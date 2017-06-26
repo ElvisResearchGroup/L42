@@ -32,7 +32,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathNotFound;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
 import platformSpecific.javaTranslation.Resources;
 import programReduction.Program;
@@ -107,25 +107,25 @@ public class Rename {
     return res;
   }
 /**{@link RenameSpec#rename}*/   
-public static ClassB renameClass(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathNotFound{
+public static ClassB renameClass(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
   List<Ast.C> srcL=PathAux.parseValidCs(src);
   List<Ast.C> destL=PathAux.parseValidCs(dest);
   if(MembersUtils.isPrivate(srcL)){
-    throw new RefactorErrors.PathNotFound(src).msg("private path");  
+    throw new RefactorErrors.PathUnfit(srcL).msg("private path");  
     }
   if(MembersUtils.isPrivate(destL)){
-    throw new RefactorErrors.PathNotFound(dest).msg("private path");  
+    throw new RefactorErrors.PathUnfit(destL).msg("private path");  
     }
   return renameClassAux(p.p,cb,srcL,destL);
   }
 
-public static ClassB hideClass(PData p,ClassB cb,String src) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathNotFound, ClassUnfit{
+public static ClassB hideClass(PData p,ClassB cb,String src) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit, ClassUnfit{
   List<Ast.C> srcL=PathAux.parseValidCs(src);
   if(MembersUtils.isPrivate(srcL)){
-    throw new RefactorErrors.PathNotFound(src).msg("private path");  
+    throw new RefactorErrors.PathUnfit(srcL).msg("private path");  
     }  
   if(!MembersUtils.isPathDefined(cb, srcL)){
-    throw new RefactorErrors.PathNotFound(src);
+    throw new RefactorErrors.PathUnfit(srcL);
     }
   Program pp=p.p;
   pp=pp.evilPush(cb);
@@ -142,9 +142,9 @@ public static ClassB hideClass(PData p,ClassB cb,String src) throws MethodClash,
 
 
 /**{@link RenameSpec#rename}*/   
-public static ClassB renameClassAux(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathNotFound{
+public static ClassB renameClassAux(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
   if(!MembersUtils.isPathDefined(cb, src)){
-    throw new RefactorErrors.PathNotFound(Location.as42Path(src));
+    throw new RefactorErrors.PathUnfit(src);
     }
   if(src.equals(dest)){return cb;}
   if(src.isEmpty()){//push is asked

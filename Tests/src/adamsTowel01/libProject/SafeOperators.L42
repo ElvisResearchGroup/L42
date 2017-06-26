@@ -73,43 +73,7 @@ class method
         )
       error System.Guard.PluginFailure"SafeOperators.removeImplementation(path)"
 
-  class method
-  Library moveImplementation(Library that,Path path,Selector src,Selector dest)
-    use This
-      check moveImplementation(that
-        path:path.#binaryRepr()
-        src:src.#binaryRepr()
-        dest:dest.#binaryRepr()
-        )
-      error System.Guard.PluginFailure"SafeOperators.moveImplementation"
 
-  class method
-  Library removeImplementation(Library that,Path path,Selector selector)
-    use This
-      check removeImplementation(that
-        path:path.#binaryRepr()
-        selector:selector.#binaryRepr()
-        )
-      error System.Guard.PluginFailure"SafeOperators.removeImplementation(path,selector)"
-
-  /*class method
-  Library addDocumentation(Library that,Path path,Introspection.Doc doc)
-    use This
-      check addDocumentation(that
-        path:path.#binaryRepr()
-        doc:doc.#binaryRepr()
-        )
-      error System.Guard.PluginFailure"SafeOperators.addDocumentation(path)"
-  class method
-  Library addDocumentation(Library that,Path path,Selector selector,Introspection.Doc doc)
-    use This
-      check addDocumentation(that
-        path:path.#binaryRepr()
-        selector:selector.#binaryRepr()
-        doc:doc.#binaryRepr()
-        )
-      error System.Guard.PluginFailure"SafeOperators.addDocumentation(path,selector)"
-*/
   class method
   S freshName(S that) S.#from(binaryRepr: use This
       check freshName(that.#binaryRepr())

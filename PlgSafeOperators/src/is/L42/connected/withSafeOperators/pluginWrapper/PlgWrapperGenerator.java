@@ -458,8 +458,8 @@ overloading
 
     
 General exceptions for Refactor
-  SelectorNotFound
-  PathNotFound
+  SelectorUnfit
+  PathUnfit
   MethodClash //2 methods not ok together
   MethodUnfit //1 method not ok shape
   ClassClash

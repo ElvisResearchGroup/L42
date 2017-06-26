@@ -126,7 +126,7 @@ public interface TsLibrary extends TypeSystem{
       mwt1=mwt;
     }
     else{
-      TIn newIn=in.freshGFromMt(mwt);
+      TIn newIn=TIn.freshGFromMt(in.p,mwt);
       TOut out=type(newIn);
       if(!out.isOk()){return out.toError();}
       for(Path P1: out.toOk().exceptions){

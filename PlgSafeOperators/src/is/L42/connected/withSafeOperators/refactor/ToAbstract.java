@@ -20,22 +20,22 @@ import is.L42.connected.withSafeOperators.location.Location;
 import is.L42.connected.withSafeOperators.location.Method;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathNotFound;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorNotFound;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
 public class ToAbstract {
-public static ClassB toAbstractPath(PData pData,ClassB cb, String path,String sel) throws SelectorNotFound, PathNotFound, MethodClash{
+public static ClassB toAbstractPath(PData pData,ClassB cb, String path,String sel) throws SelectorUnfit, PathUnfit, MethodClash{
   return toAbstractAux(pData.p,cb,PathAux.parseValidCs(path),MethodSelector.parse(sel),null);
   }
-public static ClassB toAbstractPathDest(PData pData,ClassB cb, String path,String sel,String newSel) throws SelectorNotFound, PathNotFound, MethodClash{
+public static ClassB toAbstractPathDest(PData pData,ClassB cb, String path,String sel,String newSel) throws SelectorUnfit, PathUnfit, MethodClash{
   return toAbstractAux(pData.p,cb,PathAux.parseValidCs(path),MethodSelector.parse(sel),MethodSelector.parse(newSel));
   }
-public static ClassB toAbstract(PData pData,ClassB cb,String sel) throws SelectorNotFound, PathNotFound, MethodClash{
+public static ClassB toAbstract(PData pData,ClassB cb,String sel) throws SelectorUnfit, PathUnfit, MethodClash{
   return toAbstractAux(pData.p,cb,Collections.emptyList(),MethodSelector.parse(sel),null);
   }
-public static ClassB toAbstractDest(PData pData,ClassB cb, String sel,String newSel) throws SelectorNotFound, PathNotFound, MethodClash{
+public static ClassB toAbstractDest(PData pData,ClassB cb, String sel,String newSel) throws SelectorUnfit, PathUnfit, MethodClash{
   return toAbstractAux(pData.p,cb,Collections.emptyList(),MethodSelector.parse(sel),MethodSelector.parse(newSel));
   }
 
@@ -46,23 +46,26 @@ public static ClassB toAbstractDest(PData pData,ClassB cb, String sel,String new
    This make it safe on interfaces.
  If a new method is introduced, it is not refine.
  */
-public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorNotFound, PathNotFound, MethodClash{
+public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorUnfit, PathUnfit, MethodClash{
   if(MembersUtils.isPrivate(path)){
-    throw new RefactorErrors.PathNotFound(Location.as42Path(path)).msg("Private path");
+    throw new RefactorErrors.PathUnfit(path).msg("Private path");
     }
   if(MembersUtils.isPrivate(sel)){
-    throw new RefactorErrors.SelectorNotFound(Location.as42Path(path),sel).msg("Private selector");
+    throw new RefactorErrors.SelectorUnfit(path,sel).msg("Private selector");
     }
   if(newSel!=null && MembersUtils.isPrivate(newSel)){
-    throw new RefactorErrors.SelectorNotFound(Location.as42Path(path),newSel).msg("Private selector");
+    throw new RefactorErrors.SelectorUnfit(path,newSel).msg("Private selector");
+    }
+  if(newSel!=null && sel.getNames().size()!=newSel.getNames().size()){
+    throw new RefactorErrors.SelectorUnfit(path,newSel).msg("Selector has wrong number of parameters");
     }
   try{
     ClassB nested=cb.getClassB(path);
-    //interfaces are ok if(nested.isInterface()){throw new RefactorErrors.PathNotFound(Location.as42Path(path));}
-    if(nested._getMember(sel)==null){throw new RefactorErrors.SelectorNotFound(Location.as42Path(path),sel);}
+    //interfaces are ok if(nested.isInterface()){throw new RefactorErrors.PathUnfit(Location.as42Path(path));}
+    if(nested._getMember(sel)==null){throw new RefactorErrors.SelectorUnfit(path,sel);}
     }
   catch(ast.ErrorMessage.PathMetaOrNonExistant unused){
-    throw new RefactorErrors.PathNotFound(Location.as42Path(path));
+    throw new RefactorErrors.PathUnfit(path);
     }
   if(path.isEmpty()){return auxToAbstract(p,cb,path,sel,newSel,cb);}
   return cb.onClassNavigateToPathAndDo(path,LambdaExceptionUtil.rethrowFunction(cbi->auxToAbstract(p,cbi,path,sel,newSel,cb)));

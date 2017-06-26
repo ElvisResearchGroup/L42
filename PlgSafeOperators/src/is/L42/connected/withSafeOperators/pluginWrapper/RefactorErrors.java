@@ -3,6 +3,9 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
 import is.L42.connected.withSafeOperators.location.Lib;
 import is.L42.connected.withSafeOperators.location.Location;
 import is.L42.connected.withSafeOperators.location.Method;
+
+import java.util.List;
+
 import ast.Ast.MethodSelector;
 /* fluent setter for errors, a good idea to avoid duplicating constructors, but
  * the main issue is that we need to support enriching the message while try-catching  
@@ -27,20 +30,20 @@ abstract class MutMsgExc extends Exception{
 
 public class RefactorErrors{
   @SuppressWarnings("serial") public static class 
-  SelectorNotFound extends MutMsgExc implements
-    FluentSetter<SelectorNotFound>{
-    String path; MethodSelector sel;
-    public SelectorNotFound(String path, MethodSelector sel){this.path=path;this.sel=sel;}
-    public String path(){return path;}
+  SelectorUnfit extends MutMsgExc implements
+    FluentSetter<SelectorUnfit>{
+    List<ast.Ast.C> path; MethodSelector sel;
+    public SelectorUnfit(List<ast.Ast.C> path, MethodSelector sel){this.path=path;this.sel=sel;}
+    public String path(){return Location.as42Path(path);}
     public MethodSelector selector(){return sel;}
     
   }
 
   @SuppressWarnings("serial") public static class 
-  PathNotFound extends MutMsgExc implements
-    FluentSetter<PathNotFound>{
-    String path;public PathNotFound(String path){this.path=path;}
-    public String path(){return path;}
+  PathUnfit extends MutMsgExc implements
+    FluentSetter<PathUnfit>{
+    List<ast.Ast.C> path;public PathUnfit(List<ast.Ast.C> path){this.path=path;}
+    public String path(){return Location.as42Path(path);}
     }
   
   @SuppressWarnings("serial") public static class 

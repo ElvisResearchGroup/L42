@@ -21,6 +21,63 @@ public class Map {
       if(!el.isPresent()){return Optional.empty();}
       return Optional.of(f.apply(el.get()));
     }
+  
+  /**turn two (immutable) lists into a map*/
+  static public <K,V> java.util.Map<K,V> list2map(List<K>ks,List<V>vs){
+    return new MapList<K,V>(ks,vs);
+    }
+  static class MapList<K,V> implements java.util.Map<K,V>{
+    List<K> ks;List<V>vs;
+    MapList(List<K> ks,List<V>vs){
+      this.ks=ks;this.vs=vs;
+      assert ks.size()==vs.size();
+      }
+    @Override public int size() {return ks.size();}
 
+    @Override public boolean isEmpty() {return ks.isEmpty();}
+
+    @Override public boolean containsKey(Object key) {
+      return ks.contains(key);
+      }
+
+    @Override public boolean containsValue(Object value) {
+      return vs.contains(value);
+      }
+
+    @Override public V get(Object key) {
+      for(int i=0;i<ks.size();i++){
+        if(ks.get(i).equals(key)){return vs.get(i);}
+        }
+      return null;
+      }
+
+    @Override public V put(K key, V value) {
+      throw Assertions.codeNotReachable("Immutable map");
+      }
+
+    @Override public V remove(Object key) {
+      throw Assertions.codeNotReachable("Immutable map");
+      }
+
+    @Override public void putAll(java.util.Map<? extends K, ? extends V> m) {
+      throw Assertions.codeNotReachable("Immutable map");
+      }
+
+    @Override public void clear() {
+      throw Assertions.codeNotReachable("Immutable map");
+      }
+
+    @Override public Set<K> keySet() {
+      throw Assertions.codeNotReachable("Would be very slow");
+      }
+
+    @Override public Collection<V> values() {
+      return this.vs;
+      }
+
+    @Override public Set<java.util.Map.Entry<K, V>> entrySet() {
+      throw Assertions.codeNotReachable("Would be very slow");
+      }
+    }
   }
 

@@ -2,8 +2,13 @@ package is.L42.connected.withSafeOperators;
 
 import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 import helpers.TestHelper;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
+import is.L42.connected.withSafeOperators.refactor.ToAbstract;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,43 +46,30 @@ public static class TestAbstractMeth {//add more test for error cases
   },{"{C:{B:{ method Void m(Any x) void}}}","C.B","m(x)","{C:{B:{ method Void m(Any x)}}}",false
   },{"{ method Void m()}","This0","m()","{ method Void m()}",false
   },{"{B:{ method Void m(Any x) void}}", "C", "m(x)",
-    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
-    "Path:{//@.C\n}"+
-    "Selector:{//@stringU\n//m(x)\n}"+
-    "InvalidKind:{//@stringU\n//NonExistentPath\n}"+
-    "IsPrivate:{//@stringU\n//false\n}}",
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "k()",
-    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
-	  "Path:{//@.B\n}"+
-	  "Selector:{//@stringU\n//k()\n}"+
-    "InvalidKind:{//@stringU\n//NonExistentMethod\n}"+
-    "IsPrivate:{//@stringU\n//false\n}}",
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit",
 	  true
   },{"{B:{ method Void m(Any x) void}}", "B", "m()",
-    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
-	  "Path:{//@.B\n}"+
-	  "Selector:{//@stringU\n//m()\n}"+
-    "InvalidKind:{//@stringU\n//NonExistentMethod\n}"+
-    "IsPrivate:{//@stringU\n//false\n}}",
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit",
 	  true
 }});}
-@Test  public void test() {
+@Test  public void test() throws SelectorUnfit, PathUnfit, MethodClash {
   ClassB cb1=getClassB(false,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
   MethodSelector ms=MethodSelector.parse(_ms);
   assert ms!=null;
-  ClassB expected=getClassB(false,_expected);
   if(!isError){
+    ClassB expected=getClassB(false,_expected);
     //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms,null);
+    ClassB res=ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms,null);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms,null);fail("error expected");}
-    catch(Resources.Error err){
-      ClassB res=(ClassB)err.unbox;
-      TestHelper.assertEqualExp(expected,res);
+    try{ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms,null);fail("error expected");}
+    catch(SelectorUnfit| PathUnfit| MethodClash err){
+      assertEquals(_expected,err.getClass().getName());
     }
   }
 }
@@ -96,39 +88,20 @@ public static class TestMoveMeth {//add more test for error cases
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(),//
-      "{B:{ method Void m() void}}","B","m()","k()","{B:{ method Void m() method Void k() void}}",false
+      "{B:{ method Void m() void}}","B","m()","k()","{B:{ method Void k() void method Void m()}}",false
   },{lineNumber(),//
-    "{B:{ method Void m(Any x) }}","B","m(x)","k(x)","{B:{ method Void m(Any x) method Void k(Any x)}}",false
+    "{B:{ method Void m(Any x) }}","B","m(x)","k(x)","{B:{ method Void m(Any x)}}",false
   },{lineNumber(),//
-    "{ method Void m(Any x) void}","This0","m(x)","k(x)","{ method Void m(Any x) method Void k(Any x) void}",false
+    "{ method Void m(Any x) void}","This0","m(x)","k(x)","{ method Void k(Any x) void  method Void m(Any x)}",false
   },{lineNumber(),//
-    "{C:{B:{ method Void m(Any x) }}}","C.B","m(x)","k(x)","{C:{B:{ method Void m(Any x) method Void k(Any x)}}}",false
+    "{C:{B:{ method Void m(Any x) }}}","C.B","m(x)","k(x)","{C:{B:{ method Void m(Any x)}}}",false
   },{
     lineNumber(),//
     "{ method Void m()}","This0","m()","k(x)",
-    "    {Kind:{//@stringU\n"+
-        "      //MethodClash\n"+
-        "    }Path:{//@.\n"+
-        "    }Left:{//@stringU\n"+
-        "      //method Void m()\n"+
-        "    }Right:{//@stringU\n"+
-        "      //method Void k(Void x)\n"+
-        "    }LeftKind:{//@stringU\n"+
-        "      //AbstractMethod\n"+
-        "    }RightKind:{//@stringU\n"+
-        "      //AbstractMethod\n"+
-        "    }DifferentParameters:{//@stringU\n"+
-        "      //[0]\n"+
-        "    }DifferentReturnType:{//@stringU\n"+
-        "      //false\n"+
-        "    }DifferentThisMdf:{//@stringU\n"+
-        "      //false\n"+
-        "    }IncompatibleException:{//@stringU\n"+
-        "      //false\n"+
-            "}}"
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit"
     ,true
 }});}
-@Test  public void test() {
+@Test  public void test() throws SelectorUnfit, PathUnfit, MethodClash {
   TestHelper.configureForTest();
   ClassB cb1=getClassB(false,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
@@ -136,17 +109,15 @@ public static class TestMoveMeth {//add more test for error cases
   assert ms1!=null;
   MethodSelector ms2=MethodSelector.parse(_ms2);
   assert ms2!=null;
-  ClassB expected=getClassB(false,_expected);
   if(!isError){
-    //TODO: mettere tests per il caso con un selettore destinazione. In particolare testare interfacce
-    ClassB res=Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);
+  ClassB expected=getClassB(false,_expected);
+    ClassB res=ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);fail("error expected");}
-    catch(Resources.Error err){
-      ClassB res=(ClassB)err.unbox;
-      TestHelper.assertEqualExp(expected,res);
+    try{ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);fail("error expected");}
+    catch(SelectorUnfit| PathUnfit| MethodClash err){
+      assertEquals(_expected,err.getClass().getName());
     }
   }
 }

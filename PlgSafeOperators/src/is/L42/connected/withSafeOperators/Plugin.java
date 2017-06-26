@@ -31,6 +31,7 @@ import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import facade.Configuration;
 import facade.L42;
+import is.L42.connected.withSafeOperators.refactor.ToAbstract;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -97,26 +98,7 @@ public class Plugin implements PluginType{
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       return Abstract.toAbstract(that,path);
       }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Object MremoveImplementation£xthat£xpath£xselector(Object _that,Object _path,Object _sel){
-      ClassB that=ensureExtractClassB(_that);
-      List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
-      MethodSelector sel = MethodSelector.parse(ensureExtractStringU(_sel));
-      return Abstract.toAbstract(Resources.getP(),that,path,sel,null);
-      }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Object MmoveImplementation£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _sel1,Object _sel2){
-      try{
-      ClassB that=ensureExtractClassB(_that);
-      //assert that.getStage().isInheritedComputed();
-      List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
-      MethodSelector sel1 = MethodSelector.parse(ensureExtractStringU(_sel1));
-      MethodSelector sel2 = MethodSelector.parse(ensureExtractStringU(_sel2));
-      return Abstract.toAbstract(Resources.getP(),that,path,sel1,sel2);
-      }catch (RuntimeException rte ){
-      throw rte;//to put breakpoint
-      }
-      }
+
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){
       ClassB that=ensureExtractClassB(_that);

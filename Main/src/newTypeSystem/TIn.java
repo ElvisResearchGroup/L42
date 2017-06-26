@@ -207,16 +207,16 @@ boolean isCoherent(){
   if(resE.length()>50){resE=resE.substring(0,40)+"[..]"+resE.substring(resE.length()-5,resE.length());}
   return this.phase+";p;"+this.g+"|-"+resE+":"+this.expected;
   }
-public TIn freshGFromMt(MethodWithType mwt){
+public static TIn freshGFromMt(Program p,MethodWithType mwt){
   MethodType mt=mwt.getMt();
   assert mwt.get_inner().isPresent();
-  Map<String,Map.Entry<Boolean, Type>>newG=new HashMap<>(g);
+  Map<String,Map.Entry<Boolean, Type>>newG=new HashMap<>();
   newG.put("this",p(false,new Type(mt.getMdf(),Path.outer(0),Doc.empty())));
   {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;
     Type ntx=mt.getTs().get(i);
     newG.put(x,p(false,ntx));
     }}
-  return new TIn(Phase.Typed,this.p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType()),newG);
+  return new TIn(Phase.Typed,p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType()),newG);
   }
 }
 

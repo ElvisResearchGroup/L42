@@ -46,6 +46,15 @@ public class Util {
       if(!cs.isEmpty()){prefix=String.join(".",cs);}
       return prefix+"::"+ms;}
     }
+  @Value @Wither public static class CsMxMx{
+    @NonNull java.util.List<Ast.C> cs;
+    @NonNull MethodSelector ms1;
+    @NonNull MethodSelector ms2;
+    public String toString(){
+      String prefix="This0";
+      if(!cs.isEmpty()){prefix=String.join(".",cs.toString());}
+      return prefix+"::"+ms1+"->ms2";}
+    }
   @Value @Wither public static class PathMx{
     @NonNull Path path;@NonNull MethodSelector ms;
     public String toString(){return ""+path+"::"+ms;}}
