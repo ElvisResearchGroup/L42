@@ -80,9 +80,6 @@ private List<CsPath> verified;
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
     assert external.isPrimitive() || external.outerNumber()>0;
-    if(external.isPrimitive()){
-      System.out.println("redirecting to "+external);
-      }
     p=p.evilPush(top);
     redirectOk(p,internal,external);
     return applyMapPath(p,top,verified);

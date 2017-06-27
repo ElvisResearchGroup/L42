@@ -112,14 +112,14 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   
   default TOutDs dsType(TIn in,List<Dec> _ds){
     if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,G.instance.addGG(in));}
-    int i=splitDs(in,_ds);
-    assert i+1<=_ds.size();
-    List<Dec> ds=_ds.subList(i+1,_ds.size());
-    TOutDs guessOut=GuessTypeCore.guessedDs(in.p,in,_ds.subList(0,i+1));//G'
+    int iSplit=splitDs(in,_ds);
+    assert iSplit+1<=_ds.size();
+    List<Dec> ds=_ds.subList(iSplit+1,_ds.size());
+    TOutDs guessOut=GuessTypeCore.guessedDs(in.p,in,_ds.subList(0,iSplit+1));//G'
     if(!guessOut.isOk()){return guessOut;}
     List<Dec> ds0n=guessOut.toOkDs().ds;
     List<String> fve0n=new ArrayList<>();
-    for(Dec di:_ds.subList(0,i+1)){
+    for(Dec di:_ds.subList(0,iSplit+1)){
       fve0n.addAll(FreeVariables.of(di.getInner()));
       }
     assert !fve0n.stream()
@@ -133,7 +133,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     Tr trAcc=Tr.instance;
     List<Dec>ds1=new ArrayList<>();
     List<Dec>ds1FwdP=new ArrayList<>();
-    for(Dec di:ds0n){
+    {int i=-1;for(Dec di:ds0n){i++;
       Type nt=di.getT().get();
       Type ntFwdP=TypeManipulation.fwdP(nt);
       TOut _out=type(in1.withE(di.getInner(),ntFwdP));
@@ -141,12 +141,13 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       TOk ok=_out.toOk();
       trAcc=trAcc.trUnion(ok);
       Dec di1=di.withInner(ok.annotated);
+      Optional<Type> typeForG2=_ds.get(i).getT();
       if(TypeManipulation.fwd_or_fwdP_in(nt.getMdf())){//building G2
-        ds1.add(di1.withT(Optional.of(ok.computed)));
+        ds1.add(di1.withT(Optional.of(typeForG2.orElse(ok.computed))));
         }
-      else{ds1.add(di1.withT(Optional.of(TypeManipulation.noFwd(ok.computed))));}
-      ds1FwdP.add(di1.withVar(false).withT(Optional.of(TypeManipulation.fwdP(ok.computed))));
-      }
+      else{ds1.add(di1.withT(Optional.of(typeForG2.orElse(TypeManipulation.noFwd(ok.computed)))));}
+      ds1FwdP.add(di1.withVar(false).withT(Optional.of(typeForG2.orElse(TypeManipulation.fwdP(ok.computed)))));
+      }}
     if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
       boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
       if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}

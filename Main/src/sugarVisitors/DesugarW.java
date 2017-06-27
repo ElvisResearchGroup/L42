@@ -228,8 +228,21 @@ class DesugarW extends CloneVisitor{
     for(int i=0;i<xs.size();i++){bc.add(withNext(pos,i,xs));}
     //inner =di ki s b[xs:=xs.#inner()]
     for(String xi:xs){
-      b=XInE.of(new X(pos,xi),Desugar.getMCall(pos,new X(pos,xi),"#inner", Desugar.getPs()),b);
-      }
+      b=XInE.of(new X(pos,xi),
+        /*x into x.#inner()*/Desugar.getMCall(pos,new X(pos,xi),"#inner", Desugar.getPs()),
+        /*x:=e into x.inner(e)*/bop->{
+        if(bop.getOp()==Ast.Op.ColonEqual){
+          return Desugar.getMCall(pos, bop.getLeft(),"inner",Desugar.getPs(bop.getRight()));
+          }
+        //x+=e into x.inner(x+e)
+        return Desugar.getMCall(pos, bop.getLeft(),"inner",Desugar.getPs(
+                bop.withOp(bop.getOp().nonEqOpVersion()))
+                );
+
+        },b);
+      //x into x.#inner()
+      //x:=e into x.inner(e)
+    }
     RoundBlock inner=new RoundBlock(pos,Doc.empty(),b,bc);
     Catch k=Desugar.getK(pos,SignalKind.Exception, "",
         Type.immVoid,

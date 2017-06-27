@@ -150,14 +150,12 @@ public class ToAst extends AbstractVisitor<Expression>{
   }
   public static Doc parseDoc(ParseTree s){
     if(s==null){return Doc.empty();}//as for empty comment string
-    return parseDoc(s.getText().replace('\t','(').replace(',',' '));
+    return parseDoc(s.getText().replace('\t','('));
   }
   public static Doc parseDoc(String c){
     if(c.isEmpty()){return Doc.empty();}
     if(c.startsWith("/*")){
-      c=c.trim();
-      assert c.endsWith("*/"):c+"|";
-      c=c.substring(2,c.length()-2);
+      c=c.substring(2,c.lastIndexOf('*'));
       //c=c.substring(2,c.length()-2);
       return Doc.factory(true,c);
       }

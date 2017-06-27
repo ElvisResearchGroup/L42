@@ -152,7 +152,8 @@ guessType(p,G,e)
   guessType(p,G,throw _) and guessType(p,G,loop _) undefined
   guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
-
+suggest(T?,T)=T'
+  suggest(empty,T)=suggest(T,_)=T
 --------------------------------------------
 2 Coherent literal
 --------------------------------------------

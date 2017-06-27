@@ -1,6 +1,11 @@
 {
-  class method Library (class Any that)
-    SafeOperators.redirect({#new(TOpt that)
+  class method Library (class Any that){
+    return Refactor2.redirect(path:\"T",into:that)<><This.optTrait()
+    error on Refactor2.Fail X""
+    }
+  class method Library optTrait(){
+      method TOpt that()
+      class method This #new(TOpt that)
       method
       T get()
       exception Guard.Operation {
@@ -10,10 +15,18 @@
         }
       T:{}
       TOpt:{interface method T get() }
-      TEmpty:{() implements TOpt method get()
-        error Guard.Operation
-          "TEmpty.get() Value not present in Optional" }
-      TOf:{(T that) implements TOpt method get() this.that()}
+      TEmpty:{
+        implements TOpt
+        class method This ()
+        method get()
+          error X"TEmpty.get() Value not present in Optional" 
+        }
+      TOf:{implements TOpt
+        method T that()
+        class method This (T that)
+        method get()
+          this.that()
+        }
       method T #get() this.that().get()
       method Bool isPresent(){
         with cell=this.that() (on TOf return Bool.true())
@@ -21,6 +34,5 @@
         }
       class method This () This.#new(TEmpty())
       class method This (T that) This.#new(TOf(that))
-      },
-      src:Path"T",dest:that)
+      }
   }

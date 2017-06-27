@@ -652,6 +652,11 @@ public interface Ast {
    }
    throw tools.Assertions.codeNotReachable();
   }
+  public Op nonEqOpVersion(){
+    if(this.kind!=OpKind.EqOp){return this;}
+    assert this!=Op.ColonEqual;
+    return Op.fromString(inner.substring(0,inner.length()-1));
+    }
   public Op nonNegatedVersion(){
     if (!this.negated){return this;}
     String ops=this.inner.substring(1);

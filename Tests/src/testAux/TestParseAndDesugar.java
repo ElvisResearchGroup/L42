@@ -100,14 +100,15 @@ public class TestParseAndDesugar {
   "Void unused1=b.#o()"+
   "b"+
   "))"
-},{lineNumber(), " S\"foo (\"",
+},{lineNumber(), " S\"fo,o (\"",
   " This0.S.#from(builder:("+
   " b=This0.S.#builder()"+
   "Void unused=b.#f()"+
   "Void unused0=b.#o()"+
-  "Void unused1=b.#o()"+
-  "Void unused2=b.#space()"+
-  "Void unused3=b.#oRound()"+
+  "Void unused1=b.#comma()"+
+  "Void unused2=b.#o()"+
+  "Void unused3=b.#space()"+
+  "Void unused4=b.#oRound()"+
   "b"+
   "))"
 },{lineNumber(), "with x=void (on Void void)",
@@ -135,8 +136,22 @@ public class TestParseAndDesugar {
 },{lineNumber(), "A[\\a;\\a]",
   //"This0.A.#begin().#add(that:This0.A.a()).#add(that:This0.A.a()).#end()"
   "This0.A.#from(seqBuilder:(  b=This0.A.#seqBuilder()   Void unused=b.#add(that:This0.A.a())   Void unused0=b.#add(that:This0.A.a())     b   ))"
-
-},{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar()) } }"
+},{lineNumber(), "with var a in b ( a:=c)",
+" (a=b ( Void unused=loop ( Void unused0=a.#next()"
++ " catch exception Void catched0 ( Void unused1=("
++ " Void unused2=a.#checkEnd()"
++ " catch exception Void catched1 void void )"
++ "exception void ) "
++ "(a.inner(that:c)) )"
++ " catch exception Void catched3 void void ))"
+},{lineNumber(), "with var a in b ( a+=c)",
+" (a=b ( Void unused=loop ( Void unused0=a.#next()"
++ " catch exception Void catched0 ( Void unused1=("
++ " Void unused2=a.#checkEnd()"
++ " catch exception Void catched1 void void )"
++ "exception void ) "
++ "(a.inner(that:a.#plus(that:c))) )"
++ " catch exception Void catched3 void void ))"},{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar()) } }"
 },{lineNumber(), "{method Library(){ method This bar() method This foo(This that) this.foo(\\bar+void) } }","{method Library #apply(){ method This0 bar() method This0 foo(This0 that) this.foo(that:this.bar().#plus(that:void)) } }"
   //in this test setting, we can not generate This0.A for method local nested classes introduced desugaring vars, and other stuff :(
   //thus we use a classB literal however

@@ -45,7 +45,7 @@ MiniDataTrait:{class method Library(){
   method readableName()
     MiniData.classObjToS()
 
-  method/*hi2*/ is(subtype){
+  method is(subtype){
     with subtype (on class This return Bool.true())
     return Bool.false()}
 
@@ -54,6 +54,7 @@ MiniDataTrait:{class method Library(){
     return Bool.false()}
 
   read method Bool ==(read This that)
+  This$:{}
   }}
 MiniData:{
   class method S classObjToS()S"TOFIX"

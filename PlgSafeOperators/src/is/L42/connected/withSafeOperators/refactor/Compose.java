@@ -226,7 +226,6 @@ public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,b
       throw makeMethodClash(mwt1, mwt2).msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
       }    
     if(mwt1.get_inner().isPresent()){
-      assert !mwt2.get_inner().isPresent();
       assert !interface1 && !interface2;
       checkMtGt(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);}

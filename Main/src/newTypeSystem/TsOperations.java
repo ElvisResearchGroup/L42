@@ -154,7 +154,7 @@ public interface TsOperations extends TypeSystem{
        //     not fwd_or_fwd%_in(D.G(x).T)
       if(!in.gVar(s.getVar())){
         assert false;
-        /*TODO: return TErr locked var to improve*/
+        //TODO: return TErr locked var to improve
         }
       ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
       if(subErr!=null){

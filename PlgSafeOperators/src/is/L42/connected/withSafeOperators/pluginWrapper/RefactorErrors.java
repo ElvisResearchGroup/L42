@@ -33,16 +33,7 @@ interface FluentSetter<T>{
     }
   }
 
-@SuppressWarnings("serial")
-abstract class MutMsgExc extends Exception{
-  String mutMsg;//since java do not want setMessage  :(
-  public @Override String getMessage(){return mutMsg;}
-  public void setMessage(String msg){mutMsg=msg;}
-  public String text(){return mutMsg;}
-}
-
 public class RefactorErrors{
-
   static String msgMapping(List<CsPath>verified,List<CsSPath>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest) {
     assert incoSrc!=null || !ambiguities.isEmpty();
     String res="\n";

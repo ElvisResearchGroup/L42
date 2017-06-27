@@ -10,11 +10,11 @@ Main: {
   '12345
   'There should be a [PASS] and a [FAIL] after this message.
   '[PASS] : result
-  '[FAIL] : result != other
-  '[FAIL] This should be another failing test.: result != other
+  '[FAIL] : 'result' != 'other'
+  '[FAIL] This should be another failing test.: 'result' != 'other'
   '[PASS] : result
-  '[FAIL] : result != other
-  '[FAIL] This one and the one above are expected to [FAIL].: result != other
+  '[FAIL] : 'result' != 'other'
+  '[FAIL] This one and the one above are expected to [FAIL].: 'result' != 'other'
   '[End of defined output]
   ")
   

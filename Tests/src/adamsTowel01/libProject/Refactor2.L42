@@ -3,33 +3,26 @@
 //------------------------------
 //Infrastructure
 //------------------------------
-  Fail:{interface implements Concept.ToS, Concept.Classable
-    //not implement Guard, not a message, no cause/more then a msg?
-    read method S text()  
-    }
+  Fail:{interface implements Guard    }
   ErrorW:{
     class method Library trait(){
       //@plugin is.L42.connected.withSafeOperators
       implements Fail
       
+      method kind() S"Refactor.Fail"
+      method responseOf()Message.Opt()
       method toS() This.readableName()[
         S": ";S.nl();this.text().as42MultilineString()
         ]""
       
-      refine read method class This class() This
-      
       method readableName() GetMyName(This)
       
-      method is(subtype) {
-        with subtype (on class This return Bool.true())
-        return Bool.false()
-        }
       class method
       Library #pluginUnresponsive(Library binaryRepr)
         binaryRepr  
       }
     class method Library <><(Library that)
-      UnsafeRefactor.Compose.compose(
+      UnsafeRefactor.MiniData<><UnsafeRefactor.Compose.compose(
         left:that,
         right:This.trait()
       )
@@ -69,9 +62,13 @@
     method Path path()
     method Selector selector()
     } 
+  IncoherentMapping:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
+    } 
+
 //errors ready for other operations
-//IncoherentMapping
 //PrivacyCoupuled
+
 SubtleSubtypeViolation:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
     } 
@@ -255,4 +252,36 @@ rename method:
   if dest is private, check not abstract 
     on fail??
 */
+ 
+
+//------------------------------
+//ToAbstract
+//------------------------------
+PlgRedirect:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error {/*redirect(that,src,dest)*/}
+
+  class method
+  Library redirect(Library that,Path src,class Any dest)
+  exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit
   }
+Redirect:{
+  method Path src()
+  method class Any dest()
+  class method This(Path src, class Any dest)
+  method
+  Library <><(Library that)
+  exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit
+    PlgRedirect.redirect(that,src:this.src(),dest:this.dest())
+  }
+class method
+class Path #default#redirect(Void path) Path
+class method
+Redirect redirect(Path path,class Any into) 
+  Redirect(src:path,dest:into)
+
+
+
+ }

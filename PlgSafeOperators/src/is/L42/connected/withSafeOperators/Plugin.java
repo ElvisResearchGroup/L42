@@ -32,9 +32,13 @@ import coreVisitors.From;
 import facade.Configuration;
 import facade.L42;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.IncoherentMapping;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
 import is.L42.connected.withSafeOperators.refactor.Compose;
+import is.L42.connected.withSafeOperators.refactor.RedirectObj;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -46,13 +50,17 @@ import tools.Map;
 
 //empty scheleton
 public class Plugin implements PluginType{
-
-   /* @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Object Mcompose£xleft£xright(Object _left,Object _right) throws MethodClash, SubtleSubtypeViolation, ClassClash{
+    
+    //we keep it for testing in testAux
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+    public Object Mcompose£xleft£xright(Object _left,Object _right) {
       ClassB left=ensureExtractClassB(_left);
       ClassB right=ensureExtractClassB(_right);
-      return new Compose(left,right).compose(Resources.getP(),left,right);
-      }*/
+      try {return new Compose(left,right).compose(Resources.getP(),left,right);}
+      catch (MethodClash | SubtleSubtypeViolation | ClassClash e) {
+        throw new Error(e);
+        }
+      }
 /*    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
       ClassB that=ensureExtractClassB(_that);
@@ -80,7 +88,8 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return SumMethods.sumMethods(that,path,src1,src2,dest,name);
       }
-    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
+    //we keep it for testing in testAux
+    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
@@ -89,8 +98,10 @@ public class Plugin implements PluginType{
         dest;
       if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}//TODO: see if extractPath should be changed
       try {return new RedirectObj(that).redirect(Resources.getP(),src,dest);}
-      catch (ClassUnfit | IncoherentMapping | MethodClash | PathUnfit e) {throw new Error(e);}
-      }*/
+      catch (ClassUnfit | IncoherentMapping | MethodClash | PathUnfit e) {
+        throw new Error(e);
+        }
+      }
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);

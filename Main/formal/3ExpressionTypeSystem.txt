@@ -133,8 +133,8 @@ Phase| p| G |- ds ~> ds'| Tr | G0
   The resulting G0 is the enriched G containing info about ds too.   
 
 (ds)  // G is clipped for error safety; G2 is clipped and complete
-Phase| p| G |- var?0 T?0  x0=e0 ..var?n T?n  xn=en, ds ~>
-               var?0 T'0  x0=e'0..var?0 T'n  xn=e'n, ds'|Tr U Tr' | G3
+Phase| p| G |- var?0 T?0   x0=e0 ..var?n T?n   xn=en, ds ~>
+               var?0 T''0  x0=e'0..var?0 T''n  xn=e'n, ds'|Tr U Tr' | G3
   where
   dom(ds) disjoint FV(e0..en)
   for i in 0..n
@@ -143,8 +143,8 @@ Phase| p| G |- var?0 T?0  x0=e0 ..var?n T?n  xn=en, ds ~>
   G'=x0:T0..xn:Tn
   G1= G[fwd(onlyMutOrImm(G')[with vars=empty])] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line 
   for i in 0..n Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
-  T''i=T'i if fwd_or_fwd%_in(Ti) else T''i=noFwd(T'i)
-  G2=x0:T''0..xn:T'n //TODO anti fwd?
+  T''i=suggest(T?i,T'i) if fwd_or_fwd%_in(Ti) else T''i=suggest(T?0,noFwd(T'i))
+  G2=x0:T''0..xn:T''n //TODO anti fwd?
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
     then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited

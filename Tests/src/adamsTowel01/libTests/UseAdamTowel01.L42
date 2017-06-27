@@ -3,13 +3,13 @@
 NList:Collections.vector(of:Size)
 Main:{
 
-  i=Introspection(lib:{Bar:{method Void()}})
-  Introspection.NestedClass ni=i.nestedClassFromRoot(Path"Bar")
-  Debug(ni.classKind())
-  Debug(i.classKind())
+  i=Location.Lib({Bar:{method Void()}})
+  ni=i.nested(path:\"Bar")
+  Debug(ni)
+  Debug(i)
 
   zero=NList[0Size]
-  Debug(S"Hello Adam "[zero.left()]"")
+  Debug(S"Hello, Adam "[zero.left()]"")
 
   selector=Selector"foo(azz,bzz,czz)"
   with s in selector.names().vals() (Debug(s))

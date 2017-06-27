@@ -420,7 +420,7 @@ public class Desugar extends CloneVisitor{
     }
     if(op.kind==Ast.OpKind.EqOp){
       //go from, for example a++=b into a:=a ++b
-      Op op2=Op.fromString(s.getOp().inner.substring(0,s.getOp().inner.length()-1));
+      Op op2=op.nonEqOpVersion();
       BinOp s2=s.withOp(op2);
       //NO!s2=s2.withLeft(getMCall(s.getP(),s.getLeft(),"#inner",getPs()));
       return visit(new BinOp(s.getP(),s.getLeft(),Op.ColonEqual,Doc.empty(),s2));
