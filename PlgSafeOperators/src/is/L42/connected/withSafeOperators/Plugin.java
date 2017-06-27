@@ -31,7 +31,10 @@ import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
 import facade.Configuration;
 import facade.L42;
-import is.L42.connected.withSafeOperators.refactor.ToAbstract;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
+import is.L42.connected.withSafeOperators.refactor.Compose;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -44,34 +47,29 @@ import tools.Map;
 //empty scheleton
 public class Plugin implements PluginType{
 
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Object Mcompose£xleft£xright(Object _left,Object _right){
-      return Timer.record("Mcompose£xleft£xright", ()-> {
-        ClassB left=ensureExtractClassB(_left);
-        ClassB right=ensureExtractClassB(_right);
-        try{return _Sum.sum(Resources.getP(),left,right);
-        }catch(ArrayIndexOutOfBoundsException exc){
-          exc.printStackTrace();
-          throw exc;
-        }
-      });
-      }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
+   /* @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+    public Object Mcompose£xleft£xright(Object _left,Object _right) throws MethodClash, SubtleSubtypeViolation, ClassClash{
+      ClassB left=ensureExtractClassB(_left);
+      ClassB right=ensureExtractClassB(_right);
+      return new Compose(left,right).compose(Resources.getP(),left,right);
+      }*/
+/*    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+    public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
       List<Ast.C> dest=PathAux.parseValidCs(ensureExtractStringU(_dest));
       //System.out.println("####################RENAMECLASS:"+src+"   "+dest);
-      return Rename.renameClass(Resources.getP(),that,src,dest);
-      }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Object MrenameMethod£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest){
+      return Rename.renameClassAux(Resources.getP(),that,src,dest);
+      }*/
+  /*  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+    public Object MrenameMethod£xthat£xpath£xsrc£xdest(Object _that,Object _path,Object _src,Object _dest) throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
        MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
-      return Rename.renameMethod(Resources.getP(),that,path,src,dest);
-      }
+      return new RenameMethods().addRename(path,src,dest)
+              .actP(Resources.getP(),that);
+      }*/
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest£xname(Object _that,Object _path,Object _src1,Object _src2,Object _dest,Object _name){
       ClassB that=ensureExtractClassB(_that);
@@ -82,7 +80,7 @@ public class Plugin implements PluginType{
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return SumMethods.sumMethods(that,path,src1,src2,dest,name);
       }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
+    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
@@ -90,8 +88,9 @@ public class Plugin implements PluginType{
       assert dest.isCore() || dest.isPrimitive():
         dest;
       if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}//TODO: see if extractPath should be changed
-      return Redirect.redirect(Resources.getP(),that,Path.outer(0,src),dest);
-      }
+      try {return new RedirectObj(that).redirect(Resources.getP(),src,dest);}
+      catch (ClassUnfit | IncoherentMapping | MethodClash | PathUnfit e) {throw new Error(e);}
+      }*/
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
@@ -283,22 +282,22 @@ public class Plugin implements PluginType{
       return MakeKs.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
     }
 //--------------------------
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+   /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideMethod£xthat£xpath£xsrc(Object _that,Object _path,Object _src){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
        MethodSelector src = MethodSelector.parse(ensureExtractStringU(_src));
        MethodSelector dest = src.withUniqueNum(L42.freshPrivate());
       return Rename.renameMethod(Resources.getP(),that,path,src,dest);
-      }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+      }*/
+   /* @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideClass£xthat£xsrc(Object _that,Object _src){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
       List<Ast.C> dest=new ArrayList<>(src);
       dest.set(dest.size()-1, dest.get(dest.size()-1).withUniqueNum(L42.freshPrivate()));
       return Rename.renameClass(Resources.getP(),that,src,dest);
-      }
+      }*/
     
     @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
     public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){

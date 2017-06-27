@@ -46,6 +46,13 @@ public class Util {
       String prefix=PathAux.as42Path(cs);
       return prefix+"::"+ms;}
     }
+  @Value @Wither public static class CsPath{
+    @NonNull java.util.List<Ast.C> cs;
+    @NonNull Path path;
+    public String toString(){
+      String prefix=PathAux.as42Path(cs);
+      return prefix+"->"+path;}
+    }
   @Value @Wither public static class CsMxMx{
     @NonNull java.util.List<Ast.C> cs;
     boolean flag;
@@ -64,12 +71,16 @@ public class Util {
     @NonNull Path path1; @NonNull Path path2;
     public String toString(){return ""+path1+"->"+path2;}
     }
-  @Data @Wither public static class PathSPath{
-    @NonNull Path path; @NonNull java.util.Set<Path> pathsSet;
-    public String toString(){return ""+path+"->"+pathsSet;}
+  @Data @Wither public static class CsSPath{
+    @NonNull List<Ast.C> cs;
+    @NonNull java.util.Set<Path> pathsSet;
+    public String toString(){return ""+cs+"->"+pathsSet;}
     }
-  @Data @Wither public static class SPathSPath{
-    @NonNull Path src; @NonNull ClassB.MethodWithType mwt1;@NonNull ClassB.MethodWithType mwt2;
+  @Data @Wither public static class CsMwtPMwt{
+    @NonNull List<Ast.C> src1; 
+    @NonNull ClassB.MethodWithType mwt1;
+    @NonNull Path src2; 
+    @NonNull ClassB.MethodWithType mwt2;
     //@NonNull List<Path> paths1; @NonNull List<Path> paths2;
     //public String toString(){return ""+paths1+"->"+paths2;}
     }

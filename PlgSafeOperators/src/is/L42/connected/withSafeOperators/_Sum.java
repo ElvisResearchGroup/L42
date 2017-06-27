@@ -37,7 +37,7 @@ import programReduction.Program;
 import coreVisitors.From;
 
 public class _Sum {
-  static ClassB sum(Program p, ClassB a, ClassB b) {
+  /*static ClassB sum(Program p, ClassB a, ClassB b) {
     //System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     //System.out.println("___________________________________________________");
     //System.out.println(a);
@@ -47,7 +47,7 @@ public class _Sum {
     b=ClassOperations.normalizePaths(b);
     b =(ClassB) RefreshUniqueNames.refresh(b);
     return normalizedTopSum(p, a, b);
-  }
+  }*/
 
   public static ClassB normalizedTopSum(Program p, ClassB topA, ClassB topB) {
      ClassB result=normalizedSum(p,topA, topB,topA, topB, Collections.emptyList());

@@ -12,6 +12,7 @@ import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
+import programReduction.Program;
 
 public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   public Method(MethodWithType inner, Lib location) {
@@ -19,6 +20,9 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     }
   public static Method of(MethodWithType inner,ClassB top,List<Ast.C>cs){
     return new Method(inner,Lib.newFromLibrary(top).navigateCs(cs));
+    }
+  public static Method of(MethodWithType inner,Program p,Path path){
+    return new Method(inner,Lib.newFromClassP(p, path));
     }
   public boolean isAbstract(){return !inner.get_inner().isPresent();}
   public boolean isRefine(){return inner.getMt().isRefine();}

@@ -17,6 +17,7 @@ import facade.PData;
 import is.L42.connected.withSafeOperators.ExtractInfo;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.NotAvailable;
+import programReduction.Program;
 import auxiliaryGrammar.Functions;
 public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   boolean isBinded;
@@ -42,8 +43,11 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
       this.location=this;
       }
   public static Lib newFromClass(PData pData,Path path){
+    return newFromClassP(pData.p,path);
+    }
+  public static Lib newFromClassP(Program p,Path path){
     if(path.isPrimitive()){return new LibPrimitive(path);}
-    ClassB cb=pData.p.extractClassB(path);//TODO: need from??
+    ClassB cb=p.extractClassB(path);//it seams does not need from??
     Lib lib=new Lib(true,cb,Collections.emptyList(),cb);
     return lib;
     } 

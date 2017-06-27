@@ -1,10 +1,15 @@
-package is.L42.connected.withSafeOperators;
+package is.L42.connected.withSafeOperators.refactor;
 
 import static helpers.TestHelper.getClassB;
 import helpers.TestHelper.ErrorCarry;
-import static org.junit.Assert.fail;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.IncoherentMapping;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.refactor.RedirectObj;
 import helpers.TestHelper;
 import static helpers.TestHelper.lineNumber;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -340,35 +345,23 @@ public static class TestRedirect1 {
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{class method Void fun()} }","This0.InnerA","This1.A",
-        "{"+"Kind:{//@stringU\n//SourceUnfit\n}"
-           +"SrcPath:{//@.InnerA\n}"
-           +"DestExternalPath:{//@This2.A\n}"
-           +"SrcKind:{//@stringU\n//FreeTemplate\n}"
-           +"DestKind:{//@stringU\n//Template\n}"
-           +"UnexpectedMembers:{//@stringU\n//[fun()]\n}"
-           +"UnexpectedImplementedInterfaces:{//[]\n}"
-        + "}",true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"
+       +"Unexpected members in dest:[fun()]"
+      ,true
     },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using the new mechanism
         "{InnerA:{class method Void fun(Void that)} }","This0.InnerA","This1.A",
-        ec.load("SourceUnfit",
-                "SrcPath", "//@.InnerA",
-                "DestExternalPath", "//@This2.A",
-                "SrcKind", "FreeTemplate",
-                "DestKind", "Template",
-                "UnexpectedMembers", "[fun(that)]",
-                "UnexpectedImplementedInterfaces", "//[]"
-                )
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[fun(that)]"
+        , true
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
         "{A:{interface class method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
         "{InnerA:{class method Void fun(Void that) class method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcKind", "FreeTemplate", "DestKind", "Interface",
-               "UnexpectedMembers", "[moreFun(that), notSoFun()]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[moreFun(that), notSoFun()]"
+        , true
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
                                     // Also Template (by return value) -> Interface, which is infeasible
         "{A:{interface class method Void fun(Void that) class method Void moreFun()"
@@ -379,9 +372,9 @@ public static class TestRedirect1 {
         + "D:{method This1.InnerA makeA() InnerA.fun(void)} "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcKind", "Template", "UnexpectedMembers", "[moreFun(that), mostFun(that,other)]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[moreFun(that), mostFun(that,other)]"
+        , true
     },{lineNumber(), new String[]{  // Template (by parameter value) -> OpenClass extra subclass
         "{A:{ method Void ignoreMe() void " +
         "     B:{ method Void ignoreMe() void} } }",
@@ -391,10 +384,9 @@ public static class TestRedirect1 {
         + "   class method Void useA() D.useType(InnerA) } "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .set( "DestKind", "OpenClass",
-               "UnexpectedMembers", "[C]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[C]"
+        , true
     },{lineNumber(), new String[]{  // Template (by exception) -> OpenClass extra subclass
         "{A:{ class method Void ignoreMe() void " +
         "     B:{ method Void ignoreMe() void} } }",
@@ -403,8 +395,9 @@ public static class TestRedirect1 {
         + "D:{class method Void doWithoutA() exception Void  exception InnerA.ignoreMe() } "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[C]"
+        , true
     },{lineNumber(), new String[]{   // Redirect a class (InnerA) which implements interface methods
                                      // ie OpenClass->OpenClass
                                      // NB: for classes of incompatible kinds, unexpected members and interfaces are not shown.
@@ -423,9 +416,9 @@ public static class TestRedirect1 {
         + "TestD:{method Void mostFun() {} }\n"
         + "}",
         "This0.D_Source","This1.D_Target",
-        ec
-          .set("SrcKind", "OpenClass", "UnexpectedMembers", "[]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "not redirectable"
+        , true
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method //@private \n Void ignoreMeMore() " +
@@ -433,9 +426,9 @@ public static class TestRedirect1 {
         },
         "{InnerA:{ method Void ignoreMe() void C:{} }}",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcKind", "OpenClass", "DestKind", "ClosedClass")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "not redirectable"
+        , true
     },{lineNumber(), new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method //@private \n Void ignoreMeMore() " +
@@ -446,36 +439,36 @@ public static class TestRedirect1 {
         "     C:{} " +
         " }}",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcKind", "ClosedClass", "DestKind", "ClosedClass")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "not redirectable"
+        , true
     },{lineNumber(), new String[]{  // Interface with extra method
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcKind", "Interface", "DestKind", "Interface",
-               "UnexpectedMembers", "[mostFun(that,other), notSoFun()]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[mostFun(that,other), notSoFun()]"
+        , true
     },{lineNumber(), new String[]{  // Interface with inner class
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "C:{} } }",
         "This0.InnerA","This1.A",
-        ec
-          .set("UnexpectedMembers", "[C]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[C]"
+        , true
     },{lineNumber(), new String[]{  // Interface with unexpected inner interface
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "C:{interface} } }",
         "This0.InnerA","This1.A",
-        ec
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[C]"
+        , true
     },{lineNumber(), new String[]{  // Implementing the interface does not change the error
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
@@ -484,8 +477,9 @@ public static class TestRedirect1 {
         + "C_impl:{ implements InnerA.C} "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .str(), true
+        "ClassUnfit::Redirecting InnerA to This1.A:\n"+
+        "Unexpected members in dest:[C]"
+        , true
      },{lineNumber(), new String[]{  // Expected interface, with unexpected method, implemented in implementing class
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -497,23 +491,18 @@ public static class TestRedirect1 {
         + "       } "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcPath", "//@.InnerA.C", "DestExternalPath", "//@This2.A.C",
-               "UnexpectedMembers", "[mostFun()]")
-          .str(), true
+        "ClassUnfit::Redirecting InnerA.C to This1.A.C:\n"+
+        "Unexpected members in dest:[mostFun()]"
+        , true
     },{lineNumber(), new String[]{ // Redirect free templates with methods into primitive types
         "{A:{ method Void fun(Library that, Any other)}}"},
         "{InnerVoid:{class method This #apply() } InnerLib:{ class method This #apply() } InnerAny:{ class method This #apply() }"
         + "InnerA:{method InnerVoid fun(InnerLib that, InnerAny other)}"
         + "method InnerAny moreFun(InnerVoid that, InnerLib other)"
         + "}","This0.InnerA","This1.A",
-        ec
-          .set("SrcPath", "//@.InnerVoid", "DestExternalPath", "//@Void",
-              "SrcKind","FreeTemplate",
-              "DestKind","Template",
-               "UnexpectedMembers", "[#apply()]"
-               )
-          .str(), true
+        "ClassUnfit::Redirecting InnerVoid to Void:\n"+
+        "Unexpected members in dest:[#apply()]"
+       , true
     },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
         + " C:{interface}}}"
@@ -525,14 +514,9 @@ public static class TestRedirect1 {
         + "       } "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcPath", "//@.InnerA.C", "DestExternalPath", "//@This2.A.C",
-              "SrcKind","Interface",
-              "DestKind","Interface",
-              "UnexpectedMembers", "[]",
-               "UnexpectedImplementedInterfaces", "//[@.BlockingInterface1]"
-               )
-          .str(), true
+        "ClassUnfit::Redirecting InnerA.C to This1.A.C:\n"+
+        "Unexpected implemented interface in dest:[BlockingInterface1]"
+        , true
     },{lineNumber(), new String[]{  // Matching nested interfaces, the inner of which implements two internal and one external blocking interfaces
                                     // NB: in the test harness, must specify outer numbers for outers.
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
@@ -548,10 +532,9 @@ public static class TestRedirect1 {
         + "       } "
         + "}",
         "This0.InnerA","This1.A",
-        ec
-          .set("UnexpectedImplementedInterfaces", "//[@.BlockingInterface1, @.BlockingInterface2, @This2.A.C]"
-               )
-          .str(), true
+        "ClassUnfit::Redirecting InnerA.C to This1.A.C:\n"+
+        "Unexpected implemented interface in dest:[BlockingInterface1, BlockingInterface2, This1.A.C]"
+         , true
 
     },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, the reported unexpected interface is the name before the rename.
         "{  A:{interface class method C fun(Void that)  method Void moreFun(Void that, Library other)} \n"
@@ -566,18 +549,15 @@ public static class TestRedirect1 {
         + "}"
         + "",
         "This0.InnerA","This1.A",
-        ec
-          .set("SrcPath", "//@.InnerC", "DestExternalPath", "//@This2.C",
-               "UnexpectedImplementedInterfaces", "//[@.InnerA]"
-               )
-          .str(), true
+        "ClassUnfit::Redirecting InnerC to This1.C:\n"+
+        "Unexpected implemented interface in dest:[InnerA]"
+        , true
 
 
     // IncoherentRedirectMapping: Src(1..), Dest(1..), IncoherentSrc(1..), IncoherentDest(0, 2..)
     // TODO@James: enumerate the parameters and explore them thoroughly
     // TODO@James: explore the relationship between intersection unambiguity and forced split
     },{lineNumber(), new String[]{      // Incoherent redirect, forcing InnerAB to be split into both A and B
-                                        // @Marco, I protest against "IncoherentDests"; the trailing s is unnecessary, and isn//t present on "Dest"
                     "{A:{} B:{}"
                     + "C:{ method A fun() method B moreFun()}"
                     + "}" },
@@ -585,11 +565,10 @@ public static class TestRedirect1 {
         + "InnerC:{method InnerAB fun() method InnerAB moreFun() } "
         + "}",
         "This0.InnerC","This1.C",
-        ec.load("IncoherentRedirectMapping",
-                "Src", "//[@.InnerC]",
-                "Dest", "//[@This2.C]",
-                "IncoherentSrc", "//@.InnerAB",
-                "IncoherentDest", "//[@This2.A, @This2.B]").str(), true
+        "IncoherentMapping::\n"+
+        "ambiguities:[InnerC->[This1.C], InnerAB->[]]\n"+
+        "incoherent destinations for InnerAB:[This1.A, This1.B]"
+        , true
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA.fun()) disagree about the position of their return value
                                      // NB: There is no reliable theory to filter out only nested redirects, so all redirects up to the failure are include in the error.
                     "{X:{Y:{FluffyA:{ class method This2 fun()}" // Target of original redirect
@@ -599,12 +578,11 @@ public static class TestRedirect1 {
         "{InnerZ:{FluffyA:{ class method This1 fun()}}"
         + "}",
         "This0.InnerZ.FluffyA","This1.X.Y.FluffyA",
-        ec.set(
-               "Src", "//[@.InnerZ.FluffyA, @.InnerZ, @.InnerZ, @.InnerZ.FluffyA]",
-               "Dest","//[@This2.X.Y.FluffyA, @This2.X, @This2.X, @This2.X.FluffyA]",
-        	   "IncoherentSrc", "//@.InnerZ.FluffyA",
-        	   "IncoherentDest", "//[@This2.X.FluffyA, @This2.X.Y.FluffyA]"
-        	   ).str(), true
+        "IncoherentMapping::\n"+
+        "verified:[InnerZ.FluffyA->This1.X.Y.FluffyA, InnerZ->This1.X]\n"+
+        "ambiguities:[InnerZ->[This1.X], InnerZ.FluffyA->[This1.X.FluffyA]]\n"+
+        "incoherent destinations for InnerZ.FluffyA:[This1.X.FluffyA, This1.X.Y.FluffyA]"
+        , true
     },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
                                      // disambiguating it turned out to be prohibitive.
                     "{I1:{interface method Void fun()}\n"
@@ -617,12 +595,10 @@ public static class TestRedirect1 {
         + "TestB:{ implements InnerI1 InnerI2  method fun() void method moreFun() void}\n"
         + "}",
         "This0.InnerA","This1.A",
-        ec.set(
-               "Src", "//[@.InnerA, @.InnerI1, @.InnerI1, @.InnerI2, @.InnerI2]",
-               "Dest","//[@This2.A, @This2.I1, @This2.I2, @This2.I1, @This2.I2]",
-        	   "IncoherentSrc", null,
-        	   "IncoherentDest", "//[]"
-        ).str(), true
+        "IncoherentMapping::\n"+
+        "verified:[InnerA->This1.A]\n"+
+        "ambiguities:[InnerI1->[This1.I1, This1.I2], InnerI2->[This1.I1, This1.I2]]"
+        , true
 
     // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
     // where one uses two interfaces and the other uses only one of them, to confirm that the disambiguation
@@ -648,16 +624,8 @@ public static class TestRedirect1 {
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
         "This0.Z.Aliases","This1.X.Y.Aliases",
-        ec.load("MethodClash",
-                "Path", "//@.Z.FluffyA",
-                "Left", "method Void fun(Void that)",
-                "Right", "method Library fun(Void that)",
-                "LeftKind", "AbstractMethod",
-                "RightKind", "AbstractMethod",
-                "DifferentParameters", "[]",
-                "DifferentReturnType", "true",
-                "DifferentThisMdf", "false",
-                "IncompatibleException", "false").str(), true
+        "MethodClash::Issues: Return type"
+        , true
     },{lineNumber(), new String[]{   // Redirect to, but not from, incompatible which is a path
                     "{"
                     + "X:{Y:{\n"
@@ -672,7 +640,8 @@ public static class TestRedirect1 {
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
         "This0.Z.Aliases","This1.X.Y.Aliases",
-        ec.set("Right", "method This1.X.Y fun(Void that)").str(), true
+        "MethodClash::Issues: Return type"
+        , true
 // TODO@James: play properly with redirects and primitive types
 
 /* TODO@James : try this test, when I get to method clashes
@@ -711,20 +680,16 @@ public static class TestRedirect1 {
     // because all of the other cases are reported as SourceUnfit
     },{lineNumber(),   // Redirect a private class
         new String[]{"{A:{ }}"},
-        "{InnerA://@private\n {class method Void fun(Void that)} }",
+        "{InnerA_$_1:\n {class method Void fun(Void that)} }",
         "This0.InnerA","This1.A",
-        ec.load("MemberUnavailable",
-                "Path", "//@.InnerA",
-                "Selector", "",
-                "InvalidKind", "PrivatePath",
-                "IsPrivate","true"
-               ).str(), true
+        "PathUnfit::Non existant path"
+        , true
     },{lineNumber(),   // Redirect a nonexistent class
         new String[]{"{A:{ }}"},
         "{InnerNotA:{} }",
         "This0.InnerA","This1.A",
-        ec.set("InvalidKind", "NonExistentPath")
-            .set("IsPrivate","false").str(), true
+        "PathUnfit::Non existant path"
+        , true
 /* Privacy does not trigger MemberUnavailable
     },{lineNumber(),   // Redirect to a private class
         new String[]{"{A://@private\n { }}"},
@@ -752,26 +717,38 @@ public static class TestRedirect1 {
 //},{"This2.D.C","This1.C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
 
 
-@Test  public void test() {
+@Test  public void test() throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit {
 
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
   ClassB cb1=getClassB(true,p,"cb1", _cb1);
   Path path1=Path.parse(_path1);
   Path path2=Path.parse(_path2);
-  ClassB expected=getClassB(true,p,"expected", _expected);
   if(!isError){
-    ClassB res=Redirect.redirect(p, cb1,path1,path2);
+    ClassB expected=getClassB(true,p,"expected", _expected);
+    ClassB res=new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Redirect.redirect(p, cb1,path1,path2);fail("error expected");}
-    catch(Resources.Error err){
-      ClassB res=(ClassB)err.unbox;
-      TestHelper.assertEqualExp(expected,res);
+    try{new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);fail("error expected");}
+    catch(ClassUnfit err){
+      String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
+      assertEquals(_expected,txt);
+      }
+    catch(IncoherentMapping err){
+      String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
+      assertEquals(_expected,txt);
+      }
+    catch(MethodClash err){
+      String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
+      assertEquals(_expected,txt);
+      }
+    catch(PathUnfit err){
+      String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
+      assertEquals(_expected,txt);
+      }
     }
   }
-}
 }
 
 

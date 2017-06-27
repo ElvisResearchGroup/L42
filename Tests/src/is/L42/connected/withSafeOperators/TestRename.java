@@ -5,11 +5,14 @@ import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.*;
 
 import helpers.TestHelper;
-import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
+import is.L42.connected.withSafeOperators.Abstract.UserForMethodResult;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
+import is.L42.connected.withSafeOperators.refactor.Rename;
 import is.L42.connected.withSafeOperators.refactor.RenameMethods;
 
 import java.util.Arrays;
@@ -122,12 +125,12 @@ public class TestRename {
       List<Ast.C> path=TestHelper.cs(_path);
       MethodSelector ms1 = MethodSelector.parse(_ms1);
       if (!isError) {
-        UserForMethodResult res = Rename.userForMethod(Program.emptyLibraryProgram(), cb1, path, ms1,true);
+        UserForMethodResult res = Abstract.userForMethod(Program.emptyLibraryProgram(), cb1, path, ms1,true);
         Assert.assertEquals(expected1, res.asClient.toString());
         Assert.assertEquals(expected2, res.asThis.toString());
       } else {
         try {
-          Rename.userForMethod(Program.emptyLibraryProgram(), cb1, path, ms1,true);
+          Abstract.userForMethod(Program.emptyLibraryProgram(), cb1, path, ms1,true);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;
@@ -137,49 +140,7 @@ public class TestRename {
     }
   }
 
-  @RunWith(Parameterized.class) public static class TestRenameClassStrict {//add more test for error cases
-    @Parameter(0) public String _cb1;
-    @Parameter(1) public String _path1;
-    @Parameter(2) public String _path2;
-    @Parameter(3) public String _expected;
-    @Parameter(4) public boolean isError;
-
-    @Parameterized.Parameters public static List<Object[]> createData() {
-      return Arrays.asList(new Object[][] { {//
-        "{B:{ method Void m() void}}", "B", "C", "{C:{ method Void m() void}}", false//
-        }, {//
-        "{B:{ method Void m() void}}", "B", "C.D", "{C:{ D:{method Void m() void}}}", false//
-        },{//
-        "{A:{interface method This0 m()  } B:{ implements A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()}}","B","C",
-        "{A:{interface method This0 m()  } User:{ method A mm(C b) b.m().m()}  C:{ implements A method m() this.m().m()} }",false
-        },{//
-          "{A:{interface method This0 m()  } B:{ implements A method m() this.m().m()}   User:{ method A mm(B b) b.m().m()} }","A","C",
-          "{B:{ implements C method m() this.m().m()}  User:{ method C mm(B b) b.m().m()} C:{interface method This0 m()  }    }",false
-        } });
-    }
-
-    @Test public void test() {
-      TestHelper.configureForTest();
-      ClassB cb1 = getClassB(true,null,_cb1);
-      List<Ast.C> path1=TestHelper.cs(_path1);
-      List<Ast.C> path2=TestHelper.cs(_path2);
-      ClassB expected = getClassB(true,null,_expected);
-      if (!isError) {
-        ClassB res = Rename.renameClassStrict(Program.emptyLibraryProgram(), cb1, path1,  path2);
-        newTypeSystem.TypeSystem.instance().topTypeLib(Phase.Typed, Program.emptyLibraryProgram().updateTop(res));
-        TestHelper.assertEqualExp(expected, res);
-      } else {
-        try {
-          Rename.renameClassStrict(Program.emptyLibraryProgram(), cb1, path1, path2);
-          fail("error expected");
-        } catch (Resources.Error err) {
-          ClassB res = (ClassB) err.unbox;
-          TestHelper.assertEqualExp(expected, res);
-        }
-      }
-    }
-  }
-
+ 
   //-----
   @Test
   public void testToTop() {
@@ -234,7 +195,9 @@ public class TestRename {
           "{A:{ method A ()} D:{C:{B:{method Void foo()}}}}","A","D.C.B",  "{D:{C:{B:{  method Void  foo()  method This0 ()}}}}"   ,false//
         }, {lineNumber(),//        ////
           "{ A:{ class method This1.B () } B:{ }}",
-          "A","This0", "{ class method This0.B () B:{ } }"    ,false//
+          "A","This0",
+          "{ class method This0.B () B:{ } }" 
+          ,false//
         }, {lineNumber(),//
           "{ A:{ class method This1.B () } B:{ }}" ,"A","C", "{ B:{ }  C:{class method This1.B () }}"    ,false//
         }, {lineNumber(),//
@@ -333,18 +296,18 @@ public class TestRename {
         } });
     }
 
-    @Test public void test() {
+    @Test public void test() throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit {
       TestHelper.configureForTest();
       ClassB cb1 = getClassB(true,null,_cb1);
       List<Ast.C> path1=TestHelper.cs(_path1);
       List<Ast.C> path2=TestHelper.cs(_path2);
       ClassB expected = getClassB(true,null,_expected);
       if (!isError) {
-        ClassB res = Rename.renameClass(Program.emptyLibraryProgram(), cb1, path1, path2);
+        ClassB res = Rename.renameClassAux(Program.emptyLibraryProgram(), cb1, path1, path2);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          Rename.renameClass(Program.emptyLibraryProgram(), cb1, path1, path2);
+          Rename.renameClassAux(Program.emptyLibraryProgram(), cb1, path1, path2);
           fail("error expected");
         } catch (Resources.Error err) {
           ClassB res = (ClassB) err.unbox;

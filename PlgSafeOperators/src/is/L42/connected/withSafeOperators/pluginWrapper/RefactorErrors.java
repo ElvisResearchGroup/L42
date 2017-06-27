@@ -2,11 +2,24 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
 
 import is.L42.connected.withSafeOperators.location.Lib;
 import is.L42.connected.withSafeOperators.location.Method;
+import is.L42.connected.withSafeOperators.refactor.MembersUtils;
+import platformSpecific.javaTranslation.Resources;
+import platformSpecific.javaTranslation.Resources.Error;
+import tools.Assertions;
 
 import java.util.List;
 
+import ast.Ast;
+import ast.Ast.C;
+import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.PathAux;
+import ast.Ast.Path;
+import ast.ExpCore;
+import ast.ExpCore.ClassB.Member;
+import ast.Util.CsPath;
+import ast.Util.PathPath;
+import ast.Util.CsSPath;
 /* fluent setter for errors, a good idea to avoid duplicating constructors, but
  * the main issue is that we need to support enriching the message while try-catching  
  */
@@ -29,6 +42,75 @@ abstract class MutMsgExc extends Exception{
 }
 
 public class RefactorErrors{
+
+  static String msgMapping(List<CsPath>verified,List<CsSPath>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest) {
+    assert incoSrc!=null || !ambiguities.isEmpty();
+    String res="\n";
+    if(!verified.isEmpty()){
+      res+="verified:[";
+      for(CsPath v:verified){
+        res+=PathAux.as42Path(v.getCs())+"->"+v.getPath()+", ";
+        }
+      res=res.substring(0,res.length()-2)+"]\n";
+      }
+    if(!ambiguities.isEmpty()){
+      res+="ambiguities:[";
+      for(CsSPath a:ambiguities){
+        res+=PathAux.as42Path(a.getCs())+"->[";
+        if(a.getPathsSet().isEmpty()){res+="], ";}
+        else {
+          for(Path pij:a.getPathsSet()){res+=pij+", ";}
+          res=res.substring(0,res.length()-2)+"], ";
+          }
+        }
+      res=res.substring(0,res.length()-2)+"]\n";
+      }
+    
+    if(incoSrc!=null){
+      res+="incoherent destinations for "+PathAux.as42Path(incoSrc) +":[";
+      for(Path pi:incoDest){res+=pi+", ";}
+      res=res.substring(0,res.length()-2)+"]\n";
+      }
+  return res.substring(0,res.length()-1);
+  }
+  static String formatPairs(List<List<Ast.C>> srcs,List<Path> dests){
+  StringBuffer res=new StringBuffer();
+  res.append("[");
+  assert srcs.size()==dests.size();
+  {int i=-1;for(List<C> cs:srcs){i+=1;
+    Path pi=dests.get(i);
+    res.append(PathAux.as42Path(cs)+"->"+pi);
+    res.append(", ");
+    }}
+  return res.substring(0,res.length()-2)+"]";
+  }
+
+  static String formatImplI(List<Path> extra){
+    StringBuffer res=new StringBuffer();
+    res.append("[");
+    for(Path p:extra){
+      assert p.isCore();
+      if(p.outerNumber()==0){
+        res.append(PathAux.as42Path(p.getCBar()));
+        }
+      else{res.append(p.toString());}
+      res.append(", ");
+      }
+    return res.substring(0,res.length()-2)+"]";
+    }
+  static String formatMembers(List<ExpCore.ClassB.Member> extra){
+    StringBuffer res=new StringBuffer();
+    res.append("[");
+    for(Member m:extra){
+      m.match(
+        nc->res.append(nc.getName()),
+        mi->{throw Assertions.codeNotReachable();},
+        mt->res.append(mt.getMs())
+        );
+      res.append(", ");
+      }
+    return res.substring(0,res.length()-2)+"]";
+    }
   @SuppressWarnings("serial") public static class 
   SelectorUnfit extends MutMsgExc implements
     FluentSetter<SelectorUnfit>{
@@ -70,7 +152,27 @@ public class RefactorErrors{
   
   @SuppressWarnings("serial") public static class 
   ClassUnfit extends MutMsgExc implements
-    FluentSetter<ClassUnfit>{}
+    FluentSetter<ClassUnfit>{
+  //used in many operators,
+  //for redirect:"SourceUnfit",
+  //msg: Redirecting src to dest
+  //msg-a:src notRedirectable/notRedirectable to interface
+  //msg-b:"UnexpectedMembers", "[fun(that)]",
+  //msg-c:"UnexpectedImplementedInterfaces", "//[]"
+    public ClassUnfit msgRedirectTemplate(List<Ast.C> src,Path dest,boolean interf){
+      return this.msg("Redirecting "+PathAux.as42Path(src)+" to "+dest+":\n"+
+        (interf?"not redirectable to interface":"not redirectable"));
+      }
+    public ClassUnfit msgRedirectUnexpectedM(List<Ast.C> src,Path dest,List<ExpCore.ClassB.Member> extra){
+      return this.msg("Redirecting "+PathAux.as42Path(src)+" to "+dest+":\n"+
+        "Unexpected members in dest:"+formatMembers(extra));
+      }
+    public ClassUnfit msgRedirectUnexpectedI(List<Ast.C> src,Path dest,List<Path> extra){
+      return this.msg("Redirecting "+PathAux.as42Path(src)+" to "+dest+":\n"+
+        "Unexpected implemented interface in dest:"+formatImplI(extra));
+      }
+
+  }
   
   @SuppressWarnings("serial") public static class 
   PrivacyCoupuled extends MutMsgExc implements
@@ -78,7 +180,16 @@ public class RefactorErrors{
   
   @SuppressWarnings("serial") public static class 
   IncoherentMapping extends MutMsgExc implements
-    FluentSetter<IncoherentMapping>{}
+    FluentSetter<IncoherentMapping>{
+
+  /*public IncoherentMapping msgRedirect(List<Ast.C> src,Path dest,List<List<Ast.C>> srcs,List<Path> dests){
+    return this.msg("Redirecting "+PathAux.as42Path(src)+" to "+dest+":\n"+
+      "Incoherent mapping for:"+formatPairs(srcs, dests));      
+    }*/
+  public IncoherentMapping msgMapping(List<CsPath>verified,List<CsSPath>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest){
+    return this.msg(RefactorErrors.msgMapping(verified,ambiguities,incoSrc,incoDest));      
+        }
+  }
   
   @SuppressWarnings("serial") public static class 
   SubtleSubtypeViolation extends MutMsgExc implements

@@ -1,4 +1,4 @@
-package is.L42.connected.withSafeOperators;
+package is.L42.connected.withSafeOperators.refactor;
 
 import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;

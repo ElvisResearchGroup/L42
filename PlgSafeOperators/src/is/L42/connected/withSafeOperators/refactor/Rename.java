@@ -7,8 +7,9 @@ import ast.Ast.VarDecCE;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.Phase;
-import ast.Expression.ClassB.NestedClass;
+import ast.ExpCore.ClassB.NestedClass;
 import auxiliaryGrammar.Functions;
+import coreVisitors.FromInClass;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +18,6 @@ import java.util.Optional;
 
 import ast.Ast;
 import ast.PathAux;
-import coreVisitors.CloneVisitorWithProgram;
 import facade.L42;
 import facade.PData;
 import is.L42.connected.withSafeOperators.ClassOperations;
@@ -93,7 +93,7 @@ public class Rename {
     //clearCb=remove srcC from top
     ClassB noSrcL=renamedFullL.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
     //newCB=take srcC from top, and adjust paths to dest
-    ClassB onlyDestL=is.L42.connected.withSafeOperators.Rename.redirectDefinition(src,dest,renamedFullL);
+    ClassB onlyDestL=redirectDefinition(src,dest,renamedFullL);
     //optionally sum renamed srcC in destC
     
     ClassB res= new Compose(l,l).composeRefreshed(p, noSrcL, onlyDestL);
@@ -104,7 +104,17 @@ public class Rename {
     //assert !res.toString().contains("This$"):
     //  res.toString();
     return res;
-  }
+    }
+  public static ClassB redirectDefinition(List<Ast.C>src,List<Ast.C>dest, ClassB lprime) {
+    assert !src.isEmpty();
+    assert !dest.isEmpty();
+    NestedClass nsCb=lprime.getNested(src);
+    Path toFrom=Path.outer(dest.size()-1,src.subList(0,src.size()-1));
+    ClassB cb=(ClassB) FromInClass.of((ClassB) nsCb.getInner(), toFrom);
+    List<Member>ms=new ArrayList<>();
+    ms.add(Functions.encapsulateIn(dest, cb,nsCb.getDoc()));
+    return ClassB.membersClass(ms,cb.getP(),lprime.getPhase());
+    }
 /**{@link RenameSpec#rename}*/   
 public static ClassB renameClass(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
   List<Ast.C> srcL=PathAux.parseValidCs(src);
@@ -170,32 +180,4 @@ public static ClassB renameClassAux(Program p,ClassB cb,List<Ast.C> src,List<Ast
   return cb;
 }
   
-}
-
-
-class PathRename extends CloneVisitorWithProgram{
-    List<Ast.C> src;
-    List<Ast.C> dest;
-    public PathRename(Program p,List<Ast.C> src,List<Ast.C> dest) {
-    super(p);
-    this.src=src;
-    this.dest=dest;
-    }
-  @Override public Path liftP(Path that){
-    if(that.isPrimitive()){return that;}
-    if(that.getCBar().isEmpty()){return that;}
-    Path srcHere=Path.outer(levels,src);
-    if(that.toString().contains("$_RefTo") &&
-            srcHere.toString().contains("$_RefTo") ){
-    System.out.println(that);
-    }
-
-    List<Ast.C> tail=p._equivSubPath(srcHere,that);
-    if(tail==null){return that;}
-    if(tail.isEmpty()){return Path.outer(levels,dest);}
-    List<Ast.C> newCs=new ArrayList<>(dest);
-    newCs.addAll(tail);
-    Path destHere=Path.outer(levels,newCs);
-    return destHere;
-    }    
 }

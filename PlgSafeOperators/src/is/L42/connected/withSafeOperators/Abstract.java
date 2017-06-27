@@ -10,12 +10,13 @@ import java.util.Set;
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
 import ast.ErrorMessage;
+import ast.ExpCore;
 import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore.*;
 import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
-import ast.ExpCore.ClassB;
+import ast.Ast.Position;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -24,8 +25,9 @@ import ast.Util.PathMwt;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
+import tools.Assertions;
+import tools.Map;
 import is.L42.connected.withSafeOperators.ExtractInfo.IsUsed;
-import is.L42.connected.withSafeOperators.Rename.UserForMethodResult;
 public class Abstract {
   public static ClassB toAbstract(ClassB cb, List<Ast.C> path){
     Errors42.checkExistsPathMethod(cb, path, Optional.empty());
@@ -91,10 +93,51 @@ public class Abstract {
     Set<PathMx> result=new HashSet<>();
     for(PathMx pmx:prMeth){
       assert pmx.getPath().outerNumber()==0;
-      UserForMethodResult res= Rename.userForMethod(Resources.getP()/*wasEmpty*/, cbClear,pmx.getPath().getCBar(),pmx.getMs(),false);
+      UserForMethodResult res= userForMethod(Resources.getP()/*wasEmpty*/, cbClear,pmx.getPath().getCBar(),pmx.getMs(),false);
       result.addAll(res.asClient);
       res.asThis.stream().map(e->new PathMx(Path.outer(0),e)).forEach(result::add);
       }
     return result;
   }
+  static class UserForMethodResult{List<PathMx> asClient;List<MethodSelector>asThis;}
+  public static UserForMethodResult userForMethod(Program p,ClassB cb,List<Ast.C> path,MethodSelector src,boolean checkMethExists ){
+    if(checkMethExists){
+      Member mem=Errors42.checkExistsPathMethod(cb, path, Optional.of(src));
+      assert mem instanceof MethodWithType;
+      }
+    Member mem=new ExpCore.ClassB.MethodImplemented(Doc.empty(),src,new ExpCore._void(),Position.noInfo);
+    CollectedLocatorsMap maps=CollectedLocatorsMap.from(Path.outer(0,path), mem,src);
+    HashSet<PathMx> result1=new HashSet<>();
+    HashSet<MethodSelector> result2=new HashSet<>();
+    MethodPathCloneVisitor ren=new RenameUsage(cb, maps,p){
+      public Ast.Type liftT(Ast.Type t){return t;}
+      @Override protected MethodSelector liftMs(MethodSelector ms){return ms;}
+      @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return ms;}
+      public ExpCore visit(MCall s) {
+        List<Ast.C> localPath = this.getLocator().getClassNamesPath();
+        if(!localPath.equals(path)){return super.visit(s);}
+        if(s.getInner().equals(Path.outer(0)) || s.getInner().equals(new ExpCore.X(Position.noInfo,"this"))){
+            result2.add(s.getS());
+            return s.withInner(s.getInner().accept(this)).withEs(Map.of(e->e.accept(this), s.getEs()));
+            }
+        return super.visit(s);
+        }
+      @Override public MethodSelector visitMS(MethodSelector original, Path src) {
+        MethodSelector toCollect=this.mSToReplaceOrNull(original, src);
+        if(toCollect==null){return original;}
+        Member m=this.getLocator().getLastMember();
+        assert !(m instanceof NestedClass):
+          "";
+        MethodSelector msUser=m.match(nc->{throw Assertions.codeNotReachable();},
+            mi->mi.getS(), mt->mt.getMs());
+        Path pathUser=Path.outer(0,this.getLocator().getClassNamesPath());
+        result1.add(new PathMx(pathUser,msUser));
+        return original;
+      }
+    };
+   ren.visit(cb);
+   return new UserForMethodResult(){{asClient=new ArrayList<>(result1);asThis=new ArrayList<>(result2);}};
+  }
+
+
 }

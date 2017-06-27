@@ -29,7 +29,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.X;
 import ast.Util.PathMx;
 import ast.Util.PathPath;
-import ast.Util.PathSPath;
+import ast.Util.CsSPath;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 
@@ -193,7 +193,7 @@ public class Errors42 {
     }
     return;
   }*/
-  static Error errorIncoherentRedirectMapping(List<PathPath>verified,List<PathSPath>ambiguities,Path incoSrc,List<Path> _incoDest) {
+  static Error errorIncoherentRedirectMapping(List<PathPath>verified,List<CsSPath>ambiguities,Path incoSrc,List<Path> _incoDest) {
     Doc src=Doc.empty();
     Doc dest=Doc.empty();
     //Doc ambig=Doc.empty();
@@ -201,12 +201,12 @@ public class Errors42 {
       src=src.sum(formatPathIn(v.getPath1().getCBar()));
       dest=dest.sum(formatPathOut(v.getPath2()));
     }
-    for(PathSPath a:ambiguities){
+    for(CsSPath a:ambiguities){
       //if(a.getPaths().size()!=1){
       //  ambig=ambig.sum(formatPathIn(a.getPath().getCBar()));
       //  ambig=ambig.sum(Doc.factory("@"+a.getPaths().size()));
       //  }
-      Doc srci=formatPathIn(a.getPath().getCBar());
+      Doc srci=formatPathIn(a.getCs());
       for(Path pij:a.getPathsSet()){
         src=src.sum(srci);
         dest=dest.sum(formatPathOut(pij));
