@@ -153,7 +153,11 @@ guessType(p,G,e)
   guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
 suggest(T?,T)=T'
-  suggest(empty,T)=suggest(T,_)=T
+  suggest(T,_)=T
+  suggest(empty,capsule P)=mut P//TODO: add in code
+  otherwise
+  suggest(empty,T)=T
+
 --------------------------------------------
 2 Coherent literal
 --------------------------------------------

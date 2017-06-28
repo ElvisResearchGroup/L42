@@ -184,6 +184,7 @@ Phase |p |G |Tr|-catch return Any x e ~> catch return T'.P x e':T<=T' | Tr'
   not catchRethrow(catch return Any x e)
   forall T0 in Tr.Ts p |-T0<=T'
   Phase| p| G| Tr |- catch return T'.P x e ~> catch return T'.P x e' :T <= T' | Tr'
+//TODO: limit this to e=x to avoid mess in rename e=x.foo()
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
 Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
