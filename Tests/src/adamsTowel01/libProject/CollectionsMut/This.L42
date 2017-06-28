@@ -1,0 +1,33 @@
+{
+IterationFailure:Message.$<><{ implements Guard}
+CollectionErrors:...
+MutListAny:...
+
+class method
+Library vector(class Any of){
+  return this.eq(of)
+  catch error Library return this.minimal(of)
+  catch error S return this.minimal(of)
+  }
+class method
+Library minimal(class Any that) (
+  tmp= UnsafeRefactor.Redirect.redirect(VectorTrait(),
+    src:S"Elem", dest:that)
+  UnsafeRefactor.Redirect.redirect(tmp,
+    src:S"MutListT", dest:MutListAny)
+  )
+class method
+Library eq(class Any that) (
+  lib=UnsafeRefactor.Compose.compose(   
+    left:VectorTrait(),
+    right:CodeEq()
+    )
+  tmp=UnsafeRefactor.Redirect.redirect(lib,
+    src:S"Elem",dest:that)
+  UnsafeRefactor.Redirect.redirect(tmp,
+    src:S"MutListT", dest:MutListAny)
+  )
+
+VectorTrait:{class method Library()...}
+CodeEq:{class method Library()...}
+}

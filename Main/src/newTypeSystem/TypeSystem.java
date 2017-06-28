@@ -75,7 +75,9 @@ public interface TypeSystem{
     checkExists(p,tSub.getPath());
     checkExists(p,tSuper.getPath());
     if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){return ErrorKind.NotSubtypeClass;}
-    if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return ErrorKind.NotSubtypeMdf;}
+    if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){
+      return ErrorKind.NotSubtypeMdf;
+      }
     return null;
     }
   //only check mdf subtyping

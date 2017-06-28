@@ -24,6 +24,7 @@ import programReduction.Program;
 import programReduction.TestProgram;
 import ast.Ast.Type;
 import static newTypeSystem.AlternativeMethodTypes.*;
+import static org.junit.Assert.*;
 
 public class Test212_or_170_MethodTypes {
  //WellFormednessCore.methodType, is ok to have a fwd res with no fwd pars?
@@ -281,7 +282,25 @@ public void listGenerateAtLeastMt(){
       mtToS(mt)+"\n"+mtsToS(list);
     }
   }
-
+@Test
+public void testListGenerateInGoodOrder(){
+  for(MethodType mt:dataSet){
+    List<MethodType> list = AlternativeMethodTypes.types(mt);
+    for(int i=0;i<list.size();i++){
+      Mdf ri=list.get(i).getReturnType().getMdf();
+      for(int j=i;j<list.size();j++){
+        Mdf rj=list.get(j).getReturnType().getMdf();
+        if(ri==rj){continue;}
+        if(ri==Mdf.Mutable && rj==Mdf.Readable){
+        //if(Functions.isSubtype(ri, rj)){
+          System.out.println(i+"\n "+mtsToS(list));
+          assertTrue(false);
+          }
+        //assertTrue(!Functions.isSubtype(ri, rj));
+        }
+      }
+    }
+  }
 
 //subtype mdf dataset is equal of subtype mdf of all mt in map
 //(what method subtype to use for sum/redirect?)

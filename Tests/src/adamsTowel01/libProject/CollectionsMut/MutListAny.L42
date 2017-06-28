@@ -1,0 +1,120 @@
+{implements Concept.ToS
+  var mut Cell head,var Size size
+  class method mut This(fwd mut Cell head,Size size)
+  Cell:{interface
+    read method read Any get(Size that)
+    mut method mut Any #get(Size that)
+    read method read Cell set(Size that, read Any val,Bool add)
+    mut method mut Cell #set(Size that, mut Any val,Bool add)
+    read method read Cell remove(Size that)
+    mut method mut Cell #remove(Size that)
+    }
+
+  CellNext:{implements Cell
+    mut Any val, mut Cell next
+    class method mut This(fwd mut Any val, fwd mut Cell next)
+    method get(that) {
+      if that==0Size (return this.val())
+      return  this.next().get(that-1Size)
+      }
+    method set(that,val,add) {
+      if that!=0Size (
+        read Any thisVal=this.val()
+        read This1.Cell thisNext=this.next().set(that-1Size, val:val,add:add)
+        read This res=This(val:thisVal,next:thisNext)
+        return res
+        )
+      if add (return This(val:val,next:this) )
+      return This(val:val,next:this.next())
+      }
+    method remove(that) {
+      if that!=0Size ( return This(val:this.val(),next:this.next().remove(that-1Size)))
+      return this.next()
+      }
+    }
+
+  CellEnd:{implements Cell
+    class method mut This()
+    method get(that) error X"CellEnd.get"
+    method set(that,val,add) {
+      if !add (error X"CellEnd.set1")
+      if that==0Size (return CellNext(val:val,next:this) )
+      error X"CellEnd.set2"
+      }
+    method remove(that)
+      error X"CellEnd.remove"
+    }
+
+  class method
+  mut This empty()
+     This(head:CellEnd(),size:0Size)
+
+  read method
+  read Any val(Size that) (
+    CollectionErrors.checkBound(that,listSize:this.size())
+    this.head().get(that)
+    )
+
+  mut method
+  Void (Size that,mut Any val) (
+    CollectionErrors.checkBound(that,listSize:this.size())
+    this.head(this.#head().#set(that,val:val,add:Bool.false()))
+    )
+
+  mut method
+  Void add(Size that, mut Any val) (
+    CollectionErrors.checkBoundAdd(that,listSize:this.size())
+    this.head( this.#head().#set(that, val:val,add:Bool.true()) )
+    this.size(this.size()+1Size)
+    )
+  mut method
+  Void remove(Size that) (
+    CollectionErrors.checkBound(that,listSize:this.size())
+    this.head( this.#head().#remove(that) )
+    this.size(this.size()-1Size)
+    )
+
+  method
+  This without(Size that) (
+    CollectionErrors.checkBound(that,listSize:this.size())
+    This(head: this.head().remove(that), size:this.size()-1Size )
+    )
+
+  method
+  This withAlso(Size that, Any val) (
+    CollectionErrors.checkBoundAdd(that,listSize:this.size())
+    This(head: this.head().set(that,val:val, add:Bool.true()), size:this.size()+1Size )
+    )
+
+  method
+  This with(Size that, Any val) (
+    CollectionErrors.checkBound(that,listSize:this.size())
+    This(head: this.head().set(that,val:val, add:Bool.false()), size:this.size()+1Size )
+    )
+    
+  method toS() {
+    var S ret = S"["
+    var S sep = S""
+    var read Cell c = this.head()
+    
+    loop (
+      //Debug(S"MutListAny.toS() loop pass with ret='"[ret]"', sep='"[sep]"'")
+      with c (
+        on read CellNext (
+          ret := ret ++ sep
+          with v=c.val() (
+            on read Concept.ToS ret := ret ++ v.toS()
+            on read Void  ret := ret ++ S"void"
+            on read Library ret := ret ++ S"{..}"
+            default        ret := ret ++ S"?"
+            )
+          c := c.next()
+          )
+        default
+          return ret++S"]"
+        )
+      sep := S"; "
+      )
+    }
+
+  }
