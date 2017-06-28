@@ -52,7 +52,7 @@ public static List<Object[]> createData() {
 
 //ok
 },{lineNumber(),"{}","{C:{method D() this() } D:{class method This ()}}",sameAsFormer
-},{lineNumber(),"{}","{C:{method Library() (x=void catch error Library y y {} ) }}",sameAsFormer
+},{lineNumber(),"{}","{C:{method Library() (x=void catch error Library y y {} ) }}","{C:{method Library() (Void x=void catch error Library y y {} ) }}"
 },{lineNumber(),"{}","{C:{class method Void foo() (This0.foo())} }",sameAsFormer
 //err
 },{lineNumber(),"{}","{C:{method D() this() } D:{class method This ( mut This that )}}",ErrorKind.LibraryNotCoherent
@@ -116,7 +116,7 @@ else{
   assert out.isOk():
   "";
   ClassB cb1=(ClassB)out.toOk().annotated;
-  ClassB cbExpected=s2==sameAsFormer?cb1Pre:(ClassB)Desugar.of(Parser.parse(null,(String)s2)).accept(new InjectionOnCore());
+  ClassB cbExpected=(s2==sameAsFormer)?cb1Pre:(ClassB)Desugar.of(Parser.parse(null,(String)s2)).accept(new InjectionOnCore());
   TestHelper.assertEqualExp(cb1,cbExpected);
   }
 }

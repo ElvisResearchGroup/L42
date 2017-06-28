@@ -145,12 +145,16 @@ public class AlternativeMethodTypes {
     List<MethodType>res=new ArrayList<>();
     MethodType base=mBase(mt);
     add(res,base);
+//changed order of those 2 to try and see what happens
+    MethodType mRead=_mRead(base);
+    add(res, mRead);
+    
     MethodType mNoFwd=mNoFwd(base);
     add(res,mNoFwd);
     MethodType mImmFwd=_mImmFwd(base);
     add(res,mImmFwd);
-    MethodType mRead=_mRead(base);
-    add(res, mRead);
+    //MethodType mRead=_mRead(base);
+    //add(res, mRead);
     add(res,_mC(base));
     add(res,_mC(mNoFwd));
     add(res,_mI(base));

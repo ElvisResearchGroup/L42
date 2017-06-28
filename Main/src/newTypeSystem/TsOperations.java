@@ -100,8 +100,18 @@ public interface TsOperations extends TypeSystem{
       //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
       //  D|- e~>  e' :  T3 <=T2|Ts;Ps
       Type T1=GuessTypeCore._of(in.p,in, s.getInner());
+      if(T1==null){//how to give a good error msg?
+        //if(s.getKind()!=SignalKind.Return){
+          TOut expErr=type(in.withE(s.getInner(), Path.Any().toImmNT().withMdf(Mdf.Readable)));
+          assert !expErr.isOk();
+          return expErr.toError();
+        //  }
+        //assert false:in;
+      }
       Type T2;      
-      if(s.getKind()!=SignalKind.Return){T2=T1.getPath().toImmNT();}
+      if(s.getKind()!=SignalKind.Return){
+        T2=T1.getPath().toImmNT();
+        }
       else{T2=TypeManipulation.fwd(T1);}
       TOut innerT=type(in.withE(s.getInner(), T2));
       if(!innerT.isOk()){return innerT.toError();}

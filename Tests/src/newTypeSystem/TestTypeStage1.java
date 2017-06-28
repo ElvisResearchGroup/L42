@@ -57,43 +57,34 @@ public class TestTypeStage1 {
            {lineNumber(),"( exception void catch exception  Void  x void  void)",
            new Type(Mdf.Readable,Path.Any(),Doc.empty()),
            new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
-           new String[]{"{ D:{k()}}"}
+           new String[]{"{ D:{class method This k()}}"}
          },{lineNumber(),"( (exception void "
           + "   catch exception Any x exception x"
           + "   void)"
           + " catch exception Void xOut void void)",
            new Type(Mdf.Readable,Path.Any(),Doc.empty()),
            new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
-           new String[]{"{ D:{k()}}"}
+           new String[]{"{ D:{class method This k()}}"}
        },{lineNumber(),"Any",
          new Type(Mdf.Class,Path.Any(), Doc.empty()),
          new Type(Mdf.Class,Path.Any(), Doc.empty()),
-         new String[]{"{ C:{k()}}"}
+         new String[]{"{ C:{class method This k()}}"}
        },{lineNumber(),"Library",
          new Type(Mdf.Class,Path.Any(),Doc.empty()),
          new Type(Mdf.Class,Path.Library(), Doc.empty()),
-         new String[]{"{ C:{k()}}"}
+         new String[]{"{ C:{class method This k()}}"}
        },{lineNumber(),"C.k()",
          new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
          new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
-         new String[]{"{ C:{k()}}"}
-       },{lineNumber(),"C.#mutK()",
+         new String[]{"{ C:{class method This k()}}"}
+       },{lineNumber(),"C.k()",
          new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
          new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-         new String[]{"{ C:{mut k()}}"}
-       },{lineNumber(),"C.k(f:D.k(),ft:D)",
-         new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
-         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-         new String[]{"{ C:{mut k(var D f, class D ft)}, D:{k()}}"}
-       },{lineNumber(),"( D x=D.k(), C.k(f:x,ft:D))",
-         new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
-         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-         new String[]{"{ C:{mut k(var D f, class D ft)}, D:{k()}}"}
-
+         new String[]{"{ C:{class method mut This k()}}"}
        },{lineNumber(),"error D.k()",
          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-         new String[]{"{ D:{k()}}"}
+         new String[]{"{ D:{class method This k()}}"}
 
        },{lineNumber(),"( D x=D.k(f:x), x)",
          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
@@ -126,28 +117,32 @@ public class TestTypeStage1 {
          },{lineNumber(),"( fwd D x=D.k(f:void), x)",
          new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
            new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{k(var Any f)} }"}
+           new String[]{"{ D:{var Any f class method This k(fwd Any f)} }"}
 
          //
          },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
          new Type(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
            new Type(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{k(var fwd Any f)} }"}
+           new String[]{"{ D:{var Any f class method mut This k(fwd Any f)} }"}
          },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
          new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
            new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{k( fwd Any f)} }"}
+           new String[]{"{ D:{Any f, class method mut This k( fwd Any f)} }"}
+         },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
+         new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
+           new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
+           new String[]{"{ D:{Any f, class method This k( fwd Any f)} }"}//here no mut This
          },{lineNumber(),"( D x=D.k(f:void), D.k(f:x))",
            new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
            new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
-           new String[]{"{ D:{k(var fwd Any f)} }"}
+           new String[]{"{ D:{var fwd Any f class method mut This k( fwd Any f)} }"}
         //
          },{lineNumber(),TestHelper.multiLine(""
 ,"("
 ,"  Void unused1=("
 ,"    Void unused00=exception C.k()"
 ,"    catch exception "
-,"      D x return { a()}"
+,"      D x return { }"
 ,"    catch exception C x error void"
 ,"      "
 ,"    void"
@@ -159,13 +154,13 @@ public class TestTypeStage1 {
 ,"  )"),
          new Type(Mdf.Immutable,Path.Library(), Doc.empty()),
 new Type(Mdf.Immutable,Path.Library(), Doc.empty()),
-new String[]{"{ C:{ k()}, D:{k()}}"}
+new String[]{"{ C:{ class method This k()}, D:{class method This k()}}"}
 
 }});}
       //TODO: before ts after desugaring, do well formedness check!
 
 static String listExample=TestHelper.multiLine(
-    "{N:{k() method Void checkZero() (void) method N lessOne() (this)}"
+    "{N:{class method This k() method Void checkZero() (void) method N lessOne() (this)}"
     ,"List:{class method This k(fwd List next, N elem)"
     ,"  class method List factory(N that) ("
     ,"    List x=this.factoryAux(that,top:x)"
@@ -205,23 +200,23 @@ public static class TestStage2 {
       {lineNumber(), "void",
         Type.immVoid,
         Type.immVoid,
-      new String[]{"{ C:{k()}}"}
+      new String[]{"{ C:{}}"}
     },{lineNumber(), "C.#mutK()",
       new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
       new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-      new String[]{"{ C:{mut k()}}"}
+      new String[]{"{ C:{class method mut This #mutK()}}"}
     },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
       new Type(Mdf.Readable,Path.parse("This0.D"), Doc.empty()),
       new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-      new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
+      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This #mutK()}}"}
     },{lineNumber(), "C.#mutK(f:D.#mutK()).#f()",
       new Type(Mdf.Mutable,Path.parse("This0.D"), Doc.empty()),
       new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
-      new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
+      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This #mutK()}}"}
     },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
       new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
       new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-      new String[]{"{ C:{mut k(var mut D f)} D:{mut k()}}"}
+      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This #mutK()}}"}
 
     },{lineNumber(), "(lent Vector v=Vector.#mutK(), mut B b=B.#mutK(N.#mutK()),v.add(b.clone()))",
       Type.immVoid,
@@ -259,15 +254,15 @@ public static class TestStage2 {
     },{lineNumber(), "error D.k()",//get capsule promoted
       new Type(Mdf.Readable,Path.Any(),Doc.empty()),
       new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      new String[]{"{ D:{ mut k()}}"}
-    },{lineNumber(), "( D.#mutK().m(D.#mutK()) )",
+      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This k()}}"}
+    },{lineNumber(), "( D().m(D()) )",
       new Type(Mdf.Readable,Path.Void(),Doc.empty()),
       Type.immVoid,
-      new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-    },{lineNumber(), "( mut D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",
+      new String[]{"{class method This() D:{ class method mut This() mut method Void m(mut D that) error void }}"}
+    },{lineNumber(), "( mut D x=D() mut D y=D() x.m(y)  )",
       new Type(Mdf.Readable,Path.Void(),Doc.empty()),
       Type.immVoid,
-      new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
+      new String[]{"{class method This() D:{ class method mut This() mut method Void m(mut D that) error void }}"}
  //now not well typed any more... it seams like a good thing?
   /*   },{lineNumber(), "( lent D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
       new NormType(Mdf.Readable,Path.Void(),Doc.empty()),
@@ -277,26 +272,26 @@ public static class TestStage2 {
       "Reader.readCustomer()",
       new Type(Mdf.Readable,Path.Any(),Doc.empty()),
       new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-      new String[]{"{ () \n Customer:{ mut () }\n Reader :{()\n"
+      new String[]{"{ class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
       +" class method capsule Customer readCustomer() (\n"
-      +"   mut Customer c=Customer.#mutK()\n"
+      +"   mut Customer c=Customer()\n"
       +"   c //ok, capsule promotion here\n"
       +" )}}"}
     },{lineNumber(),
         "Reader.readCustomer()",
         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
         new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-        new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
+        new String[]{"{class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
         +" class method capsule Customer readCustomer() {\n"
-        +" return Customer.#mutK()"
+        +" return Customer()"
         +" }}}"}
     },{lineNumber(),
       "Reader.readCustomer()",
       new Type(Mdf.Readable,Path.Any(),Doc.empty()),
       new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-      new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
+      new String[]{"{class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
       +" class method capsule Customer readCustomer() (\n"
-      +"   mut Customer c=Customer.#mutK()\n"
+      +"   mut Customer c=Customer()\n"
       +"   return c //ok, capsule promotion here\n"
       +"   catch return mut Customer x x"
       +"   error void)}}"}
@@ -304,9 +299,9 @@ public static class TestStage2 {
       "Reader.readCustomer()",
       new Type(Mdf.Readable,Path.Any(),Doc.empty()),
       new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-      new String[]{"{() \n Customer:{ mut () }\n Reader :{()\n"
+      new String[]{"{class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
       +" class method capsule Customer readCustomer() {\n"
-      +"   mut Customer c=Customer.#mutK()\n"
+      +"   mut Customer c=Customer()\n"
       +"   return c //ok, capsule promotion here\n"
       +" }}}"}
     }});}
@@ -320,7 +315,7 @@ public static class TestStage2 {
         Program p=TestHelper.getProgram(program);
         p=p.evilPush(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
         TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
-        assert out.isOk();
+        assert out.isOk():FormattedError.format(out.toError());
         Assert.assertEquals(typeExpected,out.toOk().computed);
    }
 }
@@ -422,13 +417,17 @@ public static class TestStage3_notOk {
 
 
 static String cloneExample=TestHelper.multiLine("{"
-    ,"  N:{k()}"
-    ,"  B:{mut k(var N that)"
+    ,"  N:{class method mut This #mutK() class method mut This k() this.#mutK()}"
+    ,"  B:{var N that "
+    ,"   class method mut This #mutK(N that)"
+    ,"   class method mut This k(N that) this.#mutK(that)"
     ,"    read method"
     ,"    capsule B clone() (B.k(this.that()))"
     ,"    }"
-    ,"  A:{mut k(mut B f)}"
-    ,"  Vector:{mut k() mut method Void add(mut B that) (void)}"
+    ,"  A:{mut B f class method mut This #mutK(mut B f)"
+    ,"   class method mut This k(mut B f) this.#mutK(f:f)}"
+    ,"  Vector:{class method mut This #mutK()"
+    ,"    mut method Void add(mut B that) (void)}"
     ,"}");
 
 
