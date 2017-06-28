@@ -137,7 +137,7 @@ Part 2: Well formedness
   if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
-* mwt:  //checks for capsuleWellFormed 
+* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "ms e" 
   mwt= refine? mdf method T m(T1 x1..Tn xn)e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
@@ -175,19 +175,20 @@ _______
 Part 3: program
 -----------------------------------------------------------
 Program-specific grammar is needed to represent the position
-in the program tree that we are reducing.
+in the project (top level Library) that we are reducing.
 For example, if our 42 project is
 { A:... B:This0.A.second({ method Library m(){C:This2.A.first({})} }) } 
-Then we first need to reduce "A.first({})"
-under the 3 part program
+we first need to reduce "A.first({})"
+In order to explicitly denote the meaning of "Thisn", we split the project
+into the 3 part program
 p={C:This2.A.first({})};{ method Library m()[]};{ A:... B:This0.A.second([]) }
 Note that the first component is an L, while the others have a hole, [],
 so they are of form ctxL.
-Note how the p.top() uses This2.A in order to skip two levels
+Note how the first component uses This2.A in order to skip two levels
 and refer to A in the outer most layer of our project.
 
 It is possible to see the program as a stack, with a top() and a pop() operation.
-Given a program is always possible to reconstruct the library whose contents are being evaluated,
+Given a program is always possible to reconstruct the project
 by doing a series of pop operations.
 Since the top of the stack is of a different kind with respect to the other elements,
 pop replaces the [] with the stack top to forge an L 
@@ -256,17 +257,27 @@ transP(p)=p'.updateTop(transL(p'.top())
 Notice how we call growFellow() on a program that is one step
 shorter than p and p', and p'.pop()=transP(p.pop())
 The idea is that p.pop() is very similar to transP(p.pop()),
-so we can use information to find a way to grow transP(p.pop()).
+so we can use information to find a way to
+grow transP(p.pop()) into the same depth as p and p'.
 
 _______
 #define p.growFellow(p0)=p1
-(L,ctxL,_).growFellow(p)=p.push(p.top()/ctxL)
+(L,ctxL,_).growFellow(p0)=p0.push(p0.top()/ctxL)
 
-_______
-#define L/ctxL'=<ctxL; e>   intuition: if L=ctxL[e], ctxL sim ctxL'
-  * {interface? implements Ps MC1..MCn C:e Ms}/{interface? implements Ps MC1'..MCn' C':ctxC' Ms'}
-   = {interface? implements Ps MC1..MCn C:ctxC Ms}, e0
-   e=ctxC[e0] and ctxC sim ctxC'
+Following the transL/transP pattern shown above,
+"L/ctxL" is used where L come from a transformation,
+while ctxL comes from the program before the transformation.
+We use (') to show those three phases:
+ Variables with 0 ' come from the original program.
+ Variables with 1 ' come from the output of a transformation.
+ Variables with 2 ' are the result of mixing the two
+ Variables which shared between at least two of these have the lowest relevant number of '
+
+#define L'/ctxL=<ctxL''; e''>   intuition: if L'=ctxL''[e''], ctxL'' sim ctxL
+  * {interface? implements Ps MC1'..MCn' C':e' Ms'}/{interface? implements Ps MC1..MCn C:ctxC Ms}
+   = {interface? implements Ps MC1'..MCn' C':ctxC'' Ms'}, e''
+   e'=ctxC''[e''] and ctxC'' sim ctxC
+
 _______
 #define ctxC1 sim ctxC2 
   * [] sim []
