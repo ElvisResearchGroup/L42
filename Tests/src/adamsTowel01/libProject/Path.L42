@@ -74,6 +74,11 @@
       )
     return result
     }
+
+  method
+  Bool isUnique()
+     S"_$_"<this.toS()
+
   class method
   Path from(read Strings names) {
     if names.isEmpty() (return Path"This")

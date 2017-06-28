@@ -255,7 +255,7 @@ rename method:
  
 
 //------------------------------
-//ToAbstract
+//Redirect
 //------------------------------
 PlgRedirect:{
   //@plugin  toFix 
@@ -283,5 +283,68 @@ Redirect redirect(Path path,class Any into)
   Redirect(src:path,dest:into)
 
 
+
+//------------------------------
+//Method  //as in Refactor.Method
+//------------------------------
+PlgMethod:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.RenameMethods
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error {/*redirect(that,src,dest)*/}
+  
+  //from Java
+  class method This ()
+  method Library act(Library that)
+  method This addRenameS(Path path, Selector src, Selector dest)
+  method This addHideS(Path path,Selector src)
+  method This addCloseS(Path path)
+  method This addAbstractS(Path path,Selector src)
+  method This addAbstractAliasS(Path path, Selector src, Selector dest)
+  }
+Method:{
+  var PlgMethod inner
+  class method mut This (PlgMethod inner)
+  
+  //[] syntax
+  class method mut This #seqBuilder() This(inner:PlgMethod())
+  class method mut This #from(mut This seqBuilder) seqBuilder
+
+  class method class Path #default##add(Void of) Path
+  class method class Selector #default##add(Void hide) Selector
+  class method class Selector #default##add(Void rename) Selector
+  class method class Selector #default##add(Void into) Selector
+  class method class Selector #default##add(Void abstract) Selector
+  class method class Selector #default##add(Void alias) Selector
+
+  //hide:\"foo()" of:\"Bar";
+  mut method Void #add(Selector hide, Path of)
+    this.inner(this.inner().addHideS(path:of,src:hide)) 
+  //hide:\"foo()";
+  mut method Void #add(Selector hide)
+    this.inner(this.inner().addHideS(path:Path"This",src:hide))
+  //rename:\"foo()" of:\"Bar" into:\"bar()";
+  mut method Void #add(Selector rename Path of Selector into)
+    this.inner(this.inner().addRenameS(path:of,src:rename,dest:into))  
+  //rename:\"foo()" into:\"bar()";
+  mut method Void #add(Selector rename Selector into)
+    this.inner(this.inner().addRenameS(path:Path"This",src:rename,dest:into))  
+  //closeState:\"Bar";
+  mut method Void #add(Path closeState)
+    this.inner(this.inner().addCloseS(path:closeState)) 
+  //abstract:\"foo()" of:\"Bar";
+  mut method Void #add(Selector abstract Path of)
+    this.inner(this.inner().addAbstractS(path:of,src:abstract))    
+  //abstract:\"foo()" of:\"Bar" alias:\"..";
+  mut method Void #add(Selector abstract Path of Selector alias)
+    this.inner(this.inner()
+      .addAbstractAliasS(path:of,src:abstract,dest:alias))      
+  //abstract:\"foo()";
+  mut method Void #add(Selector abstract)
+    this.inner(this.inner().addAbstractS(path:Path"This",src:abstract))    
+  //abstract:\"foo()" alias:\"..";
+  mut method Void #add(Selector abstract Selector alias)
+    this.inner(this.inner().addAbstractAliasS(path:Path"This",src:abstract,dest:alias))      
+  }
 
  }

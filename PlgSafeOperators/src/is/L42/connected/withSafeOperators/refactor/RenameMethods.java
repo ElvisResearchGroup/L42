@@ -56,8 +56,12 @@ import newTypeSystem.GuessTypeCore.G;
 
 Refactor[
   hide:\"foo()" of:\"Bar";
+  hide:\"foo()";
+  rename:\"foo()" of:\"Bar" into:\"bar()";
   rename:\"foo()" into:\"bar()";
   closeState:\"Bar";
+  abstract:\"foo()" of:\"Bar";
+  abstract:\"foo()" of:\"Bar" alias:\"..";
   abstract:\"foo()";
   abstract:\"foo()" alias:\"..";
   ]

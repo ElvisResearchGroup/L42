@@ -1,9 +1,15 @@
-{(Path that)
+{
+  method Path that()
+  class method This(Path that)
+  
   method
   Library <><(Library that)
-  exception MetaGuard.ClassClash,MetaGuard.MethodClash{
-    ip=Introspection(lib:that,path:this.that())
-    itr=ip.transitivelyNestedClasses()
+  exception Refactor2.ClassClash,Refactor2.MethodClash{
+    ip=Location.Lib(that).nested(path:this.that())
+    itr=ip.allNesteds()
+
+HERE
+
     rens=This.renameMap(that,prefix:S"#1", intros:itr)
     map=PreferentialComposition.SrcDests.empty()
     var Library acc=that

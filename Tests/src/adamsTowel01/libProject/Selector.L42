@@ -66,6 +66,11 @@
     return this.name()(0Size)==S"#"
     }
   method
+  Bool isUnique(){
+    if this.name().size()==0Size (return Bool.false() )
+    return S"_$_"<this.name()
+    }
+  method
   S name() (
     str=this.toS()
     str(end:str.indexOfLeft(val:S"("))

@@ -8885,6 +8885,17 @@ mut This1.Strings names() (
 CurlyBlock-Should be unreachable code
 */}
   )
+method 
+This1.Bool isUnique() (
+  This1.S opNorm=This1.S.#from(builder:(
+    capsule This1.S.SBuilder b=This1.S.#builder()
+    Void unused=b.#underscore()
+    Void unused0=b.#$()
+    Void unused1=b.#underscore()
+    b
+    ))
+  this.toS().#right(that:opNorm)
+  )
 class method 
 This1.Path from(read This1.Strings names) (
   Void unused=(
@@ -9363,6 +9374,42 @@ This1.Bool isOperator() (
       Void unused5=b1.#hash()
       b1
       )))
+    void
+    )
+  
+  catch return This1.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This1.Bool isUnique() (
+  Void unused=(
+    Void unused0=(
+      This1.Bool cond=this.name().size().#equalequal(that:This1.Size.#from(builder:(
+        capsule This1.S.SBuilder b=This1.Size.#builder()
+        Void unused2=b.#0()
+        b
+        )))
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched1 void
+        
+        (return This1.Bool.false())
+        )
+      )
+    Void unused1=return (
+      This1.S opNorm=This1.S.#from(builder:(
+        capsule This1.S.SBuilder b0=This1.S.#builder()
+        Void unused4=b0.#underscore()
+        Void unused5=b0.#$()
+        Void unused6=b0.#underscore()
+        b0
+        ))
+      this.name().#right(that:opNorm)
+      )
     void
     )
   
@@ -29542,7 +29589,138 @@ class Any dest()
 class method 
 This0 #apply(This2.Path src, class Any dest) 
 method 
-Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit This1.PlgRedirect.redirect(that:that, src:this.src(), dest:this.dest())}}
+Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit This1.PlgRedirect.redirect(that:that, src:this.src(), dest:this.dest())}
+PlgMethod: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.RenameMethods
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(that,src,dest)*/}
+class method 
+This0 #apply() This0.#from(binaryRepr:(
+  Library res=use This0 check new() error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: #apply()\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.new()\u000a
+*/})
+  res
+  ))
+method 
+Library act(Library that) (
+  Library res=use This0 check #act(_this:this.#binaryRepr(), _1_ast%ExpCore$ClassB:that) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: act(that)\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.#act(_this,_1_ast%ExpCore$ClassB)\u000a
+*/})
+  res
+  )
+method 
+This0 addRenameS(This2.Path path, This2.Selector src, This2.Selector dest) This0.#from(binaryRepr:(
+  Library res=use This0 check addRenameS(_this:this.#binaryRepr(), _1_java%lang%String:path.#binaryRepr(), _2_java%lang%String:src.#binaryRepr(), _3_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: addRenameS(path,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.addRenameS(_this,_1_java%lang%String,_2_java%lang%String,_3_java%lang%String)\u000a
+*/})
+  res
+  ))
+method 
+This0 addHideS(This2.Path path, This2.Selector src) This0.#from(binaryRepr:(
+  Library res=use This0 check addHideS(_this:this.#binaryRepr(), _1_java%lang%String:path.#binaryRepr(), _2_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: addHideS(path,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.addHideS(_this,_1_java%lang%String,_2_java%lang%String)\u000a
+*/})
+  res
+  ))
+method 
+This0 addCloseS(This2.Path path) This0.#from(binaryRepr:(
+  Library res=use This0 check addCloseS(_this:this.#binaryRepr(), _1_java%lang%String:path.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: addCloseS(path)\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.addCloseS(_this,_1_java%lang%String)\u000a
+*/})
+  res
+  ))
+method 
+This0 addAbstractS(This2.Path path, This2.Selector src) This0.#from(binaryRepr:(
+  Library res=use This0 check addAbstractS(_this:this.#binaryRepr(), _1_java%lang%String:path.#binaryRepr(), _2_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: addAbstractS(path,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.addAbstractS(_this,_1_java%lang%String,_2_java%lang%String)\u000a
+*/})
+  res
+  ))
+method 
+This0 addAbstractAliasS(This2.Path path, This2.Selector src, This2.Selector dest) This0.#from(binaryRepr:(
+  Library res=use This0 check addAbstractAliasS(_this:this.#binaryRepr(), _1_java%lang%String:path.#binaryRepr(), _2_java%lang%String:src.#binaryRepr(), _3_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.RenameMethods\u000amethod name: addAbstractAliasS(path,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.RenameMethods.addAbstractAliasS(_this,_1_java%lang%String,_2_java%lang%String,_3_java%lang%String)\u000a
+*/})
+  res
+  ))}
+Method: {
+mut method 
+Void inner(This1.PlgMethod that) 
+mut method 
+This1.PlgMethod #inner() 
+read method 
+This1.PlgMethod inner() 
+class method 
+mut This0 #apply(This1.PlgMethod inner) 
+class method 
+mut This0 #seqBuilder() This0.#apply(inner:This1.PlgMethod.#apply())
+class method 
+mut This0 #from(mut This0 seqBuilder) seqBuilder
+class method 
+class This2.Path #default##add(Void of) This2.Path
+class method 
+class This2.Selector #default##add(Void hide) This2.Selector
+class method 
+class This2.Selector #default##add(Void rename) This2.Selector
+class method 
+class This2.Selector #default##add(Void into) This2.Selector
+class method 
+class This2.Selector #default##add(Void abstract) This2.Selector
+class method 
+class This2.Selector #default##add(Void alias) This2.Selector
+mut method 
+Void #add(This2.Selector hide, This2.Path of) this.inner(that:this.inner().addHideS(path:of, src:hide))
+mut method 
+Void #add(This2.Selector hide) this.inner(that:this.inner().addHideS(path:This2.Path.#from(builder:(
+  capsule This2.S.SBuilder b=This2.Path.#builder()
+  Void unused=b.#T()
+  Void unused0=b.#h()
+  Void unused1=b.#i()
+  Void unused2=b.#s()
+  b
+  )), src:hide))
+mut method 
+Void #add(This2.Selector rename, This2.Path of, This2.Selector into) this.inner(that:this.inner().addRenameS(path:of, src:rename, dest:into))
+mut method 
+Void #add(This2.Selector rename, This2.Selector into) this.inner(that:this.inner().addRenameS(path:This2.Path.#from(builder:(
+  capsule This2.S.SBuilder b=This2.Path.#builder()
+  Void unused=b.#T()
+  Void unused0=b.#h()
+  Void unused1=b.#i()
+  Void unused2=b.#s()
+  b
+  )), src:rename, dest:into))
+mut method 
+Void #add(This2.Path closeState) this.inner(that:this.inner().addCloseS(path:closeState))
+mut method 
+Void #add(This2.Selector abstract, This2.Path of) this.inner(that:this.inner().addAbstractS(path:of, src:abstract))
+mut method 
+Void #add(This2.Selector abstract, This2.Path of, This2.Selector alias) this.inner(that:this.inner().addAbstractAliasS(path:of, src:abstract, dest:alias))
+mut method 
+Void #add(This2.Selector abstract) this.inner(that:this.inner().addAbstractS(path:This2.Path.#from(builder:(
+  capsule This2.S.SBuilder b=This2.Path.#builder()
+  Void unused=b.#T()
+  Void unused0=b.#h()
+  Void unused1=b.#i()
+  Void unused2=b.#s()
+  b
+  )), src:abstract))
+mut method 
+Void #add(This2.Selector abstract, This2.Selector alias) this.inner(that:this.inner().addAbstractAliasS(path:This2.Path.#from(builder:(
+  capsule This2.S.SBuilder b=This2.Path.#builder()
+  Void unused=b.#T()
+  Void unused0=b.#h()
+  Void unused1=b.#i()
+  Void unused2=b.#s()
+  b
+  )), src:abstract, dest:alias))}}
 Opt: {
 class method 
 Library #apply(class Any that) (

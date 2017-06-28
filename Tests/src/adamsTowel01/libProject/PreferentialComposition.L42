@@ -4,48 +4,50 @@ $:{interface
   method
   Library solveConflict(Library that,SrcDest location)
   }
-SrcDest:{(Path path, Selector src,Selector dest)}
+SrcDest:{
+  Path path, Selector src,Selector dest
+  class method This (Path path, Selector src,Selector dest)
+  }
 SrcDests:Collections.vector(of:SrcDest)
 Libs: Collections.vector(of:Library)
 
-class method //@_private
-SrcDests renameMap(Library that,S prefix,Introspection.NestedClasses intros)
+class method
+SrcDests renameMap(Library that,S prefix,Location.Lib.List intros)
   SrcDests[with intro in intros.vals() (
     round=this.renameMap(that,prefix:prefix,
-      path:intro.pathFromRoot()
+      path:intro.path()
       ms:intro.methods())
     with r in round.vals() (use[r])
     )]
 class method
 SrcDests renameMap(
-Library that,S prefix,Path path, Introspection.Methods ms) {
-  thatI=Introspection(lib:that, path:path)
-  catch exception MetaGuard.MemberUnavailable return SrcDests[]
+Library that,S prefix,Path path, Location.Method.List ms) {
+  thatI=Location.Lib(that).nested(path:path)
+  catch exception Location.NotAvailable return SrcDests[]
   return SrcDests[with meth in ms.vals() (
-    if this.needRename(that:thatI,meth:meth) (
+    if this.needRename(thatI,meth:meth) (
       destSel=Selector.fromS(prefix++meth.selector().toS())
       use[SrcDest(path:path,src:meth.selector(),dest:destSel)]
       ))]
   }
 class method
 Bool needRename(
-Introspection.NestedClass that,Introspection.Method meth) {
-  if meth.isPrivate() (return Bool.false() )
-  if meth.methodKind().equals(\class._AbstractMethod()) (return Bool.false() )
+,,,,Location.Lib that,Location.Method meth) {
+  if meth.selector().isUnique() (return Bool.false() )
+  if meth.isAbstract()(return Bool.false() )
   meth2=that.method(meth.selector())
-  catch exception  MetaGuard.MemberUnavailable
-    return Bool.false()
-  if meth2.isPrivate() (return Bool.false() )
-  if meth2.methodKind().equals(\class._AbstractMethod()) (return Bool.false() )
+  catch exception  Location.NotAvailable return Bool.false()
+  if meth2.isAbstract() (return Bool.false() )
   return Bool.true()
   }
 
 class method
-Library <><(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
-  Refactor.compose(left:that,right:{
-  //members of each produced class
- (Libs myLibs) implements $ //@_private
-
+Library <><(Library that) 
+exception Refactor2.ClassClash,Refactor2.MethodClash
+  Refactor2.compose(that,and:This.composerTrait())
+class method Library composerTrait(){implements $
+  Libs myLibs  
+  class method This(Libs myLibs) 
 
   class method
   mut Libs #seqBuilder()
@@ -58,38 +60,29 @@ Library <><(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
 
   method
   Library <>< (Library that)
-  exception MetaGuard.ClassClash,MetaGuard.MethodClash{
-    i=Introspection(lib:that)
+  exception Refactor2.ClassClash,Refactor2.MethodClash{
+    i=Location.Lib(that)
     map=SrcDests.empty()
     var Library acc={}
     with lib in this.myLibs().vals(), index in 1Size.vals() (
       var Library libi=lib
-      rens=This1.renameMap(lib,prefix:S"#"[index]"", intros:i.transitivelyNestedClasses())
+      rens=This1.renameMap(lib,
+      ,,,,prefix:S"#"[index]"",
+      ,,,,intros:i.transitivelyNestedClasses())
       with ren in rens.vals() (
         map.add(right:ren)
         libi:=this.solveConflict(libi,location:ren)
         )
-      acc:=Refactor.compose(left:acc,right:libi)
+      acc:=Refactor2.compose(acc,and:libi)
       )
-    acc:=Refactor.compose(left:acc,right:that)
+    acc:=Refactor2.compose(acc,and:that)
     with mapi in map.vals() (
       acc:=Refactor.MakePrivateSelector(mapi.dest() of:mapi.path())<><acc
       )
     return acc
-    error on MetaGuard.MemberUnavailable
-      X"PreferentialComposition1"
+    error on Location.NotAvailable X"PreferentialComposition1"
     }
   method This ++ (This that)
     This(myLibs:this.myLibs()++that.myLibs())
-  method
-  Library foldLeft(Library resolver)
-  exception MetaGuard.ClassClash,MetaGuard.MethodClash {
-    if this.myLibs().isEmpty() (return {})
-    var Library res=this.myLibs().left()
-    with libi in this.myLibs().withoutLeft().vals() (
-      res:=This[res;libi]<><resolver
-      )
-    return res
-    }
-  })
+  }
 }

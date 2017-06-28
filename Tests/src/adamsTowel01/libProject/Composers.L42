@@ -1,0 +1,102 @@
+{/*
+Main feature of Composers:
+you can implement an 
+  mut method Void op(Location.Lib l, Location.Method m, Size i)
+
+       op(n,meth,i) for example can be
+         p=n.path()
+         s=meth.selector()
+         s2=this.superName(s,i)
+         this.open(i).op(p,s,s2)//#add(rename:s of:p into:s2)
+         this.close(i).op(p,s2)//hide selector of
+*/
+
+method Library composerTrait(){
+  mut method
+  Void op(Location.Lib l, Location.Method m, Size i)
+
+  mut method
+  Void fillMaps()(
+    with li in this.ls().vals() (
+      with nj in this.l0ns().vals(), ssj in this.sels().vals() (
+      lij=li.nested(path:nj.path())//nested in li exist in l0
+      catch exception Location.NotAvailable void //continue
+      with m in lij.methods().vals() (
+        if !This.noClash(method:m) && m.selector() < ssj (
+          op(n,meth,i)
+    ))))
+      
+  //fields
+  method mut RenameMethods openMaps()
+  method mut RenameMethods closeMaps()
+  method Libs inputs()
+  method Location.Lib.List ls()
+  method Location.Lib l0()
+  method Location.Lib.List l0ns()
+  method Selectorss sels()
+  //init
+  class method This(Libs libs, Library lib0)(
+    l0=Location.Lib(lib0)
+    ls=Location.Lib.List[with l in libs.vals() (
+      use[Location.Lib(l)])]
+    l0ns=This1.filterClash(ls:l0.allNesteds())
+    sels=Selectorss[with nj in l0ns.vals() ( 
+      use[This1.filterClash(ms:nj.methods())])]
+    emptyR=Refactor.RenameMethod[]
+    This(
+      openMaps:RenameMethods[with l in libs.vals() (use[emptyR])]
+      closeMaps:RenameMethods[with l in libs.vals() (use[emptyR])]
+      inputs:libs,ls:ls, l0ns:l0ns, sels:sels
+    ))
+
+  mut method
+  Void open(Size that,RenameMethods val)
+    this.openMaps()(that,vals)  
+  mut method
+  RenameMethods open(Size that)
+    this.openMaps().val(that)
+
+  mut method
+  Void close(Size that,RenameMethods val)
+    this.closeMaps()(that,vals)  
+  mut method
+  RenameMethods close(Size that)
+    this.closeMaps().val(that)
+
+  //could be K generated
+  class method
+  mut This (
+    RenameMethods openMaps,
+    RenameMethods closeMaps
+    Libs inputs()
+    Location.Lib.List ls
+    Location.Lib l0
+    Location.Lib.List l0ns
+    Selectorss sels
+    )
+  }
+
+class method
+Library<><(Library that)
+  Refactor2.compose(This.composerTrait() and:that)
+
+//utils in the top Composers class
+  class method
+  Location.Lib.List filterClash(Location.Lib.List ls)
+    Location.Lib.List[with l in ls.vals() ( 
+      if !This.noClash(lib:l) (use[l]))]
+  class method
+  Selectors filterClash(Location.Method.List ms)
+    Selectors[with m in ms.vals() (
+      if !This.noClash(method:m) (use[m]))]    
+  class method
+  Bool noClash(Location.Method method)
+    method.selector().isUnique() || method.isAbstract()
+  class method
+  Bool noClash(Location.Lib lib)
+    lib.path().isUnique() || lib.isInterface() || lib.isRedirectable()
+
+Selectors:Collections.vector(of:Selector)
+Selectorss:Collections.vector(of:Selectors)
+RenameMethods:Collections.vector(of:Refactor.RenameMethods)
+Libs: Collections.vector(of:Library)

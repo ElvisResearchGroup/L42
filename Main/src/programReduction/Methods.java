@@ -46,7 +46,7 @@ public abstract class Methods implements Program{
     if( p0ps.isEmpty()){return p0ps;}
     Ast.Type p0=p0ps.get(0);
     List<Ast.Type> ps=p0ps.subList(1,p0ps.size());
-    if (visited.contains(p0)){
+    if (visited.contains(p0.getPath())){
       throw new ast.ErrorMessage.CircularImplements(push(visited,p0.getPath()));
       }
     if(p0.getPath().isPrimitive()){return collect(p,ps,visited);}
