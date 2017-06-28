@@ -62,7 +62,7 @@ mwt::= refine? mh eC?
 nc::= C:LC
 eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
  | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC | x:=eC
-kC::=catch T x eC
+kC::=catch P x eC
 dC::= T x=eC
 //notice how every LC is a special kind of L (math seems to have structural subtyping)
 
@@ -70,19 +70,19 @@ dC::= T x=eC
 _______
 #define Contexts
 ctxC::=[] 
- | ctcC.m( (x:e)s) 
- | eC.m( (x:eC)s x:ctxC, (x:e)s)
- | use P check m( (x:eC)s x:ctxC, (x:e)s) e 
+ | ctxC.m( (x:e)s) 
+ | eC.m( (x:eC)s, x:ctxC, (x:e)s)
+ | use P check m( (x:eC)s, x:ctxC, (x:e)s) e 
  | use P check m((x:eC)s) ctxC 
  | throw ctxC | loop ctxC | x:=ctxC
  | (dCs var? T? x=ctxC ds ks e[T])
- | (dCs kCs catch T x ctxC ks e[T])
+ | (dCs kCs catch P x ctxC ks e[T])
  | (dCs kCs ctxC[T]) 
 // The compilation context, e=ctxC[L] selects an L where
 // all of the former Ls are LC.
 // The context does not enter into libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
-ctxL::= {interface? implements Ps Ms ctxM Ms' Phase}
+ctxL::= {interface? implements Ps MCs ctxM Ms Phase}
 
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
