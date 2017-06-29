@@ -109,7 +109,7 @@ public class RefactorErrors{
     public SelectorUnfit(List<ast.Ast.C> path, MethodSelector sel){this.path=path;this.sel=sel;}
     public String path(){return PathAux.as42Path(path);}
     public MethodSelector selector(){return sel;}
-    
+    public String toString(){return "SelectorUnfit:"+path()+"::"+selector();}
   }
 
   @SuppressWarnings("serial") public static class 
@@ -126,6 +126,12 @@ public class RefactorErrors{
     public MethodClash(Method left,Method right){this.left=left;this.right=right;}
     public Method left(){return left;}
     public Method right(){return right;}
+    public String toString(){return "MethodClash: "+left.location().path()+"::"
+      +left.selector()+"->"
+      +right.selector()+"\n"
+      +"Left: "+left.formatOrigins()+"\n"     
+      +"Right: "+left.formatOrigins()     
+      ;}
     }
   
   @SuppressWarnings("serial") public static class 

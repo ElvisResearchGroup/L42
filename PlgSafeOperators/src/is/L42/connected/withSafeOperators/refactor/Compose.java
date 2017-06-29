@@ -227,6 +227,9 @@ public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,b
       }    
     if(mwt1.get_inner().isPresent()){
       assert !interface1 && !interface2;
+      if(mwt2.get_inner().isPresent()){
+        throw makeMethodClash(mwt1, mwt2);
+        }
       checkMtGt(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(mwt2.get_inner().isPresent()){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}

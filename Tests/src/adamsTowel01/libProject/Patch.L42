@@ -44,3 +44,19 @@ HERE
       )]
 
   }
+
+
+
+
+Top
+Top.N
+
+map=empty
+with l in lN.allNesteds().vals()
+  with 
+l1=l[abs sel of p]//for all good sel in N.p
+l2=l1[rename N in This0]
+lres=l2[hide #sel of p]
+
+
+    

@@ -424,7 +424,7 @@ public class Resources {
    String s=extractMessage(err);
    L42.messageOfLastTopLevelError=s;
    L42.reconstructedStackTrace=extractTrace(err);
-  }
+   }
   private static String extractTrace(L42Throwable err){
     StackTraceElement[] st = err.getStackTrace();
     String result="\n";
@@ -459,7 +459,7 @@ public class Resources {
       Object obj=err.unbox;
       Method toS = obj.getClass().getMethod("MtoS");
       Object s42=toS.invoke(obj);
-      Method binaryRepr = s42.getClass().getMethod("MbinaryRepr");
+      Method binaryRepr = s42.getClass().getMethod("M£hbinaryRepr");
       Object lib=binaryRepr.invoke(s42);
       if( lib instanceof String){return (String)lib;}
       ExpCore.ClassB cb=(ExpCore.ClassB)Revertable.doRevert(lib);

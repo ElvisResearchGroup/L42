@@ -1,8 +1,7 @@
 {reuse L42.is/AdamTowel01
 
 C1:Composers<><{
-  mut method Void op(Location.Lib l, Location.Method m, Size i)(
-    p=l.path()
+  mut method Void op(Path p, Location.Method m, Size i)(
     s=m.selector()
     s2=this.superName(selector:s,i:i)
     this.open(i).#add(rename:s of:p into:s2)
@@ -11,8 +10,7 @@ C1:Composers<><{
   }
 
 C2:Composers<><{
-  mut method Void op(Location.Lib l, Location.Method m, Size i)(
-    p=l.path()
+  mut method Void op(Path p, Location.Method m, Size i)(
     s=m.selector()
     s2=this.superName(selector:s,i:i)
     this.open(i).#add(abstract:s of:p alias:s2)
@@ -34,11 +32,18 @@ B3:C2[A()]<><{class method S foo() S"b"}
 B4:C2[A()]<><{class method S foo() S"b"++this.#1foo()}
 
 
+D:C2(patch:\"Fix")<><{
+  A:{class method S ()S"pre"}
+  Fix:{A:{class method S ()S"post"}}
+  }
+
+
 Main:{
   Debug.test(B1.foo()++B1.bar() expected:S"ba")
   Debug.test(B2.foo()++B2.bar() expected:S"baa")
   Debug.test(B3.foo()++B3.bar() expected:S"bb")
   Debug.test(B4.foo()++B4.bar() expected:S"baba")
+  Debug.test(D.A() expected:S"post")
   return ExitCode.normal()
   }
 

@@ -145,7 +145,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
       if(IsCompiled.of(m)){continue;}
       return m.match(
         nc->nc.getName()+"\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+
-      "reconstructed stackTrace:"+L42.reconstructedStackTrace+"\n"+isItErrorPlace(p,nc.getInner()),
+      "reconstructed-stackTrace:"+L42.reconstructedStackTrace+"\n"+isItErrorPlace(p,nc.getInner()),
         mi->formatSelectorCompact(mi.getS())+"."+isItErrorPlace(p,mi.getInner()),
         mt->formatSelectorCompact(mt.getMs())+"."+isItErrorPlace(p,mt.getInner())
         );

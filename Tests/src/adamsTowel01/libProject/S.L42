@@ -166,7 +166,6 @@ This withoutRight()
   method
   Bool contains(S that){
     res=this.indexOfLeft(val:that)
-    //Debug(S"S.contains(this:"[this]" that:"[that]")="[res]"")
     if res>=0Size (return Bool.true())
     return Bool.false()
     }
@@ -213,7 +212,6 @@ This withoutRight()
     S.aSCIILowerCase().contains(this(that))
   method
   Bool isASCIIUpperCase(Size that) (
-    //Debug(S"S.isASCIIUpperCase(this:"[this]" that:"[that]")")
     S.aSCIIUpperCase().contains(this(that))
     )
 

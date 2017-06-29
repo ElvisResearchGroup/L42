@@ -146,7 +146,6 @@
     var read Cell c = this.head()
     
     loop (
-      //Debug(S"MutListAny.toS() loop pass with ret='"[ret]"', sep='"[sep]"'")
       with c (
         on read CellNext (
           ret := ret ++ sep

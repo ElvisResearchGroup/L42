@@ -57,7 +57,7 @@ public class ClassOperations {
     return cb.withMs(newMs);
   }
 */
-  static ClassB normalizePaths(ClassB cb){
+  public static ClassB normalizePaths(ClassB cb){
     return (ClassB)cb.accept(new CloneWithPath(){
       protected Path liftP(Path s) {
         if(s.isPrimitive()){return s;}

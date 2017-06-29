@@ -1,10 +1,9 @@
 {/*
 Main feature of Composers:
 you can implement an 
-  mut method Void op(Location.Lib l, Location.Method m, Size i)
+  mut method Void op(Path p, Location.Method m, Size i)
 
-       op(n,meth,i) for example can be
-         p=n.path()
+       op(p,meth,i) for example can be
          s=meth.selector()
          s2=this.superName(s,i)
          this.open(i).op(p,s,s2)//#add(rename:s of:p into:s2)
@@ -13,27 +12,27 @@ you can implement an
 
 class method Library composerTrait(){
   mut method
-  Void op(Location.Lib l, Location.Method m, Size i)
+  Void op(Path p, Location.Method m, Size i)
 
   //in the following, I divide in 3 methods to reduce the stress on javac
   mut method
-  Void fillMaps() with li in this.ls().vals() (
-    this.fillMaps(li:li)
+  Void fillMaps() with li in this.ls().vals(), i in 0Size.vals() (
+    this.fillMaps(li:li, i:i)
     )
  
   mut method
-  Void fillMaps(Location.Lib li) with 
-    nj in this.l0ns().vals(), ssj in this.sels().vals(), i in 0Size.vals() (
-      lij=li.nested(path:nj.path())//nested in li exist in l0
+  Void fillMaps(Location.Lib li, Size i) with 
+    nj in this.l0ns().vals(), ssj in this.sels().vals() (
+      lij=li.nested(path:nj.path())
       catch exception Location.NotAvailable void //continue
-      this.fillMaps(lij:lij, ssj:ssj, nj:nj,i:i)
+      this.fillMaps(lij:lij, ssj:ssj, pj:nj.path(),i:i)
       )
     
   mut method
-  Void fillMaps(Location.Lib lij,Selectors ssj,Location.Lib nj,Size i)
+  Void fillMaps(Location.Lib lij,Selectors ssj,Path pj,Size i)
     with m in lij.methods().vals() (
       if !This1.noClash(m:m) & m.selector() < ssj (
-        this.op(l:nj,m:m,i:i)
+        this.op(p:pj,m:m,i:i)
     ))
 
   mut method 
@@ -93,6 +92,60 @@ class method Library composerTrait(){
   mut Refactor2.Method open(Size that)
     this.openMaps().#val(that)
  
+//------------------------------
+//Patch variation---------------
+//------------------------------
+  //l0ns //all lFix nesteds
+  //sels //all lFix selectors
+  mut method
+  Void fillMapsPatch(Location.Lib top,Path fix) with 
+    nj in this.l0ns().vals(),//all patch nesteds
+    ssj in this.sels().vals() (//all patch selectors
+      pj=This1.removePrefix(path:nj.path(), prefix:fix)
+      lij=top.nested(path:pj)//nested in nj exist in top
+      catch exception Location.NotAvailable void //continue
+      this.fillMaps(lij:lij, ssj:ssj, pj:pj,i:0Size)
+      )
+
+//initPatch
+  class method mut This(Library top, Path fix)(
+    lFix=Location.Lib(top).nested(path:fix)
+    ls=Location.Lib.List[]
+    l0ns=This1.filterClash(ls:lFix.allNesteds())
+    sels=Selectorss[with nj in l0ns.vals() ( 
+      use[This1.filterClash(ms:nj.methods())])]
+    This(
+      openMaps:RenameMethods[Refactor2.Method[]]
+      close:Refactor2.Method[]
+      inputs:Libs[], input:top, ls:ls, l0:lFix, l0ns:l0ns, sels:sels
+    ))
+
+ class method class Path #default##apply(Void patch) Path
+ class method mut Patcher (Path patch) 
+    Patcher(patch:patch)
+  Patcher:{ 
+    Path patch
+    class method mut This (Path patch)
+    method Library <><(Library that)
+    exception 
+    ,,,,Refactor2.MethodClash,
+    ,,,,Refactor2.ClassClash,
+    ,,,,Refactor2.SubtleSubtypeViolation 
+    ,,,,Refactor2.PathUnfit,
+    ,,,,Refactor2.SelectorUnfit,
+    ,,,,Refactor2.ClassUnfit (
+      mut This1 cmp=This1(top:that,fix:this.patch())
+      cmp.fillMapsPatch(top:Location.Lib(that),fix:this.patch())
+      var Library acc=that
+      acc><>=cmp.open(0Size)  
+      acc><>=Refactor2.rename(path:this.patch() into:\"This")
+      acc><>=cmp.close()      
+      acc
+      )
+    }
+
+
+  //---------------------------------------
   //could be K generated
   class method
   mut This (
@@ -112,21 +165,35 @@ Library<><(Library that)
   Refactor2.compose(This.composerTrait() and:that)
 
 //utils in the top Composers class
-  class method
-  Location.Lib.List filterClash(Location.Lib.List ls)
-    Location.Lib.List[with l in ls.vals() ( 
-      if !This.noClash(l:l) (use[l]))]
-  class method
-  Selectors filterClash(Location.Method.List ms)
-    Selectors[with m in ms.vals() (
-      if !This.noClash(m:m) (use[m.selector()]))]    
-  class method
-  Bool noClash(Location.Method m)
-    m.selector().isUnique() | m.isAbstract()
-  class method
-  Bool noClash(Location.Lib l)
-    l.path().isUnique() | l.isInterface() | l.isRedirectable()
+class method
+Location.Lib.List filterClash(Location.Lib.List ls)
+  Location.Lib.List[with l in ls.vals() ( 
+    if !This.noClash(l:l) (use[l]))]
+class method
+Selectors filterClash(Location.Method.List ms)
+  Selectors[with m in ms.vals() (
+    if !This.noClash(m:m) (use[m.selector()]))]    
+class method
+Bool noClash(Location.Method m)
+  m.selector().isUnique() | m.isAbstract()
+class method
+Bool noClash(Location.Lib l)
+  l.path().isUnique() | l.isInterface() | l.isRedirectable()
 
+class method
+Path removePrefix(Path path,Path prefix)(
+  ns=path.names()
+  ns2=prefix.names()
+  with n in ns.vals(minTo:0Size), n2 in ns2.vals() (
+    if n!=n2 (error X"invalid prefix "[prefix]" for path "[path]"")
+    )
+  //res=Path.from(names:Strings[
+  //  with n in ns.vals(from:ns2.size() to:ns.size()+1Size) (use[n])
+  //  ])//TODO: from to seams buggy
+  if ns2.size()!=1Size (error X"still to implment- need to fix iterators from-to")
+  res=Path.from(names:ns.withoutLeft())
+  res
+  )
 Selectors:Collections.vector(of:Selector)
 Selectorss:Collections.vector(of:Selectors)
 RenameMethods:Collections.vector(ofMut:Refactor2.Method)

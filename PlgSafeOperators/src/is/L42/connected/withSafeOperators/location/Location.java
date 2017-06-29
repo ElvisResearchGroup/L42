@@ -104,4 +104,12 @@ public interface Location {
   default Origin origin(int that) throws NotAvailable{
     return Location.listAccess(protectedOrigins().get(), that);
     }
+  default String formatOrigins(){
+    String res="";
+    for(int i=0;i<originSize();i++){
+      try {res+=origin(i).toS();}
+      catch (NotAvailable e) {throw new Error(e);}
+      }
+    return res;
+    }
   }

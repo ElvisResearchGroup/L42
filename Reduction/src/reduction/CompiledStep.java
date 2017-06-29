@@ -29,6 +29,7 @@ public class CompiledStep extends SmallStep{
   @Override
   protected ExpCore executeAtomicStep(PData p1, ExpCore _e1,Ast.C nestedName) {
     if(!IsCompiled.of(_e1)){
+      assert false;
       return step(p1, _e1);
       }
     return Resources.withPDo(p1,()->{
@@ -48,14 +49,17 @@ public class CompiledStep extends SmallStep{
         return (ClassB)o;
         }
       catch(Resources.Error err){
+        System.out.println("Propagating error");
         Resources.cacheMessage(err);
         return EncodingHelper.wrapResource(err);
         }
       catch(Resources.Exception err){
+        System.out.println("Propagating exception");
         Resources.cacheMessage(err);
         return EncodingHelper.wrapResource(err);
         }
       catch(Resources.Return err){//it can happen if other stuff is wrong, in this way we can see the error.
+        System.out.println("Propagating return?");
         Resources.cacheMessage(err);
         return EncodingHelper.wrapResource(err);
         }
