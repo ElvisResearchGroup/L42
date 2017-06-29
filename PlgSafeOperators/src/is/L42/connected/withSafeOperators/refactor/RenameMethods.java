@@ -135,6 +135,8 @@ public RenameMethods addAbstractS(String cs, String ms){
     fillRenames(p,that, renamesLoc);
     checkConsistency(renamesLoc);
     //call aux
+    if(renamesLoc.isEmpty()){
+      return that;}
     ClassB res=(ClassB)that.accept(new RenameMethodsAux(p,renamesLoc,that));
     return res;
     //somehow throw exeptions,

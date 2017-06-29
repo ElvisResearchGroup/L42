@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel01
 
-C:Composers<><{
+C1:Composers<><{
   mut method Void op(Location.Lib l, Location.Method m, Size i)(
     p=l.path()
     s=m.selector()
@@ -10,36 +10,35 @@ C:Composers<><{
     )
   }
 
+C2:Composers<><{
+  mut method Void op(Location.Lib l, Location.Method m, Size i)(
+    p=l.path()
+    s=m.selector()
+    s2=this.superName(selector:s,i:i)
+    this.open(i).#add(abstract:s of:p alias:s2)
+    this.close().#add(hide:s2 of:p)
+    )
+  }
+
 A:{class method Library(){
   class method S foo() S"a"
   class method S bar() this.foo()
   }}
 
-//TestC:{var Library field class method This (Library field)}
-//TestCs:CollectionsMut.vector(of:TestC)
-Main0:{
-  mut TestC t=TestC(field:{/*hi*/})
-  mut TestCs ts=TestCs[t]
-  ts.add(right:t)
-  pr=Location.Lib(ts.#val(1Size).field())
-  Debug(pr)
-  return ExitCode.normal()
-  }
-Main1:{
-  l=Refactor2.Method[rename:\"foo()" into:\"#1foo()"]<><A()
-  Debug(Location.Lib(l))
-  return ExitCode.normal()
-  }
+B1:C1[A()]<><{class method S foo() S"b"}
 
-B1:(Debug(S"RootStart")
-  C[A()]<><{class method S foo() S"b"}
-  )
-B2:C[A()]<><{class method S foo() S"b"++this.#1foo()}
+B2:C1[A()]<><{class method S foo() S"b"++this.#1foo()}
+
+B3:C2[A()]<><{class method S foo() S"b"}
+
+B4:C2[A()]<><{class method S foo() S"b"++this.#1foo()}
 
 
 Main:{
   Debug.test(B1.foo()++B1.bar() expected:S"ba")
   Debug.test(B2.foo()++B2.bar() expected:S"baa")
+  Debug.test(B3.foo()++B3.bar() expected:S"bb")
+  Debug.test(B4.foo()++B4.bar() expected:S"baba")
   return ExitCode.normal()
   }
 

@@ -34395,298 +34395,215 @@ mut method
 Void op(This2.Location.Lib l, This2.Location.Method m, This2.Size i) 
 mut method 
 Void fillMaps() (
-  Void unused=This2.Debug.#apply(that:This2.S.#from(builder:(
-    capsule This2.S.SBuilder b=This2.S.#builder()
-    Void unused0=b.#s()
-    Void unused1=b.#t()
-    Void unused2=b.#a()
-    Void unused3=b.#r()
-    Void unused4=b.#t()
-    b
-    )))
+  lent This2.Location.Lib.List.IteratorVal li=this.ls().vals()
   (
-    lent This2.Location.Lib.List.IteratorVal li=this.ls().vals()
-    (
-      Void unused5=loop (
-        Void unused6=li.#next()
-        
-        catch exception Void catched2 (
-          Void unused7=(
-            Void unused8=li.#checkEnd()
-            
-            catch exception Void catched3 void
-            
-            void
-            )
-          exception void
+    Void unused=loop (
+      Void unused0=li.#next()
+      
+      catch exception Void catched0 (
+        Void unused1=(
+          Void unused2=li.#checkEnd()
+          
+          catch exception Void catched1 void
+          
+          void
           )
-        
-        (
-          Void unused9=This2.Debug.#apply(that:This2.S.#from(builder:(
-            capsule This2.S.SBuilder b0=This2.S.#builder()
-            Void unused10=b0.#s()
-            Void unused11=b0.#t()
-            Void unused12=b0.#a()
-            Void unused13=b0.#r()
-            Void unused14=b0.#t()
-            Void unused15=b0.#I()
-            Void unused16=b0.#n()
-            Void unused17=b0.#n()
-            Void unused18=b0.#e()
-            Void unused19=b0.#r()
-            b0
-            )))
+        exception void
+        )
+      
+      (this.fillMaps(li:li.#inner()))
+      )
+    
+    catch exception Void catched3 void
+    
+    void
+    )
+  )
+mut method 
+Void fillMaps(This2.Location.Lib li) (
+  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This1.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      capsule This2.Size.Iterator i=This2.Size.#from(builder:(
+        capsule This2.S.SBuilder b=This2.Size.#builder()
+        Void unused=b.#0()
+        b
+        )).vals()
+      (
+        Void unused0=loop (
+          Void unused1=nj.#next()
+          
+          catch exception Void catched3 (
+            Void unused2=(
+              Void unused7=ssj.#next()
+              
+              catch exception Void catched4 void
+              
+              void
+              )
+            Void unused3=(
+              Void unused8=i.#next()
+              
+              catch exception Void catched5 void
+              
+              void
+              )
+            Void unused4=(
+              Void unused9=nj.#checkEnd()
+              
+              catch exception Void catched6 void
+              
+              void
+              )
+            Void unused5=(
+              Void unused10=ssj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused6=(
+              Void unused11=i.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
           (
-            lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+            Void unused12=ssj.#next()
+            
+            catch exception Void catched10 (
+              Void unused13=(
+                Void unused17=i.#next()
+                
+                catch exception Void catched11 void
+                
+                void
+                )
+              Void unused14=(
+                Void unused18=nj.#checkEnd()
+                
+                catch exception Void catched12 void
+                
+                void
+                )
+              Void unused15=(
+                Void unused19=ssj.#checkEnd()
+                
+                catch exception Void catched13 void
+                
+                void
+                )
+              Void unused16=(
+                Void unused20=i.#checkEnd()
+                
+                catch exception Void catched14 void
+                
+                void
+                )
+              exception void
+              )
+            
             (
-              lent This1.Selectorss.IteratorVal ssj=this.sels().vals()
-              (
-                capsule This2.Size.Iterator i=This2.Size.#from(builder:(
-                  capsule This2.S.SBuilder b1=This2.Size.#builder()
-                  Void unused20=b1.#0()
-                  b1
-                  )).vals()
-                (
-                  Void unused21=loop (
-                    Void unused22=nj.#next()
-                    
-                    catch exception Void catched11 (
-                      Void unused23=(
-                        Void unused28=ssj.#next()
-                        
-                        catch exception Void catched12 void
-                        
-                        void
-                        )
-                      Void unused24=(
-                        Void unused29=i.#next()
-                        
-                        catch exception Void catched13 void
-                        
-                        void
-                        )
-                      Void unused25=(
-                        Void unused30=nj.#checkEnd()
-                        
-                        catch exception Void catched14 void
-                        
-                        void
-                        )
-                      Void unused26=(
-                        Void unused31=ssj.#checkEnd()
-                        
-                        catch exception Void catched15 void
-                        
-                        void
-                        )
-                      Void unused27=(
-                        Void unused32=i.#checkEnd()
-                        
-                        catch exception Void catched16 void
-                        
-                        void
-                        )
-                      exception void
-                      )
-                    
-                    (
-                      Void unused33=ssj.#next()
-                      
-                      catch exception Void catched18 (
-                        Void unused34=(
-                          Void unused38=i.#next()
-                          
-                          catch exception Void catched19 void
-                          
-                          void
-                          )
-                        Void unused35=(
-                          Void unused39=nj.#checkEnd()
-                          
-                          catch exception Void catched20 void
-                          
-                          void
-                          )
-                        Void unused36=(
-                          Void unused40=ssj.#checkEnd()
-                          
-                          catch exception Void catched21 void
-                          
-                          void
-                          )
-                        Void unused37=(
-                          Void unused41=i.#checkEnd()
-                          
-                          catch exception Void catched22 void
-                          
-                          void
-                          )
-                        exception void
-                        )
-                      
-                      (
-                        Void unused42=i.#next()
-                        
-                        catch exception Void catched24 (
-                          Void unused43=(
-                            Void unused46=nj.#checkEnd()
-                            
-                            catch exception Void catched25 void
-                            
-                            void
-                            )
-                          Void unused44=(
-                            Void unused47=ssj.#checkEnd()
-                            
-                            catch exception Void catched26 void
-                            
-                            void
-                            )
-                          Void unused45=(
-                            Void unused48=i.#checkEnd()
-                            
-                            catch exception Void catched27 void
-                            
-                            void
-                            )
-                          exception void
-                          )
-                        
-                        (
-                          Void unused49=This2.Debug.#apply(that:(
-                            This2.S.Continue rcv73=(
-                              This2.S rcv74=This2.S.#from(builder:(
-                                capsule This2.S.SBuilder b2=This2.S.#builder()
-                                Void unused50=b2.#s()
-                                Void unused51=b2.#t()
-                                Void unused52=b2.#a()
-                                Void unused53=b2.#r()
-                                Void unused54=b2.#t()
-                                b2
-                                ))
-                              rcv74.#from(seqBuilder:(
-                                capsule This2.S.SConcat b3=rcv74.#seqBuilder()
-                                Void unused55=b3.#add(that:i.#inner())
-                                b3
-                                ))
-                              )
-                            rcv73.#from(builder:(
-                              capsule This2.S.SBuilder b4=rcv73.#builder()
-                              b4
-                              ))
-                            ))
-                          This2.Location.Lib lij=(//nested in li exist in l0
-li.#inner().nested(path:nj.#inner().path()))
-                          
-                          catch exception This2.Location.NotAvailable catched34 (//continue
-void)
-                          
-                          (
-                            lent This2.Location.Method.List.IteratorVal m=lij.methods().vals()
-                            (
-                              Void unused56=loop (
-                                Void unused57=m.#next()
-                                
-                                catch exception Void catched36 (
-                                  Void unused58=(
-                                    Void unused59=m.#checkEnd()
-                                    
-                                    catch exception Void catched37 void
-                                    
-                                    void
-                                    )
-                                  exception void
-                                  )
-                                
-                                (
-                                  Void unused60=This2.Debug.#apply(that:(
-                                    This2.S.Continue rcv75=(
-                                      This2.S rcv76=(
-                                        This2.S.Continue rcv77=(
-                                          This2.S rcv78=This2.S.#from(builder:(
-                                            capsule This2.S.SBuilder b5=This2.S.#builder()
-                                            Void unused61=b5.#s()
-                                            Void unused62=b5.#t()
-                                            Void unused63=b5.#a()
-                                            Void unused64=b5.#r()
-                                            Void unused65=b5.#t()
-                                            b5
-                                            ))
-                                          rcv78.#from(seqBuilder:(
-                                            capsule This2.S.SConcat b6=rcv78.#seqBuilder()
-                                            Void unused66=b6.#add(that:i.#inner())
-                                            b6
-                                            ))
-                                          )
-                                        rcv77.#from(builder:(
-                                          capsule This2.S.SBuilder b7=rcv77.#builder()
-                                          Void unused67=b7.#space()
-                                          b7
-                                          ))
-                                        )
-                                      rcv76.#from(seqBuilder:(
-                                        capsule This2.S.SConcat b8=rcv76.#seqBuilder()
-                                        Void unused68=b8.#add(that:m.#inner().selector())
-                                        b8
-                                        ))
-                                      )
-                                    rcv75.#from(builder:(
-                                      capsule This2.S.SBuilder b9=rcv75.#builder()
-                                      b9
-                                      ))
-                                    ))
-                                  (
-                                    This2.Bool cond=This1.noClash(m:m.#inner()).#bang().#and(that:(
-                                      This2.Selector opNorm=m.#inner().selector()
-                                      ssj.#inner().#right(that:opNorm)
-                                      ))
-                                    (
-                                      Void unused69=cond.#checkTrue()
-                                      
-                                      catch exception Void catched51 void
-                                      
-                                      (this.op(l:nj.#inner(), m:m.#inner(), i:i.#inner()))
-                                      )
-                                    )
-                                  )
-                                )
-                              
-                              catch exception Void catched52 void
-                              
-                              void
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
+              Void unused21=i.#next()
+              
+              catch exception Void catched16 (
+                Void unused22=(
+                  Void unused25=nj.#checkEnd()
                   
-                  catch exception Void catched53 void
+                  catch exception Void catched17 void
                   
                   void
                   )
+                Void unused23=(
+                  Void unused26=ssj.#checkEnd()
+                  
+                  catch exception Void catched18 void
+                  
+                  void
+                  )
+                Void unused24=(
+                  Void unused27=i.#checkEnd()
+                  
+                  catch exception Void catched19 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                This2.Location.Lib lij=(//nested in li exist in l0
+li.nested(path:nj.#inner().path()))
+                
+                catch exception This2.Location.NotAvailable catched21 (//continue
+void)
+                
+                this.fillMaps(lij:lij, ssj:ssj.#inner(), nj:nj.#inner(), i:i.#inner())
                 )
               )
             )
           )
+        
+        catch exception Void catched22 void
+        
+        void
         )
-      
-      catch exception Void catched54 void
-      
-      void
       )
     )
   )
 mut method 
+Void fillMaps(This2.Location.Lib lij, This1.Selectors ssj, This2.Location.Lib nj, This2.Size i) (
+  lent This2.Location.Method.List.IteratorVal m=lij.methods().vals()
+  (
+    Void unused=loop (
+      Void unused0=m.#next()
+      
+      catch exception Void catched0 (
+        Void unused1=(
+          Void unused2=m.#checkEnd()
+          
+          catch exception Void catched1 void
+          
+          void
+          )
+        exception void
+        )
+      
+      ((
+        This2.Bool cond=This1.noClash(m:m.#inner()).#bang().#and(that:(
+          This2.Selector opNorm=m.#inner().selector()
+          ssj.#right(that:opNorm)
+          ))
+        (
+          Void unused3=cond.#checkTrue()
+          
+          catch exception Void catched5 void
+          
+          (this.op(l:nj, m:m.#inner(), i:i))
+          )
+        ))
+      )
+    
+    catch exception Void catched6 void
+    
+    void
+    )
+  )
+mut method 
 This2.Selector superName(This2.Selector selector, This2.Size i) This2.Selector.fromS(that:(
-  This2.S.Continue rcv79=(
-    This2.S rcv80=This2.S.#from(builder:(
+  This2.S.Continue rcv73=(
+    This2.S rcv74=This2.S.#from(builder:(
       capsule This2.S.SBuilder b=This2.S.#builder()
       Void unused=b.#hash()
       b
       ))
-    rcv80.#from(seqBuilder:(
-      capsule This2.S.SConcat b0=rcv80.#seqBuilder()
+    rcv74.#from(seqBuilder:(
+      capsule This2.S.SConcat b0=rcv74.#seqBuilder()
       Void unused0=b0.#add(that:i.#plus(that:This2.Size.#from(builder:(
         capsule This2.S.SBuilder b1=This2.Size.#builder()
         Void unused1=b1.#1()
@@ -34695,8 +34612,8 @@ This2.Selector superName(This2.Selector selector, This2.Size i) This2.Selector.f
       b0
       ))
     )
-  rcv79.#from(builder:(
-    capsule This2.S.SBuilder b2=rcv79.#builder()
+  rcv73.#from(builder:(
+    capsule This2.S.SBuilder b2=rcv73.#builder()
     b2
     ))
   ).#plusplus(that:selector.toS()))
@@ -34723,28 +34640,19 @@ This1.Selectorss sels()
 class method 
 mut This0 #apply(This1.Libs libs, Library lib0) (
   This2.Location.Lib l0=This2.Location.Lib.#apply(that:lib0)
-  Void unused=This2.Debug.#apply(that:This2.S.#from(builder:(
-    capsule This2.S.SBuilder b2=This2.S.#builder()
-    Void unused3=b2.#i()
-    Void unused4=b2.#n()
-    Void unused5=b2.#i()
-    Void unused6=b2.#t()
-    Void unused7=b2.#1()
-    b2
-    )))
   capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
     capsule This2.Location.Lib.List b=This2.Location.Lib.List.#seqBuilder()
-    Void unused8=(
+    Void unused=(
       lent This1.Libs.IteratorVal l=libs.vals()
       (
-        Void unused9=loop (
-          Void unused10=l.#next()
+        Void unused0=loop (
+          Void unused1=l.#next()
           
-          catch exception Void catched1 (
-            Void unused11=(
-              Void unused12=l.#checkEnd()
+          catch exception Void catched0 (
+            Void unused2=(
+              Void unused3=l.#checkEnd()
               
-              catch exception Void catched2 void
+              catch exception Void catched1 void
               
               void
               )
@@ -34752,50 +34660,32 @@ mut This0 #apply(This1.Libs libs, Library lib0) (
             )
           
           ((
-            Void unused13=b.#add(that:This2.Location.Lib.#apply(that:l.#inner()))
+            Void unused4=b.#add(that:This2.Location.Lib.#apply(that:l.#inner()))
             void
             ))
           )
         
-        catch exception Void catched5 void
+        catch exception Void catched4 void
         
         void
         )
       )
     b
     ))
-  Void unused0=This2.Debug.#apply(that:This2.S.#from(builder:(
-    capsule This2.S.SBuilder b3=This2.S.#builder()
-    Void unused14=b3.#i()
-    Void unused15=b3.#n()
-    Void unused16=b3.#i()
-    Void unused17=b3.#t()
-    Void unused18=b3.#2()
-    b3
-    )))
   This2.Location.Lib.List l0ns=This1.filterClash(ls:l0.allNesteds())
-  Void unused1=This2.Debug.#apply(that:This2.S.#from(builder:(
-    capsule This2.S.SBuilder b4=This2.S.#builder()
-    Void unused19=b4.#i()
-    Void unused20=b4.#n()
-    Void unused21=b4.#i()
-    Void unused22=b4.#t()
-    Void unused23=b4.#3()
-    b4
-    )))
   capsule This1.Selectorss sels=This1.Selectorss.#from(seqBuilder:(
     capsule This1.Selectorss b0=This1.Selectorss.#seqBuilder()
-    Void unused24=(
+    Void unused5=(
       lent This2.Location.Lib.List.IteratorVal nj=l0ns.vals()
       (
-        Void unused25=loop (
-          Void unused26=nj.#next()
+        Void unused6=loop (
+          Void unused7=nj.#next()
           
-          catch exception Void catched10 (
-            Void unused27=(
-              Void unused28=nj.#checkEnd()
+          catch exception Void catched7 (
+            Void unused8=(
+              Void unused9=nj.#checkEnd()
               
-              catch exception Void catched11 void
+              catch exception Void catched8 void
               
               void
               )
@@ -34803,40 +34693,31 @@ mut This0 #apply(This1.Libs libs, Library lib0) (
             )
           
           ((
-            Void unused29=b0.#add(that:This1.filterClash(ms:nj.#inner().methods()))
+            Void unused10=b0.#add(that:This1.filterClash(ms:nj.#inner().methods()))
             void
             ))
           )
         
-        catch exception Void catched14 void
+        catch exception Void catched11 void
         
         void
         )
       )
     b0
     ))
-  Void unused2=This2.Debug.#apply(that:This2.S.#from(builder:(
-    capsule This2.S.SBuilder b5=This2.S.#builder()
-    Void unused30=b5.#i()
-    Void unused31=b5.#n()
-    Void unused32=b5.#i()
-    Void unused33=b5.#t()
-    Void unused34=b5.#4()
-    b5
-    )))
   This0.#apply(openMaps:This1.RenameMethods.#from(seqBuilder:(
     capsule This1.RenameMethods b1=This1.RenameMethods.#seqBuilder()
-    Void unused35=(
+    Void unused11=(
       lent This1.Libs.IteratorVal l=libs.vals()
       (
-        Void unused36=loop (
-          Void unused37=l.#next()
+        Void unused12=loop (
+          Void unused13=l.#next()
           
-          catch exception Void catched19 (
-            Void unused38=(
-              Void unused39=l.#checkEnd()
+          catch exception Void catched15 (
+            Void unused14=(
+              Void unused15=l.#checkEnd()
               
-              catch exception Void catched20 void
+              catch exception Void catched16 void
               
               void
               )
@@ -34844,23 +34725,23 @@ mut This0 #apply(This1.Libs libs, Library lib0) (
             )
           
           ((
-            Void unused40=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
-              capsule This2.Refactor2.Method b6=This2.Refactor2.Method.#seqBuilder()
-              b6
+            Void unused16=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
+              capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
+              b2
               )))
             void
             ))
           )
         
-        catch exception Void catched24 void
+        catch exception Void catched20 void
         
         void
         )
       )
     b1
     )), close:This2.Refactor2.Method.#from(seqBuilder:(
-    capsule This2.Refactor2.Method b7=This2.Refactor2.Method.#seqBuilder()
-    b7
+    capsule This2.Refactor2.Method b3=This2.Refactor2.Method.#seqBuilder()
+    b3
     )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
   )
 mut method 
@@ -34877,48 +34758,36 @@ class method
 mut This0 #apply(mut This2.Libs inner) 
 method 
 Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
-  Void unused=This3.Debug.#apply(that:This3.S.#from(builder:(
-    capsule This3.S.SBuilder b=This3.S.#builder()
-    Void unused2=b.#D()
-    Void unused3=b.#e()
-    Void unused4=b.#c()
-    Void unused5=b.#S()
-    Void unused6=b.#t()
-    Void unused7=b.#a()
-    Void unused8=b.#r()
-    Void unused9=b.#t()
-    b
-    )))
   mut This1 cmp=This1.#apply(libs:this.inner(), lib0:that)
-  Void unused0=cmp.fillMaps()
+  Void unused=cmp.fillMaps()
   var Library acc=that
-  Void unused1=(
+  Void unused0=(
     lent This2.Libs.IteratorVal li=this.inner().reverse().vals()
     (
       mut This2.RenameMethods.IteratorVar mi=cmp.openMaps().#reverse().#vals()
       (
-        Void unused10=loop (
-          Void unused11=li.#next()
+        Void unused1=loop (
+          Void unused2=li.#next()
           
-          catch exception Void catched2 (
-            Void unused12=(
-              Void unused15=mi.#next()
+          catch exception Void catched1 (
+            Void unused3=(
+              Void unused6=mi.#next()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            Void unused4=(
+              Void unused7=li.#checkEnd()
               
               catch exception Void catched3 void
               
               void
               )
-            Void unused13=(
-              Void unused16=li.#checkEnd()
+            Void unused5=(
+              Void unused8=mi.#checkEnd()
               
               catch exception Void catched4 void
-              
-              void
-              )
-            Void unused14=(
-              Void unused17=mi.#checkEnd()
-              
-              catch exception Void catched5 void
               
               void
               )
@@ -34926,20 +34795,20 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
             )
           
           (
-            Void unused18=mi.#next()
+            Void unused9=mi.#next()
             
-            catch exception Void catched7 (
-              Void unused19=(
-                Void unused21=li.#checkEnd()
+            catch exception Void catched6 (
+              Void unused10=(
+                Void unused12=li.#checkEnd()
                 
-                catch exception Void catched8 void
+                catch exception Void catched7 void
                 
                 void
                 )
-              Void unused20=(
-                Void unused22=mi.#checkEnd()
+              Void unused11=(
+                Void unused13=mi.#checkEnd()
                 
-                catch exception Void catched9 void
+                catch exception Void catched8 void
                 
                 void
                 )
@@ -34950,7 +34819,7 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
             )
           )
         
-        catch exception Void catched11 void
+        catch exception Void catched10 void
         
         void
         )
