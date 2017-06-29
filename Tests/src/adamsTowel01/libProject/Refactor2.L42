@@ -296,6 +296,7 @@ PlgMethod:{
   //from Java
   class method This ()
   method Library act(Library that)
+  exception PathUnfit, SelectorUnfit,MethodClash, ClassUnfit
   method This addRenameS(Path path, Selector src, Selector dest)
   method This addHideS(Path path,Selector src)
   method This addCloseS(Path path)
@@ -306,16 +307,21 @@ Method:{
   var PlgMethod inner
   class method mut This (PlgMethod inner)
   
+  read method
+  Library <><(Library that)  
+  exception PathUnfit, SelectorUnfit,MethodClash, ClassUnfit
+    this.inner().act(that)  
+
   //[] syntax
   class method mut This #seqBuilder() This(inner:PlgMethod())
   class method mut This #from(mut This seqBuilder) seqBuilder
 
   class method class Path #default##add(Void of) Path
-  class method class Selector #default##add(Void hide) Selector
-  class method class Selector #default##add(Void rename) Selector
-  class method class Selector #default##add(Void into) Selector
-  class method class Selector #default##add(Void abstract) Selector
-  class method class Selector #default##add(Void alias) Selector
+  class method class Selector #default##square(Void hide) Selector
+  class method class Selector #default##square(Void rename) Selector
+  class method class Selector #default##square(Void into) Selector
+  class method class Selector #default##square(Void abstract) Selector
+  class method class Selector #default##square(Void alias) Selector
 
   //hide:\"foo()" of:\"Bar";
   mut method Void #add(Selector hide, Path of)

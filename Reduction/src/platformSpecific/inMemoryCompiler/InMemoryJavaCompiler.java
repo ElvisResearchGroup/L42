@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import javax.tools.*;
+import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileManager.Location;
 import javax.tools.JavaFileObject.Kind;
 
@@ -202,10 +203,11 @@ public class InMemoryJavaCompiler {
         return classFile;
         }
       };
-    if(!compiler.getTask(/*out:*/null,classFileManager,diagnisticListenerForErrors,
-        /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","-classpath",plugins()),/*StringsClasses??:*/null,files
-      ).call()
-        ){
+    CompilationTask compilerTask = compiler.getTask(/*out:*/null,classFileManager,diagnisticListenerForErrors,
+            /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","-classpath",plugins()),/*StringsClasses??:*/null,files
+            );
+    boolean compilationRes=compilerTask.call();
+    if(!compilationRes){
         throw new CompilationError(diagnisticListenerForErrors);
         }
     return classLoader;

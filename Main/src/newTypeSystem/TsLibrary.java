@@ -190,7 +190,9 @@ public interface TsLibrary extends TypeSystem{
       if(stateC.isEmpty()){return true;}
       MethodWithType ck=stateC.get(0);
       if(!coherentK(p,ck)){
-        if(force){throw new ErrorMessage.NotOkToStar(top, ck,"invalid candidate factory", ck.getP());}
+        if(force){
+          throw new ErrorMessage.NotOkToStar(top, ck,"invalid candidate factory", ck.getP());
+          }
         return false;
         }
       for(MethodWithType mwt:stateC.subList(1,stateC.size())){
@@ -260,13 +262,11 @@ public interface TsLibrary extends TypeSystem{
       if (m==Mdf.Class){return false;}
       boolean immOrC=(m==Mdf.Immutable || m==Mdf.Capsule);
       boolean lentOrR=(m==Mdf.Lent || m==Mdf.Readable);
-      int allowedR=lentOrR?1:0;
       for(Type ti:mt.getTs()){
         Mdf mi=ti.getMdf();
         if(mi==Mdf.Lent){return false;}
         if(mi==Mdf.Readable){
-          if(allowedR==0){return false;}
-          allowedR-=1;
+          if(!lentOrR){return false;}
           }
         if(immOrC & (mi==Mdf.Mutable || mi==Mdf.MutableFwd)){return false;}
         }

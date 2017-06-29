@@ -172,7 +172,8 @@ coherent(p) //classes are coherent if they have a coherent set of abstract metho
   either mwts is empty or
     there is exactly 1 class method with parameters (T x)s and n? such that 
       forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
-      
+
+//coherent factory      
 coherent(n?,p,T1 x1..Tn xn,
       refine? class method T m__n? (T1' x1..Tn' xn) exception _)
   where
@@ -180,8 +181,32 @@ coherent(n?,p,T1 x1..Tn xn,
     T.mdf!=class
     lent notin (T1..Tn).mdfs
     if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
-    forall j in 1..n !=i, read != Tj.mdf
-    if T.mdf notin {lent,read}, i=0
+    if T.mdf notin {lent,read}, read notin (T1..Tn).mdfs
+    //before it was max 1 read, formalized as follow: 
+    //forall j in 1..n !=i, read != Tj.mdf
+    //if T.mdf notin {lent,read}, i=0
+
+//coherent exposer or getter
+coherent(n?,p,T1 x1..Tn xn,
+    refine? mdf method T m__n?() exception _)
+  where
+  m=#?xi
+  either
+    mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
+  or 
+    mdf in {read,imm} and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
+
+//coherent setter
+coherent(n?,p,T1 x1..Tn xn,
+    refine? mut method Void m__n?(T that) exception _)
+  where
+  m=#?xi
+  p|-T<=Ti//setter
+if Ti=read then T.mdf in {capsule,imm}//why this restriction? mut would seams ok?
+//on the other side, we need to restrict read,lent: otherwise evilCode.doStuff(myLent)
+//could keep a reference of myLent inside of a (lent) evilCode
+
+
 
 --------------------------------------------
 3 Multiple method types   T0..Tn-> T';Ps in methTypes(p,P,ms)

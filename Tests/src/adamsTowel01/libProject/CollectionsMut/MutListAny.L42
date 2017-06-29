@@ -17,31 +17,73 @@
       if that==0Size (return this.val())
       return  this.next().get(that-1Size)
       }
+    method #get(that) {
+      if that==0Size (return this.#val())
+      return  this.#next().#get(that-1Size)
+      }
     method set(that,val,add) {
       if that!=0Size (
-        read Any thisVal=this.val()
-        read This1.Cell thisNext=this.next().set(that-1Size, val:val,add:add)
-        read This res=This(val:thisVal,next:thisNext)
+        read This res=This(val:this.val(),
+          next:this.next().set(that-1Size, val:val,add:add))
         return res
         )
-      if add (return This(val:val,next:this) )
-      return This(val:val,next:this.next())
+      if add (//29/6/2017 buggy transation on java need res2, not res
+        read This res2= This(val:val,next:this)
+        return res2 
+        )
+      read This res3=This(val:val,next:this.next())
+      return res3
+      }
+    method #set(that,val,add) {
+      if that!=0Size (
+        mut This res=This(val:this.#val(),
+          next:this.#next().#set(that-1Size, val:val,add:add))
+        return res
+        )
+      if add (
+        mut This res2= This(val:val,next:this)
+        return res2
+        )
+      mut This res3=This(val:val,next:this.#next())
+      return res3
       }
     method remove(that) {
-      if that!=0Size ( return This(val:this.val(),next:this.next().remove(that-1Size)))
+      if that!=0Size (
+        read This res=This(val:this.val(),next:this.next().remove(that-1Size))
+        return res
+        )
       return this.next()
+      }
+    method #remove(that) {
+      if that!=0Size (
+        mut This res=This(val:this.#val(),next:this.#next().#remove(that-1Size))
+        return res
+        )
+      return this.#next()
       }
     }
 
   CellEnd:{implements Cell
     class method mut This()
     method get(that) error X"CellEnd.get"
+    method #get(that) error X"CellEnd.get"
+
     method set(that,val,add) {
+      if !add (error X"CellEnd.set1")
+      if that==0Size (
+        read Cell res=CellNext(val:val,next:this) 
+        return res
+        )
+      error X"CellEnd.set2"
+      }
+    method #set(that,val,add) {
       if !add (error X"CellEnd.set1")
       if that==0Size (return CellNext(val:val,next:this) )
       error X"CellEnd.set2"
       }
     method remove(that)
+      error X"CellEnd.remove"
+    method #remove(that)
       error X"CellEnd.remove"
     }
 
@@ -53,6 +95,12 @@
   read Any val(Size that) (
     CollectionErrors.checkBound(that,listSize:this.size())
     this.head().get(that)
+    )
+
+  mut method
+  mut Any #val(Size that) (
+    CollectionErrors.checkBound(that,listSize:this.size())
+    this.#head().#get(that)
     )
 
   mut method

@@ -15,9 +15,10 @@ mut method Void #add(mut Elem that) this.add(right:that)
 MutListT:{ implements Concept.ToS
   read method Size size()
   class method mut This empty()
-  read method Any val(Size that)
-  mut method Void (Size that,Any val)
-  mut method Void add(Size that, Any val) 
+  read method read Any val(Size that)
+  mut method mut Any #val(Size that)
+  mut method Void (Size that,mut Any val)
+  mut method Void add(Size that, mut Any val) 
   mut method Void remove(Size that) 
   method This without(Size that)
   method This withAlso(Size that, Any val)
@@ -36,17 +37,16 @@ Cast:{
 }
 
 //#################READ METHODS
-//reverse not working?
-//mut method  mut This #reverse() (//TODO: read reverse is just impossible?
-//  mut This result=This.empty()
-//  with e in this.#vals() (result.add(left:e))
-//  result
-//  )
+mut method  mut This #reverse() (//TODO: read reverse is just impossible?
+  mut This result=This.empty()
+  with e in this.#vals() (result.add(left:e))
+  result
+  )
 
 read method Size size() this.inner().size()
 read method Bool isEmpty() this.size()==0Size
 read method  read Elem val(Size that) Cast(this.inner().val(that) )
-mut  method   mut Elem #val(Size that) Cast.mut(this.#inner().val(that) )
+mut  method   mut Elem #val(Size that) Cast.mut(this.#inner().#val(that) )
 read method class Size #default#val(Void that) Size
 read method  read Elem left() Cast(this.inner().val(0Size) )
 read method  read Elem right() Cast(this.inner().val(\size-1Size) )
@@ -73,10 +73,11 @@ This +(Elem that) this.withAlso(\size,val:that)
 
 method
 This ++(This that){
-  mut This res=This.empty()
-  with e in this.vals() (res.add(right:e))
-  with e in that.vals() (res.add(right:e))
-  return res
+  //var This res=this//this does not work, iterator would return it read.
+  //with e in that.vals() (res+=e)
+  //return res
+  if that.isEmpty() (return this)
+  return (this+that.left()) ++that.withoutLeft()
   }
 
 
@@ -134,19 +135,17 @@ read method lent IteratorVal vals(Size from, Size to) this.vals(from:from, maxTo
 read method lent IteratorVal vals() this.vals(from:Size"-1", maxTo:Size"-2", minTo:this.inner().size() )
 
 IteratorVal: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
-   right:  { 
-     read MutListT _that, var Size from, Size maxTo, Size minTo
-     read method read MutListT that() this._that()
-     class method
-     lent This (read MutListT _that, Size from, Size maxTo, Size minTo)
-     class method
-     lent This(read MutListT that, Size from, Size maxTo, Size minTo)
-       This(_that:that,from:from,maxTo:maxTo,minTo:minTo)
-     read method Bool isFill() Bool.false()
-     read method read Elem filled() error X"Filled called on not fill iterator, should never happen"
-     mut method mut Elem #filled() error X"Filled called on not fill iterator, should never happen"
-
-     } )
+  right:  { 
+    var Size from, Size maxTo, Size minTo
+    read method read MutListT that(),
+    mut  method mut MutListT #that() error X"type system should make it not called"
+    class method
+    lent This (read MutListT that, Size from, Size maxTo, Size minTo)
+    read method read Elem #inner() this.readInner()
+    read method Bool isFill() Bool.false()
+    read method read Elem filled() error X"Filled called on not fill iterator, should never happen"
+    mut method mut Elem #filled() error X"Filled called on not fill iterator, should never happen"
+    } )
 //now with fill
 read method  lent IteratorValFill vals(Size from, Size maxTo, Size minTo, read Elem filled) IteratorValFill(this.inner(), from:from,maxTo:maxTo,minTo:minTo, filled:filled)
 read method lent IteratorValFill vals(Size minTo, read Elem filled) this.vals(from:Size"-1", maxTo:Size"-2", minTo:minTo, filled:filled)
@@ -155,21 +154,22 @@ read method lent IteratorValFill vals(read Elem filled) this.vals(from:Size"-1",
 
 IteratorValFill: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
    right:  {
-     read MutListT _that, var Size from, Size maxTo, Size minTo, read Elem filled
-     read method read MutListT that() this._that()
+     var Size from, Size maxTo, Size minTo
+     read method read Elem filled()
+     mut method mut Elem #filled() error X"type system should make it not called"
+     read method read MutListT that(),
+     mut  method mut MutListT #that() error X"type system should make it not called"
      class method
-     lent This (read MutListT _that, Size from, Size maxTo, Size minTo, read Elem filled)
-     class method
-     lent This(read MutListT that, Size from, Size maxTo, Size minTo, read Elem filled)
-       This(_that:that,from:from,maxTo:maxTo,minTo:minTo, filled:filled)
+     lent This (read MutListT that, Size from, Size maxTo, Size minTo, read Elem filled)
+     read method read Elem #inner() this.readInner()
      read method Bool isFill() Bool.true()
      } )
 
 
-mut method  lent IteratorVar #vals(Size from, Size maxTo, Size minTo) IteratorVar(this.#inner(), from:from,maxTo:maxTo,minTo:minTo)
-mut method lent IteratorVar #vals(Size minTo) this.#vals(from:Size"-1", maxTo:Size"-2", minTo:minTo)
-mut method lent IteratorVar #vals(Size from, Size to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
-mut method lent IteratorVar #vals() this.#vals(from:0Size-1Size, maxTo:Size"-2", minTo:this.inner().size() )
+mut method  mut IteratorVar #vals(Size from, Size maxTo, Size minTo) IteratorVar(this.#inner(), from:from,maxTo:maxTo,minTo:minTo)
+mut method mut IteratorVar #vals(Size minTo) this.#vals(from:Size"-1", maxTo:Size"-2", minTo:minTo)
+mut method mut IteratorVar #vals(Size from, Size to) this.#vals(from:from, maxTo:to, minTo:this.inner().size() )
+mut method mut IteratorVar #vals() this.#vals(from:0Size-1Size, maxTo:Size"-2", minTo:this.inner().size() )
 
 IteratorVar: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
   right:  { 
@@ -179,8 +179,10 @@ IteratorVar: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
     mut method
     Void inner(mut Elem that)  
       this.#that()(this.from(),val:that)
+    mut method mut Elem #inner() this.mutInner()
     read method Bool isFill() Bool.false()
     read method read Elem filled() error X"Filled called on not fill iterator, should never happen"
+    mut method mut Elem #filled() error X"Filled called on not fill iterator, should never happen"
     })
 //################# Interfaces implemented
   method toS()

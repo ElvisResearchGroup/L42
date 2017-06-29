@@ -8,67 +8,99 @@ you can implement an
          s=meth.selector()
          s2=this.superName(s,i)
          this.open(i).op(p,s,s2)//#add(rename:s of:p into:s2)
-         this.close(i).op(p,s2)//hide selector of
+         this.close().op(p,s2)//hide selector of
 */
 
-method Library composerTrait(){
+class method Library composerTrait(){
   mut method
   Void op(Location.Lib l, Location.Method m, Size i)
 
   mut method
   Void fillMaps()(
+    Debug(S"start")
     with li in this.ls().vals() (
-      with nj in this.l0ns().vals(), ssj in this.sels().vals() (
+      Debug(S"startInner")
+      with 
+      ,,,,nj in this.l0ns().vals()
+      ,,,,ssj in this.sels().vals()
+      ,,,,i in 0Size.vals() (
+      Debug(S"start"[i]"")
       lij=li.nested(path:nj.path())//nested in li exist in l0
       catch exception Location.NotAvailable void //continue
       with m in lij.methods().vals() (
-        if !This.noClash(method:m) && m.selector() < ssj (
-          op(n,meth,i)
-    ))))
-      
+        Debug(S"start"[i]" "[m.selector()]"")
+        if !This1.noClash(m:m) & m.selector() < ssj (
+          this.op(l:nj,m:m,i:i)
+    )))))
+  mut method 
+  Selector superName(Selector selector,Size i)
+    Selector.fromS(S"#"[i+1Size]""++selector.toS())
+
+  class method mut Libs #seqBuilder() Libs.empty()
+  class method mut Decorator #from(mut Libs seqBuilder) 
+    Decorator(inner:seqBuilder)
+  Decorator:{
+    mut Libs inner
+    class method mut This (mut Libs inner)
+    method Library <><(Library that)
+    exception 
+    ,,,,Refactor2.MethodClash,
+    ,,,,Refactor2.ClassClash,
+    ,,,,Refactor2.SubtleSubtypeViolation 
+    ,,,,Refactor2.PathUnfit,
+    ,,,,Refactor2.SelectorUnfit,
+    ,,,,Refactor2.ClassUnfit (
+      Debug(S"DecStart")
+      mut This1 cmp=This1(libs:this.inner(),lib0:that)
+      cmp.fillMaps()
+      var Library acc=that
+      with 
+      ,,,,li in this.inner().reverse().vals()
+      ,,,,mi in cmp.openMaps().#reverse().#vals() (
+        acc:=Refactor2.compose(mi<><li, and:acc)
+        )
+      cmp.close()<><acc
+      )
+    }
+
   //fields
-  method mut RenameMethods openMaps()
-  method mut RenameMethods closeMaps()
-  method Libs inputs()
-  method Location.Lib.List ls()
-  method Location.Lib l0()
-  method Location.Lib.List l0ns()
-  method Selectorss sels()
+  mut method mut RenameMethods openMaps()
+  mut method mut Refactor2.Method close()
+  read method Libs inputs()
+  read method Library input()
+  read method Location.Lib.List ls()
+  read method Location.Lib l0()
+  read method Location.Lib.List l0ns()
+  read method Selectorss sels()
   //init
-  class method This(Libs libs, Library lib0)(
+  class method mut This(Libs libs, Library lib0)(
     l0=Location.Lib(lib0)
+        Debug(S"init1")
     ls=Location.Lib.List[with l in libs.vals() (
       use[Location.Lib(l)])]
+    Debug(S"init2")
     l0ns=This1.filterClash(ls:l0.allNesteds())
+        Debug(S"init3")
     sels=Selectorss[with nj in l0ns.vals() ( 
       use[This1.filterClash(ms:nj.methods())])]
-    emptyR=Refactor.RenameMethod[]
+        Debug(S"init4")
     This(
-      openMaps:RenameMethods[with l in libs.vals() (use[emptyR])]
-      closeMaps:RenameMethods[with l in libs.vals() (use[emptyR])]
-      inputs:libs,ls:ls, l0ns:l0ns, sels:sels
+      openMaps:RenameMethods[with l in libs.vals() (use[Refactor2.Method[]])]
+      close:Refactor2.Method[]
+      inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels
     ))
-
+ 
   mut method
-  Void open(Size that,RenameMethods val)
-    this.openMaps()(that,vals)  
-  mut method
-  RenameMethods open(Size that)
-    this.openMaps().val(that)
-
-  mut method
-  Void close(Size that,RenameMethods val)
-    this.closeMaps()(that,vals)  
-  mut method
-  RenameMethods close(Size that)
-    this.closeMaps().val(that)
-
+  mut Refactor2.Method open(Size that)
+    this.openMaps().#val(that)
+ 
   //could be K generated
   class method
   mut This (
-    RenameMethods openMaps,
-    RenameMethods closeMaps
-    Libs inputs()
+    mut RenameMethods openMaps
+    mut Refactor2.Method close
+    Libs inputs
+    Library input
     Location.Lib.List ls
     Location.Lib l0
     Location.Lib.List l0ns
@@ -84,19 +116,20 @@ Library<><(Library that)
   class method
   Location.Lib.List filterClash(Location.Lib.List ls)
     Location.Lib.List[with l in ls.vals() ( 
-      if !This.noClash(lib:l) (use[l]))]
+      if !This.noClash(l:l) (use[l]))]
   class method
   Selectors filterClash(Location.Method.List ms)
     Selectors[with m in ms.vals() (
-      if !This.noClash(method:m) (use[m]))]    
+      if !This.noClash(m:m) (use[m.selector()]))]    
   class method
-  Bool noClash(Location.Method method)
-    method.selector().isUnique() || method.isAbstract()
+  Bool noClash(Location.Method m)
+    m.selector().isUnique() | m.isAbstract()
   class method
-  Bool noClash(Location.Lib lib)
-    lib.path().isUnique() || lib.isInterface() || lib.isRedirectable()
+  Bool noClash(Location.Lib l)
+    l.path().isUnique() | l.isInterface() | l.isRedirectable()
 
 Selectors:Collections.vector(of:Selector)
 Selectorss:Collections.vector(of:Selectors)
-RenameMethods:Collections.vector(of:Refactor.RenameMethods)
+RenameMethods:Collections.vector(ofMut:Refactor2.Method)
 Libs: Collections.vector(of:Library)
+}

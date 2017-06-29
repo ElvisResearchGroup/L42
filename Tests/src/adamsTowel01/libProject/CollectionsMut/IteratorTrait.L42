@@ -1,7 +1,8 @@
 {
 read method
 read MutListT that()
-
+mut method
+mut MutListT #that()
 read method
 Size from()
 
@@ -35,12 +36,20 @@ read method  Void #checkEnd()
     )
 
 read method
-read Elem #inner() {
+read Elem readInner() {
   if this.from()<this.that().size() (
     return Cast(this.that().val(this.from()))
     )
   return this.filled()
   }
+mut method
+mut Elem mutInner() {
+  if this.from()<this.that().size() (
+    return Cast.mut(this.#that().#val(this.from()))
+    )
+  return this.#filled()
+  }
+
 read method
 Void #close()
   void

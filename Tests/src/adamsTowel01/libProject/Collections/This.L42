@@ -4,6 +4,10 @@ CollectionErrors:...
 MutListAny:...
 
 class method
+Library vector(class Any ofMut)
+  CollectionsMut.vector(of:ofMut)
+
+class method
 Library vector(class Any of){
   return this.eq(of)
   catch error Library return this.minimal(of)

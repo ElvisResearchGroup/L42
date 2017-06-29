@@ -1,11 +1,16 @@
 { implements Concept.Equals
 read method Size size()
+read method Bool isEmpty()
 read method  read Elem val(Size that)
 mut method   mut Elem #val(Size that)
 
 class method mut This #seqBuilder()
 class method mut This #from(mut This seqBuilder)
 mut method Void #add(mut Elem that)
+
+read method  read Elem left()
+method This withoutLeft()
+method This withAlsoLeft(Elem that)
 
 Elem:{ implements Concept.Equals}
 
@@ -27,6 +32,9 @@ Bool contains(read Elem that){
   }
 
 //################# operators
+//TODO: general issue:  V[a;b] wants a,b mut to create a mut?
+//with the current builder desugaring, 
+//can not take imms since the collection under genration is still mut!
 
 method
 This -(Elem that)
@@ -34,17 +42,20 @@ This -(Elem that)
 
 
 method
-This --(This that)
-  This[with e in this.vals() ( if !that.contains(e)  (use[e])  )]
-
+This --(This that){
+  //This[with e in this.vals() ( if !that.contains(e)  (use[e])  )]
+  if that.isEmpty() (return this)
+  return (this-that.left()) --that.withoutLeft()
+  }
 
 
 method
-This &(This that)
-  This[with v in this.vals() (
-    if (that>v) (use[v])
-    )]
-
+This &(This that){
+  //This[with v in this.vals() ( if (that>v) (use[v]) )]
+  var This res=this
+  with v in this.vals() (if !that.contains(v) (res:=res.withoutAll(val:v)))
+  return res
+  }
 
 method
 Bool >>(This that)
@@ -53,7 +64,7 @@ Bool >>(This that)
 method
 Bool >>=(This that) {
   with e in that.vals() (
-    if ! (this > e) (return Bool.false())
+    if !this.contains(e) (return Bool.false())
     )
   return Bool.true()
   }
@@ -117,9 +128,13 @@ This withoutRight(read Elem val){
   }
 
 method
-This withoutAll(read Elem val)
-  This[with e in this.vals() (if !e.equals(val) (use[e]))]
-
+This withoutAll(read Elem val){
+  //This[with e in this.vals() (if !e.equals(val) (use[e]))]
+  if this.isEmpty() (return this)
+  rec=this.withoutLeft().withoutAll(val:val)
+  if this.left().equals(val) (return rec)
+  return rec.withAlsoLeft(this.left())
+  }
 
 
 mut method //from VectorTrait
