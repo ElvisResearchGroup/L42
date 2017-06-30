@@ -112,7 +112,6 @@ class method Library composerTrait(){
     ls=Location.Lib.List[]
     l0ns=This1.filterClash(ls:lFix.allNesteds())
     sels=Selectorss[with nj in l0ns.vals() ( 
-      Debug(S"Considering fixing "[nj.path()]"")
       use[This1.filterClash(ms:nj.methods())])]
     This(
       openMaps:RenameMethods[Refactor2.Method[]]
@@ -160,7 +159,7 @@ class method Library composerTrait(){
     )
   }
 
-class method
+class method //TODO: how is this compiling without declaring exceptions?
 Library<><(Library that)
   Refactor2.compose(This.composerTrait() and:that)
 

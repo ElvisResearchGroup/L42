@@ -2,6 +2,8 @@ package is.L42.connected.withSafeOperators;
 
 import static helpers.TestHelper.getClassB;
 import helpers.TestHelper.ErrorCarry;
+import is.L42.connected.withSafeOperators.refactor.MakeK;
+
 import static org.junit.Assert.fail;
 import helpers.TestHelper;
 import static helpers.TestHelper.lineNumber;
@@ -80,12 +82,12 @@ public class TestAddKs{
   ClassB cb1=getClassB(false,null,"cb1", _cb1);
   ClassB expected=getClassB(false,null,"expected", _expected);
   if(!isError){
-    ClassB res=MakeKs.makeKs(cb1, Collections.emptyList(),Arrays.asList(_fields), _mutK, _lentK, _readK, _immK, true);
+    ClassB res=MakeK.makeKs(cb1, Collections.emptyList(),Arrays.asList(_fields), _mutK, _lentK, _readK, _immK, true);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
     try{
-      MakeKs.makeKs(cb1, Collections.emptyList(),Arrays.asList(_fields), _mutK, _lentK, _readK, _immK, true);
+      MakeK.makeKs(cb1, Collections.emptyList(),Arrays.asList(_fields), _mutK, _lentK, _readK, _immK, true);
       fail("error expected");
       }
     catch(Resources.Error err){

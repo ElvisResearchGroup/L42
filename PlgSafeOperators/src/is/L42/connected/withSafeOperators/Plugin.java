@@ -38,6 +38,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodCla
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
 import is.L42.connected.withSafeOperators.refactor.Compose;
+import is.L42.connected.withSafeOperators.refactor.MakeK;
 import is.L42.connected.withSafeOperators.refactor.RedirectObj;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
@@ -290,7 +291,7 @@ public class Plugin implements PluginType{
       String readK=ensureExtractStringU(_readK);
       String immK=ensureExtractStringU(_immK);
       boolean fwd=ensureExtractInt32(_fwd)==0?false:true;
-      return MakeKs.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
+      return MakeK.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
     }
 //--------------------------
    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})

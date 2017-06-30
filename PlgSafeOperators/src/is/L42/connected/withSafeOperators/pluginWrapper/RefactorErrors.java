@@ -102,6 +102,19 @@ public class RefactorErrors{
       }
     return res.substring(0,res.length()-2)+"]";
     }
+  
+  @SuppressWarnings("serial") public static class 
+  ParseFail extends MutMsgExc implements
+    FluentSetter<ParseFail>{
+    String string;
+    static public enum Format{Id,Selector,Path,Number};
+    Format expected;
+    public ParseFail(String text, Format expected){this.string=text;this.expected=expected;}
+    public String string(){return string;}
+    public String expected(){return expected.toString();}
+    public String toString(){return "ParseFail[expected: "+expected()+", received: '"+string+"']";}
+    }
+  
   @SuppressWarnings("serial") public static class 
   SelectorUnfit extends MutMsgExc implements
     FluentSetter<SelectorUnfit>{
