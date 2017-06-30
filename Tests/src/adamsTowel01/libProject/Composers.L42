@@ -112,6 +112,7 @@ class method Library composerTrait(){
     ls=Location.Lib.List[]
     l0ns=This1.filterClash(ls:lFix.allNesteds())
     sels=Selectorss[with nj in l0ns.vals() ( 
+      Debug(S"Considering fixing "[nj.path()]"")
       use[This1.filterClash(ms:nj.methods())])]
     This(
       openMaps:RenameMethods[Refactor2.Method[]]

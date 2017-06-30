@@ -5,24 +5,8 @@ GetMyName:{
     Location.Type.RefTo.Binded(classObj:that)
       .toS().withoutLeft(val:S"This0.")
   }
+Message:{Opt:This2.Opt(This2.Message)}
 
-Message:{Opt:{
-  method
-  This1 #get()
-  method
-  This1 get()
-  exception This3.Guard.Operation {
-    return this.#get()
-    catch error This3.Guard.Operation err
-      exception err
-    }
-  TOpt:{interface method This2 get() }
-  TEmpty:{ implements TOpt
-    method get()
-      error This4.Guard.Operation
-        "TEmpty.get() Value not present in Optional"
-  }}}
-/*
 Guard:{interface ParseFail:{interface  implements Guard}}
 Bool:{
   ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
@@ -36,6 +20,11 @@ Size:{
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
+/*
+StringSplit:{
+  class method //will be fixed in adam2
+  Strings splitOn(S that,S chars)
+    that.splitOn(chars:chars)
 S:{
   implements Concept.ToS
   method

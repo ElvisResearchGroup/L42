@@ -90,13 +90,17 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public boolean isInterface(){return this.inner.isInterface();}
   public boolean isBinded(){return this.isBinded;}
   private static boolean isRedirectableRec(ClassB cb){
-  return !cb.mwts().stream().anyMatch(mwt->
+    boolean res=!cb.mwts().stream().anyMatch(mwt->
     mwt.get_inner().isPresent() 
     || mwt.getMs().isUnique()
-    ) || cb.ns().stream().anyMatch(nc->!isRedirectableRec((ClassB)nc.getInner()));
+    );
+    if(!res){return false;}
+    res=cb.ns().stream().allMatch(nc->isRedirectableRec((ClassB)nc.getInner()));
+    return res;
     }
   public boolean isRedirectable(){
-    return isRedirectableRec(this.inner);}//deep, all abs, no private
+    return isRedirectableRec(this.inner);
+    }//deep, all abs, no private
   public boolean isPotentialInterface(){
     //freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
     //technically you can still have class NormType variables and use the method over those, but it seams like a minor case

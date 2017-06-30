@@ -1,23 +1,18 @@
-General 42 execution:
+The execution of a 42 project can be seen as a state machine with
+that proceeds through the following phases:
 0 parsing
 1 desugaring
-2 from the top, find the first innermost C:e with e!=L and:
-3 normalize all the transitive dependencies of e
-4 type all the code transitively reachable from all the P in e.
-5 type all the code needed to execute e as "coherent" (aka not abstract)
-6 type e:Library
-7 execute e until you get an L, and replace e with L in the program
+2 from the top, find the left-most inner-most C:eC with eC!=LC
+3 collect all the transitive dependencies of eC.
+4 type these dependencies.
+5 type as "coherent" (aka not abstract) all dependencies needed to execute eC.
+6 type eC:Library in the program composed by those dependencies.
+7 execute eC until you get an LC, and replace eC with LC in the program
 8 jump back to 2. 
 
 The rules exposed here covers 2-8, and depends on other notations defined in this file
-and on reduction and typing defined in other files.
+and on reduction (in progress) and typing defined in other files.
 Paths (introduced later in the file) represent organized collections of P.
-
-//Note for james: desugaring is before all normalization. There is no need to
-//merge desugaring and normalization. Thus reuse is unfolded at
-//desugaring time.
-// A program deploying towels and testing them,
-// may need to use a load42File plugin to control the desugaring time.
 
 -----------------------------------------------------------
 Part 1: 42 top level reduction rules

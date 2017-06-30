@@ -5,26 +5,11 @@ read method Opt responseOf()
 refine read method class This class()
 //change? remove opt, use fwd and method isResponse()?
 //error fixed in adam 2 as usual?
-Opt:{TOpt that
-  class method This #new(TOpt that)
-  TOpt:{interface method This2 get() }
-  TEmpty:{ implements TOpt 
-    class method This()
-    method get()
-      error S"UnsatisfactoryErrorToAvoidCycle, replace in Adam2"
-      //error Guard.Operation"TEmpty.get() Value not present in Optional"
-    }
-  TOf:{implements TOpt 
-    This2 that
-    class method This (This2 that)
-    method get() this.that()}
-  method This1 #get() this.that().get()
-  method Bool isPresent() {
-    with cell=this.that() (on TOf return Bool.true())
-    return Bool.false()
-    }
-  class method This () This.#new(TEmpty())
-  class method This (This1 that) This.#new(TOf(that))
+Opt:{//will be Fixed in AdamTowel02
+  class method This ()
+  class method This (This1 that) This()
+  method Bool isPresent() Bool.false()
+  method This1 #get() error {/*toFix*/}
   }
 EqualMessages:{
   class method Bool (read Message that,read Message other){

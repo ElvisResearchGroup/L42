@@ -1,6 +1,5 @@
 package is.L42.connected.withSafeOperators;
 
-import java.security.AllPermission;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,18 +23,18 @@ import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import sugarVisitors.Desugar;
 public class MakeKs {
-  public static ClassB makeKs(ClassB that,List<Ast.C> path, List<String> fieldNames,String mutK,String lentK,String readK,String immK,boolean fwd){
+  public static ClassB makeKs(ClassB that,List<Ast.C> path, List<String> fieldNames,boolean fwd){
     MakeKs m=new MakeKs();
-    if(path.isEmpty()){return m.makeKs(that,that,fieldNames,mutK,lentK,readK,immK,fwd);}
+    if(path.isEmpty()){return m.makeKs(that,that,fieldNames,fwd);}
     Errors42.checkExistsPathMethod(that, path, Optional.empty());
     return that.onNestedNavigateToPathAndDo(path,
-      nc->Optional.of(nc.withInner(m.makeKs(that,(ClassB)nc.getInner(),fieldNames,mutK,lentK,readK,immK,fwd)))
+      nc->Optional.of(nc.withInner(m.makeKs(that,(ClassB)nc.getInner(),fieldNames,fwd)))
       );
     }
 
   private boolean hasReadLentSetter=false;
-  private ClassB makeKs(ClassB top, ClassB that,
-      List<String> fieldNames, String mutK, String lentK, String readK,String immK,boolean fwd) {
+private boolean hasReadFields;
+  private ClassB makeKs(ClassB top, ClassB that,List<String> fieldNames,boolean fwd) {
     List<Type>fieldTypes=new ArrayList<>();
     for(String f :fieldNames){
       if(!MethodSelector.checkX(f,true)){throw new Error("Invalid field name provided:["+f+"]");}
@@ -44,12 +43,13 @@ public class MakeKs {
     List<MethodWithType> toAdd=new  ArrayList<>();
     MethodWithType protoK = prototypeK(Doc.empty(),fieldNames,fieldTypes,that.getP());
     if(fwd){protoK=changeMt(protoK,MakeKs::fwdK);}
-    MethodWithType _mutK = changeMt(protoK,MakeKs::mutK);
+    
+    /*MethodWithType _mutK = changeMt(protoK,MakeKs::mutK);
     MethodWithType _lentK = changeMt(protoK,MakeKs::lentK);
     MethodWithType _readK = changeMt(protoK,MakeKs::readK);
     MethodWithType _immK = changeMt(protoK,MakeKs::immK);
-
-    if(!this.hasReadLentSetter){addWithName(mutK, toAdd, _mutK);}
+    */
+    addWithName(mutK, toAdd, _mutK);}
     addWithName(lentK, toAdd, _lentK);
     addWithName(readK, toAdd, _readK);
     addWithName(immK, toAdd, _immK);
@@ -113,9 +113,10 @@ static private MethodType immK(MethodType proto) {
     .withReturnType(mdfChange(proto.getReturnType(),Mdf.Mutable,Mdf.Immutable));
   }
   //can not reuse the desugar one, here we create ExpCore stuff, also , the sugar one may disappear
-  static private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
+   private MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
     MethodSelector ms=MethodSelector.of("",fieldNames);
     Type resT=Type.mutThis0;
+    if (this.hasReadFields){resT=resT.withMdf(Mdf.Lent);}
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }

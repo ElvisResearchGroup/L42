@@ -61,3 +61,8 @@ B:Data<><{implements A}
 Can not work, and that is ok.
 B is needed to be compiled for A to be typed and thus for {implements A} to be normalized.
 
+Desugaring is before all normalization. There is no need to
+merge desugaring and normalization.
+Thus "reuse" keywords are unfolded at desugaring time.
+A program deploying towels and testing them,
+may need to use a load42File plugin to control the desugaring time.
