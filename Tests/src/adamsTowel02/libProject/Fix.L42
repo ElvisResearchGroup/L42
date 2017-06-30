@@ -2,8 +2,10 @@
 GetMyName:{
   class method
   This2.S (class Any that)
-    Introspection(clazz:that).externalTypeToS()
+    Location.Type.RefTo.Binded(classObj:that)
+      .toS().withoutLeft(val:S"This0.")
   }
+
 Message:{Opt:{
   method
   This1 #get()
@@ -20,6 +22,7 @@ Message:{Opt:{
       error This4.Guard.Operation
         "TEmpty.get() Value not present in Optional"
   }}}
+/*
 Guard:{interface ParseFail:{interface  implements Guard}}
 Bool:{
   ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
@@ -64,7 +67,7 @@ S:{
         )
       else (
         error This2.Guard.Operation
-        "String.split(): skipper returned 0 on: '"[this]"' @"[index]""
+        "String.split(): skipper returned 0 on: '"[this]"' - "[index]""
         )
       )
     if index != this.size() (
@@ -181,4 +184,5 @@ Path:{
           )]""
      })
   }
+*/
 }

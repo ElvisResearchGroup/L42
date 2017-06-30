@@ -15,6 +15,8 @@ $:{
   }
 
 Main:{
+  Debug.test(Bool.readableName() expected:S"Bool")
+  Debug.test(NL.readableName() expected:S"NL")
   NL myList=NL[1Size;2Size;3Size]
   max=$.max(myList)
   Debug.test(S"the max for "[myList]" is "[max]"!" expected:S"the max for [1; 2; 3] is 3!")

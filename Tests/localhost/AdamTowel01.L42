@@ -2076,7 +2076,7 @@ Library #apply()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Conce
 refine read method 
 class This0 class() This0
 refine class method 
-This3.S readableName() This2.MiniData.classObjToS()
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -2149,16 +2149,6 @@ refine read method
 This3.S toS() 
 This$: {}}}
 MiniData: {
-class method 
-This2.S classObjToS() This2.S.#from(builder:(
-  capsule This2.S.SBuilder b=This2.S.#builder()
-  Void unused=b.#T()
-  Void unused0=b.#O()
-  Void unused1=b.#F()
-  Void unused2=b.#I()
-  Void unused3=b.#X()
-  b
-  ))
 class method 
 Library thisLib()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
@@ -18910,7 +18900,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -21290,7 +21280,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -23112,7 +23102,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -24862,7 +24852,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This3.S readableName() This3.UnsafeRefactor.MiniData.classObjToS()
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -25044,7 +25034,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This3.S readableName() This3.UnsafeRefactor.MiniData.classObjToS()
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -26757,7 +26747,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This3.S readableName() This3.UnsafeRefactor.MiniData.classObjToS()
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -28470,7 +28460,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This3.S readableName() This3.UnsafeRefactor.MiniData.classObjToS()
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -30116,7 +30106,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This4.S readableName() This4.UnsafeRefactor.MiniData.classObjToS()
+This4.S readableName() This4.GetMyName.#apply(that:This0)
 refine class method 
 This4.Bool is(class Any subtype) (
   Void unused=(
@@ -30212,7 +30202,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This4.S readableName() This4.UnsafeRefactor.MiniData.classObjToS()
+This4.S readableName() This4.GetMyName.#apply(that:This0)
 refine class method 
 This4.Bool is(class Any subtype) (
   Void unused=(
@@ -30307,6 +30297,13 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   )
 class method 
+This0 #apply(class Any classObj) This0.#from(binaryRepr:(
+  Library res=use This0 check new(_1_ast%Ast$Path:classObj) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded\u000amethod name: #apply(classObj)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded.new(_1_ast%Ast$Path)\u000a
+*/})
+  res
+  ))
+class method 
 This4.Bool equalsClassObj(class Any that, class Any and) This4.Bool.#from(binaryRepr:(
   Library res=use This0 check equalsClassObj(_1_ast%Ast$Path:that, _2_ast%Ast$Path:and) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded\u000amethod name: equalsClassObj(that,and)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded.equalsClassObj(_1_ast%Ast$Path,_2_ast%Ast$Path)\u000a
@@ -30323,7 +30320,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This4.S readableName() This4.UnsafeRefactor.MiniData.classObjToS()
+This4.S readableName() This4.GetMyName.#apply(that:This0)
 refine class method 
 This4.Bool is(class Any subtype) (
   Void unused=(
@@ -30419,7 +30416,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This4.S readableName() This4.UnsafeRefactor.MiniData.classObjToS()
+This4.S readableName() This4.GetMyName.#apply(that:This0)
 refine class method 
 This4.Bool is(class Any subtype) (
   Void unused=(
@@ -30646,7 +30643,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -30754,7 +30751,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
   res
   ))
 refine class method 
-This3.S readableName() This3.UnsafeRefactor.MiniData.classObjToS()
+This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine class method 
 This3.Bool is(class Any subtype) (
   Void unused=(
@@ -32566,7 +32563,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -32703,7 +32700,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -32840,7 +32837,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -32991,7 +32988,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -33142,7 +33139,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -33286,7 +33283,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -33437,7 +33434,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -33574,7 +33571,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(
@@ -33711,7 +33708,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine class method 
-This2.S readableName() This2.UnsafeRefactor.MiniData.classObjToS()
+This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine class method 
 This2.Bool is(class Any subtype) (
   Void unused=(

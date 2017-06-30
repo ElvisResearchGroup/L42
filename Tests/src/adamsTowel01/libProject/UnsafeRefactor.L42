@@ -43,7 +43,7 @@ MiniDataTrait:{class method Library(){
     This
 
   method readableName()
-    MiniData.classObjToS()
+    GetMyName(This)
 
   method is(subtype){
     with subtype (on class This return Bool.true())
@@ -57,7 +57,6 @@ MiniDataTrait:{class method Library(){
   This$:{}
   }}
 MiniData:{
-  class method S classObjToS()S"TOFIX"
   class method Library thisLib() {
     implements Concept.Base
     refine read method class This class()
