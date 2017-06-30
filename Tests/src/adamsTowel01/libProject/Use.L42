@@ -1,0 +1,24 @@
+{
+Over:Composers<><{
+  mut method Void op(Path p, Location.Method m, Size i) (
+    s=m.selector()
+    s2=this.superName(selector:s,i:i)
+    this.open(i).#add(rename:s of:p into:s2)
+    this.close().#add(hide:s2 of:p)
+    )
+  }
+
+Override:Composers<><{
+  mut method Void op(Path p, Location.Method m, Size i) (
+    s=m.selector()
+    s2=this.superName(selector:s,i:i)
+    this.open(i).#add(abstract:s of:p alias:s2)
+    this.close().#add(hide:s2 of:p)
+    )
+  }
+This$:Composers<><{
+  mut method Void op(Path p, Location.Method m, Size i) (
+    //do nothing is the simplest way to give a good methodClash error.
+    void )
+  }
+}

@@ -3,14 +3,13 @@ DecorationUnfeasable:Message.$<><{ implements MetaGuard}
 
 
 Parsable:{
+  Fail:Message.$<><{ implements Guard}
   class method Library<><(Library that)
-  exception DecorationUnfeasable{
-    return Extends[{
-      //ParseFailure:Message:S[]<><{ implements Guard} no need, related to invariant?
+  exception Fail{
+    return Refactor2.compose(that and:{
       class method// if you do not implement it, it is a constructor?
+      //may become an interface Concept.Parsable method?
       This fromS(Concept.ToS that)
-      //will be in the interface when there is class refinement,
-      //and will be imm in the interface, and classes can refine to their outer0, and to capsule if makes sense
 
       class method
       This #from(S.SBuilder builder)
@@ -18,9 +17,9 @@ Parsable:{
 
       class method
       mut S.SBuilder #builder() S.SBuilder.empty()
-     }]<><that
-    exception on MetaGuard
-      DecorationUnfeasable"Parsable"
+     })
+    exception on Refactor2.Fail
+      Fail"Parsable"
     }
   }
 SealState:{

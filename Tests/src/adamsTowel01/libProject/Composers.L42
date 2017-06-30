@@ -1,8 +1,7 @@
 {/*
 Main feature of Composers:
-you can implement an 
+you implement an 
   mut method Void op(Path p, Location.Method m, Size i)
-
        op(p,meth,i) for example can be
          s=meth.selector()
          s2=this.superName(s,i)
@@ -13,7 +12,6 @@ you can implement an
 class method Library composerTrait(){
   mut method
   Void op(Path p, Location.Method m, Size i)
-
   //in the following, I divide in 3 methods to reduce the stress on javac
   mut method
   Void fillMaps() with li in this.ls().vals(), i in 0Size.vals() (
@@ -45,6 +43,7 @@ class method Library composerTrait(){
   Decorator:{
     mut Libs inner
     class method mut This (mut Libs inner)
+    
     method Library <><(Library that)
     exception 
     ,,,,Refactor2.MethodClash,

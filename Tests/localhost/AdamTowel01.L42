@@ -34376,9 +34376,8 @@ refine method
 This1.T get() this.that()}}}
 Composers: {/*
 Main feature of Composers:
-you can implement an 
+you implement an 
   mut method Void op(Path p, Location.Method m, Size i)
-
        op(p,meth,i) for example can be
          s=meth.selector()
          s2=this.superName(s,i)
@@ -40539,4 +40538,2029 @@ Library filled() error This3.X.#from(builder:(
   Void unused52=b.#e()
   Void unused53=b.#n()
   b
-  ))}}}}
+  ))}}}
+Use: {
+mut method 
+Void fillMaps() (
+  lent This1.Location.Lib.List.IteratorVal li=this.ls().vals()
+  (
+    capsule This1.Size.Iterator i=This1.Size.#from(builder:(
+      capsule This1.S.SBuilder b=This1.Size.#builder()
+      Void unused=b.#0()
+      b
+      )).vals()
+    (
+      Void unused0=loop (
+        Void unused1=li.#next()
+        
+        catch exception Void catched2 (
+          Void unused2=(
+            Void unused5=i.#next()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=li.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          Void unused4=(
+            Void unused7=i.#checkEnd()
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused8=i.#next()
+          
+          catch exception Void catched7 (
+            Void unused9=(
+              Void unused11=li.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            Void unused10=(
+              Void unused12=i.#checkEnd()
+              
+              catch exception Void catched9 void
+              
+              void
+              )
+            exception void
+            )
+          
+          this.fillMaps(li:li.#inner(), i:i.#inner())
+          )
+        )
+      
+      catch exception Void catched11 void
+      
+      void
+      )
+    )
+  )
+mut method 
+Void fillMaps(This1.Location.Lib li, This1.Size i) (
+  lent This1.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This1.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      Void unused=loop (
+        Void unused0=nj.#next()
+        
+        catch exception Void catched1 (
+          Void unused1=(
+            Void unused4=ssj.#next()
+            
+            catch exception Void catched2 void
+            
+            void
+            )
+          Void unused2=(
+            Void unused5=nj.#checkEnd()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=ssj.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused7=ssj.#next()
+          
+          catch exception Void catched6 (
+            Void unused8=(
+              Void unused10=nj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused9=(
+              Void unused11=ssj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            This1.Location.Lib lij=li.nested(path:nj.#inner().path())
+            
+            catch exception This1.Location.NotAvailable catched10 void
+            
+            this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:nj.#inner().path(), i:i)
+            )
+          )
+        )
+      
+      catch exception Void catched11 void
+      
+      void
+      )
+    )
+  )
+mut method 
+Void fillMaps(This1.Location.Lib lij, This1.Composers.Selectors ssj, This1.Path pj, This1.Size i) (
+  lent This1.Location.Method.List.IteratorVal m=lij.methods().vals()
+  (
+    Void unused=loop (
+      Void unused0=m.#next()
+      
+      catch exception Void catched0 (
+        Void unused1=(
+          Void unused2=m.#checkEnd()
+          
+          catch exception Void catched1 void
+          
+          void
+          )
+        exception void
+        )
+      
+      (
+        This1.Bool cond=This1.Composers.noClash(m:m.#inner()).#bang().#and(that:(
+          This1.Selector opNorm=m.#inner().selector()
+          ssj.#right(that:opNorm)
+          ))
+        (
+          Void unused3=cond.#checkTrue()
+          
+          catch exception Void catched5 void
+          
+          this.op(p:pj, m:m.#inner(), i:i)
+          )
+        )
+      )
+    
+    catch exception Void catched6 void
+    
+    void
+    )
+  )
+mut method 
+This1.Selector superName(This1.Selector selector, This1.Size i) This1.Selector.fromS(that:(
+  This1.S.Continue rcv73=(
+    This1.S rcv74=This1.S.#from(builder:(
+      capsule This1.S.SBuilder b=This1.S.#builder()
+      Void unused=b.#hash()
+      b
+      ))
+    rcv74.#from(seqBuilder:(
+      capsule This1.S.SConcat b0=rcv74.#seqBuilder()
+      Void unused0=b0.#add(that:i.#plus(that:This1.Size.#from(builder:(
+        capsule This1.S.SBuilder b1=This1.Size.#builder()
+        Void unused1=b1.#1()
+        b1
+        ))))
+      b0
+      ))
+    )
+  rcv73.#from(builder:(
+    capsule This1.S.SBuilder b2=rcv73.#builder()
+    b2
+    ))
+  ).#plusplus(that:selector.toS()))
+class method 
+mut This1.Composers.Libs #seqBuilder() This1.Composers.Libs.empty()
+class method 
+mut This0.Decorator #from(mut This1.Composers.Libs seqBuilder) This0.Decorator.#apply(inner:seqBuilder)
+mut method 
+mut This1.Composers.RenameMethods openMaps() 
+mut method 
+mut This1.Refactor2.Method close() 
+read method 
+This1.Composers.Libs inputs() 
+read method 
+Library input() 
+read method 
+This1.Location.Lib.List ls() 
+read method 
+This1.Location.Lib l0() 
+read method 
+This1.Location.Lib.List l0ns() 
+read method 
+This1.Composers.Selectorss sels() 
+class method 
+mut This0 #apply(This1.Composers.Libs libs, Library lib0) (
+  This1.Location.Lib l0=This1.Location.Lib.#apply(that:lib0)
+  capsule This1.Location.Lib.List ls=This1.Location.Lib.List.#from(seqBuilder:(
+    capsule This1.Location.Lib.List b=This1.Location.Lib.List.#seqBuilder()
+    Void unused=(
+      lent This1.Composers.Libs.IteratorVal l=libs.vals()
+      (
+        Void unused0=loop (
+          Void unused1=l.#next()
+          
+          catch exception Void catched0 (
+            Void unused2=(
+              Void unused3=l.#checkEnd()
+              
+              catch exception Void catched1 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused4=b.#add(that:This1.Location.Lib.#apply(that:l.#inner()))
+            void
+            )
+          )
+        
+        catch exception Void catched4 void
+        
+        void
+        )
+      )
+    b
+    ))
+  This1.Location.Lib.List l0ns=This1.Composers.filterClash(ls:l0.allNesteds())
+  capsule This1.Composers.Selectorss sels=This1.Composers.Selectorss.#from(seqBuilder:(
+    capsule This1.Composers.Selectorss b0=This1.Composers.Selectorss.#seqBuilder()
+    Void unused5=(
+      lent This1.Location.Lib.List.IteratorVal nj=l0ns.vals()
+      (
+        Void unused6=loop (
+          Void unused7=nj.#next()
+          
+          catch exception Void catched7 (
+            Void unused8=(
+              Void unused9=nj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused10=b0.#add(that:This1.Composers.filterClash(ms:nj.#inner().methods()))
+            void
+            )
+          )
+        
+        catch exception Void catched11 void
+        
+        void
+        )
+      )
+    b0
+    ))
+  This0.#apply(openMaps:This1.Composers.RenameMethods.#from(seqBuilder:(
+    capsule This1.Composers.RenameMethods b1=This1.Composers.RenameMethods.#seqBuilder()
+    Void unused11=(
+      lent This1.Composers.Libs.IteratorVal l=libs.vals()
+      (
+        Void unused12=loop (
+          Void unused13=l.#next()
+          
+          catch exception Void catched15 (
+            Void unused14=(
+              Void unused15=l.#checkEnd()
+              
+              catch exception Void catched16 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused16=b1.#add(that:This1.Refactor2.Method.#from(seqBuilder:(
+              capsule This1.Refactor2.Method b2=This1.Refactor2.Method.#seqBuilder()
+              b2
+              )))
+            void
+            )
+          )
+        
+        catch exception Void catched20 void
+        
+        void
+        )
+      )
+    b1
+    )), close:This1.Refactor2.Method.#from(seqBuilder:(
+    capsule This1.Refactor2.Method b3=This1.Refactor2.Method.#seqBuilder()
+    b3
+    )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
+  )
+mut method 
+mut This1.Refactor2.Method open(This1.Size that) this.openMaps().#val(that:that)
+mut method 
+Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) (
+  lent This1.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This1.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      Void unused=loop (
+        Void unused0=nj.#next()
+        
+        catch exception Void catched1 (
+          Void unused1=(
+            Void unused4=ssj.#next()
+            
+            catch exception Void catched2 void
+            
+            void
+            )
+          Void unused2=(
+            Void unused5=nj.#checkEnd()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=ssj.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused7=ssj.#next()
+          
+          catch exception Void catched6 (
+            Void unused8=(
+              Void unused10=nj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused9=(
+              Void unused11=ssj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (/*all patch selectors
+*/
+            This1.Path pj=This1.Composers.removePrefix(path:nj.#inner().path(), prefix:fix)
+            This1.Location.Lib lij=top.nested(path:pj)
+            
+            catch exception This1.Location.NotAvailable catched10 void
+            
+            this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:pj, i:This1.Size.#from(builder:(
+              capsule This1.S.SBuilder b=This1.Size.#builder()
+              Void unused12=b.#0()
+              b
+              )))
+            )
+          )
+        )
+      
+      catch exception Void catched12 void
+      
+      void
+      )
+    )
+  )
+class method 
+mut This0 #apply(Library top, This1.Path fix) (
+  This1.Location.Lib lFix=This1.Location.Lib.#apply(that:top).nested(path:fix)
+  capsule This1.Location.Lib.List ls=This1.Location.Lib.List.#from(seqBuilder:(
+    capsule This1.Location.Lib.List b0=This1.Location.Lib.List.#seqBuilder()
+    b0
+    ))
+  This1.Location.Lib.List l0ns=This1.Composers.filterClash(ls:lFix.allNesteds())
+  capsule This1.Composers.Selectorss sels=This1.Composers.Selectorss.#from(seqBuilder:(
+    capsule This1.Composers.Selectorss b=This1.Composers.Selectorss.#seqBuilder()
+    Void unused=(
+      lent This1.Location.Lib.List.IteratorVal nj=l0ns.vals()
+      (
+        Void unused0=loop (
+          Void unused1=nj.#next()
+          
+          catch exception Void catched1 (
+            Void unused2=(
+              Void unused3=nj.#checkEnd()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused4=b.#add(that:This1.Composers.filterClash(ms:nj.#inner().methods()))
+            void
+            )
+          )
+        
+        catch exception Void catched5 void
+        
+        void
+        )
+      )
+    b
+    ))
+  This0.#apply(openMaps:This1.Composers.RenameMethods.#from(seqBuilder:(
+    capsule This1.Composers.RenameMethods b1=This1.Composers.RenameMethods.#seqBuilder()
+    Void unused5=b1.#add(that:This1.Refactor2.Method.#from(seqBuilder:(
+      capsule This1.Refactor2.Method b2=This1.Refactor2.Method.#seqBuilder()
+      b2
+      )))
+    b1
+    )), close:This1.Refactor2.Method.#from(seqBuilder:(
+    capsule This1.Refactor2.Method b3=This1.Refactor2.Method.#seqBuilder()
+    b3
+    )), inputs:This1.Composers.Libs.#from(seqBuilder:(
+    capsule This1.Composers.Libs b4=This1.Composers.Libs.#seqBuilder()
+    b4
+    )), input:top, ls:ls, l0:lFix, l0ns:l0ns, sels:sels)
+  )
+class method 
+class This1.Path #default##apply(Void patch) This1.Path
+class method 
+mut This0.Patcher #apply(This1.Path patch) This0.Patcher.#apply(patch:patch)
+class method 
+mut This0 #apply(mut This1.Composers.RenameMethods openMaps, mut This1.Refactor2.Method close, This1.Composers.Libs inputs, Library input, This1.Location.Lib.List ls, This1.Location.Lib l0, This1.Location.Lib.List l0ns, This1.Composers.Selectorss sels) 
+mut method 
+Void op(This1.Path p, This1.Location.Method m, This1.Size i) void
+Over: {
+mut method 
+Void fillMaps() (
+  lent This2.Location.Lib.List.IteratorVal li=this.ls().vals()
+  (
+    capsule This2.Size.Iterator i=This2.Size.#from(builder:(
+      capsule This2.S.SBuilder b=This2.Size.#builder()
+      Void unused=b.#0()
+      b
+      )).vals()
+    (
+      Void unused0=loop (
+        Void unused1=li.#next()
+        
+        catch exception Void catched2 (
+          Void unused2=(
+            Void unused5=i.#next()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=li.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          Void unused4=(
+            Void unused7=i.#checkEnd()
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused8=i.#next()
+          
+          catch exception Void catched7 (
+            Void unused9=(
+              Void unused11=li.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            Void unused10=(
+              Void unused12=i.#checkEnd()
+              
+              catch exception Void catched9 void
+              
+              void
+              )
+            exception void
+            )
+          
+          this.fillMaps(li:li.#inner(), i:i.#inner())
+          )
+        )
+      
+      catch exception Void catched11 void
+      
+      void
+      )
+    )
+  )
+mut method 
+Void fillMaps(This2.Location.Lib li, This2.Size i) (
+  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This2.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      Void unused=loop (
+        Void unused0=nj.#next()
+        
+        catch exception Void catched1 (
+          Void unused1=(
+            Void unused4=ssj.#next()
+            
+            catch exception Void catched2 void
+            
+            void
+            )
+          Void unused2=(
+            Void unused5=nj.#checkEnd()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=ssj.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused7=ssj.#next()
+          
+          catch exception Void catched6 (
+            Void unused8=(
+              Void unused10=nj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused9=(
+              Void unused11=ssj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            This2.Location.Lib lij=li.nested(path:nj.#inner().path())
+            
+            catch exception This2.Location.NotAvailable catched10 void
+            
+            this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:nj.#inner().path(), i:i)
+            )
+          )
+        )
+      
+      catch exception Void catched11 void
+      
+      void
+      )
+    )
+  )
+mut method 
+Void fillMaps(This2.Location.Lib lij, This2.Composers.Selectors ssj, This2.Path pj, This2.Size i) (
+  lent This2.Location.Method.List.IteratorVal m=lij.methods().vals()
+  (
+    Void unused=loop (
+      Void unused0=m.#next()
+      
+      catch exception Void catched0 (
+        Void unused1=(
+          Void unused2=m.#checkEnd()
+          
+          catch exception Void catched1 void
+          
+          void
+          )
+        exception void
+        )
+      
+      (
+        This2.Bool cond=This2.Composers.noClash(m:m.#inner()).#bang().#and(that:(
+          This2.Selector opNorm=m.#inner().selector()
+          ssj.#right(that:opNorm)
+          ))
+        (
+          Void unused3=cond.#checkTrue()
+          
+          catch exception Void catched5 void
+          
+          this.op(p:pj, m:m.#inner(), i:i)
+          )
+        )
+      )
+    
+    catch exception Void catched6 void
+    
+    void
+    )
+  )
+mut method 
+This2.Selector superName(This2.Selector selector, This2.Size i) This2.Selector.fromS(that:(
+  This2.S.Continue rcv73=(
+    This2.S rcv74=This2.S.#from(builder:(
+      capsule This2.S.SBuilder b=This2.S.#builder()
+      Void unused=b.#hash()
+      b
+      ))
+    rcv74.#from(seqBuilder:(
+      capsule This2.S.SConcat b0=rcv74.#seqBuilder()
+      Void unused0=b0.#add(that:i.#plus(that:This2.Size.#from(builder:(
+        capsule This2.S.SBuilder b1=This2.Size.#builder()
+        Void unused1=b1.#1()
+        b1
+        ))))
+      b0
+      ))
+    )
+  rcv73.#from(builder:(
+    capsule This2.S.SBuilder b2=rcv73.#builder()
+    b2
+    ))
+  ).#plusplus(that:selector.toS()))
+class method 
+mut This2.Composers.Libs #seqBuilder() This2.Composers.Libs.empty()
+class method 
+mut This0.Decorator #from(mut This2.Composers.Libs seqBuilder) This0.Decorator.#apply(inner:seqBuilder)
+mut method 
+mut This2.Composers.RenameMethods openMaps() 
+mut method 
+mut This2.Refactor2.Method close() 
+read method 
+This2.Composers.Libs inputs() 
+read method 
+Library input() 
+read method 
+This2.Location.Lib.List ls() 
+read method 
+This2.Location.Lib l0() 
+read method 
+This2.Location.Lib.List l0ns() 
+read method 
+This2.Composers.Selectorss sels() 
+class method 
+mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
+  This2.Location.Lib l0=This2.Location.Lib.#apply(that:lib0)
+  capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
+    capsule This2.Location.Lib.List b=This2.Location.Lib.List.#seqBuilder()
+    Void unused=(
+      lent This2.Composers.Libs.IteratorVal l=libs.vals()
+      (
+        Void unused0=loop (
+          Void unused1=l.#next()
+          
+          catch exception Void catched0 (
+            Void unused2=(
+              Void unused3=l.#checkEnd()
+              
+              catch exception Void catched1 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused4=b.#add(that:This2.Location.Lib.#apply(that:l.#inner()))
+            void
+            )
+          )
+        
+        catch exception Void catched4 void
+        
+        void
+        )
+      )
+    b
+    ))
+  This2.Location.Lib.List l0ns=This2.Composers.filterClash(ls:l0.allNesteds())
+  capsule This2.Composers.Selectorss sels=This2.Composers.Selectorss.#from(seqBuilder:(
+    capsule This2.Composers.Selectorss b0=This2.Composers.Selectorss.#seqBuilder()
+    Void unused5=(
+      lent This2.Location.Lib.List.IteratorVal nj=l0ns.vals()
+      (
+        Void unused6=loop (
+          Void unused7=nj.#next()
+          
+          catch exception Void catched7 (
+            Void unused8=(
+              Void unused9=nj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused10=b0.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
+            void
+            )
+          )
+        
+        catch exception Void catched11 void
+        
+        void
+        )
+      )
+    b0
+    ))
+  This0.#apply(openMaps:This2.Composers.RenameMethods.#from(seqBuilder:(
+    capsule This2.Composers.RenameMethods b1=This2.Composers.RenameMethods.#seqBuilder()
+    Void unused11=(
+      lent This2.Composers.Libs.IteratorVal l=libs.vals()
+      (
+        Void unused12=loop (
+          Void unused13=l.#next()
+          
+          catch exception Void catched15 (
+            Void unused14=(
+              Void unused15=l.#checkEnd()
+              
+              catch exception Void catched16 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused16=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
+              capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
+              b2
+              )))
+            void
+            )
+          )
+        
+        catch exception Void catched20 void
+        
+        void
+        )
+      )
+    b1
+    )), close:This2.Refactor2.Method.#from(seqBuilder:(
+    capsule This2.Refactor2.Method b3=This2.Refactor2.Method.#seqBuilder()
+    b3
+    )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
+  )
+mut method 
+mut This2.Refactor2.Method open(This2.Size that) this.openMaps().#val(that:that)
+mut method 
+Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
+  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This2.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      Void unused=loop (
+        Void unused0=nj.#next()
+        
+        catch exception Void catched1 (
+          Void unused1=(
+            Void unused4=ssj.#next()
+            
+            catch exception Void catched2 void
+            
+            void
+            )
+          Void unused2=(
+            Void unused5=nj.#checkEnd()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=ssj.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused7=ssj.#next()
+          
+          catch exception Void catched6 (
+            Void unused8=(
+              Void unused10=nj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused9=(
+              Void unused11=ssj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (/*all patch selectors
+*/
+            This2.Path pj=This2.Composers.removePrefix(path:nj.#inner().path(), prefix:fix)
+            This2.Location.Lib lij=top.nested(path:pj)
+            
+            catch exception This2.Location.NotAvailable catched10 void
+            
+            this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:pj, i:This2.Size.#from(builder:(
+              capsule This2.S.SBuilder b=This2.Size.#builder()
+              Void unused12=b.#0()
+              b
+              )))
+            )
+          )
+        )
+      
+      catch exception Void catched12 void
+      
+      void
+      )
+    )
+  )
+class method 
+mut This0 #apply(Library top, This2.Path fix) (
+  This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
+  capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
+    capsule This2.Location.Lib.List b0=This2.Location.Lib.List.#seqBuilder()
+    b0
+    ))
+  This2.Location.Lib.List l0ns=This2.Composers.filterClash(ls:lFix.allNesteds())
+  capsule This2.Composers.Selectorss sels=This2.Composers.Selectorss.#from(seqBuilder:(
+    capsule This2.Composers.Selectorss b=This2.Composers.Selectorss.#seqBuilder()
+    Void unused=(
+      lent This2.Location.Lib.List.IteratorVal nj=l0ns.vals()
+      (
+        Void unused0=loop (
+          Void unused1=nj.#next()
+          
+          catch exception Void catched1 (
+            Void unused2=(
+              Void unused3=nj.#checkEnd()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused4=b.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
+            void
+            )
+          )
+        
+        catch exception Void catched5 void
+        
+        void
+        )
+      )
+    b
+    ))
+  This0.#apply(openMaps:This2.Composers.RenameMethods.#from(seqBuilder:(
+    capsule This2.Composers.RenameMethods b1=This2.Composers.RenameMethods.#seqBuilder()
+    Void unused5=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
+      capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
+      b2
+      )))
+    b1
+    )), close:This2.Refactor2.Method.#from(seqBuilder:(
+    capsule This2.Refactor2.Method b3=This2.Refactor2.Method.#seqBuilder()
+    b3
+    )), inputs:This2.Composers.Libs.#from(seqBuilder:(
+    capsule This2.Composers.Libs b4=This2.Composers.Libs.#seqBuilder()
+    b4
+    )), input:top, ls:ls, l0:lFix, l0ns:l0ns, sels:sels)
+  )
+class method 
+class This2.Path #default##apply(Void patch) This2.Path
+class method 
+mut This0.Patcher #apply(This2.Path patch) This0.Patcher.#apply(patch:patch)
+class method 
+mut This0 #apply(mut This2.Composers.RenameMethods openMaps, mut This2.Refactor2.Method close, This2.Composers.Libs inputs, Library input, This2.Location.Lib.List ls, This2.Location.Lib l0, This2.Location.Lib.List l0ns, This2.Composers.Selectorss sels) 
+mut method 
+Void op(This2.Path p, This2.Location.Method m, This2.Size i) (
+  This2.Selector s=m.selector()
+  This2.Selector s2=this.superName(selector:s, i:i)
+  Void unused=this.open(that:i).#add(rename:s, of:p, into:s2)
+  this.close().#add(hide:s2, of:p)
+  )
+Decorator: {
+mut method 
+mut This3.Composers.Libs #inner() 
+read method 
+read This3.Composers.Libs inner() 
+class method 
+mut This0 #apply(mut This3.Composers.Libs inner) 
+method 
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+  mut This1 cmp=This1.#apply(libs:this.inner(), lib0:that)
+  Void unused=cmp.fillMaps()
+  var Library acc=that
+  Void unused0=(
+    lent This3.Composers.Libs.IteratorVal li=this.inner().reverse().vals()
+    (
+      mut This3.Composers.RenameMethods.IteratorVar mi=cmp.openMaps().#reverse().#vals()
+      (
+        Void unused1=loop (
+          Void unused2=li.#next()
+          
+          catch exception Void catched1 (
+            Void unused3=(
+              Void unused6=mi.#next()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            Void unused4=(
+              Void unused7=li.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            Void unused5=(
+              Void unused8=mi.#checkEnd()
+              
+              catch exception Void catched4 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused9=mi.#next()
+            
+            catch exception Void catched6 (
+              Void unused10=(
+                Void unused12=li.#checkEnd()
+                
+                catch exception Void catched7 void
+                
+                void
+                )
+              Void unused11=(
+                Void unused13=mi.#checkEnd()
+                
+                catch exception Void catched8 void
+                
+                void
+                )
+              exception void
+              )
+            
+            acc := This3.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc)
+            )
+          )
+        
+        catch exception Void catched10 void
+        
+        void
+        )
+      )
+    )
+  cmp.close().#leftrightleft(that:acc)
+  )}
+Patcher: {
+mut method 
+This3.Path #patch() 
+read method 
+This3.Path patch() 
+class method 
+mut This0 #apply(This3.Path patch) 
+method 
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+  mut This1 cmp=This1.#apply(top:that, fix:this.patch())
+  Void unused=cmp.fillMapsPatch(top:This3.Location.Lib.#apply(that:that), fix:this.patch())
+  var Library acc=that
+  Void unused0=acc := (
+    Library opNorm=acc
+    cmp.open(that:This3.Size.#from(builder:(
+      capsule This3.S.SBuilder b=This3.Size.#builder()
+      Void unused3=b.#0()
+      b
+      ))).#leftrightleft(that:opNorm)
+    )
+  Void unused1=acc := (
+    Library opNorm0=acc
+    This3.Refactor2.rename(path:this.patch(), into:This3.Refactor2.#default#rename(into:void).#from(builder:(
+      capsule This3.S.SBuilder b0=This3.Refactor2.#default#rename(into:void).#builder()
+      Void unused4=b0.#T()
+      Void unused5=b0.#h()
+      Void unused6=b0.#i()
+      Void unused7=b0.#s()
+      b0
+      ))).#leftrightleft(that:opNorm0)
+    )
+  Void unused2=acc := (
+    Library opNorm1=acc
+    cmp.close().#leftrightleft(that:opNorm1)
+    )
+  acc
+  )}}
+Override: {
+mut method 
+Void fillMaps() (
+  lent This2.Location.Lib.List.IteratorVal li=this.ls().vals()
+  (
+    capsule This2.Size.Iterator i=This2.Size.#from(builder:(
+      capsule This2.S.SBuilder b=This2.Size.#builder()
+      Void unused=b.#0()
+      b
+      )).vals()
+    (
+      Void unused0=loop (
+        Void unused1=li.#next()
+        
+        catch exception Void catched2 (
+          Void unused2=(
+            Void unused5=i.#next()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=li.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          Void unused4=(
+            Void unused7=i.#checkEnd()
+            
+            catch exception Void catched5 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused8=i.#next()
+          
+          catch exception Void catched7 (
+            Void unused9=(
+              Void unused11=li.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            Void unused10=(
+              Void unused12=i.#checkEnd()
+              
+              catch exception Void catched9 void
+              
+              void
+              )
+            exception void
+            )
+          
+          this.fillMaps(li:li.#inner(), i:i.#inner())
+          )
+        )
+      
+      catch exception Void catched11 void
+      
+      void
+      )
+    )
+  )
+mut method 
+Void fillMaps(This2.Location.Lib li, This2.Size i) (
+  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This2.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      Void unused=loop (
+        Void unused0=nj.#next()
+        
+        catch exception Void catched1 (
+          Void unused1=(
+            Void unused4=ssj.#next()
+            
+            catch exception Void catched2 void
+            
+            void
+            )
+          Void unused2=(
+            Void unused5=nj.#checkEnd()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=ssj.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused7=ssj.#next()
+          
+          catch exception Void catched6 (
+            Void unused8=(
+              Void unused10=nj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused9=(
+              Void unused11=ssj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            This2.Location.Lib lij=li.nested(path:nj.#inner().path())
+            
+            catch exception This2.Location.NotAvailable catched10 void
+            
+            this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:nj.#inner().path(), i:i)
+            )
+          )
+        )
+      
+      catch exception Void catched11 void
+      
+      void
+      )
+    )
+  )
+mut method 
+Void fillMaps(This2.Location.Lib lij, This2.Composers.Selectors ssj, This2.Path pj, This2.Size i) (
+  lent This2.Location.Method.List.IteratorVal m=lij.methods().vals()
+  (
+    Void unused=loop (
+      Void unused0=m.#next()
+      
+      catch exception Void catched0 (
+        Void unused1=(
+          Void unused2=m.#checkEnd()
+          
+          catch exception Void catched1 void
+          
+          void
+          )
+        exception void
+        )
+      
+      (
+        This2.Bool cond=This2.Composers.noClash(m:m.#inner()).#bang().#and(that:(
+          This2.Selector opNorm=m.#inner().selector()
+          ssj.#right(that:opNorm)
+          ))
+        (
+          Void unused3=cond.#checkTrue()
+          
+          catch exception Void catched5 void
+          
+          this.op(p:pj, m:m.#inner(), i:i)
+          )
+        )
+      )
+    
+    catch exception Void catched6 void
+    
+    void
+    )
+  )
+mut method 
+This2.Selector superName(This2.Selector selector, This2.Size i) This2.Selector.fromS(that:(
+  This2.S.Continue rcv73=(
+    This2.S rcv74=This2.S.#from(builder:(
+      capsule This2.S.SBuilder b=This2.S.#builder()
+      Void unused=b.#hash()
+      b
+      ))
+    rcv74.#from(seqBuilder:(
+      capsule This2.S.SConcat b0=rcv74.#seqBuilder()
+      Void unused0=b0.#add(that:i.#plus(that:This2.Size.#from(builder:(
+        capsule This2.S.SBuilder b1=This2.Size.#builder()
+        Void unused1=b1.#1()
+        b1
+        ))))
+      b0
+      ))
+    )
+  rcv73.#from(builder:(
+    capsule This2.S.SBuilder b2=rcv73.#builder()
+    b2
+    ))
+  ).#plusplus(that:selector.toS()))
+class method 
+mut This2.Composers.Libs #seqBuilder() This2.Composers.Libs.empty()
+class method 
+mut This0.Decorator #from(mut This2.Composers.Libs seqBuilder) This0.Decorator.#apply(inner:seqBuilder)
+mut method 
+mut This2.Composers.RenameMethods openMaps() 
+mut method 
+mut This2.Refactor2.Method close() 
+read method 
+This2.Composers.Libs inputs() 
+read method 
+Library input() 
+read method 
+This2.Location.Lib.List ls() 
+read method 
+This2.Location.Lib l0() 
+read method 
+This2.Location.Lib.List l0ns() 
+read method 
+This2.Composers.Selectorss sels() 
+class method 
+mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
+  This2.Location.Lib l0=This2.Location.Lib.#apply(that:lib0)
+  capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
+    capsule This2.Location.Lib.List b=This2.Location.Lib.List.#seqBuilder()
+    Void unused=(
+      lent This2.Composers.Libs.IteratorVal l=libs.vals()
+      (
+        Void unused0=loop (
+          Void unused1=l.#next()
+          
+          catch exception Void catched0 (
+            Void unused2=(
+              Void unused3=l.#checkEnd()
+              
+              catch exception Void catched1 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused4=b.#add(that:This2.Location.Lib.#apply(that:l.#inner()))
+            void
+            )
+          )
+        
+        catch exception Void catched4 void
+        
+        void
+        )
+      )
+    b
+    ))
+  This2.Location.Lib.List l0ns=This2.Composers.filterClash(ls:l0.allNesteds())
+  capsule This2.Composers.Selectorss sels=This2.Composers.Selectorss.#from(seqBuilder:(
+    capsule This2.Composers.Selectorss b0=This2.Composers.Selectorss.#seqBuilder()
+    Void unused5=(
+      lent This2.Location.Lib.List.IteratorVal nj=l0ns.vals()
+      (
+        Void unused6=loop (
+          Void unused7=nj.#next()
+          
+          catch exception Void catched7 (
+            Void unused8=(
+              Void unused9=nj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused10=b0.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
+            void
+            )
+          )
+        
+        catch exception Void catched11 void
+        
+        void
+        )
+      )
+    b0
+    ))
+  This0.#apply(openMaps:This2.Composers.RenameMethods.#from(seqBuilder:(
+    capsule This2.Composers.RenameMethods b1=This2.Composers.RenameMethods.#seqBuilder()
+    Void unused11=(
+      lent This2.Composers.Libs.IteratorVal l=libs.vals()
+      (
+        Void unused12=loop (
+          Void unused13=l.#next()
+          
+          catch exception Void catched15 (
+            Void unused14=(
+              Void unused15=l.#checkEnd()
+              
+              catch exception Void catched16 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused16=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
+              capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
+              b2
+              )))
+            void
+            )
+          )
+        
+        catch exception Void catched20 void
+        
+        void
+        )
+      )
+    b1
+    )), close:This2.Refactor2.Method.#from(seqBuilder:(
+    capsule This2.Refactor2.Method b3=This2.Refactor2.Method.#seqBuilder()
+    b3
+    )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
+  )
+mut method 
+mut This2.Refactor2.Method open(This2.Size that) this.openMaps().#val(that:that)
+mut method 
+Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
+  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+  (
+    lent This2.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
+    (
+      Void unused=loop (
+        Void unused0=nj.#next()
+        
+        catch exception Void catched1 (
+          Void unused1=(
+            Void unused4=ssj.#next()
+            
+            catch exception Void catched2 void
+            
+            void
+            )
+          Void unused2=(
+            Void unused5=nj.#checkEnd()
+            
+            catch exception Void catched3 void
+            
+            void
+            )
+          Void unused3=(
+            Void unused6=ssj.#checkEnd()
+            
+            catch exception Void catched4 void
+            
+            void
+            )
+          exception void
+          )
+        
+        (
+          Void unused7=ssj.#next()
+          
+          catch exception Void catched6 (
+            Void unused8=(
+              Void unused10=nj.#checkEnd()
+              
+              catch exception Void catched7 void
+              
+              void
+              )
+            Void unused9=(
+              Void unused11=ssj.#checkEnd()
+              
+              catch exception Void catched8 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (/*all patch selectors
+*/
+            This2.Path pj=This2.Composers.removePrefix(path:nj.#inner().path(), prefix:fix)
+            This2.Location.Lib lij=top.nested(path:pj)
+            
+            catch exception This2.Location.NotAvailable catched10 void
+            
+            this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:pj, i:This2.Size.#from(builder:(
+              capsule This2.S.SBuilder b=This2.Size.#builder()
+              Void unused12=b.#0()
+              b
+              )))
+            )
+          )
+        )
+      
+      catch exception Void catched12 void
+      
+      void
+      )
+    )
+  )
+class method 
+mut This0 #apply(Library top, This2.Path fix) (
+  This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
+  capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
+    capsule This2.Location.Lib.List b0=This2.Location.Lib.List.#seqBuilder()
+    b0
+    ))
+  This2.Location.Lib.List l0ns=This2.Composers.filterClash(ls:lFix.allNesteds())
+  capsule This2.Composers.Selectorss sels=This2.Composers.Selectorss.#from(seqBuilder:(
+    capsule This2.Composers.Selectorss b=This2.Composers.Selectorss.#seqBuilder()
+    Void unused=(
+      lent This2.Location.Lib.List.IteratorVal nj=l0ns.vals()
+      (
+        Void unused0=loop (
+          Void unused1=nj.#next()
+          
+          catch exception Void catched1 (
+            Void unused2=(
+              Void unused3=nj.#checkEnd()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused4=b.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
+            void
+            )
+          )
+        
+        catch exception Void catched5 void
+        
+        void
+        )
+      )
+    b
+    ))
+  This0.#apply(openMaps:This2.Composers.RenameMethods.#from(seqBuilder:(
+    capsule This2.Composers.RenameMethods b1=This2.Composers.RenameMethods.#seqBuilder()
+    Void unused5=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
+      capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
+      b2
+      )))
+    b1
+    )), close:This2.Refactor2.Method.#from(seqBuilder:(
+    capsule This2.Refactor2.Method b3=This2.Refactor2.Method.#seqBuilder()
+    b3
+    )), inputs:This2.Composers.Libs.#from(seqBuilder:(
+    capsule This2.Composers.Libs b4=This2.Composers.Libs.#seqBuilder()
+    b4
+    )), input:top, ls:ls, l0:lFix, l0ns:l0ns, sels:sels)
+  )
+class method 
+class This2.Path #default##apply(Void patch) This2.Path
+class method 
+mut This0.Patcher #apply(This2.Path patch) This0.Patcher.#apply(patch:patch)
+class method 
+mut This0 #apply(mut This2.Composers.RenameMethods openMaps, mut This2.Refactor2.Method close, This2.Composers.Libs inputs, Library input, This2.Location.Lib.List ls, This2.Location.Lib l0, This2.Location.Lib.List l0ns, This2.Composers.Selectorss sels) 
+mut method 
+Void op(This2.Path p, This2.Location.Method m, This2.Size i) (
+  This2.Selector s=m.selector()
+  This2.Selector s2=this.superName(selector:s, i:i)
+  Void unused=this.open(that:i).#add(abstract:s, of:p, alias:s2)
+  this.close().#add(hide:s2, of:p)
+  )
+Decorator: {
+mut method 
+mut This3.Composers.Libs #inner() 
+read method 
+read This3.Composers.Libs inner() 
+class method 
+mut This0 #apply(mut This3.Composers.Libs inner) 
+method 
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+  mut This1 cmp=This1.#apply(libs:this.inner(), lib0:that)
+  Void unused=cmp.fillMaps()
+  var Library acc=that
+  Void unused0=(
+    lent This3.Composers.Libs.IteratorVal li=this.inner().reverse().vals()
+    (
+      mut This3.Composers.RenameMethods.IteratorVar mi=cmp.openMaps().#reverse().#vals()
+      (
+        Void unused1=loop (
+          Void unused2=li.#next()
+          
+          catch exception Void catched1 (
+            Void unused3=(
+              Void unused6=mi.#next()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            Void unused4=(
+              Void unused7=li.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            Void unused5=(
+              Void unused8=mi.#checkEnd()
+              
+              catch exception Void catched4 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused9=mi.#next()
+            
+            catch exception Void catched6 (
+              Void unused10=(
+                Void unused12=li.#checkEnd()
+                
+                catch exception Void catched7 void
+                
+                void
+                )
+              Void unused11=(
+                Void unused13=mi.#checkEnd()
+                
+                catch exception Void catched8 void
+                
+                void
+                )
+              exception void
+              )
+            
+            acc := This3.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc)
+            )
+          )
+        
+        catch exception Void catched10 void
+        
+        void
+        )
+      )
+    )
+  cmp.close().#leftrightleft(that:acc)
+  )}
+Patcher: {
+mut method 
+This3.Path #patch() 
+read method 
+This3.Path patch() 
+class method 
+mut This0 #apply(This3.Path patch) 
+method 
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+  mut This1 cmp=This1.#apply(top:that, fix:this.patch())
+  Void unused=cmp.fillMapsPatch(top:This3.Location.Lib.#apply(that:that), fix:this.patch())
+  var Library acc=that
+  Void unused0=acc := (
+    Library opNorm=acc
+    cmp.open(that:This3.Size.#from(builder:(
+      capsule This3.S.SBuilder b=This3.Size.#builder()
+      Void unused3=b.#0()
+      b
+      ))).#leftrightleft(that:opNorm)
+    )
+  Void unused1=acc := (
+    Library opNorm0=acc
+    This3.Refactor2.rename(path:this.patch(), into:This3.Refactor2.#default#rename(into:void).#from(builder:(
+      capsule This3.S.SBuilder b0=This3.Refactor2.#default#rename(into:void).#builder()
+      Void unused4=b0.#T()
+      Void unused5=b0.#h()
+      Void unused6=b0.#i()
+      Void unused7=b0.#s()
+      b0
+      ))).#leftrightleft(that:opNorm0)
+    )
+  Void unused2=acc := (
+    Library opNorm1=acc
+    cmp.close().#leftrightleft(that:opNorm1)
+    )
+  acc
+  )}}
+Decorator: {
+mut method 
+mut This2.Composers.Libs #inner() 
+read method 
+read This2.Composers.Libs inner() 
+class method 
+mut This0 #apply(mut This2.Composers.Libs inner) 
+method 
+Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit (
+  mut This1 cmp=This1.#apply(libs:this.inner(), lib0:that)
+  Void unused=cmp.fillMaps()
+  var Library acc=that
+  Void unused0=(
+    lent This2.Composers.Libs.IteratorVal li=this.inner().reverse().vals()
+    (
+      mut This2.Composers.RenameMethods.IteratorVar mi=cmp.openMaps().#reverse().#vals()
+      (
+        Void unused1=loop (
+          Void unused2=li.#next()
+          
+          catch exception Void catched1 (
+            Void unused3=(
+              Void unused6=mi.#next()
+              
+              catch exception Void catched2 void
+              
+              void
+              )
+            Void unused4=(
+              Void unused7=li.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            Void unused5=(
+              Void unused8=mi.#checkEnd()
+              
+              catch exception Void catched4 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (
+            Void unused9=mi.#next()
+            
+            catch exception Void catched6 (
+              Void unused10=(
+                Void unused12=li.#checkEnd()
+                
+                catch exception Void catched7 void
+                
+                void
+                )
+              Void unused11=(
+                Void unused13=mi.#checkEnd()
+                
+                catch exception Void catched8 void
+                
+                void
+                )
+              exception void
+              )
+            
+            acc := This2.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc)
+            )
+          )
+        
+        catch exception Void catched10 void
+        
+        void
+        )
+      )
+    )
+  cmp.close().#leftrightleft(that:acc)
+  )}
+Patcher: {
+mut method 
+This2.Path #patch() 
+read method 
+This2.Path patch() 
+class method 
+mut This0 #apply(This2.Path patch) 
+method 
+Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit (
+  mut This1 cmp=This1.#apply(top:that, fix:this.patch())
+  Void unused=cmp.fillMapsPatch(top:This2.Location.Lib.#apply(that:that), fix:this.patch())
+  var Library acc=that
+  Void unused0=acc := (
+    Library opNorm=acc
+    cmp.open(that:This2.Size.#from(builder:(
+      capsule This2.S.SBuilder b=This2.Size.#builder()
+      Void unused3=b.#0()
+      b
+      ))).#leftrightleft(that:opNorm)
+    )
+  Void unused1=acc := (
+    Library opNorm0=acc
+    This2.Refactor2.rename(path:this.patch(), into:This2.Refactor2.#default#rename(into:void).#from(builder:(
+      capsule This2.S.SBuilder b0=This2.Refactor2.#default#rename(into:void).#builder()
+      Void unused4=b0.#T()
+      Void unused5=b0.#h()
+      Void unused6=b0.#i()
+      Void unused7=b0.#s()
+      b0
+      ))).#leftrightleft(that:opNorm0)
+    )
+  Void unused2=acc := (
+    Library opNorm1=acc
+    cmp.close().#leftrightleft(that:opNorm1)
+    )
+  acc
+  )}}
+Parsable: {
+class method 
+Library #leftrightleft(Library that) exception This0.Fail (
+  Void unused=(
+    Void unused0=return This1.Refactor2.compose(that:that, and: {
+    class method /* if you do not implement it, it is a constructor?
+may become an interface Concept.Parsable method?
+*/This0 fromS(This2.Concept.ToS that) 
+    class method 
+    This0 #from(This2.S.SBuilder builder) This0.fromS(that:This2.S.#from(binaryRepr:builder.#binaryRepr()))
+    class method 
+    mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()})
+    
+    catch exception This1.Refactor2.Fail catched exception This0.Fail.#from(builder:(
+      capsule This1.S.SBuilder b=This0.Fail.#builder()
+      Void unused1=b.#P()
+      Void unused2=b.#a()
+      Void unused3=b.#r()
+      Void unused4=b.#s()
+      Void unused5=b.#a()
+      Void unused6=b.#b()
+      Void unused7=b.#l()
+      Void unused8=b.#e()
+      b
+      )).#apply(that:catched)
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Fail: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.S kind() this.readableName()
+refine read method 
+This2.S text() this._text()
+refine read method 
+This2.Message.Opt responseOf() this.cause()
+refine read method 
+This2.Bool equals(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.#equalequal(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This2.S toS() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
+        )
+      )
+    var This2.S res=This0.kind()
+    Void unused1=(
+      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b=This2.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          ))))
+        
+        (res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b1=This2.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b2=This2.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          ))))))))
+        )
+      )
+    Void unused2=return (
+      This2.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This2.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This2.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+refine read method 
+class This2.Message class() This0
+class method 
+This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+class method 
+This0 #apply(This2.S text, This2.Message cause) (//next part could become a trait on its own (but S must keep its version)
+This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
+class method 
+mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
+class method 
+This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+  capsule This2.S.SBuilder b=This2.S.#builder()
+  b
+  )))
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+method 
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}}
+Url: {implements This1.Concept.ToS
+read method 
+This1.S inner() 
+class method 
+This0 #apply(This1.S inner) 
+refine read method 
+This1.S toS() this.inner()
+method 
+Library #binaryRepr() this.inner().#binaryRepr()
+class method /* if you do not implement it, it is a constructor?
+may become an interface Concept.Parsable method?
+*/This0 fromS(This1.Concept.ToS that) This0.#apply(inner:that.toS())
+class method 
+This0 #from(This1.S.SBuilder builder) This0.fromS(that:This1.S.#from(binaryRepr:builder.#binaryRepr()))
+class method 
+mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()}
+DeployTowel: {
+mut method 
+This1.Url #fileName() 
+read method 
+This1.Url fileName() 
+class method 
+This0 #apply(This1.Url fileName) 
+method 
+Library #leftrightleft(Library that) (
+  Void unused=use This0.SafeOperatorsAccess check deployCode(that:that, url:this.fileName().#binaryRepr()) error  {/*fileDebug*/}
+  This1.ExitCode.normal()
+  )
+SafeOperatorsAccess:/*@_private
+*/ {/*@plugin
+L42.is/connected/withSafeOperators
+*/}}}
