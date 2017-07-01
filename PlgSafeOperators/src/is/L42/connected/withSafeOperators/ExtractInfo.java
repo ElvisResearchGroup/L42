@@ -9,6 +9,9 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.Util.CsMx;
+import ast.Util.CsMxMx;
+import ast.Util.CsPath;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
@@ -32,7 +35,7 @@ import platformSpecific.javaTranslation.Resources;
 import tools.Map;
 
 public class ExtractInfo {
-  static class IsUsed extends CloneWithPath{
+  static public class IsUsed extends CloneWithPath{
     Path target;IsUsed(Path target){
       assert target.outerNumber()==0:"only for used internal paths";
       this.target=target;
@@ -259,13 +262,13 @@ public class ExtractInfo {
       return false;}
     return true;
   }
-  static List<PathMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<Ast.C> path) {
-    List<PathMx> result=new ArrayList<>();
+  public static List<CsMxMx> collectPrivateMethodsOfPublicPaths(ClassB cb, List<Ast.C> path) {
+    List<CsMxMx> result=new ArrayList<>();
     cb=cb.getClassB(path);
     auxCollectPrivateMethodsOfPublicPaths(cb,result,path);
     return result;
   }
-  private static void auxCollectPrivateMethodsOfPublicPaths(ClassB cb,List<PathMx> accumulator, List<Ast.C> prefix) {
+  private static void auxCollectPrivateMethodsOfPublicPaths(ClassB cb,List<CsMxMx> accumulator, List<Ast.C> prefix) {
     for(Member m:cb.getMs()){m.match(
       nc->{
         if(nc.getName().isUnique()){return null;}
@@ -276,23 +279,23 @@ public class ExtractInfo {
       },mi->null,
       mt->{
         if (!mt.getMs().isUnique()){return null;}
-        accumulator.add(new PathMx(Path.outer(0,prefix),mt.getMs()));
+        accumulator.add(new CsMxMx(prefix,false,mt.getMs(),mt.getMs()));
         return null;
       });}
   }
-  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb,List<Path> accumulator, List<Ast.C> prefix, boolean collectAll) {
+  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb,List<CsPath> accumulator, List<Ast.C> prefix, boolean collectAll) {
     for(Member m:cb.getMs()){m.match(
       nc->{
         List<Ast.C> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
         boolean newCollectAll=collectAll || nc.getName().isUnique();
         auxCollectPrivatePathsAndSubpaths((ClassB)nc.getInner(),accumulator,newPrefix,newCollectAll);
-        if(newCollectAll){accumulator.add(Path.outer(0,newPrefix));}
+        if(newCollectAll){accumulator.add(new CsPath(newPrefix,Path.Any()));}
         return null;
       },mi->null, mt->null);}
   }
-  static List<Path> collectPrivatePathsAndSubpaths(ClassB cb, List<Ast.C> path) {
-    List<Path> result=new ArrayList<>();
+  public static List<CsPath> collectPrivatePathsAndSubpaths(ClassB cb, List<Ast.C> path) {
+    List<CsPath> result=new ArrayList<>();
     cb=cb.getClassB(path);
     auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
     return result;

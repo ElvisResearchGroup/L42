@@ -1,4 +1,4 @@
-package is.L42.connected.withSafeOperators;
+package is.L42.connected.withSafeOperators.refactor;
 
 import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;
@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 import helpers.TestHelper;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PrivacyCoupuled;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
 import is.L42.connected.withSafeOperators.refactor.ToAbstract;
 
@@ -136,21 +137,21 @@ public static class TestAbstractClass {//add more test for error cases
     {lineNumber(),//
       "{B:{ method Void m() void}}","B","{B:{ method Void m()}}",false
   },{lineNumber(),//
-    "{B:{ method //@private\n Void m() void}}","B","{B:{}}",false
+    "{B:{ method Void m_$_1() void}}","B","{B:{}}",false
   },{lineNumber(),//
     "{B:{ method Void m(Any x) void}}","B","{B:{ method Void m(Any x)}}",false
   },{lineNumber(),//
     "{ method Void m(Any x) void}","This0","{ method Void m(Any x)}",false
   },{lineNumber(),//
-    "{B:{ method //@private\n Void m() void method Void n() void}}","B","{B:{ method Void n()}}",false
+    "{B:{ method Void m_$_2() void method Void n() void}}","B","{B:{ method Void n()}}",false
   },{lineNumber(),//
-    "{ method //@private\n Void m(Any x) void}","This0","{}",false
+    "{ method Void m_$_1(Any x) void}","This0","{}",false
   },{lineNumber(),//
     "{C:{B:{ method Void m(Any x) void}}}","C.B","{C:{B:{ method Void m(Any x)}}}",false
   },{lineNumber(),//
-    "{C:{B:{ method //@private\n  Void m(Any x) void}}}","C.B","{C:{B:{}}}",false
+    "{C:{B:{ method  Void m_$_1(Any x) void}}}","C.B","{C:{B:{}}}",false
   },{lineNumber(),//
-    "{C:{B:{ method Void m(Any x) void  method //@private\nVoid foo() void }}}",
+    "{C:{B:{ method Void m(Any x) void  method Void foo_$_1() void }}}",
 	  "C.B",
 	  "{C:{B:{ method Void m(Any x)}}}",
 	  false
@@ -160,24 +161,24 @@ public static class TestAbstractClass {//add more test for error cases
   },{lineNumber(),//
     "{B:{interface method Void m() void}}","B","{B:{interface method Void m()}}",false
   },{lineNumber(),//
-    "{C:{B:{ A://@private\n{} }}}","C","{C:{B:{}}}",false
+    "{C:{B:{ A_$_1:{} }}}","C","{C:{B:{}}}",false
   },{lineNumber(),//
-    "{C:{B:{ A://@private\n{} }}}","C.B","{C:{B:{}}}",false
+    "{C:{B:{ A_$_1:{} }}}","C.B","{C:{B:{}}}",false
   },{lineNumber(),//
-    "{C:{B://@private\n{}}}","C","{C:{}}",false
+    "{C:{B_$_1:{}}}","C","{C:{}}",false
   },{lineNumber(),//
-    "{C:{B://@private\n{} D:{}}}","C","{C:{D:{}}}",false
+    "{C:{B_$_1:{} D:{}}}","C","{C:{D:{}}}",false
   },{lineNumber(),//
-    "{C:{B://@private\n{} D:{E://@private\n{} }}}","C.D","{C:{B://@private\n{} D:{}}}",false
+    "{C:{B_$_1:{} D:{E_$_2:{} }}}","C.D","{C:{B_$_1:{} D:{}}}",false
   },{lineNumber(),//
-    "{C:{ method //@private\n Void m() void D:{E://@private\n{} }}}",
+    "{C:{ method  Void m_$_1() void D:{E_$_2:{} }}}",
 	  "C.D",
-	  "{C:{ method //@private\n Void m() void D:{}}}",
+	  "{C:{ method Void m_$_1() void D:{}}}",
 	  false
   },{lineNumber(),//
-    "{C:{ method //@private\n Void m() void D:{method //@private\n Void m() void}}}",
+    "{C:{ method Void m_$_1() void D:{method Void m_$_2() void}}}",
 	  "C.D",
-	  "{C:{ method //@private\n Void m() void D:{}}}",
+	  "{C:{ method Void m_$_1() void D:{}}}",
 	  false
   },{lineNumber(),//
     "{C:{ method Void m() D.m() D:{ class method Void m() void}}}",
@@ -190,68 +191,57 @@ public static class TestAbstractClass {//add more test for error cases
     "{C:{ method Void m() A.D.m() A:{D:{ class method Void m() }}}}",
     false
   },{lineNumber(),//
-    "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() void class method//@private\n Void k() void}}}",
+    "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() void class method Void k_$_1() void}}}",
     "A.D",
     "{C:{ method Void m() A.D.m()} A:{D:{ class method Void m() }}}",
     false
   },{lineNumber(),//
-    "{C:{ B://@private\n{}}}","C.B",
-    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
-    "Path:{//@.C.B\n}"+
-    "Selector:{//@stringU\n//\n}"+
-    "InvalidKind:{//@stringU\n//PrivatePath\n}"+
-    "IsPrivate:{//@stringU\n//true\n}}",
+    "{C:{ B_$_1:{}}}","C.B",
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",
 	  true
 
   },{lineNumber(),//
     "{C:{}}","C.B",
-    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
-    "Path:{//@.C.B\n}"+
-    "Selector:{//@stringU\n//\n}"+
-    "InvalidKind:{//@stringU\n//NonExistentPath\n}"+
-    "IsPrivate:{//@stringU\n//false\n}}",
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",
 	  true
   },{lineNumber(),//
     "{C:{}}","B",
-    "{Kind:{//@stringU\n//MemberUnavailable\n}"+
-    "Path:{//@.B\n}"+
-    "Selector:{//@stringU\n//\n}"+
-    "InvalidKind:{//@stringU\n//NonExistentPath\n}"+
-    "IsPrivate:{//@stringU\n//false\n}}",
+    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",
 	  true
 
   },{lineNumber(),//
-    "{C:{B:{ method Void m(Any x) void  method //@private\nVoid foo() void } D:{ method Void bar() B.foo() }}}",
+    "{C:{B:{ method Void m(Any x) void  method Void foo_$_1() void } D:{ method Void bar() B.foo_$_1() }}}",
 	  "C.B",
-	  "{Kind:{//@stringU\n//PrivacyCoupuled\n}"+
-	  "CoupuledPath:{//@stringU\n//[]\n}"+
-	  "CoupuledMethods:{//@stringU\n//"
+	  "PrivacyCoupuled:\n"+
+      "coupuled paths:[]\n"+
+      "coupuled selectors:[C.B::foo_$_1()]"
 	  //+ "[This2.C.B.foo()]\n}}",the user or the used??
-	  +"[This0.C.D::bar()]\n}}",
-	  true
+	  //+"[This0.C.D::bar()]\n}}",
+	 , true
   },{lineNumber(),//
-    "{C:{B://@private\n{} D:{ method B bar() void }}}",
+    "{C:{B_$_1:{} D:{ method B_$_1 bar() void }}}",
 	  "C",
-	  "{Kind:{//@stringU\n//PrivacyCoupuled\n}"+
-	   "CoupuledPath:{//@stringU\n//[This0.C.B]\n}"+
-	   "CoupuledMethods:{//@stringU\n//[]\n}}",
+	  "PrivacyCoupuled:\n"+
+      "coupuled paths:[[C, B_$_1]]\n"+ 
+      "coupuled selectors:[]",
 	   true
 }});}
-@Test  public void test() {
+@Test  public void test() throws PathUnfit, PrivacyCoupuled {
   TestHelper.configureForTest();
   ClassB cb1=getClassB(false,null,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);
-  ClassB expected=getClassB(false,null,_expected);
   if(!isError){
-    ClassB res=Abstract.toAbstract(cb1, path);
+    ClassB expected=getClassB(false,null,_expected);
+    ClassB res=AbstractClass.toAbstract(Program.emptyLibraryProgram(),cb1, path);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{Abstract.toAbstract(cb1, path);fail("error expected");}
-    catch(Resources.Error err){
-      ClassB res=(ClassB)err.unbox;
-      TestHelper.assertEqualExp(expected,res);
-    }
+    try{
+      AbstractClass.toAbstract(Program.emptyLibraryProgram(),cb1, path);
+      fail("error expected");}
+    catch(PathUnfit | PrivacyCoupuled err){
+      assertEquals(err.toString(),_expected);
+      }
   }
 }
 }

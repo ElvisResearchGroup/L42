@@ -32,10 +32,13 @@ class PathRename extends CloneVisitorWithProgram{
       }    
     return that;
     }
-  Path _processCsPath(CsPath cp,Path that){
+  protected Path _processCsPath(CsPath cp,Path that){
     Path srcHere=Path.outer(levels,cp.getCs());
     List<Ast.C> tail=p._equivSubPath(srcHere,that);
     if(tail==null){return null;}
+    return computeNonNullRes(cp, tail);
+    }
+  protected Path computeNonNullRes(CsPath cp, List<Ast.C> tail) {
     if(cp.getPath().isPrimitive()){return cp.getPath();}
     int newOuter=cp.getPath().outerNumber()+levels;
     if(tail.isEmpty()){return cp.getPath().setNewOuter(newOuter);}

@@ -103,12 +103,12 @@ public class Plugin implements PluginType{
         throw new Error(e);
         }
       }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       return Abstract.toAbstract(that,path);
-      }
+      }*/
 
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MaddDocumentation£xthat£xpath£xdoc(Object _that,Object _path,Object _doc){
@@ -279,7 +279,7 @@ public class Plugin implements PluginType{
       return LiftValue.liftValue(val,  selector, lib);
     }
 
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MaddKs£xthat£xpath£xfields£xmutK£xlentK£xreadK£ximmK£xisFwd(
         Object _that,Object _path, Object _fields, Object _mutK,Object _lentK,Object _readK,Object _immK,Object _fwd
         ){
@@ -292,7 +292,7 @@ public class Plugin implements PluginType{
       String immK=ensureExtractStringU(_immK);
       boolean fwd=ensureExtractInt32(_fwd)==0?false:true;
       return MakeK.makeKs(that, path, Arrays.asList(fieldNames), mutK, lentK, readK, immK, fwd);
-    }
+    }*/
 //--------------------------
    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideMethod£xthat£xpath£xsrc(Object _that,Object _path,Object _src){

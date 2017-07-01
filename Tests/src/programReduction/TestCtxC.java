@@ -23,7 +23,7 @@ import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import facade.Parser;
 import helpers.TestHelper;
-import is.L42.connected.withSafeOperators.Abstract;
+import is.L42.connected.withSafeOperators.refactor.AbstractClass;
 import platformSpecific.javaTranslation.Resources;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;

@@ -17,9 +17,11 @@ import ast.PathAux;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
+import ast.Util.CsMx;
 import ast.Util.CsPath;
 import ast.Util.PathPath;
 import ast.Util.CsSPath;
+import ast.Util.PathMx;
 /* fluent setter for errors, a good idea to avoid duplicating constructors, but
  * the main issue is that we need to support enriching the message while try-catching  
  */
@@ -186,7 +188,19 @@ public class RefactorErrors{
   
   @SuppressWarnings("serial") public static class 
   PrivacyCoupuled extends MutMsgExc implements
-    FluentSetter<PrivacyCoupuled>{}
+    FluentSetter<PrivacyCoupuled>{
+    List<List<Ast.C>> coupuledPaths;
+    List<CsMx> coupuledMethods;
+    public PrivacyCoupuled(List<List<Ast.C>> coupuledPaths, List<CsMx> coupuledMethods) {
+      this.coupuledPaths=coupuledPaths;
+      this.coupuledMethods=coupuledMethods;
+      }
+    public String toString(){
+       return "PrivacyCoupuled:\n"+
+       "coupuled paths:"+coupuledPaths+"\n"+
+       "coupuled selectors:"+coupuledMethods;
+      }
+    }
   
   @SuppressWarnings("serial") public static class 
   IncoherentMapping extends MutMsgExc implements

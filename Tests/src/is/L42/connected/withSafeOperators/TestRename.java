@@ -5,11 +5,11 @@ import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.*;
 
 import helpers.TestHelper;
-import is.L42.connected.withSafeOperators.Abstract.UserForMethodResult;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
+import is.L42.connected.withSafeOperators.refactor.AbstractClass;
 import is.L42.connected.withSafeOperators.refactor.RenameMethods;
 
 import java.util.Arrays;
@@ -87,51 +87,6 @@ public class TestRename {
           fail("error expected");
         } catch (PathUnfit|SelectorUnfit|MethodClash|ClassUnfit err) {
           assertEquals(_expected, err.getClass().getName());
-        }
-      }
-    }
-  }
-  @RunWith(Parameterized.class) public static class TestUserForMethod{//add more test for error cases
-    @Parameter(0) public int _lineNumber;
-    @Parameter(1) public String _cb1;
-    @Parameter(2) public String _path;
-    @Parameter(3) public String _ms1;
-    @Parameter(4) public String expected1;
-    @Parameter(5) public String expected2;
-    @Parameter(6) public boolean isError;
-
-    @Parameters(name = "{index}: line {0}")
-    public static List<Object[]> createData() {
-      return Arrays.asList(new Object[][] { { //
-          lineNumber(),"{B:{ method Void m() void}}", "B", "m()", "[]","[]", false //
-          }, { //
-            lineNumber(),"{ method Void m()  this.m()}", "This0", "m()",
-            "[]","[m()]", false //
-          }, { //
-            lineNumber(),"{ B:{method Void m()  this.m()} method Void mm(B b) b.m()}", "B", "m()",
-            "[This0::mm(b)]","[m()]", false //
-          }, { //
-            lineNumber(),"{ B:{method Void m()  this.m() method B::m() k() void} method Void mm(B b) b.m()}", "B", "m()",
-            "[This0::mm(b)]","[m()]", false //
-          } });
-    }
-
-    @Test public void test() {
-      TestHelper.configureForTest();
-      ClassB cb1 = getClassB(true,null,_cb1);
-      List<Ast.C> path=TestHelper.cs(_path);
-      MethodSelector ms1 = MethodSelector.parse(_ms1);
-      if (!isError) {
-        UserForMethodResult res = Abstract.userForMethod(Program.emptyLibraryProgram(), cb1, path, ms1,true);
-        Assert.assertEquals(expected1, res.asClient.toString());
-        Assert.assertEquals(expected2, res.asThis.toString());
-      } else {
-        try {
-          Abstract.userForMethod(Program.emptyLibraryProgram(), cb1, path, ms1,true);
-          fail("error expected");
-        } catch (Resources.Error err) {
-          ClassB res = (ClassB) err.unbox;
-          TestHelper.assertEqualExp(new ExpCore._void(), res);
         }
       }
     }

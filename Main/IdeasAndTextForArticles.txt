@@ -1,3 +1,65 @@
+Metaprogramming in 42:
+Declaratively generate imperative
+behavior by functional reasoning.
+
+Imperative programming asks you to write down the
+detailed computational step your machine should perform.
+This allowed/required the programmer to reason about their
+programs by keeping in mind a "toy implementation" of their
+hardware.
+In object oriented this change:
+-Subtyping: A dynamically dispatched method invocation
+give us no certainty of the detailed computation steps
+that are going to be performed, and 
+allows/require programmers to reason in function of the
+abstract contract of the method: that is 
+the desired properties of the result in function of the arguments.
+The programmers are still in control of the detailed behavior,
+but such control is delegated to the programmer that
+instantiated such object.
+-Subclassing: Under this lens, inheritance 
+represent a similar loss/transfer of control:
+The programmer do not know 
+the full set of methods a class offers:
+this depends of the methods offered by the base class,
+and if in a future release the heir is enriched with
+more methods, such methods will be injected also in
+the heir.
+
+This combination allows a limited declarative programming style.
+For example  class Foo extends Button{}
+Declare Foos to be buttons in a way that
+is parametric on what buttons are concretely.
+The programmer of Foo just have to specify little bits
+of behaviour to personalize the kind of buttons.
+The concrete code is then automatically derived 
+by composing it with the existing code of Button.
+
+You can see this as telling to Button some suggestions
+on what code to generate when creating the class Foo.
+
+However, this is very limited:
+since the behaviour of inheritance 
+is set in stone, Button is not very active in deciding
+about Foo.
+Under this lens you can see many approaches
+(traits, mixins, generics, family polymorphis)
+as ways to enrich what Button can do to generate the
+required Foo from the hints provided by the programmer.
+
+Compile-time metaprogramming aims to give Buttons
+a mind of their own, so that they can perform arbitrarly
+complicated steps while generating their heirs.
+
+We show here how just using rename/hide and sum
+is possible to generate arbitrary behavior
+using inductive functional reasoning.
+
+ 
+
+
+
+
 Alpha rename must be possible to let libraries add features?
 consider nominal or a dictionary variation of structural.
 company A and B do not talk
