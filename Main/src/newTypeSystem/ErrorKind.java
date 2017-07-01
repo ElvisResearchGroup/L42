@@ -1,7 +1,7 @@
 package newTypeSystem;
 
 public enum ErrorKind {
-  SelectorNotFound(false),
+  //SelectorNotFound(false),
   LibraryNotCoherent(false),
   BindingUnavailable(true),
   NotSubtypeClass(false),

@@ -37,14 +37,4 @@ class method
       use  This
       check liftValue(that,selector:selector.#binaryRepr(), lib:lib)
       error System.Guard.PluginFailure"SafeOperators.liftValue(that,selector,lib)"
-
-  class method
-  Library addKs(Library that, Path path, S fields, S mutK, S lentK, S readK, S immK, Bool isFwd) (
-      Library fwdRepr={if isFwd (return 1Size.#binaryRepr()) return 0Size.#binaryRepr()}
-      use  This
-      check addKs(that,path:path.#binaryRepr(), fields:fields.#binaryRepr(),
-         mutK:mutK.#binaryRepr(), lentK:lentK.#binaryRepr(), readK:readK.#binaryRepr(), immK:immK.#binaryRepr(),
-         isFwd:fwdRepr)
-      error System.Guard.PluginFailure"SafeOperators.addKs(that,path,fields,mutK,lentK,readK,immK,isFwd)"
-      )
   }

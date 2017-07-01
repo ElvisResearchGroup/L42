@@ -238,8 +238,8 @@ public void test9d(){tp("{"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test//(expected=ErrorMessage.MethodNotPresent.class)
-public void test10(){tp(ErrorKind.SelectorNotFound,"{"
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void test10(){tp("{"
     ," D: {class method Library id(Library that) (that)}"
     ," C: D.id({  method Void foo(D x) ( x.foo(x))}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
@@ -330,14 +330,14 @@ public void testDeepTyping1(){tp(ErrorKind.NotSubtypeClass,"{"
     ," D: { class method Library wrong()  { A:{method Void v(Any a) a } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
-@Test//(expected=ErrorMessage.MethodNotPresent.class)
-public void testDeepTyping2(){tp(ErrorKind.SelectorNotFound,"{"
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping2(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test//(expected=ErrorMessage.MethodNotPresent.class)
-public void testDeepTyping3(){tp(ErrorKind.SelectorNotFound,"{"
+@Test(expected=ErrorMessage.MethodNotPresent.class)
+public void testDeepTyping3(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Void ignore=D.wrong(), {//@exitStatus\n//0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
     ,"}");}

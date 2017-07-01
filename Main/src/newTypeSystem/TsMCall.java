@@ -9,10 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
+
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import ast.Ast.Path;
 import ast.ExpCore;
 import ast.Ast.Type;
@@ -33,17 +36,15 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   }
 
   default TOut tsMCall(TIn in, MCall s) {
-    Type _rec=GuessTypeCore._of(in.p,in, s.getInner());
-    if (_rec==null){
-      return new TErr(in,"",null,ErrorKind.SelectorNotFound);
-      }
+    Type _rec=GuessTypeCore._of(in.p,in, s.getInner(),true);
+    assert _rec!=null;
     Path rec=_rec.getPath();
     if(rec.isPrimitive()){
-      return new TErr(in,"MethodCall on primitive type",null,ErrorKind.SelectorNotFound);
+      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP());
       }
     MethodType mDec=AlternativeMethodTypes._mtDeclared(in.p,rec,s.getS());
     if (mDec==null){
-      return new TErr(in,"",null,ErrorKind.SelectorNotFound);
+      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP());
       }
     Type ret=mDec.getReturnType();
     ErrorKind kind = TypeSystem.subtype(in.p, ret.getPath(),in.expected.getPath());

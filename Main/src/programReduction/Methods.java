@@ -13,6 +13,7 @@ import java.util.Set;
 import ast.Ast;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
+import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -37,12 +38,19 @@ public abstract class Methods implements Program{
     //It would be very hard to do it and keep norm "stable"
     return res;
     }
-  public static List<Ast.Type> collect(Program p,List<Ast.Type> p0ps){
-    List<Ast.Type> res = collect(p,p0ps,new ArrayList<>());
-    return res;
+  public static List<Type> collect(Program p,List<Type> p0ps){
+    List<Type> res = collect(p,p0ps,new ArrayList<>());
+    List<Type> res2=new ArrayList<>();
+    for(Type t:res)out:{
+      for(Type t2:res2){
+        if(p.equiv(t.getPath(),t2.getPath())){break out;}
+        }
+      res2.add(t);
+      }
+    return res2;
     //TODO: do we need somehow to remove duplicates?
     }
-  static List<Ast.Type>  collect(Program p,List<Ast.Type> p0ps,List<Ast.Path> visited){
+  static List<Type>  collect(Program p,List<Type> p0ps,List<Path> visited){
     if( p0ps.isEmpty()){return p0ps;}
     Ast.Type p0=p0ps.get(0);
     List<Ast.Type> ps=p0ps.subList(1,p0ps.size());

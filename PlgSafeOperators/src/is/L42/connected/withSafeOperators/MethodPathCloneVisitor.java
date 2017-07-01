@@ -124,7 +124,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
             me->me.getKey(),
             me->new java.util.AbstractMap.SimpleEntry<>(false,me.getValue())
             )));
-      Type tGuessed=newTypeSystem.GuessTypeCore._of(in.p,in,s.getInner());
+      Type tGuessed=newTypeSystem.GuessTypeCore._of(in.p,in,s.getInner(),false);
       if(tGuessed==null){return super.visit(s);}
       guessed=tGuessed.getPath();
       assert guessed!=null;

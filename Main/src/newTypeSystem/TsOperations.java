@@ -7,6 +7,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Type;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.SignalKind;
 import ast.ErrorMessage;
 import ast.ExpCore;
@@ -71,8 +72,8 @@ public interface TsOperations extends TypeSystem{
       }       
     List<Type> lt;try{lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);}
     catch(UsingInfo.NonExistantMethod nem){
-      return new TErr(in,"PluginSelector missing",null,ErrorKind.SelectorNotFound);
-      }
+      throw new ErrorMessage.PluginMethodUndefined(null,s,null,Position.noInfo);  
+    }
     assert s.getEs().size()==lt.size()-1;
     ErrorKind k=TypeSystem.subtype(in.p,lt.get(0),in.expected);
     if(k!=null){return new TErr(in,"",lt.get(0),k);}
@@ -99,15 +100,8 @@ public interface TsOperations extends TypeSystem{
       //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
       //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
       //  D|- e~>  e' :  T3 <=T2|Ts;Ps
-      Type T1=GuessTypeCore._of(in.p,in, s.getInner());
-      if(T1==null){//how to give a good error msg?
-        //if(s.getKind()!=SignalKind.Return){
-          TOut expErr=type(in.withE(s.getInner(), Path.Any().toImmNT().withMdf(Mdf.Readable)));
-          assert !expErr.isOk();
-          return expErr.toError();
-        //  }
-        //assert false:in;
-      }
+      Type T1=GuessTypeCore._of(in.p,in, s.getInner(),true);
+      assert T1!=null;
       Type T2;      
       if(s.getKind()!=SignalKind.Return){
         T2=T1.getPath().toImmNT();

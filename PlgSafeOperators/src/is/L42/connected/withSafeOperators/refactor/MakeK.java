@@ -1,5 +1,4 @@
 package is.L42.connected.withSafeOperators.refactor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +38,7 @@ public class MakeK {
 
   public static ClassB makeK(ClassB that,List<Ast.C> path,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
-    if(!MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
+    if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
     ClassB lPath=that.getClassB(path);
     List<String> fields=new ArrayList<>();
     for(MethodWithType mwt:lPath.mwts()){
@@ -100,7 +99,7 @@ static private MethodType fwdK(MethodType proto) {
 }
 
    private static MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
-    MethodSelector ms=MethodSelector.of("",fieldNames);
+    MethodSelector ms=MethodSelector.of("#apply",fieldNames);
     Type resT=Type.mutThis0;
     MethodType mt=new MethodType(false,Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);

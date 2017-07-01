@@ -3,7 +3,7 @@ GetMyName:{
   class method
   This2.S (class Any that)
     Location.Type.RefTo.Binded(classObj:that)
-      .toS().withoutLeft(val:S"This0.")
+      .toS().withoutLeft(val:This2.S"This0.")
   }
 Message:{Opt:This2.Opt(This2.Message)}
 
@@ -20,88 +20,13 @@ Size:{
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
-/*
-StringSplit:{
-  class method //will be fixed in adam2
-  Strings splitOn(S that,S chars)
-    that.splitOn(chars:chars)
-S:{
-  implements Concept.ToS
-  method
-  This2.Size size()
-  method
-  This2.S (This2.Size start, This2.Size end)
-  method
-  This2.S (This2.Size that)
-  method 
-  This2.Bool contains(This2.S that)
-  
-  Skip: {interface 
-    mut method This3.Size (S that, This3.Size index)
-    //positive to keep and jump, negative to skip and jump,
-    //never zero
-    }
-  method Strings split(capsule Skip skipper){
-    res=Strings.empty()
-    mut Skip mskip = skipper
-    var This2.Size index= 0This2.Size
-    while index< this.size() (
-      skip=mskip(this,index:index)
-      if skip>0This2.Size (
-        res.add(right:this(start:index, end:index+skip))
-        index+=skip
-        )
-      else if skip<0This2.Size (
-        index-=skip
-        )
-      else (
-        error This2.Guard.Operation
-        "String.split(): skipper returned 0 on: '"[this]"' - "[index]""
-        )
-      )
-    if index != this.size() (
-      error This2.Guard.Operation
-      "String.split(): skipper indexes summed to "[index]" on '"[this]"'"
-      )
-    return res
-    }
-  
-  SkipChars: K<><{ implements Skip 
-    This3.S chars
-    
-    method ( that, index) {
-      This3.Size negSkip={
-        with r in Range(that.size()-index) (
-          if !this.chars().contains(that(index+r)) (return r)
-          )
-        //reached the end of the string
-        return that.size()-index
-        }
-      if negSkip>0This3.Size (return 0This3.Size-negSkip)
-      //X[
-      //  negSkip==0This3.Size; 
-      //  !this.chars().contains(that(index))
-      //  ]
-      with r in Range(that.size()-index) (
-        if this.chars().contains(that(index+r)) (return r)
-        )
-      //reached the end of the string
-      return that.size()-index
-      }
-    }
-  method
-  Strings splitOn(This2.S chars) (
-    this.split(skipper:SkipChars(chars:chars))
-//  SubStringNotPresent:This2.Message.$<><{ implements Guard}
-//  class method Void subStringNotPresent(This2.S string, This2.S subString)
-//    error SubStringNotPresent"string["[string]"] do not contains ["[subString]""
-    )
+
+S:{implements Concept.ToS
+  method Strings splitOn(This2.S chars)
+    StringSplit.splitOn(this.toS(),chars:chars)
   }
-StringSplit:{
-  class method //will be fixed in adam2
-  Strings splitOn(S that,This2.S chars)
-    that.splitOn(chars:chars)//TODO: flush SkipChars etc in StringSplit
-}
+
+
 Selector:{
   ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method
@@ -118,60 +43,44 @@ Path:{
     ParseFail"The provided string is not a valid internalized path: "[that]""(cause)
   }
 
-  Debug:{
-    class method
-    Void (Library lib)
-      use Alu
-        check stringDebug(DeployTowel.binaryReprFrom(lib:lib))
-        void
-    }
-  MetaGuard:{interface
-    RecordWrapper:{
-    class method This3.S libToS(Library that) (
-      i=Introspection(lib:that)
-      ncs=i.nestedClasses().vals()
-      This3.S"["[This3.S.nl()]""[with nc in ncs (
-        use[nc.pathFromRoot();This3.S":";nc.doc();This3.S.nl()]
-        )]"]"
+X:{
+  class method mut Tests #seqBuilder() Tests.empty()
+  class method Void #from(Tests seqBuilder) (
+    res=seqBuilder.collapse()
+    if !res.isEmpty() (
+      error This2.X"Observed bug: "[res]""
+      )
+    )
+     
+  Pre:{
+    class method mut Tests #seqBuilder() Tests.empty()
+    class method Void #from(Tests seqBuilder) (
+      res=seqBuilder.collapse()
+      if !res.isEmpty() (
+        error This3.X"Precondition violation: "[res]""
+        )
       )
     }
+  Test: {
+    This3.Bool that, This3.S msg
+    class method This (This3.Bool that, This3.S msg)
+    }
+  Tests: Refactor2.compose(
+    Refactor2.Method[hide:\"#add(that)"]<><Collections.vector(of:Test)
+    and:{ 
+
+    mut method
+    Void #add(This3.Bool that, Concept.ToS msg)
+        this.add(right: Test(that,msg:This3.S""[msg;This3.S.nl()]"number:"[this.size()]" failed") )
+
+    mut method
+    Void #add(This3.Bool that)
+        this.add(right: Test(that,msg:This3.S"Condition number "[this.size()]" failed") )
+
+    read method
+    This3.S collapse() This3.S""[with a in this.vals() (
+      if !a.that() ( use[a.msg(), sep:This3.S.nl()] )
+      )]""
+    })
   }
-  X:{
-   class method mut Tests #seqBuilder() Tests.empty()
-   class method Void #from(Tests seqBuilder) (
-     res=seqBuilder.collapse()
-     if !res.isEmpty() (
-       error This2.X.AssertionFail"Observed bug: "[res]""
-       )
-     )
-     
-   Pre:{
-     class method mut Tests #seqBuilder() Tests.empty()
-     class method Void #from(Tests seqBuilder) (
-       res=seqBuilder.collapse()
-       if !res.isEmpty() (
-         error This3.X.AssertionFail"Precondition violation: "[res]""
-         )
-       )
-     }
-   Test: {(This3.Bool that, This3.S msg)}
-   Tests: Refactor.compose(//do not use Use to save compilation time
-     left:Refactor.Hide.selector(\"#add(that)")<><Collections.vector(of:Test)
-     right:{ 
-
-     mut method
-     Void #add(This3.Bool that, Concept.ToS msg)
-         this.add(right: Test(that,msg:This3.S""[msg;This3.S.nl()]"number:"[this.size()]" failed") )
-
-     mut method
-     Void #add(This3.Bool that)
-         this.add(right: Test(that,msg:This3.S"Condition number "[this.size()]" failed") )
-
-     read method
-     This3.S collapse() This3.S""[with a in this.vals() (
-          if !a.that() ( use[a.msg(), sep:This3.S.nl()] )
-          )]""
-     })
-  }
-*/
 }

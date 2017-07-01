@@ -130,7 +130,8 @@ public class RefactorErrors{
   @SuppressWarnings("serial") public static class 
   PathUnfit extends MutMsgExc implements
     FluentSetter<PathUnfit>{
-    List<ast.Ast.C> path;public PathUnfit(List<ast.Ast.C> path){this.path=path;}
+    List<ast.Ast.C> path;
+    public PathUnfit(List<ast.Ast.C> path){this.path=path;}
     public String path(){return PathAux.as42Path(path);}
     }
   
@@ -171,6 +172,7 @@ public class RefactorErrors{
   //msg-a:src notRedirectable/notRedirectable to interface
   //msg-b:"UnexpectedMembers", "[fun(that)]",
   //msg-c:"UnexpectedImplementedInterfaces", "//[]"
+    public ClassUnfit(){}
     public ClassUnfit msgRedirectTemplate(List<Ast.C> src,Path dest,boolean interf){
       return this.msg("Redirecting "+PathAux.as42Path(src)+" to "+dest+":\n"+
         (interf?"not redirectable to interface":"not redirectable"));
@@ -217,7 +219,11 @@ public class RefactorErrors{
   
   @SuppressWarnings("serial") public static class 
   SubtleSubtypeViolation extends MutMsgExc implements
-    FluentSetter<SubtleSubtypeViolation>{}
+    FluentSetter<SubtleSubtypeViolation>{
+    public String toString(){
+      return "SubtleSubtypeViolation:"+this.mutMsg;
+      }  
+    }
   
   @SuppressWarnings("serial") public static class 
   UnresolvedOverloading extends MutMsgExc implements

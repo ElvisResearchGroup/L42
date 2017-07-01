@@ -344,7 +344,6 @@ import coreVisitors.InjectionOnSugar;
     Path path;
     MethodSelector ms;
     ExpCore.MCall call;
-    List<ClassB> p;
     Position pos;
   }
 

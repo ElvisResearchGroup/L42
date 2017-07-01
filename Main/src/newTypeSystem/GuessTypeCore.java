@@ -13,6 +13,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
@@ -45,7 +46,7 @@ public static interface G{
      public G addGuessing(Program p,List<ExpCore.Block.Dec> ds){
        Map<String, Type> varEnv2=new HashMap<>(varEnv);
        for(Dec d:ds){
-         varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d));
+         varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d,true));
          }
        return of(varEnv2);
        }
@@ -54,12 +55,14 @@ public static interface G{
   }
 G in;
 Program p;
-private GuessTypeCore(Program p,G in) {
+boolean forceError;
+private GuessTypeCore(Program p,G in,boolean forceError) {
   this.p=p;
   this.in=in;
+  this.forceError=forceError;
 }
-public static Type _of(Program p,G in,ExpCore e) {
-  return e.accept(new GuessTypeCore(p,in));
+public static Type _of(Program p,G in,ExpCore e,boolean forceError) {
+  return e.accept(new GuessTypeCore(p,in,forceError));
 }
 @Override
 public Type visit(ExpCore.EPath s) {
@@ -82,7 +85,10 @@ public Type visit(WalkBy s) {
 public Type visit(Using s) {
   try{List<Type> lt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);      
   return lt.get(0);}
-  catch(UsingInfo.NonExistantMethod nem){return null;}
+  catch(UsingInfo.NonExistantMethod nem){
+    if(forceError)throw nem;
+    return null;
+    }
   }
 @Override
 public Type visit(Signal s) {
@@ -94,10 +100,16 @@ public Type visit(MCall s) {
   if(former==null){return null;}
   Path path=former.getPath();
   assert path!=null;
-  if (!path.isCore()){return null;} 
+  if (!path.isCore()){
+    if(!forceError){return null;}
+    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP());
+    } 
   ClassB l=p.extractClassB(path);
   MethodWithType meth = (MethodWithType)l._getMember(s.getS());
-  if(meth==null){return null;}
+  if(meth==null){
+    if(!forceError){return null;}
+    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP());
+    }
   return (Type) From.fromT(meth.getMt().getReturnType(),path);
   
 }
@@ -121,21 +133,21 @@ public static TOutDs guessedDs(Program p, TIn in,List<Dec> toGuess){
 List<Dec> res=new ArrayList<>();//G'
 for(Dec di:toGuess){
   if(di.getT().isPresent()){res.add(di);continue;}
-  Type nti = _guessDecType(p,in, di);
-  if (nti==null){
-    return new TErr(in.withE(di.getInner(), Path.Any().toImmNT()),"",null,ErrorKind.SelectorNotFound);
-    }
+  Type nti = _guessDecType(p,in, di,true);
+  assert nti!=null;
   res.add(di.withT(Optional.of(nti))); 
   }
 return new TOkDs(null,res,null);
 }
-public static Type _guessDecType(Program p,G in, Dec di) {
+public static Type _guessDecType(Program p,G in, Dec di,boolean forceError) {
   if(di.getT().isPresent()){return di.getT().get();}
-  Type nti=GuessTypeCore._of(p,in, di.getInner());
+  Type nti=GuessTypeCore._of(p,in, di.getInner(),forceError);
+  assert nti!=null ||!forceError;
   if(nti==null){return null;}
   if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
   else if(di.isVar() && TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){
-    return null;
+    if(!forceError){return null;}
+    throw Assertions.codeNotReachable("d is var and inferred is fwd");
     }
   return nti;
   }

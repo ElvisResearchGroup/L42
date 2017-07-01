@@ -176,18 +176,20 @@ public class Compose {
       RefactorErrors.SubtleSubtypeViolation err=_checkSubtleSubtypeViolation(p);
       if(err!=null){throw err;}
       }
-    catch(ErrorMessage em){throw new RefactorErrors.SubtleSubtypeViolation();}
+    catch(ErrorMessage em){
+      throw new RefactorErrors.SubtleSubtypeViolation().msg(em.toString());
+      }
     } 
   private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
     ClassB l=p.top();
     List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
     if(!l.getSupertypes().containsAll(ps1)){
-      return new RefactorErrors.SubtleSubtypeViolation();
+      return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+l.getSupertypes()+" does not contains all of "+ps1);
       }
     for(MethodWithType m :p.methods(Path.outer(0))){
       //there must be equivalent in l
       Member mi = l._getMember(m.getMs());
-      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation();}
+      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+" Selector "+m.getMs()+" not found");}
       if(!m.get_inner().isPresent()){continue;}
       //we trust the mt to be the same
       //we trust the e is the same except for nested L, where we use recursion

@@ -70,8 +70,10 @@
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
     } 
 
-//errors ready for other operations
-//PrivacyCoupuled
+  PrivacyCoupuled:ErrorW<><{
+    //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled
+    } 
+
 
 SubtleSubtypeViolation:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
@@ -169,6 +171,33 @@ class Path #default#hide(Void path) Path
 class method
 HideClass hide(Path path)
   HideClass(src:path)
+
+
+PlgAbstractClass:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.AbstractClass
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error X"abtractClass(Library that,Path src)"
+
+  class method
+  Library toAbstract(Library that,Path src)
+  exception  PathUnfit, PrivacyCoupuled
+  }
+
+ToAbstractClass:{
+  Path src
+  class method This (Path src)
+  method Library <><(Library that)
+  exception  PathUnfit, PrivacyCoupuled
+    PlgAbstractClass.toAbstract(that,src:this.src())
+
+  }
+
+class method
+class Path #default#toAbstract(Void path) Path
+class method
+ToAbstractClass toAbstract(Path path)
+  ToAbstractClass(src:path)
 
 
 //------------------------------

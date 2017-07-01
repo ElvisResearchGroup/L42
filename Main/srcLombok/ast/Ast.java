@@ -263,6 +263,7 @@ public interface Ast {
       this.mdf+":"+ts.stream().map(e->e.toString()).collect(Collectors.joining(","))
       +"->"+returnType;
     if (!exceptions.isEmpty()){res=res+" exceptions:"+exceptions.stream().map(e->e.toString()).collect(Collectors.joining(","));}   
+    if(this.refine){res="refine "+res;}
     return res;
     }
  }

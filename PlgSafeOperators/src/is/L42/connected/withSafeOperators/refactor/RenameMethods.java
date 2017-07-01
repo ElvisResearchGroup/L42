@@ -277,7 +277,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
 
   public ExpCore visit(MCall s) {
     MethodSelector ms=s.getS();
-    Type guessed=GuessTypeCore._of(p, g, s.getInner());
+    Type guessed=GuessTypeCore._of(p, g, s.getInner(),false);
     if(guessed==null){return super.visit(s);}
     MethodSelector ms2=visitMS(ms,guessed.getPath());
     if(ms2.equals(ms)){return super.visit(s);}

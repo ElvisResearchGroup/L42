@@ -1,64 +1,71 @@
-{(Path path,Url url)
+{
+Path path,Url url
+class method This (Path path,Url url)
 
 class method Library moveToAbstract(Path that,Library of){
-  return Refactor.RenamePath(
-    Path"PrImpl"++that to:Path"Abstract"++that)<><of
-  error on MetaGuard.NestedClassUnavailable (
-    available=Introspection(lib:of, path:Path"PrImpl").nestedClasses()
-    error on MetaGuard.NestedClassUnavailable
-      X"DeployLibrary2"
-    X"map and library mismatch on "[that]" available paths are "[
-      with av in available.vals() (
-        use[S.nl()++av.pathFromRoot().toS()]
-      )]""
-    )
-  error on MetaGuard
+  return Refactor2.rename(
+    path:\"PrImpl"++that 
+    into:\"Abstract"++that)<><of
+  error on Refactor2.PathUnfit 
+    This.msg(that, of:of)
+  error on Refactor2.Fail
     X"DeployLibrary3"
   }
+class method X.AssertionFail msg(Path that,Library of) (
+  available=Location.Lib(of).nested(path:\"PrImpl").nesteds()
+  error on Refactor2.PathUnfit
+    X"DeployLibrary2"
+  X"map and library mismatch on "[that]" available paths are "[
+    with av in available.vals() (
+      use[S.nl()++av.path().toS()]
+    )]""  
+  )
 
 class method
 Library  exposeAsLibrary(Library that, Path path)
 exception
-    MetaGuard.NestedClassUnavailable,
-    MetaGuard.PrivacyCoupuled {
+    Refactor2.PathUnfit,
+    Refactor2.PrivacyCoupuled {
   //X[path!=Path"This"]
-  this.checkTargetExists(that,path:path)//throws MetaGuard.NestedClassUnavailable
+  this.checkTargetExists(that,path:path)//throws Refactor2.PathUnfit
   var Library res=that
   Debug(S"1.1")
-  res:=Refactor.RenamePath(Path"This" to:Path"PrImpl")<><res
-  error on MetaGuard
+  res:=Refactor2.rename(path:\"This" into:\"PrImpl")<><res
+  error on Refactor2.Fail
     X"DeployLibrary1"
   Debug(S"1.2")
-  with m in Introspection(lib:that, path:Path"ConceptMap").methods().vals() (
-    p=m.returnType().referencedPath().pathFromRoot()
+  ms=Location.Lib(that).nested(path:Path"ConceptMap").methods()
+  with m in ms.vals() (
+    Path p={ with r=m.returnType().refTo() (
+      on Location.Type.RefTo.Lib return r.referredLib().path()
+      )
+      error X""}
     res:=This.moveToAbstract(p of:res)
     Debug(S"1.2b "[p]" renamed")
     )
   Debug(S"1.3")
-  res:=Refactor.RemoveImplementationPath(Path"Abstract")<><res//leak PrivacyCoupuled
+  res:=Refactor2.toAbstract(path:\"Abstract")<><res//leak PrivacyCoupuled
   Debug(S"1.4")
-  error on MetaGuard.MemberUnavailable
+  error on Refactor2.PathUnfit
     X"DeployLibrary3"
-  res:=Refactor.RenamePath(Path"PrImpl"++path to:Path"This")<><res
+  res:=Refactor2.rename(path:\"PrImpl"++path into:\"This")<><res
   Debug(S"1.5")
-  res:=Refactor.MakePrivatePath(Path"PrImpl")<><res
+  res:=Refactor2.hide(path:\"PrImpl")<><res
   Debug(S"1.6")
   return res
-  error on MetaGuard
+  error on Refactor2.Fail
     X"DeployLibrary4"
   }
 class method
 Void checkTargetExists(Library that,Path path)
-exception MetaGuard.NestedClassUnavailable (
-  unused=Refactor.AddDocumentationPath(path doc:Introspection.Doc"JustToSeeIfItIsThere")<><that
-  error on MetaGuard.InvalidOnTopLevel
-    X"DeployLibrary5"
-  void
+exception Refactor2.PathUnfit (
+  unused=Refactor2.hide(path:path)<><that
+  void//just a way to test if path is there
   )
 
 method
 Library <><(Library that)
-exception MetaGuard.NestedClassUnavailable, MetaGuard.PrivacyCoupuled {
+exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled {
   Debug(S"1")
   var Library res=This.exposeAsLibrary(that,path:this.path())
   Debug(S"2")

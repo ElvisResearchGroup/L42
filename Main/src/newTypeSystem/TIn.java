@@ -32,7 +32,7 @@ abstract class AG<This extends AG<This>>implements GuessTypeCore.G{
       varEnv2.put(e.getKey(),e.getValue().getValue());
       }
     for(Dec d:ds){
-      varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d));
+      varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d,true));
       }
     return of(varEnv2);
     }

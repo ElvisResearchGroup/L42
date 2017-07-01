@@ -1,10 +1,16 @@
 {
-PlgK:{
-  //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.refactor.MakeK
-    class method Library makeK(Library that, Path path,Bool isFwd)
+PlgK:Refactor2.JavaImport<><{
+  //@plugin is.L42.connected.withSafeOperators
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
+    class method Library makeKS(Library that, Path path,Bool isFwd)
+
+    class method
+    Library #pluginUnresponsive(Library binaryRepr)
+      binaryRepr  
+
     }
 class method
 Library<><(Library that) 
 exception Refactor2.ClassUnfit
-  PlgK.makeK(that,path:Path"This",isFwd:Bool.true())
+  PlgK.makeKS(that,path:Path"This",isFwd:Bool.true())
 }
