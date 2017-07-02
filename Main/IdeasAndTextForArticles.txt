@@ -27,25 +27,55 @@ more methods, such methods will be injected also in
 the heir.
 
 This combination allows a limited declarative programming style.
-For example  class Foo extends Button{}
-Declare Foos to be buttons in a way that
-is parametric on what buttons are concretely.
+For example, in
+class Foo extends Button{}
+We declare Foos to be buttons in a way that
+is parametric on what Buttons concretely are.
 The programmer of Foo just have to specify little bits
 of behaviour to personalize the kind of buttons.
 The concrete code is then automatically derived 
 by composing it with the existing code of Button.
 
-You can see this as telling to Button some suggestions
+With a streach of immagination, you can immagine Button to
+follow the double role of both a class and a class generator/decorator:
+You can see this as giving some suggestions to Button
 on what code to generate when creating the class Foo.
 
 However, this is very limited:
 since the behaviour of inheritance 
 is set in stone, Button is not very active in deciding
 about Foo.
-Under this lens you can see many approaches
+
+However, this point of view let us read many approaches
 (traits, mixins, generics, family polymorphis)
 as ways to enrich what Button can do to generate the
-required Foo from the hints provided by the programmer.
+required Foo from the hints provided by the programmer,
+or as a way to enrich the declarative, domain specific language
+that the programmer can use to instruct Decorators.
+For example Traits offers many different operations,
+and a trait composition operation may look like
+Foo: Button[restrict Void onPressed()]+{ method Void onPressed() ... }
+Where first the the method onPressed is made abstract,
+so that a new implementation allowing to customized behavior to react
+to such event can be provided.
+
+In a functional perspective, we can see all those kinds of operations as endofunctions from
+code literals to code literals, and our code of before may look like
+
+Foo: sum ( (restrict "onPressed()") Button) { method Void onPressed() ... }
+
+Now Button is just a parameter, not an active member of our operation,
+just a piece of code that can be composed by operations provided by the
+inheritance system.
+
+This paper will focus on this duality: Base classes (as Button) as active members
+in code generation versus
+Base classes as just parameters of a (expressive but) fixed
+code composition mechanism.
+
+Indeed, we may expect the pattern shown before to repeat over an over
+when creating Button heirs, 
+
 
 Compile-time metaprogramming aims to give Buttons
 a mind of their own, so that they can perform arbitrarly
