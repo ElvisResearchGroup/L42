@@ -59,8 +59,8 @@ public class ProgramReduction {
   static private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
     ExpCore res=facade.Configuration.reduction.metaExp(p.reprAsPData(), e,nameDebug);
     if(res instanceof ClassB){return (ClassB)res;}
-    throw new ast.ErrorMessage.MalformedFinalResult(p.top(),"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));
-    //TODO: add error manager/printer
+    throw new ast.ErrorMessage.MalformedFinalResult(p.top(),
+            "See message above");//"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));
     }
   
 /*

@@ -3,6 +3,7 @@ package newTypeSystem;
 import helpers.TestHelper;
 
 import static helpers.TestHelper.lineNumber;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 
 import java.util.List;
 
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -313,7 +315,7 @@ public static class TestStage2 {
         TestHelper.configureForTest();
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
-        p=p.evilPush(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
+        p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
         TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
         assert out.isOk():FormattedError.format(out.toError());
         Assert.assertEquals(typeExpected,out.toOk().computed);
@@ -332,85 +334,66 @@ public static class TestStage3_notOk {
         {lineNumber()," (mut C x=C(x) x)",
           Type.immVoid,
         new Type(Mdf.Capsule,Path.Void(), Doc.empty()),
-        new String[]{"{ C:{mut (mut C that)}}"}
+        new String[]{"{ C:{mut C that class method mut This(mut C that)}}"}
         },{lineNumber()," (mut C x=C(x) (capsule C y=x y))",
           new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
           new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-          new String[]{"{ C:{mut (mut C that)}}"}
+          new String[]{"{ C:{mut C that class method mut This(mut C that)}}"}
 
       },{lineNumber()," (mut C x=C(x) (capsule C y=x.#that() y))",
         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-        new String[]{"{ C:{mut (mut C that)}}"}
+        new String[]{"{ C:{mut C that class method mut This(mut C that)}}"}
       },{lineNumber(),"(mut B b=B.k(N.k()), A a=A.k(f:b) a)",
         new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
         new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
         new String[]{cloneExample}
 
-  /*now k mdf is ignored    },{lineNumber(),"error D.k()",
-        new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-        new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-        new String[]{"{ D:{ lent k()}}"}
-      },{lineNumber()," ( mut D x= D.k() error x)",
-        new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-        new NormType(Mdf.Readable,Path.Any(),Doc.empty()),
-        new String[]{"{ D:{ mut k()}}"}
-*/
       },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
           new String[]{"{ A:{//@plugin\n//L42.is/connected/withAlu\n}}"}
-      //test to check that exception Any can not be captured
+      //test to check that exception Any can not be captured//TODO: is now ok to capture any with the new TS?
       },{lineNumber(),"( exception D() catch exception Any x void void)",
         Type.immVoid,
         Type.immVoid,
-        new String[]{"{ D:{k() method Void m() (void)}}"}
-     /* },{lineNumber(),//boh, is ok and leak exception any?
-       "( loop ( exception void"
-      +"    catch exception Void ( exception void )  "
-      +"    void)"
-      +"  catch exception Any p ( exception p  ) "
-      +"  void )",
-      NormType.immVoid,
-      NormType.immVoid,
-      new String[]{"{ D:{k() method Void m() (void)}}"}
-      },{lineNumber(),
-        "(exception void catch exception Any p ( exception p  ) void )",
-        NormType.immVoid,
-        new NormType(Mdf.Capsule,Path.Void(), Doc.empty()),
-        new String[]{"{ D:{k() method Void m() (void)}}"}
-
-            },{lineNumber(), "( ( exception void"
-                +"      catch exception Void  exception void  void)"
-                +"    catch exception  Any p  exception p  void )",
-                NormType.immVoid,
-                new NormType(Mdf.Capsule,Path.Void(), Doc.empty()),
-                new String[]{"{ D:{k() method Void m() (void)}}"}
-            },{lineNumber(),"( exception D.k() catch exception Any x void void)",//why should fail
-              NormType.immVoid,
-              new NormType(Mdf.Capsule,Path.Void(), Doc.empty()),
-              new String[]{"{ D:{k() method Void m() (void)}}"}
-           */ },{lineNumber(),"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
+        new String[]{"{ D:{class method This() method Void m() (void)}}"}
+      },{lineNumber(),"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
               new Type(Mdf.Readable,Path.Any(),Doc.empty()),
               Type.immVoid,
-              new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-            },{lineNumber(),"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
+              new String[]{"{ D:{class method mut This() mut method Void m(mut D that) error void }}"}
+      },{lineNumber(),"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
               new Type(Mdf.Readable,Path.Any(),Doc.empty()),
               Type.immVoid,
-              new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-
-
-
+              new String[]{"{ D:{ class method mut This() mut method Void m(mut D that) error void }}"}
+      },{lineNumber(),"D.foo()",//must fail//ok
+        new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+        Type.immVoid,
+        new String[]{"{ D:{class method This() class method Void foo() (exception D())}}"}
+       
+      },{lineNumber(),"D.foo()",//must fail//ok
+      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
+      Type.immVoid,
+      new String[]{"{ D:{class method This() "
+      + "class method Void foo() (this.bar())"
+      + "class method Void bar() exception D (void)"
+      + "}}"}
+    
       }});}
       @Test(expected=RuntimeException.class)
       public void testFail() {
-        TestHelper.configureForTest();
-        ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-        Program p=TestHelper.getProgram(program);
-        TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));        
-        assert !out.isOk();
-        throw new FormattedError(out.toError());//assert out.toOk().computed.equals(typeExpected);
-      }
+        try{
+          TestHelper.configureForTest();
+          ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
+          Program p=TestHelper.getProgram(program);
+          p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
+          TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
+       
+          assert !out.isOk();
+          throw new FormattedError(out.toError());//assert out.toOk().computed.equals(typeExpected);
+          }
+        catch(ParseCancellationException err){fail();}
+        }
 
       }
 

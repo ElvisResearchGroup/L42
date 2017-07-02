@@ -31,8 +31,9 @@ public class TestAdamTowel2Tests extends helpers.TestRunner{
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
       //"TestHelloWorld.L42",
-      "DeploySimpleLib.L42",
-      "UseDeployedSimpleLib.L42",
+      "TestRefactorFailToS.L42",
+      //"DeploySimpleLib.L42",
+      //"UseDeployedSimpleLib.L42",
       /*"TestAddEquals.L42",
       "TestAddInvariant.L42",
       "TestAlphanumeric.L42",

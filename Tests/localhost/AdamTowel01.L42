@@ -33637,7 +33637,7 @@ void)
     )
   ))
 class method 
-mut This0 #apply(Library top, This2.Path fix) (
+mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable (
   This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
   capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
     capsule This2.Location.Lib.List b0=This2.Location.Lib.List.#seqBuilder()
@@ -33783,7 +33783,7 @@ This3.Path patch()
 class method 
 mut This0 #apply(This3.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable (
   mut This1 cmp=This1.#apply(top:that, fix:this.patch())
   Void unused=cmp.fillMapsPatch(top:This3.Location.Lib.#apply(that:that), fix:this.patch())
   var Library acc=that
@@ -33812,8 +33812,8 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
     )
   acc
   )}}
-class method /*TODO: how is this compiling without declaring exceptions?
-*/Library #leftrightleft(Library that) (//utils in the top Composers class
+class method 
+Library #leftrightleft(Library that) exception This1.Refactor2.MethodClash, This1.Refactor2.ClassClash, This1.Refactor2.SubtleSubtypeViolation (//utils in the top Composers class
 This1.Refactor2.compose(that:This0.composerTrait(), and:that))
 class method 
 This1.Location.Lib.List filterClash(This1.Location.Lib.List ls) This1.Location.Lib.List.#from(seqBuilder:(
@@ -39779,7 +39779,7 @@ Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) (
     )
   )
 class method 
-mut This0 #apply(Library top, This1.Path fix) (
+mut This0 #apply(Library top, This1.Path fix) exception This1.Location.NotAvailable (
   This1.Location.Lib lFix=This1.Location.Lib.#apply(that:top).nested(path:fix)
   capsule This1.Location.Lib.List ls=This1.Location.Lib.List.#from(seqBuilder:(
     capsule This1.Location.Lib.List b0=This1.Location.Lib.List.#seqBuilder()
@@ -40250,7 +40250,7 @@ Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
     )
   )
 class method 
-mut This0 #apply(Library top, This2.Path fix) (
+mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable (
   This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
   capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
     capsule This2.Location.Lib.List b0=This2.Location.Lib.List.#seqBuilder()
@@ -40403,7 +40403,7 @@ This3.Path patch()
 class method 
 mut This0 #apply(This3.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable (
   mut This1 cmp=This1.#apply(top:that, fix:this.patch())
   Void unused=cmp.fillMapsPatch(top:This3.Location.Lib.#apply(that:that), fix:this.patch())
   var Library acc=that
@@ -40841,7 +40841,7 @@ Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
     )
   )
 class method 
-mut This0 #apply(Library top, This2.Path fix) (
+mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable (
   This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
   capsule This2.Location.Lib.List ls=This2.Location.Lib.List.#from(seqBuilder:(
     capsule This2.Location.Lib.List b0=This2.Location.Lib.List.#seqBuilder()
@@ -41033,7 +41033,7 @@ This3.Path patch()
 class method 
 mut This0 #apply(This3.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit (
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable (
   mut This1 cmp=This1.#apply(top:that, fix:this.patch())
   Void unused=cmp.fillMapsPatch(top:This3.Location.Lib.#apply(that:that), fix:this.patch())
   var Library acc=that
@@ -41148,7 +41148,7 @@ This2.Path patch()
 class method 
 mut This0 #apply(This2.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit (
+Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit, This2.Location.NotAvailable (
   mut This1 cmp=This1.#apply(top:that, fix:this.patch())
   Void unused=cmp.fillMapsPatch(top:This2.Location.Lib.#apply(that:that), fix:this.patch())
   var Library acc=that

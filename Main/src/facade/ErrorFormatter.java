@@ -84,7 +84,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     catch (IllegalAccessException | NoSuchFieldException | SecurityException e) {throw new Error(e);}
   }
   public static ErrorMessage.UserLevelError formatError(Program p,ErrorMessage msg, Class<?> c) throws IllegalAccessException, NoSuchFieldException, SecurityException {
-    String errorStart="\n\n\n------------------------------------\n";
+    String errorStart="";
     ArrayList<Ast.Position> ps=new ArrayList<Ast.Position>();
     String errorTxt="";
     errorTxt+= infoFields(msg, c,ps);
@@ -102,8 +102,8 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
 //        ErrorMessage.DotDotDotCanNotBeResolved ddd=(ErrorMessage.DotDotDotCanNotBeResolved)msg;
 
     }
-    errorTxt="Error kind: "+c.getSimpleName()+"\nPosition:"+
-    ((pos==null)?"unknown":pos.toString())+"\n"+errorTxt;
+    //errorTxt="Error kind: "+c.getSimpleName()+"\nPosition:"+
+    //((pos==null)?"unknown":pos.toString())+"\n"+errorTxt;
     //ps+"\n"+errorTxt;
     ErrorMessage.UserLevelError.Kind kind=findKind(msg);
     switch (kind){
@@ -113,7 +113,8 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+
         "Error in generating the following class: \n"
-            +reportPlaceOfMetaError(p,msg)/*.replace(".\n","\n")*/+"\n----------\n"+errorTxt;
+            +reportPlaceOfMetaError(p,msg)
+            ;///*.replace(".\n","\n")*/+"\n----------\n"+errorTxt;
       default:
         break;
       }
@@ -138,14 +139,16 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     ClassB cb=_msg.getFinalRes();
     //String path=_msg.getReason();
     String path=reportPlaceOfMetaError(p,cb);
-    return path+"\n-----\n"+_msg.getReason();
+    return path;//+"\n-----\n"+_msg.getReason();
   }
   public static String reportPlaceOfMetaError(Program p,ClassB cb) {
     for(Member m:cb.getMs()){
       if(IsCompiled.of(m)){continue;}
       return m.match(
-        nc->nc.getName()+"\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+
-      "reconstructed-stackTrace:"+L42.reconstructedStackTrace+"\n"+isItErrorPlace(p,nc.getInner()),
+        nc->nc.getName()+
+        "\nError is:\n"+L42.messageOfLastTopLevelError+"\n"+
+        "reconstructed-stackTrace:"+L42.reconstructedStackTrace+"\n"+
+        isItErrorPlace(p,nc.getInner()),
         mi->formatSelectorCompact(mi.getS())+"."+isItErrorPlace(p,mi.getInner()),
         mt->formatSelectorCompact(mt.getMs())+"."+isItErrorPlace(p,mt.getInner())
         );
@@ -167,7 +170,8 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
   }
   private static String isItErrorPlace(Program p,ExpCore inner) {//TODO: rename method in giveErrorText?
     if(inner instanceof ClassB){return reportPlaceOfMetaError(p,(ClassB)inner);}
-    return "\n    "+reportMetaError(p,inner);
+    //return "\n    "+reportMetaError(p,inner);
+    return "";
   }
   private static class ReportThrow extends coreVisitors.CloneWithPath{
     List<Ast.C> collectedPath=null;
@@ -401,6 +405,10 @@ private static void printType(int i, Program p) {
 @SuppressWarnings("unchecked")
 public static void topFormatErrorMessage(ErrorMessage msg) {
     //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
+    L42.printDebug("###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###");
+    L42.printDebug("###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###");
+    //The text over is the tag for the test to check it is failed
+        
     L42.printDebug(
         formatError(Program.emptyLibraryProgram(),msg).getErrorTxt()
         );

@@ -146,7 +146,7 @@ public class RefactorErrors{
       +left.selector()+"->"
       +right.selector()+"\n"
       +"Left: "+left.formatOrigins()+"\n"     
-      +"Right: "+left.formatOrigins()     
+      +"Right: "+right.formatOrigins()     
       ;}
     }
   

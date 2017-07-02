@@ -107,7 +107,9 @@ class method Library composerTrait(){
       )
 
 //initPatch
-  class method mut This(Library top, Path fix)(
+  class method 
+  mut This(Library top, Path fix)
+  exception Location.NotAvailable (
     lFix=Location.Lib(top).nested(path:fix)
     ls=Location.Lib.List[]
     l0ns=This1.filterClash(ls:lFix.allNesteds())
@@ -132,7 +134,8 @@ class method Library composerTrait(){
     ,,,,Refactor2.SubtleSubtypeViolation 
     ,,,,Refactor2.PathUnfit,
     ,,,,Refactor2.SelectorUnfit,
-    ,,,,Refactor2.ClassUnfit (
+    ,,,,Refactor2.ClassUnfit
+    ,,,,Location.NotAvailable (
       mut This1 cmp=This1(top:that,fix:this.patch())
       cmp.fillMapsPatch(top:Location.Lib(that),fix:this.patch())
       var Library acc=that
@@ -159,8 +162,12 @@ class method Library composerTrait(){
     )
   }
 
-class method //TODO: how is this compiling without declaring exceptions?
+class method
 Library<><(Library that)
+exception 
+,,,,Refactor2.MethodClash,
+,,,,Refactor2.ClassClash,
+,,,,Refactor2.SubtleSubtypeViolation 
   Refactor2.compose(This.composerTrait() and:that)
 
 //utils in the top Composers class

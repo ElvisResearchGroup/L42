@@ -80,7 +80,11 @@ public class TestHelper {
   }
   public static void check42Fails(String s){
     if(s.isEmpty()){fail("String is empty, may have not even started!"); throw new Error();}
-    if(s.contains("Error kind:")){fail("Error of some kind"); throw new Error();}
+    String tag="###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###\n"+
+               "###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###\n";
+    if(s.contains(tag)){
+      fail("Error of some kind"); throw new Error();
+      }
     //if(s.contains("Error kind: MalformedFinalResult")){fail("Error kind: MalformedFinalResult"); throw new Error();}
     final String failString = "[FAIL] ";
     final String definedOutputString = "[Defined output between]";

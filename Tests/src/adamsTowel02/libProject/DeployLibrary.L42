@@ -11,9 +11,11 @@ class method Library moveToAbstract(Path that,Library of){
   error on Refactor2.Fail
     X"DeployLibrary3"
   }
-class method X.AssertionFail msg(Path that,Library of) (
+
+class method
+X.AssertionFail msg(Path that,Library of) (
   available=Location.Lib(of).nested(path:\"PrImpl").nesteds()
-  error on Refactor2.PathUnfit
+  error on Location.NotAvailable
     X"DeployLibrary2"
   X"map and library mismatch on "[that]" available paths are "[
     with av in available.vals() (
@@ -60,6 +62,7 @@ class method
 Void checkTargetExists(Library that,Path path)
 exception Refactor2.PathUnfit (
   unused=Refactor2.hide(path:path)<><that
+  catch exception Refactor2.ClassUnfit void
   void//just a way to test if path is there
   )
 

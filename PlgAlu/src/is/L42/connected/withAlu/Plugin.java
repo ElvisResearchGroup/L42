@@ -222,7 +222,6 @@ public class Plugin implements PluginType {
     String that=ensureExtractStringU(_that);
     String src=ensureExtractStringU(_src);
     String dest=ensureExtractStringU(_dest);
-    System.out.println(that +"|||"+src+"|||"+dest+"|||"+that.replace(src, dest));
     return that.replace(src, dest);
   }
 }

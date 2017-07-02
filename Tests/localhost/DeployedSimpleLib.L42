@@ -5536,7 +5536,7 @@ mut This1.Refactor2.Method open(This1.Size that)
 mut method 
 Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) 
 class method 
-mut This0 #apply(Library top, This1.Path fix) 
+mut This0 #apply(Library top, This1.Path fix) exception This1.Location.NotAvailable 
 class method 
 class This1.Path #default##apply(Void patch) 
 class method 
@@ -5581,7 +5581,7 @@ mut This2.Refactor2.Method open(This2.Size that)
 mut method 
 Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) 
 class method 
-mut This0 #apply(Library top, This2.Path fix) 
+mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable 
 class method 
 class This2.Path #default##apply(Void patch) 
 class method 
@@ -5607,7 +5607,7 @@ This3.Path patch()
 class method 
 mut This0 #apply(This3.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit }}
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
 Override: {
 mut method 
 Void fillMaps() 
@@ -5644,7 +5644,7 @@ mut This2.Refactor2.Method open(This2.Size that)
 mut method 
 Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) 
 class method 
-mut This0 #apply(Library top, This2.Path fix) 
+mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable 
 class method 
 class This2.Path #default##apply(Void patch) 
 class method 
@@ -5670,7 +5670,7 @@ This3.Path patch()
 class method 
 mut This0 #apply(This3.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit }}
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
 Decorator: {
 mut method 
 mut This2.Composers.Libs #inner() 
@@ -5688,7 +5688,7 @@ This2.Path patch()
 class method 
 mut This0 #apply(This2.Path patch) 
 method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit }}
+Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit, This2.Location.NotAvailable }}
 Collections: {
 class method 
 Library vector(class Any ofMut) 
@@ -6044,8 +6044,8 @@ you implement an
 */
 class method 
 Library composerTrait() 
-class method /*TODO: how is this compiling without declaring exceptions?
-*/Library #leftrightleft(Library that) 
+class method 
+Library #leftrightleft(Library that) exception This1.Refactor2.MethodClash, This1.Refactor2.ClassClash, This1.Refactor2.SubtleSubtypeViolation 
 class method 
 This1.Location.Lib.List filterClash(This1.Location.Lib.List ls) 
 class method 

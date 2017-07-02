@@ -1,5 +1,9 @@
 package is.L42.connected.withSafeOperators.location;
 
+import java.nio.file.Path;
+
+import facade.L42;
+
 public class Origin {
   public String fileName() {
     return fileName;
@@ -44,7 +48,12 @@ public class Origin {
     return this.equals(that);
     }
   public String toS(){
-    return "Origin:"+this.fileName+
+    String name = L42.path.toAbsolutePath().toString();
+    String f=this.fileName();
+    if(f.startsWith(name)){
+      f=f.substring(name.length(), f.length());
+      }
+    return "Origin:"+f+
             "\nlines " + lineStart +
             " to " + lineEnd +
             "; colums " + columnStart +

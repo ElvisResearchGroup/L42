@@ -80,6 +80,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     TOk res=new TOk(in,resM,mTypeRev.getReturnType());
     // Trs[with r in resp (use[r.Tr])].collapse())
     res=res.trUnion(res0);
+    res=res.exceptionsAddAll(mTypeRev.getExceptions());
     for(TOk oki:resp){res=res.trUnion(oki);}
     return res;
     }

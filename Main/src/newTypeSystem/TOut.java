@@ -1,6 +1,7 @@
 package newTypeSystem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -69,6 +70,12 @@ public This exceptionsAdd(Path p){
   This res=trClean();
   res.exceptions=new ArrayList<>(exceptions);
   res.exceptions.add(p);
+  return res;
+  }
+public This exceptionsAddAll(Collection<Type> ps){
+  This res=trClean();
+  res.exceptions=new ArrayList<>(exceptions);
+  for(Type t:ps){res.exceptions.add(t.getPath());}
   return res;
   }
 public This trCapture(Program p,On k){
