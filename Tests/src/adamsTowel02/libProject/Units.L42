@@ -90,14 +90,14 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     this.that()/that.that()
   //*********
   }
-NotValidSupport:Message.$<><{implements MetaGuard}
-NotSameSupport:Message.$<><{implements MetaGuard}
-NotValidUnit:Message.$<><{implements MetaGuard}
+NotValidSupport:Message.$<><{implements Guard}
+NotSameSupport:Message.$<><{implements Guard}
+NotValidUnit:Message.$<><{implements Guard}
 
 class method
 Library of(class Any that) exception NotValidSupport{
-  return Data.Solid<><Refactor.Redirect(Path"Support" to:that)<><this.traitUnit()
-  exception on MetaGuard
+  return UnsafeRefactor.MiniData<><Refactor2.redirect(path:\"Support" into:that)<><this.traitUnit()
+  exception on Refactor2.Fail
     NotValidSupport"The provided class is not a valid support class for a unit of measure: "[GetMyName(that)]""
   }
 
@@ -150,24 +150,27 @@ Library of(class Any that, class Any per) exception NotValidUnit, NotSameSupport
 
 
 class method
-Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, NotSameSupport{
+Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, NotSameSupport {
   //check c1.#inner() and c2.#inner() are same type t
-  t1=Introspection(clazz:c1).method(Selector"#inner()").returnType()
-  exception on MetaGuard.MethodUnavailable
+  t1=Location.Lib(classObj:c1).method(selector:\"#inner()").returnType()
+  exception on Refactor2.SelectorUnfit
     NotValidUnit"Provided class "[GetMyName(c1)]" do not offers 'method Support #inner()'"
-  t2=Introspection(clazz:c2).method(Selector"#inner()").returnType()
-  exception on MetaGuard.MethodUnavailable
+  t2=Location.Lib(classObj:c2).method(selector:\"#inner()").returnType()
+  exception on Refactor2.SelectorUnfit
     NotValidUnit"Provided class "[GetMyName(c2)]" do not offers 'method Support #inner()'"
-  if t1.referencedPath()!=t2.referencedPath() (exception NotSameSupport
+  r=t1.refTo()
+  if !r.equals(t2.refTo()) (exception NotSameSupport
     "Provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" have different supports."
     )
-  t=t1 //==t2
-  res=Data.Solid<><Refactor.Redirect(Path"Support" toType:t)<><this.traitUnit()
-  var Library traitAnd=Refactor.Redirect(Path"S" toType:t)<><trait
-  traitAnd:=Refactor.Redirect(Path"T1" to:c1)<><traitAnd
-  traitAnd:=Refactor.Redirect(Path"T2" to:c2)<><traitAnd
-  return Use[res]<><traitAnd
-  exception on MetaGuard
+  Location.Type.RefTo.Binded cObj={
+    with r (on Location.Type.RefTo.Binded return r)
+    error X""}
+  res=UnsafeRefactor.MiniData<><Refactor2.redirect(path:\"Support" into:cObj.referredClassObj())<><this.traitUnit()
+  var Library traitAnd=Refactor2.redirect(path:\"S" into:cObj.referredClassObj())<><trait
+  traitAnd:=Refactor2.redirect(path:\"T1" into:c1)<><traitAnd
+  traitAnd:=Refactor2.redirect(path:\"T2" into:c2)<><traitAnd
+  return Use.Over[res]<><traitAnd
+  exception on Refactor2.Fail
     NotValidUnit"The provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" are not  valid Unit classes."
   }
 

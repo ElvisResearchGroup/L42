@@ -1,8 +1,10 @@
 {
   
-  InvalidElements:Message.$<><{implements MetaGuard}
+  InvalidElements:Message.$<><{implements Refactor2.Fail}
   
-  EnumTrait:Resource<><Refactor.RenamePath(Path"Top" to:Path"This")<><Enum.enumTrait()
+  EnumTrait:Resource<><
+   Refactor2.rename(path:\"Top" into:\"This")<><
+   Enum.enumTrait()
   
   class method
   Library #from(S.SBuilder builder)
@@ -51,26 +53,28 @@
   Library enumElem(Size ord, S s)
   exception InvalidElements {
     sel=this.sToSel(s)
-    return Refactor.Rename.selector(\"ord()" of: \"T" to:this.numToSel(ord))
-      <><Refactor.Rename.selector(\"n()" to:sel)
-      <><Refactor.Rename.selector(\"isN()" to:sel.with(prefix:S"is"))
-      <><this.traitMeth()
+    return Refactor2.Method[
+    ,,,,rename:\"ord()" of:\"T" into:this.numToSel(ord);
+    ,,,,rename:\"n()" into:sel;
+    ,,,,rename:\"isN()" into:sel.with(prefix:S"is")]<><
+      this.traitMeth()
     catch exception InvalidElements e (exception e)
-    error on MetaGuard X""
+    error on Refactor2.Fail X""
     }
   class method
   Library from(Concept.Base base)
   exception InvalidElements {
     ss=this.sToSs(base.toS())
-    res=Extends[EnumTrait()]
-      <><Refactor.Redirect(Path"T" to:Size)
-      <><(Extends[with ord in Range(start:0Size), s in ss.vals() (
-        use[this.enumElem(ord:ord, s:s)]
-        )]
-      <>< Refactor.Rename.selector(\"#apply()" to:\"names()")
-      <><Resource(ss))
+    res=Use.Override[EnumTrait()]<><
+      Refactor2.redirect(path:\"T" into:Size)<><
+        Use.Override[with ord in Range(start:0Size), s in ss.vals() (
+          use[this.enumElem(ord:ord, s:s)]
+          )]<><
+      Refactor2.Method[rename:\"#apply()" into:\"names()"]<><
+      Resource(ss)
+      
     catch exception InvalidElements e (exception e)
-    error on MetaGuard X""
+    error on Refactor2.Fail X""
     return res
     }
   }

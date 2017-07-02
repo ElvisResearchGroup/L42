@@ -33,12 +33,12 @@
         this.that()==that.that()
       },)
 
-    res=Extends[lib]<><that
+    res=Use.Override[lib]<><that
 
-    error on MetaGuard.ClassClash
+    error on Refactor2.ClassClash
       X"Someone redefined part of the implementation of AlphaNumeric"
 
-    error on MetaGuard.MethodClash
+    error on Refactor2.MethodClash
       X"Someone redefined parts of the implementation of Alphanumeric badly"
 
     return K<><res

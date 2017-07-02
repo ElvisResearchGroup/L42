@@ -155,7 +155,9 @@ public static Type _guessDecType(Program p,G in, Dec di,boolean forceError) {
 
 @Override
 public Type visit(Block s) {
-  if (!s.getOns().isEmpty()){throw Assertions.codeNotReachable();}
+  if (!s.getOns().isEmpty()){
+    throw Assertions.codeNotReachable();
+    }
   G oldIn=in;
   G in2=in.addGuessing(p,s.getDecs());
   in=in2;

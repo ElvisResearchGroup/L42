@@ -18,8 +18,8 @@ class method Library castTrait(){
   class method T () {with val=this.val() (on T return val) error ProvidedValueNotOfExpectedType"" }
    }
 class method Library(Any that, class Any clazz) (
-  trait=Refactor.Redirect(Path"T" to:clazz)<><this.castTrait()
-  error on MetaGuard X"Resource usage of redirect failed"
+  trait=Refactor2.redirect(path:\"T" into:clazz)<><this.castTrait()
+  error on Refactor2.Fail X"Resource usage of redirect failed"
   SafeOperators.liftValue(that,selector:Selector"val()"  lib:trait)
   //can throw primitive error MethodClash, but should never happen here
   )
