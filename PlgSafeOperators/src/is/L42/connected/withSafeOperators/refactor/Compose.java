@@ -183,7 +183,8 @@ public class Compose {
   private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
     ClassB l=p.top();
     List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
-    if(!l.getSupertypes().containsAll(ps1)){
+    boolean superOk=superOk(p,l.getSupertypes(),ps1);
+    if(!superOk){   
       return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+l.getSupertypes()+" does not contains all of "+ps1);
       }
     for(MethodWithType m :p.methods(Path.outer(0))){
@@ -210,6 +211,16 @@ public class Compose {
     return null;
     }
 
+private static boolean superOk(Program p,List<Type> all, List<Type> some) {
+//check all.containsAll(some)
+  for(Type tAll:all)out:{
+    for(Type tSome:some){
+      if (p.equiv(tAll,tSome)){break out;}
+      }
+    return false;
+    }
+  return true;
+  }
 /**{@link ComposeSpec#sumMember}*/  
 public  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
   return mwti.withDoc(mwt1.getDoc().sum(mwt2.getDoc())).withP(mwt1.getP().sum(mwt2.getP()));

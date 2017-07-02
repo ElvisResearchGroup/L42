@@ -11,6 +11,7 @@ import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore;
+import ast.PathAux;
 import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore.*;
 import ast.Ast.C;
@@ -83,8 +84,8 @@ class CollectUsages{
 }
 
 public class AbstractClass {
-  public static ClassB toAbstract(PData p,ClassB cb, List<Ast.C> path) throws PathUnfit, PrivacyCoupuled{
-    return toAbstract(p.p,cb,path);
+  public static ClassB toAbstractS(PData p,ClassB cb, String path) throws PathUnfit, PrivacyCoupuled{
+    return toAbstract(p.p,cb,PathAux.parseValidCs(path));
     }
   public static ClassB toAbstract(Program p,ClassB cb, List<Ast.C> path) throws PathUnfit, PrivacyCoupuled{
   if(!MembersUtils.isPathDefined(cb, path)){throw new RefactorErrors.PathUnfit(path);}

@@ -103,7 +103,7 @@ public class RemoveCode {
     NestedClass nc=originalNc.withInner(newInner);
     List<Member> ms = new ArrayList<>(accumulator.getMs());
     Functions.replaceIfInDom(ms,nc);
-    return accumulator.withMs(ms);
+    return accumulator.withP(accumulator.getP().sum(nc.getP())).withMs(ms);
   }
   private static ClassB mergeNestedHolderWithDep(ClassB accumulator, ClassB originalCb) {
     assert !accumulator.isInterface()
@@ -135,14 +135,16 @@ public class RemoveCode {
       }
     Ast.C firstName=path.get(0);
     List<Member> ms = new ArrayList<>();
+    Position pos=Position.noInfo;
     for(Member m:originalCb.getMs()){
       if(!(m instanceof NestedClass)){continue;}
       NestedClass nc=(NestedClass)m;
       if(!nc.getName().equals(firstName)){continue;}
       ClassB newInner=removeAllButPath(path.subList(1, path.size()),(ClassB)nc.getInner());
       ms.add(nc.withInner(newInner));
+      pos=pos.sum(nc.getP());
       }
-    return ClassB.membersClass(ms,Position.noInfo,originalCb.getPhase());
+    return ClassB.membersClass(ms,pos,originalCb.getPhase());
   }
 
   private static List<List<Ast.C>> collectDep(ClassB depSource, List<Ast.C> origin) {

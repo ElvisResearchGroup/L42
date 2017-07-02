@@ -2048,7 +2048,8 @@ class _Aux {
         if (nc.getInner() instanceof ExpCore.WalkBy) {
           countWalkBy += 1;
         }
-        assert cb.getP().containsAll(nc.getP());
+        assert cb.getP().containsAll(nc.getP()):
+        "";
       }
       if (m instanceof MethodImplemented) {
         MethodImplemented mi = (MethodImplemented)m;

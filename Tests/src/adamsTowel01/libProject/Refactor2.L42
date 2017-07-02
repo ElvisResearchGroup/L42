@@ -180,7 +180,7 @@ PlgAbstractClass:{
     error X"abtractClass(Library that,Path src)"
 
   class method
-  Library toAbstract(Library that,Path src)
+  Library toAbstractS(Library that,Path src)
   exception  PathUnfit, PrivacyCoupuled
   }
 
@@ -189,7 +189,7 @@ ToAbstractClass:{
   class method This (Path src)
   method Library <><(Library that)
   exception  PathUnfit, PrivacyCoupuled
-    PlgAbstractClass.toAbstract(that,src:this.src())
+    PlgAbstractClass.toAbstractS(that,src:this.src())
 
   }
 
