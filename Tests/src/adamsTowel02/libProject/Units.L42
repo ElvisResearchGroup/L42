@@ -15,10 +15,6 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
 
   method toS() this.that().toS()
 
-  method equals(that){
-    with that (on read This return this.that().equals(that.that()) )
-    return Bool.false()
-    }
 
   Support:{ implements Concept.ToS Concept.Equals
 
@@ -160,7 +156,7 @@ Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, Not
     NotValidUnit"Provided class "[GetMyName(c2)]" do not offers 'method Support #inner()'"
   r=t1.refTo()
   if !r.equals(t2.refTo()) (exception NotSameSupport
-    "Provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" have different supports."
+    "Provided classes "[GetMyName(c1)]"("[GetMyName(r.class())]") and "[GetMyName(c2)]"("[GetMyName(t2.refTo().class())]") have different supports."
     )
   Location.Type.RefTo.Binded cObj={
     with r (on Location.Type.RefTo.Binded return r)

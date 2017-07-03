@@ -25,34 +25,34 @@ public class TestAdamTowel2Tests extends helpers.TestRunner{
       Opt.ProfilerPrintOff,//disable profiler print and final profiling computation
 
       //// big individual deployment options
-      //Opt.DeplAT1, // AdamsTowel01
-      //Opt.DeplAT2, // AdamsTowel02
+      Opt.DeplAT1, // AdamsTowel01
+      Opt.DeplAT2, // AdamsTowel02
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
-      "TestHelloWorld.L42",
-      "TestRefactorFailToS.L42",
-      "DeploySimpleLib.L42",
-      "UseDeployedSimpleLib.L42",
+      //*"TestHelloWorld.L42",
+      //*"TestRefactorFailToS.L42",
+      //*"DeploySimpleLib.L42",
+      //*"UseDeployedSimpleLib.L42",
       //"TestAddEquals.L42",
       //"TestAddInvariant.L42",
-      //--"TestAlphanumeric.L42",
-      "TestAssertPreHold.L42",
+      //"TestAlphanumeric.L42",
+      //*"TestAssertPreHold.L42",
       //Binary flag still disabled "TestBinaryFlag32.L42",
       //"TestData.L42",
       //"TestDefaultParameter.L42",
-      "TestEnumerationPostfix.L42",
+      //*"TestEnumerationPostfix.L42",
       //////Not a valid test, more of a test template "TestIsConcrete.L42",
-      //--"TestNum.L42",
+      "TestNum.L42",
       //--"TestPatch.L42",
       //"TestPostOperation.L42",
-      "TestRange.L42",
+      //*"TestRange.L42",
       //--"TestRedirectType.L42",
       //--"TestResource.L42",
       //--"TestStringSplit.L42",
       //--"TestToS.L42",
       //"TestWither.L42",
-      "UseLib.L42",
+      //*"UseLib.L42",
       //--"UseOperators1.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
