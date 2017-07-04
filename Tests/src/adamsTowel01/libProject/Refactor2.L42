@@ -316,6 +316,25 @@ Redirect redirect(Path path,class Any into)
   Redirect(src:path,dest:into)
 
 
+RefToUnfit: Message.$<><{implements Fail}
+
+RedirectRefTo:{
+  Path src
+  Location.Type.RefTo into
+  class method This (Path src, Location.Type.RefTo into)
+  method Library <><(Library that)
+  exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit,RefToUnfit {
+    with r=this.into() (
+      on Location.Type.RefTo.Binded
+        return This1.redirect(path:this.src() into:r.referredClassObj())<><that
+      on Location.Type.RefTo.Lib
+        return This1.rename(path:this.src() into:r.referredLib().path())<><that
+      )
+    exception RefToUnfit"Provided RefTo is not Binded nor Lib: "[this.into()]""
+    }
+  }
+class method RedirectRefTo redirect(Path path, Location.Type.RefTo intoRefTo)
+  RedirectRefTo(src:path, into:intoRefTo)
 
 //------------------------------
 //Method  //as in Refactor.Method

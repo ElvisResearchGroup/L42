@@ -3,6 +3,7 @@
 A:{}
 
 Main:{
+  loadA=A
   Debug(S"
   '[Defined output between][End of defined output]
   '[End of output]
@@ -25,17 +26,17 @@ Main:{
   ")
   b={  method A a1()  method B a2()  method Void a3() B:{}}
   c={  method C c() C:{}}
-  i=Introspection(lib:b)
-  t1=i.method(Selector"a1()").returnType()
-  t2=i.method(Selector"a2()").returnType()
-  t3=i.method(Selector"a3()").returnType()
-  c1=Refactor.Redirect(Path"C" toType:t1)<><c
-  c2=Refactor.Redirect(Path"C" toType:t2)<><c
-  c3=Refactor.Redirect(Path"C" toType:t3)<><c
-  Debug(lib:c)
-  Debug(lib:c1)
-  Debug(lib:c2)
-  Debug(lib:c3)
+  i=Location.Lib(b)
+  t1=i.method(selector:\"a1()").returnType().refTo()
+  t2=i.method(selector:\"a2()").returnType().refTo()
+  t3=i.method(selector:\"a3()").returnType().refTo()
+  c1=Refactor2.redirect(path:\"C" intoRefTo:t1)<><c
+  c2=Refactor2.redirect(path:\"C" intoRefTo:t2)<><c
+  c3=Refactor2.redirect(path:\"C" intoRefTo:t3)<><c
+  Debug(Location.Lib(c))
+  Debug(Location.Lib(c1))
+  Debug(Location.Lib(c2))
+  Debug(Location.Lib(c3))
   Debug(S"[End of output]")
   return ExitCode.normal()
   }

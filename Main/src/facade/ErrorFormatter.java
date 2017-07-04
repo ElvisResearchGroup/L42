@@ -107,9 +107,12 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     //ps+"\n"+errorTxt;
     ErrorMessage.UserLevelError.Kind kind=findKind(msg);
     switch (kind){
+      case ParsingError:
+      case WellFormedness:
       case TypeError:
-        errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+errorTxt;
-        break;
+      case Unclassified:
+        errorTxt=errorStart+"runStatus: "+kind.name()+":"+msg.getClass().getSimpleName()+"\n"+errorTxt;
+        break;  
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+
         "Error in generating the following class: \n"
@@ -196,6 +199,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
   private static Kind findKind(ErrorMessage msg) {
     if (L42.getStage()==ExecutionStage.CheckingWellFormedness){
       return Kind.WellFormedness;}
+    if(msg instanceof ErrorMessage.PreParserError){return Kind.ParsingError;}
     if(msg instanceof ErrorMessage.TypeError){return Kind.TypeError;}
     if(msg instanceof ErrorMessage.MalformedFinalResult){return Kind.MetaError;}
     return Kind.Unclassified;

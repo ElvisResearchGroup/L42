@@ -52,6 +52,7 @@ public abstract class ErrorMessage extends RuntimeException {
 
     public static enum Kind {
       WellFormedness,
+      ParsingError,
       TypeError,
       MetaError,
       Unclassified;

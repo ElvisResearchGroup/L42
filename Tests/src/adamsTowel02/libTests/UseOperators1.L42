@@ -28,8 +28,8 @@ C2:{
     Inner:{class method S c() S"ic3"}
     } 
   }
-G1:Use[C1.m1();C1.m2();C1.m3()]<><{}
-G2:Use[C2.m1();C2.m2();C2.m3()]<><{
+G1:Use.Over[C1.m1();C1.m2();C1.m3()]<><{}
+G2:Use.Over[C2.m1();C2.m2();C2.m3()]<><{
   class method
   S c() this.#1c()++this.#2c()++this.#3c() 
   Inner:{
@@ -37,7 +37,7 @@ G2:Use[C2.m1();C2.m2();C2.m3()]<><{
     S c() this.#1c()++this.#2c()++this.#3c() 
     }
   }  
-G3:Extends[C2.m1();C2.m2();C2.m3()]<><{
+G3:Use.Override[C2.m1();C2.m2();C2.m3()]<><{
   class method
   S c() this.#1c()++this.#2c()++this.#3c() 
   Inner:{
