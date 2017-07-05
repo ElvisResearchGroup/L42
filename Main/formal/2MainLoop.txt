@@ -20,7 +20,7 @@ Part 1: 42 top level reduction rules
 ### reduction rules
 ReductionTop:
 precondition: at top level we have a L not of form LC
-Rule top perform the step of execution, while rule enter
+Rule top performs a step of execution, while rule enter
 propagates the execution inside nested classes and method bodies.
 
 
@@ -47,18 +47,19 @@ p ==> p'.pop()
   M not of form MC
   M.e=ctxC[L], L not of form LC
   ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
-  p'.top() of form LC//note for James: this seams strange now... does it makes sense?
+  p'.top() of form LC
 
 
 
 -----------------------------------------------------------
-Part 2: paths
+Part 2: paths //James suggest name "stset" for Paths
 -----------------------------------------------------------
 "paths" is a datastructure to store P1..Pn in a organized way:
 The idea is to store them as a stack, where the first level
-stores the This0.Cs, the second level store the This1.Cs and so on.
-Moreover, if Thisn.Cs is present, then we avoid to redundantly store
-all its sub paths Thisn.Cs.Cs'.
+stores subtrees rooted in  This0, the second level store the ones rooted
+in This1 and so on.
+Moreover, if Thisn.Cs is present, then we do not store
+any of its sub paths Thisn.Cs.Cs'.
 We model this idea with
 - minimize(Css)={Cs1 in Css | forall Cs2 in Css\Cs1,  Cs2._!=Cs1}
 

@@ -42,7 +42,7 @@ import coreVisitors.InjectionOnSugar;
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UserLevelError extends ErrorMessage implements PosImprove {
     static public enum Kind {
-      WellFormedness, TypeError, MetaError, Unclassified
+    ParsingError,WellFormedness, TypeError, MetaError, Unclassified
     }
     Kind kind;
     Ast.Position pos;
