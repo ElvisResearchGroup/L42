@@ -195,7 +195,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       k.getKind()==SignalKind.Return &&
       k.getT().equals(Path.Any().toImmNT()) &&
       tr.returns.stream().allMatch(t->
-        TypeSystem.subtype(in.p, t,in.expected)==null
+        TypeSystem.subtype(in.p, t.getPath(),in.expected.getPath())==null
         );
     if (preciseApplicable){return kTypeCatchPreciseAny(in, tr, k);}
     return kTypeCatch(in,tr,k);
@@ -235,7 +235,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TOut _out=type(in.addG(k.getX(),false,noFwdT1).withE(k.getE(), noFwdT1));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
-    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(noFwdT1),out.computed);
+    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(noFwdT1.withMdf(Mdf.Immutable)),out.computed);
     return res;
     }
   default TOutK kTypeCatchAny(TIn in,Tr tr,On k){

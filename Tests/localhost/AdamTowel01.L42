@@ -4937,7 +4937,7 @@ read Any get(This3.Size that) (
     void
     )
   
-  catch return read Any result result
+  catch return Any result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -4968,7 +4968,7 @@ mut Any #get(This3.Size that) (
     void
     )
   
-  catch return mut Any result result
+  catch return Any result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -12658,35 +12658,6 @@ ParseFail: {}}
 SafeOperators: {/*@plugin
 L42.is/connected/withSafeOperators
 */
-class method 
-Library sumMethods(Library that, This1.Path path, This1.Selector src1, This1.Selector src2, This1.Selector dest, This1.S name) use This0 check sumMethods(that:that, path:path.#binaryRepr(), src1:src1.#binaryRepr(), src2:src2.#binaryRepr(), dest:dest.#binaryRepr(), name:name.#binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
-  capsule This1.S.SBuilder b=This1.System.Guard.PluginFailure.#builder()
-  Void unused=b.#S()
-  Void unused0=b.#a()
-  Void unused1=b.#f()
-  Void unused2=b.#e()
-  Void unused3=b.#O()
-  Void unused4=b.#p()
-  Void unused5=b.#e()
-  Void unused6=b.#r()
-  Void unused7=b.#a()
-  Void unused8=b.#t()
-  Void unused9=b.#o()
-  Void unused10=b.#r()
-  Void unused11=b.#s()
-  Void unused12=b.#dot()
-  Void unused13=b.#s()
-  Void unused14=b.#u()
-  Void unused15=b.#m()
-  Void unused16=b.#M()
-  Void unused17=b.#e()
-  Void unused18=b.#t()
-  Void unused19=b.#h()
-  Void unused20=b.#o()
-  Void unused21=b.#d()
-  Void unused22=b.#s()
-  b
-  ))
 class method 
 This1.S freshName(This1.S that) This1.S.#from(binaryRepr:use This0 check freshName(that:that.#binaryRepr()) error This1.System.Guard.PluginFailure.#from(builder:(
   capsule This1.S.SBuilder b=This1.System.Guard.PluginFailure.#builder()
@@ -42046,7 +42017,7 @@ This1.Strings split(This1.S that, capsule This0.Skip skipper) (
     void
     )
   
-  catch return capsule This1.Strings result result
+  catch return This1.Strings result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code

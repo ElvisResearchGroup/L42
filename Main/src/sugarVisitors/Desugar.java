@@ -405,7 +405,7 @@ public class Desugar extends CloneVisitor{
     assert s.getContents().get(0).getDecs().get(0) instanceof VarDecE;
     Expression inner=((VarDecE)s.getContents().get(0).getDecs().get(0)).getInner();
     String y=Functions.freshName("result",this.usedVars);
-    Expression.Catch k=getK(s.getP(),SignalKind.Return,y,this.t,new X(s.getP(),y));
+    Expression.Catch k=getK(s.getP(),SignalKind.Return,y,Type.immAny,new X(s.getP(),y));
     Expression termination= Desugar.errorMsg("CurlyBlock-Should be unreachable code");
     RoundBlock outer=getBlock(s.getP(),inner, Collections.singletonList(k),termination);
     return visit(outer);

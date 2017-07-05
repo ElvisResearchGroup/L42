@@ -26,7 +26,7 @@ public class TestAdamTowel2Tests extends helpers.TestRunner{
 
       //// big individual deployment options
       //Opt.DeplAT1, // AdamsTowel01
-      //Opt.DeplAT2, // AdamsTowel02
+      Opt.DeplAT2, // AdamsTowel02
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
@@ -45,7 +45,7 @@ public class TestAdamTowel2Tests extends helpers.TestRunner{
       //////Not a valid test, more of a test template "TestIsConcrete.L42",
       //*"TestNum.L42",
       //*"TestPatch.L42",
-      //--"TestPostOperation.L42",
+      "TestPostOperation.L42",
       //*"TestRange.L42",
       //"TestRedirectType.L42",
       //"TestResource.L42",
@@ -53,7 +53,7 @@ public class TestAdamTowel2Tests extends helpers.TestRunner{
       //--"TestToS.L42",
       //--"TestWither.L42",
       //*"UseLib.L42",
-      "UseOperators1.L42",
+      //*"UseOperators1.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

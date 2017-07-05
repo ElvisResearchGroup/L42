@@ -65,7 +65,9 @@ public interface TypeSystem{
   TOut type(TIn in);
   TOut typeLib(TIn in);
   public static ErrorKind subtype(Program p,Path pSub,Path pSuper){
-    if (!p.subtypeEq(pSub, pSuper)){return ErrorKind.NotSubtypeClass;}
+    if (!p.subtypeEq(pSub, pSuper)){
+      return ErrorKind.NotSubtypeClass;
+      }
     return null;
     }
   public static void checkExists(Program p, Path pi){

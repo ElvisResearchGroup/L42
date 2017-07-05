@@ -1,4 +1,9 @@
-{(Selector that,Path of,  Library action,Selector deprecated)
+{
+Selector that,
+Path of,
+Library action,
+Selector deprecated
+class method This (Selector that,Path of,  Library action,Selector deprecated)
 //can be used as
 // PostAction(Selector"foo(bar)" of:Path"A"
 //   action:{method Size (Size that) that+that}
@@ -14,45 +19,45 @@ exception InvalidAction{
   fresh=Selector.fresh(Selector"#apply(that)")// will be the name of the action
 
   var Library acc=that
-  acc:=Refactor.MoveImplementationSelector(src of:p to:dest)<><acc
+  acc:=Refactor2.toAbstract(selector:src of:p into:dest)<><acc
   //now src is abstract
   acc:=this.composeAction(acc,fresh:fresh)
-  acc:={return Refactor.SumMethods(dest and:fresh of:p over:S"that" to:src)<><acc
-    exception on MetaGuard.ParameterMismatch
+  acc:={return Refactor2.sumMethods(dest and:fresh of:p over:S"that" into:src)<><acc
+    exception on Refactor2.PathUnfit, Refactor2.MethodClash
       InvalidAction"Action class signature does not fit decorated method"
     }
-  acc:=Refactor.MakePrivateSelector(fresh of:p)<><acc
+  acc:=Refactor2.Method[hide:fresh of:p]<><acc
   //we do not need to refer to the action any more
   return acc
   catch exception InvalidAction x exception x
-  error on MetaGuard
+  error on Refactor2.Fail
     X"PostAct.Action1"
   }
 
 method //@_private
 Library composeAction(Library that,Selector fresh){
   var Library acc=this.action()
-  acc:=Refactor.RenamePath(Path"This" to:this.of())<><acc
-  acc:=Refactor.RenameSelector(Selector"#apply(that)" of:this.of() to:fresh)<><acc
-  acc:=Refactor.compose(left:that,right:acc)
+  acc:=Refactor2.rename(path:\"This" into:this.of())<><acc
+  acc:=Refactor2.Method[rename:\"#apply(that)" of:this.of() into:fresh]<><acc
+  acc:=Refactor2.compose(that,and:acc)
   //ok since action res has fresh name
   return acc
-  error on MetaGuard
+  error on Refactor2.Fail
     X"PostAct.ActionCompose"
   }
 
 method //@_private
 Void checkAction(Library that)
 exception InvalidAction (
-  defM=Introspection(lib: that).method(Selector"#apply(that)")
-  exception on MetaGuard
+  defM=Location.Lib(that).method(selector:\"#apply(that)")
+  exception on Refactor2.Fail, Location.NotAvailable
     InvalidAction"action method not present"
-  pt=defM.parameterTypes().left()
+  pt=defM.parameterTypes().val(1Size)
   rt=defM.returnType()
-  if pt.toS()!=rt.toS() (
-    exception InvalidAction"action return class need to be equal to parameter class"
+  ok=pt.refTo().equals(rt.refTo()) & pt.mdf() ==rt.mdf()
+  if !ok (
+    exception InvalidAction"action return class need to be equal to parameter class: '"[pt]"' is different from '"[rt]"'"
     )
   )
-//InvalidAction: Message.$ <>< { implements MetaGuard}
-InvalidAction:Message.$<><{ implements MetaGuard}
+InvalidAction:Message.$<><{ implements Refactor2.Fail}
 }

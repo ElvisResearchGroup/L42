@@ -2,20 +2,6 @@
   //L42.is/connected/withSafeOperators
 
 
-
-class method
-  Library sumMethods(Library that,Path path,Selector src1,Selector src2,Selector dest, S name)
-    use This
-      check sumMethods(that
-        path:path.#binaryRepr()
-        src1:src1.#binaryRepr()
-        src2:src2.#binaryRepr()
-        dest:dest.#binaryRepr()
-        name:name.#binaryRepr()
-        )
-      error System.Guard.PluginFailure"SafeOperators.sumMethods"
-
-
   class method
   S freshName(S that) S.#from(binaryRepr: use This
       check freshName(that.#binaryRepr())
