@@ -405,4 +405,35 @@ Method:{
     this.inner(this.inner().addAbstractAliasS(path:Path"This",src:abstract,dest:alias))      
   }
 
+
+//------------------------------
+//SumMethods
+//------------------------------
+PlgSumMethods:{
+  //@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.SumMethods
+  class method Void #pluginUnresponsive(Library binaryRepr) 
+    error {/*redirect(that,src,dest)*/}
+  class method Library sumMethods(
+    Library lib, Path path,Selector src1,Selector src2,Selector dest,S name)
+  exception MethodClash, PathUnfit, SelectorUnfit
+  }
+  
+SumMethods:{
+    Selector that
+    Selector and
+    Path of
+    S over
+    Selector into
+    class method This (Selector that,Selector and, Path of, S over, Selector into)
+    method
+    Library <>< (Library that)
+    exception  MethodClash, PathUnfit, SelectorUnfit 
+      PlgSumMethods.sumMethods(lib:that,path:this.of() src1:this.that(),src2:this.and(), dest:this.into(),name:this.over())
+    }
+class method
+SumMethods sumMethods(Selector that,Selector and, Path of, S over, Selector into)
+  SumMethods(that,and:and, of:of,over:over,into:into)
+
  }
+ 

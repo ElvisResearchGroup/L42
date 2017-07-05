@@ -222,7 +222,7 @@ private static boolean superOk(Program p,List<Type> all, List<Type> some) {
   return true;
   }
 /**{@link ComposeSpec#sumMember}*/  
-public  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
+public static  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
   return mwti.withDoc(mwt1.getDoc().sum(mwt2.getDoc())).withP(mwt1.getP().sum(mwt2.getP()));
   }
 

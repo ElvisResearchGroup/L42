@@ -30845,6 +30845,8 @@ class method
 This0.Redirect redirect(This1.Path path, class Any into) This0.Redirect.#apply(src:path, dest:into)
 class method 
 This0.RedirectRefTo redirect(This1.Path path, This1.Location.Type.RefTo intoRefTo) This0.RedirectRefTo.#apply(src:path, into:intoRefTo)
+class method 
+This0.SumMethods sumMethods(This1.Selector that, This1.Selector and, This1.Path of, This1.S over, This1.Selector into) This0.SumMethods.#apply(that:that, and:and, of:of, over:over, into:into)
 Fail: {interface implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
 This2.S kind() 
@@ -33363,7 +33365,58 @@ Void #add(This2.Selector abstract, This2.Selector alias) this.inner(that:this.in
   Void unused1=b.#i()
   Void unused2=b.#s()
   b
-  )), src:abstract, dest:alias))}}
+  )), src:abstract, dest:alias))}
+PlgSumMethods: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.SumMethods
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
+class method 
+Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(that,src,dest)*/}
+class method 
+Library sumMethods(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit (
+  Library res=use This0 check #sumMethods(_1_ast%ExpCore$ClassB:lib, _2_java%lang%String:path.#binaryRepr(), _3_java%lang%String:src1.#binaryRepr(), _4_java%lang%String:src2.#binaryRepr(), _5_java%lang%String:dest.#binaryRepr(), _6_java%lang%String:name.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.SumMethods\u000amethod name: sumMethods(lib,path,src1,src2,dest,name)\u000ajava method: is.L42.connected.withSafeOperators.refactor.SumMethods.#sumMethods(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String,_4_java%lang%String,_5_java%lang%String,_6_java%lang%String)\u000a
+*/})
+  
+  catch error Library x (
+    Void unused0=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused1=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused2=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    error x
+    )
+  
+  res
+  )}
+SumMethods: {
+mut method 
+This2.Selector #that() 
+read method 
+This2.Selector that() 
+mut method 
+This2.Selector #and() 
+read method 
+This2.Selector and() 
+mut method 
+This2.Path #of() 
+read method 
+This2.Path of() 
+mut method 
+This2.S #over() 
+read method 
+This2.S over() 
+mut method 
+This2.Selector #into() 
+read method 
+This2.Selector into() 
+class method 
+This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector into) 
+method 
+Library #leftrightleft(Library that) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit This1.PlgSumMethods.sumMethods(lib:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.into(), name:this.over())}}
 K: {
 class method 
 Library #leftrightleft(Library that) exception This1.Refactor2.ClassUnfit This0.PlgK.makeKS(that:that, path:This1.Path.#from(builder:(

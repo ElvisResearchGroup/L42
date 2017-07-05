@@ -40,6 +40,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSub
 import is.L42.connected.withSafeOperators.refactor.Compose;
 import is.L42.connected.withSafeOperators.refactor.MakeK;
 import is.L42.connected.withSafeOperators.refactor.RedirectObj;
+import is.L42.connected.withSafeOperators.refactor.SumMethods;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -79,7 +80,7 @@ public class Plugin implements PluginType{
       return new RenameMethods().addRename(path,src,dest)
               .actP(Resources.getP(),that);
       }*/
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+   /* @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MsumMethods£xthat£xpath£xsrc1£xsrc2£xdest£xname(Object _that,Object _path,Object _src1,Object _src2,Object _dest,Object _name){
       ClassB that=ensureExtractClassB(_that);
       String name=ensureExtractStringU(_name);
@@ -88,7 +89,7 @@ public class Plugin implements PluginType{
        MethodSelector src2 = MethodSelector.parse(ensureExtractStringU(_src2));
        MethodSelector dest = MethodSelector.parse(ensureExtractStringU(_dest));
       return SumMethods.sumMethods(that,path,src1,src2,dest,name);
-      }
+      }*/
     //we keep it for testing in testAux
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){

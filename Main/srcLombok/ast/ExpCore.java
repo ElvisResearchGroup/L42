@@ -390,7 +390,10 @@ class _Aux{
     assert cb.isConsistent();
     List<Member> newMs = new java.util.ArrayList<>(cb.getMs());
     int index=_Aux.getIndex(newMs,m);
-    if(index==-1){newMs.add(m);}
+    if(index==-1){
+      if(m instanceof NestedClass){newMs.add(m);}
+      else {newMs.add(0,m);}
+      }
     else {newMs.set(index, m);}
     ClassB result = cb.withMs(newMs);
     return result;
