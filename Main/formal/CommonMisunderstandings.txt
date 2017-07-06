@@ -60,6 +60,12 @@ A:{interface  method B m()}
 B:Data<><{implements A}
 Can not work, and that is ok.
 B is needed to be compiled for A to be typed and thus for {implements A} to be normalized.
+A clean way is to use all interfaces
+A:{interface  method BI m()}
+BI:{interface ..}
+B:Data<><{implements A,BI}
+
+
 
 Desugaring is before all normalization. There is no need to
 merge desugaring and normalization.

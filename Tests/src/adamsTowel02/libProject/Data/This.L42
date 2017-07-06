@@ -1,27 +1,41 @@
 {
-StateUnfit:Message.$<><{ implements MetaGuard}
- //make state private will be another decorator now
-Invariant:...
-// dead alreay? useful for future?AddImmK:...
-Wither:...
-AddToS:...
-AddEquals:...
+StateUnfit:Message.$<><{ implements Guard}
+//Invariant:...
+//Wither:...
+//AddToS:...
+//AddEquals:...
 
-Solid:{
+Base:{
   //class, ToS == required
-  class method Library solidTrait(){ implements
-        Concept.Classable, Concept.ToS, Concept.Equals //may be Parsable?
-    method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-    refine read method class This class() This
-    method readableName() GetMyName(This)
-    method
-    Bool == (This that)
+  class method Library (){
+    implements Concept.Base
+    
+    refine read method
+    class This class()
+      This
+
+    method readableName()
+      GetMyName(This)
+
+    method is(subtype){
+      with subtype (on class This return Bool.true())
+      return Bool.false()}
+
+    method equals(that) {
+      with that (on read This return this==that)
+      return Bool.false()}
+
+    read method Bool ==(read This that)
     }
   class method
-  Library<><(Library that) exception MetaGuard.ClassClash,MetaGuard.MethodClash
-    Extends[this.solidTrait()]<><that
+  Library<><(Library that)
+  exception 
+  ,,,,Refactor2.MethodClash,
+  ,,,,Refactor2.ClassClash,
+  ,,,,Refactor2.SubtleSubtypeViolation
+    Use.Override[this()]<><that
   }
-
+/*
 class method
 Library <>< (Library that)
 exception StateUnfit, MetaGuard
@@ -41,5 +55,5 @@ exception StateUnfit, MetaGuard
   return res
   //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
   }
-
+*/
 }

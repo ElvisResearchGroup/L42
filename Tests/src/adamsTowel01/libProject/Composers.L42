@@ -48,10 +48,7 @@ class method Library composerTrait(){
     exception 
     ,,,,Refactor2.MethodClash,
     ,,,,Refactor2.ClassClash,
-    ,,,,Refactor2.SubtleSubtypeViolation 
-    ,,,,Refactor2.PathUnfit,
-    ,,,,Refactor2.SelectorUnfit,
-    ,,,,Refactor2.ClassUnfit (
+    ,,,,Refactor2.SubtleSubtypeViolation {
       mut This1 cmp=This1(libs:this.inner(),lib0:that)
       cmp.fillMaps()
       var Library acc=that
@@ -60,8 +57,11 @@ class method Library composerTrait(){
       ,,,,mi in cmp.openMaps().#reverse().#vals() (
         acc:=Refactor2.compose(mi<><li, and:acc)
         )
-      cmp.close()<><acc
-      )
+      return cmp.close()<><acc
+      error on 
+      ,,,,Refactor2.PathUnfit, Refactor2.SelectorUnfit,Refactor2.ClassUnfit
+        X"Composers action method produced invalid maps"
+      }
     }
 
   //fields

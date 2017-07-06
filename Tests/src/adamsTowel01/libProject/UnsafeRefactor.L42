@@ -50,10 +50,7 @@ MiniDataTrait:{class method Library(){
     return Bool.false()}
 
   method equals(that) {
-    //Debug(S"breakpointEqualEnter"[this.class().readableName()]"")
     with that (on read This return this==that)
-    //Debug(S"Equals false for different type:"[GetMyName(this.class())]" and "[GetMyName(that.class())]"" )//not classable stuff
-    //Debug(S"breakpointEqual")
     return Bool.false()}
 
   read method Bool ==(read This that)
