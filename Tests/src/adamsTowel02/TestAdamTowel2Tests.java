@@ -10,9 +10,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.runners.Parameterized.Parameters;
 
+import helpers.TestRunnerPrePost;
 import tools.TestRunner.Opt;
 
-public class TestAdamTowel2Tests extends tools.TestRunner{
+public class TestAdamTowel2Tests extends TestRunnerPrePost{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
     List<Object[]> tests = goInner(

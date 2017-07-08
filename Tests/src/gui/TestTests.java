@@ -11,9 +11,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.runners.Parameterized.Parameters;
 
+import helpers.TestRunnerPrePost;
 import tools.TestRunner.Opt;
 
-public class TestTests extends tools.TestRunner{
+public class TestTests extends TestRunnerPrePost{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
     List<Object[]> tests = goInner(

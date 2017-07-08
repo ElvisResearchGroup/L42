@@ -354,10 +354,10 @@ public static class TestStage3_notOk {
           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
           new String[]{"{ A:{//@plugin\n//L42.is/connected/withAlu\n}}"}
       //test to check that exception Any can not be captured//TODO: is now ok to capture any with the new TS?
-      },{lineNumber(),"( exception D() catch exception Any x void void)",
-        Type.immVoid,
-        Type.immVoid,
-        new String[]{"{ D:{class method This() method Void m() (void)}}"}
+      //},{lineNumber(),"( exception D() catch exception Any x void void)",
+      //  Type.immVoid,
+      //  Type.immVoid,
+      //  new String[]{"{ D:{class method This() method Void m() (void)}}"}
       },{lineNumber(),"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
               new Type(Mdf.Readable,Path.Any(),Doc.empty()),
               Type.immVoid,

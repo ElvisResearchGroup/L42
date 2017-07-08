@@ -15,7 +15,6 @@ import javax.print.DocFlavor.STRING;
 import org.junit.Assert;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-import reduction.Executor;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
@@ -30,6 +29,7 @@ import ast.Expression;
 import auxiliaryGrammar.Functions;
 import programReduction.Norm;
 import programReduction.Program;
+import reduction.Executor;
 import facade.Configuration;
 import facade.L42;
 import facade.Parser;
@@ -447,18 +447,5 @@ public class TestHelper {
     }
     assert(false);  // no tests left, so something is broken
     return null;
-  }
-  static String shortName(java.nio.file.Path p){
-    // Remove the uninteresting bits from a path, in order to make a short name for a test
-    final String preamble = "/Tests/bin/";
-    final String middle1 = "libTests";
-//    final String middle2 = "libProject";
-    
-    String ret = p.toString();
-    int preStart = ret.indexOf(preamble);
-    ret = ret.substring(preStart + preamble.length());
-    ret = ret.replace(middle1, "");
-//    ret = ret.replace(middle2,  "");
-    return ret;
   }
 }

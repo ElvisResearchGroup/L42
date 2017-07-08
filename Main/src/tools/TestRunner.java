@@ -11,21 +11,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
 
 import facade.L42;
-import helpers.ParallelizedParameterized;
-import helpers.TestHelper;
 
 @RunWith(ParallelizedParameterized.class)
 //@RunWith(Parameterized.class)
 
-public class TestRunner {
+public abstract class TestRunner {
 
   @Parameter(0) public Path p;
   @Parameter(1) public String shortName;
@@ -89,8 +84,20 @@ public class TestRunner {
 
   public static void addFileFromPath(Path p, List<Object[]> files) {
     Path normP = p.normalize();
-    files.add(new Object[]{normP, TestHelper.shortName(normP)});
+    files.add(new Object[]{normP, shortName(normP)});
   }
+  static String shortName(java.nio.file.Path p){
+  // Remove the uninteresting bits from a path, in order to make a short name for a test
+  final String preamble = "/Tests/bin/";
+  final String middle1 = "libTests";
+//  final String middle2 = "libProject";
+  String ret = p.toString();
+  int preStart = ret.indexOf(preamble);
+  ret = ret.substring(preStart + preamble.length());
+  ret = ret.replace(middle1, "");
+//  ret = ret.replace(middle2,  "");
+  return ret;
+}
   
   public static void addFilesFromRoot(Path root, String subPath, List<Object[]> files){
   try {
@@ -138,12 +145,14 @@ public static enum Opt{
   public abstract void act(Path root, List<Object[]> tests);
   };
 
+public abstract void pre();
+public abstract void post();
 @Test
 public void test() throws Throwable{
   System.out.println("start: "+this.p);
-  TestHelper.configureForTest();
+  pre();//TestHelper.configureForTest();
   L42.main(new String[]{this.p.toString()});
-  TestHelper.check42Fails(L42.record.toString());
+  post();//TestHelper.check42Fails(L42.record.toString());
   }
 
   public static Error handleThrowable(Throwable t){
