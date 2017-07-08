@@ -24,17 +24,21 @@ public class TestRemoveCode {
         return Arrays.asList(new Object[][] {
 
     {"{}","{}"
-  },{"{()}","{()}"
   },{"{C:{}}","{C:{}}"
-  },{"{ C://@private\n{}}","{}"
-  },{"{ A:{ method Void foo() use C check bar() void } C://@private\n{}}","{ A:{ method Void foo() use C check bar() void } C://@private\n{}}"
-  },{"{ A:{ method class Any foo() C } C://@private\n{}}","{ A:{ method class Any foo() C } C://@private\n{}}"
-  },{"{(C x) C://@private\n{}}","{(C x) C://@private\n{}}"
-  },{"{(C x) C://@private\n{(D y)} D://@private\n{(D y)}}","{(C x) C://@private\n{(D y)} D://@private\n{(D y)}}"
-  },{"{(C x) C://@private\n{(D y)} D://@private\n{(D y)} E:{} F://@private\n{}}","{(C x) E:{} C://@private\n{(D y)} D://@private\n{(D y)} }"
-  },{"{method C::m() foo() C://@private\n{method Void m()}}","{method C::m() foo() C://@private\n{method Void m()}}"
-  },{"{D:{method C::m() foo()} C://@private\n{method Void m()}}","{D:{method C::m() foo()} C://@private\n{method Void m()}}"
-  },{"{D:{method Any foo() A()} A://@private\n{() implements I} I://@private\n{interface}}","{D:{method Any foo() A()} A://@private\n{() implements I} I://@private\n{interface}}"
+  },{"{ C_$_1:{}}","{}"
+  },{"{ A:{ method Void foo() use C_$_1 check bar() void }"
+    + " C_$_1:{}}",
+    "{ A:{ method Void foo() use C_$_1 check bar() void }"
+    + " C_$_1:{}}"
+  },{"{ A:{ method class Any foo() C_$_1 } C_$_1:{}}",
+  "{ A:{ method class Any foo() C_$_1 } C_$_1:{}}"
+  },{"{C_$_1 x C_$_1:{}}","{C_$_1 x C_$_1:{}}"
+  },{"{C_$_1 x C_$_1:{D_$_1 y} D_$_1:{D_$_1 y}}",
+  "{C_$_1 x C_$_1:{D_$_1 y} D_$_1:{D_$_1 y}}"
+  },{"{C_$_1 x C_$_1:{D_$_1 y} D_$_1:{D_$_1 y} E:{} F_$_1:{}}",
+  "{C_$_1 x E:{} C_$_1:{D_$_1 y} D_$_1:{D_$_1 y} }"
+  },{"{D:{method Any foo() A_$_1()} A_$_1:{implements I_$_1 class method This() } I_$_1:{interface}}",
+  "{D:{method Any foo() A_$_1()} A_$_1:{implements I_$_1 class method This()} I_$_1:{interface}}"
   }});}
   @Test public void test() {
     TestHelper.configureForTest();

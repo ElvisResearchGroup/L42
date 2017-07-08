@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import ast.Ast;
 import ast.ExpCore;
@@ -24,7 +25,7 @@ public static class Test1 {
   @Parameter(2) public String _e;
   @Parameter(3) public String _expected1;
   @Parameter(4) public String _expected2;
-  @Parameterized.Parameters
+  @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{B:error void}","Void","<Empty Paths>","<Empty Paths>"
@@ -32,7 +33,11 @@ public static class Test1 {
   },{lineNumber(),"{A:{}B:error void}","A.foo()","<Empty Paths>","This0.A "
   },{lineNumber(),"{C:{} A:{ method C m()} B:error void}","A.foo()","<Empty Paths>","This0.A This0.C "
   },{lineNumber(),"{ A:{ } B:error void}"," (A a=Any.foo() a)","<Empty Paths>","This0.A "
-  },{lineNumber(),"{A:{(fwd A x)} Factory:{ class method A (fwd A a) A(x:a)}  B:error void} ", " (A myA=Factory(a:myA)  {})","<Empty Paths>","This0.A This0.Factory "
+  },{lineNumber(),
+  "{A:{A x class method mut This(fwd A x)}"
+  +" Factory:{ class method A (fwd A a) A(x:a)}  B:error void} ",
+  " (A myA=Factory(a:myA)  {})",
+  "<Empty Paths>","This0.A This0.Factory "
   }});}
 @Test  public void test() {
   Program p=TestProgram.p(_p);

@@ -23,11 +23,10 @@ public class TestPush {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {"{}","{B:{}}","B"
-  },{"{()}","{B:{()}}","B"
   },{"{A:{}}","{B:{A:{}}}","B"
-  },{"{(This2 foo)}","{B:{(This3 foo)}}","B"
-  },{"{(This2 a,This1 b,This0 c)}","{B:{(This3 a,This2 b,This0 c)}}","B"
-  },{"{(This0.H a) H:{}}","{B:{(This0.H a) H:{}}}","B"
+  },{"{This2 foo}","{B:{This3 foo}}","B"
+  },{"{This2 a,This1 b,This0 c}","{B:{This3 a,This2 b,This0 c}}","B"
+  },{"{This0.H a H:{}}","{B:{This0.H a H:{}}}","B"
   //test also the pushMany
 }});}
 @Test  public void test() {

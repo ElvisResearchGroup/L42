@@ -4904,6 +4904,10 @@ class method
 class This1.Path #default#redirect(Void path) 
 class method 
 This0.Redirect redirect(This1.Path path, class Any into) 
+class method 
+This0.RedirectRefTo redirect(This1.Path path, This1.Location.Type.RefTo intoRefTo) 
+class method 
+This0.SumMethods sumMethods(This1.Selector that, This1.Selector and, This1.Path of, This1.S over, This1.Selector into) 
 Fail: {interface implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 refine class method 
 This2.S kind() 
@@ -5421,6 +5425,73 @@ class method
 This0 #apply(This2.Path src, class Any dest) 
 method 
 Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
+RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+refine read method 
+This2.Bool equals(read Any that) 
+method 
+This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
+read method 
+This2.Bool #equalequal(read This0 that) 
+refine read method 
+class This2.Message class() 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+method 
+mut This2.S.SConcat #seqBuilder() 
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }}
+RedirectRefTo: {
+mut method 
+This2.Path #src() 
+read method 
+This2.Path src() 
+mut method 
+This2.Location.Type.RefTo #into() 
+read method 
+This2.Location.Type.RefTo into() 
+class method 
+This0 #apply(This2.Path src, This2.Location.Type.RefTo into) 
+method 
+Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit, This1.RefToUnfit }
 PlgMethod: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.RenameMethods
 */
@@ -5490,7 +5561,45 @@ Void #add(This2.Selector abstract, This2.Path of, This2.Selector alias)
 mut method 
 Void #add(This2.Selector abstract) 
 mut method 
-Void #add(This2.Selector abstract, This2.Selector alias) }}
+Void #add(This2.Selector abstract, This2.Selector alias) }
+PlgSumMethods: {/*@plugin  toFix 
+@pluginPart is.L42.connected.withSafeOperators.refactor.SumMethods
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 
+class method 
+Void #pluginUnresponsive(Library binaryRepr) 
+class method 
+Library sumMethods(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }
+SumMethods: {
+mut method 
+This2.Selector #that() 
+read method 
+This2.Selector that() 
+mut method 
+This2.Selector #and() 
+read method 
+This2.Selector and() 
+mut method 
+This2.Path #of() 
+read method 
+This2.Path of() 
+mut method 
+This2.S #over() 
+read method 
+This2.S over() 
+mut method 
+This2.Selector #into() 
+read method 
+This2.Selector into() 
+class method 
+This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector into) 
+method 
+Library #leftrightleft(Library that) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }}
 Optimize: {
 RemoveUnreachableCode: {
 class method 
@@ -5598,7 +5707,7 @@ read This3.Composers.Libs inner()
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit }
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
 mut method 
 This3.Path #patch() 
@@ -5661,7 +5770,7 @@ read This3.Composers.Libs inner()
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit }
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
 mut method 
 This3.Path #patch() 
@@ -5679,7 +5788,7 @@ read This2.Composers.Libs inner()
 class method 
 mut This0 #apply(mut This2.Composers.Libs inner) 
 method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit }
+Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation }
 Patcher: {
 mut method 
 This2.Path #patch() 

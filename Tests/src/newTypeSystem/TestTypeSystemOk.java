@@ -23,6 +23,7 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Ast.Stage;
 import ast.ErrorMessage;
+import ast.ErrorMessage.MethodNotPresent;
 import ast.ExpCore;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
@@ -77,32 +78,25 @@ public void testAllSteps() {//s1 unused :(
 }
 
 
-@RunWith(Parameterized.class)
 public static class TesFail {
-  @Parameter(0) public String s1;
-  @Parameter(1) public String s2;
-  @Parameterized.Parameters
-  public static List<Object[]> createData() {
-    return Arrays.asList(new Object[][] {
-    {"This0.C",
+@Test(expected=MethodNotPresent.class)
+public void test2() {runTypeSystem(
     "{C:{class method Void foo() (D.foo())} "
     +"D:{class method Void bar() (void)}}"
-  },{"This0.C",
+    );}
+@Test(expected=FormattedError.class)
+public void test3() {runTypeSystem(
    "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
-  },{"This0.C",
+    );}
+@Test(expected=FormattedError.class)
+public void test4() {runTypeSystem(
     "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
- },{"This0.C",
+    );}
+@Test(expected=MethodNotPresent.class)
+public void test5() {runTypeSystem(
   "{K:{E:{class method Any  foo() (This1.foo())}} C:{class method Void foo() (D.foo())} D:{class method Library foo() (K.E.foo())}}"
-
-       }});}
-
-      @Test(expected=FormattedError.class)
-      public void testAllSteps() {//s1 unused :(
-        runTypeSystem(s2);
-        //assert false;
-      }
-
-      }
+   );}
+ }
 
    static ClassB runTypeSystem(String scb1) {
         TestHelper.configureForTest();

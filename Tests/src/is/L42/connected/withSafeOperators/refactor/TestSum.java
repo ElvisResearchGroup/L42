@@ -41,7 +41,8 @@ import programReduction.Program;
       {    lineNumber(),"{B:{}}","{C:{}}","{B:{} C:{}}",false
     },{    lineNumber(),"{}","{B:{}}","{ B:{} }",false
     },{    lineNumber(),"{B_$_1:{}}","{}","{B_$_1:{}}",false
-    },{    lineNumber(),"{B_$_1:{}}","{B_$_1:{}}","{B_$_1:{} B_$_6:{}}",false//twice the same, to test that we clear the used names
+    },{    lineNumber(),"{B_$_1:{}}","{B_$_1:{}}","{B_$_1:{} B_$_4:{}}",false//twice the same, to test that we clear the used names
+    },{    lineNumber(),"{B_$_1:{}}","{B_$_1:{}}","{B_$_1:{} B_$_4:{}}",false//twice the same, to test that we clear the used names
     },{    lineNumber(),"{B:{method Void m()}}","{B:{method B m()}}",
       "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash",
       true

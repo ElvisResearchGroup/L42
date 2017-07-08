@@ -40622,282 +40622,6 @@ method
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}}
-Data: {
-StateUnfit: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-refine class method 
-This2.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This2.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.S kind() this.readableName()
-refine read method 
-This2.S text() this._text()
-refine read method 
-This2.Message.Opt responseOf() this.cause()
-refine read method 
-This2.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-method 
-This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
-refine read method 
-This2.S toS() (
-  Void unused=(
-    Void unused0=(
-      This2.Bool cond=this.cause().isPresent().#bang()
-      (
-        Void unused3=cond.#checkTrue()
-        
-        catch exception Void catched0 void
-        
-        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
-        )
-      )
-    var This2.S res=This0.kind()
-    Void unused1=(
-      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
-        capsule This2.S.SBuilder b=This2.S.#builder()
-        b
-        ))).#bang()
-      (
-        Void unused4=cond0.#checkTrue()
-        
-        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b0=This2.S.#builder()
-          Void unused5=b0.#oSquare()
-          b0
-          ))))
-        
-        (res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b1=This2.S.#builder()
-          Void unused6=b1.#oSquare()
-          Void unused7=b1.#t()
-          Void unused8=b1.#e()
-          Void unused9=b1.#x()
-          Void unused10=b1.#t()
-          Void unused11=b1.#colon()
-          b1
-          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b2=This2.S.#builder()
-          Void unused12=b2.#comma()
-          Void unused13=b2.#space()
-          Void unused14=b2.#c()
-          Void unused15=b2.#a()
-          Void unused16=b2.#u()
-          Void unused17=b2.#s()
-          Void unused18=b2.#e()
-          Void unused19=b2.#colon()
-          b2
-          ))))))))
-        )
-      )
-    Void unused2=return (
-      This2.S.Continue rcv14=res.#from(seqBuilder:(
-        capsule This2.S.SConcat b3=res.#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#get())
-        b3
-        ))
-      rcv14.#from(builder:(
-        capsule This2.S.SBuilder b4=rcv14.#builder()
-        Void unused21=b4.#cSquare()
-        b4
-        ))
-      )
-    void
-    )
-  
-  catch return This2.S result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-refine read method 
-class This2.Message class() This0
-class method 
-This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-class method 
-This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
-*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
-class method 
-mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-class method 
-This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
-method 
-mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
-  capsule This2.S.SBuilder b=This2.S.#builder()
-  b
-  )))
-Continue: {
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-class method 
-This0 #apply(This3.S that) 
-method 
-mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
-method 
-This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
-Base: {/*class, ToS == required
-*/
-class method 
-Library #apply()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
-refine read method 
-class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This3.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This3.Bool.false()
-    void
-    )
-  
-  catch return This3.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine read method 
-This3.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This3.Bool.false()
-    void
-    )
-  
-  catch return This3.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-This3.Bool #equalequal(read This0 that) 
-refine read method 
-This3.S toS() }
-class method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation This2.Use.Override.#from(seqBuilder:(
-  capsule This2.Composers.Libs b=This2.Use.Override.#seqBuilder()
-  Void unused=b.#add(that:this.#apply())
-  b
-  )).#leftrightleft(that:that)}}
 Num: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
 */
 class method 
@@ -45648,7 +45372,7 @@ CurlyBlock-Should be unreachable code
   )}}
 GetMyName: {
 class method 
-This1.S #1#apply_$_4(class Any that) This1.S.#from(builder:(
+This1.S #1#apply_$_44(class Any that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#less()
   Void unused0=b.#less()
@@ -45936,11 +45660,11 @@ This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(th
 Opt: {/*will be Fixed in AdamTowel02
 */
 class method 
-This0 #1#apply0_$_5(This1 that) This0.#apply()
+This0 #1#apply0_$_45(This1 that) This0.#apply()
 method 
-This2.Bool #1isPresent_$_6() This2.Bool.false()
+This2.Bool #1isPresent_$_46() This2.Bool.false()
 method 
-This1 #1#get_$_7() error  {/*toFix*/}
+This1 #1#get_$_47() error  {/*toFix*/}
 method 
 This0.TOpt that() 
 class method 
@@ -46926,7 +46650,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Any #1parseError_$_8(This1.S that) This1.S.#from(builder:(
+Any #1parseError_$_48(This1.S that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#B()
   Void unused0=b.#o()
@@ -47823,7 +47547,7 @@ This0 #63() This0.#from(builder:(
   b
   ))
 class method 
-Any #1parseError0_$_9(This1.S that) This1.S.#from(builder:(
+Any #1parseError0_$_49(This1.S that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#S()
   Void unused0=b.#i()
@@ -49702,7 +49426,7 @@ CurlyBlock-Should be unreachable code
 */}
   ))
 class method 
-Any #1parseError1_$_10(This1.S that) This1.S.#from(builder:(
+Any #1parseError1_$_50(This1.S that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#S()
   Void unused0=b.#e()
@@ -50451,7 +50175,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Any #1parseError2_$_11(This1.S that) (
+Any #1parseError2_$_51(This1.S that) (
   This1.S.Continue rcv52=(
     This1.S rcv53=This1.S.#from(builder:(
       capsule This1.S.SBuilder b=This1.S.#builder()
@@ -50528,7 +50252,7 @@ Any #1parseError2_$_11(This1.S that) (
     ))
   )
 class method 
-Any #1parseError3_$_12(This1.S that, This1.Message cause) (
+Any #1parseError3_$_52(This1.S that, This1.Message cause) (
   This1.S.Continue rcv54=(
     This1.S rcv55=This1.S.#from(builder:(
       capsule This1.S.SBuilder b=This1.S.#builder()
@@ -51443,7 +51167,7 @@ mut This0 #seqBuilder() this.empty()
 class method 
 mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
-Void #add0_$_3(This1.Test that) this.add(right:that)
+Void #add0_$_43(This1.Test that) this.add(right:that)
 read method 
 mut This0 reverse() (
   capsule This0 result=This0.empty()

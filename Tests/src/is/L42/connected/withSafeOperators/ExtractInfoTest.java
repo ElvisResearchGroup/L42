@@ -26,13 +26,13 @@ public class ExtractInfoTest {
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
       {"{}","B",0
-    },{"{()}","B",0
+    },{"{class method This()}","B",0
     },{"{}","This0",0
-    },{"{()}","This0",1//for desugaring of ()
-    },{"{B:{(This0 a)}}","This0",0
-    },{"{B:{(This1 a)}}","This0",1//ctx, getter, exposer
-    },{"{B:{(This0 a)}}","This0.B",1//ctx*2, getter,exposer
-    },{"{B:{(This0 a, This1.B b)}}","This0.B",1//ctx*3, getter*2,exposer*2
+    },{"{class method This()}","This0",1//for desugaring of ()
+    },{"{B:{This0 a}}","This0",0
+    },{"{B:{This1 a}}","This0",1//ctx, getter, exposer
+    },{"{B:{This0 a}}","This0.B",1//ctx*2, getter,exposer
+    },{"{B:{This0 a, This1.B b}}","This0.B",1//ctx*3, getter*2,exposer*2
   }});}
   @Test  public void test() {
     ClassB classInput=getClassB(false,null,_classInput);

@@ -37,10 +37,9 @@ public class UsedPathsPlus {
     class CollectPaths extends CloneVisitor{
       public ExpCore visit(ClassB s) {return s;}
 
-      @Override public ExpCore visit(EPath s1){
-        Path s=s1.getInner();
+      @Override public Path liftP(Path s){
         if(!s.isPrimitive()){ps.add(s);}
-        return super.visit(s1);
+        return super.liftP(s);
         }
       }
     e.accept(new CollectPaths());

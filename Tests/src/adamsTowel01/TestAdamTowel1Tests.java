@@ -10,9 +10,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.runners.Parameterized.Parameters;
 
-import helpers.TestRunner.Opt;
+import tools.TestRunner.Opt;
 
-public class TestAdamTowel1Tests extends helpers.TestRunner{
+public class TestAdamTowel1Tests extends tools.TestRunner{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
     List<Object[]> tests = goInner(

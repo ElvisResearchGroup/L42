@@ -1,4 +1,4 @@
-package helpers;
+package tools;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +19,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import facade.L42;
+import helpers.ParallelizedParameterized;
 import helpers.TestHelper;
 
 @RunWith(ParallelizedParameterized.class)

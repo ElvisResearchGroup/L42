@@ -24,13 +24,12 @@ public class TestPop {//add more test for error cases
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {"{B:{}}","{}",false
-  },{"{B:{()}}","{()}",false
-  },{"{B:{(C a) C:{}}}","{(C a) C:{}}",false
+  },{"{B:{C a C:{}}}","{C a C:{}}",false
   },{"{B:{method This1.B b()}}",
     "{method This0 b()}",false
-  },{"{B:{(This0.C a,This1.B.C b,This2.C c ) C:{}}}",
-    "{(This0.C a,This0.C b,This1.C c ) C:{}}",false
-  },{"{B:{(This0.C a,This1 b,This2.C c ) C:{}}}",
+  },{"{B:{This0.C a,This1.B.C b,This2.C c  C:{}}}",
+    "{This0.C a,This0.C b,This1.C c  C:{}}",false
+  },{"{B:{This0.C a,This1 b,This2.C c  C:{}}}",
     "{Kind:{//@stringU\n//NotBox\n}"
     +"UsedBy:{//@stringU\n//[This0.B]\n}"
     +"Supertypes:{//@stringU\n//[]\n}"

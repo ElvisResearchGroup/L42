@@ -291,6 +291,7 @@ public class TestHelper {
     Configuration.reduction=new reduction.Facade();
     L42.record=new StringBuilder();
     L42.usedNames.clear();
+    L42.resetFreshPrivate();
     Resources.clearRes();
     Timer.restart();
     Timer.activate("TOP");

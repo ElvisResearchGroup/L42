@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -76,7 +77,7 @@ public class Timer {
     for(String name:names){
       long[] stats	=processStatistic.get(name);
       result+="# "+name+"\n";
-      result+=String.format("percentage:%.2f/%.2f tot:%.3f/%.3f max:%.3f/%.3f number:%d",
+      result+=String.format(new Locale("en", "GB"),"percentage:%.2f/%.2f tot:%.3f/%.3f max:%.3f/%.3f number:%d",
     		  (stats[RAWTOTAL]/(float)totTop), (stats[NETTOTAL]/(float)totTop),
     		  stats[RAWTOTAL]/60000f, stats[NETTOTAL]/60000f,
     		  stats[RAWMAX]/60000f, stats[NETMAX]/60000f,

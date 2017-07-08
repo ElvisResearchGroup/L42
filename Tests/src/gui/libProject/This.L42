@@ -1,7 +1,7 @@
 {reuse L42.is/AdamTowel02
 GuiLib:{class method Library (){
   reuse L42.is/AdamTowel02
-    Exported:{(S id)
+    Exported:K<><{S id
       GuiPlugin:{//@plugin
         //L42.is/connected/withHtml
         }
@@ -69,7 +69,7 @@ GuiLib:{class method Library (){
       mut Iterator events()
         Iterator(id: this.id(), current:S"")
 
-      Iterator:{mut (S id, var S current)
+      Iterator:K<><{S id, var S current
 
         class method S auxFetchEvent(S id) exception Void {
           Library s=use GuiPlugin
