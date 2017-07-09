@@ -3,6 +3,8 @@ ToS:{interface
   read method S toS()
   }
 Classable:{interface
+  class method read This cast(read This that)
+  class method mut This #cast(mut This that)
   read method class This class()
   class method S readableName()
   class method Bool is(class Any subtype)

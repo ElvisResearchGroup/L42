@@ -187,8 +187,4 @@ IteratorVar: UnsafeRefactor.Compose.compose(left:IteratorTrait(),
 //################# Interfaces implemented
   method toS()
     this.inner().toS()
-  
-  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-  refine read method class This class() This
-  method readableName()GetMyName(This)
-  }
+    }

@@ -1,4 +1,4 @@
-{interface implements Concept.ToS, Concept.Equals, Concept.Classable
+{interface implements Concept.Base
 class method S kind()
 read method S text()
 read method Opt responseOf()
@@ -25,22 +25,16 @@ EqualMessages:{
   }}
 $:{class method This()
   class method Library <><(Library that)
-    UnsafeRefactor.Compose.compose(left:that, right:This.messageTrait())
+    UnsafeRefactor.MiniData<><UnsafeRefactor.Compose.compose(left:that, right:This.messageTrait())
   class method Library messageTrait() {implements Message
     S _text, Message.Opt cause
     class method This (S _text, Message.Opt cause)
-    method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-    method readableName()GetMyName(This)
     method kind() this.readableName()
     method text() this._text()
     method responseOf() this.cause()
-    method ==(that){
-      with that (on read This return this.equals(that))
-      return Bool.false()
-      }
-  method
-  This (Message that)
-    This(text:this.text(),cause:that)
+    method
+    This (Message that)
+      This(text:this.text(),cause:that)
 
     method toS() {
       if !this.cause().isPresent() (
@@ -57,7 +51,6 @@ $:{class method This()
 
     read method Bool equals(read This that)
       Message.EqualMessages(this,other:that)
-    refine read method class Message class() This
     class method
     This (S text)
       This(_text:text,cause:Message.Opt())
@@ -70,20 +63,20 @@ $:{class method This()
       class method This #from(S.SBuilder builder)
         This(text:S.#from(builder:builder))
 
-  method
-  Continue #from(S.SConcat seqBuilder)
-    Continue(seqBuilder.old()++seqBuilder.accumulator())
+    method
+    Continue #from(S.SConcat seqBuilder)
+      Continue(seqBuilder.old()++seqBuilder.accumulator())
 
-  Continue:{S that
-    class method This(S that)
-    method mut S.SBuilder #builder() S.SBuilder.empty()
-    method This1 #from(S.SBuilder builder)
-      This1(text:this.that()++S.#from(builder:builder) )
-    }
+    Continue:{S that
+      class method This(S that)
+      method mut S.SBuilder #builder() S.SBuilder.empty()
+      method This1 #from(S.SBuilder builder)
+        This1(text:this.that()++S.#from(builder:builder) )
+      }
 
-  method
-  mut S.SConcat #seqBuilder()
-    S.SConcat(old:this.text(),accumulator:S"")
+    method
+    mut S.SConcat #seqBuilder()
+      S.SConcat(old:this.text(),accumulator:S"")
 
     }
   }

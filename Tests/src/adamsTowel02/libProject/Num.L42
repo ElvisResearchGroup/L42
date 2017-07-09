@@ -1,4 +1,4 @@
-{ implements Concept.ToS Concept.Equals, Concept.Classable //@_private
+{ implements Concept.Base
   class method mut This _private(Library _binaryRepr)
   read method Library _binaryRepr()
  
@@ -6,9 +6,6 @@
     //L42.is/connected/withNumbers
     }
 
-  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-  refine read method class This class() This
-  method readableName()GetMyName(This)
   class method
   This fromS(Concept.ToS that) (
     s=that.toS()
@@ -71,10 +68,6 @@
     use Plg
       check ifNumEqualDo(n1:this.#binaryRepr() n2:that.#binaryRepr())
       return Bool.true()
-    return Bool.false()
-    }
-  method ==(that){
-    with that (on read This return this.equals(that))
     return Bool.false()
     }
 

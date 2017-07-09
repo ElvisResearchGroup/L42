@@ -19,21 +19,14 @@
       class method
       This parse(S that)
       
-      // Marco's gathered methods to implement Base
       method toS() this.that()  // Assumes simple, non-destructive parsing
-      refine read method class This class() This
-      method readableName()GetMyName(This)
-      method is(subtype){  with subtype (on class This return Bool.true()) return Bool.false()}
-      method ==(that){
-        with that (on read This return this.equals(that))
-        return Bool.false()
-        }
+      
       read method
       Bool equals(read This that)
         this.that()==that.that()
       },)
 
-    res=Use.Override[lib]<><that
+    res=Use.Override[UnsafeRefactor.MiniDataTrait();lib]<><that
 
     error on Refactor2.ClassClash
       X"Someone redefined part of the implementation of AlphaNumeric"

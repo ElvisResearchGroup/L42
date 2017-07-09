@@ -14,7 +14,16 @@
   mut This #from(Library binaryRepr)
     This(_binaryRepr:binaryRepr)
  
-  
+  refine class method
+  read This cast(read Concept.Classable that){
+    with that (on read This return that)
+    error GetMyName.classCastError(that)
+    }
+  refine class method
+  mut This #cast(mut Concept.Classable that){
+    with that (on mut This return that)
+    error GetMyName.classCastError(that)
+    }
   method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
   refine read method class This class() This
   method readableName()GetMyName(This)

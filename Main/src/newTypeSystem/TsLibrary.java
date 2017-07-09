@@ -197,7 +197,7 @@ public interface TsLibrary extends TypeSystem{
         }
       for(MethodWithType mwt:stateC.subList(1,stateC.size())){
         if(!coherentF(p,ck,mwt)){
-          if(force){throw new ErrorMessage.NotOkToStar(top, ck,"abstract method\n"+sugarVisitors.ToFormattedText.of(mwt)+"\ndo not fit candidate factory", mwt.getP());}
+          if(force){throw new ErrorMessage.NotOkToStar(top, ck,"abstract method\n"+sugarVisitors.ToFormattedText.of(mwt)+"\ndo not fit candidate factory", top.getP());}
           return false;
           }
       }
