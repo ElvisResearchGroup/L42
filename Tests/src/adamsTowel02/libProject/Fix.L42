@@ -7,7 +7,6 @@ GetMyName:{
   }
 Message:{Opt:This2.Opt(This2.Message)}
 
-Guard:{interface ParseFail:{interface  implements Guard}}
 Bool:{
   ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method

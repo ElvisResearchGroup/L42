@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import ast.ExpCore;
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Type;
@@ -194,6 +194,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     boolean preciseApplicable=
       k.getKind()==SignalKind.Return &&
       k.getT().equals(Path.Any().toImmNT()) &&
+      k.getE().equals(new ExpCore.X(Ast.Position.noInfo, k.getX())) &&      
       tr.returns.stream().allMatch(t->
         TypeSystem.subtype(in.p, t.getPath(),in.expected.getPath())==null
         );
@@ -231,13 +232,11 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     assert k.getKind()==SignalKind.Return;
     assert k.getT().equals(Path.Any().toImmNT());
     assert !TypeManipulation.catchRethrow(k);
-    Type noFwdT1=TypeManipulation.noFwd(in.expected);
-    TOut _out=type(in.addG(k.getX(),false,noFwdT1).withE(k.getE(), noFwdT1));
-    if(!_out.isOk()){return _out.toError();}
-    TOk out=_out.toOk();
-    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(noFwdT1.withMdf(Mdf.Immutable)),out.computed);
-    return res;
-    }
+    assert k.getE() instanceof ExpCore.X;
+    assert k.getE().equals(new ExpCore.X(Ast.Position.noInfo, k.getX()));
+    Path exp=in.expected.getPath();
+    return kTypeCatch(in, tr, k.withT(k.getT().withPath(exp)));
+  }
   default TOutK kTypeCatchAny(TIn in,Tr tr,On k){
     Block e=(Block) k.getE();
     ExpCore e0=e.getDecs().get(0).getInner();

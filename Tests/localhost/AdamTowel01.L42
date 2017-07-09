@@ -4936,7 +4936,7 @@ read Any get(This3.Size that) (
     void
     )
   
-  catch return Any result result
+  catch return read Any result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -4967,7 +4967,7 @@ mut Any #get(This3.Size that) (
     void
     )
   
-  catch return Any result result
+  catch return mut Any result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -42632,7 +42632,7 @@ This1.Strings split(This1.S that, capsule This0.Skip skipper) (
     void
     )
   
-  catch return This1.Strings result result
+  catch return capsule This1.Strings result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code

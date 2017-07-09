@@ -26,17 +26,19 @@ import tools.Assertions;
 public interface TsOperations extends TypeSystem{
     
     default TOut tsPath(TIn in, ExpCore.EPath s) {
-    //D |- P~>P:class P <= T | emptyTr
-    //D.p|-class P <= T
-    Type t=new Type(Mdf.Class,s.getInner(),Doc.empty());
-    assert s.getInner().isPrimitive() || in.p.extractClassB(s.getInner())!=null;
-    ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
-    if(subErr==null){
-      return new TOk(in,s,t);
+      Type t=new Type(Mdf.Class,s.getInner(),Doc.empty());
+      if(s.getInner().isCore()){    
+        ClassB cb=in.p.extractClassB(s.getInner());
+        assert cb!=null;
+        if(cb.isInterface()){t=t.withPath(Path.Any());}
+        }
+      ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+      if(subErr==null){
+        return new TOk(in,s,t);
+        }
+      TErr out=new TErr(in,"----",t,subErr);
+      return out;
       }
-    TErr out=new TErr(in,"----",t,subErr);
-    return out;
-    }
 
     default TOut tsX(TIn in, X s) {
     //D |-x ~> x :D.G(x) <= T | emptyTr

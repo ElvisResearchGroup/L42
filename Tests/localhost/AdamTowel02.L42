@@ -1680,7 +1680,7 @@ read Any get(This3.Size that) (
     void
     )
   
-  catch return Any result result
+  catch return read Any result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -1711,7 +1711,7 @@ mut Any #get(This3.Size that) (
     void
     )
   
-  catch return Any result result
+  catch return mut Any result result
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code

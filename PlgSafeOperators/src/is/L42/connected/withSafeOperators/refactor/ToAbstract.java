@@ -39,13 +39,6 @@ public static ClassB toAbstractDest(PData pData,ClassB cb, String sel,String new
   return toAbstractAux(pData.p,cb,Collections.emptyList(),MethodSelector.parse(sel),MethodSelector.parse(newSel));
   }
 
-/**
- If both sel and newSel exists, it always check for subtyping
-   This make it more resilient.
- If sel is abstract,(if no error) always return cb unmodified. 
-   This make it safe on interfaces.
- If a new method is introduced, it is not refine.
- */
 public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorUnfit, PathUnfit, MethodClash{
   if(MembersUtils.isPrivate(path)){
     throw new RefactorErrors.PathUnfit(path).msg("Private path");
@@ -76,11 +69,10 @@ public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodS
     boolean isSrcAbstract=!_mwt.get_inner().isPresent();
     MethodWithType mwt1=_mwt.with_inner(Optional.empty());
     Functions.replaceIfInDom(newMs,mwt1);
-    if(isSrcAbstract &&newSel==null){ return cb;}
+    if(isSrcAbstract){ return cb;}
     if(newSel==null){ return cb.withMs(newMs);  }
     MethodWithType mwt2 = (MethodWithType) cb._getMember(newSel);
     if(mwt2==null){
-      if(isSrcAbstract){ return cb;}
       mwt2=_mwt.withMs(newSel).withMt(_mwt.getMt().withRefine(false));
       if(!newSel.getNames().equals(_mwt.getMs().getNames())){
         mwt2=mwt2.withInner(MembersUtils.renameParNames(
@@ -105,3 +97,14 @@ public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodS
     return cb.withMs(newMs);
     }
   }
+
+interface ToAbstractSpec{
+/**<pre>
+If sel is abstract, always return l unmodified. 
+check for subtying only if sel is not abstract and newSel exists.
+If a new method is introduced, it is not refine.
+//Note: I believed it was better to always test for subtyping.
+ * But this more relaxed operator can be used in a simpler way.
+</pre>*/
+void toAbstract();
+}

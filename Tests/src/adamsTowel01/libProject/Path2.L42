@@ -1,0 +1,79 @@
+{//@plugin is.L42.connected.withSafeOperators
+ //@pluginPart java.util.List
+  implements Concept.Base
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr  
+  class method mut This #from(Library binaryRepr)
+  read method Library #binaryRepr()
+
+  class method
+  This from(Concept.ToS string) {
+    return PlgPath.rawFromS(string.toS())
+    catch error Any error ParseFail"The provided string is not a valid path: "[string]""
+    }
+  ParseFail:Message.$<><{ implements Guard.ParseFail}
+
+  class method
+  This #from(S.SBuilder builder)
+    This.from(string:S.#from(binaryRepr: builder.#binaryRepr()))
+  class method
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
+
+  method
+  Strings names()
+    Strings[with i in 0Size.vals(upTo:this.nameSize()) (use[this.name(i)])]
+
+  class method
+  This from(read Strings names) {
+    if names.isEmpty() (return This"This")
+    s=S""[with n in names.vals() (use[n sep:S"."])]""
+    return This.from(string:s) //(end:s.size()-1Size)
+    }
+
+  class method
+  This fresh()
+    This.fresh(path:This"Fresh")
+
+  method
+  S name(Size that)
+    this.get(that)
+  method
+  Size nameSize()
+    this.size()
+
+  method
+  This ++(This that)
+    PlgPath.concat(this and:that)
+  method
+  Bool isUnique()
+    PlgPath.isUnique(this)
+  class method
+  This fresh(This like)
+    PlgPath.fresh(like)
+  //from Java
+  method
+  S get(Size that)
+  method
+  Size size()
+
+
+  PlgPath:{
+    //@plugin is.L42.connected.withSafeOperators
+    //@pluginPart is.L42.connected.withSafeOperators.refactor.PathAdapter
+    class method
+    Library #pluginUnresponsive(Library binaryRepr)
+      binaryRepr
+
+    class method
+    This1 concat(This1 that,This1 and)
+    class method
+    Bool isUnique(This1 that)
+    class method
+    This1 fresh(This1 that)
+    class method 
+    This1 rawFromS(S that)
+
+    }
+  }

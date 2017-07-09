@@ -220,18 +220,21 @@ public static String freshName(String pathR, Set<String> usedNames) {
   }
 }
 
-public static Path freshPathName(Path pathR, Set<String> usedNames) {
-  String p=null;
-  if(pathR.isPrimitive()){p=freshName(pathR.toString(),usedNames);}
-  else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}
-  else{
-    Ast.C last=pathR.getCBar().get(pathR.getCBar().size()-1);
-    if (last.isUnique()){return pathR.popC().pushC(last.withUniqueNum(L42.freshPrivate()));}
-    p=last.toString();
-    p=freshName(p,usedNames);
+
+public static List<Ast.C> freshPathName(List<Ast.C> pathR, Set<String> usedNames) {
+  if(pathR.isEmpty()){return Collections.singletonList(new Ast.C(freshName("This",usedNames),-1));}
+  Ast.C last=pathR.get(pathR.size()-1);
+  if (last.isUnique()){
+    last=last.withUniqueNum(L42.freshPrivate());
     }
-  return pathR.popC().pushC(C.of(p));
-  }
+  else{
+    last=last.withInner(freshName(last.getInner(),usedNames));
+    }
+  List<Ast.C> res=new ArrayList<>(pathR);
+  res.set(res.size()-1,last);
+  return res;
+}
+
 
 public static String freshName(Path pathR, Set<String> usedNames) {
   String p=null;
