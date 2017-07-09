@@ -1120,7 +1120,66 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) }}
+This2.Bool #equalequal(read Any that) }
+CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+method 
+This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
+read method 
+This2.Bool equals(read This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+method 
+mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }}}
 System: {
 Guard: {/* implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 */interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)

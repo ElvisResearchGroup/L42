@@ -55,7 +55,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -88,7 +88,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -426,7 +426,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -459,7 +459,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -1192,7 +1192,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -1225,7 +1225,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -2294,7 +2294,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -2327,7 +2327,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -2458,7 +2458,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -2491,7 +2491,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -3001,7 +3001,7 @@ This1.S #apply(class Any that) This1.S.#from(builder:(
   b
   ))
 class method 
-Any classCastError(read This1.Concept.Classable that) This1.S.#from(builder:(
+Any classCastError(read This1.Concept.Classable that, class This1.Concept.Classable classObj) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#less()
   Void unused0=b.#less()
@@ -3395,7 +3395,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -3428,7 +3428,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -3651,7 +3651,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -3684,7 +3684,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -3907,7 +3907,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -3940,7 +3940,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -4050,7 +4050,263 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) }}
+This2.Bool #equalequal(read Any that) }
+CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() this.readableName()
+refine read method 
+This2.S text() this._text()
+refine read method 
+This2.Message.Opt responseOf() this.cause()
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This2.S toS() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        )
+      )
+    var This2.S res=This0.kind()
+    Void unused1=(
+      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b=This2.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          )))
+        
+        res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b1=This2.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b2=This2.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This2.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This2.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This2.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+class method 
+This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+class method 
+This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+class method 
+mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
+class method 
+This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+  capsule This2.S.SBuilder b=This2.S.#builder()
+  b
+  )))
+refine read method 
+class This0 class() This0
+refine class method 
+read This0 cast(read This2.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return read This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      mut This0 that0=(
+        Void unused2=return that
+        
+        catch return mut This0 casted casted
+        
+        catch return mut Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return mut This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine read method 
+This2.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+method 
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}}
 System: {
 Guard: {/* implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 */interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -4209,7 +4465,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -4242,7 +4498,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -4471,7 +4727,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -4504,7 +4760,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -4728,7 +4984,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -4761,7 +5017,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -5051,7 +5307,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -5084,7 +5340,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -8305,7 +8561,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -8338,7 +8594,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -11084,7 +11340,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -11117,7 +11373,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -12397,7 +12653,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -12430,7 +12686,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -13082,7 +13338,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -13115,7 +13371,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This1.GetMyName.classCastError(that:that)
+    Void unused1=error This1.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -14163,7 +14419,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -14196,7 +14452,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -14621,7 +14877,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -14654,7 +14910,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -16064,7 +16320,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -16097,7 +16353,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -16556,7 +16812,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -16589,7 +16845,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -16803,7 +17059,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -16836,7 +17092,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -17239,7 +17495,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -17272,7 +17528,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -18650,7 +18906,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -18683,7 +18939,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -19075,7 +19331,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -19108,7 +19364,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -21166,7 +21422,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -21199,7 +21455,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -21591,7 +21847,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -21624,7 +21880,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -23120,7 +23376,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -23153,7 +23409,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -23545,7 +23801,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -23578,7 +23834,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -25006,7 +25262,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -25039,7 +25295,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -25254,7 +25510,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -25287,7 +25543,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -25679,7 +25935,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -25712,7 +25968,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -27099,7 +27355,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -27132,7 +27388,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -27524,7 +27780,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -27557,7 +27813,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -28944,7 +29200,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -28977,7 +29233,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -29369,7 +29625,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -29402,7 +29658,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -30726,7 +30982,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -30759,7 +31015,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -30888,7 +31144,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -30921,7 +31177,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31072,7 +31328,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31105,7 +31361,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31234,7 +31490,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31267,7 +31523,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31527,7 +31783,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31560,7 +31816,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31701,7 +31957,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -31734,7 +31990,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This3.GetMyName.classCastError(that:that)
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -32126,7 +32382,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -32159,7 +32415,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This4.GetMyName.classCastError(that:that)
+    Void unused1=error This4.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -33645,7 +33901,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -33678,7 +33934,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -33849,7 +34105,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -33882,7 +34138,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34053,7 +34309,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34086,7 +34342,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34257,7 +34513,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34290,7 +34546,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34475,7 +34731,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34508,7 +34764,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34693,7 +34949,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34726,7 +34982,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34904,7 +35160,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -34937,7 +35193,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35122,7 +35378,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35155,7 +35411,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35326,7 +35582,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35359,7 +35615,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35530,7 +35786,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35563,7 +35819,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35734,7 +35990,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -35767,7 +36023,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -36389,7 +36645,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -36422,7 +36678,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -38385,7 +38641,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -38418,7 +38674,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -39989,7 +40245,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -40022,7 +40278,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -41599,7 +41855,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -41632,7 +41888,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -42957,7 +43213,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -42990,7 +43246,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -46047,7 +46303,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   
@@ -46080,7 +46336,7 @@ CastT-Should be unreachable code
         void
         )
       )
-    Void unused1=error This2.GetMyName.classCastError(that:that)
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
     void
     )
   

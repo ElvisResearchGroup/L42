@@ -4,6 +4,9 @@ GetMyName:{
   This2.S (class Any that)
     Location.Type.RefTo.Binded(classObj:that)
       .toS().withoutLeft(val:This2.S"This0.")
+  class method
+  Any classCastError(read Concept.Classable that,class Concept.Classable classObj)   
+    Guard.CastFail"Not "[This(that.class())]"<="[This(classObj)]"; provided object is of type "[This(that.class())]""
   }
 Message:{Opt:This2.Opt(This2.Message)}
 
