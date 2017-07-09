@@ -110,17 +110,6 @@ public interface TsLibrary extends TypeSystem{
     }
 
   default TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
-//(member method)
-//Phase| p| Ps |-M ~> M'
-//  where
-//  M =refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?
-//  M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
-//  G=this:mdf This0,x1:T1,..,xn:Tn
-//  if e?=e then
-//  Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1
-//  forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
-//else
-//  e?=e?'
     MethodWithType mwt1;
     if(!mwt.get_inner().isPresent()){
       mwt1=mwt;
@@ -141,15 +130,6 @@ public interface TsLibrary extends TypeSystem{
       mwt1=mwt.with_inner(Optional.of(out.toOk().annotated));
     }
     if(mwt.getMt().isRefine()){
-//  refine? = refine <=> 
-//    forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
-//      all of the following hold:
-//      M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
-//      p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name" or worst, ancestor do not define method named m(xs)
-//      p.equiv(T1,T'1)..p.equiv(Tn,T'n) //invalid type w.r.t. ancestor paramerer xi   
-//      forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
-//      //or error: leaked exception P is not the subtype of a declared exception
-//      /or  method declares an exception (P) which is not a subtype of ancestor exceptions 
       for(Type t :supertypes){
         Path P=t.getPath();
         ClassB cbP=in.p.extractClassB(P);

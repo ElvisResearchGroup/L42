@@ -180,7 +180,7 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
 //(exception A() exception B() catch exception C x useXAsB(x) ) 
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
 Phase |p |G |Tr|-catch return Any x x ~> catch return T'.P x x:T<=T' | Tr'
-  where//TODO: this whole rule has changed and need to be updated in code
+  where
   not catchRethrow(catch return Any x e)
   forall T0 in Tr.Ts p |-T0.P<=T'.P
   Phase| p| G| Tr |- catch return T'.P x x ~> catch return T'.P x x :T <= T' | Tr'
@@ -247,7 +247,7 @@ Phase| p| Ps |-M ~> M'
   M'=refine? mdf method T m(T1 x1 .. Tn xn)exceptions Ps0 e?'
   G=this:mdf This0,x1:T1,..,xn:Tn
   if e?=e then
-    Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1//TODO: IN CODE, check empty ts
+    Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
   else
     e?=e?'
