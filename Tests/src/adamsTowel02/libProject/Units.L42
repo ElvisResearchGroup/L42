@@ -34,7 +34,7 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     This /(This that)
 
     read method
-    Bool ==(read This that)
+    Bool equals(read This that)
 
     method
     Bool >(This that)
@@ -70,7 +70,7 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     This(this.that()/that)
 
   read method
-  Bool ==(read This that)
+  Bool equals(read This that)
     this.that()==that.that()
 
   method
@@ -155,7 +155,7 @@ Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, Not
   exception on Refactor2.SelectorUnfit
     NotValidUnit"Provided class "[GetMyName(c2)]" do not offers 'method Support #inner()'"
   r=t1.refTo()
-  if !r.equals(t2.refTo()) (exception NotSameSupport
+  if r!=t2.refTo() (exception NotSameSupport
     "Provided classes "[GetMyName(c1)]"("[GetMyName(r.class())]") and "[GetMyName(c2)]"("[GetMyName(t2.refTo().class())]") have different supports."
     )
   Location.Type.RefTo.Binded cObj={

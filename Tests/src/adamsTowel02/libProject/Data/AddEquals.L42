@@ -21,7 +21,7 @@ Library equalsTrait(Introspection.NestedClass that) {
     needClass=ft.isInterface()
     var Library action=Refactor.Tools.specializeField(selector:fSel, type:ft,
       forReadable:{
-          read method Bool baseEquals(read This that) this.f().equals(that.f())
+          read method Bool baseEquals(read This that) this.f()==that.f()
           T:{ implements Concept.Equals}
           read method read T f()
           }
@@ -45,12 +45,12 @@ Library equalsTrait(Introspection.NestedClass that) {
   //final wrapping
   miniEquals={ implements Concept.Equals
     read method Bool baseEquals(read This that) Bool.true()//no fields
-    method equals(that) {
+    method ==(that) {
       with that (on read This return this.baseEquals(that))
       return Bool.false()
       }
     read method
-    Bool ==(read This that)
+    Bool equals(read This that)
       this.baseEquals(that)
 
     }

@@ -212,17 +212,19 @@ import coreVisitors.InjectionOnSugar;
     // some time in milliseconds to try acting again.
   }
 
- public abstract static class NotWellFormed extends ErrorMessage {
+ public abstract static class NotWellFormed extends ErrorMessage implements PosImprove{
   }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true)
   public static class VariableUsedNotInScope extends NotWellFormed {
+    Ast.Position pos;
     Expression.X e;
     Expression ctx;
     String reason;
   }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true)
-  public static class NotWellFormedMsk extends NotWellFormed {
+  public static class NotWellFormedMsk extends NotWellFormed{
     //msk for misk, this class will be multiplied on need when is needed to distinguis the various kinds
+    Ast.Position pos;
     Expression e;
     Expression ctx;
     String reason;

@@ -21,11 +21,11 @@ Base:{
       with subtype (on class This return Bool.true())
       return Bool.false()}
 
-    method equals(that) {
-      with that (on read This return this==that)
+    method ==(that) {
+      with that (on read This return this.equals(that))
       return Bool.false()}
 
-    read method Bool ==(read This that)
+    read method Bool equals(read This that)
     }
   class method
   Library<><(Library that)

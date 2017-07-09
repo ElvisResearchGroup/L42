@@ -11,12 +11,12 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}     
     refine read method class This class() This
     method readableName() GetMyName(This)
-    method equals(that) {
-      with that (on read This return that==this)
+    method ==(that) {
+      with that (on read This return that.equals(this))
       return Bool.false()
       }
     read method
-    Bool ==(read This that) // this.toS()==that.toS()
+    Bool equals(read This that) // this.toS()==that.toS()
   }}
 
   class method Library enumTrait() {
@@ -34,7 +34,7 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
         S name()
           This.names().val(this.inner())
        
-        read method Bool ==(read This that) this.inner()==that.inner()
+        read method Bool equals(read This that) this.inner()==that.inner()
        
         class method Strings names()
        
@@ -58,14 +58,14 @@ SolidTrait:{class method Library (){//Data is more than Solid, and Liquid, Gas, 
     //  method This ++(This that) This(this.that() | that.that())
     //  method This --(This that) This(this.that() & ~that.that())
     //  method This &(This that) This(this.that() & that.that())
-    //  method Bool >(Top that)  this.that() == (this.that() | 1BinaryFlag32<><that.that())
+    //  method Bool >(Top that)  this.that() equals(this.that() | 1BinaryFlag32<><that.that())
     //  method toS()
     //    This.myName()++S"["[
     //      with n in 0Size.vals(), d in Top.names().vals() (
     //        if this>Top(n) (use[ d sep:S";"])
     //        )]"]"
    //
-   //   read method Bool ==(read This that) this.that()==that.that()
+   //   read method Bool equals(read This that) this.that()==that.that()
    //   })//end compose
   }
 }

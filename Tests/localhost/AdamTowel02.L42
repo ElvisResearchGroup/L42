@@ -135,7 +135,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -153,7 +153,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -168,7 +168,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
 This3.S toS() 
 This$: {}}}
@@ -185,7 +185,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) }
+This3.Bool #equalequal(read Any that) }
 class method 
 Library #leftrightleft(Library that) This1.This$er.#leftrightleft(that:This1.Compose.compose(left:This1.MiniDataTrait.#apply(), right:that))}}
 Range: {
@@ -569,7 +569,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) }
+This2.Bool #equalequal(read Any that) }
 Wrapper: {interface 
 read method 
 Any inner() }
@@ -583,7 +583,7 @@ mut method
 mut Any #inner() }
 Equals: {interface 
 read method 
-This2.Bool equals(read Any that) }
+This2.Bool #equalequal(read Any that) }
 Comparable: {interface 
 read method 
 This2.Bool greater(read Any that) }
@@ -615,6 +615,615 @@ read method
 Void #checkEnd() 
 read method 
 Void #close() }}
+Guard: {/* exception as Guard bureocracy, error as Guard detection
+-is a check guarenteed to be performed, program logic can rely on this being enforced.
+  as exceptions, Guards objects are a way to report/guard complex operations,
+ where checking the shape of the input can be unconvenient.
+as errors, they represent precondition violations.
+Turning an exception Guard into an error Guard
+ is equivalent of declaring that such misuse should not happen (blame on the caller),
+ still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
+*/interface implements This1.Message, This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+refine class method 
+This1.S kind() 
+refine read method 
+This1.S text() 
+refine read method 
+This1.Message.Opt responseOf() 
+refine read method 
+class This1.Message class() 
+refine read method 
+This1.S toS() 
+refine read method 
+This1.Bool #equalequal(read Any that) 
+refine class method 
+This1.S readableName() 
+refine class method 
+This1.Bool is(class Any subtype) 
+Operation: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.S kind() this.readableName()
+refine read method 
+This2.S text() this._text()
+refine read method 
+This2.Message.Opt responseOf() this.cause()
+refine read method 
+This2.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This2.S toS() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        )
+      )
+    var This2.S res=This0.kind()
+    Void unused1=(
+      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b=This2.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          )))
+        
+        res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b1=This2.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b2=This2.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This2.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This2.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This2.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+refine read method 
+class This2.Message class() This0
+class method 
+This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+class method 
+This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+class method 
+mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
+class method 
+This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+  capsule This2.S.SBuilder b=This2.S.#builder()
+  b
+  )))
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+method 
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
+Parameter: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.S kind() this.readableName()
+refine read method 
+This2.S text() this._text()
+refine read method 
+This2.Message.Opt responseOf() this.cause()
+refine read method 
+This2.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This2.S toS() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        )
+      )
+    var This2.S res=This0.kind()
+    Void unused1=(
+      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b=This2.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          )))
+        
+        res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b1=This2.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b2=This2.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This2.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This2.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This2.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+refine read method 
+class This2.Message class() This0
+class method 
+This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+class method 
+This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+class method 
+mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
+class method 
+This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+  capsule This2.S.SBuilder b=This2.S.#builder()
+  b
+  )))
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+method 
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
+Precondition: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.S kind() this.readableName()
+refine read method 
+This2.S text() this._text()
+refine read method 
+This2.Message.Opt responseOf() this.cause()
+refine read method 
+This2.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This2.S toS() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        )
+      )
+    var This2.S res=This0.kind()
+    Void unused1=(
+      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b=This2.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          )))
+        
+        res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b1=This2.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b2=This2.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This2.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This2.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This2.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+refine read method 
+class This2.Message class() This0
+class method 
+This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+class method 
+This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+class method 
+mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
+class method 
+This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+  capsule This2.S.SBuilder b=This2.S.#builder()
+  b
+  )))
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+method 
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
+ParseFail: {interface implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+refine read method 
+class This2.Message class() 
+refine read method 
+This2.S toS() 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) }}
 System: {
 Guard: {/* implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
 */interface implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
@@ -629,7 +1238,7 @@ class This2.Message class()
 refine read method 
 This2.S toS() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -687,7 +1296,7 @@ This3.S text() this._text()
 refine read method 
 This3.Message.Opt responseOf() this.cause()
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -705,7 +1314,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -794,7 +1403,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This3.Bool #equalequal(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This3.Message class() This0
 class method 
@@ -942,7 +1551,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -960,7 +1569,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -1049,7 +1658,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -3434,7 +4043,7 @@ can not take imms since the collection under genration is still mut!
             )
           
           ((
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -3587,7 +4196,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This0.Elem that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -3644,7 +4253,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -3678,7 +4287,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -3696,7 +4305,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -3721,7 +4330,7 @@ This3.Size indexOfLeft(read This0.Elem val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -3770,7 +4379,7 @@ This3.Size indexOfRight(read This0.Elem val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -3882,7 +4491,7 @@ CurlyBlock-Should be unreachable code
   )
 method 
 This0 withoutAll(read This0.Elem val) (
-  Void unused=(/*This[with e in this.vals() (if !e.equals(val) (use[e]))]
+  Void unused=(/*This[with e in this.vals() (if e!=val (use[e]))]
 */
     Void unused0=(
       This3.Bool cond=this.isEmpty()
@@ -3896,7 +4505,7 @@ This0 withoutAll(read This0.Elem val) (
       )
     This0 rec=this.withoutLeft().withoutAll(val:val)
     Void unused1=(
-      This3.Bool cond0=this.left().equals(that:val)
+      This3.Bool cond0=this.left().#equalequal(that:val)
       (
         Void unused4=cond0.#checkTrue()
         
@@ -3927,7 +4536,7 @@ Void removeAll(read This0.Elem val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -4025,7 +4634,7 @@ CurlyBlock-Should be unreachable code
   )
 Elem: {implements This4.Concept.Equals
 refine read method 
-This4.Bool equals(read Any that) }
+This4.Bool #equalequal(read Any that) }
 IteratorVal: {
 mut method 
 Void #next() exception Void 
@@ -4156,7 +4765,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -4174,7 +4783,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -4263,7 +4872,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -6038,7 +6647,7 @@ This3.Bool contains(This0.Elem that) (/*################# operators
             )
           
           ((
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -6202,7 +6811,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This0.Elem that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -6259,7 +6868,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -6293,7 +6902,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -6311,7 +6920,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -6336,7 +6945,7 @@ This3.Size indexOfLeft(This0.Elem val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -6385,7 +6994,7 @@ This3.Size indexOfRight(This0.Elem val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -6516,7 +7125,7 @@ This0 withoutAll(This0.Elem val) This0.#from(seqBuilder:(
           )
         
         ((
-          This3.Bool cond=e.#inner().equals(that:val).#bang()
+          This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -6549,7 +7158,7 @@ Void removeAll(This0.Elem val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -6647,7 +7256,7 @@ CurlyBlock-Should be unreachable code
   )
 Elem: {implements This4.Concept.Equals
 refine read method 
-This4.Bool equals(read Any that) }
+This4.Bool #equalequal(read Any that) }
 IteratorVal: {
 mut method 
 Void #next() exception Void 
@@ -7035,7 +7644,7 @@ This1.Bool contains(This1.S that) (/*################# operators
             )
           
           ((
-            This1.Bool cond=e.#inner().equals(that:that)
+            This1.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -7199,7 +7808,7 @@ CurlyBlock-Should be unreachable code
 method 
 This1.Bool #right(This1.S that) this.contains(that:that)
 read method 
-This1.Bool #equalequal(read This0 that) (
+This1.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -7256,7 +7865,7 @@ This1.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This1.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This1.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -7290,7 +7899,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This1.Bool equals(read Any that) (
+This1.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -7308,7 +7917,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -7333,7 +7942,7 @@ This1.Size indexOfLeft(This1.S val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This1.Bool cond=this.val(that:pos).equals(that:val)
+        This1.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -7382,7 +7991,7 @@ This1.Size indexOfRight(This1.S val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This1.Bool cond=this.val(that:pos).equals(that:val)
+        This1.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -7513,7 +8122,7 @@ This0 withoutAll(This1.S val) This0.#from(seqBuilder:(
           )
         
         ((
-          This1.Bool cond=e.#inner().equals(that:val).#bang()
+          This1.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -7546,7 +8155,7 @@ Void removeAll(This1.S val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This1.Bool cond=this.val(that:pos).equals(that:val)
+        This1.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -8415,7 +9024,7 @@ This3.S text() this._text()
 refine read method 
 This3.Message.Opt responseOf() this.cause()
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -8433,7 +9042,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -8522,7 +9131,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This3.Bool #equalequal(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This3.Message class() This0
 class method 
@@ -8593,7 +9202,7 @@ class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -8611,7 +9220,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return that0.#equalequal(that:this)
+        Void unused3=return that0.equals(that:this)
         void
         )
       )
@@ -8640,7 +9249,7 @@ This3.S toS() This0.readableName().#plusplus(that:This3.S.#from(builder:(
 read method 
 This3.S name() This0.names().val(that:this.inner())
 read method 
-This3.Bool #equalequal(read This0 that) this.inner().#equalequal(that:that.inner())
+This3.Bool equals(read This0 that) this.inner().#equalequal(that:that.inner())
 class method 
 This3.Strings names() 
 class method 
@@ -9161,7 +9770,7 @@ This3.Bool contains(This1.Top that) (/*################# operators
             )
           
           ((
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -9325,7 +9934,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This1.Top that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -9382,7 +9991,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -9416,7 +10025,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -9434,7 +10043,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -9459,7 +10068,7 @@ This3.Size indexOfLeft(This1.Top val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -9508,7 +10117,7 @@ This3.Size indexOfRight(This1.Top val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -9639,7 +10248,7 @@ This0 withoutAll(This1.Top val) This0.#from(seqBuilder:(
           )
         
         ((
-          This3.Bool cond=e.#inner().equals(that:val).#bang()
+          This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -9672,7 +10281,7 @@ Void removeAll(This1.Top val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -10364,7 +10973,7 @@ class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -10382,7 +10991,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return that0.#equalequal(that:this)
+        Void unused3=return that0.equals(that:this)
         void
         )
       )
@@ -10397,7 +11006,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
 This3.S toS() }}}
 Location: {interface implements This1.Concept.Base/*that is equals, toS and "know your class"
@@ -10420,7 +11029,7 @@ This1.S readableName()
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 mut method 
 This2.S #_text() 
@@ -10474,7 +11083,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -10492,7 +11101,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -10581,7 +11190,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -10651,7 +11260,7 @@ class This0 class() This0
 refine class method 
 This2.S readableName() This2.GetMyName.#apply(that:This0)
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -10669,7 +11278,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return that0.#equalequal(that:this)
+        Void unused3=return that0.equals(that:this)
         void
         )
       )
@@ -10698,7 +11307,7 @@ This2.S toS() This0.readableName().#plusplus(that:This2.S.#from(builder:(
 read method 
 This2.S name() This0.names().val(that:this.inner())
 read method 
-This2.Bool #equalequal(read This0 that) this.inner().#equalequal(that:that.inner())
+This2.Bool equals(read This0 that) this.inner().#equalequal(that:that.inner())
 class method 
 This0 fromS(This2.S that) (
   Void unused=(
@@ -11081,7 +11690,7 @@ This3.S text() this._text()
 refine read method 
 This3.Message.Opt responseOf() this.cause()
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -11099,7 +11708,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -11188,7 +11797,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This3.Bool #equalequal(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This3.Message class() This0
 class method 
@@ -11588,7 +12197,7 @@ This3.Bool contains(This1 that) (
             )
           
           (
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -11752,7 +12361,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This1 that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -11809,7 +12418,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -11843,7 +12452,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -11861,7 +12470,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -11886,7 +12495,7 @@ This3.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -11935,7 +12544,7 @@ This3.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -12066,7 +12675,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This3.Bool cond=e.#inner().equals(that:val).#bang()
+          This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -12099,7 +12708,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -12759,9 +13368,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.equalequal(_this,_1_java%lang%Object)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -12889,7 +13498,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -12907,7 +13516,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -13292,7 +13901,7 @@ This3.Bool contains(This1 that) (
             )
           
           (
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -13456,7 +14065,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This1 that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -13513,7 +14122,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -13547,7 +14156,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -13565,7 +14174,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -13590,7 +14199,7 @@ This3.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -13639,7 +14248,7 @@ This3.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -13770,7 +14379,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This3.Bool cond=e.#inner().equals(that:val).#bang()
+          This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -13803,7 +14412,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -14519,7 +15128,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) }}
+This3.Bool #equalequal(read Any that) }}
 PlgClass: {
 class method 
 Library #leftrightleft(Library that) This1.PUnresponsive.#leftrightleft(that:This2.UnsafeRefactor.MiniData.#leftrightleft(that:This1.This$Impl.#leftrightleft(that:that)))}
@@ -14536,9 +15145,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Lib\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Lib.equalequal(_this,_1_java%lang%Object)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Lib\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Lib.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -15269,7 +15878,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -15287,7 +15896,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -15672,7 +16281,7 @@ This3.Bool contains(This1 that) (
             )
           
           (
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -15836,7 +16445,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This1 that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -15893,7 +16502,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -15927,7 +16536,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -15945,7 +16554,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -15970,7 +16579,7 @@ This3.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -16019,7 +16628,7 @@ This3.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -16150,7 +16759,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This3.Bool cond=e.#inner().equals(that:val).#bang()
+          This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -16183,7 +16792,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -16845,9 +17454,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Method.equalequal(_this,_1_java%lang%Object)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Method\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Method.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -17091,7 +17700,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -17109,7 +17718,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -17494,7 +18103,7 @@ This3.Bool contains(This1 that) (
             )
           
           (
-            This3.Bool cond=e.#inner().equals(that:that)
+            This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -17658,7 +18267,7 @@ CurlyBlock-Should be unreachable code
 method 
 This3.Bool #right(This1 that) this.contains(that:that)
 read method 
-This3.Bool #equalequal(read This0 that) (
+This3.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -17715,7 +18324,7 @@ This3.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This3.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -17749,7 +18358,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -17767,7 +18376,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -17792,7 +18401,7 @@ This3.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -17841,7 +18450,7 @@ This3.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -17972,7 +18581,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This3.Bool cond=e.#inner().equals(that:val).#bang()
+          This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -18005,7 +18614,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This3.Bool cond=this.val(that:pos).equals(that:val)
+        This3.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -18679,7 +19288,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 DispatchRefTo: {
 class method 
 This1.RefTo #apply(Library that) (
@@ -18711,9 +19320,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This3.Bool #equalequal(read This0 that) This3.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Return\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Return.equalequal(_this,_1_java%lang%Object)\u000a
+This3.Bool equals(read This0 that) This3.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Return\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Return.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -18841,7 +19450,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -18859,7 +19468,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -18886,9 +19495,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This3.Bool #equalequal(read This0 that) This3.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Parameter\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Parameter.equalequal(_this,_1_java%lang%Object)\u000a
+This3.Bool equals(read This0 that) This3.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Parameter\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Parameter.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -19023,7 +19632,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -19041,7 +19650,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -19426,7 +20035,7 @@ This4.Bool contains(This1 that) (
             )
           
           (
-            This4.Bool cond=e.#inner().equals(that:that)
+            This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -19590,7 +20199,7 @@ CurlyBlock-Should be unreachable code
 method 
 This4.Bool #right(This1 that) this.contains(that:that)
 read method 
-This4.Bool #equalequal(read This0 that) (
+This4.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -19647,7 +20256,7 @@ This4.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This4.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -19681,7 +20290,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -19699,7 +20308,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -19724,7 +20333,7 @@ This4.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -19773,7 +20382,7 @@ This4.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -19904,7 +20513,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This4.Bool cond=e.#inner().equals(that:val).#bang()
+          This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -19937,7 +20546,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -20599,9 +21208,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This3.Bool #equalequal(read This0 that) This3.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Exception\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Exception.equalequal(_this,_1_java%lang%Object)\u000a
+This3.Bool equals(read This0 that) This3.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Exception\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Exception.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -20736,7 +21345,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -20754,7 +21363,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -21139,7 +21748,7 @@ This4.Bool contains(This1 that) (
             )
           
           (
-            This4.Bool cond=e.#inner().equals(that:that)
+            This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -21303,7 +21912,7 @@ CurlyBlock-Should be unreachable code
 method 
 This4.Bool #right(This1 that) this.contains(that:that)
 read method 
-This4.Bool #equalequal(read This0 that) (
+This4.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -21360,7 +21969,7 @@ This4.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This4.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -21394,7 +22003,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -21412,7 +22021,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -21437,7 +22046,7 @@ This4.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -21486,7 +22095,7 @@ This4.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -21617,7 +22226,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This4.Bool cond=e.#inner().equals(that:val).#bang()
+          This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -21650,7 +22259,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -22312,9 +22921,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This3.Bool #equalequal(read This0 that) This3.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Implemented\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Implemented.equalequal(_this,_1_java%lang%Object)\u000a
+This3.Bool equals(read This0 that) This3.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Type$Implemented\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Type$Implemented.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -22449,7 +23058,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -22467,7 +23076,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -22852,7 +23461,7 @@ This4.Bool contains(This1 that) (
             )
           
           (
-            This4.Bool cond=e.#inner().equals(that:that)
+            This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -23016,7 +23625,7 @@ CurlyBlock-Should be unreachable code
 method 
 This4.Bool #right(This1 that) this.contains(that:that)
 read method 
-This4.Bool #equalequal(read This0 that) (
+This4.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -23073,7 +23682,7 @@ This4.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This4.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -23107,7 +23716,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -23125,7 +23734,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -23150,7 +23759,7 @@ This4.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -23199,7 +23808,7 @@ This4.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -23330,7 +23939,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This4.Bool cond=e.#inner().equals(that:val).#bang()
+          This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -23363,7 +23972,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -24023,7 +24632,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 Lib: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
 */implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
@@ -24037,9 +24646,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This4.Bool #equalequal(read This0 that) This4.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Lib\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Lib.equalequal(_this,_1_java%lang%Object)\u000a
+This4.Bool equals(read This0 that) This4.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Lib\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Lib.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -24095,7 +24704,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -24113,7 +24722,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -24140,9 +24749,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This4.Bool #equalequal(read This0 that) This4.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable.equalequal(_this,_1_java%lang%Object)\u000a
+This4.Bool equals(read This0 that) This4.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -24191,7 +24800,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -24209,7 +24818,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -24237,9 +24846,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This4.Bool #equalequal(read This0 that) This4.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded.equalequal(_this,_1_java%lang%Object)\u000a
+This4.Bool equals(read This0 that) This4.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Binded.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -24309,7 +24918,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -24327,7 +24936,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -24354,9 +24963,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This4.Bool #equalequal(read This0 that) This4.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Missing\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Missing.equalequal(_this,_1_java%lang%Object)\u000a
+This4.Bool equals(read This0 that) This4.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.TypeRefTo$Missing\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.TypeRefTo$Missing.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -24405,7 +25014,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -24423,7 +25032,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -24451,9 +25060,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Doc.equalequal(_this,_1_java%lang%Object)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Doc.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -24632,7 +25241,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -24650,7 +25259,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -24675,9 +25284,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This3.Bool #equalequal(read This0 that) This3.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc$Annotation\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Doc$Annotation.equalequal(_this,_1_java%lang%Object)\u000a
+This3.Bool equals(read This0 that) This3.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Doc$Annotation\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.location.Doc$Annotation.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -24740,7 +25349,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -24758,7 +25367,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -25143,7 +25752,7 @@ This4.Bool contains(This1 that) (
             )
           
           (
-            This4.Bool cond=e.#inner().equals(that:that)
+            This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -25307,7 +25916,7 @@ CurlyBlock-Should be unreachable code
 method 
 This4.Bool #right(This1 that) this.contains(that:that)
 read method 
-This4.Bool #equalequal(read This0 that) (
+This4.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -25364,7 +25973,7 @@ This4.Bool #equalequal(read This0 that) (
                 )
               
               (
-                This4.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -25398,7 +26007,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -25416,7 +26025,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -25441,7 +26050,7 @@ This4.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -25490,7 +26099,7 @@ This4.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -25621,7 +26230,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         (
-          This4.Bool cond=e.#inner().equals(that:val).#bang()
+          This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -25654,7 +26263,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -26357,7 +26966,7 @@ class This2.Message class()
 refine read method 
 This2.S toS() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -26415,7 +27024,7 @@ This3.S text()
 refine read method 
 class This3.Message class() 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 refine class method 
 This3.S readableName() 
 refine class method 
@@ -26432,9 +27041,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -26506,7 +27115,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -26524,7 +27133,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -26583,9 +27192,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -26643,7 +27252,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -26661,7 +27270,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -26720,9 +27329,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -26780,7 +27389,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -26798,7 +27407,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -26857,9 +27466,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -26917,7 +27526,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -26935,7 +27544,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -26994,9 +27603,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27068,7 +27677,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27086,7 +27695,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -27145,9 +27754,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27219,7 +27828,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27237,7 +27846,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -27296,9 +27905,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27363,7 +27972,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27381,7 +27990,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -27440,9 +28049,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27514,7 +28123,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27532,7 +28141,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -27591,9 +28200,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27651,7 +28260,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27669,7 +28278,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -27728,9 +28337,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27788,7 +28397,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27806,7 +28415,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -27865,9 +28474,9 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 read method 
-This2.Bool #equalequal(read This0 that) This2.Bool.#from(binaryRepr:(
-  Library res=use This0 check equalequal(_this:this.#binaryRepr(), _1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation\u000amethod name: #equalequal(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation.equalequal(_this,_1_is%L42%connected%withSafeOperators%pluginWrapper%MutMsgExc)\u000a
+This2.Bool equals(read This0 that) This2.Bool.#from(binaryRepr:(
+  Library res=use This0 check equals(_this:this.#binaryRepr(), _1_java%lang%Object:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation\u000amethod name: equals(that)\u000ajava method: is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation.equals(_this,_1_java%lang%Object)\u000a
 */})
   res
   ))
@@ -27925,7 +28534,7 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 refine read method 
 class This0 class() This0
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -27943,7 +28552,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -28455,7 +29064,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -28473,7 +29082,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -28562,7 +29171,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -30523,7 +31132,7 @@ This2.Bool contains(This2.Selector that) (/*################# operators
             )
           
           ((
-            This2.Bool cond=e.#inner().equals(that:that)
+            This2.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -30687,7 +31296,7 @@ CurlyBlock-Should be unreachable code
 method 
 This2.Bool #right(This2.Selector that) this.contains(that:that)
 read method 
-This2.Bool #equalequal(read This0 that) (
+This2.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -30744,7 +31353,7 @@ This2.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This2.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This2.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -30778,7 +31387,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -30796,7 +31405,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -30821,7 +31430,7 @@ This2.Size indexOfLeft(This2.Selector val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This2.Bool cond=this.val(that:pos).equals(that:val)
+        This2.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -30870,7 +31479,7 @@ This2.Size indexOfRight(This2.Selector val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This2.Bool cond=this.val(that:pos).equals(that:val)
+        This2.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -31001,7 +31610,7 @@ This0 withoutAll(This2.Selector val) This0.#from(seqBuilder:(
           )
         
         ((
-          This2.Bool cond=e.#inner().equals(that:val).#bang()
+          This2.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -31034,7 +31643,7 @@ Void removeAll(This2.Selector val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This2.Bool cond=this.val(that:pos).equals(that:val)
+        This2.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -32061,7 +32670,7 @@ This2.Bool contains(This1.Selectors that) (/*################# operators
             )
           
           ((
-            This2.Bool cond=e.#inner().equals(that:that)
+            This2.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -32225,7 +32834,7 @@ CurlyBlock-Should be unreachable code
 method 
 This2.Bool #right(This1.Selectors that) this.contains(that:that)
 read method 
-This2.Bool #equalequal(read This0 that) (
+This2.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -32282,7 +32891,7 @@ This2.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This2.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This2.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -32316,7 +32925,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -32334,7 +32943,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -32359,7 +32968,7 @@ This2.Size indexOfLeft(This1.Selectors val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This2.Bool cond=this.val(that:pos).equals(that:val)
+        This2.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -32408,7 +33017,7 @@ This2.Size indexOfRight(This1.Selectors val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This2.Bool cond=this.val(that:pos).equals(that:val)
+        This2.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -32539,7 +33148,7 @@ This0 withoutAll(This1.Selectors val) This0.#from(seqBuilder:(
           )
         
         ((
-          This2.Bool cond=e.#inner().equals(that:val).#bang()
+          This2.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -32572,7 +33181,7 @@ Void removeAll(This1.Selectors val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This2.Bool cond=this.val(that:pos).equals(that:val)
+        This2.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -37781,7 +38390,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -37799,7 +38408,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -37888,7 +38497,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -38686,7 +39295,7 @@ method /*@_private
       b2
       )))
     This1.Location.Type.Return rt=defM.returnType()
-    This1.Bool ok=pt.refTo().equals(that:rt.refTo()).#and(that:pt.mdf().#equalequal(that:rt.mdf()))
+    This1.Bool ok=pt.refTo().#equalequal(that:rt.refTo()).#and(that:pt.mdf().#equalequal(that:rt.mdf()))
     (
       This1.Bool cond=ok.#bang()
       (
@@ -38861,7 +39470,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -38879,7 +39488,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -38968,7 +39577,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -39392,7 +40001,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -39410,7 +40019,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -39499,7 +40108,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -39582,7 +40191,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -39600,7 +40209,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -39689,7 +40298,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -40485,7 +41094,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -40503,7 +41112,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -40592,7 +41201,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -40752,7 +41361,7 @@ This0 #times(This0 that) This0._private(_binaryRepr:use This0.Plg check mulNum(n
 method 
 This0 #divide(This0 that) This0._private(_binaryRepr:use This0.Plg check divNum(n1:this.#binaryRepr(), n2:that.#binaryRepr()) error void)
 read method 
-This1.Bool #equalequal(read This0 that) (
+This1.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=use This0.Plg check ifNumEqualDo(n1:this.#binaryRepr(), n2:that.#binaryRepr()) return This1.Bool.true()
     Void unused1=return This1.Bool.false()
@@ -40766,7 +41375,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This1.Bool equals(read Any that) (
+This1.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -40784,7 +41393,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -40882,7 +41491,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -40900,7 +41509,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -40989,7 +41598,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -41048,7 +41657,7 @@ This0 #times(This0.Support that) This0.#apply(that:this.that().#times(that:that)
 method 
 This0 #divide(This0.Support that) This0.#apply(that:this.that().#divide(that:that))
 read method 
-This2.Bool #equalequal(read This0 that) this.that().#equalequal(that:that.that())
+This2.Bool equals(read This0 that) this.that().#equalequal(that:that.that())
 method 
 This2.Bool #right(This0 that) this.that().#right(that:that.that())
 method 
@@ -41057,7 +41666,7 @@ method
 This0.Support divide(This0 that) this.that().#divide(that:(//*********
 that.that()))
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 Support: {implements This3.Concept.ToS, This3.Concept.Equals
 class method 
 This0 #from(This3.S.SBuilder builder) 
@@ -41070,7 +41679,7 @@ This0 #times(This0 that)
 method 
 This0 #divide(This0 that) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 method 
 This3.Bool #right(This0 that) 
 method 
@@ -41078,7 +41687,7 @@ This3.Bool #rightequal(This0 that)
 refine read method 
 This3.S toS() 
 refine read method 
-This3.Bool equals(read Any that) }}
+This3.Bool #equalequal(read Any that) }}
 class method 
 Library of(class Any that) exception This0.NotValidSupport (
   Void unused=(
@@ -41441,7 +42050,7 @@ Library of(class Any c1, class Any c2, Library trait) exception This0.NotValidUn
 */
         This1.Location.Type.RefTo r=t1.refTo()
         Void unused128=(
-          This1.Bool cond=r.equals(that:t2.refTo()).#bang()
+          This1.Bool cond=r.#equalequal(that:t2.refTo()).#bang()
           (
             Void unused132=cond.#checkTrue()
             
@@ -41775,7 +42384,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -41793,7 +42402,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -41882,7 +42491,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -41965,7 +42574,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -41983,7 +42592,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -42072,7 +42681,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -42155,7 +42764,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -42173,7 +42782,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -42262,7 +42871,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -42349,7 +42958,7 @@ CurlyBlock-Should be unreachable code
 */}
       )
     refine read method 
-    This2.Bool equals(read Any that) (
+    This2.Bool #equalequal(read Any that) (
       Void unused=(
         Void unused0=(
           read This0 that0=(
@@ -42367,7 +42976,7 @@ CastT-Should be unreachable code
           catch exception Void catched0 void
           
           (
-            Void unused3=return this.#equalequal(that:that0)
+            Void unused3=return this.equals(that:that0)
             void
             )
           )
@@ -42382,7 +42991,7 @@ CurlyBlock-Should be unreachable code
 */}
       )
     read method 
-    This2.Bool #equalequal(read This0 that) this.that().#equalequal(that:that.that())})
+    This2.Bool equals(read This0 that) this.that().#equalequal(that:that.that())})
     Library res=This1.Use.Override.#from(seqBuilder:(
       capsule This1.Composers.Libs b=This1.Use.Override.#seqBuilder()
       Void unused0=b.#add(that:lib)
@@ -42591,7 +43200,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -42609,7 +43218,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -42698,7 +43307,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -42983,12 +43592,12 @@ This0 #apply(This0.T inner)
 class method 
 This0 n() This0.#apply(inner:This0.T.ord())
 method 
-This2.Bool isN() this.inner().equals(that:This0.T.ord())
+This2.Bool isN() this.inner().#equalequal(that:This0.T.ord())
 T: {implements This3.Concept.Equals
 class method 
 This0 ord() 
 refine read method 
-This3.Bool equals(read Any that) }})
+This3.Bool #equalequal(read Any that) }})
 class method 
 Library enumElem(This1.Size ord, This1.S s) exception This0.InvalidElements (
   Void unused=(
@@ -43233,7 +43842,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -43251,7 +43860,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -43340,7 +43949,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -43413,7 +44022,7 @@ class This0 class() This0
 refine class method 
 This3.S readableName() This3.GetMyName.#apply(that:This0)
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -43431,7 +44040,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return that0.#equalequal(that:this)
+        Void unused3=return that0.equals(that:this)
         void
         )
       )
@@ -43460,7 +44069,7 @@ This3.S toS() This0.readableName().#plusplus(that:This3.S.#from(builder:(
 read method 
 This3.S name() This0.names().val(that:this.inner())
 read method 
-This3.Bool #equalequal(read This0 that) this.inner().#equalequal(that:that.inner())
+This3.Bool equals(read This0 that) this.inner().#equalequal(that:that.inner())
 class method 
 This3.Strings names() 
 class method 
@@ -43656,7 +44265,7 @@ This4.S text() this._text()
 refine read method 
 This4.Message.Opt responseOf() this.cause()
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -43674,7 +44283,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -43763,7 +44372,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This4.Bool #equalequal(read This0 that) This4.Message.EqualMessages.#apply(that:this, other:that)
+This4.Bool equals(read This0 that) This4.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This4.Message class() This0
 class method 
@@ -44171,7 +44780,7 @@ This4.Bool contains(This1 that) (/*################# operators
             )
           
           ((
-            This4.Bool cond=e.#inner().equals(that:that)
+            This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
@@ -44335,7 +44944,7 @@ CurlyBlock-Should be unreachable code
 method 
 This4.Bool #right(This1 that) this.contains(that:that)
 read method 
-This4.Bool #equalequal(read This0 that) (
+This4.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e1=this.vals()
@@ -44392,7 +45001,7 @@ This4.Bool #equalequal(read This0 that) (
                 )
               
               ((
-                This4.Bool cond=e1.#inner().equals(that:e2.#inner()).#bang()
+                This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
@@ -44426,7 +45035,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This4.Bool equals(read Any that) (
+This4.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -44444,7 +45053,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -44469,7 +45078,7 @@ This4.Size indexOfLeft(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -44518,7 +45127,7 @@ This4.Size indexOfRight(This1 val) (
       )))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -44649,7 +45258,7 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           )
         
         ((
-          This4.Bool cond=e.#inner().equals(that:val).#bang()
+          This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
@@ -44682,7 +45291,7 @@ Void removeAll(This1 val) (
       ))
     Void unused0=loop (
       Void unused2=(
-        This4.Bool cond=this.val(that:pos).equals(that:val)
+        This4.Bool cond=this.val(that:pos).#equalequal(that:val)
         (
           Void unused4=cond.#checkTrue()
           
@@ -45417,7 +46026,7 @@ class This0 class()
 refine read method 
 This1.S toS() 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -45449,9 +46058,9 @@ This2.Bool #apply(read This1 that, read This1 other) (
         (return This2.Bool.true())
         )
       ))
-    Void unused2=return (/* this calls  equals in message,
+    Void unused2=return that.responseOf().#get().#equalequal(that:(/* this calls  equals in message,
 that check for equal class and then call EqualMessages
-*/that.responseOf().#get().equals(that:other.responseOf().#get()))
+*/other.responseOf().#get()))
     void
     )
   
@@ -45520,7 +46129,7 @@ This3.S text() this._text()
 refine read method 
 This2.Opt responseOf() this.cause()
 refine read method 
-This3.Bool equals(read Any that) (
+This3.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -45538,7 +46147,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -45627,7 +46236,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This3.Bool #equalequal(read This0 that) This2.EqualMessages.#apply(that:this, other:that)
+This3.Bool equals(read This0 that) This2.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2 class() This0
 class method 
@@ -45787,615 +46396,6 @@ class method
 This0 #apply(This2 that) 
 refine method 
 This2 get() this.that()}}}
-Guard: {/* exception as Guard bureocracy, error as Guard detection
--is a check guarenteed to be performed, program logic can rely on this being enforced.
-  as exceptions, Guards objects are a way to report/guard complex operations,
- where checking the shape of the input can be unconvenient.
-as errors, they represent precondition violations.
-Turning an exception Guard into an error Guard
- is equivalent of declaring that such misuse should not happen (blame on the caller),
- still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-*/interface implements This1.Message, This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
-refine class method 
-This1.S kind() 
-refine read method 
-This1.S text() 
-refine read method 
-This1.Message.Opt responseOf() 
-refine read method 
-class This1.Message class() 
-refine read method 
-This1.S toS() 
-refine read method 
-This1.Bool equals(read Any that) 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
-Operation: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-refine class method 
-This2.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This2.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.S kind() this.readableName()
-refine read method 
-This2.S text() this._text()
-refine read method 
-This2.Message.Opt responseOf() this.cause()
-refine read method 
-This2.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-method 
-This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
-refine read method 
-This2.S toS() (
-  Void unused=(
-    Void unused0=(
-      This2.Bool cond=this.cause().isPresent().#bang()
-      (
-        Void unused3=cond.#checkTrue()
-        
-        catch exception Void catched0 void
-        
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
-        )
-      )
-    var This2.S res=This0.kind()
-    Void unused1=(
-      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
-        capsule This2.S.SBuilder b=This2.S.#builder()
-        b
-        ))).#bang()
-      (
-        Void unused4=cond0.#checkTrue()
-        
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b0=This2.S.#builder()
-          Void unused5=b0.#oSquare()
-          b0
-          )))
-        
-        res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b1=This2.S.#builder()
-          Void unused6=b1.#oSquare()
-          Void unused7=b1.#t()
-          Void unused8=b1.#e()
-          Void unused9=b1.#x()
-          Void unused10=b1.#t()
-          Void unused11=b1.#colon()
-          b1
-          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b2=This2.S.#builder()
-          Void unused12=b2.#comma()
-          Void unused13=b2.#space()
-          Void unused14=b2.#c()
-          Void unused15=b2.#a()
-          Void unused16=b2.#u()
-          Void unused17=b2.#s()
-          Void unused18=b2.#e()
-          Void unused19=b2.#colon()
-          b2
-          )))))))
-        )
-      )
-    Void unused2=return (
-      This2.S.Continue rcv14=res.#from(seqBuilder:(
-        capsule This2.S.SConcat b3=res.#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#get())
-        b3
-        ))
-      rcv14.#from(builder:(
-        capsule This2.S.SBuilder b4=rcv14.#builder()
-        Void unused21=b4.#cSquare()
-        b4
-        ))
-      )
-    void
-    )
-  
-  catch return This2.S result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-refine read method 
-class This2.Message class() This0
-class method 
-This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-class method 
-mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-class method 
-This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
-method 
-mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
-  capsule This2.S.SBuilder b=This2.S.#builder()
-  b
-  )))
-Continue: {
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-class method 
-This0 #apply(This3.S that) 
-method 
-mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
-method 
-This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
-Parameter: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-refine class method 
-This2.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This2.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.S kind() this.readableName()
-refine read method 
-This2.S text() this._text()
-refine read method 
-This2.Message.Opt responseOf() this.cause()
-refine read method 
-This2.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-method 
-This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
-refine read method 
-This2.S toS() (
-  Void unused=(
-    Void unused0=(
-      This2.Bool cond=this.cause().isPresent().#bang()
-      (
-        Void unused3=cond.#checkTrue()
-        
-        catch exception Void catched0 void
-        
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
-        )
-      )
-    var This2.S res=This0.kind()
-    Void unused1=(
-      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
-        capsule This2.S.SBuilder b=This2.S.#builder()
-        b
-        ))).#bang()
-      (
-        Void unused4=cond0.#checkTrue()
-        
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b0=This2.S.#builder()
-          Void unused5=b0.#oSquare()
-          b0
-          )))
-        
-        res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b1=This2.S.#builder()
-          Void unused6=b1.#oSquare()
-          Void unused7=b1.#t()
-          Void unused8=b1.#e()
-          Void unused9=b1.#x()
-          Void unused10=b1.#t()
-          Void unused11=b1.#colon()
-          b1
-          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b2=This2.S.#builder()
-          Void unused12=b2.#comma()
-          Void unused13=b2.#space()
-          Void unused14=b2.#c()
-          Void unused15=b2.#a()
-          Void unused16=b2.#u()
-          Void unused17=b2.#s()
-          Void unused18=b2.#e()
-          Void unused19=b2.#colon()
-          b2
-          )))))))
-        )
-      )
-    Void unused2=return (
-      This2.S.Continue rcv14=res.#from(seqBuilder:(
-        capsule This2.S.SConcat b3=res.#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#get())
-        b3
-        ))
-      rcv14.#from(builder:(
-        capsule This2.S.SBuilder b4=rcv14.#builder()
-        Void unused21=b4.#cSquare()
-        b4
-        ))
-      )
-    void
-    )
-  
-  catch return This2.S result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-refine read method 
-class This2.Message class() This0
-class method 
-This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-class method 
-mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-class method 
-This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
-method 
-mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
-  capsule This2.S.SBuilder b=This2.S.#builder()
-  b
-  )))
-Continue: {
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-class method 
-This0 #apply(This3.S that) 
-method 
-mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
-method 
-This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
-Precondition: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-mut method 
-This2.S #_text() 
-read method 
-This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
-read method 
-This2.Message.Opt cause() 
-class method 
-This0 #apply(This2.S _text, This2.Message.Opt cause) 
-refine class method 
-This2.Bool is(class Any subtype) (
-  Void unused=(
-    Void unused0=(
-      class This0 subtype0=(
-        Void unused2=return subtype
-        
-        catch return class This0 casted casted
-        
-        catch return class Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return This2.Bool.true()
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.S kind() this.readableName()
-refine read method 
-This2.S text() this._text()
-refine read method 
-This2.Message.Opt responseOf() this.cause()
-refine read method 
-This2.Bool equals(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.#equalequal(that:that0)
-        void
-        )
-      )
-    Void unused1=return This2.Bool.false()
-    void
-    )
-  
-  catch return This2.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-method 
-This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
-refine read method 
-This2.S toS() (
-  Void unused=(
-    Void unused0=(
-      This2.Bool cond=this.cause().isPresent().#bang()
-      (
-        Void unused3=cond.#checkTrue()
-        
-        catch exception Void catched0 void
-        
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
-        )
-      )
-    var This2.S res=This0.kind()
-    Void unused1=(
-      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
-        capsule This2.S.SBuilder b=This2.S.#builder()
-        b
-        ))).#bang()
-      (
-        Void unused4=cond0.#checkTrue()
-        
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b0=This2.S.#builder()
-          Void unused5=b0.#oSquare()
-          b0
-          )))
-        
-        res := res.#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b1=This2.S.#builder()
-          Void unused6=b1.#oSquare()
-          Void unused7=b1.#t()
-          Void unused8=b1.#e()
-          Void unused9=b1.#x()
-          Void unused10=b1.#t()
-          Void unused11=b1.#colon()
-          b1
-          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
-          capsule This2.S.SBuilder b2=This2.S.#builder()
-          Void unused12=b2.#comma()
-          Void unused13=b2.#space()
-          Void unused14=b2.#c()
-          Void unused15=b2.#a()
-          Void unused16=b2.#u()
-          Void unused17=b2.#s()
-          Void unused18=b2.#e()
-          Void unused19=b2.#colon()
-          b2
-          )))))))
-        )
-      )
-    Void unused2=return (
-      This2.S.Continue rcv14=res.#from(seqBuilder:(
-        capsule This2.S.SConcat b3=res.#seqBuilder()
-        Void unused20=b3.#add(that:this.cause().#get())
-        b3
-        ))
-      rcv14.#from(builder:(
-        capsule This2.S.SBuilder b4=rcv14.#builder()
-        Void unused21=b4.#cSquare()
-        b4
-        ))
-      )
-    void
-    )
-  
-  catch return This2.S result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
-refine read method 
-class This2.Message class() This0
-class method 
-This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
-class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
-class method 
-mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-class method 
-This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
-method 
-This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
-method 
-mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
-  capsule This2.S.SBuilder b=This2.S.#builder()
-  b
-  )))
-Continue: {
-mut method 
-This3.S #that() 
-read method 
-This3.S that() 
-class method 
-This0 #apply(This3.S that) 
-method 
-mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
-method 
-This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
-ParseFail: {interface implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
-refine class method 
-This2.S kind() 
-refine read method 
-This2.S text() 
-refine read method 
-This2.Message.Opt responseOf() 
-refine read method 
-class This2.Message class() 
-refine read method 
-This2.S toS() 
-refine read method 
-This2.Bool equals(read Any that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) }}
 Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
 */
 mut method 
@@ -46483,7 +46483,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This0 equals(read Any that) (
+This0 #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -46501,7 +46501,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -46582,7 +46582,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This0 #equalequal(read This0 that) (
+This0 equals(read This0 that) (
   Void unused=(
     Void unused0=(
       Void unused2=this.#checkTrue()
@@ -46821,7 +46821,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This1 equals(read Any that) (
+This1 #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -46839,7 +46839,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -46928,7 +46928,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This1 #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This1 equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -47025,7 +47025,7 @@ This0 #times(This0 that) This0._private(_binaryRepr:use This1.Alu check mulInt32
 method 
 This0 #divide(This0 that) This0._private(_binaryRepr:use This1.Alu check divInt32(n1:this.#binaryRepr(), n2:that.#binaryRepr()) error void)
 read method 
-This1.Bool #equalequal(read This0 that) (
+This1.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=use This1.Alu check ifInt32EqualDo(n1:this.#binaryRepr(), n2:that.#binaryRepr()) return This1.Bool.true()
     Void unused1=return This1.Bool.false()
@@ -47039,7 +47039,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This1.Bool equals(read Any that) (
+This1.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -47057,7 +47057,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -47767,7 +47767,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -47785,7 +47785,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -47874,7 +47874,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -47956,7 +47956,7 @@ mut This0 #from(Library binaryRepr) This0._private(_binaryRepr:binaryRepr)
 read method 
 Library #binaryRepr() this._binaryRepr()
 refine read method 
-This1.Bool equals(read Any that) (/*#####operators
+This1.Bool #equalequal(read Any that) (/*#####operators
 */(
   Void unused=(
     Void unused0=(
@@ -47975,7 +47975,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -47992,7 +47992,7 @@ CurlyBlock-Should be unreachable code
 method 
 This0 #plusplus(This0 that) This0.#from(binaryRepr:use This1.Alu check stringConcat(s1:this.#binaryRepr(), s2:that.#binaryRepr()) error void)
 read method 
-This1.Bool #equalequal(read This0 that) (
+This1.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=use This1.Alu check ifStringEqualDo(s1:this.#binaryRepr(), s2:that.#binaryRepr()) return This1.Bool.true()
     Void unused1=return This1.Bool.false()
@@ -49095,7 +49095,7 @@ Library #binaryRepr() this._binaryRepr()
 refine read method 
 This1.S toS() This1.S.#from(binaryRepr:this._binaryRepr())
 read method 
-This1.Bool #equalequal(read This0 that) (
+This1.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=use This1.Alu check ifStringEqualDo(s1:this.#binaryRepr(), s2:that.#binaryRepr()) return This1.Bool.true()
     Void unused1=return This1.Bool.false()
@@ -49109,7 +49109,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This1.Bool equals(read Any that) (
+This1.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -49127,7 +49127,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -49605,7 +49605,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -49623,7 +49623,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -49712,7 +49712,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -49873,7 +49873,7 @@ Library #binaryRepr() this._binaryRepr()
 refine read method 
 This1.S toS() This1.S.#from(binaryRepr:this._binaryRepr())
 read method 
-This1.Bool #equalequal(read This0 that) (
+This1.Bool equals(read This0 that) (
   Void unused=(
     Void unused0=use This1.Alu check ifStringEqualDo(s1:this.#binaryRepr(), s2:that.#binaryRepr()) return This1.Bool.true()
     Void unused1=return This1.Bool.false()
@@ -49887,7 +49887,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This1.Bool equals(read Any that) (
+This1.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -49905,7 +49905,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -50515,7 +50515,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -50533,7 +50533,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -50622,7 +50622,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -50756,7 +50756,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -50774,7 +50774,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -50863,7 +50863,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 
@@ -50946,7 +50946,7 @@ This2.S text() this._text()
 refine read method 
 This2.Message.Opt responseOf() this.cause()
 refine read method 
-This2.Bool equals(read Any that) (
+This2.Bool #equalequal(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -50964,7 +50964,7 @@ CastT-Should be unreachable code
       catch exception Void catched0 void
       
       (
-        Void unused3=return this.#equalequal(that:that0)
+        Void unused3=return this.equals(that:that0)
         void
         )
       )
@@ -51053,7 +51053,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #equalequal(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 refine read method 
 class This2.Message class() This0
 class method 

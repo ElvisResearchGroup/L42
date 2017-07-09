@@ -24,12 +24,12 @@
       refine read method class This class() This
       method readableName()GetMyName(This)
       method is(subtype){  with subtype (on class This return Bool.true()) return Bool.false()}
-      method equals(that){
-        with that (on read This return this==that)
+      method ==(that){
+        with that (on read This return this.equals(that))
         return Bool.false()
         }
       read method
-      Bool ==(read This that)
+      Bool equals(read This that)
         this.that()==that.that()
       },)
 

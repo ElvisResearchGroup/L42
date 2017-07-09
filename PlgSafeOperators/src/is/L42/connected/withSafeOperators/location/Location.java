@@ -49,7 +49,7 @@ public interface Location {
     }
   Location location();
   Doc doc();
-  boolean equalequal(Object that);
+  //boolean equalequal(Object that);
   //String toS();//complicated relation with toS of Type
   Cacher<List<Origin>> protectedOrigins();
   static abstract class LocationImpl<T extends Expression.HasPos, L extends Location> implements Location{

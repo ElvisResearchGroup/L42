@@ -89,10 +89,10 @@
       error void)
 
   read method
-  Bool ==(read This that) this.that()==that.that()
+  Bool equals(read This that) this.that()==that.that()
 
-  method equals(that){
-    with that (on read This return this==that)
+  method ==(that){
+    with that (on read This return this.equals(that))
     return Bool.false()
     }
 

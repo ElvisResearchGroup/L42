@@ -43,14 +43,14 @@
   method toS() S.#from(binaryRepr: this._binaryRepr())
 
   read method
-  Bool == (read This that) {
+  Bool equals(read This that) {
     use Alu
       check ifStringEqualDo(s1:this.#binaryRepr(),s2:that.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
-  method equals(that){
-    with that (on read This return this==that)
+  method ==(that){
+    with that (on read This return this.equals(that))
     return Bool.false()
     }
   method

@@ -25,8 +25,8 @@
     }
 
   method
-  equals(that){
-    with that (on read This return this==that)
+  ==(that){
+    with that (on read This return this.equals(that))
     return Bool.false()
     }
 
@@ -59,7 +59,7 @@
     }
 
   read method
-  Bool ==(read This that){
+  Bool equals(read This that){
     if this (return that.clone())
     return !that.clone()
     }

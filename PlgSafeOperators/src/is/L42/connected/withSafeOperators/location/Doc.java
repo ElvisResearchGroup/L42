@@ -43,7 +43,7 @@ public class Doc extends Location.LocationImpl<Ast.Doc,Location>{
     }
     TypeRefTo title; 
     String text;
-    public boolean equalequal(Object that){return this.equals(that);}
+    //public boolean equalequal(Object that){return this.equals(that);}
     public String toS(){
       return "Annotation:@"+title+" "+text;
       }
@@ -72,8 +72,6 @@ public class Doc extends Location.LocationImpl<Ast.Doc,Location>{
     }
   public String toS() {return inner.getS();}
   @Override public Doc doc() {return this;}
-  @Override public boolean equalequal(Object that) {
-    return this.equals(that);
-    }
+  //@Override public boolean equalequal(Object that) {return this.equals(that);}
   //Note: equals and hash code overriden "enough" in the super class
   }

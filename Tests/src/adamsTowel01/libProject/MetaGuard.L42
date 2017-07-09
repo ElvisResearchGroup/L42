@@ -16,14 +16,14 @@
       method responseOf() Message.Opt()
       method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
       method readableName()GetMyName(This)
-      method equals(that){
-        with that (on read This return this==that)
+      method ==(that){
+        with that (on read This return this.equals(that))
         return Bool.false()
         }
       refine read method class Message class() This
       class method This(Introspection_Record.Record record, Library lib)
 
-      method Bool == (This that)
+      method Bool equals(This that)
         Message.EqualMessages(this,other:that)
       class method S libName()
       class method Void (Library lift) exception This (

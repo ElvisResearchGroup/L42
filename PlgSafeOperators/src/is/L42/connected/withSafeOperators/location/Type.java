@@ -35,7 +35,7 @@ public interface Type extends Location{
     Ast.Type type;
     @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location().location();}
-    @Override public boolean equalequal(Object that){return this.equals(that);}
+    //@Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
     public int hashCode() {
     final int prime = 31;
@@ -73,7 +73,7 @@ public interface Type extends Location{
     Ast.Type type;
     @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location().location();}
-    @Override public boolean equalequal(Object that){return this.equals(that);}
+    //@Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
     public int hashCode() {
     final int prime = 31;
@@ -113,7 +113,7 @@ public interface Type extends Location{
     Ast.Type type;
     @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location().location();}
-    @Override public boolean equalequal(Object that){return this.equals(that);}
+    //@Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
     public int hashCode() {
     final int prime = 31;
@@ -153,7 +153,7 @@ public interface Type extends Location{
     Ast.Type type;
     @Override public Ast.Type type(){return type;}
     @Override public Lib locationLib(){return location();}
-    @Override public boolean equalequal(Object that){return this.equals(that);}
+    //@Override public boolean equalequal(Object that){return this.equals(that);}
     @Override
     public int hashCode() {
     final int prime = 31;

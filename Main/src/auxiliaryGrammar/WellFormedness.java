@@ -51,13 +51,13 @@ public class WellFormedness {
         if(s.getRight() instanceof BinOp){
           Ast.Op op=((BinOp)s.getRight()).getOp();
           if(s.getOp().kind==op.kind && s.getOp()!=op){
-            throw new ErrorMessage.NotWellFormedMsk(s,_e, "Here parenthesis are needed to disambiguate operator precedence.");
+            throw new ErrorMessage.NotWellFormedMsk(s.getP(),s,_e, "Here parenthesis are needed to disambiguate operator precedence.");
             }
           }
         if(s.getLeft() instanceof BinOp){
           Ast.Op op=((BinOp)s.getLeft()).getOp();
           if(s.getOp().kind==op.kind && s.getOp()!=op){
-            throw new ErrorMessage.NotWellFormedMsk(s,_e, "Here parenthesis are needed to disambiguate operator precedence.");
+            throw new ErrorMessage.NotWellFormedMsk(s.getP(),s,_e, "Here parenthesis are needed to disambiguate operator precedence.");
             }
           }
         return super.visit(s);
@@ -72,7 +72,7 @@ public class WellFormedness {
         return d.match(
             vdxe->{
               if(vdxe.isVar() & !vdxe.getT().isPresent()){
-                throw new ErrorMessage.NotWellFormedMsk(vdxe.getInner(),vdxe.getInner(),
+                throw new ErrorMessage.NotWellFormedMsk(null,vdxe.getInner(),vdxe.getInner(),
                   "Variable local binding can not infer their type");
               }
               return this.liftVarDecXE(vdxe);
@@ -136,7 +136,7 @@ public class WellFormedness {
       public Expression visit(Signal s) {
         if(this.outerDanger==null){return super.visit(s);}
         if(s.getKind()!=SignalKind.Return){return super.visit(s);}
-        throw new ErrorMessage.NotWellFormedMsk(s, outerDanger, "A return is not allowed here");
+        throw new ErrorMessage.NotWellFormedMsk(null,s, outerDanger, "A return is not allowed here");
       }
     });
   }
@@ -150,7 +150,7 @@ public class WellFormedness {
         return super.visit(s);}
       public Expression visit(CurlyBlock s) {
         if(s.getContents().isEmpty()){
-          throw new ErrorMessage.NotWellFormedMsk(s, null, "Blocks should not be empty");
+          throw new ErrorMessage.NotWellFormedMsk(s.getP(),s, null, "Blocks should not be empty");
           }
         checkBlockContentOk(s,s.getContents());
         CheckTerminatingBlock.of(s);//this can throw!
@@ -165,7 +165,7 @@ public class WellFormedness {
         throw Assertions.codeNotReachable("Catch should not be empty on multiple contents");
         }
       if(bc.getDecs().isEmpty()){
-        throw new ErrorMessage.NotWellFormedMsk(forErr, null, "empty declarations before catch");
+        throw new ErrorMessage.NotWellFormedMsk(null,forErr, null, "empty declarations before catch");
         }
     }
     BlockContent last=l.get(l.size()-1);
@@ -186,7 +186,7 @@ public class WellFormedness {
         assert s.getLeft() instanceof X;
         String x=((X)s.getLeft()).getInner();
         if(!notEqOp.contains(x)){return super.visit(s);}
-        throw new ErrorMessage.NotWellFormedMsk(s, w, "Non var iterator variable should not be updated");
+        throw new ErrorMessage.NotWellFormedMsk(s.getP(),s, w, "Non var iterator variable should not be updated");
         }
     });
     }
@@ -199,14 +199,14 @@ public class WellFormedness {
         //$\withKw\, \emptyset\,\emptyset\, \emptyset\,\_$ is not well formed;
         int size=s.getXs().size()+s.getIs().size()+s.getDecs().size();
         if (size==0){
-          throw new ErrorMessage.NotWellFormedMsk(s,null, "With should \"with\" over something, here is empty");
+          throw new ErrorMessage.NotWellFormedMsk(s.getP(),s,null, "With should \"with\" over something, here is empty");
         }
         //$\withKw\,\xs\,\is\,\es\, %\Opt\onStart\,
         //\oRound\Many\onWith\Opt\block\cRound$
         //is well formed if the number of types $\T_\vI\ldots\T_\vn$ in each $\onKw$ is the same of the sum of the cardinalities of $\xs$, $\is$ and $\es$.
         for(With.On on:s.getOns()){
           if(!on.getTs().isEmpty() && on.getTs().size()!=size){
-            throw new ErrorMessage.NotWellFormedMsk(on.getInner(),s, "on types should be the same number of the with expressions, here on have: "+on.getTs().size()+" while the with have: "+size);
+            throw new ErrorMessage.NotWellFormedMsk(s.getP(),on.getInner(),s, "on types should be the same number of the with expressions, here on have: "+on.getTs().size()+" while the with have: "+size);
             }
         }
         //In a $\withKw$, variables introduces in the $\is$ can be updated only if they are declared \Q@var@.
@@ -227,20 +227,20 @@ public class WellFormedness {
     HashSet<String> fnames=new HashSet<String>();
     for(FieldDec f:h.getFs()){
       fnames.add(f.getName());
-      if(f.getName().equals("this")){throw new ErrorMessage.NotWellFormedMsk(cb,null, "\"this\" is not a valid field name");}
+      if(f.getName().equals("this")){throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "\"this\" is not a valid field name");}
       }
     if(fnames.size()!=h.getFs().size()){
-      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Some field name is repeated.");
+      throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "Some field name is repeated.");
       }
     if(h.getMdf()==Mdf.Class){
-      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Constructors can not return types");
+      throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "Constructors can not return types");
       }
     boolean haveVar=false;
     for(FieldDec f:h.getFs()){
       if(f.isVar()){haveVar=true;break;}
     }
     if(haveVar && h.getMdf()==Mdf.Readable){//was Immutable, but now the idea is that the mdf can be inferred
-      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Readable classes can not have a variable fields");
+      throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "Readable classes can not have a variable fields");
       }
   }
 
@@ -251,7 +251,7 @@ public class WellFormedness {
       m.match(
         nc->{
           if(usedNestedClassNames.contains(nc.getName())){
-            throw new ErrorMessage.NotWellFormedMsk(s,null, "Some nested class name is repeated: "+nc.getName()+" "+usedNestedClassNames);
+            throw new ErrorMessage.NotWellFormedMsk(s.getP(),s,null, "Some nested class name is repeated: "+nc.getName()+" "+usedNestedClassNames);
             }
           //All nested class names $\C$ in a class must be unique.
           usedNestedClassNames.add(nc.getName());
@@ -263,14 +263,14 @@ public class WellFormedness {
   }
   static void checkMs(ClassB cb ,MethodSelector s, HashSet<MethodSelector> usedSelector) {
     if(usedSelector.contains(s)){
-      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Some method selector is repeated: "+s+" is repeated. Other selector in the same scope: "+usedSelector);
+      throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "Some method selector is repeated: "+s+" is repeated. Other selector in the same scope: "+usedSelector);
       }
     usedSelector.add(s);
     //All parameter names declared within a given method header must be unique.
     HashSet<String>ps=new HashSet<String>(s.getNames());
-    if(s.getNames().contains("this")){throw new ErrorMessage.NotWellFormedMsk(cb,null, "\"this\" is not a valid parameter name");}
+    if(s.getNames().contains("this")){throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "\"this\" is not a valid parameter name");}
     if(ps.size()!=s.getNames().size()){
-      throw new ErrorMessage.NotWellFormedMsk(cb,null, "Some parameter name is repeated");
+      throw new ErrorMessage.NotWellFormedMsk(cb.getP(),cb,null, "Some parameter name is repeated");
       }
   }
   public static void classCheck(Expression _e){

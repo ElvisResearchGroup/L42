@@ -258,13 +258,13 @@ public class Desugar extends CloneVisitor{
       m2.match(
         nc2->{for(ast.ExpCore.ClassB.NestedClass nc1:reused.ns()){
           if (nc1.getName().equals(nc2.getName())){
-            throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());
+            throw new ast.ErrorMessage.NotWellFormedMsk(nc1.getP(),s, s, "Nested class \""+nc1.getName()+"\" already present in reused library "+s.getUrl());
             }
         }return null;},
         mi->{return null;},
         mwt2->{for(ast.ExpCore.ClassB.MethodWithType mwt1:reused.mwts()){
           if (mwt1.getMs().equals(mwt2.getMs())){
-            throw new ast.ErrorMessage.NotWellFormedMsk(s, s, "Method with type \""+mwt1.getMs()+"\" already present in reused library "+s.getUrl());
+            throw new ast.ErrorMessage.NotWellFormedMsk(mwt1.getP(),s, s, "Method with type \""+mwt1.getMs()+"\" already present in reused library "+s.getUrl());
             }  
         }return null;});
       }    

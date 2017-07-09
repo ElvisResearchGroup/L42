@@ -26,7 +26,7 @@ IteratorVal:{
 read method
 Bool contains(read Elem that){
   with e in this.vals() (
-    if e.equals(that) (return Bool.true())
+    if e==that (return Bool.true())
     )
   return Bool.false()
   }
@@ -76,15 +76,15 @@ Bool >(Elem that)
 
 
 read method
-Bool ==(read This that){
+Bool equals(read This that){
   with e1 in this.vals(), e2 in that.vals() (
-    if !e1.equals(e2) (return Bool.false())
+    if e1!=e2 (return Bool.false())
     )
   catch error IterationFailure ( return Bool.false() )
   return Bool.true()
   }
-method equals(that){
-  with that (on read This return this==that)
+method ==(that){
+  with that (on read This return this.equals(that))
   return Bool.false()
   }
 
@@ -94,7 +94,7 @@ Size indexOfLeft(read Elem val){
   size=this.size()
   var Size pos=0Size
   loop (
-    if this.val(pos).equals(val) (return pos)
+    if this.val(pos)==val (return pos)
     if pos>=size (return Size"-1")
     pos+=1Size
     )
@@ -104,7 +104,7 @@ read method
 Size indexOfRight(read Elem val){
   var Size pos=this.size()-1Size
   loop (
-    if this.val(pos).equals(val) (return pos)
+    if this.val(pos)==val (return pos)
     if pos<=0Size (return Size"-1")
     pos-=1Size
     )
@@ -129,10 +129,10 @@ This withoutRight(read Elem val){
 
 method
 This withoutAll(read Elem val){
-  //This[with e in this.vals() (if !e.equals(val) (use[e]))]
+  //This[with e in this.vals() (if e!=val (use[e]))]
   if this.isEmpty() (return this)
   rec=this.withoutLeft().withoutAll(val:val)
-  if this.left().equals(val) (return rec)
+  if this.left()==val (return rec)
   return rec.withAlsoLeft(this.left())
   }
 
@@ -144,7 +144,7 @@ mut method
 Void removeAll(read Elem val){
   var Size pos=0Size
   loop (
-    if this.val(pos).equals(val) (this.remove(pos))
+    if this.val(pos)==val (this.remove(pos))
     if pos>=this.size() (return void)
     pos+=1Size
     )

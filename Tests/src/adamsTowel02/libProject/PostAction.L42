@@ -54,7 +54,7 @@ exception InvalidAction (
     InvalidAction"action method not present"
   pt=defM.parameterTypes().val(1Size)
   rt=defM.returnType()
-  ok=pt.refTo().equals(rt.refTo()) & pt.mdf() ==rt.mdf()
+  ok=pt.refTo()==rt.refTo() & pt.mdf() ==rt.mdf()
   if !ok (
     exception InvalidAction"action return class need to be equal to parameter class: '"[pt]"' is different from '"[rt]"'"
     )

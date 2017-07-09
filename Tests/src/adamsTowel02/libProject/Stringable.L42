@@ -10,9 +10,9 @@ class method Library stringableTrait(){
   class method S readableName()
   method toS()  This.readableName()[]"["[this.inner()]"]"
   method Library #binaryRepr() this.inner().#binaryRepr()
-  method Bool == (This that) this.inner()==that.inner()
-  method Bool equals(Any that) {
-    with that (on read This return this==that)
+  method Bool equals(This that) this.inner()==that.inner()
+  method Bool ==(Any that) {
+    with that (on read This return this.equals(that))
     return Bool.false()
     }
   }

@@ -157,7 +157,5 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     Lib nextStep=new Lib(false,root,Functions.push(path,cs.get(0)),inner.getClassB(top),this);
     return nextStep.navigateCs(tail);
     }
-  @Override public boolean equalequal(Object that) {
-    return this.equals(that);
-    }
+  //@Override public boolean equalequal(Object that) {return this.equals(that);}
   }

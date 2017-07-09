@@ -46,7 +46,7 @@
      class method T ord()
      }
     class method This n() This(inner:T.ord())
-    method Bool isN() this.inner().equals(T.ord())
+    method Bool isN() this.inner()==T.ord()
     },)
 
   class method

@@ -20,7 +20,7 @@ EqualMessages:{
   if !res (return Bool.false())
   if !that.responseOf().isPresent() (return Bool.true())
   //i know both are present
-  return that.responseOf().#get().equals(other.responseOf().#get()) // this calls  equals in message,
+  return that.responseOf().#get()==other.responseOf().#get() // this calls  equals in message,
   //that check for equal class and then call EqualMessages
   }}
 $:{class method This()
@@ -34,8 +34,8 @@ $:{class method This()
     method kind() this.readableName()
     method text() this._text()
     method responseOf() this.cause()
-    method equals(that){
-      with that (on read This return this==that)
+    method ==(that){
+      with that (on read This return this.equals(that))
       return Bool.false()
       }
   method
@@ -55,7 +55,7 @@ $:{class method This()
       return res[this.cause().#get()]"]"
       }
 
-    read method Bool ==(read This that)
+    read method Bool equals(read This that)
       Message.EqualMessages(this,other:that)
     refine read method class Message class() This
     class method

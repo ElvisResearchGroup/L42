@@ -34,7 +34,7 @@ public class CheckVarUsedAreInScope extends CloneVisitor{
   Set<String> xs=new HashSet<String>();
   public Expression visit(Expression.X s){
     if(this.xs.contains(s.getInner())){return super.visit(s);}
-    throw new ErrorMessage.VariableUsedNotInScope(s, ctx,"Variable used not in scope");
+    throw new ErrorMessage.VariableUsedNotInScope(s.getP(),s, ctx,"Variable used not in scope");
     }
   protected Expression.BlockContent liftBC(Expression.BlockContent c) {
     Set<String> aux = this.xs;

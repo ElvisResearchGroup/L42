@@ -7,9 +7,7 @@ import ast.Ast.Path;
 import ast.PathAux;
 
 public interface TypeRefTo {
-  default boolean equalequal(Object that) {
-    return this.equals(that);
-    }
+  //default boolean equalequal(Object that) {return this.equals(that);}
   String toS();//toS is the full path with Thisn.
   static class Lib implements TypeRefTo{
     @Override

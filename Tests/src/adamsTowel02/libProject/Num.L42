@@ -67,14 +67,14 @@
       error void)
 
   read method
-  Bool ==(read This that){
+  Bool equals(read This that){
     use Plg
       check ifNumEqualDo(n1:this.#binaryRepr() n2:that.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
-  method equals(that){
-    with that (on read This return this==that)
+  method ==(that){
+    with that (on read This return this.equals(that))
     return Bool.false()
     }
 

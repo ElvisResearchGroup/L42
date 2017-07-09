@@ -55,7 +55,7 @@ public class CheckTerminatingBlock implements Visitor<Void> {
     }
 
   private Void fail(Expression s){
-    throw new ErrorMessage.NotWellFormedMsk(s, this.start, "The expression is not a valid terminator for the block");
+    throw new ErrorMessage.NotWellFormedMsk(null,s, this.start, "The expression is not a valid terminator for the block");
     }
 
 

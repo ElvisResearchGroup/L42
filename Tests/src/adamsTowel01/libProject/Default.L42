@@ -34,7 +34,7 @@ DataFromToS:{// in the future we can add also hashCode and > =>
   class method Library<><(Library that) exception DecorationUnfeasable{
     return Extends[{ implements Concept.ToS
     
-    read method Bool ==(read This that) this.toS()==that.toS()
+    read method Bool equals(read This that) this.toS()==that.toS()
     }]<><Equals<><that
     catch exception DecorationUnfeasable mg
       exception mg
@@ -46,11 +46,11 @@ DataFromToS:{// in the future we can add also hashCode and > =>
 Equals:{
   class method Library<><(Library that) exception DecorationUnfeasable{
     return Extends[{ implements Concept.Equals
-      method equals(that){
-        with that (on read This return this==that)
+      method ==(that){
+        with that (on read This return this.equals(that))
         return Bool.false()
         }
-      read method Bool ==(read This that)
+      read method Bool equals(read This that)
       }]<><that
     exception on MetaGuard
       DecorationUnfeasable"Equals"

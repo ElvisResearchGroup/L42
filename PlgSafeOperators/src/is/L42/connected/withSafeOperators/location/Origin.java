@@ -44,9 +44,7 @@ public class Origin {
     this.columnStart = columnStart;
     this.columnEnd = columnEnd;
     }
-  public boolean equalequal(Object that){
-    return this.equals(that);
-    }
+  //public boolean equalequal(Object that){return this.equals(that);}
   public String toS(){
     String name = L42.path.toAbsolutePath().toString();
     String f=this.fileName();

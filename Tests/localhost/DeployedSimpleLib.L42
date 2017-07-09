@@ -57,7 +57,7 @@ This1.S readableName()
 refine read method 
 This1.S toS() 
 refine read method 
-This0 equals(read Any that) 
+This0 #equalequal(read Any that) 
 read method 
 Void #checkTrue() exception Void 
 class method 
@@ -71,7 +71,7 @@ This0 #or(This0 that)
 method 
 This0 #bang() 
 read method 
-This0 #equalequal(read This0 that) 
+This0 equals(read This0 that) 
 class method 
 This0 fromS(read This1.Concept.ToS that) 
 class method 
@@ -98,13 +98,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This1 equals(read Any that) 
+This1 #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This1 #equalequal(read This0 that) 
+This1 equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -163,9 +163,9 @@ This0 #times(This0 that)
 method 
 This0 #divide(This0 that) 
 read method 
-This1.Bool #equalequal(read This0 that) 
+This1.Bool equals(read This0 that) 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 method 
 This1.Bool #right(This0 that) 
 method 
@@ -347,13 +347,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -399,11 +399,11 @@ mut This0 #from(Library binaryRepr)
 read method 
 Library #binaryRepr() 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 method 
 This0 #plusplus(This0 that) 
 read method 
-This1.Bool #equalequal(read This0 that) 
+This1.Bool equals(read This0 that) 
 method 
 This0 #less(This0 that) 
 method 
@@ -753,7 +753,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) }
+This2.Bool #equalequal(read Any that) }
 Wrapper: {interface 
 read method 
 Any inner() }
@@ -767,7 +767,7 @@ mut method
 mut Any #inner() }
 Equals: {interface 
 read method 
-This2.Bool equals(read Any that) }
+This2.Bool #equalequal(read Any that) }
 Comparable: {interface 
 read method 
 This2.Bool greater(read Any that) }
@@ -811,7 +811,7 @@ class This0 class()
 refine read method 
 This1.S toS() 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -877,7 +877,7 @@ class This1.Message class()
 refine read method 
 This1.S toS() 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 refine class method 
 This1.S readableName() 
 refine class method 
@@ -904,13 +904,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -958,13 +958,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -1012,13 +1012,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -1056,7 +1056,7 @@ class This2.Message class()
 refine read method 
 This2.S toS() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -1075,7 +1075,7 @@ class This2.Message class()
 refine read method 
 This2.S toS() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -1102,13 +1102,13 @@ This3.S text()
 refine read method 
 This3.Message.Opt responseOf() 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This3.Message that) 
 refine read method 
 This3.S toS() 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
 class This3.Message class() 
 class method 
@@ -1165,13 +1165,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -1219,13 +1219,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -1605,9 +1605,9 @@ This1.Bool #rightrightequal(This0 that)
 method 
 This1.Bool #right(This1.S that) 
 read method 
-This1.Bool #equalequal(read This0 that) 
+This1.Bool equals(read This0 that) 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 read method 
 This1.Size indexOfLeft(This1.S val) 
 read method 
@@ -1869,9 +1869,9 @@ Library #binaryRepr()
 refine read method 
 This1.S toS() 
 read method 
-This1.Bool #equalequal(read This0 that) 
+This1.Bool equals(read This0 that) 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 method 
 This0 #plusplus(This0 that) 
 method 
@@ -1912,13 +1912,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -1975,9 +1975,9 @@ Library #binaryRepr()
 refine read method 
 This1.S toS() 
 read method 
-This1.Bool #equalequal(read This0 that) 
+This1.Bool equals(read This0 that) 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 method 
 This1.Bool isOperator() 
 method 
@@ -2016,13 +2016,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -2068,7 +2068,7 @@ This1.S readableName()
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
-This1.Bool equals(read Any that) 
+This1.Bool #equalequal(read Any that) 
 NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
 mut method 
 This2.S #_text() 
@@ -2091,13 +2091,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -2133,7 +2133,7 @@ class This0 class()
 refine class method 
 This2.S readableName() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 mut method 
 This2.Size #inner() 
 read method 
@@ -2145,7 +2145,7 @@ This2.S toS()
 read method 
 This2.S name() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 class method 
 This0 fromS(This2.S that) 
 class method 
@@ -2204,13 +2204,13 @@ This3.S text()
 refine read method 
 This3.Message.Opt responseOf() 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This3.Message that) 
 refine read method 
 This3.S toS() 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
 class This3.Message class() 
 class method 
@@ -2350,9 +2350,9 @@ This3.Bool #rightrightequal(This0 that)
 method 
 This3.Bool #right(This1 that) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -2501,7 +2501,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 mut method 
 This2.S #fileName() 
 read method 
@@ -2535,7 +2535,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 mut method 
 mut This3.Collections.MutListAny #inner() 
@@ -2650,9 +2650,9 @@ This3.Bool #rightrightequal(This0 that)
 method 
 This3.Bool #right(This1 that) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -2816,7 +2816,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This1.Origin.List origins() 
 method 
@@ -2906,7 +2906,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 mut method 
 mut This3.Collections.MutListAny #inner() 
@@ -3021,9 +3021,9 @@ This3.Bool #rightrightequal(This0 that)
 method 
 This3.Bool #right(This1 that) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -3174,7 +3174,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This1.Origin.List origins() 
 refine method 
@@ -3214,7 +3214,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 mut method 
 mut This3.Collections.MutListAny #inner() 
@@ -3329,9 +3329,9 @@ This3.Bool #rightrightequal(This0 that)
 method 
 This3.Bool #right(This1 that) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -3494,7 +3494,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 DispatchRefTo: {
 class method 
 This1.RefTo #apply(Library that) }
@@ -3511,7 +3511,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 method 
 This2.Origin.List origins() 
 refine method 
@@ -3537,7 +3537,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) }
+This3.Bool #equalequal(read Any that) }
 Parameter: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Parameter     
 */implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -3551,7 +3551,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 method 
 This2.Origin.List origins() 
 refine method 
@@ -3579,7 +3579,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 mut method 
 mut This4.Collections.MutListAny #inner() 
@@ -3694,9 +3694,9 @@ This4.Bool #rightrightequal(This0 that)
 method 
 This4.Bool #right(This1 that) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool equals(read Any that) 
+This4.Bool #equalequal(read Any that) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -3847,7 +3847,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 method 
 This2.Origin.List origins() 
 refine method 
@@ -3875,7 +3875,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 mut method 
 mut This4.Collections.MutListAny #inner() 
@@ -3990,9 +3990,9 @@ This4.Bool #rightrightequal(This0 that)
 method 
 This4.Bool #right(This1 that) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool equals(read Any that) 
+This4.Bool #equalequal(read Any that) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -4143,7 +4143,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 method 
 This2.Origin.List origins() 
 refine method 
@@ -4171,7 +4171,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 mut method 
 mut This4.Collections.MutListAny #inner() 
@@ -4286,9 +4286,9 @@ This4.Bool #rightrightequal(This0 that)
 method 
 This4.Bool #right(This1 that) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool equals(read Any that) 
+This4.Bool #equalequal(read Any that) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -4437,7 +4437,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 Lib: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
 */implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
@@ -4451,7 +4451,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 method 
 This3.Lib referredLib() 
 refine read method 
@@ -4463,7 +4463,7 @@ This4.S readableName()
 refine class method 
 This4.Bool is(class Any subtype) 
 refine read method 
-This4.Bool equals(read Any that) }
+This4.Bool #equalequal(read Any that) }
 Unavailable: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable
 */implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
@@ -4477,7 +4477,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 refine read method 
 class This0 class() 
 refine read method 
@@ -4487,7 +4487,7 @@ This4.S readableName()
 refine class method 
 This4.Bool is(class Any subtype) 
 refine read method 
-This4.Bool equals(read Any that) }
+This4.Bool #equalequal(read Any that) }
 Binded: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Binded
 */implements This1/*includes primitives
@@ -4502,7 +4502,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 method 
 class Any referredClassObj() 
 class method 
@@ -4518,7 +4518,7 @@ This4.S readableName()
 refine class method 
 This4.Bool is(class Any subtype) 
 refine read method 
-This4.Bool equals(read Any that) }
+This4.Bool #equalequal(read Any that) }
 Missing: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Missing
 */implements This1, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
@@ -4532,7 +4532,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 refine read method 
 class This0 class() 
 refine read method 
@@ -4542,7 +4542,7 @@ This4.S readableName()
 refine class method 
 This4.Bool is(class Any subtype) 
 refine read method 
-This4.Bool equals(read Any that) }}}
+This4.Bool #equalequal(read Any that) }}}
 Doc: {/*user will need typecase to discover precise type, location() not refined
 @plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc
@@ -4557,7 +4557,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This1.Origin.List origins() 
 refine method 
@@ -4583,7 +4583,7 @@ This2.S readableName()
 refine class method 
 This2.Bool is(class Any subtype) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 Annotation: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc$Annotation
 */implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -4595,7 +4595,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This3.Bool #equalequal(read This0 that) 
+This3.Bool equals(read This0 that) 
 method 
 This2.Type.RefTo title() 
 method 
@@ -4611,7 +4611,7 @@ This3.S readableName()
 refine class method 
 This3.Bool is(class Any subtype) 
 refine read method 
-This3.Bool equals(read Any that) 
+This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 mut method 
 mut This4.Collections.MutListAny #inner() 
@@ -4726,9 +4726,9 @@ This4.Bool #rightrightequal(This0 that)
 method 
 This4.Bool #right(This1 that) 
 read method 
-This4.Bool #equalequal(read This0 that) 
+This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool equals(read Any that) 
+This4.Bool #equalequal(read Any that) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -4920,7 +4920,7 @@ class This2.Message class()
 refine read method 
 This2.S toS() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -4940,7 +4940,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This2.S string() 
 method 
@@ -4958,7 +4958,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -4973,7 +4973,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -4987,7 +4987,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5002,7 +5002,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -5016,7 +5016,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5031,7 +5031,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -5045,7 +5045,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5060,7 +5060,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This2.Location.Lib left() 
 method 
@@ -5078,7 +5078,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5093,7 +5093,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This2.Location.Method left() 
 method 
@@ -5111,7 +5111,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5126,7 +5126,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This2.Path path() 
 refine class method 
@@ -5142,7 +5142,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5157,7 +5157,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 method 
 This2.Path path() 
 method 
@@ -5175,7 +5175,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5190,7 +5190,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -5204,7 +5204,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5219,7 +5219,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -5233,7 +5233,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5248,7 +5248,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -5262,7 +5262,7 @@ This2.S text()
 refine read method 
 class This0 class() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 refine class method 
 This2.S readableName() 
 refine class method 
@@ -5447,13 +5447,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -5829,13 +5829,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -5975,13 +5975,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -6279,9 +6279,9 @@ This2.Bool #rightrightequal(This0 that)
 method 
 This2.Bool #right(This2.Selector that) 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 read method 
 This2.Size indexOfLeft(This2.Selector val) 
 read method 
@@ -6533,9 +6533,9 @@ This2.Bool #rightrightequal(This0 that)
 method 
 This2.Bool #right(This1.Selectors that) 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 read method 
 This2.Size indexOfLeft(This1.Selectors val) 
 read method 
@@ -7158,13 +7158,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
@@ -7212,13 +7212,13 @@ This2.S text()
 refine read method 
 This2.Message.Opt responseOf() 
 refine read method 
-This2.Bool equals(read Any that) 
+This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
-This2.Bool #equalequal(read This0 that) 
+This2.Bool equals(read This0 that) 
 refine read method 
 class This2.Message class() 
 class method 
