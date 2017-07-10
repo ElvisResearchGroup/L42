@@ -61,7 +61,7 @@ in This1 and so on.
 Moreover, if Thisn.Cs is present, then we do not store
 any of its sub paths Thisn.Cs.Cs'.
 We model this idea with
-- minimize(Css)={Cs1 in Css | forall Cs2 in Css\Cs1,  Cs2._!=Cs1}
+- minimize(Css)={Csi in Css | forall Csj in Css\Csi,  Csj._!=Csi}//Note: _ can be the empty Cs
 
 - paths::= Csss //list of set of list of C
 
@@ -84,7 +84,7 @@ Simple operations:
  -paths U empty=empty U paths = paths
 
  -(Css paths) \(Css' paths')=(path\path').push(Css\Css')
-   where Css\Css' ={Cs in Css|  Cs._ notin Css'}
+   where Css\Css' ={Cs in Css|  Cs._ notin Css'}//Note: _ can be the empty Cs
 
 
 The prefix operation adds Cs in front of all the P in paths.
@@ -96,15 +96,17 @@ representing paths This0.W.E.A  This0.W.B  This0.C This1.D
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
  -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
- -(Css paths).prefix(Cs.C)= paths.prefix(Cs) U Css.prefix(Cs.C)
+ -(Css paths).prefix(Cs.C)= Css.prefix(Cs.C) U paths.prefix(Cs)
   
 
 
 -----------------------------------------------------------
 Part 3: methods(p,P)=Ms,  collect(p,Ps)=Ps'
 -----------------------------------------------------------
-A non normalized L may have methods from its implemented interfaces.
-Methods collect such methods and their type. It may have to choose a type
+methods(), applied to a non normalized L, will return a mixture of
+the methods written directly into the L and methods declared in its
+implemented interfaces.
+methods() collect such methods and their type. It may have to choose a type
 in case of differently refined methods from interface diamond implements.
 
 _______
