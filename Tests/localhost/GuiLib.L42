@@ -383,6 +383,10 @@ Library #binaryRepr()
 class method 
 mut This0 #from(Library binaryRepr) 
 refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
+refine class method 
 This0 is(class Any subtype) 
 refine read method 
 class This0 class() 
@@ -410,7 +414,8 @@ class method
 This0 fromS(read This1.Concept.ToS that) 
 class method 
 Any parseError(This1.S that) 
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -422,25 +427,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This1 is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This1 #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This1 equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -453,6 +450,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This1 is(class Any subtype) 
+refine read method 
+This1 #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -470,6 +479,10 @@ class method
 mut This0 _private(Library _binaryRepr) 
 read method 
 Library _binaryRepr() 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
@@ -659,7 +672,8 @@ read method
 This1 #inner() 
 read method 
 Void #close() }
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -671,25 +685,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -702,6 +708,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -722,6 +740,10 @@ read method
 Library _binaryRepr() 
 read method 
 This0 clone() 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
@@ -1070,6 +1092,10 @@ ToS: {interface
 read method 
 This2.S toS() }
 Classable: {interface 
+class method 
+read This0 cast(read This0 that) 
+class method 
+mut This0 #cast(mut This0 that) 
 read method 
 class This0 class() 
 class method 
@@ -1080,6 +1106,10 @@ Base: {interface implements This1.ToS, This1.Classable, This1.Equals/*class meth
 */
 refine read method 
 This2.S toS() 
+refine class method 
+read This1.Classable cast(read This1.Classable that) 
+refine class method 
+mut This1.Classable #cast(mut This1.Classable that) 
 refine read method 
 class This1.Classable class() 
 refine class method 
@@ -1133,7 +1163,8 @@ read method
 Void #checkEnd() 
 read method 
 Void #close() }}
-Message: {interface implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+Message: {interface implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 This1.S kind() 
 read method 
@@ -1144,12 +1175,16 @@ refine read method
 class This0 class() 
 refine read method 
 This1.S toS() 
-refine read method 
-This1.Bool #equalequal(read Any that) 
+refine class method 
+read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method 
+mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
 refine class method 
 This1.S readableName() 
 refine class method 
 This1.Bool is(class Any subtype) 
+refine read method 
+This1.Bool #equalequal(read Any that) 
 EqualMessages: {
 class method 
 This2.Bool #apply(read This1 that, read This1 other) }
@@ -1199,7 +1234,8 @@ as errors, they represent precondition violations.
 Turning an exception Guard into an error Guard
  is equivalent of declaring that such misuse should not happen (blame on the caller),
  still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-*/interface implements This1.Message, This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable
+*/interface implements This1.Message, This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
+*/
 refine class method 
 This1.S kind() 
 refine read method 
@@ -1210,13 +1246,18 @@ refine read method
 class This1.Message class() 
 refine read method 
 This1.S toS() 
-refine read method 
-This1.Bool #equalequal(read Any that) 
+refine class method 
+read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method 
+mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
 refine class method 
 This1.S readableName() 
 refine class method 
 This1.Bool is(class Any subtype) 
-Operation: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+refine read method 
+This1.Bool #equalequal(read Any that) 
+Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -1228,25 +1269,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -1259,6 +1292,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -1270,7 +1315,8 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Parameter: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+Parameter: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -1282,25 +1328,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -1313,6 +1351,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -1324,7 +1374,8 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Precondition: {implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+Precondition: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -1336,25 +1387,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -1367,6 +1410,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -1378,7 +1433,8 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-ParseFail: {interface implements This1, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ParseFail: {interface implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 refine class method 
 This2.S kind() 
 refine read method 
@@ -1389,15 +1445,79 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }}
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
+CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+mut method 
+This2.S #_text() 
+read method 
+This2.S _text() 
+mut method 
+This2.Message.Opt #cause() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+method 
+This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
+read method 
+This2.Bool equals(read This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+method 
+mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+Continue: {
+mut method 
+This3.S #that() 
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }}}
 System: {
 Guard: {/* implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
-*/interface implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 refine class method 
 This2.S kind() 
 refine read method 
@@ -1408,13 +1528,18 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
 This2.Bool is(class Any subtype) 
-PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable
+refine read method 
+This2.Bool #equalequal(read Any that) 
+PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This3.S #_text() 
 read method 
@@ -1426,25 +1551,17 @@ This3.Message.Opt cause()
 class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) 
 refine class method 
-This3.Bool is(class Any subtype) 
-refine class method 
-This3.S readableName() 
-refine class method 
 This3.S kind() 
 refine read method 
 This3.S text() 
 refine read method 
 This3.Message.Opt responseOf() 
-refine read method 
-This3.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This3.Message that) 
 refine read method 
 This3.S toS() 
 read method 
 This3.Bool equals(read This0 that) 
-refine read method 
-class This3.Message class() 
 class method 
 This0 #apply(This3.S text) 
 class method 
@@ -1457,6 +1574,18 @@ method
 This0.Continue #from(This3.S.SConcat seqBuilder) 
 method 
 mut This3.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method 
+This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
+refine read method 
+This3.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This4.S #that() 
@@ -1477,7 +1606,8 @@ class method
 mut This0.Tests #seqBuilder() 
 class method 
 Void #from(This0.Tests seqBuilder) 
-NotImplementedYet: {implements This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+NotImplementedYet: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -1489,25 +1619,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -1520,6 +1642,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -1531,7 +1665,8 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-AssertionFail: {implements This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+AssertionFail: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -1543,25 +1678,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -1574,6 +1701,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -1697,11 +1836,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This2.S toS() 
 refine class method 
-This2.Bool is(class Any subtype) 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
 mut method 
 Void #add(This2.Bool that, This2.Concept.ToS msg) 
 mut method 
@@ -1907,11 +2050,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This1.S toS() 
 refine class method 
-This1.Bool is(class Any subtype) 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This1.S readableName() 
+refine class method 
+This1.Bool is(class Any subtype) 
 read method 
 This1.Size size() 
 read method 
@@ -2183,6 +2330,10 @@ mut This0 _private(Library _binaryRepr)
 read method 
 Library _binaryRepr() 
 refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
+refine class method 
 This1.Bool is(class Any subtype) 
 refine read method 
 class This0 class() 
@@ -2224,7 +2375,8 @@ class method
 Any parseError(This1.S that) 
 class method 
 Any parseError(This1.S that, This1.Message cause) 
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -2236,25 +2388,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -2267,6 +2411,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -2286,6 +2442,10 @@ read method
 Library _binaryRepr() 
 refine class method 
 This1.Bool is(class Any subtype) 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
@@ -2328,7 +2488,8 @@ method
 This0 with(This1.S prefix) 
 class method 
 Any parseError(This1.S that) 
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -2340,25 +2501,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -2371,6 +2524,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -2395,6 +2560,10 @@ method
 This0.Doc doc() 
 refine read method 
 This1.S toS() 
+refine class method 
+read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method 
+mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
 refine read method 
 class This1.Concept.Classable class() 
 refine class method 
@@ -2403,7 +2572,8 @@ refine class method
 This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
-NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -2415,25 +2585,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -2446,6 +2608,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -2457,25 +2631,14 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Mdf: {/*Data is more than Solid, and Liquid, Gas, Plasma can be good methafores
-*/implements This2.Concept.Equals, This2.Concept.Classable/*may be Parsable?
-*/, This2.Concept.ToS
-refine class method 
-This2.Bool is(class Any subtype) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+Mdf: {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.Size #inner() 
 read method 
 This2.Size inner() 
 class method 
 This0 #apply(This2.Size inner) 
-refine read method 
-This2.S toS() 
 read method 
 This2.S name() 
 read method 
@@ -2516,7 +2679,22 @@ class method
 This0 fwdMut() 
 method 
 This2.Bool isFwdMut() 
-ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.ToS, This3.Concept.Equals, This3.Concept.Classable
+refine read method 
+This2.S toS() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method 
+class This0 class() 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This3.S #_text() 
 read method 
@@ -2528,25 +2706,17 @@ This3.Message.Opt cause()
 class method 
 This0 #apply(This3.S _text, This3.Message.Opt cause) 
 refine class method 
-This3.Bool is(class Any subtype) 
-refine class method 
-This3.S readableName() 
-refine class method 
 This3.S kind() 
 refine read method 
 This3.S text() 
 refine read method 
 This3.Message.Opt responseOf() 
-refine read method 
-This3.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This3.Message that) 
 refine read method 
 This3.S toS() 
 read method 
 This3.Bool equals(read This0 that) 
-refine read method 
-class This3.Message class() 
 class method 
 This0 #apply(This3.S text) 
 class method 
@@ -2559,6 +2729,18 @@ method
 This0.Continue #from(This3.S.SConcat seqBuilder) 
 method 
 mut This3.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method 
+This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
+refine read method 
+This3.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This4.S #that() 
@@ -2652,11 +2834,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This3.S toS() 
 refine class method 
-This3.Bool is(class Any subtype) 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -2865,6 +3051,10 @@ class This0 class()
 refine read method 
 This2.S toS() 
 refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
 This2.S readableName() 
 refine class method 
 This2.Bool is(class Any subtype) 
@@ -2952,11 +3142,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This3.S toS() 
 refine class method 
-This3.Bool is(class Any subtype) 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -3236,6 +3430,10 @@ class This0 class()
 refine read method 
 This2.S toS() 
 refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
 This2.S readableName() 
 refine class method 
 This2.Bool is(class Any subtype) 
@@ -3323,11 +3521,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This3.S toS() 
 refine class method 
-This3.Bool is(class Any subtype) 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -3544,6 +3746,10 @@ class This0 class()
 refine read method 
 This2.S toS() 
 refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
 This2.S readableName() 
 refine class method 
 This2.Bool is(class Any subtype) 
@@ -3631,11 +3837,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This3.S toS() 
 refine class method 
-This3.Bool is(class Any subtype) 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -3821,6 +4031,10 @@ refine method
 This1.Doc doc() 
 refine read method 
 This2.S toS() 
+refine class method 
+read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This2.Concept.Classable class() 
 refine class method 
@@ -3867,6 +4081,10 @@ class This0 class()
 refine read method 
 This3.S toS() 
 refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method 
 This3.S readableName() 
 refine class method 
 This3.Bool is(class Any subtype) 
@@ -3908,6 +4126,10 @@ refine read method
 class This0 class() 
 refine read method 
 This3.S toS() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method 
 This3.S readableName() 
 refine class method 
@@ -3996,11 +4218,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This4.S toS() 
 refine class method 
-This4.Bool is(class Any subtype) 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This4.S readableName() 
+refine class method 
+This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -4205,6 +4431,10 @@ class This0 class()
 refine read method 
 This3.S toS() 
 refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method 
 This3.S readableName() 
 refine class method 
 This3.Bool is(class Any subtype) 
@@ -4292,11 +4522,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This4.S toS() 
 refine class method 
-This4.Bool is(class Any subtype) 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This4.S readableName() 
+refine class method 
+This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -4501,6 +4735,10 @@ class This0 class()
 refine read method 
 This3.S toS() 
 refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method 
 This3.S readableName() 
 refine class method 
 This3.Bool is(class Any subtype) 
@@ -4588,11 +4826,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This4.S toS() 
 refine class method 
-This4.Bool is(class Any subtype) 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This4.S readableName() 
+refine class method 
+This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -4764,6 +5006,10 @@ RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concep
 */
 refine read method 
 This3.S toS() 
+refine class method 
+read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method 
+mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
 refine read method 
 class This3.Concept.Classable class() 
 refine class method 
@@ -4793,6 +5039,10 @@ class This0 class()
 refine read method 
 This4.S toS() 
 refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
+refine class method 
 This4.S readableName() 
 refine class method 
 This4.Bool is(class Any subtype) 
@@ -4816,6 +5066,10 @@ refine read method
 class This0 class() 
 refine read method 
 This4.S toS() 
+refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine class method 
 This4.S readableName() 
 refine class method 
@@ -4848,6 +5102,10 @@ class This0 class()
 refine read method 
 This4.S toS() 
 refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
+refine class method 
 This4.S readableName() 
 refine class method 
 This4.Bool is(class Any subtype) 
@@ -4871,6 +5129,10 @@ refine read method
 class This0 class() 
 refine read method 
 This4.S toS() 
+refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine class method 
 This4.S readableName() 
 refine class method 
@@ -4913,6 +5175,10 @@ class This0 class()
 refine read method 
 This2.S toS() 
 refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
 This2.S readableName() 
 refine class method 
 This2.Bool is(class Any subtype) 
@@ -4940,6 +5206,10 @@ refine read method
 class This0 class() 
 refine read method 
 This3.S toS() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method 
 This3.S readableName() 
 refine class method 
@@ -5028,11 +5298,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This4.S toS() 
 refine class method 
-This4.Bool is(class Any subtype) 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This4.S readableName() 
+refine class method 
+This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -5242,7 +5516,8 @@ class method
 This0.RedirectRefTo redirect(This1.Path path, This1.Location.Type.RefTo intoRefTo) 
 class method 
 This0.SumMethods sumMethods(This1.Selector that, This1.Selector and, This1.Path of, This1.S over, This1.Selector into) 
-Fail: {interface implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+Fail: {interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 refine class method 
 This2.S kind() 
 refine read method 
@@ -5253,12 +5528,16 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 ErrorW: {
 class method 
 Library trait() 
@@ -5266,7 +5545,8 @@ class method
 Library #leftrightleft(Library that) }
 ParseFail: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5291,15 +5571,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 UnresolvedOverloading: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5320,15 +5605,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 ClassUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5349,15 +5639,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 MethodUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5378,15 +5673,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 ClassClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5411,15 +5711,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 MethodClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5444,15 +5749,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 PathUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5475,15 +5785,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 SelectorUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5508,15 +5823,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 IncoherentMapping: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5537,15 +5857,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 PrivacyCoupuled: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5566,15 +5891,20 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 SubtleSubtypeViolation: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
 @plugin is.L42.connected.withSafeOperators
-*/implements This2.Concept.Base, This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5595,12 +5925,16 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S readableName() 
 refine class method 
-This2.Bool is(class Any subtype) }
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) }
 JavaImport: {/*@plugin is.L42.connected.withSafeOperators
 @pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
 */
@@ -5759,7 +6093,8 @@ class method
 This0 #apply(This2.Path src, class Any dest) 
 method 
 Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
-RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -5771,25 +6106,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -5802,6 +6129,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -6141,7 +6480,8 @@ class method
 Library minimal(class Any that) 
 class method 
 Library eq(class Any that) 
-IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -6153,25 +6493,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -6184,6 +6516,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -6287,7 +6631,8 @@ class method
 Library minimal(class Any that) 
 class method 
 Library eq(class Any that) 
-IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -6299,25 +6644,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -6330,6 +6667,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -6581,11 +6930,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This2.S toS() 
 refine class method 
-This2.Bool is(class Any subtype) 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
 read method 
 This2.Size size() 
 read method 
@@ -6835,11 +7188,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This2.S toS() 
 refine class method 
-This2.Bool is(class Any subtype) 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
 read method 
 This2.Size size() 
 read method 
@@ -7111,11 +7468,15 @@ mut This0.IteratorVar #vals()
 refine read method 
 This2.S toS() 
 refine class method 
-This2.Bool is(class Any subtype) 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
 Cast: {
 class method 
 read This3.Refactor2.Method #apply(read Any that) 
@@ -7341,11 +7702,15 @@ lent This0.IteratorVar #vals()
 refine read method 
 This2.S toS() 
 refine class method 
-This2.Bool is(class Any subtype) 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 refine class method 
 This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
 Cast: {
 class method 
 Library #apply(Any that) }
@@ -7470,7 +7835,8 @@ Load: {/*shape of a loadable library:
 */
 class method 
 Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
-ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -7482,25 +7848,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -7513,6 +7871,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 
@@ -7524,7 +7894,8 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-ConceptMapUnavailable: {implements This2.Guard, This2.Message, This2.Concept.ToS, This2.Concept.Equals, This2.Concept.Classable
+ConceptMapUnavailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
 mut method 
 This2.S #_text() 
 read method 
@@ -7536,25 +7907,17 @@ This2.Message.Opt cause()
 class method 
 This0 #apply(This2.S _text, This2.Message.Opt cause) 
 refine class method 
-This2.Bool is(class Any subtype) 
-refine class method 
-This2.S readableName() 
-refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
 refine read method 
 This2.Message.Opt responseOf() 
-refine read method 
-This2.Bool #equalequal(read Any that) 
 method 
 This0 #apply(This2.Message that) 
 refine read method 
 This2.S toS() 
 read method 
 This2.Bool equals(read This0 that) 
-refine read method 
-class This2.Message class() 
 class method 
 This0 #apply(This2.S text) 
 class method 
@@ -7567,6 +7930,18 @@ method
 This0.Continue #from(This2.S.SConcat seqBuilder) 
 method 
 mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
 Continue: {
 mut method 
 This3.S #that() 

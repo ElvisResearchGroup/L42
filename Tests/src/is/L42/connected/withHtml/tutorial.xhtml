@@ -1,0 +1,3519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" media="all"/>
+    <script src="js/ace.js"></script>
+    <script src="js/utils.js"></script>
+    <link rel="shortcut icon" href="css/favicon.ico"/>
+    <title>42 - Metaprogramming as default</title>
+  </head>
+  <body onload='doOnLoad();'>
+    <div id="wrapper">
+      <div id="headerwrap">
+        <div id="header">
+          <img style='float:left;'
+            src='css/logo.png' alt='42'/>
+          <h3 style='float:left;'>
+            <p style='font-size:150%; color:rgb(250,250,250);'>42 - The definitive answer to design, code and everything</p>
+            <p style='font-size:100%; color:rgb(250,250,250);'> --But you are not going to like it</p>
+          </h3>
+        </div>
+      </div>
+      <div id="contentwrap">
+        <div id="content">
+<p>
+<div class="index"><div class="wrapFloat"><div class="inFloat">
+<div class="rotate90"> Index of Content</div>
+</div><div class="inFloat">
+<ol>
+ <li><a href="#Basics"> Basic concepts </a></li>
+ <li><a href="#ModifiersIntro"> Introduction to modifiers </a></li>
+ <li><a href="#BasicClasses"> Basic Classes </a></li>
+ <li><a href="#InterfacesAndData"> Interfaces and Data </a></li>
+ <li><a href="#Sequences"> Collections and Sequences </a></li>
+ <li><a href="#ErrorsAndExceptions"> Errors and Exceptions </a></li>
+ <li><a href="#Exercises"> Exercises </a></li>
+ <li><a href="#ExamplesOfLibraries"> Examples of libraries </a></li>
+ <li><a href="#MetaprogrammingIntro"> Introduction to Metaprogramming </a></li>
+ <li><a href="#DeployCode"> Deploy code </a></li>
+ <li><a href="#Philosophy"> Guaranties and Philosophy </a></li>
+</ol>
+</div></div><div class="finishFloat"></div></div>
+
+ </p><p id="Basics"> </p><h1> Target audience </h1> <p>
+This tutorial is design for expert programmers, already knowledgeable in
+at least two or three of the languages Java, C#, C++ and Python.
+This tutorial lays out the basic knowledge for programming in 42 using AdamsTowel, but
+does not explore the foundational theory behind 42,
+or the mathematical rational for the correctness of 42.
+<br/>
+AdamsTowel is continuing to evolve;
+this document does not represent the current state
+of AdamsTowel, but an ideal target destination.
+<br/>
+The language 42 and many 42 metaphors are inspired by
+ The Hitchhiker's Guide to the Galaxy by Douglas Adams.
+</p><h1> Basics </h1> <p>
+</p><h2> (1/5)Simple hello world program </h2> <p>
+Let's look at a simple hello world program:
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+Main: {
+  Debug(S"Hello world")
+  return ExitCode.success()
+  }
+}
+]]></pre>
+
+When we write '<span class="code"><![CDATA[reuse L42.is/AdamsTowel]]></span>' we are asking 42 to
+reuse the code of the library found in the internet address
+'<span class="code"><![CDATA[L42.is/AdamsTowel]]></span>'.
+AdamsTowel is our Towel, that is the set of classes and interfaces that we wish to start from (<a href="towel.xhtml">Deploy code</a>).
+A Towel usually plays the role of "the standard library" of most languages.
+'<span class="code"><![CDATA[L42.is]]></span>' is the main website of 42, where most commonly used libraries are hosted. To reuse code you
+need an internet connection; but this also means that you will never have to manually import any code.
+Required code will be transitively downloaded and cached on your machine, so you need not to be aware of the existence of this mechanism.
+</p><p>
+We do not need to always start from AdamsTowel, there are many interesting towels out there, and you may also become skilled in the
+advanced technique of towel embroidery.
+</p><p>
+
+At the right of '<span class="code"><![CDATA[Main: ]]></span>' we write the expression that
+we wish to execute; in this case a sequence of two statements.
+'<span class="code"><![CDATA[Main]]></span>' is not a method, and '<span class="code"><![CDATA[Main]]></span>' is not special name either, you can replace it with '<span class="code"><![CDATA[Task]]></span>' or any other valid
+upper-case name. In 42 there is no concept of main method as in
+Java or C. For now you can think of '<span class="code"><![CDATA[Main: ]]></span>' as a top level command, we will understand later how this fits with the general language design.
+</p><p>
+'<span class="code"><![CDATA[Debug]]></span>'
+is a simple class offering methods to prod the system to understand what is going on.
+The most important method of '<span class="code"><![CDATA[Debug]]></span>' is to just print a message on the console.
+</p><p>
+In 42, when a class has a "most important" method, it is conventional to name it so that can be used as if the
+class name was a function, that is
+we write '<span class="code"><![CDATA[Debug(S"Hello world")]]></span>'.
+For the same code, some other languages would require
+a more verbouse '<span class="code"><![CDATA[Debug.println(..)]]></span>'.
+
+Objects and classes that can be used as functions are called <span style="color:#ff1111; font-weight: bold;"> functors </span> (as intended in C++).
+<br/>
+In 42 Strings and numbers need to be created by their type, as in
+'<span class="code"><![CDATA[S"Hello world"]]></span>' or '<span class="code"><![CDATA[12Num]]></span>', as explained in
+<a href="index.xhtml.xhtml">Pure OO</a>.
+</p><p>
+
+Finally, our code ends by returning "success" as exit status.
+
+
+</p><h2> (2/5)Method declaration and call </h2> <p>
+Let's now define a method and call it.
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+MyCode: {
+  class method
+  S hello(S nickName){ //we can use usual if/while
+    if nickName.isEmpty() (return S"Hello!")
+    return S"Hello " ++ nickName
+    }
+  }
+Main: {
+  Debug(MyCode.hello(nickName: S"Marvin"))
+  return ExitCode.success()
+  }
+}
+]]></pre>
+Here we define a class to host our '<span class="code"><![CDATA[hello(nickName)]]></span>' method.
+We write '<span class="code"><![CDATA[class method]]></span>' to define a method that can be called on the class object, as in '<span class="code"><![CDATA[MyCode.hello(nickName: S"Marvin")]]></span>'.
+This is roughly equivalent to a static method in languages like Java or C++ , or class methods in Python.
+
+</p><p>
+Note how the method is called using the parameter name explicitly.
+We believe this increases readability.
+</p><p>
+You may also notice how there are two different usages for curly brackets:  if there is at least one '<span class="code"><![CDATA[return]]></span>' keyword then the expression is a block of statements,
+otherwise the expression is a library literal, which can contains methods and nested libraries.
+A <span style="color:#ff1111; font-weight: bold;"> nested library </span>
+is denoted by an upper-case name, and can be obtained by a library literal or an expression producing a library literal.
+A library literal can be a class (default case) or an interface (starts with the '<span class="code"><![CDATA[interface]]></span>' keyword).
+A nested library in 42 is similar to a static inner class in Java, or a nested class in C++. It is just a convenient way to organize the various components of our program into a tree shape.
+</p><p>
+The class '<span class="code"><![CDATA[MyCode]]></span>' from before offers a single class method, has no fields and you can not create instances of '<span class="code"><![CDATA[MyCode]]></span>', since no '<span class="code"><![CDATA[factory]]></span>' is present; you can think about it as a module.
+In 42 we do not have constructors. Objects are created by factory methods, that are just normal methods that happen to return an instance of their class. We believe this is a much simpler and more consistent approach to object initialization.
+
+</p><h2> (3/5)Simple class with internal state </h2> <p>
+Let's create now a class with state and factory:
+<pre class="l42Big"><![CDATA[
+Point: Data <>< {
+  Num x
+  Num y
+  method
+  Point add(Num x)
+    Point(x: x + this.x(), y: this.y())
+  method
+  Point add(Num y)
+    this.with(y: y + this.y())
+  }
+]]></pre>
+Here you can see we define a '<span class="code"><![CDATA[Point]]></span>' class with coordinates '<span class="code"><![CDATA[x]]></span>' and '<span class="code"><![CDATA[y]]></span>' of type '<span class="code"><![CDATA[Num]]></span>',
+unlimited precision rational number.
+
+In addition of '<span class="code"><![CDATA[x]]></span>',
+ '<span class="code"><![CDATA[y]]></span>',
+ '<span class="code"><![CDATA[add(x)]]></span>'
+ and '<span class="code"><![CDATA[add(y)]]></span>'
+ '<span class="code"><![CDATA[Point]]></span>' will offer many other useful methods since it has been declared using
+ '<span class="code"><![CDATA[Data]]></span>'.
+ </p><p>
+Indeed, '<span class="code"><![CDATA[Data]]></span>' is a decorator. Decorators are classes/objects that offer an operator '<span class="code"><![CDATA[<><]]></span>', called the babel fish operator,
+whose goal is to translate a library into a "better" library.
+In this case, '<span class="code"><![CDATA[Data]]></span>' is translating the class '<span class="code"><![CDATA[{Num x, Num y .....}]]></span>'
+ into a much longer class, with
+a factory method taking in input the fields and initializing them; but also containing
+ boring but useful definitions for
+equality, inequality, conversions from and to human readable strings, XML and binary representations for (de)serialization.
+</p><p>
+Finally, we define a methods to add to each of the coordinates.
+For very short methods we can omit the curly brackets and '<span class="code"><![CDATA[return]]></span>'.
+Indeed, method bodies are just expressions, and the curly brackets turna block of statements into one expression.
+
+In the method '<span class="code"><![CDATA[add(x)]]></span>' we show a how to create a new
+'<span class="code"><![CDATA[Point]]></span>' instanceand how to call getters.
+In the method '<span class="code"><![CDATA[add(y)]]></span>' we show an improved version, using the '<span class="code"><![CDATA[with]]></span>' method, another gift of Data, that allows us to easily create a clone with one or more fields updated.
+We can define two methods, '<span class="code"><![CDATA[add(x)]]></span>' and '<span class="code"><![CDATA[add(y)]]></span>' with the same name, if parameter names are different.
+</p><p>
+Note how we always use getters and we never access fields directly.
+In many other languages we can use write '<span class="code"><![CDATA[a.fieldName]]></span>' and '<span class="code"><![CDATA[a.fieldName= newValue]]></span>'. Such syntax does not exists in 42. The same goes for object instantiation; in many languages there is a special '<span class="code"><![CDATA[new ClassName(..)]]></span>' dedicated syntax, while in 42 it is just a method call.
+</p><p>
+Also, similarly to what happens in Python, we need to use '<span class="code"><![CDATA[this.methodName()]]></span>' to call methods when the receiver is '<span class="code"><![CDATA[this]]></span>'.
+While this makes some code more verbose, it saves us from the burden of
+method scope-hiding.  ; that is,
+we do not need to worry about scoping and nesting for method resolution.
+
+
+
+</p><h2> Decorators </h2> <p>
+Decorators are one of the main concepts used by 42 programmers. We will encounter many decorators in this tutorial.
+For now, just get used to the pattern of writing
+'<span class="code"><![CDATA[<><]]></span>' to go from a minimal chunk of code, with method declarations for the important bits, to a fully fledged usable class.
+<a href="Decorators.xhtml">More on decorators</a>
+
+
+</p><h2> (4/5)Vectors </h2> <p>
+
+Vectors can be defined using '<span class="code"><![CDATA[Collections.vector(of)]]></span>', as in the example below.
+
+<pre class="l42Big"><![CDATA[
+Nums: Collections.vector(of: Num) //declaration for vectors of nums
+Points: Collections.vector(of: Point) //same for points
+/*..*/
+xs= Nums[ 10Num; 20Num; 30Num ]//10Num is a shortcut for Num"10"
+ys= Nums[ 1Num; 2Num; 3Num ]
+points= Points[with x in xs.vals(), y in ys.vals() (
+  use[Point(x: x, y: y)]
+  )]
+]]></pre>
+Where we define new classes '<span class="code"><![CDATA[Nums]]></span>'
+and '<span class="code"><![CDATA[Points]]></span>'. Note that those are new classes in a nominal type system, so in
+<pre class="l42Big"><![CDATA[
+Nums1: Collections.vector(of: Num)
+Nums2: Collections.vector(of: Num)
+]]></pre>
+'<span class="code"><![CDATA[Nums1]]></span>' and
+'<span class="code"><![CDATA[Nums2]]></span>' denote different classes.
+</p><p>
+Vectors can be initialized with the '<span class="code"><![CDATA[[_;_;_]]]></span>'
+syntax or with the '<span class="code"><![CDATA[[with _ ( _ use[ _ ]_ )]]]></span>' syntax.
+We will discuss all the variation of '<span class="code"><![CDATA[with]]></span>' later.
+Note that to express number literals we need to specify their class.
+
+</p><h2> (5/5)First summary </h2> <p>
+
+<ul><li>
+At the start of your program, import a towel using
+'<span class="code"><![CDATA[reuse _]]></span>', as in '<span class="code"><![CDATA[reuse L42.is/AdamsTowel]]></span>'.
+</li><li>
+To define a simple class exposing its state and
+some methods working with those, use '<span class="code"><![CDATA[Data]]></span>', as in
+'<span class="code"><![CDATA[Point: Data <>< {Num x, Num y}]]></span>'.
+</li><li>
+You can define methods in classes with the '<span class="code"><![CDATA[method]]></span>' keyword,
+as in '<span class="code"><![CDATA[method ReturnType myName(ParType parName) body]]></span>'.
+Use '<span class="code"><![CDATA[class method]]></span>' for methods that can be called on the class object directly.
+</li><li>
+To introduce the concept of vector for a certain type, use
+'<span class="code"><![CDATA[Collections.vector(of)]]></span>'
+as in the class declaration
+'<span class="code"><![CDATA[Points: Collections.vector(of: Point)]]></span>'
+</li></ul>
+
+
+</p><h2> Object creation summary </h2> <p>
+42 supports many different syntactic forms that are convenient for creating objects:
+<ul><li>
+12Num:  from a numeric representation
+</li><li>
+S"foo":  from a string representation
+</li><li>
+Point(x: _,y: _):  from the parameter values
+</li><li>
+Points[_;_;_]:  from a variable length sequence of values.
+</li></ul>
+
+Note that in 42 those are all just expressions, and represent methods in the named class.
+Sometimes it is convenient to reuse this kind of syntax to get better syntactic support for certain operations; for example, as we will see later, the string class uses square brackets to support string formatting.
+<a href="S.xhtml">Collections and Sequences</a>
+
+ </p><p id="ModifiersIntro"> </p><h1> Keep control:  Modifiers, kinds of classes/references/objects </h1> <p>
+
+</p><h2> (1/5)Kinds of classes </h2> <p>
+'<span class="code"><![CDATA[Point]]></span>' is an <span style="color:#ff1111; font-weight: bold;"> Immutable class:  </span>
+ none of its fields can be <span style="color:#ff1111; font-weight: bold;"> updated </span>
+or <span style="color:#ff1111; font-weight: bold;"> mutated. </span>
+Immutable classes are very easy to use but may be inadequate when representing real objects, whose state can change across time.
+A <span style="color:#ff1111; font-weight: bold;"> Mutable class </span> is a class where the state of (some of) its instances may be mutated.
+
+Let's now define a '<span class="code"><![CDATA[Animal]]></span>' mutable class, whose location can be updated.
+<pre class="l42Big"><![CDATA[
+Animal: Data <>< {
+  var Point location
+
+  mut method
+  Void run()
+    this.location(this.location().add(x: 20Num))
+  }
+]]></pre>
+There are two new keywords used here:
+<ul><li>
+the '<span class="code"><![CDATA[location]]></span>' field is '<span class="code"><![CDATA[var]]></span>'.
+  This is called a variable field, and can be <span style="color:#ff1111; font-weight: bold;"> updated </span> by calling a setter.
+  Non variable fields can not be updated
+</li><li>
+  the modifier '<span class="code"><![CDATA[mut]]></span>' in front of the method.
+  We have seen '<span class="code"><![CDATA[class]]></span>' already, and we have seen methods with the default modifier (
+'<span class="code"><![CDATA[add(x)]]></span>' and
+'<span class="code"><![CDATA[add(y)]]></span>' ).
+  '<span class="code"><![CDATA[mut]]></span>' methods can mutate the "this" object. If you have experience with C++
+  you can see the relationship with '<span class="code"><![CDATA[const]]></span>' methods.
+  immutable (default) methods works only on immutable "this" objects. We will see later much more about modifiers
+</li></ul>
+
+</p><p>
+As you see, we are using the '<span class="code"><![CDATA[add]]></span>' method from before.
+Also notice that we are using a setter here, where we are providing the first parameter without the argument name.
+While this is usual in other languages, in 42 parameters are selected by name.
+However, for some methods with a single parameter, writing down the parameter name would not improve the readability and just add noise.
+In those cases, the first parameter is conventionally called '<span class="code"><![CDATA[that]]></span>',
+and writing '<span class="code"><![CDATA[a.b(that: c)]]></span>'
+is equivalent to writing '<span class="code"><![CDATA[a.b(c)]]></span>'.
+This works also for methods with multiple parameters, if the first one is called '<span class="code"><![CDATA[that]]></span>'.
+For example writing '<span class="code"><![CDATA[a.b(that: c, x: d)]]></span>'
+is equivalent to writing '<span class="code"><![CDATA[a.b(c, x: d)]]></span>'.
+</p><p>
+We can use an animal by writing, for example:
+
+<pre class="l42Big"><![CDATA[
+mut Animal dog1= Animal(location: Point(x: 0Num, y: 0Num))
+dog2= Animal(location: Point(x: 0Num, y: 0Num)) //type 'mut Animal' inferred
+dog1.run()
+]]></pre>
+
+</p><h2> (2/5)Interaction between mutable and immutable </h2> <p>
+
+We now explore some interaction between mutable and immutable objects.
+<pre class="l42Big"><![CDATA[
+Animal: Data <>< {
+  var Point location
+  mut Points path
+  mut method
+  Void move()
+    this.location(path.left()))
+    this.#path().removeLeft()
+  }
+]]></pre>
+
+
+Here we use '<span class="code"><![CDATA[mut Points path]]></span>' to denote a mutable list of points. Note the absence of '<span class="code"><![CDATA[var]]></span>'; this is conceptually similar to a '<span class="code"><![CDATA[Points * const path;]]></span>' in C++  or '<span class="code"><![CDATA[final Points path;]]></span>' in Java.
+To contrast, the declaration '<span class="code"><![CDATA[var Point location]]></span>' is similar to
+'<span class="code"><![CDATA[Point const * location;]]></span>' in C++  or '<span class="code"><![CDATA[ImmPoint location;]]></span>' in Java, for an opportune '<span class="code"><![CDATA[ImmPoint]]></span>' class.
+That is,
+mutable objects can be referred using mutable references,
+Immutable objects can be referred using immutable references.
+</p><p>
+The method '<span class="code"><![CDATA[move]]></span>'
+first use the '<span class="code"><![CDATA[location(that)]]></span>' setter method to update the '<span class="code"><![CDATA[location]]></span>' field,
+then uses the '<span class="code"><![CDATA[#path()]]></span>'
+ <span style="color:#ff1111; font-weight: bold;"> exposer </span> method and
+the '<span class="code"><![CDATA[removeLeft()]]></span>' method to mutate the list of points.
+Both exposers and getters provide access to the value of a field;
+Exposer are used to access the value of mutable fields.
+Exposers should be used with care: taking access to parts of a mutable
+state of an object could cause
+spooky action at a distance effects by aliasing.
+
+In general, methods starting with # should be used with care.
+</p><p>
+This code models an animal following a path. It can be used like this.
+<pre class="l42Big"><![CDATA[
+zero= Point(x: 0Num, y: 0Num)
+ps1= Points[ Point(x: 12Num, y: 20Num);Point(x: 1Num, y: 2Num)]
+ps2= Points[ zero;Point(x: 1Num, y: 2Num)]
+dog1= Animal(location: zero, path: ps1)
+dog2= Animal(location: zero, path: ps2)
+dog1.move()
+dog2.move()
+]]></pre>
+
+In this code the first dog goes to 12: 20.
+The second dog goes to 0: 0.
+
+This code involves a mutable animal with a mutable field. This is often
+a terrible idea, since its behaviour may depend on aliasing:  what happens if two dogs follow the same path?
+<pre class="l42Big"><![CDATA[
+zero= Point(x: 0Num, y: 0Num)
+ps= Points[ Point(x: 12Num, y: 20Num);Point(x: 1Num, y: 2Num)]
+dog1= Animal(location: zero, path: ps)
+dog2= Animal(location: zero, path: ps)
+dog1.move()
+dog2.move()
+]]></pre>
+The first dog moves and consumes the path for the second one as well.
+That is, the first goes to 12: 20 and the second goes to 1: 2.
+
+This is because '<span class="code"><![CDATA[Animal]]></span>' is a <span style="color:#ff1111; font-weight: bold;"> Deeply mutable class:  </span>  a mutable class with mutable fields.
+An amazing amount of bugs are caused by the usage of deeply mutable classes.
+
+Note how we are using the exposer '<span class="code"><![CDATA[#path()]]></span>'
+in a safe pattern: only called over the '<span class="code"><![CDATA[this]]></span>' receiver, and the reference does not leak out of the method.
+The problem here arise since the object was shared to begin with.
+
+</p><h2> (3/5)Capsules:  Keep aliasing graphs untangled </h2> <p>
+
+This tricky behaviour is correct for a
+deeply mutable class.
+In 42 we can change '<span class="code"><![CDATA[Animal]]></span>' to prevent this aliasing issue.
+<pre class="l42Big"><![CDATA[
+Animal: Data <>< {
+  var Point location
+  capsule Points path
+  mut method
+  Void move()
+    this.location(this.path().left()))
+    this.#path().removeLeft()
+  }
+]]></pre>
+Now we use the modifier '<span class="code"><![CDATA[capsule]]></span>', this requires the field to be encapsulated with respect to aliasing.
+Immutable objects do not influence aliasing, so they are free from aliasing limitations.
+
+</p><p>
+The '<span class="code"><![CDATA[capsule]]></span>'
+ modifier <span style="color:#ff1111; font-weight: bold;"> forces </span> the users to provide well encapsulated values,
+ and <span style="color:#ff1111; font-weight: bold;"> ensure </span>
+ the '<span class="code"><![CDATA[Animal]]></span>' data is well encapsulated.
+</p><p>
+
+Now the code from before would not compile. However we can still write the following variant
+<pre class="l42Big"><![CDATA[
+zero= Point(x: 0Num, y: 0Num)
+capsule Points ps= Points[ Point(x: 12Num, y: 20Num);Point(x: 1Num, y: 2Num)]
+dog1= Animal(location: zero, path: ps)
+dog2= Animal(location: zero, path: Points[ Point(x: 12Num, y: 20Num);Point(x: 1Num, y: 2Num)])
+dog1.move()
+dog2.move()
+]]></pre>
+Where the '<span class="code"><![CDATA[ps]]></span>' local binding is '<span class="code"><![CDATA[capsule]]></span>';
+it can satisfy the Animal.path requirement, but it can be used only once.
+'<span class="code"><![CDATA[dog2]]></span>'
+has to use another capsule. It is okay to just write the object creation in place as is done.
+Alternatively, most classes offer a '<span class="code"><![CDATA[clone()]]></span>' method,
+so in this case we could write
+
+'<span class="code"><![CDATA[dog2= Animal(location: zero, path: dog1.path().clone())]]></span>'
+
+
+</p><h2> (4/5)Handle mutability </h2> <p>
+
+</p><h2> Immutable objects of Mutable classes </h2> <p>
+
+How can we get an immutable '<span class="code"><![CDATA[Animal]]></span>'?
+When an '<span class="code"><![CDATA[Animal]]></span>' is created using '<span class="code"><![CDATA[Animal(location: __,path: __)]]></span>' we create a '<span class="code"><![CDATA[mut Animal]]></span>'.
+
+In most cases you can promote such reference to immutable/capsule; just make the type of the local binding explicit.
+ The type system will take care of the rest.
+If a reference can not be safely promoted to immutable/capsule, you may have to use the '<span class="code"><![CDATA[.clone()]]></span>' method or to refactor your code.
+<pre class="l42Big"><![CDATA[
+mut Animal dog1= Animal(__) //no promotion here
+Animal dog2= Animal(__) //promotion mutable->immutable
+dog1.move()
+//dog2.move()  //ill-typed, requires a mut Animal
+]]></pre>
+
+We will not explain in this tutorial the exact rules for promotion, but the main idea is that if the initialization expression uses local bindings in a controlled/safe way, then promotion can be applied.
+For example, a mutable expression using only capsule or immutable references can be promoted to capsule or immutable, as we prefer.
+
+</p><h2> Exposers and getters: mutable, lent and read </h2> <p>
+
+As we had seen before, exposers are needed to
+access a mutable reference for a mutable field.
+In case of capsule fields, the exposer will provide a '<span class="code"><![CDATA[lent]]></span>' reference; that is:
+a hygienic mutable reference allowing mutation but not long term storage.
+
+Lent references are a supertype of mutable references and can not be stored in mutable/capsule/immutable fields.
+A single lent reference in a subexpression can be temporary promoted to a mutable references.
+for example, when doing
+'<span class="code"><![CDATA[this.#path().removeLeft()]]></span>'
+the reference produced by '<span class="code"><![CDATA[this.#path()]]></span>' is promoted to mutable in order to call
+the mutable method '<span class="code"><![CDATA[removeLeft()]]></span>'.
+
+When access to a mutable reference is not needed, one can use
+a normal getter also for mutable fields.
+In this case, a '<span class="code"><![CDATA[read]]></span>' reference is provided.
+
+In general, we can
+use '<span class="code"><![CDATA[read]]></span>' when we not care about the mutability of an object.
+For example, we could add to '<span class="code"><![CDATA[Animal]]></span>'
+
+<pre class="l42Big"><![CDATA[
+read method
+Bool hasArrived()
+  this.path().isEmpty()
+]]></pre>
+This method can be called to mutable and immutable animals:
+
+<pre class="l42Big"><![CDATA[
+Debug(dog1.hasArrived())
+Debug(dog2.hasArrived())
+]]></pre>
+
+</p><h2> (5/5) Summary </h2> <p>
+
+</p><h2> Kinds of classes, summary </h2> <p>
+
+<ul>
+<li>
+immutable classes:  have only immutable fields.
+It is useful to model mathematical concepts.
+It is easy to reason about code using immutable classes,
+but some properties of real objects can be better modelled with state mutation.
+</li><li>
+shallow mutable classes:  have only (variable) fields of immutable or capsule type (or class, as we will see later).
+Reasoning with shallow mutable classes is near as easy as reasoning with immutable ones, and often more natural.
+</li><li>
+deep mutable classes:  have mutable fields.
+Reasoning with deep mutable classes can be very hard.
+</li></ul>
+
+</p><h2> Modifiers: summary </h2> <p>
+
+<ul>
+<li>
+immutable:  the default. When you omit the modifier,
+ you mean immutable.
+An immutable reference points to an object that is never changing. Its whole reachable object graph never changes and is immutable as well.
+
+</li><li>
+mutable:  A mutable reference behaves like a normal reference in Java, C#, C++ , Python and many other languages.
+Mutable references require mutable objects and allow mutating the referred object.
+</li><li>
+capsule:  capsule references are used only once and they guarantee that the whole reachable object graph is reachable only thought that
+capsule reference.
+Capsule references provide a structured way to reason over deep mutable objects.
+
+Fields can be annotated capsule, the meaning is that they need to be initialized/updated with capsule variables.
+We will discuss more about capsule fields and how they differs from capsule references later.
+
+</li><li>
+read:  A readable reference can not be used to mutate the referred object; but other mutable references pointing to the same object can mutate it.
+Read references can point to both mutable and immutable objects.
+It is easy to be confused between read and immutable references.
+As a rule of thumb, if you are in doubt about whether to use an immutable or a readable reference,
+you probably want an immutable reference.
+
+</li><li>
+lent:  a hygienic mutable reference allowing mutation but not storage.
+Lent and read are useful to handle in controlled way the state of deep mutable classes;
+moreover using lent and read on method parameters
+allows to make explicit what are the method intentions and requirements.
+</li><li>
+
+class:  class references denote the class object,
+  on methods the meaning is the same of static methods in many languages, but it can consistently be used on parameters/local variables/fields
+to encode behaviours similar to dependency injection.
+
+
+</li></ul>
+
+
+
+</p><h2> Kinds of objects, summary </h2> <p>
+
+<ul>
+<li>
+immutable: immutable objects
+ can be instances of immutable classes, or promoted instances of mutable classes.
+ They
+can be referred to only by immutable and read references.
+</li><li>
+mutable:  mutable objects are instances of mutable classes.
+They can be referred to by capsule, mutable, lent and read references.
+</li><li>
+class:  class objects can be accessed from anywhere by using the corresponding class name;
+It is also possible to
+store them into local binding, but they can be referred to only by class references,
+either of their class or any of the
+transitively implemented interfaces.
+Some programmers found the fact that class objects are instances of themselves deeply concerning
+or disturbing, while for others it is just a good story to tell to break the ice at parties.
+</li></ul>
+
+ </p><p id="BasicClasses"> </p><h1> Basic classes </h1> <p>
+
+An immutable class is <span style="color:#ff1111; font-weight: bold;"> base/basic </span>
+if is logically not composed by other elements,
+and can be instantiated by a single operations that takes no parameters.
+For examples numbers and strings are basics, while
+a collections is not: you need to provide the elements and the collection is logically
+composed by its elements.
+In the examples of before, '<span class="code"><![CDATA[Point]]></span>' and
+'<span class="code"><![CDATA[Animal]]></span>' are not basic, since they are logically composed by their fields.
+
+
+</p><h2> (1/5) Num and Size </h2> <p>
+'<span class="code"><![CDATA[Num]]></span>' is a general number type,
+implemented as an arbitrary precision rational.
+When in doubt of what numeric type to use, '<span class="code"><![CDATA[Num]]></span>'
+is a good first guess.
+Some examples of usage:
+<pre class="l42Big"><![CDATA[
+little= 123Num
+stillLittle= 4567890Num
+big= 100000000000000000Num
+bigger= 100000000000000000.0001Num
+fraction1= Num"1234567/890"
+fraction2 == little/stillLittle //holds
+Debug(fraction1) //will print '1234567/890'
+Debug(Num"12/4") //will print '3'
+]]></pre>
+
+Another useful numeric type is '<span class="code"><![CDATA[Size]]></span>'.
+It corresponds to sizes and indexes in sequences.
+'<span class="code"><![CDATA[Size]]></span>'s are returned by '<span class="code"><![CDATA[size()]]></span>' methods
+and are expected as parameter by indexing methods.
+'<span class="code"><![CDATA[Size]]></span>' represent 32 bit numbers with the usual
+but triky modulo arithmetic.
+
+</p><h2> Loading other numeric types </h2> <p>
+
+You can import other numeric types by loading libraries.
+For example
+
+<pre class="l42Big"><![CDATA[
+Int: Load <>< {reuse L42.is/Numbers/Int}
+//infinite precision positive and negative integer numbers
+Double: Load <>< {reuse L42.is/Numbers/Double}
+//double precision positive and negative floating points numbers
+Float: Load <>< {reuse L42.is/Numbers/Float}
+//single precision positive and negative floating points numbers
+Int64: Load <>< {reuse L42.is/Numbers/Int64}
+//64 bit modulo arithmetic
+UInt64: Load <>< {reuse L42.is/Numbers/UInt64}
+//64 bit modulo arithmetic, unsigned
+]]></pre>
+
+The class decorator '<span class="code"><![CDATA[Load]]></span>' allows to load libraries and embed them in the
+current context, while the
+reuse keyword imports the code from the web.
+
+</p><h2> Conversions </h2> <p>
+Conversions between various numeric classes must be performed explicitly.
+
+AdamsTowel offers a simple way to convert between numeric classes, and more in general
+between base classes.
+All numeric  classes implements
+the '<span class="code"><![CDATA[Base]]></span>' interface and offers the '<span class="code"><![CDATA[.from(base)]]></span>' method.
+So, for example
+<pre class="l42Big"><![CDATA[
+Double: Load <>< {reuse L42.is/Numbers/Double}
+size= S"hello".size()
+myDouble= Double.from(base: size)
+]]></pre>
+converts from '<span class="code"><![CDATA[Size]]></span>' to '<span class="code"><![CDATA[Double]]></span>'.
+This avoid precision loss as much as possible.
+
+
+
+
+</p><h2> (2/5) Units </h2> <p>
+
+
+The class
+'<span class="code"><![CDATA[Units]]></span>'
+offers methods to create units out of numeric supports, like '<span class="code"><![CDATA[Num]]></span>'
+and '<span class="code"><![CDATA[Size]]></span>'.
+
+For example
+<pre class="l42Big"><![CDATA[
+Meter: Units.of(Num)
+Second: Units.of(Num)
+res= (6Meter +4Meter)*2Num //20Meter
+//wrong1= 6Meter+2Second
+//wrong2= 6Meter/2Second
+]]></pre>
+As you can see, we can sum meters together, and we can use the support for multiplication, but we can not mix different units of measure.
+
+
+Mathematically you can obtain the support out of the unit by
+division; that is, 42 meters divided by 2 meters is  21.
+This do not work directly in 42, since multiplication and division
+takes the support( '<span class="code"><![CDATA[Num]]></span>' in our examples) and not a unit.
+Units provide method '<span class="code"><![CDATA[divide(that)]]></span>' for this aim.
+Units also provide method  '<span class="code"><![CDATA[#inner()]]></span>',
+this is just extracting the value of the support from the unit.
+This can be convenient during programming but
+does not make a lot of sense mathematically.
+Methods like that are required to be used with care, so they start with
+'<span class="code"><![CDATA[#]]></span>' to underline that.
+
+<pre class="l42Big"><![CDATA[
+Num n1= 42Meter.divide(2Meter) //= 21Num
+Num n2= 42Meter.#inner() //= 42Num
+]]></pre>
+
+
+
+</p><h2> Composite Units </h2> <p>
+
+'<span class="code"><![CDATA[Units]]></span>' supports composite units:
+<pre class="l42Big"><![CDATA[
+Speed: Units.of(Meter per: Second)
+fast1= Speed(42Meter per: 0.1Second)
+fast2= Speed"420" //equivalent ways to initialize it
+fast3= Speed"840/2"
+distance1= fast1.right(left: 60Second)
+
+Acc: Units.of(Speed per: Second)
+g= Acc"9.8"
+speedAfter= g.right(left: 10Second) //98 m/s
+distance2= speedAfter.right(left: 10Second)/2Num //490 m after 10s free fall
+
+Kg: Units.of(Num)
+Newton: Units.of(Kg and: Acc) //Kg*m/s2
+myRoket= 900Newton
+gForceOnMe= Newton(78Kg and: g) //little less than 780
+myLift= myRoket-gForceOnMe
+if myLift>0Newton (Debug(S"I can fly"))
+myAcc= myLift.right(left: 78Kg) //get second component
+reachedHeight= myAcc.right(left: 10Second).right(left: 10Second)/2Num //after 10 sec
+]]></pre>
+Note how in a cmposite unit we can use '<span class="code"><![CDATA[right(left)]]></span>' and
+ '<span class="code"><![CDATA[left(right)]]></span>'
+ to extract the right component providing a value
+for the left one, or we can extract the left component providing a value for the right one.
+
+</p><p>
+We can also define aliasing units:
+
+<pre class="l42Big"><![CDATA[
+Cm: Units.alias(0.01Meter)
+Meter height= 178Cm
+]]></pre>
+
+Note how height is of type '<span class="code"><![CDATA[Meter]]></span>'.
+Alias units are just shortcut to instantiate values of
+the original unit.
+
+
+
+
+</p><h2> (3/5) Alphanumeric </h2> <p>
+In the same way '<span class="code"><![CDATA[Units]]></span>' allows easy creation of
+arithmetic classes,
+'<span class="code"><![CDATA[Alphanumeric]]></span>' allows easy creation of alphanumeric classes:
+classes that can be instantiated from a string literal that follow certain
+properties.
+
+
+<pre class="l42Big"><![CDATA[
+Email: Alphanumeric <>< {
+  S local //fields
+  S domain
+
+  class method
+  This parse(S that) {
+    index= that.indexOf(S"@") //works only for simple emails
+    if !index.isPresent() (error Alphanumeric.ParseFail"@ not found")
+    local= that(end: index.get()) //string slicing
+    domain= that(start: index.get()+1Size ) //string slicing
+    if domain.contains(S"@") (error Alphanumeric.ParseFail"multiple @ found")
+    return This(that,local: local,domain: domain)
+    } //call the factory with fields plus the original string
+}
+/*..*/
+myEmail= Email"arthur.dent@gmail.com"
+myEmail.local() ==S"arthur.dent" //holds
+myEmail.domain() ==S"gmail.com" //holds
+myEmail.toS() ==S"arthur.dent@gmail.com" //holds
+]]></pre>
+
+Note how we can raise an error if the string does not have the shape we expected.
+We will see errors/exception in more detail soon.
+We can define fields, and compute their values by parsing the string.
+While it is suggested to propagate the original string in the factory,
+it is not mandatory, for example you could apply some form of normalization, as shown under:
+
+<pre class="l42Big"><![CDATA[
+Email: Alphanumeric <>< {/*..*/
+  This parse(S that) { //google ignore dots anyway
+    /*..*/
+    local= that(end: index).replaceAll(S"." with: S"")
+    /*..*/
+    return This(local++S"@"++domain,local: local,domain: domain)
+    }
+  }
+/*..*/
+myEmail= Email"arthur.dent@gmail.com"
+myEmail.toS() ==S"arthurdent@gmail.com" //holds
+]]></pre>
+
+
+</p><h2> (4/5) Enumerations </h2> <p>
+
+Enumerations can be obtained with the '<span class="code"><![CDATA[Enumeration]]></span>' class, as in the following code.
+
+<pre class="l42Big"><![CDATA[
+Direction: Enumeration"north, east, south, west"
+/*..*/
+n= Direction.north()
+s= Direction.south()
+Direction.names()==Strings[S"north,S"east",S"south",S"west"]
+
+if n.isNorth() (/*..*/)
+else if n.isEast() (/*..*/)
+
+Debug(n) //prints north
+
+e= Direction.from(base: S"east")
+
+with d in Direction.all().vals() (
+  Debug(d) //prints all the directions in order.
+  )
+
+]]></pre>
+Enumerations also come with their customized set (nested) class,
+we will see more about that when we discuss collections.
+
+</p><h2> (5/5) Summary </h2> <p>
+
+<ul><li>
+Base classes are the minimal building block for your program;
+be sure to define all the right base classes to establish a convenient vocabulary
+to talk about your problem domain.
+</li><li>
+Use '<span class="code"><![CDATA[Num]]></span>' as your first guess for numeric types,
+if you have special needs, consider loading a numeric library.
+</li><li>
+Use '<span class="code"><![CDATA[Size]]></span>' for indexing linear datastructures like vectors and strings.
+Beware of the tricky modulo arithmetic.
+</li><li>
+Use '<span class="code"><![CDATA[Units]]></span>'
+and '<span class="code"><![CDATA[Alphanumeric]]></span>' to give meaning to your constants.
+In this way, the type system will help you to use values with the semantics you decided.
+</li><li>
+Both alphanumerics and enumerations
+use '<span class="code"><![CDATA[_".."]]></span>', the <span style="color:#ff1111; font-weight: bold;"> string literal postfix operator </span> to
+provide a compact syntax.
+</li></ul>
+
+ </p><p id="InterfacesAndData"> </p><h1> Interfaces, Concept and Data </h1> <p>
+
+</p><h2> (1/5)Interfaces, Basis and Details </h2> <p>
+</p><h2> Interfaces Basis </h2> <p>
+In 42 interfaces are quite similar to interfaces in other OO languages.
+There are however a couple of important differences:
+
+<br/>
+while implementing an interface method, do not repeat the
+type signature.
+For example, in the following code, to implement '<span class="code"><![CDATA[Shape.draw(that)]]></span>' inside
+of '<span class="code"><![CDATA[Square]]></span>', the types '<span class="code"><![CDATA[Void]]></span>' and '<span class="code"><![CDATA[mut Canvas]]></span>' are not repeated.
+<pre class="l42Big"><![CDATA[
+Shape: {interface
+  method Void draw(mut Canvas that)
+  }
+Square: {implements Shape
+  method draw(that){..}
+  }
+]]></pre>
+
+In 42, we say that the method '<span class="code"><![CDATA[draw(that)]]></span>'
+implemented in '<span class="code"><![CDATA[Square]]></span>'
+<span style="color:#ff1111; font-weight: bold;"> is declared by </span>
+'<span class="code"><![CDATA[Shape]]></span>'.
+Each method is declared in a single point.
+Methods can be
+defined (that is, declared and implemented)
+in the class itself;
+or declared in a (transitively) implemented interface and
+then just implemented.
+This means that a class can not
+satisfy multiple interfaces declaring methods
+with the same name.
+For example, this code is ill-typed:
+<pre class="l42Big"><![CDATA[
+Card: {interface
+  method Num draw() //the value of the drawn card
+  }
+Gun: {interface
+  method Num draw() //the time it takes to drawn the gun
+  }
+Wrong: {implements Card,Gun //not allowed
+  }
+]]></pre>
+
+
+Note that that would be bad 42 code anyway, you should define an
+enumeration (or an alphanumeric)
+ for your cards and use a '<span class="code"><![CDATA[Second]]></span>' unit of measure
+for the time.
+
+</p><h2> Interfaces Details </h2> <p>
+However, interface diamond is allowed, that is, the following code is correct:
+<pre class="l42Big"><![CDATA[
+Shape: {interface
+  method Void draw(mut Canvas that)
+  }
+Animal: {interface implements Shape
+  method Meter run(){/*..*/}
+  }
+Noisy: {interface implements Shape
+  method Void play(mut Audio that){/*..*/}
+  }
+LoudCat: {implements Animal, Noisy
+  method draw(that){/*..*/}
+  method run(){/*..*/}
+  method play(that){/*..*/}
+  }
+]]></pre>
+
+You can further specify the type of an interface method by using the keyword
+'<span class="code"><![CDATA[refine]]></span>':
+<pre class="l42Big"><![CDATA[
+Monster: {interface
+  method Monster spawnMinion()
+  }
+BigMonster: {implements Monster
+  refine method BigMonster spawnMinion(){..}
+  }
+]]></pre>
+
+However, the parameter types can not be refined.
+
+</p><h2> (2/5) Interfaces and class methods </h2> <p>
+
+Interface methods in 42 are all abstract, that is, without body.
+A version of the body will be provided by all classes implementing the interface.
+<span style="color:#ff1111; font-weight: bold;"> This also include class methods. </span>
+<br/>
+For example, consider the following code:
+<pre class="l42Big"><![CDATA[
+Shape: {interface
+  class method
+  Num numberOfSides()
+  class method
+  This newShape(Color that)
+  method
+  Void draw(Canvas that)
+  }
+
+Square: {implements Shape
+  Color color
+  method numberOfSides() //class method implemented
+    4Num
+  method newShape(that) //class method implemented
+    This(color: that)
+  method draw(that) ( //method implemented
+    /*..*/)
+  }
+/*..*/
+class Shape kindOfShape= Square
+kindOfShape.numberOfSides()==4Num //holds
+Shape s= kindOfShape.newShape(Color.red())
+]]></pre>
+
+The pattern in the code above allows to encode the abstract factory
+pattern in a much simpler way:
+the binding '<span class="code"><![CDATA[kindOfShape]]></span>' serve the role of
+an instance of an abstract factory, and can create instances of
+a specific kind of shape.
+</p><p>
+
+In 42 interfaces can not have
+implemented static methods.
+Sometimes there is the need of semantically associate some behaviour with an interface.
+For example we could check intersections between shapes using
+the draw method.
+
+This can be done, since interfaces can have nested classes, that can have (class) methods.
+Conventionally, if you need behaviour associated with the concept represented by the interface, you can just declare a nested class,
+conventionally called '<span class="code"><![CDATA[$]]></span>', containing you needed methods.
+<br/>
+For example
+
+
+<pre class="l42Big"><![CDATA[
+Shape: {interface
+  /*..*/
+  $: {
+    class method
+    Bool intersect(Shape left,Shape right) {
+      /*..*/
+      }
+    }
+  }
+]]></pre>
+
+Such '<span class="code"><![CDATA[$]]></span>' classes are referred as service classes.
+They are needed by the code but do not serve any role
+in the abstract model of the application.
+
+</p><h2> (3/5)Concept: ToS, Equals, Classable, ... </h2> <p>
+'<span class="code"><![CDATA[Concept]]></span>' is a class defined in AdamsTowel,
+containing interfaces commonly used by many classes.
+</p><p>
+The most well known one is
+'<span class="code"><![CDATA[Concept.ToS]]></span>', implemented by all objects that can
+be converted in human readable strings.
+
+In AdamsTowel, all basic classes (as alphanumeric, numeric and units) just return the simplest
+representation for the string or the number.
+For example '<span class="code"><![CDATA[Url"foo".toS()==S"foo"]]></span>'
+and '<span class="code"><![CDATA[Meter"12".toS()==S"12"]]></span>'.
+
+
+</p><p>
+Other objects prints their fields content in square brackets.
+'<span class="code"><![CDATA[Data]]></span>' generates a reasonable
+'<span class="code"><![CDATA[Concept.ToS]]></span>' implementation, following this patter. For fields of interface type,
+the class name of the stored instance is also produced.
+Plain representations from basic classes are escaped and enclosed with double quotes.
+
+</p><p>
+Another very well known interface is '<span class="code"><![CDATA[Concept.Equals]]></span>'
+implemented by objects that can be compared with
+'<span class="code"><![CDATA[read method Bool equals(read Concept.Equals that)]]></span>'.
+Such objects usually also define methods '<span class="code"><![CDATA[==]]></span>' and '<span class="code"><![CDATA[!= ]]></span>'
+based on '<span class="code"><![CDATA[equals]]></span>', but is not required by the interface.
+
+'<span class="code"><![CDATA[Data]]></span>' will automatically generate a valid '<span class="code"><![CDATA[Concept.Equals]]></span>'
+implementation, and derived methods '<span class="code"><![CDATA[==]]></span>' and '<span class="code"><![CDATA[!= ]]></span>'.
+The default implementation of
+'<span class="code"><![CDATA[Data]]></span>' does not takes circular object graphs in account, and will loop in those cases. We discuss how to personalize the behaviour of '<span class="code"><![CDATA[Data]]></span>' in <a href="dataAndInvariants.xhtml">Data documentation</a>.
+
+</p><p>
+Finally, an interface that nearly every class or interface implements is '<span class="code"><![CDATA[Concept.Classable]]></span>'.
+It allows us to get the class object out of an ordinary instance.
+This is very useful when wanting to create an instance based on another.
+For example, to create another shape of the same kind as a given shape,
+we could do the following:
+<pre class="l42Big"><![CDATA[
+Shape: {interface implements Concept.Classable
+  class method This newShape(Color that)
+  refine method This class()
+  }
+Square: {implements Shape
+  Color color
+  method newShape(that) //implemented from Shape
+    This(color: that)
+  refine method This class() //implemented from Concept.Classable
+    This //this implementation can be omitted if "Data <>< " is used
+  }
+/*..*/
+Shape s= ..
+s.class().newShape(Color.red())
+]]></pre>
+Where the interface '<span class="code"><![CDATA[Shape]]></span>' defines an abstract factory method (that is,
+an interface class method returning something of type '<span class="code"><![CDATA[This]]></span>')
+and class '<span class="code"><![CDATA[Square]]></span>' implements
+ '<span class="code"><![CDATA[Shape]]></span>' (and thus also '<span class="code"><![CDATA[Concept.Classable]]></span>').
+
+
+</p><h2> (4/5)Concept.Invariant </h2> <p>
+
+'<span class="code"><![CDATA[Concept.Invariant]]></span>' is another interface implemented very often and
+ that can be handled by '<span class="code"><![CDATA[Data]]></span>', but in a different way from the former ones:
+ An object is more than just a record storing other objects of various types;
+ those values are bond together by an invariant: a property that
+ holds for all objects of that class.
+ AdamsTowel and '<span class="code"><![CDATA[Data]]></span>'
+ use '<span class="code"><![CDATA[Concept.Invariant]]></span>' to represent this idea:
+ a class that does not implement '<span class="code"><![CDATA[Concept.Invariant]]></span>' just has the
+ empty invariant enforced by the types of its fields, but the programmer can specify a
+ more stringent invariant by implementing '<span class="code"><![CDATA[Concept.Invariant]]></span>', as
+ in the following code:
+
+ <pre class="l42Big"><![CDATA[
+BoundingBox: Data <>< {implements Concept.Invariant
+  var Meter minX
+  var Meter minY
+  var Meter maxX
+  var Meter maxY
+  method invariant()
+    this.minX()<= this.maxX() & this.minY()<= this.maxY()
+  }
+]]></pre>
+
+Here we define a class '<span class="code"><![CDATA[BoundingBox]]></span>', where the invariant
+states that the min coordinates have to be smaller that the max ones.
+
+'<span class="code"><![CDATA[Data]]></span>' will generate code so that the invariant is checked
+directly after the object is created
+and directly after any field update.
+'<span class="code"><![CDATA[Data]]></span>' guarantees that no '<span class="code"><![CDATA[Margin]]></span>' object that does not
+satisfy the invariant will ever be visible outside of the scope of the '<span class="code"><![CDATA[invariant()]]></span>' method itself.
+
+See more about restrictions of this mechanism in <a href="dataAndInvariants.xhtml">Data documentation</a>
+<br/>
+The example above shows a class with all immutable fields.
+It is possible to enforce the invariant also on classes with immutable
+and capsule fields.
+Then '<span class="code"><![CDATA[Data]]></span>' will additionally check that the
+lent exposers are used in a safe pattern:
+that they are used only on the '<span class="code"><![CDATA[this]]></span>' receiver,
+and every method using the lent exposer do not return
+a lent result.
+Invariant is checked again after each method using exposers over '<span class="code"><![CDATA[this]]></span>'.
+</p><p>
+It may be unobvious why such requirements suffice; the idea is that the only way that a mutable/lent reference
+to the content of a capsule field can be
+accessed is by the exposer. The reference produced by the lent exposer can only be returned as lent,
+or wrapped inside of freshly created objects referred to by lent references.
+
+
+</p><h2> (5/5)Interfaces and Data, summary </h2> <p>
+
+Interfaces in 42 serves the same role that they serve in other languages,
+with a little bit of a twist in the details.
+
+The big news is that Decorators ('<span class="code"><![CDATA[Data]]></span>' in our examples) can
+provide the boilerplate implementations for free.
+This is much more powerful than traits, multiple inheritance or
+Java 8 default methods, since the implementation can be generated by examining the class.
+
+ </p><p id="Sequences"> </p><h1> High level sequences manipulation </h1> <p>
+
+</p><h2> (1/5)Vectors as Sequences </h2> <p>
+
+As we have seen before, vectors can be defined using '<span class="code"><![CDATA[Collections.vector(of)]]></span>', as in the example below.
+
+<pre class="l42Big"><![CDATA[
+Nums: Collections.vector(of: Num) //declaration for vectors of nums
+/*..*/
+Nums xs= Nums[10Num;20Num;30Num] //immutable vector
+//note that we write the type of 'xs' explicitly,
+//otherwise the vector would be mutable.
+]]></pre>
+
+Sequences can be created with square brackets,
+and can be combined with operators.
+The general idea is that operators
+'<span class="code"><![CDATA[+,-,<,>]]></span>' works
+on one sequences and one element,
+while the corresponding doubled-up operators
+'<span class="code"><![CDATA[++,--, <>< ,>>, >>= , <>< = ,==]]></span>'
+works on two sequences.
+You can see the details of this below.
+<pre class="l42Big"><![CDATA[
+//element addition
+Nums[a;b;c]+d==Nums[a;b;c;d]
+//sequence concatenation
+Nums[a;b]++Nums[c;d]==Nums[a;b;c;d]
+//element removal
+Nums[a;b;b;c] - b==Nums[a;c] //only if elements implements Concept.Equals
+//set subtraction
+Nums[a;b;b;c] -- Nums[b;c]==Nums[a] //same for all the operators under
+//set intersection
+Nums[a;b]& Nums[b;c]==Nums[b]
+//superset
+Nums[a;b;c]>>Nums[a;c] //holds
+//superseteq
+Nums[a;b]>>= Nums[a;c] //holds but [a;b]>>Nums[a;c] does not
+//contains element
+Nums[a;b]>b //holds
+//is element contained
+b<Nums[a;b] //holds
+]]></pre>
+In addition of operators, many sequences can
+be manipulated by the following methods:
+
+<pre class="l42Big"><![CDATA[
+//replacement
+Nums[a;b;c;d].withLeft(e) == Nums[e;b;c;d]
+Nums[a;b;c;d].withRight(e) == Nums[a;b;c;e]
+Nums[a;b;c;d].with(2Size,val: e) == Nums[a;b;e;d]
+
+//insertion
+Nums[a;b;c;d].withAlsoLeft(e) == Nums[e;a;b;c;d]
+Nums[a;b;c;d].withAlsoRight(e) == Nums[a;b;c;d;e]
+Nums[a;b;c;d].withAlso(2Size,val: e) == Nums[a;b;e;c;d]
+
+//skipping/filtering
+Nums[a;b;c;d].without(index: 2Size) == Nums[a;b;d]
+Nums[a;b;c;d].withoutLeft() == Nums[b;c;d]
+Nums[a;b;c;d].withoutRight() == Nums[a;b;c]
+
+//filtering, if elements implements Concept.Equals
+Nums[a;b;c;b;d].withoutAll(val: b) == Nums[a;c;d]
+Nums[a;b;c;b;d].withoutLeft(val: b) == Nums[a;c;b;d] //filter out the leftmost b
+Nums[a;b;c;b;d].withoutRight(val: b) == Nums[a;b;c;d] //filter out the rightmost b
+]]></pre>
+As you notice, there are different kind of actions:
+replace an element ('<span class="code"><![CDATA[with]]></span>'),
+insert an element ('<span class="code"><![CDATA[withAlso]]></span>')
+and skipping/filtering elements out ('<span class="code"><![CDATA[without]]></span>').
+Then, elements can be specified by ('<span class="code"><![CDATA[index]]></span>'), by being
+the leftmost or the rightmost. To filter elements
+out, you can also just provide the element.
+
+</p><p>
+
+
+Immutable collections (and also mutable ones, as we will see later)
+can be accessed with the following methods:
+
+<pre class="l42Big"><![CDATA[
+//access
+Nums[a;b;c;d].left() //a
+Nums[a;b;c;d].right() //d
+Nums[a;b;c;d].val(2Size) //c
+Nums[a;b;c;d].size() //4Size
+Nums[a;b;c;d].isEmpty() //does not hold
+]]></pre>
+
+
+
+
+
+</p><h2> (2/5) Suggested parameter values using "\" </h2> <p>
+
+In 42 is possible to use '<span class="code"><![CDATA[\]]></span>' while calling a method or using the square brackets,
+to ask the receiver for a suggestion about the parameter values.
+The library designer has full freedom to implement those suggestion in the most opportune way, however we
+recognize three important common patterns:
+</p><p>
+When setting/updating a value, the old value is suggested.
+</p><p>
+When adding a new value, the factory is suggested.
+</p><p>
+When the parameter is a number from zero to a max, the maximum is suggested.
+</p><p>
+For example:
+<pre class="l42Big"><![CDATA[
+Nums[a;b;c;d].withAlso(left: 42\) //the \ is Num
+Nums[a;b;c;d].without(index: \ - 1Size) //remove the last (the right-most)
+Nums[a;b;c;d].with(left: \ * 2Num) //the leftmost is now a*2
+
+Points[\(x: 12\ y: 0\)]==Points[Point(x: 12Num, y: 0Num)]
+]]></pre>
+Sometime, using '<span class="code"><![CDATA[\]]></span>' makes a huge difference,
+for example, for the animal example of before:
+<pre class="l42Big"><![CDATA[
+horse.location(\.with(x: \+20\)
+//is equivalent to the much longer
+horse.location(horse.location().with(
+  x: horse.location().x()+20Num)
+]]></pre>
+
+Is also possible to use '<span class="code"><![CDATA[\]]></span>' followed by an identifier, that will denote the method
+with the same name on the receiver.
+For example, if we want to reflect a point, and invert x and y coordinate, we can write
+
+<pre class="l42Big"><![CDATA[
+p= point.with(x: \y, y: \x)
+//is equivalent to
+p= point.with(x: point.y(), y: point.x())
+]]></pre>
+
+The '<span class="code"><![CDATA[\]]></span>' is also very convenient while initializing a list/set of enumerated values.
+<br/>
+For example:
+
+<pre class="l42Big"><![CDATA[
+Direction= Enumeration"north, east, south, west"
+Direction.Set[ \north; \east ] //the bitflag corresponding to the set of north and east.
+//is equivalent to the much longer
+Direction.Set[ Direction.north(); Direction.east() ]
+]]></pre>
+
+
+
+
+
+
+
+
+</p><h2> (3/5) Mutate sequences </h2> <p>
+The same sequence class can offer both immutable and mutable methods.
+Sequences are created mutable by '<span class="code"><![CDATA[[..]]]></span>'.
+</p><p>
+Mutable references can become immutable by promotion; for example,
+a method without '<span class="code"><![CDATA[mut]]></span>' parameters returning a
+'<span class="code"><![CDATA[mut]]></span>' reference
+can be used to initialize an immutable binding.
+You need to specify the type of the local binding to force the promotion.
+<br/>
+For example:
+
+<pre class="l42Big"><![CDATA[
+Nums myNums= DoIt.getMutableNums() //ok promotions happens, myNums is immutable
+
+myNums= DoIt.getMutableNums() //myNums type is inferred to be mut Nums
+]]></pre>
+
+Mutable sequences can contains mutable objects.
+While this can be useful in special circumstances, it can create aliasing issues similar to the
+ones of the animals example of before.
+To warn against such issues, methods '<span class="code"><![CDATA[left()]]></span>', '<span class="code"><![CDATA[right()]]></span>' and '<span class="code"><![CDATA[val(that)]]></span>' return
+'<span class="code"><![CDATA[read]]></span>' references to mutable objects. In order to obtain
+a '<span class="code"><![CDATA[mut]]></span>' reference, the user need to use the methods
+'<span class="code"><![CDATA[#left()]]></span>',
+ '<span class="code"><![CDATA[#right()]]></span>'
+ and '<span class="code"><![CDATA[#val(that)]]></span>'.
+
+</p><p>
+
+Mutable sequences can be more efficient that
+immutable ones, and are more general, since they
+can store mutable objects.
+<br/>
+The square brackets create mutable sequences/collections,
+so:
+
+<pre class="l42Big"><![CDATA[
+foo= Nums[a;b;c;d]
+//equivalent to
+mut Nums foo= Nums[a;b;c;d]
+]]></pre>
+
+
+Now we show some methods over mutable collections, consider each following line independently:
+<pre class="l42Big"><![CDATA[
+//setting a value in a position
+foo(2Size,val: e) //foo == Nums[a;b;e;d]
+//setting at left or right
+foo.left(e) //foo == Nums[e;b;c;d]
+foo.right(e) //foo == Nums[a;b;c;e]
+
+//add a value in a position
+foo.add(2Size,val: e) //foo == Nums[a;b;e;c;d]
+
+//add at left or right
+foo.add(left: e) //foo == Nums[e;a;b;c;d]
+foo.add(right: e) //foo == Nums[a;b;c;d;e]
+
+//removal
+foo.remove(index: 2Size) //foo == Nums[a;b;d]
+foo.removeLeft() //foo == Nums[b;c;d]
+foo.removeRight() //foo == Nums[a;b;c]
+
+//removal, if elements implements Concept.Equals
+foo.removeAll(val: b) //foo == Nums[a;c;d]
+foo.removeLeft(val: b) //remove the leftmost b
+foo.removeRight(val: b) //remove the rightmost b
+]]></pre>
+
+
+
+
+
+</p><h2> (4/5) '<span class="code"><![CDATA[with]]></span>': a Swiss army knife to encode complex behaviour </h2> <p>
+
+
+There are two basic usage for the '<span class="code"><![CDATA[with]]></span>' statement: as for-each and as a typecase.
+
+<pre class="l42Big"><![CDATA[
+//as a for each loop
+vec=  Strings[S"foo"; S"bar"; S"beer"]
+var S result= S""
+with myElem in vec.vals() (result:= result++myElem) //like for(myElem: vec){..}
+//result==S"foobarbeer"
+
+//as a typecase
+with myData= foo.bar() ( //like a typecase/switch/chain of instanceof
+  on S  Debug(S"A string "++myData) //print strings
+  on Num  void //do nothing if is a number
+  on Concept.ToS Debug(myData) //print stringables that are not numbers.
+  )
+]]></pre>
+The semantics of '<span class="code"><![CDATA[with-on]]></span>' is that the
+first match is executed. No
+confusing fall-through semantics as in C/Java switch.
+</p><p>
+If '<span class="code"><![CDATA[myData]]></span>' is already in scope, one can simply write
+<pre class="l42Big"><![CDATA[
+with myData (
+  on S Debug(myData) //here 'myData' is seen of 'S' type
+  default Debug(S"Your data is not a string")
+  )
+]]></pre>
+
+Those two modes can be combined
+<pre class="l42Big"><![CDATA[
+vec=  Anys[S"foo"; 12Num; S"beer";]
+var S result= S""
+with myElem in vec.vals() (on S  result:= result++myElem  )
+//result==S"foobeer", composed by all strings inside vec
+]]></pre>
+
+'<span class="code"><![CDATA[with]]></span>' can be used as list comprehension; where
+
+'<span class="code"><![CDATA[use]]></span>' inserts elements in the sequence under construction
+<pre class="l42Big"><![CDATA[
+vec= Anys[S"foo"; 12Num; S"beer";]
+v= Strings[with myElem in vec.vals() (on S use[myElem] )] //filter out non-strings
+//v==Strings[S"foo"; S"beer";]
+]]></pre>
+
+'<span class="code"><![CDATA[with]]></span>' can be used for multiple dispatch:
+
+<pre class="l42Big"><![CDATA[
+method Num m(Shape x, Person y, Vehicle z) //example of method using with
+ with x y z (
+ on Square Student Car (.. return ..) //x here is a Square
+ on Circle Person Airplane (..) //x here is a Circle
+ default (..) //default case, here x is just a Shape
+  )}
+]]></pre>
+
+'<span class="code"><![CDATA[with]]></span>' can be used to iterate over multiple collections at once:
+<pre class="l42Big"><![CDATA[
+rs= Nums[1\;2\;3\;]
+as=  Nums[10\;20\;30\;]
+bs=  Nums[100\;200\;300\;]
+//here a, b and r iterate over my data
+with a in as.vals(), b in bs.vals(), var r in rs.vals() (r:= r+a+b)
+//now rs==Nums[111\;222\;333\;]
+]]></pre>
+
+while iterating on multiple collections, a dynamic error is raised if
+'<span class="code"><![CDATA[rs]]></span>',
+ '<span class="code"><![CDATA[as]]></span>' and
+ '<span class="code"><![CDATA[bs]]></span>' have different length.
+This behaviour can be tuned in many way:
+iterators can be parametrized with
+'<span class="code"><![CDATA[from]]></span>' , '<span class="code"><![CDATA[maxTo]]></span>', '<span class="code"><![CDATA[fill]]></span>' and
+'<span class="code"><![CDATA[minTo]]></span>'
+
+'<span class="code"><![CDATA[from]]></span>' and '<span class="code"><![CDATA[maxTo]]></span>' are on default zero and the sequence length,
+and can be specified to start from another value, like 1 or 2, and
+to end before the very end.
+
+'<span class="code"><![CDATA[fill]]></span>' can be used in combination with
+'<span class="code"><![CDATA[from]]></span>' and '<span class="code"><![CDATA[maxTo]]></span>'
+to iterate outside of the sequence range.
+If '<span class="code"><![CDATA[fill]]></span>' is used without specifying '<span class="code"><![CDATA[maxTo]]></span>', the
+sequence is considered infinite and iteration may go on forever.
+
+'<span class="code"><![CDATA[minTo]]></span>' is useful when multiple collections are iterated at once,
+and specify the minimal allowed iteration cycles.
+<br/>
+Let see some examples:
+<pre class="l42Big"><![CDATA[
+with x in xs.vals(), y in ys.vals(fill: 10Num)
+//will iterate for as long as xs, even if ys is shorter
+//will stop after xs.size() cycles, and fail if xs.size()<ys.size()
+
+with x in xs.vals(), y in ys.vals(fill: 10Num, minTo: 0Size)
+//will iterate for as long as xs, even if ys is shorter
+//will stop after xs.size() cycles
+
+with x in xs.vals(minTo: 0Size), y in ys.vals(minTo: 0Size)
+//will iterate for as long as both xs and ys have elements
+
+with x in xs.vals(fill: 10Num), y in ys.vals(fill: 10Num)
+//will go on forever
+
+with x in xs.vals(minTo: 5Size), y in ys.vals(from: 1Size maxTo: \ - 1Size minTo: 3Size )
+//will extract at least 5 elements from xs, will skip the first
+//and the last element of ys and extract at least 2 elements from ys.
+]]></pre>
+
+
+And, in a case similar of before:
+<pre class="l42Big"><![CDATA[
+rs= Nums[1\;2\;3\;]
+as=  Nums[10\;20\;30\;40\;50\;]
+bs=  Nums[100\;200\;]
+with a in as.vals(minTo: 0Size), b in bs.vals(fill: 300Num), var r in rs.vals() (
+  r:= r+a+b)
+//rs==Nums[111\;222\;333\;]
+]]></pre>
+
+
+</p><h2> Strings interpolation, even better with '<span class="code"><![CDATA[with]]></span>' </h2> <p>
+
+Alphanumeric classes and strings can be seen as immutable
+sequences of Strings of length 1.
+
+All the operators working on immutable sequences works on strings and alphanumerics.
+
+However, they can not be constructed with square brackets, that is '<span class="code"><![CDATA[S[a;b;c]]]></span>' does not compile.
+<br/>
+Square brackets can be used to interpolate strings and alphanumerics; as in:
+<pre class="l42Big"><![CDATA[
+S"hello "[name]", have a good day, and do not panic!"
+]]></pre>
+However, also '<span class="code"><![CDATA[with]]></span>' can be used; this can make code very compact,
+for example assume we want to collect some names and numbers in a string:
+<pre class="l42Big"><![CDATA[
+res= S"your info: "[with name in names.vals(), num in nums.vals()  (
+  use[ S"name: "[name]", num: "[num]""]
+  )]"" //we always need the ending string, even if empty.
+]]></pre>
+In order to put a semicolon between elements in our string, we can use '<span class="code"><![CDATA[sep]]></span>'
+<pre class="l42Big"><![CDATA[
+res= S"your info: "[with name in names.vals(), num in nums.vals()  (
+  use[ S"name: "[name]", num: "[num]"", sep: S"; "]
+  )]"" //we always need the ending string, even if empty.
+]]></pre>
+
+
+</p><h2> (5/5) Collections summary </h2> <p>
+
+<ul><li>
+There are a tons of methods and operators to know, but since most code works
+around collections, it is worth the effort to memorize them.
+</li><li>
+Immutable collections are easy to play with, using operators and with methods.
+</li><li>
+Mutable collections can be more efficient and flexible, but they come with additional
+difficulties.
+</li><li>
+Most methods have a general version that works with an index, and specialized '<span class="code"><![CDATA[left]]></span>' and
+'<span class="code"><![CDATA[right]]></span>' variants.
+</li><li>
+'<span class="code"><![CDATA[\]]></span>' can help remove a lot of boilerplate, but is a concept unique to 42, and require some effort to get used to.
+</li><li>
+'<span class="code"><![CDATA[with]]></span>' is very useful and flexible. It is common to find methods composed from just a large
+'<span class="code"><![CDATA[with]]></span>' statement plus a little pre and post processing around it.
+</li></ul>
+ </p><p id="ErrorsAndExceptions"> </p><h1> Errors and Exceptions: Messages in AdamsTowel </h1> <p>
+
+</p><h2> (1/5)Errors, Messages, Asserts, Guards, .. so much terminology </h2> <p>
+In 42 when something takes an unexpected turn,
+you can throw an '<span class="code"><![CDATA[error]]></span>'
+This is similar to Java unchecked exceptions.
+Every immutable object can be thrown as an error.
+While it is possible to thrown informative strings, they do no offer enough
+structure to fully take advantage of the error mechanism.
+AdamsTowel defines the interface '<span class="code"><![CDATA[Message]]></span>':
+a structured way to provide a certain kind of message to the user.
+'<span class="code"><![CDATA[Message]]></span>'s has '<span class="code"><![CDATA[.text()]]></span>' ,
+'<span class="code"><![CDATA[.isResponse()]]></span>' and '<span class="code"><![CDATA[.responseOf()]]></span>'.
+The text is the informative string, while if there is
+a response ('<span class="code"><![CDATA[msg.isResponse()==Bool.true()]]></span>'
+then '<span class="code"><![CDATA[msg.responseOf()]]></span>' will be the
+former message in the chain, else '<span class="code"><![CDATA[msg.responseOf()]]></span>'
+will produce a run time error.
+
+There are two main kinds of '<span class="code"><![CDATA[Message]]></span>'s:
+'<span class="code"><![CDATA[Guard]]></span>' and '<span class="code"><![CDATA[Assert]]></span>'.
+While Assertions are useful to observe bugs, the application
+logic should not depend on them, since they may change
+in unpredictable ways during library evolutions, and can be
+enabled or disabled.
+A guard is guaranteed to be consistent across library evolution
+thus program logic can depend on them being thrown.
+
+Assertions are the right tool to prevent the code from proceding
+out of our designed space. The assertion class called '<span class="code"><![CDATA[X]]></span>'
+looks like a road sign
+and represent this
+"NO/PROHIBITED/FORBIDDEN"
+feeling.
+
+Assertions are also very convenient to check for pre/post conditions.
+The following code show usages of '<span class="code"><![CDATA[X.Pre]]></span>' (for preconditions and, in general, blaming the client of a function)
+ and '<span class="code"><![CDATA[X]]></span>' (for postconditions checks in the middle and, in general, blaming the function implementation).
+
+<pre class="l42Big"><![CDATA[
+method Nat confirmAnswer(Nat answer) (
+  X.Pre[ //preconditions
+    answer>0Num; //simplest form
+    answer<10000Num msg: S"here with personalized message answer= "[answer]"";
+    answer expected: 42Num //call equals and do a better error reporting
+    ] //in a bunch of assertions, they are all going to be checked/reported together.
+  Nat recomputedAnswer=6Num*7Num
+  X[ //postconditions/checks in the middle
+    recomputedAnswer expected: 42Num msg: S"arithmetic mess"
+    ]
+
+  X[answer==recomputedAnswer]
+
+if answer>50Num (//how to just throw error X
+  error X""
+  )
+]]></pre>
+
+'<span class="code"><![CDATA[X]]></span>' is often used as last case in a sequence of if-return:
+
+<pre class="l42Big"><![CDATA[
+Direction: Enumeration"north, east, south, west"
+/*..*/
+Direction opposite={
+  if d.isNorth() return Direction.south()
+  if d.isSouth() return Direction.north()
+  if d.isEast() return Direction.west()
+  X[d.isWest()] return Direction.east()
+  }
+]]></pre>
+As you can see, since there are only 4 directions, we believe by exclusion that the last case must hold. However, we prefer to
+make our assumptions clear and have them checked.
+
+
+</p><h2> (2/5) Create, throw and capture </h2> <p>
+
+</p><h2> Create and throw </h2> <p>
+
+You can create new kinds of messages using the
+service class of the message interface:
+
+<pre class="l42Big"><![CDATA[
+AnswerNotUnderstood: Message.$ <>< {implements Guard}
+//this is a new kind of message, implementing Guard.
+//you can also add methods to your kind of message.
+//you can add fields, we will see this more in detail later.
+/*..*/
+//throwing an error
+if this.ohNoNoNOOO() (error AnswerNotUnderstood"Well, too bad")
+
+if this.iWasDistracted() (
+  //throwing an error in response of another
+  Guard other= NotListening"" //empty message
+  error AnswerNotUnderstood"Try again"(other)
+  )
+
+]]></pre>
+
+As you can see, since '<span class="code"><![CDATA[Message]]></span>' is an interface, it can not help us directly
+to create messages, however it has a service nested class called '<span class="code"><![CDATA[$]]></span>', which
+is a class decorator helping us to create valid messages.
+As you can see we can create messages with text, in which we can optionally include a response.
+
+</p><h2> Capturing errors and exceptions </h2> <p>
+
+In 42 there is no explicit '<span class="code"><![CDATA[try]]></span>' statement,
+but any block of code can contain '<span class="code"><![CDATA[catch]]></span>'.
+This logically separe any block of code into <span style="color:#ff1111; font-weight: bold;"> paragraphs. </span>
+
+For example, in the following code we have 3 paragraphs: line 2-3,
+ line 6-7 and line 9.
+<pre class="l42Big"><![CDATA[
+res= (
+ b1= CanGoWrong()
+ b2= CanGoWrong() //see b1
+ catch error Wrong msg1  S"hi 1" //not see b1,b2
+ catch error Guard msg2  S"hi 2" //not see b1,b2
+ b3= CanGoWrong() //can see b1, b2
+ b4= CanGoWrong() //can see b1, b2
+ catch error Wrong msg3  S"hi 3" //see b1,b2, not see b3,b4
+ S"hi 4" //see b1,b2,b3
+ )
+]]></pre>
+
+Paragraphs are separated by catches.
+Each catch capture only exceptions/errors that happens inside of
+the paragraph directly above, and can not see the local binding
+declared in such paragraph.
+If a catch is successful, then the result of its catch expression
+will be the result of the whole code block.
+In this way, blocks with catches behave like conditionals.
+That is, The code above can assign to '<span class="code"><![CDATA[res]]></span>' either
+'<span class="code"><![CDATA[S"hi 1"]]></span>',
+'<span class="code"><![CDATA[S"hi 2"]]></span>',
+'<span class="code"><![CDATA[S"hi 3"]]></span>' or
+'<span class="code"><![CDATA[S"hi 4"]]></span>'.
+
+
+</p><h2> Strong error safety </h2> <p>
+
+
+Errors guarantee a property called strong error safety
+(strong exception safety in the Java/C++ terminology)
+This means that the body of a catch will observe the same
+state present at the start of the paragraph before.
+This is enforced by disallowing catching errors if the paragraph can mutate objects visible in the catch expression.
+<br/>
+That is, the following code do not compile
+<pre class="l42Big"><![CDATA[
+p= Person(name: S"Bill" age: 23Year)
+res= (
+ p.age(p.age()+1Year)
+ p.age(p.age()+1Year)
+ catch error Guard msg2  (/*could see p with 23 or 24 years*/)
+ p
+ )
+]]></pre>
+
+While the following is accepted.
+
+<pre class="l42Big"><![CDATA[
+res= (
+ p= Person(name: S"Bill" age: 23Year)
+ p.age(p.age()+1Year)
+ p.age(p.age()+1Year)
+ catch error Guard msg2  (/*can not see p*/)
+ p
+ )
+]]></pre>
+
+</p><h2> (3/5) Exceptions and errors </h2> <p>
+
+Exceptions are like checked exceptions in java.
+As with errors, every immutable object can be thrown as an exception.
+just write '<span class="code"><![CDATA[exception]]></span>' instead of '<span class="code"><![CDATA[error]]></span>' while throwing or capturing.
+Exceptions represent expected, documented and reliable behaviour,
+they are just another way to express control flow.
+They are useful to characterize multiple outcomes of an operation,
+where is important to prevent the programmer from forgetting about
+the many possible outcome and focusing only on their preferred one.
+Exceptions are checked, so methods leaking exceptions have to
+mention it in their header, as in the following.
+<pre class="l42Big"><![CDATA[
+/*somewhere in a GUI library*/
+method
+S promptUser(S text)
+exception CancelPressed {
+  /*implementation to open a text dialog*/
+  }
+]]></pre>
+The programmer using '<span class="code"><![CDATA[promptUser]]></span>' has to handle
+the possibility that the cancel button was pressed.
+
+Exceptions does not enforce strong exception safety as errors do,
+so they can be used more flexibly, and since they are documented in
+the types, we can take their existence in account while writing imperative programs.
+</p><p>
+Often, the programmer wants to just turn exceptions into errors or other exceptions.
+This is possible with the following code:
+
+
+<pre class="l42Big"><![CDATA[
+//long version
+DoStuff()
+catch exception FileNotFound fnf
+  error X"I just created it!"(fnf)
+
+//short version
+DoStuff()
+error on FileNotFound
+  X"I just created it!"
+]]></pre>
+
+The two snippets of code behave identically: the first
+show a very common patter; 42 supports syntactic sugar to
+ease following that pattern, as you can see in the second snippet.
+<br/>
+This short form exists only for wrapping exceptions, and there is no
+corresponding short form for the much less common case of
+wrapping errors.
+</p><p>
+
+As you can see, we can use '<span class="code"><![CDATA[X]]></span>' to mark branches of code
+that the programmer believes would never be executed.
+'<span class="code"><![CDATA[X]]></span>' implements '<span class="code"><![CDATA[Assert]]></span>', thus code capturing
+'<span class="code"><![CDATA[X]]></span>' is unreliable: as explained before, programmers are free
+to change when and how assertion violations are detected.
+In particular, the programmer may recognize that
+such branch could be actually executed, and thus replace the error with correct behaviour.
+</p><p>
+'<span class="code"><![CDATA[Assert]]></span>'ions should not be thrown as exceptions, but only as errors.
+
+
+
+
+
+</p><h2> (4/5) Return </h2> <p>
+
+Return, as we have seen, can be used to exit from the inner
+most level of curly brackets.
+Also curly brackets can have catches.
+In this case, all catch bodies must ends with
+'<span class="code"><![CDATA[return]]></span>',
+'<span class="code"><![CDATA[error]]></span>' or
+'<span class="code"><![CDATA[exception]]></span>'.
+<br/> Let's see some examples:
+<pre class="l42Big"><![CDATA[
+{
+x= DoStuff()
+catch exception Stuff e1
+  return void //just swallow the exception (this block return 'Void')
+catch exception Guard e2 (
+  obj.doSideEffect()
+  return void //do something and return
+  )
+catch error Message e3
+  error X"not supposed to happen"
+y= DoStuff(x)
+return y
+error on Guard
+  X"not supposed to happen"
+}
+]]></pre>
+
+Moreover, curly brackets/return can be used
+to provide a different result if some computation fails:
+
+<pre class="l42Big"><![CDATA[
+res= {return PlanA()
+  catch error Guard x
+    return PlanB()
+  }
+]]></pre>
+
+</p><h2> Return looks similar to error/exception </h2> <p>
+Return is actually another thing that can be thrown and captured.
+While only immutable values can be thrown as errors/exceptions,
+return can throw any kind of value, but returns can not flow
+outside of the scope of a method.
+Hold your head before it explodes, but curly brackets are just a syntactic sugar
+ to capture returns; these two snippets of code are equivalent:
+<div class= "compare">
+<pre class="l42Big"><![CDATA[
+N res= {
+
+  if bla (return e1)
+  return e2
+
+
+
+
+  }
+]]></pre>
+<pre class="l42Big"><![CDATA[
+N res= (
+  Void unused= (
+    if bla (return e1)
+    return e2
+    )
+  catch return N x
+    x
+  error void //this line is never executed
+  )
+]]></pre>
+</div>
+</p><p>
+Depending on how your brain works,
+knowing the desugaring of '<span class="code"><![CDATA[{..return..}]]></span>'
+can help you to use return better and understand why you can omit
+'<span class="code"><![CDATA[{..return..}]]></span>' for simple method bodies, and why you can
+write multiple groups of curly brackets and have local returns.
+Or it may just be very confusing. If you are in the second group, just
+never ever write '<span class="code"><![CDATA[catch return]]></span>' explicitly and continue
+your 42 experience ignoring the issue.
+
+
+</p><h2> (5/5) Errors, exceptions and return, summary </h2> <p>
+<ul><li>
+Always detect if your code misbehaves, and
+terminate it with an '<span class="code"><![CDATA[Assert]]></span>'
+</li><li>
+Whenever something out of your
+control happen, Give it a name and throw it as an error, as in
+<pre class="l42Big"><![CDATA[
+NameOfIssue: Message.$ <>< {implements Guard}
+/*...*/
+if /*..*/ ( error NameOfIssue"more info" )
+]]></pre>
+It just take 2 lines, and will make debugging your code so much
+easier.
+</li><li>
+Use errors intensivelly,
+but use exceptions sparsely: they are needed only in few
+cases, mostly when designing public libraries.
+</li><li>
+To convert exception into errors or other exceptions, use the convenient short
+syntax '<span class="code"><![CDATA[error on T1,..,Tn  OtherMessage""]]></span>' or
+'<span class="code"><![CDATA[exception on T1,..,Tn  OtherMessage""]]></span>'
+</li><li>
+It is sometimes possible to write elegant and correct code
+that is not covered in layers upon layers of error/exception checking,
+but often is not possible or not convenient.
+Up to half of good 42 code will be composed of
+just error/exception handling/lifting and management.
+Do not be scared of turning your code in it's own policemen.
+</li></ul>
+ </p><p id="Exercises"> </p><h1> Exercises </h1> <p>
+
+A very large class of practically useful programs can be obtained
+just by declaring
+basic classes, collections
+and simple Data classes.
+
+Let's see some exercises and solutions
+to understand better how 42 code looks like
+
+</p><h2> (1/5) Max method </h2> <p>
+Write a class method '<span class="code"><![CDATA[max]]></span>' returning the max from a list of numbers
+</p><p>
+Solution:
+<pre class="l42Big"><![CDATA[
+UndefinedOnEmpty: Message.$ <>< {implements Guard}
+//Max is undefined on empty lists.
+//Since there was no mention of preconditions, we should explicitly handle all the error cases!
+class method
+Num max(Nums that) {
+  if that.isEmpty() (error UndefinedOnEmpty"Max is undefined on empty lists")
+  //now that we know we can proceed:
+  var Num maxCandidate= that.left()
+  //there is no such thing like a minimum number, we need to select one element from the list.
+  with n in that.vals() (
+    //we could write 'that.withoutLeft().vals()' to avoid cheching on the first again
+    if maxCandidate<n (maxCandidate:= n)
+    //update the variable to keep track of the max so far.
+    )
+  return maxCandidate
+  }
+]]></pre>
+
+</p><h2> (2/5) Merge two lists of strings </h2> <p>
+Write a class method map producing a string from to lists of strings of the same length.
+ For example
+'<span class="code"><![CDATA[map(keys: Strings[S"a";S"b";S"c"],vals: Strings[S"z";S"y";S"z"])]]></span>'
+should produce '<span class="code"><![CDATA[S"[a->z, b->y, c->z]"]]></span>'
+</p><p>
+Solution:
+<pre class="l42Big"><![CDATA[
+UnequalSize: Message.$ <>< {implements Guard}
+class method
+S map(Strings keys, Strings values) {
+  if keys.size() !=  values.size() (error UnequalSize
+    "keys= "[keys.size()]", values= "[values.size()]"" )
+  //the former formatting allows us to keep a whole line for the error message
+  return S"["[with k in keys.vals(), v in values.vals() (
+    use[k++S"->"++v, sep: S", "]
+    )]"]"
+  }
+]]></pre>
+
+</p><h2> (3/5) Filtering </h2> <p>
+Write a '<span class="code"><![CDATA[class method Strings upTo(Strings that, Size size)]]></span>' that filters out from a list of strings the ones longer
+than size.
+For example
+'<span class="code"><![CDATA[upTo(Strings[S"a";S"ab";S"abc"],size: 2Size)==Strings[S"a";S"ab"]]]></span>'
+</p><p>
+Precondition: '<span class="code"><![CDATA[size]]></span>' is not negative
+</p><p>
+Solution:
+<pre class="l42Big"><![CDATA[
+class method
+Strings upTo(Strings that, Size size) ( //no need of '{..return..}' for simple methods
+  Assert.Pre[size>= 0Size]
+  Strings[with s in that.vals() (  if s.size()<= size (use[s]) )]
+  )
+]]></pre>
+
+</p><h2> (4/5) Random mole </h2> <p>
+For a longer example, represent a piece of land as a 80*80 bi-dimensional vector,
+where every cell can be full of dirt (90%) or rock (10%).
+Then a mole start from the left top corner and attempts to
+digs through dirt randomly.
+After 100 steps the mole stops.
+define the opportune classes and write a '<span class="code"><![CDATA[randomDig]]></span>'
+method.
+</p><p>
+You can use the library '<span class="code"><![CDATA[L42.is/Random]]></span>'
+for pseudo randomness. You can use '<span class="code"><![CDATA[Range(stop)]]></span>' to iterate over
+all ('<span class="code"><![CDATA[Size]]></span>') numbers from 0 to '<span class="code"><![CDATA[stop]]></span>'-1 included.
+</p><p>
+A possible solution:
+<pre class="l42Big"><![CDATA[
+Random: Load <>< {reuse L42.is/Random}
+
+Cell: Enumeration"dirt, rock, empty, mole"
+
+Direction: Enumeration"up, down, left, right"
+
+Cells: Collections.vector(of: Cell)
+
+Point: Data <>< {implements Concept.Invariant
+  Size x, Size y
+
+  method invariant()
+    this.x()>= 0Size & this.x()<80Size & this.y()>= 0Size & this.y()<80Size
+
+  This go(Direction that) {
+    if that.isUp() return this.with(x: \-1Size)
+    if that.isDown() return this.with(x: \+1Size)
+    if that.isLeft() return this.with(y: \-1Size)
+    X[that.isRight()] return this.with(y: \+1Size)
+    catch error Concept.Invariant.Failure err  (return this)
+    }
+  }
+
+Land: Data <>< { //we may want to put the field and the predefined factory private;
+  //you can search in the documentation of Data how to do it.
+  mut Cells cells
+
+  class method
+  mut This ()
+    This(cells: Cells[
+      with i in Range(stop: 80Size*80Size) (
+        if Random(10Size)==0Size (use[Cell.rock()])
+        else (use[Cell.dirt()])
+        )
+      ])
+
+  //implementation of the matrix as an example,
+  //in good 42 code should be imported from a library
+  mut method
+  Void set(Point that, Cell val)
+    this.#cells()(that.y()*80Size+that.x(), val: val)
+
+  read method
+  Cell get(Point that)
+    this.#cells().val(that.y()*80Size+that.x())
+
+
+  mut method
+  Void randomDig() (
+    var Point current= Point(x: 0Size,y: 0Size)
+    with i in Range(stop: 100Size) (
+      this.set(current,val: Cell.empty())
+      d= Direction.from(index: Random(4Size))
+      newPoint= current.go(d)
+      if !this.get(d).isRock() ( //no digging in rock
+        current:= newPoint
+        )
+      )
+    this.set(current,val: Cell.mole()) //finally, the mole is where we ends up
+    )
+
+  toS() S""[with x in Range(stop: 80Size) (
+      use[S.nl()] //newline
+      with y in Range(stop: 80Size) {
+        p= this.get(Point(x: x,y: y))
+        if p.isRock() return use[S"#"]//common pattern: with {return use[..]}
+        if p.isDirt() return use[S"%"]//use[..] return void, so is ok
+        if p.isEmpty() return use[S" "]//as final result of a with block
+        X[p.isMole()] return use[S"M"]
+      })]""++S.nl()
+  //since we define 'toS()' explicitly, Data will leave it alone :)
+  }
+]]></pre>
+
+
+</p><h2> (5/5) Examples summary </h2> <p>
+<ul><li>
+Always think about what can go wrong upfront
+</li><li>
+Many methods can be completed by first checking for
+errors/issues and then using a '<span class="code"><![CDATA[with]]></span>'
+</li><li>
+Before heading into a problem,
+spend some time to define your problem domain.
+We dodged a lot of headaches by defining
+points with invariants.
+</li></ul>
+
+Some may argue that in a real object oriented implementation,
+directions and cells should be interfaces with subtypes;
+so that we can use single dispatch to
+avoid the cascades of ifs.
+We have mixed feelings about this:
+shorter code is better and more maintainable then longer code, and the version with subtyping would have been much longer.
+
+The crucial point is that the 'random mole' code is not designed to be used by other programmers as a library.
+Libraries should have well modularize code,
+and provide convenient hooks for adaptation.
+Metaprogramming and interfaces are the right tool for this task.
+
+We should not confound adaptability (without touching the original source, make it takle a new problem), with maintenability
+ (it is easy to change the original source to keep it up to date
+with the ever-changing set of requirements).
+ </p><p id="ExamplesOfLibraries"> </p><h1> Example of Libraries </h1> <p>
+
+42 stands for the primate of libraries, so let see some libraries in action.
+We have already see how to chose a towel, and many classes that are likely to be present in such towel, like
+'<span class="code"><![CDATA[S]]></span>' and '<span class="code"><![CDATA[Data]]></span>'.
+<br/>
+Let's see how to load a library from its url:
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+Gui: Load <>< {reuse L42.is/Gui}
+Main: {
+  Gui.alert(S"hi!")
+  return ExitCode.success()
+  }
+}
+]]></pre>
+'<span class="code"><![CDATA[Load]]></span>' is another decorator, here it modifies the library found in '<span class="code"><![CDATA[L42.is/Gui]]></span>'
+ so that it can be used easily from AdamsTowel.
+
+
+</p><h2> (1/5)Gui </h2> <p>
+
+Gui allows to create graphical user interfaces using html.
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+Gui: Load <>< {reuse L42.is/Gui}
+MyGui: Gui(
+  title: S"My Gui"
+  basePath: S"base/path/for/my/files" // use / on all operating systems
+  x: 600Gui.Pixel
+  y: 400Gui.Pixel
+  //loads index.html from your basePath
+  ) <>< {
+  mut method
+  Void event_quit(mut Gui gui, S msg)
+    gui.close()
+
+  mut method
+  Void event_sayHi(mut Gui gui, S msg)
+    Gui.alert(S"hi")
+
+  mut method
+  Void event_say(mut Gui gui, S msg) (
+    //msg is going to be a multiline string coming from the html message/event.
+    //First line == "say", other lines give more info
+    Strings ss= msg.split(S.nl())
+    Gui.alert(S"hi dear "+ss.val(1\))
+    )
+  }
+
+Main: MyGui()
+}
+]]></pre>
+And the file '<span class="code"><![CDATA[index.html]]></span>'
+would look like:
+<pre class="html"><![CDATA[
+<html>
+  <head> </head>
+  <body>
+    Hi, buttons here
+    <button onclick= 'event42("quit");'> Quit</button>
+    <button onclick= 'event42("sayHi");'> Say Hi</button>
+    <button onclick= 'event42("say\ncaterpillar");'> Say Hi Caterpillar</button>
+  </body>
+</html>
+]]></pre>
+Notice the two layers of quotes: you need to quote both the call to '<span class="code"><![CDATA[event42]]></span>'
+and the string codifying the event itself.
+
+To make something happen in the gui, you can use
+'<span class="code"><![CDATA[gui.executeJs(cmd)]]></span>'.
+<br/>
+For example, an event could call the following method:
+<pre class="l42Big"><![CDATA[
+mut method
+Void useJSToWriteOnTextArea(mut Gui gui) (
+  js= Gui.JavaScript"document.getElementById('myTextAreaId').value =  'Hi! event happened';"
+  gui.executeJS(js)
+  )
+]]></pre>
+
+Gui provides help to display datastructures of various kind,
+for example vectors of Data classes can be shown as tables in the following way:
+<pre class="l42Big"><![CDATA[
+Person: Data <>< { Size id, Name name, Name surname, Year age }
+Persons: Collections.vector(of: Person)
+ShowPersons: Gui.widget(table: Persons) //each person as a row in the table
+InputPerson: Gui.input(dialogForm: Person) //relies on 'JQuery UI'
+MyGui: Gui(/*..*/) <>< { mut Persons persons //field
+  /*..*/
+  mut method
+  Void eventLoad(mut Gui gui) ( //no underscore for system events
+    gui.add(ShowPersons(this.#persons(), into: Gui.Id"divLeft"))
+    //the element with that id will contain the table
+    )
+  mut method
+  Void event_addPerson(mut Gui gui,S msg) (
+    Person p= InputPerson(gui,title: S"New Person details")
+    catch exception InputPerson.Cancelled exc ( void) //do nothing
+    this.persons().add(left: p)
+    gui.refresh()
+    )
+  }
+Main: MyGui(persons: Persons[])
+]]></pre>
+
+</p><h2> (2/5) Files </h2> <p>
+In 42 you can import '<span class="code"><![CDATA[FileSystem]]></span>' to read and write files.
+
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+FileSystem: Load <>< {reuse L42.is/FileSystem}
+
+Main: {
+  files= FileSystem()
+  files.write(S"foo.txt",S"foo foo foo!") //the file 'foo.txt' in the current directory
+  S foos= files.read(S"foo.txt") //most likely, it contains 'foo foo foo!'
+  return ExitCode.normal()
+  }
+}
+]]></pre>
+
+Each instance of the FileSystem class owns its own stream of
+operations, which are not coordinated with the other instances.  If
+you create multiple instances, then you may find that events attached
+to other instances happen much earlier than you expect.
+This happens since 42 can execute every closed expression early,
+even at compile time, if it could give a performance boost.
+To avoid unexpected early effects
+you should
+pass a '<span class="code"><![CDATA[FileSystem]]></span>' object to functions that do I/O:
+
+<pre class="l42Big"><![CDATA[
+
+method S readFoo()
+ FileSystem().read(S"foo.txt") //may read foo once and for all at compile time,
+//and then return the same value every time. It can be useful
+//for loading resources, like image files in a simple game.
+
+method S readFoo(mut FileSystem that)
+ that.read(S"foo.txt") //need the parameter to act, thus
+//will wait until a parameter is provided
+]]></pre>
+
+In general, all the system interaction that happens over the same system object are
+chronologically sorted with respect to each other, but there is no guarantee
+of ordering between different system objects.
+
+</p><h2> (3/5) Db </h2> <p>
+In AdamsTowel, databases can be accessed in two ways:
+Raw access (similar to what is supported by
+'<span class="code"><![CDATA[DBC]]></span>' or '<span class="code"><![CDATA[JDBC]]></span>' libraries)
+and structured access.
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+Db: Load <>< {reuse L42.is/Db} //Db can do Raw access
+UnivDb: Db.importStructure(Db.ConnectionS"...")
+QueryCountry: UnivDb.query(\"select * from student where country= @country")
+Main: {
+  connection= UnivDb.connect()
+  UnivDb.Student.Table ss= QueryCountry(connection, country: S"Italy")
+  /*..*/
+  }
+}
+]]></pre>
+Here
+we use '<span class="code"><![CDATA[Db]]></span>' to
+import the structure of the database. This means that
+'<span class="code"><![CDATA[UnivDb]]></span>' will contain a class for each table of the database, and
+each of those classes will have a nested class representing
+multiple rows (that is, a table).
+'<span class="code"><![CDATA[UnivDb.query(that)]]></span>' allows prepared queries.
+In the case in the example, we can use
+'<span class="code"><![CDATA[QueryCountry(that,country)]]></span>'
+to get the Italian students.
+Note how '<span class="code"><![CDATA[country]]></span>' is a parameter of the method: in this way the  query users are informed of the queries requirements.
+Our query used '<span class="code"><![CDATA[*]]></span>' (all columns), so the type '<span class="code"><![CDATA[UnivDb.Student.Table]]></span>'
+could be reused.
+In other cases a new type would be generated, eg. '<span class="code"><![CDATA[QueryCountry.Table]]></span>'.
+
+</p><h2> (4/5) Example Gui and Db together </h2> <p>
+
+In the following code we show an example where a Gui display the Italian students.
+
+We could directly display elements of
+type '<span class="code"><![CDATA[UnivDb.Student]]></span>', but we chose
+to write more flexible and maintainable code
+(code maintenance requires localized changes),
+where we define our basic classes ('<span class="code"><![CDATA[Name]]></span>' and
+'<span class="code"><![CDATA[Year]]></span>')
+and we define an injection from
+'<span class="code"><![CDATA[UnivDb.Student]]></span>'
+to
+'<span class="code"><![CDATA[Person]]></span>'.
+Then we use the
+'<span class="code"><![CDATA[eventLoad]]></span>' method
+to load the information from the DB and
+to display it.
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+
+Name: Alphanumeric: <>< {This parse(S that) (
+  if that.contains(S.nl()) (error Alphanumeric.ParseError
+    "new lines not allowed in method names")
+  This(that)
+  )} //check for more restrictions
+
+Year: Unit.of(Num)
+
+Db: Load <>< {reuse L42.is/Db}
+
+UnivDb: Db.importStructure(Db.ConnectionS"...") //will not use Name and Year
+
+QueryCountry: UnivDb.query(\"select * from students where country= @country")
+
+Person: Data <>< { Name name, Name surname, Year age
+  class method
+  This from(UnivDb.Student db) //injection/conversion method: UnivDb.Student -> Person
+    Person(
+      name: Name.from(base: db.name())
+      surname: Name.from(base: db.surname())
+      age: Year.from(base: db.age())
+      )
+  }
+
+Persons: Collections.vector(of: Person)
+
+ShowPersons: Gui.widget(table: Persons)
+
+MyGui: Gui(/*..*/) <>< {
+  mut method
+  Void eventLoad(mut Gui gui, S msg) (
+    connection= UnivDb.connect()
+    UnivDb.Student.Table ss= QueryCountry(connection, country: S"Italy")
+    ps= Persons[with s in ss.vals() (use[Person.from(db: s)])]
+    gui.add(ShowPersons(ps, into: Gui.Id"divLeft"))
+    )
+  }
+
+Main: MyGui()
+}
+]]></pre>
+
+It is interesting to notice that if we wish to change the
+content of the students displayed representation, we just need to change the class '<span class="code"><![CDATA[Person]]></span>' and add/remove/swap fields.
+</p><p>
+
+It is also interesting to consider what happens if the database schema changes.
+
+If there are no more students, or the students do not have countries any more,
+then we will get an error while generating the class '<span class="code"><![CDATA[QueryCountry]]></span>'.
+
+If the students will not have names, surnames or ages
+any more, then we will get an error while generating the
+'<span class="code"><![CDATA[Person]]></span>' class.
+In some sense we are turning into understandable compile time errors events that would have caused a runtime exception in most other languages.
+
+</p><h2> (5/5) Libraries </h2> <p>
+
+42 is designed to support libraries and cooperation of multiple libraries at the same time.
+
+Since 42 is still in its infancy, there are not many libraries around yet.
+Stay tuned for more!
+ </p><p id="MetaprogrammingIntro"> </p><h1> A taste of Metaprogramming </h1> <p>
+
+</p><h2> (1/5)Refactor and Introspection </h2> <p>
+
+</p><h2> Refactor </h2> <p>
+'<span class="code"><![CDATA[Refactor]]></span>' is a class supporting modification of
+library literals.
+For example, you may want to rename the method '<span class="code"><![CDATA[importStructure(that)]]></span>' into just '<span class="code"><![CDATA[import(that)]]></span>'.
+You can do the following:
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+Db: Refactor.RenameSelector(
+  Selector"importStructure(that)" to: Selector"import(that)"
+  ) <>< Load <>< {reuse L42.is/Db}
+UnivDb: Db.import(Db.ConnectionS"...")
+/*..*/
+}
+]]></pre>
+The type '<span class="code"><![CDATA[Selector]]></span>' represent method selectors;
+in the same way the type '<span class="code"><![CDATA[Path]]></span>' represent
+paths inside library literals, as in '<span class="code"><![CDATA[Path"MyNested.MyNestedNested"]]></span>' or
+'<span class="code"><![CDATA[Path"This"]]></span>'.
+
+There are a lot of refactoring operations nested under '<span class="code"><![CDATA[Refactor]]></span>':
+<ul><li>
+'<span class="code"><![CDATA[RenameSelector]]></span>'
+and
+'<span class="code"><![CDATA[RenamePath]]></span>'
+rename methods either at top level (as we just did) or
+in an arbitrary nested library;
+or rename paths into other paths
+</li><li>
+
+'<span class="code"><![CDATA[Redirect]]></span>'
+removes a nested library and redirects all its references to
+an external one. This emulates generics, as we will see later.
+</li><li>
+'<span class="code"><![CDATA[UpdateDocumentationSelector]]></span>'
+and '<span class="code"><![CDATA[UpdateDocumentationPath]]></span>'
+add to, alter or delete the documentation of methods/paths.
+</li><li>
+'<span class="code"><![CDATA[MakeAbstractSelector]]></span>'
+and '<span class="code"><![CDATA[MakeAbstractPath]]></span>'
+remove all the implementation out of a method or path,
+leaving only the public skeleton
+</li><li>
+'<span class="code"><![CDATA[HideSelector]]></span>'
+and '<span class="code"><![CDATA[HidePath]]></span>'
+mark methods or paths as private.
+We have not seen details on private members, the main idea is that
+they are renamed into invisible names that you can never guess, and automatically renamed to avoid collisions
+by refactoring operations.
+</li></ul>
+</p><p>
+In addition to all those nested classes,
+'<span class="code"><![CDATA[Refactor]]></span>' offers '<span class="code"><![CDATA[Refactor.compose(left,right)]]></span>'
+allowing a simmetric sum of two library literals.
+The main idea is that members with the same name are recursively composed
+
+</p><h2> Introspection </h2> <p>
+'<span class="code"><![CDATA[Introspection]]></span>' is
+a class for exploring libraries, to discover what methods they have and so on.
+
+The main classes inside of Introspection are
+'<span class="code"><![CDATA[Introspection.NestedLibrary]]></span>',
+ '<span class="code"><![CDATA[Introspection.Method]]></span>' and
+'<span class="code"><![CDATA[Introspection.Type]]></span>'.
+You can obtain a nested library by calling the factory methods
+'<span class="code"><![CDATA[Introspection(lib)]]></span>' and '<span class="code"><![CDATA[Introspection(classObj)]]></span>',
+respectively for library literals or class objects.
+We will see some example later of use of '<span class="code"><![CDATA[Introspection]]></span>'.
+
+
+</p><h2> (2/5)Traits and Metaprogramming </h2> <p>
+
+Metaprogramming is the most important feature of 42.
+All the decorators that you have seen up to now are implemented with metaprogramming,
+which shows that 42 offers a good balance of freedom and
+safety.
+</p><p>
+The main idea of 42 metaprogramming is that only library literals can
+be manipulated.
+Metaprogramming is evaluated top down nested/inner-most first.
+Once a library literal has a name, it can not be independently metaprogrammed; but only influenced
+by metaprogramming over the library that contains it.
+
+</p><p>
+We use the term <span style="color:#ff1111; font-weight: bold;"> trait </span> for  methods that return reusable (unnamed) code.
+For example
+<pre class="l42Big"><![CDATA[
+Transaction: {
+  class method
+  Library traitEnsureTransaction()
+    { //begin library literal
+    class method //without name: can be called as a functor
+    Void (mut Db.Connection connection)
+    exception Db.Query.Failure //no body: abstract method
+
+    class method //without name: can be called as a functor
+    Void (mut Db.Connection that)
+    exception Db.Query.Failure (
+      that.openTransaction()
+      This(connection: that) //here we call us as a functor
+      catch exception Db.Query.Failure x (
+        that.rollback()
+        exception x //no 'finally' needed thanks to strong error safety, more on this later
+        )
+      that.commitTransaction()
+      )
+    }
+  } //end library literal
+
+MyAction: Refactor.compose(
+  left: Transaction.traitEnsureTransaction()
+  right: { //and now the missing implementation
+    class method
+    Void (mut Db.Connection connection)
+    exception Db.Query.Failure {
+      /*..my operation..*/
+      }
+    })
+
+Main: {
+  /*..*/
+  MyAction(conn) //do the operation in a transaction
+  /*..*/
+  }
+]]></pre>
+
+Note that '<span class="code"><![CDATA[traitEnsureTransaction()]]></span>' is just a normal
+class method that directly returns a library literal.
+Traits in 42 are nothing fancier than that.
+
+Now '<span class="code"><![CDATA[MyAction]]></span>' will execute the operation inside of a transaction.
+
+However, as you can see declaring '<span class="code"><![CDATA[MyAction]]></span>' using
+'<span class="code"><![CDATA[Refactor.compose]]></span>' is verbose,
+and we need to know the code of '<span class="code"><![CDATA[traitEnsureTransaction()]]></span>'
+to use it;
+we now show how to improve.
+</p><p>
+
+Manually declaring a class just to define a single trait method
+returning a library literal is verbose.
+In AdamsTowel we can use the class '<span class="code"><![CDATA[Resource]]></span>'
+which automate this process.
+<br/>
+For example:
+<pre class="l42Big"><![CDATA[
+TraitEnsureTransaction: Resource <>< {
+  class method
+  Void (mut Db.Connection connection) //method selector here is '(connection)'
+  exception Db.Query.Failure
+
+  class method
+  Void (mut Db.Connection that) //method selector here is '(that)'
+  exception Db.Query.Failure (/*..as before..*/)
+  }
+
+MyAction: Refactor.compose(
+  left: TraitEnsureTransaction()
+  right: { /*..as before..*/})
+]]></pre>
+
+This let us save just a couple of lines.
+We can improve further and make a '<span class="code"><![CDATA[Transaction]]></span>'
+class decorator:
+
+<pre class="l42Big"><![CDATA[
+Transaction: {
+  InvalidAction: Message.$ <>< {implements MetaGuard}
+  //meta guard is the root of all the metaprogramming guards
+  class method //using <>< to define the babelfish operator
+  Library <>< (Library that)
+  exception InvalidAction {
+    i= Introspection(lib: that)
+    if !i.hasMethod(\"(connection)") (exception InvalidAction
+      "Action method '(connection)' missing")
+    composed= Refactor.compose(  left: TraitEnsureTransaction(), right: that  )
+    exception on MetaGuard ( InvalidAction
+      "Action invalid: type of '(connection)' does not fit or already defined '(that)'")
+    return Refactor.HideSelector(\"(connection)") <>< composed
+    error on Metaguard
+      X"'(connection)' is there, ready to be hidden"
+    }
+  }
+//So, MyAction becomes shorter and better checked:
+MyAction: Transaction <>< {
+  class method
+  Void(mut Db.Connection connection)
+  exception Db.Query.Failure {
+    /*..my operation..*/
+    }
+  }
+]]></pre>
+
+Note how we check some well formedness of the parameter
+in an '<span class="code"><![CDATA[if]]></span>', then we catch and wrap the exceptions of '<span class="code"><![CDATA[compose(left,right)]]></span>',
+and finally we state our assumption that '<span class="code"><![CDATA[HideSelector]]></span>' can not fail in
+that context.
+
+Now we can use '<span class="code"><![CDATA[Transaction]]></span>' as a decorator.
+
+
+</p><h2> (3/5)Extend </h2> <p>
+
+'<span class="code"><![CDATA[Extend]]></span>'
+ is a decorator implemented using
+'<span class="code"><![CDATA[Refactor]]></span>' and
+'<span class="code"><![CDATA[Introspection]]></span>'
+which provides a flexible model of multiple inheritance with super calls in AdamsTowel.
+<br/>
+As an example, in a game we can have a chest which contains objects in certain positions,
+a boat which host humanoids, and
+a cargo boat, which host humanoids and contains objects like a chest.
+We want to reuse the code of chest and boat to obtain the cargo boat.
+<br/>
+For example:
+<pre class="l42Big"><![CDATA[
+ChestTrait: Resource <>< {
+  mut Objects objects
+  /*.. methods to validate access to objects..*/
+  read method
+  Kg weight() {
+    var Kg res= 0Kg
+    with o in this.objects().vals() (res+= o.weight() )
+    return res
+    }
+  }
+
+BoatTrait: Resource <>< {
+  mut Humanoids crew
+  Kg maxCapacity
+  /*.. methods to validate access to crew..*/
+  read method
+  Kg weight() {/*..with-loop on the crew..*/}
+
+  read method
+  Kg capacityLeft()
+    this.maxCapacity()-this.weight()
+  }
+
+Chest: Data <>< ChestTrait()
+Boat: Data <>< BoatTrait()
+CargoBoat: Data <>< Extend[ChestTrait();BoatTrait()] <>< {
+  read method @override //explained below
+  Kg weight() this.#1weight()+this.#2weight()
+  }
+]]></pre>
+
+As you see, we annotate with '<span class="code"><![CDATA[@override]]></span>' to
+override the '<span class="code"><![CDATA[weight()]]></span>' method, and we use
+'<span class="code"><![CDATA[#1weight()]]></span>' and
+'<span class="code"><![CDATA[#2weight()]]></span>' to refer to the super implementations.
+As an alternative to '<span class="code"><![CDATA[@override]]></span>',
+we could use '<span class="code"><![CDATA[@hide]]></span>' to just hide the old methods and put our new
+version on top. There are two main difference between '<span class="code"><![CDATA[@override]]></span>' and
+'<span class="code"><![CDATA[@hide]]></span>'.
+With override internal references will refer to the new implementation,
+while with hide they will refer to the old one.
+With override the method type must be identical,
+while with hide they can be completely different.
+
+
+</p><h2> (4/5)An intolerant type system </h2> <p>
+
+As an exercise, lets try to use what we learned to add a '<span class="code"><![CDATA[sum()]]></span>' method to
+a vector.
+
+<pre class="l42Big"><![CDATA[
+Nums: Extends[Collections.vector(of: Num)] <>< {
+  read method
+  Num sum(){
+    var Num res= 0Num
+    with n in this.vals() (res+= n )
+    return res
+    }
+  }
+]]></pre>
+
+Easy.
+However, note that we are calling '<span class="code"><![CDATA[this.vals()]]></span>' to
+do the iteration, and we are not declaring a '<span class="code"><![CDATA[vals()]]></span>'
+method.
+The idea is that while computing '<span class="code"><![CDATA[Nums]]></span>', the type system is temporary allowing for incomplete/untypable code at the right of the '<span class="code"><![CDATA[:]]></span>'.
+The typesystem will check that all is ok when the declaration of '<span class="code"><![CDATA[Nums]]></span>' is complete.
+</p><p>
+However, we have done an extension only on our specific '<span class="code"><![CDATA[Nums]]></span>' vector, we would have to repeat
+such code for each vector.
+Can we directly produce vectors that will have a '<span class="code"><![CDATA[sum()]]></span>' method?
+Well, this can only work for vectors of elements with a '<span class="code"><![CDATA[+]]></span>' operator, and a zero concept. Luckily, all
+numeric classes offer a '<span class="code"><![CDATA[zero()]]></span>'
+and '<span class="code"><![CDATA[one()]]></span>' method.
+<br/>
+Building on that, we could attempt the following, invalid solution:
+<pre class="l42Big"><![CDATA[
+MyCollection: {
+  class method
+  Library traitSum()
+    { //my sum feature
+    T: {
+      class method T zero()
+      method T +(T that)
+      }
+    read method
+    Num sum(){
+      var T res= T.zero()
+      with n in this.vals() (res+= n ) //error here, vals() undefined
+      return res
+      }
+    }
+  class method
+  Library vector(class Any of) {
+    oldPart= Collections.vector(of: of)
+    newPart= Refactor.Redirect(Path"T" to: of) <>< this.traitSum()
+    return Refactor.compose(left: oldPart, right: newPart)
+    }
+]]></pre>
+
+Conceptually, we define a new trait for the sum method,
+and we make it general introducing '<span class="code"><![CDATA[T]]></span>' and our
+needed requirements.
+Sadly, this is not going to compile, since
+in the method '<span class="code"><![CDATA[sum()]]></span>' we call '<span class="code"><![CDATA[this.vals()]]></span>',
+and there is no definition for such method.
+Similar code worked in the former example, but here
+the definition of '<span class="code"><![CDATA[MyCollection]]></span>' gets completed,
+and the code in the method '<span class="code"><![CDATA[traitSum()]]></span>' is still
+incomplete.
+We could just repeat there the definition of '<span class="code"><![CDATA[vals()]]></span>',
+but that would be duplicating code; moreover, '<span class="code"><![CDATA[vals()]]></span>' returns an iterator, which has methods too...
+</p><p>
+
+'<span class="code"><![CDATA[Collection]]></span>' offers a solution: a trait containing
+the minimal code skeleton to make '<span class="code"><![CDATA[vals()]]></span>' over path
+'<span class="code"><![CDATA[T]]></span>'.
+<br/>
+The idea is that
+the composition of '<span class="code"><![CDATA[traitSum()]]></span>' and
+'<span class="code"><![CDATA[Collections.traitValsT()]]></span>' is complete code.
+However, even declaring '<span class="code"><![CDATA[traitSum()]]></span>' as
+<pre class="l42Big"><![CDATA[
+class method
+Library traitSum()
+  Extend[Collections.traitValsT()] <>< {/*my sum feature as before*/}
+]]></pre>
+
+whould not work: the '<span class="code"><![CDATA[<><]]></span>' method would
+be called when '<span class="code"><![CDATA[traitSum()]]></span>' runs, leaving incomplete code in the resulting library literal.
+We need to force the computation to happen before
+'<span class="code"><![CDATA[MyColleciton]]></span>' is completed.
+A solution is to use '<span class="code"><![CDATA[Resource]]></span>'.
+
+<pre class="l42Big"><![CDATA[
+TraitSum: Resource <>< Extend[Collections.traitValsT()] <>< {/*my sum feature as before*/}
+MyCollection: {
+  class method
+  Library vector(class Any of) (
+    oldPart= Collections.vector(of: of) //surely works
+    {newPart= Refactor.Redirect(Path"T" to: of) <>< TraitSum()
+    return Extend[oldPart] <>< newPart
+    catch exception MetaGuard g return oldPart
+    })
+]]></pre>
+
+By the way, earlier we also forgot to handle exceptions!
+If our parameter does not support zero and plus,
+we will just return a normal collection. We need to insert additional brackets otherwise the
+binding '<span class="code"><![CDATA[oldPart]]></span>' would not be visible in the catch body.
+
+As you may notice there is some incoherence in our programming style:
+should traits be methods in a class or Resources?
+should we use
+the more primitive
+'<span class="code"><![CDATA[Refactor.compose(left,right)]]></span>'
+or the more flexible '<span class="code"><![CDATA[Extend[] <><]]></span>'?
+In the current state of the art we do not have an answer for what is the best in 42.
+<br/>
+Indeed, we still do not understand the question.
+
+
+</p><h2> (5/5)Metaprogramming summary </h2> <p>
+<ul><li>
+Metaprogramming is hard; 42 tries to make it simpler, but not trivial.
+</li><li>
+Error handling is important while writing decorators.
+More then half of decorators code should be dedicated
+to handling errors and lifting them into a more understandable
+form, for the sake of the final user.
+</li><li>
+We are just scratching the surface of what we
+can do with metaprogramming.
+If you are interested in becoming a Magrathean, then
+refer to the painful metaprogramming guide (link);
+otherwise just use existing metaprogramming libraries
+and use '<span class="code"><![CDATA[Refactor]]></span>' only when all the other options feel more painful.
+</li></ul>
+
+
+
+ </p><p id="DeployCode"> </p><h1> Deploy 42 </h1> <p>
+In the context of 42 and AdamsTowel, there are three things that can be deployed:
+ Executable programs,  Towels and Libraries.
+
+
+</p><h2> (1/5)Deploy programs </h2> <p>
+In 42 libraries can be directly manipulated, and
+one possible manipulation is to convert them in
+another format, like an executable jar or a native program
+and then save the result somewhere, such as on the website where you users can download it.
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+ToDeploy: Resource <>< {reuse L42.is/AdamsTowel
+  //yes, we repeat the reuse
+  /*..lots of code here..*/
+  class method
+  Void main() (
+    /*..*/
+    )
+  }
+Task: Deploy.asExecutableJar(
+  main: Selector"main()"
+  location: URL".."
+  ) <>< ToDeploy()
+}
+]]></pre>
+
+Note that we reuse AdamsTowel both outside '<span class="code"><![CDATA[MyProgram]]></span>'
+and inside of it.
+The two towels do not need to be the same.
+The outermost just has to support the deployment process
+'<span class="code"><![CDATA[Deploy]]></span>', while the inner one is needed to make
+'<span class="code"><![CDATA[MyProgram]]></span>' a closed library: only libraries that do not refer to external classes can be deployed.
+
+</p><h2> 42 projects </h2> <p>
+In order to write any sizeable program, it would be great
+to be able to organize our code in multiple files spanning a hierarchy of folders.
+</p><p>
+A 42 project can be either a file
+with upper case name and extension '<span class="code"><![CDATA[.L42]]></span>'
+or a folder containing a file called '<span class="code"><![CDATA[This.L42]]></span>'.
+Folders can contain other files '<span class="code"><![CDATA[.L42]]></span>' or folders containing other '<span class="code"><![CDATA[This.L42]]></span>' and other files.
+
+In 42 we use  ellipsis '<span class="code"><![CDATA[...]]></span>' to include content of other files.
+The meaning of '<span class="code"><![CDATA[...]]></span>' depend
+on both the location of the ellipsis in the code and
+of the position of the current file in the file system. To evaluate an ellipsis '<span class="code"><![CDATA[...]]></span>'
+we locate the nearest enclosing nested
+library declaration, and we record its name, '<span class="code"><![CDATA[Main]]></span>' in the following example.
+This identifies either a file '<span class="code"><![CDATA[Main.L42]]></span>' or a folder folder '<span class="code"><![CDATA[Main]]></span>', that will contain a file This.L42.
+
+
+If both or neither of these exist, there is an error.
+ Otherwise we include the contents of the found file.
+
+Note that the found *.L42 file can contain more ellipses, which will be
+resolved relative to the file before importing it into the current scope.
+
+</p><p>
+The following code show how to deploy some code as an executable jar.
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+ToDeploy: Resource <>< {
+  reuse L42.is/AdamsTowel
+  Main: ...
+  }
+Task: Deploy.asExecutableJar(
+  mainPath:Path"Main"
+  main: Selector"main()"
+  location: URL"..") <>< ToDeploy()
+}
+]]></pre>
+
+A common way to use 42 is to have a folder with the name of your project, containing
+a folder '<span class="code"><![CDATA[Main]]></span>' with all the actual code,
+and then various files providing testing and deploying functionalities, as in the following example:
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+ToDeploy: Resource <>< {
+  reuse L42.is/AdamsTowel
+  Main: ...
+  TestsRunner: ...
+  }
+Task: Deploy.asExecutableJar(
+  mainPath:Path"Main"
+  main: Selector"main()"
+  location: URL"..") <>< ToDeploy()
+}
+]]></pre>
+
+In general, for medium size projects is a good idea to keep executing the tests before the deployment; for example
+directly under '<span class="code"><![CDATA[Main: ...]]></span>' we could add
+'<span class="code"><![CDATA[TestsRunner: ...]]></span>'
+Do not panic, If the test are not reachable from '<span class="code"><![CDATA[Main.main()]]></span>', they are not going to be included in the
+executable jar.
+</p><p>
+42 could support various kinds of testing libraries,
+but there is no support at this stage in AdamsTowel.
+
+</p><h2> (2/5)Deploy Towels </h2> <p>
+A towel is about the most massively useful thing a programmer can have.
+A towel has immense psychological value, and you should always know where your towel is.
+All the classes that we have used up to now without defining them, are defined in AdamsTowel.
+They are all normal classes/libraries.
+
+You can code without a towel, but this means starting from first principles,
+which could be quite unpleasant; especially since the only
+primitive things that 42 offers are Library literals
+(code as first class entities), the constant '<span class="code"><![CDATA[void]]></span>',
+and the types '<span class="code"><![CDATA[Library]]></span>', '<span class="code"><![CDATA[Void]]></span>' and '<span class="code"><![CDATA[Any]]></span>'.
+</p><p>
+
+
+Towels are libraries providing standard
+functionalities and types, such as number, boolean,
+string and various kinds of decorators and system errors.
+
+</p><p>
+However, we do not expect all 42 programs to reuse the same towel.
+For hygienic reasons, in real life everyone tends to use their own towel.
+For similar reasons, any sizeable 42 program will use its own towel.
+
+</p><p>
+
+We expect different programs to use massively different libraries for
+what in other languages is the standard library.
+That is, there is no such thing as 'the 42 standard library'.
+
+
+</p><h2> Using multiple Towels </h2> <p>
+
+Towels shines when multiple towels are used at the same time.
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+//here you can access to lots of utility classes defined inside the towel
+//including numbers, strings and so on.
+C: {reuse L42.is/FordTowel
+//here you can access a different set of classes.
+//For example, Num would refer to the number in FordTowel
+//and to see the number defined in AdamsTowel you have to write This1.N
+  }
+}
+]]></pre>
+
+Different code parts reason about different set of classes;
+including those predefined in other languages.
+That is, by introducing multiple towels in nested scopes,
+the names of the other scopes are "masked".
+
+Useful for code that reasons on code; that is a very common task
+in 42.
+
+</p><h2> Staining Towels </h2> <p>
+If you are writing a sizeable program,
+or many similar programs, it make sense to
+enrich a towel with some pre loaded libraries
+and basic classes.
+
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+ToDeploy: Resource <>< {
+  reuse L42.is/AdamsTowel
+  Gui: Load <>< {reuse L42.is/Gui}
+  Kg: Units.of(Num)
+  Meter: Units.of(Num)
+  }
+Task: Deploy.asTowel(
+  url: Url"https: //github.com/MyProjectName/RichTowel.L42"
+  permissions: S".."
+  ) <>< ToDeploy()
+}
+]]></pre>
+
+The former code will create your towel and update it
+on your github repository every time you
+run it.
+</p><p>
+A <span style="color:#ff1111; font-weight: bold;"> Stained Towel </span> is a towel that looks like another but is enriched by adding more things at the bottom.
+In our example, '<span class="code"><![CDATA[RichTowel]]></span>'
+ is just a stained variation of '<span class="code"><![CDATA[AdamsTowel]]></span>'.
+
+
+</p><h2> (3/5)Library deployment </h2> <p>
+
+If you start writing in 42, you will soon feel the need
+to factorize your project into libraries that can
+be independently tested, deployed and loaded.
+While successful libraries are used by multiple
+independent projects and developers,
+most libraries exists just as development tools in
+order to keep the complexity of big projects under control.
+</p><p>
+In 42 is easy to code with multiple libraries, and libraries can be much smaller.
+</p><p>
+In 42 is possible to employ a programming model where every developer (or every pair of developers in a pair programming style) is the
+only one responsible of one (or more) library and their maintenance process, while the group leader give specifications and tests to be met to the various library developers and will glue all the code together.
+
+</p><p>
+
+Libraries can be deployed in a way similar to towel deployment;
+'<span class="code"><![CDATA[Load]]></span>' is used to load libraries,
+but it also contains all the knowledge to deploy
+them.
+<br/>
+The following example code deploys a library
+using '<span class="code"><![CDATA[AdamsTowel]]></span>':
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+//could be L42.is/RichTowel and nothing would change
+
+ToDeploy: Resource <>< {
+  reuse L42.is/RichTowel
+  //need to be RichTowel; for example MyLib is using Gui
+  MoreStuff:...
+  MyLib: ...
+  }
+}
+Task: Load.DeployLibrary(
+  path: Path"MyLib",
+  url: Url".."
+  ) <>< ToDeploy()
+}
+]]></pre>
+
+This code deploy '<span class="code"><![CDATA[MyLib]]></span>' to an URL as a library.
+<br/>
+If there was any nested library unreachable from public classes
+in '<span class="code"><![CDATA[MyLib]]></span>' or in '<span class="code"><![CDATA[MoreStuff]]></span>' it will be pruned away.
+Same for any nested library stained on top of '<span class="code"><![CDATA[AdamsTowel]]></span>'.
+</p><p>
+The deployed library can be imported as usual.
+For example using
+'<span class="code"><![CDATA[Imported:Load <>< {reuse ..}]]></span>'
+we will see the content of '<span class="code"><![CDATA[MyLib]]></span>' inside of '<span class="code"><![CDATA[Imported]]></span>'.
+
+</p><p>
+Most 42 libraries are not towels, but all 42 libraries are closed code.
+
+They will have have abstract classes/methods
+for each of the original towel concepts (before staining), and they can be rebound
+to a multitude of towels.
+In particular all stained versions of the same towel are compatible.
+Every needed nested library
+that was not present in the original towel, will be made private.
+On the other side, all the classes in the original towel will
+be made abstract by '<span class="code"><![CDATA[Load.DeployLibrary]]></span>'
+and will be rebound to the current towel by '<span class="code"><![CDATA[Load]]></span>'.
+
+</p><p>
+
+Thus, in our example,
+'<span class="code"><![CDATA[Gui]]></span>',
+'<span class="code"><![CDATA[Kg]]></span>',
+'<span class="code"><![CDATA[Meter]]></span>' and '<span class="code"><![CDATA[MoreStuff]]></span>'
+would become a private implementation detail of the exposed library.
+
+
+</p><h2> (4/5)Towel embroidery: Define and deploy our own towel </h2> <p>
+
+
+Towel embroidery it is like adding your initials to your towel.
+</p><p>
+While we can simply add to the end by staining, embroidery is much more powerful.
+</p><p>
+The most common embroidery tool
+is '<span class="code"><![CDATA[Extend.patch(that)]]></span>'.
+The idea is that we extend a towel using a part of itself
+as a patch.
+<br/>
+As an artificial example:
+<pre class="l42Big"><![CDATA[
+Code: Extend.patch(Path"Fix") <>< {
+  class method
+  S sayHi()
+    S"Hi"
+  Fix: {
+    class method @override
+    S sayHi()
+      S"Say "++this.#1sayHi()
+    }
+  }
+]]></pre>
+
+'<span class="code"><![CDATA[Code.sayHi()]]></span>' will return '<span class="code"><![CDATA[S"Say Hi"]]></span>'.
+This also works for nested classes. If for example
+you wish to add a reverse method into '<span class="code"><![CDATA[S]]></span>' in your towel, you could do the following:
+
+<pre class="l42Big"><![CDATA[
+ToDeploy: Resource <>< Extend.patch(Path"Fix") <>< {
+  reuse L42.is/AdamsTowel
+  Fix: {S: {
+    method S reverse() {/*..*/ 0Num /*..*/}
+    }}
+  }
+]]></pre>
+
+The advantage with respect to composing two separated
+libraries is that the scope is the same,
+that is the implementation of '<span class="code"><![CDATA[reverse()]]></span>' will be able to use '<span class="code"><![CDATA[Bool]]></span>', '<span class="code"><![CDATA[Num]]></span>' and so on.
+That is, if we was to write our code as
+
+<pre class="l42Big"><![CDATA[
+ToDeploy: Resource <>< Extend[{reuse L42.is/AdamsTowel}] <>< {
+  S: {
+    method S reverse() {/*..*/ 0Num /*..*/}
+    }
+  }
+]]></pre>
+Now '<span class="code"><![CDATA[Num]]></span>' would be bound to the outer towel instead of the inner one.
+
+
+
+Towel staining is a very minimal personalization, and stained towels
+are fully compatible with the original one.
+By embroidery you can personalize a lot more the content of your towel,
+but when library deployment
+rely on an embroidered towel, compatibility with the original towel is lost.
+For example, an embroidered version of
+'<span class="code"><![CDATA[AdamsTowel]]></span>'
+can '<span class="code"><![CDATA[Load]]></span>' a library developed on the original
+'<span class="code"><![CDATA[AdamsTowel]]></span>', but a library developed on the embroidered version
+needs to be loaded into a similarly embroidered towel.
+
+One typical reason to embroider a towel is to
+extend the set of classes that are shared between libraries.
+For example, one may want to develop a Towel for scientific use
+where the existence of some units of measure can be shared between all the libraries.
+
+</p><p>
+To extend/expand the Loading/deployment process in this way, we
+need to patch '<span class="code"><![CDATA[ConceptMap]]></span>'
+as in the following example:
+<pre class="l42Big"><![CDATA[
+{reuse L42.is/AdamsTowel
+ToDeploy: Resource <>< Extend.patch(Path"Fix") <>< {
+  reuse L42.is/AdamsTowel
+  Kg: Units.of(Num)
+  Metre: Units.of(Num)
+  Second: Units.of(Num)
+  Fix: {
+    ConceptMap: {interface
+      method Kg en_wikipedia_org$wiki$Kilogram()
+      method Metre en_wikipedia_org$wiki$Metre()
+      method Second en_wikipedia_org$wiki$Second()
+      }
+    S: {
+      method
+      S reverse() {/*..*/}
+      }
+    //just to show we can add to the concept map and to string
+    //at the same time, no problem.
+    }
+  }
+
+Task: Deploy.asTowel(
+  url: Url"https://github.com/SI/SITowel.L42"
+  permissions: S".."
+  ) <>< ToDeploy()
+}
+]]></pre>
+Now '<span class="code"><![CDATA[SITowel]]></span>' can be used  as a towel,
+and can be used to deploy libraries that can be loaded by
+'<span class="code"><![CDATA[SITowel]]></span>'.
+
+By using (standard transmogrification of) semantic URIs as
+ontological nodes, we
+can create a basis for other libraries when trying to infer the meaning of our added types.
+</p><p>
+Our fixed towel can be used now to deploy and load libraries wrote in
+this new towel, and libraries deployed and loaded in this way will
+share a unique definition for certain units of measure.
+Note that libraries originally developed for
+'<span class="code"><![CDATA[AdamsTowel]]></span>' can still be loaded normally.
+If they was to internally define a concept of eg. '<span class="code"><![CDATA[Meter]]></span>',
+this would be interpreted as a normal (possibly private) nested class
+inside of the loaded library, and will not be merged with the unified
+concept of '<span class="code"><![CDATA[Meter]]></span>' defined in '<span class="code"><![CDATA[SITowel]]></span>'.
+
+
+</p><h2> (5/5)Deployment: programs, libraries and towels; summary </h2> <p>
+<ul><li>
+42 is a metaprogramming tool.
+It is natural to use 42 either a language (to run a program)
+or as a compiler (to deploy programs, libraries and towels).
+</li><li>
+Indeed we expect all sizeable 42 projects to use 42 as a compiler,
+to produce some reusable artefacts.
+</li><li>
+The distinction between towels (that do not need to be '<span class="code"><![CDATA[Load]]></span>'ed)
+and other ('<span class="code"><![CDATA[Load]]></span>'able) libraries is
+introduced not by 42, but by '<span class="code"><![CDATA[AdamsTowel]]></span>'; radically different towels may provide different meaning for the concepts of deploying and
+loading libraries/towels.
+</li><li>
+Application developers can freely stain and embroider towels;
+in this way they can adapt '<span class="code"><![CDATA[AdamsTowel]]></span>' to serve them better.
+However, Library developers need to carefully consider the effect of embroidery.
+</li></ul>
+ <!--
+
+<pre class="l42Big"><![CDATA[
+Observer: {interface
+  mut method update()
+  }
+Observers: Collections.vector(ofMut: Observer)
+
+Traits: {
+
+  class method
+  Library subject(){
+    mut Observers observers
+
+    class method
+    mut Observers #default_observers()
+      Observers[]
+
+    mut method
+    Void register(Observer that)
+      this.#observers().add(right: that)
+
+    mut method
+    Void notify()
+      with Observer o in this.#observers().vals() (
+        o.update()
+        )
+  }
+  class method
+  Library widget(){ /*..*/}
+
+}
+
+MyObservableWidget: Extends[Traits.subject(); Traits.widget()] <>< {
+  mut method @override
+  Void repaint() (this.#2repaint() this.notify())
+  }
+]]></pre>
+
+It is possible to iterate over a range of numbers:
+
+<pre class="l42Big"><![CDATA[
+with i in 4Size.vals() (
+  Debug(i) //prints 4,5,6,7 and so on forever
+  )
+]]></pre>
+
+<pre class="l42Big"><![CDATA[
+with i in 4Size.upTo(42Size) (
+  Debug(i) //prints 4,5,6,7 and so on up to 42 excluded
+  )
+]]></pre>
+
+
+Resources used within an iteration can be released after the iteration
+since collections are notified when the iteration ends.
+
+<pre class="l42Big"><![CDATA[
+//a contains "foo1 \n foo2 \n foo3"
+//b contains "bar1 \n bar2"
+with
+  input in LineStream.readFile(S"a"),
+  var output in LineStream.readWriteFile(S"b",fill: S"None") (
+    output:=  output +" : "+input) //line by line, add input in the file
+//b contains "bar1 : foo1 \n bar2 : foo2 \n None : foo3"
+]]></pre>
+
+
+
+<pre class="l42Big"><![CDATA[ Library myCode= { method Int foo()} ]]></pre>
+A local binding of type Library initialized with a class with a single '<span class="code"><![CDATA[foo()]]></span>' method. Since there is no body, it is an abstract method.
+ -->
+
+ <!--</p><h2> Simpler complete program </h2> <p>
+
+Let now starts showing the simplest 42 program: an empty library.
+
+<pre class="l42Big"><![CDATA[ {} ]]></pre>
+
+If we save this valid program in a file '<span class="code"><![CDATA[Test.L42]]></span>' and we run '<span class="code"><![CDATA[L42 Test]]></span>', we get an error.
+</p><p>
+As you see 42 is very intuitive, as you would expect from your former life experiences, most simple things just does not work.
+Note how valid programs can produce errors.
+We will soon learn how to produce errors in controlled and elegant ways.
+-->
+<!--A 42 program execution <span style="color:#ff1111; font-weight: bold;"> is </span> the generation of all its nested classes/interface.
+, code is simply executed from top to bottom as in
+Python, Javascript or Php. However, the
+top level expression is a Library, and code can go in libraries
+as an initializer for you need to put the code into an expression
+-->
+
+<!-- LATER?
+'<span class="code"><![CDATA[MyCode.hello(..)]]></span>'
+use directly the '<span class="code"><![CDATA[MyCode]]></span>' class instance as
+receiver. We can also give it a name
+e se vuoi puoi anche salvarlo su un binding locale,
+tipo x= MyCode  x.hello(...)
+-->
+
+ </p><p id="Philosophy"> </p><h1> Guarantees and Philosophy </h1> <p>
+
+</p><h2> (1/5)Language invariants </h2> <p>
+42 guarantees a set of language invariants; properties that are always true.
+
+</p><h2> Immutability </h2> <p>
+In 42, once an object become immutable,
+it will never change again.
+It's whole reachable object graph is frozen for the rest of its lifetime.
+( In some languages this is called value semantic,
+ to not be confused with pass by value/pass by reference)
+
+</p><h2> Encapsulation </h2> <p>
+A capsule binding (not a capsule field)
+is encapsulated, that is:
+such capsule binding is the only way to reach
+that object and its whole (mutable) object graph.
+It is irrelevant if immutable leaves are shared or not.
+
+
+</p><h2> Hygienic aliasing </h2> <p>
+A family of references is hygienic if each pair of references
+point to disjoint object graphs (modulo immutable leaves).
+</p><p>
+Hygienic families are preserved during
+the execution of any operation requiring at most one mutable references.
+That is:
+<ul><li>
+capsule references can be used only once, so they will not be available any more,
+so it is irrelevant what they referred to;
+</li><li>
+class and immutable references  are irrelevant since it can not be observed if two references are the same object or
+an identical clone;
+</li><li>
+read and lent references can not be stored inside of other object graphs.
+Lent view point adaptation is designed to carefully preserve
+Hygienic aliasing while allowing lent reference to do mutation by promoting them to mutable in a controlled scope.
+</li><li>
+mutable references can not be stored inside a lent reference.
+</li></ul>
+
+</p><h2> Strong error safety </h2> <p>
+If an error is captured, the catch body will observe the same state that was present
+at the start of its guarded paragraph.
+That is, paragraphs guarded by a catch error can not modify externally visible state.
+</p><h2> Checked exceptions </h2> <p>
+It is always statically known what exceptions every piece of code can raise.
+As for Java, this is obtained by declaring exceptions on the method signature.
+However, 42 offers convenient syntactic sugar to turn exceptions into errors/other exceptions.
+</p><h2> Subtyping control </h2> <p>
+In Java subtype is always possible (when not prevented by the '<span class="code"><![CDATA[final]]></span>' keyword), while 42 is more restrictive:
+Only interface provide subtyping, while classes are all exact types,
+that is, if a method takes a '<span class="code"><![CDATA[Point]]></span>', and '<span class="code"><![CDATA[Point]]></span>' is not
+an interface, that method is always going to receive exactly a point.
+On the other side, if '<span class="code"><![CDATA[Point]]></span>' is an interface, you know is going to be some class implementing that interface.
+This subtyping restriction, coupuled with metaprogramming operations like '<span class="code"><![CDATA[Redirect]]></span>' and generics, encourages frameworks to be instantiated at metaprogramming time instead of using subtyping.
+We believe this allows to reduce the use of subtyping only when is really needed, allowing easier reasoning on the code.
+</p><h2> MetaSafety </h2> <p>
+
+Most other meta-programming approaches allows for new type errors to be introduced by metaprogramming.
+</p><p>
+In 42 meta-programming can not add type errors to otherwise
+well-typed code. Note that code can be non well-typed either because it is ill-typed or
+because it refers to classes and interfaces that have not yet been produced.
+</p><p>
+This implies that
+Metaprogramming operations in 42 can produce non well-typed
+code only if at least one input is non well-typed.
+That is, if all of the inputs are well-typed and a result is produced (instead of, eg. a dynamic error or non temination), then the result is well-typed.
+</p><p>
+An important corollary: every expression that does not contains a library literal, will never produce
+non well-typed library literals.
+<br/>
+This includes every trait (class methods with no argument returning '<span class="code"><![CDATA[Library]]></span>') invocation
+and expressions like '<span class="code"><![CDATA[Collections.vector(of:Point)]]></span>';
+since they do not contains any library literal.
+
+</p><p>
+
+
+
+Nested library declarations containing library literals,
+as for example
+'<span class="code"><![CDATA[Point: Data <>< {Num x, Num y, method This add(S x) This.with(x: /+x)}]]></span>', can produce
+non well-typed code, if some contained library literals was non well-typed.
+In the case of our example, we mistakenly used the '<span class="code"><![CDATA[S]]></span>' type instead of
+'<span class="code"><![CDATA[Num]]></span>'; this will cause a type error in the result, which can be traced back to a type error
+in the initial library literal.
+
+
+</p><h2> Object always fully initialized </h2> <p>
+In 42 all object are born with all of the fields containing objects of the right types, and this will hold for the whole lifespan of the object.
+There is no '<span class="code"><![CDATA[null]]></span>' and no uninitialized values.
+To allow for the initialization of circular object graph
+you can use a feature called '<span class="code"><![CDATA[fwd]]></span>' references, that we have not explored in this tutorial.
+See (link)
+
+
+</p><h2> (2/5)Philosopy of 42 and AdamsTowel </h2> <p>
+Other languages have a weak division between language features
+and their standard library.
+42 have a very strong separation between language and libraries.
+You can see that from the mentality of the language and
+the (different) mentality of the popular '<span class="code"><![CDATA[AdamsTowel]]></span>'.
+
+</p><h2> Philosopy of 42 </h2> <p>
+<ul><li>
+42 is just an instrument; use it as best you can,
+to do what you prefer.
+</li><li>
+No idea is too crazy for 42;
+no matter what you do, you can not break the language
+invariants; so play hard with it; It can take it!
+</li><li>
+Do not let other people or libraries
+tell you what to prefer or avoid.
+</li><li>
+There is no intrinsic meaning in 42, no language feature
+is designed to be used only in a certain way.
+</li><li>
+42 is based on a minimal core, composed of little more than
+method calls and exception handling.
+Then there is a thick layer of syntactic sugar, allowing
+for more convenient syntax.
+
+Please,experiment with the fixed but flexible syntactic sugar of
+42, and find new idiomatic ways to mesh 42 into expressing what you want in the
+way that you want it.
+</li></ul>
+
+
+</p><h2> Philosopy of AdamsTowel </h2> <p>
+
+<ul><li>
+AdamsTowel offers a large set of simple concepts, which you can use
+to encode the domain of your problem.
+<BR/>
+Basic classes should represent atoms of knowledge.
+<BR/>
+Collections should represent homogeneous groups of objects,
+where every object serves the same role in your domain.
+<BR/>
+Instances of data classes are agglomerations of instances of other classes, subject to an invariant.
+<BR/>
+Modules have only class methods and are a simple way to organize your code.
+<BR/>
+Resources serve to indicate constants.
+<BR/>
+Algorithmic classes will implement a certain algorithm interface;
+and the concrete behaviour will be selected polymorphically; i.e. depending on the concrete class of the
+instance.
+<BR/>
+Messages will report errors and exceptions.
+<BR/>
+Decorators will complete your code,
+ adding the needed boilerplate.
+</li><li>
+AdamsTowel can be stained and embroidered to create many variations,
+and those variations can all play together with little effort and discipline.
+</li><li>
+You can use modifiers in a disciplined way to express meaning:
+<ul><li>
+Immutable references are abstract/mathematical concepts, they are used to model the world
+of your program but are not materialized in your world.
+For example, a '<span class="code"><![CDATA[Car]]></span>' has a '<span class="code"><![CDATA[Kg]]></span>' weight, but '<span class="code"><![CDATA[25Kg]]></span>' is not a thing in the world of cars.
+</li><li>
+Class objects model kinds of things, and you can use
+class methods as convenient ways to refer to general concepts not specially connected to any entity
+in the domain of your program.
+Class methods in interfaces fill a special role:
+expressing behaviour that is parametric on the kind of object without
+resorting to metaprogramming; in a pattern similar to dependency injection, see (link).
+This requires using references to class objects instead of just naming them by path.
+
+<!--For example if the '<span class="code"><![CDATA[WebServer]]></span>' interface
+has a '<span class="code"><![CDATA[class method This connect(S connectionString)]]></span>'
+then you can write code taking in input
+-->
+Another point where we need to use class references is metaprogramming; for example in the target of  '<span class="code"><![CDATA[Refactor.Redirect]]></span>'.
+
+</li><li>
+Mutable references point to mutable objects.
+Shallow mutable objects can be the centrepiece of your design.
+However, while everything sort of turns around them, most functions will work only on their (immutable) content.
+
+Deep mutable objects need to be handled with more care.
+</li><li>
+Lent references/parameters indicate the desire of a method to be hygienic with
+a chunk of data.
+If a method has at most one mutable parameter including the method modifier,
+we suggest to  not making it lent; nothing would change and it would only look more involved.
+If a method has more than one mutable parameter, then if possible keep the
+method modifier mutable and make the other parameters lent.
+The only case where it is reasonable to have a lent method is when there are at least two
+other mutable parameters, and the method is using the information inside of the receiver to decide how to mix
+their reachable graphs.
+</li><li>
+Readable references/parameters indicate the desire of a method to just read
+the content of a chunk of data, without storing it or mutating it.
+If possible, make methods and methods parameters read if they can not be immutable.
+</li></ul>
+</li></ul>
+
+
+</p><h2> (3/5) Reconciling opposite views </h2> <p>
+How can the philosophy of AdamsTowel be so different from
+the philosophy of 42?
+Actually, AdamsTowel is following all the suggestions of 42:
+<br/>
+It is using 42 as an instrument, as best it can.
+By checking for specific usage pattens, it can enforce
+class invariants by building on the language invariants.
+Certain refactoring decorators performs crazily complicated
+operations, but they can be abstracted to a simple high level concept.
+
+AdamsTowel goes a long way to support units of measure and alphanumerics, even if
+most other standard libraries would avoid going that way.
+
+Strings in AdamsTowel use the square bracket '<span class="code"><![CDATA[[]]]></span>' syntax to do
+string interpolation, instead of just sequence building.
+'<span class="code"><![CDATA[Enumeration]]></span>' uses the string literal postfix operator to generate enumeration
+classes.
+Who knows what new and creative
+applications of the 42 syntax could be used by another, more mature towel.
+
+
+
+</p><h2> (4/5) Embrace failure </h2> <p>
+We love programs that fail.
+<br/>
+We love more the ones that fails early and with good error messages.
+<br/>
+We love static type system; it allows us to fail very fast.
+<br/>
+We love to have code analysis; it makes our code fail quite fast and reliably.
+<br/>
+We love to check for additional constraints at run time.
+<br/>
+The important think is that code behaving differently from what we expected, should
+never be allowed to produce a (non error) result.
+
+</p><p>
+This mindset is different from the one found in many other language communities.
+<br/>
+For example languages supporting flexible, silent, automatic conversions between different
+datatypes (as string, bools and numbers) are clearly searching for a
+way to interpret a possibly confusing programmer request and give it a meaning.
+For example '<span class="code"><![CDATA["2"+2]]></span>' may mean '<span class="code"><![CDATA["22"]]></span>' while '<span class="code"><![CDATA[2+"2"]]></span>' may mean '<span class="code"><![CDATA[4]]></span>'.
+<br/>
+Those are reasonable interpretations, motivated by certain examples, but they can not possibly scale to
+the general case.
+</p><p>
+On the other hand, programmers coming from languages that support very strong type systems
+and encourage type safety as a way of mind,
+would prefer to either encode a precondition at the type level,
+or to encode a generalized behaviour where such a precondition is not needed, to dodge the problem.
+For example, in their mindset, '<span class="code"><![CDATA[max]]></span>' should not return an element, but an optional
+element, and the option of no element will be produced in case of an empty list.
+This approach does not scale:
+certain conditions can not be expressed in the type system;
+some other conditions could be expressed but it would be too cumbersome.
+<br/>
+In our vision, the purpose of the type system is help to make the program adhere to
+its intended behaviour or break fast.
+We do not want to bend our intended behaviour so that code
+could never be observed to fail.
+Such code can still behave unexpectedly (with respect to the original intended behaviour).
+
+
+
+
+
+</p><h2> (5/5) Going forward </h2> <p>
+
+You are now ready to do simple programs in 42.
+While coding, you should refer to (link) where you can find
+detailed documentation for all the classes of AdamsTowel and many useful libraries.
+
+</p><p>
+
+If you want to go forward and have a better understanding
+of 42, you can now read, in any order,
+
+<ul><li>
+42 core language design, for programming language experts
+</li><li>
+42 syntactic sugar, in detail
+</li><li>
+42 type system, exact rules for promotions and usage of fwd types
+</li><li>
+42 metaprogramming guide and how "there is no state"
+</li><li>
+42 testing, mocking and configuration
+</li><li>
+deploying 42 onto different platforms
+</li><li>
+42 and native code; how to import libraries from other languages
+</li><li>
+42 optimizers
+</li></ul>
+        </p>
+        </div>
+      </div>
+      <div id="footerwrap">
+        <div id="footer">
+          <ul style='padding: 10px;'>
+            <li style='display:inline;'><a href="http://ecs.victoria.ac.nz/Main/MarcoServetto" >Contact Us</a> |</li>
+            <li style='display:inline;'><a href= "http://ecs.victoria.ac.nz/mailman/listinfo/team42">Mailing list</a> |</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+</html>
+
