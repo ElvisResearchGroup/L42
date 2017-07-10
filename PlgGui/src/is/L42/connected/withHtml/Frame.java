@@ -17,6 +17,7 @@ import javafx.application.Platform;
 
 import java.awt.event.WindowAdapter;
 import platformSpecific.javaTranslation.Resources;
+import repl.HtmlFx;
 @SuppressWarnings("serial")
 public class Frame extends JFrame{
   private static final HashMap<String,Frame> windows=new HashMap<>();
@@ -44,8 +45,8 @@ public class Frame extends JFrame{
         });
     SwingUtilities.invokeLater(future);
     try {return future.get();}
-    catch (ExecutionException e) {throw propagateException(e.getCause());}
-    catch (InterruptedException e) {throw propagateException(e);}
+    catch (ExecutionException e) {throw HtmlFx.propagateException(e.getCause());}
+    catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
     }
   private static String extractTitle(String html) {
     String htmlUP=html.toUpperCase();
@@ -76,8 +77,8 @@ public class Frame extends JFrame{
     FutureTask<String> future = new FutureTask<>(()->executeJsFX(command));
     Platform.runLater(future);
     try {return future.get();}
-    catch (ExecutionException e) {throw propagateException(e.getCause());}
-    catch (InterruptedException e) {throw propagateException(e);}
+    catch (ExecutionException e) {throw HtmlFx.propagateException(e.getCause());}
+    catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
     }
   private String executeJsFX(String command) {
     try{
@@ -93,12 +94,6 @@ public class Frame extends JFrame{
     catch(netscape.javascript.JSException jsExc){
       throw new Resources.Error("JavascriptError:"+jsExc);
       }
-    }
-  protected static Error propagateException(Throwable t){
-    if (t instanceof RuntimeException){throw (RuntimeException)t;}
-    if (t instanceof Error){throw (Error)t;}
-    if (t instanceof InterruptedException){Thread.currentThread().interrupt();}
-    throw new Error(t);
   }
   public static String getEventString(String wName){
     Frame f=windows.get(wName);

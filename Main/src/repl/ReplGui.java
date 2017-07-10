@@ -40,13 +40,13 @@ public class ReplGui extends JFrame {
  }
 
 JTextArea loadedSrc=new JTextArea(20, 50);
-JTextArea newSrc=new JTextArea(2, 50);
-{newSrc.setText("reuse L42.is/AdamTowel02\n"+
+ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
+/*{newSrc.setText("reuse L42.is/AdamTowel02\n"+
   "Main:{\n"+
-  "  Debug(S\"hi!!\")\n"+        
+  "  Debug(S\"hi!!\")\n"+
   "  return ExitCode.normal()\n"+
   "}");
- }
+ }*/
 JTextArea output=new JTextArea(20, 50);
 JTextArea errors=new JTextArea(20, 50);
 ReplState repl=null;
@@ -125,7 +125,7 @@ private PrintStream delegatePrintStream(PrintStream prs){
     };
   }
 void buildGui(JRootPane pane){
-  JTabbedPane tabbedPane = new JTabbedPane();  
+  JTabbedPane tabbedPane = new JTabbedPane();
   loadedSrc.setEditable(false);
   output.setEditable(false);
   errors.setEditable(false);

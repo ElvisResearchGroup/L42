@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import repl.HtmlFx;
 
 public class TestWebEngine {
   @After
