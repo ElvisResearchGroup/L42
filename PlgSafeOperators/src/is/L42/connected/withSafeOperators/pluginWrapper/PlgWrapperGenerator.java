@@ -168,7 +168,7 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
       }//TODO: we may want to cache those tests if performance is needed
     }
   catch(ClassUnfit| MethodUnfit e){
-    e.setMessage("While examining Class "+pTop+" method "+mwt.getMs()+":\n"+e.getMessage());
+    e.setMessage("While examining Class '"+pTop+"' method '"+mwt.getMs()+"':\n"+e.getMessage());
     throw e;
     }
 
