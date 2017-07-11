@@ -106,8 +106,8 @@ Part 3: methods(p,P)=Ms,  collect(p,Ps)=Ps'
 methods(), applied to a non normalized L, will return a mixture of
 the methods written directly into the L and methods declared in its
 implemented interfaces.
-methods() collect such methods and their type. It may have to choose a type
-in case of differently refined methods from interface diamond implements.
+methods() collects such methods and their types. It may have to choose a type
+in case of methods refined in different ways from interface diamond implements.
 
 _______
 #define collect(p,Ps)=Ps' //collects transitively implemented interfaces
@@ -118,12 +118,14 @@ _______
   Ps'=collect(p,Ps0[from P0])
   //this check absence of circularity by looping
 
+//TODO: insert definition of From from the pdf; this is the first occurence
+
 _______
 #define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO: do it in the code
   P1..Pn=collect(p,Ps[from P0]), error unless forall i in 1..n, p(Pi) is an interface
-  ms1..msk={ms|forall i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
+  ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code
     such that p(Pj)(ms)=mh e? //no refine
   forall i in 1..k //i comes from k in ms1..msk
@@ -135,7 +137,8 @@ _______
     otherwise
     Mi'=Mi
 //Note, in this model cases like 
-//"A:  {interface refine method A()}  B: { implements A method A()}"
+//"A:  {interface refine method A m()} 
+// B: { implements A method A m()}"
 // are ok wrt B but fails for A  
 
 
