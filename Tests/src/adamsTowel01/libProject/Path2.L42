@@ -4,8 +4,8 @@
   class method
   Library #pluginUnresponsive(Library binaryRepr)
     binaryRepr  
-  class method mut This #from(Library binaryRepr)
-  read method Library #binaryRepr()
+  //class method mut This #from(Library binaryRepr)
+  //read method Library #binaryRepr()
 
   class method
   This from(Concept.ToS string) {
@@ -34,7 +34,7 @@
 
   class method
   This fresh()
-    This.fresh(path:This"Fresh")
+    This.fresh(like:This"Fresh")
 
   method
   S name(Size that)
@@ -42,7 +42,8 @@
   method
   Size nameSize()
     this.size()
-
+  method toS()
+    PlgPath.toS(this)
   method
   This ++(This that)
     PlgPath.concat(this and:that)
@@ -57,7 +58,7 @@
   S get(Size that)
   method
   Size size()
-
+  //from decoration: equals
 
   PlgPath:{
     //@plugin is.L42.connected.withSafeOperators
@@ -74,6 +75,7 @@
     This1 fresh(This1 that)
     class method 
     This1 rawFromS(S that)
-
+    class method
+    S toS(read This1 that)
     }
   }

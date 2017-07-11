@@ -197,7 +197,7 @@ private static UsingInfo usingMethod(PlgInfo plgInfo, Method[] jms, MethodWithTy
     String nonS=stat?"":"non ";
     throw new RefactorErrors.UnresolvedOverloading().msg(
       "The referred java class "+plgInfo.plgClass.getName()+
-      " does not have exactly one "+nonS+"static method for "+name+" with right number of arguments.\n"+
+      " does not have exactly one "+nonS+"static method for '"+name+"' with right number of arguments.\n"+
       "List of candidate methods:"+jms0);
     }
   assert jms0.size()==1:

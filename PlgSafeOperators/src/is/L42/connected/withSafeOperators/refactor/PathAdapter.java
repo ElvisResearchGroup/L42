@@ -27,4 +27,8 @@ public static
 List<Ast.C> rawFromS(String that){
   return PathAux.parseValidCs(that);
   }
+public static
+String toS(List<Ast.C>that){
+  return PathAux.as42Path(that);
+  }
 }
