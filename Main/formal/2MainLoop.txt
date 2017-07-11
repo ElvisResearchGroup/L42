@@ -113,9 +113,10 @@ _______
 #define collect(p,Ps)=Ps' //collects transitively implemented interfaces
 -collect(p,empty)=empty  
   //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
--collect(p,P0 Ps)=(P0,Ps')\collect(p,Ps), collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
+-collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={_ implements Ps0 _}
   Ps'=collect(p,Ps0[from P0])
+  where "\p" is set minus using p.equiv(P1,P2) //TODO: update code, this should fix concern in TODO "just hacked away"
   //this check absence of circularity by looping
 
 //TODO: insert definition of From from the pdf; this is the first occurence
