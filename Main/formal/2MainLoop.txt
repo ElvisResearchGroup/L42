@@ -127,7 +127,7 @@ _______
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO: do it in the code
   P1..Pn=collect(p,Ps[from P0]), error unless forall i in 1..n, p(Pi) is an interface
   ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
-  forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code
+  forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code; may be is solved by change in collect "\p"
     such that p(Pj)(ms)=mh e? //no refine
   forall i in 1..k //i comes from k in ms1..msk
     Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
