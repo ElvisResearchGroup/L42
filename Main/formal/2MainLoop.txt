@@ -148,6 +148,10 @@ Part 4: norm(p)=L, multiNorm
 -----------------------------------------------------------
 //TODO: thinking if norm should check that all paths are not doomed
 //i.e. available somewhere or still pointing to meta
+//TODO:change desugar: if C.Cs is not resolved when "reuse" is reached, before generating the Thisn.C.Cs check if that url have the C, otherwise is error.
+//Strong doom check: the path exists up to unresolved metaprogramming.
+//if the desugar check for strong doom, then norm NEED to check that all paths are not doomd to avoid
+//very fancy recovery behaviour with sum/redirect
 
 _______
 #define norm(p,L)=norm(p.evilPush(L))
