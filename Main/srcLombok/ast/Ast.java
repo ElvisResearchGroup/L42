@@ -12,6 +12,8 @@ import ast.Ast.Atom;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Type;
+import auxiliaryGrammar.Functions;
+import facade.L42;
 import ast.Ast.Op;
 import ast.Ast.Path;
 import sugarVisitors.Desugar;
@@ -180,6 +182,9 @@ public interface Ast {
     if(uniqueNum==-1){return name;}
     return name+"_$_"+uniqueNum;
     }
+  public int nameSize(){return this.names.size();}
+  public String name(int that){return this.names.get(that);}
+  public String toS(){return toString();}
   public String toString() {
    String nameU=nameToS();
    if (nameU.isEmpty() && names.isEmpty()) {
@@ -194,7 +199,10 @@ public interface Ast {
    result.append(")");
    return result.toString();
   }
-
+  public static MethodSelector fresh(MethodSelector that){
+    String newName=Functions.freshName(that.name,L42.usedNames);
+    return that.withName(newName);
+    }
   public static MethodSelector parse(String s) {
    if (s.equals("()")) {
     return MethodSelector.of(Desugar.desugarName(""), Collections.emptyList());

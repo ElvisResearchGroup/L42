@@ -118,6 +118,8 @@ Bool isEmpty()
 method
 This val(Size that)
   this(that)
+method
+Size #default#val(Void that) this.size()
 
 method
 This left()
@@ -133,6 +135,8 @@ This right()
 method
 This with(Size that, This val)
   this(end:that)++val++this(start:that+val.size())
+method
+Size #default#with(Void that) this.size()
 
 method
 This withLeft(This that)
@@ -146,6 +150,8 @@ This withRight(This that)
 method
 This withAlso(Size that, This val)
   this(end:that)++val++this(start:that)
+method
+Size #default#withAlso(Void that) this.size()
 
 method
 This withAlsoLeft(This that)
@@ -160,6 +166,8 @@ This withAlsoRight(This that)
 method
 This without(Size index)
   this(end:index)++this(start:index+1Size)
+method
+Size #default#without(Void index) this.size()
 
 method
 This without(Size index, Size skipNum)
@@ -196,6 +204,13 @@ This withoutRight()
 
   method
   S (Size end) this(start:0Size, end:end)
+  
+  method
+  Size #default##apply(Void that) this.size()
+  method
+  Size #default##apply(Void end) this.size()
+  method
+  Size #default##apply(Void start) this.size()
 
 
   method Size size()
