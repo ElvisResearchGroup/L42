@@ -152,7 +152,7 @@ Part 4: norm(p)=L, multiNorm
 //Strong doom check: the path exists up to unresolved metaprogramming.
 //if the desugar check for strong doom, then norm NEED to check that all paths are not doomd to avoid
 //very fancy recovery behaviour with sum/redirect
-
+ 
 _______
 #define norm(p,L)=norm(p.evilPush(L))
 
