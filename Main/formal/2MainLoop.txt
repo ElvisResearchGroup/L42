@@ -176,7 +176,7 @@ _______
 //we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seams to work fine.
 
 _______
-#define multiNorm(p,paths)=p'
+#define multiNorm(p,paths)=p' //multinorm assumes that p does not have evil pushes
 
 - multiNorm(p,empty) = p
 
@@ -255,7 +255,7 @@ Part 5: usedPathsE(p,eC)= <path;paths'>
 
 
 -----------------------------------------------------------
-Part 6: paths;path' ||-p ~> p, toAny
+Part 6: paths;path' ||-p ~> p, toAny //assumes that p does not have evil pushes
 -----------------------------------------------------------
 (pPop)
 Css paths;Css'path' ||- p  ~>  p1.update(L)
