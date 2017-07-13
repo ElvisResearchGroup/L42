@@ -16,13 +16,13 @@
   Selector numToSel(Size that)
   exception InvalidElements{
     if that>=64Size (exception InvalidElements"too many enumeration elements:"[that+1Size]", max is 64")
-    return Selector.fromS(S"#"++that.toS()++S"()")
+    return Selector.from(string:S"#"++that.toS()++S"()")
     }
   
   class method
   Selector sToSel(S that)
   exception InvalidElements{
-    return Selector.fromS(that++S"()")
+    return Selector.from(string:that++S"()")
     catch error Selector.ParseFail pf (//does not implements Message before we do the fixing
       Guard gpf={with pf (on Guard return pf) error S"subtype will be fixed in adam2"}
       exception InvalidElements"invalid enumeration name:"[that]""(gpf)

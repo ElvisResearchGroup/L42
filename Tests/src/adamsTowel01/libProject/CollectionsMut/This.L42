@@ -11,9 +11,9 @@ Library vector(class Any of) UnsafeRefactor.Classable<><{
   }
 class method
 Library minimal(class Any that) (
-  tmp= UnsafeRefactor.Redirect.redirect(VectorTrait(),
+  tmp= UnsafeRefactor.Redirect.redirectS(VectorTrait(),
     src:S"Elem", dest:that)
-  UnsafeRefactor.Redirect.redirect(tmp,
+  UnsafeRefactor.Redirect.redirectS(tmp,
     src:S"MutListT", dest:MutListAny)
   )
 class method
@@ -22,9 +22,9 @@ Library eq(class Any that) (
     left:VectorTrait(),
     right:CodeEq()
     )
-  tmp=UnsafeRefactor.Redirect.redirect(lib,
+  tmp=UnsafeRefactor.Redirect.redirectS(lib,
     src:S"Elem",dest:that)
-  UnsafeRefactor.Redirect.redirect(tmp,
+  UnsafeRefactor.Redirect.redirectS(tmp,
     src:S"MutListT", dest:MutListAny)
   )
 

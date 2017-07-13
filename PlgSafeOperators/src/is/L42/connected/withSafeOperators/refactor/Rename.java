@@ -116,37 +116,38 @@ public class Rename {
     return ClassB.membersClass(ms,cb.getP(),lprime.getPhase());
     }
 /**{@link RenameSpec#rename}*/   
-public static ClassB renameClass(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
-  List<Ast.C> srcL=PathAux.parseValidCs(src);
-  List<Ast.C> destL=PathAux.parseValidCs(dest);
-  if(MembersUtils.isPrivate(srcL)){
-    throw new RefactorErrors.PathUnfit(srcL).msg("private path");  
+public static ClassB renameClassS(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
+  return renameClassJ(p,cb,PathAux.parseValidCs(src),PathAux.parseValidCs(dest));
+  }  
+/**{@link RenameSpec#rename}*/   
+public static ClassB renameClassJ(PData p,ClassB cb,List<Ast.C>src,List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
+  if(MembersUtils.isPrivate(src)){
+    throw new RefactorErrors.PathUnfit(src).msg("private path");  
     }
-  if(MembersUtils.isPrivate(destL)){
-    throw new RefactorErrors.PathUnfit(destL).msg("private path");  
+  if(MembersUtils.isPrivate(dest)){
+    throw new RefactorErrors.PathUnfit(dest).msg("private path");  
     }
-  return renameClassAux(p.p,cb,srcL,destL);
+  return renameClassAux(p.p,cb,src,dest);
   }
 
-public static ClassB hideClass(PData p,ClassB cb,String src) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit, ClassUnfit{
-  List<Ast.C> srcL=PathAux.parseValidCs(src);
-  if(MembersUtils.isPrivate(srcL)){
-    throw new RefactorErrors.PathUnfit(srcL).msg("private path");  
+public static ClassB hideClassJ(PData p,ClassB cb,List<Ast.C> src) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit, ClassUnfit{
+  if(MembersUtils.isPrivate(src)){
+    throw new RefactorErrors.PathUnfit(src).msg("private path");  
     }  
-  if(!MembersUtils.isPathDefined(cb, srcL)){
-    throw new RefactorErrors.PathUnfit(srcL);
+  if(!MembersUtils.isPathDefined(cb, src)){
+    throw new RefactorErrors.PathUnfit(src);
     }
   Program pp=p.p;
   pp=pp.evilPush(cb);
-  pp=pp.navigate(srcL);
+  pp=pp.navigate(src);
   boolean coherent=newTypeSystem.TsLibrary.coherent(pp,false);
   if(!coherent){throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be hidden");}
   String nameC="Fresh";
   
-  if(!srcL.isEmpty()){nameC=srcL.get(srcL.size()-1).getInner();}
+  if(!src.isEmpty()){nameC=src.get(src.size()-1).getInner();}
   nameC=Functions.freshName(nameC, L42.usedNames);
-  List<Ast.C> destL=Collections.singletonList(new Ast.C(nameC,L42.freshPrivate()));  
-  return directRename(p.p,cb,srcL,destL);
+  List<Ast.C> dest=Collections.singletonList(new Ast.C(nameC,L42.freshPrivate()));  
+  return directRename(p.p,cb,src,dest);
   }
 
 

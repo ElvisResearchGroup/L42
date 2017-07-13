@@ -35,7 +35,7 @@ class method Library composerTrait(){
 
   mut method 
   Selector superName(Selector selector,Size i)
-    Selector.fromS(S"#"[i+1Size]""++selector.toS())
+    Selector.from(string:S"#"[i+1Size]""++selector.toS())
 
   class method mut Libs #seqBuilder() Libs.empty()
   class method mut Decorator #from(mut Libs seqBuilder) 

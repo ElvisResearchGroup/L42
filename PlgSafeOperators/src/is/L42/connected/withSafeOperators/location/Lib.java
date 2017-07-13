@@ -129,8 +129,8 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     assert !this.isBinded;
     return new Lib(false,root,Collections.emptyList(),root);
     }
-  public String path(){
-    return PathAux.as42Path(path);
+  public List<ast.Ast.C> path(){
+    return path;
     }  
   public Doc nestedDoc(){
     if(this.path.isEmpty()){
@@ -142,8 +142,8 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
 //even if obtained with a classObj, no method to get it back
 //to get a nested classObj, Refactor.navigateClassObj(classAny,Path)->classAny??
   public String toS() {return sugarVisitors.ToFormattedText.of(inner);}
-   public Lib navigate(String cs){
-    return navigateCs(PathAux.parseValidCs(cs));
+   public Lib navigate(List<Ast.C> cs){
+    return navigateCs(cs);
     }
   
    public Lib navigateCs(List<Ast.C> cs){

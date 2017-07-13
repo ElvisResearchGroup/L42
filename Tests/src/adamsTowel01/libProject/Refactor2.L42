@@ -132,11 +132,11 @@ PlgRenameClass:{
     error X"renameClass(Library that,Path src,Path dest)"
 
   class method
-  Library renameClass(Library that,Path src,Path dest)
+  Library renameClassJ(Library that,Path src,Path dest)
   exception  PathUnfit, MethodClash,ClassClash,SubtleSubtypeViolation
 
   class method
-  Library hideClass(Library that,Path src)
+  Library hideClassJ(Library that,Path src)
   exception  PathUnfit, ClassUnfit
   }
 RenameClass:{
@@ -145,7 +145,7 @@ RenameClass:{
   class method This (Path src,Path dest)
   method Library <><(Library that)
   exception  PathUnfit, MethodClash,ClassClash,SubtleSubtypeViolation
-    PlgRenameClass.renameClass(
+    PlgRenameClass.renameClassJ(
       that,src:this.src(),dest:this.dest())
   }
 //TODO: change sugar so that is #default1 or #default2, so that
@@ -163,7 +163,7 @@ HideClass:{
   class method This (Path src)
   method Library <><(Library that)
   exception  PathUnfit, ClassUnfit
-    PlgRenameClass.hideClass(
+    PlgRenameClass.hideClassJ(
       that,src:this.src())
   }
 class method
@@ -180,7 +180,7 @@ PlgAbstractClass:{
     error X"abtractClass(Library that,Path src)"
 
   class method
-  Library toAbstractS(Library that,Path src)
+  Library toAbstractJ(Library that,Path src)
   exception  PathUnfit, PrivacyCoupuled
   }
 
@@ -189,7 +189,7 @@ ToAbstractClass:{
   class method This (Path src)
   method Library <><(Library that)
   exception  PathUnfit, PrivacyCoupuled
-    PlgAbstractClass.toAbstractS(that,src:this.src())
+    PlgAbstractClass.toAbstractJ(that,src:this.src())
 
   }
 
@@ -297,7 +297,7 @@ PlgRedirect:{
     error {/*redirect(that,src,dest)*/}
 
   class method
-  Library redirect(Library that,Path src,class Any dest)
+  Library redirectJ(Library that,Path src,class Any dest)
   exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit
   }
 Redirect:{
@@ -307,7 +307,7 @@ Redirect:{
   method
   Library <><(Library that)
   exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit
-    PlgRedirect.redirect(that,src:this.src(),dest:this.dest())
+    PlgRedirect.redirectJ(that,src:this.src(),dest:this.dest())
   }
 class method
 class Path #default#redirect(Void path) Path
@@ -349,11 +349,11 @@ PlgMethod:{
   class method This ()
   method Library act(Library that)
   exception PathUnfit, SelectorUnfit,MethodClash, ClassUnfit
-  method This addRenameS(Path path, Selector src, Selector dest)
-  method This addHideS(Path path,Selector src)
-  method This addCloseS(Path path)
-  method This addAbstractS(Path path,Selector src)
-  method This addAbstractAliasS(Path path, Selector src, Selector dest)
+  method This addRenameJ(Path path, Selector src, Selector dest)
+  method This addHideJ(Path path,Selector src)
+  method This addCloseJ(Path path)
+  method This addAbstractJ(Path path,Selector src)
+  method This addAbstractAliasJ(Path path, Selector src, Selector dest)
   }
 Method:{
   var PlgMethod inner
@@ -377,32 +377,32 @@ Method:{
 
   //hide:\"foo()" of:\"Bar";
   mut method Void #add(Selector hide, Path of)
-    this.inner(this.inner().addHideS(path:of,src:hide)) 
+    this.inner(this.inner().addHideJ(path:of,src:hide)) 
   //hide:\"foo()";
   mut method Void #add(Selector hide)
-    this.inner(this.inner().addHideS(path:Path"This",src:hide))
+    this.inner(this.inner().addHideJ(path:Path"This",src:hide))
   //rename:\"foo()" of:\"Bar" into:\"bar()";
   mut method Void #add(Selector rename Path of Selector into)
-    this.inner(this.inner().addRenameS(path:of,src:rename,dest:into))  
+    this.inner(this.inner().addRenameJ(path:of,src:rename,dest:into))  
   //rename:\"foo()" into:\"bar()";
   mut method Void #add(Selector rename Selector into)
-    this.inner(this.inner().addRenameS(path:Path"This",src:rename,dest:into))  
+    this.inner(this.inner().addRenameJ(path:Path"This",src:rename,dest:into))  
   //closeState:\"Bar";
   mut method Void #add(Path closeState)
-    this.inner(this.inner().addCloseS(path:closeState)) 
+    this.inner(this.inner().addCloseJ(path:closeState)) 
   //abstract:\"foo()" of:\"Bar";
   mut method Void #add(Selector abstract Path of)
-    this.inner(this.inner().addAbstractS(path:of,src:abstract))    
+    this.inner(this.inner().addAbstractJ(path:of,src:abstract))    
   //abstract:\"foo()" of:\"Bar" alias:\"..";
   mut method Void #add(Selector abstract Path of Selector alias)
     this.inner(this.inner()
-      .addAbstractAliasS(path:of,src:abstract,dest:alias))      
+      .addAbstractAliasJ(path:of,src:abstract,dest:alias))      
   //abstract:\"foo()";
   mut method Void #add(Selector abstract)
-    this.inner(this.inner().addAbstractS(path:Path"This",src:abstract))    
+    this.inner(this.inner().addAbstractJ(path:Path"This",src:abstract))    
   //abstract:\"foo()" alias:\"..";
   mut method Void #add(Selector abstract Selector alias)
-    this.inner(this.inner().addAbstractAliasS(path:Path"This",src:abstract,dest:alias))      
+    this.inner(this.inner().addAbstractAliasJ(path:Path"This",src:abstract,dest:alias))      
   }
 
 

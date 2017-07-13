@@ -122,9 +122,9 @@ public class RefactorErrors{
     FluentSetter<SelectorUnfit>{
     List<ast.Ast.C> path; MethodSelector sel;
     public SelectorUnfit(List<ast.Ast.C> path, MethodSelector sel){this.path=path;this.sel=sel;}
-    public String path(){return PathAux.as42Path(path);}
+    public List<ast.Ast.C> path(){return path;}
     public MethodSelector selector(){return sel;}
-    public String toString(){return "SelectorUnfit:"+path()+"::"+selector();}
+    public String toString(){return "SelectorUnfit:"+PathAux.as42Path(path())+"::"+selector();}
   }
 
   @SuppressWarnings("serial") public static class 
@@ -132,7 +132,7 @@ public class RefactorErrors{
     FluentSetter<PathUnfit>{
     List<ast.Ast.C> path;
     public PathUnfit(List<ast.Ast.C> path){this.path=path;}
-    public String path(){return PathAux.as42Path(path);}
+    public List<ast.Ast.C> path(){return path;}
     }
   
   @SuppressWarnings("serial") public static class 

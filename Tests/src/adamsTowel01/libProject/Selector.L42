@@ -1,49 +1,33 @@
-{ implements Concept.ToS Concept.Equals, Concept.Classable//@_private
-  class method mut This _private(Library _binaryRepr)
-  read method Library _binaryRepr()
-
-  ParseFail:{}//will be fixed in adam2
-  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
+{ 
+//@plugin  toFix 
+//@pluginPart ast.Ast$MethodSelector
+implements Concept.Base
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr
   
-  refine class method
-  read This cast(read Concept.Classable that){
-    with that (on read This return that)
-    error GetMyName.classCastError(that,classObj:This)
+  class method
+  This parse(S that)
+
+  class method
+  This from(Concept.ToS string) {
+    return This.parse(string.toS())
+    catch error Any error ParseFail"The provided string is not a valid selector: "[string]""
     }
-  refine class method
-  mut This #cast(mut Concept.Classable that){
-    with that (on mut This return that)
-    error GetMyName.classCastError(that,classObj:This)
-    }
-  refine read method class This class() This
-  method readableName()GetMyName(This)
+  ParseFail:Message.$<><{ implements Guard.ParseFail}
 
   class method
-  This fromS(Concept.ToS that)
-    This.#from(binaryRepr: that.toS().#binaryRepr())
-
-  class method This #from(S.SBuilder builder)
-    This.#from(binaryRepr: builder.#binaryRepr())
-
-  class method mut S.SBuilder #builder() S.SBuilder.empty()
-
+  This #from(S.SBuilder builder)
+    This.from(string:S.#from(binaryRepr: builder.#binaryRepr()))
   class method
-  mut This #from(Library binaryRepr) (
-    use SafeOperators
-      check ifInvalidDo(selector:binaryRepr)
-      error This.parseError(S.#from(binaryRepr: binaryRepr))
-    This._private(_binaryRepr:binaryRepr)
-    )
-  class method
-  Any parseError(S that)
-    S"Selector.UnsatisfactoryErrorToAvoidCycle, replace in AdamT2"
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
 
   class method
   This from(S name,Strings names) {
-    if names.isEmpty() (return This.fromS(name++S"()"))
+    if names.isEmpty() (return This.from(string:name++S"()"))
     pars=S"("[with n in names.vals() (use[n++S","])]""
-    return This.fromS(name++pars(end:pars.size()-1Size)++S")")
-    //This.fromS(name[pars(end:#-1Size)]")")
+    return This.from(string:name[pars(end:\-1Size)]")")
     }
   method S nameAsField() {
     n=this.name()
@@ -53,22 +37,6 @@
   method S prefixAsField() {
     if this.toS()(0Size)==S"#" (return S"#")
     return S""
-    }
-  read method Library #binaryRepr() this._binaryRepr()
-
-
-  method toS() S.#from(binaryRepr: this._binaryRepr())
-
-  read method
-  Bool equals(read This that) {
-    use Alu
-      check ifStringEqualDo(s1:this.#binaryRepr(),s2:that.#binaryRepr())
-      return Bool.true()
-    return Bool.false()
-    }
-  method ==(that){
-    with that (on read This return this.equals(that))
-    return Bool.false()
     }
 
   method
@@ -82,38 +50,20 @@
     return S"_$_"<this.name()
     }
   method
-  S name() (
-    str=this.toS()
-    str(end:str.indexOfLeft(val:S"("))
-    )
+  S nameToS()
+  method
+  S name() this.nameToS()
 
   method
-  Strings names(){
-    var S str=this.toS()
-    str:=str(start:str.indexOfLeft(val:S"(")+1Size, end:str.size()-1Size)++S","
-    // from foo(a,b,c) to a,b,c,
-    result=Strings.empty()
-    if str==S"," (return result)
-    while str!=S"" (
-      pos=str.indexOfLeft(val:S",")
-      result.add(right:str(end:pos))
-      str:=str(start:pos+1Size)
-      )
-    return result
-  }
+  Size nameSize()
+  method
+  S name(Size that)
+  method
+  Strings names()
+    Strings[with i in 0Size.vals(upTo:this.nameSize()) (use[this.name(i)])]
 
   class method
-  Selector fresh(Selector that) {
-    var S name=that.name()
-    if name==S"" (name:= S"fresh")
-    fName=SafeOperators.freshName(name)
-    var S tot=fName++S"("
-    with n in that.names().vals() (
-      tot++=n++S","
-      )
-    tot:=tot(start:0Size end:tot.size()-1Size)++S")"
-    return Selector.fromS(tot)
-    }
+  This fresh(This that)
 
 
     class method //will be private
@@ -126,8 +76,6 @@
     method
     This with(S prefix) {
       S newName=prefix++This.leftAsASCIIUpperCase(this.name())
-      return Selector.from(name:newName, names:this.names())
+      return This.from(name:newName, names:this.names())
       }
-
-  //we still need to add check validity, and fields name, list parameters, and ways to add/remove parameters
   }

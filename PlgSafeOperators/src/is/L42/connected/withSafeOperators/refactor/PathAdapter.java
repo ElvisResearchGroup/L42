@@ -9,6 +9,11 @@ import ast.PathAux;
 import auxiliaryGrammar.Functions;
 import facade.L42;
 public class PathAdapter {
+
+public static
+String name(List<Ast.C> that, int index){
+  return that.get(index).toString();
+  }
 public static 
 List<Ast.C> concat(List<Ast.C> that,List<Ast.C> and){
   List<Ast.C> res=new ArrayList<>(that);

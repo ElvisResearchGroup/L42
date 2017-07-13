@@ -36,7 +36,7 @@
   immK$:=Refactor.Redirect(Path"$0" toType:otherK.returnType())<><immK$
   with ti in otherK.parameterTypes().vals() (
     count+=1Size
-    immK$:=Refactor.Redirect(Path.fromS(S"$"[count]"") toType:ti)<><immK$
+    immK$:=Refactor.Redirect(Path.from(string:S"$"[count]"") toType:ti)<><immK$
     )
   r=Use[that]<><immK$
   error on MetaGuard

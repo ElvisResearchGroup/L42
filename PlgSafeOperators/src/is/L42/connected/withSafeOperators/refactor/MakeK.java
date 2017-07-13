@@ -32,11 +32,11 @@ import tools.LambdaExceptionUtil;
 import tools.LambdaExceptionUtil.Function_WithExceptions;
 public class MakeK {
   public static ClassB makeKS(ClassB that,String path,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
-    return makeK(that,PathAux.parseValidCs(path),fwd);
+    return makeKJ(that,PathAux.parseValidCs(path),fwd);
     }
 
 
-  public static ClassB makeK(ClassB that,List<Ast.C> path,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
+  public static ClassB makeKJ(ClassB that,List<Ast.C> path,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
     ClassB lPath=that.getClassB(path);

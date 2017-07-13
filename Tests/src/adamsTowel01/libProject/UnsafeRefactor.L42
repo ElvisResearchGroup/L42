@@ -20,7 +20,7 @@ RenameClass:{
     error {/*renameClass(Library that,S nameSrc,S nameDest)*/}
 
   class method
-  Library renameClass(Library that,S nameSrc,S nameDest)
+  Library renameClassS(Library that,S nameSrc,S nameDest)
   }
 Redirect:{
   //@plugin  toFix 
@@ -29,12 +29,12 @@ Redirect:{
     error {/*redirect(Library that,S src,class Any dest)*/}
 
   class method
-  Library redirect(Library that,S src,class Any dest)
+  Library redirectS(Library that,S src,class Any dest)
   }
 This$er:{
   class method
   Library <><(Library that)
-    RenameClass.renameClass(that,nameSrc:S"This$",nameDest:S"This")
+    RenameClass.renameClassS(that,nameSrc:S"This$",nameDest:S"This")
   }
 MiniDataTrait:{class method Library(){
   implements Concept.Base

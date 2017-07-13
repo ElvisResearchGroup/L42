@@ -16,7 +16,7 @@ Library equalsTrait(Introspection.NestedClass that) {
 
   //accumulation
   acc=Use[with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
-    fSel=Selector.fromS(fn++S"()")
+    fSel=Selector.from(string:fn++S"()")
     // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
     needClass=ft.isInterface()
     var Library action=Refactor.Tools.specializeField(selector:fSel, type:ft,

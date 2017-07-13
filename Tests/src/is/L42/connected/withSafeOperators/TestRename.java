@@ -79,11 +79,11 @@ public class TestRename {
       MethodSelector ms2 = MethodSelector.parse(_ms2);
       if (!isError) {
         ClassB expected = getClassB(true,null,_expected);
-        ClassB res = new RenameMethods().addRename(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
+        ClassB res = new RenameMethods().addRenameJ(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
         TestHelper.assertEqualExp(expected, res);
       } else {
         try {
-          new RenameMethods().addRename(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
+          new RenameMethods().addRenameJ(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
           fail("error expected");
         } catch (PathUnfit|SelectorUnfit|MethodClash|ClassUnfit err) {
           assertEquals(_expected, err.getClass().getName());

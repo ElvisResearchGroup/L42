@@ -26,7 +26,7 @@ Library that,S prefix,Path path, Location.Method.List ms) {
   catch exception Location.NotAvailable return SrcDests[]
   return SrcDests[with meth in ms.vals() (
     if this.needRename(thatI,meth:meth) (
-      destSel=Selector.fromS(prefix++meth.selector().toS())
+      destSel=Selector.from(string:prefix++meth.selector().toS())
       use[SrcDest(path:path,src:meth.selector(),dest:destSel)]
       ))]
   }

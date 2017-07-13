@@ -90,37 +90,37 @@ public class RenameMethods{
   public RenameMethods(List<CsMxMx> commands){
     this.commands=commands;
     }
-  public RenameMethods addRename(List<Ast.C> cs, MethodSelector ms1,MethodSelector ms2){
+  public RenameMethods addRenameJ(List<Ast.C> cs, MethodSelector ms1,MethodSelector ms2){
     return new RenameMethods(Functions.push(commands, new CsMxMx(cs,false,ms1,ms2)));
     }
-  public RenameMethods addHide(List<Ast.C> cs, MethodSelector ms){
+  public RenameMethods addHideJ(List<Ast.C> cs, MethodSelector ms){
     return new RenameMethods(Functions.push(commands,new CsMxMx(cs,false,ms,null)));
     }
-  public RenameMethods addClose(List<Ast.C> cs){
+  public RenameMethods addCloseJ(List<Ast.C> cs){
     return new RenameMethods(Functions.push(commands,new CsMxMx(cs,false,null,null)));
     }
-  public RenameMethods addAbstractAlias(List<Ast.C> cs, MethodSelector ms1,MethodSelector ms2){
+  public RenameMethods addAbstractAliasJ(List<Ast.C> cs, MethodSelector ms1,MethodSelector ms2){
     return new RenameMethods(Functions.push(commands, new CsMxMx(cs,true,ms1,ms2)));
     }
-  public RenameMethods addAbstract(List<Ast.C> cs, MethodSelector ms){
+  public RenameMethods addAbstractJ(List<Ast.C> cs, MethodSelector ms){
     return new RenameMethods(Functions.push(commands,new CsMxMx(cs,true,ms,null)));
     }
 
   
 public RenameMethods addRenameS(String cs, String ms1,String ms2){
-  return addRename(PathAux.parseValidCs(cs),MethodSelector.parse(ms1),MethodSelector.parse(ms2));
+  return addRenameJ(PathAux.parseValidCs(cs),MethodSelector.parse(ms1),MethodSelector.parse(ms2));
   }
 public RenameMethods addHideS(String cs, String ms){
-  return addHide(PathAux.parseValidCs(cs),MethodSelector.parse(ms));
+  return addHideJ(PathAux.parseValidCs(cs),MethodSelector.parse(ms));
   }
 public RenameMethods addCloseS(String cs){
-  return addClose(PathAux.parseValidCs(cs));
+  return addCloseJ(PathAux.parseValidCs(cs));
   }
 public RenameMethods addAbstractAliasS(String cs, String ms1,String ms2){
-  return addAbstractAlias(PathAux.parseValidCs(cs),MethodSelector.parse(ms1),MethodSelector.parse(ms2));
+  return addAbstractAliasJ(PathAux.parseValidCs(cs),MethodSelector.parse(ms1),MethodSelector.parse(ms2));
   }
 public RenameMethods addAbstractS(String cs, String ms){
-  return addAbstract(PathAux.parseValidCs(cs),MethodSelector.parse(ms));
+  return addAbstractJ(PathAux.parseValidCs(cs),MethodSelector.parse(ms));
   }
 
   

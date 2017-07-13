@@ -53,7 +53,7 @@ import tools.Map;
 //empty scheleton
 public class Plugin implements PluginType{
     
-    //we keep it for testing in testAux
+   /* //we keep it for testing in testAux
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Mcompose£xleft£xright(Object _left,Object _right) {
       ClassB left=ensureExtractClassB(_left);
@@ -62,7 +62,7 @@ public class Plugin implements PluginType{
       catch (MethodClash | SubtleSubtypeViolation | ClassClash e) {
         throw new Error(e);
         }
-      }
+      }*/
 /*    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MrenameClass£xthat£xsrc£xdest(Object _that,Object _src,Object _dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
       ClassB that=ensureExtractClassB(_that);
@@ -91,7 +91,7 @@ public class Plugin implements PluginType{
       return SumMethods.sumMethods(that,path,src1,src2,dest,name);
       }*/
     //we keep it for testing in testAux
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
+   /* @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.TypeAny})
     public Object Mredirect£xthat£xsrc£xdest(Object _that,Object _src,Object _dest){
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> src=PathAux.parseValidCs(ensureExtractStringU(_src));
@@ -103,7 +103,7 @@ public class Plugin implements PluginType{
       catch (ClassUnfit | IncoherentMapping | MethodClash | PathUnfit e) {
         throw new Error(e);
         }
-      }
+      }*/
     /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MremoveImplementation£xthat£xpath(Object _that,Object _path){
       ClassB that=ensureExtractClassB(_that);
@@ -253,14 +253,14 @@ public class Plugin implements PluginType{
       return RefreshUniqueNames.refresh(that);
     }
 
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
+    /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MfreshName£xthat(Object _s){
       String name=ensureExtractStringU(_s);
       if (name.isEmpty()){name="fresh";}
       return Functions.freshName(name,L42.usedNames);
       //good for both selectors and class names
       //good for current operators, but for tomorrow ones?
-    }
+    }*/
 
    @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MmakeMethod£xthat£xpath£xselector£xmdfs£xexceptionN(Object _lib,Object _path,Object _selector, Object _mdfs, Object _execptionN){
@@ -274,7 +274,7 @@ public class Plugin implements PluginType{
     @ActionType({ActionType.NormType.Library,ActionType.NormType.ImmAny,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MliftValue£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
       ClassB lib=ensureExtractClassB(_lib);
-      MethodSelector selector=MethodSelector.parse(ensureExtractStringU(_selector));
+      MethodSelector selector=(MethodSelector)_selector;
       ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
       val=From.from(val,Path.outer(1));
       return LiftValue.liftValue(val,  selector, lib);

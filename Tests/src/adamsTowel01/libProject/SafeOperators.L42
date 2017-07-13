@@ -3,11 +3,6 @@
 
 
   class method
-  S freshName(S that) S.#from(binaryRepr: use This
-      check freshName(that.#binaryRepr())
-      error System.Guard.PluginFailure"SafeOperators.freshName(that)"
-    )
-  class method
   Library makeMethod(Library that,Path path,Selector selector, S mdfs, Size exceptionN)
       use This
       check makeMethod(that,

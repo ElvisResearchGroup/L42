@@ -26,7 +26,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
     }
   public boolean isAbstract(){return !inner.get_inner().isPresent();}
   public boolean isRefine(){return inner.getMt().isRefine();}
-  public String  selector(){return inner.getMs().toString();}
+  public Ast.MethodSelector  selector(){return inner.getMs();}
   public String toS() {return sugarVisitors.ToFormattedText.of(this.inner);}
   @Override public Doc doc() {return new Doc(inner.getDoc(),this);}
 

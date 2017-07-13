@@ -82,7 +82,7 @@ NestedClassUnavailable:RecordWrapper<><{(Path path,Bool isPrivate) implements Me
 MethodUnavailable:RecordWrapper<><{(Path path,Selector selector,Bool isPrivate) implements MemberUnavailable
   method toS() This.readableName()++S"[path:"[this.path()]", selector:"[this.selector()]",isPrivate:"[this.isPrivate()]"]"
   class method This (Introspection_Record.Record record, Library lib)
-    This(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.fromS(record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
+    This(path:Path.fromDocInternalizedS(record"Path"),selector:Selector.from(string:record"Selector"),isPrivate:Bool.fromS(record"IsPrivate"))
   class method S libName()S"MemberUnavailable"
   }
 }

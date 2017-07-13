@@ -84,6 +84,9 @@ class CollectUsages{
 }
 
 public class AbstractClass {
+  public static ClassB toAbstractJ(PData p,ClassB cb, List<Ast.C> path) throws PathUnfit, PrivacyCoupuled{
+    return toAbstract(p.p,cb,path);
+    }
   public static ClassB toAbstractS(PData p,ClassB cb, String path) throws PathUnfit, PrivacyCoupuled{
     return toAbstract(p.p,cb,PathAux.parseValidCs(path));
     }
