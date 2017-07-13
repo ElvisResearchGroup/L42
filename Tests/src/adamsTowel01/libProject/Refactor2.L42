@@ -210,16 +210,16 @@ PlgToAbstract:{
     error X"toAbstractSelector"
 
   class method
-  Library toAbstractPathDest(Library that,Path path,Selector src,Selector dest)
+  Library toAbstractPathDestJ(Library that,Path path,Selector src,Selector dest)
   exception SelectorUnfit, PathUnfit, MethodClash
   class method
-  Library toAbstractPath(Library that,Path path,Selector src)
+  Library toAbstractPathJ(Library that,Path path,Selector src)
   exception SelectorUnfit, PathUnfit
   class method
-  Library toAbstractDest(Library that,Selector src,Selector dest)
+  Library toAbstractDestJ(Library that,Selector src,Selector dest)
   exception SelectorUnfit,  MethodClash
   class method
-  Library toAbstract(Library that,Selector src)
+  Library toAbstractJ(Library that,Selector src)
   exception SelectorUnfit
   }
 //1
@@ -228,7 +228,7 @@ ToAbstract:{
   class method This (Selector src)
   method Library <><(Library that)
   exception SelectorUnfit
-    PlgToAbstract.toAbstract(
+    PlgToAbstract.toAbstractJ(
       that,src:this.src())
   }
 class method
@@ -240,7 +240,7 @@ ToAbstractDest:{
   class method This (Selector src,Selector dest)
   method Library <><(Library that)
   exception SelectorUnfit,MethodClash
-    PlgToAbstract.toAbstractDest(
+    PlgToAbstract.toAbstractDestJ(
       that,src:this.src() dest:this.dest())
   }
 class method
@@ -252,7 +252,7 @@ ToAbstractPath:{
   class method This (Path path,Selector src)
   method Library <><(Library that)
   exception SelectorUnfit, PathUnfit
-    PlgToAbstract.toAbstractPath(
+    PlgToAbstract.toAbstractPathJ(
       that,path:this.path(),src:this.src())
   }
 class method
@@ -264,7 +264,7 @@ ToAbstractPathDest:{
   class method This (Path path,Selector src,Selector dest)
   method Library <><(Library that)
   exception SelectorUnfit, PathUnfit, MethodClash
-    PlgToAbstract.toAbstractPathDest(
+    PlgToAbstract.toAbstractPathDestJ(
       that,path:this.path(),src:this.src(),dest:this.dest())
   }
 class method
@@ -414,7 +414,7 @@ PlgSumMethods:{
   //@pluginPart is.L42.connected.withSafeOperators.refactor.SumMethods
   class method Void #pluginUnresponsive(Library binaryRepr) 
     error {/*redirect(that,src,dest)*/}
-  class method Library sumMethods(
+  class method Library sumMethodsJ(
     Library lib, Path path,Selector src1,Selector src2,Selector dest,S name)
   exception MethodClash, PathUnfit, SelectorUnfit
   }
@@ -429,7 +429,7 @@ SumMethods:{
     method
     Library <>< (Library that)
     exception  MethodClash, PathUnfit, SelectorUnfit 
-      PlgSumMethods.sumMethods(lib:that,path:this.of() src1:this.that(),src2:this.and(), dest:this.into(),name:this.over())
+      PlgSumMethods.sumMethodsJ(lib:that,path:this.of() src1:this.that(),src2:this.and(), dest:this.into(),name:this.over())
     }
 class method
 SumMethods sumMethods(Selector that,Selector and, Path of, S over, Selector into)

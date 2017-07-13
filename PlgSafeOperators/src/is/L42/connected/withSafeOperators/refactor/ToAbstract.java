@@ -26,17 +26,17 @@ import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
 public class ToAbstract {
-public static ClassB toAbstractPath(PData pData,ClassB cb, String path,String sel) throws SelectorUnfit, PathUnfit, MethodClash{
-  return toAbstractAux(pData.p,cb,PathAux.parseValidCs(path),MethodSelector.parse(sel),null);
+public static ClassB toAbstractPathJ(PData pData,ClassB cb, List<Ast.C> path,MethodSelector sel) throws SelectorUnfit, PathUnfit, MethodClash{
+  return toAbstractAux(pData.p,cb,path,sel,null);
   }
-public static ClassB toAbstractPathDest(PData pData,ClassB cb, String path,String sel,String newSel) throws SelectorUnfit, PathUnfit, MethodClash{
-  return toAbstractAux(pData.p,cb,PathAux.parseValidCs(path),MethodSelector.parse(sel),MethodSelector.parse(newSel));
+public static ClassB toAbstractPathDestJ(PData pData,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorUnfit, PathUnfit, MethodClash{
+  return toAbstractAux(pData.p,cb,path,sel,newSel);
   }
-public static ClassB toAbstract(PData pData,ClassB cb,String sel) throws SelectorUnfit, PathUnfit, MethodClash{
-  return toAbstractAux(pData.p,cb,Collections.emptyList(),MethodSelector.parse(sel),null);
+public static ClassB toAbstractJ(PData pData,ClassB cb,MethodSelector sel) throws SelectorUnfit, PathUnfit, MethodClash{
+  return toAbstractAux(pData.p,cb,Collections.emptyList(),sel,null);
   }
-public static ClassB toAbstractDest(PData pData,ClassB cb, String sel,String newSel) throws SelectorUnfit, PathUnfit, MethodClash{
-  return toAbstractAux(pData.p,cb,Collections.emptyList(),MethodSelector.parse(sel),MethodSelector.parse(newSel));
+public static ClassB toAbstractDestJ(PData pData,ClassB cb, MethodSelector sel,MethodSelector newSel) throws SelectorUnfit, PathUnfit, MethodClash{
+  return toAbstractAux(pData.p,cb,Collections.emptyList(),sel,newSel);
   }
 
 public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodSelector sel,MethodSelector newSel) throws SelectorUnfit, PathUnfit, MethodClash{

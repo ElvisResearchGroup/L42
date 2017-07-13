@@ -31,7 +31,10 @@ import tools.Assertions;
 import java.util.*;
 import java.util.stream.Collectors;
 public class SumMethods {
-  public static ClassB sumMethods(PData pData,ClassB lib, String path,String m1,String m2,String mRes,String name) throws MethodClash, PathUnfit, SelectorUnfit{
+  public static ClassB sumMethodsJ(PData pData,ClassB lib, List<Ast.C> path,MethodSelector m1,MethodSelector m2,MethodSelector mRes,String name) throws MethodClash, PathUnfit, SelectorUnfit{
+    return sumMethodsP(pData.p,lib,path,m1,m2,mRes,name);
+    }
+  public static ClassB sumMethodsS(PData pData,ClassB lib, String path,String m1,String m2,String mRes,String name) throws MethodClash, PathUnfit, SelectorUnfit{
     return sumMethodsP(pData.p,lib,PathAux.parseValidCs(path),MethodSelector.parse(m1),MethodSelector.parse(m2),MethodSelector.parse(mRes),name);
     }
   public static ClassB sumMethodsP(Program p,ClassB lib, List<Ast.C> path, MethodSelector m1,MethodSelector m2,MethodSelector mRes,String name) throws MethodClash, PathUnfit, SelectorUnfit{

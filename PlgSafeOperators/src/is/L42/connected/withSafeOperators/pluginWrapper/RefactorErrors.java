@@ -142,7 +142,7 @@ public class RefactorErrors{
     public MethodClash(Method left,Method right){this.left=left;this.right=right;}
     public Method left(){return left;}
     public Method right(){return right;}
-    public String toString(){return "MethodClash: "+left.location().path()+"::"
+    public String toString(){return "MethodClash: "+PathAux.as42Path(left.location().path())+"::"
       +left.selector()+"->"
       +right.selector()+"\n"
       +"Left: "+left.formatOrigins()+"\n"     

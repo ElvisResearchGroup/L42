@@ -16,7 +16,7 @@ exception InvalidAction{
   src=this.that() //src selector of the method
   dest=this.deprecated()//dest selector for the copy of the method
   p=this.of()// path of the method
-  fresh=Selector.fresh(Selector"#apply(that)")// will be the name of the action
+  fresh=Selector.fresh(like:Selector"#apply(that)")// will be the name of the action
 
   var Library acc=that
   acc:=Refactor2.toAbstract(selector:src of:p into:dest)<><acc

@@ -13733,9 +13733,9 @@ This1.Strings names() This1.Strings.#from(seqBuilder:(
   b
   ))
 class method 
-This0 fresh(This0 that) This0.#from(binaryRepr:(
-  Library res=use This0 check fresh(_1_ast%Ast$MethodSelector:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: ast.Ast$MethodSelector\u000amethod name: fresh(that)\u000ajava method: ast.Ast$MethodSelector.fresh(_1_ast%Ast$MethodSelector)\u000a
+This0 fresh(This0 like) This0.#from(binaryRepr:(
+  Library res=use This0 check fresh(_1_ast%Ast$MethodSelector:like.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: ast.Ast$MethodSelector\u000amethod name: fresh(like)\u000ajava method: ast.Ast$MethodSelector.fresh(_1_ast%Ast$MethodSelector)\u000a
 */})
   res
   ))
@@ -36574,9 +36574,9 @@ Void #pluginUnresponsive(Library binaryRepr) error This2.X.#from(builder:(
   b
   ))
 class method 
-Library toAbstractPathDest(Library that, This2.Path path, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash (
-  Library res=use This0 check #toAbstractPathDest(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:path.#binaryRepr(), _3_java%lang%String:src.#binaryRepr(), _4_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractPathDest(that,path,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractPathDest(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String,_4_java%lang%String)\u000a
+Library toAbstractPathDestJ(Library that, This2.Path path, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash (
+  Library res=use This0 check #toAbstractPathDestJ(_1_ast%ExpCore$ClassB:that, _2_java%util%List:path.#binaryRepr(), _3_ast%Ast$MethodSelector:src.#binaryRepr(), _4_ast%Ast$MethodSelector:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractPathDestJ(that,path,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractPathDestJ(_1_ast%ExpCore$ClassB,_2_java%util%List,_3_ast%Ast$MethodSelector,_4_ast%Ast$MethodSelector)\u000a
 */})
   
   catch error Library x (
@@ -36589,9 +36589,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
   res
   )
 class method 
-Library toAbstractPath(Library that, This2.Path path, This2.Selector src) exception This1.SelectorUnfit, This1.PathUnfit (
-  Library res=use This0 check #toAbstractPath(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:path.#binaryRepr(), _3_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractPath(that,path,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractPath(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String)\u000a
+Library toAbstractPathJ(Library that, This2.Path path, This2.Selector src) exception This1.SelectorUnfit, This1.PathUnfit (
+  Library res=use This0 check #toAbstractPathJ(_1_ast%ExpCore$ClassB:that, _2_java%util%List:path.#binaryRepr(), _3_ast%Ast$MethodSelector:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractPathJ(that,path,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractPathJ(_1_ast%ExpCore$ClassB,_2_java%util%List,_3_ast%Ast$MethodSelector)\u000a
 */})
   
   catch error Library x (
@@ -36603,9 +36603,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
   res
   )
 class method 
-Library toAbstractDest(Library that, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.MethodClash (
-  Library res=use This0 check #toAbstractDest(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_java%lang%String:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractDest(that,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractDest(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String)\u000a
+Library toAbstractDestJ(Library that, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.MethodClash (
+  Library res=use This0 check #toAbstractDestJ(_1_ast%ExpCore$ClassB:that, _2_ast%Ast$MethodSelector:src.#binaryRepr(), _3_ast%Ast$MethodSelector:dest.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractDestJ(that,src,dest)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractDestJ(_1_ast%ExpCore$ClassB,_2_ast%Ast$MethodSelector,_3_ast%Ast$MethodSelector)\u000a
 */})
   
   catch error Library x (
@@ -36617,9 +36617,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
   res
   )
 class method 
-Library toAbstract(Library that, This2.Selector src) exception This1.SelectorUnfit (
-  Library res=use This0 check #toAbstract(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstract(that,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstract(_1_ast%ExpCore$ClassB,_2_java%lang%String)\u000a
+Library toAbstractJ(Library that, This2.Selector src) exception This1.SelectorUnfit (
+  Library res=use This0 check #toAbstractJ(_1_ast%ExpCore$ClassB:that, _2_ast%Ast$MethodSelector:src.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.ToAbstract\u000amethod name: toAbstractJ(that,src)\u000ajava method: is.L42.connected.withSafeOperators.refactor.ToAbstract.#toAbstractJ(_1_ast%ExpCore$ClassB,_2_ast%Ast$MethodSelector)\u000a
 */})
   
   catch error Library x (
@@ -36635,7 +36635,7 @@ This2.Selector src()
 class method 
 This0 #apply(This2.Selector src) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit This1.PlgToAbstract.toAbstract(that:that, src:this.src())}
+Library #leftrightleft(Library that) exception This1.SelectorUnfit This1.PlgToAbstract.toAbstractJ(that:that, src:this.src())}
 ToAbstractDest: {
 method 
 This2.Selector src() 
@@ -36644,7 +36644,7 @@ This2.Selector dest()
 class method 
 This0 #apply(This2.Selector src, This2.Selector dest) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.MethodClash This1.PlgToAbstract.toAbstractDest(that:that, src:this.src(), dest:this.dest())}
+Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.MethodClash This1.PlgToAbstract.toAbstractDestJ(that:that, src:this.src(), dest:this.dest())}
 ToAbstractPath: {
 method 
 This2.Path path() 
@@ -36653,7 +36653,7 @@ This2.Selector src()
 class method 
 This0 #apply(This2.Path path, This2.Selector src) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.PathUnfit This1.PlgToAbstract.toAbstractPath(that:that, path:this.path(), src:this.src())}
+Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.PathUnfit This1.PlgToAbstract.toAbstractPathJ(that:that, path:this.path(), src:this.src())}
 ToAbstractPathDest: {
 method 
 This2.Path path() 
@@ -36664,7 +36664,7 @@ This2.Selector dest()
 class method 
 This0 #apply(This2.Path path, This2.Selector src, This2.Selector dest) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash This1.PlgToAbstract.toAbstractPathDest(that:that, path:this.path(), src:this.src(), dest:this.dest())}
+Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash This1.PlgToAbstract.toAbstractPathDestJ(that:that, path:this.path(), src:this.src(), dest:this.dest())}
 PlgRedirect: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
 */
@@ -37231,9 +37231,9 @@ Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof
 class method 
 Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(that,src,dest)*/}
 class method 
-Library sumMethods(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit (
-  Library res=use This0 check #sumMethods(_1_ast%ExpCore$ClassB:lib, _2_java%lang%String:path.#binaryRepr(), _3_java%lang%String:src1.#binaryRepr(), _4_java%lang%String:src2.#binaryRepr(), _5_java%lang%String:dest.#binaryRepr(), _6_java%lang%String:name.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.SumMethods\u000amethod name: sumMethods(lib,path,src1,src2,dest,name)\u000ajava method: is.L42.connected.withSafeOperators.refactor.SumMethods.#sumMethods(_1_ast%ExpCore$ClassB,_2_java%lang%String,_3_java%lang%String,_4_java%lang%String,_5_java%lang%String,_6_java%lang%String)\u000a
+Library sumMethodsJ(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit (
+  Library res=use This0 check #sumMethodsJ(_1_ast%ExpCore$ClassB:lib, _2_java%util%List:path.#binaryRepr(), _3_ast%Ast$MethodSelector:src1.#binaryRepr(), _4_ast%Ast$MethodSelector:src2.#binaryRepr(), _5_ast%Ast$MethodSelector:dest.#binaryRepr(), _6_java%lang%String:name.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
+plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refactor.SumMethods\u000amethod name: sumMethodsJ(lib,path,src1,src2,dest,name)\u000ajava method: is.L42.connected.withSafeOperators.refactor.SumMethods.#sumMethodsJ(_1_ast%ExpCore$ClassB,_2_java%util%List,_3_ast%Ast$MethodSelector,_4_ast%Ast$MethodSelector,_5_ast%Ast$MethodSelector,_6_java%lang%String)\u000a
 */})
   
   catch error Library x (
@@ -37269,7 +37269,7 @@ This2.Selector into()
 class method 
 This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector into) 
 method 
-Library #leftrightleft(Library that) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit This1.PlgSumMethods.sumMethods(lib:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.into(), name:this.over())}}
+Library #leftrightleft(Library that) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit This1.PlgSumMethods.sumMethodsJ(lib:that, path:this.of(), src1:this.that(), src2:this.and(), dest:this.into(), name:this.over())}}
 K: {
 class method 
 Library #leftrightleft(Library that) exception This1.Refactor2.ClassUnfit This0.PlgK.makeKJ(that:that, path:This1.Path.#from(builder:(

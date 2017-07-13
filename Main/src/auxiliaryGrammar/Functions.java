@@ -222,7 +222,7 @@ public static String freshName(String pathR, Set<String> usedNames) {
 
 
 public static List<Ast.C> freshPathName(List<Ast.C> pathR, Set<String> usedNames) {
-  if(pathR.isEmpty()){return Collections.singletonList(new Ast.C(freshName("This",usedNames),-1));}
+  if(pathR.isEmpty()){return Collections.singletonList(new Ast.C(freshName("This_",usedNames),-1));}
   Ast.C last=pathR.get(pathR.size()-1);
   if (last.isUnique()){
     last=last.withUniqueNum(L42.freshPrivate());

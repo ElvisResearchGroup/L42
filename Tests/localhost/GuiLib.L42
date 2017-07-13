@@ -785,11 +785,15 @@ This1.Bool isEmpty()
 method 
 This0 val(This1.Size that) 
 method 
+This1.Size #default#val(Void that) 
+method 
 This0 left() 
 method 
 This0 right() 
 method 
 This0 with(This1.Size that, This0 val) 
+method 
+This1.Size #default#with(Void that) 
 method 
 This0 withLeft(This0 that) 
 method 
@@ -797,11 +801,15 @@ This0 withRight(This0 that)
 method 
 This0 withAlso(This1.Size that, This0 val) 
 method 
+This1.Size #default#withAlso(Void that) 
+method 
 This0 withAlsoLeft(This0 that) 
 method 
 This0 withAlsoRight(This0 that) 
 method 
 This0 without(This1.Size index) 
+method 
+This1.Size #default#without(Void index) 
 method 
 This0 without(This1.Size index, This1.Size skipNum) 
 method 
@@ -818,6 +826,12 @@ method
 This0 #apply(This1.Size start) 
 method 
 This0 #apply(This1.Size end) 
+method 
+This1.Size #default##apply(Void that) 
+method 
+This1.Size #default##apply(Void end) 
+method 
+This1.Size #default##apply(Void start) 
 method 
 This1.Size size() 
 method 
@@ -2318,63 +2332,90 @@ method
 Library #binaryRepr() 
 class method /* if you do not implement it, it is a constructor?
 may become an interface Concept.Parsable method?
-*/This0 fromS(This1.Concept.ToS that) 
+*/This0 from(This1.Concept.ToS string) 
 class method 
 This0 #from(This1.S.SBuilder builder) 
 class method 
 mut This1.S.SBuilder #builder() }
-Path: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
+Path: {/*@plugin is.L42.connected.withSafeOperators
+@pluginPart java.util.List
+*/implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
 */
-class method 
-mut This0 _private(Library _binaryRepr) 
-read method 
-Library _binaryRepr() 
-refine class method 
-read This0 cast(read This1.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.Bool is(class Any subtype) 
-refine read method 
-class This0 class() 
-refine class method 
-This1.S readableName() 
-class method 
-This0 fromDocInternalizedS(This1.S that) 
-class method 
-This0 fromS(This1.Concept.ToS that) 
-class method 
-This0 #from(This1.S.SBuilder builder) 
-class method 
-mut This1.S.SBuilder #builder() 
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
 Library #binaryRepr() 
-refine read method 
-This1.S toS() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This1.Bool equals(read This0 that) 
-refine read method 
-This1.Bool #equalequal(read Any that) 
+class method 
+Library #pluginUnresponsive(Library binaryRepr) 
+class method 
+This0 from(This1.Concept.ToS string) 
+class method 
+This0 #from(This1.S.SBuilder builder) 
+class method 
+mut This1.S.SBuilder #builder() 
 method 
-This0 #plusplus(This0 that) 
-method 
-mut This1.Strings names() 
-method 
-This1.Bool isUnique() 
+This1.Strings names() 
 class method 
 This0 from(read This1.Strings names) 
 class method 
-This0 fresh(This1.S name) 
-class method 
 This0 fresh() 
+method 
+This1.S name(This1.Size that) 
+method 
+This1.Size nameSize() 
+refine read method 
+This1.S toS() 
+method 
+This0 #plusplus(This0 that) 
+method 
+This1.Bool isUnique() 
 class method 
-This0 fresh(This0 path) 
+This0 fresh(This0 like) 
+method 
+This1.Size size() 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
+refine read method 
+class This0 class() 
+refine class method 
+This1.S readableName() 
+refine class method 
+This1.Bool is(class Any subtype) 
+refine read method 
+This1.Bool #equalequal(read Any that) 
 class method 
 Any parseError(This1.S that) 
 class method 
 Any parseError(This1.S that, This1.Message cause) 
+PlgPath: {/*@plugin is.L42.connected.withSafeOperators
+@pluginPart is.L42.connected.withSafeOperators.refactor.PathAdapter
+*/
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 
+class method 
+Library #pluginUnresponsive(Library binaryRepr) 
+class method 
+This2.S name(This1 that, This2.Size index) 
+class method 
+This1 concat(This1 that, This1 and) 
+class method 
+This2.Bool isUnique(This1 that) 
+class method 
+This1 fresh(This1 that) 
+class method 
+This1 rawFromS(This2.S that) 
+class method 
+This2.S toS(read This1 that) }
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 mut method 
@@ -2434,14 +2475,56 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}}
-Selector: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
+Selector: {/*@plugin  toFix 
+@pluginPart ast.Ast$MethodSelector
+*/implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
 */
 class method 
-mut This0 _private(Library _binaryRepr) 
+mut This0 #from(Library binaryRepr) 
 read method 
-Library _binaryRepr() 
-refine class method 
-This1.Bool is(class Any subtype) 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 
+read method 
+This1.Bool equals(read This0 that) 
+class method 
+Library #pluginUnresponsive(Library binaryRepr) 
+class method 
+This0 parse(This1.S that) 
+class method 
+This0 from(This1.Concept.ToS string) 
+class method 
+This0 #from(This1.S.SBuilder builder) 
+class method 
+mut This1.S.SBuilder #builder() 
+class method 
+This0 from(This1.S name, This1.Strings names) 
+method 
+This1.S nameAsField() 
+method 
+This1.S prefixAsField() 
+method 
+This1.Bool isOperator() 
+method 
+This1.Bool isUnique() 
+method 
+This1.S nameToS() 
+method 
+This1.S name() 
+method 
+This1.Size nameSize() 
+method 
+This1.S name(This1.Size that) 
+method 
+This1.Strings names() 
+class method 
+This0 fresh(This0 like) 
+class method /*will be private
+*/This1.S leftAsASCIIUpperCase(This1.S that) 
+method 
+This0 with(This1.S prefix) 
+refine read method 
+This1.S toS() 
 refine class method 
 read This0 cast(read This1.Concept.Classable that) 
 refine class method 
@@ -2450,42 +2533,10 @@ refine read method
 class This0 class() 
 refine class method 
 This1.S readableName() 
-class method 
-This0 fromS(This1.Concept.ToS that) 
-class method 
-This0 #from(This1.S.SBuilder builder) 
-class method 
-mut This1.S.SBuilder #builder() 
-class method 
-mut This0 #from(Library binaryRepr) 
-class method 
-This0 from(This1.S name, This1.Strings names) 
-method 
-This1.S nameAsField() 
-method 
-This1.S prefixAsField() 
-read method 
-Library #binaryRepr() 
-refine read method 
-This1.S toS() 
-read method 
-This1.Bool equals(read This0 that) 
+refine class method 
+This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
-method 
-This1.Bool isOperator() 
-method 
-This1.Bool isUnique() 
-method 
-This1.S name() 
-method 
-This1.Strings names() 
-class method 
-This0 fresh(This0 that) 
-class method /*will be private
-*/This1.S leftAsASCIIUpperCase(This1.S that) 
-method 
-This0 with(This1.S prefix) 
 class method 
 Any parseError(This1.S that) 
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -5975,9 +6026,9 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Void #pluginUnresponsive(Library binaryRepr) 
 class method 
-Library renameClass(Library that, This2.Path src, This2.Path dest) exception This1.PathUnfit, This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation 
+Library renameClassJ(Library that, This2.Path src, This2.Path dest) exception This1.PathUnfit, This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation 
 class method 
-Library hideClass(Library that, This2.Path src) exception This1.PathUnfit, This1.ClassUnfit }
+Library hideClassJ(Library that, This2.Path src) exception This1.PathUnfit, This1.ClassUnfit }
 RenameClass: {
 method 
 This2.Path src() 
@@ -6006,7 +6057,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Void #pluginUnresponsive(Library binaryRepr) 
 class method 
-Library toAbstractS(Library that, This2.Path src) exception This1.PathUnfit, This1.PrivacyCoupuled }
+Library toAbstractJ(Library that, This2.Path src) exception This1.PathUnfit, This1.PrivacyCoupuled }
 ToAbstractClass: {
 mut method 
 This2.Path #src() 
@@ -6028,13 +6079,13 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Void #pluginUnresponsive(Library binaryRepr) 
 class method 
-Library toAbstractPathDest(Library that, This2.Path path, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash 
+Library toAbstractPathDestJ(Library that, This2.Path path, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash 
 class method 
-Library toAbstractPath(Library that, This2.Path path, This2.Selector src) exception This1.SelectorUnfit, This1.PathUnfit 
+Library toAbstractPathJ(Library that, This2.Path path, This2.Selector src) exception This1.SelectorUnfit, This1.PathUnfit 
 class method 
-Library toAbstractDest(Library that, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.MethodClash 
+Library toAbstractDestJ(Library that, This2.Selector src, This2.Selector dest) exception This1.SelectorUnfit, This1.MethodClash 
 class method 
-Library toAbstract(Library that, This2.Selector src) exception This1.SelectorUnfit }
+Library toAbstractJ(Library that, This2.Selector src) exception This1.SelectorUnfit }
 ToAbstract: {
 method 
 This2.Selector src() 
@@ -6083,7 +6134,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Void #pluginUnresponsive(Library binaryRepr) 
 class method 
-Library redirect(Library that, This2.Path src, class Any dest) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
+Library redirectJ(Library that, This2.Path src, class Any dest) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
 Redirect: {
 method 
 This2.Path src() 
@@ -6181,15 +6232,15 @@ This0 #apply()
 method 
 Library act(Library that) exception This1.PathUnfit, This1.SelectorUnfit, This1.MethodClash, This1.ClassUnfit 
 method 
-This0 addRenameS(This2.Path path, This2.Selector src, This2.Selector dest) 
+This0 addRenameJ(This2.Path path, This2.Selector src, This2.Selector dest) 
 method 
-This0 addHideS(This2.Path path, This2.Selector src) 
+This0 addHideJ(This2.Path path, This2.Selector src) 
 method 
-This0 addCloseS(This2.Path path) 
+This0 addCloseJ(This2.Path path) 
 method 
-This0 addAbstractS(This2.Path path, This2.Selector src) 
+This0 addAbstractJ(This2.Path path, This2.Selector src) 
 method 
-This0 addAbstractAliasS(This2.Path path, This2.Selector src, This2.Selector dest) }
+This0 addAbstractAliasJ(This2.Path path, This2.Selector src, This2.Selector dest) }
 Method: {
 mut method 
 Void inner(This1.PlgMethod that) 
@@ -6247,7 +6298,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Void #pluginUnresponsive(Library binaryRepr) 
 class method 
-Library sumMethods(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }
+Library sumMethodsJ(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }
 SumMethods: {
 mut method 
 This2.Selector #that() 
@@ -6808,7 +6859,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 class method 
-Library makeKS(Library that, This2.Path path, This2.Bool isFwd) 
+Library makeKJ(Library that, This2.Path path, This2.Bool isFwd) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) }}
 DeployTowel: {

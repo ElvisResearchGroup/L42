@@ -200,7 +200,7 @@ and A add a method name already present in B
 It can work without alpha renaming?
 
 
-
+-------------------------
 .multipy(byMeter)
 .divide/dividing(byKg)
 if we had a UnitOfMeasure interface,
@@ -209,6 +209,11 @@ will make some stuff easier?
 Check if two units are the same to prevent kg/kg and to
 generate only one extractor for kg*kg?
 
+u=a*b  dividing bya=b/dividing byb=a   u /- b  u /-- a
+u=a/b  multiply byb=a /divide bya=b   u *-b b/<u = u />b
+
+
+------------
 
 
 Conventionally, compiled languages have separated phases of

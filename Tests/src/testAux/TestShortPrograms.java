@@ -533,19 +533,19 @@ public void testCompositionAT2() throws Throwable{
 
 
 public static final String operatorAccess(){return
-"{//@plugin\n"
-+"   //L42.is/connected/withSafeOperators\n"
-+"class method\n"
-+"Library compose(Library left,Library right)\n"
-+"  use This\n"
-+"    check compose(left:left,right:right)\n"
-+"    error void\n"
-+"class method\n"
-+"Library redirect(Library that,Library srcBinaryRepr,class Any dest)\n"
-+"    use This\n"
-+"      check redirect(that,src:srcBinaryRepr,dest:dest)\n"
-+"      error void\n"
-+"  }\n";
+"{"+
+  "/*@plugin  toFix"+ 
+  "@pluginPart is.L42.connected.withSafeOperators.refactor.Compose*/"+
+  "class method Library compose(Library left, Library right) "+
+  "  use This0 check #compose(_1_ast%ExpCore$ClassB:left, _2_ast%ExpCore$ClassB:right)"+
+  "  error void}";
+/*      
+Redirect: {//@plugin  toFix 
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
+class method Library redirectS(Library that, This2.S src, class Any dest) 
+  use This0 check #redirectS(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_ast%Ast$Path:dest) 
+  error void
+*/
 }
 
 public static final String listAccess(){return
