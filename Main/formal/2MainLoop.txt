@@ -119,8 +119,6 @@ _______
   where "\p" is set minus using p.equiv(P1,P2) //TODO: update code, this should fix concern in TODO "just hacked away"
   //this check absence of circularity by looping
 
-//TODO: insert definition of From from the pdf; this is the first occurence
-
 _______
 #define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
   p(P0)={interface? implements Ps Ms Phase}
@@ -146,13 +144,13 @@ _______
 -----------------------------------------------------------
 Part 4: norm(p)=L, multiNorm 
 -----------------------------------------------------------
-//TODO: thinking if norm should check that all paths are not doomed
-//i.e. available somewhere or still pointing to meta
-//TODO:change desugar: if C.Cs is not resolved when "reuse" is reached, before generating the Thisn.C.Cs check if that url have the C, otherwise is error.
-//Strong doom check: the path exists up to unresolved metaprogramming.
-//if the desugar check for strong doom, then norm NEED to check that all paths are not doomd to avoid
-//very fancy recovery behaviour with sum/redirect
- 
+_______
+#define alive(p,P) //check if P is defined or have hope to be defined in the future
+alive(p,Thisn.C.Cs)=alive(p(Thisn),C.Cs) //we assume the sugar will check for all paths
+alive(L,C) if L(C) is defined            //to be alive after desugaring
+alive(L,C.Cs) if L(C)=L' and alive(L',Cs)
+  or  L(C)=e not of form L or L doc
+   
 _______
 #define norm(p,L)=norm(p.evilPush(L))
 
@@ -170,7 +168,8 @@ _______
 -norm(p,refine? mh e?)= refine? mh e'?
   where e'?=empty if e?=empty
   otherwise e'?= e where we replace all Li inside e?
-    with norm(p,Li) 
+    with norm(p,Li)
+  forall P inside e', alive(p,P)//TODO: add in code 
     
 -norm(p, C:L) =C:norm(p,L)
 //we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seams to work fine.

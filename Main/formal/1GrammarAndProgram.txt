@@ -95,6 +95,31 @@ _______
  and Ti= _ P or P in Ps
  
 
+The next definition allows us to see paths P and expressions e
+from a different point of view. For example calling a method
+This2.A.B.foo() whose body is originally This1.bar()
+we would expect to excute
+This1.bar()[from This2.A.B]=This2.A.bar()
+in our local context. Note how we did not need to denote our
+observation point, but only the path needed to reach the destination
+starting from our observation point.
+_______
+#define P0[from P1]=P2 e[from P]=e' e[from P]n=e'
+P0[from P1]=P2
+Thisn.Cs[from Thism.C1..Ck]=Thism.C1..C(k-n).Cs if n<=k
+Thisn.Cs[from Thism.C1..Ck]=This(m+n-k).Cs if n>k
+Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
+
+e[from P] propagate on the structure, and L[from P] = L[ from P]0
+{interface? implements Ps, Ms}[from P]j =
+  {interface? implements Ps[from P]j+1, Ms[from P]j+1} 
+
+This(j+n).Cs0[from P]j=This(j+k).Cs1
+  with Thisn.Cs0[from P]=Thisk.Cs1
+Thisn.Cs[from P]j=Thisn.Cs with n<j
+All cases for other expressions/terms propagate to submembers, including
+comments, since they can have annotated Ps
+
 -----------------------------------------------------------
 Part 2: Well formedness
 -----------------------------------------------------------

@@ -31,6 +31,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
+      "TestResource.L42",
       "TestHelloWorld.L42",
       "TestRefactorFailToS.L42",
       "DeploySimpleLib.L42",
@@ -49,7 +50,6 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "TestPostOperation.L42",
       "TestRange.L42",
       "TestRedirectType.L42",
-      "TestResource.L42",
       //--"TestStringSplit.L42",
       //--"TestToS.L42",
       //--"TestWither.L42",
