@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import sugarVisitors.CloneVisitor;
+import sugarVisitors.Desugar;
+import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
 import tools.Map;
@@ -42,6 +44,7 @@ import coreVisitors.IsValue;
 import coreVisitors.ReplaceCtx;
 import facade.Configuration;
 import facade.L42;
+import facade.Parser;
 import programReduction.Program;
 
 public class Functions {
@@ -470,5 +473,10 @@ public static String multiLine(String ...ss){
     catch (NoSuchFieldException|IllegalArgumentException |IllegalAccessException e) {
       throw Assertions.codeNotReachable();
       }}}*/
+public static ClassB parseAndDesugar(String locaiton,String s) {
+Expression code1=Parser.parse(locaiton,s);
+Expression code2=Desugar.of(code1);
+return (ClassB)code2.accept(new InjectionOnCore());
+}
 
 }

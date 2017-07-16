@@ -12,7 +12,6 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.*;
 import ast.Ast;
 import ast.ExpCore;
-import ast.Expression;
 import ast.PathAux;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
@@ -25,7 +24,6 @@ import ast.Ast.Type;
 import auxiliaryGrammar.Functions;
 import facade.L42;
 import facade.PData;
-import facade.Parser;
 import is.L42.connected.withSafeOperators.Errors42;
 import is.L42.connected.withSafeOperators.Push;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
@@ -34,8 +32,6 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ParseFail
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
-import sugarVisitors.Desugar;
-import sugarVisitors.InjectionOnCore;
 import tools.LambdaExceptionUtil;
 import tools.LambdaExceptionUtil.Function_WithExceptions;
 public class MakeK {
@@ -140,12 +136,7 @@ T'i=Tki[with mdf=imm]
     ClassB res=openDataCode.withMs(ms);
     return Push.pushMany(res, path);
   }
-  private static ClassB parseAndDesugar(String s) {
-    Expression code1=Parser.parse("makeK",s);
-    Expression code2=Desugar.of(code1);
-    return (ClassB)code2.accept(new InjectionOnCore());
-    }
-  static ClassB openDataCode=parseAndDesugar(Functions.multiLine("{",
+  static ClassB openDataCode=Functions.parseAndDesugar("makeK",Functions.multiLine("{",
   //"class method mut This fwdKj(Ti xi)",  
   "class method mut This mutK(Tai xi) (",
   "  res=This.fwdKj(xi:xi)",

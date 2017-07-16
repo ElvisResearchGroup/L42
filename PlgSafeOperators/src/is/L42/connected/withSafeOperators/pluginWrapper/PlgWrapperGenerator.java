@@ -53,7 +53,7 @@ import sugarVisitors.InjectionOnCore;
 import tools.Assertions;
 
 public class PlgWrapperGenerator {
-  private static List<ClassB.Member> templateWrapper=((ClassB)parseAndDesugar(
+  private static List<ClassB.Member> templateWrapper=((ClassB)Functions.parseAndDesugar("PlgWrapper",
     " {class method\n"+
     " mut This0 #from(Library binaryRepr)\n"+
     " read method\n"+
@@ -64,7 +64,7 @@ public class PlgWrapperGenerator {
     "   exception This.#from(binaryRepr:binaryRepr)\n"+
     "}")).getMs();
  
-  private static MCall templateUsingExc=(MCall) ((ClassB)parseAndDesugar(
+  private static MCall templateUsingExc=(MCall) ((ClassB)Functions.parseAndDesugar("PlgWrapper",
     " {class method This m()\n"+
     " This.#from(binaryRepr:(\n"+
     "   res=use This0 check m(_:This.#binaryRepr())\n"+
@@ -78,11 +78,6 @@ public class PlgWrapperGenerator {
     "}\n"+
     "")).getMs().get(0).getInner();
   
-private static ExpCore parseAndDesugar(String s) {
-  Expression code1=Parser.parse("PlgWrapperGenerator",s);
-  Expression code2=Desugar.of(code1);
-  return code2.accept(new InjectionOnCore());
-  }
 
 
 //-----------------------------------------------------
