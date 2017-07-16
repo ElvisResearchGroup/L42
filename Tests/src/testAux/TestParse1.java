@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import auxiliaryGrammar.Functions;
 import helpers.TestHelper;
 
 
@@ -28,7 +29,7 @@ public class TestParse1 {
   },{lineNumber()," (This0.that().#next() x=this.that().#next() x)"
 //},{lineNumber(),"{//@ExpectedClass :( \n}"//TODO: the ( is turned in \t, and \t is not accepted in comments.
 //    more important: should // be accepted in single line strings?
-},{lineNumber(),TestHelper.multiLine("{"
+},{lineNumber(),Functions.multiLine("{"
         ,"C:{ class method This k() class method Library ok() ({//@OK\n})"
         ,"        class method Library ko() ({//@KO\n})"
         ,"  }"

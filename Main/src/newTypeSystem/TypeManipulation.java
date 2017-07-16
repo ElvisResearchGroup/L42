@@ -125,19 +125,17 @@ public static Type _toLent(Type t){
   }
 
 public static Type mutOnlyToLent(Type t){
-//  mutOnlyToLent(T)
-//    mutOnlyToLent(mut P)=lent P,
-//    otherwise mutOnlyToLent(T)=T 
   if(t.getMdf()==Mdf.Mutable){return t.withMdf(Mdf.Lent);}
   return t;
   }
 public static Type capsuleToLent(Type t){
-//  capsuleToLent(T)  
-//    capsuleToLent(capsule P)=lent P
-//    otherwise capsuleToLent(mdf P)=mdf P
   if(t.getMdf()==Mdf.Capsule){return t.withMdf(Mdf.Lent);}
   return t;
   }
+public static Type capsuleToFwdMut(Type t){
+if(t.getMdf()==Mdf.Capsule){return t.withMdf(Mdf.MutableFwd);}
+return t;
+}
 
 public static Type _toRead(Type t){   
 //  toRead(T)

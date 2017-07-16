@@ -1,7 +1,5 @@
 package testAux;
 
-import helpers.TestHelper;
-
 import java.io.IOException;
 
 
@@ -10,6 +8,7 @@ import org.junit.Assert;
 
 import ast.ErrorMessage;
 import ast.ErrorMessage.UserLevelError;
+import auxiliaryGrammar.Functions;
 import programReduction.Program;
 
 import static ast.ErrorMessage.UserLevelError.Kind.*;
@@ -18,7 +17,7 @@ import facade.L42;
 
 public class TestErrorMsgs {
   public void testCode(String fileName,UserLevelError.Kind expectedKind,int expectedLine,String ...src){
-    String code=TestHelper.multiLine(src);
+    String code=Functions.multiLine(src);
     try{L42.runSlow(fileName,code);}
     catch(ErrorMessage msg){
       UserLevelError err = ErrorFormatter.formatError(Program.emptyLibraryProgram(),msg);

@@ -7,9 +7,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.*;
 import ast.Ast;
+import ast.ExpCore;
+import ast.Expression;
 import ast.PathAux;
 import ast.Ast.Doc;
 import ast.Ast.FieldDec;
@@ -20,14 +23,19 @@ import ast.Ast.Type;
 import ast.Ast.Position;
 import ast.Ast.Type;
 import auxiliaryGrammar.Functions;
+import facade.L42;
 import facade.PData;
+import facade.Parser;
 import is.L42.connected.withSafeOperators.Errors42;
+import is.L42.connected.withSafeOperators.Push;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ParseFail;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 import sugarVisitors.Desugar;
+import sugarVisitors.InjectionOnCore;
 import tools.LambdaExceptionUtil;
 import tools.LambdaExceptionUtil.Function_WithExceptions;
 public class MakeK {
@@ -35,51 +43,132 @@ public class MakeK {
     return makeKJ(that,PathAux.parseValidCs(path),fwd);
     }
 
-
   public static ClassB makeKJ(ClassB that,List<Ast.C> path,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
     ClassB lPath=that.getClassB(path);
-    List<String> fields=new ArrayList<>();
-    for(MethodWithType mwt:lPath.mwts()){
-      if(mwt.get_inner().isPresent()){continue;}
-      if(mwt.getMt().getMdf()==Mdf.Class){continue;}
-      if(mwt.getMs().getNames().size()>1){continue;}
-      if(mwt.getMs().getNames().size()==1 
-        && (!mwt.getMt().getReturnType().equals(Type.immVoid)
-          || !mwt.getMs().getNames().get(0).equals("that")  
-         )){continue;}
-      String name=mwt.getMs().getName();
-      if(name.startsWith("#")){name=name.substring(1,name.length());}
-      if(!MethodSelector.checkX(name,false)){continue;}
-      if(fields.contains(name)){continue;}
-      fields.add(name);
-      }
-      return makeK(that,path,fields,fwd);
+    List<String> fields = collectFieldNames(lPath);
+    return makeK(that,path,fields,fwd);
     }
 
+private static List<String> collectFieldNames(ClassB lPath) {
+List<String> fields=new ArrayList<>();
+for(MethodWithType mwt:lPath.mwts()){
+  if(mwt.get_inner().isPresent()){continue;}
+  if(mwt.getMt().getMdf()==Mdf.Class){continue;}
+  if(mwt.getMs().getNames().size()>1){continue;}
+  if(mwt.getMs().getNames().size()==1 
+    && (!mwt.getMt().getReturnType().equals(Type.immVoid)
+      || !mwt.getMs().getNames().get(0).equals("that")  
+     )){continue;}
+  String name=mwt.getMs().getName();
+  if(name.startsWith("#")){name=name.substring(1,name.length());}
+  if(!MethodSelector.checkX(name,false)){continue;}
+  if(fields.contains(name)){continue;}
+  fields.add(name);
+  }
+return fields;
+}
+
   public static ClassB makeK(ClassB that,List<Ast.C> path, List<String> fieldNames,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
-    if(path.isEmpty()){return makeK(that,that,path,fieldNames,fwd);}
+    if(path.isEmpty()){return makeK("#apply",that,that,path,fieldNames,fwd);}
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(!MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
-    Function_WithExceptions<NestedClass,Optional<NestedClass>,Exception> f=nc->Optional.of(nc.withInner(makeK(that,(ClassB)nc.getInner(),path,fieldNames,fwd)));
+    Function_WithExceptions<NestedClass,Optional<NestedClass>,Exception> f=nc->Optional.of(nc.withInner(makeK("#apply",that,(ClassB)nc.getInner(),path,fieldNames,fwd)));
     return that.onNestedNavigateToPathAndDo(path,LambdaExceptionUtil.rethrowFunction(f));
     }
 
-  private static ClassB makeK(ClassB top, ClassB that,List<Ast.C>path,List<String> fieldNames,boolean fwd) throws ParseFail, ClassUnfit {
-    List<Type>fieldTypes=new ArrayList<>();
-    for(String f :fieldNames){
-      if(!MethodSelector.checkX(f,false)){throw new RefactorErrors.ParseFail(f,RefactorErrors.ParseFail.Format.Id);}
-      fieldTypes.add(candidate(that.getMs(),f));
-      }
-    MethodWithType protoK = prototypeK(Doc.empty(),fieldNames,fieldTypes,that.getP());
-    if(fwd){protoK=changeMt(protoK,MakeK::fwdK);}
-    
+  private static ClassB makeK(String kName,ClassB top, ClassB that,List<Ast.C>path,List<String> fieldNames,boolean fwd) throws ParseFail, ClassUnfit {
+    MethodWithType candidateK = candidateK(kName, that, fieldNames, fwd);
     List<Member> result=new ArrayList<>(that.getMs());
-    if(Functions.getIfInDom(result,protoK.getMs()).isPresent()){throw new RefactorErrors.ClassUnfit();}
-    result.add(protoK);
+    if(Functions.getIfInDom(result,candidateK.getMs()).isPresent()){throw new RefactorErrors.ClassUnfit();}
+    result.add(candidateK);
     return that.withMs(result);
   }
+  
+  /**
+   DataOpen: mutK,immK, L1, path
+create fresh fwdK (not unique)
+return L1[create fwdK, mutK->fwdK+inv immK->fwdK+inv]
+{
+class method mut This fwdKj(T1 x1..Tn xn)  
+class method mut This mutK(T'1 x1..T'n xn) (
+  res=This.fwdKj(x1:x1..xn:xn)
+  res.#invariant()
+  res
+  )
+class method This mutK(T''1 x1..T''n xn) (
+  res=This.fwdKj(x1:x1..xn:xn)
+  res.#invariant()
+  res
+  )
+}
+Tk1..Tkn= Ts as in K
+Ti=Tki[capsule->mut]
+T'i=noFwd(Tki)
+T'i=Tki[with mdf=imm]
+   */
+  public static ClassB dataOpen(ClassB that,List<Ast.C> path,String fresh,String mutKName,String immKName) throws PathUnfit, ParseFail, ClassUnfit{
+    if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
+    if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
+    ClassB lPath=that.getClassB(path);
+    List<String> fields = collectFieldNames(lPath);
+    MethodWithType candidateK = candidateK(fresh, lPath, fields, true);
+    MethodSelector candidateMs=candidateK.getMs();
+    MethodWithType mutK=(MethodWithType) openDataCode.getMs().get(0);
+    MethodWithType immK=(MethodWithType) openDataCode.getMs().get(1);
+    mutK=mutK.withMs(candidateMs.withName(mutKName));
+    immK=immK.withMs(candidateMs.withName(immKName));
+    Dec dec0 = ((ExpCore.Block)mutK.getInner()).getDecs().get(0);
+    ExpCore.MCall e=(ExpCore.MCall)dec0.getInner();
+    List<ExpCore>l=tools.Map.of(s->new ExpCore.X(lPath.getP(),s),candidateMs.getNames());
+    e=e.withS(candidateMs).withEs(l);
+    mutK=mutK.withInner(((ExpCore.Block)
+      mutK.getInner()).withDeci(0, dec0.withInner(e)));
+    immK=immK.withInner(((ExpCore.Block)
+            immK.getInner()).withDeci(0, dec0.withInner(e)));
+    List<Ast.Type>fwdT=tools.Map.of(TypeManipulation::capsuleToFwdMut,candidateK.getMt().getTs());
+    List<Ast.Type>mutT=tools.Map.of(TypeManipulation::noFwd,candidateK.getMt().getTs());
+    List<Ast.Type>immT=tools.Map.of(t->t.withMdf(Mdf.Immutable),candidateK.getMt().getTs());
+    candidateK=candidateK.withMt(candidateK.getMt().withTs(fwdT));
+    mutK=mutK.withMt(mutK.getMt().withTs(mutT));
+    immK=immK.withMt(immK.getMt().withTs(immT));
+    List<Member> ms=new ArrayList<>();
+    ms.add(candidateK);
+    ms.add(mutK);
+    ms.add(immK);
+    ClassB res=openDataCode.withMs(ms);
+    return Push.pushMany(res, path);
+  }
+  private static ClassB parseAndDesugar(String s) {
+    Expression code1=Parser.parse("makeK",s);
+    Expression code2=Desugar.of(code1);
+    return (ClassB)code2.accept(new InjectionOnCore());
+    }
+  static ClassB openDataCode=parseAndDesugar(Functions.multiLine("{",
+  //"class method mut This fwdKj(Ti xi)",  
+  "class method mut This mutK(Tai xi) (",
+  "  res=This.fwdKj(xi:xi)",
+  "  res.#invariant()",
+  "  res",
+  "  )",
+  "class method This mutK(Tbi xi) (",
+  "  res=This.fwdKj(xi:xi)",
+  "  res.#invariant()",
+  "  res",
+  "  )",
+  "}"));
+private static MethodWithType candidateK(String kName, ClassB that, List<String> fieldNames, boolean fwd)
+        throws ParseFail, ClassUnfit {
+List<Type>fieldTypes=new ArrayList<>();
+for(String f :fieldNames){
+  if(!MethodSelector.checkX(f,false)){throw new RefactorErrors.ParseFail(f,RefactorErrors.ParseFail.Format.Id);}
+  fieldTypes.add(candidate(that.getMs(),f));
+  }
+MethodWithType protoK = prototypeK(kName,Doc.empty(),fieldNames,fieldTypes,that.getP());
+if(fwd){protoK=changeMt(protoK,MakeK::fwdK);}
+return protoK;
+}
 
 static private MethodWithType changeMt(MethodWithType proto,Function<MethodType,MethodType>f) {
   return proto.withMt(f.apply(proto.getMt()));
@@ -98,8 +187,8 @@ static private MethodType fwdK(MethodType proto) {
     .map(MakeK::addFwd).collect(Collectors.toList()));
 }
 
-   private static MethodWithType prototypeK(Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
-    MethodSelector ms=MethodSelector.of("#apply",fieldNames);
+   private static MethodWithType prototypeK(String kName,Doc doc,List<String>fieldNames,List<Type>fieldTypes,Position pos) {
+    MethodSelector ms=MethodSelector.of(kName,fieldNames);
     Type resT=Type.mutThis0;
     MethodType mt=new MethodType(false,Mdf.Class,fieldTypes,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);

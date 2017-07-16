@@ -66,6 +66,10 @@ import tools.Map;
 
 
 interface ComposeSpec{
+//TODO: comments at the start of the class:
+//plg comments can ONLY be summed with empty comments, otherwise
+//we may break typing. Redirect, in the same way, can not redirect classes
+//containing plg comments!
 /**<pre>#define L1 ++p L2 = L0
 L1 ++p L2 = L0
   with L0=L1 +p.evilPush(L0) L2

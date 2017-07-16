@@ -113,6 +113,29 @@ nativeResource Resource{
   //every newFwd edits a list inside of Fwds to remember where they are stored.
   }
 
+Native classes and operations:
+one option would be to use plugin annotations,
+for example
+{nativeInt
+method This +(This that)nativeIntSum
+}
+could originate from
+{//@plugin nativeInt
+ // @This @S @Bool
+method This +(This that)
+  use This 
+  check nativeIntSum(_this:this,that:that)
+  error void
+}
+
+collection plg can be generic in the same way
+{//@plugin nativeVector
+ // @Bar @Size @S @Bool
+ method Bar get(Size that) use This check
+   nativeVectorGet(_this:this,that:that)
+}
+could be a vector of bar, and the plgType can discover it and type properly
+
 -----------------------------
 2 L42N into L42F
 -----------------------------

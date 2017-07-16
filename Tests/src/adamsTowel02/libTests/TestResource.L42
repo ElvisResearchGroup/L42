@@ -4,7 +4,7 @@ TestCode:{
   class method
   Library () {method S foo() S"foo"}
   }
-/*RT0:Use.Override[TestCode()]<><{method S foo()}
+RT0:Use.Override[TestCode()]<><{method S foo()}
 
 R1:Resource<><TestCode()
 RT1:Use.Override[R1()]<><{method S foo()}
@@ -14,16 +14,16 @@ R3:{RRA:{RRB:Resource<><TestCode()}}
 
 RT2:Use[R2.RR()]<><{method S foo()}
 RTR:{RR:Use.Override[R2.RR()]<><{method S foo()} }
-*/
+
 S1:Resource(S"one")
 //N1:Resource(Num"1")
 N2:Resource(Size"2")
-P1:Resource(Path"A")
+//P1:Resource(Path"A")
 Main:{
   Debug.test(S1() expected:S"one")
   //Debug.test(N1() expected:S"1")
   Debug.test(N2() expected:S"2")
-  Debug.test(P1() expected:S"A")
+  //Debug.test(P1() expected:S"A")
 
   return ExitCode.normal()
   }

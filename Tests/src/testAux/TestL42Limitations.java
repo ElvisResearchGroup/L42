@@ -21,6 +21,7 @@ import org.junit.runners.Parameterized.Parameter;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import ast.Expression;
+import auxiliaryGrammar.Functions;
 import ast.ExpCore.ClassB;
 import ast.Ast;
 import ast.Ast.Stage;
@@ -36,7 +37,7 @@ public class TestL42Limitations {
 public void test1() throws IOException{
     TestHelper.configureForTest();
     //L42.setRootPath(Paths.get("dummy"));
-    Assert.assertEquals(L42.runSlow(null,TestHelper.multiLine(""
+    Assert.assertEquals(L42.runSlow(null,Functions.multiLine(""
 ,"{reuse L42.is/nanoBase1"
 ,"  Time:{//@plugin"
 ,"    //L42.is/connected/withLimitations"

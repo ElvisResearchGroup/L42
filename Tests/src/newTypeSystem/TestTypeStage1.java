@@ -36,6 +36,7 @@ import ast.ErrorMessage;
 import ast.ErrorMessage.TypeError;
 import ast.ExpCore;
 import ast.Expression;
+import auxiliaryGrammar.Functions;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Path;
@@ -101,7 +102,7 @@ public class TestTypeStage1 {
          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
          new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
          new String[]{listExample}
-       },{lineNumber(),TestHelper.multiLine(""
+       },{lineNumber(),Functions.multiLine(""
 ,"(class List this=List,"
 ," N that=N.k(),"
 ," fwd List top=List.factory(N.k())"
@@ -139,7 +140,7 @@ public class TestTypeStage1 {
            new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
            new String[]{"{ D:{var fwd Any f class method mut This k( fwd Any f)} }"}
         //
-         },{lineNumber(),TestHelper.multiLine(""
+         },{lineNumber(),Functions.multiLine(""
 ,"("
 ,"  Void unused1=("
 ,"    Void unused00=exception C.k()"
@@ -161,7 +162,7 @@ new String[]{"{ C:{ class method This k()}, D:{class method This k()}}"}
 }});}
       //TODO: before ts after desugaring, do well formedness check!
 
-static String listExample=TestHelper.multiLine(
+static String listExample=Functions.multiLine(
     "{N:{class method This k() method Void checkZero() (void) method N lessOne() (this)}"
     ,"List:{class method This k(fwd List next, N elem)"
     ,"  class method List factory(N that) ("
@@ -399,7 +400,7 @@ public static class TestStage3_notOk {
 
 
 
-static String cloneExample=TestHelper.multiLine("{"
+static String cloneExample=Functions.multiLine("{"
     ,"  N:{class method mut This #mutK() class method mut This k() this.#mutK()}"
     ,"  B:{var N that "
     ,"   class method mut This #mutK(N that)"

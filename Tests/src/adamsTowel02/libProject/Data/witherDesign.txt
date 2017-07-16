@@ -96,53 +96,49 @@ lent exposer->capsule in mutK, + imm in immK
 
 ------
 
-DataOpen: mutK,immK,invariant, L1, path
-create unique j,
-L2=L1[create fwdKj, mutK->fwdKj+inv immK->fwdKj+inv]
-
-DataAccumulate: mutK,immK, L2, path
-L3=Use.Override[ base,wither(immK,L2,path), equals, toS,..]<><L2
-
-DataClose: mutK,immK, L2, path
-recover j exploring immK
-L4=L3[in path immK,delegate
-  setter to inv+setterj
-  getter to getterj]
-L5=L4[rename path.exposer to exposerj, check used only on this]
-
-Data: mutK,immK,invaraint,ops
+Data: String mutK,immK,invaraint,ops
 Decorate: L0,path
-  mutK,immK+=collectFieldNames(L0)
+  String fresh=...
   var L=L0
   L ><>= EnsureInvariant(path,invariant)//if no invariant, add invariant
-  L ><>= DataOpen(mutK,immK,invariant, path)
+  L ><>= DataOpen(fresh,mutK,immK,invariant, path)
   L ><>= Use.Override[with op in ops ( 
     use[ op(L2,path,mutK,immK) ]
     )]
-  L ><>= DataClose(mutK,immK,path)
+  L ><>= DataClose(fresh,mutK,immK,path)
   L
 
+EnsureInvariant in 42
 
-TODO:
-//-comment data and related tests
-//-make other tests pass
-//-make other tests for all sources pass
-//newTypeSystem
-//gui test deploy
-//withSafeOperators
-//helpers.TestRunner
-//withSafeOperators.refactor.sum //about refreshing uniqueNum
-//programReduction
-//profiling
-//gui.TestTests
 
-//-make REPL work again
--check the issues on the paper
--equalequal will take Any
-->equals will take This and will be mapped on Java equals
+DataOpen: mutK,immK, L1, path
+  mutK.dataOpen()+sum
 
-**42 calls to equals renamed in ==
-**rename dec equalequal/== in equalequalOld
-rename dec equals in equalequal/==
-rename dec equalequalOld in equals
 
+DataClose: freshName, mutK,immK, L1, path
+L2=L1[wrap method bodies]<><{
+  //for all methods using this.#xi_$_j(),or exposer name
+  mdf method T m(ps) (r=e this.invariant() r)
+  //hard, need to work also for private ones
+  //for mdf not capsule, ok to leave untouched the (stupid) ones with mdf==capsule
+  //inded, if this used to call exposer, can not be used to open capsule
+  }
+return Refactor2.Method[close:path]<><Use.Override[lib]<><{
+  read method read(Ti) xi() this.#1xi() //getter
+  mut method Void xi(Ti that)( //setter, on need
+    this.#1xi(that)
+    this.invariant()
+    )
+}
+
+WrapExposer(path,L1,mutKname)
+  exposerNames=L1(path)(mutKName(??) ).ms().names()
+  extend MethodRenames()
+    -add counter
+    -visit mwt WITH inner //no inner is the exposer itself
+     assert counter=0
+     super
+     if counter>0 resetCounter and apply wrap
+    -override rename ms
+      throw if receiver not "this"
+      else counter+=1;

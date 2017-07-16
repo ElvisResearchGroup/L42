@@ -84,7 +84,7 @@ import programReduction.Program;
           "A","This0",
           "{ B:{ } D:{ class method This0 d() This0.d() } class method This0.B foo()This0.foo()  }"   ,false//
         }, {lineNumber(),//
-          helpers.TestHelper.multiLine(""
+          auxiliaryGrammar.Functions.multiLine(""
               ,"{ A:{"
               ,"  OptMax:{"
               ,"    TOpt:{interface}"
@@ -92,7 +92,7 @@ import programReduction.Program;
               ,"    }"
               ,"  }}"),
               "A","This0",
-              helpers.TestHelper.multiLine(""
+              auxiliaryGrammar.Functions.multiLine(""
               ,"{"
               ,"OptMax:{"
               ,"  TOpt:{interface }"

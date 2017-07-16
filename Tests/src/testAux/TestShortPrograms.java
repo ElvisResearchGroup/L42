@@ -32,7 +32,7 @@ public class TestShortPrograms {
     TestHelper.configureForTest();
     FinalResult res0;
     try{
-      res0=facade.L42.runSlow(null,TestHelper.multiLine(code));
+      res0=facade.L42.runSlow(null,Functions.multiLine(code));
     }catch(ErrorMessage msg){
       ErrorFormatter.topFormatErrorMessage(msg);
       throw msg;
