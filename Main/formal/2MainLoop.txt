@@ -30,12 +30,12 @@ r::=LC| exception v | error v
 p ==> p'.update(p'.top()[C=L]) 
   where
   p.top()={_ implements Ps0, MCs  C:eC Ms}//MCs are already compiled
-  eC not of form LC//thus eC is the first point to execute
+  eC not of form L//thus eC is the first point to execute
   <paths; paths'>=usedPathsE(p,eC) //paths U paths' are the Ps recursively used by eC, paths need not to be executable
-  p0=multiNorm(p,paths U paths')//norm the part of p required by eC
+  p0=multiNorm(p; paths U paths')//norm the part of p required by eC
   path;paths' ||-p0 ~> p' //type all the paths
-  Norm | p'| empty| empty| empty |-eC ~> eC' : imm Library //typing eC normally
-  Norm | p'| empty| empty| empty |-toAny(paths,eC) ~> _ : imm Library //check that even replacing paths with Any eC is well typed
+  Norm | p'| empty |-eC ~> eC' : _<= imm Library //typing eC normally
+  Norm | p'| empty |-toAny(paths',eC) ~> _ :_<= imm Library //check that even replacing paths with Any eC is well typed
   eC' -->p'+ r //execute the expression under the program and obtain a result
   L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
 
@@ -47,7 +47,8 @@ p ==> p'.pop()
   M not of form MC
   M.e=ctxC[L], L not of form LC
   ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
-  p'.top() of form LC
+  p'.top() of form LC //Note: p' is one level deeper than p,
+  // and p'.top() is the LC result of metaprogramming L
 
 
 
@@ -69,7 +70,7 @@ We construct paths from P1..Pn as follow:
  -reorganize(empty)=empty
  -reorganize(Ps)=Css0,...,Cssn
   Cssn!=empty
-  Cs in Cssi' iff Thisi.Cs in Ps
+  Cs in Cssi' iff Thisi.Cs in Ps //this filter out Any,Void, Library since they have no Thisi
   Cssi=minimize(Cssi')
 
 Simple operations:
@@ -149,8 +150,7 @@ _______
 alive(p,Thisn.C.Cs)=alive(p(Thisn),C.Cs) //we assume the sugar will check for all paths
 alive(L,C) if L(C) is defined            //to be alive after desugaring
 alive(L,C.Cs) if L(C)=L' and alive(L',Cs)
-  or  L(C)=e not of form L or L doc
-   
+  or  L(C)=e not of form L // or L doc
 _______
 #define norm(p,L)=norm(p.evilPush(L))
 
@@ -175,27 +175,27 @@ _______
 //we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seams to work fine.
 
 _______
-#define multiNorm(p,paths)=p' //multinorm assumes that p does not have evil pushes
+#define multiNorm(p; paths)=p' //multinorm assumes that p does not have evil pushes
 
-- multiNorm(p,empty) = p
+- multiNorm(p; empty) = p //Note: for populated paths, the end point of recursion is the next clause
 
-- multiNorm(p, Cs1..Csn)= p.update(L)//case of paths= a single Css
+- multiNorm(p; Cs1..Csn)= p.update(L)//case of paths= a single Css
   pi = p.navigate(Csi) 
   Li = norm(pi)//norming the top
   L = p.top()[Cs1=L1..Csk=Lk] //replace the nested classes in paths Csi with libraries Li.
 
-- multiNorm(p, Css,paths) =multiNorm(p',Css) 
-  p'=p.growFellow(multiNorm(p.pop(), paths))
+- multiNorm(p; Css,paths) =multiNorm(p'; Css) 
+  p'=p.growFellow(multiNorm(p.pop(); paths))
 
 
 
 -----------------------------------------------------------
-Part 5: usedPathsE(p,eC)= <path;paths'>
+Part 5: usedPathsE(p,eC)= <paths;paths'>
 -----------------------------------------------------------
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
-//and this is also ok for path,path' for toAny
+//and this is also ok for paths,paths' for toAny
 
-- usedPathsE(p,eC)= <path\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
+- usedPathsE(p,eC)= <paths\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation.
   paths'=usedPathsFix(p,reorganize(Ps'), empty,Coherent)
   paths0=reorganize(Ps,Ps') U paths' U (deepImplements(L1)U..U deepImplements(Ln)).pop()
@@ -204,7 +204,7 @@ Part 5: usedPathsE(p,eC)= <path;paths'>
 
 - deepImplements(L0)=reorganize(L0.Ps)
   U (deepImplements(L1) U..deepImplements(Ln)).pop()
-  L1..Ln={L|L in M, M in L0.Ms}//TODO> was L instead of L0, check in code 
+  L1..Ln={L|L inside M.e, M in L0.Ms}//TODO> was L instead of L0, check in code 
  
 - usedPathsFix(p,paths,Css,Phase0)= usedPathsFix(p, paths U paths0,Css',Phase0) // U on paths does minimize() internally
   paths.top()\Css!=empty
@@ -233,38 +233,35 @@ Part 5: usedPathsE(p,eC)= <path;paths'>
   LC.Phase not in{None,Norm}
 
 - usedInnerM(C:L,phase0)= usedInnerL(L,empty,phase0).pop()
-- usedInnerM(M,Coherent)=reorganize({P| P inside M}) 
-    with M not of form C:L
-- usedInnerM(M,Typed)=reorganize({P| P inside M}) 
+- usedInnerM(mwt,Coherent)=reorganize({P| P inside mwt}) 
+- usedInnerM(mwt,Typed)=reorganize({P| P inside mwt}) 
     U (usedInnerL(L1,empty,Typed) U...U usedInnerL(Ln,empty,Typed)).pop()
-    L1..Ln={L| L inside M.e?}
-    with M not of form C:L
+    L1..Ln={L| L inside mwt.e?}
 
-  non determinism heuristic:
+  non determinism heuristic used in usedPathsE(p,eC): //not Any means need to be in Ps'.
   **if P.m(_) inside e, P not Any
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
-  **if p(Pi).Phase=Typed, Pi is not Any
+  **if p(Pi).Phase=Typed, Pi is not Any // note, if p(P) is not defined, the path will be consider an any, and error will be raised somewhere else. 
   **if ( _ T x=_  _ _) inside e, T.P not Any
   **if catch throw T x _ inside e, T.P not Any  
   **if using P _ _ inside e, P not Any
   **if catch T inside e, T.P not Any
   otherwise, P is considered of type class Any.
   // note that user can always force a not any by writing (x=P x)
-  // note, if p(P) not defined, the path will be consider an any, and error will be rised somewhere else.
-
+  
 
 -----------------------------------------------------------
-Part 6: paths;path' ||-p ~> p, toAny //assumes that p does not have evil pushes
+Part 6: paths;path' ||-p ~> p,  toAny(paths, eC) //assumes that p does not have evil pushes
 -----------------------------------------------------------
 (pPop)
-Css paths;Css'path' ||- p  ~>  p1.update(L)
+paths;path' ||- p  ~>  p1.update(L)
   where
   p1=p.growFellow(p0)
-  paths;path' ||- p.pop() ~> p0
-  Css; Css' ||-p1 ~> L
+  paths.pop();paths'.pop() ||- p.pop() ~> p0
+  paths.top(); paths'.top() ||-p1 ~> L
   
 (pNoPop)
-Css;Css'  ||- p  ~> L,empty
+Css;Css'  ||- p  ~> L,empty // 'L,empty' is a program with only 1 level
     where
     p.pop() undefined
     Css;Css' ||-p ~> L
@@ -276,14 +273,14 @@ empty;empty ||- p ~> p
 Cs1..Csn;Cs1'..Csk' ||-p ~> p.top()[Cs1=L1,.. Csn=Ln][Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also inside all somehow contained Ls
   where
   forall Csi in 1..n : Typed |-p.navigate(Csi) ~> Li 
-  forall Csi' in 1..k: Coherent |-p.navigate(Csi') ~> Li' 
-  //assert Csi' not contained, even as postfix in Cs1..Csn
+  forall Csj' in 1..k: Coherent |-p.navigate(Csj') ~> Lj' 
+  //assert Csj' not contained, even as postfix in Cs1..Csn //Note: James believe this does not hold
   // the type system can be optimized to just assert  tests for libraries that are
   // annotated as already checked 
   // However, this is  the responsibility of the TS and not MultiTypeSystem
 _______
-#define toAny
-- toAny(Css0..Cssn,eC)=eC iff forall i in 0..n, Cs in Cssi, not Thisi.Cs inside eC
+#define toAny(paths', eC)//TODO: update in code, now it takes paths' instead of paths and have inverted behavior
+- toAny(Css0..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
   otherwise toAny(Css0..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
-  where Cs in Cssi
+  where forall i in 0..n, Cs notin Cssi
  
