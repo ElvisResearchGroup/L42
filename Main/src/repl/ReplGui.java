@@ -29,9 +29,7 @@ public class ReplGui extends JFrame {
  g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
  g.getRootPane().setLayout(new BorderLayout());
  g.runB = new JButton("Run!");
- g.runB.addActionListener((e)->
-   g.runCode()
-   );
+ g.runB.addActionListener(e->g.runCode());
  g.getRootPane().add(g.runB, BorderLayout.SOUTH);
  g.buildGui(g.getRootPane());
  g.pack();
@@ -81,6 +79,7 @@ void auxRunCode(){
     SwingUtilities.invokeLater(this::updateTextFields);
     }
   }
+private  int iterations=0;
 private void updateTextFields(){
   try{
     assert L42.record!=null:"d";
@@ -92,6 +91,11 @@ private void updateTextFields(){
     errors.setText(newErr);
     if(repl==null){return;}
     loadedSrc.setText(repl.originalS);
+    iterations+=1;
+    newSrc.setText(
+        "Main"+iterations+":{//make more stuff happen!\n"+
+        "  return ExitCode.normal()\n  }"
+        );
     }
   finally{
     this.running=false;
