@@ -25,8 +25,20 @@ public class ReplTextArea extends JFXPanel{
           );
       return res;
       });
-  Platform.runLater(query);
-  try {return query.get();}
-  catch (InterruptedException | ExecutionException e) {throw new Error(e);}
-  }
+    Platform.runLater(query);
+    try {return query.get();}
+    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
+    }
+  public void setText(String input){
+    FutureTask<?> query = new FutureTask<>(()->{
+      htmlFx.webEngine.executeScript(
+          "ace.edit(\"textArea\").setValue(\""+input.replace("\"", "\\\"").replace("\n", "\\n")+"\")"
+          );
+      return null;
+      });
+    Platform.runLater(query);
+    try {query.get();}
+    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
+    }
+
 }
