@@ -109,11 +109,59 @@ Decorate: L0,path
   L
 
 EnsureInvariant in 42
+EnsureInvariant:K<><{
+  Path path
+  Fail:Message.$<><{????}
+  method
+  Library<><(Library that)
+  exception NotAvailable {
+    i=Location.Lib(that).nested(path:path)
+      (
+      m=i.method(selector:\"#invariant()")
+      catch exception NotAvailable
+        return Refactor2.compose(
+          that and:{read method Void #invariant()void})
+       void
+       )
+    //here I'm sure #invariant() is defined, check has right type
+      (
+      Refactor2.compose(that and:{read method Void #invariant()})
+      exception on Refactor2.Fail"Method invariant has incompatible type"
+      void
+      )
+    return that
+    }
+  }
 
 
-DataOpen: mutK,immK, L1, path
-  mutK.dataOpen()+sum
+PlgDataOpen:Refactor2.JavaImport<><{
+  //@plugin is.L42.connected.withSafeOperators
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
+  class method
+  Library dataOpen(Library that,Path path,S fresh,S mutKName,S immKName)
+  exception 
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ParseFail
+  ,,,,Refactor2.ClassUnfit
+  ,,,,Refactor2.MethodClash
 
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr  
+  }
+DataOpen:{
+  Path path, S fresh, S mutKName, S immKName
+  class method
+  Library <><(Library that))
+  exception 
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ParseFail
+  ,,,,Refactor2.ClassUnfit
+  ,,,,Refactor2.MethodClash
+    PlgDataOpen.dataOpen(that,path:this.path(),
+      fresh:????,
+      mutKName:this.mutKName(),immKName:this.immKName())
+  }
 
 DataClose: freshName, mutK,immK, L1, path
 L2=L1[wrap method bodies]<><{

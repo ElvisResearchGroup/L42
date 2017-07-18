@@ -27,9 +27,12 @@ import facade.PData;
 import is.L42.connected.withSafeOperators.Errors42;
 import is.L42.connected.withSafeOperators.Push;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ParseFail;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
@@ -104,7 +107,9 @@ Ti=Tki[capsule->mut]
 T'i=noFwd(Tki)
 T'i=Tki[with mdf=imm]
    */
-  public static ClassB dataOpen(ClassB that,List<Ast.C> path,String fresh,String mutKName,String immKName) throws PathUnfit, ParseFail, ClassUnfit{
+  public static
+  ClassB dataOpen(PData pData,ClassB that,List<Ast.C> path,String fresh,String mutKName,String immKName)
+  throws PathUnfit, ParseFail, ClassUnfit, MethodClash, SubtleSubtypeViolation, ClassClash{
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
     ClassB lPath=that.getClassB(path);
@@ -134,8 +139,13 @@ T'i=Tki[with mdf=imm]
     ms.add(mutK);
     ms.add(immK);
     ClassB res=openDataCode.withMs(ms);
-    return Push.pushMany(res, path);
-  }
+    if(!path.isEmpty()){
+      res=ClassB.membersClass(Collections.singletonList(
+        Functions.encapsulateIn(path,res,Doc.empty())),
+        res.getP(),res.getPhase());
+      }
+    return Compose.compose(pData, res, that);
+    }
   static ClassB openDataCode=Functions.parseAndDesugar("makeK",Functions.multiLine("{",
   //"class method mut This fwdKj(Ti xi)",  
   "class method mut This mutK(Tai xi) (",
