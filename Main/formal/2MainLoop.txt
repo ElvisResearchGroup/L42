@@ -32,7 +32,7 @@ p ==> p'.update(p'.top()[C=L])
   p.top()={_ implements Ps0, MCs  C:eC Ms}//MCs are already compiled
   eC not of form L//thus eC is the first point to execute
   <paths; paths'>=usedPathsE(p,eC) //paths U paths' represents the Ps recursively used by eC,
-  // paths' needs to be coherent while paths needs only to be typed
+  // paths' needs to be coherent, while paths needs only to be typed
   p0=multiNorm(p; paths U paths')//norm the part of p required by eC
   path;paths' ||-p0 ~> p' //type all the paths
   Norm | p'| empty |-eC ~> eC' : _<= imm Library //typing eC normally
@@ -69,10 +69,10 @@ We model this idea with
 
 We construct paths from P1..Pn as follow:
  -reorganize(empty)=empty
- -reorganize(Ps)=Css0,...,Cssn
+ -reorganize(Ps)=Css0',...,Cssn'
+  Cs in Cssi iff Thisi.Cs in Ps //this filter out Any,Void, Library since they have no Thisi
   Cssn!=empty
-  Cs in Cssi' iff Thisi.Cs in Ps //this filter out Any,Void, Library since they have no Thisi
-  Cssi=minimize(Cssi')
+  Cssi'=minimize(Cssi)
 
 Simple operations:
  -(Css paths).top()=Css
