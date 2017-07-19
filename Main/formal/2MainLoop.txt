@@ -129,8 +129,8 @@ _______
 #define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO: do it in the code
-  P1..Pn=collect(p,Ps[from P0]),
-  //TODO: in code move the ckec for "error unless forall i in 1..n, p(Pi) is an interface" into the former definition
+  P1..Pn=collect(p,Ps[from P0])
+  //TODO: in code move the check for "error unless forall i in 1..n, p(Pi) is an interface" into the former definition
   ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code; may be is solved by change in collect "\p"
     such that p(Pj)(ms)=mh e? //no refine
@@ -139,6 +139,7 @@ _______
     otherwise
     Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
       for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
+    //this ordering of j leverages the smart ordering of collect() 
     Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
     otherwise
     Mi'=Mi
@@ -152,9 +153,10 @@ _______
 Part 4: norm(p)=L, multiNorm 
 -----------------------------------------------------------
 _______
-#define alive(p,P) //check if P is defined or have hope to be defined in the future
-alive(p,Thisn.C.Cs)=alive(p(Thisn),C.Cs) //we assume the sugar will check for all paths
-alive(L,C) if L(C) is defined            //to be alive after desugaring
+#define alive(p,P) //check if P is defined or has hope to be defined in the future
+alive(p,Thisn.C.Cs)=alive(p(Thisn),C.Cs) //TODO: we assume the sugar
+// will check for all paths to be alive after desugaring
+alive(L,empty) holds
 alive(L,C.Cs) if L(C)=L' and alive(L',Cs)
   or  L(C)=e not of form L // or L doc
 _______
