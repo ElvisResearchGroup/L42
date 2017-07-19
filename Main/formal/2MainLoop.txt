@@ -240,9 +240,9 @@ Part 5: usedPathsE(p,eC)= <paths;paths'>
 
   non determinism heuristic used in usedPathsE(p,eC): //not Any means need to be in Ps'.
   **if P.m(_) inside e, P not Any
+  **if p(Pi).Phase=Coherent, Pi is not Any // note, if p(P) is not defined, the path will be consider an any, and error will be raised somewhere else. 
   **if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
-  **if p(Pi).Phase=Typed, Pi is not Any // note, if p(P) is not defined, the path will be consider an any, and error will be raised somewhere else. 
-  **if ( _ T x=_  _ _) inside e, T.P not Any
+  **if ( _ T? x=_  _ _) inside e, T?.P not Any
   **if catch throw T x _ inside e, T.P not Any  
   **if using P _ _ inside e, P not Any
   **if catch T inside e, T.P not Any
