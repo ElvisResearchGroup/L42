@@ -154,7 +154,8 @@ Part 4: norm(p)=L, multiNorm
 -----------------------------------------------------------
 _______
 #define alive(p,P) //check if P is defined or has hope to be defined in the future
-alive(p,Thisn.C.Cs)=alive(p(Thisn),C.Cs) //TODO: we assume the sugar
+alive(p,Any),alive(p,Void),alive(p,Library) holds
+alive(p,Thisn.Cs)=alive(p(Thisn),Cs) //TODO: we assume the sugar
 // will check for all paths to be alive after desugaring
 alive(L,empty) holds
 alive(L,C.Cs) if L(C)=L' and alive(L',Cs)
