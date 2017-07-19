@@ -12,7 +12,7 @@ that proceeds through the following phases:
 
 The rules exposed here covers 2-8, and depends on other notations defined in this file
 and on reduction (in progress) and typing defined in other files.
-Paths (introduced later in the file) represent organized collections of P.
+Paths (introduced later in the file) represent organized/restricted collections of P.
 
 -----------------------------------------------------------
 Part 1: 42 top level reduction rules
@@ -31,7 +31,8 @@ p ==> p'.update(p'.top()[C=L])
   where
   p.top()={_ implements Ps0, MCs  C:eC Ms}//MCs are already compiled
   eC not of form L//thus eC is the first point to execute
-  <paths; paths'>=usedPathsE(p,eC) //paths U paths' are the Ps recursively used by eC, paths need not to be executable
+  <paths; paths'>=usedPathsE(p,eC) //paths U paths' represents the Ps recursively used by eC,
+  // paths' needs to be coherent while paths needs only to be typed
   p0=multiNorm(p; paths U paths')//norm the part of p required by eC
   path;paths' ||-p0 ~> p' //type all the paths
   Norm | p'| empty |-eC ~> eC' : _<= imm Library //typing eC normally
@@ -241,7 +242,7 @@ Part 5: usedPathsE(p,eC)= <paths;paths'>
   non determinism heuristic used in usedPathsE(p,eC):
   **if P.m(_) inside e, P in Ps'
   **if p(Pi).Phase=Coherent, Pi  in Ps' // note, if p(P) is not defined, the path will be consider an any, and error will be raised somewhere else. 
-  **if ( _ T x=P _ _) inside e and T!=class Any, P in Ps'.
+  **if ( _ T? x=P _ _) inside e and T? != class Any, P in Ps'.
   **if ( _ T x=_  _ _) inside e, T.P  in Ps'//TODO: update the code for this heuristic
   **if catch throw T x _ inside e, T.P  in Ps'  
   **if using P _ _ inside e, P  in Ps'
