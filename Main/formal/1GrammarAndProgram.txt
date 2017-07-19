@@ -90,6 +90,8 @@ _______
 _______
 #define eC' inside eC
 - eC' inside eC if eC=ctxC[eC']
+- P inside ( _ T x=_ _) if P=T.P  //TODO: check is correct in code
+- P inside ( _ catch throw P x _ _) //TODO: check is correct in code
 - P inside M holds iff P inside M.e 
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
  and Ti= _ P or P in Ps
