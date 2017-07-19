@@ -178,7 +178,7 @@ _______
   where e'?=empty if e?=empty
   otherwise e'?= e where we replace all Li inside e?
     with norm(p,Li)
-  forall P inside e', alive(p,P)//TODO: add in code 
+  forall P inside mh e?, alive(p,P)//TODO: add in code 
     
 -norm(p, C:L) =C:norm(p,L)
 //we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seams to work fine.
