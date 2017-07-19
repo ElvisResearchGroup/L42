@@ -88,6 +88,9 @@ Simple operations:
 
  -(Css paths) \(Css' paths')=(path\path').push(Css\Css')
    where Css\Css' ={Cs in Css|  Cs._ notin Css'}//Note: _ can be the empty Cs
+ -empty \paths =empty
+ -paths\empty =paths  //TODO: fix: this '\' operation may create a paths with leaning empty Css,
+  //that should not be well formed
 
 
 The prefix operation adds Cs in front of all the P in paths.
@@ -100,8 +103,8 @@ representing paths This0.W.E.A  This0.W.B  This0.C This1.D
  -paths.prefix(empty)= paths
  -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
  -(Css paths).prefix(Cs.C)= Css.prefix(Cs.C) U paths.prefix(Cs)
-  
-
+//the formalization rely on Cs1..Csn being a set.  
+//TODO: in code remove duplicates from the list
 
 -----------------------------------------------------------
 Part 3: methods(p,P)=Ms,  collect(p,Ps)=Ps'
