@@ -98,6 +98,7 @@ It is unobvious since we need to consider the n in Thisn.
 for example: reorganize(This0.A,This1.B,This2.C,This3.D)=((A)  (B)  (C)  (D));
 ((A)  (B)  (C)  (D)).prefix(W.E) = ((W.E.A  W.B  C) (D)),
 representing paths This0.W.E.A  This0.W.B  This0.C This1.D
+//Note: prexifx() and [from _] are related: reorganize(Ps[from This0.Cs])=reorganize(Ps).prefix(Cs)
 
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
