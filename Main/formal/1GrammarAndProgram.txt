@@ -314,4 +314,16 @@ _______
   * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
   * and so on        
  
+ Terminology:
+ Different operations and constructs can be 
+ categorized depending on how they explore the structure:
+ an "e" can be explored shallow if we never enter into any L
+ an "LC" can be explored weakly deep if we explore method bodies 
+  in a shallow way and nested libraries in a weakly deep way.
+ an "e" can be explored strongly deep if we explore all its subexpressions
+   strongly deep, meaning that we enter into all contained Ls
+ In this sense, ctxC and inside are shallow operations.
+ L(Cs) is weakly deep, since it can not select Ls inside method bodies.
+ On the other hand, well formedness and [from _] are strongly deep.
+ 
  

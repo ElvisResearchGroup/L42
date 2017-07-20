@@ -31,10 +31,12 @@ p ==> p'.update(p'.top()[C=L])
   where
   p.top()={_ implements Ps0, MCs  C:eC Ms}//MCs are already compiled
   eC not of form L//thus eC is the first point to execute
-  <paths; paths'>=usedPathsE(p,eC) //paths U paths' represents the Ps recursively used by eC,
-  // paths' needs to be coherent, while paths needs only to be typed
-  p0=multiNorm(p; paths U paths')//norm the part of p required by eC
-  path;paths' ||-p0 ~> p' //type all the paths
+  paths'=tryCoherentPaths(p,eC)//TODO: we change lots in here update code also for ||-
+  paths=tryTypedPaths(p,eC)
+  //paths and paths' represents the Ps recursively used by eC,
+  //paths' needs to be coherent, while paths needs only to be typed
+  p0=multiNorm(p; paths)//norm the part of p required by eC
+  paths;paths' ||-p0 ~> p' //type all the paths
   Norm | p'| empty |-eC ~> eC' : _<= imm Library //typing eC normally
   Norm | p'| empty |-toAny(paths',eC) ~> _ :_<= imm Library //check that even replacing paths with Any eC is well typed
   eC' -->p'+ r //execute the expression under the program and obtain a result
@@ -86,12 +88,7 @@ Simple operations:
  -(Css paths) U (Css' paths')=(paths U paths').push(Css U Css')
  -paths U empty=empty U paths = paths
 
- -(Css paths) \(Css' paths')=(path\path').push(Css\Css')
-   where Css\Css' ={Cs in Css|  Cs._ notin Css'}//Note: _ can be the empty Cs
- -empty \paths =empty
- -paths\empty =paths  //TODO: fix: this '\' operation may create a paths with leaning empty Css,
-  //that should not be well formed
-
+//TODO: remove  (Css paths) \(Css' paths') from code
 
 The prefix operation adds Cs in front of all the P in paths.
 It is unobvious since we need to consider the n in Thisn.
@@ -104,7 +101,7 @@ representing paths This0.W.E.A  This0.W.B  This0.C This1.D
  -paths.prefix(empty)= paths
  -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
  -(Css paths).prefix(Cs.C)= Css.prefix(Cs.C) U paths.prefix(Cs)
-//the formalization rely on Cs1..Csn being a set.  
+//the formalization relies on Cs1..Csn being a set.  
 //TODO: in code remove duplicates from the list
 
 -----------------------------------------------------------
@@ -200,55 +197,52 @@ _______
 
 
 -----------------------------------------------------------
-Part 5: usedPathsE(p,eC)= <paths;paths'>
+Part 5: reachability
 -----------------------------------------------------------
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
 //and this is also ok for paths,paths' for toAny
 
-- usedPathsE(p,eC)= <paths\paths';paths'>//assert that the result includes paths in usedPathsFix(p,paths, empty)  
-  Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation.
-  paths'=usedPathsFix(p,reorganize(Ps'), empty,Coherent)
-  paths0=reorganize(Ps,Ps') U paths' U (deepImplements(L1)U..U deepImplements(Ln)).pop()
-  paths=usedPathsFix(p,paths0, empty,Typed)
+-tryCoherentPaths(p,eC)=reachablePaths(p,reorganize(Ps'), empty,empty)
+  _,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
+
+-tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed)
+  paths0=reorganize({P|P inside eC}) U (stronglyDeepImplements(L1)U..U stronglyDeepImplements(Ln)).pop()
   L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
 
-- deepImplements(L0)=reorganize(L0.Ps)
-  U (deepImplements(L1) U..deepImplements(Ln)).pop()
-  L1..Ln={L|L inside M.e, M in L0.Ms}//TODO> was L instead of L0, check in code 
+- stronglyDeepImplements(L0)=reorganize(L0.Ps)
+  U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
+  L1..Ln={L|L inside M.e, M in L0.Ms}//TODO: was L instead of L0, check in code 
  
-- usedPathsFix(p,paths,Css,Phase0)= usedPathsFix(p, paths U paths0,Css',Phase0) // U on paths does minimize() internally
+- reachablePaths(p,paths,Css,Typed?)= reachablePaths(p, paths U paths0,Css',Typed?) // U on paths does minimize() internally
   paths.top()\Css!=empty
-  paths0=usedPathsL(p.top(),paths.top()\Css,Phase0)
-  Css'=minimize(paths.top() U Css)
+  Cs1..Csn=paths.top()\Css
+  paths0=usedInnerL(p.top()(Cs1),Cs1,Typed?) U ... U usedInnerL(p.top()(Csn),Csn,Typed?)
+  error if Csi= C._ and L(C) not of form LC //this allows for clearer error messages and less fragile code
+  Css'=minimize(paths.top() U Css)  
      
-- usedPathsFix(p,paths,Css,Phase0)=paths0
+- reachablePaths(p,paths,Css,Typed?)=paths0
   paths.top()\Css==empty
   if paths.pop() not empty
-    paths0=usedPathsFix(p.pop(),paths.pop(),empty,Phase0).push(Css)
+    paths0=reachablePaths(p.pop(),paths.pop(),empty,Typed?).push(Css)
   otherwise //this if is to avoid p.pop() undefined
     paths0=empty.push(Css)
-- usedPathsFix(p,empty,empty,Phase0) =empty   
+- reachablePaths(p,empty,empty,Typed?) =empty   
     
-- usedPathsL(L, Cs1..Csn,Phase0)=usedInnerL(L(Cs1),Cs1,Phase0) U ... U usedInnerL(L(Csn),Csn,Phase0)
-  where for all i in 1..n 
-  Csi=C._
-  L(C) of form LC //this allows for clearer error messages and less fragile code
-
-- usedInnerL(LC,Cs,Phase0)=paths.prefix(Cs)
+- reachableFromL(LC,Cs,Typed?)=paths.prefix(Cs)
   LC={_ implements Ps, M1..Mn Phase}//in implementation, error if not compiled
-  paths=reorganize(Ps) U usedInnerM(M1,Phase0) U... U usedInnerM(Mn,Phase0))
+  paths=reorganize(Ps) U reachableFromM(M1,Typed?) U... U reachableFromM(Mn,Typed?))
   Phase in{None,Norm}
   
-- usedInnerL(LC,Cs,Phase0)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
+- reachableFromL(LC,Cs,Typed?)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
   LC.Phase not in{None,Norm}
 
-- usedInnerM(C:L,phase0)= usedInnerL(L,empty,phase0).pop()
-- usedInnerM(mwt,Coherent)=reorganize({P| P inside mwt}) 
-- usedInnerM(mwt,Typed)=reorganize({P| P inside mwt}) 
-    U (usedInnerL(L1,empty,Typed) U...U usedInnerL(Ln,empty,Typed)).pop()
+- reachableFromM(C:L,Typed?)= reachableFromL(L,empty,Typed?).pop()
+- reachableFromM(mwt,empty)=reorganize({P| P inside mwt}) 
+- reachableFromM(mwt,Typed)=reorganize({P| P inside mwt}) 
+    U (reachableFromL(L1,empty,Typed) U...U reachableFromL(Ln,empty,Typed)).pop()
     L1..Ln={L| L inside mwt.e?}
 
-  non determinism heuristic used in usedPathsE(p,eC):
+  non determinism heuristic used in tryCoherentPaths(p,eC):
   **if P.m(_) inside e, P in Ps'
   **if p(Pi).Phase=Coherent, Pi  in Ps' // note, if p(P) is not defined, the path will be consider an any, and error will be raised somewhere else. 
   **if ( _ T? x=P _ _) inside e and T? != class Any, P in Ps'.
@@ -261,10 +255,10 @@ Part 5: usedPathsE(p,eC)= <paths;paths'>
   
 
 -----------------------------------------------------------
-Part 6: paths;path' ||-p ~> p,  toAny(paths, eC) //assumes that p does not have evil pushes
+Part 6: paths;paths' ||-p ~> p,  toAny(paths, eC) //assumes that p does not have evil pushes
 -----------------------------------------------------------
 (pPop)
-paths;path' ||- p  ~>  p1.update(L)
+paths;paths' ||- p  ~>  p1.update(L)
   where
   p1=p.growFellow(p0)
   paths.pop();paths'.pop() ||- p.pop() ~> p0
@@ -280,10 +274,12 @@ Css;Css'  ||- p  ~> L,empty // 'L,empty' is a program with only 1 level
 empty;empty ||- p ~> p
 
 (pL)
-Cs1..Csn;Cs1'..Csk' ||-p ~> p.top()[Cs1=L1,.. Csn=Ln][Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also inside all somehow contained Ls
+Css;Cs1'..Csk' ||-p ~> p'[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also inside all somehow contained Ls
   where
+  Cs1..Csn=Css\Cs1'..Csk' 
   forall Csi in 1..n : Typed |-p.navigate(Csi) ~> Li 
-  forall Csj' in 1..k: Coherent |-p.navigate(Csj') ~> Lj' 
+  p'=p.top()[Cs1=L1,.. Csn=Ln]//TODO: in code, insert p' to avoid scribbling over
+  forall Csj' in 1..k: Coherent |-p'.navigate(Csj') ~> Lj' 
   //assert Csj' not contained, even as postfix in Cs1..Csn //Note: James believe this does not hold
   // the type system can be optimized to just assert  tests for libraries that are
   // annotated as already checked 
