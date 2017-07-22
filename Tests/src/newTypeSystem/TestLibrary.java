@@ -57,6 +57,21 @@ public static List<Object[]> createData() {
 //err
 },{lineNumber(),"{}","{C:{method D() this() } D:{class method This ( mut This that )}}",ErrorKind.LibraryNotCoherent
 
+
+},{lineNumber(),"{}",
+"{A:{class method This ()\n"
++ " class method Void #next()void\n"
++ " class method Void #checkEnd()void"
++ " }\n"+
+"B:{class method This ()}\n"+
+"Test:{\n"+
+"  class method Void foo()\n"+
+"  exception B (\n"+
+"    with class A x in A (exception B())\n"+
+"  )\n"+
+"  }}",sameAsFormer
+
+
 },{lineNumber(),"{}",
 "{A:{class method This ()}\n"+
 "B:{class method This ()}\n"+
@@ -134,7 +149,7 @@ ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCo
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
 TOut out;try{out=TypeSystem.instance().type(TIn.top(Phase.Coherent,p,cb1Pre));}
 catch(NotOkToStar coh){
-  assert s2==ErrorKind.LibraryNotCoherent;
+  assert s2==ErrorKind.LibraryNotCoherent:s2;
   return;
   }
 if(s2 instanceof ErrorKind){

@@ -28,11 +28,8 @@
 
     res=Use.Override[UnsafeRefactor.MiniDataTrait();lib]<><that
 
-    error on Refactor2.ClassClash
-      X"Someone redefined part of the implementation of AlphaNumeric"
-
-    error on Refactor2.MethodClash
-      X"Someone redefined parts of the implementation of Alphanumeric badly"
+    error on Refactor2.Fail, Location.NotAvailable
+      X""
 
     return K<><res
     }

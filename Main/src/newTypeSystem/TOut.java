@@ -86,14 +86,15 @@ public This trCapture(Program p,On k){
   if(k.getKind()==SignalKind.Error){return self();}
   This result=trClean();
   if(k.getKind()==SignalKind.Exception){
-  result.exceptions=new ArrayList<>();
-  result.returns=this.returns;
-  for(Path pi: exceptions){
-    if(null!=TypeSystem.subtype(p,pi,k.getT().getPath())){
-      result.exceptions.add(pi);
+    result.exceptions=new ArrayList<>();
+    result.returns=this.returns;
+    for(Path pi: exceptions){
+      if(null!=TypeSystem.subtype(p,pi,k.getT().getPath())){
+        result.exceptions.add(pi);
+        }
       }
+    return result;
     }
-  }
 //otherwise, is return
   result.exceptions=this.exceptions;
   result.returns=new ArrayList<>();

@@ -122,7 +122,9 @@ public interface TsLibrary extends TypeSystem{
         //exists P0 in Ps0 such that p|-P1<=P0
         boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
           P0->null==TypeSystem.subtype(newIn.p, P1, P0.getPath()));
-        if(!ok){return new TErr(newIn,"",P1.toImmNT(),ErrorKind.MethodLeaksExceptions);}
+        if(!ok){
+          return new TErr(newIn,"",P1.toImmNT(),ErrorKind.MethodLeaksExceptions);
+          }
         }
       if(!out.toOk().returns.isEmpty()){
         return new TErr(newIn,"",out.toOk().returns.get(0),ErrorKind.MethodLeaksReturns);

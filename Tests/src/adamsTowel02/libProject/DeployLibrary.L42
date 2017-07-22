@@ -26,8 +26,9 @@ X.AssertionFail msg(Path that,Library of) (
 class method
 Library  exposeAsLibrary(Library that, Path path)
 exception
-    Refactor2.PathUnfit,
-    Refactor2.PrivacyCoupuled {
+,,,,Refactor2.PathUnfit,
+,,,,Refactor2.PrivacyCoupuled
+,,,,Location.NotAvailable {
   //X[path!=Path"This"]
   this.checkTargetExists(that,path:path)//throws Refactor2.PathUnfit
   var Library res=that
@@ -68,7 +69,7 @@ exception Refactor2.PathUnfit (
 
 method
 Library <><(Library that)
-exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled {
+exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled,Location.NotAvailable {
   Debug(S"1")
   var Library res=This.exposeAsLibrary(that,path:this.path())
   Debug(S"2")

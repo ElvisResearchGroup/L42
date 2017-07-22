@@ -146,13 +146,14 @@ Library of(class Any that, class Any per) exception NotValidUnit, NotSameSupport
 
 
 class method
-Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, NotSameSupport {
+Library of(class Any c1, class Any c2,Library trait)
+exception NotValidUnit, NotSameSupport {
   //check c1.#inner() and c2.#inner() are same type t
   t1=Location.Lib(classObj:c1).method(selector:\"#inner()").returnType()
-  exception on Refactor2.SelectorUnfit
+  exception on Location.NotAvailable
     NotValidUnit"Provided class "[GetMyName(c1)]" do not offers 'method Support #inner()'"
   t2=Location.Lib(classObj:c2).method(selector:\"#inner()").returnType()
-  exception on Refactor2.SelectorUnfit
+  exception on Location.NotAvailable
     NotValidUnit"Provided class "[GetMyName(c2)]" do not offers 'method Support #inner()'"
   r=t1.refTo()
   if r!=t2.refTo() (exception NotSameSupport
@@ -166,7 +167,7 @@ Library of(class Any c1, class Any c2,Library trait) exception NotValidUnit, Not
   traitAnd:=Refactor2.redirect(path:\"T1" into:c1)<><traitAnd
   traitAnd:=Refactor2.redirect(path:\"T2" into:c2)<><traitAnd
   return Use.Over[res]<><traitAnd
-  exception on Refactor2.Fail
+  exception on Refactor2.Fail, Location.NotAvailable
     NotValidUnit"The provided classes "[GetMyName(c1)]" and "[GetMyName(c2)]" are not  valid Unit classes."
   }
 
