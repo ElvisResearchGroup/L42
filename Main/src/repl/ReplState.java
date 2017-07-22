@@ -67,6 +67,7 @@ public static ReplState start(String code){
     try{
       //parse
       Expression.ClassB codeTmp=(ClassB) Parser.parse("Repl","{"+code+"}");  
+      Position fullP=codeTmp.getP();
       //new original
       ClassReuse newOriginal = this.originalL;      
       List<ast.Expression.ClassB.Member> newOriginalMs=newOriginal.getInner().getMs();
@@ -78,11 +79,12 @@ public static ReplState start(String code){
       for( Member m:this.desugaredL.getMs()){
         if(!(m instanceof NestedClass)){continue;}
         NestedClass nc=(NestedClass)m;
+        fullP=fullP.sum(nc.getP());
         newMs.add(new ClassB.NestedClass(Doc.empty(),nc.getName(),cbEmpty,nc.getP()));
         nestedAdded+=1;
         }
       newMs.addAll(codeTmp.getMs());
-      codeTmp=codeTmp.withMs(newMs);
+      codeTmp=codeTmp.withMs(newMs).withP(fullP);
       Expression code2=Desugar.of(codeTmp);
       ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
       // TODO: will die after new reduction Refresh of position identities, it is used to generate correct Java code.

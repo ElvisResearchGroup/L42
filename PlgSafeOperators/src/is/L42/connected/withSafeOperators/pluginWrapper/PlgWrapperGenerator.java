@@ -338,7 +338,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
     if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
     if(mt.getExceptions().size()!=1){return false;}
-    if(!mt.getExceptions().get(0).equals(Path.outer(0))){return false;}
+    if(!mt.getExceptions().get(0).equals(Type.immThis0)){return false;}
     if(!mt.getReturnType().equals(Type.immVoid)){return false;}
     return true;//no need to check return type, since is just thrown as error
     }

@@ -1,7 +1,8 @@
 {
 StateUnfit:Message.$<><{ implements Guard}
+InvariantUnfit:Message.$<><{ implements Guard}
 //Invariant:...
-Wither:...
+//Wither:...
 //AddToS:...
 //AddEquals:...
 
@@ -35,7 +36,127 @@ Base:{
   ,,,,Refactor2.SubtleSubtypeViolation
     Use.Override[this()]<><that
   }
+
+EnsureInvariant:K<><{
+  Path path
+  method
+  Library<><(Library that)
+  exception NotAvailable {
+    i=Location.Lib(that).nested(path:this.path())
+      (
+      m=i.method(selector:\"#invariant()")
+      catch exception NotAvailable
+        return Refactor2.compose(
+          that and:{read method Void #invariant()void})
+       void
+       )
+    //here I'm sure #invariant() is defined, check has right type
+      (
+      unused=Refactor2.compose(that and:{read method Void #invariant()})
+      exception on Refactor2.Fail
+        InvariantUnfit"Method '#invariant()' has incompatible type"
+      void //TODO: somehow it accept that InvariantUnfit is not in the throws... fixing this bug
+      )
+    return that
+    }
+  }
+
+PlgDataOpen:Refactor2.JavaImport<><{
+  //@plugin is.L42.connected.withSafeOperators
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
+  class method
+  Library dataOpen(Library that,Path path,S fresh,S mutKName,S immKName)
+  exception 
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ParseFail
+  ,,,,Refactor2.ClassUnfit
+  ,,,,Refactor2.MethodClash
+
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr  
+  }
+DataOpen:K<><{
+  Path path, S fresh, S mutKName, S immKName
+  method
+  Library <><(Library that)
+  exception 
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ParseFail
+  ,,,,Refactor2.ClassUnfit
+  ,,,,Refactor2.MethodClash
+    PlgDataOpen.dataOpen(that,path:this.path(),
+      fresh:this.fresh(),
+      mutKName:this.mutKName(),
+      immKName:this.immKName())
+  }
+
+PlgWrapExposers:{
+  //@plugin is.L42.connected.withSafeOperators
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
+  class method
+  Library wrapExposers(Path path,Library top,Selector fresh)
+  exception 
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ClassUnfit
+
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr  
+  }
+WrapExposers:K<><{
+  Selector that, Path of
+  method
+  Library <><(Library that)
+  exception 
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ClassUnfit
+    PlgWrapExposers.wrapExposers(
+      path:this.of(),top:that,fresh:this.that()
+    )
+  }
+
 /*
+DataClose:K<><{
+  Location.Method that, Path of
+  method Library <><(Library that)
+  exception 
+  ,,,,Refactor2.SelectorUnfit
+  ,,,,Refactor2.PathUnfit
+  ,,,,Refactor2.ClassUnfit 
+  ,,,,Refactor2.ClassClash
+  ,,,,Refactor2.MethodClash (
+    s=this.that().selector()
+    ts=this.that().parameterTypes()
+    lib=WrapExposers(s of:this.of())<><that
+    solver=Use[with n in s.names().vals(), t in ts.vals() (
+      if t.mdf().isFwdImm() (use[This.getSetTraitImm()])
+      else (use[This.getSetTraitCapsule()])
+      )]
+    Refactor2.Method[closeState:this.of()]<><
+      Use.Override[lib]<><solver<><{}
+    )
+  class method
+  Library getSetTraitImm(){
+    Ti:{}
+    read method Ti xi() this.#1xi() //getter
+    mut method Void xi(Ti that)( //setter, on need
+      this.#1xi(that)
+      this.invariant()
+      )
+    }
+  class method
+  Library getSetTraitCapsule(){
+    Ti:{}
+    read method read Ti xi() this.#1xi() //getter
+    mut method Void xi(capsule Ti that)( //setter, on need
+      this.#1xi(that)
+      this.invariant()
+      )
+    }
+  }
+
+
 class method
 Library <>< (Library that)
 exception StateUnfit, MetaGuard

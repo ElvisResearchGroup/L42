@@ -108,85 +108,48 @@ Decorate: L0,path
   L ><>= DataClose(fresh,mutK,immK,path)
   L
 
-EnsureInvariant in 42
-EnsureInvariant:K<><{
-  Path path
-  Fail:Message.$<><{????}
-  method
-  Library<><(Library that)
-  exception NotAvailable {
-    i=Location.Lib(that).nested(path:path)
-      (
-      m=i.method(selector:\"#invariant()")
-      catch exception NotAvailable
-        return Refactor2.compose(
-          that and:{read method Void #invariant()void})
-       void
-       )
-    //here I'm sure #invariant() is defined, check has right type
-      (
-      Refactor2.compose(that and:{read method Void #invariant()})
-      exception on Refactor2.Fail"Method invariant has incompatible type"
-      void
+class method
+Location.Method k(String fresh,Library that, Path of,Library opened){
+  i1=Location.Lib(that).navigate(of)
+  i2=Location.Lib(that).navigate(of)
+  with m2 in i2.methods().vals() (
+    s2=m2.selector()
+    if s2.name()==fresh (
+      m1=i1.method(selector:s2)
+      catch exception Location.NotAvailable return m2
       )
-    return that
+    )
+  error X"fresh constructor not added"
+  }
+
+DataClose:{
+  Location.Method that, Path of
+  class method Library <><(Library that) (
+    lib=WrapExposers(this.that() of:this.of())<><that
+    solver=Use[with
+    ,,,,n in freshK.selector().names().vals()
+    ,,,,t in freshK.parameterTypes().vals() (
+      if t.mdf().is(\fwdImm) (use[This.getSetTraitImm()])
+      else (use[This.getSetTraitCapsule()])
+      )]
+    Refactor2.Method[close:path]<><Use.Override[lib]<><solver<><{}
+    )
+  class method
+  Library getSetTraitImm(){
+    Ti:{}
+    read method Ti xi() this.#1xi() //getter
+    mut method Void xi(Ti that)( //setter, on need
+      this.#1xi(that)
+      this.invariant()
+      )
+    }
+  class method
+  Library getSetTraitCapsule(){
+    Ti:{}
+    read method read Ti xi() this.#1xi() //getter
+    mut method Void xi(capsule Ti that)( //setter, on need
+      this.#1xi(that)
+      this.invariant()
+      )
     }
   }
-
-
-PlgDataOpen:Refactor2.JavaImport<><{
-  //@plugin is.L42.connected.withSafeOperators
-  //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
-  class method
-  Library dataOpen(Library that,Path path,S fresh,S mutKName,S immKName)
-  exception 
-  ,,,,Refactor2.PathUnfit
-  ,,,,Refactor2.ParseFail
-  ,,,,Refactor2.ClassUnfit
-  ,,,,Refactor2.MethodClash
-
-  class method
-  Library #pluginUnresponsive(Library binaryRepr)
-    binaryRepr  
-  }
-DataOpen:{
-  Path path, S fresh, S mutKName, S immKName
-  class method
-  Library <><(Library that))
-  exception 
-  ,,,,Refactor2.PathUnfit
-  ,,,,Refactor2.ParseFail
-  ,,,,Refactor2.ClassUnfit
-  ,,,,Refactor2.MethodClash
-    PlgDataOpen.dataOpen(that,path:this.path(),
-      fresh:????,
-      mutKName:this.mutKName(),immKName:this.immKName())
-  }
-
-DataClose: freshName, mutK,immK, L1, path
-L2=L1[wrap method bodies]<><{
-  //for all methods using this.#xi_$_j(),or exposer name
-  mdf method T m(ps) (r=e this.invariant() r)
-  //hard, need to work also for private ones
-  //for mdf not capsule, ok to leave untouched the (stupid) ones with mdf==capsule
-  //inded, if this used to call exposer, can not be used to open capsule
-  }
-return Refactor2.Method[close:path]<><Use.Override[lib]<><{
-  read method read(Ti) xi() this.#1xi() //getter
-  mut method Void xi(Ti that)( //setter, on need
-    this.#1xi(that)
-    this.invariant()
-    )
-}
-
-WrapExposer(path,L1,mutKname)
-  exposerNames=L1(path)(mutKName(??) ).ms().names()
-  extend MethodRenames()
-    -add counter
-    -visit mwt WITH inner //no inner is the exposer itself
-     assert counter=0
-     super
-     if counter>0 resetCounter and apply wrap
-    -override rename ms
-      throw if receiver not "this"
-      else counter+=1;

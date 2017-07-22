@@ -11,9 +11,16 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+
 
 public class HtmlFx{
   public WebEngine webEngine;
@@ -43,6 +50,28 @@ public class HtmlFx{
       alert.showAndWait();
       //alert.setOnCloseRequest(e->{  alert.close(); });
       });
+    //---cut and paste
+    browser.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+    if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
+      // PASTE
+      Clipboard clipboard = Clipboard.getSystemClipboard();
+      String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
+      webEngine.executeScript(" pasteContent(\""+
+              org.apache.commons.text.StringEscapeUtils
+              .escapeEcmaScript(content)+"\") ");
+    }
+  });
+  // retrieve copy event via javascript:alert
+  webEngine.setOnAlert((WebEvent<String> we) -> {
+    if(we.getData()!=null && we.getData().startsWith("copy: ")){
+       // COPY
+       final Clipboard clipboard = Clipboard.getSystemClipboard();
+       final ClipboardContent content = new ClipboardContent();
+       content.putString(we.getData().substring(6));
+       clipboard.setContent(content);    
+    }
+});
+    //---- 
     root.getChildren().add(browser);
     jfxPanel.setScene(scene);
     return null;

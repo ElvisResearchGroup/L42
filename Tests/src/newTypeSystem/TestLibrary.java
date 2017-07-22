@@ -57,6 +57,36 @@ public static List<Object[]> createData() {
 //err
 },{lineNumber(),"{}","{C:{method D() this() } D:{class method This ( mut This that )}}",ErrorKind.LibraryNotCoherent
 
+},{lineNumber(),"{}",
+"{A:{class method This ()}\n"+
+"B:{class method This ()}\n"+
+"Test:{\n"+
+"  class method Void foo()\n"+
+"  exception A (\n"+
+"    exception B()\n"+
+"  )\n"+
+"  }}",ErrorKind.MethodLeaksExceptions
+
+},{lineNumber(),"{}",
+"{Top:{class method Library (){A:{class method This ()}\n"+
+"B:{class method This ()}\n"+
+"Test:{\n"+
+"  class method Void foo()\n"+
+"  exception A (\n"+
+"    exception B()\n"+
+"  )\n"+
+"  }}}}",ErrorKind.MethodLeaksExceptions
+
+},{lineNumber(),"{}",
+"{A:{class method This ()}\n"+
+"B:{class method This (A that)}\n"+
+"Test:{\n"+
+"  class method Void foo()\n"+
+"  exception A {(\n"+
+"    a=void   exception on A (B)   void\n"+
+"  ) return void}\n"+
+"  }}",ErrorKind.MethodLeaksExceptions
+
 
 //fromming and calling method from other classes
 //ok

@@ -87,6 +87,7 @@ public This trCapture(Program p,On k){
   This result=trClean();
   if(k.getKind()==SignalKind.Exception){
   result.exceptions=new ArrayList<>();
+  result.returns=this.returns;
   for(Path pi: exceptions){
     if(null!=TypeSystem.subtype(p,pi,k.getT().getPath())){
       result.exceptions.add(pi);
@@ -94,6 +95,7 @@ public This trCapture(Program p,On k){
     }
   }
 //otherwise, is return
+  result.exceptions=this.exceptions;
   result.returns=new ArrayList<>();
   for(Type ti: returns){
     if(null!=TypeSystem.subtype(p,ti.getPath(),k.getT().getPath())){

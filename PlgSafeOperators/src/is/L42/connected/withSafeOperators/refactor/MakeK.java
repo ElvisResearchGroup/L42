@@ -153,7 +153,7 @@ T'i=Tki[with mdf=imm]
   "  res.#invariant()",
   "  res",
   "  )",
-  "class method This mutK(Tbi xi) (",
+  "class method This immK(Tbi xi) (",
   "  res=This.fwdKj(xi:xi)",
   "  res.#invariant()",
   "  res",

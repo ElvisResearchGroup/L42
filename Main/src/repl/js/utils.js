@@ -3,7 +3,6 @@ allDivs=[
   "b",
   "c"
   ];
-  
 function doOnLoad(){
   hide(allDivs);
   // Get every l42 Div
@@ -14,7 +13,7 @@ function doOnLoad(){
       theme:"ace/theme/l42_eclipse"
       });
     setAllAs("l42Big",{
-      fontSize:"115%",
+      fontSize:"215%",
       maxLines:3000,
       mode:"ace/mode/l42",
       theme:"ace/theme/l42_eclipse"
@@ -31,6 +30,16 @@ function doOnLoad(){
       mode:"ace/mode/html",
       theme:"ace/theme/github"
       });
+    var editor =ace.edit("textArea");
+    pasteContent=function(content){//write on global var
+      editor.onPaste(content);
+      }
+    editor.getCopyText = function() {
+      var text = this.getSelectedText();
+      javascript:alert("copy: "+text);
+      this._signal("copy", text);
+      return text;
+      };
   }
 function setAllAs(className,options){
   var list = document.getElementsByClassName(className);

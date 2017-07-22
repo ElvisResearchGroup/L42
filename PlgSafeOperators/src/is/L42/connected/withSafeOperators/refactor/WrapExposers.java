@@ -31,24 +31,22 @@ import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
 public class WrapExposers {
-public static ClassB wrapExposers(PData p,List<Ast.C>path,ClassB top,String freshK,String mutK) throws PathUnfit, ClassUnfit{
+public static ClassB wrapExposers(PData p,List<Ast.C>path,ClassB top,MethodSelector freshK) throws PathUnfit, ClassUnfit{
   if(!MembersUtils.isPathDefined(top, path)){throw new RefactorErrors.PathUnfit(path);}
   if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
   ClassB lPath=top.getClassB(path);
   //discover constructor
-  Optional<MethodWithType> k1 = lPath.mwts().stream().filter(m->m.getMs().getName().equals(freshK)).findAny();
-  MethodSelector kSel=k1.get().getMs().withName(mutK);//now I have field names
-  MethodWithType k=(MethodWithType) lPath._getMember(kSel);
+  MethodWithType k=(MethodWithType) lPath._getMember(freshK);
   assert k!=null;
   //collect capsule names
   List<String> capsNames=new ArrayList<>();
-  for(int i=0;i<kSel.nameSize();i++){
-    if(k.getMt().getTs().get(i).getMdf()==Mdf.Capsule){capsNames.add(kSel.name(i));}
+  for(int i=0;i<freshK.nameSize();i++){
+    if(k.getMt().getTs().get(i).getMdf()==Mdf.MutableFwd){capsNames.add(freshK.name(i));}
     }
-  //collect getters for capsula names
+  //collect getters for capsule names
   List<CsMxMx> sel=new ArrayList<>();
   for(MethodWithType mwti:lPath.mwts()){
-    if(!TsLibrary.coherentF(p.p,k1.get(),mwti)){continue;} 
+    if(!TsLibrary.coherentF(p.p,k,mwti)){continue;} 
     // with non read result, assert is lent
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
     if(mdf==Mdf.Readable){continue;}
@@ -90,6 +88,12 @@ class WrapAux extends RenameMethodsAux{
     count=0;
     ClassB.MethodWithType res=super.visit(mwt);
     if(count==0){return res;}
+    if(mwt.getMt().getMdf()==Mdf.Capsule){
+      //ok to leave untouched the (stupid) ones with mdf==capsule
+      //inded, if this used to call exposer, can not be used to open capsule
+      return res;
+      }
+    assert mwt.getMt().getMdf()==Mdf.Lent || mwt.getMt().getMdf()==Mdf.Mutable;
     //else, replace with the pattern
     if(mwt.getMt().getReturnType().getMdf()==Mdf.Lent){
       LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
