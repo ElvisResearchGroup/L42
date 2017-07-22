@@ -8020,11 +8020,11 @@ Library moveToAbstract(This2.Path that, Library of)
 class method 
 This2.X.AssertionFail msg(This2.Path that, Library of) 
 class method 
-Library exposeAsLibrary(Library that, This2.Path path) exception This2.Refactor2.PathUnfit, This2.Refactor2.PrivacyCoupuled 
+Library exposeAsLibrary(Library that, This2.Path path) exception This2.Refactor2.PathUnfit, This2.Refactor2.PrivacyCoupuled, This2.Location.NotAvailable 
 class method 
 Void checkTargetExists(Library that, This2.Path path) exception This2.Refactor2.PathUnfit 
 method 
-Library #leftrightleft(Library that) exception This2.Refactor2.PathUnfit, This2.Refactor2.PrivacyCoupuled }}}
+Library #leftrightleft(Library that) exception This2.Refactor2.PathUnfit, This2.Refactor2.PrivacyCoupuled, This2.Location.NotAvailable }}}
 GuiPlugin: {/*@plugin
 L42.is/connected/withHtml
 */}

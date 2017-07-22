@@ -27,8 +27,6 @@ Main:{
 
   return ExitCode.normal()
   }
-}
-
 /*
 resource on lib ok
 resource on string ok
@@ -36,3 +34,5 @@ others need to be parsable/stringable since
 otherwise we may end up violating invariant invariant: the private constructor used only in the class itself.
 can we make location stuff stringable?
 data ideally would generate a from(string) method...*/
+}
+
