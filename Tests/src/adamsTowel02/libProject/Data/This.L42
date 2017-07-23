@@ -116,7 +116,7 @@ WrapExposers:K<><{
     )
   }
 
-/*
+
 DataClose:K<><{
   Location.Method that, Path of
   method Library <><(Library that)
@@ -129,12 +129,49 @@ DataClose:K<><{
     s=this.that().selector()
     ts=this.that().parameterTypes()
     lib=WrapExposers(s of:this.of())<><that
+    dec=
     solver=Use[with n in s.names().vals(), t in ts.vals() (
       if t.mdf().isFwdImm() (use[This.getSetTraitImm()])
       else (use[This.getSetTraitCapsule()])
       )]
     Refactor2.Method[closeState:this.of()]<><
       Use.Override[lib]<><solver<><{}
+    )
+  class method 
+  Library dec(Library that,Path of,S name,Location.Type.RefTo r)(
+    Refactor2.RedirectRefTo(path:\"Ti" into:r)
+    <><Refactor2.Method[rename:\"xi()" of:of into:Selector.from(string:na]
+/*
+-check tat all time call coherentF use program.navigate in java
+-no, expand wrapeposer:
+rename .exposer() ->freshExposer()
+rename decl exposer() ->decl freshExposer()
+replace decl get() ->decl freshXi()+ delegator get() this.freshXi()
+replace decl set() ->decl freshXi(that)+ delegator set(that) (this.freshXi(that) invariant())
+replace delc freshK ->decl freshK(freshx1..freshxn) +delegator freshK
+close class, make freshK private.
+
+
+xi(), xi(that) may start with #, or not be there at all
+OptSelector gi=getSel(intro,xi)
+OptSelector si=setSel(intro,xi)
+//filter before gi.isPresent() | si.isPresent()
+var Library res=select(isImm,gi.isPresent(),si.isPresent())
+if gi.isPresent() (
+  res=><>Refactor2.Method[rename:\"xi()" of:of into:gi.get()]
+  )
+if si.isPresent() (
+  res=><>Refactor2.Method[rename:\"xi(that)" of:of into:si.get()]
+  )
+ref=><>Refactor2.RedirectRefTo(path:\"Ti" into:r)
+ref
+)
+
+getSel(into,xi)
+what if both xi and #xi defined?
+be coherent with makeK?
+
+*/
     )
   class method
   Library getSetTraitImm(){
@@ -156,7 +193,7 @@ DataClose:K<><{
     }
   }
 
-
+/*
 class method
 Library <>< (Library that)
 exception StateUnfit, MetaGuard
