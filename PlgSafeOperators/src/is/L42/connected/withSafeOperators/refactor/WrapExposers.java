@@ -2,12 +2,17 @@ package is.L42.connected.withSafeOperators.refactor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import ast.ExpCore;
 import ast.Ast;
 import ast.Ast.C;
+import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
@@ -31,39 +36,112 @@ import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
 public class WrapExposers {
+
+static MethodSelector ms(MethodSelector s1,Map<String,String> nameMap){
+  assert !s1.isUnique();
+  String name=s1.getName();
+  boolean hash=name.startsWith("#");
+  if(hash){name=name.substring(1,name.length());}
+  String n2=nameMap.get(name);
+  assert n2!=null;
+  if(hash){n2="#"+n2;}
+  return s1.withName(n2);
+  }
+
 public static ClassB wrapExposers(PData p,List<Ast.C>path,ClassB top,MethodSelector freshK) throws PathUnfit, ClassUnfit{
   if(!MembersUtils.isPathDefined(top, path)){throw new RefactorErrors.PathUnfit(path);}
   if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
-  ClassB lPath=top.getClassB(path);
+  Program pPath=p.p.navigate(path);
+  ClassB lPath=pPath.top();
   //discover constructor
   MethodWithType k=(MethodWithType) lPath._getMember(freshK);
   assert k!=null;
   //collect capsule names
   List<String> capsNames=new ArrayList<>();
+  //map state selectos->fresh selectors
+  Map<String,String> nameMap=new HashMap<>();
   for(int i=0;i<freshK.nameSize();i++){
-    if(k.getMt().getTs().get(i).getMdf()==Mdf.MutableFwd){capsNames.add(freshK.name(i));}
+    String ni=freshK.name(i);
+    if(k.getMt().getTs().get(i).getMdf()==Mdf.MutableFwd){capsNames.add(ni);}
+    nameMap.put(ni,Functions.freshName(ni, L42.usedNames));
     }
   //collect getters for capsule names
+  Set<MethodSelector>msk=new HashSet<>();
+  msk.add(freshK);
   List<CsMxMx> sel=new ArrayList<>();
   for(MethodWithType mwti:lPath.mwts()){
-    if(!TsLibrary.coherentF(p.p,k,mwti)){continue;} 
+    if(!TsLibrary.coherentF(pPath,k,mwti)){continue;}
+    assert !mwti.get_inner().isPresent();
+    msk.add(mwti.getMs());
     // with non read result, assert is lent
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
     if(mdf==Mdf.Readable){continue;}
     assert mdf!=Mdf.Immutable;//since capsule field
-    if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}
-    sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs()));
-    }
-  //fill map
+    if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}    
+    sel.add(new CsMxMx(path,false,mwti.getMs(),ms(mwti.getMs(),nameMap)));
+    } 
   WrapAux w=new WrapAux(p.p,sel,top);
   //call and return aux
-  return (ClassB)top.accept(w);
+  ClassB newTop=(ClassB)top.accept(w);
+  return delegateState(msk,nameMap,newTop,p.p,path,freshK);
   }
+
+private static ClassB delegateState(
+        Set<MethodSelector> msk,
+        Map<String, String> nameMap,
+        ClassB newTop, Program p, List<C> path,
+        MethodSelector freshK) {
+  ClassB lPath=newTop.getClassB(path);
+  List<MethodWithType> newMwts=new ArrayList<>();
+  for(MethodWithType mwt:lPath.mwts()){
+    if(!msk.contains(mwt.getMs())){newMwts.add(mwt);}
+    Mdf mdf=mwt.getMt().getMdf();
+    Mdf resMdf=mwt.getMt().getReturnType().getMdf();
+    boolean isGet=mwt.getMs().getNames().isEmpty();
+    if(mdf==Mdf.Class){
+      //  replace delc freshK ->decl freshK(freshx1..freshxn) +delegator freshK
+      continue;
+      }
+    if(isGet &&(resMdf==Mdf.Readable || resMdf==Mdf.Immutable )){
+      //  replace decl get() ->decl freshXi()+ delegator get() this.freshXi()  
+      continue;
+      }
+    if(isGet){
+      // Exposer: should be already fixed:
+      //rename .exposer() ->freshExposer()
+      //  rename decl exposer() ->decl freshExposer()  
+      continue;
+     }
+  //  replace decl set() ->decl freshXi(that)+ delegator set(that) (this.freshXi(that) invariant())
+    
+    }
+//  close class, make freshK private.
+
+//return newTop with newLPath
+return null;
+}
+void delegator(boolean callInvariant,List<MethodWithType> newMwts, MethodWithType original,MethodSelector delegate){
+  assert !original.get_inner().isPresent();
+  assert original.getMs().nameSize()==delegate.nameSize();
+  Position p=original.getP();
+  MethodWithType delegateM=original.withMs(delegate);
+  ExpCore.MCall delegateMCall=new ExpCore.MCall(
+          new ExpCore.EPath(p, Path.outer(0)), delegate,Doc.empty(),
+          tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),p);
+  if(!callInvariant){original=original.withInner(delegateMCall);}
+  else{
+    ExpCore.Block b=WrapAux.e.withDeci(0,WrapAux.e.getDecs().get(0).withInner(delegateMCall));
+    original=original.withInner(b);
+    }
+  newMwts.add(original);
+  newMwts.add(delegateM);
+  }
+
 }
 class WrapAux extends RenameMethodsAux{
   int count=0;
-  private static X thisX=new X(Position.noInfo,"this");
-  private static ExpCore.Block e=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+  static X thisX=new X(Position.noInfo,"this");
+  static ExpCore.Block e=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
     "{method m() (r=void this.#invariant() r)}"
     ).getMs().get(0).getInner();
   public WrapAux(Program p, List<CsMxMx> renames, ClassB top) {
