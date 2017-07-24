@@ -31,8 +31,8 @@ p ==> p'.update(p'.top()[C=L])
   where
   p.top()={_ implements Ps0, MCs  C:eC Ms}//MCs are already compiled
   eC not of form L//thus eC is the first point to execute
-  paths'=tryCoherentPaths(p,eC)//TODO: we change lots in here update code also for ||-
   paths=tryTypedPaths(p,eC)
+  paths'=tryCoherentPaths(p,eC)//TODO: we change lots in here update code also for ||-
   //paths and paths' represents the Ps recursively used by eC,
   //paths' needs to be coherent, while paths needs only to be typed
   p0=multiNorm(p; paths)//norm the part of p required by eC
@@ -199,8 +199,32 @@ _______
 -----------------------------------------------------------
 Part 5: reachability
 -----------------------------------------------------------
+Understanding the treatements of Ps in eC.
+Consider this part of a project:
+  C:{interface method E k()}
+  eC= A.foo(B,{ implements C,G method D m() F.foo()}
+               G:{interface method H h()})
+  D:{}
+In the current design we divide A,B,C,D,E,F into 3 categories:
+  coherent: A 
+  typed:    B,C,E
+  alive:    D,F
+Note that E is typed since C is typed; C is typed since C is implemented.
+This design allows that using introspection on {...},
+if you succede navigating out, all is typed.
+Another, more expressive option would be to have 
+  coherent: A     //NOT WHAT WE ARE DOING
+  typed:    B     //NOT WHAT WE ARE DOING
+  norm:     C     //NOT WHAT WE ARE DOING
+  alive:    D,E,F //NOT WHAT WE ARE DOING
+But this introduces more cases, and makes harder to reason about
+introspecting library value, in a way that any extracted class Any
+will be a valid typed class Any suitable input for redirect.
+-----------------------------------
+
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
-//and this is also ok for paths,paths' for toAny
+//and this is also ok for the result of tryCoherentPaths() and 
+//tryTypedPaths() and the input of toAny()
 
 -tryCoherentPaths(p,eC)=reachablePaths(p,reorganize(Ps'), empty,empty)
   _,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
