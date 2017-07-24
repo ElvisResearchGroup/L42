@@ -208,7 +208,7 @@ In the current design we divide A,B,C,D,E,F into 3 categories:
   coherent: A 
   typed:    B,C,E
   alive:    D,F
-Note that G is not in any of the cases, since we are classifying external bindings 
+Note that G is not in any of the cases, since we are classifying external bindings.
 Note that E is typed since C is typed; C is typed since C is implemented.
 This design allows that using introspection on {...},
 if you succeeded navigating out, all is typed.
@@ -218,8 +218,8 @@ Another, more expressive option would be to have
   norm:     C     //NOT WHAT WE ARE DOING
   alive:    D,E,F //NOT WHAT WE ARE DOING
 But this introduces more cases, and makes harder to reason about
-introspecting library value, in a way that any extracted class Any
-will be a valid typed class Any suitable input for redirect.
+introspecting library value: it is harder to guarantee that any
+extracted class Any will be a valid typed 'class Any' suitable input for redirect.
 -----------------------------------
 
 //note we could have redundant paths, like This1.C and This2.B.C and is ok
