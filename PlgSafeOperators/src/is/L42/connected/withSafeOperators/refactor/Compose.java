@@ -71,7 +71,7 @@ interface ComposeSpec{
 //we may break typing. Redirect, in the same way, can not redirect classes
 //containing plg comments!
 /**<pre>#define L1 ++p L2 = L0
-L1 ++p L2 = L0
+L1 ++p L2 = norm(p.evilPush(L0)) //TODO: in the implementation we just return L0 for now
   with L0=L1 +p.evilPush(L0) L2
   and norm(p.evilPush(L0))=L0 except for order of implemented interfaces and members
   //note, we need to refresh the private names here

@@ -227,7 +227,7 @@ extracted class Any will be a valid typed 'class Any' suitable input for redirec
 //tryTypedPaths() and the input of toAny()
 
 -tryCoherentPaths(p,eC)=reachablePaths(p,reorganize(Ps'), empty,empty)
-  _,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
+  Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
 
 -tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed)
   paths0=reorganize({P|P inside eC}) U (stronglyDeepImplements(L1)U..U stronglyDeepImplements(Ln)).pop()
@@ -269,14 +269,14 @@ extracted class Any will be a valid typed 'class Any' suitable input for redirec
 
   non determinism heuristic used in tryCoherentPaths(p,eC):
   **if P.m(_) inside e, P in Ps'
-  **if p(Pi).Phase=Coherent, Pi  in Ps' // note, if p(P) is not defined, the path will be consider an any, and error will be raised somewhere else. 
+  **if p(Pi).Phase=Coherent, Pi  in Ps' // note, if p(P) is not defined,
+  //the path will not be queued for coherence, and error will be raised in the check for typing. 
   **if ( _ T? x=P _ _) inside e and T? != class Any, P in Ps'.
   **if ( _ T x=_  _ _) inside e, T.P  in Ps'//TODO: update the code for this heuristic
-  **if catch throw T x _ inside e, T.P  in Ps'  
+  **if catch throw P x _ inside e, P  in Ps'  
   **if using P _ _ inside e, P  in Ps'
-  **if catch T inside e, T.P  in Ps'
   otherwise, P is in Ps instead of Ps'.
-  // note that user can always force a not any by writing (x=P x)
+  // note that user can always force a Ps' by writing (x=P x)
   
 
 -----------------------------------------------------------
@@ -305,13 +305,12 @@ Css;Cs1'..Csk' ||-p ~> p'[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also
   forall Csi in 1..n : Typed |-p.navigate(Csi) ~> Li 
   p'=p.top()[Cs1=L1,.. Csn=Ln]//TODO: in code, insert p' to avoid scribbling over
   forall Csj' in 1..k: Coherent |-p'.navigate(Csj') ~> Lj' 
-  //assert Csj' not contained, even as postfix in Cs1..Csn //Note: James believe this does not hold
   // the type system can be optimized to just assert  tests for libraries that are
   // annotated as already checked 
-  // However, this is  the responsibility of the TS and not MultiTypeSystem
+  // However, this is  the responsibility of the TS and not of '_||-_:_'
 _______
 #define toAny(paths', eC)//TODO: update in code, now it takes paths' instead of paths and have inverted behavior
-- toAny(Css0..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
+- toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
   otherwise toAny(Css0..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
   where forall i in 0..n, Cs notin Cssi
  
