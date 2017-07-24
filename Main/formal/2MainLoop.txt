@@ -240,7 +240,7 @@ extracted class Any will be a valid typed 'class Any' suitable input for redirec
 - reachablePaths(p,paths,Css,Typed?)= reachablePaths(p, paths U paths0,Css',Typed?) // U on paths does minimize() internally
   paths.top()\Css!=empty
   Cs1..Csn=paths.top()\Css
-  paths0=usedInnerL(p.top()(Cs1),Cs1,Typed?) U ... U usedInnerL(p.top()(Csn),Csn,Typed?)
+  paths0=reachableFromL(p.top()(Cs1),Typed?).prefix(Cs1) U ... U reachableFromL(p.top()(Csn),Typed?).prefix(Csn)
   error if Csi= C._ and L(C) not of form LC //this allows for clearer error messages and less fragile code
   Css'=minimize(paths.top() U Css)  
      
@@ -252,18 +252,18 @@ extracted class Any will be a valid typed 'class Any' suitable input for redirec
     paths0=empty.push(Css)
 - reachablePaths(p,empty,empty,Typed?) =empty   
     
-- reachableFromL(LC,Cs,Typed?)=paths.prefix(Cs)
+- reachableFromL(LC,Typed?)=paths
   LC={_ implements Ps, M1..Mn Phase}//in implementation, error if not compiled
   paths=reorganize(Ps) U reachableFromM(M1,Typed?) U... U reachableFromM(Mn,Typed?))
   Phase in{None,Norm}
   
-- reachableFromL(LC,Cs,Typed?)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
+- reachableFromL(LC,Typed?)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
   LC.Phase not in{None,Norm}
 
-- reachableFromM(C:L,Typed?)= reachableFromL(L,empty,Typed?).pop()
+- reachableFromM(C:L,Typed?)= reachableFromL(L,Typed?).pop()
 - reachableFromM(mwt,empty)=reorganize({P| P inside mwt}) 
 - reachableFromM(mwt,Typed)=reorganize({P| P inside mwt}) 
-    U (reachableFromL(L1,empty,Typed) U...U reachableFromL(Ln,empty,Typed)).pop()
+    U (reachableFromL(L1,Typed) U...U reachableFromL(Ln,Typed)).pop()
     L1..Ln={L| L inside mwt.e?}
 
   non determinism heuristic used in tryCoherentPaths(p,eC):
