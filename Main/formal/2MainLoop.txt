@@ -311,6 +311,6 @@ Css;Cs1'..Csk' ||-p ~> p'[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also
 _______
 #define toAny(paths', eC)//TODO: update in code, now it takes paths' instead of paths and have inverted behavior
 - toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
-  otherwise toAny(Css0..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
-  where forall i in 0..n, Cs notin Cssi
+  otherwise toAny(Css1..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
+  where forall i in 1..n, Cs notin Cssi
  
