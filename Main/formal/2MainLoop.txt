@@ -307,7 +307,7 @@ Css;Cs1'..Csk' ||-p ~> p'[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also
   forall Csj' in 1..k: Coherent |-p'.navigate(Csj') ~> Lj' 
   // the type system can be optimized to just assert  tests for libraries that are
   // annotated as already checked 
-  // However, this is  the responsibility of the TS and not of '_||-_:_'
+  // However, this is  the responsibility of the TS and not of  ||-
 _______
 #define toAny(paths', eC)//TODO: update in code, now it takes paths' instead of paths and have inverted behavior
 - toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
