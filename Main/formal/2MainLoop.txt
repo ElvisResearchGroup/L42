@@ -199,19 +199,19 @@ _______
 -----------------------------------------------------------
 Part 5: reachability
 -----------------------------------------------------------
-Understanding the treatements of Ps in eC.
+Understanding the treatments of Ps in eC.
 Consider this part of a project:
   C:{interface method E k()}
-  eC= A.foo(B,{ implements C,G method D m() F.foo()}
-               G:{interface method H h()})
+  eC= A.foo(B,{implements C,G method D m() F.foo() G:{interface}})
   D:{}
 In the current design we divide A,B,C,D,E,F into 3 categories:
   coherent: A 
   typed:    B,C,E
   alive:    D,F
+Note that G is not in any of the cases, since we are classifying external bindings 
 Note that E is typed since C is typed; C is typed since C is implemented.
 This design allows that using introspection on {...},
-if you succede navigating out, all is typed.
+if you succeeded navigating out, all is typed.
 Another, more expressive option would be to have 
   coherent: A     //NOT WHAT WE ARE DOING
   typed:    B     //NOT WHAT WE ARE DOING
