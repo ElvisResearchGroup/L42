@@ -29,13 +29,16 @@ import facade.L42;
 import facade.PData;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
 import newTypeSystem.GuessTypeCore;
 import newTypeSystem.TsLibrary;
+import programReduction.Methods;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
-public class WrapExposers {
+public class InvariantClose {
 
 static MethodSelector ms(MethodSelector s1,Map<String,String> nameMap){
   assert !s1.isUnique();
@@ -48,7 +51,7 @@ static MethodSelector ms(MethodSelector s1,Map<String,String> nameMap){
   return s1.withName(n2);
   }
 
-public static ClassB wrapExposers(PData p,List<Ast.C>path,ClassB top,MethodSelector freshK) throws PathUnfit, ClassUnfit{
+public static ClassB close(PData p,List<Ast.C>path,ClassB top,MethodSelector freshK) throws PathUnfit, ClassUnfit, SelectorUnfit, MethodClash{
   if(!MembersUtils.isPathDefined(top, path)){throw new RefactorErrors.PathUnfit(path);}
   if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
   Program pPath=p.p.navigate(path);
@@ -83,7 +86,13 @@ public static ClassB wrapExposers(PData p,List<Ast.C>path,ClassB top,MethodSelec
   WrapAux w=new WrapAux(p.p,sel,top);
   //call and return aux
   ClassB newTop=(ClassB)top.accept(w);
-  return delegateState(msk,nameMap,newTop,p.p,path,freshK);
+  lPath=delegateState(msk,nameMap,newTop,p.p,path,freshK);
+  //close class, make freshK private.
+  lPath=new RenameMethods().addCloseJ(path).actP(pPath,lPath);
+  //return newTop with newLPath
+  if(path.isEmpty()){return lPath;}
+  final ClassB lP=lPath;
+  return newTop.onClassNavigateToPathAndDo(path, l->lP);
   }
 
 private static ClassB delegateState(
@@ -92,7 +101,7 @@ private static ClassB delegateState(
         ClassB newTop, Program p, List<C> path,
         MethodSelector freshK) {
   ClassB lPath=newTop.getClassB(path);
-  List<MethodWithType> newMwts=new ArrayList<>();
+  List<ClassB.Member> newMwts=new ArrayList<>();
   for(MethodWithType mwt:lPath.mwts()){
     if(!msk.contains(mwt.getMs())){newMwts.add(mwt);}
     Mdf mdf=mwt.getMt().getMdf();
@@ -100,27 +109,28 @@ private static ClassB delegateState(
     boolean isGet=mwt.getMs().getNames().isEmpty();
     if(mdf==Mdf.Class){
       //  replace delc freshK ->decl freshK(freshx1..freshxn) +delegator freshK
+      delegator(false,newMwts,mwt,ms(mwt.getMs(),nameMap));
       continue;
       }
     if(isGet &&(resMdf==Mdf.Readable || resMdf==Mdf.Immutable )){
       //  replace decl get() ->decl freshXi()+ delegator get() this.freshXi()  
+      delegator(false,newMwts,mwt,ms(mwt.getMs(),nameMap));
       continue;
       }
     if(isGet){
       // Exposer: should be already fixed:
       //rename .exposer() ->freshExposer()
       //  rename decl exposer() ->decl freshExposer()  
+      delegator(false,newMwts,mwt,ms(mwt.getMs(),nameMap));
       continue;
      }
   //  replace decl set() ->decl freshXi(that)+ delegator set(that) (this.freshXi(that) invariant())
-    
+    delegator(true,newMwts,mwt,ms(mwt.getMs(),nameMap));  
     }
-//  close class, make freshK private.
-
-//return newTop with newLPath
-return null;
-}
-void delegator(boolean callInvariant,List<MethodWithType> newMwts, MethodWithType original,MethodSelector delegate){
+  newMwts.addAll(lPath.ns());
+  return lPath.withMs(newMwts);
+  }
+static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodWithType original,MethodSelector delegate){
   assert !original.get_inner().isPresent();
   assert original.getMs().nameSize()==delegate.nameSize();
   Position p=original.getP();

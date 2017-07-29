@@ -91,11 +91,11 @@ DataOpen:K<><{
       immKName:this.immKName())
   }
 
-PlgWrapExposers:{
+PlgInvariantClose:{
   //@plugin is.L42.connected.withSafeOperators
   //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
   class method
-  Library wrapExposers(Path path,Library top,Selector fresh)
+  Library close(Path path,Library top,Selector fresh)
   exception 
   ,,,,Refactor2.PathUnfit
   ,,,,Refactor2.ClassUnfit
@@ -104,14 +104,14 @@ PlgWrapExposers:{
   Library #pluginUnresponsive(Library binaryRepr)
     binaryRepr  
   }
-WrapExposers:K<><{
+InvariantClose:K<><{
   Selector that, Path of
   method
   Library <><(Library that)
   exception 
   ,,,,Refactor2.PathUnfit
   ,,,,Refactor2.ClassUnfit
-    PlgWrapExposers.wrapExposers(
+    PlgInvariantClose.close(
       path:this.of(),top:that,fresh:this.that()
     )
   }
@@ -128,7 +128,7 @@ DataClose:K<><{
   ,,,,Refactor2.MethodClash (
     s=this.that().selector()
     ts=this.that().parameterTypes()
-    lib=WrapExposers(s of:this.of())<><that
+    lib=InvariantClose(s of:this.of())<><that
     dec=
     solver=Use[with n in s.names().vals(), t in ts.vals() (
       if t.mdf().isFwdImm() (use[This.getSetTraitImm()])
