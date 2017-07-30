@@ -55,8 +55,40 @@ public class TestCloseInvariant{
   + "r=This0.k_$_2(a:a)this.#invariant() r) "
   + "A: {}} "
   ,false
+  },{lineNumber(), 
+  "{var A a read method Void #invariant() void A:{}}","This",
+  "{ mut method Void a(This0.A that) ("
+  + "r=This0.a_$_2(that:that) this.#invariant() r ) "
+  + "mut method Void a_$_2(This0.A that) "  
+  + " read method This0.A a() This0.a_$_2() "
+  + "read method This0.A a_$_2() "
+  + "read method Void #invariant() void "
+  + "class method mut This0 mutK(This0.A a) ( "
+  + "r=This0.k_$_2(a:a) this.#invariant() r) "
+  + "class method mut This0 k_$_2(fwd This0.A a) "
+  + "class method mut This0 immK(This0.A a) ( "
+  + "r=This0.k_$_2(a:a)this.#invariant() r) "
+  + "A: {}} "
+  ,false
   
- 
+  },{lineNumber(), 
+  "{capsule A a read method Void #invariant() void "
+  + " mut method Void doStuff(A that)that(this.#a()) A:{}}","This",
+  "{ read method read This0.A a() This0.a_$_2()"
+  + "read method read This0.A a_$_2() "
+  + "read method Void #invariant() void "
+  + "mut method Void doStuff(This0.A that) ("
+  + "  r=that(this.#a()) this.#invariant() r ) "
+  + "class method mut This0 mutK(capsule This0.A a) ("
+  + "  r=This0.k_$_2(a:a) this.#invariant() r ) "
+  + "class method mut This0 k_$_2(fwd mut This0.A a) "
+  + "class method mut This0 immK(This0.A a) ("
+  + "r=This0.k_$_2(a:a) this.#invariant() r ) "
+  + "A: {}} "
+  ,false
+
+  
+  
   },{lineNumber(), "{B:{}}","C",
   "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",true
 }});}

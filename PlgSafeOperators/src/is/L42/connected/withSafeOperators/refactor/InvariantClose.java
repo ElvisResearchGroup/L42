@@ -210,11 +210,8 @@ class WrapAux extends RenameMethodsAux{
       LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
         "Exposer called on lent returning method '"+mwt.getMs()+"' in "+mwt.getP())
         );}
-    ExpCore myE=e.withDeci(0,new ExpCore.Block.Dec(
-      false,Optional.empty(),
-      Functions.freshName("wrapExposer",L42.usedNames),
-      mwt.getInner()
-      ));
+    ExpCore myE=e.withDeci(0,e.getDecs().get(0)
+      .withInner(mwt.getInner()));
     return res.withInner(myE);
     }
 }
