@@ -85,9 +85,9 @@ Accessing methods:
 LibMethodsTest:{
   Debug.test(Location.Lib({}).methods().size()
     expected:0Size)
-  Debug.test(Location.Lib({var Any field}).methods().size()
+  Debug.test(Location.Lib({var mut Any field}).methods().size()
     expected:3Size)//getter, setter and exposer
-  Debug.test(Location.Lib({Any field}).methods().size()
+  Debug.test(Location.Lib({ mut Any field}).methods().size()
     expected:2Size)//getter and exposer
   Debug.test(Location.Lib({Any field}).has(selector:\"field()") 
     expected:Bool.true())

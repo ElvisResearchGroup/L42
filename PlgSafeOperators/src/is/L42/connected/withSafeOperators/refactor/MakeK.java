@@ -50,7 +50,7 @@ public class MakeK {
     return makeK(that,path,fields,fwd);
     }
 
-private static List<String> collectFieldNames(ClassB lPath) {
+public static List<String> collectFieldNames(ClassB lPath) {
 List<String> fields=new ArrayList<>();
 for(MethodWithType mwt:lPath.mwts()){
   if(mwt.get_inner().isPresent()){continue;}
@@ -107,59 +107,8 @@ Ti=Tki[capsule->mut]
 T'i=noFwd(Tki)
 T'i=Tki[with mdf=imm]
    */
-  public static
-  ClassB dataOpen(PData pData,ClassB that,List<Ast.C> path,String fresh,String mutKName,String immKName)
-  throws PathUnfit, ParseFail, ClassUnfit, MethodClash, SubtleSubtypeViolation, ClassClash{
-    if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
-    if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
-    ClassB lPath=that.getClassB(path);
-    List<String> fields = collectFieldNames(lPath);
-    MethodWithType candidateK = candidateK(fresh, lPath, fields, true);
-    MethodSelector candidateMs=candidateK.getMs();
-    MethodWithType mutK=(MethodWithType) openDataCode.getMs().get(0);
-    MethodWithType immK=(MethodWithType) openDataCode.getMs().get(1);
-    mutK=mutK.withMs(candidateMs.withName(mutKName));
-    immK=immK.withMs(candidateMs.withName(immKName));
-    Dec dec0 = ((ExpCore.Block)mutK.getInner()).getDecs().get(0);
-    ExpCore.MCall e=(ExpCore.MCall)dec0.getInner();
-    List<ExpCore>l=tools.Map.of(s->new ExpCore.X(lPath.getP(),s),candidateMs.getNames());
-    e=e.withS(candidateMs).withEs(l);
-    mutK=mutK.withInner(((ExpCore.Block)
-      mutK.getInner()).withDeci(0, dec0.withInner(e)));
-    immK=immK.withInner(((ExpCore.Block)
-            immK.getInner()).withDeci(0, dec0.withInner(e)));
-    List<Ast.Type>fwdT=tools.Map.of(TypeManipulation::capsuleToFwdMut,candidateK.getMt().getTs());
-    List<Ast.Type>mutT=tools.Map.of(TypeManipulation::noFwd,candidateK.getMt().getTs());
-    List<Ast.Type>immT=tools.Map.of(t->t.withMdf(Mdf.Immutable),candidateK.getMt().getTs());
-    candidateK=candidateK.withMt(candidateK.getMt().withTs(fwdT));
-    mutK=mutK.withMt(mutK.getMt().withTs(mutT));
-    immK=immK.withMt(immK.getMt().withTs(immT));
-    List<Member> ms=new ArrayList<>();
-    ms.add(candidateK);
-    ms.add(mutK);
-    ms.add(immK);
-    ClassB res=openDataCode.withMs(ms);
-    if(!path.isEmpty()){
-      res=ClassB.membersClass(Collections.singletonList(
-        Functions.encapsulateIn(path,res,Doc.empty())),
-        res.getP(),res.getPhase());
-      }
-    return Compose.compose(pData, res, that);
-    }
-  static ClassB openDataCode=Functions.parseAndDesugar("makeK",Functions.multiLine("{",
-  //"class method mut This fwdKj(Ti xi)",  
-  "class method mut This mutK(Tai xi) (",
-  "  res=This.fwdKj(xi:xi)",
-  "  res.#invariant()",
-  "  res",
-  "  )",
-  "class method This immK(Tbi xi) (",
-  "  res=This.fwdKj(xi:xi)",
-  "  res.#invariant()",
-  "  res",
-  "  )",
-  "}"));
-private static MethodWithType candidateK(String kName, ClassB that, List<String> fieldNames, boolean fwd)
+
+public static MethodWithType candidateK(String kName, ClassB that, List<String> fieldNames, boolean fwd)
         throws ParseFail, ClassUnfit {
 List<Type>fieldTypes=new ArrayList<>();
 for(String f :fieldNames){

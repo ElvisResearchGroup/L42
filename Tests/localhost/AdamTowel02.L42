@@ -391,12 +391,8 @@ class This1.Size #default##apply(Void start) This1.Size
 Iterator: {
 mut method 
 Void start(This2.Size that) 
-mut method 
-This2.Size #start() 
 read method 
 This2.Size start() 
-mut method 
-This2.Size #end() 
 read method 
 This2.Size end() 
 class method 
@@ -699,8 +695,6 @@ Void #add(read This2.Concept.ToS that, read This2.Concept.ToS expected, This2.S 
 Count: {
 mut method 
 Void counter(This1.Size that) 
-mut method 
-This1.Size #counter() 
 read method 
 This1.Size counter() 
 class method 
@@ -833,12 +827,8 @@ refine read method
 This1.Bool #equalequal(read Any that) 
 Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1077,8 +1067,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1089,12 +1077,8 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 Parameter: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1333,8 +1317,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1345,12 +1327,8 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 Precondition: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1589,8 +1567,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1623,12 +1599,8 @@ refine read method
 This2.Bool #equalequal(read Any that) }
 CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1867,8 +1839,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1903,12 +1873,8 @@ refine read method
 This2.Bool #equalequal(read Any that) 
 PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.S #_text() 
 read method 
 This3.S _text() 
-mut method 
-This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
 class method 
@@ -2147,8 +2113,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This4.S #that() 
 read method 
 This4.S that() 
 class method 
@@ -2225,12 +2189,8 @@ Library eq(class Any that) (
   )
 IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -2470,8 +2430,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -2816,14 +2774,12 @@ Void checkBoundAdd(This2.Size that, This2.Size listSize) (
 MutListAny: {implements This2.Concept.ToS
 mut method 
 Void head(mut This0.Cell that) 
-mut method 
-mut This0.Cell #head() 
 read method 
 read This0.Cell head() 
 mut method 
-Void size(This2.Size that) 
+mut This0.Cell #head() 
 mut method 
-This2.Size #size() 
+Void size(This2.Size that) 
 read method 
 This2.Size size() 
 class method 
@@ -3046,14 +3002,14 @@ read This0 remove(This3.Size that)
 mut method 
 mut This0 #remove(This3.Size that) }
 CellNext: {implements This1.Cell
-mut method 
-mut Any #val() 
 read method 
 read Any val() 
 mut method 
-mut This1.Cell #next() 
+mut Any #val() 
 read method 
 read This1.Cell next() 
+mut method 
+mut This1.Cell #next() 
 class method 
 mut This0 #apply(fwd mut Any val, fwd mut This1.Cell next) 
 refine read method 
@@ -3490,10 +3446,10 @@ mut This1.Cell #remove(This3.Size that) error This3.X.#from(builder:(
 VectorTrait: {
 class method 
 Library #apply()  {implements This3.Concept.ToS, This3.Concept.Classable
-mut method 
-mut This0.MutListT #inner() 
 read method 
 read This0.MutListT inner() 
+mut method 
+mut This0.MutListT #inner() 
 class method 
 mut This0 #apply(fwd mut This0.MutListT inner) 
 class method 
@@ -4117,16 +4073,10 @@ read method
 Void #close() void
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -4402,16 +4352,10 @@ read method
 Void #close() void
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -4609,22 +4553,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This1.MutListT #that() 
 read method 
 read This1.MutListT that() 
 mut method 
-Void from(This4.Size that) 
+mut This1.MutListT #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -5479,12 +5417,8 @@ Library eq(class Any that) (
   )
 IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -5724,8 +5658,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -6070,14 +6002,10 @@ Void checkBoundAdd(This2.Size that, This2.Size listSize) (
 MutListAny: {implements This2.Concept.ToS
 mut method 
 Void head(This0.Cell that) 
-mut method 
-This0.Cell #head() 
 read method 
 This0.Cell head() 
 mut method 
 Void size(This2.Size that) 
-mut method 
-This2.Size #size() 
 read method 
 This2.Size size() 
 class method 
@@ -6290,12 +6218,8 @@ This0 set(This3.Size that, Any val, This3.Bool add)
 method 
 This0 remove(This3.Size that) }
 CellNext: {implements This1.Cell
-mut method 
-Any #val() 
 read method 
 Any val() 
-mut method 
-This1.Cell #next() 
 read method 
 This1.Cell next() 
 class method 
@@ -6508,10 +6432,10 @@ This1.Cell remove(This3.Size that) error This3.X.#from(builder:(
 VectorTrait: {
 class method 
 Library #apply()  {implements This3.Concept.ToS, This3.Concept.Classable
-mut method 
-mut This0.MutListT #inner() 
 read method 
 read This0.MutListT inner() 
+mut method 
+mut This0.MutListT #inner() 
 class method 
 mut This0 #apply(fwd mut This0.MutListT inner) 
 class method 
@@ -7062,22 +6986,14 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This1.MutListT #_that() 
 read method 
 read This1.MutListT _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -7223,26 +7139,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This1.MutListT #_that() 
 read method 
 read This1.MutListT _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This1.Elem #filled() 
 read method 
 This1.Elem filled() 
 read method 
@@ -7328,22 +7234,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This1.MutListT #that() 
 read method 
 read This1.MutListT that() 
 mut method 
-Void from(This4.Size that) 
+mut This1.MutListT #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -8072,10 +7972,10 @@ This1.Elem #inner()
 read method 
 Void #close() }}}}
 Strings: {implements This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
-mut method 
-mut This1.Collections.MutListAny #inner() 
 read method 
 read This1.Collections.MutListAny inner() 
+mut method 
+mut This1.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This1.Collections.MutListAny inner) 
 class method 
@@ -9322,26 +9222,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This2.Collections.MutListAny #_that() 
 read method 
 read This2.Collections.MutListAny _that() 
 mut method 
 Void from(This2.Size that) 
-mut method 
-This2.Size #from() 
 read method 
 This2.Size from() 
-mut method 
-This2.Size #maxTo() 
 read method 
 This2.Size maxTo() 
-mut method 
-This2.Size #minTo() 
 read method 
 This2.Size minTo() 
-mut method 
-This2.S #filled() 
 read method 
 This2.S filled() 
 read method 
@@ -9427,22 +9317,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This2.Collections.MutListAny #that() 
 read method 
 read This2.Collections.MutListAny that() 
 mut method 
-Void from(This2.Size that) 
+mut This2.Collections.MutListAny #that() 
 mut method 
-This2.Size #from() 
+Void from(This2.Size that) 
 read method 
 This2.Size from() 
-mut method 
-This2.Size #maxTo() 
 read method 
 This2.Size maxTo() 
-mut method 
-This2.Size #minTo() 
 read method 
 This2.Size minTo() 
 class method 
@@ -9515,22 +9399,14 @@ This2.S filled() error This2.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This2.Collections.MutListAny #_that() 
 read method 
 read This2.Collections.MutListAny _that() 
 mut method 
 Void from(This2.Size that) 
-mut method 
-This2.Size #from() 
 read method 
 This2.Size from() 
-mut method 
-This2.Size #maxTo() 
 read method 
 This2.Size maxTo() 
-mut method 
-This2.Size #minTo() 
 read method 
 This2.Size minTo() 
 read method 
@@ -9796,8 +9672,6 @@ Library #leftrightleft(Library that) This1.UnsafeRefactor.MiniData.#leftrightlef
 class method 
 Library enumTrait()  {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.Size #inner() 
 read method 
 This2.Size inner() 
 class method 
@@ -9968,12 +9842,8 @@ refine read method
 This2.Bool #equalequal(read Any that) 
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.S #_text() 
 read method 
 This3.S _text() 
-mut method 
-This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
 class method 
@@ -10213,8 +10083,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This4.S #that() 
 read method 
 This4.S that() 
 class method 
@@ -10240,10 +10108,10 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) }
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -11490,26 +11358,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2.This$ #filled() 
 read method 
 This2.This$ filled() 
 read method 
@@ -11595,22 +11453,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -11683,22 +11535,14 @@ This2.This$ filled() error This4.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -11870,12 +11714,8 @@ refine read method
 This1.Bool #equalequal(read Any that) 
 NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -12114,8 +11954,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -12126,8 +11964,6 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 Mdf: {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.Size #inner() 
 read method 
 This2.Size inner() 
 class method 
@@ -12609,12 +12445,8 @@ CurlyBlock-Should be unreachable code
   )
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.S #_text() 
 read method 
 This3.S _text() 
-mut method 
-This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
 class method 
@@ -12853,8 +12685,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This4.S #that() 
 read method 
 This4.S that() 
 class method 
@@ -12864,10 +12694,10 @@ mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
 method 
 This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}}
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -14107,26 +13937,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -14212,22 +14032,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -14300,22 +14114,14 @@ This2 filled() error This4.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -14477,24 +14283,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-mut method 
-This2.S #fileName() This2.S.#from(binaryRepr:(
-  Library res=use This0 check fileName(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: #fileName()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.fileName(_this)\u000a
-*/})
-  res
-  ))
 read method 
 This2.S fileName() This2.S.#from(binaryRepr:(
   Library res=use This0 check fileName(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: fileName()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.fileName(_this)\u000a
-*/})
-  res
-  ))
-mut method 
-This2.Size #lineStart() This2.Size.#from(binaryRepr:(
-  Library res=use This0 check lineStart(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: #lineStart()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.lineStart(_this)\u000a
 */})
   res
   ))
@@ -14505,13 +14297,6 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-mut method 
-This2.Size #lineEnd() This2.Size.#from(binaryRepr:(
-  Library res=use This0 check lineEnd(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: #lineEnd()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.lineEnd(_this)\u000a
-*/})
-  res
-  ))
 read method 
 This2.Size lineEnd() This2.Size.#from(binaryRepr:(
   Library res=use This0 check lineEnd(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -14519,24 +14304,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-mut method 
-This2.Size #columnStart() This2.Size.#from(binaryRepr:(
-  Library res=use This0 check columnStart(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: #columnStart()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.columnStart(_this)\u000a
-*/})
-  res
-  ))
 read method 
 This2.Size columnStart() This2.Size.#from(binaryRepr:(
   Library res=use This0 check columnStart(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
 plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: columnStart()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.columnStart(_this)\u000a
-*/})
-  res
-  ))
-mut method 
-This2.Size #columnEnd() This2.Size.#from(binaryRepr:(
-  Library res=use This0 check columnEnd(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
-plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.location.Origin\u000amethod name: #columnEnd()\u000ajava method: is.L42.connected.withSafeOperators.location.Origin.columnEnd(_this)\u000a
 */})
   res
   ))
@@ -14700,10 +14471,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -15943,26 +15714,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -16048,22 +15809,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -16136,22 +15891,14 @@ This2 filled() error This4.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -17216,10 +16963,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -18459,26 +18206,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -18564,22 +18301,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -18652,22 +18383,14 @@ This2 filled() error This4.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -19170,10 +18893,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -20413,26 +20136,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -20518,22 +20231,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -20606,22 +20313,14 @@ This2 filled() error This4.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -21304,10 +21003,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -22547,26 +22246,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -22652,22 +22341,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -22740,22 +22423,14 @@ This2 filled() error This5.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -23149,10 +22824,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -24392,26 +24067,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -24497,22 +24162,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -24585,22 +24244,14 @@ This2 filled() error This5.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -24994,10 +24645,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -26237,26 +25888,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -26342,22 +25983,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -26430,22 +26065,14 @@ This2 filled() error This5.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -27751,10 +27378,10 @@ CurlyBlock-Should be unreachable code
 */}
   )
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -28994,26 +28621,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -29099,22 +28716,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -29187,22 +28798,14 @@ This2 filled() error This5.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -32025,8 +31628,6 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
   res
   )}
 ToAbstractClass: {
-mut method 
-This2.Path #src() 
 read method 
 This2.Path src() 
 class method 
@@ -32195,12 +31796,8 @@ method
 Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit This1.PlgRedirect.redirectJ(that:that, src:this.src(), dest:this.dest())}
 RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -32439,8 +32036,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -32450,12 +32045,8 @@ mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 RedirectRefTo: {
-mut method 
-This2.Path #src() 
 read method 
 This2.Path src() 
-mut method 
-This2.Location.Type.RefTo #into() 
 read method 
 This2.Location.Type.RefTo into() 
 class method 
@@ -32641,8 +32232,6 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 Method: {
 mut method 
 Void inner(This1.PlgMethod that) 
-mut method 
-This1.PlgMethod #inner() 
 read method 
 This1.PlgMethod inner() 
 class method 
@@ -32738,24 +32327,14 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
   res
   )}
 SumMethods: {
-mut method 
-This2.Selector #that() 
 read method 
 This2.Selector that() 
-mut method 
-This2.Selector #and() 
 read method 
 This2.Selector and() 
-mut method 
-This2.Path #of() 
 read method 
 This2.Path of() 
-mut method 
-This2.S #over() 
 read method 
 This2.S over() 
-mut method 
-This2.Selector #into() 
 read method 
 This2.Selector into() 
 class method 
@@ -33432,10 +33011,10 @@ mut This0.Patcher #apply(This2.Path patch) This0.Patcher.#apply(patch:patch)
 class method 
 mut This0 #apply(mut This1.RenameMethods openMaps, mut This2.Refactor2.Method close, This1.Libs inputs, Library input, This2.Location.Lib.List ls, This2.Location.Lib l0, This2.Location.Lib.List l0ns, This1.Selectorss sels) 
 Decorator: {
-mut method 
-mut This2.Libs #inner() 
 read method 
 read This2.Libs inner() 
+mut method 
+mut This2.Libs #inner() 
 class method 
 mut This0 #apply(mut This2.Libs inner) 
 method 
@@ -33670,8 +33249,6 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Patcher: {
-mut method 
-This3.Path #patch() 
 read method 
 This3.Path patch() 
 class method 
@@ -34004,10 +33581,10 @@ This1.Path removePrefix(This1.Path path, This1.Path prefix) (
   res
   )
 Selectors: {implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -35254,26 +34831,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-This3.Selector #filled() 
 read method 
 This3.Selector filled() 
 read method 
@@ -35359,22 +34926,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -35447,22 +35008,14 @@ This3.Selector filled() error This3.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -35608,10 +35161,10 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void}}
 Selectorss: {implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -36858,26 +36411,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-This2.Selectors #filled() 
 read method 
 This2.Selectors filled() 
 read method 
@@ -36963,22 +36506,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -37051,22 +36588,14 @@ This2.Selectors filled() error This3.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -37212,10 +36741,10 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #close() void}}
 RenameMethods: {implements This2.Concept.ToS, This2.Concept.Classable
-mut method 
-mut This2.CollectionsMut.MutListAny #inner() 
 read method 
 read This2.CollectionsMut.MutListAny inner() 
+mut method 
+mut This2.CollectionsMut.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.CollectionsMut.MutListAny inner) 
 class method 
@@ -37908,16 +37437,10 @@ read method
 Void #close() void
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -38193,16 +37716,10 @@ read method
 Void #close() void
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -38400,22 +37917,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This3.CollectionsMut.MutListAny #that() 
 read method 
 read This3.CollectionsMut.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.CollectionsMut.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -38550,10 +38061,10 @@ mut This3.Refactor2.Method #filled() error This3.X.#from(builder:(
   b
   ))}}
 Libs: {implements This2.Concept.ToS, This2.Concept.Classable
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -39175,22 +38686,14 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -39336,26 +38839,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-Library #filled() 
 read method 
 Library filled() 
 read method 
@@ -39441,22 +38934,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -40476,10 +39963,10 @@ Void op(This2.Path p, This2.Location.Method m, This2.Size i) (
   this.close().#add(hide:s2, of:p)
   )
 Decorator: {
-mut method 
-mut This3.Composers.Libs #inner() 
 read method 
 read This3.Composers.Libs inner() 
+mut method 
+mut This3.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
@@ -40714,8 +40201,6 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Patcher: {
-mut method 
-This3.Path #patch() 
 read method 
 This3.Path patch() 
 class method 
@@ -41266,10 +40751,10 @@ Void op(This2.Path p, This2.Location.Method m, This2.Size i) (
   this.close().#add(hide:s2, of:p)
   )
 Decorator: {
-mut method 
-mut This3.Composers.Libs #inner() 
 read method 
 read This3.Composers.Libs inner() 
+mut method 
+mut This3.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
@@ -41504,8 +40989,6 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Patcher: {
-mut method 
-This3.Path #patch() 
 read method 
 This3.Path patch() 
 class method 
@@ -41541,10 +41024,10 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
   acc
   )}}
 Decorator: {
-mut method 
-mut This2.Composers.Libs #inner() 
 read method 
 read This2.Composers.Libs inner() 
+mut method 
+mut This2.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This2.Composers.Libs inner) 
 method 
@@ -41779,8 +41262,6 @@ CurlyBlock-Should be unreachable code
 */}
   )}
 Patcher: {
-mut method 
-This2.Path #patch() 
 read method 
 This2.Path patch() 
 class method 
@@ -41852,12 +41333,8 @@ CurlyBlock-Should be unreachable code
   )
 Fail: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -42097,8 +41574,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -42124,8 +41599,6 @@ This0 #from(This1.S.SBuilder builder) This0.from(string:This1.S.#from(binaryRepr
 class method 
 mut This1.S.SBuilder #builder() This1.S.SBuilder.empty()}
 DeployTowel: {
-mut method 
-This1.Url #fileName() 
 read method 
 This1.Url fileName() 
 class method 
@@ -42374,8 +41847,6 @@ Skip: {interface
 mut method 
 This2.Size #apply(This2.S that, This2.Size index) }
 SkipChars: {implements This1.Skip
-mut method 
-This2.S #chars() 
 read method 
 This2.S chars() 
 refine mut method 
@@ -42492,20 +41963,12 @@ CurlyBlock-Should be unreachable code
 class method 
 mut This0 #apply(fwd This2.S chars) }}
 PostAction: {
-mut method 
-This1.Selector #that() 
 read method 
 This1.Selector that() 
-mut method 
-This1.Path #of() 
 read method 
 This1.Path of() 
-mut method 
-Library #action() 
 read method 
 Library action() 
-mut method 
-This1.Selector #deprecated() 
 read method 
 This1.Selector deprecated() 
 class method 
@@ -42999,12 +42462,8 @@ method /*@_private
   )
 InvalidAction: {implements This2.Refactor2.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -43244,8 +42703,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -43597,12 +43054,8 @@ CurlyBlock-Should be unreachable code
   )
 ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -43842,8 +43295,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -43854,12 +43305,8 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 ConceptMapUnavailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -44099,8 +43546,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -44110,12 +43555,8 @@ mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 DeployLibrary: {
-mut method 
-This2.Path #path() 
 read method 
 This2.Path path() 
-mut method 
-This2.Url #url() 
 read method 
 This2.Url url() 
 class method 
@@ -44824,12 +44265,8 @@ This1.SafeOperators.liftValue(that:that, selector:This1.Selector.#from(builder:(
   )
 ProvidedValueNotOfExpectedType: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -45069,8 +44506,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -45354,12 +44789,8 @@ L42.is/connected/withNumbers
 */}
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -45598,8 +45029,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -45614,8 +45043,6 @@ of(that on) comp/
 */
 class method 
 Library traitUnit()  {implements This2.Concept.Equals, This2.Concept.ToS
-mut method 
-This0.Support #that() 
 read method 
 This0.Support that() 
 class method /*factory
@@ -46399,12 +45826,8 @@ CurlyBlock-Should be unreachable code
   ))
 NotValidSupport: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -46644,8 +46067,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -46656,12 +46077,8 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 NotSameSupport: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -46901,8 +46318,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -46913,12 +46328,8 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 NotValidUnit: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -47158,8 +46569,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -47174,8 +46583,6 @@ Library #leftrightleft(Library that) (
   Void unused=(
     Library lib=( {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-    mut method 
-    This2.S #that() 
     read method 
     This2.S that() 
     class method 
@@ -47232,12 +46639,8 @@ CurlyBlock-Should be unreachable code
   )
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -47477,8 +46880,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -47733,8 +47134,6 @@ This1.StringSplit.splitOn(that:that, chars:This1.S.#from(builder:(
   )).#plusplus(that:This1.S.nl())))
 class method 
 Library traitMeth() ( {
-mut method 
-This0.T #inner() 
 read method 
 This0.T inner() 
 class method 
@@ -47941,12 +47340,8 @@ CurlyBlock-Should be unreachable code
   )
 InvalidElements: {implements This2.Refactor2.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -48186,8 +47581,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -48200,8 +47593,6 @@ EnumTrait: {
 class method 
 Any val()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.Size #inner() 
 read method 
 This3.Size inner() 
 class method 
@@ -48496,12 +47887,8 @@ CurlyBlock-Should be unreachable code
   )
 ParseFail: {implements This4.Guard.ParseFail, This4.Guard, This4.Message, This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This4.S #_text() 
 read method 
 This4.S _text() 
-mut method 
-This4.Message.Opt #cause() 
 read method 
 This4.Message.Opt cause() 
 class method 
@@ -48741,8 +48128,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This5.S #that() 
 read method 
 This5.S that() 
 class method 
@@ -48752,10 +48137,10 @@ mut This5.S.SBuilder #builder() This5.S.SBuilder.empty()
 method 
 This1 #from(This5.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This5.S.#from(builder:builder)))}}
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -50002,26 +49387,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -50107,22 +49482,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -50195,22 +49564,14 @@ This2 filled() error This5.X.#from(builder:(
   b
   ))}
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -50598,12 +49959,8 @@ Library #leftrightleft(Library that) This2.UnsafeRefactor.MiniData.#leftrightlef
 class method 
 Library messageTrait()  {implements This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.S #_text() 
 read method 
 This3.S _text() 
-mut method 
-This2.Opt #cause() 
 read method 
 This2.Opt cause() 
 class method 
@@ -50719,8 +50076,6 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This4.S #that() 
 read method 
 This4.S that() 
 class method 
@@ -50861,8 +50216,6 @@ refine method
 This2 get() this.that()}}}
 Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-Library #_binaryRepr() 
 read method 
 Library _binaryRepr() 
 class method 
@@ -51299,12 +50652,8 @@ Any parseError(This1.S that) (
   )
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -51544,8 +50893,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -52331,12 +51678,8 @@ Any parseError(This1.S that) (
 Iterator: {
 mut method 
 Void start(This1 that) 
-mut method 
-This1 #start() 
 read method 
 This1 start() 
-mut method 
-This1 #end() 
 read method 
 This1 end() 
 class method 
@@ -52378,12 +51721,8 @@ read method
 Void #close() void}
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -52623,8 +51962,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -53233,8 +52570,6 @@ This1.Strings splitOn(This0 chars) This1.StringSplit.splitOn(that:this.toS(), ch
 refine read method 
 This0 toS() this.clone()
 Continue: {
-mut method 
-This1 #that() 
 read method 
 This1 that() 
 class method 
@@ -53244,14 +52579,10 @@ mut This1.SBuilder #builder() This1.SBuilder.empty()
 method 
 This1 #from(This1.SBuilder builder) this.that().#plusplus(that:This1.#from(builder:builder))}
 SConcat: {
-mut method 
-This1 #old() 
 read method 
 This1 old() 
 mut method 
 Void accumulator(This1 that) 
-mut method 
-This1 #accumulator() 
 read method 
 This1 accumulator() 
 class method 
@@ -53279,8 +52610,6 @@ Void #add(read This2.Concept.ToS that, This2.Concept.ToS sep) (
 SBuilder: {
 mut method 
 Void _binaryRepr(Library that) 
-mut method 
-Library #_binaryRepr() 
 read method 
 Library _binaryRepr() 
 class method 
@@ -54586,12 +53915,8 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -54835,8 +54160,6 @@ method
 mut This3.S.SBuilder #1#builder0_$_29() This3.S.SBuilder.empty()
 method 
 This1 #1#from1_$_30(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -55644,12 +54967,8 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -55893,8 +55212,6 @@ method
 mut This3.S.SBuilder #1#builder2_$_49() This3.S.SBuilder.empty()
 method 
 This1 #1#from4_$_50(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -55956,12 +55273,8 @@ Void #from(This0.Tests seqBuilder) (
   )
 NotImplementedYet: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -56201,8 +55514,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -56213,12 +55524,8 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
 AssertionFail: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -56458,8 +55765,6 @@ CurlyBlock-Should be unreachable code
 */}
   )
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -56526,21 +55831,17 @@ Void #from(This1.Tests seqBuilder) (
     )
   )}
 Test: {
-mut method 
-This2.Bool #that() 
 read method 
 This2.Bool that() 
-mut method 
-This2.S #msg() 
 read method 
 This2.S msg() 
 class method 
 This0 #apply(This2.Bool that, This2.S msg) }
 Tests: {implements This2.Concept.ToS, This2.Concept.Classable
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -57304,22 +56605,14 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -57465,26 +56758,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-This2.Test #filled() 
 read method 
 This2.Test filled() 
 read method 
@@ -57570,22 +56853,16 @@ CurlyBlock-Should be unreachable code
   )
 read method 
 Void #close() void
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 

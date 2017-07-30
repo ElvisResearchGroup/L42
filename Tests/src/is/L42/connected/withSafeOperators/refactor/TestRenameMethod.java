@@ -33,19 +33,17 @@ check(rm.addRenameS("This","m()","k(x)"),"{method Any m()}","{method Any k()}");
 }
 @Test public void test2() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addCloseS("This"),
-"{Any a, Void b, class method This (Any a,Void b)}",
-"{ mut method Any #a_$_2() "
+"{mut Any a, Void b, class method This (Any a,Void b)}",
+"{ mut method mut Any #a_$_2() "
 + "read method Any a_$_2() "
-+ "mut method Void #b_$_2() "
 + "read method Void b_$_2() "
 + "class method This0 #apply_$_2(Any a, Void b) }");
 }
 @Test public void test2Bis() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addCloseS("This"),
-"{Any a, Void b, class method This (Any a,Void b)}",
-"{ mut method Any #a_$_2() "
+"{mut Any a, Void b, class method This (Any a,Void b)}",
+"{ mut method mut Any #a_$_2() "
 + "read method Any a_$_2() "
-+ "mut method Void #b_$_2() "
 + "read method Void b_$_2() "
 + "class method This0 #apply_$_2(Any a, Void b) }");
 }

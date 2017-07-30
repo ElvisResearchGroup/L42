@@ -15,13 +15,16 @@ import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
+import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.MCall;
 import ast.ExpCore.X;
+import ast.PathAux;
 import ast.Util.CsMx;
 import ast.Util.CsMxMx;
 import auxiliaryGrammar.Functions;
@@ -30,123 +33,143 @@ import facade.PData;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ParseFail;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
 import newTypeSystem.GuessTypeCore;
 import newTypeSystem.TsLibrary;
+import newTypeSystem.TypeManipulation;
 import programReduction.Methods;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
 public class InvariantClose {
 
-static MethodSelector ms(MethodSelector s1,Map<String,String> nameMap){
-  assert !s1.isUnique();
-  String name=s1.getName();
-  boolean hash=name.startsWith("#");
-  if(hash){name=name.substring(1,name.length());}
-  String n2=nameMap.get(name);
-  assert n2!=null;
-  if(hash){n2="#"+n2;}
-  return s1.withName(n2);
+public static ClassB closeJ(PData p,List<Ast.C>path,ClassB top,String mutK,String immK) throws PathUnfit, ClassUnfit, ParseFail{
+  return close(p.p,path,top,mutK,immK);
   }
-
-public static ClassB close(PData p,List<Ast.C>path,ClassB top,MethodSelector freshK) throws PathUnfit, ClassUnfit, SelectorUnfit, MethodClash{
+public static ClassB close(Program p,List<Ast.C>path,ClassB top,String mutK,String immK) throws PathUnfit, ClassUnfit, ParseFail{
   if(!MembersUtils.isPathDefined(top, path)){throw new RefactorErrors.PathUnfit(path);}
   if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
-  Program pPath=p.p.navigate(path);
+  Program pPath=p.evilPush(top).navigate(path);
   ClassB lPath=pPath.top();
-  //discover constructor
-  MethodWithType k=(MethodWithType) lPath._getMember(freshK);
-  assert k!=null;
-  //collect capsule names
-  List<String> capsNames=new ArrayList<>();
-  //map state selectos->fresh selectors
-  Map<String,String> nameMap=new HashMap<>();
-  for(int i=0;i<freshK.nameSize();i++){
-    String ni=freshK.name(i);
-    if(k.getMt().getTs().get(i).getMdf()==Mdf.MutableFwd){capsNames.add(ni);}
-    nameMap.put(ni,Functions.freshName(ni, L42.usedNames));
-    }
-  //collect getters for capsule names
-  Set<MethodSelector>msk=new HashSet<>();
-  msk.add(freshK);
+  MethodWithType inv=(MethodWithType)lPath._getMember(MethodSelector.of("#invariant", Collections.emptyList()));
+  if(inv==null){throw new ClassUnfit().msg("selector #invariant() missing into "+PathAux.as42Path(path));}
+  MethodType invMt=new MethodType(false,Mdf.Readable,Collections.emptyList(),Type.immVoid,Collections.emptyList()).withRefine(inv.getMt().isRefine());
+  if(!inv.getMt().equals(invMt)){throw new ClassUnfit().msg("selector #invariant() into "+PathAux.as42Path(path)+" has invalid type "+inv.getMt());}
+  Ks ks=new Ks(lPath,mutK,immK);
   List<CsMxMx> sel=new ArrayList<>();
-  for(MethodWithType mwti:lPath.mwts()){
-    if(!TsLibrary.coherentF(pPath,k,mwti)){continue;}
-    assert !mwti.get_inner().isPresent();
-    msk.add(mwti.getMs());
-    // with non read result, assert is lent
-    Mdf mdf=mwti.getMt().getReturnType().getMdf();
-    if(mdf==Mdf.Readable){continue;}
-    assert mdf!=Mdf.Immutable;//since capsule field
-    if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}    
-    sel.add(new CsMxMx(path,false,mwti.getMs(),ms(mwti.getMs(),nameMap)));
-    } 
-  WrapAux w=new WrapAux(p.p,sel,top);
-  //call and return aux
-  ClassB newTop=(ClassB)top.accept(w);
-  lPath=delegateState(msk,nameMap,newTop,p.p,path,freshK);
-  //close class, make freshK private.
-  lPath=new RenameMethods().addCloseJ(path).actP(pPath,lPath);
+  Set<MethodSelector>state=new HashSet<>();
+  collectStateMethodsAndExposers(path, pPath, lPath, ks.candidateK,sel, state);
+  ClassB newTop=(ClassB)top.accept(new WrapAux(p,sel,top));
+  lPath=delegateState(ks,state,newTop,path);
   //return newTop with newLPath
   if(path.isEmpty()){return lPath;}
   final ClassB lP=lPath;
   return newTop.onClassNavigateToPathAndDo(path, l->lP);
   }
 
-private static ClassB delegateState(
-        Set<MethodSelector> msk,
-        Map<String, String> nameMap,
-        ClassB newTop, Program p, List<C> path,
-        MethodSelector freshK) {
+private static void collectStateMethodsAndExposers(
+    List<Ast.C> path, Program pPath, ClassB lPath,
+    MethodWithType k,
+    List<CsMxMx> sel, Set<MethodSelector> state
+    ) throws ClassUnfit {
+  for(MethodWithType mwti:lPath.mwts()){
+    if(!TsLibrary.coherentF(pPath,k,mwti)){continue;}
+    assert !mwti.get_inner().isPresent();
+    state.add(mwti.getMs());
+    // with non read result, assert is lent
+    Mdf mdf=mwti.getMt().getReturnType().getMdf();
+    if(mdf==Mdf.Readable || mdf==Mdf.Immutable){continue;}
+    if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}    
+    sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(k.getMs().getUniqueNum())));
+    }
+}
+
+private static class Ks{
+  MethodWithType candidateK;
+  MethodWithType fwdK;
+  MethodWithType mutK;
+  MethodWithType immK;
+  Ks(ClassB l,String mutKName,String immKName) throws ParseFail, ClassUnfit{
+    List<String> fields = MakeK.collectFieldNames(l);
+    candidateK = MakeK.candidateK("k", l, fields, true);
+    MethodSelector candidateMs=candidateK.getMs();
+    MethodType candidateMt=candidateK.getMt();
+    mutK=candidateK.withMs(candidateMs.withName(mutKName));
+    immK=candidateK.withMs(candidateMs.withName(immKName));
+    fwdK=candidateK.withMs(candidateMs.withUniqueNum(L42.freshPrivate()));
+    List<Ast.Type>fwdT=tools.Map.of(TypeManipulation::capsuleToFwdMut,fwdK.getMt().getTs());
+    List<Ast.Type>mutT=tools.Map.of(TypeManipulation::noFwd,fwdK.getMt().getTs());
+    List<Ast.Type>immT=tools.Map.of(t->t.withMdf(Mdf.Immutable),fwdK.getMt().getTs());
+    fwdK=fwdK.withMt(candidateMt.withTs(fwdT));
+    mutK=mutK.withMt(candidateMt.withTs(mutT));
+    immK=immK.withMt(candidateMt.withTs(immT));
+    }
+  }
+private static ClassB delegateState(Ks ks,
+    Set<MethodSelector> state,
+    ClassB newTop, List<C> path
+    ) throws ParseFail, ClassUnfit {
   ClassB lPath=newTop.getClassB(path);
   List<ClassB.Member> newMwts=new ArrayList<>();
   for(MethodWithType mwt:lPath.mwts()){
-    if(!msk.contains(mwt.getMs())){newMwts.add(mwt);}
+    if(!state.contains(mwt.getMs())){newMwts.add(mwt);continue;}
     Mdf mdf=mwt.getMt().getMdf();
     Mdf resMdf=mwt.getMt().getReturnType().getMdf();
     boolean isGet=mwt.getMs().getNames().isEmpty();
     if(mdf==Mdf.Class){
-      //  replace delc freshK ->decl freshK(freshx1..freshxn) +delegator freshK
-      delegator(false,newMwts,mwt,ms(mwt.getMs(),nameMap));
+      newMwts.add(mwt);
       continue;
       }
-    if(isGet &&(resMdf==Mdf.Readable || resMdf==Mdf.Immutable )){
+    MethodSelector uniqueMs=mwt.getMs().withUniqueNum(ks.fwdK.getMs().getUniqueNum());
+    if(!isGet){
+      //replace decl set() ->decl freshXi(that)+ delegator set(that) (this.freshXi(that) invariant())
+      delegator(true,newMwts,mwt,uniqueMs);  
+      continue;
+    }
+    if(resMdf==Mdf.Readable || resMdf==Mdf.Immutable ){
       //  replace decl get() ->decl freshXi()+ delegator get() this.freshXi()  
-      delegator(false,newMwts,mwt,ms(mwt.getMs(),nameMap));
+      delegator(false,newMwts,mwt,uniqueMs);
       continue;
       }
-    if(isGet){
-      // Exposer: should be already fixed:
+    //last case is exposer, and Exposer: should be already fixed:
       //rename .exposer() ->freshExposer()
       //  rename decl exposer() ->decl freshExposer()  
-      delegator(false,newMwts,mwt,ms(mwt.getMs(),nameMap));
-      continue;
-     }
-  //  replace decl set() ->decl freshXi(that)+ delegator set(that) (this.freshXi(that) invariant())
-    delegator(true,newMwts,mwt,ms(mwt.getMs(),nameMap));  
     }
+  //delegate mutK,immK to candidtateK
+  delegator(true,newMwts,ks.mutK,ks.fwdK);
+  delegator(true,newMwts,ks.immK,ks.fwdK);
   newMwts.addAll(lPath.ns());
   return lPath.withMs(newMwts);
   }
-static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodWithType original,MethodSelector delegate){
+static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodWithType original,MethodSelector delegate) throws ClassUnfit{
+  delegator(callInvariant,newMwts,original,original.withMs(delegate));
+  }
+static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodWithType original,MethodWithType delegate) throws ClassUnfit{
   assert !original.get_inner().isPresent();
-  assert original.getMs().nameSize()==delegate.nameSize();
+  assert original.getMs().nameSize()==delegate.getMs().nameSize();
   Position p=original.getP();
-  MethodWithType delegateM=original.withMs(delegate);
   ExpCore.MCall delegateMCall=new ExpCore.MCall(
-          new ExpCore.EPath(p, Path.outer(0)), delegate,Doc.empty(),
+          new ExpCore.EPath(p, Path.outer(0)), delegate.getMs(),Doc.empty(),
           tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),p);
   if(!callInvariant){original=original.withInner(delegateMCall);}
   else{
     ExpCore.Block b=WrapAux.e.withDeci(0,WrapAux.e.getDecs().get(0).withInner(delegateMCall));
     original=original.withInner(b);
     }
-  newMwts.add(original);
-  newMwts.add(delegateM);
+  addCheck(original,newMwts);
+  addCheck(delegate,newMwts);
   }
-
+static void addCheck(MethodWithType mwt,List<ClassB.Member> newMwts) throws ClassUnfit{
+  // delegator when adding to newMs check for old and override if identical mt
+  Optional<Member> pre=Functions.getIfInDom(newMwts,mwt);
+  if(!pre.isPresent()){newMwts.add(mwt);return;}
+  MethodWithType mwtPre=(MethodWithType)pre.get();
+  if(mwtPre.getMt().equals(mwt.getMt())){
+    Functions.replaceIfInDom(newMwts,mwt);return;}
+  throw new RefactorErrors.ClassUnfit().msg("Incompatible factory type: "+mwt.getMs()+": "+mwt.getMt()+" and "+mwtPre.getMt());
+  }
 }
 class WrapAux extends RenameMethodsAux{
   int count=0;

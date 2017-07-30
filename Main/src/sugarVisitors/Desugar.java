@@ -773,20 +773,18 @@ public class Desugar extends CloneVisitor{
     Stream<Member> s=Stream.of();
     //if var, do setter
     if(f.isVar()){s=Stream.concat(s,Stream.of(generateSetter(pos,f,f.getDoc())));}
-    //if #, do getter and exposer, else only exposer
-    //if(f.getName().startsWith("#")){
-      s=Stream.concat(s, Stream.of(
-        generateExposer(pos,f,f.getDoc()),
-        generateGetter(pos,f,f.getDoc())
-        ));
-    /*  }
-    else if (requireExposer(f.getT())){
-      s=Stream.concat(s, Stream.of(
+    s=Stream.concat(s, Stream.of(
+      generateGetter(pos,f,f.getDoc())
+      ));
+    Mdf m=f.getT().getMdf();
+    if(m==Mdf.Lent ||
+         m==Mdf.Mutable ||
+         m==Mdf.MutableFwd ||
+         m==Mdf.Capsule ){
+      s=Stream.concat(s, Stream.of(    
         generateExposer(pos,f,f.getDoc())
         ));
       }
-    else {s=Stream.concat(s, Stream.of(  generateGetter(pos,f,f.getDoc())  ));}
-    *///Careful with capsule
     return s;
     }
   private static boolean requireExposer(Type t) {
@@ -822,11 +820,6 @@ public class Desugar extends CloneVisitor{
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);
     return mwt;
   }
-  static private void cfGetter(Expression.Position pos,FieldDec f,Doc doc, List<Member> result) {
-    if(!( f.getT() instanceof Type)){return;}
-    MethodWithType mwt = generateGetter(pos, f, doc);
-    result.add(mwt);
-    }
   private static MethodWithType generateGetter(Expression.Position pos, FieldDec f, Doc doc) {
     Type fieldNt=(Type)f.getT();
     fieldNt=TypeManipulation.noFwd(fieldNt);

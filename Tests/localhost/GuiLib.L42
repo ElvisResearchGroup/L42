@@ -1,6 +1,4 @@
  {
-mut method 
-This0.Abstract.S #id() 
 read method 
 This0.Abstract.S id() 
 class method 
@@ -370,8 +368,6 @@ class method
 Library failure() }
 Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-Library #_binaryRepr() 
 read method 
 Library _binaryRepr() 
 class method 
@@ -416,12 +412,8 @@ class method
 Any parseError(This1.S that) 
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -463,8 +455,6 @@ This1 is(class Any subtype)
 refine read method 
 This1 #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -654,12 +644,8 @@ Any parseError(This1.S that)
 Iterator: {
 mut method 
 Void start(This1 that) 
-mut method 
-This1 #start() 
 read method 
 This1 start() 
-mut method 
-This1 #end() 
 read method 
 This1 end() 
 class method 
@@ -674,12 +660,8 @@ read method
 Void #close() }
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -721,8 +703,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -867,8 +847,6 @@ This1.Strings splitOn(This0 chars)
 refine read method 
 This0 toS() 
 Continue: {
-mut method 
-This1 #that() 
 read method 
 This1 that() 
 class method 
@@ -878,14 +856,10 @@ mut This1.SBuilder #builder()
 method 
 This1 #from(This1.SBuilder builder) }
 SConcat: {
-mut method 
-This1 #old() 
 read method 
 This1 old() 
 mut method 
 Void accumulator(This1 that) 
-mut method 
-This1 #accumulator() 
 read method 
 This1 accumulator() 
 class method 
@@ -897,8 +871,6 @@ Void #add(read This2.Concept.ToS that, This2.Concept.ToS sep) }
 SBuilder: {
 mut method 
 Void _binaryRepr(Library that) 
-mut method 
-Library #_binaryRepr() 
 read method 
 Library _binaryRepr() 
 class method 
@@ -1272,12 +1244,8 @@ refine read method
 This1.Bool #equalequal(read Any that) 
 Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1319,8 +1287,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1331,12 +1297,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 Parameter: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1378,8 +1340,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1390,12 +1350,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 Precondition: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1437,8 +1393,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1471,12 +1425,8 @@ refine read method
 This2.Bool #equalequal(read Any that) }
 CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1518,8 +1468,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1554,12 +1502,8 @@ refine read method
 This2.Bool #equalequal(read Any that) 
 PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.S #_text() 
 read method 
 This3.S _text() 
-mut method 
-This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
 class method 
@@ -1601,8 +1545,6 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This4.S #that() 
 read method 
 This4.S that() 
 class method 
@@ -1622,12 +1564,8 @@ class method
 Void #from(This0.Tests seqBuilder) 
 NotImplementedYet: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1669,8 +1607,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1681,12 +1617,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 AssertionFail: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -1728,8 +1660,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -1744,21 +1674,17 @@ mut This1.Tests #seqBuilder()
 class method 
 Void #from(This1.Tests seqBuilder) }
 Test: {
-mut method 
-This2.Bool #that() 
 read method 
 This2.Bool that() 
-mut method 
-This2.S #msg() 
 read method 
 This2.S msg() 
 class method 
 This0 #apply(This2.Bool that, This2.S msg) }
 Tests: {implements This2.Concept.ToS, This2.Concept.Classable
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -1880,22 +1806,14 @@ read method
 This2.Test #inner() 
 read method 
 Void #close() 
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -1917,26 +1835,16 @@ read method
 This2.Test #inner() 
 read method 
 Void #close() 
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-This2.Test #filled() 
 read method 
 This2.Test filled() 
 read method 
@@ -1956,22 +1864,16 @@ read method
 This2.Test #inner() 
 read method 
 Void #close() 
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -1983,10 +1885,10 @@ This3.Bool isFill()
 read method 
 This2.Test filled() }}}
 Strings: {implements This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
-mut method 
-mut This1.Collections.MutListAny #inner() 
 read method 
 read This1.Collections.MutListAny inner() 
+mut method 
+mut This1.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This1.Collections.MutListAny inner) 
 class method 
@@ -2138,26 +2040,16 @@ read method
 This2.S #inner() 
 read method 
 Void #close() 
-mut method 
-read This2.Collections.MutListAny #_that() 
 read method 
 read This2.Collections.MutListAny _that() 
 mut method 
 Void from(This2.Size that) 
-mut method 
-This2.Size #from() 
 read method 
 This2.Size from() 
-mut method 
-This2.Size #maxTo() 
 read method 
 This2.Size maxTo() 
-mut method 
-This2.Size #minTo() 
 read method 
 This2.Size minTo() 
-mut method 
-This2.S #filled() 
 read method 
 This2.S filled() 
 read method 
@@ -2177,22 +2069,16 @@ read method
 This2.S #inner() 
 read method 
 Void #close() 
-mut method 
-mut This2.Collections.MutListAny #that() 
 read method 
 read This2.Collections.MutListAny that() 
 mut method 
-Void from(This2.Size that) 
+mut This2.Collections.MutListAny #that() 
 mut method 
-This2.Size #from() 
+Void from(This2.Size that) 
 read method 
 This2.Size from() 
-mut method 
-This2.Size #maxTo() 
 read method 
 This2.Size maxTo() 
-mut method 
-This2.Size #minTo() 
 read method 
 This2.Size minTo() 
 class method 
@@ -2204,22 +2090,14 @@ This2.Bool isFill()
 read method 
 This2.S filled() }
 IteratorVal: {
-mut method 
-read This2.Collections.MutListAny #_that() 
 read method 
 read This2.Collections.MutListAny _that() 
 mut method 
 Void from(This2.Size that) 
-mut method 
-This2.Size #from() 
 read method 
 This2.Size from() 
-mut method 
-This2.Size #maxTo() 
 read method 
 This2.Size maxTo() 
-mut method 
-This2.Size #minTo() 
 read method 
 This2.Size minTo() 
 read method 
@@ -2418,12 +2296,8 @@ class method
 This2.S toS(read This1 that) }
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -2465,8 +2339,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -2541,12 +2413,8 @@ class method
 Any parseError(This1.S that) 
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -2588,8 +2456,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -2625,12 +2491,8 @@ refine read method
 This1.Bool #equalequal(read Any that) 
 NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -2672,8 +2534,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -2684,8 +2544,6 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 Mdf: {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.Size #inner() 
 read method 
 This2.Size inner() 
 class method 
@@ -2746,12 +2604,8 @@ refine read method
 This2.Bool #equalequal(read Any that) 
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This3.S #_text() 
 read method 
 This3.S _text() 
-mut method 
-This3.Message.Opt #cause() 
 read method 
 This3.Message.Opt cause() 
 class method 
@@ -2793,8 +2647,6 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This4.S #that() 
 read method 
 This4.S that() 
 class method 
@@ -2804,10 +2656,10 @@ mut This4.S.SBuilder #builder()
 method 
 This1 #from(This4.S.SBuilder builder) }}
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -2959,26 +2811,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -2998,22 +2840,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -3025,22 +2861,14 @@ This4.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -3073,24 +2901,14 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-mut method 
-This2.S #fileName() 
 read method 
 This2.S fileName() 
-mut method 
-This2.Size #lineStart() 
 read method 
 This2.Size lineStart() 
-mut method 
-This2.Size #lineEnd() 
 read method 
 This2.Size lineEnd() 
-mut method 
-This2.Size #columnStart() 
 read method 
 This2.Size columnStart() 
-mut method 
-This2.Size #columnEnd() 
 read method 
 This2.Size columnEnd() 
 class method 
@@ -3112,10 +2930,10 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -3267,26 +3085,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -3306,22 +3114,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -3333,22 +3135,14 @@ This4.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -3491,10 +3285,10 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -3646,26 +3440,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -3685,22 +3469,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -3712,22 +3490,14 @@ This4.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -3807,10 +3577,10 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
-mut method 
-mut This3.Collections.MutListAny #inner() 
 read method 
 read This3.Collections.MutListAny inner() 
+mut method 
+mut This3.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This3.Collections.MutListAny inner) 
 class method 
@@ -3962,26 +3732,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -4001,22 +3761,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This4.Collections.MutListAny #that() 
 read method 
 read This4.Collections.MutListAny that() 
 mut method 
-Void from(This4.Size that) 
+mut This4.Collections.MutListAny #that() 
 mut method 
-This4.Size #from() 
+Void from(This4.Size that) 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 class method 
@@ -4028,22 +3782,14 @@ This4.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This4.Collections.MutListAny #_that() 
 read method 
 read This4.Collections.MutListAny _that() 
 mut method 
 Void from(This4.Size that) 
-mut method 
-This4.Size #from() 
 read method 
 This4.Size from() 
-mut method 
-This4.Size #maxTo() 
 read method 
 This4.Size maxTo() 
-mut method 
-This4.Size #minTo() 
 read method 
 This4.Size minTo() 
 read method 
@@ -4188,10 +3934,10 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -4343,26 +4089,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -4382,22 +4118,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -4409,22 +4139,14 @@ This5.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -4492,10 +4214,10 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -4647,26 +4369,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -4686,22 +4398,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -4713,22 +4419,14 @@ This5.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -4796,10 +4494,10 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -4951,26 +4649,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -4990,22 +4678,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -5017,22 +4699,14 @@ This5.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -5268,10 +4942,10 @@ This3.Bool is(class Any subtype)
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
-mut method 
-mut This4.Collections.MutListAny #inner() 
 read method 
 read This4.Collections.MutListAny inner() 
+mut method 
+mut This4.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This4.Collections.MutListAny inner) 
 class method 
@@ -5423,26 +5097,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
-mut method 
-This2 #filled() 
 read method 
 This2 filled() 
 read method 
@@ -5462,22 +5126,16 @@ read method
 This2 #inner() 
 read method 
 Void #close() 
-mut method 
-mut This5.Collections.MutListAny #that() 
 read method 
 read This5.Collections.MutListAny that() 
 mut method 
-Void from(This5.Size that) 
+mut This5.Collections.MutListAny #that() 
 mut method 
-This5.Size #from() 
+Void from(This5.Size that) 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 class method 
@@ -5489,22 +5147,14 @@ This5.Bool isFill()
 read method 
 This2 filled() }
 IteratorVal: {
-mut method 
-read This5.Collections.MutListAny #_that() 
 read method 
 read This5.Collections.MutListAny _that() 
 mut method 
 Void from(This5.Size that) 
-mut method 
-This5.Size #from() 
 read method 
 This5.Size from() 
-mut method 
-This5.Size #maxTo() 
 read method 
 This5.Size maxTo() 
-mut method 
-This5.Size #minTo() 
 read method 
 This5.Size minTo() 
 read method 
@@ -6059,8 +5709,6 @@ Void #pluginUnresponsive(Library binaryRepr)
 class method 
 Library toAbstractJ(Library that, This2.Path src) exception This1.PathUnfit, This1.PrivacyCoupuled }
 ToAbstractClass: {
-mut method 
-This2.Path #src() 
 read method 
 This2.Path src() 
 class method 
@@ -6146,12 +5794,8 @@ method
 Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
 RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -6193,8 +5837,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -6204,12 +5846,8 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}
 RedirectRefTo: {
-mut method 
-This2.Path #src() 
 read method 
 This2.Path src() 
-mut method 
-This2.Location.Type.RefTo #into() 
 read method 
 This2.Location.Type.RefTo into() 
 class method 
@@ -6244,8 +5882,6 @@ This0 addAbstractAliasJ(This2.Path path, This2.Selector src, This2.Selector dest
 Method: {
 mut method 
 Void inner(This1.PlgMethod that) 
-mut method 
-This1.PlgMethod #inner() 
 read method 
 This1.PlgMethod inner() 
 class method 
@@ -6300,24 +5936,14 @@ Void #pluginUnresponsive(Library binaryRepr)
 class method 
 Library sumMethodsJ(Library lib, This2.Path path, This2.Selector src1, This2.Selector src2, This2.Selector dest, This2.S name) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }
 SumMethods: {
-mut method 
-This2.Selector #that() 
 read method 
 This2.Selector that() 
-mut method 
-This2.Selector #and() 
 read method 
 This2.Selector and() 
-mut method 
-This2.Path #of() 
 read method 
 This2.Path of() 
-mut method 
-This2.S #over() 
 read method 
 This2.S over() 
-mut method 
-This2.Selector #into() 
 read method 
 This2.Selector into() 
 class method 
@@ -6424,17 +6050,15 @@ mut This0 #apply(mut This2.Composers.RenameMethods openMaps, mut This2.Refactor2
 mut method 
 Void op(This2.Path p, This2.Location.Method m, This2.Size i) 
 Decorator: {
-mut method 
-mut This3.Composers.Libs #inner() 
 read method 
 read This3.Composers.Libs inner() 
+mut method 
+mut This3.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
 Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
-mut method 
-This3.Path #patch() 
 read method 
 This3.Path patch() 
 class method 
@@ -6487,17 +6111,15 @@ mut This0 #apply(mut This2.Composers.RenameMethods openMaps, mut This2.Refactor2
 mut method 
 Void op(This2.Path p, This2.Location.Method m, This2.Size i) 
 Decorator: {
-mut method 
-mut This3.Composers.Libs #inner() 
 read method 
 read This3.Composers.Libs inner() 
+mut method 
+mut This3.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
 Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
-mut method 
-This3.Path #patch() 
 read method 
 This3.Path patch() 
 class method 
@@ -6505,17 +6127,15 @@ mut This0 #apply(This3.Path patch)
 method 
 Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
 Decorator: {
-mut method 
-mut This2.Composers.Libs #inner() 
 read method 
 read This2.Composers.Libs inner() 
+mut method 
+mut This2.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This2.Composers.Libs inner) 
 method 
 Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation }
 Patcher: {
-mut method 
-This2.Path #patch() 
 read method 
 This2.Path patch() 
 class method 
@@ -6533,12 +6153,8 @@ class method
 Library eq(class Any that) 
 IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -6580,8 +6196,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -6606,14 +6220,10 @@ Void checkBoundAdd(This2.Size that, This2.Size listSize) }
 MutListAny: {implements This2.Concept.ToS
 mut method 
 Void head(This0.Cell that) 
-mut method 
-This0.Cell #head() 
 read method 
 This0.Cell head() 
 mut method 
 Void size(This2.Size that) 
-mut method 
-This2.Size #size() 
 read method 
 This2.Size size() 
 class method 
@@ -6644,12 +6254,8 @@ This0 set(This3.Size that, Any val, This3.Bool add)
 method 
 This0 remove(This3.Size that) }
 CellNext: {implements This1.Cell
-mut method 
-Any #val() 
 read method 
 Any val() 
-mut method 
-This1.Cell #next() 
 read method 
 This1.Cell next() 
 class method 
@@ -6684,12 +6290,8 @@ class method
 Library eq(class Any that) 
 IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -6731,8 +6333,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -6757,14 +6357,12 @@ Void checkBoundAdd(This2.Size that, This2.Size listSize) }
 MutListAny: {implements This2.Concept.ToS
 mut method 
 Void head(mut This0.Cell that) 
-mut method 
-mut This0.Cell #head() 
 read method 
 read This0.Cell head() 
 mut method 
-Void size(This2.Size that) 
+mut This0.Cell #head() 
 mut method 
-This2.Size #size() 
+Void size(This2.Size that) 
 read method 
 This2.Size size() 
 class method 
@@ -6803,14 +6401,14 @@ read This0 remove(This3.Size that)
 mut method 
 mut This0 #remove(This3.Size that) }
 CellNext: {implements This1.Cell
-mut method 
-mut Any #val() 
 read method 
 read Any val() 
 mut method 
-mut This1.Cell #next() 
+mut Any #val() 
 read method 
 read This1.Cell next() 
+mut method 
+mut This1.Cell #next() 
 class method 
 mut This0 #apply(fwd mut Any val, fwd mut This1.Cell next) 
 refine read method 
@@ -6863,8 +6461,6 @@ Library makeKJ(Library that, This2.Path path, This2.Bool isFwd)
 class method 
 Library #pluginUnresponsive(Library binaryRepr) }}
 DeployTowel: {
-mut method 
-This1.Url #fileName() 
 read method 
 This1.Url fileName() 
 class method 
@@ -6900,10 +6496,10 @@ This1.Bool noClash(This1.Location.Lib l)
 class method 
 This1.Path removePrefix(This1.Path path, This1.Path prefix) 
 Selectors: {implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -7055,26 +6651,16 @@ read method
 This3.Selector #inner() 
 read method 
 Void #close() 
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-This3.Selector #filled() 
 read method 
 This3.Selector filled() 
 read method 
@@ -7094,22 +6680,16 @@ read method
 This3.Selector #inner() 
 read method 
 Void #close() 
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -7121,22 +6701,14 @@ This3.Bool isFill()
 read method 
 This3.Selector filled() }
 IteratorVal: {
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -7158,10 +6730,10 @@ This3.Selector #inner()
 read method 
 Void #close() }}
 Selectorss: {implements This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -7313,26 +6885,16 @@ read method
 This2.Selectors #inner() 
 read method 
 Void #close() 
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-This2.Selectors #filled() 
 read method 
 This2.Selectors filled() 
 read method 
@@ -7352,22 +6914,16 @@ read method
 This2.Selectors #inner() 
 read method 
 Void #close() 
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -7379,22 +6935,14 @@ This3.Bool isFill()
 read method 
 This2.Selectors filled() }
 IteratorVal: {
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -7416,10 +6964,10 @@ This2.Selectors #inner()
 read method 
 Void #close() }}
 RenameMethods: {implements This2.Concept.ToS, This2.Concept.Classable
-mut method 
-mut This2.CollectionsMut.MutListAny #inner() 
 read method 
 read This2.CollectionsMut.MutListAny inner() 
+mut method 
+mut This2.CollectionsMut.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.CollectionsMut.MutListAny inner) 
 class method 
@@ -7549,16 +7097,10 @@ read method
 Void #close() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -7588,16 +7130,10 @@ read method
 Void #close() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -7625,22 +7161,16 @@ mut method
 mut This3.Refactor2.Method mutInner() 
 read method 
 Void #close() 
-mut method 
-mut This3.CollectionsMut.MutListAny #that() 
 read method 
 read This3.CollectionsMut.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.CollectionsMut.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -7656,10 +7186,10 @@ read This3.Refactor2.Method filled()
 mut method 
 mut This3.Refactor2.Method #filled() }}
 Libs: {implements This2.Concept.ToS, This2.Concept.Classable
-mut method 
-mut This2.Collections.MutListAny #inner() 
 read method 
 read This2.Collections.MutListAny inner() 
+mut method 
+mut This2.Collections.MutListAny #inner() 
 class method 
 mut This0 #apply(fwd mut This2.Collections.MutListAny inner) 
 class method 
@@ -7777,22 +7307,14 @@ read method
 Library #inner() 
 read method 
 Void #close() 
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 read method 
@@ -7814,26 +7336,16 @@ read method
 Library #inner() 
 read method 
 Void #close() 
-mut method 
-read This3.Collections.MutListAny #_that() 
 read method 
 read This3.Collections.MutListAny _that() 
 mut method 
 Void from(This3.Size that) 
-mut method 
-This3.Size #from() 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
-mut method 
-Library #filled() 
 read method 
 Library filled() 
 read method 
@@ -7853,22 +7365,16 @@ read method
 Library #inner() 
 read method 
 Void #close() 
-mut method 
-mut This3.Collections.MutListAny #that() 
 read method 
 read This3.Collections.MutListAny that() 
 mut method 
-Void from(This3.Size that) 
+mut This3.Collections.MutListAny #that() 
 mut method 
-This3.Size #from() 
+Void from(This3.Size that) 
 read method 
 This3.Size from() 
-mut method 
-This3.Size #maxTo() 
 read method 
 This3.Size maxTo() 
-mut method 
-This3.Size #minTo() 
 read method 
 This3.Size minTo() 
 class method 
@@ -7888,12 +7394,8 @@ class method
 Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
 ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -7935,8 +7437,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -7947,12 +7447,8 @@ method
 This1 #from(This3.S.SBuilder builder) }}
 ConceptMapUnavailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
-mut method 
-This2.S #_text() 
 read method 
 This2.S _text() 
-mut method 
-This2.Message.Opt #cause() 
 read method 
 This2.Message.Opt cause() 
 class method 
@@ -7994,8 +7490,6 @@ This2.Bool is(class Any subtype)
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
-mut method 
-This3.S #that() 
 read method 
 This3.S that() 
 class method 
@@ -8005,12 +7499,8 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}
 DeployLibrary: {
-mut method 
-This2.Path #path() 
 read method 
 This2.Path path() 
-mut method 
-This2.Url #url() 
 read method 
 This2.Url url() 
 class method 
@@ -8029,14 +7519,10 @@ GuiPlugin: {/*@plugin
 L42.is/connected/withHtml
 */}
 Iterator: {
-mut method 
-This1.Abstract.S #id() 
 read method 
 This1.Abstract.S id() 
 mut method 
 Void current(This1.Abstract.S that) 
-mut method 
-This1.Abstract.S #current() 
 read method 
 This1.Abstract.S current() 
 class method 
