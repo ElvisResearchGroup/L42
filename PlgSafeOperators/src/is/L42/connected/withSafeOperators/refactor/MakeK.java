@@ -53,6 +53,7 @@ public class MakeK {
 public static List<String> collectFieldNames(ClassB lPath) {
 List<String> fields=new ArrayList<>();
 for(MethodWithType mwt:lPath.mwts()){
+  if(mwt.getMt().isRefine()){continue;}//To prevent toS() and class() to be seen as fields
   if(mwt.get_inner().isPresent()){continue;}
   if(mwt.getMt().getMdf()==Mdf.Class){continue;}
   if(mwt.getMs().getNames().size()>1){continue;}
@@ -61,7 +62,10 @@ for(MethodWithType mwt:lPath.mwts()){
       || !mwt.getMs().getNames().get(0).equals("that")  
      )){continue;}
   String name=mwt.getMs().getName();
-  if(name.startsWith("#")){name=name.substring(1,name.length());}
+  if(name.startsWith("#")){
+    continue;//prevent operators from being fields
+    //name=name.substring(1,name.length());//what if it has more # inside?
+    }
   if(!MethodSelector.checkX(name,false)){continue;}
   if(fields.contains(name)){continue;}
   fields.add(name);

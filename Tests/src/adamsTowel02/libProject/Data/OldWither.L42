@@ -1,0 +1,58 @@
+Now Data invariant and Data wither implement in Java,
+less nice but faster and more general.
+
+{
+
+Selectors:Collections.vector(of:Selector)
+
+class method
+Introspection.Method immK(Introspection.Methods that)
+exception StateUnfit{
+    with m in that.vals() (
+      if m.thisMdf().equals(\class._Class()) & m.returnType().mdf().equals(\class._Immutable()) (
+        return m
+        )
+      )
+    exception StateUnfit"immutable constructor not found"
+  }
+
+class method
+Library<><(Library that)
+exception StateUnfit, MetaGuard{
+  i=Introspection(lib:that)
+  s=i.state()
+  k=this.immK(s)
+  names=k.selector().names()
+  var Library acc=that
+  withK=Selector.from(name:S"with",names:names)
+  var Selectors ss=Selectors[withK]
+  acc:=this.addWithAllArgs(that,k:k)
+  with n in withK.names().vals() (
+    // I know all names in ss contains n
+    with sel in ss.vals() (
+      newSelNames=sel.names() - n
+      newSel=Selector.from(name:S"with",names:newSelNames)
+      defP=Selector.from(name:n,names:Strings[])
+      ss:=ss + newSel
+      acc:=DefaultParameter(sel, of:Path"This",name:n, by:defP)<><acc
+      )
+    )
+  return acc
+  }
+
+class method
+Library addWithAllArgs(Library that,Introspection.Method k)
+exception StateUnfit, MetaGuard{
+  p=Path"This"
+  freshK=Selector.fresh(k.selector())
+  freshW=Selector.fresh(Selector"with(that)")
+  withK=Selector.from(name:S"with",names:k.selector().names())
+  action={ read method This with(This that) that}
+  var Library acc=that
+  acc:=Refactor.compose(left:acc
+    right:Refactor.RenameSelector(
+      Selector"with(that)" of:p to:freshW)<><action)
+  acc:=Refactor.SumMethods(k.selector() and:freshW of:p over:S"that" to:withK)<><acc
+  return acc
+  }
+}

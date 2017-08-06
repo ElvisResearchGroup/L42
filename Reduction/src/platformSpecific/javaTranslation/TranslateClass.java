@@ -86,6 +86,8 @@ public class TranslateClass {
   }
 
   private static void getReverter(String s, MethodWithType ctor,StringBuilder res) {
+    String uniqueNum=ctor.getMs().isUnique()?
+      "_$_"+ctor.getMs().getUniqueNum():"";
     res.append("public ast.ExpCore revert(){\n");
     //pathReverter(s, res);//no, much worst here
     Path path=Path.parse(Resources.name42Of(s));
@@ -102,7 +104,7 @@ public class TranslateClass {
     res.append("java.util.ArrayList<ast.ExpCore> es=new java.util.ArrayList<>(java.util.Arrays.asList(");
     StringBuilders.formatSequence(res,ns.iterator(),
       ", ",n->res.append(
-          "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this.F"+Resources.nameOf(n)+")"
+          "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this.F"+Resources.nameOf(n)+uniqueNum+")"
           ));
     res.append("));\n");
     res.append("return new ast.ExpCore.MCall(receiver,"+ctor.getMs().toSrcEquivalent()+",ast.Ast.Doc.empty(),es,null);\n");
@@ -151,12 +153,14 @@ public class TranslateClass {
   private static void getFields(MethodWithType ctor, StringBuilder res) {
     List<String> ns = ctor.getMs().getNames();
     List<Type> ts = ctor.getMt().getTs();
+    String uniqueNum=ctor.getMs().isUnique()?
+      "_$_"+ctor.getMs().getUniqueNum():"";
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ";\n", (n,t)->{
         assert t instanceof Type;
         res.append("public ");
         res.append(Resources.nameOf(t));
-        res.append(" F"+Resources.nameOf(n));
+        res.append(" F"+Resources.nameOf(n)+uniqueNum);
         });
     res.append(";\n");
   }
@@ -166,6 +170,8 @@ public class TranslateClass {
     res.append("( ");
     List<String> ns = ctor.getMs().getNames();
     List<Type> ts = ctor.getMt().getTs();
+    String uniqueNum=ctor.getMs().isUnique()?
+            "_$_"+ctor.getMs().getUniqueNum():"";
     StringBuilders.formatSequence(res,ns.iterator(),ts.iterator(),
       ", ",(n,t)->{
         n=Resources.nameOf(n);
@@ -177,7 +183,7 @@ public class TranslateClass {
     "\n",(n,t)->{
       n=Resources.nameOf(n);
       res.append("this.");
-      res.append("F"+n);
+      res.append("F"+n+uniqueNum);
       res.append("=");
       res.append("P"+n);
       res.append(";\n");
@@ -187,7 +193,7 @@ public class TranslateClass {
       res.append(" instanceof platformSpecific.javaTranslation.Resources.PhI<?>){((platformSpecific.javaTranslation.Resources.PhI<"+Resources.nameOf(t)+">)");
       res.append("P"+n);
       res.append(").addAction((val)->this.");
-      res.append("F"+n);
+      res.append("F"+n+uniqueNum);
       res.append("=val);}\n");
     });
     res.append("}\n");

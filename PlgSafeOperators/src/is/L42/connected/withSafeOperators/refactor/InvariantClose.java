@@ -151,11 +151,13 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
   assert original.getMs().nameSize()==delegate.getMs().nameSize();
   Position p=original.getP();
   ExpCore.MCall delegateMCall=new ExpCore.MCall(
-          new ExpCore.EPath(p, Path.outer(0)), delegate.getMs(),Doc.empty(),
+          new ExpCore.X(p, "this"), delegate.getMs(),Doc.empty(),
           tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),p);
   if(!callInvariant){original=original.withInner(delegateMCall);}
   else{
-    ExpCore.Block b=WrapAux.e.withDeci(0,WrapAux.e.getDecs().get(0).withInner(delegateMCall));
+    ExpCore.Block e=InvariantClose.eThis;
+    if(original.getMt().getMdf()==Mdf.Class){e=InvariantClose.eR;}
+    ExpCore.Block b=e.withDeci(0,e.getDecs().get(0).withInner(delegateMCall));
     original=original.withInner(b);
     }
   addCheck(original,newMwts);
@@ -170,13 +172,17 @@ static void addCheck(MethodWithType mwt,List<ClassB.Member> newMwts) throws Clas
     Functions.replaceIfInDom(newMwts,mwt);return;}
   throw new RefactorErrors.ClassUnfit().msg("Incompatible factory type: "+mwt.getMs()+": "+mwt.getMt()+" and "+mwtPre.getMt());
   }
+static ExpCore.Block eThis=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+  "{method m() (r=void this.#invariant() r)}"
+  ).getMs().get(0).getInner();
+  
+static ExpCore.Block eR=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+  "{method m() (r=void r.#invariant() r)}"
+  ).getMs().get(0).getInner();
 }
 class WrapAux extends RenameMethodsAux{
   int count=0;
   static X thisX=new X(Position.noInfo,"this");
-  static ExpCore.Block e=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
-    "{method m() (r=void this.#invariant() r)}"
-    ).getMs().get(0).getInner();
   public WrapAux(Program p, List<CsMxMx> renames, ClassB top) {
     super(p, renames, top);
     }
@@ -210,7 +216,7 @@ class WrapAux extends RenameMethodsAux{
       LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
         "Exposer called on lent returning method '"+mwt.getMs()+"' in "+mwt.getP())
         );}
-    ExpCore myE=e.withDeci(0,e.getDecs().get(0)
+    ExpCore myE=InvariantClose.eThis.withDeci(0,InvariantClose.eThis.getDecs().get(0)
       .withInner(mwt.getInner()));
     return res.withInner(myE);
     }

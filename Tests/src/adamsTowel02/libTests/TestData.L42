@@ -1,22 +1,22 @@
 {reuse L42.is/AdamTowel02
 
 
-
-Person:Data<><{ implements Concept.Invariant
+Person:Data<><{ implements Concept.ToS
   S name, var Size age
-  method invariant()
+  read method Bool #invariant()
     this.name()!=S"" & this.age()>= 0Size
-   }
+  method toS() S"hi"
+  }
 
 Main:{
   Person p1=Person(name:S"Bob",age:10Size)
-  Debug(p1==p1)
+  //Debug(p1==p1)
   Debug(p1)
-  Debug(p1.with(age:20Size))
+  //Debug(p1.with(age:20Size))
 
   (
-    unused=Debug(Person(name:S"", age:2Size))
-    catch error Data.Invariant.Failure x
+    unused=Person(name:S"", age:2Size)
+    catch error Data.Invariant.Fail x
       void
     Debug(S"Fail")
     )

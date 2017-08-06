@@ -31,6 +31,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
+      /*
       "TestResource.L42",
       "TestHelloWorld.L42",
       "TestRefactorFailToS.L42",
@@ -41,7 +42,6 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "TestAlphanumeric.L42",
       "TestAssertPreHold.L42",
       //Binary flag still disabled "TestBinaryFlag32.L42",
-      //--"TestData.L42",
       //--"TestDefaultParameter.L42",
       "TestEnumerationPostfix.L42",
       //////Not a valid test, more of a test template "TestIsConcrete.L42",
@@ -55,6 +55,8 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       //--"TestWither.L42",
       "UseLib.L42",
       "UseOperators1.L42",
+      */
+      "TestData.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );
