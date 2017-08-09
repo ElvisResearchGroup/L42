@@ -5,7 +5,9 @@ package ast;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;
-
+import lombok.experimental.Wither;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 @SuppressWarnings("serial")
 public abstract class InternalError extends RuntimeException{//stuff that should not get out
 
