@@ -1,22 +1,27 @@
 {
+Path of
+Selector mutK
+class method class Path #default##apply(Void of)Path
+class method class Selector #default##apply(Void mutK)Selector
+Fail:Message.$<><{ implements This2.Fail}
+
 //no need to generate thoseN, S is just the string
 //else, generated ones:
 
 //initial delegation
 class method
 Library<><(Library that) {
-  return Use[that]<><this.toSTrait(Introspection(lib:that))
-  error on MetaGuard
+  m=Location.Lib(that).navigate(this.of()).method(selector:this.mutK())
+  return Use[that]<><this.toSTrait(m)
+  error on Refactor2.Fail, Location.NotAvailable
     X"AddToS.<><"
   }
 
 //code generation
 class method
-Library toSTrait(Introspection.NestedClass that) {
-  state=that.state()
-  if state.isEmpty() (error S"TODO")
-  fs=state.left()
-
+Library toSTrait(Location.Method that) {
+  //TODO: add checks is actually a factory?
+  fs=that
   //accumulation
   acc=Use[with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
     fSel=Selector.from(string:fn++S"()")

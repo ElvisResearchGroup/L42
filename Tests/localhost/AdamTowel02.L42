@@ -44537,6 +44537,86 @@ This1.S immKName() This1.S.#from(builder:(
   b
   ))
 class method 
+This1.Selector immK(Library that, This1.Path of) exception This0.Invariant.Fail (
+  Void unused=(
+    This1.Location.Lib loc=This1.Location.Lib.#apply(that:that).navigate(that:of)
+    capsule This1.Location.Method.List ks=This1.Location.Method.List.#from(seqBuilder:(
+      capsule This1.Location.Method.List b=This1.Location.Method.List.#seqBuilder()
+      Void unused1=(
+        lent This1.Location.Method.List.IteratorVal m=loc.methods().vals()
+        (
+          Void unused2=loop (
+            Void unused3=m.#next()
+            
+            catch exception Void catched0 (
+              Void unused4=(
+                Void unused5=m.#checkEnd()
+                
+                catch exception Void catched1 void
+                
+                void
+                )
+              exception void
+              )
+            
+            ((
+              This1.Bool cond=m.#inner().selector().name().#equalequal(that:This0.immKName())
+              (
+                Void unused6=cond.#checkTrue()
+                
+                catch exception Void catched4 void
+                
+                ((
+                  Void unused7=b.#add(that:m.#inner())
+                  void
+                  ))
+                )
+              ))
+            )
+          
+          catch exception Void catched6 void
+          
+          void
+          )
+        )
+      b
+      ))
+    Void unused0=(
+      This1.Bool cond0=ks.size().#equalequal(that:This1.Size.#from(builder:(
+        capsule This1.S.SBuilder b0=This1.Size.#builder()
+        Void unused8=b0.#1()
+        b0
+        )))
+      (
+        Void unused9=cond0.#checkTrue()
+        
+        catch exception Void catched10 void
+        
+        (return ks.left().selector())
+        )
+      )
+    
+    catch exception This1.Message catched11 exception This0.Invariant.Fail.#from(builder:(
+      capsule This1.S.SBuilder b1=This0.Invariant.Fail.#builder()
+      b1
+      )).#apply(that:catched11)
+    
+    (
+      Void unused10=exception This0.Invariant.Fail.#from(builder:(
+        capsule This1.S.SBuilder b2=This0.Invariant.Fail.#builder()
+        b2
+        ))
+      void
+      )
+    )
+  
+  catch return This1.Selector result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
 Library #leftrightleft(Library that) exception This0.Fail, This1.Refactor2.PathUnfit (/*
 class method
 Library <>< (Library that)
@@ -44575,15 +44655,23 @@ exception StateUnfit, MetaGuard
         b
         ))).#leftrightleft(that:opNorm0)
       )
+    This1.Selector immK=this.immK(that:res, of:This1.Path.#from(builder:(
+      capsule This1.S.SBuilder b0=This1.Path.#builder()
+      Void unused8=b0.#T()
+      Void unused9=b0.#h()
+      Void unused10=b0.#i()
+      Void unused11=b0.#s()
+      b0
+      )))
     Void unused2=res := (
       Library opNorm1=res
-      This0.Wither.#apply(of:This0.Wither.#default##apply(of:void).#from(builder:(
-        capsule This1.S.SBuilder b0=This0.Wither.#default##apply(of:void).#builder()
-        Void unused8=b0.#T()
-        Void unused9=b0.#h()
-        Void unused10=b0.#i()
-        Void unused11=b0.#s()
-        b0
+      This0.Wither.#apply(immK:immK, of:This0.Wither.#default##apply(of:void).#from(builder:(
+        capsule This1.S.SBuilder b1=This0.Wither.#default##apply(of:void).#builder()
+        Void unused12=b1.#T()
+        Void unused13=b1.#h()
+        Void unused14=b1.#i()
+        Void unused15=b1.#s()
+        b1
         ))).#leftrightleft(that:opNorm1)
       )
     Void unused3=return res
@@ -45093,94 +45181,17 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr}}
 Wither: {
 read method 
+This2.Selector immK() 
+read method 
 This2.Path of() 
 class method 
-class This2.Path #default##apply(Void of) This2.Path
+class This2.Selector #default##apply(Void immK) This2.Selector
 class method 
-This2.Selector immK(Library that, This2.Path of) exception This0.Fail (
-  Void unused=(
-    This2.Location.Lib loc=This2.Location.Lib.#apply(that:that).navigate(that:of)
-    capsule This2.Location.Method.List ks=This2.Location.Method.List.#from(seqBuilder:(
-      capsule This2.Location.Method.List b=This2.Location.Method.List.#seqBuilder()
-      Void unused1=(
-        lent This2.Location.Method.List.IteratorVal m=loc.methods().vals()
-        (
-          Void unused2=loop (
-            Void unused3=m.#next()
-            
-            catch exception Void catched0 (
-              Void unused4=(
-                Void unused5=m.#checkEnd()
-                
-                catch exception Void catched1 void
-                
-                void
-                )
-              exception void
-              )
-            
-            (
-              This2.Bool cond=m.#inner().selector().name().#equalequal(that:This1.immKName())
-              (
-                Void unused6=cond.#checkTrue()
-                
-                catch exception Void catched4 void
-                
-                (
-                  Void unused7=b.#add(that:m.#inner())
-                  void
-                  )
-                )
-              )
-            )
-          
-          catch exception Void catched6 void
-          
-          void
-          )
-        )
-      b
-      ))
-    Void unused0=(
-      This2.Bool cond0=ks.size().#equalequal(that:This2.Size.#from(builder:(
-        capsule This2.S.SBuilder b0=This2.Size.#builder()
-        Void unused8=b0.#1()
-        b0
-        )))
-      (
-        Void unused9=cond0.#checkTrue()
-        
-        catch exception Void catched10 void
-        
-        return ks.left().selector()
-        )
-      )
-    
-    catch exception This2.Message catched11 exception This0.Fail.#from(builder:(
-      capsule This2.S.SBuilder b1=This0.Fail.#builder()
-      b1
-      )).#apply(that:catched11)
-    
-    (
-      Void unused10=exception This0.Fail.#from(builder:(
-        capsule This2.S.SBuilder b2=This0.Fail.#builder()
-        b2
-        ))
-      void
-      )
-    )
-  
-  catch return This2.Selector result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
+class This2.Path #default##apply(Void of) This2.Path
 method 
 Library #leftrightleft(Library that) exception This0.Fail, This2.Refactor2.PathUnfit (
   Void unused=(
-    This2.Selector immK=This0.immK(that:that, of:this.of())
-    Void unused0=return This0.PlgWither.witherJ(path:this.of(), top:that, immK:immK)
+    Void unused0=return This0.PlgWither.witherJ(path:this.of(), top:that, immK:this.immK())
     
     catch exception This2.Refactor2.Fail catched exception This0.Fail.#from(builder:(
       capsule This2.S.SBuilder b=This0.Fail.#builder()
@@ -45197,7 +45208,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-mut This0 #apply(fwd This2.Path of) 
+mut This0 #apply(fwd This2.Selector immK, fwd This2.Path of) 
 Fail: {implements This2.Fail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
 read method 

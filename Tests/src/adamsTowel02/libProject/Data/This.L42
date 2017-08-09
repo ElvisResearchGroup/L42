@@ -7,6 +7,14 @@ Wither:K<><...
 
 class method S mutKName() S"#apply"
 class method S immKName() S"#immK"
+class method Selector immK(Library that,Path of) exception Invariant.Fail{
+  loc=Location.Lib(that).navigate(of)
+  ks=Location.Method.List[with m in loc.methods().vals() (
+    if m.selector().name()==This.immKName() (use[m]))]
+  if ks.size()==1Size (return ks.left().selector())
+  exception on Message Invariant.Fail""
+  exception Invariant.Fail""
+  }
 
 ExcHelp:{
   class method Refactor2.SelectorUnfit selectorUnfit(Selector that) {
@@ -69,7 +77,8 @@ exception Fail Refactor2.PathUnfit {
  var Library res=that
  res><>=Base
  res><>=Invariant(of:\"This")
- res><>=Wither(of:\"This")
+ immK=this.immK(res, of:Path"This")
+ res><>=Wither(immK:immK, of:\"This")
  return res
 }
 

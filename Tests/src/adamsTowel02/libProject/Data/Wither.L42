@@ -1,22 +1,15 @@
 {
+Selector immK
 Path of
+class method class Selector #default##apply(Void immK)Selector
 class method class Path #default##apply(Void of)Path
-Fail:Message.$<><{ implements This2.Fail}
 
-class method Selector immK(Library that,Path of) exception Fail{
-  loc=Location.Lib(that).navigate(of)
-  ks=Location.Method.List[with m in loc.methods().vals() (
-    if m.selector().name()==This1.immKName() (use[m]))]
-  if ks.size()==1Size (return ks.left().selector())
-  exception on Message Fail""
-  exception Fail""
-  }
+Fail:Message.$<><{ implements This2.Fail}
 
 method
 Library <><(Library that)
 exception Fail Refactor2.PathUnfit {
-  immK=This.immK(that, of:this.of())
-  return PlgWither.witherJ(path:this.of(),top:that,immK:immK)
+  return PlgWither.witherJ(path:this.of(),top:that,immK:this.immK())
   exception on Refactor2.Fail Fail""
   }
 
