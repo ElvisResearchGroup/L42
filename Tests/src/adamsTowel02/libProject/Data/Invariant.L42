@@ -43,7 +43,7 @@ exception Fail Refactor2.PathUnfit {
   return PlgInvariantClose.closeJ(
     path:this.of(),top:inv,mutK:This1.mutKName() immK:This1.immKName()
     )
-  catch exception Refactor2.Fail e exception Fail""(e)
+  exception on Refactor2.Fail Fail""
   }
 
 

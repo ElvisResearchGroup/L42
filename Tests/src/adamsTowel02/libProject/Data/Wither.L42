@@ -1,55 +1,36 @@
 {
+Path of
+class method class Path #default##apply(Void of)Path
+Fail:Message.$<><{ implements This2.Fail}
 
-Selectors:Collections.vector(of:Selector)
-
-class method
-Introspection.Method immK(Introspection.Methods that)
-exception StateUnfit{
-    with m in that.vals() (
-      if m.thisMdf().equals(\class._Class()) & m.returnType().mdf().equals(\class._Immutable()) (
-        return m
-        )
-      )
-    exception StateUnfit"immutable constructor not found"
+class method Selector immK(Library that,Path of) exception Fail{
+  loc=Location.Lib(that).navigate(of)
+  ks=Location.Method.List[with m in loc.methods().vals() (
+    if m.selector().name()==This1.immKName() (use[m]))]
+  if ks.size()==1Size (return ks.left().selector())
+  exception on Message Fail""
+  exception Fail""
   }
 
-class method
-Library<><(Library that)
-exception StateUnfit, MetaGuard{
-  i=Introspection(lib:that)
-  s=i.state()
-  k=this.immK(s)
-  names=k.selector().names()
-  var Library acc=that
-  withK=Selector.from(name:S"with",names:names)
-  var Selectors ss=Selectors[withK]
-  acc:=this.addWithAllArgs(that,k:k)
-  with n in withK.names().vals() (
-    // I know all names in ss contains n
-    with sel in ss.vals() (
-      newSelNames=sel.names() - n
-      newSel=Selector.from(name:S"with",names:newSelNames)
-      defP=Selector.from(name:n,names:Strings[])
-      ss:=ss + newSel
-      acc:=DefaultParameter(sel, of:Path"This",name:n, by:defP)<><acc
-      )
-    )
-  return acc
+method
+Library <><(Library that)
+exception Fail Refactor2.PathUnfit {
+  immK=This.immK(that, of:this.of())
+  return PlgWither.witherJ(path:this.of(),top:that,immK:immK)
+  exception on Refactor2.Fail Fail""
   }
 
-class method
-Library addWithAllArgs(Library that,Introspection.Method k)
-exception StateUnfit, MetaGuard{
-  p=Path"This"
-  freshK=Selector.fresh(k.selector())
-  freshW=Selector.fresh(Selector"with(that)")
-  withK=Selector.from(name:S"with",names:k.selector().names())
-  action={ read method This with(This that) that}
-  var Library acc=that
-  acc:=Refactor.compose(left:acc
-    right:Refactor.RenameSelector(
-      Selector"with(that)" of:p to:freshW)<><action)
-  acc:=Refactor.SumMethods(k.selector() and:freshW of:p over:S"that" to:withK)<><acc
-  return acc
+
+PlgWither:Refactor2.JavaImport<><{
+  //@plugin is.L42.connected.withSafeOperators
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.Wither
+  class method
+  Library witherJ(Path path,Library top,Selector immK)
+  exception 
+  ,,,,Refactor2.PathUnfit, Refactor2.SelectorUnfit,
+  ,,,,Refactor2.MethodUnfit, Refactor2.ClassUnfit
+  class method
+  Library #pluginUnresponsive(Library binaryRepr)
+    binaryRepr  
   }
 }

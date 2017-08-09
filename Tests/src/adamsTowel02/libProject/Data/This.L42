@@ -1,7 +1,7 @@
 {
 Fail:{interface implements Guard}
 Invariant:K<><...
-//Wither:...
+Wither:K<><...
 //AddToS:...
 //AddEquals:...
 
@@ -23,6 +23,7 @@ ExcHelp:{
     }
   }
 Base:{
+  Fail:Message.$<><{ implements This2.Fail}
   //class, ToS == required
   class method Library (){
     implements Concept.Base
@@ -46,18 +47,19 @@ Base:{
     }
   class method
   Library<><(Library that)
-  exception 
-  ,,,,Refactor2.MethodClash,
-  ,,,,Refactor2.ClassClash,
-  ,,,,Refactor2.SubtleSubtypeViolation
-    Use.Override[this()]<><that
+  exception Fail {
+    return Use.Override[this()]<><that
+    exception on Refactor2.Fail Fail""
+    }
   }
 
 class method
 Library <>< (Library that)
-exception Invariant.Fail Refactor2.PathUnfit {
+exception Fail Refactor2.PathUnfit {
  var Library res=that
+ res><>=Base
  res><>=Invariant(of:\"This")
+ res><>=Wither(of:\"This")
  return res
 }
 
