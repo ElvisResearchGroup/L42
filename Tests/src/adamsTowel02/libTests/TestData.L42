@@ -6,13 +6,15 @@ Person:Data<><{ implements Concept.ToS
   read method Bool #invariant()
     this.name()!=S"" & this.age()>= 0Size
   method toS() S"hi"
+  read method This1.Bool equals(read This that)Bool.false()
   }
+
 
 Main:{
   Person p1=Person(name:S"Bob",age:10Size)
-  //Debug(p1==p1)
+  Debug(p1==p1)
   Debug(p1)
-  //Debug(p1.with(age:20Size))
+  Debug(p1.with(age:20Size))
 
   (
     unused=Person(name:S"", age:2Size)

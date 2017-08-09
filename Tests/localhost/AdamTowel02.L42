@@ -45577,6 +45577,72 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
+refine class method 
+read This0 cast(read This3.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return read This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      mut This0 that0=(
+        Void unused2=return that
+        
+        catch return mut This0 casted casted
+        
+        catch return mut Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return mut This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 refine read method 
 This3.Bool #equalequal(read Any that) (
   Void unused=(
@@ -45613,11 +45679,7 @@ CurlyBlock-Should be unreachable code
 read method 
 This3.Bool equals(read This0 that) 
 refine read method 
-This3.S toS() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) }
+This3.S toS() }
 class method 
 Library #leftrightleft(Library that) exception This0.Fail (
   Void unused=(
