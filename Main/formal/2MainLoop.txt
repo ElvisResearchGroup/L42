@@ -1,4 +1,4 @@
-The execution of a 42 project can be seen as a state machine with
+The execution of a 42 project can be seen as a state machine
 that proceeds through the following phases:
 0 parsing
 1 desugaring
@@ -10,8 +10,8 @@ that proceeds through the following phases:
 7 execute eC until you get an LC, and replace eC with LC in the program
 8 jump back to 2. 
 
-The rules exposed here covers 2-8, and depends on other notations defined in this file
-and on reduction (in progress) and typing defined in other files.
+The rules exposed here cover 2-8, and depend on other notations defined in files up to here,
+and on reduction (in progress) and typing defined in further files.
 Paths (introduced later in the file) represent organized/restricted collections of P.
 
 -----------------------------------------------------------
@@ -19,7 +19,7 @@ Part 1: 42 top level reduction rules
 -----------------------------------------------------------
 ### reduction rules
 ReductionTop:
-precondition: at top level we have a L not of form LC
+precondition: at top level we have an L not of form LC.
 Rule top performs a step of execution, while rule enter
 propagates the execution inside nested classes and method bodies.
 
@@ -60,7 +60,7 @@ Part 2: paths //James suggest name "stset" for Paths
 -----------------------------------------------------------
 "paths" is a datastructure to store P1..Pn in a organized way:
 The idea is to store them as a stack, where the first level
-stores subtrees rooted in  This0, the second level store the ones rooted
+stores subtrees rooted in This0, the second level store the ones rooted
 in This1 and so on.
 Moreover, if Thisn.Cs is present, then we do not store
 any of its sub paths Thisn.Cs.Cs'.
@@ -72,7 +72,7 @@ We model this idea with
 We construct paths from P1..Pn as follow:
  -reorganize(empty)=empty
  -reorganize(Ps)=Css0',...,Cssn'
-  Cs in Cssi iff Thisi.Cs in Ps //this filter out Any,Void, Library since they have no Thisi
+  Cs in Cssi iff Thisi.Cs in Ps //this filters out Any, Void, and Library since they have no Thisi
   Cssn!=empty
   Cssi'=minimize(Cssi)
 
@@ -108,16 +108,18 @@ representing paths This0.W.E.A  This0.W.B  This0.C This1.D
 Part 3: methods(p,P)=Ms,  collect(p,Ps)=Ps'
 -----------------------------------------------------------
 methods(), applied to a non normalized L, will return a mixture of
-the methods written directly into the L and methods declared in its
+the methods retrieved directly from the L and methods declared in its
 implemented interfaces.
+
 methods() collects such methods and their types. It may have to choose a type
 in case of methods refined in different ways from interface diamond implements.
 
 _______
 #define collect(p,Ps)=Ps' //collects transitively implemented interfaces
 -collect(p,empty)=empty  
-  //an implementation could keep a list of visited P instead of diverging, mathematically is the same.
--collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is,crucially: dept first but we avoid duplicates by keeping the rightmost occurence.  
+  //an implementation could keep a list of visited P instead of diverging; mathematically it is the same.
+  //The list-keeping implementation would have to shuffle the list a lot.    TODO(old line): <blank>
+-collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is,crucially: depth first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={interface implements Ps0 _}//TODO: add check for "interface" in code
   Ps'=collect(p,Ps0[from P0])
   where "\p" is set minus on lists using p.equiv(P1,P2) //TODO: update code, this should fix concern in TODO "just hacked away"
@@ -128,7 +130,7 @@ _______
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO: do it in the code
   P1..Pn=collect(p,Ps[from P0])
-  //TODO: in code move the check for "error unless forall i in 1..n, p(Pi) is an interface" into the former definition
+  //TODO: in code move the check for "error unless forall i in 1..n, p(Pi) is an interface" into the pattern match on p(P0) above
   ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code; may be is solved by change in collect "\p"
     such that p(Pj)(ms)=mh e? //no refine
@@ -179,7 +181,7 @@ _______
   forall P inside mh e?, alive(p,P)//TODO: add in code 
     
 -norm(p, C:L) =C:norm(p,L)
-//we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seams to work fine.
+//we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seems to work fine.
 
 _______
 #define multiNorm(p; paths)=p' //multinorm assumes that p does not have evil pushes
@@ -199,39 +201,44 @@ _______
 -----------------------------------------------------------
 Part 5: reachability
 -----------------------------------------------------------
-Understanding the treatments of Ps in eC.
+Different Ps in the eC in (top), and the parts of the          // TODO(old line): Understanding the treatments of Ps in eC.
+p from (top) that they purport to refer to, are treated
+differently.
+
 Consider this part of a project:
   C:{interface method E k()}
   eC= A.foo(B,{implements C,G method D m() F.foo() G:{interface}})
   D:{}
-In the current design we divide A,B,C,D,E,F into 3 categories:
+  
+In the current design we divide A,B,C,D,E,F into 3 1/2 categories:
   coherent: A 
   typed:    B,C,E
-  alive:    D,F
-Note that G is not in any of the cases, since we are classifying external bindings.
-Note that E is typed since C is typed; C is typed since C is implemented.
-This design allows that using introspection on {...},
-if you succeeded navigating out, all is typed.
+  alive:    D,F      (while normalising the coherent and typed paths)
+  alive:    G        (while normalising the libraries in eC)
+                                                                           // TODO(old line): Note that G is not in any of the cases, since we are classifying external bindings.
+Note that E is typed since C is typed; C is typed since C is outside eC and implemented.
+This design allows that using introspection on a Library value,
+if you succeeded navigating out, everything reachable is typed.
 Another, more expressive option would be to have 
-  coherent: A     //NOT WHAT WE ARE DOING
-  typed:    B     //NOT WHAT WE ARE DOING
-  norm:     C     //NOT WHAT WE ARE DOING
-  alive:    D,E,F //NOT WHAT WE ARE DOING
+  coherent: A       //NOT WHAT WE ARE DOING
+  typed:    B       //NOT WHAT WE ARE DOING
+  norm:     C       //NOT WHAT WE ARE DOING
+  alive:    D,E,F,G //NOT WHAT WE ARE DOING
 But this introduces more cases, and makes harder to reason about
-introspecting library value: it is harder to guarantee that any
-extracted class Any will be a valid typed 'class Any' suitable input for redirect.
+introspecting a library value: it is harder to guarantee that any
+extracted class Any will be a valid typed 'class Any', suitable as input for redirect.
 -----------------------------------
 
-//note we could have redundant paths, like This1.C and This2.B.C and is ok
+//Note that we could have redundant paths, like This1.C and This2.B.C, which is ok,
 //and this is also ok for the result of tryCoherentPaths() and 
-//tryTypedPaths() and the input of toAny()
+//tryTypedPaths() and the input of toAny().
 
 -tryCoherentPaths(p,eC)=reachablePaths(p,reorganize(Ps'), empty,empty)
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
 
 -tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed)
   paths0=reorganize({P|P inside eC}) U (stronglyDeepImplements(L1)U..U stronglyDeepImplements(Ln)).pop()
-  L1..Ln={L| L inside eC}//in path not prime// not repeat check stage
+  L1..Ln={L| L inside eC}//in path not prime// not repeat check stage  
 
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
@@ -290,7 +297,7 @@ paths;paths' ||- p  ~>  p1.update(L)
   paths.top(); paths'.top() ||-p1 ~> L
   
 (pNoPop)
-Css;Css'  ||- p  ~> L,empty // 'L,empty' is a program with only 1 level
+Css;Css'  ||- p  ~>  L,empty // 'L,empty' is a program with only 1 level
     where
     p.pop() undefined
     Css;Css' ||-p ~> L
@@ -309,7 +316,7 @@ Css;Cs1'..Csk' ||-p ~> p'[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also
   // annotated as already checked 
   // However, this is  the responsibility of the TS and not of  ||-
 _______
-#define toAny(paths', eC)//TODO: update in code, now it takes paths' instead of paths and have inverted behavior
+#define toAny(paths', eC)//TODO: update in code, now it takes coherent paths' instead of typed paths and has inverted behaviour
 - toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
   otherwise toAny(Css1..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
   where forall i in 1..n, Cs notin Cssi
