@@ -62,18 +62,21 @@ public This trUnion(ATr<?> that){
   }
 public This returnsAdd(Type t){
   This res=trClean();
+  res.exceptions=exceptions;
   res.returns=new ArrayList<>(returns);
   res.returns.add(t);
   return res;
   }
 public This exceptionsAdd(Path p){
   This res=trClean();
+  res.returns=returns;
   res.exceptions=new ArrayList<>(exceptions);
   res.exceptions.add(p);
   return res;
   }
 public This exceptionsAddAll(Collection<Type> ps){
   This res=trClean();
+  res.returns=returns;
   res.exceptions=new ArrayList<>(exceptions);
   for(Type t:ps){res.exceptions.add(t.getPath());}
   return res;

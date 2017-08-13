@@ -27,7 +27,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
 
       //// big individual deployment options
       //Opt.DeplAT1, // AdamsTowel01
-      //Opt.DeplAT2, // AdamsTowel02
+      Opt.DeplAT2, // AdamsTowel02
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file

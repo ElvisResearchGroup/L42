@@ -1,36 +1,32 @@
 {
-  ParseFail: Message.$<><{implements Guard.ParseFail}
+ParseFail: Message.$<><{implements Guard.ParseFail}
+Fail: Message.$<><{implements Guard}
+  
+Trait:Resource<><{implements Concept.Base
+  S that
 
   class method
-  Library <><(Library that){
-    lib=(,{
-      implements Concept.Base
-      
-      S that
+  This #from(S.SBuilder builder)
+    This.parse(S.#from(builder:builder))
 
-      class method
-      This #from(S.SBuilder builder)
-        This.parse(S.#from(builder:builder))
+  class method
+  mut S.SBuilder #builder()
+    S.SBuilder.empty()
 
-      class method
-      mut S.SBuilder #builder()
-        S.SBuilder.empty()
+  class method
+  This parse(S that)
+    
+  method toS() this.that()  // Assumes simple, non-destructive parsing
+  
+  read method
+  Bool equals(read This that)
+    this.that()==that.that()
+    }
 
-      class method
-      This parse(S that)
-      
-      method toS() this.that()  // Assumes simple, non-destructive parsing
-      
-      read method
-      Bool equals(read This that)
-        this.that()==that.that()
-      },)
-
-    res=Use.Override[UnsafeRefactor.MiniDataTrait();lib]<><that
-
-    error on Refactor2.Fail, Location.NotAvailable
-      X""
-
-    return K<><res
+  class method
+  Library <><(Library that)
+  exception Fail{
+    return K<><Use.Override[UnsafeRefactor.MiniDataTrait();Trait()]<><that
+    exception on Refactor2.Fail Fail""
     }
   }

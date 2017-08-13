@@ -2,9 +2,9 @@
 Fail:{interface implements Guard}
 Invariant:K<><...
 Wither:K<><...
-FieldOpSpecializer:...
-AddToS:K<><...
-//AddEquals:...
+StateOperation:...
+AddToS:StateOperation<><...
+AddEquals:StateOperation<><...
 
 class method S mutKName() S"#apply"
 class method S immKName() S"#immK"
@@ -57,12 +57,6 @@ Base:{
       with that (on mut This return that)
       error GetMyName.classCastError(that,classObj:This)
       }
-
-    method ==(that) {
-      with that (on read This return this.equals(that))
-      return Bool.false()}
-
-    read method Bool equals(read This that)
     }
   class method
   Library<><(Library that)
@@ -82,6 +76,7 @@ exception Fail Refactor2.PathUnfit {
  res><>=Wither(immK:immK, of:\"This")
  mutK=immK.with(name:This.mutKName())
  res><>=AddToS(mutK:mutK, of:\"This")
+ res><>=AddEquals(mutK:mutK, of:\"This")
  return res
 }
 

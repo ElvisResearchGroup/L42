@@ -1,43 +1,18 @@
 {
-Selector mutK
-Path of
-class method class Path #default##apply(Void of)Path
-class method class Selector #default##apply(Void mutK)Selector
-Fail:Message.$<><{ implements This2.Fail}
-
-
-
-//initial delegation
+Fail:{}
 method
-Library<><(Library that) exception Fail{
-  l=Location.Lib(that).navigate(this.of())
-  exception on Location.NotAvailable
-    Fail"Nested class "[this.of()]" not found"
-  ,,(mToS=l.method(selector:\"toS()")
-    catch exception Location.NotAvailable void
-    if !l.implements(classObj:Concept.ToS) (
-      error Fail"method toS not from Concept.ToS"
-      )
-    if !mToS.isAbstract() (return that)
+Bool shouldDecorate(Location.Lib that)
+exception Fail {
+  mToS=that.method(selector:\"toS()")
+  catch exception Location.NotAvailable
+    return Bool.true()
+  if !that.implements(classObj:Concept.ToS) (
+    exception Fail"method toS not from Concept.ToS"
     )
-  m=l.method(selector:this.mutK())
-  exception on Location.NotAvailable
-    Fail"Selector "[this.mutK()]" not found"
-  //TODO: add checks mutK is actually a factory
-
-  fNs=m.selector().names()
-  fTs=m.parameterTypes().withoutLeft()
-  return Use[that]<><
-    Refactor2.rename(path:\"This" into:this.of())<><
-    This.toSTrait(fNs:fNs,fTs:fTs)
-  error on Refactor2.Fail, Location.NotAvailable
-    X"AddToS.<><"
+  return mToS.isAbstract()
   }
-
-
-//code generation
 class method
-Library toSTrait(Strings fNs, Location.Type.Parameter.List fTs)
+Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
 exception Fail{
   //accumulation
   acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
@@ -66,47 +41,50 @@ exception Fail{
 
 //auxiliary functions
 
- class method
- S className(class Any that){
-   with that (
-     on class Void return S"Void"
-     on class Library return S"Library"
-     on class Concept.Classable return that.readableName()
-     )
+class method
+S className(class Any that){
+  with that (
+    on class Void return S"Void"
+    on class Library return S"Library"
+    on class Concept.Classable return that.readableName()
+    )
    return GetMyName(that)
    }
 
- class method
- S nodeName(read Any that){
-   with that (
-     on read Void return S"Void"
-     on read Library return S"Library"
-     on read Concept.Classable return that.class().readableName()
-     )
-   return S"?"
-  }
 class method
- S valToS(read Any that){
-   with that (
-     on read Concept.ToS (
-       ts=that.toS()
-       if ts.beginsWith(S"[") ( return ts)
-       return S.doubleQuote()++ts++S.doubleQuote()
-       )
-     on read Void  return S.doubleQuote()++S"void"++S.doubleQuote()
-     on read Library  return S.doubleQuote()++S"{..}"++S.doubleQuote()
-     )
-   return S"?"
+S nodeName(read Any that){
+  with that (
+    on read Void return S"Void"
+    on read Library return S"Library"
+    on read Concept.Classable return that.class().readableName()
+    )
+  return S"?"
   }
-class method
- S nodeNameAndValToS(read Any that){
-   S nn=this.nodeName(that)
-   S ts=this.valToS(that)
-   return nn++ts
-   }
 
-class method Location.Lib lib(Location.Type.RefTo refTo)
-  exception Fail {
+class method
+S valToS(read Any that){
+  with that (
+    on read Concept.ToS (
+      ts=that.toS()
+      if ts.beginsWith(S"[") ( return ts)
+      return S.doubleQuote()++ts++S.doubleQuote()
+      )
+    on read Void  return S.doubleQuote()++S"void"++S.doubleQuote()
+    on read Library  return S.doubleQuote()++S"{..}"++S.doubleQuote()
+    )
+  return S"?"
+  }
+
+class method
+S nodeNameAndValToS(read Any that){
+  S nn=this.nodeName(that)
+  S ts=this.valToS(that)
+  return nn++ts
+  }
+
+class method
+Location.Lib lib(Location.Type.RefTo refTo)
+exception Fail {
   with refTo (
     on Location.Type.RefTo.Lib
       return refTo.referredLib()
@@ -117,15 +95,14 @@ class method Location.Lib lib(Location.Type.RefTo refTo)
   }
 
 class method
-Library ( Selector fSel,Location.Type fT) exception Fail {
-  isInterface=this.lib(refTo:fT.refTo()).isInterface()
-  if isInterface (
-    return ToSSpecializerInterface(selector:fSel,type:fT) 
-    )
-  return ToSSpecializer(selector:fSel,type:fT) 
+Library (Selector fSel,Location.Type fT) exception Fail {
+  rich=this.lib(refTo:fT.refTo()).isInterface()
+  if rich (return FieldOpAddClassName(selector:fSel,type:fT))
+  return FieldOp(selector:fSel,type:fT) 
+  exception on StateOperation.Fail Fail""
   }
 
-ToSSpecializer:FieldOpSpecializer(
+FieldOp:StateOperation.fieldOperation(
   forReadable:{
     class method S fN()
     read method S baseToS()
@@ -136,15 +113,14 @@ ToSSpecializer:FieldOpSpecializer(
       S""[This.fN()]":"[This1.className(this.f())]""}
   )
 
-ToSSpecializerInterface:FieldOpSpecializer(
+FieldOpAddClassName:StateOperation.fieldOperation(
   forReadable:{
     class method S fN()
     read method S baseToS()
       S""[This.fN()]":"[This1.nodeNameAndValToS(this.f())]""}
-  forClass:{// can not do ToSSpecializer.forClass() since uses This1
+  forClass:{// can not do FieldOp.forClass() since uses This1
     class method S fN()
     read method S baseToS()
       S""[This.fN()]":"[This1.className(this.f())]""}
   )
-
 }

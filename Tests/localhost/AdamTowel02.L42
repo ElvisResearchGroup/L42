@@ -32049,7 +32049,7 @@ This2.Location.Type.RefTo into()
 class method 
 This0 #apply(This2.Path src, This2.Location.Type.RefTo into) 
 method 
-Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit, This1.RefToUnfit (
+Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.ClassClash, This1.PathUnfit, This1.RefToUnfit, This1.SubtleSubtypeViolation (
   Void unused=(
     Void unused0=(
       This2.Location.Type.RefTo r=this.into()
@@ -44906,29 +44906,29 @@ exception StateUnfit, MetaGuard
       Library opNorm0=res
       This0.Invariant.#apply(of:This0.Invariant.#default##apply(of:void).#from(builder:(
         capsule This1.S.SBuilder b=This0.Invariant.#default##apply(of:void).#builder()
-        Void unused5=b.#T()
-        Void unused6=b.#h()
-        Void unused7=b.#i()
-        Void unused8=b.#s()
+        Void unused6=b.#T()
+        Void unused7=b.#h()
+        Void unused8=b.#i()
+        Void unused9=b.#s()
         b
         ))).#leftrightleft(that:opNorm0)
       )
     This1.Selector immK=this.immK(that:res, of:This1.Path.#from(builder:(
       capsule This1.S.SBuilder b0=This1.Path.#builder()
-      Void unused9=b0.#T()
-      Void unused10=b0.#h()
-      Void unused11=b0.#i()
-      Void unused12=b0.#s()
+      Void unused10=b0.#T()
+      Void unused11=b0.#h()
+      Void unused12=b0.#i()
+      Void unused13=b0.#s()
       b0
       )))
     Void unused2=res := (
       Library opNorm1=res
       This0.Wither.#apply(immK:immK, of:This0.Wither.#default##apply(of:void).#from(builder:(
         capsule This1.S.SBuilder b1=This0.Wither.#default##apply(of:void).#builder()
-        Void unused13=b1.#T()
-        Void unused14=b1.#h()
-        Void unused15=b1.#i()
-        Void unused16=b1.#s()
+        Void unused14=b1.#T()
+        Void unused15=b1.#h()
+        Void unused16=b1.#i()
+        Void unused17=b1.#s()
         b1
         ))).#leftrightleft(that:opNorm1)
       )
@@ -44937,14 +44937,25 @@ exception StateUnfit, MetaGuard
       Library opNorm2=res
       This0.AddToS.#apply(mutK:mutK, of:This0.AddToS.#default##apply(of:void).#from(builder:(
         capsule This1.S.SBuilder b2=This0.AddToS.#default##apply(of:void).#builder()
-        Void unused17=b2.#T()
-        Void unused18=b2.#h()
-        Void unused19=b2.#i()
-        Void unused20=b2.#s()
+        Void unused18=b2.#T()
+        Void unused19=b2.#h()
+        Void unused20=b2.#i()
+        Void unused21=b2.#s()
         b2
         ))).#leftrightleft(that:opNorm2)
       )
-    Void unused4=return res
+    Void unused4=res := (
+      Library opNorm3=res
+      This0.AddEquals.#apply(mutK:mutK, of:This0.AddEquals.#default##apply(of:void).#from(builder:(
+        capsule This1.S.SBuilder b3=This0.AddEquals.#default##apply(of:void).#builder()
+        Void unused22=b3.#T()
+        Void unused23=b3.#h()
+        Void unused24=b3.#i()
+        Void unused25=b3.#s()
+        b3
+        ))).#leftrightleft(that:opNorm3)
+      )
+    Void unused5=return res
     void
     )
   
@@ -45756,9 +45767,9 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   )
 class method 
 Library #pluginUnresponsive(Library binaryRepr) binaryRepr}}
-FieldOpSpecializer: {
+StateOperation: {
 class method /* maybe private
-*/Library readToImm(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation (
+*/Library readToImm(Library that) exception This0.Fail (
   Void unused=(
     Void unused0=return This2.Refactor2.Method.#from(seqBuilder:(
       capsule This2.Refactor2.Method b=This2.Refactor2.Method.#seqBuilder()
@@ -45807,6 +45818,11 @@ class method /* maybe private
       b5
       )).#apply(that:catched4)
     
+    catch exception This2.Refactor2.Fail catched4 error This0.Fail.#from(builder:(
+      capsule This2.S.SBuilder b6=This0.Fail.#builder()
+      b6
+      )).#apply(that:catched4)
+    
     void
     )
   
@@ -45817,71 +45833,88 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Library #apply(Library forReadable, Library forClass) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation This2.Use.#from(seqBuilder:(
-  capsule This2.Composers.Libs b=This2.Use.#seqBuilder()
-  Void unused=b.#add(that:This2.Resource.#apply(that:This2.Use.#from(seqBuilder:(
-    capsule This2.Composers.Libs b0=This2.Use.#seqBuilder()
-    Void unused2=b0.#add(that:This0.ReadSkeletonTrait.#apply())
-    b0
-    )).#leftrightleft(that:forReadable), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
-    capsule This2.S.SBuilder b1=This2.Resource.#default##apply(selector:void).#builder()
-    Void unused3=b1.#f()
-    Void unused4=b1.#o()
-    Void unused5=b1.#r()
-    Void unused6=b1.#R()
-    Void unused7=b1.#e()
-    Void unused8=b1.#a()
-    Void unused9=b1.#d()
-    Void unused10=b1.#a()
-    Void unused11=b1.#b()
-    Void unused12=b1.#l()
-    Void unused13=b1.#e()
-    Void unused14=b1.#oRound()
-    Void unused15=b1.#cRound()
-    b1
-    ))))
-  Void unused0=b.#add(that:This2.Resource.#apply(that:This2.Use.#from(seqBuilder:(
-    capsule This2.Composers.Libs b2=This2.Use.#seqBuilder()
-    Void unused16=b2.#add(that:This0.ReadSkeletonTrait.#apply())
-    b2
-    )).#leftrightleft(that:This0.readToImm(that:forReadable)), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
-    capsule This2.S.SBuilder b3=This2.Resource.#default##apply(selector:void).#builder()
-    Void unused17=b3.#f()
-    Void unused18=b3.#o()
-    Void unused19=b3.#r()
-    Void unused20=b3.#I()
-    Void unused21=b3.#m()
-    Void unused22=b3.#m()
-    Void unused23=b3.#u()
-    Void unused24=b3.#t()
-    Void unused25=b3.#a()
-    Void unused26=b3.#b()
-    Void unused27=b3.#l()
-    Void unused28=b3.#e()
-    Void unused29=b3.#oRound()
-    Void unused30=b3.#cRound()
-    b3
-    ))))
-  Void unused1=b.#add(that:This2.Resource.#apply(that:This2.Use.#from(seqBuilder:(
-    capsule This2.Composers.Libs b4=This2.Use.#seqBuilder()
-    Void unused31=b4.#add(that:This0.ClassSkeletonTrait.#apply())
-    b4
-    )).#leftrightleft(that:forClass), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
-    capsule This2.S.SBuilder b5=This2.Resource.#default##apply(selector:void).#builder()
-    Void unused32=b5.#f()
-    Void unused33=b5.#o()
-    Void unused34=b5.#r()
-    Void unused35=b5.#C()
-    Void unused36=b5.#l()
-    Void unused37=b5.#a()
-    Void unused38=b5.#s()
-    Void unused39=b5.#s()
-    Void unused40=b5.#oRound()
-    Void unused41=b5.#cRound()
-    b5
-    ))))
-  b
-  )).#leftrightleft(that:This0.specializerTrait())
+Library fieldOperation(Library forReadable, Library forClass) exception This0.Fail (
+  Void unused=(
+    Void unused0=return This2.Use.#from(seqBuilder:(
+      capsule This2.Composers.Libs b=This2.Use.#seqBuilder()
+      Void unused1=b.#add(that:This2.Resource.#apply(that:This2.Use.#from(seqBuilder:(
+        capsule This2.Composers.Libs b0=This2.Use.#seqBuilder()
+        Void unused4=b0.#add(that:This0.ReadSkeletonTrait.#apply())
+        b0
+        )).#leftrightleft(that:forReadable), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
+        capsule This2.S.SBuilder b1=This2.Resource.#default##apply(selector:void).#builder()
+        Void unused5=b1.#f()
+        Void unused6=b1.#o()
+        Void unused7=b1.#r()
+        Void unused8=b1.#R()
+        Void unused9=b1.#e()
+        Void unused10=b1.#a()
+        Void unused11=b1.#d()
+        Void unused12=b1.#a()
+        Void unused13=b1.#b()
+        Void unused14=b1.#l()
+        Void unused15=b1.#e()
+        Void unused16=b1.#oRound()
+        Void unused17=b1.#cRound()
+        b1
+        ))))
+      Void unused2=b.#add(that:This2.Resource.#apply(that:This2.Use.#from(seqBuilder:(
+        capsule This2.Composers.Libs b2=This2.Use.#seqBuilder()
+        Void unused18=b2.#add(that:This0.ReadSkeletonTrait.#apply())
+        b2
+        )).#leftrightleft(that:This0.readToImm(that:forReadable)), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
+        capsule This2.S.SBuilder b3=This2.Resource.#default##apply(selector:void).#builder()
+        Void unused19=b3.#f()
+        Void unused20=b3.#o()
+        Void unused21=b3.#r()
+        Void unused22=b3.#I()
+        Void unused23=b3.#m()
+        Void unused24=b3.#m()
+        Void unused25=b3.#u()
+        Void unused26=b3.#t()
+        Void unused27=b3.#a()
+        Void unused28=b3.#b()
+        Void unused29=b3.#l()
+        Void unused30=b3.#e()
+        Void unused31=b3.#oRound()
+        Void unused32=b3.#cRound()
+        b3
+        ))))
+      Void unused3=b.#add(that:This2.Resource.#apply(that:This2.Use.#from(seqBuilder:(
+        capsule This2.Composers.Libs b4=This2.Use.#seqBuilder()
+        Void unused33=b4.#add(that:This0.ClassSkeletonTrait.#apply())
+        b4
+        )).#leftrightleft(that:forClass), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
+        capsule This2.S.SBuilder b5=This2.Resource.#default##apply(selector:void).#builder()
+        Void unused34=b5.#f()
+        Void unused35=b5.#o()
+        Void unused36=b5.#r()
+        Void unused37=b5.#C()
+        Void unused38=b5.#l()
+        Void unused39=b5.#a()
+        Void unused40=b5.#s()
+        Void unused41=b5.#s()
+        Void unused42=b5.#oRound()
+        Void unused43=b5.#cRound()
+        b5
+        ))))
+      b
+      )).#leftrightleft(that:This0.specializerTrait())
+    
+    catch exception This2.Refactor2.Fail catched6 error This0.Fail.#from(builder:(
+      capsule This2.S.SBuilder b6=This0.Fail.#builder()
+      b6
+      )).#apply(that:catched6)
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 class method 
 Library specializerTrait()  {
 class method 
@@ -45891,7 +45924,7 @@ Library forImmutable()
 class method 
 Library forClass() 
 class method 
-Library #apply(This3.Selector selector, This3.Location.Type type) exception This1.CanNotSpecializeOperation (
+Library #apply(This3.Selector selector, This3.Location.Type type) exception This1.Fail (
   Void unused=(
     This3.Location.Mdf mdf=type.mdf()
     This3.Location.Type.RefTo r=type.refTo()
@@ -45926,7 +45959,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method /* maybe private
-*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This1.CanNotSpecializeOperation (
+*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This1.Fail (
   Void unused=(
     Void unused0=return This3.Refactor2.redirect(path:This3.Refactor2.#default#redirect(path:void).#from(builder:(
       capsule This3.S.SBuilder b=This3.Refactor2.#default#redirect(path:void).#builder()
@@ -45944,8 +45977,8 @@ class method /* maybe private
       b0
       )).#leftrightleft(that:that))
     
-    catch exception This3.Refactor2.Fail catched2 exception This1.CanNotSpecializeOperation.#from(builder:(
-      capsule This3.S.SBuilder b2=This1.CanNotSpecializeOperation.#builder()
+    catch exception This3.Refactor2.Fail catched2 exception This1.Fail.#from(builder:(
+      capsule This3.S.SBuilder b2=This1.Fail.#builder()
       Void unused6=b2.#U()
       Void unused7=b2.#n()
       Void unused8=b2.#f()
@@ -45973,7 +46006,30 @@ class method /* maybe private
 CurlyBlock-Should be unreachable code
 */}
   )}
-CanNotSpecializeOperation: {implements This2.Fail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+class method 
+Library #leftrightleft(Library that) exception This0.Fail (
+  Void unused=(
+    Void unused0=return This2.K.#leftrightleft(that:This2.Use.#from(seqBuilder:(
+      capsule This2.Composers.Libs b=This2.Use.#seqBuilder()
+      Void unused1=b.#add(that:This0.Trait.#apply())
+      b
+      )).#leftrightleft(that:that))
+    
+    catch exception This2.Refactor2.Fail catched0 exception This0.Fail.#from(builder:(
+      capsule This2.S.SBuilder b0=This0.Fail.#builder()
+      b0
+      )).#apply(that:catched0)
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Fail: {implements This2.Fail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
 read method 
 This3.S _text() 
@@ -46313,6 +46369,449 @@ CastT-Should be unreachable code
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
+  )}
+Trait: {
+class method 
+Any val()  {
+read method 
+This4.Selector mutK() 
+read method 
+This4.Path of() 
+class method 
+class This4.Path #default##apply(Void of) This4.Path
+class method 
+class This4.Selector #default##apply(Void mutK) This4.Selector
+method 
+This4.Bool shouldDecorate(This4.Location.Lib that) exception This0.Fail 
+class method 
+Library operationTrait(This4.Strings fNs, This4.Location.Type.Parameter.List fTs) exception This0.Fail/*initial delegation
+*/ 
+method 
+Library #leftrightleft(Library that) exception This0.Fail (
+  Void unused=(
+    This4.Location.Lib l=This4.Location.Lib.#apply(that:that).navigate(that:this.of())
+    
+    catch exception This4.Location.NotAvailable catched exception (
+      This0.Fail.Continue rcv17=(
+        This0.Fail rcv18=This0.Fail.#from(builder:(
+          capsule This4.S.SBuilder b=This0.Fail.#builder()
+          Void unused0=b.#N()
+          Void unused1=b.#e()
+          Void unused2=b.#s()
+          Void unused3=b.#t()
+          Void unused4=b.#e()
+          Void unused5=b.#d()
+          Void unused6=b.#space()
+          Void unused7=b.#c()
+          Void unused8=b.#l()
+          Void unused9=b.#a()
+          Void unused10=b.#s()
+          Void unused11=b.#s()
+          Void unused12=b.#space()
+          b
+          ))
+        rcv18.#from(seqBuilder:(
+          capsule This4.S.SConcat b0=rcv18.#seqBuilder()
+          Void unused13=b0.#add(that:this.of())
+          b0
+          ))
+        )
+      rcv17.#from(builder:(
+        capsule This4.S.SBuilder b1=rcv17.#builder()
+        Void unused14=b1.#space()
+        Void unused15=b1.#n()
+        Void unused16=b1.#o()
+        Void unused17=b1.#t()
+        Void unused18=b1.#space()
+        Void unused19=b1.#f()
+        Void unused20=b1.#o()
+        Void unused21=b1.#u()
+        Void unused22=b1.#n()
+        Void unused23=b1.#d()
+        b1
+        ))
+      ).#apply(that:catched)
+    
+    (
+      This4.Location.Method m=l.method(selector:this.mutK())
+      
+      catch exception This4.Location.NotAvailable catched5 exception (
+        This0.Fail.Continue rcv19=(
+          This0.Fail rcv20=This0.Fail.#from(builder:(
+            capsule This4.S.SBuilder b2=This0.Fail.#builder()
+            Void unused24=b2.#S()
+            Void unused25=b2.#e()
+            Void unused26=b2.#l()
+            Void unused27=b2.#e()
+            Void unused28=b2.#c()
+            Void unused29=b2.#t()
+            Void unused30=b2.#o()
+            Void unused31=b2.#r()
+            Void unused32=b2.#space()
+            b2
+            ))
+          rcv20.#from(seqBuilder:(
+            capsule This4.S.SConcat b3=rcv20.#seqBuilder()
+            Void unused33=b3.#add(that:this.mutK())
+            b3
+            ))
+          )
+        rcv19.#from(builder:(
+          capsule This4.S.SBuilder b4=rcv19.#builder()
+          Void unused34=b4.#space()
+          Void unused35=b4.#n()
+          Void unused36=b4.#o()
+          Void unused37=b4.#t()
+          Void unused38=b4.#space()
+          Void unused39=b4.#f()
+          Void unused40=b4.#o()
+          Void unused41=b4.#u()
+          Void unused42=b4.#n()
+          Void unused43=b4.#d()
+          b4
+          ))
+        ).#apply(that:catched5)
+      
+      (
+        Void unused44=(
+          This4.Bool cond=this.shouldDecorate(that:l).#bang()
+          (
+            Void unused46=cond.#checkTrue()
+            
+            catch exception Void catched12 void
+            
+            return that
+            )
+          )
+        This4.Strings fNs=m.selector().names()
+        This4.Location.Type.Parameter.List fTs=m.parameterTypes().withoutLeft()
+        Void unused45=return This4.Use.#from(seqBuilder:(
+          capsule This4.Composers.Libs b5=This4.Use.#seqBuilder()
+          Void unused47=b5.#add(that:that)
+          b5
+          )).#leftrightleft(that:This4.Refactor2.rename(path:This4.Refactor2.#default#rename(path:void).#from(builder:(
+          capsule This4.S.SBuilder b6=This4.Refactor2.#default#rename(path:void).#builder()
+          Void unused48=b6.#T()
+          Void unused49=b6.#h()
+          Void unused50=b6.#i()
+          Void unused51=b6.#s()
+          b6
+          )), into:this.of()).#leftrightleft(that:This0.operationTrait(fNs:fNs, fTs:fTs)))
+        
+        catch exception This4.Refactor2.Fail catched15 error This4.X.#from(builder:(
+          capsule This4.S.SBuilder b7=This4.X.#builder()
+          Void unused52=b7.#A()
+          Void unused53=b7.#d()
+          Void unused54=b7.#d()
+          Void unused55=b7.#T()
+          Void unused56=b7.#o()
+          Void unused57=b7.#S()
+          Void unused58=b7.#dot()
+          Void unused59=b7.#left()
+          Void unused60=b7.#right()
+          Void unused61=b7.#left()
+          b7
+          )).#apply(that:catched15)
+        
+        void
+        )
+      )
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Fail: {implements This4.Fail, This5.Guard, This5.Message, This5.Concept.Base, This5.Concept.ToS, This5.Concept.Classable, This5.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This5.S _text() 
+read method 
+This5.Message.Opt cause() 
+class method 
+This0 #apply(This5.S _text, This5.Message.Opt cause) 
+refine class method 
+This5.S kind() this.readableName()
+refine read method 
+This5.S text() this._text()
+refine read method 
+This5.Message.Opt responseOf() this.cause()
+method 
+This0 #apply(This5.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This5.S toS() (
+  Void unused=(
+    Void unused0=(
+      This5.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This5.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This5.S.doubleQuote())))
+        )
+      )
+    var This5.S res=This0.kind()
+    Void unused1=(
+      This5.Bool cond0=this.text().#equalequal(that:This5.S.#from(builder:(
+        capsule This5.S.SBuilder b=This5.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 res := res.#plusplus(that:This5.S.#from(builder:(
+          capsule This5.S.SBuilder b0=This5.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          )))
+        
+        res := res.#plusplus(that:This5.S.#from(builder:(
+          capsule This5.S.SBuilder b1=This5.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This5.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This5.S.doubleQuote().#plusplus(that:This5.S.#from(builder:(
+          capsule This5.S.SBuilder b2=This5.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This5.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This5.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This5.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This5.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This5.Bool equals(read This0 that) This5.Message.EqualMessages.#apply(that:this, other:that)
+class method 
+This0 #apply(This5.S text) This0.#apply(_text:text, cause:This5.Message.Opt.#apply())
+class method 
+This0 #apply(This5.S text, This5.Message cause) This0.#apply(_text:text, cause:This5.Message.Opt.#apply(that:cause))
+class method 
+mut This5.S.SBuilder #builder() This5.S.SBuilder.empty()
+class method 
+This0 #from(This5.S.SBuilder builder) This0.#apply(text:This5.S.#from(builder:builder))
+method 
+This0.Continue #from(This5.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This5.S.SConcat #seqBuilder() This5.S.SConcat.#apply(old:this.text(), accumulator:This5.S.#from(builder:(
+  capsule This5.S.SBuilder b=This5.S.#builder()
+  b
+  )))
+refine read method 
+class This0 class() This0
+refine class method 
+read This0 cast(read This5.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This5.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return read This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+mut This0 #cast(mut This5.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      mut This0 that0=(
+        Void unused2=return that
+        
+        catch return mut This0 casted casted
+        
+        catch return mut Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This5.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return mut This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This5.S readableName() This5.GetMyName.#apply(that:This0)
+refine class method 
+This5.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This5.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This5.Bool.false()
+    void
+    )
+  
+  catch return This5.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine read method 
+This5.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This5.Bool.false()
+    void
+    )
+  
+  catch return This5.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Continue: {
+read method 
+This6.S that() 
+class method 
+This0 #apply(This6.S that) 
+method 
+mut This6.S.SBuilder #builder() This6.S.SBuilder.empty()
+method 
+This1 #from(This6.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This6.S.#from(builder:builder)))}}}
+class method 
+Library #apply() (
+  Void unused=(
+    Void unused0=(
+      Any val=this.val()
+      (
+        Library val0=(
+          Void unused2=return val
+          
+          catch return Library casted casted
+          
+          catch return Any casted exception void
+          
+          error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return val0
+          void
+          )
+        )
+      )
+    Void unused1=error This3.Resource.ProvidedValueNotOfExpectedType.#from(builder:(
+      capsule This3.S.SBuilder b=This3.Resource.ProvidedValueNotOfExpectedType.#builder()
+      b
+      ))
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
   )}}
 AddToS: {
 read method 
@@ -46370,157 +46869,85 @@ Library #leftrightleft(Library that) exception This0.Fail (
       ).#apply(that:catched)
     
     (
-      Void unused24=(
-        This2.Location.Method mToS=l.method(selector:l.#default#method(selector:void).#from(builder:(
-          capsule This2.S.SBuilder b2=l.#default#method(selector:void).#builder()
-          Void unused25=b2.#t()
-          Void unused26=b2.#o()
-          Void unused27=b2.#S()
-          Void unused28=b2.#oRound()
-          Void unused29=b2.#cRound()
-          b2
-          )))
-        
-        catch exception This2.Location.NotAvailable void (
-          This2.Bool cond=l.implements(classObj:This2.Concept.ToS).#bang()
-          (
-            Void unused30=cond.#checkTrue()
-            
-            catch exception Void catched8 void
-            
-            error This0.Fail.#from(builder:(
-              capsule This2.S.SBuilder b3=This0.Fail.#builder()
-              Void unused31=b3.#m()
-              Void unused32=b3.#e()
-              Void unused33=b3.#t()
-              Void unused34=b3.#h()
-              Void unused35=b3.#o()
-              Void unused36=b3.#d()
-              Void unused37=b3.#space()
-              Void unused38=b3.#t()
-              Void unused39=b3.#o()
-              Void unused40=b3.#S()
-              Void unused41=b3.#space()
-              Void unused42=b3.#n()
-              Void unused43=b3.#o()
-              Void unused44=b3.#t()
-              Void unused45=b3.#space()
-              Void unused46=b3.#f()
-              Void unused47=b3.#r()
-              Void unused48=b3.#o()
-              Void unused49=b3.#m()
-              Void unused50=b3.#space()
-              Void unused51=b3.#C()
-              Void unused52=b3.#o()
-              Void unused53=b3.#n()
-              Void unused54=b3.#c()
-              Void unused55=b3.#e()
-              Void unused56=b3.#p()
-              Void unused57=b3.#t()
-              Void unused58=b3.#dot()
-              Void unused59=b3.#T()
-              Void unused60=b3.#o()
-              Void unused61=b3.#S()
-              b3
-              ))
-            )
+      This2.Location.Method m=l.method(selector:this.mutK())
+      
+      catch exception This2.Location.NotAvailable catched5 exception (
+        This0.Fail.Continue rcv19=(
+          This0.Fail rcv20=This0.Fail.#from(builder:(
+            capsule This2.S.SBuilder b2=This0.Fail.#builder()
+            Void unused24=b2.#S()
+            Void unused25=b2.#e()
+            Void unused26=b2.#l()
+            Void unused27=b2.#e()
+            Void unused28=b2.#c()
+            Void unused29=b2.#t()
+            Void unused30=b2.#o()
+            Void unused31=b2.#r()
+            Void unused32=b2.#space()
+            b2
+            ))
+          rcv20.#from(seqBuilder:(
+            capsule This2.S.SConcat b3=rcv20.#seqBuilder()
+            Void unused33=b3.#add(that:this.mutK())
+            b3
+            ))
           )
-        
-        (
-          This2.Bool cond0=mToS.isAbstract().#bang()
+        rcv19.#from(builder:(
+          capsule This2.S.SBuilder b4=rcv19.#builder()
+          Void unused34=b4.#space()
+          Void unused35=b4.#n()
+          Void unused36=b4.#o()
+          Void unused37=b4.#t()
+          Void unused38=b4.#space()
+          Void unused39=b4.#f()
+          Void unused40=b4.#o()
+          Void unused41=b4.#u()
+          Void unused42=b4.#n()
+          Void unused43=b4.#d()
+          b4
+          ))
+        ).#apply(that:catched5)
+      
+      (
+        Void unused44=(
+          This2.Bool cond=this.shouldDecorate(that:l).#bang()
           (
-            Void unused62=cond0.#checkTrue()
+            Void unused46=cond.#checkTrue()
             
-            catch exception Void catched11 void
+            catch exception Void catched12 void
             
             return that
             )
           )
-        )
-      This2.Location.Method m=l.method(selector:this.mutK())
-      
-      catch exception This2.Location.NotAvailable catched12 exception (
-        This0.Fail.Continue rcv19=(
-          This0.Fail rcv20=This0.Fail.#from(builder:(
-            capsule This2.S.SBuilder b4=This0.Fail.#builder()
-            Void unused63=b4.#S()
-            Void unused64=b4.#e()
-            Void unused65=b4.#l()
-            Void unused66=b4.#e()
-            Void unused67=b4.#c()
-            Void unused68=b4.#t()
-            Void unused69=b4.#o()
-            Void unused70=b4.#r()
-            Void unused71=b4.#space()
-            b4
-            ))
-          rcv20.#from(seqBuilder:(
-            capsule This2.S.SConcat b5=rcv20.#seqBuilder()
-            Void unused72=b5.#add(that:this.mutK())
-            b5
-            ))
-          )
-        rcv19.#from(builder:(
-          capsule This2.S.SBuilder b6=rcv19.#builder()
-          Void unused73=b6.#space()
-          Void unused74=b6.#n()
-          Void unused75=b6.#o()
-          Void unused76=b6.#t()
-          Void unused77=b6.#space()
-          Void unused78=b6.#f()
-          Void unused79=b6.#o()
-          Void unused80=b6.#u()
-          Void unused81=b6.#n()
-          Void unused82=b6.#d()
-          b6
-          ))
-        ).#apply(that:catched12)
-      
-      (
         This2.Strings fNs=m.selector().names()
         This2.Location.Type.Parameter.List fTs=m.parameterTypes().withoutLeft()
-        Void unused83=return This2.Use.#from(seqBuilder:(
-          capsule This2.Composers.Libs b7=This2.Use.#seqBuilder()
-          Void unused84=b7.#add(that:that)
-          b7
+        Void unused45=return This2.Use.#from(seqBuilder:(
+          capsule This2.Composers.Libs b5=This2.Use.#seqBuilder()
+          Void unused47=b5.#add(that:that)
+          b5
           )).#leftrightleft(that:This2.Refactor2.rename(path:This2.Refactor2.#default#rename(path:void).#from(builder:(
-          capsule This2.S.SBuilder b8=This2.Refactor2.#default#rename(path:void).#builder()
-          Void unused85=b8.#T()
-          Void unused86=b8.#h()
-          Void unused87=b8.#i()
-          Void unused88=b8.#s()
-          b8
-          )), into:this.of()).#leftrightleft(that:This0.toSTrait(fNs:fNs, fTs:fTs)))
+          capsule This2.S.SBuilder b6=This2.Refactor2.#default#rename(path:void).#builder()
+          Void unused48=b6.#T()
+          Void unused49=b6.#h()
+          Void unused50=b6.#i()
+          Void unused51=b6.#s()
+          b6
+          )), into:this.of()).#leftrightleft(that:This0.operationTrait(fNs:fNs, fTs:fTs)))
         
-        catch exception This2.Refactor2.Fail catched20 error This2.X.#from(builder:(
-          capsule This2.S.SBuilder b9=This2.X.#builder()
-          Void unused89=b9.#A()
-          Void unused90=b9.#d()
-          Void unused91=b9.#d()
-          Void unused92=b9.#T()
-          Void unused93=b9.#o()
-          Void unused94=b9.#S()
-          Void unused95=b9.#dot()
-          Void unused96=b9.#left()
-          Void unused97=b9.#right()
-          Void unused98=b9.#left()
-          b9
-          )).#apply(that:catched20)
-        
-        catch exception This2.Location.NotAvailable catched20 error This2.X.#from(builder:(
-          capsule This2.S.SBuilder b10=This2.X.#builder()
-          Void unused99=b10.#A()
-          Void unused100=b10.#d()
-          Void unused101=b10.#d()
-          Void unused102=b10.#T()
-          Void unused103=b10.#o()
-          Void unused104=b10.#S()
-          Void unused105=b10.#dot()
-          Void unused106=b10.#left()
-          Void unused107=b10.#right()
-          Void unused108=b10.#left()
-          b10
-          )).#apply(that:catched20)
+        catch exception This2.Refactor2.Fail catched15 error This2.X.#from(builder:(
+          capsule This2.S.SBuilder b7=This2.X.#builder()
+          Void unused52=b7.#A()
+          Void unused53=b7.#d()
+          Void unused54=b7.#d()
+          Void unused55=b7.#T()
+          Void unused56=b7.#o()
+          Void unused57=b7.#S()
+          Void unused58=b7.#dot()
+          Void unused59=b7.#left()
+          Void unused60=b7.#right()
+          Void unused61=b7.#left()
+          b7
+          )).#apply(that:catched15)
         
         void
         )
@@ -46533,8 +46960,79 @@ Library #leftrightleft(Library that) exception This0.Fail (
 CurlyBlock-Should be unreachable code
 */}
   )
+method 
+This2.Bool shouldDecorate(This2.Location.Lib that) exception This0.Fail (
+  Void unused=(
+    This2.Location.Method mToS=that.method(selector:that.#default#method(selector:void).#from(builder:(
+      capsule This2.S.SBuilder b=that.#default#method(selector:void).#builder()
+      Void unused0=b.#t()
+      Void unused1=b.#o()
+      Void unused2=b.#S()
+      Void unused3=b.#oRound()
+      Void unused4=b.#cRound()
+      b
+      )))
+    
+    catch exception This2.Location.NotAvailable catched0 return This2.Bool.true()
+    
+    (
+      Void unused5=(
+        This2.Bool cond=that.implements(classObj:This2.Concept.ToS).#bang()
+        (
+          Void unused7=cond.#checkTrue()
+          
+          catch exception Void catched2 void
+          
+          exception This0.Fail.#from(builder:(
+            capsule This2.S.SBuilder b0=This0.Fail.#builder()
+            Void unused8=b0.#m()
+            Void unused9=b0.#e()
+            Void unused10=b0.#t()
+            Void unused11=b0.#h()
+            Void unused12=b0.#o()
+            Void unused13=b0.#d()
+            Void unused14=b0.#space()
+            Void unused15=b0.#t()
+            Void unused16=b0.#o()
+            Void unused17=b0.#S()
+            Void unused18=b0.#space()
+            Void unused19=b0.#n()
+            Void unused20=b0.#o()
+            Void unused21=b0.#t()
+            Void unused22=b0.#space()
+            Void unused23=b0.#f()
+            Void unused24=b0.#r()
+            Void unused25=b0.#o()
+            Void unused26=b0.#m()
+            Void unused27=b0.#space()
+            Void unused28=b0.#C()
+            Void unused29=b0.#o()
+            Void unused30=b0.#n()
+            Void unused31=b0.#c()
+            Void unused32=b0.#e()
+            Void unused33=b0.#p()
+            Void unused34=b0.#t()
+            Void unused35=b0.#dot()
+            Void unused36=b0.#T()
+            Void unused37=b0.#o()
+            Void unused38=b0.#S()
+            b0
+            ))
+          )
+        )
+      Void unused6=return mToS.isAbstract()
+      void
+      )
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
 class method 
-Library toSTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs) exception This0.Fail (
+Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs) exception This0.Fail (
   Void unused=(/*accumulation
 */
     capsule This2.Use.Override.Decorator acc=This2.Use.Override.#from(seqBuilder:(
@@ -47192,15 +47690,21 @@ CurlyBlock-Should be unreachable code
 class method 
 Library #apply(This2.Selector fSel, This2.Location.Type fT) exception This0.Fail (
   Void unused=(
-    This2.Bool isInterface=this.lib(refTo:fT.refTo()).isInterface()
+    This2.Bool rich=this.lib(refTo:fT.refTo()).isInterface()
     Void unused0=(
-      Void unused2=isInterface.#checkTrue()
+      Void unused2=rich.#checkTrue()
       
       catch exception Void catched void
       
-      return This0.ToSSpecializerInterface.#apply(selector:fSel, type:fT)
+      return This0.FieldOpAddClassName.#apply(selector:fSel, type:fT)
       )
-    Void unused1=return This0.ToSSpecializer.#apply(selector:fSel, type:fT)
+    Void unused1=return This0.FieldOp.#apply(selector:fSel, type:fT)
+    
+    catch exception This1.StateOperation.Fail catched0 exception This0.Fail.#from(builder:(
+      capsule This2.S.SBuilder b=This0.Fail.#builder()
+      b
+      )).#apply(that:catched0)
+    
     void
     )
   
@@ -47462,9 +47966,9 @@ method
 mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
 method 
 This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}}
-ToSSpecializer: {
+FieldOp: {
 class method 
-Any val0_$_28()  {
+Any val0_$_36()  {
 read method 
 read This0.T f() 
 class method 
@@ -47503,7 +48007,7 @@ This4.S baseToS() (
   )
 T: {}}
 class method 
-Any val1_$_29()  {/*Use.Over would do the opposite kind of hiding
+Any val1_$_37()  {/*Use.Over would do the opposite kind of hiding
 */
 class method 
 This4.S fN() 
@@ -47530,7 +48034,7 @@ This4.S baseToS() (
       )
     rcv30.#from(seqBuilder:(
       capsule This4.S.SConcat b2=rcv30.#seqBuilder()
-      Void unused1=b2.#add(that:This2.valToS(that:this.f0_$_30()))
+      Void unused1=b2.#add(that:This2.valToS(that:this.f0_$_38()))
       b2
       ))
     )
@@ -47540,12 +48044,12 @@ This4.S baseToS() (
     ))
   )
 read method 
-read This0.T f0_$_30() this.f()
+read This0.T f0_$_38() this.f()
 read method 
 This0.T f() 
 T: {}}
 class method 
-Any val2_$_31()  {
+Any val2_$_39()  {
 read method 
 class This0.T f() 
 class method 
@@ -47587,7 +48091,7 @@ class method
 Library forReadable() (
   Void unused=(
     Void unused0=(
-      Any val=this.val0_$_28()
+      Any val=this.val0_$_36()
       (
         Library val0=(
           Void unused2=return val
@@ -47626,7 +48130,7 @@ class method
 Library forImmutable() (
   Void unused=(
     Void unused0=(
-      Any val=this.val1_$_29()
+      Any val=this.val1_$_37()
       (
         Library val0=(
           Void unused2=return val
@@ -47665,7 +48169,7 @@ class method
 Library forClass() (
   Void unused=(
     Void unused0=(
-      Any val=this.val2_$_31()
+      Any val=this.val2_$_39()
       (
         Library val0=(
           Void unused2=return val
@@ -47701,7 +48205,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Library #apply(This3.Selector selector, This3.Location.Type type) exception This2.FieldOpSpecializer.CanNotSpecializeOperation (
+Library #apply(This3.Selector selector, This3.Location.Type type) exception This2.StateOperation.Fail (
   Void unused=(
     This3.Location.Mdf mdf=type.mdf()
     This3.Location.Type.RefTo r=type.refTo()
@@ -47736,7 +48240,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method /* maybe private
-*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This2.FieldOpSpecializer.CanNotSpecializeOperation (
+*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This2.StateOperation.Fail (
   Void unused=(
     Void unused0=return This3.Refactor2.redirect(path:This3.Refactor2.#default#redirect(path:void).#from(builder:(
       capsule This3.S.SBuilder b=This3.Refactor2.#default#redirect(path:void).#builder()
@@ -47754,8 +48258,8 @@ class method /* maybe private
       b0
       )).#leftrightleft(that:that))
     
-    catch exception This3.Refactor2.Fail catched2 exception This2.FieldOpSpecializer.CanNotSpecializeOperation.#from(builder:(
-      capsule This3.S.SBuilder b2=This2.FieldOpSpecializer.CanNotSpecializeOperation.#builder()
+    catch exception This3.Refactor2.Fail catched2 exception This2.StateOperation.Fail.#from(builder:(
+      capsule This3.S.SBuilder b2=This2.StateOperation.Fail.#builder()
       Void unused6=b2.#U()
       Void unused7=b2.#n()
       Void unused8=b2.#f()
@@ -47783,9 +48287,9 @@ class method /* maybe private
 CurlyBlock-Should be unreachable code
 */}
   )}
-ToSSpecializerInterface: {
+FieldOpAddClassName: {
 class method 
-Any val3_$_32()  {
+Any val3_$_40()  {
 read method 
 read This0.T f() 
 class method 
@@ -47824,7 +48328,7 @@ This4.S baseToS() (
   )
 T: {}}
 class method 
-Any val4_$_33()  {/*Use.Over would do the opposite kind of hiding
+Any val4_$_41()  {/*Use.Over would do the opposite kind of hiding
 */
 class method 
 This4.S fN() 
@@ -47851,7 +48355,7 @@ This4.S baseToS() (
       )
     rcv38.#from(seqBuilder:(
       capsule This4.S.SConcat b2=rcv38.#seqBuilder()
-      Void unused1=b2.#add(that:This2.nodeNameAndValToS(that:this.f1_$_34()))
+      Void unused1=b2.#add(that:This2.nodeNameAndValToS(that:this.f1_$_42()))
       b2
       ))
     )
@@ -47861,12 +48365,12 @@ This4.S baseToS() (
     ))
   )
 read method 
-read This0.T f1_$_34() this.f()
+read This0.T f1_$_42() this.f()
 read method 
 This0.T f() 
 T: {}}
 class method 
-Any val5_$_35()  {/* can not do ToSSpecializer.forClass() since uses This1
+Any val5_$_43()  {/* can not do FieldOp.forClass() since uses This1
 */
 read method 
 class This0.T f() 
@@ -47909,7 +48413,7 @@ class method
 Library forReadable() (
   Void unused=(
     Void unused0=(
-      Any val=this.val3_$_32()
+      Any val=this.val3_$_40()
       (
         Library val0=(
           Void unused2=return val
@@ -47948,7 +48452,7 @@ class method
 Library forImmutable() (
   Void unused=(
     Void unused0=(
-      Any val=this.val4_$_33()
+      Any val=this.val4_$_41()
       (
         Library val0=(
           Void unused2=return val
@@ -47987,7 +48491,7 @@ class method
 Library forClass() (
   Void unused=(
     Void unused0=(
-      Any val=this.val5_$_35()
+      Any val=this.val5_$_43()
       (
         Library val0=(
           Void unused2=return val
@@ -48023,7 +48527,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Library #apply(This3.Selector selector, This3.Location.Type type) exception This2.FieldOpSpecializer.CanNotSpecializeOperation (
+Library #apply(This3.Selector selector, This3.Location.Type type) exception This2.StateOperation.Fail (
   Void unused=(
     This3.Location.Mdf mdf=type.mdf()
     This3.Location.Type.RefTo r=type.refTo()
@@ -48058,7 +48562,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method /* maybe private
-*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This2.FieldOpSpecializer.CanNotSpecializeOperation (
+*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This2.StateOperation.Fail (
   Void unused=(
     Void unused0=return This3.Refactor2.redirect(path:This3.Refactor2.#default#redirect(path:void).#from(builder:(
       capsule This3.S.SBuilder b=This3.Refactor2.#default#redirect(path:void).#builder()
@@ -48076,8 +48580,1026 @@ class method /* maybe private
       b0
       )).#leftrightleft(that:that))
     
-    catch exception This3.Refactor2.Fail catched2 exception This2.FieldOpSpecializer.CanNotSpecializeOperation.#from(builder:(
-      capsule This3.S.SBuilder b2=This2.FieldOpSpecializer.CanNotSpecializeOperation.#builder()
+    catch exception This3.Refactor2.Fail catched2 exception This2.StateOperation.Fail.#from(builder:(
+      capsule This3.S.SBuilder b2=This2.StateOperation.Fail.#builder()
+      Void unused6=b2.#U()
+      Void unused7=b2.#n()
+      Void unused8=b2.#f()
+      Void unused9=b2.#i()
+      Void unused10=b2.#t()
+      Void unused11=b2.#space()
+      Void unused12=b2.#o()
+      Void unused13=b2.#p()
+      Void unused14=b2.#e()
+      Void unused15=b2.#r()
+      Void unused16=b2.#a()
+      Void unused17=b2.#t()
+      Void unused18=b2.#i()
+      Void unused19=b2.#o()
+      Void unused20=b2.#n()
+      b2
+      )).#apply(that:catched2)
+    
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )}}
+AddEquals: {
+read method 
+This2.Selector mutK() 
+read method 
+This2.Path of() 
+class method 
+class This2.Path #default##apply(Void of) This2.Path
+class method 
+class This2.Selector #default##apply(Void mutK) This2.Selector
+method 
+Library #leftrightleft(Library that) exception This0.Fail (
+  Void unused=(
+    This2.Location.Lib l=This2.Location.Lib.#apply(that:that).navigate(that:this.of())
+    
+    catch exception This2.Location.NotAvailable catched exception (
+      This0.Fail.Continue rcv17=(
+        This0.Fail rcv18=This0.Fail.#from(builder:(
+          capsule This2.S.SBuilder b=This0.Fail.#builder()
+          Void unused0=b.#N()
+          Void unused1=b.#e()
+          Void unused2=b.#s()
+          Void unused3=b.#t()
+          Void unused4=b.#e()
+          Void unused5=b.#d()
+          Void unused6=b.#space()
+          Void unused7=b.#c()
+          Void unused8=b.#l()
+          Void unused9=b.#a()
+          Void unused10=b.#s()
+          Void unused11=b.#s()
+          Void unused12=b.#space()
+          b
+          ))
+        rcv18.#from(seqBuilder:(
+          capsule This2.S.SConcat b0=rcv18.#seqBuilder()
+          Void unused13=b0.#add(that:this.of())
+          b0
+          ))
+        )
+      rcv17.#from(builder:(
+        capsule This2.S.SBuilder b1=rcv17.#builder()
+        Void unused14=b1.#space()
+        Void unused15=b1.#n()
+        Void unused16=b1.#o()
+        Void unused17=b1.#t()
+        Void unused18=b1.#space()
+        Void unused19=b1.#f()
+        Void unused20=b1.#o()
+        Void unused21=b1.#u()
+        Void unused22=b1.#n()
+        Void unused23=b1.#d()
+        b1
+        ))
+      ).#apply(that:catched)
+    
+    (
+      This2.Location.Method m=l.method(selector:this.mutK())
+      
+      catch exception This2.Location.NotAvailable catched5 exception (
+        This0.Fail.Continue rcv19=(
+          This0.Fail rcv20=This0.Fail.#from(builder:(
+            capsule This2.S.SBuilder b2=This0.Fail.#builder()
+            Void unused24=b2.#S()
+            Void unused25=b2.#e()
+            Void unused26=b2.#l()
+            Void unused27=b2.#e()
+            Void unused28=b2.#c()
+            Void unused29=b2.#t()
+            Void unused30=b2.#o()
+            Void unused31=b2.#r()
+            Void unused32=b2.#space()
+            b2
+            ))
+          rcv20.#from(seqBuilder:(
+            capsule This2.S.SConcat b3=rcv20.#seqBuilder()
+            Void unused33=b3.#add(that:this.mutK())
+            b3
+            ))
+          )
+        rcv19.#from(builder:(
+          capsule This2.S.SBuilder b4=rcv19.#builder()
+          Void unused34=b4.#space()
+          Void unused35=b4.#n()
+          Void unused36=b4.#o()
+          Void unused37=b4.#t()
+          Void unused38=b4.#space()
+          Void unused39=b4.#f()
+          Void unused40=b4.#o()
+          Void unused41=b4.#u()
+          Void unused42=b4.#n()
+          Void unused43=b4.#d()
+          b4
+          ))
+        ).#apply(that:catched5)
+      
+      (
+        Void unused44=(
+          This2.Bool cond=this.shouldDecorate(that:l).#bang()
+          (
+            Void unused46=cond.#checkTrue()
+            
+            catch exception Void catched12 void
+            
+            return that
+            )
+          )
+        This2.Strings fNs=m.selector().names()
+        This2.Location.Type.Parameter.List fTs=m.parameterTypes().withoutLeft()
+        Void unused45=return This2.Use.#from(seqBuilder:(
+          capsule This2.Composers.Libs b5=This2.Use.#seqBuilder()
+          Void unused47=b5.#add(that:that)
+          b5
+          )).#leftrightleft(that:This2.Refactor2.rename(path:This2.Refactor2.#default#rename(path:void).#from(builder:(
+          capsule This2.S.SBuilder b6=This2.Refactor2.#default#rename(path:void).#builder()
+          Void unused48=b6.#T()
+          Void unused49=b6.#h()
+          Void unused50=b6.#i()
+          Void unused51=b6.#s()
+          b6
+          )), into:this.of()).#leftrightleft(that:This0.operationTrait(fNs:fNs, fTs:fTs)))
+        
+        catch exception This2.Refactor2.Fail catched15 error This2.X.#from(builder:(
+          capsule This2.S.SBuilder b7=This2.X.#builder()
+          Void unused52=b7.#A()
+          Void unused53=b7.#d()
+          Void unused54=b7.#d()
+          Void unused55=b7.#T()
+          Void unused56=b7.#o()
+          Void unused57=b7.#S()
+          Void unused58=b7.#dot()
+          Void unused59=b7.#left()
+          Void unused60=b7.#right()
+          Void unused61=b7.#left()
+          b7
+          )).#apply(that:catched15)
+        
+        void
+        )
+      )
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+This2.Bool shouldDecorate(This2.Location.Lib that) exception This0.Fail (
+  Void unused=(
+    This2.Location.Method mToS=that.method(selector:that.#default#method(selector:void).#from(builder:(
+      capsule This2.S.SBuilder b=that.#default#method(selector:void).#builder()
+      Void unused0=b.#hash()
+      Void unused1=b.#e()
+      Void unused2=b.#q()
+      Void unused3=b.#u()
+      Void unused4=b.#a()
+      Void unused5=b.#l()
+      Void unused6=b.#e()
+      Void unused7=b.#q()
+      Void unused8=b.#u()
+      Void unused9=b.#a()
+      Void unused10=b.#l()
+      Void unused11=b.#oRound()
+      Void unused12=b.#t()
+      Void unused13=b.#h()
+      Void unused14=b.#a()
+      Void unused15=b.#t()
+      Void unused16=b.#cRound()
+      b
+      )))
+    
+    catch exception This2.Location.NotAvailable catched0 return This2.Bool.true()
+    
+    (
+      Void unused17=(
+        This2.Bool cond=that.implements(classObj:This2.Concept.Equals).#bang()
+        (
+          Void unused19=cond.#checkTrue()
+          
+          catch exception Void catched2 void
+          
+          exception This0.Fail.#from(builder:(
+            capsule This2.S.SBuilder b0=This0.Fail.#builder()
+            Void unused20=b0.#m()
+            Void unused21=b0.#e()
+            Void unused22=b0.#t()
+            Void unused23=b0.#h()
+            Void unused24=b0.#o()
+            Void unused25=b0.#d()
+            Void unused26=b0.#space()
+            Void unused27=b0.#t()
+            Void unused28=b0.#o()
+            Void unused29=b0.#S()
+            Void unused30=b0.#space()
+            Void unused31=b0.#n()
+            Void unused32=b0.#o()
+            Void unused33=b0.#t()
+            Void unused34=b0.#space()
+            Void unused35=b0.#f()
+            Void unused36=b0.#r()
+            Void unused37=b0.#o()
+            Void unused38=b0.#m()
+            Void unused39=b0.#space()
+            Void unused40=b0.#C()
+            Void unused41=b0.#o()
+            Void unused42=b0.#n()
+            Void unused43=b0.#c()
+            Void unused44=b0.#e()
+            Void unused45=b0.#p()
+            Void unused46=b0.#t()
+            Void unused47=b0.#dot()
+            Void unused48=b0.#E()
+            Void unused49=b0.#q()
+            Void unused50=b0.#u()
+            Void unused51=b0.#a()
+            Void unused52=b0.#l()
+            Void unused53=b0.#s()
+            b0
+            ))
+          )
+        )
+      Void unused18=return mToS.isAbstract()
+      void
+      )
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs) exception This0.Fail (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=fNs.isEmpty()
+      (
+        Void unused1=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        error This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused2=b0.#T()
+          Void unused3=b0.#O()
+          Void unused4=b0.#D()
+          Void unused5=b0.#O()
+          b0
+          ))
+        )
+      )
+    capsule This2.Use.Override.Decorator acc=This2.Use.Override.#from(seqBuilder:(
+      capsule This2.Composers.Libs b=This2.Use.Override.#seqBuilder()
+      Void unused6=(
+        lent This2.Strings.IteratorVal fN=fNs.vals()
+        (
+          lent This2.Location.Type.Parameter.List.IteratorVal fT=fTs.vals()
+          (
+            Void unused7=loop (
+              Void unused8=fN.#next()
+              
+              catch exception Void catched4 (
+                Void unused9=(
+                  Void unused12=fT.#next()
+                  
+                  catch exception Void catched5 void
+                  
+                  void
+                  )
+                Void unused10=(
+                  Void unused13=fN.#checkEnd()
+                  
+                  catch exception Void catched6 void
+                  
+                  void
+                  )
+                Void unused11=(
+                  Void unused14=fT.#checkEnd()
+                  
+                  catch exception Void catched7 void
+                  
+                  void
+                  )
+                exception void
+                )
+              
+              (
+                Void unused15=fT.#next()
+                
+                catch exception Void catched9 (
+                  Void unused16=(
+                    Void unused18=fN.#checkEnd()
+                    
+                    catch exception Void catched10 void
+                    
+                    void
+                    )
+                  Void unused17=(
+                    Void unused19=fT.#checkEnd()
+                    
+                    catch exception Void catched11 void
+                    
+                    void
+                    )
+                  exception void
+                  )
+                
+                (
+                  Library fOp=This0.FieldOp.#apply(selector:This2.Selector.from(string:fN.#inner().#plusplus(that:This2.S.#from(builder:(
+                    capsule This2.S.SBuilder b1=This2.S.#builder()
+                    Void unused20=b1.#oRound()
+                    Void unused21=b1.#cRound()
+                    b1
+                    )))), type:fT.#inner())
+                  
+                  catch exception This1.StateOperation.Fail catched14 exception This0.Fail.#from(builder:(
+                    capsule This2.S.SBuilder b2=This0.Fail.#builder()
+                    b2
+                    )).#apply(that:catched14)
+                  
+                  (
+                    Void unused22=(
+                      Void unused23=b.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
+                        capsule This2.Refactor2.Method b3=This2.Refactor2.Method.#seqBuilder()
+                        Void unused24=b3.#add(hide:This2.Refactor2.Method.#default##square(hide:void).#from(builder:(
+                          capsule This2.S.SBuilder b4=This2.Refactor2.Method.#default##square(hide:void).#builder()
+                          Void unused25=b4.#f()
+                          Void unused26=b4.#N()
+                          Void unused27=b4.#oRound()
+                          Void unused28=b4.#cRound()
+                          b4
+                          )))
+                        b3
+                        )).#leftrightleft(that:This2.Use.#from(seqBuilder:(
+                        capsule This2.Composers.Libs b5=This2.Use.#seqBuilder()
+                        Void unused29=b5.#add(that:This2.Resource.#apply(that:fN.#inner(), selector:This2.Resource.#default##apply(selector:void).#from(builder:(
+                          capsule This2.S.SBuilder b6=This2.Resource.#default##apply(selector:void).#builder()
+                          Void unused30=b6.#f()
+                          Void unused31=b6.#N()
+                          Void unused32=b6.#oRound()
+                          Void unused33=b6.#cRound()
+                          b6
+                          ))))
+                        b5
+                        )).#leftrightleft(that:fOp)))
+                      void
+                      )
+                    
+                    catch exception This2.Refactor2.Fail catched21 error This2.X.#from(builder:(
+                      capsule This2.S.SBuilder b7=This2.X.#builder()
+                      Void unused34=b7.#A()
+                      Void unused35=b7.#d()
+                      Void unused36=b7.#d()
+                      Void unused37=b7.#T()
+                      Void unused38=b7.#o()
+                      Void unused39=b7.#S()
+                      Void unused40=b7.#dot()
+                      Void unused41=b7.#f()
+                      Void unused42=b7.#i()
+                      Void unused43=b7.#n()
+                      Void unused44=b7.#a()
+                      Void unused45=b7.#l()
+                      Void unused46=b7.#W()
+                      Void unused47=b7.#r()
+                      Void unused48=b7.#a()
+                      Void unused49=b7.#p()
+                      Void unused50=b7.#p()
+                      Void unused51=b7.#i()
+                      Void unused52=b7.#n()
+                      Void unused53=b7.#g()
+                      Void unused54=b7.#space()
+                      Void unused55=b7.#less()
+                      Void unused56=b7.#space()
+                      Void unused57=b7.#h()
+                      Void unused58=b7.#i()
+                      Void unused59=b7.#d()
+                      Void unused60=b7.#e()
+                      Void unused61=b7.#space()
+                      Void unused62=b7.#f()
+                      Void unused63=b7.#N()
+                      b7
+                      )).#apply(that:catched21)
+                    
+                    void
+                    )
+                  )
+                )
+              )
+            
+            catch exception Void catched23 void
+            
+            void
+            )
+          )
+        )
+      b
+      ))
+    Library lib=acc.foldLeft(resolver: {
+    read method 
+    This3.Bool #1equals(read This0 that) 
+    read method 
+    This3.Bool #2equals(read This0 that) 
+    read method 
+    This3.Bool equals(read This0 that) (
+      Void unused=(
+        Void unused0=(
+          This3.Bool cond=this.#1equals(that:that).#bang()
+          (
+            Void unused2=cond.#checkTrue()
+            
+            catch exception Void catched0 void
+            
+            return This3.Bool.false()
+            )
+          )
+        Void unused1=return this.#2equals(that:that)
+        void
+        )
+      
+      catch return This3.Bool result result
+      
+      error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+      )})
+    
+    catch exception This2.Refactor2.Fail catched25 error This2.X.#from(builder:(
+      capsule This2.S.SBuilder b8=This2.X.#builder()
+      Void unused64=b8.#A()
+      Void unused65=b8.#d()
+      Void unused66=b8.#d()
+      Void unused67=b8.#T()
+      Void unused68=b8.#o()
+      Void unused69=b8.#S()
+      Void unused70=b8.#dot()
+      Void unused71=b8.#a()
+      Void unused72=b8.#c()
+      Void unused73=b8.#c()
+      Void unused74=b8.#u()
+      Void unused75=b8.#m()
+      Void unused76=b8.#u()
+      Void unused77=b8.#l()
+      Void unused78=b8.#a()
+      Void unused79=b8.#t()
+      Void unused80=b8.#i()
+      Void unused81=b8.#o()
+      Void unused82=b8.#n()
+      b8
+      )).#apply(that:catched25)
+    
+    (
+      Library miniEquals= {implements This3.Concept.Equals
+      read method 
+      This3.Bool equals(read This0 that) This3.Bool.true()
+      refine read method 
+      This3.Bool #equalequal(read Any that) (
+        Void unused=(
+          Void unused0=(
+            read This0 that0=(
+              Void unused2=return that
+              
+              catch return read This0 casted casted
+              
+              catch return read Any casted exception void
+              
+              error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+              )
+            
+            catch exception Void catched0 void
+            
+            (
+              Void unused3=return this.equals(that:that0)
+              void
+              )
+            )
+          Void unused1=return This3.Bool.false()
+          void
+          )
+        
+        catch return This3.Bool result result
+        
+        error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+        )}
+      Void unused83=return This2.Use.Override.#from(seqBuilder:(
+        capsule This2.Composers.Libs b9=This2.Use.Override.#seqBuilder()
+        Void unused84=b9.#add(that:miniEquals)
+        b9
+        )).#leftrightleft(that:lib)
+      
+      catch exception This2.Refactor2.Fail catched28 error This2.X.#from(builder:(
+        capsule This2.S.SBuilder b10=This2.X.#builder()
+        Void unused85=b10.#A()
+        Void unused86=b10.#d()
+        Void unused87=b10.#d()
+        Void unused88=b10.#T()
+        Void unused89=b10.#o()
+        Void unused90=b10.#S()
+        Void unused91=b10.#dot()
+        Void unused92=b10.#f()
+        Void unused93=b10.#i()
+        Void unused94=b10.#n()
+        Void unused95=b10.#a()
+        Void unused96=b10.#l()
+        Void unused97=b10.#W()
+        Void unused98=b10.#r()
+        Void unused99=b10.#a()
+        Void unused100=b10.#p()
+        Void unused101=b10.#p()
+        Void unused102=b10.#i()
+        Void unused103=b10.#n()
+        Void unused104=b10.#g()
+        Void unused105=b10.#space()
+        Void unused106=b10.#less()
+        Void unused107=b10.#space()
+        Void unused108=b10.#h()
+        Void unused109=b10.#i()
+        Void unused110=b10.#d()
+        Void unused111=b10.#e()
+        b10
+        )).#apply(that:catched28)
+      
+      void
+      )
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+mut This0 #apply(fwd This2.Selector mutK, fwd This2.Path of) 
+Fail: {implements This2.Fail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This3.S _text() 
+read method 
+This3.Message.Opt cause() 
+class method 
+This0 #apply(This3.S _text, This3.Message.Opt cause) 
+refine class method 
+This3.S kind() this.readableName()
+refine read method 
+This3.S text() this._text()
+refine read method 
+This3.Message.Opt responseOf() this.cause()
+method 
+This0 #apply(This3.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This3.S toS() (
+  Void unused=(
+    Void unused0=(
+      This3.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        )
+      )
+    var This3.S res=This0.kind()
+    Void unused1=(
+      This3.Bool cond0=this.text().#equalequal(that:This3.S.#from(builder:(
+        capsule This3.S.SBuilder b=This3.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+          capsule This3.S.SBuilder b0=This3.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          )))
+        
+        res := res.#plusplus(that:This3.S.#from(builder:(
+          capsule This3.S.SBuilder b1=This3.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote().#plusplus(that:This3.S.#from(builder:(
+          capsule This3.S.SBuilder b2=This3.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          )))))))
+        )
+      )
+    Void unused2=return (
+      This3.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This3.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This3.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This3.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this, other:that)
+class method 
+This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
+class method 
+This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+class method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+class method 
+This0 #from(This3.S.SBuilder builder) This0.#apply(text:This3.S.#from(builder:builder))
+method 
+This0.Continue #from(This3.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumulator:This3.S.#from(builder:(
+  capsule This3.S.SBuilder b=This3.S.#builder()
+  b
+  )))
+refine read method 
+class This0 class() This0
+refine class method 
+read This0 cast(read This3.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return read This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      mut This0 that0=(
+        Void unused2=return that
+        
+        catch return mut This0 casted casted
+        
+        catch return mut Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This3.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return mut This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method 
+This3.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This3.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine read method 
+This3.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This3.Bool.false()
+    void
+    )
+  
+  catch return This3.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Continue: {
+read method 
+This4.S that() 
+class method 
+This0 #apply(This4.S that) 
+method 
+mut This4.S.SBuilder #builder() This4.S.SBuilder.empty()
+method 
+This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This4.S.#from(builder:builder)))}}
+FieldOp: {
+class method 
+Any val6_$_61()  {
+read method 
+read This0.T f() 
+read method 
+This4.Bool equals(read This0 that) this.f().#equalequal(that:that.f())
+T: {implements This5.Concept.Equals
+refine read method 
+This5.Bool #equalequal(read Any that) }}
+class method 
+Any val7_$_62()  {/*Use.Over would do the opposite kind of hiding
+*/
+read method 
+This4.Bool equals(read This0 that) this.f2_$_63().#equalequal(that:that.f2_$_63())
+read method 
+read This0.T f2_$_63() this.f()
+read method 
+This0.T f() 
+T: {implements This5.Concept.Equals
+refine read method 
+This5.Bool #equalequal(read Any that) }}
+class method 
+Any val8_$_64()  {
+read method 
+class This0.T f() 
+read method 
+This4.Bool equals(read This0 that) This4.Location.Lib.#apply(classObj:this.f()).#equalequal(that:This4.Location.Lib.#apply(classObj:that.f()))
+T: {}}
+class method 
+Library forReadable() (
+  Void unused=(
+    Void unused0=(
+      Any val=this.val6_$_61()
+      (
+        Library val0=(
+          Void unused2=return val
+          
+          catch return Library casted casted
+          
+          catch return Any casted exception void
+          
+          error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return val0
+          void
+          )
+        )
+      )
+    Void unused1=error This3.Resource.ProvidedValueNotOfExpectedType.#from(builder:(
+      capsule This3.S.SBuilder b=This3.Resource.ProvidedValueNotOfExpectedType.#builder()
+      b
+      ))
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library forImmutable() (
+  Void unused=(
+    Void unused0=(
+      Any val=this.val7_$_62()
+      (
+        Library val0=(
+          Void unused2=return val
+          
+          catch return Library casted casted
+          
+          catch return Any casted exception void
+          
+          error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return val0
+          void
+          )
+        )
+      )
+    Void unused1=error This3.Resource.ProvidedValueNotOfExpectedType.#from(builder:(
+      capsule This3.S.SBuilder b=This3.Resource.ProvidedValueNotOfExpectedType.#builder()
+      b
+      ))
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library forClass() (
+  Void unused=(
+    Void unused0=(
+      Any val=this.val8_$_64()
+      (
+        Library val0=(
+          Void unused2=return val
+          
+          catch return Library casted casted
+          
+          catch return Any casted exception void
+          
+          error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return val0
+          void
+          )
+        )
+      )
+    Void unused1=error This3.Resource.ProvidedValueNotOfExpectedType.#from(builder:(
+      capsule This3.S.SBuilder b=This3.Resource.ProvidedValueNotOfExpectedType.#builder()
+      b
+      ))
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method 
+Library #apply(This3.Selector selector, This3.Location.Type type) exception This2.StateOperation.Fail (
+  Void unused=(
+    This3.Location.Mdf mdf=type.mdf()
+    This3.Location.Type.RefTo r=type.refTo()
+    Void unused0=(
+      This3.Bool cond=mdf.isCmpClass()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return this.specialize(that:This0.forClass(), selector:selector, refTo:r)
+        )
+      )
+    Void unused1=(
+      This3.Bool cond0=mdf.isCmpImm()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched2 void
+        
+        return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r)
+        )
+      )
+    Void unused2=return this.specialize(that:This0.forReadable(), selector:selector, refTo:r)
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+class method /* maybe private
+*/Library specialize(Library that, This3.Selector selector, This3.Location.Type.RefTo refTo) exception This2.StateOperation.Fail (
+  Void unused=(
+    Void unused0=return This3.Refactor2.redirect(path:This3.Refactor2.#default#redirect(path:void).#from(builder:(
+      capsule This3.S.SBuilder b=This3.Refactor2.#default#redirect(path:void).#builder()
+      Void unused1=b.#T()
+      b
+      )), intoRefTo:refTo).#leftrightleft(that:This3.Refactor2.Method.#from(seqBuilder:(
+      capsule This3.Refactor2.Method b0=This3.Refactor2.Method.#seqBuilder()
+      Void unused2=b0.#add(rename:This3.Refactor2.Method.#default##square(rename:void).#from(builder:(
+        capsule This3.S.SBuilder b1=This3.Refactor2.Method.#default##square(rename:void).#builder()
+        Void unused3=b1.#f()
+        Void unused4=b1.#oRound()
+        Void unused5=b1.#cRound()
+        b1
+        )), into:selector)
+      b0
+      )).#leftrightleft(that:that))
+    
+    catch exception This3.Refactor2.Fail catched2 exception This2.StateOperation.Fail.#from(builder:(
+      capsule This3.S.SBuilder b2=This2.StateOperation.Fail.#builder()
       Void unused6=b2.#U()
       Void unused7=b2.#n()
       Void unused8=b2.#f()
@@ -48274,42 +49796,9 @@ CurlyBlock-Should be unreachable code
 */}
   )
 refine read method 
-This3.Bool #equalequal(read Any that) (
-  Void unused=(
-    Void unused0=(
-      read This0 that0=(
-        Void unused2=return that
-        
-        catch return read This0 casted casted
-        
-        catch return read Any casted exception void
-        
-        error  {/*@stringU
-CastT-Should be unreachable code
-*/}
-        )
-      
-      catch exception Void catched0 void
-      
-      (
-        Void unused3=return this.equals(that:that0)
-        void
-        )
-      )
-    Void unused1=return This3.Bool.false()
-    void
-    )
-  
-  catch return This3.Bool result result
-  
-  error  {/*@stringU
-CurlyBlock-Should be unreachable code
-*/}
-  )
-read method 
-This3.Bool equals(read This0 that) 
+This3.S toS() 
 refine read method 
-This3.S toS() }
+This3.Bool #equalequal(read Any that) }
 class method 
 Library #leftrightleft(Library that) exception This0.Fail (
   Void unused=(
@@ -50649,56 +52138,21 @@ method
 This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}}
 Alphanumeric: {
 class method 
-Library #leftrightleft(Library that) (
+Library #leftrightleft(Library that) exception This0.Fail (
   Void unused=(
-    Library lib=( {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
-    read method 
-    This2.S that() 
-    class method 
-    This0 #from(This2.S.SBuilder builder) This0.parse(that:This2.S.#from(builder:builder))
-    class method 
-    mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
-    class method 
-    This0 parse(This2.S that) 
-    refine read method 
-    This2.S toS() (// Assumes simple, non-destructive parsing
-this.that())
-    read method 
-    This2.Bool equals(read This0 that) this.that().#equalequal(that:that.that())
-    refine class method 
-    read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-    refine class method 
-    mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-    refine read method 
-    class This2.Concept.Classable class() 
-    refine class method 
-    This2.S readableName() 
-    refine class method 
-    This2.Bool is(class Any subtype) 
-    refine read method 
-    This2.Bool #equalequal(read Any that) })
-    Library res=This1.Use.Override.#from(seqBuilder:(
+    Void unused0=return This1.K.#leftrightleft(that:This1.Use.Override.#from(seqBuilder:(
       capsule This1.Composers.Libs b=This1.Use.Override.#seqBuilder()
-      Void unused0=b.#add(that:This1.UnsafeRefactor.MiniDataTrait.#apply())
-      Void unused1=b.#add(that:lib)
+      Void unused1=b.#add(that:This1.UnsafeRefactor.MiniDataTrait.#apply())
+      Void unused2=b.#add(that:This0.Trait.#apply())
       b
-      )).#leftrightleft(that:that)
+      )).#leftrightleft(that:that))
     
-    catch exception This1.Refactor2.Fail catched0 error This1.X.#from(builder:(
-      capsule This1.S.SBuilder b0=This1.X.#builder()
+    catch exception This1.Refactor2.Fail catched0 exception This0.Fail.#from(builder:(
+      capsule This1.S.SBuilder b0=This0.Fail.#builder()
       b0
       )).#apply(that:catched0)
     
-    catch exception This1.Location.NotAvailable catched0 error This1.X.#from(builder:(
-      capsule This1.S.SBuilder b1=This1.X.#builder()
-      b1
-      )).#apply(that:catched0)
-    
-    (
-      Void unused2=return This1.K.#leftrightleft(that:res)
-      void
-      )
+    void
     )
   
   catch return Library result result
@@ -50957,7 +52411,325 @@ This0 #apply(This3.S that)
 method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 method 
-This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}}
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
+Fail: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This2.S _text() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() this.readableName()
+refine read method 
+This2.S text() this._text()
+refine read method 
+This2.Message.Opt responseOf() this.cause()
+method 
+This0 #apply(This2.Message that) This0.#apply(text:this.text(), cause:that)
+refine read method 
+This2.S toS() (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.cause().isPresent().#bang()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
+        )
+      )
+    var This2.S res=This0.kind()
+    Void unused1=(
+      This2.Bool cond0=this.text().#equalequal(that:This2.S.#from(builder:(
+        capsule This2.S.SBuilder b=This2.S.#builder()
+        b
+        ))).#bang()
+      (
+        Void unused4=cond0.#checkTrue()
+        
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b0=This2.S.#builder()
+          Void unused5=b0.#oSquare()
+          b0
+          ))))
+        
+        (res := res.#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b1=This2.S.#builder()
+          Void unused6=b1.#oSquare()
+          Void unused7=b1.#t()
+          Void unused8=b1.#e()
+          Void unused9=b1.#x()
+          Void unused10=b1.#t()
+          Void unused11=b1.#colon()
+          b1
+          )).#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote().#plusplus(that:This2.S.#from(builder:(
+          capsule This2.S.SBuilder b2=This2.S.#builder()
+          Void unused12=b2.#comma()
+          Void unused13=b2.#space()
+          Void unused14=b2.#c()
+          Void unused15=b2.#a()
+          Void unused16=b2.#u()
+          Void unused17=b2.#s()
+          Void unused18=b2.#e()
+          Void unused19=b2.#colon()
+          b2
+          ))))))))
+        )
+      )
+    Void unused2=return (
+      This2.S.Continue rcv14=res.#from(seqBuilder:(
+        capsule This2.S.SConcat b3=res.#seqBuilder()
+        Void unused20=b3.#add(that:this.cause().#get())
+        b3
+        ))
+      rcv14.#from(builder:(
+        capsule This2.S.SBuilder b4=rcv14.#builder()
+        Void unused21=b4.#cSquare()
+        b4
+        ))
+      )
+    void
+    )
+  
+  catch return This2.S result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+read method 
+This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+class method 
+This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+class method 
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
+class method 
+mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
+class method 
+This0 #from(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+method 
+mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+  capsule This2.S.SBuilder b=This2.S.#builder()
+  b
+  )))
+refine read method 
+class This0 class() This0
+refine class method 
+read This0 cast(read This2.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return read This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) (
+  Void unused=(
+    Void unused0=(
+      mut This0 that0=(
+        Void unused2=return that
+        
+        catch return mut This0 casted casted
+        
+        catch return mut Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return that0
+        void
+        )
+      )
+    Void unused1=error This2.GetMyName.classCastError(that:that, classObj:This0)
+    void
+    )
+  
+  catch return mut This0 result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine class method 
+This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method 
+This2.Bool is(class Any subtype) (
+  Void unused=(
+    Void unused0=(
+      class This0 subtype0=(
+        Void unused2=return subtype
+        
+        catch return class This0 casted casted
+        
+        catch return class Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return This2.Bool.true()
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+refine read method 
+This2.Bool #equalequal(read Any that) (
+  Void unused=(
+    Void unused0=(
+      read This0 that0=(
+        Void unused2=return that
+        
+        catch return read This0 casted casted
+        
+        catch return read Any casted exception void
+        
+        error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+        )
+      
+      catch exception Void catched0 void
+      
+      (
+        Void unused3=return this.equals(that:that0)
+        void
+        )
+      )
+    Void unused1=return This2.Bool.false()
+    void
+    )
+  
+  catch return This2.Bool result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+Continue: {
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+method 
+This1 #from(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))}}
+Trait: {
+class method 
+Any val()  {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This3.S that() 
+class method 
+This0 #from(This3.S.SBuilder builder) This0.parse(that:This3.S.#from(builder:builder))
+class method 
+mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
+class method 
+This0 parse(This3.S that) 
+refine read method 
+This3.S toS() this.that()
+read method 
+This3.Bool equals(read This0 that) this.that().#equalequal(that:that.that())
+refine class method 
+read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method 
+mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine read method 
+class This3.Concept.Classable class() 
+refine class method 
+This3.S readableName() 
+refine class method 
+This3.Bool is(class Any subtype) 
+refine read method 
+This3.Bool #equalequal(read Any that) }
+class method 
+Library #apply() (
+  Void unused=(
+    Void unused0=(
+      Any val=this.val()
+      (
+        Library val0=(
+          Void unused2=return val
+          
+          catch return Library casted casted
+          
+          catch return Any casted exception void
+          
+          error  {/*@stringU
+CastT-Should be unreachable code
+*/}
+          )
+        
+        catch exception Void catched1 void
+        
+        (
+          Void unused3=return val0
+          void
+          )
+        )
+      )
+    Void unused1=error This2.Resource.ProvidedValueNotOfExpectedType.#from(builder:(
+      capsule This2.S.SBuilder b=This2.Resource.ProvidedValueNotOfExpectedType.#builder()
+      b
+      ))
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )}}
 Enumeration: {
 class method 
 Library #from(This1.S.SBuilder builder) exception This0.InvalidElements This0.from(base:This1.S.#from(builder:builder))
@@ -53827,7 +55599,7 @@ CurlyBlock-Should be unreachable code
   )}}
 GetMyName: {
 class method 
-This1.S #1#apply_$_38(class Any that) This1.S.#from(builder:(
+This1.S #1#apply_$_67(class Any that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#less()
   Void unused0=b.#less()
@@ -53850,7 +55622,7 @@ This1.S #1#apply_$_38(class Any that) This1.S.#from(builder:(
   b
   ))
 class method 
-Any #1classCastError_$_39(read This1.Concept.Classable that, class This1.Concept.Classable classObj) This1.S.#from(builder:(
+Any #1classCastError_$_68(read This1.Concept.Classable that, class This1.Concept.Classable classObj) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#less()
   Void unused0=b.#less()
@@ -54157,11 +55929,11 @@ This1 #from(This4.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(th
 Opt: {/*will be Fixed in AdamTowel02
 */
 class method 
-This0 #1#apply0_$_40(This1 that) This0.#apply()
+This0 #1#apply0_$_69(This1 that) This0.#apply()
 method 
-This2.Bool #1isPresent_$_41() This2.Bool.false()
+This2.Bool #1isPresent_$_70() This2.Bool.false()
 method 
-This1 #1#get_$_42() error  {/*toFix*/}
+This1 #1#get_$_71() error  {/*toFix*/}
 method 
 This0.TOpt that() 
 class method 
@@ -54602,7 +56374,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Any #1parseError_$_43(This1.S that) This1.S.#from(builder:(
+Any #1parseError_$_72(This1.S that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#B()
   Void unused0=b.#o()
@@ -55626,7 +57398,7 @@ This0 #63() This0.#from(builder:(
   b
   ))
 class method 
-Any #1parseError0_$_44(This1.S that) This1.S.#from(builder:(
+Any #1parseError0_$_73(This1.S that) This1.S.#from(builder:(
   capsule This1.S.SBuilder b=This1.S.#builder()
   Void unused=b.#S()
   Void unused0=b.#i()
@@ -57757,15 +59529,15 @@ ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.
 */, This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 class method 
-This2.S #1kind_$_45() this.readableName()
+This2.S #1kind_$_74() this.readableName()
 read method 
-This2.S #1text_$_46() this._text()
+This2.S #1text_$_75() this._text()
 read method 
-This2.Message.Opt #1responseOf_$_47() this.cause()
+This2.Message.Opt #1responseOf_$_76() this.cause()
 method 
-This0 #1#apply1_$_48(This2.Message that) This0.#apply(text:this.text(), cause:that)
+This0 #1#apply1_$_77(This2.Message that) This0.#apply(text:this.text(), cause:that)
 read method 
-This2.S #1toS_$_49() (
+This2.S #1toS_$_78() (
   Void unused=(
     Void unused0=(
       This2.Bool cond=this.cause().isPresent().#bang()
@@ -57837,26 +59609,26 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #1equals_$_50(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool #1equals0_$_79(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 class method 
-This0 #1#apply2_$_51(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+This0 #1#apply2_$_80(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #1#apply3_$_52(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #1#apply3_$_81(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
 class method 
-mut This2.S.SBuilder #1#builder_$_53() This2.S.SBuilder.empty()
+mut This2.S.SBuilder #1#builder_$_82() This2.S.SBuilder.empty()
 class method 
-This0 #1#from_$_54(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+This0 #1#from_$_83(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
-This0.Continue #1#from0_$_55(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+This0.Continue #1#from0_$_84(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
 method 
-mut This2.S.SConcat #1#seqBuilder_$_56() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+mut This2.S.SConcat #1#seqBuilder_$_85() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
   capsule This2.S.SBuilder b=This2.S.#builder()
   b
   )))
 read method 
-class This0 #1class_$_57() This0
+class This0 #1class_$_86() This0
 class method 
-read This0 #1cast_$_58(read This2.Concept.Classable that) (
+read This0 #1cast_$_87(read This2.Concept.Classable that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -57889,7 +59661,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-mut This0 #1#cast_$_59(mut This2.Concept.Classable that) (
+mut This0 #1#cast_$_88(mut This2.Concept.Classable that) (
   Void unused=(
     Void unused0=(
       mut This0 that0=(
@@ -57922,9 +59694,9 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-This2.S #1readableName_$_60() This2.GetMyName.#apply(that:This0)
+This2.S #1readableName_$_89() This2.GetMyName.#apply(that:This0)
 class method 
-This2.Bool #1is_$_61(class Any subtype) (
+This2.Bool #1is_$_90(class Any subtype) (
   Void unused=(
     Void unused0=(
       class This0 subtype0=(
@@ -57957,7 +59729,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #1#equalequal_$_62(read Any that) (
+This2.Bool #1#equalequal_$_91(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -58231,9 +60003,9 @@ CurlyBlock-Should be unreachable code
   )
 Continue: {
 method 
-mut This3.S.SBuilder #1#builder0_$_63() This3.S.SBuilder.empty()
+mut This3.S.SBuilder #1#builder0_$_92() This3.S.SBuilder.empty()
 method 
-This1 #1#from1_$_64(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))
+This1 #1#from1_$_93(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))
 read method 
 This3.S that() 
 class method 
@@ -58809,15 +60581,15 @@ ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.
 */, This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 class method 
-This2.S #1kind0_$_65() this.readableName()
+This2.S #1kind0_$_94() this.readableName()
 read method 
-This2.S #1text0_$_66() this._text()
+This2.S #1text0_$_95() this._text()
 read method 
-This2.Message.Opt #1responseOf0_$_67() this.cause()
+This2.Message.Opt #1responseOf0_$_96() this.cause()
 method 
-This0 #1#apply4_$_68(This2.Message that) This0.#apply(text:this.text(), cause:that)
+This0 #1#apply4_$_97(This2.Message that) This0.#apply(text:this.text(), cause:that)
 read method 
-This2.S #1toS0_$_69() (
+This2.S #1toS0_$_98() (
   Void unused=(
     Void unused0=(
       This2.Bool cond=this.cause().isPresent().#bang()
@@ -58889,26 +60661,26 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #1equals0_$_70(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
+This2.Bool #1equals1_$_99(read This0 that) This2.Message.EqualMessages.#apply(that:this, other:that)
 class method 
-This0 #1#apply5_$_71(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
+This0 #1#apply5_$_100(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #1#apply6_$_72(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #1#apply6_$_101(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
 class method 
-mut This2.S.SBuilder #1#builder1_$_73() This2.S.SBuilder.empty()
+mut This2.S.SBuilder #1#builder1_$_102() This2.S.SBuilder.empty()
 class method 
-This0 #1#from2_$_74(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
+This0 #1#from2_$_103(This2.S.SBuilder builder) This0.#apply(text:This2.S.#from(builder:builder))
 method 
-This0.Continue #1#from3_$_75(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
+This0.Continue #1#from3_$_104(This2.S.SConcat seqBuilder) This0.Continue.#apply(that:seqBuilder.old().#plusplus(that:seqBuilder.accumulator()))
 method 
-mut This2.S.SConcat #1#seqBuilder0_$_76() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
+mut This2.S.SConcat #1#seqBuilder0_$_105() This2.S.SConcat.#apply(old:this.text(), accumulator:This2.S.#from(builder:(
   capsule This2.S.SBuilder b=This2.S.#builder()
   b
   )))
 read method 
-class This0 #1class0_$_77() This0
+class This0 #1class0_$_106() This0
 class method 
-read This0 #1cast0_$_78(read This2.Concept.Classable that) (
+read This0 #1cast0_$_107(read This2.Concept.Classable that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -58941,7 +60713,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-mut This0 #1#cast0_$_79(mut This2.Concept.Classable that) (
+mut This0 #1#cast0_$_108(mut This2.Concept.Classable that) (
   Void unused=(
     Void unused0=(
       mut This0 that0=(
@@ -58974,9 +60746,9 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-This2.S #1readableName0_$_80() This2.GetMyName.#apply(that:This0)
+This2.S #1readableName0_$_109() This2.GetMyName.#apply(that:This0)
 class method 
-This2.Bool #1is0_$_81(class Any subtype) (
+This2.Bool #1is0_$_110(class Any subtype) (
   Void unused=(
     Void unused0=(
       class This0 subtype0=(
@@ -59009,7 +60781,7 @@ CurlyBlock-Should be unreachable code
 */}
   )
 read method 
-This2.Bool #1#equalequal0_$_82(read Any that) (
+This2.Bool #1#equalequal0_$_111(read Any that) (
   Void unused=(
     Void unused0=(
       read This0 that0=(
@@ -59283,9 +61055,9 @@ CurlyBlock-Should be unreachable code
   )
 Continue: {
 method 
-mut This3.S.SBuilder #1#builder2_$_83() This3.S.SBuilder.empty()
+mut This3.S.SBuilder #1#builder2_$_112() This3.S.SBuilder.empty()
 method 
-This1 #1#from4_$_84(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))
+This1 #1#from4_$_113(This3.S.SBuilder builder) This1.#apply(text:this.that().#plusplus(that:This3.S.#from(builder:builder)))
 read method 
 This3.S that() 
 class method 
@@ -59927,7 +61699,7 @@ mut This0 #seqBuilder() this.empty()
 class method 
 mut This0 #from(mut This0 seqBuilder) seqBuilder
 mut method 
-Void #add0_$_37(This1.Test that) this.add(right:that)
+Void #add0_$_66(This1.Test that) this.add(right:that)
 read method 
 mut This0 reverse() (
   capsule This0 result=This0.empty()

@@ -1,60 +1,62 @@
 {
-//initial delegation
-class method
-Library<><(Library that) {
-  return Use[that]<><this.equalsTrait(Introspection(lib:that))
-  error on MetaGuard
-    X"AddToS.<><"
+Fail:{}
+method
+Bool shouldDecorate(Location.Lib that)
+exception Fail {
+  mToS=that.method(selector:\"#equalequal(that)")
+  catch exception Location.NotAvailable
+    return Bool.true()
+  if !that.implements(classObj:Concept.Equals) (
+    exception Fail"method toS not from Concept.Equals"
+    )
+  return mToS.isAbstract()
   }
 
-//code generation
 class method
-Library equalsTrait(Introspection.NestedClass that) {
-  state=that.state()
-  if state.isEmpty() (error S"TODO")
-  fs=state.left()
-
+Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
+exception Fail{
+  if fNs.isEmpty() (error S"TODO")
   //accumulation
-  acc=Use[with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
-    fSel=Selector.from(string:fn++S"()")
-    // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
-    needClass=ft.isInterface()
-    var Library action=Refactor.Tools.specializeField(selector:fSel, type:ft,
-      forReadable:{
-          read method Bool baseEquals(read This that) this.f()==that.f()
-          T:{ implements Concept.Equals}
-          read method read T f()
-          }
-      forClass:{
-        read method Bool baseEquals(read This that) Introspection(clazz:this.f())==Introspection(clazz:that.f())
-        T:{}
-        read method class T f()
-        }
-      )
-   use[action]
+  acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
+    fOp=FieldOp(selector:Selector.from(string:fN++S"()"),type:fT)      
+    exception on StateOperation.Fail Fail""
+    use[
+      Refactor2.Method[hide:\"fN()"]<><
+      Use[Resource(fN,selector:\"fN()")]<><fOp
+      ]
+    error on Refactor2.Fail X"AddToS.finalWrapping - hide fN"
+    void
     )]
   lib=acc.foldLeft(resolver:{
-      read method Bool #1baseEquals(read This that)
-      read method Bool #2baseEquals(read This that)
-      read method Bool baseEquals(read This that) {
-        if !this.#1baseEquals(that:that) (return Bool.false())
-        return this.#2baseEquals(that:that)
+      read method Bool #1equals(read This that)
+      read method Bool #2equals(read This that)
+      read method Bool equals(read This that) {
+        if !this.#1equals(that:that) (return Bool.false())
+        return this.#2equals(that:that)
         }
      })
-
+  error on Refactor2.Fail X"AddToS.accumulation"
   //final wrapping
   miniEquals={ implements Concept.Equals
-    read method Bool baseEquals(read This that) Bool.true()//no fields
+    read method 
+    Bool equals(read This that) 
+      Bool.true()//no fields
     method ==(that) {
-      with that (on read This return this.baseEquals(that))
+      with that (on read This return this.equals(that))
       return Bool.false()
       }
-    read method
-    Bool equals(read This that)
-      this.baseEquals(that)
-
     }
-  return Refactor.MakePrivateSelector(Selector"baseEquals(that)" of:Path"This")<><Extends[miniEquals]<><lib
-  error on MetaGuard X"AddEquals.finalWrapping - MakePrivate"
+  return Use.Override[miniEquals]<><lib
+  error on Refactor2.Fail X"AddToS.finalWrapping - hide"
   }
+
+FieldOp:StateOperation.fieldOperation(
+  forReadable:{
+    T:{implements Concept.Equals}
+    read method Bool equals(read This that) this.f()==that.f()
+    }
+  forClass:{
+    read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
+    }
+  )
 }

@@ -323,7 +323,14 @@ RedirectRefTo:{
   Location.Type.RefTo into
   class method This (Path src, Location.Type.RefTo into)
   method Library <><(Library that)
-  exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit,RefToUnfit {
+  exception 
+  ,,,,ClassUnfit
+  ,,,,IncoherentMapping
+  ,,,,MethodClash
+  ,,,,ClassClash
+  ,,,,PathUnfit
+  ,,,,RefToUnfit
+  ,,,,SubtleSubtypeViolation {
     with r=this.into() (
       on Location.Type.RefTo.Binded
         return This1.redirect(path:this.src() into:r.referredClassObj())<><that

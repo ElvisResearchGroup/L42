@@ -1,11 +1,10 @@
 {reuse L42.is/AdamTowel02
 
 
-Person:Data<><{ implements Concept.ToS
-  S name, var Size age
-  read method Bool #invariant()
+Person:Data<><{ S name, var Size age
+  read method
+  Bool #invariant()
     this.name()!=S"" & this.age()>= 0Size
-  read method This1.Bool equals(read This that)Bool.false()
   }
 
 

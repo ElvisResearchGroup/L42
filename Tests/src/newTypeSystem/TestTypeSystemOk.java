@@ -3,6 +3,8 @@ package newTypeSystem;
 import helpers.TestHelper;
 
 import static helpers.TestHelper.lineNumber;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,8 +98,31 @@ public void test4() {runTypeSystem(
 public void test5() {runTypeSystem(
   "{K:{E:{class method Any  foo() (This1.foo())}} C:{class method Void foo() (D.foo())} D:{class method Library foo() (K.E.foo())}}"
    );}
- }
 
+@Test()
+public void test6() {try{runTypeSystem(
+  "{class method Any  foo() (exception void)}"
+   );fail();}catch(FormattedError fe){assertEquals(
+  ErrorKind.MethodLeaksExceptions,
+  fe.kind);};}
+
+@Test()
+public void test7() {try{runTypeSystem(
+  "{class method Any  foo()exception This (exception void)}"
+   );fail();}catch(FormattedError fe){assertEquals(
+  ErrorKind.MethodLeaksExceptions,
+  fe.kind);};}
+
+@Test()
+public void test8() {try{runTypeSystem(
+  "{class method Any  foo()exception This "
+  + "{return (exception void {})}"
+  + "}"
+   );fail();}catch(FormattedError fe){assertEquals(
+  ErrorKind.MethodLeaksExceptions,
+  fe.kind);};}
+
+}
    static ClassB runTypeSystem(String scb1) {
         TestHelper.configureForTest();
         ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,scb1)).accept(new InjectionOnCore());

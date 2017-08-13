@@ -1,5 +1,5 @@
 {
-CanNotSpecializeOperation:Message.$<><{ implements This2.Fail}
+Fail:Message.$<><{ implements This2.Fail}
 ReadSkeletonTrait:Resource<><{
   T:{}
   read method read T f()
@@ -10,10 +10,7 @@ ClassSkeletonTrait:Resource<><{
   }
 class method // maybe private
 Library readToImm(Library that)
-exception
-,,,,Refactor2.MethodClash
-,,,,Refactor2.ClassClash
-,,,,Refactor2.SubtleSubtypeViolation {
+exception Fail {
   return Refactor2.Method[hide:\"f()"; rename:\"#0f()" into:\"f()"]<><
     Use[that]<><{//Use.Over would do the opposite kind of hiding
       T:{}
@@ -21,14 +18,12 @@ exception
       read method T #0f()
       }
   error on Refactor2.PathUnfit, Refactor2.SelectorUnfit X""
+  error on Refactor2.Fail Fail""
   }
 class method
-Library (Library forReadable, Library forClass)
-exception
-,,,,Refactor2.MethodClash
-,,,,Refactor2.ClassClash
-,,,,Refactor2.SubtleSubtypeViolation
-  Use[
+Library fieldOperation(Library forReadable, Library forClass)
+exception Fail {
+  return Use[
     Resource(Use[ReadSkeletonTrait()]<><forReadable,
       selector:\"forReadable()");
     Resource(Use[ReadSkeletonTrait()]<><This.readToImm(forReadable),
@@ -36,6 +31,8 @@ exception
     Resource(Use[ClassSkeletonTrait()]<><forClass,
       selector:\"forClass()");
     ]<><This.specializerTrait()
+  error on Refactor2.Fail Fail""  
+  }
 
 class method Library specializerTrait(){
   class method Library forReadable()
@@ -43,7 +40,7 @@ class method Library specializerTrait(){
   class method Library forClass()
   class method
   Library (Selector selector,Location.Type type)
-  exception CanNotSpecializeOperation {
+  exception Fail {
     mdf=type.mdf()
     r=type.refTo()
     if mdf.isCmpClass() (
@@ -57,10 +54,52 @@ class method Library specializerTrait(){
    class method // maybe private
    Library specialize(
    ,,,,Library that, Selector selector, Location.Type.RefTo refTo)
-   exception CanNotSpecializeOperation {
+   exception Fail {
     return Refactor2.redirect(path:\"T"  intoRefTo:refTo)<><
       Refactor2.Method[rename:\"f()" into:selector]<><that
-    exception on Refactor2.Fail CanNotSpecializeOperation"Unfit operation"
+    exception on Refactor2.Fail Fail"Unfit operation"
+    }
+  }
+
+class method
+Library <><(Library that)
+exception Fail {
+  return K<><Use[Trait()]<><that
+  exception on  Refactor2.Fail Fail""
+  }
+Trait:Resource<><{
+  Selector mutK
+  Path of
+  class method class Path #default##apply(Void of)Path
+  class method class Selector #default##apply(Void mutK)Selector
+  Fail:Message.$<><{ implements This3.Fail}
+
+  method
+  Bool shouldDecorate(Location.Lib that)
+  exception Fail 
+
+  class method
+  Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
+  exception Fail
+
+  //initial delegation
+  method
+  Library<><(Library that) exception Fail{
+    l=Location.Lib(that).navigate(this.of())
+    exception on Location.NotAvailable
+      Fail"Nested class "[this.of()]" not found"
+    m=l.method(selector:this.mutK())
+    exception on Location.NotAvailable
+      Fail"Selector "[this.mutK()]" not found"
+    //TODO: add checks mutK is actually a factory
+    if !this.shouldDecorate(l) (return that)
+    fNs=m.selector().names()
+    fTs=m.parameterTypes().withoutLeft()
+    return Use[that]<><
+      Refactor2.rename(path:\"This" into:this.of())<><
+      This.operationTrait(fNs:fNs,fTs:fTs)
+    error on Refactor2.Fail
+      X"AddToS.<><"
     }
   }
 }

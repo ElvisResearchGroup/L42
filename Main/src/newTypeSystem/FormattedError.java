@@ -5,6 +5,7 @@ import ast.Expression;
 import sugarVisitors.CollapsePositions;
 
 public class FormattedError extends RuntimeException {
+    private static final long serialVersionUID = 1L;
     public final TErr err;
     public final ErrorKind kind;
     public static String format(TErr err){
