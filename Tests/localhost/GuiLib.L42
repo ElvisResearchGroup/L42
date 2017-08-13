@@ -1129,9 +1129,6 @@ Contains: {interface
 read method 
 This2.Bool contains(read Any that) }
 Parsable: {interface }
-Invariant: {interface 
-read method /* can throw error or return false, as more opportune
-*/This2.Bool invariant() }
 RandomAccess: {interface 
 read method 
 read Any get(This2.Size that) 
@@ -2395,6 +2392,10 @@ class method /*will be private
 */This1.S leftAsASCIIUpperCase(This1.S that) 
 method 
 This0 with(This1.S prefix) 
+method 
+This0 with(This1.S name) 
+method 
+This0 with(This1.Strings names) 
 refine read method 
 This1.S toS() 
 refine class method 
@@ -6057,7 +6058,9 @@ mut This3.Composers.Libs #inner()
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation 
+method 
+Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
 read method 
 This3.Path patch() 
@@ -6118,7 +6121,9 @@ mut This3.Composers.Libs #inner()
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
 method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
+Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation 
+method 
+Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
 read method 
 This3.Path patch() 
@@ -6134,7 +6139,9 @@ mut This2.Composers.Libs #inner()
 class method 
 mut This0 #apply(mut This2.Composers.Libs inner) 
 method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation }
+Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation 
+method 
+Library foldLeft(Library resolver) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation }
 Patcher: {
 read method 
 This2.Path patch() 
