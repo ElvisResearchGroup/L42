@@ -78,4 +78,10 @@ implements Concept.Base
       S newName=prefix++This.leftAsASCIIUpperCase(this.name())
       return This.from(name:newName, names:this.names())
       }
+    method
+    This with(S name)
+      This.from(name:name,names:this.names())
+    method
+    This with(Strings names)
+      This.from(name:this.name(),names:names)
   }

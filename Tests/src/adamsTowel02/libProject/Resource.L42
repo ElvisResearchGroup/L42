@@ -3,6 +3,14 @@ ProvidedValueNotOfExpectedType:Message.$<><{ implements Guard}
 
 class method Library<><(Library that) This(that)
 
+
+class method class Selector #default##apply(Void selector) Selector
+class method Library(Any that, Selector selector) {
+  return Refactor2.Method[rename:\"#apply()" into:selector; hide:\"val()"]
+    <><This(that)
+  error on Refactor2.Fail X""
+  }
+
 class method Library(Any that) {
   with that (
     on Concept.Classable return this(that, clazz:that.class())

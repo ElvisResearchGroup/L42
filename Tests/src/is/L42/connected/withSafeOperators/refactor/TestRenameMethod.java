@@ -33,19 +33,21 @@ check(rm.addRenameS("This","m()","k(x)"),"{method Any m()}","{method Any k()}");
 }
 @Test public void test2() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addCloseS("This"),
-"{mut Any a, Void b, class method This (Any a,Void b)}",
-"{ mut method mut Any #a_$_2() "
-+ "read method Any a_$_2() "
+"{mut Any a, Void b, class method mut This (mut Any a,Void b)}",
+"{ "
++ "read method read Any a_$_2() "
++ "mut method mut Any #a_$_2() "
 + "read method Void b_$_2() "
-+ "class method This0 #apply_$_2(Any a, Void b) }");
++ "class method mut This0 #apply_$_2(mut Any a, Void b) }");
 }
 @Test public void test2Bis() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addCloseS("This"),
-"{mut Any a, Void b, class method This (Any a,Void b)}",
-"{ mut method mut Any #a_$_2() "
-+ "read method Any a_$_2() "
+"{mut Any a, Void b, class method mut This (mut Any a,Void b)}",
+"{ "
++ "read method read Any a_$_2() "
++ "mut method mut Any #a_$_2() "
 + "read method Void b_$_2() "
-+ "class method This0 #apply_$_2(Any a, Void b) }");
++ "class method mut This0 #apply_$_2(mut Any a, Void b) }");
 }
 
 @Test public void test3() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
@@ -78,6 +80,27 @@ check(rm.addHideS("This", "foo(x,y)"),
 "{ class method Any foo(Void x,Void y) void   class method Any f()this.foo(x:void,y:void)}",
 "{ class method Any foo0_$_2(Void x,Void y) void   class method Any f()this.foo0_$_2(x:void,y:void)}"
 );}
+
+@Test public void testAddHideRenameShadow1() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
+check(rm.addHideS("This", "mMain()").addRenameS("This","mNew()", "mMain()"),
+"{ class method Any mMain() this.mNew() class method Any mNew() }",
+" { "+
+"class method "+ 
+"Any mMain0_$_2() this.mMain() "+
+"class method  "+
+"Any mMain() }"
+);}
+
+@Test public void testAddHideRenameShadow2() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
+check(rm.addRenameS("This","mNew()", "mMain()").addHideS("This", "mMain()"),
+"{ class method Any mMain() this.mNew() class method Any mNew() }",
+" { "+
+"class method "+ 
+"Any mMain0_$_2() this.mMain() "+
+"class method  "+
+"Any mMain() }"
+);}
+
 
 @Test public void test6() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addRenameS("This", "foo(x,y)","bar(beer,buz)"),

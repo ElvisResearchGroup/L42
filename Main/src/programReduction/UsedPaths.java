@@ -133,15 +133,26 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
   //checked after for newPaths: when the offending value is produced, so we have more context for error message
   //  throw new ErrorMessage.PathMetaOrNonExistant(true, Collections.singletonList(csi.get(0)), l, null,null);
   
-  Paths newPaths=usedInnerL(li,csi,phase0);
+  Paths newPaths=usedInnerL(li,csi,phase0); 
+  checkPathMetaOrNonExistant(pForError, csi, li, newPaths);
+  return newPaths;
+  }
+private static void checkPathMetaOrNonExistant(Program pForError, List<Ast.C> csi, ClassB li, Paths newPaths) {
+  //check no thisns
+  {int i=0;for(Paths psi=newPaths;!psi.isEmpty();i++,psi=psi.pop()){
+    if(!psi.current.contains(Collections.emptyList())){continue;}
+    Position p=FindPathUsage._locate(pForError,li,Path.outer(i));
+    throw new ErrorMessage.ThisnRequiredToType(i,li,li.getP(),p);
+  }}
+  assert !newPaths.contains(Path.outer(0));
+  //check Cs
   try{newPaths.checkAllDefined(pForError);}
   catch(ErrorMessage.PathMetaOrNonExistant pne){
     Position p=FindPathUsage._locate(pForError,li,Path.outer(csi.size()+1/*TODO we need to fix this crap for real*/,
             pne.getListOfNodeNames()));
     throw pne.withWherePathWasWritten(p);
     }
-  return newPaths;
-  }
+}
   
 //- usedInnerL(LC,Cs)=paths.prefix(Cs)
   static private Paths usedInnerL(ClassB lc, List<Ast.C> cs,Phase phase0) {
@@ -154,10 +165,12 @@ static PathsPaths usedPathsECatchErrors(Program p, ExpCore e){
   }
   Paths paths=Paths.reorganize(lc.getSuperPaths());
   for(ClassB.Member mi: lc.getMs()){
-    paths=paths.union(usedInnerM(mi,phase0));
+    paths=paths.union(usedInnerM(mi,phase0));    
     }
   //paths=reorganize(Ps) U usedInnerM(M1) U... U usedInnerM(Mn))
-  return paths.prefix(cs);}
+  paths=paths.prefix(cs);
+  return paths;
+  }
  
   static private Paths usedInnerM(Member m,Phase phase0) {  
     if(m instanceof NestedClass){

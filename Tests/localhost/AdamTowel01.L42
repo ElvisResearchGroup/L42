@@ -2949,9 +2949,6 @@ Contains: {interface
 read method 
 This2.Bool contains(read Any that) }
 Parsable: {interface }
-Invariant: {interface 
-read method /* can throw error or return false, as more opportune
-*/This2.Bool invariant() }
 RandomAccess: {interface 
 read method 
 read Any get(This2.Size that) 
@@ -13622,6 +13619,10 @@ This0 with(This1.S prefix) (
 CurlyBlock-Should be unreachable code
 */}
   )
+method 
+This0 with(This1.S name) This0.from(name:name, names:this.names())
+method 
+This0 with(This1.Strings names) This0.from(name:this.name(), names:names)
 refine read method 
 This1.S toS() This1.S.#from(binaryRepr:(
   Library res=use This0 check toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -37711,6 +37712,60 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
+  )
+method 
+Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation (
+  Void unused=(
+    Void unused0=(
+      This3.Bool cond=this.inner().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        (return  {})
+        )
+      )
+    var Library res=this.inner().left()
+    Void unused1=(
+      lent This2.Libs.IteratorVal libi=this.inner().withoutLeft().vals()
+      (
+        Void unused4=loop (
+          Void unused5=libi.#next()
+          
+          catch exception Void catched2 (
+            Void unused6=(
+              Void unused7=libi.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            exception void
+            )
+          
+          (res := This1.#from(seqBuilder:(
+            capsule This2.Libs b=This1.#seqBuilder()
+            Void unused8=b.#add(that:res)
+            Void unused9=b.#add(that:libi.#inner())
+            b
+            )).#leftrightleft(that:resolver))
+          )
+        
+        catch exception Void catched6 void
+        
+        void
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
   )}
 Patcher: {
 read method 
@@ -44663,6 +44718,60 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
+  )
+method 
+Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation (
+  Void unused=(
+    Void unused0=(
+      This3.Bool cond=this.inner().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return  {}
+        )
+      )
+    var Library res=this.inner().left()
+    Void unused1=(
+      lent This3.Composers.Libs.IteratorVal libi=this.inner().withoutLeft().vals()
+      (
+        Void unused4=loop (
+          Void unused5=libi.#next()
+          
+          catch exception Void catched2 (
+            Void unused6=(
+              Void unused7=libi.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            exception void
+            )
+          
+          res := This1.#from(seqBuilder:(
+            capsule This3.Composers.Libs b=This1.#seqBuilder()
+            Void unused8=b.#add(that:res)
+            Void unused9=b.#add(that:libi.#inner())
+            b
+            )).#leftrightleft(that:resolver)
+          )
+        
+        catch exception Void catched6 void
+        
+        void
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
   )}
 Patcher: {
 read method 
@@ -45451,6 +45560,60 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
+  )
+method 
+Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation (
+  Void unused=(
+    Void unused0=(
+      This3.Bool cond=this.inner().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return  {}
+        )
+      )
+    var Library res=this.inner().left()
+    Void unused1=(
+      lent This3.Composers.Libs.IteratorVal libi=this.inner().withoutLeft().vals()
+      (
+        Void unused4=loop (
+          Void unused5=libi.#next()
+          
+          catch exception Void catched2 (
+            Void unused6=(
+              Void unused7=libi.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            exception void
+            )
+          
+          res := This1.#from(seqBuilder:(
+            capsule This3.Composers.Libs b=This1.#seqBuilder()
+            Void unused8=b.#add(that:res)
+            Void unused9=b.#add(that:libi.#inner())
+            b
+            )).#leftrightleft(that:resolver)
+          )
+        
+        catch exception Void catched6 void
+        
+        void
+        )
+      )
+    Void unused2=return res
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
   )}
 Patcher: {
 read method 
@@ -45716,6 +45879,60 @@ Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This
       b1
       )).#apply(that:catched11)
     
+    void
+    )
+  
+  catch return Library result result
+  
+  error  {/*@stringU
+CurlyBlock-Should be unreachable code
+*/}
+  )
+method 
+Library foldLeft(Library resolver) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation (
+  Void unused=(
+    Void unused0=(
+      This2.Bool cond=this.inner().isEmpty()
+      (
+        Void unused3=cond.#checkTrue()
+        
+        catch exception Void catched0 void
+        
+        return  {}
+        )
+      )
+    var Library res=this.inner().left()
+    Void unused1=(
+      lent This2.Composers.Libs.IteratorVal libi=this.inner().withoutLeft().vals()
+      (
+        Void unused4=loop (
+          Void unused5=libi.#next()
+          
+          catch exception Void catched2 (
+            Void unused6=(
+              Void unused7=libi.#checkEnd()
+              
+              catch exception Void catched3 void
+              
+              void
+              )
+            exception void
+            )
+          
+          res := This1.#from(seqBuilder:(
+            capsule This2.Composers.Libs b=This1.#seqBuilder()
+            Void unused8=b.#add(that:res)
+            Void unused9=b.#add(that:libi.#inner())
+            b
+            )).#leftrightleft(that:resolver)
+          )
+        
+        catch exception Void catched6 void
+        
+        void
+        )
+      )
+    Void unused2=return res
     void
     )
   

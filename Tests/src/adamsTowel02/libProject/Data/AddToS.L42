@@ -1,91 +1,87 @@
 {
-Path of
 Selector mutK
+Path of
 class method class Path #default##apply(Void of)Path
 class method class Selector #default##apply(Void mutK)Selector
 Fail:Message.$<><{ implements This2.Fail}
 
-//no need to generate thoseN, S is just the string
-//else, generated ones:
+
 
 //initial delegation
-class method
-Library<><(Library that) {
-  m=Location.Lib(that).navigate(this.of()).method(selector:this.mutK())
-  return Use[that]<><this.toSTrait(m)
+method
+Library<><(Library that) exception Fail{
+  l=Location.Lib(that).navigate(this.of())
+  exception on Location.NotAvailable
+    Fail"Nested class "[this.of()]" not found"
+  ,,(mToS=l.method(selector:\"toS()")
+    catch exception Location.NotAvailable void
+    if !l.implements(classObj:Concept.ToS) (
+      error Fail"method toS not from Concept.ToS"
+      )
+    if !mToS.isAbstract() (return that)
+    )
+  m=l.method(selector:this.mutK())
+  exception on Location.NotAvailable
+    Fail"Selector "[this.mutK()]" not found"
+  //TODO: add checks mutK is actually a factory
+
+  fNs=m.selector().names()
+  fTs=m.parameterTypes().withoutLeft()
+  return Use[that]<><
+    Refactor2.rename(path:\"This" into:this.of())<><
+    This.toSTrait(fNs:fNs,fTs:fTs)
   error on Refactor2.Fail, Location.NotAvailable
     X"AddToS.<><"
   }
 
 
-class method
-Library (
-  Selector fSel
-  Location.Type ft
-  Location.Lib fLib
-  ) {
-
-}
-
 //code generation
 class method
-Library toSTrait(Location.Method that) {
-  //TODO: add checks is actually a factory?
-  fs=that
+Library toSTrait(Strings fNs, Location.Type.Parameter.List fTs)
+exception Fail{
   //accumulation
-  acc=Use[with fn in fs.selector().names().vals(), ft in fs.parameterTypes().vals() (
-    fSel=Selector.from(string:fn++S"()")
-    // with meth in that.methods().vals() (    if meth.selector()==that (...)      )//we may want to see if we need to add an #
-    needClass=ft.isInterface()
-    var Library action=Refactor.Tools.specializeField(selector:fSel, type:ft,
-      forReadable:{
-          if !needClass (return {
-            read method S baseToS() S""[This.FN()]":"[This1.valToS(this.f())]""
-            FN:{class method S()}
-            T:{}
-            read method read T f()
-            })
-          return{
-            read method S baseToS() S""[This.FN()]":"[This1.nodeNameAndValToS(this.f())]""
-            FN:{class method S()}
-            T:{}
-            read method read T f()
-            }
-          }
-      forClass:{
-        read method S baseToS() S""[This.FN()]": class "[Introspection(clazz:this.f()).externalTypeToS()]""
-        FN:{class method S ()}
-        T:{}
-        read method class T f()
-        }
-      )
-   action:=Use[action]<><Refactor.RenamePath(Path"This" to:Path"FN")<><Resource(fn)
-   action:=Refactor.MakePrivatePath(Path"FN")<><action
-   use[action]
-    )]
+  acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
+    use[
+      Refactor2.Method[hide:\"fN()"]<><
+      Use[Resource(fN,selector:\"fN()")]<><
+      This(fSel:Selector.from(string:fN++S"()"),fT:fT)
+      ])]
   lib=acc.foldLeft(resolver:{
       read method S #1baseToS()
       read method S #2baseToS()
-      read method S baseToS() S""[this.#1baseToS()]", "[this.#2baseToS()]""
+      read method S baseToS()
+        S""[this.#1baseToS()]", "[this.#2baseToS()]""
      })
-
+  error on Refactor2.Fail X"AddToS.accumulation"
   //final wrapping
   miniToS={ implements Concept.ToS
     method toS() S"["[this.baseToS()]"]"
     read method S baseToS() S""
     }
-  //lib can override baseToS to provid the real behaviour, the empty baseToS is used for classes wiht no fields
-  return Refactor.MakePrivateSelector(Selector"baseToS()" of:Path"This")<><Extends[miniToS]<><lib
-  error on MetaGuard X"AddToS.finalWrapping - MakePrivate"
+  //lib can override baseToS to provid the real behaviour,
+  //the empty baseToS is used for classes wiht no fields
+  return Refactor2.Method[hide:\"baseToS()"]<><Use.Override[miniToS]<><lib
+  error on Refactor2.Fail X"AddToS.finalWrapping - hide"
   }
+
+//auxiliary functions
+
+ class method
+ S className(class Any that){
+   with that (
+     on class Void return S"Void"
+     on class Library return S"Library"
+     on class Concept.Classable return that.readableName()
+     )
+   return GetMyName(that)
+   }
 
  class method
  S nodeName(read Any that){
    with that (
-     on read Concept.Classable
-       return Introspection(clazz:that.class()).externalTypeToS()
      on read Void return S"Void"
      on read Library return S"Library"
+     on read Concept.Classable return that.class().readableName()
      )
    return S"?"
   }
@@ -97,8 +93,8 @@ class method
        if ts.beginsWith(S"[") ( return ts)
        return S.doubleQuote()++ts++S.doubleQuote()
        )
-     on Void  return S.doubleQuote()++S"void"++S.doubleQuote()
-     on Library  return S.doubleQuote()++S"{..}"++S.doubleQuote()
+     on read Void  return S.doubleQuote()++S"void"++S.doubleQuote()
+     on read Library  return S.doubleQuote()++S"{..}"++S.doubleQuote()
      )
    return S"?"
   }
@@ -108,4 +104,47 @@ class method
    S ts=this.valToS(that)
    return nn++ts
    }
+
+class method Location.Lib lib(Location.Type.RefTo refTo)
+  exception Fail {
+  with refTo (
+    on Location.Type.RefTo.Lib
+      return refTo.referredLib()
+    on Location.Type.RefTo.Binded
+      return Location.Lib(classObj:refTo.referredClassObj())
+    )
+  exception Fail"field missing or unavailable: "[refTo]""
+  }
+
+class method
+Library ( Selector fSel,Location.Type fT) exception Fail {
+  isInterface=this.lib(refTo:fT.refTo()).isInterface()
+  if isInterface (
+    return ToSSpecializerInterface(selector:fSel,type:fT) 
+    )
+  return ToSSpecializer(selector:fSel,type:fT) 
+  }
+
+ToSSpecializer:FieldOpSpecializer(
+  forReadable:{
+    class method S fN()
+    read method S baseToS()
+      S""[This.fN()]":"[This1.valToS(this.f())]""}
+  forClass:{
+    class method S fN()
+    read method S baseToS()
+      S""[This.fN()]":"[This1.className(this.f())]""}
+  )
+
+ToSSpecializerInterface:FieldOpSpecializer(
+  forReadable:{
+    class method S fN()
+    read method S baseToS()
+      S""[This.fN()]":"[This1.nodeNameAndValToS(this.f())]""}
+  forClass:{// can not do ToSSpecializer.forClass() since uses This1
+    class method S fN()
+    read method S baseToS()
+      S""[This.fN()]":"[This1.className(this.f())]""}
+  )
+
 }

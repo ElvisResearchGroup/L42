@@ -1,0 +1,66 @@
+{
+CanNotSpecializeOperation:Message.$<><{ implements This2.Fail}
+ReadSkeletonTrait:Resource<><{
+  T:{}
+  read method read T f()
+  }
+ClassSkeletonTrait:Resource<><{
+  T:{}
+  read method class T f()
+  }
+class method // maybe private
+Library readToImm(Library that)
+exception
+,,,,Refactor2.MethodClash
+,,,,Refactor2.ClassClash
+,,,,Refactor2.SubtleSubtypeViolation {
+  return Refactor2.Method[hide:\"f()"; rename:\"#0f()" into:\"f()"]<><
+    Use[that]<><{//Use.Over would do the opposite kind of hiding
+      T:{}
+      read method read T f() this.#0f()
+      read method T #0f()
+      }
+  error on Refactor2.PathUnfit, Refactor2.SelectorUnfit X""
+  }
+class method
+Library (Library forReadable, Library forClass)
+exception
+,,,,Refactor2.MethodClash
+,,,,Refactor2.ClassClash
+,,,,Refactor2.SubtleSubtypeViolation
+  Use[
+    Resource(Use[ReadSkeletonTrait()]<><forReadable,
+      selector:\"forReadable()");
+    Resource(Use[ReadSkeletonTrait()]<><This.readToImm(forReadable),
+      selector:\"forImmutable()");
+    Resource(Use[ClassSkeletonTrait()]<><forClass,
+      selector:\"forClass()");
+    ]<><This.specializerTrait()
+
+class method Library specializerTrait(){
+  class method Library forReadable()
+  class method Library forImmutable()
+  class method Library forClass()
+  class method
+  Library (Selector selector,Location.Type type)
+  exception CanNotSpecializeOperation {
+    mdf=type.mdf()
+    r=type.refTo()
+    if mdf.isCmpClass() (
+      return this.specialize(This.forClass(),selector:selector,refTo:r)
+      )
+    if mdf.isCmpImm() (
+      return this.specialize(This.forImmutable(),selector:selector,refTo:r)
+      )
+    return this.specialize(This.forReadable(),selector:selector,refTo:r)
+    }
+   class method // maybe private
+   Library specialize(
+   ,,,,Library that, Selector selector, Location.Type.RefTo refTo)
+   exception CanNotSpecializeOperation {
+    return Refactor2.redirect(path:\"T"  intoRefTo:refTo)<><
+      Refactor2.Method[rename:\"f()" into:selector]<><that
+    exception on Refactor2.Fail CanNotSpecializeOperation"Unfit operation"
+    }
+  }
+}

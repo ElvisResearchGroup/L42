@@ -194,6 +194,13 @@ import coreVisitors.InjectionOnSugar;
     Position pos;
     Position wherePathWasWritten;
     }
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ThisnRequiredToType extends TypeError implements PosImprove{
+  int n;
+  ClassB cb;
+  Position pos;
+  Position wherePathWasWritten;
+  }
+
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class PathNonStar extends TypeError {
     Path path;
     HashMap<String, Ast.Type> varEnv;

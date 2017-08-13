@@ -5,7 +5,6 @@ Person:Data<><{ implements Concept.ToS
   S name, var Size age
   read method Bool #invariant()
     this.name()!=S"" & this.age()>= 0Size
-  method toS() S"hi"
   read method This1.Bool equals(read This that)Bool.false()
   }
 
@@ -13,8 +12,12 @@ Person:Data<><{ implements Concept.ToS
 Main:{
   Person p1=Person(name:S"Bob",age:10Size)
   Debug(p1==p1)
-  Debug(p1)
-  Debug(p1.with(age:20Size))
+  Debug.test(p1 expected:S"
+  '[name:"Bob", age:"10"]
+  ".withoutRight())
+  Debug.test(p1.with(age:20Size) expected:S"
+  '[name:"Bob", age:"20"]
+  ".withoutRight())
 
   (
     unused=Person(name:S"", age:2Size)

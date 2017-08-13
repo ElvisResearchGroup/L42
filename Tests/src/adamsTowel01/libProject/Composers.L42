@@ -62,6 +62,19 @@ class method Library composerTrait(){
       ,,,,Refactor2.PathUnfit, Refactor2.SelectorUnfit,Refactor2.ClassUnfit
         X"Composers action method produced invalid maps"
       }
+    method
+    Library foldLeft(Library resolver)
+    exception
+    ,,,,Refactor2.MethodClash,
+    ,,,,Refactor2.ClassClash,
+    ,,,,Refactor2.SubtleSubtypeViolation {
+      if this.inner().isEmpty() (return {})
+      var Library res=this.inner().left()
+      with libi in this.inner().withoutLeft().vals() (
+        res:=This1[res;libi]<><resolver
+        )
+      return res
+      }
     }
 
   //fields
@@ -91,6 +104,7 @@ class method Library composerTrait(){
   mut Refactor2.Method open(Size that)
     this.openMaps().#val(that)
  
+
 //------------------------------
 //Patch variation---------------
 //------------------------------

@@ -188,7 +188,8 @@ private void fillRenamesCoherent(CsMxMx r, Program p, List<CsMxMx> renamesLoc) t
   if(alreadyClosed && this.ignoreUnfit){return;}
   if(alreadyClosed){throw new RefactorErrors.ClassUnfit().msg("Class is already closed");}
   boolean coherent=newTypeSystem.TsLibrary.coherent(p,false);
-  if(!coherent){throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be closed");}
+  if(!coherent){
+    throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be closed");}
   long prN=L42.freshPrivate();
   for(MethodSelector msi :sel){
     renamesLoc.add(new CsMxMx(r.getCs(),false,msi,msi.withUniqueNum(prN)));
