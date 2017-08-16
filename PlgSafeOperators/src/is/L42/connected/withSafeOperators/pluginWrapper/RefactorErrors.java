@@ -158,7 +158,8 @@ public class RefactorErrors{
   ClassClash extends MutMsgExc implements
     FluentSetter<ClassClash>{
     Lib left; Lib right;
-    public ClassClash(Lib left,Lib right){this.left=left;this.right=right;}
+    public ClassClash(Lib left,Lib right){
+      this.left=left;this.right=right;}
     public Lib left(){return left;}
     public Lib right(){return right;}
     }

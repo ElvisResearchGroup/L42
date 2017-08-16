@@ -29,12 +29,12 @@ X[
 
   Debug(S"Email parsing complete")
 
-  // Try to exercise the catch on ClassClash
+  // Try to exercise Alphanumeric.Fail
 
-  var X.AssertionFail bb={
+  var Alphanumeric.Fail bb={
     lib=Alphanumeric <>< {interface}
-    catch error X.AssertionFail b (return b)
-    error S"unable to exercise ClassClash in Alphanumeric"
+    catch exception Alphanumeric.Fail b (return b)
+    error S"unable to exercise Alphanumeric.Fail"
   }
   var Message.Opt e = bb.responseOf()
 
@@ -45,9 +45,9 @@ X[
 ]
 
   // Try to exercise the catch on MethodClash
-  var X.AssertionFail bb1= {
+  var Alphanumeric.Fail bb1= {
     lib=Alphanumeric <>< {class method Void #builder()}
-    catch error X.AssertionFail b (return b)
+    catch exception Alphanumeric.Fail b (return b)
     error S"unable to exercise MethodClash in Alphanumeric"
   }
   e := bb1.responseOf()
