@@ -1,6 +1,7 @@
 package newTypeSystem;
 
 import ast.ExpCore.MCall;
+import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Functions;
 import tools.Assertions;
 import tools.Map;
@@ -40,11 +41,13 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     assert _rec!=null;
     Path rec=_rec.getPath();
     if(rec.isPrimitive()){
-      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP());
+      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP(),Collections.emptyList());
       }
     MethodType mDec=AlternativeMethodTypes._mtDeclared(in.p,rec,s.getS());
     if (mDec==null){
-      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP());
+      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP(),
+        tools.Map.of(m->((MethodWithType)m).getMs(),in.p.extractClassB(rec).mwts())
+        );
       }
     Type ret=mDec.getReturnType();
     ErrorKind kind = TypeSystem.subtype(in.p, ret.getPath(),in.expected.getPath());

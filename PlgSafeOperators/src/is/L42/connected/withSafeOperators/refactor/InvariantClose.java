@@ -60,7 +60,7 @@ public static ClassB close(Program p,List<Ast.C>path,ClassB top,String mutK,Stri
   Ks ks=new Ks(lPath,mutK,immK);
   List<CsMxMx> sel=new ArrayList<>();
   Set<MethodSelector>state=new HashSet<>();
-  collectStateMethodsAndExposers(path, pPath, lPath, ks.candidateK,sel, state);
+  collectStateMethodsAndExposers(path, pPath, lPath, ks.candidateK,ks.fwdK.getMs().getUniqueNum(),sel, state);
   ClassB newTop=(ClassB)top.accept(new WrapAux(p,sel,top));
   lPath=delegateState(ks,state,newTop,path);
   //return newTop with newLPath
@@ -71,7 +71,7 @@ public static ClassB close(Program p,List<Ast.C>path,ClassB top,String mutK,Stri
 
 private static void collectStateMethodsAndExposers(
     List<Ast.C> path, Program pPath, ClassB lPath,
-    MethodWithType k,
+    MethodWithType k,long uniqueNum,
     List<CsMxMx> sel, Set<MethodSelector> state
     ) throws ClassUnfit {
   for(MethodWithType mwti:lPath.mwts()){
@@ -82,7 +82,7 @@ private static void collectStateMethodsAndExposers(
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
     if(mdf==Mdf.Readable || mdf==Mdf.Immutable){continue;}
     if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}    
-    sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(k.getMs().getUniqueNum())));
+    sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(uniqueNum)));
     }
 }
 
@@ -104,7 +104,7 @@ private static class Ks{
     List<Ast.Type>immT=tools.Map.of(t->t.withMdf(Mdf.Immutable),fwdK.getMt().getTs());
     fwdK=fwdK.withMt(candidateMt.withTs(fwdT));
     mutK=mutK.withMt(candidateMt.withTs(mutT));
-    immK=immK.withMt(candidateMt.withTs(immT));
+    immK=immK.withMt(candidateMt.withTs(immT).withReturnType(candidateMt.getReturnType().withMdf(Mdf.Immutable)));
     }
   }
 private static ClassB delegateState(Ks ks,
@@ -134,8 +134,9 @@ private static ClassB delegateState(Ks ks,
       continue;
       }
     //last case is exposer, and Exposer: should be already fixed:
-      //rename .exposer() ->freshExposer()
-      //  rename decl exposer() ->decl freshExposer()  
+    //newMwts.add(mwt.withMs(uniqueMs));
+    //rename .exposer() ->freshExposer()
+    //  rename decl exposer() ->decl freshExposer()  
     }
   //delegate mutK,immK to candidtateK
   delegator(true,newMwts,ks.mutK,ks.fwdK);
@@ -156,7 +157,12 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
   if(!callInvariant){original=original.withInner(delegateMCall);}
   else{
     ExpCore.Block e=InvariantClose.eThis;
-    if(original.getMt().getMdf()==Mdf.Class){e=InvariantClose.eR;}
+    if(original.getMt().getMdf()==Mdf.Class){
+      if(original.getMt().getReturnType().getMdf()==Mdf.Immutable){
+        e=InvariantClose.eRImm;
+        }
+      else {e=InvariantClose.eR;}
+      }
     ExpCore.Block b=e.withDeci(0,e.getDecs().get(0).withInner(delegateMCall));
     original=original.withInner(b);
     }
@@ -179,7 +185,10 @@ static ExpCore.Block eThis=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer
 static ExpCore.Block eR=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
   "{method m() (r=void r.#invariant() r)}"
   ).getMs().get(0).getInner();
-}
+static ExpCore.Block eRImm=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+  "{method m() (This r=void r.#invariant() r)}"
+  ).getMs().get(0).getInner();
+      }
 class WrapAux extends RenameMethodsAux{
   int count=0;
   static X thisX=new X(Position.noInfo,"this");
@@ -197,7 +206,6 @@ class WrapAux extends RenameMethodsAux{
         "Exposer '"+s.getS()+"' called on non 'this' receiver in "+s.getP())
       );}
     count+=1;
-    assert s.getS().equals(ms2);
     return super.visit(s);
     }
   @Override public 
@@ -205,19 +213,19 @@ class WrapAux extends RenameMethodsAux{
     count=0;
     ClassB.MethodWithType res=super.visit(mwt);
     if(count==0){return res;}
-    if(mwt.getMt().getMdf()==Mdf.Capsule){
+    if(res.getMt().getMdf()==Mdf.Capsule){
       //ok to leave untouched the (stupid) ones with mdf==capsule
       //inded, if this used to call exposer, can not be used to open capsule
       return res;
       }
-    assert mwt.getMt().getMdf()==Mdf.Lent || mwt.getMt().getMdf()==Mdf.Mutable;
+    assert res.getMt().getMdf()==Mdf.Lent || res.getMt().getMdf()==Mdf.Mutable;
     //else, replace with the pattern
-    if(mwt.getMt().getReturnType().getMdf()==Mdf.Lent){
+    if(res.getMt().getReturnType().getMdf()==Mdf.Lent){
       LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
-        "Exposer called on lent returning method '"+mwt.getMs()+"' in "+mwt.getP())
+        "Exposer called on lent returning method '"+res.getMs()+"' in "+res.getP())
         );}
     ExpCore myE=InvariantClose.eThis.withDeci(0,InvariantClose.eThis.getDecs().get(0)
-      .withInner(mwt.getInner()));
+      .withInner(res.getInner()));
     return res.withInner(myE);
     }
 }

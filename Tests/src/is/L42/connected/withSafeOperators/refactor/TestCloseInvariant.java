@@ -51,8 +51,8 @@ public class TestCloseInvariant{
   + "class method mut This0 mutK(This0.A a) ( "
   + "r=this.k_$_2(a:a) r.#invariant() r) "
   + "class method mut This0 k_$_2(fwd This0.A a) "
-  + "class method mut This0 immK(This0.A a) ( "
-  + "r=this.k_$_2(a:a) r.#invariant() r) "
+  + "class method This0 immK(This0.A a) ( "
+  + "This0 r=this.k_$_2(a:a) r.#invariant() r) "
   + "A: {}} "
   ,false
   },{lineNumber(), 
@@ -66,8 +66,8 @@ public class TestCloseInvariant{
   + "class method mut This0 mutK(This0.A a) ( "
   + "r=this.k_$_2(a:a) r.#invariant() r) "
   + "class method mut This0 k_$_2(fwd This0.A a) "
-  + "class method mut This0 immK(This0.A a) ( "
-  + "r=this.k_$_2(a:a) r.#invariant() r) "
+  + "class method This0 immK(This0.A a) ( "
+  + "This0 r=this.k_$_2(a:a) r.#invariant() r) "
   + "A: {}} "
   ,false
   
@@ -76,18 +76,55 @@ public class TestCloseInvariant{
   + " mut method Void doStuff(A that)that(this.#a()) A:{}}","This",
   "{ read method read This0.A a() this.a_$_2()"
   + "read method read This0.A a_$_2() "
+  + "mut method lent This0.A #a_$_2() " 
   + "read method Void #invariant() void "
   + "mut method Void doStuff(This0.A that) ("
-  + "  r=that(this.#a()) this.#invariant() r ) "
+  + "  r=that(this.#a_$_2()) this.#invariant() r ) "
   + "class method mut This0 mutK(capsule This0.A a) ("
   + "  r=this.k_$_2(a:a) r.#invariant() r ) "
   + "class method mut This0 k_$_2(fwd mut This0.A a) "
-  + "class method mut This0 immK(This0.A a) ("
-  + "r=this.k_$_2(a:a) r.#invariant() r ) "
+  + "class method This0 immK(This0.A a) ("
+  + "This0 r=this.k_$_2(a:a) r.#invariant() r ) "
   + "A: {}} "
   ,false
 
-  
+  },{lineNumber(), 
+  "{capsule A a read method Void #invariant() void mut method Void mutA()( lent A a=this.#a() void) A:{}}","This",
+  "{"
+  + "read method  "
+  + "read This0.A a() this.a_$_2() "
++ "read method " 
++ "read This0.A a_$_2() " 
++ "mut method " 
++ "lent This0.A #a_$_2() " 
++ "read method " 
++ "Void #invariant() void "
++ "mut method " 
++ "Void mutA() ( "
++ "  r=( "
++ "    lent This0.A a=this.#a_$_2() "//untouched,#a non present
++ "    void "
++ "    ) "
++ "  Void unused=this.#invariant() "
++ "  r "
++ "  ) "
++ "class method " 
++ "mut This0 mutK(capsule This0.A a) ( "
++ "  r=this.k_$_2(a:a) "
++ "  Void unused=r.#invariant() "
++ "  r "
++ "  ) "
++ "class method  "
++ "mut This0 k_$_2(fwd mut This0.A a) " 
++ "class method " 
++ "This0 immK(This0.A a) ( "
++ "  This0 r=this.k_$_2(a:a) "
++ "  Void unused=r.#invariant() "
++ "  r "
++ "  ) "
++ "A: {}"
+  + "}"
+  ,false
   
   },{lineNumber(), "{B:{}}","C",
   "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",true

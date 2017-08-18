@@ -1,6 +1,7 @@
 package newTypeSystem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,13 +103,17 @@ public Type visit(MCall s) {
   assert path!=null;
   if (!path.isCore()){
     if(!forceError){return null;}
-    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP());
+    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP(),
+      Collections.emptyList()
+      );
     } 
   ClassB l=p.extractClassB(path);
   MethodWithType meth = (MethodWithType)l._getMember(s.getS());
   if(meth==null){
     if(!forceError){return null;}
-    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP());
+    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP(),
+      tools.Map.of(m->((MethodWithType)m).getMs(),l.mwts())
+      );
     }
   return (Type) From.fromT(meth.getMt().getReturnType(),path);
   

@@ -354,6 +354,7 @@ import coreVisitors.InjectionOnSugar;
     MethodSelector ms;
     ExpCore.MCall call;
     Position pos;
+    List<MethodSelector>availables;
   }
 
   //not used right now, may be is not useful
