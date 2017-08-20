@@ -19,8 +19,6 @@ import ast.Ast.Path;
 import sugarVisitors.Desugar;
 import tools.Assertions;
 import tools.StringBuilders;
-//import ast.Ast.Doc;
-//import ast.Ast.MethodSelector;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.Value;

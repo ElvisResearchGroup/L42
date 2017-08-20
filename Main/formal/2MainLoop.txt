@@ -119,7 +119,7 @@ _______
 -collect(p,empty)=empty  
   //an implementation could keep a list of visited P instead of diverging; mathematically it is the same.
 
--collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is,crucially: depth first but we avoid duplicates by keeping the rightmost occurence.  
+-collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={interface implements Ps0 _}//TODO: add check for "interface" in code
   Ps'=collect(p,Ps0[from P0])
   where "\p" is set minus on lists using p.equiv(P1,P2) //TODO: update code, this should fix concern in TODO "just hacked away"
@@ -130,7 +130,7 @@ _______
   p(P0)={interface? implements Ps Ms Phase}
   if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO: do it in the code
   P1..Pn=collect(p,Ps[from P0])
-  //TODO: in code move the check for "error unless forall i in 1..n, p(Pi) is an interface" into the pattern match on p(P0) above
+  //TODO: in code move the check for "error unless forall i in 1..n, p(Pi) is an interface" into the pattern match on p(P0) in collect() above(look former TODO)
   ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code; may be is solved by change in collect "\p"
     such that p(Pj)(ms)=mh e? //no refine
@@ -169,7 +169,7 @@ _______
   if p.top().phase!=None
   otherwise
 -norm(p)={interface? implements Ps' norm(p,Ms') Norm}
- p.top()={interface? implements Ps Ms}
+ p.top()={interface? implements Ps Ms None}
  Ps'=collect(p,Ps) //Marco does not likes that Ps get reordered also if they are all present, but is hard to predict what will happen if not reorder only in that fragile circustance
  Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
  //TODO: former line now have well defined order (for the 2nd and 3rd part). Fix the order in the code 
@@ -201,7 +201,7 @@ _______
 -----------------------------------------------------------
 Part 5: reachability
 -----------------------------------------------------------
-Different Ps in the eC in (top), and the parts of the          // TODO(old line): Understanding the treatments of Ps in eC.
+Different Ps in the eC in (top), and the parts of the
 p from (top) that they purport to refer to, are treated
 differently.
 
@@ -210,12 +210,12 @@ Consider this part of a project:
   eC= A.foo(B,{implements C,G method D m() F.foo() G:{interface}})
   D:{}
   
-In the current design we divide A,B,C,D,E,F into 3 1/2 categories:
+In the current design we divide A,B,C,D,E,F,G into 3 1/2 categories:
   coherent: A 
   typed:    B,C,E
   alive:    D,F      (while normalising the coherent and typed paths)
   alive:    G        (while normalising the libraries in eC)
-                                                                           // TODO(old line): Note that G is not in any of the cases, since we are classifying external bindings.
+Note that G is not visible from outside eC.
 Note that E is typed since C is typed; C is typed since C is outside eC and implemented.
 This design allows that using introspection on a Library value,
 if you succeeded navigating out, everything reachable is typed.
@@ -238,7 +238,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 
 -tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed)
   paths0=reorganize({P|P inside eC}) U (stronglyDeepImplements(L1)U..U stronglyDeepImplements(Ln)).pop()
-  L1..Ln={L| L inside eC}//in path not prime// not repeat check stage  
+  L1..Ln={L| L inside eC}//in path not prime// not repeat check stage //Marco and James are confused by those comments 
 
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
@@ -318,6 +318,6 @@ Css;Cs1'..Csk' ||-p ~> p'[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also
 _______
 #define toAny(paths', eC)//TODO: update in code, now it takes coherent paths' instead of typed paths and has inverted behaviour
 - toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs inside eC, Cs in Cssi
-  otherwise toAny(Css1..Cssn, ctxC[Thisi.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
-  where forall i in 1..n, Cs notin Cssi
+  otherwise toAny(Css1..Cssn, ctxC[Thisj.Cs])=toAny(Css1..Cssn,ctxC[Any]) 
+  where Cs notin Cssj
  

@@ -72,35 +72,37 @@ Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty only if kind=interface
 body::=ex | setter|getter|new|newWithFwd|newFwd |nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector<CN> | nativeOpt<T>| ...
-miniE::=x|void|CN|null| throw[TX1,TX2] x |loop ex //TODO: may be miniE can be removed  and merged with ex
+ex::= (dxs kxs ex [TX]) | x|void|CN|null| throw[TX1,TX2] x |loop ex
   |CN.mxs(ys)| use CN check mxs(ys) ex
   |if x then ex1 else ex2 |breakLoop | x1:=x2 |(mdf CN)x
-ex::=miniE | (dxs kxs ex [TX])
 kx::=catch throw TX x ex
 dx::=TX x=ex
-TX::=mdf CN
+TX::=mdf CN//TODO: try to understand if we can leave mdf only in certain points
 
 ----
 note: method calling/method dispatch in L42F:
 methods with refine or with no body are dynamically dispatched 
-and must have a 'this' parameter (other still can have a 'this' parameter)
+and must have a 'this' parameter
 others are statically dispatched.
+others still can have a 'this' parameter
+
 CN is just an instance of class/interface CN.
 Some native bodies would fail if the 'this' parameter is the CN instance.
 The translation L42N to L42F will work in the following way:
--class methods declared in classes behave like static method with no 'this'
--non class methods declared in classes behave line static method with first 'this' parameter
--class methods declared in interfaces, with dynamic dispatch
+-42 class methods declared in classes behave like static methods with no 'this'
+-42 non class methods declared in classes behave line static method with first 'this' parameter
+-42 class methods declared in interfaces, with dynamic dispatch
   behave like python class methods with first 'this class' parameter
--non class methods declared in interfaces, with dynamic dispatch
+-42 non class methods declared in interfaces, with dynamic dispatch
   behave like java method with first 'this' parameter
 
 In addition, L42F can support implemented interface methods with no 'this' parameter (we use them for some predefined behavior)
-  they behave java interface static methods
+  they behave java interface static methods (no equivalent in 42)
 
 We assume the presence of some Prefefined classes/methods in L42F:
   Void, Any and Library, all offering only 
   method CN NewFwd() newFwd //also Any have it!//yes, statically binded
+//uppercase names to avoid conflicts
 
 We also assume a class
 nativeResource Resource{
@@ -113,21 +115,39 @@ nativeResource Resource{
   //every newFwd edits a list inside of Fwds to remember where they are stored.
   }
 
-Native classes and operations:
-one option would be to use plugin annotations,
-for example
-{nativeInt
-method This +(This that)nativeIntSum
+---------------
+some classes can be implemented in 42, but it would be
+inefficient and boring.
+let be lInt32 an implementation for int 32 bits.
+It uses implmentations for strings and bools, and can have creative names
+for its methods. More methods could be defined there.
+We can represent this family of int representations as 
+{native(Int32,1,This,Bool,S)
+method This +(This that) this.sum_$_1(that)
 }
-could originate from
-{//@plugin nativeInt
- // @This @S @Bool
-method This +(This that)
-  use This 
-  check nativeIntSum(_this:this,that:that)
-  error void
-}
+Syntactically writing 'native(Int32,1,This,Bool,S)'
+is a shortcut for a longer code that we do not actualy need to ever write.
+similar to reuse, but is parametric and not desugared
+is just a representation optimization.
+Can a native lib have implements? nope?
 
+
+It is not so easy for a case with 2 Concepts.Equal
+and native java HashSets.
+how should I implement java equals?
+the one of the 2 that is implemented? what if both?
+I may have to use http://trove.starlight-systems.com/
+or
+http://commons.apache.org/proper/commons-collections/javadocs/api-release/org/apache/commons/collections4/map/AbstractHashedMap.html#isEqualKey(java.lang.Object,%20java.lang.Object)
+In this case, in the generate code
+we can have 
+MyMap factory(){
+  return new HashedMap(){
+    isEqualKey(Object key1, Object key2){
+      return ((LocalEqualityClazz)key1).localEqMethod(key2);
+      }//etcetera
+    }
+}
 collection plg can be generic in the same way
 {//@plugin nativeVector
  // @Bar @Size @S @Bool
@@ -151,7 +171,7 @@ translate p.top() into a set of class declarations CD for L42F.
 libToCDs(p)=libToCDs(p,ncs),//return a list, continue in the next line
   class/interface? CN implements p*P1..p*Pn {
     method CN NewFwd() newFwd 
-    libToCD(p,mwts)
+    libToCD(interface?,p,mwts)
     }
   where p.top()={interface? implements P1..Pn mwts ncs Phase CN}
 
@@ -159,35 +179,43 @@ libToCDs(p,C:L)=libToCDs(p.navigate(C)) //assert p.navigate(C).top()==L
 
 //cases for various kinds of mwt
 
-//class method into static method  -- note: PG[e] fixes the calling points
-libToCD(p,class method T m(T1 x1..Tn xn)exception Ps e) =
-  method p*T mxs(p*T1 x1..p*Tn xn)  ex?[this=p.top().CN]
-  where ex= p;(mdf This0 this,T1 x1..Tn xn)[e]
+Note, in 42, a call on this or P is always statically
+dispatched; this never have an interface type.
 
-//class-interface methods or instance methods, the ones needing "this"
-otherwise //that is refine?=refine, mdf!=class or e?=empty
-libToCD(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e?) =
-  refine? method p*T mxs(mdf (p.top().CN) this,p*T1 x1..p*Tn xn)  ex?
-  where ex?= p;(mdf This0 this,T1 x1..Tn xn)[e?]
-  and if e?=empty, p.top() is interface
+Using header and body, cases for mwts 
+0//interface 
+libToCD(interface,p,mwt)=header(p,mwt)  
 
-//the other rules manage abstract state; that is:p.top() not interface and e?=empty
-//getter/setter
-libToCD(p,refine? mdf method T' m((T x)?)  )=
-  refine? method p*T' mxs(mdf (p.top().CN) this,p*(T x)?) body
-  where mdf not class and body =setter if (T x)? not empty, otherwise body=getter
+1//class method into static method
+libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt[with e=e[this=This])
+  where mwt.mt.mdf=class and mwt.e?!=empty
 
-//constructor with FWD
-libToCD(p,refine? class method T m(T1 x1..Tn xn)  )= //we could have  p.top().CN instead of T, but T should be good enough
-  refine? method method p*T mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) newFwd
-  method method p*T New_mxs(class (p.top().CN) this,p*(noFwd T1) x1..p*(noFwd Tn) xn) new
-  if exists T' in T1..Tn that is fwd, otherwise  
-//constructor with no FWD
-libToCD(p,refine? class method T m(T1 x1..Tn xn)  )=
-  refine? method method p*T mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) new //if refine? =empty, there may be no need to generate this one
-  method method p*T New_mxs(class (p.top().CN) this,p*T1 x1..p*Tn xn) new
+2//instance method
+libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt)
+  where mwt.mt.mdf!=class and mwt.e?!=empty
 
+3//get/set
+libToCD(empty,p,mwt)=header(p,mwt) body
+  where
+  mdf!=class
+  body =setter if mwt.ms.xs not empty, otherwise body=getter
 
+4//constructor with FWD, note, we return 2 methods
+libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be good enough
+  header(p,mwt) newFwd
+  header(p,noFwd(mwt))[with ms='New_'++mwt.ms] new
+//  if noFwd(mwt)!=mwt, otherwise  
+//  header(p,mwt) fwd
+//  header(p,mwt)[with ms='New_'++mwt.ms] new
+
+  header(p,refine? class method T mxs(T1 x1..Tn xn) e?)=
+    refine? method p*T mxs(p*T1 x1..p*Tn xn)
+  otherwise
+  header(p,refine? mdf method T mxs(T1 x1..Tn xn) e?)=
+    refine? method p*T mxs(mdf p*This, p*T1 x1..p*Tn xn)
+  body(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e)=p;(mdf This0 this,T1 x1..Tn xn)[e]
+
+    
 ################## PG[ e0]= e1 with e0 in L42N and e1 in L42F
 translate an expression. Needs a program and a gamma
 ---
@@ -198,15 +226,12 @@ PG::=p;(x:T)s //p;G
 p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
 PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
 
-PG*T=PG.p*T
+PG*T=PG.p*T  //myPG.translate(T) in code?
 PG*P=PG.p*P
 
 p*P=p(P).CN
 
-p*T =mdf p*P
-where
-  mdf P=resolve(p,T)
-
+p*(mdf P) =mdf p*P
 
 ###PG[e] definition
 ---
@@ -222,11 +247,21 @@ PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
 otherwise
 PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
 
+PG[x1:=x2]=x1:=x2
+otherwise
+PG[x1:=e]=PG[( T x=e x1:=x)]
+  where T=PG.g(x1)
+  
 //Translation method call
 //-normalizing es into xs
-In the following, whith e!=x //usare y per x receiver? 
-PG[e.m[P]( (x:e)s)]= PG[( P::m(xs)::this x=e x.m[P]((x:e)s))]//where xs is the list of xs of the method call
-PG[y0.m[P]( (x:y)s x:e (x:e)s)]= PG[( P::m(xs)::x y=e y0.m[P]( (x:y)s x:y (x:e)s))]//where xs is the list of xs of the method call
+In the following, whith e!=x //use y for x receiver? 
+and xs is the list of xs of the method call
+
+PG[e.m[P]( (x:e)s)]= PG[( mdf0 P x=e x.m[P]((x:e)s))]
+where mdf0=PG.p(P)(m(xs)).mh.mdf 
+
+PG[y0.m[P]( (x:y)s xi:e (x:e)s)]= PG[( Ti y=e y0.m[P]( (x:y)s xi:y (x:e)s))]
+where PG.p(P)(m(xs))= refine? mdf method T0 m(T1 x1..Tn xn)exceptions Ps e?
 
 //-3 cases for y.m((x:y)s)
 //--case 1: interface or non class method or some FWD-->trad normal
@@ -236,11 +271,13 @@ PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
 
 //--case 2:class method body  -->trad no this
 otherwise
-if PG.p(P)(m(x1..xn))=class method T m(T1 x1..Tn xn) e
+if PG.p(P)(m(x1..xn))=refine? class method T m(T1 x1..Tn xn) exception Ps e
+//that is, 'e' is present
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
 //--case 3:class method constr no Fwd  --> trad no this, New_
 otherwise //we have optimized new
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
+//TODO: should we use gamma instead of the method type to decide if no fwd?
 
 //block 
 PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
@@ -251,9 +288,11 @@ PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
     phGen(mdf1 CN1 x'1,xs)..phGen(mdfn CNn x'n,xs)
-    mdf1 CN1 x1=ex'1 imm Void z1=Resource.Fix(x1',x1)
+    mdf1 CN1 x1=ex'1, imm Void z1=Resource.Fix(x1',x1)
+                      if phGen(mdf1 CN1 x'1,xs)!=empty, else empty
     ..
-    mdfn CNn xn=ex'n imm Void zn=Resource.Fix(xn',xn)
+    mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
+                      if phGen(mdf1 CN1 x'n,xs)!=empty, else empty
     with exi'=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
   
   phGen(mdf CN x,xs)=empty if x not in xs
@@ -382,6 +421,7 @@ public class CN implements CNs{CT,CN[Mxs]
     }
   }
 
+//TODO: add the case with no this for refined class method
 //never happens with no this? CT[refine method T mxs((T x)s) e]
 CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
   public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) CT[e[_this=this]]
