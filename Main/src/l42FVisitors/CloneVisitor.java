@@ -5,6 +5,7 @@ import ast.L42F.Block;
 import ast.L42F.BreakLoop;
 import ast.L42F.Call;
 import ast.L42F.Cast;
+import ast.L42F.Cn;
 import ast.L42F.D;
 import ast.L42F.E;
 import ast.L42F.If;
@@ -110,5 +111,8 @@ public class CloneVisitor implements Visitor<L42F.E>{
   public E visit(Cast s) {
     return new Cast(liftT(s.getT()),liftX(s.getX()));
     }
-
-}
+  @Override
+  public E visit(Cn s) {
+    return new Cn(s.getInner());
+    }
+  }

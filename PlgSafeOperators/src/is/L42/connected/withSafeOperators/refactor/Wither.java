@@ -132,12 +132,12 @@ private static MethodWithType template(MethodWithType k,List<MethodWithType>gett
     k.getMt().getReturnType(),k.getMt().getExceptions()
     );
   MCall body=new MCall(new ExpCore.EPath(k.getP(),Path.outer(0)), k.getMs(), Doc.empty(),
-    tools.Map.of(Wither::invk,getters),k.getP());
+    tools.Map.of(Wither::invk,getters),k.getP(),Type.classThis0);
   MethodSelector ms=MethodSelector.of("with",Collections.emptyList());
   return new MethodWithType(Doc.empty(),ms,mt,Optional.of(body),k.getP());
   }
 private static MCall invk(MethodWithType g){
-  return new MCall(new ExpCore.X(g.getP(), "this"), g.getMs(),Doc.empty(),Collections.emptyList(),g.getP());
+  return new MCall(new ExpCore.X(g.getP(), "this"), g.getMs(),Doc.empty(),Collections.emptyList(),g.getP(),Type.immThis0.withMdf(g.getMt().getMdf()));
   }
 private static boolean fOk(Type ti, MethodWithType fi) {
   //(1)exists, (2) has read/imm receiver,(3) no exceptions

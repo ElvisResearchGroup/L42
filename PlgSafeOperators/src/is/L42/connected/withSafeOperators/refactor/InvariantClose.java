@@ -153,7 +153,7 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
   Position p=original.getP();
   ExpCore.MCall delegateMCall=new ExpCore.MCall(
           new ExpCore.X(p, "this"), delegate.getMs(),Doc.empty(),
-          tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),p);
+          tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),p,Type.readThis0);
   if(!callInvariant){original=original.withInner(delegateMCall);}
   else{
     ExpCore.Block e=InvariantClose.eThis;

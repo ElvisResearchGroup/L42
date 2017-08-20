@@ -25,12 +25,14 @@ import ast.ExpCore.ClassB.NestedClass;
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
   default String toS(){return sugarVisitors.ToFormattedText.of(this);}
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class MCall implements ExpCore,HasPos<MCall>, WithInner<MCall>{
+  @Value @EqualsAndHashCode(exclude = {"typeRec","p"}) @ToString(exclude = {"typeRec","p"})   @Wither 
+  public static class MCall implements ExpCore,HasPos<MCall>, WithInner<MCall>{
     ExpCore inner;
     MethodSelector s;
     Doc doc;
     List<ExpCore> es;
     Position p;
+    Type typeRec;
     public MCall withEsi(int i,ExpCore ei){
       List<ExpCore> es2=new ArrayList<>(es);
       es2.set(i,ei);

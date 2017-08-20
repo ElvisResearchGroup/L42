@@ -10,6 +10,7 @@ import ast.ExpCore;
 import ast.L42F;
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
+import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
@@ -26,6 +27,9 @@ import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import ast.L42F.Call;
+import ast.L42F.Cn;
+import ast.L42F.D;
 import ast.L42F.E;
 import ast.L42F.M;
 import ast.L42F.T;
@@ -105,11 +109,15 @@ public E visit(Signal s) {
 
 @Override
 public E visit(ClassB s) {
-//( class Any x=L.CN//yes, ok even if not compiled as for Collections.vector(of:P)
-//Resource.LoadLib( x ) )
-
-return null;
-}
+  T t=new T(Mdf.Class,Cn.cnAny.getInner());
+  String x=Functions.freshName("libX",L42.usedNames);
+  Cn lcn=new Cn(s.getUniqueId());
+  D d=new D(false, t, x, lcn);
+  MethodSelector ms=MethodSelector.parse("loadLib(that)");
+  Call call=new Call(Cn.cnResource.getInner(),ms,Collections.singletonList(x));
+  L42F.Block b=new L42F.Block(Collections.singletonList(d),Collections.emptyList(),call,T.immVoid);
+  return b;
+  }
 @Override
 public E visit(Loop s) {
   return new L42F.Loop(s.getInner().accept(this));
@@ -128,6 +136,17 @@ public E visit(UpdateVar s) {
 @Override
 public E visit(MCall s) {
 // TODO Auto-generated method stub
+//PG[e.m[P]( (x:e)s)]= PG[( mdf0 P x=e x.m[P]((x:e)s))]
+//where mdf0=PG.p(P)(m(xs)).mh.mdf 
+//type annotation for mcall?? Mdf mdf0=p.extractClassB(s.g)
+/*
+todo:
+-fix annotation in mcall.
+-check annotations in signal
+-Rely on annotation in Method[]??
+-go back here
+
+*/
 return null;
 }
 @Override

@@ -118,7 +118,7 @@ return new RefactorErrors.MethodClash(
     //this/outer0 . m2(this/outer0 .m1(ps1),ps2)
     List<ExpCore> ps1=new ArrayList<>();
     for(String x:mRes.getNames().subList(0,m1.getNames().size())){ps1.add(new ExpCore.X(pos,x));}
-    ExpCore eInner=new ExpCore.MCall(r1, m1,Doc.empty(), ps1, pos);
+    ExpCore eInner=new ExpCore.MCall(r1, m1,Doc.empty(), ps1, pos,Type.immThis0.withMdf(mt1.getMdf()));
 
     ArrayList<ExpCore> ps2=new ArrayList<>();
     for(int i=1;i<m2.getNames().size();i++){
@@ -126,7 +126,7 @@ return new RefactorErrors.MethodClash(
       ps2.add(new ExpCore.X(pos,x));
       }
     ps2.add(index,eInner);
-    ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 , pos);
+    ExpCore eU=new ExpCore.MCall(r2, m2, Doc.empty(),ps2 , pos,Type.immThis0.withMdf(mt2.getMdf()));
     return eU;
   }
   private static Mdf mdfU(Mdf mdf1, Mdf mdf2) {

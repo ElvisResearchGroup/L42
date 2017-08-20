@@ -67,7 +67,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     TOut _res0=type(in.withE(e0,TypeManipulation.mutOnlyToLent(t0)));
     if(!_res0.isOk()){return improveReceiverError(in,t0, _res0.toError());}
     TOk res0=_res0.toOk();
-    Mdf recMdf=_res0.toOk().computed.getMdf();
+    Mdf recMdf=res0.computed.getMdf();
     {int i=-1;for(  ExpCore ei:s.getEs()){i+=1;
       Type ti=mType.getTs().get(i);
       TOut _resi=type(in.withE(ei,TypeManipulation.mutOnlyToLent(ti)));
@@ -79,7 +79,8 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   MethodType computedMt=new MethodType(false,recMdf,computed,in.expected,Collections.emptyList());
   MethodType mTypeRev=AlternativeMethodTypes._bestMatchMtype(in.p,computedMt,mTypes);
   if (mTypeRev!=null){
-    MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP());
+    Type recT=res0.computed.withMdf(mTypeRev.getMdf());
+    MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP(),recT);
     TOk res=new TOk(in,resM,mTypeRev.getReturnType());
     // Trs[with r in resp (use[r.Tr])].collapse())
     res=res.trUnion(res0);
@@ -117,8 +118,9 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     newResp.add(outi.toOk());
     }}
 //return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
+  Type resT=newRes0.computed.withMdf(mTypeRev.getMdf());
   MCall resM=new MCall(newRes0.annotated,s.getS(),s.getDoc(),
-    Map.of(r->r.annotated,newResp),s.getP());
+    Map.of(r->r.annotated,newResp),s.getP(),resT);
   TOk res=new TOk(in,resM,mTypeMVP.getReturnType());
 // Trs[with r in resp (use[r.Tr])].collapse())
   res=res.trUnion(newRes0);

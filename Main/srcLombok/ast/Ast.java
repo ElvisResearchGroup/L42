@@ -129,10 +129,13 @@ public interface Ast {
   Doc doc;
   public static final Type mutThis0=new Type(Mdf.Mutable,Path.outer(0),Doc.empty());
   public static final Type immThis0=new Type(Mdf.Immutable,Path.outer(0),Doc.empty());
+  public static final Type readThis0=new Type(Mdf.Readable,Path.outer(0),Doc.empty());
+  public static final Type classThis0=new Type(Mdf.Class,Path.outer(0),Doc.empty());
   public static final Type immVoid=new Type(Mdf.Immutable,Path.Void(),Doc.empty());
   public static final Type immLibrary=new Type(Mdf.Immutable,Path.Library(),Doc.empty());
   public static final Type immAny=new Type(Mdf.Immutable,Path.Any(),Doc.empty());
   public static final Type classAny=new Type(Mdf.Class,Path.Any(),Doc.empty());
+  
   public String toString() {
    return (mdf.inner+" "+this.path.toString()).trim();
   }

@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import ast.Ast.Mdf;
 import lombok.Value;
 import lombok.experimental.Wither;
 import l42FVisitors.Visitor;
@@ -47,7 +48,12 @@ X implements E{String inner;
 
 @Value @Wither public static class
 Cn implements E{int inner;
-  @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
+  @Override public <T> T accept(Visitor<T> v){return v.visit(this);}
+  public static final Cn cnAny=new Cn(0);
+  public static final Cn cnVoid=new Cn(1);
+  public static final Cn cnLibrary=new Cn(2);
+  public static final Cn cnResource=new Cn(3);  
+  }
 
 @Value @Wither public static class
 _void implements E{
@@ -99,5 +105,10 @@ K {Ast.SignalKind kind; T t; String x; E e;}
 @Value @Wither public static class
 D {boolean var; T t; String x; E e;}
 @Value @Wither public static class
-T {Ast.Mdf mdf; int cn;}
+T {Ast.Mdf mdf; int cn;
+  public static final T immAny=new T(Mdf.Immutable,Cn.cnAny.inner);
+  public static final T immVoid=new T(Mdf.Immutable,Cn.cnVoid.inner);
+  public static final T immLibrary=new T(Mdf.Immutable,Cn.cnLibrary.inner);
+  public static final T classAny=new T(Mdf.Class,Cn.cnAny.inner);
+  }
 }
