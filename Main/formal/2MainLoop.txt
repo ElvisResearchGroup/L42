@@ -10,7 +10,7 @@ that proceeds through the following phases:
 7 execute eC until you get an LC, and replace eC with LC in the program
 8 jump back to 2. 
 
-The rules exposed here cover 2-8, and depend on other notations defined in files up to here,
+The rules presented here cover 2-8, and depend on other notations defined in files up to here,
 and on reduction (in progress) and typing defined in further files.
 Paths (introduced later in the file) represent organized/restricted collections of P.
 
@@ -20,7 +20,7 @@ Part 1: 42 top level reduction rules
 ### reduction rules
 ReductionTop:
 precondition: at top level we have an L not of form LC.
-Rule top performs a step of execution, while rule enter
+Rule (top) performs a step of execution, while rule (enter)
 propagates the execution inside nested classes and method bodies.
 
 
@@ -56,7 +56,7 @@ p ==> p'.pop()
 
 
 -----------------------------------------------------------
-Part 2: paths //James suggest name "stset" for Paths
+Part 2: paths //James suggest name "stset,subtrees,pathtrees" for Paths
 -----------------------------------------------------------
 "paths" is a datastructure to store P1..Pn in a organized way:
 The idea is to store them as a stack, where the first level
@@ -73,7 +73,7 @@ We construct paths from P1..Pn as follow:
  -reorganize(empty)=empty
  -reorganize(Ps)=Css0',...,Cssn'
   Cs in Cssi iff Thisi.Cs in Ps //this filters out Any, Void, and Library since they have no Thisi
-  Cssn!=empty
+  Cssn!=empty //this guarantees paths is not larger then is needed by the set of Ps
   Cssi'=minimize(Cssi)
 
 Simple operations:
@@ -94,14 +94,14 @@ The prefix operation adds Cs in front of all the P in paths.
 It is unobvious since we need to consider the n in Thisn.
 for example: reorganize(This0.A,This1.B,This2.C,This3.D)=((A)  (B)  (C)  (D));
 ((A)  (B)  (C)  (D)).prefix(W.E) = ((W.E.A  W.B  C) (D)),
-representing paths This0.W.E.A  This0.W.B  This0.C This1.D
+representing Ps This0.W.E.A  This0.W.B  This0.C This1.D
 //Note: prexifx() and [from _] are related: reorganize(Ps[from This0.Cs])=reorganize(Ps).prefix(Cs)
 
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
  -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
  -(Css paths).prefix(Cs.C)= Css.prefix(Cs.C) U paths.prefix(Cs)
-//the formalization relies on Cs1..Csn being a set.  
+//the formalization relies on Cs1..Csn being a set, so duplicates are removed.  
 //TODO: in code remove duplicates from the list
 
 -----------------------------------------------------------
@@ -118,12 +118,12 @@ _______
 #define collect(p,Ps)=Ps' //collects transitively implemented interfaces
 -collect(p,empty)=empty  
   //an implementation could keep a list of visited P instead of diverging; mathematically it is the same.
-  //The list-keeping implementation would have to shuffle the list a lot.    TODO(old line): <blank>
+
 -collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is,crucially: depth first but we avoid duplicates by keeping the rightmost occurence.  
   p(P0)={interface implements Ps0 _}//TODO: add check for "interface" in code
   Ps'=collect(p,Ps0[from P0])
   where "\p" is set minus on lists using p.equiv(P1,P2) //TODO: update code, this should fix concern in TODO "just hacked away"
-  //this checks absence of circularity by looping
+  //this checks absence of circularity by diverging (i.e. looping until stack overflow)
 
 _______
 #define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
