@@ -14,6 +14,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
+import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB;
@@ -39,6 +40,7 @@ import coreVisitors.Visitor;
 import facade.L42;
 import newTypeSystem.GuessTypeCore;
 import newTypeSystem.GuessTypeCore.G;
+import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 import tools.Assertions;
 
@@ -48,12 +50,12 @@ class PG implements Visitor<E>{
   PG(Program p,G gamma){this.p=p;this.gamma=gamma;}
   public static M header(Program p,MethodWithType mwt){
     MethodType mt=mwt.getMt();
-    
+
     List<TX>ts=new ArrayList<>();
     if(mt.getMdf()!=Mdf.Class){
       T t = new T(mt.getMdf(),PG.liftP(p,Path.outer(0)));
       ts.add(new TX(t,"this"));
-      } 
+      }
     {int i=-1;for(String n : mwt.getMs().getNames()){i+=1;
       Ast.Type t=mt.getTs().get(i);
       ts.add(new TX(PG.liftT(p,t),n));
@@ -62,11 +64,11 @@ class PG implements Visitor<E>{
   }
 
   public static E body(Program p, MethodWithType mwt) {
-  PG pg=new PG(p,G.of(GuessTypeCore.mapForMwt(mwt))); 
+  PG pg=new PG(p,G.of(GuessTypeCore.mapForMwt(mwt)));
   E res=mwt.getInner().accept(pg);
   return res;
   }
-  
+
   public static int liftP(Program p,Ast.Path path){
     ClassB cb=p.extractClassB(path);
     return cb.getUniqueId();
@@ -136,19 +138,47 @@ public E visit(UpdateVar s) {
 @Override
 public E visit(MCall s) {
 // TODO Auto-generated method stub
-//PG[e.m[P]( (x:e)s)]= PG[( mdf0 P x=e x.m[P]((x:e)s))]
-//where mdf0=PG.p(P)(m(xs)).mh.mdf 
-//type annotation for mcall?? Mdf mdf0=p.extractClassB(s.g)
-/*
-todo:
--fix annotation in mcall.
--check annotations in signal
--Rely on annotation in Method[]??
--go back here
-
-*/
-return null;
+if(!(s.getInner() instanceof X)) {return visitReceiver(s);}
+int i=0;
+for(ExpCore ei:s.getEs()) {
+  if (ei instanceof X) {i+=1;}
+  else{break;}
 }
+//i is the first non X
+if(i!=s.getEs().size()) {return visitParameter(i, s);}
+return visitBase(s);
+}
+private E visitBase(MCall s) {
+ClassB cb=p.extractClassB(s.getTypeRec().getPath());
+MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
+boolean isInterface=cb.isInterface();
+boolean isClass=mwt.getMt().getMdf()==Mdf.Class;
+boolean isAbs=!mwt.get_inner().isPresent();
+List<String> ps=new ArrayList<>();
+MethodSelector ms=mwt.getMs();
+if(isInterface || !isClass) {
+  ps.add(((X)s.getInner()).getInner());
+  }
+assert isClass;
+if(isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
+  ms=msOptimizedNew(ms);
+  }
+for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
+return new Call(cb.getUniqueId(),ms,ps);
+}
+private E visitReceiver(MCall s) {
+  String x = Functions.freshName("receiverX",L42.usedNames);
+  MCall sx = s.withInner(new X(Position.noInfo,x));
+  return blockX(s.getTypeRec(),x, s.getInner(),sx).accept(this);
+  }
+private E visitParameter(int i,MCall s) {
+  String x = Functions.freshName("parX",L42.usedNames);
+  MCall sx = s.withEsi(i,new X(Position.noInfo,x));
+  ClassB cb=p.extractClassB(s.getTypeRec().getPath());
+  MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
+  Type ti=mwt.getMt().getTs().get(i);
+  return blockX(ti,x, s.getEs().get(i),sx).accept(this);
+  }
 @Override
 public E visit(Using s) {
 // TODO Auto-generated method stub
@@ -158,6 +188,9 @@ return null;
 public E visit(Block s) {
 // TODO Auto-generated method stub
 return null;
+}
+static MethodSelector msOptimizedNew(MethodSelector ms) {
+  return ms.withName("New_"+ms.getName());
 }
 
 }

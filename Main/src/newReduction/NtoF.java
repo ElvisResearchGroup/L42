@@ -74,7 +74,7 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
   if(!isClass){return Stream.of(h.withBody(b));}
   //case 4
   MethodWithType mwtNoF=mwt.withMt(mt.withTs(TypeManipulation.noFwd(mt.getTs())));
-  mwtNoF=mwtNoF.withMs(ms.withName("New_"+ms.getName()));
+  mwtNoF=mwtNoF.withMs(PG.msOptimizedNew(ms));
   M k1=h.withBody(L42F.SimpleBody.NewFwd);
   M k2=PG.header(p,mwtNoF).withBody(L42F.SimpleBody.New);
   return Stream.of(k1,k2);

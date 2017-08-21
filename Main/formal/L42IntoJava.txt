@@ -5,7 +5,7 @@ Structure of this document:
 
 1 Grammar
 
-2 L42N into L42F 
+2 L42N into L42F
 
 3 L42F into Java
 
@@ -18,7 +18,7 @@ Structure of this document:
 -----------------------------
 
 Challenges:
-Generated Java should be 
+Generated Java should be
 -incremental
 -fast to compile
 -fast to execute//the less important now
@@ -32,10 +32,10 @@ key ideas:
   -current program // current program do not appear in map, current.top() always not LC
   -map from generate names to program view in that point//programs in map,p.top() always LC
    (no need to be the most updated program view?)
- Thus, multiple independent 42 executions can run in parallel, but 
+ Thus, multiple independent 42 executions can run in parallel, but
  multiple C:e in an execution needs to be sequential.
- 
- 
+
+
 Starting point:
   L42N: L42 core, compiled, well typed and normalized, with some types annotated.
 
@@ -44,7 +44,7 @@ Intermediate; only for expressions in meth bodies:
 
 Destinaton1:
   L42F: a flattened version where every *executable*
-  class/interface have a top level name 
+  class/interface have a top level name
   this language also contains null, if, bool and so on..
    -design a process to optimize L42F using those features.
     Should be so that
@@ -65,7 +65,7 @@ throw::= exception | error | return
 k::=catch throw T x e
 d::= T x=e
 
-L42F 
+L42F
 CT::= CN->p,CD,Javabytecode
 CD::=kind CN implements CNs{ Mxs }
 Mx::=refine? method T mxs((T x)s) body?//first is this
@@ -81,7 +81,7 @@ TX::=mdf CN//TODO: try to understand if we can leave mdf only in certain points
 
 ----
 note: method calling/method dispatch in L42F:
-methods with refine or with no body are dynamically dispatched 
+methods with refine or with no body are dynamically dispatched
 and must have a 'this' parameter
 others are statically dispatched.
 others still can have a 'this' parameter
@@ -100,16 +100,16 @@ In addition, L42F can support implemented interface methods with no 'this' param
   they behave java interface static methods (no equivalent in 42)
 
 We assume the presence of some Prefefined classes/methods in L42F:
-  Void, Any and Library, all offering only 
+  Void, Any and Library, all offering only
   method CN NewFwd() newFwd //also Any have it!//yes, statically binded
 //uppercase names to avoid conflicts
 
 We also assume a class
 nativeResource Resource{
-  
+
   method Library LoadLib(class Any that)nativeLoadLib
   //return the Library denoted by the provided CN
-  
+
   method Void Fix(Any a,Any b)nativeFix //hoping a is a Fwd
   //replace a with b in all the places a was stored.
   //every newFwd edits a list inside of Fwds to remember where they are stored.
@@ -121,7 +121,7 @@ inefficient and boring.
 let be lInt32 an implementation for int 32 bits.
 It uses implmentations for strings and bools, and can have creative names
 for its methods. More methods could be defined there.
-We can represent this family of int representations as 
+We can represent this family of int representations as
 {native(Int32,1,This,Bool,S)
 method This +(This that) this.sum_$_1(that)
 }
@@ -140,7 +140,7 @@ I may have to use http://trove.starlight-systems.com/
 or
 http://commons.apache.org/proper/commons-collections/javadocs/api-release/org/apache/commons/collections4/map/AbstractHashedMap.html#isEqualKey(java.lang.Object,%20java.lang.Object)
 In this case, in the generate code
-we can have 
+we can have
 MyMap factory(){
   return new HashedMap(){
     isEqualKey(Object key1, Object key2){
@@ -170,7 +170,7 @@ translate p.top() into a set of class declarations CD for L42F.
 
 libToCDs(p)=libToCDs(p,ncs),//return a list, continue in the next line
   class/interface? CN implements p*P1..p*Pn {
-    method CN NewFwd() newFwd 
+    method CN NewFwd() newFwd
     libToCD(interface?,p,mwts)
     }
   where p.top()={interface? implements P1..Pn mwts ncs Phase CN}
@@ -182,9 +182,9 @@ libToCDs(p,C:L)=libToCDs(p.navigate(C)) //assert p.navigate(C).top()==L
 Note, in 42, a call on this or P is always statically
 dispatched; this never have an interface type.
 
-Using header and body, cases for mwts 
-0//interface 
-libToCD(interface,p,mwt)=header(p,mwt)  
+Using header and body, cases for mwts
+0//interface
+libToCD(interface,p,mwt)=header(p,mwt)
 
 1//class method into static method
 libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt[with e=e[this=This])
@@ -204,7 +204,7 @@ libToCD(empty,p,mwt)=header(p,mwt) body
 libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be good enough
   header(p,mwt) newFwd
   header(p,noFwd(mwt))[with ms='New_'++mwt.ms] new
-//  if noFwd(mwt)!=mwt, otherwise  
+//  if noFwd(mwt)!=mwt, otherwise
 //  header(p,mwt) fwd
 //  header(p,mwt)[with ms='New_'++mwt.ms] new
 
@@ -215,7 +215,7 @@ libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be
     refine? method p*T mxs(mdf p*This, p*T1 x1..p*Tn xn)
   body(p,refine? mdf method T m(T1 x1..Tn xn)exception Ps e)=p;(mdf This0 this,T1 x1..Tn xn)[e]
 
-    
+
 ################## PG[ e0]= e1 with e0 in L42N and e1 in L42F
 translate an expression. Needs a program and a gamma
 ---
@@ -251,39 +251,38 @@ PG[x1:=x2]=x1:=x2
 otherwise
 PG[x1:=e]=PG[( T x=e x1:=x)]
   where T=PG.g(x1)
-  
+
 //Translation method call
 //-normalizing es into xs
-In the following, whith e!=x //use y for x receiver? 
+In the following, whith e!=x //use y for x receiver?
 and xs is the list of xs of the method call
 
 PG[e.m[P]( (x:e)s)]= PG[( mdf0 P x=e x.m[P]((x:e)s))]
-where mdf0=PG.p(P)(m(xs)).mh.mdf 
+where mdf0=PG.p(P)(m(xs)).mh.mdf
 
 PG[y0.m[P]( (x:y)s xi:e (x:e)s)]= PG[( Ti y=e y0.m[P]( (x:y)s xi:y (x:e)s))]
 where PG.p(P)(m(xs))= refine? mdf method T0 m(T1 x1..Tn xn)exceptions Ps e?
 
-//-3 cases for y.m((x:y)s)
-//--case 1: interface or non class method or some FWD-->trad normal
+//-3 cases for y.m[P]((x:y)s)
+//--case 1: interface or non class method-->trad normal
 if PG.p(P) is interface or PG.p(P)(m(x1..xn)) non class method
-or some T1..Tn parameters of PG.p(P)(m(x1..xn)) have fwd modifier 
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
 
 //--case 2:class method body  -->trad no this
 otherwise
-if PG.p(P)(m(x1..xn))=refine? class method T m(T1 x1..Tn xn) exception Ps e
-//that is, 'e' is present
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
+if PG.p(P)(m(x1..xn))=refine? class method T m(T1 x1..Tn xn) exception Ps e?
+and either e?=e or fwd_or_fwd%_in(PG.g(x1)..PG.g(xn))
+
 //--case 3:class method constr no Fwd  --> trad no this, New_
 otherwise //we have optimized new
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
-//TODO: should we use gamma instead of the method type to decide if no fwd?
 
-//block 
+//block
 PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   PG[T x=e]=PG*T x=PG[e]
   PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
- 
+
   phFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
   otherwise //a block actually using placeholders
   phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
@@ -294,10 +293,10 @@ PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
     mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
                       if phGen(mdf1 CN1 x'n,xs)!=empty, else empty
     with exi'=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
-  
+
   phGen(mdf CN x,xs)=empty if x not in xs
   otherwise phGen(mdf CN x,xs)=mdf CN x=CN.NewFwd()
-  
+
 
 
 ################## CT.growWith(p,paths)
@@ -324,9 +323,9 @@ CT+p=CT if CT(p.top().CN) is defined
 otherwise
 CT+p=CT,p.top().CN->p,CD',J
   where CD=libToCDs(p), CD'=optimize(CD), J=toJava(CD')
-  
-  
-  
+
+
+
 
 
 
@@ -335,10 +334,10 @@ CT+p=CT,p.top().CN->p,CD',J
 3 L42F into Java
 -----------------------------
 CT*mdf CN=@mdf CN if CT(CN)=kind _ and kind in {class,interface}
-CT*mdf CN=@mdf int if CT(CN)=nativeInt _ 
+CT*mdf CN=@mdf int if CT(CN)=nativeInt _
 ...
 CT*mdf CN=@mdf float if CT(CN)=nativeFloat _
-CT*mdf CN=@mdf T if CT(CN)=nativeOpt<T> _  
+CT*mdf CN=@mdf T if CT(CN)=nativeOpt<T> _
 
 Java------------------
 statement st::=
@@ -353,10 +352,10 @@ statement st::=
   |try b catch(T x)b //one catch should be enough
   |CN.m(xs)
   |useCall(xs)
-  
+
 block b::=label:{sts}
 
-ej::=x|CN.m(xs)|useCall(xs) 
+ej::=x|CN.m(xs)|useCall(xs)
  | (CN') CN.m(xs) | CN'.m(xs) instanceof CN | !(CN'.m(xs) instanceof CN)
 
 --------
@@ -377,7 +376,7 @@ L42F-->st
 CT[throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
 CT[loop ex]= while(true) label1:{returnTrash(CT[ex])}
 CT[CN.mxs(ys)]=CN.mxs(ys) with CT(CN)(mxs) with body //not CT*CN on purpose
-CT[CN.mxs(y,ys)]=y._mxs(ys) with CT(CN)(mxs) without body 
+CT[CN.mxs(y,ys)]=y._mxs(ys) with CT(CN)(mxs) without body
 CT[use CN check mxs(ys) ex]=....(CN,ys,CT[ex])//not CT*CN on purpose
 CT[if x then ex1 else ex2]=if (x)CT[ex1] else CT[ex2] //blocks??
 CT[while ???x?_or_?ex?? then ex1]=...
@@ -390,7 +389,7 @@ CT[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
   catch([throw] y){CT[TX1 x1 ex1] ...CT[TXn xn exn] throw y;}
 CT[TX x ex]=
   boolean fresh; fresh=y.inner() instanceof CT*TX;//boxed version
-  if(fresh){//TODO:Need care for Library vs Any: Library will capture all objects that 
+  if(fresh){//TODO:Need care for Library vs Any: Library will capture all objects that
     //do not implement some root interface of all 42 objects, while Any will capture all.
     //Also, IMPORTANT: when capturing a return class Any, if we allow it, we need to check for coherence!
     CT*TX x=(TX)y.inner();
@@ -410,7 +409,7 @@ CT[interface CN implements CNs {Mxs}]=
 public interface CN implements CNs{CT,CN[Mxs]}
 otherwise
 CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{CT,CN[Mxs] 
+public class CN implements CNs{CT,CN[Mxs]
   /*public CN(){}*/
   public static CN NewFwd(){return new _Fwd();}
   private static class _Fwd extends CN implements Fwd{
@@ -431,7 +430,7 @@ CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
   CT*TX _mxs(CT*(TX x)s);//is going to be in an interface
 
 CT,CN[method T mxs((T x)s) e] //no refine, note, work both with and without 'this' parameter
-  public static CT*TX mxs(CT*(TX x)s[_this=this])CT[e[_this=this]] 
+  public static CT*TX mxs(CT*(TX x)s[_this=this])CT[e[_this=this]]
 
 
 //never happens CT[method T mxs((T x)s)]
@@ -450,21 +449,21 @@ CT,CN[method T mxs((T x)s) newFwd]
     res.xn=xn;if(xn instanceof Fwd){((Fwd)xn).rememberAssign(res,CN.FieldAssFor_xn);}
     return res;
     }//usual delegation if is refine?
-    
+
 //and then the field ones?
 CT,CN[method TX x(TX' this) getter]=
   public static CT*TX mxs(CT*TX' _this){return _this._x;}
   CT*TX _x;
   public static BiConsumer<Object,Object> FieldAssFor_x=(f,o)->{
     ((CN)o)._x=(CT*TX)f;
-    } 
+    }
 CT,CN[method Void x(TX this, TX' that) setter]=
   public static Void x(CT*TX _this, CT*TX' that){
     _this._x=that; return Void.instance();}
 
 //note:TX x=(dxs ex) in Java can be
 //TX x;{dxs  x=ex}
-//note:TX x=(dxs kxs ex) in Java can be 
+//note:TX x=(dxs kxs ex) in Java can be
 //TX x; labelFor_x:{dxs\e try{dxs\t}x=kxs  x=ex}
 //  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
 //dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
@@ -498,7 +497,7 @@ a.#plus( that: b) //42 core
 a.#plus[Nat]( that: b) //42 annotated
 Nat.#plus_that(a,b) //42F
 nativeInt32 Nat: {   Nat #plus_that(Nat a, Nat b)nativeInt32Plus} //42F class
-Nat._hash_plus_that(a,b)//Java 
+Nat._hash_plus_that(a,b)//Java
 class Nat {  public static int _hash_plus_that(int a, int b){return a+b;}  }//Java class
 
 -----------------------------
@@ -529,7 +528,7 @@ that contains the following info:
   -the p, the e, the used paths, the used CT, the resulting r
 when re-compiling, if the same iteraion uses the same e, the same used paths as
 cached, and for each P in paths, p(P) is the same(THE SAME of who???), then we can re use the cached CT and re run e.
-If the resulting r is different, we trash all cache for following iterations. 
+If the resulting r is different, we trash all cache for following iterations.
 Discuss advantages/disadvantages
 
 how to implement attempt:
@@ -540,8 +539,8 @@ start:
   CT=beginning ct
   loader=loaderOf(CT)
   normalization(loader)
-  
-loader;paths|- eC -->p+ r   
+
+loader;paths|- eC -->p+ r
   loader.CT=loader.CT.growWith(p,paths)
   r=loader.CT.execute(p,eC)
 
@@ -580,7 +579,7 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
   Ps1={P in Ps0 | not CT.has(p,P)}
   //assert all classes in CT are also "cached well"
   Dag: //may not have a single root
-    Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive    
+    Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive
     Edges={ Ps1->Ps2 | Ps1,Ps2 in Nodes, Ps1 supersetof Ps2}
   var CTres=CT
   Repeat:
@@ -601,7 +600,7 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
      -we update cache forall Pi in "roots of the Dag", p(Pi).CN->CT(p(Pi).CN)
   //this algorithm require to not cache the "e",
   //may be is not a problem since they are usually small?
-  return CTRes  
+  return CTRes
 
 
 
@@ -628,8 +627,8 @@ if l!=p(Path) //this also check l.Dep=p(Path).Dep
 return lf,j,jb
 
 
-    
- 
+
+
 
 //Path2={P in Path1 | not cache.has(p,P)}
 
@@ -667,9 +666,9 @@ for Opts would work in combination with wrapper class optimization
 
 ###Optimizations over blocks:
 ---
-#Var Local binding optimization 
+#Var Local binding optimization
 if a block declare a binding x that:
--has non interface type 
+-has non interface type
 -is initialized from constructor
 -is only used as receiver //includes is never returned
 -the called methods on it are only get/set
@@ -686,8 +685,8 @@ int32Pattern=//input
 class CN{
   method Library x() getter
   method CN New_m(x)(Library x) new
-  method CN plus(CN this,CN that) 
-    CN.New_m(use P 
+  method CN plus(CN this,CN that)
+    CN.New_m(use P
     check int32_sum(left:this.x(), right: that.x())
     error _)
   method CN times(CN that) ...
@@ -709,15 +708,15 @@ then
 replace all CN with the field type except for CN.mxs
 CN constructors are simplified away
 CN.f(x,z) setters are x:=z ?? we just said no setter?
-CN.f(x) getter are y=x 
+CN.f(x) getter are y=x
 if x passed to a method needing an interface type, then it is wrapped as for throw(see later)?
-all throw x where G(x)=mdf CN in the original program//all throw of form throw x in this language 
+all throw x where G(x)=mdf CN in the original program//all throw of form throw x in this language
 are transformed in (mdf CN x'=CN.new(x) throw x') //x will be now of the wrapped type
 all catch throw CN x e,
 if x used outside of throws in e
 are transformed in (mdf?? CN x'=x.field() transformedOf(e)[x'=x] )
 //TODO: check this does not break {..return..} optimization
-  
+
   //note for marco: I believe/ed that this means redirect need to refuse to work on private P, no idea what that could mean now
   //oddly correlated note for marco: if we rename all private nested classes to the top level, we can avoid most privacy coupuled; it would only stay for private methods; not sure is what we want
 
@@ -741,7 +740,7 @@ Throw/cast simplification
 (throw[T,_] ax
  catch throw T x x
  _)
-   replaced with 
+   replaced with
    ax
 
 Throw/cast simplification
@@ -776,8 +775,7 @@ G.typeOf( (_[T]) )=T
 G.typeOf( e.m[mdf P](x1:e1..xn:en) )=P::m(x1..xn)//resolved?
 
 //Note for marco: Guess type in formal
-//case use: use the plugin information, not the e! 
+//case use: use the plugin information, not the e!
 
 
 
-  

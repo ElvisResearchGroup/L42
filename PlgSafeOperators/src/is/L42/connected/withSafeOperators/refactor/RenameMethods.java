@@ -106,7 +106,7 @@ public class RenameMethods{
     return new RenameMethods(Functions.push(commands,new CsMxMx(cs,true,ms,null)));
     }
 
-  
+
 public RenameMethods addRenameS(String cs, String ms1,String ms2){
   return addRenameJ(PathAux.parseValidCs(cs),MethodSelector.parse(ms1),MethodSelector.parse(ms2));
   }
@@ -123,8 +123,8 @@ public RenameMethods addAbstractS(String cs, String ms){
   return addAbstractJ(PathAux.parseValidCs(cs),MethodSelector.parse(ms));
   }
 
-  
-  
+
+
   public ClassB act(PData pData,ClassB that) throws PathUnfit, SelectorUnfit,MethodClash, ClassUnfit{
     return actP(pData.p,that);
     }
@@ -195,7 +195,7 @@ private void fillRenamesCoherent(CsMxMx r, Program p, List<CsMxMx> renamesLoc) t
     renamesLoc.add(new CsMxMx(r.getCs(),false,msi,msi.withUniqueNum(prN)));
     }
   }
-void fillRenamesOne(CsMxMx r,MethodWithType mwt, List<CsMxMx> renamesLoc) throws PathUnfit, SelectorUnfit {    
+void fillRenamesOne(CsMxMx r,MethodWithType mwt, List<CsMxMx> renamesLoc) throws PathUnfit, SelectorUnfit {
   if(mwt.getMt().isRefine()){
     if(!r.isFlag()){//is ok to make refine methods abstract
       throw new RefactorErrors.SelectorUnfit(r.getCs(),r.getMs1()).msg("Selector is refine. Interface methods can not be hidden.");
@@ -218,13 +218,13 @@ void fillRenamesOne(CsMxMx r,MethodWithType mwt, List<CsMxMx> renamesLoc) throws
     }
   fillRenamesOneHide(r,renamesLoc);
   }
-void fillRenamesOneHide(CsMxMx r, List<CsMxMx> renamesLoc) throws PathUnfit, SelectorUnfit {    
+void fillRenamesOneHide(CsMxMx r, List<CsMxMx> renamesLoc) throws PathUnfit, SelectorUnfit {
   assert r.isFlag()==false;
   assert r.getMs2()==null;
   long prN=L42.freshPrivate();
   MethodSelector ms2=r.getMs1();
   ms2=ms2.withName(Functions.freshName(ms2.getName(), L42.usedNames));
-  ms2=ms2.withUniqueNum(prN);      
+  ms2=ms2.withUniqueNum(prN);
   renamesLoc.add(new CsMxMx(r.getCs(),false,r.getMs1(),ms2));
   }
 }
@@ -263,7 +263,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
       res.getInner());
     return res.withInner(body);
     }
-  
+
   public ExpCore visit(Block s) {
     List<Dec> ds = liftDecs(s.getDecs());
     List<On> ons = Map.of(this::liftO,s.getOns());
@@ -277,7 +277,8 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
     }
 
   public ExpCore visit(MCall s) {
-    Type guessed=GuessTypeCore._of(p, g, s.getInner(),false);
+    Type guessed=s.getTypeRec();
+    if(guessed==null) {guessed=GuessTypeCore._of(p, g, s.getInner(),false);}
     if(guessed==null){return super.visit(s);}
     MethodSelector ms2=visitMS(s.getS(),guessed.getPath());
     return super.visit(s.withS(ms2));
