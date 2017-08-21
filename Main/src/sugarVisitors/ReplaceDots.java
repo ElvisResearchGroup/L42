@@ -35,14 +35,14 @@ public class ReplaceDots extends CloneVisitor{
     if(pathF==null &&pathD==null){fail("File not found");}
     if(pathF!=null){//put in subfunction
       String code=L42.pathToString(pathF);
-      Expression e=Parser.parse(pathF.toString(), code);
+      Expression e=Parser.parse(pathF.toUri().toString(), code);
       auxiliaryGrammar.WellFormedness.checkAll(e);
       return ReplaceDots.of(this.currentFolder,e );
       }
     assert pathD!=null;
     Path pdf=pathD.resolve("This.L42");
     String code=L42.pathToString(pdf);
-    Expression e=Parser.parse(pdf.toString(), code);
+    Expression e=Parser.parse(pdf.toUri().toString(), code);
     return ReplaceDots.of(pathD,e );
   }
   //Decisions: is ok if there is a text file that have no extension?

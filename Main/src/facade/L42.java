@@ -114,7 +114,7 @@ public class L42 {
         L42.setRootPath(path.getParent());
         code=L42.pathToString(path);
         }
-      FinalResult res = L42.runSlow(path.toString(),code);
+      FinalResult res = L42.runSlow(path.toUri().toString(),code);
       System.out.println("------------------------------");
       System.out.println("END (zero for success): "+res.getErrCode());
     }
@@ -178,7 +178,7 @@ public class L42 {
     try{
       L42.setExecutionStage(ExecutionStage.Parsing);
       Expression code1=Parser.parse(fileName,code);
-      assert code1 instanceof Expression.ClassB || code1 instanceof Expression.ClassReuse:code1; 
+      assert code1 instanceof Expression.ClassB || code1 instanceof Expression.ClassReuse:code1;
       L42.setExecutionStage(ExecutionStage.CheckingWellFormedness);
       auxiliaryGrammar.WellFormedness.checkAll(code1);
       L42.setExecutionStage(ExecutionStage.Desugaring);

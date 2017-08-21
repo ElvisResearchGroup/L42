@@ -4,7 +4,7 @@
 Main:{//Line numbers seams to not to fit right. Not sure why
   (
     err=Refactor2.compose(
-      {method Void foo()} 
+      {method Void foo()}
       and:{method Library foo()}
       )
     catch exception Refactor2.Fail f
@@ -13,9 +13,9 @@ Main:{//Line numbers seams to not to fit right. Not sure why
       '"
       ''Neither of the method is subtype of the other
       ''MethodClash: This::foo()->foo()
-      ''Left: Origin:\TestRefactorFailToS.L42
+      ''Left: Origin:TestRefactorFailToS.L42
       ''lines 8 to 8; colums 7 to 23
-      ''Right: Origin:\TestRefactorFailToS.L42
+      ''Right: Origin:TestRefactorFailToS.L42
       ''lines 9 to 9; colums 11 to 30
       '"
       ".withoutRight())
@@ -25,7 +25,7 @@ Main:{//Line numbers seams to not to fit right. Not sure why
   }
 /*
 MainFail:Refactor2.compose(
-      {method Void foo()} 
+      {method Void foo()}
       and:{method Library foo()}
       )
 */
