@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import ast.Ast;
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.L42F;
 import ast.Ast.Doc;
@@ -32,14 +35,17 @@ import ast.L42F.Call;
 import ast.L42F.Cn;
 import ast.L42F.D;
 import ast.L42F.E;
+import ast.L42F.K;
 import ast.L42F.M;
 import ast.L42F.T;
 import ast.L42F.TX;
 import auxiliaryGrammar.Functions;
+import coreVisitors.FreeVariables;
 import coreVisitors.Visitor;
 import facade.L42;
 import newTypeSystem.GuessTypeCore;
 import newTypeSystem.GuessTypeCore.G;
+import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 import tools.Assertions;
@@ -149,23 +155,23 @@ if(i!=s.getEs().size()) {return visitParameter(i, s);}
 return visitBase(s);
 }
 private E visitBase(MCall s) {
-ClassB cb=p.extractClassB(s.getTypeRec().getPath());
-MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
-boolean isInterface=cb.isInterface();
-boolean isClass=mwt.getMt().getMdf()==Mdf.Class;
-boolean isAbs=!mwt.get_inner().isPresent();
-List<String> ps=new ArrayList<>();
-MethodSelector ms=mwt.getMs();
-if(isInterface || !isClass) {
-  ps.add(((X)s.getInner()).getInner());
+  ClassB cb=p.extractClassB(s.getTypeRec().getPath());
+  MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
+  boolean isInterface=cb.isInterface();
+  boolean isClass=mwt.getMt().getMdf()==Mdf.Class;
+  boolean isAbs=!mwt.get_inner().isPresent();
+  List<String> ps=new ArrayList<>();
+  MethodSelector ms=mwt.getMs();
+  if(isInterface || !isClass) {
+    ps.add(((X)s.getInner()).getInner());
+    }
+  assert isClass;
+  if(isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
+    ms=msOptimizedNew(ms);
+    }
+  for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
+  return new Call(cb.getUniqueId(),ms,ps);
   }
-assert isClass;
-if(isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
-  ms=msOptimizedNew(ms);
-  }
-for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
-return new Call(cb.getUniqueId(),ms,ps);
-}
 private E visitReceiver(MCall s) {
   String x = Functions.freshName("receiverX",L42.usedNames);
   MCall sx = s.withInner(new X(Position.noInfo,x));
@@ -179,18 +185,72 @@ private E visitParameter(int i,MCall s) {
   Type ti=mwt.getMt().getTs().get(i);
   return blockX(ti,x, s.getEs().get(i),sx).accept(this);
   }
+private E visitParameter(int i,List<Type> lt,Using s) {
+  String x = Functions.freshName("parX",L42.usedNames);
+  Using sx = s.withEsi(i,new X(Position.noInfo,x));
+  Type ti=lt.get(i);
+  return blockX(ti,x, s.getEs().get(i),sx).accept(this);
+  }
+private E visitBase(List<Type> lt,Using s) {
+  List<String> ps=new ArrayList<>();
+  for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
+  E e=s.getInner().accept(this);
+  return new L42F.Use(p.extractClassB(s.getPath()).getUniqueId(),s.getS(),ps,e);
+  }
+
 @Override
 public E visit(Using s) {
-// TODO Auto-generated method stub
-return null;
-}
+  List<Type> lt;try{lt = platformSpecific.fakeInternet.OnLineCode.pluginType(p, s);}
+  catch(UsingInfo.NonExistantMethod nem){throw new Error(nem);}
+  int i=0;
+  for(ExpCore ei:s.getEs()) {
+    if (ei instanceof X) {i+=1;}
+    else{break;}
+    }
+  //i is the first non X
+  if(i!=s.getEs().size()) {
+    return visitParameter(i,lt, s);
+    }
+  return visitBase(lt,s);
+  }
 @Override
 public E visit(Block s) {
-// TODO Auto-generated method stub
-return null;
+  PG pg=this.plusDs(s.getDecs());
+  List<D>ds=tools.Map.of(pg::visitD,s.getDecs());
+  List<K>ks=tools.Map.of(pg::visitK,s.getOns());
+  E e=s.getInner().accept(pg);
+  Set<String> fv = FreeVariables.of(s.getDecs());
+  assert false;  //TODO: ADD t annotation to block
+  return new L42F.Block(fwdFix(fv,ds), ks, e, PG.liftT(p,null));
 }
 static MethodSelector msOptimizedNew(MethodSelector ms) {
   return ms.withName("New_"+ms.getName());
 }
+private List<D> fwdFix(Set<String> fv,List<D>ds){
+  if(ds.stream().allMatch(d->!fv.contains(d.getX()))){
+    return ds;
+    }
+  //a block actually using placeholders
+  //compute all xiPrime
+  //compute all eiPrime
+  //all fwdGen
+  //all normal dec+optional resourceFix
+  return null;
+  }
+private Stream<D> fwdGen(Set<String> fv,String xPrime, D d){
+  if(!fv.contains(d.getX())){return Stream.of();}
+  Call e=new Call(d.getT().getCn(),MethodSelector.parse("NewFwd()"),Collections.emptyList());
+  return Stream.of(new D(false,d.getT(),xPrime,e));
+  }
+private PG plusDs(List<ExpCore.Block.Dec>ds){
+  return new PG(p,this.gamma.addGuessing(p, ds));
+  }
+private D visitD(ExpCore.Block.Dec d){
+  return new D(d.isVar(),PG.liftT(p,d.getT().get()),d.getX(),d.getInner().accept(this));
+  }
+private K visitK(ExpCore.Block.On k){
+  PG pg=new PG(p,gamma.addTx(k.getX(),k.getT()));
+  return new K(k.getKind(),PG.liftT(p,k.getT()),k.getX(),k.getInner().accept(pg));
+  }
 
 }

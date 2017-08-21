@@ -279,23 +279,23 @@ otherwise //we have optimized new
 PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
 
 //block
-PG[(ds ks e[T])]=(phFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
+PG[(ds ks e[T])]=(fwdFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   PG[T x=e]=PG*T x=PG[e]
   PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
 
-  phFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
+  fwdFix(dxs)=dxs if dxs.xs not in xs=FV(dxs.es)
   otherwise //a block actually using placeholders
-  phFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
-    phGen(mdf1 CN1 x'1,xs)..phGen(mdfn CNn x'n,xs)
+  fwdFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
+    fwdGen(mdf1 CN1 x'1,xs)..fwdGen(mdfn CNn x'n,xs)
     mdf1 CN1 x1=ex'1, imm Void z1=Resource.Fix(x1',x1)
-                      if phGen(mdf1 CN1 x'1,xs)!=empty, else empty
+                      if fwdGen(mdf1 CN1 x'1,xs)!=empty, else empty
     ..
     mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
-                      if phGen(mdf1 CN1 x'n,xs)!=empty, else empty
+                      if fwdGen(mdf1 CN1 x'n,xs)!=empty, else empty
     with exi'=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
 
-  phGen(mdf CN x,xs)=empty if x not in xs
-  otherwise phGen(mdf CN x,xs)=mdf CN x=CN.NewFwd()
+  fwdGen(mdf CN x,xs)=empty if x not in xs
+  otherwise fwdGen(mdf CN x,xs)=mdf CN x=CN.NewFwd()
 
 
 

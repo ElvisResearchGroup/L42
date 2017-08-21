@@ -24,6 +24,14 @@ public class FreeVariables implements Visitor<Set<String>>{
   public static Set<String> of(ExpCore e){
     return e.accept(new FreeVariables());
   } 
+  public static Set<String> of(List<Block.Dec> ds){
+    FreeVariables fv=new FreeVariables();
+    for(Block.Dec di:ds){
+      di.getInner().accept(fv);
+      }
+    return fv.collected;
+    } 
+
   public static Set<String> ofBlock(Block s){
     return new FreeVariables().inBlock(s);
   } 

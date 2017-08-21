@@ -41,6 +41,8 @@ import tools.Assertions;
 public class GuessTypeCore implements Visitor<Type>{
 public static interface G{
   public G addGuessing(Program p,List<ExpCore.Block.Dec> ds);
+  public G addTx(String x,Type t);
+
   public Type _g(String x);
   public static G of(Map<String, Type> varEnv){return new G(){
      public Type _g(String x){return varEnv.get(x);}
@@ -49,6 +51,11 @@ public static interface G{
        for(Dec d:ds){
          varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d,true));
          }
+       return of(varEnv2);
+       }
+     public G addTx(String x,Type t){
+       Map<String, Type> varEnv2=new HashMap<>(varEnv);
+       varEnv2.put(x,t);
        return of(varEnv2);
        }
      };

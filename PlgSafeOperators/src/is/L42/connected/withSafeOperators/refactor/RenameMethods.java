@@ -265,11 +265,16 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
     }
 
   public ExpCore visit(Block s) {
-    List<Dec> ds = liftDecs(s.getDecs());
-    List<On> ons = Map.of(this::liftO,s.getOns());
     G oldG=g;
     try{
-      g=g.addGuessing(p, s.getDecs());
+      G baseG=g.addGuessing(p, s.getDecs());
+      g=baseG;
+      List<Dec> ds = liftDecs(s.getDecs());
+      List<On> ons = Map.of((o)->{
+        g=baseG.addTx(o.getX(),o.getT());
+        return this.liftO(o);
+        },s.getOns());
+      g=baseG;
       ExpCore inner = lift(s.getInner());
       return new Block(liftDoc(s.getDoc()),ds,inner,ons,s.getP());
       }

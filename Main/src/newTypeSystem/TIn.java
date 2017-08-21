@@ -43,6 +43,7 @@ abstract class AG<This extends AG<This>>implements GuessTypeCore.G{
   public static Map.Entry<Boolean, Type> p(Boolean b,Type t){//p for pair
     return new java.util.AbstractMap.SimpleEntry<>(b,t);
     }
+  public This addTx(String x,Type t){return addG(x,false,t);}
   public This addG(String x,boolean var, Type t){
     assert !g.containsKey(x);
     assert !var || !TypeManipulation.fwd_or_fwdP_in(t.getMdf());
