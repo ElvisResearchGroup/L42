@@ -23,7 +23,7 @@ public static final ClassTable empty=new ClassTable(Collections.emptyMap());
     L42F.CD cd;
     }
   public static class NamesP{
-    NamesP(List<String>names,Program p){this.names=names;this.p=p;}  
+    NamesP(List<String>names, Program p){this.names=names;this.p=p;}  
     List<String>names;Program p;
     }
   public ClassTable growWith(List<String>names,Program p, Paths paths){
