@@ -20,7 +20,7 @@ public static enum SimpleKind implements Kind{
 Class, Interface, NativeInt32, NativeString, NativeFloat32;
 }
 @Value @Wither public static class
-CD{Kind kind;int cn; List<String>dbgName;List<Integer> cns; List<M> ms; }
+CD{programReduction.Program p; Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms; }
 
 @Value @Wither public static class
 TX{T t; String x;}

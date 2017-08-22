@@ -321,10 +321,13 @@ programsOf(p,Cs1..Csn paths)=
 
 ###auxiliary CT+p
 ---
-CT+p=CT if CT(p.top().CN) is defined
+CT+p=CT+CD1+..+CDn
+  where CD1..CDn=libToCDs(p),
+
+CT+CD=CT if CD.CN in dom(CT)
 otherwise
-CT+p=CT,p.top().CN->p,CD',J
-  where CD=libToCDs(p), CD'=optimize(CD), J=toJava(CD')
+CT+CD=CT,CD.CN->p,CD',J
+  where CD'=optimize(CD), J=toJava(CD')
 
 
 
