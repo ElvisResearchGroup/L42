@@ -25,7 +25,7 @@ import ast.ExpCore.ClassB.NestedClass;
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
   default String toS(){return sugarVisitors.ToFormattedText.of(this);}
-  @Value @EqualsAndHashCode(exclude = {"typeRec","p"}) @ToString(exclude = {"typeRec","p"})   @Wither 
+  @Value @EqualsAndHashCode(exclude = {"typeRec","typeOut","p"}) @ToString(exclude = {"typeRec","typeOut","p"})   @Wither
   public static class MCall implements ExpCore,HasPos<MCall>, WithInner<MCall>{
     ExpCore inner;
     MethodSelector s;
@@ -33,6 +33,7 @@ public interface ExpCore {
     List<ExpCore> es;
     Position p;
     Type typeRec;
+    Type typeOut;
     public MCall withEsi(int i,ExpCore ei){
       List<ExpCore> es2=new ArrayList<>(es);
       es2.set(i,ei);
@@ -53,7 +54,7 @@ public interface ExpCore {
   }
 }
 
-  
+
   @Value @Wither @EqualsAndHashCode(exclude = "p")
   public static class X implements ExpCore, Ast.Atom, HasPos<X> {
     Position p;
@@ -66,12 +67,13 @@ public interface ExpCore {
     }
   }
 
-  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class Block implements ExpCore,HasPos<Block>,WithInner<Block> {
+  @Value @EqualsAndHashCode(exclude = {"typeOut","p"}) @ToString(exclude = {"typeOut","p"}) @Wither public static class Block implements ExpCore,HasPos<Block>,WithInner<Block> {
     Doc doc;
     List<Dec> decs;
     ExpCore inner;
     List<On> ons;
     Position p;
+    Type typeOut;
     public ExpCore getE(){return inner;}
     public Block withE(ExpCore e){return this.withInner(e);}
     public Block withDeci(int i,Dec di){
@@ -83,7 +85,7 @@ public interface ExpCore {
     List<On> ons2=new ArrayList<>(ons);
     ons2.set(i,oi);
     return this.withOns(ons2);
-    }  
+    }
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -112,10 +114,10 @@ public interface ExpCore {
 
     }
   }
-   
+
 
   @Value @Wither @EqualsAndHashCode(exclude = {"p","phase","uniqueId"})  /*@ToString(exclude ="p")*/ public static class ClassB implements ExpCore, Ast.Atom,HasPos<ClassB> {
-    
+
     public ClassB(Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms,Position p, Phase phase, int uniqueId) {
       this.doc1 = doc1;
       this.isInterface = isInterface;
@@ -156,16 +158,16 @@ public interface ExpCore {
     public ExpCore.ClassB.NestedClass getNested(List<Ast.C>cs){return _Aux.getNested(this, cs);}
     public List<ExpCore.ClassB.NestedClass> getNestedList(List<Ast.C>cs){return _Aux.getNestedList(this, cs);}
     public ExpCore.ClassB getClassB(List<Ast.C>cs){return _Aux.getClassB(this, cs);}
-    
+
     public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,0);}
-    
-    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,0);}    
-    
+
+    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,0);}
+
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
         .map(t->t.getPath())
         .collect(Collectors.toList());
-      }    
+      }
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {return v.visit(this);}
     public static enum Phase{None,Norm,Typed,Coherent;
     public Phase acc(Phase that){
@@ -233,7 +235,7 @@ public interface ExpCore {
     return new EPath(Position.noInfo,p);
     }
   }
-  
+
   @Value public static class WalkBy implements ExpCore {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
@@ -261,13 +263,13 @@ public interface ExpCore {
   }
 
   @Value @Wither
-  @EqualsAndHashCode(exclude = {"typeOut","typeIn"}) @ToString(exclude = {"typeOut","typeIn"}) 
+  @EqualsAndHashCode(exclude = {"typeOut","typeIn"}) @ToString(exclude = {"typeOut","typeIn"})
   public static class Signal implements ExpCore, WithInner<Signal>{
     SignalKind kind;
     ExpCore inner;
     Type typeOut;
     Type typeIn;
-    
+
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -275,7 +277,7 @@ public interface ExpCore {
 
   @Value @Wither public static class Loop implements ExpCore, WithInner<Loop> {
     ExpCore inner;
-    
+
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
@@ -283,7 +285,7 @@ public interface ExpCore {
   interface WithInner<T>{
     ExpCore getInner(); T withInner(ExpCore e);
     }
-  
+
   }
 class _Aux{
   static ClassB wrapCast(ExpCore e){
@@ -335,26 +337,26 @@ class _Aux{
     ClassB newCb = op.apply(wrapCast(nc.getInner()));
     newMs.set(index, nc.withInner(newCb));
     return cb.withMs(newMs);
-    }  
-  
+    }
+
   static int getIndex(List<ExpCore.ClassB.Member> map, ast.Ast.MethodSelector elem){
     int i=-1;for(ExpCore.ClassB.Member m: map){i++;
     if(m.match(nc->false,mi->mi.getS().equals(elem) ,mt->mt.getMs().equals(elem))){return i;}
       }
-    return -1;  
+    return -1;
     }
-  
+
   static int getIndex(List<ExpCore.ClassB.Member> map, Ast.C elem){
     int i=-1;for(ExpCore.ClassB.Member m: map){i++;
       if(m.match(nc->nc.getName().equals(elem), mi->false, mt->false)){return i;}
       }
     return -1;
     }
-  
+
   static int getIndex(List<ExpCore.ClassB.Member> map, ExpCore.ClassB.Member elem){
     return elem.match(nc->getIndex(map,nc.getName()), mi->getIndex(map,mi.getS()),mt->getIndex(map,mt.getMs()));
     }
-  
+
   static ExpCore.ClassB.NestedClass getNested(ExpCore.ClassB cb, List<Ast.C>cs){
     assert !cs.isEmpty();
     Ast.C nName=cs.get(0);
@@ -364,7 +366,7 @@ class _Aux{
     if(cs.size()==1){return nc;}
     return getNested(wrapCast(nc.getInner()),cs.subList(1, cs.size()));
     }
-  
+
   static List<ExpCore.ClassB.NestedClass> getNestedList(ExpCore.ClassB cb, List<Ast.C>cs){
     assert !cs.isEmpty();
     List<ExpCore.ClassB.NestedClass> result=new ArrayList<>();
@@ -382,7 +384,7 @@ class _Aux{
       getNestedList(wrapCast(nc.getInner()),cs.subList(1, cs.size()),result);
       }
     }
-  
+
   static ExpCore.ClassB getClassB(ExpCore.ClassB cb, List<Ast.C>cs){
     if(cs.isEmpty()){return cb;}
     return wrapCast(getNested(cb,cs).getInner());

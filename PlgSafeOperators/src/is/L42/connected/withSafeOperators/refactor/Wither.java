@@ -64,14 +64,14 @@ for all xi in k.ms.xs
  for all xi, we generate method
  imm method T with(getxi.T xi) exc k.exceptionsPs
    This.k(x1:this.f1()..xi:xi..xn:this.fn())
- if 
+ if
    not already present in path,
    or present abstract with same method type (modulo refine).
  * @throws PathUnfit
- * @throws SelectorUnfit 
- * @throws MethodUnfit 
- * @throws ClassUnfit 
- 
+ * @throws SelectorUnfit
+ * @throws MethodUnfit
+ * @throws ClassUnfit
+
  */
 public static ClassB wither(Program p,List<Ast.C>path,ClassB top,MethodSelector immK) throws PathUnfit, SelectorUnfit, MethodUnfit, ClassUnfit{
   if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
@@ -87,8 +87,8 @@ public static ClassB wither(Program p,List<Ast.C>path,ClassB top,MethodSelector 
     if(m!=Mdf.Class && m!=Mdf.Immutable){throw new RefactorErrors.MethodUnfit().msg(immK.toString()+" invalid parameter mdf "+m);}
     }
   {int i=-1;for(String n:immK.getNames()){i+=1;
-    MethodWithType fi=(MethodWithType)lPath._getMember(MethodSelector.of(n,Collections.emptyList()));  
-    MethodWithType hfi=(MethodWithType)lPath._getMember(MethodSelector.of("#"+n,Collections.emptyList()));    
+    MethodWithType fi=(MethodWithType)lPath._getMember(MethodSelector.of(n,Collections.emptyList()));
+    MethodWithType hfi=(MethodWithType)lPath._getMember(MethodSelector.of("#"+n,Collections.emptyList()));
     boolean fiOk = fOk(k.getMt().getTs().get(i), fi);
     boolean hfiOk = fOk(k.getMt().getTs().get(i), hfi);
     if (fiOk && hfiOk){throw new ClassUnfit().msg("ambiguos field getter "+n+"() and #"+n+"()");}
@@ -132,26 +132,28 @@ private static MethodWithType template(MethodWithType k,List<MethodWithType>gett
     k.getMt().getReturnType(),k.getMt().getExceptions()
     );
   MCall body=new MCall(new ExpCore.EPath(k.getP(),Path.outer(0)), k.getMs(), Doc.empty(),
-    tools.Map.of(Wither::invk,getters),k.getP(),Type.classThis0);
+    tools.Map.of(Wither::invk,getters),
+    k.getP(),Type.classThis0,Type.immThis0);
   MethodSelector ms=MethodSelector.of("with",Collections.emptyList());
   return new MethodWithType(Doc.empty(),ms,mt,Optional.of(body),k.getP());
   }
 private static MCall invk(MethodWithType g){
-  return new MCall(new ExpCore.X(g.getP(), "this"), g.getMs(),Doc.empty(),Collections.emptyList(),g.getP(),Type.immThis0.withMdf(g.getMt().getMdf()));
+  return new MCall(new ExpCore.X(g.getP(), "this"), g.getMs(),Doc.empty(),Collections.emptyList(),
+    g.getP(),Type.immThis0.withMdf(g.getMt().getMdf()),Type.immThis0);
   }
 private static boolean fOk(Type ti, MethodWithType fi) {
   //(1)exists, (2) has read/imm receiver,(3) no exceptions
   if(fi==null){return false;}
   Mdf r=fi.getMt().getMdf();
   if(r!=Mdf.Immutable && r!=Mdf.Readable){return false;}
-  if(!fi.getMt().getExceptions().isEmpty()){return false;}   
+  if(!fi.getMt().getExceptions().isEmpty()){return false;}
   //(4)return type T, T.mdf in {read/imm/class}
   Type t=fi.getMt().getReturnType();
   Mdf m=t.getMdf();
-  if(m!=Mdf.Immutable && m!=Mdf.Readable && m!=Mdf.Class){return false;} 
+  if(m!=Mdf.Immutable && m!=Mdf.Readable && m!=Mdf.Class){return false;}
   //(5)if T=class P then Ti=class P
   if(m==Mdf.Class){return t.equals(ti);}
-  //(6)if T=read/imm P, then Ti= imm P 
+  //(6)if T=read/imm P, then Ti= imm P
   assert m==Mdf.Immutable || m==Mdf.Readable;
   if(ti.getMdf()!=Mdf.Immutable){return false;}
   return t.getPath().equals(ti.getPath());

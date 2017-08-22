@@ -81,7 +81,7 @@ private static void collectStateMethodsAndExposers(
     // with non read result, assert is lent
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
     if(mdf==Mdf.Readable || mdf==Mdf.Immutable){continue;}
-    if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}    
+    if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}
     sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(uniqueNum)));
     }
 }
@@ -125,18 +125,18 @@ private static ClassB delegateState(Ks ks,
     MethodSelector uniqueMs=mwt.getMs().withUniqueNum(ks.fwdK.getMs().getUniqueNum());
     if(!isGet){
       //replace decl set() ->decl freshXi(that)+ delegator set(that) (this.freshXi(that) invariant())
-      delegator(true,newMwts,mwt,uniqueMs);  
+      delegator(true,newMwts,mwt,uniqueMs);
       continue;
     }
     if(resMdf==Mdf.Readable || resMdf==Mdf.Immutable ){
-      //  replace decl get() ->decl freshXi()+ delegator get() this.freshXi()  
+      //  replace decl get() ->decl freshXi()+ delegator get() this.freshXi()
       delegator(false,newMwts,mwt,uniqueMs);
       continue;
       }
     //last case is exposer, and Exposer: should be already fixed:
     //newMwts.add(mwt.withMs(uniqueMs));
     //rename .exposer() ->freshExposer()
-    //  rename decl exposer() ->decl freshExposer()  
+    //  rename decl exposer() ->decl freshExposer()
     }
   //delegate mutK,immK to candidtateK
   delegator(true,newMwts,ks.mutK,ks.fwdK);
@@ -152,8 +152,9 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
   assert original.getMs().nameSize()==delegate.getMs().nameSize();
   Position p=original.getP();
   ExpCore.MCall delegateMCall=new ExpCore.MCall(
-          new ExpCore.X(p, "this"), delegate.getMs(),Doc.empty(),
-          tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),p,Type.readThis0);
+    new ExpCore.X(p, "this"), delegate.getMs(),Doc.empty(),
+    tools.Map.of(s->new ExpCore.X(p,s), original.getMs().getNames()),
+    p,Type.readThis0,original.getMt().getReturnType());
   if(!callInvariant){original=original.withInner(delegateMCall);}
   else{
     ExpCore.Block e=InvariantClose.eThis;
@@ -178,14 +179,14 @@ static void addCheck(MethodWithType mwt,List<ClassB.Member> newMwts) throws Clas
     Functions.replaceIfInDom(newMwts,mwt);return;}
   throw new RefactorErrors.ClassUnfit().msg("Incompatible factory type: "+mwt.getMs()+": "+mwt.getMt()+" and "+mwtPre.getMt());
   }
-static ExpCore.Block eThis=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+static ExpCore.Block eThis=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer",
   "{method m() (r=void this.#invariant() r)}"
   ).getMs().get(0).getInner();
-  
-static ExpCore.Block eR=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+
+static ExpCore.Block eR=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer",
   "{method m() (r=void r.#invariant() r)}"
   ).getMs().get(0).getInner();
-static ExpCore.Block eRImm=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer", 
+static ExpCore.Block eRImm=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer",
   "{method m() (This r=void r.#invariant() r)}"
   ).getMs().get(0).getInner();
       }
@@ -208,7 +209,7 @@ class WrapAux extends RenameMethodsAux{
     count+=1;
     return super.visit(s);
     }
-  @Override public 
+  @Override public
   ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
     count=0;
     ClassB.MethodWithType res=super.visit(mwt);

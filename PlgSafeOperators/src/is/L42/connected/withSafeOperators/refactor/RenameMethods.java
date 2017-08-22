@@ -276,7 +276,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
         },s.getOns());
       g=baseG;
       ExpCore inner = lift(s.getInner());
-      return new Block(liftDoc(s.getDoc()),ds,inner,ons,s.getP());
+      return new Block(liftDoc(s.getDoc()),ds,inner,ons,s.getP(),s.getTypeOut());
       }
     finally{g=oldG;}
     }

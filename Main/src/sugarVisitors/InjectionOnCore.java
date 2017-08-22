@@ -61,9 +61,9 @@ public class InjectionOnCore implements Visitor<ExpCore> {
         assert x.length()>=1;
         ons.add(new ExpCore.Block.On(kind,x,k1.getT(),lift(k1.getInner()),k1.getP()));
         }
-      return new Block(doc,decs,inner,ons,s.getP());
+      return new Block(doc,decs,inner,ons,s.getP(),null);
       }
-    return new Block(doc,decs,inner,Collections.emptyList(),s.getP());
+    return new Block(doc,decs,inner,Collections.emptyList(),s.getP(),null);
   }
   public ExpCore visit(Expression.ClassB s){
     Doc doc1=s.getDoc1();
@@ -94,7 +94,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     List<String> xs=s.getPs().getXs();
     List<ExpCore>es=new ArrayList<>();
     for(Expression e:s.getPs().getEs()){es.add(e.accept(this));}
-    return new MCall(receiver, MethodSelector.of(name,xs),doc,es,s.getP(),null);
+    return new MCall(receiver, MethodSelector.of(name,xs),doc,es,s.getP(),null,null);
   }
   public ExpCore visit(Expression.Using s){
     assert !s.getPs().getE().isPresent();

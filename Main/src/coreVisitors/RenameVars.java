@@ -40,8 +40,8 @@ public class RenameVars extends CloneVisitor{
       if(altxi==null){decs.add(dec);}
       else {decs.add(dec.withX(altxi));}
     }
-
-    return new Block(s.getDoc(),tools.Map.of(this::liftDec,decs),lift(s.getInner()),newK,s.getP());
+    return new Block(s.getDoc(),tools.Map.of(this::liftDec,decs),
+      lift(s.getInner()),newK,s.getP(),liftTNull(s.getTypeOut()));
   }
 
 

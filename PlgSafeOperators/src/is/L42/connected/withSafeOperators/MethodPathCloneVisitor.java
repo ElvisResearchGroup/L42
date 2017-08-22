@@ -38,7 +38,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
   public HashMap<String, Type> varEnv=new HashMap<>();
   public final ClassB visitStart;
   public final Program p;
-  public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) { 
+  public MethodPathCloneVisitor(ClassB visitStart,CollectedLocatorsMap maps,Program p) {
     super(maps);
     this.visitStart=visitStart;
     this.p=p.evilPush(visitStart);
@@ -104,7 +104,8 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
         newOns.add(liftO(on));
         this.varEnv.remove(on.getX());
         }
-      return new Block(s.getDoc(),newDecs,lift(s.getInner()),newOns,s.getP());
+      return new Block(s.getDoc(),newDecs,lift(s.getInner()),newOns,
+        s.getP(),liftTNull(s.getTypeOut()));
       }
     finally{this.varEnv=aux;}
     }
@@ -132,9 +133,8 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     catch(NormImpossible ignored){return super.visit(s);}
     MethodSelector ms2=visitMS(ms,guessed);
     if(ms2.equals(ms)){return super.visit(s);}
-    Type t=s.getTypeRec();
-    if(t!=null){t=liftT(t);}
-    s=new MCall(s.getInner(),ms2,s.getDoc(),s.getEs(),s.getP(),t);
+    s=new MCall(s.getInner(),ms2,s.getDoc(),s.getEs(),s.getP(),
+      liftTNull(s.getTypeRec()),liftTNull(s.getTypeOut()));
     return super.visit(s);
     }
     @Override protected MethodSelector liftMsInMetDec(MethodSelector ms){return visitMS(ms,Path.outer(0));}

@@ -120,7 +120,7 @@ public static Path originDecOf(Program p,MethodSelector ms,ClassB cb/*normalized
     }
   throw Assertions.codeNotReachable();
   }
- 
+
 public static Path add1Outer(Path p) {
     if( p.isPrimitive()){return p;}
     return p.setNewOuter(p.outerNumber()+1);
@@ -140,7 +140,7 @@ public static boolean isSubtype(Mdf mdf1, Mdf m) {
   }
 
 /**exceptions of a method that is conceptually a subtype
- * of both a methods containing exceptions a AND one containing exceptions b 
+ * of both a methods containing exceptions a AND one containing exceptions b
  */
 public static List<Type> excRes(Program p, List<Type>a,List<Type>b){
   List<Type> res = excFilter(p,a,b);
@@ -179,7 +179,7 @@ public static Block garbage(Block e, int n) {
     if(i<n&&!needKeep.contains(i)){continue;}
     decs2.add(decs1.get(i));
     }
-  return new Block(e.getDoc(),decs2,e.getInner(),e.getOns(),e.getP());
+  return new Block(e.getDoc(),decs2,e.getInner(),e.getOns(),e.getP(),e.getTypeOut());
   }
 private static boolean iterateAddNeeded(Block e, int n, HashSet<String> needX, HashSet<Integer> needKeep) {
   int size=needKeep.size();
@@ -330,7 +330,7 @@ public static Type toPartial(Type that) {
     case Mutable:       return that.withMdf(Mdf.MutablePFwd);
     case MutableFwd:    return that;
     case MutablePFwd:   return that;
-    case Readable:      return that;  
+    case Readable:      return that;
     }
   throw Assertions.codeNotReachable();
   }
@@ -346,7 +346,7 @@ public static boolean isComplete(Type that){
     case Mutable:       return true;
     case MutableFwd:    return false;
     case MutablePFwd:   return false;
-    case Readable:      return true; 
+    case Readable:      return true;
     }
   throw Assertions.codeNotReachable();
   }
@@ -362,7 +362,7 @@ public static Type toPh(Type that){
     case Mutable:       return that.withMdf(Mdf.MutableFwd);
     case MutableFwd:    return that;
     case MutablePFwd:   return that.withMdf(Mdf.MutableFwd);
-    case Readable:      return that;  
+    case Readable:      return that;
     }
   throw Assertions.codeNotReachable();
   }

@@ -55,7 +55,8 @@ public class ExtractThrow implements Visitor<ExpCore>{
       if(res instanceof ExpCore.WalkBy){return res;}
       Signal res_=(Signal)res;
       List<Block.Dec> decs = s.getDecs().subList(0, i);
-      Block newInner=new Block(s.getDoc(),decs,res_.getInner(),Collections.emptyList(),s.getP());
+      Block newInner=new Block(s.getDoc(),decs,res_.getInner(),Collections.emptyList(),
+        s.getP(),s.getTypeOut());
       newInner=Functions.garbage(newInner,i);
       return res_.withInner(newInner);
       }
@@ -73,5 +74,5 @@ public class ExtractThrow implements Visitor<ExpCore>{
   public ExpCore visit(WalkBy s) {throw Assertions.codeNotReachable();}
   public ExpCore visit(Loop s) { return new ExpCore.WalkBy(); }
   public ExpCore visit(ExpCore.UpdateVar s) {throw Assertions.codeNotReachable("should be dead code?");}
-  
+
   }

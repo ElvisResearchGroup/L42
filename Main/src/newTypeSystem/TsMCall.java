@@ -24,7 +24,7 @@ import ast.Ast.Type;
 public interface TsMCall extends TypeSystem{
 default TOut innerMVPRetype(TOk ri,Type ti){
   if(Functions.isSubtype(ri.computed.getMdf(),ti.getMdf())){
-    assert ri.computed.getMdf()!=Mdf.Mutable; 
+    assert ri.computed.getMdf()!=Mdf.Mutable;
     return ri;
     }
   else{
@@ -80,7 +80,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   MethodType mTypeRev=AlternativeMethodTypes._bestMatchMtype(in.p,computedMt,mTypes);
   if (mTypeRev!=null){
     Type recT=res0.computed.withMdf(mTypeRev.getMdf());
-    MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP(),recT);
+    MCall resM=new MCall(res0.annotated,s.getS(),s.getDoc(),annotated,s.getP(),recT,mTypeRev.getReturnType());
     TOk res=new TOk(in,resM,mTypeRev.getReturnType());
     // Trs[with r in resp (use[r.Tr])].collapse())
     res=res.trUnion(res0);
@@ -120,7 +120,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
 //return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
   Type resT=newRes0.computed.withMdf(mTypeRev.getMdf());
   MCall resM=new MCall(newRes0.annotated,s.getS(),s.getDoc(),
-    Map.of(r->r.annotated,newResp),s.getP(),resT);
+    Map.of(r->r.annotated,newResp),s.getP(),resT,mTypeMVP.getReturnType());
   TOk res=new TOk(in,resM,mTypeMVP.getReturnType());
 // Trs[with r in resp (use[r.Tr])].collapse())
   res=res.trUnion(newRes0);

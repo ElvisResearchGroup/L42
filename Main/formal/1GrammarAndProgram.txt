@@ -8,19 +8,19 @@ A core Library literal L has the least restrictive grammar:
   -nested classes can be of form "C:e", where "e" represents
    the computation needed to obtain an explicit form for "C".
 In addition, a compiled Library literal LC requires all the nested classes
-  *everywhere* in its subtree to be of form C:LC 
+  *everywhere* in its subtree to be of form C:LC
 In addition, in a normalized Library literal LC
   -all of the transitively implemented interfaces are mentioned
   -all methods have all of their types mentioned
   -method declarations are listed before nested classes
   -all L  *everywhere* in its subtree are normalized.
-  -Normalized library literals are labeled (at least)"Norm" 
-In addition, in a typed Library literal, 
+  -Normalized library literals are labeled (at least)"Norm"
+In addition, in a typed Library literal,
   -some type annotations are added, to simplify the work of
    translating 42 to target languages.
   -all L  *everywhere* in its subtree are typed.
-  -Typed library literals are labeled (at least)"Typed" 
-  
+  -Typed library literals are labeled (at least)"Typed"
+
 
 -----------------------------------------------------------
 Part 1: Core language grammar
@@ -31,7 +31,7 @@ throw::= exception | error | return //James suggests "ball" as a possible replac
 mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
 Phase::=None|Norm|Typed|Coherent //TODO: add (fresh library)names that are put after norms//May be None should be renamed into "Desugared"
 ms::=m(xs) //method selector
-mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms  
+mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms
 Ldom::=ms|Cs
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P
@@ -48,7 +48,7 @@ _______
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
 L::={interface? implements Ps M1..Mn Phase}
 M::=refine? mh e?| ms e | C:e
-e::=L|void|x| P | chain.m[P]((x:e)s) 
+e::=L|void|x| P | chain.m[P,T]((x:e)s)
   | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
 k::=catch throw P x e
 d::=var? T x=e | var? x=chain
@@ -69,15 +69,15 @@ dC::= T x=eC
 
 _______
 #define Contexts
-ctxC::=[] 
- | ctxC.m( (x:e)s) 
+ctxC::=[]
+ | ctxC.m( (x:e)s)
  | eC.m( (x:eC)s, x:ctxC, (x:e)s)
- | use P check m( (x:eC)s, x:ctxC, (x:e)s) e 
- | use P check m((x:eC)s) ctxC 
+ | use P check m( (x:eC)s, x:ctxC, (x:e)s) e
+ | use P check m((x:eC)s) ctxC
  | throw ctxC | loop ctxC | x:=ctxC
  | (dCs var? T? x=ctxC ds ks e[T])
  | (dCs kCs catch P x ctxC ks e[T])
- | (dCs kCs ctxC[T]) 
+ | (dCs kCs ctxC[T])
 // The compilation context, e=ctxC[L] selects an L where
 // all of the former Ls are LC.
 // The context does not enter into libraries
@@ -92,10 +92,10 @@ _______
 - eC' inside eC if eC=ctxC[eC']
 - P inside ( _ T x=_ _) if P=T.P  //TODO: check is correct in code
 - P inside ( _ catch throw P x _ _) //TODO: check is correct in code
-- P inside M holds iff P inside M.e 
+- P inside M holds iff P inside M.e
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
  and Ti= _ P or P in Ps
- 
+
 
 The next definition allows us to see paths P and expressions e
 from a different point of view. For example calling a method
@@ -114,7 +114,7 @@ Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
 
 e[from P] propagate on the structure, and L[from P] = L[ from P]0
 {interface? implements Ps, Ms}[from P]j =
-  {interface? implements Ps[from P]j+1, Ms[from P]j+1} 
+  {interface? implements Ps[from P]j+1, Ms[from P]j+1}
 
 This(j+n).Cs0[from P]j=This(j+k).Cs1
   with Thisn.Cs0[from P]=Thisk.Cs1
@@ -126,7 +126,7 @@ comments, since they can have annotated Ps
 Part 2: Well formedness
 -----------------------------------------------------------
 
-* C__n,m__n: if for a given L and non-empty n,  C__n in dom(L) 
+* C__n,m__n: if for a given L and non-empty n,  C__n in dom(L)
   or m__n(xs) in dom(L), then for any other L' in the project
   C'__n notin dom(L') and m'__n(xs') notin dom(L')
 
@@ -142,12 +142,12 @@ Part 2: Well formedness
 
 * L: unique LDom in dom(L), Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
     Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? empty
-    
+
 * L interface:
    methods in interfaces have no body
    forall m__n(xs),  m__n(xs) notin dom(L)//TODO: in code check interfaces has no unique named methods
 
-* (ds ks e[T]): unique x in dom(ds), FV(ks) disjoint dom(ds) and 
+* (ds ks e[T]): unique x in dom(ds), FV(ks) disjoint dom(ds) and
   forall k1,k2 in ks, k1.throw=k2.throw
   That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
 
@@ -158,13 +158,13 @@ Part 2: Well formedness
 * C:e : //checks for capsuleWellFormed and absence of free variables
    cX(e)=empty
    //TODO: in code Note, this can be applied directly after desugaring
-   
-* mwt: Ts=parameter types, T=return type 
+
+* mwt: Ts=parameter types, T=return type
   if exists fwdImm _ in Ts then T.mdf in {mut, fwdMut, imm, fwdImm}
   if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
-* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "ms e" 
+* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "ms e"
   mwt= refine? mdf method T m(T1 x1..Tn xn)e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
@@ -186,7 +186,7 @@ cX(e)//count occurences of xs
     where
     ys=cX(e1),..,cX(en)
     xsi=cX(ki)
-    xs0=cX(e0) 
+    xs0=cX(e0)
     if Ti=capsule _ then
       xi 0 or 1 times in ys,xs0
 _______
@@ -204,7 +204,7 @@ Part 3: program
 Program-specific grammar is needed to represent the position
 in the project (top level Library) that we are reducing.
 For example, if our 42 project is
-{ A:... B:This0.A.second({ method Library m(){C:This2.A.first({})} }) } 
+{ A:... B:This0.A.second({ method Library m(){C:This2.A.first({})} }) }
 we first need to reduce "A.first({})"
 In order to explicitly denote the meaning of "Thisn", we split the project
 into the 3 part program
@@ -218,7 +218,7 @@ It is possible to see the program as a stack, with a top() and a pop() operation
 Given a program is always possible to reconstruct the project
 by doing a series of pop operations.
 Since the top of the stack is of a different kind with respect to the other elements,
-pop replaces the [] with the stack top to forge an L 
+pop replaces the [] with the stack top to forge an L
 push, the opposite of pop, extracts a piece of the top to forge a new top.
 To do so, it takes in input the split form of the old head.
 Finally, notice how in this model updating the top  can not be emulated with pop() + push()
@@ -235,17 +235,17 @@ program primitive operations:
 
 -p.push(ctxL,L)=p'
  (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
- 
+
 -p.update(L)=p' //this is the only one that can detect evilPush
  (L,ctxLs).update(L')=L',ctxLs
 
-  
+
 program derived operations:
 
 -p.get(n)=p'
  p.get(0)=p.top()
  p.get(n+1)=p.pop().get(n)
- 
+
 -p.navigate(Cs)=p'
  p.navigate(C1..Ck)=p.push(C1)...push(Ck)
 
@@ -262,13 +262,13 @@ program derived operations:
 -p.evilPush(L)=p'
  ({interface? Ps Ms},ctxLs).evilPush(L)=L,{interface? Ps Ms C_evil:[]},ctxLs
  with C_evil reserved C name.
- A well-formed project (top level L) can not have C_evil anywhere.  
+ A well-formed project (top level L) can not have C_evil anywhere.
 
- //Note: p.push(L)=p' (ie searching p.top() for a library that matches L) 
+ //Note: p.push(L)=p' (ie searching p.top() for a library that matches L)
  // is not used in the code since it would be very slow and not expressive enough.
  // p.push(L)=p.push(ctxL,L) with ctxL[L]=p.top()
- 
- 
+
+
 ------------------------------------------
 Recursively transforming programs.
 We show here a general way to lift transformations
@@ -280,7 +280,7 @@ otherwise
 transP(p)=p'.updateTop(transL(p'.top())
   //where p'=transP(p.pop()).push(????)//we use p to synthesize a push
   where p'=p.growFellow(transP(p.pop()))
-  
+
 Notice how we call growFellow() on a program that is one step
 shorter than p and p', and p'.pop()=transP(p.pop())
 The idea is that p.pop() is very similar to transP(p.pop()),
@@ -306,20 +306,20 @@ We use (') to show those three phases:
    e'=ctxC''[e''] and ctxC'' sim ctxC
 
 _______
-#define ctxC1 sim ctxC2 
+#define ctxC1 sim ctxC2
   * [] sim []
   assuming ctxC sim ctxC', then
   * ctxC.m((x:e)s) sim ctxC'.m'((x:e)s')
   * e.m(x1:e1..xn:en x:ctxC (x:e)s) sim e'.m'(x1':e1'..xn':en' x':ctxC' (x:e)s')
   * (T1 x1=e1..Tn xn=en T x=ctxC (T x=e)s e) sim (T1' x1'=e1'..Tn' xn'=en' T' x'=ctxC' (T x=e)s' e')
-  * and so on        
+  * and so on
 
------------------------------------------- 
+------------------------------------------
 Terminology:
-Different operations and constructs can be 
+Different operations and constructs can be
 categorized depending on how they explore the structure:
 an "e" can be explored shallow if we never enter into any L
-an "LC" can be explored weakly deep if we explore method bodies 
+an "LC" can be explored weakly deep if we explore method bodies
 in a shallow way and nested libraries in a weakly deep way.
 an "e" can be explored strongly deep if we explore all its subexpressions
 strongly deep, meaning that we enter into all contained Ls

@@ -1,10 +1,16 @@
 package newReduction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ast.Ast;
@@ -43,6 +49,7 @@ import auxiliaryGrammar.Functions;
 import coreVisitors.FreeVariables;
 import coreVisitors.Visitor;
 import facade.L42;
+import l42FVisitors.CloneVisitor;
 import newTypeSystem.GuessTypeCore;
 import newTypeSystem.GuessTypeCore.G;
 import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
@@ -82,9 +89,9 @@ class PG implements Visitor<E>{
   public static T liftT(Program p,Ast.Type t){
     return new T(t.getMdf(),liftP(p,t.getPath()));
     }
-  public static ExpCore.Block blockX(Ast.Type t,String x, ExpCore e,ExpCore e0){
+  public static ExpCore.Block blockX(Ast.Type t,String x, ExpCore e,ExpCore e0,Type expectedT){
     Dec d=new Dec(false,Optional.of(t),x,e);
-    return new ExpCore.Block(Doc.empty(),Collections.singletonList(d), e0,Collections.emptyList(), Position.noInfo);
+    return new ExpCore.Block(Doc.empty(),Collections.singletonList(d), e0,Collections.emptyList(), Position.noInfo,expectedT);
     }
 
 @Override
@@ -112,7 +119,7 @@ public E visit(Signal s) {
     }
   String x = Functions.freshName("throwX",L42.usedNames);
   Signal sx = s.withInner(new X(Position.noInfo,x));
-  return blockX(s.getTypeIn(),x, s.getInner(),sx).accept(this);
+  return blockX(s.getTypeIn(),x, s.getInner(),sx,s.getTypeOut()).accept(this);
   }
 
 @Override
@@ -138,12 +145,11 @@ public E visit(UpdateVar s) {
     }
   String x = Functions.freshName("throwX",L42.usedNames);
   UpdateVar sx = s.withInner(new X(Position.noInfo,x));
-  return blockX(gamma._g(s.getVar()),x, s.getInner(),sx).accept(this);
+  return blockX(gamma._g(s.getVar()),x, s.getInner(),sx,Type.immVoid).accept(this);
   }
 
 @Override
 public E visit(MCall s) {
-// TODO Auto-generated method stub
 if(!(s.getInner() instanceof X)) {return visitReceiver(s);}
 int i=0;
 for(ExpCore ei:s.getEs()) {
@@ -175,7 +181,7 @@ private E visitBase(MCall s) {
 private E visitReceiver(MCall s) {
   String x = Functions.freshName("receiverX",L42.usedNames);
   MCall sx = s.withInner(new X(Position.noInfo,x));
-  return blockX(s.getTypeRec(),x, s.getInner(),sx).accept(this);
+  return blockX(s.getTypeRec(),x, s.getInner(),sx,s.getTypeOut()).accept(this);
   }
 private E visitParameter(int i,MCall s) {
   String x = Functions.freshName("parX",L42.usedNames);
@@ -183,15 +189,15 @@ private E visitParameter(int i,MCall s) {
   ClassB cb=p.extractClassB(s.getTypeRec().getPath());
   MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
   Type ti=mwt.getMt().getTs().get(i);
-  return blockX(ti,x, s.getEs().get(i),sx).accept(this);
+  return blockX(ti,x, s.getEs().get(i),sx,s.getTypeOut()).accept(this);
   }
 private E visitParameter(int i,List<Type> lt,Using s) {
   String x = Functions.freshName("parX",L42.usedNames);
   Using sx = s.withEsi(i,new X(Position.noInfo,x));
-  Type ti=lt.get(i);
-  return blockX(ti,x, s.getEs().get(i),sx).accept(this);
+  Type ti=lt.get(i+1);
+  return blockX(ti,x, s.getEs().get(i),sx,lt.get(0)).accept(this);
   }
-private E visitBase(List<Type> lt,Using s) {
+private E visitBase(Using s) {
   List<String> ps=new ArrayList<>();
   for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
   E e=s.getInner().accept(this);
@@ -211,7 +217,7 @@ public E visit(Using s) {
   if(i!=s.getEs().size()) {
     return visitParameter(i,lt, s);
     }
-  return visitBase(lt,s);
+  return visitBase(s);
   }
 @Override
 public E visit(Block s) {
@@ -220,8 +226,7 @@ public E visit(Block s) {
   List<K>ks=tools.Map.of(pg::visitK,s.getOns());
   E e=s.getInner().accept(pg);
   Set<String> fv = FreeVariables.of(s.getDecs());
-  assert false;  //TODO: ADD t annotation to block
-  return new L42F.Block(fwdFix(fv,ds), ks, e, PG.liftT(p,null));
+  return new L42F.Block(fwdFix(fv,ds), ks, e, PG.liftT(p,s.getTypeOut()));
 }
 static MethodSelector msOptimizedNew(MethodSelector ms) {
   return ms.withName("New_"+ms.getName());
@@ -231,14 +236,25 @@ private List<D> fwdFix(Set<String> fv,List<D>ds){
     return ds;
     }
   //a block actually using placeholders
-  //compute all xiPrime
-  //compute all eiPrime
+  Map<String,String> map=new HashMap<>();
+  Collections.reverse(ds);
+  List<D> dPrimes=new ArrayList<>();//e'i..e'n
+  Set<String>usedAsFwd=new HashSet<>();
+  for(D d:ds) {//from the bottom
+    //compute all xiPrime and eiPrime
+    map.put(d.getX(),Functions.freshName(d.getX(), L42.usedNames));
+    dPrimes.add(d.withE(ePrimei(d.getE(),map,usedAsFwd)));
+    }
+  Collections.reverse(ds);
+  Collections.reverse(dPrimes);
   //all fwdGen
-  //all normal dec+optional resourceFix
-  return null;
+  Stream<D> acc=ds.stream().flatMap(d->fwdGen(d,map.get(d.getX()),usedAsFwd));
+  acc=Stream.concat(acc,dPrimes.stream().flatMap(d->fixedXi(d,map.get(d.getX()),usedAsFwd)));
+      //all normal dec+optional resourceFix
+  return acc.collect(Collectors.toList());
   }
-private Stream<D> fwdGen(Set<String> fv,String xPrime, D d){
-  if(!fv.contains(d.getX())){return Stream.of();}
+private Stream<D> fwdGen(D d, String xPrime, Set<String> xs){
+  if(!xs.contains(xPrime)){return Stream.of();}
   Call e=new Call(d.getT().getCn(),MethodSelector.parse("NewFwd()"),Collections.emptyList());
   return Stream.of(new D(false,d.getT(),xPrime,e));
   }
@@ -252,5 +268,21 @@ private K visitK(ExpCore.Block.On k){
   PG pg=new PG(p,gamma.addTx(k.getX(),k.getT()));
   return new K(k.getKind(),PG.liftT(p,k.getT()),k.getX(),k.getInner().accept(pg));
   }
-
+private E ePrimei(E ei,Map<String,String>map,Set<String>usedAsFwd) {
+  //ex'i=exi[xi..xn=x'i..x'n]
+  return ei.accept(new CloneVisitor() {
+    protected String liftX(String s) {
+      String mapped=map.get(s);
+      if(mapped==null) {return s;}
+      usedAsFwd.add(mapped);
+      return mapped;
+      }
+    });
+  }
+private Stream<D> fixedXi(D di,String xPrimei,Set<String>xs){
+  if(xs.contains(xPrimei)) {return Stream.of(di);}
+  E fixE=new Call(Cn.cnResource.getInner(),MethodSelector.parse("Fix()"),Arrays.asList(xPrimei,di.getX()));
+  D dPrime=new D(false,T.immVoid,Functions.freshName("unused", L42.usedNames),fixE);
+  return Stream.of(di,dPrime);
+}
 }

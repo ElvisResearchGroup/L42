@@ -107,7 +107,7 @@ final public ExpCore step(PData p,ExpCore e){
       .end();}
 catch(ErrorMessage.CtxExtractImpossible rethrow){
   throw rethrow;//to debug
-  
+
 }*/
 }
 
@@ -118,7 +118,7 @@ ExpCore val=e1.getDecs().get(i).getInner();
 String x=e1.getDecs().get(i).getX();
 ArrayList<Block.Dec> decs = new ArrayList<Block.Dec>(e1.getDecs());
 decs.remove(i);
-Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.getOns(),e1.getP());
+Block e2=new Block(e1.getDoc(),decs,e1.getInner(),e1.getOns(),e1.getP(),e1.getTypeOut());
 ExpCore result=ReplaceX.of(e2,val,x);
 return ReplaceCtx.of(ctxVal,result);
 }
@@ -318,7 +318,7 @@ private ExpCore primCallArg(Program p,MCall mc, int i, MethodWithType mwt, HashS
   return new Block(Doc.empty(),Collections.singletonList(new Block.Dec(ti,xi,ei)),
       mc.withEs(es),Collections.emptyList(),mc.getP());
 }
-private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) { 
+private ExpCore primCallRec(MCall mc, Path pathR,MethodWithType mwt, HashSet<String> usedNames) {
   NormType t1=Functions.toComplete(new NormType(mwt.getMt().getMdf(),pathR,Doc.empty()));
   log("---primCallRec--");
   String x1=Functions.freshName(pathR,usedNames);

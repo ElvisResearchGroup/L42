@@ -26,6 +26,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
     if(!t.isPresent()){return t;}
     return Optional.of(liftT(t.get()));
   }
+  protected Type liftTNull(Type t) {
+    if(t==null) {return t;}
+    return liftT(t);
+    }
   protected Type liftT(Type t){
     return new Type(t.getMdf(),liftP(t.getPath()),liftDoc(t.getDoc()));
     }
@@ -82,12 +86,14 @@ public class CloneVisitor implements Visitor<ExpCore>{
             );
   }
   public ExpCore visit(MCall s) {
-    Type t=s.getTypeRec();
-    if(t!=null){t=liftT(t);}
-    return new MCall(lift(s.getInner()),liftMs(s.getS()),liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP(),t);
+    return new MCall(lift(s.getInner()),liftMs(s.getS()),
+      liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP(),
+      liftTNull(s.getTypeRec()),liftTNull(s.getTypeOut()));
   }
   public ExpCore visit(Block s) {
-    return new Block(liftDoc(s.getDoc()),liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftO,s.getOns()),s.getP());
+    return new Block(liftDoc(s.getDoc()),
+      liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftO,s.getOns()),
+      s.getP(),liftTNull(s.getTypeOut()));
   }
   protected List<Dec> liftDecs(List<Dec> s) {
     return Map.of(this::liftDec,s);

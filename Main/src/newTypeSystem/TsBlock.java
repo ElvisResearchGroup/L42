@@ -34,7 +34,7 @@ public interface TsBlock extends TypeSystem{
     //if we are here, both res1,res2 not ok
     return combine(res1.toError(),res2.toError());
     }
-  
+
   default int splitDs(TIn in,List<Block.Dec> ds){
     int i=0;
     final int n=ds.size()-1;
@@ -44,10 +44,10 @@ public interface TsBlock extends TypeSystem{
       xs.addAll(coreVisitors.FreeVariables.of(ds.get(i).getInner()));//xs U  FV(ei)
       if (xsNotInDomi(xs,ds,i+1)){return i;}
       //cut will be from 0 to i included
-      if (i==n){return i;} //ds.size-1  
+      if (i==n){return i;} //ds.size-1
       i+=1;
       }
-    }  
+    }
 default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   //ds=ds0..dsn;
   //domi=dom(dsi+1..dsn)
@@ -59,7 +59,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   }
 
   default TOut tsBlockBase(TIn in,Block s){
-   //Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T]) 
+   //Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
    //     : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
    List<Block.Dec> ds=s.getDecs();
    List<Block.On> ks=s.getOns();
@@ -70,7 +70,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    if(!_dsOut.isOk()){
      TErr err=_dsOut.toError();
      if(!err.kind.needContext){return err;}
-     //TODO: here we have the info to capture a failure about ds and discover if    
+     //TODO: here we have the info to capture a failure about ds and discover if
      //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
      //was locked by error safety[cite the line number of the catch]
      return err;
@@ -98,7 +98,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      }
    Type t=new Type(tMdf,in.expected.getPath(),Doc.empty());
    assert null==TypeSystem.subtype(in.p,t, in.expected);
-   Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP());
+   Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP(),t);
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0
    Tr trCaptured=dsOk.trAcc;
@@ -108,8 +108,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    Tr trUnion = trCaptured.trUnion(ksOk.trAcc).trUnion(e0Ok);
    res=res.trUnion(trUnion);
    return res;
-  }  
-  
+  }
+
   default TOutDs dsType(TIn in,List<Dec> _ds){
     if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,G.instance.addGG(in));}
     int iSplit=splitDs(in,_ds);
@@ -124,7 +124,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       }
     assert !fve0n.stream()
       .anyMatch(x->ds.stream()
-        .anyMatch(d->d.getX().equals(x)));    
+        .anyMatch(d->d.getX().equals(x)));
     List<Dec> dsFiltered = ds0n.stream().filter(
           d->{Mdf m=d.getT().get().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
           .map(d->d.withVar(false).withT(Optional.of(TypeManipulation.fwd(d.getT().get()))))
@@ -167,7 +167,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(res.trAcc!=null){trAcc=trAcc.trUnion(res.trAcc);}
     return new TOkDs(trAcc,ds1,res.g);
     }
-  
+
   default TOutKs ksType(TIn in,Tr trAcc,List<On> ks){
 //   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 //     forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
@@ -187,14 +187,14 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
 
     TOkKs res=new TOkKs(newTrAcc,ks1,ts);
     return res;
-    }    
-  
+    }
+
   default TOutK kType(TIn in,Tr tr,On k){
     if(TypeManipulation.catchRethrow(k)){return kTypeCatchAny(in,tr,k);}
     boolean preciseApplicable=
       k.getKind()==SignalKind.Return &&
       k.getT().equals(Path.Any().toImmNT()) &&
-      k.getE().equals(new ExpCore.X(Ast.Position.noInfo, k.getX())) &&      
+      k.getE().equals(new ExpCore.X(Ast.Position.noInfo, k.getX())) &&
       tr.returns.stream().allMatch(t->
         TypeSystem.subtype(in.p, t.getPath(),in.expected.getPath())==null
         );
@@ -212,7 +212,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(mdf1==null){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
-    assert mdf1!=Mdf.MutablePFwd && mdf1!=Mdf.ImmutablePFwd; 
+    assert mdf1!=Mdf.MutablePFwd && mdf1!=Mdf.ImmutablePFwd;
     Type T1 = k.getT().withMdf(mdf1);
     TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
@@ -248,13 +248,13 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     ExpCore newE=e.withDeci(0,e.getDecs().get(0).withInner(ok.annotated));
     return new TOkK(tr,k.withE(newE),in.expected);
     /*
-   (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"  
+   (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"
    Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw x): T<=T | Tr
      where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
      e0=(e catch error Any z void void)
      e0'=(e' catch error Any z void void)
      Phase |p |G\x |- e ~> e':_ <=imm Void | empty
-     catchRethrow(catch throw Any x(e0 throw x)) 
+     catchRethrow(catch throw Any x(e0 throw x))
 */
   }
 
@@ -267,7 +267,7 @@ default TOut tsBlockPromotion(TIn in,Block s){
   Mdf eM=in.expected.getMdf();
   assert eM==Mdf.Capsule || eM==Mdf.Immutable ||eM==Mdf.ImmutableFwd || eM==Mdf.ImmutablePFwd:
     eM;
-  
+
   TIn in2=in.toLent();
   TOut out=type(in2.withE(in.e,in.expected.withMdf(Mdf.Mutable)));
   if(!out.isOk()){return out;}

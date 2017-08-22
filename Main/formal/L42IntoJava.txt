@@ -283,16 +283,18 @@ PG[(ds ks e[T])]=(fwdFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   PG[T x=e]=PG*T x=PG[e]
   PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
 
-  fwdFix(dxs)=dxs if dxs.xs not in xs=FV(dxs.es)
+  fwdFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
   otherwise //a block actually using placeholders
   fwdFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
     fwdGen(mdf1 CN1 x'1,xs)..fwdGen(mdfn CNn x'n,xs)
     mdf1 CN1 x1=ex'1, imm Void z1=Resource.Fix(x1',x1)
-                      if fwdGen(mdf1 CN1 x'1,xs)!=empty, else empty
+                      if x'1 notin xs else empty
     ..
     mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
-                      if fwdGen(mdf1 CN1 x'n,xs)!=empty, else empty
-    with exi'=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
+                      if x'n notin xs else empty
+    with ex'i=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
+    //in code, while computing ex'i, collect set of x'i that has been inserted
+    // if x'i in such set then x'i in xs
 
   fwdGen(mdf CN x,xs)=empty if x not in xs
   otherwise fwdGen(mdf CN x,xs)=mdf CN x=CN.NewFwd()
