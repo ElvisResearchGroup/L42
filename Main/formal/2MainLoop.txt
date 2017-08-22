@@ -3,11 +3,11 @@ that proceeds through the following phases:
 0 parsing
 1 desugaring
 2 from the top, find the left-most inner-most C:eC with eC!=LC
-3 collect all the transitive dependencies of eC.
+3 collect all the transitive dependencies of the eC.
 4 type these dependencies.
-5 type as "coherent" (aka not abstract) all dependencies needed to execute eC.
-6 type eC:Library in the program composed by those dependencies.
-7 execute eC until you get an LC, and replace eC with LC in the program
+5 type as "coherent" (aka not abstract) all dependencies needed to execute the eC.
+6 type the eC as a Library in the program composed by those dependencies.
+7 execute the eC until you get an LC, and replace the eC with the LC in the program
 8 jump back to 2. 
 
 The rules presented here cover 2-8, and depend on other notations defined in files up to here,
@@ -73,7 +73,7 @@ We construct paths from P1..Pn as follow:
  -reorganize(empty)=empty
  -reorganize(Ps)=Css0',...,Cssn'
   Cs in Cssi iff Thisi.Cs in Ps //this filters out Any, Void, and Library since they have no Thisi
-  Cssn!=empty //this guarantees paths is not larger then is needed by the set of Ps
+  Cssn!=empty //this guarantees paths is not larger than is needed by the set of Ps
   Cssi'=minimize(Cssi)
 
 Simple operations:
@@ -135,11 +135,11 @@ _______
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code; may be is solved by change in collect "\p"
     such that p(Pj)(ms)=mh e? //no refine
   forall i in 1..k //i comes from k in ms1..msk
-    Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
+    Mi= p(P0)(msi)[from P0] if it is of form refine? mh e?,
     otherwise
     Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
       for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
-    //this ordering of j leverages the smart ordering of collect() 
+      //this ordering of j leverages the smart ordering of collect() 
     Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
     otherwise
     Mi'=Mi
@@ -277,14 +277,14 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   non determinism heuristic used in tryCoherentPaths(p,eC):
   **if P.m(_) inside e, P in Ps'
   **if p(Pi).Phase=Coherent, Pi  in Ps' // note, if p(P) is not defined,
-  //the path will not be queued for coherence, and error will be raised in the check for typing. 
+  //the path will not be queued for coherence, and an error will be raised during the typing of eC in (top).
   **if ( _ T? x=P _ _) inside e and T? != class Any, P in Ps'.
   **if ( _ T x=_  _ _) inside e, T.P  in Ps'//TODO: update the code for this heuristic
   **if catch throw P x _ inside e, P  in Ps'  
   **if using P _ _ inside e, P  in Ps'
   otherwise, P is in Ps instead of Ps'.
   // note that user can always force a Ps' by writing (x=P x)
-  
+       class method Library ident(that Library) (that)
 
 -----------------------------------------------------------
 Part 6: paths;paths' ||-p ~> p,  toAny(paths, eC) //assumes that p does not have evil pushes
