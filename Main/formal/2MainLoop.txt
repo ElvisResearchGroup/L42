@@ -256,6 +256,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 - reachablePaths(p,paths,Css,Typed?)=paths0
   where
   paths.top()\Css==empty
+  assert paths.top() == Css //TODO: add in code
   if paths.pop() not empty
     paths0=reachablePaths(p.pop(),paths.pop(),empty,Typed?).push(Css)
   otherwise //this if is to avoid p.pop() undefined
