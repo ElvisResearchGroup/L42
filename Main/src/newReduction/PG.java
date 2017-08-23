@@ -83,8 +83,14 @@ class PG implements Visitor<E>{
   }
 
   public static int liftP(Program p,Ast.Path path){
-    ClassB cb=p.extractClassB(path);
-    return cb.getUniqueId();
+    if(path.isCore()) {
+      ClassB cb=p.extractClassB(path);
+      return cb.getUniqueId();
+      }
+    if(path==Path.Any()) {return Cn.cnAny.getInner();}
+    if(path==Path.Void()) {return Cn.cnVoid.getInner();}
+    if(path==Path.Library()) {return Cn.cnLibrary.getInner();}
+    throw Assertions.codeNotReachable();
     }
   public static T liftT(Program p,Ast.Type t){
     return new T(t.getMdf(),liftP(p,t.getPath()));

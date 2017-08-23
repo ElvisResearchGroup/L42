@@ -102,8 +102,6 @@ public class ToFormattedText implements Visitor<Void>{
     }
   //String atomIndent="  ";
   protected Void c(String s){result.append(s);return null;}
-  @SuppressWarnings("unused")
-  private Void c(StringBuilder s){result.append(s);return null;}
   private Void sp(){result.append(" ");return null;}
   private Void separeFromChar(){
     char last=result.charAt(result.length()-1);
@@ -540,12 +538,12 @@ public class ToFormattedText implements Visitor<Void>{
   public Void visit(Expression.EPath path) {
     return liftP(path.getInner());
   }
-  
+
   protected Void liftP(Path path) {
     if(Path.Any()==path){return c("Any");}
     if(Path.Library()==path){return c("Library");}
     if(Path.Void()==path){return c("Void");}
-    
+
     if(path.isCore()){
       c("This"+path.outerNumber());
       for(Ast.C ci:path.getCBar()){

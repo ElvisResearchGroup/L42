@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ast.Ast.C;
 import ast.L42F;
@@ -17,13 +18,20 @@ public class ClassTable {
   public ClassTable(Map<Integer, Element> map) {
     this.map = map;
     }
-public static final ClassTable empty=new ClassTable(Collections.emptyMap());
-  private static class Element{
+  public Element get(int index) {
+    Element res=map.get(index);
+    assert res!=null;
+    return res;
+    }
+  public Set<Integer> keySet(){return map.keySet();}
+  public String toString() {return L42FToString.visitCT(this);}
+  public static final ClassTable empty=new ClassTable(Collections.emptyMap());
+  static class Element{
     Element(CD cd) {this.cd = cd;}
     L42F.CD cd;
     }
   public static class NamesP{
-    NamesP(List<String>names, Program p){this.names=names;this.p=p;}  
+    NamesP(List<String>names, Program p){this.names=names;this.p=p;}
     List<String>names;Program p;
     }
   public ClassTable growWith(List<String>names,Program p, Paths paths){
@@ -36,7 +44,7 @@ public static final ClassTable empty=new ClassTable(Collections.emptyMap());
     if(paths.isEmpty()){return Collections.emptyList();}
     List<NamesP>res=new ArrayList<>();
     for(List<C> cs :paths.top()){
-      Program pi=p.navigate(cs);  
+      Program pi=p.navigate(cs);
       res.add(new NamesP(names,pi));
       }
     Paths ppaths=paths.pop();
@@ -56,11 +64,5 @@ public static final ClassTable empty=new ClassTable(Collections.emptyMap());
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(cd.getCn(), new Element(cd));
   return new ClassTable(newMap);
-}
-private String dbgName(List<String> names, int topN) {
-    StringBuilder b=new StringBuilder();
-    tools.StringBuilders.formatSequence(b, names.iterator(), "£C",s->b.append(s));
-    b.append("£Id"+topN);
-    return b.toString();
-    }
   }
+}

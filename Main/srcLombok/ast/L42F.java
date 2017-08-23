@@ -20,7 +20,14 @@ public static enum SimpleKind implements Kind{
 Class, Interface, NativeInt32, NativeString, NativeFloat32;
 }
 @Value @Wither public static class
-CD{programReduction.Program p; Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms; }
+CD{programReduction.Program p; Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
+  public String dbgName() {
+    StringBuilder b=new StringBuilder();
+    tools.StringBuilders.formatSequence(b, dbgName.iterator(), "£C",s->b.append(s));
+    b.append("£Id"+cn);
+    return b.toString();
+    }
+  }
 
 @Value @Wither public static class
 TX{T t; String x;}
@@ -52,7 +59,7 @@ Cn implements E{int inner;
   public static final Cn cnAny=new Cn(0);
   public static final Cn cnVoid=new Cn(1);
   public static final Cn cnLibrary=new Cn(2);
-  public static final Cn cnResource=new Cn(3);  
+  public static final Cn cnResource=new Cn(3);
   }
 
 @Value @Wither public static class
@@ -92,7 +99,7 @@ If implements E{
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
 
 @Value @Wither public static class
-Update implements E{String x1; String x2; 
+Update implements E{String x1; String x2;
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
 
 @Value @Wither public static class
