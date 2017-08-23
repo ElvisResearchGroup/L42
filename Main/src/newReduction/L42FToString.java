@@ -55,7 +55,7 @@ public class L42FToString implements l42FVisitors.Visitor<Void>{
       if(mi.isRefine()) {c("refine ");}
       c("mehtod ");
       liftT(mi.getReturnType());
-      c(""+mi.getSelector());
+      c(" "+mi.getSelector());
       c("(");
       tools.StringBuilders.formatSequence(result,mi.getTxs().iterator(),",",
           x->{liftT(x.getT());sp();liftX(x.getX());});
@@ -102,7 +102,7 @@ public class L42FToString implements l42FVisitors.Visitor<Void>{
   }
 
   private void liftX(String x) {c(x);}
-  private void liftCn(int i) {c(ct.get(i).cd.dbgName());}
+  private void liftCn(int i) {c(ct.dbgNameOf(i));}
   private void liftT(T t) {
     c(""+t.getMdf());
     sp();

@@ -165,7 +165,7 @@ class EmptyProgramHolder{
   }
 
 class FlatProgram extends Methods{
-  int freshIds=1;
+  int freshIds=5;
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
     

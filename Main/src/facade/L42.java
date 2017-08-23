@@ -55,6 +55,12 @@ public class L42 {
   }
   private static long privateNum=0L;
   public synchronized static long freshPrivate(){privateNum+=1L;return privateNum;}
+  /*private static int uniqueIdForNormL=4;
+  public synchronized static int freshUniqueId(){uniqueIdForNormL+=1L;return uniqueIdForNormL;}
+  public synchronized static void resetUniqueId(){//for testing
+    uniqueIdForNormL=4;
+    }*/
+
   public synchronized static void setFreshPrivateCap(long cap){
     privateNum=Math.max(privateNum, cap);
     }

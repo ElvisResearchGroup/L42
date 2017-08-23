@@ -583,4 +583,19 @@ public static final String listAccess(){return
 +"  }\n";
 }
 
+@Test public void testMultipleImplementSameInterface(){tp("{"+
+"  A:{ "+
+"    B:{ "+
+"       C:{interface class method Void m() "+
+"          } "+
+"       D:{implements C B.C A.B.C "+
+"          method m() void} "+
+"       } "+
+"    class method Library ident(Library that) (that) "+
+"    } "+
+"  E:A.ident({//@exitStatus\n//0\n\n}) "+
+"  }");
+}
+
+
 }

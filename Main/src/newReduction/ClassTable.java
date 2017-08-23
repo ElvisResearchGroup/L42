@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import ast.Ast.C;
+import ast.Ast.Path;
 import ast.L42F;
 import ast.L42F.CD;
+import ast.L42F.Cn;
 import programReduction.Paths;
 import programReduction.Program;
 
@@ -18,6 +20,13 @@ public class ClassTable {
   public ClassTable(Map<Integer, Element> map) {
     this.map = map;
     }
+  public String dbgNameOf(int index){
+  if(index==Cn.cnAny.getInner()){return "Any";}
+  if(index==Cn.cnVoid.getInner()){return "Void";}
+  if(index==Cn.cnLibrary.getInner()){return "Library";}
+  if(index==Cn.cnResource.getInner()){return "Resource";}
+  return get(index).cd.dbgName();
+  }
   public Element get(int index) {
     Element res=map.get(index);
     assert res!=null;

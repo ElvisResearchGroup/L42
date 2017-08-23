@@ -35,10 +35,28 @@ public class TestL42F {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{method Void v()void}",
-    "Class Foo£Id1 implements {\n" +
-    "  mehtod Immutable Foo£Id1v()(Immutable Foo£Id1 this)\n" +
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "  void\n" +
-    "}"
+    "}\n"
+    },{lineNumber(),
+    "{ A:{method Void va()void} B:{method Void vb()void}}",
+    "Class Foo£Id7 implements {\n"+
+    "  \n"+
+    "}\n"+
+    "Class Foo£CA£Id8 implements {\n"+
+    "  mehtod Immutable Void va()(Immutable Foo£CA£Id8 this)\n"+
+    "  void\n"+
+    "}\n"+
+    "Class Foo£CB£Id9 implements {\n"+
+    "  mehtod Immutable Void vb()(Immutable Foo£CB£Id9 this)\n"+
+    "  void\n"+
+    "}\n"
+    },{lineNumber(),"{method Void v()void}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  void\n" +
+    "}\n"
     }});}
 
   @Test  public void test() {

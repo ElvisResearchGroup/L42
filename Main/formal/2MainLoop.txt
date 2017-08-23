@@ -37,8 +37,8 @@ p ==> p'.update(p'.top()[C=L])
   //paths' needs to be coherent, while paths needs only to be typed
   p0=multiNorm(p; paths)//norm the part of p required by eC
   paths;paths' ||-p0 ~> p' //type all the paths
-  Norm | p'| empty |-eC ~> eC' : _<= imm Library //typing eC normally
-  Norm | p'| empty |-toAny(paths',eC) ~> _ :_<= imm Library //check that even replacing paths with Any eC is well typed
+  Norm | p'| empty |-eC ~> eC' : _<= imm Library | empty;_ //typing eC normally//TODO: in code check no leaked returns
+  Norm | p'| empty |-toAny(paths',eC) ~> _ :_<= imm Library | empty;_ //check that even replacing all Ps but paths' with Any, eC is still well typed
   eC' -->p'+ r //execute the expression under the program and obtain a result
   L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
 
@@ -65,7 +65,7 @@ in This1 and so on.
 Moreover, if Thisn.Cs is present, then we do not store
 any of its sub paths Thisn.Cs.Cs'.
 We model this idea with
-- minimize(Css)={Csi in Css | forall Csj in Css\Csi,  Csj._!=Csi}//Note: _ can be the empty Cs
+- minimize(Css)={Csi in Css | forall Csj in Css\Csi,  Csj._!=Csi}//TODO: marco remembers that in the code we allows _ to be of size 0. this makes no sense since Css\Csi would remove all occurences of Csi
 
 - paths::= Csss //list of set of list of C
 
@@ -135,8 +135,8 @@ _______
   forall ms in ms1..msk, there is exactly 1 j in 0..n //TODO: this is problematic: In case multiple P are either exactly the same or points to the same interface!! for now the problem is just hacked away in the code; may be is solved by change in collect "\p"
     such that p(Pj)(ms)=mh e? //no refine
   forall i in 1..k //i comes from k in ms1..msk
-    Mi= p(P0)(msi)[from P0] if it is of form refine? mh e?,
-    otherwise
+    Mi= p(P0)(msi)[from P0],  with p(P0)(msi) of form refine? mh e?,
+    otherwise //note: 'ms e' and missing methods both get mh from implemented interfaces
     Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
       for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
       //this ordering of j leverages the smart ordering of collect() 
@@ -242,9 +242,11 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
+  where
   L1..Ln={L|L inside M.e, M in L0.Ms}//TODO: was L instead of L0, check in code 
  
 - reachablePaths(p,paths,Css,Typed?)= reachablePaths(p, paths U paths0,Css',Typed?) // U on paths does minimize() internally
+  where
   paths.top()\Css!=empty
   Cs1..Csn=paths.top()\Css
   paths0=reachableFromL(p.top()(Cs1),Typed?).prefix(Cs1) U ... U reachableFromL(p.top()(Csn),Typed?).prefix(Csn)
@@ -252,6 +254,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   Css'=minimize(paths.top() U Css)  
      
 - reachablePaths(p,paths,Css,Typed?)=paths0
+  where
   paths.top()\Css==empty
   if paths.pop() not empty
     paths0=reachablePaths(p.pop(),paths.pop(),empty,Typed?).push(Css)
@@ -261,11 +264,13 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 - reachablePaths(p,empty,empty,Typed?) =empty   
     
 - reachableFromL(LC,Typed?)=paths
+  where
   LC={_ implements Ps, M1..Mn Phase}//in implementation, error if not compiled
   paths=reorganize(Ps) U reachableFromM(M1,Typed?) U... U reachableFromM(Mn,Typed?))
   Phase in{None,Norm}
   
 - reachableFromL(LC,Typed?)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
+  where
   LC.Phase not in{None,Norm}
 
 - reachableFromM(C:L,Typed?)= reachableFromL(L,Typed?).pop()

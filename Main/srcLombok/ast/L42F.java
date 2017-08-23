@@ -10,6 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import ast.Ast.Mdf;
+import ast.L42F.Cn;
 import lombok.Value;
 import lombok.experimental.Wither;
 import l42FVisitors.Visitor;
@@ -56,10 +57,10 @@ X implements E{String inner;
 @Value @Wither public static class
 Cn implements E{int inner;
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}
-  public static final Cn cnAny=new Cn(0);
-  public static final Cn cnVoid=new Cn(1);
-  public static final Cn cnLibrary=new Cn(2);
-  public static final Cn cnResource=new Cn(3);
+  public static final Cn cnAny=new Cn(1);
+  public static final Cn cnVoid=new Cn(2);
+  public static final Cn cnLibrary=new Cn(3);
+  public static final Cn cnResource=new Cn(4);
   }
 
 @Value @Wither public static class
