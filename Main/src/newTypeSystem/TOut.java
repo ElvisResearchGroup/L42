@@ -31,12 +31,12 @@ Type _computed;
 ErrorKind kind;
 public TErr enrich(TIn in2) {
   return this;//TODO: design some general error context enreaching
-  }  
+  }
 }
 
 
 //-----------------TOut
-interface TOut{
+public interface TOut{
   boolean isOk();
   default TOk toOk() {throw new Error();}
   default TErr toError() {throw new Error();}
@@ -52,7 +52,7 @@ abstract This trClean();//{return new This();}
 abstract This self();//{return this;}
 public This trUnion(ATr<?> that){
 //Tr1 U Tr2
-//  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2  
+//  Ts1;Ps1 U Ts2;Ps2 =  Ts1,Ts2; Ps1,Ps2
   This res=trClean();
   assert this.returns!=null;
   assert that.returns!=null;
@@ -162,7 +162,7 @@ interface TOutM{
 
 class TOkM implements TOutM{
   public TOkM(Member inner) {this.inner = inner;}
-  ExpCore.ClassB.Member inner;  
+  ExpCore.ClassB.Member inner;
   @Override public boolean isOk() { return true;}
   @Override public TOkM toOkM() {return this;}
   }

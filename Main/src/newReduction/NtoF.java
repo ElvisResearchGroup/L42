@@ -47,7 +47,7 @@ public class NtoF {
     List<M> ms=top.mwts().stream()
       .flatMap(m->liftM(top.isInterface(),p,(MethodWithType)m))
       .collect(Collectors.toList());
-    CD res=new CD(k,top.getUniqueId(),new ArrayList<>(topName),supert,ms);
+    CD res=new CD(p,k,top.getUniqueId(),new ArrayList<>(topName),supert,ms);
     acc.add(res);
     }
 private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt) {
