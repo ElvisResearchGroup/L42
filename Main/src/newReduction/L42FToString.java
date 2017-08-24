@@ -25,17 +25,8 @@ import ast.L42F.Use;
 import ast.L42F.X;
 import ast.L42F._void;
 
-public class L42FToString implements l42FVisitors.Visitor<Void>{
-  public L42FToString(ClassTable ct) {this.ct = ct;}
-  ClassTable ct;
-  StringBuilder result=new StringBuilder();
-  private String currentIndent="";
-  private Void nl(){result.append("\n");result.append(currentIndent);return null;}
-  private Void indent(){currentIndent+="  ";return null;}
-  private Void deIndent(){currentIndent=currentIndent.substring(2);return null;}
-  protected Void c(String s){result.append(s);return null;}
-  private Void sp(){result.append(" ");return null;}
-
+public class L42FToString extends L42FStringer{
+  public L42FToString(ClassTable ct) {super(ct);}
 
   public static String visitCT(ClassTable ct) {
     L42FToString ts=new L42FToString(ct);

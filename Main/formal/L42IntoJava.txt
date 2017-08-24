@@ -354,14 +354,14 @@ statement st::=
   |break label
   |return ej
   |throw new 'throw'(x)
-  |try b catch(T x)b //one catch should be enough
+  |try b catch(T x)b //more catch for catching return/exception/error
   |CN.m(xs)
   |useCall(xs)
 
 block b::=label:{sts}
 
 ej::=x|CN.m(xs)|useCall(xs)
- | (CN') CN.m(xs) | CN'.m(xs) instanceof CN | !(CN'.m(xs) instanceof CN)
+??? | (CN') CN.m(xs) | CN'.m(xs) instanceof CN | !(CN'.m(xs) instanceof CN)
 
 --------
 
@@ -389,9 +389,10 @@ CT[x1:=x2]= x1=x2
 
 
 CT[(dxs ex [TX])]=label:{CT*dxs dxs/t CT[ex]}
-CT[(dxs kxs ex [TX])]=label:{ dxs/e try{ dxs/t}CT[kxs] CT[ex]}
+CT[(dxs kxs ex [TX])]=label:{ CT*dxs try{ dxs/t}CT[kxs] CT[ex]}
 CT[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
   catch([throw] y){CT[TX1 x1 ex1] ...CT[TXn xn exn] throw y;}
+//for more then one kind of throw, reorder them, to make them consecutive, then split the rule?
 CT[TX x ex]=
   boolean fresh; fresh=y.inner() instanceof CT*TX;//boxed version
   if(fresh){//TODO:Need care for Library vs Any: Library will capture all objects that

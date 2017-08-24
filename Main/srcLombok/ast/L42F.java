@@ -16,9 +16,23 @@ import lombok.experimental.Wither;
 import l42FVisitors.Visitor;
 
 public class L42F {
-public static interface Kind{}
+public static interface Kind{String className(CD cd);}
 public static enum SimpleKind implements Kind{
-Class, Interface, NativeInt32, NativeString, NativeFloat32;
+Class{
+public String className(CD cd){return cd.dbgName();}
+},
+Interface{
+public String className(CD cd){return cd.dbgName();}
+},
+NativeInt32{
+public String className(CD cd){return "int";}
+},
+NativeString{
+public String className(CD cd){return "String";}
+},
+NativeFloat32{
+public String className(CD cd){return "float";}
+};
 }
 @Value @Wither public static class
 CD{programReduction.Program p; Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
@@ -28,6 +42,7 @@ CD{programReduction.Program p; Kind kind; int cn; List<String>dbgName; List<Inte
     b.append("£Id"+cn);
     return b.toString();
     }
+  public String className(){return kind.className(this);}
   }
 
 @Value @Wither public static class
