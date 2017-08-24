@@ -62,10 +62,7 @@ Try implements S{
  public <V> V accept(JVisitor<V> v){return v.visit(this);}
  }
 @Value @Wither public static class
-K{
-  String t; String x; B b;
-  public <V> V accept(JVisitor<V> v){return v.visit(this);}
-  }
+K{String t; String x; B b;}
 
 @Value @Wither public static class
 MCall implements E{
