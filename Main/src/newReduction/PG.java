@@ -149,7 +149,7 @@ public E visit(UpdateVar s) {
     String x = ((X)s.getInner()).getInner();
     return new L42F.Update(s.getVar(),x);
     }
-  String x = Functions.freshName("throwX",L42.usedNames);
+  String x = Functions.freshName("updateX",L42.usedNames);
   UpdateVar sx = s.withInner(new X(Position.noInfo,x));
   return blockX(gamma._g(s.getVar()),x, s.getInner(),sx,Type.immVoid).accept(this);
   }
@@ -177,7 +177,6 @@ private E visitBase(MCall s) {
   if(isInterface || !isClass) {
     ps.add(((X)s.getInner()).getInner());
     }
-  assert isClass;
   if(isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
     ms=msOptimizedNew(ms);
     }
@@ -248,6 +247,7 @@ private List<D> fwdFix(Set<String> fv,List<D>ds){
   Set<String>usedAsFwd=new HashSet<>();
   for(D d:ds) {//from the bottom
     //compute all xiPrime and eiPrime
+    L42.usedNames.add(d.getX());
     map.put(d.getX(),Functions.freshName(d.getX(), L42.usedNames));
     dPrimes.add(d.withE(ePrimei(d.getE(),map,usedAsFwd)));
     }
@@ -261,7 +261,7 @@ private List<D> fwdFix(Set<String> fv,List<D>ds){
   }
 private Stream<D> fwdGen(D d, String xPrime, Set<String> xs){
   if(!xs.contains(xPrime)){return Stream.of();}
-  Call e=new Call(d.getT().getCn(),MethodSelector.parse("NewFwd()"),Collections.emptyList());
+  Call e=new Call(d.getT().getCn(),new MethodSelector("NewFwd",-1,Collections.emptyList()),Collections.emptyList());
   return Stream.of(new D(false,d.getT(),xPrime,e));
   }
 private PG plusDs(List<ExpCore.Block.Dec>ds){
@@ -286,8 +286,8 @@ private E ePrimei(E ei,Map<String,String>map,Set<String>usedAsFwd) {
     });
   }
 private Stream<D> fixedXi(D di,String xPrimei,Set<String>xs){
-  if(xs.contains(xPrimei)) {return Stream.of(di);}
-  E fixE=new Call(Cn.cnResource.getInner(),MethodSelector.parse("Fix()"),Arrays.asList(xPrimei,di.getX()));
+  if(!xs.contains(xPrimei)) {return Stream.of(di);}
+  E fixE=new Call(Cn.cnResource.getInner(),new MethodSelector("Fix", -1, Collections.emptyList()),Arrays.asList(xPrimei,di.getX()));
   D dPrime=new D(false,T.immVoid,Functions.freshName("unused", L42.usedNames),fixE);
   return Stream.of(di,dPrime);
 }

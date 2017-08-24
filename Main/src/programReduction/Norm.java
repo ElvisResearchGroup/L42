@@ -60,8 +60,9 @@ public class Norm {
       );
     }
   protected NestedClass normNC(Program p,NestedClass nc){
-    return nc.withE(norm(p,nc.getE()));
-    //modify here to decrese performance but reduce evilpushes, by doing push(C) in case e is L
+    assert nc.getE() instanceof ClassB;
+    return nc.withE(norm(p.push(nc.getName())));
+    //faster but buggy return nc.withE(norm(p,nc.getE()));
   }
   protected MethodWithType normMwt(Program p,MethodWithType mwt){
     Optional<ExpCore> e=mwt.get_inner().map(e1->e1.accept(new CloneVisitor(){
@@ -70,7 +71,7 @@ public class Norm {
         }}));
     return mwt.with_inner(e);
     }
-      
+
 
   static Program auxMultiNorm(Program p, List<List<Ast.C>>topPaths){
     ClassB lTop=p.top();
@@ -84,7 +85,7 @@ public class Norm {
       }
     return p.updateTop(lTop);
     }
-  
+
   static Program multiNorm(Program p, Paths paths){
 //- multiNorm(p,empty) = p
       if(paths.isEmpty()){return p;}
@@ -93,7 +94,7 @@ public class Norm {
       if(popped.isEmpty()){
         return auxMultiNorm(p,paths.top());
         }
-//- multiNorm(p, Css,Csss) =multiNorm(p',Css) 
+//- multiNorm(p, Css,Csss) =multiNorm(p',Css)
 //  p'=p.growFellow(multiNorm(p.pop(), Csss))
       Program rec=multiNorm(p.pop(),popped);
       Program p1=p.growFellow(rec);

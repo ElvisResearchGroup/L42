@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import ast.ErrorMessage;
 import ast.ExpCore;
@@ -31,32 +32,96 @@ public class TestL42F {
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public String _cb;
   @Parameter(2) public String expected;
-  @Parameterized.Parameters
+  @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{method Void v()void}",
     "Class Foo£Id5 implements {\n" +
     "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
-    "  void\n" +
-    "}\n"
+    "    void\n" +
+    "  }\n"
     },{lineNumber(),
     "{ A:{method Void va()void} B:{method Void vb()void}}",
     "Class Foo£Id7 implements {\n"+
-    "  \n"+
-    "}\n"+
+    "  }\n"+
     "Class Foo£CA£Id8 implements {\n"+
     "  mehtod Immutable Void va()(Immutable Foo£CA£Id8 this)\n"+
-    "  void\n"+
-    "}\n"+
+    "    void\n"+
+    "  }\n"+
     "Class Foo£CB£Id9 implements {\n"+
     "  mehtod Immutable Void vb()(Immutable Foo£CB£Id9 this)\n"+
-    "  void\n"+
-    "}\n"
+    "    void\n"+
+    "  }\n"
     },{lineNumber(),"{method Void v()void}",
     "Class Foo£Id5 implements {\n" +
     "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
-    "  void\n" +
-    "}\n"
+    "    void\n" +
+    "  }\n"
+    },{lineNumber(),"{method Void v()this.v()}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "    Foo£Id5.v()(this)\n" +
+    "  }\n"
+    },{lineNumber(),"{method Void v() (this.v())}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "    (Foo£Id5.v()(this))\n" +
+    "  }\n"
+    },{lineNumber(),"{method Void v() (x=this.v() x)}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "    (\n" +
+    "      Immutable Void x=Foo£Id5.v()(this)\n" +
+    "      x\n" +
+    "    )\n" +
+    "  }\n"
+    },{lineNumber(),"{method Void v() (x=this.v() catch error Void r r x)}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "    (\n" +
+    "      Immutable Void x=Foo£Id5.v()(this)\n" +
+    "      catch Error Immutable Void r r\n" +
+    "      x\n" +
+    "    )\n" +
+    "  }\n"
+    },{lineNumber(),"{method Void v() loop this.v()}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "    loop Foo£Id5.v()(this)\n" +
+    "  }\n"
+
+    },{lineNumber(),"{method Void v() (var Void x=void x:=void x)}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "    (\n" +
+    "      Immutable Void x=void\n" +
+    "      Immutable Void unused=(\n" +
+    "        Immutable Void updateX=void\n" +
+    "        x:=updateX\n" +
+    "      )\n" +
+    "      x\n" +
+    "    )\n" +
+    "  }\n"
+
+    },{lineNumber(),"{class method This k(fwd This that) method This v() (x=This.k(x) x)}",
+    "Class Foo£Id5 implements {\n" +
+    "  mehtod Immutable Foo£Id5 k(that)(ImmutableFwd Foo£Id5 that)\n" +
+    "    NewFwd\n"+
+    "  mehtod Immutable Foo£Id5 New_k(that)(Immutable Foo£Id5 that)\n" +
+    "    New\n"+
+    "  mehtod Immutable Foo£Id5 v()(Immutable Foo£Id5 this)\n" +
+    "    (\n" +
+    "      Immutable Foo£Id5 x1=Foo£Id5.NewFwd()()\n" +
+    "      Immutable Foo£Id5 x=(\n" +
+    "        Class Foo£Id5 receiverX=Foo£Id5\n" +//ok for this to happen, it may be simplified later since not used
+    "        Foo£Id5.k(that)(x1)\n" +
+    "      )\n" +
+    "      Immutable Void unused1=Resource.Fix()(x1,x)\n" +
+    "      x\n" +
+    "    )\n" +
+    "  }\n"
+
+
     }});}
 
   @Test  public void test() {

@@ -288,10 +288,10 @@ PG[(ds ks e[T])]=(fwdFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   fwdFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
     fwdGen(mdf1 CN1 x'1,xs)..fwdGen(mdfn CNn x'n,xs)
     mdf1 CN1 x1=ex'1, imm Void z1=Resource.Fix(x1',x1)
-                      if x'1 notin xs else empty
+                      if x'1 in xs else empty
     ..
     mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
-                      if x'n notin xs else empty
+                      if x'n in xs else empty
     with ex'i=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
     //in code, while computing ex'i, collect set of x'i that has been inserted
     // if x'i in such set then x'i in xs

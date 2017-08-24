@@ -60,13 +60,13 @@ public class L42FToString implements l42FVisitors.Visitor<Void>{
       tools.StringBuilders.formatSequence(result,mi.getTxs().iterator(),",",
           x->{liftT(x.getT());sp();liftX(x.getX());});
       c(")");
-      nl();
       indent();
+      nl();
       liftB(mi.getBody());
       deIndent();
+      nl();
       }
     deIndent();
-    nl();
     c("}");
     nl();
   }
