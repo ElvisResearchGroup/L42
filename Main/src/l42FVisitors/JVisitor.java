@@ -8,6 +8,7 @@ public interface JVisitor<V> {
 V visit(B s);
 V visit(Break s);
 V visit(If s);
+V visit(IfTypeCase s);
 V visit(MCall s);
 V visit(Return s);
 V visit(Throw s);
