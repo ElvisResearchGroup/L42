@@ -24,9 +24,12 @@ import ast.L42F.Update;
 import ast.L42F.Use;
 import ast.L42F.X;
 import ast.L42F._void;
+import l42FVisitors.ToFormattedText;
+import l42FVisitors.Visitor;
 
-public class L42FToString extends L42FStringer{
-  public L42FToString(ClassTable ct) {super(ct);}
+public class L42FToString extends ToFormattedText implements Visitor<Void>{
+  public L42FToString(ClassTable ct){this.ct = ct;}
+  ClassTable ct;
 
   public static String visitCT(ClassTable ct) {
     L42FToString ts=new L42FToString(ct);

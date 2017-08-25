@@ -1,11 +1,9 @@
-package newReduction;
+package l42FVisitors;
 
-import l42FVisitors.Visitor;
+import newReduction.ClassTable;
 
-public abstract class L42FStringer implements Visitor<Void>{
-public L42FStringer(ClassTable ct) {this.ct = ct;}
-  ClassTable ct;
-  StringBuilder result=new StringBuilder();
+public abstract class ToFormattedText{
+  protected StringBuilder result=new StringBuilder();
   protected String currentIndent="";
   protected Void nl(){result.append("\n");result.append(currentIndent);return null;}
   protected Void indent(){currentIndent+="  ";return null;}

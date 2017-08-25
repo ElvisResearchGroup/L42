@@ -37,6 +37,12 @@ If implements S{
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 @Value @Wither public static class
+IfTypeCase implements S{
+  String x0;String x1; String cn; B then; B _else;
+  //if(x0 instanceof cn){cn x1=(cn)x0;..}else{..}
+  public <V> V accept(JVisitor<V> v){return v.visit(this);}
+  }
+@Value @Wither public static class
 WhileTrue implements S{
  B b;
  public <V> V accept(JVisitor<V> v){return v.visit(this);}
@@ -62,7 +68,7 @@ Try implements S{
  public <V> V accept(JVisitor<V> v){return v.visit(this);}
  }
 @Value @Wither public static class
-K{String t; String x; B b;}
+K{ast.Ast.SignalKind t; String x; B b;}
 
 @Value @Wither public static class
 MCall implements E{

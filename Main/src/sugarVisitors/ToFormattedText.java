@@ -55,9 +55,7 @@ import ast.Expression._void;
 
 import auxiliaryGrammar.Functions;
 
-public class ToFormattedText implements Visitor<Void>{
-  private StringBuilder result=new StringBuilder();
-  private String currentIndent="";
+public class ToFormattedText extends l42FVisitors.ToFormattedText implements Visitor<Void>{
   private ToFormattedText(){}
   public static String of(Expression e){
     ToFormattedText tft=new ToFormattedText();
@@ -100,17 +98,12 @@ public class ToFormattedText implements Visitor<Void>{
       tft.formatMembers(ms);
       return tft.result.toString();
     }
-  //String atomIndent="  ";
-  protected Void c(String s){result.append(s);return null;}
-  private Void sp(){result.append(" ");return null;}
+
   private Void separeFromChar(){
     char last=result.charAt(result.length()-1);
     if(Character.isLetter(last) || Character.isDigit(last) || last=='$' || last=='%'){
     result.append(" ");}return null;
     }
-  private Void nl(){result.append("\n");result.append(currentIndent);return null;}
-  private Void indent(){currentIndent+="  ";return null;}
-  private Void deIndent(){currentIndent=currentIndent.substring(2);return null;}
   @Override
   public Void visit(Signal arg0) {
     c(arg0.getKind().content);
