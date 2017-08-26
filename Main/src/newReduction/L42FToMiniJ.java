@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ast.Ast.MethodSelector;
 import ast.Ast.SignalKind;
 import ast.L42F;
 import ast.L42F.Block;
+import ast.L42F.Body;
 import ast.L42F.BreakLoop;
 import ast.L42F.Call;
 import ast.L42F.Cast;
@@ -49,6 +49,7 @@ public class L42FToMiniJ implements Visitor<MiniJ.S>{
     try{return inner.accept(this);}
     finally{this.x0=oldX0;this.label=oldLabel;}
   }
+  
   @Override
   public MiniJ.S visit(BreakLoop s) {
     if(label==null){throw Assertions.codeNotReachable();}
@@ -82,7 +83,7 @@ public class L42FToMiniJ implements Visitor<MiniJ.S>{
   
   @Override
   public MiniJ.S visit(Call s) {
-    E e=new MiniJ.MCall(ct.l42ClassName(s.getCn()),liftMs(s.getMs()),s.getXs());
+    E e=new MiniJ.MCall(ct.l42ClassName(s.getCn()),L42FToMiniJTop.liftMs(s.getMs()),s.getXs());
     return wrapE(e);
     }
 
@@ -90,16 +91,10 @@ public class L42FToMiniJ implements Visitor<MiniJ.S>{
   public MiniJ.S visit(Use s) {
     S inner=liftWith(null,null,s.getInner());
     E e=new MiniJ.UseCall(ct.l42ClassName(s.getCn()),
-            liftMs(s.getMs()),
+            L42FToMiniJTop.liftMs(s.getMs()),
             s.getXs(),inner);
     return wrapE(e);
     }
-  private String liftMs(MethodSelector ms) {
-    String res=ms.nameToS();
-    for(String xi:ms.getNames()){res+="£X"+xi;}
-    return res;
-    }
-
   @Override
   public MiniJ.S visit(Throw s) {
     String kindJName="platformSpecific.javaTranslation.Resources."+s.getKind().name();

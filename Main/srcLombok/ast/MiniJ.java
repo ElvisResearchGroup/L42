@@ -13,9 +13,16 @@ import ast.Ast.Mdf;
 import ast.L42F.Cn;
 import lombok.Value;
 import lombok.experimental.Wither;
-import l42FVisitors.Visitor;
 import l42FVisitors.JVisitor;
+
 public class MiniJ {
+
+@Value @Wither public static class
+CD{boolean isInterface; String cn; List<String> cns; List<M> ms;}
+
+@Value @Wither public static class
+M{String retT;String name;List<String>ts;List<String>xs; S body;}
+
 public static interface S{
   <V> V accept(JVisitor<V> v);
   }
@@ -85,6 +92,11 @@ UseCall implements E{
 
 @Value @Wither public static class
 X implements E{
+  String inner;
+  public <V> V accept(JVisitor<V> v){return v.visit(this);}
+  }
+@Value @Wither public static class
+RawJ implements E{
   String inner;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }

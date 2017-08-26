@@ -14,6 +14,8 @@ import ast.L42F.Cn;
 import lombok.Value;
 import lombok.experimental.Wither;
 import l42FVisitors.Visitor;
+import l42FVisitors.BodyVisitor;
+
 
 public class L42F {
 public static interface Kind{
@@ -61,12 +63,21 @@ M{
   boolean refine; T returnType;
   Ast.MethodSelector selector; List<TX> txs; Body body;
   }
-public static interface Body{}
+public static interface Body{
+  <T> T accept(BodyVisitor<T> v);
+  }
 public static enum SimpleBody implements Body{
-  Empty,Setter,Getter,New,NewWithFwd,NewFwd,NativeIntSum;
+  Empty{public <T> T accept(BodyVisitor<T> v){return v.visitEmpty(this);}},
+  Setter{public <T> T accept(BodyVisitor<T> v){return v.visitSetter(this);}},
+  Getter{public <T> T accept(BodyVisitor<T> v){return v.visitGetter(this);}},
+  New{public <T> T accept(BodyVisitor<T> v){return v.visitNew(this);}},
+  NewWithFwd{public <T> T accept(BodyVisitor<T> v){return v.visitNewWithFwd(this);}},
+  NewFwd{public <T> T accept(BodyVisitor<T> v){return v.visitNewFwd(this);}},
+  NativeIntSum{public <T> T accept(BodyVisitor<T> v){return v.visitNativeIntSum(this);}};
   }
 public static interface E extends Body{
   <T> T accept(Visitor<T> v);
+  default <T> T accept(BodyVisitor<T> v){return v.visitE(this);}
   }
 
 @Value @Wither public static class

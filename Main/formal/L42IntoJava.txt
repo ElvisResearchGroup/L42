@@ -402,39 +402,9 @@ tx(T x e)= CT*T x;
 
 xe(label?,T x e)= x;label?*e;
 
-
-
-
-L42F-->st
-CT[throw[TX1,TX2] x]='throw' new [throw](x) //one throw is the keyword, the other the metavariable
-CT[loop ex]= while(true) label1:{returnTrash(CT[ex])}
-CT[CN.mxs(ys)]=CN.mxs(ys) with CT(CN)(mxs) with body //not CT*CN on purpose
-CT[CN.mxs(y,ys)]=y._mxs(ys) with CT(CN)(mxs) without body
-CT[use CN check mxs(ys) ex]=....(CN,ys,CT[ex])//not CT*CN on purpose
-CT[if x then ex1 else ex2]=if (x)CT[ex1] else CT[ex2] //blocks??
-CT[while ???x?_or_?ex?? then ex1]=...
-CT[x1:=x2]= x1=x2
-
-
-CT[(dxs ex [TX])]=label:{tx(CT,dxs) xe(CT,dxs) CT[ex]}
-CT[(dxs kxs ex [TX])]=label:{ tx(CT,dxs) try{ xe(CT,dxs)}CT[kxs] CT[ex]}
-CT[catch throw TX1 x1 ex1..catch throw TXn xn exn ]=
-  catch([throw] y){CT[TX1 x1 ex1] ...CT[TXn xn exn] throw y;}
-//for more then one kind of throw, reorder them, to make them consecutive, then split the rule?
-CT[TX x ex]=
-  boolean fresh; fresh=y.inner() instanceof CT*TX;//boxed version
-  if(fresh){//TODO:Need care for Library vs Any: Library will capture all objects that
-    //do not implement some root interface of all 42 objects, while Any will capture all.
-    //Also, IMPORTANT: when capturing a return class Any, if we allow it, we need to check for coherence!
-    CT*TX x=(TX)y.inner();
-    CT[ex]
-    }
-
-CT[x]=return x
-CT[void]=return Void.instance()//Void Any and Library will be imported at the start of the file
-CT[CN]=return CN.classInstance()
-CT[null]=return null
-CT[(T)x]=return (CT*T)x;//annotations no problem
+//Note: we disallow capturing a 'return class Any'
+//in the type system. If we allow it,
+//we need to check for coherence!
 
 
 ###[CD]=JClass

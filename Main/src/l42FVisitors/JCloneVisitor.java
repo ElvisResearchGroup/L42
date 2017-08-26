@@ -12,6 +12,7 @@ import ast.MiniJ.IfTypeCase;
 import ast.MiniJ.K;
 import ast.MiniJ.MCall;
 import ast.MiniJ.Null;
+import ast.MiniJ.RawJ;
 import ast.MiniJ.Return;
 import ast.MiniJ.S;
 import ast.MiniJ.Throw;
@@ -136,6 +137,11 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
     @Override
     public S visit(Cast s) {
       return new Cast(liftCn(s.getCn()),liftX(s.getX()));
+      }
+
+    @Override
+    public S visit(RawJ s) {
+      return s;
       }
 
 }
