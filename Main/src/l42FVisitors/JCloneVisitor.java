@@ -1,12 +1,17 @@
 package l42FVisitors;
 
+import java.util.List;
+
 import ast.MiniJ;
 import ast.MiniJ.B;
 import ast.MiniJ.Break;
+import ast.MiniJ.Cast;
 import ast.MiniJ.E;
 import ast.MiniJ.If;
+import ast.MiniJ.IfTypeCase;
 import ast.MiniJ.K;
 import ast.MiniJ.MCall;
+import ast.MiniJ.Null;
 import ast.MiniJ.Return;
 import ast.MiniJ.S;
 import ast.MiniJ.Throw;
@@ -36,7 +41,11 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
 
     @Override
     public MiniJ.S visit(If s) {
-      return new If(liftX(s.getCond()),this.visit(s.getThen()),this.visit(s.get_else()));
+      return new If(
+        liftX(s.getCond()),
+        s.getThen().accept(this),
+        s.get_else().accept(this)
+        );
     }
 
 
@@ -63,8 +72,9 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
     }
     @Override
     public MiniJ.S visit(Return s) {
-      return new Return(liftX(s.getX()));
-    }
+      E e = (E)s.getE().accept(this);
+      return new Return(e);
+      }
 
     @Override
     public MiniJ.S visit(Throw s) {
@@ -78,8 +88,12 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
 
     @Override
     public MiniJ.E visit(UseCall s) {
-      return new UseCall(tools.Map.of(this::liftX,s.getXs()));
-    }
+      String cn=liftCn(s.getCn());
+      String name=liftMn(s.getMName());
+      List<String> xs = tools.Map.of(this::liftX,s.getXs());
+      S body=s.getInner().accept(this);
+       return new UseCall(cn,name,xs,body);
+      }
 
     @Override
     public MiniJ.S visit(VarAss s) {
@@ -95,12 +109,33 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
 
     @Override
     public MiniJ.S visit(WhileTrue s) {
-      return new WhileTrue(this.visit(s.getB()));
+      return new WhileTrue(liftLabel(s.getLabel()),s.getS().accept(this));
     }
 
     @Override
     public MiniJ.E visit(X s) {
       return new X(liftX(s.getInner()));
     }
+
+    @Override
+    public S visit(IfTypeCase s) {
+      return new IfTypeCase(
+        liftX(s.getX0()),
+        liftX(s.getX1()),
+        liftCn(s.getCn()),
+        s.getThen().accept(this),
+        s.get_else().accept(this)
+        );
+    }
+
+    @Override
+    public S visit(Null s) {
+      return s;
+      }
+
+    @Override
+    public S visit(Cast s) {
+      return new Cast(liftCn(s.getCn()),liftX(s.getX()));
+      }
 
 }

@@ -14,6 +14,7 @@ import ast.L42F.CD;
 import ast.L42F.Cn;
 import programReduction.Paths;
 import programReduction.Program;
+import tools.Assertions;
 
 public class ClassTable {
   private Map<Integer,Element> map;
@@ -21,12 +22,34 @@ public class ClassTable {
     this.map = map;
     }
   public String dbgNameOf(int index){
-  if(index==Cn.cnAny.getInner()){return "Any";}
-  if(index==Cn.cnVoid.getInner()){return "Void";}
-  if(index==Cn.cnLibrary.getInner()){return "Library";}
-  if(index==Cn.cnResource.getInner()){return "Resource";}
-  return get(index).cd.dbgName();
-  }
+    if(index==Cn.cnAny.getInner()){return "Any";}
+    if(index==Cn.cnVoid.getInner()){return "Void";}
+    if(index==Cn.cnLibrary.getInner()){return "Library";}
+    if(index==Cn.cnResource.getInner()){return "Resource";}
+    return get(index).cd.dbgName();
+    }
+  public String className(int index){
+    if(index==Cn.cnAny.getInner()){return "Object";}
+    if(index==Cn.cnVoid.getInner()){return "platformSpecific.javaTranslation.Resources.Void";}
+    if(index==Cn.cnLibrary.getInner()){return "Object";}
+    if(index==Cn.cnResource.getInner()){return "Resource";}
+    return get(index).cd.className();
+    }
+  public String boxedClassName(int index){
+    if(index==Cn.cnAny.getInner()){return "Object";}
+    if(index==Cn.cnVoid.getInner()){return "platformSpecific.javaTranslation.Resources.Void";}
+    if(index==Cn.cnLibrary.getInner()){return "Object";}
+    if(index==Cn.cnResource.getInner()){return "Resource";}
+    return get(index).cd.boxedClassName();
+    }
+  public String l42ClassName(int index){
+    if(index==Cn.cnAny.getInner()){throw Assertions.codeNotReachable();}
+    if(index==Cn.cnVoid.getInner()){throw Assertions.codeNotReachable();}
+    if(index==Cn.cnLibrary.getInner()){throw Assertions.codeNotReachable();}
+    if(index==Cn.cnResource.getInner()){return "Resource";}
+    return get(index).cd.l42ClassName();
+    }
+  
   public Element get(int index) {
     Element res=map.get(index);
     assert res!=null;

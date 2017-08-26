@@ -23,7 +23,6 @@ import l42FVisitors.JVisitor;
 import l42FVisitors.ToFormattedText;
 
 abstract public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
-  public MiniJToJava(ClassTable ct){this.ct = ct;}
-  ClassTable ct;
+
 
 }

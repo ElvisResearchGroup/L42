@@ -33,18 +33,19 @@ VarAss implements S{
   }
 @Value @Wither public static class
 If implements S{
-  String cond; B then; B _else;
+  String cond; S then; S _else;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 @Value @Wither public static class
 IfTypeCase implements S{
-  String x0;String x1; String cn; B then; B _else;
-  //if(x0 instanceof cn){cn x1=(cn)x0;..}else{..}
+  String x0;String x1; String cn; S then;S _else;
+  //if(x0.inner() instanceof cn){cn x1=(cn)x0.inner(); [then]}
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 @Value @Wither public static class
 WhileTrue implements S{
- B b;
+ String label;
+ S s;
  public <V> V accept(JVisitor<V> v){return v.visit(this);}
  }
 @Value @Wither public static class
@@ -54,11 +55,11 @@ Break implements S{
   }
 @Value @Wither public static class
 Return implements S{
-  String x;
+  E e;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 @Value @Wither public static class
-Throw implements S{
+Throw implements S{//throw new cn(x) or throw x if cn==null;
   String cn; String x;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
@@ -77,13 +78,24 @@ MCall implements E{
   }
 @Value @Wither public static class
 UseCall implements E{
-  List<String>xs;
+  String cn; String mName; List<String> xs;
+  S inner;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 
 @Value @Wither public static class
 X implements E{
   String inner;
+  public <V> V accept(JVisitor<V> v){return v.visit(this);}
+  }
+@Value @Wither public static class
+Cast implements E{
+  String cn;
+  String x;
+  public <V> V accept(JVisitor<V> v){return v.visit(this);}
+  }
+@Value @Wither public static class
+Null implements E{
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 

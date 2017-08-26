@@ -18,4 +18,6 @@ V visit(VarAss s);
 V visit(VarDec s);
 V visit(WhileTrue s);
 V visit(X s);
+V visit(Null s);
+V visit(Cast s);
 }
