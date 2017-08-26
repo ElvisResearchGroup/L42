@@ -22,6 +22,8 @@ import ast.L42F.CD;
 import ast.L42F.E;
 import ast.L42F.Kind;
 import ast.L42F.M;
+import ast.L42F.SimpleBody;
+import ast.L42F.T;
 import coreVisitors.CloneVisitor;
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
@@ -44,12 +46,19 @@ public class NtoF {
     Kind k=L42F.SimpleKind.Class;
     if (top.isInterface()){k=L42F.SimpleKind.Interface;}
     List<Integer>supert=tools.Map.of(t->PG.liftP(p,t.getPath()), top.getSupertypes());
-    List<M> ms=top.mwts().stream()
+    List<M> ms=Stream.concat(newFwdMeth(top.getUniqueId()),
+      top.mwts().stream()
       .flatMap(m->liftM(top.isInterface(),p,(MethodWithType)m))
-      .collect(Collectors.toList());
+      ).collect(Collectors.toList());
     CD res=new CD(p,k,top.getUniqueId(),new ArrayList<>(topName),supert,ms);
     acc.add(res);
     }
+private static Stream<M> newFwdMeth(int id) {
+MethodSelector ms0=new MethodSelector("NewFwd",-1,Collections.emptyList());
+M m0=new M(false,new T(null,id),ms0,Collections.emptyList(),SimpleBody.NewFwd);
+Stream<M> a=Stream.of(m0);
+return a;
+}
 private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt) {
   M h=PG.header(p, mwt);
   if(isInterface){return Stream.of(h);}//case 0

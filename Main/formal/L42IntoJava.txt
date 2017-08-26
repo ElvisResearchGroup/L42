@@ -54,6 +54,17 @@ Destination 2:
   Java, C++, Javascript,..
   -design process to convert L42F programs into stuff.
 
+
+Main Differences between 42 and Java/C#/C++ etc
+
+All classes final (dynamic dispatch only for interfaces)
+Expression based
+Exception on local bindings
+Fwd/placeholders
+No primitive types
+
+
+
 -----------------------------
 1 Grammar
 -----------------------------
@@ -415,7 +426,6 @@ otherwise
 CT[kind CN implements CNs {Mxs}]=
 public class CN implements CNs{CT,CN[Mxs]
   /*public CN(){}*/
-  public static CN NewFwd(){return new _Fwd();}
   private static class _Fwd extends CN implements Fwd{
     private List<Object> os=new ArrayList<>();
     private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
@@ -424,59 +434,67 @@ public class CN implements CNs{CT,CN[Mxs]
     }
   }
 
-//TODO: add the case with no this for refined class method
-//never happens with no this? CT[refine method T mxs((T x)s) e]
 CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
-  public static CT*TX mxs(CT*TX' _this,CT*(TX x)s) CT[e[_this=this]]
-  public CT*TX _mxs(CT*(TX x)s)  CT.mxs(this,xs)
+  public static CT*TX mxs(CT*TX' £this,CT*(TX x)s) CT[e[£this=this]]
+  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(this,xs);}
+
+//case with no "this"
+CT,CN[refine method TX mxs((TX x)s) e]=
+  public static CT*TX mxs(CT*(TX x)s) CT[e]
+  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);}
 
 CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
-  CT*TX _mxs(CT*(TX x)s);//is going to be in an interface
+  CT*TX £mxs(CT*(TX x)s);//is going to be in an interface
+  static CT*TX mxs(CT*TX' £this,CT*(TX x)s){£this.£mxs(xs);}
 
 CT,CN[method T mxs((T x)s) e] //no refine, note, work both with and without 'this' parameter
-  public static CT*TX mxs(CT*(TX x)s[_this=this])CT[e[_this=this]]
+  public static CT*TX mxs(CT*(TX x)s[£this=this])CT[e[£this=this]]
 
 
 //never happens CT[method T mxs((T x)s)]
 
-CT,CN[method T mxs((T x)s) new] //there can be many new/newFwd
+CT,CN[refine? method T mxs((T x)s) new] //there can be many new/newFwd
   public static CT*TX mxs(CT*(TX x)s){
     CN res=new CN();
     res.x1=x1;..;res.xn=xn;
     return res;
-    }//usual delegation if is refine?
-CT,CN[method T mxs((T x)s) newFwd]
+    }
+  public CT*TX £mxs(CT*(TX x)s) CN.mxs(xs) //only if refine?=refine
+
+CT,CN[refine? method T mxs((T x)s) newWithFwd]
   public static CT*TX mxs(CT*(TX x)s){
     CN res=new CN();
-    res.x1=x1;if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,CN.FieldAssFor_x1);}
+    res.x1=x1;Fwd.addIfFwd(x1,CN.FieldAssFor_x1);
     ..;
-    res.xn=xn;if(xn instanceof Fwd){((Fwd)xn).rememberAssign(res,CN.FieldAssFor_xn);}
+    res.xn=xn;Fwd.addIfFwd(xn,CN.FieldAssFor_xn);
     return res;
-    }//usual delegation if is refine?
+    }
+  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);} //only if refine?=refine
 
 //and then the field ones?
-CT,CN[method TX x(TX' this) getter]=
-  public static CT*TX mxs(CT*TX' _this){return _this._x;}
-  CT*TX _x;
-  public static BiConsumer<Object,Object> FieldAssFor_x=(f,o)->{
-    ((CN)o)._x=(CT*TX)f;
+CT,CN[refine? method TX x(TX' this) getter]=
+  public static CT*TX x(CT*TX' £this){return £this.£x;}
+  CT*TX £x;
+  public static BiConsumer<Object,Object> FieldAssFor£x=(f,o)->{
+    ((CN)o).£x=(CT*TX)f;
     }
-CT,CN[method Void x(TX this, TX' that) setter]=
-  public static Void x(CT*TX _this, CT*TX' that){
-    _this._x=that; return Void.instance();}
+  public CT*TX £x() {return this.mxs();} //only if refine?=refine
+    
+CT,CN[refine? method Void x(TX this, TX' that) setter]=
+  public static Void x(CT*TX £this, CT*TX' that){
+    £this.£x=that; return Void.instance();}
+  public CT*TX £x(CT*TX' that) {return CN.x(this,that);} //only if refine?=refine
 
-//note:TX x=(dxs ex) in Java can be
-//TX x;{dxs  x=ex}
-//note:TX x=(dxs kxs ex) in Java can be
-//TX x; labelFor_x:{dxs\e try{dxs\t}x=kxs  x=ex}
-//  where x=catch TX y ex is catch (TX y ){x=ex break labelFor_x}
-//dxs\e and dxs\t removes the e and the TX from dxs to separe declarations and initializations
-//x=ex is untrivial to define, for example x= throw x'== throw x'
+CT,CN[ _ NewFwd() newFwd]=
+  public static CN NewFwd(){return new _Fwd();}
 
 
 ###Assumed
 ---
 interface Fwd{
+  static  void addIfFwd(Object x1,BiConsumer<Object,Object> action){
+    if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,action);}
+    }
   List<Object> os();
   List<BiConsumer<Object,Object>> fs();
   default void rememberAssign(Object f,BiConsumer<Object,Object> fo){

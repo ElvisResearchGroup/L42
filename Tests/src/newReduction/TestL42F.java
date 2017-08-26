@@ -37,39 +37,55 @@ public class TestL42F {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{method Void v()void}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    void\n" +
     "  }\n"
     },{lineNumber(),
     "{ A:{method Void va()void} B:{method Void vb()void}}",
     "Class Foo£Id7 implements {\n"+
+    "  method null Foo£Id7 NewFwd()()\n"+
+    "    NewFwd\n"+
     "  }\n"+
     "Class Foo£CA£Id8 implements {\n"+
-    "  mehtod Immutable Void va()(Immutable Foo£CA£Id8 this)\n"+
+    "  method null Foo£CA£Id8 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void va()(Immutable Foo£CA£Id8 this)\n"+
     "    void\n"+
     "  }\n"+
     "Class Foo£CB£Id9 implements {\n"+
-    "  mehtod Immutable Void vb()(Immutable Foo£CB£Id9 this)\n"+
+    "  method null Foo£CB£Id9 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void vb()(Immutable Foo£CB£Id9 this)\n"+
     "    void\n"+
     "  }\n"
     },{lineNumber(),"{method Void v()void}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    void\n" +
     "  }\n"
     },{lineNumber(),"{method Void v()this.v()}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    Foo£Id5.v()(this)\n" +
     "  }\n"
     },{lineNumber(),"{method Void v() (this.v())}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    (Foo£Id5.v()(this))\n" +
     "  }\n"
     },{lineNumber(),"{method Void v() (x=this.v() x)}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    (\n" +
     "      Immutable Void x=Foo£Id5.v()(this)\n" +
     "      x\n" +
@@ -77,7 +93,9 @@ public class TestL42F {
     "  }\n"
     },{lineNumber(),"{method Void v() (x=this.v() catch error Void r r x)}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    (\n" +
     "      Immutable Void x=Foo£Id5.v()(this)\n" +
     "      catch Error Immutable Void r r\n" +
@@ -86,13 +104,17 @@ public class TestL42F {
     "  }\n"
     },{lineNumber(),"{method Void v() loop this.v()}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    loop Foo£Id5.v()(this)\n" +
     "  }\n"
 
     },{lineNumber(),"{method Void v() (var Void x=void x:=void x)}",
     "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Void v()(Immutable Foo£Id5 this)\n" +
+    "  method null Foo£Id5 NewFwd()()\n"+
+    "    NewFwd\n"+
+    "  method Immutable Void v()(Immutable Foo£Id5 this)\n" +
     "    (\n" +
     "      Immutable Void x=void\n" +
     "      Immutable Void unused=(\n" +
@@ -104,12 +126,14 @@ public class TestL42F {
     "  }\n"
 
     },{lineNumber(),"{class method This k(fwd This that) method This v() (x=This.k(x) x)}",
-    "Class Foo£Id5 implements {\n" +
-    "  mehtod Immutable Foo£Id5 k(that)(ImmutableFwd Foo£Id5 that)\n" +
+    "Class Foo£Id5 implements {\n" +    
+    "  method null Foo£Id5 NewFwd()()\n"+
     "    NewFwd\n"+
-    "  mehtod Immutable Foo£Id5 New_k(that)(Immutable Foo£Id5 that)\n" +
+    "  method Immutable Foo£Id5 k(that)(ImmutableFwd Foo£Id5 that)\n" +
+    "    NewFwd\n"+
+    "  method Immutable Foo£Id5 New_k(that)(Immutable Foo£Id5 that)\n" +
     "    New\n"+
-    "  mehtod Immutable Foo£Id5 v()(Immutable Foo£Id5 this)\n" +
+    "  method Immutable Foo£Id5 v()(Immutable Foo£Id5 this)\n" +
     "    (\n" +
     "      Immutable Foo£Id5 x1=Foo£Id5.NewFwd()()\n" +
     "      Immutable Foo£Id5 x=(\n" +

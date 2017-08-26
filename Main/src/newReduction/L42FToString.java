@@ -47,7 +47,7 @@ public class L42FToString extends ToFormattedText implements Visitor<Void>{
     indent();nl();
     for(M mi:cd.getMs()) {
       if(mi.isRefine()) {c("refine ");}
-      c("mehtod ");
+      c("method ");
       liftT(mi.getReturnType());
       c(" "+mi.getSelector());
       c("(");
