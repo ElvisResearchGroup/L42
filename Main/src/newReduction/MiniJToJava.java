@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ast.ExpCore;
 import ast.MiniJ;
 import ast.L42F.Block;
 import ast.L42F.BreakLoop;
@@ -37,6 +38,9 @@ import auxiliaryGrammar.Functions;
 import facade.L42;
 import l42FVisitors.JVisitor;
 import l42FVisitors.ToFormattedText;
+import platformSpecific.fakeInternet.PluginType;
+import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
+import platformSpecific.javaTranslation.Resources;
 import tools.Assertions;
 
 public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
@@ -147,7 +151,16 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
 
     @Override
     public Void visit(UseCall s) {
-      throw Assertions.codeNotReachable();
+      UsingInfo ui=null;
+      List<String> es=s.getXs();
+      StringBuilder resOld=result;
+      result=new StringBuilder();
+      s.getInner().accept(this);
+      String e=result.toString();
+      result=resOld;
+      PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(s.getDoc());
+      result.append(pt.executableJ(ui, e, es, L42.usedNames));
+      return null;
       }
 
     @Override

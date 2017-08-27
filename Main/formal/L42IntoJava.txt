@@ -546,13 +546,17 @@ that contains the following info:
 -how many compilation iterations last time,
 -for each iteration:
   -the p, the e, the used paths, the used CT, the resulting r
-when re-compiling, if the same iteraion uses the same e, the same used paths as
-cached, and for each P in paths, p(P) is the same(THE SAME of who???), then we can re use the cached CT and re run e.
-If the resulting r is different, we trash all cache for following iterations.
+when re-compiling, if the same iteration uses the same e,
+the same used paths as cached, and for each P in paths,
+p(P) is the same(THE SAME of who???),
+then we can re use the cached CT and re run e.
+If the resulting r is different,
+we trash all cache for following iterations.
 Discuss advantages/disadvantages
 
 how to implement attempt:
-  loader using CT/CT can be updated/swapped (this will not influence already loaded classes)
+  loader using CT/CT can be updated/swapped
+  (this will not influence already loaded classes)
 
 start:
   //??desugaring will also import pre compiled used towels.

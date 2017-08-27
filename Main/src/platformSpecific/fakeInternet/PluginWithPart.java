@@ -96,14 +96,17 @@ public class PluginWithPart implements PluginType{
     plgString=doc._getParameterForPlugin();
     plgString=plgString.trim();
     plgName=doc._getParameterForPluginPart();
-    plgName=plgName.trim();
-    try{plgClass=Class.forName(plgName);}
-    catch(ClassNotFoundException|SecurityException e){
-      throw Assertions.codeNotReachable();
-      }
+    if(plgName!=null){
+      plgName=plgName.trim();
+      try{plgClass=Class.forName(plgName);}
+      catch(ClassNotFoundException|SecurityException e){
+        throw Assertions.codeNotReachable();
+        }
+      } 
     }
   }
-  public static class UsingInfo{
+    @SuppressWarnings("serial")
+    public static class UsingInfo{
     public static class NonExistantMethod extends RuntimeException{}
     public boolean staticMethod=false;
     public List<String> names;// avoiding _this, just the parameter names, encoding java types
@@ -170,34 +173,36 @@ public class PluginWithPart implements PluginType{
       jMethName=s.getS().nameToS();
       needPData=jMethName.startsWith("#");
       if(needPData){jMethName=jMethName.substring(1);}
-      for(String n:names){
-        String t=EncodingHelper.xToJavaClass(n);
-        Class<?>tClass;
-        tClass = tToClass(t);
-        ts.add(tClass.getCanonicalName());//t has $ for nestedclasses, canonicalname have . instead
-        jts.add(tClass);
-        }
-      if(needPData){
-        jts.add(0,PData.class);
-        }
-      if(jMethName.equals("new")){
-        if(!this.staticMethod){throw new NonExistantMethod();}
-        try{methOrKs=plgInfo.plgClass.getDeclaredConstructor(jts.toArray(new Class<?>[0]));}
-        catch(NoSuchMethodException e){
-          throw new NonExistantMethod();
+      if(plgInfo.plgName!=null){
+        for(String n:names){
+          String t=EncodingHelper.xToJavaClass(n);
+          Class<?>tClass;
+          tClass = tToClass(t);
+          ts.add(tClass.getCanonicalName());//t has $ for nestedclasses, canonicalname have . instead
+          jts.add(tClass);
           }
-        }
-      else{
-        Method m;
-        try{m=Class.forName(plgInfo.plgName).getMethod(jMethName, jts.toArray(new Class<?>[0]));}
-        catch(ClassNotFoundException|NoSuchMethodException|SecurityException e){
-          throw new NonExistantMethod();
+        if(needPData){
+          jts.add(0,PData.class);
           }
-        if(Modifier.isStatic(m.getModifiers())!=this.staticMethod){
-          throw new NonExistantMethod();
+        if(jMethName.equals("new")){
+          if(!this.staticMethod){throw new NonExistantMethod();}
+          try{methOrKs=plgInfo.plgClass.getDeclaredConstructor(jts.toArray(new Class<?>[0]));}
+          catch(NoSuchMethodException e){
+            throw new NonExistantMethod();
+            }
           }
-        isVoid=m.getReturnType().equals(Void.TYPE);
-        methOrKs=m;
+        else{
+          Method m;
+          try{m=Class.forName(plgInfo.plgName).getMethod(jMethName, jts.toArray(new Class<?>[0]));}
+          catch(ClassNotFoundException|NoSuchMethodException|SecurityException e){
+            throw new NonExistantMethod();
+            }
+          if(Modifier.isStatic(m.getModifiers())!=this.staticMethod){
+            throw new NonExistantMethod();
+            }
+          isVoid=m.getReturnType().equals(Void.TYPE);
+          methOrKs=m;
+          }
         }
       }
     private Class<?> tToClass(String t) {
@@ -218,9 +223,8 @@ public class PluginWithPart implements PluginType{
   
   
   @Override
-  public String executableJ(Program p,Using s,String te,List<String>tes,Set<String> labels){
-    UsingInfo ui=new UsingInfo(p,s);
-    if (ui.methOrKs==null){return executableInstanceof(ui,s,te,tes,labels);}
+  public String executableJ(UsingInfo ui,String te,List<String>tes,Set<String> labels){
+    if (ui.methOrKs==null){return executableInstanceof(ui,te,tes,labels);}
     //if static meth tes=e1..en, parRec=null, rec=plgName
     //else  tes=e0..en, parRec=e0, rec=plF //that is, e1..en do not contains the first of tes
     //if Meth par1 of type PData opt=`Resources.pData(),`
@@ -240,7 +244,7 @@ public class PluginWithPart implements PluginType{
     StringBuilder res=new StringBuilder();
     //plgExecutor("`PathName`",p,(plgName)`parRec`,
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
-    res.append("\""+s.getS().nameToS()+"\",");
+    res.append("\""+ui.usingMs.nameToS()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
     res.append("("+ui.plgInfo.plgClass.getCanonicalName()+")"+parRec+", ");
     //(plF,xsF)->{ `T1` _1;..`Tn` _n;
@@ -293,7 +297,7 @@ public class PluginWithPart implements PluginType{
     res.append(")");
     return res.toString();
     }
-  private String executableInstanceof(UsingInfo ui, Using s, String te, List<String> tes, Set<String> labels) {
+  private String executableInstanceof(UsingInfo ui, String te, List<String> tes, Set<String> labels) {
     String path=ui.plgInfo.plgClass.getCanonicalName();
     String plF="L"+Functions.freshName("pl",labels);
     String xsF="L"+Functions.freshName("xs",labels);

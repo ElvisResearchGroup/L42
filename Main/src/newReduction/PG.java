@@ -206,7 +206,12 @@ private E visitBase(Using s) {
   List<String> ps=new ArrayList<>();
   for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
   E e=s.getInner().accept(this);
-  return new L42F.Use(p.extractClassB(s.getPath()).getUniqueId(),s.getS(),ps,e);
+  Doc doc=p.extractClassB(s.getPath()).getDoc1();
+  UsingInfo ui=null;
+  if(doc._getParameterForPluginPart()!=null){ui=new UsingInfo(p, s);}
+  return new L42F.Use(
+          doc,ui,
+          s.getS(),ps,e);
   }
 
 @Override

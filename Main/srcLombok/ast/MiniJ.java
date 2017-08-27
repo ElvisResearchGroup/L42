@@ -85,7 +85,9 @@ MCall implements E{
   }
 @Value @Wither public static class
 UseCall implements E{
-  String cn; String mName; List<String> xs;
+  Ast.Doc doc;
+  platformSpecific.fakeInternet.PluginWithPart.UsingInfo ui;
+  String mName; List<String> xs;
   S inner;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }

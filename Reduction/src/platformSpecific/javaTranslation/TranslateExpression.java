@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import platformSpecific.fakeInternet.PluginType;
+import platformSpecific.fakeInternet.PluginWithPart;
+import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import tools.Assertions;
 import tools.StringBuilders;
 import ast.Ast.Type;
@@ -117,7 +119,8 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
       }
     res=resOld;
     PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(Resources.getP(),s);
-    res.append(pt.executableJ(Resources.getP(),s, e, es, TranslateExpression.labels));
+    UsingInfo ui=new UsingInfo(Resources.getP(),s);
+    res.append(pt.executableJ(ui, e, es, TranslateExpression.labels));
     return null;
     }
 

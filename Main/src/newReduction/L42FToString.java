@@ -161,7 +161,7 @@ public class L42FToString extends ToFormattedText implements Visitor<Void>{
   @Override
   public Void visit(Use s) {
     c("use ");
-    liftCn(s.getCn());
+    s.getDoc().toStringWeak();
     c(" check "+s.getMs());
     c("(");
     tools.StringBuilders.formatSequence(result,s.getXs().iterator(),",",x->c(x));

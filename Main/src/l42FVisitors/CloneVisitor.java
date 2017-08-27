@@ -90,10 +90,9 @@ public class CloneVisitor implements Visitor<L42F.E>{
 
   @Override
   public E visit(Use s) {
-    int cn=liftCn(s.getCn());
     MethodSelector ms=liftMs(s.getMs());
     List<String> xs=tools.Map.of(this::liftX,s.getXs());
-    return new Use(cn,ms,xs,s.getInner().accept(this));
+    return new Use(s.getDoc(),s.getUi(),ms,xs,s.getInner().accept(this));
     }
 
   @Override

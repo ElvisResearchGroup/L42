@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import platformSpecific.fakeInternet.ActionType.NormType;
+import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import platformSpecific.javaTranslation.Resources;
 import tools.StringBuilders;
 import ast.Ast.MethodType;
@@ -58,17 +59,17 @@ class ProtectedPluginType{
       throw new Error(e.getCause());
       }
     }
-  static String executableWrapper(Using s, Set<String> labels){
+  static String executableWrapper(Ast.MethodSelector ms, Set<String> labels){
   //  (plF,xsF)->plF. 
   //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
   String plF="L"+Functions.freshName("pl",labels);
   String xsF="L"+Functions.freshName("xs",labels);
   StringBuilder res=new StringBuilder();
   res.append("("+plF+","+xsF+")->"+plF+".");
-  res.append(Resources.nameOf(s.getS().nameToS(),s.getS().getNames()));
+  res.append(Resources.nameOf(ms.nameToS(),ms.getNames()));
   res.append("(");
   StringBuilders.formatSequence(res,
-    IntStream.range(0, s.getEs().size()).iterator(),
+    IntStream.range(0, ms.nameSize()).iterator(),
     ", ",
     i->res.append(xsF+"["+i+"]"));
   res.append(")");
@@ -91,14 +92,14 @@ public interface PluginType {
     Method m=ProtectedPluginType.getMethod(this,p, u);
     return ProtectedPluginType.executeMethod(m, p, this, u.getEs().toArray());
     }
-  default String executableJ(Program p,Using s,String e,List<String>es,Set<String> labels){
+  default String executableJ(UsingInfo s,String e,List<String>es,Set<String> labels){
     StringBuilder res=new StringBuilder();
     String plgName=this.getClass().getName();
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
-    res.append("\""+s.getS().nameToS()+"\",");
+    res.append("\""+s.usingMs.nameToS()+"\",");
     res.append("platformSpecific.javaTranslation.Resources.getP(), ");
     res.append("new "+plgName+"(), ");
-    res.append(ProtectedPluginType.executableWrapper(s, labels));
+    res.append(ProtectedPluginType.executableWrapper(s.usingMs, labels));
     //plgExecutor("PathName",p,new plgName(),
     //  (plF,xsF)->plF. 
     //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),

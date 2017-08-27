@@ -92,7 +92,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 @Override
   public MiniJ.S visit(Use s) {
     S inner=liftWith(null,null,s.getInner());
-    E e=new MiniJ.UseCall(ct.l42ClassName(s.getCn()),
+    E e=new MiniJ.UseCall(s.getDoc(),s.getUi(),
             L42FToMiniJ.liftMs(s.getMs()),
             s.getXs(),inner);
     return wrapE(e);

@@ -89,11 +89,10 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
 
     @Override
     public MiniJ.E visit(UseCall s) {
-      String cn=liftCn(s.getCn());
       String name=liftMn(s.getMName());
       List<String> xs = tools.Map.of(this::liftX,s.getXs());
       S body=s.getInner().accept(this);
-       return new UseCall(cn,name,xs,body);
+       return new UseCall(s.getDoc(),s.getUi(),name,xs,body);
       }
 
     @Override

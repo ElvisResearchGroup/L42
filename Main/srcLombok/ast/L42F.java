@@ -124,7 +124,9 @@ Call implements E{
 
 @Value @Wither public static class
 Use implements E{
-  int cn; Ast.MethodSelector ms;
+  Ast.Doc doc;
+  platformSpecific.fakeInternet.PluginWithPart.UsingInfo ui;
+  Ast.MethodSelector ms;
   List<String> xs; E inner;
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
 

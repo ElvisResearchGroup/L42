@@ -61,7 +61,9 @@ public interface OnLineCode {
     return null;
     }
   public static PluginType plugin(Program p,ExpCore.Using u){
-    Doc d=p.extractClassB(u.getPath()).getDoc1();
+    return plugin(p.extractClassB(u.getPath()).getDoc1());
+    }
+  public static PluginType plugin(Ast.Doc d){
     PluginType pt =_isPluginWithPart(d);
     if(pt!=null){return pt;}
     pt = _isWellKnownPlugin(d);
