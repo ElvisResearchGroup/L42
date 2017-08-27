@@ -12,6 +12,7 @@ import ast.Ast.Path;
 import ast.L42F;
 import ast.L42F.CD;
 import ast.L42F.Cn;
+import ast.MiniJ;
 import programReduction.Paths;
 import programReduction.Program;
 import tools.Assertions;
@@ -52,15 +53,17 @@ public class ClassTable {
   
   public Element get(int index) {
     Element res=map.get(index);
-    assert res!=null;
+    assert res!=null:index;
     return res;
     }
   public Set<Integer> keySet(){return map.keySet();}
   public String toString() {return L42FToString.visitCT(this);}
+  public String toJString() {return MiniJToJava.of(this);}
   public static final ClassTable empty=new ClassTable(Collections.emptyMap());
   static class Element{
     Element(CD cd) {this.cd = cd;}
     L42F.CD cd;
+    MiniJ.CD jCd;
     }
   public static class NamesP{
     NamesP(List<String>names, Program p){this.names=names;this.p=p;}
@@ -70,6 +73,9 @@ public class ClassTable {
     List<NamesP>ps=programsOf(names,p,paths);
     ClassTable res=this;
     for(NamesP pi:ps){res=res.plus(pi.names,pi.p);}
+    for(Element e:res.map.values()){
+      if (e.jCd==null){e.jCd=L42FToMiniJ.of(res, e.cd);}
+      }
     return res;
     }
   private List<NamesP> programsOf(List<String>names,Program p, Paths paths) {
@@ -86,12 +92,13 @@ public class ClassTable {
     return res;
     }
   public ClassTable plus(List<String> names,Program p){
-    List<CD> res1 = NtoF.libToCDs(names,p);
+    List<CD> res1 = NtoF.libToCDs(this,names,p);
     ClassTable res2=this;
     for(CD cd:res1){res2=res2.plus(cd);}
     return res2;
     }
   private ClassTable plus(CD cd) {
+  assert !map.containsKey(cd.getCn()):"avoided before with 'avoidRepeat'?";
   if(map.containsKey(cd.getCn())){return this;}
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(cd.getCn(), new Element(cd));

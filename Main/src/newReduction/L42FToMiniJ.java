@@ -1,6 +1,7 @@
 package newReduction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ast.Ast.MethodSelector;
@@ -25,8 +26,8 @@ public class L42FToMiniJ {
     List<String> cs=tools.Map.of(i->ct.get(i).cd.l42ClassName(),cd.getCns());
     List<MiniJ.M>ms=new ArrayList<>();
     for(L42F.M m:cd.getMs()){
-    String retT=ct.get(m.getReturnType().getCn()).cd.className();
-    List<String> ts=tools.Map.of(tx->ct.get(tx.getT().getCn()).cd.className(),m.getTxs());
+    String retT=ct.className(m.getReturnType().getCn());
+    List<String> ts=tools.Map.of(tx->ct.className(tx.getT().getCn()),m.getTxs());
     List<String> xs=tools.Map.of(tx->tx.getX(),m.getTxs());
     MiniJ.M res=new MiniJ.M(retT, liftMs(m.getSelector()), ts, xs,null);
     MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res));
@@ -107,8 +108,15 @@ public class L42FToMiniJ {
 
     @Override
     public S visitNewFwd(SimpleBody s) {
-      return new RawJ("{return new _Fwd();}");
-     }
+      StringBuilder sb=new StringBuilder();
+      sb.append("{return new _Fwd();}\n");
+      sb.append("private static class _Fwd extends "+cn+"CN implements Fwd{\n");
+      sb.append("private java.util.List<Object> os=new java.util.ArrayList<>();\n");
+      sb.append("private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n");
+      sb.append("public java.util.List<Object> os(){return os;}\n");
+      sb.append("public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}");
+      return new RawJ(sb.toString());
+      }
 
     @Override
     public S visitNativeIntSum(SimpleBody s) {
@@ -117,7 +125,11 @@ public class L42FToMiniJ {
 
     @Override
     public S visitE(E s) {
-      return s.accept(new L42FToMiniJS(ct));
+      S res=s.accept(new L42FToMiniJS(ct));
+      if(res instanceof MiniJ.B){return res;}
+      if(res instanceof MiniJ.RawJ){return res;}
+      MiniJ.B b=new MiniJ.B(null,Collections.singletonList(res));
+      return b;
       }
     }
 

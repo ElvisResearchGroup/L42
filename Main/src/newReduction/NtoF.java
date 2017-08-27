@@ -29,19 +29,20 @@ import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 
 public class NtoF {
-  public static List<L42F.CD> libToCDs(List<String> topName,Program p){
+  public static List<L42F.CD> libToCDs(ClassTable avoidRepeat,List<String> topName,Program p){
     List<L42F.CD> acc=new ArrayList<>();
     List<String> top=new ArrayList<>(topName);
-    libToCDs(top,p,acc);
+    libToCDs(avoidRepeat,top,p,acc);
     return acc;
     }
-  public static void libToCDs(List<String> topName,Program p,List<L42F.CD> acc){
+  public static void libToCDs(ClassTable avoidRepeat,List<String> topName,Program p,List<L42F.CD> acc){
     ClassB top=p.top();
     topName.add(null);
     for(NestedClass nc:top.ns()){
       topName.set(topName.size()-1,nc.getName().toString());
-      libToCDs(topName,p.navigate(Collections.singletonList(nc.getName())),acc);
+      libToCDs(avoidRepeat,topName,p.navigate(Collections.singletonList(nc.getName())),acc);
       }
+    if(avoidRepeat.keySet().contains(top.getUniqueId())){return;}
     topName.remove(topName.size()-1);
     Kind k=L42F.SimpleKind.Class;
     if (top.isInterface()){k=L42F.SimpleKind.Interface;}

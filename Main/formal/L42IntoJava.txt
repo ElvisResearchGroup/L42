@@ -424,15 +424,7 @@ CT[interface CN implements CNs {Mxs}]=
 public interface CN implements CNs{CT,CN[Mxs]}
 otherwise
 CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{CT,CN[Mxs]
-  /*public CN(){}*/
-  private static class _Fwd extends CN implements Fwd{
-    private List<Object> os=new ArrayList<>();
-    private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
-    public List<Object> os(){return os;}
-    public List<BiConsumer<Object,Object>> fs(){return fs;}
-    }
-  }
+public class CN implements CNs{CT,CN[Mxs]}
 
 CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
   public static CT*TX mxs(CT*TX' £this,CT*(TX x)s) CT[e[£this=this]]
@@ -487,6 +479,12 @@ CT,CN[refine? method Void x(TX this, TX' that) setter]=
 
 CT,CN[ _ NewFwd() newFwd]=
   public static CN NewFwd(){return new _Fwd();}
+  private static class _Fwd extends CN implements Fwd{
+    private List<Object> os=new ArrayList<>();
+    private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
+    public List<Object> os(){return os;}
+    public List<BiConsumer<Object,Object>> fs(){return fs;}
+    }
 
 
 ###Assumed
