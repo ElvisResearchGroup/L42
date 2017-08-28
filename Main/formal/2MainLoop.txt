@@ -236,10 +236,17 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 -tryCoherentPaths(p,eC)=reachablePaths(p,reorganize(Ps'), empty,empty)
   Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
 
--tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed)
+-tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed) U paths1
   paths0=reorganize({P|P inside eC}) U (stronglyDeepImplements(L1)U..U stronglyDeepImplements(Ln)).pop()
-  L1..Ln={L| L inside eC}//in path not prime// not repeat check stage //Marco and James are confused by those comments 
-
+  L1..Ln={L| L inside eC}
+  //in path not prime// not repeat check stage 
+  //Marco and James are confused by those comments 
+  --new part of tryTypedPaths added 28/08/2017
+  Ps0={P |P inside mh,refine? mh e?=Li(ms), Li in L1..Ln} 
+  Ps1 =largest subset of Ps0 so that
+  paths1=reachablePaths(p,reorganize(p,Ps0), empty,Typed)  
+  is defined
+  
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
   where
