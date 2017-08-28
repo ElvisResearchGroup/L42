@@ -242,7 +242,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   //in path not prime// not repeat check stage 
   //Marco and James are confused by those comments 
   --new part of tryTypedPaths added 28/08/2017
-  Ps0={P |P inside mh,refine? mh e?=Li(ms), Li in L1..Ln} 
+  Ps0={P |P inside mh,refine? mh e?=Li(Cs)(ms)[from This0.Cs], Li in L1..Ln} 
   Ps1 =largest subset of Ps0 so that
   paths1=reachablePaths(p,reorganize(p,Ps0), empty,Typed)  
   is defined
