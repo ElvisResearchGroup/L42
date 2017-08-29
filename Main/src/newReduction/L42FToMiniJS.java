@@ -51,13 +51,13 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     try{return inner.accept(this);}
     finally{this.x0=oldX0;this.label=oldLabel;}
   }
-  
+
   @Override
   public MiniJ.S visit(BreakLoop s) {
     if(label==null){throw Assertions.codeNotReachable();}
     return new MiniJ.Break(label);
     }
-  
+
   @Override
   public MiniJ.S visit(X s) {
     return wrapE(new MiniJ.X(s.getInner()));
@@ -82,7 +82,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     MiniJ.E e=new MiniJ.Null();
     return wrapE(e);
     }
-  
+
   @Override
   public MiniJ.S visit(Call s) {
     E e=new MiniJ.MCall(ct.l42ClassName(s.getCn()),L42FToMiniJ.liftMs(s.getMs()),s.getXs());
@@ -133,11 +133,9 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
       for(D di:s.getDs()){ds.add(liftDsXE(di));}
       }
     else{
-      String label0=Functions.freshName("label",L42.usedNames); 
+      String label0=Functions.freshName("label",L42.usedNames);
       List<S>dsTry=new ArrayList<>();
-      if(s.getKs().isEmpty()){
-        for(D di:s.getDs()){dsTry.add(liftDsXE(di));}
-        }
+      for(D di:s.getDs()){dsTry.add(liftDsXE(di));}
       List<MiniJ.K> ks=liftKs(label0,s.getKs());
       Try t=new Try(new B(null,dsTry),ks);
       ds.add(t);
@@ -162,7 +160,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 
     }
   private void liftKs(String label0,SignalKind kind,List<K> ks,List<MiniJ.K> acc) {
-    if(ks.isEmpty()){return;} 
+    if(ks.isEmpty()){return;}
     String catchX=Functions.freshName("catchX",L42.usedNames);
     S s=new MiniJ.Throw(null, catchX);
     Collections.reverse(ks);
@@ -178,7 +176,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
       }
     B b=new B(null,ss);
     MiniJ.K res=new MiniJ.K(kind, catchX, b);
-    acc.add(res);    
+    acc.add(res);
     }
 
   private S liftDsXE(D di) {

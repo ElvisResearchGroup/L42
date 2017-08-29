@@ -21,16 +21,16 @@ import tools.Assertions;
 public interface Program {
   @SuppressWarnings("serial")
   public static class EmptyProgram extends RuntimeException{}
-  
+
   Program pop();//(L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
 
   Program push(CtxL ctx, ExpCore.ClassB l);//(ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
-  
+
   //well, it is a primitive but always has the same implementation
   default Program evilPush(ExpCore.ClassB l){return new EvilPushed(l,this);}
-  
+
   ExpCore.ClassB top();//(L,_).top()=L
-  
+
   Program updateTop(ExpCore.ClassB l);
   //this is the only one that can detect evilPush
   //(L,ctxLs).update(L')=L',ctxLs
@@ -39,10 +39,10 @@ public interface Program {
     //ok also this one can be messed up by evilPush
   Program growFellow(Program fellow);
   //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
-  int getFreshId();//good for debugging and needed for reduction 
+  int getFreshId();//good for debugging and needed for reduction
 
   List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
-  
+
   //program derived operations:
   default boolean subtypeEq(Ast.Type tSub,Ast.Type tSuper){
     if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return false;}
@@ -95,7 +95,7 @@ public interface Program {
   default boolean equiv(Ast.Type t, Ast.Type t1){
     return t.getMdf()==t1.getMdf() && equiv(t.getPath(),t1.getPath());
     }
-  
+
   default ExpCore.ClassB get(int n){
     assert n>=0;
     if(n==0){return this.top();}
@@ -106,13 +106,13 @@ public interface Program {
     CtxL splitted=CtxL.split(this.top(), c);
     ExpCore holeP = splitted.originalHole();
     assert holeP instanceof ClassB;
-    return new PushedProgram((ClassB)holeP,splitted,this); 
+    return new PushedProgram((ClassB)holeP,splitted,this);
     }
 
   /*mah -push(L)//non determinism is not relevant if update is not used
   p.push(L)=p.push(ctxL,L)//an evilPush can exist in implementation
   with ctxL[L]=p.top()
-  //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error! 
+  //with p'=p.evilPush(L)   p'.top()==L, p'.pop()==p, p'.update(..) error!
   */
 
   default Program navigate(List<Ast.C>cs){
@@ -158,24 +158,24 @@ public interface Program {
     PData res=new PData(this);
     return res;
     }
-  static Program emptyLibraryProgram(){return EmptyProgramHolder.cached;}
+  static Program emptyLibraryProgram(){return new FlatProgram(EmptyProgramHolder.cached);}
   }
 class EmptyProgramHolder{
-  static final Program cached=new FlatProgram(new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Coherent, 0));
+  static final ClassB cached=new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Coherent, 0);
   }
 
 class FlatProgram extends Methods{
   int freshIds=5;
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
-    
+
   public Program pop() {
     throw new Program.EmptyProgram();}
-  
+
   public Program push(CtxL ctx, ClassB l) {
     return new PushedProgram(l,ctx,this);
     }
-    
+
   public ClassB top() {return l;}
 
   public Program updateTop(ClassB l) {
@@ -185,7 +185,7 @@ class FlatProgram extends Methods{
     }
 
   public Path _reducePath(Path p){return null;}
-    
+
   public boolean equiv(Path p, Path p1) {return p.equals(p1);}
 
   public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
@@ -214,11 +214,11 @@ class PushedProgram extends Methods{
     }
 
   public ClassB top() {return newTop;}
-   
+
   public Program updateTop(ClassB l) {return new UpdatedProgram(l,this.splitPoint,this.former);}
-   
+
   public Path _reducePath(Path p){return _reducePath(p,this.splitPoint);}
-    
+
   public Program growFellow(Program fellow) {
     CtxL ctx=this.splitPoint.divide(fellow.top());
     return fellow.push(ctx,(ClassB)ctx.originalHole());
@@ -232,7 +232,7 @@ class PushedProgram extends Methods{
 class UpdatedProgram extends PushedProgram{
   public UpdatedProgram(ClassB newTop, CtxL splitPoint, Program former) {
     super(newTop, splitPoint, former);}
-  
+
   public Program pop() {
     return former.updateTop(splitPoint.fillHole(newTop));
     }
@@ -266,7 +266,7 @@ class EvilPushed extends Methods{
     return null;
   }
   public Program growFellow(Program fellow) {throw Assertions.codeNotReachable();}
-  
+
   public int getFreshId(){
     int popped=this.pop().getFreshId();
     return popped;//+".<EvilPushed>";
