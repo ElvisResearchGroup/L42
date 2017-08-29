@@ -43,7 +43,7 @@ public String boxedClassName(CD cd){return "Float";}
 public String boxedClassName(CD cd){return className(cd);}
 }
 @Value @Wither public static class
-CD{programReduction.Program p; Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
+CD{Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
   public String dbgName() {
     StringBuilder b=new StringBuilder();
     tools.StringBuilders.formatSequence(b, dbgName.iterator(), "£C",s->b.append(s));

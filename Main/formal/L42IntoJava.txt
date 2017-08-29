@@ -537,108 +537,86 @@ C- apply 1 step of  enter* +top, CT/cache just got propagated over enter/top
 D- locally update L, CT, cache, and either save new cache or give error
 E- goto C
 
-CT and cache have identical shape
-CN->p,L42F,MiniJ,bytecode,CNs //dependencies
-not all fields are availabe all time:
-CN->p if p.top() only normalized/not executable
+CT::= CN->p,L42F,MiniJ,bytecode,CNs //dependencies
+  not all fields are availabe all time:
+  CN->p if p.top() only normalized/not executable
+cache::=CN->L42F,bytecode
 
 Execution
 
-CT.execute(p,e)=CT.loadAndRun(CN,J)
-  ex=p;empty[e]
-  sJ=toJava(ex)
-  J=class CN{ public static Object execute(){sJ}}//CN fresh
+Loader: a mutable object containing CT,cache and java classloaders
 
-CT.loadAndRun(CN,J)
-  CT contains/related to a class loader that access CT to load classes
-  CT.loader.load(toBytecode(J))
-  return CT.loader.usualReflectionToCall("CN.execute()")
+Loader.execute(p,paths,e)=LC
+  Loader.load(p,paths) //Loader change state here
+  sJ=toJava(p;empty[e])
+  J=class CN{ public static Object execute(){sJ}}//CN fresh
+  LC=Loader.runAndTrash(J)//Loader do not change state here
+
+Loader.load(p,paths)
+  hard
+  loader using CT/CT can be updated/swapped
+  (this will not influence already loaded classes)
+  
+Loader.runAndTrash(J)
+  classLoader=Loader.load(toBytecode(J))
+  return classLoader.usualReflectionToCall("CN.execute()")
 
 -------------
 should we use a db instead of files?
-example caching system:
 when L42 run in a folder, near This.L42 we create a _This.db
-that contains the following info:
--how many compilation iterations last time,
--for each iteration:
-  -the p, the e, the used paths, the used CT, the resulting r
-when re-compiling, if the same iteration uses the same e,
-the same used paths as cached, and for each P in paths,
-p(P) is the same(THE SAME of who???),
-then we can re use the cached CT and re run e.
-If the resulting r is different,
-we trash all cache for following iterations.
-Discuss advantages/disadvantages
-
-how to implement attempt:
-  loader using CT/CT can be updated/swapped
-  (this will not influence already loaded classes)
-
-start:
-  //??desugaring will also import pre compiled used towels.
-  CT=beginning ct
-  loader=loaderOf(CT)
-  normalization(loader)
-
-loader;paths|- eC -->p+ r
-  loader.CT=loader.CT.growWith(p,paths)
-  r=loader.CT.execute(p,eC)
-
-CTJ is just [JBC1..JBCn]
-loader.CTJ.growWith(JBC1..JBCn)//no repetition with the ones already loaded
-loader.CTJ.execute(JBC)
-
-test
-CTJ=empty
-CTJ.growWith(stuff)
-execute stuff
-save to disc
-load
-grow more stuff
-execute more stuff
+that contains a serialized cache object
 
 
-----------------
-Second plan for caching
+-----------------------
+plan for caching
 
 -Dep
-Assume all L have a L.Dep=P->CN
+We keep dependency in the CT map Dep=CNs
 where all the transitive dependencies are contained in Dep
-and in the p pointing to L, forall P in dom(L.Dep)
-p(P).CN=L.Dep(P)
+that is: in a well formed CT, forall CN
+* if CT' in CT(CN).CD then CT' in CT(CN).Dep
+* if CT' in CT(CN).Dep then CT(CT').Dep subseteq CT(CN).Dep
 
--CT.has(p,P)= CT(p(P).CN) is defined
--cache.has(p,P)= cache(p(P).CN).L=p(P)
--p(Ps).CN={p(P).CN| P in Ps}
+
+-CT.has(CN)= CT(CN).bytecode is defined
+-cache.has(CN,CT)= cache(CN).CD=CT(CN)
 
 ###
 ---
-When from program p we need to load classes Ps0 to CT using cache:
+When from program p we need to load classes Ps0 to CT
+using cache:
 
+Loader.load(p,paths)
+  CT'=Loader.CT.need(Loader.cache,p,paths.toPs())
+  Loader.cache=cache.accumulate(CT'.toCache())
+  Loader.CT=CT'
+ 
+ 
+//TODO: CT.growWith seams unusefull now?
 CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi-class inlining
   Ps1={P in Ps0 | not CT.has(p,P)}
+  CT0=CT.plus(p,Ps1) //note, this does not compute java/bytecode yet
+  CT1=CT0.computeDeps()
   //assert all classes in CT are also "cached well"
-  //Dag where nodes are set Ps closed for dependency
+  //Dag where nodes are set CNs closed for dependency
   Dag: //may not have a single root
-    Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive
-    Edges={ Ps1->Ps2 | Ps1,Ps2 in Nodes, Ps1 supersetof Ps2}
-  var CTres=CT
+    Nodes={CT1(p(P).CN)\dom(CT1.has)| P in Ps1} //note, dependencies are transitive
+    Edges={ CNs1->CNs2 | CNs1,CNs2 in Nodes, CNs1 supersetof CNs2}
+  var CTres=CT1
   Repeat:
-    Take one clean leave Ps in Dag
-      assert !CTres.has(p,P) forall P in Ps
-      if forall P in Ps:
-        cache.has(p,P) //note, this includes L.Dep
+    Take one clean leave CNs in Dag
+      assert !CTres.has(CN) forall CN in CNs
+      if forall CN in CNs:
+        cache.has(CN,CT1) //or CTres??
       then:
-        -add Ps=P1..Pn to CTres using the cache:
-          CTRes=CTRes,p(P1).CN->cache(p(P1).CN),..,p(Pn).CN->cache(p(Pn).CN)
+        -add CTres=CTres.addCache(cache,CNs)
         -remove the leave from Dag
-        -remove Ps from all the nodes of the graph
+        -remove CNs from all the nodes of the graph
       else:
         -mark that leave as dirty
   When all the existing leaves are dirty,then:
-     -we load Paths=(all the P in the roots of the Dag) without using the cache:
-       CTRes=CT.growWith(p,Paths)
-     -we update cache forall Pi in "roots of the Dag", p(Pi).CN->CT(p(Pi).CN)
+     -we load paths=reorganize(all the P in the roots of the Dag) without using the cache:
+       CTres=CTres.computeJavaAndBytecodeForNullFields()
   //this algorithm require to not cache the "e",
   //may be is not a problem since they are usually small?
   return CTRes

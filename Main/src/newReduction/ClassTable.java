@@ -61,7 +61,8 @@ public class ClassTable {
   public String toJString() {return MiniJToJava.of(this);}
   public static final ClassTable empty=new ClassTable(Collections.emptyMap());
   static class Element{
-    Element(CD cd) {this.cd = cd;}
+    Element(Program p, CD cd) {this.p=p; this.cd = cd;}
+    Program p;
     L42F.CD cd;
     MiniJ.CD jCd;
     }
@@ -92,16 +93,16 @@ public class ClassTable {
     return res;
     }
   public ClassTable plus(List<String> names,Program p){
-    List<CD> res1 = NtoF.libToCDs(this,names,p);
+    List<Element> res1 = NtoF.libToCDs(this,names,p);
     ClassTable res2=this;
-    for(CD cd:res1){res2=res2.plus(cd);}
+    for(Element e:res1){res2=res2.plus(e);}
     return res2;
     }
-  private ClassTable plus(CD cd) {
-  assert !map.containsKey(cd.getCn()):"avoided before with 'avoidRepeat'?";
-  if(map.containsKey(cd.getCn())){return this;}
+  private ClassTable plus(Element e) {
+  assert !map.containsKey(e.cd.getCn()):"avoided before with 'avoidRepeat'?";
+  //if(map.containsKey(cd.getCn())){return this;}
   HashMap<Integer,Element> newMap=new HashMap<>(map);
-  newMap.put(cd.getCn(), new Element(cd));
+  newMap.put(e.cd.getCn(), e);
   return new ClassTable(newMap);
   }
 }

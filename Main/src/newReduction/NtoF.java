@@ -25,21 +25,22 @@ import ast.L42F.M;
 import ast.L42F.SimpleBody;
 import ast.L42F.T;
 import coreVisitors.CloneVisitor;
+import newReduction.ClassTable.Element;
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 
 public class NtoF {
-  public static List<L42F.CD> libToCDs(ClassTable avoidRepeat,List<String> topName,Program p){
-    List<L42F.CD> acc=new ArrayList<>();
+  public static List<Element> libToCDs(ClassTable avoidRepeat,List<String> topName,Program p){
+    List<Element> acc=new ArrayList<>();
     List<String> top=new ArrayList<>(topName);
     List<Program> ps=new ArrayList<>();
     libToCDs(avoidRepeat,top,p,acc,ps);
     for(Program pi:ps) {
-      acc.add(new CD(pi,null,pi.top().getUniqueId(),null,null, null));
+      acc.add(new Element(pi,new CD(null,pi.top().getUniqueId(),null,null, null)));
       }
     return acc;
     }
-  public static void libToCDs(ClassTable avoidRepeat,List<String> topName,Program p,List<L42F.CD> acc, List<Program> ps){
+  public static void libToCDs(ClassTable avoidRepeat,List<String> topName,Program p,List<Element> acc, List<Program> ps){
     ClassB top=p.top();
     topName.add(null);
     for(NestedClass nc:top.ns()){
@@ -55,7 +56,7 @@ public class NtoF {
       top.mwts().stream()
       .flatMap(m->liftM(top.isInterface(),p,(MethodWithType)m,ps))
       ).collect(Collectors.toList());
-    CD res=new CD(p,k,top.getUniqueId(),new ArrayList<>(topName),supert,ms);
+    Element res=new Element(p,new CD(k,top.getUniqueId(),new ArrayList<>(topName),supert,ms));
     acc.add(res);
     }
 private static Stream<M> newFwdMeth(int id) {
