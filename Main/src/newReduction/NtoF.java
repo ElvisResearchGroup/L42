@@ -32,15 +32,19 @@ public class NtoF {
   public static List<L42F.CD> libToCDs(ClassTable avoidRepeat,List<String> topName,Program p){
     List<L42F.CD> acc=new ArrayList<>();
     List<String> top=new ArrayList<>(topName);
-    libToCDs(avoidRepeat,top,p,acc);
+    List<Program> ps=new ArrayList<>();
+    libToCDs(avoidRepeat,top,p,acc,ps);
+    for(Program pi:ps) {
+      acc.add(new CD(pi,null,pi.top().getUniqueId(),null,null, null));
+      }
     return acc;
     }
-  public static void libToCDs(ClassTable avoidRepeat,List<String> topName,Program p,List<L42F.CD> acc){
+  public static void libToCDs(ClassTable avoidRepeat,List<String> topName,Program p,List<L42F.CD> acc, List<Program> ps){
     ClassB top=p.top();
     topName.add(null);
     for(NestedClass nc:top.ns()){
       topName.set(topName.size()-1,nc.getName().toString());
-      libToCDs(avoidRepeat,topName,p.navigate(Collections.singletonList(nc.getName())),acc);
+      libToCDs(avoidRepeat,topName,p.navigate(Collections.singletonList(nc.getName())),acc,ps);
       }
     if(avoidRepeat.keySet().contains(top.getUniqueId())){return;}
     topName.remove(topName.size()-1);
@@ -49,7 +53,7 @@ public class NtoF {
     List<Integer>supert=tools.Map.of(t->PG.liftP(p,t.getPath()), top.getSupertypes());
     List<M> ms=Stream.concat(newFwdMeth(top.getUniqueId()),
       top.mwts().stream()
-      .flatMap(m->liftM(top.isInterface(),p,(MethodWithType)m))
+      .flatMap(m->liftM(top.isInterface(),p,(MethodWithType)m,ps))
       ).collect(Collectors.toList());
     CD res=new CD(p,k,top.getUniqueId(),new ArrayList<>(topName),supert,ms);
     acc.add(res);
@@ -60,14 +64,14 @@ M m0=new M(false,new T(null,id),ms0,Collections.emptyList(),SimpleBody.NewFwd);
 Stream<M> a=Stream.of(m0);
 return a;
 }
-private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt) {
+private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt, List<Program> ps) {
   M h=PG.header(p, mwt);
   if(isInterface){return Stream.of(h);}//case 0
   MethodType mt=mwt.getMt();
   MethodSelector ms=mwt.getMs();
   boolean hasE=mwt.get_inner().isPresent();
   boolean isClass=mt.getMdf()==Mdf.Class;
-  
+
   if(hasE){//cases 1 and 2
     ExpCore e=mwt.getInner();
     if(isClass){
@@ -75,8 +79,8 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
         return new ExpCore.EPath(s.getP(),Path.outer(0));
         }});
       }
-    E b=PG.body(p,mwt.with_inner(Optional.of(e)));
-    return Stream.of(h.withBody(b));       
+    E b=PG.body(p,mwt.with_inner(Optional.of(e)),ps);
+    return Stream.of(h.withBody(b));
     }
   //case 3
   Body b=L42F.SimpleBody.Setter;

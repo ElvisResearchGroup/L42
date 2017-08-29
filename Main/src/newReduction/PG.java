@@ -60,7 +60,8 @@ import tools.Assertions;
 class PG implements Visitor<E>{
   Program p;
   G gamma;
-  PG(Program p,G gamma){this.p=p;this.gamma=gamma;}
+  List<Program> ps;
+  PG(Program p,G gamma,List<Program> ps){this.p=p;this.gamma=gamma;this.ps=ps;}
   public static M header(Program p,MethodWithType mwt){
     MethodType mt=mwt.getMt();
 
@@ -76,8 +77,8 @@ class PG implements Visitor<E>{
     return new M(mt.isRefine(),PG.liftT(p,mt.getReturnType()),mwt.getMs(),ts,L42F.SimpleBody.Empty);
   }
 
-  public static E body(Program p, MethodWithType mwt) {
-  PG pg=new PG(p,G.of(GuessTypeCore.mapForMwt(mwt)));
+  public static E body(Program p, MethodWithType mwt,List<Program> ps) {
+  PG pg=new PG(p,G.of(GuessTypeCore.mapForMwt(mwt)),ps);
   E res=mwt.getInner().accept(pg);
   return res;
   }
@@ -130,14 +131,10 @@ public E visit(Signal s) {
 
 @Override
 public E visit(ClassB s) {
-  T t=new T(Mdf.Class,Cn.cnAny.getInner());
-  String x=Functions.freshName("libX",L42.usedNames);
-  Cn lcn=new Cn(s.getUniqueId());
-  D d=new D(false, t, x, lcn);
-  MethodSelector ms=MethodSelector.parse("loadLib(that)");
-  Call call=new Call(Cn.cnResource.getInner(),ms,Collections.singletonList(x));
-  L42F.Block b=new L42F.Block(Collections.singletonList(d),Collections.emptyList(),call,T.immVoid);
-  return b;
+  MethodSelector ms=new MethodSelector("LoadLib_"+s.getUniqueId(),-1,Collections.emptyList());
+  Call call=new Call(Cn.cnResource.getInner(),ms,Collections.emptyList());
+  ps.add(p.evilPush(s));
+  return call;
   }
 @Override
 public E visit(Loop s) {
@@ -270,13 +267,13 @@ private Stream<D> fwdGen(D d, String xPrime, Set<String> xs){
   return Stream.of(new D(false,d.getT(),xPrime,e));
   }
 private PG plusDs(List<ExpCore.Block.Dec>ds){
-  return new PG(p,this.gamma.addGuessing(p, ds));
+  return new PG(p,this.gamma.addGuessing(p, ds),ps);
   }
 private D visitD(ExpCore.Block.Dec d){
   return new D(d.isVar(),PG.liftT(p,d.getT().get()),d.getX(),d.getInner().accept(this));
   }
 private K visitK(ExpCore.Block.On k){
-  PG pg=new PG(p,gamma.addTx(k.getX(),k.getT()));
+  PG pg=new PG(p,gamma.addTx(k.getX(),k.getT()),ps);
   return new K(k.getKind(),PG.liftT(p,k.getT()),k.getX(),k.getInner().accept(pg));
   }
 private E ePrimei(E ei,Map<String,String>map,Set<String>usedAsFwd) {

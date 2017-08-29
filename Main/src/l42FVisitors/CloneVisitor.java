@@ -39,12 +39,12 @@ public class CloneVisitor implements Visitor<L42F.E>{
   protected int liftCn(int s){
     return s;
     }
-  
+
   protected MethodSelector liftMs(MethodSelector s){return s;}
   @Override
   public E visit(Block s) {
     return new Block(
-      tools.Map.of(this::liftD,s.getDs()), 
+      tools.Map.of(this::liftD,s.getDs()),
       tools.Map.of(this::liftK,s.getKs()),
       s.getE().accept(this),
       liftT(s.getType()));

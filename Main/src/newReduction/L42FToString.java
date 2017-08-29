@@ -41,6 +41,10 @@ public class L42FToString extends ToFormattedText implements Visitor<Void>{
     return ts.result.toString();
   }
   public void visit(CD cd) {
+    if(cd.getKind()==null) {//just a stub for libs
+      c("Stub for cn: "+cd.getCn()+"\n");
+      return;
+      }
     c(cd.getKind()+" "+cd.dbgName()+" implements ");
     tools.StringBuilders.formatSequence(result,cd.getCns().iterator(),",",x->liftCn(x));
     c("{");
@@ -197,5 +201,4 @@ public class L42FToString extends ToFormattedText implements Visitor<Void>{
     c(")");
     return null;
   }
-
 }

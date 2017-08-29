@@ -50,7 +50,7 @@ public class ClassTable {
     if(index==Cn.cnResource.getInner()){return "Resource";}
     return get(index).cd.l42ClassName();
     }
-  
+
   public Element get(int index) {
     Element res=map.get(index);
     assert res!=null:index;
@@ -74,7 +74,7 @@ public class ClassTable {
     ClassTable res=this;
     for(NamesP pi:ps){res=res.plus(pi.names,pi.p);}
     for(Element e:res.map.values()){
-      if (e.jCd==null){e.jCd=L42FToMiniJ.of(res, e.cd);}
+      if (e.jCd==null && e.cd.getKind()!=null){e.jCd=L42FToMiniJ.of(res, e.cd);}
       }
     return res;
     }

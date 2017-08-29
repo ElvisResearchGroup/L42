@@ -250,8 +250,8 @@ p*(mdf P) =mdf p*P
 PG[x]=x
 PG[void]=void
 PG[P]=PG*P
-PG[L]=( class Any x=L.CN//yes, ok even if not compiled as for Collections.vector(of:P)
-        Resource.LoadLib( x ) )
+PG[L]=Resource.LoadLib_'L.CN'()//will be translate as Resource.LoadLib(someInt) in Java
+  //yes, ok even if not compiled as for Collections.vector(of:P)
 PG[loop e]=loop PG[e]
 
 PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
@@ -391,7 +391,7 @@ c*x= c+x
 c*CN= c+CN.instance()
 c*void= return Void.instance()
 c*null= c+null
-c*CN.mxs(ys)= c+CT*CN.mxs(ys)//keep a look for native classes 
+c*CN.mxs(ys)= c+CT*CN.mxs(ys)//keep a look for native classes
 //note, be careful with optimizations, we can not break a loop here
 c*use CN check mxs(ys) ex= c+use(?,ys,(?)->{'emptyC*ex'})
 c*'throw'[TX1,TX2] x= throw new 'throw'(x)
@@ -399,8 +399,8 @@ c*loop ex=label:{while(true){ 'empty;label*ex' }}
 c*(mdf CN)x= c+(CT*CN)x
 c*x1:=x2= x1=x2
 c*if x then ex1 else ex2= if x {'c*ex1'} else{'c*ex2'}
-c*(dxs ex [TX])= {tx(dxs) xe(c.label,dxs) c*ex} 
-c*(dxs ex [TX])= label0:{tx(dxs) try{ xe(c.label,dxs)} c;label0*kxs c*ex} 
+c*(dxs ex [TX])= {tx(dxs) xe(c.label,dxs) c*ex}
+c*(dxs ex [TX])= label0:{tx(dxs) try{ xe(c.label,dxs)} c;label0*kxs c*ex}
 
 //reorder them for throw kind, and then for each kind
 c;label0*catch throw1 TX1 x1 ex1..catch thrown TXn xn exn =
@@ -471,7 +471,7 @@ CT,CN[refine? method TX x(TX' this) getter]=
     ((CN)o).£x=(CT*TX)f;
     }
   public CT*TX £x() {return this.mxs();} //only if refine?=refine
-    
+
 CT,CN[refine? method Void x(TX this, TX' that) setter]=
   public static Void x(CT*TX £this, CT*TX' that){
     £this.£x=that; return Void.instance();}
@@ -523,6 +523,25 @@ class Nat {  public static int _hash_plus_that(int a, int b){return a+b;}  }//Ja
 -----------------------------
 4 General execution
 -----------------------------
+
+before p  --enter* +top-->  p'
+
+now L,CT,cache  --enter* +top-->  L',CT',cache'
+
+every project save cache every step?
+
+on start:
+A- if no cache, create empty cache,
+B- load cache, parse/desugar L, emptyCT
+C- apply 1 step of  enter* +top, CT/cache just got propagated over enter/top
+D- locally update L, CT, cache, and either save new cache or give error
+E- goto C
+
+CT and cache have identical shape
+CN->p,L42F,MiniJ,bytecode,CNs //dependencies
+not all fields are availabe all time:
+CN->p if p.top() only normalized/not executable
+
 Execution
 
 CT.execute(p,e)=CT.loadAndRun(CN,J)
@@ -536,9 +555,6 @@ CT.loadAndRun(CN,J)
   return CT.loader.usualReflectionToCall("CN.execute()")
 
 -------------
-We need to save in CT also the compiled bytecode;
-we need to make CT serializable and save it with "names" related to the "stage"
-of the program, for example the compilation of all a towel.
 should we use a db instead of files?
 example caching system:
 when L42 run in a folder, near This.L42 we create a _This.db
@@ -602,6 +618,7 @@ When from program p we need to load classes Ps0 to CT using cache:
 CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi-class inlining
   Ps1={P in Ps0 | not CT.has(p,P)}
   //assert all classes in CT are also "cached well"
+  //Dag where nodes are set Ps closed for dependency
   Dag: //may not have a single root
     Nodes={P,dom(p(P).Dep)[from P]| P in Ps1} //note, dependencies are transitive
     Edges={ Ps1->Ps2 | Ps1,Ps2 in Nodes, Ps1 supersetof Ps2}
@@ -612,7 +629,7 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
       if forall P in Ps:
         cache.has(p,P) //note, this includes L.Dep
       then:
-        -add Ps=P1..Pn to CT using the cache:
+        -add Ps=P1..Pn to CTres using the cache:
           CTRes=CTRes,p(P1).CN->cache(p(P1).CN),..,p(Pn).CN->cache(p(Pn).CN)
         -remove the leave from Dag
         -remove Ps from all the nodes of the graph

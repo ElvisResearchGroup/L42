@@ -23,6 +23,7 @@ import ast.L42F.X;
 import ast.L42F._void;
 import ast.MiniJ.B;
 import ast.MiniJ.Break;
+import ast.MiniJ.CD;
 import ast.MiniJ.IfTypeCase;
 import ast.MiniJ.M;
 import ast.MiniJ.MCall;
@@ -49,7 +50,9 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     Collections.sort(ks);
     String res="";
     for(Integer i:ks){
-      res+=MiniJToJava.of(ct.get(i).jCd)+"\n";
+      CD jCdi = ct.get(i).jCd;
+      if(jCdi==null) {continue;}//must be a lib stub
+      res+=MiniJToJava.of(jCdi)+"\n";
       }
     return res;
     }
@@ -76,7 +79,7 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     deIndent();
     return null;
     }
-    
+
     @Override
     public Void visit(B s) {
       if(s.getLabel()!=null){c(s.getLabel()+":{");}
@@ -113,6 +116,10 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
 
     @Override
     public Void visit(MCall s) {
+      if(s.getMName().startsWith("LoadLib_")) {
+        int cn=Integer.parseInt(s.getMName().substring(8));
+        return c(s.getCn()+".LoadLib("+cn+");");
+        }
       c(s.getCn()+"."+s.getMName()+"(");
       tools.StringBuilders.formatSequence(result, s.getXs().iterator(),", ", x->c(x));
       return c(");");

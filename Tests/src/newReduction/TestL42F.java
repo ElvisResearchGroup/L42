@@ -297,7 +297,29 @@ public class TestL42F {
     + "return x;}\n" +
     "  }\n"
 
-
+    },{lineNumber(),"{method Library l() (x={A:{}} x)}",
+    "Class Foo£Id7 implements {\n" +
+    "  method null Foo£Id7 NewFwd()()\n" +
+    "    NewFwd\n" +
+    "  method Immutable Library l()(Immutable Foo£Id7 this)\n" +
+    "    (\n" +
+    "      Immutable Library x=Resource.LoadLib_9()()\n" +
+    "      x\n" +
+    "    )\n" +
+    "  }\n" +
+    "Stub for cn: 9\n",
+    "public class Foo£Id7{\n" +
+    "  public Foo£Id7 NewFwd(){return new _Fwd();}\n" +
+    "private static class _Fwd extends Foo£Id7CN implements Fwd{\n" +
+    "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
+    "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
+    "public java.util.List<Object> os(){return os;}\n" +
+    "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
+    "  public Object l(Foo£Id7 this){"
+    + "Object x;"
+    + "x=Resource.LoadLib(9);"
+    + "return x;}\n" +
+    "  }\n"
     }});}
 
   @Test  public void test() {
