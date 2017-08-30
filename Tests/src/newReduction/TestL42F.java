@@ -34,6 +34,7 @@ public class TestL42F {
   @Parameter(1) public String _cb;
   @Parameter(2) public String expected;
   @Parameter(3) public String expectedJ;
+  @Parameter(4) public String expectedD;
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
@@ -54,7 +55,8 @@ public class TestL42F {
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
 
     "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n" +
-    "  }\n"
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),
     "{ A:{method Void va()void} B:{method Void vb()void}}",
     "Class Foo£Id7 implements {\n"+
@@ -99,8 +101,10 @@ public class TestL42F {
   "public java.util.List<Object> os(){return os;}\n"+
   "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n"+
   "  public platformSpecific.javaTranslation.Resources.Void vb(Foo£CB£Id9 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
-  "  }\n"
-
+  "  }\n",
+  "7->[7]\n" +
+  "8->[8]\n" +
+  "9->[9]\n"
     },{lineNumber(),"{method Void v()void}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -117,8 +121,8 @@ public class TestL42F {
   "public java.util.List<Object> os(){return os;}\n"+
   "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n"+
   "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
-  "  }\n"
-
+  "  }\n",
+  "5->[5]\n"
     },{lineNumber(),"{method Void v()this.v()}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -134,7 +138,8 @@ public class TestL42F {
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
     "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return Foo£Id5.v(this);}\n" +
-    "  }\n"
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{method Void v() (this.v())}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -150,7 +155,8 @@ public class TestL42F {
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
     "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return Foo£Id5.v(this);}\n" +
-    "  }\n"
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{method Void v() (x=this.v() x)}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -172,7 +178,8 @@ public class TestL42F {
     + "platformSpecific.javaTranslation.Resources.Void x;"
     + "x=Foo£Id5.v(this);"
     + "return x;}\n" +
-    "  }\n"
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{method Void v() (x=this.v() catch error Void r r x)}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -201,7 +208,8 @@ public class TestL42F {
     + " return r;}"
     + " else throw catchX;}"
     + "return x;}\n" +
-    "  }\n"
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{method Void v() loop this.v()}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -210,17 +218,17 @@ public class TestL42F {
     "    loop Foo£Id5.v()(this)\n" +
     "  }\n",
     //java
-"public class Foo£Id5{\n" +
-"  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
-"private static class _Fwd extends Foo£Id5CN implements Fwd{\n" +
-"private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
-"private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
-"public java.util.List<Object> os(){return os;}\n" +
-"public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-"  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
-+ "label0:while(true)Foo£Id5.v(this);}\n" +
-"  }\n"
-
+    "public class Foo£Id5{\n" +
+    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "private static class _Fwd extends Foo£Id5CN implements Fwd{\n" +
+    "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
+    "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
+    "public java.util.List<Object> os(){return os;}\n" +
+    "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
+    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
+    + "label0:while(true)Foo£Id5.v(this);}\n" +
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{method Void v() (var Void x=void x:=void x)}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -250,8 +258,8 @@ public class TestL42F {
     + "updateX=platformSpecific.javaTranslation.Resources$Void.Instance();"
     + "x=updateX;"
     + "}return x;}\n" +
-    "  }\n"
-
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{class method This k(fwd This that) method This v() (x=This.k(x) x)}",
     "Class Foo£Id5 implements {\n" +
     "  method null Foo£Id5 NewFwd()()\n"+
@@ -295,8 +303,8 @@ public class TestL42F {
     + "x=Foo£Id5.k£Xthat(x1);"
     + "}unused1=Resource.Fix(x1, x);"
     + "return x;}\n" +
-    "  }\n"
-
+    "  }\n",
+    "5->[5]\n"
     },{lineNumber(),"{method Library l() (x={A:{}} x)}",
     "Class Foo£Id7 implements {\n" +
     "  method null Foo£Id7 NewFwd()()\n" +
@@ -319,7 +327,8 @@ public class TestL42F {
     + "Object x;"
     + "x=Resource.LoadLib(9);"
     + "return x;}\n" +
-    "  }\n"
+    "  }\n",
+    "7->[7]\n"
     }});}
 
   @Test  public void test() {
@@ -330,8 +339,11 @@ public class TestL42F {
     p=p.updateTop(l);
     Paths ps=Paths.empty().push(Collections.singletonList(Collections.emptyList()));
     ClassTable ct=ClassTable.empty.growWith(Collections.singletonList("Foo"),p,ps);
-    assertEquals(expected,ct.toString());
-    assertEquals(expectedJ,ct.toJString());
+    ct=ct.computeJavaForNulls();
+    ct=ct.computeDeps();
+    if(expected!=null) {assertEquals(expected,ct.toString());}
+    if(expectedJ!=null) {assertEquals(expectedJ,ct.toJString());}
+    if(expectedD!=null) {assertEquals(expectedD,ct.toDepJString());}
 
     }
   }
