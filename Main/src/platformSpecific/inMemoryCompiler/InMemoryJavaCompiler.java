@@ -45,7 +45,7 @@ public class InMemoryJavaCompiler {
       this.name=name;
       }
     private void cacheBytes() {bytes=byteCode.toByteArray(); }
-    private byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
+    public byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
     @Override
     public InputStream openInputStream() {
       return new ByteArrayInputStream(getBytes());
