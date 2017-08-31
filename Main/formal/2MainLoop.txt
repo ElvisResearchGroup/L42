@@ -247,6 +247,8 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   Ps1 =largest subset of Ps0 so that
     paths1=reachablePaths(p,reorganize(p,Ps0), empty,Typed)  
   is defined
+  //ts=collect all the types inside the mh weakly deep in libraries inside eC referring outside of eC
+  //larger subset Ps1 can be computed by collecting the paths of individual Pi in Ps0
   
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
@@ -258,7 +260,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   paths.top()\Css!=empty
   Cs1..Csn=paths.top()\Css
   paths0=reachableFromL(p.top()(Cs1),Typed?).prefix(Cs1) U ... U reachableFromL(p.top()(Csn),Typed?).prefix(Csn)
-  error if Csi= C._ and p.top()(C) not of form LC //this allows for clearer error messages and less fragile code
+  forall i in 1..n error if Csi= C._ and p.top()(C) not of form LC //this allows for clearer error messages and less fragile code
   Css'=minimize(paths.top() U Css)  
      
 - reachablePaths(p,paths,Css,Typed?)=paths0
