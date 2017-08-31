@@ -357,6 +357,17 @@ public class TestL42F {
     "5->[5, 7]\n" +
     "6->[6, 7]\n" +
     "7->[7]\n"
+    },{lineNumber(),"{class method Void m() void"
+        + " A:{class method Void ma() B.mb() }"
+        + " B:{class method Void mb() C.mc() }"
+        + " C:{class method Void mc() This1.m() }"
+        + "}",
+    null,null,
+    "5->[5, 6, 7, 8]\n" +
+    "6->[6, 7, 8]\n" +
+    "7->[7, 8]\n" +
+    "8->[8]\n"
+
     }});}
 
   @Test  public void test() {
