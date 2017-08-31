@@ -1,7 +1,7 @@
-{ //@plugin  toFix 
+{ //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.location.Lib
-  implements This1.This$ 
-  
+  implements This1.This$
+
   This$:UnsafeRefactor.MiniData.thisLib()
 
   List:Collections.vector(of:This$)
@@ -32,12 +32,12 @@
     catch exception NotAvailable Bool.false()
     Bool.true()
     )
-        
+
   method
   Method.List methods()
     Method.List[with i in 0Size.vals(upTo:this.methodSize()) (use[this.method(i)])]
 
-  method class Selector #default#method(Void selector) Selector    
+  method class Selector #default#method(Void selector) Selector
   method Method method(Selector selector) exception NotAvailable {
     with mi in this.methods().vals() (
       if mi.selector()==selector (return mi)
@@ -49,15 +49,15 @@
     unused=this.method(selector:selector)
     catch exception NotAvailable Bool.false()
     Bool.true()
-    )      
+    )
   method
   Type.Implemented.List implements()
     Type.Implemented.List[with i in 0Size.vals(upTo:this.implementedSize()) (use[this.implemented(i)])]
-    
+
   method Bool implements(class Any classObj){
     if Type.$_RefTo.Binded.equalsClassObj(Any, and:classObj) (
       return Bool.true()
-      ) 
+      )
      with ti in this.implements().vals() (
        with ri=ti.refTo() (
          on Type.$_RefTo.Binded (
@@ -71,8 +71,8 @@
        )
      return Bool.false()
      }
-  
-  method class Path #default#implements(Void path) Path   
+
+  method class Path #default#implements(Void path) Path
   method Bool implements(Path path) {
      with ti in this.implements().vals() (
        with ri=ti.refTo() (
@@ -85,24 +85,24 @@
          )
        )
      return Bool.false()
-     }   
-  
+     }
+
 
   class method
   This (class Any classObj)
     This.newFromClass(classObj)
-  class method 
+  class method
   This (Library that)
     This.newFromLibrary(that)
-    
+
   //methods imported from java
   method
   Lib navigate(Path that)
   class method
   This newFromClass(class Any that)
-  class method 
+  class method
   This newFromLibrary(Library that)
-  method 
+  method
   Type.Implemented implemented(Size that)
   method
   Size implementedSize()
@@ -126,7 +126,7 @@
   This nested(Size that)
   method //empty doc if it is root
   $_Doc nestedDoc()
-  method 
+  method
   Size nestedSize()
   method//last is its name, empty path for root
   Path path()

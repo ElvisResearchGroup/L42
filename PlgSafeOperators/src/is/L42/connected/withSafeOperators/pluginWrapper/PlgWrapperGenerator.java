@@ -29,6 +29,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore.MCall;
 import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
@@ -63,7 +64,7 @@ public class PlgWrapperGenerator {
     "   use This check instanceof(_this:binaryRepr)\n"+
     "   exception This.#from(binaryRepr:binaryRepr)\n"+
     "}")).getMs();
- 
+
   private static MCall templateUsingExc=(MCall) ((ClassB)Functions.parseAndDesugar("PlgWrapper",
     " {class method This m()\n"+
     " This.#from(binaryRepr:(\n"+
@@ -77,7 +78,7 @@ public class PlgWrapperGenerator {
     "   ))\n"+
     "}\n"+
     "")).getMs().get(0).getInner();
-  
+
 
 
 //-----------------------------------------------------
@@ -147,7 +148,7 @@ public class PlgWrapperGenerator {
         }
       addMwt(p, plgInfo, jms,jcs, msResult, pTop, mwt);
     }
-    return l.withMs(msResult);
+    return l.withPhase(Phase.Norm).withMs(msResult);
     }
 
 
@@ -228,7 +229,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
     if (mwt.getMt().getExceptions().isEmpty()){b=b.withOns(Collections.emptyList());}
     ExpCore.Using u=(Using) b.getDecs().get(0).getInner();
     ExpCore.MCall p0=(MCall) u.getEs().get(0);//parameter expressions
-    
+
     //e#mcall.inner<-mwt.retType.path1
     e=e.withInner(ExpCore.EPath.wrap(mt.getReturnType().getPath()));
     //u=u.withS(ui.usingMs);
@@ -247,7 +248,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
         needAddBinaryRepr=false;
         }
       if(needAddBinaryRepr){
-        pi=p0.withInner(pi);  
+        pi=p0.withInner(pi);
         }
       ues.add(pi);
       }}
@@ -279,7 +280,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       //ki.inner#mcall.inner<-Pi
       }
     boolean wrapRes=!mt.getReturnType().equals(Type.classAny) &&
-            !mt.getReturnType().equals(Type.immLibrary);    
+            !mt.getReturnType().equals(Type.immLibrary);
     if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(Optional.of(Type.immVoid))));}
     if(!ui.isVoid && wrapRes){
       e=e.withEs(Collections.singletonList(b));
@@ -299,7 +300,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
-    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
+    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}
     if(!mt.getExceptions().isEmpty()){return false;}
     if(!mt.getReturnType().getMdf().equals(Mdf.Immutable)){return false;}
     return true;//no need to check return type, since is just thrown as error
@@ -311,7 +312,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Readable)){return false;}
-    if(!mt.getTs().isEmpty()){return false;}    
+    if(!mt.getTs().isEmpty()){return false;}
     if(!mt.getExceptions().isEmpty()){return false;}
     if(!mt.getReturnType().equals(Type.immLibrary)){return false;}
     return true;
@@ -323,7 +324,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
-    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
+    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}
     if(!mt.getExceptions().isEmpty()){return false;}
     if(!mt.getReturnType().equals(Type.mutThis0)){return false;}
     return true;
@@ -336,7 +337,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(mwt==null){return false;}//must be an mwt since normalized
     MethodType mt=mwt.getMt();
     if(!mt.getMdf().equals(Mdf.Class)){return false;}
-    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}    
+    if(!mt.getTs().get(0).equals(Type.immLibrary)){return false;}
     if(mt.getExceptions().size()!=1){return false;}
     if(!mt.getExceptions().get(0).equals(Type.immThis0)){return false;}
     if(!mt.getReturnType().equals(Type.immVoid)){return false;}
@@ -418,8 +419,8 @@ public static boolean hasPluginUnresponsive(ClassB l){
     if(!phOk){//TODO: why this limitation?
       throw new RefactorErrors.MethodUnfit().msg("Return type can not be fwd");
       }
-    }   
- 
+    }
+
 }
 
 
@@ -431,15 +432,15 @@ invalidMethodType
        method *123 not present in external ref
        plg part not internal ref
        no class/fwd par/ret
- 
+
   no plgunresponsive
     where: Path, ms
 
 overloading
   where: Path, ms
   in JavaClass selector/num have x variations/ is not present
-  
-  
+
+
   LocationIssue
     Any Operator cause //this will store some of the parameters of the operation
     Library originalInput
@@ -451,7 +452,7 @@ overloading
     issue string
     LocationIssue next?
 
-    
+
 General exceptions for Refactor
   SelectorUnfit
   PathUnfit
@@ -459,14 +460,14 @@ General exceptions for Refactor
   MethodUnfit //1 method not ok shape
   ClassClash
   ClassUnfit
-  
+
   privacycoupuled
   incoherentRedirectMapping
   cicular interface implements induced
-  overloading  
-    
+  overloading
+
   error may talk about extern
   have field internalLocation to talk about why pointing out
-    
+
 */
 //TODO: if a class is internal and is not plugin with part, is it ok if it has the right methods anyway??

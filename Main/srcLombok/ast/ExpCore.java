@@ -15,12 +15,15 @@ import lombok.Value;
 import lombok.experimental.Wither;
 import ast.Expression;
 import ast.Ast.*;
+import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.MCall;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
+import coreVisitors.PropagatorVisitor;
 
 public interface ExpCore {
   <T> T accept(coreVisitors.Visitor<T> v);
@@ -442,6 +445,18 @@ class _Aux{
     //assert  (cb.getPhase()==ast.ExpCore.ClassB.Phase.None && cb.getUniqueId().isEmpty())
     //     || ((cb.getPhase()!=ast.ExpCore.ClassB.Phase.None && !cb.getUniqueId().isEmpty()) );
     assert countWalkBy <= 1 : cb;
+
+    if(cb.getPhase()==Phase.Typed ||cb.getPhase()==Phase.Coherent) {
+      int[]find= {0};
+      class T extends PropagatorVisitor{
+        protected void liftDec(Block.Dec f) {
+          if(!f.getT().isPresent()) {find[0]++;}
+          super.liftDec(f);
+        }
+      };
+      cb.accept(new T());
+      assert find[0]==0;
+      }
     return true;
     }
   }

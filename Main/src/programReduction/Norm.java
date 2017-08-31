@@ -4,18 +4,21 @@ import ast.Ast.Type;
 import ast.Ast.Path;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import ast.ExpCore;
+import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 
 import coreVisitors.CloneVisitor;
+import coreVisitors.PropagatorVisitor;
 import tools.Assertions;
 import tools.Map;
 import ast.Ast;
@@ -40,6 +43,13 @@ public class Norm {
     //-norm(p)={interface? implements Ps' norm(p,Ms') }
     //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
     ClassB l=p.top();
+    if(l.getPhase()!=Phase.None) {
+      //TODO: logging an error instead of failing to keep stuff going (just) for now
+      List<Type> ps1 = Methods.collect(p,l.getSupertypes());
+      if(!ps1.equals(l.getSupertypes())) {System.err.println("LoggingError: "+ps1+" "+l.getSupertypes());}
+      return l;
+      }
+
     //Ps'=collect(p,Ps)
     List<Type> ps1 = Methods.collect(p,l.getSupertypes());
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
@@ -48,8 +58,8 @@ public class Norm {
       this0Ms.stream(),
       l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
       ).map(m->norm(p,m)).collect(Collectors.toList());
-    //return l.withSupertypes(ps1).withMs(ms1).withUniqueId(p.getFreshId()).withPhase(Phase.Norm);
-    return new ClassB(l.getDoc1(),l.isInterface(),ps1,ms1,l.getP(),Phase.Norm,p.getFreshId());
+    ClassB newL=new ClassB(l.getDoc1(),l.isInterface(),ps1,ms1,l.getP(),Phase.Norm,p.getFreshId());
+    return newL;
     }
   @SuppressWarnings("unchecked")
   <T extends ExpCore.ClassB.Member> T norm(Program p,T m){

@@ -13,6 +13,7 @@ import ast.Ast.Path;
 import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 
@@ -35,6 +36,6 @@ public class LiftValue {
     if(!(optMt.get() instanceof MethodWithType)){throw Errors42.errorMethodClash(Collections.emptyList(),optMt.get(),mwt,true,Collections.emptyList(),true,true,false);}
    Errors42.checkMethodClash(Collections.emptyList(),(MethodWithType) optMt.get(),mwt,false);
    Functions.replaceIfInDom(ms,mwt);
-   return context.withMs(ms);
+   return context.withPhase(Phase.Norm).withMs(ms);
     }
 }
