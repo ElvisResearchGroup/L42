@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import ast.Ast.C;
 import ast.Ast.Path;
@@ -59,12 +60,27 @@ public class ClassTable {
   public Set<Integer> keySet(){return map.keySet();}
   public String toString() {return L42FToString.visitCT(this);}
   public String toJString() {return MiniJToJava.of(this);}
+  public String toDepJString() {
+    StringBuilder res=new StringBuilder();
+    map.values().stream().sorted((e1,e2)->e1.cd.getCn()-e2.cd.getCn())
+      .filter(e->e.deps!=null)
+      .map(e->e.cd.getCn()+"->"+e.deps.stream().sorted().collect(Collectors.toList()))
+      .forEachOrdered(s->res.append(s+"\n"));
+    return res.toString();
+    }
   public static final ClassTable empty=new ClassTable(Collections.emptyMap());
   static class Element{
     Element(Program p, CD cd) {this.p=p; this.cd = cd;}
     Program p;
     L42F.CD cd;
     MiniJ.CD jCd;
+    Set<Integer>deps;
+    Element copy() {
+      Element res=new Element(p,cd);
+      res.jCd=jCd;
+      res.deps=deps;
+      return res;
+      }
     }
   public static class NamesP{
     NamesP(List<String>names, Program p){this.names=names;this.p=p;}
@@ -74,11 +90,39 @@ public class ClassTable {
     List<NamesP>ps=programsOf(names,p,paths);
     ClassTable res=this;
     for(NamesP pi:ps){res=res.plus(pi.names,pi.p);}
+    return res;
+    }
+
+  public ClassTable computeJavaForNulls() {
+    ClassTable res = copy();
     for(Element e:res.map.values()){
-      if (e.jCd==null && e.cd.getKind()!=null){e.jCd=L42FToMiniJ.of(res, e.cd);}
+      if (e.jCd==null && e.cd.getKind()!=null){
+        e.jCd=L42FToMiniJ.of(res, e.cd);
+        }
       }
     return res;
     }
+
+  public ClassTable computeDeps() {
+    ClassTable res = copy();
+    for(Element e:res.map.values()){
+      if (e.deps==null && e.cd.getKind()!=null){
+        e.deps=CTDeps.of(res, e.cd);
+        }
+      }
+    return res;
+    }
+
+
+
+  private ClassTable copy() {
+    Map<Integer,Element> newMap=map.entrySet().stream()
+      .collect(Collectors.toMap(Map.Entry::getKey,
+        e -> e.getValue().copy()));
+    ClassTable res=new ClassTable(newMap);
+    return res;
+    }
+
   private List<NamesP> programsOf(List<String>names,Program p, Paths paths) {
     if(paths.isEmpty()){return Collections.emptyList();}
     List<NamesP>res=new ArrayList<>();

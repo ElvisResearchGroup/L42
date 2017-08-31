@@ -49,7 +49,7 @@ public class L42FToMiniJ {
     L42F.CD cd;
     L42F.M m;
     MiniJ.M mj;
-  
+
     @Override
     public S visitEmpty(SimpleBody s) {
       return new RawJ(";");
@@ -100,7 +100,7 @@ public class L42FToMiniJ {
       sb.append("{"+cn+" res=new "+cn+"();");
       for(String xi:mj.getXs()){
         sb.append("res."+xi+"="+xi+";");
-        if(fwd){sb.append("Fwd.addIfFwd("+xi+","+cn+".FieldAssFor_"+xi+");");}        
+        if(fwd){sb.append("Fwd.addIfFwd("+xi+","+cn+".FieldAssFor_"+xi+");");}
         }
       sb.append("return res;}");
       return new RawJ(sb.toString());
@@ -110,7 +110,7 @@ public class L42FToMiniJ {
     public S visitNewFwd(SimpleBody s) {
       StringBuilder sb=new StringBuilder();
       sb.append("{return new _Fwd();}\n");
-      sb.append("private static class _Fwd extends "+cn+"CN implements Fwd{\n");
+      sb.append("private static class _Fwd extends "+cn+" implements Fwd{\n");
       sb.append("private java.util.List<Object> os=new java.util.ArrayList<>();\n");
       sb.append("private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n");
       sb.append("public java.util.List<Object> os(){return os;}\n");

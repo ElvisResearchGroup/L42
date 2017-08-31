@@ -190,7 +190,9 @@ class FlatProgram extends Methods{
 
   public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
 
-  public int getFreshId(){return freshIds++;}
+  public int getFreshId(){
+    return freshIds++;
+    }
   }
 class PushedProgram extends Methods{
   ClassB newTop;

@@ -333,12 +333,11 @@ programsOf(p,Cs1..Csn paths)=
 ###auxiliary CT+p
 ---
 CT+p=CT+CD1+..+CDn
-  where CD1..CDn=libToCDs(p),
+  where p1,CD1..pn,CDn=libToCDs(p),
 
-CT+CD=CT if CD.CN in dom(CT)
+CT+p,CD=CT if CD.CN in dom(CT)
 otherwise
-CT+CD=CT,CD.CN->p,CD',J
-  where CD'=optimize(CD), J=toJava(CD')
+CT+p,CD=CT,CD.CN->p,CD,empty,empty
 
 
 
@@ -418,7 +417,7 @@ xe(label?,T x e)= x;label?*e;
 //we need to check for coherence!
 
 
-###[CD]=JClass
+### CT[CD]=JClass
 ---
 CT[interface CN implements CNs {Mxs}]=
 public interface CN implements CNs{CT,CN[Mxs]}
@@ -552,11 +551,6 @@ Loader.execute(p,paths,e)=LC
   J=class CN{ public static Object execute(){sJ}}//CN fresh
   LC=Loader.runAndTrash(J)//Loader do not change state here
 
-Loader.load(p,paths)
-  hard
-  loader using CT/CT can be updated/swapped
-  (this will not influence already loaded classes)
-  
 Loader.runAndTrash(J)
   classLoader=Loader.load(toBytecode(J))
   return classLoader.usualReflectionToCall("CN.execute()")
@@ -590,12 +584,13 @@ Loader.load(p,paths)
   CT'=Loader.CT.need(Loader.cache,p,paths.toPs())
   Loader.cache=cache.accumulate(CT'.toCache())
   Loader.CT=CT'
- 
- 
-//TODO: CT.growWith seams unusefull now?
+  Loader.classLoader.referTo(CT')
+//loader using CT/CT can be updated/swapped (this will not influence already loaded classes)
+
+
 CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi-class inlining
   Ps1={P in Ps0 | not CT.has(p,P)}
-  CT0=CT.plus(p,Ps1) //note, this does not compute java/bytecode yet
+  CT0=CT.growWith(p,reorganize(Ps1)) //note, this does not compute java/bytecode yet
   CT1=CT0.computeDeps()
   //assert all classes in CT are also "cached well"
   //Dag where nodes are set CNs closed for dependency
@@ -621,8 +616,24 @@ CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi
   //may be is not a problem since they are usually small?
   return CTRes
 
+###auxiliary functions
+
+CT.computeDeps()=CT'
+  if CT(CN)=p,CD,JCD?,byteCode?,empty
+  then CT'(CN)=p,CD,JCD?,byteCode?,CNs
+  CN0 in CNs if CN0 somewhere inside CD
+  CN1 in CNs if CN0 in Cns, CN1 somewhere inside CT(CN0)
 
 
+
+CT.computeJavaAndBytecodeForNullFields()=
+  CT.computeJavaForNullFields().computeBytecodeForNullFields()
+
+
+CT.computeJavaForNulls()
+  uses CT[CD]=JClass
+CT.computeBytecodeForNulls()
+  uses tools.javac
 
 
 reuse at               //0
