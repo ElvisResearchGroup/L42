@@ -47,14 +47,14 @@ public class TestL42F {
     "  }\n",
     //java
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
 
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n" +
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n" +
     "  }\n",
     "5->[5]\n"
     },{lineNumber(),
@@ -77,25 +77,25 @@ public class TestL42F {
     "  }\n",
     //java
   "public class Foo£CA£Id5{\n"+
-  "  public Foo£CA£Id5 NewFwd(){return new _Fwd();}\n"+
+  "  static public Foo£CA£Id5 NewFwd(){return new _Fwd();}\n"+
   "private static class _Fwd extends Foo£CA£Id5 implements Fwd{\n"+
   "private java.util.List<Object> os=new java.util.ArrayList<>();\n"+
   "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n"+
   "public java.util.List<Object> os(){return os;}\n"+
   "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n"+
-  "  public platformSpecific.javaTranslation.Resources.Void va(Foo£CA£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
+  "  static public platformSpecific.javaTranslation.Resources.Void va(Foo£CA£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
   "  }\n"+
   "public class Foo£CB£Id6{\n"+
-  "  public Foo£CB£Id6 NewFwd(){return new _Fwd();}\n"+
+  "  static public Foo£CB£Id6 NewFwd(){return new _Fwd();}\n"+
   "private static class _Fwd extends Foo£CB£Id6 implements Fwd{\n"+
   "private java.util.List<Object> os=new java.util.ArrayList<>();\n"+
   "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n"+
   "public java.util.List<Object> os(){return os;}\n"+
   "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n"+
-  "  public platformSpecific.javaTranslation.Resources.Void vb(Foo£CB£Id6 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
+  "  static public platformSpecific.javaTranslation.Resources.Void vb(Foo£CB£Id6 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
   "  }\n"+
   "public class Foo£Id7{\n"+
-  "  public Foo£Id7 NewFwd(){return new _Fwd();}\n"+
+  "  static public Foo£Id7 NewFwd(){return new _Fwd();}\n"+
   "private static class _Fwd extends Foo£Id7 implements Fwd{\n"+
   "private java.util.List<Object> os=new java.util.ArrayList<>();\n"+
   "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n"+
@@ -114,13 +114,13 @@ public class TestL42F {
     "  }\n",
     //java
     "public class Foo£Id5{\n"+
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n"+
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n"+
   "private static class _Fwd extends Foo£Id5 implements Fwd{\n"+
   "private java.util.List<Object> os=new java.util.ArrayList<>();\n"+
   "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n"+
   "public java.util.List<Object> os(){return os;}\n"+
   "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n"+
-  "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
+  "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return platformSpecific.javaTranslation.Resources$Void.Instance();}\n"+
   "  }\n",
   "5->[5]\n"
     },{lineNumber(),"{method Void v()this.v()}",
@@ -131,13 +131,13 @@ public class TestL42F {
     "    Foo£Id5.v()(this)\n" +
     "  }\n",
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return Foo£Id5.v(this);}\n" +
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return Foo£Id5.v(this);}\n" +
     "  }\n",
     "5->[5]\n"
     },{lineNumber(),"{method Void v() (this.v())}",
@@ -148,13 +148,13 @@ public class TestL42F {
     "    (Foo£Id5.v()(this))\n" +
     "  }\n",
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return Foo£Id5.v(this);}\n" +
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){return Foo£Id5.v(this);}\n" +
     "  }\n",
     "5->[5]\n"
     },{lineNumber(),"{method Void v() (x=this.v() x)}",
@@ -168,13 +168,13 @@ public class TestL42F {
     "    )\n" +
     "  }\n",
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
     + "platformSpecific.javaTranslation.Resources.Void x;"
     + "x=Foo£Id5.v(this);"
     + "return x;}\n" +
@@ -193,13 +193,13 @@ public class TestL42F {
     "  }\n",
     //java
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
     + "platformSpecific.javaTranslation.Resources.Void x;"
     + "try{x=Foo£Id5.v(this);}catch (Error catchX){"
     + "if(catchX.inner() instanceof platformSpecific.javaTranslation.Resources.Void){"
@@ -219,13 +219,13 @@ public class TestL42F {
     "  }\n",
     //java
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
     + "label0:while(true)Foo£Id5.v(this);}\n" +
     "  }\n",
     "5->[5]\n"
@@ -244,13 +244,13 @@ public class TestL42F {
     "    )\n" +
     "  }\n",
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
+    "  static public platformSpecific.javaTranslation.Resources.Void v(Foo£Id5 this){"
     + "platformSpecific.javaTranslation.Resources.Void x;"
     + "platformSpecific.javaTranslation.Resources.Void unused;"
     + "x=platformSpecific.javaTranslation.Resources$Void.Instance();"
@@ -280,20 +280,20 @@ public class TestL42F {
     "    )\n" +
     "  }\n",
     "public class Foo£Id5{\n" +
-    "  public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id5 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public Foo£Id5 k£Xthat(Foo£Id5 that){return new _Fwd();}\n" +
+    "  static public Foo£Id5 k£Xthat(Foo£Id5 that){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id5 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public Foo£Id5 New_k£Xthat(Foo£Id5 that){Foo£Id5 res=new Foo£Id5();res.that=that;return res;}\n" +
-    "  public Foo£Id5 v(Foo£Id5 this){"
+    "  static public Foo£Id5 New_k£Xthat(Foo£Id5 that){Foo£Id5 res=new Foo£Id5();res.that=that;return res;}\n" +
+    "  static public Foo£Id5 v(Foo£Id5 this){"
     + "Foo£Id5 x1;"
     + "Foo£Id5 x;"
     + "platformSpecific.javaTranslation.Resources.Void unused1;"
@@ -317,13 +317,13 @@ public class TestL42F {
     "    )\n" +
     "  }\n",
     "public class Foo£Id7{\n" +
-    "  public Foo£Id7 NewFwd(){return new _Fwd();}\n" +
+    "  static public Foo£Id7 NewFwd(){return new _Fwd();}\n" +
     "private static class _Fwd extends Foo£Id7 implements Fwd{\n" +
     "private java.util.List<Object> os=new java.util.ArrayList<>();\n" +
     "private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n" +
     "public java.util.List<Object> os(){return os;}\n" +
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
-    "  public Object l(Foo£Id7 this){"
+    "  static public Object l(Foo£Id7 this){"
     + "Object x;"
     + "x=Resource.LoadLib(6);"
     + "return x;}\n" +

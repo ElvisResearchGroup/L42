@@ -21,7 +21,7 @@ public class MiniJ {
 CD{boolean isInterface; String cn; List<String> cns; List<M> ms;}
 
 @Value @Wither public static class
-M{String retT;String name;List<String>ts;List<String>xs; S body;}
+M{boolean isStatic; String retT;String name;List<String>ts;List<String>xs; S body;}
 
 public static interface S{
   <V> V accept(JVisitor<V> v);

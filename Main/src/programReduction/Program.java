@@ -1,5 +1,6 @@
 package programReduction;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +41,8 @@ public interface Program {
   Program growFellow(Program fellow);
   //(L,ctxL,_).growFellow(p)==p.push(p.top()/ctxL)
   int getFreshId();//good for debugging and needed for reduction
+
+  List<Object> exploredWay();
 
   List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
 
@@ -193,6 +196,10 @@ class FlatProgram extends Methods{
   public int getFreshId(){
     return freshIds++;
     }
+
+  public List<Object> exploredWay() {
+    return new ArrayList<>();
+    }
   }
 class PushedProgram extends Methods{
   ClassB newTop;
@@ -230,6 +237,11 @@ class PushedProgram extends Methods{
     int popped=this.pop().getFreshId();
     return popped;//+"."+this.splitPoint.nameWhereThereisTheHole();
     }
+  public List<Object> exploredWay() {
+    List<Object> sup=this.former.exploredWay();
+    sup.add(this.splitPoint.nameOfWayInside());
+    return sup;
+  }
   }
 class UpdatedProgram extends PushedProgram{
   public UpdatedProgram(ClassB newTop, CtxL splitPoint, Program former) {
@@ -273,4 +285,10 @@ class EvilPushed extends Methods{
     int popped=this.pop().getFreshId();
     return popped;//+".<EvilPushed>";
     }
+
+  public List<Object> exploredWay() {
+    List<Object>sup=this.former.exploredWay();
+    sup.add(null);
+    return sup;
+  }
   }

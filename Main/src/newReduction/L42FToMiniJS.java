@@ -33,7 +33,10 @@ import tools.Assertions;
 import platformSpecific.javaTranslation.Resources;
 
 public class L42FToMiniJS implements Visitor<MiniJ.S>{
-  public L42FToMiniJS(ClassTable ct){this.ct = ct;}
+  public L42FToMiniJS(ClassTable ct){
+    assert ct!=null;
+    this.ct = ct;
+    }
   ClassTable ct;
   String x0=null;
   String label=null;
@@ -42,6 +45,13 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     if(emptyC()){return new MiniJ.Return(e);}
     if(x0!=null){return new MiniJ.VarAss(x0, e);}
     return e;
+    }
+  public static MiniJ.S forBody(ClassTable ct, L42F.E body){
+    S res=body.accept(new L42FToMiniJS(ct));
+    if(res instanceof MiniJ.B){return res;}
+    if(res instanceof MiniJ.RawJ){return res;}
+    MiniJ.B b=new MiniJ.B(null,Collections.singletonList(res));
+    return b;
     }
   MiniJ.S liftWith(String x0,String label,L42F.E inner){
     String oldX0=this.x0;

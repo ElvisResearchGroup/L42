@@ -179,11 +179,15 @@ could be a vector of bar, and the plgType can discover it and type properly
 translate p.top() into a set of class declarations CD for L42F.
 ---
 
-libToCDs(p)=libToCDs(p,ncs),//return a list, continue in the next line
-  class/interface? CN implements p*P1..p*Pn {
+libToCDs(p)=//return a list of pairs <p,CD> continue in many lines
+  libToCDs(p,ncs);   //recursively computed list elements
+  p,class/interface? CN implements p*P1..p*Pn { //list element for p
     method CN NewFwd() newFwd
     libToCD(interface?,p,mwts)
-    }
+    };
+  pi, nullKind pi.CN implements empty{}//with pi in ps collected
+  //for all L inside weakly deep methods.
+
   where p.top()={interface? implements P1..Pn mwts ncs Phase CN}
 
 libToCDs(p,C:L)=libToCDs(p.navigate(C)) //assert p.navigate(C).top()==L
@@ -252,6 +256,8 @@ PG[void]=void
 PG[P]=PG*P
 PG[L]=Resource.LoadLib_'L.CN'()//will be translate as Resource.LoadLib(someInt) in Java
   //yes, ok even if not compiled as for Collections.vector(of:P)
+  //TODO: ok in code, hard to update formalism: collect p.evilPush(L) in a list ps,
+  //so that we can add them to the CT with kind==null
 PG[loop e]=loop PG[e]
 
 PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
@@ -332,7 +338,7 @@ programsOf(p,Cs1..Csn paths)=
 
 ###auxiliary CT+p
 ---
-CT+p=CT+CD1+..+CDn
+CT+p=CT+p1,CD1+..+pn,CDn
   where p1,CD1..pn,CDn=libToCDs(p),
 
 CT+p,CD=CT if CD.CN in dom(CT)
@@ -348,11 +354,11 @@ CT+p,CD=CT,CD.CN->p,CD,empty,empty
 -----------------------------
 3 L42F into Java
 -----------------------------
-CT*mdf CN=@mdf CN if CT(CN)=kind _ and kind in {class,interface}
-CT*mdf CN=@mdf int if CT(CN)=nativeInt _
+CT*mdf CN=CN if CT(CN)=kind _ and kind in {class,interface}
+CT*mdf CN=int if CT(CN)=nativeInt _
 ...
-CT*mdf CN=@mdf float if CT(CN)=nativeFloat _
-CT*mdf CN=@mdf T if CT(CN)=nativeOpt<T> _
+CT*mdf CN=float if CT(CN)=nativeFloat _
+CT*mdf CN=T if CT(CN)=nativeOpt<T> _
 
 Java------------------
 statement st::=
@@ -382,7 +388,7 @@ emptyC+ej= return ej
 x0;_+ej= x0=ej
 empty;label+ej= ej
 
-In the following * function, a global CT is assumed
+#######In the following * function, a global CT is assumed
 emptyC*breakLoop= ??
 _;label*breakLoop= break label;
 
@@ -431,7 +437,7 @@ CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
 
 //case with no "this"
 CT,CN[refine method TX mxs((TX x)s) e]=
-  public static CT*TX mxs(CT*(TX x)s) CT[e]
+  public static CT*TX mxs(CT*(TX x)s) CT;empty;empty*e
   public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);}
 
 CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
@@ -547,13 +553,19 @@ Loader: a mutable object containing CT,cache and java classloaders
 
 Loader.execute(p,paths,e)=LC
   Loader.load(p,paths) //Loader change state here
-  sJ=toJava(p;empty[e])
-  J=class CN{ public static Object execute(){sJ}}//CN fresh
-  LC=Loader.runAndTrash(J)//Loader do not change state here
+  LC=Loader.run(p,e)//Loader change state here but should be irrelevant
 
-Loader.runAndTrash(J)
-  classLoader=Loader.load(toBytecode(J))
-  return classLoader.usualReflectionToCall("CN.execute()")
+Loader.run(p,e)
+  ps,sJ=Loader.CT;empty;empty*(p;empty[e])
+  //ps is the collected L inside e.
+  Loader.CT=Loader.CT+ p1, nullKind p1.CN implements empty{}
+  ...
+  + pn, nullKind pn.CN implements empty{}
+  with ps=p1..pn
+
+  J=class CN{ public static Object execute(){sJ}}//CN fresh
+  Loader.classLoader=Loader.load(toBytecode(J))
+  return Loader.classLoader.usualReflectionToCall("CN.execute()")
 
 -------------
 should we use a db instead of files?

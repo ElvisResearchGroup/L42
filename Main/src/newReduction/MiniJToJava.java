@@ -68,6 +68,7 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     indent();
     for(M mi: cd.getMs()){
       nl();
+      if(mi.isStatic()) {c("static ");}
       c("public "+mi.getRetT()+" "+mi.getName()+"(");
       tools.StringBuilders.formatSequence(result, mi.getTs().iterator(), mi.getXs().iterator(),
         ", ",(t,x)->c(t+" "+x));

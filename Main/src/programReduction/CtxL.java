@@ -15,6 +15,13 @@ public class CtxL {
   ExpCore.ClassB origin;
   int pos;
   CtxC ctx;
+  Object nameOfWayInside() {
+    Member m = origin.getMs().get(pos);
+    return m.match(
+      nC->nC.getName(),
+      mi->mi.getS(),
+      mt->mt.getMs());
+    }
   CtxL(ExpCore.ClassB origin,int pos,CtxC ctx){
     this.origin=origin;
     this.pos=pos;
@@ -26,21 +33,21 @@ public class CtxL {
     return origin.withMember(m);
   }
   public ExpCore originalHole(){return ctx.originalHole();}
-  
+
   public CtxL divide(ExpCore.ClassB all){
     Member m=all.getMs().get(pos);//already checking there are enough members
     CtxC divided=ctx.divide(m.getInner());
-    return new CtxL(all,pos,divided);    
+    return new CtxL(all,pos,divided);
   }
   public Member originalCtxM(){return origin.getMs().get(pos);}
-  
+
   public String nameWhereThereisTheHole(){
     Member m = this.origin.getMs().get(this.pos);
     return m.match(
       nc->nc.getName().toString(),
       mi->mi.getS().toString(),
       mwt->mwt.getMs().toString());
-    }  
+    }
   public String toString() {return "CtxL["+sugarVisitors.ToFormattedText.of(this.fillHole(new ExpCore.X(Position.noInfo,"_HOLE_")))+",originalHole:"+sugarVisitors.ToFormattedText.of(this.originalHole())+"]";}
   public int hashCode() {return this.fillHole(new ExpCore.WalkBy()).hashCode();}
   public boolean equals(Object obj) {
@@ -59,7 +66,7 @@ public class CtxL {
     ExpCore inner=m.getInner();
     boolean metaReady=m instanceof NestedClass && IsCompiled.of(m.getInner());
     CtxC innerSplit;
-    if(metaReady){innerSplit=CtxC.hole(inner);} 
+    if(metaReady){innerSplit=CtxC.hole(inner);}
     else {innerSplit=CtxC.split(inner);}
     return new CtxL(l,pos,innerSplit);
     }

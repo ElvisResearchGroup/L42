@@ -29,7 +29,7 @@ public class L42FToMiniJ {
     String retT=ct.className(m.getReturnType().getCn());
     List<String> ts=tools.Map.of(tx->ct.className(tx.getT().getCn()),m.getTxs());
     List<String> xs=tools.Map.of(tx->tx.getX(),m.getTxs());
-    MiniJ.M res=new MiniJ.M(retT, liftMs(m.getSelector()), ts, xs,null);
+    MiniJ.M res=new MiniJ.M(!m.isRefine(),retT, liftMs(m.getSelector()), ts, xs,null);
     MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res));
     ms.add(res.withBody(body));
     }
@@ -125,11 +125,7 @@ public class L42FToMiniJ {
 
     @Override
     public S visitE(E s) {
-      S res=s.accept(new L42FToMiniJS(ct));
-      if(res instanceof MiniJ.B){return res;}
-      if(res instanceof MiniJ.RawJ){return res;}
-      MiniJ.B b=new MiniJ.B(null,Collections.singletonList(res));
-      return b;
+      return L42FToMiniJS.forBody(ct, s);
       }
     }
 

@@ -10,10 +10,13 @@ import java.util.stream.Collectors;
 
 import ast.Ast.C;
 import ast.Ast.Path;
+import ast.ExpCore;
+import ast.ExpCore.ClassB;
 import ast.L42F;
 import ast.L42F.CD;
 import ast.L42F.Cn;
 import ast.MiniJ;
+import coreVisitors.From;
 import programReduction.Paths;
 import programReduction.Program;
 import tools.Assertions;
@@ -69,13 +72,44 @@ public class ClassTable {
     return res.toString();
     }
   public static final ClassTable empty=new ClassTable(Collections.emptyMap());
-  static class Element{
+  public static class Element{
     Element(Program p, CD cd) {this.p=p; this.cd = cd;}
     Program p;
     L42F.CD cd;
     MiniJ.CD jCd;
     Set<Integer>deps;
-    Element copy() {
+    public ExpCore.ClassB cachedSrc=null;
+    void reCache(Program pView) {
+      Program p0=p.pop();
+      List<Object> pViewWay=pView.exploredWay();
+      int pViewSize=pViewWay.size();
+      pViewWay=cutWay(pViewWay);
+      List<Object> p0WayAll=p0.exploredWay();
+      List<Object> p0WayCut=cutWay(p0WayAll);
+      int i=0;
+      int min=Math.min(p0WayCut.size(),pViewWay.size());
+      for(;i<min;i+=1) {
+        if(!p0WayCut.get(i).equals(pViewWay.get(i))) {break;}
+        }
+      int n=pViewSize-i;
+      assert n>=0;
+      List<C> cs=new ArrayList<>();
+      for(int j=i;j<p0WayAll.size();j+=1) {
+        Object ci=p0WayAll.get(j);
+        assert ci!=null;
+        assert ci instanceof C;
+        cs.add((C)ci);
+        }
+      Path fromming=Path.outer(n,cs);
+      cachedSrc=(ClassB) From.from(p.top(),fromming);
+      }
+    private List<Object> cutWay(List<Object> way) {
+      int cut=way.indexOf(null);
+      if(cut==-1) {cut=way.size();}
+      way=way.subList(0, cut);
+      return way;
+    }
+    Element copy() {//we intentionally do not copy the old cache.
       Element res=new Element(p,cd);
       res.jCd=jCd;
       res.deps=deps;
@@ -113,8 +147,6 @@ public class ClassTable {
     return res;
     }
 
-
-
   private ClassTable copy() {
     Map<Integer,Element> newMap=map.entrySet().stream()
       .collect(Collectors.toMap(Map.Entry::getKey,
@@ -142,7 +174,7 @@ public class ClassTable {
     for(Element e:res1){res2=res2.plus(e);}
     return res2;
     }
-  private ClassTable plus(Element e) {
+  protected ClassTable plus(Element e) {
   assert !map.containsKey(e.cd.getCn()):"avoided before with 'avoidRepeat'?";
   //if(map.containsKey(cd.getCn())){return this;}
   HashMap<Integer,Element> newMap=new HashMap<>(map);
