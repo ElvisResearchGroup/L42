@@ -76,7 +76,6 @@ public class ClassTable {
     Element(Program p, CD cd) {this.p=p; this.cd = cd;}
     Program p;
     L42F.CD cd;
-    MiniJ.CD jCd;
     Set<Integer>deps;
     public ExpCore.ClassB cachedSrc=null;
     void reCache(Program pView) {
@@ -111,7 +110,6 @@ public class ClassTable {
     }
     Element copy() {//we intentionally do not copy the old cache.
       Element res=new Element(p,cd);
-      res.jCd=jCd;
       res.deps=deps;
       return res;
       }
@@ -127,7 +125,7 @@ public class ClassTable {
     return res;
     }
 
-  public ClassTable computeJavaForNulls() {
+  /*public ClassTable computeJavaForNulls() {
     ClassTable res = copy();
     for(Element e:res.map.values()){
       if (e.jCd==null && e.cd.getKind()!=null){
@@ -135,7 +133,7 @@ public class ClassTable {
         }
       }
     return res;
-    }
+    }*/
 
   public ClassTable computeDeps() {
     ClassTable res = copy();

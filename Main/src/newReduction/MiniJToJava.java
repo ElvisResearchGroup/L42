@@ -50,8 +50,13 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     Collections.sort(ks);
     String res="";
     for(Integer i:ks){
-      CD jCdi = ct.get(i).jCd;
+      ast.L42F.CD cd = ct.get(i).cd;
+      CD jCdi=null;
+      if (cd.getKind()!=null){
+        jCdi=L42FToMiniJ.of(ct, cd);
+        }  
       if(jCdi==null) {continue;}//must be a lib stub
+      
       res+=MiniJToJava.of(jCdi)+"\n";
       }
     return res;

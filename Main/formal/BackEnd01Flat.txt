@@ -1,0 +1,338 @@
+-----------------------------
+Structure of this document:
+
+1 Grammar
+
+2 L42N into L42F
+
+3 discussion on L42F design
+
+-----------------------------
+1 Grammar
+-----------------------------
+
+### L42N //should denote a super language with respect to the one in NotationsAndGrammar
+e::=x|void|P|L|throw[T1,T2] e|loop e|(ds ks e[T])
+  | e.m[P]((x:e)s)| use P check m((x:e)s) e
+throw::= exception | error | return
+k::=catch throw T x e
+d::= T x=e
+
+### L42F
+CD::=kind CN implements CNs{ Mxs }
+Mx::=refine? method T mxs((T x)s) body?//first is this
+//note: no exceptions declared, body empty only if kind=interface
+body::=ex | setter|getter|new|newWithFwd|newFwd |nativeIntSum|nativeIntMul|...|nativeVectorAdd
+kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector<CN> | nativeOpt<T>| ...
+ex::= (dxs kxs ex [TX]) | x|void|CN|null| throw[TX1,TX2] x |loop ex
+  |CN.mxs(ys)| use CN check mxs(ys) ex
+  |if x then ex1 else ex2 |breakLoop | x1:=x2 |(mdf CN)x
+kx::=catch throw TX x ex
+dx::=TX x=ex
+TX::=mdf CN
+
+dep: CNs //set
+CT::= CN -> (p,L42F,dep) //dependencies
+clMap: byteName -> byteCode
+cache:  dep -> (CDs, clMap)
+clMap in cache is coherent/save space:
+if cache(dep0).clMap(byteName)=byteCode
+   cache(dep1).clMap(byteName)=byteCode'
+then byteCode==byteCode' (pointer equality)
+
+
+
+-----------------------------
+2 L42N into L42F
+-----------------------------
+//for compactness ignore use, treated the same as mcall
+//and all newly introduced variables are fresh
+
+
+### libToCDs(p)=p1,CD1,..pn,CDn
+translate p.top() into a set of class declarations CD for L42F.
+---
+
+libToCDs(p)=//return a list of pairs <p,CD> continue in many lines
+  libToCDs(p,ncs);   //recursively computed list elements
+  p,class/interface? CN implements p*P1..p*Pk { //list element for p
+    method CN NewFwd() newFwd
+    libToCD(interface?,p,mwts)
+    };
+  p1, nullKind p1.CN implements empty{};
+  ..;
+  pn, nullKind pn.CN implements empty{}
+  
+  where
+  p.top()={interface? implements P1..Pk mwts ncs Phase CN}
+  p1..pn={p.evilPush(L)|L inside mwt in mwts}
+  //in the code we collect ps while exploring p.top()
+
+
+### libToCDs(p,C:L)=p1,CD1,..pn,CDn
+propagate in nested classes
+---
+libToCDs(p,C:L)=libToCDs(p.navigate(C)) //assert p.navigate(C).top()==L
+
+
+### libToCDs(interface?,p,mwt)=Mxs //more then 1 method can be in output
+cases for various kinds of mwt
+Note, in 42, a call on this or P is always statically
+dispatched; this never have an interface type.
+---
+
+0//method in interface
+libToCD(interface,p,mwt)=header(p,mwt)
+
+1//class method turned into static method
+libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt[with e=e[this=This])
+  where mwt.mt.mdf=class and mwt.e?!=empty
+
+2//instance method
+libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt)
+  where mwt.mt.mdf!=class and mwt.e?!=empty
+
+3//get/set
+libToCD(empty,p,mwt)=header(p,mwt) body
+  where
+  mdf!=class
+  body =setter if mwt.ms.xs not empty, otherwise body=getter
+
+4//constructor with FWD, note, we return 2 methods
+libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be good enough
+  header(p,mwt) newFwd
+  header(p,noFwd(mwt))[with ms='New_'++mwt.ms] new
+//  if noFwd(mwt)!=mwt, otherwise
+//  header(p,mwt) fwd
+//  header(p,mwt)[with ms='New_'++mwt.ms] new
+
+### header(p,mwt)=refine? method T mxs((T x)s)
+  header(p,refine? class method T mxs(T1 x1..Tn xn) e?)=
+    refine? method p*T mxs(p*T1 x1..p*Tn xn)
+  otherwise
+  header(p,refine? mdf method T mxs(T1 x1..Tn xn) e?)=
+    refine? method p*T mxs(mdf p*This, p*T1 x1..p*Tn xn)
+
+### body(p,mwt)=body?
+  body(p,mwt)=p;(mdf This0 this,T1 x1..Tn xn)[e]
+  where 
+  mwt=refine? mdf method T m(T1 x1..Tn xn)exception Ps e
+
+### PG[ e0]= e1 with e0 in L42N and e1 in L42F
+translate an expression. Needs a program and a gamma
+---
+PG::=p;(x:T)s //p;G
+### '+' notation for PG
+p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
+PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
+
+### PG *T=mdf CN, PG*P=CN 
+
+PG*T=PG.p*T
+PG*P=PG.p*P
+
+p*P=p(P).CN
+
+p*(mdf P) =mdf p*P
+
+###PG[e] definition
+---
+
+PG[x]=x
+PG[void]=void
+PG[P]=PG*P
+PG[L]=Resource.LoadLib_'L.CN'()//will be translate as Resource.LoadLib(someInt) in Java
+  //yes, ok even if not compiled as for Collections.vector(of:P)
+PG[loop e]=loop PG[e]
+
+PG[throw[T1,T2] x]=throw[PG*T1,PG*T2] x
+otherwise
+PG[throw[T1,T2] e]=PG[( T2 x=e throw[T1,T2] x)]
+
+PG[x1:=x2]=x1:=x2
+otherwise
+PG[x1:=e]=PG[( T x=e x1:=x)]
+  where T=PG.g(x1)
+
+//Translation method call
+//-normalizing es into xs
+In the following, whith e!=x //use y for x receiver?
+and xs is the list of xs of the method call
+
+PG[e.m[P]( (x:e)s)]= PG[( mdf0 P x=e x.m[P]((x:e)s))]
+where mdf0=PG.p(P)(m(xs)).mh.mdf
+
+PG[y0.m[P]( (x:y)s xi:e (x:e)s)]= PG[( Ti y=e y0.m[P]( (x:y)s xi:y (x:e)s))]
+where PG.p(P)(m(xs))= refine? mdf method T0 m(T1 x1..Tn xn)exceptions Ps e?
+
+//-3 cases for y.m[P]((x:y)s)
+//--case 1: interface or non class method-->trad normal
+if PG.p(P) is interface or PG.p(P)(m(x1..xn)) non class method
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y0..yn)
+
+//--case 2:class method body  -->trad no this
+otherwise
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.m`x1..xn`(y1..yn)
+if PG.p(P)(m(x1..xn))=refine? class method T m(T1 x1..Tn xn) exception Ps e?
+and either e?=e or fwd_or_fwd%_in(PG.g(x1)..PG.g(xn))
+
+//--case 3:class method constr no Fwd  --> trad no this, New_
+otherwise //we have optimized new
+PG[y0.m[P](x1:y1..xn:yn)]=PG*P.New_m`x1..xn`(y1..yn)
+
+//block
+PG[(ds ks e[T])]=(fwdFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
+  PG[T x=e]=PG*T x=PG[e]
+  PG[catch throw T x e]=catch throw PG*T x PG+x:T[e]
+
+  fwdFix(dxs)=dxs if dxs.xs not in FV(dxs.es)
+  otherwise //a block actually using placeholders
+  fwdFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
+    fwdGen(mdf1 CN1 x'1,xs)..fwdGen(mdfn CNn x'n,xs)
+    mdf1 CN1 x1=ex'1, imm Void z1=Resource.Fix(x1',x1)
+                      if x'1 in xs else empty
+    ..
+    mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
+                      if x'n in xs else empty
+    with ex'i=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
+    //in code, while computing ex'i, collect set of x'i that has been inserted
+    // if x'i in such set then x'i in xs
+
+  fwdGen(mdf CN x,xs)=empty if x not in xs
+  otherwise fwdGen(mdf CN x,xs)=mdf CN x=CN.NewFwd()
+
+
+
+### CT.growWith(p,paths)=CT'
+take an existing CT, create a bigger one where paths from p are added
+we assume CT empty to exists
+---
+
+CT.growWith(p,paths)=CT+p1+..+pn
+  where p1,..,pn=programsOf(p,paths)
+
+###auxiliary programsOf
+---
+programsOf(p,empty)=empty
+programsOf(p,Cs1..Csn paths)=
+    p.navigate(Cs1),..,p.navigate(Csn),programsOf(p.pop(),paths)
+  where p.pop() is defined, otherwise
+programsOf(p,Cs1..Csn paths)=
+    p.navigate(Cs1),..,p.navigate(Csn)
+    where paths=empty
+
+###auxiliary CT+p
+---
+CT+p=CT+p1,CD1+..+pn,CDn
+  where p1,CD1..pn,CDn=libToCDs(p),
+
+CT+p,CD=CT if CD.CN in dom(CT)
+otherwise
+CT+p,CD=CT,CD.CN->p,CD
+
+
+### CT.computeDeps()=CT'
+CT.computeDeps()=CT'
+  if CT(CN)=p,CD,empty
+  then CT'(CN)=p,CD,CNs
+  CN0 in CNs if CN0 somewhere inside CD
+  CN1 in CNs if CN0 in Cns,
+    CT(CN0).dep=empty and CN1 somewhere inside CT(CN0)
+  CN1 in CNs if CN0 in Cns,
+    CN1 in CT(CN0).dep
+
+-----------------------------
+3 L42F discussion
+-----------------------------
+note: method calling/method dispatch in L42F:
+methods with refine or with no body are dynamically dispatched
+and must have a 'this' parameter
+others are statically dispatched.
+others still can have a 'this' parameter
+
+CN is just an instance of class/interface CN.
+Some native bodies would fail if the 'this' parameter is the CN instance.
+The translation L42N to L42F will work in the following way:
+-42 class methods declared in classes behave like static methods with no 'this'
+-42 non class methods declared in classes behave line static method with first 'this' parameter
+-42 class methods declared in interfaces, with dynamic dispatch
+  behave like python class methods with first 'this class' parameter
+-42 non class methods declared in interfaces, with dynamic dispatch
+  behave like java method with first 'this' parameter
+
+In addition, L42F can support implemented interface methods with no 'this' parameter (we use them for some predefined behavior)
+  they behave java interface static methods (no equivalent in 42)
+
+We assume the presence of some Predefined classes/methods in L42F:
+  Void, Any and Library, all offering only
+  method CN NewFwd() newFwd //also Any have it!//yes, statically binded
+//uppercase names to avoid conflicts
+
+We also assume a native class Resource with methods
+*  method Library LoadLib_'CN'() for all relevant CN.
+    Those methods will take care of 'fromming' libraries to make 
+    metaprogramming coherent
+*  method Void Fix(Any a,Any b)nativeFix //hoping 'a' is a Fwd
+    replace a with b in all the places a was stored.
+    every newFwd edits a list inside of Fwds to remember where they are stored.
+---------------
+some classes can be implemented in 42, but it would be
+inefficient and boring.
+let be lInt32 an implementation for int 32 bits.
+It uses implmentations for strings and bools, and can have creative names
+for its methods. More methods could be defined there.
+We can represent this family of int representations as
+{native(Int32,1,This,Bool,S)
+method This +(This that) this.sum_$_1(that)
+}
+Syntactically writing 'native(Int32,1,This,Bool,S)'
+is a shortcut for a longer code that we do not actualy need to ever write.
+similar to reuse, but is parametric and not desugared
+is just a representation optimization.
+Can a native lib have implements? nope?
+
+
+It is not so easy for a case with 2 Concepts.Equal
+and native java HashSets.
+how should I implement java equals?
+the one of the 2 that is implemented? what if both?
+I may have to use http://trove.starlight-systems.com/
+or
+http://commons.apache.org/proper/commons-collections/javadocs/api-release/org/apache/commons/collections4/map/AbstractHashedMap.html#isEqualKey(java.lang.Object,%20java.lang.Object)
+In this case, in the generate code
+we can have
+MyMap factory(){
+  return new HashedMap(){
+    isEqualKey(Object key1, Object key2){
+      return ((LocalEqualityClazz)key1).localEqMethod(key2);
+      }//etcetera
+    }
+}
+collection plg can be generic in the same way
+{//@plugin nativeVector
+ // @Bar @Size @S @Bool
+ method Bar get(Size that) use This check
+   nativeVectorGet(_this:this,that:that)
+}
+could be a vector of bar, and the plgType can discover it and type properly
+
+
+---
+Translation example
+a+b //42 user
+a.#plus( that: b) //42 core
+a.#plus[Nat]( that: b) //42 annotated
+Nat.#plus_that(a,b) //42F
+nativeInt32 Nat: {   Nat #plus_that(Nat a, Nat b)nativeInt32Plus} //42F class
+Nat._hash_plus_that(a,b)//Java
+class Nat {  public static int _hash_plus_that(int a, int b){return a+b;}  }//Java class
+
+
+plan for caching
+
+-Dep
+We keep dependency in the CT map Dep=CNs
+where all the transitive dependencies are contained in Dep
+that is: in a well formed CT, forall CN
+* if CT' in CT(CN).CD then CT' in CT(CN).Dep
+* if CT' in CT(CN).Dep then CT(CT').Dep subseteq CT(CN).Dep

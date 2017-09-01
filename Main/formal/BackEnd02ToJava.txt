@@ -1,0 +1,245 @@
+-----------------------------
+L42F into Java
+-----------------------------
+CT*mdf CN=CN if CT(CN)=kind _ and kind in {class,interface}
+CT*mdf CN=int if CT(CN)=nativeInt _
+...
+CT*mdf CN=float if CT(CN)=nativeFloat _
+CT*mdf CN=T if CT(CN)=nativeOpt<T> _
+
+//note, here we keep CN as an abstraction,
+//in code CN of L42F is an int, while CN of MiniJ is a string
+
+
+Java------------------ 
+S::=//statement
+   T x;
+  |x=ej;
+  |if(x) S1 else S2
+  |if(x.inner() instanceof CN){CN x1=(CN)x.inner(); S1} else S2
+  |while(true) S
+  |b
+  |break label
+  |return x
+  |throw new 'throw'(x)
+  |try b catch('throw' x)b
+  |CN.m(xs)
+  |useCall(doc,m,xs,S)
+
+block b::=label:{Ss}
+
+ej::=x|CN.m(xs)|useCall(xs)|(CN)x|null
+
+--------
+
+### c*ex=ej   c+ej=ej'
+'c' is context for translation L42F->Java
+---
+c::=x?;label?
+
+c+ej
+emptyC+ej= return ej
+x0;_+ej= x0=ej
+empty;label+ej= ej
+
+#######In the following * function, a global CT is assumed
+emptyC*breakLoop= ??
+_;label*breakLoop= break label;
+
+c*x= c+x
+c*CN= c+CN.instance()
+c*void= return Void.instance()
+c*null= c+null
+c*CN.mxs(ys)= c+CT*CN.mxs(ys)//keep a look for native classes
+//note, be careful with optimizations, we can not break a loop here
+c*use CN check mxs(ys) ex= c+use(?,ys,(?)->{'emptyC*ex'})
+c*'throw'[TX1,TX2] x= throw new 'throw'(x)
+c*loop ex=label:{while(true){ 'empty;label*ex' }}
+c*(mdf CN)x= c+(CT*CN)x
+c*x1:=x2= x1=x2
+c*if x then ex1 else ex2= if x {'c*ex1'} else{'c*ex2'}
+c*(dxs ex [TX])= {tx(dxs) xe(c.label,dxs) c*ex}
+c*(dxs ex [TX])= label0:{tx(dxs) try{ xe(c.label,dxs)} c;label0*kxs c*ex}
+
+//reorder them for throw kind, and then for each kind
+c;label0*catch throw1 TX1 x1 ex1..catch thrown TXn xn exn =
+  catch([throw] y){ifT[y x1 TX1 c*ex1] else ...
+    else ifT[y xn TXn c*exn] else throw y;s?}
+s?=empty if c=emptyC
+s?=break label; otherwise
+
+tx(T x e)= CT*T x;
+
+xe(label?,T x e)= x;label?*e;
+
+//Note: we disallow capturing a 'return class Any'
+//in the type system. If we allow it,
+//we need to check for coherence!
+
+
+### CT[CD]=JClass
+---
+CT[interface CN implements CNs {Mxs}]=
+public interface CN implements CNs{CT,CN[Mxs]}
+otherwise
+CT[kind CN implements CNs {Mxs}]=
+public class CN implements CNs{CT,CN[Mxs]}
+
+CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
+  public static CT*TX mxs(CT*TX' £this,CT*(TX x)s) CT[e[£this=this]]
+  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(this,xs);}
+
+//case with no "this"
+CT,CN[refine method TX mxs((TX x)s) e]=
+  public static CT*TX mxs(CT*(TX x)s) CT;empty;empty*e
+  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);}
+
+CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
+  CT*TX £mxs(CT*(TX x)s);//is going to be in an interface
+  static CT*TX mxs(CT*TX' £this,CT*(TX x)s){£this.£mxs(xs);}
+
+CT,CN[method T mxs((T x)s) e] //no refine, note, work both with and without 'this' parameter
+  public static CT*TX mxs(CT*(TX x)s[£this=this])CT[e[£this=this]]
+
+
+//never happens CT[method T mxs((T x)s)]
+
+CT,CN[refine? method T mxs((T x)s) new] //there can be many new/newFwd
+  public static CT*TX mxs(CT*(TX x)s){
+    CN res=new CN();
+    res.x1=x1;..;res.xn=xn;
+    return res;
+    }
+  public CT*TX £mxs(CT*(TX x)s) CN.mxs(xs) //only if refine?=refine
+
+CT,CN[refine? method T mxs((T x)s) newWithFwd]
+  public static CT*TX mxs(CT*(TX x)s){
+    CN res=new CN();
+    res.x1=x1;Fwd.addIfFwd(x1,CN.FieldAssFor_x1);
+    ..;
+    res.xn=xn;Fwd.addIfFwd(xn,CN.FieldAssFor_xn);
+    return res;
+    }
+  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);} //only if refine?=refine
+
+//and then the field ones?
+CT,CN[refine? method TX x(TX' this) getter]=
+  public static CT*TX x(CT*TX' £this){return £this.£x;}
+  CT*TX £x;
+  public static BiConsumer<Object,Object> FieldAssFor£x=(f,o)->{
+    ((CN)o).£x=(CT*TX)f;
+    }
+  public CT*TX £x() {return this.mxs();} //only if refine?=refine
+
+CT,CN[refine? method Void x(TX this, TX' that) setter]=
+  public static Void x(CT*TX £this, CT*TX' that){
+    £this.£x=that; return Void.instance();}
+  public CT*TX £x(CT*TX' that) {return CN.x(this,that);} //only if refine?=refine
+
+CT,CN[ _ NewFwd() newFwd]=
+  public static CN NewFwd(){return new _Fwd();}
+  private static class _Fwd extends CN implements Fwd{
+    private List<Object> os=new ArrayList<>();
+    private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
+    public List<Object> os(){return os;}
+    public List<BiConsumer<Object,Object>> fs(){return fs;}
+    }
+
+
+###Assumed
+---
+interface Fwd{
+  static  void addIfFwd(Object x1,BiConsumer<Object,Object> action){
+    if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,action);}
+    }
+  List<Object> os();
+  List<BiConsumer<Object,Object>> fs();
+  default void rememberAssign(Object f,BiConsumer<Object,Object> fo){
+    os().add(f);
+    fs().add(fo);
+    }
+  default void fix(){
+    List<Object> os=os();
+    List<BiConsumer<Object,Object>> fs=fs();
+    assert os.size()==fs.size();
+    for(int i=0;i<os.size();i++){
+      fs.get(i).accept(this,os.get(i));
+      }
+    }
+  }
+
+-----------------------------
+4 General execution
+-----------------------------
+A- run fileName.L42 or dirName
+B- if no cache in fileName.C42 or dirName/This.C42 create empty cache
+C- load cache, parse/desugar L, emptyCT
+D- apply 1 step of
+  L,CT,cache  --enter* +top-->  L',CT',cache'
+  where CT/cache just got propagated over enter/top
+E- update L, CT, cache, and either save on disk new cache or give error
+F- goto D
+
+###Instrumentation of top execution:
+Now (top) will refer to a Loader:
+a mutable object containing CT,cache and a java MapClassLoader
+
+### Loader.execute(p,paths,e)=LC
+---
+
+Loader.execute(p,paths,e)=LC
+  Loader.load(p,paths) //Loader change state here
+  LC=Loader.run(p,e)//Loader change state here but should be irrelevant
+
+### Loader.run(p,e)
+---
+
+Loader.run(p,e)=LC
+  sJ=Loader.CT;empty;empty*(p;empty[e]) //e->ex->sj
+  p1..pn={p.evilPush(L)| L inside e}
+  Loader.CT=Loader.CT+ p1, nullKind p1.CN implements empty{}
+  ...
+  + pn, nullKind pn.CN implements empty{}
+
+  CD=class CN{ public static Object execute(){sJ}}//CN fresh
+  javac(Loader.CT,Loader.clMap,CD)
+  return Loader.clMap.usualReflectionToCall("CN.execute()")
+
+
+### Loader.load(p,paths)
+---
+Loader.load(p,paths)
+  CT'=Loader.CT.growWith(p,paths).computeDep()
+  cache=Loader.cache
+  clMap=Loader.clMap
+  chunks=CT'.listOfDeps() // ordered over superSet relation
+  for deps in chunks://take smaller deps in chunks 
+    1a-if CT' deps in cache and clMap: nothing
+    1b-if CT' deps in cache: clMap.putAll(cache(depts)\dom(clMap))
+    1c-else: javac(CT, clMap, deps) and cache= cache, deps->clMap(deps) //with coherence to save space
+    //note: javac will not recompile what is already in clMap
+    2 -remove deps from chunks.
+  Loader.cache=cache
+  Loader.CT=CT'
+    
+### Auxiliary predicates: CT dep in cache, CT dep in cache and clMap
+--- 
+CT dep in cache=
+  cache(dep)=CDs,clMap
+  CT(dep)=CDs
+
+CT dep in cache and clMap'=
+  cache(dep)=CDs,clMap
+  CT(dep)=CDs
+  clMap subsetOf clMap'
+
+
+### javac(_) imperative operation
+--- 
+javac(CT,clMap, dep)=
+  javac(CT,clMap,CT(CNi))
+  forall CNi in dep where CN notin dom(clMap)
+  //each CN can correspond to more then one element in clMap,
+  //but if there is CN, then all is in clMap already.
+
+javac(CT,clMap,CD)=javac(clMap,optimize(CT[CD]))//non formalized, uses javatools.

@@ -378,7 +378,6 @@ public class TestL42F {
     p=p.updateTop(l);
     Paths ps=Paths.empty().push(Collections.singletonList(Collections.emptyList()));
     ClassTable ct=ClassTable.empty.growWith(Collections.singletonList("Foo"),p,ps);
-    ct=ct.computeJavaForNulls();
     ct=ct.computeDeps();
     if(expected!=null) {assertEquals(expected,ct.toString());}
     if(expectedJ!=null) {assertEquals(expectedJ,ct.toJString());}
