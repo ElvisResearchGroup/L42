@@ -593,13 +593,45 @@ When from program p we need to load classes Ps0 to CT
 using cache:
 
 Loader.load(p,paths)
-  CT'=Loader.CT.need(Loader.cache,p,paths.toPs())
-  Loader.cache=cache.accumulate(CT'.toCache())
+  CT'=Loader.CT.growWith(p,paths).computeDep()
+  cache=Loader.cache
+  clMap=Loader.clMap
+  chunks=CT'.listOfDeps() // ordered over superSet relation
+  for deps in chunks://take smaller deps in chunks 
+    1a-if CT' deps in cache and clMap: nothing
+    1b-if CT' deps in cache: clMap.putAll(cache(depts)\dom(clMap))
+    1c-else: javac(CT, deps, clMap) and cache= cache, deps->clMap(deps) //with coherence to save space
+    //note: javac will not recompile what is already in clMap
+    2 -remove deps from chunks.
+  Loader.cache=cache
   Loader.CT=CT'
-  Loader.classLoader.referTo(CT')
 //loader using CT/CT can be updated/swapped (this will not influence already loaded classes)
 
+Yet Another dependency handling:
+ 
+clMap: byteName->byteCode
+cache:  depSet-> CDSet, clMap
+clMap in cache is coherent/save space:
+if byteName->byteCode and byteName->byteCode' 
+then byteCode==byteCode' (pointer equality)
+    
+Define
+CT deps in cache and clMap'=
+  cache(deps)=CDs,clMap
+  CT(deps)=CDs
+  clMap subsetOf clMap'
+ 
+CT deps in cache=
+  cache(deps)=CDs,clMap
+  CT(deps)=CDs
 
+javac(CT, deps, clMap)
+  javac([CT(CN) | for CN in deps if CN notin dom(clMap)])
+  //each CN can correspond to more then one element in clMap,
+  //but if there is CN, then all is in clMap already.
+
+
+    
 CT'=CT.need(cache,p,Ps0) //need all the chunk together, since Javac may do multi-class inlining
   Ps1={P in Ps0 | not CT.has(p,P)}
   CT0=CT.growWith(p,reorganize(Ps1)) //note, this does not compute java/bytecode yet
