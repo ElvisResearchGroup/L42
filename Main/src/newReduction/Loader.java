@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import ast.ExpCore;
+import ast.L42F;
 import ast.ExpCore.ClassB;
 import ast.L42F.CD;
 import ast.L42F.E;
@@ -28,6 +30,7 @@ import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import platformSpecific.javaTranslation.Resources;
+import programReduction.Paths;
 import programReduction.Program;
 
 public class Loader {
@@ -61,9 +64,62 @@ public class Loader {
   }
   private ClassTable ct;
   private Program currentP=null;
-  HashMap<String, ClassFile> map=new HashMap<>();
-  MapClassLoader cl=new MapClassLoader(map, ClassLoader.getSystemClassLoader());
+  private Cache cache=new Cache();
+  HashMap<String, ClassFile> clMap=new HashMap<>();
+  MapClassLoader cl=new MapClassLoader(clMap, ClassLoader.getSystemClassLoader());
 
+  static public boolean validCache(ClassTable ct1, Map<Integer,String>dep, List<L42F.CD>cds){
+    if(dep.size()!=cds.size()){return false;}
+    for(int cn:dep.keySet()){
+      if(!cds.contains(ct1.get(cn).cd)){return false;}
+      }
+    return true;
+    }
+  public void processDep(Map<Integer,String>dep){
+    Cache.Element cDep = cache.get(new HashSet<>(dep.values()));
+    if(cDep==null ||validCache(ct, dep, cDep.cds)){
+      Set<String>oldDom=new HashSet<>(clMap.keySet());
+      javac(dep);//this enrich clMap
+      List<L42F.CD> cds=new ArrayList<>();
+      for(int i:dep.keySet()){cds.add(ct.get(i).cd);}
+      HashMap<String,ClassFile>newClMap=new HashMap<>();
+      for(String s:clMap.keySet()){
+        if(!oldDom.contains(s)){clMap.put(s,clMap.get(s));}
+        }
+      this.cache.add(new HashSet<>(dep.values()), cds, newClMap);
+      return;
+      }
+    for(String cn : cDep.clMap.keySet()){
+      ClassFile bytecode=clMap.get(cn);
+      ClassFile bytecodeOld=clMap.get(cn);
+      assert bytecodeOld==null || bytecodeOld.equals(bytecode);
+      if(bytecodeOld==null){clMap.put(cn,bytecode);}
+      }
+    }
+  private void javac(Map<Integer, String> dep) {
+  List<SourceFile> readyToJavac=new ArrayList<>();
+    for(int cn:dep.keySet()){
+      String cnString=dep.get(cn);
+      if(clMap.containsKey(cnString)){continue;}
+      MiniJ.CD j=L42FToMiniJ.of(ct, ct.get(cn).cd);
+      SourceFile src=new SourceFile(cnString,
+        "package generated;\n"+MiniJToJava.of(j));
+      readyToJavac.add(src); 
+      }
+    try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
+    catch(CompilationError ce){throw new Error(ce);}
+    }
+  public void load(List<String>names,Program p, Paths paths){
+    ct=ct.growWith(names, p, paths).computeDeps();
+    List<Map<Integer,String>> chunks = ct.listOfDeps();
+    Collections.sort(chunks,(s1,s2)->s1.size()-s2.size());
+    //TODO: check is not the opposite
+    for(Map<Integer,String>dep:chunks){
+      System.out.println("Remove after checking that numbers are in increasing order:"+dep.size());
+      processDep(dep);
+      }
+    }  
+  
   ExpCore.ClassB run(Program p, ExpCore e) {
     currentP=p;
     List<Program>ps=new ArrayList<>();

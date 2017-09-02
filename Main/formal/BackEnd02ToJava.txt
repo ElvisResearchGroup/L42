@@ -209,36 +209,37 @@ Loader.run(p,e)=LC
 ### Loader.load(p,paths)
 ---
 Loader.load(p,paths)
-  CT'=Loader.CT.growWith(p,paths).computeDep()
+  CT'=Loader.CT.growWith(p,paths).computeDeps()
   cache=Loader.cache
   clMap=Loader.clMap
   chunks=CT'.listOfDeps() // ordered over superSet relation
-  for deps in chunks://take smaller deps in chunks 
-    1a-if CT' deps in cache and clMap: nothing
-    1b-if CT' deps in cache: clMap.putAll(cache(depts)\dom(clMap))
-    1c-else: javac(CT, clMap, deps) and cache= cache, deps->clMap(deps) //with coherence to save space
-    //note: javac will not recompile what is already in clMap
-    2 -remove deps from chunks.
+  for dep in chunks://take smaller dep in chunks 
+    //1cache is not there
+    if cache(dep) undefined
+      cache=javac(CT,clMap,dep,cache)//enriches clMap
+      continue;
+    cache(dep)=CDs1,clMap1    
+    //2cache is there but wrong
+    if CT'(dep).CDs != CDs1 //set comparison
+      cache=javac(CT',clMap,dep,cache)//enriches clMap
+    //3cache is there and is already loaded
+    //4cache is there and need loading
+    else forall byteName -> byteCode in clMap1:
+      assert clMap(byteName) undefined or clMap(byteName)=byteCode
+      clMap.put(byteName -> byteCode)
   Loader.cache=cache
   Loader.CT=CT'
-    
-### Auxiliary predicates: CT dep in cache, CT dep in cache and clMap
---- 
-CT dep in cache=
-  cache(dep)=CDs,clMap
-  CT(dep)=CDs
-
-CT dep in cache and clMap'=
-  cache(dep)=CDs,clMap
-  CT(dep)=CDs
-  clMap subsetOf clMap'
-
 
 ### javac(_) imperative operation
 --- 
+javac(CT,clMap,dep,cache)=cache1
+  oldDom=dom(clMap)
+  javac(CT, clMap, dep)//this enrich clMap
+  cache1= cache, dep->(CT(dep).cds,clMap\oldDom)      
+  //note: javac will not recompile what is already in clMap
+
 javac(CT,clMap, dep)=
-  javac(CT,clMap,CT(CNi))
-  forall CNi in dep where CN notin dom(clMap)
+  javac(CT,clMap,[CT(CNi)|forall CNi in dep where CN notin dom(clMap)])
   //each CN can correspond to more then one element in clMap,
   //but if there is CN, then all is in clMap already.
 

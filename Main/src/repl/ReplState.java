@@ -50,7 +50,7 @@ public static ReplState start(String code){
         return super.visit(cb);
         }
       });
-    ExpCore.ClassB result= ProgramReduction.allSteps(code3);
+    ExpCore.ClassB result= new ProgramReduction().allSteps(code3);
     return new ReplState(code, code2,result);
     }
     catch(org.antlr.v4.runtime.misc.ParseCancellationException parser){
@@ -102,7 +102,7 @@ public static ReplState start(String code){
         }
       code3=code3.withMs(resultMs);
       //call the repl and return
-      ExpCore.ClassB result= ProgramReduction.allSteps(code3);
+      ExpCore.ClassB result= new ProgramReduction().allSteps(code3);
       return new ReplState(this.originalS+"\n"+code, newOriginal,result);
       }
     catch(ParseCancellationException parser){

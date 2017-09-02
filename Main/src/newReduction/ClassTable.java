@@ -3,6 +3,7 @@ package newReduction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -178,5 +179,16 @@ public class ClassTable {
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(e.cd.getCn(), e);
   return new ClassTable(newMap);
+  }
+public List<Map<Integer,String>> listOfDeps() {
+  List<Map<Integer,String>> l=new ArrayList<>();
+  for(Element e:map.values()){
+    Map<Integer,String> s=new HashMap<>();
+    for(int i:e.deps){
+      s.put(i,this.className(i));
+      }
+    l.add(s);
+    }
+  return l;
   }
 }

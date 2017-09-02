@@ -12,14 +12,14 @@ import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
 
 public class ProgramReduction {
-  public static ClassB allSteps(ClassB l){
+  public ClassB allSteps(ClassB l){
     Program top=new FlatProgram(l);
     while(!IsCompiled.of(top.top())){
       top=step(top);
       }
     return top.top();
     }
-  static Program step(Program p){
+  private Program step(Program p){
 //precondition: at top level we have a L not of form LC
     assert ! IsCompiled.of(p.top());
     CtxL top=CtxL._split(p.top());
@@ -36,7 +36,7 @@ public class ProgramReduction {
     }
 
 
-  static private Program top(Program p,NestedClass nc) {
+  private Program top(Program p,NestedClass nc) {
     ExpCore ec=nc.getInner();
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
@@ -56,7 +56,7 @@ public class ProgramReduction {
     top=top.withMember(nc.withE(res));
     return p1.updateTop(top);
     }
-  static private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
+  private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
     ExpCore res=facade.Configuration.reduction.metaExp(p.reprAsPData(), e,nameDebug);
     if(res instanceof ClassB){return (ClassB)res;}
     throw new ast.ErrorMessage.MalformedFinalResult(p.top(),
@@ -70,7 +70,7 @@ public class ProgramReduction {
                                     ctxL={interface? implements Ps, MCs  M[with e=ctxC] Ms}
                                     p'.top() of form LC
 */
-  static private Program enter(Program p, CtxL ctxL, Member m) {
+  private Program enter(Program p, CtxL ctxL, Member m) {
     Program p1=p.push(ctxL,(ClassB)ctxL.originalHole());
     assert !IsCompiled.of(p1.top());
     while(!IsCompiled.of(p1.top())){p1=step(p1);}

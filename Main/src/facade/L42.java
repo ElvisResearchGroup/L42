@@ -206,7 +206,7 @@ public class L42 {
             }
           });
       //ClassB result= Configuration.reduction.of(code3);
-      ClassB result= ProgramReduction.allSteps(code3);
+      ClassB result= new ProgramReduction().allSteps(code3);
       //System.out.println("--------------------------");
       //System.out.println(ToFormattedText.of(result));
       //System.out.println("--------------------------");
