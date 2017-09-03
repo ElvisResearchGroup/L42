@@ -51,17 +51,17 @@ public class CompiledStep extends SmallStep{
       catch(Resources.Error err){
         System.out.println("Propagating error");
         Resources.cacheMessage(err);
-        return EncodingHelper.wrapResource(err);
+        return EncodingHelper.wrapResource(p1.p,err);
         }
       catch(Resources.Exception err){
         System.out.println("Propagating exception");
         Resources.cacheMessage(err);
-        return EncodingHelper.wrapResource(err);
+        return EncodingHelper.wrapResource(p1.p,err);
         }
       catch(Resources.Return err){//it can happen if other stuff is wrong, in this way we can see the error.
         System.out.println("Propagating return?");
         Resources.cacheMessage(err);
-        return EncodingHelper.wrapResource(err);
+        return EncodingHelper.wrapResource(p1.p,err);
         }
       });
     }

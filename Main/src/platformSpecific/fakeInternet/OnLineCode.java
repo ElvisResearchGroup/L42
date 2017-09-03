@@ -73,9 +73,9 @@ public interface OnLineCode {
   public static ExpCore pluginAction(Program p,ExpCore.Using u){
     try{
       Object o= plugin(p,u).execute(p,u);
-      return EncodingHelper.wrapResource(o);
+      return EncodingHelper.wrapResource(p,o);
       }
-    catch(Resources.Error err){return EncodingHelper.wrapResource(err);}
+    catch(Resources.Error err){return EncodingHelper.wrapResource(p,err);}
   }
   public static List<Type> pluginType(Program p,ExpCore.Using u){
     return plugin(p,u).typeOf(p,u);

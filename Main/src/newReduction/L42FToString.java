@@ -20,6 +20,7 @@ import ast.L42F.M;
 import ast.L42F.Null;
 import ast.L42F.T;
 import ast.L42F.Throw;
+import ast.L42F.Unreachable;
 import ast.L42F.Update;
 import ast.L42F.Use;
 import ast.L42F.X;
@@ -201,4 +202,8 @@ public class L42FToString extends ToFormattedText implements Visitor<Void>{
     c(")");
     return null;
   }
+@Override
+public Void visit(Unreachable s) {
+return c("unreachable");
+}
 }

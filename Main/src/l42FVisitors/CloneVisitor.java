@@ -14,6 +14,7 @@ import ast.L42F.Loop;
 import ast.L42F.Null;
 import ast.L42F.T;
 import ast.L42F.Throw;
+import ast.L42F.Unreachable;
 import ast.L42F.Update;
 import ast.L42F.Use;
 import ast.L42F.X;
@@ -114,4 +115,6 @@ public class CloneVisitor implements Visitor<L42F.E>{
   public E visit(Cn s) {
     return new Cn(s.getInner());
     }
+@Override
+public E visit(Unreachable s) { return s;}
   }

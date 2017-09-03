@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import facade.Configuration;
 import platformSpecific.javaTranslation.Resources;
+import programReduction.Program;
 import tools.Assertions;
 import ast.Ast;
 import ast.ExpCore;
@@ -80,7 +81,7 @@ public class EncodingHelper{
   public static ClassB wrapInt32(String i) {
     return ClassB.docClass(Doc.factory(true,"@int32\n"+i+"\n"));
   }
-  public static ClassB wrapBool(boolean b) {
+  public static ClassB wrapBool(Program p,boolean b) {
     String s="@boolTrue\n";
     if(!b)s="@boolFalse\n";
     return ClassB.docClass(Doc.factory(true,s));
@@ -198,22 +199,22 @@ public class EncodingHelper{
       ts.add(pi.toImmNT());      }
     return new Ast.MethodType(false,Mdf.Immutable,ts,result.toImmNT(),Collections.emptyList());
   }
-  public static ExpCore wrapResource(Object o) {
+  public static ExpCore wrapResource(Program p,Object o) {
     if(o instanceof ClassB){return (ClassB)o;}
     if(o instanceof ExpCore){return (ExpCore)o;}
     if(o instanceof Integer){return wrapInt32((Integer)o);}
     if(o instanceof String){return wrapStringU((String)o);}
     if(o instanceof Resources.Void){return new ExpCore._void();}
     if(o instanceof Resources.Error){
-      ExpCore inside=wrapResource(((Resources.Error)o).unbox);
+      ExpCore inside=wrapResource(p,((Resources.Error)o).unbox);
       return new ExpCore.Signal(SignalKind.Error,inside,null,null);
       }
     if(o instanceof Resources.Exception){
-      ExpCore inside=wrapResource(((Resources.Exception)o).unbox);
+      ExpCore inside=wrapResource(p,((Resources.Exception)o).unbox);
       return new ExpCore.Signal(SignalKind.Exception,inside,null,null);
       }
     if(o instanceof Resources.Return){
-      ExpCore inside=wrapResource(((Resources.Return)o).unbox);
+      ExpCore inside=wrapResource(p,((Resources.Return)o).unbox);
       return new ExpCore.Signal(SignalKind.Return,inside,null,null);
       }
     if( o instanceof Resources.Library){
@@ -226,7 +227,7 @@ public class EncodingHelper{
       return EPath.wrap(Ast.Path.Any());
     }
     if(o instanceof Resources.Revertable){return ((Resources.Revertable)o).revert();}
-    return wrapResource(o.toString());
+    return wrapResource(p,o.toString());
   }
   
   

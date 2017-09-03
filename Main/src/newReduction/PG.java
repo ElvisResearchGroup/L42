@@ -47,6 +47,7 @@ import ast.L42F.T;
 import ast.L42F.TX;
 import auxiliaryGrammar.Functions;
 import coreVisitors.FreeVariables;
+import coreVisitors.From;
 import coreVisitors.Visitor;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
@@ -191,6 +192,7 @@ private E visitParameter(int i,MCall s) {
   ClassB cb=p.extractClassB(s.getTypeRec().getPath());
   MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
   Type ti=mwt.getMt().getTs().get(i);
+  ti=From.fromT(ti, s.getTypeRec().getPath());
   return blockX(ti,x, s.getEs().get(i),sx,s.getTypeOut()).accept(this);
   }
 private E visitParameter(int i,List<Type> lt,Using s) {

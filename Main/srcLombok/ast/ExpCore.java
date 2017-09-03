@@ -413,6 +413,8 @@ class _Aux{
     }
 
   static boolean isConsistent(ClassB cb) {
+    assert cb.getUniqueId()!=0;
+    assert cb.getUniqueId()==-2 ||cb.getUniqueId()>0 ||cb.getPhase()==Phase.None;
     int countWalkBy = 0;
     HashSet<String> keys = new HashSet<String>();
     for (Member m : cb.getMs()) {

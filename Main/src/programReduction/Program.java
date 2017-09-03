@@ -164,7 +164,7 @@ public interface Program {
   static Program emptyLibraryProgram(){return new FlatProgram(EmptyProgramHolder.cached);}
   }
 class EmptyProgramHolder{
-  static final ClassB cached=new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Coherent, 0);
+  static final ClassB cached=new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Typed, -2);
   }
 
 class FlatProgram extends Methods{

@@ -174,14 +174,12 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     
     private void liftK(ast.MiniJ.K k) {
       c("catch ("+tOf(k.getT())+" "+k.getX()+")");
-      c("{if(true)");//to prevent unreachable code after the catch
       k.getB().accept(this);
-      c("} ");
     }
 
     @Override
     public Void visit(UseCall s) {
-      UsingInfo ui=null;
+      UsingInfo ui=s.getUi();
       List<String> es=s.getXs();
       StringBuilder resOld=result;
       result=new StringBuilder();
@@ -189,7 +187,8 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
       String e=result.toString();
       result=resOld;
       PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(s.getDoc());
-      result.append(pt.executableJ(ui, e, es, L42.usedNames));
+      c(pt.executableJ(ui, e, es, L42.usedNames));
+      c(";");
       return null;
       }
 

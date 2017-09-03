@@ -32,18 +32,32 @@ public class L42FToMiniJ {
       MiniJ.M res = methodHeader(ct, m);
       MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res));
       ms.add(res.withBody(body));
-      //TODO: if m.isRefine() add delegator?
+      if(!(m.getBody() instanceof E)){continue;}
+      if(!m.isRefine()){continue;}
+      //remove static,add£M to name, remove £Xthis, rembemberThis
+      int pSize=m.getTxs().size();
+      boolean haveThis=pSize!=0 && m.getTxs().get(0).getX().equals("this");
+      MiniJ.M delegator=res.withStatic(false).withName("£M"+res.getName());
+      if(haveThis){
+        delegator=delegator
+          .withTs(res.getTs().subList(1,pSize))
+          .withXs(res.getXs().subList(1,pSize));
+        }
+      delegator=delegator.withBody(new MiniJ.B(null,Collections.singletonList(new MiniJ.Return(
+        new MiniJ.MCall(name, res.getName(),tools.Map.of(tx->tx.getX(),m.getTxs())))
+        )));
+      ms.add(delegator);
       }
-  return new MiniJ.CD(interf, name, cs, ms);
-  }
-private static MiniJ.M methodHeader(ClassTable ct, L42F.M m) {
-  assert m.getBody()!= SimpleBody.Empty ||m.getTxs().get(0).getX().equals("this");
-  String retT=ct.className(m.getReturnType().getCn());
-  List<String> ts=tools.Map.of(tx->ct.className(tx.getT().getCn()),m.getTxs());
-  List<String> xs=tools.Map.of(tx->liftX(tx.getX()),m.getTxs());
-  MiniJ.M res=new MiniJ.M(true,retT, liftMs(m.getSelector()), ts, xs,null);
-  return res;
-  }
+    return new MiniJ.CD(interf, name, cs, ms);
+    }
+  private static MiniJ.M methodHeader(ClassTable ct, L42F.M m) {
+    assert m.getBody()!= SimpleBody.Empty ||m.getTxs().get(0).getX().equals("this");
+    String retT=ct.className(m.getReturnType().getCn());
+    List<String> ts=tools.Map.of(tx->ct.className(tx.getT().getCn()),m.getTxs());
+    List<String> xs=tools.Map.of(tx->liftX(tx.getX()),m.getTxs());
+    MiniJ.M res=new MiniJ.M(true,retT, liftMs(m.getSelector()), ts, xs,null);
+    return res;
+    }
 
   private static class VB implements BodyVisitor<MiniJ.S>{
     public VB(ClassTable ct,String cn,CD cd, M m, MiniJ.M mj) {
@@ -80,13 +94,14 @@ private static MiniJ.M methodHeader(ClassTable ct, L42F.M m) {
     @Override
     public S visitSetter(SimpleBody s) {
       String x=mj.getName();
+      String f=x;if(f.startsWith("£H")){f=f.substring(2);}
       String t=mj.getRetT();
       String t1=mj.getTs().get(1);
       String x1=mj.getXs().get(1);
       StringBuilder sb=new StringBuilder();
-      sb.append("{£Xthis.£"+x+"=that; return "+Resources.Void.class.getCanonicalName()+".instance();}");
+      sb.append("{£Xthis.£X"+f+"=that; return "+Resources.Void.class.getCanonicalName()+".instance();}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£"+x+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,that);}");
+        sb.append("public "+t+ "£M"+x+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,that);}");
         }
       return new RawJ(sb.toString());
       }
@@ -94,28 +109,32 @@ private static MiniJ.M methodHeader(ClassTable ct, L42F.M m) {
     @Override
     public S visitGetter(SimpleBody s) {
       String x=mj.getName();
+      String f=x;if(f.startsWith("£H")){f=f.substring(2);}
       String t=mj.getRetT();
       StringBuilder sb=new StringBuilder();
-      sb.append("{return £Xthis.£"+x+";}");
-      sb.append(t+" "+x+";");
-      sb.append("public static java.util.function.BiConsumer<Object,Object> FieldAssFor£"+
-        x+"=(f,o)->{(("+cn+")o).£"+x+"=("+t+")f;}"
-        );
+      sb.append("{return £Xthis.£X"+f+";}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£"+x+"(){return this."+x+"();}");
+        sb.append("public "+t+ "£M"+x+"(){return "+cn+"."+x+"(this);}");
         }
       return new RawJ(sb.toString());
       }
 
     @Override
     public S visitNew(SimpleBody s) {
-      return factory(false);
+      return new RawJ(factory(false).toString());
       }
     @Override
     public S visitNewWithFwd(SimpleBody s) {
-      return factory(true);
+      StringBuilder sb=factory(true);
+      {int i=-1;for(String xi:mj.getXs()){i+=1;
+        String ti=mj.getTs().get(i);
+        sb.append(ti+" £X"+xi+";");
+        sb.append("public static BiConsumer<Object,Object> FieldAssFor£"+xi+"=(f,o)->{(("+cn+")o).£X"+xi+"=("+ti+")f;}"); 
+        }}
+      return new RawJ(sb.toString());
       }
-    public S factory(boolean fwd){
+    
+    public StringBuilder factory(boolean fwd){
       String x=mj.getName();
       String t=mj.getRetT();
       StringBuilder sb=new StringBuilder();
@@ -125,7 +144,12 @@ private static MiniJ.M methodHeader(ClassTable ct, L42F.M m) {
         if(fwd){sb.append("Fwd.addIfFwd("+xi+","+cn+".FieldAssFor_"+xi+");");}
         }
       sb.append("return res;}");
-      return new RawJ(sb.toString());
+      if(this.m.isRefine()){
+        sb.append("public "+t+ "£M"+x+"(){return "+cn+"."+x+"(this");
+        for(String xi:mj.getXs()){sb.append(", "+xi);}     
+        sb.append(");}");
+        }
+      return sb;
       }
 
     @Override

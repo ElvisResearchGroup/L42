@@ -103,6 +103,10 @@ _void implements E{
 @Value @Wither public static class
 Null implements E{
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
+@Value @Wither public static class
+Unreachable implements E{
+  @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
+
 
 @Value @Wither public static class
 BreakLoop implements E{

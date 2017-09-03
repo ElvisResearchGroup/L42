@@ -18,6 +18,7 @@ import ast.L42F.K;
 import ast.L42F.Loop;
 import ast.L42F.Null;
 import ast.L42F.Throw;
+import ast.L42F.Unreachable;
 import ast.L42F.Update;
 import ast.L42F.Use;
 import ast.L42F.X;
@@ -47,6 +48,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     return e;
     }
   public static MiniJ.S forBody(ClassTable ct, L42F.E body){
+    body=body.accept(new OptimizeBlock());
     S res=body.accept(new L42FToMiniJS(ct));
     if(res instanceof MiniJ.B){return res;}
     if(res instanceof MiniJ.RawJ){return res;}
@@ -138,19 +140,27 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
   public MiniJ.S visit(Block s) {
     String label0=null;
     List<S>ds=new ArrayList<>();
-    for(D di:s.getDs()){ds.add(liftDsTX(di));}
+    for(D di:s.getDs()){
+      ds.add(liftDsTX(di));
+      }
     if(s.getKs().isEmpty()){
-      for(D di:s.getDs()){ds.add(liftDsXE(di));}
+      for(D di:s.getDs()){
+        ds.add(liftDsXE(di));
+        }
       }
     else{
       label0=Functions.freshName("label",L42.usedNames);
       List<S>dsTry=new ArrayList<>();
-      for(D di:s.getDs()){dsTry.add(liftDsXE(di));}
+      for(D di:s.getDs()){
+        dsTry.add(liftDsXE(di));
+        }
       List<MiniJ.K> ks=liftKs(label0,s.getKs());
       Try t=new Try(new B(null,dsTry),ks);
       ds.add(t);
       }
-    ds.add(s.getE().accept(this));
+    if(!(s.getE() instanceof Unreachable)){
+      ds.add(s.getE().accept(this));
+      }
     return new B(label0,ds);
     }
   private List<MiniJ.K> liftKs(String label0,List<K> ks) {
@@ -195,4 +205,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
   private S liftDsTX(D di) {
     return new MiniJ.VarDec(ct.className(di.getT().getCn()),di.getX());
   }
+@Override
+public S visit(Unreachable s) { throw Assertions.codeNotReachable();}
+
 }

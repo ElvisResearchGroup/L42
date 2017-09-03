@@ -50,6 +50,7 @@ c*x= c+x
 c*CN= c+CN.instance()
 c*void= return Void.instance()
 c*null= c+null
+c*unreachable=empty
 c*CN.mxs(ys)= c+CT*CN.mxs(ys)//keep a look for native classes
 //note, be careful with optimizations, we can not break a loop here
 c*use CN check mxs(ys) ex= c+use(?,ys,(?)->{'emptyC*ex'})
@@ -85,22 +86,23 @@ otherwise
 CT[kind CN implements CNs {Mxs}]=
 public class CN implements CNs{CT;CN[Mxs]}
 
-
-CT;CN[refine method TX mxs(TX' this,(TX x)s) e]=
-  public static CT*TX mxs(CT*TX' £Xthis,CT*(TX x)s) CT[e[£Xthis=this]]
-  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(this,xs);}
-
-//case with no "this"
-CT;CN[refine method TX mxs((TX x)s) e]=
+//a this
+CT;CN[refine? method TX mxs(TX' this,(TX x)s) e]=
+  public static CT*TX mxs(CT*TX' £Xthis,CT*(TX x)s) CT;empty;empty*e[£Xthis=this]
+  onlyIfRefine(refine?,
+    public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(this,xs);}
+    )
+//b no "this"
+CT;CN[refine? method TX mxs((TX x)s) e]=
   public static CT*TX mxs(CT*(TX x)s) CT;empty;empty*e
-  public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);}
-
-CT;CN[refine method T mxs(TX' this,(T x)s)] //no body
+  onlyIfRefine(refine?,
+    public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);}
+    )
+//c interface this
+CT;CN[refine? method T mxs(TX' this,(T x)s)] //no body
   public static CT*TX mxs(CT*TX' £Xthis,CT*(TX x)s){return £Xthis.£mxs(xs);}
   default CT*TX £mxs(CT*(TX x)s){throw new Error("Interface method invocation");}//is going to be in an interface
 
-CT,CN[method T mxs((T x)s) e] //no refine, note, work both with and without 'this' parameter
-  public static CT*TX mxs(CT*(TX x)s[£Xthis=this])CT[e[£Xthis=this]]
 
 
 //never happens CT[method T mxs((T x)s)]
@@ -116,26 +118,30 @@ CT,CN[refine? method T mxs((T x)s) new] //there can be many new/newFwd
 CT,CN[refine? method T mxs((T x)s) newWithFwd]
   public static CT*TX mxs(CT*(TX x)s){
     CN res=new CN();
-    res.x1=x1;Fwd.addIfFwd(x1,CN.FieldAssFor_x1);
+    res.£Xx1=x1;Fwd.addIfFwd(x1,CN.FieldAssFor_x1);
     ..;
-    res.xn=xn;Fwd.addIfFwd(xn,CN.FieldAssFor_xn);
+    res.£Xxn=xn;Fwd.addIfFwd(xn,CN.FieldAssFor_xn);
     return res;
     }
   public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);} //only if refine?=refine
 
-//and then the field ones?
-CT,CN[refine? method TX x(TX' this) getter]=
-  public static CT*TX x(CT*TX' £this){return £this.£x;}
-  CT*TX £x;
-  public static BiConsumer<Object,Object> FieldAssFor£x=(f,o)->{
-    ((CN)o).£x=(CT*TX)f;
-    }
-  public CT*TX £x() {return this.mxs();} //only if refine?=refine
+  CT*TX1 £Xx1;
+  public static BiConsumer<Object,Object> FieldAssFor£x1=(f,o)->{((CN)o).£Xx1=(CT*TX1)f;}
+  ...
+  CT*TXn £Xxn;
+  public static BiConsumer<Object,Object> FieldAssFor£xn=(f,o)->{((CN)o).£Xxn=(CT*TXn)f;}
+  
+  //with TX1..TXn=(T x)s.Ts
 
-CT,CN[refine? method Void x(TX this, TX' that) setter]=
-  public static Void x(CT*TX £this, CT*TX' that){
-    £this.£x=that; return Void.instance();}
-  public CT*TX £x(CT*TX' that) {return CN.x(this,that);} //only if refine?=refine
+//and then the field ones?
+CT,CN[refine? method TX #?x(TX' this) getter]=
+  public static CT*TXn #?x(CT*CN £Xthis){return £Xthis.£Xx;}
+  public CT*TX £M#?x() {return CN.#?x(this);} //only if refine?=refine
+
+CT,CN[refine? method Void #?x(TX this, TX' that) setter]=
+  public static Void #?x(CT*TX £Xthis, CT*TX' that){
+    £Xthis.x=that; return Void.instance();}
+  public CT*TX £M#?x(CT*TX' that) {return CN.#?x(this,that);} //only if refine?=refine
 
 //TODO: need to handle _Fwd and Instance for interfaces
 CT,CN[ _ NewFwd() newFwd]=

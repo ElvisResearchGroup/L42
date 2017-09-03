@@ -200,8 +200,9 @@ public class Resources {
     }
   public static interface Revertable{
     public static ast.ExpCore doRevert(Object o){
+      Program p=Resources.getP();
       if (o instanceof Revertable){return ((Revertable)o).revert();}
-      return EncodingHelper.wrapResource(o);
+      return EncodingHelper.wrapResource(p,o);
     }
     public ast.ExpCore revert();
   }

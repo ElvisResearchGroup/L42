@@ -24,6 +24,7 @@ import auxiliaryGrammar.Functions;
 import ast.MiniJ;
 import facade.Configuration;
 import facade.L42;
+import l42FVisitors.CloneVisitor;
 import newReduction.ClassTable.Element;
 import newTypeSystem.GuessTypeCore.G;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
@@ -59,7 +60,7 @@ public class Loader {
     MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Collections.singletonList(m1));
     String text="package generated;\n"+MiniJToJava.of(cdResource);
     List<SourceFile> files =Collections.singletonList(new SourceFile(cdResource.getCn(),text));
-    try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+    //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
 
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     Class<?> cl0 = clX.loadClass("generated."+cdResource.getCn());
@@ -109,7 +110,7 @@ public class Loader {
       String text="package generated;\n"+MiniJToJava.of(j);
       SourceFile src=new SourceFile(cnString,text);
       readyToJavac.add(src); 
-      try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cnString+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+      //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cnString+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
 
       }
     try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
@@ -157,8 +158,8 @@ public class Loader {
       j.getCn(),text
       ));
     System.out.println(MiniJToJava.of(j));
-    try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-    //try{Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
+    //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+    //"/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     Class<?> cl0 = clX.loadClass("generated."+j.getCn());
     Method m0 = cl0.getDeclaredMethod("execute0");
@@ -168,8 +169,14 @@ public class Loader {
   public ExpCore.ClassB execute(Program p,Paths paths,ExpCore e){
     List<String> names = computeDbgNames(p);
     this.load(names,p,paths); //Loader change state here
-    return this.run(p,e);//Loader change state here but should be irrelevant
-
+    ExpCore.ClassB res= Resources.withPDo(p.reprAsPData(),()->this.run(p,e));//Loader change state here but should be irrelevant
+    res=(ExpCore.ClassB)res.accept(new coreVisitors.CloneVisitor(){
+      public ExpCore visit(ClassB s) {
+        s=(ExpCore.ClassB)super.visit(s);
+        return s.withUniqueId(p.getFreshId());
+        }
+      });
+    return res;
   }
   private List<String> computeDbgNames(Program p) throws Error {
     List<String>names=new ArrayList<>();

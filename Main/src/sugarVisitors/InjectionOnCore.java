@@ -83,7 +83,7 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           })
        );
     }
-    ClassB result=new ClassB(doc1,isInterface,supertypes,members,s.getP(),Phase.None,0);
+    ClassB result=new ClassB(doc1,isInterface,supertypes,members,s.getP(),Phase.None,-1);
     return result;
     }
   public ExpCore visit(Expression.MCall s){

@@ -129,4 +129,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     }
 
   }
+
+@Override
+public Void visit(Unreachable s) {return null;}
 }

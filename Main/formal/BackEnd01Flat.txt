@@ -24,11 +24,11 @@ Mx::=refine? method T mxs((T x)s) body?//first is this
 //note: no exceptions declared, body empty only if kind=interface
 body::=ex | setter|getter|new|newWithFwd|newFwd |nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector<CN> | nativeOpt<T>| ...
-ex::= (dxs kxs ex [TX]) | x|void|CN|null| throw[TX1,TX2] x |loop ex
+ex::= (dxs kxs ex [TX]) | x|void|CN|null|unreachable| throw[TX1,TX2] x |loop ex
   |CN.mxs(ys)| use CN check mxs(ys) ex
   |if x then ex1 else ex2 |breakLoop | x1:=x2 |(mdf CN)x
 kx::=catch throw TX x ex
-dx::=TX x=ex
+dx::=TX x=ex |ex //ex as a dx to avoid unused variables
 TX::=mdf CN
 
 dep: CNs //set

@@ -49,6 +49,7 @@ import platformSpecific.fakeInternet.OnLineCode;
 import platformSpecific.fakeInternet.PluginWithPart;
 import platformSpecific.fakeInternet.PluginWithPart.PlgInfo;
 import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
+import platformSpecific.javaTranslation.Resources;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import tools.Assertions;

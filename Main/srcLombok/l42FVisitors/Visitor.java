@@ -10,6 +10,7 @@ V visit(X s);
 V visit(Cn s);
 V visit(_void s);
 V visit(Null s);
+V visit(Unreachable s);
 V visit(BreakLoop s);
 V visit(Throw s);
 V visit(Loop s);
