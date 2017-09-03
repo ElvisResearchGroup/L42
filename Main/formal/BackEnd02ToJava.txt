@@ -80,26 +80,27 @@ xe(label?,T x e)= x;label?*e;
 ### CT[CD]=JClass
 ---
 CT[interface CN implements CNs {Mxs}]=
-public interface CN implements CNs{CT,CN[Mxs]}
+public interface CN implements CNs{CT;CN[Mxs]}
 otherwise
 CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{CT,CN[Mxs]}
+public class CN implements CNs{CT;CN[Mxs]}
 
-CT,CN[refine method TX mxs(TX' this,(TX x)s) e]=
-  public static CT*TX mxs(CT*TX' £this,CT*(TX x)s) CT[e[£this=this]]
+
+CT;CN[refine method TX mxs(TX' this,(TX x)s) e]=
+  public static CT*TX mxs(CT*TX' £Xthis,CT*(TX x)s) CT[e[£Xthis=this]]
   public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(this,xs);}
 
 //case with no "this"
-CT,CN[refine method TX mxs((TX x)s) e]=
+CT;CN[refine method TX mxs((TX x)s) e]=
   public static CT*TX mxs(CT*(TX x)s) CT;empty;empty*e
   public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);}
 
-CT,CN[refine method T mxs(TX' this,(T x)s)] //no body
-  CT*TX £mxs(CT*(TX x)s);//is going to be in an interface
-  static CT*TX mxs(CT*TX' £this,CT*(TX x)s){£this.£mxs(xs);}
+CT;CN[refine method T mxs(TX' this,(T x)s)] //no body
+  public static CT*TX mxs(CT*TX' £Xthis,CT*(TX x)s){return £Xthis.£mxs(xs);}
+  default CT*TX £mxs(CT*(TX x)s){throw new Error("Interface method invocation");}//is going to be in an interface
 
 CT,CN[method T mxs((T x)s) e] //no refine, note, work both with and without 'this' parameter
-  public static CT*TX mxs(CT*(TX x)s[£this=this])CT[e[£this=this]]
+  public static CT*TX mxs(CT*(TX x)s[£Xthis=this])CT[e[£Xthis=this]]
 
 
 //never happens CT[method T mxs((T x)s)]
@@ -136,15 +137,21 @@ CT,CN[refine? method Void x(TX this, TX' that) setter]=
     £this.£x=that; return Void.instance();}
   public CT*TX £x(CT*TX' that) {return CN.x(this,that);} //only if refine?=refine
 
+//TODO: need to handle _Fwd and Instance for interfaces
 CT,CN[ _ NewFwd() newFwd]=
   public static CN NewFwd(){return new _Fwd();}
-  private static class _Fwd extends CN implements Fwd{
+  public static class _Fwd extends CN implements Fwd{//implements CN if CN interface
     private List<Object> os=new ArrayList<>();
     private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
     public List<Object> os(){return os;}
     public List<BiConsumer<Object,Object>> fs(){return fs;}
     }
+  public static final CN Instance=new _Fwd();//so it work also if CN is interface
+  public static CN Instance(){return Instance; }
 
+
+Note:if CN is interface, is ok to just implement it
+since all its methods has defaults
 
 ###Assumed
 ---

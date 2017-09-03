@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ast.Ast;
 import ast.ExpCore;
 import ast.MiniJ;
 import ast.L42F.Block;
@@ -69,7 +70,12 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     }
   public Void visit(MiniJ.CD cd){
     String kind=cd.isInterface()?"interface":"class";
-    c("public "+kind+" "+cd.getCn()+"{");
+    c("public "+kind+" "+cd.getCn());
+    if(!cd.getCns().isEmpty()){
+      c(" implements ");
+      tools.StringBuilders.formatSequence(result, cd.getCns().iterator(), ", ", cni->c(cni));
+      }
+    c("{");
     indent();
     for(M mi: cd.getMs()){
       nl();
@@ -88,9 +94,10 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
 
     @Override
     public Void visit(B s) {
-      if(s.getLabel()!=null){c(s.getLabel()+":{");}
+      if(s.getLabel()!=null){c("{"+s.getLabel()+":{");}
       else{c("{");}
       for(S si:s.getSs()){si.accept(this);}
+      if(s.getLabel()!=null){c("}");}
       return c("}");
       }
 
@@ -140,8 +147,8 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
 
     @Override
     public Void visit(ast.MiniJ.Throw s) {
-      if(s.getCn()!=null){
-        c("throw new "+s.getCn()+"("+s.getX()+");");
+      if(s.getK()!=null){
+        c("throw new "+tOf(s.getK())+"("+s.getX()+");");
         }
       else {c("throw "+s.getX()+";");}
       return null;
@@ -156,10 +163,20 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
         }
       return null;
       }
-
+    private String tOf(Ast.SignalKind kind){
+      switch(kind){
+        case Return: return Resources.Return.class.getCanonicalName();
+        case Exception: return Resources.Exception.class.getCanonicalName();
+        case Error: return Resources.Error.class.getCanonicalName();
+        }
+      throw Assertions.codeNotReachable();
+      }
+    
     private void liftK(ast.MiniJ.K k) {
-      c("catch ("+k.getT()+" "+k.getX()+")");
+      c("catch ("+tOf(k.getT())+" "+k.getX()+")");
+      c("{if(true)");//to prevent unreachable code after the catch
       k.getB().accept(this);
+      c("} ");
     }
 
     @Override

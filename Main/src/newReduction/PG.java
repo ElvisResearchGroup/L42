@@ -62,11 +62,11 @@ class PG implements Visitor<E>{
   G gamma;
   List<Program> ps;
   PG(Program p,G gamma,List<Program> ps){this.p=p;this.gamma=gamma;this.ps=ps;}
-  public static M header(Program p,MethodWithType mwt){
+  public static M header(boolean isInterface,Program p,MethodWithType mwt){
     MethodType mt=mwt.getMt();
 
     List<TX>ts=new ArrayList<>();
-    if(mt.getMdf()!=Mdf.Class){
+    if(mt.getMdf()!=Mdf.Class || isInterface){
       T t = new T(mt.getMdf(),PG.liftP(p,Path.outer(0)));
       ts.add(new TX(t,"this"));
       }
@@ -174,7 +174,7 @@ private E visitBase(MCall s) {
   if(isInterface || !isClass) {
     ps.add(((X)s.getInner()).getInner());
     }
-  if(isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
+  if(!isInterface && isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
     ms=msOptimizedNew(ms);
     }
   for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}

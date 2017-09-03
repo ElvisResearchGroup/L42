@@ -70,7 +70,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 
   @Override
   public MiniJ.S visit(X s) {
-    return wrapE(new MiniJ.X(s.getInner()));
+    return wrapE(new MiniJ.X(L42FToMiniJ.liftX(s.getInner())));
     }
 
   @Override
@@ -82,7 +82,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 
   @Override
   public MiniJ.S visit(_void s) {
-    String name=Resources.Void.class.getName();
+    String name=Resources.Void.class.getCanonicalName();
     E e=new MiniJ.MCall(name, "Instance", Collections.emptyList());
     return wrapE(e);
     }
@@ -109,8 +109,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     }
   @Override
   public MiniJ.S visit(Throw s) {
-    String kindJName="platformSpecific.javaTranslation.Resources."+s.getKind().name();
-    return new MiniJ.Throw(kindJName, s.getX());
+    return new MiniJ.Throw(s.getKind(), s.getX());
     }
 
   @Override
@@ -137,13 +136,14 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 
   @Override
   public MiniJ.S visit(Block s) {
+    String label0=null;
     List<S>ds=new ArrayList<>();
     for(D di:s.getDs()){ds.add(liftDsTX(di));}
     if(s.getKs().isEmpty()){
       for(D di:s.getDs()){ds.add(liftDsXE(di));}
       }
     else{
-      String label0=Functions.freshName("label",L42.usedNames);
+      label0=Functions.freshName("label",L42.usedNames);
       List<S>dsTry=new ArrayList<>();
       for(D di:s.getDs()){dsTry.add(liftDsXE(di));}
       List<MiniJ.K> ks=liftKs(label0,s.getKs());
@@ -151,7 +151,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
       ds.add(t);
       }
     ds.add(s.getE().accept(this));
-    return new B(label,ds);
+    return new B(label0,ds);
     }
   private List<MiniJ.K> liftKs(String label0,List<K> ks) {
     List<K> errs=new ArrayList<>();
@@ -188,7 +188,6 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     MiniJ.K res=new MiniJ.K(kind, catchX, b);
     acc.add(res);
     }
-
   private S liftDsXE(D di) {
     return liftWith(di.getX(), label, di.getE());
   }

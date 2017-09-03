@@ -10,8 +10,11 @@ import ast.ExpCore;
 import ast.Ast.C;
 import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
+import newReduction.ClassTable;
+import newReduction.Loader;
 
 public class ProgramReduction {
+  Loader loader=new Loader();
   public ClassB allSteps(ClassB l){
     Program top=new FlatProgram(l);
     while(!IsCompiled.of(top.top())){
@@ -49,7 +52,8 @@ public class ProgramReduction {
     @SuppressWarnings("unused")
     ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec));
     ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,ec);
-    ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
+    ClassB res=loader.execute(p1, paths1, annEc1);
+    //ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there

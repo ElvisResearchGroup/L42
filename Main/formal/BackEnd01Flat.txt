@@ -82,35 +82,36 @@ dispatched; this never have an interface type.
 ---
 
 0//method in interface
-libToCD(interface,p,mwt)=header(p,mwt)
+libToCD(interface,p,mwt)=header(interface,p,mwt)
 
 1//class method turned into static method
-libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt[with e=e[this=This])
+libToCD(empty,p,mwt)=header(empty,p,mwt) body(p,mwt[with e=e[this=This])
   where mwt.mt.mdf=class and mwt.e?!=empty
 
 2//instance method
-libToCD(empty,p,mwt)=header(p,mwt) body(p,mwt)
+libToCD(empty,p,mwt)=header(empty,p,mwt) body(p,mwt)
   where mwt.mt.mdf!=class and mwt.e?!=empty
 
 3//get/set
-libToCD(empty,p,mwt)=header(p,mwt) body
+libToCD(empty,p,mwt)=header(empty,p,mwt) body
   where
   mdf!=class
   body =setter if mwt.ms.xs not empty, otherwise body=getter
 
 4//constructor with FWD, note, we return 2 methods
 libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be good enough
-  header(p,mwt) newFwd
-  header(p,noFwd(mwt))[with ms='New_'++mwt.ms] new
+  header(empty,p,mwt) newWithFwd
+  header(empty,p,noFwd(mwt))[with ms='New_'++mwt.ms] new
 //  if noFwd(mwt)!=mwt, otherwise
-//  header(p,mwt) fwd
-//  header(p,mwt)[with ms='New_'++mwt.ms] new
+//  header(empty,p,mwt) fwd
+//  header(empty,p,mwt)[with ms='New_'++mwt.ms] new
 
-### header(p,mwt)=refine? method T mxs((T x)s)
-  header(p,refine? class method T mxs(T1 x1..Tn xn) e?)=
+### header(interface?,p,mwt)=refine? method T mxs((T x)s)
+  //first case: mdf=class, and not interface
+  header(empty,p,refine? class method T mxs(T1 x1..Tn xn) e?)=
     refine? method p*T mxs(p*T1 x1..p*Tn xn)
   otherwise
-  header(p,refine? mdf method T mxs(T1 x1..Tn xn) e?)=
+  header(interface?,p,refine? mdf method T mxs(T1 x1..Tn xn) e?)=
     refine? method p*T mxs(mdf p*This, p*T1 x1..p*Tn xn)
 
 ### body(p,mwt)=body?

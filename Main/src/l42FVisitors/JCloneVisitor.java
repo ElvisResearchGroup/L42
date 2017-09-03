@@ -79,7 +79,7 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
 
     @Override
     public MiniJ.S visit(Throw s) {
-      return new Throw(liftCn(s.getCn()),liftX(s.getX()));
+      return new Throw(s.getK(),liftX(s.getX()));
     }
 
     @Override

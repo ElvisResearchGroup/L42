@@ -66,7 +66,7 @@ Stream<M> a=Stream.of(m0);
 return a;
 }
 private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt, List<Program> ps) {
-  M h=PG.header(p, mwt);
+  M h=PG.header(isInterface,p, mwt);
   if(isInterface){return Stream.of(h);}//case 0
   MethodType mt=mwt.getMt();
   MethodSelector ms=mwt.getMs();
@@ -77,7 +77,10 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
     ExpCore e=mwt.getInner();
     if(isClass){
       e=e.accept(new CloneVisitor(){public ExpCore visit(ExpCore.X s){
-        return new ExpCore.EPath(s.getP(),Path.outer(0));
+        if(s.getInner().equals("this")){
+          return new ExpCore.EPath(s.getP(),Path.outer(0));
+          }
+        return super.visit(s);
         }});
       }
     E b=PG.body(p,mwt.with_inner(Optional.of(e)),ps);
@@ -90,8 +93,8 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
   //case 4
   MethodWithType mwtNoF=mwt.withMt(mt.withTs(TypeManipulation.noFwd(mt.getTs())));
   mwtNoF=mwtNoF.withMs(PG.msOptimizedNew(ms));
-  M k1=h.withBody(L42F.SimpleBody.NewFwd);
-  M k2=PG.header(p,mwtNoF).withBody(L42F.SimpleBody.New);
+  M k1=h.withBody(L42F.SimpleBody.NewWithFwd);
+  M k2=PG.header(isInterface,p,mwtNoF).withBody(L42F.SimpleBody.New);
   return Stream.of(k1,k2);
   }
 }

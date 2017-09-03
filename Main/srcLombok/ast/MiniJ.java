@@ -67,7 +67,7 @@ Return implements S{
   }
 @Value @Wither public static class
 Throw implements S{//throw new cn(x) or throw x if cn==null;
-  String cn; String x;
+  Ast.SignalKind k; String x;
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 @Value @Wither public static class

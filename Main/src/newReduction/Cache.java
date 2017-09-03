@@ -25,7 +25,6 @@ public class Cache {
   public static Cache loadFromFile(){throw Assertions.codeNotReachable();}
   public Element get(Set<String> key){
     Element res = inner.get(key);
-    assert res!=null;
     return res;
     }
   public void add(Set<String> dep,List<L42F.CD>cds,HashMap<String, ClassFile> clMap){

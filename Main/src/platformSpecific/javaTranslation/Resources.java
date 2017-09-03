@@ -135,6 +135,7 @@ public class Resources {
   @SuppressWarnings("serial")
   private static class L42Throwable extends RuntimeException{
     public final Object unbox; public L42Throwable(Object u){unbox=u;}
+    public final Object inner(){return unbox;}
     }
   @SuppressWarnings("serial")
   public static class Error extends L42Throwable{
@@ -178,6 +179,7 @@ public class Resources {
     }
   public static class Void implements Revertable{
     public static final Void instance=new Void();
+    public static Void Instance(){return instance;}
     public static final Void type=new Void();
     @Override
     public ExpCore revert() {

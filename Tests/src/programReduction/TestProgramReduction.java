@@ -45,7 +45,7 @@ public static class TestExecution {
   TestHelper.configureForTest();
   ExpCore.ClassB l1=(ExpCore.ClassB)TestHelper.getExpCore(TestProgramReduction.class.getSimpleName(),_p);
   ExpCore.ClassB l2=(ExpCore.ClassB)TestHelper.getExpCore(TestProgramReduction.class.getSimpleName(),_expected);
-  TestHelper.assertEqualExp(l2,ProgramReduction.allSteps(l1));
+  TestHelper.assertEqualExp(l2,new ProgramReduction().allSteps(l1));
   }
 }
 

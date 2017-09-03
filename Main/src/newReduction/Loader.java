@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ast.Ast;
 import ast.ExpCore;
 import ast.L42F;
 import ast.ExpCore.ClassB;
@@ -32,10 +34,11 @@ import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import platformSpecific.javaTranslation.Resources;
 import programReduction.Paths;
 import programReduction.Program;
+import tools.Assertions;
 
 public class Loader {
-  public Loader(ClassTable ct) {
-    this.ct = ct;
+  public Loader() {
+    this.ct = ClassTable.empty;
     try {addResource();}
     catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
     }
@@ -54,9 +57,10 @@ public class Loader {
         "{System.out.println(\"askedLoadLib \"+index);return loader.getLib(index);}\n"
         + "public static newReduction.Loader loader;"));
     MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Collections.singletonList(m1));
-    List<SourceFile> files =Collections.singletonList(new SourceFile(
-      cdResource.getCn(),"package generated;\n"+MiniJToJava.of(cdResource)
-      ));
+    String text="package generated;\n"+MiniJToJava.of(cdResource);
+    List<SourceFile> files =Collections.singletonList(new SourceFile(cdResource.getCn(),text));
+    try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     Class<?> cl0 = clX.loadClass("generated."+cdResource.getCn());
     Field fLoader = cl0.getDeclaredField("loader");
@@ -102,9 +106,11 @@ public class Loader {
       String cnString=dep.get(cn);
       if(clMap.containsKey(cnString)){continue;}
       MiniJ.CD j=L42FToMiniJ.of(ct, ct.get(cn).cd);
-      SourceFile src=new SourceFile(cnString,
-        "package generated;\n"+MiniJToJava.of(j));
+      String text="package generated;\n"+MiniJToJava.of(j);
+      SourceFile src=new SourceFile(cnString,text);
       readyToJavac.add(src); 
+      try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cnString+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+
       }
     try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
     catch(CompilationError ce){throw new Error(ce);}
@@ -120,7 +126,7 @@ public class Loader {
       }
     }  
   
-  ExpCore.ClassB run(Program p, ExpCore e) {
+  public ExpCore.ClassB run(Program p, ExpCore e) {
     currentP=p;
     List<Program>ps=new ArrayList<>();
     PG pg=new PG(p,G.of(Collections.emptyMap()),ps);
@@ -146,16 +152,41 @@ public class Loader {
 
     }
   Object run(MiniJ.CD j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+    String text="package generated;\n"+MiniJToJava.of(j);
     List<SourceFile> files =Collections.singletonList(new SourceFile(
-      j.getCn(),"package generated;\n"+MiniJToJava.of(j)
+      j.getCn(),text
       ));
     System.out.println(MiniJToJava.of(j));
+    try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     //try{Files.write(Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+k+".java"), map.get(k).getBytes());}catch (IOException _e) {throw new Error(_e);}
-    //try{Files.write(Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+j.getCn()+".java"), files.get(j.getCn()).getBytes());}catch (IOException _e) {throw new Error(_e);}
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     Class<?> cl0 = clX.loadClass("generated."+j.getCn());
     Method m0 = cl0.getDeclaredMethod("execute0");
     Object result = m0.invoke(null);
     return result;
+    }
+  public ExpCore.ClassB execute(Program p,Paths paths,ExpCore e){
+    List<String> names = computeDbgNames(p);
+    this.load(names,p,paths); //Loader change state here
+    return this.run(p,e);//Loader change state here but should be irrelevant
+
+  }
+  private List<String> computeDbgNames(Program p) throws Error {
+    List<String>names=new ArrayList<>();
+    for(Object o:p.exploredWay()){
+      if(o==null){names.add("£E");}
+      else if(o instanceof Ast.C){names.add(o.toString());}
+      else if(o instanceof Ast.MethodSelector){
+        names.add(o.toString()
+          .replace("(","£X")
+          .replace(",","£X")
+          .replace(")","")
+          .replace(" ","")
+          .replace("#","£H")
+          );
+        }
+      else throw Assertions.codeNotReachable();
+      }
+    return names;
     }
   }

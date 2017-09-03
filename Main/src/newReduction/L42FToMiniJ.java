@@ -2,6 +2,7 @@ package newReduction;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import ast.Ast.MethodSelector;
@@ -10,8 +11,10 @@ import ast.MiniJ;
 import ast.L42F.Body;
 import ast.L42F.CD;
 import ast.L42F.E;
+import ast.L42F.Kind;
 import ast.L42F.M;
 import ast.L42F.SimpleBody;
+import ast.L42F.SimpleKind;
 import ast.MiniJ.S;
 import ast.MiniJ.RawJ;
 import l42FVisitors.BodyVisitor;
@@ -26,14 +29,20 @@ public class L42FToMiniJ {
     List<String> cs=tools.Map.of(i->ct.get(i).cd.l42ClassName(),cd.getCns());
     List<MiniJ.M>ms=new ArrayList<>();
     for(L42F.M m:cd.getMs()){
-    String retT=ct.className(m.getReturnType().getCn());
-    List<String> ts=tools.Map.of(tx->ct.className(tx.getT().getCn()),m.getTxs());
-    List<String> xs=tools.Map.of(tx->tx.getX(),m.getTxs());
-    MiniJ.M res=new MiniJ.M(!m.isRefine(),retT, liftMs(m.getSelector()), ts, xs,null);
-    MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res));
-    ms.add(res.withBody(body));
-    }
+      MiniJ.M res = methodHeader(ct, m);
+      MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res));
+      ms.add(res.withBody(body));
+      //TODO: if m.isRefine() add delegator?
+      }
   return new MiniJ.CD(interf, name, cs, ms);
+  }
+private static MiniJ.M methodHeader(ClassTable ct, L42F.M m) {
+  assert m.getBody()!= SimpleBody.Empty ||m.getTxs().get(0).getX().equals("this");
+  String retT=ct.className(m.getReturnType().getCn());
+  List<String> ts=tools.Map.of(tx->ct.className(tx.getT().getCn()),m.getTxs());
+  List<String> xs=tools.Map.of(tx->liftX(tx.getX()),m.getTxs());
+  MiniJ.M res=new MiniJ.M(true,retT, liftMs(m.getSelector()), ts, xs,null);
+  return res;
   }
 
   private static class VB implements BodyVisitor<MiniJ.S>{
@@ -52,7 +61,20 @@ public class L42FToMiniJ {
 
     @Override
     public S visitEmpty(SimpleBody s) {
-      return new RawJ(";");
+      StringBuilder r=new StringBuilder();
+      r.append("{return £Xthis.£M"+mj.getName()+"(");
+      Iterator<String> it = mj.getXs().iterator();
+      it.next();
+      tools.StringBuilders.formatSequence(r,it,", ",x->r.append(x));
+      r.append(");}\n");
+      r.append("default "+mj.getRetT()+" £M"+mj.getName()+"(");
+      Iterator<String> itt=mj.getTs().iterator();
+      Iterator<String> itx=mj.getXs().iterator();
+      itt.next();
+      itx.next();
+      tools.StringBuilders.formatSequence(r,itt,itx,", ",(t,x)->r.append(t+" "+x));
+      r.append("){throw new Error(\"Interface method invocation\");}");
+      return new RawJ(r.toString());
       }
 
     @Override
@@ -62,7 +84,7 @@ public class L42FToMiniJ {
       String t1=mj.getTs().get(1);
       String x1=mj.getXs().get(1);
       StringBuilder sb=new StringBuilder();
-      sb.append("{£this.£"+x+"=that; return "+Resources.Void.class.getName()+".instance();}");
+      sb.append("{£Xthis.£"+x+"=that; return "+Resources.Void.class.getCanonicalName()+".instance();}");
       if(this.m.isRefine()){
         sb.append("public "+t+ "£"+x+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,that);}");
         }
@@ -74,7 +96,7 @@ public class L42FToMiniJ {
       String x=mj.getName();
       String t=mj.getRetT();
       StringBuilder sb=new StringBuilder();
-      sb.append("{return £this.£"+x+";}");
+      sb.append("{return £Xthis.£"+x+";}");
       sb.append(t+" "+x+";");
       sb.append("public static java.util.function.BiConsumer<Object,Object> FieldAssFor£"+
         x+"=(f,o)->{(("+cn+")o).£"+x+"=("+t+")f;}"
@@ -108,13 +130,17 @@ public class L42FToMiniJ {
 
     @Override
     public S visitNewFwd(SimpleBody s) {
+      boolean interf=cd.getKind()==SimpleKind.Interface;
       StringBuilder sb=new StringBuilder();
       sb.append("{return new _Fwd();}\n");
-      sb.append("private static class _Fwd extends "+cn+" implements Fwd{\n");
+      if(interf){sb.append("public static class _Fwd  implements "+cn+", "+Fwd.class.getName()+"{\n");}
+      else {sb.append("public static class _Fwd extends "+cn+" implements "+Fwd.class.getName()+"{\n");}
       sb.append("private java.util.List<Object> os=new java.util.ArrayList<>();\n");
       sb.append("private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n");
       sb.append("public java.util.List<Object> os(){return os;}\n");
-      sb.append("public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}");
+      sb.append("public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n");
+      sb.append("public static final "+cn+" Instance=new _Fwd();\n");
+      sb.append("public static "+cn+" Instance(){return Instance; }");
       return new RawJ(sb.toString());
       }
 
@@ -128,10 +154,13 @@ public class L42FToMiniJ {
       return L42FToMiniJS.forBody(ct, s);
       }
     }
-
+  public static String liftX(String x) {
+    if(x.equals("this")){return "£Xthis";}
+    return x;
+    }
   public static String liftMs(MethodSelector ms) {
     String res=ms.nameToS();
     for(String xi:ms.getNames()){res+="£X"+xi;}
-    return res;
+    return res.replace("#", "£H");
     }
   }

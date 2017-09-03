@@ -18,6 +18,7 @@ import ast.L42F.CD;
 import ast.L42F.Cn;
 import ast.MiniJ;
 import coreVisitors.From;
+import platformSpecific.javaTranslation.Resources;
 import programReduction.Paths;
 import programReduction.Program;
 import tools.Assertions;
@@ -31,28 +32,28 @@ public class ClassTable {
     if(index==Cn.cnAny.getInner()){return "Any";}
     if(index==Cn.cnVoid.getInner()){return "Void";}
     if(index==Cn.cnLibrary.getInner()){return "Library";}
-    if(index==Cn.cnResource.getInner()){return "Resource";}
+    if(index==Cn.cnResource.getInner()){return "generated.Resource";}
     return get(index).cd.dbgName();
     }
   public String className(int index){
     if(index==Cn.cnAny.getInner()){return "Object";}
-    if(index==Cn.cnVoid.getInner()){return "platformSpecific.javaTranslation.Resources.Void";}
+    if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
     if(index==Cn.cnLibrary.getInner()){return "Object";}
-    if(index==Cn.cnResource.getInner()){return "Resource";}
+    if(index==Cn.cnResource.getInner()){return "generated.Resource";}
     return get(index).cd.className();
     }
   public String boxedClassName(int index){
     if(index==Cn.cnAny.getInner()){return "Object";}
-    if(index==Cn.cnVoid.getInner()){return "platformSpecific.javaTranslation.Resources.Void";}
+    if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
     if(index==Cn.cnLibrary.getInner()){return "Object";}
-    if(index==Cn.cnResource.getInner()){return "Resource";}
+    if(index==Cn.cnResource.getInner()){return "generated.Resource";}
     return get(index).cd.boxedClassName();
     }
   public String l42ClassName(int index){
     if(index==Cn.cnAny.getInner()){throw Assertions.codeNotReachable();}
     if(index==Cn.cnVoid.getInner()){throw Assertions.codeNotReachable();}
     if(index==Cn.cnLibrary.getInner()){throw Assertions.codeNotReachable();}
-    if(index==Cn.cnResource.getInner()){return "Resource";}
+    if(index==Cn.cnResource.getInner()){return "generated.Resource";}
     return get(index).cd.l42ClassName();
     }
 
@@ -174,7 +175,8 @@ public class ClassTable {
     return res2;
     }
   protected ClassTable plus(Element e) {
-  assert !map.containsKey(e.cd.getCn()):"avoided before with 'avoidRepeat'?";
+  assert e.cd.getKind()==null || !map.containsKey(e.cd.getCn()):
+    "avoided before with 'avoidRepeat'?";
   //if(map.containsKey(cd.getCn())){return this;}
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(e.cd.getCn(), e);
@@ -184,6 +186,7 @@ public List<Map<Integer,String>> listOfDeps() {
   List<Map<Integer,String>> l=new ArrayList<>();
   for(Element e:map.values()){
     Map<Integer,String> s=new HashMap<>();
+    if(e.cd.getKind()==null){continue;}
     for(int i:e.deps){
       s.put(i,this.className(i));
       }
