@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,11 +18,13 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.L42F;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.EPath;
 import ast.L42F.CD;
 import ast.L42F.E;
 import ast.MiniJ.M;
 import auxiliaryGrammar.Functions;
 import ast.MiniJ;
+import ast.Ast.Path;
 import facade.Configuration;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
@@ -33,6 +36,7 @@ import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import platformSpecific.javaTranslation.Resources;
+import platformSpecific.javaTranslation.Resources.Revertable;
 import programReduction.Paths;
 import programReduction.Program;
 import tools.Assertions;
@@ -42,6 +46,11 @@ public class Loader {
     this.ct = ClassTable.empty;
     try {addResource();}
     catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
+    }
+  public EPath getPathOf(int index){
+    Element e=ct.get(index);
+    Path fromming = e.fromming(e.p,currentP);
+    return EPath.wrap(fromming);
     }
   public ClassB getLib(int index) {
     Element e=ct.get(index);
@@ -55,13 +64,20 @@ public class Loader {
   private void addResource()
       throws CompilationError, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
     M m1=new M(true,"Object","£CLoadLib",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
-        "{return loader.getLib(index);}\n"
-        + "public static newReduction.Loader loader;"));
-    MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Collections.singletonList(m1));
+      "{return loader.getLib(index);}\n"
+      + "public static newReduction.Loader loader;"
+      ));
+    M m2=new M(true,Revertable.class.getCanonicalName(),"£COf",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
+      "{return ()->£CPathOf(index);}\n"
+      ));
+    M m3=new M(true,ast.ExpCore.class.getCanonicalName(),"£CPathOf",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
+      "{return loader.getPathOf(index);}\n"
+      ));
+    MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Arrays.asList(m1,m2,m3));
     String text="package generated;\n"+MiniJToJava.of(cdResource);
     List<SourceFile> files =Collections.singletonList(new SourceFile(cdResource.getCn(),text));
     //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-    try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+    //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     Class<?> cl0 = clX.loadClass("generated."+cdResource.getCn());
     Field fLoader = cl0.getDeclaredField("loader");
@@ -102,17 +118,23 @@ public class Loader {
       }
     }
   private void javac(Map<Integer, String> dep) {
-  List<SourceFile> readyToJavac=new ArrayList<>();
+    assert ct.isCoherent();
+    List<SourceFile> readyToJavac=new ArrayList<>();
     for(int cn:dep.keySet()){
       String cnString=dep.get(cn);
-      if(clMap.containsKey(cnString)){continue;}
+      if(clMap.containsKey("generated."+cnString)){continue;}
+      else{System.out.println("Recompiling "+cnString+ " sizeMap: "+clMap.size());}
       MiniJ.CD j=L42FToMiniJ.of(ct, ct.get(cn).cd);
       String text="package generated;\n"+MiniJToJava.of(j);
       SourceFile src=new SourceFile(cnString,text);
       readyToJavac.add(src);
       //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cnString+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-      try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+      //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
       }
+    System.out.println("Running javac: dependency size:"+dep.size());
+    System.out.println("Running javac: new size:"+readyToJavac.size());
+    //TODO:??? next if?? how can get empty?
+    if (readyToJavac.isEmpty()){return;}
     try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
     catch(CompilationError ce){throw new Error(ce);}
     }
@@ -120,9 +142,7 @@ public class Loader {
     ct=ct.growWith(names, p, paths).computeDeps();
     List<Map<Integer,String>> chunks = ct.listOfDeps();
     Collections.sort(chunks,(s1,s2)->s1.size()-s2.size());
-    //TODO: check is not the opposite
     for(Map<Integer,String>dep:chunks){
-      System.out.println("Remove after checking that numbers are in increasing order:"+dep.size());
       processDep(dep);
       }
     }
@@ -158,7 +178,7 @@ public class Loader {
       j.getCn(),text
       ));
     //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-    try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+    //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     Class<?> cl0 = clX.loadClass("generated."+j.getCn());
     Method m0 = cl0.getDeclaredMethod("execute0");
@@ -168,6 +188,7 @@ public class Loader {
   public ExpCore.ClassB execute(Program p,Paths paths,ExpCore e){
     List<String> names = computeDbgNames(p);
     this.load(names,p,paths); //Loader change state here
+    assert this.ct.isCoherent();
     ExpCore.ClassB res= Resources.withPDo(p.reprAsPData(),()->this.run(p,e));//Loader change state here but should be irrelevant
     res=(ExpCore.ClassB)res.accept(new coreVisitors.CloneVisitor(){
       public ExpCore visit(ClassB s) {

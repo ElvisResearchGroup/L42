@@ -15,8 +15,10 @@ import ast.L42F.Cn;
 import ast.L42F.D;
 import ast.L42F.If;
 import ast.L42F.K;
+import ast.L42F.Kind;
 import ast.L42F.Loop;
 import ast.L42F.Null;
+import ast.L42F.SimpleKind;
 import ast.L42F.Throw;
 import ast.L42F.Unreachable;
 import ast.L42F.Update;
@@ -77,9 +79,23 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 
   @Override
   public MiniJ.S visit(Cn s) {
+    boolean classAny = isClassAny(s);
+    if(classAny){
+      E e=new MiniJ.MCall("generated.Resources", "£COf_"+s.getInner(), Collections.emptyList());
+      return wrapE(e);
+    }
     String name=ct.l42ClassName(s.getInner());
     E e=new MiniJ.MCall(name, "Instance", Collections.emptyList());
     return wrapE(e);
+    }
+  private boolean isClassAny(Cn s) {
+    if(L42F.Cn.cnAny.equals(s)){return true;}
+    if(L42F.Cn.cnFwd.getInner()>=s.getInner()){return false;}
+    ast.L42F.CD cd=ct.get(s.getInner()).cd;
+    Kind k = cd.getKind();
+    boolean classAny=false;
+    if(k==null || k==SimpleKind.Interface){classAny=true;}
+    return classAny;
     }
 
   @Override
@@ -115,7 +131,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     }
   @Override
   public MiniJ.S visit(Throw s) {
-    return new MiniJ.Throw(s.getKind(), s.getX());
+    return new MiniJ.Throw(s.getKind(), L42FToMiniJ.liftX(s.getX()));
     }
 
   @Override
@@ -188,14 +204,16 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     String catchX=Functions.freshName("catchX",L42.usedNames);
     S s=new MiniJ.Throw(null, catchX);
     Collections.reverse(ks);
+    boolean isTerminating=true;
     for(K ki:ks){
+      isTerminating=isTerminating&& ki.getE().accept(new Terminating());
       String cn = ct.boxedClassName(ki.getT().getCn());
       S then = ki.getE().accept(this);
       s=new MiniJ.IfTypeCase(catchX, ki.getX(), cn, then,s);
       }
     List<S>ss=new ArrayList<>();
     ss.add(s);
-    if(!emptyC()){
+    if(!emptyC() &&!isTerminating){
       ss.add(new MiniJ.Break(label0));
       }
     B b=new B(null,ss);

@@ -18,6 +18,7 @@ import ast.L42F.CD;
 import ast.L42F.Cn;
 import ast.MiniJ;
 import coreVisitors.From;
+import l42FVisitors.PropagatorVisitor;
 import platformSpecific.javaTranslation.Resources;
 import programReduction.Paths;
 import programReduction.Program;
@@ -27,6 +28,23 @@ public class ClassTable {
   private Map<Integer,Element> map;
   public ClassTable(Map<Integer, Element> map) {
     this.map = map;
+    }
+  public boolean isCoherent(){
+    List<Integer>invalid=new ArrayList<>();
+    for(int i:map.keySet()){
+      CD cdi = get(i).cd;
+      if(cdi.getKind()==null){continue;}
+      new PropagatorVisitor(){
+        protected void liftCn(int cn) {
+          if(Cn.cnFwd.getInner()>=cn){return;}
+          if(!map.containsKey(cn)){
+            invalid.add(cn);
+            }     
+          }
+        }.visit(cdi);
+      }
+    assert invalid.isEmpty():invalid;
+    return true;
     }
   public String dbgNameOf(int index){
     if(index==Cn.cnAny.getInner()){return "Any";}
@@ -63,7 +81,7 @@ public class ClassTable {
 
   public Element get(int index) {
     Element res=map.get(index);
-    assert res!=null:index;
+    assert res!=null:""+index+this.isCoherent();
     return res;
     }
   public Set<Integer> keySet(){return map.keySet();}
@@ -85,7 +103,10 @@ public class ClassTable {
     Set<Integer>deps;
     public ExpCore.ClassB cachedSrc=null;
     void reCache(Program pView) {
-      Program p0=p.pop();
+      Path fromming = fromming(p.pop(),pView);
+      cachedSrc=(ClassB) From.from(p.top(),fromming);
+      }
+    public Path fromming(Program p0,Program pView) {
       List<Object> pViewWay=pView.exploredWay();
       int pViewSize=pViewWay.size();
       pViewWay=cutWay(pViewWay);
@@ -106,9 +127,9 @@ public class ClassTable {
         cs.add((C)ci);
         }
       Path fromming=Path.outer(n,cs);
-      cachedSrc=(ClassB) From.from(p.top(),fromming);
-      }
-    private List<Object> cutWay(List<Object> way) {
+    return fromming;
+    }
+    private static List<Object> cutWay(List<Object> way) {
       int cut=way.indexOf(null);
       if(cut==-1) {cut=way.size();}
       way=way.subList(0, cut);
@@ -128,6 +149,7 @@ public class ClassTable {
     List<NamesP>ps=programsOf(names,p,paths);
     ClassTable res=this;
     for(NamesP pi:ps){res=res.plus(pi.names,pi.p);}
+    assert res.isCoherent();
     return res;
     }
 

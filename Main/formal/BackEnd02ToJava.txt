@@ -47,7 +47,8 @@ emptyC*breakLoop= ??
 _;label*breakLoop= break label;
 
 c*x= c+x
-c*CN= c+CN.Instance()
+c*CN= c+Resource.Of(CN)  with CT(CN).CD.kind in {interface, null, any?}
+c*CN= c+CN.Instance()  with CT(CN).CD.kind in {class, nativeXX,...}
 c*void= return Void.Instance()
 c*null= c+null
 c*unreachable=empty
@@ -147,6 +148,7 @@ CT,CN[refine? method Void #?x(TX this, TX' that) setter]=
 CT,CN[ _ NewFwd() newFwd]=
   public static CN NewFwd(){return new _Fwd();}
   public static class _Fwd extends CN implements Fwd{//implements CN if CN interface
+    public ast.ExpCore revert(){return Resource.£CPathOf(CN);}
     private List<Object> os=new ArrayList<>();
     private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
     public List<Object> os(){return os;}

@@ -116,6 +116,8 @@ public class L42FToMiniJ {
         assert f.startsWith("£C");
         f=f.substring(2);
         }
+      int i=f.indexOf("£");
+      if(i!=-1){f=f.substring(0, i);}
       return f;
     }
 
@@ -174,6 +176,7 @@ public class L42FToMiniJ {
       sb.append("{return new _Fwd();}\n");
       if(interf){sb.append("public static class _Fwd  implements "+cn+", "+Fwd.class.getName()+"{\n");}
       else {sb.append("public static class _Fwd extends "+cn+" implements "+Fwd.class.getName()+"{\n");}
+      sb.append("public ast.ExpCore revert(){return generated.Resource.£CPathOf("+cd.getCn()+");}\n");
       sb.append("private java.util.List<Object> os=new java.util.ArrayList<>();\n");
       sb.append("private java.util.List<java.util.function.BiConsumer<Object,Object>> fs=new java.util.ArrayList<>();\n");
       sb.append("public java.util.List<Object> os(){return os;}\n");

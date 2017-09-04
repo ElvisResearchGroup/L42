@@ -270,9 +270,11 @@ We assume the presence of some Predefined classes/methods in L42F:
 //uppercase names to avoid conflicts
 
 We also assume a native class Resource with method
-  method Library LoadLib_'CN'() for all relevant CN.
+  *method Library LoadLib_'CN'() for all relevant CN.
     Those methods will take care of 'fromming' libraries to make
     metaprogramming coherent
+  *method aux.Aux.Path PathOf(CN)
+  *method Resources.Revertable Of(CN)
 ---------------
 some classes can be implemented in 42, but it would be
 inefficient and boring.

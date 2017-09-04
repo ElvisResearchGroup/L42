@@ -132,8 +132,12 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     @Override
     public Void visit(MCall s) {
       if(s.getMName().startsWith("£CLoadLib_")) {
-        int cn=Integer.parseInt(s.getMName().substring(10));
+        int cn=Integer.parseInt(s.getMName().substring("£CLoadLib_".length()));
         return c(s.getCn()+".£CLoadLib("+cn+");");
+        }
+      if(s.getMName().startsWith("£COf_")) {
+        int cn=Integer.parseInt(s.getMName().substring("£COf_".length()));
+        return c(s.getCn()+".£COf("+cn+");");
         }
       c(s.getCn()+"."+s.getMName()+"(");
       tools.StringBuilders.formatSequence(result, s.getXs().iterator(),", ", x->c(x));
@@ -185,7 +189,9 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
       List<String> es=s.getXs();
       StringBuilder resOld=result;
       result=new StringBuilder();
+      result.append("{");
       s.getInner().accept(this);
+      result.append("}");
       String e=result.toString();
       result=resOld;
       PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(s.getDoc());

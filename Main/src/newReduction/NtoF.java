@@ -11,6 +11,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.X;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
+import ast.ExpCore.ClassB.Phase;
 import ast.L42F;
 import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
@@ -57,7 +58,8 @@ public class NtoF {
       top.mwts().stream()
       .flatMap(m->liftM(top.isInterface(),p,(MethodWithType)m,ps))
       ).collect(Collectors.toList());
-    Element res=new Element(p,new CD(k,top.getUniqueId(),new ArrayList<>(topName),supert,ms));
+    Element res=new Element(p,new CD(null,top.getUniqueId(),null,null, null));
+    if(top.getPhase()==Phase.Coherent){res=new Element(p,new CD(k,top.getUniqueId(),new ArrayList<>(topName),supert,ms));}
     acc.add(res);
     }
 private static Stream<M> newFwdMeth(int id) {
@@ -77,12 +79,15 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
   if(hasE){//cases 1 and 2
     ExpCore e=mwt.getInner();
     if(isClass){
-      e=e.accept(new CloneVisitor(){public ExpCore visit(ExpCore.X s){
-        if(s.getInner().equals("this")){
-          return new ExpCore.EPath(s.getP(),Path.outer(0));
+      e=e.accept(new CloneVisitor(){
+        public ExpCore visit(ExpCore.X s){
+          if(s.getInner().equals("this")){
+            return new ExpCore.EPath(s.getP(),Path.outer(0));
+            }
+          return super.visit(s);
           }
-        return super.visit(s);
-        }});
+        public ExpCore visit(ClassB s) {return s;}
+        });
       }
     E b=PG.body(p,mwt.with_inner(Optional.of(e)),ps);
     return Stream.of(h.withBody(b));

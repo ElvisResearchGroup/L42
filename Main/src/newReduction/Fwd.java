@@ -5,7 +5,7 @@ import java.util.function.BiConsumer;
 
 import platformSpecific.javaTranslation.Resources;
 
-public interface Fwd{
+public interface Fwd extends Resources.Revertable{
   static  Resources.Void £CAddIfFwd(Object x1, Object res, BiConsumer<Object,Object> action){
     if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,action);}
     return Resources.Void.instance;
