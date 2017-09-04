@@ -1219,6 +1219,7 @@ public class MiniJ {
       this.mName = mName;
       this.xs = xs;
       this.inner = inner;
+      assert ui!=null;
     }
 
     @java.lang.SuppressWarnings("all")

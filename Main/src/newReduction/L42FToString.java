@@ -18,6 +18,7 @@ import ast.L42F.K;
 import ast.L42F.Loop;
 import ast.L42F.M;
 import ast.L42F.Null;
+import ast.L42F.SimpleKind;
 import ast.L42F.T;
 import ast.L42F.Throw;
 import ast.L42F.Unreachable;
@@ -46,7 +47,9 @@ public class L42FToString extends ToFormattedText implements Visitor<Void>{
       c("Stub for cn: "+cd.getCn()+"\n");
       return;
       }
-    c(cd.getKind()+" "+cd.dbgName()+" implements ");
+    c(cd.getKind()+" "+cd.dbgName());
+    if(cd.getKind()!=SimpleKind.Interface) {c(" implements ");}
+    else {c(" extends ");}
     tools.StringBuilders.formatSequence(result,cd.getCns().iterator(),",",x->liftCn(x));
     c("{");
     indent();nl();

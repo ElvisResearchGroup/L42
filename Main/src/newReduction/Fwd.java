@@ -6,11 +6,11 @@ import java.util.function.BiConsumer;
 import platformSpecific.javaTranslation.Resources;
 
 public interface Fwd{
-  static  Resources.Void AddIfFwd(Object x1, Object res, BiConsumer<Object,Object> action){
+  static  Resources.Void £CAddIfFwd(Object x1, Object res, BiConsumer<Object,Object> action){
     if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,action);}
     return Resources.Void.instance;
     }
-  static Resources.Void Fix(Object a,Object b) { //hoping 'a' is a Fwd
+  static Resources.Void £CFix(Object a,Object b) { //hoping 'a' is a Fwd
     Fwd _a=(Fwd)a;
     _a.fix(b);
     return Resources.Void.instance;

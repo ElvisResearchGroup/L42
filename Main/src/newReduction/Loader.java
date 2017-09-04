@@ -54,8 +54,8 @@ public class Loader {
   }
   private void addResource()
       throws CompilationError, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-    M m1=new M(true,"Object","LoadLib",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
-        "{System.out.println(\"askedLoadLib \"+index);return loader.getLib(index);}\n"
+    M m1=new M(true,"Object","£CLoadLib",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
+        "{return loader.getLib(index);}\n"
         + "public static newReduction.Loader loader;"));
     MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Collections.singletonList(m1));
     String text="package generated;\n"+MiniJToJava.of(cdResource);

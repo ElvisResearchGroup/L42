@@ -17,6 +17,7 @@ import ast.L42F.If;
 import ast.L42F.K;
 import ast.L42F.Loop;
 import ast.L42F.Null;
+import ast.L42F.SimpleKind;
 import ast.L42F.Throw;
 import ast.L42F.Update;
 import ast.L42F.Use;
@@ -55,9 +56,9 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
       CD jCdi=null;
       if (cd.getKind()!=null){
         jCdi=L42FToMiniJ.of(ct, cd);
-        }  
+        }
       if(jCdi==null) {continue;}//must be a lib stub
-      
+
       res+=MiniJToJava.of(jCdi)+"\n";
       }
     return res;
@@ -72,7 +73,8 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     String kind=cd.isInterface()?"interface":"class";
     c("public "+kind+" "+cd.getCn());
     if(!cd.getCns().isEmpty()){
-      c(" implements ");
+      if(!cd.isInterface()) {c(" implements ");}
+      else {c(" extends ");}
       tools.StringBuilders.formatSequence(result, cd.getCns().iterator(), ", ", cni->c(cni));
       }
     c("{");
@@ -129,9 +131,9 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
 
     @Override
     public Void visit(MCall s) {
-      if(s.getMName().startsWith("LoadLib_")) {
-        int cn=Integer.parseInt(s.getMName().substring(8));
-        return c(s.getCn()+".LoadLib("+cn+");");
+      if(s.getMName().startsWith("£CLoadLib_")) {
+        int cn=Integer.parseInt(s.getMName().substring(10));
+        return c(s.getCn()+".£CLoadLib("+cn+");");
         }
       c(s.getCn()+"."+s.getMName()+"(");
       tools.StringBuilders.formatSequence(result, s.getXs().iterator(),", ", x->c(x));
@@ -171,7 +173,7 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
         }
       throw Assertions.codeNotReachable();
       }
-    
+
     private void liftK(ast.MiniJ.K k) {
       c("catch ("+tOf(k.getT())+" "+k.getX()+")");
       k.getB().accept(this);

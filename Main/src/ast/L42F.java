@@ -1145,6 +1145,7 @@ public class L42F {
       this.ms = ms;
       this.xs = xs;
       this.inner = inner;
+      assert ui!=null;
     }
 
     @java.lang.SuppressWarnings("all")

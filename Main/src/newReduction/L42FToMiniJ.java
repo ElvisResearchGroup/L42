@@ -37,7 +37,8 @@ public class L42FToMiniJ {
       //remove static,add£M to name, remove £Xthis, rembemberThis
       int pSize=m.getTxs().size();
       boolean haveThis=pSize!=0 && m.getTxs().get(0).getX().equals("this");
-      MiniJ.M delegator=res.withStatic(false).withName("£M"+res.getName());
+      assert res.getName().startsWith("£C");
+      MiniJ.M delegator=res.withStatic(false).withName("£M"+res.getName().substring(2));
       if(haveThis){
         delegator=delegator
           .withTs(res.getTs().subList(1,pSize))
@@ -76,12 +77,13 @@ public class L42FToMiniJ {
     @Override
     public S visitEmpty(SimpleBody s) {
       StringBuilder r=new StringBuilder();
-      r.append("{return £Xthis.£M"+mj.getName()+"(");
+      assert mj.getName().startsWith("£C");
+      r.append("{return £Xthis.£M"+mj.getName().substring(2)+"(");
       Iterator<String> it = mj.getXs().iterator();
       it.next();
       tools.StringBuilders.formatSequence(r,it,", ",x->r.append(x));
       r.append(");}\n");
-      r.append("default "+mj.getRetT()+" £M"+mj.getName()+"(");
+      r.append("default "+mj.getRetT()+" £M"+mj.getName().substring(2)+"(");
       Iterator<String> itt=mj.getTs().iterator();
       Iterator<String> itx=mj.getXs().iterator();
       itt.next();
@@ -94,27 +96,39 @@ public class L42FToMiniJ {
     @Override
     public S visitSetter(SimpleBody s) {
       String x=mj.getName();
-      String f=x;if(f.startsWith("£H")){f=f.substring(2);}
+      assert x.startsWith("£C");
+      String f = fieldNameFromMethName(x);
       String t=mj.getRetT();
       String t1=mj.getTs().get(1);
       String x1=mj.getXs().get(1);
       StringBuilder sb=new StringBuilder();
       sb.append("{£Xthis.£X"+f+"=that; return "+Resources.Void.class.getCanonicalName()+".instance();}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£M"+x+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,that);}");
+        sb.append("public "+t+ "£M"+x.substring(2)+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,that);}");
         }
       return new RawJ(sb.toString());
       }
 
+    private String fieldNameFromMethName(String x) {
+      String f=x;
+      if(f.startsWith("£C£H")){f=f.substring(4);}
+      else {
+        assert f.startsWith("£C");
+        f=f.substring(2);
+        }
+      return f;
+    }
+
     @Override
     public S visitGetter(SimpleBody s) {
       String x=mj.getName();
-      String f=x;if(f.startsWith("£H")){f=f.substring(2);}
+      assert x.startsWith("£C");
+      String f=fieldNameFromMethName(x);
       String t=mj.getRetT();
       StringBuilder sb=new StringBuilder();
       sb.append("{return £Xthis.£X"+f+";}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£M"+x+"(){return "+cn+"."+x+"(this);}");
+        sb.append("public "+t+ "£M"+x.substring(2)+"(){return "+cn+"."+x+"(this);}");
         }
       return new RawJ(sb.toString());
       }
@@ -136,16 +150,17 @@ public class L42FToMiniJ {
 
     public StringBuilder factory(boolean fwd){
       String x=mj.getName();
+      assert x.startsWith("£C");
       String t=mj.getRetT();
       StringBuilder sb=new StringBuilder();
       sb.append("{"+cn+" Res=new "+cn+"();");
       for(String xi:mj.getXs()){
         sb.append("Res.£X"+xi+"="+xi+";");
-        if(fwd){sb.append(Fwd.class.getCanonicalName()+".AddIfFwd("+xi+",Res,"+cn+".FieldAssFor£X"+xi+");");}
+        if(fwd){sb.append(Fwd.class.getCanonicalName()+".£CAddIfFwd("+xi+",Res,"+cn+".FieldAssFor£X"+xi+");");}
         }
       sb.append("return Res;}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£M"+x+"(){return "+cn+"."+x+"(this");
+        sb.append("public "+t+ "£M"+x.substring(2)+"(){return "+cn+"."+x+"(this");
         for(String xi:mj.getXs()){sb.append(", "+xi);}
         sb.append(");}");
         }
@@ -185,6 +200,6 @@ public class L42FToMiniJ {
   public static String liftMs(MethodSelector ms) {
     String res=ms.nameToS();
     for(String xi:ms.getNames()){res+="£X"+xi;}
-    return res.replace("#", "£H");
+    return "£C"+res.replace("#", "£H");
     }
   }

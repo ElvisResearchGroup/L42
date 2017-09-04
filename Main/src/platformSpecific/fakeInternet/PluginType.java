@@ -39,7 +39,7 @@ class ProtectedPluginType{
       }
     catch (SecurityException e) { throw new Error(e);}
     }
-  
+
   static Object executeMethod(Method m,Program p,Object rec, Object[] es){
     try {
       Object r = m.invoke(rec,es);
@@ -60,7 +60,7 @@ class ProtectedPluginType{
       }
     }
   static String executableWrapper(Ast.MethodSelector ms, Set<String> labels){
-  //  (plF,xsF)->plF. 
+  //  (plF,xsF)->plF.
   //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
   String plF="L"+Functions.freshName("pl",labels);
   String xsF="L"+Functions.freshName("xs",labels);
@@ -94,6 +94,8 @@ public interface PluginType {
     }
   default String executableJ(UsingInfo s,String e,List<String>es,Set<String> labels){
     StringBuilder res=new StringBuilder();
+    assert s!=null;
+    assert s.usingMs!=null;
     String plgName=this.getClass().getName();
     res.append("platformSpecific.javaTranslation.Resources.plgExecutor(");
     res.append("\""+s.usingMs.nameToS()+"\",");
@@ -101,7 +103,7 @@ public interface PluginType {
     res.append("new "+plgName+"(), ");
     res.append(ProtectedPluginType.executableWrapper(s.usingMs, labels));
     //plgExecutor("PathName",p,new plgName(),
-    //  (plF,xsF)->plF. 
+    //  (plF,xsF)->plF.
     //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
     //()->e,e0,..,en);
     res.append(", ()->(");
