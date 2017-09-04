@@ -129,24 +129,24 @@ public class L42FToMiniJ {
       {int i=-1;for(String xi:mj.getXs()){i+=1;
         String ti=mj.getTs().get(i);
         sb.append(ti+" £X"+xi+";");
-        sb.append("public static BiConsumer<Object,Object> FieldAssFor£"+xi+"=(f,o)->{(("+cn+")o).£X"+xi+"=("+ti+")f;}"); 
+        sb.append("public static java.util.function.BiConsumer<Object,Object> FieldAssFor£X"+xi+"=(f,o)->{(("+cn+")o).£X"+xi+"=("+ti+")f;};");
         }}
       return new RawJ(sb.toString());
       }
-    
+
     public StringBuilder factory(boolean fwd){
       String x=mj.getName();
       String t=mj.getRetT();
       StringBuilder sb=new StringBuilder();
-      sb.append("{"+cn+" res=new "+cn+"();");
+      sb.append("{"+cn+" Res=new "+cn+"();");
       for(String xi:mj.getXs()){
-        sb.append("res."+xi+"="+xi+";");
-        if(fwd){sb.append("Fwd.addIfFwd("+xi+","+cn+".FieldAssFor_"+xi+");");}
+        sb.append("Res.£X"+xi+"="+xi+";");
+        if(fwd){sb.append(Fwd.class.getCanonicalName()+".AddIfFwd("+xi+",Res,"+cn+".FieldAssFor£X"+xi+");");}
         }
-      sb.append("return res;}");
+      sb.append("return Res;}");
       if(this.m.isRefine()){
         sb.append("public "+t+ "£M"+x+"(){return "+cn+"."+x+"(this");
-        for(String xi:mj.getXs()){sb.append(", "+xi);}     
+        for(String xi:mj.getXs()){sb.append(", "+xi);}
         sb.append(");}");
         }
       return sb;

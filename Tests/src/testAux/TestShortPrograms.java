@@ -6,6 +6,7 @@ import org.junit.Test;
 import helpers.TestHelper;
 import newTypeSystem.ErrorKind;
 import newTypeSystem.FormattedError;
+import platformSpecific.javaTranslation.Resources;
 import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
@@ -22,7 +23,7 @@ import auxiliaryGrammar.Functions;
 
 public class TestShortPrograms {
   public static void tp(ErrorKind kind,String ...code) {
-  
+
   try{tp(code);assert false;}
   catch(FormattedError err){
     assert err.kind==kind;
@@ -305,8 +306,8 @@ public void testClassMethods2(){tp("{"
 ,"}"
 );}
 
-@Test(expected=ErrorMessage.MalformedFinalResult.class)
-public void testTwoKindExc2(){tp(""
+@Test()
+public void testTwoKindExc2(){try{tp(""
 ,"{"
 ,"A:{class method This()}"
 ,"B:{}"
@@ -318,6 +319,11 @@ public void testTwoKindExc2(){tp(""
 ," {//@exitStatus\n//0\n})"
 ,"}"
 );}
+catch(ErrorMessage.MalformedFinalResult exc1) {}
+catch(Resources.Exception exc2) {}
+//both ok, depend on details in reduction strategy
+
+}
 @Test(expected=ErrorMessage.NotOkToStar.class)
 public void testPlusNotStar(){tp("{"
 ,"A:{ class method This () method Library foo() }"
@@ -534,16 +540,16 @@ public void testCompositionAT2() throws Throwable{
 
 public static final String operatorAccess(){return
 "{"+
-  "/*@plugin  toFix"+ 
+  "/*@plugin  toFix"+
   "@pluginPart is.L42.connected.withSafeOperators.refactor.Compose*/"+
   "class method Library compose(Library left, Library right) "+
   "  use This0 check #compose(_1_ast%ExpCore$ClassB:left, _2_ast%ExpCore$ClassB:right)"+
   "  error void}";
-/*      
-Redirect: {//@plugin  toFix 
+/*
+Redirect: {//@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
-class method Library redirectS(Library that, This2.S src, class Any dest) 
-  use This0 check #redirectS(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_ast%Ast$Path:dest) 
+class method Library redirectS(Library that, This2.S src, class Any dest)
+  use This0 check #redirectS(_1_ast%ExpCore$ClassB:that, _2_java%lang%String:src.#binaryRepr(), _3_ast%Ast$Path:dest)
   error void
 */
 }

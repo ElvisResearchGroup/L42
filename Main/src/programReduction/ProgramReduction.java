@@ -52,8 +52,8 @@ public class ProgramReduction {
     @SuppressWarnings("unused")
     ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec));
     ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,ec);
-    //ClassB res=loader.execute(p1, paths1, annEc1);
-    ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
+    ClassB res=loader.execute(p1, paths1, annEc1);
+    //ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
@@ -66,7 +66,7 @@ public class ProgramReduction {
     throw new ast.ErrorMessage.MalformedFinalResult(p.top(),
             "See message above");//"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));
     }
-  
+
 /*
         p.push(ctxL, L)==>+ p'      p.top()={interface? implements Ps, MCs  M Ms}
 (enter)-------------------------    M not of form MC
@@ -78,6 +78,6 @@ public class ProgramReduction {
     Program p1=p.push(ctxL,(ClassB)ctxL.originalHole());
     assert !IsCompiled.of(p1.top());
     while(!IsCompiled.of(p1.top())){p1=step(p1);}
-    return p1.pop(); 
+    return p1.pop();
     }
   }

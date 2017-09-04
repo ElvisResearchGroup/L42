@@ -1,5 +1,5 @@
 /*
-All composition operations are 
+All composition operations are
 expected to run only on normalized LCs, and to produce a normalized LC.
 In a normalized LC,
 -Ps reports all the transitivelly implemented interfaces
@@ -12,12 +12,12 @@ When run on well typed LCs, it will produce a well typed LC  or fail for locally
 #weak associativity
 sum is a partial function:
 if a+(b+c)=d and (a+b)+c=d' then d=d'
-but is not guaranteed a+(b+c)=(a+b)+c 
+but is not guaranteed a+(b+c)=(a+b)+c
 
 #weak commutativity
 a+b sim b+a
 sim allows differences in the order of implemented
-interfaces, declared methods and nested classes.  
+interfaces, declared methods and nested classes.
 */
 
 
@@ -91,7 +91,7 @@ interface?,empty +p interface?1,M = M //M is the metavariable for member, introd
 interface?1,C:L1 +p interface?2,C:L2 = C: L1 +p.push(C) L2
 interface?1,refine? mh1 e?1 +p interface?2,refine? mh2 e?2= refine? mhi e?i //we chose that allowing refine+non refine sum was more evil than good
   with {i,j}={1,2},p|-mhi<=mhj
-  and e?j=empty, if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj  
+  and e?j=empty, if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj
 //interface can not loose, implemented can not loose.
 </pre>*/void sumMember();
 
@@ -112,7 +112,7 @@ mwts1 +mwts2=empty
 /**<pre>#define p|-mh1<=mh2  //remember that p.equiv( P,P) hold even if p( P) undefined
 p|-mh1<=mh2
   where p|-mh1.T<=mh2.T and parameters and exceptions are equiv, and mdfs are equal
-  //similar to mh1[with T=mh2.T]=mh2   
+  //similar to mh1[with T=mh2.T]=mh2
 </pre>*/void methodTypeSubtype();
 
 /**<pre>#define M[Ms]=M?
@@ -183,12 +183,12 @@ public class Compose {
     catch(ErrorMessage em){
       throw new RefactorErrors.SubtleSubtypeViolation().msg(em.toString());
       }
-    } 
+    }
   private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
     ClassB l=p.top();
     List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
     boolean superOk=superOk(p,l.getSupertypes(),ps1);
-    if(!superOk){   
+    if(!superOk){
       return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+l.getSupertypes()+" does not contains all of "+ps1);
       }
     for(MethodWithType m :p.methods(Path.outer(0))){
@@ -225,15 +225,15 @@ private static boolean superOk(Program p,List<Type> all, List<Type> some) {
     }
   return true;
   }
-/**{@link ComposeSpec#sumMember}*/  
+/**{@link ComposeSpec#sumMember}*/
 public static  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
   return mwti.withDoc(mwt1.getDoc().sum(mwt2.getDoc())).withP(mwt1.getP().sum(mwt2.getP()));
   }
 
-/**{@link ComposeSpec#sumMember}*/  
+/**{@link ComposeSpec#sumMember}*/
 public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,boolean interface2,MethodWithType mwt2) throws MethodClash{
     if (mwt1==null){return mwt2;}
-    //assign to i,j: if one has body, is i. Else, we need to check for 
+    //assign to i,j: if one has body, is i. Else, we need to check for
     //if only one is interface, is i.
     //if both interface, methods must be equiv
     //if no interfaces, try mt1<=mt2, then try the other way
@@ -241,7 +241,7 @@ public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,b
     MethodType mt2=mwt2.getMt();
     if(mt1.isRefine()!=mt2.isRefine()){
       throw makeMethodClash(mwt1, mwt2).msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
-      }    
+      }
     if(mwt1.get_inner().isPresent()){
       assert !interface1 && !interface2;
       if(mwt2.get_inner().isPresent()){
@@ -250,14 +250,14 @@ public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,b
       checkMtGt(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(mwt2.get_inner().isPresent()){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
-    if(interface1 && !interface2){checkMtGt(p,mwt1,mwt2,mt1,mt2);return sumMwtij(p,mwt1,mwt1,mwt2);}    
+    if(interface1 && !interface2){checkMtGt(p,mwt1,mwt2,mt1,mt2);return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(interface2 && !interface1){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
     if(interface1 && interface2){
       checkMtEq(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);
       }
     assert !interface1 && !interface2;
-    if(mtGT(p,mt1,mt2)){return sumMwtij(p,mwt1,mwt1,mwt2);}    
+    if(mtGT(p,mt1,mt2)){return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(mtGT(p,mt2,mt1)){return sumMwtij(p,mwt2,mwt1,mwt2);}
     throw makeMethodClash(mwt1, mwt2).msg("Neither of the method is subtype of the other");
     }
@@ -271,7 +271,7 @@ private ClassClash makeClassClash() {
     );
 }
 
-/**{@link ComposeSpec#methodTypeSubtype}*/  
+/**{@link ComposeSpec#methodTypeSubtype}*/
 public static boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
   if (!p.subtypeEq(mt1.getReturnType(), mt2.getReturnType())){return false;}
   return mtEqRest(p,mt1,mt2);
@@ -318,10 +318,10 @@ public  ClassB onlySubtypeCompose(ClassB a,ClassB b){
       ncs.add(nci.withE(l));
       }
     }
-  return new ClassB(Doc.empty(),false,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,a.getUniqueId());
+  return new ClassB(Doc.empty(),false,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,-2);
   }
 
-/**{@link ComposeSpec#innerCompose}*/  
+/**{@link ComposeSpec#innerCompose}*/
 public ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash, ClassClash{
   boolean interf=isSumResultInterface(a, b);
   List<Type> impls=p.top().getSupertypes();
@@ -335,19 +335,19 @@ public ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash, Clas
   for(NestedClass nci: b.ns()){
     ncs.add(sumNc(_extractNc(nci,a.ns()),p,nci));
     }
-  return new ClassB(a.getDoc1().sum(b.getDoc1()),interf,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,p.getFreshId());
+  return new ClassB(a.getDoc1().sum(b.getDoc1()),interf,impls,mwts,ncs,a.getP().sum(b.getP()),Phase.Norm,-2);
   }
-  
+
 //handles sum of two classes with private state and sum class/interface invalid
   /**{@link ComposeSpec#isSumResultInterface}*/
   public boolean isSumResultInterface(ClassB currentA,ClassB currentB) throws ClassClash{
-    if(currentA.isInterface()&&currentB.isInterface()){return true;}    
+    if(currentA.isInterface()&&currentB.isInterface()){return true;}
     if(!currentA.isInterface()&&!currentB.isInterface()){
       boolean privateA=ExtractInfo.hasPrivateState(currentA);
       boolean privateB=ExtractInfo.hasPrivateState(currentB);
       if (privateA && privateB){throw makeClassClash();}
       return false;
-      }    
+      }
     if(currentA.isInterface()){
       ClassB tmp=currentA; currentA=currentB;currentB=tmp;
       }

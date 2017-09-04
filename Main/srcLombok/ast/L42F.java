@@ -95,6 +95,7 @@ Cn implements E{int inner;
   public static final Cn cnVoid=new Cn(2);
   public static final Cn cnLibrary=new Cn(3);
   public static final Cn cnResource=new Cn(4);
+  public static final Cn cnFwd = new Cn(5);
   }
 
 @Value @Wither public static class

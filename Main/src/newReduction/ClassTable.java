@@ -33,6 +33,7 @@ public class ClassTable {
     if(index==Cn.cnVoid.getInner()){return "Void";}
     if(index==Cn.cnLibrary.getInner()){return "Library";}
     if(index==Cn.cnResource.getInner()){return "generated.Resource";}
+    if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.dbgName();
     }
   public String className(int index){
@@ -40,6 +41,7 @@ public class ClassTable {
     if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
     if(index==Cn.cnLibrary.getInner()){return "Object";}
     if(index==Cn.cnResource.getInner()){return "generated.Resource";}
+    if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.className();
     }
   public String boxedClassName(int index){
@@ -47,6 +49,7 @@ public class ClassTable {
     if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
     if(index==Cn.cnLibrary.getInner()){return "Object";}
     if(index==Cn.cnResource.getInner()){return "generated.Resource";}
+    if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.boxedClassName();
     }
   public String l42ClassName(int index){
@@ -54,6 +57,7 @@ public class ClassTable {
     if(index==Cn.cnVoid.getInner()){throw Assertions.codeNotReachable();}
     if(index==Cn.cnLibrary.getInner()){throw Assertions.codeNotReachable();}
     if(index==Cn.cnResource.getInner()){return "generated.Resource";}
+    if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.l42ClassName();
     }
 
@@ -177,7 +181,6 @@ public class ClassTable {
   protected ClassTable plus(Element e) {
   assert e.cd.getKind()==null || !map.containsKey(e.cd.getCn()):
     "avoided before with 'avoidRepeat'?";
-  //if(map.containsKey(cd.getCn())){return this;}
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(e.cd.getCn(), e);
   return new ClassTable(newMap);

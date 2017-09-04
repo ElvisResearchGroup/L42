@@ -62,7 +62,7 @@ libToCDs(p)=//return a list of pairs <p,CD> continue in many lines
   p1, nullKind p1.CN implements empty{};
   ..;
   pn, nullKind pn.CN implements empty{}
-  
+
   where
   p.top()={interface? implements P1..Pk mwts ncs Phase CN}
   p1..pn={p.evilPush(L)|L inside mwt in mwts}
@@ -116,7 +116,7 @@ libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be
 
 ### body(p,mwt)=body?
   body(p,mwt)=p;(mdf This0 this,T1 x1..Tn xn)[e]
-  where 
+  where
   mwt=refine? mdf method T m(T1 x1..Tn xn)exception Ps e
 
 ### PG[ e0]= e1 with e0 in L42N and e1 in L42F
@@ -127,7 +127,7 @@ PG::=p;(x:T)s //p;G
 p;(x:T)s + (x:T)s'=p;(x:T)s (x:T)s' //Thus I can write PG+x:T
 PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
 
-### PG *T=mdf CN, PG*P=CN 
+### PG *T=mdf CN, PG*P=CN
 
 PG*T=PG.p*T
 PG*P=PG.p*P
@@ -190,10 +190,10 @@ PG[(ds ks e[T])]=(fwdFix(PG+ds[ds]) PG+ds[ks] PG+ds[e] [PG*T])
   otherwise //a block actually using placeholders
   fwdFix(mdf1 CN1 x1=ex1..mdfn CNn xn=exn)=
     fwdGen(mdf1 CN1 x'1,xs)..fwdGen(mdfn CNn x'n,xs)
-    mdf1 CN1 x1=ex'1, imm Void z1=Resource.Fix(x1',x1)
+    mdf1 CN1 x1=ex'1, imm Void z1=Fwd.Fix(x1',x1)
                       if x'1 in xs else empty
     ..
-    mdfn CNn xn=ex'n, imm Void zn=Resource.Fix(xn',xn)
+    mdfn CNn xn=ex'n, imm Void zn=Fwd.Fix(xn',xn)
                       if x'n in xs else empty
     with ex'i=exi[xi..xn=x'i..x'n], xs=FV(ex'1..ex'n)
     //in code, while computing ex'i, collect set of x'i that has been inserted
@@ -269,13 +269,10 @@ We assume the presence of some Predefined classes/methods in L42F:
   method CN NewFwd() newFwd //also Any have it!//yes, statically binded
 //uppercase names to avoid conflicts
 
-We also assume a native class Resource with methods
-*  method Library LoadLib_'CN'() for all relevant CN.
-    Those methods will take care of 'fromming' libraries to make 
+We also assume a native class Resource with method
+  method Library LoadLib_'CN'() for all relevant CN.
+    Those methods will take care of 'fromming' libraries to make
     metaprogramming coherent
-*  method Void Fix(Any a,Any b)nativeFix //hoping 'a' is a Fwd
-    replace a with b in all the places a was stored.
-    every newFwd edits a list inside of Fwds to remember where they are stored.
 ---------------
 some classes can be implemented in 42, but it would be
 inefficient and boring.

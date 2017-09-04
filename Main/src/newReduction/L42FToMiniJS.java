@@ -97,7 +97,11 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
 
   @Override
   public MiniJ.S visit(Call s) {
-    E e=new MiniJ.MCall(ct.l42ClassName(s.getCn()),L42FToMiniJ.liftMs(s.getMs()),s.getXs());
+    E e=new MiniJ.MCall(
+      ct.l42ClassName(s.getCn()),
+      L42FToMiniJ.liftMs(s.getMs()),
+      tools.Map.of(L42FToMiniJ::liftX,s.getXs())
+      );
     return wrapE(e);
     }
 

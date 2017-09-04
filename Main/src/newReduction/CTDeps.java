@@ -35,7 +35,7 @@ public class CTDeps {
   private static void accCd(ClassTable res, CD cd, Set<Integer> acc, List<CD> newCn) {
     new PropagatorVisitor() {
       protected void liftCn(int cn) {
-        if(cn<=Cn.cnResource.getInner()) {return;}
+        if(cn<=Cn.cnFwd.getInner()) {return;}
         Set<Integer> deps = res.get(cn).deps;
         if(deps!=null) { acc.addAll(deps); return;}
         boolean added=acc.add(cn);

@@ -11,7 +11,7 @@ CT*mdf CN=T if CT(CN)=nativeOpt<T> _
 //in code CN of L42F is an int, while CN of MiniJ is a string
 
 
-Java------------------ 
+Java------------------
 S::=//statement
    T x;
   |x=ej;
@@ -109,19 +109,19 @@ CT;CN[refine? method T mxs(TX' this,(T x)s)] //no body
 
 CT,CN[refine? method T mxs((T x)s) new] //there can be many new/newFwd
   public static CT*TX mxs(CT*(TX x)s){
-    CN res=new CN();
-    res.x1=x1;..;res.xn=xn;
-    return res;
+    CN Res=new CN();
+    Res.£Xx1=x1;..;Res.£Xxn=xn;
+    return Res;
     }
   public CT*TX £mxs(CT*(TX x)s) CN.mxs(xs) //only if refine?=refine
 
 CT,CN[refine? method T mxs((T x)s) newWithFwd]
   public static CT*TX mxs(CT*(TX x)s){
-    CN res=new CN();
-    res.£Xx1=x1;Fwd.addIfFwd(x1,CN.FieldAssFor_x1);
+    CN Res=new CN();
+    Res.£Xx1=x1;Fwd.AddIfFwd(x1,Res,CN.FieldAssFor_x1);
     ..;
-    res.£Xxn=xn;Fwd.addIfFwd(xn,CN.FieldAssFor_xn);
-    return res;
+    Res.£Xxn=xn;Fwd.AddIfFwd(xn,Res,CN.FieldAssFor_xn);
+    return Res;
     }
   public CT*TX £mxs(CT*(TX x)s) {return CN.mxs(xs);} //only if refine?=refine
 
@@ -130,7 +130,7 @@ CT,CN[refine? method T mxs((T x)s) newWithFwd]
   ...
   CT*TXn £Xxn;
   public static BiConsumer<Object,Object> FieldAssFor£xn=(f,o)->{((CN)o).£Xxn=(CT*TXn)f;}
-  
+
   //with TX1..TXn=(T x)s.Ts
 
 //and then the field ones?
@@ -161,25 +161,7 @@ since all its methods has defaults
 
 ###Assumed
 ---
-interface Fwd{
-  static  void addIfFwd(Object x1,BiConsumer<Object,Object> action){
-    if(x1 instanceof Fwd){((Fwd)x1).rememberAssign(res,action);}
-    }
-  List<Object> os();
-  List<BiConsumer<Object,Object>> fs();
-  default void rememberAssign(Object f,BiConsumer<Object,Object> fo){
-    os().add(f);
-    fs().add(fo);
-    }
-  default void fix(){
-    List<Object> os=os();
-    List<BiConsumer<Object,Object>> fs=fs();
-    assert os.size()==fs.size();
-    for(int i=0;i<os.size();i++){
-      fs.get(i).accept(this,os.get(i));
-      }
-    }
-  }
+interface Fwd{/*as in newReduction.Fix*/}
 
 -----------------------------
 4 General execution
@@ -226,12 +208,12 @@ Loader.load(p,paths)
   cache=Loader.cache
   clMap=Loader.clMap
   chunks=CT'.listOfDeps() // ordered over superSet relation
-  for dep in chunks://take smaller dep in chunks 
+  for dep in chunks://take smaller dep in chunks
     //1cache is not there
     if cache(dep) undefined
       cache=javac(CT,clMap,dep,cache)//enriches clMap
       continue;
-    cache(dep)=CDs1,clMap1    
+    cache(dep)=CDs1,clMap1
     //2cache is there but wrong
     if CT'(dep).CDs != CDs1 //set comparison
       cache=javac(CT',clMap,dep,cache)//enriches clMap
@@ -244,11 +226,11 @@ Loader.load(p,paths)
   Loader.CT=CT'
 
 ### javac(_) imperative operation
---- 
+---
 javac(CT,clMap,dep,cache)=cache1
   oldDom=dom(clMap)
   javac(CT, clMap, dep)//this enrich clMap
-  cache1= cache, dep->(CT(dep).cds,clMap\oldDom)      
+  cache1= cache, dep->(CT(dep).cds,clMap\oldDom)
   //note: javac will not recompile what is already in clMap
 
 javac(CT,clMap, dep)=

@@ -175,7 +175,7 @@ private E visitBase(MCall s) {
   if(isInterface || !isClass) {
     ps.add(((X)s.getInner()).getInner());
     }
-  if(!isInterface && isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
+  if(isClass && !isInterface && isAbs && !TypeManipulation.fwd_or_fwdP_in(mwt.getMt().getTs())) {
     ms=msOptimizedNew(ms);
     }
   for(ExpCore ei:s.getEs()) {ps.add(((X)ei).getInner());}
@@ -291,7 +291,7 @@ private E ePrimei(E ei,Map<String,String>map,Set<String>usedAsFwd) {
   }
 private Stream<D> fixedXi(D di,String xPrimei,Set<String>xs){
   if(!xs.contains(xPrimei)) {return Stream.of(di);}
-  E fixE=new Call(Cn.cnResource.getInner(),new MethodSelector("Fix", -1, Collections.emptyList()),Arrays.asList(xPrimei,di.getX()));
+  E fixE=new Call(Cn.cnFwd.getInner(),new MethodSelector("Fix", -1, Collections.emptyList()),Arrays.asList(xPrimei,di.getX()));
   D dPrime=new D(false,T.immVoid,Functions.freshName("unused", L42.usedNames),fixE);
   return Stream.of(di,dPrime);
 }

@@ -10,6 +10,7 @@ import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.ErrorMessage;
 import ast.ExpCore;
+import ast.L42F;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Phase;
 import ast.PathAux;
@@ -168,7 +169,7 @@ class EmptyProgramHolder{
   }
 
 class FlatProgram extends Methods{
-  int freshIds=5;
+  int[] freshIds= {10};//In this way I create a cell that can be shared on FlatProgram.updateTop
   ExpCore.ClassB l;
   FlatProgram(ExpCore.ClassB l){this.l=l;}
 
@@ -194,7 +195,7 @@ class FlatProgram extends Methods{
   public Program growFellow(Program fellow) {throw new Program.EmptyProgram();}
 
   public int getFreshId(){
-    return freshIds++;
+    return freshIds[0]++;
     }
 
   public List<Object> exploredWay() {

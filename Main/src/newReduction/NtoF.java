@@ -47,7 +47,8 @@ public class NtoF {
       topName.set(topName.size()-1,nc.getName().toString());
       libToCDs(avoidRepeat,topName,p.navigate(Collections.singletonList(nc.getName())),acc,ps);
       }
-    if(avoidRepeat.keySet().contains(top.getUniqueId())){return;}
+    if(avoidRepeat.keySet().contains(top.getUniqueId())){
+      return;}
     topName.remove(topName.size()-1);
     Kind k=L42F.SimpleKind.Class;
     if (top.isInterface()){k=L42F.SimpleKind.Interface;}

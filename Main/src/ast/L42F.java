@@ -675,6 +675,7 @@ public class L42F {
     public static final Cn cnVoid = new Cn(2);
     public static final Cn cnLibrary = new Cn(3);
     public static final Cn cnResource = new Cn(4);
+    public static final Cn cnFwd = new Cn(5);//no here is generated file
 
     @java.beans.ConstructorProperties({"inner"})
     @java.lang.SuppressWarnings("all")
