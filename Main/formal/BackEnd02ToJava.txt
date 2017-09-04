@@ -47,8 +47,8 @@ emptyC*breakLoop= ??
 _;label*breakLoop= break label;
 
 c*x= c+x
-c*CN= c+CN.instance()
-c*void= return Void.instance()
+c*CN= c+CN.Instance()
+c*void= return Void.Instance()
 c*null= c+null
 c*unreachable=empty
 c*CN.mxs(ys)= c+CT*CN.£Cmxs(ys)//keep a look for native classes
@@ -140,7 +140,7 @@ CT,CN[refine? method TX #?x(TX' this) getter]=
 
 CT,CN[refine? method Void #?x(TX this, TX' that) setter]=
   public static Void £C#?x(CT*TX £Xthis, CT*TX' that){
-    £Xthis.£Xx=that; return Void.instance();}
+    £Xthis.£Xx=that; return Void.Instance();}
   public CT*TX £M#?x(CT*TX' that) {return CN.£C#?x(this,that);} //only if refine?=refine
 
 //TODO: need to handle _Fwd and Instance for interfaces

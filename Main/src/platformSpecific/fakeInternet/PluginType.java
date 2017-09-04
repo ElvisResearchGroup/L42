@@ -106,9 +106,9 @@ public interface PluginType {
     //  (plF,xsF)->plF.
     //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
     //()->e,e0,..,en);
-    res.append(", ()->(");
+    res.append(", ()->");
     res.append(e);
-    res.append(")");
+    res.append("");
     for(String ei:es){
       res.append(", ");
       res.append(ei);

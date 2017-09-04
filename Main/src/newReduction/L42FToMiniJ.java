@@ -102,7 +102,7 @@ public class L42FToMiniJ {
       String t1=mj.getTs().get(1);
       String x1=mj.getXs().get(1);
       StringBuilder sb=new StringBuilder();
-      sb.append("{£Xthis.£X"+f+"=that; return "+Resources.Void.class.getCanonicalName()+".instance();}");
+      sb.append("{£Xthis.£X"+f+"=that; return "+Resources.Void.class.getCanonicalName()+".Instance();}");
       if(this.m.isRefine()){
         sb.append("public "+t+ "£M"+x.substring(2)+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,that);}");
         }
@@ -195,11 +195,11 @@ public class L42FToMiniJ {
     }
   public static String liftX(String x) {
     if(x.equals("this")){return "£Xthis";}
-    return x;
+    return x.replace("%", "£P");
     }
   public static String liftMs(MethodSelector ms) {
     String res=ms.nameToS();
     for(String xi:ms.getNames()){res+="£X"+xi;}
-    return "£C"+res.replace("#", "£H");
+    return "£C"+res.replace("#", "£H").replace("%", "£P");
     }
   }
