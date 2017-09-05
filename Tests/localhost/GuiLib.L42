@@ -19,7 +19,8 @@ This0.Abstract.S jsEscape(This0.Abstract.S that) (
     Void unused5=b1.#backslash()
     b1
     )).#plusplus(that:This0.Abstract.S.doubleQuote()))
-  Void unused1=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
+  Void unused1=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
+tmp.replace(that:This0.Abstract.S.#from(builder:(
     capsule This0.Abstract.S.SBuilder b2=This0.Abstract.S.#builder()
     Void unused6=b2.#sQuote()
     b2
@@ -28,7 +29,7 @@ This0.Abstract.S jsEscape(This0.Abstract.S that) (
     Void unused7=b3.#backslash()
     Void unused8=b3.#sQuote()
     b3
-    )))
+    ))))
   tmp
   )
 method 
@@ -335,7 +336,7 @@ Void set(This0.Abstract.S that, This0.Abstract.S id) (
         
         catch exception Void catched4 void
         
-        This0.Abstract.Debug.#apply(that:x)
+        (This0.Abstract.Debug.#apply(that:x))
         )
       )
     Void unused2=return void
@@ -7568,7 +7569,7 @@ CurlyBlock-Should be unreachable code
 read method 
 Void #checkEnd() void
 read method 
-This1.Abstract.S #inner() this.current()
+This1.Abstract.S #inner() (this.current())
 read method 
 Void #close() void
 class method 

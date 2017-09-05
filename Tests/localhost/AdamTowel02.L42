@@ -848,7 +848,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -860,13 +860,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -886,7 +886,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -915,7 +915,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -1098,7 +1099,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -1110,13 +1111,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -1136,7 +1137,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -1165,7 +1166,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -1348,7 +1350,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -1360,13 +1362,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -1386,7 +1388,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -1415,7 +1417,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -1620,7 +1623,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -1632,13 +1635,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -1658,7 +1661,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -1687,7 +1690,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -1894,7 +1898,7 @@ This3.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote()))))
         )
       )
     var This3.S res=This0.kind()
@@ -1906,13 +1910,13 @@ This3.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b0=This3.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This3.S.#from(builder:(
+        (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b1=This3.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -1932,7 +1936,7 @@ This3.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -1961,7 +1965,8 @@ This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
-This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+This0 #apply(This3.S text, This3.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause)))
 class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
@@ -11735,7 +11740,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -11747,13 +11752,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -11773,7 +11778,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -11802,7 +11807,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -12030,16 +12036,16 @@ This0 fromS(This2.S that) (
                 exception void
                 )
               
-              (
+              ((
                 This2.Bool cond=d.#inner().#equalequal(that:that)
                 (
                   Void unused16=cond.#checkTrue()
                   
                   catch exception Void catched12 void
                   
-                  return This0.#apply(inner:n.#inner())
+                  (return This0.#apply(inner:n.#inner()))
                   )
-                )
+                ))
               )
             )
           
@@ -12466,7 +12472,7 @@ This3.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote()))))
         )
       )
     var This3.S res=This0.kind()
@@ -12478,13 +12484,13 @@ This3.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b0=This3.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This3.S.#from(builder:(
+        (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b1=This3.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -12504,7 +12510,7 @@ This3.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -12533,7 +12539,8 @@ This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
-This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+This0 #apply(This3.S text, This3.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause)))
 class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
@@ -12721,7 +12728,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -12746,14 +12753,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This3.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This3.Size.#from(builder:(
     capsule This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This3.Size that, This1 val) (
   mut This3.Collections.MutListAny rcv47=this.#inner()
@@ -12797,15 +12805,17 @@ Void removeLeft() this.remove(that:This3.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -12825,7 +12835,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -12850,7 +12860,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -12867,7 +12877,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This3.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -12877,11 +12887,12 @@ This0 withLeft(This1 that) this.with(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This3.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This3.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -12891,7 +12902,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
@@ -12899,11 +12911,12 @@ This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This3.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This3.Size from, This3.Size maxTo, This3.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -13107,7 +13120,8 @@ lent This0.IteratorVal vals() this.vals(from:This3.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This3.Bool contains(This1 that) (
+This3.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -13126,16 +13140,16 @@ This3.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.true()
+              (return This3.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -13152,7 +13166,7 @@ This3.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -13175,19 +13189,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -13217,19 +13231,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This3.Bool cond=that.#right(that:v.#inner())
+        ((
+          This3.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -13240,7 +13254,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This3.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -13261,16 +13275,16 @@ This3.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This3.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This3.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.false()
+              (return This3.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -13347,16 +13361,16 @@ This3.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This3.Bool.false()
+                  (return This3.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -13367,7 +13381,7 @@ This3.Bool equals(read This0 that) (
         )
       )
     
-    catch error This3.Collections.IterationFailure catched13 return This3.Bool.false()
+    catch error This3.Collections.IterationFailure catched13 (return This3.Bool.false())
     
     (
       Void unused15=return This3.Bool.true()
@@ -13431,7 +13445,7 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -13441,12 +13455,12 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b0=This3.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -13480,7 +13494,7 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -13497,12 +13511,12 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b1=This3.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This3.Size.#from(builder:(
@@ -13540,7 +13554,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -13571,7 +13585,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -13604,19 +13618,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -13644,7 +13658,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -13654,7 +13668,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -13690,7 +13704,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -13721,7 +13735,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -13803,7 +13817,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -13813,7 +13827,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -13828,7 +13842,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -13844,7 +13858,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -13878,7 +13892,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -13888,7 +13902,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -13903,7 +13917,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -13919,7 +13933,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -13973,7 +13987,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -13983,7 +13997,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -13998,7 +14012,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -14014,7 +14028,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -14207,7 +14221,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -14217,7 +14231,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -14232,7 +14246,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -14248,7 +14262,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -14498,7 +14512,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -14523,14 +14537,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This3.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This3.Size.#from(builder:(
     capsule This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This3.Size that, This1 val) (
   mut This3.Collections.MutListAny rcv47=this.#inner()
@@ -14574,15 +14589,17 @@ Void removeLeft() this.remove(that:This3.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -14602,7 +14619,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -14627,7 +14644,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -14644,7 +14661,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This3.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -14654,11 +14671,12 @@ This0 withLeft(This1 that) this.with(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This3.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This3.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -14668,7 +14686,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
@@ -14676,11 +14695,12 @@ This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This3.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This3.Size from, This3.Size maxTo, This3.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -14884,7 +14904,8 @@ lent This0.IteratorVal vals() this.vals(from:This3.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This3.Bool contains(This1 that) (
+This3.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -14903,16 +14924,16 @@ This3.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.true()
+              (return This3.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -14929,7 +14950,7 @@ This3.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -14952,19 +14973,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -14994,19 +15015,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This3.Bool cond=that.#right(that:v.#inner())
+        ((
+          This3.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -15017,7 +15038,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This3.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -15038,16 +15059,16 @@ This3.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This3.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This3.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.false()
+              (return This3.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -15124,16 +15145,16 @@ This3.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This3.Bool.false()
+                  (return This3.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -15144,7 +15165,7 @@ This3.Bool equals(read This0 that) (
         )
       )
     
-    catch error This3.Collections.IterationFailure catched13 return This3.Bool.false()
+    catch error This3.Collections.IterationFailure catched13 (return This3.Bool.false())
     
     (
       Void unused15=return This3.Bool.true()
@@ -15208,7 +15229,7 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -15218,12 +15239,12 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b0=This3.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -15257,7 +15278,7 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -15274,12 +15295,12 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b1=This3.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This3.Size.#from(builder:(
@@ -15317,7 +15338,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -15348,7 +15369,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -15381,19 +15402,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -15421,7 +15442,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -15431,7 +15452,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -15467,7 +15488,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -15498,7 +15519,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -15580,7 +15601,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -15590,7 +15611,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -15605,7 +15626,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -15621,7 +15642,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -15655,7 +15676,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -15665,7 +15686,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -15680,7 +15701,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -15696,7 +15717,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -15750,7 +15771,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -15760,7 +15781,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -15775,7 +15796,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -15791,7 +15812,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -15984,7 +16005,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -15994,7 +16015,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -16009,7 +16030,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -16025,7 +16046,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -16079,10 +16100,10 @@ This2.Origin.List origins() This2.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -16158,10 +16179,10 @@ This1.Origin.List origins() This1.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -16195,10 +16216,10 @@ This0.List nesteds() This0.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.nested(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -16232,7 +16253,7 @@ This0.List allNesteds() This0.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           lent This0.List.IteratorVal nci=nc.#inner().allNesteds().vals()
           (
             Void unused5=loop (
@@ -16249,17 +16270,17 @@ This0.List allNesteds() This0.List.#from(seqBuilder:(
                 exception void
                 )
               
-              (
+              ((
                 Void unused9=b.#add(that:nci.#inner())
                 void
-                )
+                ))
               )
             
             catch exception Void catched9 void
             
             void
             )
-          )
+          ))
         )
       
       catch exception Void catched10 void
@@ -16357,10 +16378,10 @@ This1.Method.List methods() This1.Method.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.method(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -16392,16 +16413,16 @@ This1.Method method(This2.Selector selector) exception This1.NotAvailable (
             exception void
             )
           
-          (
+          ((
             This2.Bool cond=mi.#inner().selector().#equalequal(that:selector)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return mi.#inner()
+              (return mi.#inner())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -16489,10 +16510,10 @@ This1.Type.Implemented.List implements() This1.Type.Implemented.List.#from(seqBu
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.implemented(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -16512,7 +16533,7 @@ This2.Bool implements(class Any classObj) (
         
         catch exception Void catched0 void
         
-        return This2.Bool.true()
+        (return This2.Bool.true())
         )
       )
     Void unused1=(
@@ -16532,7 +16553,7 @@ This2.Bool implements(class Any classObj) (
             exception void
             )
           
-          (
+          ((
             This1.Type.RefTo ri=ti.#inner().refTo()
             (
               This1.Type.RefTo.Binded ri0=(
@@ -16559,14 +16580,15 @@ CastT-Should be unreachable code
                       
                       catch exception Void catched10 void
                       
-                      return This2.Bool.true()
+                      (/*no need of supertypes since normalized classes has transitive implements already
+*/return This2.Bool.true())
                       )
                     )
                   )
                 void
                 )
               )
-            )
+            ))
           )
         
         catch exception Void catched12 void
@@ -16606,7 +16628,7 @@ This2.Bool implements(This2.Path path) (
             exception void
             )
           
-          (
+          ((
             This1.Type.RefTo ri=ti.#inner().refTo()
             (
               This1.Type.RefTo.Lib ri0=(
@@ -16633,14 +16655,14 @@ CastT-Should be unreachable code
                       
                       catch exception Void catched8 void
                       
-                      return This2.Bool.true()
+                      (return This2.Bool.true())
                       )
                     )
                   )
                 void
                 )
               )
-            )
+            ))
           )
         
         catch exception Void catched10 void
@@ -16661,7 +16683,8 @@ CurlyBlock-Should be unreachable code
 class method 
 This0 #apply(class Any classObj) This0.newFromClass(that:classObj)
 class method 
-This0 #apply(Library that) This0.newFromLibrary(that:that)
+This0 #apply(Library that) (/*methods imported from java
+*/This0.newFromLibrary(that:that))
 method 
 This0 navigate(This2.Path that) This0.#from(binaryRepr:(
   Library res=use This0 check navigate(_this:this.#binaryRepr(), _1_java%util%List:that.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -16990,7 +17013,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -17015,14 +17038,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This3.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This3.Size.#from(builder:(
     capsule This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This3.Size that, This1 val) (
   mut This3.Collections.MutListAny rcv47=this.#inner()
@@ -17066,15 +17090,17 @@ Void removeLeft() this.remove(that:This3.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -17094,7 +17120,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -17119,7 +17145,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -17136,7 +17162,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This3.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -17146,11 +17172,12 @@ This0 withLeft(This1 that) this.with(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This3.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This3.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -17160,7 +17187,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
@@ -17168,11 +17196,12 @@ This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This3.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This3.Size from, This3.Size maxTo, This3.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -17376,7 +17405,8 @@ lent This0.IteratorVal vals() this.vals(from:This3.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This3.Bool contains(This1 that) (
+This3.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -17395,16 +17425,16 @@ This3.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.true()
+              (return This3.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -17421,7 +17451,7 @@ This3.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -17444,19 +17474,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -17486,19 +17516,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This3.Bool cond=that.#right(that:v.#inner())
+        ((
+          This3.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -17509,7 +17539,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This3.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -17530,16 +17560,16 @@ This3.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This3.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This3.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.false()
+              (return This3.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -17616,16 +17646,16 @@ This3.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This3.Bool.false()
+                  (return This3.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -17636,7 +17666,7 @@ This3.Bool equals(read This0 that) (
         )
       )
     
-    catch error This3.Collections.IterationFailure catched13 return This3.Bool.false()
+    catch error This3.Collections.IterationFailure catched13 (return This3.Bool.false())
     
     (
       Void unused15=return This3.Bool.true()
@@ -17700,7 +17730,7 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -17710,12 +17740,12 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b0=This3.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -17749,7 +17779,7 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -17766,12 +17796,12 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b1=This3.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This3.Size.#from(builder:(
@@ -17809,7 +17839,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -17840,7 +17870,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -17873,19 +17903,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -17913,7 +17943,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -17923,7 +17953,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -17959,7 +17989,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -17990,7 +18020,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -18072,7 +18102,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -18082,7 +18112,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -18097,7 +18127,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -18113,7 +18143,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -18147,7 +18177,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -18157,7 +18187,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -18172,7 +18202,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -18188,7 +18218,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -18242,7 +18272,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -18252,7 +18282,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -18267,7 +18297,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -18283,7 +18313,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -18476,7 +18506,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -18486,7 +18516,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -18501,7 +18531,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -18517,7 +18547,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -18575,10 +18605,10 @@ This1.Origin.List origins() This1.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -18661,10 +18691,10 @@ This1.Type.Parameter.List parameterTypes() This1.Type.Parameter.List.#from(seqBu
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.parameterType(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -18712,10 +18742,10 @@ This1.Type.Exception.List exceptionTypes() This1.Type.Exception.List.#from(seqBu
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.exceptionType(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -18920,7 +18950,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -18945,14 +18975,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This3.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This3.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This3.Size.#from(builder:(
     capsule This3.S.SBuilder b=This3.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This3.Size that, This1 val) (
   mut This3.Collections.MutListAny rcv47=this.#inner()
@@ -18996,15 +19027,17 @@ Void removeLeft() this.remove(that:This3.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -19024,7 +19057,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -19049,7 +19082,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -19066,7 +19099,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This3.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -19076,11 +19109,12 @@ This0 withLeft(This1 that) this.with(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This3.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This3.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -19090,7 +19124,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This3.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
@@ -19098,11 +19133,12 @@ This0 withoutLeft() this.without(index:This3.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This3.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This3.Size.#from(builder:(
   capsule This3.S.SBuilder b=This3.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This3.Size from, This3.Size maxTo, This3.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -19306,7 +19342,8 @@ lent This0.IteratorVal vals() this.vals(from:This3.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This3.Bool contains(This1 that) (
+This3.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -19325,16 +19362,16 @@ This3.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This3.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.true()
+              (return This3.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -19351,7 +19388,7 @@ This3.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -19374,19 +19411,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -19416,19 +19453,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This3.Bool cond=that.#right(that:v.#inner())
+        ((
+          This3.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -19439,7 +19476,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This3.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This3.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -19460,16 +19497,16 @@ This3.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This3.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This3.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This3.Bool.false()
+              (return This3.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -19546,16 +19583,16 @@ This3.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This3.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This3.Bool.false()
+                  (return This3.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -19566,7 +19603,7 @@ This3.Bool equals(read This0 that) (
         )
       )
     
-    catch error This3.Collections.IterationFailure catched13 return This3.Bool.false()
+    catch error This3.Collections.IterationFailure catched13 (return This3.Bool.false())
     
     (
       Void unused15=return This3.Bool.true()
@@ -19630,7 +19667,7 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -19640,12 +19677,12 @@ This3.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b0=This3.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -19679,7 +19716,7 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -19696,12 +19733,12 @@ This3.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This3.Size.#from(builder:(
+          (return This3.Size.#from(builder:(
             capsule This3.S.SBuilder b1=This3.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This3.Size.#from(builder:(
@@ -19739,7 +19776,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -19770,7 +19807,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -19803,19 +19840,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This3.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -19843,7 +19880,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -19853,7 +19890,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This3.Size.#from(builder:(
@@ -19889,7 +19926,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -19920,7 +19957,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -20002,7 +20039,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -20012,7 +20049,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -20027,7 +20064,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -20043,7 +20080,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -20077,7 +20114,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -20087,7 +20124,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -20102,7 +20139,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -20118,7 +20155,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -20172,7 +20209,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -20182,7 +20219,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -20197,7 +20234,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -20213,7 +20250,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -20406,7 +20443,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -20416,7 +20453,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -20431,7 +20468,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This4.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -20447,7 +20484,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -20553,10 +20590,10 @@ This2.Origin.List origins() This2.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -20794,10 +20831,10 @@ This2.Origin.List origins() This2.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -21030,7 +21067,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -21055,14 +21092,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This4.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This4.Size.#from(builder:(
     capsule This4.S.SBuilder b=This4.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This4.Size that, This1 val) (
   mut This4.Collections.MutListAny rcv47=this.#inner()
@@ -21106,15 +21144,17 @@ Void removeLeft() this.remove(that:This4.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -21134,7 +21174,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -21159,7 +21199,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -21176,7 +21216,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This4.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -21186,11 +21226,12 @@ This0 withLeft(This1 that) this.with(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This4.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This4.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -21200,7 +21241,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -21208,11 +21250,12 @@ This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This4.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This4.Size from, This4.Size maxTo, This4.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -21416,7 +21459,8 @@ lent This0.IteratorVal vals() this.vals(from:This4.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This4.Bool contains(This1 that) (
+This4.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -21435,16 +21479,16 @@ This4.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.true()
+              (return This4.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -21461,7 +21505,7 @@ This4.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -21484,19 +21528,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -21526,19 +21570,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This4.Bool cond=that.#right(that:v.#inner())
+        ((
+          This4.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -21549,7 +21593,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This4.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -21570,16 +21614,16 @@ This4.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This4.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This4.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.false()
+              (return This4.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -21656,16 +21700,16 @@ This4.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This4.Bool.false()
+                  (return This4.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -21676,7 +21720,7 @@ This4.Bool equals(read This0 that) (
         )
       )
     
-    catch error This4.Collections.IterationFailure catched13 return This4.Bool.false()
+    catch error This4.Collections.IterationFailure catched13 (return This4.Bool.false())
     
     (
       Void unused15=return This4.Bool.true()
@@ -21740,7 +21784,7 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -21750,12 +21794,12 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b0=This4.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -21789,7 +21833,7 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -21806,12 +21850,12 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b1=This4.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This4.Size.#from(builder:(
@@ -21849,7 +21893,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -21880,7 +21924,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -21913,19 +21957,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -21953,7 +21997,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -21963,7 +22007,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -21999,7 +22043,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -22030,7 +22074,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -22112,7 +22156,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -22122,7 +22166,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -22137,7 +22181,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -22153,7 +22197,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -22187,7 +22231,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -22197,7 +22241,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -22212,7 +22256,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -22228,7 +22272,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -22282,7 +22326,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -22292,7 +22336,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -22307,7 +22351,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -22323,7 +22367,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -22516,7 +22560,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -22526,7 +22570,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -22541,7 +22585,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -22557,7 +22601,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -22615,10 +22659,10 @@ This2.Origin.List origins() This2.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -22851,7 +22895,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -22876,14 +22920,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This4.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This4.Size.#from(builder:(
     capsule This4.S.SBuilder b=This4.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This4.Size that, This1 val) (
   mut This4.Collections.MutListAny rcv47=this.#inner()
@@ -22927,15 +22972,17 @@ Void removeLeft() this.remove(that:This4.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -22955,7 +23002,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -22980,7 +23027,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -22997,7 +23044,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This4.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -23007,11 +23054,12 @@ This0 withLeft(This1 that) this.with(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This4.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This4.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -23021,7 +23069,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -23029,11 +23078,12 @@ This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This4.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This4.Size from, This4.Size maxTo, This4.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -23237,7 +23287,8 @@ lent This0.IteratorVal vals() this.vals(from:This4.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This4.Bool contains(This1 that) (
+This4.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -23256,16 +23307,16 @@ This4.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.true()
+              (return This4.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -23282,7 +23333,7 @@ This4.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -23305,19 +23356,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -23347,19 +23398,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This4.Bool cond=that.#right(that:v.#inner())
+        ((
+          This4.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -23370,7 +23421,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This4.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -23391,16 +23442,16 @@ This4.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This4.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This4.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.false()
+              (return This4.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -23477,16 +23528,16 @@ This4.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This4.Bool.false()
+                  (return This4.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -23497,7 +23548,7 @@ This4.Bool equals(read This0 that) (
         )
       )
     
-    catch error This4.Collections.IterationFailure catched13 return This4.Bool.false()
+    catch error This4.Collections.IterationFailure catched13 (return This4.Bool.false())
     
     (
       Void unused15=return This4.Bool.true()
@@ -23561,7 +23612,7 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -23571,12 +23622,12 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b0=This4.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -23610,7 +23661,7 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -23627,12 +23678,12 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b1=This4.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This4.Size.#from(builder:(
@@ -23670,7 +23721,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -23701,7 +23752,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -23734,19 +23785,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -23774,7 +23825,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -23784,7 +23835,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -23820,7 +23871,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -23851,7 +23902,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -23933,7 +23984,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -23943,7 +23994,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -23958,7 +24009,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -23974,7 +24025,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -24008,7 +24059,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -24018,7 +24069,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -24033,7 +24084,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -24049,7 +24100,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -24103,7 +24154,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -24113,7 +24164,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -24128,7 +24179,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -24144,7 +24195,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -24337,7 +24388,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -24347,7 +24398,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -24362,7 +24413,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -24378,7 +24429,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -24436,10 +24487,10 @@ This2.Origin.List origins() This2.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -24672,7 +24723,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -24697,14 +24748,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This4.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This4.Size.#from(builder:(
     capsule This4.S.SBuilder b=This4.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This4.Size that, This1 val) (
   mut This4.Collections.MutListAny rcv47=this.#inner()
@@ -24748,15 +24800,17 @@ Void removeLeft() this.remove(that:This4.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -24776,7 +24830,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -24801,7 +24855,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -24818,7 +24872,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This4.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -24828,11 +24882,12 @@ This0 withLeft(This1 that) this.with(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This4.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This4.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -24842,7 +24897,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -24850,11 +24906,12 @@ This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This4.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This4.Size from, This4.Size maxTo, This4.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -25058,7 +25115,8 @@ lent This0.IteratorVal vals() this.vals(from:This4.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This4.Bool contains(This1 that) (
+This4.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -25077,16 +25135,16 @@ This4.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.true()
+              (return This4.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -25103,7 +25161,7 @@ This4.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -25126,19 +25184,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -25168,19 +25226,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This4.Bool cond=that.#right(that:v.#inner())
+        ((
+          This4.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -25191,7 +25249,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This4.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -25212,16 +25270,16 @@ This4.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This4.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This4.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.false()
+              (return This4.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -25298,16 +25356,16 @@ This4.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This4.Bool.false()
+                  (return This4.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -25318,7 +25376,7 @@ This4.Bool equals(read This0 that) (
         )
       )
     
-    catch error This4.Collections.IterationFailure catched13 return This4.Bool.false()
+    catch error This4.Collections.IterationFailure catched13 (return This4.Bool.false())
     
     (
       Void unused15=return This4.Bool.true()
@@ -25382,7 +25440,7 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -25392,12 +25450,12 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b0=This4.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -25431,7 +25489,7 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -25448,12 +25506,12 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b1=This4.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This4.Size.#from(builder:(
@@ -25491,7 +25549,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -25522,7 +25580,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -25555,19 +25613,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -25595,7 +25653,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -25605,7 +25663,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -25641,7 +25699,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -25672,7 +25730,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -25754,7 +25812,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -25764,7 +25822,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -25779,7 +25837,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -25795,7 +25853,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -25829,7 +25887,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -25839,7 +25897,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -25854,7 +25912,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -25870,7 +25928,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -25924,7 +25982,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -25934,7 +25992,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -25949,7 +26007,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -25965,7 +26023,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -26158,7 +26216,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -26168,7 +26226,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -26183,7 +26241,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -26199,7 +26257,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -26951,10 +27009,10 @@ This1.Origin.List origins() This1.Origin.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.origin(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -26967,7 +27025,7 @@ This1.Origin.List origins() This1.Origin.List.#from(seqBuilder:(
 refine method 
 This1 location() (
   Void unused=(
-    Library libRes=use This0 check location(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {})
+    Library libRes=(use This0 check location(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {}))
     Void unused0=use This1.Lib check instanceof(_this:libRes) return This1.Lib.#from(binaryRepr:libRes)
     Void unused1=use This1.Method check instanceof(_this:libRes) return This1.Method.#from(binaryRepr:libRes)
     Void unused2=use This1.Type.Return check instanceof(_this:libRes) return This1.Type.Return.#from(binaryRepr:libRes)
@@ -27023,10 +27081,10 @@ This0.Annotation.List annotations() This0.Annotation.List.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.annotation(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -27405,7 +27463,7 @@ mut This0 reverse() (
           exception void
           )
         
-        result.add(left:e.#inner())
+        (result.add(left:e.#inner()))
         )
       
       catch exception Void catched3 void
@@ -27430,14 +27488,15 @@ This1 left() This0.Cast.#apply(that:this.inner().val(that:This4.Size.#from(build
   b
   ))))
 read method 
-This1 right() This0.Cast.#apply(that:(
+This1 right() (/*#################MUT METHODS
+*/This0.Cast.#apply(that:(
   read This4.Collections.MutListAny rcv46=this.inner()
   rcv46.val(that:rcv46.size().#less(that:This4.Size.#from(builder:(
     capsule This4.S.SBuilder b=This4.Size.#builder()
     Void unused=b.#1()
     b
     ))))
-  ))
+  )))
 mut method 
 Void #apply(This4.Size that, This1 val) (
   mut This4.Collections.MutListAny rcv47=this.#inner()
@@ -27481,15 +27540,17 @@ Void removeLeft() this.remove(that:This4.Size.#from(builder:(
   b
   )))
 mut method 
-Void removeRight() this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
+Void removeRight() (/*#################OPERATORS
+*/this.remove(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 method 
 This0 #plus(This1 that) this.withAlso(that:this.size(), val:that)
 method 
-This0 #plusplus(This0 that) (
+This0 #plusplus(This0 that) (/*#################Withs
+*/(
   Void unused=(
     mut This0 res=This0.empty()
     Void unused0=(
@@ -27509,7 +27570,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched3 void
@@ -27534,7 +27595,7 @@ This0 #plusplus(This0 that) (
             exception void
             )
           
-          res.add(right:e.#inner())
+          (res.add(right:e.#inner()))
           )
         
         catch exception Void catched8 void
@@ -27551,7 +27612,7 @@ This0 #plusplus(This0 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 with(This4.Size that, This1 val) This0.#immK(inner:this.inner().with(that:that, val:val))
 method 
@@ -27561,11 +27622,12 @@ This0 withLeft(This1 that) this.with(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withRight(This1 that) this.with(that:this.size().#less(that:This4.Size.#from(builder:(
+This0 withRight(This1 that) (/*insertion
+*/this.with(that:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))), val:that)
+  ))), val:that))
 method 
 This0 withAlso(This4.Size that, This1 val) This0.#immK(inner:this.inner().withAlso(that:that, val:val))
 method 
@@ -27575,7 +27637,8 @@ This0 withAlsoLeft(This1 that) this.withAlso(that:This4.Size.#from(builder:(
   b
   )), val:that)
 method 
-This0 withAlsoRight(This1 that) this.withAlso(that:this.size(), val:that)
+This0 withAlsoRight(This1 that) (/*skipping/filtering
+*/this.withAlso(that:this.size(), val:that))
 method 
 This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
@@ -27583,11 +27646,12 @@ This0 withoutLeft() this.without(index:This4.Size.#from(builder:(
   b
   )))
 method 
-This0 withoutRight() this.without(index:this.size().#less(that:This4.Size.#from(builder:(
+This0 withoutRight() (/*################# Iterators
+*/this.without(index:this.size().#less(that:This4.Size.#from(builder:(
   capsule This4.S.SBuilder b=This4.Size.#builder()
   Void unused=b.#1()
   b
-  ))))
+  )))))
 read method 
 lent This0.IteratorVal vals(This4.Size from, This4.Size maxTo, This4.Size minTo) This0.IteratorVal.#apply(that:this.inner(), from:from, maxTo:maxTo, minTo:minTo)
 read method 
@@ -27791,7 +27855,8 @@ lent This0.IteratorVal vals() this.vals(from:This4.Size.#from(builder:(
   b0
   )), minTo:this.inner().size())
 read method 
-This4.Bool contains(This1 that) (
+This4.Bool contains(This1 that) (/*################# operators
+*/(
   Void unused=(
     Void unused0=(
       lent This0.IteratorVal e=this.vals()
@@ -27810,16 +27875,16 @@ This4.Bool contains(This1 that) (
             exception void
             )
           
-          (
+          ((
             This4.Bool cond=e.#inner().#equalequal(that:that)
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.true()
+              (return This4.Bool.true())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -27836,7 +27901,7 @@ This4.Bool contains(This1 that) (
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 method 
 This0 #less(This1 that) this.withoutAll(val:that)
 method 
@@ -27859,19 +27924,19 @@ This0 #lessless(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=that.contains(that:e.#inner()).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -27901,19 +27966,19 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
-          This4.Bool cond=that.#right(that:v.#inner())
+        ((
+          This4.Bool cond=(that.#right(that:v.#inner()))
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:v.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -27924,7 +27989,7 @@ This0 #and(This0 that) This0.#from(seqBuilder:(
   b
   ))
 method 
-This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:that.#rightrightequal(that:this).#bang())
+This4.Bool #rightright(This0 that) this.#rightrightequal(that:that).#and(that:(that.#rightrightequal(that:this)).#bang())
 method 
 This4.Bool #rightrightequal(This0 that) (
   Void unused=(
@@ -27945,16 +28010,16 @@ This4.Bool #rightrightequal(This0 that) (
             exception void
             )
           
-          (
-            This4.Bool cond=this.#right(that:e.#inner()).#bang()
+          ((
+            This4.Bool cond=(this.#right(that:e.#inner())).#bang()
             (
               Void unused6=cond.#checkTrue()
               
               catch exception Void catched4 void
               
-              return This4.Bool.false()
+              (return This4.Bool.false())
               )
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -28031,16 +28096,16 @@ This4.Bool equals(read This0 that) (
                 exception void
                 )
               
-              (
+              ((
                 This4.Bool cond=e1.#inner().#equalequal(that:e2.#inner()).#bang()
                 (
                   Void unused14=cond.#checkTrue()
                   
                   catch exception Void catched11 void
                   
-                  return This4.Bool.false()
+                  (return This4.Bool.false())
                   )
-                )
+                ))
               )
             )
           
@@ -28051,7 +28116,7 @@ This4.Bool equals(read This0 that) (
         )
       )
     
-    catch error This4.Collections.IterationFailure catched13 return This4.Bool.false()
+    catch error This4.Collections.IterationFailure catched13 (return This4.Bool.false())
     
     (
       Void unused15=return This4.Bool.true()
@@ -28115,7 +28180,7 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -28125,12 +28190,12 @@ This4.Size indexOfLeft(This1 val) (
           
           catch exception Void catched3 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b0=This4.Size.#builder()
             Void unused6=b0.#less()
             Void unused7=b0.#1()
             b0
-            ))
+            )))
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -28164,7 +28229,7 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched1 void
           
-          return pos
+          (return pos)
           )
         )
       Void unused3=(
@@ -28181,12 +28246,12 @@ This4.Size indexOfRight(This1 val) (
           
           catch exception Void catched5 void
           
-          return This4.Size.#from(builder:(
+          (return This4.Size.#from(builder:(
             capsule This4.S.SBuilder b1=This4.Size.#builder()
             Void unused7=b1.#less()
             Void unused8=b1.#1()
             b1
-            ))
+            )))
           )
         )
       pos := pos.#less(that:This4.Size.#from(builder:(
@@ -28224,7 +28289,7 @@ This0 withoutLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -28255,7 +28320,7 @@ This0 withoutRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return this
+        (return this)
         )
       )
     Void unused1=return this.without(index:pos)
@@ -28288,19 +28353,19 @@ This0 withoutAll(This1 val) This0.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           This4.Bool cond=e.#inner().#equalequal(that:val).#bang()
           (
             Void unused4=cond.#checkTrue()
             
             catch exception Void catched4 void
             
-            (
+            ((
               Void unused5=b.#add(that:e.#inner())
               void
-              )
+              ))
             )
-          )
+          ))
         )
       
       catch exception Void catched6 void
@@ -28328,7 +28393,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched1 void
           
-          this.remove(that:pos)
+          (this.remove(that:pos))
           )
         )
       Void unused3=(
@@ -28338,7 +28403,7 @@ Void removeAll(This1 val) (
           
           catch exception Void catched3 void
           
-          return void
+          (return void)
           )
         )
       pos := pos.#plus(that:This4.Size.#from(builder:(
@@ -28374,7 +28439,7 @@ Void removeLeft(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -28405,7 +28470,7 @@ Void removeRight(This1 val) (
         
         catch exception Void catched2 void
         
-        return void
+        (return void)
         )
       )
     Void unused1=return this.remove(that:pos)
@@ -28487,7 +28552,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -28497,7 +28562,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -28512,7 +28577,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This6.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -28528,7 +28593,7 @@ This3 #inner() (
         
         catch exception Void catched1 void
         
-        return This2.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This2.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -28562,7 +28627,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -28572,7 +28637,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -28587,7 +28652,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -28603,7 +28668,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -28657,7 +28722,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -28667,7 +28732,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -28682,7 +28747,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -28698,7 +28763,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -28891,7 +28956,7 @@ Void #next() exception Void (
       
       catch exception Void catched2 void
       
-      exception void
+      (exception void)
       )
     )
   (
@@ -28901,7 +28966,7 @@ Void #next() exception Void (
       
       catch exception Void catched5 void
       
-      exception void
+      (exception void)
       )
     )
   )
@@ -28916,7 +28981,7 @@ Void #checkEnd() (
     
     catch exception Void catched1 void
     
-    error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size())
+    (error This5.Collections.CollectionErrors.iterationTermination(from:this.from(), minTo:this.minTo(), size:this.that().size()))
     )
   )
 read method 
@@ -28932,7 +28997,7 @@ This2 #inner() (
         
         catch exception Void catched1 void
         
-        return This1.Cast.#apply(that:this.that().val(that:this.from()))
+        (return This1.Cast.#apply(that:this.that().val(that:this.from())))
         )
       )
     Void unused1=return this.filled()
@@ -28952,7 +29017,10 @@ Infrastructure
 ------------------------------
 */
 class method 
-Library compose(Library that, Library and) exception This0.MethodClash, This0.ClassClash, This0.SubtleSubtypeViolation This0.Compose.compose(left:that, right:and)
+Library compose(Library that, Library and) exception This0.MethodClash, This0.ClassClash, This0.SubtleSubtypeViolation (/*------------------------------
+Rename
+------------------------------
+*/This0.Compose.compose(left:that, right:and))
 class method 
 class This1.Path #default#rename(Void path) This1.Path
 class method 
@@ -28966,13 +29034,19 @@ This0.HideClass hide(This1.Path path) This0.HideClass.#apply(src:path)
 class method 
 class This1.Path #default#toAbstract(Void path) This1.Path
 class method 
-This0.ToAbstractClass toAbstract(This1.Path path) This0.ToAbstractClass.#apply(src:path)
+This0.ToAbstractClass toAbstract(This1.Path path) (/*------------------------------
+ToAbstract
+------------------------------
+*/This0.ToAbstractClass.#apply(src:path))
 class method 
-This0.ToAbstract toAbstract(This1.Selector selector) This0.ToAbstract.#apply(src:selector)
+This0.ToAbstract toAbstract(This1.Selector selector) (/*2
+*/This0.ToAbstract.#apply(src:selector))
 class method 
-This0.ToAbstractDest toAbstract(This1.Selector selector, This1.Selector into) This0.ToAbstractDest.#apply(src:selector, dest:into)
+This0.ToAbstractDest toAbstract(This1.Selector selector, This1.Selector into) (/*3
+*/This0.ToAbstractDest.#apply(src:selector, dest:into))
 class method 
-This0.ToAbstractPath toAbstract(This1.Selector selector, This1.Path of) This0.ToAbstractPath.#apply(path:of, src:selector)
+This0.ToAbstractPath toAbstract(This1.Selector selector, This1.Path of) (/*4
+*/This0.ToAbstractPath.#apply(path:of, src:selector))
 class method 
 This0.ToAbstractPathDest toAbstract(This1.Selector selector, This1.Path of, This1.Selector into) This0.ToAbstractPathDest.#apply(path:of, src:selector, dest:into)
 class method 
@@ -28980,13 +29054,25 @@ class This1.Selector #default#toAbstract(Void selector) This1.Selector
 class method 
 class This1.Selector #default#toAbstract(Void into) This1.Selector
 class method 
-class This1.Path #default#toAbstract(Void of) This1.Path
+class This1.Path #default#toAbstract(Void of) (/*------------------------------
+Redirect
+------------------------------
+*/(/*
+rename method:
+  if path private, path not found
+  if src private, selector not found
+  if dest is private, check not abstract 
+    on fail??
+*/This1.Path))
 class method 
 class This1.Path #default#redirect(Void path) This1.Path
 class method 
 This0.Redirect redirect(This1.Path path, class Any into) This0.Redirect.#apply(src:path, dest:into)
 class method 
-This0.RedirectRefTo redirect(This1.Path path, This1.Location.Type.RefTo intoRefTo) This0.RedirectRefTo.#apply(src:path, into:intoRefTo)
+This0.RedirectRefTo redirect(This1.Path path, This1.Location.Type.RefTo intoRefTo) (/*------------------------------
+Method  //as in Refactor.Method
+------------------------------
+*/This0.RedirectRefTo.#apply(src:path, into:intoRefTo))
 class method 
 This0.SumMethods sumMethods(This1.Selector that, This1.Selector and, This1.Path of, This1.S over, This1.Selector into) This0.SumMethods.#apply(that:that, and:and, of:of, over:over, into:into)
 Fail: {interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -31817,7 +31903,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -31829,13 +31915,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -31855,7 +31941,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -31884,7 +31970,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -32167,7 +32254,8 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 use This0 check instanceof(_this:binaryRepr) exception This0.#from(binaryRepr:binaryRepr)
 class method 
-Void #pluginUnresponsive(Library binaryRepr) error  {/*redirect(that,src,dest)*/}
+Void #pluginUnresponsive(Library binaryRepr) error (/*from Java
+*/ {/*redirect(that,src,dest)*/})
 class method 
 This0 #apply() This0.#from(binaryRepr:(
   Library res=use This0 check new() error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -32234,7 +32322,8 @@ This1.PlgMethod inner()
 class method 
 mut This0 #apply(This1.PlgMethod inner) 
 read method 
-Library #leftrightleft(Library that) exception This1.PathUnfit, This1.SelectorUnfit, This1.MethodClash, This1.ClassUnfit this.inner().act(that:that)
+Library #leftrightleft(Library that) exception This1.PathUnfit, This1.SelectorUnfit, This1.MethodClash, This1.ClassUnfit (/*[] syntax
+*/this.inner().act(that:that))
 class method 
 mut This0 #seqBuilder() This0.#apply(inner:This1.PlgMethod.#apply())
 class method 
@@ -32250,44 +32339,53 @@ class This2.Selector #default##square(Void into) This2.Selector
 class method 
 class This2.Selector #default##square(Void abstract) This2.Selector
 class method 
-class This2.Selector #default##square(Void alias) This2.Selector
+class This2.Selector #default##square(Void alias) (/*hide:\"foo()" of:\"Bar";
+*/This2.Selector)
 mut method 
-Void #add(This2.Selector hide, This2.Path of) this.inner(that:this.inner().addHideJ(path:of, src:hide))
+Void #add(This2.Selector hide, This2.Path of) (/*hide:\"foo()";
+*/this.inner(that:this.inner().addHideJ(path:of, src:hide)))
 mut method 
-Void #add(This2.Selector hide) this.inner(that:this.inner().addHideJ(path:This2.Path.#from(builder:(
+Void #add(This2.Selector hide) (/*rename:\"foo()" of:\"Bar" into:\"bar()";
+*/this.inner(that:this.inner().addHideJ(path:This2.Path.#from(builder:(
   capsule This2.S.SBuilder b=This2.Path.#builder()
   Void unused=b.#T()
   Void unused0=b.#h()
   Void unused1=b.#i()
   Void unused2=b.#s()
   b
-  )), src:hide))
+  )), src:hide)))
 mut method 
-Void #add(This2.Selector rename, This2.Path of, This2.Selector into) this.inner(that:this.inner().addRenameJ(path:of, src:rename, dest:into))
+Void #add(This2.Selector rename, This2.Path of, This2.Selector into) (/*rename:\"foo()" into:\"bar()";
+*/this.inner(that:this.inner().addRenameJ(path:of, src:rename, dest:into)))
 mut method 
-Void #add(This2.Selector rename, This2.Selector into) this.inner(that:this.inner().addRenameJ(path:This2.Path.#from(builder:(
+Void #add(This2.Selector rename, This2.Selector into) (/*closeState:\"Bar";
+*/this.inner(that:this.inner().addRenameJ(path:This2.Path.#from(builder:(
   capsule This2.S.SBuilder b=This2.Path.#builder()
   Void unused=b.#T()
   Void unused0=b.#h()
   Void unused1=b.#i()
   Void unused2=b.#s()
   b
-  )), src:rename, dest:into))
+  )), src:rename, dest:into)))
 mut method 
-Void #add(This2.Path closeState) this.inner(that:this.inner().addCloseJ(path:closeState))
+Void #add(This2.Path closeState) (/*abstract:\"foo()" of:\"Bar";
+*/this.inner(that:this.inner().addCloseJ(path:closeState)))
 mut method 
-Void #add(This2.Selector abstract, This2.Path of) this.inner(that:this.inner().addAbstractJ(path:of, src:abstract))
+Void #add(This2.Selector abstract, This2.Path of) (/*abstract:\"foo()" of:\"Bar" alias:\"..";
+*/this.inner(that:this.inner().addAbstractJ(path:of, src:abstract)))
 mut method 
-Void #add(This2.Selector abstract, This2.Path of, This2.Selector alias) this.inner(that:this.inner().addAbstractAliasJ(path:of, src:abstract, dest:alias))
+Void #add(This2.Selector abstract, This2.Path of, This2.Selector alias) (/*abstract:\"foo()";
+*/this.inner(that:this.inner().addAbstractAliasJ(path:of, src:abstract, dest:alias)))
 mut method 
-Void #add(This2.Selector abstract) this.inner(that:this.inner().addAbstractJ(path:This2.Path.#from(builder:(
+Void #add(This2.Selector abstract) (/*abstract:\"foo()" alias:\"..";
+*/this.inner(that:this.inner().addAbstractJ(path:This2.Path.#from(builder:(
   capsule This2.S.SBuilder b=This2.Path.#builder()
   Void unused=b.#T()
   Void unused0=b.#h()
   Void unused1=b.#i()
   Void unused2=b.#s()
   b
-  )), src:abstract))
+  )), src:abstract)))
 mut method 
 Void #add(This2.Selector abstract, This2.Selector alias) this.inner(that:this.inner().addAbstractAliasJ(path:This2.Path.#from(builder:(
   capsule This2.S.SBuilder b=This2.Path.#builder()
@@ -39126,7 +39224,7 @@ Void fillMaps() (
             exception void
             )
           
-          this.fillMaps(li:li.#inner(), i:i.#inner())
+          (this.fillMaps(li:li.#inner(), i:i.#inner()))
           )
         )
       
@@ -39194,7 +39292,8 @@ Void fillMaps(This1.Location.Lib li, This1.Size i) (
           (
             This1.Location.Lib lij=li.nested(path:nj.#inner().path())
             
-            catch exception This1.Location.NotAvailable catched10 void
+            catch exception This1.Location.NotAvailable catched10 (/*continue
+*/void)
             
             this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:nj.#inner().path(), i:i)
             )
@@ -39225,7 +39324,7 @@ Void fillMaps(This1.Location.Lib lij, This1.Composers.Selectors ssj, This1.Path 
         exception void
         )
       
-      (
+      ((
         This1.Bool cond=This1.Composers.noClash(m:m.#inner()).#bang().#and(that:(
           This1.Selector opNorm=m.#inner().selector()
           ssj.#right(that:opNorm)
@@ -39235,9 +39334,9 @@ Void fillMaps(This1.Location.Lib lij, This1.Composers.Selectors ssj, This1.Path 
           
           catch exception Void catched5 void
           
-          this.op(p:pj, m:m.#inner(), i:i)
+          (this.op(p:pj, m:m.#inner(), i:i))
           )
-        )
+        ))
       )
     
     catch exception Void catched6 void
@@ -39310,10 +39409,10 @@ mut This0 #apply(This1.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused4=b.#add(that:This1.Location.Lib.#apply(that:l.#inner()))
             void
-            )
+            ))
           )
         
         catch exception Void catched4 void
@@ -39343,10 +39442,10 @@ mut This0 #apply(This1.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused10=b0.#add(that:This1.Composers.filterClash(ms:nj.#inner().methods()))
             void
-            )
+            ))
           )
         
         catch exception Void catched11 void
@@ -39375,13 +39474,13 @@ mut This0 #apply(This1.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused16=b1.#add(that:This1.Refactor2.Method.#from(seqBuilder:(
               capsule This1.Refactor2.Method b2=This1.Refactor2.Method.#seqBuilder()
               b2
               )))
             void
-            )
+            ))
           )
         
         catch exception Void catched20 void
@@ -39396,10 +39495,17 @@ mut This0 #apply(This1.Composers.Libs libs, Library lib0) (
     )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
   )
 mut method 
-mut This1.Refactor2.Method open(This1.Size that) this.openMaps().#val(that:that)
+mut This1.Refactor2.Method open(This1.Size that) (/*------------------------------
+Patch variation---------------
+------------------------------
+l0ns //all lFix nesteds
+sels //all lFix selectors
+*/this.openMaps().#val(that:that))
 mut method 
-Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) (
-  lent This1.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) (/*initPatch
+*/(
+  lent This1.Location.Lib.List.IteratorVal nj=(/*all patch nesteds
+*/this.l0ns().vals())
   (
     lent This1.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
     (
@@ -39455,9 +39561,11 @@ Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) (
           (/*all patch selectors
 */
             This1.Path pj=This1.Composers.removePrefix(path:nj.#inner().path(), prefix:fix)
-            This1.Location.Lib lij=top.nested(path:pj)
+            This1.Location.Lib lij=(/*nested in nj exist in top
+*/top.nested(path:pj))
             
-            catch exception This1.Location.NotAvailable catched10 void
+            catch exception This1.Location.NotAvailable catched10 (/*continue
+*/void)
             
             this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:pj, i:This1.Size.#from(builder:(
               capsule This1.S.SBuilder b=This1.Size.#builder()
@@ -39473,7 +39581,7 @@ Void fillMapsPatch(This1.Location.Lib top, This1.Path fix) (
       void
       )
     )
-  )
+  ))
 class method 
 mut This0 #apply(Library top, This1.Path fix) exception This1.Location.NotAvailable (
   This1.Location.Lib lFix=This1.Location.Lib.#apply(that:top).nested(path:fix)
@@ -39501,10 +39609,10 @@ mut This0 #apply(Library top, This1.Path fix) exception This1.Location.NotAvaila
             exception void
             )
           
-          (
+          ((
             Void unused4=b.#add(that:This1.Composers.filterClash(ms:nj.#inner().methods()))
             void
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -39536,7 +39644,8 @@ mut This0.Patcher #apply(This1.Path patch) This0.Patcher.#apply(patch:patch)
 class method 
 mut This0 #apply(mut This1.Composers.RenameMethods openMaps, mut This1.Refactor2.Method close, This1.Composers.Libs inputs, Library input, This1.Location.Lib.List ls, This1.Location.Lib l0, This1.Location.Lib.List l0ns, This1.Composers.Selectorss sels) 
 mut method 
-Void op(This1.Path p, This1.Location.Method m, This1.Size i) void
+Void op(This1.Path p, This1.Location.Method m, This1.Size i) (/*do nothing is the simplest way to give a good methodClash error.
+*/void)
 Over: {
 mut method 
 Void fillMaps() (
@@ -39597,7 +39706,7 @@ Void fillMaps() (
             exception void
             )
           
-          this.fillMaps(li:li.#inner(), i:i.#inner())
+          (this.fillMaps(li:li.#inner(), i:i.#inner()))
           )
         )
       
@@ -39665,7 +39774,8 @@ Void fillMaps(This2.Location.Lib li, This2.Size i) (
           (
             This2.Location.Lib lij=li.nested(path:nj.#inner().path())
             
-            catch exception This2.Location.NotAvailable catched10 void
+            catch exception This2.Location.NotAvailable catched10 (/*continue
+*/void)
             
             this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:nj.#inner().path(), i:i)
             )
@@ -39696,7 +39806,7 @@ Void fillMaps(This2.Location.Lib lij, This2.Composers.Selectors ssj, This2.Path 
         exception void
         )
       
-      (
+      ((
         This2.Bool cond=This2.Composers.noClash(m:m.#inner()).#bang().#and(that:(
           This2.Selector opNorm=m.#inner().selector()
           ssj.#right(that:opNorm)
@@ -39706,9 +39816,9 @@ Void fillMaps(This2.Location.Lib lij, This2.Composers.Selectors ssj, This2.Path 
           
           catch exception Void catched5 void
           
-          this.op(p:pj, m:m.#inner(), i:i)
+          (this.op(p:pj, m:m.#inner(), i:i))
           )
-        )
+        ))
       )
     
     catch exception Void catched6 void
@@ -39781,10 +39891,10 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused4=b.#add(that:This2.Location.Lib.#apply(that:l.#inner()))
             void
-            )
+            ))
           )
         
         catch exception Void catched4 void
@@ -39814,10 +39924,10 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused10=b0.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
             void
-            )
+            ))
           )
         
         catch exception Void catched11 void
@@ -39846,13 +39956,13 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused16=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
               capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
               b2
               )))
             void
-            )
+            ))
           )
         
         catch exception Void catched20 void
@@ -39867,10 +39977,17 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
     )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
   )
 mut method 
-mut This2.Refactor2.Method open(This2.Size that) this.openMaps().#val(that:that)
+mut This2.Refactor2.Method open(This2.Size that) (/*------------------------------
+Patch variation---------------
+------------------------------
+l0ns //all lFix nesteds
+sels //all lFix selectors
+*/this.openMaps().#val(that:that))
 mut method 
-Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
-  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (/*initPatch
+*/(
+  lent This2.Location.Lib.List.IteratorVal nj=(/*all patch nesteds
+*/this.l0ns().vals())
   (
     lent This2.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
     (
@@ -39926,9 +40043,11 @@ Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
           (/*all patch selectors
 */
             This2.Path pj=This2.Composers.removePrefix(path:nj.#inner().path(), prefix:fix)
-            This2.Location.Lib lij=top.nested(path:pj)
+            This2.Location.Lib lij=(/*nested in nj exist in top
+*/top.nested(path:pj))
             
-            catch exception This2.Location.NotAvailable catched10 void
+            catch exception This2.Location.NotAvailable catched10 (/*continue
+*/void)
             
             this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:pj, i:This2.Size.#from(builder:(
               capsule This2.S.SBuilder b=This2.Size.#builder()
@@ -39944,7 +40063,7 @@ Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
       void
       )
     )
-  )
+  ))
 class method 
 mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable (
   This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
@@ -39972,10 +40091,10 @@ mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvaila
             exception void
             )
           
-          (
+          ((
             Void unused4=b.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
             void
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -40080,7 +40199,7 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
                 exception void
                 )
               
-              acc := This3.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc)
+              (acc := This3.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc))
               )
             )
           
@@ -40261,7 +40380,7 @@ Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.
         
         catch exception Void catched0 void
         
-        return  {}
+        (return  {})
         )
       )
     var Library res=this.inner().left()
@@ -40282,12 +40401,12 @@ Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.
             exception void
             )
           
-          res := This1.#from(seqBuilder:(
+          (res := This1.#from(seqBuilder:(
             capsule This3.Composers.Libs b=This1.#seqBuilder()
             Void unused8=b.#add(that:res)
             Void unused9=b.#add(that:libi.#inner())
             b
-            )).#leftrightleft(that:resolver)
+            )).#leftrightleft(that:resolver))
           )
         
         catch exception Void catched6 void
@@ -40400,7 +40519,7 @@ Void fillMaps() (
             exception void
             )
           
-          this.fillMaps(li:li.#inner(), i:i.#inner())
+          (this.fillMaps(li:li.#inner(), i:i.#inner()))
           )
         )
       
@@ -40468,7 +40587,8 @@ Void fillMaps(This2.Location.Lib li, This2.Size i) (
           (
             This2.Location.Lib lij=li.nested(path:nj.#inner().path())
             
-            catch exception This2.Location.NotAvailable catched10 void
+            catch exception This2.Location.NotAvailable catched10 (/*continue
+*/void)
             
             this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:nj.#inner().path(), i:i)
             )
@@ -40499,7 +40619,7 @@ Void fillMaps(This2.Location.Lib lij, This2.Composers.Selectors ssj, This2.Path 
         exception void
         )
       
-      (
+      ((
         This2.Bool cond=This2.Composers.noClash(m:m.#inner()).#bang().#and(that:(
           This2.Selector opNorm=m.#inner().selector()
           ssj.#right(that:opNorm)
@@ -40509,9 +40629,9 @@ Void fillMaps(This2.Location.Lib lij, This2.Composers.Selectors ssj, This2.Path 
           
           catch exception Void catched5 void
           
-          this.op(p:pj, m:m.#inner(), i:i)
+          (this.op(p:pj, m:m.#inner(), i:i))
           )
-        )
+        ))
       )
     
     catch exception Void catched6 void
@@ -40584,10 +40704,10 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused4=b.#add(that:This2.Location.Lib.#apply(that:l.#inner()))
             void
-            )
+            ))
           )
         
         catch exception Void catched4 void
@@ -40617,10 +40737,10 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused10=b0.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
             void
-            )
+            ))
           )
         
         catch exception Void catched11 void
@@ -40649,13 +40769,13 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
             exception void
             )
           
-          (
+          ((
             Void unused16=b1.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
               capsule This2.Refactor2.Method b2=This2.Refactor2.Method.#seqBuilder()
               b2
               )))
             void
-            )
+            ))
           )
         
         catch exception Void catched20 void
@@ -40670,10 +40790,17 @@ mut This0 #apply(This2.Composers.Libs libs, Library lib0) (
     )), inputs:libs, input:lib0, ls:ls, l0:l0, l0ns:l0ns, sels:sels)
   )
 mut method 
-mut This2.Refactor2.Method open(This2.Size that) this.openMaps().#val(that:that)
+mut This2.Refactor2.Method open(This2.Size that) (/*------------------------------
+Patch variation---------------
+------------------------------
+l0ns //all lFix nesteds
+sels //all lFix selectors
+*/this.openMaps().#val(that:that))
 mut method 
-Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
-  lent This2.Location.Lib.List.IteratorVal nj=this.l0ns().vals()
+Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (/*initPatch
+*/(
+  lent This2.Location.Lib.List.IteratorVal nj=(/*all patch nesteds
+*/this.l0ns().vals())
   (
     lent This2.Composers.Selectorss.IteratorVal ssj=this.sels().vals()
     (
@@ -40729,9 +40856,11 @@ Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
           (/*all patch selectors
 */
             This2.Path pj=This2.Composers.removePrefix(path:nj.#inner().path(), prefix:fix)
-            This2.Location.Lib lij=top.nested(path:pj)
+            This2.Location.Lib lij=(/*nested in nj exist in top
+*/top.nested(path:pj))
             
-            catch exception This2.Location.NotAvailable catched10 void
+            catch exception This2.Location.NotAvailable catched10 (/*continue
+*/void)
             
             this.fillMaps(lij:lij, ssj:ssj.#inner(), pj:pj, i:This2.Size.#from(builder:(
               capsule This2.S.SBuilder b=This2.Size.#builder()
@@ -40747,7 +40876,7 @@ Void fillMapsPatch(This2.Location.Lib top, This2.Path fix) (
       void
       )
     )
-  )
+  ))
 class method 
 mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvailable (
   This2.Location.Lib lFix=This2.Location.Lib.#apply(that:top).nested(path:fix)
@@ -40775,10 +40904,10 @@ mut This0 #apply(Library top, This2.Path fix) exception This2.Location.NotAvaila
             exception void
             )
           
-          (
+          ((
             Void unused4=b.#add(that:This2.Composers.filterClash(ms:nj.#inner().methods()))
             void
-            )
+            ))
           )
         
         catch exception Void catched5 void
@@ -40922,7 +41051,7 @@ Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This
                 exception void
                 )
               
-              acc := This3.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc)
+              (acc := This3.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc))
               )
             )
           
@@ -41103,7 +41232,7 @@ Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.
         
         catch exception Void catched0 void
         
-        return  {}
+        (return  {})
         )
       )
     var Library res=this.inner().left()
@@ -41124,12 +41253,12 @@ Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.
             exception void
             )
           
-          res := This1.#from(seqBuilder:(
+          (res := This1.#from(seqBuilder:(
             capsule This3.Composers.Libs b=This1.#seqBuilder()
             Void unused8=b.#add(that:res)
             Void unused9=b.#add(that:libi.#inner())
             b
-            )).#leftrightleft(that:resolver)
+            )).#leftrightleft(that:resolver))
           )
         
         catch exception Void catched6 void
@@ -41249,7 +41378,7 @@ Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This
                 exception void
                 )
               
-              acc := This2.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc)
+              (acc := This2.Refactor2.compose(that:mi.#inner().#leftrightleft(that:li.#inner()), and:acc))
               )
             )
           
@@ -41430,7 +41559,7 @@ Library foldLeft(Library resolver) exception This2.Refactor2.MethodClash, This2.
         
         catch exception Void catched0 void
         
-        return  {}
+        (return  {})
         )
       )
     var Library res=this.inner().left()
@@ -41451,12 +41580,12 @@ Library foldLeft(Library resolver) exception This2.Refactor2.MethodClash, This2.
             exception void
             )
           
-          res := This1.#from(seqBuilder:(
+          (res := This1.#from(seqBuilder:(
             capsule This2.Composers.Libs b=This1.#seqBuilder()
             Void unused8=b.#add(that:res)
             Void unused9=b.#add(that:libi.#inner())
             b
-            )).#leftrightleft(that:resolver)
+            )).#leftrightleft(that:resolver))
           )
         
         catch exception Void catched6 void
@@ -42067,7 +42196,8 @@ This2.Size #apply(This2.S that, This2.Size index) (
   Void unused=(
     This2.Size negSkip=(
       Void unused3=(
-        Void unused4=(
+        Void unused4=(/*reached the end of the string
+*/(
           capsule This2.Range.Iterator r=This2.Range.#apply(that:that.size().#less(that:index))
           (
             Void unused6=loop (
@@ -42084,23 +42214,23 @@ This2.Size #apply(This2.S that, This2.Size index) (
                 exception void
                 )
               
-              (
+              ((
                 This2.Bool cond=this.chars().contains(that:that.#apply(that:index.#plus(that:r.#inner()))).#bang()
                 (
                   Void unused10=cond.#checkTrue()
                   
                   catch exception Void catched4 void
                   
-                  return r.#inner()
+                  (return r.#inner())
                   )
-                )
+                ))
               )
             
             catch exception Void catched5 void
             
             void
             )
-          )
+          ))
         Void unused5=return that.size().#less(that:index)
         void
         )
@@ -42111,7 +42241,11 @@ This2.Size #apply(This2.S that, This2.Size index) (
 CurlyBlock-Should be unreachable code
 */}
       )
-    Void unused0=(
+    Void unused0=(/*X[
+  negSkip==0Size; 
+  !this.chars().contains(that(index))
+  ]
+*/(
       This2.Bool cond0=negSkip.#right(that:This2.Size.#from(builder:(
         capsule This2.S.SBuilder b=This2.Size.#builder()
         Void unused11=b.#0()
@@ -42122,14 +42256,15 @@ CurlyBlock-Should be unreachable code
         
         catch exception Void catched10 void
         
-        return This2.Size.#from(builder:(
+        (return This2.Size.#from(builder:(
           capsule This2.S.SBuilder b0=This2.Size.#builder()
           Void unused13=b0.#0()
           b0
-          )).#less(that:negSkip)
+          )).#less(that:negSkip))
         )
-      )
-    Void unused1=(
+      ))
+    Void unused1=(/*reached the end of the string
+*/(
       capsule This2.Range.Iterator r=This2.Range.#apply(that:that.size().#less(that:index))
       (
         Void unused14=loop (
@@ -42146,23 +42281,23 @@ CurlyBlock-Should be unreachable code
             exception void
             )
           
-          (
+          ((
             This2.Bool cond1=this.chars().contains(that:that.#apply(that:index.#plus(that:r.#inner())))
             (
               Void unused18=cond1.#checkTrue()
               
               catch exception Void catched17 void
               
-              return r.#inner()
+              (return r.#inner())
               )
-            )
+            ))
           )
         
         catch exception Void catched18 void
         
         void
         )
-      )
+      ))
     Void unused2=return that.size().#less(that:index)
     void
     )
@@ -58990,12 +59125,12 @@ This0 from(This1.S name, This1.Strings names) (
         
         catch exception Void catched0 void
         
-        return This0.from(string:name.#plusplus(that:This1.S.#from(builder:(
+        (return This0.from(string:name.#plusplus(that:This1.S.#from(builder:(
           capsule This1.S.SBuilder b0=This1.S.#builder()
           Void unused3=b0.#oRound()
           Void unused4=b0.#cRound()
           b0
-          ))))
+          )))))
         )
       )
     This1.S pars=(
@@ -59024,14 +59159,14 @@ This0 from(This1.S name, This1.Strings names) (
                   exception void
                   )
                 
-                (
+                ((
                   Void unused11=b.#add(that:n.#inner().#plusplus(that:This1.S.#from(builder:(
                     capsule This1.S.SBuilder b2=This1.S.#builder()
                     Void unused12=b2.#comma()
                     b2
                     ))))
                   void
-                  )
+                  ))
                 )
               
               catch exception Void catched10 void
@@ -59091,11 +59226,11 @@ This1.S nameAsField() (
         
         catch exception Void catched2 void
         
-        return n.#apply(start:This1.Size.#from(builder:(
+        (return n.#apply(start:This1.Size.#from(builder:(
           capsule This1.S.SBuilder b1=This1.Size.#builder()
           Void unused5=b1.#1()
           b1
-          )))
+          ))))
         )
       )
     Void unused1=return n
@@ -59129,11 +59264,11 @@ This1.S prefixAsField() (
         
         catch exception Void catched3 void
         
-        return This1.S.#from(builder:(
+        (return This1.S.#from(builder:(
           capsule This1.S.SBuilder b1=This1.S.#builder()
           Void unused5=b1.#hash()
           b1
-          ))
+          )))
         )
       )
     Void unused1=return This1.S.#from(builder:(
@@ -59163,7 +59298,7 @@ This1.Bool isOperator() (
         
         catch exception Void catched1 void
         
-        return This1.Bool.true()
+        (return This1.Bool.true())
         )
       )
     Void unused1=return (
@@ -59201,7 +59336,7 @@ This1.Bool isUnique() (
         
         catch exception Void catched1 void
         
-        return This1.Bool.false()
+        (return This1.Bool.false())
         )
       )
     Void unused1=return (
@@ -59270,10 +59405,10 @@ This1.Strings names() This1.Strings.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.name(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -59305,10 +59440,10 @@ class method /*will be private
         
         catch exception Void catched1 void
         
-        return that.withLeft(that:(
+        (return that.withLeft(that:(
           This1.S rcv63=This1.S.aSCIIUpperCase()
           rcv63.#apply(that:index)
-          ))
+          )))
         )
       )
     Void unused1=return that
@@ -59566,7 +59701,7 @@ This2.S #1toS_$_78() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -59578,13 +59713,13 @@ This2.S #1toS_$_78() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -59604,7 +59739,7 @@ This2.S #1toS_$_78() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -59633,7 +59768,8 @@ This2.Bool #1equals0_$_79(read This0 that) This2.Message.EqualMessages.#apply(th
 class method 
 This0 #1#apply2_$_80(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #1#apply3_$_81(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #1#apply3_$_81(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #1#builder_$_82() This2.S.SBuilder.empty()
 class method 
@@ -60052,7 +60188,9 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: java.util.Li
   res
   ))
 class method 
-Library #pluginUnresponsive(Library binaryRepr) binaryRepr
+Library #pluginUnresponsive(Library binaryRepr) (/*class method mut This #from(Library binaryRepr)
+read method Library #binaryRepr()
+*/binaryRepr)
 class method 
 This0 from(This1.Concept.ToS string) (
   Void unused=(
@@ -60154,10 +60292,10 @@ This1.Strings names() This1.Strings.#from(seqBuilder:(
           exception void
           )
         
-        (
+        ((
           Void unused5=b.#add(that:this.name(that:i.#inner()))
           void
-          )
+          ))
         )
       
       catch exception Void catched5 void
@@ -60177,14 +60315,14 @@ This0 from(read This1.Strings names) (
         
         catch exception Void catched0 void
         
-        return This0.#from(builder:(
+        (return This0.#from(builder:(
           capsule This1.S.SBuilder b0=This0.#builder()
           Void unused3=b0.#T()
           Void unused4=b0.#h()
           Void unused5=b0.#i()
           Void unused6=b0.#s()
           b0
-          ))
+          )))
         )
       )
     This1.S s=(
@@ -60212,14 +60350,14 @@ This0 from(read This1.Strings names) (
                   exception void
                   )
                 
-                (
+                ((
                   Void unused12=b.#add(that:n.#inner(), sep:This1.S.#from(builder:(
                     capsule This1.S.SBuilder b2=This1.S.#builder()
                     Void unused13=b2.#dot()
                     b2
                     )))
                   void
-                  )
+                  ))
                 )
               
               catch exception Void catched10 void
@@ -60235,7 +60373,8 @@ This0 from(read This1.Strings names) (
         b3
         ))
       )
-    Void unused1=return This0.from(string:s)
+    Void unused1=return (/*(end:s.size()-1Size)
+*/This0.from(string:s))
     void
     )
   
@@ -60266,7 +60405,8 @@ This0 #plusplus(This0 that) This0.PlgPath.concat(that:this, and:that)
 method 
 This1.Bool isUnique() This0.PlgPath.isUnique(that:this)
 class method 
-This0 fresh(This0 like) This0.PlgPath.fresh(that:like)
+This0 fresh(This0 like) (/*from Java
+*/This0.PlgPath.fresh(that:like))
 method 
 This1.Size size() This1.Size.#from(binaryRepr:(
   Library res=use This0 check size(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -60618,7 +60758,7 @@ This2.S #1toS0_$_98() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -60630,13 +60770,13 @@ This2.S #1toS0_$_98() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -60656,7 +60796,7 @@ This2.S #1toS0_$_98() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -60685,7 +60825,8 @@ This2.Bool #1equals1_$_99(read This0 that) This2.Message.EqualMessages.#apply(th
 class method 
 This0 #1#apply5_$_100(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #1#apply6_$_101(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #1#apply6_$_101(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #1#builder1_$_102() This2.S.SBuilder.empty()
 class method 

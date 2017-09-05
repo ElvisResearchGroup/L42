@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import ast.Ast.MethodSelector;
+import ast.Ast.Path;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.L42F;
 import ast.MiniJ;
 import ast.L42F.Body;
@@ -21,12 +23,17 @@ import l42FVisitors.BodyVisitor;
 
 import platformSpecific.javaTranslation.Resources;
 import tools.Assertions;
+import tools.StringBuilders;
 
 public class L42FToMiniJ {
   public static MiniJ.CD of(ClassTable ct,L42F.CD cd){
     String name=cd.l42ClassName();
     boolean interf=cd.getKind()==L42F.SimpleKind.Interface;
-    List<String> cs=tools.Map.of(i->ct.get(i).cd.l42ClassName(),cd.getCns());
+    List<String> cs=new ArrayList<>();
+    if(cd.getMs().stream().anyMatch(m->m.getBody()==SimpleBody.NewWithFwd)){
+      cs.add(Resources.Revertable.class.getCanonicalName());
+    }
+    cs.addAll(tools.Map.of(i->ct.get(i).cd.l42ClassName(),cd.getCns()));
     List<MiniJ.M>ms=new ArrayList<>();
     for(L42F.M m:cd.getMs()){
       MiniJ.M res = methodHeader(ct, m);
@@ -149,10 +156,29 @@ public class L42FToMiniJ {
         sb.append(ti+" "+xi+";");
         sb.append("public static java.util.function.BiConsumer<Object,Object> FieldAssFor£X"+xi+"=(f,o)->{(("+cn+")o)."+xi+"=("+ti+")f;};");
         }}
+      appendReverter(sb);
       return new RawJ(sb.toString());
       }
+    private void appendReverter(StringBuilder res) {
+      String uniqueNum=m.getSelector().isUnique()?
+        "_$_"+m.getSelector().getUniqueNum():"";
+      res.append("public ast.ExpCore revert(){\n");
+      String receiver="Instance().revert()";
+      StringBuilder es=new StringBuilder();
+      es.append("java.util.Arrays.asList(");
+      StringBuilders.formatSequence(es,mj.getXs().iterator(),
+        ", ",n->es.append(
+            "platformSpecific.javaTranslation.Resources.Revertable.doRevert(this."+n+uniqueNum+")"
+            ));
+      es.append(")");
+      res.append(
+        "return new ast.ExpCore.MCall("
+        +receiver+","+m.getSelector().toSrcEquivalent()
+        +",ast.Ast.Doc.empty(),"+es+",null,null,null);\n");
+      res.append("}\n");
+    }
 
-    public StringBuilder factory(boolean fwd){
+    private StringBuilder factory(boolean fwd){
       String x=mj.getName();
       assert x.startsWith("£C");
       String t=mj.getRetT();
