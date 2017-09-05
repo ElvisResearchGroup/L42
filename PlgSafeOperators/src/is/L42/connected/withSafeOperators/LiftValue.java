@@ -34,8 +34,9 @@ public class LiftValue {
       return context.withMs(ms);
       }
     if(!(optMt.get() instanceof MethodWithType)){throw Errors42.errorMethodClash(Collections.emptyList(),optMt.get(),mwt,true,Collections.emptyList(),true,true,false);}
-   Errors42.checkMethodClash(Collections.emptyList(),(MethodWithType) optMt.get(),mwt,false);
-   Functions.replaceIfInDom(ms,mwt);
-   return context.withPhase(Phase.Norm).withMs(ms);
+    Errors42.checkMethodClash(Collections.emptyList(),(MethodWithType) optMt.get(),mwt,false);
+    Functions.replaceIfInDom(ms,mwt);
+    ExpCore.ClassB res= context.withPhase(Phase.Norm).withMs(ms);
+    return res;
     }
 }

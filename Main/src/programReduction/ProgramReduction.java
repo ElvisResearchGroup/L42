@@ -52,8 +52,8 @@ public class ProgramReduction {
     @SuppressWarnings("unused")
     ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec));
     ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,ec);
-    ClassB res=loader.execute(p1, paths.union(paths1), annEc1);
-    //ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
+    //ClassB res=loader.execute(p1, paths.union(paths1), annEc1);
+    ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
