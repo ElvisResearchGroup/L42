@@ -39,7 +39,7 @@ public class ClassTable {
           if(Cn.cnFwd.getInner()>=cn){return;}
           if(!map.containsKey(cn)){
             invalid.add(cn);
-            }     
+            }
           }
         }.visit(cdi);
       }
@@ -54,7 +54,7 @@ public class ClassTable {
     if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.dbgName();
     }
-  public String className(int index){
+  public String className(int index){//as in int
     if(index==Cn.cnAny.getInner()){return "Object";}
     if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
     if(index==Cn.cnLibrary.getInner()){return "Object";}
@@ -62,7 +62,7 @@ public class ClassTable {
     if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.className();
     }
-  public String boxedClassName(int index){
+  public String boxedClassName(int index){//as in Integer
     if(index==Cn.cnAny.getInner()){return "Object";}
     if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
     if(index==Cn.cnLibrary.getInner()){return "Object";}
@@ -70,17 +70,20 @@ public class ClassTable {
     if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.boxedClassName();
     }
-  public String l42ClassName(int index){
-    if(index==Cn.cnAny.getInner()){throw Assertions.codeNotReachable();}
-    if(index==Cn.cnVoid.getInner()){throw Assertions.codeNotReachable();}
-    if(index==Cn.cnLibrary.getInner()){throw Assertions.codeNotReachable();}
+  public String l42ClassName(int index){//as in MyNat (that can be optimized as an int but has more static methods)
+    if(index==Cn.cnAny.getInner()){return Resources.Any.class.getCanonicalName();}
+    if(index==Cn.cnVoid.getInner()){return Resources.Void.class.getCanonicalName();}
+    if(index==Cn.cnLibrary.getInner()){return Resources.Library.class.getCanonicalName();}
     if(index==Cn.cnResource.getInner()){return "generated.Resource";}
     if(index==Cn.cnFwd.getInner()){return Fwd.class.getCanonicalName();}
     return get(index).cd.l42ClassName();
     }
 
+  public Element _get(int index) {
+    return map.get(index);
+    }
   public Element get(int index) {
-    Element res=map.get(index);
+    Element res=_get(index);
     assert res!=null:""+index+this.isCoherent();
     return res;
     }
@@ -141,14 +144,13 @@ public class ClassTable {
       return res;
       }
     }
-  public static class NamesP{
-    NamesP(List<String>names, Program p){this.names=names;this.p=p;}
-    List<String>names;Program p;
-    }
-  public ClassTable growWith(List<String>names,Program p, Paths paths){
-    List<NamesP>ps=programsOf(names,p,paths);
+  public ClassTable growWith(Program p, Paths paths){
+    List<Program>ps=programsOf(p,paths);
     ClassTable res=this;
-    for(NamesP pi:ps){res=res.plus(pi.names,pi.p);}
+    for(Program pi:ps){
+      List<String> names = Loader.computeDbgNames(pi);
+      res=res.plus(names,pi);
+      }
     assert res.isCoherent();
     return res;
     }
@@ -181,17 +183,16 @@ public class ClassTable {
     return res;
     }
 
-  private List<NamesP> programsOf(List<String>names,Program p, Paths paths) {
+  private List<Program> programsOf(Program p, Paths paths) {
     if(paths.isEmpty()){return Collections.emptyList();}
-    List<NamesP>res=new ArrayList<>();
+    List<Program>res=new ArrayList<>();
     for(List<C> cs :paths.top()){
       Program pi=p.navigate(cs);
-      res.add(new NamesP(names,pi));
+      res.add(pi);
       }
     Paths ppaths=paths.pop();
     if(ppaths.isEmpty()){return res;}
-    List<String>namesPop=names.subList(0, names.size()-1);
-    res.addAll(programsOf(namesPop,p.pop(),paths.pop()));
+    res.addAll(programsOf(p.pop(),paths.pop()));
     return res;
     }
   public ClassTable plus(List<String> names,Program p){
@@ -201,8 +202,6 @@ public class ClassTable {
     return res2;
     }
   protected ClassTable plus(Element e) {
-  assert e.cd.getKind()==null || !map.containsKey(e.cd.getCn()):
-    "avoided before with 'avoidRepeat'?";
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(e.cd.getCn(), e);
   return new ClassTable(newMap);

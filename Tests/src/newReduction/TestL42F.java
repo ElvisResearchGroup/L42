@@ -404,7 +404,7 @@ public class TestL42F {
     l=TypeSystem.instance().topTypeLib(Phase.Typed,p);
     p=p.updateTop(l);
     Paths ps=Paths.empty().push(Collections.singletonList(Collections.emptyList()));
-    ClassTable ct=ClassTable.empty.growWith(Collections.singletonList("Foo"),p,ps);
+    ClassTable ct=ClassTable.empty.growWith(p,ps);
     ct=ct.computeDeps();
     if(expected!=null) {assertEquals(expected,ct.toString());}
     if(expectedJ!=null) {assertEquals(expectedJ,ct.toJString());}

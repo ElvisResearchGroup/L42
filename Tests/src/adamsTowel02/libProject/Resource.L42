@@ -23,8 +23,11 @@ class method Library(Any that) {
 class method Library castTrait(){
   T:{}
   class method Any val()
-  class method T () {with val=this.val() (on T return val) error ProvidedValueNotOfExpectedType"" }
-   }
+  class method T () {
+    with val=this.val() (on T return val)
+    error ProvidedValueNotOfExpectedType""
+    }
+  }
 class method Library(Any that, class Any clazz) (
   trait=Refactor2.redirect(path:\"T" into:clazz)<><this.castTrait()
   error on Refactor2.Fail X"Resource usage of redirect failed"

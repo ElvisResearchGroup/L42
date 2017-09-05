@@ -89,7 +89,7 @@ public class CN implements CNs{CT;CN[Mxs]}
 
 //a this
 CT;CN[refine? method TX mxs(TX' this,(TX x)s) e]=
-  public static CT*TX £Cmxs(CT*TX' £Xthis,CT*(TX x)s) CT;empty;empty*e[£Xthis=this]
+  public static CT*TX £Cmxs(CT*TX' £Xthis,CT*(TX x)s) CT;empty;empty*e[£Xx=x]//for all x
   onlyIfRefine(refine?,
     public CT*TX £Mmxs(CT*(TX x)s) {return CN.£Cmxs(this,xs);}
     )
@@ -111,17 +111,17 @@ CT;CN[refine? method T mxs(TX' this,(T x)s)] //no body
 CT,CN[refine? method T mxs((T x)s) new] //there can be many new/newFwd
   public static CT*TX £Cmxs(CT*(TX x)s){
     CN Res=new CN();
-    Res.£Xx1=x1;..;Res.£Xxn=xn;
+    Res.£Xx1=£Xx1;..;Res.£Xxn=£Xxn;
     return Res;
     }
   public CT*TX £Mmxs(CT*(TX x)s) CN.£Cmxs(xs) //only if refine?=refine
 
-CT,CN[refine? method T mxs((T x)s) newWithFwd]
+CT,CN[refine? method T mxs((T x)s) newWithFwd]=//here, if mxs is private, we will add the pedex to the fields
   public static CT*TX £Cmxs(CT*(TX x)s){
     CN Res=new CN();
-    Res.£Xx1=x1;Fwd.£CAddIfFwd(x1,Res,CN.FieldAssFor_x1);
+    Res.£Xx1=£Xx1;Fwd.£CAddIfFwd(x1,Res,CN.FieldAssFor_x1);
     ..;
-    Res.£Xxn=xn;Fwd.£CAddIfFwd(xn,Res,CN.FieldAssFor_xn);
+    Res.£Xxn=£Xxn;Fwd.£CAddIfFwd(xn,Res,CN.FieldAssFor_xn);
     return Res;
     }
   public CT*TX £Mmxs(CT*(TX x)s) {return CN.£Cmxs(xs);} //only if refine?=refine
@@ -140,9 +140,9 @@ CT,CN[refine? method TX #?x(TX' this) getter]=
   public CT*TX £M#?x() {return CN.£C#?x(this);} //only if refine?=refine
 
 CT,CN[refine? method Void #?x(TX this, TX' that) setter]=
-  public static Void £C#?x(CT*TX £Xthis, CT*TX' that){
-    £Xthis.£Xx=that; return Void.Instance();}
-  public CT*TX £M#?x(CT*TX' that) {return CN.£C#?x(this,that);} //only if refine?=refine
+  public static Void £C#?x(CT*TX £Xthis, CT*TX' £Xthat){
+    £Xthis.£Xx=£Xthat; return Void.Instance();}
+  public CT*TX £M#?x(CT*TX' £Xthat) {return CN.£C#?x(this,£Xthat);} //only if refine?=refine
 
 //TODO: need to handle _Fwd and Instance for interfaces
 CT,CN[ _ NewFwd() newFwd]=

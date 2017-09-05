@@ -107,7 +107,7 @@ public class Resources {
       try{p=p.pop();}
       catch(RuntimeException rte){break;}
     }
-    return res.stream().mapToInt(Integer::intValue).toArray();    
+    return res.stream().mapToInt(Integer::intValue).toArray();
     }
   public static Object getRes(String key,int... ks){
     Object o=usedRes.get(key);
@@ -179,7 +179,7 @@ public class Resources {
     }
   public static class Void implements Revertable{
     public static final Void instance=new Void();
-    public static Void Instance(){return instance;}
+    public static Void Instance(){return type;}
     public static final Void type=new Void();
     @Override
     public ExpCore revert() {
@@ -188,9 +188,11 @@ public class Resources {
     }
   public static class Any implements Revertable{
     public static final Any type=new Any();
+    public static Any Instance(){return type;}
     @Override
     public ExpCore revert() {return ExpCore.EPath.wrap(Path.Any());  }}
   public static class Library implements Revertable{
+    public static Library Instance(){return type;}
     public static final Library type=new Library();
     @Override
     public ExpCore revert() {return ExpCore.EPath.wrap(Path.Library());  }}

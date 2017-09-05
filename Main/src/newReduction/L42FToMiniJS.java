@@ -81,7 +81,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
   public MiniJ.S visit(Cn s) {
     boolean classAny = isClassAny(s);
     if(classAny){
-      E e=new MiniJ.MCall("generated.Resources", "£COf_"+s.getInner(), Collections.emptyList());
+      E e=new MiniJ.MCall("generated.Resource", "£COf_"+s.getInner(), Collections.emptyList());
       return wrapE(e);
     }
     String name=ct.l42ClassName(s.getInner());
@@ -126,7 +126,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     S inner=liftWith(null,null,s.getInner());
     E e=new MiniJ.UseCall(s.getDoc(),s.getUi(),
             L42FToMiniJ.liftMs(s.getMs()),
-            s.getXs(),inner);
+            tools.Map.of(L42FToMiniJ::liftX, s.getXs()),inner);
     return wrapE(e);
     }
   @Override
@@ -143,17 +143,17 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
   @Override
   public MiniJ.S visit(Cast s) {
     String cn = ct.className(s.getT().getCn());
-    return wrapE(new MiniJ.Cast(cn,s.getX()));
+    return wrapE(new MiniJ.Cast(cn,L42FToMiniJ.liftX(s.getX())));
     }
   @Override
   public MiniJ.S visit(Update s) {
-    return new MiniJ.VarAss(s.getX1(), new MiniJ.X(s.getX2()));
+    return new MiniJ.VarAss(L42FToMiniJ.liftX(s.getX1()), new MiniJ.X(L42FToMiniJ.liftX(s.getX2())));
     }
   @Override
   public MiniJ.S visit(If s) {
     S then=s.getThen().accept(this);
     S _else=s.get_else().accept(this);
-    return new MiniJ.If(s.getCondition(), then, _else);
+    return new MiniJ.If(L42FToMiniJ.liftX(s.getCondition()), then, _else);
   }
 
   @Override
@@ -209,7 +209,7 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
       isTerminating=isTerminating&& ki.getE().accept(new Terminating());
       String cn = ct.boxedClassName(ki.getT().getCn());
       S then = ki.getE().accept(this);
-      s=new MiniJ.IfTypeCase(catchX, ki.getX(), cn, then,s);
+      s=new MiniJ.IfTypeCase(catchX, L42FToMiniJ.liftX(ki.getX()), cn, then,s);
       }
     List<S>ss=new ArrayList<>();
     ss.add(s);
@@ -221,11 +221,11 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
     acc.add(res);
     }
   private S liftDsXE(D di) {
-    return liftWith(di.getX(), label, di.getE());
+    return liftWith(L42FToMiniJ.liftX(di.getX()), label, di.getE());
   }
 
   private S liftDsTX(D di) {
-    return new MiniJ.VarDec(ct.className(di.getT().getCn()),di.getX());
+    return new MiniJ.VarDec(ct.className(di.getT().getCn()),L42FToMiniJ.liftX(di.getX()));
   }
 @Override
 public S visit(Unreachable s) { throw Assertions.codeNotReachable();}

@@ -20,6 +20,7 @@ import ast.L42F;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.EPath;
 import ast.L42F.CD;
+import ast.L42F.Cn;
 import ast.L42F.E;
 import ast.MiniJ.M;
 import auxiliaryGrammar.Functions;
@@ -48,6 +49,9 @@ public class Loader {
     catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
     }
   public EPath getPathOf(int index){
+    if(Cn.cnAny.getInner()==index) {return EPath.wrap(Path.Any());}
+    if(Cn.cnVoid.getInner()==index) {return EPath.wrap(Path.Void());}
+    if(Cn.cnLibrary.getInner()==index) {return EPath.wrap(Path.Library());}
     Element e=ct.get(index);
     Path fromming = e.fromming(e.p,currentP);
     return EPath.wrap(fromming);
@@ -123,7 +127,6 @@ public class Loader {
     for(int cn:dep.keySet()){
       String cnString=dep.get(cn);
       if(clMap.containsKey("generated."+cnString)){continue;}
-      else{System.out.println("Recompiling "+cnString+ " sizeMap: "+clMap.size());}
       MiniJ.CD j=L42FToMiniJ.of(ct, ct.get(cn).cd);
       String text="package generated;\n"+MiniJToJava.of(j);
       SourceFile src=new SourceFile(cnString,text);
@@ -131,15 +134,12 @@ public class Loader {
       //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cnString+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
       //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
       }
-    System.out.println("Running javac: dependency size:"+dep.size());
-    System.out.println("Running javac: new size:"+readyToJavac.size());
-    //TODO:??? next if?? how can get empty?
     if (readyToJavac.isEmpty()){return;}
     try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
     catch(CompilationError ce){throw new Error(ce);}
     }
-  public void load(List<String>names,Program p, Paths paths){
-    ct=ct.growWith(names, p, paths).computeDeps();
+  public void load(Program p, Paths paths){
+    ct=ct.growWith(p, paths).computeDeps();
     List<Map<Integer,String>> chunks = ct.listOfDeps();
     Collections.sort(chunks,(s1,s2)->s1.size()-s2.size());
     for(Map<Integer,String>dep:chunks){
@@ -186,8 +186,7 @@ public class Loader {
     return result;
     }
   public ExpCore.ClassB execute(Program p,Paths paths,ExpCore e){
-    List<String> names = computeDbgNames(p);
-    this.load(names,p,paths); //Loader change state here
+    this.load(p,paths); //Loader change state here
     assert this.ct.isCoherent();
     ExpCore.ClassB res= Resources.withPDo(p.reprAsPData(),()->this.run(p,e));//Loader change state here but should be irrelevant
     res=(ExpCore.ClassB)res.accept(new coreVisitors.CloneVisitor(){
@@ -198,7 +197,7 @@ public class Loader {
       });
     return res;
   }
-  private List<String> computeDbgNames(Program p) throws Error {
+  static List<String> computeDbgNames(Program p) {
     List<String>names=new ArrayList<>();
     for(Object o:p.exploredWay()){
       if(o==null){names.add("£E");}

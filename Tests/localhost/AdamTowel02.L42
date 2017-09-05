@@ -45008,7 +45008,8 @@ Library ensureInvariant(Library that) exception This2.Refactor2.PathUnfit, This0
     catch exception This2.Location.NotAvailable catched0 exception This1.ExcHelp.pathUnfit(that:this.of())
     
     (
-      Void unused5=(
+      Void unused5=(//here I'm sure #invariant() is defined, check has right type
+(
         This2.Location.Method m=i.method(selector:i.#default#method(selector:void).#from(builder:(
           capsule This2.S.SBuilder b0=i.#default#method(selector:void).#builder()
           Void unused8=b0.#hash()
@@ -45031,15 +45032,17 @@ Library ensureInvariant(Library that) exception This2.Refactor2.PathUnfit, This0
         Void #invariant() void}))
         
         void
-        )
+        ))
       Void unused6=(
         Library type1=intoOf.#leftrightleft(that: {
         read method 
         Void #invariant() })
         Library unused1=This2.Refactor2.compose(that:that, and:type1)
-        Void unused20=return that
+        Void unused20=return (//if compose is good, Void #invariant was already defined
+that)
         
-        catch exception This2.Refactor2.Fail catched3 void
+        catch exception This2.Refactor2.Fail catched3 (//we skip former return
+void)
         
         void
         )
@@ -45051,14 +45054,14 @@ Library ensureInvariant(Library that) exception This2.Refactor2.PathUnfit, This0
       read method 
       This3.Bool #1#invariant() 
       read method 
-      Void #invariant() (
+      Void #invariant() ((
         This3.Bool cond=this.#1#invariant().#bang()
         (
           Void unused=cond.#checkTrue()
           
           catch exception Void catched0 void
           
-          error (
+          (error (
             This1.Fail.Continue rcv15=(
               This1.Fail rcv16=This1.Fail.#from(builder:(
                 capsule This3.S.SBuilder b=This1.Fail.#builder()
@@ -45098,9 +45101,9 @@ Library ensureInvariant(Library that) exception This2.Refactor2.PathUnfit, This0
               capsule This3.S.SBuilder b1=rcv15.#builder()
               b1
               ))
-            )
+            ))
           )
-        )
+        ))
       refine read method 
       This3.S toS() }))
       
@@ -45210,7 +45213,7 @@ This3.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote()))))
         )
       )
     var This3.S res=This0.kind()
@@ -45222,13 +45225,13 @@ This3.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b0=This3.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This3.S.#from(builder:(
+        (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b1=This3.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -45248,7 +45251,7 @@ This3.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -45277,7 +45280,8 @@ This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
-This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+This0 #apply(This3.S text, This3.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause)))
 class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
@@ -45516,7 +45520,7 @@ This3.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote()))))
         )
       )
     var This3.S res=This0.kind()
@@ -45528,13 +45532,13 @@ This3.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b0=This3.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This3.S.#from(builder:(
+        (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b1=This3.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -45554,7 +45558,7 @@ This3.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -45583,7 +45587,8 @@ This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
-This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+This0 #apply(This3.S text, This3.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause)))
 class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
@@ -46435,7 +46440,8 @@ Library #leftrightleft(Library that) exception This0.Fail (
     (
       This4.Location.Method m=l.method(selector:this.mutK())
       
-      catch exception This4.Location.NotAvailable catched5 exception (
+      catch exception This4.Location.NotAvailable catched5 exception (//TODO: add checks mutK is actually a factory
+(
         This0.Fail.Continue rcv19=(
           This0.Fail rcv20=This0.Fail.#from(builder:(
             capsule This4.S.SBuilder b2=This0.Fail.#builder()
@@ -46470,7 +46476,7 @@ Library #leftrightleft(Library that) exception This0.Fail (
           Void unused43=b4.#d()
           b4
           ))
-        ).#apply(that:catched5)
+        )).#apply(that:catched5)
       
       (
         Void unused44=(
@@ -46480,7 +46486,7 @@ Library #leftrightleft(Library that) exception This0.Fail (
             
             catch exception Void catched12 void
             
-            return that
+            (return that)
             )
           )
         This4.Strings fNs=m.selector().names()
@@ -46550,7 +46556,7 @@ This5.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This5.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This5.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This5.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This5.S.doubleQuote()))))
         )
       )
     var This5.S res=This0.kind()
@@ -46562,13 +46568,13 @@ This5.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This5.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This5.S.#from(builder:(
           capsule This5.S.SBuilder b0=This5.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This5.S.#from(builder:(
+        (res := res.#plusplus(that:This5.S.#from(builder:(
           capsule This5.S.SBuilder b1=This5.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -46588,7 +46594,7 @@ This5.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -46617,7 +46623,8 @@ This5.Bool equals(read This0 that) This5.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This5.S text) This0.#apply(_text:text, cause:This5.Message.Opt.#apply())
 class method 
-This0 #apply(This5.S text, This5.Message cause) This0.#apply(_text:text, cause:This5.Message.Opt.#apply(that:cause))
+This0 #apply(This5.S text, This5.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This5.Message.Opt.#apply(that:cause)))
 class method 
 mut This5.S.SBuilder #builder() This5.S.SBuilder.empty()
 class method 
@@ -46871,7 +46878,8 @@ Library #leftrightleft(Library that) exception This0.Fail (
     (
       This2.Location.Method m=l.method(selector:this.mutK())
       
-      catch exception This2.Location.NotAvailable catched5 exception (
+      catch exception This2.Location.NotAvailable catched5 exception (//TODO: add checks mutK is actually a factory
+(
         This0.Fail.Continue rcv19=(
           This0.Fail rcv20=This0.Fail.#from(builder:(
             capsule This2.S.SBuilder b2=This0.Fail.#builder()
@@ -46906,7 +46914,7 @@ Library #leftrightleft(Library that) exception This0.Fail (
           Void unused43=b4.#d()
           b4
           ))
-        ).#apply(that:catched5)
+        )).#apply(that:catched5)
       
       (
         Void unused44=(
@@ -46916,7 +46924,7 @@ Library #leftrightleft(Library that) exception This0.Fail (
             
             catch exception Void catched12 void
             
-            return that
+            (return that)
             )
           )
         This2.Strings fNs=m.selector().names()
@@ -46983,7 +46991,7 @@ This2.Bool shouldDecorate(This2.Location.Lib that) exception This0.Fail (
           
           catch exception Void catched2 void
           
-          exception This0.Fail.#from(builder:(
+          (exception This0.Fail.#from(builder:(
             capsule This2.S.SBuilder b0=This0.Fail.#builder()
             Void unused8=b0.#m()
             Void unused9=b0.#e()
@@ -47017,7 +47025,7 @@ This2.Bool shouldDecorate(This2.Location.Lib that) exception This0.Fail (
             Void unused37=b0.#o()
             Void unused38=b0.#S()
             b0
-            ))
+            )))
           )
         )
       Void unused6=return mToS.isAbstract()
@@ -47032,7 +47040,8 @@ CurlyBlock-Should be unreachable code
 */}
   )
 class method 
-Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs) exception This0.Fail (
+Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs) exception This0.Fail (//auxiliary functions
+(
   Void unused=(/*accumulation
 */
     capsule This2.Use.Override.Decorator acc=This2.Use.Override.#from(seqBuilder:(
@@ -47091,7 +47100,7 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
                   exception void
                   )
                 
-                (
+                ((
                   Void unused14=b.#add(that:This2.Refactor2.Method.#from(seqBuilder:(
                     capsule This2.Refactor2.Method b0=This2.Refactor2.Method.#seqBuilder()
                     Void unused15=b0.#add(hide:This2.Refactor2.Method.#default##square(hide:void).#from(builder:(
@@ -47121,7 +47130,7 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
                     b4
                     )))), fT:fT.#inner()))))
                   void
-                  )
+                  ))
                 )
               )
             
@@ -47172,7 +47181,8 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
         ))
       )})
     
-    catch exception This2.Refactor2.Fail catched18 error This2.X.#from(builder:(
+    catch exception This2.Refactor2.Fail catched18 error (//final wrapping
+This2.X.#from(builder:(
       capsule This2.S.SBuilder b5=This2.X.#builder()
       Void unused27=b5.#A()
       Void unused28=b5.#d()
@@ -47194,11 +47204,13 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
       Void unused44=b5.#o()
       Void unused45=b5.#n()
       b5
-      )).#apply(that:catched18)
+      ))).#apply(that:catched18)
     
     (/*accumulation
 */
-      Library miniToS= {implements This3.Concept.ToS
+      Library miniToS=(//lib can override baseToS to provid the real behaviour,
+//the empty baseToS is used for classes wiht no fields
+ {implements This3.Concept.ToS
       refine read method 
       This3.S toS() (
         This3.S.Continue rcv25=(
@@ -47223,7 +47235,7 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
       This3.S baseToS() This3.S.#from(builder:(
         capsule This3.S.SBuilder b=This3.S.#builder()
         b
-        ))}
+        ))})
       Void unused46=return This2.Refactor2.Method.#from(seqBuilder:(
         capsule This2.Refactor2.Method b6=This2.Refactor2.Method.#seqBuilder()
         Void unused47=b6.#add(hide:This2.Refactor2.Method.#default##square(hide:void).#from(builder:(
@@ -47287,7 +47299,7 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
 */}
-  )
+  ))
 class method 
 This2.S className(class Any that) (
   Void unused=(
@@ -47552,7 +47564,7 @@ CastT-Should be unreachable code
               
               catch exception Void catched11 void
               
-              return ts
+              (return ts)
               )
             )
           return This2.S.doubleQuote().#plusplus(that:ts.#plusplus(that:This2.S.doubleQuote()))
@@ -47696,7 +47708,7 @@ Library #apply(This2.Selector fSel, This2.Location.Type fT) exception This0.Fail
       
       catch exception Void catched void
       
-      return This0.FieldOpAddClassName.#apply(selector:fSel, type:fT)
+      (return This0.FieldOpAddClassName.#apply(selector:fSel, type:fT))
       )
     Void unused1=return This0.FieldOp.#apply(selector:fSel, type:fT)
     
@@ -47742,7 +47754,7 @@ This3.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote()))))
         )
       )
     var This3.S res=This0.kind()
@@ -47754,13 +47766,13 @@ This3.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b0=This3.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This3.S.#from(builder:(
+        (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b1=This3.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -47780,7 +47792,7 @@ This3.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -47809,7 +47821,8 @@ This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
-This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+This0 #apply(This3.S text, This3.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause)))
 class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
@@ -48216,7 +48229,7 @@ Library #apply(This3.Selector selector, This3.Location.Type type) exception This
         
         catch exception Void catched0 void
         
-        return this.specialize(that:This0.forClass(), selector:selector, refTo:r)
+        (return this.specialize(that:This0.forClass(), selector:selector, refTo:r))
         )
       )
     Void unused1=(
@@ -48226,7 +48239,7 @@ Library #apply(This3.Selector selector, This3.Location.Type type) exception This
         
         catch exception Void catched2 void
         
-        return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r)
+        (return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r))
         )
       )
     Void unused2=return this.specialize(that:This0.forReadable(), selector:selector, refTo:r)
@@ -48538,7 +48551,7 @@ Library #apply(This3.Selector selector, This3.Location.Type type) exception This
         
         catch exception Void catched0 void
         
-        return this.specialize(that:This0.forClass(), selector:selector, refTo:r)
+        (return this.specialize(that:This0.forClass(), selector:selector, refTo:r))
         )
       )
     Void unused1=(
@@ -48548,7 +48561,7 @@ Library #apply(This3.Selector selector, This3.Location.Type type) exception This
         
         catch exception Void catched2 void
         
-        return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r)
+        (return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r))
         )
       )
     Void unused2=return this.specialize(that:This0.forReadable(), selector:selector, refTo:r)
@@ -48667,7 +48680,8 @@ Library #leftrightleft(Library that) exception This0.Fail (
     (
       This2.Location.Method m=l.method(selector:this.mutK())
       
-      catch exception This2.Location.NotAvailable catched5 exception (
+      catch exception This2.Location.NotAvailable catched5 exception (//TODO: add checks mutK is actually a factory
+(
         This0.Fail.Continue rcv19=(
           This0.Fail rcv20=This0.Fail.#from(builder:(
             capsule This2.S.SBuilder b2=This0.Fail.#builder()
@@ -48702,7 +48716,7 @@ Library #leftrightleft(Library that) exception This0.Fail (
           Void unused43=b4.#d()
           b4
           ))
-        ).#apply(that:catched5)
+        )).#apply(that:catched5)
       
       (
         Void unused44=(
@@ -48712,7 +48726,7 @@ Library #leftrightleft(Library that) exception This0.Fail (
             
             catch exception Void catched12 void
             
-            return that
+            (return that)
             )
           )
         This2.Strings fNs=m.selector().names()
@@ -48791,7 +48805,7 @@ This2.Bool shouldDecorate(This2.Location.Lib that) exception This0.Fail (
           
           catch exception Void catched2 void
           
-          exception This0.Fail.#from(builder:(
+          (exception This0.Fail.#from(builder:(
             capsule This2.S.SBuilder b0=This0.Fail.#builder()
             Void unused20=b0.#m()
             Void unused21=b0.#e()
@@ -48828,7 +48842,7 @@ This2.Bool shouldDecorate(This2.Location.Lib that) exception This0.Fail (
             Void unused52=b0.#l()
             Void unused53=b0.#s()
             b0
-            ))
+            )))
           )
         )
       Void unused18=return mToS.isAbstract()
@@ -48845,23 +48859,24 @@ CurlyBlock-Should be unreachable code
 class method 
 Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs) exception This0.Fail (
   Void unused=(
-    Void unused0=(
+    Void unused0=(//accumulation
+(
       This2.Bool cond=fNs.isEmpty()
       (
         Void unused1=cond.#checkTrue()
         
         catch exception Void catched0 void
         
-        error This2.S.#from(builder:(
+        (error This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused2=b0.#T()
           Void unused3=b0.#O()
           Void unused4=b0.#D()
           Void unused5=b0.#O()
           b0
-          ))
+          )))
         )
-      )
+      ))
     capsule This2.Use.Override.Decorator acc=This2.Use.Override.#from(seqBuilder:(
       capsule This2.Composers.Libs b=This2.Use.Override.#seqBuilder()
       Void unused6=(
@@ -49023,7 +49038,7 @@ Library operationTrait(This2.Strings fNs, This2.Location.Type.Parameter.List fTs
             
             catch exception Void catched0 void
             
-            return This3.Bool.false()
+            (return This3.Bool.false())
             )
           )
         Void unused1=return this.#2equals(that:that)
@@ -49037,7 +49052,8 @@ CurlyBlock-Should be unreachable code
 */}
       )})
     
-    catch exception This2.Refactor2.Fail catched25 error This2.X.#from(builder:(
+    catch exception This2.Refactor2.Fail catched25 error (//final wrapping
+This2.X.#from(builder:(
       capsule This2.S.SBuilder b8=This2.X.#builder()
       Void unused64=b8.#A()
       Void unused65=b8.#d()
@@ -49059,12 +49075,13 @@ CurlyBlock-Should be unreachable code
       Void unused81=b8.#o()
       Void unused82=b8.#n()
       b8
-      )).#apply(that:catched25)
+      ))).#apply(that:catched25)
     
     (
       Library miniEquals= {implements This3.Concept.Equals
       read method 
-      This3.Bool equals(read This0 that) This3.Bool.true()
+      This3.Bool equals(read This0 that) (//no fields
+This3.Bool.true())
       refine read method 
       This3.Bool #equalequal(read Any that) (
         Void unused=(
@@ -49174,7 +49191,7 @@ This3.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This3.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This3.S.doubleQuote()))))
         )
       )
     var This3.S res=This0.kind()
@@ -49186,13 +49203,13 @@ This3.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This3.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b0=This3.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This3.S.#from(builder:(
+        (res := res.#plusplus(that:This3.S.#from(builder:(
           capsule This3.S.SBuilder b1=This3.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -49212,7 +49229,7 @@ This3.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -49241,7 +49258,8 @@ This3.Bool equals(read This0 that) This3.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This3.S text) This0.#apply(_text:text, cause:This3.Message.Opt.#apply())
 class method 
-This0 #apply(This3.S text, This3.Message cause) This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause))
+This0 #apply(This3.S text, This3.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This3.Message.Opt.#apply(that:cause)))
 class method 
 mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
@@ -49556,7 +49574,7 @@ Library #apply(This3.Selector selector, This3.Location.Type type) exception This
         
         catch exception Void catched0 void
         
-        return this.specialize(that:This0.forClass(), selector:selector, refTo:r)
+        (return this.specialize(that:This0.forClass(), selector:selector, refTo:r))
         )
       )
     Void unused1=(
@@ -49566,7 +49584,7 @@ Library #apply(This3.Selector selector, This3.Location.Type type) exception This
         
         catch exception Void catched2 void
         
-        return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r)
+        (return this.specialize(that:This0.forImmutable(), selector:selector, refTo:r))
         )
       )
     Void unused2=return this.specialize(that:This0.forReadable(), selector:selector, refTo:r)
@@ -50372,7 +50390,7 @@ This2.S toS() (
         
         catch exception Void catched0 void
         
-        return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote())))
+        (return This0.kind().#plusplus(that:This2.S.doubleQuote().#plusplus(that:this.text().#plusplus(that:This2.S.doubleQuote()))))
         )
       )
     var This2.S res=This0.kind()
@@ -50384,13 +50402,13 @@ This2.S toS() (
       (
         Void unused4=cond0.#checkTrue()
         
-        catch exception Void catched3 res := res.#plusplus(that:This2.S.#from(builder:(
+        catch exception Void catched3 (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b0=This2.S.#builder()
           Void unused5=b0.#oSquare()
           b0
-          )))
+          ))))
         
-        res := res.#plusplus(that:This2.S.#from(builder:(
+        (res := res.#plusplus(that:This2.S.#from(builder:(
           capsule This2.S.SBuilder b1=This2.S.#builder()
           Void unused6=b1.#oSquare()
           Void unused7=b1.#t()
@@ -50410,7 +50428,7 @@ This2.S toS() (
           Void unused18=b2.#e()
           Void unused19=b2.#colon()
           b2
-          )))))))
+          ))))))))
         )
       )
     Void unused2=return (
@@ -50439,7 +50457,8 @@ This2.Bool equals(read This0 that) This2.Message.EqualMessages.#apply(that:this,
 class method 
 This0 #apply(This2.S text) This0.#apply(_text:text, cause:This2.Message.Opt.#apply())
 class method 
-This0 #apply(This2.S text, This2.Message cause) This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause))
+This0 #apply(This2.S text, This2.Message cause) (/*next part could become a trait on its own (but S must keep its version)
+*/This0.#apply(_text:text, cause:This2.Message.Opt.#apply(that:cause)))
 class method 
 mut This2.S.SBuilder #builder() This2.S.SBuilder.empty()
 class method 
@@ -52676,7 +52695,8 @@ mut This3.S.SBuilder #builder() This3.S.SBuilder.empty()
 class method 
 This0 parse(This3.S that) 
 refine read method 
-This3.S toS() this.that()
+This3.S toS() (// Assumes simple, non-destructive parsing
+this.that())
 read method 
 This3.Bool equals(read This0 that) this.that().#equalequal(that:that.that())
 refine class method 
@@ -62223,19 +62243,19 @@ This2.S collapse() (
               exception void
               )
             
-            (
+            ((
               This2.Bool cond=a.#inner().that().#bang()
               (
                 Void unused4=cond.#checkTrue()
                 
                 catch exception Void catched6 void
                 
-                (
+                ((
                   Void unused5=b.#add(that:a.#inner().msg(), sep:This2.S.nl())
                   void
-                  )
+                  ))
                 )
-              )
+              ))
             )
           
           catch exception Void catched8 void
