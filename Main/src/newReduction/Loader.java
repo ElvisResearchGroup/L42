@@ -52,15 +52,15 @@ public class Loader {
       }
     else {
       loadCache();
+      loadLoader(cl);
       }
     }
   private boolean checkPath(java.nio.file.Path path) {
     this.cacheFile=path;
     if(path==null) {return false;}
     try {
-      if(Files.exists(path) && Files.size(path)<50) {return true;}
-      Files.delete(path);
-      Files.createFile(path);
+      if(!Files.exists(path)){Files.createFile(path);}
+      if(Files.size(path)>50) {return true;}
       }
     catch (IOException e) {throw new Error(e);}
     return false;
@@ -100,10 +100,16 @@ public class Loader {
     //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
-    Class<?> cl0 = clX.loadClass("generated."+cdResource.getCn());
-    Field fLoader = cl0.getDeclaredField("loader");
-    fLoader.set(null,this);
+    loadLoader(clX);
   }
+  private void loadLoader(MapClassLoader clX){
+    try{
+      Class<?> cl0 = clX.loadClass("generated.Resource");
+      Field fLoader = cl0.getDeclaredField("loader");
+      fLoader.set(null,this);
+      }
+    catch(IllegalAccessException | ClassNotFoundException | NoSuchFieldException | SecurityException e){throw new Error(e);}
+    }
   private ClassTable ct;
   private Program currentP=null;
   private Cache cache=new Cache();
@@ -129,7 +135,7 @@ public class Loader {
     }
   public void processDep(Map<Integer,String>dep){
     Cache.Element cDep = cache.get(new HashSet<>(dep.values()));
-    if(cDep==null ||validCache(ct, dep, cDep.cds)){
+    if(cDep==null ||!validCache(ct, dep, cDep.cds)){
       Set<String>oldDom=new HashSet<>(clMap.keySet());
       javac(dep);//this enrich clMap
       List<L42F.CD> cds=new ArrayList<>();
@@ -141,6 +147,7 @@ public class Loader {
       this.cache.add(new HashSet<>(dep.values()), cds, newClMap);
       return;
       }
+    if(!cDep.clMap.isEmpty())System.out.println("Using cache for "+cDep.clMap.keySet());
     for(String cn : cDep.clMap.keySet()){
       ClassFile bytecode=clMap.get(cn);
       ClassFile bytecodeOld=clMap.get(cn);

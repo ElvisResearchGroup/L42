@@ -32,6 +32,7 @@ public class ReplState {
   ast.Expression.ClassReuse originalL;
   ast.ExpCore.ClassB desugaredL;
   ProgramReduction reduction=new ProgramReduction(Paths.get("localhost","ReplCache.C42"));
+  //ProgramReduction reduction=new ProgramReduction(null);
   Program p;
   public ReplState(String originalS, ast.Expression.ClassReuse originalL, ast.ExpCore.ClassB desugaredL,Program p) {
     this.originalS = originalS;
