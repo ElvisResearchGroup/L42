@@ -15,7 +15,7 @@ import lombok.Value;
 import lombok.experimental.Wither;
 import l42FVisitors.Visitor;
 import l42FVisitors.BodyVisitor;
-
+import java.io.Serializable;
 
 public class L42F {
 public static interface Kind{
@@ -43,7 +43,7 @@ public String boxedClassName(CD cd){return "Float";}
 public String boxedClassName(CD cd){return className(cd);}
 }
 @Value @Wither public static class
-CD{Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
+CD implements Serializable{Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
   public String dbgName() {
     StringBuilder b=new StringBuilder();
     tools.StringBuilders.formatSequence(b, dbgName.iterator(), "£C",s->b.append(s));
@@ -56,14 +56,14 @@ CD{Kind kind; int cn; List<String>dbgName; List<Integer> cns; List<M> ms;
   }
 
 @Value @Wither public static class
-TX{T t; String x;}
+TX implements Serializable{T t; String x;}
 
 @Value @Wither public static class
-M{
+M implements Serializable{
   boolean refine; T returnType;
   Ast.MethodSelector selector; List<TX> txs; Body body;
   }
-public static interface Body{
+public static interface Body extends Serializable{
   <T> T accept(BodyVisitor<T> v);
   }
 public static enum SimpleBody implements Body{
@@ -149,12 +149,12 @@ Cast implements E{T t; String x;
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
 
 @Value @Wither public static class
-K {Ast.SignalKind kind; T t; String x; E e;}
+K  implements Serializable{Ast.SignalKind kind; T t; String x; E e;}
 
 @Value @Wither public static class
-D {boolean var; T t; String x; E e;}
+D  implements Serializable{boolean var; T t; String x; E e;}
 @Value @Wither public static class
-T {Ast.Mdf mdf; int cn;
+T  implements Serializable{Ast.Mdf mdf; int cn;
   public static final T immAny=new T(Mdf.Immutable,Cn.cnAny.inner);
   public static final T immVoid=new T(Mdf.Immutable,Cn.cnVoid.inner);
   public static final T immLibrary=new T(Mdf.Immutable,Cn.cnLibrary.inner);

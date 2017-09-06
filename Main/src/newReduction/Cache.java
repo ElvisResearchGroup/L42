@@ -1,18 +1,31 @@
 package newReduction;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import ast.L42F;
 import ast.L42F.CD;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
+import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
+import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import tools.Assertions;
 
 
-public class Cache {
-  public static class Element{
+public class Cache implements Serializable{
+  private static final long serialVersionUID = 1L;
+  public static class Element implements Serializable{
+    private static final long serialVersionUID = 1L;
     public Element(List<CD> cds, HashMap<String, ClassFile> clMap) {
       this.cds = cds;
       this.clMap = clMap;
@@ -22,7 +35,7 @@ public class Cache {
     }
   HashMap<String, ClassFile> fullMap=new HashMap<>();
   HashMap<Set<String>,Element>inner=new HashMap<>();
-  public static Cache loadFromFile(){throw Assertions.codeNotReachable();}
+  HashMap<String,SClassFile> smap=null;//contains values when saving/loading
   public Element get(Set<String> key){
     Element res = inner.get(key);
     return res;
@@ -47,4 +60,27 @@ public class Cache {
       }
     inner.put(dep, new Element(cds,clMapNoRep));
     }
+
+  public void saveOnFile(Path file,MapClassLoader cl){
+    this.smap = cl.exportMap();
+    try (
+      OutputStream os = Files.newOutputStream(file);
+      ObjectOutputStream out = new ObjectOutputStream(os);
+      )
+      {out.writeObject(this);}
+      catch(IOException i) {throw new Error(i);}
+    }
+  public static Cache readFromFile(Path file){
+    try (
+      InputStream is = Files.newInputStream(file);
+      ObjectInputStream in = new ObjectInputStream(is);
+    ){
+      Object res = in.readObject();
+      return (Cache)res;
+      }
+    catch(IOException i) {throw new Error(i);}
+    catch (ClassNotFoundException e) {throw new Error(e);}
+    catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    }
+
   }

@@ -24,7 +24,7 @@ import lombok.ToString;
 import lombok.Value;
 import lombok.experimental.Wither;
 import platformSpecific.javaTranslation.Resources;
-
+import java.io.Serializable;
 public interface Ast {
 
  public interface Atom {
@@ -135,7 +135,7 @@ public interface Ast {
   public static final Type immLibrary=new Type(Mdf.Immutable,Path.Library(),Doc.empty());
   public static final Type immAny=new Type(Mdf.Immutable,Path.Any(),Doc.empty());
   public static final Type classAny=new Type(Mdf.Class,Path.Any(),Doc.empty());
-  
+
   public String toString() {
    return (mdf.inner+" "+this.path.toString()).trim();
   }
@@ -144,7 +144,7 @@ public interface Ast {
 
  @Value
  @Wither
- public class MethodSelector {
+ public class MethodSelector implements Serializable{
   String name;
   long uniqueNum;
   public boolean isUnique(){return uniqueNum!=-1;}
@@ -271,13 +271,13 @@ public interface Ast {
     String res=
       this.mdf+":"+ts.stream().map(e->e.toString()).collect(Collectors.joining(","))
       +"->"+returnType;
-    if (!exceptions.isEmpty()){res=res+" exceptions:"+exceptions.stream().map(e->e.toString()).collect(Collectors.joining(","));}   
+    if (!exceptions.isEmpty()){res=res+" exceptions:"+exceptions.stream().map(e->e.toString()).collect(Collectors.joining(","));}
     if(this.refine){res="refine "+res;}
     return res;
     }
  }
  @Value @Wither
- public static class C{
+ public static class C implements Serializable{
    String inner;
    long uniqueNum;
    public boolean isUnique(){return uniqueNum!=-1;}
@@ -298,16 +298,16 @@ public interface Ast {
      int index=name.lastIndexOf("_$_");
      long uniqueNum=sToNumber(name,index);
      if(uniqueNum==-1){return new C(name,-1);}
-     return new C(name.substring(0,index),uniqueNum);       
+     return new C(name.substring(0,index),uniqueNum);
      }
    public String toString(){
      if(uniqueNum==-1){return inner;}
      return inner+"_$_"+uniqueNum;
      }
    }
- 
+
  //-------------------
- public static abstract class Path {
+ public static abstract class Path implements Serializable{
  public static Path sugarParse(List<String> rowData){
    Path res=PathSugar._instance(rowData);
    if (res!=null){return res;}
@@ -350,13 +350,13 @@ public interface Ast {
    public Path setNewOuter(int n){throw Assertions.codeNotReachable("path.setNewOuter on not core:"+this);}
    public int outerNumber(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
    public List<C> sugarNames(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
-   
- }  
+
+ }
  //-----------------------------
- 
+
  @Value @Wither
  @EqualsAndHashCode(exclude = "p") /*to string manually defined so @ToString(exclude = "p") not needed*/
- public static class Doc implements Expression.HasPos<Doc>{
+ public static class Doc implements Expression.HasPos<Doc>,Serializable{
   boolean multiline;
   String s;
   List<Object> annotations;
@@ -468,14 +468,14 @@ public interface Ast {
     }
      public String _getParameterForPlugin(){return _getParameterFor("plugin");}
         public String _getParameterForPluginPart(){return _getParameterFor("pluginPart");}
-        
+
         public String toStringWeak() {
           List<Object> paths = new ArrayList<>();
           for (Object pi : this.annotations) {
-            if (pi instanceof Path) { 
+            if (pi instanceof Path) {
               paths.add("@" + sugarVisitors.ToFormattedText.of((Path) pi));
             } else {
-              paths.add("@" + (String) pi);  
+              paths.add("@" + (String) pi);
             }
           }
           return String.format(this.s, paths.toArray());
@@ -507,8 +507,8 @@ public interface Ast {
   }
 
   public Doc sum(Doc that) {
-   
-   //be carefull, a more optimized implementation would mess up annotations as in 
+
+   //be carefull, a more optimized implementation would mess up annotations as in
    // /*@a b*/ +/* c*/ would create annotations=[" b"] while
    // /*@a b c*/ would create annotations=[" b c"]
    String tosThis=this.toString();
@@ -523,7 +523,7 @@ public interface Ast {
     }
 
   private static int readAnnotation(String s, int start, List<Object> paths) {
-    boolean isPath=PathAux.isValidPathStart(s.charAt(start));        
+    boolean isPath=PathAux.isValidPathStart(s.charAt(start));
     StringBuilder sb = new StringBuilder();
     for (int i = start; i < s.length(); i++) {
       char ci = s.charAt(i);
@@ -535,7 +535,7 @@ public interface Ast {
     String res = sb.toString();
     if (isPath) {paths.add(Path.sugarParse(res));}
     else {paths.add(res);}
-    return start + res.length() - 1;  
+    return start + res.length() - 1;
     }
 
   private static void readParameter(String s, int start, List<String> parameters) {
@@ -616,8 +616,8 @@ public interface Ast {
   BangLTLTEqual("!<<=",OpKind.RelationalOp,false,true,true),//
   BangGTGTEqual("!>>=",OpKind.RelationalOp,true,true,true),//
   BangEqual("!=",OpKind.RelationalOp, true,true,true),//
-  
-  
+
+
   Plus("+", OpKind.DataOp, true, true,false),//
   Minus("-", OpKind.DataOp, true,true,false),//
   Times("*", OpKind.DataOp, true, true,false),//
@@ -627,7 +627,7 @@ public interface Ast {
   TimesTimes("**",OpKind.DataOp, true,false,false),//
   BabelFishL("<><",OpKind.DataOp, true,false,false),//
   BabelFishR("><>",OpKind.DataOp, false,false,false),//
-  
+
   PlusEqual("+=", OpKind.EqOp,true, true,false),//
   MinusEqual("-=",OpKind.EqOp, true,true,false),//
   TimesEqual("*=",OpKind.EqOp,true,true,false),//
@@ -646,7 +646,7 @@ public interface Ast {
   public final boolean normalized;// false for <<,<, <=,<<=,><> etc
   public final boolean leftAssociative;// false for ++ << >> ** ==
   public final boolean negated;//true for all starting with !
-  
+
   Op(String inner, OpKind kind, boolean normalized, boolean leftAssociative, boolean negated) {
    this.inner = inner;
    this.kind = kind;
@@ -706,7 +706,7 @@ public interface Ast {
   None, Ph, Partial
  }*/
 
- public static @Wither @Value class Position {
+ public static @Wither @Value class Position implements Serializable{
   public static final Position noInfo = new Position(null, Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2, 0, 0,null);
   public Position sum(Position that){
     if (this==noInfo){return that;}

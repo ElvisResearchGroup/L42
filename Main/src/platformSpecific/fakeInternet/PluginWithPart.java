@@ -1,5 +1,6 @@
 package platformSpecific.fakeInternet;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -85,10 +86,10 @@ public class PluginWithPart implements PluginType{
     if ((method.getModifiers() & Modifier.STATIC) == 0) {
     rec=es.get(0);
     es=es.subList(1,es.size());
-    }  
+    }
     return ProtectedPluginType.executeMethod(method, p, rec, es.toArray());
     }
-  public static class PlgInfo{
+  public static class PlgInfo implements Serializable{
     public String plgString;
     public String plgName;
     public Class<?> plgClass;
@@ -102,11 +103,11 @@ public class PluginWithPart implements PluginType{
       catch(ClassNotFoundException|SecurityException e){
         throw Assertions.codeNotReachable();
         }
-      } 
+      }
     }
   }
     @SuppressWarnings("serial")
-    public static class UsingInfo{
+    public static class UsingInfo implements Serializable{
     public static class NonExistantMethod extends RuntimeException{}
     public boolean staticMethod=false;
     public List<String> names;// avoiding _this, just the parameter names, encoding java types
@@ -122,7 +123,7 @@ public class PluginWithPart implements PluginType{
     public UsingInfo(PlgInfo pi,Method m){
       plgInfo=pi;
       methOrKs=m;
-      isVoid=m.getReturnType().equals(Void.TYPE);   
+      isVoid=m.getReturnType().equals(Void.TYPE);
       staticMethod=Modifier.isStatic(m.getModifiers());
       jMethName=m.getName();
       jts.addAll(Arrays.asList(m.getParameterTypes()));
@@ -146,7 +147,7 @@ public class PluginWithPart implements PluginType{
     public UsingInfo(PlgInfo pi,Constructor<?> m){
       plgInfo=pi;
       methOrKs=m;
-      isVoid=false;   
+      isVoid=false;
       staticMethod=true;
       jMethName="new";
       jts.addAll(Arrays.asList(m.getParameterTypes()));
@@ -220,8 +221,8 @@ public class PluginWithPart implements PluginType{
       catch (ClassNotFoundException e) { throw new Error(e); }
       }
     }
-  
-  
+
+
   @Override
   public String executableJ(UsingInfo ui,String te,List<String>tes,Set<String> labels){
     if (ui.methOrKs==null){return executableInstanceof(ui,te,tes,labels);}
@@ -277,10 +278,10 @@ public class PluginWithPart implements PluginType{
         }
       else{
         res.append(plF+"."+ui.jMethName+"("+opt);
-        } 
+        }
       }
     else{
-      res.append("new "+ui.plgInfo.plgClass.getCanonicalName()+"("+opt);    
+      res.append("new "+ui.plgInfo.plgClass.getCanonicalName()+"("+opt);
     }
     StringBuilders.formatSequence(res,
       IntStream.range(1, ui.ts.size()+1).iterator(),

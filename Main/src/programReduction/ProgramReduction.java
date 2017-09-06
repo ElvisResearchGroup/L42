@@ -3,6 +3,7 @@ package programReduction;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 
+import java.nio.file.Path;
 import java.util.Collections;
 
 import ast.Ast;
@@ -14,7 +15,8 @@ import newReduction.ClassTable;
 import newReduction.Loader;
 
 public class ProgramReduction {
-  Loader loader=new Loader();
+  public ProgramReduction(Path path) {loader=new Loader(path);}
+  Loader loader;
   public ClassB allSteps(Program top){
     while(!IsCompiled.of(top.top())){
       top=step(top);

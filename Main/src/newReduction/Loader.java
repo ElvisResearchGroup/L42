@@ -43,10 +43,27 @@ import programReduction.Program;
 import tools.Assertions;
 
 public class Loader {
-  public Loader() {
+  public Loader(java.nio.file.Path path) {
     this.ct = ClassTable.empty;
-    try {addResource();}
-    catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
+    boolean isThere=checkPath(path);
+    if(!isThere) {
+      try {addResource();}
+      catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
+      }
+    else {
+      loadCache();
+      }
+    }
+  private boolean checkPath(java.nio.file.Path path) {
+    this.cacheFile=path;
+    if(path==null) {return false;}
+    try {
+      if(Files.exists(path) && Files.size(path)<50) {return true;}
+      Files.delete(path);
+      Files.createFile(path);
+      }
+    catch (IOException e) {throw new Error(e);}
+    return false;
     }
   public EPath getPathOf(int index){
     if(Cn.cnAny.getInner()==index) {return EPath.wrap(Path.Any());}
@@ -90,8 +107,18 @@ public class Loader {
   private ClassTable ct;
   private Program currentP=null;
   private Cache cache=new Cache();
+  private java.nio.file.Path cacheFile=null;
   HashMap<String, ClassFile> clMap=new HashMap<>();
   MapClassLoader cl=new MapClassLoader(clMap, ClassLoader.getSystemClassLoader());
+  private void loadCache() {
+    assert this.cacheFile!=null;
+    cache=Cache.readFromFile(cacheFile);
+    cl.updateFromMap(cache.smap);
+    }
+
+  private void saveCache() {
+    if(this.cacheFile!=null) {cache.saveOnFile(cacheFile,cl);}
+    }
 
   static public boolean validCache(ClassTable ct1, Map<Integer,String>dep, List<L42F.CD>cds){
     if(dep.size()!=cds.size()){return false;}
@@ -195,6 +222,7 @@ public class Loader {
         return s.withUniqueId(p.getFreshId());
         }
       });
+    this.saveCache();
     return res;
   }
   static List<String> computeDbgNames(Program p) {

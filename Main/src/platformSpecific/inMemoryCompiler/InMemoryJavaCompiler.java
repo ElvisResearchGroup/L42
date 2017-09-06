@@ -21,7 +21,7 @@ public class InMemoryJavaCompiler {
     private static URI methForSuper(String s){
     try {
     return java.net.URI.create(URLEncoder.encode(s,"UTF-8"));
-    } catch (UnsupportedEncodingException e) { throw new Error(e);} 
+    } catch (UnsupportedEncodingException e) { throw new Error(e);}
     }
     public SourceFile(String className, String contents) {
       super(methForSuper(
@@ -52,11 +52,11 @@ public class InMemoryJavaCompiler {
       }
     @Override
     public OutputStream openOutputStream() throws IOException {
-      return byteCode; 
+      return byteCode;
       }
     }
-  
-  
+
+
   private static class MyDiagnosticListener implements DiagnosticListener<JavaFileObject> {
     public List<Diagnostic<? extends JavaFileObject>> diagnostic=new ArrayList<>();
     public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
@@ -88,11 +88,11 @@ public class InMemoryJavaCompiler {
         }
       private final HashMap<String,ClassFile> map;
       public HashMap<String,ClassFile> map(){return map;}
-      
-      private static class SClassFile implements Serializable{
+
+      public static class SClassFile implements Serializable{
         private static final long serialVersionUID = 1L;
         public  String name;
-        private byte[] bytes=null; 
+        private byte[] bytes=null;
         private Kind kind;
         static SClassFile fromCF(ClassFile from){
           SClassFile res=new SClassFile();
@@ -108,10 +108,7 @@ public class InMemoryJavaCompiler {
           }
         }
       public void saveOnFile(Path file){
-        HashMap<String, SClassFile> smap =new HashMap<>();
-        for(Entry<String, ClassFile> e:map().entrySet()){
-          smap.put(e.getKey(),SClassFile.fromCF(e.getValue()));
-          }
+        HashMap<String, SClassFile> smap = exportMap();
         try (
           OutputStream os = Files.newOutputStream(file);
           ObjectOutputStream out = new ObjectOutputStream(os);
@@ -119,7 +116,15 @@ public class InMemoryJavaCompiler {
           out.writeObject(smap);
         }catch(IOException i) {throw new Error(i);}
       }
-      
+
+      public HashMap<String, SClassFile> exportMap() {
+        HashMap<String, SClassFile> smap =new HashMap<>();
+        for(Entry<String, ClassFile> e:map().entrySet()){
+          smap.put(e.getKey(),SClassFile.fromCF(e.getValue()));
+          }
+        return smap;
+      }
+
       public static MapClassLoader readFromFile(Path file,ClassLoader env){
         try (
           InputStream is = Files.newInputStream(file);
@@ -133,12 +138,17 @@ public class InMemoryJavaCompiler {
             map.put(e.getKey(),e.getValue().toCF());
             }
           return new MapClassLoader(map,env);
-        }
+          }
         catch(IOException i) {throw new Error(i);}
         catch (ClassNotFoundException e) {throw new Error(e);}
         catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
-      }
-      
+        }
+      public void updateFromMap(HashMap<String,SClassFile> smap){
+        map.clear();
+        for(Entry<String, SClassFile> e:smap.entrySet()){
+          map.put(e.getKey(),e.getValue().toCF());
+          }
+        }
       @Override
       protected Class<?> findClass(String name)throws ClassNotFoundException {
         if(!map.containsKey(name)){

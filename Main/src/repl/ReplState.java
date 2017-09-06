@@ -1,5 +1,6 @@
 package repl;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ReplState {
   String originalS;
   ast.Expression.ClassReuse originalL;
   ast.ExpCore.ClassB desugaredL;
-  ProgramReduction reduction=new ProgramReduction();
+  ProgramReduction reduction=new ProgramReduction(Paths.get("localhost","ReplCache.C42"));
   Program p;
   public ReplState(String originalS, ast.Expression.ClassReuse originalL, ast.ExpCore.ClassB desugaredL,Program p) {
     this.originalS = originalS;
