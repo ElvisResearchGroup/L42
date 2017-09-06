@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import helpers.TestHelper;
+
 public class ReplTest {
 public static void main(String[]arg)throws Throwable{
   ReplGui.main(arg);

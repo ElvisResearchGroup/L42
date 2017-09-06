@@ -23,7 +23,7 @@ public static class TestExecution {
   @Parameterized.Parameters
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
-    {lineNumber(),"{A:{class method Library const(){C:{}} } B:A.const()}","{A:{class method Library const(){C:{}##star ^##}##star ^##}##star ^## B:{C:{}}}"  
+    {lineNumber(),"{A:{class method Library const(){C:{}} } B:A.const()}","{A:{class method Library const(){C:{}##star ^##}##star ^##}##star ^## B:{C:{}}}"
   },{lineNumber(),"{A:{class method Library id(Library that)that } B:A.id({D:{}})}","{A:{class method Library id(Library that)that }##star ^## B:{D:{}}}"
 
   },{lineNumber(),
@@ -36,16 +36,16 @@ public static class TestExecution {
  +"A:{ implements I1, I2  refine class method  Library id(Library that)that }##star ^## "
  +"B:{D:{}}}"
 
-//  },{lineNumber(),"{I:{method Any m()} B:error void}","This0.I::m()","Any"  
-//  },{lineNumber(),"{I:{method I m() method Any m2()} B:error void}","This0.I::m()::m()::m2()","Any" 
-//  },{lineNumber(),"{I:{method I m(I x) method Any m2()} B:error void}","This0.I::m(x)::m(x)::x::m2()","Any" 
+//  },{lineNumber(),"{I:{method Any m()} B:error void}","This0.I::m()","Any"
+//  },{lineNumber(),"{I:{method I m() method Any m2()} B:error void}","This0.I::m()::m()::m2()","Any"
+//  },{lineNumber(),"{I:{method I m(I x) method Any m2()} B:error void}","This0.I::m(x)::m(x)::x::m2()","Any"
 
     }});}
 @Test  public void test() {
   TestHelper.configureForTest();
   ExpCore.ClassB l1=(ExpCore.ClassB)TestHelper.getExpCore(TestProgramReduction.class.getSimpleName(),_p);
   ExpCore.ClassB l2=(ExpCore.ClassB)TestHelper.getExpCore(TestProgramReduction.class.getSimpleName(),_expected);
-  TestHelper.assertEqualExp(l2,new ProgramReduction().allSteps(l1));
+  TestHelper.assertEqualExp(l2,new ProgramReduction().allSteps(Program.emptyLibraryProgram().updateTop(l1)));
   }
 }
 

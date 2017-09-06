@@ -23,7 +23,7 @@ import facade.L42;
 @SuppressWarnings("serial")
 public class ReplGui extends JFrame {
  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
- Configuration.loadAll();
+ //Configuration.loadAll();
  SwingUtilities.invokeLater(()-> {
  ReplGui g = new ReplGui();
  g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

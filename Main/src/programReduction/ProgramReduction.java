@@ -15,8 +15,7 @@ import newReduction.Loader;
 
 public class ProgramReduction {
   Loader loader=new Loader();
-  public ClassB allSteps(ClassB l){
-    Program top=new FlatProgram(l);
+  public ClassB allSteps(Program top){
     while(!IsCompiled.of(top.top())){
       top=step(top);
       }
