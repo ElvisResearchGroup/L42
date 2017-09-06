@@ -114,12 +114,13 @@ public class Loader {
   private Program currentP=null;
   private Cache cache=new Cache();
   private java.nio.file.Path cacheFile=null;
-  HashMap<String, ClassFile> clMap=new HashMap<>();
-  MapClassLoader cl=new MapClassLoader(clMap, ClassLoader.getSystemClassLoader());
+  //HashMap<String, ClassFile> clMap=new HashMap<>();
+  MapClassLoader cl=new MapClassLoader(new HashMap<>(), ClassLoader.getSystemClassLoader());
   private void loadCache() {
     assert this.cacheFile!=null;
     cache=Cache.readFromFile(cacheFile);
     cl.updateFromMap(cache.smap);
+    System.out.println("cache loaded, elements count: "+cache.smap.size());
     }
 
   private void saveCache() {
@@ -127,22 +128,24 @@ public class Loader {
     }
 
   static public boolean validCache(ClassTable ct1, Map<Integer,String>dep, List<L42F.CD>cds){
-    if(dep.size()!=cds.size()){return false;}
+    if(dep.size()!=cds.size()){
+      return false;}
     for(int cn:dep.keySet()){
-      if(!cds.contains(ct1.get(cn).cd)){return false;}
+      if(!cds.contains(ct1.get(cn).cd)){
+        return false;}
       }
     return true;
     }
   public void processDep(Map<Integer,String>dep){
     Cache.Element cDep = cache.get(new HashSet<>(dep.values()));
     if(cDep==null ||!validCache(ct, dep, cDep.cds)){
-      Set<String>oldDom=new HashSet<>(clMap.keySet());
-      javac(dep);//this enrich clMap
+      Set<String>oldDom=new HashSet<>(this.cl.map().keySet());
+      javac(dep);//this enrich cl.map()
       List<L42F.CD> cds=new ArrayList<>();
       for(int i:dep.keySet()){cds.add(ct.get(i).cd);}
       HashMap<String,ClassFile>newClMap=new HashMap<>();
-      for(String s:clMap.keySet()){
-        if(!oldDom.contains(s)){clMap.put(s,clMap.get(s));}
+      for(String s:this.cl.map().keySet()){
+        if(!oldDom.contains(s)){newClMap.put(s,cl.map().get(s));}
         }
       this.cache.add(new HashSet<>(dep.values()), cds, newClMap);
       return;

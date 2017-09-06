@@ -212,7 +212,7 @@ public List<Map<Integer,String>> listOfDeps() {
     Map<Integer,String> s=new HashMap<>();
     if(e.cd.getKind()==null){continue;}
     for(int i:e.deps){
-      s.put(i,this.className(i));
+      s.put(i,"generated."+this.className(i));
       }
     l.add(s);
     }

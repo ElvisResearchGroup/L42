@@ -35,6 +35,9 @@ dep: CNs //set
 CT::= CN -> (p,L42F,dep) //dependencies
 clMap: byteName -> byteCode
 cache:  dep -> (CDs, clMap)
+cache maps dep to
+  1-corresponding CDs to validate cache
+  2-section of class loader map to save bytecode
 clMap in cache is coherent/save space:
 if cache(dep0).clMap(byteName)=byteCode
    cache(dep1).clMap(byteName)=byteCode'

@@ -26,12 +26,12 @@ public class Cache implements Serializable{
   private static final long serialVersionUID = 1L;
   public static class Element implements Serializable{
     private static final long serialVersionUID = 1L;
-    public Element(List<CD> cds, HashMap<String, ClassFile> clMap) {
+    public Element(List<CD> cds, Set<String> byteCodeNames) {
       this.cds = cds;
-      this.clMap = clMap;
+      this.byteCodeNames = byteCodeNames;
       }
     List<L42F.CD>cds;
-    HashMap<String, ClassFile> clMap;
+    Set<String> byteCodeNames;
     }
   HashMap<String, ClassFile> fullMap=new HashMap<>();
   HashMap<Set<String>,Element>inner=new HashMap<>();
@@ -61,6 +61,16 @@ public class Cache implements Serializable{
     inner.put(dep, new Element(cds,clMapNoRep));
     }
 
+  /**
+   NO, 
+   class loader is NOT saved. class loader is "loaded"
+   from cache if is required:
+   -at all times full map >=cl.map
+   -at all times smap= translation of map
+   -elements just store set of strings.(not maps)
+   -loading require using fullMap+element
+   
+   * */
   public void saveOnFile(Path file,MapClassLoader cl){
     this.smap = cl.exportMap();
     try (
