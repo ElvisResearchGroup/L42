@@ -244,16 +244,18 @@ public class Loader {
   public ExpCore.ClassB execute(Program p,Paths paths,ExpCore e){
     this.load(p,paths); //Loader change state here
     assert this.ct.isCoherent();
-    ExpCore.ClassB res= Resources.withPDo(p.reprAsPData(),()->this.run(p,e));//Loader change state here but should be irrelevant
-    res=(ExpCore.ClassB)res.accept(new coreVisitors.CloneVisitor(){
-      public ExpCore visit(ClassB s) {
-        s=(ExpCore.ClassB)super.visit(s);
-        return s.withUniqueId(p.getFreshId());
-        }
-      });
-    this.saveCache();
-    return res;
-  }
+    try{
+      ExpCore.ClassB res= Resources.withPDo(p.reprAsPData(),()->this.run(p,e));//Loader change state here but should be irrelevant
+      res=(ExpCore.ClassB)res.accept(new coreVisitors.CloneVisitor(){
+        public ExpCore visit(ClassB s) {
+          s=(ExpCore.ClassB)super.visit(s);
+          return s.withUniqueId(p.getFreshId());
+          }
+        });
+      return res;
+      }
+    finally{this.saveCache();}//keep cache up to date with the failed run expression (and the correct dependencies)
+    }
   static List<String> computeDbgNames(Program p) {
     List<String>names=new ArrayList<>();
     for(Object o:p.exploredWay()){
