@@ -31,14 +31,15 @@ public class ReplState {
   String originalS;
   ast.Expression.ClassReuse originalL;
   ast.ExpCore.ClassB desugaredL;
-  ProgramReduction reduction=new ProgramReduction(Paths.get("localhost","ReplCache.C42"));
+  ProgramReduction reduction;
   //ProgramReduction reduction=new ProgramReduction(null);
   Program p;
-  public ReplState(String originalS, ast.Expression.ClassReuse originalL, ast.ExpCore.ClassB desugaredL,Program p) {
+  public ReplState(String originalS, ast.Expression.ClassReuse originalL, ast.ExpCore.ClassB desugaredL,Program p,ProgramReduction reduction) {
     this.originalS = originalS;
     this.originalL = originalL;
     this.desugaredL = desugaredL;
     this.p=p;
+    this.reduction=reduction;
     }
 public static ReplState start(String code){
   try{
@@ -56,7 +57,7 @@ public static ReplState start(String code){
         return super.visit(cb);
         }
       });*/
-    ReplState res=new ReplState(code, code2,code3,Program.emptyLibraryProgram().updateTop(code3));
+    ReplState res=new ReplState(code, code2,code3,Program.emptyLibraryProgram().updateTop(code3),new ProgramReduction(Paths.get("localhost","ReplCache.C42")));
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);
     return res;
@@ -110,7 +111,7 @@ public static ReplState start(String code){
         }
       code3=code3.withMs(resultMs);
       //call the repl and return
-      ReplState res=new ReplState(this.originalS+"\n"+code, newOriginal,code3,this.p.updateTop(code3));
+      ReplState res=new ReplState(this.originalS+"\n"+code, newOriginal,code3,this.p.updateTop(code3),this.reduction);
       res.desugaredL=res.reduction.allSteps(res.p);
       res.p=res.p.updateTop(res.desugaredL);
       return res;

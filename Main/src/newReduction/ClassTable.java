@@ -206,13 +206,13 @@ public class ClassTable {
   newMap.put(e.cd.getCn(), e);
   return new ClassTable(newMap);
   }
-public List<Map<Integer,String>> listOfDeps() {
-  List<Map<Integer,String>> l=new ArrayList<>();
+public Set<Set<Integer>> listOfDeps() {
+  Set<Set<Integer>> l=new HashSet<>();
   for(Element e:map.values()){
-    Map<Integer,String> s=new HashMap<>();
+    Set<Integer> s=new HashSet<>();
     if(e.cd.getKind()==null){continue;}
     for(int i:e.deps){
-      s.put(i,"generated."+this.className(i));
+      s.add(i);
       }
     l.add(s);
     }

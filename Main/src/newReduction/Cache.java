@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,53 +27,51 @@ public class Cache implements Serializable{
   private static final long serialVersionUID = 1L;
   public static class Element implements Serializable{
     private static final long serialVersionUID = 1L;
-    public Element(List<CD> cds, Set<String> byteCodeNames) {
+    public Element(Map<Integer,L42F.CD> cds, Set<String> byteCodeNames) {
       this.cds = cds;
       this.byteCodeNames = byteCodeNames;
       }
-    List<L42F.CD>cds;
+    Map<Integer,L42F.CD>cds;
     Set<String> byteCodeNames;
     }
-  HashMap<String, ClassFile> fullMap=new HashMap<>();
+  transient HashMap<String, ClassFile> fullMap=new HashMap<>();
   HashMap<Set<String>,Element>inner=new HashMap<>();
-  HashMap<String,SClassFile> smap=null;//contains values when saving/loading
+  HashMap<String,SClassFile> smap=new HashMap<>();//contains values when saving/loading
   public Element get(Set<String> key){
     Element res = inner.get(key);
     return res;
     }
-  public void add(Set<String> dep,List<L42F.CD>cds,HashMap<String, ClassFile> clMap){
+  public void add(Set<String> dep,Map<Integer,L42F.CD>cds,HashMap<String, ClassFile> clMap){
     //if cache(dep0).clMap(byteName)=byteCode
     //cache(dep1).clMap(byteName)=byteCode'
+    HashSet<String> clSet=new HashSet<>(clMap.keySet());
     Element old = inner.get(dep);
     if(old!=null){
-      assert old.clMap.equals(clMap);
+      assert old.byteCodeNames.equals(clSet);
       return;
       }
+    //was not already in cache
     HashMap<String, ClassFile> clMapNoRep=new HashMap<>(clMap);
-    for(String s:clMap.keySet()){
-      ClassFile cf=fullMap.get(s);
-      if(cf!=null){//already there
-        clMapNoRep.put(s, cf);
-        }
-      else{//new classfile
-        fullMap.put(s, clMap.get(s));
-        }
-      }
-    inner.put(dep, new Element(cds,clMapNoRep));
+    assert !clSet.stream().anyMatch(s->fullMap.containsKey(s));
+    fullMap.putAll(clMap);
+    inner.put(dep, new Element(cds,clSet));
     }
 
   /**
-   NO, 
+   NO,
    class loader is NOT saved. class loader is "loaded"
    from cache if is required:
    -at all times full map >=cl.map
    -at all times smap= translation of map
    -elements just store set of strings.(not maps)
    -loading require using fullMap+element
-   
+
    * */
   public void saveOnFile(Path file,MapClassLoader cl){
-    this.smap = cl.exportMap();
+    for(String s: fullMap.keySet()) {
+      if(smap.containsKey(s)) {continue;}
+      smap.put(s,SClassFile.fromCF(fullMap.get(s)));
+      }
     try (
       OutputStream os = Files.newOutputStream(file);
       ObjectOutputStream out = new ObjectOutputStream(os);
@@ -86,7 +85,12 @@ public class Cache implements Serializable{
       ObjectInputStream in = new ObjectInputStream(is);
     ){
       Object res = in.readObject();
-      return (Cache)res;
+      Cache cache=(Cache)res;
+      cache.fullMap=new HashMap<>();
+      for(String s:cache.smap.keySet()) {
+          cache.fullMap.put(s,cache.smap.get(s).toCF());
+        }
+      return cache;
       }
     catch(IOException i) {throw new Error(i);}
     catch (ClassNotFoundException e) {throw new Error(e);}

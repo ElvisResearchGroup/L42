@@ -52,7 +52,7 @@ public class Loader {
       }
     else {
       loadCache();
-      loadLoader(cl);
+      loadResource(cl);
       }
     }
   private boolean checkPath(java.nio.file.Path path) {
@@ -100,9 +100,12 @@ public class Loader {
     //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
-    loadLoader(clX);
+    ClassFile resBytes = clX.map().get("generated.Resource");
+    assert resBytes!=null;
+    cache.fullMap.put("generated.Resource", resBytes);
+    loadResource(clX);
   }
-  private void loadLoader(MapClassLoader clX){
+  private void loadResource(MapClassLoader clX){
     try{
       Class<?> cl0 = clX.loadClass("generated.Resource");
       Field fLoader = cl0.getDeclaredField("loader");
@@ -119,7 +122,9 @@ public class Loader {
   private void loadCache() {
     assert this.cacheFile!=null;
     cache=Cache.readFromFile(cacheFile);
-    cl.updateFromMap(cache.smap);
+    ClassFile resBytes = cache.fullMap.get("generated.Resource");
+    assert resBytes!=null;
+    cl.map().put("generated.Resource", resBytes);
     System.out.println("cache loaded, elements count: "+cache.smap.size());
     }
 
@@ -127,11 +132,13 @@ public class Loader {
     if(this.cacheFile!=null) {cache.saveOnFile(cacheFile,cl);}
     }
 
-  static public boolean validCache(ClassTable ct1, Map<Integer,String>dep, List<L42F.CD>cds){
+  static public boolean validCache(ClassTable ct1, Map<Integer,String>dep, Map<Integer,L42F.CD>cds){
     if(dep.size()!=cds.size()){
       return false;}
     for(int cn:dep.keySet()){
-      if(!cds.contains(ct1.get(cn).cd)){
+      CD cdsCn = cds.get(cn);
+      CD ct1Cn =ct1.get(cn).cd;
+      if(!cdsCn.equals(ct1Cn)){
         return false;}
       }
     return true;
@@ -141,21 +148,26 @@ public class Loader {
     if(cDep==null ||!validCache(ct, dep, cDep.cds)){
       Set<String>oldDom=new HashSet<>(this.cl.map().keySet());
       javac(dep);//this enrich cl.map()
-      List<L42F.CD> cds=new ArrayList<>();
-      for(int i:dep.keySet()){cds.add(ct.get(i).cd);}
+      Map<Integer,L42F.CD> cds=new HashMap<>();
+      for(int i:dep.keySet()){cds.put(i,ct.get(i).cd);}
       HashMap<String,ClassFile>newClMap=new HashMap<>();
       for(String s:this.cl.map().keySet()){
         if(!oldDom.contains(s)){newClMap.put(s,cl.map().get(s));}
         }
       this.cache.add(new HashSet<>(dep.values()), cds, newClMap);
+      System.out.println("Javac for  "+newClMap.keySet());
       return;
       }
-    if(!cDep.clMap.isEmpty())System.out.println("Using cache for "+cDep.clMap.keySet());
-    for(String cn : cDep.clMap.keySet()){
-      ClassFile bytecode=clMap.get(cn);
-      ClassFile bytecodeOld=clMap.get(cn);
+    //assert validCache(ct, dep, cDep.cds);//holds, and slow
+    if(!cDep.byteCodeNames.isEmpty())System.out.println("Using cache for "+cDep.byteCodeNames);
+    for(String cn : cDep.byteCodeNames){
+      ClassFile bytecode=cache.fullMap.get(cn);
+      ClassFile bytecodeOld=cl.map().get(cn);
+      bytecode.getBytes();//cache bytes
+      if(bytecodeOld!=null){bytecodeOld.getBytes();}//cache bytes
+      //it can be that bytecodeOld==null since byteCodeNames stores all the dependencies (not just the new one, that will be hard to model)
       assert bytecodeOld==null || bytecodeOld.equals(bytecode);
-      if(bytecodeOld==null){clMap.put(cn,bytecode);}
+      if(bytecodeOld==null){cl.map().put(cn,bytecode);}
       }
     }
   private void javac(Map<Integer, String> dep) {
@@ -163,7 +175,8 @@ public class Loader {
     List<SourceFile> readyToJavac=new ArrayList<>();
     for(int cn:dep.keySet()){
       String cnString=dep.get(cn);
-      if(clMap.containsKey("generated."+cnString)){continue;}
+      assert !cl.map().containsKey("generated."+cnString);
+      if(cl.map().containsKey("generated."+cnString)){continue;}
       MiniJ.CD j=L42FToMiniJ.of(ct, ct.get(cn).cd);
       String text="package generated;\n"+MiniJToJava.of(j);
       SourceFile src=new SourceFile(cnString,text);
@@ -177,10 +190,16 @@ public class Loader {
     }
   public void load(Program p, Paths paths){
     ct=ct.growWith(p, paths).computeDeps();
-    List<Map<Integer,String>> chunks = ct.listOfDeps();
+    List<Set<Integer>> chunks = new ArrayList<>(ct.listOfDeps());
     Collections.sort(chunks,(s1,s2)->s1.size()-s2.size());
-    for(Map<Integer,String>dep:chunks){
-      processDep(dep);
+    Set<Integer>seen=new HashSet<>();
+    for(Set<Integer>ci:chunks) {
+      ci.removeAll(seen);
+      seen.addAll(ci);
+      HashMap<Integer,String> ciMap=new HashMap<>();
+      for(Integer i:ci) {ciMap.put(i,"generated."+ct.className(i));}
+      System.out.println("Dependency about "+ci);
+      processDep(ciMap);
       }
     }
 
