@@ -67,7 +67,7 @@ public class Cache implements Serializable{
    -loading require using fullMap+element
 
    * */
-  public void saveOnFile(Path file,MapClassLoader cl){
+  public void saveOnFile(Path file){
     for(String s: fullMap.keySet()) {
       if(smap.containsKey(s)) {continue;}
       smap.put(s,SClassFile.fromCF(fullMap.get(s)));

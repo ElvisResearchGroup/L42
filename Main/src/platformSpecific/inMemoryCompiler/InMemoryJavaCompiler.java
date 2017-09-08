@@ -73,7 +73,12 @@ public class InMemoryJavaCompiler {
       super(java.net.URI.create("string:///" + name.replace('.', '/')+kind.extension),kind);
       this.name=name;
       }
-    private void cacheBytes() {bytes=byteCode.toByteArray(); }
+    private void cacheBytes() {
+      if(bytes!=null) {return;}
+      bytes=byteCode.toByteArray();
+      try {byteCode.close();}
+      catch (IOException e) {throw new Error(e);}
+      }
     public byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
     @Override
     public InputStream openInputStream() {
@@ -114,6 +119,11 @@ public class InMemoryJavaCompiler {
       public MapClassLoader(HashMap<String,ClassFile> map,ClassLoader env){
         super(env);
         this.map=map;
+        }
+      public void readAllStreams() {
+        for(String s: map.keySet()) {
+          map.get(s).cacheBytes();
+          }
         }
       private final HashMap<String,ClassFile> map;
       public HashMap<String,ClassFile> map(){return map;}

@@ -117,7 +117,6 @@ public class Loader {
   private Program currentP=null;
   private Cache cache=new Cache();
   private java.nio.file.Path cacheFile=null;
-  //HashMap<String, ClassFile> clMap=new HashMap<>();
   MapClassLoader cl=new MapClassLoader(new HashMap<>(), ClassLoader.getSystemClassLoader());
   private void loadCache() {
     assert this.cacheFile!=null;
@@ -129,7 +128,7 @@ public class Loader {
     }
 
   private void saveCache() {
-    if(this.cacheFile!=null) {cache.saveOnFile(cacheFile,cl);}
+    if(this.cacheFile!=null) {cache.saveOnFile(cacheFile);}
     }
 
   static public boolean validCache(ClassTable ct1, Map<Integer,String>dep, Map<Integer,L42F.CD>cds){
@@ -187,6 +186,7 @@ public class Loader {
     if (readyToJavac.isEmpty()){return;}
     try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
     catch(CompilationError ce){throw new Error(ce);}
+    cl.readAllStreams();
     }
   public void load(Program p, Paths paths){
     ct=ct.growWith(p, paths).computeDeps();
