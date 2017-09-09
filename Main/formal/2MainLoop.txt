@@ -158,7 +158,7 @@ alive(p,Thisn.Cs)=alive(p(Thisn),Cs) //TODO: we assume the sugar
 // will check for all paths to be alive after desugaring
 alive(L,empty) holds
 alive(L,C.Cs) if L(C)=L' and alive(L',Cs)
-  or  L(C)=e not of form L // or L doc
+  or  L(C)=e, e not of form L // or L doc
 _______
 #define norm(p,L)=norm(p.evilPush(L))
 
@@ -179,8 +179,8 @@ _______
     with norm(p,Li)
   forall P inside mh e?, alive(p,P)//TODO: add in code 
     
--norm(p, C:L) =C:norm(p,L)
-//we could do a norm(p.push(C)) to avoid an evil push, now we do not, the code seems to work fine.
+-norm(p, C:L) =C:norm(p.push(C))
+
 
 _______
 #define multiNorm(p; paths)=p' //multinorm assumes that p does not have evil pushes
@@ -200,9 +200,9 @@ _______
 -----------------------------------------------------------
 Part 5: reachability
 -----------------------------------------------------------
-Different Ps in the eC in (top), and the parts of the
-p from (top) that they purport to refer to, are treated
-differently.
+In order to decide how to treat them later,
+we divide the Ps in the eC in (top) (along with the parts of the
+p from (top) that they purport to refer to) into various categories.
 
 Consider this part of a project:
   C:{interface method E k()}
