@@ -6,7 +6,7 @@ that proceeds through the following phases:
 3 collect all the transitive dependencies of the eC.
 4 type these dependencies.
 5 type as "coherent" (aka not abstract) all dependencies needed to execute the eC.
-6 type the eC as a Library in the program composed by those dependencies.
+6 type the eC as evaluating to a Library, in the program composed by those dependencies.
 7 execute the eC until you get an LC, and replace the eC with the LC in the program
 8 jump back to 2.
 
@@ -21,7 +21,7 @@ Part 1: 42 top level reduction rules
 ReductionTop:
 precondition: at top level we have an L not of form LC.
 Rule (top) performs a step of execution, while rule (enter)
-propagates the execution inside nested classes and method bodies.
+propagates the execution inside nested classes and libraries in method bodies.
 
 
 r::=LC| exception v | error v
@@ -95,7 +95,7 @@ It is unobvious since we need to consider the n in Thisn.
 for example: reorganize(This0.A,This1.B,This2.C,This3.D)=((A)  (B)  (C)  (D));
 ((A)  (B)  (C)  (D)).prefix(W.E) = ((W.E.A  W.B  C) (D)),
 representing Ps This0.W.E.A  This0.W.B  This0.C This1.D
-//Note: prexifx() and [from _] are related: reorganize(Ps[from This0.Cs])=reorganize(Ps).prefix(Cs)
+//Note: prefix() and [from _] are related: reorganize(Ps[from This0.Cs])=reorganize(Ps).prefix(Cs)
 
  -empty.prefix(_)=empty
  -paths.prefix(empty)= paths
@@ -145,14 +145,14 @@ _______
 //Note, in this model cases like 
 //"A:  {interface refine method A m()} 
 // B: { implements A method A m()}"
-// are ok wrt B but fails for A  
+// are ok wrt B but fail for A  
 
 
 -----------------------------------------------------------
-Part 4: norm(p)=L, multiNorm 
+Part 4: alive(p,P),  norm(p)=L,  multiNorm(p; paths) 
 -----------------------------------------------------------
 _______
-#define alive(p,P) //check if P is defined or has hope to be defined in the future
+#define alive(p,P) //check if P is defined or has some hope of being defined in the future
 alive(p,Any),alive(p,Void),alive(p,Library) holds
 alive(p,Thisn.Cs)=alive(p(Thisn),Cs) //TODO: we assume the sugar
 // will check for all paths to be alive after desugaring
@@ -171,7 +171,7 @@ _______
  p.top()={interface? implements Ps Ms None}
  Ps'=collect(p,Ps) //Marco does not likes that Ps get reordered also if they are all present, but is hard to predict what will happen if not reorder only in that fragile circumstance
  Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
- //TODO: former line now have well defined order (for the 2nd and 3rd part). Fix the order in the code 
+ //TODO: former line now has a well defined order (for the 2nd and 3rd parts). Fix the order in the code.
 
 -norm(p,refine? mh e?)= refine? mh e'?
   where e'?=empty if e?=empty
@@ -187,7 +187,7 @@ _______
 
 - multiNorm(p; empty) = p //Note: for populated paths, the end point of recursion is the next clause
 
-- multiNorm(p; Cs1..Csn)= p.update(L)//case of paths= a single Css
+- multiNorm(p; Cs1..Csn)= p.update(L)//case of paths= a single Css, equivalent to a (Css,empty)
   pi = p.navigate(Csi) 
   Li = norm(pi)//norming the top
   L = p.top()[Cs1=L1..Csk=Lk] //replace the nested classes in paths Csi with libraries Li.
@@ -215,7 +215,7 @@ In the current design we divide A,B,C,D,E,F,G into 3 1/2 categories:
   alive:    D,F      (while normalising the coherent and typed paths)
   alive:    G        (while normalising the libraries in eC)
 Note that G is not visible from outside eC.
-Note that E is typed since C is typed; C is typed since C is outside eC and implemented.
+Note that E is typed since C is typed; C is typed since C is outside eC and implemented in eC.
 This design allows that using introspection on a Library value,
 if you succeeded navigating out, everything reachable is typed.
 Another, more expressive option would be to have 
@@ -223,7 +223,7 @@ Another, more expressive option would be to have
   typed:    B       //NOT WHAT WE ARE DOING
   norm:     C       //NOT WHAT WE ARE DOING
   alive:    D,E,F,G //NOT WHAT WE ARE DOING
-But this introduces more cases, and makes harder to reason about
+But this introduces more cases, and makes it harder to reason about
 introspecting a library value: it is harder to guarantee that any
 extracted class Any will be a valid typed 'class Any', suitable as input for redirect.
 -----------------------------------
@@ -233,7 +233,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 //tryTypedPaths() and the input of toAny().
 
 -tryCoherentPaths(p,eC)=reachablePaths(p,reorganize(Ps'), empty,empty)
-  Ps,Ps'={P|P inside eC}//arbitrary split of the set; heuristic as modeled later will apply in the implementation
+  Ps,Ps'={P|P inside eC}//arbitrary split of the set; a heuristic which is modeled later will apply in the implementation
 
 -tryTypedPaths(p,eC)=reachablePaths(p,paths0, empty,Typed) U paths1
   paths0=reorganize({P|P inside eC}) U (stronglyDeepImplements(L1)U..U stronglyDeepImplements(Ln)).pop()
@@ -277,7 +277,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   where
   LC={_ implements Ps, M1..Mn Phase}//in implementation, error if not compiled
   paths=reorganize(Ps) U reachableFromM(M1,Typed?) U... U reachableFromM(Mn,Typed?))
-  Phase in{None,Norm}
+  Phase in{None,Norm}   // or the definition below is not yet implemented
   
 - reachableFromL(LC,Typed?)=empty //TODO: Possible huge performance boost when implemented. Not implemented at 1/10/2016
   where
