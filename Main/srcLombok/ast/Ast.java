@@ -355,13 +355,13 @@ public interface Ast {
  //-----------------------------
 
  @Value @Wither
- @EqualsAndHashCode(exclude = "p") /*to string manually defined so @ToString(exclude = "p") not needed*/
+ @EqualsAndHashCode /*to string manually defined so @ToString(exclude = "p") not needed*/
  public static class Doc implements Expression.HasPos<Doc>,Serializable{
   boolean multiline;
   String s;
   List<Object> annotations;
   List<String> parameters;
-  Position p;
+  transient Position p;
 
   public List<Path> getPaths() {
    List<Path> result = new ArrayList<>();
@@ -706,7 +706,7 @@ public interface Ast {
   None, Ph, Partial
  }*/
 
- public static @Wither @Value class Position implements Serializable{
+ public static @Wither @Value class Position {
   public static final Position noInfo = new Position(null, Integer.MAX_VALUE / 2, Integer.MAX_VALUE / 2, 0, 0,null);
   public Position sum(Position that){
     if (this==noInfo){return that;}

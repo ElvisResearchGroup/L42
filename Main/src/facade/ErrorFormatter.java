@@ -44,7 +44,7 @@ public class ErrorFormatter {
     //displayAbstractMethods(cb,result,"");
     return result.toString();
   }
-  
+
 @SuppressWarnings("unused")//TODO: what was this for
 private static void displayAbstractMethods(ClassB cb,StringBuilder result,String nesting){
 
@@ -112,7 +112,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
       case TypeError:
       case Unclassified:
         errorTxt=errorStart+"runStatus: "+kind.name()+":"+msg.getClass().getSimpleName()+"\n"+errorTxt;
-        break;  
+        break;
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+
         "Error in generating the following class: \n"
@@ -409,11 +409,11 @@ private static void printType(int i, Program p) {
 @SuppressWarnings("unchecked")
 public static void topFormatErrorMessage(ErrorMessage msg) {
     //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
-    L42.printDebug("###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###");
-    L42.printDebug("###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###");
+    System.out.println("###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###");
+    System.out.println("###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###");
     //The text over is the tag for the test to check it is failed
-        
-    L42.printDebug(
+
+    System.out.println(
         formatError(Program.emptyLibraryProgram(),msg).getErrorTxt()
         );
     for(Field f:msg.getClass().getDeclaredFields()){
@@ -424,7 +424,7 @@ public static void topFormatErrorMessage(ErrorMessage msg) {
       catch (IllegalArgumentException | IllegalAccessException e) { throw new Error(e);}
       if(program!=null){
         for(ClassB cb:program){
-          L42.printDebug(displayAbstractMethods(cb));
+          System.out.println(displayAbstractMethods(cb));
         }
       }
     }

@@ -18,7 +18,11 @@ import java.util.stream.Collectors;
 
 import javax.swing.*;
 
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+
+import ast.ErrorMessage;
 import facade.Configuration;
+import facade.ErrorFormatter;
 import facade.L42;
 @SuppressWarnings("serial")
 public class ReplGui extends JFrame {
@@ -60,6 +64,7 @@ void runCode(){
   /*Future<Object> future = */executor.submit(this::auxRunCode);
   }
 void auxRunCode(){
+  boolean[] success= {false};
   try{
   String code=newSrc.getText();
   if(repl==null){ repl=ReplState.start("{"+code+"}");}
@@ -67,7 +72,14 @@ void auxRunCode(){
     ReplState newR=repl.add(code);
     if(newR!=null){repl=newR;}
     }
+  success[0]=true;
   }
+  catch(ParseCancellationException parser){
+    System.out.println(parser.getMessage());
+    }
+  catch(ErrorMessage msg){
+    ErrorFormatter.topFormatErrorMessage(msg);
+    }
   catch(Throwable t){
      //somehow t.printstacktrace freeze stuff as well as inspecting t.cause
       System.out.println(
@@ -76,11 +88,11 @@ void auxRunCode(){
            .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
       }
   finally{
-    SwingUtilities.invokeLater(this::updateTextFields);
+    SwingUtilities.invokeLater(()->this.updateTextFields(success[0]));
     }
   }
 private  int iterations=0;
-private void updateTextFields(){
+private void updateTextFields(boolean success){
   try{
     assert L42.record!=null:"d";
     assert err!=null:"a";
@@ -91,11 +103,13 @@ private void updateTextFields(){
     errors.setText(newErr);
     if(repl==null){return;}
     loadedSrc.setText(repl.originalS);
-    iterations+=1;
-    newSrc.setText(
+    if(success) {
+      iterations+=1;
+      newSrc.setText(
         "Main"+iterations+":{//make more stuff happen!\n"+
         "  return ExitCode.normal()\n  }"
         );
+      }
     }
   finally{
     this.running=false;
@@ -109,7 +123,7 @@ private void doAndWait(Runnable r){
     throw new Error(e);
     }
   }
-private PrintStream delegatePrintStream(PrintStream prs){
+public static PrintStream delegatePrintStream(StringBuffer err,PrintStream prs){
   return new PrintStream(prs){
     public void print(String s) {
 //      doAndWait(()->{
@@ -140,8 +154,8 @@ void buildGui(JRootPane pane){
   newSrc.setFont(newSrc.getFont().deriveFont(40f));
   //System.out.println(System.out.getClass().getName());
   //System.out.println(System.err.getClass().getName());
-  System.setOut(delegatePrintStream(System.out));
-  System.setErr(delegatePrintStream(System.err));
+  System.setOut(delegatePrintStream(err,System.out));
+  System.setErr(delegatePrintStream(err,System.err));
   pane.add(tabbedPane,BorderLayout.CENTER);
   }
 }

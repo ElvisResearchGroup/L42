@@ -89,7 +89,7 @@ public class PluginWithPart implements PluginType{
     }
     return ProtectedPluginType.executeMethod(method, p, rec, es.toArray());
     }
-  public static class PlgInfo implements Serializable{
+  public static class PlgInfo{
     public String plgString;
     public String plgName;
     public Class<?> plgClass;
@@ -107,7 +107,7 @@ public class PluginWithPart implements PluginType{
     }
   }
     @SuppressWarnings("serial")
-    public static class UsingInfo implements Serializable{
+    public static class UsingInfo{
     public static class NonExistantMethod extends RuntimeException{}
     public boolean staticMethod=false;
     public List<String> names;// avoiding _this, just the parameter names, encoding java types

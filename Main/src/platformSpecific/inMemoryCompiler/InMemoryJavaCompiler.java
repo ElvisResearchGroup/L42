@@ -37,6 +37,35 @@ public class InMemoryJavaCompiler {
       super(diagnostic.toString()); this.diagnostic=diagnostic;}
   }
   public static class ClassFile extends SimpleJavaFileObject{
+    @Override
+    public int hashCode() {
+      cacheBytes();
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + Arrays.hashCode(bytes);
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      ClassFile other = (ClassFile) obj;
+      cacheBytes();
+      other.cacheBytes();
+      if (!Arrays.equals(bytes, other.bytes))
+        return false;
+      if (name == null) {
+        if (other.name != null)
+          return false;
+      } else if (!name.equals(other.name))
+        return false;
+      return true;
+    }
     private final ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
     public final String name;
     private byte[] bytes=null;
@@ -44,7 +73,12 @@ public class InMemoryJavaCompiler {
       super(java.net.URI.create("string:///" + name.replace('.', '/')+kind.extension),kind);
       this.name=name;
       }
-    private void cacheBytes() {bytes=byteCode.toByteArray(); }
+    private void cacheBytes() {
+      if(bytes!=null) {return;}
+      bytes=byteCode.toByteArray();
+      try {byteCode.close();}
+      catch (IOException e) {throw new Error(e);}
+      }
     public byte[] getBytes() {if(bytes==null) {cacheBytes();} return bytes;}
     @Override
     public InputStream openInputStream() {
@@ -86,6 +120,11 @@ public class InMemoryJavaCompiler {
         super(env);
         this.map=map;
         }
+      public void readAllStreams() {
+        for(String s: map.keySet()) {
+          map.get(s).cacheBytes();
+          }
+        }
       private final HashMap<String,ClassFile> map;
       public HashMap<String,ClassFile> map(){return map;}
 
@@ -94,14 +133,14 @@ public class InMemoryJavaCompiler {
         public  String name;
         private byte[] bytes=null;
         private Kind kind;
-        static SClassFile fromCF(ClassFile from){
+        public static SClassFile fromCF(ClassFile from){
           SClassFile res=new SClassFile();
           res.name=from.name;
           res.bytes=from.bytes;
           res.kind=from.getKind();
           return res;
           }
-        ClassFile toCF(){
+        public ClassFile toCF(){
           ClassFile res=new ClassFile(name,kind);
           res.bytes=this.bytes;
           return res;

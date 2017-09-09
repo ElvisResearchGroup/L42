@@ -3,6 +3,14 @@ Path of
 class method class Path #default##apply(Void of)Path
 Fail:Message.$<><{ implements This2.Fail}
 
+/*
+TODO: invariant is still broken: we need to avoid 
+exceptions in methods usin this.exposer
+OR we need to capture such excepions and rethrow them
+after cheking invariant falilure.
+
+*/
+
 method
 Library ensureInvariant(Library that)
 ,,,,exception Refactor2.PathUnfit, Fail {

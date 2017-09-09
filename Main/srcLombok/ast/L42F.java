@@ -16,6 +16,7 @@ import lombok.experimental.Wither;
 import l42FVisitors.Visitor;
 import l42FVisitors.BodyVisitor;
 import java.io.Serializable;
+import lombok.ToString;
 
 public class L42F {
 public static interface Kind{
@@ -127,10 +128,10 @@ Call implements E{
   List<String> xs;
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}
 
-@Value @Wither public static class
+@Value @Wither /*already since transient @EqualsAndHashCode(exclude = "ui")*/ @ToString(exclude = "ui")public static class
 Use implements E{
   Ast.Doc doc;
-  platformSpecific.fakeInternet.PluginWithPart.UsingInfo ui;
+  transient platformSpecific.fakeInternet.PluginWithPart.UsingInfo ui;
   Ast.MethodSelector ms;
   List<String> xs; E inner;
   @Override public <T> T accept(Visitor<T> v){return v.visit(this);}}

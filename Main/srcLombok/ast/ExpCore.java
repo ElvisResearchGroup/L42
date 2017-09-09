@@ -162,9 +162,9 @@ public interface ExpCore {
     public List<ExpCore.ClassB.NestedClass> getNestedList(List<Ast.C>cs){return _Aux.getNestedList(this, cs);}
     public ExpCore.ClassB getClassB(List<Ast.C>cs){return _Aux.getClassB(this, cs);}
 
-    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,0);}
+    public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,-2);}
 
-    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,0);}
+    public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,-2);}
 
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
