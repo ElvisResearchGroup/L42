@@ -208,11 +208,11 @@ Consider this part of a project:
   C:{interface method E k()}
   eC= A.foo(B,{implements C,G method D m() F.foo() G:{interface}})
   D:{}
-  
+  F:(...)  
 In the current design we divide A,B,C,D,E,F,G into 3 1/2 categories:
   coherent: A 
-  typed:    B,C,E
-  alive:    D,F      (while normalising the coherent and typed paths)
+  typed:    B,C,D,E
+  alive:    F        (while normalising eC, since F is not metaprogrammed yet)
   alive:    G        (while normalising the libraries in eC)
 Note that G is not visible from outside eC.
 Note that E is typed since C is typed; C is typed since C is outside eC and implemented in eC.
@@ -240,14 +240,12 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   L1..Ln={L| L inside eC}
   //in path not prime// not repeat check stage 
   //Marco and James are confused by those comments 
-  --new part of tryTypedPaths added 28/08/2017
   Ps0={Thisn.Cs |This(n+1).Cs inside mhs}
   mhs={Li(Cs)(ms)[from This0.Cs].mh|forall Cs, Ms, Li in L1..Ln} 
-  Ps1 =largest subset of Ps0 so that
-    paths1=reachablePaths(p,reorganize(p,Ps0), empty,Typed)  
-  is defined
-  //ts=collect all the types inside the mh weakly deep in libraries inside eC referring outside of eC
-  //larger subset Ps1 can be computed by collecting the paths of individual Pi in Ps0
+  paths1=reachablePaths(p,reorganize(p,Ps1), empty,Typed)  
+    where Ps1 =maximal subset of Ps0 such that is defined
+  //Ps0=collect all the types inside the mh weakly deep in libraries inside eC referring outside of eC
+  //maximal subset Ps1 can be computed by collecting the paths of individual Pi in Ps0
   
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
