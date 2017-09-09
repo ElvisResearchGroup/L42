@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.io.Serializable;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -25,7 +26,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 import coreVisitors.PropagatorVisitor;
 
-public interface ExpCore {
+public interface ExpCore extends Serializable{
   <T> T accept(coreVisitors.Visitor<T> v);
   default String toS(){return sugarVisitors.ToFormattedText.of(this);}
   @Value @EqualsAndHashCode(exclude = {"typeRec","typeOut","p"}) @ToString(exclude = {"typeRec","typeOut","p"})   @Wither
@@ -92,11 +93,12 @@ public interface ExpCore {
     @Override public <T> T accept(coreVisitors.Visitor<T> v) {
       return v.visit(this);
     }
-    @Value @Wither public static class Dec implements WithInner<Dec>{
+    @Value @Wither public static class Dec implements WithInner<Dec>, Serializable{
       boolean isVar;
-      Optional<Type> t;
+      Type _t;
       String x;
       ExpCore inner;
+      public Optional<Type> getT(){return Optional.ofNullable(_t);}
     }
     public List<String> domDecs() {
       List<String> dom = new java.util.ArrayList<String>();
@@ -106,7 +108,7 @@ public interface ExpCore {
       return dom;
     }
 
-    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos<On>, WithInner<On>{
+    @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class On implements HasPos<On>, WithInner<On>, Serializable{
       SignalKind kind;
       String x;
       Type t;
@@ -181,7 +183,7 @@ public interface ExpCore {
       return this.ordinal()>=that.ordinal();
       }
     }
-    public interface Member extends HasPos<Member>, WithInner<Member> {
+    public interface Member extends Serializable, HasPos<Member>, WithInner<Member> {
       <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt);
       }
     @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p")public static class NestedClass implements Member {
@@ -210,10 +212,10 @@ public interface ExpCore {
       @NonNull Doc doc;
       @NonNull MethodSelector ms;
       @NonNull MethodType mt;
-      @NonNull Optional<ExpCore> _inner;
+      ExpCore _inner;
       Position p;
-      public ExpCore getInner(){return _inner.get();}//and boom if there is not
-      public MethodWithType withInner(ExpCore e) {return this.with_inner(Optional.of(e));}
+      public ExpCore getInner(){ assert _inner!=null; return _inner;}//and boom if there is not
+      public MethodWithType withInner(ExpCore e) {return this.with_inner(e);}
 
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mt.apply(this);

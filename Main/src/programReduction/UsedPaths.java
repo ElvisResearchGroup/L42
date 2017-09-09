@@ -182,7 +182,7 @@ private static void checkPathMetaOrNonExistant(Program pForError, List<Ast.C> cs
     if(m instanceof MethodWithType){
       MethodWithType mwt=(MethodWithType)m;
       result1=CollectPaths0.of(mwt);
-      if(phase0==Phase.Typed && mwt.get_inner().isPresent()){
+      if(phase0==Phase.Typed && mwt.get_inner()!=null){
         l1n = CollectClassBs0.of(m.getInner());
         }
       }
@@ -201,7 +201,7 @@ private static void checkPathMetaOrNonExistant(Program pForError, List<Ast.C> cs
     Paths acc=Paths.empty();
     for(Member mi:l.getMs()){
       if (mi instanceof MethodWithType && 
-         !((MethodWithType)mi).get_inner().isPresent()){continue;}
+         ((MethodWithType)mi).get_inner()==null){continue;}
       ExpCore e=mi.getInner();
       for(ClassB cbij:CollectClassBs0.of(e)){
         acc=acc.union(deepImplements(cbij));

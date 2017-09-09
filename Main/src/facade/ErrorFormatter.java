@@ -67,7 +67,7 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
         return null;
         },
       mt->{
-        if(mt.get_inner().isPresent()){return null;}
+        if(mt.get_inner()!=null){return null;}
         if(mt.getMt().getMdf()==Mdf.Class){return null;}
         result.append(nesting);
         result.append(ToFormattedText.of(mt).replace("\n", "\n"+nesting));
@@ -354,7 +354,7 @@ private static void printType(int i, Program p) {
       if(!(m instanceof MethodWithType)){continue;}
       MethodWithType mwt=(MethodWithType)m;
       mwt=mwt.withDoc(Doc.empty());
-      mwt=mwt.with_inner(Optional.empty());
+      mwt=mwt.with_inner(null);
       String txt=sugarVisitors.ToFormattedText.of(mwt);
       txt=txt.replace("{","");
       txt=txt.replace("}","");

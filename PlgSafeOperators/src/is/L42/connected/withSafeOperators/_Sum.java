@@ -187,8 +187,8 @@ public class _Sum {
     mt = mt.withExceptions(opc);
     MethodWithType mwt = ma.withMt(mt).withDoc(doc);
     //now mwt has min exceptions and summed docs
-    assert !ma.get_inner().isPresent() || !mb.get_inner().isPresent();
-    if (mb.get_inner().isPresent()) {
+    assert ma.get_inner()==null || mb.get_inner()==null;
+    if (mb.get_inner()!=null) {
       mwt = mwt.withInner(mb.getInner());
     }
     return mwt;

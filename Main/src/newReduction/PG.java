@@ -58,11 +58,11 @@ import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 import tools.Assertions;
 
-class PG implements Visitor<E>{
+public class PG implements Visitor<E>{
   Program p;
   G gamma;
   List<Program> ps;
-  PG(Program p,G gamma,List<Program> ps){this.p=p;this.gamma=gamma;this.ps=ps;}
+  public PG(Program p,G gamma,List<Program> ps){this.p=p;this.gamma=gamma;this.ps=ps;}
   public static M header(boolean isInterface,Program p,MethodWithType mwt){
     MethodType mt=mwt.getMt();
 
@@ -98,7 +98,7 @@ class PG implements Visitor<E>{
     return new T(t.getMdf(),liftP(p,t.getPath()));
     }
   public static ExpCore.Block blockX(Ast.Type t,String x, ExpCore e,ExpCore e0,Type expectedT){
-    Dec d=new Dec(false,Optional.of(t),x,e);
+    Dec d=new Dec(false,t,x,e);
     return new ExpCore.Block(Doc.empty(),Collections.singletonList(d), e0,Collections.emptyList(), Position.noInfo,expectedT);
     }
 
@@ -169,7 +169,7 @@ private E visitBase(MCall s) {
   MethodWithType mwt=(MethodWithType)cb._getMember(s.getS());
   boolean isInterface=cb.isInterface();
   boolean isClass=mwt.getMt().getMdf()==Mdf.Class;
-  boolean isAbs=!mwt.get_inner().isPresent();
+  boolean isAbs=mwt.get_inner()==null;
   List<String> ps=new ArrayList<>();
   MethodSelector ms=mwt.getMs();
   if(isInterface || !isClass) {

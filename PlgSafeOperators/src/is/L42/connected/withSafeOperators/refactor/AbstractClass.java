@@ -115,7 +115,7 @@ public class AbstractClass {
           mi->{throw Assertions.codeNotReachable();},
           mt->{
             if(mt.getMs().isUnique()){return null;}
-            newMs.add(mt.with_inner(Optional.empty()));return null;}
+            newMs.add(mt.with_inner(null));return null;}
       );}
     //create new class
     return cb.withMs(newMs);

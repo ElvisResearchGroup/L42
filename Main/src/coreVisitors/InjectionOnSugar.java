@@ -120,7 +120,7 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
          Doc idoc=mwt.getDoc();
          MethodSelector is=mwt.getMs();
          MethodType mt=mwt.getMt();
-         return new Expression.ClassB.MethodWithType(idoc, is, mt, lift(mwt.get_inner()),mwt.getP());
+         return new Expression.ClassB.MethodWithType(idoc, is, mt, Optional.ofNullable(liftNullable(mwt.get_inner())),mwt.getP());
          }
         ));    }
     return new Expression.ClassB(doc1, h,Collections.emptyList(), supertypes, members,s.getP());
@@ -130,9 +130,9 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     }
 //  private ast.ExpCore lift(Expression e){return e.accept(this);}
   private Expression lift(ast.ExpCore e){return e.accept(this);}
-  private Optional<Expression> lift(Optional<ast.ExpCore> e){
-    if(e.isPresent()){return Optional.of(e.get().accept(this));}
-    return Optional.empty();
+  private Expression liftNullable(ast.ExpCore _e){
+    if(_e!=null){return _e.accept(this);}
+    return null;
     }
 
   @Override

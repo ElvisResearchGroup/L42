@@ -76,7 +76,7 @@ private static void collectStateMethodsAndExposers(
     ) throws ClassUnfit {
   for(MethodWithType mwti:lPath.mwts()){
     if(!TsLibrary.coherentF(pPath,k,mwti)){continue;}
-    assert !mwti.get_inner().isPresent();
+    assert mwti.get_inner()==null;
     state.add(mwti.getMs());
     // with non read result, assert is lent
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
@@ -148,7 +148,7 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
   delegator(callInvariant,newMwts,original,original.withMs(delegate));
   }
 static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodWithType original,MethodWithType delegate) throws ClassUnfit{
-  assert !original.get_inner().isPresent();
+  assert original.get_inner()==null;
   assert original.getMs().nameSize()==delegate.getMs().nameSize();
   Position p=original.getP();
   ExpCore.MCall delegateMCall=new ExpCore.MCall(

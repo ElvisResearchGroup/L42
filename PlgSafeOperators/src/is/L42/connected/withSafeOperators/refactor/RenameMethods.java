@@ -181,7 +181,7 @@ private void fillRenamesCoherent(CsMxMx r, Program p, List<CsMxMx> renamesLoc) t
   boolean alreadyClosed=false;
   List<MethodSelector> sel=new ArrayList<>();
   for(MethodWithType mwt:p.top().mwts()){
-    boolean abs=!mwt.get_inner().isPresent();
+    boolean abs=mwt.get_inner()==null;
     if(abs && mwt.getMs().isUnique()){alreadyClosed=true;}
     if(abs){sel.add(mwt.getMs());}
     }
@@ -201,7 +201,7 @@ void fillRenamesOne(CsMxMx r,MethodWithType mwt, List<CsMxMx> renamesLoc) throws
       throw new RefactorErrors.SelectorUnfit(r.getCs(),r.getMs1()).msg("Selector is refine. Interface methods can not be hidden.");
       }
     }
-  boolean ms1Abs=!mwt.get_inner().isPresent();
+  boolean ms1Abs=mwt.get_inner()==null;
   MethodSelector ms2=r.getMs2();
   if(ms2!=null){
     //if(ms1Abs && r.isFlag()) handle in RenameMethodsAux
@@ -255,7 +255,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
     g=GuessTypeCore.freshGFromMt(p,mwt);
     ClassB.MethodWithType res;try{res=super.visit(mwt);}
     finally{g=null;}
-    if(!res.get_inner().isPresent()){return res;}
+    if(res.get_inner()==null){return res;}
     if(res.getMs().getNames().equals(mwt.getMs().getNames())){return res;}
     //else, we need to rename variables
     ExpCore body = MembersUtils.renameParNames(
@@ -323,8 +323,8 @@ private void addToAbstractAliases(List<Member> res) {
         if(mwtA.getMs().equals(r.getMs1())){break;}
         }
       assert mwtA!=null;
-      if(mwtA.get_inner().isPresent()){
-        res.set(index,mwtA.with_inner(Optional.empty()));
+      if(mwtA.get_inner()!=null){
+        res.set(index,mwtA.with_inner(null));
         if(r.getMs2()!=null){
           MethodWithType mwtB=mwtA.withMt(mwtA.getMt().withRefine(false)).withMs(r.getMs2());
           if(!r.getMs2().getNames().equals(r.getMs1().getNames())){

@@ -91,7 +91,7 @@ public class IsValue extends TestShapeVisitor{
     if(!(s.getInner() instanceof EPath)){return false;}
     MethodSelector ms=s.getS();
     MethodWithType mwt=(MethodWithType) p.extractClassB(((EPath)s.getInner()).getInner())._getMember(ms);
-    if(mwt.get_inner().isPresent()){return false;}
+    if(mwt.get_inner()!=null){return false;}
     if(mwt.getMt().getMdf()!=ast.Ast.Mdf.Class){return false;}
     for(ExpCore ei:s.getEs()){
       if(!isAtom(ei)){return false;}

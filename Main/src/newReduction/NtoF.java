@@ -73,7 +73,7 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
   if(isInterface){return Stream.of(h);}//case 0
   MethodType mt=mwt.getMt();
   MethodSelector ms=mwt.getMs();
-  boolean hasE=mwt.get_inner().isPresent();
+  boolean hasE=mwt.get_inner()!=null;
   boolean isClass=mt.getMdf()==Mdf.Class;
 
   if(hasE){//cases 1 and 2
@@ -89,7 +89,7 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
         public ExpCore visit(ClassB s) {return s;}
         });
       }
-    E b=PG.body(p,mwt.with_inner(Optional.of(e)),ps);
+    E b=PG.body(p,mwt.with_inner(e),ps);
     return Stream.of(h.withBody(b));
     }
   //case 3

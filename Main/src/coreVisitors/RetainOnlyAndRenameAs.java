@@ -55,12 +55,16 @@ public class RetainOnlyAndRenameAs extends CloneVisitor{
       m=m.match(nc->{throw Assertions.codeNotReachable();},
           mi->{throw Assertions.codeNotReachable();},
         //mi->mi.withS(ms2).withInner(renameParameterAsVars(mi.getInner(),ms1,ms2)),
-        mt->mt.withMs(ms2).with_inner(Map.of(eMt->renameParameterAsVars(eMt,ms1,ms2),mt.get_inner()))
+        mt->mt.withMs(ms2).with_inner(_renameParameterAsVars(mt.get_inner(),ms1,ms2))
         );
       result.add(m);
       }
     return result;
   }
+  private static ExpCore _renameParameterAsVars(ExpCore inner, MethodSelector ms1, MethodSelector ms2) {
+    if(inner==null){return null;}
+    return renameParameterAsVars(inner,ms1,ms2);
+    }
   private static ExpCore renameParameterAsVars(ExpCore inner, MethodSelector ms1, MethodSelector ms2) {
     HashMap<String, String> toRename=new HashMap<>();
     {int i=-1;for(String x1i:ms1.getNames()){i+=1;

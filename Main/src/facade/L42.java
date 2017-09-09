@@ -139,13 +139,16 @@ public class L42 {
     }
   }
 
-  public static String pathToString(Path p) {
+  public static String _pathToString(Path p)throws IOException {
+  try (Stream<String> lines = Files.lines(p)) {
     StringBuffer b=new StringBuffer();
-    try (Stream<String> lines = Files.lines(p)) {
-      lines.forEach((l)->{b.append("\n");b.append(l);});
-      b.append("\n");
-      return b.toString();
-      }
+    lines.forEach((l)->{b.append("\n");b.append(l);});
+    b.append("\n");
+    return b.toString();
+    }
+  }
+  public static String pathToString(Path p) {
+    try {return _pathToString(p);}
     catch (IOException e) {throw new Error(e);}
     }
   public static int runSlow(Path p) throws IOException{
@@ -207,7 +210,7 @@ public class L42 {
             }
           });
       //ClassB result= Configuration.reduction.of(code3);
-      ClassB result= new ProgramReduction(null).allSteps(Program.emptyLibraryProgram().updateTop(code3));
+      ClassB result= new ProgramReduction(null,false).allSteps(Program.emptyLibraryProgram().updateTop(code3));
       //System.out.println("--------------------------");
       //System.out.println(ToFormattedText.of(result));
       //System.out.println("--------------------------");
@@ -217,6 +220,6 @@ public class L42 {
 
   public static Path path;
   public static void setRootPath(Path path) {
-    L42.path=path;
+    L42.path=path.toAbsolutePath();
   }
 }

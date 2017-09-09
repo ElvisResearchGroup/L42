@@ -76,7 +76,7 @@ public class PropagatorVisitor implements Visitor<Void>{
     liftDoc(mt.getDoc());
     liftMsInMetDec(mt.getMs());
     liftMT(mt.getMt());
-    if(mt.get_inner().isPresent()){lift(mt.getInner());}  
+    if(mt.get_inner()!=null){lift(mt.getInner());}  
     }
   protected void liftMT(MethodType mt) {
     for(Type t:mt.getTs()){liftT(t);}

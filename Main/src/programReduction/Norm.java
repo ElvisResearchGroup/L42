@@ -75,10 +75,11 @@ public class Norm {
     //faster but buggy return nc.withE(norm(p,nc.getE()));
   }
   protected MethodWithType normMwt(Program p,MethodWithType mwt){
-    Optional<ExpCore> e=mwt.get_inner().map(e1->e1.accept(new CloneVisitor(){
+    if(mwt.get_inner()==null){return mwt;}
+    ExpCore e=mwt.get_inner().accept(new CloneVisitor(){
       @Override public ExpCore visit(ClassB cb){
         return norm(p.evilPush(cb));
-        }}));
+        }});
     return mwt.with_inner(e);
     }
 

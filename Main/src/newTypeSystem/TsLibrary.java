@@ -111,7 +111,7 @@ public interface TsLibrary extends TypeSystem{
 
   default TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
     MethodWithType mwt1;
-    if(!mwt.get_inner().isPresent()){
+    if(mwt.get_inner()==null){
       mwt1=mwt;
     }
     else{
@@ -129,7 +129,7 @@ public interface TsLibrary extends TypeSystem{
       if(!out.toOk().returns.isEmpty()){
         return new TErr(newIn,"",out.toOk().returns.get(0),ErrorKind.MethodLeaksReturns);
         }
-      mwt1=mwt.with_inner(Optional.of(out.toOk().annotated));
+      mwt1=mwt.with_inner(out.toOk().annotated);
     }
     if(mwt.getMt().isRefine()){
       for(Type t :supertypes){
@@ -166,7 +166,7 @@ public interface TsLibrary extends TypeSystem{
       if (top.isInterface()){return true;}
       List<MethodWithType> stateC=top.mwts().stream()
       .map(m->(MethodWithType)m)
-      .filter(m->!m.get_inner().isPresent())
+      .filter(m->m.get_inner()==null)
       .sorted((m1,m2)->m1.getMt().getMdf()==Mdf.Class?-1:1)
       .collect(Collectors.toList());
       if(stateC.isEmpty()){return true;}

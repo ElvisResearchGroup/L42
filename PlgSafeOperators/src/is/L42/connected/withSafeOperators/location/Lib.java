@@ -91,7 +91,7 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
   public boolean isBinded(){return this.isBinded;}
   private static boolean isRedirectableRec(ClassB cb){
     boolean res=!cb.mwts().stream().anyMatch(mwt->
-    mwt.get_inner().isPresent() 
+    mwt.get_inner()!=null 
     || mwt.getMs().isUnique()
     );
     if(!res){return false;}
@@ -105,13 +105,13 @@ public class Lib extends Location.LocationImpl<ExpCore.ClassB,Lib>{
     //freeTemplate must mean no class methods!! old idea (class methods not called) does not seams to make sense, if not called, then could be just not having them...
     //technically you can still have class NormType variables and use the method over those, but it seams like a minor case
     return !this.inner.mwts().stream().anyMatch(mwt->
-      mwt.get_inner().isPresent() 
+      mwt.get_inner()!=null 
       || mwt.getMs().isUnique()
       || mwt.getMt().getMdf()==Mdf.Class);
     }//shallow for being sum with interface or redirectable to interface
   public boolean isCloseState(){
     return this.inner.mwts().stream().anyMatch(mwt->
-      !mwt.get_inner().isPresent() 
+      mwt.get_inner()==null 
       && mwt.getMs().isUnique());
     }
   public boolean isEnsuredCoherent(PData pData){

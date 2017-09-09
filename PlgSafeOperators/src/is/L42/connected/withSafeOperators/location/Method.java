@@ -24,7 +24,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   public static Method of(MethodWithType inner,Program p,Path path){
     return new Method(inner,Lib.newFromClassP(p, path));
     }
-  public boolean isAbstract(){return !inner.get_inner().isPresent();}
+  public boolean isAbstract(){return inner.get_inner()==null;}
   public boolean isRefine(){return inner.getMt().isRefine();}
   public Ast.MethodSelector  selector(){return inner.getMs();}
   public String toS() {return sugarVisitors.ToFormattedText.of(this.inner);}

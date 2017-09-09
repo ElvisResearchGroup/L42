@@ -2,6 +2,8 @@ package programReduction;
 
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import caching.Loader;
+import caching.Phase1CacheValue;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -11,12 +13,16 @@ import ast.ExpCore;
 import ast.Ast.C;
 import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
+import facade.L42;
 import newReduction.ClassTable;
-import newReduction.Loader;
 
 public class ProgramReduction {
-  public ProgramReduction(Path path) {loader=new Loader(path);}
+  public ProgramReduction(Path path,boolean saveVCache) {
+    this.loader=new Loader(path);
+    this.saveVCache=saveVCache;
+    }
   Loader loader;
+  boolean saveVCache;
   public ClassB allSteps(Program top){
     while(!IsCompiled.of(top.top())){
       top=step(top);
@@ -53,6 +59,7 @@ public class ProgramReduction {
     @SuppressWarnings("unused")
     ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec));
     ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,ec);
+    saveFirstTimeCache(p1);
     ClassB res=loader.execute(p1, paths.union(paths1), annEc1);
     //ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
@@ -60,6 +67,17 @@ public class ProgramReduction {
     assert top.getNested(Collections.singletonList(nc.getName()))!=null;//would actually fail if not there
     top=top.withMember(nc.withE(res));
     return p1.updateTop(top);
+    }
+  private void saveFirstTimeCache(Program p) {
+    if(!saveVCache){return;}
+    try{while(true){p=p.pop();}}
+    catch(Program.EmptyProgram ep){}  
+    ClassB topCb=p.top();
+    Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb);
+    String name=L42.path.getName(L42.path.getNameCount()-1).toString();
+    assert name.endsWith(".L42");
+    Path vPath = L42.path.getParent().resolve(name.substring(0, name.length()-4)+".V42");
+    cv.saveOnFile(vPath);
     }
   private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
     ExpCore res=facade.Configuration.reduction.metaExp(p.reprAsPData(), e,nameDebug);

@@ -14,6 +14,10 @@ import ast.Ast.*;
 import ast.Ast.Type.*;
 
 public class CloneVisitor implements Visitor<ExpCore>{
+  protected <T extends ExpCore>T liftNullable(T e){
+    if(e==null){return null;}
+    return lift(e);
+    }
   protected <T extends ExpCore>T lift(T e){
     @SuppressWarnings("unchecked")
     T result= (T)e.accept(this);
@@ -22,10 +26,6 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return result;
     }
   protected Path liftP(Path p){return p;}
-  protected Optional<Type> liftTOpt(Optional<Type> t){
-    if(!t.isPresent()){return t;}
-    return Optional.of(liftT(t.get()));
-  }
   protected Type liftTNull(Type t) {
     if(t==null) {return t;}
     return liftT(t);
@@ -47,7 +47,7 @@ public class CloneVisitor implements Visitor<ExpCore>{
     return new FieldDec(f.isVar(),liftT(f.getT()),f.getName(),f.getDocs());
   }*/
   protected Block.Dec liftDec(Block.Dec f) {
-    return new Block.Dec(f.isVar(),liftTOpt(f.getT()),f.getX(),lift(f.getInner()));
+    return new Block.Dec(f.isVar(),liftTNull(f.get_t()),f.getX(),lift(f.getInner()));
   }
   protected Doc liftDoc(Doc doc) {
     return doc.withAnnotations(Map.of(ann->{
@@ -65,8 +65,12 @@ public class CloneVisitor implements Visitor<ExpCore>{
   public ClassB.MethodImplemented visit(ClassB.MethodImplemented mi){
     return new ClassB.MethodImplemented(liftDoc(mi.getDoc()), liftMsInMetDec(mi.getS()), lift(mi.getInner()),mi.getP());
     }
-  public ClassB.MethodWithType visit(ClassB.MethodWithType mt){
-    return new ClassB.MethodWithType(liftDoc(mt.getDoc()),liftMsInMetDec(this.liftMs(mt.getMs())),liftMT(mt.getMt()), Map.of(this::lift,mt.get_inner()),mt.getP());
+  public ClassB.MethodWithType visit(ClassB.MethodWithType mwt){
+    Doc doc=liftDoc(mwt.getDoc());
+    MethodSelector ms=liftMsInMetDec(this.liftMs(mwt.getMs()));
+    MethodType mt=liftMT(mwt.getMt());
+    ExpCore e=this.liftNullable(mwt.get_inner());
+    return new ClassB.MethodWithType(doc,ms,mt,e ,mwt.getP());
     }
 
   protected MethodType liftMT(MethodType mt) {

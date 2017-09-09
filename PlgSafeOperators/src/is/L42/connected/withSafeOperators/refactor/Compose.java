@@ -195,7 +195,7 @@ public class Compose {
       //there must be equivalent in l
       Member mi = l._getMember(m.getMs());
       if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+" Selector "+m.getMs()+" not found");}
-      if(!m.get_inner().isPresent()){continue;}
+      if(m.get_inner()==null){continue;}
       //we trust the mt to be the same
       //we trust the e is the same except for nested L, where we use recursion
       ExpCore body=m.getInner();
@@ -242,14 +242,14 @@ public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,b
     if(mt1.isRefine()!=mt2.isRefine()){
       throw makeMethodClash(mwt1, mwt2).msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
       }
-    if(mwt1.get_inner().isPresent()){
+    if(mwt1.get_inner()!=null){
       assert !interface1 && !interface2;
-      if(mwt2.get_inner().isPresent()){
+      if(mwt2.get_inner()!=null){
         throw makeMethodClash(mwt1, mwt2).msg("both sides are implemented");
         }
       checkMtGt(p,mwt1,mwt2,mt1,mt2);
       return sumMwtij(p,mwt1,mwt1,mwt2);}
-    if(mwt2.get_inner().isPresent()){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
+    if(mwt2.get_inner()!=null){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
     if(interface1 && !interface2){checkMtGt(p,mwt1,mwt2,mt1,mt2);return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(interface2 && !interface1){checkMtGt(p,mwt1,mwt2,mt2,mt1);return sumMwtij(p,mwt2,mwt1,mwt2);}
     if(interface1 && interface2){

@@ -147,7 +147,7 @@ for(Dec di:toGuess){
   if(di.getT().isPresent()){res.add(di);continue;}
   Type nti = _guessDecType(p,in, di,true);
   assert nti!=null;
-  res.add(di.withT(Optional.of(nti))); 
+  res.add(di.with_t(nti)); 
   }
 return new TOkDs(null,res,null);
 }

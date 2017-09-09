@@ -48,7 +48,8 @@ public class InjectionOnCore implements Visitor<ExpCore> {
           d;
         Ast.VarDecXE sugarDec=(Ast.VarDecXE)d;
         //assert sugarDec.getT().isPresent() :sugarDec;
-        Optional<Type> t=sugarDec.getT();
+        Optional<Type> tt=sugarDec.getT();
+        Type t=null; if(tt.isPresent()){t=tt.get();}
         String x=sugarDec.getX();
         ExpCore e=sugarDec.getInner().accept(this);
         decs.add(new Dec(sugarDec.isVar(),t,x,e));
@@ -79,7 +80,9 @@ public class InjectionOnCore implements Visitor<ExpCore> {
       m->{  Doc mdoc=m.getDoc();
             Ast.MethodSelector ms=m.getMs();
             MethodType mt=m.getMt();
-            return new ClassB.MethodWithType(mdoc,ms,mt,lift(m.getInner()),m.getP());
+            ExpCore e=null;
+            if(m.getInner().isPresent()){e=lift(m.getInner().get());}
+            return new ClassB.MethodWithType(mdoc,ms,mt,e,m.getP());
           })
        );
     }
@@ -108,10 +111,6 @@ public class InjectionOnCore implements Visitor<ExpCore> {
   }
   private ast.ExpCore lift(Expression e){return e.accept(this);}
 //private Expression lift(ast.ExpCore e){return e.accept(this);}
-  private Optional<ExpCore> lift(Optional<Expression> e){
-    if(e.isPresent()){return Optional.of(e.get().accept(this));}
-    return Optional.empty();
-    }
   public ExpCore visit(Expression.BinOp s){
     if(s.getOp()!=Expression.BinOp.Op.ColonEqual){
       throw Assertions.codeNotReachable();}

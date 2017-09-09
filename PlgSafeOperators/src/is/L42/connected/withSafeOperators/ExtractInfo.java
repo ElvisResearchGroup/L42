@@ -118,7 +118,7 @@ public class ExtractInfo {
     return m.match(
       nc->"NestedClass",
       mi->"InterfaceImplementedMethod",
-      mt->(mt.get_inner().isPresent())?"ImplementedMethod":"AbstractMethod");
+      mt->(mt.get_inner()!=null)?"ImplementedMethod":"AbstractMethod");
   }
 
   public static enum ClassKind{
@@ -174,7 +174,7 @@ public class ExtractInfo {
      for(Member m:cb.getMs()){
        if(!(m instanceof MethodWithType)){continue;}
        MethodWithType mwt=(MethodWithType)m;
-       if(mwt.get_inner().isPresent()){continue;}
+       if(mwt.get_inner()!=null){continue;}
        if(mwt.getMs().isUnique()){return true;}
      }
     return false;
@@ -186,7 +186,7 @@ public class ExtractInfo {
          mi->{
          return true
          ;},
-         mt->mt.get_inner().isPresent()
+         mt->mt.get_inner()!=null
          );
        if(isImpl){return false;}
      }
@@ -256,9 +256,9 @@ public class ExtractInfo {
     Set<Path> pb=new HashSet<>(Map.of(t->t.getPath(),mtb.getMt().getExceptions()));
     Set<Path> pc=new HashSet<>(pa);
     pc.retainAll(pb);
-    if(mta.get_inner().isPresent() && !pc.containsAll(pa)){
+    if(mta.get_inner()!=null && !pc.containsAll(pa)){
       return false;}
-    if(mtb.get_inner().isPresent() && !pc.containsAll(pb)){
+    if(mtb.get_inner()!=null && !pc.containsAll(pb)){
       return false;}
     return true;
   }

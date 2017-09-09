@@ -56,7 +56,8 @@ public class SumMethods {
     MethodType mtU=mtU(index,mt1,mt2);
     if(mtU==null){throw makeMethodClash(lib, path, mwt1,mwt2).msg("Incompatible method modifiers");}
     ExpCore eU=eU(index,mwt2.getP(),mt1,mt2,m1,m2, mRes);
-    MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,Optional.of(eU),mwt2.getP() );
+    assert eU!=null;
+    MethodWithType mwtU=new MethodWithType(Doc.empty(),mRes,mtU,eU,mwt2.getP() );
     mwtU=getComposedMwt(p, path, lib, mRes, pathCb, mwtU);
     boolean replOk=isReplacedParOk(p,index,mt1,mt2);
     if(!replOk){throw makeMethodClash(lib, path, mwt1,mwt2).msg("Replaced parameter not a supertype of return type");}
@@ -78,7 +79,7 @@ return new RefactorErrors.MethodClash(
   private static MethodWithType getComposedMwt(Program p,List<Ast.C> path,ClassB lib, MethodSelector mRes, ClassB pathCb, MethodWithType mwtU) throws MethodClash {
     MethodWithType mwtC=(MethodWithType) pathCb._getMember(mRes);
     if(mwtC==null){return mwtU;}
-    if(mwtC.get_inner().isPresent()){throw makeMethodClash(lib, path, mwtU,mwtC).msg("Method "+mRes+" already implemented");}
+    if(mwtC.get_inner()!=null){throw makeMethodClash(lib, path, mwtU,mwtC).msg("Method "+mRes+" already implemented");}
     if(Compose.mtGT(p,mwtU.getMt(),mwtC.getMt())){return Compose.sumMwtij(p,mwtU,mwtU,mwtC);}
     throw makeMethodClash(lib, path, mwtU,mwtC).msg("Composed type is not a subtype of the other");
     }

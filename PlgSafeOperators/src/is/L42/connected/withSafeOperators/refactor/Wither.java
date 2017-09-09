@@ -106,14 +106,14 @@ public static ClassB wither(Program p,List<Ast.C>path,ClassB top,MethodSelector 
     MethodType twi=template.getMt().withTs(Collections.singletonList(retg));
     MethodWithType former = (MethodWithType)lPath._getMember(msi);
     if(former!=null){
-      if(former.get_inner().isPresent()){continue;}
+      if(former.get_inner()!=null){continue;}
       MethodType mt=former.getMt();
       twi=twi.withRefine(mt.isRefine());
       if(!twi.equals(mt)){continue;}
       }
     MCall bi=(MCall)template.getInner();
     bi=bi.withEsi(i,new ExpCore.X(g.getP(),ni ));
-    MethodWithType wi=new MethodWithType(Doc.empty(),msi,twi,Optional.of(bi),k.getP());
+    MethodWithType wi=new MethodWithType(Doc.empty(),msi,twi,bi,k.getP());
     Functions.replaceIfInDom(mwts,wi);
     }}
   mwts.addAll(lPath.ns());
@@ -135,7 +135,7 @@ private static MethodWithType template(MethodWithType k,List<MethodWithType>gett
     tools.Map.of(Wither::invk,getters),
     k.getP(),Type.classThis0,Type.immThis0);
   MethodSelector ms=MethodSelector.of("with",Collections.emptyList());
-  return new MethodWithType(Doc.empty(),ms,mt,Optional.of(body),k.getP());
+  return new MethodWithType(Doc.empty(),ms,mt,body,k.getP());
   }
 private static MCall invk(MethodWithType g){
   return new MCall(new ExpCore.X(g.getP(), "this"), g.getMs(),Doc.empty(),Collections.emptyList(),

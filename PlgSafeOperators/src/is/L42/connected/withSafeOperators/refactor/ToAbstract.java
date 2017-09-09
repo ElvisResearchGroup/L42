@@ -66,8 +66,8 @@ public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodS
   private static ClassB auxToAbstract(Program p,ClassB cb,List<Ast.C> path,MethodSelector sel,MethodSelector newSel,ClassB top) throws MethodClash {
     List<Member> newMs=new ArrayList<>(cb.getMs());
     MethodWithType _mwt = (MethodWithType) cb._getMember(sel);
-    boolean isSrcAbstract=!_mwt.get_inner().isPresent();
-    MethodWithType mwt1=_mwt.with_inner(Optional.empty());
+    boolean isSrcAbstract=_mwt.get_inner()==null;
+    MethodWithType mwt1=_mwt.with_inner(null);
     Functions.replaceIfInDom(newMs,mwt1);
     if(isSrcAbstract){ return cb;}
     if(newSel==null){ return cb.withMs(newMs);  }
@@ -83,7 +83,7 @@ public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodS
       return cb.withMs(newMs);
       }
     boolean ok=Compose.mtGT(p, mwt1.getMt(), mwt2.getMt());
-    boolean noTwoImpl=isSrcAbstract ||!mwt2.get_inner().isPresent();
+    boolean noTwoImpl=isSrcAbstract ||mwt2.get_inner()==null;
     if(!ok || !noTwoImpl){
       Lib root=Lib.newFromLibrary(top);
       Lib nested=root.navigateCs(path);

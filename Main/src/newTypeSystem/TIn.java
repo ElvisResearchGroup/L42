@@ -210,7 +210,7 @@ boolean isCoherent(){
   }
 public static TIn freshGFromMt(Program p,MethodWithType mwt){
   MethodType mt=mwt.getMt();
-  assert mwt.get_inner().isPresent();
+  assert mwt.get_inner()!=null;
   Map<String,Map.Entry<Boolean, Type>>newG=new HashMap<>();
   newG.put("this",p(false,new Type(mt.getMdf(),Path.outer(0),Doc.empty())));
   {int i=-1;for(String x:mwt.getMs().getNames()){i+=1;

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -28,6 +29,7 @@ import facade.L42;
 public class ReplGui extends JFrame {
  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
  //Configuration.loadAll();
+ L42.setRootPath(Paths.get("ReplCache.L42"));
  SwingUtilities.invokeLater(()-> {
  ReplGui g = new ReplGui();
  g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

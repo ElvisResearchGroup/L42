@@ -11,11 +11,13 @@ import java.util.stream.Collectors;
 
 import ast.Ast.C;
 import ast.Ast.Path;
+import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.L42F;
 import ast.L42F.CD;
 import ast.L42F.Cn;
+import caching.Loader;
 import ast.MiniJ;
 import coreVisitors.From;
 import l42FVisitors.PropagatorVisitor;
@@ -100,12 +102,12 @@ public class ClassTable {
     }
   public static final ClassTable empty=new ClassTable(Collections.emptyMap());
   public static class Element{
-    Element(Program p, CD cd) {this.p=p; this.cd = cd;}
-    Program p;
-    L42F.CD cd;
-    Set<Integer>deps;
+    public Element(Program p, CD cd) {this.p=p; this.cd = cd;}
+    public Program p;
+    public L42F.CD cd;
+    public Set<Integer>deps;
     public ExpCore.ClassB cachedSrc=null;
-    void reCache(Program pView) {
+    public void reCache(Program pView) {
       Path fromming = fromming(p.pop(),pView);
       cachedSrc=(ClassB) From.from(p.top(),fromming);
       }
@@ -148,12 +150,32 @@ public class ClassTable {
     List<Program>ps=programsOf(p,paths);
     ClassTable res=this;
     for(Program pi:ps){
-      List<String> names = Loader.computeDbgNames(pi);
+      List<String> names = computeDbgNames(pi);
       res=res.plus(names,pi);
       }
     assert res.isCoherent();
     return res;
     }
+
+   static List<String> computeDbgNames(Program p) {
+    List<String>names=new ArrayList<>();
+    for(Object o:p.exploredWay()){
+      if(o==null){names.add("£E");}
+      else if(o instanceof Ast.C){names.add(o.toString());}
+      else if(o instanceof Ast.MethodSelector){
+        names.add(o.toString()
+          .replace("(","£X")
+          .replace(",","£X")
+          .replace(")","")
+          .replace(" ","")
+          .replace("#","£H")
+          );
+        }
+      else throw Assertions.codeNotReachable();
+      }
+    return names;
+    }
+  
 
   /*public ClassTable computeJavaForNulls() {
     ClassTable res = copy();
@@ -201,7 +223,7 @@ public class ClassTable {
     for(Element e:res1){res2=res2.plus(e);}
     return res2;
     }
-  protected ClassTable plus(Element e) {
+  public ClassTable plus(Element e) {
   HashMap<Integer,Element> newMap=new HashMap<>(map);
   newMap.put(e.cd.getCn(), e);
   return new ClassTable(newMap);

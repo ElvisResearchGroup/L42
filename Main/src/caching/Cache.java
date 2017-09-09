@@ -1,4 +1,4 @@
-package newReduction;
+package caching;
 
 import java.io.IOException;
 import java.io.InputStream;

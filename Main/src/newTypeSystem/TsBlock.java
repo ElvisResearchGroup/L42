@@ -126,8 +126,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       .anyMatch(x->ds.stream()
         .anyMatch(d->d.getX().equals(x)));
     List<Dec> dsFiltered = ds0n.stream().filter(
-          d->{Mdf m=d.getT().get().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
-          .map(d->d.withVar(false).withT(Optional.of(TypeManipulation.fwd(d.getT().get()))))
+          d->{Mdf m=d.get_t().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
+          .map(d->d.withVar(false).with_t(TypeManipulation.fwd(d.getT().get())))
           .collect(Collectors.toList());
     TIn in1=in.addGds(in.p,dsFiltered); //G1
     Tr trAcc=Tr.instance;
@@ -143,10 +143,10 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       Dec di1=di.withInner(ok.annotated);
       Optional<Type> typeForG2=_ds.get(i).getT();
       if(TypeManipulation.fwd_or_fwdP_in(nt.getMdf())){//building G2
-        ds1.add(di1.withT(Optional.of(typeForG2.orElse(ok.computed))));
+        ds1.add(di1.with_t(typeForG2.orElse(ok.computed)));
         }
-      else{ds1.add(di1.withT(Optional.of(typeForG2.orElse(TypeManipulation.noFwd(ok.computed)))));}
-      ds1FwdP.add(di1.withVar(false).withT(Optional.of(typeForG2.orElse(TypeManipulation.fwdP(ok.computed)))));
+      else{ds1.add(di1.with_t(typeForG2.orElse(TypeManipulation.noFwd(ok.computed))));}
+      ds1FwdP.add(di1.withVar(false).with_t(typeForG2.orElse(TypeManipulation.fwdP(ok.computed))));
       }}
     if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
       boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));

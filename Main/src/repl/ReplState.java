@@ -57,7 +57,7 @@ public static ReplState start(String code){
         return super.visit(cb);
         }
       });*/
-    ReplState res=new ReplState(code, code2,code3,Program.emptyLibraryProgram().updateTop(code3),new ProgramReduction(Paths.get("localhost","ReplCache.C42")));
+    ReplState res=new ReplState(code, code2,code3,Program.emptyLibraryProgram().updateTop(code3),new ProgramReduction(Paths.get("localhost","ReplCache.C42"),true));
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);
     return res;

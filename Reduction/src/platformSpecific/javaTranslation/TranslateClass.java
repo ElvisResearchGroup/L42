@@ -144,7 +144,7 @@ public class TranslateClass {
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
-      if(mt.get_inner().isPresent()){continue;}
+      if(mt.get_inner()!=null){continue;}
       if(mt.getMt().getMdf()!=Ast.Mdf.Class){continue;}
       result.add(mt);
     }
@@ -203,7 +203,7 @@ public class TranslateClass {
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
-      if(mt.get_inner().isPresent()){continue;}
+      if(mt.get_inner()!=null){continue;}
       if(mt.getMt().getMdf()==Ast.Mdf.Class){continue;}//constructor
       if(mt.getMt().getTs().isEmpty()){
         getGetterOrExposer(mt,res);
@@ -312,14 +312,14 @@ public class TranslateClass {
     for(Member m:ct.getMs()){
       assert m instanceof MethodWithType;
       MethodWithType mt=(MethodWithType)m;
-      if( !isInterface && !mt.get_inner().isPresent()){continue;}
+      if( !isInterface && mt.get_inner()==null){continue;}
       //if(mt.getMt().getMdf()!=Ast.Mdf.NormType){continue;}
       getMethod(p,mt,res);
     }
   }
   private static void getMethod(Program p,MethodWithType mt, StringBuilder res) {
     getMethodHeader(mt, res);
-    if(mt.get_inner().isPresent()){
+    if(mt.get_inner()!=null){
       List<String> methPar=mt.getMs().getNames();
       TranslateExpression.of(mt.getInner(),res,methPar);
       }

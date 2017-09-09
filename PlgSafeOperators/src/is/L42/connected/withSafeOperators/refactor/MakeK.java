@@ -54,7 +54,7 @@ public static List<String> collectFieldNames(ClassB lPath) {
 List<String> fields=new ArrayList<>();
 for(MethodWithType mwt:lPath.mwts()){
   if(mwt.getMt().isRefine()){continue;}//To prevent toS() and class() to be seen as fields
-  if(mwt.get_inner().isPresent()){continue;}
+  if(mwt.get_inner()!=null){continue;}
   if(mwt.getMt().getMdf()==Mdf.Class){continue;}
   if(mwt.getMs().getNames().size()>1){continue;}
   if(mwt.getMs().getNames().size()==1 
@@ -145,7 +145,7 @@ static private MethodType fwdK(MethodType proto) {
     MethodSelector ms=MethodSelector.of(kName,fieldNames);
     Type resT=Type.mutThis0;
     MethodType mt=new MethodType(false,Mdf.Class,fieldTypes,resT,Collections.emptyList());
-    return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
+    return new MethodWithType(doc, ms,mt,null,pos);
     }
 
   private static ast.Ast.Type candidate(List<Member> ms, String fName) throws ClassUnfit{

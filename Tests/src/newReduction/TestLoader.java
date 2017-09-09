@@ -11,6 +11,7 @@ import ast.ExpCore.ClassB.Phase;
 import ast.Ast;
 import ast.MiniJ;
 import ast.MiniJ.M;
+import caching.Loader;
 import helpers.TestHelper;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import programReduction.Program;

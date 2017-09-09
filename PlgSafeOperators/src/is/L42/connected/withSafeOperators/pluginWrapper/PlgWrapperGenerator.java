@@ -143,7 +143,7 @@ public class PlgWrapperGenerator {
         continue;
         }
       MethodWithType mwt=(MethodWithType)m;
-      if (mwt.get_inner().isPresent()){
+      if (mwt.get_inner()!=null){
         msResult.add(mwt);
         continue;
         }
@@ -282,7 +282,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       }
     boolean wrapRes=!mt.getReturnType().equals(Type.classAny) &&
             !mt.getReturnType().equals(Type.immLibrary);
-    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).withT(Optional.of(Type.immVoid))));}
+    if (ui.isVoid){b=b.withDecs(Collections.singletonList(b.getDecs().get(0).with_t(Type.immVoid)));}
     if(!ui.isVoid && wrapRes){
       e=e.withEs(Collections.singletonList(b));
       mwt=mwt.withInner(e);

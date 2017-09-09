@@ -1,4 +1,4 @@
-package newReduction;
+package caching;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -29,6 +29,11 @@ import ast.Ast.Path;
 import facade.Configuration;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
+import newReduction.ClassTable;
+import newReduction.L42FToMiniJ;
+import newReduction.L42FToMiniJS;
+import newReduction.MiniJToJava;
+import newReduction.PG;
 import newReduction.ClassTable.Element;
 import newTypeSystem.GuessTypeCore.G;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
@@ -86,7 +91,7 @@ public class Loader {
       throws CompilationError, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
     M m1=new M(true,"Object","£CLoadLib",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
       "{return loader.getLib(index);}\n"
-      + "public static newReduction.Loader loader;"
+      + "public static "+Loader.class.getCanonicalName()+" loader;"
       ));
     M m2=new M(true,Revertable.class.getCanonicalName(),"£COf",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
       "{return ()->£CPathOf(index);}\n"
@@ -228,7 +233,7 @@ public class Loader {
 
 
     }
-  Object run(MiniJ.CD j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+  public Object run(MiniJ.CD j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     String text="package generated;\n"+MiniJToJava.of(j);
     List<SourceFile> files =Collections.singletonList(new SourceFile(
       j.getCn(),text
@@ -255,23 +260,5 @@ public class Loader {
       return res;
       }
     finally{this.saveCache();}//keep cache up to date with the failed run expression (and the correct dependencies)
-    }
-  static List<String> computeDbgNames(Program p) {
-    List<String>names=new ArrayList<>();
-    for(Object o:p.exploredWay()){
-      if(o==null){names.add("£E");}
-      else if(o instanceof Ast.C){names.add(o.toString());}
-      else if(o instanceof Ast.MethodSelector){
-        names.add(o.toString()
-          .replace("(","£X")
-          .replace(",","£X")
-          .replace(")","")
-          .replace(" ","")
-          .replace("#","£H")
-          );
-        }
-      else throw Assertions.codeNotReachable();
-      }
-    return names;
     }
   }

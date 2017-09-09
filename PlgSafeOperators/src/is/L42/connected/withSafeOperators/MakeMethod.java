@@ -47,7 +47,7 @@ public static ClassB addMethod(ClassB _lib, List<Ast.C> path, MethodSelector ms,
     nc.add(cn);
     }
   MethodType mt = new MethodType(false,Mdf.valueOf(_mdfs[0]),ts, retT,Map.of(pi->pi.toImmNT(),exceptions));
-  MethodWithType mwt=new MethodWithType(Doc.empty(),ms,mt,Optional.empty(),innerLib.getP());
+  MethodWithType mwt=new MethodWithType(Doc.empty(),ms,mt,null,innerLib.getP());
   Optional<Member> optM = Functions.getIfInDom(innerLib.getMs(),ms);
   if(optM.isPresent()){
     throw Errors42.errorMethodClash(path, mwt, optM.get(), false, Collections.emptyList(), false, false,false);

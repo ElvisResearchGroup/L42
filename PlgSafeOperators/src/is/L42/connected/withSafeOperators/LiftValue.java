@@ -19,6 +19,7 @@ import programReduction.Program;
 
 public class LiftValue {
   static ExpCore.ClassB liftValue(ExpCore val,Ast.MethodSelector sel, ExpCore.ClassB context){
+    assert val!=null;
     List<Member> ms = new ArrayList<>(context.getMs());
     MethodType mt=new MethodType(false,Mdf.Class,
       Collections.emptyList(),Ast.Type.immAny,Collections.emptyList()
@@ -28,7 +29,7 @@ public class LiftValue {
     //lib:=redirect T ->... <<lib
     //lib:=liftValue  val
     Optional<Member> optMt = Functions.getIfInDom(ms,sel);
-    ExpCore.ClassB.MethodWithType mwt=new ExpCore.ClassB.MethodWithType(Doc.empty(),sel,mt,Optional.of(val),context.getP());
+    ExpCore.ClassB.MethodWithType mwt=new ExpCore.ClassB.MethodWithType(Doc.empty(),sel,mt,val,context.getP());
     if(!optMt.isPresent()){
       ms.add(mwt);
       return context.withMs(ms);
