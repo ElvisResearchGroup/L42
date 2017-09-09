@@ -331,6 +331,7 @@ Css;Cs1'..Csk' ||-p ~> p'.top()[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Type
 _______
 #define toAny(paths', eC)//TODO: update in code, now it takes coherent paths' instead of typed paths and has inverted behaviour
 - toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs0 inside eC, Cs0=Cs1.Cs2 and Cs1 in Cssi
-  otherwise toAny(Css1..Cssn, ctxC[Thisj.Cs1.Cs2])=toAny(Css1..Cssn,ctxC[Any]) 
-  where Cs notin Cssj
+  otherwise
+  toAny(Css1..Cssn, ctxC[Thisj.Cs1.Cs2])=toAny(Css1..Cssn,ctxC[Any]) 
+  where Cs1 notin Cssj
  
