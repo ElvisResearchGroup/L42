@@ -12,7 +12,9 @@ import java.util.Set;
 
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
+import ast.Expression;
 import facade.L42;
+import programReduction.Program;
 
 public class Phase1CacheValue implements Serializable{
   public Phase1CacheValue(Set<String> usedNames, ClassB top) {
@@ -30,17 +32,17 @@ private static final long serialVersionUID = 1L;
       {out.writeObject(this);}
     catch(IOException i) {throw new Error(i);}
     }
-  public static Phase1CacheKey readFromFile(Path file){
+  public static Phase1CacheValue readFromFile(Path file){
     try (
       InputStream is = Files.newInputStream(file);
       ObjectInputStream in = new ObjectInputStream(is);
       ){
       Object res = in.readObject();
-      Phase1CacheKey cache=(Phase1CacheKey)res;
+      Phase1CacheValue cache=(Phase1CacheValue)res;
       return cache;
       }
     catch(IOException i) {throw new Error(i);}
     catch (ClassNotFoundException e) {throw new Error(e);}
     catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
-    }
+    }  
   }

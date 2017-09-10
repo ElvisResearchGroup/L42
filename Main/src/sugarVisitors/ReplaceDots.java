@@ -33,17 +33,22 @@ public class ReplaceDots extends CloneVisitor{
     Path pathD=pathToDirectory();
     if(pathF!=null && pathD!=null){fail("Both file and directory present");}
     if(pathF==null &&pathD==null){fail("File not found");}
-    if(pathF!=null){//put in subfunction
-      String code=L42.pathToString(pathF);
-      Expression e=Parser.parse(pathF.toUri().toString(), code);
-      auxiliaryGrammar.WellFormedness.checkAll(e);
-      return ReplaceDots.of(this.currentFolder,e );
+    if(pathF!=null){return loadFile(pathF);
       }
     assert pathD!=null;
     Path pdf=pathD.resolve("This.L42");
     String code=L42.pathToString(pdf);
     Expression e=Parser.parse(pdf.toUri().toString(), code);
     return ReplaceDots.of(pathD,e );
+  }
+private Expression loadFile(Path pathF) {
+  String code=null;
+  if(L42.newK!=null){code=L42.newK.fileNameToLib.get(pathF);}
+  if(code==null){code=L42.pathToString(pathF);}
+  L42.cacheK.fileNameToLibPut(pathF,code);
+  Expression e=Parser.parse(pathF.toUri().toString(), code);
+  auxiliaryGrammar.WellFormedness.checkAll(e);
+  return ReplaceDots.of(this.currentFolder,e );
   }
   //Decisions: is ok if there is a text file that have no extension?
   //or if the folder have extension? or if there are both? or

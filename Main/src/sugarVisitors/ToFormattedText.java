@@ -533,9 +533,9 @@ public class ToFormattedText extends l42FVisitors.ToFormattedText implements Vis
   }
 
   protected Void liftP(Path path) {
-    if(Path.Any()==path){return c("Any");}
-    if(Path.Library()==path){return c("Library");}
-    if(Path.Void()==path){return c("Void");}
+    if(path.equals(Path.Any())){return c("Any");}
+    if(path.equals(Path.Library())){return c("Library");}
+    if(path.equals(Path.Void())){return c("Void");}
 
     if(path.isCore()){
       c("This"+path.outerNumber());

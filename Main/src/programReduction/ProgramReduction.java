@@ -76,7 +76,9 @@ public class ProgramReduction {
     ClassB topCb=p.top();
     Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb);
     Path vPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".V42");
+    Path kPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".K42");
     cv.saveOnFile(vPath);
+    L42.cacheK.saveOnFile(kPath);
     }
   private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
     ExpCore res=facade.Configuration.reduction.metaExp(p.reprAsPData(), e,nameDebug);

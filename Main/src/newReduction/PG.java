@@ -89,9 +89,9 @@ public class PG implements Visitor<E>{
       ClassB cb=p.extractClassB(path);
       return cb.getUniqueId();
       }
-    if(path==Path.Any()) {return Cn.cnAny.getInner();}
-    if(path==Path.Void()) {return Cn.cnVoid.getInner();}
-    if(path==Path.Library()) {return Cn.cnLibrary.getInner();}
+    if(path.equals(Path.Any())) {return Cn.cnAny.getInner();}
+    if(path.equals(Path.Void())) {return Cn.cnVoid.getInner();}
+    if(path.equals(Path.Library())) {return Cn.cnLibrary.getInner();}
     throw Assertions.codeNotReachable();
     }
   public static T liftT(Program p,Ast.Type t){

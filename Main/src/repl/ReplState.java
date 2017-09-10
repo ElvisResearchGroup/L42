@@ -12,11 +12,13 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
+import ast.Ast;
 import ast.Ast.Doc;
 import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Expression.ClassB;
 import ast.Expression.ClassReuse;
+import caching.Phase1CacheKey;
 import coreVisitors.CloneVisitor;
 import facade.ErrorFormatter;
 import facade.L42;
@@ -29,35 +31,22 @@ import sugarVisitors.InjectionOnCore;
 
 public class ReplState {
   String originalS;
-  ast.Expression.ClassReuse originalL;
   ast.ExpCore.ClassB desugaredL;
   ProgramReduction reduction;
   //ProgramReduction reduction=new ProgramReduction(null);
   Program p;
-  public ReplState(String originalS, ast.Expression.ClassReuse originalL, ast.ExpCore.ClassB desugaredL,Program p,ProgramReduction reduction) {
+  public ReplState(String originalS, ast.ExpCore.ClassB desugaredL,Program p,ProgramReduction reduction) {
     this.originalS = originalS;
-    this.originalL = originalL;
     this.desugaredL = desugaredL;
     this.p=p;
     this.reduction=reduction;
     }
 public static ReplState start(String code){
+  Program p=Phase1CacheKey._handleCache();
   try{
-    Expression.ClassReuse code1=(ClassReuse) Parser.parse("Repl",code);
-    auxiliaryGrammar.WellFormedness.checkAll(code1);
-    Expression.ClassReuse code2=(ClassReuse)Desugar.of(code1);
-    assert auxiliaryGrammar.WellFormedness.checkAll(code2);
-    ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
-    assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
-    /*// TODO: will die after new reduction Refresh of position identities, it is used to generate correct Java code.
-    code3=(ExpCore.ClassB)code3.accept(new CloneVisitor(){
-      @Override public ExpCore visit(ExpCore.ClassB cb){
-        Position p=cb.getP();
-        cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2(),p.get_next()));
-        return super.visit(cb);
-        }
-      });*/
-    ReplState res=new ReplState(code, code2,code3,Program.emptyLibraryProgram().updateTop(code3),new ProgramReduction(Paths.get("localhost","ReplCache.C42"),true));
+    if(p==null){p= L42.parseAndDesugar("Repl",code);}
+    ProgramReduction pr = new ProgramReduction(Paths.get("localhost","ReplCache.C42"),true);
+    ReplState res=new ReplState(code,p.top(),p,pr);
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);
     return res;
@@ -77,8 +66,10 @@ public static ReplState start(String code){
     Expression.ClassB codeTmp=(ClassB) Parser.parse("Repl","{"+code+"}");
     Position fullP=codeTmp.getP();
     //new original
-    ClassReuse newOriginal = this.originalL;
-    List<ast.Expression.ClassB.Member> newOriginalMs=newOriginal.getInner().getMs();
+    ClassB inner=new ClassB(Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),
+      Collections.emptyList(),Collections.emptyList(), fullP);
+    ClassReuse newOriginal = new ClassReuse(inner, null,null);
+    List<ast.Expression.ClassB.Member> newOriginalMs=new ArrayList<>();
     newOriginalMs.addAll(codeTmp.getMs());
     newOriginal.withInner(newOriginal.getInner().withMs(newOriginalMs));
     //new src to desugar
@@ -101,7 +92,7 @@ public static ReplState start(String code){
       }
     code3=code3.withMs(resultMs);
     //call the repl and return
-    ReplState res=new ReplState(this.originalS+"\n"+code, newOriginal,code3,this.p.updateTop(code3),this.reduction);
+    ReplState res=new ReplState(this.originalS+"\n"+code,code3,this.p.updateTop(code3),this.reduction);
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);
     return res;

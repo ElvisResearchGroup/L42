@@ -39,6 +39,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Expression;
+import ast.Expression.ClassReuse;
 import caching.Phase1CacheKey;
 
 public class L42 {
@@ -116,11 +117,13 @@ public class L42 {
       String code=null;
       if(Files.isDirectory(path)){
         Path fullP=path.resolve("This.L42");
-        L42.setRootPath(fullP);
+        L42.setRootPath(path);
+        L42.cacheK.fileName="This.L42";
         code=L42.pathToString(fullP);
         }
       else {
-        L42.setRootPath(path);
+        L42.setRootPath(path.getParent());
+        L42.cacheK.fileName=path.getName(path.getNameCount()-1).toString();
         code=L42.pathToString(path);
         }
       FinalResult res = L42.runSlow(path.toUri().toString(),code);
@@ -186,42 +189,44 @@ public class L42 {
     if(errCodeInt>0 && errCodeInt<100){finalErr(result,"The exitStatus is reserved: "+errCodeInt);}
     return new ErrorMessage.FinalResult(errCodeInt,result);
   }
+  public static Program parseAndDesugar(String fileName,String code) {
+    L42.setExecutionStage(ExecutionStage.Parsing);
+    Expression code1=Parser.parse(fileName,code);
+    assert code1 instanceof Expression.ClassB || code1 instanceof Expression.ClassReuse:code1;
+    L42.setExecutionStage(ExecutionStage.CheckingWellFormedness);
+    auxiliaryGrammar.WellFormedness.checkAll(code1);
+    L42.setExecutionStage(ExecutionStage.Desugaring);
+    Expression code2=Desugar.of(code1);
+    assert auxiliaryGrammar.WellFormedness.checkAll(code2);
+    ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
+    assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
+    L42.setExecutionStage(ExecutionStage.MetaExecution);
+    return Program.emptyLibraryProgram().updateTop(code3);
+    }
+
+  
   public static ErrorMessage.FinalResult runSlow(String fileName,String code){
     try{
-      L42.setExecutionStage(ExecutionStage.Parsing);
-      Expression code1=Parser.parse(fileName,code);
-      assert code1 instanceof Expression.ClassB || code1 instanceof Expression.ClassReuse:code1;
-      L42.setExecutionStage(ExecutionStage.CheckingWellFormedness);
-      auxiliaryGrammar.WellFormedness.checkAll(code1);
-      L42.setExecutionStage(ExecutionStage.Desugaring);
-      Expression code2=Desugar.of(code1);
-      assert auxiliaryGrammar.WellFormedness.checkAll(code2);
-      ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
-      assert coreVisitors.CheckNoVarDeclaredTwice.of(code3);
-      // L42.usedNames.addAll(CollectDeclaredVarsAndCheckNoDeclaredTwice.of(code2));
-      //L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(code2));
-      L42.setExecutionStage(ExecutionStage.MetaExecution);
-      //ClassB result= (ClassB)Executor.stepStar(exe,code3);
-
+      Program p=parseAndDesugar(fileName,code);
        //Refresh of position identities, it is used to generate correct Java code.
-      code3=(ClassB)code3.accept(new CloneVisitor(){
+/*      code3=(ClassB)code3.accept(new CloneVisitor(){
           @Override public ExpCore visit(ClassB cb){
             Position p=cb.getP();
             cb=cb.withP(new Position(p.getFile(),p.getLine1(),p.getPos1(),p.getLine2(),p.getPos2(),p.get_next()));
             return super.visit(cb);
             }
           });
-      //ClassB result= Configuration.reduction.of(code3);
-      ClassB result= new ProgramReduction(null,false).allSteps(Program.emptyLibraryProgram().updateTop(code3));
-      //System.out.println("--------------------------");
-      //System.out.println(ToFormattedText.of(result));
-      //System.out.println("--------------------------");
+  */
+      ClassB result= new ProgramReduction(null,false).allSteps(p);
       return checkFinalError(result);
-    }finally{L42.setExecutionStage(ExecutionStage.None);}
+      }
+    finally{L42.setExecutionStage(ExecutionStage.None);}
   }
 
+  public static Phase1CacheKey newK=null;
   public static Phase1CacheKey cacheK=new Phase1CacheKey();
+  public static Path root;//the root directory, where to seek all the rest
   public static void setRootPath(Path path) {
-    L42.cacheK.fileName=path.toAbsolutePath();
+    L42.root=path;
   }
 }

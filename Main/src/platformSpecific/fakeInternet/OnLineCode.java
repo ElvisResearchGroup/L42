@@ -38,8 +38,10 @@ public interface OnLineCode {
   public static Expression.ClassB getCode(String url){
     assert url.startsWith("reuse");
     url=url.substring("reuse".length());
-    url=url.trim();
-    if(url.startsWith("L42.is/")){return OnLineCodeHelper.getL42Code(url.substring("L42.is/".length()));}
+    url=url.trim(); 
+    if(url.startsWith("L42.is/")){
+      return OnLineCodeHelper.getL42Code(url.substring("L42.is/".length()));
+      }
     throw Assertions.codeNotReachable();
   }
   static PluginWithPart _isPluginWithPart(Doc doc){
@@ -119,7 +121,9 @@ class OnLineCodeHelper{
     //Path res = L42.path.resolve(name+".L42");
     Path res = Paths.get("localhost",name+".L42");
     assert res!=null:name;
-    String s= L42.pathToString(res);
+    String s= null;
+    if(L42.newK!=null){s=L42.newK.urlToLib.get(name);}
+    if(s==null){s=L42.pathToString(res);}
     Expression e=Parser.parse(res.toString(),s);
     assert WellFormedness.checkAll(e);
     return e;

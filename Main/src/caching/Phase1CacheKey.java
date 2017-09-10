@@ -9,11 +9,16 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import ast.ExpCore;
 import facade.L42;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
+import programReduction.Program;
 
 /**
  
@@ -26,13 +31,12 @@ cacheKey:
 cacheData:
   serialized 42core ast+L42.usedNames and similar
 1-read entry file
-2-read entry file cache
-3-load maps with mentioned files in cache
-4-make a new cache key
-5-if identical to cacheKey, use cacheData
-6-if different, 
+2-oldK=read entry file cache
+3-newK=load maps with mentioned files in cache
+4-if newK==oldK then cacheKey=newK and p=flatProram.of(cacheVal)
+6-if different, cacheKey=empty, normal execution..
 compute up to top execute()
-make new cache with the typed program there.
+make new cacheVal /cacheKey with the typed program there.
  
  * */
 
@@ -73,14 +77,31 @@ public class Phase1CacheKey implements Serializable{
     return true;
     }
 private static final long serialVersionUID = 1L;
-  public Path fileName;//the starting point
+  public String fileName;//the starting point
   public Map<String,String> urlToLib=new HashMap<>();
-  public Map<Path,String>fileNameToLib=new HashMap<>();//contains fileName->??
+  public Map<List<String>,String>fileNameToLib=new HashMap<>();//contains fileName->??
+  private static Path pathFromList(List<String> l){
+    Path p=L42.root;
+    for(String s:l){p=p.resolve(s);}
+    return p;
+    }
+  private static List<String> listFromPath(Path path){
+    List<String> res=new ArrayList<>();
+    for(Path si:path){res.add(si.toString());}
+    return res;
+    }
+  public void fileNameToLibPut(Path path, String code){
+    fileNameToLib.put(listFromPath(path),code);
+    }
+  public Path fileName(){
+    return pathFromList(Collections.singletonList(fileName));
+    }
   public Path rootPath(){
-    return fileName.getParent();
+    return fileName().getParent();
     }
   public String firstSourceName(){
-    String name=fileName.getName(fileName.getNameCount()-1).toString();
+    Path fn=fileName();
+    String name=fn.getName(fn.getNameCount()-1).toString();
     assert name.endsWith(".L42");
     return name.substring(0, name.length()-4);  
     }
@@ -97,8 +118,8 @@ private static final long serialVersionUID = 1L;
       String fnContent=_contentOrNull(fn);
       res.urlToLib.put(url,fnContent);
       }
-    for(Path path:fileNameToLib.keySet()){
-      Path fn = rootPath().resolve(path);
+    for(List<String> path:fileNameToLib.keySet()){
+      Path fn = rootPath().resolve(pathFromList(path));
       String fnContent=_contentOrNull(fn);
       res.fileNameToLib.put(path,fnContent);
       }   
@@ -124,5 +145,25 @@ private static final long serialVersionUID = 1L;
     catch(IOException i) {throw new Error(i);}
     catch (ClassNotFoundException e) {throw new Error(e);}
     catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    }
+  
+  public static Program _handleCache(){
+    Path vPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".V42");
+    Path kPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".K42");
+    try{
+      Phase1CacheKey oldK=Phase1CacheKey.readFromFile(kPath);
+      Phase1CacheKey newK=oldK.current();
+      L42.newK=newK;
+      assert oldK.fileName.equals(L42.cacheK.fileName);
+      assert newK.fileName.equals(L42.cacheK.fileName);
+      if(!newK.equals(oldK)){
+        return null;}
+      }
+    catch(Error e){
+      return null;}
+    Phase1CacheValue val=Phase1CacheValue.readFromFile(vPath);
+    L42.usedNames.clear();
+    L42.usedNames.addAll(val.usedNames);
+    return Program.emptyLibraryProgram().updateTop(val.top);
     }
   }
