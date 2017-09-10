@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,9 +73,18 @@ public class Phase1CacheKey implements Serializable{
     return true;
     }
 private static final long serialVersionUID = 1L;
-  String fileName;//the starting point
-  Map<String,String> urlToLib=new HashMap<>();
-  Map<Path,String>fileNameToLib=new HashMap<>();//contains fileName->??
+  public Path fileName;//the starting point
+  public Map<String,String> urlToLib=new HashMap<>();
+  public Map<Path,String>fileNameToLib=new HashMap<>();//contains fileName->??
+  public Path rootPath(){
+    return fileName.getParent();
+    }
+  public String firstSourceName(){
+    String name=fileName.getName(fileName.getNameCount()-1).toString();
+    assert name.endsWith(".L42");
+    return name.substring(0, name.length()-4);  
+    }
+
   public static String _contentOrNull(Path fn){
     try{return L42._pathToString(fn);}
     catch (IOException e) {return null;}
@@ -83,12 +93,12 @@ private static final long serialVersionUID = 1L;
     Phase1CacheKey res=new Phase1CacheKey();
     res.fileName=this.fileName;
     for(String url:urlToLib.keySet()){
-      Path fn = L42.path.resolve(fileName);
+      Path fn = Paths.get("localhost",url);
       String fnContent=_contentOrNull(fn);
       res.urlToLib.put(url,fnContent);
       }
     for(Path path:fileNameToLib.keySet()){
-      Path fn = L42.path.resolve(path);
+      Path fn = rootPath().resolve(path);
       String fnContent=_contentOrNull(fn);
       res.fileNameToLib.put(path,fnContent);
       }   

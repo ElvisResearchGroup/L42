@@ -39,6 +39,7 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Expression;
+import caching.Phase1CacheKey;
 
 public class L42 {
   public static enum ExecutionStage{None,Reading,Parsing,CheckingWellFormedness,Desugaring,MetaExecution,Closing;}
@@ -114,11 +115,12 @@ public class L42 {
 
       String code=null;
       if(Files.isDirectory(path)){
-        L42.setRootPath(path);
-        code=L42.pathToString(path.resolve("This.L42"));
+        Path fullP=path.resolve("This.L42");
+        L42.setRootPath(fullP);
+        code=L42.pathToString(fullP);
         }
       else {
-        L42.setRootPath(path.getParent());
+        L42.setRootPath(path);
         code=L42.pathToString(path);
         }
       FinalResult res = L42.runSlow(path.toUri().toString(),code);
@@ -218,8 +220,8 @@ public class L42 {
     }finally{L42.setExecutionStage(ExecutionStage.None);}
   }
 
-  public static Path path;
+  public static Phase1CacheKey cacheK=new Phase1CacheKey();
   public static void setRootPath(Path path) {
-    L42.path=path.toAbsolutePath();
+    L42.cacheK.fileName=path.toAbsolutePath();
   }
 }

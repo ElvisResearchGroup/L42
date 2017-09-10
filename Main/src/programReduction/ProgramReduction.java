@@ -70,13 +70,12 @@ public class ProgramReduction {
     }
   private void saveFirstTimeCache(Program p) {
     if(!saveVCache){return;}
+    if(L42.cacheK.fileName==null){return;}
     try{while(true){p=p.pop();}}
     catch(Program.EmptyProgram ep){}  
     ClassB topCb=p.top();
     Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb);
-    String name=L42.path.getName(L42.path.getNameCount()-1).toString();
-    assert name.endsWith(".L42");
-    Path vPath = L42.path.getParent().resolve(name.substring(0, name.length()-4)+".V42");
+    Path vPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".V42");
     cv.saveOnFile(vPath);
     }
   private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {

@@ -123,7 +123,7 @@ public interface Ast {
  @Value
  @Wither
  @EqualsAndHashCode(exclude = "doc")
- public class Type{
+ public class Type implements Serializable{
   Mdf mdf;
   Path path;
   Doc doc;
@@ -261,7 +261,7 @@ public interface Ast {
 
  @Value
  @Wither
- public class MethodType {
+ public class MethodType implements Serializable{
   boolean refine;
   Mdf mdf;
   List<Type> ts;
