@@ -82,7 +82,9 @@ private static final long serialVersionUID = 1L;
   public Map<List<String>,String>fileNameToLib=new HashMap<>();//contains fileName->??
   private static Path pathFromList(List<String> l){
     Path p=L42.root;
-    for(String s:l){p=p.resolve(s);}
+    for(String s:l){assert s!=null;
+      p=p.resolve(s);
+      }
     return p;
     }
   private static List<String> listFromPath(Path path){
@@ -163,7 +165,7 @@ private static final long serialVersionUID = 1L;
       return null;}
     Phase1CacheValue val=Phase1CacheValue.readFromFile(vPath);
     L42.usedNames.clear();
-    L42.usedNames.addAll(val.usedNames);
+    L42.usedNames.putAll(val.usedNames);
     return Program.emptyLibraryProgram().updateTop(val.top);
     }
   }

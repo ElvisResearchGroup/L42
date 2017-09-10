@@ -169,6 +169,7 @@ import programReduction.Program;
       List<Ast.C> path1=TestHelper.cs(_path1);
       List<Ast.C> path2=TestHelper.cs(_path2);
       if (!isError) {
+        TestHelper.configureForTest();
         ClassB expected = getClassB(true,null,_expected);
         ClassB res = Rename.renameClassAux(Program.emptyLibraryProgram(), cb1, path1, path2);
         TestHelper.assertEqualExp(expected, res);

@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +79,7 @@ public class L42 {
   public static String reconstructedStackTrace="";
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
-  public static final Set<String> usedNames=new HashSet<String>();
+  public static final java.util.Map<String,Integer> usedNames=new HashMap<>();
   public static void printDebug(String s){
     record.append(s);
     record.append("\n");

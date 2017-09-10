@@ -250,7 +250,7 @@ private List<D> fwdFix(Set<String> fv,List<D>ds){
   Set<String>usedAsFwd=new HashSet<>();
   for(D d:ds) {//from the bottom
     //compute all xiPrime and eiPrime
-    L42.usedNames.add(d.getX());
+    Functions.addName(d.getX(),L42.usedNames);
     map.put(d.getX(),Functions.freshName(d.getX(), L42.usedNames));
     dPrimes.add(d.withE(ePrimei(d.getE(),map,usedAsFwd)));
     }

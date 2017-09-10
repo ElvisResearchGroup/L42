@@ -34,6 +34,7 @@ import ast.ExpCore._void;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import coreVisitors.IsCompiled;
+import facade.L42;
 
 /*class A{ A m(A a){return a;}
   A mm(){
@@ -120,7 +121,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     res=resOld;
     PluginType pt=platformSpecific.fakeInternet.OnLineCode.plugin(Resources.getP(),s);
     UsingInfo ui=new UsingInfo(Resources.getP(),s);
-    res.append(pt.executableJ(ui, e, es, TranslateExpression.labels));
+    res.append(pt.executableJ(ui, e, es, L42.usedNames));
     return null;
     }
 
@@ -159,7 +160,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     return null;
   }
   public void produceNestedBlock(Block s,String asReturn){
-    String kVar=" L"+Functions.freshName("lab",TranslateExpression.labels);
+    String kVar=" L"+Functions.freshName("lab",L42.usedNames);
     res.append("{"+kVar+":{");
     Set<String> domPhs=declareVarsAndPh(s.getDecs());
     if(!s.getOns().isEmpty()){
@@ -189,7 +190,7 @@ public class TranslateExpression implements coreVisitors.Visitor<Void>{
     boolean allEq=true;
     for(On on:c){ if(on.getKind()!=kind){allEq=false;}}
     assert allEq;//TODO: for now ok, then we will capture a more general exception on need.
-    String kVar=Functions.freshName("K",TranslateExpression.labels);
+    String kVar=Functions.freshName("K",L42.usedNames);
     res.append("catch(platformSpecific.javaTranslation.Resources."+kind.name()+" "+kVar);
     res.append("){\n");
     for(On on:c){getCatch(kVar,on,asReturn,kLab);}

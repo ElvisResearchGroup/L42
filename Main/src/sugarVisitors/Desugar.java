@@ -85,19 +85,22 @@ public class Desugar extends CloneVisitor{
     L42.setFreshPrivateCap(max+1);
     if(L42.cacheK.fileName!=null){e=ReplaceDots.of(L42.cacheK.rootPath(), e);}
     Desugar d=new Desugar();
-    d.usedVars.addAll(CollectDeclaredVars.of(e));
+    for(String si:CollectDeclaredVars.of(e)){Functions.addName(si, L42.usedNames);}
     e=DesugarPaths.of(e);
-    e=DesugarNormalizeReceiver.of(d.usedVars, e);
-    e=DesugarContext.of(d.usedVars, e);
+    e=DesugarNormalizeReceiver.of( e);
+    e=DesugarContext.of( e);
     assert DesugarContext.checkRemoved(e);
-    e=DesugarW.of(d.usedVars,e);
-    e=DesugarVars.of(d.usedVars,e);
+    e=DesugarW.of(e);
+    e=DesugarVars.of(e);
     //assert DesugarVars.assertVarsRemoved(e);
     //understand what is the current folder
     //replace ... recursively
     //replaceDots(currentFolder,e)-> clone visitor
     d.collectAllUsedLibs(e);//collect all classBreuse in a map url->core version
-    L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(e));
+
+    for(String si:CollectDeclaredClassNamesAndMethodNames.of(e)){
+      Functions.addName(si,L42.usedNames);
+      }
 
     d.renameAllPrivatesInUsedLibs();
     Expression result= e.accept(d);
@@ -119,7 +122,9 @@ public class Desugar extends CloneVisitor{
       @Override
       public Expression visit(ClassReuse s) {
         ClassB data = OnLineCode.getCode(s.getUrl());
-        L42.usedNames.addAll(CollectDeclaredClassNamesAndMethodNames.of(data));
+        for(String si:CollectDeclaredClassNamesAndMethodNames.of(data)){
+          Functions.addName(si,L42.usedNames);
+          }
         ast.ExpCore.ClassB dataCore=(ast.ExpCore.ClassB) data.accept(new InjectionOnCore());
         Desugar.this.importedLibs.put(s.getUrl(),dataCore);
         //Using a hash map as over means that if we import the same library twice, we get a single copy.
@@ -132,7 +137,6 @@ public class Desugar extends CloneVisitor{
   }
 
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();
-  Set<String> usedVars=new HashSet<String>();
   Type t=Type.immVoid;
   HashMap<String,Type> varEnv=new HashMap<String,Type>();
 
@@ -176,7 +180,7 @@ public class Desugar extends CloneVisitor{
       if(!(_dec instanceof VarDecE)){
         newDecs.add(_dec);continue;}
       VarDecE dec=(VarDecE)_dec;
-      String x=Functions.freshName("unused", usedVars);
+      String x=Functions.freshName("unused", L42.usedNames);
       //usedVars.add(x);
       VarDecXE newXE=new VarDecXE(false,Optional.of(Type.immVoid),x,dec.getInner());
       newDecs.add(newXE);
@@ -236,7 +240,6 @@ public class Desugar extends CloneVisitor{
       ms.addAll(s.getMs());
       s=s.withMs(ms).withH(new Ast.TraitHeader());
       }
-    Set<String> oldUsedVars = this.usedVars;
     HashMap<String, Type> oldVarEnv = this.varEnv;
     try{
       s=(ClassB)super.visit(s);
@@ -244,7 +247,6 @@ public class Desugar extends CloneVisitor{
       s=DesugarCatchDefault.of(s);
       return s;}
     finally{
-      this.usedVars=oldUsedVars;
       this.varEnv=oldVarEnv;
       }
   }
@@ -278,7 +280,7 @@ public class Desugar extends CloneVisitor{
   }
   protected List<Catch> liftKs(List<Catch> ks) {
     List<Catch> result=new ArrayList<>();
-    String x=Functions.freshName("catched", usedVars);
+    String x=Functions.freshName("catched", L42.usedNames);
     for(Catch k:ks){
       if( k instanceof DesugarCatchDefault.CatchToComplete){
         Catch k2=this.liftK(((DesugarCatchDefault.CatchToComplete) k).catch1);
@@ -337,7 +339,7 @@ public class Desugar extends CloneVisitor{
     }
     Position p=s.getP();
     if(!(s.getCond() instanceof Ast.Atom)){
-      String x=Functions.freshName("cond", usedVars);
+      String x=Functions.freshName("cond", L42.usedNames);
       return visit(getBlock(p,x, s.getCond(),s.withCond(new X(p,x))));
     }
     MCall check=getMCall(p,s.getCond(),"#checkTrue", getPs());
@@ -404,7 +406,7 @@ public class Desugar extends CloneVisitor{
     assert s.getContents().get(0).getDecs().size()==1;
     assert s.getContents().get(0).getDecs().get(0) instanceof VarDecE;
     Expression inner=((VarDecE)s.getContents().get(0).getDecs().get(0)).getInner();
-    String y=Functions.freshName("result",this.usedVars);
+    String y=Functions.freshName("result",L42.usedNames);
     Expression.Catch k=getK(s.getP(),SignalKind.Return,y,Type.immAny,new X(s.getP(),y));
     Expression termination= Desugar.errorMsg("CurlyBlock-Should be unreachable code");
     RoundBlock outer=getBlock(s.getP(),inner, Collections.singletonList(k),termination);
@@ -432,7 +434,7 @@ public class Desugar extends CloneVisitor{
     if (op.normalized){
       return visit(getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight())));
       }
-    String x=Functions.freshName("opNorm", usedVars);
+    String x=Functions.freshName("opNorm", L42.usedNames);
     BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getDoc(),new Expression.X(s.getP(),x));
     return visit(getBlock(s.getP(),x, s.getLeft(),s2));
   }
@@ -460,7 +462,7 @@ public class Desugar extends CloneVisitor{
     //(b=r.builder() b.a() b.b() b.c() .... b)
     List<VarDec> vd=new ArrayList<>();
     Expression k=getMCall(s.getP(),s.getReceiver(),"#seqBuilder",getPs());
-    String x=Functions.freshName("b", usedVars);
+    String x=Functions.freshName("b", L42.usedNames);
     X b=new X(s.getP(),x);
     vd.add(new VarDecXE(false, Optional.empty(), x, k));
     for(Parameters ps:s.getPss()){
@@ -495,7 +497,7 @@ public class Desugar extends CloneVisitor{
     //(b=r.builder() b.a() b.b() b.c() .... b)
     List<VarDec> vd=new ArrayList<>();
     Expression k=getMCall(s.getP(),s.getReceiver(),"#builder",getPs());
-    String x=Functions.freshName("b", usedVars);
+    String x=Functions.freshName("b", L42.usedNames);
     X b=new X(s.getP(),x);
     vd.add(new VarDecXE(false, Optional.empty(), x, k));
     for(char ch:s.getInner().toCharArray()){
@@ -630,42 +632,39 @@ public class Desugar extends CloneVisitor{
       nc=nc.withInner(((Expression.DocE)nc.getInner()).getInner());
       }//TODO: document stripping of comments and decide scope
     NestedClass nc1=nc;
-    this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
-    usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
+    for(String si:CollectDeclaredVars.of(nc.getInner())){Functions.addName(si,L42.usedNames);}
     return withExpectedType(
       Type.immLibrary,
       ()->super.visit(nc1));
   }
   public MethodImplemented visit(MethodImplemented mi){
-    this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
     String mName=desugarName(mi.getS().nameToS());
     mi=mi.withS(mi.getS().withName(mName));
     for(String name:mi.getS().getNames()){
-      usedVars.add(name);
+      Functions.addName(name,L42.usedNames);
       varEnv.put(name,null);
     }
-    usedVars.add("this");
-    usedVars.addAll(CollectDeclaredVars.of(mi.getInner()));
+    Functions.addName("this",L42.usedNames);
+    for(String si:CollectDeclaredVars.of(mi.getInner())){Functions.addName(si,L42.usedNames);}
     final MethodImplemented mi2=mi;//final restrictions
     return withExpectedType(null,
       ()->super.visit(mi2));
     //well... this is an issue> method desugaring for method implemented does not know its return type?
     }
   public MethodWithType visit(MethodWithType mt){
-    this.usedVars=new HashSet<String>();
     this.varEnv=new HashMap<String, Type>();
     String mName=desugarName(mt.getMs().getName());
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
     {int i=-1;for(String name:mt.getMs().getNames()){i+=1;
-    this.usedVars.add(name);
+    Functions.addName(name,L42.usedNames);
     this.varEnv.put(name,mt.getMt().getTs().get(i));
     }}
-    usedVars.add("this");
+    Functions.addName("this",L42.usedNames);
     varEnv.put("this",new Type(mt.getMt().getMdf(),Path.outer(0),mt.getDoc()));
-    usedVars.addAll(CollectDeclaredVars.of(mt.getInner().get()));
+    for(String si:CollectDeclaredVars.of(mt.getInner().get())){Functions.addName(si,L42.usedNames);}
     final MethodWithType mt2=mt;//final restrictions
     return withExpectedType(
       liftT(mt.getMt().getReturnType()),

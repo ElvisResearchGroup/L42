@@ -56,19 +56,18 @@ import ast.Expression.ClassB.MethodImplemented;
 import ast.Expression.ClassB.MethodWithType;
 import ast.Expression.ClassB.NestedClass;
 import auxiliaryGrammar.Functions;
+import facade.L42;
 
 class DesugarNormalizeReceiver extends CloneVisitor{
-  Set<String> usedVars=new HashSet<String>();
-  public static Expression of(Set<String> usedVars,Expression e){
+  public static Expression of(Expression e){
     DesugarNormalizeReceiver d=new DesugarNormalizeReceiver();
-    d.usedVars=usedVars;
     Expression result= e.accept(d);
     return result;
   }
 
   private Expression normalizeReceiver(Ast.HasReceiver s){
     assert !(s.getReceiver() instanceof Ast.Atom);
-    String x=Functions.freshName("rcv", usedVars);
+    String x=Functions.freshName("rcv", L42.usedNames);
     return Desugar.getBlock(s.getP(),x, s.getReceiver(),s.withReceiver(new X(s.getP(),x)));
     }
   public Expression visit(MCall s) {

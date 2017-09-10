@@ -59,7 +59,7 @@ class ProtectedPluginType{
       throw new Error(e.getCause());
       }
     }
-  static String executableWrapper(Ast.MethodSelector ms, Set<String> labels){
+  static String executableWrapper(Ast.MethodSelector ms, java.util.Map<String,Integer> labels){
   //  (plF,xsF)->plF.
   //  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
   String plF="L"+Functions.freshName("pl",labels);
@@ -92,7 +92,7 @@ public interface PluginType {
     Method m=ProtectedPluginType.getMethod(this,p, u);
     return ProtectedPluginType.executeMethod(m, p, this, u.getEs().toArray());
     }
-  default String executableJ(UsingInfo s,String e,List<String>es,Set<String> labels){
+  default String executableJ(UsingInfo s,String e,List<String>es,java.util.Map<String,Integer> labels){
     StringBuilder res=new StringBuilder();
     assert s!=null;
     assert s.usingMs!=null;

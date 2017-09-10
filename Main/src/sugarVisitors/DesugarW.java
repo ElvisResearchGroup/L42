@@ -43,38 +43,32 @@ import ast.Expression.ClassB.MethodImplemented;
 import ast.Expression.ClassB.MethodWithType;
 import ast.Expression.ClassB.NestedClass;
 import auxiliaryGrammar.Functions;
+import facade.L42;
 
 class DesugarW extends CloneVisitor{
-  Set<String> usedVars=new HashSet<String>();
-  public static Expression of(Set<String> usedVars,Expression e){
+  public static Expression of(Expression e){
     DesugarW d=new DesugarW();
-    d.usedVars=usedVars;
     Expression result= e.accept(d);
     return result;
   }
   public Expression visit(ClassB s) {
-    Set<String> oldUsedVars = this.usedVars;
-    try{ return (ClassB)super.visit(s);}
-    finally{ this.usedVars=oldUsedVars; }// it reset but not replace, membes replace
-  }
+    return (ClassB)super.visit(s);
+    }
   public NestedClass visit(NestedClass nc){
-    this.usedVars=new HashSet<String>();
-    usedVars.addAll(CollectDeclaredVars.of(nc.getInner()));
+    for(String si:CollectDeclaredVars.of(nc.getInner())){Functions.addName(si, L42.usedNames);}
     return super.visit(nc);
   }
   public MethodImplemented visit(MethodImplemented mi){
-    this.usedVars=new HashSet<String>();
-    for(String name:mi.getS().getNames()){ usedVars.add(name); }
-    usedVars.add("this");
-    usedVars.addAll(CollectDeclaredVars.of(mi.getInner()));
+    for(String si:mi.getS().getNames()){Functions.addName(si, L42.usedNames);}
+    Functions.addName("this", L42.usedNames);
+    for(String si:CollectDeclaredVars.of(mi.getInner())){Functions.addName(si, L42.usedNames);}
     return super.visit(mi);
     }
   public MethodWithType visit(MethodWithType mt){
-    this.usedVars=new HashSet<String>();
     if(!mt.getInner().isPresent()){return super.visit(mt);}
-    for(String name:mt.getMs().getNames()){this.usedVars.add(name);}
-    usedVars.add("this");
-    usedVars.addAll(CollectDeclaredVars.of(mt.getInner().get()));
+    for(String si:mt.getMs().getNames()){Functions.addName(si, L42.usedNames);}
+    Functions.addName("this", L42.usedNames);
+    for(String si:CollectDeclaredVars.of(mt.getInner().get())){Functions.addName(si, L42.usedNames);}
     return super.visit(mt);
       }
 
@@ -103,7 +97,7 @@ class DesugarW extends CloneVisitor{
     //(b=r.builder() b.a() b.b() b.c() .... b)
     List<VarDec> vd=new ArrayList<>();
     Expression k=Desugar.getMCall(s.getP(),s.getReceiver(),"#seqBuilder",Desugar.getPs());
-    String x=Functions.freshName("b", usedVars);
+    String x=Functions.freshName("b", L42.usedNames);
     X b=new X(s.getP(),x);
     vd.add(new VarDecXE(false, Optional.empty(), x, k));
     Expression ew=s.getWith().accept(this);
@@ -136,7 +130,7 @@ class DesugarW extends CloneVisitor{
   private VarDecXE castT(Position pos,Type t, String y, String x) {
     assert t instanceof Type;
     Type nt=t;
-    String z=Functions.freshName("casted", usedVars);
+    String z=Functions.freshName("casted", L42.usedNames);
 
     List<Catch> ks=new ArrayList<>();
     Type t2=new Type(nt.getMdf(),Path.Any(),Doc.empty());
@@ -180,7 +174,7 @@ class DesugarW extends CloneVisitor{
   }
   private Expression with_C_A(Position pos, List<String> xs, With.On on0,Expression continuation) {
     List<String> ys=new ArrayList<String>();
-    for(String x:xs){ys.add(Functions.freshName(x, usedVars));}
+    for(String x:xs){ys.add(Functions.freshName(x, L42.usedNames));}
     //(
     List<VarDec> decs=new ArrayList<>();
     //TODO:?? now is very strange and requires the mdf to propagate it to the locally introduced var?
@@ -275,7 +269,7 @@ class DesugarW extends CloneVisitor{
   }
 
   private Catch withDesugarGetDefaultCatch(Position pos,SignalKind kind,Expression eClose) {
-    String propagated1=Functions.freshName("propagated",usedVars);
+    String propagated1=Functions.freshName("propagated",L42.usedNames);
     Expression blockPropagate1=Desugar.getBlock(pos,eClose,new Signal(kind,new X(pos,propagated1)));
     Type t=Type.immAny;
     Expression.Catch1 k1=new Expression.Catch1(pos,kind, t,propagated1,blockPropagate1);

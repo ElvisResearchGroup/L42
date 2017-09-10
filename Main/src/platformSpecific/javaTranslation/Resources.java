@@ -71,8 +71,7 @@ public class Resources {
   public static final TypeMap types=new TypeMap();
   */
   public static String submitRes(Object cb){
-    HashSet<String> hs=new HashSet<>(usedRes.keySet());
-    String newK=Functions.freshName("key", hs);
+    String newK=Functions.freshName("key", L42.usedNames);
     assert !usedRes.containsKey(newK);
     usedRes.put(newK,cb);
     return newK;

@@ -224,7 +224,7 @@ public class PluginWithPart implements PluginType{
 
 
   @Override
-  public String executableJ(UsingInfo ui,String te,List<String>tes,Set<String> labels){
+  public String executableJ(UsingInfo ui,String te,List<String>tes,java.util.Map<String,Integer> labels){
     if (ui.methOrKs==null){return executableInstanceof(ui,te,tes,labels);}
     //if static meth tes=e1..en, parRec=null, rec=plgName
     //else  tes=e0..en, parRec=e0, rec=plF //that is, e1..en do not contains the first of tes
@@ -298,7 +298,7 @@ public class PluginWithPart implements PluginType{
     res.append(")");
     return res.toString();
     }
-  private String executableInstanceof(UsingInfo ui, String te, List<String> tes, Set<String> labels) {
+  private String executableInstanceof(UsingInfo ui, String te, List<String> tes, java.util.Map<String,Integer> labels) {
     String path=ui.plgInfo.plgClass.getCanonicalName();
     String plF="L"+Functions.freshName("pl",labels);
     String xsF="L"+Functions.freshName("xs",labels);

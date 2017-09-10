@@ -140,7 +140,7 @@ public class TestL42F {
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
     "public static final £Id10 Instance=new _Fwd();\n" +
     "public static £Id10 Instance(){return Instance; }\n" +
-    "  static public platformSpecific.javaTranslation.Resources.Void £Cv(£Id10 £Xthis){label:{platformSpecific.javaTranslation.Resources.Void £Xx;try{£Xx=£Id10.£Cv(£Xthis);}catch (platformSpecific.javaTranslation.Resources.Error catchX){if(catchX.inner() instanceof platformSpecific.javaTranslation.Resources.Void){platformSpecific.javaTranslation.Resources.Void £Xr=(platformSpecific.javaTranslation.Resources.Void)catchX.inner(); return £Xr;} else throw catchX;}return £Xx;}}\n" +
+    "  static public platformSpecific.javaTranslation.Resources.Void £Cv(£Id10 £Xthis){label1:{platformSpecific.javaTranslation.Resources.Void £Xx;try{£Xx=£Id10.£Cv(£Xthis);}catch (platformSpecific.javaTranslation.Resources.Error catchX1){if(catchX1.inner() instanceof platformSpecific.javaTranslation.Resources.Void){platformSpecific.javaTranslation.Resources.Void £Xr=(platformSpecific.javaTranslation.Resources.Void)catchX1.inner(); return £Xr;} else throw catchX1;}return £Xx;}}\n" +
     "  }\n",
     null
     },{lineNumber(),"{method Void v() loop this.v()}",
@@ -156,7 +156,7 @@ public class TestL42F {
     "public java.util.List<java.util.function.BiConsumer<Object,Object>> fs(){return fs;}}\n" +
     "public static final £Id10 Instance=new _Fwd();\n" +
     "public static £Id10 Instance(){return Instance; }\n" +
-    "  static public platformSpecific.javaTranslation.Resources.Void £Cv(£Id10 £Xthis){label:while(true)£Id10.£Cv(£Xthis);}\n" +
+    "  static public platformSpecific.javaTranslation.Resources.Void £Cv(£Id10 £Xthis){label1:while(true)£Id10.£Cv(£Xthis);}\n" +
     "  }\n",
     null
     },{lineNumber(),"{method Void v() (var Void x=void x:=void x)}",
@@ -171,12 +171,12 @@ public class TestL42F {
     "    New\n" +
     "  method Immutable £Id10 v()(Immutable £Id10 this)\n" +
     "    (\n" +
-    "      Immutable £Id10 x0=£Id10.NewFwd()()\n" +
+    "      Immutable £Id10 x1=£Id10.NewFwd()()\n" +
     "      Immutable £Id10 x=(\n" +
-    "        Class £Id10 receiverX=£Id10\n" +
-    "        £Id10.k(that)(x0)\n" +
+    "        Class £Id10 receiverX1=£Id10\n" +
+    "        £Id10.k(that)(x1)\n" +
     "      )\n" +
-    "      Immutable Void unused=newReduction.Fwd.Fix()(x0,x)\n" +
+    "      Immutable Void unused1=newReduction.Fwd.Fix()(x1,x)\n" +
     "      x\n" +
     "    )\n" +
     "  }\n",
@@ -195,7 +195,7 @@ public class TestL42F {
     "}\n" +
     "\n" +
     "  static public £Id10 £CNew_k£Xthat(£Id10 £Xthat){£Id10 Res=new £Id10();Res.£Xthat=£Xthat;return Res;}\n" +
-    "  static public £Id10 £Cv(£Id10 £Xthis){£Id10 £Xx0;£Id10 £Xx;platformSpecific.javaTranslation.Resources.Void £Xunused;£Xx0=£Id10.£CNewFwd();{£Id10 £XreceiverX;£XreceiverX=£Id10.Instance();£Xx=£Id10.£Ck£Xthat(£Xx0);}£Xunused=newReduction.Fwd.£CFix(£Xx0, £Xx);return £Xx;}\n" +
+    "  static public £Id10 £Cv(£Id10 £Xthis){£Id10 £Xx1;£Id10 £Xx;platformSpecific.javaTranslation.Resources.Void £Xunused1;£Xx1=£Id10.£CNewFwd();{£Id10 £XreceiverX1;£XreceiverX1=£Id10.Instance();£Xx=£Id10.£Ck£Xthat(£Xx1);}£Xunused1=newReduction.Fwd.£CFix(£Xx1, £Xx);return £Xx;}\n" +
     "  }\n" +
     "",
     null

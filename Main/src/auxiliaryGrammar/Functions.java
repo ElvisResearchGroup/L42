@@ -206,25 +206,38 @@ private static HashSet<String>  neededX(Block e,int n){
   neededX.addAll(FreeVariables.of(e.getInner()));
   return neededX;
   }
-public static String freshName(String pathR, Set<String> usedNames) {
-  while(Character.isDigit(pathR.charAt(pathR.length()-1))){
-    pathR=pathR.substring(0,pathR.length()-1);
-  }
-  if(!usedNames.contains(pathR) && !keywords.contains(pathR)){
-    usedNames.add(pathR);
-    return pathR;
+public static void addName(String _name, java.util.Map<String,Integer> usedNames){
+  String name=_name;
+  while(Character.isDigit(name.charAt(name.length()-1))){
+    name=name.substring(0,name.length()-1);
     }
-  int i=0;
-  while(true){
-    String res=pathR+i;
-    if(usedNames.contains(res)){i++;continue;}
-    usedNames.add(res);
-    return res;
+  String sNumber=_name.substring(name.length());
+  int number=0;
+  if(sNumber.length()!=0){number=Integer.parseInt(sNumber);}
+  Integer i=usedNames.get(name);
+  if(i==null){i=0;}
+  i=Math.max(i, number);
+  assert i>=0;
+  usedNames.put(name,i);
   }
-}
+public static String freshName(String _name, java.util.Map<String,Integer> usedNames) {
+  String name=_name;
+  while(Character.isDigit(name.charAt(name.length()-1))){
+    name=name.substring(0,name.length()-1);
+    }
+  String sNumber=_name.substring(name.length());
+  int number=0;
+  if(sNumber.length()!=0){number=Integer.parseInt(sNumber);}
+  Integer i=usedNames.get(name);
+  if(i==null){i=0;}
+  i=Math.max(i, number);
+  assert i>=0;
+  usedNames.put(name,i+1);
+  return name+(i+1);
+  }
 
 
-public static List<Ast.C> freshPathName(List<Ast.C> pathR, Set<String> usedNames) {
+public static List<Ast.C> freshPathName(List<Ast.C> pathR, java.util.Map<String,Integer> usedNames) {
   if(pathR.isEmpty()){return Collections.singletonList(new Ast.C(freshName("This_",usedNames),-1));}
   Ast.C last=pathR.get(pathR.size()-1);
   if (last.isUnique()){
@@ -239,7 +252,7 @@ public static List<Ast.C> freshPathName(List<Ast.C> pathR, Set<String> usedNames
 }
 
 
-public static String freshName(Path pathR, Set<String> usedNames) {
+public static String freshName(Path pathR, java.util.Map<String,Integer> usedNames) {
   String p=null;
   if(pathR.isPrimitive()){p=freshName(pathR.toString(),usedNames);}
   else if(pathR.getCBar().isEmpty()){p=freshName("This",usedNames);}

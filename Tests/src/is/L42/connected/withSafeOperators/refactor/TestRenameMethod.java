@@ -72,13 +72,13 @@ check(rm.addAbstractAliasS("This","k(x)","kk(y)"),
 @Test public void test5() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addHideS("This", "foo(x,y)"),
 "{ class method Any foo(Void x,Void y) void   class method Any f()this.foo(x:void,y:void)}",
-"{ class method Any foo0_$_2(Void x,Void y) void   class method Any f()this.foo0_$_2(x:void,y:void)}"
+"{ class method Any foo1_$_2(Void x,Void y) void   class method Any f()this.foo1_$_2(x:void,y:void)}"
 );}
 
 @Test public void test5Bis() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
 check(rm.addHideS("This", "foo(x,y)"),
 "{ class method Any foo(Void x,Void y) void   class method Any f()this.foo(x:void,y:void)}",
-"{ class method Any foo0_$_2(Void x,Void y) void   class method Any f()this.foo0_$_2(x:void,y:void)}"
+"{ class method Any foo1_$_2(Void x,Void y) void   class method Any f()this.foo1_$_2(x:void,y:void)}"
 );}
 
 @Test public void testAddHideRenameShadow1() throws PathUnfit, SelectorUnfit, MethodClash, ClassUnfit{
@@ -86,7 +86,7 @@ check(rm.addHideS("This", "mMain()").addRenameS("This","mNew()", "mMain()"),
 "{ class method Any mMain() this.mNew() class method Any mNew() }",
 " { "+
 "class method "+ 
-"Any mMain0_$_2() this.mMain() "+
+"Any mMain1_$_2() this.mMain() "+
 "class method  "+
 "Any mMain() }"
 );}
@@ -96,7 +96,7 @@ check(rm.addRenameS("This","mNew()", "mMain()").addHideS("This", "mMain()"),
 "{ class method Any mMain() this.mNew() class method Any mNew() }",
 " { "+
 "class method "+ 
-"Any mMain0_$_2() this.mMain() "+
+"Any mMain1_$_2() this.mMain() "+
 "class method  "+
 "Any mMain() }"
 );}

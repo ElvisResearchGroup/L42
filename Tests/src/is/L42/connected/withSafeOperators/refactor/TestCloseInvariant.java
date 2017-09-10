@@ -105,13 +105,13 @@ public class TestCloseInvariant{
 + "    lent This0.A a=this.#a_$_2() "//untouched,#a non present
 + "    void "
 + "    ) "
-+ "  Void unused=this.#invariant() "
++ "  Void unused1=this.#invariant() "
 + "  r "
 + "  ) "
 + "class method " 
 + "mut This0 mutK(capsule This0.A a) ( "
 + "  r=this.k_$_2(a:a) "
-+ "  Void unused=r.#invariant() "
++ "  Void unused1=r.#invariant() "
 + "  r "
 + "  ) "
 + "class method  "
@@ -119,7 +119,7 @@ public class TestCloseInvariant{
 + "class method " 
 + "This0 immK(This0.A a) ( "
 + "  This0 r=this.k_$_2(a:a) "
-+ "  Void unused=r.#invariant() "
++ "  Void unused1=r.#invariant() "
 + "  r "
 + "  ) "
 + "A: {}"
@@ -130,6 +130,17 @@ public class TestCloseInvariant{
   "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",true
 }});}
 @Test  public void test() throws PathUnfit, ClassUnfit, ParseFail {
+  /**
+   real issue here:
+   some metaprogramming classes have some parsing
+   at class loading time. This uses L42.usedNames.
+   Caching currently does not work well with those.
+   
+     Algorithm? Load all the parsing first, then do caching 
+     Or normal behaviour? not clean usedNames but make it as
+     after parsing meta class loaders?
+   */
+
   TestHelper.configureForTest();
   ClassB cb1=getClassB(false,null,_cb1);
   List<Ast.C> path=TestHelper.cs(_path);

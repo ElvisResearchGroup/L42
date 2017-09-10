@@ -66,9 +66,6 @@ import auxiliaryGrammar.Functions;
 import facade.L42;
 
 public class DesugarVars extends CloneVisitor{
-  Set<String> usedVars=new HashSet<String>();
-
-
   public static boolean assertVarsRemoved(Expression _e){
     _e.accept(new CloneVisitor(){
       //Ok liftVarDec since With uses liftVarDecXE
@@ -87,9 +84,8 @@ public class DesugarVars extends CloneVisitor{
     return true;
   }
 
-  public static Expression of(Set<String> usedVars,Expression e){
+  public static Expression of(Expression e){
     DesugarVars d=new DesugarVars();
-    d.usedVars=usedVars;
     Expression result= e.accept(d);
     return result;
   }
@@ -141,7 +137,7 @@ private VarDecXE getDecForVar(Ast.C cName,VarDecXE varDec) {
   Type nt=new Type(Mdf.Mutable,Path.outer(0).pushC(cName),Doc.empty());
   Position pos = Desugar.getPosition(varDec.getInner());
   MCall right=new MCall(new Expression.EPath(pos,nt.getPath()),"#apply",Doc.empty(), Desugar.getPs("inner",new X(pos,varDec.getX())),pos);
-  String nameZ=Functions.freshName(nt.getPath(), usedVars);
+  String nameZ=Functions.freshName(nt.getPath(), L42.usedNames);
   //usedVars.add(nameZ);
   return new VarDecXE(false,Optional.of(nt),nameZ,right);
 }

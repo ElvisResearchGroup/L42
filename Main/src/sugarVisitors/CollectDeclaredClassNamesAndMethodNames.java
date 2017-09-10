@@ -12,28 +12,35 @@ import ast.Expression;
 
 public class CollectDeclaredClassNamesAndMethodNames extends CloneVisitor{
   HashSet<String> xs=new HashSet<String>();
+  private void xsAdd(String x){
+    assert x!=null;
+    assert x!="";
+    xs.add(x);
+    }
   public static HashSet<String> of(Expression e){
     CollectDeclaredClassNamesAndMethodNames cdv=new CollectDeclaredClassNamesAndMethodNames();
     e.accept(cdv);
+    assert !cdv.xs.contains("");
+    assert !cdv.xs.contains(null);
     return cdv.xs;
   }
   public NestedClass visit(NestedClass nc){
-    xs.add(nc.getName().toString());
+    xsAdd(nc.getName().toString());
     return super.visit(nc);
     }
   protected MethodSelector liftMs(MethodSelector ms) {
-    xs.add(ms.nameToS());
-    for(String n:ms.getNames()){xs.add(n);}
+    xsAdd(Desugar.desugarName(ms.nameToS()));
+    for(String n:ms.getNames()){xsAdd(n);}
     return super.liftMs(ms);
   }
   protected FieldDec liftF(FieldDec f) {
-    xs.add(f.getName());
+    xsAdd(f.getName());
     //NO, just the first component? xs.add(f.getName()+"(that)");
-    xs.add("#"+f.getName());
+    xsAdd("#"+f.getName());
     return super.liftF(f);
   }
   protected Header liftH(Header h) {
-    if(h instanceof Ast.ConcreteHeader){  xs.add( ((Ast.ConcreteHeader)h).getName());}
+    if(h instanceof Ast.ConcreteHeader){  xsAdd( ((Ast.ConcreteHeader)h).getName());}
     return super.liftH(h);
     }
 }

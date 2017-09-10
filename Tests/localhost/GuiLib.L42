@@ -4,31 +4,31 @@ This0.Abstract.S id()
 class method 
 This0.Abstract.S jsEscape(This0.Abstract.S that) (
   var This0.Abstract.S tmp=that
-  Void unused=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b=This0.Abstract.S.#builder()
-    Void unused2=b.#backslash()
-    b
+  Void unused320=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
+    capsule This0.Abstract.S.SBuilder b32=This0.Abstract.S.#builder()
+    Void unused323=b32.#backslash()
+    b32
     )), into:This0.Abstract.S.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b0=This0.Abstract.S.#builder()
-    Void unused3=b0.#backslash()
-    Void unused4=b0.#backslash()
-    b0
+    capsule This0.Abstract.S.SBuilder b33=This0.Abstract.S.#builder()
+    Void unused324=b33.#backslash()
+    Void unused325=b33.#backslash()
+    b33
     )))
-  Void unused0=tmp := tmp.replace(that:This0.Abstract.S.doubleQuote(), into:This0.Abstract.S.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b1=This0.Abstract.S.#builder()
-    Void unused5=b1.#backslash()
-    b1
+  Void unused321=tmp := tmp.replace(that:This0.Abstract.S.doubleQuote(), into:This0.Abstract.S.#from(builder:(
+    capsule This0.Abstract.S.SBuilder b34=This0.Abstract.S.#builder()
+    Void unused326=b34.#backslash()
+    b34
     )).#plusplus(that:This0.Abstract.S.doubleQuote()))
-  Void unused1=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
+  Void unused322=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
 tmp.replace(that:This0.Abstract.S.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b2=This0.Abstract.S.#builder()
-    Void unused6=b2.#sQuote()
-    b2
+    capsule This0.Abstract.S.SBuilder b35=This0.Abstract.S.#builder()
+    Void unused327=b35.#sQuote()
+    b35
     )), into:This0.Abstract.S.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b3=This0.Abstract.S.#builder()
-    Void unused7=b3.#backslash()
-    Void unused8=b3.#sQuote()
-    b3
+    capsule This0.Abstract.S.SBuilder b36=This0.Abstract.S.#builder()
+    Void unused328=b36.#backslash()
+    Void unused329=b36.#sQuote()
+    b36
     ))))
   tmp
   )
@@ -36,314 +36,314 @@ method
 Void close() use This0.GuiPlugin check close(wName:this.id().#binaryRepr()) error void
 method 
 Void open(This0.Abstract.S title, This0.Abstract.S body, This0.Abstract.Size x, This0.Abstract.Size y) this.open(html:(
-  This0.Abstract.S.Continue rcv=(
-    This0.Abstract.S rcv0=(
-      This0.Abstract.S.Continue rcv1=(
-        This0.Abstract.S rcv2=(
-          This0.Abstract.S.Continue rcv3=(
-            This0.Abstract.S rcv4=This0.Abstract.S.#from(builder:(
-              capsule This0.Abstract.S.SBuilder b=This0.Abstract.S.#builder()
-              b
+  This0.Abstract.S.Continue rcv1=(
+    This0.Abstract.S rcv2=(
+      This0.Abstract.S.Continue rcv3=(
+        This0.Abstract.S rcv4=(
+          This0.Abstract.S.Continue rcv5=(
+            This0.Abstract.S rcv6=This0.Abstract.S.#from(builder:(
+              capsule This0.Abstract.S.SBuilder b37=This0.Abstract.S.#builder()
+              b37
               ))
-            rcv4.#from(seqBuilder:(
-              capsule This0.Abstract.S.SConcat b0=rcv4.#seqBuilder()
-              Void unused=b0.#add(that:This0.htmlHeader())
-              b0
+            rcv6.#from(seqBuilder:(
+              capsule This0.Abstract.S.SConcat b38=rcv6.#seqBuilder()
+              Void unused330=b38.#add(that:This0.htmlHeader())
+              b38
               ))
             )
-          rcv3.#from(builder:(
-            capsule This0.Abstract.S.SBuilder b1=rcv3.#builder()
-            Void unused0=b1.#left()
-            Void unused1=b1.#T()
-            Void unused2=b1.#I()
-            Void unused3=b1.#T()
-            Void unused4=b1.#L()
-            Void unused5=b1.#E()
-            Void unused6=b1.#right()
-            b1
+          rcv5.#from(builder:(
+            capsule This0.Abstract.S.SBuilder b39=rcv5.#builder()
+            Void unused331=b39.#left()
+            Void unused332=b39.#T()
+            Void unused333=b39.#I()
+            Void unused334=b39.#T()
+            Void unused335=b39.#L()
+            Void unused336=b39.#E()
+            Void unused337=b39.#right()
+            b39
             ))
           )
-        rcv2.#from(seqBuilder:(
-          capsule This0.Abstract.S.SConcat b2=rcv2.#seqBuilder()
-          Void unused7=b2.#add(that:title)
-          b2
+        rcv4.#from(seqBuilder:(
+          capsule This0.Abstract.S.SConcat b40=rcv4.#seqBuilder()
+          Void unused338=b40.#add(that:title)
+          b40
           ))
         )
-      rcv1.#from(builder:(
-        capsule This0.Abstract.S.SBuilder b3=rcv1.#builder()
-        Void unused8=b3.#left()
-        Void unused9=b3.#divide()
-        Void unused10=b3.#T()
-        Void unused11=b3.#I()
-        Void unused12=b3.#T()
-        Void unused13=b3.#L()
-        Void unused14=b3.#E()
-        Void unused15=b3.#right()
-        Void unused16=b3.#left()
-        Void unused17=b3.#divide()
-        Void unused18=b3.#H()
-        Void unused19=b3.#T()
-        Void unused20=b3.#M()
-        Void unused21=b3.#L()
-        Void unused22=b3.#right()
-        Void unused23=b3.#left()
-        Void unused24=b3.#B()
-        Void unused25=b3.#O()
-        Void unused26=b3.#D()
-        Void unused27=b3.#Y()
-        Void unused28=b3.#right()
-        b3
+      rcv3.#from(builder:(
+        capsule This0.Abstract.S.SBuilder b41=rcv3.#builder()
+        Void unused339=b41.#left()
+        Void unused340=b41.#divide()
+        Void unused341=b41.#T()
+        Void unused342=b41.#I()
+        Void unused343=b41.#T()
+        Void unused344=b41.#L()
+        Void unused345=b41.#E()
+        Void unused346=b41.#right()
+        Void unused347=b41.#left()
+        Void unused348=b41.#divide()
+        Void unused349=b41.#H()
+        Void unused350=b41.#T()
+        Void unused351=b41.#M()
+        Void unused352=b41.#L()
+        Void unused353=b41.#right()
+        Void unused354=b41.#left()
+        Void unused355=b41.#B()
+        Void unused356=b41.#O()
+        Void unused357=b41.#D()
+        Void unused358=b41.#Y()
+        Void unused359=b41.#right()
+        b41
         ))
       )
-    rcv0.#from(seqBuilder:(
-      capsule This0.Abstract.S.SConcat b4=rcv0.#seqBuilder()
-      Void unused29=b4.#add(that:body)
-      b4
+    rcv2.#from(seqBuilder:(
+      capsule This0.Abstract.S.SConcat b42=rcv2.#seqBuilder()
+      Void unused360=b42.#add(that:body)
+      b42
       ))
     )
-  rcv.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b5=rcv.#builder()
-    Void unused30=b5.#left()
-    Void unused31=b5.#divide()
-    Void unused32=b5.#B()
-    Void unused33=b5.#O()
-    Void unused34=b5.#D()
-    Void unused35=b5.#Y()
-    Void unused36=b5.#right()
-    Void unused37=b5.#left()
-    Void unused38=b5.#divide()
-    Void unused39=b5.#H()
-    Void unused40=b5.#T()
-    Void unused41=b5.#M()
-    Void unused42=b5.#L()
-    Void unused43=b5.#right()
-    b5
+  rcv1.#from(builder:(
+    capsule This0.Abstract.S.SBuilder b43=rcv1.#builder()
+    Void unused361=b43.#left()
+    Void unused362=b43.#divide()
+    Void unused363=b43.#B()
+    Void unused364=b43.#O()
+    Void unused365=b43.#D()
+    Void unused366=b43.#Y()
+    Void unused367=b43.#right()
+    Void unused368=b43.#left()
+    Void unused369=b43.#divide()
+    Void unused370=b43.#H()
+    Void unused371=b43.#T()
+    Void unused372=b43.#M()
+    Void unused373=b43.#L()
+    Void unused374=b43.#right()
+    b43
     ))
   ), x:x, y:y)
 class method 
 This0.Abstract.S htmlHeader() (
-  This0.Abstract.S.Continue rcv5=(
-    This0.Abstract.S rcv6=This0.Abstract.S.#from(builder:(
-      capsule This0.Abstract.S.SBuilder b=This0.Abstract.S.#builder()
-      Void unused=b.#left()
-      Void unused0=b.#bang()
-      Void unused1=b.#D()
-      Void unused2=b.#O()
-      Void unused3=b.#C()
-      Void unused4=b.#T()
-      Void unused5=b.#Y()
-      Void unused6=b.#P()
-      Void unused7=b.#E()
-      Void unused8=b.#space()
-      Void unused9=b.#h()
-      Void unused10=b.#t()
-      Void unused11=b.#m()
-      Void unused12=b.#l()
-      Void unused13=b.#right()
-      Void unused14=b.#left()
-      Void unused15=b.#h()
-      Void unused16=b.#t()
-      Void unused17=b.#m()
-      Void unused18=b.#l()
-      Void unused19=b.#right()
-      Void unused20=b.#left()
-      Void unused21=b.#h()
-      Void unused22=b.#e()
-      Void unused23=b.#a()
-      Void unused24=b.#d()
-      Void unused25=b.#right()
-      Void unused26=b.#left()
-      Void unused27=b.#m()
-      Void unused28=b.#e()
-      Void unused29=b.#t()
-      Void unused30=b.#a()
-      Void unused31=b.#space()
-      Void unused32=b.#h()
-      Void unused33=b.#t()
-      Void unused34=b.#t()
-      Void unused35=b.#p()
-      Void unused36=b.#less()
-      Void unused37=b.#e()
-      Void unused38=b.#q()
-      Void unused39=b.#u()
-      Void unused40=b.#i()
-      Void unused41=b.#v()
-      Void unused42=b.#equal()
-      Void unused43=b.#dQuote()
-      Void unused44=b.#c()
-      Void unused45=b.#o()
-      Void unused46=b.#n()
-      Void unused47=b.#t()
-      Void unused48=b.#e()
-      Void unused49=b.#n()
-      Void unused50=b.#t()
-      Void unused51=b.#less()
-      Void unused52=b.#c()
-      Void unused53=b.#l()
-      Void unused54=b.#a()
-      Void unused55=b.#s()
-      Void unused56=b.#s()
-      Void unused57=b.#dQuote()
-      Void unused58=b.#space()
-      Void unused59=b.#c()
-      Void unused60=b.#o()
-      Void unused61=b.#n()
-      Void unused62=b.#t()
-      Void unused63=b.#e()
-      Void unused64=b.#n()
-      Void unused65=b.#t()
-      Void unused66=b.#equal()
-      Void unused67=b.#dQuote()
-      Void unused68=b.#t()
-      Void unused69=b.#e()
-      Void unused70=b.#x()
-      Void unused71=b.#t()
-      Void unused72=b.#divide()
-      Void unused73=b.#h()
-      Void unused74=b.#t()
-      Void unused75=b.#m()
-      Void unused76=b.#l()
-      Void unused77=b.#semicolon()
-      Void unused78=b.#space()
-      Void unused79=b.#c()
-      Void unused80=b.#h()
-      Void unused81=b.#a()
-      Void unused82=b.#r()
-      Void unused83=b.#s()
-      Void unused84=b.#e()
-      Void unused85=b.#t()
-      Void unused86=b.#equal()
-      Void unused87=b.#U()
-      Void unused88=b.#T()
-      Void unused89=b.#F()
-      Void unused90=b.#less()
-      Void unused91=b.#8()
-      Void unused92=b.#dQuote()
-      Void unused93=b.#right()
-      Void unused94=b.#newline()
-      Void unused95=b.#left()
-      Void unused96=b.#s()
-      Void unused97=b.#c()
-      Void unused98=b.#r()
-      Void unused99=b.#i()
-      Void unused100=b.#p()
-      Void unused101=b.#t()
-      Void unused102=b.#right()
-      Void unused103=b.#newline()
-      Void unused104=b.#newline()
-      b
+  This0.Abstract.S.Continue rcv7=(
+    This0.Abstract.S rcv8=This0.Abstract.S.#from(builder:(
+      capsule This0.Abstract.S.SBuilder b44=This0.Abstract.S.#builder()
+      Void unused375=b44.#left()
+      Void unused376=b44.#bang()
+      Void unused377=b44.#D()
+      Void unused378=b44.#O()
+      Void unused379=b44.#C()
+      Void unused380=b44.#T()
+      Void unused381=b44.#Y()
+      Void unused382=b44.#P()
+      Void unused383=b44.#E()
+      Void unused384=b44.#space()
+      Void unused385=b44.#h()
+      Void unused386=b44.#t()
+      Void unused387=b44.#m()
+      Void unused388=b44.#l()
+      Void unused389=b44.#right()
+      Void unused390=b44.#left()
+      Void unused391=b44.#h()
+      Void unused392=b44.#t()
+      Void unused393=b44.#m()
+      Void unused394=b44.#l()
+      Void unused395=b44.#right()
+      Void unused396=b44.#left()
+      Void unused397=b44.#h()
+      Void unused398=b44.#e()
+      Void unused399=b44.#a()
+      Void unused400=b44.#d()
+      Void unused401=b44.#right()
+      Void unused402=b44.#left()
+      Void unused403=b44.#m()
+      Void unused404=b44.#e()
+      Void unused405=b44.#t()
+      Void unused406=b44.#a()
+      Void unused407=b44.#space()
+      Void unused408=b44.#h()
+      Void unused409=b44.#t()
+      Void unused410=b44.#t()
+      Void unused411=b44.#p()
+      Void unused412=b44.#less()
+      Void unused413=b44.#e()
+      Void unused414=b44.#q()
+      Void unused415=b44.#u()
+      Void unused416=b44.#i()
+      Void unused417=b44.#v()
+      Void unused418=b44.#equal()
+      Void unused419=b44.#dQuote()
+      Void unused420=b44.#c()
+      Void unused421=b44.#o()
+      Void unused422=b44.#n()
+      Void unused423=b44.#t()
+      Void unused424=b44.#e()
+      Void unused425=b44.#n()
+      Void unused426=b44.#t()
+      Void unused427=b44.#less()
+      Void unused428=b44.#c()
+      Void unused429=b44.#l()
+      Void unused430=b44.#a()
+      Void unused431=b44.#s()
+      Void unused432=b44.#s()
+      Void unused433=b44.#dQuote()
+      Void unused434=b44.#space()
+      Void unused435=b44.#c()
+      Void unused436=b44.#o()
+      Void unused437=b44.#n()
+      Void unused438=b44.#t()
+      Void unused439=b44.#e()
+      Void unused440=b44.#n()
+      Void unused441=b44.#t()
+      Void unused442=b44.#equal()
+      Void unused443=b44.#dQuote()
+      Void unused444=b44.#t()
+      Void unused445=b44.#e()
+      Void unused446=b44.#x()
+      Void unused447=b44.#t()
+      Void unused448=b44.#divide()
+      Void unused449=b44.#h()
+      Void unused450=b44.#t()
+      Void unused451=b44.#m()
+      Void unused452=b44.#l()
+      Void unused453=b44.#semicolon()
+      Void unused454=b44.#space()
+      Void unused455=b44.#c()
+      Void unused456=b44.#h()
+      Void unused457=b44.#a()
+      Void unused458=b44.#r()
+      Void unused459=b44.#s()
+      Void unused460=b44.#e()
+      Void unused461=b44.#t()
+      Void unused462=b44.#equal()
+      Void unused463=b44.#U()
+      Void unused464=b44.#T()
+      Void unused465=b44.#F()
+      Void unused466=b44.#less()
+      Void unused467=b44.#8()
+      Void unused468=b44.#dQuote()
+      Void unused469=b44.#right()
+      Void unused470=b44.#newline()
+      Void unused471=b44.#left()
+      Void unused472=b44.#s()
+      Void unused473=b44.#c()
+      Void unused474=b44.#r()
+      Void unused475=b44.#i()
+      Void unused476=b44.#p()
+      Void unused477=b44.#t()
+      Void unused478=b44.#right()
+      Void unused479=b44.#newline()
+      Void unused480=b44.#newline()
+      b44
       ))
-    rcv6.#from(seqBuilder:(
-      capsule This0.Abstract.S.SConcat b0=rcv6.#seqBuilder()
-      Void unused105=b0.#add(that:This0.Abstract.Debug.readFile(fileName:This0.Abstract.Debug.localToAbsolute(fileName:This0.Abstract.S.#from(builder:(
-        capsule This0.Abstract.S.SBuilder b1=This0.Abstract.S.#builder()
-        Void unused106=b1.#e()
-        Void unused107=b1.#x()
-        Void unused108=b1.#a()
-        Void unused109=b1.#m()
-        Void unused110=b1.#p()
-        Void unused111=b1.#l()
-        Void unused112=b1.#e()
-        Void unused113=b1.#s()
-        Void unused114=b1.#divide()
-        Void unused115=b1.#r()
-        Void unused116=b1.#e()
-        Void unused117=b1.#s()
-        Void unused118=b1.#o()
-        Void unused119=b1.#u()
-        Void unused120=b1.#r()
-        Void unused121=b1.#c()
-        Void unused122=b1.#e()
-        Void unused123=b1.#s()
-        Void unused124=b1.#divide()
-        Void unused125=b1.#j()
-        Void unused126=b1.#s()
-        Void unused127=b1.#dot()
-        Void unused128=b1.#j()
-        Void unused129=b1.#s()
-        b1
+    rcv8.#from(seqBuilder:(
+      capsule This0.Abstract.S.SConcat b45=rcv8.#seqBuilder()
+      Void unused481=b45.#add(that:This0.Abstract.Debug.readFile(fileName:This0.Abstract.Debug.localToAbsolute(fileName:This0.Abstract.S.#from(builder:(
+        capsule This0.Abstract.S.SBuilder b46=This0.Abstract.S.#builder()
+        Void unused482=b46.#e()
+        Void unused483=b46.#x()
+        Void unused484=b46.#a()
+        Void unused485=b46.#m()
+        Void unused486=b46.#p()
+        Void unused487=b46.#l()
+        Void unused488=b46.#e()
+        Void unused489=b46.#s()
+        Void unused490=b46.#divide()
+        Void unused491=b46.#r()
+        Void unused492=b46.#e()
+        Void unused493=b46.#s()
+        Void unused494=b46.#o()
+        Void unused495=b46.#u()
+        Void unused496=b46.#r()
+        Void unused497=b46.#c()
+        Void unused498=b46.#e()
+        Void unused499=b46.#s()
+        Void unused500=b46.#divide()
+        Void unused501=b46.#j()
+        Void unused502=b46.#s()
+        Void unused503=b46.#dot()
+        Void unused504=b46.#j()
+        Void unused505=b46.#s()
+        b46
         )))))
-      b0
+      b45
       ))
     )
-  rcv5.#from(builder:(
-    capsule This0.Abstract.S.SBuilder b2=rcv5.#builder()
-    Void unused130=b2.#newline()
-    Void unused131=b2.#left()
-    Void unused132=b2.#divide()
-    Void unused133=b2.#s()
-    Void unused134=b2.#c()
-    Void unused135=b2.#r()
-    Void unused136=b2.#i()
-    Void unused137=b2.#p()
-    Void unused138=b2.#t()
-    Void unused139=b2.#right()
-    Void unused140=b2.#newline()
-    b2
+  rcv7.#from(builder:(
+    capsule This0.Abstract.S.SBuilder b47=rcv7.#builder()
+    Void unused506=b47.#newline()
+    Void unused507=b47.#left()
+    Void unused508=b47.#divide()
+    Void unused509=b47.#s()
+    Void unused510=b47.#c()
+    Void unused511=b47.#r()
+    Void unused512=b47.#i()
+    Void unused513=b47.#p()
+    Void unused514=b47.#t()
+    Void unused515=b47.#right()
+    Void unused516=b47.#newline()
+    b47
     ))
   )
 method 
 Void open(This0.Abstract.S html, This0.Abstract.Size x, This0.Abstract.Size y) (
-  Void unused=This0.Abstract.Debug.#apply(that:html)
+  Void unused517=This0.Abstract.Debug.#apply(that:html)
   use This0.GuiPlugin check open(wName:this.id().#binaryRepr(), html:html.#binaryRepr(), x:x.#binaryRepr(), y:y.#binaryRepr()) error void
   )
 method 
 Void set(This0.Abstract.S that, This0.Abstract.S id) (
-  Void unused=(/*$('#Alpha').replaceWith('htmlstring')
+  Void unused518=(/*$('#Alpha').replaceWith('htmlstring')
 */
     This0.Abstract.S cmd=This0.Abstract.S.#from(builder:(
-      capsule This0.Abstract.S.SBuilder b=This0.Abstract.S.#builder()
-      Void unused3=b.#$()
-      Void unused4=b.#oRound()
-      Void unused5=b.#sQuote()
-      Void unused6=b.#hash()
-      b
+      capsule This0.Abstract.S.SBuilder b48=This0.Abstract.S.#builder()
+      Void unused522=b48.#$()
+      Void unused523=b48.#oRound()
+      Void unused524=b48.#sQuote()
+      Void unused525=b48.#hash()
+      b48
       )).#plusplus(that:This0.jsEscape(that:id).#plusplus(that:This0.Abstract.S.#from(builder:(
-      capsule This0.Abstract.S.SBuilder b0=This0.Abstract.S.#builder()
-      Void unused7=b0.#sQuote()
-      Void unused8=b0.#cRound()
-      Void unused9=b0.#dot()
-      Void unused10=b0.#r()
-      Void unused11=b0.#e()
-      Void unused12=b0.#p()
-      Void unused13=b0.#l()
-      Void unused14=b0.#a()
-      Void unused15=b0.#c()
-      Void unused16=b0.#e()
-      Void unused17=b0.#W()
-      Void unused18=b0.#i()
-      Void unused19=b0.#t()
-      Void unused20=b0.#h()
-      Void unused21=b0.#oRound()
-      Void unused22=b0.#sQuote()
-      b0
+      capsule This0.Abstract.S.SBuilder b49=This0.Abstract.S.#builder()
+      Void unused526=b49.#sQuote()
+      Void unused527=b49.#cRound()
+      Void unused528=b49.#dot()
+      Void unused529=b49.#r()
+      Void unused530=b49.#e()
+      Void unused531=b49.#p()
+      Void unused532=b49.#l()
+      Void unused533=b49.#a()
+      Void unused534=b49.#c()
+      Void unused535=b49.#e()
+      Void unused536=b49.#W()
+      Void unused537=b49.#i()
+      Void unused538=b49.#t()
+      Void unused539=b49.#h()
+      Void unused540=b49.#oRound()
+      Void unused541=b49.#sQuote()
+      b49
       )).#plusplus(that:This0.jsEscape(that:that).#plusplus(that:This0.Abstract.S.#from(builder:(
-      capsule This0.Abstract.S.SBuilder b1=This0.Abstract.S.#builder()
-      Void unused23=b1.#sQuote()
-      Void unused24=b1.#cRound()
-      Void unused25=b1.#semicolon()
-      b1
+      capsule This0.Abstract.S.SBuilder b50=This0.Abstract.S.#builder()
+      Void unused542=b50.#sQuote()
+      Void unused543=b50.#cRound()
+      Void unused544=b50.#semicolon()
+      b50
       ))))))
     This0.Abstract.S x=this.executeJs(that:cmd)
-    Void unused0=This0.Abstract.Debug.#apply(that:cmd)
-    Void unused1=(
-      This0.Abstract.Bool cond=x.#equalequal(that:This0.Abstract.S.#from(builder:(
-        capsule This0.Abstract.S.SBuilder b2=This0.Abstract.S.#builder()
-        b2
+    Void unused519=This0.Abstract.Debug.#apply(that:cmd)
+    Void unused520=(
+      This0.Abstract.Bool cond2=x.#equalequal(that:This0.Abstract.S.#from(builder:(
+        capsule This0.Abstract.S.SBuilder b51=This0.Abstract.S.#builder()
+        b51
         ))).#bang()
       (
-        Void unused26=cond.#checkTrue()
+        Void unused545=cond2.#checkTrue()
         
-        catch exception Void catched4 void
+        catch exception Void catched17997 void
         
         (This0.Abstract.Debug.#apply(that:x))
         )
       )
-    Void unused2=return void
+    Void unused521=return void
     void
     )
   
-  catch return Void result result
+  catch return Void result1 result1
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -353,8 +353,8 @@ method
 This0.Abstract.S executeJs(This0.Abstract.S that) This0.Abstract.S.#from(binaryRepr:use This0.GuiPlugin check executeJs(wName:this.id().#binaryRepr(), command:that.#binaryRepr()) error void)
 method 
 mut This0.Iterator events() This0.Iterator.#apply(id:this.id(), current:This0.Abstract.S.#from(builder:(
-  capsule This0.Abstract.S.SBuilder b=This0.Abstract.S.#builder()
-  b
+  capsule This0.Abstract.S.SBuilder b52=This0.Abstract.S.#builder()
+  b52
   )))
 class method 
 mut This0 #apply(fwd This0.Abstract.S id) 
@@ -7535,18 +7535,18 @@ read method
 This1.Abstract.S current() 
 class method 
 This1.Abstract.S auxFetchEvent(This1.Abstract.S id) exception Void (
-  Void unused=(
+  Void unused546=(
     Library s=use This1.GuiPlugin check eventPending(wName:id.#binaryRepr()) exception void
     
     catch error Library x exception void
     
     (
-      Void unused0=return This1.Abstract.S.#from(binaryRepr:s)
+      Void unused547=return This1.Abstract.S.#from(binaryRepr:s)
       void
       )
     )
   
-  catch return capsule This1.Abstract.S result result
+  catch return capsule This1.Abstract.S result2 result2
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -7554,13 +7554,13 @@ CurlyBlock-Should be unreachable code
   )
 mut method 
 Void #next() exception Void (
-  Void unused=(
+  Void unused548=(
     This1.Abstract.S s=This0.auxFetchEvent(id:this.id())
-    Void unused0=return this.current(that:s)
+    Void unused549=return this.current(that:s)
     void
     )
   
-  catch return Void result result
+  catch return Void result3 result3
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code

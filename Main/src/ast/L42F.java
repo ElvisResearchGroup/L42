@@ -91,6 +91,8 @@ public class L42F {
     }
 
     public String className() {
+      assert kind!=null:
+        "";
       return kind.className(this);
     }
 

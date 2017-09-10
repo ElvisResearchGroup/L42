@@ -70,6 +70,7 @@ public class ProgramReduction {
     }
   private void saveFirstTimeCache(Program p) {
     if(!saveVCache){return;}
+    saveVCache=false;
     if(L42.cacheK.fileName==null){return;}
     try{while(true){p=p.pop();}}
     catch(Program.EmptyProgram ep){}  

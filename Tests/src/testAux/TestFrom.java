@@ -13,6 +13,7 @@ import org.junit.runners.Parameterized.Parameter;
 import coreVisitors.From;
 import coreVisitors.FromInClass;
 import facade.Parser;
+import helpers.TestHelper;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import sugarVisitors.Desugar;
@@ -124,7 +125,9 @@ public class TestFrom {
 
 @Test
 public void testFromMethod() {
+  TestHelper.configureForTest(); 
   ClassB cb1=(ClassB)Desugar.of(Parser.parse(null,e1)).accept(new InjectionOnCore());
+  TestHelper.configureForTest();  
   ClassB cb2=(ClassB)Desugar.of(Parser.parse(null,er)).accept(new InjectionOnCore());
   Path p=Path.parse(path);
   Assert.assertEquals(

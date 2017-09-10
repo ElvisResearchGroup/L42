@@ -29,7 +29,8 @@ import facade.L42;
 public class ReplGui extends JFrame {
  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
  //Configuration.loadAll();
- L42.setRootPath(Paths.get("localhost","ReplCache.L42"));
+ L42.setRootPath(Paths.get("localhost"));
+ L42.cacheK.fileName="ReplCache.L42";
  SwingUtilities.invokeLater(()-> {
  ReplGui g = new ReplGui();
  g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

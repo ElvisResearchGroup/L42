@@ -98,9 +98,8 @@ class DesugarContext extends CloneVisitor{
     e.accept(new AssertContextNotPresent());
     return true;
   }
-  public static Expression of(Set<String> usedVars,Expression e){
+  public static Expression of(Expression e){
     DesugarContext d=new DesugarContext();
-    d.usedVars=usedVars;
     Expression result= e.accept(d);
     return result;
     //TODO: need to check there is no \ out of scope, that would be ill formed

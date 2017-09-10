@@ -17,12 +17,12 @@ import facade.L42;
 import programReduction.Program;
 
 public class Phase1CacheValue implements Serializable{
-  public Phase1CacheValue(Set<String> usedNames, ClassB top) {
+  public Phase1CacheValue(java.util.Map<String,Integer> usedNames, ClassB top) {
     this.usedNames = usedNames;
     this.top = top;
     }
 private static final long serialVersionUID = 1L;
-  Set<String> usedNames;
+  java.util.Map<String,Integer> usedNames;
   ExpCore.ClassB top;
   public void saveOnFile(Path file){
     try (
