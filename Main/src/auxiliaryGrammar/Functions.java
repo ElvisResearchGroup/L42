@@ -487,9 +487,13 @@ public static String multiLine(String ...ss){
       throw Assertions.codeNotReachable();
       }}}*/
 public static ClassB parseAndDesugar(String locaiton,String s) {
-Expression code1=Parser.parse(locaiton,s);
-Expression code2=Desugar.of(code1);
-return (ClassB)code2.accept(new InjectionOnCore());
-}
+  java.util.Map<String, Integer> oldN = new HashMap<>(L42.usedNames);
+  try{
+    Expression code1=Parser.parse(locaiton,s);
+    Expression code2=Desugar.of(code1);
+    return (ClassB)code2.accept(new InjectionOnCore());
+    }
+  finally{L42.usedNames.clear();L42.usedNames.putAll(oldN);}
+  }
 
 }

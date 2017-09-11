@@ -180,14 +180,14 @@ static void addCheck(MethodWithType mwt,List<ClassB.Member> newMwts) throws Clas
   throw new RefactorErrors.ClassUnfit().msg("Incompatible factory type: "+mwt.getMs()+": "+mwt.getMt()+" and "+mwtPre.getMt());
   }
 static ExpCore.Block eThis=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer",
-  "{method m() (r=void this.#invariant() r)}"
+  "{method m() (r=void Void unusedInv=this.#invariant() r)}"
   ).getMs().get(0).getInner();
 
 static ExpCore.Block eR=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer",
-  "{method m() (r=void r.#invariant() r)}"
+  "{method m() (r=void Void unusedInv=r.#invariant() r)}"
   ).getMs().get(0).getInner();
 static ExpCore.Block eRImm=(ExpCore.Block)Functions.parseAndDesugar("WrapExposer",
-  "{method m() (This r=void r.#invariant() r)}"
+  "{method m() (This r=void Void unusedInv=r.#invariant() r)}"
   ).getMs().get(0).getInner();
       }
 class WrapAux extends RenameMethodsAux{
