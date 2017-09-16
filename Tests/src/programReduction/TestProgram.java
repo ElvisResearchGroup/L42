@@ -19,7 +19,9 @@ import helpers.TestHelper;
 public class TestProgram {
 public static Program p(String s){
   ExpCore.ClassB l=(ExpCore.ClassB)TestHelper.getExpCore(TestProgram.class.getSimpleName(),s);
-  Program p=new FlatProgram(l);
+  FlatProgram fp=new FlatProgram(l);
+  fp.freshIds=new int[]{10};
+  Program p=fp;
   ExpCore.ClassB currentTop=l;
   while(true){
     CtxL first=CtxL._split(currentTop);

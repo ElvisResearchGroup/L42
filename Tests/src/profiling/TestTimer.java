@@ -26,8 +26,8 @@ public class TestTimer {
     System.out.print(res);
     assertTrue(res.contains(top));
     assertTrue(res.contains(foo));
-	assertTrue(res.contains("percentage:1.00/0.00 tot:1.000/0.000 max:1.000/0.000 number:1"));
-    assertTrue(res.contains("percentage:1.00/1.00 tot:1.000/1.000 max:1.000/1.000 number:1"));
+	assertTrue(res.contains("percentage:1.00/0.00 tot:1.000/0.000 minutes, max:1.000/0.000 minutes, number:1"));
+    assertTrue(res.contains("percentage:1.00/1.00 tot:1.000/1.000 minutes, max:1.000/1.000 minutes, number:1"));
   }
   @Test
   public void two(){
@@ -45,9 +45,9 @@ public class TestTimer {
     assertTrue(res.contains(top));
     assertTrue(res.contains(foo));
     assertTrue(res.contains(bar));
-    assertTrue(res.contains("percentage:1.00/0.38 tot:8.000/3.000 max:8.000/3.000 number:1"));
-    assertTrue(res.contains("percentage:0.63/0.50 tot:5.000/4.000 max:3.000/3.000 number:2"));
-	assertTrue(res.contains("percentage:0.13/0.13 tot:1.000/1.000 max:1.000/1.000 number:1"));
+    assertTrue(res.contains("percentage:1.00/0.38 tot:8.000/3.000 minutes, max:8.000/3.000 minutes, number:1"));
+    assertTrue(res.contains("percentage:0.63/0.50 tot:5.000/4.000 minutes, max:3.000/3.000 minutes, number:2"));
+	assertTrue(res.contains("percentage:0.13/0.13 tot:1.000/1.000 minutes, max:1.000/1.000 minutes, number:1"));
   }
   @Test
   public void cluster(){
@@ -70,10 +70,10 @@ public class TestTimer {
 	  assertTrue(res.contains(foo));
 	  assertTrue(res.contains(bar));
 	  assertTrue(res.contains(beer));
-	  assertTrue(res.contains("percentage:1.00/0.25 tot:12.000/3.000 max:12.000/3.000 number:1"));
-	  assertTrue(res.contains("percentage:0.67/0.17 tot:8.000/2.000 max:8.000/2.000 number:1"));
-	  assertTrue(res.contains("percentage:0.50/0.25 tot:6.000/3.000 max:5.000/1.000 number:2"));
-	  assertTrue(res.contains("percentage:0.33/0.33 tot:4.000/4.000 max:3.000/3.000 number:2"));
+	  assertTrue(res.contains("percentage:1.00/0.25 tot:12.000/3.000 minutes, max:12.000/3.000 minutes, number:1"));
+	  assertTrue(res.contains("percentage:0.67/0.17 tot:8.000/2.000 minutes, max:8.000/2.000 minutes, number:1"));
+	  assertTrue(res.contains("percentage:0.50/0.25 tot:6.000/3.000 minutes, max:5.000/1.000 minutes, number:2"));
+	  assertTrue(res.contains("percentage:0.33/0.33 tot:4.000/4.000 minutes, max:3.000/3.000 minutes, number:2"));
   }
   @Test
   public void nested(){
@@ -91,8 +91,8 @@ public class TestTimer {
 	  assertTrue(res.contains(top));
 	  assertTrue(res.contains(foo));
 	  assertTrue(res.contains(beer));
-	  assertTrue(res.contains("percentage:1.00/0.29 tot:7.000/2.000 max:7.000/2.000 number:1"));
-	  assertTrue(res.contains("percentage:0.71/0.43 tot:5.000/3.000 max:5.000/2.000 number:2"));
-	  assertTrue(res.contains("percentage:0.43/0.29 tot:3.000/2.000 max:3.000/2.000 number:1"));
+	  assertTrue(res.contains("percentage:1.00/0.29 tot:7.000/2.000 minutes, max:7.000/2.000 minutes, number:1"));
+	  assertTrue(res.contains("percentage:0.71/0.43 tot:5.000/3.000 minutes, max:5.000/2.000 minutes, number:2"));
+	  assertTrue(res.contains("percentage:0.43/0.29 tot:3.000/2.000 minutes, max:3.000/2.000 minutes, number:1"));
   }
 }

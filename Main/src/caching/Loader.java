@@ -216,8 +216,10 @@ public class Loader {
     assert ct.isCoherent();
     for(Program pi:ps) {
       int newId=pi.top().getUniqueId();
-      assert ct._get(newId)==null;
-      ct=ct.plus(new Element(pi,new CD(null,newId,null,null, null)));
+      Element mapped = ct._get(newId);
+      if(mapped==null){
+        ct=ct.plus(new Element(pi,new CD(null,newId,null,null, null)));
+        }
       }
     assert ct.isCoherent();
     assert ct.isCoherent(ex);
