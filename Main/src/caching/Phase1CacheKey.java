@@ -96,10 +96,8 @@ private static final long serialVersionUID = 1L;
     fileNameToLib.put(listFromPath(path),code);
     }
   public Path fileName(){
+    assert fileName!=null;
     return pathFromList(Collections.singletonList(fileName));
-    }
-  public Path rootPath(){
-    return fileName().getParent();
     }
   public String firstSourceName(){
     Path fn=fileName();
@@ -121,7 +119,7 @@ private static final long serialVersionUID = 1L;
       res.urlToLib.put(url,fnContent);
       }
     for(List<String> path:fileNameToLib.keySet()){
-      Path fn = rootPath().resolve(pathFromList(path));
+      Path fn = L42.root.resolve(pathFromList(path));
       String fnContent=_contentOrNull(fn);
       res.fileNameToLib.put(path,fnContent);
       }   
@@ -150,8 +148,9 @@ private static final long serialVersionUID = 1L;
     }
   
   public static Program _handleCache(){
-    Path vPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".V42");
-    Path kPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".K42");
+    if(L42.cacheK.fileName==null){return null;}
+    Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
+    Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
     try{
       Phase1CacheKey oldK=Phase1CacheKey.readFromFile(kPath);
       Phase1CacheKey newK=oldK.current();
@@ -166,6 +165,8 @@ private static final long serialVersionUID = 1L;
     Phase1CacheValue val=Phase1CacheValue.readFromFile(vPath);
     L42.usedNames.clear();
     L42.usedNames.putAll(val.usedNames);
-    return Program.emptyLibraryProgram().updateTop(val.top);
+    Program pRes= Program.emptyLibraryProgram(val.uniqueIdStart);
+    pRes=pRes.updateTop(val.top);
+    return pRes;
     }
   }

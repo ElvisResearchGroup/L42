@@ -75,9 +75,9 @@ public class ProgramReduction {
     try{while(true){p=p.pop();}}
     catch(Program.EmptyProgram ep){}  
     ClassB topCb=p.top();
-    Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb);
-    Path vPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".V42");
-    Path kPath = L42.cacheK.rootPath().resolve(L42.cacheK.firstSourceName()+".K42");
+    Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb,p.getFreshId());
+    Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
+    Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
     cv.saveOnFile(vPath);
     L42.cacheK.saveOnFile(kPath);
     }

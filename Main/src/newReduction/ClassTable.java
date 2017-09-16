@@ -17,6 +17,8 @@ import ast.ExpCore.ClassB;
 import ast.L42F;
 import ast.L42F.CD;
 import ast.L42F.Cn;
+import ast.L42F.D;
+import ast.L42F.T;
 import caching.Loader;
 import ast.MiniJ;
 import coreVisitors.From;
@@ -31,24 +33,44 @@ public class ClassTable {
   public ClassTable(Map<Integer, Element> map) {
     this.map = map;
     }
+  
+  public boolean isCoherent(L42F.E e0){
+    List<Integer>invalid=new ArrayList<>();
+    e0.accept(coherentceChecker(invalid));
+    assert invalid.isEmpty():invalid;
+    return true;
+    }
+
   public boolean isCoherent(){
     List<Integer>invalid=new ArrayList<>();
     for(int i:map.keySet()){
       CD cdi = get(i).cd;
       if(cdi.getKind()==null){continue;}
-      new PropagatorVisitor(){
-        protected void liftCn(int cn) {
-          if(Cn.cnFwd.getInner()>=cn){return;}
-          if(!map.containsKey(cn)){
-            invalid.add(cn);
-            }
-          }
-        }.visit(cdi);
+      coherentceChecker(invalid).visit(cdi);
       }
     assert invalid.isEmpty():invalid;
     return true;
     }
-  public String dbgNameOf(int index){
+  private PropagatorVisitor coherentceChecker(List<Integer>invalid) {
+    return new PropagatorVisitor(){
+    @Override protected void liftCn(int cn) {
+        if(Cn.cnFwd.getInner()>=cn){return;}
+        if(!map.containsKey(cn)){
+          invalid.add(cn);
+        }
+      }
+    @Override protected void liftT(T t) {
+      super.liftT(t);
+      Element e = map.get(t.getCn());
+      if(e==null){return;}
+      if(e.cd.getKind()==null){
+        invalid.add(t.getCn());
+        }
+      }
+    };   
+  }
+
+public String dbgNameOf(int index){
     if(index==Cn.cnAny.getInner()){return "Any";}
     if(index==Cn.cnVoid.getInner()){return "Void";}
     if(index==Cn.cnLibrary.getInner()){return "Library";}

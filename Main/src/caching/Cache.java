@@ -47,18 +47,29 @@ public class Cache implements Serializable{
     HashSet<String> clSet=new HashSet<>(clMap.keySet());
     Element old = inner.get(dep);
     if(old!=null){
-      assert old.byteCodeNames.equals(clSet);
-      return;
+      System.out.println("Overriding cache for "+dep);
+      HashMap<Set<String>,Element> oldCache=new HashMap<>(inner);
+      inner.clear();
+      HashMap<String, ClassFile> oldFullMap=new HashMap<>(fullMap);
+      fullMap.clear();
+      for(Entry<Set<String>, Element> e:oldCache.entrySet()){
+        //if e.key superset of dep
+        if(dep.containsAll(e.getKey())){continue;}
+        inner.put(e.getKey(), e.getValue());
+        for(String byteCodeName:e.getValue().byteCodeNames){
+          fullMap.put(byteCodeName,oldFullMap.get(byteCodeName));
+          }
+        }
       }
     //was not already in cache
-    HashMap<String, ClassFile> clMapNoRep=new HashMap<>(clMap);
     assert !clSet.stream().anyMatch(s->fullMap.containsKey(s));
     fullMap.putAll(clMap);
     inner.put(dep, new Element(cds,clSet));
     }
 
-  /**
-   NO,
+  /*
+   //TODO: have I handled this already? 
+    NO,
    class loader is NOT saved. class loader is "loaded"
    from cache if is required:
    -at all times full map >=cl.map

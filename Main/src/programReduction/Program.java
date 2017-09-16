@@ -162,16 +162,25 @@ public interface Program {
     PData res=new PData(this);
     return res;
     }
-  static Program emptyLibraryProgram(){return new FlatProgram(EmptyProgramHolder.cached);}
+  static Program emptyLibraryProgram(){
+    return emptyLibraryProgram(10);
+    }
+  static Program emptyLibraryProgram(int freshIdStart){
+    FlatProgram res= new FlatProgram(EmptyProgramHolder.cached);
+    res.freshIds=new int[]{freshIdStart};
+    return res;
+    }
   }
 class EmptyProgramHolder{
   static final ClassB cached=new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Typed, -2);
   }
 
 class FlatProgram extends Methods{
-  int[] freshIds= {10};//In this way I create a cell that can be shared on FlatProgram.updateTop
+  int[] freshIds=null;//In this way I create a cell that can be shared on FlatProgram.updateTop
   ExpCore.ClassB l;
-  FlatProgram(ExpCore.ClassB l){this.l=l;}
+  FlatProgram(ExpCore.ClassB l){
+    this.l=l;
+    }
 
   public Program pop() {
     throw new Program.EmptyProgram();}

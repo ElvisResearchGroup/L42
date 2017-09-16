@@ -83,7 +83,7 @@ public class Desugar extends CloneVisitor{
     long max=RefreshUniqueNames.maxUnique(e);
     assert max>=0L;
     L42.setFreshPrivateCap(max+1);
-    if(L42.cacheK.fileName!=null){e=ReplaceDots.of(L42.cacheK.rootPath(), e);}
+    if(L42.cacheK.fileName!=null){e=ReplaceDots.of(L42.root, e);}
     Desugar d=new Desugar();
     for(String si:CollectDeclaredVars.of(e)){Functions.addName(si, L42.usedNames);}
     e=DesugarPaths.of(e);

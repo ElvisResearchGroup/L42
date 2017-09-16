@@ -213,9 +213,14 @@ public class Loader {
     List<Program>ps=new ArrayList<>();
     PG pg=new PG(p,G.of(Collections.emptyMap()),ps);
     E ex = e.accept(pg);
+    assert ct.isCoherent();
     for(Program pi:ps) {
-      ct=ct.plus(new Element(pi,new CD(null,pi.top().getUniqueId(),null,null, null)));
+      int newId=pi.top().getUniqueId();
+      assert ct._get(newId)==null;
+      ct=ct.plus(new Element(pi,new CD(null,newId,null,null, null)));
       }
+    assert ct.isCoherent();
+    assert ct.isCoherent(ex);
     MiniJ.S sJ=L42FToMiniJS.forBody(ct,ex);
     M m1=new M(true,"Object","execute0",Collections.emptyList(),Collections.emptyList(),sJ);
     String freshName=Functions.freshName("Main£Main", L42.usedNames);

@@ -39,7 +39,7 @@ public class FrameFX {
   }
   private static void openThrow(String _title,String _content) throws IOException, InterruptedException {
     title=_title;
-    content =head+"<base href='"+L42.cacheK.rootPath().toUri()+"' />"+_content+"</html>";
+    content =head+"<base href='"+L42.root.toUri()+"' />"+_content+"</html>";
     System.out.println(content);
     synchronized(dumbLock){
       laucherThread.start();
