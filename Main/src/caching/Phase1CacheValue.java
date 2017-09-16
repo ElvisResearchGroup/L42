@@ -14,6 +14,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.Expression;
 import facade.L42;
+import profiling.Timer;
 import programReduction.Program;
 
 public class Phase1CacheValue implements Serializable{
@@ -35,6 +36,7 @@ private static final long serialVersionUID = 1L;
     catch(IOException i) {throw new Error(i);}
     }
   public static Phase1CacheValue readFromFile(Path file){
+    Timer.activate("ReadCacheValue");
     try (
       InputStream is = Files.newInputStream(file);
       ObjectInputStream in = new ObjectInputStream(is);
@@ -46,5 +48,6 @@ private static final long serialVersionUID = 1L;
     catch(IOException i) {throw new Error(i);}
     catch (ClassNotFoundException e) {throw new Error(e);}
     catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    finally{Timer.deactivate("ReadCacheValue");}
     }  
   }

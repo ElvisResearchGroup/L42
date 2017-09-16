@@ -77,9 +77,10 @@ public class Timer {
     for(String name:names){
       long[] stats	=processStatistic.get(name);
       result+="# "+name+"\n";
-      result+=String.format(new Locale("en", "GB"),"percentage:%.2f/%.2f tot:%.3f/%.3f max:%.3f/%.3f number:%d",
-    		  (stats[RAWTOTAL]/(float)totTop), (stats[NETTOTAL]/(float)totTop),
-    		  stats[RAWTOTAL]/60000f, stats[NETTOTAL]/60000f,
+      result+=String.format(new Locale("en", "GB"),"percentage:%.2f/%.2f tot:%.3f/%.3f minutes, max:%.3f/%.3f minutes, number:%d",
+    		  (stats[RAWTOTAL]/(float)totTop),//percentage of time (including subcalls)
+    		  (stats[NETTOTAL]/(float)totTop),//percentage of time (no subcalls)
+    		  stats[RAWTOTAL]/60000f, stats[NETTOTAL]/60000f,//time in minutes
     		  stats[RAWMAX]/60000f, stats[NETMAX]/60000f,
     		  (int)stats[COUNT])
     		  +"\n";
@@ -135,7 +136,7 @@ public class Timer {
 		if(isAncestor)
 			elders.remove(this.name);
 		if(netNodeTime<0)
-			throw new Exception("unreliable tree");
+			throw new Exception("unreliable tree about "+this.name);
 		long newNode[]	= new long[5];
 		if(outputList.containsKey(this.name)){
 			newNode[RAWTOTAL]	= outputList.get(this.name)[RAWTOTAL];

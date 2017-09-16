@@ -49,12 +49,12 @@ public class L42 {
   public static boolean profilerPrintOn=true;
   private static void setExecutionStage(ExecutionStage newStage){
     System.out.println(newStage);
-    if(_stage!=ExecutionStage.None){
+    /*if(_stage!=ExecutionStage.None){
       Timer.deactivate(_stage.toString());
       }
     if(newStage!=ExecutionStage.None){
       Timer.activate(newStage.toString());
-      }
+      }*/
     _stage=newStage;
   }
   private static long privateNum=0L;

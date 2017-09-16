@@ -6,10 +6,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import facade.L42;
 import helpers.TestHelper;
+import profiling.Timer;
 
 public class ReplTest {
 public static void main(String[]arg)throws Throwable{
+  Timer.activate("TOP");
   ReplGui.main(arg);
   }
 /*@Test

@@ -117,7 +117,7 @@ public class Desugar extends CloneVisitor{
     return classB;//TODO: when new private system is working modify here
   }
   private void collectAllUsedLibs(Expression e) {
-    profiling.Timer.activate("sugarvisitors.collectAllUsed");
+    //profiling.Timer.activate("sugarvisitors.collectAllUsed");
     e.accept(new CloneVisitor(){
       @Override
       public Expression visit(ClassReuse s) {
@@ -133,7 +133,7 @@ public class Desugar extends CloneVisitor{
         return super.visit(s);
       }
     });
-    profiling.Timer.deactivate("sugarvisitors.collectAllUsed");
+    //profiling.Timer.deactivate("sugarvisitors.collectAllUsed");
   }
 
   HashMap<String,ast.ExpCore.ClassB> importedLibs=new HashMap<>();

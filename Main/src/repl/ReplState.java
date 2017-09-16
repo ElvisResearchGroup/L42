@@ -24,6 +24,7 @@ import facade.ErrorFormatter;
 import facade.L42;
 import facade.Parser;
 import facade.L42.ExecutionStage;
+import profiling.Timer;
 import programReduction.Program;
 import programReduction.ProgramReduction;
 import sugarVisitors.Desugar;
@@ -44,8 +45,12 @@ public class ReplState {
 public static ReplState start(String code){
   Program p=Phase1CacheKey._handleCache();
   try{
-    if(p==null){p= L42.parseAndDesugar("Repl",code);}
-    ProgramReduction pr = new ProgramReduction(Paths.get("localhost","ReplCache.C42"),true);
+    boolean cached=p!=null;
+    if(!cached){
+      Timer.activate("RunningWithoutParsedCache");
+      p= L42.parseAndDesugar("Repl",code);
+      }
+    ProgramReduction pr = new ProgramReduction(Paths.get("localhost","ReplCache.C42"),!cached);
     ReplState res=new ReplState(code,p.top(),p,pr);
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);

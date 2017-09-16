@@ -25,24 +25,32 @@ import ast.ErrorMessage;
 import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
+import profiling.Timer;
 @SuppressWarnings("serial")
 public class ReplGui extends JFrame {
- public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
- //Configuration.loadAll();
- L42.setRootPath(Paths.get("localhost"));
- L42.cacheK.fileName="ReplCache.L42";
- SwingUtilities.invokeLater(()-> {
- ReplGui g = new ReplGui();
- g.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
- g.getRootPane().setLayout(new BorderLayout());
- g.runB = new JButton("Run!");
- g.runB.addActionListener(e->g.runCode());
- g.getRootPane().add(g.runB, BorderLayout.SOUTH);
- g.buildGui(g.getRootPane());
- g.pack();
- g.setVisible(true);
- });
- }
+  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    //Configuration.loadAll();
+    L42.setRootPath(Paths.get("localhost"));
+    L42.cacheK.fileName="ReplCache.L42";
+    SwingUtilities.invokeLater(()-> {
+    ReplGui g = new ReplGui();
+    g.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    g.addWindowListener(new WindowAdapter(){
+      public void windowClosing(WindowEvent e){
+        if (L42.profilerPrintOn){
+          System.out.print(Timer.report());
+          }
+        }
+      });
+    g.getRootPane().setLayout(new BorderLayout());
+    g.runB = new JButton("Run!");
+    g.runB.addActionListener(e->g.runCode());
+    g.getRootPane().add(g.runB, BorderLayout.SOUTH);
+    g.buildGui(g.getRootPane());
+    g.pack();
+    g.setVisible(true);
+    });
+  }
 
 JTextArea loadedSrc=new JTextArea(20, 50);
 ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));

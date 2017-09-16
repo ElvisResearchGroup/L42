@@ -18,6 +18,7 @@ import java.util.Map;
 import ast.ExpCore;
 import facade.L42;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
+import profiling.Timer;
 import programReduction.Program;
 
 /**
@@ -134,6 +135,7 @@ private static final long serialVersionUID = 1L;
     catch(IOException i) {throw new Error(i);}
     }
   public static Phase1CacheKey readFromFile(Path file){
+    Timer.activate("ReadCacheKey");
     try (
       InputStream is = Files.newInputStream(file);
       ObjectInputStream in = new ObjectInputStream(is);
@@ -145,6 +147,7 @@ private static final long serialVersionUID = 1L;
     catch(IOException i) {throw new Error(i);}
     catch (ClassNotFoundException e) {throw new Error(e);}
     catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    finally{Timer.deactivate("ReadCacheKey");}
     }
   
   public static Program _handleCache(){

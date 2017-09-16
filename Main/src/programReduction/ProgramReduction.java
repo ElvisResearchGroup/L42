@@ -15,6 +15,7 @@ import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
 import facade.L42;
 import newReduction.ClassTable;
+import profiling.Timer;
 
 public class ProgramReduction {
   public ProgramReduction(Path path,boolean saveVCache) {
@@ -70,6 +71,7 @@ public class ProgramReduction {
     }
   private void saveFirstTimeCache(Program p) {
     if(!saveVCache){return;}
+    Timer.deactivate("RunningWithoutParsedCache");
     saveVCache=false;
     if(L42.cacheK.fileName==null){return;}
     try{while(true){p=p.pop();}}
