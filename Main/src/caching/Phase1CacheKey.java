@@ -123,8 +123,15 @@ private static final long serialVersionUID = 1L;
     for(List<String> path:fileNameToLib.keySet()){
       Path fn = L42.root.resolve(pathFromList(path));
       String fnContent=_contentOrNull(fn);
+      if(!Files.exists(fn)){
+        if(path.size()==1 && path.get(0).equals(_fileName)){
+          //TODO: it may change:
+          //We are in the repl, where there the main file does not exits
+          fnContent=this.fileNameToLib.get(path);
+          }
+        }
       res.fileNameToLib.put(path,fnContent);
-      }   
+      }
     return res;
     }
   public void saveOnFile(Path file){

@@ -12,8 +12,8 @@ import profiling.Timer;
 
 public class ReplTest {
 public static void main(String[]arg)throws Throwable{
-  //ClassLoader.getSystemClassLoader()
-  //.setDefaultAssertionStatus(false);
+  ClassLoader.getSystemClassLoader()
+  .setDefaultAssertionStatus(false);
   Timer.activate("TOP");
   ReplGui.main(arg);
   }
