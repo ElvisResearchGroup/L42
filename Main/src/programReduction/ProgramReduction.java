@@ -73,7 +73,7 @@ public class ProgramReduction {
     if(!saveVCache){return;}
     Timer.deactivate("RunningWithoutParsedCache");
     saveVCache=false;
-    if(L42.cacheK.fileName==null){return;}
+    if(!L42.cacheK.hasFileName()){return;}
     try{while(true){p=p.pop();}}
     catch(Program.EmptyProgram ep){}  
     ClassB topCb=p.top();

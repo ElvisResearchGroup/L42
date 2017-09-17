@@ -88,7 +88,7 @@ public class Cache implements Serializable{
       ObjectOutputStream out = new ObjectOutputStream(os);
       )
       {out.writeObject(this);}
-      catch(IOException i) {throw new Error(i);}
+      catch(IOException i) {throw new InvalidCacheFile(i);}
     }
   public static Cache readFromFile(Path file){
     try (
@@ -103,9 +103,9 @@ public class Cache implements Serializable{
         }
       return cache;
       }
-    catch(IOException i) {throw new Error(i);}
-    catch (ClassNotFoundException e) {throw new Error(e);}
-    catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    catch(IOException i) {throw new InvalidCacheFile(i);}
+    catch (ClassNotFoundException e) {throw new InvalidCacheFile(e);}
+    catch (ClassCastException e) {throw new InvalidCacheFile(e);}//means file corrupted?
     }
 
   }

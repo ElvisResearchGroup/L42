@@ -132,7 +132,8 @@ public class Resources {
   }
 
   @SuppressWarnings("serial")
-  private static class L42Throwable extends RuntimeException{
+public
+  static class L42Throwable extends RuntimeException{
     public final Object unbox; public L42Throwable(Object u){unbox=u;}
     public final Object inner(){return unbox;}
     }
@@ -461,10 +462,10 @@ public class Resources {
   private static String extractMessage(L42Throwable err) {
     Object obj=err.unbox;
     try{
-      Method toS = obj.getClass().getMethod("MtoS");
-      Object s42=toS.invoke(obj);
-      Method binaryRepr = s42.getClass().getMethod("M£hbinaryRepr");
-      Object lib=binaryRepr.invoke(s42);
+      Method toS = obj.getClass().getMethod("£CtoS",obj.getClass());
+      Object s42=toS.invoke(obj,obj);
+      Method binaryRepr = s42.getClass().getMethod("£C£HbinaryRepr",s42.getClass());
+      Object lib=binaryRepr.invoke(s42,s42);
       if( lib instanceof String){return (String)lib;}
       ExpCore.ClassB cb=(ExpCore.ClassB)Revertable.doRevert(lib);
       return EncodingHelper.ensureExtractStringU(cb);//safer that extracting on lib, if the method return numbers or other stuff
@@ -473,8 +474,8 @@ public class Resources {
          | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
         //Is it a non wrapped java object?
       try{
-        Method toS =obj.getClass().getMethod("toS");
-        Object s42=toS.invoke(obj);
+        Method toS = obj.getClass().getMethod("£CtoS",obj.getClass());
+        Object s42=toS.invoke(obj,obj);
         return "RawJavaException,toS:\n"+s42;
         }
       catch (NoSuchMethodException | SecurityException

@@ -164,7 +164,9 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
         }
       else {e=InvariantClose.eR;}
       }
-    ExpCore.Block b=e.withDeci(0,e.getDecs().get(0).withInner(delegateMCall));
+    ExpCore.Block.Dec d0=e.getDecs().get(0);
+    d0=d0.withInner(delegateMCall);
+    ExpCore.Block b=e.withDeci(0,d0);
     original=original.withInner(b);
     }
   addCheck(original,newMwts);
@@ -225,8 +227,14 @@ class WrapAux extends RenameMethodsAux{
       LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
         "Exposer called on lent returning method '"+res.getMs()+"' in "+res.getP())
         );}
-    ExpCore myE=InvariantClose.eThis.withDeci(0,InvariantClose.eThis.getDecs().get(0)
-      .withInner(res.getInner()));
+    if(!res.getMt().getExceptions().isEmpty()){
+      LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
+        "Exposer called on exceptions leaking method '"+res.getMs()+"' in "+res.getP())
+        );}
+    ExpCore.Block.Dec d0=InvariantClose.eThis.getDecs().get(0);
+    d0=d0.withInner(res.getInner());
+    d0.with_t(res.getMt().getReturnType());
+    ExpCore myE=InvariantClose.eThis.withDeci(0,d0);
     return res.withInner(myE);
     }
 }

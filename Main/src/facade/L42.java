@@ -119,13 +119,13 @@ public class L42 {
       if(Files.isDirectory(path)){
         Path fullP=path.resolve("This.L42");
         L42.setRootPath(path);
-        L42.cacheK.fileName="This.L42";
         code=L42.pathToString(fullP);
+        L42.cacheK.setFileName("This.L42",code);
         }
       else {
         L42.setRootPath(path.getParent());
-        L42.cacheK.fileName=path.getName(path.getNameCount()-1).toString();
         code=L42.pathToString(path);
+        L42.cacheK.setFileName(path.getName(path.getNameCount()-1).toString(),code);
         }
       FinalResult res = L42.runSlow(path.toUri().toString(),code);
       System.out.println("------------------------------");

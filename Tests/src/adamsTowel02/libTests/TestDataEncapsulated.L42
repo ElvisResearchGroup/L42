@@ -1,0 +1,56 @@
+{reuse L42.is/AdamTowel02
+
+CacheAdamTowel02:Load.cacheTowel()
+
+AddLeaksExceptions:{
+  Library l=Data<><{
+    Num age
+    S name
+    capsule Strings allergies
+    read method
+    Bool #invariant()
+      this.age()>=0Num
+      & !this.name().isEmpty()
+      & this.allergies().size()<=2Size
+    mut method
+    Void add(S allergy) exception S (
+      this.#allergies().add(right:allergy)
+      if allergy==S"NOPE" (exception S"Fail")
+      )
+    }
+  catch exception Data.Invariant.Fail f
+    return ExitCode.normal()
+  error X"fail expected"
+  }
+
+Person:Data<><{
+  Num age
+  S name
+  capsule Strings allergies
+  read method
+  Bool #invariant()
+    this.age()>=0Num
+    & !this.name().isEmpty()
+    & this.allergies().size()<=2Size
+  mut method
+  Void add(S allergy)(
+    this.#allergies().add(right:allergy)
+    )
+  }
+Main1:{
+  Debug(17Num>=0Num)
+  Debug(!S"a".isEmpty())
+  Debug(Strings[].size()<=2Size)
+  mut Person p=Person(
+    age:17Num,
+    name:S"a",
+    allergies:Strings[]
+    )
+  p.add(allergy:S"duba")
+  Debug(p)
+  p.add(allergy:S"buba")
+  Debug(p)
+  return ExitCode.normal()
+  }
+//in add allergy, you get code unreachable for curly (with no return) instead of round
+}

@@ -46,7 +46,7 @@ public class Phase1CacheKey implements Serializable{
     public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
+    result = prime * result + ((_fileName == null) ? 0 : _fileName.hashCode());
     result = prime * result + ((fileNameToLib == null) ? 0 : fileNameToLib.hashCode());
     result = prime * result + ((urlToLib == null) ? 0 : urlToLib.hashCode());
     return result;
@@ -60,10 +60,10 @@ public class Phase1CacheKey implements Serializable{
     if (getClass() != obj.getClass())
         return false;
     Phase1CacheKey other = (Phase1CacheKey) obj;
-    if (fileName == null) {
-    if (other.fileName != null)
+    if (_fileName == null) {
+    if (other._fileName != null)
         return false;
-    } else if (!fileName.equals(other.fileName))
+    } else if (!_fileName.equals(other._fileName))
         return false;
     if (fileNameToLib == null) {
     if (other.fileNameToLib != null)
@@ -78,7 +78,8 @@ public class Phase1CacheKey implements Serializable{
     return true;
     }
 private static final long serialVersionUID = 1L;
-  public String fileName;//the starting point
+  private String _fileName;//the starting point
+  public boolean hasFileName(){return _fileName!=null;}
   public Map<String,String> urlToLib=new HashMap<>();
   public Map<List<String>,String>fileNameToLib=new HashMap<>();//contains fileName->??
   private static Path pathFromList(List<String> l){
@@ -97,8 +98,8 @@ private static final long serialVersionUID = 1L;
     fileNameToLib.put(listFromPath(path),code);
     }
   public Path fileName(){
-    assert fileName!=null;
-    return pathFromList(Collections.singletonList(fileName));
+    assert _fileName!=null;
+    return pathFromList(Collections.singletonList(_fileName));
     }
   public String firstSourceName(){
     Path fn=fileName();
@@ -113,7 +114,7 @@ private static final long serialVersionUID = 1L;
   }
   public Phase1CacheKey current(){
     Phase1CacheKey res=new Phase1CacheKey();
-    res.fileName=this.fileName;
+    res._fileName=this._fileName;
     for(String url:urlToLib.keySet()){
       Path fn = Paths.get("localhost",url);
       String fnContent=_contentOrNull(fn);
@@ -127,12 +128,14 @@ private static final long serialVersionUID = 1L;
     return res;
     }
   public void saveOnFile(Path file){
+    assert _fileName!=null;
+    assert fileNameToLib.get(Collections.singletonList(_fileName))!=null;
     try (
       OutputStream os = Files.newOutputStream(file);
       ObjectOutputStream out = new ObjectOutputStream(os);
       )
       {out.writeObject(this);}
-    catch(IOException i) {throw new Error(i);}
+    catch(IOException i) {throw new InvalidCacheFile(i);}
     }
   public static Phase1CacheKey readFromFile(Path file){
     Timer.activate("ReadCacheKey");
@@ -142,28 +145,30 @@ private static final long serialVersionUID = 1L;
       ){
       Object res = in.readObject();
       Phase1CacheKey cache=(Phase1CacheKey)res;
+      assert cache._fileName!=null;
+      assert cache.fileNameToLib.get(Collections.singletonList(cache._fileName))!=null;
       return cache;
      }
-    catch(IOException i) {throw new Error(i);}
-    catch (ClassNotFoundException e) {throw new Error(e);}
-    catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    catch(IOException i) {
+      throw new InvalidCacheFile(i);}
+    catch (ClassNotFoundException e) {throw new InvalidCacheFile(e);}
+    catch (ClassCastException e) {throw new InvalidCacheFile(e);}//means file corrupted?
     finally{Timer.deactivate("ReadCacheKey");}
     }
   
   public static Program _handleCache(){
-    if(L42.cacheK.fileName==null){return null;}
+    if(L42.cacheK._fileName==null){return null;}
     Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
     Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
     try{
       Phase1CacheKey oldK=Phase1CacheKey.readFromFile(kPath);
-      Phase1CacheKey newK=oldK.current();
-      L42.newK=newK;
-      assert oldK.fileName.equals(L42.cacheK.fileName);
-      assert newK.fileName.equals(L42.cacheK.fileName);
-      if(!newK.equals(oldK)){
+      L42.newK=oldK.current();
+      assert oldK._fileName.equals(L42.cacheK._fileName);
+      assert L42.newK._fileName.equals(L42.cacheK._fileName);
+      if(!L42.newK.equals(oldK)){
         return null;}
       }
-    catch(Error e){
+    catch(InvalidCacheFile e){
       return null;}
     Phase1CacheValue val=Phase1CacheValue.readFromFile(vPath);
     L42.usedNames.clear();
@@ -172,4 +177,8 @@ private static final long serialVersionUID = 1L;
     pRes=pRes.updateTop(val.top);
     return pRes;
     }
+  public void setFileName(String fileName, String code) {
+    this._fileName=fileName;
+    this.fileNameToLib.put(Collections.singletonList(fileName),code);
+  }
   }

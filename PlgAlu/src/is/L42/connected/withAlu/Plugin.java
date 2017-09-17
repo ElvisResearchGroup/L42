@@ -119,7 +119,9 @@ public class Plugin implements PluginType {
   public  Resources.Void MifUInt32GEqDo£xn1£xn2(Object cb1,Object cb2){
     Integer i1=ensureExtractInt32(cb1);
     Integer i2=ensureExtractInt32(cb2);
-    if(Integer.compareUnsigned(i1,i2)>0){return Resources.Void.instance;}
+    if(Integer.compareUnsigned(i1,i2)>0){
+      return Resources.Void.instance;
+      }
     throw Resources.notAct;
   }
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})

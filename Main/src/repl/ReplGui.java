@@ -31,15 +31,15 @@ public class ReplGui extends JFrame {
   public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
     //Configuration.loadAll();
     L42.setRootPath(Paths.get("localhost"));
-    L42.cacheK.fileName="ReplCache.L42";
     SwingUtilities.invokeLater(()-> {
     ReplGui g = new ReplGui();
-    g.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    //g.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     g.addWindowListener(new WindowAdapter(){
       public void windowClosing(WindowEvent e){
         if (L42.profilerPrintOn){
           System.out.print(Timer.report());
           }
+        g.dispose();
         }
       });
     g.getRootPane().setLayout(new BorderLayout());
@@ -78,6 +78,7 @@ void auxRunCode(){
   boolean[] success= {false};
   try{
   String code=newSrc.getText();
+  L42.cacheK.setFileName("ReplCache.L42",code);
   if(repl==null){ repl=ReplState.start("{"+code+"}");}
   else{
     ReplState newR=repl.add(code);

@@ -4,11 +4,10 @@ class method class Path #default##apply(Void of)Path
 Fail:Message.$<><{ implements This2.Fail}
 
 /*
-TODO: invariant is still broken: we need to avoid 
-exceptions in methods usin this.exposer
-OR we need to capture such excepions and rethrow them
-after cheking invariant falilure.
-
+Right now, invariant can not be applied if methods using exposers
+leak exceptions.
+I could wrap them and, in case the invariant fails, silent the exception.
+But I'm no so eager to swallow an exception, even if it is to rais an error..
 */
 
 method

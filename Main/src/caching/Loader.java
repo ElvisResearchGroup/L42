@@ -27,6 +27,7 @@ import auxiliaryGrammar.Functions;
 import ast.MiniJ;
 import ast.Ast.Path;
 import facade.Configuration;
+import facade.ErrorFormatter;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
 import newReduction.ClassTable;
@@ -230,15 +231,18 @@ public class Loader {
     ct=ct.computeDeps();
     try{return (ExpCore.ClassB)run(cd);}
     catch(InvocationTargetException ite) {
-      if (ite.getCause() instanceof RuntimeException) throw (RuntimeException)ite.getCause();
-      if (ite.getCause() instanceof Error) throw (Error)ite.getCause();
-      throw new Error(ite.getCause());
+      Throwable cause=ite.getCause();
+      if(cause instanceof Resources.L42Throwable){
+        Resources.cacheMessage((Resources.L42Throwable)cause);
+        System.out.println(ErrorFormatter.reportPlaceOfMetaError(p,p.top()));
+        }
+      if (cause instanceof RuntimeException) throw (RuntimeException)cause;
+      if (cause instanceof Error) throw (Error)cause;
+      throw new Error(cause);
       }
     catch(CompilationError| ClassNotFoundException| NoSuchMethodException| SecurityException| IllegalAccessException| IllegalArgumentException exc) {
       throw new Error(exc);
-    }
-
-
+      }
     }
   public Object run(MiniJ.CD j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     String text="package generated;\n"+MiniJToJava.of(j);

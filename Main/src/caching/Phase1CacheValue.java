@@ -33,7 +33,7 @@ private static final long serialVersionUID = 1L;
       ObjectOutputStream out = new ObjectOutputStream(os);
       )
       {out.writeObject(this);}
-    catch(IOException i) {throw new Error(i);}
+    catch(IOException i) {throw new InvalidCacheFile(i);}
     }
   public static Phase1CacheValue readFromFile(Path file){
     Timer.activate("ReadCacheValue");
@@ -45,9 +45,9 @@ private static final long serialVersionUID = 1L;
       Phase1CacheValue cache=(Phase1CacheValue)res;
       return cache;
       }
-    catch(IOException i) {throw new Error(i);}
-    catch (ClassNotFoundException e) {throw new Error(e);}
-    catch (ClassCastException e) {throw new Error(e);}//means file corrupted?
+    catch(IOException i) {throw new InvalidCacheFile(i);}
+    catch (ClassNotFoundException e) {throw new InvalidCacheFile(e);}
+    catch (ClassCastException e) {throw new InvalidCacheFile(e);}//means file corrupted?
     finally{Timer.deactivate("ReadCacheValue");}
     }  
   }

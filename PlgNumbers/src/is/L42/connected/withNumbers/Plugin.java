@@ -52,17 +52,23 @@ public class Plugin implements PluginType {
   public  Resources.Void MifNumGrtDo£xn1£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
-    if(i1.compareTo(i2)<0){return Resources.Void.instance;}
-    throw Resources.notAct;
+    if(i1.compareTo(i2)<0){
+      throw Resources.notAct;
+      //return Resources.Void.instance;
+      }
+    return Resources.Void.instance;
+    //throw Resources.notAct;
   }
   //<=
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Resources.Void MifNumGEqDo£xn1£xn2(Object cb1,Object cb2){
     BigRational  i1=ensureExtract(BigRational.class,cb1);
     BigRational  i2=ensureExtract(BigRational.class,cb2);
-    if(i1.compareTo(i2)<=0){return Resources.Void.instance;}
-    throw Resources.notAct;
-  }
+    if(i1.compareTo(i2)<=0){
+      throw Resources.notAct;
+      }
+    return Resources.Void.instance;
+    }
 
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringToNum£xthat(Object cb){
