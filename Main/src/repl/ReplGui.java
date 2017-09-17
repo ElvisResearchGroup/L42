@@ -40,6 +40,9 @@ public class ReplGui extends JFrame {
           System.out.print(Timer.report());
           }
         g.dispose();
+        System.gc();
+        System.runFinalization();
+        System.exit(0);
         }
       });
     g.getRootPane().setLayout(new BorderLayout());

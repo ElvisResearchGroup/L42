@@ -207,6 +207,7 @@ public class L42 {
 
   
   public static ErrorMessage.FinalResult runSlow(String fileName,String code){
+    assert L42.usedNames.isEmpty();
     try{
       Program p=parseAndDesugar(fileName,code);
        //Refresh of position identities, it is used to generate correct Java code.

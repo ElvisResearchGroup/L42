@@ -10,7 +10,7 @@ Over:Composers<><{
 
 Override:Composers<><{
   mut method Void op(Path p, Location.Method m, Size i) (
-    Debug(S"Fixing "[p]"::"[m.selector()]"")
+    //Debug(S"Fixing "[p]"::"[m.selector()]"")
     s=m.selector()
     s2=this.superName(selector:s,i:i)
     this.open(i).#add(abstract:s of:p alias:s2)

@@ -69,7 +69,7 @@ class DesugarW extends CloneVisitor{
     for(String si:mt.getMs().getNames()){Functions.addName(si, L42.usedNames);}
     Functions.addName("this", L42.usedNames);
     for(String si:CollectDeclaredVars.of(mt.getInner().get())){Functions.addName(si, L42.usedNames);}
-    return super.visit(mt);
+      return super.visit(mt);
       }
 
   public Expression visit(With e){

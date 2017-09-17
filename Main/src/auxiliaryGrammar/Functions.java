@@ -213,7 +213,9 @@ public static void addName(String _name, java.util.Map<String,Integer> usedNames
     }
   String sNumber=_name.substring(name.length());
   int number=0;
-  if(sNumber.length()!=0){number=Integer.parseInt(sNumber);}
+  if(sNumber.length()!=0){
+    number=Integer.parseInt(sNumber);
+    }
   Integer i=usedNames.get(name);
   if(i==null){i=0;}
   i=Math.max(i, number);
