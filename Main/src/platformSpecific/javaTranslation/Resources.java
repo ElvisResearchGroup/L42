@@ -4,6 +4,7 @@ import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
 import facade.PData;
+import newReduction.NotLibrary;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -177,7 +178,7 @@ public
     public String toString() {return "Return["+ unbox +"]";}
     public Return(Object u){super(u);}
     }
-  public static class Void implements Revertable{
+  public static class Void implements Revertable, NotLibrary{
     public static final Void instance=new Void();
     public static Void Instance(){return type;}
     public static final Void type=new Void();
@@ -186,7 +187,7 @@ public
       return ExpCore.EPath.wrap(Path.Void());
     }
     }
-  public static class Any implements Revertable{
+  public static class Any implements Revertable, NotLibrary{
     public static final Any type=new Any();
     public static Any Instance(){return type;}
     @Override

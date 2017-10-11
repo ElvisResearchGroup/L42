@@ -1,47 +1,48 @@
 {reuse L42.is/AdamTowel02
 
-NotStringable:{(Size that)}
+NotStringable:{Size that
+  class method This (Size that)}
 
-Person:Data.AddToS<><{(S name, var Size age)
-  implements Concept.Classable
-  method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
-  refine read method class This class() This
-  method readableName()GetMyName(This)
+Person:Data<><{S name, var Size age}
+Strange:Data<><{Concept.Base name}
+
+PP:(p=Person, Data<><{capsule Person p})
+PP2:Data<><{capsule Concept.Base p}
+
+TestWrong:{
+  n=NotStringable
+    (
+    l1=Data<><{NotStringable name}
+    catch exception Data.AddEquals.Fail void
+    error X""
+    )
+    (
+    l2=Data<><{Any name}
+    catch exception Data.AddEquals.Fail void
+    error X""
+    )
+  return ExitCode.normal()
   }
-//Person:Data.AddToS<><{(S name, var Size age)}
-Person2:Data.AddToS<><{(S name, NotStringable age)}
-Person3:Data.AddToS<><{(Concept.ToS name, Any age)}
 
-PP:Data.AddToS<><{(mut Person p)}
-PP2:Data.AddToS<><{(mut Any p)}
-
-Main:{
+TestOk:{
   dq = S.doubleQuote()
   quoteBob = dq ++ S"Bob" ++ dq
   quoteTen = dq ++ S"10" ++ dq
 
-// original debug output, in case people read java better than 42 composition:
-//   "[name:\"Bob\", age:\"10\"]\n"+
-//   "[name:\"Bob\", age:?]\n"+
-//   "[name:This.S\"Bob\", age:??]\n"+
-//   "[p:[name:\"Bob\", age:\"10\"]]\n"+
-//   "[p:This.Person[name:\"Bob\", age:\"10\"]]\n"
 
   p=Person(name:S"Bob",age:10Size)
   Debug.test(p expected:S"[name:"[quoteBob]", age:"[quoteTen]"]")
-  
-  p2=Person2(name:S"Bob",age:NotStringable(10Size))
-  Debug.test(p2, expected:S"[name:"[quoteBob]", age:?]")
-  
-  p3=Person3(name:S"Bob",age:NotStringable(10Size))
-  Debug.test(p3, expected:S"[name:This.S"[quoteBob]", age:??]")
-  
-  pp=PP(p:p)
+
+  pp=PP(p:Person(name:S"Bob",age:10Size))
   Debug.test(pp, expected:S"[p:[name:"[quoteBob]", age:"[quoteTen]"]]")
-  
-  pp2=PP2(p:p)
-  Debug.test(pp2, expected:S"[p:This.Person[name:"[quoteBob]", age:"[quoteTen]"]]")
-  
+
+  pp2=PP2(p:Person(name:S"Bob",age:10Size))
+  Debug.test(pp2, expected:S"[p:Person[name:"[quoteBob]", age:"[quoteTen]"]]")
+
+  pp3=PP2(p:PP(p:Person(name:S"Bob",age:10Size)))
+  Debug.test(pp3, expected:S"[p:PP[p:[name:"[quoteBob]", age:"[quoteTen]"]]]")
+
+
   return ExitCode.normal()
   }
 }

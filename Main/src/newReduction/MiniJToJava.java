@@ -72,11 +72,11 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
   public Void visit(MiniJ.CD cd){
     String kind=cd.isInterface()?"interface":"class";
     c("public "+kind+" "+cd.getCn());
-    if(!cd.getCns().isEmpty()){
-      if(!cd.isInterface()) {c(" implements ");}
-      else {c(" extends ");}
-      tools.StringBuilders.formatSequence(result,cd.getCns().iterator(),
-              ", ",cni->c(cni));
+    if(!cd.isInterface()) {c(" implements ");}
+    else {c(" extends ");}
+    c(NotLibrary.class.getCanonicalName());
+    for(String ci:cd.getCns()) {
+      c(", "+ci);
       }
     c("{");
     indent();
@@ -122,8 +122,13 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     public Void visit(IfTypeCase s) {
       //if(x0.inner() instanceof cn){cn x1=(cn)x0.inner(); [then]} else [_else]
       String xi=s.getX0()+".inner()";
-      c("if("+xi+" instanceof "+s.getCn()+"){");
-      c(s.getCn()+" "+s.getX1()+"=("+s.getCn()+")"+xi+"; ");
+      String test=xi+" instanceof "+s.getCn();
+      if (!s.isPositive()) { test="!("+test+")";}
+      c("if("+test+"){");
+      if (s.isPositive()) {
+        c(s.getCn()+" "+s.getX1()+"=("+s.getCn()+")"+xi+"; ");
+        }
+      else {c("Object "+s.getX1()+"="+xi+"; ");}
       s.getThen().accept(this);
       c("} else ");
       s.get_else().accept(this);

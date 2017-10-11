@@ -46,7 +46,7 @@ public class TestL42F {
     "    void\n" +
     "  }\n",
     //java
-    "public class £Id10{\n" +
+    "public class £Id10 implements newReduction.NotLibrary{\n" +
     "  static public £Id10 £CNewFwd(){return new _Fwd();}\n" +
     "public static class _Fwd extends £Id10 implements newReduction.Fwd{\n" +
     "public ast.ExpCore revert(){return generated.Resource.£CPathOf(10);}\n" +
@@ -105,7 +105,7 @@ public class TestL42F {
     null
     },{lineNumber(),"{method Void v() (x=this.v() x)}",
     null,
-    "public class £Id10{\n" +
+    "public class £Id10 implements newReduction.NotLibrary{\n" +
     "  static public £Id10 £CNewFwd(){return new _Fwd();}\n" +
     "public static class _Fwd extends £Id10 implements newReduction.Fwd{\n" +
     "public ast.ExpCore revert(){return generated.Resource.£CPathOf(10);}\n" +
@@ -130,7 +130,7 @@ public class TestL42F {
     "    )\n" +
     "  }\n",
     //java
-    "public class £Id10{\n" +
+    "public class £Id10 implements newReduction.NotLibrary{\n" +
     "  static public £Id10 £CNewFwd(){return new _Fwd();}\n" +
     "public static class _Fwd extends £Id10 implements newReduction.Fwd{\n" +
     "public ast.ExpCore revert(){return generated.Resource.£CPathOf(10);}\n" +
@@ -146,7 +146,7 @@ public class TestL42F {
     },{lineNumber(),"{method Void v() loop this.v()}",
     null,
     //java
-    "public class £Id10{\n" +
+    "public class £Id10 implements newReduction.NotLibrary{\n" +
     "  static public £Id10 £CNewFwd(){return new _Fwd();}\n" +
     "public static class _Fwd extends £Id10 implements newReduction.Fwd{\n" +
     "public ast.ExpCore revert(){return generated.Resource.£CPathOf(10);}\n" +
@@ -180,7 +180,7 @@ public class TestL42F {
     "      x\n" +
     "    )\n" +
     "  }\n",
-    "public class £Id10 implements platformSpecific.javaTranslation.Resources.Revertable{\n" +
+    "public class £Id10 implements newReduction.NotLibrary, platformSpecific.javaTranslation.Resources.Revertable{\n" +
     "  static public £Id10 £CNewFwd(){return new _Fwd();}\n" +
     "public static class _Fwd extends £Id10 implements newReduction.Fwd{\n" +
     "public ast.ExpCore revert(){return generated.Resource.£CPathOf(10);}\n" +

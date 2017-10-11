@@ -209,7 +209,11 @@ public class L42FToMiniJS implements Visitor<MiniJ.S>{
       isTerminating=isTerminating&& ki.getE().accept(new Terminating());
       String cn = ct.boxedClassName(ki.getT().getCn());
       S then = ki.getE().accept(this);
-      s=new MiniJ.IfTypeCase(catchX, L42FToMiniJ.liftX(ki.getX()), cn, then,s);
+      boolean positive=Cn.cnLibrary.getInner()!=ki.getT().getCn();
+      if(!positive) {
+        cn=NotLibrary.class.getCanonicalName();
+      }
+      s=new MiniJ.IfTypeCase(positive,catchX, L42FToMiniJ.liftX(ki.getX()), cn, then,s);
       }
     List<S>ss=new ArrayList<>();
     ss.add(s);

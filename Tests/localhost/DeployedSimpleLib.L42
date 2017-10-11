@@ -2,28 +2,28 @@
 */
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
-  capsule This0.Abstract.S.SBuilder b820=This0.Abstract.S.#builder()
-  Void unused6437138=b820.#H()
-  Void unused6437139=b820.#e()
-  Void unused6437140=b820.#l()
-  Void unused6437141=b820.#l()
-  Void unused6437142=b820.#o()
-  Void unused6437143=b820.#space()
-  Void unused6437144=b820.#W()
-  Void unused6437145=b820.#o()
-  Void unused6437146=b820.#r()
-  Void unused6437147=b820.#l()
-  Void unused6437148=b820.#d()
-  Void unused6437149=b820.#space()
-  Void unused6437150=b820.#D()
-  Void unused6437151=b820.#e()
-  Void unused6437152=b820.#p()
-  Void unused6437153=b820.#l()
-  Void unused6437154=b820.#o()
-  Void unused6437155=b820.#y()
-  Void unused6437156=b820.#e()
-  Void unused6437157=b820.#d()
-  b820
+  capsule This0.Abstract.S.SBuilder b815=This0.Abstract.S.#builder()
+  Void unused3957998=b815.#H()
+  Void unused3957999=b815.#e()
+  Void unused3958000=b815.#l()
+  Void unused3958001=b815.#l()
+  Void unused3958002=b815.#o()
+  Void unused3958003=b815.#space()
+  Void unused3958004=b815.#W()
+  Void unused3958005=b815.#o()
+  Void unused3958006=b815.#r()
+  Void unused3958007=b815.#l()
+  Void unused3958008=b815.#d()
+  Void unused3958009=b815.#space()
+  Void unused3958010=b815.#D()
+  Void unused3958011=b815.#e()
+  Void unused3958012=b815.#p()
+  Void unused3958013=b815.#l()
+  Void unused3958014=b815.#o()
+  Void unused3958015=b815.#y()
+  Void unused3958016=b815.#e()
+  Void unused3958017=b815.#d()
+  b815
   )))
 Abstract: {
 Alu: {/*@plugin
@@ -326,6 +326,108 @@ read method
 This1 #inner() 
 read method 
 Void #close() }
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This2.S _text() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+method 
+This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
+read method 
+This2.Bool equals(read This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+method 
+mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+Continue: {
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }}}
+Num: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
+*/
+class method 
+mut This0 _private(Library _binaryRepr) 
+read method 
+Library _binaryRepr() 
+class method 
+This0 fromS(This1.Concept.ToS that) 
+class method 
+This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+mut This1.S.SBuilder #builder() 
+class method 
+This0 #from(This1.S.SBuilder builder) 
+class method 
+Any parseError(This1.S that) 
+refine read method 
+This1.S toS() 
+method 
+This0 #plus(This0 that) 
+method 
+This0 #less(This0 that) 
+method 
+This0 #times(This0 that) 
+method 
+This0 #divide(This0 that) 
+read method 
+This1.Bool equals(read This0 that) 
+method 
+This1.Bool #right(This0 that) 
+method 
+This1.Bool #rightequal(This0 that) 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
+refine read method 
+class This0 class() 
+refine class method 
+This1.S readableName() 
+refine class method 
+This1.Bool is(class Any subtype) 
+refine read method 
+This1.Bool #equalequal(read Any that) 
+Plg: {/*@plugin
+L42.is/connected/withNumbers
+*/}
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 read method 
@@ -1817,7 +1919,9 @@ This1.ExitCode _ExitCode()
 method 
 This1.Bool _Bool() 
 method 
-This1.Size _N() 
+This1.Size _Size() 
+method 
+This1.Num _Num() 
 method 
 This1.S _S() 
 method 
@@ -1858,6 +1962,8 @@ method
 This1.CollectionsMut _CollectionsMut() 
 method 
 This1.K _K() 
+method 
+This1.Alphanumeric _Alphanumeric() 
 method 
 This1.DeployTowel _DeployTowel() 
 method 
@@ -6135,6 +6241,120 @@ class method
 Library makeKJ(Library that, This2.Path path, This2.Bool isFwd) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) }}
+Alphanumeric: {
+class method 
+Library #leftrightleft(Library that) exception This0.Fail 
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This2.S _text() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+method 
+This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
+read method 
+This2.Bool equals(read This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+method 
+mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+Continue: {
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }}
+Fail: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
+*/
+read method 
+This2.S _text() 
+read method 
+This2.Message.Opt cause() 
+class method 
+This0 #apply(This2.S _text, This2.Message.Opt cause) 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.S text() 
+refine read method 
+This2.Message.Opt responseOf() 
+method 
+This0 #apply(This2.Message that) 
+refine read method 
+This2.S toS() 
+read method 
+This2.Bool equals(read This0 that) 
+class method 
+This0 #apply(This2.S text) 
+class method 
+This0 #apply(This2.S text, This2.Message cause) 
+class method 
+mut This2.S.SBuilder #builder() 
+class method 
+This0 #from(This2.S.SBuilder builder) 
+method 
+This0.Continue #from(This2.S.SConcat seqBuilder) 
+method 
+mut This2.S.SConcat #seqBuilder() 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method 
+This2.S readableName() 
+refine class method 
+This2.Bool is(class Any subtype) 
+refine read method 
+This2.Bool #equalequal(read Any that) 
+Continue: {
+read method 
+This3.S that() 
+class method 
+This0 #apply(This3.S that) 
+method 
+mut This3.S.SBuilder #builder() 
+method 
+This1 #from(This3.S.SBuilder builder) }}
+Trait: {
+class method 
+Any val() 
+class method 
+Library #apply() }}
 DeployTowel: {
 read method 
 This1.Url fileName() 
@@ -7065,6 +7285,8 @@ Load: {/*shape of a loadable library:
  Abstract:{} contains abstract classes, and
  Abstract.ConceptMap maps concepts names to abstract classes
 */
+class method 
+Library cacheTowel() 
 class method 
 Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
 ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)

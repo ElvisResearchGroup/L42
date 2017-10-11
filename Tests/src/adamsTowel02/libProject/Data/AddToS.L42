@@ -33,8 +33,8 @@ exception Fail{
     method toS() S"["[this.baseToS()]"]"
     read method S baseToS() S""
     }
-  //lib can override baseToS to provid the real behaviour,
-  //the empty baseToS is used for classes wiht no fields
+  //lib can override baseToS to provide the real behaviour,
+  //the empty baseToS is used for classes with no fields
   return Refactor2.Method[hide:\"baseToS()"]<><Use.Override[miniToS]<><lib
   error on Refactor2.Fail X"AddToS.finalWrapping - hide"
   }
@@ -98,7 +98,7 @@ class method
 Library (Selector fSel,Location.Type fT) exception Fail {
   rich=this.lib(refTo:fT.refTo()).isInterface()
   if rich (return FieldOpAddClassName(selector:fSel,type:fT))
-  return FieldOp(selector:fSel,type:fT) 
+  return FieldOp(selector:fSel,type:fT)
   exception on StateOperation.Fail Fail""
   }
 

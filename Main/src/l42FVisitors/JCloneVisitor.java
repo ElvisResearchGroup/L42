@@ -120,6 +120,7 @@ public class JCloneVisitor implements JVisitor<MiniJ.S>{
     @Override
     public S visit(IfTypeCase s) {
       return new IfTypeCase(
+        s.isPositive(),
         liftX(s.getX0()),
         liftX(s.getX1()),
         liftCn(s.getCn()),

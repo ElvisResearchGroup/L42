@@ -45,6 +45,7 @@ If implements S{
   }
 @Value @Wither public static class
 IfTypeCase implements S{
+  boolean positive;
   String x0;String x1; String cn; S then;S _else;
   //if(x0.inner() instanceof cn){cn x1=(cn)x0.inner(); [then]}
   public <V> V accept(JVisitor<V> v){return v.visit(this);}

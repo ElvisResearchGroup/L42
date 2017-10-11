@@ -17,6 +17,7 @@ S::=//statement
   |x=ej;
   |if(x) S1 else S2
   |if(x.inner() instanceof CN){CN x1=(CN)x.inner(); S1} else S2
+  |if(!(x.inner() instanceof CN)){Object x1=x.inner(); S1} else S2
   |while(true) S
   |b
   |break label
@@ -77,6 +78,14 @@ xe(label?,T x e)= x;label?*e;
 //Note: we disallow capturing a 'return class Any'
 //in the type system. If we allow it,
 //we need to check for coherence!
+
+With CN!=Library
+ifT[y x CN S1] else S2 =
+  if(y.inner() instanceof CN){CN x=(CN)y.inner(); S1} else S2
+Otherwise
+ifT[y x CN S1] else S2 =
+  if(!(y.inner() instanceof NotLibrary))
+  ){Object x=y.inner(); S1} else S2
 
 
 ### CT[CD]=JClass
@@ -164,7 +173,7 @@ since all its methods has defaults
 ###Assumed
 ---
 interface Fwd{/*as in newReduction.Fix*/}
-
+interface NotLibrary{}//marker interface, implemented by all 42class, Any and Void
 -----------------------------
 4 General execution
 -----------------------------
