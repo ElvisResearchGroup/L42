@@ -52,16 +52,15 @@ public class ProgramReduction {
     assert IsCompiled.of(ec);
     assert !(ec instanceof ClassB);
     System.out.println("Top running on nc:"+nc.getName());
-    PathsPaths pair = UsedPaths.usedPathsECatchErrors(p, ec);
-    Paths paths=pair.left;
-    Paths paths1=pair.right;
-    Program p0=Norm.multiNorm(p,paths.union(paths1));
+    Paths paths=UsedPaths.tryTypedPaths(p, ec);
+    Paths paths1=UsedPaths.tryCoherentPaths(p, ec);
+    Program p0=Norm.multiNorm(p,paths);
     Program p1=MultiTypeSystem.typeProgram(paths,paths1, p0);
     @SuppressWarnings("unused")
-    ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths,ec));
+    ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths1,ec));
     ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,ec);
     saveFirstTimeCache(p1);
-    ClassB res=loader.execute(p1, paths.union(paths1), annEc1);
+    ClassB res=loader.execute(p1, paths, annEc1);
     //ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();

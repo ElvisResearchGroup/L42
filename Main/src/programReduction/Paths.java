@@ -5,6 +5,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import ast.Ast;
+import ast.Ast.C;
 import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
@@ -147,12 +148,18 @@ public class Paths {
     return result;
     }
   
-  public boolean contains(ast.Ast.Path s) {
+  public boolean containsPrefixFor(ast.Ast.Path s) {
     if(s.isPrimitive()){return false;}
     Paths popped=this;
     for(int i=0;i<s.outerNumber();i++){
       popped=popped.pop();
       }
-    return popped.current.contains(s.getCBar());
+    for(List<C> p:popped.current){
+      if(s.getCBar().size()<p.size()){continue;}
+      if(s.getCBar().subList(0, p.size()).equals(p)){
+        return true;
+        }
+      }
+    return false;
     }
   }

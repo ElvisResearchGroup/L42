@@ -111,6 +111,7 @@ public class L42F {
       this.dbgName = dbgName;
       this.cns = cns;
       this.ms = ms;
+      //assert cns==null ||!cns.contains(2255);
     }
 
     @java.lang.SuppressWarnings("all")

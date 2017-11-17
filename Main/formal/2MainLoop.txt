@@ -32,7 +32,8 @@ p ==> p'.update(p'.top()[C=L])
   p.top()={_ implements Ps0, MCs  C:eC Ms}//MCs are already compiled
   eC not of form L//thus eC is the first point to execute
   paths=tryTypedPaths(p,eC)
-  paths'=tryCoherentPaths(p,eC)//TODO: we change lots in here update code also for ||-
+  paths'=tryCoherentPaths(p,eC)
+  //TODO: update code also for ||-
   //paths and paths' represents the Ps recursively used by eC,
   //paths' needs to be coherent, while paths needs only to be typed
   p0=multiNorm(p; paths)//norm the part of p required by eC
@@ -240,30 +241,33 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   L1..Ln={L| L inside eC}
   //in path not prime// not repeat check stage 
   //Marco and James are confused by those comments 
+  mhs={Li(Cs)(ms)[from This0.Cs].mh|forall Cs, Ms, Li in L1..Ln}
+  //mhs is a collections of method headers from many libraries,
+  //and the paths are relative to the multiple insides of those libraries
   Ps0={Thisn.Cs |This(n+1).Cs inside mhs}
-  mhs={Li(Cs)(ms)[from This0.Cs].mh|forall Cs, Ms, Li in L1..Ln} 
   paths1=reachablePaths(p,reorganize(p,Ps1), empty,Typed)  
-    where Ps1 =maximal subset of Ps0 such that is defined
+    where Ps1 =maximal subset of Ps0 such that reachablePaths(..) is defined
   //Ps0=collect all the types inside the mh weakly deep in libraries inside eC referring outside of eC
   //maximal subset Ps1 can be computed by collecting the paths of individual Pi in Ps0
   
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
   where
-  L1..Ln={L|L inside M.e, M in L0.Ms}//TODO: was L instead of L0, check in code 
- 
+  L1..Ln={L|L inside M.e, M in L0.Ms}//TODO: was L instead of L0, check in code  
+  
 - reachablePaths(p,paths,Css,Typed?)= reachablePaths(p, paths U paths0,Css',Typed?) // U on paths does minimize() internally
   where
-  paths.top()\Css!=empty
-  Cs1..Csn=paths.top()\Css
+  //logically sort of paths.top()\Css!=empty
+  Css'=minimize(paths.top() U Css)
+  Css'!=Css
+  Cs1..Csn=Css'
   paths0=reachableFromL(p.top()(Cs1),Typed?).prefix(Cs1) U ... U reachableFromL(p.top()(Csn),Typed?).prefix(Csn)
   forall i in 1..n error if Csi= C._ and p.top()(C) not of form LC //this allows for clearer error messages and less fragile code
-  Css'=minimize(paths.top() U Css)  
-     
+  
 - reachablePaths(p,paths,Css,Typed?)=paths0
   where
-  paths.top()\Css==empty
-  assert paths.top() == Css //TODO: add in code
+  //logically sort of paths.top()\Css==empty
+  Css==minimize(paths.top() U Css)
   if paths.pop() not empty
     paths0=reachablePaths(p.pop(),paths.pop(),empty,Typed?).push(Css)
   otherwise //this if is to avoid p.pop() undefined
@@ -283,7 +287,9 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 
 - reachableFromM(C:L,Typed?)= reachableFromL(L,Typed?).pop()
 - reachableFromM(mwt,empty)=reorganize({P| P inside mwt}) 
-- reachableFromM(mwt,Typed)=reorganize({P| P inside mwt}) 
+- reachableFromM(ms e,empty)=reorganize({P| P inside e}) 
+otherwise //M can be mwt or ms e
+- reachableFromM(M,Typed)=reachableFromM(M,empty) 
     U (reachableFromL(L1,Typed) U...U reachableFromL(Ln,Typed)).pop()
     L1..Ln={L| L inside mwt.e?}
 
@@ -318,18 +324,18 @@ Css;Css'  ||- p  ~>  L,empty // 'L,empty' is a program with only 1 level
 (pEmpty)
 empty;empty ||- p ~> p
 
-(pL)//TODO: in code, lots to change
+(pL)
 Css;Cs1'..Csk' ||-p ~> p'.top()[Cs1'=L1'..Csk'=Lk']    //Li will have Phase=Typed also inside all somehow contained Ls
   where
   Cs1..Csn=Css\Cs1'..Csk' 
   forall Csi in 1..n : Typed |-p.navigate(Csi) ~> Li 
-  p'=p.update(p.top()[Cs1=L1,.. Csn=Ln])//TODO: in code, insert p' to avoid scribbling over
+  p'=p.update(p.top()[Cs1=L1,.. Csn=Ln])//Note: in code, updated p to avoid both p and p' in scope
   forall Csj' in 1..k: Coherent |-p'.navigate(Csj') ~> Lj' 
   // the type system can be optimized to just assert  tests for libraries that are
   // annotated as already checked 
   // However, this is  the responsibility of the TS and not of  ||-
 _______
-#define toAny(paths', eC)//TODO: update in code, now it takes coherent paths' instead of typed paths and has inverted behaviour
+#define toAny(paths', eC)
 - toAny(Css1..Cssn,eC)=eC iff forall Thisi.Cs0 inside eC, Cs0=Cs1.Cs2 and Cs1 in Cssi
   otherwise
   toAny(Css1..Cssn, ctxC[Thisj.Cs1.Cs2])=toAny(Css1..Cssn,ctxC[Any]) 

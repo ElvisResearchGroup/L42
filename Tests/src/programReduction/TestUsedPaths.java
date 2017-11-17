@@ -30,21 +30,23 @@ public static class Test1 {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{B:error void}","Void","<Empty Paths>","<Empty Paths>"
   },{lineNumber(),"{B:error void}","Void.foo()","<Empty Paths>","<Empty Paths>"
-  },{lineNumber(),"{A:{}B:error void}","A.foo()","<Empty Paths>","This0.A "
-  },{lineNumber(),"{C:{} A:{ method C m()} B:error void}","A.foo()","<Empty Paths>","This0.A This0.C "
-  },{lineNumber(),"{ A:{ } B:error void}"," (A a=Any.foo() a)","<Empty Paths>","This0.A "
+  },{lineNumber(),"{A:{}B:error void}","A.foo()","This0.A ","This0.A "
+  },{lineNumber(),"{C:{} A:{ method C m()} B:error void}","A.foo()","This0.A This0.C ","This0.A This0.C "
+  },{lineNumber(),"{ A:{ } B:error void}"," (A a=Any.foo() a)","This0.A ","This0.A "
+  },{lineNumber(),"{ A:{ } B:error void}"," Any.foo({method This1.A m()})","This0.A ","<Empty Paths>"
   },{lineNumber(),
   "{A:{A x class method mut This(fwd A x)}"
   +" Factory:{ class method A (fwd A a) A(x:a)}  B:error void} ",
   " (A myA=Factory(a:myA)  {})",
-  "<Empty Paths>","This0.A This0.Factory "
+  "This0.A This0.Factory ","This0.A This0.Factory "
   }});}
 @Test  public void test() {
   Program p=TestProgram.p(_p);
   ExpCore e=TestHelper.getExpCore(TestUsedPaths.class.getSimpleName(),_e);
-  PathsPaths res = UsedPaths.usedPathsE(p, e);
-  assertEquals(this._expected1,res.left.toString());
-  assertEquals(this._expected2,res.right.toString());
+  Paths res1 = UsedPaths.tryTypedPaths(p, e);
+  Paths res2 = UsedPaths.tryCoherentPaths(p, e);
+  assertEquals(this._expected1,res1.toString());
+  assertEquals(this._expected2,res2.toString());
   }
 }
 }

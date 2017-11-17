@@ -18,23 +18,26 @@ public static Program typeProgram(Paths paths0,Paths paths1, Program p){
   if(paths0.isEmpty() && paths1.isEmpty()){return p;}
   if(p instanceof FlatProgram){
     assert paths0.pop().isEmpty() && paths1.pop().isEmpty(); 
-    return p.updateTop(typeLibrary(paths0.top(),paths1.top(),p));
+    ClassB l=pL(paths0.top(),paths1.top(),p);
+    return p.updateTop(l);
   }
   Program p0=typeProgram(paths0.pop(),paths1.pop(),p.pop());
   Program p1=p.growFellow(p0);
-  ClassB l=typeLibrary(paths0.top(),paths1.top(),p1);
+  ClassB l=pL(paths0.top(),paths1.top(),p1);
   return p1.updateTop(l);
   }
 
-private static ClassB typeLibrary(List<List<Ast.C>> current0,List<List<Ast.C>> current1, Program p) {
+private static ClassB pL(List<List<Ast.C>> current0,List<List<Ast.C>> current1, Program p) {
   ClassB result=p.top();
   for(List<Ast.C> csi : current0){
+    if(current1.contains(csi)){continue;}
     Program pi=p.navigate(csi);
     assert pi.top().getPhase()!=Phase.None:
     "";
     ClassB li=typeSingle(Phase.Typed,pi);
     result=result.onClassNavigateToPathAndDo(csi, oldLi->li);
     }
+  p=p.updateTop(result);
   for(List<Ast.C> csi : current1){
     Program pi=p.navigate(csi);
     assert pi.top().getPhase()!=Phase.None:
@@ -53,7 +56,7 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
   return e.accept(new CloneVisitor(){
     public ExpCore visit(ClassB s) {return s;}
     public ExpCore visit(ExpCore.EPath s) {
-      if(paths.contains(s.getInner())){
+      if(!paths.containsPrefixFor(s.getInner())){
         return s.withInner(Ast.Path.Any());
         }
       return s;

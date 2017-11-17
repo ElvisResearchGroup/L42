@@ -43,14 +43,19 @@ public class NtoF {
     }
   public static void libToCDs(ClassTable avoidRepeat,List<String> topName,Program p,List<Element> acc, List<Program> ps){
     ClassB top=p.top();
-    topName.add(null);
-    for(NestedClass nc:top.ns()){
-      topName.set(topName.size()-1,nc.getName().toString());
-      libToCDs(avoidRepeat,topName,p.navigate(Collections.singletonList(nc.getName())),acc,ps);
+    int topNameSize=topName.size();
+    try{
+      topName.add(null);
+      for(NestedClass nc:top.ns()){
+        topName.set(topNameSize,nc.getName().toString());
+        libToCDs(avoidRepeat,topName,p.navigate(Collections.singletonList(nc.getName())),acc,ps);
+        assert topName.size()==topNameSize+1;
+        }
+      Element old=avoidRepeat._get(top.getUniqueId());
+      if(old!=null && old.cd.getKind()!=null){return;}
+      assert topName.size()==topNameSize+1;
       }
-    Element old=avoidRepeat._get(top.getUniqueId());
-    if(old!=null && old.cd.getKind()!=null){return;}
-    topName.remove(topName.size()-1);
+    finally{topName.remove(topNameSize);}
     Kind k=L42F.SimpleKind.Class;
     if (top.isInterface()){k=L42F.SimpleKind.Interface;}
     List<Integer>supert=tools.Map.of(t->PG.liftP(p,t.getPath()), top.getSupertypes());
