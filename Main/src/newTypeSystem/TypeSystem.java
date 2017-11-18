@@ -50,7 +50,15 @@ public interface TypeSystem{
   default ExpCore topTypeExp(Program p,ExpCore e){
     TIn in=TIn.top(Phase.Norm,p, e);
     TOut out=type(in);
-    if(out.isOk()){return out.toOk().annotated;}
+    if(out.isOk()){
+      TOk res=out.toOk();
+      if(!res.returns.isEmpty()){
+        throw new FormattedError(new TErr(in,"",
+          res.returns.get(0),
+          ErrorKind.MethodLeaksReturns));
+        }
+      return res.annotated;
+      }
     TErr err=out.toError();
     throw new FormattedError(err);
     }

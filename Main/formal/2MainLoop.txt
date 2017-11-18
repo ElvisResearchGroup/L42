@@ -33,12 +33,11 @@ p ==> p'.update(p'.top()[C=L])
   eC not of form L//thus eC is the first point to execute
   paths=tryTypedPaths(p,eC)
   paths'=tryCoherentPaths(p,eC)
-  //TODO: update code also for ||-
   //paths and paths' represents the Ps recursively used by eC,
   //paths' needs to be coherent, while paths needs only to be typed
   p0=multiNorm(p; paths)//norm the part of p required by eC
   paths;paths' ||-p0 ~> p' //type all the paths
-  Norm | p'| empty |-eC ~> eC' : _<= imm Library | empty;_ //typing eC normally//TODO: in code check no leaked returns
+  Norm | p'| empty |-eC ~> eC' : _<= imm Library | empty;_ //typing eC normally
   Norm | p'| empty |-toAny(paths',eC) ~> _ :_<= imm Library | empty;_ //check that even replacing all Ps but paths' with Any, eC is still well typed
   eC' -->p'+ r //execute the expression under the program and obtain a result
   L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
@@ -178,7 +177,7 @@ _______
   where e'?=empty if e?=empty
   otherwise e'?= e where we replace all Li inside e?
     with norm(p,Li)
-  forall P inside mh e?, alive(p,P)//TODO: add in code 
+  forall P inside mh e?, alive(p,P) 
     
 -norm(p, C:L) =C:norm(p.push(C))
 
@@ -253,7 +252,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 - stronglyDeepImplements(L0)=reorganize(L0.Ps)
   U (stronglyDeepImplements(L1) U..stronglyDeepImplements(Ln)).pop()
   where
-  L1..Ln={L|L inside M.e, M in L0.Ms}//TODO: was L instead of L0, check in code  
+  L1..Ln={L|L inside M.e, M in L0.Ms} 
   
 - reachablePaths(p,paths,Css,Typed?)= reachablePaths(p, paths U paths0,Css',Typed?) // U on paths does minimize() internally
   where
@@ -298,7 +297,7 @@ otherwise //M can be mwt or ms e
   **if p(Pi).Phase=Coherent, Pi  in Ps' // note, if p(P) is not defined,
   //the path will not be queued for coherence, and an error will be raised during the typing of eC in (top).
   **if ( _ T? x=P _ _) inside e and T? != class Any, P in Ps'.
-  **if ( _ T x=_  _ _) inside e, T.P  in Ps'//TODO: update the code for this heuristic
+  **if ( _ T x=_  _ _) inside e, T.P  in Ps'
   **if catch throw P x _ inside e, P  in Ps'  
   **if using P _ _ inside e, P  in Ps'
   otherwise, P is in Ps instead of Ps'.

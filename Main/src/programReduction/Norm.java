@@ -1,7 +1,9 @@
 package programReduction;
 
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import ast.Ast.Path;
+import ast.Ast.Position;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,8 +18,9 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
-
+import auxiliaryGrammar.Functions;
 import coreVisitors.CloneVisitor;
+import coreVisitors.CollectPaths0;
 import coreVisitors.PropagatorVisitor;
 import tools.Assertions;
 import tools.Map;
@@ -80,6 +83,11 @@ public class Norm {
       @Override public ExpCore visit(ClassB cb){
         return norm(p.evilPush(cb));
         }});
+    for(Path pi: CollectPaths0.of(mwt)){
+      if(!UsedPaths.alive(p, pi)){
+        throw new ErrorMessage.PathMetaOrNonExistant(false, pi.getCBar(), p.top(), mwt.getP(), Position.noInfo);
+        }
+      }
     return mwt.with_inner(e);
     }
 

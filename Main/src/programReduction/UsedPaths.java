@@ -36,6 +36,26 @@ import tools.Assertions;
 
 public class UsedPaths {
 
+static boolean alive(Program p,Path P){
+  if(P.isPrimitive()){return true;}
+  return alive(p.get(P.outerNumber()),P.getCBar());
+  }
+static boolean alive(ClassB l,List<Ast.C>cs){
+  if(cs.isEmpty()){return true;}
+  ExpCore e;try{e=l.getNested(Collections.singletonList(cs.get(0))).getInner();}
+  catch(ErrorMessage.PathMetaOrNonExistant ne){return false;}
+  return aliveE(e,cs.subList(1,cs.size()));
+  }
+
+//to support the sugar for L doc = (doc L)
+static boolean aliveE(ExpCore e,List<Ast.C>cs){
+  if(e instanceof ClassB){return alive((ClassB)e,cs);}
+  if(!(e instanceof Block)){return true;}
+  Block b=(Block)e;
+  if(!b.getDecs().isEmpty()){return true;}
+  return aliveE(b.getE(),cs);
+  }
+
 static Paths tryCoherentPaths(Program p, ExpCore ec){
   try{
     List<Path> ps1 = collectNotAnyPaths(p,ec);
@@ -200,10 +220,10 @@ static private Paths reachableFromL(ClassB l,boolean forTyped){
     return result2.union(acc.pop());
     }
   
-  static private Paths stronglyDeepImplements(ClassB l){
-    Paths res=Paths.reorganize(l.getSuperPaths());
+  static private Paths stronglyDeepImplements(ClassB l0){
+    Paths res=Paths.reorganize(l0.getSuperPaths());
     Paths acc=Paths.empty();
-    for(Member mi:l.getMs()){
+    for(Member mi:l0.getMs()){
       if (mi instanceof MethodWithType && 
          ((MethodWithType)mi).get_inner()==null){continue;}
       ExpCore e=mi.getInner();
@@ -226,9 +246,7 @@ static private Paths reachableFromL(ClassB l,boolean forTyped){
         if (p!=null){add(p);}
         return super.visit(s);
         }
-    //**if ( _ T x=P _ _) inside e and T!=class Any, P not Any.
-    //**if (mdf P x=_ _) inside e, P not Any  
-      protected void liftDec(Block.Dec s) {
+    protected void liftDec(Block.Dec s) {
         if(s.getT().isPresent()){
           Path pt=s.getT().get().getPath();
           if(!pt.isPrimitive()){add(pt);}
