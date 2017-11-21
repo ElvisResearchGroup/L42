@@ -311,7 +311,6 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     if(obj instanceof Ast.Position){ return obj.toString();}
     if(obj instanceof HashMap){ return obj.toString();}
     if(obj instanceof Collection){ return obj.toString();}
-    if(obj instanceof ast.Util.PathMwt){ return obj.toString();}
     if(obj instanceof ast.Ast.C){ return obj.toString();}
     if(obj instanceof Boolean){ return obj.toString();}
     if(obj instanceof ast.Ast.Path){ return obj.toString();}

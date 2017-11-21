@@ -12,7 +12,6 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util.CsMx;
 import ast.Util.CsMxMx;
 import ast.Util.CsPath;
-import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 

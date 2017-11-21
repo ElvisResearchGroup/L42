@@ -66,7 +66,6 @@ import ast.Expression.X;
 import ast.Expression._void;
 import ast.PathAux;
 
-import ast.Util.PathMxMx;
 import auxiliaryGrammar.EncodingHelper;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;

@@ -27,8 +27,6 @@ import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.X;
-import ast.Util.PathMx;
-import ast.Util.PathPath;
 import ast.Util.CsSPath;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
@@ -90,7 +88,7 @@ public class Errors42 {
   }
   //"MemberUnavailable", caused by most operations referring to paths and methods
   static enum MemberUnavailable{PrivatePath,PrivateMethod,NonExistentPath,NonExistentMethod}
-  
+
   static Member checkExistsPathMethod(ClassB cb, List<Ast.C> path,Optional<MethodSelector>ms){
     try{
       Boolean[] isPrivateRef=new Boolean[]{false};//used in closures
@@ -130,12 +128,6 @@ public class Errors42 {
     }
   }
 
-  //"PrivacyCoupuled", caused by removeImplementation
-  static Error errorPrivacyCoupuled(List<Path> coupuledPaths, List<PathMx> ordered) {
-    return Resources.Error.multiPartStringError("PrivacyCoupuled",
-       "CoupuledPath",""+coupuledPaths,//private paths that are still used
-      "CoupuledMethods",""+ordered);//private methods that are still used
-  }
 
   //"PathClash", caused by renameClassStrict, if two paths are prefix of one other
   public static Resources.Error errorPrefix(List<Ast.C> a, List<Ast.C> b) {
@@ -193,35 +185,6 @@ public class Errors42 {
     }
     return;
   }*/
-  static Error errorIncoherentRedirectMapping(List<PathPath>verified,List<CsSPath>ambiguities,Path incoSrc,List<Path> _incoDest) {
-    Doc src=Doc.empty();
-    Doc dest=Doc.empty();
-    //Doc ambig=Doc.empty();
-    for(PathPath v:verified){
-      src=src.sum(formatPathIn(v.getPath1().getCBar()));
-      dest=dest.sum(formatPathOut(v.getPath2()));
-    }
-    for(CsSPath a:ambiguities){
-      //if(a.getPaths().size()!=1){
-      //  ambig=ambig.sum(formatPathIn(a.getPath().getCBar()));
-      //  ambig=ambig.sum(Doc.factory("@"+a.getPaths().size()));
-      //  }
-      Doc srci=formatPathIn(a.getCs());
-      for(Path pij:a.getPathsSet()){
-        src=src.sum(srci);
-        dest=dest.sum(formatPathOut(pij));
-      }
-    }
-    Doc incoDest=Doc.empty();
-    for(Path pi:_incoDest){incoDest=incoDest.sum(formatPathOut(pi));}
-    return Resources.Error.multiPartStringError("IncoherentRedirectMapping",
-        "Src",src.formatNewLinesAsList(),
-        "Dest",dest.formatNewLinesAsList(),
-        //"Ambiguities",ambig.formatNewLinesAsList(),
-        "IncoherentSrc",incoSrc==null?Doc.empty():formatPathIn(incoSrc.getCBar()),
-        "IncoherentDest",incoDest.formatNewLinesAsList()
-        );
-  }
   static Doc formatPathIn(List<Ast.C> path){
     //if(path.isEmpty()){return Doc.factory(Path.outer(0));}
     String res="@";

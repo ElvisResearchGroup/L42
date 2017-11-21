@@ -40,7 +40,6 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 
-import ast.Util.PathPath;
 import ast.Util.CsSPath;
 import ast.Util.CsPath;
 import ast.Util.CsMwtPMwt;

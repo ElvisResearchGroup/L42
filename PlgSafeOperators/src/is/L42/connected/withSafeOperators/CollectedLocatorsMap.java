@@ -43,14 +43,6 @@ public static  CollectedLocatorsMap from(Path src,Member m,MethodSelector ms2){
   maps.selectors.add(result);
   return maps;
 }
-public static CollectedLocatorsMap from(List<PathPath> pp){
-  CollectedLocatorsMap maps=new CollectedLocatorsMap();
-  for(PathPath ppi:pp){
-    Locator nl = pathPathToLocator(ppi.getPath1(),ppi.getPath2());
-    maps.nesteds.add(nl);
-  }
-  return maps;
-}
 
 private static Locator pathPathToLocator(Path src, Path dest) {
   Locator result=new Locator();
