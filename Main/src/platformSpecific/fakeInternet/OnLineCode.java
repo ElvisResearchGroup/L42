@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 import platformSpecific.javaTranslation.Resources;
-import facade.Configuration;
 import facade.L42;
 import facade.Parser;
 import sugarVisitors.Desugar;
@@ -38,7 +37,7 @@ public interface OnLineCode {
   public static Expression.ClassB getCode(String url){
     assert url.startsWith("reuse");
     url=url.substring("reuse".length());
-    url=url.trim(); 
+    url=url.trim();
     if(url.startsWith("L42.is/")){
       return OnLineCodeHelper.getL42Code(url.substring("L42.is/".length()));
       }

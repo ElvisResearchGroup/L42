@@ -14,7 +14,6 @@ import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.CloneWithPath;
 import coreVisitors.From;
 import coreVisitors.FromInClass;
-import facade.Configuration;
 import is.L42.connected.withSafeOperators.ExtractInfo;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import is.L42.connected.withSafeOperators.location.Method;
@@ -134,7 +133,7 @@ private List<CsPath> verified;
      if(!src.containsAll(other)){
        Method m1=Method.of(exc.getMwt1(),top,exc.getSrc1());
        Method m2=Method.of(exc.getMwt2(),p,exc.getSrc2());
-       throw new RefactorErrors.MethodClash(m1,m2).msg("Issues:  Incompatible exceptions "); 
+       throw new RefactorErrors.MethodClash(m1,m2).msg("Issues:  Incompatible exceptions ");
        //throw Errors42.errorMethodClash(exc.getSrc().getCBar(), exc.getMwt1(),exc.getMwt2(),true,
        //    Collections.emptyList(),false,false,false);
        }
@@ -184,7 +183,7 @@ private List<CsPath> verified;
       throw new RefactorErrors.PathUnfit(cs).msg("Private path");
       }
     if(!MembersUtils.isPathDefined(top,cs)){
-      throw new RefactorErrors.PathUnfit(cs).msg("Non existant path");  
+      throw new RefactorErrors.PathUnfit(cs).msg("Non existant path");
       }
     ClassB currentIntCb=top.getClassB(cs);
     //path exists by construction.
@@ -261,7 +260,7 @@ private List<CsPath> verified;
     if(thisMdfOk && retOk && excOk && parWrong.isEmpty()){return;}
     Method m1=Method.of(mwtSrc,top,current.getCs());
     Method m2=Method.of(mwtDest,p,pathExt);
-    throw new RefactorErrors.MethodClash(m1,m2).msg("Issues:"+(thisMdfOk?"":" This modifier ")+(retOk?"":" Return type")+(excOk?"":" Incompatible exceptions ")+(parWrong.isEmpty()?"":" wrong parameters ")); 
+    throw new RefactorErrors.MethodClash(m1,m2).msg("Issues:"+(thisMdfOk?"":" This modifier ")+(retOk?"":" Return type")+(excOk?"":" Incompatible exceptions ")+(parWrong.isEmpty()?"":" wrong parameters "));
     //throw Errors42.errorMethodClash(current.getPath().getCBar(),mwtSrc,mwtDest,excOk,parWrong,retOk, thisMdfOk,false);
     }
   private boolean plusEqualAndExc(List<CsSPath> ambiguities, List<CsMwtPMwt> exceptions, List<Ast.C> src,MethodWithType mwtSrc,Path pathDest, MethodWithType mwtDest) throws IncoherentMapping {
@@ -285,10 +284,10 @@ private List<CsPath> verified;
       return false;
       }//incompatible internal/external types t1 t2
     //Boolean[] pathOk={true};
-  
+
     Type ntP=(Type)tDest;
     if(!tSrc.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
-    return plusEqualCheckExt(ambiguities,tSrc.getPath(),Arrays.asList(ntP.getPath()));  
+    return plusEqualCheckExt(ambiguities,tSrc.getPath(),Arrays.asList(ntP.getPath()));
     }
   private boolean plusEqualCheckExt(List<CsSPath> ambiguities, Path path, List<Path> paths) throws IncoherentMapping {
     if(!path.isPrimitive() && path.outerNumber()==0){
@@ -323,7 +322,7 @@ private List<CsPath> verified;
     //throw Errors42.errorSourceUnfit(current.getPath().getCBar(),current.getPathsSet().iterator().next(),
     //      kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);
   }
- 
+
   private void plusEqual(List<CsSPath> ambiguities, List<Ast.C> pif, List<Path> extPs) throws IncoherentMapping {
     assert ambiguitiesOk(ambiguities);
     try{assert !extPs.isEmpty();

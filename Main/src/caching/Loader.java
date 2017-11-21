@@ -26,7 +26,6 @@ import ast.MiniJ.M;
 import auxiliaryGrammar.Functions;
 import ast.MiniJ;
 import ast.Ast.Path;
-import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
 import l42FVisitors.CloneVisitor;

@@ -112,7 +112,6 @@ public class L42 {
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
     try{
-      Configuration.loadAll();
       Path path = Paths.get(arg[arg.length-1]);
 
       String code=null;
@@ -205,7 +204,7 @@ public class L42 {
     return Program.emptyLibraryProgram().updateTop(code3);
     }
 
-  
+
   public static ErrorMessage.FinalResult runSlow(String fileName,String code){
     assert L42.usedNames.isEmpty();
     try{

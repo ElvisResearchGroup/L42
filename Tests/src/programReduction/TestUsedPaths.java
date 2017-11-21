@@ -35,6 +35,7 @@ public static class Test1 {
   },{lineNumber(),"{ A:{ } B:error void}"," (A a=Any.foo() a)","This0.A ","This0.A "
   },{lineNumber(),"{ C:{} A:{ method C m()} B:error void}"," Void.foo(A)","This0.A This0.C ","<Empty Paths>"
   },{lineNumber(),"{ A:{ } B:error void}"," Any.foo({method This1.A m()})","This0.A ","<Empty Paths>"
+  },{lineNumber(),"{ A:error void}"," Any.foo({method This1.A m()})","<Empty Paths>","<Empty Paths>"
   },{lineNumber(),
   "{A:{A x class method mut This(fwd A x)}"
   +" Factory:{ class method A (fwd A a) A(x:a)}  B:error void} ",

@@ -42,7 +42,6 @@ import coreVisitors.From;
 import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
 import coreVisitors.ReplaceCtx;
-import facade.Configuration;
 import facade.L42;
 import facade.Parser;
 import programReduction.Program;

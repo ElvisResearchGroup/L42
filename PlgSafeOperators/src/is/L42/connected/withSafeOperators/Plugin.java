@@ -29,7 +29,6 @@ import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import coreVisitors.CloneVisitorWithProgram;
 import coreVisitors.From;
-import facade.Configuration;
 import facade.L42;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
@@ -52,7 +51,7 @@ import tools.Map;
 
 //empty scheleton
 public class Plugin implements PluginType{
-    
+
    /* //we keep it for testing in testAux
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object Mcompose£xleft£xright(Object _left,Object _right) {
@@ -311,7 +310,7 @@ public class Plugin implements PluginType{
       dest.set(dest.size()-1, dest.get(dest.size()-1).withUniqueNum(L42.freshPrivate()));
       return Rename.renameClass(Resources.getP(),that,src,dest);
       }*/
-    
+
     @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
     public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
       ClassB that=ensureExtractClassB(_that);
@@ -322,7 +321,7 @@ public class Plugin implements PluginType{
       catch (IOException e) {throw new Error(e);}
       return Resources.Void.instance;
       }
-    
+
     /*
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideState£xthat£xsrc(Object _that,Object _src){
@@ -332,19 +331,19 @@ public class Plugin implements PluginType{
       List<MethodWithType>mwtA=target.mwts().stream().filter(mwt->!mwt.get_inner().isPresent()).collect(Collectors.toList());
       kjkkj typos to remember I was here
       we should take in input a candidete ks?
-              
+
               map can go num to num!
               -state can all be labeled with the same num
               -change in consistent: fields inherit num of unique constructor
               -now, a num to num map keep consistent classes consistent!
-              
+
               we can make a pluginwithpart taking a list of strings for candidate state?
               -new(path), addSelector, decorate(lib)?
-               decorate: choose uniqueNum n. 
+               decorate: choose uniqueNum n.
                  for all selectors msi: RenameMethod path,msi, msi.with(n)
-                      
+
       //return Rename.renameClass(Resources.getP(),that,src,dest);
       return null;
       }*/
-    
+
   }

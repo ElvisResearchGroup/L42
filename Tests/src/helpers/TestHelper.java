@@ -29,8 +29,6 @@ import ast.Expression;
 import auxiliaryGrammar.Functions;
 import programReduction.Norm;
 import programReduction.Program;
-import reduction.Executor;
-import facade.Configuration;
 import facade.L42;
 import facade.Parser;
 import facade.L42.ExecutionStage;
@@ -38,42 +36,42 @@ import platformSpecific.javaTranslation.Resources;
 import profiling.Timer;
 
 public class TestHelper {
-  
+
   private static class LimitString {
     private final String parent;
     final int start;
     final int end;
-    
+
     private LimitString(String _parent, int _start, int _end) {
       parent = _parent;
       start = _start;
       end = _end;  // index of character past _end, on the C model
     }
-    
+
     public static LimitString search(String parent, int fromIndex, int startChar, int endChar) {
       int startIndex = parent.indexOf(startChar, fromIndex);
       int endIndex = parent.indexOf(endChar, startIndex+1);
-      
+
       if (-1 == startIndex | -1 == endIndex)
         return null;
-      
+
       ++endIndex;
-      
+
       try {
         if ('\n' == parent.charAt(endIndex))
           ++endIndex;
       }catch (IndexOutOfBoundsException i) {};
-      
+
       return new LimitString(parent, startIndex, endIndex);
     }
-    
+
     public static LimitString search(String parent, int fromIndex, String target) {
       int index = parent.indexOf(target, fromIndex);
       if (-1 == index)
         return null;
       return new LimitString(parent, index, index + target.length());
     }
-    
+
     public String contents() {
       return parent.substring(start, end);
     }
@@ -92,33 +90,33 @@ public class TestHelper {
     int index = s.indexOf(definedOutputString);
     if (-1 != index) {
       LimitString endOfDefinedMarker = LimitString.search(s, index + definedOutputString.length(), '[', ']');
-      LimitString endOfOutputMarker = null == endOfDefinedMarker 
+      LimitString endOfOutputMarker = null == endOfDefinedMarker
           ? null: LimitString.search(s, endOfDefinedMarker.end, '[', ']');
-      
+
       if (null == endOfOutputMarker) {
         fail("Marker text(s), delimited by [] missing after "+definedOutputString); throw new Error();
       }
-      
+
       LimitString endOfDefined = LimitString.search(s, endOfOutputMarker.end, endOfDefinedMarker.contents());
-      
+
       if (null == endOfDefined) {
         fail("End of defined output marker, "+endOfDefinedMarker.contents()+" not found."); throw new Error();
-        
+
       }
-      
+
       LimitString endOfOutput = LimitString.search(s, endOfDefined.end, endOfOutputMarker.contents());
-      
+
       if (null == endOfOutput) {
         fail("End of output marker, "+endOfOutput.contents()+" not found.  Tests failed early?"); throw new Error();
       }
-      
+
       if (s.length() != endOfOutput.end) {
         fail("Junk after end of output: "+s.substring(endOfOutput.end)); throw new Error();
       }
-      
+
       Assert.assertEquals(s.substring(endOfOutputMarker.end, endOfDefined.start),
                    s.substring(endOfDefined.end, endOfOutput.start));
-      
+
       // And configure so that the next loop leaves us be
       index = -1;
     }else{
@@ -207,14 +205,14 @@ public class TestHelper {
         + "}}"
         });
   }
-  
+
   public static ExpCore getExpCore(String source, String _e1) {
     Expression code1=Parser.parse("GeneratedByTestHelper_",_e1);
     Expression code2=Desugar.of(code1);
     ExpCore e1=code2.accept(new InjectionOnCore());
     return e1;
     }
-  
+
   public static ClassB getClassB(boolean norm,Program p,String source, String e1) {
     if(p==null){p=Program.emptyLibraryProgram();}
     Expression code1=Parser.parse("GeneratedByTestHelper_"+source,e1);
@@ -258,29 +256,12 @@ public class TestHelper {
     return path.isCore()?path.getCBar():path.sugarNames();
     }
   public static void configureForTest() {
-    Configuration.reduction=new reduction.Facade();
     L42.record=new StringBuilder();
     L42.usedNames.clear();
     L42.resetFreshPrivate();
     Resources.clearRes();
     Timer.restart();
     Timer.activate("TOP");
-  }
-  public static void reportError(ErrorMessage e){
-  if(Executor.last1==null||Executor.last2==null){throw e;}
-  ClassB c1=(ClassB)Executor.last1;
-  ClassB c2=(ClassB)Executor.last2;
-  ArrayList<Member> ms1 = new ArrayList<>();
-  ArrayList<Member> ms2 = new ArrayList<>();
-  {int i=-1;for(Member e1:c1.getMs()){i+=1;
-    Member e2=c2.getMs().get(i);
-    if(e1.equals(e2)){continue;}
-    ms1.add(e1);
-    ms2.add(e2);
-  }}
-  c1=c1.withMs(ms1);
-  c2=c2.withMs(ms2);
-  //TestHelper.assertEqualExp(c1, c2);
   }
 
   public static class ErrorCarry {

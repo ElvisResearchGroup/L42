@@ -1,6 +1,5 @@
 package coreVisitors;
 
-import facade.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class CloneVisitorWithProgram extends CloneVisitor{
     //to remove a dumb null at the start :(
     }
   private Object lastCMs=null;
-  
+
   public Object getLastCMs(){return lastCMs;}
   public NestedClass visit(NestedClass s) {
     Object aux=lastCMs;
@@ -44,7 +43,7 @@ public class CloneVisitorWithProgram extends CloneVisitor{
     lastCMs=s.getMs();
     try{return super.visit(s);}
     finally{lastCMs=aux;}
-  }  
+  }
   public ExpCore visit(ClassB s) {
     Program aux=p;
     if(lastCMs!=null && lastCMs instanceof Ast.C){

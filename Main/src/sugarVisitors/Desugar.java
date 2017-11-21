@@ -73,7 +73,6 @@ import programReduction.Program;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
-import facade.Configuration;
 import facade.L42;
 import newTypeSystem.TypeManipulation;
 import profiling.Timer;
@@ -267,9 +266,9 @@ public class Desugar extends CloneVisitor{
         mwt2->{for(ast.ExpCore.ClassB.MethodWithType mwt1:reused.mwts()){
           if (mwt1.getMs().equals(mwt2.getMs())){
             throw new ast.ErrorMessage.NotWellFormedMsk(mwt1.getP(),s, s, "Method with type \""+mwt1.getMs()+"\" already present in reused library "+s.getUrl());
-            }  
+            }
         }return null;});
-      }    
+      }
     return new ClassReuse(res,s.getUrl(),reused);
   }
 
@@ -318,7 +317,7 @@ public class Desugar extends CloneVisitor{
   private Parameters liftPsPropagate(Parameters ps) {
     assert !ps.getE().isPresent();
     List<Expression> es = new ArrayList<Expression>();
-    {int i=-1;for(Expression ei:ps.getEs()){i+=1; 
+    {int i=-1;for(Expression ei:ps.getEs()){i+=1;
       es.add(withExpectedType(null,()->lift(ei)));
     }}
     return new Parameters( Optional.empty(), ps.getXs(),   es);
@@ -780,7 +779,7 @@ public class Desugar extends CloneVisitor{
          m==Mdf.Mutable ||
          m==Mdf.MutableFwd ||
          m==Mdf.Capsule ){
-      s=Stream.concat(s, Stream.of(    
+      s=Stream.concat(s, Stream.of(
         generateExposer(pos,f,f.getDoc())
         ));
       }
@@ -813,7 +812,7 @@ public class Desugar extends CloneVisitor{
     private static MethodWithType generateExposer(Expression.Position pos, FieldDec f, Doc doc) {
     Type tt=TypeManipulation.noFwd(f.getT());
     if(tt.getMdf()==Mdf.Capsule){tt=tt.withMdf(Mdf.Lent);}
-    
+
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.emptyList(),tt,Collections.emptyList());
     MethodSelector msi=MethodSelector.of("#"+f.getName(),Collections.emptyList());
     MethodWithType mwt = new MethodWithType(doc, msi, mti, Optional.empty(),pos);

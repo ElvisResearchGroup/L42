@@ -5,7 +5,6 @@ import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import facade.Configuration;
 import facade.L42;
 import helpers.TestHelper;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
@@ -94,7 +93,7 @@ import programReduction.Program;
     + "method Void m(Void c) this.m(a:c,b:this.noArg())"
     + "method Void noArg() method Void m(Void a,Void b) "
     + "}",false
-    
+
   },{    lineNumber(),"{A:{} B:{} C:{} class method Void m1(A a) method Void m2(B b,Void that, C c)}",
     "This0","m1(a)", "m2(b,that,c)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
@@ -103,7 +102,7 @@ import programReduction.Program;
     + "class method Void m1(This0.A a) "
     + "method Void m2(This0.B b,Void that, This0.C c) "
     + "}",false
-    
+
   },{    lineNumber(),"{A:{} B:{} C:{} class method Void m1(A a) method Void m2(B b, C c,Void that)}",
     "This0","m1(a)", "m2(b,c,that)","m1m2(a,b,c)","that",
     "{A:{} B:{} C:{}"
@@ -112,7 +111,7 @@ import programReduction.Program;
     + "class method Void m1(This0.A a) "
     + "method Void m2(This0.B b, This0.C c,Void that) "
     + "}",false
-    
+
    }});}
   @Test  public void test() throws MethodClash, PathUnfit, SelectorUnfit {
     TestHelper.configureForTest();

@@ -22,7 +22,6 @@ import javax.swing.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import ast.ErrorMessage;
-import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
 import profiling.Timer;

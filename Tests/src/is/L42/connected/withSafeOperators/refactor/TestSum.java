@@ -4,7 +4,6 @@ import static helpers.TestHelper.getClassB;
 import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.*;
 
-import facade.Configuration;
 import facade.L42;
 import helpers.TestHelper;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
@@ -64,7 +63,7 @@ import programReduction.Program;
       "{I1:{interface } I2:{interface implements  I1} }",
       "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation",
       true
-      
+
   }});}
   @Test  public void test() throws MethodClash, SubtleSubtypeViolation, ClassClash {
     TestHelper.configureForTest();

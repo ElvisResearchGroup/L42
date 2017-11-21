@@ -28,7 +28,6 @@ import ast.ExpCore.ClassB.Phase;
 import programReduction.Norm;
 import programReduction.Program;
 import coreVisitors.From;
-import facade.Configuration;
 import newTypeSystem.GuessTypeCore;
 import newTypeSystem.TIn;
 import tools.Assertions;

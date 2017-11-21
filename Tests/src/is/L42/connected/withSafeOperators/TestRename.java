@@ -34,7 +34,6 @@ import ast.ExpCore.ClassB.Phase;
 import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
-import facade.Configuration;
 
 public class TestRename {
   @RunWith(Parameterized.class) public static class TestRenameMethod {//add more test for error cases
@@ -92,7 +91,7 @@ public class TestRename {
     }
   }
 
- 
+
   //-----
   @Test
   public void testToTop() {

@@ -14,7 +14,6 @@ import privateMangling.RefreshUniqueNames;
 import sugarVisitors.CloneVisitor;
 import sugarVisitors.CollapsePositions;
 import tools.Map;
-import facade.Configuration;
 import is.L42.connected.withSafeOperators.ExtractInfo.ClassKind;
 import ast.Ast;
 import ast.Ast.Doc;

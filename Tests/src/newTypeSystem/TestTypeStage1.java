@@ -25,7 +25,6 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import coreVisitors.CollectPaths0;
-import facade.Configuration;
 import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
@@ -371,7 +370,7 @@ public static class TestStage3_notOk {
         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
         Type.immVoid,
         new String[]{"{ D:{class method This() class method Void foo() (exception D())}}"}
-       
+
       },{lineNumber(),"D.foo()",//must fail//ok
       new Type(Mdf.Readable,Path.Any(),Doc.empty()),
       Type.immVoid,
@@ -379,7 +378,7 @@ public static class TestStage3_notOk {
       + "class method Void foo() (this.bar())"
       + "class method Void bar() exception D (void)"
       + "}}"}
-    
+
       }});}
       @Test(expected=RuntimeException.class)
       public void testFail() {
@@ -389,7 +388,7 @@ public static class TestStage3_notOk {
           Program p=TestHelper.getProgram(program);
           p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
           TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e).withE(e, this.typeSugg));
-       
+
           assert !out.isOk();
           throw new FormattedError(out.toError());//assert out.toOk().computed.equals(typeExpected);
           }

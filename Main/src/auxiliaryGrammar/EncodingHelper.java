@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import facade.Configuration;
 import platformSpecific.javaTranslation.Resources;
 import programReduction.Program;
 import tools.Assertions;
@@ -229,8 +228,8 @@ public class EncodingHelper{
     if(o instanceof Resources.Revertable){return ((Resources.Revertable)o).revert();}
     return wrapResource(p,o.toString());
   }
-  
-  
+
+
  //javaFullName can contains dots but not %
  //"." converted in "%" and unicode weirdos converted in "%%u..."
  //since no two dots in a row are allowed
@@ -250,7 +249,7 @@ public class EncodingHelper{
     that=that.replace("%%", "\\u");
     that=that.replace("%", ".");
     that=parseStringUnicode(that);
-    return that; 
+    return that;
   }
 
 }

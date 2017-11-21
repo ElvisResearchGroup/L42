@@ -74,19 +74,13 @@ public class ProgramReduction {
     saveVCache=false;
     if(!L42.cacheK.hasFileName()){return;}
     try{while(true){p=p.pop();}}
-    catch(Program.EmptyProgram ep){}  
+    catch(Program.EmptyProgram ep){}
     ClassB topCb=p.top();
     Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb,p.getFreshId());
     Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
     Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
     cv.saveOnFile(vPath);
     L42.cacheK.saveOnFile(kPath);
-    }
-  private ClassB reduceE(Program p, ExpCore e,Ast.C nameDebug) {
-    ExpCore res=facade.Configuration.reduction.metaExp(p.reprAsPData(), e,nameDebug);
-    if(res instanceof ClassB){return (ClassB)res;}
-    throw new ast.ErrorMessage.MalformedFinalResult(p.top(),
-            "See message above");//"error is:\n\n"+sugarVisitors.ToFormattedText.of(res));
     }
 
 /*

@@ -15,7 +15,6 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.Util.InvalidMwtAsState;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
-import facade.Configuration;
 import platformSpecific.javaTranslation.Resources;
 public class AddDocumentation {
 

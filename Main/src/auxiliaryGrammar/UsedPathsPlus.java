@@ -10,7 +10,6 @@ import tools.Assertions;
 import coreVisitors.CloneVisitor;
 import coreVisitors.CollectPaths0;
 import coreVisitors.IsCompiled;
-import facade.Configuration;
 import ast.Ast;
 import ast.Ast.FieldDec;
 import ast.Ast.MethodType;

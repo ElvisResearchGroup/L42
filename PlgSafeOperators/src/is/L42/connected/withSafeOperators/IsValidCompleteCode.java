@@ -6,7 +6,6 @@ import programReduction.Program;
 import ast.ExpCore;
 import ast.Ast.Path;
 import coreVisitors.CloneWithPath;
-import facade.Configuration;
 public class IsValidCompleteCode {
   boolean isComplete(ClassB cb){
     boolean[]found={false};

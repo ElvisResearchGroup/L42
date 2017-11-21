@@ -7,7 +7,6 @@ import helpers.TestHelper;
 import newTypeSystem.ErrorKind;
 import newTypeSystem.FormattedError;
 import platformSpecific.javaTranslation.Resources;
-import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
 import facade.Parser;

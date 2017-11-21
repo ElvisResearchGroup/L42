@@ -1,6 +1,5 @@
 package platformSpecific.javaTranslation;
 
-import facade.Configuration;
 import facade.ErrorFormatter;
 import facade.L42;
 import facade.PData;
