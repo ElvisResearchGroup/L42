@@ -1,21 +1,27 @@
 package repl;
 
+import java.awt.Dimension;
+import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Tab;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
@@ -24,17 +30,16 @@ import netscape.javascript.JSObject;
 
 public class HtmlFx{
   public WebEngine webEngine;
-  public JFXPanel jfxPanel;
-  public HtmlFx(JFXPanel jfxPanel) {
+  public Pane parentPanel;
+
+  public HtmlFx(Pane panel) {
     super();
-    this.jfxPanel = jfxPanel;
+    this.parentPanel = panel;
   }
 
   public final Events events=new Events();
 
   private Void initWeb(CountDownLatch latch,String html){
-    Group root = new Group();
-    Scene scene = new Scene(root);
     WebView browser = new WebView();
     this.webEngine = browser.getEngine();
     this.webEngine.getLoadWorker().stateProperty().addListener(
@@ -68,12 +73,12 @@ public class HtmlFx{
        final Clipboard clipboard = Clipboard.getSystemClipboard();
        final ClipboardContent content = new ClipboardContent();
        content.putString(we.getData().substring(6));
-       clipboard.setContent(content);    
+       clipboard.setContent(content);
     }
 });
-    //---- 
-    root.getChildren().add(browser);
-    jfxPanel.setScene(scene);
+    //----
+    parentPanel.getChildren().clear();
+    parentPanel.getChildren().add(browser);
     return null;
     }
   public static Error propagateException(Throwable t){
@@ -87,11 +92,11 @@ public class HtmlFx{
     CountDownLatch latch = new CountDownLatch(1);
     FutureTask<Void> future=new FutureTask<Void>(()->initWeb(latch,html));
     Platform.runLater(future);
-    try {future.get();}
-    catch (ExecutionException e) {throw propagateException(e.getCause());}
-    catch (InterruptedException e) {throw propagateException(e);}
-    try {latch.await();}
-    catch (InterruptedException e) {throw propagateException(e);}
+//    try {future.get();}
+//    catch (ExecutionException e) {throw propagateException(e.getCause());}
+//    catch (InterruptedException e) {throw propagateException(e);}
+//    try {latch.await();}
+//    catch (InterruptedException e) {throw propagateException(e);}
     future=new FutureTask<Void>(()->{
       Object o=this.webEngine.executeScript(
 "window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
@@ -101,9 +106,9 @@ public class HtmlFx{
       return null;
       });
     Platform.runLater(future);
-    try {future.get();}
-    catch (ExecutionException e) {throw propagateException(e.getCause());}
-    catch (InterruptedException e) {throw propagateException(e);}
+//    try {future.get();}
+//    catch (ExecutionException e) {throw propagateException(e.getCause());}
+//    catch (InterruptedException e) {throw propagateException(e);}
     }
 
 }
