@@ -26,8 +26,6 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.Util.CsMx;
 import ast.Util.CsMxMx;
 import ast.Util.CsPath;
-import ast.Util.PathMwt;
-import ast.Util.PathMx;
 import auxiliaryGrammar.Functions;
 import facade.PData;
 import programReduction.Program;
@@ -46,7 +44,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PrivacyCo
 class CollectUsages{
   List<List<Ast.C>> coupuledPaths=new ArrayList<>();
   List<CsMx> coupuledMethods=new ArrayList<>();
-  
+
   public static void checkPrivacyCoupuled(Program p,List<Ast.C>path,ClassB l,ClassB clear) throws PrivacyCoupuled{
     CollectUsages us=new CollectUsages();
     List<CsPath>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(l,path);
@@ -66,7 +64,7 @@ class CollectUsages{
       }
     protected Path computeNonNullRes(CsPath cp, List<Ast.C> tail) {
       return Path.Any();
-      }    
+      }
     });
   l.accept(new RenameMethodsAux(p,renames,l){
   public MethodSelector mSToReplaceOrNull(MethodSelector original,Path src){
@@ -79,7 +77,7 @@ class CollectUsages{
       }
     return null;
     }
-  }); 
+  });
   }
 }
 

@@ -12,7 +12,6 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
-import ast.Util.InfoAboutMs;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Locator;
 import programReduction.Program;
@@ -68,7 +67,7 @@ class RenameAlsoDefinition extends RenameUsage{
       }
     return mi;
   }
-  
+
   public ClassB.NestedClass visit(ClassB.NestedClass nc){
     //System.out.println("visitNestedClass "+nc.getName());
     Locator current=this.getLocator().copy();

@@ -22,8 +22,6 @@ import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
-import ast.Util.InfoAboutMs;
-import ast.Util.PathMxMx;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.Locator;
 import auxiliaryGrammar.Locator.Kind;
@@ -35,7 +33,7 @@ public class RenameUsage extends MethodPathCloneVisitor {
   RenameUsage(ClassB visitStart,CollectedLocatorsMap maps,Program p) {
     super(visitStart,maps,p);
   }
-  
+
   public MethodSelector mSToReplaceOrNull(MethodSelector original,Path src){
     assert src!=null;
     List<Locator> filtered=new ArrayList<>();
@@ -59,7 +57,7 @@ public class RenameUsage extends MethodPathCloneVisitor {
         }
       return null;
   }
-  
+
   @Override public MethodSelector visitMS(MethodSelector original,Path src){
       MethodSelector result=mSToReplaceOrNull(original,src);
       if(result==null){ return original;}

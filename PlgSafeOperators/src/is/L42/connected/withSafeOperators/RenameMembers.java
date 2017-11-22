@@ -21,7 +21,6 @@ import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
-import ast.Util.PathPath;
 import auxiliaryGrammar.Locator;
 import programReduction.Program;
 import coreVisitors.CloneVisitorWithProgram;
@@ -37,7 +36,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
   public static  ClassB of(CollectedLocatorsMap maps,ClassB cb){
     return (ClassB)cb.accept(new RenameMembers(maps));
   }
-      
+
     @Override protected Path liftP(Path s) {
         if(s.isPrimitive()){return s;}
         //System.out.print("     "+s);
@@ -50,11 +49,11 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         if(!canCut){return s;}
         int whereImSize=current.size();
         current.addCs(s.getCBar());
-        
+
         for(Locator nl:maps.nesteds){
           if(whereImSize>nl.size()){continue;}
           //situation: rename: s1 c1->path   current path locator is:  whereIm c cs
-          //check whereImSize<=s1Size and  whereIm c cs =s1 _ 
+          //check whereImSize<=s1Size and  whereIm c cs =s1 _
           boolean compatible= current.prefixOf(nl);
           if(!compatible){continue;}
           int extraCs=(current.size()-nl.size());//the class name in nl.that
@@ -64,7 +63,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
           }
         return s;
         }
- 
+
 
       private Path getDestPath(int myDept,Locator nl, Path s, int extraCs) {
         assert extraCs>=0:extraCs;
@@ -85,7 +84,7 @@ public class RenameMembers extends coreVisitors.CloneWithPath{
         }
         return result.setNewOuter(result.outerNumber()+myDept);
       }
-      
+
     }
 
 

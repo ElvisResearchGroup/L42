@@ -12,7 +12,6 @@ import ast.Ast.MethodSelector;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
-import ast.Util.InvalidMwtAsState;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import platformSpecific.javaTranslation.Resources;

@@ -19,7 +19,6 @@ import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
-import ast.Util.PathMwt;
 import coreVisitors.InjectionOnSugar;
 
 @SuppressWarnings("serial") public abstract class ErrorMessage extends RuntimeException {
@@ -66,15 +65,6 @@ import coreVisitors.InjectionOnSugar;
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class ImpossibleToCompose extends ErrorMessage {
     List<ClassB.Member> inherited;
     List<ClassB.Member> alreadyOffered;
-  }
-  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class IncoherentMwts extends ErrorMessage implements PosImprove{
-  ast.Ast.MethodSelector guilty;
-  List<Ast.C> exploredPath;
-  List<PathMwt> incoherent;
-  Ast.Position pos;}
-  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class MalformedUnionOfMembers extends ErrorMessage {
-    ClassB.MethodWithType mFromInterface;
-    ClassB.MethodWithType mFromClass;
   }
 
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class  TwoDifferentImplementedInterfacesDeclareMethod extends ErrorMessage {

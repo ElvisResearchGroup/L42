@@ -14,7 +14,6 @@ import ast.ExpCore.ClassB.MethodImplemented;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.PathAux;
-import ast.Util.PathMwt;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 import coreVisitors.From;

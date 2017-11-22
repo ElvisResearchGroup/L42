@@ -35,13 +35,10 @@ import ast.ExpCore.ClassB.*;
 import ast.Expression.ClassReuse;
 import ast.Expression;
 
-import ast.Util.InvalidMwtAsState;
-import ast.Util.PathMwt;
 import coreVisitors.FreeVariables;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
-import coreVisitors.ReplaceCtx;
 import facade.L42;
 import facade.Parser;
 import programReduction.Program;
