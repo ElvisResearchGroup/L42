@@ -62,8 +62,8 @@ mwt::= refine? mh eC?
 nc::= C:LC
 eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
  | eC.m[P]((x:eC)s)| use P check m((x:eC)s) eC | x:=eC
-kC::=catch P x eC
-dC::= T x=eC
+kC::=catch throw P x eC
+dC::= var? T? x=eC
 //notice how every LC is a special kind of L (math seems to have structural subtyping)
 
 
@@ -100,7 +100,7 @@ _______
 The next definition allows us to see paths P and expressions e
 from a different point of view. For example calling a method
 This2.A.B.foo() whose body is originally This1.bar()
-we would expect to excute
+we would expect to execute
 This1.bar()[from This2.A.B]=This2.A.bar()
 in our local context. Note how we did not need to denote our
 observation point, but only the path needed to reach the destination
@@ -148,7 +148,7 @@ Part 2: Well formedness
    forall m__n(xs),  m__n(xs) notin dom(L)//TODO: in code check interfaces has no unique named methods
 
 * (ds ks e[T]): unique x in dom(ds), FV(ks) disjoint dom(ds) and
-  forall k1,k2 in ks, k1.throw=k2.throw
+  forall k1,k2 in ks, k1.throw=k2.throw//TODO: is this restrictions still needed?
   That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
 
 * use P check m((x:e)s) e: P not Any/Void/Library
@@ -171,8 +171,6 @@ Part 2: Well formedness
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
   //TODO: do in code when norm happens?
 
-  //Note: if we want mispelled/free variable to be perceived like
-  // a syntax error, we need to add  * ms e: FV(e)\this,ms.xs=empty
 _______
 #define
 cX(e)//count occurences of xs
