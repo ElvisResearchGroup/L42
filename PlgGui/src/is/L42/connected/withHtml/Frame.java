@@ -8,23 +8,32 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import is.L42.connected.withHtml.FrameFX.NestedPrivate;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
+import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Worker;
+import javafx.concurrent.Worker.State;
 
 import java.awt.event.WindowAdapter;
 import platformSpecific.javaTranslation.Resources;
 import repl.HtmlFx;
-@SuppressWarnings("serial")
-public class Frame extends JFrame{
+//@SuppressWarnings("serial")
+public class Frame extends Stage{
   private static final HashMap<String,Frame> windows=new HashMap<>();
-  HtmlFx htmlFx=new HtmlFx(new JFXPanel());
+  HtmlFx htmlFx=new HtmlFx(new StackPane());
   public static void load(String wName,String html,int x,int y){
     Frame f=windows.get(wName);
-    if (f!=null){f.dispose();}
+    if (f!=null){f.close();}
     f=Frame.createNew(wName,html,x,y);
     windows.put(wName,f);
     }
@@ -32,22 +41,35 @@ public class Frame extends JFrame{
     FutureTask<Frame> future = new FutureTask<>(()-> {
       final Frame frame = new Frame(Frame.extractTitle(html));
       frame.htmlFx.createHtmlContent(html);
-      frame.getContentPane().add(frame.htmlFx.jfxPanel);
-      frame.setMinimumSize(new Dimension(x, y));
-      frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      frame.addWindowListener(
-          new WindowAdapter(){
-        public void windowClosing(WindowEvent e){
-          Frame.close(wName);
-          }});
-      frame.setVisible(true);
+      frame.setMinWidth(x);
+      frame.setMinHeight(y);
+      frame.setOnCloseRequest(event -> {
+        System.out.println("Stage is closing");
+        Frame.close(wName);
+      });
+      Platform.runLater(new Runnable() {
+        public void run() {
+          new NestedPrivate().start(frame);
+        }
+      });
       return frame;
-        });
-    SwingUtilities.invokeLater(future);
+    });
+    JFXPanel fxPanel = new JFXPanel(); //this is added so that an exception "toolkit not initialised" doesnt occur
+    Platform.runLater(future);
     try {return future.get();}
     catch (ExecutionException e) {throw HtmlFx.propagateException(e.getCause());}
     catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
     }
+
+  public static class NestedPrivate extends Application {
+    @Override public void start(Stage primaryStage) {
+        assert (primaryStage instanceof Frame) : "Stage must be an instance of Frame";
+        Pane webview = ((Frame)primaryStage).htmlFx.parentPanel;
+        primaryStage.setScene(new Scene(webview, primaryStage.getMinWidth(), primaryStage.getMinHeight()));
+        primaryStage.show();
+    }
+  }
+
   private static String extractTitle(String html) {
     String htmlUP=html.toUpperCase();
     int start=htmlUP.indexOf("<TITLE>");//TODO: better parsing?
@@ -59,7 +81,7 @@ public class Frame extends JFrame{
     Frame f=windows.get(wName);
     if(f!=null){
       System.out.println(wName+" is disposed");
-      f.dispose();
+      Platform.runLater(() -> f.close()); //need to do this because otherwise we get "Not on FX application thread" exception
       windows.remove(wName);
       f.htmlFx.events.isDisposed=true;
       }
@@ -71,7 +93,7 @@ public class Frame extends JFrame{
     throw new Resources.Error("wName not active:"+wName);
     }
 
-  private Frame(String title){super(title);}
+  private Frame(String title){this.setTitle(title);}
 
   private String executeJs(String command) {
     FutureTask<String> future = new FutureTask<>(()->executeJsFX(command));
