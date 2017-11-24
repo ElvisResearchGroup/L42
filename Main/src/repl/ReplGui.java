@@ -1,6 +1,5 @@
 package repl;
 
-import java.awt.*; import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,7 +16,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import javax.swing.*;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
@@ -26,56 +41,89 @@ import facade.ErrorFormatter;
 import facade.L42;
 import profiling.Timer;
 @SuppressWarnings("serial")
-public class ReplGui extends JFrame {
-  public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    //Configuration.loadAll();
+public class ReplGui extends Application {
+
+  private static final int SCENE_WIDTH = 1000;
+  private static final int SCENE_HEIGHT = 800;
+
+  ReplState repl=null;
+
+  TextArea loadedSrc=new TextArea();
+  ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
+  /*{newSrc.setText("reuse L42.is/AdamTowel02\n"+
+    "Main:{\n"+
+    "  Debug(S\"hi!!\")\n"+
+    "  return ExitCode.normal()\n"+
+    "}");
+   }*/
+  TextArea output=new TextArea();
+  TextArea errors=new TextArea();
+  Button runB;
+
+  public static void main(String[] args) {
     L42.setRootPath(Paths.get("localhost"));
-    SwingUtilities.invokeLater(()-> {
-    ReplGui g = new ReplGui();
-    //g.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    g.addWindowListener(new WindowAdapter(){
-      public void windowClosing(WindowEvent e){
-        if (L42.profilerPrintOn){
-          System.out.print(Timer.report());
-          }
-        g.dispose();
-        System.gc();
-        System.runFinalization();
-        System.exit(0);
-        }
-      });
-    g.getRootPane().setLayout(new BorderLayout());
-    g.runB = new JButton("Run!");
-    g.runB.addActionListener(e->g.runCode());
-    g.getRootPane().add(g.runB, BorderLayout.SOUTH);
-    g.buildGui(g.getRootPane());
-    g.pack();
-    g.setVisible(true);
-    });
+    Application.launch(args);
   }
 
-JTextArea loadedSrc=new JTextArea(20, 50);
-ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
-/*{newSrc.setText("reuse L42.is/AdamTowel02\n"+
-  "Main:{\n"+
-  "  Debug(S\"hi!!\")\n"+
-  "  return ExitCode.normal()\n"+
-  "}");
- }*/
-JTextArea output=new JTextArea(20, 50);
-JTextArea errors=new JTextArea(20, 50);
-ReplState repl=null;
+  @Override
+  public void start(Stage primaryStage) throws Exception {
+
+    BorderPane borderPane = new BorderPane();
+
+    //set the 'loaded', 'output' and 'errors' tabs to be read-only (cannot be edited)
+    loadedSrc.setEditable(false);
+    output.setEditable(false);
+    errors.setEditable(false);
+
+    TabPane tabbedPane = new TabPane();
+    tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+    tabbedPane.getTabs().addAll(
+    		new Tab("new code", newSrc),
+    		new Tab("loaded", loadedSrc),
+    		new Tab("output", output),
+    		new Tab("errors", errors));
+
+    //System.out.println(System.out.getClass().getName());
+    //System.out.println(System.err.getClass().getName());
+    System.setOut(delegatePrintStream(err,System.out));
+    System.setErr(delegatePrintStream(err,System.err));
+    borderPane.setCenter(tabbedPane);
+
+    runB = new Button("Run!");
+    runB.setOnAction(e->runCode());
+    runB.setMaxWidth(Double.MAX_VALUE);
+    borderPane.setBottom(runB);
+
+    Scene scene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT); // Manage scene size
+    primaryStage.setTitle("L42 IDE");
+    primaryStage.setScene(scene);
+    primaryStage.setMinWidth(scene.getWidth());
+    primaryStage.setMinHeight(scene.getHeight());
+    primaryStage.show();
+  }
+
+  @Override
+  public void stop(){
+    if (L42.profilerPrintOn){
+      System.out.print(Timer.report());
+    }
+    //g.dispose();
+    System.gc();
+    System.runFinalization();
+    System.exit(0);
+  }
+
 StringBuffer err=new StringBuffer();
 boolean running=false;
-JButton runB;
 ExecutorService executor = Executors.newFixedThreadPool(1);
 void runCode(){
   if(running){throw new Error("Was running");}
   running=true;
   runB.setText("Running");
-  runB.setEnabled(false);
+  runB.setDisable(true);
   /*Future<Object> future = */executor.submit(this::auxRunCode);
   }
+
 void auxRunCode(){
   boolean[] success= {false};
   try{
@@ -102,7 +150,7 @@ void auxRunCode(){
            .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
       }
   finally{
-    SwingUtilities.invokeLater(()->this.updateTextFields(success[0]));
+    Platform.runLater(()->this.updateTextFields(success[0]));
     }
   }
 private  int iterations=0;
@@ -127,7 +175,7 @@ private void updateTextFields(boolean success){
     }
   finally{
     this.running=false;
-    runB.setEnabled(true);
+    runB.setDisable(false);
     runB.setText("Run!");
     }
   }
@@ -155,21 +203,5 @@ public static PrintStream delegatePrintStream(StringBuffer err,PrintStream prs){
       super.println(s);
       }
     };
-  }
-void buildGui(JRootPane pane){
-  JTabbedPane tabbedPane = new JTabbedPane();
-  loadedSrc.setEditable(false);
-  output.setEditable(false);
-  errors.setEditable(false);
-  tabbedPane.addTab("new code", new JScrollPane(newSrc));
-  tabbedPane.addTab("loaded", new JScrollPane(loadedSrc));
-  tabbedPane.addTab("output", new JScrollPane(output));
-  tabbedPane.addTab("errors", new JScrollPane(errors));
-  newSrc.setFont(newSrc.getFont().deriveFont(40f));
-  //System.out.println(System.out.getClass().getName());
-  //System.out.println(System.err.getClass().getName());
-  System.setOut(delegatePrintStream(err,System.out));
-  System.setErr(delegatePrintStream(err,System.err));
-  pane.add(tabbedPane,BorderLayout.CENTER);
   }
 }
