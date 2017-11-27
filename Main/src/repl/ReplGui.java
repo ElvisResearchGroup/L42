@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -77,17 +79,37 @@ public class ReplGui extends Application {
 
     TabPane tabbedPane = new TabPane();
     tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-    tabbedPane.getTabs().addAll(
-    		new Tab("new code", newSrc),
-    		new Tab("loaded", loadedSrc),
-    		new Tab("output", output),
-    		new Tab("errors", errors));
+
+    tabbedPane.getTabs().addAll(new Tab("new code", newSrc));
+    tabbedPane.getTabs().addAll(new Tab("loaded", loadedSrc));
+    tabbedPane.getTabs().addAll(new Tab("output", output));
+    tabbedPane.getTabs().addAll(new Tab("errors", errors));
 
     //System.out.println(System.out.getClass().getName());
     //System.out.println(System.err.getClass().getName());
     System.setOut(delegatePrintStream(err,System.out));
     System.setErr(delegatePrintStream(err,System.err));
-    borderPane.setCenter(tabbedPane);
+
+    Button rollbackBtn = new Button("Rollback!");
+    rollbackBtn.setTooltip(new Tooltip("Rollback to previous code!"));
+    rollbackBtn.setOnAction(e->rollBackCode());
+
+    tabbedPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+      @Override
+      public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
+        rollbackBtn.setVisible(newValue.intValue()==0);
+      }
+    });
+
+    AnchorPane anchor = new AnchorPane(tabbedPane, rollbackBtn);
+
+    AnchorPane.setTopAnchor(rollbackBtn, 3.0);
+    AnchorPane.setRightAnchor(rollbackBtn, 5.0);
+    AnchorPane.setTopAnchor(tabbedPane, 0.0);
+    AnchorPane.setRightAnchor(tabbedPane, 0.0);
+    AnchorPane.setLeftAnchor(tabbedPane, 0.0);
+    AnchorPane.setBottomAnchor(tabbedPane, 0.0);
+    borderPane.setCenter(anchor);
 
     runB = new Button("Run!");
     runB.setOnAction(e->runCode());
@@ -153,6 +175,21 @@ void auxRunCode(){
     Platform.runLater(()->this.updateTextFields(success[0]));
     }
   }
+
+void rollBackCode(){
+  if(repl == null) {
+	return; //do nothing
+  }
+
+  iterations--;
+  newSrc.setText(repl.code);
+  repl= repl.oldRepl;
+
+  if(repl==null) { loadedSrc.clear(); }
+  else { loadedSrc.setText(repl.originalS); }
+
+  }
+
 private  int iterations=0;
 private void updateTextFields(boolean success){
   try{

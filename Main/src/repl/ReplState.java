@@ -32,10 +32,12 @@ import sugarVisitors.InjectionOnCore;
 
 public class ReplState {
   String originalS;
+  String code;
   ast.ExpCore.ClassB desugaredL;
   ProgramReduction reduction;
   //ProgramReduction reduction=new ProgramReduction(null);
   Program p;
+  ReplState oldRepl;
   public ReplState(String originalS, ast.ExpCore.ClassB desugaredL,Program p,ProgramReduction reduction) {
     this.originalS = originalS;
     this.desugaredL = desugaredL;
@@ -54,6 +56,7 @@ public static ReplState start(String code){
     ReplState res=new ReplState(code,p.top(),p,pr);
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);
+    res.code=code.substring(1, code.length()-1); //to remove start and end {}
     return res;
     }
     catch(org.antlr.v4.runtime.misc.ParseCancellationException parser){
@@ -100,6 +103,8 @@ public static ReplState start(String code){
     ReplState res=new ReplState(this.originalS+"\n"+code,code3,this.p.updateTop(code3),this.reduction);
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);
+    res.oldRepl=this;
+    res.code=code;
     return res;
     }
   }
