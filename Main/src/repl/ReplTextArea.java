@@ -13,22 +13,23 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 
 public class ReplTextArea extends SplitPane {
-  private static final double DIVIDER_POSN = 0.7f;
+  private static final double DIVIDER_POSN = 0.75f;
 
   HtmlFx htmlFx;
   TextArea documentationArea;
+
   public ReplTextArea(URL url) {
-   StackPane codingArea = new StackPane();
+   htmlFx=new HtmlFx(this);
+   htmlFx.createHtmlContent("<body></body>");
+   Platform.runLater(()->htmlFx.webEngine.load(url.toExternalForm()));
+
    documentationArea = new TextArea();
    documentationArea.setEditable(false);
 
-   this.getItems().addAll(codingArea, documentationArea);
+   this.getItems().addAll(htmlFx, documentationArea);
    this.setDividerPositions(DIVIDER_POSN);
-   codingArea.minWidthProperty().bind(this.widthProperty().multiply(DIVIDER_POSN)); //to lock the divider
+   //codingArea.minWidthProperty().bind(this.widthProperty().multiply(DIVIDER_POSN)); //to lock the divider
 
-   htmlFx=new HtmlFx(codingArea);
-   htmlFx.createHtmlContent("<body></body>");
-   Platform.runLater(()->htmlFx.webEngine.load(url.toExternalForm()));
    }
 
   public String getText(){

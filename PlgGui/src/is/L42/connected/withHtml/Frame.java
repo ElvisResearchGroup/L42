@@ -30,7 +30,7 @@ import repl.HtmlFx;
 //@SuppressWarnings("serial")
 public class Frame extends Stage{
   private static final HashMap<String,Frame> windows=new HashMap<>();
-  HtmlFx htmlFx=new HtmlFx(new StackPane());
+  HtmlFx htmlFx=new HtmlFx(null);
   public static void load(String wName,String html,int x,int y){
     Frame f=windows.get(wName);
     if (f!=null){f.close();}
@@ -64,7 +64,7 @@ public class Frame extends Stage{
   public static class NestedPrivate extends Application {
     @Override public void start(Stage primaryStage) {
         assert (primaryStage instanceof Frame) : "Stage must be an instance of Frame";
-        Pane webview = ((Frame)primaryStage).htmlFx.parentPanel;
+        Pane webview = ((Frame)primaryStage).htmlFx;
         primaryStage.setScene(new Scene(webview, primaryStage.getMinWidth(), primaryStage.getMinHeight()));
         primaryStage.show();
     }

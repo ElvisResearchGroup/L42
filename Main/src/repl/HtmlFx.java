@@ -8,6 +8,8 @@ import java.util.concurrent.FutureTask;
 
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -28,13 +30,13 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 
-public class HtmlFx{
+public class HtmlFx extends Pane{
   public WebEngine webEngine;
-  public Pane parentPanel;
+  public ReplTextArea outerPanel;
 
-  public HtmlFx(Pane panel) {
+  public HtmlFx(ReplTextArea outer) {
     super();
-    this.parentPanel = panel;
+    this.outerPanel = outer;
   }
 
   public final Events events=new Events();
@@ -77,8 +79,8 @@ public class HtmlFx{
     }
 });
     //----
-    parentPanel.getChildren().clear();
-    parentPanel.getChildren().add(browser);
+    this.getChildren().clear();
+    this.getChildren().add(browser);
     return null;
     }
   public static Error propagateException(Throwable t){

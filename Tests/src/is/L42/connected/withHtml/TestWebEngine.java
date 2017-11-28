@@ -42,14 +42,12 @@ public class TestWebEngine {
 
     @Override
     public void start(Stage stage) {
-      StackPane root = new StackPane();
-
-      HtmlFx h=new HtmlFx(root);
+      HtmlFx h=new HtmlFx(null);
       h.createHtmlContent("<body><div>hi</div><div>hi</div></body>");
       URL url = getClass().getResource("tutorial.xhtml");
       Platform.runLater(()->h.webEngine.load(url.toExternalForm()));
 
-      Scene scene = new Scene(root, 500, 500);
+      Scene scene = new Scene(h, 500, 500);
       stage.setTitle("myTitle!");
       stage.setScene(scene);
       stage.show();
