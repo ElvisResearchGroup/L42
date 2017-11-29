@@ -192,7 +192,7 @@ Phase |p |G |Tr|-catch throw Any x (e0 throw x) ~> catch throw Any x (e0' throw 
   where //Note: e0, e, e0',e' are using the sugar imm Void x=e == e
   e0=(e catch error Any z void void)
   e0'=(e' catch error Any z void void)
-  Phase |p |G\x |- e ~> e':_ <=imm Void | empty
+  Phase |p |G\x |- e ~> e':_ <=imm Void | emptyTr
   catchRethrow(catch throw Any x(e0 throw x))
 
 ------------
