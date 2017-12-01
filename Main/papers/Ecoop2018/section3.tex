@@ -46,9 +46,9 @@ avoid conceptual errors that are not captured by the type system.
 One could \emph{retroactively} fix this problem by introducing \Q@AbstractSetOrBag@
 and making both \Q@Bag@ and \Q@Set@ inherit from it:
 \begin{lstlisting}
-abstract class AbstractSetOrBag{/*old set code goes here*/}
-class Set extends AbstractSetOrBag{} //empty body
-class Bag extends AbstractSetOrBag{/*old bag code goes here*/}
+abstract class AbstractSetOrBag {/*old set code goes here*/}
+class Set extends AbstractSetOrBag {} //empty body
+class Bag extends AbstractSetOrBag {/*old bag code goes here*/}
 ...
 //AbstractSetOrBag type not designed to be used.
 AbstractSetOrBag unexpected=new Bag(); 
@@ -59,7 +59,7 @@ and we would be surprised to find a use of the type \Q@AbstractSetOrBag@.
 Worst, if we are to constantly apply this mentally, we would introduce a very high number
 of abstract classes that are not supposed to be used as types. Those classes would clutter the 
 public interface of our classes and our code project as a whole.
-A \textbf{use}able API should only offer the relevant information.
+A \textbf{use}able API should only provide the relevant information to the client.
 In our example the information \Q@Set<:AbstractSetOrBag@ would be present in the public interface
 of the class \Q@Set@, but such information is not needed to use the class properly!
 

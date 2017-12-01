@@ -60,12 +60,12 @@ instead.
 \saveSpace 
 \begin{lstlisting}
   pointSum: { method int x()  method int y()//getters
-    class method This of(int x,int y)//factory method
+    static method This of(int x,int y)//factory method
     method This sum(This that)
       This.of(this.x()+that.x(),this.y()+that.y())//self instantiation
     }
   pointMul: { method int x() method int y()//repeating getters
-    class method This of(int x,int y)//repeating factory
+    static method This of(int x,int y)//repeating factory
     method This mul(This that)
       This.of(this.x()*that.x(),this.y()*that.y())
     }
@@ -73,11 +73,11 @@ instead.
 \saveSpace
 \noindent As we can see, all the state operations (the getters for the 
 \lstinline{x} and \lstinline{y} coordinates) are represented as {\bf abstract} methods.
-Notice the abstract \Q@class method This of(..)@ which acts as a constructor
+Notice the abstract \Q@static method This of(..)@ which acts as a constructor
 for points:
-a class method is similar to a \Q@static@ method in Java but can be abstract. 
+a static method is similar to a \Q@static@ method in Java but can be abstract. 
 As for instance methods, they are late bound:  flattening can provide an implementation for them.
-Abstract class methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
+Abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
 
 Following the general model of traits and classes common in literature \emph{in a traditional trait model}~\cite{Traits:ECOOP2003},
 we can now compose the two traits, by adding glue-code
@@ -87,7 +87,7 @@ to implement methods \Q@x@,\Q@y@ and \Q@of@.
     int x   int y
     method int x() x       
     method int y() y
-    class method This of(int x, int y) new Point(x,y)
+    static method This of(int x, int y) new Point(x,y)
     constructor Point(int x, int y){ this.x=x   this.y=y }
     }
 \end{lstlisting}
@@ -138,11 +138,11 @@ classes is given next:
 \begin{itemize}
 \item a class with no abstract methods is coherent (just like Java
   \Q@Math@, for example). Such classes are useful for calling class/static methods.
-\item a class with a single abstract \Q@class@ method returning \Q@This@
+\item a class with a single abstract \Q@static@ method returning \Q@This@
 is coherent if all the other abstract methods can be seen as \emph{abstract state
 operations} over one of its argument.
 For example,
-if there is a \Q@class method This of(int x, int y)@ as before,
+if there is a \Q@static method This of(int x, int y)@ as before,
 then
 \begin{itemize}
 \item a method \Q@int x()@ is interpreted as an abstract state method: a \emph{getter} for \Q@x@.
@@ -187,7 +187,7 @@ In \name and with our approach to handle the state,
 \saveSpace
 \begin{lstlisting}
   p: { method int x() method int y()
-    class method This of(int x,int y)
+    static method This of(int x,int y)
     }
   pointSum:Use p, { method This sum(This that)
       This.of(this.x()+that.x(),this.y()+that.y())
@@ -218,8 +218,8 @@ A solution is to provide a richer factory:
 \saveSpace
 \begin{lstlisting}
   CPoint:Use pointSum,colored,{
-    class method This of(int x,int y) This.of(x,y,Color.of(/*red*/))
-    class method This of(int x, int y,Color color)
+    static method This of(int x,int y) This.of(x,y,Color.of(/*red*/))
+    static method This of(int x, int y,Color color)
     }
 \end{lstlisting}
 \saveSpace
@@ -240,7 +240,7 @@ a better design would be the following:
 \saveSpace\begin{lstlisting}
   p: { method int x() method int y() //getters
     method This withX(int that) method This withY(int that)//withers
-    class method This of(int x,int y)
+    static method This of(int x,int y)
     method This merge(This that) //new method merge!
     }
   pointSum:Use p, { method This sum(This that)
@@ -285,9 +285,9 @@ to refer to the version of \Q@merge@ as defined in the second/third element of \
     colored[restrict merge as _1merge],
     flavoured[restrict merge as _2merge],
     pointSum,{
-      class method This of(int x,int y)
+      static method This of(int x,int y)
         This.of(x,y,Color.of(/*red*/),Flavor.none())
-      class method This of(int x, int y,Color color,Flavor flavor)
+      static method This of(int x, int y,Color color,Flavor flavor)
       //resolves the conflict about two implementations for merge
       //by proving our own implementation here
       method This merge(This that) this._1merge(that)._2merge(that)

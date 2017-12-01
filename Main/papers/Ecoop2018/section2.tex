@@ -1,7 +1,7 @@
 \saveSpace\saveSpace\saveSpace
 \section{The Design of \name: Separating Use and Reuse}\label{sec:separate}
 \saveSpace\saveSpace\saveSpace
-This section presents the overview of \name, and it illustrates the
+This section presents an overview of \name and illustrates the
 key ideas of its design. In particular we illustrate how to separate code use and 
 code reuse, and how \name solves the this-leaking problem.
 % in \name. %, and how this allows improving both. 
@@ -16,11 +16,11 @@ only. This means that there is actually no subclassing:
 classes are roughly equivalent to final classes in Java.  Thus,
 compared to Java-like languages, the most noticeable difference is the
 absence of the \Q@extends@ keyword in \name. 
-Consider the example in Section~\ref{sec:intro}:
+Consider the example from Section~\ref{sec:intro}:
 \saveSpace
 \begin{lstlisting}
  A: { method int ma(){return Utils.m(this);} }
- Utils:{ class method int m(A a){return ...} }
+ Utils:{ static method int m(A a){return ...} }
 \end{lstlisting} 
 \saveSpace
 \noindent Classes in \name use a slightly different declaration style compared
@@ -59,14 +59,14 @@ with traits and code reuse is:
 \begin{lstlisting}
  ta:{ method int ma(){return Utils.m(this);}}//type error
  A:Use ta
- Utils:{ class method int m(A a){return ...} }
+ Utils:{ static method int m(A a){return ...} }
 \end{lstlisting}
 \saveSpace
 \noindent Here \lstinline{ta} is a trait intended to replace the
 original class \lstinline{A} so that the code of the method
 \lstinline{ma} can be reused. Then the class \lstinline{A} 
 is created by inheriting the code from the trait using the keyword 
-{\bf Use}. Note that \use\ cannot contain class names: only trait
+{\bf \lstinline{Use}}. Note that \use\ cannot contain class names: only trait
 names are allowed.
 That is, using a trait is the only way to induce code reuse.
 Unfortunately, this code does not work, 
@@ -77,7 +77,7 @@ A Java programmer may then try to write:
 \begin{lstlisting}
  ta:{ method int ma(){return Utils.m(this);}}//type error
  A:Use ta
- Utils:{ class method int m(ta a){return ...}//syntax error
+ Utils:{ static method int m(ta a){return ...}//syntax error
  }
 \end{lstlisting}
 \saveSpace
@@ -132,7 +132,7 @@ With this in mind, we can try to model the example again:
 \saveSpace
 \begin{lstlisting}
  IA:{interface method int ma()}//interface with abstract method
- Utils:{class method int m(IA a){return ...} }
+ Utils:{static method int m(IA a){return ...} }
  ta:{implements IA //This line is the core of the solution
      method int ma(){return Utils.m(this);}}
  A:Use ta
@@ -145,7 +145,7 @@ associated to its code, we know that such class(es) will implement
 \Q@IA@. 
 Therefore, while typechecking \Q@Utils.m(this)@ we can assume
 \Q@this<:IA@.
- It is also possible to add a \Q@B@ as follows:
+ It is also possible to add a class \Q@B@ as follows:
 \saveSpace
 \begin{lstlisting}
   B:Use ta, { method int mb(){return this.ma();} }
@@ -158,7 +158,7 @@ Later, in Section \ref{sec:formal} we will provide more details on the type
 system. 
 For now notice that in the former example the code is correct even if
 no method called \Q@ma@ is explicitly declared.
-DeepFJig and TR would require instead to explicitly declare an abstract \Q@ma@:
+DeepFJig and TR would require instead to explicitly declare an abstract \Q@ma@ method:
 \saveSpace
 \begin{lstlisting}
   B:Use ta, { method int ma()//not required by us

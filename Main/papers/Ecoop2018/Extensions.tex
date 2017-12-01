@@ -7,17 +7,17 @@ Finally we show how we can solve even the most
 demanding version of the expression problem.
 
 \paragraph{Rename}${}_{}$\\*
-Rename allows to make some form of ``compile time'' re-factoring
+Rename allows to make some form of "compile time'' re-factoring
 There are a lots of different forms of rename in literature,
 sometime allowing only to rename specific methods, sometime allowing to rename
 nested classes into other nested classes either at the same or at a different nesting level.
 %Renaming in the context of nested classes also means that when renaming a method of an interface, all the 
 %nested classes implementing such interface inside of that code literal need to be adjusted.
 Renaming need to rename not only the method headers, but all the method calls inside of method bodies.
-At first glimps, this seams to be not always possible since we are considering to be able to apply those
+At first glimpse, this seems to be not always possible since we are considering to be able to apply those
 operators also to non well typed code.
 However, if the expression language is simple enough, it is possible to pre process the code to
-annotate the expected receiver type on all method calls by doing a purelly sintactic analysis
+annotate the expected receiver type on all method calls by doing a purelly syntactic analysis
 on a single code literal in isolation. 
 All the expression whose type is guessed to be out of the border of the literal can stay unannotated; they are not going to be renamed anyway.
 
