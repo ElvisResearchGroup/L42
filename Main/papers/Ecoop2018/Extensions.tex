@@ -1,116 +1,18 @@
 \section{Extensions to our model}
   One of the main feature of our simple reuse/use model is that it can be
-  easly extended. One simple but amazingly expressive extension is nested classes
-
-\subsection{Nested classes}
-
-A nested class will be another kind of member in the Literal, so  
-the grammar can be updated as following:
-
-\begin{bnf}
-\prodFull\mMD{
-\Opt{\terminalCode{class}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me
-\mid \mCD
-}{Member Decl}\\
-\prodFull\mT{\mC\mid\mC\terminalCode{.}\mT}{types are now paths}
-\end{bnf}\\
-
-The general idea is that by composing code with \use, nested classes with the same name are recursivelly composed.
-Note that while we have nested classes, we do not have nested traits: all traits are still
-at top level.
-Untypable/unresolved Traits are also the only``dependency"
-the type system keeps track of, this means that when a nested class at an arbirary
-nested level is flattend, as in
-\Q@C:{ D:{ E:Use t1,t2,L}}@
-t1 and t2 must be defined before C at top level; and they may require classes (and their
-nested) defined before C. This means that the type system can still consider
-the class table as a simple map from Types T to their definition.
-
-This extension lets us challenge the expression problem~\cite{wadler1998expression}:
-in the expression problem we have data variants and operations and....
-
-Let see how to easily encode and solve the expression problem:
-
-\begin{lstlisting}
-exp:{Exp:{interface}}//Exp declared once, reused everywhere
-lit:Use exp,{ Lit:{implements Exp //Exp not explicitly declared
-    class method Lit of(int inner) //Lit abstract state
-    method int inner()}
-  }
-sum:Use  exp,{ Sum:{implements Exp 
-    class method This of(Exp left, Exp right)
-    method Exp left() //Sum abstract state
-    method Exp right()}
-  }  
-uminus:Use exp,{ UMinus:{implements Exp 
-    class method This of(exp inner)//and so on for
-    method Exp inner()}//all the needed datavariants
-  }   
-  
-expToS:{Exp:{interface method String toString()}}
-//concept of toString declared once
-
-sumToS:Use sum,expToS,{ Sum:{implements Exp//with Exp.toString
-    method String toString()//just the implementation of the
-      left.toString()+"+"+right.toString()//specific method
-  }
-uminusToS:...//implement toString for all the datavariants
-
-expEval:{Exp:{interface method int eval()}}
-//declare the next operation and implement it for all the datavariant
-\end{lstlisting}
-
-Now that you have nicely modularized the code, just compose all the traits you need.
-\begin{lstlisting}
-MySolution:Use sumToS,litToS
-//sum,lit and exp traits are alread included
-\end{lstlisting}
-
-The expression problem presented up to now is the traditional challenge proposed by~\cite{wadler1998expression};
-this has been criticized to not really address the fundamental issues since it does not handle ....
-Now we show how we can go behond the traditional expression problem by encoding transformer methods:
-For example, lets add 1 to all literals
-\begin{lstlisting}
-expAdd1:{Exp:{interface method Exp add1()}}
-sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
-    method Exp add1()
-      Sum.of(left.add1,right.add1())
-  }
-litAdd1:Use lit,expAdd1,{Lit:{implements Exp
-    method Exp add1()
-      Lit.of(inner()+1);
-    }
-
-MySolutionAdd1:Use sumToS,litToS,sumAdd1,litAdd1
-\end{lstlisting}
-
-This nicely solve our problem. 
-However, notice how if we wished to add many similar operations we would 
-have to repeat the propagation code (as in \Q@sumAdd1@) many times
-just changing the name of the operation.
-Solutions to the expression problems involving the  Visitor Pattern 
-allow defining a \Q@CloneVisitor@ in order
-to reuse its propagation code.
-You can see what we mean with the sketch of code below:
-\begin{lstlisting}
-class CloneVisitor{
-  Exp visit(Lit l){return new Lit(l.inner);}
-  Exp visit(Sum s){return new Sum(s.left.accept(this),s.right.accept(this);}
-  }
-class Add1 extends CloneVisitor{
-  Exp visit(Lit l){return new Lit(l.inner+1);}
-  }
-\end{lstlisting}
-In \name we can obtain the same kind of code reuse, without the need of introducing 
-the concepts related to the Visitor Pattern; but we need to rely on 2 new operators:
+  easy extended. 
+First we show two more composition operators, then we show 
+a simple extension with nested classes.
+Finally we show how we can solve even the most
+demanding version of the expression problem.
 
 \paragraph{Rename}${}_{}$\\*
-Rename allows to make some form of ``compile time'' refactoring
+Rename allows to make some form of ``compile time'' re-factoring
 There are a lots of different forms of rename in literature,
 sometime allowing only to rename specific methods, sometime allowing to rename
 nested classes into other nested classes either at the same or at a different nesting level.
-Renaming in the context of nested classes also means that when renaming a method of an interface, all the 
-nested classes implementing such interface inside of that code literal need to be adjusted.
+%Renaming in the context of nested classes also means that when renaming a method of an interface, all the 
+%nested classes implementing such interface inside of that code literal need to be adjusted.
 Renaming need to rename not only the method headers, but all the method calls inside of method bodies.
 At first glimps, this seams to be not always possible since we are considering to be able to apply those
 operators also to non well typed code.
@@ -166,10 +68,189 @@ ListString:list[redirect Elem to String]
 
 
 
-%Redirect can be multiple.
 
-\paragraph{Application on the expression problem}${}_{}$\\*
-With redirect, rename and restrict we can have the general operator propagator
+\paragraph{Nested classes}${}_{}$\\*
+
+A nested class will be another kind of member
+in the code Literal.
+The general idea is that by composing code with \use, nested classes with the same name are recursivelly composed.
+Note that while we have nested classes, we do not have nested traits: all traits are still
+at top level.
+Untypable/unresolved Traits are also the only``dependency"
+the type system keeps track of, this means that when a nested class at an arbirary
+nested level is flattend, as in
+\Q@C:{ D:{ E:Use t1,t2,L}}@\\*
+\Q@t1@ and \Q@t2@ must be defined before \Q@C@ at top level; and they may require classes (and their
+nested) defined before C. This means that the type system can still consider
+the class table as a simple map from Types T to their definition.
+
+This extension lets us challenge the expression problem~\cite{wadler1998expression},
+with the requirements exposed in~\cite{scala}.
+In the expression problem we have data variants and operations and we can
+\textbf{extend our solution in both dimensions},
+by adding new datavariants and adding new operations.
+We also aim to \textbf{combine independently developed extensions} so
+that they can be used jointly.
+
+To be really modular, we want our extensions to
+preserve \textbf{type safety}
+and allow \textbf{separate compilation} (no re-type-checking),
+while avoiding \textbf{duplication of source code}.
+
+We can do this by creating a table of features, as in~\cite{Deepfjig}.
+But in \name we can be even more compact, and we can avoid a large amount of abstract declarations,
+that clutters the solution in~\cite{Deepfjig}.
+
+
+\begin{lstlisting}
+//Definition of the datavariants state
+exp:{//Exp declared once, reused everywhere
+  Exp:{interface}
+  T:{implements Exp}
+  }
+lit:Use exp[rename T in Lit],{//T renamed in Lit is 
+  Lit:{ method Int inner() class method Lit of(Int inner)
+    }//summed with the current Lit
+  }
+sum:Use exp[rename T in Sum],{//same for the other
+  Sum:{ method Exp left() method Exp right()
+    class method Sum(Exp left, Exp right) }
+  }
+uminus:Use exp[rename T in UMinus],{
+  UMinus:{ ... }
+  }
+
+\end{lstlisting}
+Here we define a trait for each datavariant.
+Each trait will contain its version of \Q@Exp@
+and a specific case of expression, with its state.
+ To avoid repeating the declaration of \Q@Exp@ 
+and \Q@implements Exp@ multiple times, we reuse
+a \Q@exp@ trait.
+
+\begin{lstlisting}
+//Definition of toString for all the datavariants
+expToS:Use exp, {//concept of toString declared once
+  Exp:{interface method String toString()}
+  }
+litToS: Use Lit, expToS[rename T in Sum], {
+  Lit:{//just the implementation of the specific method
+    method String toString(){return ""+this.inner();}
+    } }
+sumToS:Use sum, expToS[rename T in Sum], {
+  Sum:{//just the implementation of the specific method
+    method String toString(){
+      return this.left().toString()+"+"+this.right().toString();}
+      }  }  }
+uminusToS:...//implement toString for all the datavariants
+\end{lstlisting}
+
+Here we define a trait for each datavariant implementing the operation \Q@toString()@.
+Again, Each trait will contain its version of \Q@Exp@ with \Q@toString()@.
+and a specific case of expression, with the implementation for \Q@toString()@
+for that specific case. Note how the state of such datavariant is 
+\textbf{not repeated}, but imported by (for example) \Q@Use sum, ...@.
+
+Again, \Q@expToS@ is a useful modularization point.
+In the code below, the example of the other iconic operation: \Q@eval@.
+
+\begin{lstlisting}
+//Definition of other operations, for example eval
+expEval:Use exp, {
+  Exp:{interface method int eval()}
+  }
+//declare the next operation and implement it for all the datavariant
+//example
+sumEval:Use sum,expEval[rename T in Sum], {
+  Sum:{//just the implementation of the
+    method int eval(){//specific method
+      return this.left().eval()+this.right().eval();}
+
+      }  }  }
+\end{lstlisting}
+In \name it is trivial also for the binary method equals.
+Since every datavariant would have to copy the "cast" logic,
+ we can modularize that into a \Q@expEquals@.
+
+\begin{lstlisting}
+expEquals:{
+  Exp:{interface method Bool equals(Exp that)}
+  T:{implements Exp
+    method Bool exactEqual(T that)
+    method Bool equals(Exp that){
+      if(!(that instanceof T)){ return false;}
+      return exactEqual( (T) that );
+      }  }  }
+sumEquals:Use sum,expEquals[rename T in Sum],{
+  Sum:{
+    method Bool exactEquals(Sum that){
+      return this.left().equals(that.left()) 
+        && this.right().equals(that.right())
+      }  }  }
+\end{lstlisting}
+Note how the cast is safe since there is guarded by
+and \Q@instanceof@. A sightly longer solution could avoid the
+cast with double dispatch as done in [](show in appendix?)
+%expEquals:{
+%  Exp:{interface
+%    method Bool equals(Exp that)
+%    method Bool equalToT(T that)
+%    }
+%  T:{implements Exp
+%    method Bool equals(Exp that){ that.equalToT(this); }
+%    }  }
+%sumEquals:Use sum,
+%expEquals[rename T in Sum][rename Exp.equalToT in equalToSum],{
+%  Sum:{
+%    method Bool equalToSum(Sum that){
+%      return this.left().equals(that.left()) 
+%        && this.right().equals(that.right())
+%      }  }  }
+
+Now that you have nicely modularized the code, just compose all the traits you need.
+\begin{lstlisting}
+MySolution:Use sumToS,litToS
+//sum,lit and exp traits are already included
+\end{lstlisting}
+
+The expression problem presented up to now is the traditional challenge proposed by~\cite{wadler1998expression};
+this has been criticized to not really address the fundamental issues since it does not handle ....
+Now we show how we can go beyond the traditional expression problem by encoding transformer methods:
+For example, lets add 1 to all literals
+\begin{lstlisting}
+expAdd1:{Exp:{interface method Exp add1()}}
+sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
+    method Exp add1()
+      Sum.of(left.add1,right.add1())
+  }
+litAdd1:Use lit,expAdd1,{Lit:{implements Exp
+    method Exp add1()
+      Lit.of(inner()+1);
+    }
+
+MySolutionAdd1:Use sumToS,litToS,sumAdd1,litAdd1
+\end{lstlisting}
+
+This nicely solve our problem. 
+However, notice how if we wished to add many similar operations we would 
+have to repeat the propagation code (as in \Q@sumAdd1@) many times
+just changing the name of the operation.
+Solutions to the expression problems involving the  Visitor Pattern 
+allow defining a \Q@CloneVisitor@ in order
+to reuse its propagation code.
+You can see what we mean with the sketch of code below:
+\begin{lstlisting}
+class CloneVisitor{
+  Exp visit(Lit l){return new Lit(l.inner);}
+  Exp visit(Sum s){return new Sum(s.left.accept(this),s.right.accept(this);}
+  }
+class Add1 extends CloneVisitor{
+  Exp visit(Lit l){return new Lit(l.inner+1);}
+  }
+\end{lstlisting}
+In \name we can obtain the same kind of code reuse, without the need of introducing 
+the concepts related to the Visitor Pattern.
+With redirect, rename and restrict we can have the general operator propagator:
 \begin{lstlisting}
 operation:{//for sum and lit, easy to extends as before
   T:{}

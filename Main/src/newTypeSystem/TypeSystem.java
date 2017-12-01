@@ -97,7 +97,7 @@ public interface TypeSystem{
     {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
       if (!Functions.isSubtype(tSuper.getMdf(),tSub.getMdf())){
         return false;
-        }    
+        }
       }}
     return true;
     }
@@ -110,7 +110,7 @@ public interface TypeSystem{
     {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
       if (null!=subtype(p,tSuper,tSub)){
         return false;
-        }    
+        }
       }}
     for(Type ti:mSub.getExceptions()){
       if(!exceptionSubtype(p,ti, mSuper)){return false;}
@@ -156,7 +156,7 @@ class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
     assert out!=null:
       "";
     assert !map.containsKey(in);
-    map.put(in, out);
+    //map.put(in, out);//TODO: revert after testing
     }
   private TOut _memoizedTSRes(TIn in) {
     TOut out=map.get(in);

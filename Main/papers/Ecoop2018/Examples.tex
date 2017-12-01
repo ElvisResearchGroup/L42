@@ -63,6 +63,19 @@ To denote a method as abstract, instead of an optional keyword we just omit the 
 A version of this language where there are no traits can be seen 
 as a restriction/variation of FJ~\cite{igarashi2001featherweight}.
 
+\noindent\textbf{Nested classes:}
+A nested class will be another kind of member in the Literal, so  
+the grammar could be updated as following:
+
+\begin{bnf}
+\prodFull\mMD{
+\Opt{\terminalCode{class}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me
+\mid \mCD
+}{Member Decl}\\
+\prodFull\mT{\mC\mid\mC\terminalCode{.}\mT}{types are now paths}
+\end{bnf}\\
+
+
 \subsection{Well-formedness}
 In \name the basic well formedness rules apply:
 \begin{itemize}
