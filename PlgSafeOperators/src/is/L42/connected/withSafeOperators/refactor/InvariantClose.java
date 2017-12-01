@@ -19,6 +19,7 @@ import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
+import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
@@ -28,6 +29,7 @@ import ast.PathAux;
 import ast.Util.CsMx;
 import ast.Util.CsMxMx;
 import auxiliaryGrammar.Functions;
+import coreVisitors.CloneVisitor;
 import facade.L42;
 import facade.PData;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
@@ -164,6 +166,20 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
         }
       else {e=InvariantClose.eR;}
       }
+    String newR=Functions.freshName("r", L42.usedNames);
+    String newU=Functions.freshName("unusedInv", L42.usedNames);
+    e=(Block) e.accept(new CloneVisitor(){
+      public ExpCore visit(X s) {
+        if(s.getInner().equals("r")) {return s.withInner(newR);}
+        return s;
+        }
+      protected Block.Dec liftDec(Block.Dec f) {
+        String x=f.getX();
+        if(x.equals("r")) {x=newR;}
+        else if(x.equals("unusedInv")) {x=newU;}
+        return super.liftDec(f.withX(x));
+        }
+    });
     ExpCore.Block.Dec d0=e.getDecs().get(0);
     d0=d0.withInner(delegateMCall);
     ExpCore.Block b=e.withDeci(0,d0);
