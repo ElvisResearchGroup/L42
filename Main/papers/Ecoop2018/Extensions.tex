@@ -1,0 +1,253 @@
+\section{Extensions to our model}
+  One of the main feature of our simple reuse/use model is that it can be
+  easly extended. One simple but amazingly expressive extension is nested classes
+
+\subsection{Nested classes}
+
+A nested class will be another kind of member in the Literal, so  
+the grammar can be updated as following:
+
+\begin{bnf}
+\prodFull\mMD{
+\Opt{\terminalCode{class}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me
+\mid \mCD
+}{Member Decl}\\
+\prodFull\mT{\mC\mid\mC\terminalCode{.}\mT}{types are now paths}
+\end{bnf}\\
+
+The general idea is that by composing code with \use, nested classes with the same name are recursivelly composed.
+Note that while we have nested classes, we do not have nested traits: all traits are still
+at top level.
+Untypable/unresolved Traits are also the only``dependency"
+the type system keeps track of, this means that when a nested class at an arbirary
+nested level is flattend, as in
+\Q@C:{ D:{ E:Use t1,t2,L}}@
+t1 and t2 must be defined before C at top level; and they may require classes (and their
+nested) defined before C. This means that the type system can still consider
+the class table as a simple map from Types T to their definition.
+
+This extension lets us challenge the expression problem~\cite{wadler1998expression}:
+in the expression problem we have data variants and operations and....
+
+Let see how to easily encode and solve the expression problem:
+
+\begin{lstlisting}
+exp:{Exp:{interface}}//Exp declared once, reused everywhere
+lit:Use exp,{ Lit:{implements Exp //Exp not explicitly declared
+    class method Lit of(int inner) //Lit abstract state
+    method int inner()}
+  }
+sum:Use  exp,{ Sum:{implements Exp 
+    class method This of(Exp left, Exp right)
+    method Exp left() //Sum abstract state
+    method Exp right()}
+  }  
+uminus:Use exp,{ UMinus:{implements Exp 
+    class method This of(exp inner)//and so on for
+    method Exp inner()}//all the needed datavariants
+  }   
+  
+expToS:{Exp:{interface method String toString()}}
+//concept of toString declared once
+
+sumToS:Use sum,expToS,{ Sum:{implements Exp//with Exp.toString
+    method String toString()//just the implementation of the
+      left.toString()+"+"+right.toString()//specific method
+  }
+uminusToS:...//implement toString for all the datavariants
+
+expEval:{Exp:{interface method int eval()}}
+//declare the next operation and implement it for all the datavariant
+\end{lstlisting}
+
+Now that you have nicely modularized the code, just compose all the traits you need.
+\begin{lstlisting}
+MySolution:Use sumToS,litToS
+//sum,lit and exp traits are alread included
+\end{lstlisting}
+
+The expression problem presented up to now is the traditional challenge proposed by~\cite{wadler1998expression};
+this has been criticized to not really address the fundamental issues since it does not handle ....
+Now we show how we can go behond the traditional expression problem by encoding transformer methods:
+For example, lets add 1 to all literals
+\begin{lstlisting}
+expAdd1:{Exp:{interface method Exp add1()}}
+sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
+    method Exp add1()
+      Sum.of(left.add1,right.add1())
+  }
+litAdd1:Use lit,expAdd1,{Lit:{implements Exp
+    method Exp add1()
+      Lit.of(inner()+1);
+    }
+
+MySolutionAdd1:Use sumToS,litToS,sumAdd1,litAdd1
+\end{lstlisting}
+
+This nicely solve our problem. 
+However, notice how if we wished to add many similar operations we would 
+have to repeat the propagation code (as in \Q@sumAdd1@) many times
+just changing the name of the operation.
+Solutions to the expression problems involving the  Visitor Pattern 
+allow defining a \Q@CloneVisitor@ in order
+to reuse its propagation code.
+You can see what we mean with the sketch of code below:
+\begin{lstlisting}
+class CloneVisitor{
+  Exp visit(Lit l){return new Lit(l.inner);}
+  Exp visit(Sum s){return new Sum(s.left.accept(this),s.right.accept(this);}
+  }
+class Add1 extends CloneVisitor{
+  Exp visit(Lit l){return new Lit(l.inner+1);}
+  }
+\end{lstlisting}
+In \name we can obtain the same kind of code reuse, without the need of introducing 
+the concepts related to the Visitor Pattern; but we need to rely on 2 new operators:
+
+\paragraph{Rename}${}_{}$\\*
+Rename allows to make some form of ``compile time'' refactoring
+There are a lots of different forms of rename in literature,
+sometime allowing only to rename specific methods, sometime allowing to rename
+nested classes into other nested classes either at the same or at a different nesting level.
+Renaming in the context of nested classes also means that when renaming a method of an interface, all the 
+nested classes implementing such interface inside of that code literal need to be adjusted.
+Renaming need to rename not only the method headers, but all the method calls inside of method bodies.
+At first glimps, this seams to be not always possible since we are considering to be able to apply those
+operators also to non well typed code.
+However, if the expression language is simple enough, it is possible to pre process the code to
+annotate the expected receiver type on all method calls by doing a purelly sintactic analysis
+on a single code literal in isolation. 
+All the expression whose type is guessed to be out of the border of the literal can stay unannotated; they are not going to be renamed anyway.
+
+\begin{lstlisting}
+t:{ I:{interface method int mI() }
+     A:{implements I  method int mI() 42}
+     B:{ method int mB(I i, A a, C c) i.mI()+a.mI()+c.mI()}
+     //mB would be annotated i[I].mI()+a[A].mI()+c.mI()
+     }
+D:t[rename A.mI kI]
+\end{lstlisting}
+ Notice how we are sure that c does not implements I since it is invisible from the outside: traits does not introduce nominal types!
+ 
+ We expect the flattened version for \Q@D@ to be
+\begin{lstlisting}
+D:{ I:{interface method int kI() }
+     A:{implements I  method int kI() 42}
+     B:{ method int mB(I i, A a, C c) i.kI()+a.kI()+c.mI()}
+     }
+\end{lstlisting}
+
+Hide can be seen as a variation of rename, where the method/class is renamed to a fresh unguessable name.
+
+\paragraph{Redirect}${}_{}$\\*
+Redirect allows to emulate generics; the main idea is that a (fully abstract) class can be redirect to another one external to the trait/code literal.
+For example a linked list can be implement as
+\begin{lstlisting}
+list:{ Elem:{}
+     Cell:{class method Cell of(Elem e,Cell c) 
+       method Elem e()  method Cell c()
+       }
+   method Elem get(int x) ...
+   ...more methods..
+   }
+ListString:list[redirect Elem to String]
+\end{lstlisting}
+
+%An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
+%We show a graph example, where also we can show how to propagate generics:
+%For example
+%\begin{lstlisting}
+%t:{ method boolean reachable(Node start, Node end)/*implements reachability*/
+%     Node:{method ListEdge nodes()}
+%     Edge:{method Node in()  method Node out()}
+%     ListEdge:list[redirect Elem to Edge]
+%     }
+%\end{lstlisting}
+
+
+
+%Redirect can be multiple.
+
+\paragraph{Application on the expression problem}${}_{}$\\*
+With redirect, rename and restrict we can have the general operator propagator
+\begin{lstlisting}
+operation:{//for sum and lit, easy to extends as before
+  T:{}
+  Exp:{interface method Exp op(T x)}}
+  Sum:Use sum,{ extends Exp sum,expAdd1,{
+    method Exp op(T x)
+      Sum.of(left.op(x),right.op(x))  }
+  Lit:Use lit,{
+    method Exp op(T x)  this
+  }
+\end{lstlisting}
+
+Now, to have my \Q@addN@ we can
+
+\begin{lstlisting}
+opAddn: Use
+  operation[redirect T to Int]
+    [rename Exp.op(x) to addN(x)][restrict Lit.op(x)], {
+  Lit:{method Exp addN(Int x) Lit.of(inner())+x}
+  }
+\end{lstlisting}  
+
+
+
+%\paragraph{Full power of redirect}${}_{}$\\*
+%An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
+%We show an example where a specific kind of \Q@Service@ can produce a \Q@Report@, and 
+%\Q@Report@s can be combined together.
+%The goal is to execute a list of such services and produce a collated report.
+%This example also show how to propagate generics:
+%
+%\begin{lstlisting}
+%Service:{interface method Void performService()}
+%serviceCombinator:{
+%  S:{implements Service method R report()  }
+%  
+%  R:{method R combine(R that)   class method R empty() }
+%  
+%  ListS:list[redirect Elem to S]
+%  
+%  class method R doAll(ListS ss){//here we use extended java like syntax
+%    R r=R.empty()
+%    for(S s in ss){
+%      s.performService();
+%      r=r.combine(s.report())
+%      }
+%    return r;
+%  }
+%}
+%PaintingService:serviceCombinator[redirect S to PaintingService]
+%PaintingService:{... method PaintingReport report()..}
+%PaintingReport:{..}
+%\end{lstlisting}
+%
+%The flattened version of \Q@PaintingService@ would look like:
+%\begin{lstlisting}
+%PaintingService:{
+%  ListS:/*the expansion of list[redirect Elem to PaintingService]*/
+%  
+%  class method PaintingReport doAll(ListS ss){
+%    PaintingReport r=PaintingReport.empty()
+%    for(PaintingService s in ss){
+%      s.performService();
+%      r=r.combine(s.report())
+%      }
+%    return r;
+%  }
+%}
+%\end{lstlisting}
+%Where you can note how redirect figured out \Q@R=PaintingReport@ by comparing the structural shape of
+%classes \Q@PaintingService@ and \Q@S@.
+%
+%To encode the former generic code in java you need to write
+%the following headeche inducing interfaces for RService and Report.
+%and require that the services you want to serve implement those.
+%\begin{lstlisting}
+%interface Service{ void performService();}
+%interface Report<R extends Report<R>>{R combine(R that);}
+%interface RService<R extends Report<R>> extends Service{ R report();}
+%\end{lstlisting}
+%Note how we still can not encode the method \Q@empty@.
