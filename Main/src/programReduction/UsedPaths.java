@@ -146,16 +146,18 @@ static void recursiveAux(ClassB l,List<Ast.MethodType>mhs,List<Ast.C>cs){
       Paths paths0= Paths.empty();
       for(List<Ast.C> csi : css1){
         assert csi.size()!=0;//may be
-        //catch(ErrorMessage.PathMetaOrNonExistant pne){
-        //throw pne.withListOfNodeNames(csi).withCb(l);//.withWherePathWasWritten(p);
-        //}
-        ClassB lFirst=p.top().getClassB(Collections.singletonList(csi.get(0)));
-        if(!IsCompiled.of(lFirst)){
-          throw new ErrorMessage.IncompleteClassIsRequired(
-          "library not compiled yet is required to be typed",
-           null,Path.outer(0, csi), Collections.emptyList(),
-           Ast.Position.noInfo
-           );
+        try{
+          ClassB lFirst=p.top().getClassB(Collections.singletonList(csi.get(0)));
+          if(!IsCompiled.of(lFirst)){
+            throw new ErrorMessage.IncompleteClassIsRequired(
+            "library not compiled yet is required to be typed",
+             null,Path.outer(0, csi), Collections.emptyList(),
+             Ast.Position.noInfo
+             );
+            }
+          }
+        catch(ErrorMessage.PathMetaOrNonExistant pne){
+          throw pne.withListOfNodeNames(csi).withCb(p.top());//.withWherePathWasWritten(p);
           }
         Paths pathsi=reachableFromL(p.top().getClassB(csi),forTyped);
         pathsi=pathsi.prefix(csi);
