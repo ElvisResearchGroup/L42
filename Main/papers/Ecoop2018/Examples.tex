@@ -26,7 +26,7 @@ In the following, we present a simplified grammar of \name:
 \cC
 }{Code Literal}\\
 \prodFull\mT{\mC}{types are class names}\\
-\prodFull\mMD{\Opt{\terminalCode{class}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me}{Method Decl}\\
+\prodFull\mMD{\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me}{Method Decl}\\
 
 \prodFull\me{\mx\mid\mT\mid\me\terminalCode{.}\mm\oR\overline\me\cR}{expressions}\\
 \prodFull\mD{\mCD\mid\mTD}{Declaration}\\
@@ -37,7 +37,8 @@ In the following, we present a simplified grammar of \name:
 expression.  In full 42 we support various operators (restrict, hide,
 alias), but in \name we focus on the single operator 
 $\use$. $\use$ takes a set
-of code values: that is trait names \mt\ or code literals \mL\ and composes them.  This operation, sometimes called \emph{sum}, is the simplest and most elegant
+of code values ($\overline\mV$): that is trait names \mt\ or code literals \mL\ and composes them.  
+This operation, sometimes called \emph{sum}, is the simplest and most elegant
 trait composition operator~\cite{ducasse2006traits}.
 
 $\use\ \overline\mV$ composes the content of $\overline\mV$
@@ -57,19 +58,19 @@ In our simple model, we consider an error trying to merge an interface with a no
   declarations. In this simple language, the only members are methods.
 If there are no implemented interfaces, in the concrete syntax we will omit the \Q@implements@ keyword.
 
-Methods \mMD~can be instance methods or \Q@class@ methods. A class method is similar to a \Q@static@ method in Java but can be abstract. This is very useful in the context of code composition.
+Methods \mMD~can be instance methods or \Q@static@ methods. A static method is similar to a \Q@static@ method in Java but can be abstract. This is very useful in the context of code composition.
 To denote a method as abstract, instead of an optional keyword we just omit the implementation \me.
 
 A version of this language where there are no traits can be seen 
 as a restriction/variation of FJ~\cite{igarashi2001featherweight}.
 
 \noindent\textbf{Nested classes:}
-A nested class will be another kind of member in the Literal, so  
+A nested class will be another kind of member in the literal, so  
 the grammar could be updated as following:
 
 \begin{bnf}
 \prodFull\mMD{
-\Opt{\terminalCode{class}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me
+\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me
 \mid \mCD
 }{Member Decl}\\
 \prodFull\mT{\mC\mid\mC\terminalCode{.}\mT}{types are now paths}
@@ -83,7 +84,7 @@ In \name the basic well formedness rules apply:
  in the parameter list,
 \item all methods in a code literal have unique names,
 \item all used variables are in scope,
-\item all methods in an interface are abstract, and there are no interface class methods.
+\item all methods in an interface are abstract, and there are no interface static methods.
 \end{itemize}
 Those rules can be applied on any given \mL~individually and in full isolation.
 We expect the type system to enforce: 
@@ -105,7 +106,7 @@ A Literal can use the \lstinline{This} type,
 and when flattening completes creating a class definition, \Q@This@ will be replaced with such class name.
 
 For the sake of simplicity, method bodies are just simple expressions
-\me: they can be just variables, types and method calls. We need types as part of expressions in order to use them as receivers for class methods.
+\me: they can be just variables, types and method calls. We need types as part of expressions in order to use them as receivers for static methods.
 
 \subsection{Remarks on Typing}
  Our typing discipline is 
@@ -129,12 +130,12 @@ t1:{method int n() this.m()+1}
 \noindent would be ill typed.
 
 \paragraph{2: code literals are not required to be \emph{well-typed} before flattening.}${}_{}$\\*
-In class expressions  $\use\ \overline\mV$
+In class expressions  $\use\ \overline\mV$,
 an \mL\ in $\overline\mV$ is not typechecked before flattening, and only the result is expected to be well-typed.
 While this seems a dangerous approach at first, consider that also Java has the same behaviour:
 for example in
 \saveSpace\begin{lstlisting}[language=Java]
-  class A{ int m() {return 2;}  int n(){return this.m()+1;} }
+  class A{ int ma() {return 2;}  int n(){return this.ma()+1;} }
   class B extends A{ int mb(){return this.ma();} }
 \end{lstlisting}\saveSpace
 \noindent in \Q@B@ we can call \lstinline{this.ma()} even if in the curly braces there is no declaration for \Q@ma()@.
@@ -157,7 +158,7 @@ Our typing strategy has two important properties:
 \item If a class is declared by using $\mC : \use\ \overline\mt$, that is without literals,
 and the flattening is successful then \mC\ is well typed: there is no need of further checking.
 \item On the other side, if a class is declared by $\mC : \use\ \overline\mV$, with
-$\mL_1\ldots\mL_n \in \overline\mV$, and after successfull flattening $\mC : \mL$ can not be typechecked,
+$\mL_1\ldots\mL_n \in \overline\mV$, and after successful flattening $\mC : \mL$ can not be typechecked,
 then the issue was originally present in one of $\mL_1\ldots\mL_n$.
 It may be that the result is intrinsically ill-typed, if one of the methods in $\mL_1\ldots\mL_n$ is not well typed,
 but it may also happen that a type referred from one of those methods
@@ -178,7 +179,7 @@ This means that typing classes
 
 The most expressive compilation process may divide the program in groups of mutually 
 dependent classes.
-Each group may also depend from a number of other groups.
+Each group may also depend on a number of other groups.
 This would form a \emph{direct acyclic graph} of groups.
 To type a group, we first need to type all depended groups, then
 we can extract the structure/signature/structural type of all
@@ -189,8 +190,8 @@ from the current group, it is possible to typecheck the implementation
 In this model, it is reasonable to assume that flattening happens group by group, before
 extracting the class signatures.
 
-Here we go for a much simpler simple top down execution/interpretation for flattening, where flattening
-happen one at the time, and classes are typechecked where their type is first needed.
+Here we go for a much simpler top down execution/interpretation for flattening, where flattening
+happens one at the time, and classes are typechecked where their type is first needed.
 That is, in \name typing and flattening are interleaved. We assume our compilation process to stop as soon as 
 an error arises. There are two main kinds of errors: \emph{type errors} (like method not found) or \emph{composition errors} (like summing two conflicting implementation for the same method).
 For example

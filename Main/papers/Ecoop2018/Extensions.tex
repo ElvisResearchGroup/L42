@@ -3,21 +3,21 @@
   easy extended. 
 First we show two more composition operators, then we show 
 a simple extension with nested classes.
-Finally we show how we can solve even the most
+Finally, we show how we can solve even the most
 demanding version of the expression problem.
 
 \paragraph{Rename}${}_{}$\\*
-Rename allows to make some form of "compile time'' re-factoring
+Rename allows to make some form of "compile time" re-factoring
 There are a lots of different forms of rename in literature,
 sometime allowing only to rename specific methods, sometime allowing to rename
 nested classes into other nested classes either at the same or at a different nesting level.
 %Renaming in the context of nested classes also means that when renaming a method of an interface, all the 
 %nested classes implementing such interface inside of that code literal need to be adjusted.
 Renaming need to rename not only the method headers, but all the method calls inside of method bodies.
-At first glimpse, this seems to be not always possible since we are considering to be able to apply those
+At a first glimpse, this seems to be not always possible since we are considering to be able to apply those
 operators also to non well typed code.
-However, if the expression language is simple enough, it is possible to pre process the code to
-annotate the expected receiver type on all method calls by doing a purelly syntactic analysis
+However, if the expression language is simple enough, it is possible to pre-process the code to
+annotate the expected receiver type on all method calls by doing a purely syntactic analysis
 on a single code literal in isolation. 
 All the expression whose type is guessed to be out of the border of the literal can stay unannotated; they are not going to be renamed anyway.
 
@@ -29,7 +29,7 @@ t:{ I:{interface method int mI() }
      }
 D:t[rename A.mI kI]
 \end{lstlisting}
- Notice how we are sure that c does not implements I since it is invisible from the outside: traits does not introduce nominal types!
+ Notice how we are sure that \Q@C@ does not implements \Q@I@ since it is invisible from the outside: traits does not introduce nominal types!
  
  We expect the flattened version for \Q@D@ to be
 \begin{lstlisting}
@@ -70,13 +70,11 @@ ListString:list[redirect Elem to String]
 
 
 \paragraph{Nested classes}${}_{}$\\*
-
-A nested class will be another kind of member
-in the code Literal.
-The general idea is that by composing code with \use, nested classes with the same name are recursivelly composed.
+A nested class will be another kind of member in the code literal.
+The general idea is that by composing code with \use, nested classes with the same name are recursively composed.
 Note that while we have nested classes, we do not have nested traits: all traits are still
 at top level.
-Untypable/unresolved Traits are also the only``dependency"
+Untypable/unresolved traits are also the only "dependency"
 the type system keeps track of, this means that when a nested class at an arbirary
 nested level is flattend, as in
 \Q@C:{ D:{ E:Use t1,t2,L}}@\\*
@@ -98,7 +96,7 @@ and allow \textbf{separate compilation} (no re-type-checking),
 while avoiding \textbf{duplication of source code}.
 
 We can do this by creating a table of features, as in~\cite{Deepfjig}.
-But in \name we can be even more compact, and we can avoid a large amount of abstract declarations,
+But in \name we can be even more compact as we can avoid a large amount of abstract declarations,
 that clutters the solution in~\cite{Deepfjig}.
 
 
@@ -109,12 +107,12 @@ exp:{//Exp declared once, reused everywhere
   T:{implements Exp}
   }
 lit:Use exp[rename T in Lit],{//T renamed in Lit is 
-  Lit:{ method Int inner() class method Lit of(Int inner)
+  Lit:{ method Int inner() static method Lit of(Int inner)
     }//summed with the current Lit
   }
 sum:Use exp[rename T in Sum],{//same for the other
   Sum:{ method Exp left() method Exp right()
-    class method Sum(Exp left, Exp right) }
+    static method Sum(Exp left, Exp right) }
   }
 uminus:Use exp[rename T in UMinus],{
   UMinus:{ ... }
@@ -133,20 +131,20 @@ a \Q@exp@ trait.
 expToS:Use exp, {//concept of toString declared once
   Exp:{interface method String toString()}
   }
-litToS: Use Lit, expToS[rename T in Sum], {
+litToS: Use lit, expToS[rename T in Lit], {
   Lit:{//just the implementation of the specific method
     method String toString(){return ""+this.inner();}
     } }
 sumToS:Use sum, expToS[rename T in Sum], {
   Sum:{//just the implementation of the specific method
     method String toString(){
-      return this.left().toString()+"+"+this.right().toString();}
+      return this.left().toString()+"+"+this.right().toString();
       }  }  }
 uminusToS:...//implement toString for all the datavariants
 \end{lstlisting}
 
 Here we define a trait for each datavariant implementing the operation \Q@toString()@.
-Again, Each trait will contain its version of \Q@Exp@ with \Q@toString()@.
+Again, each trait will contain its version of \Q@Exp@ with \Q@toString()@
 and a specific case of expression, with the implementation for \Q@toString()@
 for that specific case. Note how the state of such datavariant is 
 \textbf{not repeated}, but imported by (for example) \Q@Use sum, ...@.
@@ -157,15 +155,14 @@ In the code below, the example of the other iconic operation: \Q@eval@.
 \begin{lstlisting}
 //Definition of other operations, for example eval
 expEval:Use exp, {
-  Exp:{interface method int eval()}
+  T:{interface method int eval()}
   }
 //declare the next operation and implement it for all the datavariant
 //example
 sumEval:Use sum,expEval[rename T in Sum], {
   Sum:{//just the implementation of the
     method int eval(){//specific method
-      return this.left().eval()+this.right().eval();}
-
+      return this.left().eval()+this.right().eval();
       }  }  }
 \end{lstlisting}
 In \name it is trivial also for the binary method equals.
@@ -185,12 +182,12 @@ sumEquals:Use sum,expEquals[rename T in Sum],{
   Sum:{
     method Bool exactEquals(Sum that){
       return this.left().equals(that.left()) 
-        && this.right().equals(that.right())
+        && this.right().equals(that.right());
       }  }  }
 \end{lstlisting}
-Note how the cast is safe since there is guarded by
-and \Q@instanceof@. A sightly longer solution could avoid the
-cast with double dispatch as done in [](show in appendix?)
+Note how the cast is safe since it is guarded by
+an \Q@instanceof@ check. A sightly longer solution could avoid the
+cast with double dispatch as done in [](show in appendix?).
 %expEquals:{
 %  Exp:{interface
 %    method Bool equals(Exp that)
@@ -221,7 +218,7 @@ For example, lets add 1 to all literals
 expAdd1:{Exp:{interface method Exp add1()}}
 sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
     method Exp add1()
-      Sum.of(left.add1,right.add1())
+      Sum.of(left.add1(), right.add1())
   }
 litAdd1:Use lit,expAdd1,{Lit:{implements Exp
     method Exp add1()
@@ -231,7 +228,7 @@ litAdd1:Use lit,expAdd1,{Lit:{implements Exp
 MySolutionAdd1:Use sumToS,litToS,sumAdd1,litAdd1
 \end{lstlisting}
 
-This nicely solve our problem. 
+This nicely solves our problem. 
 However, notice how if we wished to add many similar operations we would 
 have to repeat the propagation code (as in \Q@sumAdd1@) many times
 just changing the name of the operation.
@@ -263,7 +260,7 @@ operation:{//for sum and lit, easy to extends as before
   }
 \end{lstlisting}
 
-Now, to have my \Q@addN@ we can
+Now, to have \Q@addN@ we can do the following.
 
 \begin{lstlisting}
 opAddn: Use

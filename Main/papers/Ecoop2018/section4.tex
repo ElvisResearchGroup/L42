@@ -74,8 +74,7 @@ instead.
 \noindent As we can see, all the state operations (the getters for the 
 \lstinline{x} and \lstinline{y} coordinates) are represented as {\bf abstract} methods.
 Notice the abstract \Q@static method This of(..)@ which acts as a constructor
-for points:
-a static method is similar to a \Q@static@ method in Java but can be abstract. 
+for points. 
 As for instance methods, they are late bound:  flattening can provide an implementation for them.
 Abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
 
@@ -87,8 +86,8 @@ to implement methods \Q@x@,\Q@y@ and \Q@of@.
     int x   int y
     method int x() x       
     method int y() y
-    static method This of(int x, int y) new Point(x,y)
-    constructor Point(int x, int y){ this.x=x   this.y=y }
+    static method This of(int x, int y) new CPoint(x,y)
+    constructor CPoint(int x, int y){ this.x=x   this.y=y }
     }
 \end{lstlisting}
 %\bruno{We talk about withers later on. So I think we should consider
@@ -97,14 +96,13 @@ to implement methods \Q@x@,\Q@y@ and \Q@of@.
 %\marco{with withers it will look more complicated}
 
 \noindent 
-With slightly different syntax, this approach is available in both Scala and Rust.
-This verbose approach works, and it as some advantages, but also
-some disadvantages: 
+With a slightly different syntax, this approach is available in both Scala and Rust.
+This verbose approach works, and it has some advantages, but also disadvantages: 
 
 \begin{itemize}
 
 \item {\bf Advantages:} This approach is associative and commutative, even self construction
-  can be allowed if the trait requires a static/class method
+  can be allowed if the trait requires a static method
   returning \Q@This@. The class will then implement the methods returning \Q@This@
   by forwarding a call to the constructor.
   
@@ -137,7 +135,7 @@ as factory, getters and setters. Methods recognised as factory, getters and sett
 classes is given next:
 \begin{itemize}
 \item a class with no abstract methods is coherent (just like Java
-  \Q@Math@, for example). Such classes are useful for calling class/static methods.
+  \Q@Math@, for example). Such classes are useful for calling static methods.
 \item a class with a single abstract \Q@static@ method returning \Q@This@
 is coherent if all the other abstract methods can be seen as \emph{abstract state
 operations} over one of its argument.
@@ -146,7 +144,7 @@ if there is a \Q@static method This of(int x, int y)@ as before,
 then
 \begin{itemize}
 \item a method \Q@int x()@ is interpreted as an abstract state method: a \emph{getter} for \Q@x@.
-\item a method \Q@Void x(int that)@ is a \emph{setter} for x.
+\item a method \Q@void x(int that)@ is a \emph{setter} for x.
 \end{itemize}
 \end{itemize}
 \noindent
@@ -155,7 +153,7 @@ support more operations. For example:
 \begin{itemize}
 \item \Q@method This withX(int that)@
 may be a ``wither", doing a functional field update: it creates a new instance that is like \Q@this@ but where field \Q@x@ has now \Q@that@ value.
-\item \Q@method Void update(int x,int y)@
+\item \Q@method void update(int x,int y)@
 may do two field updates at a time.
 \item\Q@method This clone()@ may do a shallow clone of the object.
 \end{itemize}
@@ -189,10 +187,12 @@ In \name and with our approach to handle the state,
   p: { method int x() method int y()
     static method This of(int x,int y)
     }
-  pointSum:Use p, { method This sum(This that)
+  pointSum:Use p, { 
+    method This sum(This that)
       This.of(this.x()+that.x(),this.y()+that.y())
     }
-  pointMul:Use p, { method This mul(This that)
+  pointMul:Use p, { 
+    method This mul(This that)
       This.of(this.x()*that.x(),this.y()*that.y())
     }
   pointDiv: ...
@@ -208,12 +208,12 @@ this would be:
 \saveSpace
 \begin{lstlisting}
   colored:{ method Color color() }
-  Point:Use pointSum,colored //Fails: class not coherent
+  CPoint:Use pointSum,colored //Fails: class not coherent
 \end{lstlisting}
 \saveSpace
 This first attempt does not work: the abstract color method
 is not a getter for any of the parameters of 
-\Q@ class method This of(int x,int y)@. 
+\Q@ static method This of(int x,int y)@. 
 A solution is to provide a richer factory:
 \saveSpace
 \begin{lstlisting}
@@ -243,7 +243,8 @@ a better design would be the following:
     static method This of(int x,int y)
     method This merge(This that) //new method merge!
     }
-  pointSum:Use p, { method This sum(This that)
+  pointSum:Use p, { 
+    method This sum(This that)
       this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y())
     }
   colored:{method Color color()
@@ -263,15 +264,15 @@ a better design would be the following:
   In order to compose, let say \Q@colored@ with \Q@flavored@ we would
   need to compose the merge operation inside of both of them.
 
-Just \use\ is not sufficient, since we need to combine the implementation of 2 different version of \Q@merge@.
+Just \use\ is not sufficient, since we need to combine the implementation of 2 different versions of \Q@merge@.
 We introduce here an operator \Q@restrict@.
 Restrict makes a method abstract and
-move the implementation to another name. This is very useful to implement \Q@super@
+moves the implementation to another name. This is very useful to implement \Q@super@
  and to compose conflicting implementations.
 
 The following code shows how to mix colours and flavours. 
-Note how we use \Q@restrict@ to introduce method selectors \Q@_2merge@ and \Q@_3merge@
-to refer to the version of \Q@merge@ as defined in the second/third element of \use.
+Note how we use \Q@restrict@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
+to refer to the version of \Q@merge@ as defined in the first/second element of \use.
 \saveSpace\begin{lstlisting}
   p: {/*as before*/ }
   pointSum:Use p, {/*as before*/ }
@@ -280,7 +281,7 @@ to refer to the version of \Q@merge@ as defined in the second/third element of \
       method Flavor flavor() //very similar to colored
       method This withFlavor(Flavor that)
       method This merge(This that) //merging flavors handled here
-        this.withFlavor(that.flavor())}//inherits ``that'' flavor
+        this.withFlavor(that.flavor())}//inherits "that" flavor
   FCPoint:Use
     colored[restrict merge as _1merge],
     flavoured[restrict merge as _2merge],
@@ -294,7 +295,7 @@ to refer to the version of \Q@merge@ as defined in the second/third element of \
       }
 \end{lstlisting}  \saveSpace\saveSpace
 
-Note how we are levering on the fact that the code literal
+Note how we are leveraging on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
