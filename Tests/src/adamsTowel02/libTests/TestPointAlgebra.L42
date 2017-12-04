@@ -1,0 +1,62 @@
+{reuse L42.is/AdamTowel02
+
+Flavor: Enumeration"sour, sweet, salty, spicy"
+Color:Data<><{Num r Num g Num b
+  method This mix(This that)
+    Color(
+      r:(this.r()+that.r())/2Num
+      g:(this.g()+that.g())/2Num
+      b:(this.b()+that.b())/2Num
+      )
+  }
+
+
+$p: Resource <>< {
+  method Num x() method Num y() //getters
+  method This withX(Num that) method This withY(Num that)//withers
+  class method This of(Num x,Num y)
+  method This merge(This that) //new method merge!
+  }
+
+$pointSum: Resource <>< Use[$p()] <>< {
+  method This sum(This that)
+    this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y())
+  }
+
+$colored: Resource <>< {
+  method Color color()
+  method This withColor(Color that)
+  method This merge(This that) //how to merge color handled here
+    this.withColor(this.color().mix(that.color()))
+  }
+
+$flavored: Resource <>< {
+  method Flavor flavor() //very similar to colored
+  method This withFlavor(Flavor that)
+  method This merge(This that) //merging flavors handled here
+    this.withFlavor(that.flavor())}//inherits "that" flavor
+
+CPoint: Use[$pointSum();$colored()] <>< {
+  class method This of(Num x,Num y) This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num))
+  class method This of(Num x, Num y,Color color)
+  }
+FCPoint: Use[
+  Refactor2.toAbstract(
+    selector:\"merge(that)", into:\"_1merge(that)")<><$colored();
+  Refactor2.toAbstract(
+    selector:\"merge(that)", into:\"_2merge(that)")<><$flavored();
+  $pointSum()] <>< {
+    class method This of(Num x,Num y)
+      This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num),flavor:Flavor.none())
+    class method This of(Num x, Num y,Color color,Flavor flavor)
+    //resolves the conflict about two implementations for merge
+    //by proving our own implementation here
+    method This merge(This that) this._1merge(that)._2merge(that)
+    }
+Main:{
+  Debug(S"HI")
+  c=Color(r:100Num,g:0Num,b:0Num)
+  Debug(c)
+  return ExitCode.normal()
+  }
+}

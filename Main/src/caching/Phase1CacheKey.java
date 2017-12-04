@@ -22,11 +22,11 @@ import profiling.Timer;
 import programReduction.Program;
 
 /**
- 
+
  file ff.P42
 containes
 cacheKey:
-  srcFileString,  //for example This.L42 if is a folder
+  FileName,  //for example This.L42 if is a folder
   map<url,srcFileString>//loaded while caching
   map<deepFileName,srcFileString>//readed while caching
 cacheData:
@@ -38,7 +38,7 @@ cacheData:
 6-if different, cacheKey=empty, normal execution..
 compute up to top execute()
 make new cacheVal /cacheKey with the typed program there.
- 
+
  * */
 
 public class Phase1CacheKey implements Serializable{
@@ -105,7 +105,7 @@ private static final long serialVersionUID = 1L;
     Path fn=fileName();
     String name=fn.getName(fn.getNameCount()-1).toString();
     assert name.endsWith(".L42");
-    return name.substring(0, name.length()-4);  
+    return name.substring(0, name.length()-4);
     }
 
   public static String _contentOrNull(Path fn){
@@ -162,7 +162,7 @@ private static final long serialVersionUID = 1L;
     catch (ClassCastException e) {throw new InvalidCacheFile(e);}//means file corrupted?
     finally{Timer.deactivate("ReadCacheKey");}
     }
-  
+
   public static Program _handleCache(){
     if(L42.cacheK._fileName==null){return null;}
     Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
