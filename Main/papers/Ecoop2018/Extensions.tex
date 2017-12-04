@@ -249,24 +249,29 @@ In \name we can obtain the same kind of code reuse, without the need of introduc
 the concepts related to the Visitor Pattern.
 With redirect, rename and restrict we can have the general operator propagator:
 \begin{lstlisting}
-operation:{//for sum and lit, easy to extends as before
-  T:{}
-  Exp:{interface method Exp op(T x)}}
-  Sum:Use sum,{ extends Exp sum,expAdd1,{
-    method Exp op(T x)
-      Sum.of(left.op(x),right.op(x))  }
-  Lit:Use lit,{
-    method Exp op(T x)  this
-  }
+operation:Use lit, sum, {//for sum and lit, easy to extends as before
+  Arg:{}
+  Exp:{interface method Exp op(Arg x)}
+  Lit:{
+    method Exp op(Arg x){return this}
+    }
+  Sum:{
+    method Exp op(Arg x){
+      return Sum.of(this.left().op(x),this.right().op(x))
+      }
+    }
 \end{lstlisting}
 
 Now, to have \Q@addN@ we can do the following.
 
 \begin{lstlisting}
-opAddn: Use
-  operation[redirect T to Int]
-    [rename Exp.op(x) to addN(x)][restrict Lit.op(x)], {
-  Lit:{method Exp addN(Int x) Lit.of(inner())+x}
+opAddn:Use operation
+  [redirect Arg to Int]
+  [rename Exp.op(x) to addN(x)]
+  [restrict Lit.op(x)], {
+  Lit:{
+    method Exp addN(Int x){ return Lit.of(inner())+x}
+    }
   }
 \end{lstlisting}  
 
