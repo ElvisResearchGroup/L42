@@ -22,6 +22,20 @@ $pointSum: Resource <>< Use[$p()] <>< {
   method This sum(This that)
     this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y())
   }
+$pointSub: Resource <>< Use[$p()] <>< {
+  method This sub(This that)
+    this.merge(that).withX(this.x()-that.x()).withY(this.y()-that.y())
+  }
+$pointMul: Resource <>< Use[$p()] <>< {
+  method This mul(This that)
+    this.merge(that).withX(this.x()*that.x()).withY(this.y()*that.y())
+  }
+$pointDiv: Resource <>< Use[$p()] <>< {
+  method This div(This that)
+    this.merge(that).withX(this.x()/that.x()).withY(this.y()/that.y())
+  }
+
+PointAlgebra: Resource <>< Use[$pointSum();$pointSub();$pointMul();$pointDiv()] <>< {}
 
 $colored: Resource <>< {
   method Color color()
@@ -36,7 +50,7 @@ $flavored: Resource <>< {
   method This merge(This that) //merging flavors handled here
     this.withFlavor(that.flavor())}//inherits "that" flavor
 
-CPoint: Use[$pointSum();$colored()] <>< {
+CPoint: Use[PointAlgebra();$colored()] <>< {
   class method This of(Num x,Num y) This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num))
   class method This of(Num x, Num y,Color color)
   }
