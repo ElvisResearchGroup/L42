@@ -1,4 +1,4 @@
-﻿Syntax
+Syntax
 D::=TD|CD
 TE::=t:E Trait Decl Expr
 CE::=C:E Class Decl
@@ -63,21 +63,23 @@ Notations: we use the . to extract sub parts of the tree, as in the 42 documents
     CDs|-t=L : OK
 
     
-  forall i in 1..n CDs(Ti).interface?=interface
+  
   forall i in 1..k T;CDs|-Mi:Ok
--------------------------------------------
-  T;CDs|-{interface? implements T1..Tn M1..Mk} :Ok
+-------------------------------------------  L={interface? implements T1..Tn M1..Mk} 
+  T;CDs|-L:Ok                                forall i in 1..n CDs(Ti).interface?=interface
+                                             forall i in 1..n and m in dom(CDs(Ti)), m in dom(L)
 
 
   T.C; CDs|-L :Ok
  ------------------
   T;CDs|-C=L : Ok 
 
-    
-  if e?=e then CDs; this:T,x1:T1 .. xn:Tn|-e:T     CDs(C).Ts=T1..Tn
-------------------------------------------------   forall i, if m in CDs(Ti) then
+
+  if e?=e then CDs; G|-e:T                         
+------------------------------------------------   forall T in CDs(C).Ts, if m in dom(CDs(Ti)) then
    T;CDs|-static? T0 m(T1 x1..Tn xn) e?              static? T0 m(T1 x1..Tn xn) in CDs(Ti)
-  
+                                                   if static?=static then G=x1:T1 .. xn:Tn
+                                                   else G=this:T,x1:T1 .. xn:Tn
    
    CDs;G|-e:T1
    CDs|-T1<=T2
