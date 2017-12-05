@@ -40,6 +40,40 @@ In the following, we present a simplified grammar of \name:
 \end{bnf}
 %\end{comment}
 
+\begin{figure}[t]
+\fbox{$a\rightarrow b, a \Rightarrow b,
+a \xrightarrow[\overline{D}]{+} b $: short description}
+\\[1ex]
+$
+\!\!\!\begin{array}{l}
+ \inferrule[(myName)]{
+  a(b) \text{not of form } C\ \oC \overline{M} \cC \\\\
+  \forall i \in 1..n \text{ another premise}
+  }
+{ \Gamma\vdash x:\Gamma(x)} 
+\\[4ex] %to go new line
+ \inferrule[(myName2)]{
+  a(b) \text{not of form } C\ \oC \overline{M} \cC \\\\
+  \forall i \in 1..n \text{ another premise}
+  }
+{ \Gamma\vdash x:\Gamma(x)} 
+
+\end{array}
+$
+
+
+\caption{Metarules}
+\end{figure}
+
+\noindent\textbf{Definition:}$a+b=c$\\
+$\begin{array}{l}
+\!\!\!\bullet\ a+b=c\quad  \text{where}\\
+\quad\quad a=\oC\ldots \cC\\
+\!\!\!\bullet\ a+(b b)=a b b\\
+\!\!\!\bullet\ \text{otherwise} a+ b =a\text{where}\\
+\quad\quad a<b\\
+\end{array}$
+
 \noindent To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
 expression.  In full 42 we support various operators (restrict, hide,
 alias), but in \name we focus on the single operator 
