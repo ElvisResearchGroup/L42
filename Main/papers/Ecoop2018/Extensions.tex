@@ -104,15 +104,15 @@ that clutters the solution in~\cite{Deepfjig}.
 //Definition of the datavariants state
 exp:{//Exp declared once, reused everywhere
   Exp:{interface}
-  T:{implements Exp}
+  T:{implements .Exp}
   }
 lit:Use exp[rename T in Lit],{//T renamed in Lit is 
-  Lit:{ method Int inner() static method Lit of(Int inner)
+  Lit:{ method Int inner() static method .Lit of(Int inner)
     }//summed with the current Lit
   }
 sum:Use exp[rename T in Sum],{//same for the other
-  Sum:{ method Exp left() method Exp right()
-    static method Sum(Exp left, Exp right) }
+  Sum:{ method .Exp left() method .Exp right()
+    static method .Sum of(.Exp left, .Exp right) }
   }
 uminus:Use exp[rename T in UMinus],{
   UMinus:{ ... }
@@ -171,16 +171,16 @@ Since every datavariant would have to copy the "cast" logic,
 
 \begin{lstlisting}
 expEquals:{
-  Exp:{interface method Bool equals(Exp that)}
-  T:{implements Exp
-    method Bool exactEqual(T that)
-    method Bool equals(Exp that){
-      if(!(that instanceof T)){ return false;}
-      return exactEqual( (T) that );
+  Exp:{interface method Bool equals(.Exp that)}
+  T:{implements .Exp
+    method Bool exactEqual(.T that)
+    method Bool equals(.Exp that){
+      if(!(that instanceof .T)){ return false;}
+      return exactEqual( (.T) that );
       }  }  }
 sumEquals:Use sum,expEquals[rename T in Sum],{
   Sum:{
-    method Bool exactEquals(Sum that){
+    method Bool exactEquals(.Sum that){
       return this.left().equals(that.left()) 
         && this.right().equals(that.right());
       }  }  }
@@ -215,14 +215,14 @@ this has been criticized to not really address the fundamental issues since it d
 Now we show how we can go beyond the traditional expression problem by encoding transformer methods:
 For example, lets add 1 to all literals
 \begin{lstlisting}
-expAdd1:{Exp:{interface method Exp add1()}}
-sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
-    method Exp add1()
-      Sum.of(left.add1(), right.add1())
+expAdd1:{Exp:{interface method .Exp add1()}}
+sumAdd1:Use sum,expAdd1,{Sum:{implements .Exp
+    method .Exp add1()
+      .Sum.of(this.left().add1(), this.right().add1())
   }
-litAdd1:Use lit,expAdd1,{Lit:{implements Exp
-    method Exp add1()
-      Lit.of(inner()+1);
+litAdd1:Use lit,expAdd1,{Lit:{implements .Exp
+    method .Exp add1()
+      .Lit.of(inner()+1);
     }
 
 MySolutionAdd1:Use sumToS,litToS,sumAdd1,litAdd1
@@ -251,13 +251,13 @@ With redirect, rename and restrict we can have the general operator propagator:
 \begin{lstlisting}
 operation:Use lit, sum, {//for sum and lit, easy to extends as before
   Arg:{}
-  Exp:{interface method Exp op(Arg x)}
+  Exp:{interface method .Exp op(.Arg x)}
   Lit:{
-    method Exp op(Arg x){return this}
+    method .Exp op(.Arg x){return this}
     }
   Sum:{
-    method Exp op(Arg x){
-      return Sum.of(this.left().op(x),this.right().op(x))
+    method .Exp op(.Arg x){
+      return .Sum.of(this.left().op(x),this.right().op(x))
       }
     }
 \end{lstlisting}
@@ -270,7 +270,7 @@ opAddn:Use operation
   [rename Exp.op(x) to addN(x)]
   [restrict Lit.op(x)], {
   Lit:{
-    method Exp addN(Int x){ return Lit.of(inner())+x}
+    method .Exp addN(Int x){ return .Lit.of(inner())+x}
     }
   }
 \end{lstlisting}  
