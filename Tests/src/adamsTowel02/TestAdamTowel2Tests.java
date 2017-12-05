@@ -33,6 +33,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       //"_.L42", // Name of a file in libTests; edit to match your file
 
       "TestPointAlgebra.L42",
+      "TestPointFC.L42",
       "TestResource.L42",
       "TestHelloWorld.L42",
       "TestRefactorFailToS.L42",
