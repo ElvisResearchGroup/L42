@@ -4,6 +4,13 @@
 This section sketches some of the key ideas in \name more
 formally. A similarly interleaving approach can be seen in~\cite{servetto2014meta} fully formalized.
 
+To simplify the formalism, 
+ we have some difference in the concrete syntax.
+We use binary \Q@+@ instead of \use
+and when referring to a nested type, we require the fully
+qualified typename. For a nested class of a trait,
+is going to look like \Q@This.Exp@.
+
 %In this article we dedicate more space to examples and informal presentation and motivations;
 %so we do not have space to provide a full formalizations.
 %We will provide here some hints on how the formalization works.
@@ -32,6 +39,40 @@ In the following, we present a simplified grammar of \name:
 \prodFull\mD{\mCD\mid\mTD}{Declaration}\\
 \end{bnf}
 %\end{comment}
+
+\begin{figure}[t]
+\fbox{$a\rightarrow b, a \Rightarrow b,
+a \xrightarrow[\overline{D}]{+} b $: short description}
+\\[1ex]
+$
+\!\!\!\begin{array}{l}
+ \inferrule[(myName)]{
+  a(b) \text{not of form } C\ \oC \overline{M} \cC \\\\
+  \forall i \in 1..n \text{ another premise}
+  }
+{ \Gamma\vdash x:\Gamma(x)} 
+\\[4ex] %to go new line
+ \inferrule[(myName2)]{
+  a(b) \text{not of form } C\ \oC \overline{M} \cC \\\\
+  \forall i \in 1..n \text{ another premise}
+  }
+{ \Gamma\vdash x:\Gamma(x)} 
+
+\end{array}
+$
+
+
+\caption{Metarules}
+\end{figure}
+
+\noindent\textbf{Definition:}$a+b=c$\\
+$\begin{array}{l}
+\!\!\!\bullet\ a+b=c\quad  \text{where}\\
+\quad\quad a=\oC\ldots \cC\\
+\!\!\!\bullet\ a+(b b)=a b b\\
+\!\!\!\bullet\ \text{otherwise} a+ b =a\text{where}\\
+\quad\quad a<b\\
+\end{array}$
 
 \noindent To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
 expression.  In full 42 we support various operators (restrict, hide,
