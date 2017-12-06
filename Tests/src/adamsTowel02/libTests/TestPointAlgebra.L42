@@ -1,34 +1,39 @@
 {reuse L42.is/AdamTowel02
 
 $p: Resource <>< {
-  method Num x() method Num y() 
+  method Num x()
+  method Num y()
   class method This of(Num x,Num y)
   }
-
 
 $pointSum: Resource <>< Use[$p()] <>< {
   method This sum(This that)
     This.of(x: this.x()+that.x(), y: this.y()+that.y())
   }
+
 $pointSub: Resource <>< Use[$p()] <>< {
   method This sub(This that)
     This.of(x: this.x()-that.x(), y: this.y()-that.y())
   }
+
 $pointMul: Resource <>< Use[$p()] <>< {
   method This mul(This that)
     This.of(x: this.x()*that.x(), y: this.y()*that.y())
   }
+
 $pointDiv: Resource <>< Use[$p()] <>< {
   method This div(This that)
     This.of(x: this.x()/that.x(), y: this.y()/that.y())
   }
 
-
 Point: Use[$p()] <>< {}
 
 PointSum: Use[$pointSum()] <>< {}
+
 PointSub: Use[$pointSub()] <>< {}
+
 PointMul: Use[$pointMul()] <>< {}
+
 PointDiv: Use[$pointDiv()] <>< {}
 
 PointSumSub: Use[$pointSum();$pointSub()] <>< {}
