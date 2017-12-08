@@ -1,10 +1,31 @@
 \saveSpace\saveSpace\section{Intuitions on formalization}\label{sec:formal}
 \saveSpace\saveSpace
 
+Figure 1 contains the complete formalization for the 
+compilation process and the type system for \name.
+It starts with the syntax, then
+show
+\noindent Notations: we use the . to extract sub parts of the tree, as in the 42 documents, to explain\\
+
+\noindent\textbf{Define }$\mL_1+\mL_2, \ \overline{\mM}+\overline{\mM},\ \mM+\mM$\\
+$\begin{array}{l}
+\!\!\!\bullet\ \mL_1+\mL_2 =\mL_3\quad\text{where}\\
+\quad\quad \mL_1= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1\ \overline\mM_1\ \overline\mM_0\cC\\
+\quad\quad \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0\cC\\
+\quad\quad \mL_3= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1,\overline\mT_2\ \overline\mM_1,\overline\mM_2\ (\overline\mM_0+\overline\mM_0')\cC\\
+\quad\quad \dom(\overline\mM_1)\ \pitchfork \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\\\
+
+\!\!\!\bullet\ \mM_1..\mM_n+\mM'_1+\mM'_n\ = \ \mM_1+\mM'_1..\mM_n+\mM'_n\\
+
+\!\!\!\bullet\ \mC\terminalCode{=}\mL_1+\mC\terminalCode{=}\mL_2\ = \ \mC\terminalCode{=}\mL_3\quad if \mL_1+\mL_2\\
+
+\!\!\!\bullet\ \mM_1+\mM_2=\mM_2+\mM_1\\
+
+\!\!\!\bullet\ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \ + \ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me = \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me\\
+\end{array}$
+
+\begin{figure}
 %NEW FORMALISATION below
-
-
-
 % Syntax
 % D::=TD|CD
 % TE::=t:E Trait Decl Expr
@@ -23,8 +44,11 @@
 \prodFull\mCE{\mC\terminalCode{:}\mE}{Class Decl Expr}\\
 \prodFull\mTD{\mt\terminalCode{:}\mL}{Trait Decl}\\
 \prodFull\mCD{\mC\terminalCode{:}\mL}{Class Decl}\\
-\prodFull\mE{\mL \mid \mt \mid \mE\terminalCode{+}\mE \mid
-\mE\terminalCode{[rename}\ \mT\terminalCode{.}\mm_1\ \terminalCode{to}\ \mm_2\terminalCode{]} \mid
+\prodFull\mE{\mL \mid \mt \mid \mE\,\terminalCode{+}\mE
+\mid \mE\terminalCode{[rename}\ \mT\terminalCode{.}\mm_1\ \terminalCode{to}\ \mm_2\terminalCode{]}
+}{}\\
+\prodNextLine{
+ \mid
 \mE\terminalCode{[rename}\ \mT_1\ \terminalCode{in}\ \mT_2\terminalCode{]} \mid
 \mE\terminalCode{[redirect}\ \mT_1\ \terminalCode{to}\ \mT_2\terminalCode{]}}{Code Expression}\\
 
@@ -37,8 +61,6 @@
 \end{bnf}\\
 \\
 
-\noindent Notations: we use the . to extract sub parts of the tree, as in the 42 documents, to explain\\
-
 $
 \!\!\!\begin{array}{l}
 
@@ -47,50 +69,49 @@ $
 %      CD1..CDn CDs' D Ds -> CDs CDs' D[with E=L] Ds
 
  \inferrule[(top)]{
-    \mD.\mE \xrightarrow[\overline{\mCD}]{}^+ \mL \quad\overline{\mCD}\vdash\mCD_1:\text{OK} \  .. \  \overline{\mCD}\vdash\mCD_n:\text{OK} 
+    \mD.\mE \xrightarrow[\overline{\mCD}]{}^+ \mL \quad\overline{\mCD}\vdash\mCD_1:\text{OK} \  \ldots\  \overline{\mCD}\vdash\mCD_n:\text{OK} 
   }{ 
-    \mCD_1..\mCD_n \ \overline{\mCD'}\ \mD \ \overline{D} \rightarrow \overline{\mCD}\ \overline{\mCD'}\ \mD\text{[with \mE=\mL]}\ \overline{\mD}
+    \overline{\mCD} \ \overline{\mCD'}\ \mD \ \overline{D} \rightarrow \overline{\mCD}\ \overline{\mCD'}\ \mD\text{[with \mE=\mL]}\ \overline{\mD}
   } \begin{array}{l}\overline{\mCD}\text{ = }\mCD_1..\mCD_n \\ \mD.\mE\ \text{not of form}\ \mL \end{array}
-\\[4ex]
-
+\quad\quad
 %
 %     ------------------------
 %      t -->_CDs CDs(t)
 
- \inferrule[]{
+ \inferrule[(trait-look-up)]{
     \ 
   }{ 
     \mt \xrightarrow[\overline{\mCD}]{}\ \overline{\mCD}\oR\mt\cR
   }
-\\[5ex] 
+\\[4ex]
 
 %      E0-->_CDsE1
 %    ------------------------
 %    E0+E2  -->_CDs E1+E2
 
-\inferrule[]{
+\inferrule[(left-propagation)]{
     \mE_0 \xrightarrow[\overline{\mCD}]{}\ \mE_1
   }{ 
      \mE_0+\mE_2 \xrightarrow[\overline{\mCD}]{}\ \mE_1+\mE_2
   }
-\\[5ex] 
+\quad\quad
 
 %      E0-->_CDsE1
 %    ------------------------
 %    L+E0  -->_CDs L+E1
 
-\inferrule[]{
+\inferrule[(right-propagation)]{
     \mE_0 \xrightarrow[\overline{\mCD}]{}\ \mE_1
   }{ 
      \mL+\mE_2 \xrightarrow[\overline{\mCD}]{}\ \mL+\mE_2
   }
-\\[5ex] 
+\quad\quad
 
 %
 %      --------------------------      L = L1+L2
 %      L1+L2  -->_CDs L
 
-\inferrule[]{
+\inferrule[(sum)]{
     \
   }{ 
      \mL_1+\mL_2 \xrightarrow[\overline{\mCD}]{}\ \mL
@@ -99,40 +120,6 @@ $
 $\\
 \\
 
-%   Define L1+L2, Ms+Ms,  M+M
-%   L1+L2  =  L3
-%   L1={ interface? implements Ts1 Ms1 Ms0}
-%   L2={ interface? implements Ts2 Ms2 Ms0'}
-%   L3={ interface? implements Ts1,Ts2 Ms1,Ms2 (Ms0+Ms0')}
-%   dom(Ms1) disj dom(Ms2)
-%   dom(Ms0) = dom(Ms0')
-%    
-%   M1..Mn+M'1..M'n  =  M1+M'1..Mn+M'n
-%   
-%   C=L1+C=L2  =  C=L3  if L1+L2
-%   
-%   M1+M2  =  M2+M1
-%   
-%   static? method T0 m(T1 x1..Tn xn) + static? method T0 m(T1 x1..Tn xn) e?
-%     =  static? method T0 m(T1 x1..Tn xn) e?
-
-\noindent\textbf{Define }$\mL_1+\mL_2, \ \overline{\mM}+\overline{\mM},\ \mM+\mM$\\
-$\begin{array}{l}
-\!\!\!\bullet\ \mL_1+\mL_2 =\mL_3\\
-\!\!\!\bullet\ \mL_1= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1\ \overline\mM_1\ \overline\mM_0\cC\\
-\!\!\!\bullet\ \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0\cC\\
-\!\!\!\bullet\ \mL_3= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1,\overline\mT_2\ \overline\mM_1,\overline\mM_2\ \oR\overline\mM_0+\overline\mM_0'\cR\cC\\
-\!\!\!\bullet\ dom\oR\overline\mM_1\cR\ \text{disj}\ dom\oR\overline\mM_2\cR\\
-\!\!\!\bullet\ dom\oR\overline\mM_0\cR\ =\ dom\oR\overline\mM_0'\cR\\\\
-
-\!\!\!\bullet\ \mM_1..\mM_n+\mM'_1+\mM'_n\ = \ \mM_1+\mM'_1..\mM_n+\mM'_n\\
-
-\!\!\!\bullet\ \mC=\mL_1+\mC=\mL_2\ = \ \mC=\mL_3\quad if \mL_1+\mL_2\\
-
-\!\!\!\bullet\ \mM_1+\mM_2=\mM_2+\mM_1\\
-
-\!\!\!\bullet\ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \ + \ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me = \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me\\
-\end{array}$
 
 $
 \!\!\!\begin{array}{l}
@@ -141,21 +128,21 @@ $
 % ----------------------------------------- coherent(L)
 %  CDs|-C=L : OK
 
-\inferrule[]{
-    \mC;\overline\mCD,\mC=\mL\vdash \mL[This=\mC]\ :\text{OK}
+\inferrule[(CD-OK)]{
+    \mC;\overline\mCD,\mC\terminalCode{=}\mL\vdash \mL[\terminalCode{This}=\mC]\ :\text{OK}
   }{ 
-     \overline\mCD \vdash \mC=\mL\ :\text{OK}
+     \overline\mCD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
   } \terminalCode{coherent}\oR\mL\cR
-\\[5ex] 
+\quad\quad 
 
 %    This;CDs,This=L |- L :OK
 %----------------------------------------
 %    CDs|-t=L : OK
 
-\inferrule[]{
-    This;\overline\mCD,This=\mL\vdash \mL\ :\text{OK}
+\inferrule[(TD-OK)]{
+    \terminalCode{This};\overline\mCD,\terminalCode{This=}\mL\vdash \mL\ :\text{OK}
   }{ 
-     \overline\mCD \vdash \mt=\mL\ :\text{OK}
+     \overline\mCD \vdash \mt\terminalCode{=}\mL\ :\text{OK}
   }
 \\[5ex] 
 
@@ -164,8 +151,10 @@ $
 %  T;CDs|-L:Ok                                         forall i in 1..n 	CDs(Ti).interface?=interface
 %                                                             forall i in 1..n and m in 	dom(CDs(Ti)), m in dom(L)
 
-\inferrule[]{
-    \forall i \in 1..k\ \mT;\overline\mCD\vdash\mM_1:\text{OK}
+\inferrule[(Many-M)]{
+    \mT;\overline\mCD\vdash\mM_1:\text{OK}
+\ldots
+    \mT;\overline\mCD\vdash\mM_k:\text{OK}
   }{ 
      \mT;\overline\mCD \vdash \mL\ :\text{OK}
   } \begin{array}{l} 
@@ -176,55 +165,56 @@ $
 
 \\[5ex] 
 
-%  T.C; CDs|-L :Ok
-% ------------------
-%  T;CDs|-C=L : Ok 
-
-\inferrule[]{
-    \mT;\overline\mC,\overline\mCD\vdash \mL\ :\text{OK}
-  }{ 
-     \mT;\overline\mCD \vdash \mC=\mL\ :\text{OK}
-  }
-\\[5ex] 
-
 %  if e?=e then CDs; G|-e:T                         
 %----------------------------------------------------------   forall T in CDs(C).Ts, if m in dom(CDs(Ti)) then
 %   T;CDs|-static? T0 m(T1 x1..Tn xn) e?              static? T0 m(T1 x1..Tn xn) in CDs(Ti)
 %                                                                        if static?=static then G=x1:T1 .. xn:Tn
 %                                                                        else G=this:T,x1:T1 .. xn:Tn
 
-\inferrule[]{
-    \terminalCode{if}\ \Opt\me=\me\ \terminalCode{then}\ \overline\mCD; \mG\vdash\me:\mT
+\inferrule[(Method-OK)]{
+    \text{if}\ \Opt\me=\me\ \text{then}\ \overline\mCD; \mG\vdash\me:\mT
   }{ 
      \mT;\overline\mCD \vdash \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me
   } \begin{array}{l} 
-  \forall \mT \in \overline\mCD\oR\mC\cR.\overline\mT,\ \terminalCode{if}\ \mm \in \text{dom}\oR \overline\mCD\oR\mT_i\cR\cR\ \terminalCode{then} \\
+  \text{if}\ \Opt{\terminalCode{static}}=\terminalCode{static}\ \text{then}\ \mG=\mx_1:\mT_1\ .. \ \mx_n:\mT_n\ \\
+  \quad\text{else}\ \mG=\terminalCode{this}:\mT,\mx_1:\mT_1\ ..\ \mx_n:\mT_n
+  \\
+  \forall \mT_i \in \overline\mCD\oR\mC\cR.\overline\mT,\ \text{if}\ \mm \in \text{dom}\oR \overline\mCD\oR\mT_i\cR\cR\ \text{then} \\
   \quad\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \in \overline\mCD\oR\mT_i\cR \\
-  \terminalCode{if}\ \Opt{\terminalCode{static}}=\terminalCode{static}\ \terminalCode{then}\ \mG=\mx_1:\mT_1\ .. \ \mx_n:\mT_n\ \\
-  \quad\terminalCode{else}\ \mG=this:\mT,\mx_1:\mT_1\ ..\ \mx_n:\mT_n
    \end{array}
 \\[5ex] 
+
+
+%  T.C; CDs|-L :Ok
+% ------------------
+%  T;CDs|-C=L : Ok 
+
+\inferrule[(Nested-OK)]{
+    \mT;\overline\mC,\overline\mCD\vdash \mL\ :\text{OK}
+  }{ 
+     \mT;\overline\mCD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
+  }
+\quad\quad
 
 %   CDs;G|-e:T1
 %   CDs|-T1<=T2
 %--------------------
 %   CDs;G|-e:T2
 
-\inferrule[]{
+\inferrule[(Subsumption)]{
 %  \begin{array}{l}
     \overline\mCD; \mG\vdash\me: \mT_1  \\\\
-    \overline\mCD\vdash\mT_1 \Leftarrow \mT_2
+    \overline\mCD\vdash\mT_1 \leq \mT_2
 %  \end{array}
   }{ 
      \overline\mCD; \mG\vdash\me: \mT_2
   }
-\\[5ex] 
-
+\quad\quad
 %   
 %--------------------
 %   CDs;G|-x:G(x)
 
-\inferrule[]{
+\inferrule[(X)]{
     \
   }{ 
     \overline\mCD; \mG\vdash\mx: \mG\oR\mx\cR
@@ -235,7 +225,7 @@ $
 %------------------------------------------    static T m(T1 x1..Tn xn) _ in CDs(T0)
 %  CDs;G|-T0.m(e1..en):T
 
-\inferrule[]{
+\inferrule[(Method-Call)]{
     \mCD;\mG\vdash\me_1:\mT_1\ .. \ \mCD;\mG\vdash\me_n:\mT_n
   }{ 
     \mCD;\mG\vdash \mT_0.\mm\oR\me_1\ .. \ \me_n\cR:\mT
@@ -246,7 +236,7 @@ $
 %---------------------------------------------    static T m(T1 x1..Tn xn) _ in CDs(T0)
 %  CDs;G|-e0.m(e1..en):T
 
-\inferrule[]{
+\inferrule[(Static-Method-Call)]{
     \mCD;\mG\vdash\me_0:\mT_0\ .. \ \mCD;\mG\vdash\me_n:\mT_n
   }{ 
     \mCD;\mG\vdash \me_0.\mm\oR\me_1\ .. \ \me_n\cR:\mT
@@ -255,8 +245,8 @@ $
 
 \end{array}
 $\\
-
-\textbf {>> FORMALISATION ENDS HERE} \\
+\caption{Formalization}
+\end{figure}
 ---------------------------------------------------------------------------------------
 
 %new added FORMALISATION ENDS here
