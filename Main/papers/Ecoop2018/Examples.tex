@@ -24,6 +24,67 @@ $\begin{array}{l}
 \!\!\!\bullet\ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \ + \ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me = \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me\\
 \end{array}$
 
+ADD DESCRIPTION HERE
+
+\noindent\textbf{Define }$\text{coherent}(\mT,\mL)$\\
+$\begin{array}{l}
+\!\!\!\bullet\ \text{coherent}(\mT,
+\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT\ \overline\mM\cC
+)\quad\text{where}\\
+
+\quad\quad \forall \mC\terminalCode{=}\mL'\in\overline\mM \text{coherent}(\mT\terminalCode{.}\mC,\mL')\\
+\quad\quad \text{ either }
+\Opt{\terminalCode{interface}}=\terminalCode{interface}\\
+\quad\quad \text{or } 
+\forall
+\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM%
+\footnote{That is, all abstract methods}
+\text{state}(\text{factory}(\mT,\overline\mM),\mM)
+\end{array}$
+
+\noindent A Library is \emph{coherent} if 
+all the nested classes are coherent,
+and either the Library is an interface,
+there are no static methods, or all the static methods
+are a valid \emph{state} method of the candidate \emph{factory}.
+
+\noindent\textbf{Define }$\text{factory}(\mT,\overline\mM)$\\
+$\begin{array}{l}
+
+\!\!\!\bullet\ \text{factory}(\mT,\mM_1\ldots\mM_n)=\mM_i\quad\text{where}\\
+\quad\quad \mM_i.\Opt{\terminalCode{static}}=\terminalCode{static}\\
+\quad\quad \forall j\neq i.\mM_j.\Opt{\terminalCode{static}}=\emptyset\\
+\quad\quad \mM_i.\mT=\mT
+
+\end{array}$
+
+\noindent The candidate factory is the only static method, and
+its return type is the nominal type of our class.
+
+\noindent\textbf{Define }$\text{state}(\mM,\mM')$\\
+$\begin{array}{l}
+
+
+\!\!\!\bullet\ \text{state}(
+\terminalCode{static}\ \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+\terminalCode{method}\ \mT_i\ \mx_i\oR\cR
+)\\
+
+\!\!\!\bullet\ \text{state}(
+\terminalCode{static} \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+\terminalCode{method}\ \terminalCode{Void} \mx_i\oR\mT_i\,\terminalCode{that}\cR
+)\\
+
+\!\!\!\bullet\ \text{state}(
+\terminalCode{static} \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+\terminalCode{method}\ \mT \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR
+)\\
+
+\end{array}$
+
+\noindent A non static method is part of the \emph{abstract state} if 
+is a valid getter, setter or wither.
+
 \begin{figure}
 %NEW FORMALISATION below
 % Syntax
@@ -132,7 +193,7 @@ $
     \mC;\overline\mCD,\mC\terminalCode{=}\mL\vdash \mL[\terminalCode{This}=\mC]\ :\text{OK}
   }{ 
      \overline\mCD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
-  } \terminalCode{coherent}\oR\mL\cR
+  } \text{coherent}(\mC,\mL)
 \quad\quad 
 
 %    This;CDs,This=L |- L :OK
