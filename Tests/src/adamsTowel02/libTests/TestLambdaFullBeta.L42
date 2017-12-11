@@ -1,0 +1,92 @@
+{reuse L42.is/AdamTowel02
+
+$exp:Resource<><{
+  Exp:{interface}
+  T:{implements Exp}
+  }
+$lit:Resource<><Use[Refactor2.rename(path:\"T" into:\"Lit")<><$exp()]<><{
+  Lit:{
+    method Num inner()
+    class method Lit of(Num inner)
+    }
+  }
+$sum:Resource<><Use[Refactor2.rename(path:\"T" into:\"Sum")<><$exp()]<><{
+  Sum:{
+    method Exp left()
+    method Exp right()
+    class method Sum of(Exp left, Exp right)
+    }
+  }
+
+$uminus:Resource<><Use[Refactor2.rename(path:\"T" into:\"UMinus")<><$exp()]<><{
+  UMinus:{
+    method Exp inner()
+    class method UMinus of(Exp inner)
+  }
+}
+
+$expToS:Resource<><{
+  Exp:{interface
+    method S toString()
+    }
+  T:{implements Exp}
+  }
+
+$litToS:Resource<><Use[$lit(); Refactor2.rename(path:\"T" into:\"Lit")<><$expToS()]<><{
+  Lit:{
+    refine method S toString()
+      this.inner().toS()
+    }
+  }
+/*
+$sumToS:Resource<><Use[$lit(); Refactor2.rename(path:\"T" into:\"Sum")<><$expToS()]<><{
+sumToS:Use sum, expToS[rename T in Sum], {
+  Sum:{//just the implementation of the specific method
+    method S toString(){
+      return this.left().toString()+"+"+this.right().toString();
+      }  }  }
+uminusToS:...//implement toString for all the datavariants
+
+expEval:Use exp, {
+  T:{interface method int eval()}
+  }
+sumEval:Use sum,expEval[rename T in Sum], {
+  Sum:{//just the implementation of the
+    method int eval(){//specific method
+      return this.left().eval()+this.right().eval();
+      }  }  }
+expEquals:{
+  Exp:{interface method Bool equals(Exp that)}
+  T:{implements Exp
+    method Bool exactEqual(T that)
+    method Bool equals(Exp that){
+      if(!(that instanceof T)){ return false;}
+      return exactEqual( (T) that );
+      }  }  }
+sumEquals:Use sum,expEquals[rename T in Sum],{
+  Sum:{
+    method Bool exactEquals(Sum that){
+      return this.left().equals(that.left())
+        && this.right().equals(that.right());
+      }  }  }
+expEquals:{
+  Exp:{interface
+    method Bool equals(Exp that)
+    method Bool equalToT(T that)
+    }
+  T:{implements Exp
+    method Bool equals(Exp that){ that.equalToT(this); }
+    }  }
+sumEquals:Use sum,
+expEquals[rename T in Sum][rename Exp.equalToT in equalToSum],{
+  Sum:{
+    method Bool equalToSum(Sum that){
+      return this.left().equals(that.left())
+        && this.right().equals(that.right())
+      }  }  }
+
+*/
+Main: {
+  Debug(S"Hello LambdaFulLBeta")
+  return ExitCode.normal()
+} }

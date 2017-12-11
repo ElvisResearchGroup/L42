@@ -107,9 +107,9 @@ exp:{//Exp declared once, reused everywhere
   Exp:{interface}
   T:{implements Exp}
   }
-lit:Use exp[rename T in Lit],{//T renamed in Lit is 
+lit:Use exp[rename T in Lit],{ 
   Lit:{ method Int inner() static method Lit of(Int inner)
-    }//summed with the current Lit
+    }//T renamed in Lit is summed with the current Lit
   }
 sum:Use exp[rename T in Sum],{//same for the other
   Sum:{ method Exp left() method Exp right()
