@@ -1,10 +1,21 @@
-\saveSpace\saveSpace\section{Intuitions on formalization}\label{sec:formal}
+\saveSpace\saveSpace\section{Formalization}\label{sec:formal}
 \saveSpace\saveSpace
+
+Here we show a simple formalization for the language we presented so far.
+We also model nested classes, but in order to avoid uninteresting complexities, we assume that
+all the type names are fully qualified from the top level, so the examples of before should be
+written using \Q@This.Exp@, \Q@This.Sum@ and so on.
+In a real language, a simple pre processor may take care of this step.
+
+We also consider a binary operator sum \Q@+@ instead of the variable arity operator \Q@use@
 
 Figure 1 contains the complete formalization for the 
 compilation process and the type system for \name.
 It starts with the syntax, then
-show
+show the compilation process and the typing rules.
+
+Usually the compilation process is not modelled, but here it is the most interesting part.
+
 \noindent Notations: we use the . to extract sub parts of the tree, as in the 42 documents, to explain\\
 
 \noindent\textbf{Define }$\mL_1+\mL_2, \ \overline{\mM}+\overline{\mM},\ \mM+\mM$\\
