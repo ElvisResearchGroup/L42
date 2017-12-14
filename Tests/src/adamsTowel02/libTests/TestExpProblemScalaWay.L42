@@ -12,115 +12,165 @@ RenNeg:{class method Library<>< (Library that) exception Guard
   Refactor2.rename(path:\"T" into:\"Neg")<><that
   }
 
-
-$base:Resource<><{
-  Exp:{interface method Size eval()}
+$exp:Resource<><{
+  Exp:{interface}
   T:{implements Exp}
-  Num:{implements Exp
+  }
+
+$num:Resource<><Use[RenNum<><$exp()]<><{
+  Num:{
     method Size value()
     class method Num of(Size value)
-    method eval()
-      this.value()
     }
   }
 
-$basePlus:Resource<><Use[RenPlus<><$base()]<><{
+$plus:Resource<><Use[RenPlus<><$exp()]<><{
   Exp:{}
   Plus:{
     method Exp left()
     method Exp right()
     class method Plus of(Exp left, Exp right)
-    method eval()
-      this.left().eval()+this.right().eval()
     }
   }
 
-$baseNeg:Resource<><Use[RenNeg<><$base()]<><{
+$neg:Resource<><Use[RenNeg<><$exp()]<><{
   Exp:{}
   Neg:{
     method Exp term()
     class method Neg of(Exp term)
-    method eval()
+  }
+}
+
+$base:Resource<>< {
+  Exp:{interface method Size eval()}
+  T:{implements Exp}
+  }
+
+$baseNum:Resource<><Use[$num(); RenNum<><$base()]<>< {
+  Num:{
+    method Size eval()
+      this.value()
+    }
+  }
+
+$basePlus:Resource<><Use[$plus(); RenPlus<><$base()]<>< {
+  Plus:{
+    method Size eval()
+      this.left().eval()+this.right().eval()
+    }
+  }
+
+$baseNeg:Resource<><Use[$neg(); RenNeg<><$base()]<>< {
+  Neg:{
+    method Size eval()
      Size"-1" * this.term().eval()
     }
   }
 
-$basePlusNeg:Resource<><Use[$basePlus();$baseNeg()]<><{}
+$basePlusNeg:Resource<><Use[$basePlus();$baseNeg();$baseNum()]<><{}
+
 
 $show:Resource<><Use[$base()]<><{
-  Exp:{interface method S show()}
+  Exp:{interface
+    method S show()
+    }
+  T:{implements Exp}
+  }
+
+$showNum:Resource<><Use[$num(); RenNum<><$show()]<><{
   Num:{
-    method show()
+    method S show()
       this.value().toS()
     }
   }
 
-$showPlusNeg:Resource<><Use[$basePlusNeg();$show()]<><{
-  Exp:{}
+$showPlus:Resource<><Use[$plus(); RenPlus<><$show()]<><{
   Plus:{
-    method show()
+    method S show()
       this.left().show()++S" + "++this.right().show()
     }
+  }
+
+$showNeg:Resource<><Use[$neg(); RenNeg<><$show()]<><{
   Neg:{
-    method show()
+    method S show()
       S"-("++this.term().show()++S")"
     }
   }
 
-$dblePlusNeg:Resource<><Use[$basePlusNeg()]<><{
+$showPlusNeg:Resource<><Use[$showNum();$showPlus();$showNeg()]<><{}
+
+
+$dble:Resource<><Use[$base()]<><{
   Exp:{interface method Exp dble()}
+  T:{implements Exp}
+  }
+
+$dbleNum:Resource<><Use[$num(); RenNum<><$dble()]<><{
+  Exp:{}
   Num:{
-    method dble()
+    method Exp dble()
       Num.of(value: this.value()*2Size)
     }
+  }
+
+$dblePlus:Resource<><Use[$plus(); RenPlus<><$dble()]<><{
+  Exp:{}
   Plus:{
-    method dble()
+    method Exp dble()
       Plus.of(left: this.left().dble(), right: this.right().dble())
     }
+  }
+
+$dbleNeg:Resource<><Use[$neg(); RenNeg<><$dble()]<><{
+  Exp:{}
   Neg:{
-    method dble()
+    method Exp dble()
       Neg.of(term: this.term().dble())
     }
   }
 
+$dblePlusNeg:Resource<><Use[$dbleNum();$dblePlus();$dbleNeg()]<><{}
+
 $showDblePlusNeg:Resource<><Use[$showPlusNeg();$dblePlusNeg()]<><{ }
 
 $equals:Resource<><Use[$base()]<><{
-  Exp:{interface
-    method Bool eql(Exp other)
-    method Bool isNum(Size v)
-      Bool.false()
+  Exp:{interface method Bool eql(Exp that)}
+  T:{implements Exp
+    method Bool exactEqual(T that)
+    method eql(that){
+      with that (on T  return this.exactEqual(that) )
+      return Bool.false()
+      }
     }
+  }
+
+$equalsNum:Resource<><Use[$num(); RenNum<>< $equals()]<><{
   Num:{
-    method Bool eql(Exp other)
-      other.isNum(this.value())
-    method Bool isNum(Size v)
-      this.value()==v
+    method Bool exactEqual(Num that)
+      this.value()==that.value()
     }
   }
 
-$equalsPlusNeg:Resource<><Use[$basePlusNeg();$equals()]<><{
-  Exp:{interface
-    method Bool isPlus(Exp l, Exp r)
-      Bool.false()
-    method Bool isNeg(Exp t)
-      Bool.false()
-    }
+$equalsPlus:Resource<><Use[$plus(); RenPlus<><$equals()]<><{
   Plus:{
-    method Bool eql(Exp other)
-      other.isPlus(l: this.left(), r: this.right())
-    method Bool isPlus(Exp l, Exp r)
-      this.left().eql(l) & this.right().eql(r)
-    }
-  Neg:{
-    method Bool eql(Exp other)
-      other.isNeg(t: this.term())
-    method Bool isNeg(Exp t)
-      this.term().eql(t)
+    method Bool exactEqual(Plus that)
+      this.left().eql(that.left()) & this.right().eql(that.right())
     }
   }
 
-$equalsShowPlusNeg:Resource<><Use[$equalsPlusNeg();$showPlusNeg()]<><{ }
+$equalsNeg:Resource<><Use[$neg(); RenNeg<><$equals()]<><{
+  Neg:{
+    method Bool exactEqual(Neg that)
+      this.term().eql(that.term())
+    }
+  }
+
+$equalsPlusNeg:Resource<><Use[$equalsPlus();$equalsNeg();$equalsNum()]<><{}
+
+$equalsShowPlusNeg:Resource<><Use[$equalsPlusNeg();$showPlusNeg()]<><{}
+
+
 
 
 Main: {
