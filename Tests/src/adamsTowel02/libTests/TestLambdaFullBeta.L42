@@ -219,14 +219,14 @@ $subst:Resource<><Use[$alphaFresh();
         if this.x() < that.fve() (
           yFresh=This.fresh(x:this.x(), used:that.#used())
           body=this.body().alpha(AlphaArg(x:this.x(), y:yFresh))
-          return Lambda(x:yFresh, body:body)
+          return Lambda(x:yFresh, body:body.subst(that))
           )
         return Lambda(x:this.x(), body:this.body().subst(that))
         }
     class method S fresh(S x,mut Strings used) {
       with num in Range(start:0Size) (
         current = x ++ num.toS()
-        if used.contains(current) (
+        if !used.contains(current) (
           used.add(right:current)
           return current
           )
@@ -280,7 +280,7 @@ Language:
 //LoggingError: [This1.Exp, This2.Concept.ToS] [This2.Concept.ToS, This1.Exp]
   Use[$fullBeta(); $allVar(); $dimension()]<><{
     Exp:{interface implements Concept.ToS}
-    Lambda:{implements Exp method toS() S"\"[this.x();S".";this.body()]""}
+    Lambda:{implements Exp method toS() S"(\"[this.x();S".";this.body()]")"}
     Subtraction:{implements Exp method toS() S""[this.e1();S" - ";this.e2()]""}
     Application:{implements Exp method toS() S""[this.e1();S" ";this.e2()]""}
     Literal:{implements Exp method toS() this.inner().toS()}
@@ -319,17 +319,25 @@ Main: {
   replaceY2=a(e1:la(x:S"x",body:freeX),e2:freeY)
 
   e=la(x:S"x", body:a(e1:x(inner:S"x"),e2:x(inner:S"x")))
-  Debug.test(e expected:S"\x.x x")
+  Debug.test(e expected:S"(\x.x x)")
   e1=la(x:S"x",body:s(e1:li(inner:1Num),e2:x(inner:S"x")))
-  Debug.test(e1 expected:S"\x.1 - x)")
+  Debug.test(e1 expected:S"(\x.1 - x)")
 
   e3=a(e1:id,e2:id)
   res3=Minimize.minimizeMany(input:e3)
-  Debug.test(e3 expected:S"(\x.x)")
+  Debug.test(res3 expected:S"(\x.x)")
 
-  //e4=a(e1:id(),e2:a(e1:id(),e2:id()));
-  //res4=Minimize.minimizeMany(input:e4);
-  //Debug.test(e4 expected:S"(\x.x)");
+  e4=a(e1:id,e2:a(e1:id,e2:id))
+  res4=Minimize.minimizeMany(input:e4)
+  Debug.test(res4 expected:S"(\x.x)")
+
+  Debug.test(replaceY expected:S"(\y.y) (\x.y)")
+  res5=Minimize.minimizeMany(input:replaceY)
+  Debug.test(res5 expected:S"(\x.y)")
+
+  Debug.test(replaceY2 expected:S"(\x.(\y.x)) (\x.y)")
+  res6=Minimize.minimizeMany(input:replaceY2)
+  Debug.test(res6 expected:S"(\y0.(\x.y))")
 
   return ExitCode.normal()
   }
