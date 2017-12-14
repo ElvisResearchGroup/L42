@@ -1,0 +1,129 @@
+{reuse L42.is/AdamTowel02
+
+RenNum:{class method Library<>< (Library that) exception Guard
+  Refactor2.rename(path:\"T" into:\"Num")<><that
+  }
+
+RenPlus:{class method Library<>< (Library that) exception Guard
+  Refactor2.rename(path:\"T" into:\"Plus")<><that
+  }
+
+RenNeg:{class method Library<>< (Library that) exception Guard
+  Refactor2.rename(path:\"T" into:\"Neg")<><that
+  }
+
+
+$base:Resource<><{
+  Exp:{interface method Size eval()}
+  T:{implements Exp}
+  Num:{implements Exp
+    method Size value()
+    class method Num of(Size value)
+    method eval()
+      this.value()
+    }
+  }
+
+$basePlus:Resource<><Use[RenPlus<><$base()]<><{
+  Exp:{}
+  Plus:{
+    method Exp left()
+    method Exp right()
+    class method Plus of(Exp left, Exp right)
+    method eval()
+      this.left().eval()+this.right().eval()
+    }
+  }
+
+$baseNeg:Resource<><Use[RenNeg<><$base()]<><{
+  Exp:{}
+  Neg:{
+    method Exp term()
+    class method Neg of(Exp term)
+    method eval()
+     Size"-1" * this.term().eval()
+    }
+  }
+
+$basePlusNeg:Resource<><Use[$basePlus();$baseNeg()]<><{}
+
+$show:Resource<><Use[$base()]<><{
+  Exp:{interface method S show()}
+  Num:{
+    method show()
+      this.value().toS()
+    }
+  }
+
+$showPlusNeg:Resource<><Use[$basePlusNeg();$show()]<><{
+  Exp:{}
+  Plus:{
+    method show()
+      this.left().show()++S" + "++this.right().show()
+    }
+  Neg:{
+    method show()
+      S"-("++this.term().show()++S")"
+    }
+  }
+
+$dblePlusNeg:Resource<><Use[$basePlusNeg()]<><{
+  Exp:{interface method Exp dble()}
+  Num:{
+    method dble()
+      Num.of(value: this.value()*2Size)
+    }
+  Plus:{
+    method dble()
+      Plus.of(left: this.left().dble(), right: this.right().dble())
+    }
+  Neg:{
+    method dble()
+      Neg.of(term: this.term().dble())
+    }
+  }
+
+$showDblePlusNeg:Resource<><Use[$showPlusNeg();$dblePlusNeg()]<><{ }
+
+$equals:Resource<><Use[$base()]<><{
+  Exp:{interface
+    method Bool eql(Exp other)
+    method Bool isNum(Size v)
+      Bool.false()
+    }
+  Num:{
+    method Bool eql(Exp other)
+      other.isNum(this.value())
+    method Bool isNum(Size v)
+      this.value()==v
+    }
+  }
+
+$equalsPlusNeg:Resource<><Use[$basePlusNeg();$equals()]<><{
+  Exp:{interface
+    method Bool isPlus(Exp l, Exp r)
+      Bool.false()
+    method Bool isNeg(Exp t)
+      Bool.false()
+    }
+  Plus:{
+    method Bool eql(Exp other)
+      other.isPlus(l: this.left(), r: this.right())
+    method Bool isPlus(Exp l, Exp r)
+      this.left().eql(l) & this.right().eql(r)
+    }
+  Neg:{
+    method Bool eql(Exp other)
+      other.isNeg(t: this.term())
+    method Bool isNeg(Exp t)
+      this.term().eql(t)
+    }
+  }
+
+$equalsShowPlusNeg:Resource<><Use[$equalsPlusNeg();$showPlusNeg()]<><{ }
+
+
+Main: {
+  Debug(S"Hello ExpProblemScalaWay")
+  return ExitCode.normal()
+} }
