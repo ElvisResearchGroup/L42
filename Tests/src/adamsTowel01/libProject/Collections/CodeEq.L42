@@ -129,8 +129,8 @@ Void removeAll(Elem val){
   var Size pos=0Size
   loop (
     if this.val(pos)==val (this.remove(pos))
-    if pos>=this.size() (return void)
-    pos+=1Size
+    else (pos+=1Size)
+    if pos==this.size() (return void)
     )
   }
 
