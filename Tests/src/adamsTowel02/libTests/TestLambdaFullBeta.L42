@@ -22,7 +22,7 @@ $exp:Resource<><{
 
   Literal:{implements Exp
     Num inner
-    class method Literal (S inner)
+    class method Literal (Num inner)
     }
 
   Subtraction:{implements Exp
@@ -134,27 +134,27 @@ $freeVar:Resource<><Use[Refactor2.Method[
       }
     }
 
-$dimension:Resource<><{
-    Exp:{
-      method Num dimension()
+$dimension:Resource<><Use[$exp()]<><{
+    Exp:{interface
+      method Num size()
       }
-    X:{
-      method Num dimension() 1Num
+    X:{implements Exp
+      method size() 1Num
       }
-    Lambda:{
-      method Num dimension()
-        1Num+this.body().dimension()
+    Lambda:{implements Exp
+      method size()
+        1Num+this.body().size()
       }
-    Application:{
-      method Num dimension()
-        1Num+this.e1().dimension()+this.e2().dimension()
+    Application:{implements Exp
+      method size()
+        1Num+this.e1().size()+this.e2().size()
       }
-    Literal:{
-      method Num dimension() 1Num
+    Literal:{implements Exp
+      method size() 1Num
       }
-    Subtraction:{
-      method Num dimension()
-        1Num+this.e1().dimension()+this.e2().dimension()
+    Subtraction:{implements Exp
+      method size()
+        1Num+this.e1().size()+this.e2().size()
       }
     }
 
@@ -255,7 +255,7 @@ $fullBeta:Resource<><Use[$subst();$freeVar();
         with e1=this.e1() (on Lambda (
           fve=Strings.empty()
           e2.fv(fve)
-          sa=SubstArg(x:e1.x(),e:e2,fve:fve,used:that.used())
+          sa=SubstArg(x:e1.x(),e:e2,fve:fve,used:that.#used())
           return e1.body().subst(sa)
           ))
         return Application(e1:this.e1().beta(that),e2:e2)
@@ -264,17 +264,73 @@ $fullBeta:Resource<><Use[$subst();$freeVar();
     Subtraction:{
       method Exp beta(mut BetaArg that){
         with e1=this.e1(), e2=this.e2() (on Literal, Literal (
-          return Literal(e1.num()-e2.num())
+          return Literal(inner:e1.inner()-e2.inner())
           ))
         return Application(e1:this.e1().beta(that),e2:this.e2().beta(that))
         }
       }
     }
-/*
-Minimize
-*/
+
+Language:
+//  Data.AddToS(mutK:\"#apply(e1,e2)", of:\"Application")<><
+//  Data.AddToS(mutK:\"#apply(e1,e2)", of:\"Subtraction")<><
+//  Data.AddToS(mutK:\"#apply(inner)", of:\"X")<><
+//  Data.AddToS(mutK:\"#apply(inner)", of:\"Literal")<><
+//  Data.AddToS(mutK:\"#apply(x,body)", of:\"Lambda")<><
+//LoggingError: [This1.Exp, This2.Concept.ToS] [This2.Concept.ToS, This1.Exp]
+  Use[$fullBeta(); $allVar(); $dimension()]<><{
+    Exp:{interface implements Concept.ToS}
+    Lambda:{implements Exp method toS() S"\"[this.x();S".";this.body()]""}
+    Subtraction:{implements Exp method toS() S""[this.e1();S" - ";this.e2()]""}
+    Application:{implements Exp method toS() S""[this.e1();S" ";this.e2()]""}
+    Literal:{implements Exp method toS() this.inner().toS()}
+    X:{implements Exp method toS() this.inner().toS()}
+    BetaArg:{class method mut BetaArg (mut Strings used)}
+
+  }
+
+Minimize :{
+  class method Language.Exp minimizeMany(Language.Exp input) {
+    mut Strings vars=Strings.empty()
+    input.allVar(vars)
+    var Language.Exp e = input
+    var Num next=e.size()
+    var Num current = next
+    loop (
+      current := next
+      e := e.beta(Language.BetaArg(used:vars))
+      next :=e.size()
+      if current<=next (return e)
+      )
+    }
+  }
+
 Main: {
-  Debug(S"Hello LambdaFulLBeta")
+  la=Language.Lambda
+  a=Language.Application
+  x=Language.X
+  li=Language.Literal
+  s=Language.Subtraction
+  id=la(x:S"x",body: x(inner:S"x"))
+  omega=la(x:S"x",body:a(e1:x(inner:S"x"),e2:x(inner:S"x")))
+  freeY= la(x:S"x",body:x(inner:S"y"))
+  freeX= la(x:S"y",body:x(inner:S"x"))
+  replaceY=a(e1:la(x:S"y",body:x(inner:S"y")),e2:freeY)
+  replaceY2=a(e1:la(x:S"x",body:freeX),e2:freeY)
+
+  e=la(x:S"x", body:a(e1:x(inner:S"x"),e2:x(inner:S"x")))
+  Debug.test(e expected:S"\x.x x")
+  e1=la(x:S"x",body:s(e1:li(inner:1Num),e2:x(inner:S"x")))
+  Debug.test(e1 expected:S"\x.1 - x)")
+
+  e3=a(e1:id,e2:id)
+  res3=Minimize.minimizeMany(input:e3)
+  Debug.test(e3 expected:S"(\x.x)")
+
+  //e4=a(e1:id(),e2:a(e1:id(),e2:id()));
+  //res4=Minimize.minimizeMany(input:e4);
+  //Debug.test(e4 expected:S"(\x.x)");
+
   return ExitCode.normal()
   }
 //-------------------------

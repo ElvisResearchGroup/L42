@@ -274,7 +274,7 @@ public  MethodWithType sumMwtAux(Program p,boolean interface1,MethodWithType mwt
     assert !interface1 && !interface2;
     if(mtGT(p,mt1,mt2)){return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(mtGT(p,mt2,mt1)){return sumMwtij(p,mwt2,mwt1,mwt2);}
-    throw makeMethodClash(mwt1, mwt2).msg("Neither of the method is subtype of the other");
+    throw makeMethodClash(mwt1, mwt2).msg("Neither of the method is subtype of the other: "+mwt1.getMt()+" "+mwt2.getMt());
     }
 private MethodClash makeMethodClash(MethodWithType mwt1, MethodWithType mwt2) {
   return new MethodClash(Method.of(mwt1,leftTop,stackCs),Method.of(mwt2,leftTop,stackCs));
