@@ -36,7 +36,7 @@ $transformation:Resource<><Use[$exp()]<><{
   Arg:{}
 
   Exp:{interface
-    method Exp op(Arg that)
+    method Exp op(mut Arg that)
     }
 
   X:{implements Exp
@@ -119,18 +119,17 @@ $allVar:Resource<><Use[
         that.add(right:this.x())
       }
     }
-/*
+
 $freeVar:Resource<><Use[Refactor2.Method[
-  abstract:\"op(that)" of:\"Lambda";
+  abstract:\"allVar(that)" of:\"Lambda";
   rename:\"allVar(that)" of:\"Exp" into:\"fv(that)"
   ]<><$allVar()]<><{
     Lambda:{
       method Void fv(mut Strings that) (
         mut Strings tmp=Strings.empty()
-        this.body().allVar(tmp)
+        this.body().fv(tmp)
         tmp.removeAll(val:this.x())
         with s in tmp.vals() (that.add(right:s))
-        that
         )
       }
     }
@@ -158,28 +157,30 @@ $dimension:Resource<><{
         1Num+this.e1().dimension()+this.e2().dimension()
       }
     }
+
 $substErr:Resource<><Use[
-  Refactor2.rename(path:\"Arg" into:SubstArg)<><
+  Refactor2.rename(path:\"Arg" into:\"SubstArg")<><
   Refactor2.Method[
     abstract:\"op(that)" of:\"X";
     abstract:\"op(that)" of:\"Lambda";
-    rename:\"op(that)" of:\"Exp" into:\"subst()"]<><
+    rename:\"op(that)" of:\"Exp" into:\"subst(that)"]<><
   $transformation()]<><{
     Exp:{}
     SubstArg:{S x, Exp e,Strings fve}
     X:{
-      method Exp subst(SubstArg that){
+      method Exp subst(mut SubstArg that){
         if this.inner()==that.x() (return that.e())
         return this
         }
       }
-    Lambda{
-      method Exp subst(SubstArg that){
+    Lambda:{
+      method Exp subst(mut SubstArg that){
         if this.x()==that.x() (return this)
-        if this.x() < that.fve() (error X"")
+        if this.x() < that.fve() (error S"alphaRenameNotSupported")
         return Lambda(x:this.x(), body:this.body().subst(that))
         }
       }
+    }
 
 
 $alphaFresh:Resource<><Use[
@@ -190,40 +191,42 @@ $alphaFresh:Resource<><Use[
     rename:\"op(that)" of:\"Exp" into:\"alpha(that)"]<><
   $transformation()]<><{
     Exp:{}
-    AlphaArg:{S x, S y}
+    AlphaArg:{S x, S y class method mut AlphaArg(S x, S y)}
     X:{
-      method Exp alpha(AlphaArg that){
+      method Exp alpha(mut AlphaArg that){
         if this.inner()==that.x() (return X(inner:that.y()))
         return this
         }
       }
-    Lambda{
-      method Exp alpha(AlphaArg that){
+    Lambda:{
+      method Exp alpha(mut AlphaArg that){
         if this.x()!=that.x() (return this)
-        return Lambda(x:this.y(), body:this.body().alpha(that))
+        return Lambda(x:that.y(), body:this.body().alpha(that))
         }
       }
+    }
 
 $subst:Resource<><Use[$alphaFresh();
-  Refactor2.Method[abstract:\"op(that)" of:\"Lambda"]<><$substErr()]<><{
+  Refactor2.Method[abstract:\"subst(that)" of:\"Lambda"]<><$substErr()]<><{
+    Exp:{}
+    AlphaArg:{}
     SubstArg:{mut Strings used
-      class method SubstArg(S x, Exp e,Strings fve,mut Strings used)
+      class method mut SubstArg(S x, Exp e, Strings fve, mut Strings used)
       }
-    Lambda{
-      method Exp alpha(SubstArg that){
+    Lambda:{
+      method Exp subst(mut SubstArg that){
         if this.x()==that.x() (return this)
         if this.x() < that.fve() (
-              AlphaXFresh alpha = new AlphaXFresh(e.x, used);
-          yFresh=This.fresh(x:this.x(),this.used)
-          body=this.body().alpha(AlphaArg(x:this.x() y:yFresh));
-          return Lambda(x:yFresh, body:body);
+          yFresh=This.fresh(x:this.x(), used:that.#used())
+          body=this.body().alpha(AlphaArg(x:this.x(), y:yFresh))
+          return Lambda(x:yFresh, body:body)
           )
         return Lambda(x:this.x(), body:this.body().subst(that))
         }
     class method S fresh(S x,mut Strings used) {
       with num in Range(start:0Size) (
-        current = x ++ num.toS();
-        if current !< used (
+        current = x ++ num.toS()
+        if used.contains(current) (
           used.add(right:current)
           return current
           )
@@ -231,39 +234,43 @@ $subst:Resource<><Use[$alphaFresh();
         error X""
       }
     }
+  }
 
 
-$fullBeta:Resource<><Use[$subst();$freeVar()
+$fullBeta:Resource<><Use[$subst();$freeVar();
   Refactor2.rename(path:\"Arg" into:\"BetaArg")<><
   Refactor2.Method[
-    abstract:\"op(that)" of:\"X";
-    abstract:\"op(that)" of:\"Lambda";
+    abstract:\"op(that)" of:\"Application";
+    abstract:\"op(that)" of:\"Subtraction";
     rename:\"op(that)" of:\"Exp" into:\"beta(that)"]<><
   $transformation()]<><{
     Exp:{}
     Lambda:{}
     Literal:{}
+    SubstArg:{}
     BetaArg:{mut Strings used}
     Application:{
-      method Exp beta(BetaArg that){
-        e2=this.e2.beta(that)
+      method Exp beta(mut BetaArg that){
+        e2=this.e2().beta(that)
         with e1=this.e1() (on Lambda (
           fve=Strings.empty()
-          e.fv(fve)
-          sa=SubstArg(x:e1.x(),e:e2,fve:fve,used:used)
+          e2.fv(fve)
+          sa=SubstArg(x:e1.x(),e:e2,fve:fve,used:that.used())
           return e1.body().subst(sa)
           ))
         return Application(e1:this.e1().beta(that),e2:e2)
         }
       }
     Subtraction:{
-      with e1=this.e1(), e2=this.e2() (on Literal, Literal (
-        return Literal(e1.num()-e2.num())
-        ))
-      return Application(e1:this.e1().beta(that),e2:this.e2().beta(that))
+      method Exp beta(mut BetaArg that){
+        with e1=this.e1(), e2=this.e2() (on Literal, Literal (
+          return Literal(e1.num()-e2.num())
+          ))
+        return Application(e1:this.e1().beta(that),e2:this.e2().beta(that))
+        }
       }
     }
-
+/*
 Minimize
 */
 Main: {
