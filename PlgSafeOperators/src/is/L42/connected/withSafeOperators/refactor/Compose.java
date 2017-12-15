@@ -192,12 +192,12 @@ public class Compose {
     List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
     boolean superOk=superOk(p,l.getSupertypes(),ps1);
     if(!superOk){
-      return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+l.getSupertypes()+" does not contains all of "+ps1);
+      return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+"\n"+l.getSupertypes()+" does not contains all of "+ps1);
       }
     for(MethodWithType m :p.methods(Path.outer(0))){
       //there must be equivalent in l
       Member mi = l._getMember(m.getMs());
-      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+" Selector "+m.getMs()+" not found");}
+      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+"\n"+" Selector "+m.getMs()+" not found");}
       if(m.get_inner()==null){continue;}
       //we trust the mt to be the same
       //we trust the e is the same except for nested L, where we use recursion
@@ -301,7 +301,7 @@ private void checkMtEq(Program p, MethodWithType mwt1, MethodWithType mwt2,Metho
     throw makeMethodClash(mwt1, mwt2);
     }
   if(!mtEqRest(p,mwt1.getMt(),mwt2.getMt())){
-    throw makeMethodClash(mwt1, mwt2);
+    throw makeMethodClash(mwt1, mwt2).msg("Incompatible types:\n  left: "+mt1+"\n  right: "+mt2);
     }
 }
 /**{@link ComposeSpec#methodTypeSubtype}*/

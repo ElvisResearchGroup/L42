@@ -42,33 +42,23 @@ $neg:Resource<><Use[RenNeg<><$exp()]<><{
 }
 
 $base:Resource<>< {
-  Exp:{interface method Size eval()}
+  Exp:{interface
+    method Size eval()
+    }
   T:{implements Exp}
   }
 
 $baseNum:Resource<><Use[$num(); RenNum<><$base()]<>< {
-  Num:{
-    method Size eval()
-      this.value()
-    }
+  Num:{ method Size eval() this.value() }
   }
 
 $basePlus:Resource<><Use[$plus(); RenPlus<><$base()]<>< {
-  Plus:{
-    method Size eval()
-      this.left().eval()+this.right().eval()
-    }
+  Plus:{ method Size eval() this.left().eval()+this.right().eval() }
   }
 
 $baseNeg:Resource<><Use[$neg(); RenNeg<><$base()]<>< {
-  Neg:{
-    method Size eval()
-     Size"-1" * this.term().eval()
-    }
+  Neg:{ method Size eval() Size"-1" * this.term().eval() }
   }
-
-$basePlusNeg:Resource<><Use[$basePlus();$baseNeg();$baseNum()]<><{}
-
 
 $show:Resource<><Use[$base()]<><{
   Exp:{interface
@@ -78,102 +68,177 @@ $show:Resource<><Use[$base()]<><{
   }
 
 $showNum:Resource<><Use[$num(); RenNum<><$show()]<><{
-  Num:{
-    method S show()
-      this.value().toS()
-    }
+  Num:{ method S show() this.value().toS() }
   }
 
 $showPlus:Resource<><Use[$plus(); RenPlus<><$show()]<><{
-  Plus:{
-    method S show()
-      this.left().show()++S" + "++this.right().show()
-    }
+  Plus:{ method S show() this.left().show()++S" + "++this.right().show() }
   }
 
 $showNeg:Resource<><Use[$neg(); RenNeg<><$show()]<><{
-  Neg:{
-    method S show()
-      S"-("++this.term().show()++S")"
-    }
+  Neg:{ method S show() S"-("++this.term().show()++S")" }
   }
 
-$showPlusNeg:Resource<><Use[$showNum();$showPlus();$showNeg()]<><{}
-
+//----------------
 
 $dble:Resource<><Use[$base()]<><{
-  Exp:{interface method Exp dble()}
+  Exp:{interface
+    method Exp dble()
+    }
   T:{implements Exp}
   }
 
 $dbleNum:Resource<><Use[$num(); RenNum<><$dble()]<><{
   Exp:{}
-  Num:{
-    method Exp dble()
-      Num.of(value: this.value()*2Size)
-    }
+  Num:{ method Exp dble() Num.of(value: this.value()*2Size) }
   }
 
 $dblePlus:Resource<><Use[$plus(); RenPlus<><$dble()]<><{
   Exp:{}
-  Plus:{
-    method Exp dble()
-      Plus.of(left: this.left().dble(), right: this.right().dble())
-    }
+  Plus:{ method Exp dble() Plus.of(left: this.left().dble(), right: this.right().dble()) }
   }
 
 $dbleNeg:Resource<><Use[$neg(); RenNeg<><$dble()]<><{
   Exp:{}
-  Neg:{
-    method Exp dble()
-      Neg.of(term: this.term().dble())
+  Neg:{ method Exp dble() Neg.of(term: this.term().dble()) }
+  }
+
+//---------
+
+$equals:Resource<><Use[$base()]<><{
+  Exp:{interface
+    method Bool eql(Exp that)
+    method Bool equalToT(T that)
+    }
+  T:{implements Exp
+    method eql(that) that.equalToT(this)
     }
   }
+
+$equalsNum:Resource<><Use[$num();
+  Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToNum(that)"]
+  <><RenNum<>< $equals()]<><{
+  Num:{
+    method Bool equalToNum(Num that) this.value()==that.value()
+    }
+  }
+
+$equalsPlus:Resource<><Use[$plus();
+  Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToPlus(that)"]
+  <><RenPlus<><$equals()]<><{
+  Plus:{
+    method Bool equalToPlus(Plus that)
+      this.left().eql(that.left()) & this.right().eql(that.right())
+    }
+  }
+
+$equalsNeg:Resource<><Use[$neg();
+  Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToNeg(that)"]
+  <><RenNeg<><$equals()]<><{
+  Neg:{
+    method Bool equalToNeg(Neg that) this.term().eql(that.term())
+    }
+  }
+
+$equalsPlusNeg:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
+  Exp:{interface
+    method Bool eql(Exp that)
+    method Bool equalToNum(Num that)
+    method Bool equalToPlus(Plus that)
+    method Bool equalToNeg(Neg that)
+    method Size eval()
+    }
+  Num:{implements Exp
+    method equalToPlus(that) Bool.false()
+    method equalToNeg(that) Bool.false()
+    }
+  Plus:{implements Exp
+    method equalToNum(that) Bool.false()
+    method equalToNeg(that) Bool.false()
+    }
+
+  Neg:{implements Exp
+    method equalToNum(that) Bool.false()
+    method equalToPlus(that) Bool.false()
+    }
+  }
+
+
+$basePlusNeg:Resource<><Use[$basePlus();$baseNeg();$baseNum()]<><{}
+$showPlusNeg:Resource<><Use[$showNum();$showPlus();$showNeg()]<><{}
+EvalAndShow:Use[$basePlusNeg()]<><$showPlusNeg()
 
 $dblePlusNeg:Resource<><Use[$dbleNum();$dblePlus();$dbleNeg()]<><{}
 
 $showDblePlusNeg:Resource<><Use[$showPlusNeg();$dblePlusNeg()]<><{ }
 
-$equals:Resource<><Use[$base()]<><{
-  Exp:{interface method Bool eql(Exp that)}
-  T:{implements Exp
-    method Bool exactEqual(T that)
-    method eql(that){
-      with that (on T  return this.exactEqual(that) )
-      return Bool.false()
-      }
-    }
-  }
-
-$equalsNum:Resource<><Use[$num(); RenNum<>< $equals()]<><{
-  Num:{
-    method Bool exactEqual(Num that)
-      this.value()==that.value()
-    }
-  }
-
-$equalsPlus:Resource<><Use[$plus(); RenPlus<><$equals()]<><{
-  Plus:{
-    method Bool exactEqual(Plus that)
-      this.left().eql(that.left()) & this.right().eql(that.right())
-    }
-  }
-
-$equalsNeg:Resource<><Use[$neg(); RenNeg<><$equals()]<><{
-  Neg:{
-    method Bool exactEqual(Neg that)
-      this.term().eql(that.term())
-    }
-  }
-
-$equalsPlusNeg:Resource<><Use[$equalsPlus();$equalsNeg();$equalsNum()]<><{}
 
 $equalsShowPlusNeg:Resource<><Use[$equalsPlusNeg();$showPlusNeg()]<><{}
-
-
-
 
 Main: {
   Debug(S"Hello ExpProblemScalaWay")
   return ExitCode.normal()
+
+/*
+//------------------
+//      lines  methods
+//42     176
+//scala  223
+As a third case study, we
+challenge our approach against an extended version of the expression problem,
+as defined in [].
+We then compare with the proposed solution is in scala.
+
+The first part of the problem is about defining....
+
+For this part of the problem we use
+just base+show
+
+//      lines  methods  fully modularized units  traits class/interf
+//42     68      4*2+6    12 (4*3)                12     15
+//scala  68      4*2       5 (3+2)                10     6
+//42collated //just for this part...
+5= (numEval+plusEval+negEval+numShow+plusNegShow)
+
+We propose a more modular solution,
+and we compare it with their result.
+Their solution requires ....
+while our solution require just composition and renaming.
+
+
+
+
+
+
+$notEquals:Resource<><{
+  Exp:{interface
+    method Bool equalToT(Arg that)
+    }
+  Arg:{}
+  T:{implements Exp
+    method equalToT(that) Bool.false()
+    }
+  }
+NotEq:{
+  class method Library (Selector that,Path arg, Path of) exception Guard
+    Refactor2.rename(path:\"T" into:of)<><
+    Refactor2.rename(path:\"Arg" into:arg)<><
+    Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:that]<><$notEquals()
+    }
+
+$equalsPlusNeg:Resource<><Use[
+  Use[
+    NotEq(Selector"equalToPlus(that)" arg:Path"Plus" of:Path"Num");
+    NotEq(Selector"equalToNeg(that)" arg:Path"Neg" of:Path"Num");
+    ]<><$equalsNum();
+  Use[
+    NotEq(Selector"equalToNum(that)" arg:Path"Num" of:Path"Plus");
+    NotEq(Selector"equalToNeg(that)" arg:Path"Neg" of:Path"Plus");
+    ]<><$equalsPlus();
+  Use[
+    NotEq(Selector"equalToNum(that)" arg:Path"Num" of:Path"Neg");
+    NotEq(Selector"equalToPlus(that)" arg:Path"Plus" of:Path"Neg");
+    ]<><$equalsNeg();
+  ]<><{}
+*/
 } }
