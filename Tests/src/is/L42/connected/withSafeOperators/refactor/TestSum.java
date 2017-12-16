@@ -48,8 +48,9 @@ import programReduction.Program;
     },{    lineNumber(),
     "{                             B:{method Void m()}}",
     "{I:{interface method Void m()}B:{implements I}}",
-    "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash",
-      true
+    "{I:{interface method Void m()}B:{implements I refine method Void m()}}",
+    //"is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash",//we relaxed the sum to allow this
+      false
     },{    lineNumber(),
     "{J:{interface method Void m()} B:{ implements J}}",
     "{I:{interface method Void m()} B:{ implements I}}",

@@ -33,7 +33,7 @@ Bool contains(read Elem that){
 
 //################# operators
 //TODO: general issue:  V[a;b] wants a,b mut to create a mut?
-//with the current builder desugaring, 
+//with the current builder desugaring,
 //can not take imms since the collection under genration is still mut!
 
 method
@@ -145,8 +145,8 @@ Void removeAll(read Elem val){
   var Size pos=0Size
   loop (
     if this.val(pos)==val (this.remove(pos))
-    if pos>=this.size() (return void)
-    pos+=1Size
+    else (pos+=1Size)
+    if pos==this.size() (return void)
     )
   }
 

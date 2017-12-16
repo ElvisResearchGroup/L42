@@ -1,19 +1,57 @@
 \section{Extensions to our model}
-  One of the main feature of our simple reuse/use model is that it can be
-  easy extended. 
-First we show two more composition operators, then we show 
-a simple extension with nested classes.
-Finally, we show how we can solve even the most
-demanding version of the expression problem.
+
+\paragraph{Nested classes}${}_{}$\\*
+A nested class is just another kind of member in the code literal.
+The general idea is that by composing code with \use,
+nested classes with the same name are recursively composed.
+For simplicity, while we discuss nested classes,
+here we do not consider nested traits nor nested composition,
+and all traits and code composition expression are still at top level.
+
+In this way all dependencies are about top level names, allowing the type system 
+to consider the class table as a simple map from (nested) types\footnote{
+as both \Q@A@ and \Q@A.B.C@}  to their definition.
+
+\paragraph{Redirect}${}_{}$\\*
+Redirect is another composition operator that
+leverage on nested classes to emulate generics;
+the main idea is that a (fully abstract) nested class can be redirect to
+another one external to the trait/code literal.
+For example a linked list can be implement as
+\begin{lstlisting}
+list:{ Elem:{}
+     Cell:{static method Cell of(Elem e,Cell c) 
+       method Elem e()  method Cell c()
+       }
+   method Elem get(int x) ...
+   ...more methods..
+   }
+ListString:list[redirect Elem to String]
+\end{lstlisting}
+Note how redirect only influence its input, not the rest of the program.
+
+%An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
+%We show a graph example, where also we can show how to propagate generics:
+%For example
+%\begin{lstlisting}
+%t:{ method boolean reachable(Node start, Node end)/*implements reachability*/
+%     Node:{method ListEdge nodes()}
+%     Edge:{method Node in()  method Node out()}
+%     ListEdge:list[redirect Elem to Edge]
+%     }
+%\end{lstlisting}
+
+
 
 \paragraph{Rename}${}_{}$\\*
-Rename allows to make some form of "compile time" re-factoring
-There are a lots of different forms of rename in literature,
-sometime allowing only to rename specific methods, sometime allowing to rename
-nested classes into other nested classes either at the same or at a different nesting level.
-%Renaming in the context of nested classes also means that when renaming a method of an interface, all the 
-%nested classes implementing such interface inside of that code literal need to be adjusted.
-Renaming need to rename not only the method headers, but all the method calls inside of method bodies.
+There are a lots of different forms of rename in literature.
+Here we present two variants: one to rename nested types in other nested types
+and one to rename methods; this also allows to rename an (nested) interface method
+and having all the implementations renamed as well.
+Thanks to our division of use and reuse, those renames need to work only inside
+of their input and global rewriting of the whole program is never needed.
+
+Rename modify the method headers, and also all the method calls inside of the input.
 At a first glimpse, this seems to be not always possible since we are considering to be able to apply those
 operators also to non well typed code.
 However, if the expression language is simple enough, it is possible to pre-process the code to
@@ -29,7 +67,8 @@ t:{ I:{interface method int mI() }
      }
 D:t[rename A.mI kI]
 \end{lstlisting}
- Notice how we are sure that \Q@C@ does not implements \Q@I@ since it is invisible from the outside: traits does not introduce nominal types!
+ Notice how we are sure that \Q@C@ does not implements \Q@I@ since it is invisible from the outside:
+ traits does not introduce nominal types!
  
  We expect the flattened version for \Q@D@ to be
 \begin{lstlisting}
@@ -41,48 +80,10 @@ D:{ I:{interface method int kI() }
 
 Hide can be seen as a variation of rename, where the method/class is renamed to a fresh unguessable name.
 
-\paragraph{Redirect}${}_{}$\\*
-Redirect allows to emulate generics; the main idea is that a (fully abstract) class can be redirect to another one external to the trait/code literal.
-For example a linked list can be implement as
-\begin{lstlisting}
-list:{ Elem:{}
-     Cell:{class method Cell of(Elem e,Cell c) 
-       method Elem e()  method Cell c()
-       }
-   method Elem get(int x) ...
-   ...more methods..
-   }
-ListString:list[redirect Elem to String]
-\end{lstlisting}
-
-%An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
-%We show a graph example, where also we can show how to propagate generics:
-%For example
-%\begin{lstlisting}
-%t:{ method boolean reachable(Node start, Node end)/*implements reachability*/
-%     Node:{method ListEdge nodes()}
-%     Edge:{method Node in()  method Node out()}
-%     ListEdge:list[redirect Elem to Edge]
-%     }
-%\end{lstlisting}
 
 
-
-
-\paragraph{Nested classes}${}_{}$\\*
-A nested class will be another kind of member in the code literal.
-The general idea is that by composing code with \use, nested classes with the same name are recursively composed.
-Note that while we have nested classes, we do not have nested traits: all traits are still
-at top level.
-Untypable/unresolved traits are also the only "dependency"
-the type system keeps track of, this means that when a nested class at an arbirary
-nested level is flattend, as in
-\Q@C:{ D:{ E:Use t1,t2,L}}@\\*
-\Q@t1@ and \Q@t2@ must be defined before \Q@C@ at top level; and they may require classes (and their
-nested) defined before C. This means that the type system can still consider
-the class table as a simple map from Types T to their definition.
-
-This extension lets us challenge the expression problem~\cite{wadler1998expression},
+\paragraph{Application to the expression problem}${}_{}$\\*
+The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
 with the requirements exposed in~\cite{scala}.
 In the expression problem we have data variants and operations and we can
 \textbf{extend our solution in both dimensions},
@@ -99,72 +100,156 @@ We can do this by creating a table of features, as in~\cite{Deepfjig}.
 But in \name we can be even more compact as we can avoid a large amount of abstract declarations,
 that clutters the solution in~\cite{Deepfjig}.
 
+Following closely
+the example of~\cite{},
+we consider a language where the
+expressions \Q@Exp@ can
+be \Q@Num@ (for number literal)
+\Q@Plus@ (for binary plus operator)
+and \Q@Neg@ (for unary minus).
+We then proceed defining operation
+\Q@show@ to print it as a string
+and \Q@eval@ to compute the numeric value.
+
+We thus have 4 classes/interface
+the definition of the state and 2 operations.
+We can model this as a 4*3 table composed by 12 traits.
+Those traits are atomic: they only consider one case and
+they either define the state or an operation.
+
+Intuitively, we would like our traits to look like the following 
+\begin{lstlisting}
+eval={
+  Exp:{interface
+    method Size eval()
+    }
+evalPlus=Use plus, {
+  Exp:{interface
+    method Size eval()
+    }
+  Plus:{implements Exp
+    method Size eval() this.left().eval()+this.right().eval() 
+    }
+  }
+\end{lstlisting}
+\Q@basePlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
+and defines the \Q@eval()@ method from interface \Q@Exp@.
+
+But, if we was to declare those
+explicitly, we would repeat \Q@Exp@, the abstract
+declaration of \Q@eval()@ and \Q@implements Exp@
+for al the data-variant.
+Our more abstract solution, to avoid this duplication is to write 
+the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
+onto the corresponding data variant.
+Thus, our source code is the following:
 
 \begin{lstlisting}
 //Definition of the datavariants state
-exp:{//Exp declared once, reused everywhere
-  Exp:{interface}
-  T:{implements Exp}
+exp={
+  Exp={interface}
+  T={implements Exp}
   }
-lit:Use exp[rename T in Lit],{//T renamed in Lit is 
-  Lit:{ method Int inner() static method Lit of(Int inner)
-    }//summed with the current Lit
+num=Use exp[rename T into Num],{
+  Num={
+    method Size value()
+    class method Num of(Size value)
+    }
+  }//T renamed in Num is summed with the current Num
+plus=exp[rename T into Plus], {
+  Plus={
+    method Exp left()
+    method Exp right()
+    class method Plus of(Exp left, Exp right)
+    }
   }
-sum:Use exp[rename T in Sum],{//same for the other
-  Sum:{ method Exp left() method Exp right()
-    static method Sum(Exp left, Exp right) }
+neg=Use exp[rename T into Neg],{
+  Neg={
+    method Exp term()
+    class method Neg of(Exp term)
   }
-uminus:Use exp[rename T in UMinus],{
-  UMinus:{ ... }
-  }
-
+}
 \end{lstlisting}
 Here we define a trait for each datavariant.
 Each trait will contain its version of \Q@Exp@
 and a specific case of expression, with its state.
- To avoid repeating the declaration of \Q@Exp@ 
-and \Q@implements Exp@ multiple times, we reuse
-a \Q@exp@ trait.
-
+Next, we define the operation eval for all the datavariants:
 \begin{lstlisting}
-//Definition of toString for all the datavariants
-expToS:Use exp, {//concept of toString declared once
-  Exp:{interface method String toString()}
+base={//concept of Exp.eval() declared once
+  Exp={interface
+    method Size eval()
+    }
+  T={implements Exp}
   }
-litToS: Use lit, expToS[rename T in Lit], {
-  Lit:{//just the implementation of the specific method
-    method String toString(){return ""+this.inner();}
+baseNum=Use num, base[rename T into Num],{
+  //just the implementation of the specific method
+  Num={ method Size eval() this.value() }
+  }
+basePlus=Use plus, base[rename T into Num], {
+  Plus={ method Size eval() this.left().eval()+this.right().eval() }
+  }
+baseNeg=Use neg, base[rename T into Neg], {Neg={ method Size eval()..}}
+\end{lstlisting}
+Now, we define the operation show for all the datavariants.
+\begin{lstlisting}
+show=Use exp,{
+  Exp={interface
+    method S show()
+    }
+  T={implements Exp}
+  }
+showNum=Use num, show[rename T into Num],{
+  Num={ method S show() this.value().toS() }
+  }
+showPlus=Use plus, show[rename T into Plus],{Plus={ method S show() ..}}
+showNeg=Use neg, show[rename T into Neg],{Neg={ method S show() .. }}
+  }
+\end{lstlisting}
+Here we define a trait for each datavariant implementing the operation \Q@show()@.
+Again, each trait will contain its version of \Q@Exp@ with \Q@show()@
+and a specific case of expression, with the implementation for \Q@show()@
+for that specific case.
+Former solutions in \cite{deepfjig} required the state of the 
+datavariant to be repeated in each operation.
+Here we can just import it.
+
+
+At this stage, we could define a class supporting any subset of operations
+and data-variants by just composing the right traits:
+For example, here a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
+with both operations:
+\begin{lstlisting}
+Example=Use baseNum,basePlus,showNum,showPlus
+\end{lstlisting}
+
+
+Supporting transformations (operation from \Q@Exp@ to \Q@Exp@)
+is a challenge for some proposed solution to the expression problem.~\cite{}.
+It is transparent in \name, is just another operation.
+\begin{lstlisting}
+double= Use{
+  Exp={interface
+    method Exp double()
+    }
+  T={implements Exp}
+  }
+doubleNum= Use num, double[rename T in Num],{
+  Num={ method Exp double() Num.of(this.value()*2) }
+  }
+doublePlus=Use plus,double[rename T in num],{
+  Plus={ method Exp dble()
+    Plus.of(this.left().double(),this.right().double()) 
     } }
-sumToS:Use sum, expToS[rename T in Sum], {
-  Sum:{//just the implementation of the specific method
-    method String toString(){
-      return this.left().toString()+"+"+this.right().toString();
-      }  }  }
-uminusToS:...//implement toString for all the datavariants
+doubleNeg:...
 \end{lstlisting}
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+In the code below,
 
-Here we define a trait for each datavariant implementing the operation \Q@toString()@.
-Again, each trait will contain its version of \Q@Exp@ with \Q@toString()@
-and a specific case of expression, with the implementation for \Q@toString()@
-for that specific case. Note how the state of such datavariant is 
-\textbf{not repeated}, but imported by (for example) \Q@Use sum, ...@.
+ the example of the other iconic operation: \Q@eval@.
 
-Again, \Q@expToS@ is a useful modularization point.
-In the code below, the example of the other iconic operation: \Q@eval@.
 
-\begin{lstlisting}
-//Definition of other operations, for example eval
-expEval:Use exp, {
-  T:{interface method int eval()}
-  }
-//declare the next operation and implement it for all the datavariant
-//example
-sumEval:Use sum,expEval[rename T in Sum], {
-  Sum:{//just the implementation of the
-    method int eval(){//specific method
-      return this.left().eval()+this.right().eval();
-      }  }  }
-\end{lstlisting}
+
 In \name it is trivial also for the binary method equals.
 Since every datavariant would have to copy the "cast" logic,
  we can modularize that into a \Q@expEquals@.
@@ -218,7 +303,7 @@ For example, lets add 1 to all literals
 expAdd1:{Exp:{interface method Exp add1()}}
 sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
     method Exp add1()
-      Sum.of(left.add1(), right.add1())
+      Sum.of(this.left().add1(), this.right().add1())
   }
 litAdd1:Use lit,expAdd1,{Lit:{implements Exp
     method Exp add1()
@@ -249,24 +334,29 @@ In \name we can obtain the same kind of code reuse, without the need of introduc
 the concepts related to the Visitor Pattern.
 With redirect, rename and restrict we can have the general operator propagator:
 \begin{lstlisting}
-operation:{//for sum and lit, easy to extends as before
-  T:{}
-  Exp:{interface method Exp op(T x)}}
-  Sum:Use sum,{ extends Exp sum,expAdd1,{
-    method Exp op(T x)
-      Sum.of(left.op(x),right.op(x))  }
-  Lit:Use lit,{
-    method Exp op(T x)  this
-  }
+operation:Use lit, sum, {//for sum and lit, easy to extends as before
+  Arg:{}
+  Exp:{interface method Exp op(Arg x)}
+  Lit:{
+    method Exp op(Arg x){return this}
+    }
+  Sum:{
+    method Exp op(Arg x){
+      return Sum.of(this.left().op(x),this.right().op(x))
+      }
+    }
 \end{lstlisting}
 
 Now, to have \Q@addN@ we can do the following.
 
 \begin{lstlisting}
-opAddn: Use
-  operation[redirect T to Int]
-    [rename Exp.op(x) to addN(x)][restrict Lit.op(x)], {
-  Lit:{method Exp addN(Int x) Lit.of(inner())+x}
+opAddn:Use operation
+  [redirect Arg to Int]
+  [rename Exp.op(x) to addN(x)]
+  [restrict Lit.op(x)], {
+  Lit:{
+    method Exp addN(Int x){ return Lit.of(inner())+x}
+    }
   }
 \end{lstlisting}  
 

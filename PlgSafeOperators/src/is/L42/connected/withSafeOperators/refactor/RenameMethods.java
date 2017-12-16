@@ -291,8 +291,8 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
     }
 
   @Override public List<Member> liftMembers(List<Member> s) {
+    addToAbstractAliases(s);
     List<Member> res=new ArrayList<>(super.liftMembers(s));
-    addToAbstractAliases(res);
     collapseEqualMs(res);
     return res;
     }

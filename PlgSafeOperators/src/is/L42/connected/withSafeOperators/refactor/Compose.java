@@ -89,9 +89,12 @@ L1 ++p L2 = norm(p.evilPush(L0)) //TODO: in the implementation we just return L0
 /**<pre>#define interface?,M? +p interface?1,M1 = M2
 interface?,empty +p interface?1,M = M //M is the metavariable for member, introduced in notation and grammar
 interface?1,C:L1 +p interface?2,C:L2 = C: L1 +p.push(C) L2
-interface?1,refine? mh1 e?1 +p interface?2,refine? mh2 e?2= refine? mhi e?i //we chose that allowing refine+non refine sum was more evil than good
-  with {i,j}={1,2},p|-mhi<=mhj
-  and e?j=empty, if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj
+interface?1,refine?1 mh1 e?1 +p interface?2,refine?2 mh2 e?2= {refine?1,refine?2} mhi e?i
+//we originally chose that allowing refine+non refine sum was more evil than good,
+//but we want to implement interface methods without mentioning such interface, so we relaxed it
+  with {i,j}={1,2} :
+    p|-mhi<=mhj and e?j=empty,
+    if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj
 //interface can not loose, implemented can not loose.
 </pre>*/void sumMember();
 
@@ -189,12 +192,12 @@ public class Compose {
     List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
     boolean superOk=superOk(p,l.getSupertypes(),ps1);
     if(!superOk){
-      return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+l.getSupertypes()+" does not contains all of "+ps1);
+      return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+"\n"+l.getSupertypes()+" does not contains all of "+ps1);
       }
     for(MethodWithType m :p.methods(Path.outer(0))){
       //there must be equivalent in l
       Member mi = l._getMember(m.getMs());
-      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+" Selector "+m.getMs()+" not found");}
+      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+"\n"+" Selector "+m.getMs()+" not found");}
       if(m.get_inner()==null){continue;}
       //we trust the mt to be the same
       //we trust the e is the same except for nested L, where we use recursion
@@ -232,16 +235,28 @@ public static  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithT
 
 /**{@link ComposeSpec#sumMember}*/
 public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,boolean interface2,MethodWithType mwt2) throws MethodClash{
-    if (mwt1==null){return mwt2;}
+  if (mwt1==null){return mwt2;}
+  MethodType mt1=mwt1.getMt();
+  MethodType mt2=mwt2.getMt();
+  boolean refine=mt1.isRefine() ||mt2.isRefine();
+  mt1=mt1.withRefine(refine);
+  mt2=mt2.withRefine(refine);
+  mwt1=mwt1.withMt(mt1);
+  mwt2=mwt2.withMt(mt2);
+  return sumMwtAux(p,interface1,mwt1,interface2,mwt2);
+  }
+
+/**{@link ComposeSpec#sumMember}*/
+public  MethodWithType sumMwtAux(Program p,boolean interface1,MethodWithType mwt1,boolean interface2,MethodWithType mwt2) throws MethodClash{
     //assign to i,j: if one has body, is i. Else, we need to check for
     //if only one is interface, is i.
     //if both interface, methods must be equiv
     //if no interfaces, try mt1<=mt2, then try the other way
     MethodType mt1=mwt1.getMt();
     MethodType mt2=mwt2.getMt();
-    if(mt1.isRefine()!=mt2.isRefine()){
-      throw makeMethodClash(mwt1, mwt2).msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
-      }
+//    if(mt1.isRefine()!=mt2.isRefine()){
+//      throw makeMethodClash(mwt1, mwt2).msg("sum of refine and non refine methods:\n"+mwt1+"\n"+mwt2);
+//      }
     if(mwt1.get_inner()!=null){
       assert !interface1 && !interface2;
       if(mwt2.get_inner()!=null){
@@ -259,7 +274,7 @@ public  MethodWithType sumMwt(Program p,boolean interface1,MethodWithType mwt1,b
     assert !interface1 && !interface2;
     if(mtGT(p,mt1,mt2)){return sumMwtij(p,mwt1,mwt1,mwt2);}
     if(mtGT(p,mt2,mt1)){return sumMwtij(p,mwt2,mwt1,mwt2);}
-    throw makeMethodClash(mwt1, mwt2).msg("Neither of the method is subtype of the other");
+    throw makeMethodClash(mwt1, mwt2).msg("Neither of the method is subtype of the other: "+mwt1.getMt()+" "+mwt2.getMt());
     }
 private MethodClash makeMethodClash(MethodWithType mwt1, MethodWithType mwt2) {
   return new MethodClash(Method.of(mwt1,leftTop,stackCs),Method.of(mwt2,leftTop,stackCs));
@@ -286,7 +301,7 @@ private void checkMtEq(Program p, MethodWithType mwt1, MethodWithType mwt2,Metho
     throw makeMethodClash(mwt1, mwt2);
     }
   if(!mtEqRest(p,mwt1.getMt(),mwt2.getMt())){
-    throw makeMethodClash(mwt1, mwt2);
+    throw makeMethodClash(mwt1, mwt2).msg("Incompatible types:\n  left: "+mt1+"\n  right: "+mt2);
     }
 }
 /**{@link ComposeSpec#methodTypeSubtype}*/

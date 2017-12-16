@@ -137,7 +137,8 @@ public class RefactorErrors{
   MethodClash extends MutMsgExc implements
     FluentSetter<MethodClash>{
     Method left;Method right;
-    public MethodClash(Method left,Method right){this.left=left;this.right=right;}
+    public MethodClash(Method left,Method right){
+      this.left=left;this.right=right;}
     public Method left(){return left;}
     public Method right(){return right;}
     public String toString(){return "MethodClash: "+PathAux.as42Path(left.location().path())+"::"
