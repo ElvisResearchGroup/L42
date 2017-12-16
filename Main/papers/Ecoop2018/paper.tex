@@ -21,6 +21,7 @@
 \usepackage{times}
 \usepackage{comment}
 \usepackage{rotating} 
+\usepackage[T1]{fontenc}
 %\addtolength{\textwidth}{0.5ex}
 \usepackage{enumitem}
 \setlist{nosep}
@@ -74,7 +75,12 @@
 }
 %----------------------
 \newcommand\dom{\text{dom}}
-
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand\smallDs{{\Scale[0.5]{\overline{\mD}}}}
+\newcommand\vds{{v_{\smallDs}}}
+\newcommand\Rulename[1]{{\textsc\textbf{#1}}}
+\newcommand\ctx{{\cal{E}}}
+\newcommand\mID{\metavariable{ID}}
 \newcommand\mL{\metavariable{L}}
 \newcommand\mE{\metavariable{E}}
 \newcommand\mC{\metavariable{C}}
@@ -82,9 +88,10 @@
 \newcommand\mV{\metavariable{V}} %code value t or L
 \newcommand\mM{\metavariable{M}}
 \newcommand\mG{\metavariable{G}}
-\newcommand\mMD{\metavariable{MD}}
+\newcommand\mDE{\metavariable{DE}}
 \newcommand\mTE{\metavariable{TE}}
 \newcommand\mCE{\metavariable{CE}}
+\newcommand\mMD{\metavariable{MD}}
 \newcommand\mTD{\metavariable{TD}}
 \newcommand\mCD{\metavariable{CD}}
 \newcommand\mD{\metavariable{D}}
