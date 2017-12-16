@@ -100,72 +100,156 @@ We can do this by creating a table of features, as in~\cite{Deepfjig}.
 But in \name we can be even more compact as we can avoid a large amount of abstract declarations,
 that clutters the solution in~\cite{Deepfjig}.
 
+Following closely
+the example of~\cite{},
+we consider a language where the
+expressions \Q@Exp@ can
+be \Q@Num@ (for number literal)
+\Q@Plus@ (for binary plus operator)
+and \Q@Neg@ (for unary minus).
+We then proceed defining operation
+\Q@show@ to print it as a string
+and \Q@eval@ to compute the numeric value.
+
+We thus have 4 classes/interface
+the definition of the state and 2 operations.
+We can model this as a 4*3 table composed by 12 traits.
+Those traits are atomic: they only consider one case and
+they either define the state or an operation.
+
+Intuitively, we would like our traits to look like the following 
+\begin{lstlisting}
+eval={
+  Exp:{interface
+    method Size eval()
+    }
+evalPlus=Use plus, {
+  Exp:{interface
+    method Size eval()
+    }
+  Plus:{implements Exp
+    method Size eval() this.left().eval()+this.right().eval() 
+    }
+  }
+\end{lstlisting}
+\Q@basePlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
+and defines the \Q@eval()@ method from interface \Q@Exp@.
+
+But, if we was to declare those
+explicitly, we would repeat \Q@Exp@, the abstract
+declaration of \Q@eval()@ and \Q@implements Exp@
+for al the data-variant.
+Our more abstract solution, to avoid this duplication is to write 
+the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
+onto the corresponding data variant.
+Thus, our source code is the following:
 
 \begin{lstlisting}
 //Definition of the datavariants state
-exp:{//Exp declared once, reused everywhere
-  Exp:{interface}
-  T:{implements Exp}
+exp={
+  Exp={interface}
+  T={implements Exp}
   }
-lit:Use exp[rename T in Lit],{ 
-  Lit:{ method Int inner() static method Lit of(Int inner)
-    }//T renamed in Lit is summed with the current Lit
+num=Use exp[rename T into Num],{
+  Num={
+    method Size value()
+    class method Num of(Size value)
+    }
+  }//T renamed in Num is summed with the current Num
+plus=exp[rename T into Plus], {
+  Plus={
+    method Exp left()
+    method Exp right()
+    class method Plus of(Exp left, Exp right)
+    }
   }
-sum:Use exp[rename T in Sum],{//same for the other
-  Sum:{ method Exp left() method Exp right()
-    static method Sum of(Exp left, Exp right) }
+neg=Use exp[rename T into Neg],{
+  Neg={
+    method Exp term()
+    class method Neg of(Exp term)
   }
-uminus:Use exp[rename T in UMinus],{
-  UMinus:{ ... }
-  }
-
+}
 \end{lstlisting}
 Here we define a trait for each datavariant.
 Each trait will contain its version of \Q@Exp@
 and a specific case of expression, with its state.
- To avoid repeating the declaration of \Q@Exp@ 
-and \Q@implements Exp@ multiple times, we reuse
-a \Q@exp@ trait.
-
+Next, we define the operation eval for all the datavariants:
 \begin{lstlisting}
-//Definition of toString for all the datavariants
-expToS:Use exp, {//concept of toString declared once
-  Exp:{interface method String toString()}
+base={//concept of Exp.eval() declared once
+  Exp={interface
+    method Size eval()
+    }
+  T={implements Exp}
   }
-litToS: Use lit, expToS[rename T in Lit], {
-  Lit:{//just the implementation of the specific method
-    method String toString(){return ""+this.inner();}
+baseNum=Use num, base[rename T into Num],{
+  //just the implementation of the specific method
+  Num={ method Size eval() this.value() }
+  }
+basePlus=Use plus, base[rename T into Num], {
+  Plus={ method Size eval() this.left().eval()+this.right().eval() }
+  }
+baseNeg=Use neg, base[rename T into Neg], {Neg={ method Size eval()..}}
+\end{lstlisting}
+Now, we define the operation show for all the datavariants.
+\begin{lstlisting}
+show=Use exp,{
+  Exp={interface
+    method S show()
+    }
+  T={implements Exp}
+  }
+showNum=Use num, show[rename T into Num],{
+  Num={ method S show() this.value().toS() }
+  }
+showPlus=Use plus, show[rename T into Plus],{Plus={ method S show() ..}}
+showNeg=Use neg, show[rename T into Neg],{Neg={ method S show() .. }}
+  }
+\end{lstlisting}
+Here we define a trait for each datavariant implementing the operation \Q@show()@.
+Again, each trait will contain its version of \Q@Exp@ with \Q@show()@
+and a specific case of expression, with the implementation for \Q@show()@
+for that specific case.
+Former solutions in \cite{deepfjig} required the state of the 
+datavariant to be repeated in each operation.
+Here we can just import it.
+
+
+At this stage, we could define a class supporting any subset of operations
+and data-variants by just composing the right traits:
+For example, here a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
+with both operations:
+\begin{lstlisting}
+Example=Use baseNum,basePlus,showNum,showPlus
+\end{lstlisting}
+
+
+Supporting transformations (operation from \Q@Exp@ to \Q@Exp@)
+is a challenge for some proposed solution to the expression problem.~\cite{}.
+It is transparent in \name, is just another operation.
+\begin{lstlisting}
+double= Use{
+  Exp={interface
+    method Exp double()
+    }
+  T={implements Exp}
+  }
+doubleNum= Use num, double[rename T in Num],{
+  Num={ method Exp double() Num.of(this.value()*2) }
+  }
+doublePlus=Use plus,double[rename T in num],{
+  Plus={ method Exp dble()
+    Plus.of(this.left().double(),this.right().double()) 
     } }
-sumToS:Use sum, expToS[rename T in Sum], {
-  Sum:{//just the implementation of the specific method
-    method String toString(){
-      return this.left().toString()+"+"+this.right().toString();
-      }  }  }
-uminusToS:...//implement toString for all the datavariants
+doubleNeg:...
 \end{lstlisting}
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+In the code below,
 
-Here we define a trait for each datavariant implementing the operation \Q@toString()@.
-Again, each trait will contain its version of \Q@Exp@ with \Q@toString()@
-and a specific case of expression, with the implementation for \Q@toString()@
-for that specific case. Note how the state of such datavariant is 
-\textbf{not repeated}, but imported by (for example) \Q@Use sum, ...@.
+ the example of the other iconic operation: \Q@eval@.
 
-Again, \Q@expToS@ is a useful modularization point.
-In the code below, the example of the other iconic operation: \Q@eval@.
 
-\begin{lstlisting}
-//Definition of other operations, for example eval
-expEval:Use exp, {
-  T:{interface method int eval()}
-  }
-//declare the next operation and implement it for all the datavariant
-//example
-sumEval:Use sum,expEval[rename T in Sum], {
-  Sum:{//just the implementation of the
-    method int eval(){//specific method
-      return this.left().eval()+this.right().eval();
-      }  }  }
-\end{lstlisting}
+
 In \name it is trivial also for the binary method equals.
 Since every datavariant would have to copy the "cast" logic,
  we can modularize that into a \Q@expEquals@.

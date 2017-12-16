@@ -60,7 +60,7 @@ $baseNeg:Resource<><Use[$neg(); RenNeg<><$base()]<>< {
   Neg:{ method Size eval() Size"-1" * this.term().eval() }
   }
 
-$show:Resource<><Use[$base()]<><{
+$show:Resource<><Use[$exp()]<><{
   Exp:{interface
     method S show()
     }
@@ -81,7 +81,7 @@ $showNeg:Resource<><Use[$neg(); RenNeg<><$show()]<><{
 
 //----------------
 
-$dble:Resource<><Use[$base()]<><{
+$dble:Resource<><{
   Exp:{interface
     method Exp dble()
     }
