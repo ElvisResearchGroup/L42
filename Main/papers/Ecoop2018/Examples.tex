@@ -3,9 +3,9 @@
 
 Here we show a simple formalization for the language we presented so far.
 We also model nested classes, but in order to avoid uninteresting complexities, we assume that
-all the type names are fully qualified from the top level, so the examples of before should be
+all the type names are fully qualified from the top level, so the examples shown before should be
 written using \Q@This.Exp@, \Q@This.Sum@ and so on.
-In a real language, a simple pre processor may take care of this step.
+In a real language, a simple pre-processor may take care of this step.
 
 In most languages, when implementing an interface, the programmer may avoid repeating abstract methods
 they do not wish to implement.
@@ -13,12 +13,12 @@ In the same spirit of before, in this simplified formalization we consider sourc
 all the imported abstract methods. In a real language, a normalization process
 may hide this abstraction.
 
-We also consider a binary operator sum \Q@+@ instead of the variable arity operator \Q@use@
+We also consider a binary operator sum \Q@+@ instead of the variable arity operator \Q@use@.
 
 Figure 1 contains the complete formalization for the 
 compilation process and the type system for \name.
 It starts with the syntax, then
-show the compilation process and the typing rules.
+we show the compilation process and the typing rules.
 
 
 
@@ -241,19 +241,18 @@ $
 $\\
 \caption{Formalization}
 \end{figure}
----------------------------------------------------------------------------------------
 
 \subsection{Syntax}
 
-In the following, we present a simplified grammar of \name:
-\noindent We use $\mt$ and $\mC$ to represent lower case trait and upper case class identifiers.
+In the following section, we present a simplified grammar of \name:
+\noindent We use $\mt$ and $\mC$ to represent lower case trait and upper case class identifiers respectively.
 
 \noindent To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
 expression $\mE$.
-Note how in $\mE$you can refer to a trait by name.
+Note how in $\mE$\ you can refer to a trait by name.
 
- In full 42 we support various operators, including the ones presented before,
- but here show only the single operator \Q@+@.
+ In full 42, we support various operators including the ones presented before,
+ but here we only show the single operator \Q@+@.
 This operation is a generalization to the case of nested classes of the simplest and most elegant
 trait composition operator~\cite{ducasse2006traits}.
 
@@ -272,9 +271,9 @@ A static method in \name is similar to a \Q@static@ method in Java but can be ab
 This is very useful in the context of code composition.
 To denote a method as abstract, instead of an optional keyword we just omit the implementation \me.
 
-Finally, expression $\me$ are just variables method call and static method call.
+Finally, expression $\me$ are just variables, method calls or static method calls.
 The ugliness of having two different kinds of method call is an artefact of our simplifications.
-In the full language type names are a kind of expression, whose type help to model metaclasses.
+In the full language, type names are a kind of expression whose type helps to model metaclasses.
 
 Our concept of abstract state implies we have no \Q@new@ expressions, and
 the values are just calls to abstract static methods.
@@ -285,10 +284,10 @@ We then show the evaluation context, the compilation context and full context.
 \subsection{Well-formedness}
 
 The whole program, that is $\overline\mDE$, is well formed if
-All the traits and classes at top level have unique names, and the special class name
+all the traits and classes at top level have unique names, and the special class name
 \Q@This@ is reserved and if all
-the subtype relation is consistent:
-This means that implementation of interfaces is not circular,
+the subtype relations are consistent:
+this means that the implementation of interfaces is not circular,
 and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \text{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL,\mL)$\\
 
 \noindent\textbf{Define }$\text{consistentSubtype}(\overline\mDE,\mL)$\\
@@ -314,19 +313,19 @@ $\begin{array}{l}
 That is, every literal declares (abstract or not) all the methods that are declared 
 in its super interfaces.
 
-\noindent An \mL is well formed if:
+\noindent An \mL\ is well formed if:
 \begin{itemize}
 \item all method parameters have unique names and the special parameter name \Q@this@ is not declared
  in the parameter list,
 \item all methods in a code literal have unique names,
-\item all nested classes have unique names, and no nested class is called \Q@This@.
-\item all used variables are in scope,
+\item all nested classes have unique names, and no nested class is called \Q@This@,
+\item all used variables are in scope, and
 \item all methods in an interface are abstract, and there are no interface static methods.
 \end{itemize}
 
 
 While classes are typed assuming \lstinline{this} is of the nominal type of the
-class, trait declarations, do not introduce any nominal type.  \lstinline{this}
+class, trait declarations, do not introduce any nominal types.  \lstinline{this}
 in a trait is typed with a special type \lstinline{This} that is visible only
 inside such trait. Syntactically, \Q@This@ is just a special, reserved, class name $\mC$.
 A Literal can use the \lstinline{This} type,
@@ -337,21 +336,21 @@ and when flattening completes creating a class definition, \Q@This@ will be repl
 
 Usually the compilation process is not modelled, but here it is the most interesting part.
 Here we explain in the detail the flattening process and how and when compilation errors may arise.
-It is composed by rules \Rulename{Top},\Rulename{Look-Up},\Rulename{Ctx-C} and \Rulename{sum}.
-If we was to formally model more composition operators, each one would have its rule.
+It is composed by rules \Rulename{Top},\ \Rulename{Look-Up},\ \Rulename{Ctx-C} and \Rulename{sum}.
+If we were to formally model more composition operators, each operator would have its own  rule.
 
 Rule \Rulename{Top}
 compiles the leftmost top level (trait or class) declaration that needs to be compiled.
 In order to do so,
-it identify the subset of the program $\overline\mD$ that can be already typed (second premise).
+it identifies the subset of the program $\overline\mD$ that can already be typed (second premise).
 Then the expression is executed under the control of such compiled program (first premise).
 According to rule \Rulename{Look-Up}, all the traits inside the expression needs to
 be compiled, that is $\forall\mt. \mE=\ctx[\mt], \mt\in\dom(\overline\mD)$.
-If a large enough $\overline\mD$ can not be typed, this would cause a compilation error
+If a large enough $\overline\mD$ cannot be typed, this would cause a compilation error
 at this stage.
 
 Rule \Rulename{Look-Up}
-replace a trait name $\mt$ with the corresponding literal $\mL$.
+replaces a trait name $\mt$ with the corresponding literal $\mL$.
 Thanks to the fact that $\overline\mD$ is all well typed, we know that $\mL$ is well typed too.
 
 Rule \Rulename{Ctx-c}
@@ -360,7 +359,7 @@ It enforces a deterministic left-right call by value ($\mL$) reduction;
 thus the leftmost invalid sum that is performed will be the one providing the compilation error.
 
 Finally, rule \Rulename{Sum}
-applies the operator, as follow:
+applies the operator, as follows:
 
 \noindent\textbf{Define }$\mL_1+\mL_2, \ \overline{\mM}+\overline{\mM},\ \mM+\mM$\\
 $\begin{array}{l}
@@ -368,7 +367,7 @@ $\begin{array}{l}
 \quad\quad \mL_1= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1\ \overline\mM_1\ \overline\mM_0\cC\\
 \quad\quad \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0\cC\\
 \quad\quad \mL_3= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1,\overline\mT_2\ \overline\mM_1,\overline\mM_2\ (\overline\mM_0+\overline\mM_0')\cC\\
-\quad\quad \dom(\overline\mM_1)\ \pitchfork \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\\\
+\quad\quad \dom(\overline\mM_1)\pitchfork \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\
 
 \!\!\!\bullet\ \mM_1..\mM_n+\mM'_1+\mM'_n\ = \ \mM_1+\mM'_1..\mM_n+\mM'_n\\
 
@@ -382,14 +381,14 @@ $\begin{array}{l}
 It composes the content of the arguments
 by taking the union of their members and the union of their \Q@implements@.
 Members with the same name are recursively composed.
-There are tree cases where the composition is impossible.
+There are three cases where the composition is impossible.
 \begin{itemize}
 \item MethodClash: two methods with the same name are composed,
 but either their headers have different types or they are both implemented.
 \item ClassClash: a class is composed with an interface.
 The full language offers some relaxation here, so that for example an empty class can be seen as an empty interface during composition.
 \item ImplementsClash:
-The resulting class would be ill formed because the 
+The resulting class would be ill-formed because the 
 result would violate ...
 This can happen only when composing nested interfaces,
 for example
@@ -406,11 +405,11 @@ t2={
 Naively, \Q@t1+t2@ should result in a class \Q@B@ implementing \Q@A@ with method \Q@a()@,
 but \Q@B@ would not offer such method \Q@a()@.
 While in \name it could be possible to try to patch class \Q@B@, for example adding a
-abstract method \Q@a()@, we chose to give error in this case, since in the full 42 language
+abstract method \Q@a()@, we chose to give an error in this case, since in the full 42 language
 such patch would interact badly with private nested classes.
 Note that while the first two kind of errors are obtained directly by the definition of 
 $\mL_1+\mL_2$, ImplementsClash is obtained since injecting the resulting 
-$\mL$ in the program would make it ill formed by 
+$\mL$ in the program would make it ill-formed by 
 $\text{consistentSubtype}(\overline\mDE,\mL)$.
 \end{itemize}
 
@@ -421,7 +420,7 @@ Typing is composed by rules \Rulename{CD-OK}, \Rulename{TD-OK},
 followed by expression typing rules
 \Rulename{Subsumption}, \Rulename{Method-Call}, \Rulename{X} and \Rulename{Static-Method-Call}.
 
-Rules \Rulename{CD-OK} \Rulename{TD-OK}
+Rules \Rulename{CD-OK}, \Rulename{TD-OK}
 are interesting: a top level class is typed by replacing \Q@This@ with the class name,
 and is required to be coherent.
 On the other side, a top level trait is typed by temporary adding to the typed program a mapping for
@@ -447,7 +446,7 @@ $\begin{array}{l}
 all the nested classes are coherent,
 and either the Library is an interface,
 there are no static methods, or all the static methods
-are a valid \emph{state} method of the candidate \emph{factory}.
+are a valid \emph{state} methods of the candidate \emph{factory}.
 
 \noindent\textbf{Define }$\text{factory}(\mT,\overline\mM)$\\
 $\begin{array}{l}
@@ -484,7 +483,7 @@ $\begin{array}{l}
 \end{array}$
 
 \noindent A non static method is part of the \emph{abstract state} if 
-is a valid getter, setter or wither.
+it s a valid getter, setter or wither.
 
 
 Rule \Rulename{Nested-OK} helps to accumulate the type of \Q@this@ so that rule \Rulename{Method-OK}
@@ -492,10 +491,9 @@ can use it.
 The other rules are straightforward and standard.
 
 
-While very simple from a formal perspective, our typing discipline is 
+While our typing discipline is very simple from a formal perspective,  
 what distinguishes our approach from a simple minded code composition macro~\cite{bawden1999quasiquotation}
-or a rigid module composition~\cite{ancona2002calculus}.
-There are two core ideas:
+or a rigid module composition~\cite{ancona2002calculus} are two core ideas:
 
 \paragraph{1: traits are \emph{well-typed} before being reused.}
  For example in
@@ -510,12 +508,12 @@ t:{method int m() 2
 \saveSpace\begin{lstlisting}
 t1:{method int n() this.m()+1} 
 \end{lstlisting}\saveSpace
-\noindent would be ill typed.
+\noindent would be ill-typed.
 
 \paragraph{2: code literals are not required to be \emph{well-typed} before flattening.}${}_{}$\\*
 In class expressions  $\use\ \overline\mV$,
-an \mL\ in $\overline\mV$ is not typechecked before flattening, and only the result is expected to be well-typed.
-While this seems a dangerous approach at first, consider that also Java has the same behaviour:
+an \mL\ in $\overline\mV$ is not type-checked before flattening, and only the result is expected to be well-typed.
+While this seems a dangerous approach at first, consider that Java also has the same behaviour:
 for example in
 \saveSpace\begin{lstlisting}[language=Java]
   class A{ int ma() {return 2;}  int n(){return this.ma()+1;} }
@@ -530,7 +528,7 @@ C: Use t {method int k() this.n()+this.m()}
 \noindent would be correct. In the code literal
 \Q@{method int k() this.n()+this.m()}@, 
  even if \Q@n@, \Q@m@ are not locally defined, in 
-\name the result of the flattening is well typed.
+\name the result of the flattening is well-typed.
 This is not the case in many similar works in literature~\cite{deep,Bettini2015282,Bergel2007} where the
 literals have to be \emph{self contained}. In this case we would have been forced to
 declare abstract methods \Q@n@ and \Q@m@, even if \Q@t@ already 
@@ -538,7 +536,7 @@ provides such methods.
 
 
 \subsection{Formal properties}
-In addition of conventional soundness of the expression reduction,
+In addition to conventional soundness of the expression reduction,
 \name ensures soundness of the compilation process itself.
 A similar property was called meta-level-soundness in~\cite{}; here we can obtain the same result in
 a much simpler setting.
@@ -550,12 +548,12 @@ Theorem compilation soundness:
 if $\mE_0 \xrightarrow[\smallDs]{} \mE_1$
 then $\text{wrong}(\overline\mD,\mE_0)\geq\text{wrong}(\overline\mD,\mE_1)$.
 
-This property have two important corollary:
+This property has two important corollary:
 \begin{itemize}
 \item If a class is declared by using $\mC : \use\ \overline\mt$, that is without literals,
-and the flattening is successful then \mC\ is well typed: there is no need of further checking.
+and the flattening is successful then \mC\ is well-typed: there is no need of further checking.
 \item On the other side, if a class is declared by $\mC : \use\ \overline\mV$, with
-$\mL_1\ldots\mL_n \in \overline\mV$, and after successful flattening $\mC : \mL$ can not be typechecked,
+$\mL_1\ldots\mL_n \in \overline\mV$, and after successful flattening $\mC : \mL$ can not be type-checked,
 then the issue was originally present in one of $\mL_1\ldots\mL_n$.
 It may be that the result is intrinsically ill-typed, if one of the methods in $\mL_1\ldots\mL_n$ is not well typed,
 but it may also happen that a type referred from one of those methods
@@ -695,7 +693,7 @@ interfaces and final classes, where nested classes gives structure to the code b
 The only interesting point is the auxiliary function meth:
 
 
-\noindent\textbf{Define }$\text{meth}(\mM,\overline\vds)$\\
+\noindent\textbf{Define }$\text{meth}(\mM,\overline\vds)$
 
 $\begin{array}{l}
 
