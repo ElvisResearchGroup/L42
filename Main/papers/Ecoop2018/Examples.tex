@@ -301,16 +301,29 @@ $\begin{array}{l}
   \cC
   )\quad\text{where}\\
 \quad\quad \forall\ \_\terminalCode{=}\mL\in  \overline\mM, 
-\text{consistentSubtype}(\overline\mDE,\mL)
+\text{consistentSubtype}(\overline\mDE,\mL) \text{ and }
 \\
-\quad\quad \forall \mT\in\overline\mT, \text{if }\overline\mDE(\mT)=\mL
-\text{ then }
-\mL=\oC\terminalCode{interface implements}\ \overline\mT' \overline\mM'\cC
-\dom(\overline\mM')\subseteq\dom(\overline\mM')
+\quad\quad 
+\forall \terminalCode{method}\ \mT_0 \mm\oR
+\mT_1\,\mx_1\ldots\mT_n\,\mx_n
+%\overline{\mT\,\mx}
+\cR\Opt\me
+\in\overline\mM,
+\forall \mT\in\overline\mT,
+\text{if }\overline\mDE(\mT,\mm)=\mT'_0 \mm\oR
+%\overline{\mT\,\mx}'
+\mT'_1\,\mx'_1\ldots\mT'_k\,\mx'_k
+\cR
+\\\quad\quad\text{ then }
+%\mT_0=\mT'_0, \overline{\mT\,\mx}=\overline{\mT\,\mx}'
+\mT_0\ldots\mT_n=\mT'_0\ldots\mT'_k
+
+\text{ and }\overline\mDE(\mT)=\oC\terminalCode{interface}\,\_\cC
+
 \\
 \end{array}$
 
-That is, every literal declares (abstract or not) all the methods that are declared 
+\noindent That is, every literal declares (abstract or not) all the methods that are declared 
 in its super interfaces.
 
 \noindent An \mL\ is well formed if:

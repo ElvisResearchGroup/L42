@@ -96,10 +96,6 @@ preserve \textbf{type safety}
 and allow \textbf{separate compilation} (no re-type-checking),
 while avoiding \textbf{duplication of source code}.
 
-We can do this by creating a table of features, as in~\cite{Deepfjig}.
-But in \name we can be even more compact as we can avoid a large amount of abstract declarations,
-that clutters the solution in~\cite{Deepfjig}.
-
 Following closely
 the example of~\cite{},
 we consider a language where the
@@ -108,29 +104,30 @@ be \Q@Num@ (for number literal)
 \Q@Plus@ (for binary plus operator)
 and \Q@Neg@ (for unary minus).
 We then proceed defining operation
-\Q@show@ to print it as a string
-and \Q@eval@ to compute the numeric value.
+\Q@show@ to print it as a string,
+ \Q@eval@ to compute the numeric value and 
+\Q@double@ to double the value of each \Q@Num@.
 
-We thus have 4 classes/interface
-the definition of the state and 2 operations.
-We can model this as a 4*3 table composed by 12 traits.
-Those traits are atomic: they only consider one case and
-they either define the state or an operation.
+We thus have 3 classes, 1 interface,
+the definition of the state and 3 operations.
+We can model this
+as a table of features, as in~\cite{Deepfjig}:
+a (3classes+1interface)*(1state+3operations)
+table composed by 16 traits.
+They are atomic: they deal with exactly 
+define the state of a class
+or a single operation for a single class.
+In \name we can be very compact,
+ as we can avoid a large amount of abstract declarations,
+that clutters the solution in~\cite{Deepfjig}.
 
 Intuitively, we would like our traits to look like the following 
 \begin{lstlisting}
-eval={
-  Exp:{interface
-    method Size eval()
-    }
-evalPlus=Use plus, {
-  Exp:{interface
-    method Size eval()
-    }
+eval={  Exp:{interface      method Size eval()}}
+evalPlus=Use plus, {  
+  Exp:{interface      method Size eval()}
   Plus:{implements Exp
-    method Size eval() this.left().eval()+this.right().eval() 
-    }
-  }
+    method Size eval() this.left().eval()+this.right().eval()}}
 \end{lstlisting}
 \Q@basePlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
@@ -142,223 +139,228 @@ for al the data-variant.
 Our more abstract solution, to avoid this duplication is to write 
 the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
 onto the corresponding data variant.
-Thus, our source code is the following:
-
+Thus, our source code is as follow;
+First we declare the 4 traits to represent the state:
 \begin{lstlisting}
-//Definition of the datavariants state
-exp={
-  Exp={interface}
-  T={implements Exp}
-  }
+exp={Exp={interface}      T={implements Exp}}
 num=Use exp[rename T into Num],{
-  Num={
-    method Size value()
-    class method Num of(Size value)
-    }
-  }//T renamed in Num is summed with the current Num
+  Num={method Size value()      class method Num of(Size value)}}
+  //T renamed in Num is summed with the current Num
 plus=exp[rename T into Plus], {
-  Plus={
-    method Exp left()
-    method Exp right()
-    class method Plus of(Exp left, Exp right)
-    }
-  }
+  Plus={method Exp left()      method Exp right()
+    class method Plus of(Exp left, Exp right)}}
 neg=Use exp[rename T into Neg],{
-  Neg={
-    method Exp term()
-    class method Neg of(Exp term)
-  }
-}
+  Neg={method Exp term()      class method Neg of(Exp term)}}
 \end{lstlisting}
 Here we define a trait for each datavariant.
 Each trait will contain its version of \Q@Exp@
 and a specific case of expression, with its state.
 Next, we define the operation eval for all the datavariants:
 \begin{lstlisting}
-base={//concept of Exp.eval() declared once
-  Exp={interface
-    method Size eval()
-    }
-  T={implements Exp}
-  }
+eval={//concept of Exp.eval() declared once
+  Exp={interface      method Size eval()}
+  T={implements Exp}}
 baseNum=Use num, base[rename T into Num],{
   //just the implementation of the specific method
-  Num={ method Size eval() this.value() }
-  }
+  Num={ method Size eval() this.value() }}
 basePlus=Use plus, base[rename T into Num], {
-  Plus={ method Size eval() this.left().eval()+this.right().eval() }
-  }
+  Plus={ method Size eval() this.left().eval()+this.right().eval() }}
 baseNeg=Use neg, base[rename T into Neg], {Neg={ method Size eval()..}}
 \end{lstlisting}
-Now, we define the operation show for all the datavariants.
-\begin{lstlisting}
-show=Use exp,{
-  Exp={interface
-    method S show()
-    }
-  T={implements Exp}
-  }
-showNum=Use num, show[rename T into Num],{
-  Num={ method S show() this.value().toS() }
-  }
-showPlus=Use plus, show[rename T into Plus],{Plus={ method S show() ..}}
-showNeg=Use neg, show[rename T into Neg],{Neg={ method S show() .. }}
-  }
-\end{lstlisting}
-Here we define a trait for each datavariant implementing the operation \Q@show()@.
-Again, each trait will contain its version of \Q@Exp@ with \Q@show()@
-and a specific case of expression, with the implementation for \Q@show()@
-for that specific case.
 Former solutions in \cite{deepfjig} required the state of the 
 datavariant to be repeated in each operation.
 Here we can just import it.
 
+We can (not show) trivially define the show operation following exactly the same design.
 
-At this stage, we could define a class supporting any subset of operations
-and data-variants by just composing the right traits:
-For example, here a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
-with both operations:
+%Now, we define the operation show for all the datavariants.
+%\begin{lstlisting}
+%show=Use exp,{
+%  Exp={interface      method S show()}
+%  T={implements Exp}}
+%showNum=Use num, show[rename T into Num],{
+%  Num={ method S show() this.value().toS()}}
+%showPlus=Use plus, show[rename T into Plus],{Plus={ method S show() ..}}
+%showNeg=Use neg, show[rename T into Neg],{Neg={ method S show() .. }}
+%\end{lstlisting}
+
+The operation \Q@double@ is is a challenge for some proposed solution to the expression problem.~\cite{}.
+It is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
+It is transparent in \name, is just exactly like \Q@eval@ and \Q@show@.
 \begin{lstlisting}
-Example=Use baseNum,basePlus,showNum,showPlus
-\end{lstlisting}
-
-
-Supporting transformations (operation from \Q@Exp@ to \Q@Exp@)
-is a challenge for some proposed solution to the expression problem.~\cite{}.
-It is transparent in \name, is just another operation.
-\begin{lstlisting}
-double= Use{
-  Exp={interface
-    method Exp double()
-    }
-  T={implements Exp}
-  }
+double={ Exp={interface      method Exp double()}
+  T={implements Exp}}
 doubleNum= Use num, double[rename T in Num],{
-  Num={ method Exp double() Num.of(this.value()*2) }
-  }
+  Num={ method Exp double() Num.of(this.value()*2) }}
 doublePlus=Use plus,double[rename T in num],{
-  Plus={ method Exp dble()
-    Plus.of(this.left().double(),this.right().double()) 
-    } }
+  Plus={ method Exp double()
+    Plus.of(this.left().double(),this.right().double())}}
 doubleNeg:...
 \end{lstlisting}
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
-In the code below,
+Here we define a trait for each datavariant implementing the operation \Q@double()@.
+Again, each trait will contain its version of \Q@Exp@ with \Q@double()@
+and a specific case of expression, with the implementation for \Q@double()@
+for that specific case.
+We can express \Q@double@ with this level of simplicity
+thanks to the separation between use and reuse:
+every trait have its own \Q@Exp@,
+and there is no subtyping between those \Q@Exp@, they can not even
+see each other.
 
- the example of the other iconic operation: \Q@eval@.
+In our third case study we compare our results with the ones presented
+in scala.~\cite{}
+The proposed solution is not fully modularized as a table,
+so in order to make a more close comparison, we provide an alternative
+version where we isolate all the unites of behaviour as we
+have done in \name.
+\begin{minipage}{0.4\textwidth}
+\begin{tabular}{l |l |l}
+&                              lines  &   methods\\
+original scala            & 95     &  12+3=15\\
+scala  isolated units   & 149    &  12+3=15\\
+scala  instance         &   41   &     3\\
+42 traits               &   97   &    4*3+7=19\\
+42 class                &   3    &     0\\
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.6\textwidth}
+Notes: To make a meaningful comparison, we formatted
+all code in a readable and consistent manner,
+on the other side the code presented in the article
+is formatted as compact as possible.
+Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
+We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
+\end{minipage}
 
-
-
-In \name it is trivial also for the binary method equals.
-Since every datavariant would have to copy the "cast" logic,
- we can modularize that into a \Q@expEquals@.
-
+As you can see, to encode fully isolated units in scala is
+more verbose,
+but more importantly,
+we can just define a class supporting any subset of operations
+and data-variants by listing the desired traits:
+For example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
+with \Q@eval@ and \Q@double@ would look like:
 \begin{lstlisting}
-expEquals:{
+Example=Use evalNum,evalPlus,doubleNum,doublePlus
+\end{lstlisting}
+The composition of all our traits would just require to list all
+of the relevant behaviour;reasonably formatted, it can takes 3 lines.
+
+On the other side, the presented solution in Scala requires
+41 lines of glue code to put the traits together.
+
+Following~\cite{}, after \Q@double@ we present an implementation of \Q@equals@.
+In~\cite{}, involved double dispatch is used to avoid casting.
+To show understandable code, we show a simpler solution 
+with a guarded cast (sometime called a typecase).
+The interested reader can find a \name implementaiton of \Q@equals@ with double dispatch
+in the appendix.
+
+The main idea is that  every datavariant would contains
+ the "cast" logic; thus
+ we can modularize that into a \Q@expEquals@ trait.
+\begin{lstlisting}
+equals:{
   Exp:{interface method Bool equals(Exp that)}
   T:{implements Exp
-    method Bool exactEqual(T that)
-    method Bool equals(Exp that){
-      if(!(that instanceof T)){ return false;}
-      return exactEqual( (T) that );
-      }  }  }
-sumEquals:Use sum,expEquals[rename T in Sum],{
-  Sum:{
-    method Bool exactEquals(Sum that){
-      return this.left().equals(that.left()) 
-        && this.right().equals(that.right());
-      }  }  }
+    method Bool exactEquals(T that)
+    method equals(that) 
+      if(T instanceof This) then this.exactEquals(that)
+      else Bool.false()}}
+equalsNum:Use num, equals[rename T into Num],{
+  Num:{method Bool exactEquals(Num that) this.value().equals(that.value())}}
+equalsPlus:Use plus, equals[rename T into Plus],{
+  Plus:{method Bool exactEquals(Plus that)
+    this.left().equals(that.left()) & this.right().equals(that.right())}}
+equalsNeg:Use neg, equals2[rename T into Neg],{
+  Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term())}}
 \end{lstlisting}
-Note how the cast is safe since it is guarded by
-an \Q@instanceof@ check. A sightly longer solution could avoid the
-cast with double dispatch as done in [](show in appendix?).
-%expEquals:{
-%  Exp:{interface
-%    method Bool equals(Exp that)
-%    method Bool equalToT(T that)
+
+This simple implementation of \Q@equals@
+is much simple than the one proposed by scala
+ and can be instantiated without any glue code.
+
+\begin{minipage}{0.4\textwidth}
+\begin{tabular}{l |l |l}
+&                              lines  &   methods\\
+original scala eq           &    51   &   10\\
+isolated scala eq           &   58    &   10\\
+scala eq instance           &    43   &    3\\
+42 trait eq d-dispatch      &    34   &    6\\
+42 class dd instance        &    25   &   11\\
+42 traits eq Cast            &    21   &    6\\
+42 class cast instance      &     3   &    0\\
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.6\textwidth}
+Here the scala code can be made fully isolated for a very little
+extra syntactic cost.
+To merge all the operations together in scala, it
+takes 42 lines of glue code. Note that this
+is mostly the same glue code from before (41 lines), that
+needs to be manually adapted.
+In 42 we can be more compact while encoding equality with double dispatch (and no casts).
+However, we need 25 lines of glue code.
+We could remove such glue code using all 
+the features
+of 42, but here we stick to only the features presented in this paper.
+\end{minipage}
+
+
+%\paragraph{Transformations (and queries)}${}_{}$\\*
+%
+%The expression problem presented up to now is the traditional
+% challenge proposed by~\cite{wadler1998expression};
+%this has been criticized to not really address the fundamental issues
+%since if many transformations have to be defined,
+%it is hard to share common code between them.
+%For example, we shown the \Q@double@ transformation.
+%An equivalent transformation \Q@triple@ (tripling the
+%values of the literals) should be easy to define by
+%reusing all the traversal code and just redefining the
+%case of \Q@Num@.
+%When modularity is not a concern, this
+%can be obtained in Java using the visitor pattern,
+%defining a \Q@CloneVisitor@  and then overriding 
+%only the relevant cases.
+%Consider the Java code below:
+%\begin{lstlisting}
+%class CloneVisitor{
+%  Exp visit(Num n){return new Num(n.value);}
+%  Exp visit(Plus p){return new Plus(p.left.accept(this),p.right.accept(this);}
+%  }
+%class Double extends CloneVisitor{
+%  Exp visit(Lit l){return new Lit(l.inner+1);}
+%  }
+%\end{lstlisting}
+%In \name we can obtain the same kind of code reuse, without the need of introducing 
+%the concepts related to the Visitor Pattern.
+%With redirect, rename and restrict we can have the general operator propagator:
+%\begin{lstlisting}
+%operation:Use lit, sum, {//for sum and lit, easy to extends as before
+%  Arg:{}
+%  Exp:{interface method Exp op(Arg x)}
+%  Lit:{
+%    method Exp op(Arg x){return this}
 %    }
-%  T:{implements Exp
-%    method Bool equals(Exp that){ that.equalToT(this); }
-%    }  }
-%sumEquals:Use sum,
-%expEquals[rename T in Sum][rename Exp.equalToT in equalToSum],{
 %  Sum:{
-%    method Bool equalToSum(Sum that){
-%      return this.left().equals(that.left()) 
-%        && this.right().equals(that.right())
-%      }  }  }
-
-Now that you have nicely modularized the code, just compose all the traits you need.
-\begin{lstlisting}
-MySolution:Use sumToS,litToS
-//sum,lit and exp traits are already included
-\end{lstlisting}
-
-The expression problem presented up to now is the traditional challenge proposed by~\cite{wadler1998expression};
-this has been criticized to not really address the fundamental issues since it does not handle ....
-Now we show how we can go beyond the traditional expression problem by encoding transformer methods:
-For example, lets add 1 to all literals
-\begin{lstlisting}
-expAdd1:{Exp:{interface method Exp add1()}}
-sumAdd1:Use sum,expAdd1,{Sum:{implements Exp
-    method Exp add1()
-      Sum.of(this.left().add1(), this.right().add1())
-  }
-litAdd1:Use lit,expAdd1,{Lit:{implements Exp
-    method Exp add1()
-      Lit.of(inner()+1);
-    }
-
-MySolutionAdd1:Use sumToS,litToS,sumAdd1,litAdd1
-\end{lstlisting}
-
-This nicely solves our problem. 
-However, notice how if we wished to add many similar operations we would 
-have to repeat the propagation code (as in \Q@sumAdd1@) many times
-just changing the name of the operation.
-Solutions to the expression problems involving the  Visitor Pattern 
-allow defining a \Q@CloneVisitor@ in order
-to reuse its propagation code.
-You can see what we mean with the sketch of code below:
-\begin{lstlisting}
-class CloneVisitor{
-  Exp visit(Lit l){return new Lit(l.inner);}
-  Exp visit(Sum s){return new Sum(s.left.accept(this),s.right.accept(this);}
-  }
-class Add1 extends CloneVisitor{
-  Exp visit(Lit l){return new Lit(l.inner+1);}
-  }
-\end{lstlisting}
-In \name we can obtain the same kind of code reuse, without the need of introducing 
-the concepts related to the Visitor Pattern.
-With redirect, rename and restrict we can have the general operator propagator:
-\begin{lstlisting}
-operation:Use lit, sum, {//for sum and lit, easy to extends as before
-  Arg:{}
-  Exp:{interface method Exp op(Arg x)}
-  Lit:{
-    method Exp op(Arg x){return this}
-    }
-  Sum:{
-    method Exp op(Arg x){
-      return Sum.of(this.left().op(x),this.right().op(x))
-      }
-    }
-\end{lstlisting}
-
-Now, to have \Q@addN@ we can do the following.
-
-\begin{lstlisting}
-opAddn:Use operation
-  [redirect Arg to Int]
-  [rename Exp.op(x) to addN(x)]
-  [restrict Lit.op(x)], {
-  Lit:{
-    method Exp addN(Int x){ return Lit.of(inner())+x}
-    }
-  }
-\end{lstlisting}  
+%    method Exp op(Arg x){
+%      return Sum.of(this.left().op(x),this.right().op(x))
+%      }
+%    }
+%\end{lstlisting}
+%
+%Now, to have \Q@addN@ we can do the following.
+%
+%\begin{lstlisting}
+%opAddn:Use operation
+%  [redirect Arg to Int]
+%  [rename Exp.op(x) to addN(x)]
+%  [restrict Lit.op(x)], {
+%  Lit:{
+%    method Exp addN(Int x){ return Lit.of(inner())+x}
+%    }
+%  }
+%\end{lstlisting}  
 
 
 

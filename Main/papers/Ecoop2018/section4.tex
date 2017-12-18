@@ -201,6 +201,39 @@ In \name and with our approach to handle the state,
 \saveSpace      
 Now the code is fully modularized, and each trait handles exactly one method.
 
+In order to evaluate our approach,
+we performed a case study:
+we consider Sum, Subtraction, Multiplication and Division.
+This give us 16 different possible combinations.
+We coded this example in three different styles:
+(a) Java7 (= 243 lines), (b) \name (= 57 lines), (c) Classless Java (= 226 lines).
+We chosen Classless Java since it is a novel approach allowing to encode traits on Java levering on 
+Java 8 default interface methods.
+We then chosen Java7, that lacks the features needed to encode traits, to show the impact of this feature.
+
+We observed that in Java we had to duplicate 28 method bodies across the 16 classes.
+Of these, 11 method bodies were duplicated because Java does not support multiple inheritance
+ and the remaining 17 bodies had to be duplicated to ensure that the right type
+ is returned by the method. Those could be avoided if Java supported
+ the `This` type.
+ On the other hand, the solution in \name was much more compact since we could efficiently
+reuse traits (this is why the number of toplevel concepts in \name was larger i.e. 21 due to the
+ presence of traits in this solution).
+ The solution in Classless Java was slightly smaller than the Java one,
+ but was still quite longer than the \name solution because we still had to redefine the
+ sum/sub/etc operations in each of the classes because of limited support of the `This` type.
+
+This example is the best-case scenario for \name: this is an example where a maximum level of reuse
+ is required since we considered the case where all the 16 permutations need to be materialized in the code.
+The results in each of the styles are presented below.
+
+\begin{tabular}{l|l|l|l}
+Language       & Lines of code & number of members & number of top-level concepts (classes or traits)\\
+Java           &   243         & 50                &      16\\
+\name          &    57         & 7                 &      21\\
+Classless Java &   226         & 34                &      16\\
+\end{tabular}
+
 \subsection{State Extensibility}
 Programmers may want to extend points with more state. For example 
 they may want to add colors to the points. A first attempt at doing
@@ -306,3 +339,27 @@ they can just omit the new name, as in the following example:
 t:{method bool geq(This x) x.leq(this)   method bool leq(This x) x.qeq(this) }
 C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
 \end{lstlisting}
+
+
+To understand how easy it is to extend the state in this
+way we compare the former code with an equivalent version in
+Java.
+For this example, we encode \Q@Point@ with no operations,
+\Q@PointSum@ reusing \Q@Point@ adding a functional \Q@sum@ operation,
+a \Q@CPoint@ reusing \Q@PointSum@ with a \Q@Color@ field
+and a \Q@FCPoint@ reusing \Q@CPoint@ with a \Q@Flavour@ field.
+
+On the opposite side of the former example, this represents a worst case scenario for \name against Java because we model just a single chain of reuse; in Java we can easy model this with single inheritance.
+
+Like the previous experiment, we still found that the Java solution was longer (109 lines) than that in \name (50 lines). This is caused by the absence support for the `This` type, where the withers in each of the CPoint/FCpoint classes need to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
+
+Complex patterns in Java allow to support the `This` type and the `This` type instantiation but they required a lot of setup code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+
+The results for the second experiment are presented below.
+
+\begin{tabular}{l|l|l|l}
+Language       & Lines of code & number of members & number of toplevel concepts (classes or traits)\\
+Java           &  109          &    27             &         6\\
+\name          &   50          &    24             &         8\\
+\end{tabular}
+
