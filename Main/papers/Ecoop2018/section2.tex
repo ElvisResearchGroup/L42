@@ -19,8 +19,8 @@ absence of the \Q@extends@ keyword in \name.
 Consider the example from Section~\ref{sec:intro}:
 \saveSpace
 \begin{lstlisting}
- A: { method int ma(){return Utils.m(this);} }
- Utils:{ static method int m(A a){return ...} }
+ A= { method int ma(){return Utils.m(this);} }
+ Utils={ static method int m(A a){return ...} }
 \end{lstlisting} 
 \saveSpace
 \noindent Classes in \name use a slightly different declaration style compared
@@ -57,9 +57,9 @@ to model the example in Section~\ref{sec:intro}
 with traits and code reuse is:
 \saveSpace
 \begin{lstlisting}
- ta:{ method int ma(){return Utils.m(this);}}//type error
- A:Use ta
- Utils:{ static method int m(A a){return ...} }
+ ta={ method int ma(){return Utils.m(this);}}//type error
+ A=Use ta
+ Utils={ static method int m(A a){return ...} }
 \end{lstlisting}
 \saveSpace
 \noindent Here \lstinline{ta} is a trait intended to replace the
@@ -75,7 +75,7 @@ because \lstinline{Utils.m} requires an \lstinline{A} and the type of \lstinline
 A Java programmer may then try to write:
 \saveSpace
 \begin{lstlisting}
- ta:{ method int ma(){return Utils.m(this);}}//type error
+ ta:{ method int ma(){return Utils.m(this);}}
  A:Use ta
  Utils:{ static method int m(ta a){return ...}//syntax error
  }

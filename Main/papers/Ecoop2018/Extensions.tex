@@ -12,23 +12,23 @@ In this way all dependencies are about top level names, allowing the type system
 to consider the class table as a simple map from (nested) types\footnote{
 as both \Q@A@ and \Q@A.B.C@}  to their definition.
 
-\paragraph{Redirect}${}_{}$\\*
-Redirect is another composition operator that
-leverage on nested classes to emulate generics;
-the main idea is that a (fully abstract) nested class can be redirect to
-another one external to the trait/code literal.
-For example a linked list can be implement as
-\begin{lstlisting}
-list:{ Elem:{}
-     Cell:{static method Cell of(Elem e,Cell c) 
-       method Elem e()  method Cell c()
-       }
-   method Elem get(int x) ...
-   ...more methods..
-   }
-ListString:list[redirect Elem to String]
-\end{lstlisting}
-Note how redirect only influence its input, not the rest of the program.
+%\paragraph{Redirect}${}_{}$\\*
+%Redirect is another composition operator that
+%leverage on nested classes to emulate generics;
+%the main idea is that a (fully abstract) nested class can be redirect to
+%another one external to the trait/code literal.
+%For example a linked list can be implement as
+%\begin{lstlisting}
+%list:{ Elem:{}
+%     Cell:{static method Cell of(Elem e,Cell c) 
+%       method Elem e()  method Cell c()
+%       }
+%   method Elem get(int x) ...
+%   ...more methods..
+%   }
+%ListString:list[redirect Elem to String]
+%\end{lstlisting}
+%Note how redirect only influence its input, not the rest of the program.
 
 %An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
 %We show a graph example, where also we can show how to propagate generics:
@@ -45,40 +45,56 @@ Note how redirect only influence its input, not the rest of the program.
 
 \paragraph{Rename}${}_{}$\\*
 There are a lots of different forms of rename in literature.
-Here we present two variants: one to rename nested types in other nested types
-and one to rename methods; this also allows to rename an (nested) interface method
-and having all the implementations renamed as well.
-Thanks to our division of use and reuse, those renames need to work only inside
-of their input and global rewriting of the whole program is never needed.
-
-Rename modify the method headers, and also all the method calls inside of the input.
-At a first glimpse, this seems to be not always possible since we are considering to be able to apply those
-operators also to non well typed code.
-However, if the expression language is simple enough, it is possible to pre-process the code to
-annotate the expected receiver type on all method calls by doing a purely syntactic analysis
-on a single code literal in isolation. 
-All the expression whose type is guessed to be out of the border of the literal can stay unannotated; they are not going to be renamed anyway.
-
+Here we will use a simple variant to rename nested types in other nested types.
+For example 
 \begin{lstlisting}
-t:{ I:{interface method int mI() }
-     A:{implements I  method int mI() 42}
-     B:{ method int mB(I i, A a, C c) i.mI()+a.mI()+c.mI()}
-     //mB would be annotated i[I].mI()+a[A].mI()+c.mI()
-     }
-D:t[rename A.mI kI]
+t:{ method B m() B:{ method B mb()} }
+D: t[rename B into C]
 \end{lstlisting}
- Notice how we are sure that \Q@C@ does not implements \Q@I@ since it is invisible from the outside:
- traits does not introduce nominal types!
- 
- We expect the flattened version for \Q@D@ to be
+would flatten to 
 \begin{lstlisting}
-D:{ I:{interface method int kI() }
-     A:{implements I  method int kI() 42}
-     B:{ method int mB(I i, A a, C c) i.kI()+a.kI()+c.mI()}
-     }
+t:{ method B m() B:{ method B mb()} }
+D:{ method C m() C:{ method C mb()} }
 \end{lstlisting}
+Note how the rename only influence its argument.
+Since traits do not induce nominal types, we can
+consistently change their
+internally used names without breaking any code.
 
-Hide can be seen as a variation of rename, where the method/class is renamed to a fresh unguessable name.
+%Here we present two variants: one to rename nested types in other nested types
+%and one to rename methods; this also allows to rename an (nested) interface method
+%and having all the implementations renamed as well.
+%Thanks to our division of use and reuse, those renames need to work only inside
+%of their input and global rewriting of the whole program is never needed.
+%
+%Rename modify the method headers, and also all the method calls inside of the input.
+%At a first glimpse, this seems to be not always possible since we are considering to be able to apply those
+%operators also to non well typed code.
+%However, if the expression language is simple enough, it is possible to pre-process the code to
+%annotate the expected receiver type on all method calls by doing a purely syntactic analysis
+%on a single code literal in isolation. 
+%All the expression whose type is guessed to be out of the border of the literal can stay unannotated; they are not going to be renamed anyway.
+%
+%\begin{lstlisting}
+%t:{ I:{interface method int mI() }
+%     A:{implements I  method int mI() 42}
+%     B:{ method int mB(I i, A a, C c) i.mI()+a.mI()+c.mI()}
+%     //mB would be annotated i[I].mI()+a[A].mI()+c.mI()
+%     }
+%D:t[rename A.mI kI]
+%\end{lstlisting}
+% Notice how we are sure that \Q@C@ does not implements \Q@I@ since it is invisible from the outside:
+% traits does not introduce nominal types!
+% 
+% We expect the flattened version for \Q@D@ to be
+%\begin{lstlisting}
+%D:{ I:{interface method int kI() }
+%     A:{implements I  method int kI() 42}
+%     B:{ method int mB(I i, A a, C c) i.kI()+a.kI()+c.mI()}
+%     }
+%\end{lstlisting}
+%
+%Hide can be seen as a variation of rename, where the method/class is renamed to a fresh unguessable name.
 
 
 
@@ -224,18 +240,15 @@ scala  instance         &   41   &     3\\
 \end{tabular}
 \end{minipage}
 \begin{minipage}{0.6\textwidth}
-Notes: To make a meaningful comparison, we formatted
-all code in a readable and consistent manner,
-on the other side the code presented in the article
-is formatted as compact as possible.
 Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
 We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
+
 \end{minipage}
 
 As you can see, to encode fully isolated units in scala is
 more verbose,
 but more importantly,
-we can just define a class supporting any subset of operations
+in \name we can just define a class supporting any subset of operations
 and data-variants by listing the desired traits:
 For example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
 with \Q@eval@ and \Q@double@ would look like:
@@ -299,11 +312,19 @@ takes 42 lines of glue code. Note that this
 is mostly the same glue code from before (41 lines), that
 needs to be manually adapted.
 In 42 we can be more compact while encoding equality with double dispatch (and no casts).
-However, we need 25 lines of glue code.
+\end{minipage}
+
+To instantiate the double dispatch 
+version in \name we need 25 lines of glue code.
 We could remove such glue code using all 
 the features
 of 42, but here we stick to only the features presented in this paper.
-\end{minipage}
+The interesting point is that the nature of our needed glue code 
+is different with respect to the Scala glue code:
+Scala requires lots of trait multiple inheritance declarations to explicitly merge
+nested traits with the same name, while in \name we mostly need 
+to add the negative cases for the double dispatch (as in
+\Q@Sum={method Bool isNum(){return false;}}@).
 
 
 %\paragraph{Transformations (and queries)}${}_{}$\\*

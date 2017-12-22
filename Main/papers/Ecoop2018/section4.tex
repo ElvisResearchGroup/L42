@@ -43,12 +43,15 @@ and fields) while achieving the following goals:
 
 \subsection{State of the art}
 In the related work we will show some alternative ways to handle
-state.  However the purest solution requires methods only. The idea is
-that the trait code just uses getter/setters/factories, while leaving
+state. 
+We first present the state of the art solution.
+Such solution 
+% However the purest solution 
+requires methods only in the traits.
+The idea is that the trait code just uses getter/setters/factories, while leaving
 to classes the role to finally define the fields/constructors. That
-is, classes have syntax richer than traits, allowing
-declaration for fields and constructors.  This approach is very
-powerful as illustrated by Wang et al.~\cite{wang2016classless}.
+is in this state of the art solution, classes have a syntax richer than traits, allowing
+declaration for fields and constructors. 
 
 \paragraph{Modelling Points} Consider, for example, two simple 
 traits that deal with \emph{point} objects. That is, points
@@ -82,12 +85,12 @@ Following the general model of traits and classes common in literature \emph{in 
 we can now compose the two traits, by adding glue-code
 to implement methods \Q@x@,\Q@y@ and \Q@of@.
 \begin{lstlisting}
-  CPoint:Use pointSum,pointMul, {//not our suggested solution
-    int x   int y
-    method int x() x       
-    method int y() y
+class PointAlgebra=Use pointSum,pointMul, {//not 42 code
+    int x   int y//unsatisfactory state of the art solution
+    constructor PointAlgebra(int x, int y){ this.x=x   this.y=y }
+    method int x() x//repetitive code
+    method int y() y// in traits terminology, this is all "glue code"
     static method This of(int x, int y) new CPoint(x,y)
-    constructor CPoint(int x, int y){ this.x=x   this.y=y }
     }
 \end{lstlisting}
 %\bruno{We talk about withers later on. So I think we should consider
@@ -96,8 +99,10 @@ to implement methods \Q@x@,\Q@y@ and \Q@of@.
 %\marco{with withers it will look more complicated}
 
 \noindent 
+This approach is verbose but very
+powerful as illustrated by Wang et al.~\cite{wang2016classless}.
 With a slightly different syntax, this approach is available in both Scala and Rust.
-This verbose approach works, and it has some advantages, but also disadvantages: 
+It has some advantages, but also disadvantages: 
 
 \begin{itemize}
 
@@ -108,7 +113,7 @@ This verbose approach works, and it has some advantages, but also disadvantages:
   
 \item {\bf Disadvantages:} Writing such obvious definitions to close
   the state/fixpoint in the class 
-   with the constructors and fields and getter/setters and factories is tedious.
+   with the constructors and fields and getter/setters and factories is tedious and error prone.
    Moreover, there is no way for a trait to specify a default value for a field,
    the class need to handle all the state, even state that is conceptually
    "private" of such trait. 
@@ -168,8 +173,8 @@ In \name and with our approach to handle the state,
 \lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed:
 \saveSpace
 \begin{lstlisting}
-  //Same code as before! Works because resulting class is coherent.
-  PointAlgebra:Use pointSum,pointMul 
+  //Works because resulting class is coherent.
+  PointAlgebra:Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 \saveSpace
 \noindent
@@ -226,12 +231,16 @@ reuse traits (this is why the number of toplevel concepts in \name was larger i.
 This example is the best-case scenario for \name: this is an example where a maximum level of reuse
  is required since we considered the case where all the 16 permutations need to be materialized in the code.
 The results in each of the styles are presented below.
+In all our case studies, to make a meaningful comparison, we formatted all code in a readable and consistent manner;
+on the other side for space limitations, the code presented in the article
+is formatted to be very compacts.
 
 \begin{tabular}{l|l|l|l}
 Language       & Lines of code & number of members & number of top-level concepts (classes or traits)\\
 Java           &   243         & 50                &      16\\
-\name          &    57         & 7                 &      21\\
 Classless Java &   226         & 34                &      16\\
+\name          &    57         & 7                 &      21\\
+
 \end{tabular}
 
 \subsection{State Extensibility}
@@ -303,18 +312,19 @@ Restrict makes a method abstract and
 moves the implementation to another name. This is very useful to implement \Q@super@
  and to compose conflicting implementations.
 
-The following code shows how to mix colours and flavours. 
-Note how we use \Q@restrict@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
-to refer to the version of \Q@merge@ as defined in the first/second element of \use.
+Consider the simple flavored trait:
 \saveSpace\begin{lstlisting}
-  p: {/*as before*/ }
-  pointSum:Use p, {/*as before*/ }
-  colored:{/*as before*/}
   flavored:{
       method Flavor flavor() //very similar to colored
       method This withFlavor(Flavor that)
       method This merge(This that) //merging flavors handled here
         this.withFlavor(that.flavor())}//inherits "that" flavor
+\end{lstlisting}  \saveSpace\saveSpace
+
+In order to merge colored and flavored we use  \Q@restrict@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
+to refer to the version of \Q@merge@ as defined in the first/second element of \use.
+
+\saveSpace\begin{lstlisting}
   FCPoint:Use
     colored[restrict merge as _1merge],
     flavoured[restrict merge as _2merge],
@@ -328,17 +338,18 @@ to refer to the version of \Q@merge@ as defined in the first/second element of \
       }
 \end{lstlisting}  \saveSpace\saveSpace
 
-Note how we are leveraging on the fact that the code literal
+Note how we are levering on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
 
 In case someone wish to discard the implementation of a \Q@restricted@ method,
-they can just omit the new name, as in the following example:
-\begin{lstlisting}
-t:{method bool geq(This x) x.leq(this)   method bool leq(This x) x.qeq(this) }
-C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
-\end{lstlisting}
+they can just omit the new name.
+%, as in the following example:
+%\begin{lstlisting}
+%t:{method bool geq(This x) x.leq(this)   method bool leq(This x) x.qeq(this) }
+%C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
+%\end{lstlisting}
 
 
 To understand how easy it is to extend the state in this
@@ -354,7 +365,6 @@ On the opposite side of the former example, this represents a worst case scenari
 Like the previous experiment, we still found that the Java solution was longer (109 lines) than that in \name (50 lines). This is caused by the absence support for the `This` type, where the withers in each of the CPoint/FCpoint classes need to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
 Complex patterns in Java allow to support the `This` type and the `This` type instantiation but they required a lot of setup code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
-
 The results for the second experiment are presented below.
 
 \begin{tabular}{l|l|l|l}

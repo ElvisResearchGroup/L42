@@ -146,17 +146,16 @@ cannot be instantiated (or used) directly. Such design allows
 subtyping and code reuse to be treated separately, which in turn
 brings several benefits in terms of flexibility and code reuse.
 
-We focus on an example-driven presentation to illustrate how to
-improve use and reuse. Most of the hard technical aspects of the
+We first focus on an example-driven presentation to illustrate how to
+improve use and reuse. 
+in Section~\ref{sec:formal} we then provide a compact 1 page formalization.
+Most of the hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
 and the design of \name synthesises some of these previously studied
-concepts. We briefly sketch the key ideas of the formalization of
-\name in Section~\ref{sec:formal}.
+concepts.
 The language design ideas have been implemented in the {\bf 42 language}, which supports all
-the examples we show in the paper, and is available at:
-
-\url{http://l42.is}
+the examples we show in the paper, and is available at:\url{http://l42.is} (this site can be accessed without breaking double blind review).
 
 In summary, our contributions are:
 
@@ -185,9 +184,11 @@ In summary, our contributions are:
 \item We illustrate how the new design {\bf improves both code use and code
   reuse}.
 \item We propose {\bf a clean and elegant approach to handle of state} in a trait based language.
+
+\item We show how to extend our system with nested classes, and how this make us challenge the expression problem.
+\item we show the simplicity of our approach by providing a compact 1 page formalization
+\item we perform 3 case studies, comparing our work with other approaches, showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}
-
-
 \saveSpace
 \saveSpace
 

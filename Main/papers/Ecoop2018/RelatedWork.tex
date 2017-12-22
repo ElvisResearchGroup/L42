@@ -32,8 +32,8 @@ classes introduce nominal types in an unnatural way: the type of
 \Q@this@ is only \Q@This@ (sometimes called \Q@<>@) and not the
 nominal type of its class. 
 That is in DeepFJig 
-\Q@A:{ method A m()this}@ is not well typed. This is because
-\Q@B: Use A@ flattens to \Q@B:{ method A m()this}@, which is clearly not well typed.
+`\Q@A:{ method A m()this}@' is not well typed. This is because
+`\Q@B: Use A@' flattens to `\Q@B:{ method A m()this}@', which is clearly not well typed.
 Looking to this example is clear why we need reusable code to be agnostic of its name.
 Then, either reusable code has no name (as in TR, PT and \name)
 or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name.
@@ -69,6 +69,11 @@ This allows encoding binary methods, express patterns like withers or fluent set
 \end{itemize}
 
 \subsection{State and traits}
+The original trait model has no self construction 
+and (since it was applied to a dynamically typed language)
+it was not clear if it had intention of modelling ThisType.
+They purposely avoided any connection between state and traits.
+
 
 The idea of abstract state operations emerged from Classless
 Java~\cite{wang2016classless}. This approach offers a clean solution to handle state
@@ -93,7 +98,7 @@ In the literature there have been many attempts to add state in traits/module co
 In this approach (used by \cite{fjig}) the fields are declared but not initialized, and
 a canonical constructor (as in FJ) taking a value for each field and just initializing such field
 is automatically generated in the resulting class.
-It is easy to add fields, however this model is associative but not commutative: composition order influences field order, and thus the construtor signature.
+It is easy to add fields, however this model is associative but not commutative: composition order influences field order, and thus the constructor signature.
 Self construction is not possible 
 since the signature of the constructors changes during composition.
 
@@ -106,18 +111,14 @@ This approach is designed to allow self construction.
 It is also associative and mostly commutative: composition order only influences execution order of side effects during construction.
 However constructor composition requires identical constructor signatures: this
 hampers reuse, and if a field is added, its initial value needs to be
-somehow syntesized from the constructor parameters.
+somehow synthesized from the constructor parameters.
 
 \end{itemize}
 
-Extension with nested class is natural and powerful
-We claim that our solution to the expression problem is the most natural in literature to date:
-While a similar sintax can be achieved with the scandinavian style~\cite{ernst2004expression}, their dependent type system makes reasoning quite complex, and indeed more recent solutions have accepted a more involved syntax in order to have an understandable type system~\cite{igarashi2005lightweight}.
+We claim that our presented solution to the expression problem is the most natural in literature to date:
+While a similar syntax can be achieved with the scandinavian style~\cite{ernst2004expression}, their dependent type system makes reasoning quite complex, and indeed more recent solutions have accepted a more involved syntax in order to have an understandable type system~\cite{igarashi2005lightweight}.
+Our close contented is DeepFJig~\cite{corradi2011deepfjig}: all our gain over their model is based on our relaxation over abstract signatures.
 
-Our close contendant is DeepFJig~\cite{corradi2011deepfjig}: all our gain over their model is based on our relaxation over abstract signatures.
-Note how we solve the expression problem in the most radical way possible \marco{bruno, here you can insert some of the criticism over expression problem trivially and explain how is not applicable to us here.}
-
-Add that: original trait model has no self construction and types introduction not relevant since dynamically typed language
 
 \subsection{ThisType with Subclassing implying Subtyping}
 With the exception of those mentioned 3 lines of work, to the best of our understading
@@ -134,23 +135,20 @@ the hope to improve both the mechanisms for use and reuse in OOP.
 
 
 \subsection{Tablular comparision of many approaches}
-\begin{minipage}[t]{0.4\textwidth}
-In this table we show if some approach or part-there-of support certain critical features:
-Direct instantation (as in \Q@new C()@),
+\begin{minipage}[t]{0.30\textwidth}
+In this table we show if some constructs support certain features:
+Direct instantiation (as in \Q@new C()@),
 Self instantiation (as in \Q@new This()@),
-Unit of use, Unit of reuse,
-Introduce type and if the Induced type is the type of \Q@this@,
+Is this construct a `Unit of use'?, a `Unit of reuse'?,
+Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
 support for binary methods,
-does inheritance induce subtype?,
-is code required to be well-typed before being inherited /imported in a new context?
-is code required to be well-typed before composed with other code?
-
-We use Y and X to mean yes and no, and we use ``-'' were the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes little sense.
+does inheritance of this construct induce subtype?,
+is the code of this construct required to be well-typed before being inherited /imported in a new context?
+is it required to be well-typed before being composed with other code?
 \end{minipage}
 %second column
 \begin{minipage}[t]{0.6\textwidth}
 \newcommand{\YY}{\textbf{Y}}
-${}_{}$
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
 &\Rotated{direct instantation}
@@ -167,24 +165,21 @@ ${}_{}$
 \hline
 java/scala class&\YY &X&\YY &\YY &\YY &\YY &X&\YY &\YY &X\\
 java8 interface &X&X&X&\YY &\YY &\YY &X&\YY &\YY &X\\
-scala trait        &X&X&X&\YY &\YY &\YY &X&\YY &X&X\\
+scala trait        &X&X&X&\YY &\YY &\YY &X&\YY &\YY&X\\
 original trait     &X&X&X&\YY &-&-&X&X&-&-\\
-Ferruccio trait  &X&X&X&\YY &X&-&X&X&\YY &\YY \\
+TR  &X&X&X&\YY &X&-&X&X&\YY &\YY \\
 \name trait            &X&\YY &X&\YY &X&-&\YY &X&\YY &X\\
-\name class           &\YY &\YY &\YY &X&\YY &\YY &\YY &-&\YY &X\\
+\name class           &\YY &\YY &\YY &X&\YY &\YY &\YY &-&\YY &-\\
 module composition
                       &-&-&\YY &\YY &-&-&-&-&\YY &\YY \\
 deepFJig class &\YY &\YY &\YY &\YY &\YY &X&\YY &X&\YY &\YY \\
 package template
                       &X&\YY &X&\YY &X&-&X&X&\YY &X\\
-
+${}_{}$\\
 \end{tabular}
 \end{center}
 \end{minipage}
 
-\bruno{
-We can also mention what happens in structural types:
-"System with structural types would *be required to* guarantee that
-the structural type of A is a supertype of the structural type of B”.
-}
+We use Y and X to mean yes and no, and we use ``-'' were the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes little sense.
+
 

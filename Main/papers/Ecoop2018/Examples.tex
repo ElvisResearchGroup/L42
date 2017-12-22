@@ -70,15 +70,14 @@ v_{{\smallDs}}\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx,\overline\me\
 \prodFull{\ctx}{[]\mid\ctx\,\terminalCode+\mE | \mE\,\terminalCode+\ctx |\ldots}{ctx}\\
 \end{bnf}\\
 \\
-
-$
-\!\!\!\begin{array}{l}
+\newcommand{\pushLeft}{\!\!\!\!\!\!\!\!\!\!\!\!}
+$\begin{array}{l}
 
 %       D.E -->^+_CDs L  CDs|-CD1:OK .. CDs|-CDn:OK       CDs=CD1..CDn
 % (top)---------------------------------------------------------------    D.E not of form L
 %      CD1..CDn CDs' D Ds -> CDs CDs' D[with E=L] Ds
 
- \inferrule[(top)]{
+\pushLeft\inferrule[(top)]{
   \mE_0 \xrightarrow[\smallDs]{} \mE_1
   \\
   \forall \mD\in\overline\mD,
@@ -115,19 +114,12 @@ $
   }{ 
      \mL_1\,\terminalCode{+}\mL_2 \xrightarrow[\smallDs]{}\ \mL
   }\mL = \mL_1+\mL_2
-\end{array}
-$\\
-\\
-
-
-$
-\!\!\!\begin{array}{l}
-
+\\[5ex]
 %  C;CDs,C=L |- L[This=C] :OK
 % ----------------------------------------- coherent(L)
 %  CDs|-C=L : OK
 
-\inferrule[(CD-OK)]{
+\pushLeft\inferrule[(CD-OK)]{
     \mC;\overline\mD,\mC\terminalCode{=}\mL\vdash \mL[\terminalCode{This}=\mC]\ :\text{OK}
   }{ 
      \overline\mD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
@@ -150,7 +142,7 @@ $
 %  T;CDs|-L:Ok                                         forall i in 1..n 	CDs(Ti).interface?=interface
 %                                                             forall i in 1..n and m in 	dom(CDs(Ti)), m in dom(L)
 
-\inferrule[(L-OK)]{
+\pushLeft\inferrule[(L-OK)]{
     \forall\mM\in\overline\mM,
   \mT;\overline\mD\vdash\mM:\text{OK}
   }{ 
@@ -174,7 +166,7 @@ $
 %                                                                        if static?=static then G=x1:T1 .. xn:Tn
 %                                                                        else G=this:T,x1:T1 .. xn:Tn
 
-\inferrule[(Method-OK)]{
+\pushLeft\inferrule[(Method-OK)]{
     \text{if}\ \Opt\me=\me\ \text{then}\ \overline\mD; \mG\vdash\me:\mT
   }{ 
      \mT;\overline\mD \vdash \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR \Opt\me
@@ -191,7 +183,7 @@ $
 
 
 
-\inferrule[(Subsumption)]{
+\pushLeft\inferrule[(Subsumption)]{
 %  \begin{array}{l}
     \overline\mD; \mG\vdash\me: \mT_1  \\\\
     \overline\mD\vdash\mT_1 \leq \mT_2
@@ -210,7 +202,7 @@ $
 %---------------------------------------------    static T m(T1 x1..Tn xn) _ in CDs(T0)
 %  CDs;G|-e0.m(e1..en):T
 
-\inferrule[(X)]{
+\pushLeft\inferrule[(X)]{
     \
   }{ 
     \overline\mD; \mG\vdash\mx: \mG\oR\mx\cR
@@ -223,7 +215,7 @@ $
   } \terminalCode{static method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
 
 \\[5ex] 
-\inferrule[(ctxv)]{\me_0\xrightarrow[\smallDs]{}\me_1}{
+\pushLeft\inferrule[(ctxv)]{\me_0\xrightarrow[\smallDs]{}\me_1}{
  \ctx_{\smallDs}[\me_0]\xrightarrow[\smallDs]{} \ctx_{\smallDs}[\me_1]
  }
 
