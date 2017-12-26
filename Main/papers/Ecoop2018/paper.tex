@@ -49,7 +49,7 @@
   breakautoindent=false,
   linewidth=4\textwidth,% should be enough
 %  identifierstyle=\idstyle
- morekeywords={method,Use,This},
+ morekeywords={method,Use,This,then},
  deletekeywords={double}
 }
 %
@@ -79,7 +79,7 @@
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
 \newcommand\smallDs{{\Scale[0.5]{\overline{\mD}}}}
 \newcommand\vds{{v_{\smallDs}}}
-\newcommand\Rulename[1]{{\textsc\textbf{#1}}}
+\newcommand\Rulename[1]{{\textsc{#1}}}
 \newcommand\ctx{{\cal{E}}}
 \newcommand\mID{\metavariable{ID}}
 \newcommand\mL{\metavariable{L}}
@@ -179,7 +179,7 @@ The goal of this paper is to synthesize and improve on
 the main ideas of those very different designs into a nominally typed
 minimalist language, called \name, which is quite
 natural to OO programmers.
-By making our type system distinguish between code-use and code-reuse
+By making our type system \textbf{distinguish between code-use and code-reuse}
 we can separate inheritance and subtyping, while avoiding 
 redundant abstract declarations required in TraitRecordJ and
 DeepFJig. At the same time \emph{self construction},

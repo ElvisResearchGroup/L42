@@ -138,13 +138,12 @@ The keys ideas in \name are to divide between code designed for
 approach to state in traits that avoids the complexities introduced by
 fields and their initialisation in previous approaches.
 In \name there are two separate concepts: classes
-and traits~\cite{Traits:ECOOP2003}. Classes are meant for code use, and cannot be used
-for reuse. In some sense classes in \name are like final classes in
-Java. Traits are meant for code reuse and multiple traits can be
+and traits~\cite{Traits:ECOOP2003}. Classes are meant for code \textbf{use}, and cannot be inherited/extended. In some sense classes in \name are like final classes in
+Java. Traits are meant for code \textbf{reuse} and multiple traits can be
 composed to form a class which can then be instantiated. Traits 
 cannot be instantiated (or used) directly. Such design allows
 subtyping and code reuse to be treated separately, which in turn
-brings several benefits in terms of flexibility and code reuse.
+brings several flexibility and simplicity benefits.
 
 We first focus on an example-driven presentation to illustrate how to
 improve use and reuse. 
@@ -185,9 +184,9 @@ In summary, our contributions are:
   reuse}.
 \item We propose {\bf a clean and elegant approach to handle of state} in a trait based language.
 
-\item We show how to extend our system with nested classes, and how this make us challenge the expression problem.
-\item we show the simplicity of our approach by providing a compact 1 page formalization
-\item we perform 3 case studies, comparing our work with other approaches, showing that we can express the same examples in a cleaner and more modular manner.
+\item The extension with nested classes solves the expression problem better then former work.
+\item We show the simplicity of our approach by providing a compact 1 page formalization
+\item We perform 3 case studies, comparing our work with other approaches, showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}
 \saveSpace
 \saveSpace

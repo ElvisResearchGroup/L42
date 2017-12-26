@@ -4,6 +4,12 @@
 Literature on code reuse is too vast to let us do justice of it in a few pages.
 Our work is inspired by traits~\cite{ducasse2006traits}, which in turn
 are inspired by module composition languages~\cite{ancona2002calculus}.
+
+We claim that our presented solution to the expression problem is the most natural in literature to date.
+While a similar syntax can be achieved with the scandinavian style~\cite{ernst2004expression}, their dependent type system makes reasoning quite complex, and indeed more recent solutions have accepted a more involved syntax in order to have an understandable type system~\cite{igarashi2005lightweight}.
+Our close contented is DeepFJig~\cite{corradi2011deepfjig}: all our gain over their model is based on our relaxation over abstract signatures.
+
+
 \saveSpace
 \subsection{Separating Inheritance and Subtyping}
 We are aware of at least 3 independently designed research languages 
@@ -14,8 +20,8 @@ coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
 3 particular language designs.
 The following compares 
-various aspects of the language designs:
-
+various aspects of the language designs;
+we underline 3 properties where one approach shine the most, and 3 properties where one approach is more lacking.
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals}
 DeepFJig is best in this sense, since TR has separate syntax for class literals, trait literals and record literals.
@@ -70,9 +76,9 @@ This allows encoding binary methods, express patterns like withers or fluent set
 
 \subsection{State and traits}
 The original trait model has no self construction 
-and (since it was applied to a dynamically typed language)
-it was not clear if it had intention of modelling ThisType.
-They purposely avoided any connection between state and traits.
+and purposely avoided any connection between state and traits.
+It was applied to a dynamically typed language, so
+it was not clear if the author intended of modelling ThisType.
 
 
 The idea of abstract state operations emerged from Classless
@@ -114,11 +120,6 @@ hampers reuse, and if a field is added, its initial value needs to be
 somehow synthesized from the constructor parameters.
 
 \end{itemize}
-
-We claim that our presented solution to the expression problem is the most natural in literature to date:
-While a similar syntax can be achieved with the scandinavian style~\cite{ernst2004expression}, their dependent type system makes reasoning quite complex, and indeed more recent solutions have accepted a more involved syntax in order to have an understandable type system~\cite{igarashi2005lightweight}.
-Our close contented is DeepFJig~\cite{corradi2011deepfjig}: all our gain over their model is based on our relaxation over abstract signatures.
-
 
 \subsection{ThisType with Subclassing implying Subtyping}
 With the exception of those mentioned 3 lines of work, to the best of our understading

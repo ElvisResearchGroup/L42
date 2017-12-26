@@ -131,19 +131,19 @@ as a table of features, as in~\cite{Deepfjig}:
 a (3classes+1interface)*(1state+3operations)
 table composed by 16 traits.
 They are atomic: they deal with exactly 
-define the state of a class
-or a single operation for a single class.
+declaring the state of a class
+or defining a single operation for a single class.
 In \name we can be very compact,
  as we can avoid a large amount of abstract declarations,
 that clutters the solution in~\cite{Deepfjig}.
-
 Intuitively, we would like our traits to look like the following 
 \begin{lstlisting}
-eval={  Exp:{interface      method Size eval()}}
 evalPlus=Use plus, {  
-  Exp:{interface      method Size eval()}
+  Exp:{interface
+    method Size eval()}
   Plus:{implements Exp
-    method Size eval() this.left().eval()+this.right().eval()}}
+    method Size eval()
+      this.left().eval()+this.right().eval()}}
 \end{lstlisting}
 \Q@basePlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
@@ -158,20 +158,24 @@ onto the corresponding data variant.
 Thus, our source code is as follow;
 First we declare the 4 traits to represent the state:
 \begin{lstlisting}
-exp={Exp={interface}      T={implements Exp}}
-num=Use exp[rename T into Num],{
-  Num={method Size value()      class method Num of(Size value)}}
-  //T renamed in Num is summed with the current Num
+exp={
+  Exp={interface}
+  T={implements Exp}}
+num=Use exp[rename T into Num],{//T renamed in Num is summed with the current Num
+  Num={method Size value()  static method Num of(Size value)}}
 plus=exp[rename T into Plus], {
-  Plus={method Exp left()      method Exp right()
-    class method Plus of(Exp left, Exp right)}}
+  Plus={method Exp left()  method Exp right()  static method Plus of(Exp left,Exp right)}}
 neg=Use exp[rename T into Neg],{
-  Neg={method Exp term()      class method Neg of(Exp term)}}
+  Neg={method Exp term()  static method Neg of(Exp term)}}
 \end{lstlisting}
 Here we define a trait for each datavariant.
 Each trait will contain its version of \Q@Exp@
 and a specific case of expression, with its state.
-Next, we define the operation eval for all the datavariants:
+Next, we define the operation \Q@eval@ for all the datavariants.
+The former solutions in~\cite{deepfjig}
+required to repeat the state declaration of the 
+datavariant in each operation, while were we can just import it.
+
 \begin{lstlisting}
 eval={//concept of Exp.eval() declared once
   Exp={interface      method Size eval()}
@@ -183,58 +187,48 @@ basePlus=Use plus, base[rename T into Num], {
   Plus={ method Size eval() this.left().eval()+this.right().eval() }}
 baseNeg=Use neg, base[rename T into Neg], {Neg={ method Size eval()..}}
 \end{lstlisting}
-Former solutions in \cite{deepfjig} required the state of the 
-datavariant to be repeated in each operation.
-Here we can just import it.
 
-We can (not show) trivially define the show operation following exactly the same design.
-
-%Now, we define the operation show for all the datavariants.
-%\begin{lstlisting}
-%show=Use exp,{
-%  Exp={interface      method S show()}
-%  T={implements Exp}}
-%showNum=Use num, show[rename T into Num],{
-%  Num={ method S show() this.value().toS()}}
-%showPlus=Use plus, show[rename T into Plus],{Plus={ method S show() ..}}
-%showNeg=Use neg, show[rename T into Neg],{Neg={ method S show() .. }}
-%\end{lstlisting}
-
+The \Q@show@ operation can be trivially defined
+following exactly the same design (omitted here for space reasons).
 The operation \Q@double@ is is a challenge for some proposed solution to the expression problem.~\cite{}.
 It is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
-It is transparent in \name, is just exactly like \Q@eval@ and \Q@show@.
+Thanks to the separation between use and reuse, and the support
+for self-instantiation of every nested class in a given trait,
+in \name, it do not need any special attention
+and can be coded is just exactly like \Q@eval@ and \Q@show@.
 \begin{lstlisting}
-double={ Exp={interface      method Exp double()}
+double={
+  Exp={interface
+    method Exp double()}
   T={implements Exp}}
 doubleNum= Use num, double[rename T in Num],{
   Num={ method Exp double() Num.of(this.value()*2) }}
 doublePlus=Use plus,double[rename T in num],{
-  Plus={ method Exp double()
-    Plus.of(this.left().double(),this.right().double())}}
+  Plus={ method Exp double() Plus.of(this.left().double(),this.right().double())}}
 doubleNeg:...
 \end{lstlisting}
 Here we define a trait for each datavariant implementing the operation \Q@double()@.
 Again, each trait will contain its version of \Q@Exp@ with \Q@double()@
 and a specific case of expression, with the implementation for \Q@double()@
 for that specific case.
-We can express \Q@double@ with this level of simplicity
-thanks to the separation between use and reuse:
-every trait have its own \Q@Exp@,
-and there is no subtyping between those \Q@Exp@, they can not even
-see each other.
+%We can express \Q@double@ with this level of simplicity
+%thanks to the separation between use and reuse:
+%every trait have its own \Q@Exp@,
+%and there is no subtyping between those \Q@Exp@, they can not even
+%see each other.
 
 In our third case study we compare our results with the ones presented
 in scala.~\cite{}
 The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
-version where we isolate all the unites of behaviour as we
+version where we isolate all the units of behaviour as we
 have done in \name.
 \begin{minipage}{0.4\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
-original scala            & 95     &  12+3=15\\
+original scala          & 95     &  12+3=15\\
 scala  isolated units   & 149    &  12+3=15\\
-scala  instance         &   41   &     3\\
+scala  glue-code        &   41   &     3\\
 42 traits               &   97   &    4*3+7=19\\
 42 class                &   3    &     0\\
 \end{tabular}
@@ -256,24 +250,28 @@ with \Q@eval@ and \Q@double@ would look like:
 Example=Use evalNum,evalPlus,doubleNum,doublePlus
 \end{lstlisting}
 The composition of all our traits would just require to list all
-of the relevant behaviour;reasonably formatted, it can takes 3 lines.
+of the relevant behaviour;reasonably formatted, it can takes 3 lines (so a full \name solution would be 97+3=100 lines).
 
 On the other side, the presented solution in Scala requires
-41 lines of glue code to put the traits together.
+41 lines of glue code to put the traits together
+(so a full scala solution would be 149+41=190 lines).
 
 Following~\cite{}, after \Q@double@ we present an implementation of \Q@equals@.
 In~\cite{}, involved double dispatch is used to avoid casting.
 To show understandable code, we show a simpler solution 
-with a guarded cast (sometime called a typecase).
-The interested reader can find a \name implementaiton of \Q@equals@ with double dispatch
+with a guarded cast (sometime called a typecase).%
+\footnote{
+The interested reader can find a \name implementation of \Q@equals@ with double dispatch
 in the appendix.
+}
 
 The main idea is that  every datavariant would contains
  the "cast" logic; thus
- we can modularize that into a \Q@expEquals@ trait.
+ we can modularize that into a \Q@equals@ trait.
 \begin{lstlisting}
 equals:{
-  Exp:{interface method Bool equals(Exp that)}
+  Exp:{interface
+    method Bool equals(Exp that)}
   T:{implements Exp
     method Bool exactEquals(T that)
     method equals(that) 
@@ -283,7 +281,7 @@ equalsNum:Use num, equals[rename T into Num],{
   Num:{method Bool exactEquals(Num that) this.value().equals(that.value())}}
 equalsPlus:Use plus, equals[rename T into Plus],{
   Plus:{method Bool exactEquals(Plus that)
-    this.left().equals(that.left()) & this.right().equals(that.right())}}
+    this.left().equals(that.left()) && this.right().equals(that.right())}}
 equalsNeg:Use neg, equals2[rename T into Neg],{
   Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term())}}
 \end{lstlisting}
@@ -311,20 +309,21 @@ To merge all the operations together in scala, it
 takes 42 lines of glue code. Note that this
 is mostly the same glue code from before (41 lines), that
 needs to be manually adapted.
-In 42 we can be more compact while encoding equality with double dispatch (and no casts).
+In 42 we are
+more compact than Scala both when using the double dispatch (25 vs 58)
+or the guarded cast (21 vs 58).
 \end{minipage}
 
-To instantiate the double dispatch 
+However, to instantiate the double dispatch 
 version in \name we need 25 lines of glue code.
-We could remove such glue code using all 
-the features
-of 42, but here we stick to only the features presented in this paper.
+We could remove such glue code using 
+features from the full 42 language, but here we stick to only the features presented in this paper.
 The interesting point is that the nature of our needed glue code 
 is different with respect to the Scala glue code:
 Scala requires lots of trait multiple inheritance declarations to explicitly merge
 nested traits with the same name, while in \name we mostly need 
 to add the negative cases for the double dispatch (as in
-\Q@Sum={method Bool isNum(){return false;}}@).
+\Q@Sum={method Bool equalToNum(Num that){return false;}}@).
 
 
 %\paragraph{Transformations (and queries)}${}_{}$\\*
