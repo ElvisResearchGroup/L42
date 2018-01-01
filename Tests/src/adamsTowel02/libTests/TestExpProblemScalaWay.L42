@@ -14,6 +14,7 @@ RenNeg:{class method Library<>< (Library that) exception Guard
 
 $exp:Resource<><{
   Exp:{interface}
+
   T:{implements Exp}
   }
 
@@ -25,7 +26,8 @@ $num:Resource<><Use[RenNum<><$exp()]<><{
   }
 
 $plus:Resource<><Use[RenPlus<><$exp()]<><{
-  Exp:{}
+  Exp:{interface}
+
   Plus:{
     method Exp left()
     method Exp right()
@@ -34,29 +36,31 @@ $plus:Resource<><Use[RenPlus<><$exp()]<><{
   }
 
 $neg:Resource<><Use[RenNeg<><$exp()]<><{
-  Exp:{}
+  Exp:{interface}
+
   Neg:{
     method Exp term()
     class method Neg of(Exp term)
   }
 }
 
-$base:Resource<>< {
+$eval:Resource<>< {
   Exp:{interface
     method Size eval()
     }
+
   T:{implements Exp}
   }
 
-$baseNum:Resource<><Use[$num(); RenNum<><$base()]<>< {
+$evalNum:Resource<><Use[$num(); RenNum<><$eval()]<>< {
   Num:{ method Size eval() this.value() }
   }
 
-$basePlus:Resource<><Use[$plus(); RenPlus<><$base()]<>< {
+$evalPlus:Resource<><Use[$plus(); RenPlus<><$eval()]<>< {
   Plus:{ method Size eval() this.left().eval()+this.right().eval() }
   }
 
-$baseNeg:Resource<><Use[$neg(); RenNeg<><$base()]<>< {
+$evalNeg:Resource<><Use[$neg(); RenNeg<><$eval()]<>< {
   Neg:{ method Size eval() Size"-1" * this.term().eval() }
   }
 
@@ -64,6 +68,7 @@ $show:Resource<><Use[$exp()]<><{
   Exp:{interface
     method S show()
     }
+
   T:{implements Exp}
   }
 
@@ -78,38 +83,39 @@ $showPlus:Resource<><Use[$plus(); RenPlus<><$show()]<><{
 $showNeg:Resource<><Use[$neg(); RenNeg<><$show()]<><{
   Neg:{ method S show() S"-("++this.term().show()++S")" }
   }
-
 //----------------
-
-$dble:Resource<><{
+$double:Resource<><{
   Exp:{interface
-    method Exp dble()
+    method Exp double()
     }
+
   T:{implements Exp}
   }
 
-$dbleNum:Resource<><Use[$num(); RenNum<><$dble()]<><{
-  Exp:{}
-  Num:{ method Exp dble() Num.of(value: this.value()*2Size) }
+$doubleNum:Resource<><Use[$num(); RenNum<><$double()]<><{
+  Exp:{interface}
+
+  Num:{ method Exp double() Num.of(value: this.value()*2Size) }
   }
 
-$dblePlus:Resource<><Use[$plus(); RenPlus<><$dble()]<><{
-  Exp:{}
-  Plus:{ method Exp dble() Plus.of(left: this.left().dble(), right: this.right().dble()) }
+$doublePlus:Resource<><Use[$plus(); RenPlus<><$double()]<><{
+  Exp:{interface}
+
+  Plus:{ method Exp double() Plus.of(left: this.left().double(), right: this.right().double()) }
   }
 
-$dbleNeg:Resource<><Use[$neg(); RenNeg<><$dble()]<><{
-  Exp:{}
-  Neg:{ method Exp dble() Neg.of(term: this.term().dble()) }
-  }
+$doubleNeg:Resource<><Use[$neg(); RenNeg<><$double()]<><{
+  Exp:{interface}
 
+  Neg:{ method Exp double() Neg.of(term: this.term().double()) }
+  }
 //---------
-
-$equals:Resource<><Use[$base()]<><{
+$equals:Resource<><Use[$eval()]<><{
   Exp:{interface
     method Bool eql(Exp that)
     method Bool equalToT(T that)
     }
+
   T:{implements Exp
     method eql(that) that.equalToT(this)
     }
@@ -140,7 +146,7 @@ $equalsNeg:Resource<><Use[$neg();
     }
   }
 
-$equalsPlusNeg:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
+$equalsAll:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
   Exp:{interface
     method Bool eql(Exp that)
     method Bool equalToNum(Num that)
@@ -148,10 +154,12 @@ $equalsPlusNeg:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
     method Bool equalToNeg(Neg that)
     method Size eval()
     }
+
   Num:{implements Exp
     method equalToPlus(that) Bool.false()
     method equalToNeg(that) Bool.false()
     }
+
   Plus:{implements Exp
     method equalToNum(that) Bool.false()
     method equalToNeg(that) Bool.false()
@@ -163,27 +171,77 @@ $equalsPlusNeg:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
     }
   }
 
+$evalAll:Resource<><Use[$evalPlus();$evalNeg()]<><$evalNum()
 
-$basePlusNeg:Resource<><Use[$basePlus();$baseNeg();$baseNum()]<><{}
-$showPlusNeg:Resource<><Use[$showNum();$showPlus();$showNeg()]<><{}
-EvalAndShow:Use[$basePlusNeg()]<><$showPlusNeg()
+$showAll:Resource<><Use[$showNum();$showPlus()]<><$showNeg()
 
-$dblePlusNeg:Resource<><Use[$dbleNum();$dblePlus();$dbleNeg()]<><{}
+$doubleAll:Resource<><Use[$doubleNum();$doublePlus()]<><$doubleNeg()
 
-$showDblePlusNeg:Resource<><Use[$showPlusNeg();$dblePlusNeg()]<><{ }
+ESDAll0:Use[Use[$evalPlus();$evalNeg()]<><$evalNum();
+  Use[$showNum();$showPlus()]<><$showNeg();
+  $doubleNum();$doublePlus()]<><$doubleNeg()
 
 
-$equalsShowPlusNeg:Resource<><Use[$equalsPlusNeg();$showPlusNeg()]<><{}
+ESDAll:Use[$evalAll();$showAll()]<><$doubleAll()
+
+ESDEAll:Use[$evalAll();$showAll();$doubleAll()]<><$equalsAll()
+
+$equals2:Resource<><{
+  Exp:{interface method Bool equals(Exp that)}
+  T:{implements Exp
+    method Bool exactEquals(T that)
+    method equals(that){
+      with that (on T  return this.exactEquals(that) )
+      return Bool.false()
+      }
+    }
+  }
+
+$equalsNum2:Resource<><Use[$num();RenNum<><$equals2()]<><{
+  Num:{ method Bool exactEquals(Num that) this.value().equals(that.value()) }
+  }
+
+$equalsPlus2:Resource<><Use[$plus();RenPlus<><$equals2()]<><{
+  Plus:{ method Bool exactEquals(Plus that) this.left().equals(that.left()) & this.right().equals(that.right()) }
+  }
+
+$equalsNeg2:Resource<><Use[$neg();RenNeg<><$equals2()]<><{
+  Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term()) }
+  }
+
+$equalsAll2:Resource<><Use[$equalsNum2();$equalsPlus2()]<><$equalsNeg2()
+
+ESDEAll2:Use[$evalAll();$showAll();$doubleAll()]<><$equalsAll2()
 
 Main: {
+  i=ESDAll
+  i1=ESDEAll
+  i2=ESDEAll2
   Debug(S"Hello ExpProblemScalaWay")
   return ExitCode.normal()
 
 /*
 //------------------
-//      lines  methods
-//42     176
-//scala  223
+//                              lines     methods
+//original scala base            95       12+3
+//scala base fully modularized   149      12+3
+//scala base instance            41        3
+//42 traits Base                 97       4*3+7=19
+//42 class Base                  3         0
+
+//original scala eq               51      10
+//scala eq d-dispatch             58      10
+//scala eq instance               43       3
+//42 trait eq d-dispatch          34       6
+//42 class dd instance            25      11
+//42 traits EqCast                21       6
+//42 class cast instance           3       0
+
+
+
+
+
+
 As a third case study, we
 challenge our approach against an extended version of the expression problem,
 as defined in [].

@@ -1,10 +1,10 @@
 \section{Improving Use}
 
 To illustrates how 
-\name \emph{improves the use} of classes we model a simplified version of
+\name improves the use of classes we model a simplified version of
 Set and Bag collections first in Java, and then in \name.
-The main benefit of the \name solution is that \emph{we can get reuse 
-without introducing subtyping between Bags and Sets}. 
+The main benefit of the \name solution is that we can get reuse 
+without introducing subtyping between Bags and Sets
 
 As shown below, this \textbf{improves the 
 use of Bags} by eliminating logical errors arising from incorrect
@@ -31,19 +31,20 @@ class Bag extends Set{...//for each element in the hash map,
 \end{lstlisting}
 
 \noindent Coding \Q@Bag@ in this way avoids a lot of code
-duplication, but \emph{we induced unintended subtyping}! 
+duplication, but \textbf{we induced unintended subtyping}! 
 Since subclassing implies subtyping, our code breaks the Liskov substitution principle (LSP)~\cite{martin2000design}: not all bags are sets!
 Indeed, the following is allowed:
 
 \begin{lstlisting}
 Set mySet=new Bag(); //OK for the type system but not for LSP
 \end{lstlisting}
-This requires the client of \Q@Bag@ to \textbf{use} it very carefully to
-avoid conceptual errors that are not captured by the type system.
+This encumber the programmer:
+to avoid conceptual errors that are not captured by the type system.
+they have to \textbf{use} \Q@Bag@ very carefully.
 
 
 \paragraph{A (broken) attempt to fix the Problem in Java.}
-One could \emph{retroactively} fix this problem by introducing \Q@AbstractSetOrBag@
+One could \textbf{retroactively} fix this problem by introducing \Q@AbstractSetOrBag@
 and making both \Q@Bag@ and \Q@Set@ inherit from it:
 \begin{lstlisting}
 abstract class AbstractSetOrBag {/*old set code goes here*/}
@@ -81,7 +82,7 @@ reflection, for example).
 \subsection{Sets and Bags in \name}
 Instead, in \name, if we were to originally declare
 \saveSpace\begin{lstlisting}
-Set:{/*set implementation*/} 
+Set={/*set implementation*/} 
 \end{lstlisting}\saveSpace
 Then our code would be impossible to reuse in the first place for any user of our library.
 We consider this an advantage, since unintended code reuse runs into underdocumented behaviour nearly all the time\footnote{See
@@ -91,23 +92,23 @@ self use of public methods is rarely documented, thus is hard to understand the 
 }!
 If the designer of the set class wishes to make it reusable, he/she can do it explicitly by providing a set trait:
 \saveSpace\begin{lstlisting}
-set:{/*set implementation*/} 
-Set:Use set
+set={/*set implementation*/} 
+Set=Use set
 \end{lstlisting}\saveSpace
 Since \Q@set@ can never be used as a type, there is no reason to give it a {\bf fancy-future-aware} name like
 \Q@AbstractSetOrBag@.
 When bag will be added, the code will look either like
 \saveSpace\begin{lstlisting}
-set:{/*set implementation*/} 
-Set:Use set
-Bag: Use set, {/*bag implementation*/}
+set={/*set implementation*/} 
+Set=Use set
+Bag= Use set, {/*bag implementation*/}
 \end{lstlisting}\saveSpace\saveSpace
 or 
 \saveSpace\saveSpace\begin{lstlisting}
-set:{/*set implementation*/} 
-Set:Use set
-bag: Use set, {/*bag implementation*/}
-Bag: Use bag
+set={/*set implementation*/} 
+Set=Use set
+bag=Use set, {/*bag implementation*/}
+Bag=Use bag
 \end{lstlisting}\saveSpace
 Notice how, thanks to flattening, the resulting code for \Q@Bag@ is identical in both versions, 
 and as shown in Section 2, there is no trace of trait \Q@bag@. 

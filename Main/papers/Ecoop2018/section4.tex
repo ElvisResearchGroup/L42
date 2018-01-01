@@ -17,7 +17,7 @@
 
 %\subsection{Managing State}
 
-\name improves reuse in many different ways,
+%\name improves reuse in many different ways,
 
 To illustrate how \name improves reuse,
 we will show a novel approach
@@ -38,17 +38,18 @@ and fields) while achieving the following goals:
 \item managing fields in a way that borrows the elegance of summing methods;
 \item actually initialize objects, leaving no null fields;
 \item making it easy to add new fields;
-\item allowing a class to create instances of itself.
+\item allowing a class to create instances of itself (self instantiation).
 \end{itemize}
 
 \subsection{State of the art}
 In the related work we will show some alternative ways to handle
-state.  However the purest solution requires methods only. The idea is
-that the trait code just uses getter/setters/factories, while leaving
+state.
+We first present the state of the art solution, where 
+traits have only methods but classes have also fields and constructors.
+The idea is that the trait code just uses getter/setters/factories, while leaving
 to classes the role to finally define the fields/constructors. That
-is, classes have syntax richer than traits, allowing
-declaration for fields and constructors.  This approach is very
-powerful as illustrated by Wang et al.~\cite{wang2016classless}.
+is in this state of the art solution, classes have a syntax richer than traits, allowing
+declaration for fields and constructors. 
 
 \paragraph{Modelling Points} Consider, for example, two simple 
 traits that deal with \emph{point} objects. That is, points
@@ -77,17 +78,18 @@ Notice the abstract \Q@static method This of(..)@ which acts as a constructor
 for points. 
 As for instance methods, they are late bound:  flattening can provide an implementation for them.
 Abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
-
-Following the general model of traits and classes common in literature \emph{in a traditional trait model}~\cite{Traits:ECOOP2003},
-we can now compose the two traits, by adding glue-code
+Following the model of traits and classes common in literature \emph{in a traditional trait model}~\cite{Traits:ECOOP2003},
+we can now compose the two traits, by \textbf{adding glue-code}
 to implement methods \Q@x@,\Q@y@ and \Q@of@.
+This approach is verbose but very
+powerful as illustrated by Wang et al.~\cite{wang2016classless}.
 \begin{lstlisting}
-  CPoint:Use pointSum,pointMul, {//not our suggested solution
-    int x   int y
-    method int x() x       
-    method int y() y
+class PointAlgebra=Use pointSum,pointMul, {//not 42 code
+    int x   int y//unsatisfactory state of the art solution
+    constructor PointAlgebra(int x, int y){ this.x=x   this.y=y }
+    method int x() x//repetitive code
+    method int y() y// in traits terminology, this is all "glue code"
     static method This of(int x, int y) new CPoint(x,y)
-    constructor CPoint(int x, int y){ this.x=x   this.y=y }
     }
 \end{lstlisting}
 %\bruno{We talk about withers later on. So I think we should consider
@@ -96,8 +98,9 @@ to implement methods \Q@x@,\Q@y@ and \Q@of@.
 %\marco{with withers it will look more complicated}
 
 \noindent 
-With a slightly different syntax, this approach is available in both Scala and Rust.
-This verbose approach works, and it has some advantages, but also disadvantages: 
+
+With a slightly different syntax, this approach is available in both Scala and Rust, and they both require glue code.
+It has some advantages, but also disadvantages: 
 
 \begin{itemize}
 
@@ -108,10 +111,10 @@ This verbose approach works, and it has some advantages, but also disadvantages:
   
 \item {\bf Disadvantages:} Writing such obvious definitions to close
   the state/fixpoint in the class 
-   with the constructors and fields and getter/setters and factories is tedious.
+   with the constructors and fields and getter/setters and factories is tedious and error prone.
    Moreover, there is no way for a trait to specify a default value for a field,
    the class need to handle all the state, even state that is conceptually
-   "private" of such trait. 
+   private of such trait. 
    Previous work shows that such code can be automatically
    generated~\cite{wang2016classless}.
    Also the semantic of \Q@Use@/code composition of a model with fields and constructors is necessarily
@@ -123,19 +126,19 @@ This verbose approach works, and it has some advantages, but also disadvantages:
 In \name there is no need to generate
 code, or to explicitly write down constructors and fields. In fact in
 \name there is not even syntax for those constructs!  The idea is that
-any class that ``can" be completed in the obvious way  is \emph{a
-  complete ``coherent" class}.  In most other languages, a class is
+any class that could be completed in the obvious way  is a
+  complete \textbf{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
 abstract only when the set of abstract methods is not coherent. That
 is, the unimplemented methods cannot not be automatically recognised
 as factory, getters and setters. Methods recognised as factory, getters and setters are called
 \emph{abstract state operations}.
   
-\paragraph{Coherent classes} A more detailed definition of coherent
-classes is given next:
+A more detailed definition of coherent
+classes is given next, and is formally defined in Section \ref{sec:formal}:
 \begin{itemize}
 \item a class with no abstract methods is coherent (just like Java
-  \Q@Math@, for example). Such classes are useful for calling static methods.
+  \Q@Math@, for example). Such classes are only useful for calling static methods.
 \item a class with a single abstract \Q@static@ method returning \Q@This@
 is coherent if all the other abstract methods can be seen as \emph{abstract state
 operations} over one of its argument.
@@ -168,8 +171,8 @@ In \name and with our approach to handle the state,
 \lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed:
 \saveSpace
 \begin{lstlisting}
-  //Same code as before! Works because resulting class is coherent.
-  PointAlgebra:Use pointSum,pointMul 
+  //Works because resulting class is coherent.
+  PointAlgebra:Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 \saveSpace
 \noindent
@@ -199,7 +202,44 @@ In \name and with our approach to handle the state,
   PointAlgebra:Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
 \saveSpace      
-Now the code is fully modularized, and each trait handles exactly one method.
+Now the code is fully modularized, and each trait defines exactly one method.
+
+In order to evaluate our approach,
+we performed a case study:
+we consider \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
+This give us 16 different possible combinations.
+We coded this example in three different styles:
+(a) Java7 (= 243 lines), (b) Classless Java (= 226 lines) and (c) \name (= 57 lines).
+We chosen Classless Java since it is a novel approach allowing to encode traits on Java levering on 
+Java 8 default interface methods.
+We then chosen Java7, that lacks the features needed to encode traits, to show the impact of this feature.
+
+We observed that in Java we had to duplicate 28 method bodies across the 16 classes.
+Of these, 11 method bodies were duplicated because Java does not support multiple inheritance
+ and the remaining 17 bodies had to be duplicated to ensure that the right type
+ is returned by the method. Those could be avoided if Java supported
+ the `This` type.
+ On the other hand, the solution in \name was much more compact since we could efficiently
+reuse traits (this is why the number of toplevel concepts in \name was larger i.e. 21 due to the
+ presence of traits in this solution).
+ The solution in Classless Java was slightly smaller than the Java one,
+ but was still quite longer than the \name solution because we still had to redefine the
+ sum/sub/etc operations in each of the classes because of limited support of the `This` type.
+
+This example is the best-case scenario for \name: this is an example where a maximum level of reuse
+ is required since we considered the case where all the 16 permutations need to be materialized in the code.
+The results in each of the styles are presented below.
+In all our case studies, to make a meaningful comparison, we formatted all code in a readable and consistent manner;
+on the other side for space limitations, the code presented in the article
+is formatted to be very compacts.
+
+\begin{tabular}{l|l|l|l}
+Language       & Lines of code & number of members & number of top-level concepts (classes or traits)\\
+Java           &   243         & 50                &      16\\
+Classless Java &   226         & 34                &      16\\
+\name          &    57         & 7                 &      21 = 16+4+1\\
+
+\end{tabular}
 
 \subsection{State Extensibility}
 Programmers may want to extend points with more state. For example 
@@ -231,8 +271,7 @@ delegates to \Q@of(int,int,Color)@ by passing red as the default field
 value.  What should be the behaviour in this case?  If our abstract
 state supports withers, we can use
 \Q@this.withX(newX).withY(newY)@, instead of writing \Q@This.of(...)@, in order to preserve the color from
-\Q@this@.  This solution is still not satisfactory: this design ignores
-the color from \Q@that@.
+\Q@this@.  This solution is better but still not satisfactory, the color from \Q@that@ is ignored.
 
 \paragraph{A better design}
 If the point designer is designing for reuse and extensibility, then 
@@ -260,49 +299,68 @@ a better design would be the following:
 \paragraph{Independent Extensibility}
   Of course, quite frequently there can be multiple independent
   extensions~\cite{Zenger-Odersky2005} that need to be composed. Lets suppose that 
-  we could have a notion of flavoured points as well.   
-  In order to compose, let say \Q@colored@ with \Q@flavored@ we would
-  need to compose the merge operation inside of both of them.
-
-Just \use\ is not sufficient, since we need to combine the implementation of 2 different versions of \Q@merge@.
-We introduce here an operator \Q@restrict@.
-Restrict makes a method abstract and
-moves the implementation to another name. This is very useful to implement \Q@super@
+  we could have a notion of \Q@flavoured@ as well.   
+  In order to compose \Q@colored@ with \Q@flavored@ we would
+  need to compose the merge operation inside both of them; to this aim \use\ is not sufficient, since we need to combine the implementation of 2 different versions of \Q@merge@.
+We introduce here an operator called \Q@super@, that
+ makes a method abstract and
+moves the implementation to another name. This is very useful to implement super calls
  and to compose conflicting implementations.
-
-The following code shows how to mix colours and flavours. 
-Note how we use \Q@restrict@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
-to refer to the version of \Q@merge@ as defined in the first/second element of \use.
+\noindent Consider the simple flavored trait:
 \saveSpace\begin{lstlisting}
-  p: {/*as before*/ }
-  pointSum:Use p, {/*as before*/ }
-  colored:{/*as before*/}
   flavored:{
       method Flavor flavor() //very similar to colored
       method This withFlavor(Flavor that)
       method This merge(This that) //merging flavors handled here
         this.withFlavor(that.flavor())}//inherits "that" flavor
+\end{lstlisting}  \saveSpace\saveSpace
+
+\noindent In order to merge colored and flavored we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
+to refer to the version of \Q@merge@ as defined in the first/second element of \use.
+
+\saveSpace\begin{lstlisting}
   FCPoint:Use
-    colored[restrict merge as _1merge],
-    flavoured[restrict merge as _2merge],
+    colored[super merge as _1merge],
+    flavoured[super merge as _2merge],
     pointSum,{
       static method This of(int x,int y)
         This.of(x,y,Color.of(/*red*/),Flavor.none())
       static method This of(int x, int y,Color color,Flavor flavor)
-      //resolves the conflict about two implementations for merge
-      //by proving our own implementation here
-      method This merge(This that) this._1merge(that)._2merge(that)
+      method This merge(This that)//merge conflict is solved 
+        this._1merge(that)._2merge(that)//by calling the two versions
       }
 \end{lstlisting}  \saveSpace\saveSpace
 
-Note how we are leveraging on the fact that the code literal
+Note how we are levering on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
 
-In case someone wish to discard the implementation of a \Q@restricted@ method,
-they can just omit the new name, as in the following example:
-\begin{lstlisting}
-t:{method bool geq(This x) x.leq(this)   method bool leq(This x) x.qeq(this) }
-C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
-\end{lstlisting}
+
+%, as in the following example:
+%\begin{lstlisting}
+%t:{method bool geq(This x) x.leq(this)   method bool leq(This x) x.qeq(this) }
+%C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
+%\end{lstlisting}
+
+
+To understand how easy it is to extend the state in this
+way we compare the former code with an equivalent version in
+Java.
+For this example, we encode \Q@Point@ with no operations,
+\Q@PointSum@ reusing \Q@Point@ adding a functional \Q@sum@ operation,
+a \Q@CPoint@ reusing \Q@PointSum@ with a \Q@Color@ field
+and a \Q@FCPoint@ reusing \Q@CPoint@ with a \Q@Flavour@ field.
+This second case study represents a \textbf{worst case scenario} for \name against Java because we model just a single chain of reuse,
+easily supported in plain Java by single inheritance.
+Like the previous experiment, we still found that the Java solution was longer (109 lines) than that in \name (50 lines). This is caused by the absence support for the `This` type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes need to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
+
+Complex patterns in Java allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they required a lot of setup code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+The results for the second experiment are presented below.
+
+\begin{tabular}{l|l|l|l}
+Language       & Lines of code & number of members & number of toplevel concepts (classes or traits)\\
+Java           &  109          &    27             &         6\\
+\name          &   50          &    24             &         8\\
+\end{tabular}
+
