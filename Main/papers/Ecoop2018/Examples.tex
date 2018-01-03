@@ -4,7 +4,7 @@
 Here we show a simple formalization for the language we presented so far.
 We also model nested classes, but in order to avoid uninteresting complexities, we assume that
 all the type names are fully qualified from the top level, so the examples shown before should be
-written using \Q@This.Exp@, \Q@This.Sum@ and so on.
+written like \Q@This.Exp@, \Q@This.Sum@ and so on.
 In a real language, a simple pre-processor may take care of this step.
 
 In most languages, when implementing an interface, the programmer may avoid repeating abstract methods
@@ -249,7 +249,7 @@ Note how in $\mE$\ you can refer to a trait by name.
 %trait composition operator~\cite{ducasse2006traits}.
 
 
-Code literals \mL\ can be marked as interfaces. We use '?' to represent optional terms.
+Code literals \mL\ can be marked as interfaces. We use `?' to represent optional terms.
 Note that the interface keyword is inside the curly brackets,
 so an upper case name associated with an interface literal is a class-interface, while a lowercase one is a trait-interface.
 
@@ -398,7 +398,7 @@ but either their headers have different types or they are both implemented.
 The full language offers some relaxation here, so that for example an empty class can be seen as an empty interface during composition.
 }
 \item ImplementsClash:
-The result code would not respect implements relationships.
+The result code would not respect the implements relationships.
 For example
 \begin{lstlisting}
 t1={
@@ -456,7 +456,7 @@ $\begin{array}{l}
 all the nested classes are coherent,
 and either the Library is an interface,
 there are no static methods, or all the static methods
-are a valid \emph{state} methods of the candidate \emph{factory}.
+are a valid \emph{state} method of the candidate \emph{factory}.
 Note, by asking for
 $\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM$
 we select only the abstract methods.
@@ -502,7 +502,7 @@ $\begin{array}{l}
 \end{array}$
 
 \noindent A non static method is part of the \emph{abstract state} if 
-it s a valid getter, setter or wither.
+it is a valid getter, setter or wither.
 
 
 Rule \Rulename{Nested-OK} helps to accumulate the type of \Q@this@ so that rule \Rulename{Method-OK}
@@ -524,10 +524,10 @@ then $\text{wrong}(\overline\mD,\mE_0)\geq\text{wrong}(\overline\mD,\mE_1)$.
 
 This property has two important corollary:
 \begin{itemize}
-\item If a class is declared by using $\mC : \use\ \overline\mt$, that is without literals,
+\item If a class is declared by using $\mC = \use\ \overline\mt$, that is without literals,
 and the flattening is successful then \mC\ is well-typed: there is no need of further checking.
-\item On the other side, if a class is declared by $\mC : \use\ \overline\mV$, with
-$\mL_1\ldots\mL_n \in \overline\mV$, and after successful flattening $\mC : \mL$ can not be type-checked,
+\item On the other side, if a class is declared by $\mC = \use\ \overline\mV$, with
+$\mL_1\ldots\mL_n \in \overline\mV$, and after successful flattening $\mC = \mL$ can not be type-checked,
 then the issue was originally present in one of $\mL_1\ldots\mL_n$.
 It may be that the result is intrinsically ill-typed, if one of the methods in $\mL_1\ldots\mL_n$ is not well typed,
 but it may also happen that a type referred from one of those methods
@@ -549,7 +549,7 @@ This also means that as an optimization strategy
 Our typing discipline is very simple from a formal perspective,  
 and is what distinguishes our approach from a simple minded code composition macro~\cite{bawden1999quasiquotation}
 or a rigid module composition~\cite{ancona2002calculus}. 
-It is build on two core ideas:
+It is built on two core ideas:
 
 \paragraph{1: traits are \textbf{well-typed} before being reused.}
  For example in
@@ -579,7 +579,7 @@ for example in
 In our example, using the trait \Q@t@
 
 \saveSpace\begin{lstlisting}
-C: Use t {method int k() this.n()+this.m()}
+C= Use t, {method int k() this.n()+this.m()}
 \end{lstlisting}\saveSpace
 \noindent would be correct. In the code literal
 \Q@{method int k() this.n()+this.m()}@, 
@@ -596,7 +596,7 @@ OO languages leverage on recursive types most of the times:
 for example \Q@String@ may offer a \Q@Int size()@
 method, and \Q@Int@ may offer a \Q@String toString()@ method.
 This means that typing classes 
-\Q@String@ and \Q@Int@ in isolation one at the time is not possible.
+\Q@String@ and \Q@Int@ in isolation one at a time is not possible.
 
 
 To solve this problem, \textbf{state of the art systems}
@@ -619,9 +619,9 @@ extracting the class signatures.
 
 In our simpler but still sound approach,
 we support recursive types between multiple $\mC$\Q@=@$\mE$ \textbf{without
-the need of predicting the resulting shape}.%
+the need of predicting the resulting shape}%
 \footnote{This is a great simplification of our approach,
-and is fundamental in the full language where arbitrary code can be run at compile time.}
+and is fundamental in the full language where arbitrary code can be run at compile time.}.
 Indeed we have a much simpler top down execution/interpretation for flattening:
 it happens one at the time, and classes are typechecked 
 in order and only where their type is first needed,
@@ -658,16 +658,15 @@ B:{method int mb(A a) a.ma()+1}
 \end{lstlisting}\saveSpace
 \noindent
 we would be unable to type \Q@tc@, since we need to know the type of \Q@A@ and \Q@B@.
-A type error would be generated, on the line of ``flattening of \Q@C@
+A type error would be generated, on the lines of ``flattening of \Q@C@
 requires \Q@tc@, \Q@tc@ requires \Q@B@ that is defined later''.
 
 %In this example, a more expressive compilation/precompilation process 
 %could compute a dependency graph and, if possible, reorganize the list,
 
 \paragraph{The cost: what expressive power we lose}${}_{}$\\*
-
 For simplicity, we consider to always be able to provide the declarations in the right order, if one exists.
-An example of a ``morally correct" program where no right order exists is the following:
+An example of a ``morally correct'' program where no right order exists is the following:
 \saveSpace\begin{lstlisting}
 t={ int mt(A a) a.ma()}
 A=Use t {int ma() 1}
@@ -679,7 +678,7 @@ we chose to not support this kind of involved programs.
 In a system without inference for method types,
 if the result of composition operators depends only on the
 structural shape of their input (as for \use)
-is indeed possible to optimistically compute the resulting structural shape of the classes
+it is indeed possible to optimistically compute the resulting structural shape of the classes
 and use it to type involved examples like the former.
 We stick to our simple approach, since we believe such typing discipline would be fragile,
 and could make human understanding the code-reuse process much harder/involved.
@@ -700,11 +699,11 @@ This would however be overcomplicated without any observable difference:
 Indeed, in the \Q@A,B,C@ example above there is no difference
 between
 \begin{itemize}
-\item  (1)First check \Q@B@ and produce \Q@B@ code (that also contains \Q@B@ structural shape),
+\item  (1) First check \Q@B@ and produce \Q@B@ code (that also contains \Q@B@ structural shape),
   (2) then use \Q@B@ shape to check \Q@C@ and produce \Q@C@ code;\ 
 or a more involved
-\item  (1)First check \Q@B@ and discover just \Q@B@ structural shape as result of the checking,
-  (2)then use \Q@B@ shape to check \Q@C@.
+\item  (1) First check \Q@B@ and discover just \Q@B@ structural shape as result of the checking,
+  (2) then use \Q@B@ shape to check \Q@C@.
   (3) Finally produce both \Q@B@ and \Q@C@ code.
 \end{itemize}
 

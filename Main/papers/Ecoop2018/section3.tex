@@ -1,11 +1,10 @@
 \section{Improving Use}
 
-To illustrates how 
+To illustrate how 
 \name improves the use of classes we model a simplified version of
 Set and Bag collections first in Java, and then in \name.
 The main benefit of the \name solution is that we can get reuse 
-without introducing subtyping between Bags and Sets
-
+without introducing subtyping between Bags and Sets.
 As shown below, this \textbf{improves the 
 use of Bags} by eliminating logical errors arising from incorrect
 subtyping relations that are allowed in the Java solution. 
@@ -38,8 +37,8 @@ Indeed, the following is allowed:
 \begin{lstlisting}
 Set mySet=new Bag(); //OK for the type system but not for LSP
 \end{lstlisting}
-This encumber the programmer:
-to avoid conceptual errors that are not captured by the type system.
+This encumbers the programmer:
+to avoid conceptual errors that are not captured by the type system, 
 they have to \textbf{use} \Q@Bag@ very carefully.
 
 
@@ -59,7 +58,7 @@ This looks unnatural, since \Q@Set@ would extend \Q@AbstractSetOrBag@ without ad
 and we would be surprised to find a use of the type \Q@AbstractSetOrBag@.
 Worst, if we are to constantly apply this mentally, we would introduce a very high number
 of abstract classes that are not supposed to be used as types. Those classes would clutter the 
-public interface of our classes and our code project as a whole.
+public interface of our classes and the code project as a whole.
 A \textbf{use}able API should only provide the relevant information to the client.
 In our example the information \Q@Set<:AbstractSetOrBag@ would be present in the public interface
 of the class \Q@Set@, but such information is not needed to use the class properly!
@@ -71,7 +70,7 @@ We are now at the starting point again:
 \item either we insert \Q@class Bag5 extends Bag@ and we break the LSP; 
 \item or we duplicate the code of the \Q@Bag@ implementation with minimal
   adjustments in \\* \Q@class Bag5 extends AbstractSetOrBag@;
-\item or we introduce a
+\item or we introduce an
 \Q@abstract class BagN extends AbstractSetOrBag@ and \\*\Q@class Bag5 extends BagN@
 and we modify \Q@Bag@ so that  \Q@class Bag extends BagN@.
 Note that this last solution is changing the public interface of the formerly released \Q@Bag@ class, and
@@ -90,7 +89,7 @@ We consider this an advantage, since unintended code reuse runs into underdocume
 it''~\cite{Bloch08}: the
 self use of public methods is rarely documented, thus is hard to understand the effects of overriding a library method.
 }!
-If the designer of the set class wishes to make it reusable, he/she can do it explicitly by providing a set trait:
+If the designer of the \Q@Set@ class wishes to make it reusable, they can do it explicitly by providing a set trait:
 \saveSpace\begin{lstlisting}
 set={/*set implementation*/} 
 Set=Use set
@@ -117,7 +116,7 @@ Then, when for example we need to add \Q@Bag5@ as discussed before,
 we can introduce the \Q@bag@ trait without adding new undesired complexity for our old clients.
 
 
-As a pleasurable accident, avoiding such code gift us simple support for
+As a pleasurable accident, avoiding such code allows us simple support for the
 This type and (in the extensions with nested classes seen later)
 family polymorphism.
 

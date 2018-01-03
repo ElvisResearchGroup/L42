@@ -8,7 +8,7 @@ a subtype} of \lstinline{B}. Therefore in a language like Java,
 a subclass is \emph{always} a subtype of the extended class.
 
 Historically, there has been a lot of focus on
-separating subtyping from subclassing~\cite{cook}.  This is claimed to be
+separating subtyping from subclassing~\cite{cook}.  This seperation is claimed to be
 good for code-reuse, design and reasoning. There are at
 least two distinct situations where the separation of subtyping and 
 subclassing is helpful.
@@ -39,10 +39,10 @@ accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
 the second situation nominal subtyping is preferable. With nominal
 subtyping an explicit subtyping relation must be signalled by the
-programmer. Thus if subtyping is not desired, the idea is that 
+programmer. Thus if subtyping is not desired, the idea is that the
 programmer can simply {\bf not} declare a subtyping relationship.
 
-While there is no problem in subtyping without subclassing, in the design
+While there is no problem in subtyping without subclassing, the design
 of most nominal OO languages subclassing implies subtyping in a
 fundamental way. This is because of what we call the
 \emph{this-leaking problem}, illustrated by the following
@@ -53,7 +53,7 @@ fundamental way. This is because of what we call the
   class Utils{static int m(A a){..}}
 \end{lstlisting}
 
-Method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Util.m@.
+Method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
 This code is correct, and there is no subtyping/subclassing.  Now, lets add a class \Q@B@
 
 \begin{lstlisting}[language=Java]
@@ -90,13 +90,13 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %expected argument of type \lstinline{A}.  
 
 
-As a thought experiment, imagine that Java code-reuse (the {\bf extends} keyword) was not introducing subtyping: then an invocation of 
+Suppose if Java code-reuse (the {\bf extends} keyword) was not introducing subtyping: then an invocation of 
 \lstinline{B.mb} would result in a run-time type error.
 The problem is that the
 self-reference \lstinline{this} in class \lstinline{B} has 
 type \lstinline{B}. Thus, when \lstinline{this} is passed as an argument to 
-the method \lstinline{Utils.m} as a result of the invocation of
-\lstinline{mb}, it will have a type that is incompatible with the
+the method \lstinline{Utils.m} (as a result of the invocation of
+\lstinline{B.mb}), it will have a type that is incompatible with the
 expected argument of type \lstinline{A}.  
 Therefore, every OO language with the minimal features exposed in the example (using \lstinline{this},
 {\bf extends} and method calls) is forced to accept that subclassing implies
@@ -109,7 +109,7 @@ subtyping\footnote{C++ allows to "extends privately", but it is a limitation ove
 What the \emph{this-leaking problem} shows is that adopting a more flexible
 nominally typed OO model where subclassing does not imply subtyping is
 not trivial: a more substantial change in the language design is
-necessary.  In essence we believe that, in languages like Java, classes do too many
+necessary.  In essence we believe that in languages like Java, classes do too many
 things at once. In particular they act both as units of \emph{use} and
 \emph{reuse}: classes can be \emph{use}d as types and can be instantiated;
 classes can also be subclassed to provide \emph{reuse} of code.
@@ -147,14 +147,14 @@ brings several flexibility and simplicity benefits.
 
 We first focus on an example-driven presentation to illustrate how to
 improve use and reuse. 
-in Section~\ref{sec:formal} we then provide a compact 1 page formalization.
+In Section~\ref{sec:formal} we then provide a compact 1 page formalization.
 Most of the hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
-and the design of \name synthesises some of these previously studied
+and the design of \name synthesizes some of these previously studied
 concepts.
 The language design ideas have been implemented in the {\bf 42 language}, which supports all
-the examples we show in the paper, and is available at:\url{http://l42.is} (this site can be accessed without breaking double blind review).
+the examples we show in the paper, and is available at: \url{http://l42.is} (this site can be accessed without breaking double blind review).
 
 In summary, our contributions are:
 
@@ -180,11 +180,11 @@ In summary, our contributions are:
   simple language design}. This language is the logic core of the language 42, and 
   all the examples in the paper can be encoded as valid 42 programs. 
 
-\item We illustrate how the new design {\bf improves both code use and code
+\item We illustrate how the new language design {\bf improves both code use and code
   reuse}.
-\item We propose {\bf a clean and elegant approach to handle of state} in a trait based language.
+\item We propose {\bf a clean and elegant approach to the handling of state} in a trait based language.
 
-\item The extension with nested classes solves the expression problem better then former work.
+\item An extension with nested classes solves the expression problem better than former work.
 \item We show the simplicity of our approach by providing a compact 1 page formalization
 \item We perform 3 case studies, comparing our work with other approaches, showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}

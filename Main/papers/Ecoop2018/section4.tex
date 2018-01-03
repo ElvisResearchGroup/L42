@@ -36,7 +36,7 @@ and fields) while achieving the following goals:
 \begin{itemize}
 %complicated discussions on this point \item keep sum associative and commutative,
 \item managing fields in a way that borrows the elegance of summing methods;
-\item actually initialize objects, leaving no null fields;
+\item actually initializing objects, leaving no null fields;
 \item making it easy to add new fields;
 \item allowing a class to create instances of itself (self instantiation).
 \end{itemize}
@@ -89,7 +89,7 @@ class PointAlgebra=Use pointSum,pointMul, {//not 42 code
     constructor PointAlgebra(int x, int y){ this.x=x   this.y=y }
     method int x() x//repetitive code
     method int y() y// in traits terminology, this is all "glue code"
-    static method This of(int x, int y) new CPoint(x,y)
+    static method This of(int x, int y) new PointAlgebra(x,y)
     }
 \end{lstlisting}
 %\bruno{We talk about withers later on. So I think we should consider
@@ -113,7 +113,7 @@ It has some advantages, but also disadvantages:
   the state/fixpoint in the class 
    with the constructors and fields and getter/setters and factories is tedious and error prone.
    Moreover, there is no way for a trait to specify a default value for a field,
-   the class need to handle all the state, even state that is conceptually
+   the class needs to handle all the state, even state that is conceptually
    private of such trait. 
    Previous work shows that such code can be automatically
    generated~\cite{wang2016classless}.
@@ -207,35 +207,37 @@ Now the code is fully modularized, and each trait defines exactly one method.
 In order to evaluate our approach,
 we performed a case study:
 we consider \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
-This give us 16 different possible combinations.
+This gives us 16 different possible combinations.
 We coded this example in three different styles:
-(a) Java7 (= 243 lines), (b) Classless Java (= 226 lines) and (c) \name (= 57 lines).
-We chosen Classless Java since it is a novel approach allowing to encode traits on Java levering on 
+(a) Java7 \emph{(= 243 lines)}, (b) Classless Java \emph{(= 226 lines)} and (c) \name \emph{(= 57 lines)}.
+We chose Classless Java since it is a novel approach allowing to encode traits in Java leveraging on 
 Java 8 default interface methods.
-We then chosen Java7, that lacks the features needed to encode traits, to show the impact of this feature.
+We then chose Java7, that lacks the features needed to encode traits, to show the impact of this feature.
 
-We observed that in Java we had to duplicate 28 method bodies across the 16 classes.
+We observed that in Java7 we had to duplicate 28 method bodies across the 16 classes.
 Of these, 11 method bodies were duplicated because Java does not support multiple inheritance
  and the remaining 17 bodies had to be duplicated to ensure that the right type
  is returned by the method. Those could be avoided if Java supported
- the `This` type.
+ the `This' type.
  On the other hand, the solution in \name was much more compact since we could efficiently
 reuse traits (this is why the number of toplevel concepts in \name was larger i.e. 21 due to the
  presence of traits in this solution).
- The solution in Classless Java was slightly smaller than the Java one,
+ The solution in Classless Java was slightly smaller than Java7,
  but was still quite longer than the \name solution because we still had to redefine the
- sum/sub/etc operations in each of the classes because of limited support of the `This` type.
+ sum/sub/etc operations in each of the classes because of limited support of the `This' type.
 
 This example is the best-case scenario for \name: this is an example where a maximum level of reuse
- is required since we considered the case where all the 16 permutations need to be materialized in the code.
+ is required since we considered the case where all the 16 permutations needed to be materialized in the code.
 The results in each of the styles are presented below.
 In all our case studies, to make a meaningful comparison, we formatted all code in a readable and consistent manner;
-on the other side for space limitations, the code presented in the article
-is formatted to be very compacts.
+on the other hand for space limitations, the code snippets presented in the article
+are formatted to be very compact.
+
 
 \begin{tabular}{l|l|l|l}
-Language       & Lines of code & number of members & number of top-level concepts (classes or traits)\\
-Java           &   243         & 50                &      16\\
+Language       & Lines of code & Number of members & Number of top-level concepts (classes or traits)\\
+\hline
+Java7           &   243         & 50                &      16\\
 Classless Java &   226         & 34                &      16\\
 \name          &    57         & 7                 &      21 = 16+4+1\\
 
@@ -259,7 +261,7 @@ A solution is to provide a richer factory:
 \begin{lstlisting}
   CPoint:Use pointSum,colored,{
     static method This of(int x,int y) This.of(x,y,Color.of(/*red*/))
-    static method This of(int x, int y,Color color)
+    static method This of(int x,int y,Color color)
     }
 \end{lstlisting}
 \saveSpace
@@ -271,10 +273,10 @@ delegates to \Q@of(int,int,Color)@ by passing red as the default field
 value.  What should be the behaviour in this case?  If our abstract
 state supports withers, we can use
 \Q@this.withX(newX).withY(newY)@, instead of writing \Q@This.of(...)@, in order to preserve the color from
-\Q@this@.  This solution is better but still not satisfactory, the color from \Q@that@ is ignored.
+\Q@this@.  This solution is better but still not satisfactory since the color from \Q@that@ is ignored.
 
 \paragraph{A better design}
-If the point designer is designing for reuse and extensibility, then 
+If the designer of point (i.e. trait \Q@p@) is designing for reuse and extensibility, then 
 a better design would be the following:  
 \saveSpace\begin{lstlisting}
   p: { method int x() method int y() //getters
@@ -306,7 +308,7 @@ We introduce here an operator called \Q@super@, that
  makes a method abstract and
 moves the implementation to another name. This is very useful to implement super calls
  and to compose conflicting implementations.
-\noindent Consider the simple flavored trait:
+\noindent Consider the simple \Q@flavored@ trait:
 \saveSpace\begin{lstlisting}
   flavored:{
       method Flavor flavor() //very similar to colored
@@ -315,7 +317,7 @@ moves the implementation to another name. This is very useful to implement super
         this.withFlavor(that.flavor())}//inherits "that" flavor
 \end{lstlisting}  \saveSpace\saveSpace
 
-\noindent In order to merge colored and flavored we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
+\noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
 to refer to the version of \Q@merge@ as defined in the first/second element of \use.
 
 \saveSpace\begin{lstlisting}
@@ -331,7 +333,7 @@ to refer to the version of \Q@merge@ as defined in the first/second element of \
       }
 \end{lstlisting}  \saveSpace\saveSpace
 
-Note how we are levering on the fact that the code literal
+Note how we are leveraging on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
@@ -353,13 +355,14 @@ a \Q@CPoint@ reusing \Q@PointSum@ with a \Q@Color@ field
 and a \Q@FCPoint@ reusing \Q@CPoint@ with a \Q@Flavour@ field.
 This second case study represents a \textbf{worst case scenario} for \name against Java because we model just a single chain of reuse,
 easily supported in plain Java by single inheritance.
-Like the previous experiment, we still found that the Java solution was longer (109 lines) than that in \name (50 lines). This is caused by the absence support for the `This` type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes need to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
+Like the previous experiment, we still found that the Java solution was longer (109 lines) than that in \name (50 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
 Complex patterns in Java allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they required a lot of setup code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
 The results for the second experiment are presented below.
 
 \begin{tabular}{l|l|l|l}
-Language       & Lines of code & number of members & number of toplevel concepts (classes or traits)\\
+Language       & Lines of code & Number of members & Number of toplevel concepts (classes or traits)\\
+\hline
 Java           &  109          &    27             &         6\\
 \name          &   50          &    24             &         8\\
 \end{tabular}

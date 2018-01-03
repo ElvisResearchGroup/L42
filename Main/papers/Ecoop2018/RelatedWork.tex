@@ -70,7 +70,7 @@ PT imports all the complexity of Java, so although is possible to separate use a
 \item {\bf Naming the self type, even if there is none yet.}
 Both DeepFJig and PT allow a class to refer to its name, albeit this is
 less obvious in PT since both a package and a class have to be introduced to express it.
-This allows encoding binary methods, express patterns like withers or fluent setters and to instantiate instances of the (future) class(es)  using the reused code.
+This allows encoding binary methods, expressing patterns like withers or fluent setters and to instantiate instances of the (future) class(es)  using the reused code.
 
 \end{itemize}
 
@@ -97,7 +97,7 @@ In the literature there have been many attempts to add state in traits/module co
   
   To its credit, this simple approach is commutative and associative and does not disrupt elegance of summing methods.
   However, objects are created "broken" and the user is trusted with fixing them.
-  While is easy to add fields, the load of initializing them is on the user; moreover
+  While it is easy to add fields, the load of initializing them is on the user; moreover
     all the objects are intrinsically mutable, so this model is unfriendly
     to a functional programming style.
 \item {\bf Constructors compose fields}:
@@ -124,7 +124,7 @@ somehow synthesized from the constructor parameters.
 \subsection{ThisType with Subclassing implying Subtyping}
 With the exception of those mentioned 3 lines of work, to the best of our understading
 other famous work in literature, like~\cite{odersky2008programming,nystrom2006j}
-does not completely break the relation between inheritance and subtyping, but only prevents subtyping where 
+do not completely break the relation between inheritance and subtyping, but only prevent subtyping where 
 it would be unsound.
 Recent work on {\bf ThisType} \cite{Saito:2009,ryu16ThisType}
 also continues on this line.
@@ -181,6 +181,6 @@ ${}_{}$\\
 \end{center}
 \end{minipage}
 
-We use Y and X to mean yes and no, and we use ``-'' were the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes little sense.
+We use Y and X to mean yes and no, and we use ``-'' where the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions no sense here.
 
 

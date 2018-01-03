@@ -6,7 +6,7 @@ The general idea is that by composing code with \use,
 nested classes with the same name are recursively composed.
 For simplicity, while we discuss nested classes,
 here we do not consider nested traits nor nested composition,
-and all traits and code composition expression are still at top level.
+and all traits and code composition expressions are still at top level.
 
 In this way all dependencies are about top level names, allowing the type system 
 to consider the class table as a simple map from (nested) types\footnote{
@@ -56,7 +56,7 @@ would flatten to
 t:{ method B m() B:{ method B mb()} }
 D:{ method C m() C:{ method C mb()} }
 \end{lstlisting}
-Note how the rename only influence its argument.
+Note how the rename only influences its argument.
 Since traits do not induce nominal types, we can
 consistently change their
 internally used names without breaking any code.
@@ -116,10 +116,10 @@ Following closely
 the example of~\cite{},
 we consider a language where the
 expressions \Q@Exp@ can
-be \Q@Num@ (for number literal)
+be \Q@Num@ (for number literal),
 \Q@Plus@ (for binary plus operator)
 and \Q@Neg@ (for unary minus).
-We then proceed defining operation
+We then proceed to defining operations
 \Q@show@ to print it as a string,
  \Q@eval@ to compute the numeric value and 
 \Q@double@ to double the value of each \Q@Num@.
@@ -145,17 +145,17 @@ evalPlus=Use plus, {
     method Size eval()
       this.left().eval()+this.right().eval()}}
 \end{lstlisting}
-\Q@basePlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
+\Q@evalPlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
 
-But, if we was to declare those
+But, if we were to declare those
 explicitly, we would repeat \Q@Exp@, the abstract
 declaration of \Q@eval()@ and \Q@implements Exp@
-for al the data-variant.
+for all data-variants.
 Our more abstract solution, to avoid this duplication is to write 
 the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
-onto the corresponding data variant.
-Thus, our source code is as follow;
+into the corresponding data variant.
+Thus, our source code is as follows;
 First we declare the 4 traits to represent the state:
 \begin{lstlisting}
 exp={
@@ -163,7 +163,7 @@ exp={
   T={implements Exp}}
 num=Use exp[rename T into Num],{//T renamed in Num is summed with the current Num
   Num={method Size value()  static method Num of(Size value)}}
-plus=exp[rename T into Plus], {
+plus=Use exp[rename T into Plus], {
   Plus={method Exp left()  method Exp right()  static method Plus of(Exp left,Exp right)}}
 neg=Use exp[rename T into Neg],{
   Neg={method Exp term()  static method Neg of(Exp term)}}
@@ -174,38 +174,37 @@ and a specific case of expression, with its state.
 Next, we define the operation \Q@eval@ for all the datavariants.
 The former solutions in~\cite{deepfjig}
 required to repeat the state declaration of the 
-datavariant in each operation, while were we can just import it.
+datavariant in each operation, while we can just import it.
 
 \begin{lstlisting}
 eval={//concept of Exp.eval() declared once
   Exp={interface      method Size eval()}
   T={implements Exp}}
-baseNum=Use num, base[rename T into Num],{
+evalNum=Use num, eval[rename T into Num],{
   //just the implementation of the specific method
   Num={ method Size eval() this.value() }}
-basePlus=Use plus, base[rename T into Num], {
+evalPlus=Use plus, eval[rename T into Plus], {
   Plus={ method Size eval() this.left().eval()+this.right().eval() }}
-baseNeg=Use neg, base[rename T into Neg], {Neg={ method Size eval()..}}
+evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval()..}}
 \end{lstlisting}
 
 The \Q@show@ operation can be trivially defined
-following exactly the same design (omitted here for space reasons).
-The operation \Q@double@ is is a challenge for some proposed solution to the expression problem.~\cite{}.
+following exactly the same pattern (omitted here for space reasons).
+The operation \Q@double@ is is a challenge for some proposed solution to the expression problem ~\cite{}.
 It is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
 Thanks to the separation between use and reuse, and the support
 for self-instantiation of every nested class in a given trait,
-in \name, it do not need any special attention
-and can be coded is just exactly like \Q@eval@ and \Q@show@.
+in \name, it does not need any special attention
+and can be coded just like \Q@eval@ and \Q@show@.
 \begin{lstlisting}
 double={
-  Exp={interface
-    method Exp double()}
+  Exp={interface      method Exp double()}
   T={implements Exp}}
 doubleNum= Use num, double[rename T in Num],{
   Num={ method Exp double() Num.of(this.value()*2) }}
-doublePlus=Use plus,double[rename T in num],{
+doublePlus=Use plus,double[rename T in Plus],{
   Plus={ method Exp double() Plus.of(this.left().double(),this.right().double())}}
-doubleNeg:...
+doubleNeg=...
 \end{lstlisting}
 Here we define a trait for each datavariant implementing the operation \Q@double()@.
 Again, each trait will contain its version of \Q@Exp@ with \Q@double()@
@@ -218,7 +217,7 @@ for that specific case.
 %see each other.
 
 In our third case study we compare our results with the ones presented
-in scala.~\cite{}
+in Scala ~\cite{}
 The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
 version where we isolate all the units of behaviour as we
@@ -226,11 +225,12 @@ have done in \name.
 \begin{minipage}{0.4\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
+\hline
 original scala          & 95     &  12+3=15\\
 scala  isolated units   & 149    &  12+3=15\\
 scala  glue-code        &   41   &     3\\
 42 traits               &   97   &    4*3+7=19\\
-42 class                &   3    &     0\\
+42 classes              &   3    &     0\\
 \end{tabular}
 \end{minipage}
 \begin{minipage}{0.6\textwidth}
@@ -250,7 +250,7 @@ with \Q@eval@ and \Q@double@ would look like:
 Example=Use evalNum,evalPlus,doubleNum,doublePlus
 \end{lstlisting}
 The composition of all our traits would just require to list all
-of the relevant behaviour;reasonably formatted, it can takes 3 lines (so a full \name solution would be 97+3=100 lines).
+of the relevant behaviour; reasonably formatted, it can take upto 3 lines (so a full \name solution would be 97+3=100 lines).
 
 On the other side, the presented solution in Scala requires
 41 lines of glue code to put the traits together
@@ -265,9 +265,9 @@ The interested reader can find a \name implementation of \Q@equals@ with double 
 in the appendix.
 }
 
-The main idea is that  every datavariant would contains
+The main idea is that  every datavariant  contains
  the "cast" logic; thus
- we can modularize that into a \Q@equals@ trait.
+ we can modularize that into an \Q@equals@ trait.
 \begin{lstlisting}
 equals:{
   Exp:{interface
@@ -282,34 +282,35 @@ equalsNum:Use num, equals[rename T into Num],{
 equalsPlus:Use plus, equals[rename T into Plus],{
   Plus:{method Bool exactEquals(Plus that)
     this.left().equals(that.left()) && this.right().equals(that.right())}}
-equalsNeg:Use neg, equals2[rename T into Neg],{
+equalsNeg:Use neg, equals[rename T into Neg],{
   Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term())}}
 \end{lstlisting}
 
 This simple implementation of \Q@equals@
-is much simple than the one proposed by scala
+is much simpler than the one proposed by scala
  and can be instantiated without any glue code.
 
 \begin{minipage}{0.4\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
-original scala eq           &    51   &   10\\
-isolated scala eq           &   58    &   10\\
-scala eq instance           &    43   &    3\\
+\hline
+original Scala eq           &    51   &   10\\
+isolated Scala eq           &   58    &   10\\
+Scala eq instance           &    43   &    3\\
 42 trait eq d-dispatch      &    34   &    6\\
 42 class dd instance        &    25   &   11\\
 42 traits eq Cast            &    21   &    6\\
 42 class cast instance      &     3   &    0\\
 \end{tabular}
 \end{minipage}
-\begin{minipage}{0.6\textwidth}
-Here the scala code can be made fully isolated for a very little
+\begin{minipage}{0.65\textwidth}
+Here the Scala code can be made fully isolated for a very little
 extra syntactic cost.
 To merge all the operations together in scala, it
 takes 42 lines of glue code. Note that this
 is mostly the same glue code from before (41 lines), that
 needs to be manually adapted.
-In 42 we are
+In \name we are
 more compact than Scala both when using the double dispatch (25 vs 58)
 or the guarded cast (21 vs 58).
 \end{minipage}
