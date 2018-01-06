@@ -100,7 +100,7 @@ internally used names without breaking any code.
 
 \paragraph{Application to the expression problem}${}_{}$\\*
 The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
-with the requirements exposed in~\cite{scala}.
+with the requirements exposed in~\cite{Zenger-Odersky2005}.
 In the expression problem we have data variants and operations and we can
 \textbf{extend our solution in both dimensions},
 by adding new datavariants and adding new operations.
@@ -113,7 +113,7 @@ and allow \textbf{separate compilation} (no re-type-checking),
 while avoiding \textbf{duplication of source code}.
 
 Following closely
-the example of~\cite{},
+the example of~\cite{Zenger-Odersky2005},
 we consider a language where the
 expressions \Q@Exp@ can
 be \Q@Num@ (for number literal),
@@ -127,7 +127,7 @@ We then proceed to defining operations
 We thus have 3 classes, 1 interface,
 the definition of the state and 3 operations.
 We can model this
-as a table of features, as in~\cite{Deepfjig}:
+as a table of features, as in~\cite{deep}:
 a (3classes+1interface)*(1state+3operations)
 table composed by 16 traits.
 They are atomic: they deal with exactly 
@@ -135,7 +135,7 @@ declaring the state of a class
 or defining a single operation for a single class.
 In \name we can be very compact,
  as we can avoid a large amount of abstract declarations,
-that clutters the solution in~\cite{Deepfjig}.
+that clutters the solution in~\cite{deep}.
 Intuitively, we would like our traits to look like the following 
 \begin{lstlisting}
 evalPlus=Use plus, {  
@@ -172,7 +172,7 @@ Here we define a trait for each datavariant.
 Each trait will contain its version of \Q@Exp@
 and a specific case of expression, with its state.
 Next, we define the operation \Q@eval@ for all the datavariants.
-The former solutions in~\cite{deepfjig}
+The former solutions in~\cite{deep}
 required to repeat the state declaration of the 
 datavariant in each operation, while we can just import it.
 
@@ -190,7 +190,7 @@ evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval()..}}
 
 The \Q@show@ operation can be trivially defined
 following exactly the same pattern (omitted here for space reasons).
-The operation \Q@double@ is is a challenge for some proposed solution to the expression problem ~\cite{}.
+The operation \Q@double@ is is a challenge for some proposed solution to the expression problem, as explained in ~\cite{zhang2017evf}.
 It is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
 Thanks to the separation between use and reuse, and the support
 for self-instantiation of every nested class in a given trait,
@@ -217,29 +217,28 @@ for that specific case.
 %see each other.
 
 In our third case study we compare our results with the ones presented
-in Scala ~\cite{}
+in Scala~\cite{Zenger-Odersky2005}.
 The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
 version where we isolate all the units of behaviour as we
 have done in \name.
-\begin{minipage}{0.4\textwidth}
+\begin{minipage}{0.6\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original scala          & 95     &  12+3=15\\
-scala  isolated units   & 149    &  12+3=15\\
-scala  glue-code        &   41   &     3\\
-42 traits               &   97   &    4*3+7=19\\
+original Scala          & 52     &  15=12+3\\
+Scala  isolated units   & 78    &  15=12+3\\
+Scala  glue-code        & 27   &     3\\
+42 traits               & 48=3+4+6+5 + (4+2*3)*3   &    19=4*3+7\\
 42 classes              &   3    &     0\\
 \end{tabular}
 \end{minipage}
-\begin{minipage}{0.6\textwidth}
+\begin{minipage}{0.4\textwidth}
 Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
 We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
-
 \end{minipage}
 
-As you can see, to encode fully isolated units in scala is
+As you can see, to encode fully isolated units in Scala is
 more verbose,
 but more importantly,
 in \name we can just define a class supporting any subset of operations
@@ -250,14 +249,19 @@ with \Q@eval@ and \Q@double@ would look like:
 Example=Use evalNum,evalPlus,doubleNum,doublePlus
 \end{lstlisting}
 The composition of all our traits would just require to list all
-of the relevant behaviour; reasonably formatted, it can take upto 3 lines (so a full \name solution would be 97+3=100 lines).
+of the relevant behaviour; reasonably formatted, it can take up to 3 lines (so a full \name solution would be 48+3=51 lines).
 
 On the other side, the presented solution in Scala requires
-41 lines of glue code to put the traits together
-(so a full scala solution would be 149+41=190 lines).
+27 lines of glue code to put the traits together
+(so a full Scala solution would be 78+27=105 lines).
 
-Following~\cite{}, after \Q@double@ we present an implementation of \Q@equals@.
-In~\cite{}, involved double dispatch is used to avoid casting.
+The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
+for each of the three operations (\Q@eval,show,double@) 
+we just need 4 lines to declare the operation 
+in the interface, and 2 lines for each of the 3 datavariants.
+
+Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
+In~\cite{Zenger-Odersky2005}, involved double dispatch is used to avoid casting.
 To show understandable code, we show a simpler solution 
 with a guarded cast (sometime called a typecase).%
 \footnote{
@@ -290,33 +294,35 @@ This simple implementation of \Q@equals@
 is much simpler than the one proposed by scala
  and can be instantiated without any glue code.
 
-\begin{minipage}{0.4\textwidth}
+\noindent
+\begin{minipage}{0.46\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala eq           &    51   &   10\\
-isolated Scala eq           &   58    &   10\\
-Scala eq instance           &    43   &    3\\
-42 trait eq d-dispatch      &    34   &    6\\
-42 class dd instance        &    25   &   11\\
-42 traits eq Cast            &    21   &    6\\
+original Scala eq           &    40   &   10\\
+isolated Scala eq           &   31    &   10\\
+Scala eq instance           &    29   &    3\\
+42 trait eq d-dispatch      &   21=6+5*3   &    6\\
+42 class dd instance        &    22   &   11\\
+42 traits eq Cast            &   13=7+2*3   &    6\\
 42 class cast instance      &     3   &    0\\
 \end{tabular}
 \end{minipage}
-\begin{minipage}{0.65\textwidth}
+\begin{minipage}{0.54\textwidth}
 Here the Scala code can be made fully isolated for a very little
-extra syntactic cost.
-To merge all the operations together in scala, it
-takes 42 lines of glue code. Note that this
-is mostly the same glue code from before (41 lines), that
+extra syntactic cost. The original Scala eq is 40 lines and
+contains a part of the glue code mixed inside.
+The isolated version is 31 lines and to merge all the operations together in Scala, it
+takes 29 lines of glue code. Note that this
+is mostly the same glue code from before (27 lines), that
 needs to be manually adapted.
-In \name we are
-more compact than Scala both when using the double dispatch (25 vs 58)
-or the guarded cast (21 vs 58).
 \end{minipage}
 
-However, to instantiate the double dispatch 
-version in \name we need 25 lines of glue code.
+In \name we are
+more compact than Scala both when using the double dispatch (21+22 vs 31+29)
+or the guarded cast (13+3 vs 31+29).
+To instantiate the double dispatch 
+version in \name we need 22 lines of glue code.
 We could remove such glue code using 
 features from the full 42 language, but here we stick to only the features presented in this paper.
 The interesting point is that the nature of our needed glue code 

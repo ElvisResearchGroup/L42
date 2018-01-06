@@ -209,22 +209,47 @@ we performed a case study:
 we consider \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
 This gives us 16 different possible combinations.
 We coded this example in three different styles:
-(a) Java7 \emph{(= 243 lines)}, (b) Classless Java \emph{(= 226 lines)} and (c) \name \emph{(= 57 lines)}.
+(a) Java7 \emph{(= 115 lines)}%
+\footnote{
+Since we want to focus on the actual code, while counting line numbers we \textbf{omit} white lines and lines containing only open/closed parenthesis.
+}%
+, (b) Classless Java \emph{(= 82 lines)},
+(c) Scala \emph{(= 81 lines)} and (d) \name \emph{(= 32 lines)}.
 We chose Classless Java since it is a novel approach allowing to encode traits in Java leveraging on 
 Java 8 default interface methods.
 We then chose Java7, that lacks the features needed to encode traits, to show the impact of this feature.
+Finally, the comparison with Scala is interesting since abstract type members allows to conveniently encode
+`\Q@This@' type.
 
-We observed that in Java7 we had to duplicate 28 method bodies across the 16 classes.
+We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } 28 method bodies across the 16 classes.
 Of these, 11 method bodies were duplicated because Java does not support multiple inheritance
  and the remaining 17 bodies had to be duplicated to ensure that the right type
  is returned by the method. Those could be avoided if Java supported
- the `This' type.
+ the `\Q@This@' type.
  On the other hand, the solution in \name was much more compact since we could efficiently
 reuse traits (this is why the number of toplevel concepts in \name was larger i.e. 21 due to the
  presence of traits in this solution).
+In the detail, we used 6 lines for the initial \Q@Point@ class,
+5 lines for each of the 4 arithmetic operations, 7 lines for each of the 6 combinations
+of two different operations, 9 lines for each of the 4 combinations of three different 
+operations and finally 11 lines for the class with all the four operations.
+
+
  The solution in Classless Java was slightly smaller than Java7,
  but was still quite longer than the \name solution because we still had to redefine the
- sum/sub/etc operations in each of the classes because of limited support of the `This' type.
+ sum/sub/etc operations in each of the classes because of limited support of the `\Q@This@' type, thus it also has 28 duplicated method bodies.
+
+Finally, we compare it with a Scala solution.
+Scala has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
+There is no need for duplicate method bodies in Scala.
+However, for `\Q@This@' instantiation we need to define abstract methods, that will be implemented in the concrete classes.
+The Scala solution have the same exact advantages
+of our proposed solution, and the declaration
+of the trait is about the same size: 
+5(point state)+3*4 (point operations).
+However the glue code (the code needed to compose the traits into usable classes) is quite costly:
+4 lines for each of the 16 cases.
+In \name a single line for each case is sufficient.
 
 This example is the best-case scenario for \name: this is an example where a maximum level of reuse
  is required since we considered the case where all the 16 permutations needed to be materialized in the code.
@@ -233,13 +258,13 @@ In all our case studies, to make a meaningful comparison, we formatted all code 
 on the other hand for space limitations, the code snippets presented in the article
 are formatted to be very compact.
 
-
 \begin{tabular}{l|l|l|l}
 Language       & Lines of code & Number of members & Number of top-level concepts (classes or traits)\\
 \hline
-Java7           &   243         & 50                &      16\\
-Classless Java &   226         & 34                &      16\\
-\name          &    57         & 7                 &      21 = 16+4+1\\
+Java7           &   115=6+5*4+7*6+9*4+11        & 50                &      16\\
+Classless Java &   \ \ 82=3+3*4+5*6+7*4+9          & 34                &      16\\
+Scala          &   \ \ 81=5+3*4+4*16  &  40                 &    21 = 16+4+1\\
+\name          &   \ \ 32=4+3*4+1*16 & 7                 &      21 = 16+4+1\\
 
 \end{tabular}
 
@@ -355,15 +380,30 @@ a \Q@CPoint@ reusing \Q@PointSum@ with a \Q@Color@ field
 and a \Q@FCPoint@ reusing \Q@CPoint@ with a \Q@Flavour@ field.
 This second case study represents a \textbf{worst case scenario} for \name against Java because we model just a single chain of reuse,
 easily supported in plain Java by single inheritance.
-Like the previous experiment, we still found that the Java solution was longer (109 lines) than that in \name (50 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
+Like the previous experiment, we still found that the Java solution was longer (47 lines) than that in \name (33 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
 Complex patterns in Java allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they required a lot of setup code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavoured@ do not exists 
+as individual concepts.
+
+We also compare with a solution in Scala.
+This shows the same level of reuse and modularity of 
+code, but again is more verbose than \name, and requires more members (31), an indication it may be logically heavier too.
+We define the main \Q@tPoint@ trait (8 lines),
+the \Q@tPointSum@ operation (3), the two 
+\Q@Colored@ and \Q@Flavoured@ traits (6*2)
+\Q@CPoint@ and \Q@CFPoint@ (12+18).
+Note how the major benefit of \name is in the reduction
+of the amount of code needed to generate 
+\Q@CPoint@ and \Q@CFPoint@ (4+9).
+
 The results for the second experiment are presented below.
 
 \begin{tabular}{l|l|l|l}
 Language       & Lines of code & Number of members & Number of toplevel concepts (classes or traits)\\
 \hline
-Java           &  109          &    27             &         6\\
-\name          &   50          &    24             &         8\\
+Java           &  47= 10+9\ \ \ \ + \ \ \ \  13+15         &    27             &     6\\
+Scala          &  53= \ \ 8+3+6*2+12+18        &    31             &         6\\
+\name          &  33=\ \ \ 7+3+5*2+\ \ 4+9      &    24             &         6\\
 \end{tabular}
 

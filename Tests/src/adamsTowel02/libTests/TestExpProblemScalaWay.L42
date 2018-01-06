@@ -11,21 +11,22 @@ RenPlus:{class method Library<>< (Library that) exception Guard
 RenNeg:{class method Library<>< (Library that) exception Guard
   Refactor2.rename(path:\"T" into:\"Neg")<><that
   }
+//above, header not counted
 
-$exp:Resource<><{
+$exp:Resource<><{ //3 lines
   Exp:{interface}
 
   T:{implements Exp}
   }
 
-$num:Resource<><Use[RenNum<><$exp()]<><{
+$num:Resource<><Use[RenNum<><$exp()]<><{ //4 lines
   Num:{
     method Size value()
     class method Num of(Size value)
     }
   }
 
-$plus:Resource<><Use[RenPlus<><$exp()]<><{
+$plus:Resource<><Use[RenPlus<><$exp()]<><{  //6 lines
   Exp:{interface}
 
   Plus:{
@@ -35,7 +36,7 @@ $plus:Resource<><Use[RenPlus<><$exp()]<><{
     }
   }
 
-$neg:Resource<><Use[RenNeg<><$exp()]<><{
+$neg:Resource<><Use[RenNeg<><$exp()]<><{  //5 lines
   Exp:{interface}
 
   Neg:{
@@ -44,7 +45,7 @@ $neg:Resource<><Use[RenNeg<><$exp()]<><{
   }
 }
 
-$eval:Resource<>< {
+$eval:Resource<>< {  //4 lines
   Exp:{interface
     method Size eval()
     }
@@ -52,7 +53,7 @@ $eval:Resource<>< {
   T:{implements Exp}
   }
 
-$evalNum:Resource<><Use[$num(); RenNum<><$eval()]<>< {
+$evalNum:Resource<><Use[$num(); RenNum<><$eval()]<>< {  // 2*3 lines
   Num:{ method Size eval() this.value() }
   }
 
@@ -64,7 +65,7 @@ $evalNeg:Resource<><Use[$neg(); RenNeg<><$eval()]<>< {
   Neg:{ method Size eval() Size"-1" * this.term().eval() }
   }
 
-$show:Resource<><Use[$exp()]<><{
+$show:Resource<><Use[$exp()]<><{  //4 lines
   Exp:{interface
     method S show()
     }
@@ -72,7 +73,7 @@ $show:Resource<><Use[$exp()]<><{
   T:{implements Exp}
   }
 
-$showNum:Resource<><Use[$num(); RenNum<><$show()]<><{
+$showNum:Resource<><Use[$num(); RenNum<><$show()]<><{  //2*3 lines
   Num:{ method S show() this.value().toS() }
   }
 
@@ -84,7 +85,7 @@ $showNeg:Resource<><Use[$neg(); RenNeg<><$show()]<><{
   Neg:{ method S show() S"-("++this.term().show()++S")" }
   }
 //----------------
-$double:Resource<><{
+$double:Resource<><{  //4 lines
   Exp:{interface
     method Exp double()
     }
@@ -92,8 +93,8 @@ $double:Resource<><{
   T:{implements Exp}
   }
 
-$doubleNum:Resource<><Use[$num(); RenNum<><$double()]<><{
-  Exp:{interface}
+$doubleNum:Resource<><Use[$num(); RenNum<><$double()]<><{ //2*3 lines
+  Exp:{interface}//not counted, needed in the full language only to guide scope resolution in the desugaring
 
   Num:{ method Exp double() Num.of(value: this.value()*2Size) }
   }
@@ -110,7 +111,7 @@ $doubleNeg:Resource<><Use[$neg(); RenNeg<><$double()]<><{
   Neg:{ method Exp double() Neg.of(term: this.term().double()) }
   }
 //---------
-$equals:Resource<><Use[$eval()]<><{
+$equals:Resource<><Use[$eval()]<><{  //6 lines
   Exp:{interface
     method Bool eql(Exp that)
     method Bool equalToT(T that)
@@ -121,7 +122,7 @@ $equals:Resource<><Use[$eval()]<><{
     }
   }
 
-$equalsNum:Resource<><Use[$num();
+$equalsNum:Resource<><Use[$num();  //5*3 lines
   Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToNum(that)"]
   <><RenNum<>< $equals()]<><{
   Num:{
@@ -146,6 +147,7 @@ $equalsNeg:Resource<><Use[$neg();
     }
   }
 
+ //16+6 lines glue code
 $equalsAll:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
   Exp:{interface
     method Bool eql(Exp that)
@@ -186,7 +188,7 @@ ESDAll:Use[$evalAll();$showAll()]<><$doubleAll()
 
 ESDEAll:Use[$evalAll();$showAll();$doubleAll()]<><$equalsAll()
 
-$equals2:Resource<><{
+$equals2:Resource<><{ //7 lines
   Exp:{interface method Bool equals(Exp that)}
   T:{implements Exp
     method Bool exactEquals(T that)
@@ -197,7 +199,7 @@ $equals2:Resource<><{
     }
   }
 
-$equalsNum2:Resource<><Use[$num();RenNum<><$equals2()]<><{
+$equalsNum2:Resource<><Use[$num();RenNum<><$equals2()]<><{  //2*3 lines
   Num:{ method Bool exactEquals(Num that) this.value().equals(that.value()) }
   }
 

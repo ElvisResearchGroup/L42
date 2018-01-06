@@ -1,12 +1,12 @@
 {reuse L42.is/AdamTowel02
-
-$p: Resource <>< {
+//header not counted for line number, also not counted in the other approaches
+$p: Resource <>< {//4
   method Num x()
   method Num y()
   class method This of(Num x,Num y)
   }
 
-$pointSum: Resource <>< Use[$p()] <>< {
+$pointSum: Resource <>< Use[$p()] <>< {//3*4
   method This sum(This that)
     This.of(x: this.x()+that.x(), y: this.y()+that.y())
   }
@@ -26,7 +26,7 @@ $pointDiv: Resource <>< Use[$p()] <>< {
     This.of(x: this.x()/that.x(), y: this.y()/that.y())
   }
 
-Point: Use[$p()] <>< {}
+Point: Use[$p()] <>< {}//1*16
 
 PointSum: Use[$pointSum()] <>< {}
 

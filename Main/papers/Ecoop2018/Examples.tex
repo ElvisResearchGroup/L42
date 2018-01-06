@@ -281,15 +281,14 @@ all the traits and classes at top level have unique names, and the special class
 \Q@This@ is reserved and if all
 the subtype relations are consistent:
 this means that the implementation of interfaces is not circular,
-and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \text{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL,\mL)$
+and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \mathit{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL,\mL)$
 
-\noindent That is, every literal declares (abstract or not) all the methods that are declared 
-in its super interfaces.
+\noindent That is, every literal declaring (abstract or not) methods that are declared in its super interfaces, declare them with the same exact type.\footnote{The full 42 language allows for covariant return types, like in Java.}
 
 
-\noindent\textbf{Define }$\text{consistentSubtype}(\overline\mDE,\mL)$\\
+\noindent\textbf{Define }$\mathit{consistentSubtype}(\overline\mDE,\mL)$\\
 $\begin{array}{l}
-\!\!\!\bullet\ \text{consistentSubtype}(
+\!\!\!\bullet\ \mathit{consistentSubtype}(
   \overline\mDE,
   \oC
   \Opt{\terminalCode{interface}}
@@ -297,8 +296,14 @@ $\begin{array}{l}
   \overline\mM
   \cC
   )\quad\text{where}\\
+
+\quad\quad
+\forall \mT\in\overline\mT,\overline\mDE(\mT)=\oC\terminalCode{interface}\,\_\cC,
+\\
 \quad\quad \forall\ \_\terminalCode{=}\mL\in  \overline\mM, 
-\text{consistentSubtype}(\overline\mDE,\mL) \text{ and }
+\mathit{consistentSubtype}(\overline\mDE,\mL) 
+
+\text{ and }
 \\
 \quad\quad 
 \forall \terminalCode{method}\ \mT_0 \mm\oR
@@ -307,15 +312,15 @@ $\begin{array}{l}
 \cR\Opt\me
 \in\overline\mM,
 \forall \mT\in\overline\mT,
-\text{if }\overline\mDE(\mT,\mm)=\mT'_0 \mm\oR
+\\\quad\quad\quad
+\text{if }\overline\mDE(\mT,\mm)=\terminalCode{method}\ \mT'_0 \mm\oR
 %\overline{\mT\,\mx}'
 \mT'_1\,\mx'_1\ldots\mT'_k\,\mx'_k
 \cR
-\\\quad\quad\text{ then }
+\text{ then }
 %\mT_0=\mT'_0, \overline{\mT\,\mx}=\overline{\mT\,\mx}'
 \mT_0\ldots\mT_n=\mT'_0\ldots\mT'_k
 
-\text{ and }\overline\mDE(\mT)=\oC\terminalCode{interface}\,\_\cC
 
 \\
 \end{array}$
@@ -421,7 +426,7 @@ into abstract (private) ones.
 ImplementsClash can happen only when composing nested interfaces. Note that while the first two kind of errors are obtained directly by the definition of 
 $\mL_1+\mL_2$, ImplementsClash is obtained since injecting the resulting 
 $\mL$ in the program would make it ill-formed by 
-$\text{consistentSubtype}(\overline\mDE,\mL)$.
+$\mathit{consistentSubtype}(\overline\mDE,\mL)$.
 \end{itemize}
 
 \subsection{Typing}
@@ -512,17 +517,29 @@ The other rules are straightforward and standard.
 \subsection{Formal properties}
 In addition to conventional soundness of the expression reduction,
 \name ensures soundness of the compilation process itself.
-A similar property was called meta-level-soundness in~\cite{}; here we can obtain the same result in
+A similar property was called meta-level-soundness in~\cite{servetto2014meta}; here we can obtain the same result in
 a much simpler setting.
-We denote with $\text{wrong}(\overline\mD,\mE)$ the count of $\mL$ such that
+We denote with $\mathit{wrong}(\overline\mD,\mE)$ the count of $\mL$ such that
 $\mE=\ctx[\mL]\ \text{and not}\ \overline\mD\vdash\mL:\text{OK}$.
 
-Theorem compilation soundness:
+\begin{Theorem}[Compilation Soundness]
 
 if $\mE_0 \xrightarrow[\smallDs]{} \mE_1$
-then $\text{wrong}(\overline\mD,\mE_0)\geq\text{wrong}(\overline\mD,\mE_1)$.
-
-This property has two important corollary:
+then $\mathit{wrong}(\overline\mD,\mE_0)\geq\mathit{wrong}(\overline\mD,\mE_1)$.
+\end{Theorem}
+This can be proved by cases on the applied reduction rule:
+\begin{itemize}
+\item
+\Rulename{look-up} preserve the number of wrong literals,
+since $t \in \overline\mD$ and $\overline\mD$ are well typed by \Rulename{top} second preconditions.
+\item \Rulename{sum} either preserve or reduces the number of
+wrong literals:
+the core of the proof is to show the sum of two well typed literals produces a well typed one.
+A code literal is well typed (\Rulename{l-ok}) if implements all the methods of the super interfaces (true since true for both arguments) and all their bodies are correct.
+This holds since the type environment used to type the result is strictly richer than the type environment used to type the arguments.
+\end{itemize}
+\noindent 
+Compilation Soundness has two important corollary:
 \begin{itemize}
 \item If a class is declared by using $\mC = \use\ \overline\mt$, that is without literals,
 and the flattening is successful then \mC\ is well-typed: there is no need of further checking.
@@ -598,11 +615,10 @@ method, and \Q@Int@ may offer a \Q@String toString()@ method.
 This means that typing classes 
 \Q@String@ and \Q@Int@ in isolation one at a time is not possible.
 
-
-To solve this problem, \textbf{state of the art systems}
-supporting recursive types and code reuse/adaptation often accept a great deal of
+\textbf{state of the art systems} (TR,PT and DeepFJig)
+support recursive types and solve to solve the former problem  accepting a great deal of
 complication in order to \textbf{predict the structural shape} of the resulting code before doing the actual
-code reuse/adaptation~\cite{deepfjig,traitsFerr,packageTempl,MetaML}.
+code reuse/adaptation.
 Following those approaches, 
 the most expressive compilation process may divide the program in groups of mutually 
 dependent classes.
@@ -720,7 +736,6 @@ a simple fully flattened program,
 where all the composition operators have been removed.
 From the point of view of expression reduction, \name is a simple language of 
 interfaces and final classes, where nested classes gives structure to the code but have no special semantic.
-
 The reduction of expression is composed by rules
 \Rulename{ctx-v},\Rulename{s-m} and \Rulename{m}.
 The only interesting point is the auxiliary function meth:
@@ -750,3 +765,5 @@ the abstract state:
 the third case takes care of getters and the fourth takes care of withers.
 In our formalization we are not modelling state mutation, so there is 
 no case for setters.
+
+For space reasons, we omit the prof of conventional soundness for the reduction. It is unsurprising, since the flattened calculus is like a simplified version of FJ.
