@@ -122,10 +122,14 @@ $\begin{array}{l}
 %  CDs|-C=L : OK
 
 \pushLeft\inferrule[(CD-OK)]{
-    \mC;\overline\mD,\mC\terminalCode{=}\mL\vdash \mL[\terminalCode{This}=\mC]\ :\text{OK}
+    \mC;\overline\mD,\mC\terminalCode{=}\mL_1\vdash \mL_1\ :\text{OK}
   }{ 
-     \overline\mD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
-  } \text{coherent}(\mC,\mL)
+     \overline\mD \vdash \mC\terminalCode{=}\mL_0\ :\text{OK}
+  }
+\begin{array}{l}
+\mL_1=\mL_0[\terminalCode{This}=\mC]\\
+\text{coherent}(\mC,\mL_1)
+\end{array}
 \quad\quad 
 
 %    This;CDs,This=L |- L :OK
@@ -148,11 +152,12 @@ $\begin{array}{l}
     \forall\mM\in\overline\mM,
   \mT;\overline\mD\vdash\mM:\text{OK}
   }{ 
-     \mT;\overline\mD \vdash \mL\ :\text{OK}
-  } \begin{array}{l} 
-  \mL=\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT \ \overline\mM \cC \\
-  \forall \mT\in\overline\mT \text{and } m \in \dom(\mD(\mT)), \mm \in \dom(\mL)
-   \end{array}
+     \mT;\overline\mD \vdash  \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT \ \overline\mM \cC \ :\text{OK}\\
+  } 
+%\begin{array}{l} 
+%  \mL=\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT \ \overline\mM \cC \\
+%  \forall \mT\in\overline\mT \text{and } m \in \dom(\mD(\mT)), \mm \in \dom(\mL)
+%   \end{array}
 \quad
 \inferrule[(Nested-OK)]{
     \mT\terminalCode{.}\mC;\overline\mD\vdash \mL\ :\text{OK}
@@ -285,7 +290,8 @@ and the subtype relations are consistent:
 this means that the implementation of interfaces is not circular,
 and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \mathit{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL;\mL)$
 
-\noindent That is, every literal declaring (abstract or not) methods that are declared in its super interfaces, declare them with the same exact type.\footnote{The full 42 language allows for covariant return types, like in Java.}
+\noindent That is, every literal declares
+all the methods that are declared in its super interfaces, and declare them with the same exact type.\footnote{The full 42 language allows for covariant return types, like in Java.}
 
 
 \noindent\textbf{Define }$\mathit{consistentSubtype}(\overline\mDE;\mL)$\\
@@ -309,20 +315,20 @@ $\begin{array}{l}
 \text{ and }
 \\
 \quad\quad 
-\forall \terminalCode{method}\ \mT_0 \mm\oR
-\mT_1\,\mx_1\ldots\mT_n\,\mx_n
-%\overline{\mT\,\mx}
-\cR\Opt\me
-\in\overline\mM,
-\forall \mT\in\overline\mT,
-\\\quad\quad\quad
-\text{if }\overline\mDE(\mT,\mm)=\terminalCode{method}\ \mT'_0 \mm\oR
-%\overline{\mT\,\mx}'
-\mT'_1\,\mx'_1\ldots\mT'_k\,\mx'_k
+\forall \mm, \mT\in\overline\mT,
+\text{if}\,\overline\mDE(\mT,\mm)=\terminalCode{method}\ \mT_0 \mm\oR
+\overline{\mT\,\mx}
+%\mT'_1\,\mx'_1\ldots\mT'_k\,\mx'_k
 \cR
-\text{ then }
+\,\text{then}\,
+\terminalCode{method}\ \mT_0 \mm\oR
+%\mT_1\,\mx_1\ldots\mT_n\,\mx_n
+\overline{\mT\,\mx}
+\cR\Opt\me
+\in\overline\mM
+
 %\mT_0=\mT'_0, \overline{\mT\,\mx}=\overline{\mT\,\mx}'
-\mT_0\ldots\mT_n=\mT'_0\ldots\mT'_k
+%\mT_0\ldots\mT_n=\mT'_0\ldots\mT'_k
 
 
 \\
@@ -438,7 +444,7 @@ followed by expression typing rules
 \Rulename{subsumption}, \Rulename{method-call}, \Rulename{x} and \Rulename{static-method-call}.
 
 Rules \Rulename{cd-ok} and \Rulename{td-ok}
-are interesting: a top level class is typed by replacing \Q@This@ with the class name,
+are interesting: a top level class is typed by replacing all occurrences of the name `\Q@This@' with the class name $C$,
 and is required to be coherent.
 On the other side, a top level trait is typed by temporary adding to the typed program a mapping for
 \Q@This@.
@@ -450,12 +456,12 @@ $\begin{array}{l}
 )\quad\text{where}\\
 
 \quad\quad \forall \mC\terminalCode{=}\mL'\in\overline\mM \text{coherent}(\mT\terminalCode{.}\mC,\mL')\\
-\quad\quad \text{ either }
+\quad\quad \text{either }
 \Opt{\terminalCode{interface}}=\terminalCode{interface}\\
-\quad\quad \text{or } 
-\forall
-\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM
-\text{state}(\text{factory}(\mT,\overline\mM),\mM)
+\quad\quad\quad \text{or } 
+\forall\ 
+\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM,\ 
+\text{state}(\text{factory}(\mT,\overline\mM),\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR)
 \end{array}$
 
 \noindent A Library is \emph{coherent} if 
@@ -483,7 +489,7 @@ $\begin{array}{l}
 \cR
 \end{array}$
 
-\noindent The candidate factory is the only static abstract  method, and
+\noindent The factory is the only static abstract  method, and
 its return type is the nominal type of our class.
 
 \noindent\textbf{Define }$\text{state}(\mM,\mM')$\\
@@ -495,24 +501,28 @@ $\begin{array}{l}
 \terminalCode{method}\ \mT_i\ \mx_i\oR\cR
 )\\
 
-\!\!\!\bullet\ \text{state}(
-\terminalCode{static} \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
-\terminalCode{method}\ \terminalCode{Void} \mx_i\oR\mT_i\,\terminalCode{that}\cR
-)\\
+%\!\!\!\bullet\ \text{state}(
+%\terminalCode{static}\ \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+%\terminalCode{method}\ \terminalCode{Void} \mx_i\oR\mT_i\,\terminalCode{that}\cR
+%)\\
 
 \!\!\!\bullet\ \text{state}(
-\terminalCode{static} \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
-\terminalCode{method}\ \mT \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR
+\terminalCode{static}\ \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+\terminalCode{method}\ \mT\ \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR
 )\\
 
 \end{array}$
 
 \noindent A non static method is part of the \emph{abstract state} if 
-it is a valid getter, setter or wither.
+it is a valid getter or wither. This simple formalism without imperative features do not offer setters.
 
 
 Rule \Rulename{Nested-OK} helps to accumulate the type of \Q@this@ so that rule \Rulename{Method-OK}
 can use it.
+
+Rule \Rulename{L-OK} is so simple since all the checks
+related to correctly implementing interfaces are delegated to the well formedness criteria.
+
 The other rules are straightforward and standard.
 
 \subsection{Formal properties}
@@ -533,27 +543,34 @@ This can be proved by cases on the applied reduction rule:
 \item
 \Rulename{look-up} preserve the number of wrong literals,
 since $t \in \overline\mD$ and $\overline\mD$ are well typed by \Rulename{top} second preconditions.
-\item \Rulename{sum} either preserve or reduces the number of
+\item \Rulename{sum} either preserves or reduces the number of
 wrong literals:
 the core of the proof is to show the sum of two well typed literals produces a well typed one.
-A code literal is well typed (\Rulename{l-ok}) if implements all the methods of the super interfaces (true since true for both arguments) and all their bodies are correct.
-This holds since the type environment used to type the result is strictly richer than the type environment used to type the arguments.
+A code literal is well typed (\Rulename{l-ok}) if all the method bodies are correct.
+This holds since those same method bodies
+are well typed in a strictly poorer environment with respect to the one used to type the result.
+This is because every member in the result
+is structurally a subtype of
+the corresponding member in the argument.
+Note that by well formedness, if \Rulename{sum}
+is applied, the result still respects 
+$\mathit{consistentSubtype}$.
 \end{itemize}
 \noindent 
 Compilation Soundness has two important corollary:
 \begin{itemize}
-\item If a class is declared by using $\mC = \use\ \overline\mt$, that is without literals,
+\item If a class is declared without literals,
 and the flattening is successful then \mC\ is well-typed: there is no need of further checking.
-\item On the other side, if a class is declared by $\mC = \use\ \overline\mV$, with
-$\mL_1\ldots\mL_n \in \overline\mV$, and after successful flattening $\mC = \mL$ can not be type-checked,
+\item On the other side, if a class is declared by using literals $\mL_1\ldots\mL_n$, and after successful flattening $\mC = \mL$ can not be type-checked,
 then the issue was originally present in one of $\mL_1\ldots\mL_n$.
-It may be that the result is intrinsically ill-typed, if one of the methods in $\mL_1\ldots\mL_n$ is not well typed,
-but it may also happen that a type referred from one of those methods
-is declared \emph{after} the current class. 
-In the next section we discuss why we believe this is an acceptable and even useful limitation.
-
 This also means that as an optimization strategy
- we may remember what method bodies come from traits and what method bodies come from code literals, in order to typecheck only the latter.
+ we may remember what method bodies come from traits and what method bodies come from code literals, in order to type-check only the latter.
+
+If the result can not be type-checked, does not means
+that is intrinsically ill-typed: it may happen that a 
+referred type is declared \emph{after} the current class. 
+As we see in the next section, we leverage on this 
+to allow recursive types.
  \end{itemize}
 
 
@@ -585,63 +602,42 @@ t1={method int n() this.m()+1}
 \noindent would be ill-typed.
 
 \paragraph{2: code literals are \textbf{not required to be well-typed} before flattening.}${}_{}$\\*
-In class expressions  $\use\ \overline\mV$,
-an \mL\ in $\overline\mV$ is not type-checked before flattening, and only the result is expected to be well-typed.
-While this seems a dangerous approach at first, consider that Java also has the same behaviour:
-for example in
-\saveSpace\begin{lstlisting}[language=Java]
-  class A{ int ma() {return 2;}  int n(){return this.ma()+1;} }
-  class B extends A{ int mb(){return this.ma();} }
-\end{lstlisting}\saveSpace
-\noindent in \Q@B@ we can call \lstinline{this.ma()} even if in the curly braces there is no declaration for \Q@ma()@.
-In our example, using the trait \Q@t@
+An $\mL$ in a $\mD$
+is well formed and respect $\mathit{consistentSubtype}$, but
+is not type-checked before flattening,
+and only the result is expected to be well-typed.
+This example using the trait \Q@t@ is correct:
 
 \saveSpace\begin{lstlisting}
 C= Use t, {method int k() this.n()+this.m()}
 \end{lstlisting}\saveSpace
-\noindent would be correct. In the code literal
+
+\noindent The code literal
 \Q@{method int k() this.n()+this.m()}@, 
- even if \Q@n@, \Q@m@ are not locally defined, in 
+is not well typed,
+since \Q@n@, \Q@m@ are not locally defined. However in 
 \name the result of the flattening is well-typed.
 This is not the case in many similar works in literature~\cite{deep,Bettini2015282,Bergel2007} where the
 literals have to be \emph{self contained}. In this case we would have been forced to
 declare abstract methods \Q@n@ and \Q@m@, even if \Q@t@ already 
 provides such methods.
 
-
-Our typing discipline allows recursive types, and
+This relaxation allows multiple declarations to be flattened one at the time, without typing them individually, and then to type them all together.
+In this way, we support recursive types%
+\footnote{
 OO languages leverage on recursive types most of the times:
 for example \Q@String@ may offer a \Q@Int size()@
 method, and \Q@Int@ may offer a \Q@String toString()@ method.
 This means that typing classes 
-\Q@String@ and \Q@Int@ in isolation one at a time is not possible.
-
-\textbf{state of the art systems} (TR,PT and DeepFJig)
-support recursive types and solve to solve the former problem  accepting a great deal of
-complication in order to \textbf{predict the structural shape} of the resulting code before doing the actual
-code reuse/adaptation.
-Following those approaches, 
-the most expressive compilation process may divide the program in groups of mutually 
-dependent classes.
-Each group may also depend on a number of other groups.
-This would form a direct acyclic graph of groups.
-To type a group, they need to type all depended groups, then
-to extract the signature/structural shape of all
-the classes of the group.
-Then, with the information of the depended groups and the one extracted
-from the current group, it is possible to typecheck the implementation
- of each class in the group.
-In this model, it is reasonable to assume that flattening happens group by group, before
-extracting the class signatures.
-
-In our simpler but still sound approach,
-we support recursive types between multiple $\mC$\Q@=@$\mE$ \textbf{without
+\Q@String@ and \Q@Int@ in isolation one at a time is not possible.}
+between multiple $\mC$\Q@=@$\mE$ \textbf{without
 the need of predicting the resulting shape}%
-\footnote{This is a great simplification of our approach,
-and is fundamental in the full language where arbitrary code can be run at compile time.}.
-Indeed we have a much simpler top down execution/interpretation for flattening:
-it happens one at the time, and classes are typechecked 
-in order and only where their type is first needed,
+\footnote{This is fundamental in the full language where arbitrary code can be run at compile time, making impossible to predict the resulting shape.}.
+
+As seen in \Rulename{top}, our compilation process just
+proceed top-down, flattening one declaration at a time,
+and declarations need type-checking
+only where their type is first needed,
 that is, when they are required to type a trait $\mt$ used in an expression $\mE$.
 
 That is, in \name typing and flattening are interleaved. We assume our compilation process to stop as soon as 
@@ -656,17 +652,18 @@ C: Use tc, {method int hello() 1}
 \end{lstlisting}\saveSpace
 In this scenario, since we go top down, we first need to generate \Q@A@.
 To generate \Q@A@, we need to use \Q@ta@ (but we do not need
-\Q@tc@, in rule \Rulename{top} $\mD=$\Q@ta@ and $\mD'=$\Q@tc@).
-In order to modularly ensure well typedness,
-we require \Q@ta@ to be well typed at this stage. If \Q@ta@ was not well typed
-a type error could be generated at this stage.
+\Q@tc@, in rule \Rulename{top} $\overline\mD=$\Q@ta@ and $\overline\mD'=$\Q@tc@).
 At this moment, \Q@tc@ cannot be compiled/checked alone:
 information about \Q@A@ and \Q@B@ is needed.
 
-Now, we need to generate \Q@C@, and we need to ensure well typedness of \Q@tc@.
+In order to modularly ensure well-typedness,
+we require only \Q@ta@ to be well typed at this stage. If \Q@ta@ was not well-typed
+a type error could be generated at this stage.
+
+Now, we need to generate \Q@C@, and we need to ensure well-typedness of \Q@tc@.
 Now \Q@A@ is already well typed (since generated by \use\ \Q@ta@, with no \mL),
 and \Q@B@ can be typed. Finally \Q@tc@ can be typed and used.
-If \use\ could not be performed (for example it \Q@tc@ had a method \Q@hello@ too)
+If \Rulename{sum} could not be performed (for example it \Q@tc@ had a method \Q@hello@ too)
 a composition error could be generated at this stage.
 On the opposite side, if \Q@B@ and \Q@C@ were swapped, as in
 \saveSpace\begin{lstlisting}
@@ -689,18 +686,10 @@ t={ int mt(A a) a.ma()}
 A=Use t {int ma() 1}
 \end{lstlisting}\saveSpace
 
-In sharp contrast with
-many other approaches
-we chose to not support this kind of involved programs.
-In a system without inference for method types,
-if the result of composition operators depends only on the
-structural shape of their input (as for \use)
-it is indeed possible to optimistically compute the resulting structural shape of the classes
-and use it to type involved examples like the former.
-We stick to our simple approach, since we believe such typing discipline would be fragile,
-and could make human understanding the code-reuse process much harder/involved.
-Indeed we just wrote an involved program where the correctness of trait \Q@t@ depends of 
+We just wrote an involved program where the correctness of trait \Q@t@ depends of 
 \Q@A@, that is in turn generated using trait \Q@t@.
+We believe any typing allowing those programs would be fragile with respect to code evolution,
+and could make human understanding the code-reuse process much harder/involved.
 
 %Rewriting our example in Java may help to show how involved it is.
 %\saveSpace\begin{lstlisting}
@@ -708,25 +697,60 @@ Indeed we just wrote an involved program where the correctness of trait \Q@t@ de
 %class A extends T {int ma() {return 1;}}
 %\end{lstlisting}\saveSpace
 
+In sharp contrast with
+many other approaches (TR, PT, DeepFJig and in some sense even Java, C\# and Scala)
+we chose to not support this kind of involved programs.
+In a system without inference for method types,
+if the result of composition operators depends only on the
+structural shape of their input (as for \use)
+it is indeed possible to optimistically compute the resulting structural shape of the classes
+and use it to type involved examples like the former.
 
-\paragraph{In \name, typechecking before compiling would be redundant}${}_{}$\\*
+TR, PT, DeepFJig, Java, C\# and Scala
+accept a great complexity in order to \textbf{predict the structural shape} of the resulting code before doing the actual code reuse/adaptation.
+Those approaches logically divide the program in groups of mutually dependent classes, where each group may depend on a number of other groups.
+This form a direct acyclic graph of groups.
+To type a group, all depended groups are typed, then
+the signature/structural shape of all
+the classes of the group is extracted.
+Finally, with the information of the depended groups and the one extracted
+from the current group, it is possible to type-check the implementation of each class in the group.
+%Following this model, it is reasonable to assume that flattening happens group by group, before extracting the class signatures.
+
+
+
+%\paragraph{In \name, typechecking before compiling would be redundant}${}_{}$\\*
+%In the world of strongly typed languages we are tempted to
+%first check that all can go well, and then perform the flattening.
+%This would however be overcomplicated without any observable difference:
+%Indeed, in the \Q@A,B,C@ example above there is no difference
+%between
+%\begin{itemize}
+%\item  (1) First check \Q@B@ and produce \Q@B@ code (that also contains \Q@B@ structural shape),
+%  (2) then use \Q@B@ shape to check \Q@C@ and produce \Q@C@ code;\ 
+%or a more involved
+%\item  (1) First check \Q@B@ and discover just \Q@B@ structural shape as result of the checking,
+%  (2) then use \Q@B@ shape to check \Q@C@.
+%  (3) Finally produce both \Q@B@ and \Q@C@ code.
+%\end{itemize}
+%
+%
+%This may seems a dangerous relaxation at first, but also Java has the same behaviour:
+%\saveSpace\begin{lstlisting}[language=Java]
+%  class A{ int ma() {return 2;}  int n(){return this.ma()+1;} }
+%  class B extends A{ int mb(){return this.ma();} }
+%\end{lstlisting}\saveSpace
+%\noindent in \Q@B@ we can call \lstinline{this.ma()} even if in the curly braces there is no declaration for \Q@ma()@.
+%
+%
+
+
+
+\noindent 
 In the world of strongly typed languages we are tempted to
-first check that all can go well, and then perform the flattening.
-This would however be overcomplicated without any observable difference:
-Indeed, in the \Q@A,B,C@ example above there is no difference
-between
-\begin{itemize}
-\item  (1) First check \Q@B@ and produce \Q@B@ code (that also contains \Q@B@ structural shape),
-  (2) then use \Q@B@ shape to check \Q@C@ and produce \Q@C@ code;\ 
-or a more involved
-\item  (1) First check \Q@B@ and discover just \Q@B@ structural shape as result of the checking,
-  (2) then use \Q@B@ shape to check \Q@C@.
-  (3) Finally produce both \Q@B@ and \Q@C@ code.
-\end{itemize}
-
-\noindent Note that we can reuse code only by naming traits; but our point of relaxation is {\bf only} the code literal: in no way an error can ``move around'' and be duplicated during the compilation process.
-Our approach allows for safe libraries of traits and classes to be typechecked, deployed and reused by multiple clients: no type error will emerge from library code.
-However, we do not force the programmer to write self-contained code where all the abstract method definition are explicitly declared.
+first check that all can go well, and then perform the flattening. However, that we can reuse code only by naming traits; but our point of relaxation is {\bf only} the code literal: in no way an error can ``move around'' and be duplicated during the compilation process.
+Our approach allows for safe libraries of traits and classes to be typechecked once and then deployed and reused by multiple clients: no type error will emerge from library code.
+%However, we do not force the programmer to write self-contained code where all the abstract method definition are explicitly declared.
 
 
 
@@ -748,10 +772,22 @@ $\begin{array}{l}
 
 \!\!\!\bullet\text{meth}(\terminalCode{static method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_1\ldots\vds_n)=\me[\mx_1=\vds_1\ldots\me_n=\vds_n]
 \\
+
 \!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_0\ldots\vds_n)=\me[\terminalCode{this}=\vds_0,\mx_1=\vds_1\ldots\me_n=\vds_n]
 \\
-\!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT_i\ \mm\oR\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_n\cR)=\vds_i\quad\text{where}\\
-\quad\quad \overline\mD(\mT,\mm) =
+
+\!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT_i\ \mx_i\oR\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_n\cR)=\vds_i\\
+\quad \quad\text{where}\ \ \overline\mD(\mT,\mm) =
+\terminalCode{static method}
+\ \mT\,\mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR
+\\
+
+\!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT\ \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_i\ldots\vds_n\cR,
+\vds
+)=
+\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds\ldots\vds_n\cR
+\\
+\quad \quad\text{where}\ \ \overline\mD(\mT,\mm) =
 \terminalCode{static method}
 \ \mT\,\mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR
 \end{array}$
