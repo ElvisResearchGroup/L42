@@ -1,5 +1,5 @@
 \section{Introduction}\label{sec:intro}
-In mainstream OO languages like Java, C++ or C\# subclassing 
+In mainstream OO languages like Java, C++, Scala or C\# subclassing 
 implies subtyping. For example, a Java subclass definition, such as 
 \Q@class A extends B {}@
 \noindent does two things at the same time:
@@ -18,7 +18,7 @@ subclassing is helpful.
 \item {\bf Allowing inheritance/reuse even when subtyping is impossible:} 
 In some situations a subclass contains methods whose signatures 
 are incompatible with the superclass, yet inheritance is still
-possible. A typical example, which was illustrated by Cook et al.~\cite{cook}, are 
+desirable. A typical example, which was illustrated by Cook et al.~\cite{cook}, are 
 classes with \emph{binary methods}~\cite{bruce96binary}.
 
 \item {\bf Preventing unintended subtyping:} For certain classes we
@@ -90,7 +90,7 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %expected argument of type \lstinline{A}.  
 
 
-Suppose if Java code-reuse (the {\bf extends} keyword) was not introducing subtyping: then an invocation of 
+Suppose Java code-reuse (the {\bf extends} keyword) was not introducing subtyping: then an invocation of 
 \lstinline{B.mb} would result in a run-time type error.
 The problem is that the
 self-reference \lstinline{this} in class \lstinline{B} has 
@@ -141,7 +141,7 @@ In \name there are two separate concepts: classes
 and traits~\cite{Traits:ECOOP2003}. Classes are meant for code \textbf{use}, and cannot be inherited/extended. In some sense classes in \name are like final classes in
 Java. Traits are meant for code \textbf{reuse} and multiple traits can be
 composed to form a class which can then be instantiated. Traits 
-cannot be instantiated (or used) directly. Such design allows
+cannot be instantiated or used as types. Such design allows
 subtyping and code reuse to be treated separately, which in turn
 brings several flexibility and simplicity benefits.
 
@@ -177,14 +177,14 @@ In summary, our contributions are:
   makes the separation of subclassing and subtyping difficult.
 \item We synthesize the key ideas of previous designs that solve the
   this-leaking problem into {\bf a novel and
-  simple language design}. This language is the logic core of the language 42, and 
+  minimalistic language design}. This language is the logic core of the language 42, and 
   all the examples in the paper can be encoded as valid 42 programs. 
 
 \item We illustrate how the new language design {\bf improves both code use and code
   reuse}.
 \item We propose {\bf a clean and elegant approach to the handling of state} in a trait based language.
 
-\item An extension with nested classes solves the expression problem better than former work.
+\item \name extended with nested classes solves the expression problem better than former work.
 \item We show the simplicity of our approach by providing a compact 1 page formalization
 \item We perform 3 case studies, comparing our work with other approaches, showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}

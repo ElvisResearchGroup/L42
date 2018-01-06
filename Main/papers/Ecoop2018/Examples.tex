@@ -10,8 +10,10 @@ In a real language, a simple pre-processor may take care of this step.
 In most languages, when implementing an interface, the programmer may avoid repeating abstract methods
 they do not wish to implement.
 In the same spirit of before, in this simplified formalization we consider source code containing
-all the imported abstract methods. In a real language, a normalization process
-may hide this abstraction.
+all the methods imported from interfaces. In a real language, a normalization process
+may hide this abstraction\footnote{
+In the full language scoping is indeed supported by an initial desugaring, and a normalization phase takes care of importing methods from interfaces.
+}.
 
 We also consider a binary operator sum \Q@+@ instead of the variable arity operator \Q@use@.
 
@@ -56,7 +58,7 @@ we show the compilation process and the typing rules.
 
 \prodFull\me{\mx \mid \me\terminalCode{.}\mm\oR\overline\me\cR \mid \mT\terminalCode{.}\mm\oR\overline\me\cR}{Expression}\\
 
-\prodFull{v_{{\smallDs}}}{\mT\terminalCode{.}\mm\oR\overline{v}\cR
+\prodFull{v_{{\smallDs}}}{\mT\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}}\cR
 \text{  where }\mm \text{ is abstract in }\overline\mD(\mT)
 }{value}\\
 \prodFull{\ctx_{\smallDs}}{[]\mid
@@ -183,7 +185,7 @@ $\begin{array}{l}
 
 
 
-\pushLeft\inferrule[(Subsumption)]{
+\pushLeft\inferrule[(subsumption)]{
 %  \begin{array}{l}
     \overline\mD; \mG\vdash\me: \mT_1  \\\\
     \overline\mD\vdash\mT_1 \leq \mT_2
@@ -191,28 +193,28 @@ $\begin{array}{l}
   }{ 
      \overline\mD; \mG\vdash\me: \mT_2
   }
-\quad \inferrule[(Method-Call)]{
-    \mD;\mG\vdash\me_1:\mT_1\ .. \ \mD;\mG\vdash\me_n:\mT_n
+\quad \inferrule[(static-method-call)]{
+    \overline\mD;\mG\vdash\me_1:\mT_1\ \ldots \ \overline\mD;\mG\vdash\me_n:\mT_n
   }{ 
-    \mD;\mG\vdash \mT_0.\mm\oR\me_1\ .. \ \me_n\cR:\mT
-  } \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
+    \overline\mD;\mG\vdash \mT_0.\mm\oR\me_1\ \ldots \ \me_n\cR:\mT
+  } \terminalCode{static method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
 \\[5ex] 
 
 %    CDs;G|-e0:T0 .. CDs;G|-en:Tn
 %---------------------------------------------    static T m(T1 x1..Tn xn) _ in CDs(T0)
 %  CDs;G|-e0.m(e1..en):T
 
-\pushLeft\inferrule[(X)]{
+\pushLeft\inferrule[(x)]{
     \
   }{ 
     \overline\mD; \mG\vdash\mx: \mG\oR\mx\cR
   }
 \quad
-\inferrule[(Static-Method-Call)]{
-    \mD;\mG\vdash\me_0:\mT_0\ .. \ \mD;\mG\vdash\me_n:\mT_n
+\inferrule[(method-call)]{
+    \overline\mD;\mG\vdash\me_0:\mT_0\ \ldots \ \overline\mD;\mG\vdash\me_n:\mT_n
   }{ 
-    \mD;\mG\vdash \me_0.\mm\oR\me_1\ .. \ \me_n\cR:\mT
-  } \terminalCode{static method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
+    \overline\mD;\mG\vdash \me_0.\mm\oR\me_1\ \ldots \ \me_n\cR:\mT
+  } \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
 
 \\[5ex] 
 \pushLeft\inferrule[(ctxv)]{\me_0\xrightarrow[\smallDs]{}\me_1}{
@@ -264,7 +266,7 @@ A static method in \name is similar to a \Q@static@ method in Java but can be ab
 This is very useful in the context of code composition.
 To denote a method as abstract, instead of an optional keyword we just omit the implementation \me.
 
-Finally, expression $\me$ are just variables, method calls or static method calls.
+Finally, expressions $\me$ are just variables, method calls or static method calls.
 The ugliness of having two different kinds of method call is an artefact of our simplifications.
 In the full language, type names are a kind of expression whose type helps to model metaclasses.
 
@@ -277,16 +279,16 @@ We then show the evaluation context, the compilation context and full context.
 \subsection{Well-formedness}
 
 The whole program, that is $\overline\mDE$, is well formed if
-all the traits and classes at top level have unique names, and the special class name
-\Q@This@ is reserved and if all
-the subtype relations are consistent:
+all the traits and classes at top level have unique names, the special class name
+\Q@This@ is not one of those,
+and the subtype relations are consistent:
 this means that the implementation of interfaces is not circular,
-and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \mathit{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL,\mL)$
+and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \mathit{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL;\mL)$
 
 \noindent That is, every literal declaring (abstract or not) methods that are declared in its super interfaces, declare them with the same exact type.\footnote{The full 42 language allows for covariant return types, like in Java.}
 
 
-\noindent\textbf{Define }$\mathit{consistentSubtype}(\overline\mDE,\mL)$\\
+\noindent\textbf{Define }$\mathit{consistentSubtype}(\overline\mDE;\mL)$\\
 $\begin{array}{l}
 \!\!\!\bullet\ \mathit{consistentSubtype}(
   \overline\mDE,
@@ -298,10 +300,11 @@ $\begin{array}{l}
   )\quad\text{where}\\
 
 \quad\quad
-\forall \mT\in\overline\mT,\overline\mDE(\mT)=\oC\terminalCode{interface}\,\_\cC,
+\forall \mT\in\overline\mT,\overline\mDE(\mT)=\oC\terminalCode{interface}\,\_\cC
+ \text{,\footnotemark}
 \\
 \quad\quad \forall\ \_\terminalCode{=}\mL\in  \overline\mM, 
-\mathit{consistentSubtype}(\overline\mDE,\mL) 
+\mathit{consistentSubtype}(\overline\mDE;\mL) 
 
 \text{ and }
 \\
@@ -324,7 +327,10 @@ $\begin{array}{l}
 
 \\
 \end{array}$
-
+\footnotetext{That is, in this simplified version 
+in order to implements an interface nested in a different top level name, such interface can not be generated using a trait expression. This limitation is lifted in the full language.}
+${}_{}$\\*
+${}_{}$\\*
 \noindent An \mL\ is well formed if:
 \begin{itemize}
 \item all method parameters have unique names and the special parameter name \Q@this@ is not declared
@@ -334,14 +340,6 @@ $\begin{array}{l}
 \item all used variables are in scope, and
 \item all methods in an interface are abstract, and there are no interface static methods.
 \end{itemize}
-
-
-\noindent While classes are typed assuming \lstinline{this} is of the nominal type of the
-class, trait declarations, do not introduce any nominal types.  \lstinline{this}
-in a trait is typed with a special type \lstinline{This} that is visible only
-inside such trait. Syntactically, \Q@This@ is just a special, reserved, class name $\mC$.
-A Literal can use the \lstinline{This} type,
-and when flattening completes creating a class definition, \Q@This@ will be replaced with such class name.
 
 
 \subsection{Compilation process}
@@ -371,8 +369,8 @@ It enforces a deterministic left-right call by value\footnote{
 In the flattening process, values are code literals $\mL$.} reduction;
 thus the leftmost invalid sum that is performed will be the one providing the compilation error.
 
-Finally, rule \Rulename{sum}
-applies the operator, as follows:
+Keeping in mind the order of members in a literal is immaterial, rule \Rulename{sum}
+applies the operator:
 
 \noindent\textbf{Define }$\mL_1+\mL_2, \ \overline{\mM}+\overline{\mM},\ \mM+\mM$\\
 $\begin{array}{l}
@@ -380,7 +378,10 @@ $\begin{array}{l}
 \quad\quad \mL_1= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1\ \overline\mM_1\ \overline\mM_0\cC\\
 \quad\quad \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0\cC\\
 \quad\quad \mL_3= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1,\overline\mT_2\ \overline\mM_1,\overline\mM_2\ (\overline\mM_0+\overline\mM_0')\cC\\
-\quad\quad \dom(\overline\mM_1)\pitchfork \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\
+\quad\quad \dom(\overline\mM_1)
+%\pitchfork
+\,\text{disjoint}\,
+ \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\
 
 \!\!\!\bullet\ \mM_1..\mM_n+\mM'_1+\mM'_n\ = \ \mM_1+\mM'_1..\mM_n+\mM'_n\\
 
@@ -391,7 +392,7 @@ $\begin{array}{l}
 \!\!\!\bullet\ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \ + \ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me = \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me\\
 \end{array}$
 
-It composes the content of the arguments
+Sum composes the content of the arguments
 by taking the union of their members and the union of their \Q@implements@.
 Members with the same name are recursively composed.
 There are three cases where the composition is impossible.
@@ -403,7 +404,7 @@ but either their headers have different types or they are both implemented.
 The full language offers some relaxation here, so that for example an empty class can be seen as an empty interface during composition.
 }
 \item ImplementsClash:
-The result code would not respect the implements relationships.
+The result code would not be well formed.
 For example
 \begin{lstlisting}
 t1={
@@ -416,12 +417,12 @@ t2={
   }
 \end{lstlisting}
 Naively, \Q@t1+t2@ should result in a class \Q@B@ implementing \Q@A@ with method \Q@a()@,
-but \Q@B@ would not offer such method \Q@a()@.
-While in \name it could be possible to try to patch class \Q@B@, for example adding a
+but \Q@B@ would not offer such method \Q@a()@.%
+\footnote{While in \name it could be possible to try to patch class \Q@B@, for example adding a
 abstract method \Q@a()@, we chose to give an error in this case, since in the full 42 language
 such patch would 
 be able to turn private nested classes
-into abstract (private) ones.
+into abstract (private) ones.}
 
 ImplementsClash can happen only when composing nested interfaces. Note that while the first two kind of errors are obtained directly by the definition of 
 $\mL_1+\mL_2$, ImplementsClash is obtained since injecting the resulting 

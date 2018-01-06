@@ -1,16 +1,14 @@
 \section{Extensions to our model}
 
-\paragraph{Nested classes}${}_{}$\\*
+\paragraph{Nested classes}:
 A nested class is just another kind of member in the code literal.
 The general idea is that by composing code with \use,
 nested classes with the same name are recursively composed.
 For simplicity, while we discuss nested classes,
-here we do not consider nested traits nor nested composition,
+here we do not consider nested traits,
 and all traits and code composition expressions are still at top level.
-
 In this way all dependencies are about top level names, allowing the type system 
-to consider the class table as a simple map from (nested) types\footnote{
-as both \Q@A@ and \Q@A.B.C@}  to their definition.
+to consider the class table as a simple map from (nested) types (as both \Q@A@ and \Q@A.B.C@) to their definition.
 
 %\paragraph{Redirect}${}_{}$\\*
 %Redirect is another composition operator that
@@ -43,7 +41,7 @@ as both \Q@A@ and \Q@A.B.C@}  to their definition.
 
 
 
-\paragraph{Rename}${}_{}$\\*
+\paragraph{Rename}:
 There are a lots of different forms of rename in literature.
 Here we will use a simple variant to rename nested types in other nested types.
 For example 
@@ -101,9 +99,9 @@ internally used names without breaking any code.
 \paragraph{Application to the expression problem}${}_{}$\\*
 The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
 with the requirements exposed in~\cite{Zenger-Odersky2005}.
-In the expression problem we have data variants and operations and we can
+In the expression problem we have data-variants and operations and we can
 \textbf{extend our solution in both dimensions},
-by adding new datavariants and adding new operations.
+by adding new data-variants and adding new operations.
 We also aim to \textbf{combine independently developed extensions} so
 that they can be used jointly.
 
@@ -133,12 +131,11 @@ table composed by 16 traits.
 They are atomic: they deal with exactly 
 declaring the state of a class
 or defining a single operation for a single class.
-In \name we can be very compact,
- as we can avoid a large amount of abstract declarations,
+\name avoids the large amount of abstract declarations,
 that clutters the solution in~\cite{deep}.
-Intuitively, we would like our traits to look like the following 
+Intuitively, we would like our traits to look like the following:
 \begin{lstlisting}
-evalPlus=Use plus, {  
+evalPlus=Use plus, {//eval operation for Plus datavariant
   Exp:{interface
     method Size eval()}
   Plus:{implements Exp
@@ -147,44 +144,62 @@ evalPlus=Use plus, {
 \end{lstlisting}
 \Q@evalPlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
-
 But, if we were to declare those
 explicitly, we would repeat \Q@Exp@, the abstract
-declaration of \Q@eval()@ and \Q@implements Exp@
+declaration of \Q@eval()@ and `\Q@implements Exp@'
 for all data-variants.
 Our more abstract solution, to avoid this duplication is to write 
 the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
-into the corresponding data variant.
+into the corresponding data-variant.
 Thus, our source code is as follows;
 First we declare the 4 traits to represent the state:
+\newcommand\multiCode{\vspace{-5pt}}
+\saveSpace
 \begin{lstlisting}
 exp={
   Exp={interface}
   T={implements Exp}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 num=Use exp[rename T into Num],{//T renamed in Num is summed with the current Num
   Num={method Size value()  static method Num of(Size value)}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 plus=Use exp[rename T into Plus], {
   Plus={method Exp left()  method Exp right()  static method Plus of(Exp left,Exp right)}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 neg=Use exp[rename T into Neg],{
   Neg={method Exp term()  static method Neg of(Exp term)}}
 \end{lstlisting}
-Here we define a trait for each datavariant.
+Here we define a trait for each data-variant.
 Each trait will contain its version of \Q@Exp@
 and a specific case of expression, with its state.
-Next, we define the operation \Q@eval@ for all the datavariants.
+Next, we define the operation \Q@eval@ for all the data-variants.
 The former solutions in~\cite{deep}
 required to repeat the state declaration of the 
-datavariant in each operation, while we can just import it.
+data-variant in each operation, while we can just import it.
 
 \begin{lstlisting}
 eval={//concept of Exp.eval() declared once
   Exp={interface      method Size eval()}
   T={implements Exp}}
-evalNum=Use num, eval[rename T into Num],{
-  //just the implementation of the specific method
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+evalNum=Use num, eval[rename T into Num],{//just the implementation of the specific method
   Num={ method Size eval() this.value() }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 evalPlus=Use plus, eval[rename T into Plus], {
   Plus={ method Size eval() this.left().eval()+this.right().eval() }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval()..}}
 \end{lstlisting}
 
@@ -200,13 +215,22 @@ and can be coded just like \Q@eval@ and \Q@show@.
 double={
   Exp={interface      method Exp double()}
   T={implements Exp}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 doubleNum= Use num, double[rename T in Num],{
   Num={ method Exp double() Num.of(this.value()*2) }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 doublePlus=Use plus,double[rename T in Plus],{
   Plus={ method Exp double() Plus.of(this.left().double(),this.right().double())}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 doubleNeg=...
 \end{lstlisting}
-Here we define a trait for each datavariant implementing the operation \Q@double()@.
+Here we define a trait for each data-variant implementing the operation \Q@double()@.
 Again, each trait will contain its version of \Q@Exp@ with \Q@double()@
 and a specific case of expression, with the implementation for \Q@double()@
 for that specific case.
@@ -258,7 +282,7 @@ On the other side, the presented solution in Scala requires
 The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
 for each of the three operations (\Q@eval,show,double@) 
 we just need 4 lines to declare the operation 
-in the interface, and 2 lines for each of the 3 datavariants.
+in the interface, and 2 lines for each of the 3 data-variants.
 
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
 In~\cite{Zenger-Odersky2005}, involved double dispatch is used to avoid casting.
@@ -269,7 +293,7 @@ The interested reader can find a \name implementation of \Q@equals@ with double 
 in the appendix.
 }
 
-The main idea is that  every datavariant  contains
+The main idea is that  every data-variant  contains
  the "cast" logic; thus
  we can modularize that into an \Q@equals@ trait.
 \begin{lstlisting}
@@ -281,11 +305,20 @@ equals:{
     method equals(that) 
       if(T instanceof This) then this.exactEquals(that)
       else Bool.false()}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 equalsNum:Use num, equals[rename T into Num],{
   Num:{method Bool exactEquals(Num that) this.value().equals(that.value())}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 equalsPlus:Use plus, equals[rename T into Plus],{
   Plus:{method Bool exactEquals(Plus that)
     this.left().equals(that.left()) && this.right().equals(that.right())}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
 equalsNeg:Use neg, equals[rename T into Neg],{
   Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term())}}
 \end{lstlisting}

@@ -27,7 +27,7 @@ Moreover, we provide self-instantiation (trait methods can create instances of t
 reuse in the past.
 
 The idea of summing pieces of
-code is very elegant, and has proven very successful in module
+code is elegant, and successful in module
 composition languages~\cite{ancona2002calculus} and several trait
 models~\cite{Traits:ECOOP2003,Bergel2007,BETTINI2013521,fjig}.  However the research
 community is struggling to make it work with object state (constructors
@@ -109,16 +109,16 @@ It has some advantages, but also disadvantages:
   returning \Q@This@. The class will then implement the methods returning \Q@This@
   by forwarding a call to the constructor.
   
-\item {\bf Disadvantages:} Writing such obvious definitions to close
-  the state/fixpoint in the class 
-   with the constructors and fields and getter/setters and factories is tedious and error prone.
-   Moreover, there is no way for a trait to specify a default value for a field,
-   the class needs to handle all the state, even state that is conceptually
-   private of such trait. 
-   Previous work shows that such code can be automatically
-   generated~\cite{wang2016classless}.
-   Also the semantic of \Q@Use@/code composition of a model with fields and constructors is necessarily
+\item {\bf Disadvantages:}
+   The semantic of \Q@Use@/code composition of a model with fields and constructors is necessarily
    more complex than a model with methods only.
+ There is no way for a trait to specify a default value for a field.
+The class needs to handle all the state, even state that is conceptually
+   private of such trait. 
+ Moreover, writing such obvious definitions to close
+  the state/fixpoint in the class 
+   with the constructors and fields and getter/setters and factories is tedious and error prone; previous work shows that such code can be automatically
+   generated~\cite{wang2016classless}.
 \end{itemize}
 
 \subsection{Our proposed approach to State: Coherent Classes}
@@ -138,7 +138,7 @@ A more detailed definition of coherent
 classes is given next, and is formally defined in Section \ref{sec:formal}:
 \begin{itemize}
 \item a class with no abstract methods is coherent (just like Java
-  \Q@Math@, for example). Such classes are only useful for calling static methods.
+  \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
 \item a class with a single abstract \Q@static@ method returning \Q@This@
 is coherent if all the other abstract methods can be seen as \emph{abstract state
 operations} over one of its argument.
@@ -168,10 +168,10 @@ set of such abstract state operations.
 
 \paragraph{Points in \name:}
 In \name and with our approach to handle the state, 
-\lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed:
+\lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed;
+It works because resulting class is coherent.
 \saveSpace
 \begin{lstlisting}
-  //Works because resulting class is coherent.
   PointAlgebra:Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 \saveSpace
@@ -183,8 +183,8 @@ In \name and with our approach to handle the state,
   repeats the abstract methods \Q@x@, \Q@y@ and \Q@of@.
   Moreover, in addition to \Q@sum@ and \Q@mul@ we may want many
   operations over points. It is possible to improve reuse
-  and not repeat such abstract definitions by abstracting the common
-  abstract definitions into a trait \Q@p@: 
+  and not repeat such declaration by abstracting the common
+  declaration into a trait \Q@p@: 
 \saveSpace
 \begin{lstlisting}
   p: { method int x() method int y()
@@ -208,18 +208,20 @@ In order to evaluate our approach,
 we performed a case study:
 we consider \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
 This gives us 16 different possible combinations.
-We coded this example in three different styles:
+We coded this example in four different styles:
 (a) Java7 \emph{(= 115 lines)}%
 \footnote{
 Since we want to focus on the actual code, while counting line numbers we \textbf{omit} white lines and lines containing only open/closed parenthesis.
 }%
 , (b) Classless Java \emph{(= 82 lines)},
 (c) Scala \emph{(= 81 lines)} and (d) \name \emph{(= 32 lines)}.
-We chose Classless Java since it is a novel approach allowing to encode traits in Java leveraging on 
+We chose Classless Java since it is a novel approach allowing to encode traits in Java levering on 
 Java 8 default interface methods.
 We then chose Java7, that lacks the features needed to encode traits, to show the impact of this feature.
-Finally, the comparison with Scala is interesting since abstract type members allows to conveniently encode
-`\Q@This@' type.
+Finally, the comparison with Scala is interesting 
+since
+it has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
+Rust is similar to Scala in this regard; we believe we would get similar results by comparing against either Scala or Rust.
 
 We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } 28 method bodies across the 16 classes.
 Of these, 11 method bodies were duplicated because Java does not support multiple inheritance
@@ -229,18 +231,18 @@ Of these, 11 method bodies were duplicated because Java does not support multipl
  On the other hand, the solution in \name was much more compact since we could efficiently
 reuse traits (this is why the number of toplevel concepts in \name was larger i.e. 21 due to the
  presence of traits in this solution).
-In the detail, we used 6 lines for the initial \Q@Point@ class,
+In the detail, Java required 6 lines for the initial \Q@Point@ class,
 5 lines for each of the 4 arithmetic operations, 7 lines for each of the 6 combinations
 of two different operations, 9 lines for each of the 4 combinations of three different 
 operations and finally 11 lines for the class with all the four operations.
 
 
  The solution in Classless Java was slightly smaller than Java7,
- but was still quite longer than the \name solution because we still had to redefine the
+ but was still quite longer than the \name solution because it still had to redefine the
  sum/sub/etc operations in each of the classes because of limited support of the `\Q@This@' type, thus it also has 28 duplicated method bodies.
 
 Finally, we compare it with a Scala solution.
-Scala has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
+%Scala has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
 There is no need for duplicate method bodies in Scala.
 However, for `\Q@This@' instantiation we need to define abstract methods, that will be implemented in the concrete classes.
 The Scala solution have the same exact advantages
@@ -374,7 +376,7 @@ thus we can just call \Q@_1merge@ and \Q@_2merge@ without
 To understand how easy it is to extend the state in this
 way we compare the former code with an equivalent version in
 Java.
-For this example, we encode \Q@Point@ with no operations,
+For this example, in Java we encode \Q@Point@ with no operations,
 \Q@PointSum@ reusing \Q@Point@ adding a functional \Q@sum@ operation,
 a \Q@CPoint@ reusing \Q@PointSum@ with a \Q@Color@ field
 and a \Q@FCPoint@ reusing \Q@CPoint@ with a \Q@Flavour@ field.
@@ -382,19 +384,18 @@ This second case study represents a \textbf{worst case scenario} for \name again
 easily supported in plain Java by single inheritance.
 Like the previous experiment, we still found that the Java solution was longer (47 lines) than that in \name (33 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
-Complex patterns in Java allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they required a lot of setup code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+Complex patterns in Java allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they require a lot of set-up code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
 Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavoured@ do not exists 
 as individual concepts.
 
-We also compare with a solution in Scala.
-This shows the same level of reuse and modularity of 
+We also compare with a solution in Scala, offering the same level of reuse and modularity of 
 code, but again is more verbose than \name, and requires more members (31), an indication it may be logically heavier too.
 We define the main \Q@tPoint@ trait (8 lines),
 the \Q@tPointSum@ operation (3), the two 
-\Q@Colored@ and \Q@Flavoured@ traits (6*2)
-\Q@CPoint@ and \Q@CFPoint@ (12+18).
+\Q@tColored@ and \Q@tFlavoured@ traits (6*2)
+and \Q@CPoint@ and \Q@CFPoint@ classes (12+18).
 Note how the major benefit of \name is in the reduction
-of the amount of code needed to generate 
+of the amount of glue-code needed to generate 
 \Q@CPoint@ and \Q@CFPoint@ (4+9).
 
 The results for the second experiment are presented below.
