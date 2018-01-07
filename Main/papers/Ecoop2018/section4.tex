@@ -62,14 +62,14 @@ instead.
 \begin{lstlisting}
   pointSum: { method int x()  method int y()//getters
     static method This of(int x,int y)//factory method
-    method This sum(This that)
-      This.of(this.x()+that.x(),this.y()+that.y())//self instantiation
-    }
+    method This sum(This that){
+      return This.of(this.x()+that.x(),this.y()+that.y());//self instantiation
+    }}
   pointMul: { method int x() method int y()//repeating getters
     static method This of(int x,int y)//repeating factory
-    method This mul(This that)
-      This.of(this.x()*that.x(),this.y()*that.y())
-    }
+    method This mul(This that){
+      return This.of(this.x()*that.x(),this.y()*that.y());
+    }}
 \end{lstlisting}
 \saveSpace
 \noindent As we can see, all the state operations (the getters for the 
@@ -87,9 +87,9 @@ powerful as illustrated by Wang et al.~\cite{wang2016classless}.
 class PointAlgebra=Use pointSum,pointMul, {//not 42 code
     int x   int y//unsatisfactory state of the art solution
     constructor PointAlgebra(int x, int y){ this.x=x   this.y=y }
-    method int x() x//repetitive code
-    method int y() y// in traits terminology, this is all "glue code"
-    static method This of(int x, int y) new PointAlgebra(x,y)
+    method int x(){return x;}//repetitive code
+    method int y(){return y;}// in traits terminology, this is all "glue code"
+    static method This of(int x, int y){return new PointAlgebra(x,y);}
     }
 \end{lstlisting}
 %\bruno{We talk about withers later on. So I think we should consider
@@ -191,13 +191,13 @@ It works because resulting class is coherent.
     static method This of(int x,int y)
     }
   pointSum:Use p, { 
-    method This sum(This that)
-      This.of(this.x()+that.x(),this.y()+that.y())
-    }
+    method This sum(This that){
+      return This.of(this.x()+that.x(),this.y()+that.y());
+    }}
   pointMul:Use p, { 
-    method This mul(This that)
-      This.of(this.x()*that.x(),this.y()*that.y())
-    }
+    method This mul(This that){
+      return This.of(this.x()*that.x(),this.y()*that.y());
+    }}
   pointDiv: ...
   PointAlgebra:Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
@@ -215,7 +215,7 @@ Since we want to focus on the actual code, while counting line numbers we \textb
 }%
 , (b) Classless Java \emph{(= 82 lines)},
 (c) Scala \emph{(= 81 lines)} and (d) \name \emph{(= 32 lines)}.
-We chose Classless Java since it is a novel approach allowing to encode traits in Java levering on 
+We chose Classless Java~\cite{wang2016classless} since it is a novel approach allowing to encode traits in Java levering on 
 Java 8 default interface methods.
 We then chose Java7, that lacks the features needed to encode traits, to show the impact of this feature.
 Finally, the comparison with Scala is interesting 
@@ -287,7 +287,7 @@ A solution is to provide a richer factory:
 \saveSpace
 \begin{lstlisting}
   CPoint:Use pointSum,colored,{
-    static method This of(int x,int y) This.of(x,y,Color.of(/*red*/))
+    static method This of(int x,int y){ return This.of(x,y,Color.of(/*red*/));}
     static method This of(int x,int y,Color color)
     }
 \end{lstlisting}
@@ -312,14 +312,14 @@ a better design would be the following:
     method This merge(This that) //new method merge!
     }
   pointSum:Use p, { 
-    method This sum(This that)
-      this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y())
-    }
+    method This sum(This that){
+      return this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y());
+    }}
   colored:{method Color color()
     method This withColor(Color that)
-    method This merge(This that) //how to merge color handled here
-      this.withColor(this.color().mix(that.color())
-    }
+    method This merge(This that){ //how to merge color handled here
+      return this.withColor(this.color().mix(that.color());
+    }}
   CPoint:/*as before*/
 \end{lstlisting}  \saveSpace
   \noindent This design allows merging colours, or any other kind of state we may want to add
@@ -352,11 +352,11 @@ to refer to the version of \Q@merge@ as defined in the first/second element of \
     colored[super merge as _1merge],
     flavoured[super merge as _2merge],
     pointSum,{
-      static method This of(int x,int y)
-        This.of(x,y,Color.of(/*red*/),Flavor.none())
+      static method This of(int x,int y){
+        return This.of(x,y,Color.of(/*red*/),Flavor.none());}
       static method This of(int x, int y,Color color,Flavor flavor)
-      method This merge(This that)//merge conflict is solved 
-        this._1merge(that)._2merge(that)//by calling the two versions
+      method This merge(This that){//merge conflict is solved 
+        return this._1merge(that)._2merge(that);}//by calling the two versions
       }
 \end{lstlisting}  \saveSpace\saveSpace
 

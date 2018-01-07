@@ -139,8 +139,8 @@ evalPlus=Use plus, {//eval operation for Plus datavariant
   Exp:{interface
     method Size eval()}
   Plus:{implements Exp
-    method Size eval()
-      this.left().eval()+this.right().eval()}}
+    method Size eval(){
+      return this.left().eval()+this.right().eval();}}}
 \end{lstlisting}
 \Q@evalPlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
@@ -162,13 +162,14 @@ exp={
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
-num=Use exp[rename T into Num],{//T renamed in Num is summed with the current Num
+num=Use exp[rename T into Num],{//T renamed in Num is summed with current Num
   Num={method Size value()  static method Num of(Size value)}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 plus=Use exp[rename T into Plus], {
-  Plus={method Exp left()  method Exp right()  static method Plus of(Exp left,Exp right)}}
+  Plus={method Exp left()  method Exp right()
+    static method Plus of(Exp left,Exp right)}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -190,17 +191,17 @@ eval={//concept of Exp.eval() declared once
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
-evalNum=Use num, eval[rename T into Num],{//just the implementation of the specific method
-  Num={ method Size eval() this.value() }}
+evalNum=Use num, eval[rename T into Num],{         //just the implementation
+  Num={ method Size eval(){return this.value();} }}//of the specific method
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 evalPlus=Use plus, eval[rename T into Plus], {
-  Plus={ method Size eval() this.left().eval()+this.right().eval() }}
+  Plus={ method Size eval(){ return this.left().eval()+this.right().eval();} }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
-evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval()..}}
+evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval(){..}}}
 \end{lstlisting}
 
 The \Q@show@ operation can be trivially defined
@@ -219,12 +220,13 @@ double={
 \multiCode
 \begin{lstlisting}
 doubleNum= Use num, double[rename T in Num],{
-  Num={ method Exp double() Num.of(this.value()*2) }}
+  Num={ method Exp double(){return Num.of(this.value()*2);} }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 doublePlus=Use plus,double[rename T in Plus],{
-  Plus={ method Exp double() Plus.of(this.left().double(),this.right().double())}}
+  Plus={ method Exp double(){
+    return Plus.of(this.left().double(),this.right().double());}  }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -302,25 +304,27 @@ equals:{
     method Bool equals(Exp that)}
   T:{implements Exp
     method Bool exactEquals(T that)
-    method equals(that) 
-      if(T instanceof This) then this.exactEquals(that)
-      else Bool.false()}}
+    method equals(that){
+      if(T instanceof This) return this.exactEquals(that);
+      else return false;}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 equalsNum:Use num, equals[rename T into Num],{
-  Num:{method Bool exactEquals(Num that) this.value().equals(that.value())}}
+  Num:{method Bool exactEquals(Num that){
+    return this.value().equals(that.value());}  }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 equalsPlus:Use plus, equals[rename T into Plus],{
-  Plus:{method Bool exactEquals(Plus that)
-    this.left().equals(that.left()) && this.right().equals(that.right())}}
+  Plus:{method Bool exactEquals(Plus that){
+    return this.left().equals(that.left()) && this.right().equals(that.right());}  }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 equalsNeg:Use neg, equals[rename T into Neg],{
-  Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term())}}
+  Neg:{method Bool exactEquals(Neg that){
+    return this.term().equals(that.term());}  }}
 \end{lstlisting}
 
 This simple implementation of \Q@equals@
