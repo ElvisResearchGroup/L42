@@ -204,10 +204,11 @@ It works because resulting class is coherent.
 \saveSpace      
 Now the code is fully modularized, and each trait defines exactly one method.
 
+\paragraph{Case Study}
 In order to evaluate our approach,
 we performed a case study:
-we consider \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
-This gives us 16 different possible combinations.
+we consider 4 different operations \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
+These operations can be combined in 16 different ways.
 We coded this example in four different styles:
 (a) Java7 \emph{(= 115 lines)}%
 \footnote{
@@ -372,7 +373,7 @@ thus we can just call \Q@_1merge@ and \Q@_2merge@ without
 %C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
 %\end{lstlisting}
 
-
+\paragraph{Case Study}
 To understand how easy it is to extend the state in this
 way we compare the former code with an equivalent version in
 Java.
@@ -384,8 +385,8 @@ This second case study represents a \textbf{worst case scenario} for \name again
 easily supported in plain Java by single inheritance.
 Like the previous experiment, we still found that the Java solution was longer (47 lines) than that in \name (33 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
-Complex patterns in Java allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they require a lot of set-up code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
-Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavoured@ do not exists 
+Complex patterns in Java~\cite{}\bruno{references} allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they require a lot of set-up code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavoured@ do not exist
 as individual concepts.
 
 We also compare with a solution in Scala, offering the same level of reuse and modularity of 

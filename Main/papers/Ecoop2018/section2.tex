@@ -74,13 +74,12 @@ the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A}.
 
 
-Note that also this second attempt would not work:
+Note that also that the following second attempt would not work:
 \saveSpace
 \begin{lstlisting}
  Utils={ static method int m(ta a){return ...}//syntax error
  ta={ method int ma(){return Utils.m(this);}}
  A=Use ta
- }
 \end{lstlisting}
 \saveSpace
 \Q@ta@ is not a type in the first place, since it is a (lowercase) trait name.
