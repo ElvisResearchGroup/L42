@@ -177,8 +177,8 @@ inheritance from subtyping is non-trivial and requires a significant
 departure from the OO models in existing mainstream OO languages.
 We are aware of at least 3 independently designed research languages 
 addressing this limitation: \emph{TraitRecordJ}, \emph{Package Templates} and \emph{DeepFJig}.
-Those 3 languages also shown that family polymorphism 
-is easy to support when inheritance and subtyping are disconnected.
+Those 3 languages also show that family polymorphism 
+is easy to support when inheritance and subtyping are separated.
 
 The goal of this paper is to synthesize and improve on
 the main ideas of those very different designs into a nominally typed
@@ -193,8 +193,9 @@ Moreover, we provide a novel and elegant solution to \textbf{uniformly
 handling behaviour and state} within trait composition and without the need of glue-code.
 These ideas have been implemented in the 42 language, 
 which supports all the examples we show in this paper.
-This allowed us to run 3 case studies comparing
-our language with languages where use and reuse are connected, like Java and Scala.
+We run 3 case studies comparing
+42 with languages where use and reuse are connected, like Java and
+Scala.
 \saveSpace\saveSpace
 
 \keywords{Code Reuse, Object-Oriented Programming}
