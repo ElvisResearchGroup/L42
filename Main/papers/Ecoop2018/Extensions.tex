@@ -1,7 +1,7 @@
 \section{Extensions to our model}
 
 \paragraph{Nested classes}:
-A nested class is just another kind of member in the code literal.
+A nested class is just another kind of member in a code literal.
 The general idea is that by composing code with \use,
 nested classes with the same name are recursively composed.
 For simplicity, while we discuss nested classes,
@@ -42,7 +42,8 @@ to consider the class table as a simple map from (nested) types (as both \Q@A@ a
 
 
 \paragraph{Rename}:
-There are a lots of different forms of rename in literature.
+There are a lots of different forms of rename in
+literature~\cite{}\bruno{references please!}.
 Here we will use a simple variant to rename nested types in other nested types.
 For example 
 \begin{lstlisting}
@@ -111,7 +112,7 @@ and allow \textbf{separate compilation} (no re-type-checking),
 while avoiding \textbf{duplication of source code}.
 
 Following closely
-the example of~\cite{Zenger-Odersky2005},
+the example of Zenger and Odersky~\cite{Zenger-Odersky2005},
 we consider a language where the
 expressions \Q@Exp@ can
 be \Q@Num@ (for number literal),
@@ -128,7 +129,7 @@ We can model this
 as a table of features, as in~\cite{deep}:
 a (3classes+1interface)*(1state+3operations)
 table composed by 16 traits.
-They are atomic: they deal with exactly 
+The features are atomic: they deal with exactly 
 declaring the state of a class
 or defining a single operation for a single class.
 \name avoids the large amount of abstract declarations,
@@ -206,8 +207,9 @@ evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval(){..}}}
 
 The \Q@show@ operation can be trivially defined
 following exactly the same pattern (omitted here for space reasons).
-The operation \Q@double@ is is a challenge for some proposed solution to the expression problem, as explained in ~\cite{zhang2017evf}.
-It is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
+The operation \Q@double@ is is a challenge for some proposed solution
+to the expression problem, as explained by Zhang and Oliveira~\cite{zhang2017evf}.
+The \Q@double@ operation is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
 Thanks to the separation between use and reuse, and the support
 for self-instantiation of every nested class in a given trait,
 in \name, it does not need any special attention
@@ -252,7 +254,7 @@ have done in \name.
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala          & 52     &  15=12+3\\
+original Scala~\cite{Zenger-Odersky2005}          & 52     &  15=12+3\\
 Scala  isolated units   & 78    &  15=12+3\\
 Scala  glue-code        & 27   &     3\\
 42 traits               & 48=3+4+6+5 + (4+2*3)*3   &    19=4*3+7\\
@@ -264,7 +266,7 @@ Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
 We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
 \end{minipage}
 
-As you can see, to encode fully isolated units in Scala is
+As we can see, to encode fully isolated units in Scala is
 more verbose,
 but more importantly,
 in \name we can just define a class supporting any subset of operations
@@ -287,7 +289,7 @@ we just need 4 lines to declare the operation
 in the interface, and 2 lines for each of the 3 data-variants.
 
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
-In~\cite{Zenger-Odersky2005}, involved double dispatch is used to avoid casting.
+Zenger and Odersky's solution~\cite{Zenger-Odersky2005}, involved double dispatch to avoid casting.
 To show understandable code, we show a simpler solution 
 with a guarded cast (sometime called a typecase).%
 \footnote{
@@ -328,7 +330,7 @@ equalsNeg:Use neg, equals[rename T into Neg],{
 \end{lstlisting}
 
 This simple implementation of \Q@equals@
-is much simpler than the one proposed by scala
+is much simpler than the one proposed by Scala
  and can be instantiated without any glue code.
 
 \noindent
@@ -346,7 +348,7 @@ Scala eq instance           &    29   &    3\\
 \end{tabular}
 \end{minipage}
 \begin{minipage}{0.54\textwidth}
-Here the Scala code can be made fully isolated for a very little
+Here the Scala code can be made fully isolated with little
 extra syntactic cost. The original Scala eq is 40 lines and
 contains a part of the glue code mixed inside.
 The isolated version is 31 lines and to merge all the operations together in Scala, it
