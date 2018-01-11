@@ -5,7 +5,7 @@ Literature on code reuse is too vast to let us do justice of it in a few pages.
 Our work is inspired by traits~\cite{ducasse2006traits}, which in turn
 are inspired by module composition languages~\cite{ancona2002calculus}.
 
-\subsection{Disconnecting Inheritance and Subtyping}
+\subsection{Separating Inheritance and Subtyping}
 We are aware of at least 3 independently designed research languages 
 that address the this-leaking problem: TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}, Package Templates~(PT)\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}, DeepFJig~\cite{deep,servetto2014meta,fjig}.
 Levering on \emph{traits}, in this work we aim to synthesize
@@ -25,7 +25,7 @@ involved syntax.
 \emph{thanks to our novel representation of state}, \name also offers a much simpler and uniform syntax than
 all other approaches: everything is just a method.
 \item 
-{\bf Reusable code cannot be ``used'', that is instantiated or used as a type.}
+{\bf Reusable code cannot be ``used'' (that is be instantiated) or used as a type.}
 This happens in TR and in PT, but not in DeepFJig. To allow reusable code to be directly 
 usable, in DeepFJig
 classes introduce nominal types in an unnatural way: the type of
@@ -74,9 +74,9 @@ Our \Q@Use@ operator is similar to deep mixin composition~\cite{Ernst99a,Zenger-
 and family polymorphism~\cite{Ernst06, igarashi2005lightweight, IgarashiViroli07, IgarashiEtAl08}, but is symmetric, and with the operator
 \Q@super@ offers a flexible  explicit conflict resolution.
 
-We claim that our presented solution to the expression problem is the most natural in literature to date.
-Challenging the expression problem, our close contented is DeepFJig~\cite{deep}: all our gain over their model is based on our relaxation over abstract signatures.
-
+We claim that our presented solution to the expression problem is very
+natural and compores positively with existing solutions in the literature.
+Challenging the expression problem, our close contender is DeepFJig~\cite{deep}: all our gain over their model is based on our relaxation over abstract signatures.
 A similar syntax can be achieved with the scandinavian style~\cite{ernst2004expression}, or with the work of 
 Nystrom (Jx~\cite{NystromEtAl04} and
 J\&~\cite{nystrom2006j}), where the composition behaves similarly to our sum operator.
@@ -85,7 +85,7 @@ make uses of dependent types.
 As in \Q@.@FJ and \Q@^@FJ~\cite{igarashi2005lightweight,IgarashiEtAl08,IgarashiViroli07},
  instead, we do not need sophisticated types. 
 
-The work introducting DeepFJig~\cite{deep} contains an in depth comparison between various FP approaches, including a simple example written in \Q@.@FJ syntax synthesizing the issues arising when FP is obtained while keeping Use and Reuse connected:
+The work introducting DeepFJig~\cite{deep} contains an in-depth comparison between various FP approaches, including a simple example written in \Q@.@FJ syntax synthesizing the issues arising when FP is obtained while keeping Use and Reuse connected:
 \begin{lstlisting}
 class A{
   static class B{int f1;}  
@@ -96,9 +96,10 @@ class AA extends A{
   int k(.B x){return x.f2+new .B().f2; }
 }
 \end{lstlisting}
-The syntax \lstinline{.B} denote a relative path, that is, the 
+The syntax \lstinline{.B} denotes a relative path, that is, the 
 class \lstinline{B} in scope.
-In Java and Scala declaring in a subclass a nested class with the same name of a nested of the superclass has only the effect of hiding parent's declaration.
+In Java and Scala declaring a subclass of a nested class with the same
+name of a nested of the superclass only has the effect of hiding parent's declaration.
 Approaches supporting FP~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
 consider such definition a form of \emph{overriding},
 sometimes called \emph{further extension}~\cite{IgarashiViroli07}:
@@ -122,22 +123,19 @@ the ``Inheritance implies Subtyping'' model.
 We believe that this is a major source of complexity in the type
 systems of those approaches:
 They need to track those calls, and enforce the \emph{family} of the receiver and the argument is the same.
-
 Because we separate inheritance from subtyping we liberate ourselves
 from tricky issues that arise in such type systems, and we can
 provide a simpler model of family polymorphism, soundly supported by 
 a straightforward nominal type system:
 by disconnecting use and reuse we outlaw \Q@A a=new A2()@.
-
 In \name this is also reducing the expressing power a little, but
 in the full 42 language, as well as in DeepFJig, the operator \textbf{redirect} allows to write code that is parametric on families of data types.
 
 
-Researchers with a strong grasp on FP: Family
+Researchers with a strong grasp on Family
 Polymorphism know that support for FP strictly includes
 support for `\Q@This@' type and self instantiation, since the
 class is a member of its own family.
-
 Scala allows to \textbf{encode} further extension/deep mixin composition,
 but it requires to do it explicitly, growing the amount of required glue-code.
 
@@ -162,8 +160,7 @@ but it requires to do it explicitly, growing the amount of required glue-code.
 The original trait model has no self construction 
 and purposely avoided any connection between state and traits.
 It was applied to a dynamically typed language, so
-it was not clear if the author intended of modelling `\Q@This@' type.
-
+it was not clear if the authors intended modelling a `\Q@This@' type.
 
 The idea of abstract state operations emerged from Classless
 Java~\cite{wang2016classless}. This approach offers a clean solution to handle state

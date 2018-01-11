@@ -9,12 +9,11 @@ In a real language, a simple pre-processor may take care of this step.
 
 In most languages, when implementing an interface, the programmer may avoid repeating abstract methods
 they do not wish to implement.
-In the same spirit of before, in this simplified formalization we consider source code containing
+In that same spirit, in our simplified formalization we consider source code containing
 all the methods imported from interfaces. In a real language, a normalization process
 may hide this abstraction\footnote{
-In the full language scoping is indeed supported by an initial desugaring, and a normalization phase takes care of importing methods from interfaces.
+In the full 42 language scoping is indeed supported by an initial desugaring, and a normalization phase takes care of importing methods from interfaces.
 }.
-
 We also consider a binary operator sum \Q@+@ instead of the variable arity operator \Q@use@.
 
 Figure 1 contains the complete formalization for the 
@@ -243,28 +242,21 @@ $\\
 
 \subsection{Syntax}
 
-In the following section, we present a simplified grammar of \name:
-\noindent We use $\mt$ and $\mC$ to represent lower case trait and upper case class identifiers respectively.
-
-\noindent To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
-expression $\mE$.
-Note how in $\mE$\ you can refer to a trait by name.
-
- In full 42, we support various operators including the ones presented before,
- but here we only show the single operator \Q@+@.
-%This operation is a generalization to the case of nested classes of the simplest and most elegant
-%trait composition operator~\cite{ducasse2006traits}.
-
-
+%In the following section, we present a simplified grammar of \name. 
+We use $\mt$ and $\mC$ to represent lower case trait and upper case class identifiers respectively.
+To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
+expression $\mE$. Note how in $\mE$\ you can refer to a trait by name.
+In full 42, we support various operators including the ones presented before,
+ but here we only show the single sum operator \Q@+@.
+This operation is a generalization to the case of nested classes of the simplest and most elegant
+trait composition operator~\cite{ducasse2006traits}.
 Code literals \mL\ can be marked as interfaces. We use `?' to represent optional terms.
 Note that the interface keyword is inside the curly brackets,
 so an upper case name associated with an interface literal is a class-interface, while a lowercase one is a trait-interface.
-
 Then we have a set of implemented interfaces and a set of member
 declarations, they can be methods or nested classes.
 The members of a code literal are a set, thus their order is immaterial.
-
-\noindent If a code literal implements zero interfaces, the concrete syntax omits the \Q@implements@ keyword.
+If a code literal implements zero interfaces, the concrete syntax omits the \Q@implements@ keyword.
 
 Methods \mMD~can be instance methods or \Q@static@ methods. 
 A static method in \name is similar to a \Q@static@ method in Java but can be abstract.
@@ -272,19 +264,19 @@ This is very useful in the context of code composition.
 To denote a method as abstract, instead of an optional keyword we just omit the implementation \me.
 
 Finally, expressions $\me$ are just variables, method calls or static method calls.
-The ugliness of having two different kinds of method call is an artefact of our simplifications.
-In the full language, type names are a kind of expression whose type helps to model metaclasses.
-
+The ugliness of having two different kinds of method calls is an artefact of our simplifications.
+In the full 42 language, type names are a kind of expression whose type helps to model metaclasses.
 Our concept of abstract state implies we have no \Q@new@ expressions, and
 the values are just calls to abstract static methods.
 Thus values are parametric on the shape of the specific programs $\overline\mD$.
 
-We then show the evaluation context, the compilation context and full context.
+We then show the evaluation context, the compilation context and full
+context.
 
 \subsection{Well-formedness}
 
 The whole program, that is $\overline\mDE$, is well formed if
-all the traits and classes at top level have unique names, the special class name
+all the traits and classes at top level have unique names. The special class name
 \Q@This@ is not one of those,
 and the subtype relations are consistent:
 this means that the implementation of interfaces is not circular,
@@ -337,7 +329,7 @@ $\begin{array}{l}
 in order to implements an interface nested in a different top level name, such interface can not be generated using a trait expression. This limitation is lifted in the full language.}
 ${}_{}$\\*
 ${}_{}$\\*
-\noindent An \mL\ is well formed if:
+\noindent A code literal \mL\ is well formed if:
 \begin{itemize}
 \item all method parameters have unique names and the special parameter name \Q@this@ is not declared
  in the parameter list,
@@ -360,15 +352,13 @@ compiles the leftmost top level (trait or class) declaration that needs to be co
 In order to do so,
 it identifies the subset of the program $\overline\mD$ that can already be typed (second premise).
 Then the expression is executed under the control of such compiled program (first premise).
-According to rule \Rulename{look-up}, all the traits inside the expression needs to
+According to rule \Rulename{look-up}, all the traits inside the expression need to
 be compiled, that is $\forall\mt. \mE=\ctx[\mt], \mt\in\dom(\overline\mD)$.
 If a large enough $\overline\mD$ cannot be typed, this would cause a compilation error
 at this stage.
-
 Rule \Rulename{look-up}
 replaces a trait name $\mt$ with the corresponding literal $\mL$.
 Thanks to the fact that $\overline\mD$ is all well typed, we know that $\mL$ is well typed too.
-
 Rule \Rulename{ctx-c}
 uses the compilation context to decide what step to apply next.
 It enforces a deterministic left-right call by value\footnote{
@@ -519,10 +509,8 @@ it is a valid getter or wither. This simple formalism without imperative feature
 
 Rule \Rulename{Nested-OK} helps to accumulate the type of \Q@this@ so that rule \Rulename{Method-OK}
 can use it.
-
 Rule \Rulename{L-OK} is so simple since all the checks
 related to correctly implementing interfaces are delegated to the well formedness criteria.
-
 The other rules are straightforward and standard.
 
 \subsection{Formal properties}
@@ -530,7 +518,7 @@ In addition to conventional soundness of the expression reduction,
 \name ensures soundness of the compilation process itself.
 A similar property was called meta-level-soundness in~\cite{servetto2014meta}; here we can obtain the same result in
 a much simpler setting.
-We denote with $\mathit{wrong}(\overline\mD,\mE)$ the count of $\mL$ such that
+We denote $\mathit{wrong}(\overline\mD,\mE)$ to be the count of $\mL$ such that
 $\mE=\ctx[\mL]\ \text{and not}\ \overline\mD\vdash\mL:\text{OK}$.
 
 \begin{Theorem}[Compilation Soundness]
@@ -557,7 +545,7 @@ is applied, the result still respects
 $\mathit{consistentSubtype}$.
 \end{itemize}
 \noindent 
-Compilation Soundness has two important corollary:
+Compilation Soundness has two important corollaries:
 \begin{itemize}
 \item If a class is declared without literals,
 and the flattening is successful then \mC\ is well-typed: there is no need of further checking.
@@ -602,9 +590,10 @@ t1={method int n() this.m()+1}
 \noindent would be ill-typed.
 
 \paragraph{2: code literals are \textbf{not required to be well-typed} before flattening.}${}_{}$\\*
-An $\mL$ in a $\mD$
-is well formed and respect $\mathit{consistentSubtype}$, but
-is not type-checked before flattening,
+A code literal $\mL$ in a declaration $\mD$
+is must be well formed and respect
+$\mathit{consistentSubtype}$. However 
+it is not type-checked before flattening,
 and only the result is expected to be well-typed.
 This example using the trait \Q@t@ is correct:
 
@@ -634,12 +623,11 @@ between multiple $\mC$\Q@=@$\mE$ \textbf{without
 the need of predicting the resulting shape}%
 \footnote{This is fundamental in the full language where arbitrary code can be run at compile time, making impossible to predict the resulting shape.}.
 
-As seen in \Rulename{top}, our compilation process just
-proceed top-down, flattening one declaration at a time,
+As seen in \Rulename{top}, our compilation process
+proceeds in a top-down fashion, flattening one declaration at a time,
 and declarations need type-checking
 only where their type is first needed,
 that is, when they are required to type a trait $\mt$ used in an expression $\mE$.
-
 That is, in \name typing and flattening are interleaved. We assume our compilation process to stop as soon as 
 an error arises. 
 For example
@@ -655,7 +643,6 @@ To generate \Q@A@, we need to use \Q@ta@ (but we do not need
 \Q@tc@, in rule \Rulename{top} $\overline\mD=$\Q@ta@ and $\overline\mD'=$\Q@tc@).
 At this moment, \Q@tc@ cannot be compiled/checked alone:
 information about \Q@A@ and \Q@B@ is needed.
-
 In order to modularly ensure well-typedness,
 we require only \Q@ta@ to be well typed at this stage. If \Q@ta@ was not well-typed
 a type error could be generated at this stage.
@@ -679,7 +666,8 @@ requires \Q@tc@, \Q@tc@ requires \Q@B@ that is defined later''.
 %could compute a dependency graph and, if possible, reorganize the list,
 
 \paragraph{The cost: what expressive power we lose}${}_{}$\\*
-For simplicity, we consider to always be able to provide the declarations in the right order, if one exists.
+For simplicity, that declarations are always provided in the right
+order, if such order exists.
 An example of a ``morally correct'' program where no right order exists is the following:
 \saveSpace\begin{lstlisting}
 t={ int mt(A a) a.ma()}
@@ -761,8 +749,8 @@ A great advantage of our compilation model is that expressions are executed on
 a simple fully flattened program, 
 where all the composition operators have been removed.
 From the point of view of expression reduction, \name is a simple language of 
-interfaces and final classes, where nested classes gives structure to the code but have no special semantic.
-The reduction of expression is composed by rules
+interfaces and final classes, where nested classes gives structure to the code but have no special semantics.
+The reduction of expressions is composed by rules
 \Rulename{ctx-v},\Rulename{s-m} and \Rulename{m}.
 The only interesting point is the auxiliary function meth:
 
@@ -804,4 +792,6 @@ the third case takes care of getters and the fourth takes care of withers.
 In our formalization we are not modelling state mutation, so there is 
 no case for setters.
 
-For space reasons, we omit the prof of conventional soundness for the reduction. It is unsurprising, since the flattened calculus is like a simplified version of FJ.
+For space reasons, we omit the proof of conventional soundness for the
+reduction. It is unsurprising, since the flattened calculus is like a
+simplified version of Featherweight Java~\cite{}\bruno{reference please!}.
