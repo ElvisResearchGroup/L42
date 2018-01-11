@@ -21,11 +21,11 @@ we underline 3 properties where one approach shines the most, and 3 properties w
 DeepFJig is best in this sense, since TR has separate syntax for class literals, trait literals and record literals.
 PT on the other hand is built on top of full Java, thus has a very
 involved syntax.
-\name leverages on DeepFJig's approach but,
+\name relies on DeepFJig's approach but,
 \emph{thanks to our novel representation of state}, \name also offers a much simpler and uniform syntax than
 all other approaches: everything is just a method.
 \item 
-{\bf Reusable code cannot be ``used'' (that is be instantiated) or used as a type.}
+{\bf Reusable code cannot be ``used'' (that is be instantiated or used as a type).}
 This happens in TR and in PT, but not in DeepFJig. To allow reusable code to be directly 
 usable, in DeepFJig
 classes introduce nominal types in an unnatural way: the type of
@@ -75,9 +75,9 @@ and family polymorphism~\cite{Ernst06, igarashi2005lightweight, IgarashiViroli07
 \Q@super@ offers a flexible  explicit conflict resolution.
 
 We claim that our presented solution to the expression problem is very
-natural and compores positively with existing solutions in the literature.
+natural and compares positively with existing solutions in the literature.
 Challenging the expression problem, our close contender is DeepFJig~\cite{deep}: all our gain over their model is based on our relaxation over abstract signatures.
-A similar syntax can be achieved with the scandinavian style~\cite{ernst2004expression}, or with the work of 
+A similar syntax can be achieved with the Scandinavian style~\cite{ernst2004expression}, or with the work of 
 Nystrom (Jx~\cite{NystromEtAl04} and
 J\&~\cite{nystrom2006j}), where the composition behaves similarly to our sum operator.
 Both Jx,J\& and the virtual classes of Ernst~\cite{Ernst06}
@@ -202,7 +202,7 @@ somehow synthesized from the constructor parameters.
 
 \end{itemize}
 
-\subsection{Tablular comparision of many approaches}
+\subsection{Tabular comparison of many approaches}
 \begin{minipage}[t]{0.30\textwidth}
 In this table we show if some constructs support certain features:
 Direct instantiation (as in \Q@new C()@),
@@ -219,7 +219,7 @@ is it required to be well-typed before being composed with other code?
 \newcommand{\YY}{\textbf{Y}}
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
-&\Rotated{direct instantation}
+&\Rotated{direct instantiation}
 &\Rotated{self instantiation}
 &\Rotated{unit of use}
 &\Rotated{unit of reuse}
@@ -251,7 +251,7 @@ ${}_{}$\\
 \noindent \textbf{Y} and X means yes and no, and we use ``-'' where the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
 
 \subsection{ThisType with Subclassing implying Subtyping}
-With the exception of those mentioned 3 lines of work, to the best of our understading
+With the exception of those mentioned 3 lines of work, to the best of our understanding
 other famous work in literature, like~\cite{odersky2008programming,nystrom2006j}
 do not completely break the relation between inheritance and subtyping, but only prevent subtyping where 
 it would be unsound.

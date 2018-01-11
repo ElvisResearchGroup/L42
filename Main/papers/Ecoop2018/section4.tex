@@ -53,7 +53,7 @@ declaration for fields and constructors.
 
 \paragraph{Modelling Points} Consider, for example, two simple 
 traits that deal with \emph{point} objects. That is, points
-in the cartesian plane (with coordinates \lstinline{x} and
+in the Cartesian plane (with coordinates \lstinline{x} and
 \lstinline{y}). The first trait provides a \emph{binary method} that 
 sums the point object with another point to return a new point. 
 The second trait provides a similar operation that does multiplication 
@@ -234,7 +234,7 @@ Of these, 11 method bodies were duplicated because Java does not support multipl
  is returned by the method. Those could be avoided if Java supported
  the `\Q@This@' type.
  On the other hand, the solution in \name was much more compact since we could efficiently
-reuse traits (this is why the number of toplevel concepts in \name was larger i.e. 21 due to the
+reuse traits (this is why the number of top-level concepts in \name was larger i.e. 21 due to the
  presence of traits in this solution).
 In the detail, Java required 6 lines for the initial \Q@Point@ class,
 5 lines for each of the 4 arithmetic operations, 7 lines for each of the 6 combinations
@@ -245,7 +245,7 @@ operations and finally 11 lines for the class with all the four operations.
  The solution in Classless Java was slightly smaller than Java7,
  but was still longer than the \name solution because it still had to redefine the
  sum/sub/etc operations in each of the classes. Here the limited
- support of the `\Q@This@' type is to blaim, thus Classless Java also has 28 duplicated method bodies.
+ support of the `\Q@This@' type is to blame, thus Classless Java also has 28 duplicated method bodies.
 
 Finally, we compare it with a Scala solution.
 %Scala has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
@@ -365,7 +365,7 @@ to refer to the version of \Q@merge@ as defined in the first/second element of \
       }
 \end{lstlisting}  \saveSpace\saveSpace
 
-Note how we are leveraging on the fact that the code literal
+Note how we are levering on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
