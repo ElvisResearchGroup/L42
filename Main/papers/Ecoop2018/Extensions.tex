@@ -138,9 +138,9 @@ Intuitively, we would like our traits to look like the following:
 \begin{lstlisting}
 evalPlus=Use plus, {//eval operation for Plus datavariant
   Exp:{interface
-    method Size eval()}
+    method int eval()}
   Plus:{implements Exp
-    method Size eval(){
+    method int eval(){
       return this.left().eval()+this.right().eval();}}}
 \end{lstlisting}
 \Q@evalPlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
@@ -164,7 +164,7 @@ exp={
 \multiCode
 \begin{lstlisting}
 num=Use exp[rename T into Num],{//T renamed in Num is summed with current Num
-  Num={method Size value()  static method Num of(Size value)}}
+  Num={method int value()  static method Num of(int value)}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -187,22 +187,22 @@ data-variant in each operation, while we can just import it.
 
 \begin{lstlisting}
 eval={//concept of Exp.eval() declared once
-  Exp={interface      method Size eval()}
+  Exp={interface      method int eval()}
   T={implements Exp}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 evalNum=Use num, eval[rename T into Num],{         //just the implementation
-  Num={ method Size eval(){return this.value();} }}//of the specific method
+  Num={ method int eval(){return this.value();} }}//of the specific method
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
 evalPlus=Use plus, eval[rename T into Plus], {
-  Plus={ method Size eval(){ return this.left().eval()+this.right().eval();} }}
+  Plus={ method int eval(){ return this.left().eval()+this.right().eval();} }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
-evalNeg=Use neg, eval[rename T into Neg], {Neg={ method Size eval(){..}}}
+evalNeg=Use neg, eval[rename T into Neg], {Neg={ method int eval(){..}}}
 \end{lstlisting}
 
 The \Q@show@ operation can be trivially defined

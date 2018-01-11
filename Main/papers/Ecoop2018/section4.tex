@@ -29,7 +29,7 @@ reuse in the past.
 The idea of summing pieces of
 code is elegant, and successful in module
 composition languages~\cite{ancona2002calculus} and several trait
-models~\cite{Traits:ECOOP2003,Bergel2007,BETTINI2013521,fjig}.  However the research
+models~\cite{ducasse2006traits,Bergel2007,BETTINI2013521,fjig}.  However the research
 community is struggling to make it work with object state (constructors
 and fields) while achieving the following goals:
 
@@ -78,7 +78,7 @@ Notice the abstract \Q@static method This of(..)@ which acts as a constructor
 for points. 
 As for instance methods, they are late bound:  flattening can provide an implementation for them.
 Abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
-Following the model of traits and classes common in literature \emph{in a traditional trait model}~\cite{Traits:ECOOP2003},
+Following the model of traits and classes common in literature \emph{in a traditional trait model}~\cite{ducasse2006traits},
 we can now compose the two traits, by \textbf{adding glue-code}
 to implement methods \Q@x@,\Q@y@ and \Q@of@.
 This approach is verbose but very
