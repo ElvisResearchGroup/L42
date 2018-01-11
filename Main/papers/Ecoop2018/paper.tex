@@ -56,7 +56,7 @@
 }
 %
 %\newcommand\saveSpace{}
-\newcommand\saveSpace{\vspace{-1pt}}
+\newcommand\saveSpace{\vspace{-3pt}}
 
 \newcommand\Rotated[1]{\begin{turn}{90}\begin{minipage}{12em}#1\end{minipage}\end{turn}}
 %
@@ -145,8 +145,8 @@ The University of Hong Kong, Hong Kong\\}
 
 \Copyright{John Q. Open and Joan R. Access}%mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
 
-\subjclass{Dummy classification -- please refer to \url{http://www.acm.org/about/class/ccs98-html}}% mandatory: Please choose ACM 1998 classifications from http://www.acm.org/about/class/ccs98-html . E.g., cite as "F.1.1 Models of Computation". 
-\keywords{Dummy keyword -- please provide 1--5 keywords}% mandatory: Please provide 1-5 keywords
+\subjclass{D.3.3 Language Constructs and Features}
+\keywords{Code Reuse, Object-Oriented Programming}
 % Author macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,7 +168,7 @@ The University of Hong Kong, Hong Kong\\}
 \maketitle
 
 \begin{abstract}
-\saveSpace\saveSpace\saveSpace
+\saveSpace
 In most OO languages subclassing/inheritance implies
 subtyping. This is considered by many a conceptual design error, but it
 seems required for technical reasons, due to what we call the
@@ -177,6 +177,9 @@ inheritance from subtyping is non-trivial and requires a significant
 departure from the OO models in existing mainstream OO languages.
 We are aware of at least 3 independently designed research languages 
 addressing this limitation: \emph{TraitRecordJ}, \emph{Package Templates} and \emph{DeepFJig}.
+Those 3 languages also shown that family polymorphism 
+is easy to support when inheritance and subtyping are disconnected.
+
 The goal of this paper is to synthesize and improve on
 the main ideas of those very different designs into a nominally typed
 minimalist language, called \name, which is quite
@@ -190,10 +193,12 @@ Moreover, we provide a novel and elegant solution to \textbf{uniformly
 handling behaviour and state} within trait composition and without the need of glue-code.
 These ideas have been implemented in the 42 language, 
 which supports all the examples we show in this paper.
-\saveSpace\saveSpace\saveSpace
+This allowed us to run 3 case studies comparing
+our language with languages where use and reuse are connected, like Java and Scala.
+\saveSpace\saveSpace
 
-%\keywords{Code Reuse, Object-Oriented Programming}
-\saveSpace\saveSpace\saveSpace
+\keywords{Code Reuse, Object-Oriented Programming}
+\saveSpace\saveSpace
 \end{abstract}
 
 \input{Intro}

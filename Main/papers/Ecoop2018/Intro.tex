@@ -1,4 +1,6 @@
+\saveSpace
 \section{Introduction}\label{sec:intro}
+\saveSpace
 In mainstream OO languages like Java, C++, Scala or C\# subclassing 
 implies subtyping. For example, a Java subclass definition, such as 
 \Q@class A extends B {}@
@@ -47,19 +49,19 @@ of most nominal OO languages subclassing implies subtyping in a
 fundamental way. This is because of what we call the
 \emph{this-leaking problem}, illustrated by the following
 (Java) code:
-
+\saveSpace
 \begin{lstlisting}[language=Java]
   class A{ int ma(){return Utils.m(this);} }
   class Utils{static int m(A a){..}}
 \end{lstlisting}
-
+\saveSpace
 Method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
 This code is correct, and there is no subtyping/subclassing.  Now, lets add a class \Q@B@
-
+\saveSpace
 \begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
-
+\saveSpace
 %%Class \lstinline{B} does two things at the same time: 
 %%1) it {\bf inherits} the method \lstinline{ma} from
 %%\lstinline{A}; and 2) it creates a {\bf subtype} of \lstinline{A}.
@@ -128,6 +130,10 @@ separation of inheritance and subtyping.
 a module composition language where the main idea is that
 nested classes with the same name are recursively composed.
 \end{itemize}
+Those 3 languages also shown that family polymorphism 
+is easy to support when inheritance and subtyping are disconnected.
+
+
 This paper aims at showing a simple language design, called \name,
 which addresses the \emph{this-leaking problem} and decouples subtyping from inheritance.
 Leveraging on traits, in this work we aim to synthesize the best ideas
@@ -143,7 +149,9 @@ Java. Traits are meant for code \textbf{reuse} and multiple traits can be
 composed to form a class which can then be instantiated. Traits 
 cannot be instantiated or used as types. Such design allows
 subtyping and code reuse to be treated separately, which in turn
-brings several flexibility and simplicity benefits.
+brings several flexibility and simplicity benefits; for example Family Polymorphism and Virtual Classes~\cite{ernst2004expression} are radically simpler to soundly support.
+Such simplification has been already recognized by the 3 lines of research above, and is even more outstanding in the clean \name model.
+
 
 We first focus on an example-driven presentation to illustrate how to
 improve use and reuse. 
@@ -155,6 +163,7 @@ and the design of \name synthesizes some of these previously studied
 concepts.
 The language design ideas have been implemented in the {\bf 42 language}, which supports all
 the examples we show in the paper, and is available at: \url{http://l42.is} (this site can be accessed without breaking double blind review).
+Work on 42 is now slowly reaching maturity after about 5 years of intense research and development, more then a thousand GIT commits and about a thousand tests.
 
 In summary, our contributions are:
 
@@ -186,7 +195,7 @@ In summary, our contributions are:
 
 \item \name extended with nested classes solves the expression problem better than former work.
 \item We show the simplicity of our approach by providing a compact 1 page formalization
-\item We perform 3 case studies, comparing our work with other approaches, showing that we can express the same examples in a cleaner and more modular manner.
+\item We perform 3 case studies, comparing our work with other approaches; we collect clear data showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}
 \saveSpace
 \saveSpace

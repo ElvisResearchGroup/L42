@@ -347,9 +347,9 @@ ${}_{}$\\*
 \item all methods in an interface are abstract, and there are no interface static methods.
 \end{itemize}
 
-
+\saveSpace
 \subsection{Compilation process}
-
+\saveSpace
 Usually the compilation process is not modelled, but here it is the \textbf{most interesting part}.
 Here we explain in the detail the flattening process and how and when compilation errors may arise.
 It is composed by rules \Rulename{top},\ \Rulename{look-up},\ \Rulename{ctx-c} and \Rulename{sum}.
@@ -753,8 +753,9 @@ Our approach allows for safe libraries of traits and classes to be typechecked o
 %However, we do not force the programmer to write self-contained code where all the abstract method definition are explicitly declared.
 
 
-
+\saveSpace
 \subsection{Expression reduction}
+\saveSpace
 Reduction rules are incredibly simple and standard.
 A great advantage of our compilation model is that expressions are executed on
 a simple fully flattened program, 

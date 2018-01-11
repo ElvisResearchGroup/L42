@@ -71,8 +71,35 @@ PT imports all the complexity of Java, so although is possible to separate use a
 Both DeepFJig and PT allow a class to refer to its name, albeit this is
 less obvious in PT since both a package and a class have to be introduced to express it.
 This allows encoding binary methods, expressing patterns like withers or fluent setters and to instantiate instances of the (future) class(es)  using the reused code.
-
 \end{itemize}
+
+\subsection{Family
+Polymorphism by disconnecting Use and Reuse}
+
+Researchers with a strong grasp on FP: Family
+Polymorphism know that support for FP strictly includes
+support for `\Q@This@' type and self instantiation, since the
+class is a member of its own family.
+~\cite{deep} contains an in depth comparison between various FP approaches.
+The main point is synthesized by the following example, allowed when FP 
+is obtained while keeping Use and Reuse connected:
+\begin{lstlisting}
+A = { B = {...}                Int m(B b){...} }
+A2 = Use A, { B = {... Int y;} Int m(B b){ ... b.y ... }}
+A a=new A2();//this line is considered sound by most FP
+a.m(new A.B());//this line is unsound, but is hard to prevent
+\end{lstlisting}
+In those approaches, \Q@A2@ is a subtype of \Q@A@,
+so code like \Q@A a=new A2();@ is accepted.
+However, this implies that innocent looking code like
+\Q@a.m(new A.B());@ is now unsound: method \Q@A2.m@ will
+try to access field \Q@A2.B.y@
+that is not present in class \Q@A.B@.
+To track those calls, and enforce the \emph{family} of the receiver and the argument is the same, complex dependent type systems are often used~\cite{ernst2004expression,Zenger-Odersky2005}.
+
+Our approach logically avoid all this complexity: by disconnecting use and reuse we outlaw \Q@A a=new A2()@.
+While in \name this is also reducing the expressing power a little,
+in the full 42 language, as well as in DeepFJig, the operator \textbf{redirect} allows to write code that is parametric on families of data types.
 
 \subsection{State and traits}
 The original trait model has no self construction 
