@@ -35,9 +35,9 @@
 \renewcommand{\paragraph}[1]{\noindent{\bf #1}}
 
 \let\oldsubsection\subsection
-\renewcommand{\subsection}[1]{\vspace{-5pt}\oldsubsection{#1}\vspace{-5pt}}
+\renewcommand{\subsection}[1]{\vspace{-4pt}\oldsubsection{#1}\vspace{-4pt}}
 
-\newenvironment{listing}{\vspace{-3pt}\begin{lstlisting}}{\end{lstlisting}\vspace{-3pt}}
+%\newenvironment{listing}{\vspace{-3pt}\begin{lstlisting}}{\end{lstlisting}\vspace{-3pt}}
 %
 \lstset{language=Java,
   basicstyle=\ttfamily\footnotesize,%\small,%\scriptsize,
@@ -49,7 +49,7 @@
   breaklines=false,
   breakatwhitespace=false,
   breakautoindent=false,
-  linewidth=4\textwidth,% should be enough
+  %linewidth=4\textwidth,% should be enough
 %  identifierstyle=\idstyle
  morekeywords={method,Use,This,then,constructor},
  deletekeywords={double}
