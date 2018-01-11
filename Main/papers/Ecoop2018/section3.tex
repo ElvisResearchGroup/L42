@@ -109,14 +109,14 @@ Set=Use set
 bag=Use set, {/*bag implementation*/}
 Bag=Use bag
 \end{lstlisting}\saveSpace
-Notice how, thanks to flattening, the resulting code for \Q@Bag@ is identical in both versions, 
-and as shown in Section 2, there is no trace of trait \Q@bag@. 
+Notice how, thanks to flattening, the resulting code for \Q@Bag@ is identical in both versions
+and, as shown in Section 2, there is no trace of trait \Q@bag@. 
 Thus if we are the developers of bags, we can temporarily go for the first version.
 Then, when for example we need to add \Q@Bag5@ as discussed before,
 we can introduce the \Q@bag@ trait without adding new undesired complexity for our old clients.
 
 
-As a pleasurable accident, avoiding such code allows us simple support for the
+As a pleasurable accident, avoiding such code allows us to provide support for the
 `\Q@This@' type and (in the extensions with nested classes seen later)
-family polymorphism.
+family polymorphism in a very simple way.
 

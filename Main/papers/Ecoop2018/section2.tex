@@ -139,7 +139,7 @@ dependencies in code literals to be explicitly declared, so that the
 code literal is completely self-contained. However, this results in
 many redundant abstract method declarations.
 
-\paragraph{Semantic of Use}
+\paragraph{Semantics of Use}
 Albeit alternative semantic models for traits~\cite{Traits:ECOOP2003} have been proposed,
 here we use the flattening model. This means that 
 \saveSpace\begin{lstlisting}
@@ -147,7 +147,7 @@ A=Use ta
 B=Use ta, { method int mb(){return this.ma();} }
 \end{lstlisting}\saveSpace
  
-\noindent is equivalent to:
+\noindent is equivalent to the inlining the code of all used traits:
   
 \saveSpace \begin{lstlisting}
 A={implements IA method int ma(){return Utils.m(this);}}
