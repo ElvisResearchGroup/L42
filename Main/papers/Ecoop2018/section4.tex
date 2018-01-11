@@ -141,9 +141,13 @@ classes is given next, and is formally defined in Section \ref{sec:formal}:
   \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
 \item a class with a single abstract \Q@static@ method returning \Q@This@
 is coherent if all the other abstract methods can be seen as \emph{abstract state
-operations} over one of its argument.
+operations} over one of its argument. The single, abstract static
+method acts as a \emph{factory method}.
+The signature of the factory method plays an important role, since
+abstract state operations are identified by using the names of the
+factory method arguments.
 For example,
-if there is a \Q@static method This of(int x, int y)@ as before,
+if there is a \Q@static method This of(int x, int y)@,
 then
 \begin{itemize}
 \item a method \Q@int x()@ is interpreted as an abstract state method: a \emph{getter} for \Q@x@.
@@ -168,8 +172,8 @@ set of such abstract state operations.
 
 \paragraph{Points in \name:}
 In \name and with our approach to handle the state, 
-\lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed;
-It works because resulting class is coherent.
+\lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed.
+This works because resulting class is coherent.
 \saveSpace
 \begin{lstlisting}
   PointAlgebra:Use pointSum,pointMul //no glue code needed
@@ -221,7 +225,7 @@ Java 8 default interface methods.
 We then chose Java7, that lacks the features needed to encode traits, to show the impact of this feature.
 Finally, the comparison with Scala is interesting 
 since
-it has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
+it has good support for traits, and using abstract types, it is possible to support `\Q@This@' type.
 Rust is similar to Scala in this regard; we believe we would get similar results by comparing against either Scala or Rust.
 
 We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } 28 method bodies across the 16 classes.
@@ -239,8 +243,9 @@ operations and finally 11 lines for the class with all the four operations.
 
 
  The solution in Classless Java was slightly smaller than Java7,
- but was still quite longer than the \name solution because it still had to redefine the
- sum/sub/etc operations in each of the classes because of limited support of the `\Q@This@' type, thus it also has 28 duplicated method bodies.
+ but was still longer than the \name solution because it still had to redefine the
+ sum/sub/etc operations in each of the classes. Here the limited
+ support of the `\Q@This@' type is to blaim, thus Classless Java also has 28 duplicated method bodies.
 
 Finally, we compare it with a Scala solution.
 %Scala has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
