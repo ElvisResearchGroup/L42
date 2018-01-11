@@ -1,0 +1,1792 @@
+\newpage\appendix
+\section{Case studies complete code} 
+
+Here, for reference, you can find the complete
+of the Case Studies.
+It is quite a lot of code, about 18 pages. The interested reader
+can navigate it in order to gain a perfect understanding on
+how we encoded the various solutions in the various styles and languages,
+but is not needed to understand the overall value of our paper.
+
+\subsection{Point algebra}
+Here the code of Java7 for the first case study, the \Q@Point@ algebra:
+\begin{lstlisting}[basicstyle=\tiny]
+//0
+class Point {//6
+  final int x;
+  final int y;
+
+  public Point(int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+// 1
+class PointSum extends Point {//5*4
+  public PointSum(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSum sum(Point that) {
+    return new PointSum(this.x + that.x, this.y + that.y);
+  }
+}
+
+// 2
+class PointSub extends Point {
+  public PointSub(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSub sub(Point that) {
+    return new PointSub(this.x - that.x, this.y - that.y);
+  }
+}
+
+// 3
+class PointMul extends Point {
+  public PointMul(int x, int y) {
+    super(x, y);
+  }
+
+  public PointMul mul(Point that) {
+    return new PointMul(this.x * that.x, this.y * that.y);
+  }
+}
+
+// 4
+class PointDiv extends Point {
+  public PointDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointDiv div(Point that) {
+    return new PointDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 5
+class PointSumSub extends PointSum {//7*6
+  public PointSumSub(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumSub sum(Point that) {
+    return new PointSumSub(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumSub sub(Point that) {
+    return new PointSumSub(this.x - that.x, this.y - that.y);
+  }
+}
+
+// 6
+class PointSumMul extends PointSum {
+  public PointSumMul(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumMul sum(Point that) {
+    return new PointSumMul(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumMul mul(Point that) {
+    return new PointSumMul(this.x * that.x, this.y * that.y);
+  }
+}
+
+// 7
+class PointSumDiv extends PointSum {
+  public PointSumDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumDiv sum(Point that) {
+    return new PointSumDiv(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumDiv div(Point that) {
+    return new PointSumDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 8
+class PointSubMul extends PointSub {
+  public PointSubMul(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSubMul sub(Point that) {
+    return new PointSubMul(this.x - that.x, this.y - that.y);
+  }
+
+  public PointSubMul mul(Point that) {
+    return new PointSubMul(this.x * that.x, this.y * that.y);
+  }
+}
+
+// 9
+class PointSubDiv extends PointSub {
+  public PointSubDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSubDiv sub(Point that) {
+    return new PointSubDiv(this.x - that.x, this.y - that.y);
+  }
+
+  public PointSubDiv div(Point that) {
+    return new PointSubDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 10
+class PointMulDiv extends PointMul {
+  public PointMulDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointMulDiv mul(Point that) {
+    return new PointMulDiv(this.x * that.x, this.y * that.y);
+  }
+
+  public PointMulDiv div(Point that) {
+    return new PointMulDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 11
+class PointSumSubDiv extends PointSumSub {//9*4
+  public PointSumSubDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumSubDiv sum(Point that) {
+    return new PointSumSubDiv(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumSubDiv sub(Point that) {
+    return new PointSumSubDiv(this.x - that.x, this.y - that.y);
+  }
+
+  public PointSumSubDiv div(Point that) {
+    return new PointSumSubDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 12
+class PointSumSubMul extends PointSumSub {
+  public PointSumSubMul(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumSubMul sum(Point that) {
+    return new PointSumSubMul(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumSubMul sub(Point that) {
+    return new PointSumSubMul(this.x - that.x, this.y - that.y);
+  }
+
+  public PointSumSubMul mul(Point that) {
+    return new PointSumSubMul(this.x * that.x, this.y * that.y);
+  }
+}
+
+// 13
+class PointSumMulDiv extends PointMulDiv {
+  public PointSumMulDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumMulDiv sum(Point that) {
+    return new PointSumMulDiv(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumMulDiv mul(Point that) {
+    return new PointSumMulDiv(this.x * that.x, this.y * that.y);
+  }
+
+  public PointSumMulDiv div(Point that) {
+    return new PointSumMulDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 14
+class PointSubMulDiv extends PointMulDiv {
+  public PointSubMulDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSubMulDiv sub(Point that) {
+    return new PointSubMulDiv(this.x - that.x, this.y - that.y);
+  }
+
+  public PointSubMulDiv mul(Point that) {
+    return new PointSubMulDiv(this.x * that.x, this.y * that.y);
+  }
+
+  public PointSubMulDiv div(Point that) {
+    return new PointSubMulDiv(this.x / that.x, this.y / that.y);
+  }
+}
+
+// 15
+class PointSumSubMulDiv extends PointSumSubMul {//11
+  public PointSumSubMulDiv(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSumSubMulDiv sum(Point that) {
+    return new PointSumSubMulDiv(this.x + that.x, this.y + that.y);
+  }
+
+  public PointSumSubMulDiv sub(Point that) {
+    return new PointSumSubMulDiv(this.x - that.x, this.y - that.y);
+  }
+
+  public PointSumSubMulDiv mul(Point that) {
+    return new PointSumSubMulDiv(this.x * that.x, this.y * that.y);
+  }
+
+  public PointSumSubMulDiv div(Point that) {
+    return new PointSumSubMulDiv(this.x / that.x, this.y / that.y);
+  }
+}
+\end{lstlisting}
+
+Here you can find the ClassLessJava style code for the Point Algebra:
+\begin{lstlisting}[basicstyle=\tiny]
+// 0
+@Obj // 3 lines
+interface Point {
+  static Point of(int x, int y) {// methods "of" generated by @Obj thus not counted in the line numbers
+    return new Point() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  int x();
+
+  int y();
+}
+
+// 1
+@Obj // 3*4 lines
+interface PointSum extends Point {
+  static PointSum of(int x, int y) {
+    return new PointSum() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSum sum(Point that) {
+    return of(this.x() + that.x(), this.y() + that.y());
+  }
+}
+
+// 2
+@Obj
+interface PointSub extends Point {
+  static PointSub of(int x, int y) {
+    return new PointSub() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSub sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+}
+
+// 3
+@Obj
+interface PointMul extends Point {
+  static PointMul of(int x, int y) {
+    return new PointMul() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointMul mul(Point that) {
+    return of(this.x() * that.x(), this.y() * that.y());
+  }
+}
+
+// 4
+@Obj
+interface PointDiv extends Point {
+  static PointDiv of(int x, int y) {
+    return new PointDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 5
+@Obj // 5*6 lines
+interface PointSumMul extends PointSum, PointMul {
+  static PointSumMul of(int x, int y) {
+    return new PointSumMul() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumMul sum(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() + that.x(), this.y() + that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSumMul mul(Point that) {
+    return of(this.x() * that.x(), this.y() * that.y());
+  }
+}
+
+// 6
+@Obj
+interface PointSumSub extends PointSum, PointSub {
+  static PointSumSub of(int x, int y) {
+    return new PointSumSub() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumSub sum(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() + that.x(), this.y() + that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSumSub sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+}
+
+// 7
+@Obj
+interface PointSumDiv extends PointSum, PointDiv {
+  static PointSumDiv of(int x, int y) {
+    return new PointSumDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumDiv sum(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() + that.x(), this.y() + that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSumDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 8
+@Obj
+interface PointSubMul extends PointMul, PointSub {
+  static PointSubMul of(int x, int y) {
+    return new PointSubMul() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSubMul mul(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSubMul sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+}
+
+// 9
+@Obj
+interface PointSubDiv extends PointSub, PointDiv {
+  static PointSubDiv of(int x, int y) {
+    return new PointSubDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSubDiv sub(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() - that.x(), this.y() - that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSubDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 10
+@Obj
+interface PointMulDiv extends PointMul, PointDiv {
+  static PointMulDiv of(int x, int y) {
+    return new PointMulDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointMulDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 11
+@Obj // 7*4 lines
+interface PointSumSubDiv extends PointSumSub, PointSumDiv, PointSubDiv {
+  static PointSumSubDiv of(int x, int y) {
+    return new PointSumSubDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumSubDiv sum(Point that) {
+    return of(this.x() + that.x(), this.y() + that.y());
+  }
+
+  default PointSumSubDiv sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+
+  default PointSumSubDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 12
+@Obj
+interface PointSumSubMul extends PointSumSub, PointSumMul, PointSubMul {
+  static PointSumSubMul of(int x, int y) {
+    return new PointSumSubMul() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumSubMul sum(Point that) {
+    return of(this.x() + that.x(), this.y() + that.y());
+  }
+
+  default PointSumSubMul sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+
+  default PointSumSubMul mul(Point that) {
+    return of(this.x() * that.x(), this.y() * that.y());
+  }
+}
+
+// 13
+@Obj
+interface PointSumMulDiv extends PointSumMul, PointMulDiv, PointSumDiv {
+  static PointSumMulDiv of(int x, int y) {
+    return new PointSumMulDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumMulDiv sum(Point that) {
+    return of(this.x() + that.x(), this.y() + that.y());
+  }
+
+  default PointSumMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSumMulDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 14
+@Obj
+interface PointSubMulDiv extends PointSubMul, PointMulDiv, PointSubDiv {
+  static PointSubMulDiv of(int x, int y) {
+    return new PointSubMulDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSubMulDiv sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+
+  default PointSubMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSubMulDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+
+// 15
+@Obj//9*1 lines
+interface PointSumSubMulDiv extends PointSumSubMul, PointSumMulDiv, PointSumSubDiv, PointSubMulDiv {
+  static PointSumSubMulDiv of(int x, int y) {
+    return new PointSumSubMulDiv() {
+      public int x() {
+        return x;
+      }
+
+      public int y() {
+        return y;
+      }
+    };
+  }
+
+  default PointSumSubMulDiv sum(Point that) {
+    return of(this.x() + that.x(), this.y() + that.y());
+  }
+
+  default PointSumSubMulDiv sub(Point that) {
+    return of(this.x() - that.x(), this.y() - that.y());
+  }
+
+  default PointSumSubMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+    return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
+  }
+
+  default PointSumSubMulDiv div(Point that) {
+    return of(this.x() / that.x(), this.y() / that.y());
+  }
+}
+\end{lstlisting}
+
+Here you can find the Scala code for the Point Algebra:
+\begin{lstlisting}[basicstyle=\tiny]
+trait tPointState {//5
+  type p <: tPointState
+  def x: Int
+  def y: Int
+  def of(x:Int,y:Int):p
+}
+
+trait tPointSum extends tPointState {//3*4
+  def sum(that:p)=
+    this.of(this.x+that.x,this.y+that.y)  
+}
+
+trait tPointSub extends tPointState {
+  def sub(that:p)=
+    this.of(this.x-that.x,this.y-that.y)  
+}
+
+trait tPointMul extends tPointState {
+  def mul(that:p)=
+    this.of(this.x*that.x,this.y*that.y)  
+}
+
+trait tPointDiv extends tPointState {
+  def div(that:p)=
+    this.of(this.x/that.x,this.y/that.y)  
+}
+//glue code from now on
+class Point0(val x:Int, val y:Int) extends tPointState {//4*16
+ override type p = Point0
+ override def of(x:Int,y:Int)=
+   new Point0(x,y)//3 duplication of "this name"
+}
+
+class PointSum(val x:Int, val y:Int) extends tPointSum {
+ override type p = PointSum
+ override def of(x:Int,y:Int)=
+   new PointSum(x,y)
+}
+
+class PointSub(val x:Int, val y:Int) extends tPointSub {
+ override type p = PointSub
+ override def of(x:Int,y:Int)=
+   new PointSub(x,y)
+}
+
+class PointMul(val x:Int, val y:Int) extends tPointMul {
+ override type p = PointMul
+ override def of(x:Int,y:Int)=
+   new PointMul(x,y)
+}
+
+class PointDiv(val x:Int, val y:Int) extends tPointDiv {
+ override type p = PointDiv
+ override def of(x:Int,y:Int)=
+   new PointDiv(x,y)
+}
+
+class PointSumSub(val x:Int, val y:Int) extends tPointSum with tPointSub {
+ override type p = PointSumSub
+ override def of(x:Int,y:Int)=
+   new PointSumSub(x,y)
+}
+
+class PointSumMul(val x:Int, val y:Int) extends tPointSum with tPointMul {
+ override type p = PointSumMul
+ override def of(x:Int,y:Int)=
+   new PointSumMul(x,y)
+}
+
+class PointSumDiv(val x:Int, val y:Int) extends tPointSum with tPointDiv {
+ override type p = PointSumDiv
+ override def of(x:Int,y:Int)=
+   new PointSumDiv(x,y)
+}
+
+class PointSubMul(val x:Int, val y:Int) extends tPointSub with tPointMul {
+ override type p = PointSubMul
+ override def of(x:Int,y:Int)=
+   new PointSubMul(x,y)
+}
+
+class PointSubDiv(val x:Int, val y:Int) extends tPointSub with tPointDiv {
+ override type p = PointSubDiv
+ override def of(x:Int,y:Int)=
+   new PointSubDiv(x,y)
+}
+
+class PointMulDiv(val x:Int, val y:Int) extends tPointMul with tPointDiv {
+ override type p = PointMulDiv
+ override def of(x:Int,y:Int)=
+   new PointMulDiv(x,y)
+}
+
+class PointSumSubDiv(val x:Int, val y:Int) extends tPointSum with tPointSub with tPointDiv {
+ override type p = PointSumSubDiv
+ override def of(x:Int,y:Int)=
+   new PointSumSubDiv(x,y)
+}
+
+class PointSumSubMul(val x:Int, val y:Int) extends tPointSum with tPointSub with tPointMul {
+ override type p = PointSumSubMul
+ override def of(x:Int,y:Int)=
+   new PointSumSubMul(x,y)
+}
+
+class PointSumMulDiv(val x:Int, val y:Int) extends tPointSum with tPointMul with tPointDiv {
+ override type p = PointSumMulDiv
+ override def of(x:Int,y:Int)=
+   new PointSumMulDiv(x,y)
+}
+
+class PointSubMulDiv(val x:Int, val y:Int) extends tPointSub with tPointMul with tPointDiv {
+ override type p = PointSubMulDiv
+ override def of(x:Int,y:Int)=
+   new PointSubMulDiv(x,y)
+}
+
+class PointSumSubMulDiv(val x:Int, val y:Int) extends tPointSum with tPointSub with tPointMul with tPointDiv {
+ override type p = PointSumSubMulDiv
+ override def of(x:Int,y:Int)=
+   new PointSumSubMulDiv(x,y)
+}
+\end{lstlisting}
+
+Here you can find the 42 code for the Point Algebra.
+The main differences with respect to \name as presented in
+the paper, is that we use \Q@Resource<><@
+to declare a trait,
+all trait names start with \texttt{\$}
+and are referred with `\Q@()@'.
+Method bodies can be just simple expressions, without the need
+or `\Q@return@'.
+
+\begin{lstlisting}[basicstyle=\tiny, mathescape=false]
+$p: Resource <>< {//4
+  method Num x()
+  method Num y()
+  class method This of(Num x,Num y)
+  }
+
+$pointSum: Resource <>< Use[$p()] <>< {//3*4
+  method This sum(This that)
+    This.of(x: this.x()+that.x(), y: this.y()+that.y())
+  }
+
+$pointSub: Resource <>< Use[$p()] <>< {
+  method This sub(This that)
+    This.of(x: this.x()-that.x(), y: this.y()-that.y())
+  }
+
+$pointMul: Resource <>< Use[$p()] <>< {
+  method This mul(This that)
+    This.of(x: this.x()*that.x(), y: this.y()*that.y())
+  }
+
+$pointDiv: Resource <>< Use[$p()] <>< {
+  method This div(This that)
+    This.of(x: this.x()/that.x(), y: this.y()/that.y())
+  }
+
+Point: Use[$p()] <>< {}//1*16
+
+PointSum: Use[$pointSum()] <>< {}
+
+PointSub: Use[$pointSub()] <>< {}
+
+PointMul: Use[$pointMul()] <>< {}
+
+PointDiv: Use[$pointDiv()] <>< {}
+
+PointSumSub: Use[$pointSum();$pointSub()] <>< {}
+
+PointSumMul: Use[$pointSum();$pointMul()] <>< {}
+
+PointSumDiv: Use[$pointSum();$pointDiv()] <>< {}
+
+PointSubMul: Use[$pointSub();$pointMul()] <>< {}
+
+PointSubDiv: Use[$pointSub();$pointDiv()] <>< {}
+
+PointMulDiv: Use[$pointMul();$pointDiv()] <>< {}
+
+PointSumSubDiv: Use[$pointSum();$pointSub();$pointDiv()] <>< {}
+
+PointSumSubMul: Use[$pointSum();$pointSub();$pointMul()] <>< {}
+
+PointSumMulDiv: Use[$pointSum();$pointMul();$pointDiv()] <>< {}
+
+PointSubMulDiv: Use[$pointSub();$pointMul();$pointDiv()] <>< {}
+
+PointSumSubMulDiv: Use[$pointSum();$pointSub();$pointMul();$pointDiv()] <>< {}
+\end{lstlisting}
+
+
+\subsection{FCPoint}
+Here the code of Java7 for the second case study;
+flavoured and colored points:
+\begin{lstlisting}[basicstyle=\tiny]
+enum Flavor {
+  NONE, SOUR, SWEET, SALTY, SPLICY;
+}
+
+class Color {
+  final int r;
+  final int g;
+  final int b;
+
+  public Color(int r, int g, int b) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
+  }
+
+  public Color mix(Color that) {
+    return new Color((this.r + that.r) / 2, (this.g + that.g) / 2, (this.b + that.b) / 2);
+  }
+}
+
+class Point {//10 lines
+  final int x;
+  final int y;
+
+  public Point(int x, int y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public Point withX(int that) {
+    return new Point(that, this.y);
+  }
+
+  public Point withY(int that) {
+    return new Point(this.x, that);
+  }
+}
+
+class PointSum extends Point {//9 lines
+  public PointSum(int x, int y) {
+    super(x, y);
+  }
+
+  public PointSum withX(int that) {
+    return new PointSum(that, this.y);
+  }
+
+  public PointSum withY(int that) {
+    return new PointSum(this.x, that);
+  }
+
+  public PointSum sum(Point that) {
+    return this.withX(this.x + that.x).withY(this.y + that.y);
+  }
+}
+
+class CPoint extends PointSum {//13 lines
+  final Color color;
+
+  public CPoint(int x, int y, Color color) {
+    super(x, y);
+    this.color = color;
+  }
+
+  public CPoint withX(int that) {
+    return new CPoint(that, this.y, this.color);
+  }
+
+  public CPoint withY(int that) {
+    return new CPoint(this.x, that, this.color);
+  }
+
+  public CPoint withColor(Color that) {
+    return new CPoint(this.x, this.y, that);
+  }
+
+  public CPoint merge(CPoint that) {
+    return this.withColor(this.color.mix(that.color));
+  }
+}
+
+class FCPoint extends CPoint {//15 lines
+  final Flavor flavor;
+
+  public FCPoint(int x, int y, Color color, Flavor flavor) {
+    super(x, y, color);
+    this.flavor = flavor;
+  }
+
+  public FCPoint withX(int that) {
+    return new FCPoint(that, this.y, this.color, this.flavor);
+  }
+
+  public FCPoint withY(int that) {
+    return new FCPoint(this.x, that, this.color, this.flavor);
+  }
+
+  public FCPoint withColor(Color that) {
+    return new FCPoint(this.x, this.y, that, this.flavor);
+  }
+
+  public FCPoint withFlavor(Flavor that) {
+    return new FCPoint(this.x, this.y, this.color, that);
+  }
+
+  public FCPoint merge(FCPoint that) {
+    return this.withColor(that.color).withFlavor(that.flavor);
+  }
+}
+\end{lstlisting}
+Here the code of Scala for flavoured and colored points:
+\begin{lstlisting}[basicstyle=\tiny]
+trait tPointState {//8
+  type p <: tPointState
+  def x: Int
+  def y: Int
+  def withX(that:Int):p
+  def withY(that:Int):p
+  def of(x:Int,y:Int):p
+  def merge(that:p):p
+}
+
+trait tPointSum extends tPointState {//3
+  def sum(that:p)=
+    this.merge(that).withX(this.x+that.x).withY(this.y+that.y)  
+}
+
+trait tColored {//6*2
+  type p <: tColored
+  def color:Int
+  def withColor(that:Int):p
+  def merge(that:p)=
+    this.withColor(this.color+that.color)
+  }
+
+trait tFlavored{
+  type p <: tFlavored
+  def flavor:Int
+  def withFlavor(that:Int):p
+  def merge(that:p)=
+    this.withFlavor(that.flavor)
+  }
+//glue code from now on //12 lines
+class CPoint(val x:Int, val y:Int, val color:Int) extends tPointSum with tColored {
+  override type p = CPoint
+  def of(x:Int,y:Int)=
+    this.of(x,y,0)
+  def of(x:Int,y:Int,color:Int)=
+    new CPoint(x,y,color)
+  def withX(that:Int)=
+    of(that,y,color)
+  def withY(that:Int)=
+    of(x,that,color)
+  def withColor(that:Int)=
+    of(x,y,that)
+  }
+//18 lines
+class FCPoint(val x:Int, val y:Int, val color:Int, val flavor:Int) extends tPointSum with tColored with tFlavored{
+  override type p = FCPoint
+  def of(x:Int,y:Int)=
+    this.of(x,y,0,0)
+  def of(x:Int,y:Int,color:Int,flavor:Int)=
+    new FCPoint(x,y,color,flavor)
+  def withX(that:Int)=
+    of(that,y,color,flavor)
+  def withY(that:Int)=
+    of(x,that,color,flavor)
+  def withColor(that:Int)=
+    of(x,y,that,flavor)
+  def withFlavor(that:Int)=
+    of(x,y,color,that)
+  def superMergeFlavoured(that:FCPoint)=
+    super[tFlavored].merge(that)
+  override def merge(that:FCPoint)=
+      super[tColored].merge(that).superMergeFlavoured(that)
+  }
+\end{lstlisting}
+
+Here you can find the 42 code for flavored and colored points..
+
+\begin{lstlisting}[basicstyle=\tiny, mathescape=false]
+Flavor: Enumeration"sour, sweet, salty, spicy"
+
+Color:Data<><{Num r Num g Num b
+  method This mix(This that)
+    Color( r:(this.r()+that.r())/2Num, g:(this.g()+that.g())/2Num, b:(this.b()+that.b())/2Num)
+  }
+
+$p: Resource <>< {// 7 lines
+  method Num x()
+  method Num y() //getters
+  method This withX(Num that)
+  method This withY(Num that)//withers
+  class method This of(Num x,Num y)
+  method This merge(This that) //new method merge!
+  }
+
+$pointSum: Resource <>< Use[$p()] <>< {// 3 lines
+  method This sum(This that)
+    this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y())
+  }
+
+$colored: Resource <>< {// 5 *2 lines
+  method Color color()
+  method This withColor(Color that)
+  method This merge(This that) //how to merge color handled here
+    this.withColor(this.color().mix(that.color()))
+  }
+
+$flavored: Resource <>< {
+  method Flavor flavor() //very similar to colored
+  method This withFlavor(Flavor that)
+  method This merge(This that) //merging flavors handled here
+    this.withFlavor(that.flavor())//inherits "that" flavor
+  }
+
+CPoint: Use[$pointSum();$colored()] <>< {// 4 lines
+  class method This of(Num x,Num y)
+    This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num))
+  class method This of(Num x, Num y,Color color)
+  }
+
+FCPoint: Use[//9 lines
+  Refactor2.toAbstract(selector:\"merge(that)", into:\"_1merge(that)")<><$colored();
+  Refactor2.toAbstract(selector:\"merge(that)", into:\"_2merge(that)")<><$flavored();
+  $pointSum()] <>< {
+    class method This of(Num x,Num y)
+      This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num),flavor:Flavor.none())
+    class method This of(Num x, Num y,Color color,Flavor flavor)
+    method This merge(This that)
+      this._1merge(that)._2merge(that)
+    }
+\end{lstlisting}
+
+\subsection{Expression problem}
+Here the original code of Scala solving the expression problem.
+As you can see, sometimes multiple operations/cases are declared together in
+the same trait.
+\begin{lstlisting}[basicstyle=\tiny]
+trait Base {
+  type exp <: Exp
+
+  trait Exp {
+    def eval: Int
+  }
+
+  class Num(val value: Int) extends Exp {
+    def eval: Int = value
+  }
+
+  type BaseNum = Num
+}
+
+trait BasePlus extends Base {
+  class Plus(val left: exp, val right: exp) extends Exp {
+    def eval: Int = left.eval + right.eval
+  }
+
+  type BasePlus = Plus
+}
+
+trait BaseNeg extends Base {
+  class Neg(val term: exp) extends Exp {
+    def eval = -term.eval
+  }
+
+  type BaseNeg = Neg
+}
+trait BasePlusNeg extends BasePlus with BaseNeg
+trait Show extends Base {
+  type exp <: Exp
+
+  trait Exp extends super.Exp {
+    def show: String
+  }
+
+  trait NumBehavior extends Exp {
+    self: BaseNum =>
+    override def show: String = value.toString
+  }
+
+  final class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+}
+
+trait ShowPlusNeg extends BasePlusNeg with Show {
+  trait PlusBehavior {
+    self: BasePlus =>
+    def show = left.show + "+" + right.show;
+  }
+
+  final class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+
+  trait NegBehavior {
+    self: BaseNeg =>
+    def show = "-(" + term.show + ")";
+  }
+  
+  class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+}
+
+trait DblePlusNeg extends BasePlusNeg {
+  type exp <: Exp
+
+  trait Exp extends super.Exp {
+    def dble: exp
+  }
+
+  def Num(v: Int): exp
+
+  def Plus(l: exp, r: exp): exp
+
+  def Neg(t: exp): exp
+
+  trait NumBehavior {
+    self: BaseNum =>
+    def dble = Num(value * 2)
+  }
+
+  final class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+
+  trait PlusBehavior {
+    self: BasePlus =>
+    def dble = Plus(left.dble, right.dble)
+  }
+
+  class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+
+  trait NegBehavior {
+    self: BaseNeg =>
+    def dble = Neg(term.dble)
+  }
+
+  class Neg(t: exp) extends super.Neg(t) with NegBehavior with Exp
+}
+//-- 52 lines up to here, not counting new lines and '}'
+trait Equals extends Base {
+  type exp <: Exp;
+
+  trait Exp extends super.Exp {
+    def eql(other: exp): Boolean;
+
+    def isNum(v: Int): Boolean = false;
+  }
+
+  trait NumBehavior extends Exp {
+    self: BaseNum =>
+    def eql(other: exp): Boolean = other.isNum(value);
+
+    override def isNum(v: Int) = v == value;
+  }
+
+  final class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+}
+
+trait EqualsPlusNeg extends BasePlusNeg with Equals {
+  type exp <: Exp;
+
+  trait Exp extends super[BasePlusNeg].Exp
+    with super[Equals].Exp {
+    def isPlus(l: exp, r: exp): Boolean = false;
+
+    def isNeg(t: exp): Boolean = false;
+  }
+
+  final class Num(v: Int) extends BaseNum(v)
+    with NumBehavior // effectively super[Equals].NumBehavior
+    with Exp
+
+  trait PlusBehavior extends Exp {
+    self: BasePlus =>
+    def eql(other: exp): Boolean = other.isPlus(left, right);
+
+    override def isPlus(l: exp, r: exp) = (left eql l) && (right eql r)
+  }
+
+  final class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+
+  trait NegBehavior extends Exp {
+    self: BaseNeg =>
+    def eql(other: exp): Boolean = other.isNeg(term);
+
+    override def isNeg(t: exp) = term eql t
+  }
+
+  final class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+}
+
+trait EqualsShowPlusNeg extends EqualsPlusNeg with ShowPlusNeg {
+  type exp <: Exp
+
+  trait Exp extends super[EqualsPlusNeg].Exp
+    with super[ShowPlusNeg].Exp
+
+  trait NumBehavior extends super[EqualsPlusNeg].NumBehavior with super[ShowPlusNeg].NumBehavior {
+    self: BaseNum =>
+  }
+
+  class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+
+  trait PlusBehavior extends super[EqualsPlusNeg].PlusBehavior with super[ShowPlusNeg].PlusBehavior {
+    self: BasePlus =>
+  }
+
+  class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+
+  trait NegBehavior extends super[EqualsPlusNeg].NegBehavior with super[ShowPlusNeg].NegBehavior {
+    self: BaseNeg =>
+  }
+
+  class Neg(term: exp) extends BaseNeg(term) with NegBehavior with Exp
+}
+//--- 40 lines for equals
+\end{lstlisting}
+
+
+In the following, the fully modularized Scala code, so that
+every trait define exactly one operation for one datavariant:
+\begin{lstlisting}[basicstyle=\tiny]
+trait Base {
+  type exp <: Exp
+
+  trait Exp {  }
+}
+
+trait BaseNum extends Base {
+  class Num(val value: Int) extends Exp {  }
+
+  type BaseNum = Num
+}
+
+trait BasePlus extends Base {
+  class Plus(val left: exp, val right: exp) extends Exp {  }
+
+  type BasePlus = Plus
+}
+
+trait BaseNeg extends Base {
+  class Neg(val term: exp) extends Exp {  }
+
+  type BaseNeg = Neg
+}
+//----------------------EVAL
+trait Eval extends Base {
+  type exp <: Exp
+
+  trait Exp extends super.Exp {
+    def eval: Int
+  }
+}
+
+//----------------------EVALNUM
+trait EvalNum extends BaseNum with Eval {
+  trait NumBehavior {
+    self: BaseNum =>
+    def eval: Int = value
+  }
+
+  class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+}
+
+//----------------------EVALPLUS
+trait EvalPlus extends BasePlus with Eval {
+  trait PlusBehavior {
+    self: BasePlus =>
+    def eval = left.eval + right.eval;
+  }
+
+  class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+}
+//----------------------EVALNEG
+trait EvalNeg extends BaseNeg with Eval {
+  trait NegBehavior {
+    self: BaseNeg =>
+    def eval = - term.eval;
+  }
+  
+  class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+}
+//----------------------SHOW
+trait Show extends Base {
+  type exp <: Exp
+
+  trait Exp extends super.Exp {
+    def show: String
+  }
+}
+//----------------------SHOWNUM
+trait ShowNum extends BaseNum with Show {
+  trait NumBehavior {
+    self: BaseNum =>
+    def show: String = value.toString
+  }
+
+  class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+}
+
+//----------------------SHOWPLUS
+trait ShowPlus extends BasePlus with Show {
+  trait PlusBehavior {
+    self: BasePlus =>
+    def show = left.show + "+" + right.show;
+  }
+
+  class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+}
+//----------------------SHOWNEG
+trait ShowNeg extends BaseNeg with Show {
+  trait NegBehavior {
+    self: BaseNeg =>
+    def show = "-(" + term.show + ")";
+  }
+
+  class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+}
+//----------------------DBLE
+trait Dble extends Base {
+  type exp <: Exp
+
+  trait Exp extends super.Exp {
+    def dble: exp
+  }
+}
+//----------------------DBLENUM
+trait DbleNum extends BaseNum with Dble {
+  type exp <: Exp
+
+  trait Exp extends super[BaseNum].Exp with super[Dble].Exp 
+  
+  trait NumBehavior {
+    self: BaseNum =>
+    def dble = Num(value * 2)
+  }
+  
+  def Num(v: Int): exp
+
+  class Num(v: Int) extends super.Num(v) with NumBehavior
+}
+//----------------------DBLEPLUS
+trait DblePlus extends BasePlus with Dble {
+  type exp <: Exp
+  
+  trait Exp extends super[BasePlus].Exp with super[Dble].Exp
+  
+  trait PlusBehavior {
+    self: BasePlus =>
+    def dble = Plus(left.dble, right.dble)
+  }
+
+  def Plus(l: exp, r: exp): exp
+  
+  class Plus(l: exp, r: exp) extends super.Plus(l, r) with PlusBehavior with Exp
+}
+//----------------------DBLENEG
+trait DbleNeg extends BaseNeg with Dble {
+  type exp <: Exp
+  
+  trait Exp extends super[BaseNeg].Exp with super[Dble].Exp
+
+  trait NegBehavior {
+    self: BaseNeg =>
+    def dble = Neg(term.dble)
+  }
+
+  def Neg(t: exp): exp
+
+  class Neg(t: exp) extends super.Neg(t) with NegBehavior with Exp
+}//78 lines up to here, not couting new lines and '}'
+
+
+//glue code: 27 lines
+object All0 extends 
+Eval with Show with Dble 
+with EvalNum with EvalPlus with EvalNeg 
+with ShowNum with ShowPlus with ShowNeg 
+with DbleNum with DblePlus with DbleNeg 
+    {
+  override type exp = Exp
+  
+  trait Exp extends 
+  super[Eval].Exp with super[Show].Exp with super[Dble].Exp
+  with super[DbleNum].Exp with super[DblePlus].Exp with super[DbleNeg].Exp 
+
+  trait NumBehavior extends
+  super[EvalNum].NumBehavior with super[ShowNum].NumBehavior
+  with super[DbleNum].NumBehavior{
+    self: BaseNum =>
+  }
+
+  class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+
+  trait PlusBehavior extends
+  super[EvalPlus].PlusBehavior with super[ShowPlus].PlusBehavior
+  with super[DblePlus].PlusBehavior {
+    self: BasePlus =>
+  }
+
+   class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+
+  trait NegBehavior extends
+      super[EvalNeg].NegBehavior with super[ShowNeg].NegBehavior
+      with super[DbleNeg].NegBehavior {
+    self: BaseNeg =>
+  }
+
+  class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+  
+  def Num(v: Int) = new Num(v)
+  
+  def Plus(l: exp, r: exp) =new Plus(l,r)
+
+  def Neg(t: exp) = new Neg(t)
+}
+//----------------------EQUALS
+trait Equals extends Base {
+  type exp <: Exp;
+
+  trait Exp extends super.Exp {
+    def eql(other: exp): Boolean;
+  }
+}
+//----------------------EQUALSNUM
+trait EqualsNum extends BaseNum with Equals {
+  type exp <: Exp;
+
+  trait Exp extends super.Exp {
+    def isNum(v: Int): Boolean = false;
+  }
+
+  trait NumBehavior extends Exp {
+    self: BaseNum =>
+    def eql(other: exp): Boolean = other.isNum(value);
+
+    override def isNum(v: Int) = v == value;
+  }
+
+  class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+}
+//----------------------EQUALSPLUS
+trait EqualsPlus extends BasePlus with Equals {
+  type exp <: Exp;
+
+  trait Exp extends super[BasePlus].Exp with super[Equals].Exp {
+    def isPlus(l: exp, r: exp): Boolean = false;
+  }
+
+  trait PlusBehavior extends Exp {
+    self: BasePlus =>
+    def eql(other: exp): Boolean = other.isPlus(left, right);
+
+    override def isPlus(l: exp, r: exp) = (left eql l) && (right eql r)
+  }
+
+  class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+}
+//----------------------EQUALSNEG
+trait EqualsNeg extends BaseNeg with Equals {
+  type exp <: Exp;
+
+  trait Exp extends super[BaseNeg].Exp with super[Equals].Exp {
+    def isNeg(t: exp): Boolean = false;
+  }
+
+  trait NegBehavior extends Exp {
+    self: BaseNeg =>
+    def eql(other: exp): Boolean = other.isNeg(term);
+
+    override def isNeg(t: exp) = term eql t
+  }
+
+  class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+}
+//31 lines for equals, 29 glue
+object All extends 
+Eval with Show with Dble with Equals 
+with EvalNum with EvalPlus with EvalNeg 
+with ShowNum with ShowPlus with ShowNeg 
+with DbleNum with DblePlus with DbleNeg 
+with EqualsNum with EqualsPlus with EqualsNeg 
+    {
+  override type exp = Exp
+  
+  trait Exp extends 
+  super[Eval].Exp with super[Show].Exp with super[Dble].Exp with super[Equals].Exp
+  with super[DbleNum].Exp with super[DblePlus].Exp with super[DbleNeg].Exp
+  with super[EqualsNum].Exp with super[EqualsPlus].Exp with super[EqualsNeg].Exp
+
+  trait NumBehavior extends
+  super[EvalNum].NumBehavior with super[ShowNum].NumBehavior
+  with super[DbleNum].NumBehavior with super[EqualsNum].NumBehavior {
+    self: BaseNum =>
+  }
+
+  class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
+
+  trait PlusBehavior extends
+  super[EvalPlus].PlusBehavior with super[ShowPlus].PlusBehavior
+  with super[DblePlus].PlusBehavior with super[EqualsPlus].PlusBehavior {
+    self: BasePlus =>
+  }
+
+   class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+
+  trait NegBehavior extends
+      super[EvalNeg].NegBehavior with super[ShowNeg].NegBehavior
+      with super[DbleNeg].NegBehavior with super[EqualsNeg].NegBehavior {
+    self: BaseNeg =>
+  }
+
+  class Neg(t: exp) extends BaseNeg(t) with NegBehavior with Exp
+  
+  def Num(v: Int) = new Num(v)
+  
+  def Plus(l: exp, r: exp) =new Plus(l,r)
+
+  def Neg(t: exp) = new Neg(t)
+}
+\end{lstlisting}
+
+
+Finally, here is the 42 code solving the expression problem.
+The classes \Q@RenNum@,\Q@RenPlus@ and \Q@RenNeg@
+can be understood as declarations of `short-cuts'
+In order to make the full 42 language more in line with the
+(more compact) syntax of \name.
+In 42 those `short-cuts' can be very expressive 
+but here we use them only to better align 42 and \name.
+\begin{lstlisting}[basicstyle=\tiny, mathescape=false]]
+RenNum:{class method Library<>< (Library that) exception Guard
+  Refactor2.rename(path:\"T" into:\"Num")<><that
+  }
+
+RenPlus:{class method Library<>< (Library that) exception Guard
+  Refactor2.rename(path:\"T" into:\"Plus")<><that
+  }
+
+RenNeg:{class method Library<>< (Library that) exception Guard
+  Refactor2.rename(path:\"T" into:\"Neg")<><that
+  }
+//above, header not counted
+
+$exp:Resource<><{ //3 lines
+  Exp:{interface}
+
+  T:{implements Exp}
+  }
+
+$num:Resource<><Use[RenNum<><$exp()]<><{ //4 lines
+  Num:{
+    method Size value()
+    class method Num of(Size value)
+    }
+  }
+
+$plus:Resource<><Use[RenPlus<><$exp()]<><{  //6 lines
+  Exp:{interface}
+
+  Plus:{
+    method Exp left()
+    method Exp right()
+    class method Plus of(Exp left, Exp right)
+    }
+  }
+
+$neg:Resource<><Use[RenNeg<><$exp()]<><{  //5 lines
+  Exp:{interface}
+
+  Neg:{
+    method Exp term()
+    class method Neg of(Exp term)
+  }
+}
+
+$eval:Resource<>< {  //4 lines
+  Exp:{interface
+    method Size eval()
+    }
+
+  T:{implements Exp}
+  }
+
+$evalNum:Resource<><Use[$num(); RenNum<><$eval()]<>< {  // 2*3 lines
+  Num:{ method Size eval() this.value() }
+  }
+
+$evalPlus:Resource<><Use[$plus(); RenPlus<><$eval()]<>< {
+  Plus:{ method Size eval() this.left().eval()+this.right().eval() }
+  }
+
+$evalNeg:Resource<><Use[$neg(); RenNeg<><$eval()]<>< {
+  Neg:{ method Size eval() Size"-1" * this.term().eval() }
+  }
+
+$show:Resource<><Use[$exp()]<><{  //4 lines
+  Exp:{interface
+    method S show()
+    }
+
+  T:{implements Exp}
+  }
+
+$showNum:Resource<><Use[$num(); RenNum<><$show()]<><{  //2*3 lines
+  Num:{ method S show() this.value().toS() }
+  }
+
+$showPlus:Resource<><Use[$plus(); RenPlus<><$show()]<><{
+  Plus:{ method S show() this.left().show()++S" + "++this.right().show() }
+  }
+
+$showNeg:Resource<><Use[$neg(); RenNeg<><$show()]<><{
+  Neg:{ method S show() S"-("++this.term().show()++S")" }
+  }
+//----------------
+$double:Resource<><{  //4 lines
+  Exp:{interface
+    method Exp double()
+    }
+
+  T:{implements Exp}
+  }
+
+$doubleNum:Resource<><Use[$num(); RenNum<><$double()]<><{ //2*3 lines
+  Exp:{interface}//not counted, needed in the full language only to guide scope resolution in the desugaring
+
+  Num:{ method Exp double() Num.of(value: this.value()*2Size) }
+  }
+
+$doublePlus:Resource<><Use[$plus(); RenPlus<><$double()]<><{
+  Exp:{interface}
+
+  Plus:{ method Exp double() Plus.of(left: this.left().double(), right: this.right().double()) }
+  }
+
+$doubleNeg:Resource<><Use[$neg(); RenNeg<><$double()]<><{
+  Exp:{interface}
+
+  Neg:{ method Exp double() Neg.of(term: this.term().double()) }
+  }
+//---------
+$equals:Resource<><Use[$eval()]<><{  //6 lines
+  Exp:{interface
+    method Bool eql(Exp that)
+    method Bool equalToT(T that)
+    }
+
+  T:{implements Exp
+    method eql(that) that.equalToT(this)
+    }
+  }
+
+$equalsNum:Resource<><Use[$num();  //5*3 lines
+  Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToNum(that)"]
+  <><RenNum<>< $equals()]<><{
+  Num:{
+    method Bool equalToNum(Num that) this.value()==that.value()
+    }
+  }
+
+$equalsPlus:Resource<><Use[$plus();
+  Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToPlus(that)"]
+  <><RenPlus<><$equals()]<><{
+  Plus:{
+    method Bool equalToPlus(Plus that)
+      this.left().eql(that.left()) & this.right().eql(that.right())
+    }
+  }
+
+$equalsNeg:Resource<><Use[$neg();
+  Refactor2.Method[rename:\"equalToT(that)" of:\"Exp" into:\"equalToNeg(that)"]
+  <><RenNeg<><$equals()]<><{
+  Neg:{
+    method Bool equalToNeg(Neg that) this.term().eql(that.term())
+    }
+  }
+
+ //16+6 lines glue code
+$equalsAll:Resource<><Use[$equalsNeg();$equalsPlus();$equalsNum()]<><{
+  Exp:{interface
+    method Bool eql(Exp that)
+    method Bool equalToNum(Num that)
+    method Bool equalToPlus(Plus that)
+    method Bool equalToNeg(Neg that)
+    method Size eval()
+    }
+
+  Num:{implements Exp
+    method equalToPlus(that) Bool.false()
+    method equalToNeg(that) Bool.false()
+    }
+
+  Plus:{implements Exp
+    method equalToNum(that) Bool.false()
+    method equalToNeg(that) Bool.false()
+    }
+
+  Neg:{implements Exp
+    method equalToNum(that) Bool.false()
+    method equalToPlus(that) Bool.false()
+    }
+  }
+
+$evalAll:Resource<><Use[$evalPlus();$evalNeg()]<><$evalNum()
+
+$showAll:Resource<><Use[$showNum();$showPlus()]<><$showNeg()
+
+$doubleAll:Resource<><Use[$doubleNum();$doublePlus()]<><$doubleNeg()
+
+ESDAll0:Use[Use[$evalPlus();$evalNeg()]<><$evalNum();
+  Use[$showNum();$showPlus()]<><$showNeg();
+  $doubleNum();$doublePlus()]<><$doubleNeg()
+
+
+ESDAll:Use[$evalAll();$showAll()]<><$doubleAll()
+
+ESDEAll:Use[$evalAll();$showAll();$doubleAll()]<><$equalsAll()
+
+$equals2:Resource<><{ //7 lines
+  Exp:{interface method Bool equals(Exp that)}
+  T:{implements Exp
+    method Bool exactEquals(T that)
+    method equals(that){
+      with that (on T  return this.exactEquals(that) )
+      return Bool.false()
+      }
+    }
+  }
+
+$equalsNum2:Resource<><Use[$num();RenNum<><$equals2()]<><{  //2*3 lines
+  Num:{ method Bool exactEquals(Num that) this.value().equals(that.value()) }
+  }
+
+$equalsPlus2:Resource<><Use[$plus();RenPlus<><$equals2()]<><{
+  Plus:{ method Bool exactEquals(Plus that) this.left().equals(that.left()) & this.right().equals(that.right()) }
+  }
+
+$equalsNeg2:Resource<><Use[$neg();RenNeg<><$equals2()]<><{
+  Neg:{method Bool exactEquals(Neg that) this.term().equals(that.term()) }
+  }
+
+$equalsAll2:Resource<><Use[$equalsNum2();$equalsPlus2()]<><$equalsNeg2()
+
+ESDEAll2:Use[$evalAll();$showAll();$doubleAll()]<><$equalsAll2()
+
+\end{lstlisting}
