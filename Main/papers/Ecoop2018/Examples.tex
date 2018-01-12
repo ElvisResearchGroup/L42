@@ -686,7 +686,7 @@ and could make human understanding the code-reuse process much harder/involved.
 %\end{lstlisting}\saveSpace
 
 In sharp contrast with
-many other approaches (TR, PT, DeepFJig and in some sense even Java, C\# and Scala)
+many other approaches (TR, PT, DJ and in some sense even Java, C\# and Scala)
 we chose to not support this kind of involved programs.
 In a system without inference for method types,
 if the result of composition operators depends only on the
@@ -694,7 +694,7 @@ structural shape of their input (as for \use)
 it is indeed possible to optimistically compute the resulting structural shape of the classes
 and use it to type involved examples like the former.
 
-TR, PT, DeepFJig, Java, C\# and Scala
+TR, PT, DJ, Java, C\# and Scala
 accept a great complexity in order to \textbf{predict the structural shape} of the resulting code before doing the actual code reuse/adaptation.
 Those approaches logically divide the program in groups of mutually dependent classes, where each group may depend on a number of other groups.
 This form a direct acyclic graph of groups.

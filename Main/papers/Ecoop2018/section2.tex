@@ -36,14 +36,15 @@ literal associated with the class is `\Q@{ method int ma(){return Utils.m(this);
 %Nevertheless, for this example, things still work in a similar way to Java. 
 
 In the \name code above there is no way to add a class 
-\Q@B@ reusing the code of \Q@A@: \Q@A@ is designed for code \emph{use} and not \emph{reuse}.
+\Q@B@ reusing the code of \Q@A@: class \Q@A@ (uppercase) is designed for code \emph{use} and not \emph{reuse}.
 Thus, unlike the Java code, introducing a subclass
 \lstinline{B} is not possible. This may seem like a severe restriction, but
 \name has a different mechanism for \emph{code-reuse} that 
 is more appropriate when \emph{code-reuse} is intended. 
 
+\saveSpace
 \subsection{Traits in \name: A mechanism of code Reuse}
-
+\saveSpace
 Unlike classes, traits in \name cannot be instantiated and do not introduce new
 types. However they provide code reuse.
 %So, lets try again encoding the code for the leaking problem, but this
@@ -74,7 +75,7 @@ the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A}.
 
 
-Note that also that the following second attempt would not work:
+Also that the following second attempt would not work:
 \saveSpace
 \begin{lstlisting}
  Utils={ static method int m(ta a){return ...}//syntax error
@@ -120,7 +121,7 @@ Later, in Section \ref{sec:formal} we will provide the type
 system. 
 For now notice that in the former example the code is correct even if
 no method called \Q@ma@ is explicitly declared.
-DeepFJig and TR would require instead to explicitly declare an abstract \Q@ma@ method:
+DJ and TR would require instead to explicitly declare an abstract \Q@ma@ method:
 \saveSpace
 \begin{lstlisting}
   B=Use ta, { method int ma()//not required by us
@@ -145,10 +146,8 @@ here we use the flattening model. This means that
 \saveSpace\begin{lstlisting}
 A=Use ta
 B=Use ta, { method int mb(){return this.ma();} }
-\end{lstlisting}\saveSpace
- 
+\end{lstlisting}\saveSpace 
 \noindent is equivalent to the inlining the code of all used traits:
-  
 \saveSpace \begin{lstlisting}
 A={implements IA method int ma(){return Utils.m(this);}}
 B={implements IA
@@ -160,6 +159,14 @@ B={implements IA
  \Q@ta@}. All the information about code-reuse/inheritance
   is just a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.
+
+
+Summarizing, \Q@IA@ is required by our example.
+We found the code with \Q@IA@ to better transmits the intention of the programmer; but some
+reader may see requiring \Q@IA@ as a cost of our approach.
+Even from this point of view, such cost is counter balanced by 
+very natural and simple support for code reuse, `\Q@This@' type and (in the extensions with nested classes seen later)
+family polymorphism.
 
 
 %To finish this section, Figure \ref{fig:compare} provides a summary of
