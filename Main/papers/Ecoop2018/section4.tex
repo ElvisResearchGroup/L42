@@ -110,7 +110,7 @@ It has some advantages, but also disadvantages:
   by forwarding a call to the constructor.
   
 \item {\bf Disadvantages:}
-   The semantic of \Q@Use@/code composition of a model with fields and constructors is necessarily
+   The semantics of \Q@Use@/code composition of a model with fields and constructors is necessarily
    more complex than a model with methods only.
  There is no way for a trait to specify a default value for a field.
 The class needs to handle all the state, even state that is conceptually
@@ -260,7 +260,7 @@ Finally, we compare it with a Scala solution.
 %Scala has good support for traits, and using abstract types, is possible to support `\Q@This@' type.
 There is no need for duplicate method bodies in Scala.
 However, for `\Q@This@' instantiation we need to define abstract methods, that will be implemented in the concrete classes.
-The Scala solution have the same exact advantages
+The Scala solution has the same exact advantages
 of our proposed solution, and the declaration
 of the trait is about the same size: 
 5(point state)+3*4 (point operations).
@@ -270,7 +270,7 @@ In \name a single line for each case is sufficient.
 
 This example is the best-case scenario for \name: this is an example where a maximum level of reuse
  is required since we considered the case where all the 16 permutations needed to be materialized in the code.
-The results in each of the styles are presented below.
+%The results in each of the styles are presented below.
 In all our case studies, to make a meaningful comparison, we formatted all code in a readable and consistent manner;
 on the other hand for space limitations, the code snippets presented in the article
 are formatted to be very compact.
