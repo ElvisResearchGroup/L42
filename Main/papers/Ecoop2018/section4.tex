@@ -390,8 +390,10 @@ This second case study represents a \textbf{worst case scenario} for \name again
 easily supported in plain Java by single inheritance.
 Like the previous experiment, we still found that the Java solution was longer (47 lines) than that in \name (33 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
-Complex patterns in Java
-%~\cite{}\bruno{references}
+Complex patterns in Java%
+\footnote{Combining the ones used in those works~\cite{saito2008essence,torgersen2004expression},
+with abstract methods
+to allow self instantiation as in~\cite{Zenger-Odersky2005}.}
  allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they require a lot of set-up code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
 Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavoured@ do not exist
 as individual concepts.
