@@ -32,8 +32,8 @@ classes introduce nominal types in an unnatural way: the type of
 \Q@this@ is only \Q@This@ (sometimes called \Q@<>@) and not the
 nominal type of its class. 
 That is in DJ 
-`\Q@A:{ method A m()this}@' is not well typed. This is because
-`\Q@B: Use A@' flattens to `\Q@B:{ method A m()this}@', which is clearly not well typed.
+`\Q@A={method A m(){return this;}}@' is not well typed. This is because
+`\Q@B= Use A@' flattens to `\Q@B={method A m(){return this;}}@', which is clearly not well typed.
 Looking to this example is clear why we need reusable code to be agnostic of its name.
 Then, either reusable code has no name (as in TR, PT and \name)
 or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name, as in DJ.
@@ -127,7 +127,7 @@ Because we separate inheritance from subtyping we liberate ourselves
 from tricky issues that arise in such type systems, and we can
 provide a simpler model of family polymorphism, soundly supported by 
 a straightforward nominal type system:
-by disconnecting use and reuse we outlaw \Q@A a=new A2()@.
+by disconnecting use and reuse we outlaw \Q@A a=new AA()@.
 In \name this is also reducing the expressing power a little, but
 in the full 42 language, as well as in DJ, the operator \textbf{redirect} allows to write code that is parametric on families of data types.
 
@@ -138,6 +138,19 @@ support for `\Q@This@' type and self instantiation, since the
 class is a member of its own family.
 Scala allows to \textbf{encode} further extension/deep mixin composition,
 but it requires to do it explicitly, growing the amount of required glue-code.
+
+\subsection{ThisType with Subclassing implying Subtyping}
+With the exception of those mentioned 3 lines of work, to the best of our understanding
+other famous work in literature, like~\cite{odersky2008programming,nystrom2006j}
+do not completely break the relation between inheritance and subtyping, but only prevent subtyping where 
+it would be unsound.
+Recent work on {\bf ThisType} \cite{Saito:2009,ryu16ThisType}
+also continues on this line.
+In those works, ``subtyping by subclassing'' is preserved, which means
+that those designs are more suitable to retain the programming model
+of mainstream OOP languages and backwards compatibility. The design 
+of \name (and 42) is a more radical departure of mainstream OOP, with
+the hope to improve both the mechanisms for use and reuse in OOP.
 
 
 %\begin{lstlisting}
@@ -249,18 +262,5 @@ ${}_{}$\\
 \end{minipage}
 
 \noindent \textbf{Y} and X means yes and no, and we use ``-'' where the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
-
-\subsection{ThisType with Subclassing implying Subtyping}
-With the exception of those mentioned 3 lines of work, to the best of our understanding
-other famous work in literature, like~\cite{odersky2008programming,nystrom2006j}
-do not completely break the relation between inheritance and subtyping, but only prevent subtyping where 
-it would be unsound.
-Recent work on {\bf ThisType} \cite{Saito:2009,ryu16ThisType}
-also continues on this line.
-In those works, ``subtyping by subclassing'' is preserved, which means
-that those designs are more suitable to retain the programming model
-of mainstream OOP languages and backwards compatibility. The design 
-of \name (and 42) is a more radical departure of mainstream OOP, with
-the hope to improve both the mechanisms for use and reuse in OOP.
 
 

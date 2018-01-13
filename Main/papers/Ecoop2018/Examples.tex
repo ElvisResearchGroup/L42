@@ -60,15 +60,20 @@ we show the compilation process and the typing rules.
 \prodFull{v_{{\smallDs}}}{\mT\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}}\cR
 \text{  where }\mm \text{ is abstract in }\overline\mD(\mT)
 }{value}\\
+
 \prodFull{\ctx_{\smallDs}}{[]\mid
-\ctx\terminalCode{.}\mm\oR\overline\me\cR
+\ctx_\smallDs\terminalCode{.}\mm\oR\overline\me\cR
 \mid
-v_{{\smallDs}}\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx,\overline\me\cR
+v_{{\smallDs}}\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx_\smallDs,\overline\me\cR
 \mid
-\mT\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx,\overline\me\cR
+\mT\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx_\smallDs,\overline\me\cR
 }{evaluation ctx}\\
-\prodFull{\ctx_c}{[]\mid\ctx\,\terminalCode+\mE | \mL\,\terminalCode+\ctx |\ldots}{compilation ctx}\\
+
+\prodFull{\ctx_c}{[]\mid\ctx_c\,\terminalCode+\mE | \mL\,\terminalCode+\ctx_c |\ldots}{compilation ctx}\\
+
 \prodFull{\ctx}{[]\mid\ctx\,\terminalCode+\mE | \mE\,\terminalCode+\ctx |\ldots}{ctx}\\
+
+\prodFull\mG{\mx_1{:}\mT_1\ldots\mx_n{:}\mT_n}{variable env}
 \end{bnf}\\
 \\
 \newcommand{\pushLeft}{\!\!\!\!\!\!\!\!\!\!\!\!}
@@ -228,12 +233,12 @@ $\begin{array}{l}
 \quad
 \inferrule[(s-m)]{{}_{}}{
  \mT\terminalCode{.}\mm\oR\overline\vds\cR\xrightarrow[\smallDs]{}
- \text{meth}(\overline\mD(\mT,\mm),\overline\vds)
+ \mathit{meth}(\overline\mD(\mT,\mm),\overline\vds)
 }
 \quad
 \inferrule[(m)]{{}_{}}{
  \vds\terminalCode{.}\mm\oR\overline\vds\cR\xrightarrow[\smallDs]{}
- \text{meth}(\overline\mD(\mT,\mm),\vds\,\overline\vds)
+ \mathit{meth}(\overline\mD(\mT,\mm),\vds\,\overline\vds)
 }\vds=\mT\terminalCode{.}\mm'\oR\_\cR\\
 \end{array}
 $\\
@@ -246,7 +251,7 @@ $\\
 We use $\mt$ and $\mC$ to represent lower case trait and upper case class identifiers respectively.
 To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
 expression $\mE$. Note how in $\mE$\ you can refer to a trait by name.
-In full 42, we support various operators including the ones presented before,
+In full 42, we support various operators including the ones presented before and much more,
  but here we only show the single sum operator \Q@+@.
 This operation is a generalization to the case of nested classes of the simplest and most elegant
 trait composition operator~\cite{ducasse2006traits}.
@@ -308,10 +313,10 @@ $\begin{array}{l}
 \\
 \quad\quad 
 \forall \mm, \mT\in\overline\mT,
-\text{if}\,\overline\mDE(\mT,\mm)=\terminalCode{method}\ \mT_0 \mm\oR
+\text{if}\,\terminalCode{method}\ \mT_0 \mm\oR
 \overline{\mT\,\mx}
 %\mT'_1\,\mx'_1\ldots\mT'_k\,\mx'_k
-\cR
+\cR\in\overline\mDE(\mT)
 \,\text{then}\,
 \terminalCode{method}\ \mT_0 \mm\oR
 %\mT_1\,\mx_1\ldots\mT_n\,\mx_n
@@ -334,7 +339,7 @@ ${}_{}$\\*
 \item all method parameters have unique names and the special parameter name \Q@this@ is not declared
  in the parameter list,
 \item all methods in a code literal have unique names,
-\item all nested classes have unique names, and no nested class is called \Q@This@,
+\item all nested classes in a code literal have unique names, and no nested class is called \Q@This@,
 \item all used variables are in scope, and
 \item all methods in an interface are abstract, and there are no interface static methods.
 \end{itemize}
@@ -353,7 +358,7 @@ In order to do so,
 it identifies the subset of the program $\overline\mD$ that can already be typed (second premise).
 Then the expression is executed under the control of such compiled program (first premise).
 According to rule \Rulename{look-up}, all the traits inside the expression need to
-be compiled, that is $\forall\mt. \mE=\ctx[\mt], \mt\in\dom(\overline\mD)$.
+be compiled, that is $\forall\mt, \text{if}\, \mE=\ctx[\mt]\,\text{then}\, \mt\in\dom(\overline\mD)$.
 If a large enough $\overline\mD$ cannot be typed, this would cause a compilation error
 at this stage.
 Rule \Rulename{look-up}
@@ -372,14 +377,14 @@ applies the operator:
 $\begin{array}{l}
 \!\!\!\bullet\ \mL_1+\mL_2 =\mL_3\quad\text{where}\\
 \quad\quad \mL_1= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1\ \overline\mM_1\ \overline\mM_0\cC\\
-\quad\quad \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0\cC\\
+\quad\quad \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0'\cC\\
 \quad\quad \mL_3= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1,\overline\mT_2\ \overline\mM_1,\overline\mM_2\ (\overline\mM_0+\overline\mM_0')\cC\\
 \quad\quad \dom(\overline\mM_1)
 %\pitchfork
 \,\text{disjoint}\,
  \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\
 
-\!\!\!\bullet\ \mM_1..\mM_n+\mM'_1+\mM'_n\ = \ \mM_1+\mM'_1..\mM_n+\mM'_n\\
+\!\!\!\bullet\ (\mM_1\ldots\mM_n)+(\mM'_1\ldots\mM'_n)\ = \ (\mM_1+\mM'_1)\ldots(\mM_n+\mM'_n)\\
 
 \!\!\!\bullet\ \mC\terminalCode{=}\mL_1+\mC\terminalCode{=}\mL_2\ = \ \mC\terminalCode{=}\mL_3\quad if \mL_1+\mL_2\\
 
@@ -405,7 +410,6 @@ For example
 \begin{lstlisting}
 t1={
   A:{interface method Void a()}
-  B:{}
    }
 t2={
   A:{interface}
@@ -456,7 +460,7 @@ $\begin{array}{l}
 
 \noindent A Library is \emph{coherent} if 
 all the nested classes are coherent,
-and either the Library is an interface,
+and either the Library is an interface, or
 there are no static methods, or all the static methods
 are a valid \emph{state} method of the candidate \emph{factory}.
 Note, by asking for
@@ -578,14 +582,14 @@ It is built on two core ideas:
  For example in
 
 \saveSpace\begin{lstlisting}
-t={method int m() 2 
-   method int n() this.m()+1}
+t={method int m(){return 2;} 
+   method int n(){return this.m()+1;}}
 \end{lstlisting}\saveSpace
 
 \noindent \Q@t@ is well typed since \Q@m()@ is declared inside of \Q@t@, while
 
 \saveSpace\begin{lstlisting}
-t1={method int n() this.m()+1} 
+t1={method int n(){return this.m()+1;}} 
 \end{lstlisting}\saveSpace
 \noindent would be ill-typed.
 
@@ -598,11 +602,11 @@ and only the result is expected to be well-typed.
 This example using the trait \Q@t@ is correct:
 
 \saveSpace\begin{lstlisting}
-C= Use t, {method int k() this.n()+this.m()}
+C= Use t, {method int k(){return this.n()+this.m();}}
 \end{lstlisting}\saveSpace
 
 \noindent The code literal
-\Q@{method int k() this.n()+this.m()}@, 
+\Q@{method int k(){ return this.n()+this.m();}}@, 
 is not well typed,
 since \Q@n@, \Q@m@ are not locally defined. However in 
 \name the result of the flattening is well-typed.
@@ -632,11 +636,11 @@ That is, in \name typing and flattening are interleaved. We assume our compilati
 an error arises. 
 For example
 \saveSpace\begin{lstlisting}
-ta:{method int ma() 2}
-tc:{method int mc(A a,B b) b.mb(a)}
-A: Use ta
-B:{method int mb(A a) a.ma()+1}
-C: Use tc, {method int hello() 1}
+ta={method int ma(){return 2;}}
+tc={method int mc(A a,B b){return b.mb(a);}}
+A= Use ta
+B= {method int mb(A a){return a.ma()+1;}}
+C= Use tc, {method int hello(){return 1;}}
 \end{lstlisting}\saveSpace
 In this scenario, since we go top down, we first need to generate \Q@A@.
 To generate \Q@A@, we need to use \Q@ta@ (but we do not need
@@ -649,13 +653,13 @@ a type error could be generated at this stage.
 
 Now, we need to generate \Q@C@, and we need to ensure well-typedness of \Q@tc@.
 Now \Q@A@ is already well typed (since generated by \use\ \Q@ta@, with no \mL),
-and \Q@B@ can be typed. Finally \Q@tc@ can be typed and used.
+and \Q@B@ can be typed. Finally \Q@tc@ can be typed and reused.
 If \Rulename{sum} could not be performed (for example it \Q@tc@ had a method \Q@hello@ too)
 a composition error could be generated at this stage.
 On the opposite side, if \Q@B@ and \Q@C@ were swapped, as in
 \saveSpace\begin{lstlisting}
-C: Use tc, {method int hello() 1}
-B:{method int mb(A a) a.ma()+1}
+C= Use tc, {method int hello(){return 1;}}
+B= {method int mb(A a){return a.ma()+1;}}
 \end{lstlisting}\saveSpace
 \noindent
 we would be unable to type \Q@tc@, since we need to know the type of \Q@A@ and \Q@B@.
@@ -666,12 +670,11 @@ requires \Q@tc@, \Q@tc@ requires \Q@B@ that is defined later''.
 %could compute a dependency graph and, if possible, reorganize the list,
 
 \paragraph{The cost: what expressive power we lose}${}_{}$\\*
-For simplicity, that declarations are always provided in the right
-order, if such order exists.
+Our simple formalism requires the declarations to be provided in the right dependency order. However, sometimes no such order exists.
 An example of a ``morally correct'' program where no right order exists is the following:
 \saveSpace\begin{lstlisting}
-t={ int mt(A a) a.ma()}
-A=Use t {int ma() 1}
+t= { int mt(A a){return a.ma();}}
+A= Use t {int ma(){return 1;}}
 \end{lstlisting}\saveSpace
 
 We just wrote an involved program where the correctness of trait \Q@t@ depends of 
@@ -688,11 +691,6 @@ and could make human understanding the code-reuse process much harder/involved.
 In sharp contrast with
 many other approaches (TR, PT, DJ and in some sense even Java, C\# and Scala)
 we chose to not support this kind of involved programs.
-In a system without inference for method types,
-if the result of composition operators depends only on the
-structural shape of their input (as for \use)
-it is indeed possible to optimistically compute the resulting structural shape of the classes
-and use it to type involved examples like the former.
 
 TR, PT, DJ, Java, C\# and Scala
 accept a great complexity in order to \textbf{predict the structural shape} of the resulting code before doing the actual code reuse/adaptation.
@@ -703,6 +701,9 @@ the signature/structural shape of all
 the classes of the group is extracted.
 Finally, with the information of the depended groups and the one extracted
 from the current group, it is possible to type-check the implementation of each class in the group.
+Such approach relies on the structural shape of the result of composition operators depending only on the
+structural shape of their input (as for \use).
+
 %Following this model, it is reasonable to assume that flattening happens group by group, before extracting the class signatures.
 
 
@@ -736,8 +737,9 @@ from the current group, it is possible to type-check the implementation of each 
 
 \noindent 
 In the world of strongly typed languages we are tempted to
-first check that all can go well, and then perform the flattening. However, that we can reuse code only by naming traits; but our point of relaxation is {\bf only} the code literal: in no way an error can ``move around'' and be duplicated during the compilation process.
-Our approach allows for safe libraries of traits and classes to be typechecked once and then deployed and reused by multiple clients: no type error will emerge from library code.
+first check that all can go well, and then perform the flattening. 
+Such methodology would be redundant in our setting: we can only reuse code by naming traits; but our point of relaxation is {\bf only} the code literal: in no way an error can ``move around'' and be duplicated during the compilation process.
+That is, our approach allows for safe libraries of traits and classes to be typechecked once and then deployed and reused by multiple clients: no type error will emerge from library code.
 %However, we do not force the programmer to write self-contained code where all the abstract method definition are explicitly declared.
 
 
@@ -752,26 +754,26 @@ From the point of view of expression reduction, \name is a simple language of
 interfaces and final classes, where nested classes gives structure to the code but have no special semantics.
 The reduction of expressions is composed by rules
 \Rulename{ctx-v},\Rulename{s-m} and \Rulename{m}.
-The only interesting point is the auxiliary function meth:
+The only interesting point is the auxiliary function $\mathit{meth}$:
 
 
-\noindent\textbf{Define }$\text{meth}(\mM,\overline\vds)$
+\noindent\textbf{Define }$\mathit{meth}(\mM,\overline\vds)$
 
 $\begin{array}{l}
 
-\!\!\!\bullet\text{meth}(\terminalCode{static method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_1\ldots\vds_n)=\me[\mx_1=\vds_1\ldots\me_n=\vds_n]
+\!\!\!\bullet\mathit{meth}(\terminalCode{static method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_1\ldots\vds_n)=\me[\mx_1=\vds_1\ldots\me_n=\vds_n]
 \\
 
-\!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_0\ldots\vds_n)=\me[\terminalCode{this}=\vds_0,\mx_1=\vds_1\ldots\me_n=\vds_n]
+\!\!\!\bullet\mathit{meth}(\terminalCode{method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_0\ldots\vds_n)=\me[\terminalCode{this}=\vds_0,\mx_1=\vds_1\ldots\me_n=\vds_n]
 \\
 
-\!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT_i\ \mx_i\oR\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_n\cR)=\vds_i\\
+\!\!\!\bullet\mathit{meth}(\terminalCode{method}\ \mT_i\ \mx_i\oR\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_n\cR)=\vds_i\\
 \quad \quad\text{where}\ \ \overline\mD(\mT,\mm) =
 \terminalCode{static method}
 \ \mT\,\mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR
 \\
 
-\!\!\!\bullet\text{meth}(\terminalCode{method}\ \mT\ \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_i\ldots\vds_n\cR,
+\!\!\!\bullet\mathit{meth}(\terminalCode{method}\ \mT\ \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_i\ldots\vds_n\cR,
 \vds
 )=
 \mT\terminalCode{.}\mm\oR\vds_1\ldots\vds\ldots\vds_n\cR

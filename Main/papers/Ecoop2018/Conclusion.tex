@@ -7,14 +7,15 @@ makes the language more complex:
 % since
 %interfaces (subtyping without subclassing)
 %exists in both Java and C\#.
-we are replacing the concept of abstract classes with
+we \textbf{replace the concept} of abstract classes with
 the concept of traits, while keeping the concepts of
 interfaces and final classes.
 Concrete non final classes are simply not needed in our model.
 
 The model presented here is easy to extend.
 More composition operators can be added in addition to \use.
-In particular all the sophisticated operators of DJ can be added.
+In particular variants of the sophisticated operators of DJ are
+included in the full 42 language.
  Indeed we can add any operator respecting following criteria:
 
 \begin{itemize}
@@ -38,7 +39,7 @@ flattening to execute arbitrary computations.
 In such model we do not need an explicit notion of traits: they are encoded as methods returning a code literal.
 42 also has features less related to code composition, like
   a strong type system supporting aliasing mutability and circularity control,
-   checked exceptions, errors (unchecked exceptions) with strong-exception-safety for errors.
+   checked exceptions, and errors (unchecked exceptions) with strong-exception-safety.
 
 \begin{comment}
 42 do not have a finite set of composition operators; they can be

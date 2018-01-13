@@ -38,7 +38,7 @@ and fields) while achieving the following goals:
 \item managing fields in a way that borrows the elegance of summing methods;
 \item actually initializing objects, leaving no null fields;
 \item making it easy to add new fields;
-\item allowing a class to create instances of itself (self instantiation).
+\item allowing code to create instances of itself (self instantiation).
 \end{itemize}
 
 \subsection{State of the art}
@@ -48,7 +48,7 @@ We first present the state of the art solution, where
 traits have only methods but classes have also fields and constructors.
 The idea is that the trait code just uses getter/setters/factories, while leaving
 to classes the role to finally define the fields/constructors. That
-is in this state of the art solution, classes have a syntax richer than traits, allowing
+is, in this state of the art solution, classes have a syntax richer than traits, allowing
 declaration for fields and constructors. 
 
 \paragraph{Modelling Points} Consider, for example, two simple 
@@ -208,7 +208,7 @@ This works because resulting class is coherent.
 \saveSpace      
 Now the code is fully modularized, and each trait defines exactly one method.
 
-\paragraph{Case Study}
+\paragraph{Case Study 1:}
 In order to evaluate our approach,
 we performed a case study:
 we consider 4 different operations \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
@@ -228,7 +228,16 @@ since
 it has good support for traits, and using abstract types, it is possible to support `\Q@This@' type.
 Rust is similar to Scala in this regard; we believe we would get similar results by comparing against either Scala or Rust.
 
-We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } 28 method bodies across the 16 classes.
+\noindent\begin{tabular}{l|l|l|l}
+Language       & Lines of code & Number of members & Number of top-level concepts (classes or traits)\\
+\hline
+Java7           &   115=6+5*4+7*6+9*4+11        & 50                &      16\\
+Classless Java &   \ \ 82=3+3*4+5*6+7*4+9          & 34                &      16\\
+Scala          &   \ \ 81=5+3*4+4*16  &  40                 &    21 = 16+4+1\\
+\name          &   \ \ 32=4+3*4+1*16 & 7                 &      21 = 16+4+1\\
+\end{tabular}
+
+\noindent We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } 28 method bodies across the 16 classes.
 Of these, 11 method bodies were duplicated because Java does not support multiple inheritance
  and the remaining 17 bodies had to be duplicated to ensure that the right type
  is returned by the method. Those could be avoided if Java supported
@@ -266,14 +275,6 @@ In all our case studies, to make a meaningful comparison, we formatted all code 
 on the other hand for space limitations, the code snippets presented in the article
 are formatted to be very compact.
 
-\noindent\begin{tabular}{l|l|l|l}
-Language       & Lines of code & Number of members & Number of top-level concepts (classes or traits)\\
-\hline
-Java7           &   115=6+5*4+7*6+9*4+11        & 50                &      16\\
-Classless Java &   \ \ 82=3+3*4+5*6+7*4+9          & 34                &      16\\
-Scala          &   \ \ 81=5+3*4+4*16  &  40                 &    21 = 16+4+1\\
-\name          &   \ \ 32=4+3*4+1*16 & 7                 &      21 = 16+4+1\\
-\end{tabular}
 
 \subsection{State Extensibility}
 Programmers may want to extend points with more state. For example 
@@ -281,8 +282,8 @@ they may want to add colors to the points. A first attempt at doing
 this would be:
 \saveSpace
 \begin{lstlisting}
-  colored:{ method Color color() }
-  CPoint:Use pointSum,colored //Fails: class not coherent
+colored:{ method Color color() }
+CPoint:Use pointSum,colored //Fails: class not coherent
 \end{lstlisting}
 \saveSpace
 This first attempt does not work: the abstract color method
@@ -291,10 +292,10 @@ is not a getter for any of the parameters of
 A solution is to provide a richer factory:
 \saveSpace
 \begin{lstlisting}
-  CPoint:Use pointSum,colored,{
-    static method This of(int x,int y){ return This.of(x,y,Color.of(/*red*/));}
-    static method This of(int x,int y,Color color)
-    }
+CPoint:Use pointSum,colored,{
+  static method This of(int x,int y){return This.of(x,y,Color.of(/*red*/));}
+  static method This of(int x,int y,Color color)
+  }
 \end{lstlisting}
 \saveSpace
 \noindent 
@@ -311,21 +312,21 @@ state supports withers, we can use
 If the designer of point (i.e. trait \Q@p@) is designing for reuse and extensibility, then 
 a better design would be the following:  
 \saveSpace\begin{lstlisting}
-  p: { method int x() method int y() //getters
-    method This withX(int that) method This withY(int that)//withers
-    static method This of(int x,int y)
-    method This merge(This that) //new method merge!
-    }
-  pointSum:Use p, { 
-    method This sum(This that){
-      return this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y());
-    }}
-  colored:{method Color color()
-    method This withColor(Color that)
-    method This merge(This that){ //how to merge color handled here
-      return this.withColor(this.color().mix(that.color());
-    }}
-  CPoint:/*as before*/
+p: { method int x() method int y() //getters
+  method This withX(int that) method This withY(int that)//withers
+  static method This of(int x,int y)
+  method This merge(This that) //new method merge!
+  }
+pointSum:Use p, { 
+  method This sum(This that){
+    return this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y());
+  }}
+colored:{method Color color()
+  method This withColor(Color that)
+  method This merge(This that){ //how to merge color handled here
+    return this.withColor(this.color().mix(that.color());
+  }}
+CPoint:/*as before*/
 \end{lstlisting}  \saveSpace
   \noindent This design allows merging colours, or any other kind of state we may want to add
   following this pattern.%\bruno{worried that withers are not explained enough.}
@@ -353,16 +354,16 @@ moves the implementation to another name. This is very useful to implement super
 to refer to the version of \Q@merge@ as defined in the first/second element of \use.
 
 \saveSpace\begin{lstlisting}
-  FCPoint:Use
-    colored[super merge as _1merge],
-    flavoured[super merge as _2merge],
-    pointSum,{
-      static method This of(int x,int y){
-        return This.of(x,y,Color.of(/*red*/),Flavor.none());}
-      static method This of(int x, int y,Color color,Flavor flavor)
-      method This merge(This that){//merge conflict is solved 
-        return this._1merge(that)._2merge(that);}//by calling the two versions
-      }
+FCPoint:Use
+  colored[super merge as _1merge],
+  flavoured[super merge as _2merge],
+  pointSum,{
+    static method This of(int x,int y){
+      return This.of(x,y,Color.of(/*red*/),Flavor.none());}
+    static method This of(int x, int y,Color color,Flavor flavor)
+    method This merge(This that){//merge conflict is solved 
+      return this._1merge(that)._2merge(that);}//by calling the two versions
+    }
 \end{lstlisting}  \saveSpace\saveSpace
 
 Note how we are levering on the fact that the code literal
@@ -377,7 +378,7 @@ thus we can just call \Q@_1merge@ and \Q@_2merge@ without
 %C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
 %\end{lstlisting}
 
-\paragraph{Case Study}
+\paragraph{Case Study 2:}
 To understand how easy it is to extend the state in this
 way we compare the former code with an equivalent version in
 Java.
@@ -389,12 +390,14 @@ This second case study represents a \textbf{worst case scenario} for \name again
 easily supported in plain Java by single inheritance.
 Like the previous experiment, we still found that the Java solution was longer (47 lines) than that in \name (33 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 
-Complex patterns in Java~\cite{}\bruno{references} allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they require a lot of set-up code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+Complex patterns in Java
+%~\cite{}\bruno{references}
+ allow to support the `\Q@This@' type and the `\Q@This@' type instantiation but they require a lot of set-up code. We started experimenting using those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
 Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavoured@ do not exist
 as individual concepts.
 
-We also compare with a solution in Scala, offering the same level of reuse and modularity of 
-code, but again is more verbose than \name, and requires more members (31), an indication it may be logically heavier too.
+We also compare with a solution in Scala, offering the same level of reuse and code modularity of 
+the \name solution, but again is more verbose and requires more members (31): an indication it may be logically heavier too.
 We define the main \Q@tPoint@ trait (8 lines),
 the \Q@tPointSum@ operation (3), the two 
 \Q@tColored@ and \Q@tFlavoured@ traits (6*2)

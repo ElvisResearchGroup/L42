@@ -97,7 +97,7 @@ internally used names without breaking any code.
 
 
 
-\paragraph{Application to the expression problem}${}_{}$\\*
+\paragraph{Application to the expression problem. Case Study 3:}${}_{}$\\*
 The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
 with the requirements exposed in~\cite{Zenger-Odersky2005}.
 In the expression problem we have data-variants and operations and we can
@@ -118,8 +118,8 @@ expressions \Q@Exp@ can
 be \Q@Num@ (for number literal),
 \Q@Plus@ (for binary plus operator)
 and \Q@Neg@ (for unary minus).
-We then proceed to defining operations
-\Q@show@ to print it as a string,
+We then proceed to define operations
+\Q@show@ to convert it into a string,
  \Q@eval@ to compute the numeric value and 
 \Q@double@ to double the value of each \Q@Num@.
 
@@ -280,8 +280,11 @@ The composition of all our traits would just require to list all
 of the relevant behaviour; reasonably formatted, it can take up to 3 lines (so a full \name solution would be 48+3=51 lines).
 
 On the other side, the presented solution in Scala requires
-27 lines of glue code to put the traits together
-(so a full Scala solution would be 78+27=105 lines).
+27 lines of glue code to put the traits together.
+This means that a full Scala solution \textbf{requiring a single instantiation with all the traits} would be 78+27=105 lines.
+If we was to require more instantiations with different subset of traits, the glue code would dominate the line count,
+and the Scala solution would end up being up to \textbf{9 times heavier then the
+\name one} (if all the 64 permutations was required).
 
 The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
 for each of the three operations (\Q@eval,show,double@) 
@@ -320,7 +323,8 @@ equalsNum:Use num, equals[rename T into Num],{
 \begin{lstlisting}
 equalsPlus:Use plus, equals[rename T into Plus],{
   Plus:{method Bool exactEquals(Plus that){
-    return this.left().equals(that.left()) && this.right().equals(that.right());}  }}
+    return this.left().equals(that.left())&&this.right().equals(that.right());
+  }  }}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -330,7 +334,7 @@ equalsNeg:Use neg, equals[rename T into Neg],{
 \end{lstlisting}
 
 This simple implementation of \Q@equals@
-is much simpler than the one proposed by Scala
+is much simpler than the one proposed by Zenger and Odersky
  and can be instantiated without any glue code.
 
 \noindent
