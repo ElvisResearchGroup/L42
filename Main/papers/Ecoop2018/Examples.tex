@@ -408,13 +408,10 @@ The full language offers some relaxation here, so that for example an empty clas
 The result code would not be well formed.
 For example
 \begin{lstlisting}
-t1={
-  A:{interface method Void a()}
-   }
+t1={  A:{interface method Void a()}  }
 t2={
   A:{interface}
-  B:{implements A}
-  }
+  B:{implements A}  }
 \end{lstlisting}
 Naively, \Q@t1+t2@ should result in a class \Q@B@ implementing \Q@A@ with method \Q@a()@,
 but \Q@B@ would not offer such method \Q@a()@.%
@@ -429,8 +426,9 @@ $\mL_1+\mL_2$, ImplementsClash is obtained since injecting the resulting
 $\mL$ in the program would make it ill-formed by 
 $\mathit{consistentSubtype}(\overline\mDE,\mL)$.
 \end{itemize}
-
+\saveSpace
 \subsection{Typing}
+\saveSpace
 Typing is composed by rules \Rulename{cd-ok}, \Rulename{td-ok},
 \Rulename{l-ok},
 \Rulename{nested-ok} and \Rulename{method-ok},
@@ -517,7 +515,9 @@ Rule \Rulename{L-OK} is so simple since all the checks
 related to correctly implementing interfaces are delegated to the well formedness criteria.
 The other rules are straightforward and standard.
 
+\saveSpace
 \subsection{Formal properties}
+\saveSpace
 In addition to conventional soundness of the expression reduction,
 \name ensures soundness of the compilation process itself.
 A similar property was called meta-level-soundness in~\cite{servetto2014meta}; here we can obtain the same result in
@@ -569,9 +569,9 @@ to allow recursive types.
 
 
 
-
+\saveSpace
 \subsection{Advantages of our compilation process}
-
+\saveSpace
 
 Our typing discipline is very simple from a formal perspective,  
 and is what distinguishes our approach from a simple minded code composition macro~\cite{bawden1999quasiquotation}
