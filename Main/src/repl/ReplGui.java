@@ -1,7 +1,10 @@
 package repl;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
@@ -22,8 +25,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -33,7 +44,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -50,17 +64,11 @@ public class ReplGui extends Application {
 
   ReplState repl=null;
 
-  TextArea loadedSrc=new TextArea();
-  ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
-  /*{newSrc.setText("reuse L42.is/AdamTowel02\n"+
-    "Main:{\n"+
-    "  Debug(S\"hi!!\")\n"+
-    "  return ExitCode.normal()\n"+
-    "}");
-   }*/
   TextArea output=new TextArea();
   TextArea errors=new TextArea();
   Button runB;
+
+  Tab selectedTab=null;
 
   public static void main(String[] args) {
     L42.setRootPath(Paths.get("localhost"));
@@ -72,49 +80,116 @@ public class ReplGui extends Application {
 
     BorderPane borderPane = new BorderPane();
 
-    //set the 'loaded', 'output' and 'errors' tabs to be read-only (cannot be edited)
-    loadedSrc.setEditable(false);
-    output.setEditable(false);
-    errors.setEditable(false);
+    TabPane tabPane = new TabPane();
+    tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
+    tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+      @Override public void changed(ObservableValue<? extends Tab> tab, Tab oldTab, Tab newTab) {
+        selectedTab = newTab;
+      }
+    });
 
-    TabPane tabbedPane = new TabPane();
-    tabbedPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+    MenuBar leftBar = new MenuBar();
+    MenuBar rightBar = new MenuBar();
 
-    tabbedPane.getTabs().addAll(new Tab("new code", newSrc));
-    tabbedPane.getTabs().addAll(new Tab("loaded", loadedSrc));
-    tabbedPane.getTabs().addAll(new Tab("output", output));
-    tabbedPane.getTabs().addAll(new Tab("errors", errors));
+    Region spacer = new Region();
+    spacer.getStyleClass().add("menu-bar");
+    HBox.setHgrow(spacer, Priority.SOMETIMES);
+    HBox menubars = new HBox(leftBar, spacer, rightBar);
+
+    Menu menuNew = new Menu("New Project");
+    MenuItem menuItemNew = new MenuItem();
+    menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent t) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
+        File outputFolder = directoryChooser.showDialog(primaryStage);
+
+        Tab tab = new Tab();
+
+        if (outputFolder != null) {
+    	  tab.setText(outputFolder.getPath());
+    	} else
+            tab.setText("This.L42");
+        ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
+        tab.setContent(newSrc);
+        tabPane.getTabs().add(tab);
+        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+        selectionModel.select(tab);
+      }
+    });
+    this.setupSingleMenuItem(menuNew, menuItemNew);
+
+    Menu menuOpen = new Menu("Open Project");
+    MenuItem menuItemOpen = new MenuItem();
+    menuItemOpen.setOnAction(new EventHandler<ActionEvent>() {
+      public void handle(ActionEvent t) {
+        FileChooser fc = new FileChooser();
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("L42 files", "*.L42"));
+
+        File fileToOpen = fc.showOpenDialog(primaryStage);
+        if(fileToOpen!=null) {
+          // Read the file, and set its contents within the editor
+          String openFileName = fileToOpen.getAbsolutePath();
+          StringBuffer sb = new StringBuffer();
+          try(FileInputStream fis = new FileInputStream(fileToOpen);
+        		  BufferedInputStream bis = new BufferedInputStream(fis)) {
+            while(bis.available()>0) {
+              sb.append((char)bis.read());
+            }
+          } catch(Exception e) {
+            e.printStackTrace();
+          }
+          System.out.println(getClass().getResource("textArea.xhtml"));
+          ReplTextArea editor=new ReplTextArea(getClass().getResource("textArea.xhtml"));
+          //System.out.println(sb.toString());
+         // editor.setText(sb.toString());
+          editor.setText("heelo");
+          //editor.htmlFx.webEngine.load(sb.toString());
+          editor.filename = openFileName;          //
+          //System.out.println(editor.getText());
+
+
+          Tab tab = new Tab();
+          tab.setText(fileToOpen.getName());
+          tab.setContent(editor);
+          tabPane.getTabs().add(tab);
+
+          SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+          selectionModel.select(tab);
+        }
+      }
+    });
+    this.setupSingleMenuItem(menuOpen, menuItemOpen);
+
+    Menu menuRun = new Menu("Run!");
+    MenuItem menuItemRun = new MenuItem();
+    menuItemRun.setOnAction(e->runCode());
+    this.setupSingleMenuItem(menuRun, menuItemRun);
+
+    leftBar.getMenus().addAll(menuNew, menuOpen); //, menuFileExit);
+    rightBar.getMenus().addAll(menuRun);
+    borderPane.setTop(menubars);
+
 
     //System.out.println(System.out.getClass().getName());
     //System.out.println(System.err.getClass().getName());
     System.setOut(delegatePrintStream(err,System.out));
     System.setErr(delegatePrintStream(err,System.err));
 
-    Button rollbackBtn = new Button("Rollback!");
-    rollbackBtn.setTooltip(new Tooltip("Rollback to previous code!"));
-    rollbackBtn.setOnAction(e->rollBackCode());
+    TabPane outputPane = new TabPane();
+    outputPane.setSide(Side.LEFT);
+    outputPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+    output.setEditable(false);
+    errors.setEditable(false);
+    outputPane.getTabs().add(new Tab("output", output));
+    outputPane.getTabs().add(new Tab("errors", errors));
 
-    tabbedPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-      @Override
-      public void changed(ObservableValue<? extends Number> ov, Number oldValue, Number newValue) {
-        rollbackBtn.setVisible(newValue.intValue()==0);
-      }
-    });
+    SplitPane splitPane = new SplitPane();
+    splitPane.getItems().addAll(tabPane, outputPane);
+    splitPane.setDividerPositions(0.7f);
+    splitPane.setOrientation(Orientation.VERTICAL);
 
-    AnchorPane anchor = new AnchorPane(tabbedPane, rollbackBtn);
-
-    AnchorPane.setTopAnchor(rollbackBtn, 3.0);
-    AnchorPane.setRightAnchor(rollbackBtn, 5.0);
-    AnchorPane.setTopAnchor(tabbedPane, 0.0);
-    AnchorPane.setRightAnchor(tabbedPane, 0.0);
-    AnchorPane.setLeftAnchor(tabbedPane, 0.0);
-    AnchorPane.setBottomAnchor(tabbedPane, 0.0);
-    borderPane.setCenter(anchor);
-
-    runB = new Button("Run!");
-    runB.setOnAction(e->runCode());
-    runB.setMaxWidth(Double.MAX_VALUE);
-    borderPane.setBottom(runB);
+    borderPane.setCenter(splitPane);
 
     Scene scene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT); // Manage scene size
     primaryStage.setTitle("L42 IDE");
@@ -124,12 +199,113 @@ public class ReplGui extends Application {
     primaryStage.show();
   }
 
+private void setupSingleMenuItem(Menu menu, MenuItem menuItem) {
+	menu.getItems().add(menuItem);
+    menu.showingProperty().addListener((observableValue, oldValue, newValue) -> {
+      if (newValue) {
+        // the first menuItem is triggered
+    	menu.getItems().get(0).fire();
+        }
+      });
+}
+
+//  private void indicateFileModified() {
+//      if ( currentEditor != null && currentEditor.modified ) {
+//          return;
+//      }
+//
+//      // Get current tab, add an "*" to its name to indicate modified
+//      System.out.println("Indicating text modified");
+//      SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+//      Tab selectedTab = selectionModel.getSelectedItem();
+//      TextArea area = (TextArea)selectedTab.getContent();
+//      currentEditor = getEditorForTextArea(area);
+//      String modName = selectedTab.getText();
+//      if ( ! modName.endsWith("*") ) {
+//          modName += "*";
+//          selectedTab.setText(modName);
+//      }
+//      currentEditor.modified = true;
+//  }
+//
+//  private SimpleEditor getEditorForTextArea(TextArea area) {
+//      Iterator<SimpleEditor> iter = editors.iterator();
+//      while ( iter.hasNext() ) {
+//          SimpleEditor editor = iter.next();
+//          if ( area == (TextArea)editor.getRoot() )
+//              return editor;
+//      }
+//
+//      return null;
+//  }
+//
+//  private void saveFileRev() {
+//      System.out.println("saving file");
+//      boolean success = false;
+//      SimpleEditor editor = null;
+//      File file = null;
+//
+//      SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+//      Tab selectedTab = selectionModel.getSelectedItem();
+//      editor = getEditorForTextArea((TextArea)selectedTab.getContent());
+//      if ( editor == null )
+//          return;
+//      String openFileName = editor.filename;
+//
+//      if ( openFileName == null ) {
+//          // No file was opened. The user just started typing
+//          // Save new file now
+//          FileChooser fc = new FileChooser();
+//          File newFile = fc.showSaveDialog(null);
+//          if ( newFile != null ) {
+//              // Check for a file extension and add ".txt" if missing
+//              if ( ! newFile.getName().contains(".") ) {
+//                  String newFilePath = newFile.getAbsolutePath();
+//                  newFilePath += ".txt";
+//                  newFile.delete();
+//                  newFile = new File(newFilePath);
+//              }
+//              file = newFile;
+//              openFileName = new String(newFile.getAbsolutePath());
+//              editor.filename = openFileName;
+//              selectedTab.setText(newFile.getName());
+//          }
+//      }
+//      else {
+//          // User is saving an existing file
+//          file = new File(openFileName);
+//      }
+//
+//      // Write the content to the file
+//      try ( FileOutputStream fos = new FileOutputStream(file);
+//            BufferedOutputStream bos = new BufferedOutputStream(fos) ) {
+//          String text = editor.getText();
+//          bos.write(text.getBytes());
+//          bos.flush();
+//          success = true;
+//      }
+//      catch ( Exception e ) {
+//          success = false;
+//          System.out.println("File save failed (error: " + e.getLocalizedMessage() + ")");
+//          e.printStackTrace();
+//      }
+//      finally {
+//          if ( success ) {
+//              if ( editor != null ) {
+//                  editor.modified = false;
+//              }
+//
+//              // The the tab's filename
+//              selectedTab.setText(file.getName());
+//          }
+//      }
+//  }
+
   @Override
   public void stop(){
     if (L42.profilerPrintOn){
       System.out.print(Timer.report());
     }
-    //g.dispose();
     System.gc();
     System.runFinalization();
     System.exit(0);
@@ -149,7 +325,7 @@ void runCode(){
 void auxRunCode(){
   boolean[] success= {false};
   try{
-  String code=newSrc.getText();
+  String code="";//newSrc.getText();
   L42.cacheK.setFileName("ReplCache.L42",code);
   if(repl==null){ repl=ReplState.start("{"+code+"}");}
   else{
@@ -172,7 +348,7 @@ void auxRunCode(){
            .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
       }
   finally{
-    Platform.runLater(()->this.updateTextFields(success[0]));
+    this.updateTextFields(success[0]);
     }
   }
 
@@ -182,11 +358,11 @@ void rollBackCode(){
   }
 
   iterations--;
-  newSrc.setText(repl.code);
+  //newSrc.setText(repl.code);
   repl= repl.oldRepl;
 
-  if(repl==null) { loadedSrc.clear(); }
-  else { loadedSrc.setText(repl.originalS); }
+//  if(repl==null) { loadedSrc.clear(); }
+//  else { loadedSrc.setText(repl.originalS); }
 
   }
 
@@ -196,18 +372,18 @@ private void updateTextFields(boolean success){
     assert L42.record!=null:"d";
     assert err!=null:"a";
     assert errors!=null:"b";
-    assert loadedSrc!=null:"c";
+//    assert loadedSrc!=null:"c";
     output.setText(L42.record.toString());
     String newErr=err.toString();
     errors.setText(newErr);
     if(repl==null){return;}
-    loadedSrc.setText(repl.originalS);
+//    loadedSrc.setText(repl.originalS);
     if(success) {
       iterations+=1;
-      newSrc.setText(
-        "Main"+iterations+":{//make more stuff happen!\n"+
-        "  return ExitCode.normal()\n  }"
-        );
+//      newSrc.setText(
+//        "Main"+iterations+":{//make more stuff happen!\n"+
+//        "  return ExitCode.normal()\n  }"
+//        );
       }
     }
   finally{
