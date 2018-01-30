@@ -5,19 +5,28 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -28,6 +37,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -53,6 +64,7 @@ import javafx.stage.Stage;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import ast.ErrorMessage;
+import ast.PathAux;
 import facade.ErrorFormatter;
 import facade.L42;
 import profiling.Timer;
@@ -70,8 +82,9 @@ public class ReplGui extends Application {
 
   Tab selectedTab=null;
 
+  private boolean rootPathSet=false;
+
   public static void main(String[] args) {
-    L42.setRootPath(Paths.get("localhost"));
     Application.launch(args);
   }
 
@@ -104,6 +117,9 @@ public class ReplGui extends Application {
         directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
         File outputFolder = directoryChooser.showDialog(primaryStage);
 
+        L42.setRootPath(outputFolder.toPath());
+        rootPathSet=true;
+
         Tab tab = new Tab();
 
         if (outputFolder != null) {
@@ -127,6 +143,11 @@ public class ReplGui extends Application {
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("L42 files", "*.L42"));
 
         File fileToOpen = fc.showOpenDialog(primaryStage);
+
+        //TODO CHECK IS VALID L42 PROJECT otherwise give error
+        //L42.setRootPath(outputFolder.toPath());
+        //rootPathSet=true;
+
         if(fileToOpen!=null) {
           // Read the file, and set its contents within the editor
           String openFileName = fileToOpen.getAbsolutePath();
@@ -142,7 +163,7 @@ public class ReplGui extends Application {
           System.out.println(getClass().getResource("textArea.xhtml"));
           ReplTextArea editor=new ReplTextArea(getClass().getResource("textArea.xhtml"));
           //System.out.println(sb.toString());
-         // editor.setText(sb.toString());
+          // editor.setText(sb.toString());
           editor.setText("heelo");
           //editor.htmlFx.webEngine.load(sb.toString());
           editor.filename = openFileName;          //
@@ -200,106 +221,14 @@ public class ReplGui extends Application {
   }
 
 private void setupSingleMenuItem(Menu menu, MenuItem menuItem) {
-	menu.getItems().add(menuItem);
-    menu.showingProperty().addListener((observableValue, oldValue, newValue) -> {
-      if (newValue) {
-        // the first menuItem is triggered
-    	menu.getItems().get(0).fire();
-        }
-      });
+  menu.getItems().add(menuItem);
+  menu.showingProperty().addListener((observableValue, oldValue, newValue) -> {
+    if (newValue) {
+      // the first menuItem is triggered
+      menu.getItems().get(0).fire();
+      }
+  });
 }
-
-//  private void indicateFileModified() {
-//      if ( currentEditor != null && currentEditor.modified ) {
-//          return;
-//      }
-//
-//      // Get current tab, add an "*" to its name to indicate modified
-//      System.out.println("Indicating text modified");
-//      SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-//      Tab selectedTab = selectionModel.getSelectedItem();
-//      TextArea area = (TextArea)selectedTab.getContent();
-//      currentEditor = getEditorForTextArea(area);
-//      String modName = selectedTab.getText();
-//      if ( ! modName.endsWith("*") ) {
-//          modName += "*";
-//          selectedTab.setText(modName);
-//      }
-//      currentEditor.modified = true;
-//  }
-//
-//  private SimpleEditor getEditorForTextArea(TextArea area) {
-//      Iterator<SimpleEditor> iter = editors.iterator();
-//      while ( iter.hasNext() ) {
-//          SimpleEditor editor = iter.next();
-//          if ( area == (TextArea)editor.getRoot() )
-//              return editor;
-//      }
-//
-//      return null;
-//  }
-//
-//  private void saveFileRev() {
-//      System.out.println("saving file");
-//      boolean success = false;
-//      SimpleEditor editor = null;
-//      File file = null;
-//
-//      SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-//      Tab selectedTab = selectionModel.getSelectedItem();
-//      editor = getEditorForTextArea((TextArea)selectedTab.getContent());
-//      if ( editor == null )
-//          return;
-//      String openFileName = editor.filename;
-//
-//      if ( openFileName == null ) {
-//          // No file was opened. The user just started typing
-//          // Save new file now
-//          FileChooser fc = new FileChooser();
-//          File newFile = fc.showSaveDialog(null);
-//          if ( newFile != null ) {
-//              // Check for a file extension and add ".txt" if missing
-//              if ( ! newFile.getName().contains(".") ) {
-//                  String newFilePath = newFile.getAbsolutePath();
-//                  newFilePath += ".txt";
-//                  newFile.delete();
-//                  newFile = new File(newFilePath);
-//              }
-//              file = newFile;
-//              openFileName = new String(newFile.getAbsolutePath());
-//              editor.filename = openFileName;
-//              selectedTab.setText(newFile.getName());
-//          }
-//      }
-//      else {
-//          // User is saving an existing file
-//          file = new File(openFileName);
-//      }
-//
-//      // Write the content to the file
-//      try ( FileOutputStream fos = new FileOutputStream(file);
-//            BufferedOutputStream bos = new BufferedOutputStream(fos) ) {
-//          String text = editor.getText();
-//          bos.write(text.getBytes());
-//          bos.flush();
-//          success = true;
-//      }
-//      catch ( Exception e ) {
-//          success = false;
-//          System.out.println("File save failed (error: " + e.getLocalizedMessage() + ")");
-//          e.printStackTrace();
-//      }
-//      finally {
-//          if ( success ) {
-//              if ( editor != null ) {
-//                  editor.modified = false;
-//              }
-//
-//              // The the tab's filename
-//              selectedTab.setText(file.getName());
-//          }
-//      }
-//  }
 
   @Override
   public void stop(){
@@ -319,7 +248,9 @@ void runCode(){
   running=true;
   runB.setText("Running");
   runB.setDisable(true);
-  /*Future<Object> future = */executor.submit(this::auxRunCode);
+  System.out.println("Auxruncode starting FX: "+Platform.isFxApplicationThread());
+  this.auxRunCode();
+  System.out.println("Auxruncode done FX: "+Platform.isFxApplicationThread());
   }
 
 void auxRunCode(){
@@ -327,11 +258,50 @@ void auxRunCode(){
   try{
   String code="";//newSrc.getText();
   L42.cacheK.setFileName("ReplCache.L42",code);
-  if(repl==null){ repl=ReplState.start("{"+code+"}");}
-  else{
-    ReplState newR=repl.add(code);
-    if(newR!=null){repl=newR;}
+  if(!rootPathSet) {
+	  Alert alert = new Alert(AlertType.ERROR);
+	  alert.setTitle("Invalid Run");
+	  alert.setHeaderText("Invalid Run");
+	  alert.setContentText("Please either create a new project or open an existing L42 project before you can run the code");
+	  alert.show();
+	  return;
+  }
+
+  //if(repl==null){ repl=ReplState.start("{"+code+"}");}
+
+  //check first 2 line of This.l42
+  String res[]=null;
+  try {
+    File thisL42 = new File(L42.root.toFile(), "This.L42");
+
+    res=check2Line(thisL42);
+
+    //check for error
+    if(res==null || res.length==0) {
+  	  Alert alert = new Alert(AlertType.ERROR);
+  	  alert.setTitle("Invalid Run");
+  	  alert.setHeaderText("Invalid Run");
+  	  alert.setContentText("Missing two line at the start of This.L42 file for the caching library");
+  	  alert.show();
+  	  return;
     }
+
+  } catch(NullPointerException e) { e.printStackTrace(); }
+
+//  Map<String,ReplState> fileNameToCache = new HashMap<>();
+//
+////  List<Path> filesInProject = Files.walk(L42.root)
+////  .filter(Files::isRegularFile)
+////  .filter(File)
+////  .collect(Collectors.toList())
+//
+//  try (Stream<Path> paths = Files.walk(L42.root)) {
+//	    paths.filter(Files::isRegularFile)
+//	    paths.fi
+//	        .forEach(System.out::println);
+//	}
+
+
   success[0]=true;
   }
   catch(ParseCancellationException parser){
@@ -352,21 +322,41 @@ void auxRunCode(){
     }
   }
 
-void rollBackCode(){
-  if(repl == null) {
-	return; //do nothing
+//returns a String array with 3 things ==>  {first2Line,cacheLibName,restOfCode}
+private static String[] check2Line(File file) {
+
+  try {
+	Scanner sc = new Scanner(file);
+	sc.useDelimiter(Pattern.compile("(\\n)| |,")); //newline, spaces and comma
+
+	String cacheLibName="";
+
+	if(sc.next().equals("reuse")) {
+	  cacheLibName=sc.next();
+
+	  String className=sc.next();
+	  if(PathAux.isValidClassName(className)) {
+	    if(sc.next().equals(":")) {
+		  if(sc.next().equals("Load.cacheTowel()")) {
+		    String first2Line="reuse "+cacheLibName+"\n"+className+":"+"Load.cacheTowel()";
+
+		    sc.useDelimiter("\\z");
+		    String restOfCode=sc.next();
+			sc.close();
+		    return new String[]{first2Line,cacheLibName,restOfCode};
+	 	    }
+		  }
+		}
+	  }
+	sc.close();
+  } catch (FileNotFoundException e) {
+	e.printStackTrace();
   }
 
-  iterations--;
-  //newSrc.setText(repl.code);
-  repl= repl.oldRepl;
+  //check for error
+  return new String[0];
+}
 
-//  if(repl==null) { loadedSrc.clear(); }
-//  else { loadedSrc.setText(repl.originalS); }
-
-  }
-
-private  int iterations=0;
 private void updateTextFields(boolean success){
   try{
     assert L42.record!=null:"d";
@@ -379,7 +369,6 @@ private void updateTextFields(boolean success){
     if(repl==null){return;}
 //    loadedSrc.setText(repl.originalS);
     if(success) {
-      iterations+=1;
 //      newSrc.setText(
 //        "Main"+iterations+":{//make more stuff happen!\n"+
 //        "  return ExitCode.normal()\n  }"
