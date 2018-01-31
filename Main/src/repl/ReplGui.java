@@ -265,59 +265,35 @@ void auxRunCode(){
   }
 
   try{
-    String code="";//newSrc.getText();
-
-    //if(repl==null){ repl=ReplState.start("{"+code+"}");}
-
     //check first 2 line of This.l42
-    String res[]=null;
-
     File thisL42 = new File(L42.root.toFile(), "This.L42");
 
-    res=check2Line(thisL42);
-
-    //check for error
-    if(res==null || res.length==0) {
-  	  Alert alert = new Alert(AlertType.ERROR);
-  	  alert.setTitle("Invalid Run");
-  	  alert.setHeaderText("Invalid Run");
-  	  alert.setContentText("Missing two line at the start of This.L42 file for the caching library");
-  	  alert.show();
-  	  return;
-    }
-
-
-    String first2Line=res[0];
-    String cacheLibName=res[1];
-    String restOfCode=res[2];
-
+    CodeInfo res=new CodeInfo(thisL42);
 
     //check if library already cached in L42IDE folder
     Path currentRoot=L42.root;
     L42.setRootPath(Paths.get("L42IDE"));
 
-    File directory = new File(cacheLibName);
-    if (!directory.exists()){
+    File directory = new File(res.cacheLibName);
+
+    if (!directory.exists()){ //if not already cached before
       directory.mkdir();
+
+      L42.setRootPath(Paths.get("L42IDE", res.cacheLibName));
+
+      L42.cacheK.setFileName("This.L42",res.first2Line);
+      repl=ReplState.start("{"+res.first2Line+"}");
     }
 
-    L42.setRootPath(Paths.get("L42IDE", cacheLibName));
-
-    if(true) { //TODO: check if already cached then do not do this
-      L42.cacheK.setFileName("This.L42",first2Line);
-      repl=ReplState.start("{"+first2Line+"}");
-    }
-
-    L42.setRootPath(currentRoot);
+    L42.setRootPath(currentRoot); //go back to project folder
 
     //Copy the files into the current project
-    // FileUtils.copyDirectory
-   // Files.copy(source, target, options), out)
-    // Files.copy(Paths.get("L42acheL) , );
-     // ???????????
+    Path src=Paths.get("L42IDE", res.cacheLibName);
+    Path dest=currentRoot;
+    this.copyEntireDirectory(src,dest);
 
-    L42.cacheK.setFileName("This.L42",restOfCode);
-    ReplState newR=repl.add(restOfCode);
+    L42.cacheK.setFileName("This.L42",res.restOfCode);
+    ReplState newR=repl.add(res.restOfCode);
     if(newR!=null){repl=newR;}
 
 //  Map<String,ReplState> fileNameToCache = new HashMap<>();
@@ -336,18 +312,25 @@ void auxRunCode(){
 
 
   }
+  catch(IllegalArgumentException e) {
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.setTitle("Invalid Run");
+    alert.setHeaderText("Invalid Run");
+    alert.setContentText("Missing two line at the start of This.L42 file for the caching library");
+    alert.show();
+  }
   catch(NullPointerException e) {
-	e.printStackTrace();
+	  throw new Error(e);
 	}
   catch(ParseCancellationException parser){
-    System.out.println(parser.getMessage());
+    throw new Error(parser);
     }
   catch(ErrorMessage msg){
     ErrorFormatter.topFormatErrorMessage(msg);
     }
   catch(Throwable t){
      //somehow t.printstacktrace freeze stuff as well as inspecting t.cause
-      System.out.println(
+      throw new Error(
             ""+t+"\n"+
            Arrays.asList(t.getStackTrace()).stream()
            .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
@@ -358,38 +341,38 @@ void auxRunCode(){
   }
 
 //returns a String array with 3 things ==>  {first2Line,cacheLibName,restOfCode}
-private static String[] check2Line(File file) {
+protected static class CodeInfo{
+  String first2Line;
+  String cacheLibName;
+  String restOfCode;
+  CodeInfo(File file){
+    try(Scanner sc = new Scanner(file)) {
+    	sc.useDelimiter(Pattern.compile("(\\n)| |,")); //newline, spaces and comma
 
-  try {
-	Scanner sc = new Scanner(file);
-	sc.useDelimiter(Pattern.compile("(\\n)| |,")); //newline, spaces and comma
+  	  if(!sc.next().equals("reuse")) {throw new IllegalArgumentException();}
+  	  this.cacheLibName=sc.next();
+      String className=sc.next();
+  	  if(!PathAux.isValidClassName(className)) {throw new IllegalArgumentException();}
+  	  if(!sc.next().equals(":")) {throw new IllegalArgumentException();}
+  	  if(!sc.next().equals("Load.cacheTowel()")) {throw new IllegalArgumentException();}
 
-	String cacheLibName="";
-
-	if(sc.next().equals("reuse")) {
-	  cacheLibName=sc.next();
-
-	  String className=sc.next();
-	  if(PathAux.isValidClassName(className)) {
-	    if(sc.next().equals(":")) {
-		  if(sc.next().equals("Load.cacheTowel()")) {
-		    String first2Line="reuse "+cacheLibName+"\n"+className+":"+"Load.cacheTowel()";
-
-		    sc.useDelimiter("\\z");
-		    String restOfCode=sc.next();
-			sc.close();
-		    return new String[]{first2Line,cacheLibName,restOfCode};
-	 	    }
-		  }
-		}
-	  }
-	sc.close();
-  } catch (FileNotFoundException e) {
-	e.printStackTrace();
+    	this.first2Line="reuse "+cacheLibName+"\n"+className+":"+"Load.cacheTowel()";
+      sc.useDelimiter("\\z");
+    	this.restOfCode=sc.next();
+    }
+  catch (FileNotFoundException e) {throw new Error(e);}
   }
+}
 
-  //check for error
-  return new String[0];
+private void copyEntireDirectory(Path src, Path dest) {
+  try (Stream<Path> stream = Files.walk(src)) {
+    stream.forEach(sourcePath -> {
+  	  try {
+  	    Files.copy(sourcePath, src.resolve(dest.relativize(sourcePath)));
+  	  } catch (Exception e) {throw new Error(e);}
+    });
+  } catch (IOException e1) {throw new Error(e1);}
+
 }
 
 private void updateTextFields(){
