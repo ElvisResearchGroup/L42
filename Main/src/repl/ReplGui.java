@@ -254,24 +254,24 @@ void runCode(){
   }
 
 void auxRunCode(){
-  boolean[] success= {false};
-  try{
-  String code="";//newSrc.getText();
-  L42.cacheK.setFileName("ReplCache.L42",code);
+
   if(!rootPathSet) {
-	  Alert alert = new Alert(AlertType.ERROR);
-	  alert.setTitle("Invalid Run");
-	  alert.setHeaderText("Invalid Run");
-	  alert.setContentText("Please either create a new project or open an existing L42 project before you can run the code");
-	  alert.show();
-	  return;
+	Alert alert = new Alert(AlertType.ERROR);
+	alert.setTitle("Invalid Run");
+	alert.setHeaderText("Invalid Run");
+	alert.setContentText("Please either create a new project or open an existing L42 project before you can run the code");
+	alert.show();
+    return;
   }
 
-  //if(repl==null){ repl=ReplState.start("{"+code+"}");}
+  try{
+    String code="";//newSrc.getText();
 
-  //check first 2 line of This.l42
-  String res[]=null;
-  try {
+    //if(repl==null){ repl=ReplState.start("{"+code+"}");}
+
+    //check first 2 line of This.l42
+    String res[]=null;
+
     File thisL42 = new File(L42.root.toFile(), "This.L42");
 
     res=check2Line(thisL42);
@@ -286,7 +286,39 @@ void auxRunCode(){
   	  return;
     }
 
-  } catch(NullPointerException e) { e.printStackTrace(); }
+
+    String first2Line=res[0];
+    String cacheLibName=res[1];
+    String restOfCode=res[2];
+
+
+    //check if library already cached in L42IDE folder
+    Path currentRoot=L42.root;
+    L42.setRootPath(Paths.get("L42IDE"));
+
+    File directory = new File(cacheLibName);
+    if (!directory.exists()){
+      directory.mkdir();
+    }
+
+    L42.setRootPath(Paths.get("L42IDE", cacheLibName));
+
+    if(true) { //TODO: check if already cached then do not do this
+      L42.cacheK.setFileName("This.L42",first2Line);
+      repl=ReplState.start("{"+first2Line+"}");
+    }
+
+    L42.setRootPath(currentRoot);
+
+    //Copy the files into the current project
+    // FileUtils.copyDirectory
+   // Files.copy(source, target, options), out)
+    // Files.copy(Paths.get("L42acheL) , );
+     // ???????????
+
+    L42.cacheK.setFileName("This.L42",restOfCode);
+    ReplState newR=repl.add(restOfCode);
+    if(newR!=null){repl=newR;}
 
 //  Map<String,ReplState> fileNameToCache = new HashMap<>();
 //
@@ -302,8 +334,11 @@ void auxRunCode(){
 //	}
 
 
-  success[0]=true;
+
   }
+  catch(NullPointerException e) {
+	e.printStackTrace();
+	}
   catch(ParseCancellationException parser){
     System.out.println(parser.getMessage());
     }
@@ -318,7 +353,7 @@ void auxRunCode(){
            .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
       }
   finally{
-    this.updateTextFields(success[0]);
+    this.updateTextFields();
     }
   }
 
@@ -357,23 +392,14 @@ private static String[] check2Line(File file) {
   return new String[0];
 }
 
-private void updateTextFields(boolean success){
+private void updateTextFields(){
   try{
     assert L42.record!=null:"d";
     assert err!=null:"a";
     assert errors!=null:"b";
-//    assert loadedSrc!=null:"c";
     output.setText(L42.record.toString());
     String newErr=err.toString();
     errors.setText(newErr);
-    if(repl==null){return;}
-//    loadedSrc.setText(repl.originalS);
-    if(success) {
-//      newSrc.setText(
-//        "Main"+iterations+":{//make more stuff happen!\n"+
-//        "  return ExitCode.normal()\n  }"
-//        );
-      }
     }
   finally{
     this.running=false;
