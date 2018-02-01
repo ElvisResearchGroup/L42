@@ -295,20 +295,6 @@ void auxRunCode(){
     ReplState newR=repl.add(res.restOfCode);
     if(newR!=null){repl=newR;}
 
-//  Map<String,ReplState> fileNameToCache = new HashMap<>();
-//
-////  List<Path> filesInProject = Files.walk(L42.root)
-////  .filter(Files::isRegularFile)
-////  .filter(File)
-////  .collect(Collectors.toList())
-//
-//  try (Stream<Path> paths = Files.walk(L42.root)) {
-//	    paths.filter(Files::isRegularFile)
-//	    paths.fi
-//	        .forEach(System.out::println);
-//	}
-
-
 
   }
   catch(IllegalArgumentException e) {
@@ -339,7 +325,6 @@ void auxRunCode(){
     }
   }
 
-//returns a String array with 3 things ==>  {first2Line,cacheLibName,restOfCode}
 protected static class CodeInfo{
   String first2Line;
   String cacheLibName;
@@ -351,6 +336,7 @@ protected static class CodeInfo{
 
   	  if(!sc.next().equals("reuse")) {throw new IllegalArgumentException();}
       sc.skip(delimit);
+
   	  this.cacheLibName=sc.next();
       sc.skip(delimit);
 
@@ -363,7 +349,8 @@ protected static class CodeInfo{
   	  if(!lastPart.equals("Load.cacheTowel()")) {throw new IllegalArgumentException();}
 
     	this.first2Line="reuse "+cacheLibName+"\n"+className+":"+"Load.cacheTowel()";
-      sc.useDelimiter("\\z");
+
+      sc.useDelimiter("\\z"); //rest of the content
     	this.restOfCode=sc.next();
     }
   }
