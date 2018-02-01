@@ -242,6 +242,9 @@ public class Loader {
     catch(CompilationError| ClassNotFoundException| NoSuchMethodException| SecurityException| IllegalAccessException| IllegalArgumentException exc) {
       throw new Error(exc);
       }
+    catch (Throwable t) {
+      throw Assertions.codeNotReachable();
+      }
     }
   public Object run(MiniJ.CD j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     String text="package generated;\n"+MiniJToJava.of(j);

@@ -1,0 +1,350 @@
+{reuse L42.is/AdamTowel02
+
+$exp:Resource<><{
+  Exp:{interface}
+
+  X:{implements Exp
+    S inner
+    class method X(S inner)
+    }
+
+  Lambda:{implements Exp
+    S x
+    Exp body
+    class method Lambda (S x, Exp body)
+    }
+
+  Application:{implements Exp
+    Exp e1
+    Exp e2
+    class method Application (Exp e1, Exp e2)
+    }
+
+  Literal:{implements Exp
+    Num inner
+    class method Literal (Num inner)
+    }
+
+  Subtraction:{implements Exp
+    Exp e1
+    Exp e2
+    class method Subtraction (Exp e1, Exp e2)
+    }
+  }
+
+$transformation:Resource<><Use[$exp()]<><{
+  Arg:{}
+
+  Exp:{interface
+    method Exp op(mut Arg that)
+    }
+
+  X:{implements Exp
+    method op(that)
+      this
+    }
+
+  Lambda:{implements Exp
+    method op(that)
+      Lambda(x:this.x(), body:this.body().op(that))
+    }
+
+  Application:{implements Exp
+    method op(that)
+      Application(e1:this.e1().op(that), e2:this.e2().op(that))
+    }
+
+  Literal:{implements Exp
+    method op(that)
+      this
+    }
+
+  Subtraction:{implements Exp
+    method op(that)
+      Subtraction(e1:this.e1().op(that), e2:this.e2().op(that))
+    }
+  }
+
+$query:Resource<><Use[$exp()]<><{
+  Arg:{}
+
+  Exp:{interface
+    method Void op(mut Arg that)
+    }
+
+  X:{implements Exp
+    method op(that)
+      void
+    }
+
+  Lambda:{implements Exp
+    method op(that)
+      this.body().op(that)
+    }
+
+  Application:{implements Exp
+    method op(that) (
+      this.e1().op(that)
+      this.e2().op(that)
+      )
+    }
+
+  Literal:{implements Exp
+    method op(that)
+      void
+    }
+
+  Subtraction:{implements Exp
+    method op(that) (
+      this.e1().op(that)
+      this.e2().op(that)
+      )
+    }
+  }
+
+
+$allVar:Resource<><Use[
+  Refactor2.redirect(path:\"Arg" into:Strings)<><
+  Refactor2.Method[
+    abstract:\"op(that)" of:\"X";
+    abstract:\"op(that)" of:\"Lambda";
+    rename:\"op(that)" of:\"Exp" into:\"allVar(that)"]<><
+  $query()]<><{
+    X:{
+      method Void allVar(mut Strings that)
+        that.add(right:this.inner())
+      }
+    Lambda:{
+      method Void allVar(mut Strings that)
+        that.add(right:this.x())
+      }
+    }
+
+$freeVar:Resource<><Use[Refactor2.Method[
+  abstract:\"allVar(that)" of:\"Lambda";
+  rename:\"allVar(that)" of:\"Exp" into:\"fv(that)"
+  ]<><$allVar()]<><{
+    Lambda:{
+      method Void fv(mut Strings that) (
+        mut Strings tmp=Strings.empty()
+        this.body().fv(tmp)
+        tmp.removeAll(val:this.x())
+        with s in tmp.vals() (that.add(right:s))
+        )
+      }
+    }
+
+$dimension:Resource<><Use[$exp()]<><{
+    Exp:{interface
+      method Num size()
+      }
+    X:{implements Exp
+      method size() 1Num
+      }
+    Lambda:{implements Exp
+      method size()
+        1Num+this.body().size()
+      }
+    Application:{implements Exp
+      method size()
+        1Num+this.e1().size()+this.e2().size()
+      }
+    Literal:{implements Exp
+      method size() 1Num
+      }
+    Subtraction:{implements Exp
+      method size()
+        1Num+this.e1().size()+this.e2().size()
+      }
+    }
+
+$substErr:Resource<><Use[
+  Refactor2.rename(path:\"Arg" into:\"SubstArg")<><
+  Refactor2.Method[
+    abstract:\"op(that)" of:\"X";
+    abstract:\"op(that)" of:\"Lambda";
+    rename:\"op(that)" of:\"Exp" into:\"subst(that)"]<><
+  $transformation()]<><{
+    Exp:{}
+    SubstArg:{S x, Exp e,Strings fve}
+    X:{
+      method Exp subst(mut SubstArg that){
+        if this.inner()==that.x() (return that.e())
+        return this
+        }
+      }
+    Lambda:{
+      method Exp subst(mut SubstArg that){
+        if this.x()==that.x() (return this)
+        if this.x() < that.fve() (error S"alphaRenameNotSupported")
+        return Lambda(x:this.x(), body:this.body().subst(that))
+        }
+      }
+    }
+
+
+$alphaFresh:Resource<><Use[
+  Refactor2.rename(path:\"Arg" into:\"AlphaArg")<><
+  Refactor2.Method[
+    abstract:\"op(that)" of:\"X";
+    abstract:\"op(that)" of:\"Lambda";
+    rename:\"op(that)" of:\"Exp" into:\"alpha(that)"]<><
+  $transformation()]<><{
+    Exp:{}
+    AlphaArg:{S x, S y class method mut AlphaArg(S x, S y)}
+    X:{
+      method Exp alpha(mut AlphaArg that){
+        if this.inner()==that.x() (return X(inner:that.y()))
+        return this
+        }
+      }
+    Lambda:{
+      method Exp alpha(mut AlphaArg that){
+        if this.x()!=that.x() (return this)
+        return Lambda(x:that.y(), body:this.body().alpha(that))
+        }
+      }
+    }
+
+$subst:Resource<><Use[$alphaFresh();
+  Refactor2.Method[abstract:\"subst(that)" of:\"Lambda"]<><$substErr()]<><{
+    Exp:{}
+    AlphaArg:{}
+    SubstArg:{mut Strings used
+      class method mut SubstArg(S x, Exp e, Strings fve, mut Strings used)
+      }
+    Lambda:{
+      method Exp subst(mut SubstArg that){
+        if this.x()==that.x() (return this)
+        if this.x() < that.fve() (
+          yFresh=This.fresh(x:this.x(), used:that.#used())
+          body=this.body().alpha(AlphaArg(x:this.x(), y:yFresh))
+          return Lambda(x:yFresh, body:body.subst(that))
+          )
+        return Lambda(x:this.x(), body:this.body().subst(that))
+        }
+    class method S fresh(S x,mut Strings used) {
+      with num in Range(start:0Size) (
+        current = x ++ num.toS()
+        if !used.contains(current) (
+          used.add(right:current)
+          return current
+          )
+        )
+        error X""
+      }
+    }
+  }
+
+
+$fullBeta:Resource<><Use[$subst();$freeVar();
+  Refactor2.rename(path:\"Arg" into:\"BetaArg")<><
+  Refactor2.Method[
+    abstract:\"op(that)" of:\"Application";
+    abstract:\"op(that)" of:\"Subtraction";
+    rename:\"op(that)" of:\"Exp" into:\"beta(that)"]<><
+  $transformation()]<><{
+    Exp:{}
+    Lambda:{}
+    Literal:{}
+    SubstArg:{}
+    BetaArg:{mut Strings used}
+    Application:{
+      method Exp beta(mut BetaArg that){
+        e2=this.e2().beta(that)
+        with e1=this.e1() (on Lambda (
+          fve=Strings.empty()
+          e2.fv(fve)
+          sa=SubstArg(x:e1.x(),e:e2,fve:fve,used:that.#used())
+          return e1.body().subst(sa)
+          ))
+        return Application(e1:this.e1().beta(that),e2:e2)
+        }
+      }
+    Subtraction:{
+      method Exp beta(mut BetaArg that){
+        with e1=this.e1(), e2=this.e2() (on Literal, Literal (
+          return Literal(inner:e1.inner()-e2.inner())
+          ))
+        return Application(e1:this.e1().beta(that),e2:this.e2().beta(that))
+        }
+      }
+    }
+
+Language:
+//  Data.AddToS(mutK:\"#apply(e1,e2)", of:\"Application")<><
+//  Data.AddToS(mutK:\"#apply(e1,e2)", of:\"Subtraction")<><
+//  Data.AddToS(mutK:\"#apply(inner)", of:\"X")<><
+//  Data.AddToS(mutK:\"#apply(inner)", of:\"Literal")<><
+//  Data.AddToS(mutK:\"#apply(x,body)", of:\"Lambda")<><
+//LoggingError: [This1.Exp, This2.Concept.ToS] [This2.Concept.ToS, This1.Exp]
+  Use[$fullBeta(); $allVar(); $dimension()]<><{
+    Exp:{interface implements Concept.ToS}
+    Lambda:{implements Exp method toS() S"(\"[this.x();S".";this.body()]")"}
+    Subtraction:{implements Exp method toS() S""[this.e1();S" - ";this.e2()]""}
+    Application:{implements Exp method toS() S""[this.e1();S" ";this.e2()]""}
+    Literal:{implements Exp method toS() this.inner().toS()}
+    X:{implements Exp method toS() this.inner().toS()}
+    BetaArg:{class method mut BetaArg (mut Strings used)}
+
+  }
+
+Minimize :{
+  class method Language.Exp minimizeMany(Language.Exp input) {
+    mut Strings vars=Strings.empty()
+    input.allVar(vars)
+    var Language.Exp e = input
+    var Num next=e.size()
+    var Num current = next
+    loop (
+      current := next
+      e := e.beta(Language.BetaArg(used:vars))
+      next :=e.size()
+      if current<=next (return e)
+      )
+    }
+  }
+
+Main: {
+  la=Language.Lambda
+  a=Language.Application
+  x=Language.X
+  li=Language.Literal
+  s=Language.Subtraction
+  id=la(x:S"x",body: x(inner:S"x"))
+  omega=la(x:S"x",body:a(e1:x(inner:S"x"),e2:x(inner:S"x")))
+  freeY= la(x:S"x",body:x(inner:S"y"))
+  freeX= la(x:S"y",body:x(inner:S"x"))
+  replaceY=a(e1:la(x:S"y",body:x(inner:S"y")),e2:freeY)
+  replaceY2=a(e1:la(x:S"x",body:freeX),e2:freeY)
+
+  e=la(x:S"x", body:a(e1:x(inner:S"x"),e2:x(inner:S"x")))
+  Debug.test(e expected:S"(\x.x x)")
+  e1=la(x:S"x",body:s(e1:li(inner:1Num),e2:x(inner:S"x")))
+  Debug.test(e1 expected:S"(\x.1 - x)")
+
+  e3=a(e1:id,e2:id)
+  res3=Minimize.minimizeMany(input:e3)
+  Debug.test(res3 expected:S"(\x.x)")
+
+  e4=a(e1:id,e2:a(e1:id,e2:id))
+  res4=Minimize.minimizeMany(input:e4)
+  Debug.test(res4 expected:S"(\x.x)")
+
+  Debug.test(replaceY expected:S"(\y.y) (\x.y)")
+  res5=Minimize.minimizeMany(input:replaceY)
+  Debug.test(res5 expected:S"(\x.y)")
+
+  Debug.test(replaceY2 expected:S"(\x.(\y.x)) (\x.y)")
+  res6=Minimize.minimizeMany(input:replaceY2)
+  Debug.test(res6 expected:S"(\y0.(\x.y))")
+
+  return ExitCode.normal()
+  }
+//-------------------------
+//lines   topconcepts  members
+// 106      14           37
+// 366
+
+
+ }

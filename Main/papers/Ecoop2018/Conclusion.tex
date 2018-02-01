@@ -2,17 +2,26 @@
 
 In this paper we explained a simple model to 
 radically decouple inheritance/code reuse and subtyping.
+One important point is that our decoupling does not
+makes the language more complex:
+% since
+%interfaces (subtyping without subclassing)
+%exists in both Java and C\#.
+we \textbf{replace the concept} of abstract classes with
+the concept of traits, while keeping the concepts of
+interfaces and final classes.
+Concrete non final classes are simply not needed in our model.
+
 The model presented here is easy to extend.
-For example nested classes can be easily added, giving us enough power
-to easily solve the Expression Problem~\cite{EP}, as demonstrated previously in
-DeepFJig~\cite{deep}. More composition operators can be added in addition to \use.
-In particular all the sophisticated operators of DeepFJig can be added.
+More composition operators can be added in addition to \use.
+In particular variants of the sophisticated operators of DJ are
+included in the full 42 language.
  Indeed we can add any operator respecting following criteria:
 
 \begin{itemize}
-\item As for \use, the operator does not need to be total, but if it fails it needs to provide an error that will be reported to the programmer.
-\item When the operator takes in input only traits (they are going to be well typed), if a result is produced,
- such result is well typed.
+\item The operator does not need to be total, but if it fails it needs to provide an error that will be reported to the programmer.
+\item When the operator takes in input only traits (they are going to be well typed code), if a result is produced,
+ such result is also well typed.
 \item When the operator takes in input also code literals, if a non-well typed result is produced,
 the type error must be traced back to code in one of those not-yet typed code literals.
  \end{itemize}
@@ -20,17 +29,17 @@ the type error must be traced back to code in one of those not-yet typed code li
 
  
  Our simplified model represents the conceptual core of  42: a novel full blown programming language,
-which leverages on the ideas presented in this paper to obtain reliable and understandable metaprogramming.
+using the ideas presented in this paper to obtain reliable and understandable metaprogramming.
 Formalization (in progress) for full 42 can be found at
 \url{http://}\footnote{Omitted for anonymous review}. 
 %\verb@urlOmittedForDoubleBlindReview@.
 %\verb@github.com/ElvisResearchGroup/L42/tree/master/Main/formal@.
 42 extends our model allowing
 flattening to execute arbitrary computations.
-In such model we do not need an explicit notion of traits: they are encoded as method returning a code literal.
-42 also have features less related to code composition, like
+In such model we do not need an explicit notion of traits: they are encoded as methods returning a code literal.
+42 also has features less related to code composition, like
   a strong type system supporting aliasing mutability and circularity control,
-   checked exceptions, errors (unchecked exceptions) with strong-exception-safety for errors.
+   checked exceptions, and errors (unchecked exceptions) with strong-exception-safety.
 
 \begin{comment}
 42 do not have a finite set of composition operators; they can be

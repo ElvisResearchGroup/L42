@@ -1,46 +1,46 @@
-\saveSpace\saveSpace
+\saveSpace
 \section{Related Work}
-\saveSpace\saveSpace
+\saveSpace
 Literature on code reuse is too vast to let us do justice of it in a few pages.
 Our work is inspired by traits~\cite{ducasse2006traits}, which in turn
 are inspired by module composition languages~\cite{ancona2002calculus}.
-\saveSpace
+
 \subsection{Separating Inheritance and Subtyping}
 We are aware of at least 3 independently designed research languages 
-that address the this-leaking problem: TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}, Package Templates~(PT)\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}, DeepFJig~\cite{deep,servetto2014meta,fjig}.
-Leveraging on \emph{traits}, in this work we aim to synthesize
+that address the this-leaking problem: TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}, Package Templates~(PT)\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}, DeepFJig(DJ)~\cite{deep,servetto2014meta,fjig}.
+Levering on \emph{traits}, in this work we aim to synthesize
 the best ideas of those very different designs, while at the same time 
 coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
 3 particular language designs.
 The following compares 
-various aspects of the language designs:
-
+various aspects of the language designs;
+we underline 3 properties where one approach shines the most, and 3 properties where one approach is more lacking.
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals}
-DeepFJig is best in this sense, since TR has separate syntax for class literals, trait literals and record literals.
+DJ is best in this sense, since TR has separate syntax for class literals, trait literals and record literals.
 PT on the other hand is built on top of full Java, thus has a very
 involved syntax.
-\name leverages on DeepFJig's approach but,
+\name relies on DJ's approach but,
 \emph{thanks to our novel representation of state}, \name also offers a much simpler and uniform syntax than
 all other approaches: everything is just a method.
 \item 
-{\bf Reusable code cannot be ``used'', that is instantiated or used as a type.}
-This happens in TR and in PT, but not in DeepFJig. To allow reusable code to be directly 
-usable, in DeepFJig
+{\bf Reusable code cannot be ``used'' (that is be instantiated or used as a type).}
+This happens in TR and in PT, but not in DJ. To allow reusable code to be directly 
+usable, in DJ
 classes introduce nominal types in an unnatural way: the type of
 \Q@this@ is only \Q@This@ (sometimes called \Q@<>@) and not the
 nominal type of its class. 
-That is in DeepFJig 
-\Q@A:{ method A m()this}@ is not well typed. This is because
-\Q@B: Use A@ flattens to \Q@B:{ method A m()this}@, which is clearly not well typed.
+That is in DJ 
+`\Q@A={method A m(){return this;}}@' is not well typed. This is because
+`\Q@B= Use A@' flattens to `\Q@B={method A m(){return this;}}@', which is clearly not well typed.
 Looking to this example is clear why we need reusable code to be agnostic of its name.
 Then, either reusable code has no name (as in TR, PT and \name)
-or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name.
+or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name, as in DJ.
 
 \item 
 {\bf Requiring abstract signatures is a left over of module composition mindset.}
-TR and DeepFJig comes from a tradition of functional module composition, where 
+TR and DJ comes from a tradition of functional module composition, where 
 modules are typed in isolation under an environment, and then the composition is performed.
 As we show in this work, this ends up requiring verbose repetition of abstract signatures,
 which (for highly modularized code) may end up constituting most of the program.
@@ -49,26 +49,133 @@ the meaning of names can be understood from the reuse context.
 The typing strategy of PT offers the same advantages of our typing model, 
 but is more involved and indirect. This may be caused by the
 heavy task of integrating with full Java.
-%Recent work based on TR is trying to address this issue too.
+Recent work based on TR is trying to address this issue too~\cite{damiani2017unified}.
 \item {\bf Composition algebra.}
 The idea of using composition operators over atomic values as in an arithmetic expression is very powerful,
-and makes it easy to extend languages with more operators. DeepFJig and TR embrace this idea, while PT takes the traditional Java/C++ approach of using enhanced class/package declaration syntax.
+and makes it easy to extend languages with more operators. DJ and TR embrace this idea, while PT takes the traditional Java/C++ approach of using enhanced class/package declaration syntax.
 The typing strategy of PT also seems to be connected with this
 decision, so it would be hard to move their approach in a composition
 algebra setting.
 \item {\bf Complete ontological separation between use and reuse}
 While all 3 works allow separating inheritance and subtyping only TR properly enforces 
 separation between use (classes and interfaces) and reuse (traits).
-This is because in DeepFJig all classes are both units of use and reuse (however, subtyping is not induced).
+This is because in DJ all classes are both units of use and reuse (however, subtyping is not induced).
 PT imports all the complexity of Java, so although is possible to separate use and reuse, the model have powerful but non-obvious implications where (conventional Java) \Q@extends@ and PT are used together.
 \item {\bf Naming the self type, even if there is none yet.}
-Both DeepFJig and PT allow a class to refer to its name, albeit this is
+Both DJ and PT allow a class to refer to its name, albeit this is
 less obvious in PT since both a package and a class have to be introduced to express it.
-This allows encoding binary methods, express patterns like withers or fluent setters and to instantiate instances of the (future) class(es)  using the reused code.
-
+This allows encoding binary methods, expressing patterns like withers or fluent setters and to instantiate instances of the (future) class(es)  using the reused code.
 \end{itemize}
 
+\subsection{Family
+Polymorphism by disconnecting Use and Reuse}
+
+Our \Q@Use@ operator is similar to deep mixin composition~\cite{Ernst99a,Zenger-Odersky2005, Hutchins06}
+and family polymorphism~\cite{Ernst06, igarashi2005lightweight, IgarashiViroli07, IgarashiEtAl08}, but is symmetric, and with the operator
+\Q@super@ offers a flexible  explicit conflict resolution.
+
+We claim that our presented solution to the expression problem is very
+natural and compares positively with existing solutions in the literature.
+Challenging the expression problem, our close contender is DJ~\cite{deep}: all our gain over their model is based on our relaxation over abstract signatures.
+A similar syntax can be achieved with the Scandinavian style~\cite{ernst2004expression}, or with the work of 
+Nystrom (Jx~\cite{NystromEtAl04} and
+J\&~\cite{nystrom2006j}), where the composition behaves similarly to our sum operator.
+Both Jx,J\& and the virtual classes of Ernst~\cite{Ernst06}
+make uses of dependent types.
+As in \Q@.@FJ and \Q@^@FJ~\cite{igarashi2005lightweight,IgarashiEtAl08,IgarashiViroli07,saito2008essence},
+ instead, we do not need sophisticated types. 
+
+The work introducting DJ~\cite{deep} contains an in-depth comparison between various FP approaches, including a simple example written in \Q@.@FJ syntax synthesizing the issues arising when FP is obtained while keeping Use and Reuse connected:
+\begin{lstlisting}
+class A{
+  static class B{int f1;}  
+  int k(.B x){ return x.f1;}
+}
+class AA extends A{
+  static class B{int f2;}
+  int k(.B x){return x.f2+new .B().f2; }
+}
+\end{lstlisting}
+The syntax \lstinline{.B} denotes a relative path, that is, the 
+class \lstinline{B} in scope.
+In Java and Scala declaring a subclass of a nested class with the same
+name of a nested of the superclass only has the effect of hiding parent's declaration.
+Approaches supporting FP~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
+consider such definition a form of \emph{overriding},
+sometimes called \emph{further extension}~\cite{IgarashiViroli07}:
+\lstinline{AA.B} further extends \lstinline{A.B}: it is implicitly considered a subclass of \lstinline{A.B}, adding the field \Q@f2@.
+
+Consider now the following code:
+\begin{lstlisting}
+new AA().k(new AA.B())//well-typed
+new A().k(new A.B())//well-typed
+A a=new AA(); //well-typed assuming AA subtype of A
+a.k(new A.B())//runtime error: A.B.f2 does not exist
+\end{lstlisting}
+The sound \Q@.@FJ type system consider the last method invocation ill-typed; even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
+With minor syntactical changes, other approaches~\cite{nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07}
+supports this same example in the same way.
+Inheritance implies Subtyping is broken only in some controlled way, and is  allowed whenever does not directly lead to unsoundness.
+
+From a different perspective, we can say that traditional
+implementations of family polymorphism are still heavily influenced by
+the ``Inheritance implies Subtyping'' model.
+We believe that this is a major source of complexity in the type
+systems of those approaches:
+They need to track those calls, and enforce the \emph{family} of the receiver and the argument is the same.
+Because we separate inheritance from subtyping we liberate ourselves
+from tricky issues that arise in such type systems, and we can
+provide a simpler model of family polymorphism, soundly supported by 
+a straightforward nominal type system:
+by disconnecting use and reuse we outlaw \Q@A a=new AA()@.
+In \name this is also reducing the expressing power a little, but
+in the full 42 language, as well as in DJ, the operator \textbf{redirect} allows to write code that is parametric on families of data types.
+
+
+Researchers with a strong grasp on Family
+Polymorphism know that support for FP strictly includes
+support for `\Q@This@' type and self instantiation, since the
+class is a member of its own family.
+Scala allows to \textbf{encode} further extension/deep mixin composition,
+but it requires to do it explicitly, growing the amount of required glue-code.
+\saveSpace
+\subsection{ThisType with Subclassing implying Subtyping}
+\saveSpace
+With the exception of those mentioned 3 lines of work, to the best of our understanding
+other famous work in literature, like~\cite{odersky2008programming,nystrom2006j}
+do not completely break the relation between inheritance and subtyping, but only prevent subtyping where 
+it would be unsound.
+Recent work on {\bf ThisType} \cite{Saito:2009,ryu16ThisType}
+also continues on this line.
+In those works, ``subtyping by subclassing'' is preserved, which means
+that those designs are more suitable to retain the programming model
+of mainstream OOP languages and backwards compatibility. The design 
+of \name (and 42) is a more radical departure of mainstream OOP, with
+the hope to improve both the mechanisms for use and reuse in OOP.
+
+
+%\begin{lstlisting}
+%A = { B = {...}                Int m(B b){...} }
+%A2 = Use A, { B = {... Int y;} Int m(B b){ ... b.y ... }}
+%A a=new A2();//this line is considered sound by most FP
+%a.m(new A.B());//this line is unsound, but is hard to prevent
+%\end{lstlisting}
+
+%In those approaches, \Q@A2@ is a subtype of \Q@A@,
+%so code like \Q@A a=new A2();@ is accepted.
+%However, this implies that innocent looking code like
+%\Q@a.m(new A.B());@ is now unsound: method \Q@A2.m@ will
+%try to access field \Q@A2.B.y@
+%that is not present in class \Q@A.B@.
+
+
+\saveSpace
 \subsection{State and traits}
+\saveSpace
+The original trait model has no self construction 
+and purposely avoided any connection between state and traits.
+It was applied to a dynamically typed language, so
+it was not clear if the authors intended modelling a `\Q@This@' type.
 
 The idea of abstract state operations emerged from Classless
 Java~\cite{wang2016classless}. This approach offers a clean solution to handle state
@@ -86,19 +193,19 @@ In the literature there have been many attempts to add state in traits/module co
   
   To its credit, this simple approach is commutative and associative and does not disrupt elegance of summing methods.
   However, objects are created "broken" and the user is trusted with fixing them.
-  While is easy to add fields, the load of initializing them is on the user; moreover
+  While it is easy to add fields, the load of initializing them is on the user; moreover
     all the objects are intrinsically mutable, so this model is unfriendly
     to a functional programming style.
 \item {\bf Constructors compose fields}:
 In this approach (used by \cite{fjig}) the fields are declared but not initialized, and
 a canonical constructor (as in FJ) taking a value for each field and just initializing such field
 is automatically generated in the resulting class.
-It is easy to add fields, however this model is associative but not commutative: composition order influences field order, and thus the construtor signature.
+It is easy to add fields, however this model is associative but not commutative: composition order influences field order, and thus the constructor signature.
 Self construction is not possible 
 since the signature of the constructors changes during composition.
 
 \item {\bf Constructors can be composed if they offer the same exact parameters}:
-In this approach (used by DeepFJig) traits declare fields and constructors.
+In this approach (used by DJ) traits declare fields and constructors.
 The constructor initializes the fields but can do any other computation.
 Traits whose constructors have the same signature can be composed.
 The composed constructor will execute both constructor bodies in order.
@@ -106,85 +213,56 @@ This approach is designed to allow self construction.
 It is also associative and mostly commutative: composition order only influences execution order of side effects during construction.
 However constructor composition requires identical constructor signatures: this
 hampers reuse, and if a field is added, its initial value needs to be
-somehow syntesized from the constructor parameters.
+somehow synthesized from the constructor parameters.
 
 \end{itemize}
 
-Extension with nested class is natural and powerful
-We claim that our solution to the expression problem is the most natural in literature to date:
-While a similar sintax can be achieved with the scandinavian style~\cite{ernst2004expression}, their dependent type system makes reasoning quite complex, and indeed more recent solutions have accepted a more involved syntax in order to have an understandable type system~\cite{igarashi2005lightweight}.
-
-Our close contendant is DeepFJig~\cite{corradi2011deepfjig}: all our gain over their model is based on our relaxation over abstract signatures.
-Note how we solve the expression problem in the most radical way possible \marco{bruno, here you can insert some of the criticism over expression problem trivially and explain how is not applicable to us here.}
-
-Add that: original trait model has no self construction and types introduction not relevant since dynamically typed language
-
-\subsection{ThisType with Subclassing implying Subtyping}
-With the exception of those mentioned 3 lines of work, to the best of our understading
-other famous work in literature, like~\cite{odersky2008programming,nystrom2006j}
-does not completely break the relation between inheritance and subtyping, but only prevents subtyping where 
-it would be unsound.
-Recent work on {\bf ThisType} \cite{Saito:2009,ryu16ThisType}
-also continues on this line.
-In those works, ``subtyping by subclassing'' is preserved, which means
-that those designs are more suitable to retain the programming model
-of mainstream OOP languages and backwards compatibility. The design 
-of \name (and 42) is a more radical departure of mainstream OOP, with
-the hope to improve both the mechanisms for use and reuse in OOP.
-
-
-\subsection{Tablular comparision of many approaches}
-\begin{minipage}[t]{0.4\textwidth}
-In this table we show if some approach or part-there-of support certain critical features:
-Direct instantation (as in \Q@new C()@),
+\subsection{Tabular comparison of many approaches}
+\begin{minipage}[t]{0.30\textwidth}
+In this table we show if some constructs support certain features:
+Direct instantiation (as in \Q@new C()@),
 Self instantiation (as in \Q@new This()@),
-Unit of use, Unit of reuse,
-Introduce type and if the Induced type is the type of \Q@this@,
+Is this construct a `Unit of use'?, a `Unit of reuse'?,
+Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
 support for binary methods,
-does inheritance induce subtype?,
-is code required to be well-typed before being inherited /imported in a new context?
-is code required to be well-typed before composed with other code?
-
-We use Y and X to mean yes and no, and we use ``-'' were the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes little sense.
+does inheritance of this construct induce subtype?,
+is the code of this construct required to be well-typed before being inherited /imported in a new context?
+is it required to be well-typed before being composed with other code?
 \end{minipage}
 %second column
 \begin{minipage}[t]{0.6\textwidth}
 \newcommand{\YY}{\textbf{Y}}
-${}_{}$
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
-&\Rotated{direct instantation}
+&\Rotated{direct instantiation}
 &\Rotated{self instantiation}
 &\Rotated{unit of use}
 &\Rotated{unit of reuse}
 &\Rotated{introduce type}
 &\Rotated{induced type is this type}
 &\Rotated{binary methods}
-&\Rotated{inheritance induce subtype}
-&\Rotated{well-typed before imported}
-&\Rotated{well-typed before composed} 
+&\Rotated{{${}_{}$\!inheritance induce subtype\!\!\!}}
+&\Rotated{{${}_{}$\!well-typed before imported\!\!\!}}
+&\Rotated{{${}_{}$\!well-typed before composed\!\!\!}} 
 \\
 \hline
 java/scala class&\YY &X&\YY &\YY &\YY &\YY &X&\YY &\YY &X\\
-java8 interface &X&X&X&\YY &\YY &\YY &X&\YY &\YY &X\\
-scala trait        &X&X&X&\YY &\YY &\YY &X&\YY &X&X\\
-original trait     &X&X&X&\YY &-&-&X&X&-&-\\
-Ferruccio trait  &X&X&X&\YY &X&-&X&X&\YY &\YY \\
-\name trait            &X&\YY &X&\YY &X&-&\YY &X&\YY &X\\
-\name class           &\YY &\YY &\YY &X&\YY &\YY &\YY &-&\YY &X\\
+java8 interface &X&X&X&\YY &\YY &\YY       &X&\YY &\YY &X\\
+scala trait        &X&X&X&\YY &\YY &\YY    &-&\YY &\YY&X\\
+original trait     &X&X&X&\YY &-&-         &-&X&-&-\\
+TR  &X&X&X&\YY &X&-                        &X&X&\YY &\YY \\
+\name trait        &X&\YY &X&\YY &X&-      &\YY &X&\YY &X\\
+\name class        &\YY &\YY &\YY &X&\YY   &\YY &\YY &-&\YY &-\\
 module composition
-                      &-&-&\YY &\YY &-&-&-&-&\YY &\YY \\
-deepFJig class &\YY &\YY &\YY &\YY &\YY &X&\YY &X&\YY &\YY \\
+                      &-&-&\YY &\YY &-&-   &-&-&\YY &\YY \\
+deepFJig class &\YY &\YY &\YY &\YY &\YY &X &\YY &X&\YY &\YY \\
 package template
-                      &X&\YY &X&\YY &X&-&X&X&\YY &X\\
-
+                      &X&\YY &X&\YY &X&-   &-&X&\YY &X\\
+${}_{}$\\
 \end{tabular}
 \end{center}
 \end{minipage}
 
-\bruno{
-We can also mention what happens in structural types:
-"System with structural types would *be required to* guarantee that
-the structural type of A is a supertype of the structural type of B”.
-}
+\noindent \textbf{Y} and X means yes and no, and we use ``-'' where the question is not really applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
+
 

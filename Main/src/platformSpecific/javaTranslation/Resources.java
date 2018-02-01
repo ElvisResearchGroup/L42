@@ -434,7 +434,7 @@ public
     StackTraceElement[] st = err.getStackTrace();
     String result="\n";
     for(StackTraceElement si:st){
-      if(!si.getMethodName().startsWith("M")){continue;}
+      if(!si.getMethodName().startsWith("£")){continue;}
       result+=extractClassName(si.getClassName());
       result+=extractMethName(si.getMethodName());
       result+="\n";
@@ -442,19 +442,21 @@ public
     return result;
   }
   private static String extractMethName(String methodName) {
-    assert methodName.startsWith("M");
+    assert methodName.startsWith("£"):methodName;
     String end=")";
-    if (!methodName.contains("£x")){end="()";}
-    methodName=methodName.replaceFirst("£x", "(");
-    methodName=methodName.replaceAll("£x", ", ");
+    if (!methodName.contains("£X")){end="()";}
+    methodName=methodName.replaceFirst("£X", "(");
+    methodName=methodName.replaceAll("£X", ", ");
     methodName=name42Of(methodName);
-    return "."+methodName.substring(1)+end;
+    return "."+methodName.substring(2)+end;
   }
   private static String extractClassName(String className) {
-    if(className.startsWith("generated.Program42$This0£_")){
-      className=className.substring(27);
-      className=className.replace("£_", ".");
+    if(className.startsWith("generated.")){
+      className=className.substring(10);
+      className=className.replace("£C", ".");
       className=name42Of(className);
+      int index=className.indexOf("£Id");
+      if(index!=-1) {className=className.substring(0,index);}
       return className;
     }
     return className;//may be is plugin code?

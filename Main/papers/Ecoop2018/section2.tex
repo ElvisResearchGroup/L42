@@ -1,6 +1,6 @@
-\saveSpace\saveSpace\saveSpace
+\saveSpace
 \section{The Design of \name: Separating Use and Reuse}\label{sec:separate}
-\saveSpace\saveSpace\saveSpace
+\saveSpace\saveSpace
 This section presents an overview of \name and illustrates the
 key ideas of its design. In particular we illustrate how to separate code use and 
 code reuse, and how \name solves the this-leaking problem.
@@ -16,50 +16,48 @@ only. This means that there is actually no subclassing:
 classes are roughly equivalent to final classes in Java.  Thus,
 compared to Java-like languages, the most noticeable difference is the
 absence of the \Q@extends@ keyword in \name. 
-Consider the example from Section~\ref{sec:intro}:
+Consider the example from Section~\ref{sec:intro}, rewritten in \name:
 \saveSpace
 \begin{lstlisting}
- A: { method int ma(){return Utils.m(this);} }
- Utils:{ static method int m(A a){return ...} }
+ Utils={ static method int m(A a){return ...} }
+ A= { method int ma(){return Utils.m(this);} }
 \end{lstlisting} 
 \saveSpace
 \noindent Classes in \name use a slightly different declaration style compared
-to Java: there is no \lstinline{class} keyword, and a colon separates the class name (which must always start with
+to Java: there is no \lstinline{class} keyword, and an equal sign separates the class name (which must always start with
 an uppercase letter) and the class implementation, which is used to specify the
 definitions of the class. In our example, in the class declaration
 for \lstinline{A}, the name of the class is \lstinline{A} and the code 
-literal associated with the class (\Q@{ method int ma(){return Utils.m(this);}}@) contains the definitions associated to the
-class.
+literal associated with the class is `\Q@{ method int ma(){return Utils.m(this);}}@' and it contains the member  \Q@ma()@.
 
 %We will see next some 
 %important differences to Java-like languages in the way 
 %classes and code-literals are type-checked, as we shall see next. 
 %Nevertheless, for this example, things still work in a similar way to Java. 
 
-The \name code above is fine, but there is no way to add a class 
-\Q@B@ reusing the code of \Q@A@, since
-\Q@A@ is designed for code \emph{use} and not \emph{reuse}. So, unlike
-the Java code, introducing a subclass
+In the \name code above there is no way to add a class 
+\Q@B@ reusing the code of \Q@A@: class \Q@A@ (uppercase) is designed for code \emph{use} and not \emph{reuse}.
+Thus, unlike the Java code, introducing a subclass
 \lstinline{B} is not possible. This may seem like a severe restriction, but
 \name has a different mechanism for \emph{code-reuse} that 
 is more appropriate when \emph{code-reuse} is intended. 
 
+\saveSpace
 \subsection{Traits in \name: A mechanism of code Reuse}
-
+\saveSpace
 Unlike classes, traits in \name cannot be instantiated and do not introduce new
 types. However they provide code reuse.
 %So, lets try again encoding the code for the leaking problem, but this
 %time aiming at code reuse. 
 Trait declarations 
 look very much like class declarations, but trait names 
-start with a lowercase letter. An obvious first attempt 
-to model the example in Section~\ref{sec:intro} 
-with traits and code reuse is:
+start with a lowercase letter.
+
 \saveSpace
 \begin{lstlisting}
- ta:{ method int ma(){return Utils.m(this);}}//type error
- A:Use ta
- Utils:{ static method int m(A a){return ...} }
+ Utils={ static method int m(A a){return ...} }
+ ta={ method int ma(){return Utils.m(this);}}//type error
+ A=Use ta
 \end{lstlisting}
 \saveSpace
 \noindent Here \lstinline{ta} is a trait intended to replace the
@@ -68,74 +66,39 @@ original class \lstinline{A} so that the code of the method
 is created by inheriting the code from the trait using the keyword 
 {\bf \lstinline{Use}}. Note that \use\ cannot contain class names: only trait
 names are allowed.
-That is, using a trait is the only way to induce code reuse.
-Unfortunately, this code does not work, 
-because \lstinline{Utils.m} requires an \lstinline{A} and the type of \lstinline{this} in
+That is, \textbf{using a trait is the only way to induce code reuse}.
+
+The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
+the corresponding call in the Java code is coercing that code (even when reused) to be an \Q@A@.
+In \name we do not commit the same mistake, and the former code is ill typed:
+the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A}.
-A Java programmer may then try to write:
+
+
+Also that the following second attempt would not work:
 \saveSpace
 \begin{lstlisting}
- ta:{ method int ma(){return Utils.m(this);}}//type error
- A:Use ta
- Utils:{ static method int m(ta a){return ...}//syntax error
- }
+ Utils={ static method int m(ta a){return ...}//syntax error
+ ta={ method int ma(){return Utils.m(this);}}
+ A=Use ta
 \end{lstlisting}
 \saveSpace
-But this does not work either: \Q@ta@ is not a type in the first place, since it is a (lowercase) trait name.
-Indeed
-since the trait name is not a type, no code external to that trait can
-refer to it. This is one of the key design decisions in \name. 
+\Q@ta@ is not a type in the first place, since it is a (lowercase) trait name.
+Indeed since the trait name is not a type, no code external to that trait can
+refer to it, and that code can stay agnostic of its name. This is one of the key design decisions in \name:
+traits can be reused in multiple places, and their code can be seen under multiple types.
+\textbf{Interfaces are the only way to obtain subtyping}; thus
+subtyping is the way to reason about commonalities between different types.
 
-% this text may go after, while explaining the This type?
-%Code inside traits/classes can refer to (uppercase) class names, but not to (lowercase) trait names.
-%The point is that the trait can refer to the program via \lstinline{this},
-%??????????????
-% This means that the
-%program is agnostic to what the trait type is going to be, so it can
-%be later assigned to any (or many) classes. This improves the
-%flexibility of reuse as illustrated in Section~\ref{}.
-%However, 
-%to solve the more immediate typing issue above we need one more round of refactoring, as we shall see next. 
-
-
-%in \name all declarations 
-%are sequentially type-checked and if a definition occurs afterwards
-%another, then it is not visible on all previous definitions.
-
-%\paragraph{Type of the self-reference} 
-%The code above does not work.
-%Indeed, in \name type-checking of 
-%code literals is independent of the class/trait names associated to it.
-%A Java programmer may expect that the type of \lstinline{this} 
-%in the previous definition of \lstinline{ta} is \lstinline{ta}
-%itself. However, this intuition brought from Java is wrong in \name
-%for two reasons:
-%
-%\begin{itemize}
-%
-%\item {\bf Traits are not types}. Traits in
-%  \name are simply units of reuse and cannot be used as types. Types
-%  are only introduced by class/interface declarations.
-%
-%\item The second reason is that {\bf the type of self-references is the self type of the
-%    code literal.} Unlike Java-like languages, where the body of a
-%  class declaration is intrinsically coupled with the class itself, in
-%  \name code literals are first-class\bruno{Is it appropriate to say
-%    that they are first class?} and are type-checked independently.
-%  \name has a notion of self-type, which is closely related to
-%  approaches such as ThisType~\cite{} and ...\cite{others}. Therefore
-%  in \name the self-reference does not have the type of the class
-%  being defined, but rather it has the self-type.
-%\end{itemize}
-%
-With this in mind, we can try to model the example again:
+Thus, to model our example, we need an interface
+capturing the commonalities between \Q@A@ and \Q@B@:
 \saveSpace
 \begin{lstlisting}
- IA:{interface method int ma()}//interface with abstract method
- Utils:{static method int m(IA a){return ...} }
- ta:{implements IA //This line is the core of the solution
+ IA={interface method int ma()}//interface with abstract method
+ Utils={static method int m(IA a){return ...} }
+ ta={implements IA //This line is the core of the solution
      method int ma(){return Utils.m(this);}}
- A:Use ta
+ A=Use ta
 \end{lstlisting}
 \saveSpace
 This code works: \Q@Utils@ relies on interface \Q@IA@ and the trait \Q@ta@
@@ -148,20 +111,20 @@ Therefore, while typechecking \Q@Utils.m(this)@ we can assume
  It is also possible to add a class \Q@B@ as follows:
 \saveSpace
 \begin{lstlisting}
-  B:Use ta, { method int mb(){return this.ma();} }
+  B=Use ta, { method int mb(){return this.ma();} }
 \end{lstlisting}
 \saveSpace
 This also works.  \Q@B@ reuses the code of \Q@ta@, but has no knowledge of \Q@A@.
 Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, also \Q@B@ implements \Q@IA@. 
 
-Later, in Section \ref{sec:formal} we will provide more details on the type
+Later, in Section \ref{sec:formal} we will provide the type
 system. 
 For now notice that in the former example the code is correct even if
 no method called \Q@ma@ is explicitly declared.
-DeepFJig and TR would require instead to explicitly declare an abstract \Q@ma@ method:
+DJ and TR would require instead to explicitly declare an abstract \Q@ma@ method:
 \saveSpace
 \begin{lstlisting}
-  B:Use ta, { method int ma()//not required by us
+  B=Use ta, { method int ma()//not required by us
       method int mb(){return this.ma();} }
 \end{lstlisting}\saveSpace
 \noindent
@@ -177,27 +140,33 @@ dependencies in code literals to be explicitly declared, so that the
 code literal is completely self-contained. However, this results in
 many redundant abstract method declarations.
 
-\paragraph{Semantic of Use}
-Albeit alternative semantic models for traits~\cite{Traits:ECOOP2003} have been proposed,
+\paragraph{Semantics of Use}
+Albeit alternative semantic models for traits~\cite{lagorio2009featherweight} have been proposed,
 here we use the flattening model. This means that 
 \saveSpace\begin{lstlisting}
-A:Use ta
-B:Use ta, { method int mb(){return this.ma();} }
-\end{lstlisting}\saveSpace
- 
-\noindent is equivalent to:
-  
+A=Use ta
+B=Use ta, { method int mb(){return this.ma();} }
+\end{lstlisting}\saveSpace 
+\noindent is equivalent to the inlining the code of all used traits:
 \saveSpace \begin{lstlisting}
-A:{implements IA method int ma(){return Utils.m(this);}}
-B:{implements IA
+A={implements IA method int ma(){return Utils.m(this);}}
+B={implements IA
   method int ma(){return Utils.m(this);}
   method int mb(){return this.ma();} } 
  \end{lstlisting}
 \saveSpace 
  This code is correct, and {\bf in the resulting code there is no mention of the trait
- \Q@ta@}. In some sense, all the information about code-reuse/inheritance
+ \Q@ta@}. All the information about code-reuse/inheritance
   is just a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.
+
+
+Summarizing, \Q@IA@ is required by our example.
+We found the code with \Q@IA@ to better transmits the intention of the programmer; but some
+reader may see requiring \Q@IA@ as a cost of our approach.
+Even from this point of view, such cost is counter balanced by 
+very natural and simple support for code reuse, `\Q@This@' type and (in the extensions with nested classes seen later)
+family polymorphism.
 
 
 %To finish this section, Figure \ref{fig:compare} provides a summary of

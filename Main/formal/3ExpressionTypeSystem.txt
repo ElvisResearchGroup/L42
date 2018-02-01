@@ -34,9 +34,13 @@ D |- P~>P:class P' <= T | emptyTr
   assert p(P) well defined
   D.p|-class P' <= T
   where//TODO: check in code we change type and not just the subtype
-  if p(P).interface?=empty then P'=P
+  //if p(P).interface?=empty then P'=P //old TODO: implement next line in the code
+  if p(P).interface?=empty and class in p(P).mhs.mdfs then P'=P
   else P'=Any
-
+//Note: we need p(P) not interface and with some class methods to prevent a bug in sum/redirect
+//when a class 'A' may become an interface, and annotations 'class A' would be invalid.
+//since classes without class methods may become interfaces, we accept the type class A only
+//when class methods are present.
 
 (library propagation)
 D |- L ~> L' : imm Library <= T | emptyTr
