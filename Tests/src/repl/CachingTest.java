@@ -20,7 +20,7 @@ public class CachingTest {
 
   @Test
   public void testCodeInfo() {
-    String content="reuse L42.is/AdamTowel02\n" +
+    String content="\n\n\n\nreuse L42.is/AdamTowel02\n" +
         "\n" +
         "CacheAdamTowel02:Load.cacheTowel()\n" +
         "\n" +
@@ -28,15 +28,13 @@ public class CachingTest {
         "  Debug(S\"Hello world\")\n" +
         "  return ExitCode.normal()\n" +
         "  }";
-    File file=createFileFromString(content);
-    System.out.println(file.exists()+" "+file.getAbsolutePath());
 
-    CodeInfo test= new CodeInfo(file);
+    CodeInfo test= new CodeInfo(content);
 
     String first2Line="reuse L42.is/AdamTowel02\n" +
         "CacheAdamTowel02:Load.cacheTowel()";
     String cacheLibName="L42.is/AdamTowel02";
-    String restOfCode="\n\n" +
+    String restOfCode="\n" +
         "Main: {\n" +
         "  Debug(S\"Hello world\")\n" +
         "  return ExitCode.normal()\n" +
@@ -64,20 +62,5 @@ public class CachingTest {
 //        "  }";
 //    CodeInfo test= new CodeInfo(new File(content));
 //  }
-
-  private static File createFileFromString(String s) {
-
-    Charset charset = Charset.forName("US-ASCII");
-    Path path = Paths.get("testfile.L42");
-
-    try (BufferedWriter writer = Files.newBufferedWriter(path, charset)) {
-      writer.write(s, 0, s.length());
-    } catch (IOException x) {
-        System.err.format("IOException: %s%n", x);
-    }
-
-    return path.toFile();
-  }
-
 
 }

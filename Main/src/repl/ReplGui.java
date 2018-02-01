@@ -266,9 +266,8 @@ void auxRunCode(){
 
   try{
     //check first 2 line of This.l42
-    File thisL42 = new File(L42.root.toFile(), "This.L42");
-
-    CodeInfo res=new CodeInfo(thisL42);
+    String fileContent= L42.pathToString(L42.root.resolve("This.L42"));
+    CodeInfo res=new CodeInfo(fileContent);
 
     //check if library already cached in L42IDE folder
     Path currentRoot=L42.root;
@@ -345,22 +344,28 @@ protected static class CodeInfo{
   String first2Line;
   String cacheLibName;
   String restOfCode;
-  CodeInfo(File file){
-    try(Scanner sc = new Scanner(file)) {
-    	sc.useDelimiter(Pattern.compile("(\\n)| |,")); //newline, spaces and comma
+  CodeInfo(String string){
+    try(Scanner sc = new Scanner(string)) {
+    	Pattern delimit= Pattern.compile("(\\n| |,)*"); //newline, spaces and comma
+    	sc.skip(delimit);
 
   	  if(!sc.next().equals("reuse")) {throw new IllegalArgumentException();}
+      sc.skip(delimit);
   	  this.cacheLibName=sc.next();
-      String className=sc.next();
+      sc.skip(delimit);
+
+      String[] secondLine=sc.nextLine().split(":");
+      if(secondLine.length!=2) {throw new IllegalArgumentException();}
+
+      String className=secondLine[0];
+      String lastPart=secondLine[1];
   	  if(!PathAux.isValidClassName(className)) {throw new IllegalArgumentException();}
-  	  if(!sc.next().equals(":")) {throw new IllegalArgumentException();}
-  	  if(!sc.next().equals("Load.cacheTowel()")) {throw new IllegalArgumentException();}
+  	  if(!lastPart.equals("Load.cacheTowel()")) {throw new IllegalArgumentException();}
 
     	this.first2Line="reuse "+cacheLibName+"\n"+className+":"+"Load.cacheTowel()";
       sc.useDelimiter("\\z");
     	this.restOfCode=sc.next();
     }
-  catch (FileNotFoundException e) {throw new Error(e);}
   }
 }
 
