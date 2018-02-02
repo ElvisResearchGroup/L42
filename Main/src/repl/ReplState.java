@@ -1,5 +1,6 @@
 package repl;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +45,7 @@ public class ReplState {
     this.p=p;
     this.reduction=reduction;
     }
-public static ReplState start(String code){
+public static ReplState start(String code, Path cacheC42){
   Program p=Phase1CacheKey._handleCache();
   try{
     boolean cached=p!=null;
@@ -52,7 +53,7 @@ public static ReplState start(String code){
       Timer.activate("RunningWithoutParsedCache");
       p= L42.parseAndDesugar("Repl",code);
       }
-    ProgramReduction pr = new ProgramReduction(Paths.get("localhost","ReplCache.C42"),!cached);
+    ProgramReduction pr = new ProgramReduction(cacheC42,!cached);
     ReplState res=new ReplState(code,p.top(),p,pr);
     res.desugaredL=res.reduction.allSteps(res.p);
     res.p=res.p.updateTop(res.desugaredL);

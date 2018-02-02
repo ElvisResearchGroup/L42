@@ -59,6 +59,7 @@ public class Loader {
       loadCache();
       loadResource(cl);
       }
+    System.out.println("Test ct::: "+ct.contains("Foo"));
     }
   private boolean checkPath(java.nio.file.Path path) {
     this.cacheFile=path;

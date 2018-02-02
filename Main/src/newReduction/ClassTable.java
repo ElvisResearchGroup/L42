@@ -33,7 +33,7 @@ public class ClassTable {
   public ClassTable(Map<Integer, Element> map) {
     this.map = map;
     }
-  
+
   public boolean isCoherent(L42F.E e0){
     List<Integer>invalid=new ArrayList<>();
     e0.accept(coherentceChecker(invalid));
@@ -67,9 +67,16 @@ public class ClassTable {
         invalid.add(t.getCn());
         }
       }
-    };   
+    };
   }
-
+public boolean contains(String dbgName) {
+    for(int i : keySet()) {
+      if(dbgNameOf(i).contains(dbgName)) {
+        System.out.println(dbgNameOf(i));
+        return true;}
+    }
+    return false;
+}
 public String dbgNameOf(int index){
     if(index==Cn.cnAny.getInner()){return "Any";}
     if(index==Cn.cnVoid.getInner()){return "Void";}
@@ -197,7 +204,7 @@ public String dbgNameOf(int index){
       }
     return names;
     }
-  
+
 
   /*public ClassTable computeJavaForNulls() {
     ClassTable res = copy();
