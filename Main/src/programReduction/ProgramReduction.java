@@ -22,7 +22,7 @@ public class ProgramReduction {
     this.loader=new Loader(path);
     this.saveVCache=saveVCache;
     }
-  Loader loader;
+  public Loader loader;
   boolean saveVCache;
   public ClassB allSteps(Program top){
     while(!IsCompiled.of(top.top())){

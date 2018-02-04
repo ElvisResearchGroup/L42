@@ -327,10 +327,13 @@ public static ReplState copyResetKVCthenRun(String fileContent, String... doNotC
 
   L42.setRootPath(currentRoot); //go back to project folder
 
-  if(repl==null) {
+  Path pathC=L42.root.resolve("This.C42");
+  //if(repl==null) {
     L42.cacheK.setFileName("This.L42",res.first2Line);
-    repl=ReplState.start("{"+res.first2Line+"}", L42.root.resolve("This.C42")); //found the cache so just read it
-  }
+    repl=ReplState.start("{"+res.first2Line+"}", pathC); //found the cache so just read it
+  //} else {
+  //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
+  //}
 
   L42.cacheK.setFileName("This.L42",res.restOfCode);
   ReplState newR=repl.add(res.restOfCode);

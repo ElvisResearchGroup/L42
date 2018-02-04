@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
@@ -241,6 +242,9 @@ public class CachingTest {
 
   @Test
   public void testCopyResetKVCthenRun_testTwoOutputs_reuseCache() throws IOException {
+    try{this.deleteDirectory(Paths.get("L42IDE").resolve("L42.is%2FAdamTowel02"));}
+    catch(NoSuchFileException nsfe) {}
+
     this.deleteFilesInDirectory(Paths.get("TestFolder"));
 
     TestHelper.configureForTest();
@@ -259,6 +263,7 @@ public class CachingTest {
     String output= L42.record.toString();
 
     TestHelper.configureForTest();
+    //System.gc();
     {
       String content2="reuse L42.is/AdamTowel02\n" +
         "CacheAdamTowel02:Load.cacheTowel()\n" +

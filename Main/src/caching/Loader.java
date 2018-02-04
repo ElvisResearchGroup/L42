@@ -50,7 +50,7 @@ import tools.Assertions;
 public class Loader {
   public Loader(java.nio.file.Path path) {
     this.ct = ClassTable.empty;
-    boolean isThere=checkPath(path);
+    boolean isThere=updateCachePath(path);
     if(!isThere) {
       try {addResource();}
       catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
@@ -59,9 +59,9 @@ public class Loader {
       loadCache();
       loadResource(cl);
       }
-    System.out.println("Test ct::: "+ct.contains("Foo"));
+    System.out.println("Test cache::: "+cache.contains("Foo"));
     }
-  private boolean checkPath(java.nio.file.Path path) {
+  public boolean updateCachePath(java.nio.file.Path path) {
     this.cacheFile=path;
     if(path==null) {return false;}
     try {

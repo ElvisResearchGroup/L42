@@ -67,8 +67,16 @@ public class Cache implements Serializable{
     inner.put(dep, new Element(cds,clSet));
     }
 
+  public boolean contains(String dbgName) {
+    for(Map.Entry<Set<String>,Element> elem : inner.entrySet()) {
+      if(elem.getValue().byteCodeNames.contains(dbgName)) {
+        return true;}
+    }
+    return false;
+    }
+
   /*
-   //TODO: have I handled this already? 
+   //TODO: have I handled this already?
     NO,
    class loader is NOT saved. class loader is "loaded"
    from cache if is required:
