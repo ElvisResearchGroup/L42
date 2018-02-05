@@ -83,6 +83,7 @@ public class ReplGui extends Application {
   TextArea errors=new TextArea();
   Button runB;
 
+  TabPane tabPane=null;
   Tab selectedTab=null;
 
   private boolean rootPathSet=false;
@@ -96,7 +97,7 @@ public class ReplGui extends Application {
 
     BorderPane borderPane = new BorderPane();
 
-    TabPane tabPane = new TabPane();
+    tabPane = new TabPane();
     tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
       @Override public void changed(ObservableValue<? extends Tab> tab, Tab oldTab, Tab newTab) {
@@ -104,36 +105,30 @@ public class ReplGui extends Application {
       }
     });
 
-    MenuBar leftBar = new MenuBar();
-    MenuBar rightBar = new MenuBar();
-
-    Region spacer = new Region();
-    spacer.getStyleClass().add("menu-bar");
-    HBox.setHgrow(spacer, Priority.SOMETIMES);
-    HBox menubars = new HBox(leftBar, spacer, rightBar);
+    MenuBar menubar = new MenuBar();
 
     Menu menuNew = new Menu("New Project");
     MenuItem menuItemNew = new MenuItem();
     menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent t) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
-        File outputFolder = directoryChooser.showDialog(primaryStage);
-
-        L42.setRootPath(outputFolder.toPath());
-        rootPathSet=true;
-
-        Tab tab = new Tab();
-
-        if (outputFolder != null) {
-    	  tab.setText(outputFolder.getPath());
-    	} else
-            tab.setText("This.L42");
-        ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
-        tab.setContent(newSrc);
-        tabPane.getTabs().add(tab);
-        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-        selectionModel.select(tab);
+//        DirectoryChooser directoryChooser = new DirectoryChooser();
+//        directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
+//        File outputFolder = directoryChooser.showDialog(primaryStage);
+//
+//        L42.setRootPath(outputFolder.toPath());
+//        rootPathSet=true;
+//
+//        Tab tab = new Tab();
+//
+//        if (outputFolder != null) {
+//    	  tab.setText(outputFolder.getPath());
+//      	} else
+//            tab.setText("This.L42");
+//        ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
+//        tab.setContent(newSrc);
+//        tabPane.getTabs().add(tab);
+//        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+//        selectionModel.select(tab);
       }
     });
     this.setupSingleMenuItem(menuNew, menuItemNew);
@@ -142,57 +137,39 @@ public class ReplGui extends Application {
     MenuItem menuItemOpen = new MenuItem();
     menuItemOpen.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent t) {
-        FileChooser fc = new FileChooser();
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("L42 files", "*.L42"));
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Select an L42 project to open!");
 
-        File fileToOpen = fc.showOpenDialog(primaryStage);
+        File outputFolder = directoryChooser.showDialog(primaryStage);
 
-        //TODO CHECK IS VALID L42 PROJECT otherwise give error
-        //L42.setRootPath(outputFolder.toPath());
-        //rootPathSet=true;
+        //check is a valid L42 project
+        if(outputFolder==null) {return;} //no selection has been made
 
-        if(fileToOpen!=null) {
-          // Read the file, and set its contents within the editor
-          String openFileName = fileToOpen.getAbsolutePath();
-          StringBuffer sb = new StringBuffer();
-          try(FileInputStream fis = new FileInputStream(fileToOpen);
-        		  BufferedInputStream bis = new BufferedInputStream(fis)) {
-            while(bis.available()>0) {
-              sb.append((char)bis.read());
-            }
-          } catch(Exception e) {
-            e.printStackTrace();
-          }
-          System.out.println(getClass().getResource("textArea.xhtml"));
-          ReplTextArea editor=new ReplTextArea(getClass().getResource("textArea.xhtml"));
-          //System.out.println(sb.toString());
-          // editor.setText(sb.toString());
-          editor.setText("heelo");
-          //editor.htmlFx.webEngine.load(sb.toString());
-          editor.filename = openFileName;          //
-          //System.out.println(editor.getText());
-
-
-          Tab tab = new Tab();
-          tab.setText(fileToOpen.getName());
-          tab.setContent(editor);
-          tabPane.getTabs().add(tab);
-
-          SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-          selectionModel.select(tab);
+        File thisFile=new File(outputFolder, "This.L42");
+        if(!thisFile.exists()) {
+          giveAlert("Invalid Project", "Invalid Project", "Selected project does not contain a 'This.L42' file");
+          return;
         }
+
+        L42.setRootPath(outputFolder.toPath());
+        rootPathSet=true;
+        openFileInNewTab(thisFile);
       }
     });
     this.setupSingleMenuItem(menuOpen, menuItemOpen);
 
-    Menu menuRun = new Menu("Run!");
-    MenuItem menuItemRun = new MenuItem();
-    menuItemRun.setOnAction(e->runCode());
-    this.setupSingleMenuItem(menuRun, menuItemRun);
+    runB = new Button("Run!");
+    runB.setOnAction(e->runCode());
 
-    leftBar.getMenus().addAll(menuNew, menuOpen); //, menuFileExit);
-    rightBar.getMenus().addAll(menuRun);
-    borderPane.setTop(menubars);
+    menubar.getMenus().addAll(menuNew, menuOpen);
+
+    HBox topbar = new HBox(menubar, runB);
+
+    HBox.setHgrow(menubar, Priority.ALWAYS);
+    HBox.setHgrow(runB, Priority.NEVER);
+   topbar.autosize();
+
+    borderPane.setTop(topbar);
 
 
     //System.out.println(System.out.getClass().getName());
@@ -221,6 +198,39 @@ public class ReplGui extends Application {
     primaryStage.setMinWidth(scene.getWidth());
     primaryStage.setMinHeight(scene.getHeight());
     primaryStage.show();
+  }
+
+protected void openFileInNewTab(File file) {
+  assert file!=null && file.exists();
+
+  // Read the file, and set its contents within the editor
+  String openFileName = file.getAbsolutePath();
+  StringBuffer sb = new StringBuffer();
+  try(FileInputStream fis = new FileInputStream(file);
+      BufferedInputStream bis = new BufferedInputStream(fis)) {
+    while(bis.available()>0) {
+      sb.append((char)bis.read());
+    }
+  } catch(Exception e) {
+    throw new Error(e);
+  }
+
+  System.out.println(getClass().getResource("textArea.xhtml"));
+  ReplTextArea editor=new ReplTextArea();
+  //System.out.println(sb.toString());
+  editor.filename = openFileName;
+//  editor.setText(sb.toString());
+//  editor.setText("heelo");
+  //editor.htmlFx.webEngine.load(sb.toString());
+  //System.out.println(editor.getText());
+
+  Tab tab = new Tab();
+  tab.setText(file.getName());
+  tab.setContent(editor);
+  tabPane.getTabs().add(tab);
+
+  SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+  selectionModel.select(tab);
   }
 
 private void setupSingleMenuItem(Menu menu, MenuItem menuItem) {
@@ -259,11 +269,8 @@ void runCode(){
 void auxRunCode(){
 
   if(!rootPathSet) {
-	Alert alert = new Alert(AlertType.ERROR);
-	alert.setTitle("Invalid Run");
-	alert.setHeaderText("Invalid Run");
-	alert.setContentText("Please either create a new project or open an existing L42 project before you can run the code");
-	alert.show();
+    this.giveAlert("Invalid Run", "Invalid Run",
+        "Create new project or open an existing L42 project to run some code");
     return;
   }
 
@@ -272,11 +279,8 @@ void auxRunCode(){
     repl=copyResetKVCthenRun(content);
   }
   catch(IllegalArgumentException e) {
-    Alert alert = new Alert(AlertType.ERROR);
-    alert.setTitle("Invalid Run");
-    alert.setHeaderText("Invalid Run");
-    alert.setContentText("Missing two line at the start of This.L42 file for the caching library");
-    alert.show();
+    this.giveAlert("Invalid Run", "Invalid Run",
+        "Missing two line at the start of This.L42 file for the caching library");
   }
   catch(NullPointerException e) {
 	  throw new Error(e);
@@ -330,7 +334,7 @@ public static ReplState copyResetKVCthenRun(String fileContent, String... doNotC
   Path pathC=L42.root.resolve("This.C42");
   //if(repl==null) {
     L42.cacheK.setFileName("This.L42",res.first2Line);
-    repl=ReplState.start("{"+res.first2Line+"}", pathC); //found the cache so just read it
+    repl=ReplState.start("{"+res.first2Line+"}", pathC);
   //} else {
   //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
   //}
@@ -392,6 +396,19 @@ private static void copyEntireDirectory(Path src, Path dest, String... doNotCopy
 
 }
 
+private void giveAlert(String title, String headerText, String contentText) {
+  this.giveAlert(AlertType.ERROR, title, headerText, contentText);
+}
+
+private void giveAlert(AlertType alertType, String title, String headerText, String contentText) {
+  Alert alert = new Alert(alertType);
+  alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+  alert.setTitle(title);
+  alert.setHeaderText(headerText);
+  alert.setContentText(contentText);
+  alert.show();
+}
+
 private void updateTextFields(){
   try{
     assert L42.record!=null:"d";
@@ -407,6 +424,7 @@ private void updateTextFields(){
     runB.setText("Run!");
     }
   }
+
 private void doAndWait(Runnable r){
   try {executor.submit(r).get();}
   catch (InterruptedException | ExecutionException e) {

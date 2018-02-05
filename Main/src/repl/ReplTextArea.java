@@ -3,6 +3,7 @@ package repl;
 import java.awt.Dimension;
 import java.net.URL;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
@@ -23,16 +24,16 @@ public class ReplTextArea extends SplitPane {
   HtmlFx htmlFx;
   TextArea documentationArea;
 
-  public ReplTextArea(URL url) {
+  public ReplTextArea() {
     htmlFx=new HtmlFx(this);
     System.out.println("repltextarea construct FX: "+Platform.isFxApplicationThread());
 //    Platform.runLater(()->htmlFx.webEngine.load(url.toExternalForm()));
-    htmlFx.webEngine.load(url.toExternalForm());
-    htmlFx.webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-        if (newState != Worker.State.SUCCEEDED) {
-        	return;
-        }
-    });
+//    htmlFx.webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+//      if (newState == Worker.State.SUCCEEDED) {
+//        new CountDownLatch(1).countDown();
+//      }
+//  });
+//    htmlFx.webEngine.load(url.toExternalForm());
 
     documentationArea = new TextArea();
     documentationArea.setEditable(false);

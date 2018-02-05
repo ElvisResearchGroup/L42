@@ -1,7 +1,12 @@
 package repl;
 
 import java.awt.Dimension;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -29,22 +34,23 @@ import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
-
 public class HtmlFx extends Pane{
   public WebEngine webEngine;
   public ReplTextArea outerPanel;
 
   public HtmlFx(ReplTextArea outer) {
     super();
-    this.outerPanel = outer;
+    this.outerPanel=outer;
+//    this.createHtmlContent(readURL(url));
     this.createHtmlContent("<body></body>");
-//    this.webEngine.getLoadWorker().stateProperty().addListener(
-//      (ov, oldState,newState)->{
-//        if (newState == Worker.State.SUCCEEDED) {latch.countDown();}
-//        });
-    System.out.println(getClass().getResource("textArea.xhtml"));
-    System.out.println(getClass().getResource("textArea.xhtml").toExternalForm());
-    this.webEngine.load(getClass().getResource("textArea.xhtml").toExternalForm());
+
+    this.webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+        if (newState == Worker.State.SUCCEEDED) {
+          new CountDownLatch(1).countDown();
+        }
+    });
+    URL url=getClass().getResource("textArea.xhtml");
+    this.webEngine.load(url.toExternalForm());
   }
 
   public final Events events=new Events();
@@ -104,37 +110,32 @@ public class HtmlFx extends Pane{
     throw new Error(t);
     }
 
+  private String readURL(URL resource) {
+    try {
+//      URLConnection connection = resource.openConnection();
+//      String text = new Scanner(connection.getInputStream()).useDelimiter("\\Z").next();
+//      return text;
+      BufferedReader in = new BufferedReader(
+          new InputStreamReader(resource.openStream()));
+      StringBuilder response = new StringBuilder();
+      String inputLine;
+      while ((inputLine = in.readLine()) != null) {response.append(inputLine);}
+      in.close();
+      return response.toString();
+    }catch (IOException e) {throw new Error(e);}
+  }
+
   public void createHtmlContent(String html) {
     CountDownLatch latch = new CountDownLatch(1);
     System.out.println("createhtmlcontent1 FX: "+Platform.isFxApplicationThread());
     initWeb(latch,html);
-//    Platform.runLater(()->initWeb(latch,html));
-//    FutureTask<Void> future=new FutureTask<Void>(()->initWeb(latch,html));
-//    Platform.runLater(future);
-//    try {future.get();}
-//    catch (ExecutionException e) {throw propagateException(e.getCause());}
-//    catch (InterruptedException e) {throw propagateException(e);}
-//    try {latch.await();}
-//    catch (InterruptedException e) {throw propagateException(e);}
-//    future=new FutureTask<Void>(()->{
-//      Object o=this.webEngine.executeScript(
-//"window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
-//      assert o instanceof JSObject : o.toString();
-//      JSObject jsobj = (JSObject)o;
-//      jsobj.setMember("eventCollector",this.events);
-//      return null;
-//      });
+
     System.out.println("createhtmlcontent2 FX: "+Platform.isFxApplicationThread());
-//    Platform.runLater(()-> {
-      Object o=this.webEngine.executeScript(
-    		"window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
-      assert o instanceof JSObject : o.toString();
-      JSObject jsobj = (JSObject)o;
-      jsobj.setMember("eventCollector",this.events);//});
-//    Platform.runLater(future);
-//    try {future.get();}
-//    catch (ExecutionException e) {throw propagateException(e.getCause());}
-//    catch (InterruptedException e) {throw propagateException(e);}
+    Object o=this.webEngine.executeScript(
+  		"window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
+    assert o instanceof JSObject : o.toString();
+    JSObject jsobj = (JSObject)o;
+    jsobj.setMember("eventCollector",this.events);
     }
 
 }
