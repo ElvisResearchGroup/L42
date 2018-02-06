@@ -27,15 +27,8 @@ public class ReplTextArea extends SplitPane {
   public ReplTextArea() {
     htmlFx=new HtmlFx(this);
     System.out.println("repltextarea construct FX: "+Platform.isFxApplicationThread());
-//    Platform.runLater(()->htmlFx.webEngine.load(url.toExternalForm()));
-//    htmlFx.webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-//      if (newState == Worker.State.SUCCEEDED) {
-//        new CountDownLatch(1).countDown();
-//      }
-//  });
-//    htmlFx.webEngine.load(url.toExternalForm());
 
-    documentationArea = new TextArea();
+    documentationArea=new TextArea();
     documentationArea.setEditable(false);
 
     this.getItems().addAll(htmlFx, documentationArea);
@@ -62,10 +55,10 @@ public class ReplTextArea extends SplitPane {
   public void setText(String input){
 	  System.out.println("settext FX: "+Platform.isFxApplicationThread());
 	  System.out.println("gettext: "+getText());
-//	  Platform.runLater(()->
+
 	  htmlFx.webEngine.executeScript(
 	        "ace.edit(\"textArea\").setValue(\""+input.replace("\"", "\\\"").replace("\n", "\\n")+"\")"
-	        );//);
+	        );
 	  System.out.println("DONE");
 //	  FutureTask<?> query = new FutureTask<>(()->{
 //      htmlFx.webEngine.executeScript(

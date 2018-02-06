@@ -53,10 +53,12 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -71,22 +73,23 @@ import ast.PathAux;
 import facade.ErrorFormatter;
 import facade.L42;
 import profiling.Timer;
-@SuppressWarnings("serial")
+
 public class ReplGui extends Application {
 
   private static final int SCENE_WIDTH = 1000;
   private static final int SCENE_HEIGHT = 800;
 
   ReplState repl=null;
-
-  TextArea output=new TextArea();
-  TextArea errors=new TextArea();
+  boolean rootPathSet=false;
+  boolean running=false;
   Button runB;
 
-  TabPane tabPane=null;
-  Tab selectedTab=null;
+  TabPane tabPane=new TabPane();
+  TextArea output=new TextArea();
+  TextArea errors=new TextArea();
+  StringBuffer err=new StringBuffer();
 
-  private boolean rootPathSet=false;
+  Tab selectedTab=null;
 
   public static void main(String[] args) {
     Application.launch(args);
@@ -97,7 +100,6 @@ public class ReplGui extends Application {
 
     BorderPane borderPane = new BorderPane();
 
-    tabPane = new TabPane();
     tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
     tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
       @Override public void changed(ObservableValue<? extends Tab> tab, Tab oldTab, Tab newTab) {
@@ -105,11 +107,8 @@ public class ReplGui extends Application {
       }
     });
 
-    MenuBar menubar = new MenuBar();
-
-    Menu menuNew = new Menu("New Project");
-    MenuItem menuItemNew = new MenuItem();
-    menuItemNew.setOnAction(new EventHandler<ActionEvent>() {
+    Button newProjectBtn = new Button("New Project");
+    newProjectBtn.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent t) {
 //        DirectoryChooser directoryChooser = new DirectoryChooser();
 //        directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
@@ -131,11 +130,9 @@ public class ReplGui extends Application {
 //        selectionModel.select(tab);
       }
     });
-    this.setupSingleMenuItem(menuNew, menuItemNew);
 
-    Menu menuOpen = new Menu("Open Project");
-    MenuItem menuItemOpen = new MenuItem();
-    menuItemOpen.setOnAction(new EventHandler<ActionEvent>() {
+    Button openProjectBtn = new Button("Open Project");
+    openProjectBtn.setOnAction(new EventHandler<ActionEvent>() {
       public void handle(ActionEvent t) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select an L42 project to open!");
@@ -147,7 +144,12 @@ public class ReplGui extends Application {
 
         File thisFile=new File(outputFolder, "This.L42");
         if(!thisFile.exists()) {
-          giveAlert("Invalid Project", "Invalid Project", "Selected project does not contain a 'This.L42' file");
+          Alert alert = new Alert(AlertType.ERROR);
+          alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+          alert.setTitle("Invalid Project");
+          alert.setHeaderText(null);
+          alert.setContentText("Selected project does not contain a 'This.L42' file");
+          alert.showAndWait();
           return;
         }
 
@@ -156,21 +158,15 @@ public class ReplGui extends Application {
         openFileInNewTab(thisFile);
       }
     });
-    this.setupSingleMenuItem(menuOpen, menuItemOpen);
 
     runB = new Button("Run!");
     runB.setOnAction(e->runCode());
 
-    menubar.getMenus().addAll(menuNew, menuOpen);
+    Pane empty=new Pane();
+    HBox.setHgrow(empty, Priority.ALWAYS);
 
-    HBox topbar = new HBox(menubar, runB);
-
-    HBox.setHgrow(menubar, Priority.ALWAYS);
-    HBox.setHgrow(runB, Priority.NEVER);
-   topbar.autosize();
-
-    borderPane.setTop(topbar);
-
+    ToolBar toolbar = new ToolBar(newProjectBtn, openProjectBtn, empty, runB);
+    borderPane.setTop(toolbar);
 
     //System.out.println(System.out.getClass().getName());
     //System.out.println(System.err.getClass().getName());
@@ -185,11 +181,9 @@ public class ReplGui extends Application {
     outputPane.getTabs().add(new Tab("output", output));
     outputPane.getTabs().add(new Tab("errors", errors));
 
-    SplitPane splitPane = new SplitPane();
-    splitPane.getItems().addAll(tabPane, outputPane);
+    SplitPane splitPane = new SplitPane(tabPane, outputPane);
     splitPane.setDividerPositions(0.7f);
     splitPane.setOrientation(Orientation.VERTICAL);
-
     borderPane.setCenter(splitPane);
 
     Scene scene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT); // Manage scene size
@@ -215,12 +209,10 @@ protected void openFileInNewTab(File file) {
     throw new Error(e);
   }
 
-  System.out.println(getClass().getResource("textArea.xhtml"));
   ReplTextArea editor=new ReplTextArea();
   //System.out.println(sb.toString());
   editor.filename = openFileName;
-//  editor.setText(sb.toString());
-//  editor.setText("heelo");
+  editor.setText(sb.toString());
   //editor.htmlFx.webEngine.load(sb.toString());
   //System.out.println(editor.getText());
 
@@ -233,16 +225,6 @@ protected void openFileInNewTab(File file) {
   selectionModel.select(tab);
   }
 
-private void setupSingleMenuItem(Menu menu, MenuItem menuItem) {
-  menu.getItems().add(menuItem);
-  menu.showingProperty().addListener((observableValue, oldValue, newValue) -> {
-    if (newValue) {
-      // the first menuItem is triggered
-      menu.getItems().get(0).fire();
-      }
-  });
-}
-
   @Override
   public void stop(){
     if (L42.profilerPrintOn){
@@ -253,9 +235,7 @@ private void setupSingleMenuItem(Menu menu, MenuItem menuItem) {
     System.exit(0);
   }
 
-StringBuffer err=new StringBuffer();
-boolean running=false;
-ExecutorService executor = Executors.newFixedThreadPool(1);
+
 void runCode(){
   if(running){throw new Error("Was running");}
   running=true;
@@ -267,20 +247,30 @@ void runCode(){
   }
 
 void auxRunCode(){
-
   if(!rootPathSet) {
-    this.giveAlert("Invalid Run", "Invalid Run",
-        "Create new project or open an existing L42 project to run some code");
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    alert.setTitle("Invalid Run");
+    alert.setHeaderText(null);
+    alert.setContentText("Create new project or open an existing L42 project to run some code");
+    alert.showAndWait();
+    this.running=false;
+    runB.setDisable(false);
+    runB.setText("Run!");
     return;
   }
 
   try{
-    String content = L42.pathToString(L42.root.resolve("This.L42"));
+    String content=L42.pathToString(L42.root.resolve("This.L42"));
     repl=copyResetKVCthenRun(content);
   }
   catch(IllegalArgumentException e) {
-    this.giveAlert("Invalid Run", "Invalid Run",
-        "Missing two line at the start of This.L42 file for the caching library");
+    Alert alert = new Alert(AlertType.ERROR);
+    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+    alert.setTitle("Invalid Run");
+    alert.setHeaderText(null);
+    alert.setContentText("Missing two line at the start of 'This.L42' file");
+    alert.showAndWait();
   }
   catch(NullPointerException e) {
 	  throw new Error(e);
@@ -314,12 +304,9 @@ public static ReplState copyResetKVCthenRun(String fileContent, String... doNotC
   L42.setRootPath(Paths.get("L42IDE")); //todo: check later where is created?
 
   Path dirPath=L42.root.resolve(res.cacheLibName);
-
   if (!Files.exists(dirPath)){ //if not already cached before
     Files.createDirectory(dirPath);
-
     L42.setRootPath(Paths.get("L42IDE").resolve(res.cacheLibName));
-
     L42.cacheK.setFileName("This.L42",res.first2Line);
     repl=ReplState.start("{"+res.first2Line+"}", L42.root.resolve("This.C42")); //create the cache
   }
@@ -330,7 +317,6 @@ public static ReplState copyResetKVCthenRun(String fileContent, String... doNotC
   ReplGui.copyEntireDirectory(src,dest,doNotCopyFiles);
 
   L42.setRootPath(currentRoot); //go back to project folder
-
   Path pathC=L42.root.resolve("This.C42");
   //if(repl==null) {
     L42.cacheK.setFileName("This.L42",res.first2Line);
@@ -396,19 +382,6 @@ private static void copyEntireDirectory(Path src, Path dest, String... doNotCopy
 
 }
 
-private void giveAlert(String title, String headerText, String contentText) {
-  this.giveAlert(AlertType.ERROR, title, headerText, contentText);
-}
-
-private void giveAlert(AlertType alertType, String title, String headerText, String contentText) {
-  Alert alert = new Alert(alertType);
-  alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-  alert.setTitle(title);
-  alert.setHeaderText(headerText);
-  alert.setContentText(contentText);
-  alert.show();
-}
-
 private void updateTextFields(){
   try{
     assert L42.record!=null:"d";
@@ -425,12 +398,6 @@ private void updateTextFields(){
     }
   }
 
-private void doAndWait(Runnable r){
-  try {executor.submit(r).get();}
-  catch (InterruptedException | ExecutionException e) {
-    throw new Error(e);
-    }
-  }
 public static PrintStream delegatePrintStream(StringBuffer err,PrintStream prs){
   return new PrintStream(prs){
     public void print(String s) {
