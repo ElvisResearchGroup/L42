@@ -209,7 +209,7 @@ protected void openFileInNewTab(File file) {
     throw new Error(e);
   }
 
-  ReplTextArea editor=new ReplTextArea();
+  ReplTextArea editor=new ReplTextArea(getClass().getResource("textArea.xhtml"));
   //System.out.println(sb.toString());
   editor.filename = openFileName;
   editor.setText(sb.toString());

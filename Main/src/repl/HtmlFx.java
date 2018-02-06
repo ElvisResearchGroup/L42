@@ -41,66 +41,6 @@ public class HtmlFx extends Pane{
   public HtmlFx(ReplTextArea outer) {
     super();
     this.outerPanel=outer;
-  this.createHtmlContent("<body></body");
-//  this.createHtmlContent(readURL(url));
-
-//    this.createHtmlContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-//        " <!DOCTYPE html\n" +
-//        "     PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n" +
-//        "     \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n" +
-//        " <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
-//        "\n" +
-//        "  <head>\n" +
-//        "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />\n" +
-//        "    <link rel=\"stylesheet\" type=\"text/css\" href=\"css/style.css\" media=\"all\"/>\n" +
-//        "    <script src=\"js/ace.js\"></script>\n" +
-//        "    <script src=\"js/utils.js\"></script>\n" +
-//        "  </head>\n" +
-//        "  <body onload='doOnLoad();'>\n" +
-//        "<pre id=\"textArea\" class=\"l42Big\"><![CDATA[\n" +
-//        "reuse L42.is/AdamTowel02\n" +
-//        "\n" +
-//        "CacheAdamTowel02:Load.cacheTowel()\n" +
-//        "\n" +
-//        "Main: {\n" +
-//        "  Debug(S\"Hello world\")\n" +
-//        "  return ExitCode.normal()\n" +
-//        "  }\n" +
-//        "\n" +
-//        "]]></pre>\n" +
-//        "  </body>\n" +
-//        "</html>");
-
-//    this.webEngine.getLoadWorker().stateProperty().addListener(
-//        (bservable,oldValue,newValue) -> {
-//          if( newValue != Worker.State.SUCCEEDED ) {
-//            return;
-//          }
-//
-//          URL url=getClass().getResource("textArea.xhtml");
-//        this.webEngine.load(url.toExternalForm());
-//        } );
-
-  CountDownLatch latch=new CountDownLatch(1);
-  this.webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> { //to make synchronous
-      if (newState != Worker.State.SUCCEEDED) {
-        latch.countDown();
-      }
-  });
-  URL url=getClass().getResource("textArea.xhtml");
-  this.webEngine.load(url.toExternalForm());
-
-//  this.webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> { //to make synchronous
-//      if (newState == Worker.State.SUCCEEDED) {
-//        String res = (String) this.webEngine.executeScript(
-//            "ace.edit(\"textArea\").getValue()"
-//            );
-//        System.out.println("RES:: "+res);
-//        return; //new CountDownLatch(1).countDown();
-//      }
-//  });
-//  URL url=getClass().getResource("textArea.xhtml");
-//  this.webEngine.load(url.toExternalForm());
   }
 
   public final Events events=new Events();
@@ -110,7 +50,7 @@ public class HtmlFx extends Pane{
     this.webEngine = browser.getEngine();
     this.webEngine.getLoadWorker().stateProperty().addListener(
       (ov, oldState,newState)->{
-        if (newState != Worker.State.SUCCEEDED) {latch.countDown();}
+        if (newState == Worker.State.SUCCEEDED) {latch.countDown();}
         });
     this.webEngine.loadContent(html);
     this.webEngine.setOnAlert(event->{
@@ -160,25 +100,12 @@ public class HtmlFx extends Pane{
     throw new Error(t);
     }
 
-  private String readURL(URL resource) {
-    try {
-//      URLConnection connection = resource.openConnection();
-//      String text = new Scanner(connection.getInputStream()).useDelimiter("\\Z").next();
-//      return text;
-      BufferedReader in = new BufferedReader(
-          new InputStreamReader(resource.openStream()));
-      StringBuilder response = new StringBuilder();
-      String inputLine;
-      while ((inputLine = in.readLine()) != null) {response.append(inputLine);}
-      in.close();
-      return response.toString();
-    }catch (IOException e) {throw new Error(e);}
-  }
-
   public void createHtmlContent(String html) {
     CountDownLatch latch = new CountDownLatch(1);
     System.out.println("createhtmlcontent1 FX: "+Platform.isFxApplicationThread());
     initWeb(latch,html);
+    try {latch.await();}
+    catch (InterruptedException e) {throw propagateException(e);}
 
     System.out.println("createhtmlcontent2 FX: "+Platform.isFxApplicationThread());
     Object o=this.webEngine.executeScript(
