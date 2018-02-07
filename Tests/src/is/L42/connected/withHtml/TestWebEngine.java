@@ -17,6 +17,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import repl.HtmlFx;
@@ -42,9 +44,10 @@ public class TestWebEngine {
 
     @Override
     public void start(Stage stage) {
-      HtmlFx h=new HtmlFx(null);
+      HtmlFx h=new HtmlFx(new Pane());
       h.createHtmlContent("<body><div>hi</div><div>hi</div></body>");
       URL url = getClass().getResource("tutorial.xhtml");
+
       Platform.runLater(()->h.webEngine.load(url.toExternalForm()));
 
       Scene scene = new Scene(h, 500, 500);

@@ -235,6 +235,7 @@ protected void openFileInNewTab(File file) {
     System.exit(0);
   }
 
+ExecutorService executor = Executors.newFixedThreadPool(1);
 
 void runCode(){
   if(running){throw new Error("Was running");}
@@ -242,7 +243,8 @@ void runCode(){
   runB.setText("Running");
   runB.setDisable(true);
   System.out.println("Auxruncode starting FX: "+Platform.isFxApplicationThread());
-  this.auxRunCode();
+  /*Future<Object> future = */executor.submit(this::auxRunCode);
+  //this.auxRunCode();
   System.out.println("Auxruncode done FX: "+Platform.isFxApplicationThread());
   }
 
@@ -397,7 +399,12 @@ private void updateTextFields(){
     runB.setText("Run!");
     }
   }
-
+private void doAndWait(Runnable r){
+  try {executor.submit(r).get();}
+  catch (InterruptedException | ExecutionException e) {
+    throw new Error(e);
+    }
+  }
 public static PrintStream delegatePrintStream(StringBuffer err,PrintStream prs){
   return new PrintStream(prs){
     public void print(String s) {

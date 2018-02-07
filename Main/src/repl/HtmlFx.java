@@ -28,6 +28,7 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
@@ -36,9 +37,9 @@ import netscape.javascript.JSObject;
 
 public class HtmlFx extends Pane{
   public WebEngine webEngine;
-  public ReplTextArea outerPanel;
+  public Region outerPanel;
 
-  public HtmlFx(ReplTextArea outer) {
+  public HtmlFx(Region outer) {
     super();
     this.outerPanel=outer;
   }
@@ -73,11 +74,11 @@ public class HtmlFx extends Pane{
     }
   });
   //TODO keep track when is text modified
-  browser.setOnKeyPressed(new EventHandler<Event>() {
-    public void handle(Event arg0) {
-	  if(outerPanel!=null) outerPanel.changed.set(true);
-	}
-  });
+//  browser.setOnKeyPressed(new EventHandler<Event>() {
+//    public void handle(Event arg0) {
+//	  if(outerPanel!=null) outerPanel.changed.set(true);
+//	}
+//  });
   // retrieve copy event via javascript:alert
   webEngine.setOnAlert((WebEvent<String> we) -> {
     if(we.getData()!=null && we.getData().startsWith("copy: ")){
@@ -102,17 +103,26 @@ public class HtmlFx extends Pane{
 
   public void createHtmlContent(String html) {
     CountDownLatch latch = new CountDownLatch(1);
-    System.out.println("createhtmlcontent1 FX: "+Platform.isFxApplicationThread());
-    initWeb(latch,html);
-    try {latch.await();}
-    catch (InterruptedException e) {throw propagateException(e);}
+    System.out.println("createhtmlcontent1 FX: "+Platform.isFxApplicationThread()); //
+    FutureTask<Void> future=new FutureTask<Void>(()->initWeb(latch,html));
+    Platform.runLater(future);
+//    try {future.get();}
+//    catch (ExecutionException e) {throw propagateException(e.getCause());}
+//    catch (InterruptedException e) {throw propagateException(e);}
+//    try {latch.await();}
+//    catch (InterruptedException e) {throw propagateException(e);}
 
-    System.out.println("createhtmlcontent2 FX: "+Platform.isFxApplicationThread());
-    Object o=this.webEngine.executeScript(
-  		"window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
-    assert o instanceof JSObject : o.toString();
-    JSObject jsobj = (JSObject)o;
-    jsobj.setMember("eventCollector",this.events);
-    }
-
+    future=new FutureTask<Void>(()->{
+      Object o=this.webEngine.executeScript(
+"window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
+      assert o instanceof JSObject : o.toString();
+      JSObject jsobj = (JSObject)o;
+      jsobj.setMember("eventCollector",this.events);
+      return null;
+      });
+    Platform.runLater(future);
+//    try {future.get();}
+//    catch (ExecutionException e) {throw propagateException(e.getCause());}
+//    catch (InterruptedException e) {throw propagateException(e);}
+  }
 }

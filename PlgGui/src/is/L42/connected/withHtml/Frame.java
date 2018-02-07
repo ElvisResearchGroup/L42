@@ -30,7 +30,7 @@ import repl.HtmlFx;
 //@SuppressWarnings("serial")
 public class Frame extends Stage{
   private static final HashMap<String,Frame> windows=new HashMap<>();
-  HtmlFx htmlFx=new HtmlFx(null);
+  HtmlFx htmlFx=new HtmlFx(new Pane());
   public static void load(String wName,String html,int x,int y){
     Frame f=windows.get(wName);
     if (f!=null){f.close();}

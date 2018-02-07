@@ -32,6 +32,7 @@ public class ReplTextArea extends SplitPane {
     System.out.println("repltextarea construct FX: "+Platform.isFxApplicationThread());
 
     htmlFx.createHtmlContent("<body></body>");
+    Platform.runLater(()->htmlFx.webEngine.load(url.toExternalForm()));
 
 //    htmlFx.createHtmlContent("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 //      " <!DOCTYPE html\n" +
@@ -66,8 +67,8 @@ public class ReplTextArea extends SplitPane {
 //          latch.countDown();
 //        }
 //    });
-    htmlFx.webEngine.load(url.toExternalForm());
-
+//    htmlFx.webEngine.load(url.toExternalForm());
+//
 //    try {latch.await();}
 //    catch (InterruptedException e) {throw new Error(e);}
 
@@ -79,39 +80,41 @@ public class ReplTextArea extends SplitPane {
     }
 
   public String getText(){
-	System.out.println("gettext FX: "+Platform.isFxApplicationThread());
-	String res = (String) htmlFx.webEngine.executeScript(
-	        "ace.edit(\"textArea\").getValue()"
-	        );
-	return res;
-//    FutureTask<String> query = new FutureTask<>(()->{
-//      String res = (String) htmlFx.webEngine.executeScript(
-//          "ace.edit(\"textArea\").getValue()"
-//          );
-//      return res;
-//      });
-//    Platform.runLater(query);
-//    try {return query.get();}
-//    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
+//	System.out.println("gettext FX: "+Platform.isFxApplicationThread());
+//	String res = (String) htmlFx.webEngine.executeScript(
+//	        "ace.edit(\"textArea\").getValue()"
+//	        );
+//	return res;
+
+    FutureTask<String> query = new FutureTask<>(()->{
+      String res = (String) htmlFx.webEngine.executeScript(
+          "ace.edit(\"textArea\").getValue()"
+          );
+      return res;
+      });
+    Platform.runLater(query);
+    try {return query.get();}
+    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
     }
 
   public void setText(String input){
 	  System.out.println("settext FX: "+Platform.isFxApplicationThread());
 	  //System.out.println("gettext: "+getText());
 
-	  htmlFx.webEngine.executeScript(
-	        "ace.edit(\"textArea\").setValue(\""+input.replace("\"", "\\\"").replace("\n", "\\n")+"\")"
-	        );
-	  System.out.println("DONE");
-//	  FutureTask<?> query = new FutureTask<>(()->{
-//      htmlFx.webEngine.executeScript(
-//          "ace.edit(\"textArea\").setValue(\""+input.replace("\"", "\\\"").replace("\n", "\\n")+"\")"
-//          );
-//      return null;
-//      });
-//    Platform.runLater(query);
-//    try {query.get();}
-//    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
+//	  htmlFx.webEngine.executeScript(
+//	        "ace.edit(\"textArea\").setValue(\""+input.replace("\"", "\\\"").replace("\n", "\\n")+"\")"
+//	        );
+//	  System.out.println("DONE");
+
+	  FutureTask<?> query = new FutureTask<>(()->{
+      htmlFx.webEngine.executeScript(
+          "ace.edit(\"textArea\").setValue(\""+input.replace("\"", "\\\"").replace("\n", "\\n")+"\")"
+          );
+      return null;
+      });
+    Platform.runLater(query);
+    try {query.get();}
+    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
     }
 
   public void setDocumentation(String input){
