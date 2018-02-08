@@ -1,52 +1,21 @@
 package repl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import facade.L42;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -54,32 +23,18 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import org.antlr.v4.runtime.misc.ParseCancellationException;
-
-import ast.ErrorMessage;
-import ast.PathAux;
-import facade.ErrorFormatter;
-import facade.L42;
 import profiling.Timer;
 
 public class ReplGui extends Application {
-
+  static ReplMain main;
   private static final int SCENE_WIDTH = 1000;
   private static final int SCENE_HEIGHT = 800;
-
-  ReplState repl=null;
   boolean rootPathSet=false;
   boolean running=false;
   Button runB;
@@ -91,13 +46,10 @@ public class ReplGui extends Application {
 
   Tab selectedTab=null;
 
-  public static void main(String[] args) {
-    Application.launch(args);
-  }
-
   @Override
   public void start(Stage primaryStage) throws Exception {
-
+    assert Platform.isFxApplicationThread();
+    ReplMain.gui=this;
     BorderPane borderPane = new BorderPane();
 
     tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
@@ -108,8 +60,7 @@ public class ReplGui extends Application {
     });
 
     Button newProjectBtn = new Button("New Project");
-    newProjectBtn.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent t) {
+    newProjectBtn.setOnAction(t->{
 //        DirectoryChooser directoryChooser = new DirectoryChooser();
 //        directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
 //        File outputFolder = directoryChooser.showDialog(primaryStage);
@@ -128,39 +79,32 @@ public class ReplGui extends Application {
 //        tabPane.getTabs().add(tab);
 //        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
 //        selectionModel.select(tab);
-      }
     });
 
     Button openProjectBtn = new Button("Open Project");
-    openProjectBtn.setOnAction(new EventHandler<ActionEvent>() {
-      public void handle(ActionEvent t) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select an L42 project to open!");
+    openProjectBtn.setOnAction(t->{
+         assert Platform.isFxApplicationThread();
+        //DirectoryChooser directoryChooser = new DirectoryChooser();
+        //directoryChooser.setTitle("Select an L42 project to open!");
 
-        File outputFolder = directoryChooser.showDialog(primaryStage);
+        //File outputFolder = directoryChooser.showDialog(primaryStage);
+
+        Path hardcode=Paths.get("src","adamsTowel02","libProject");
+        File outputFolder=hardcode.toFile();
 
         //check is a valid L42 project
         if(outputFolder==null) {return;} //no selection has been made
-
-        File thisFile=new File(outputFolder, "This.L42");
-        if(!thisFile.exists()) {
-          Alert alert = new Alert(AlertType.ERROR);
-          alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-          alert.setTitle("Invalid Project");
-          alert.setHeaderText(null);
-          alert.setContentText("Selected project does not contain a 'This.L42' file");
-          alert.showAndWait();
-          return;
-        }
-
-        L42.setRootPath(outputFolder.toPath());
-        rootPathSet=true;
-        openFileInNewTab(thisFile);
-      }
+        ReplMain.runLater(()->main.loadProject(outputFolder.toPath()));
     });
 
     runB = new Button("Run!");
-    runB.setOnAction(e->runCode());
+    runB.setOnAction(e->ReplMain.runLater(()->{
+      if(running){throw new Error("Was running");}
+      running=true;
+      runB.setText("Running");
+      runB.setDisable(true);
+      main.runCode();
+      }));
 
     Pane empty=new Pane();
     HBox.setHgrow(empty, Priority.ALWAYS);
@@ -194,37 +138,6 @@ public class ReplGui extends Application {
     primaryStage.show();
   }
 
-protected void openFileInNewTab(File file) {
-  assert file!=null && file.exists();
-
-  // Read the file, and set its contents within the editor
-  String openFileName = file.getAbsolutePath();
-  StringBuffer sb = new StringBuffer();
-  try(FileInputStream fis = new FileInputStream(file);
-      BufferedInputStream bis = new BufferedInputStream(fis)) {
-    while(bis.available()>0) {
-      sb.append((char)bis.read());
-    }
-  } catch(Exception e) {
-    throw new Error(e);
-  }
-
-  ReplTextArea editor=new ReplTextArea(getClass().getResource("textArea.xhtml"));
-  //System.out.println(sb.toString());
-  editor.filename = openFileName;
-  editor.setText(sb.toString());
-  //editor.htmlFx.webEngine.load(sb.toString());
-  //System.out.println(editor.getText());
-
-  Tab tab = new Tab();
-  tab.setText(file.getName());
-  tab.setContent(editor);
-  tabPane.getTabs().add(tab);
-
-  SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-  selectionModel.select(tab);
-  }
-
   @Override
   public void stop(){
     if (L42.profilerPrintOn){
@@ -235,193 +148,59 @@ protected void openFileInNewTab(File file) {
     System.exit(0);
   }
 
-ExecutorService executor = Executors.newFixedThreadPool(1);
+  public void openTab(ReplTextArea editor) {
+    assert Platform.isFxApplicationThread();
+    Tab tab = new Tab();
+    tab.setText(editor.filename);
+    tab.setContent(editor);
+    tabPane.getTabs().add(tab);
+    SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+    selectionModel.select(tab);
+    }
 
-void runCode(){
-  if(running){throw new Error("Was running");}
-  running=true;
-  runB.setText("Running");
-  runB.setDisable(true);
-  System.out.println("Auxruncode starting FX: "+Platform.isFxApplicationThread());
-  /*Future<Object> future = */executor.submit(this::auxRunCode);
-  //this.auxRunCode();
-  System.out.println("Auxruncode done FX: "+Platform.isFxApplicationThread());
-  }
-
-void auxRunCode(){
-  if(!rootPathSet) {
+  public void makeAlert(String title, String content) {
+    assert Platform.isFxApplicationThread();
     Alert alert = new Alert(AlertType.ERROR);
     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    alert.setTitle("Invalid Run");
+    alert.setTitle(title);
     alert.setHeaderText(null);
-    alert.setContentText("Create new project or open an existing L42 project to run some code");
+    alert.setContentText(content);
     alert.showAndWait();
-    this.running=false;
-    runB.setDisable(false);
-    runB.setText("Run!");
-    return;
-  }
+    }
 
-  try{
-    String content=L42.pathToString(L42.root.resolve("This.L42"));
-    repl=copyResetKVCthenRun(content);
-  }
-  catch(IllegalArgumentException e) {
-    Alert alert = new Alert(AlertType.ERROR);
-    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-    alert.setTitle("Invalid Run");
-    alert.setHeaderText(null);
-    alert.setContentText("Missing two line at the start of 'This.L42' file");
-    alert.showAndWait();
-  }
-  catch(NullPointerException e) {
-	  throw new Error(e);
-	}
-  catch(ParseCancellationException parser){
-    throw new Error(parser);
-    }
-  catch(ErrorMessage msg){
-    ErrorFormatter.topFormatErrorMessage(msg);
-    }
-  catch(Throwable t){
-     //somehow t.printstacktrace freeze stuff as well as inspecting t.cause
-      throw new Error(
-            ""+t+"\n"+
-           Arrays.asList(t.getStackTrace()).stream()
-           .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
+  void updateTextFields(){
+    try{
+      assert L42.record!=null:"d";
+      assert err!=null:"a";
+      assert errors!=null:"b";
+      output.setText(L42.record.toString());
+      String newErr=err.toString();
+      errors.setText(newErr);
       }
-  finally{
-    this.updateTextFields();
-    }
-  }
-
-public static ReplState copyResetKVCthenRun(String fileContent, String... doNotCopyFiles) throws IOException {
-  ReplState repl=null;
-
-  //check first 2 line of This.l42
-  CodeInfo res=new CodeInfo(fileContent);
-
-  //check if library already cached in L42IDE folder
-  Path currentRoot=L42.root;
-  L42.setRootPath(Paths.get("L42IDE")); //todo: check later where is created?
-
-  Path dirPath=L42.root.resolve(res.cacheLibName);
-  if (!Files.exists(dirPath)){ //if not already cached before
-    Files.createDirectory(dirPath);
-    L42.setRootPath(Paths.get("L42IDE").resolve(res.cacheLibName));
-    L42.cacheK.setFileName("This.L42",res.first2Line);
-    repl=ReplState.start("{"+res.first2Line+"}", L42.root.resolve("This.C42")); //create the cache
-  }
-
-  //Copy the files into the current project
-  Path src=Paths.get("L42IDE", res.cacheLibName);
-  Path dest=currentRoot;
-  ReplGui.copyEntireDirectory(src,dest,doNotCopyFiles);
-
-  L42.setRootPath(currentRoot); //go back to project folder
-  Path pathC=L42.root.resolve("This.C42");
-  //if(repl==null) {
-    L42.cacheK.setFileName("This.L42",res.first2Line);
-    repl=ReplState.start("{"+res.first2Line+"}", pathC);
-  //} else {
-  //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
-  //}
-
-  L42.cacheK.setFileName("This.L42",res.restOfCode);
-  ReplState newR=repl.add(res.restOfCode);
-  if(newR!=null){repl=newR;}
-
-  return repl;
-}
-
-protected static class CodeInfo{
-  String first2Line;
-  String cacheLibUrl;
-  String cacheLibName;
-  String restOfCode;
-  CodeInfo(String string){
-    try(Scanner sc = new Scanner(string)) {
-    	Pattern delimit= Pattern.compile("(\\n| |,)*"); //newline, spaces and comma
-    	sc.skip(delimit);
-
-  	  if(!sc.next().equals("reuse")) {throw new IllegalArgumentException();}
-      sc.skip(delimit);
-
-  	  this.cacheLibUrl=sc.next();
-      this.cacheLibName=URLEncoder.encode(this.cacheLibUrl, "UTF-8");
-
-      sc.skip(delimit);
-
-      String[] secondLine=sc.nextLine().split(":");
-      if(secondLine.length!=2) {throw new IllegalArgumentException();}
-
-      String className=secondLine[0];
-      String lastPart=secondLine[1];
-  	  if(!PathAux.isValidClassName(className)) {throw new IllegalArgumentException();}
-  	  if(!lastPart.equals("Load.cacheTowel()")) {throw new IllegalArgumentException();}
-
-    	this.first2Line="reuse "+cacheLibUrl+"\n"+className+":"+"Load.cacheTowel()";
-
-      sc.useDelimiter("\\z"); //rest of the content
-    	this.restOfCode=sc.next();
-    } catch (UnsupportedEncodingException e) {
-      throw new IllegalArgumentException(e);
-    }
-  }
-}
-
-private static void copyEntireDirectory(Path src, Path dest, String... doNotCopyFiles) {
-  try (Stream<Path> stream = Files.list(src)) {
-    stream
-    .filter(x -> !Arrays.asList(doNotCopyFiles).contains(x.getName(x.getNameCount()-1).toString()))
-    .forEach(sourcePath -> {
-  	  try {
-        Path target= dest.resolve(sourcePath.getName(sourcePath.getNameCount()-1));
-  	    Files.copy(sourcePath, target, StandardCopyOption.REPLACE_EXISTING);
-  	  } catch (Exception e) {throw new Error(e);}
-    });
-  } catch (IOException e1) {throw new Error(e1);}
-
-}
-
-private void updateTextFields(){
-  try{
-    assert L42.record!=null:"d";
-    assert err!=null:"a";
-    assert errors!=null:"b";
-    output.setText(L42.record.toString());
-    String newErr=err.toString();
-    errors.setText(newErr);
-    }
-  finally{
-    this.running=false;
-    runB.setDisable(false);
-    runB.setText("Run!");
-    }
-  }
-private void doAndWait(Runnable r){
-  try {executor.submit(r).get();}
-  catch (InterruptedException | ExecutionException e) {
-    throw new Error(e);
-    }
-  }
-public static PrintStream delegatePrintStream(StringBuffer err,PrintStream prs){
-  return new PrintStream(prs){
-    public void print(String s) {
-//      doAndWait(()->{
-//        prs.print(s);
-        err.append(s);
-//        });
-      super.print(s);
+    finally{
+      this.running=false;
+      runB.setDisable(false);
+      runB.setText("Run!");
       }
-    public void println(String s) {
-//      doAndWait(()->{
-        String ss=s+"\n";
-//        prs.println(ss);
-        err.append(ss);
-//        });
-      super.println(s);
-      }
-    };
+    }
+
+  public static PrintStream delegatePrintStream(StringBuffer err,PrintStream prs){
+    return new PrintStream(prs){
+      public void print(String s) {
+  //      doAndWait(()->{
+  //        prs.print(s);
+          err.append(s);
+  //        });
+        super.print(s);
+        }
+      public void println(String s) {
+  //      doAndWait(()->{
+          String ss=s+"\n";
+  //        prs.println(ss);
+          err.append(ss);
+  //        });
+        super.println(s);
+        }
+      };
+    }
   }
-}
