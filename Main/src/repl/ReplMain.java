@@ -36,8 +36,8 @@ import javafx.scene.layout.Region;
 
 public class ReplMain {
   static ReplGui gui;
-  static ExecutorService executor = Executors.newFixedThreadPool(1);
   ReplState repl=null;
+  static ExecutorService executor = Executors.newFixedThreadPool(1);
 
   public static void main(String []arg) {
     ReplGui.main=new ReplMain();

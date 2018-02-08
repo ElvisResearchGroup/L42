@@ -19,8 +19,8 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 public class HtmlFx extends Pane{
-  public WebEngine webEngine;
-  public Region outerPanel;
+  WebEngine webEngine;
+  Region outerPanel;
 
   public HtmlFx(Region outer) {
     super();

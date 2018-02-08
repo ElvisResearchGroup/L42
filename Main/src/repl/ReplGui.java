@@ -33,16 +33,17 @@ import profiling.Timer;
 
 public class ReplGui extends Application {
   static ReplMain main;
+
   private static final int SCENE_WIDTH = 1000;
   private static final int SCENE_HEIGHT = 800;
-  boolean rootPathSet=false;
-  boolean running=false;
-  Button runB;
 
   TabPane tabPane=new TabPane();
   TextArea output=new TextArea();
   TextArea errors=new TextArea();
   StringBuffer err=new StringBuffer();
+  Button runB;
+  boolean rootPathSet=false;
+  boolean running=false;
 
   Tab selectedTab=null;
 
