@@ -19,7 +19,7 @@ import org.junit.Test;
 
 import facade.L42;
 import helpers.TestHelper;
-import repl.ReplGui.CodeInfo;
+import repl.ReplMain.CodeInfo;
 
 public class CachingTest {
 
@@ -167,7 +167,7 @@ public class CachingTest {
 
     L42.setRootPath(Paths.get("TestFolder"));
 
-    ReplGui.copyResetKVCthenRun(content);
+    ReplMain.copyResetKVCthenRun(content);
 
     this.deleteDirectory(Paths.get("L42IDE").resolve(test.cacheLibName));
   }
@@ -189,11 +189,11 @@ public class CachingTest {
 
     L42.setRootPath(Paths.get("TestFolder"));
 
-    ReplGui.copyResetKVCthenRun(content);
+    ReplMain.copyResetKVCthenRun(content);
     long first=System.currentTimeMillis();
     this.deleteDirectory(Paths.get("L42IDE").resolve(test.cacheLibName));
 
-    ReplGui.copyResetKVCthenRun(content);
+    ReplMain.copyResetKVCthenRun(content);
     long second=System.currentTimeMillis();
     assertTrue(second-first < first-start);
 
@@ -215,7 +215,7 @@ public class CachingTest {
         "  }";
 
       L42.setRootPath(Paths.get("TestFolder"));
-      ReplGui.copyResetKVCthenRun(content);
+      ReplMain.copyResetKVCthenRun(content);
     }
     String output= L42.record.toString();
 
@@ -230,7 +230,7 @@ public class CachingTest {
         "  }";
 
       L42.setRootPath(Paths.get("TestFolder"));
-      ReplGui.copyResetKVCthenRun(content2);
+      ReplMain.copyResetKVCthenRun(content2);
     }
     String output2= L42.record.toString();
 
@@ -258,7 +258,7 @@ public class CachingTest {
           "  }";
 
       L42.setRootPath(Paths.get("TestFolder"));
-      ReplGui.copyResetKVCthenRun(content);
+      ReplMain.copyResetKVCthenRun(content);
     }
     String output= L42.record.toString();
 
@@ -274,7 +274,7 @@ public class CachingTest {
         "  }";
 
       L42.setRootPath(Paths.get("TestFolder"));
-      ReplGui.copyResetKVCthenRun(content2, "This.C42");
+      ReplMain.copyResetKVCthenRun(content2, "This.C42");
     }
     String output2= L42.record.toString();
 
