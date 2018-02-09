@@ -45,9 +45,10 @@ public class ReplGui extends Application {
   TextArea output=new TextArea();
   TextArea errors=new TextArea();
   StringBuffer err=new StringBuffer();
-  Button runB;
+
   boolean rootPathSet=false;
   boolean running=false;
+  Button runB=new Button("Run!");
 
   Tab selectedTab=null;
 
@@ -74,6 +75,8 @@ public class ReplGui extends Application {
         selectedTab = newTab;
       }
     });
+
+    runB.setDisable(true);
 
     Button newProjectBtn = new Button("New Project");
     newProjectBtn.setOnAction(t->{
@@ -110,10 +113,9 @@ public class ReplGui extends Application {
       ReplMain.runLater(()->main.loadProject(outputFolder.toPath()));
     });
 
-    runB = new Button("Run!");
     runB.setOnAction(e->ReplMain.runLater(()->{
       if(running){throw new Error("Was running");}
-      this.disableRunB();
+      Platform.runLater(()->this.disableRunB());
       main.runCode();
     }));
 

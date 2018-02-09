@@ -33,14 +33,11 @@ public class HtmlFx extends Pane{
   private Void initWeb(CountDownLatch latch,URL url){
     WebView browser = new WebView();
     this.webEngine = browser.getEngine();
-    //this.webEngine.loadContent(html);
-    this.webEngine.load(url.toExternalForm());
     this.webEngine.getLoadWorker().stateProperty().addListener(
       (ov, oldState,newState)->{
-        if (newState == Worker.State.SUCCEEDED) {
-          //System.out.println("ACE IS UNDEFINED:: "+this.webEngine.executeScript("ace===undefined"));
-          latch.countDown();}
+        if (newState == Worker.State.SUCCEEDED) {latch.countDown();}
         });
+    this.webEngine.load(url.toExternalForm());
     this.webEngine.setOnAlert(event->{
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Information Dialog");
@@ -94,7 +91,11 @@ public class HtmlFx extends Pane{
     initWeb(latch,url);
     //
     Object o=this.webEngine.executeScript(
-"window.event42=function(s){ if(event42.eventCollector){event42.eventCollector.add(s);return 'Event '+s+' added '+event42.eventCollector.toString();} return 'Event '+s+' not added';}");
+        "window.event42=function(s){ "
+        + "if(event42.eventCollector){"
+        + "event42.eventCollector.add(s);"
+        + "return 'Event '+s+' added '+event42.eventCollector.toString();} "
+        + "return 'Event '+s+' not added';}");
     assert o instanceof JSObject : o.toString();
     JSObject jsobj = (JSObject)o;
     jsobj.setMember("eventCollector",this.events);

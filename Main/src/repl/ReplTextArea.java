@@ -24,25 +24,24 @@ public class ReplTextArea extends SplitPane {
   public ReplTextArea(CountDownLatch latch,URL url) {
     assert Platform.isFxApplicationThread();
     htmlFx=new HtmlFx(this);
-//    htmlFx.createHtmlContent(latch,content);//latch 2 times
     htmlFx.createHtmlContent(latch,url);
     documentationArea=new TextArea();
     documentationArea.setEditable(false);
     this.getItems().addAll(htmlFx, documentationArea);
     this.setDividerPositions(DIVIDER_POSN);
     latch.countDown();
-    }
+  }
 
   public void setDocumentation(String input){
     documentationArea.setText(input);
-    }
+  }
 
   public Function<CountDownLatch,String> getText(){
     assert Platform.isFxApplicationThread();
     return l->(String) htmlFx.webEngine.executeScript(
-      "ace.edit(\"textArea\").getValue()"
-      );
-    }
+        "ace.edit(\"textArea\").getValue()"
+        );
+  }
 
   public void setText(String input){
 	  assert Platform.isFxApplicationThread();
@@ -54,10 +53,7 @@ public class ReplTextArea extends SplitPane {
 	    else if(i=='\r') {}
 	    else {b.appendCodePoint(i);}
 	  });
-	  String command="ace.edit(\"textArea\").setValue(\""+b+"\")";
-	  System.out.println(input);
-	  System.out.println(command);
-    htmlFx.webEngine.executeScript(command);
-    }
+    htmlFx.webEngine.executeScript("ace.edit(\"textArea\").setValue(\""+b+"\")");
+  }
 
 }

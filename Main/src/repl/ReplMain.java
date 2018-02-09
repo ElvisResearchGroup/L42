@@ -66,6 +66,7 @@ public class ReplMain {
     }
     L42.setRootPath(path);
     gui.rootPathSet=true;
+    Platform.runLater(()->gui.runB.setDisable(false));
     openFileInNewTab(thisFile);
   }
 
