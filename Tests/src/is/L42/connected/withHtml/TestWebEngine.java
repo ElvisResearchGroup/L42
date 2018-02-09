@@ -1,4 +1,4 @@
-package is.L42.connected.withHtml;
+ package is.L42.connected.withHtml;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.After;
 import org.junit.Test;
@@ -45,10 +46,8 @@ public class TestWebEngine {
     @Override
     public void start(Stage stage) {
       HtmlFx h=new HtmlFx(new Pane());
-      h.createHtmlContent("<body><div>hi</div><div>hi</div></body>");
       URL url = getClass().getResource("tutorial.xhtml");
-
-      Platform.runLater(()->h.webEngine.load(url.toExternalForm()));
+      h.createHtmlContent(new CountDownLatch(1), url);
 
       Scene scene = new Scene(h, 500, 500);
       stage.setTitle("myTitle!");

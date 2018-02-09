@@ -57,6 +57,7 @@ public class ReplMain {
       }
     }
 
+
   public void loadProject(Path path) {
     Path thisFile=path.resolve("This.L42");
     if(!Files.exists(thisFile)) {
@@ -80,22 +81,8 @@ public class ReplMain {
     }
 
   private void makeReplTextArea(String openFileName,String tabContent) {
-    Path path;try{path=Paths.get(getClass().getResource("textArea.xhtml").toURI());}
-    catch (URISyntaxException e) {throw new Error(e);}
-    ReplTextArea editor[]= {null};
-    String content;try {content = new String(Files.readAllBytes(path));}
-    catch (IOException e) {throw new Error(e);}
-    CountDownLatch latch = new CountDownLatch(1);
-    Platform.runLater(()->{editor[0]=new ReplTextArea(latch,content);});
-    //try {future.get();}
-    //catch (ExecutionException e) {throw propagateException(e.getCause());}
-    //catch (InterruptedException e) {throw propagateException(e);}
-    try {latch.await();}
-    catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
-
-    editor[0].filename = openFileName;
-    editor[0].setText(tabContent);
-    gui.openTab(editor[0]);
+    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,getClass().getResource("textArea.xhtml")));
+    Platform.runLater(()->gui.openTab(editor,openFileName,tabContent));
     }
 
   void runCode(){

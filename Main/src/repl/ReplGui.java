@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import facade.L42;
 import javafx.application.Application;
@@ -28,14 +31,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import profiling.Timer;
 
 public class ReplGui extends Application {
   static ReplMain main;
 
-  private static final int SCENE_WIDTH = 1000;
-  private static final int SCENE_HEIGHT = 800;
+  private static final int SCENE_WIDTH = 1500;
+  private static final int SCENE_HEIGHT = 1000;
 
   TabPane tabPane=new TabPane();
   TextArea output=new TextArea();
@@ -46,6 +50,17 @@ public class ReplGui extends Application {
   boolean running=false;
 
   Tab selectedTab=null;
+
+  @SuppressWarnings("unchecked")
+  public static <T>T runAndWait(int operations,Function<CountDownLatch,T>task){
+    assert !Platform.isFxApplicationThread();
+    CountDownLatch latch = new CountDownLatch(operations);
+    Object[]res={null};
+    Platform.runLater(()->res[0]=task.apply(latch));
+    try {latch.await();}
+    catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
+    return(T)res[0];
+    }
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -84,28 +99,23 @@ public class ReplGui extends Application {
 
     Button openProjectBtn = new Button("Open Project");
     openProjectBtn.setOnAction(t->{
-         assert Platform.isFxApplicationThread();
-        //DirectoryChooser directoryChooser = new DirectoryChooser();
-        //directoryChooser.setTitle("Select an L42 project to open!");
+      assert Platform.isFxApplicationThread();
+      DirectoryChooser directoryChooser = new DirectoryChooser();
+      directoryChooser.setTitle("Select an L42 project to open!");
 
-        //File outputFolder = directoryChooser.showDialog(primaryStage);
+      File outputFolder = directoryChooser.showDialog(primaryStage);
 
-        Path hardcode=Paths.get("src","adamsTowel02","libProject");
-        File outputFolder=hardcode.toFile();
-
-        //check is a valid L42 project
-        if(outputFolder==null) {return;} //no selection has been made
-        ReplMain.runLater(()->main.loadProject(outputFolder.toPath()));
+      //check is a valid L42 project
+      if(outputFolder==null) {return;} //no selection has been made
+      ReplMain.runLater(()->main.loadProject(outputFolder.toPath()));
     });
 
     runB = new Button("Run!");
     runB.setOnAction(e->ReplMain.runLater(()->{
       if(running){throw new Error("Was running");}
-      running=true;
-      runB.setText("Running");
-      runB.setDisable(true);
+      this.disableRunB();
       main.runCode();
-      }));
+    }));
 
     Pane empty=new Pane();
     HBox.setHgrow(empty, Priority.ALWAYS);
@@ -149,8 +159,21 @@ public class ReplGui extends Application {
     System.exit(0);
   }
 
-  public void openTab(ReplTextArea editor) {
+  void enableRunB() {
+    running=false;
+    runB.setDisable(false);
+    runB.setText("Run!");
+  }
+  void disableRunB() {
+    running=true;
+    runB.setDisable(true);
+    runB.setText("Running");
+  }
+
+  void openTab(ReplTextArea editor,String openFileName,String tabContent) {
     assert Platform.isFxApplicationThread();
+    editor.filename = openFileName;
+    editor.setText(tabContent);
     Tab tab = new Tab();
     tab.setText(editor.filename);
     tab.setContent(editor);
@@ -159,7 +182,7 @@ public class ReplGui extends Application {
     selectionModel.select(tab);
     }
 
-  public void makeAlert(String title, String content) {
+  void makeAlert(String title, String content) {
     assert Platform.isFxApplicationThread();
     Alert alert = new Alert(AlertType.ERROR);
     alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);

@@ -1,11 +1,14 @@
 package repl;
 
+import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.function.Function;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Worker;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 
@@ -18,35 +21,31 @@ public class ReplTextArea extends SplitPane {
   HtmlFx htmlFx;
   TextArea documentationArea;
 
-  public ReplTextArea(CountDownLatch latch,String content) {
+  public ReplTextArea(CountDownLatch latch,URL url) {
     assert Platform.isFxApplicationThread();
     htmlFx=new HtmlFx(this);
-    htmlFx.createHtmlContent(latch,content);
+//    htmlFx.createHtmlContent(latch,content);//latch 2 times
+    htmlFx.createHtmlContent(latch,url);
     documentationArea=new TextArea();
     documentationArea.setEditable(false);
     this.getItems().addAll(htmlFx, documentationArea);
     this.setDividerPositions(DIVIDER_POSN);
+    latch.countDown();
     }
 
   public void setDocumentation(String input){
     documentationArea.setText(input);
     }
 
-  public String getText(){
-    assert !Platform.isFxApplicationThread();
-    FutureTask<String> query = new FutureTask<>(()->{
-      String res = (String) htmlFx.webEngine.executeScript(
-          "ace.edit(\"textArea\").getValue()"
-          );
-      return res;
-      });
-    Platform.runLater(query);
-    try {return query.get();}
-    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
+  public Function<CountDownLatch,String> getText(){
+    assert Platform.isFxApplicationThread();
+    return l->(String) htmlFx.webEngine.executeScript(
+      "ace.edit(\"textArea\").getValue()"
+      );
     }
 
   public void setText(String input){
-	  assert !Platform.isFxApplicationThread();
+	  assert Platform.isFxApplicationThread();
 	  StringBuffer b=new StringBuffer();
 	  input.codePoints().forEachOrdered(i->{
 	    if(i=='\"') {b.append("\\\"");}
@@ -58,13 +57,7 @@ public class ReplTextArea extends SplitPane {
 	  String command="ace.edit(\"textArea\").setValue(\""+b+"\")";
 	  System.out.println(input);
 	  System.out.println(command);
-	  FutureTask<?> query = new FutureTask<>(()->{
-      htmlFx.webEngine.executeScript(command);
-      return null;
-      });
-    Platform.runLater(query);
-    try {query.get();}
-    catch (InterruptedException | ExecutionException e) {throw new Error(e);}
+    htmlFx.webEngine.executeScript(command);
     }
 
 }
