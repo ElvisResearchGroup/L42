@@ -37,12 +37,12 @@ import javafx.scene.layout.Region;
 public class ReplMain {
   static ReplGui gui;
   ReplState repl=null;
+
   static ExecutorService executor = Executors.newFixedThreadPool(1);
 
   public static void main(String []arg) {
     ReplGui.main=new ReplMain();
     Application.launch(ReplGui.class,arg);
-    System.out.println("Hi");
   }
 
   public static void runLater(Runnable runnable) {
@@ -58,7 +58,25 @@ public class ReplMain {
     }
 
 
-  public void loadProject(Path path) {
+
+  void newProject(Path path) {
+    Path thisFile=path.resolve("This.L42");
+    if(Files.exists(thisFile)) {
+      Platform.runLater(()->gui.makeAlert("Already an L42 Project!", "The selected folder is already an L42 project"));
+      return;
+    }
+    //create an empty This.L42 file in the selected folder
+    try {
+      Files.createDirectories(path.getParent());
+      Files.createFile(thisFile);
+    } catch(IOException e) {throw new Error(e);}
+    L42.setRootPath(path);
+    gui.rootPathSet=true;
+    Platform.runLater(()->gui.runB.setDisable(false));
+    openFileInNewTab(thisFile);
+  }
+
+  void loadProject(Path path) {
     Path thisFile=path.resolve("This.L42");
     if(!Files.exists(thisFile)) {
       Platform.runLater(()->gui.makeAlert("Invalid Project","Selected project does not contain a 'This.L42' file"));
@@ -70,34 +88,25 @@ public class ReplMain {
     openFileInNewTab(thisFile);
   }
 
-  protected void openFileInNewTab(Path file) {
+  void openFileInNewTab(Path file) {
     assert file!=null && Files.exists(file);
-    String content;try {content = new String(Files.readAllBytes(file));}
+    String content; try {content = new String(Files.readAllBytes(file));}
     catch (IOException e) {
       Platform.runLater(()->gui.makeAlert("Invalid Project content","Lost contact with project folder"));
       return;
-      }
+    }
     String openFileName = file.getFileName().toString();
     makeReplTextArea(openFileName,content);
-    }
+  }
 
   private void makeReplTextArea(String openFileName,String tabContent) {
     ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,getClass().getResource("textArea.xhtml")));
     Platform.runLater(()->gui.openTab(editor,openFileName,tabContent));
-    }
+  }
 
   void runCode(){
-    //TODO: make run button disabled when project not loader OR run is already running
-  /*if(!rootPathSet) {
-      Platform.runLater(()->gui.makeAlert("Invalid Run","Create new project or open an existing L42 project to run some code"));
-      gui.running=false;
-      runB.setDisable(false);
-      runB.setText("Run!");
-      return;
-    }
-  */
     try{
-      String content=L42.pathToString(L42.root.resolve("This.L42"));
+      String content = L42.pathToString(L42.root.resolve("This.L42"));
       repl=copyResetKVCthenRun(content);
     }
     catch(IllegalArgumentException e) {
@@ -108,22 +117,22 @@ public class ReplMain {
       throw new Error(e);
     }
     catch(ParseCancellationException parser){
-      throw new Error(parser);
+      System.out.println(parser.getMessage());
       }
     catch(ErrorMessage msg){
       ErrorFormatter.topFormatErrorMessage(msg);
       }
     catch(Throwable t){
-       //somehow t.printstacktrace freeze stuff as well as inspecting t.cause
-        throw new Error(
+      //somehow t.printstacktrace freeze stuff as well as inspecting t.cause
+      System.out.println(
               ""+t+"\n"+
              Arrays.asList(t.getStackTrace()).stream()
              .map(e->e.toString()+"\n").reduce("",(a,b)->a+b));
-        }
+      }
     finally{
       Platform.runLater(()->gui.updateTextFields());
       }
-    }
+  }
 
   public static ReplState copyResetKVCthenRun(String fileContent, String... doNotCopyFiles) throws IOException {
     ReplState repl=null;

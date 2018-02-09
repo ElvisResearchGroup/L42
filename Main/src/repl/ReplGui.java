@@ -1,6 +1,7 @@
 package repl;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,7 +49,7 @@ public class ReplGui extends Application {
 
   boolean rootPathSet=false;
   boolean running=false;
-  Button runB=new Button("Run!");
+  Button runB;
 
   Tab selectedTab=null;
 
@@ -60,8 +61,8 @@ public class ReplGui extends Application {
     Platform.runLater(()->res[0]=task.apply(latch));
     try {latch.await();}
     catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
-    return(T)res[0];
-    }
+    return (T)res[0];
+  }
 
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -76,28 +77,14 @@ public class ReplGui extends Application {
       }
     });
 
-    runB.setDisable(true);
-
     Button newProjectBtn = new Button("New Project");
     newProjectBtn.setOnAction(t->{
-//        DirectoryChooser directoryChooser = new DirectoryChooser();
-//        directoryChooser.setTitle("Select an existing folder for the project or enter a new folder name!");
-//        File outputFolder = directoryChooser.showDialog(primaryStage);
-//
-//        L42.setRootPath(outputFolder.toPath());
-//        rootPathSet=true;
-//
-//        Tab tab = new Tab();
-//
-//        if (outputFolder != null) {
-//    	  tab.setText(outputFolder.getPath());
-//      	} else
-//            tab.setText("This.L42");
-//        ReplTextArea newSrc=new ReplTextArea(getClass().getResource("textArea.xhtml"));
-//        tab.setContent(newSrc);
-//        tabPane.getTabs().add(tab);
-//        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-//        selectionModel.select(tab);
+      DirectoryChooser directoryChooser = new DirectoryChooser();
+      directoryChooser.setTitle("Create a new folder for the new project!");
+      File outputFolder = directoryChooser.showDialog(primaryStage);
+
+      if(outputFolder==null) {return;} //no selection has been made
+      ReplMain.runLater(()->main.newProject(outputFolder.toPath()));
     });
 
     Button openProjectBtn = new Button("Open Project");
@@ -105,14 +92,14 @@ public class ReplGui extends Application {
       assert Platform.isFxApplicationThread();
       DirectoryChooser directoryChooser = new DirectoryChooser();
       directoryChooser.setTitle("Select an L42 project to open!");
-
       File outputFolder = directoryChooser.showDialog(primaryStage);
 
-      //check is a valid L42 project
       if(outputFolder==null) {return;} //no selection has been made
       ReplMain.runLater(()->main.loadProject(outputFolder.toPath()));
     });
 
+    runB=new Button("Run!");
+    runB.setDisable(true);
     runB.setOnAction(e->ReplMain.runLater(()->{
       if(running){throw new Error("Was running");}
       Platform.runLater(()->this.disableRunB());
@@ -143,7 +130,7 @@ public class ReplGui extends Application {
     splitPane.setOrientation(Orientation.VERTICAL);
     borderPane.setCenter(splitPane);
 
-    Scene scene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT); // Manage scene size
+    Scene scene = new Scene(borderPane, SCENE_WIDTH, SCENE_HEIGHT);
     primaryStage.setTitle("L42 IDE");
     primaryStage.setScene(scene);
     primaryStage.setMinWidth(scene.getWidth());
@@ -182,7 +169,7 @@ public class ReplGui extends Application {
     tabPane.getTabs().add(tab);
     SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
     selectionModel.select(tab);
-    }
+  }
 
   void makeAlert(String title, String content) {
     assert Platform.isFxApplicationThread();
@@ -192,7 +179,7 @@ public class ReplGui extends Application {
     alert.setHeaderText(null);
     alert.setContentText(content);
     alert.showAndWait();
-    }
+  }
 
   void updateTextFields(){
     try{
@@ -204,9 +191,7 @@ public class ReplGui extends Application {
       errors.setText(newErr);
       }
     finally{
-      this.running=false;
-      runB.setDisable(false);
-      runB.setText("Run!");
+      this.enableRunB();
       }
     }
 
