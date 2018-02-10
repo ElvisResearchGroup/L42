@@ -58,7 +58,6 @@ public class ReplMain {
     }
 
 
-
   void newProject(Path path) {
     Path thisFile=path.resolve("This.L42");
     if(Files.exists(thisFile)) {
@@ -99,9 +98,9 @@ public class ReplMain {
     makeReplTextArea(openFileName,content);
   }
 
-  private void makeReplTextArea(String openFileName,String tabContent) {
-    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,getClass().getResource("textArea.xhtml")));
-    Platform.runLater(()->gui.openTab(editor,openFileName,tabContent));
+  private void makeReplTextArea(String fileName,String tabContent) {
+    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,fileName,getClass().getResource("textArea.xhtml")));
+    Platform.runLater(()->gui.openTab(editor,tabContent));
   }
 
   void runCode(){

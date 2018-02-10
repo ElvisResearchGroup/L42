@@ -1,39 +1,44 @@
 package repl;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.function.Function;
 
+import facade.L42;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Worker;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextArea;
 
 public class ReplTextArea extends SplitPane {
   private static final double DIVIDER_POSN = 0.75f;
 
-  SimpleBooleanProperty changed= new SimpleBooleanProperty(false);
-
-  String filename;
+  Tab tab;
+  final String filename;
   HtmlFx htmlFx;
-  TextArea documentationArea;
+  TextArea docPanel;
 
-  public ReplTextArea(CountDownLatch latch,URL url) {
+  public ReplTextArea(CountDownLatch latch, String fname, URL url) {
     assert Platform.isFxApplicationThread();
     htmlFx=new HtmlFx(this);
     htmlFx.createHtmlContent(latch,url);
-    documentationArea=new TextArea();
-    documentationArea.setEditable(false);
-    this.getItems().addAll(htmlFx, documentationArea);
+    filename=fname;
+    docPanel=new TextArea();
+    docPanel.setEditable(false);
+    this.getItems().addAll(htmlFx, docPanel);
     this.setDividerPositions(DIVIDER_POSN);
     latch.countDown();
   }
 
   public void setDocumentation(String input){
-    documentationArea.setText(input);
+    docPanel.setText(input);
   }
 
   public Function<CountDownLatch,String> getText(){
@@ -54,6 +59,16 @@ public class ReplTextArea extends SplitPane {
 	    else {b.appendCodePoint(i);}
 	  });
     htmlFx.webEngine.executeScript("ace.edit(\"textArea\").setValue(\""+b+"\")");
+  }
+
+  void saveToFile() {
+    assert Platform.isFxApplicationThread();
+    String content=getText().apply(new CountDownLatch(1));
+    System.out.println(content);
+    assert Files.exists(L42.root.resolve(this.filename));
+    try(FileWriter f = new FileWriter(L42.root.resolve(this.filename).toFile())){
+      f.write(content);
+    } catch (IOException e) {throw new Error(e);}
   }
 
 }

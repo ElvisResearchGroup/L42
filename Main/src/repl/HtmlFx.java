@@ -5,6 +5,8 @@ import java.util.concurrent.CountDownLatch;
 
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.Clipboard;
@@ -56,13 +58,26 @@ public class HtmlFx extends Pane{
                 org.apache.commons.text.StringEscapeUtils
                 .escapeEcmaScript(content)+"\") ");
       }
+
+      //---CTRL+S save
+      if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.S){
+        if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
+          ReplTextArea editor=((ReplTextArea)outerPanel);
+          editor.saveToFile();
+          if(editor.tab.getText().endsWith("*")) {
+            editor.tab.setText(editor.filename);
+          }
+        }
+      } else { //file has been modified (NOT SAVED)
+        if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
+          ReplTextArea editor=((ReplTextArea)outerPanel);
+          if(!editor.tab.getText().endsWith("*")) {
+            editor.tab.setText(editor.filename+"*");
+          }
+        }
+      }
+
     });
-    //TODO keep track when is text modified
-    //browser.setOnKeyPressed(new EventHandler<Event>() {
-    //  public void handle(Event arg0) {
-    //  if(outerPanel!=null) outerPanel.changed.set(true);
-    //}
-    //});
     // retrieve copy event via javascript:alert
     webEngine.setOnAlert((WebEvent<String> we) -> {
       if(we.getData()!=null && we.getData().startsWith("copy: ")){

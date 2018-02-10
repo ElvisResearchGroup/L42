@@ -39,8 +39,8 @@ import profiling.Timer;
 public class ReplGui extends Application {
   static ReplMain main;
 
-  private static final int SCENE_WIDTH = 1500;
-  private static final int SCENE_HEIGHT = 1000;
+  private static final int SCENE_WIDTH = 1550;
+  private static final int SCENE_HEIGHT = 900;
 
   TabPane tabPane=new TabPane();
   TextArea output=new TextArea();
@@ -159,16 +159,15 @@ public class ReplGui extends Application {
     runB.setText("Running");
   }
 
-  void openTab(ReplTextArea editor,String openFileName,String tabContent) {
+  void openTab(ReplTextArea editor, String tabContent) {
     assert Platform.isFxApplicationThread();
-    editor.filename = openFileName;
     editor.setText(tabContent);
-    Tab tab = new Tab();
-    tab.setText(editor.filename);
-    tab.setContent(editor);
-    tabPane.getTabs().add(tab);
+    editor.tab = new Tab();
+    editor.tab.setText(editor.filename);
+    editor.tab.setContent(editor);
+    tabPane.getTabs().add(editor.tab);
     SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-    selectionModel.select(tab);
+    selectionModel.select(editor.tab);
   }
 
   void makeAlert(String title, String content) {
