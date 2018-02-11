@@ -41,6 +41,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.Expression;
 import ast.Expression.ClassReuse;
+import caching.Loader;
 import caching.Phase1CacheKey;
 
 public class L42 {
@@ -218,7 +219,7 @@ public class L42 {
             }
           });
   */
-      ClassB result= new ProgramReduction(null,false).allSteps(p);
+      ClassB result= new ProgramReduction(new Loader(null),false).allSteps(p);
       return checkFinalError(result);
       }
     finally{L42.setExecutionStage(ExecutionStage.None);}

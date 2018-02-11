@@ -18,8 +18,8 @@ import newReduction.ClassTable;
 import profiling.Timer;
 
 public class ProgramReduction {
-  public ProgramReduction(Path path,boolean saveVCache) {
-    this.loader=new Loader(path);
+  public ProgramReduction(Loader loader, boolean saveVCache) {
+    this.loader=loader;
     this.saveVCache=saveVCache;
     }
   public Loader loader;

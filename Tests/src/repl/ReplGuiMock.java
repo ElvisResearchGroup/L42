@@ -1,6 +1,7 @@
 package repl;
 
 import java.nio.file.Paths;
+import caching.Loader;
 
 public class ReplGuiMock {
 
@@ -20,7 +21,9 @@ public class ReplGuiMock {
       );
   }
   void auxRunCode(String code){
-    if(repl==null){ repl=ReplState.start("{"+code+"}", Paths.get("localhost","ReplCache.C42"));}
+    if(repl==null){
+      repl=ReplState.start("{"+code+"}", new Loader(Paths.get("localhost","ReplCache.C42")));
+      }
     else{
       ReplState newR=repl.add(code);
       if(newR!=null){repl=newR;}

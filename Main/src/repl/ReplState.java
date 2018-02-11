@@ -19,6 +19,7 @@ import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Expression.ClassB;
 import ast.Expression.ClassReuse;
+import caching.Loader;
 import caching.Phase1CacheKey;
 import coreVisitors.CloneVisitor;
 import facade.ErrorFormatter;
@@ -45,7 +46,7 @@ public class ReplState {
     this.p=p;
     this.reduction=reduction;
     }
-public static ReplState start(String code, Path cacheC42){
+public static ReplState start(String code, Loader cacheC42){
   Program p=Phase1CacheKey._handleCache();
   try{
     boolean cached=p!=null;

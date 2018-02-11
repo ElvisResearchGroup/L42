@@ -24,6 +24,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import ast.ErrorMessage;
 import ast.PathAux;
+import caching.Loader;
 import facade.ErrorFormatter;
 import facade.L42;
 import javafx.application.Application;
@@ -148,7 +149,7 @@ public class ReplMain {
       Files.createDirectory(dirPath);
       L42.setRootPath(Paths.get("L42IDE").resolve(res.cacheLibName));
       L42.cacheK.setFileName("This.L42",res.first2Line);
-      repl=ReplState.start("{"+res.first2Line+"}", L42.root.resolve("This.C42")); //create the cache
+      repl=ReplState.start("{"+res.first2Line+"}", new Loader(L42.root.resolve("This.C42"))); //create the cache
     }
 
     //Copy the files into the current project
@@ -160,7 +161,7 @@ public class ReplMain {
     Path pathC=L42.root.resolve("This.C42");
     //if(repl==null) {
       L42.cacheK.setFileName("This.L42",res.first2Line);
-      repl=ReplState.start("{"+res.first2Line+"}", pathC);
+      repl=ReplState.start("{"+res.first2Line+"}", new Loader(pathC));
     //} else {
     //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
     //}
