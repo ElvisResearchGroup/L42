@@ -52,6 +52,7 @@ public class ReplGui extends Application {
   boolean rootPathSet=false;
   boolean running=false;
   Button runB;
+  Button refreshB;
 
   Tab selectedTab=null;
 
@@ -108,10 +109,19 @@ public class ReplGui extends Application {
       main.runCode(Loader::new, !Files.exists(L42.root.resolve("This.C42")));
     }));
 
+    refreshB=new Button("Refresh");
+    refreshB.setDisable(true);
+    refreshB.setOnAction(t->{
+      assert rootPathSet;
+      for(Tab tab: tabPane.getTabs()) {
+        ((ReplTextArea)tab.getContent()).refresh();
+      }
+    });
+
     Pane empty=new Pane();
     HBox.setHgrow(empty, Priority.ALWAYS);
 
-    ToolBar toolbar = new ToolBar(newProjectBtn, openProjectBtn, empty, runB);
+    ToolBar toolbar = new ToolBar(newProjectBtn, openProjectBtn, refreshB, empty, runB);
     borderPane.setTop(toolbar);
 
     //System.out.println(System.out.getClass().getName());

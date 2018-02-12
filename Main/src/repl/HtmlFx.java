@@ -64,16 +64,12 @@ public class HtmlFx extends Pane{
         if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
           ReplTextArea editor=((ReplTextArea)outerPanel);
           editor.saveToFile();
-          if(editor.tab.getText().endsWith("*")) {
-            editor.tab.setText(editor.filename);
-          }
+          editor.removeStar();
         }
       } else { //file has been modified (NOT SAVED)
         if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
           ReplTextArea editor=((ReplTextArea)outerPanel);
-          if(!editor.tab.getText().endsWith("*")) {
-            editor.tab.setText(editor.filename+"*");
-          }
+          editor.addStar();
         }
       }
 

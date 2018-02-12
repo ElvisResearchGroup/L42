@@ -97,7 +97,10 @@ public class ReplMain {
     }
     L42.setRootPath(path);
     gui.rootPathSet=true;
-    Platform.runLater(()->gui.runB.setDisable(false));
+    Platform.runLater(()->{
+      gui.runB.setDisable(false);
+      gui.refreshB.setDisable(false);
+    });
     openFileInNewTab(thisFile);
   }
 

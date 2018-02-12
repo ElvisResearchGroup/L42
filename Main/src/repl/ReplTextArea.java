@@ -67,8 +67,31 @@ public class ReplTextArea extends SplitPane {
     String content=getText().apply(new CountDownLatch(1));
     System.out.println(content);
     Path file=L42.root.resolve(this.filename);
+    assert file!=null && Files.exists(file);
     try { Files.write(file, content.getBytes()); }
     catch (IOException e) {throw new Error(e);}
+  }
+
+  void refresh() {
+    assert Platform.isFxApplicationThread();
+    Path file=L42.root.resolve(this.filename);
+    assert file!=null && Files.exists(file);
+    String content; try {content = new String(Files.readAllBytes(file));}
+    catch (IOException e) {throw new Error(e);}
+    setText(content);
+    removeStar();
+  }
+
+  void addStar() {
+    if(!tab.getText().endsWith("*")) {
+      tab.setText(filename+"*");
+    }
+  }
+
+  void removeStar() {
+    if(tab.getText().endsWith("*")) {
+      tab.setText(filename);
+    }
   }
 
 }
