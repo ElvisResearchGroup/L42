@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -16,12 +17,15 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -87,7 +91,10 @@ public class ReplGui extends Application {
       File outputFolder = directoryChooser.showDialog(primaryStage);
 
       if(outputFolder==null) {return;} //no selection has been made
-      ReplMain.runLater(()->main.newProject(outputFolder.toPath()));
+      ReplMain.runLater(()->{
+        if(rootPathSet) { closeAllTabs();}
+        main.newProject(outputFolder.toPath());
+      });
     });
 
     Button openProjectBtn = new Button("Open Project");
@@ -98,7 +105,10 @@ public class ReplGui extends Application {
       File outputFolder = directoryChooser.showDialog(primaryStage);
 
       if(outputFolder==null) {return;} //no selection has been made
-      ReplMain.runLater(()->main.loadProject(outputFolder.toPath()));
+      ReplMain.runLater(()->{
+        if(rootPathSet) { closeAllTabs();}
+        main.loadProject(outputFolder.toPath());
+      });
     });
 
     runB=new Button("Run!");
@@ -176,9 +186,32 @@ public class ReplGui extends Application {
     editor.tab = new Tab();
     editor.tab.setText(editor.filename);
     editor.tab.setContent(editor);
+    editor.tab.setOnCloseRequest(t->{
+      if(editor.tab.getText().endsWith("*")) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.setTitle("Save file?");
+        alert.setHeaderText(null);
+        alert.setContentText("Do you want to save \""+editor.filename+"\" before closing?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+            editor.saveToFile();
+        }
+      }
+    });
     tabPane.getTabs().add(editor.tab);
     SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
     selectionModel.select(editor.tab);
+  }
+
+  private void closeAllTabs() {
+    //TODO: ask for confirmation for all unsaved tabs before closing
+    //for(Tab tab: tabPane.getTabs()) {
+    //  EventHandler<Event> handler=tab.getOnClosed();
+    //  if(handler!=null) handler.handle(null);
+    //}
+    tabPane.getTabs().clear();
   }
 
   void makeAlert(String title, String content) {
