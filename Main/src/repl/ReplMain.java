@@ -17,6 +17,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -46,6 +47,8 @@ public class ReplMain {
     Application.launch(ReplGui.class,arg);
   }
 
+  public void eventStart() {}
+
   public static void runLater(Runnable runnable) {
     assert Platform.isFxApplicationThread();
     executor.execute(runnable);
@@ -60,15 +63,25 @@ public class ReplMain {
 
 
   void newProject(Path path) {
+    String content="reuse L42.is/AdamTowel02\n" +
+        "CacheAdamTowel02:Load.cacheTowel()\n\n" +
+        "Main: {\n" +
+        "  Debug(S\"Hello world\")\n" +
+        "  return ExitCode.normal()\n" +
+        "  }";
+    newProject(path, content);
+  }
+
+  void newProject(Path path, String content) {
     Path thisFile=path.resolve("This.L42");
     if(Files.exists(thisFile)) {
       Platform.runLater(()->gui.makeAlert("Already an L42 Project!", "The selected folder is already an L42 project"));
       return;
     }
-    //create an empty This.L42 file in the selected folder
     try {
-      Files.createDirectories(path.getParent());
-      Files.createFile(thisFile);
+      Files.createDirectories(path.toAbsolutePath().getParent());
+      Files.createFile(thisFile);//create an empty This.L42 file in the selected folder
+      Files.write(thisFile, content.getBytes());
     } catch(IOException e) {throw new Error(e);}
     L42.setRootPath(path);
     gui.rootPathSet=true;
@@ -104,10 +117,14 @@ public class ReplMain {
     Platform.runLater(()->gui.openTab(editor,tabContent));
   }
 
-  void runCode(){
+  void runCode(Function<Path,Loader> loaderFactory, boolean resetCache){
     try{
       String content = L42.pathToString(L42.root.resolve("This.L42"));
-      repl=copyResetKVCthenRun(content);
+      if(resetCache) {
+        repl=copyResetKVCthenRun(loaderFactory, content);
+      } else {
+        repl=copyResetKVCthenRun(loaderFactory, content, "This.C42");
+      }
     }
     catch(IllegalArgumentException e) {
       Platform.runLater(()->gui.makeAlert("Invalid Run","Missing two line at the start of 'This.L42' file"));
@@ -134,7 +151,13 @@ public class ReplMain {
       }
   }
 
-  public static ReplState copyResetKVCthenRun(String fileContent, String... doNotCopyFiles) throws IOException {
+  /**
+   * To make testing possible, pass in a loaderFactory which allow to create a
+   * personalized loader from a Path.
+   *
+   * @param loaderFactory
+   */
+  public static ReplState copyResetKVCthenRun(Function<Path, Loader> loaderFactory, String fileContent, String... doNotCopyFiles) throws IOException {
     ReplState repl=null;
 
     //check first 2 line of This.l42
@@ -149,7 +172,7 @@ public class ReplMain {
       Files.createDirectory(dirPath);
       L42.setRootPath(Paths.get("L42IDE").resolve(res.cacheLibName));
       L42.cacheK.setFileName("This.L42",res.first2Line);
-      repl=ReplState.start("{"+res.first2Line+"}", new Loader(L42.root.resolve("This.C42"))); //create the cache
+      repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(L42.root.resolve("This.C42"))); //create the cache
     }
 
     //Copy the files into the current project
@@ -158,10 +181,9 @@ public class ReplMain {
     ReplMain.copyEntireDirectory(src,dest,doNotCopyFiles);
 
     L42.setRootPath(currentRoot); //go back to project folder
-    Path pathC=L42.root.resolve("This.C42");
     //if(repl==null) {
       L42.cacheK.setFileName("This.L42",res.first2Line);
-      repl=ReplState.start("{"+res.first2Line+"}", new Loader(pathC));
+      repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(L42.root.resolve("This.C42")));
     //} else {
     //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
     //}

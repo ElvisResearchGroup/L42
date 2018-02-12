@@ -59,8 +59,11 @@ public class Loader {
       loadCache();
       loadResource(cl);
       }
-    System.out.println("Test cache::: "+cache.contains("Foo"));
+    eventCache(cache);
     }
+  public void eventCache(Cache cache) {
+
+  }
   public boolean updateCachePath(java.nio.file.Path path) {
     this.cacheFile=path;
     if(path==null) {return false;}
@@ -160,11 +163,12 @@ public class Loader {
         if(!oldDom.contains(s)){newClMap.put(s,cl.map().get(s));}
         }
       this.cache.add(new HashSet<>(dep.values()), cds, newClMap);
-      System.out.println("Javac for  "+newClMap.keySet());
+      eventJavaC(newClMap);
       return;
       }
     //assert validCache(ct, dep, cDep.cds);//holds, and slow
-    if(!cDep.byteCodeNames.isEmpty())System.out.println("Using cache for "+cDep.byteCodeNames);
+
+    if(!cDep.byteCodeNames.isEmpty())eventUsingCache(cDep.byteCodeNames);
     for(String cn : cDep.byteCodeNames){
       ClassFile bytecode=cache.fullMap.get(cn);
       ClassFile bytecodeOld=cl.map().get(cn);
@@ -175,6 +179,12 @@ public class Loader {
       if(bytecodeOld==null){cl.map().put(cn,bytecode);}
       }
     }
+  public void eventUsingCache(Set<String> byteCodeNames) {
+
+  }
+  public void eventJavaC(HashMap<String, ClassFile> newClMap) {
+
+  }
   private void javac(Map<Integer, String> dep) {
     assert ct.isCoherent();
     List<SourceFile> readyToJavac=new ArrayList<>();

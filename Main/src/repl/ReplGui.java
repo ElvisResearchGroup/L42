@@ -3,12 +3,14 @@ package repl;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
+import caching.Loader;
 import facade.L42;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -103,7 +105,7 @@ public class ReplGui extends Application {
     runB.setOnAction(e->ReplMain.runLater(()->{
       if(running){throw new Error("Was running");}
       Platform.runLater(()->this.disableRunB());
-      main.runCode();
+      main.runCode(Loader::new, !Files.exists(L42.root.resolve("This.C42")));
     }));
 
     Pane empty=new Pane();
@@ -136,6 +138,7 @@ public class ReplGui extends Application {
     primaryStage.setMinWidth(scene.getWidth());
     primaryStage.setMinHeight(scene.getHeight());
     primaryStage.show();
+    ReplMain.runLater(()->main.eventStart());
   }
 
   @Override
@@ -143,9 +146,7 @@ public class ReplGui extends Application {
     if (L42.profilerPrintOn){
       System.out.print(Timer.report());
     }
-    System.gc();
-    System.runFinalization();
-    System.exit(0);
+    Platform.exit();
   }
 
   void enableRunB() {

@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -65,10 +66,9 @@ public class ReplTextArea extends SplitPane {
     assert Platform.isFxApplicationThread();
     String content=getText().apply(new CountDownLatch(1));
     System.out.println(content);
-    assert Files.exists(L42.root.resolve(this.filename));
-    try(FileWriter f = new FileWriter(L42.root.resolve(this.filename).toFile())){
-      f.write(content);
-    } catch (IOException e) {throw new Error(e);}
+    Path file=L42.root.resolve(this.filename);
+    try { Files.write(file, content.getBytes()); }
+    catch (IOException e) {throw new Error(e);}
   }
 
 }

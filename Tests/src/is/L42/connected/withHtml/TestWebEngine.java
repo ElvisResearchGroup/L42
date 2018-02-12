@@ -33,12 +33,8 @@ public class TestWebEngine {
   public void test() throws InvocationTargetException, InterruptedException,FileNotFoundException {
     //@SuppressWarnings("resource")
     //String content = new Scanner(new File("htmlTests/tutorial.xhtml")).useDelimiter("\\Z").next();
-    JFXPanel fxPanel = new JFXPanel(); //this is added so that an exception "toolkit not initialised" doesnt occur
-    Platform.runLater(new Runnable() {
-      public void run() {
-          new TestFXClass().start(new Stage());
-      }
-   });
+    new JFXPanel();
+    Platform.runLater(()->new TestFXClass().start(new Stage()));
   }
 
   public static class TestFXClass extends Application {
