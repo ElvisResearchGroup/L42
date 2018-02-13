@@ -305,8 +305,11 @@ static final class Pos  {
     catch (NoSuchFieldException|IllegalArgumentException |IllegalAccessException e) {
       throw Assertions.codeNotReachable();
       }}}
-
   public static void checkForBalancedParenthesis(String s) {
+    ErrorMessage.UnclosedParenthesis res= _checkForBalancedParenthesis(s);
+    if(res!=null) {throw res;}
+  }
+  public static ErrorMessage.UnclosedParenthesis _checkForBalancedParenthesis(String s) {
   ParData d=new ParData();
   char[] cs=s.toCharArray();
   for(int i=0;i<cs.length;i++){
@@ -345,7 +348,8 @@ static final class Pos  {
   if(d.s.peek().state!=ParData.State.None){
   ParData.State f=d.s.peek().state;
   String token=f==ParData.State.Round?"(":f==ParData.State.Square?"[":f==ParData.State.Curly?"{":f==ParData.State.CommML?"/*":"string literal";
-    throw new ErrorMessage.UnclosedParenthesis(fileName,d.s.peek().line,d.s.peek().pos,token);
+    return new ErrorMessage.UnclosedParenthesis(fileName,d.s.peek().line,d.s.peek().pos,token);
     }
+  return null;
   }
 }

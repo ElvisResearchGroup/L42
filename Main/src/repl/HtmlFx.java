@@ -3,6 +3,11 @@ package repl;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 
+import ast.Ast;
+import ast.ErrorMessage;
+import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.Member;
+import facade.Parser;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.event.Event;
@@ -20,6 +25,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import programReduction.Program;
 
 public class HtmlFx extends Pane{
   public WebEngine webEngine;
@@ -58,6 +64,18 @@ public class HtmlFx extends Pane{
                 org.apache.commons.text.StringEscapeUtils
                 .escapeEcmaScript(content)+"\") ");
       }
+      if(keyEvent.getCode() == KeyCode.PERIOD) {
+        if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
+          ReplTextArea editor=((ReplTextArea)outerPanel);
+          Object o=webEngine.executeScript("ace.edit(\"textArea\").getCursorPosition()");
+          assert o instanceof JSObject : o.toString();
+          JSObject jsobj=(JSObject)o;
+          int row=Integer.parseInt(jsobj.getMember("row").toString());
+          int col=Integer.parseInt(jsobj.getMember("column").toString());
+          try { displayDoc(editor,row,col); }
+          catch(IllegalArgumentException e) {}
+        }
+      }
 
       //---CTRL+S save
       if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.S){
@@ -90,6 +108,21 @@ public class HtmlFx extends Pane{
     latch.countDown();
     return null;
     }
+
+  private void displayDoc(ReplTextArea editor, int row, int col) {
+    editor.setDoc("Row: "+row+" Col: "+col+"\n");
+    FromDotToPath r=new FromDotToPath(editor.getText(),row,col);
+    Program p=ReplGui.main.repl.p;
+    p=p.navigate(r.cs);
+    //try {p=p.pop();}catch(Throwable  t) {}
+    ClassB top=p.top();
+    editor.appendDoc(top.getDoc1().toString());
+//    editor.appendDoc("\nMembers:\n");
+//    for(Member m : top.getMs()) {
+//      editor.appendDoc(m.toString());
+//    }
+  }
+
   public static Error propagateException(Throwable t){
     if (t instanceof RuntimeException){throw (RuntimeException)t;}
     if (t instanceof Error){throw (Error)t;}

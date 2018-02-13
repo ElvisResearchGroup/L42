@@ -59,12 +59,12 @@ public class PathAux {
     return res;
     }
 
-  
+
   public static boolean isValidPrimitiveName(String name){
     Path p=PathPrimitive._parsePrimitive(name);
     return p!=null;
     }
-  
+
   public static boolean isValidClassName(String name) {
     if(name.isEmpty()){ return false;}
     if(isValidOuter(name)) { return false;}
@@ -85,7 +85,7 @@ public class PathAux {
     if (c == '$') { return true;}
     if (c == '_') { return true;}
     assert c!='\t': c;
-    return Character.isUpperCase(c) 
+    return Character.isUpperCase(c)
       || Character.isLowerCase(c)
       || Character.isDigit(c);
     }
@@ -96,7 +96,12 @@ public class PathAux {
     if(!cs.equals(csLong.subList(0,shortSize))){return null;}
     return csLong.subList(shortSize,longSize);
     }
-  }  
+  public static int getThisn(String that) {
+    that = that.substring("This".length());
+    if(that.isEmpty()){return 0;}
+    return Integer.parseInt(that);
+    }
+  }
 
 @Value @EqualsAndHashCode(callSuper=false)
 class PathCore extends Path{
@@ -114,11 +119,7 @@ class PathCore extends Path{
     if(names.isEmpty()){return null;}
     String first=names.get(0);
     if(!PathAux.isValidOuter(first)){return null;}
-    first = first.substring("This".length());
-    int n=0;
-    if(!first.isEmpty()){
-      n = Integer.parseInt(first);
-      }
+    int n=PathAux.getThisn(first);
     List<String>tail=names.subList(1, names.size());
     return instance(n,PathAux.sToC(tail));
     }
@@ -158,17 +159,17 @@ class PathPrimitive extends Path{
   static public final PathPrimitive _Any = new PathPrimitive("Any");
   static public final PathPrimitive _Library = new PathPrimitive("Library");
   }
-  
+
 @Value @EqualsAndHashCode(callSuper=false)
 class PathSugar extends Path{
   public String toString() { return sugarVisitors.ToFormattedText.of(this);}//otherwise lombock overrides it
   public static Path _instance(List<String> names){
     for(String s:names){
       if(!PathAux.isValidClassName(s)){
-        return null;    
+        return null;
         }
       }
-    assert (names=Collections.unmodifiableList(names))!=null;//ok for testing efficiency 
+    assert (names=Collections.unmodifiableList(names))!=null;//ok for testing efficiency
     return new PathSugar(PathAux.sToC(names));
     }
   private PathSugar(List<C> names) {

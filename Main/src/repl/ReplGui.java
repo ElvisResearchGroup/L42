@@ -167,6 +167,7 @@ public class ReplGui extends Application {
       System.out.print(Timer.report());
     }
     Platform.exit();
+    System.exit(0);
   }
 
   void enableRunB() {

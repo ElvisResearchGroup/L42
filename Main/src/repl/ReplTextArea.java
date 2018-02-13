@@ -23,8 +23,8 @@ public class ReplTextArea extends SplitPane {
 
   Tab tab;
   final String filename;
-  HtmlFx htmlFx;
-  TextArea docPanel;
+  final HtmlFx htmlFx;
+  private final TextArea docPanel;
 
   public ReplTextArea(CountDownLatch latch, String fname, URL url) {
     assert Platform.isFxApplicationThread();
@@ -38,13 +38,17 @@ public class ReplTextArea extends SplitPane {
     latch.countDown();
   }
 
-  public void setDocumentation(String input){
+  public void setDoc(String input){
     docPanel.setText(input);
   }
 
-  public Function<CountDownLatch,String> getText(){
+  public void appendDoc(String text) {
+    docPanel.appendText(text);
+  }
+
+  public String getText(){
     assert Platform.isFxApplicationThread();
-    return l->(String) htmlFx.webEngine.executeScript(
+    return (String) htmlFx.webEngine.executeScript(
         "ace.edit(\"textArea\").getValue()"
         );
   }
@@ -64,7 +68,7 @@ public class ReplTextArea extends SplitPane {
 
   void saveToFile() {
     assert Platform.isFxApplicationThread();
-    String content=getText().apply(new CountDownLatch(1));
+    String content=getText();
     System.out.println(content);
     Path file=L42.root.resolve(this.filename);
     assert file!=null && Files.exists(file);
