@@ -7,6 +7,7 @@ import ast.Ast;
 import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
+import ast.ExpCore.ClassB.MethodWithType;
 import facade.Parser;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
@@ -21,13 +22,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import programReduction.Program;
 
-public class HtmlFx extends Pane{
+public class HtmlFx extends StackPane{
   public WebEngine webEngine;
   Region outerPanel;
 

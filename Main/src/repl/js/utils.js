@@ -12,7 +12,7 @@ function doOnLoad(){
       mode:"ace/mode/l42",
       theme:"ace/theme/l42_eclipse"
       });
-    setAllAs("l42Big",{
+  setAllAs("l42Big",{
       fontSize:"215%",
       maxLines:3000,
       mode:"ace/mode/l42",
