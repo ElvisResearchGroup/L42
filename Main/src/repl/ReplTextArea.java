@@ -63,7 +63,7 @@ public class ReplTextArea extends SplitPane {
 	    else if(i=='\r') {}
 	    else {b.appendCodePoint(i);}
 	  });
-    htmlFx.webEngine.executeScript("ace.edit(\"textArea\").setValue(\""+b+"\")");
+    htmlFx.webEngine.executeScript("ace.edit(\"textArea\").setValue(\""+b+"\", -1)");
   }
 
   void saveToFile() {
