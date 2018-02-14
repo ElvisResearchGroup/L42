@@ -39,14 +39,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import profiling.Timer;
 
 public class ReplGui extends Application {
   static ReplMain main;
 
-  private static final int SCENE_WIDTH = 1550;
-  private static final int SCENE_HEIGHT = 900;
+  private static final int SCENE_WIDTH = 1200;
+  private static final int SCENE_HEIGHT = 700;
 
   TabPane tabPane=new TabPane();
   TextArea output=new TextArea();
@@ -56,7 +57,7 @@ public class ReplGui extends Application {
   boolean rootPathSet=false;
   boolean running=false;
   Button runB;
-  Button refreshB;
+  Button openFileBtn, refreshB;
 
   Tab selectedTab=null;
 
@@ -98,6 +99,20 @@ public class ReplGui extends Application {
       });
     });
 
+    openFileBtn=new Button("Open File in Project");
+    openFileBtn.setDisable(true);
+    openFileBtn.setOnAction(t->{
+      assert Platform.isFxApplicationThread();
+      FileChooser fileChooser = new FileChooser();
+      FileChooser.ExtensionFilter l42Filter = new FileChooser.ExtensionFilter("L42 files (*.L42)", "*.L42");
+      fileChooser.getExtensionFilters().add(l42Filter);
+      L42.root.initialiseFileChooser(fileChooser);
+
+      File chosenFile = fileChooser.showOpenDialog(primaryStage);
+      if(chosenFile==null) {return;} //no selection has been made
+      ReplMain.runLater(()->main.openFile(chosenFile.toPath()));
+    });
+
     runB=new Button("Run!");
     runB.setDisable(true);
     runB.setOnAction(e->ReplMain.runLater(()->{
@@ -118,7 +133,7 @@ public class ReplGui extends Application {
     Pane empty=new Pane();
     HBox.setHgrow(empty, Priority.ALWAYS);
 
-    ToolBar toolbar = new ToolBar(loadProjectBtn, refreshB, empty, runB);
+    ToolBar toolbar = new ToolBar(loadProjectBtn, openFileBtn, refreshB, empty, runB);
     borderPane.setTop(toolbar);
 
     //System.out.println(System.out.getClass().getName());
@@ -188,7 +203,7 @@ public class ReplGui extends Application {
         alert.setContentText("Do you want to save \""+editor.filename+"\" before closing?");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
+        if (result.isPresent() && (result.get() == ButtonType.OK)) {
             editor.saveToFile();
         }
       }

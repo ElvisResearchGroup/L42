@@ -2,6 +2,7 @@ package facade;
 
 import static org.junit.Assert.assertArrayEquals;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -23,6 +24,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import coreVisitors.CloneVisitor;
 import coreVisitors.InjectionOnSugar;
+import javafx.stage.FileChooser;
 import profiling.Timer;
 import programReduction.Program;
 import programReduction.ProgramReduction;
@@ -254,6 +256,12 @@ public class L42 {
       Path res=inner.relativize(other);
       assert !res.isAbsolute();
       return res;
+    }
+    public boolean isChild(Path other) {
+      return other.startsWith(inner);
+    }
+    public void initialiseFileChooser(FileChooser fc) {
+      fc.setInitialDirectory(this.inner.toFile());
     }
 
   }

@@ -26,6 +26,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import ast.ErrorMessage;
 import ast.PathAux;
 import caching.Loader;
+import caching.Phase1CacheKey;
 import facade.ErrorFormatter;
 import facade.L42;
 import facade.L42.AbsPath;
@@ -93,9 +94,18 @@ public class ReplMain {
     gui.rootPathSet=true;
     Platform.runLater(()->{
       gui.runB.setDisable(false);
+      gui.openFileBtn.setDisable(false);
       gui.refreshB.setDisable(false);
     });
     openFileInNewTab(thisFile);
+  }
+
+  void openFile(Path file) {
+    if(!Files.exists(file) || !L42.root.isChild(file)) {
+      Platform.runLater(()->gui.makeAlert("File not in Project","The selected file is not in the current project"));
+      return;
+    }
+    openFileInNewTab(file);
   }
 
   void openFileInNewTab(Path file) {
