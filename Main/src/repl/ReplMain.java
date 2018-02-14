@@ -182,7 +182,7 @@ public class ReplMain {
       System.out.println("CREATING CACHE IN L42IDE FOR FIRST2LINE...");
       if(!Files.exists(dirPath)) {Files.createDirectory(dirPath);}
       L42.setRootPath(dirPath);
-      L42.cacheK.setFileName("This.L42",res.first2Line);
+      L42.cacheK.setFileName("This.L42","{"+res.first2Line+"}");
       repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(dirPath.resolve("This.C42"))); //create the cache
     }
 
@@ -197,7 +197,7 @@ public class ReplMain {
 
     L42.root=currentRoot; //go back to project folder
     //if(repl==null) {
-      L42.cacheK.setFileName("This.L42",res.first2Line);
+      L42.cacheK.setFileName("This.L42","{"+res.first2Line+"}");
       System.out.println("RE-CREATING REPL FROM CACHE (FIRST2LINE ONLY)...");
       repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(currentRoot.resolve("This.C42")));
     //} else {
