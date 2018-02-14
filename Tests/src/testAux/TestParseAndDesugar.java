@@ -241,7 +241,7 @@ public class TestParseAndDesugar {
   @Test
   public void testOk() {
     TestHelper.configureForTest();
-    L42.setRootPath(Paths.get("dummy"));
+    L42.setRootPath(Paths.get("dummy").toAbsolutePath());
     Expression es2=Parser.parse(null,_p2);
     TestHelper.configureForTest();
     Expression es1=Parser.parse(null,_p1);

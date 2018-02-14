@@ -40,7 +40,8 @@ public class Frame extends Stage{
   private static Frame createNew(String wName,String html,int x, int y) {
     FutureTask<Frame> future = new FutureTask<>(()-> {
       final Frame frame = new Frame(Frame.extractTitle(html));
-      frame.htmlFx.createHtmlContent(html);
+      assert false;
+      //frame.htmlFx.createHtmlContent(html);//TODO: disabled for now, need refactoring of ReplMain.runAndWait
       frame.setMinWidth(x);
       frame.setMinHeight(y);
       frame.setOnCloseRequest(event -> {
