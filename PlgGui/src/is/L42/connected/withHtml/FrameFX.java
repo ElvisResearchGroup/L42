@@ -39,7 +39,7 @@ public class FrameFX {
   }
   private static void openThrow(String _title,String _content) throws IOException, InterruptedException {
     title=_title;
-    content =head+"<base href='"+L42.root.toUri()+"' />"+_content+"</html>";
+    content =head+"<base href='"+L42.root.toString()+"' />"+_content+"</html>";
     System.out.println(content);
     synchronized(dumbLock){
       laucherThread.start();
@@ -54,14 +54,14 @@ public class FrameFX {
         JSObject jsobj = (JSObject)o;
         FrameFX.eventCollector=new EventCollected();
         jsobj.setMember("eventCollector",eventCollector );
-        
-        NestedPrivate.webEngine.setOnAlert(event->{         
+
+        NestedPrivate.webEngine.setOnAlert(event->{
           Alert alert = new Alert(AlertType.INFORMATION);
           alert.setTitle("Information Dialog");
           alert.setHeaderText(null);
           alert.setContentText(event.getData());
           alert.showAndWait();
-          });        
+          });
         //<a href="" onclick="java.add('bla');">here</a>
         synchronized(dumbLock){dumbLock.notifyAll();}
       });
@@ -93,14 +93,14 @@ public class FrameFX {
         catch (InterruptedException e) {
           Thread.currentThread().interrupt();
           throw new Error(e);
-          }      
+          }
         }
       return eventCollector.events.remove(0);
     }
-    
+
   }
 
-  
+
   public static final Object dumbLock=new Object();
   public static volatile String title;
   public static volatile String content;
@@ -112,11 +112,11 @@ public class FrameFX {
         }
     }
   public static class NestedPrivate extends Application {
-    public NestedPrivate(){}   
+    public NestedPrivate(){}
     @Override public void start(Stage primaryStage) {
         primaryStage.setTitle(title);
         primaryStage.setOnCloseRequest((boh)->Platform.exit());
-        load(content);      
+        load(content);
         StackPane root = new StackPane();
         root.getChildren().add(wv);
         primaryStage.setScene(new Scene(root, 700, 700));
@@ -200,4 +200,4 @@ public class FrameFX {
     catch(netscape.javascript.JSException jsExc){return ""+jsExc;}
   }
   }
-  
+

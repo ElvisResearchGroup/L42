@@ -83,14 +83,16 @@ private static final long serialVersionUID = 1L;
   public Map<String,String> urlToLib=new HashMap<>();
   public Map<List<String>,String>fileNameToLib=new HashMap<>();//contains fileName->??
   private static Path pathFromList(List<String> l){
-    Path p=L42.root;
-    for(String s:l){assert s!=null;
+    assert !l.isEmpty();
+    Path p=Paths.get(l.get(0));
+    for(String s:l.subList(1, l.size())){assert s!=null;
       p=p.resolve(s);
       }
     return p;
     }
-  private static List<String> listFromPath(Path path){
+  public static List<String> listFromPath(Path path){
     List<String> res=new ArrayList<>();
+    path=L42.root.relativize(path);
     for(Path si:path){res.add(si.toString());}
     return res;
     }
@@ -112,7 +114,14 @@ private static final long serialVersionUID = 1L;
     try{return L42._pathToString(fn);}
     catch (IOException e) {return null;}
   }
-  public Phase1CacheKey current(){
+
+  /**
+   * The "this" cache is the old state of the files. The method current() return the new state of the files.
+   *
+   * @param _content Is null if when runned from command line, the IDE will force a content for the main file
+   * @return
+   */
+  public Phase1CacheKey current(String _content){
     Phase1CacheKey res=new Phase1CacheKey();
     res._fileName=this._fileName;
     for(String url:urlToLib.keySet()){
@@ -121,15 +130,14 @@ private static final long serialVersionUID = 1L;
       res.urlToLib.put(url,fnContent);
       }
     for(List<String> path:fileNameToLib.keySet()){
+      if(_content!=null) {
+        assert fileNameToLib.keySet().size()==1;
+        res.fileNameToLib.put(path,_content);
+        continue;
+      }
       Path fn = L42.root.resolve(pathFromList(path));
       String fnContent=_contentOrNull(fn);
-      if(!Files.exists(fn)){
-        if(path.size()==1 && path.get(0).equals(_fileName)){
-          //TODO: it may change:
-          //We are in the repl, where there the main file does not exits
-          fnContent=this.fileNameToLib.get(path);
-          }
-        }
+      if(!Files.exists(fn)){throw new Error();}
       res.fileNameToLib.put(path,fnContent);
       }
     return res;
@@ -163,13 +171,17 @@ private static final long serialVersionUID = 1L;
     finally{Timer.deactivate("ReadCacheKey");}
     }
 
-  public static Program _handleCache(){
+  /**
+   * @param _content Is null if when runned from command line, the IDE will force a content for the main file
+   * @return
+   */
+  public static Program _handleCache(String _content){
     if(L42.cacheK._fileName==null){return null;}
     Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
     Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
     try{
       Phase1CacheKey oldK=Phase1CacheKey.readFromFile(kPath);
-      L42.newK=oldK.current();
+      L42.newK=oldK.current(_content);
       assert oldK._fileName.equals(L42.cacheK._fileName);
       assert L42.newK._fileName.equals(L42.cacheK._fileName);
       if(!L42.newK.equals(oldK)){

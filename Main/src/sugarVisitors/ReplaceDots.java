@@ -4,20 +4,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import facade.L42;
+import facade.L42.AbsPath;
 import facade.Parser;
 import ast.ErrorMessage;
 import ast.Expression;
 import ast.Expression.DotDotDot;
+import caching.Phase1CacheKey;
 import ast.Expression.ClassB.NestedClass;
 
 public class ReplaceDots extends CloneVisitor{
-  Path currentFolder;
+  AbsPath currentFolder;
   NestedClass currentNested;
-  public static Expression of(Path currentFolder,Expression e){
+  public static Expression of(AbsPath currentFolder,Expression e){
     ReplaceDots rd=new ReplaceDots(currentFolder,null);
     return e.accept(rd);
     }
-  private ReplaceDots(Path currentFolder,NestedClass currentNested){
+  private ReplaceDots(AbsPath currentFolder,NestedClass currentNested){
     this.currentFolder=currentFolder;
     this.currentNested=currentNested;
     }
@@ -30,7 +32,7 @@ public class ReplaceDots extends CloneVisitor{
   public Expression visit(DotDotDot s) {
     assert this.currentNested!=null;
     Path pathF=pathToFile();
-    Path pathD=pathToDirectory();
+    AbsPath pathD=new AbsPath(pathToDirectory());
     if(pathF!=null && pathD!=null){fail("Both file and directory present");}
     if(pathF==null &&pathD==null){fail("File not found");}
     if(pathF!=null){return loadFile(pathF);
@@ -41,14 +43,14 @@ public class ReplaceDots extends CloneVisitor{
     Expression e=Parser.parse(pdf.toUri().toString(), code);
     return ReplaceDots.of(pathD,e );
   }
-private Expression loadFile(Path pathF) {
-  String code=null;
-  if(L42.newK!=null){code=L42.newK.fileNameToLib.get(pathF);}
-  if(code==null){code=L42.pathToString(pathF);}
-  L42.cacheK.fileNameToLibPut(pathF,code);
-  Expression e=Parser.parse(pathF.toUri().toString(), code);
-  auxiliaryGrammar.WellFormedness.checkAll(e);
-  return ReplaceDots.of(this.currentFolder,e );
+  private Expression loadFile(Path pathF) {
+    String code=null;
+    if(L42.newK!=null){code=L42.newK.fileNameToLib.get(Phase1CacheKey.listFromPath(pathF));}
+    if(code==null){code=L42.pathToString(pathF);}
+    L42.cacheK.fileNameToLibPut(pathF,code);
+    Expression e=Parser.parse(pathF.toUri().toString(), code);
+    auxiliaryGrammar.WellFormedness.checkAll(e);
+    return ReplaceDots.of(this.currentFolder,e );
   }
   //Decisions: is ok if there is a text file that have no extension?
   //or if the folder have extension? or if there are both? or

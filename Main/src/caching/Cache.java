@@ -45,7 +45,7 @@ public class Cache implements Serializable{
     //if cache(dep0).clMap(byteName)=byteCode
     //cache(dep1).clMap(byteName)=byteCode'
     HashSet<String> clSet=new HashSet<>(clMap.keySet());
-    Element old = inner.get(dep);
+    Element old = inner.get(dep); //TODO: possible bug? if program is changed and dep is a subset of the element in the map?
     if(old!=null){
       System.out.println("Overriding cache for "+dep);
       HashMap<Set<String>,Element> oldCache=new HashMap<>(inner);

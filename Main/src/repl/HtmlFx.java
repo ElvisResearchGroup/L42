@@ -68,6 +68,7 @@ public class HtmlFx extends StackPane{
       }
       if(keyEvent.getCode() == KeyCode.PERIOD) {
         if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
+          //DOCUMENTATION
           ReplTextArea editor=((ReplTextArea)outerPanel);
           Object o=webEngine.executeScript("ace.edit(\"textArea\").getCursorPosition()");
           assert o instanceof JSObject : o.toString();
@@ -119,10 +120,15 @@ public class HtmlFx extends StackPane{
     //try {p=p.pop();}catch(Throwable  t) {}
     ClassB top=p.top();
     editor.appendDoc(top.getDoc1().toString());
-//    editor.appendDoc("\nMembers:\n");
-//    for(Member m : top.getMs()) {
-//      editor.appendDoc(m.toString());
-//    }
+
+    editor.appendDoc("\nSupertypes:");
+    for(Ast.Type t : top.getSupertypes()) {
+      editor.appendDoc("\n  -> "+t.toString());
+    }
+    editor.appendDoc("\nMethods:");
+    for(MethodWithType m : top.mwts()) {
+      editor.appendDoc("\n  -> "+m.toString());
+    }
   }
 
   public static Error propagateException(Throwable t){

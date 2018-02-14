@@ -46,10 +46,15 @@ public class FromDotToPath {
     boolean up=PathAux.isValidPathStart(c);
     boolean down=MethodSelector.checkX(""+c,true);
     boolean out=PathAux.isValidOuter(token);
-    if(out) {parseThis(token); return unskipped;}
-    if(up) { parsePath(token); return unskipped;}
-    if(down) { parseX(token); return unskipped;}
+    //assert boolToInt(up) + boolToInt(up) + boolToInt(up) == 1;
+    if(out) { parseThis(token); return unskipped; }
+    if(up) { parsePath(token); return unskipped; }
+    if(down) { parseX(token); return unskipped; }
     throw new IllegalArgumentException();
+  }
+
+  private int boolToInt(boolean up) {
+    return up ? 1 : 0;
   }
 
   private void parseMCall(String token) {

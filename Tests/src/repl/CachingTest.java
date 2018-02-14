@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class CachingTest {
     try{this.deleteDirectory(Paths.get("L42IDE").resolve("L42.is%2FAdamTowel02"));}
     catch(NoSuchFileException nsfe) {}
 
-    Path projFolder=Paths.get("TestFolder");
+    Path projFolder=Paths.get("TestFolder").toAbsolutePath();
     if(!Files.exists(projFolder)){
       Files.createDirectories(projFolder);
     }
@@ -50,7 +51,11 @@ public class CachingTest {
 
     TestHelper.configureForTest();
   }
-  //@AfterClass public void exit(){Platform.exit();}
+
+  @After
+  public void after() throws IOException{
+    before();
+  }
 
   @Test
   public void testCodeInfo_valid() {
@@ -197,7 +202,7 @@ public class CachingTest {
 
     CodeInfo test= new CodeInfo(content);
 
-    L42.setRootPath(Paths.get("TestFolder"));
+    L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
 
     ReplMain.copyResetKVCthenRun(Loader::new, content);
 
@@ -217,7 +222,7 @@ public class CachingTest {
 
     CodeInfo test= new CodeInfo(content);
 
-    L42.setRootPath(Paths.get("TestFolder"));
+    L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
 
     ReplMain.copyResetKVCthenRun(Loader::new, content);
     long first=System.currentTimeMillis();
@@ -265,7 +270,7 @@ public class CachingTest {
         "  return ExitCode.normal()\n" +
         "  }";
 
-      L42.setRootPath(Paths.get("TestFolder"));
+      L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
       ReplMain.copyResetKVCthenRun(loadFactory1.factory, content);
     }
     String output= L42.record.toString();
@@ -282,7 +287,7 @@ public class CachingTest {
         "  return ExitCode.normal()\n" +
         "  }";
 
-      L42.setRootPath(Paths.get("TestFolder"));
+      L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
       ReplMain.copyResetKVCthenRun(loadFactory2.factory, content2);
     }
     String output2= L42.record.toString();
@@ -308,7 +313,7 @@ public class CachingTest {
           "  return ExitCode.normal()\n" +
           "  }";
 
-      L42.setRootPath(Paths.get("TestFolder"));
+      L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
       ReplMain.copyResetKVCthenRun(loadFactory1.factory, content);
     }
     String output= L42.record.toString();
@@ -326,7 +331,7 @@ public class CachingTest {
         "  return ExitCode.normal()\n" +
         "  }";
 
-      L42.setRootPath(Paths.get("TestFolder"));
+      L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
       ReplMain.copyResetKVCthenRun(loadFactory2.factory, content2, "This.C42");
     }
     String output2= L42.record.toString();
@@ -349,10 +354,10 @@ public class CachingTest {
             "  Debug(S\"Hello New Test\")\n" +
             "  return ExitCode.normal()\n" +
             "  }";
-        Path p=Paths.get("TestFolder");
+        Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content);
         ReplGui.main.runCode(Loader::new, true);
-        ReplMain.gui.stop();
+        ReplGui.main.stop();
       }
     };
     startApplication();
@@ -374,7 +379,7 @@ public class CachingTest {
             "  Debug(S\"Test one \"++Foo.hi())\n" +
             "  return ExitCode.normal()\n" +
             "  }";
-        Path p=Paths.get("TestFolder");
+        Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content1);
         ReplGui.main.runCode(loadFactory1.factory, true);
 
@@ -389,7 +394,7 @@ public class CachingTest {
         try {Files.write(p.resolve("This.L42"), content2.getBytes());}
         catch (IOException e) {throw new Error(e);}
         ReplGui.main.runCode(loadFactory2.factory, false);
-        ReplMain.gui.stop();
+        ReplGui.main.stop();
       }
     };
     startApplication();
@@ -401,7 +406,7 @@ public class CachingTest {
 
   @Test
   public void testActualIDE_loadProject() throws IOException {
-    Path path=Paths.get("TestFolder");
+    Path path=Paths.get("TestFolder").toAbsolutePath();
     Files.createFile(path.resolve("This.L42"));//create an empty This.L42 file in the selected folder
     String content="reuse L42.is/AdamTowel02\n" +
         "CacheAdamTowel02:Load.cacheTowel()\n" +
@@ -410,14 +415,14 @@ public class CachingTest {
         "  return ExitCode.normal()\n" +
         "  }";
     Files.write(path.resolve("This.L42"), content.getBytes());
-    L42.setRootPath(Paths.get("TestFolder"));
+    L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
     ReplMain.copyResetKVCthenRun(Loader::new, content);
 
     ReplGui.main=new ReplMain() {
       public void eventStart() {
-        L42.setRootPath(Paths.get("TestFolder"));
+        L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
         ReplGui.main.runCode(Loader::new, false);
-        ReplMain.gui.stop();
+        ReplGui.main.stop();;
       }
     };
     startApplication();
@@ -439,7 +444,7 @@ public class CachingTest {
             "  Debug(S\"Test one \"++Foo.hi())\n" +
             "  return ExitCode.normal()\n" +
             "  }";
-        Path p=Paths.get("TestFolder");
+        Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content1);
         ReplGui.main.runCode(loadFactory1.factory, true);
 
@@ -454,7 +459,7 @@ public class CachingTest {
         try {Files.write(p.resolve("This.L42"), content2.getBytes());}
         catch (IOException e) {throw new Error(e);}
         ReplGui.main.runCode(loadFactory2.factory, false);
-        ReplMain.gui.stop();
+        ReplGui.main.stop();
       }
     };
     startApplication();
@@ -474,8 +479,9 @@ public class CachingTest {
       try {
         ReplGui gui=new ReplGui() {
           @Override
-          public void stop(){
+          public void stop() throws Exception {
             l.countDown();
+            origStop();
             }
         };
         gui.start(new Stage());

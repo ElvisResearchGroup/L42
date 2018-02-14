@@ -28,6 +28,7 @@ import ast.PathAux;
 import caching.Loader;
 import facade.ErrorFormatter;
 import facade.L42;
+import facade.L42.AbsPath;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -61,6 +62,13 @@ public class ReplMain {
       }
     }
 
+
+  public void stop() {
+    Platform.runLater(()->{
+      try { ReplMain.gui.stop(); }
+      catch (Exception e) {throw new Error(e);}
+    });
+  }
 
   void loadProject(Path path) {
     String content="reuse L42.is/AdamTowel02\n" +
@@ -150,38 +158,56 @@ public class ReplMain {
     ReplState repl=null;
 
     //check first 2 line of This.l42
+    System.out.println("READ FIRST2LINE...");
     CodeInfo res=new CodeInfo(fileContent);
 
     //check if library already cached in L42IDE folder
-    Path currentRoot=L42.root;
-    L42.setRootPath(Paths.get("L42IDE")); //TODO: check later where is created?
+    final AbsPath currentRoot=L42.root;
 
-    Path dirPath=L42.root.resolve(res.cacheLibName);
-    if (!Files.exists(dirPath)){ //if not already cached before
-      Files.createDirectory(dirPath);
-      L42.setRootPath(Paths.get("L42IDE").resolve(res.cacheLibName));
+    L42.setRootPath(Paths.get("L42IDE").toAbsolutePath()); //TODO: check later where is created?
+    final Path dirPath=L42.root.resolve(res.cacheLibName);
+
+    boolean cachedBefore= validSystemCache(dirPath);
+    if (!cachedBefore){ //if not already cached before
+      System.out.println("CREATING CACHE IN L42IDE FOR FIRST2LINE...");
+      if(!Files.exists(dirPath)) {Files.createDirectory(dirPath);}
+      L42.setRootPath(dirPath);
       L42.cacheK.setFileName("This.L42",res.first2Line);
-      repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(L42.root.resolve("This.C42"))); //create the cache
+      repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(dirPath.resolve("This.C42"))); //create the cache
     }
 
     //Copy the files into the current project
-    Path src=Paths.get("L42IDE", res.cacheLibName);
-    Path dest=currentRoot;
-    ReplMain.copyEntireDirectory(src,dest,doNotCopyFiles);
+    if(cachedBefore) {
+      System.out.println("COPYING CACHE FROM L42IDE TO CURRENT ROOT (WITHOUT This.C42)...");
+      ReplMain.copyEntireDirectory(dirPath,currentRoot,doNotCopyFiles);
+    } else {
+      System.out.println("COPYING CACHE FROM L42IDE TO CURRENT ROOT (WITH This.C42)...");
+      ReplMain.copyEntireDirectory(dirPath,currentRoot);
+    }
 
-    L42.setRootPath(currentRoot); //go back to project folder
+    L42.root=currentRoot; //go back to project folder
     //if(repl==null) {
       L42.cacheK.setFileName("This.L42",res.first2Line);
-      repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(L42.root.resolve("This.C42")));
+      System.out.println("RE-CREATING REPL FROM CACHE (FIRST2LINE ONLY)...");
+      repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(currentRoot.resolve("This.C42")));
     //} else {
     //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
     //}
 
     L42.cacheK.setFileName("This.L42",res.restOfCode);
+    System.out.println("ReplState.add(RESTOFCODE) RUNNING...");
     ReplState newR=repl.add(res.restOfCode);
     if(newR!=null){repl=newR;}
 
     return repl;
+  }
+
+  private static boolean validSystemCache(Path dirPath) {
+    if(!Files.exists(dirPath)) {return false;}
+    Path kFile=dirPath.resolve("This.K42");
+    Path vFile=dirPath.resolve("This.V42");
+    Path cFile=dirPath.resolve("This.C42");
+    return Files.exists(kFile) && Files.exists(vFile) && Files.exists(cFile);
   }
 
   protected static class CodeInfo{
@@ -220,7 +246,7 @@ public class ReplMain {
     }
   }
 
-  private static void copyEntireDirectory(Path src, Path dest, String... doNotCopyFiles) {
+  private static void copyEntireDirectory(Path src, AbsPath dest, String... doNotCopyFiles) {
     try (Stream<Path> stream = Files.list(src)) {
       stream
       .filter(x -> !Arrays.asList(doNotCopyFiles).contains(x.getName(x.getNameCount()-1).toString()))
@@ -233,7 +259,6 @@ public class ReplMain {
     } catch (IOException e1) {throw new Error(e1);}
 
   }
-
 
 
 }

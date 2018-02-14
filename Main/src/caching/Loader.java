@@ -61,9 +61,17 @@ public class Loader {
       }
     eventCache(cache);
     }
+
   public void eventCache(Cache cache) {
 
   }
+  public void eventUsingCache(Set<String> byteCodeNames) {
+    System.out.println("Using cache for "+byteCodeNames);
+  }
+  public void eventJavaC(HashMap<String, ClassFile> newClMap) {
+    System.out.println("Javac for  "+newClMap.keySet());
+  }
+
   public boolean updateCachePath(java.nio.file.Path path) {
     this.cacheFile=path;
     if(path==null) {return false;}
@@ -179,12 +187,7 @@ public class Loader {
       if(bytecodeOld==null){cl.map().put(cn,bytecode);}
       }
     }
-  public void eventUsingCache(Set<String> byteCodeNames) {
 
-  }
-  public void eventJavaC(HashMap<String, ClassFile> newClMap) {
-
-  }
   private void javac(Map<Integer, String> dep) {
     assert ct.isCoherent();
     List<SourceFile> readyToJavac=new ArrayList<>();

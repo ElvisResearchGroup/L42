@@ -119,7 +119,7 @@ import coreVisitors.InjectionOnSugar;
     String reason;
     //java.nio.file.Path orignFileName;
     Expression.ClassB.NestedClass hasDotDotDot;
-    java.nio.file.Path path;
+    facade.L42.AbsPath path;
   }
 
   //*****************************

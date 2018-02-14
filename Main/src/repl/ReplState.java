@@ -47,7 +47,7 @@ public class ReplState {
     this.reduction=reduction;
     }
 public static ReplState start(String code, Loader cacheC42){
-  Program p=Phase1CacheKey._handleCache();
+  Program p=Phase1CacheKey._handleCache(code);
   try{
     boolean cached=p!=null;
     if(!cached){

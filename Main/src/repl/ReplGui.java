@@ -148,11 +148,16 @@ public class ReplGui extends Application {
     ReplMain.runLater(()->main.eventStart());
   }
 
+  public void origStop() throws Exception {
+    super.stop();
+  }
+
   @Override
-  public void stop(){
+  public void stop() throws Exception {
     if (L42.profilerPrintOn){
       System.out.print(Timer.report());
     }
+    origStop();
     Platform.exit();
     System.exit(0);
   }

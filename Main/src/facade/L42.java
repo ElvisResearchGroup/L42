@@ -1,5 +1,7 @@
 package facade;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -227,8 +229,32 @@ public class L42 {
 
   public static Phase1CacheKey newK=null;
   public static Phase1CacheKey cacheK=new Phase1CacheKey();
-  public static Path root;//the root directory, where to seek all the rest
+  public static AbsPath root;//the root directory, where to seek all the rest
   public static void setRootPath(Path path) {
-    L42.root=path;
+    L42.root=new AbsPath(path);
+  }
+
+  public static class AbsPath { //absolutePath
+    private final Path inner;
+    public AbsPath(Path inner) {
+      assert inner.isAbsolute();
+      this.inner=inner;
+    }
+    public Path resolve(String other) {
+      return this.inner.resolve(other);
+    }
+    public Path resolve(Path other) {
+      assert !other.isAbsolute();
+      return this.inner.resolve(other);
+    }
+    public String toString() {
+      return this.inner.toAbsolutePath().toUri().toString();
+    }
+    public Path relativize(Path other) {
+      Path res=inner.relativize(other);
+      assert !res.isAbsolute();
+      return res;
+    }
+
   }
 }
