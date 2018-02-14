@@ -84,24 +84,11 @@ public class ReplGui extends Application {
       }
     });
 
-    Button newProjectBtn = new Button("New Project");
-    newProjectBtn.setOnAction(t->{
-      DirectoryChooser directoryChooser = new DirectoryChooser();
-      directoryChooser.setTitle("Create a new folder for the new project!");
-      File outputFolder = directoryChooser.showDialog(primaryStage);
-
-      if(outputFolder==null) {return;} //no selection has been made
-      ReplMain.runLater(()->{
-        if(rootPathSet) { closeAllTabs();}
-        main.newProject(outputFolder.toPath());
-      });
-    });
-
-    Button openProjectBtn = new Button("Open Project");
-    openProjectBtn.setOnAction(t->{
+    Button loadProjectBtn = new Button("Load Project");
+    loadProjectBtn.setOnAction(t->{
       assert Platform.isFxApplicationThread();
       DirectoryChooser directoryChooser = new DirectoryChooser();
-      directoryChooser.setTitle("Select an L42 project to open!");
+      directoryChooser.setTitle("Select an L42 project to load!");
       File outputFolder = directoryChooser.showDialog(primaryStage);
 
       if(outputFolder==null) {return;} //no selection has been made
@@ -131,7 +118,7 @@ public class ReplGui extends Application {
     Pane empty=new Pane();
     HBox.setHgrow(empty, Priority.ALWAYS);
 
-    ToolBar toolbar = new ToolBar(newProjectBtn, openProjectBtn, refreshB, empty, runB);
+    ToolBar toolbar = new ToolBar(loadProjectBtn, refreshB, empty, runB);
     borderPane.setTop(toolbar);
 
     //System.out.println(System.out.getClass().getName());

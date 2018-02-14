@@ -62,38 +62,24 @@ public class ReplMain {
     }
 
 
-  void newProject(Path path) {
+  void loadProject(Path path) {
     String content="reuse L42.is/AdamTowel02\n" +
         "CacheAdamTowel02:Load.cacheTowel()\n\n" +
         "Main: {\n" +
         "  Debug(S\"Hello world\")\n" +
         "  return ExitCode.normal()\n" +
         "  }";
-    newProject(path, content);
+    loadProject(path, content);
   }
 
-  void newProject(Path path, String content) {
-    Path thisFile=path.resolve("This.L42");
-    if(Files.exists(thisFile)) {
-      Platform.runLater(()->gui.makeAlert("Already an L42 Project!", "The selected folder is already an L42 project"));
-      return;
-    }
-    try {
-      Files.createDirectories(path.toAbsolutePath().getParent());
-      Files.createFile(thisFile);//create an empty This.L42 file in the selected folder
-      Files.write(thisFile, content.getBytes());
-    } catch(IOException e) {throw new Error(e);}
-    L42.setRootPath(path);
-    gui.rootPathSet=true;
-    Platform.runLater(()->gui.runB.setDisable(false));
-    openFileInNewTab(thisFile);
-  }
-
-  void loadProject(Path path) {
+  void loadProject(Path path, String content) {
     Path thisFile=path.resolve("This.L42");
     if(!Files.exists(thisFile)) {
-      Platform.runLater(()->gui.makeAlert("Invalid Project","Selected project does not contain a 'This.L42' file"));
-      return;
+      try {
+        Files.createDirectories(path.toAbsolutePath().getParent());
+        Files.createFile(thisFile);//create an empty This.L42 file in the selected folder
+        Files.write(thisFile, content.getBytes());
+      } catch(IOException e) {throw new Error(e);}
     }
     L42.setRootPath(path);
     gui.rootPathSet=true;

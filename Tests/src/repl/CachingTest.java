@@ -350,7 +350,7 @@ public class CachingTest {
             "  return ExitCode.normal()\n" +
             "  }";
         Path p=Paths.get("TestFolder");
-        ReplGui.main.newProject(p, content);
+        ReplGui.main.loadProject(p, content);
         ReplGui.main.runCode(Loader::new, true);
         ReplMain.gui.stop();
       }
@@ -375,7 +375,7 @@ public class CachingTest {
             "  return ExitCode.normal()\n" +
             "  }";
         Path p=Paths.get("TestFolder");
-        ReplGui.main.newProject(p, content1);
+        ReplGui.main.loadProject(p, content1);
         ReplGui.main.runCode(loadFactory1.factory, true);
 
         String content2="reuse L42.is/AdamTowel02\n" +
@@ -440,7 +440,7 @@ public class CachingTest {
             "  return ExitCode.normal()\n" +
             "  }";
         Path p=Paths.get("TestFolder");
-        ReplGui.main.newProject(p, content1);
+        ReplGui.main.loadProject(p, content1);
         ReplGui.main.runCode(loadFactory1.factory, true);
 
         String content2="reuse L42.is/AdamTowel02\n" +
