@@ -32,16 +32,16 @@ public class ReplaceDots extends CloneVisitor{
   public Expression visit(DotDotDot s) {
     assert this.currentNested!=null;
     Path pathF=pathToFile();
-    AbsPath pathD=new AbsPath(pathToDirectory());
+    Path pathD=_pathToDirectory();
     if(pathF!=null && pathD!=null){fail("Both file and directory present");}
-    if(pathF==null &&pathD==null){fail("File not found");}
+    if(pathF==null && pathD==null){fail("File not found");}
     if(pathF!=null){return loadFile(pathF);
       }
     assert pathD!=null;
     Path pdf=pathD.resolve("This.L42");
     String code=L42.pathToString(pdf);
     Expression e=Parser.parse(pdf.toUri().toString(), code);
-    return ReplaceDots.of(pathD,e );
+    return ReplaceDots.of(new AbsPath(pathD),e );
   }
   private Expression loadFile(Path pathF) {
     String code=null;
@@ -64,12 +64,12 @@ public class ReplaceDots extends CloneVisitor{
       }
     return null;
   }
-  public Path pathToDirectory(){
+  public Path _pathToDirectory(){
     Path fileP=this.currentFolder.resolve(this.currentNested.getName().toString());
     if(Files.isDirectory(fileP)){
       return fileP;
       }
-    if(Files.exists(fileP)){fail("File exists but is not a directory");}
+    if(Files.exists(fileP)){throw fail("File exists but is not a directory");}
     return null;
 
   }

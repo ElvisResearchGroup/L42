@@ -243,11 +243,15 @@ public class L42 {
       this.inner=inner;
     }
     public Path resolve(String other) {
-      return this.inner.resolve(other);
+      Path res=this.inner.resolve(other);
+      assert res.isAbsolute();
+      return res;
     }
     public Path resolve(Path other) {
       assert !other.isAbsolute();
-      return this.inner.resolve(other);
+      Path res=this.inner.resolve(other);
+      assert res.isAbsolute();
+      return res;
     }
     public String toString() {
       return this.inner.toAbsolutePath().toUri().toString();

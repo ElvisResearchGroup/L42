@@ -11,6 +11,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 
 import ast.ExpCore;
+import caching.Loader;
 import ast.Ast.Type;
 import helpers.TestHelper;
 
@@ -45,7 +46,7 @@ public static class TestExecution {
   TestHelper.configureForTest();
   ExpCore.ClassB l1=(ExpCore.ClassB)TestHelper.getExpCore(TestProgramReduction.class.getSimpleName(),_p);
   ExpCore.ClassB l2=(ExpCore.ClassB)TestHelper.getExpCore(TestProgramReduction.class.getSimpleName(),_expected);
-  TestHelper.assertEqualExp(l2,new ProgramReduction(null,false).allSteps(Program.emptyLibraryProgram().updateTop(l1)));
+  TestHelper.assertEqualExp(l2,new ProgramReduction(new Loader(null),false).allSteps(Program.emptyLibraryProgram().updateTop(l1)));
   }
 }
 
