@@ -12,6 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -19,6 +22,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
@@ -82,13 +86,22 @@ public class ReplMain {
   }
 
   void loadProject(Path path, String content) {
+    List<Path> filesToOpen=null;
     Path thisFile=path.resolve("This.L42");
-    if(!Files.exists(thisFile)) {
+    if(!Files.exists(thisFile)) { //new project
       try {
         Files.createDirectories(path.toAbsolutePath().getParent());
         Files.createFile(thisFile);//create an empty This.L42 file in the selected folder
         Files.write(thisFile, content.getBytes());
       } catch(IOException e) {throw new Error(e);}
+      filesToOpen=Collections.singletonList(thisFile); //only This.L42 file
+    } else { //open project
+      try {
+        filesToOpen=Files.list(path)
+            .filter(Files::isRegularFile)
+            .filter(p->p.toFile().getName().endsWith(".L42"))
+            .collect(Collectors.toList());
+      } catch (IOException e) {throw new Error(e);}
     }
     L42.setRootPath(path);
     gui.rootPathSet=true;
@@ -97,7 +110,9 @@ public class ReplMain {
       gui.openFileBtn.setDisable(false);
       gui.refreshB.setDisable(false);
     });
-    openFileInNewTab(thisFile);
+    for(Path file : filesToOpen) {
+      openFileInNewTab(file);
+    }
   }
 
   void openFile(Path file) {

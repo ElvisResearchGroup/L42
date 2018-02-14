@@ -25,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.SplitPane;
@@ -94,7 +95,9 @@ public class ReplGui extends Application {
 
       if(outputFolder==null) {return;} //no selection has been made
       ReplMain.runLater(()->{
-        if(rootPathSet) { closeAllTabs();}
+        if(rootPathSet) {
+          ReplGui.runAndWait(1,l->{closeAllTabs();l.countDown();return null;});
+        }
         main.loadProject(outputFolder.toPath());
       });
     });
@@ -198,27 +201,35 @@ public class ReplGui extends Application {
       if(editor.tab.getText().endsWith("*")) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.getButtonTypes().setAll(ButtonType.NO,
+            ButtonType.CANCEL,
+            ButtonType.YES);
         alert.setTitle("Save file?");
         alert.setHeaderText(null);
         alert.setContentText("Do you want to save \""+editor.filename+"\" before closing?");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && (result.get() == ButtonType.OK)) {
+        alert.showAndWait().ifPresent(response->{
+          if(response == ButtonType.YES) {
             editor.saveToFile();
-        }
+          } else if(response == ButtonType.NO) {
+          } else if(response == ButtonType.CANCEL) {
+            if(t!=null) {t.consume();}
+          }
+        });
       }
     });
     tabPane.getTabs().add(editor.tab);
-    SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
-    selectionModel.select(editor.tab);
+    tabPane.getSelectionModel().select(editor.tab);
   }
 
   private void closeAllTabs() {
-    //TODO: ask for confirmation for all unsaved tabs before closing
-    //for(Tab tab: tabPane.getTabs()) {
-    //  EventHandler<Event> handler=tab.getOnClosed();
-    //  if(handler!=null) handler.handle(null);
-    //}
+    //Ask for confirmation for all unsaved tabs before closing
+    assert Platform.isFxApplicationThread();
+    for(Tab tab: tabPane.getTabs()) {
+      EventHandler<Event> handler=tab.getOnCloseRequest();
+      tabPane.getSelectionModel().select(tab);
+      if(handler!=null) handler.handle(null);
+    }
     tabPane.getTabs().clear();
   }
 
