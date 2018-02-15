@@ -80,14 +80,14 @@ public class HtmlFx extends StackPane{
     if(outerPanel==null || !(outerPanel instanceof ReplTextArea)) {return;}
     ReplTextArea editor=((ReplTextArea)outerPanel);
 
-    if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
-      // PASTE
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
-      webEngine.executeScript(" pasteContent(\""+
-              org.apache.commons.text.StringEscapeUtils
-              .escapeEcmaScript(content)+"\") ");
-    }
+    //if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
+    //  // PASTE
+    //  Clipboard clipboard = Clipboard.getSystemClipboard();
+    //  String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
+    //  webEngine.executeScript(" pasteContent(\""+
+    //          org.apache.commons.text.StringEscapeUtils
+    //          .escapeEcmaScript(content)+"\") ");
+    //}
 
     //DOCUMENTATION
     if(keyEvent.getCode() == KeyCode.PERIOD) {
