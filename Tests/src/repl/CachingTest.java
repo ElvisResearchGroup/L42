@@ -51,13 +51,17 @@ public class CachingTest {
       Files.createDirectories(projFolder);
     }
     this.deleteFilesInDirectory(projFolder);
-
+    Platform.setImplicitExit(false);
     TestHelper.configureForTest();
   }
 
   @After
   public void after() throws IOException{
     before();
+  }
+  @AfterClass
+  public static void afterClass() throws IOException{
+    Platform.exit();
   }
 
   @Test

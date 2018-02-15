@@ -171,8 +171,7 @@ public class ReplGui extends Application {
   }
 
   public void origStop() throws Exception {
-    //this.stage.close();
-    //this.stage.fireEvent();
+    this.stage.close();
     super.stop();
   }
 
