@@ -361,6 +361,10 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content);
+        while(ReplMain.gui.running) {
+          try {Thread.sleep(100);}
+          catch (InterruptedException e) {throw new Error(e);}
+        }
         ReplGui.main.runCode(Loader::new);
         ReplGui.main.stop();
       }

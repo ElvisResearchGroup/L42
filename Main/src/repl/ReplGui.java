@@ -161,8 +161,8 @@ public class ReplGui extends Application {
     primaryStage.setMinWidth(scene.getWidth());
     primaryStage.setMinHeight(scene.getHeight());
     primaryStage.show();
-    loadProjectBtn.fire(); //start with load project dialog
-    ReplMain.runLater(()->main.eventStart());
+    Platform.runLater(loadProjectBtn::fire); //start with load project dialog
+    ReplMain.runLater(main::eventStart);
   }
 
   public void origStop() throws Exception {
