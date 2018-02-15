@@ -13,9 +13,8 @@ var doOnLoad=function (){
       theme:"ace/theme/l42_eclipse"
       });
   setAllAs("l42Big",{
-      fontSize:"170%", //"215%",
+      fontSize:"170%",
       maxLines:3000,
-      //minLines:20,
       mode:"ace/mode/l42",
       theme:"ace/theme/l42_eclipse"
       });
@@ -32,9 +31,7 @@ var doOnLoad=function (){
       theme:"ace/theme/github"
       });
     var editor =ace.edit("textArea");
-    pasteContent=function(content){//write on global var
-      editor.onPaste(content);
-      }
+
     editor.getCopyText = function() {
       var text = this.getSelectedText();
       javascript:alert("copy: "+text);
@@ -42,6 +39,9 @@ var doOnLoad=function (){
       return text;
       };
     setOurMinMax();
+//    $( window ).resize(function() {
+//    	setTimeout(setOurMinMax, 100);
+//    });
     window.onresize=function(){setTimeout(setOurMinMax, 100);};
   }
 var setOurMinMax=function(){

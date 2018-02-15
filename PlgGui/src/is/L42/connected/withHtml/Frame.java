@@ -5,6 +5,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
@@ -40,8 +41,7 @@ public class Frame extends Stage{
   private static Frame createNew(String wName,String html,int x, int y) {
     FutureTask<Frame> future = new FutureTask<>(()-> {
       final Frame frame = new Frame(Frame.extractTitle(html));
-      assert false;
-      //frame.htmlFx.createHtmlContent(html);//TODO: disabled for now, need refactoring of ReplMain.runAndWait
+      frame.htmlFx.createHtmlContent(new CountDownLatch(3),wv->wv.loadContent(html));
       frame.setMinWidth(x);
       frame.setMinHeight(y);
       frame.setOnCloseRequest(event -> {
@@ -55,7 +55,7 @@ public class Frame extends Stage{
       });
       return frame;
     });
-    JFXPanel fxPanel = new JFXPanel(); //this is added so that an exception "toolkit not initialised" doesnt occur
+    new JFXPanel(); //this is added so that an exception "toolkit not initialised" doesnt occur
     Platform.runLater(future);
     try {return future.get();}
     catch (ExecutionException e) {throw HtmlFx.propagateException(e.getCause());}

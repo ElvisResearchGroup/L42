@@ -1,6 +1,7 @@
 package repl;
 
 import javafx.application.Application;
+import javafx.concurrent.Worker;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
@@ -21,7 +22,7 @@ public class WebViewSample extends Application {
         stage.setTitle("Web View");
         scene = new Scene(new Browser(),750,500, Color.web("#666970"));
         stage.setScene(scene);
-        scene.getStylesheets().add("webviewsample/BrowserToolbar.css");
+        //scene.getStylesheets().add("webviewsample/BrowserToolbar.css");
         stage.show();
     }
 
@@ -38,7 +39,23 @@ class Browser extends Region {
         //apply the styles
         getStyleClass().add("browser");
         // load the web page
-        webEngine.load("http://www.oracle.com/products/index.html");
+        this.webEngine.getLoadWorker().stateProperty().addListener(
+          (ov, oldState,newState)->{
+            if (newState == Worker.State.SUCCEEDED) {
+              String content="<!DOCTYPE html>\n" +
+                  "<html>\n" +
+                  "<head>\n" +
+                  "  <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n" +
+                  "  <link rel=\"stylesheet\" type=\"text/css\" href=\"stylish.css\" media=\"all\"/>\n" +
+                  "</head>\n" +
+                  "  <body>\n" +
+                  "    <h1>See</h1><h2>you</h2><h3>later</h3>\n" +
+                  "  </body>\n" +
+                  "</html>";
+              webEngine.loadContent(content);
+              }
+            });
+        webEngine.load(getClass().getResource("header.html").toExternalForm());
         //add the web view to the scene
         getChildren().add(browser);
 

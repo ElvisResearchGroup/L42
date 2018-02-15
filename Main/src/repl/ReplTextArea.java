@@ -29,7 +29,7 @@ public class ReplTextArea extends SplitPane {
   public ReplTextArea(CountDownLatch latch, String fname, URL url) {
     assert Platform.isFxApplicationThread();
     htmlFx=new HtmlFx(this);
-    htmlFx.createHtmlContent(latch,url);
+    htmlFx.createHtmlContent(latch,wv->wv.load(url.toExternalForm()));
     filename=fname;
     docPanel=new TextArea();
     docPanel.setEditable(false);

@@ -2,6 +2,7 @@ package repl;
 
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
 
 import ast.Ast;
 import ast.ErrorMessage;
@@ -40,14 +41,15 @@ public class HtmlFx extends StackPane{
 
   public final Events events=new Events();
 
-  private Void initWeb(CountDownLatch latch,URL url){
+  private Void initWeb(CountDownLatch latch,Consumer<WebEngine> load){
     WebView browser = new WebView();
     this.webEngine = browser.getEngine();
     this.webEngine.getLoadWorker().stateProperty().addListener(
       (ov, oldState,newState)->{
         if (newState == Worker.State.SUCCEEDED) {latch.countDown();}
         });
-    this.webEngine.load(url.toExternalForm());
+    load.accept(this.webEngine);
+//    this.webEngine.load(url.toExternalForm());
     this.webEngine.setOnAlert(event->{
       Alert alert = new Alert(AlertType.INFORMATION);
       alert.setTitle("Information Dialog");
@@ -80,14 +82,14 @@ public class HtmlFx extends StackPane{
     if(outerPanel==null || !(outerPanel instanceof ReplTextArea)) {return;}
     ReplTextArea editor=((ReplTextArea)outerPanel);
 
-    if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
-      // PASTE
-      Clipboard clipboard = Clipboard.getSystemClipboard();
-      String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
-      webEngine.executeScript(" pasteContent(\""+
-              org.apache.commons.text.StringEscapeUtils
-              .escapeEcmaScript(content)+"\") ");
-    }
+    //if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
+    //  // PASTE
+    //  Clipboard clipboard = Clipboard.getSystemClipboard();
+    //  String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
+    //  webEngine.executeScript(" pasteContent(\""+
+    //          org.apache.commons.text.StringEscapeUtils
+    //          .escapeEcmaScript(content)+"\") ");
+    //}
 
     //DOCUMENTATION
     if(keyEvent.getCode() == KeyCode.PERIOD) {
@@ -138,9 +140,9 @@ public class HtmlFx extends StackPane{
     throw new Error(t);
     }
 
-  public void createHtmlContent(CountDownLatch latch,URL url) {
+  public void createHtmlContent(CountDownLatch latch,Consumer<WebEngine> load) {
     assert Platform.isFxApplicationThread();
-    initWeb(latch,url);
+    initWeb(latch,load);
     //
     Object o=this.webEngine.executeScript(
         "window.event42=function(s){ "
