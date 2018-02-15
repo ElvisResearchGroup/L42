@@ -97,7 +97,7 @@ public class ReplMain {
       filesToOpen=Collections.singletonList(thisFile); //only This.L42 file
     } else { //open project
       try {
-        filesToOpen=Files.list(path)
+        filesToOpen=Files.walk(path)
             .filter(Files::isRegularFile)
             .filter(p->p.toFile().getName().endsWith(".L42"))
             .collect(Collectors.toList());
@@ -130,7 +130,7 @@ public class ReplMain {
       Platform.runLater(()->gui.makeAlert("Invalid Project content","Lost contact with project folder"));
       return;
     }
-    String openFileName = file.getFileName().toString();
+    String openFileName = L42.root.relativize(file).toString();
     makeReplTextArea(openFileName,content);
   }
 

@@ -262,9 +262,11 @@ public class L42 {
       return res;
     }
     public boolean isChild(Path other) {
+      assert other.isAbsolute();
       return other.startsWith(inner);
     }
     public void initialiseFileChooser(FileChooser fc) {
+      assert fc !=null;
       fc.setInitialDirectory(this.inner.toFile());
     }
 
