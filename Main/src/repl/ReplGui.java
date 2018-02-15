@@ -46,7 +46,10 @@ import profiling.Timer;
 
 public class ReplGui extends Application {
   static ReplMain main;
-
+  public ReplGui(){
+    super();
+    System.out.println("ReplGuiCreated");
+  }
   private static final int SCENE_WIDTH = 1200;
   private static final int SCENE_HEIGHT = 700;
 
@@ -60,6 +63,8 @@ public class ReplGui extends Application {
   Button runB;
   Button openFileBtn;
   Button refreshB;
+  Button loadProjectBtn;
+  Stage stage;
 
   Tab selectedTab=null;
 
@@ -78,6 +83,7 @@ public class ReplGui extends Application {
   public void start(Stage primaryStage) throws Exception {
     assert Platform.isFxApplicationThread();
     ReplMain.gui=this;
+    stage=primaryStage;
     BorderPane borderPane = new BorderPane();
 
     tabPane.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
@@ -87,7 +93,7 @@ public class ReplGui extends Application {
       }
     });
 
-    Button loadProjectBtn = new Button("Load Project");
+    loadProjectBtn = new Button("Load Project");
     loadProjectBtn.setOnAction(t->{
       assert Platform.isFxApplicationThread();
       DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -110,7 +116,7 @@ public class ReplGui extends Application {
       FileChooser fileChooser = new FileChooser();
       FileChooser.ExtensionFilter l42Filter = new FileChooser.ExtensionFilter("L42 files (*.L42)", "*.L42");
       fileChooser.getExtensionFilters().add(l42Filter);
-      L42.root.initialiseFileChooser(fileChooser);
+      fileChooser.setInitialDirectory(L42.root.toFile());
 
       File chosenFile = fileChooser.showOpenDialog(primaryStage);
       if(chosenFile==null) {return;} //no selection has been made
@@ -161,11 +167,12 @@ public class ReplGui extends Application {
     primaryStage.setMinWidth(scene.getWidth());
     primaryStage.setMinHeight(scene.getHeight());
     primaryStage.show();
-    Platform.runLater(loadProjectBtn::fire); //start with load project dialog
     ReplMain.runLater(main::eventStart);
   }
 
   public void origStop() throws Exception {
+    //this.stage.close();
+    //this.stage.fireEvent();
     super.stop();
   }
 

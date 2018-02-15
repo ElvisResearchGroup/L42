@@ -53,7 +53,9 @@ public class ReplMain {
     Application.launch(ReplGui.class,arg);
   }
 
-  public void eventStart() {}
+  public void eventStart() {
+    Platform.runLater(gui.loadProjectBtn::fire);
+  }
 
   public static void runLater(Runnable runnable) {
     assert Platform.isFxApplicationThread();

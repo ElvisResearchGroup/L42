@@ -265,10 +265,6 @@ public class L42 {
       assert other.isAbsolute();
       return other.startsWith(inner);
     }
-    public void initialiseFileChooser(FileChooser fc) {
-      assert fc !=null;
-      fc.setInitialDirectory(this.inner.toFile());
-    }
-
+    public File toFile() {return this.inner.toFile();}
   }
 }

@@ -361,10 +361,7 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content);
-        while(ReplMain.gui.running) {
-          try {Thread.sleep(100);}
-          catch (InterruptedException e) {throw new Error(e);}
-        }
+        CachingTest.waitToRun();
         ReplGui.main.runCode(Loader::new);
         ReplGui.main.stop();
       }
@@ -372,6 +369,13 @@ public class CachingTest {
     startApplication();
     String output= L42.record.toString();
     assertEquals("Hello New Test\n", output);
+  }
+
+  protected static void waitToRun() {
+    while(ReplMain.gui.running) {
+      try {Thread.sleep(100);}
+      catch (InterruptedException e) {throw new Error(e);}
+    }
   }
 
   @Test
@@ -390,6 +394,7 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content1);
+        CachingTest.waitToRun();
         ReplGui.main.runCode(loadFactory1.factory);
 
         String content2="reuse L42.is/AdamTowel02\n" +
@@ -402,6 +407,7 @@ public class CachingTest {
 
         try {Files.write(p.resolve("This.L42"), content2.getBytes());}
         catch (IOException e) {throw new Error(e);}
+        CachingTest.waitToRun();
         ReplGui.main.runCode(loadFactory2.factory);
         ReplGui.main.stop();
       }
@@ -430,6 +436,7 @@ public class CachingTest {
     ReplGui.main=new ReplMain() {
       public void eventStart() {
         L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
+        CachingTest.waitToRun();
         ReplGui.main.runCode(Loader::new);
         ReplGui.main.stop();;
       }
@@ -455,6 +462,7 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content1);
+        CachingTest.waitToRun();
         ReplGui.main.runCode(loadFactory1.factory);
 
         String content2="reuse L42.is/AdamTowel02\n" +
@@ -467,6 +475,7 @@ public class CachingTest {
 
         try {Files.write(p.resolve("This.L42"), content2.getBytes());}
         catch (IOException e) {throw new Error(e);}
+        CachingTest.waitToRun();
         ReplGui.main.runCode(loadFactory2.factory);
         ReplGui.main.stop();
       }
