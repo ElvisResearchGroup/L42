@@ -56,45 +56,9 @@ public class HtmlFx extends StackPane{
       alert.showAndWait();
       //alert.setOnCloseRequest(e->{  alert.close(); });
       });
-    //---cut and paste
-    browser.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
-      if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
-        // PASTE
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
-        webEngine.executeScript(" pasteContent(\""+
-                org.apache.commons.text.StringEscapeUtils
-                .escapeEcmaScript(content)+"\") ");
-      }
-      if(keyEvent.getCode() == KeyCode.PERIOD) {
-        if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
-          //DOCUMENTATION
-          ReplTextArea editor=((ReplTextArea)outerPanel);
-          Object o=webEngine.executeScript("ace.edit(\"textArea\").getCursorPosition()");
-          assert o instanceof JSObject : o.toString();
-          JSObject jsobj=(JSObject)o;
-          int row=Integer.parseInt(jsobj.getMember("row").toString());
-          int col=Integer.parseInt(jsobj.getMember("column").toString());
-          try { displayDoc(editor,row,col); }
-          catch(IllegalArgumentException e) {}
-        }
-      }
 
-      //---CTRL+S save
-      if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.S){
-        if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
-          ReplTextArea editor=((ReplTextArea)outerPanel);
-          editor.saveToFile();
-          editor.removeStar();
-        }
-      } else { //file has been modified (NOT SAVED)
-        if(outerPanel!=null && outerPanel instanceof ReplTextArea) {
-          ReplTextArea editor=((ReplTextArea)outerPanel);
-          editor.addStar();
-        }
-      }
+    browser.addEventHandler(KeyEvent.KEY_PRESSED, this::handleKeyPress);
 
-    });
     // retrieve copy event via javascript:alert
     webEngine.setOnAlert((WebEvent<String> we) -> {
       if(we.getData()!=null && we.getData().startsWith("copy: ")){
@@ -112,10 +76,45 @@ public class HtmlFx extends StackPane{
     return null;
     }
 
+  private void handleKeyPress(KeyEvent keyEvent) {
+    if(outerPanel==null || !(outerPanel instanceof ReplTextArea)) {return;}
+    ReplTextArea editor=((ReplTextArea)outerPanel);
+
+    if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.V){
+      // PASTE
+      Clipboard clipboard = Clipboard.getSystemClipboard();
+      String content = (String) clipboard.getContent(DataFormat.PLAIN_TEXT);
+      webEngine.executeScript(" pasteContent(\""+
+              org.apache.commons.text.StringEscapeUtils
+              .escapeEcmaScript(content)+"\") ");
+    }
+
+    //DOCUMENTATION
+    if(keyEvent.getCode() == KeyCode.PERIOD) {
+      Object o=webEngine.executeScript("ace.edit(\"textArea\").getCursorPosition()");
+      assert o instanceof JSObject : o.toString();
+      JSObject jsobj=(JSObject)o;
+      int row=Integer.parseInt(jsobj.getMember("row").toString());
+      int col=Integer.parseInt(jsobj.getMember("column").toString());
+      try { displayDoc(editor,row,col); }
+      catch(IllegalArgumentException e) {}
+    }
+
+    //---CTRL+S save
+    if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.S){
+      editor.saveToFile();
+      editor.removeStar();
+      return;
+    }
+    editor.addStar(); //file has been modified (NOT SAVED)
+  }
+
   private void displayDoc(ReplTextArea editor, int row, int col) {
+    if(ReplGui.main.repl==null) {return;}
+
     editor.setDoc("Row: "+row+" Col: "+col+"\n");
     FromDotToPath r=new FromDotToPath(editor.getText(),row,col);
-    assert ReplGui.main.repl!=null;
+
     Program p=ReplGui.main.repl.p;
     p=p.navigate(r.cs);
     //try {p=p.pop();}catch(Throwable  t) {}

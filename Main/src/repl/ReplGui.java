@@ -126,7 +126,6 @@ public class ReplGui extends Application {
     refreshB=new Button("Refresh");
     refreshB.setDisable(true);
     refreshB.setOnAction(t->{
-      assert rootPathSet;
       for(Tab tab: tabPane.getTabs()) {
         ((ReplTextArea)tab.getContent()).refresh();
       }
@@ -162,6 +161,7 @@ public class ReplGui extends Application {
     primaryStage.setMinWidth(scene.getWidth());
     primaryStage.setMinHeight(scene.getHeight());
     primaryStage.show();
+    loadProjectBtn.fire(); //start with load project dialog
     ReplMain.runLater(()->main.eventStart());
   }
 

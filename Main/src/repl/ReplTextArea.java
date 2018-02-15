@@ -69,7 +69,6 @@ public class ReplTextArea extends SplitPane {
   void saveToFile() {
     assert Platform.isFxApplicationThread();
     String content=getText();
-    System.out.println(content);
     Path file=L42.root.resolve(this.filename);
     assert file!=null && Files.exists(file);
     try { Files.write(file, content.getBytes()); }
