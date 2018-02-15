@@ -115,6 +115,7 @@ public class HtmlFx extends StackPane{
   private void displayDoc(ReplTextArea editor, int row, int col) {
     editor.setDoc("Row: "+row+" Col: "+col+"\n");
     FromDotToPath r=new FromDotToPath(editor.getText(),row,col);
+    assert ReplGui.main.repl!=null;
     Program p=ReplGui.main.repl.p;
     p=p.navigate(r.cs);
     //try {p=p.pop();}catch(Throwable  t) {}

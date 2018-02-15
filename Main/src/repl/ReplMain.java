@@ -105,14 +105,18 @@ public class ReplMain {
     }
     L42.setRootPath(path);
     gui.rootPathSet=true;
-    Platform.runLater(()->{
-      gui.runB.setDisable(false);
-      gui.openFileBtn.setDisable(false);
-      gui.refreshB.setDisable(false);
-    });
     for(Path file : filesToOpen) {
       openFileInNewTab(file);
     }
+    Platform.runLater(()->{
+      gui.running=true;
+      gui.runB.setText("Loading");
+    });
+    this.runCode(false, Loader::new); //initialise a repl
+    Platform.runLater(()->{
+      gui.openFileBtn.setDisable(false);
+      gui.refreshB.setDisable(false);
+    });
   }
 
   void openFile(Path file) {
@@ -139,13 +143,20 @@ public class ReplMain {
     Platform.runLater(()->gui.openTab(editor,tabContent));
   }
 
-  void runCode(Function<Path,Loader> loaderFactory, boolean resetCache){
+  void runCode(Function<Path,Loader> loaderFactory) {
+    if(gui.running){throw new Error("Was running");}
+    Platform.runLater(()->gui.disableRunB());
+    runCode(true, loaderFactory);
+  }
+
+  void runCode(boolean runAll, Function<Path,Loader> loaderFactory){
     try{
       String content = L42.pathToString(L42.root.resolve("This.L42"));
+      boolean resetCache=!Files.exists(L42.root.resolve("This.C42"));
       if(resetCache) {
-        repl=copyResetKVCthenRun(loaderFactory, content);
+        repl=copyResetKVCthenRun(runAll, loaderFactory, content);
       } else {
-        repl=copyResetKVCthenRun(loaderFactory, content, "This.C42");
+        repl=copyResetKVCthenRun(runAll, loaderFactory, content, "This.C42");
       }
     }
     catch(IllegalArgumentException e) {
@@ -173,13 +184,17 @@ public class ReplMain {
       }
   }
 
+  public static ReplState copyResetKVCthenRun(Function<Path, Loader> loaderFactory, String fileContent, String... doNotCopyFiles) throws IOException {
+    return copyResetKVCthenRun(true, loaderFactory, fileContent, doNotCopyFiles);
+  }
+
   /**
    * To make testing possible, pass in a loaderFactory which allow to create a
    * personalized loader from a Path.
    *
    * @param loaderFactory
    */
-  public static ReplState copyResetKVCthenRun(Function<Path, Loader> loaderFactory, String fileContent, String... doNotCopyFiles) throws IOException {
+  public static ReplState copyResetKVCthenRun(boolean runAll, Function<Path, Loader> loaderFactory, String fileContent, String... doNotCopyFiles) throws IOException {
     ReplState repl=null;
 
     //check first 2 line of This.l42
@@ -219,10 +234,12 @@ public class ReplMain {
     //  repl.reduction.loader.updateCachePath(pathC); //TODO: see why does not cache C properly (saved not in right place?)
     //}
 
-    L42.cacheK.setFileName("This.L42",res.restOfCode);
-    System.out.println("ReplState.add(RESTOFCODE) RUNNING...");
-    ReplState newR=repl.add(res.restOfCode);
-    if(newR!=null){repl=newR;}
+    if(runAll) {
+      L42.cacheK.setFileName("This.L42",res.restOfCode);
+      System.out.println("ReplState.add(RESTOFCODE) RUNNING...");
+      ReplState newR=repl.add(res.restOfCode);
+      if(newR!=null){repl=newR;}
+    }
 
     return repl;
   }

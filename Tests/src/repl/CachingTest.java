@@ -23,7 +23,9 @@ import java.util.function.Function;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import caching.Cache;
 import caching.Loader;
@@ -36,6 +38,7 @@ import javafx.stage.Stage;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import repl.ReplMain.CodeInfo;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CachingTest {
 
   @Before
@@ -226,10 +229,12 @@ public class CachingTest {
 
     ReplMain.copyResetKVCthenRun(Loader::new, content);
     long first=System.currentTimeMillis();
-    this.deleteDirectory(Paths.get("L42IDE").resolve(test.cacheLibName));
+    //this.deleteDirectory(Paths.get("L42IDE").resolve(test.cacheLibName));
 
     ReplMain.copyResetKVCthenRun(Loader::new, content);
     long second=System.currentTimeMillis();
+    System.out.println("First run (should be longer): "+(first-start)+"milliseconds");
+    System.out.println("Second run (should be shorter): "+(second-first)+"milliseconds");
     assertTrue(second-first < first-start);
 
     this.deleteDirectory(Paths.get("L42IDE").resolve(test.cacheLibName));
@@ -356,7 +361,7 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content);
-        ReplGui.main.runCode(Loader::new, true);
+        ReplGui.main.runCode(Loader::new);
         ReplGui.main.stop();
       }
     };
@@ -381,7 +386,7 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content1);
-        ReplGui.main.runCode(loadFactory1.factory, true);
+        ReplGui.main.runCode(loadFactory1.factory);
 
         String content2="reuse L42.is/AdamTowel02\n" +
             "CacheAdamTowel02:Load.cacheTowel()\n" +
@@ -393,7 +398,7 @@ public class CachingTest {
 
         try {Files.write(p.resolve("This.L42"), content2.getBytes());}
         catch (IOException e) {throw new Error(e);}
-        ReplGui.main.runCode(loadFactory2.factory, false);
+        ReplGui.main.runCode(loadFactory2.factory);
         ReplGui.main.stop();
       }
     };
@@ -421,7 +426,7 @@ public class CachingTest {
     ReplGui.main=new ReplMain() {
       public void eventStart() {
         L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
-        ReplGui.main.runCode(Loader::new, false);
+        ReplGui.main.runCode(Loader::new);
         ReplGui.main.stop();;
       }
     };
@@ -446,7 +451,7 @@ public class CachingTest {
             "  }";
         Path p=Paths.get("TestFolder").toAbsolutePath();
         ReplGui.main.loadProject(p, content1);
-        ReplGui.main.runCode(loadFactory1.factory, true);
+        ReplGui.main.runCode(loadFactory1.factory);
 
         String content2="reuse L42.is/AdamTowel02\n" +
             "CacheAdamTowel02:Load.cacheTowel()\n" +
@@ -458,7 +463,7 @@ public class CachingTest {
 
         try {Files.write(p.resolve("This.L42"), content2.getBytes());}
         catch (IOException e) {throw new Error(e);}
-        ReplGui.main.runCode(loadFactory2.factory, false);
+        ReplGui.main.runCode(loadFactory2.factory);
         ReplGui.main.stop();
       }
     };

@@ -58,7 +58,8 @@ public class ReplGui extends Application {
   boolean rootPathSet=false;
   boolean running=false;
   Button runB;
-  Button openFileBtn, refreshB;
+  Button openFileBtn;
+  Button refreshB;
 
   Tab selectedTab=null;
 
@@ -119,9 +120,7 @@ public class ReplGui extends Application {
     runB=new Button("Run!");
     runB.setDisable(true);
     runB.setOnAction(e->ReplMain.runLater(()->{
-      if(running){throw new Error("Was running");}
-      Platform.runLater(()->this.disableRunB());
-      main.runCode(Loader::new, !Files.exists(L42.root.resolve("This.C42")));
+      main.runCode(Loader::new);
     }));
 
     refreshB=new Button("Refresh");
