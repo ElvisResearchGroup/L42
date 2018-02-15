@@ -1,10 +1,15 @@
 package repl;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import caching.Loader;
 
 public class ReplGuiMock {
-
+  ReplGuiMock(){
+    try {Files.deleteIfExists(Paths.get("localhost","ReplCache.C42"));}
+    catch (IOException e) {throw new Error(e);}
+  }
   ReplState repl=null;
   StringBuffer err=new StringBuffer();{
     System.setOut(ReplGui.delegatePrintStream(err,System.out));
