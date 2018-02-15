@@ -3,7 +3,7 @@ allDivs=[
   "b",
   "c"
   ];
-function doOnLoad(){
+var doOnLoad=function (){
   hide(allDivs);
   // Get every l42 Div
   setAllAs("l42",{
@@ -15,6 +15,7 @@ function doOnLoad(){
   setAllAs("l42Big",{
       fontSize:"170%", //"215%",
       maxLines:3000,
+      //minLines:20,
       mode:"ace/mode/l42",
       theme:"ace/theme/l42_eclipse"
       });
@@ -40,8 +41,23 @@ function doOnLoad(){
       this._signal("copy", text);
       return text;
       };
+    setOurMinMax();
+    window.onresize=function(){setTimeout(setOurMinMax, 100);};
   }
-function setAllAs(className,options){
+var setOurMinMax=function(){
+	var body=document.body;
+    var html=document.documentElement;
+
+    var height = Math.max(body.scrollHeight, body.offsetHeight,
+		   html.clientHeight, html.scrollHeight, html.offsetHeight );
+    var lineHeight = height/27-1;
+    setAllAs("l42Big",{
+      maxLines:lineHeight,
+      minLines:lineHeight
+    });
+}
+
+var setAllAs=function(className,options){
   var list = document.getElementsByClassName(className);
   for (var i = list.length - 1; i >= 0; i--) {
     // Turn it into an ace window and apply features
@@ -55,23 +71,23 @@ function setAllAs(className,options){
     }
   }
 
-function hide(elements) {
+var hide=function(elements) {
   elements = elements.length ? elements : [elements];
   for (var index = 0; index < elements.length; index++) {
     var e=document.getElementById(elements[index]);
     if(e!=null){e.style.display = 'none';}
   }
 }
-function show (element) { document.getElementById(element).style.display = 'block'; }
+var show=function (element) { document.getElementById(element).style.display = 'block'; }
 
-function showAll(elements){
+var showAll=function(elements){
   elements = elements.length ? elements : [elements];
   for (var index = 0; index < elements.length; index++) {
     show(elements[index]);
   }
 }
 
-function selectDiv(id){
+var selectDiv=function(id){
   hide(allDivs)
   show(id)
   }
