@@ -27,6 +27,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
 import ast.Expression;
 import auxiliaryGrammar.Functions;
+import caching.Phase1CacheKey;
 import programReduction.Norm;
 import programReduction.Program;
 import facade.L42;
@@ -258,6 +259,9 @@ public class TestHelper {
   public static void configureForTest() {
     L42.record=new StringBuilder();
     L42.usedNames.clear();
+    L42.cacheK=new Phase1CacheKey();
+    L42.root=null;
+    L42.newK=null;
     L42.resetFreshPrivate();
     Resources.clearRes();
     Timer.restart();

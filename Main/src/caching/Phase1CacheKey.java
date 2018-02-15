@@ -131,7 +131,8 @@ private static final long serialVersionUID = 1L;
       }
     for(List<String> path:fileNameToLib.keySet()){
       if(_content!=null) {
-        assert fileNameToLib.keySet().size()==1:fileNameToLib.keySet();
+        assert fileNameToLib.keySet().size()==1:
+          fileNameToLib.keySet();
         res.fileNameToLib.put(path,_content);
         continue;
       }
