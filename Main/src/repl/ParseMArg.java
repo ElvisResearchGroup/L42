@@ -19,11 +19,13 @@ public class ParseMArg {
   char former=' ';
   int pos=0;
   boolean usefulDone=false;
+  int skipping=0;
 
   public ParseMArg(String mArg) {
     for(int i:mArg.codePoints().boxed().collect(Collectors.toList())) {
       char c=FromDotToPath.toChar(i);
-      switchState(i,c);
+      if(skipping==0) {switchState(mArg, i,c);}
+      else {skipping-=1;}
       former=c;
       pos++;
     }
@@ -40,7 +42,7 @@ public class ParseMArg {
     }
   }
 
-  private void switchState(int i,char c) {
+  private void switchState(String mArg, int i,char c) {
     switch(current) {
     case MultiLineComment:
       if(c=='/' && former=='*') {out();}
@@ -58,6 +60,8 @@ public class ParseMArg {
       case ':': startX();
 
       case ' ': case ',': case '/': return;
+
+      case '(': case '{': case '[': skipping=FromDotToPath.skipArgs(mArg.substring(pos+1, mArg.length())); return;
 
       default: usefulDone=true;
       }

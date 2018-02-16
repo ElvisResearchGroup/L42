@@ -67,7 +67,8 @@ public class FromDotToPath {
 
   private void parseMCall(String token) {
     String noFirstChar=token.substring(1, token.length());
-    String methName=reverse(skipArgs(noFirstChar));
+    String methRev=noFirstChar.substring(skipArgs(noFirstChar), noFirstChar.length());
+    String methName=reverse(methRev);
     String mArgs=noFirstChar.substring(0, noFirstChar.length()-(methName.length()+1));
     ParseMArg mArg=new ParseMArg(mArgs);
 
@@ -81,7 +82,7 @@ public class FromDotToPath {
 
   }
 
-  private String skipArgs(String noFirstChar) {
+  static int skipArgs(String noFirstChar) {
     try{
       Parser.checkForBalancedParenthesis(noFirstChar);
     } catch(ErrorMessage.UnclosedParenthesis e) {
@@ -93,7 +94,7 @@ public class FromDotToPath {
     } catch(ErrorMessage.UnopenedParenthesis e) {
       System.out.println(e.getClass().getSimpleName());
       System.out.println(e.getPos());
-      return noFirstChar.substring(e.getPos(), noFirstChar.length());
+      return e.getPos();
     } catch(ErrorMessage.ParenthesisMismatchRange e) {
       System.out.println(e.getClass().getSimpleName());
       System.out.println("Pos1: "+e.getPos1()+" Pos2: "+e.getPos2());
@@ -136,7 +137,7 @@ public class FromDotToPath {
     return new StringBuilder(input).reverse().toString();
   }
 
-  private static String swapParenthesis(String input) {
+  static String swapParenthesis(String input) {
     StringBuffer b=new StringBuffer();
     input.codePoints().forEachOrdered(i->{
       if(i=='{') {b.append("}");}

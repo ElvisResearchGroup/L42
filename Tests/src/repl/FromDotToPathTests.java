@@ -24,7 +24,7 @@ public class FromDotToPathTests {
   }
 
   private String testMArg(String in) {
-    ParseMArg r = new ParseMArg(FromDotToPath.reverse(in));
+    ParseMArg r = new ParseMArg(FromDotToPath.reverse(FromDotToPath.swapParenthesis(in)));
     return r.xs.toString();
   }
 
@@ -76,7 +76,6 @@ public class FromDotToPathTests {
 
   @Test public void testNew23() { testMs("P.hi(x:hello())","[hi(x)]",0); }
 
-  //TODO:fix
   @Test public void testNew24() { testMs("P.hhhh(hi(x:hello()))","[hhhh(that)]",0); }
 
   @Test public void testNew25() { assertEquals("[]", testMArg("")); }
