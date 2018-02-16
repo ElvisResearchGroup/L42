@@ -43,7 +43,7 @@ public class TestWebEngine {
     public void start(Stage stage) {
       HtmlFx h=new HtmlFx(new Pane());
       URL url = getClass().getResource("tutorial.xhtml");
-      h.createHtmlContent(new CountDownLatch(1), url);
+      h.createHtmlContent(new CountDownLatch(1), wv->wv.load(url.toExternalForm()));
 
       Scene scene = new Scene(h, 500, 500);
       stage.setTitle("myTitle!");

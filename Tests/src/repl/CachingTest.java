@@ -61,7 +61,7 @@ public class CachingTest {
   }
   @AfterClass
   public static void afterClass() throws IOException{
-    Platform.exit();
+    //Platform.exit();
   }
 
   @Test
