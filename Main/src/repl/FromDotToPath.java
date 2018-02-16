@@ -1,5 +1,7 @@
 package repl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +15,8 @@ public class FromDotToPath {
   int thisNum=-1;
   StringBuffer pathString=new StringBuffer();
   List<Ast.C> cs;
+  List<Ast.MethodSelector> ms=new ArrayList<>();
+
   public FromDotToPath(String text, int row, int col) {
     String[] lines=text.split("\\r?\\n");
     String lineBefore=lines[row].substring(0, col);
@@ -21,6 +25,7 @@ public class FromDotToPath {
     String reverseAndReplaced=swapParenthesis(reverseLineBefore);
 
     parse(reverseAndReplaced);
+    if(pathString.length()==0) {throw new IllegalArgumentException();}
     cs=PathAux.parseValidCs(pathString.substring(0, pathString.length()-1).toString());
     }
 
@@ -32,7 +37,10 @@ public class FromDotToPath {
   }
 
   private boolean parseToken(String token) {
-    if(token.startsWith("(")) { parseMCall(token); return true; }
+    if(token.startsWith("(")) {
+      parseMCall(token);
+      return true;
+    }
     StringBuffer tb=new StringBuffer();
     for(int i:token.codePoints().boxed().collect(Collectors.toList())) {
       char c=toChar(i);
@@ -43,32 +51,56 @@ public class FromDotToPath {
     token=tb.reverse().toString();
     if(token.isEmpty()) {return false;}//and stop processing the for
     char c=toChar(token.codePointAt(0));
-    boolean up=PathAux.isValidPathStart(c);
     boolean down=MethodSelector.checkX(""+c,true);
     boolean out=PathAux.isValidOuter(token);
-    //assert boolToInt(up) + boolToInt(up) + boolToInt(up) == 1;
+    boolean up=!out && PathAux.isValidPathStart(c);
+    assert boolToInt(up) + boolToInt(down) + boolToInt(out) == 1;
     if(out) { parseThis(token); return unskipped; }
     if(up) { parsePath(token); return unskipped; }
     if(down) { parseX(token); return unskipped; }
     throw new IllegalArgumentException();
   }
 
-  private int boolToInt(boolean up) {
-    return up ? 1 : 0;
+  private int boolToInt(boolean bool) {
+    return bool ? 1 : 0;
   }
 
   private void parseMCall(String token) {
     String noFirstChar=token.substring(1, token.length());
-    ErrorMessage.UnclosedParenthesis err= Parser._checkForBalancedParenthesis(noFirstChar);
-    if(err==null) {throw new IllegalArgumentException();}
+    String methName=reverse(skipArgs(noFirstChar));
+    boolean isM=MethodSelector.checkX(methName,true);
+    if(!isM) {throw new IllegalArgumentException();}
+    ms.add(0, Ast.MethodSelector.parse(methName+"()"));
+
     System.out.println(noFirstChar);
-    System.out.println(err.getPos());
+
+  }
+
+  private String skipArgs(String noFirstChar) {
+    try{
+      Parser.checkForBalancedParenthesis(noFirstChar);
+    } catch(ErrorMessage.UnclosedParenthesis e) {
+      System.out.println(e.getClass().getSimpleName());
+      System.out.println(e.getPos());
+    } catch(ErrorMessage.UnclosedStringLiteral e) {
+      System.out.println(e.getClass().getSimpleName());
+      System.out.println(e.getPos());
+    } catch(ErrorMessage.UnopenedParenthesis e) {
+      System.out.println(e.getClass().getSimpleName());
+      System.out.println(e.getPos());
+      return noFirstChar.substring(e.getPos(), noFirstChar.length());
+    } catch(ErrorMessage.ParenthesisMismatchRange e) {
+      System.out.println(e.getClass().getSimpleName());
+      System.out.println("Pos1: "+e.getPos1()+" Pos2: "+e.getPos2());
+    }
+    throw new IllegalArgumentException();
   }
 
   private void parseThis(String token) {
     if(thisNum!=-1){throw new IllegalArgumentException();}
     thisNum=PathAux.getThisn(token);
   }
+
   private void parsePath(String token) {
     StringBuffer b=new StringBuffer(token);
     //for(int i:token.codePoints().boxed().collect(Collectors.toList())) {
@@ -89,13 +121,13 @@ public class FromDotToPath {
     throw new IllegalArgumentException();
   }
 
-  private char toChar(int codePoint) {
+  static char toChar(int codePoint) {
     char[]cs=Character.toChars(codePoint);
     if(cs.length!=1) {throw new IllegalArgumentException();}
     return cs[0];
   }
 
-  private String reverse(String input) {
+  private static String reverse(String input) {
     return new StringBuilder(input).reverse().toString();
   }
 
