@@ -68,9 +68,14 @@ public class FromDotToPath {
   private void parseMCall(String token) {
     String noFirstChar=token.substring(1, token.length());
     String methName=reverse(skipArgs(noFirstChar));
+    String mArgs=noFirstChar.substring(0, noFirstChar.length()-(methName.length()+1));
+    ParseMArg mArg=new ParseMArg(mArgs);
+
     boolean isM=MethodSelector.checkX(methName,true);
     if(!isM) {throw new IllegalArgumentException();}
-    ms.add(0, Ast.MethodSelector.parse(methName+"()"));
+    String args=mArg.xs.toString().replace(" ", "");
+    args=args.substring(1, args.length()-1);
+    ms.add(0, Ast.MethodSelector.parse(methName+"("+args+")"));
 
     System.out.println(noFirstChar);
 
@@ -127,7 +132,7 @@ public class FromDotToPath {
     return cs[0];
   }
 
-  private static String reverse(String input) {
+  static String reverse(String input) {
     return new StringBuilder(input).reverse().toString();
   }
 
