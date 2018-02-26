@@ -9,12 +9,12 @@ Alu: {/*@plugin
 L42.is/connected/withAlu
 */}
 ExitCode: {
-class method 
-Library normal()  {/*@exitStatus
+class method /*To signal normal program completion
+*/Library normal()  {/*@exitStatus
 0
 */}
-class method 
-Library failure()  {/*@exitStatus
+class method /*To signal a failure in program completion
+*/Library failure()  {/*@exitStatus
 42000
 */}}
 Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
@@ -35951,9 +35951,9 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 */})
   
   catch error Library x (
-    Void unused3957550=This1.UnresolvedOverloading.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.MethodUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.UnresolvedOverloading.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -35997,9 +35997,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.ClassClash.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36070,10 +36070,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.ClassClash.#exceptionIf(binaryRepr:x)
-    Void unused3957553=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused36043=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36086,8 +36086,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36165,8 +36165,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.PrivacyCoupuled.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PrivacyCoupuled.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36218,9 +36218,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodClash.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36233,8 +36233,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PathUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36247,8 +36247,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.MethodClash.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36261,7 +36261,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36321,10 +36321,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.IncoherentMapping.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused3957553=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.IncoherentMapping.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36043=This1.PathUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36732,10 +36732,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused3957553=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36043=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36875,9 +36875,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused3957550=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused3957551=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused3957552=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   

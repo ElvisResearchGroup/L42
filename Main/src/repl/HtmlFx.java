@@ -116,7 +116,7 @@ public class HtmlFx extends StackPane{
   private void displayDoc(ReplTextArea editor, int row, int col) {
     if(ReplGui.main.repl==null) {return;}
 
-    editor.setDoc("Row: "+row+" Col: "+col+"\n");
+    //editor.setDoc("Row: "+row+" Col: "+col+"\n");
     FromDotToPath r=new FromDotToPath(editor.getText(),row,col);
 
     Program p=ReplGui.main.repl.p;
@@ -124,26 +124,7 @@ public class HtmlFx extends StackPane{
     catch(Throwable t){throw new IllegalArgumentException(t);}
     //try {p=p.pop();}catch(Throwable  t) {}
     ClassB top=p.top();
-
-    for(ast.Ast.MethodSelector ms: r.ms) {
-      ClassB.Member m=top._getMember(ms);
-      if(m==null) {throw new IllegalArgumentException(); }
-      if(m instanceof ClassB.MethodImplemented){throw new IllegalArgumentException(); }
-      ClassB.MethodWithType mwt=(ClassB.MethodWithType)m;
-      Path rt = mwt.getMt().getReturnType().getPath();
-      try{p=p.navigate(rt);top=p.top();}
-      catch(Throwable t){throw new IllegalArgumentException(t);}
-    }
-    editor.appendDoc(top.getDoc1().toString());
-
-    editor.appendDoc("\nSupertypes:");
-    for(Ast.Type t : top.getSupertypes()) {
-      editor.appendDoc("\n  -> "+t.toString());
-    }
-    editor.appendDoc("\nMethods:");
-    for(MethodWithType m : top.mwts()) {
-      editor.appendDoc("\n  -> "+m.toString());
-    }
+    editor.setDoc(Path.outer(0,r.cs), top);
   }
 
   public static Error propagateException(Throwable t){
