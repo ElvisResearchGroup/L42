@@ -18,6 +18,16 @@ but is not guaranteed a+(b+c)=(a+b)+c
 a+b sim b+a
 sim allows differences in the order of implemented
 interfaces, declared methods and nested classes.
+
+moreover, ideally, we would like the following property for our operators:
+L1,L2 and L3 are possibly typed and type-annotated, or possibly not
+typed libraries
+type(L) is the typed version of an L, and type(type(L))=type(L)
+**if L1 +L2 =L3
+then  type(L1)+type(l2)=type(l3)
+**if L1 +L2 =error
+then  type(L1)+type(l2)=error
+
 */
 
 
@@ -73,8 +83,29 @@ interface ComposeSpec{
 /**<pre>#define L1 ++p L2 = L0
 L1 ++p L2 = norm(p.evilPush(L0)) //TODO: in the implementation we just return L0 for now
   with L0=L1 +p.evilPush(L0) L2
-  and norm(p.evilPush(L0))=L0 except for order of implemented interfaces and members
+  and ssv(p.evilPush(L1),p.evilPush(L2),p.evilPush(L0))
   //note, we need to refresh the private names here
+
+#define ssv((p1, p2)?, p0), ssv(p,e), refined(p,ms,Ps)=Ps'
+//subtle subtype violation error function, p1,p2 parameters can be absent/empty
+ssv((p1, p2)?, p0):
+  error if p0.top().Ps!=collect(p0,p0.top().Ps) //set equality
+  error if dom(p0.top().mwts)!=dom(methods(p,This0))
+  error if {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top()) and not
+refined(p,ms,p0.top().Ps) subsetEq refined(p,ms,pi.top().Ps)
+  dsj=dom(p1.top()) disjoint dom(p2.top())
+  forall C in dsj ssv(p1.navigate(C),p2.navigate(C),p0.navigate(C))
+  forall C in dom(p0.top())\dsj ssv(p0.navigate(C))
+  forall refine? mt e in p0.top() ssv(p0,e)
+
+ssv(p,e):
+  forall L such that e=ctxC[L], ssv(p.evilPush(L))
+
+refined(p,ms,Ps)={P |P in Ps and ms in dom(p(P)) }
+
+
+    
+   
 </pre>*/void compose();
 
 /**<pre>#define L1 +p L2 = L0

@@ -256,12 +256,14 @@ Phase| p| Ps |-M ~> M'
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
   else
     e?=e?'
-  refine? = refine <=>
+  //TODO: replace in code, before was refine? = refine <=>
+  if ?refine=empty, then for no P in Ps M.ms in dom(p(P))
+  if ?refine=refine then //end change, test under as before
     forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
       all of the following hold:
       M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
       p|-T<= T' //method returns a type which is not a sybtype of its ancestor "name"
       p.equiv(T1,T'1)..p.equiv(Tn,T'n) //invalid type w.r.t. ancestor paramerer xi
       forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
-      //or error: leaked exception P is not the subtype of a declared exception
+      //or error: leaked exception P is not the subtype of a declared exception//description of error messages in the comments
       //or  method declares an exception (P) which is not a subtype of ancestor exceptions
