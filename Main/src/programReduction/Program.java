@@ -170,6 +170,14 @@ public interface Program {
     res.freshIds=new int[]{freshIdStart};
     return res;
     }
+  /**should be always valid for normalized tops.
+   * Returns true or error*/
+  default boolean checkTopInterfacesDefined() {
+    for(Path pi:this.top().getSuperPaths()) {
+      this.navigate(pi);
+      }
+    return true;
+    }
   }
 class EmptyProgramHolder{
   static final ClassB cached=new ClassB(Doc.empty(), false,Collections.emptyList(),Collections.emptyList(), Position.noInfo, Phase.Typed, -2);

@@ -36,7 +36,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,6 +58,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Functions;
 import coreVisitors.CloneVisitor;
+import coreVisitors.CollectClassBs0;
 import coreVisitors.TestShapeVisitor;
 import facade.PData;
 import ast.ExpCore.ClassB.Member;
@@ -81,32 +84,36 @@ interface ComposeSpec{
 //we may break typing. Redirect, in the same way, can not redirect classes
 //containing plg comments!
 /**<pre>#define L1 ++p L2 = L0
-L1 ++p L2 = norm(p.evilPush(L0)) //TODO: in the implementation we just return L0 for now
+  L1 ++p L2 = L0
   with L0=L1 +p.evilPush(L0) L2
   and ssv(p.evilPush(L1),p.evilPush(L2),p.evilPush(L0))
   //note, we need to refresh the private names here
 
 #define ssv((p1, p2)?, p0), ssv(p,e), refined(p,ms,Ps)=Ps'
 //subtle subtype violation error function, p1,p2 parameters can be absent/empty
-ssv((p1, p2)?, p0):
-  error if p0.top().Ps!=collect(p0,p0.top().Ps) //set equality
+
+</pre>*/void compose();
+
+/**<pre>ssv((p1, p2)?, p0):
+  error if not collect(p0,p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
   error if dom(p0.top().mwts)!=dom(methods(p,This0))
-  error if {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top()) and not
-refined(p,ms,p0.top().Ps) subsetEq refined(p,ms,pi.top().Ps)
-  dsj=dom(p1.top()) disjoint dom(p2.top())
-  forall C in dsj ssv(p1.navigate(C),p2.navigate(C),p0.navigate(C))
-  forall C in dom(p0.top())\dsj ssv(p0.navigate(C))
+  error if {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to ms that are "refine" in p0
+    ps0=refined(p0,ms,p0.top().Ps),//that is, they need to be defined
+    psi=refined(pi,ms,pi.top().Ps)
+    and not ps0 subsetEq psi //using p0.equiv //that is, there is some 'surprisingly added' stuff in ps0
+  if (p1, p2)? =empty
+    dsj=empty, otherwise
+    dsj=dom(p1.top()) disjoint dom(p2.top())//that is, present in both p1 and p2
+  forall C in dsj ssv(p1.push(C),p2.push(C),p0.push(C))
+  forall C in dom(p0.top())\dsj ssv(p0.push(C))
   forall refine? mt e in p0.top() ssv(p0,e)
 
 ssv(p,e):
   forall L such that e=ctxC[L], ssv(p.evilPush(L))
 
 refined(p,ms,Ps)={P |P in Ps and ms in dom(p(P)) }
-
-
-    
-   
-</pre>*/void compose();
+  where p(Pi) is defined forall Pi in Ps //thus, undefined otherwise
+</pre>*/void ssv();
 
 /**<pre>#define L1 +p L2 = L0
 {interface?1 implements Ts mwts ncs} +p {interface?2 implements Ts' mwt1..mwtn nc1..nck}
@@ -193,6 +200,100 @@ public class Compose {
     }
   finally{popC();}
   }
+
+ /**{@link ComposeSpec#ssv}*/
+ public static List<Path> _refined(Program p, Ast.MethodSelector ms,List<Path>ps) {
+   try{return ps.stream().filter(pi->
+     p.navigate(pi).top().mwts().stream().anyMatch(m->m.getMs().equals(ms))
+     ).collect(Collectors.toList());}
+   catch(ErrorMessage.CtxExtractImpossible notFound) {return null;}
+   }
+ /**{@link ComposeSpec#ssv}
+ * @throws SubtleSubtypeViolation */
+ public static void ssv(Program p, ExpCore e) throws SubtleSubtypeViolation {
+   for(ClassB cb:CollectClassBs0.of(e)) {ssv(null,null,p.evilPush(cb));}
+   }
+ /**{@link ComposeSpec#ssv}
+ * @throws SubtleSubtypeViolation */
+ public static void ssv(Program _p1,Program _p2,Program p0) throws SubtleSubtypeViolation {
+   assert (_p1==null && _p2==null) ||(_p1!=null && _p2!=null);
+   //assert _p1==null || _p1.checkTopInterfacesDefined();
+   //assert _p2==null || _p2.checkTopInterfacesDefined();
+   //assert p0.checkTopInterfacesDefined();
+   List<Type> ps0 = p0.top().getSupertypes();
+   List<Type> ps0Coll = Methods.collect(p0,ps0);
+   boolean sEq=subsetEq(p0, ps0,ps0Coll);
+   if(!sEq) {
+     throw new RefactorErrors.SubtleSubtypeViolation().msg(
+       "In "+p0.top().getP()+"\n"+ps0+" does not contains all of "+ps0Coll
+       );
+     }
+   //error if dom(p0.top().mwts)!=dom(methods(p,This0))
+   Set<Ast.MethodSelector>ms0=p0.top().mwts().stream()
+     .map(m->m.getMs()).collect(Collectors.toSet());
+   Set<Ast.MethodSelector>ms0Coll=p0.methods(Path.outer(0)).stream()
+       .map(m->m.getMs()).collect(Collectors.toSet());
+   boolean mEq=ms0.equals(ms0Coll);
+   if(!mEq) {
+     ms0Coll.removeAll(ms0);
+     throw new RefactorErrors.SubtleSubtypeViolation().msg(
+       "In "+p0.top().getP()+"\n"+" Selectors "+ms0Coll+" not found"
+       );
+     }
+   if(_p1!=null) {
+     ssv_ij(_p1,_p2,p0);
+     ssv_ij(_p2,_p1,p0);
+     }
+   List<Ast.C>c1=new ArrayList<>();
+   List<Ast.MethodSelector>ms1=new ArrayList<>();
+   if(_p1!=null) {
+     List<Ast.C>c2=new ArrayList<>();
+     List<Ast.MethodSelector>ms2=new ArrayList<>();
+     _p1.top().getMs().stream().forEach(m->{
+       if(m instanceof MethodWithType) {ms1.add(((MethodWithType)m).getMs());}
+       else c1.add(((NestedClass)m).getName());
+     });
+     _p2.top().getMs().stream().forEach(m->{
+       if(m instanceof MethodWithType) {ms2.add(((MethodWithType)m).getMs());}
+       else c2.add(((NestedClass)m).getName());
+     });
+     c1.retainAll(c2);
+     ms1.retainAll(ms2);
+     for(Ast.C c:c1) {
+       ssv(_p1.push(c),_p2.push(c),p0.push(c));
+       }
+     }
+   for(NestedClass nc:p0.top().ns()) {
+     if(c1.contains(nc.getName())){continue;}
+     ssv(null,null,p0.push(nc.getName()));
+     }
+   for(MethodWithType mwt:p0.top().mwts()) {
+     if(mwt.get_inner()!=null) {ssv(p0,mwt.get_inner());}
+     }
+   }
+ /**{@link ComposeSpec#ssv}
+ * @throws SubtleSubtypeViolation */
+ private static void ssv_ij(Program pi,Program pj,Program p0) throws SubtleSubtypeViolation {
+   List<Ast.MethodSelector> domPi=pi.top().mwts().stream()
+     .map(m->m.getMs()).collect(Collectors.toList());
+   List<Ast.MethodSelector> domPj=pj.top().mwts().stream()
+       .map(m->m.getMs()).collect(Collectors.toList());
+   domPi.removeAll(domPj);
+   for(Ast.MethodSelector ms:domPi) {
+     //TODO: efficiency issue: the program is navigated for all superpaths and for all methods.
+     //If I could save the navigation for the superpaths, I could avoid recomputing it in the refined function.
+     List<Path>refp0=_refined(p0, ms, p0.top().getSuperPaths());
+     List<Path>refpi=_refined(pi, ms, pi.top().getSuperPaths());
+     if(refp0==null || refpi==null) {continue;}
+     if(!refpi.containsAll(refp0)){
+       throw new RefactorErrors.SubtleSubtypeViolation().msg(
+         "In "+p0.top().getP()+"\n"+" Selector "+ms+" refining from "+
+         refpi+ " would be requested to refine also "+refp0
+           );
+       }
+     }
+   }
+
   /**{@link ComposeSpec#compose}*/
   public static ClassB compose(PData pData,ClassB a,ClassB b) throws MethodClash, SubtleSubtypeViolation, ClassClash{
     return new Compose(a,b).compose(pData.p,a,b);}
@@ -206,50 +307,17 @@ public class Compose {
     ClassB forP=onlySubtypeCompose(a, b);
     Program p=pp.evilPush(forP);
     ClassB res=innerCompose(p,a,b);
-    checkSubtleSubtypeViolation(pp.evilPush(res));
+    checkSubtleSubtypeViolation(pp.evilPush(a),pp.evilPush(b),pp.evilPush(res));
     return res;
     }
-  private  void checkSubtleSubtypeViolation(Program p) throws RefactorErrors.SubtleSubtypeViolation {
-    try{
-      RefactorErrors.SubtleSubtypeViolation err=_checkSubtleSubtypeViolation(p);
-      if(err!=null){throw err;}
-      }
+  private  void checkSubtleSubtypeViolation(Program p1,Program p2,Program p0) throws RefactorErrors.SubtleSubtypeViolation {
+    try{ssv(p1,p2,p0);}
     catch(ErrorMessage em){
       throw new RefactorErrors.SubtleSubtypeViolation().msg(em.toString());
       }
     }
-  private static RefactorErrors.SubtleSubtypeViolation _checkSubtleSubtypeViolation(Program p) {
-    ClassB l=p.top();
-    List<Ast.Type> ps1 = Methods.collect(p,l.getSupertypes());
-    boolean superOk=superOk(p,l.getSupertypes(),ps1);
-    if(!superOk){
-      return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+"\n"+l.getSupertypes()+" does not contains all of "+ps1);
-      }
-    for(MethodWithType m :p.methods(Path.outer(0))){
-      //there must be equivalent in l
-      Member mi = l._getMember(m.getMs());
-      if(mi==null){return new RefactorErrors.SubtleSubtypeViolation().msg("In "+l.getP()+"\n"+" Selector "+m.getMs()+" not found");}
-      if(m.get_inner()==null){continue;}
-      //we trust the mt to be the same
-      //we trust the e is the same except for nested L, where we use recursion
-      ExpCore body=m.getInner();
-      RefactorErrors.SubtleSubtypeViolation[]out={null};
-      body.accept(new TestShapeVisitor(){
-        @Override public Boolean visit(ClassB cb){
-          if(out[0]!=null){return false;}
-          out[0]=_checkSubtleSubtypeViolation(p.evilPush(cb));
-          return out[0]==null;
-        }});
-      if(out[0]!=null){return out[0];}
-      }
-    for(NestedClass nci:l.ns()){
-      RefactorErrors.SubtleSubtypeViolation out=_checkSubtleSubtypeViolation(p.push(nci.getName()));
-      if(out!=null){return out;}
-      }
-    return null;
-    }
 
-private static boolean superOk(Program p,List<Type> all, List<Type> some) {
+private static boolean subsetEq(Program p,List<Type> all, List<Type> some) {
 //check all.containsAll(some)
   for(Type tAll:all)out:{
     for(Type tSome:some){

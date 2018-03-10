@@ -4,6 +4,7 @@ import java.util.List;
 
 import ast.Ast;
 import ast.Ast.Position;
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -83,7 +84,7 @@ public class CtxL {
         }
       i++;
     }
-    throw Assertions.codeNotReachable();
+    throw new ErrorMessage.CtxExtractImpossible(null,null);
     }
   private static int firstNotCompiled(List<Member> ms) {
     for(int i=0;i<ms.size();i++){
