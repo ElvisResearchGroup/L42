@@ -96,7 +96,7 @@ interface ComposeSpec{
 
 /**<pre>ssv((p1, p2)?, p0):
   error if not collect(p0,p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
-  error if dom(p0.top().mwts)!=dom(methods(p,This0))
+  error if dom(p0.top().mwts)!=dom(methods(p0,This0))
   error if {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to ms that are "refine" in p0
     ps0=refined(p0,ms,p0.top().Ps),//that is, they need to be defined
     psi=refined(pi,ms,pi.top().Ps)
