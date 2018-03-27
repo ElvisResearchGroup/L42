@@ -1,0 +1,9 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+SS:Collections.vector(of:S)
+Main: {
+  s=SS[S"1";S"2"]
+  Debug(S"0 "[ with si in s.vals() (use[si  sep:S" "])]" 3")
+  return ExitCode.normal()
+  }

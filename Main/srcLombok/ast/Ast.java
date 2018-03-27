@@ -16,6 +16,7 @@ import auxiliaryGrammar.Functions;
 import facade.L42;
 import ast.Ast.Op;
 import ast.Ast.Path;
+import ast.Ast.Position;
 import sugarVisitors.Desugar;
 import tools.Assertions;
 import tools.StringBuilders;
@@ -440,7 +441,7 @@ public interface Ast {
     assert ann.stream().allMatch(Doc::isValidAnnotation)://
       "";
     Doc tmp = new Doc(this.multiline, this.s, ann, this.parameters, this.p);
-    assert Doc.factory(this.multiline,tmp.toStringWeak()).equals(tmp)://
+    assert Doc.factory(this.multiline, tmp.toStringWeak()).equals(tmp.withP(Position.noInfo)) : //
       "";
     return tmp;
   }
@@ -482,7 +483,7 @@ public interface Ast {
           }
         public String toString() {
           String text=toStringWeak();
-          assert Doc.factory(this.multiline, text).equals(this)://
+          assert Doc.factory(this.multiline, text).equals(this.withP(Position.noInfo)) : //
             "";
           return text;
         }
