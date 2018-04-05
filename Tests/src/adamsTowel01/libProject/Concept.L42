@@ -3,11 +3,28 @@ ToS:{interface
   read method S toS()
   }
 Classable:{interface
-  class method read This cast(read This that)
-  class method mut This #cast(mut This that)
-  read method class This class()
-  class method S readableName()
-  class method Bool is(class Any subtype)
+  class method/*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This cast(read This that)
+  class method/*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This #cast(mut This that)
+  read method/*
+  Extracts the class singleton from another instance of this class
+  */class This class()
+  class method/*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */S readableName()
+  class method/*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */Bool is(class Any subtype)
   }
 
 Base:{interface

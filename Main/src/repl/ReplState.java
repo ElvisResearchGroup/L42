@@ -94,6 +94,7 @@ public static ReplState start(String code, Loader cacheC42){
       }
     newMs.addAll(codeTmp.getMs());
     codeTmp=codeTmp.withMs(newMs).withP(fullP);
+    auxiliaryGrammar.WellFormedness.checkAll(codeTmp);
     Expression code2=Desugar.of(codeTmp);
     ExpCore.ClassB code3=(ExpCore.ClassB)code2.accept(new InjectionOnCore());
     List<Member> resultMs=new ArrayList<>(this.desugaredL.getMs());

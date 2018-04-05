@@ -95,8 +95,10 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This1.Bool is(class Any subtype) (
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) (
   Void unused13=(
     Void unused14=(
       class This0 subtype1=(
@@ -130,8 +132,11 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This0 class() This0
-refine class method 
-This1.S readableName() This1.GetMyName.#apply(that:This0)
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() This1.GetMyName.#apply(that:This0)
 refine read method 
 This1.S toS() (
   Void unused18=(
@@ -466,8 +471,10 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This1.Bool is(class Any subtype) (
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) (
   Void unused132=(
     Void unused133=(
       class This0 subtype2=(
@@ -501,8 +508,11 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This0 class() This0
-refine class method 
-This1.S readableName() This1.GetMyName.#apply(that:This0)
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() This1.GetMyName.#apply(that:This0)
 class method 
 This0 fromS(This1.Concept.ToS that) (
   This1.S s=that.toS()
@@ -1228,8 +1238,10 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This1.Bool is(class Any subtype) (
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) (
   Void unused340=(
     Void unused341=(
       class This0 subtype3=(
@@ -1263,8 +1275,11 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This0 class() This0
-refine class method 
-This1.S readableName() This1.GetMyName.#apply(that:This0)
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() This1.GetMyName.#apply(that:This0)
 class method 
 mut This0 #from(Library binaryRepr) This0._private(_binaryRepr:binaryRepr)
 read method 
@@ -2338,10 +2353,15 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -2419,14 +2439,25 @@ refine read method
 class This0 class() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) }
 class method 
@@ -2502,10 +2533,15 @@ CurlyBlock-Should be unreachable code
   )
 refine read method 
 class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -2898,30 +2934,54 @@ ToS: {interface
 read method 
 This2.S toS() }
 Classable: {interface 
-class method 
-read This0 cast(read This0 that) 
-class method 
-mut This0 #cast(mut This0 that) 
-read method 
-class This0 class() 
-class method 
-This2.S readableName() 
-class method 
-This2.Bool is(class Any subtype) }
+class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This0 that) 
+class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This0 that) 
+read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) }
 Base: {interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
 */
 refine read method 
 This2.S toS() 
-refine class method 
-read This1.Classable cast(read This1.Classable that) 
-refine class method 
-mut This1.Classable #cast(mut This1.Classable that) 
-refine read method 
-class This1.Classable class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Classable cast(read This1.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Classable #cast(mut This1.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This1.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 Wrapper: {interface 
@@ -3023,14 +3083,25 @@ refine read method
 class This0 class() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method 
-mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 Opt: {/*will be Fixed in AdamTowel02
@@ -3196,14 +3267,25 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This3.Message class() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Continue: {
@@ -3235,14 +3317,25 @@ refine read method
 class This1.Message class() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method 
-mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -3353,8 +3446,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -3386,8 +3486,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -3419,10 +3526,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -3604,8 +3730,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -3637,8 +3770,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -3670,10 +3810,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -3855,8 +4014,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -3888,8 +4054,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -3921,10 +4094,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -4010,14 +4202,25 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -4128,8 +4331,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -4161,8 +4371,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -4194,10 +4411,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -4285,14 +4521,25 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -4403,8 +4650,15 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -4436,8 +4690,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -4469,10 +4730,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -4659,8 +4939,11 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -4692,8 +4975,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -4725,10 +5011,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -4910,8 +5208,11 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -4943,8 +5244,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -4976,10 +5280,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -5227,8 +5543,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -5260,8 +5583,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -5293,10 +5623,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -6680,16 +7029,28 @@ mut This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This3.Concept.Classable class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This3.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 MutListT: {implements This4.Concept.ToS
 read method 
 This4.Size size() 
@@ -8454,8 +8815,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -8487,8 +8855,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -8520,10 +8895,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -9685,16 +10079,28 @@ lent This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This3.Concept.Classable class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This3.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 MutListT: {implements This4.Concept.ToS
 read method 
 This4.Size size() 
@@ -11198,8 +11604,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This1.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This1.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This1.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -11231,8 +11640,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -11264,12 +11676,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This1.S readableName() This1.GetMyName.#apply(that:This0)
-refine class method 
-This1.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() This1.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -12724,8 +13149,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: java.util.Li
 */})
   res
   ))
-refine class method 
-read This0 cast(read This1.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -12757,8 +13185,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -12790,12 +13221,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This1.S readableName() This1.GetMyName.#apply(that:This0)
-refine class method 
-This1.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() This1.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -12968,8 +13412,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -13001,8 +13452,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -13034,10 +13492,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -13637,8 +14114,11 @@ plugin string: toFix\u000aplugin part: ast.Ast$MethodSelector\u000amethod name: 
 */})
   res
   ))
-refine class method 
-read This0 cast(read This1.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -13670,8 +14150,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -13703,12 +14186,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This1.S readableName() This1.GetMyName.#apply(that:This0)
-refine class method 
-This1.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() This1.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -13881,8 +14377,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -13914,8 +14417,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -13947,10 +14457,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -14301,16 +14830,28 @@ This0 fromS(This2.S that) (
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This2.Concept.Classable class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This2.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -14421,8 +14962,15 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -14454,8 +15002,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -14487,10 +15042,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -14568,16 +15142,28 @@ This$: {implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classabl
 */
 refine read method 
 This3.S toS() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This3.Concept.Classable class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This3.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) }
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -14877,8 +15463,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -14910,8 +15499,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -14943,12 +15535,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -16172,16 +16777,45 @@ method
 This0.Doc doc() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method 
-mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine read method 
-class This1.Concept.Classable class() 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  
+  Extracts the class singleton from another instance of this class
+  */class This1.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -16292,8 +16926,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -16325,8 +16966,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -16358,10 +17006,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -16780,8 +17447,15 @@ This2.S toS() This0.readableName().#plusplus(that:This2.S.#from(builder:(
   Void unused2498=b397.#dot()
   b397
   )).#plusplus(that:this.name()))
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -16813,8 +17487,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -16846,12 +17527,34 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -17024,8 +17727,15 @@ mut This3.S.SConcat #seqBuilder() This3.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -17057,8 +17767,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -17090,10 +17807,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -17464,8 +18200,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -17497,8 +18236,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -17530,12 +18272,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -18816,8 +19571,11 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -18849,8 +19607,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -18882,10 +19643,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -19247,8 +20020,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -19280,8 +20056,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -19313,12 +20092,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -20591,14 +21383,25 @@ refine method
 This2.Doc doc() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) }}
 PlgClass: {
@@ -21316,8 +22119,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -21349,8 +22163,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -21382,10 +22207,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -21747,8 +22598,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -21780,8 +22634,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -21813,12 +22670,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -23252,8 +24122,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -23285,8 +24166,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -23318,10 +24210,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -23683,8 +24601,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This3.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This3.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -23716,8 +24637,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -23749,12 +24673,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -24983,16 +25920,28 @@ refine method
 This1.Doc doc() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This2.Concept.Classable class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This2.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 DispatchRefTo: {
@@ -25111,8 +26060,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine read method 
-class This0 class() This0
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
   Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -25120,8 +26070,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -25153,8 +26114,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -25186,10 +26158,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -25359,8 +26357,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine read method 
-class This0 class() This0
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
   Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -25368,8 +26367,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -25401,8 +26411,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -25434,10 +26455,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -25799,8 +26846,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This4.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This4.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -25832,8 +26882,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -25865,12 +26918,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -27186,8 +28252,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine read method 
-class This0 class() This0
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
   Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -27195,8 +28262,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -27228,8 +28306,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -27261,10 +28350,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -27626,8 +28741,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This4.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This4.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -27659,8 +28777,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -27692,12 +28813,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -29013,8 +30147,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine read method 
-class This0 class() This0
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
 refine read method 
 This3.S toS() This3.S.#from(binaryRepr:(
   Library res=use This0 check #toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -29022,8 +30157,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -29055,8 +30201,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -29088,10 +30245,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -29453,8 +30636,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This4.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This4.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -29486,8 +30672,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -29519,12 +30708,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -30739,16 +31941,28 @@ RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concep
 */
 refine read method 
 This3.S toS() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This3.Concept.Classable class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This3.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Lib: {/*@plugin  toFix 
@@ -30786,8 +32000,11 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -30819,8 +32036,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -30852,10 +32072,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -30948,8 +32180,11 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -30981,8 +32216,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -31014,10 +32252,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -31132,8 +32382,11 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -31165,8 +32418,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -31198,10 +32454,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -31294,8 +32562,11 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -31327,8 +32598,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -31360,10 +32634,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -31578,8 +32864,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine read method 
-class This0 class() This0
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
 refine read method 
 This2.S toS() This2.S.#from(binaryRepr:(
   Library res=use This0 check toS(_this:this.#binaryRepr()) error This0.#pluginUnresponsive(binaryRepr: {/*@stringU
@@ -31587,8 +32874,19 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -31620,8 +32918,19 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -31653,10 +32962,36 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -31761,8 +33096,11 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.locati
 */})
   res
   ))
-refine class method 
-read This0 cast(read This3.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -31794,8 +33132,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -31827,10 +33168,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This3.S readableName() This3.GetMyName.#apply(that:This0)
-refine class method 
-This3.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() This3.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -32192,8 +33545,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This4.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This4.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This4.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -32225,8 +33581,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -32258,12 +33617,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This4.S readableName() This4.GetMyName.#apply(that:This0)
-refine class method 
-This4.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() This4.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -33549,14 +34921,25 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 ErrorW: {
@@ -33612,14 +34995,25 @@ refine read method
 This3.S text() 
 refine read method 
 class This3.Message class() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) }
 class method 
@@ -33708,8 +35102,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -33741,8 +35138,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -33774,10 +35174,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -33912,8 +35324,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -33945,8 +35360,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -33978,10 +35396,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -34116,8 +35546,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -34149,8 +35582,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -34182,10 +35618,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -34320,8 +35768,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -34353,8 +35804,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -34386,10 +35840,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -34538,8 +36004,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -34571,8 +36040,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -34604,10 +36076,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -34756,8 +36240,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -34789,8 +36276,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -34822,10 +36312,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -34967,8 +36469,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -35000,8 +36505,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -35033,10 +36541,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -35185,8 +36705,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -35218,8 +36741,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -35251,10 +36777,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -35389,8 +36927,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -35422,8 +36963,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -35455,10 +36999,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -35593,8 +37149,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -35626,8 +37185,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -35659,10 +37221,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -35797,8 +37371,11 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
   ))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -35830,8 +37407,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -35863,10 +37443,22 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -35951,9 +37543,9 @@ plugin string: is.L42.connected.withSafeOperators\u000aplugin part: is.L42.conne
 */})
   
   catch error Library x (
-    Void unused396108550=This1.UnresolvedOverloading.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.MethodUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.UnresolvedOverloading.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -35997,9 +37589,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.ClassClash.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36070,10 +37662,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.ClassClash.#exceptionIf(binaryRepr:x)
-    Void unused396108553=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.ClassClash.#exceptionIf(binaryRepr:x)
+    Void unused36043=This1.SubtleSubtypeViolation.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36086,8 +37678,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36165,8 +37757,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.PrivacyCoupuled.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PrivacyCoupuled.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36218,9 +37810,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodClash.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36233,8 +37825,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PathUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36247,8 +37839,8 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.MethodClash.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36261,7 +37853,7 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36321,10 +37913,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.IncoherentMapping.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused396108553=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.IncoherentMapping.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36043=This1.PathUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36447,8 +38039,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -36480,8 +38079,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -36513,10 +38119,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
@@ -36732,10 +38357,10 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused396108553=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36043=This1.ClassUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -36875,9 +38500,9 @@ plugin string: toFix\u000aplugin part: is.L42.connected.withSafeOperators.refact
 */})
   
   catch error Library x (
-    Void unused396108550=This1.MethodClash.#exceptionIf(binaryRepr:x)
-    Void unused396108551=This1.PathUnfit.#exceptionIf(binaryRepr:x)
-    Void unused396108552=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36040=This1.MethodClash.#exceptionIf(binaryRepr:x)
+    Void unused36041=This1.PathUnfit.#exceptionIf(binaryRepr:x)
+    Void unused36042=This1.SelectorUnfit.#exceptionIf(binaryRepr:x)
     error x
     )
   
@@ -38488,8 +40113,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This2.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This2.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -38521,8 +40149,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -38554,12 +40185,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -40067,8 +41711,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This2.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This2.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -40100,8 +41747,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -40133,12 +41783,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -41652,8 +43315,11 @@ mut This0.IteratorVar #vals() this.#vals(from:This2.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This2.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -41685,8 +43351,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -41718,12 +43387,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -42992,8 +44674,11 @@ lent This0.IteratorVar #vals() this.#vals(from:This2.Size.#from(builder:(
   )), minTo:this.inner().size())
 refine read method 
 This2.S toS() this.inner().toS()
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused491=(
     Void unused492=(
       read This0 that13=(
@@ -43025,8 +44710,11 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused496=(
     Void unused497=(
       mut This0 that14=(
@@ -43058,12 +44746,25 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine read method 
-class This0 class() This0
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() This0
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused501=(
     Void unused502=(
       class This0 subtype5=(
@@ -46203,8 +47904,15 @@ mut This2.S.SConcat #seqBuilder() This2.S.SConcat.#apply(old:this.text(), accumu
   )))
 refine read method 
 class This0 class() This0
-refine class method 
-read This0 cast(read This2.Concept.Classable that) (
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) (
   Void unused471=(
     Void unused472=(
       read This0 that10=(
@@ -46236,8 +47944,15 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) (
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) (
   Void unused476=(
     Void unused477=(
       mut This0 that11=(
@@ -46269,10 +47984,29 @@ CastT-Should be unreachable code
 CurlyBlock-Should be unreachable code
 */}
   )
-refine class method 
-This2.S readableName() This2.GetMyName.#apply(that:This0)
-refine class method 
-This2.Bool is(class Any subtype) (
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() This2.GetMyName.#apply(that:This0)
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) (
   Void unused481=(
     Void unused482=(
       class This0 subtype4=(
