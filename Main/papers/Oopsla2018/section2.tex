@@ -1,0 +1,181 @@
+\saveSpace
+\section{The Design of \name: Separating Use and Reuse}\label{sec:separate}
+\saveSpace\saveSpace
+This section presents an overview of \name and illustrates the
+key ideas of its design. In particular we illustrate how to separate code use and 
+code reuse, and how \name solves the this-leaking problem.
+% in \name. %, and how this allows improving both. 
+
+%\subsection{The Design of \name: Decoupling Use from Reuse}
+\saveSpace\saveSpace
+\subsection{Classes in \name: A mechanism for code Use}
+\saveSpace
+%\name has a substantially different design from Java-like languages.
+The concept of a class in \name provides a mechanism for code-use
+only. This means that there is actually no subclassing:
+\name classes are roughly equivalent to final classes in Java.  Thus,
+compared to Java, the most noticeable difference is the
+absence of the \Q@extends@ keyword in \name.
+
+Consider the example from Section~\ref{sec:intro}, rewritten in \name, introducing classes \Q@Utils@ and\Q@A@:
+\saveSpace
+\begin{lstlisting}
+ Utils={ static method int m(A a){return ...} }
+ A= { method int ma(){return Utils.m(this);} }
+\end{lstlisting} 
+\saveSpace
+\noindent Classes in \name use a slightly different declaration style compared
+to Java: there is no \lstinline{class} keyword, and an equal sign separates the class name (which must always start with
+an uppercase letter) and the class implementation, which is used to specify the
+definitions of the class. In our example, in the class declaration
+for \lstinline{A}, the name of the class is \lstinline{A} and the code 
+literal associated with the class is `\Q@{ method int ma(){return Utils.m(this);}}@' and it contains the method \Q@ma()@.
+
+%We will see next some 
+%important differences to Java-like languages in the way 
+%classes and code-literals are type-checked, as we shall see next. 
+%Nevertheless, for this example, things still work in a similar way to Java. 
+
+In the \name code above there is no way to add a class 
+\Q@B@ reusing the code of \Q@A@: class \Q@A@ (uppercase) is designed for code \emph{use} and not \emph{reuse}.
+Thus, unlike the Java code, introducing a subclass
+\lstinline{B} is not possible. This may seem like a severe restriction, but
+\name has a different mechanism for \emph{code-reuse} that 
+is more appropriate when \emph{code-reuse} is intended. 
+
+\saveSpace
+\subsection{Traits in \name: A mechanism for code Reuse}
+\saveSpace
+Unlike classes, traits in \name cannot be instantiated and do not introduce new
+types. However they provide code reuse.
+%So, lets try again encoding the code for the leaking problem, but this
+%time aiming at code reuse. 
+Trait declarations 
+look very much like class declarations, but trait names 
+start with a lowercase letter.
+
+\saveSpace
+\begin{lstlisting}
+ Utils={ static method int m(A a){return ...} }
+ ta={ method int ma(){return Utils.m(this);}}//type error
+ A=Use ta
+\end{lstlisting}
+\saveSpace
+\noindent Here \lstinline{ta} is a trait intended to replace the
+original class \lstinline{A} so that the code of the method
+\lstinline{ma} can be reused. Then the class \lstinline{A} 
+is created by reusing the code from the trait \Q@ta@, introduced by the keyword 
+{\bf \lstinline{Use}}. Note that \use\ expressions cannot contain class names: only trait
+names are allowed.
+That is, \textbf{referring to a trait is the only way to induce code reuse}.
+
+The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
+the corresponding call in the Java code typecheck since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere is reused.
+In \name we do not commit the same mistake, and the code \Q@Utils.m(this)@ is ill typed:
+the type of \lstinline{this} in
+\Q@ta@ has no relationship to the type \lstinline{A}.
+
+
+The following second attempt would not work either:
+\saveSpace
+\begin{lstlisting}
+ Utils={ static method int m(ta a){return ...}//syntax error
+ ta={ method int ma(){return Utils.m(this);}}
+ A=Use ta
+\end{lstlisting}
+\saveSpace
+\Q@ta@ is not a type in the first place, since it is a (lowercase) trait name.
+Indeed, trait names can only be used in \use\ expressions, and thus they can not appear in method bodies or type annotations.
+In this way, the code of a trait can stay agnostic of its name. This is one of the key design decisions in \name:
+traits can be reused in multiple places, and their code can be seen under multiple types.
+\textbf{Interfaces are the only way to obtain subtyping}; 
+subtyping is the way to reason about commonalities between different types.
+
+Thus, to model the original Java example, we need an interface
+capturing the commonalities between \Q@A@ and \Q@B@:
+\saveSpace
+\begin{lstlisting}
+ IA={interface method int ma()}//interface with abstract method
+ Utils={static method int m(IA a){return ...} }
+ ta={implements IA //This line is the core of the solution
+     method int ma(){return Utils.m(this);}}
+ A=Use ta
+\end{lstlisting}
+\saveSpace
+This code works: \Q@Utils@ relies on interface \Q@IA@ and the trait \Q@ta@
+implements \Q@IA@.
+\Q@ta@ is well typed:
+any class reusing \Q@ta@ will contain the code of\Q@ta@,
+including the \Q@implements IA@ subtyping declaration; thus any class reusing \Q@ta@ will be a subtype of \Q@IA@. 
+Therefore, while typechecking \Q@Utils.m(this)@ we can assume
+\Q@this<:IA@.
+ It is also possible to add a class \Q@B@ as follows:
+\saveSpace
+\begin{lstlisting}
+  B=Use ta, { method int mb(){return this.ma();} }
+\end{lstlisting}
+\saveSpace
+This also works.  \Q@B@ reuses the code of \Q@ta@, but has no knowledge of \Q@A@.
+Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, also \Q@B@ implements \Q@IA@. 
+
+Later, in Section \ref{sec:formal} we will provide the type
+system. 
+For now notice that the former declaration of \Q@B@ is correct even if
+no method called \Q@ma@ is explicitly declared.
+DJ and TR would require instead to explicitly declare an abstract \Q@ma@ method:
+\saveSpace
+\begin{lstlisting}
+  B=Use ta, { method int ma()//not required by us
+      method int mb(){return this.ma();} }
+\end{lstlisting}\saveSpace
+\noindent
+The idea in \name is that methods are directly accessible from trait \Q@ta@, exactly as in the Java equivalent
+\saveSpace\begin{lstlisting}[language=Java]
+  class B extends A{ int mb(){return this.ma();} }  
+\end{lstlisting}
+\saveSpace
+where method \Q@ma@ is imported from \Q@A@.
+This concept is natural for a Java programmer, but was not supported
+in previous work \cite{BETTINI2013521,deep}. Those works require all
+dependencies in code literals to be explicitly declared, so that the
+code literal is completely self-contained. However, this results in
+many redundant abstract method declarations.
+
+\paragraph{Semantics of Use}
+Albeit alternative semantic models for traits~\cite{lagorio2009featherweight} have been proposed,
+here we use the flattening model. This means that 
+\saveSpace\begin{lstlisting}
+A=Use ta
+B=Use ta, { method int mb(){return this.ma();} }
+\end{lstlisting}\saveSpace 
+\noindent is equivalent to the inlining the code of all used traits:
+\saveSpace \begin{lstlisting}
+A={implements IA method int ma(){return Utils.m(this);}}
+B={implements IA
+  method int ma(){return Utils.m(this);}
+  method int mb(){return this.ma();} } 
+ \end{lstlisting}
+\saveSpace 
+ This code is correct, and {\bf in the resulting code there is no mention of the trait
+ \Q@ta@}. All the information about code-reuse/inheritance
+  is just a private implementation detail of \Q@A@
+ and \Q@B@; while subtyping is part of the class interface.
+
+
+Summarizing, \Q@IA@ is required by our example.
+We found that the code with \Q@IA@ better transmits the intention of the programmer. Some
+readers may instead see requiring \Q@IA@ as a cost of our approach.
+Even from this point of view, such cost is counter balanced by 
+very natural and simple support for code reuse, `\Q@This@' type and (in the extensions with nested classes seen later)
+family polymorphism.
+
+
+%To finish this section, Figure \ref{fig:compare} provides a summary of
+%the differences between classes and traits. The comparison focus on
+%the roles of traits and classes with respect to instantiation,
+%reusability and whether the declarations also introduce new types or
+%not.
+
+
+
+

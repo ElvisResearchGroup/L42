@@ -1,0 +1,294 @@
+%------------------- drawing----
+%\usepackage{tikz}
+%\usetikzlibrary{calc}
+\tikzstyle{every picture}+=[remember picture] 
+
+
+
+
+\pgfdeclarelayer{background}
+%\pgfdeclarelayer{foreground}
+%\pgfsetlayers{background,main,foreground}
+\pgfsetlayers{background,main}
+
+ 
+
+
+\newcommand{\DrawRectangle}[3]{%
+\begin{tikzpicture}[overlay] %
+\draw [#1,rounded corners=3pt,opacity=0.2,fill=#1]($(#2)+(-0.03,0.42)$)%
+rectangle($(#3)+(0.03,-0.09)$);%
+\end{tikzpicture}%
+}
+\newcommand{\DrawTallRectangle}[3]{%
+\begin{tikzpicture}[overlay] %
+\draw [#1,rounded corners=3pt,opacity=0.2,fill=#1]($(#2)+(-0.03,0.42)$)%
+rectangle($(#3)+(0.03,-0.25)$);%
+\end{tikzpicture}%
+}
+
+\newcommand{\DrawMediumTallRectangle}[3]{%
+\begin{tikzpicture}[overlay] %
+\draw [#1,rounded corners=3pt,opacity=0.2,fill=#1]($(#2)+(-0.02,0.28)$)%
+rectangle($(#3)+(0.02,-0.11)$);%
+\end{tikzpicture}%
+}
+
+
+\newcommand{\DrawFullRectangle}[3]{%
+\begin{tikzpicture}[overlay] %
+\draw [#1,rounded corners=3pt,opacity=0.2,fill=#1]($(#2)+(-0.02,0.2)$)%
+rectangle($(#3)+(0.02,-0.06)$);%
+\end{tikzpicture}%
+}
+
+\newcommand{\DrawEmptyRectangle}[3]{%
+\begin{tikzpicture}[overlay] %
+\draw [#1,rounded corners=3pt,opacity=0.2,line width=1pt]($(#2)+(-0.02,0.2)$)%
+rectangle($(#3)+(0.02,-0.06)$);%
+\end{tikzpicture}%
+}
+
+
+
+\newcommand{\NamePoint}[1]{\tikz\coordinate(#1);}
+
+%-------------------------------------------
+\newcommand{\RectangleOpen}[1]{%
+\NamePoint{#1}%
+  }
+\newcommand{\RectangleClose}[3]{%
+\NamePoint{#3}%
+\DrawMediumTallRectangle{#1}{#2}{#3}%
+}
+\newcommand{\EmptyRectangleClose}[3]{%
+\NamePoint{#3}%
+\DrawEmptyRectangle{#1}{#2}{#3}%
+}
+
+\newcommand{\FullRectangleClose}[3]{%
+\NamePoint{#3}%
+\DrawFullRectangle{#1}{#2}{#3}%
+}
+\newcommand{\TallRectangleClose}[3]{%
+\NamePoint{#3}%
+\DrawTallRectangle{#1}{#2}{#3}%
+}
+\newcommand{\MediumTallRectangleClose}[3]{%
+\NamePoint{#3}%
+\DrawMediumTallRectangle{#1}{#2}{#3}%
+}
+
+\definecolor{MyGrey}{rgb}{0.5,0.5,0.5}
+\definecolor{MyRed}{rgb}{1,0.1,0.1}
+%\definecolor{MyOrange}{rgb}{1,0.5,0.5}
+
+\newcommand{\bO}{\RectangleOpen{privateCbOpen}}
+%\newcommand{\bC}{\FullRectangleClose{MyGrey}%
+\newcommand{\bC}{\MediumTallRectangleClose{MyGrey}%
+{privateCbOpen}{privateCbClose}}
+
+\newcommand{\cbOpen}{\RectangleOpen{privateCbOpen}}
+\newcommand{\cbClose}{\RectangleClose{MyGrey}{privateCbOpen}{privateCbClose}}
+\newcommand{\cbTallOpen}{\RectangleOpen{privateCbOpen}}
+\newcommand{\cbTallClose}{\TallRectangleClose{MyGrey}{privateCbOpen}{privateCbClose}}
+
+
+\newcommand{\alertO}{\RectangleOpen{privateCbOpen}}
+\newcommand{\alertC}{\EmptyRectangleClose{black}{privateCbOpen}{privateCbClose}}
+
+
+
+\newcommand{\gO}{\RectangleOpen{privateGO}}
+\newcommand{\gC}{\RectangleClose{green}{privateGO}{privateGC}}
+\newcommand{\yO}{\RectangleOpen{privateYO}}
+\newcommand{\yC}{\RectangleClose{yellow}{privateYO}{privateYC}}
+\newcommand{\rO}{\RectangleOpen{privateRO}}
+\newcommand{\rC}{\RectangleClose{red}{privateRO}{privateRC}}
+
+\newcommand*{\Greybox}[1]{\relax\sloppy{#1}\relax}
+\newcommand*{\GreyTallbox}[1]{\relax\sloppy{#1}\relax}
+
+
+%\newcommand*{\Greybox}[1]{\relax\sloppy{\cbOpen#1\cbClose}\relax}
+%\newcommand*{\GreyTallbox}[1]{\relax\sloppy{\cbTallOpen#1\cbTallClose}\relax}
+
+
+%------------------------------------------
+%----------------------------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------------------------------
+
+\newcommand{\MiniRectangleClose}[3]{%
+\NamePoint{#3}%
+\DrawMiniRectangle{#1}{#2}{#3}%
+}
+
+%\newcommand{\DrawMiniRectangle}[3]{%
+%\begin{pgfonlayer}{background}%
+%\hspace{-0.14ex}%
+%\raisebox{-0.18ex}{%
+%\begin{tikzpicture}%[overlay]%
+%\draw [#1,rounded corners=1pt,opacity=0.4,fill=#1]($(#2)+(-0.05ex,1.45ex)$)%
+%rectangle($(#3)$);%
+%\end{tikzpicture}%
+%}%
+%\end{pgfonlayer}%
+%}
+
+
+\newcommand{\DrawMiniRectangle}[3]{%
+\begin{tikzpicture}[overlay]%
+\draw [#1,rounded corners=1pt,opacity=0.2,fill=#1]($(#2)+(-0.1ex,1.45ex)$)%
+rectangle($(#3)+(-0.05ex,-0.15ex)$);%
+\end{tikzpicture}%
+}
+
+
+
+\newcommand{\mO}{\RectangleOpen{privateMO}}
+\newcommand{\mC}{\MiniRectangleClose{MyRed}{privateMO}{privateMC}}
+
+
+
+
+%------------------------------------------------
+%------------------------------------------------
+%------------------------------------------------
+%-- New and cool tikz boxes
+%------------------------------------------------
+%------------------------------------------------
+
+\newcommand\sizeTitleBoxTitle{}
+\newenvironment{SizeTitleBox}[2]{%
+\renewcommand\sizeTitleBoxTitle{#2}%
+\begin{Sbox}%
+%\!\!\!%
+\begin{minipage}{#1}%
+}{%
+\end{minipage}%
+\end{Sbox}%
+\begin{tikzpicture}%
+\node [mybox] (box){\TheSbox};%
+\node[myTitle, right=10pt,rounded corners] at (box.north west) {\sizeTitleBoxTitle};%
+\end{tikzpicture}%
+}%
+
+\newenvironment{SizeBox}[1]{%
+\begin{Sbox}%
+%\!\!\!%
+\begin{minipage}{#1}%
+}{%
+\end{minipage}%
+\end{Sbox}%
+%\!\!\!%
+\begin{tikzpicture}%
+\node [mybox] (box){\TheSbox};%
+\end{tikzpicture}%
+}
+
+\newenvironment{ensureMathEnv}{%
+\begin{Sbox}%
+}{%
+\end{Sbox}%
+\ensuremath{\TheSbox}%
+}
+
+
+%------------------------------------------------
+%-- USAGE EXAMPLE
+%------------------------------------------------
+%\newenvironment{RuleBox}[2]{
+%\tikzstyle{mybox} = [draw=myBlueD, fill=white, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=20pt]
+%\tikzstyle{myTitle} =[draw=red, fill=myBlueL,very thick, rectangle, rounded corners]
+%\begin{SizeTitleBox}{#1}{#2}
+%}{
+%\end{SizeTitleBox}
+%}
+
+
+
+%---------------------boxes
+%\definecolor{myBlueL}{rgb}{0.85,0.85,1}
+\definecolor{myBlueL}{rgb}{1,1,1}
+\definecolor{myBlueD}{rgb}{0.2,0.2,0.6}
+
+\definecolor{myRedL}{rgb}{1,0.85,0.85}
+\definecolor{myRedD}{rgb}{0.8,0.15,0.15}
+\definecolor{myBackground}{rgb}{0.8,0.8,1}
+
+
+%\newcommand\cBox{67ex}
+%\newcommand\pBox{132.5ex}
+%\newcommand\csBox{90ex}
+%\newcommand\clBox{44ex}
+
+
+\newenvironment{Array}[1]%
+{%
+\begin{minipage}{#1}%
+\begin{math}%
+\!\!\!%
+\begin{array}{l}%
+}
+{%
+\end{array}
+\end{math}%
+\end{minipage}%
+}%
+
+
+\newenvironment{BlueArray}[1]{%
+\tikzstyle{mybox} = [draw=myBlueD, fill=myBlueL, very thick,rectangle, rounded corners, inner sep=0.9ex, inner ysep=0.9ex]%
+\begin{SizeBox}{#1}%
+\begin{math}%
+\!\!\!%
+\begin{array}{l}%
+}{%
+\end{array}%
+\end{math}%
+\end{SizeBox}%
+}
+\newenvironment{RedArray}[1]{%
+\tikzstyle{mybox} = [draw=myRedD, fill=myRedL, very thick,rectangle, rounded corners, inner sep=0.9ex, inner ysep=0.9ex]%
+\begin{SizeBox}{#1}%
+\begin{math}%
+\!\!\!%
+\begin{array}{l}%
+}{%
+\end{array}%
+\end{math}%
+\end{SizeBox}%
+}
+
+
+\newenvironment{RuleFrame}[2]{
+\tikzstyle{mybox} = [draw=myBlueD, fill=white, very thick,
+    rectangle, rounded corners, inner sep=0.9ex, inner ysep=0.9ex]%
+\tikzstyle{myTitle} =[draw=myBlueD, fill=myBlueL,very thick, rectangle, rounded corners]%
+\begin{SizeTitleBox}{#1}{#2}%
+\begin{math}%
+\!\!\!%
+\begin{array}{l}%
+\\[-1.3ex]%
+}{%
+\\[-0.85ex]%
+\end{array}%
+\end{math}%
+\end{SizeTitleBox}%
+}
+
+
+
+\definecolor{greyCodeBg}{RGB}{245,245,245}
+\definecolor{greyCodeLine}{RGB}{200,200,200}
+
+\newenvironment{NiceCode}[2]{% size, zoom
+\tikzstyle{mybox} = [draw=greyCodeLine, fill=greyCodeBg, very thick,rectangle, rounded corners, inner sep=0.9ex, inner ysep=0.9ex]%
+\begin{SizeBox}{#1}%
+\ensuremath{{}_{}}\!\!\!\!\!\!\!\!\!
+\begin{Scaled}{#2}{#2}%
+}{%
+\end{Scaled}%
+\end{SizeBox}%
+}
