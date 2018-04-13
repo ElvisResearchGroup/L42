@@ -226,7 +226,7 @@ it has good support for traits, and using abstract types, it is possible to supp
 Rust is similar to Scala in this regard; we believe we would get similar results by comparing against either Scala or Rust.
 
 \noindent\begin{tabular}{l|l|l|l}
-Language       & Lines of code & Number of members & Number of top-level concepts (classes or traits)\\
+Language       & Lines of code & Number of members & Number of classes and traits\\
 \hline
 Java7           &   115=6+5*4+7*6+9*4+11        & 50                &      16\\
 Classless Java &   \ \ 82=3+3*4+5*6+7*4+9          & 34                &      16\\
@@ -249,7 +249,7 @@ operations and finally 11 lines for the class with all the four operations.
 
 
  The solution in Classless Java was slightly smaller than Java7,
- but was still longer than the \name solution because it still had to redefine the
+ but was still longer than the \name solution: it still had to redefine the
  sum/sub/etc operations in each of the classes. Here the limited
  support of the `\Q@This@' type is to blame, thus Classless Java also has 28 duplicated method bodies.
 
@@ -277,24 +277,24 @@ are formatted to be very compact.
 Programmers may want to extend points with more state. For example 
 they may want to add colors to the points. A first attempt at doing
 this would be:
-\saveSpace
+\saveSpace\saveSpace
 \begin{lstlisting}
 colored= { method Color color() }
 CPoint= Use pointSum,colored //Fails: class not coherent
 \end{lstlisting}
-\saveSpace
+\saveSpace\saveSpace 
 This first attempt does not work: the abstract color method
 is not a getter for any of the parameters of 
 \Q@ static method This of(int x,int y)@. 
 A solution is to provide a richer factory:
-\saveSpace
+\saveSpace\saveSpace 
 \begin{lstlisting}
 CPoint= Use pointSum,colored,{
   static method This of(int x,int y){return This.of(x,y,Color.of(/*red*/));}
   static method This of(int x,int y,Color color)
   }
 \end{lstlisting}
-\saveSpace
+\saveSpace\saveSpace 
 \noindent 
 where we assume support for overloading on different number of parameters.
 This is a reasonable solution, however the method \Q@CPoint.sum@ resets
@@ -308,7 +308,7 @@ state supports withers, we can use
 \paragraph{A better design}
 If the designer of point (i.e. trait \Q@p@) is designing for reuse and extensibility, then 
 a better design would be the following:  
-\saveSpace\begin{lstlisting}
+\saveSpace\saveSpace \begin{lstlisting}
 p= { method int x() method int y() //getters
   method This withX(int that) method This withY(int that)//withers
   static method This of(int x,int y)
@@ -324,7 +324,7 @@ colored= {method Color color()
     return this.withColor(this.color().mix(that.color());
   }}
 CPoint= /*as before*/
-\end{lstlisting}  \saveSpace
+\end{lstlisting} \saveSpace\saveSpace 
   \noindent This design allows merging colours, or any other kind of state we may want to add
   following this pattern.%\bruno{worried that withers are not explained enough.}
 
@@ -339,7 +339,7 @@ We introduce here an operator called \Q@super@, that
 moves the implementation to another name. This is very useful to implement super calls
  and to compose conflicting implementations.
 \noindent Consider the simple \Q@flavored@ trait:
-\saveSpace\begin{lstlisting}
+\saveSpace\saveSpace \begin{lstlisting}
   flavored= {
       method Flavor flavor() //very similar to colored
       method This withFlavor(Flavor that)
@@ -350,7 +350,7 @@ moves the implementation to another name. This is very useful to implement super
 \noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
 to refer to the version of \Q@merge@ as defined in the first/second element of \use.
 
-\saveSpace\begin{lstlisting}
+\saveSpace\saveSpace \begin{lstlisting}
 FCPoint= Use
   colored[super merge as _1merge],
   flavoured[super merge as _2merge],
