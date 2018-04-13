@@ -71,9 +71,9 @@ The second trait provides multiplication.
 Notice the abstract \Q@static method This of(..)@ which acts as a factory/constructor
 for points. 
 As for instance methods, static methods are late bound:  flattening can provide an implementation for them.
-Thus, in \name\ they can be abstract, and abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
-Following the model of traits and classes common in literature \emph{in a traditional trait model}~\cite{ducasse2006traits},
-we can now compose the two traits, by \textbf{adding glue-code}
+Thus, in \name\ they can be abstract, and abstract static methods are similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
+Following the traditional model of traits and classes common in literature~\cite{ducasse2006traits},
+we can compose the two traits, by \textbf{adding glue-code}
 to implement methods \Q@x@, \Q@y@ and \Q@of@.
 This approach is verbose but very
 powerful, as illustrated by Wang et al.~\cite{wang2016classless}.
@@ -131,12 +131,12 @@ is, the abstract methods cannot not be automatically recognised
 as factory, getters and setters. Methods recognised as factory, getters and setters are called
 \emph{abstract state operations}.
   
-A more detailed definition of coherent
-classes is given next, and is formally defined in Section \ref{sec:formal}:
+A definition of coherent
+classes is given next, and is formally modelled in Section \ref{sec:formal}:
 \begin{itemize}
-\item a class with no abstract methods is coherent (just like Java
+\item A class with no abstract methods is coherent (just like Java
   \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
-\item a class with a single abstract \Q@static@ method returning \Q@This@
+\item A class with a single abstract \Q@static@ method returning \Q@This@
 is coherent if all the other abstract methods can be seen as \emph{abstract state
 operations} over one of its argument. The single, abstract static
 method acts as a \emph{factory method}.
@@ -147,8 +147,8 @@ For example,
 if there is a \Q@static method This of(int x, int y)@,
 then
 \begin{itemize}
-\item a method \Q@int x()@ is interpreted as an abstract state method: a \emph{getter} for \Q@x@.
-\item a method \Q@void x(int that)@ is a \emph{setter} for x.
+\item A method \Q@int x()@ is interpreted as an abstract state method: a \emph{getter} for \Q@x@.
+\item A method \Q@void x(int that)@ is a \emph{setter} for x.
 \end{itemize}
 \end{itemize}
 \noindent
@@ -171,11 +171,11 @@ set of such abstract state operations.
 In \name and with our approach to handle the state, 
 \lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed.
 This works because resulting class is coherent.
-\saveSpace
+\saveSpace\saveSpace
 \begin{lstlisting}
-  PointAlgebra= Use pointSum,pointMul //no glue code needed
+PointAlgebra= Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
-\saveSpace
+\saveSpace\saveSpace
 \noindent
   Note how we can declare the methods independently and compose the result
   as we wish. 
@@ -186,23 +186,23 @@ This works because resulting class is coherent.
   operations over points. It is possible to improve reuse
   and not repeat such declaration by abstracting the common
   declaration into a trait \Q@p@: 
-\saveSpace
+\saveSpace\saveSpace
 \begin{lstlisting}
-  p= { method int x() method int y()
-    static method This of(int x,int y)
-    }
-  pointSum= Use p, { 
-    method This sum(This that){
-      return This.of(this.x()+that.x(),this.y()+that.y());
-    }}
-  pointMul= Use p, { 
-    method This mul(This that){
-      return This.of(this.x()*that.x(),this.y()*that.y());
-    }}
-  pointDiv= ...
-  PointAlgebra= Use pointSum,pointMul,pointDiv,...
+p= { method int x() method int y()
+  static method This of(int x,int y)
+  }
+pointSum= Use p, { 
+  method This sum(This that){
+    return This.of(this.x()+that.x(),this.y()+that.y());
+  }}
+pointMul= Use p, { 
+  method This mul(This that){
+    return This.of(this.x()*that.x(),this.y()*that.y());
+  }}
+pointDiv= ...
+PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
-\saveSpace      
+\saveSpace\saveSpace      
 Now the code is fully modularized, and each trait defines exactly one method.
 
 \paragraph{Case Study 1:}
