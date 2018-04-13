@@ -1,13 +1,12 @@
 \saveSpace
 \section{Introduction}\label{sec:intro}
 \saveSpace
-In mainstream OO languages like Java, C++, Scala or C\# subclassing 
-implies subtyping. For example, a Java subclass definition, such as 
+In Java, C++, Scala or C\# subclassing 
+implies subtyping. A Java subclass definition, such as 
 \Q@class A extends B {}@
 \noindent does two things at the same time:
 it {\bf inherits} code from \lstinline{B}; and it {\bf creates
-a subtype} of \lstinline{B}. Therefore in a language like Java, 
-a subclass is \emph{always} a subtype of the extended class.
+a subtype} of \lstinline{B}. Therefore a subclass must \emph{always} also be a subtype of the extended class.
 
 Historically, there has been a lot of focus on
 separating subtyping from subclassing~\cite{cook}.  This separation is claimed to be
@@ -20,13 +19,12 @@ subclassing is helpful.
 \item {\bf Allowing inheritance/reuse even when subtyping is impossible:} 
 In some situations a subclass contains methods whose signatures 
 are incompatible with the superclass, yet inheritance is still
-desirable. A typical example, which was illustrated by Cook et al.~\cite{cook}, are 
-classes with \emph{binary methods}~\cite{bruce96binary}.
+desirable. Classes with \emph{binary methods}~\cite{cook,bruce96binary} are a typical example.
 
 \item {\bf Preventing unintended subtyping:} For certain classes we
   would like to inherit code without creating a subtype even if, from
-  the typing point of view, subtyping is still possible. A typical
-  example~\cite{LaLonde:1991:SSS:110673.110679} of this are methods for collection classes such as \emph{Sets} and
+  the typing point of view, subtyping is still sound. A typical
+  example~\cite{LaLonde:1991:SSS:110673.110679} is \emph{Sets} and
   \emph{Bags}. Bag implementations can often inherit 
   from Set implementations, and the interfaces of the two collection types are
   similar and type compatible. 
@@ -35,33 +33,30 @@ classes with \emph{binary methods}~\cite{bruce96binary}.
 
 \end{itemize}
 
-Type systems based on structural typing~\cite{cook} can deal with the first
+Structural typing~\cite{cook} can deal with the first
 situation well, but not the second. Since structural subtyping
 accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
-the second situation nominal subtyping is preferable. With nominal
-subtyping an explicit subtyping relation must be signalled by the
-programmer. Thus if subtyping is not desired, the idea is that the
+the second situation nominal subtyping is preferable: an explicit subtyping relation must be signalled by the programmer. Thus if subtyping is not desired, the
 programmer can simply {\bf not} declare a subtyping relationship.
 
-While there is no problem in subtyping without subclassing, the design
-of most nominal OO languages subclassing implies subtyping in a
-fundamental way. This is because of what we call the
+While there is no problem in subtyping without subclassing, in most nominal OO languages subclassing fundamentally implies subtyping. 
+This is because of what we call the
 \emph{this-leaking problem}, illustrated by the following
 (Java) code:
-\saveSpace
+\saveSpace\saveSpace
 \begin{lstlisting}[language=Java]
   class A{ int ma(){return Utils.m(this);} }
   class Utils{static int m(A a){..}}
 \end{lstlisting}
-\saveSpace
+\saveSpace\saveSpace
 Method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
 This code is correct, and there is no subtyping/subclassing.  Now, lets add a class \Q@B@
-\saveSpace
+\saveSpace\saveSpace\saveSpace
 \begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
-\saveSpace
+\saveSpace\saveSpace
 %%Class \lstinline{B} does two things at the same time: 
 %%1) it {\bf inherits} the method \lstinline{ma} from
 %%\lstinline{A}; and 2) it creates a {\bf subtype} of \lstinline{A}.
@@ -121,38 +116,35 @@ languages that address the \emph{this-leaking problem}:
 \item In {\bf TraitRecordJ (TR)}~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}
 each construct has a single responsibility: classes instantiate objects,
 interfaces induce types, records express state and traits are reuse units.
-\item {\bf Package Templates (PT)}~\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}
-are an extension of (full) Java where new packages can be ``synthesized'' by mixing
-and integrating code templates. As an extension of Java, PT allows but does not require
-separation of inheritance and subtyping.
+\item {\bf Package Templates (PT)}~\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}:
+an extension of (full) Java where new packages can be ``synthesized'' by mixing
+and integrating code templates. 
+Such ``synthesized'' packages can be used for code reuse without inducing subtyping.
+%As an extension of Java, PT allows but does not require
+%separation of inheritance and subtyping.
 \item {\bf
     DeepFJig(DJ)}~\cite{deep,servetto2014meta,fjig} is
-a module composition language where the main idea is that
-nested classes with the same name are recursively composed.
+a module composition language where nested classes with the same name are recursively composed.
 \end{itemize}
-Those 3 languages also shown that family polymorphism 
-is easy to support when inheritance and subtyping are separated.
+%Those 3 languages also shown that family polymorphism 
+%is easy to support when inheritance and subtyping are separated.
 
 
-This paper aims at showing a simple language design, called \name,
-which addresses the \emph{this-leaking problem} and decouples subtyping from inheritance.
-Building on traits, in this work we aim to synthesize the best ideas
-from those 3 very different designs, while at the same time coming up with a simpler and
-improved design for separating subclassing from subtyping.
-The keys ideas in \name are to separate code designed for
-\textbf{use} from code designed for \textbf{reuse}, and a novel
-approach to state in traits that avoids the complexities introduced by
-fields and their initialisation.
+This paper show a simple language design, called \name,
+addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
+We build on traits to distinguish code designed for
+\textbf{use} from code designed for \textbf{reuse}.
+We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant \textbf{novel approach} to state in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+
 In \name there are two separate concepts: classes
-and traits~\cite{ducasse2006traits}. Classes are meant for code \textbf{use}, and cannot be inherited/extended. In
-some sense, classes in \name are like final classes in
-Java: they can be used as types and as object factories. Traits are meant for code \textbf{reuse}: multiple traits can be
-composed to form a class which can then be instantiated. Traits 
-cannot be instantiated or used as types. Such a design allows
+and traits~\cite{ducasse2006traits}. Classes are meant for code \textbf{use}, and cannot be inherited/extended. Classes in \name are like final classes in
+Java, and can be used as types and as object factories. Traits are meant for code \textbf{reuse} only: multiple traits can be
+composed to form a class. However, traits 
+cannot be instantiated or used as types. Our design allows
 subtyping and code reuse to be treated separately, which brings several benefits. In particular, 
 Family Polymorphism~\cite{ernst2004expression} is
 radically simpler to support soundly.
-Such simplification has been already recognized by the 3 lines of
+This is already clear in 3 lines of
 research above, and is even more outstanding in the clean \name model.
 
 We first focus on an example-driven presentation to illustrate how to
@@ -164,7 +156,7 @@ work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,Krogda
 and the design of \name synthesizes some of these previously studied
 concepts.
 The language design ideas have been implemented in the {\bf 42 language}, which supports all
-the examples we show in the paper, and is available at: \url{http://l42.is} (this site can be accessed without breaking double blind review).
+the examples we show in the paper, and is available at: \url{http://l42.is} (can be accessed without breaking double blind review).
 Work on 42 is now slowly reaching maturity after about 5 years of
 intense research and development. The current implementation 
 is now robust enough to create realistic medium sized programs running 
@@ -189,15 +181,14 @@ In summary, our contributions are:
 
 
 \begin{itemize}
-\item We identify the {\bf this-leaking problem} and argue why it
-  makes the separation of subclassing and subtyping difficult.
+\item We identify the {\bf this-leaking problem}, that makes dividing inheritance and subtyping difficult.
+
 \item We synthesize the key ideas of previous designs that solve the
   this-leaking problem into {\bf a novel and
-  minimalistic language design}. This language is the logic core of the language 42, and 
-  all the examples in the paper can be encoded as valid 42 programs. 
+  minimalistic language design}.This language is the logic core of the language 42, and 
+  all the examples in the paper can be encoded as valid 42 programs
+This design {\bf improves both code use and code reuse}.
 
-\item We illustrate how the new language design {\bf improves both code use and code
-  reuse}.
 \item We propose {\bf a clean and elegant approach to the handling of state} in a trait based language.
 
 \item We illustrate how \name, extended with nested classes, enables a

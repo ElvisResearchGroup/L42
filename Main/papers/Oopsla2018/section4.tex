@@ -20,12 +20,9 @@
 %\name improves reuse in many different ways,
 
 To illustrate how \name improves reuse,
-we will show a novel approach
-to deal with \emph{state} in traits.
-Moreover, we provide self-instantiation (trait methods can create instances of the class using them)
- and smoothly integrate state and traits: a challenging problem that has limited the flexibility of traits and
+we show a novel approach
+to smoothly integrate state and traits: a challenging problem that has limited the flexibility of traits and
 reuse in the past.
-
 The idea of summing pieces of
 code is elegant, and successful in module
 composition languages~\cite{ancona2002calculus} and several trait
@@ -38,51 +35,49 @@ and fields) while achieving the following goals:
 \item managing fields in a way that borrows the elegance of summing methods;
 \item actually initializing objects, leaving no null fields;
 \item making it easy to add new fields;
-\item allowing code to create instances of itself (self instantiation).
+\item allowing self instantiation: trait methods can create instances of the class using them.
 \end{itemize}
 
 \subsection{State of the art}
-In the related work we will show some alternative ways to handle
-state.
-We first present the state of the art solution, where 
+We first present the state of the art solution: 
 traits have only methods but classes have also fields and constructors.
 The idea is that the trait code just uses getter/setters/factories, while leaving
 to classes the role to finally define the fields/constructors. That
 is, in this state of the art solution, classes have a richer syntax than traits, allowing
 declaration for fields and constructors. 
 
-\paragraph{Modelling Points} Consider, for example, two simple 
-traits that deal with \emph{point} objects that represent points
-in the Cartesian plane (with coordinates \lstinline{x} and
-\lstinline{y}). The first trait provides a \emph{binary method} that 
-adds the point object to another point to return a new point. 
-The second trait provides multiplication.
-\saveSpace 
+\paragraph{Modelling Points} Consider two simple 
+traits dealing with \emph{point} objects with coordinates \lstinline{x} and
+\lstinline{y}.
+\saveSpace\saveSpace
 \begin{lstlisting}
 //idealized state of the art trait language, not 42
 pointSum= { method int x()  method int y()//getters
   static method This of(int x,int y)//factory method
-  method This sum(This that){
+  method This sum(This that){//sum code
     return This.of(this.x()+that.x(),this.y()+that.y());//self instantiation
   }}
 pointMul= { method int x() method int y()//repeating getters
   static method This of(int x,int y)//repeating factory
-  method This mul(This that){
+  method This mul(This that){//multiplication code
     return This.of(this.x()*that.x(),this.y()*that.y());
   }}
 \end{lstlisting}
-\saveSpace
-\noindent As we can see, all the state operations (the getters for the 
-\lstinline{x} and \lstinline{y} coordinates) are represented as {\bf abstract} methods.
+\saveSpace\saveSpace
+The first trait provides a \emph{binary method} that 
+adds the point object to another point to return a new point. 
+The second trait provides multiplication.
+\noindent In this code all the operations dealing with state are represented as {\bf abstract} methods.
 Notice the abstract \Q@static method This of(..)@ which acts as a factory/constructor
 for points. 
 As for instance methods, static methods are late bound:  flattening can provide an implementation for them.
 Thus, in \name\ they can be abstract, and abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
 Following the model of traits and classes common in literature \emph{in a traditional trait model}~\cite{ducasse2006traits},
 we can now compose the two traits, by \textbf{adding glue-code}
-to implement methods \Q@x@,\Q@y@ and \Q@of@.
+to implement methods \Q@x@, \Q@y@ and \Q@of@.
 This approach is verbose but very
 powerful, as illustrated by Wang et al.~\cite{wang2016classless}.
+\saveSpace\saveSpace
 \begin{lstlisting}
 //idealized state of the art trait language, not 42
 class PointAlgebra=Use pointSum,pointMul, {//not 42 code
@@ -93,6 +88,7 @@ class PointAlgebra=Use pointSum,pointMul, {//not 42 code
     static method This of(int x, int y){return new PointAlgebra(x,y);}
     }
 \end{lstlisting}
+\saveSpace\saveSpace
 %\bruno{We talk about withers later on. So I think we should consider
  % having withers in this code, so that readers can understand what 
 %withers are!}
@@ -111,14 +107,14 @@ It has some advantages, but also disadvantages:
   by forwarding a call to the constructor.
   
 \item {\bf Disadvantages:}
-   The semantics of \Q@Use@/code composition of a model with fields and constructors is necessarily
-   more complex than a model with methods only.
+   %The semantics of \Q@Use@/code composition of a model with fields and constructors is necessarily
+%   more complex than a model with methods only.
+The class needs to handle all the state, even state conceptually
+   private to a trait. 
  There is no way for a trait to specify a default value for a field.
-The class needs to handle all the state, even state that is conceptually
-   private to such trait. 
- Moreover, writing such obvious definitions to close
+ Moreover, writing such obvious code to close
   the state/fixpoint in the class 
-   with the constructors and fields and getter/setters and factories is tedious and error prone; previous work shows that such code can be automatically
+   with the constructors and fields and getter/setters and factories is tedious and error prone; such code could be automatically
    generated~\cite{wang2016classless}.
 \end{itemize}
 
@@ -367,7 +363,7 @@ FCPoint= Use
     }
 \end{lstlisting}  \saveSpace\saveSpace
 
-Note how we are levering on the fact that the code literal
+Note how we are relying on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
