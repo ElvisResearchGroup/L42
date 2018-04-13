@@ -408,10 +408,10 @@ The full language offers some relaxation here, so that for example an empty clas
 The result code would not be well formed.
 For example
 \begin{lstlisting}
-t1={  A:{interface method Void a()}  }
+t1={  A= {interface method Void a()}  }
 t2={
-  A:{interface}
-  B:{implements A}  }
+  A= {interface}
+  B= {implements A}  }
 \end{lstlisting}
 Naively, \Q@t1+t2@ should result in a class \Q@B@ implementing \Q@A@ with method \Q@a()@,
 but \Q@B@ would not offer such method \Q@a()@.%

@@ -48,42 +48,43 @@ We first present the state of the art solution, where
 traits have only methods but classes have also fields and constructors.
 The idea is that the trait code just uses getter/setters/factories, while leaving
 to classes the role to finally define the fields/constructors. That
-is, in this state of the art solution, classes have a syntax richer than traits, allowing
+is, in this state of the art solution, classes have a richer syntax than traits, allowing
 declaration for fields and constructors. 
 
 \paragraph{Modelling Points} Consider, for example, two simple 
-traits that deal with \emph{point} objects. That is, points
+traits that deal with \emph{point} objects that represent points
 in the Cartesian plane (with coordinates \lstinline{x} and
 \lstinline{y}). The first trait provides a \emph{binary method} that 
-sums the point object with another point to return a new point. 
-The second trait provides a similar operation that does multiplication 
-instead.
+adds the point object to another point to return a new point. 
+The second trait provides multiplication.
 \saveSpace 
 \begin{lstlisting}
-  pointSum: { method int x()  method int y()//getters
-    static method This of(int x,int y)//factory method
-    method This sum(This that){
-      return This.of(this.x()+that.x(),this.y()+that.y());//self instantiation
-    }}
-  pointMul: { method int x() method int y()//repeating getters
-    static method This of(int x,int y)//repeating factory
-    method This mul(This that){
-      return This.of(this.x()*that.x(),this.y()*that.y());
-    }}
+//idealized state of the art trait language, not 42
+pointSum= { method int x()  method int y()//getters
+  static method This of(int x,int y)//factory method
+  method This sum(This that){
+    return This.of(this.x()+that.x(),this.y()+that.y());//self instantiation
+  }}
+pointMul= { method int x() method int y()//repeating getters
+  static method This of(int x,int y)//repeating factory
+  method This mul(This that){
+    return This.of(this.x()*that.x(),this.y()*that.y());
+  }}
 \end{lstlisting}
 \saveSpace
 \noindent As we can see, all the state operations (the getters for the 
 \lstinline{x} and \lstinline{y} coordinates) are represented as {\bf abstract} methods.
-Notice the abstract \Q@static method This of(..)@ which acts as a constructor
+Notice the abstract \Q@static method This of(..)@ which acts as a factory/constructor
 for points. 
-As for instance methods, they are late bound:  flattening can provide an implementation for them.
-Abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
+As for instance methods, static methods are late bound:  flattening can provide an implementation for them.
+Thus, in \name\ they can be abstract, and abstract static methods are very similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
 Following the model of traits and classes common in literature \emph{in a traditional trait model}~\cite{ducasse2006traits},
 we can now compose the two traits, by \textbf{adding glue-code}
 to implement methods \Q@x@,\Q@y@ and \Q@of@.
 This approach is verbose but very
-powerful as illustrated by Wang et al.~\cite{wang2016classless}.
+powerful, as illustrated by Wang et al.~\cite{wang2016classless}.
 \begin{lstlisting}
+//idealized state of the art trait language, not 42
 class PointAlgebra=Use pointSum,pointMul, {//not 42 code
     int x   int y//unsatisfactory state of the art solution
     constructor PointAlgebra(int x, int y){ this.x=x   this.y=y }
@@ -114,7 +115,7 @@ It has some advantages, but also disadvantages:
    more complex than a model with methods only.
  There is no way for a trait to specify a default value for a field.
 The class needs to handle all the state, even state that is conceptually
-   private of such trait. 
+   private to such trait. 
  Moreover, writing such obvious definitions to close
   the state/fixpoint in the class 
    with the constructors and fields and getter/setters and factories is tedious and error prone; previous work shows that such code can be automatically
@@ -124,13 +125,13 @@ The class needs to handle all the state, even state that is conceptually
 \subsection{Our proposed approach to State: Coherent Classes}
 
 In \name there is no need to generate
-code, or to explicitly write down constructors and fields. In fact in
+code, or to explicitly write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The idea is that
 any class that could be completed in the obvious way  is a
   complete \textbf{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
 abstract only when the set of abstract methods is not coherent. That
-is, the unimplemented methods cannot not be automatically recognised
+is, the abstract methods cannot not be automatically recognised
 as factory, getters and setters. Methods recognised as factory, getters and setters are called
 \emph{abstract state operations}.
   
@@ -176,7 +177,7 @@ In \name and with our approach to handle the state,
 This works because resulting class is coherent.
 \saveSpace
 \begin{lstlisting}
-  PointAlgebra:Use pointSum,pointMul //no glue code needed
+  PointAlgebra= Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 \saveSpace
 \noindent
@@ -191,19 +192,19 @@ This works because resulting class is coherent.
   declaration into a trait \Q@p@: 
 \saveSpace
 \begin{lstlisting}
-  p: { method int x() method int y()
+  p= { method int x() method int y()
     static method This of(int x,int y)
     }
-  pointSum:Use p, { 
+  pointSum= Use p, { 
     method This sum(This that){
       return This.of(this.x()+that.x(),this.y()+that.y());
     }}
-  pointMul:Use p, { 
+  pointMul= Use p, { 
     method This mul(This that){
       return This.of(this.x()*that.x(),this.y()*that.y());
     }}
-  pointDiv: ...
-  PointAlgebra:Use pointSum,pointMul,pointDiv,...
+  pointDiv= ...
+  PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
 \saveSpace      
 Now the code is fully modularized, and each trait defines exactly one method.
@@ -282,8 +283,8 @@ they may want to add colors to the points. A first attempt at doing
 this would be:
 \saveSpace
 \begin{lstlisting}
-colored:{ method Color color() }
-CPoint:Use pointSum,colored //Fails: class not coherent
+colored= { method Color color() }
+CPoint= Use pointSum,colored //Fails: class not coherent
 \end{lstlisting}
 \saveSpace
 This first attempt does not work: the abstract color method
@@ -292,7 +293,7 @@ is not a getter for any of the parameters of
 A solution is to provide a richer factory:
 \saveSpace
 \begin{lstlisting}
-CPoint:Use pointSum,colored,{
+CPoint= Use pointSum,colored,{
   static method This of(int x,int y){return This.of(x,y,Color.of(/*red*/));}
   static method This of(int x,int y,Color color)
   }
@@ -312,21 +313,21 @@ state supports withers, we can use
 If the designer of point (i.e. trait \Q@p@) is designing for reuse and extensibility, then 
 a better design would be the following:  
 \saveSpace\begin{lstlisting}
-p: { method int x() method int y() //getters
+p= { method int x() method int y() //getters
   method This withX(int that) method This withY(int that)//withers
   static method This of(int x,int y)
   method This merge(This that) //new method merge!
   }
-pointSum:Use p, { 
+pointSum= Use p, { 
   method This sum(This that){
     return this.merge(that).withX(this.x()+that.x()).withY(this.y()+that.y());
   }}
-colored:{method Color color()
+colored= {method Color color()
   method This withColor(Color that)
   method This merge(This that){ //how to merge color handled here
     return this.withColor(this.color().mix(that.color());
   }}
-CPoint:/*as before*/
+CPoint= /*as before*/
 \end{lstlisting}  \saveSpace
   \noindent This design allows merging colours, or any other kind of state we may want to add
   following this pattern.%\bruno{worried that withers are not explained enough.}
@@ -343,7 +344,7 @@ moves the implementation to another name. This is very useful to implement super
  and to compose conflicting implementations.
 \noindent Consider the simple \Q@flavored@ trait:
 \saveSpace\begin{lstlisting}
-  flavored:{
+  flavored= {
       method Flavor flavor() //very similar to colored
       method This withFlavor(Flavor that)
       method This merge(This that) //merging flavors handled here
@@ -354,7 +355,7 @@ moves the implementation to another name. This is very useful to implement super
 to refer to the version of \Q@merge@ as defined in the first/second element of \use.
 
 \saveSpace\begin{lstlisting}
-FCPoint:Use
+FCPoint= Use
   colored[super merge as _1merge],
   flavoured[super merge as _2merge],
   pointSum,{
