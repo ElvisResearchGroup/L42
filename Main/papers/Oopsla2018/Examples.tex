@@ -75,7 +75,7 @@ v_{{\smallDs}}\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx_\smallDs,\ove
 
 \prodFull\mG{\mx_1{:}\mT_1\ldots\mx_n{:}\mT_n}{variable env}
 \end{bnf}\\
-\\
+
 \newcommand{\pushLeft}{\!\!\!\!\!\!\!\!\!\!\!\!}
 $\begin{array}{l}
 
@@ -525,11 +525,11 @@ a much simpler setting.
 We denote $\mathit{wrong}(\overline\mD,\mE)$ to be the count of $\mL$ such that
 $\mE=\ctx[\mL]\ \text{and not}\ \overline\mD\vdash\mL:\text{OK}$.
 
-\begin{Theorem}[Compilation Soundness]
+%\begin{Theorem}[Compilation Soundness]
 
 if $\mE_0 \xrightarrow[\smallDs]{} \mE_1$
 then $\mathit{wrong}(\overline\mD,\mE_0)\geq\mathit{wrong}(\overline\mD,\mE_1)$.
-\end{Theorem}
+%\end{Theorem}
 This can be proved by cases on the applied reduction rule:
 \begin{itemize}
 \item
