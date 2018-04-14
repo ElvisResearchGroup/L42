@@ -105,7 +105,6 @@ In the expression problem we have data-variants and operations and we can
 by adding new data-variants and adding new operations.
 We also aim to \textbf{combine independently developed extensions} so
 that they can be used jointly.
-
 To be really modular, we want our extensions to
 preserve \textbf{type safety}
 and allow \textbf{separate compilation} (no re-type-checking),
@@ -125,13 +124,13 @@ We then proceed to define operations
 
 We thus have 3 classes, 1 interface,
 the definition of the state and 3 operations.
-We can model this
+We model this
 as a table of features, as in~\cite{deep}:
 a (3classes+1interface)*(1state+3operations)
 table composed by 16 traits.
-The features are atomic: they deal with exactly 
-declaring the state of a class
-or defining a single operation for a single class.
+The features are atomic: they exactly 
+declare the state of a class
+or define a single operation for a single class.
 \name avoids the large amount of abstract declarations,
 that clutters the solution in~\cite{deep}.
 Intuitively, we would like our traits to look like the following:
@@ -149,7 +148,7 @@ But, if we were to declare those
 explicitly, we would repeat \Q@Exp@, the abstract
 declaration of \Q@eval()@ and `\Q@implements Exp@'
 for all data-variants.
-Our more abstract solution, to avoid this duplication is to write 
+To avoid this duplication,  we write 
 the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
 into the corresponding data-variant.
 Thus, our source code is as follows;
@@ -244,24 +243,24 @@ for that specific case.
 %and there is no subtyping between those \Q@Exp@, they can not even
 %see each other.
 
-In our third case study we compare our results with the ones presented
-in Scala~\cite{Zenger-Odersky2005}.
+Our third case study compares with the results presented
+in Scala\cite{Zenger-Odersky2005}.
 The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
-version where we isolate all the units of behaviour as we
-have done in \name.
-\begin{minipage}{0.6\textwidth}
+version where we isolate all the units of behaviour as done in \name.
+
+\noindent\begin{minipage}{0.65\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala~\cite{Zenger-Odersky2005}          & 52     &  15=12+3\\
+original Scala          & 52     &  15=12+3\\
 Scala  isolated units   & 78    &  15=12+3\\
 Scala  glue-code        & 27   &     3\\
 42 traits               & 48=3+4+6+5 + (4+2*3)*3   &    19=4*3+7\\
 42 classes              &   3    &     0\\
 \end{tabular}
 \end{minipage}
-\begin{minipage}{0.4\textwidth}
+\begin{minipage}{0.35\textwidth}
 Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
 We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
 \end{minipage}
@@ -292,7 +291,7 @@ we just need 4 lines to declare the operation
 in the interface, and 2 lines for each of the 3 data-variants.
 
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
-Zenger and Odersky's solution~\cite{Zenger-Odersky2005}, involved double dispatch to avoid casting.
+\cite{Zenger-Odersky2005} solution involved double dispatch to avoid casting.
 To show understandable code, we show a simpler solution 
 with a guarded cast (sometime called a typecase).%
 \footnote{
@@ -350,8 +349,8 @@ Scala eq instance           &    29   &    3\\
 42 traits eq Cast            &   13=7+2*3   &    6\\
 42 class cast instance      &     3   &    0\\
 \end{tabular}
-\end{minipage}
-\begin{minipage}{0.54\textwidth}
+\end{minipage}\quad\ \ 
+\begin{minipage}{0.5\textwidth}
 Here the Scala code can be made fully isolated with little
 extra syntactic cost. The original Scala eq is 40 lines and
 contains a part of the glue code mixed inside.

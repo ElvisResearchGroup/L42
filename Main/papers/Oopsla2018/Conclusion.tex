@@ -1,5 +1,6 @@
+\saveSpace\saveSpace
 \section{Conclusions, extensions and practical applications}
-
+\saveSpace
 In this paper we explained a simple model to 
 radically decouple inheritance/code reuse and subtyping.
 One important point is that our decoupling does not
@@ -19,16 +20,19 @@ included in the full 42 language.
  Indeed we can add any operator respecting following criteria:
 
 \begin{itemize}
-\item The operator does not need to be total, but if it fails it needs to provide an error that will be reported to the programmer.
-\item When the operator takes in input only traits (they are going to be well typed code), if a result is produced,
+\item When the operator fails it needs to provide an error that will be reported to the programmer.
+\item When only well typed code is took as input, if a result is produced,
  such result is also well typed.
-\item When the operator takes in input also code literals, if a non-well typed result is produced,
-the type error must be traced back to code in one of those not-yet typed code literals.
+\item When the result is not well typed,
+the type error must be traced back to
+a fault in the input.
  \end{itemize}
  
 
  
- Our simplified model represents the conceptual core of  42: a novel full blown programming language,
+Our simplified model represents the conceptual core of  42: a novel full blown programming language,
+In such model we do not need an explicit notion of traits: they are encoded as methods returning a code literal.
+\begin{comment}
 using the ideas presented in this paper to obtain reliable and understandable metaprogramming.
 Formalization (in progress) for full 42 can be found at
 \url{http://}\footnote{Omitted for anonymous review}. 
@@ -41,7 +45,7 @@ In such model we do not need an explicit notion of traits: they are encoded as m
   a strong type system supporting aliasing mutability and circularity control,
    checked exceptions, and errors (unchecked exceptions) with strong-exception-safety.
 
-\begin{comment}
+
 42 do not have a finite set of composition operators; they can be
 added using the built in support for native method calls. They can
 be dynamically checked to verify that they are well behaved

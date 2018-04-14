@@ -307,7 +307,7 @@ state supports withers, we can use
 
 \paragraph{A better design}
 If the designer of point (i.e. trait \Q@p@) is designing for reuse and extensibility, then 
-a better design would be the following:  
+a better design would be to add a \Q@merge(This)@ method as a extensibility hook: 
 \saveSpace\saveSpace \begin{lstlisting}
 p= { method int x() method int y() //getters
   method This withX(int that) method This withY(int that)//withers
@@ -325,7 +325,7 @@ colored= {method Color color()
   }}
 CPoint= /*as before*/
 \end{lstlisting} \saveSpace\saveSpace 
-  \noindent This design allows merging colours, or any other kind of state we may want to add
+  \noindent Using \Q@withers@ we can merge \Q@color@s, or any other kind of state 
   following this pattern.%\bruno{worried that withers are not explained enough.}
 
 \paragraph{Independent Extensibility}
@@ -333,18 +333,17 @@ CPoint= /*as before*/
   extensions~\cite{Zenger-Odersky2005} that need to be composed. Lets suppose that 
   we could have a notion of \Q@flavoured@ as well.   
   In order to compose \Q@colored@ with \Q@flavored@ we would
-  need to compose the merge operation inside both of them; to this aim \use\ is not sufficient, since we need to combine the implementation of 2 different versions of \Q@merge@.
-We introduce here an operator called \Q@super@, that
+  need to compose their respective merge operations. To this aim \use\ is not sufficient. To combine the implementation of two different implementation of methods, we introduce an operator called \Q@super@, that
  makes a method abstract and
 moves the implementation to another name. This is very useful to implement super calls
  and to compose conflicting implementations.
 \noindent Consider the simple \Q@flavored@ trait:
 \saveSpace\saveSpace \begin{lstlisting}
-  flavored= {
-      method Flavor flavor() //very similar to colored
-      method This withFlavor(Flavor that)
-      method This merge(This that) //merging flavors handled here
-        this.withFlavor(that.flavor())}//inherits "that" flavor
+flavored= {
+  method Flavor flavor() //very similar to colored
+  method This withFlavor(Flavor that)
+  method This merge(This that) //merging flavors handled here
+  this.withFlavor(that.flavor())}//inherits "that" flavor
 \end{lstlisting}  \saveSpace\saveSpace
 
 \noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
@@ -401,14 +400,14 @@ We define the main \Q@tPoint@ trait (8 lines),
 the \Q@tPointSum@ operation (3), the two 
 \Q@tColored@ and \Q@tFlavoured@ traits (6*2)
 and \Q@CPoint@ and \Q@CFPoint@ classes (12+18).
-Note how the major benefit of \name is in the reduction
+The major benefit of \name is in the reduction
 of the amount of glue-code needed to generate 
 \Q@CPoint@ and \Q@CFPoint@ (4+9).
 
 \noindent The results for the second experiment are presented below.
 
 \noindent \begin{tabular}{l|l|l|l}
-Language       & Lines of code & Number of members & Number of toplevel concepts (classes or traits)\\
+Language       & Lines of code & Number of members & Number of classes or traits\\
 \hline
 Java           &  47= 10+9\ \ \ \ + \ \ \ \  13+15         &    27             &     6\\
 Scala          &  53= \ \ 8+3+6*2+12+18        &    31             &         6\\
