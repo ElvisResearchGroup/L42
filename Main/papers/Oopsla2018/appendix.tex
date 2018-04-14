@@ -1,4 +1,119 @@
 \newpage\appendix
+
+\section{Benefits without heavy costs}
+In this section we discuss why the design of \name
+is not intrinsically harder to use than Java.
+
+\subsection{Introducing more names}
+At first it may seams our approach requires to
+introduce and keep in mind more names, as for \Q@set@ and \Q@Set@;
+however this is not the case. 
+The \textbf{user} of \Q@Set@ needs to keep in mind
+only the class \Q@Set@.
+The \textbf{reuser} of \Q@set@ needs to keep in mind only
+ the trait \Q@set@.
+Those are quite different roles, so they may very well
+being handled by different programmers.
+As shown in the \Q@set/Set@ example, defining a reusable class
+takes only an extra line with respect to defining a final one.
+In some sense, in Java the default is ``non final'', and
+the programmer can write \Q@final@ to prevent code reuse, while
+in 42 the default is reverted.
+
+It could be possible to define a syntactic sugar, like
+\begin{lstlisting}
+reusable Set={...}
+//expanded into
+set={...}
+Set=set
+\end{lstlisting}
+While this may sound appealing to a Java programmers, it only saves one line, and it may obscure the actual behaviour of the code.
+On the same line, Cecil~\cite{chambers1995typechecking} offers 
+syntactic sugar to declare a class and an interface with the same structural type in a single declaration.
+
+\subsection{Class hierarchies}
+By having all the classes final, we prevent class hierarchies.
+However,
+we allow both trait hierarchies and interface hierarchies.
+We believe having those two trees,
+one for code reuse and one for subtyping can improve code
+maintainability, since those two trees will be able to evolve independently. Having two trees does not makes code comprehension harder since, as for before, they have different roles and thus are relevant only one at the time.
+
+Often, class hierarchies are used as a hack in order to obtain code reuse (and in those cases, the LSP is often violated).
+In \name, trait hierarchies will just serve the same role better.
+
+
+\subsection{Constructors and initialization}
+Java allows constructors to do arbitrary operations.
+The same behaviour can be obtained in \name by using a factory method; that is, the following:
+\begin{lstlisting}[language=Java]
+class A{
+  public int x;
+  public A(String s){
+    this.x=/*any computation here*/;
+    }
+  }
+\end{lstlisting}
+could be expressed in \name as 
+\begin{lstlisting}
+A={
+  method Num x();
+  static method This of(Num x)
+  static method This of(String s){
+    return This.of(/*any computation here*/);
+    }
+  }
+\end{lstlisting}
+
+For space reasons we did not explain yet how to allow for traits to have their own state with a default initialization.
+This could be solved by adding to the abstract state operations (getters, setters, withers) a default initializer;
+for example the trait
+\begin{lstlisting}
+t={ method Num x();
+  method defaultX(){return 0;}}//new concept here!
+\end{lstlisting}
+would loosely correspond to a Java abstract class
+\begin{lstlisting}[language=Java]
+class T{ int x=0;  }
+\end{lstlisting}
+and could be used to obtain concrete classes where the abstract factory do not need to initialize the field \Q@x@.
+For example classes \Q@A@ and \Q@B@ below would be coherent classes
+\begin{lstlisting}
+A= Use t,{ static method This of()}
+B= Use t,{ method String s(); static method This of(String s)}
+...
+A.of().x()==0
+\end{lstlisting}
+
+Finally, when self construction is not needed, declaring the abstract factory can be redundant, and it can indeed be omitted in the full 42 language.
+
+Moreover, when code reuse is involved, \name is much simpler to use then Java,C++ or C\#: a class extending another class needs to define a constructor calling a super constructor.
+   This typically has as many parameters as the full set of fields. Those parameters are then used at least one time in the body of the constructor.
+In \name, to compose traits without adding fields, there is no need to repeat the abstract factory.
+To add a field, you need to define a new abstract factory and implement the "super" factory method by calling the new one.
+Thus, when adding a field the amount of code between 42 and Java is about the same, but is much easier when no fields are added.
+
+How class invariants and state encapsulation is established and preserved without explicit super constructors is a different issue, and a paper on such topic is being prepared right now.
+
+\subsection{Self instantiation is very useful}
+In many cases the absence of self instantiation cause bugs: often programmers ``think'' that \Q@new C()@ inside of class \Q@C@ would create an instance of the ``current class'', while of course \Q@class D extends C@ still creates instances of \Q@C@.
+The absence of self instantiation also prevents to use functional programming patterns in OO languages.
+Just a look to how involved is the code to implement the functional \Q@Point@ in Java is sufficient to dissuade most programmers.
+
+\subsection{Comprehensibility and usability}
+Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenario, we believe \name is much more explicit and clear then Scala and other options. We invite the curios reader to look to the complete code of the case studies (below) and compare our solution with the cryptic version of Scala, where behaviour traits are nested inside other traits.
+
+In particular, with respect to Java/Scala we encourage more explicit code since:
+\begin{itemize}
+\item sub-typing need to be explicitly declared.
+\item when sub typing is needed, an opportune interface need to be declared. Thus when using a class type, it is always clear what implementation is referred.
+\item \name requires to be explicit when subtyping and subclassing are both supposed to happen (by declaring an extra interface)
+\item \Q@this.@ is required to access fields/methods (so they can not be confused with local variables)
+\item our object model is equivalent to an untyped language
+\end{itemize}
+The last point is quite important: languages where inheritance is not subtyping proposed in the past tend to have more complex object models, instead our 
+our flattened language is just a language of interfaces and final classes. Novice programmers may start by learning that. They could learn to use traits later, and to define their own traits even later.
+
 \section{Case studies complete code} 
 
 Here, for reference, you can find the complete
@@ -7,6 +122,11 @@ It is quite a lot of code, about 18 pages. The interested reader
 can navigate it in order to gain a perfect understanding on
 how we encoded the various solutions in the various styles and languages,
 but is not needed to understand the overall value of our paper.
+
+While evaluating our approach, we consider not only lines of code but also number of methods and classes.
+Our particular examples are focused on code reuse, thus method implementations are all trivial.
+We believe that in this particular context the number of methods/classes is a good indicator.
+
 
 \subsection{Point algebra}
 Here the code of Java7 for the first case study, the \Q@Point@ algebra:

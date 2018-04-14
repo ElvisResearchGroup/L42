@@ -7,9 +7,15 @@ Our work is inspired by traits~\cite{ducasse2006traits}, which in turn
 are inspired by module composition languages~\cite{ancona2002calculus}.
 
 \subsection{Separating Inheritance and Subtyping}
-We are aware of at least 3 independently designed research languages 
-that address the this-leaking problem: TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}, Package Templates~(PT)\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}, DeepFJig(DJ)~\cite{deep,servetto2014meta,fjig}.
-In this work we synthesize
+In languages like cecil~\cite{chambers1995typechecking} and polyToil~\cite{bruce1995polytoil}
+classes are not types. This is a more radical solution to Inheritance implies Subtyping, and equivalent to a restricted version of \name where only interface names can be used as types.
+This complicates typing of \Q@this@,
+and may prevent any usefully application of \Q@This@ type (polyToil uses polymorphism to support it).
+
+
+\name is directyl inspired by the 3 independently designed research languages already mentioned:
+ TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530}, Package Templates~(PT)\cite{KrogdahlMS09}, DeepFJig(DJ)~\cite{deep}.
+We synthesize
 the best ideas of those very different designs, while at the same time 
 coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
@@ -86,14 +92,8 @@ As in \Q@.@FJ and \Q@^@FJ~\cite{igarashi2005lightweight,IgarashiEtAl08,IgarashiV
 The work on DJ~\cite{deep} contains an in-depth comparison between various FP approaches, including an example written in \Q@.@FJ syntax synthesizing the difficulty to support FP while keeping Use and Reuse connected:
 \saveSpace\saveSpace
 \begin{lstlisting}
-class A{
-  static class B{int f1;}  
-  int k(.B x){ return x.f1;}
-}
-class AA extends A{
-  static class B{int f2;}
-  int k(.B x){return x.f2+new .B().f2; }
-}
+class A{static class B{int f1;}    int k(.B x){ return x.f1;}}
+class AA extends A{static class B{int f2;}   int k(.B x){return x.f2+new .B().f2;}}
 \end{lstlisting}\saveSpace\saveSpace
 The syntax \lstinline{.B} denotes a relative path, that is, the 
 class \lstinline{B} in scope.
@@ -224,8 +224,8 @@ is it required to be well-typed before being composed with other code?
 &\Rotated{induced type is this type}
 &\Rotated{binary methods}
 &\Rotated{{${}_{}$\!inheritance induce subtype\!\!\!}}
-&\Rotated{{${}_{}$\!well-typed before imported\!\!\!}}
-&\Rotated{{${}_{}$\!well-typed before composed\!\!\!}} 
+&\Rotated{{${}_{}$\!typed before imported\!\!\!}}
+&\Rotated{{${}_{}$\!typed before composed\!\!\!}} 
 \\
 \hline
 java/scala class&\YY &X&\YY &\YY &\YY &\YY &X&\YY &\YY &X\\

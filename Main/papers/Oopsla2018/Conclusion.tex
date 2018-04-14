@@ -12,6 +12,11 @@ we \textbf{replace the concept} of abstract classes with
 the concept of traits, while keeping the concepts of
 interfaces and final classes.
 Concrete non final classes are simply not needed in our model.
+Thus, we believe that \name benefits
+code reuse in important cases 
+without having a negative impacts on the general programming experience.
+The interested reader can find a detailed discussion about it in the appendix.
+
 
 The model presented here is easy to extend.
 More composition operators can be added in addition to \use.
@@ -29,9 +34,9 @@ a fault in the input.
  \end{itemize}
  
 
- 
 Our simplified model represents the conceptual core of  42: a novel full blown programming language,
 In such model we do not need an explicit notion of traits: they are encoded as methods returning a code literal.
+
 \begin{comment}
 using the ideas presented in this paper to obtain reliable and understandable metaprogramming.
 Formalization (in progress) for full 42 can be found at
