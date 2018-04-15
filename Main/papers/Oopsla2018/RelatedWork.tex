@@ -7,11 +7,15 @@ Our work is inspired by traits~\cite{ducasse2006traits}, which in turn
 are inspired by module composition languages~\cite{ancona2002calculus}.
 
 \subsection{Separating Inheritance and Subtyping}
-In languages like cecil~\cite{chambers1995typechecking} and polyToil~\cite{bruce1995polytoil}
+In languages like Cecil~\cite{chambers1995typechecking} and polyToil~\cite{bruce1995polytoil}
 classes are not types. This is a more radical solution to Inheritance implies Subtyping, and equivalent to a restricted version of \name where only interface names can be used as types.
 This complicates typing of \Q@this@,
 and may prevent any usefully application of \Q@This@ type (polyToil uses polymorphism to support it).
-
+For example, in those approaches, the following code does not work since \Q@A@ is not a type:
+\saveSpace\saveSpace\begin{lstlisting}[language=Java]
+  class A{ int ma(){return Utils.m(this);} }  class Utils{static int m(A a){..}}
+\end{lstlisting}\saveSpace\saveSpace
+To overcome this limit Cecil  rely on some syntactic sugar, advantages and pitfalls of this design are discussed in the appendix.
 
 \name is directyl inspired by the 3 independently designed research languages already mentioned:
  TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530}, Package Templates~(PT)\cite{KrogdahlMS09}, DeepFJig(DJ)~\cite{deep}.

@@ -4,6 +4,7 @@
 In this section we discuss why the design of \name
 is not intrinsically harder to use than Java.
 
+
 \subsection{Introducing more names}
 At first it may seem that our approach requires
 introducing and keeping more names in mind, as for the \Q@set@ and \Q@Set@ example;
@@ -30,6 +31,28 @@ Set=set
 While this may sound appealing to a Java programmers, it only saves one line, and it may obscure the actual behaviour of the code.
 On the same line, Cecil~\cite{chambers1995typechecking} offers 
 syntactic sugar to declare a class and an interface with the same structural type in a single declaration.
+\subsection{Two ways to separate subclassing and subtyping}
+
+PROBLEM
+\begin{lstlisting}[language=Java]
+  class A{ int ma(){return Utils.m(this);} }
+  class Utils{static int m(A a){..}}
+  class B extends A{ int mb(){return this.ma();} }  
+\end{lstlisting}
+SOLUTION
+\begin{lstlisting}
+ IA={interface method int ma()}//interface with abstract method
+ Utils={static method int m(IA a){return ...} }
+ ta={implements IA //This line is the core of the solution
+     method int ma(){return Utils.m(this);}}
+ A=Use ta
+ B=Use ta,{ int mb(){return this.ma();} }  
+\end{lstlisting}
+OPTION classes are all final,
+extends is replaced with another mechanism
+OPTION classes are not types, interfaces needs to be used everywhere
+
+
 
 \subsection{Class hierarchies}
 By having all the classes final, we prevent class hierarchies.
