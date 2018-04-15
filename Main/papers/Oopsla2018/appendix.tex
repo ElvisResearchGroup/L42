@@ -5,15 +5,15 @@ In this section we discuss why the design of \name
 is not intrinsically harder to use than Java.
 
 \subsection{Introducing more names}
-At first it may seams our approach requires to
-introduce and keep in mind more names, as for \Q@set@ and \Q@Set@;
+At first it may seem that our approach requires
+introducing and keeping more names in mind, as for the \Q@set@ and \Q@Set@ example;
 however this is not the case. 
 The \textbf{user} of \Q@Set@ needs to keep in mind
 only the class \Q@Set@.
-The \textbf{reuser} of \Q@set@ needs to keep in mind only
+The \textbf{re-user} of \Q@set@ needs to keep in mind only
  the trait \Q@set@.
 Those are quite different roles, so they may very well
-being handled by different programmers.
+be handled by different programmers.
 As shown in the \Q@set/Set@ example, defining a reusable class
 takes only an extra line with respect to defining a final one.
 In some sense, in Java the default is ``non final'', and
@@ -35,9 +35,9 @@ syntactic sugar to declare a class and an interface with the same structural typ
 By having all the classes final, we prevent class hierarchies.
 However,
 we allow both trait hierarchies and interface hierarchies.
-We believe having those two trees,
+We believe having both these hierarchies,
 one for code reuse and one for subtyping can improve code
-maintainability, since those two trees will be able to evolve independently. Having two trees does not makes code comprehension harder since, as for before, they have different roles and thus are relevant only one at the time.
+maintainability, since those two hierarchies will be able to evolve independently. Furthermore, having two hierarchies does not makes code comprehension harder since, as for before, they have different roles and thus are relevant only one at the time.
 
 Often, class hierarchies are used as a hack in order to obtain code reuse (and in those cases, the LSP is often violated).
 In \name, trait hierarchies will just serve the same role better.
@@ -65,7 +65,7 @@ A={
   }
 \end{lstlisting}
 
-For space reasons we did not explain yet how to allow for traits to have their own state with a default initialization.
+For space reasons we have not yet explained how to allow traits to have their own state with a default initialization.
 This could be solved by adding to the abstract state operations (getters, setters, withers) a default initializer;
 for example the trait
 \begin{lstlisting}
@@ -74,9 +74,9 @@ t={ method Num x();
 \end{lstlisting}
 would loosely correspond to a Java abstract class
 \begin{lstlisting}[language=Java]
-class T{ int x=0;  }
+abstract class T{ int x=0;  }
 \end{lstlisting}
-and could be used to obtain concrete classes where the abstract factory do not need to initialize the field \Q@x@.
+and could be used to obtain concrete classes where the abstract factory does not need to initialize the field \Q@x@.
 For example classes \Q@A@ and \Q@B@ below would be coherent classes
 \begin{lstlisting}
 A= Use t,{ static method This of()}
@@ -96,9 +96,9 @@ Thus, when adding a field the amount of code between 42 and Java is about the sa
 How class invariants and state encapsulation is established and preserved without explicit super constructors is a different issue, and a paper on such topic is being prepared right now.
 
 \subsection{Self instantiation is very useful}
-In many cases the absence of self instantiation cause bugs: often programmers ``think'' that \Q@new C()@ inside of class \Q@C@ would create an instance of the ``current class'', while of course \Q@class D extends C@ still creates instances of \Q@C@.
+In many cases the absence of self instantiation causes bugs: often programmers ``think'' that \Q@new C()@ inside of class \Q@C@ would create an instance of the ``current class'', while of course \Q@class D extends C@ still creates instances of \Q@C@.
 The absence of self instantiation also prevents to use functional programming patterns in OO languages.
-Just a look to how involved is the code to implement the functional \Q@Point@ in Java is sufficient to dissuade most programmers.
+Just a look at how involved the code is to implement the functional \Q@Point@ in Java is sufficient to dissuade most programmers.
 
 \subsection{Comprehensibility and usability}
 Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenario, we believe \name is much more explicit and clear then Scala and other options. We invite the curios reader to look to the complete code of the case studies (below) and compare our solution with the cryptic version of Scala, where behaviour traits are nested inside other traits.
@@ -106,12 +106,12 @@ Of course it could take a while to adapt from the Java model to the \name one. H
 In particular, with respect to Java/Scala we encourage more explicit code since:
 \begin{itemize}
 \item sub-typing need to be explicitly declared.
-\item when sub typing is needed, an opportune interface need to be declared. Thus when using a class type, it is always clear what implementation is referred.
-\item \name requires to be explicit when subtyping and subclassing are both supposed to happen (by declaring an extra interface)
+\item when sub typing is needed, an opportune interface needs to be declared. Thus, when using a class type, it is always clear what implementation is referred to.
+\item \name requires to be explicit when subtyping and subclassing are both supposed to happen (by declaring an extra interface).
 \item \Q@this.@ is required to access fields/methods (so they can not be confused with local variables)
-\item our object model is equivalent to an untyped language
+\item our object model is equivalent to an untyped language.
 \end{itemize}
-The last point is quite important: languages where inheritance is not subtyping proposed in the past tend to have more complex object models, instead our 
+The last point is quite important: languages where inheritance is not subtyping proposed in the past tend to have more complex object models, instead 
 our flattened language is just a language of interfaces and final classes. Novice programmers may start by learning that. They could learn to use traits later, and to define their own traits even later.
 
 \section{Case studies complete code} 
@@ -900,7 +900,7 @@ to declare a trait,
 all trait names start with \texttt{\$}
 and are referred with `\Q@()@'.
 Method bodies can be just simple expressions, without the need
-or `\Q@return@'.
+of `\Q@return@'.
 
 \begin{lstlisting}[basicstyle=\tiny, mathescape=false]
 $p: Resource <>< {//4
@@ -964,7 +964,7 @@ PointSumSubMulDiv: Use[$pointSum();$pointSub();$pointMul();$pointDiv()] <>< {}
 
 
 \subsection{FCPoint}
-Here the code of Java7 for the second case study;
+Here is the code of Java7 for the second case study;
 flavoured and colored points:
 \begin{lstlisting}[basicstyle=\tiny]
 enum Flavor {
@@ -1077,7 +1077,7 @@ class FCPoint extends CPoint {//15 lines
   }
 }
 \end{lstlisting}
-Here the code of Scala for flavoured and colored points:
+Here is the code in Scala for flavoured and colored points:
 \begin{lstlisting}[basicstyle=\tiny]
 trait tPointState {//8
   type p <: tPointState
@@ -1202,7 +1202,7 @@ FCPoint: Use[//9 lines
 \end{lstlisting}
 
 \subsection{Expression problem}
-Here the original code of Scala solving the expression problem.
+Here is the original code of Scala solving the expression problem.
 As you can see, sometimes multiple operations/cases are declared together in
 the same trait.
 \begin{lstlisting}[basicstyle=\tiny]
@@ -1382,8 +1382,8 @@ trait EqualsShowPlusNeg extends EqualsPlusNeg with ShowPlusNeg {
 \end{lstlisting}
 
 
-In the following, the fully modularized Scala code, so that
-every trait define exactly one operation for one datavariant:
+In the following, the fully modularized Scala code,
+every trait defines exactly one operation for each datavariant:
 \begin{lstlisting}[basicstyle=\tiny]
 trait Base {
   type exp <: Exp
@@ -1689,10 +1689,10 @@ with EqualsNum with EqualsPlus with EqualsNeg
 Finally, here is the 42 code solving the expression problem.
 The classes \Q@RenNum@,\Q@RenPlus@ and \Q@RenNeg@
 can be understood as declarations of `short-cuts'
-In order to make the full 42 language more in line with the
+in order to make the full 42 language more in line with the
 (more compact) syntax of \name.
-In 42 those `short-cuts' can be very expressive 
-but here we use them only to better align 42 and \name.
+In 42, these `short-cuts' can be very expressive 
+but here we use them only to better align full 42 and \name.
 \begin{lstlisting}[basicstyle=\tiny, mathescape=false]]
 RenNum:{class method Library<>< (Library that) exception Guard
   Refactor2.rename(path:\"T" into:\"Num")<><that
