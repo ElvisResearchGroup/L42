@@ -2,7 +2,7 @@
 \section{Introduction}\label{sec:intro}
 \saveSpace
 In Java, C++, Scala and C\#, subclassing 
-implies subtyping. A Java subclass definition, such as 
+implies subtyping. A Java subclass declaration, such as 
 \Q@class A extends B {}@
 \noindent does two things at the same time:
 it {\bf inherits} code from \lstinline{B}; and it {\bf creates
@@ -144,7 +144,7 @@ cannot be instantiated or used as types. Our design allows
 subtyping and code reuse to be treated separately, which brings several benefits. In particular, 
 Family Polymorphism~\cite{ernst2004expression} is
 radically simpler to support soundly.
-This is already clear in 3 lines of
+This is already clear in the 3 lines of
 research above, and is even more outstanding in the clean \name model.
 
 We first focus on an example-driven presentation to illustrate how to
@@ -155,7 +155,7 @@ semantics have been studied in previous
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
 and the design of \name synthesizes some of these previously studied
 concepts.
-The language design ideas have been implemented in the {\bf 42 language}, which supports all
+The language design ideas have been implemented in the {\bf full 42 language}, which supports all
 the examples we show in the paper, and is available at: \url{http://l42.is} (can be accessed without breaking double blind review).
 Work on 42 is now slowly reaching maturity after about 5 years of
 intense research and development. The current implementation 
@@ -186,7 +186,7 @@ In summary, our contributions are:
 \item We synthesize the key ideas of previous designs that solve the
   this-leaking problem into {\bf a novel and
   minimalistic language design}.This language is the logic core of the language 42, and 
-  all the examples in the paper can be encoded as valid 42 programs
+  all the examples in this paper can be encoded as valid 42 programs
 This design {\bf improves both code use and code reuse}.
 
 \item We propose {\bf a clean and elegant approach to the handling of state} in a trait based language.

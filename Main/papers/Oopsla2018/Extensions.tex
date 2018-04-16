@@ -43,9 +43,9 @@ to consider the class table as a simple map from (nested) types (as both \Q@A@ a
 
 \paragraph{Rename}:
 There are a lots of different forms of rename in
-literature~\cite{deep,ancona2002calculus,bracha1992programming}
+literature~\cite{deep,ancona2002calculus,bracha1992programming}.
 Here we will use a simple variant to rename nested types in other nested types.
-For example 
+For example:
 \begin{lstlisting}
 t={ method B m() B={ method B mb()} }
 D= t[rename B into C]
@@ -149,7 +149,7 @@ explicitly, we would repeat \Q@Exp@, the abstract
 declaration of \Q@eval()@ and `\Q@implements Exp@'
 for all data-variants.
 To avoid this duplication,  we write 
-the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
+the trait \Q@eval @with a placeholder \Q@T@ nested class, that can then be renamed
 into the corresponding data-variant.
 Thus, our source code is as follows;
 First we declare the 4 traits to represent the state:
@@ -282,8 +282,8 @@ On the other side, the presented solution in Scala requires
 27 lines of glue code to put the traits together.
 This means that a full Scala solution \textbf{requiring a single instantiation with all the traits} would be 78+27=105 lines.
 If we were to require more instantiations with different subset of traits, the glue code would dominate the line count,
-and the Scala solution would end up being up to \textbf{9 times heavier then the
-\name one} (if all the 64 permutations was required).
+and the Scala solution would end up being up to \textbf{9 times heavier than the
+\name one} (if all the 64 permutations were required).
 
 The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
 for each of the three operations (\Q@eval,show,double@) 

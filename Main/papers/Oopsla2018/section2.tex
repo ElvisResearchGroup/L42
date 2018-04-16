@@ -67,7 +67,7 @@ That is, \textbf{referring to a trait is the only way to induce code reuse}.
 
 The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
 the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere is reused.
-In \name we do not commit the same mistake, and the code \Q@Utils.m(this)@ is ill typed:
+In \name we do not commit the same mistake, and the code \Q@Utils.m(this)@ is ill-typed:
 the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A}.
 The following second attempt would not work either:
