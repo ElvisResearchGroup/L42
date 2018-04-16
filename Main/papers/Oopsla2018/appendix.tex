@@ -29,9 +29,9 @@ set={...}
 Set=set
 \end{lstlisting}
 While this may sound appealing to a Java programmers, it only saves one line, and it may obscure the actual behaviour of the code.
-On the same line, Cecil~\cite{chambers1995typechecking} offers 
-syntactic sugar to declare a class and an interface with the same structural type in a single declaration.
-\subsection{Two ways to separate subclassing and subtyping}
+This kind of behaviour is offered in Cecil~\cite{chambers1995typechecking}.
+
+Consider, the problem below presented in a previous section of this paper.
 
 PROBLEM
 \begin{lstlisting}[language=Java]
@@ -39,6 +39,9 @@ PROBLEM
   class Utils{static int m(A a){..}}
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
+
+Also consider the equivalent solution in 42 below.
+
 SOLUTION
 \begin{lstlisting}
  IA={interface method int ma()}//interface with abstract method
@@ -48,9 +51,20 @@ SOLUTION
  A=Use ta
  B=Use ta,{ int mb(){return this.ma();} }  
 \end{lstlisting}
-OPTION classes are all final,
-extends is replaced with another mechanism
-OPTION classes are not types, interfaces needs to be used everywhere
+
+In Cecil, an equivalent solution would be mostly
+the similar to the one presented in 42 above. However, Cecil does not allow for classes
+to be used as types. Thus, interfaces need to be used for the types everywhere in the
+program in Cecil. To avoid this, Cecil offers syntactic sugar to declare a class and an
+interface with the same structural type in a single declaration.
+
+However, the 42 solution allows using classes as types so we believe this is an advantage due
+to not having to declare unnecessary syntactic sugar like in languages like Cecil.
+
+
+%OPTION classes are all final,
+%extends is replaced with another mechanism
+%OPTION classes are not types, interfaces needs to be used everywhere
 
 
 
