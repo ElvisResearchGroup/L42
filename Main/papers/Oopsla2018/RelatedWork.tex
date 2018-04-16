@@ -8,7 +8,7 @@ are inspired by module composition languages~\cite{ancona2002calculus}.
 
 \subsection{Separating Inheritance and Subtyping}
 In languages like Cecil~\cite{chambers1995typechecking} and PolyToil~\cite{bruce1995polytoil}
-classes are not types. This is a more radical solution to `inheritance implies subtyping', and equivalent to a restricted version of \name where only interface names can be used as types.
+classes are not types: it is a more radical solution to `inheritance implies subtyping', and equivalent to a restricted version of \name where only interface names can be used as types.
 This complicates typing of \Q@this@,
 and may prevent any useful application of the \Q@This@ type (PolyToil uses polymorphism to support it).
 For example, in those approaches, the following Java code does not work since \Q@A@ is not a type:
@@ -114,7 +114,7 @@ new A().k(new A.B())//well-typed
 A a=new AA(); //well-typed assuming AA subtype of A
 a.k(new A.B())//runtime error: A.B.f2 does not exist
 \end{lstlisting}\saveSpace\saveSpace
-The sound \Q@.@FJ type system considers the last method invocation ill-typed even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
+In the sound \Q@.@FJ type system the last method invocation ill-typed even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
 With minor changes, others~\cite{nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07}
 support this example in the same way.
 Inheritance implies Subtyping is broken only in a controlled way, and it is allowed whenever it does not lead to unsoundness.

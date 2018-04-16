@@ -265,16 +265,17 @@ Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
 We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
 \end{minipage}
 
-As we can see, to encode fully isolated units in Scala is
+\noindent As we can see, to encode atomic units in Scala is
 more verbose,
 but more importantly,
 in \name we can just define a class supporting any subset of operations
 and data-variants by listing the desired traits:
 For example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
 with \Q@eval@ and \Q@double@ would look like:
+\saveSpace\saveSpace
 \begin{lstlisting}
 Example= Use evalNum,evalPlus,doubleNum,doublePlus
-\end{lstlisting}
+\end{lstlisting}\saveSpace\saveSpace
 The composition of all our traits would just require to list all
 of the relevant behaviour; reasonably formatted, it can take up to 3 lines (so a full \name solution would be 48+3=51 lines).
 
@@ -291,17 +292,17 @@ we just need 4 lines to declare the operation
 in the interface, and 2 lines for each of the 3 data-variants.
 
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
-\cite{Zenger-Odersky2005} solution involved double dispatch to avoid casting.
+Their solution involved double dispatch to avoid casting.
 To show understandable code, we show a simpler solution 
-with a guarded cast (sometime called a typecast).%
+with a guarded cast (sometime called a typecase).%
 \footnote{
 The interested reader can find a \name implementation of \Q@equals@ with double dispatch
 in the appendix.
 }
-
 The main idea is that  every data-variant  contains
  the "cast" logic; thus
  we can modularize that into an \Q@equals@ trait.
+\saveSpace\saveSpace
 \begin{lstlisting}
 equals= {
   Exp= {interface
@@ -331,9 +332,9 @@ equalsNeg= Use neg, equals[rename T into Neg],{
   Neg= {method Bool exactEquals(Neg that){
     return this.term().equals(that.term());}  }}
 \end{lstlisting}
-
-This simple implementation of \Q@equals@
-is much simpler than the one proposed by Zenger and Odersky
+\saveSpace\saveSpace
+\noindent Our implementation of \Q@equals@
+is much simpler than the one proposed by~\cite{Zenger-Odersky2005}
  and can be instantiated without any glue code.
 
 \noindent

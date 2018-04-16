@@ -1,5 +1,5 @@
-\saveSpace\saveSpace\section{Formalization}\label{sec:formal}
-\saveSpace\saveSpace
+\saveSpace\section{Formalization}\label{sec:formal}
+\saveSpace
 
 Here we show a simple formalization for the language we presented so far.
 We also model nested classes, but in order to avoid uninteresting complexities, we assume that
@@ -241,9 +241,9 @@ $\begin{array}{l}
 $\\
 \caption{Formalization}
 \end{figure}
-
+\saveSpace
 \subsection{Syntax}
-
+\saveSpace
 %In the following section, we present a simplified grammar of \name. 
 We use $\mt$ and $\mC$ to represent lowercase trait and uppercase class identifiers respectively.
 To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
@@ -273,9 +273,9 @@ the values are just calls to abstract static methods.
 Thus values are parametric on the shape of the specific programs $\overline\mD$.
 We then show the evaluation context, the compilation context and full
 context.
-
+\saveSpace
 \subsection{Well-formedness}
-
+\saveSpace
 The whole program, that is $\overline\mDE$, is well formed if
 all the traits and classes at top level have unique names. The special class name
 \Q@This@ is not one of those,
@@ -618,7 +618,9 @@ This means that typing classes
 \Q@String@ and \Q@Int@ in isolation one at a time is not possible.}
 between multiple $\mC$\Q@=@$\mE$ \textbf{without
 the need of predicting the resulting shape}%
-\footnote{This is fundamental in the full language where arbitrary code can be run at compile time, making impossible to predict the resulting shape.}.
+\footnote{This is needed in full 42: it is
+impossible to predict the resulting shape since
+arbitrary code can run at compile time.}.
 
 As seen in \Rulename{top}, our compilation process
 proceeds in a top-down fashion, flattening one declaration at a time,
