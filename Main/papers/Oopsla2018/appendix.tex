@@ -29,42 +29,53 @@ set={...}
 Set=set
 \end{lstlisting}
 While this may sound appealing to a Java programmers, it only saves one line, and it may obscure the actual behaviour of the code.
-This kind of behaviour is offered in Cecil~\cite{chambers1995typechecking}.
+This kind of behaviour is offered in Cecil~\cite{chambers1995typechecking}, where it makes sense, since in 
+Cecil classes are not types.
+Cecil offers syntactic sugar to declare a class and an
+interface with the same structural type in a single declaration.
 
-Consider, the problem below presented in a previous section of this paper.
+\subsection{Two ways to separate subclassing and subtyping}
+There are indeed two different ways to separate subclassing and subtyping:
 
-PROBLEM
+\begin{itemize}
+\item \textbf{(1)Classes are not types}
+In this solution (used by Cecil, Toil/polyToil and most structurally typed languages) classes and types are different concepts; thus subclassing is not subtyping.
+This also means that every method call is dynamically dispatched. Some authors consider this security problem, and it is also out of those concerns that Java designers decided to support \Q@final@ classes.
+\item \textbf{(2)Classes are not extensible}
+This is our solution: classes are types, but can not be reused. This requires to introduce another concept for code reuse: Traits.
+We think our solution is much less radical than the former one.
+A key advantage we have is that all class types are exact types, and method calls on class types are statically dispatched; supporting easier reasoning and higher security.
+On the other side, all interface types obviously are not exact, since interfaces can not be instantiated,
+and method calls on interface types obviously are dynamically dispatched, since interfaces have no implementation.
+This builds toward a simpler mental model, and prevent bugs where programmers may forgot about dynamic dispatch and reason over method calls using the specific implementation found in the receiver static type.
+\end{itemize}
+
+Both ways enforce about the same solution for the \emph{this-leaking} problem:
 \begin{lstlisting}[language=Java]
   class A{ int ma(){return Utils.m(this);} }
   class Utils{static int m(A a){..}}
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
+In (1) the error is using \Q@A@ as a type in \Q@Utils.m@,
+while in (2) the error is using \Q@extends@.
 
-Also consider the equivalent solution in 42 below.
-
-SOLUTION
+The solution proposed by (1) would look like
+\begin{lstlisting}[language=Java, morekeywords={type, method}]
+ type IA{interface method int ma()}//type = interface
+ class Utils{static method int m(IA a){return ...} }
+ class A{implements IA 
+   method int ma(){return Utils.m(this);}}
+ class B extends A{ int mb(){return this.ma();} }  
+\end{lstlisting}
+while our solution (2) is just one line longer:
 \begin{lstlisting}
  IA={interface method int ma()}//interface with abstract method
  Utils={static method int m(IA a){return ...} }
- ta={implements IA //This line is the core of the solution
+ ta={implements IA
      method int ma(){return Utils.m(this);}}
  A=Use ta
  B=Use ta,{ int mb(){return this.ma();} }  
 \end{lstlisting}
-
-In Cecil, an equivalent solution would be mostly
-the similar to the one presented in 42 above. However, Cecil does not allow for classes
-to be used as types. Thus, interfaces need to be used for the types everywhere in the
-program in Cecil. To avoid this, Cecil offers syntactic sugar to declare a class and an
-interface with the same structural type in a single declaration.
-
-However, the 42 solution allows using classes as types so we believe this is an advantage due
-to not having to declare unnecessary syntactic sugar like in languages like Cecil.
-
-
-%OPTION classes are all final,
-%extends is replaced with another mechanism
-%OPTION classes are not types, interfaces needs to be used everywhere
 
 
 
