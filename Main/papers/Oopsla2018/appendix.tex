@@ -39,15 +39,17 @@ There are indeed two different ways to separate subclassing and subtyping:
 
 \begin{itemize}
 \item \textbf{(1)Classes are not types}
-In this solution (used by Cecil, Toil/polyToil and most structurally typed languages) classes and types are different concepts; thus subclassing is not subtyping.
-This also means that every method call is dynamically dispatched. Some authors consider this security problem, and it is also out of those concerns that Java designers decided to support \Q@final@ classes.
+In this solution (used by Cecil, Toil/PolyToil and most structurally typed languages) classes and types are different concepts; thus subclassing is not subtyping.
+This also means that every method call is dynamically dispatched. Some authors consider this to be a security problem, and it is also out of those concerns that Java designers decided to support \Q@final@ classes.\footnote{
+For example, a Java programmer may assume the call \Q@myPoint.getX()@ to behave as specified in the \Q@Point@ class. However, dynamic class loading may be used in a malicious way to provide a \Q@Point@ instance with a
+dangerous behaviour. This can be easily prevented by declaring \Q@Point@ final. To insist on all calls to be dynamically dispatched requires to disable dynamic class loading or to verify all the dynamically loaded code.}
 \item \textbf{(2)Classes are not extensible}
 This is our solution: classes are types, but can not be reused. This requires to introduce another concept for code reuse: Traits.
 We think our solution is much less radical than the former one.
 A key advantage we have is that all class types are exact types, and method calls on class types are statically dispatched; supporting easier reasoning and higher security.
 On the other side, all interface types obviously are not exact, since interfaces can not be instantiated,
 and method calls on interface types obviously are dynamically dispatched, since interfaces have no implementation.
-This builds toward a simpler mental model, and prevent bugs where programmers may forgot about dynamic dispatch and reason over method calls using the specific implementation found in the receiver static type.
+This builds toward a simpler mental model, and prevent bugs where programmers may forget about dynamic dispatch and reasoning over method calls using the specific implementation found in the receiver static type.
 \end{itemize}
 
 Both ways enforce about the same solution for the \emph{this-leaking} problem:
@@ -78,7 +80,6 @@ while our solution (2) is just one line longer:
 \end{lstlisting}
 
 
-
 \subsection{Class hierarchies}
 By having all the classes final, we prevent class hierarchies.
 However,
@@ -105,8 +106,8 @@ class A{
 could be expressed in \name as 
 \begin{lstlisting}
 A={
-  method Num x();
-  static method This of(Num x)
+  method int x();
+  static method This of(int x)
   static method This of(String s){
     return This.of(/*any computation here*/);
     }
@@ -117,12 +118,19 @@ For space reasons we have not yet explained how to allow traits to have their ow
 This could be solved by adding to the abstract state operations (getters, setters, withers) a default initializer;
 for example the trait
 \begin{lstlisting}
-t={ method Num x();
-  method defaultX(){return 0;}}//new concept here!
+t={
+  method int x();
+  method void x(int x);
+  method int defaultX(){return 0;}//new concept here!
+}
 \end{lstlisting}
 would loosely correspond to a Java abstract class
 \begin{lstlisting}[language=Java]
-abstract class T{ int x=0;  }
+abstract class T{
+  private int x=0;
+  public int x(){return x;}
+  public void x(int that){return this.x=that;}
+  }
 \end{lstlisting}
 and could be used to obtain concrete classes where the abstract factory does not need to initialize the field \Q@x@.
 For example classes \Q@A@ and \Q@B@ below would be coherent classes
@@ -130,7 +138,11 @@ For example classes \Q@A@ and \Q@B@ below would be coherent classes
 A= Use t,{ static method This of()}
 B= Use t,{ method String s(); static method This of(String s)}
 ...
-A.of().x()==0
+A a=A.of();
+a.x()==0;//assert a.x()==0
+a.x(42);
+a.x()==42;//assert a.x()==42
+
 \end{lstlisting}
 
 Finally, when self construction is not needed, declaring the abstract factory can be redundant, and it can indeed be omitted in the full 42 language.
@@ -941,7 +953,7 @@ class PointSumSubMulDiv(val x:Int, val y:Int) extends tPointSum with tPointSub w
 }
 \end{lstlisting}
 
-Here you can find the 42 code for the Point Algebra.
+Here you can find the full 42 code for the Point Algebra.
 The main differences with respect to \name as presented in
 the paper, is that we use \Q@Resource<><@
 to declare a trait,
@@ -949,6 +961,8 @@ all trait names start with \texttt{\$}
 and are referred with `\Q@()@'.
 Method bodies can be just simple expressions, without the need
 of `\Q@return@'.
+Note that in full 42 there is no primitive type \Q@int@ and
+the class representing numbers is called \Q@Num@.
 
 \begin{lstlisting}[basicstyle=\tiny, mathescape=false]
 $p: Resource <>< {//4
