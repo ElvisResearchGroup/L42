@@ -1,23 +1,23 @@
 \saveSpace
 \section{Related Work}
 \saveSpace
-Literature on code reuse is too vast to let us do justice of it in a few pages.
-In particular, we where unable to discuss all the variations on Family polymorphism.
+Literature on code reuse is too vast to let us do justice to it in a few pages.
+In particular, we were unable to discuss all the variations on Family polymorphism.
 Our work is inspired by traits~\cite{ducasse2006traits}, which in turn
 are inspired by module composition languages~\cite{ancona2002calculus}.
 
 \subsection{Separating Inheritance and Subtyping}
 In languages like Cecil~\cite{chambers1995typechecking} and PolyToil~\cite{bruce1995polytoil}
-classes are not types. This is a more radical solution to Inheritance implies Subtyping, and equivalent to a restricted version of \name where only interface names can be used as types.
+classes are not types. This is a more radical solution to `inheritance implies subtyping', and equivalent to a restricted version of \name where only interface names can be used as types.
 This complicates typing of \Q@this@,
-and may prevent any usefully application of \Q@This@ type (PolyToil uses polymorphism to support it).
+and may prevent any useful application of the \Q@This@ type (PolyToil uses polymorphism to support it).
 For example, in those approaches, the following Java code does not work since \Q@A@ is not a type:
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
 class A{ int ma(){return Utils.m(this);} }  class Utils{static int m(A a){..}}
 \end{lstlisting}\saveSpace\saveSpace
-Cecil syntactic sugar counters this issue; advantages and pitfalls are discussed in the appendix.
+Cecil syntactic sugar counters this issue (advantages and pitfalls are discussed in the appendix).
 
-\name is directyl inspired by the 3 independently designed research languages already mentioned:
+\name is directly inspired by the 3 independently designed research languages as already mentioned:
  TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530}, Package Templates~(PT)\cite{KrogdahlMS09}, DeepFJig(DJ)~\cite{deep}.
 We synthesize
 the best ideas of those very different designs, while at the same time 
@@ -30,7 +30,7 @@ we \underline{underline} 3 properties where one approach shines the most, and 3 
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals}
 \underline{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
-PT is built on top of full Java, thus has a very
+PT is built on top of Java, thus, it has a very
 involved syntax.
 \name relies on DJ's approach but,
 \emph{thanks to our novel representation of state}, \name also offers a much simpler and uniform syntax than
@@ -55,7 +55,7 @@ TR and DJ comes from a tradition of functional module composition, where
 modules are typed in isolation under an environment, and then the composition is performed.
 As we show in this work, this ends up requiring verbose repetition of abstract signatures,
 which (for highly modularized code) may end up constituting most of the program.
-Java (and thus \underline{PT}, as a Java extension) shows us a better way:
+Java (and thus \underline{PT}, as a Java extension) show us a better way:
 names are understood from the reuse context.
 The typing of PT offers the same advantages of our typing model, 
 but is more involved and indirect. This may be caused by the
@@ -71,7 +71,7 @@ algebra setting.
 While all 3 works allow separating inheritance and subtyping only \underline{TR} properly enforces 
 separation between use (classes and interfaces) and reuse (traits).
 In DJ all classes are both units of use and reuse (however, subtyping is not induced).
-PT imports all the complexity of Java: is possible to separate use and reuse, the model have powerful but non-obvious implications where Java \Q@extends@ and PT are used together.
+PT imports all the complexity of Java: is possible to separate use and reuse, the model has powerful but non-obvious implications where Java \Q@extends@ and PT are used together.
 \item {\bf Naming the self type, even if there is none yet.}
 \underline{TR} is lacking here, while DJ and PT both allow a class to refer to its name; albeit this is
 less obvious in PT since both a package and a class have to be introduced to express it.
@@ -90,7 +90,7 @@ A similar syntax can be achieved with the Scandinavian style~\cite{ernst2004expr
 Nystrom (Jx~\cite{NystromEtAl04} and
 J\&~\cite{nystrom2006j}), where the composition behaves similarly to our sum operator.
 Both Jx,J\& and the virtual classes of Ernst~\cite{Ernst06}
-make uses of dependent types.
+make use of dependent types.
 As in \Q@.@FJ and \Q@^@FJ~\cite{igarashi2005lightweight,IgarashiEtAl08,IgarashiViroli07,saito2008essence},
  instead, we do not need sophisticated types. 
 The work on DJ~\cite{deep} contains an in-depth comparison between various FP approaches, including an example written in \Q@.@FJ syntax synthesizing the difficulty to support FP while keeping Use and Reuse connected:
@@ -114,10 +114,10 @@ new A().k(new A.B())//well-typed
 A a=new AA(); //well-typed assuming AA subtype of A
 a.k(new A.B())//runtime error: A.B.f2 does not exist
 \end{lstlisting}\saveSpace\saveSpace
-The sound \Q@.@FJ type system consider the last method invocation ill-typed even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
+The sound \Q@.@FJ type system considers the last method invocation ill-typed even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
 With minor changes, others~\cite{nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07}
-supports this example in the same way.
-Inheritance implies Subtyping is broken only in a controlled way, and it is allowed whenever does not lead to unsoundness.
+support this example in the same way.
+Inheritance implies Subtyping is broken only in a controlled way, and it is allowed whenever it does not lead to unsoundness.
 Recent work on {\bf ThisType} \cite{Saito:2009,ryu16ThisType}
 also continues on this line.
 In those works, ``subtyping by subclassing'' is preserved: those designs aim to retain the programming model of mainstream OOP languages and backwards compatibility. 42 is instead a radical departure of mainstream OOP, hoping to improve the mechanisms for use and reuse in OOP and unlock new ways to design software.

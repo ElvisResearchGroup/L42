@@ -293,7 +293,7 @@ in the interface, and 2 lines for each of the 3 data-variants.
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
 \cite{Zenger-Odersky2005} solution involved double dispatch to avoid casting.
 To show understandable code, we show a simpler solution 
-with a guarded cast (sometime called a typecase).%
+with a guarded cast (sometime called a typecast).%
 \footnote{
 The interested reader can find a \name implementation of \Q@equals@ with double dispatch
 in the appendix.
@@ -351,7 +351,7 @@ Scala eq instance           &    29   &    3\\
 \end{tabular}
 \end{minipage}\quad\ \ 
 \begin{minipage}{0.5\textwidth}
-Here the Scala code can be made fully isolated with little
+The Scala code here can be made fully isolated with little
 extra syntactic cost. The original Scala eq is 40 lines and
 contains a part of the glue code mixed inside.
 The isolated version is 31 lines and to merge all the operations together in Scala, it
