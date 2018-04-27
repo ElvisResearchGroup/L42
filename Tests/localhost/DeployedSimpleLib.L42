@@ -3,26 +3,26 @@
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
   capsule This0.Abstract.S.SBuilder b815=This0.Abstract.S.#builder()
-  Void unused39610324=b815.#H()
-  Void unused39610325=b815.#e()
-  Void unused39610326=b815.#l()
-  Void unused39610327=b815.#l()
-  Void unused39610328=b815.#o()
-  Void unused39610329=b815.#space()
-  Void unused39610330=b815.#W()
-  Void unused39610331=b815.#o()
-  Void unused39610332=b815.#r()
-  Void unused39610333=b815.#l()
-  Void unused39610334=b815.#d()
-  Void unused39610335=b815.#space()
-  Void unused39610336=b815.#D()
-  Void unused39610337=b815.#e()
-  Void unused39610338=b815.#p()
-  Void unused39610339=b815.#l()
-  Void unused39610340=b815.#o()
-  Void unused39610341=b815.#y()
-  Void unused39610342=b815.#e()
-  Void unused39610343=b815.#d()
+  Void unused395224=b815.#H()
+  Void unused395225=b815.#e()
+  Void unused395226=b815.#l()
+  Void unused395227=b815.#l()
+  Void unused395228=b815.#o()
+  Void unused395229=b815.#space()
+  Void unused395230=b815.#W()
+  Void unused395231=b815.#o()
+  Void unused395232=b815.#r()
+  Void unused395233=b815.#l()
+  Void unused395234=b815.#d()
+  Void unused395235=b815.#space()
+  Void unused395236=b815.#D()
+  Void unused395237=b815.#e()
+  Void unused395238=b815.#p()
+  Void unused395239=b815.#l()
+  Void unused395240=b815.#o()
+  Void unused395241=b815.#y()
+  Void unused395242=b815.#e()
+  Void unused395243=b815.#d()
   b815
   )))
 Abstract: {
@@ -50,12 +50,17 @@ refine class method
 read This0 cast(read This1.Concept.Classable that) 
 refine class method 
 mut This0 #cast(mut This1.Concept.Classable that) 
-refine class method 
-This0 is(class Any subtype) 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This0 is(class Any subtype) 
 refine read method 
 class This0 class() 
-refine class method 
-This1.S readableName() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
 refine read method 
 This1.S toS() 
 refine read method 
@@ -112,14 +117,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This1 is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1 is(class Any subtype) 
 refine read method 
 This1 #equalequal(read Any that) 
 Continue: {
@@ -141,12 +179,17 @@ refine class method
 read This0 cast(read This1.Concept.Classable that) 
 refine class method 
 mut This0 #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 class This0 class() 
-refine class method 
-This1.S readableName() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
 class method 
 This0 fromS(This1.Concept.ToS that) 
 class method 
@@ -360,14 +403,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -413,16 +489,35 @@ method
 This1.Bool #right(This0 that) 
 method 
 This1.Bool #rightequal(This0 that) 
-refine class method 
-read This0 cast(read This1.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 Plg: {/*@plugin
@@ -462,14 +557,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -494,12 +622,17 @@ refine class method
 read This0 cast(read This1.Concept.Classable that) 
 refine class method 
 mut This0 #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 class This0 class() 
-refine class method 
-This0 readableName() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This0 readableName() 
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -848,30 +981,54 @@ ToS: {interface
 read method 
 This2.S toS() }
 Classable: {interface 
-class method 
-read This0 cast(read This0 that) 
-class method 
-mut This0 #cast(mut This0 that) 
-read method 
-class This0 class() 
-class method 
-This2.S readableName() 
-class method 
-This2.Bool is(class Any subtype) }
+class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This0 that) 
+class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This0 that) 
+read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) }
 Base: {interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
 */
 refine read method 
 This2.S toS() 
-refine class method 
-read This1.Classable cast(read This1.Classable that) 
-refine class method 
-mut This1.Classable #cast(mut This1.Classable that) 
-refine read method 
-class This1.Classable class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Classable cast(read This1.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Classable #cast(mut This1.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This1.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 Wrapper: {interface 
@@ -928,14 +1085,25 @@ refine read method
 class This0 class() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method 
-mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 EqualMessages: {
@@ -999,14 +1167,25 @@ refine read method
 class This1.Message class() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method 
-mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -1043,14 +1222,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -1096,14 +1308,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -1149,14 +1394,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -1180,14 +1458,25 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -1224,14 +1513,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -1257,14 +1579,25 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -1301,14 +1634,47 @@ method
 mut This3.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Continue: {
@@ -1363,14 +1729,32 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -1416,14 +1800,32 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -1542,16 +1944,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 mut method 
 Void #add(This2.Bool that, This2.Concept.ToS msg) 
 mut method 
@@ -1732,16 +2153,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This0 cast(read This1.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 read method 
 This1.Size size() 
 read method 
@@ -2026,16 +2466,35 @@ class method
 This0 fresh(This0 like) 
 method 
 This1.Size size() 
-refine class method 
-read This0 cast(read This1.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 class method 
@@ -2099,14 +2558,84 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -2172,16 +2701,35 @@ method
 This0 with(This1.Strings names) 
 refine read method 
 This1.S toS() 
-refine class method 
-read This0 cast(read This1.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This1.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 class method 
@@ -2220,14 +2768,84 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -2252,16 +2870,45 @@ method
 This0.Doc doc() 
 refine read method 
 This1.S toS() 
-refine class method 
-read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method 
-mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine read method 
-class This1.Concept.Classable class() 
-refine class method 
-This1.S readableName() 
-refine class method 
-This1.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  
+  Extracts the class singleton from another instance of this class
+  */class This1.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This1.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This1.Bool is(class Any subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -2298,14 +2945,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -2365,16 +3045,52 @@ method
 This2.Bool isFwdMut() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -2411,14 +3127,47 @@ method
 mut This3.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Continue: {
@@ -2511,16 +3260,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -2694,14 +3462,32 @@ refine read method
 class This0 class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -2785,16 +3571,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -3049,14 +3854,62 @@ refine read method
 class This0 class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -3140,16 +3993,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -3341,14 +4213,62 @@ refine read method
 class This0 class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -3432,16 +4352,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 read method 
 This3.Size size() 
 read method 
@@ -3603,16 +4542,28 @@ refine method
 This1.Doc doc() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This2.Concept.Classable class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This2.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 DispatchRefTo: {
@@ -3648,18 +4599,67 @@ refine method
 This2.Origin origin(This3.Size that) 
 refine method 
 This2.Doc doc() 
-refine read method 
-class This0 class() 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) }
 Parameter: {/*@plugin  toFix 
@@ -3694,18 +4694,67 @@ refine method
 This2.Origin origin(This3.Size that) 
 refine method 
 This2.Doc doc() 
-refine read method 
-class This0 class() 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
@@ -3789,16 +4838,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -3974,18 +5042,67 @@ refine method
 This2.Origin origin(This3.Size that) 
 refine method 
 This2.Doc doc() 
-refine read method 
-class This0 class() 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
@@ -4069,16 +5186,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -4254,18 +5390,67 @@ refine method
 This2.Origin origin(This3.Size that) 
 refine method 
 This2.Doc doc() 
-refine read method 
-class This0 class() 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
@@ -4349,16 +5534,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -4506,16 +5710,28 @@ RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concep
 */
 refine read method 
 This3.S toS() 
-refine class method 
-read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method 
-mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine read method 
-class This3.Concept.Classable class() 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This3.Concept.Classable class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Lib: {/*@plugin  toFix 
@@ -4538,14 +5754,32 @@ refine read method
 class This0 class() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) }
 Unavailable: {/*@plugin  toFix 
@@ -4566,14 +5800,32 @@ refine read method
 class This0 class() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) }
 Binded: {/*@plugin  toFix 
@@ -4601,14 +5853,32 @@ refine read method
 class This0 class() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) }
 Missing: {/*@plugin  toFix 
@@ -4629,14 +5899,32 @@ refine read method
 class This0 class() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) }}}
 Doc: {/*user will need typecase to discover precise type, location() not refined
@@ -4670,18 +5958,67 @@ refine method
 This1.Origin origin(This2.Size that) 
 refine method 
 This0 doc() 
-refine read method 
-class This0 class() 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Annotation: {/*@plugin  toFix 
@@ -4706,14 +6043,32 @@ refine read method
 class This0 class() 
 refine read method 
 This3.S toS() 
-refine class method 
-read This0 cast(read This3.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method 
-This3.S readableName() 
-refine class method 
-This3.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This3.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This3.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This3.Bool is(class Any subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
@@ -4797,16 +6152,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This4.S toS() 
-refine class method 
-read This0 cast(read This4.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This4.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This4.S readableName() 
-refine class method 
-This4.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This4.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This4.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This4.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This4.Bool is(class Any subtype) 
 read method 
 This4.Size size() 
 read method 
@@ -5004,14 +6378,25 @@ refine read method
 class This2.Message class() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method 
-mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 ErrorW: {
@@ -5047,14 +6432,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 UnresolvedOverloading: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
@@ -5081,14 +6484,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 ClassUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
@@ -5115,14 +6536,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 MethodUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
@@ -5149,14 +6588,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 ClassClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash
@@ -5187,14 +6644,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 MethodClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash
@@ -5225,14 +6700,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 PathUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit
@@ -5261,14 +6754,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 SelectorUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
@@ -5299,14 +6810,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 IncoherentMapping: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
@@ -5333,14 +6862,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 PrivacyCoupuled: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled
@@ -5367,14 +6914,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 SubtleSubtypeViolation: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
@@ -5401,14 +6966,32 @@ refine read method
 This2.S text() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 JavaImport: {/*@plugin is.L42.connected.withSafeOperators
@@ -5601,14 +7184,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -5966,14 +7582,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -6103,14 +7752,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -6278,14 +7960,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -6331,14 +8046,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -6471,16 +8219,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 read method 
 This2.Size size() 
 read method 
@@ -6705,16 +8472,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 read method 
 This2.Size size() 
 read method 
@@ -6961,16 +8747,35 @@ mut method
 mut This0.IteratorVar #vals() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 Cast: {
 class method 
 read This3.Refactor2.Method #apply(read Any that) 
@@ -7177,16 +8982,35 @@ mut method
 lent This0.IteratorVar #vals() 
 refine read method 
 This2.S toS() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method 
-class This0 class() 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method /*
+  Extracts the class singleton from another instance of this class
+  */class This0 class() 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 Cast: {
 class method 
 Library #apply(Any that) }
@@ -7323,14 +9147,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {
@@ -7376,14 +9233,47 @@ method
 mut This2.S.SConcat #seqBuilder() 
 refine read method 
 class This0 class() 
-refine class method 
-read This0 cast(read This2.Concept.Classable that) 
-refine class method 
-mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method 
-This2.S readableName() 
-refine class method 
-This2.Bool is(class Any subtype) 
+refine class method /*
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  Cast a (read/imm) object to this type.
+  A class implementing this method should refine the return type to This.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */read This0 cast(read This2.Concept.Classable that) 
+refine class method /*
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  
+  Cast a (mutable) object to this type.
+  A class implementing this method should refine the return type to This.
+  if cast(that) produces a result, then #cast(that) also must produce a result.
+  */mut This0 #cast(mut This2.Concept.Classable that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class Any subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 Continue: {

@@ -98,7 +98,7 @@ interface ComposeSpec{
   error if not collect(p0,p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
   error if dom(p0.top().mwts)!=dom(methods(p0,This0))
   error if {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to ms that are "refine" in p0
-    ps0=refined(p0,ms,p0.top().Ps),//that is, they need to be defined
+    ps0=refined(p0,ms,p0.top().Ps),
     psi=refined(pi,ms,pi.top().Ps)
     and not ps0 subsetEq psi //using p0.equiv //that is, there is some 'surprisingly added' stuff in ps0
   if (p1, p2)? =empty
@@ -112,7 +112,7 @@ ssv(p,e):
   forall L such that e=ctxC[L], ssv(p.evilPush(L))
 
 refined(p,ms,Ps)={P |P in Ps and ms in dom(p(P)) }
-  where p(Pi) is defined forall Pi in Ps //thus, undefined otherwise
+  //note: if p(P) is undefined, then not ms in dom(p(P))
 </pre>*/void ssv();
 
 /**<pre>#define L1 +p L2 = L0
@@ -202,11 +202,12 @@ public class Compose {
   }
 
  /**{@link ComposeSpec#ssv}*/
- public static List<Path> _refined(Program p, Ast.MethodSelector ms,List<Path>ps) {
-   try{return ps.stream().filter(pi->
-     p.navigate(pi).top().mwts().stream().anyMatch(m->m.getMs().equals(ms))
-     ).collect(Collectors.toList());}
-   catch(ErrorMessage.CtxExtractImpossible notFound) {return null;}
+ public static List<Path> refined(Program p, Ast.MethodSelector ms,List<Path>ps) {
+   return ps.stream().filter(pi->{
+     ClassB ci;try{ci=p.navigate(pi).top();}
+     catch(ErrorMessage.CtxExtractImpossible notFound) {return false;}
+     return ci._getMember(ms)!=null;
+     }).collect(Collectors.toList());
    }
  /**{@link ComposeSpec#ssv}
  * @throws SubtleSubtypeViolation */
@@ -282,9 +283,9 @@ public class Compose {
    for(Ast.MethodSelector ms:domPi) {
      //TODO: efficiency issue: the program is navigated for all superpaths and for all methods.
      //If I could save the navigation for the superpaths, I could avoid recomputing it in the refined function.
-     List<Path>refp0=_refined(p0, ms, p0.top().getSuperPaths());
-     List<Path>refpi=_refined(pi, ms, pi.top().getSuperPaths());
-     if(refp0==null || refpi==null) {continue;}
+     List<Path>refp0=refined(p0, ms, p0.top().getSuperPaths());
+     List<Path>refpi=refined(pi, ms, pi.top().getSuperPaths());
+     assert refp0!=null && refpi!=null;
      if(!refpi.containsAll(refp0)){
        throw new RefactorErrors.SubtleSubtypeViolation().msg(
          "In "+p0.top().getP()+"\n"+" Selector "+ms+" refining from "+
