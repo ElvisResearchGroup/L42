@@ -90,11 +90,11 @@ _______
 _______
 #define eC' inside eC
 - eC' inside eC if eC=ctxC[eC']
-- P inside ( _ T x=_ _) if P=T.P  //TODO: check is correct in code
-- P inside ( _ catch throw P x _ _) //TODO: check is correct in code
-- P inside M holds iff P inside M.e
+- P inside ( _ T x=_ _) if P=T.P
+- P inside ( _ catch throw P x _ _)
+- P inside M holds iff P inside M.e //called CollectPaths0.of(P)
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
- and Ti= _ P or P in Ps
+ and Ti= _ P or P in Ps //or P is in the method docs
 
 
 The next definition allows us to see paths P and expressions e
@@ -169,12 +169,12 @@ Part 2: Well formedness
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
-  //TODO: do in code when norm happens?
-
+  //Note: in the code this happens while "Program.methods" adds a methodType to a MethodImplemented. 
+  //TODO: still need to happen in desugaring for methods that are born as MethodWithType
 _______
-#define
+#define     //note: FV is trivially defined from cX
 cX(e)//count occurences of xs
-  cX(x)=x         //FV can be defined from cX!!
+  cX(x)=x         
   cX(void)=cX(P)=cX(L)=empty
   cX(throw[T1,T2] e)=cX(e)
   cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work

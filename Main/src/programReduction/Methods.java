@@ -11,12 +11,16 @@ import java.util.stream.Collectors;
 import java.util.Set;
 
 import ast.Ast;
+import ast.ErrorMessage;
+import ast.ExpCore;
+import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import auxiliaryGrammar.WellFormednessCore;
 import coreVisitors.From;
 import tools.Map;
 
@@ -117,17 +121,31 @@ public abstract class Methods implements Program{
         ms.add((MethodWithType)memsi.get(0));continue;
         }
       ClassB.MethodImplemented mem0=(ClassB.MethodImplemented)memsi.get(0);
-      for(Member mj:memsi){// 0 will fail instanceof
-        if (mj==null || !(mj instanceof MethodWithType)){continue;}
-//    Mi'=Mi[with e=p(P0)(msi).e[from P0]] if defined,
-//    otherwise
-//    Mi'=Mi
-        if(mem0!=null){mj=mj.withInner(mem0.getE());}
+      for(Member mjMember:memsi){// 0 will fail instanceof
+        if (mjMember==null || !(mjMember instanceof MethodWithType)){continue;}
+        MethodWithType mj=(MethodWithType)mjMember;
+        if(mem0!=null){mj=addEToAbstractMethod(mj,mem0.getE());}
         ms.add(addRefine((MethodWithType) mj));
         break;
         }
       }
       return ms;
+    }
+  static private MethodWithType addEToAbstractMethod(MethodWithType mj, ExpCore e){
+    //HERE we create a mj with an expression that is not guaranteed to be well formed w.r.t. capsule variables used only onece.
+    List<String>capsPar=new ArrayList<>();        
+    {int i=-1;for(Type ti:mj.getMt().getTs()){i+=1;
+      if(!ti.getMdf().equals(Mdf.Capsule)){continue;}
+      capsPar.add(mj.getMs().getNames().get(i));
+    }}
+    if(capsPar.isEmpty()){return mj.withInner(e);}
+    List<String> xs=WellFormednessCore.countX(e);
+    for(String s:capsPar){
+      xs.remove(s);
+      if(!xs.contains(s)){continue;}
+      throw new ErrorMessage.CapsuleUsedMoreThenOne(null,s,mj.getP());
+      }
+    return mj.withInner(e);
     }
   static private Void add(boolean isFirst,HashMap<Ast.MethodSelector,List<ClassB.Member>> ms1k,Ast.MethodSelector ms,ClassB.Member m){
     List<Member> list = ms1k.get(ms);
