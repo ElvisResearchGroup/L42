@@ -602,5 +602,47 @@ public static final String listAccess(){return
 "  }");
 }
 
+/**
+ * Aden's tests.
+ */
+
+public void testGoodAssign(){tp("{reuse L42.is/AdamTowel02"
+,"CacheAdamTowel02:Load.cacheTowel()"
+,"C:{ s = 12Num"
+,"	s := 13Num"
+,"}"
+,"}");}
+
+public void testUpdate(){tp("{reuse L42.is/AdamTowel02"
+,"CacheAdamTowel02:Load.cacheTowel()"
+,"C:{ s = 12Num"
+,"	s := s.#plus(30Num)"
+,"}"
+,"}");}
+
+@Test(expected=ErrorMessage.NotWellFormedMsk.class)
+public void testUnderscoreVariableName(){tp("{reuse L42.is/AdamTowel02"
+,"CacheAdamTowel02:Load.cacheTowel()"
+," C:{class method Any m(Any that) that}"
+," Main: {"
+,"  arr = C.m(_)"
+,"  }"
+,"}");}
+
+@Test(expected = ErrorMessage.NotWellFormedMsk.class)
+public void testAssignExitCode(){tp("{reuse L42.is/AdamTowel02"
+,"CacheAdamTowel02:Load.cacheTowel()"
+," C:{ s = return ExitCode.normal()"
+,"}"
+,"}");}
+
+@Test(expected = ErrorMessage.InvalidCharacter.class)
+public void testBadAssign(){tp("{reuse L42.is/AdamTowel02"
+,"CacheAdamTowel02:Load.cacheTowel()"
+,"C:{ s = 12Num"
+,"	s = 13Num"
+,"}"
+,"}");}
+
 
 }
