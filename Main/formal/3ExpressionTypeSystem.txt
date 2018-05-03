@@ -148,7 +148,7 @@ Phase| p| G |- var?0 T?0   x0=e0 ..var?n T?n   xn=en, ds ~>
   G'=x0:T0..xn:Tn
   G1= G[ fwd( onlyMutOrImm(G')[with vars=empty] ) ] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line
   for i in 0..n Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
-  T''i=suggest(T?i,T'i) if fwd_or_fwd%_in(Ti) else T''i=suggest(T?i,noFwd(T'i))//TODO: in code check is T?i and not T?0 :(
+  T''i=suggest(T?i,T'i) if fwd_or_fwd%_in(Ti) else T''i=suggest(T?i,noFwd(T'i))
   G2=x0:T''0..xn:T''n //TODO anti fwd?
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts

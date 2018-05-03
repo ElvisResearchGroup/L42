@@ -167,7 +167,11 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(res.trAcc!=null){trAcc=trAcc.trUnion(res.trAcc);}
     return new TOkDs(trAcc,ds1,res.g);
     }
-
+  default Type suggest(Optional<Type> option,Type alternative) {
+    if (option.isPresent()) {return option.get();}
+    if(!alternative.getMdf().equals(Mdf.Capsule)) {return alternative;}
+    return alternative.withMdf(Mdf.Mutable);
+    }
   default TOutKs ksType(TIn in,Tr trAcc,List<On> ks){
 //   D| Tr |-k1..kn ~> k'1..k'n:T1..Tn <= T | Tr1 U .. U Trn
 //     forall i in 1..n D| Tr.capture(D.p,k1..ki-1)|-ki ~> k'i:Ti <= T |Tri
