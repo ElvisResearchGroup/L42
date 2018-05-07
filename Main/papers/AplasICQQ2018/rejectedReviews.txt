@@ -1,0 +1,171 @@
+Dear Marco Servetto,
+
+we regret to inform you that your paper
+
+Metaprogramming in 42: Declaratively generate imperative behaviour by functional reasoning:
+
+was not accepted for FLOPS 2018.
+
+The reviews for the paper are included below.  We hope that you
+can use them to improve the paper and we wish you success with
+your future research.
+
+Best regards
+
+Martin Sulzmann and John Gallagher
+Program Committee Co-Chairs
+
+
+----------------------- REVIEW 1 ---------------------
+PAPER: 10
+TITLE: Metaprogramming in 42: Declaratively generate imperative behaviour by functional reasoning
+AUTHORS: Marco Servetto and Alex Potanin
+
+Overall evaluation: -2 (reject)
+
+----------- Overall evaluation -----------
+The goal of the work is to present an alternative to Quasi-Quotations (QQ)
+  in the context of OO languages. The proposal uses the concept of Iterative
+  Composition (IC), recently introduced (elsewhere).  The goal of the paper
+  is to show that this approach is more expressive and better suited for
+  formal analyses.
+
+  IC is not new and therefore this is not the contribution of the paper.
+  Still, IC is not so well-known and should be better explained to make the
+  paper more self-contained.  Here, IC is is only explained by means of a
+  short example and its use in a language that is itself not formalized.
+  This makes it quite hard to follow the developments.
+
+  The paper is very descriptive with statements that are not backed up by
+  any formal arguments: there is not even a semantics description of the
+  language.
+
+  The paper does not show any serious example of compile-time
+  specialization, but just a tiny example for presentation purposes.
+  Hence, there is no real evaluation of the proposal.
+
+  The writing in OO style is already quite cumbersome and I am really
+  worried that the code would become hardly readable on a more serious
+  example of staged compilation.
+
+  Overall, the presentation is insufficiently self-contained and too
+  informal for a conference such as FLOPS, which therefore then does not
+  seem the right target.
+
+
+----------------------- REVIEW 2 ---------------------
+PAPER: 10
+TITLE: Metaprogramming in 42: Declaratively generate imperative behaviour by functional reasoning
+AUTHORS: Marco Servetto and Alex Potanin
+
+Overall evaluation: -3 (strong reject)
+
+----------- Overall evaluation -----------
+SUMMARY
+
+This paper proposes an approach to staged code construction based on a library with a number of primitive operators for defining and composing (closed) classes at runtime. It argues that this approach is as expressive as quasi quotations, but is easier to reason about.
+
+
+ASSESSMENT
+
+This paper has numerous problems, both technically and in terms of presentation.
+
+The paper introduces a number of language constructs (composition operators) for composing classes. For many of them it does so on the fly without describing their semantics in a way that enabled me to sufficiently understand what’s going on or how the code examples work. Some of these operators look plausible, some are fancy, but I couldn’t make out a canonical design principle underlying them.
+
+Together these operators essentially form a library interface for reflective construction of classes. The paper argues that these are a (better) replacement for quasi quotation, but that wasn’t clear to me. They seem to be quite a bit more dynamic in nature, which has upsides and downsides.
+
+The paper has fairly strong claims but unfortunately, almost nothing concrete to back them up. Much of the discussion is extremely hand-wavy, such as the argument why OO can be considered a declarative paradigm. There is no tangible result that I could identify.
+
+The presentation generally leaves a lot to be desired. The paper is all over the place and follows no clear structure. I had a hard time following along.
+
+This paper was apparently written with a lot of enthusiasm, which I appreciate. But unfortunately, it does not succeed in bringing across its main ideas in a way that would manage to spread this enthusiasm to the reader. In particular, it lacks solid proof for any of its claims.
+
+
+
+DETAILS
+
+Page 1:
+
+- I did not find the “functional reasoning” promised in the title in the paper.
+
+Page 3:
+
+- “IQ” -> “IC”
+
+- “lifted at” -> “lifted to”
+
+- Can you explain the Override operator better? How does the name substitution work?
+
+- I had trouble understanding the Pow example, in particular, why there are two definitions of inductive, and how the latter defines superPow for the former. Does the method vanish? Or is it renamed to pow by Override? If so, don’t you have two methods pow now? I’m confused.
+
+Page 4:
+
+- “Unsurprisingly, proving correctness of parametric code is much harder than for complete code.” -- What is this statement comparing? Simple parametric constructions are relatively simple to reason about. Open recursion over abstract methods is also a form of parameterization, but much more complicated semantically. Overriding usually is much harder to reason about than parametric instantiation.
+
+- citation for JML
+
+Page 5:
+
+- I’m even more confused about the semantics of override now. How can it check the contracts when they are just annotations in the source code? Previously you said everything is code, do you assume that these annotations become part of the code?
+
+Page 6:
+
+- “Expressiveness of matching is probably not important” -- That sounds like a rather bold and unjustified assumption.
+
+Page 7:
+
+- This is extremely hand-waving, and I fail to see the point. Of course, certain declaration forms have declarative aspects to it, but that does not make OO a declarative paradigm. For example, your earlier example generated the pow function in an imperative loop, reassigning the same mutable variable. There is nothing declarative about that.
+
+Also, I fail to see how this is relevant to expressiveness.
+
+Page 9:
+
+- I did not understand the description of the Babel fish operator.
+
+Page 10:
+
+- Where are these phases coming from? I have lost track of what you are aiming to describe. To the poor reader Section 3 dissolves into numerous loose unnumbered subsections without a clear thread.
+
+Page 13:
+
+- This “case study” reads more like a pitch for your language than a presentation of any concrete results.
+
+Page 14:
+
+- “We argue that our approach can generate any behaviour, but not any AST.” -- That is a rather strange statement. You did not provide proof. This can at best be called a conjecture, but even then I would highly doubt it.
+
+- You definitely need to discuss the relation to other work more thoroughly.
+
+
+----------------------- REVIEW 3 ---------------------
+PAPER: 10
+TITLE: Metaprogramming in 42: Declaratively generate imperative behaviour by functional reasoning
+AUTHORS: Marco Servetto and Alex Potanin
+
+Overall evaluation: -1 (weak reject)
+
+----------- Overall evaluation -----------
+SUMMARY:
+
+The paper shows how meta-programming (or primarily software composition) can be supported by a composition algebra. The approach is referred to as Iterative Composition (IC) and includes FP flavoured operations such as "baseCases" and fold (to generate methods) and non-trivial composition operators (to generate libraries, or classes).
+
+PROS: Interesting, sound, mostly well written, and generous with examples.
+
+CONS: Sprawling, hard to find a narrative thread, far from self-contained, and difficult to follow without a good background in the literature on code reuse and restructuring, mixins, trait composition etc. What appears to be the most original components of the paper - comparison with quasi-quotation, and exposition of "declarative" advantages of IC, especially for verification - those are also the weakest, least developed, components.
+
+COMMENTS:
+
+Arguably this type of paper is difficult to write, because there are so many intertwined tasks: Introduce IC, exemplify, motivate, and compare with alternatives.  For motivation, one claim is that IC is more natural (at least to an OO programmer) than quasi-quotation (QQ) and related meta-programming concepts, and that it will be easier to prove correctness of code that uses IC, compared to QQ. The abstract promises a presentation of a prototype implementation. Section 3's heading creates an expectation of a proper, maybe even formal, comparison of IC and QQ.
+
+The paper does not deliver on all these promises, and it probably should not be expected to, either.  I would have been lost without the (excellent) 42 tutorial, to which the paper provides a link.
+
+The support for the claims about ease of verification appears to be Section 2. That section sketches an approach that relies on traditional verification of method bodies, followed by code "contract matching" at code composition time, and finally runtime verification of contract details. It is too sketchy to be convincing; it would require much more detail and hence space, to make the case properly.
+
+Section 3 does not really do what its heading suggests. It first discusses to what extent certain OO features are "declarative", without defining the latter.  It then describes the basic composition operators and shows, via an example, how they are used.  The latter is done in sufficient detail to make it useful.
+
+TYPOS:
+
+[3,3]    IQ  ==>  IC
+[5,6]    lets  ==>  let us
+[12,7]   implemenations  ==>  implementations
+[14,-11] Smaragdakis  ==>  Smaragdakis et al. 
