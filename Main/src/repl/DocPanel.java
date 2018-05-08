@@ -78,7 +78,7 @@ public class DocPanel extends VBox{
     nesteds.setCellFactory(f);
     nesteds.setCacheShape(false);
 
-    TitledPane msTP = new TitledPane("Mehtods",methods);
+    TitledPane msTP = new TitledPane("Methods",methods);
     TitledPane nsTP = new TitledPane("Nesteds",nesteds);
     Accordion acc=new Accordion(msTP,nsTP);
     refresh=o->Platform.runLater(()->{

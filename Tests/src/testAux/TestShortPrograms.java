@@ -606,43 +606,86 @@ public static final String listAccess(){return
  * Aden's tests.
  */
 
+@Test(expected = ErrorMessage.UnclosedParenthesis.class)
+public void testUnclosedParen() {
+	tp("{"
+	,"C: ("
+	,"{}");
+}
+
+//If the test above throws an UnclosedParenthesis should this one throw an unopenedParenthesis?
+//This throws the correct error in the IDE.
+@Test(expected = ErrorMessage.UnopenedParenthesis.class)
+public void testUnopenedParen() {
+	tp("{"
+	,"C:"
+	,"{})"
+	,"}");
+}
+
+@Test(expected = ErrorMessage.PathMetaOrNonExistant.class)
+public void testNonVarVariable() {
+	tp("{"
+	,"C:( s = 12Num"
+	,"s := 13Num"
+	,"{})"
+	,"}");
+}
+
+@Test
+public void testNanoLibrary() {
+	tp("{reuse L42.is/nanoBase0"
+	,"C:{"
+	,"return ExitCode.normal()}"
+	,"}");
+}
+
 //Should throw a type error, not an assertion error
-@Test public void testGoodAssign(){tp("{reuse L42.is/AdamTowel02"
-,"C:( s = 12Num"
-,"s := 13Num"
-," {})"
-,"}");}
-//Should throw a type error, not an assertion error
-@Test public void testUpdate(){tp("{reuse L42.is/AdamTowel02"
-,"C:( s = 12Num"
-,"	s := s.#plus(30Num)"
-,"{})"
-,"}");}
+@Test 
+public void testBadUpdate() {
+	tp("{"
+	,"C:( s = 12Num"
+	,"s := s.#plus(30Num)"
+	,"{})"
+	,"}");
+}
 
 @Test(expected=ErrorMessage.VariableUsedNotInScope.class)
-public void testUnderscoreVariableName(){tp("{reuse L42.is/AdamTowel02"
-,"CacheAdamTowel02:Load.cacheTowel()"
-," C:{class method Any m(Any that) that}"
-," Main: ("
-,"  arr = C.m(_)"
-,"  {})"
-,"}");}
+public void testUnderscoreVariableName(){
+	tp("{"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	," C:{class method Any m(Any that) that}"
+	," Main: ("
+	,"  arr = C.m(_)"
+	,"  {})"
+	,"}");
+}
 
 //This should be correct??
 @Test//(expected = ErrorMessage.NotWellFormedMsk.class)
-public void testAssignExitCode(){tp("{reuse L42.is/AdamTowel02"
-,"CacheAdamTowel02:Load.cacheTowel()"
-," C:{ s = return ExitCode.normal()"
-," {} }"
-,"}");}
+public void testAssignExitCode() {
+	tp("{"
+	," C:{ s = return ExitCode.normal()"
+	," {} }"
+	,"}");
+}
 
 @Test(expected = ErrorMessage.InvalidCharacter.class)
-public void testBadAssign(){tp("{reuse L42.is/AdamTowel02"
-,"CacheAdamTowel02:Load.cacheTowel()"
-,"C:{ s = 12Num"
-,"	s = 13Num"
-,"}"
-,"}");}
+public void testTabBadCharacter() {
+	tp("{"
+	,"C:{ s = 12Num"
+	,"	s = 13Num"
+	,"}"
+	,"}");
+}
 
-
+@Test//(expected = ErrorMessage.NotWellFormedMsk.class)
+public void testClassnameS() {
+	tp("{reuse L42.is/nanoBase0"
+	,"C: ("
+	,  "return ExitCode.normal()"
+	,"{})"
+	,""
+	,"}");
+}
 }
