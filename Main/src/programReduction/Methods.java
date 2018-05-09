@@ -63,19 +63,23 @@ public abstract class Methods implements Program{
       }
     if(p0.getPath().isPrimitive()){return collect(p,ps,visited);}
     ClassB l=p.extractClassB(p0.getPath());
+    if(!l.isInterface()) {
+      assert false: "should be always discovered by methdos(path)?";
+      throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0.getPath());
+      }
     List<Ast.Type>superPaths=l.getSupertypes();
     List<Ast.Type> recP0=collect(p.navigate(p0.getPath()),superPaths,push(visited,p0.getPath()));
     recP0=Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),recP0);
     List<Ast.Type> recPs=collect(p,ps,visited);
-    return mergeUnique(p0, recP0, recPs);    
+    return mergeUnique(p0, recP0, recPs);
     }
-  
+
   static MethodWithType addRefine(MethodWithType mwt){
     return mwt.withMt(mwt.getMt().withRefine(true));
   }
-  
+
 //  -methods(p,P0)=M1'..Mk'
-//          p(P0)={interface? implements Ps Ms} 
+//          p(P0)={interface? implements Ps Ms}
   public List<MethodWithType> methods(Ast.Path p0){
     if (p0.isPrimitive()){return Collections.emptyList();}
     Program p=this;
@@ -133,7 +137,7 @@ public abstract class Methods implements Program{
     }
   static private MethodWithType addEToAbstractMethod(MethodWithType mj, ExpCore e){
     //HERE we create a mj with an expression that is not guaranteed to be well formed w.r.t. capsule variables used only onece.
-    List<String>capsPar=new ArrayList<>();        
+    List<String>capsPar=new ArrayList<>();
     {int i=-1;for(Type ti:mj.getMt().getTs()){i+=1;
       if(!ti.getMdf().equals(Mdf.Capsule)){continue;}
       capsPar.add(mj.getMs().getNames().get(i));

@@ -1,0 +1,270 @@
+\appendix
+\section{Proofs} 
+
+\begin{Theorem}[Sound Invariant Checking SIC]
+if $c:\text{Cap}\vdash \e: \T$ and
+$c:\text{Cap}\{\_;\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
+either $H(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
+\end{Theorem}
+
+We believe this property captures very precisely our statement in Section~\ref{s:def}.
+
+It is hard to prove SIC directly,
+so we first define a stronger property,
+called Stronger SIC and
+we show that it is preserved during reduction by mean of conventional Progress and Subject Reduction.
+That is,
+Progress+Subject Reduction $\Rightarrow$ Stronger SIC
+\\*and Stronger SIC $\Rightarrow$ Sound Invariant Checking.
+
+\subsection{Stronger SIC $\Rightarrow$ Sound Invariant Checking}
+
+Stronger SIC depends on 
+$\mathit{wellEncapsulated}$, $\mathit{monitored}$
+and $IOK$ (Invariant OK):
+
+\noindent\textbf{Define} $\mathit{wellEncapsulated}(\sigma,\e,l_0)$:\\*
+${}_{}$\quad\quad$\forall l \in rog(\sigma,l_0), \text{not}\ \mathit{mutated}(l,\sigma,\e)$
+
+\noindent The main idea is that an object is encapsulated if its internal representation is safe from
+modification. 
+
+\noindent\textbf{Define} $\mathit{monitored}(\e,l)$:\\*
+${}_{}$\quad\quad  $\e=\ctx_v[M(l,\e_1;\e_2)]$ and either $l=\e_1$ or $l$ not inside $\e_1$.
+
+\noindent An object is monitored if the execution
+is currently inside of a monitor for that object, and
+the monitored expression $\e_1$ \textbf{does not}
+contains $l$ as a proper subexpression.
+
+That is, a monitored object is associated with an expression that can not observe him, but may 
+reference its internal representation directly.
+In this way, we can safely modify its representation before checking for the invariant.
+
+The idea is that at the start the object invariant will hold and $\e_1$ will contains $l$;
+but during reduction, the $l$ reference will be used in order to
+give access to the internal state of $l$. Only after that moment, the invariant may be broken.
+
+
+\noindent\textbf{Define} $IOK(\sigma,e)$:\\
+${}_{}$\quad\quad  $\forall l\in\dom(\sigma)$
+  either
+\begin{itemize}
+   \item${}_{}$\quad\quad   (1) $l$ has not invariant
+   \item${}_{}$\quad\quad   (2) $\mathit{garbage}(l,\sigma,\e)$
+   \item${}_{}$\quad\quad   (3) $H(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$
+   \item${}_{}$\quad\quad   (4) $\mathit{monitored}(\e,l)$
+\end{itemize}
+
+\noindent
+Finally, the system is in a coherent state with respect to invariant checking 
+if for all the objects in the memory, one of those 4 cases apply:
+the class of the object has no invariant method;
+the object is not (transitively) reachable from the expression, thus can be garbage collected;
+the object invariant holds, and the object is encapsulated;
+or the object is currently monitored.
+
+Thus, on one side, we accept that invariants can be broken for garbage and during the monitoring process.
+on the other side, in addition of requiring object invariant to hold $H$, we
+also require those objects to be $\mathit{wellEncapsulated}$;
+it is needed later to prove that the future steps will be $IOK$ too.
+
+
+\begin{Theorem}[Stronger SIC]
+if $c:\text{Cap}\vdash \e_0: \T_0$ and
+$c:\text{Cap}\{\_;\_\}|\e_0\rightarrow^+ \sigma|\e$, then
+$IOK(\sigma,\e)$
+\end{Theorem}
+\noindent Starting from only the capability object,
+any well typed expression $\e_0$ can be reduced for an arbitrary amount of steps,
+and $IOK$ will always hold.
+\\
+\textbf{Proof }Stronger SIC $\Rightarrow$ Sound Invariant Checking:\\*
+\noindent To prove that Stronger SIC implies Sound Invariant Checking
+we consider for each $l$ the 4 cases of $IOK$: the $l$ involved in the current redex
+will be one of those.
+Indeed, this proof shows broken invariants are never observed:
+No broken invariant is observed from $l$ if $l$ has no invariant.
+If $l$ is garbage, is not in the current redex.
+If $H(\sigma,l)$, the invariant holds, so thanks to @InvariantType
+no broken invariant is observed.
+Finally, if $\mathit{monitored}(\e,l)$
+then, either we are executing inside of $\e_1$, thus
+the current redex is inside of a subexpression of the monitor that does not contains $l$, thus
+$l$ is not in the current redex.
+Or we are executing inside $\e_2$:
+by $\Lambda$, all monitor expressions starts with 
+$\e_2=l$\Q@.invariant()@, thus the first execution step
+of $\e_2$ is trusted.
+Following execution steps are also trusted since thanks
+to well formedness the body of invariant methods only
+uses \Q@this@ to access fields.
+
+
+\subsection{Subject Reduction}
+
+\noindent\textbf{Define} $\text{fieldGuarded}(\sigma,\e)$:\\*
+${}_{}$\quad\quad$\forall \ctx$ such that $\e=\ctx[l\singleDot\f], $\\*
+${}_{}$\quad\quad\quad either $\sigma(l)$ not has invariant\\*
+${}_{}$\quad\quad\quad or $\forall\, T,C,\quad\ \Sigma^\sigma;\x:\Kw{imm}\,C\,\vdash\ctx[\x]:T$ does not hold\\*
+${}_{}$\quad\quad\quad or $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\_$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$ \\*
+\noindent We check that all the mutating field accesses
+from invariant objects are individually guarded by monitors.
+Note how we use $C$ in $\x:\Kw{imm}\,C$ to guess the type of the accessed field,
+and that we use the full context $\ctx$ instead of the evaluation context $\ctx_v$
+to refer to field accesses everywhere in the expression $\e$.
+
+
+
+\begin{Theorem}[Subject Reduction]
+if $\Sigma^{\sigma_0}\vdash e_0: T_0$,
+$\sigma_0|e_0\rightarrow \sigma_1|e_1$,
+$IOK(\sigma_0,\e_0)$
+and
+$\mathit{fieldGuarded}(\sigma_0,\e_0)$
+then
+$\Sigma^{\sigma_1}\vdash e_1: T_1$,
+$IOK(\sigma_1,e_1)$ and
+$\mathit{fieldGuarded}(\sigma_1,\e_1)$
+\end{Theorem}
+
+\noindent\textbf{Proof }Progress + Subject Reduction $\Rightarrow$ Stronger SIC:\\*
+This proof proceed by induction as the usual Progress + Subject Reduction $\Rightarrow$ Soundness
+proof.
+Note that at the start of the execution, the memory is going to be empty, thus
+$IOK(\emptyset,e)$  and $\mathit{fieldGuarded}(\emptyset,\e)$
+will hold.
+Then step by step, objects are created and their status is kept under control.
+Note how here garbage collection is important: 
+when the \Q@invariant()@ method terminate with false, 
+execution can continue only if the offending object is classified as garbage.
+
+\subsection{Proof of Subject Reduction}
+We first introduce some lemmas
+derived from the well formedness criteria and the type guarantees
+\begin{Lemma}[ConstructorInstrumentation]
+  In our reduction, executing rule \textsc{new} creating an object with invariant $l$, creates a monitor expression for $l$.
+(Holds by definition of $\Lambda$)
+\end{Lemma}
+\begin{Lemma}[SetterInstrumentation]
+  In our reduction, executing rule \textsc{f-update} on an object with invariant $l$, creates a monitor expression for $l$.
+(Holds by definition of $\Lambda$)
+\end{Lemma}
+\begin{Lemma}[ExposerInstrumentation]
+if $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
+$\text{fieldGuarded}(\sigma_0,\e_0)$
+\\*
+then $\text{fieldGuarded}(\sigma_1,\e_1)$
+
+  In our reduction, all occurreces of $l\singleDot\f$ used for mutation, 
+  where l is an object with invariant
+   are surrounded by a monitor expression for $l$.
+  This means that reduction preserve $\text{fieldGuarded}(\sigma,\e)$.
+\end{Lemma}
+\noindent\textbf{Proof }of @ExposerInstrumentation:\\*
+The only rule that can 
+introduce a new field access is \textsc{m-call}.
+In that case, @ExposerInstrumentation holds
+by well formedness (all field access in methods are of form \Q@this.f@)
+ and function $\Lambda$, inserting a monitor while invoking exposer methods.
+Note that rule \textsc{monitor exit} is fine because monitors are removed only when
+ $e_1$ is a value.
+
+\noindent\textbf{Proof }of Subject Reduction:\\*
+Any reduction step can be obtained
+by exactly one application of rule \textsc{ctx} and then one other rule.
+Thus the proof can simply proceed by cases on such other applied rule.
+
+As a further simplification, for each case 
+$\Sigma^{\sigma_1}\vdash e_1: T_1$ holds by @SubjectReductionBase
+and 
+$\mathit{fieldGuarded}(\sigma_1,\e_1)$ 
+holds thanks to @ExposerInstrumentation.
+Thus, for each case of reduction, we just verify that $IOK(\sigma_1,\e_1)$ holds.
+That is, we need to check that for all locations in $\sigma_1$, one of the cases (1-4) hold.
+
+
+\noindent\textbf{case field update} $l.f=v\rightarrow \e$:
+  \begin{itemize}
+  \item For $l$, either (1) $l$ has not invariant or, by @SetterInstrumentation 
+  \e=\Q@M(@$l;l;l$\Q@.invariant())@;
+  thus (4)$\mathit{monitored}(\e,l)$.
+  \item Every $l_1$ so that $l\in \text{rog}(\sigma,l_1)$ will verify the same case
+  of the former step:
+  if it was (1)[no invariant] or (2)[garbage],clearly it still holds.
+  If it was (4)[monitored] then it still holds too.
+  It could not have been (3): $l_1$ is not $\mathit{wellEncapsulated}$ since 
+$\mathit{mutated}(l,	\sigma,\e)$ (by @MutField).
+  \item Every other $l_0$ do not reach $l$, thus its invariant status is not influenced by this reductions step.
+\end{itemize}
+
+\noindent\textbf{case field access} $l.f\rightarrow v$:
+
+    If for $l$ $IOK$ holds by (3),  
+    it is possible that the next step is not encapsulated.
+    This would mean that the field $f$ is a capsule and that we are required
+to type it as \Q@mut@ to type the expression for the next step.
+By $\mathit{fieldGuarded}(\sigma_0,\e_0)$
+    the former step was inside of a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
+    and the $l$ under reduction was the only occurrence of $l$.
+    since $f$ is a capsule, we know that $l\notin \text{rog}(\sigma,l)$
+    by @HeadNonCircular.
+    Thus in the new step not $l\, \text{inside}\ \ctx_v[v]$.
+    Thus for l (4)[monitored] holds.
+    
+We still need to show that properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$
+ for other objects are
+not disturbed. This is the point where our aliasing and mutability control are most crucial:
+We know that mutable $v$ is (directly) reachable from
+$l$ that have invariant.
+Thanks to @CapsuleTree we know that for all $l_0$ reaching $l$,
+$v$ can be reached by $l_0$ only passing trough $l$.
+Thus, we can conclude  $l_0$ is not encapsulated in the former step (containing mutable $l$).
+Thus, $l_0$ is either without invariant, garbage or monitored.
+None of those 3 cases can be disturbed by a field access.
+
+
+\noindent\textbf{case meth call}:\\*
+  This reduction step does not influence any object in the memory and does not
+disturb the properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$.
+
+\noindent\textbf{case new}:\\*
+  If $C$ has invariant, then by @ConstructionInstrumentation the new object is monitored.
+As for the method call, other objects and properties are not disturbed.
+
+
+\noindent\textbf{case monitor exit} \Q@M(@$l;v;$\Q@true)@$\rightarrow v$ :
+  \begin{itemize}
+\item
+    If it was a setter $v=l$, and 
+    thanks to @InvariantType the execution of invariant is deterministic;
+    thus for $l$ in the former step both case (3) and (4) holds.
+    In the next step (3) will hold for $l$.
+\item
+    If it was an exposer, thanks to @InvariantType the execution of \Q@invariant()@ is deterministic;
+    thus for $l$ in the former step both $H$ and case (4) holds.
+    Thanks to @ExposerInstrumentation $v$ is offered without mutation permissions, so
+    In the next step $l$ is encapsulated and (3) will hold.
+\item
+    If it is was a constructor, 
+    then $v$ is encapsulated and thanks to @InvariantType
+    the execution of invariant is deterministic, thus in the next step (3) will hold.
+\end{itemize}
+
+\noindent\textbf{case try enter and try ok}
+This case do not influence any object in the memory and does not
+disturb the properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$.
+
+\noindent\textbf{case try catch} $\sigma,\sigma_0|\Kw{try}^\sigma \oC\mathit{error}\cC\Kw{catch}\, \e\rightarrow \sigma|\e$:\\*
+From the premise we know 
+$IOK(\sigma,\sigma_0;\ctx_v[\Kw{try}^\sigma \oC\mathit{error}\cC\Kw{catch}\, \e])$;
+thus we need to show
+$IOK(\sigma;\ctx_v[\e])$.
+By @StrongExceptionSafety we know that $\sigma_0$ is garbage with respect to $\ctx_v[\e]$.
+
+There could be many $l$ inside $\sigma,\sigma_0$ that are $\mathit{monitored}$
+in the former step thanks to monitor expressions inside $\mathit{error}$.
+However, all such $l$ are defined inside $\sigma_0$,
+for the last well formedness condition.
+
+

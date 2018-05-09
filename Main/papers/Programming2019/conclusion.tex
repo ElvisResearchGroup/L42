@@ -1,0 +1,94 @@
+\saveSpace
+\section{Conclusion}
+\label{s:conclusion}
+\saveSpace
+Class invariants are a fundamental part of the design by contract methodology. 
+Many languages and tools support some form of invariant verification (e.g. Eiffel~\cite{Meyer:1992:EL:129093}, D~\cite{Alexandrescu:2010:DPL:1875434}, JML~\cite{Burdy2005}, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}).
+%In order to be verified, the invariant needs to be expressed in some formal way.
+Here we focus on multi-object invariants: the class invariant of a given object may depend upon the observable behaviour of any object referenced in its Reachable Object Graph (ROG).
+
+Static verification requires great effort, but can ensures all invariants \textbf{always} holds, thus all objects are always coherent.
+
+However, Static verification is very heavy weight, and often impractical.
+In the context of a conventional OO language with imperative features,
+we propose an \textbf{ultra-lightweight} verification approach,
+where the programmer specifies \textbf{only} the desired class invariants as an 
+\Q@invariant()@ method written in the language itself.
+This is much more convenient with respect to requiring the specification of methods pre and post conditions,
+since the number of classes is usually order of magnitude smaller then the number of methods,
+and a fully annotated program requires to write down 
+pre-post conditions for each methods, encoding a generalization of its behaviour
+in the dedicated specification language.
+This means that, even in the best case scenario, 
+using pre-post conditions
+the user is required to specify the program semantic twice:
+first in the specification language and then in the underlying programming language.
+
+
+With just invariants, our system will then 
+\textbf{soundly ensure invariants of all objects involved in the execution}.
+Our approach do not rely on assumption over the behaviour of methods/classes;
+except for the language semantics and the type system guarantees.
+Methods are just treated as black-boxes, producing a result or throwing an error.
+
+Of course, there is a catch: this result is obtained by modifying/instrumenting the
+semantic of the language, so that (as for type casts) \textbf{violations are detected at run-time}, and exceptions
+are throw in order to stop the execution before involving any broken object.
+
+\noindent\textit{Similarity with checked casts:}
+%\subsection{Extended type system and similarity with checked casts}
+Even if not as good as full static verification, from a formal perspective our system clearly \textbf{aid reasoning}:
+For example, while checking the correctness of a method,
+in addition to the semantic of the language
+and the properties ensured by the type system,
+programmers can assume the invariants of all the parameters and of all the
+objects in their ROG.
+They still are responsible to create and mutate objects in order to preserve the invariants;
+but once an object has been successfully created/mutated, all the invariants are guaranteed to hold.
+
+This is similar to casts in Java with respect to casts in C:
+In both languages the programmer is responsible to cast values correctly.
+However, in Java casts are soundly checked: if in a Java program the control flow go over a cast,
+ we know that in that specific
+execution such assumption was correct.
+On the other side incorrect C casts just default to undefined behaviour:
+if a C execution continue after a cast, we know absolutely nothing. The same execution
+ may fail when run on a different machine, 
+or even on the same one in another moment.
+
+In the same sense, object construction and ROG mutation are soundly checked by our system,
+and success in a mutation means that in that specific execution, the invariant was preserved.
+
+
+
+\noindent\textit{Security and DMZ:}
+Static verification let us reason about a complete program
+and verify its correctness.
+Traditional static verification is like a mathematical proof: is valid if it is \textbf{all correct},
+but a single error invalidates all the claims.
+Thus, it is hard to perform verification on large programs, or when independently maintained third party libraries
+are involved.
+To solve this issue, static verification systems are starting to consider a verified core
+and a run-time verified boundary.
+
+You can see our approach as an extremely modularized version of such system:
+every class is its own demilitarized zone, and the rest of the code 
+could have Byzantine behaviour.
+
+Every class that compiles/type checks should be protected against breakage,
+ independently of the code that uses this class or any other surrounding code.
+ That is, our approach works both with open world assumption and in a library setting.
+
+\noindent\textit{SIC as extended type system:}
+The philosophy of our approach is to be like an extended type system: 
+\begin{itemize}
+\item The programmer decides to annotate a field with a certain type, or the class with a certain invariant.
+\item If that is a valid type, or a valid invariant, the user is not questioned in its intent.
+\item The system enforce that field will only contain values or that type, or that instance of that class
+will respect that invariant.
+\end{itemize}
+This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
+both deciding the invariant and enforcing it is controlled by the programmers.
+This change the semantic of invariants: they are not expected to hold all the time,
+but only when checked. Many programmers tries to recover the original semantic
+by checking it in the ``right moments''. This article has shown how taunting and tricky such task really is.

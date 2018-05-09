@@ -1,19 +1,7 @@
-\usepackage{amssymb}
-\usepackage{verbatim}
-\usepackage{xspace}
-\usepackage{xcolor}
-\usepackage{babel}
-\usepackage[T1]{fontenc}
 \usepackage{listings}
-\usepackage{amsmath}
-\usepackage{stmaryrd}
-\usepackage{times}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{shapes,snakes}
-\usepackage{url}
-\usepackage{microtype}
-\usepackage{fancybox}
 \usepackage{mathtools}
 
 \input{../Def/commonDef}
@@ -265,13 +253,15 @@
 \newcommand*{\onWith}{{\V{\AddApex\on{w}}}}
 \newcommand*{\I}{\V{\NonTerminale{I}}}
 \newcommand*{\IMany}{\Many{\I}}
-\newcommand*{\T}{\V{\NonTerminale{T}}}
+\providecommand\T{}
+\renewcommand*{\T}{\V{\NonTerminale{T}}}
 %\newcommand*{\T}{\cal{T}}
 \newcommand*{\TMany}{\Many{\T}}
 \newcommand*{\x}{\V{\NonTerminale{x}}}
 \newcommand*{\y}{\V{\NonTerminale{y}}}
 \newcommand*{\z}{\V{\NonTerminale{z}}}
-\newcommand*{\f}{\NonTerminale{f}}
+\providecommand\f{}
+\renewcommand*{\f}{\NonTerminale{f}}
 \newcommand*{\oi}{\V{\ensuremath{\iota}}}
 \newcommand*{\xMany}{\Many{\x}}
 \newcommand*{\oiMany}{\Many\oi}
@@ -301,8 +291,8 @@
 \newcommand*{\eMany}{\Many{\e}}
 
 
-
-\newcommand*{\m}
+\providecommand\m{}
+\renewcommand*{\m}
 {\V{\NonTerminale{m}}}
 %{\!\V{\raisebox{-0.2ex}{\scalebox{0.35}{$\hole$}}\NonTerminale{m}}}
 
@@ -323,7 +313,8 @@
 \newcommand*{\classDec}{\NonTerminale{cd}}
 \newcommand*{\interfaceDec}{\NonTerminale{id}}
 \newcommand*{\classDecMany}{\Many{\classDec}}
-\newcommand*{\val}{\V{\NonTerminale{v}}}
+\providecommand\val{}
+\renewcommand*{\val}{\V{\NonTerminale{v}}}
 \newcommand*{\Val}[1]{\V{\val^{#1}}}
 \newcommand*{\redex}{\NonTerminale{r}}
 \newcommand*{\valMany}{\Many{\val}}
@@ -383,7 +374,7 @@
 \newcommand*{\oS}{\Terminale{[}}
 \newcommand*{\cS}{\Terminale{]}}
 
-\newcommand*{\singleDot}{{\Terminale{\!.\!}}}
+\newcommand*{\singleDot}{{\Terminale{.}}}
 \newcommand*{\classSep}{{\colon\colon}}
 \newcommand\equalSign{\colon\initSign}
 %\newcommand*{\staticMdf}{\ensuremath{{}^{*}}}
@@ -408,7 +399,6 @@
 \newcommand*{\PostMdf}[1]{\ensuremath{\mbox{\Q@`@}{}^{#1}}}
 \newcommand*{\PreMdf}[1]{\ensuremath{\mbox{\Q@'@}{}^{#1}}}
 %ESPRESSIONI COMPOSTE
-\newcommand*{\B}[2]{QQQQQQQQ\oCurly{#1}\,{#2}\cCurly}
 \newcommand*{\Fd}[2]{{#1}\,{#2}\semiColon}
 \newcommand*{\Xe}[2]{#1\,\equalSign\,#2}
 \newcommand*{\MethodCall}[3]{{#1}\singleDot{#2}\oRound{#3}\cRound}
@@ -500,7 +490,8 @@
 \newcommand*{\Rph}[2]{\Aux{reachPh}(#1,#2)}
 \newcommand*{\Oph}[2]{\Aux{oph}(#1,#2)}
 \newcommand*{\DOpen}[1]{\Aux{openPh}(#1)}
-\newcommand*{\ClassName}[2]{\Aux{cname}(#1,#2)}
+\providecommand\ClassName{}
+\renewcommand*{\ClassName}[2]{\Aux{cname}(#1,#2)}
 
 \newcommand*{\FieldsFunction}[2]{\Aux{defFields}(#1,#2)}
 \newcommand*{\fieldsFunction}{\Aux{defFields}}
@@ -957,7 +948,8 @@ ${}_{}$\\ \noindent${}_{}$\\ \noindent}
 }
 
 \newcommand\ToPh[1]{\Aux{toPh}(#1)}
-\newcommand\hv{{\h\dArrow}}
+\providecommand\hv{}
+\renewcommand\hv{{\h\dArrow}}
 \newcommand\never{\bot}
 \newcommand\TN{\Nv\T^\never}
 \newcommand\typeAny[2]{\Aux{typeAny}(#1,#2)}
@@ -1044,7 +1036,8 @@ ${}_{}$\\ \noindent${}_{}$\\ \noindent}
 \newcommand\usingKw{\Kw{using}}
 \newcommand\checkKw{\Kw{check}}
 \newcommand\andCloseKw{\Kw{andclose}}
-\newcommand\num{\V{\NonTerminale{num}}}
+%\providecommand\num{}
+%\renewcommand\num{\V{\NonTerminale{num}}}
 \newcommand\withKw{\Kw{with}}
 \newcommand\breakKw{\Terminale{break}}
 \newcommand\inKw{\Kw{in}}
@@ -1296,7 +1289,7 @@ commentstyle=\color{red}\ttfamily,
 }
 \newcommand{\Comment}[1]{%
   \scalebox{0.83}[1]{\textit{\color{darkBlue}{
-  \textbf{\!\!\!//#1}}}}%
+  \textbf{\!\!//#1}}}}%
   }
 \newcommand{\MComment}[1]{%
   \scalebox{0.83}[1]{\textit{\color{darkBlue}{

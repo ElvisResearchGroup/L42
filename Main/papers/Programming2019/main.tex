@@ -1,0 +1,82 @@
+\documentclass[english,submission]{programming}
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+\usepackage[backend=biber]{biblatex} % Use Biblatex
+\addbibresource{main.bib}
+\addbibresource{bib.bib}
+\usepackage{mathpartir}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\theoremstyle{plain}
+\newcounter{theoremQ}
+\newtheorem{Theorem}[theoremQ]{Theorem}
+\newcounter{definition}
+\newtheorem{Definition}[definition]{Definition}
+\newcounter{assumption}
+\newtheorem{Assumption}[assumption]{Assumption}
+\newcounter{lemma}
+\newtheorem{Lemma}[lemma]{Lemma}
+\input{../Def/Def}
+%\lstset{language=FortyTwo, morekeywords={imm,new,class,this,assert}}
+\newcommand\saveSpace{\vspace{-1px}}
+
+\begin{document}
+\paperdetails{
+perspective=art,
+area={General-purpose programming}
+}
+\title{Sound Invariant Checking}
+%\author{Authors omitted for double-blind review.}
+\author{Marco Servetto}
+%\affiliation{Victoria University of Wellington}
+%\email{marco.servetto@ecs.vuw.ac.nz}
+\author{Alex Potanin}
+\affiliation{Victoria University of Wellington}
+%\email{alex@ecs.vuw.ac.nz}
+
+\keywords{invariant, soundness}
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002944.10011122.10003459</concept_id>
+<concept_desc>General and reference~Computing standards, RFCs and guidelines</concept_
+,→ desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[300]{General and reference~Computing standards, RFCs and guidelines}
+\maketitle
+\begin{abstract}
+Class invariants provide guarantees about the state of objects throughout the execution.
+Runtime verification of class invariants is
+a hard problem due to issues with aliasing, exceptions,
+non-deterministic invariants, I/O, subtyping and untrusted code.
+We challenge this problem in the context of
+a Java-like language where the invariants are expressed in the language itself.
+We formally define \textbf{Sound Invariant Checking}
+and formally prove that a combination of carefully selected type modifiers, object capabilities,
+ and strong exception safety is sufficient
+to handle Sound Invariant Checking for the most common categories of objects.
+
+\end{abstract}
+
+\input{intro}
+\input{immutable}
+\input{simple}
+\input{encapsulated}
+\input{interconnected}
+\input{meaning}
+\input{related}
+\input{conclusion}
+
+%\bibliography{main,bib}
+\input{appendix}
+\end{document}

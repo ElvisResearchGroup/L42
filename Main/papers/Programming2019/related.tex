@@ -1,0 +1,324 @@
+\saveSpace
+\section{Performance considerations and Practical experience}
+\saveSpace
+We believe our sound approach can monitor arbitrary programs
+for a fraction of the cost of many other competitors.
+Many other works%
+~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
+ check (that is, run)
+the invariant code at the start and at the end of every public
+method.
+In  our approach,
+we only call the invariant a single time for each mutator method.
+We expect this to result in at least 10 times reduction over
+the number of required invariant checks:
+for mutator methods, we call \Q@invariant()@ only one time instead of two,
+and we
+do not call it at all for non-mutator methods, that
+ are usually more numerous and invoked more often.
+
+${}_{}$
+
+\noindent We are in the process of creating a practical language (\url{http://L42.is})
+ where sound invariant checking can be enforced by decorating a class.
+In 42 the following code expresses the \Q@Boat@ example.
+\begin{lstlisting}
+Boat:Data<><{
+  S name,$\Comment{the default modifier is imm}$
+  capsule Items cargo,
+  Void load(Item item)
+    this.#cargo().add(item),
+  Item unload(String itemName)
+    this.#cargo().extract(itemName),
+  read method Bool #invariant()
+    !this.name().isEmpty() & this.cargo().weight()<=300Num,
+  }
+\end{lstlisting}
+\Q@Data@ takes that code literal and creates a \Q@Boat@ class with invariant.
+Moreover, \Q@equals@, \Q@toString@ and many other utility methods are generated/added.
+
+The 42 project is starting to reach maturity, and is showing that sound and practical
+ run time verification of arbitrary invariants written in the language itself is possible. 
+In 42 we have only final classes and interfaces (code reuse is obtained by metaprogramming)
+This means that every variable of a class type hold an instance of that exact type, and 
+thus, thanks to SIC, exactly that class invariant will hold.
+
+
+
+\saveSpace
+\section{Related work}
+\label{s:related}
+\saveSpace
+\noindent\textit{Type Modifiers:}
+We show how a combination of
+\Q@mut@, \Q@imm@, \Q@read@ and \Q@capsule@ provides the tools to ensure enough encapsulation in a sound way. 
+It is responsibility of the language, and not of the programmer,
+to verify that encapsulated objects actually have control of the mutation of their whole ROG.
+This requires to use modifiers with a deep/strong interpretation, without back-doors.
+This means that the approaches like ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07}
+are not suitable since they aim to enforce the property only for
+the annotated object and/or its owned objects.
+Approaches like Javari~\cite{TschantzErnst05,Boyland06} and Rust~\cite{matsakis2014rust}
+are also unsuitable since they introduce back-doors, and expect the programmer to use them properly.
+Many approaches tries to just preserve purity (as for example~\cite{pearce2011jpure}), but here we need also aliasing control.
+
+
+\noindent
+\textit{Object Capabilities:}
+Object capabilities, in conjunction with type modifiers seems to be able to
+ enforce purity of sections of code in a friendly and modular way.
+Here we presented this idea very informally.
+The language Joe-E~\cite{finifter2008verifiable}
+explores how to use object capabilities to ensure
+pure behaviour for methods.
+In order to express Joe-E as a subset of Java,
+they leverage on a simplified model of immutability:
+Immutable classes are final classes where all the fields are final and refers to other immutable classes.
+Instances of immutable classes are immutable objects.
+\textbf{In Joe-E every method taking in input only immutable objects is pure.}
+Their model would not allow to verify purity for invariant methods of mutable objects
+ (as Simple/Encapsulated objects).
+In our model we have a more fine grained representation of immutable/read:
+ \emph{reference based} instead of \emph{class based}.
+\textbf{
+In our model, every method taking in input only \Q@read@ or \Q@imm@ references is pure.
+}
+% We are surprised that we cannot find many formal works on the promising relation between monads and object capabilities.
+
+
+\noindent\textit{Strong Exception Safety:}
+Exception safety seems at first glance a smaller issue with respect 
+to the other two, but is the final piece that lets the whole system work in a real world setting.
+Note that state of the art type systems to enforce exception safety
+ do not restrict code that do not capture errors, and
+only the point of error capturing is constrained.
+
+
+\noindent\textit{Dedicated specification language or underling language:}
+Using a specification languages near to the logic and disjointed from a specific language
+semantic may seems attractive, however
+a study~\cite{chalin2007logical} discovered that developers expect
+the specification language to use the semantic of the underling language, including
+short circuit semantic and arithmetic exceptions; thus for example
+\Q@1/0 || 2>1@
+should not hold, while 
+\Q@2>1 ||1/0@ should hold thanks to short circuit semantic.
+This study was influential enough to convince JML to change its interpretation of logical expressions
+accordingly~\cite{chalin2008jml}.
+We believe this is evidence that using a method in the underlying language to encode the invariant is
+a developers-friendly solution.
+
+
+%With our great surprise we had difficulties finding much related work in the area 
+%of soundly and automatically injecting run time invariant tests in class based, nominally typed
+%object oriented languages.
+%For example  
+
+\noindent\textit{Ensuring class invariants:}
+JML offers a tool (jmlrac~\cite{Burdy2005}) that is intentionally unsound,
+while InvTS~\cite{gorbovitski08efficient} lets you write Python conditions
+ that are verified on a set of Python objects, but the programmer needs to be able
+ to predict which objects are in need of being checked and to use a simpler domain
+ specific language to target them. That is, the programmer may make a mistake
+while using this domain specific language, and the invariant checking
+will not be triggered.
+
+By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
+it seems that most RV works have a philosophy that is radically different from ours:
+indeed RV systems and frameworks are often tools empowering the user
+into implementing what kind of monitoring they see fit for their specific problem at hand.
+This means that they are responsible for deciding, designing and encoding both the 
+logic properties and the instrumentation criteria that will perform operations
+in certain moments in time~\cite{meredith2012overview}.
+In practice, this means that the logic and the instrumentation and the implementation end up connected:
+a specific instrumentation strategy is good only to test certain logic properties in certain applications.
+No guarantee is given that the implemented instrumentation strategy is able to support
+the required logic in the monitored application.
+
+In this work we define a language where a minimal, standardized,
+efficient and completely general purpose instrumentation strategy can soundly verify any invariant
+expressible as a\\* \Q@read method imm Bool invariant()@, for any well-typed program; with open world assumption
+and possible Byzantine behaviour of any object in the system.
+
+By seeing class invariant as a part of the type of the object,
+the `RV tool' philosophy is akin to letting the programmer customize the behaviour of the
+type system: the programmer implementation may be unsound; while our philosophy is
+to give the user a way to represent complex and expressive types (in the form of arbitrary code in 
+the \Q@invariant()@ method), but 
+the type system implementation is fixed in stone by the language designer.
+
+\newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*$\bullet\,$}
+
+\noindent\textit{Sound monitors:}
+\noindent Many works attempts to move out of the `RV tool' philosophy to ensure RV Monitors work as expected. Here
+we mention some of them:
+\sepItems
+In avionics, where memory allocation is disallowed, making reasoning about aliasing much simpler~\cite{laurent2015assuring}:
+``\emph{Runtime Verification (RV) can act as the last line of defense to
+protect the public safety, but only if the RV system itself is trusted.}''.
+\sepItems
+In domain specific languages~\cite{ferrari2002guardians}:
+``\emph{Proof techniques for establishing security properties}''.
+\sepItems
+On assertions over restrictive domain specific languages, to tame some of the C/C++
+undefined behaviour issues~\cite{agten2015sound}:
+``\emph{no verified assertion in the verified
+module will ever fail at runtime, even if the module runs as part of
+a vulnerable application that is subject to code injection attacks}''.
+\sepItems
+Works on class based OO languages, but focusing only on pre and post conditions~\cite{findler2001contract}:
+``\emph{we  study  the  problem  of  contract  enforcement in
+an object-oriented world from  a foundational perspective.   More
+specifically, we study contracts as refinements of types}''.
+\sepItems
+Jose~\cite{feldman2006jose} seems keen on sound theoretical principles:
+``\emph{There are two issues involved
+in the implementation of such a tool: the correct enforcement of the theoretical principles, and the instrumentation
+of the code. Most previous tools tackle both issues, but have
+subtle failures in one or the other.}'',\\*
+but when it comes to class invariants just perform checks around public methods:
+``\emph{Invariants are checked at the end of the lowest-level constructor,
+ and at the beginning and end of every non-private non-static method}''.\\*
+The same behaviour happens in `Code Contracts'~\cite{fahndrich2010embedded},
+jContractor~\cite{abercrombie2002jcontractor}
+and~\cite{tran2003design}:``\emph{Invariants may be checked both before and after
+method  execution  for  calls  crossing  object  boundaries.
+Assertion  failures  result  in  appropriate  exceptions.}''.\\*
+In this way methods still have to assume any received object may be broken; in such case calling any
+public getter would trigger an error, but until the object is just passed around
+(and for example stored in collections), the broken state will not be detected.
+The already discussed~\cite{Gopinathan:2008:RMO:1483018.1483028}
+explains the danger of those approaches very clearly:
+``\emph{there are many instances where o's invariant is violated by the programmer inadvertently changing the state
+of p when o is in a steady state. Typically, o and p
+are objects exposed by the API, and the programmer (who is the user of the API), unaware of
+the dependency between o and p, calls a method of p in such a way that
+o's invariant is violated. The fact that the violation occurred is detected
+much later, when a method of o is called again, and it is difficult to 
+determine exactly where such violations occur.}''\\*
+Critically, even~\cite{Gopinathan:2008:RMO:1483018.1483028} is still unsound since they do not address neither
+the risk of non-determinism in the \Q@invariant()@ method, 
+nor the presence of exceptions.
+\sepItems
+Works over C\# recognize the need
+of purity/determinism when methods calls are allowed in contracts~\cite{barnett200499}
+``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
+of functions. The first approach is not scalable, the second overly restrictive and
+the third unsound.}''\\*
+They recognize that many tools unsoundly uses (c), as AsmL~\cite{barnett2003runtime}.
+They propose a concept of observational purity, than when completely fleshed out
+could possibly be a great addition to our proposed type system. We speculate that some 
+primitive language support may be needed, for example implementing the Flyweight pattern 
+as part of the language semantic.
+
+\noindent\textit{Class Invariant Interpretations:}
+As we discussed, in an OO language we cannot prevent the existence of broken objects,
+but only limit their impact on the program execution.
+Of course we are not the first ones to consider this issue, and in the literature we have many possible definitions
+of \textbf{when} the invariant is expected to hold:
+\begin{itemize}
+\item  when the object is in a \textit{steady} state:
+ the execution is not inside any of its methods~\cite{Gopinathan:2008:RMO:1483018.1483028};
+\item
+at the start and at the end of every public method
+(though it is unclear how to deal with recursive methods)~\cite{Burdy2005};
+\item
+constantly maintained between calls to public methods~\footnote{\url{https://en.wikipedia.org/wiki/Class_invariant}};
+\item
+constantly maintained when the object is \textit{closed};
+invariant can be manually opened and closed by using special operations; % Add cite here!
+\item
+before every field getter --- this way an invalid value may never be observed
+even if present in memory for a long time.
+\end{itemize}
+\noindent We believe our requirement is the strongest amongst the ones found in literature,
+thus it offers the best support to reasoning.
+Moreover, since the invariant is defined in the language itself,
+the user can encode open/close semantics if is needed,
+by adding a mutable boolean \Q@isOpen@ field and adding \Q@this.isOpen || ..@
+in front of the invariant condition.
+
+\noindent However, there could be yet a stronger interpretation:
+to start checking \Q@invariant()@ directly
+after any field update in the whole ROG.
+With aspect orientation it is possible to do just that~\cite{Gopinathan:2008:RMO:1483018.1483028},
+however even if we could accept the intrinsic performance cost of such solution,
+many argue for the importance of
+doing \textbf{multiple tightly connected field updates} before checking the invariant again.
+We understand the need for this
+expressive power; the Decorator Pattern
+is sufficient to supports such expressive power while 
+preserving SIC and the reasoning benefits coming from 
+class invariants:
+define a `state class' (e.g. \Q@BoatState@) containing the state but no invariant;
+the `target class' (e.g. \Q@Boat@) will then have a single 
+\Q@capsule@ field of type `state class' and the \Q@invariant()@ method.
+In this way, any method taking a `target class' parameter can
+rely on the invariant, while any method taking a `state class' parameter will not.
+As for the Decorator, a common interface can be introduced to support reasoning on both kinds of objects.
+
+
+
+%Overall, we are very confused on finding so many approaches asking for the programmer to
+%actually understand what their code is doing in the details.
+%It is undesirable to reach such level of understanding while relying only on the specification
+%of the used (third party) libraries.
+
+%Our interpretation of invariant is sightly different from the usual open/close
+%semantics.
+%Consider a class containing two equal numbers:
+%\begin{lstlisting}
+%class EqualPair {
+%  imm Int a, imm Int b
+%  read method imm Bool invariant() {return a==b;}
+%  mut method imm Void update(imm Int x) {
+%    this.setA(x);this.setB(x);
+%  }
+%}
+%\end{lstlisting}
+%In our system the \Q@update@ method clearly breaks the invariant, and running it will cause an invariant error/exception.
+%
+%In the conventional open/close semantics, the programmer could write something like:
+%\begin{lstlisting}
+%  mut method imm Void update(imm Int x){
+%    this.openInvariant();
+%    this.setA(x);this.setB(x);
+%    this.closeInvariant();
+%  }
+%\end{lstlisting}
+%To allow the two mutations to happen while the invariant is open.
+%Our way to handle encapsulated objects exacerbates this difference; consider the following class
+%containing non empty lists:
+%\begin{lstlisting}
+%class NonEmptyList{
+%  capsule ListS list, imm String label
+%  read method imm Bool invariant(){
+%    return !list.isEmpty();}
+%  mut method imm Void update(imm String x){
+%    this.#list().clear();$\Comment{list is now empty}$
+%    this.#list().add(x);$\Comment{what if we swap}$
+%    this.setLabel(x);$\Comment{ those two lines?}$
+%  }
+%}
+%\end{lstlisting}
+%The code as presented is fine, but if we just swap the two last lines, then we would set the label while the object is debated.
+%This would still cause a re-checking of the invariant, that will fail. 
+%
+%We are unsure if these two examples show a limitation of our approach with respect to explicit open/close semantics or if we capture more closely the expectations of a programmer.
+%If it is the second case, then is our last code example conceptually wrong independently of the ordering of the lines?
+%
+%Note how our approach is clearly simpler/more primitive than the explicit open/close semantics.
+%We could easily extend our work by making the compiler add a boolean field to all classes,
+%and modify the invariant checking in the methods using exposers as follows:
+%\begin{lstlisting}
+%public mut method imm Void addAllergy(imm Str x){
+%  imm Bool wasOpen=this.open;
+%  this.open=true;
+%  this.#allergies().add(x);
+%  this.open=wasOpen;$\Comment{ thanks of strong exception}$
+%  $\Comment{ safety there is no need of 'finally' here}$
+%  if(!this.open && !this.invariant()){
+%    throw new Error(...);}}
+%\end{lstlisting}
+
+

@@ -16,11 +16,12 @@ public class Paths {
   final List<List<Ast.C>> current;
   private Paths(Paths next, List<List<Ast.C>> current){
     this.next=next; this.current=current;
+    assert new HashSet<>(current).size()==current.size();
     }
   private static final Paths empty=new Paths(null,Collections.emptyList());
   public static Paths empty(){return empty;}
   public boolean isEmpty(){return this==empty;}
-  
+
   public List<List<Ast.C>> top(){
     assert current!=null;
     return current;
@@ -42,21 +43,6 @@ public class Paths {
     css.addAll(other.top());
     return rec.push(css);
   }
-  public Paths setMinus(Paths other){
-    assert other!=null:
-      "";
-    if (this==empty){return this;}
-    if (other==empty){return this;}
-    Paths rec=this.pop().setMinus(other.pop()); 
-    List<List<Ast.C>> css = new ArrayList<>();
-    for(List<Ast.C> csi:this.top()){
-      if(other.top().contains(csi)){continue;}
-      if(hasPrefixIn(other.top(),csi)){continue;}
-      css.add(csi);
-      }
-    if(css.isEmpty() && rec.isEmpty()){return Paths.empty();}
-    return rec.push(css);
-  }
   public boolean checkAllDefined(Program p){
     if(this.isEmpty()){return true;}
     for(List<Ast.C>cs:this.top()){
@@ -75,14 +61,15 @@ public class Paths {
       }
     if(this.pop().isEmpty()){return true;}
     return this.pop().checkAllDefined(p.pop());
-    
+
     }
-  
+
   public Paths prefix(List<Ast.C>cs){
     if(this==empty){return empty;}
     if(cs.isEmpty()){return this;}
     if(this.pop()==empty){
       List<List<Ast.C>> res=new ArrayList<>();
+      //checked in constructor: assert new HashSet<>(this.top()).size()==this.top().size();//no dups in TOP
       for(List<Ast.C>csi:this.top()){
         List<Ast.C>cscsi=new ArrayList<>(cs);
         cscsi.addAll(csi);
@@ -97,7 +84,7 @@ public class Paths {
     assert paths0!=empty;
     Paths paths1=new Paths(empty,this.top()).prefix(cs);
     assert paths1!=empty;
-    return paths0.union(paths1);
+    return paths0.union(paths1);//this remove duplicates from paths0 and paths1 by "minimize"
     }
   public static Paths reorganize(List<Ast.Path> ps){
     if(ps.isEmpty()){return empty;}
@@ -147,7 +134,7 @@ public class Paths {
     if(this.pop()!=empty){result+=this.pop().toString(n+1);}
     return result;
     }
-  
+
   public boolean containsPrefixFor(ast.Ast.Path s) {
     if(s.isPrimitive()){return false;}
     Paths popped=this;

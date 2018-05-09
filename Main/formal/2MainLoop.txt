@@ -65,7 +65,7 @@ in This1 and so on.
 Moreover, if Thisn.Cs is present, then we do not store
 any of its sub paths Thisn.Cs.Cs'.
 We model this idea with
-- minimize(Css)={Csi in Css | forall Csj in Css\Csi,  Csj._!=Csi}//TODO: marco remembers that in the code we allows _ to be of size 0. this makes no sense since Css\Csi would remove all occurences of Csi
+- minimize(Css)={Csi in Css | forall Csj in Css\Csi,  Csj.C._!=Csi}//note: in code we check '.C._' need to be non empty by 'csShort.size()>=csLong.size()'i
 
 - paths::= Csss //list of set of list of C
 
@@ -88,7 +88,6 @@ Simple operations:
  -(Css paths) U (Css' paths')=(paths U paths').push(Css U Css')
  -paths U empty=empty U paths = paths
 
-//TODO: remove  (Css paths) \(Css' paths') from code
 
 The prefix operation adds Cs in front of all the P in paths.
 It is unobvious since we need to consider the n in Thisn.
@@ -101,8 +100,7 @@ representing Ps This0.W.E.A  This0.W.B  This0.C This1.D
  -paths.prefix(empty)= paths
  -(Cs1..Csn).prefix(Cs)=Cs.Cs1 .. Cs.Csn
  -(Css paths).prefix(Cs.C)= Css.prefix(Cs.C) U paths.prefix(Cs)
-//the formalization relies on Cs1..Csn being a set, so duplicates are removed.
-//TODO: in code remove duplicates from the list
+//the formalization relies on Cs1..Csn being a set, so duplicates are removed. In the code it happens by minimize
 
 -----------------------------------------------------------
 Part 3: methods(p,P)=Ms,  collect(p,Ps)=Ps'
@@ -120,7 +118,7 @@ _______
   //an implementation could keep a list of visited P instead of diverging; mathematically it is the same.
 
 -collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
-  p(P0)={interface implements Ps0 _}//TODO: add check for "interface" in code
+  p(P0)={interface implements Ps0 _}
   Ps'=collect(p,Ps0[from P0])
   where "\p" is set minus on lists using p.equiv(P1,P2) //TODO: update code, this should fix concern in TODO "just hacked away"  //this checks absence of circularity by diverging (i.e. looping until stack overflow)
 

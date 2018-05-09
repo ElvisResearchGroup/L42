@@ -1,0 +1,155 @@
+\saveSpace
+\section{A Language Supporting SIC}
+\label{s:language}
+\saveSpace
+We now present how a real language could support
+SIC. To ease our explanation, we present various categories
+of objects where we can support invariants, starting from the simpler one to handle.
+We will introduce one by one the various
+\textbf{language features} needed 
+to support SIC, and we work under the assumption that there are no static variables.
+We will provide a brief introduction to type modifiers, object capabilities, and exception safety and we will show how they enable sound invariant checking.
+
+To clearly communicate what kinds of checks the language should insert,
+ we will write them down as if they were ``generated source code''. 
+However our proposed approach is independent of the actual technique to insert these checks, and they may be inserted directly into the bytecode, or they can be part of the underlying semantics of the virtual machine.
+In this section we rely on code example and informal explanations. In the next section we will provide formal definitions.
+We would like to underline that the
+features we need for SIC have all been presented in the past, but their application to sound runtime class invariant checking has never been explored.
+\saveSpace
+\subsection{Immutable Objects}
+\label{s:immutable}
+\saveSpace
+Immutable objects (such as UML data types or deeply immutable objects~\cite{Potanin2013}) are the simplest category to handle: all the fields are final and refer to other immutable objects.
+This means that all the ROG is immutable.
+Even in this simple case SIC  is challenging:
+\begin{enumerate}
+  \item buggy immutable objects may actually be mutable;
+  \item buggy invariants may not be pure;
+  \item the \Q@this@ pointer, pointing to a broken object, may be leaked during object
+ construction levering on a mutable parameter
+\item or can be leaked during invariant checking via an exception object.
+\end{enumerate}
+\saveSpace\saveSpace
+\subsubsection*{Solving Issue 1: Type Modifiers}
+\saveSpace
+Type modifiers are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification of mutability and aliasing properties of objects.
+The three most common modifiers for object references are:
+\begin{itemize}
+\item Mutable \Q@mut@: the referred object is free to mutate, as in a language without modifiers,
+\item Immutable \Q@imm@: the referred object can never mutate, no matter what happens,
+\item and Readable/Readonly \Q@read@: the referred object cannot be mutated by such reference, but in the program there may be mutable references to this same object, so mutation can still be observed. 
+\end{itemize}
+\noindent
+One may be confused about the difference between (using Java terminology) final and non final as well as immutable and mutable and what each of the four combinations would mean:
+\begin{itemize}
+\item A final variable or field cannot be reassigned.
+It is always going to point to the same object.
+However, fields of the referred object may be updated.
+Final is a modifier over the variable or field, not over the reference.
+\item An immutable reference refers to an object that will never mutate.
+That is, its fields are never going to be updated, nor the fields of any object in its ROG.
+\textbf{However, a non final variable with an immutable reference may be updated to point to another object.}%
+\footnote{In C, this is similar to the difference between ``\Q@const *A@'', ``\Q@* const A@'' and ``\Q@const *const A@''.}
+\end{itemize}
+\noindent Consider the following  example of usage of \Q@mut@, \Q@imm@ and \Q@read@:
+\begin{lstlisting}
+mut Point mp=new Point(1,2)
+mp.setX(3)$\Comment{ok}$
+imm Point ip=new Point(1,2)
+$\Comment{}$ip.setX(3)$\Comment{type error}$
+read Point rp=mp$\Comment{ok read common supertype of imm/mut}$
+$\Comment{}$rp.setX(3)$\Comment{type error}$
+mp.setX(5)$\Comment{ok, and now we can observe rp.x()==5}$
+ip=new Point(3,5)$\Comment{ok, ip not final}$
+\end{lstlisting}
+\noindent We cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation; in our example we observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
+ 
+There are several possible interpretations of the semantics of type modifiers.
+Here we assume the full/deep meaning:
+\begin{itemize}
+\item all the ROG from an immutable object is immutable,
+\item all the ROG accessed from a read reference is accessed as read,
+\item no casting is allowed between different type modifiers.
+\end{itemize}
+\saveSpace
+\begin{lstlisting}
+mut Point mCenter=new Point(1,2)
+mut Circle mc=new Circle(mCenter,$\MComment{radius}$7)
+mc.setRadius(3)$\Comment{ok}$
+imm Circle ic=new Circle(new Point(0,0),7)
+imm Point ip=ic.center()$\Comment{ok, ROG immutable}$
+read Circle rc=mc
+read Point rp=rc.center()$\Comment{ok, read Circle show read Point}$
+$\Comment{}$mut Point mp=rc.center()$\Comment{type error}$ 
+\end{lstlisting}
+\saveSpace
+With this kind of type system, we can ensure immutable classes by just declaring all their fields as final and immutable.%
+\footnote{
+In Java,  to ensure a class is immutable we need:
+the class must be final, all the fields must be final of immutable
+classes (thus no interface fields, final classes all the way down),
+and the SecurityManager need to properly tame reflection.}
+
+% Not sure about this paragraph:
+There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
+The main progress in the last couple of years is about the flexibility of those type systems: the programmer may use \Q@imm@ when dealing with objects that obviously behave like
+ UML data types, and \Q@mut@ nearly everywhere else,
+ and the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15}
+ the type modifiers adapting them to the context.
+To see a glimpse of this flexibility, note how in the example above \Q@imm Circle ic@ and
+\Q@mut Circle mc@ are both initialized with a \Q@new Circle(...)@.
+This is not a special feature of the \Q@new@ construct: any expression typed as a \Q@mut Circle@ can be promoted/recovered into \Q@imm Circle@ if it uses only immutable references.
+
+\saveSpace
+\subsubsection*{Solving Issue 2: Object Capabilities}
+\saveSpace
+While type modifiers are a statically verified property of references, object capabilities are run time characteristics of specific objects.
+The general idea of object capabilities is that only certain objects with ``special'' powers can do ``special'' actions, and those objects are obtained in a controlled way.
+We call those objects ``capability objects''.
+In a language with capabilities, we would not have \Q@System.out.println@ but the \Q@main@ method will take a \Q@System@ object as a parameter, and that object has to be used to perform I/O, as in \Q@mySystem.println("hello")@.
+
+Moreover, there is no visible constructor for the \Q@System@ object and all the I/O methods require a mutable (\Q@mut@) object.
+
+Many other operations, like random numbers and file management may just take a \Q@mut System@ object as a parameter.
+
+In this setting, the invariant method may be defined as follows:
+\saveSpace
+\begin{lstlisting}
+read method imm Bool invariant(){...}
+\end{lstlisting}
+\saveSpace
+The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference, and has no other parameters.
+By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
+\begin{itemize}
+\item the ROG from \Q@this@ is only accessed in \Q@read@, thus it cannot be mutated,
+\item nothing else is accessible (we do not have global variables),
+\item if a \Q@System@ object is in the ROG of \Q@this@, then we will only access it as \Q@read@, preventing I/O.
+\end{itemize}
+\noindent This design space has been explored in literature by Joe-E~\cite{finifter2008verifiable}.
+\saveSpace
+
+\subsubsection*{Solving Issue 3: Constructors}
+\saveSpace
+Exposing \Q@this@ during construction is a generally recognized problem~\cite{gil2009we}.
+A simple solution is to require all constructors to 
+simply take a parameter for each field and to just initialize the fields.
+An advantage of such approach, is that constructors are implicitly defined
+by the set of fields and thus there is no need to define them manually.
+Expressive initialization operations can still be performed, by following the factory pattern.
+\saveSpace
+\subsubsection*{Solving Issue 4: Exceptions}
+\saveSpace
+The invariant method can still throw exceptions.
+We think this is a good thing: the invariant may want to generate a user friendly error message explaining the reason why the invariant is broken.
+However, if such exception was to refer to \Q@this@ in its ROG, then we will allow such broken object to escape.
+A simple solution solving just this issue is to require all thrown exceptions to be immutable:
+\Q@this@ is \Q@read@, thus it can not be inserted in the ROG of an immutable object.
+Exceptions are going to trouble our life again later in this paper:
+to handle the next case a more complex solution is required.
+
+
+
+
+%\subsubsection*{Recap}
+%By utilising type modifiers (\Q@imm@, \Q@mut@ and \Q@read@), object capabilities and immutable exceptions we obtain sound runtime verification for immutable classes/UML data types.

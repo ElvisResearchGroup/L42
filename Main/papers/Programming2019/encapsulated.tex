@@ -1,0 +1,160 @@
+\saveSpace
+\subsection{Encapsulated Objects}
+\label{s:encapsulated}
+\saveSpace
+Lets consider the
+complete \Q@Boat@ example, with added modifiers:
+%we can consider the we may have a person with a list of allergies.%
+%\footnote{To avoid discussing generics, we assume class \Q@ListS@: a mutable list of \Q@imm Str@.}
+\begin{lstlisting}
+class Boat{$\Comment{too much cargo and the ship may sink}$
+  read method imm Bool invariant(){
+    return !name.isEmpty() && cargo.weight()<=300;
+  }
+  imm String name;
+  mut Items cargo;$\Comment{mut is not good here}$
+  mut method mut Items cargo(){return this.cargo;}
+  mut method imm Void load(imm Item item){this.cargo.add(item);} 
+  mut method imm Item unload(imm String iName){
+    return this.cargo.extract(iName);
+  }
+}
+\end{lstlisting}
+An encapsulated object is an object
+ that has control over its ROG;
+However field \Q@mut Items cargo@ makes this code
+broken in two distinct ways. Firstly, the cargo we receive in the constructor may
+be already compromised:
+\saveSpace
+\begin{lstlisting}
+mut Items evilAlias=new Items();
+mut Boat b=new Boat("Mary",evilAlias);
+$\Comment{b is ok now, but we do not have control}$
+imm Item sugar=new Item("sugar");
+for(imm Int i=0;i<1000;i++){
+  evilAlias.add(sugar);}$\Comment{this is corrupting b}$
+  $\Comment{how can we discover it and give error?}$
+}
+\end{lstlisting}
+\saveSpace 
+Secondly, even if the \Q@Boat@ has full control 
+in initialization time, such control may be lost later:
+\saveSpace
+\begin{lstlisting}
+mut Boat b = new Boat("Mary",new Items());
+$\Comment{b is ok now}$
+mut Boat evilAlias=b.cargo()$\Comment{here we lose control}$
+$\Comment{b still ok}$
+imm Item sugar=new Item("sugar");
+for(imm Int i=0;i<1000;i++){evilAlias.add(..);}
+\end{lstlisting}
+\saveSpace
+The general idea is that we would like to mutate the cargo object while keeping the control of its aliasing.
+Intuitively, this is connected to the general idea in object-orientation that you should keep your fields private and limit the way clients can access them.
+
+To solve these two problems, we introduce the new modifier \Q@capsule@:
+It represents a ``balloon''~\cite{Almeida97,ServettoEtAl13a} in the object graph.
+Everything in the ROG of a capsule object is reachable only though that field, however
+immutable objects can be freely shared across capsule boundaries, since they are referentially transparent.
+
+Capsule references are usually expressed using linear/affine types~\cite{Boyland01} when they are passed around and manipulated.
+Existing work 
+either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15}
+or leverage on destructive reads instead of linear types.\cite{GordonEtAl12,clebsch2015deny}.
+%Destructive reads seems like not a good fit with object invariants, since they will likely break 
+%the invariant of the containing object.
+Here capsule fields 
+%as input to our code-generation / \Q@invariant()@-injection; that is, \Q@capsule T f@ is expanded by the language into:
+\begin{itemize}
+\item Induce a \Q@capsule@ parameter for the generated constructor.
+\item Require to be updated with a \Q@capsule@ expression.
+\item Are accessed as a \Q@mut@ field.
+Access is \textbf{not} a destructive read.
+ However methods accessing them are kept under
+strict control; either
+\begin{itemize}
+\item they have \Q@read this@: they act like a normal getter, and can not propagate
+writing permission over the ROG of that field.
+Indeed, with \Q@read this@, any field access \Q@this.f@ will be typed \Q@read@ or \Q@imm@.
+\item they have \Q@mut this@, no parameter is \Q@mut@ or \Q@read@,
+the return type is not \Q@mut@ and \Q@this@ appear exactly one time in
+the method body: we call those methods \textbf{exposers}, and the invariant is going to be checked at the end of
+the exposers.
+\end{itemize}
+\end{itemize}
+Exposers are the key part of our solution.
+The strong limitations they endorse turn them in ``wrappers'' of an operation 
+on the field, and that operation is guaranteed to not see the \Q@this@ object:
+\begin{itemize}
+\item Only a single use of \Q@this@ is allowed, and is need to access the field, as in \Q@this.f@.
+\item The argument of the method are guaranteed to not refer to the mutable \Q@this@, since \Q@mut@ and \Q@read@
+parameters are disallowed.
+\item the \Q@capsule@ modifier guarantees that 
+\Q@this@ is not in the rog of \Q@this.f@.
+%$\notin\Text{rog}($\Q@this.f@$)$.
+\end{itemize}
+Thus, any operation surrounding \Q@this.f@ will not have access to \Q@this@, so \Q@this@ is not observable
+during such arbitrary computation.
+If \Q@this@ was to become broken, we could not  observe it.
+The first thing after such operation is completed, is to check the \Q@invariant()@ again.
+Those restrictions also enforce that while executing an exposer no object outside the rog of \Q@this@ can be mutated,
+and that I/O can not be performed: the capability objects are externally visible mutable objects and thus the type system will
+never place them into a \Q@capsule@.%
+\footnote{
+Mainstream languages like Java/C\# do not offer modifiers like \Q@capsule@.
+In order to write correct library code in such languages techniques like
+defensive cloning~\cite{Bloch08} are needed.
+For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.
+}
+
+In our approach, an encapsulated object has all fields of type \Q@imm T@ or \Q@capsule T@ .
+This means that every object in the ROG is either immutable or (write-)owned
+by such encapsulated object.
+
+\noindent Here is the corrected \Q@Boat@ with \Q@cargo@ and how it expands to support sound RV of the invariant:
+
+
+\begin{lstlisting}
+class Boat{$\Comment{too much cargo and the ship may sink}$
+  read method imm Bool invariant(){
+    return !name.isEmpty() && cargo.weight()<=300;
+  }
+  imm String name;
+  capsule Items cargo;$\Comment{capsule modifier here}$
+  read method imm String name(){return this.name;}
+  mut method Void name(imm String name){this.name=name;}
+  read method read Items cargo(){return this.cargo;}$\Comment{read here}$
+  mut method imm Void load(imm Item item){this.cargo.add(item);} 
+  mut method imm Item unload(imm String iName){
+    return this.cargo.extract(iName);
+  }
+}$\Comment{load and unload are exposer methods}$
+\end{lstlisting}
+%-----------------
+\begin{lstlisting}
+class Boat{$\Comment{too much cargo and the ship may sink}$
+  read method imm Bool invariant(){
+    return !name.isEmpty() && cargo.weight()<=300;
+  }
+  private imm String name;$\Comment{private}$
+  private capsule Items cargo;$\Comment{private and capsule}$
+  public Boat(imm String name,capsule Items cargo){
+    this.name=name;
+    this.cargo=cargo;
+    if(!this.invariant()){throw $\MComment{error}$}
+  }
+  read method imm String name(){return this.name;}
+  mut method Void name(imm String name){
+    this.name=name;
+    if(!this.invariant()){throw $\MComment{error}$}
+  }
+  read method read Items cargo(){return this.cargo;}$\Comment{stays the same}$
+  mut method imm Void load(imm Item item){
+    this.cargo.add(item);
+    if(!this.invariant()){throw $\MComment{error}$}$\Comment{invariant check added here}$
+  } 
+  mut method imm Item unload(imm String itemName){
+    return this.cargo.extract(itemName);
+    if(!this.invariant()){throw $\MComment{error}$}$\Comment{invariant check added here}$
+  }  }$\Comment{Generated code, not directly written by the programmer}$
+\end{lstlisting}
