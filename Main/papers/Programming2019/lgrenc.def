@@ -1,0 +1,922 @@
+% lgrenc.def
+% ***********
+%
+% LGR Greek font encoding definitions
+% ===================================
+%
+% :Copyright: © 2010, 2014 Günter Milde
+% :Licence:   This work may be distributed and/or modified under the
+%             conditions of the `LaTeX Project Public License`_, either
+%             version 1.3 of this license or any later version.
+%
+% :Abstract:  The LGR font encoding is the de-facto standard for Greek
+%             typesetting with LaTeX. This file provides a comprehensive set
+%             of macros to typeset Greek with LGR encoded fonts. It works for
+%             both, monotonic and polytonic Greek, independent of the `babel`
+%             package.
+%
+% .. contents::
+%
+%
+% Changelog
+% ---------
+%
+% Development of this file started under the name "lgrxenc.def" as part of the
+% lgrx_ bundle. With version 0.8, it moved to ``greek-fontenc/lgrx.def``.
+%
+% .. class:: borderless
+%
+% ====== ============  ========================================================
+% 0.1    2010-03-31    initial attempt
+% 0.2    2010-04-20    diacritics dropped in UPPERCASE.
+% 0.3    2010-06-08    handle Titlecase and UPPERCASE extending
+%                      ``\@uclclist``.
+% 0.4    2010-06-15    more text symbols.
+% 0.5    2010-08-27    support ``\textalpha`` ... ``\textOmega``.
+% 0.5.1  2012-05-08    upload to CTAN.
+% 0.6    2012-06-29    ``\TextGreek`` wrapper command,
+% ..                   aliases for ``puenc.def`` compatibility.
+% 0.6.1  2013-02-12    ``\@uclclist`` entries for `PU` aliases.
+% 0.7    2013-05-13    documentation update, new accent macros names,
+% ..                   ``\TextGreek`` renamed to ``\ensuregreek``.
+% 0.8    2013-05-13    rename to lgrenc.def (superseding the babel_ version),
+% ..                   move to greek-fontenc,
+% ..                   drop the old (<0.7) internal accent macros names.
+% 0.8.1  2013-05-22    auxiliary macro \update@uclc@with@greek,
+% ..                   conservative naming: "text" prefix for archaic letters,
+% ..                   "LGR@" prefix for internal commands,
+% ..                   remove not required alias macros.
+% 0.8.2  2013-05-23    fix name: ``\textpentehkaton`` -> ``\textpentehekaton``,
+% ..                   fix ``\textperiodcentered``,
+% ..                   add composite command for Ῥ (Rho with Dasia).
+% 0.9    2013-07-16    move common definitions to ``greek-fontenc.def``,
+% ..                   add composite commands for single quotation marks.
+% 0.11.2 2014-09-04    remove duplicate code.
+% 0.13   2015-08-04    Support for symbol variants.
+% 0.13.1 2015-12-07    Fix `rho with dasia bug` (Linus Romer).
+% ====== ============  ========================================================
+%
+% Usage
+% -----
+%
+% Load this file by calling fontenc_ with the ``LGR`` option
+% or indirectly via the babel_, textalpha_ or alphabeta_ packages.
+%
+% Example:
+%   Select font encodings `T1` (as default) and `LGR` (for Greek):
+%
+%     ``\usepackage[LGR,T1]{fontenc}``
+%
+%
+% Implementation
+% --------------
+%
+% Read this file only once
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+% .. note:: The use of ``\@ifundefined`` has the side-effect that the tested
+%    macro becomes defined and set to ``\relax`` (polluting the namespace and
+%    interfering with tests via eTeX's ``\ifdefined``). However, in this case
+%    no harm is done as the macro is defined by the identification_ below
+%    anyway.
+%
+% ::
+
+% read this file only once
+\@ifundefined{ver@lgrenc.def}
+  {}
+  {\message{LGR font encoding definitions already loaded}
+   \expandafter\endinput % "return"
+  }
+
+
+% Identification
+% ~~~~~~~~~~~~~~
+% ::
+
+\ProvidesFile{lgrenc.def}
+[2015/12/07 v0.13.1 LGR Greek font encoding definitions]
+% Copyright © 2010 Günter Milde
+% This file is part of the "greek-fontenc" package.
+% It may be distributed and/or modified under the
+% conditions of the "LaTeX Project Public License", either
+% version 1.3 of this license or any later version.
+
+% You can test the version date using
+%
+% .. code:: latex
+%
+%   \@ifl@ter {extension}{filename}{date}{YES}{NO}
+%
+% or using ltxcmds_' ``\@iffilelater``.
+%
+%
+% Base setup
+% ~~~~~~~~~~
+%
+% Declare the LGR font encoding and base substitutions::
+
+\DeclareFontEncoding{LGR}{}{}
+\DeclareFontSubstitution{LGR}{cmr}{m}{n}
+\DeclareErrorFont{LGR}{cmr}{m}{n}{10}
+
+% Text symbols
+% ~~~~~~~~~~~~
+%
+% Greek Alphabet
+% """"""""""""""
+%
+% Greek letters are accessible by the Latin transcription, but the mapping is
+% specific to the LGR font encoding.
+%
+% The LICR macros provide a way to access the symbols independent of the
+% specific font encoding, in any font encoding supporting Greek. An
+% alternative Greek font encodings is LGI (ibycus_). Greek script is also
+% supported by the Unicode-based font encodings PU (`PDF Unicode` used by
+% hyperref_ for PDF metadata), TU, EU1 (XeTeX) and EU2 (LuaTeX). The textalpha_
+% package makes these macros available independent of the current font
+% encoding.
+% ::
+
+\DeclareTextSymbol{\textAlpha}{LGR}{65}
+\DeclareTextSymbol{\textBeta}{LGR}{66}
+\DeclareTextSymbol{\textGamma}{LGR}{71}
+\DeclareTextSymbol{\textDelta}{LGR}{68}
+\DeclareTextSymbol{\textEpsilon}{LGR}{69}
+\DeclareTextSymbol{\textZeta}{LGR}{90}
+\DeclareTextSymbol{\textEta}{LGR}{72}
+\DeclareTextSymbol{\textTheta}{LGR}{74}
+\DeclareTextSymbol{\textIota}{LGR}{73}
+\DeclareTextSymbol{\textKappa}{LGR}{75}
+\DeclareTextSymbol{\textLambda}{LGR}{76}
+\DeclareTextSymbol{\textMu}{LGR}{77}
+\DeclareTextSymbol{\textNu}{LGR}{78}
+\DeclareTextSymbol{\textXi}{LGR}{88}
+\DeclareTextSymbol{\textOmicron}{LGR}{79}
+\DeclareTextSymbol{\textPi}{LGR}{80}
+\DeclareTextSymbol{\textRho}{LGR}{82}
+\DeclareTextSymbol{\textSigma}{LGR}{83}
+\DeclareTextSymbol{\textTau}{LGR}{84}
+\DeclareTextSymbol{\textUpsilon}{LGR}{85}
+\DeclareTextSymbol{\textPhi}{LGR}{70}
+\DeclareTextSymbol{\textChi}{LGR}{81}
+\DeclareTextSymbol{\textPsi}{LGR}{89}
+\DeclareTextSymbol{\textOmega}{LGR}{87}
+%
+\DeclareTextSymbol{\textalpha}{LGR}{97}
+\DeclareTextSymbol{\textbeta}{LGR}{98}
+\DeclareTextSymbol{\textgamma}{LGR}{103}
+\DeclareTextSymbol{\textdelta}{LGR}{100}
+\DeclareTextSymbol{\textepsilon}{LGR}{101}
+\DeclareTextSymbol{\textzeta}{LGR}{122}
+\DeclareTextSymbol{\texteta}{LGR}{104}
+\DeclareTextSymbol{\texttheta}{LGR}{106}
+\DeclareTextSymbol{\textiota}{LGR}{105}
+\DeclareTextSymbol{\textkappa}{LGR}{107}
+\DeclareTextSymbol{\textlambda}{LGR}{108}
+\DeclareTextSymbol{\textmu}{LGR}{109}
+\DeclareTextSymbol{\textnu}{LGR}{110}
+\DeclareTextSymbol{\textxi}{LGR}{120}
+\DeclareTextSymbol{\textomicron}{LGR}{111}
+\DeclareTextSymbol{\textpi}{LGR}{112}
+\DeclareTextSymbol{\textrho}{LGR}{114}
+\DeclareTextCommand{\textsigma}{LGR}{s\noboundary} % σ
+\DeclareTextSymbol{\textvarsigma}{LGR}{99}         % ς final sigma
+\DeclareTextCommand{\textfinalsigma}{LGR}{\textvarsigma} % ς final sigma
+\DeclareTextSymbol{\textautosigma}{LGR}{115}       % σ (ς at end of word)
+\DeclareTextSymbol{\texttau}{LGR}{116}
+\DeclareTextSymbol{\textupsilon}{LGR}{117}
+\DeclareTextSymbol{\textphi}{LGR}{102}
+\DeclareTextSymbol{\textchi}{LGR}{113}
+\DeclareTextSymbol{\textpsi}{LGR}{121}
+\DeclareTextSymbol{\textomega}{LGR}{119}
+
+
+% Additional Greek symbols
+% """"""""""""""""""""""""
+%
+% Ancient Greek Numbers (Athenian Numerals)
+% '''''''''''''''''''''''''''''''''''''''''
+%
+% Names from ucs_ (``ucsencs.def``)
+% (In ucs, five hundred is (wrongly?) named \textpentehkaton.) ::
+
+\DeclareTextSymbol{\textpentedeka}{LGR}{2}    % GREEK ACROPHONIC ATTIC FIFTY
+\DeclareTextSymbol{\textpentehekaton}{LGR}{3} % GREEK ACROPHONIC ATTIC FIVE HUNDRED
+\DeclareTextSymbol{\textpenteqilioi}{LGR}{4}  % GREEK ACROPHONIC ATTIC FIVE THOUSAND
+\DeclareTextSymbol{\textpentemuria}{LGR}{5}  % GREEK ACROPHONIC ATTIC FIFTY THOUSAND
+
+
+% Archaic letters
+% '''''''''''''''
+% Names after teubner_ and ucs_::
+
+\DeclareTextSymbol{\textstigma}{LGR}{6}       % ϛ
+\DeclareTextSymbol{\textvarstigma}{LGR}{7}    % stigma variant (CB.enc, teubner)
+\DeclareTextSymbol{\textkoppa}{LGR}{18}       % ϟ (greek small letter koppa)
+\DeclareTextSymbol{\textqoppa}{LGR}{19}       % ϙ (archaic koppa)
+\DeclareTextSymbol{\textQoppa}{LGR}{21}       % Ϙ (archaic Koppa)
+\DeclareTextSymbol{\textStigma}{LGR}{22}      % Ϛ in some fonts ϹΤ ligature
+\DeclareTextSymbol{\textSampi}{LGR}{23}       % Ϡ
+\DeclareTextSymbol{\textsampi}{LGR}{27}       % ϡ
+\DeclareTextSymbol{\textanoteleia}{LGR}{38}   % ·
+\DeclareTextSymbol{\texterotimatiko}{LGR}{63} % ;
+\DeclareTextSymbol{\textdigamma}{LGR}{147}    % ϝ (ucs) \digamma used by amsmath for math-macro
+\DeclareTextSymbol{\textDigamma}{LGR}{195}    % Ϝ (ucs)
+
+
+% Numeral signs
+% '''''''''''''
+% See also http://en.wikipedia.org/wiki/Greek_numerals
+%
+% Names from ucs_::
+
+\DeclareTextSymbol{\textdexiakeraia}{LGR}{254}      % ʹ (Dexia keraia)
+\DeclareTextSymbol{\textaristerikeraia}{LGR}{255}   % ͵ (Aristeri keraia)
+
+% variant symbols
+% '''''''''''''''
+%
+% Mathematical notation distinguishes variant shapes for pi, phi, rho, theta
+% (small and capital), beta, and kappa (characters for the latter three
+% symbols are not included in TeX’s math fonts). These variations have no
+% syntactic meaning in Greek text and are not given code-points in the LGR
+% encoding. Greek text fonts use the shape variants interchangeabely.
+%
+% However, as Unicode defines separate code points for the symbol variants, we
+% provide fallback LICR macros with detailed error reporting::
+
+\providecommand*{\LGR@TextSymbolUnavailable}[1]{%
+  \PackageError{greek-fontenc}{character \string#1 not available \MessageBreak
+    in 8-bit TeX}
+    {Use XeTeX/LuaTeX if you need to distinguish the symbol from the letter.\MessageBreak
+     The package `textalpha' with `normalize-symbols' maps the GREEK SYMBOL\MessageBreak
+     character to the corresponding GREEK LETTER.\MessageBreak
+     Press <return> to proceed (dropping the symbol from the document).}
+}
+
+\providecommand*{\LGR@TextSymbolOnlyMath}[2]{%
+  \PackageError{greek-fontenc}{character \string#1 not available in text mode}
+    {Use #2 or XeTeX/LuaTeX if you need to distinguish\MessageBreak
+     the symbol from the letter.\MessageBreak
+     The package `textalpha' with `normalize-symbols' maps the GREEK SYMBOL\MessageBreak
+     character to the corresponding GREEK LETTER.\MessageBreak
+     Press <return> to proceed (dropping the symbol from the document).}
+}
+
+\ProvideTextCommand{\textbetasymbol} {LGR}{\LGR@TextSymbolUnavailable{ϐ beta symbol}}
+\ProvideTextCommand{\textkappasymbol}{LGR}{\LGR@TextSymbolUnavailable{ϰ kappa symbol}}
+\ProvideTextCommand{\textThetasymbol}{LGR}{\LGR@TextSymbolUnavailable{ϴ Theta symbol}}
+
+\ProvideTextCommand{\textthetasymbol}  {LGR}{\LGR@TextSymbolOnlyMath{ϑ theta symbol}{$\vartheta$}}
+\ProvideTextCommand{\textphisymbol}    {LGR}{\LGR@TextSymbolOnlyMath{ϕ phi symbol}{$\phi$}}
+\ProvideTextCommand{\textpisymbol}     {LGR}{\LGR@TextSymbolOnlyMath{ϖ pi symbol}{$\varpi$}}
+\ProvideTextCommand{\textrhosymbol}    {LGR}{\LGR@TextSymbolOnlyMath{ϱ rho symbol}{$\varrho$}}
+\ProvideTextCommand{\textepsilonsymbol}{LGR}{\LGR@TextSymbolOnlyMath{ϵ lunate epsilon symbol}{$\epsilon$}}
+
+% Other
+% """""
+%
+% Characters that also exist in other font encodings:
+%
+% * define them for LGR if there is a matching glyph,
+% * use established macro names that match with other ``*enc.def`` files and
+%   ``textcomp.sty``.
+%
+% All encodings: See usrguide.pdf, chapter 3.14 ff::
+
+\DeclareTextSymbol{\textendash}{LGR}{0}          % EN DASH
+\DeclareTextSymbol{\textquoteleft}{LGR}{28}      % ‘
+\DeclareTextSymbol{\textquoteright}{LGR}{29}     % ’
+\DeclareTextSymbol{\textperiodcentered}{LGR}{38} % · = \textanoteleia
+\DeclareTextSymbol{\textcompwordmark}{LGR}{118}  % ZERO WIDTH NO JOINER
+\DeclareTextSymbol{\textemdash}{LGR}{127}        % EM DASH
+
+% T1::
+
+\DeclareTextSymbol{\guillemotleft}{LGR}{123}     % «
+\DeclareTextSymbol{\guillemotright}{LGR}{125}    % »
+
+% TS1::
+
+\ProvideTextCommand{\textasciibreve}{LGR}{\char30\textcompwordmark}  % ˘
+\ProvideTextCommand{\textasciimacron}{LGR}{\char31\textcompwordmark} % ¯
+\ProvideTextCommand{\textasciidieresis}{LGR}{"\textcompwordmark}     % "
+\ProvideTextCommand{\textasciiacute}{LGR}{'\textcompwordmark}        % '
+\ProvideTextCommand{\textasciigrave}{LGR}{`\textcompwordmark}        % `
+\DeclareTextCommand{\textasciitilde}{LGR}{\char126\textcompwordmark} % ~
+\DeclareTextSymbol{\textohm}{LGR}{87}            % Ω (Ohm sign -> Omega)
+\DeclareTextSymbol{\texteuro}{LGR}{24}           % € \euro in greek.ldf
+\DeclareTextSymbol{\textpercent}{LGR}{37}        % %
+\DeclareTextSymbol{\textperthousand}{LGR}{25}    % ‰ \permill in greek.ldf
+
+% T3 (tipa)::
+
+\DeclareTextSymbol{\textschwa}{LGR}{26}          % ə
+
+% T3 also defines some greek letters as well as Latin characters with Greek
+% names:
+%
+% According to the Unicode standard, the following IPA characters are identic
+% to the Greek letters:
+%
+% - 03B2 greek small letter beta
+% - 03B8 greek small letter theta
+% - 03BB greek small letter lamda
+% - 03C7 greek small letter chi
+%
+% The following characters in the IPA block refer to Greek letters:
+%
+% - 0251  LATIN SMALL LETTER ALPHA → greek small letter alpha - 03B1
+% - 025B  LATIN SMALL LETTER OPEN E = epsilon → greek small letter epsilon - 03B5
+% - 0263  LATIN SMALL LETTER GAMMA → greek small letter gamma - 03B3
+% - 0269  LATIN SMALL LETTER IOTA  → greek small letter iota - 03B9
+% - 0278  LATIN SMALL LETTER PHI → greek small letter phi - 03C6
+% - 028A  LATIN SMALL LETTER UPSILON  → greek small letter upsilon - 03C5
+%
+% `tipa` uses the macro names ``\textepsilon``, ``\textgamma``, ``\textiota``,
+% ``\textphi``, and ``\textupsilon`` for the Latin characters. This is no
+% problem with 8-bit fonts (set the font encoding to T3 vs. LGR to
+% disambiguate), but leads to ambiguity with Unicode fonts. xunicode_ uses the
+% ``gr`` infix and alias names to disambiguate:
+%
+% - 03B3 ``\textgrgamma``
+% - 03B9 ``\textgriota``
+% - 03C6 ``\textgrphi`` (see x0278 )
+%
+% but not for epsilon and upsilon (03C2 ``\textgrsigma`` is the final sigma).
+%
+% It also assigns alias names to the Latin counterparts, however not on a
+% systematical basis:
+%
+% - 0194 ``\textGammaafrican``
+% - 0196 ``\textIotaafrican``
+% - 0251 ``\textscripta``
+% - 025B ``\texteopen``
+% - 0263 ``\textbabygamma``, ``\textgammalatinsmall``
+% - 0269 ``\textiotalatin``
+% - 028A ``\textscupsilon``  % TIPA-U
+%
+%
+%
+% Not implemented
+% """""""""""""""
+%
+% The characters at position 16 and 17 are used in the ``\nexus`` macro
+% of the teubner_ package to form an extensible, hat-like bracket. In
+% ``CB.enc``, they are mapped to
+%
+%   16--MODIFIER LETTER LOW ACUTE ACCENT
+%   17--MODIFIER LETTER LOW GRAVE ACCENT
+%
+% but according to the documentation of Werner Lemberg's `babel patch`_,
+% they rather represent the left and right part of U+23E0 TOP TORTOISE
+% SHELL BRACKET.
+%
+% Babel's ``lgrenc.def`` has some definitions to prevent surprises with
+% macros that expect a Latin script. These definitions are problematic in a
+% font-encoding definition file as they require ``\textlatin`` which is
+% defined in ``babel.def``. They were moved to ``greek.ldf``.
+%
+% Diacritics
+% ~~~~~~~~~~
+%
+% This section defines `named macros`_ for Greek diacritics and standard
+% `symbol macros`_ as alias for simple diacritics. Convenient input
+% conventions for `composite diacritics`_ are defined as `composite
+% definitions`_.
+%
+% Advantages:
+%
+% * input convention similar to LGR input encodings (just prepend a ``\``).
+%
+% * Access pre-composed characters without resorting to the
+%   ligature mechanism (allows proper kerning, cf. teubner-doc_).
+%
+% * Named macros can be used to ensure a font encoding supporting Greek is
+%   used. However, substitution with pre-composed characters works only for
+%   the active font encoding (cf. textalpha_). Named accent macros can also be
+%   used instead of the ``\@tabacckludge`` by to-LaTeX converters to ensure
+%   working also inside the tabbing environment.
+%
+% * Named macros are required for upcasing according to Greek typesetting
+%   conventions (cf. `UPPERCASE`_ below) and for composite diacritics.
+%
+%
+% Named macros
+% """"""""""""
+%
+% Definitions are based on the teubner_ package by Claudio Beccari, the ucs_
+% package, and the `babel patch`_ by Werner Lemberg. Names are derived from
+% the Unicode name with the prefix "acc" (cf. `How to name accent macros?`
+% in the README_) reducing the probability of incompatibilities compared to the
+% two-letter teubner_ diacritic macros or the "text" prefix used by ucs_.
+%
+% Simple Greek diacritics::
+
+\DeclareTextAccent{\accdialytika}{LGR}{34} % διαλυτικά (diaeresis/trema)
+\DeclareTextAccent{\acctonos}{LGR}{39} % τόνος/ὀξεῖα tonos/oxia (acute)
+\DeclareTextAccent{\accdasia}{LGR}{60} % δασεῖα spiritus asper (rough breathing)
+\DeclareTextAccent{\accpsili}{LGR}{62} % ψιλή spiritus lenis (smooth breathing)
+\DeclareTextAccent{\accvaria}{LGR}{96} % βαρεῖα (grave)
+\DeclareTextAccent{\accperispomeni}{LGR}{126} % περισπωμένη (circonflex/tilde)
+
+% The sub-iota__ is input after the base character. In LGR fonts, ligatures are
+% defined for pre-composed characters, the postfix ligature does not interfere
+% with kerning::
+
+\DeclareTextSymbol{\prosgegrammeni}{LGR}{8}  % ι "capital" sub-iota
+\DeclareTextSymbol{\ypogegrammeni}{LGR}{124} % ͺ "small" sub-iota
+
+% __ http://en.wikipedia.org/wiki/Hypogegrammeni
+%
+% Composite diacritics::
+
+%                                                       Teubner name
+\DeclareTextAccent{\accdialytikaperispomeni}{LGR}{32} % Cd
+\DeclareTextAccent{\accdialytikatonos}{LGR}{35}       % Ad
+\DeclareTextAccent{\accdialytikavaria}{LGR}{36}       % Gd
+
+\DeclareTextAccent{\accdasiaperispomeni}{LGR}{64}     % Cr
+\DeclareTextAccent{\accdasiavaria}{LGR}{67}           % Gr
+\DeclareTextAccent{\accdasiaoxia}{LGR}{86}            % Ar
+
+\DeclareTextAccent{\accpsiliperispomeni}{LGR}{92}     % Cs
+\DeclareTextAccent{\accpsilioxia}{LGR}{94}            % As
+\DeclareTextAccent{\accpsilivaria}{LGR}{95}           % Gs
+
+% For classical Greek and linguistics, the LGR font encoding contains a number
+% of additional diacritic symbols::
+
+\DeclareTextAccent{\accinvertedbrevebelow}{LGR}{1} % INVERTED BREVE BELOW
+\DeclareTextAccent{\textsubarch}{LGR}{1}      % (tipa)
+\DeclareTextAccent{\accbrevebelow}{LGR}{20}   % BREVE BELOW
+\DeclareTextAccent{\u}{LGR}{30}               % BREVE (Greek vrachy)
+\DeclareTextAccent{\=}{LGR}{31}               % MACRON
+
+% Aliases
+% """""""
+%
+% The standard _`symbol macros` are exclusively used for Greek diacritics
+% in LGR::
+
+\DeclareTextCommand{\"}{LGR}{\accdialytika}
+\DeclareTextCommand{\'}{LGR}{\acctonos}
+\DeclareTextCommand{\`}{LGR}{\accvaria}
+\DeclareTextCommand{\~}{LGR}{\accperispomeni}
+
+% Common Greek font encoding definitions
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% The file greek-fontenc.def contains font encoding definitions that are
+% shared by font encodings providing Greek characters::
+
+\input{greek-fontenc.def}
+
+
+% Composite definitions
+% ~~~~~~~~~~~~~~~~~~~~~
+%
+% Composite diacritics
+% """"""""""""""""""""
+%
+% Composite accents can be input as sequence of simple diacritics (in
+% arbitrary order) via named macro, symbol macro and "transcription
+% characters", e.g. ``\accdialytica\accvaria\textalpha``, ``\"\'\textalpha``,
+% ``\"'\textalpha``, or ``\'"\textalpha``.
+%
+% The actual declarations are part of the `common Greek font encoding
+% definitions`_.
+%
+%
+% Pre-composed letters
+% """"""""""""""""""""
+% Small letters with diacritics
+% '''''''''''''''''''''''''''''
+%
+% (from teubner_ with changed names of the composite accents)::
+
+\DeclareTextComposite{\accvaria}{LGR}{a}{128}
+\DeclareTextComposite{\accdasia}{LGR}{a}{129}
+\DeclareTextComposite{\accpsili}{LGR}{a}{130}
+\DeclareTextComposite{\accdasiavaria}{LGR}{a}{131}
+\DeclareTextComposite{\acctonos}{LGR}{a}{136}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{a}{137}
+\DeclareTextComposite{\accpsilioxia}{LGR}{a}{138}
+\DeclareTextComposite{\accpsilivaria}{LGR}{a}{139}
+\DeclareTextComposite{\accperispomeni}{LGR}{a}{144}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{a}{145}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{a}{146}
+\DeclareTextComposite{\accvaria}{LGR}{h}{152}
+\DeclareTextComposite{\accdasia}{LGR}{h}{153}
+\DeclareTextComposite{\accpsili}{LGR}{h}{154}
+\DeclareTextComposite{\acctonos}{LGR}{h}{160}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{h}{161}
+\DeclareTextComposite{\accpsilioxia}{LGR}{h}{162}
+\DeclareTextComposite{\accdasiavaria}{LGR}{h}{163}
+\DeclareTextComposite{\accperispomeni}{LGR}{h}{168}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{h}{169}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{h}{170}
+\DeclareTextComposite{\accpsilivaria}{LGR}{h}{171}
+\DeclareTextComposite{\accvaria}{LGR}{w}{176}
+\DeclareTextComposite{\accdasia}{LGR}{w}{177}
+\DeclareTextComposite{\accpsili}{LGR}{w}{178}
+\DeclareTextComposite{\accdasiavaria}{LGR}{w}{179}
+\DeclareTextComposite{\acctonos}{LGR}{w}{184}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{w}{185}
+\DeclareTextComposite{\accpsilioxia}{LGR}{w}{186}
+\DeclareTextComposite{\accpsilivaria}{LGR}{w}{187}
+\DeclareTextComposite{\accperispomeni}{LGR}{w}{192}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{w}{193}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{w}{194}
+\DeclareTextComposite{\accvaria}{LGR}{i}{200}
+\DeclareTextComposite{\accdasia}{LGR}{i}{201}
+\DeclareTextComposite{\accpsili}{LGR}{i}{202}
+\DeclareTextComposite{\accdasiavaria}{LGR}{i}{203}
+\DeclareTextComposite{\acctonos}{LGR}{i}{208}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{i}{209}
+\DeclareTextComposite{\accpsilioxia}{LGR}{i}{210}
+\DeclareTextComposite{\accpsilivaria}{LGR}{i}{211}
+\DeclareTextComposite{\accperispomeni}{LGR}{i}{216}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{i}{217}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{i}{218}
+\DeclareTextComposite{\accdialytika}{LGR}{i}{240}
+\DeclareTextComposite{\accdialytikavaria}{LGR}{i}{241}
+\DeclareTextComposite{\accdialytikatonos}{LGR}{i}{242}
+\DeclareTextComposite{\accdialytikaperispomeni}{LGR}{i}{243}
+\DeclareTextComposite{\accvaria}{LGR}{u}{204}
+\DeclareTextComposite{\accdasia}{LGR}{u}{205}
+\DeclareTextComposite{\accpsili}{LGR}{u}{206}
+\DeclareTextComposite{\accdasiavaria}{LGR}{u}{207}
+\DeclareTextComposite{\acctonos}{LGR}{u}{212}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{u}{213}
+\DeclareTextComposite{\accpsilioxia}{LGR}{u}{214}
+\DeclareTextComposite{\accpsilivaria}{LGR}{u}{215}
+\DeclareTextComposite{\accperispomeni}{LGR}{u}{220}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{u}{221}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{u}{222}
+\DeclareTextComposite{\accdialytika}{LGR}{u}{244}
+\DeclareTextComposite{\accdialytikavaria}{LGR}{u}{245}
+\DeclareTextComposite{\accdialytikatonos}{LGR}{u}{246}
+\DeclareTextComposite{\accdialytikaperispomeni}{LGR}{u}{247}
+\DeclareTextComposite{\accvaria}{LGR}{e}{224}
+\DeclareTextComposite{\accdasia}{LGR}{e}{225}
+\DeclareTextComposite{\accpsili}{LGR}{e}{226}
+\DeclareTextComposite{\accdasiavaria}{LGR}{e}{227}
+\DeclareTextComposite{\acctonos}{LGR}{e}{232}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{e}{233}
+\DeclareTextComposite{\accpsilioxia}{LGR}{e}{234}
+\DeclareTextComposite{\accpsilivaria}{LGR}{e}{235}
+\DeclareTextComposite{\accvaria}{LGR}{o}{228}
+\DeclareTextComposite{\accdasia}{LGR}{o}{229}
+\DeclareTextComposite{\accpsili}{LGR}{o}{230}
+\DeclareTextComposite{\accdasiavaria}{LGR}{o}{231}
+\DeclareTextComposite{\acctonos}{LGR}{o}{236}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{o}{237}
+\DeclareTextComposite{\accpsilioxia}{LGR}{o}{238}
+\DeclareTextComposite{\accpsilivaria}{LGR}{o}{239}
+\DeclareTextComposite{\accdasia}{LGR}{r}{251}
+\DeclareTextComposite{\accpsili}{LGR}{r}{252}
+
+% Pre-composed letters with diacritics + LICR macros::
+
+\DeclareTextComposite{\accvaria}{LGR}{\textalpha}{128}
+\DeclareTextComposite{\accdasia}{LGR}{\textalpha}{129}
+\DeclareTextComposite{\accpsili}{LGR}{\textalpha}{130}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\textalpha}{131}
+\DeclareTextComposite{\acctonos}{LGR}{\textalpha}{136}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\textalpha}{137}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\textalpha}{138}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\textalpha}{139}
+\DeclareTextComposite{\accperispomeni}{LGR}{\textalpha}{144}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{\textalpha}{145}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{\textalpha}{146}
+\DeclareTextComposite{\accvaria}{LGR}{\texteta}{152}
+\DeclareTextComposite{\accdasia}{LGR}{\texteta}{153}
+\DeclareTextComposite{\accpsili}{LGR}{\texteta}{154}
+\DeclareTextComposite{\acctonos}{LGR}{\texteta}{160}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\texteta}{161}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\texteta}{162}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\texteta}{163}
+\DeclareTextComposite{\accperispomeni}{LGR}{\texteta}{168}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{\texteta}{169}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{\texteta}{170}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\texteta}{171}
+\DeclareTextComposite{\accvaria}{LGR}{\textomega}{176}
+\DeclareTextComposite{\accdasia}{LGR}{\textomega}{177}
+\DeclareTextComposite{\accpsili}{LGR}{\textomega}{178}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\textomega}{179}
+\DeclareTextComposite{\acctonos}{LGR}{\textomega}{184}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\textomega}{185}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\textomega}{186}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\textomega}{187}
+\DeclareTextComposite{\accperispomeni}{LGR}{\textomega}{192}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{\textomega}{193}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{\textomega}{194}
+\DeclareTextComposite{\accvaria}{LGR}{\textiota}{200}
+\DeclareTextComposite{\accdasia}{LGR}{\textiota}{201}
+\DeclareTextComposite{\accpsili}{LGR}{\textiota}{202}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\textiota}{203}
+\DeclareTextComposite{\acctonos}{LGR}{\textiota}{208}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\textiota}{209}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\textiota}{210}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\textiota}{211}
+\DeclareTextComposite{\accperispomeni}{LGR}{\textiota}{216}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{\textiota}{217}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{\textiota}{218}
+\DeclareTextComposite{\accdialytika}{LGR}{\textiota}{240}
+\DeclareTextComposite{\accdialytikavaria}{LGR}{\textiota}{241}
+\DeclareTextComposite{\accdialytikatonos}{LGR}{\textiota}{242}
+\DeclareTextComposite{\accdialytikaperispomeni}{LGR}{\textiota}{243}
+\DeclareTextComposite{\accvaria}{LGR}{\textupsilon}{204}
+\DeclareTextComposite{\accdasia}{LGR}{\textupsilon}{205}
+\DeclareTextComposite{\accpsili}{LGR}{\textupsilon}{206}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\textupsilon}{207}
+\DeclareTextComposite{\acctonos}{LGR}{\textupsilon}{212}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\textupsilon}{213}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\textupsilon}{214}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\textupsilon}{215}
+\DeclareTextComposite{\accperispomeni}{LGR}{\textupsilon}{220}
+\DeclareTextComposite{\accdasiaperispomeni}{LGR}{\textupsilon}{221}
+\DeclareTextComposite{\accpsiliperispomeni}{LGR}{\textupsilon}{222}
+\DeclareTextComposite{\accdialytika}{LGR}{\textupsilon}{244}
+\DeclareTextComposite{\accdialytikavaria}{LGR}{\textupsilon}{245}
+\DeclareTextComposite{\accdialytikatonos}{LGR}{\textupsilon}{246}
+\DeclareTextComposite{\accdialytikaperispomeni}{LGR}{\textupsilon}{247}
+\DeclareTextComposite{\accvaria}{LGR}{\textepsilon}{224}
+\DeclareTextComposite{\accdasia}{LGR}{\textepsilon}{225}
+\DeclareTextComposite{\accpsili}{LGR}{\textepsilon}{226}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\textepsilon}{227}
+\DeclareTextComposite{\acctonos}{LGR}{\textepsilon}{232}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\textepsilon}{233}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\textepsilon}{234}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\textepsilon}{235}
+\DeclareTextComposite{\accvaria}{LGR}{\textomicron}{228}
+\DeclareTextComposite{\accdasia}{LGR}{\textomicron}{229}
+\DeclareTextComposite{\accpsili}{LGR}{\textomicron}{230}
+\DeclareTextComposite{\accdasiavaria}{LGR}{\textomicron}{231}
+\DeclareTextComposite{\acctonos}{LGR}{\textomicron}{236}
+\DeclareTextComposite{\accdasiaoxia}{LGR}{\textomicron}{237}
+\DeclareTextComposite{\accpsilioxia}{LGR}{\textomicron}{238}
+\DeclareTextComposite{\accpsilivaria}{LGR}{\textomicron}{239}
+\DeclareTextComposite{\accdasia}{LGR}{\textrho}{251}
+\DeclareTextComposite{\accpsili}{LGR}{\textrho}{252}
+
+
+% Capital letters with diacritics
+% '''''''''''''''''''''''''''''''
+%
+%  In Greek, diacritics are omitted in all-uppercase words, but kept as part
+%  of an uppercase initial (written before rather than above the letter).
+%
+%  The diaytika should also always be used in all-uppercase words (even
+%  in cases where they are not needed when writing in lowercase)
+%
+%  -- http://en.wikipedia.org/wiki/Capitalization
+%
+% In Title Case, place diacritics before instead of above the base character::
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{A}{<A}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{A}{<`A}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{A}{<'A}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{A}{<\char126A}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{A}{>A}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{A}{>`A}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{A}{>'A}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{A}{>\char126A}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{A}{'A}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{A}{`A}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{E}{<E}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{E}{<'E}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{E}{<`E}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{E}{>E}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{E}{>'E}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{E}{>`E}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{E}{'E}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{E}{`E}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{H}{<H}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{H}{<`H}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{H}{<'H}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{H}{<\char126H}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{H}{>H}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{H}{>`H}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{H}{>'H}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{H}{>\char126H}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{H}{'H}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{H}{`H}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{I}{<I}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{I}{<`I}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{I}{<'I}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{I}{<\char126I}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{I}{>I}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{I}{>`I}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{I}{>'I}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{I}{>\char126I}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{I}{'I}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{I}{`I}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{O}{<O}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{O}{<`O}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{O}{<'O}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{O}{>O}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{O}{>`O}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{O}{>'O}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{O}{'O}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{O}{`O}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{R}{<R}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{U}{<U}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{U}{<`U}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{U}{<'U}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{U}{<\char126U}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{U}{'U}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{U}{`U}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{W}{<W}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{W}{<`W}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{W}{<'W}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{W}{<\char126W}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{W}{>W}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{W}{>`W}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{W}{>'W}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{W}{>\char126W}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{W}{'W}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{W}{`W}
+
+% Except for the dialytika::
+
+\DeclareTextComposite{\accdialytika}{LGR}{I}{219}
+\DeclareTextComposite{\accdialytika}{LGR}{U}{223}
+
+% Do the same for the LICR macros::
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textAlpha}{<A}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textAlpha}{<`A}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textAlpha}{<'A}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\textAlpha}{<\char126A}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{\textAlpha}{>A}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\textAlpha}{>`A}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\textAlpha}{>'A}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\textAlpha}{>\char126A}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textAlpha}{'A}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textAlpha}{`A}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textEpsilon}{<E}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textEpsilon}{<'E}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textEpsilon}{<`E}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{\textEpsilon}{>E}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\textEpsilon}{>'E}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\textEpsilon}{>`E}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textEpsilon}{'E}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textEpsilon}{`E}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textEta}{<H}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textEta}{<`H}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textEta}{<'H}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\textEta}{<\char126H}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{\textEta}{>H}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\textEta}{>`H}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\textEta}{>'H}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\textEta}{>\char126H}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textEta}{'H}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textEta}{`H}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textIota}{<I}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textIota}{<`I}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textIota}{<'I}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\textIota}{<\char126I}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{\textIota}{>I}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\textIota}{>`I}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\textIota}{>'I}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\textIota}{>\char126I}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textIota}{'I}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textIota}{`I}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textOmicron}{<O}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textOmicron}{<`O}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textOmicron}{<'O}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{\textOmicron}{>O}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\textOmicron}{>`O}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\textOmicron}{>'O}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textOmicron}{'O}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textOmicron}{`O}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textRho}{<R}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textUpsilon}{<U}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textUpsilon}{<`U}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textUpsilon}{<'U}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\textUpsilon}{<\char126U}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textUpsilon}{'U}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textUpsilon}{`U}
+
+\DeclareTextCompositeCommand{\accdasia}{LGR}{\textOmega}{<W}
+\DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\textOmega}{<`W}
+\DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\textOmega}{<'W}
+\DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\textOmega}{<\char126W}
+\DeclareTextCompositeCommand{\accpsili}{LGR}{\textOmega}{>W}
+\DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\textOmega}{>`W}
+\DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\textOmega}{>'W}
+\DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\textOmega}{>\char126W}
+\DeclareTextCompositeCommand{\acctonos}{LGR}{\textOmega}{'W}
+\DeclareTextCompositeCommand{\accvaria}{LGR}{\textOmega}{`W}
+
+% Except for the dialytika::
+
+\DeclareTextComposite{\accdialytika}{LGR}{\textIota}{219}
+\DeclareTextComposite{\accdialytika}{LGR}{\textUpsilon}{223}
+
+
+% UPPERCASE
+% ~~~~~~~~~
+%
+% The `common Greek font encoding definitions`_ in ``greek-fontenc.def`` extend
+% the `uclclist` with Greek LICR macros. Here, we add LGR specific "hiatus"
+% handling.
+%
+% Composite commands for Latin transliteration::
+
+\DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{A}{\LGR@A@hiatus}
+\DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{E}{\LGR@E@hiatus}
+
+% TODO: What does the \LGR@hiatus command "see" if a Unicode literal follows?
+%
+% .. code:: latex
+%
+%   % \DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{\symbol{"ce}}{bluff}
+%   % \DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{"cf}{blaff}
+%   % \DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{ι}{blaff}
+%
+% Look ahead and place a diaeresis on Ι or Υ::
+
+\DeclareTextCommand{\LGR@A@hiatus}{LGR}{%
+  \LGR@ifnextchar{I}{A\"}{%
+    \LGR@ifnextchar{U}{A\"}{%
+      \LGR@ifnextchar{\textIota}{A\"}{%
+        \LGR@ifnextchar{\textUpsilon}{A\"}{A}%
+      }%
+    }%
+  }%
+}
+\DeclareTextCommand{\LGR@E@hiatus}{LGR}{%
+  \LGR@ifnextchar{I}{E\"}{%
+    \LGR@ifnextchar{U}{E\"}{%
+      \LGR@ifnextchar{\textIota}{E\"}{%
+        \LGR@ifnextchar{\textUpsilon}{E\"}{E}%
+      }%
+    }%
+  }%
+}
+
+% Unfortunately, the lookahead breaks kerning.
+%
+% Alternatives tried:
+%
+% * CompositeCommands fail at the end of a macro, e.g. ``\emph{\'a}``
+%
+%   .. code:: latex
+%
+%     \DeclareTextCommand{\LGR@A@hiatus}{LGR}{A}
+%     \DeclareTextCommand{\LGR@E@hiatus}{LGR}{E}
+%
+%     \DeclareTextCompositeCommand{\LGR@A@hiatus}{LGR}{}{A}
+%     \DeclareTextCompositeCommand{\LGR@A@hiatus}{LGR}{I}{A\"I}
+%     \DeclareTextCompositeCommand{\LGR@A@hiatus}{LGR}{U}{A\"U}
+%
+%
+% * The glyph No 12 is a special "Upcase Alpha" that in ligature with Y
+%   and I adds a diaresis to them. However, it seems that it has only
+%   kerning definitions for I and Y (as it is not intended for direct
+%   use)
+%
+%   .. code:: latex
+%
+%     \DeclareTextComposite{\LGR@hiatus}{LGR}{A}{12}
+%
+%   No such glyph exists for E but this is no problem as E does
+%   not require kerning anyway.
+%
+% .. References
+%    ----------
+%
+% .. _README: README.html
+% .. _alphabeta: alphabeta.sty.html
+% .. _athnum: http://www.ctan.org/pkg/athnum
+% .. _Babel: http://www.ctan.org/pkg/babel
+% .. _babel patch: http://www.eutypon.gr/eutypon/pdf/e2008-20/e20-a03.pdf
+% .. _fntguide: http://mirror.ctan.org/macros/latex/doc/fntguide.pdf
+% .. _fontenc:  http://www.ctan.org/pkg/fontenc
+% .. _hyperref: http://www.ctan.org/pkg/hyperref
+% .. _ibycus: http://www.ctan.org/pkg/ibycus-babel
+% .. _LaTeX Project Public License: http://www.latex-project.org/lppl.txt
+% .. _lgrx: http://www.ctan.org/pkg/lgrx
+% .. _ltxcmds: http://www.ctan.org/pkg/ltxcmds
+% .. _teubner: http://www.ctan.org/pkg/teubner
+% .. _teubner-doc:
+%     http://mirror.ctan.org/macros/latex/contrib/teubner/teubner-doc.pdf
+% .. _textalpha: textalpha.sty.html
+% .. _ucs: http://www.ctan.org/pkg/unicode
+% .. _xunicode: http://www.ctan.org/pkg/xunicode

@@ -35,32 +35,6 @@ Of course, there is a catch: this result is obtained by modifying/instrumenting 
 semantic of the language, so that (as for type casts) \textbf{violations are detected at run-time}, and exceptions
 are throw in order to stop the execution before involving any broken object.
 
-\noindent\textit{Similarity with checked casts:}
-%\subsection{Extended type system and similarity with checked casts}
-Even if not as good as full static verification, from a formal perspective our system clearly \textbf{aid reasoning}:
-For example, while checking the correctness of a method,
-in addition to the semantic of the language
-and the properties ensured by the type system,
-programmers can assume the invariants of all the parameters and of all the
-objects in their ROG.
-They still are responsible to create and mutate objects in order to preserve the invariants;
-but once an object has been successfully created/mutated, all the invariants are guaranteed to hold.
-
-This is similar to casts in Java with respect to casts in C:
-In both languages the programmer is responsible to cast values correctly.
-However, in Java casts are soundly checked: if in a Java program the control flow go over a cast,
- we know that in that specific
-execution such assumption was correct.
-On the other side incorrect C casts just default to undefined behaviour:
-if a C execution continue after a cast, we know absolutely nothing. The same execution
- may fail when run on a different machine, 
-or even on the same one in another moment.
-
-In the same sense, object construction and ROG mutation are soundly checked by our system,
-and success in a mutation means that in that specific execution, the invariant was preserved.
-
-
-
 \noindent\textit{Security and DMZ:}
 Static verification let us reason about a complete program
 and verify its correctness.
