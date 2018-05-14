@@ -640,20 +640,9 @@ public void testNanoLibrary() {
 	,"}");
 }
 
-//Should throw a type error, not an assertion error
-@Test 
-public void testBadUpdate() {
-	tp("{"
-	,"C:( s = 12Num"
-	,"s := s.#plus(30Num)"
-	,"{})"
-	,"}");
-}
-
 @Test(expected=ErrorMessage.VariableUsedNotInScope.class)
 public void testUnderscoreVariableName(){
 	tp("{"
-	,"CacheAdamTowel02:Load.cacheTowel()"
 	," C:{class method Any m(Any that) that}"
 	," Main: ("
 	,"  arr = C.m(_)"
@@ -679,13 +668,153 @@ public void testTabBadCharacter() {
 	,"}");
 }
 
-@Test//(expected = ErrorMessage.NotWellFormedMsk.class)
-public void testClassnameS() {
+//This should work as nanoBase doesn't load in the string class.
+@Test
+public void testClassnameSOk() {
 	tp("{reuse L42.is/nanoBase0"
-	,"C: ("
+		,"S: {"
+		,  "return ExitCode.normal()"
+		,"}"
+		,""
+		,"}");
+}
+
+//Should this work fine as just an empty block?
+@Test
+public void testEmptyBlock() {
+	tp("{{}}");
+}
+
+//This probably shouldn't work, but it throws a Java error.
+@Test //Expecting some sort of parsing error? Or prehaps a meta error.
+public void testNoClassname() {
+	tp("{"
+	,"{Debug()}"
+	,"}");
+}
+
+
+/**
+ * These tests use AdamTowel02, therefore the first one may take a while to run before the towel
+ * is cached.
+ */
+
+@Test
+public void testCollectionNotEmpty() {
+	tp("{reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Strs: Collections.vector(of: S)"
+	,"C: {"
+		,"Strs t = Strs[S\"1\"; S\"2\"; S\"3\"]"
+		,"X[t.isEmpty() == Bool.false()]"
+		,"return ExitCode.normal()"
+	,"}"
+	,"}");
+}
+
+// Test collection size == number of elements.
+@Test
+public void testCollectionSize() {
+	tp("{reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Strs: Collections.vector(of: S)"
+	,"C: {"
+		,"Strs t = Strs[S\"1\"; S\"2\"; S\"3\"]"
+		,"X[t.size() == 3Size]"
+		,"return ExitCode.normal()"
+	,"}"
+	,"}");
+}
+
+// Test that an empty collection has a size of 0.
+@Test
+public void testEmptyCollection() {
+	tp("{reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Strs: Collections.vector(of: S)"
+	,"C: {"
+		,"Strs t = Strs[]"
+		,"X[t.size() == 0Size]"
+		,"return ExitCode.normal()"
+	,"}"
+	,"}");
+}
+
+//This needs to cache the towel to use S (string) as the classname.
+@Test(expected = ErrorMessage.NotWellFormedMsk.class)
+public void testClassnameS() {
+	tp("{reuse L42.is/AdamTowel02"
+	,""
+	,"S: ("
 	,  "return ExitCode.normal()"
 	,"{})"
 	,""
+	,"}");
+}
+
+//Should throw a type error, not an assertion error
+@Test
+public void testBadUpdate() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"C:( s = 12Num"
+	,"s := s.#plus(30Num)"
+	,"{})"
+	,"}");
+}
+
+//Should throw a type error, not an assertion error
+@Test
+public void testCollectionMethod() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"Nums: Collections.vector(of: Num)"
+	,"A: {"
+	,"class method Nums give() {"
+		,"return Nums[1Num; 2Num; 3Num]"
+	,"}"
+	,"}"
+	,"C: {"
+		,"Nums t = A.give()"
+		,"Nums t2 = Nums[4Num]"
+		,"X[t.size() != t2.size()]"
+		,"return ExitCode.normal()"
+	,"}"
+	,"}");
+}
+
+//Test equality of collections and test having the exitCode on the only reachable path.
+@Test
+public void testCollectionsEqual() {
+	tp("{reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Nums: Collections.vector(of: Num)"
+	,"C: {"
+		,"t1 = Nums[1Num; 2Num]"
+		,"Nums t2 = Nums[1Num; 2Num]"
+		,"if !t1.equals(t2) ("
+			,"error X\"\""
+		,")"
+		,"else ("
+		,"return ExitCode.normal()"
+		,")"
+	,"}"
+	,"}");
+}
+
+@Test
+public void testCollectionsNotEqual() {
+	tp("{reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Nums: Collections.vector(of: Num)"
+	,"C: {"
+		,"t1 = Nums[1Num; 2Num]"
+		,"Nums t2 = Nums[1Num]"
+		,"if !t1.equals(t2) ("
+			,"error X\"\""
+		,")"
+		,"return ExitCode.normal()"
+	,"}"
 	,"}");
 }
 }
