@@ -793,7 +793,7 @@ public void testCollectionsEqual() {
 		,"t1 = Nums[1Num; 2Num]"
 		,"Nums t2 = Nums[1Num; 2Num]"
 		,"if !t1.equals(t2) ("
-			,"error X\"\""
+			,""
 		,")"
 		,"else ("
 		,"return ExitCode.normal()"
@@ -802,6 +802,7 @@ public void testCollectionsEqual() {
 	,"}");
 }
 
+//Test equality of collections which are not equal.
 @Test
 public void testCollectionsNotEqual() {
 	tp("{reuse L42.is/AdamTowel02"
@@ -811,8 +812,24 @@ public void testCollectionsNotEqual() {
 		,"t1 = Nums[1Num; 2Num]"
 		,"Nums t2 = Nums[1Num]"
 		,"if !t1.equals(t2) ("
-			,"error X\"\""
+			,"return ExitCode.normal()"
 		,")"
+		,"error X\"\""
+	,"}"
+	,"}");
+}
+
+// If this code is run twice in the IDE it will fail, but that is not the case here.
+@Test
+public void testSymbol() {
+	tp("{reuse L42.is/AdamTowel02"
+	,"C: {"
+		,"class method S m(S that) {"
+			,"return that"
+		,"}"
+	,"}"
+	,"Main: {"
+		,"t = C.m(that: S\"t\")"
 		,"return ExitCode.normal()"
 	,"}"
 	,"}");
