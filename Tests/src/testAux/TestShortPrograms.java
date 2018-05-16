@@ -817,4 +817,52 @@ public void testCollectionsNotEqual() {
 	,"}"
 	,"}");
 }
+
+@Test //We should expect some sort of 42 stackoverflow error. We can count to about 5800.
+public void testStackOverflow() {
+	tp("{reuse L42.is/AdamTowel02"
+		,"A: {"
+			,"class method Num a(Num that) {"
+				,"if that == 10000Num ("
+					,"return that"
+				,")"
+				,"else ("
+					,"return A.a(that + 1Num)"
+				,")"
+			,"}"
+		,"}"
+		,"B: {"
+			,"Num s = A.a(1Num)"
+			,"return ExitCode.normal()"
+		,"}"
+	,"}");
+}
+
+@Test
+public void testGoodRecursion() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"class method Num a(Num that) {"
+					,"if that == 1000Num ("
+						,"return that"
+					,")"
+					,"else ("
+						,"return A.a(that + 1Num)"
+					,")"
+				,"}"
+			,"}"
+			,"B: {"
+				,"Num s = A.a(1Num)"
+				,"return ExitCode.normal()"
+			,"}"
+		,"}");
+}
+
+
+
+
+
+
+
+
 }
