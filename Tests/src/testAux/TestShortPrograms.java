@@ -623,22 +623,46 @@ public void testUnopenedParen() {
 	,"}");
 }
 
-@Test(expected = ErrorMessage.PathMetaOrNonExistant.class)
-public void testNonVarVariable() {
-	tp("{"
-	,"C:( s = 12Num"
-	,"s := 13Num"
-	,"{})"
+// If run in the IDE this will break the IDE until you use a text editor to change the file.
+@Test
+public void testLocalhost() {
+	tp("{reuse localhost/nanoBase0"
+			,"C:{"
+				,"return ExitCode.normal()"
+			,"}"
 	,"}");
 }
 
+
 @Test
-public void testNanoLibrary() {
+public void testNanoBase() {
 	tp("{reuse L42.is/nanoBase0"
-	,"C:{"
-	,"return ExitCode.normal()}"
+			,"C:{"
+				,"return ExitCode.normal()"
+			,"}"
 	,"}");
 }
+
+// We should be able to use this towel?
+@Test
+public void testMicroBase() {
+	tp("{reuse L42.is/microBase"
+			,"A: {"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// We should also be able to use this towel?
+@Test
+public void testOtherNanobase() {
+	tp("{reuse L42.is/nanoBase2"
+		,"C:{"
+			,"return ExitCode.normal()"
+		,"}"
+	,"}");
+}
+
 
 @Test(expected=ErrorMessage.VariableUsedNotInScope.class)
 public void testUnderscoreVariableName(){
@@ -654,8 +678,8 @@ public void testUnderscoreVariableName(){
 @Test//(expected = ErrorMessage.NotWellFormedMsk.class)
 public void testAssignExitCode() {
 	tp("{"
-	," C:{ s = return ExitCode.normal()"
-	," {} }"
+	,"C:{ s = return ExitCode.normal()"
+	,"}"
 	,"}");
 }
 
@@ -752,7 +776,7 @@ public void testClassnameS() {
 	,"}");
 }
 
-//Should throw a type error, not an assertion error
+//Should throw a type error, not an assertion error as we shouldn't be able to update it.
 @Test
 public void testBadUpdate() {
 	tp("{"
@@ -875,11 +899,125 @@ public void testGoodRecursion() {
 		,"}");
 }
 
+// Throws an assertion error. It should throw maybe a parsing error or maybe a method not present. 
+@Test
+public void testMethodCallOnVariable() {
+	tp("{reuse L42.is/nanoBase0"
+			,"A: {"
+				,"c = c()"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testGetCollectionValue() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"Nums: Collections.vector(of: Num)"
+			,"A: Data <>< {"
+				,"Nums list"
+				,"method Num search(Size index) {"
+					,"return this.list().val(index)"
+				,"}"
+			,"}"
+			,""
+			,"B: {"
+				,"Nums toCheck = Nums[3Num; 2Num; 4Num; 5Num]"
+				,"A a = A(list: toCheck)"
+				,"X[a.search(index: 1Size) == 2Num]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// This works correctly but there isn't a suitable error to expect.
+@Test//(expected = ErrorMessage.)
+public void testIndexOutOfBounds() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"Nums: Collections.vector(of: Num)"
+			,"A: {"
+				,"Nums toCheck = Nums[3Num; 2Num; 4Num; 5Num]"
+				,"Num outOfBounds = toCheck.val(12Size)"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
 
 
+@Test
+public void testNegativeNumbers() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"Num negative = Num\"-1\""
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Division by zero. Is it intended behaviour to not throw an error?
+@Test
+public void testDivideByZero() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"Num negative = Num\"-1\""
+				,"Debug(negative / 0Num)"
+				,"Debug(0Num / 0Num)"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// This throws a FileNotFoundException.
+@Test
+public void testIntDivision() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"Int: Load <>< {reuse L42.is/Numbers/Int}"
+			,"A: {"
+				,"Debug(0Int / 0Int)"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+
+}
+// Should this work? Should the predictor be able to find the type of 1? And not
+// have it as void. It works on methods, does this not count constructors? 
+// It could also be nice to have predictions on "Num n = 12\".
+@Test
+public void testSuggestion() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Data <>< {"
+				,"Num n"
+			,"}"
+			,""
+			,"B: {"
+				,"A a = A(n: 321312\\)"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Is this error due to the fact that we don't have a field in a class extending
+// Data therefore the equals method can't be constructed properly?
+@Test
+public void testBabelFish() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Data <>< {"
+			,"}"
+			,"B: {"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
 
 
-
-
-
+@Test
+public void testImplementAndBabelFish() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Data <>< {implements S"
+			,"}"
+			,"B: {"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
 }
