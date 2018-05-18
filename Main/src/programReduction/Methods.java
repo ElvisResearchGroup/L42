@@ -20,6 +20,7 @@ import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
+import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.WellFormednessCore;
 import coreVisitors.From;
 import tools.Map;
@@ -72,7 +73,7 @@ public abstract class Methods implements Program{
     ClassB l=p.extractClassB(p0.getPath());
     assert l.isInterface():"should be always discovered by methdos(path)?";
     //may need to become throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0);
-    List<Type>psPrime=collectAux(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),l.getSupertypes()),visited);
+    List<Type>psPrime=collectAux(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),l.getSupertypes()),Functions.push(visited,p0.getPath()));
     List<Type>collectedPs=collectAux(p,ps,visited);
     List<Type>res=new ArrayList<>();
     if(!equivInList(p,p0,collectedPs)) {res.add(p0);}
