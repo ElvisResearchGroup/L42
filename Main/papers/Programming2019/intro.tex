@@ -1,5 +1,77 @@
 
 \section{Introduction}
+
+names:
+valid/validation/validity
+
+name of the method: valid/validate
+-----------------------------------
+
+##what is validation
+
+Objects can provide a "Bool validate()" method, encoding the expectations
+all instances should satisfy.
+An object o is valid when o.validate() would return true.
+An object o is invalid in all the other cases (return false, exception or non termination)
+
+The language enforces object validity:
+-it is not possible for an invalid object to be reachable by application code.
+-validate methods are guaranteed to be deterministic and not mutate any state.
+
+##why is good
+aid reasoning
+catch the source of the problem
+implementation: catch error of client code as soon as arises
+
+
+
+
+
+If a user action would create an new object in an invalid state, or mutate an existing object so
+that the new state would be invalid, the language would take action to make such object unreachable (that is, ready for garbage collection)
+
+
+
+validation ensures that as soon as an object becomes invalid there will be an error
+but you will not be able to interact 
+
+load Item i
+  playCargo(this.cargo(),i)
+
+static playCargo(mut Cargo c, Item i)
+  c.add(i)
+  c.remove(i)
+  
+ 
+
+
+awesome capability objects
+
+awesome type modifiers
+
+awesome exception safety
+
+with those 3 together we get validation
+
+is like a extended type system
+
+contrast with class invariants
+
+
+valid only access fields
+
+valid
+
+
+patterns wrapper/state variable allows for flexible invariants
+
+verify the programmer intentions are self-consistent
+
+encoding post conditions and pre conditions as specialized types
+
+code example
+
+
 Assertions are a popular way to keep code execution
 under control. Assertions are checked only in the specific
 execution point where they are encountered;

@@ -42,8 +42,13 @@ public abstract class Methods implements Program{
     //It would be very hard to do it and keep norm "stable"
     return res;
     }
+  //We use Type instead of Path to keep the Docs
   public static List<Type> collect(Program p,List<Type> p0ps){
-    List<Type> res = collect(p,p0ps,new ArrayList<>());
+    List<Type> res=collectAux(p,p0ps,new ArrayList<>());
+    assert noDuplicates(p,res);
+    return res;
+    }
+  private static boolean noDuplicates(Program p,List<Type> res) {
     List<Type> res2=new ArrayList<>();
     for(Type t:res)out:{
       for(Type t2:res2){
@@ -51,52 +56,38 @@ public abstract class Methods implements Program{
         }
       res2.add(t);
       }
-    return res2;
-    //TODO: do we need somehow to remove duplicates?
-    }
-/*  static List<Path>  collectAux(Program p,List<Path> p0ps,List<Path> visited){
+    return res2.size()==res.size();
+  }
+  static List<Type>  collectAux(Program p,List<Type> p0ps,List<Path> visited){
     if( p0ps.isEmpty()){return p0ps;}
-    Path p0=p0ps.get(0);
-    List<Path> ps=p0ps.subList(1,p0ps.size());
-    if (visited.contains(p0)){
-      throw new ast.ErrorMessage.CircularImplements(push(visited,p0));
-      }
-    if(p0.isPrimitive()){return collectAux(p,ps,visited);}
-    return collectAux(p,p0,ps,visited);
-    }
-  static List<Path>  collectAux(Program p,Path p0, List<Path> ps,List<Path> visited){
-    //-collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
-    //  p(P0)={interface implements Ps0 _}
-    //  Ps'=collect(p,Ps0[from P0])
-    ClassB l=p.extractClassB(p0);
-    assert l.isInterface():"should be always discovered by methdos(path)?";
-    //may need to become throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0);
-    List<Path>psPrime=collect(p,Map.of(pi->From.fromP(pi,p0),l.getSuperPaths());
-    }*/
-  static List<Type>  collect(Program p,List<Type> p0ps,List<Path> visited){
-    if( p0ps.isEmpty()){return p0ps;}
-    Ast.Type p0=p0ps.get(0);
-    List<Ast.Type> ps=p0ps.subList(1,p0ps.size());
+    Type p0=p0ps.get(0);
+    List<Type> ps=p0ps.subList(1,p0ps.size());
     if (visited.contains(p0.getPath())){
       throw new ast.ErrorMessage.CircularImplements(push(visited,p0.getPath()));
       }
-    if(p0.getPath().isPrimitive()){return collect(p,ps,visited);}
+    if(p0.getPath().isPrimitive()){return collectAux(p,ps,visited);}
+    return collectAux(p,p0,ps,visited);
+    }
+  static List<Type>  collectAux(Program p,Type p0, List<Type> ps,List<Path> visited){
     ClassB l=p.extractClassB(p0.getPath());
-    if(!l.isInterface()) {
-      assert false: "should be always discovered by methdos(path)?";
-      throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0.getPath());
-      }
-    List<Ast.Type>superPaths=l.getSupertypes();
-    List<Ast.Type> recP0=collect(p.navigate(p0.getPath()),superPaths,push(visited,p0.getPath()));
-
-    recP0=Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),recP0);
-    List<Ast.Type> recPs=collect(p,ps,visited);
-    return mergeUnique(p0, recP0, recPs);
+    assert l.isInterface():"should be always discovered by methdos(path)?";
+    //may need to become throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0);
+    List<Type>psPrime=collectAux(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),l.getSupertypes()),visited);
+    List<Type>collectedPs=collectAux(p,ps,visited);
+    List<Type>res=new ArrayList<>();
+    if(!equivInList(p,p0,collectedPs)) {res.add(p0);}
+    for(Type pi:psPrime) {if(!equivInList(p,pi,collectedPs)) {res.add(pi);}}
+    res.addAll(collectedPs);
+    return res;
+    }
+  static boolean equivInList(Program p,Type pi,List<Type>equivCandidates) {
+    for(Type pEq:equivCandidates) {if(p.equiv(pi.getPath(), pEq.getPath())) {return true;}}
+    return false;
     }
 
   static MethodWithType addRefine(MethodWithType mwt){
     return mwt.withMt(mwt.getMt().withRefine(true));
-  }
+    }
 
 //  -methods(p,P0)=M1'..Mk'
 //          p(P0)={interface? implements Ps Ms}
