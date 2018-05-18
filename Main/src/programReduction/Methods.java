@@ -54,6 +54,25 @@ public abstract class Methods implements Program{
     return res2;
     //TODO: do we need somehow to remove duplicates?
     }
+/*  static List<Path>  collectAux(Program p,List<Path> p0ps,List<Path> visited){
+    if( p0ps.isEmpty()){return p0ps;}
+    Path p0=p0ps.get(0);
+    List<Path> ps=p0ps.subList(1,p0ps.size());
+    if (visited.contains(p0)){
+      throw new ast.ErrorMessage.CircularImplements(push(visited,p0));
+      }
+    if(p0.isPrimitive()){return collectAux(p,ps,visited);}
+    return collectAux(p,p0,ps,visited);
+    }
+  static List<Path>  collectAux(Program p,Path p0, List<Path> ps,List<Path> visited){
+    //-collect(p,P0 Ps)=((P0 Ps') \p collect(p,Ps)) collect(p,Ps) //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
+    //  p(P0)={interface implements Ps0 _}
+    //  Ps'=collect(p,Ps0[from P0])
+    ClassB l=p.extractClassB(p0);
+    assert l.isInterface():"should be always discovered by methdos(path)?";
+    //may need to become throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0);
+    List<Path>psPrime=collect(p,Map.of(pi->From.fromP(pi,p0),l.getSuperPaths());
+    }*/
   static List<Type>  collect(Program p,List<Type> p0ps,List<Path> visited){
     if( p0ps.isEmpty()){return p0ps;}
     Ast.Type p0=p0ps.get(0);
@@ -69,6 +88,7 @@ public abstract class Methods implements Program{
       }
     List<Ast.Type>superPaths=l.getSupertypes();
     List<Ast.Type> recP0=collect(p.navigate(p0.getPath()),superPaths,push(visited,p0.getPath()));
+
     recP0=Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),recP0);
     List<Ast.Type> recPs=collect(p,ps,visited);
     return mergeUnique(p0, recP0, recPs);
