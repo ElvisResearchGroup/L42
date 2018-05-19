@@ -617,6 +617,7 @@ public void testUnclosedParen() {
 
 //If the test above throws an UnclosedParenthesis should this one throw an unopenedParenthesis?
 //This throws the correct error in the IDE. It throws ParenthesisMismatchRange instead
+// Was a bug as of 18/05/18.
 @Test(expected = ErrorMessage.UnopenedParenthesis.class)
 public void testUnopenedParen() {
 	tp("{"
@@ -626,6 +627,7 @@ public void testUnopenedParen() {
 }
 
 // If run in the IDE this will break the IDE until you use a text editor to change the file.
+// Kind of a bug, was a bug as of 18/05/18.
 @Test
 public void testLocalhost() {
 	tp("{reuse localhost/nanoBase0"
@@ -644,6 +646,9 @@ public void testNanoBase() {
 			,"}"
 	,"}");
 }
+
+
+// These towels are no longer supported.
 
 // We should be able to use this towel?
 /*@Test
@@ -677,6 +682,7 @@ public void testUnderscoreVariableName(){
 }
 
 //This should be correct??
+// This was current as of 18/05/18
 @Test//(expected = ErrorMessage.NotWellFormedMsk.class)
 public void testAssignExitCode() {
 	tp("{"
@@ -710,7 +716,9 @@ public void testClassnameSOk() {
 
 
 //This probably shouldn't work, but it throws a Java error.
-@Test //Expecting some sort of parsing error? Or prehaps a meta error.
+//Expecting some sort of parsing error? Or prehaps a meta error.
+// Was a bug as of 18/05/18.
+@Test 
 public void testNoClassname() {
 	tp("{"
 	,"{Debug()}"
@@ -764,7 +772,8 @@ public void testEmptyCollection() {
 	,"}");
 }
 
-//This needs to cache the towel to use S (string) as the classname.
+//This needs to cache the towel to use S (string) as the class name.
+// This should fail as we're using S as a class name which is already in the towel.
 @Test(expected = ErrorMessage.NotWellFormedMsk.class)
 public void testClassnameS() {
 	tp("{reuse L42.is/AdamTowel02"
@@ -776,7 +785,8 @@ public void testClassnameS() {
 	,"}");
 }
 
-//Should throw a type error, not an assertion error as we shouldn't be able to update it.
+// Should throw a type error, not an assertion error as we shouldn't be able to update it.
+// This was a bug as of 18/05/18.
 @Test
 public void testBadUpdate() {
 	tp("{"
@@ -787,7 +797,6 @@ public void testBadUpdate() {
 	,"}");
 }
 
-//Should throw a type error, not an assertion error
 @Test
 public void testCollectionMethod() {
 	tp("{"
@@ -860,6 +869,7 @@ public void testSymbol() {
 }
 
 @Test //We should expect some sort of 42 stackoverflow error. We can count to about 5800.
+// This was a bug as of 18/05/2018. Note: The equivalent Java program counts to about 23000.
 public void testStackOverflow() {
 	tp("{reuse L42.is/AdamTowel02"
 		,"A: {"
@@ -900,6 +910,7 @@ public void testGoodRecursion() {
 }
 
 // Throws an assertion error. It should throw maybe a parsing error or maybe a method not present.
+// This was a bug as of 18/05/2018.
 @Test
 public void testMethodCallOnVariable() {
 	tp("{reuse L42.is/nanoBase0"
@@ -961,6 +972,7 @@ public void testNegativeNumbers() {
 }
 
 // Division by zero. Is it intended behaviour to not throw an error?
+// This was a bug as of 18/05/2018. 
 @Test
 public void testDivideByZero() {
 	tp("{reuse L42.is/AdamTowel02"
