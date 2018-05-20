@@ -1,24 +1,39 @@
 
 \section{Introduction}
 
-names:
-valid/validation/validity
+Reasoning about imperative object oriented programs is a non trivial task;
+this is made particularly difficult by mutations and aliasing, dynamic dispatch and dynamic class loading,
+unrestricted I/O(input/output) and exceptions.
 
-name of the method: valid/validate
------------------------------------
+Static verification with method contracts has been successfully employed to proof correctness of OO programs.
+However, static verification is an intellectually challenging and work intensive activity, that requires to rewrite the semantic of the program in a verification language and then prove equivalence between the two.
+This however require to limit dynamic class loading, ensuring that only statically verified code can be loaded.
+Without this restriction, even predicting the behaviour of an innocent looking call, like 
+\Q@myPoint.getX()@ is impossible: the dynamic type of \Q@myPoint@ can refer to a dynamically loaded class
+whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the user hard drive.
 
-##what is validation
+Recent research on type modifiers (TM) and object capabilities (OC) offer us a simpler way to perform high-level reasoning on OO programs without restricting dynamic class loading or employing a verification language.
+For example, type modifiers has been used to enforce ownership and to guarantee correct behaviour of
+parallel code. Object capabilities has been used to enforce certain methods to be deterministic and to not perform I/O.
 
-Objects can provide a "Bool validate()" method, encoding the expectations
+Given those benefits, many emerging languages (as Rust and newspeak)
+are going to support some form of type modifiers and/or object capability.
+
+In this paper we show how the combination TM+OC allows to ensure some property holds for all instances of a class. We call this concept \textbf{validation}.
+
+%##what is validation
+
+Objects can provide a \Q@Bool validate()@ method, encoding the expectations
 all instances should satisfy.
-An object o is valid when o.validate() would return true.
-An object o is invalid in all the other cases (return false, exception or non termination)
+An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is invalid in all the other cases (return \Q@false@, exception or non termination).
+In or approach the language enforces object validity:
+\begin{itemize}
+\item \Q@.validate()@ methods are guaranteed to be deterministic and to not mutate any state; they represent logic predicates on the object reachable object graph (ROG).
+\item It is not possible for an invalid object to be reachable by application code.
+\end{itemize}
 
-The language enforces object validity:
--it is not possible for an invalid object to be reachable by application code.
--validate methods are guaranteed to be deterministic and not mutate any state.
+%##why is good
 
-##why is good
 aid reasoning
 catch the source of the problem
 implementation: catch error of client code as soon as arises
@@ -43,6 +58,10 @@ static playCargo(mut Cargo c, Item i)
   c.remove(i)
   
  
+valid/validation/validity
+
+name of the method: valid/validate
+-----------------------------------
 
 
 awesome capability objects
