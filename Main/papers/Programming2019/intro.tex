@@ -1,183 +1,65 @@
 
 \section{Introduction}
+\saveSpace\saveSpace
+Reasoning about imperative object oriented (OO) programs is a non trivial task,
+made particularly difficult by mutations, aliasing, dynamic dispatch, dynamic class loading,
+unrestricted I/O(input/output) and exceptions.
 
-names:
-valid/validation/validity
+Static verification with method contracts can prove correctness of OO programs, but is costly and requires to define the desired semantic of the program in a verification language then prove consistency.
+This however require to limit dynamic class loading, ensuring that only statically verified code can be loaded.
+Without this restriction, even predicting the behaviour of an innocent looking call, like 
+\Q@myPoint.getX()@ is impossible: the dynamic type of \Q@myPoint@ can refer to a dynamically loaded class
+whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the user hard drive.
 
-name of the method: valid/validate
------------------------------------
+Recent research on type modifiers (TM) and object capabilities (OC) offer us a simpler way to perform high-level reasoning on OO programs without restricting dynamic class loading or employing a verification language.
+For example, type modifiers has been used to enforce ownership and to guarantee correct behaviour of
+parallel code[]. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O[joe].
+Given these benefits, many emerging languages (as Rust[] and newspeak[])
+support some forms of type modifiers and/or object capabilities.
 
-##what is validation
+\loseSpace
 
-Objects can provide a "Bool validate()" method, encoding the expectations
+\subsection{Validation}
+In this paper, we rely on TM and OC to define a language ensuring \textbf{validation}: that is, its ensure a user defined property (it being 'valid') holds for all instances of a class.
+
+%##what is validation
+Some classes can provide a \Q@Bool validate()@ method, encoding the expectations
 all instances should satisfy.
-An object o is valid when o.validate() would return true.
-An object o is invalid in all the other cases (return false, exception or non termination)
-
-The language enforces object validity:
--it is not possible for an invalid object to be reachable by application code.
--validate methods are guaranteed to be deterministic and not mutate any state.
-
-##why is good
-aid reasoning
-catch the source of the problem
-implementation: catch error of client code as soon as arises
-
-
-
-
-
-If a user action would create an new object in an invalid state, or mutate an existing object so
-that the new state would be invalid, the language would take action to make such object unreachable (that is, ready for garbage collection)
-
-
-
-validation ensures that as soon as an object becomes invalid there will be an error
-but you will not be able to interact 
-
-load Item i
-  playCargo(this.cargo(),i)
-
-static playCargo(mut Cargo c, Item i)
-  c.add(i)
-  c.remove(i)
-  
- 
-
-
-awesome capability objects
-
-awesome type modifiers
-
-awesome exception safety
-
-with those 3 together we get validation
-
-is like a extended type system
-
-contrast with class invariants
-
-
-valid only access fields
-
-valid
-
-
-patterns wrapper/state variable allows for flexible invariants
-
-verify the programmer intentions are self-consistent
-
-encoding post conditions and pre conditions as specialized types
-
-code example
-
-
-Assertions are a popular way to keep code execution
-under control. Assertions are checked only in the specific
-execution point where they are encountered;
-In the context of OO programming, it would be
-convenient to keep \textbf{objects state
-under constant control} by using assertions-like properties, that
-can be encoded as a \Q@Bool valid()@ method.
-During execution,
-an object is \textbf{valid} only if running its
-\Q@.valid()@ method would return \Q@true@;
-objects without a \Q@.valid()@ method are always \textbf{valid}.
-We would like a language semantic where 
-execution only manipulates \textbf{valid} objects:
-if the object offers a \Q@.valid()@ method, then such
- method is automatically checked at run time in the right moments.
-While this is related to class invariants,
-there are substantial differences:
+An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is invalid in all the other cases (return \Q@false@, exception or non termination).
+We say that a language enforces object validity if:
 \begin{itemize}
-\item \textbf{Just Self consistency}: there is no expectation for
-the behaviour of \Q@.valid()@ to match a formal specification defined outside.
-The system only ensures that the expectations of the programmer are consistent.
-\item \textbf{Always Hold}: 
-In the Class Invariant model, the invariant can be broken in
-certain moments. Thus code can manipulate objects with broken invariant.
-Here code is guarantee to only manipulate \textbf{valid} objects.
-Properties requiring more flexibility can be manually supported by
- using certain programming pattern over the primitive validity concept (see ...).
-\item \textbf{Alternative language design}:
-We do not aim to verify programs that are correct under a conventional language,
-thus certain common (and arguably correct) patterns are disallowed.
-We define a new language where it is easier to make a program correct by construction, relying on
-strict programming patterns.
+\item \Q@.validate()@ methods are guaranteed to be deterministic and to not mutate any state; they represent logic predicates on the reachable object graph (ROG).
+\item Invalid object are not reachable by application code. Thus programmers can always assume such properties to hold.
+For example, at the point of a method call,
+all the parameters (including \Q@this@) and all the objects in their ROG will be valid.
 \end{itemize}
 
-\noindent To understand the main challenges
-toward our goal,
-consider the following code 
-simulating a commercial port
- where a boat is being loaded with cargo:
-\saveSpace
-\begin{lstlisting}
-class Boat{$\Comment{too much cargo and the ship may sink}$
-  Bool valid(){  return cargo.weight()<=300;}
-  Items cargo;
-  Void load(Item item){  this.cargo.add(item);}
-  Item unload(String itemName){  return this.cargo.extract(itemName);}
-  }
-\end{lstlisting}
-\saveSpace
+\noindent 
 
+\subsection{How we implement}
+Our language supports validation by invoking the \Q@.validate()@ method before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 
+Like assertions, an (unchecked) exception is thrown if such a call returns false (indicating that the object is invalid).
 
+Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type-system ensures the object is not reachable.
+If you were to step with the debugger, you may see invalid objects, and validation checks failing.
 
+Our approach follows the principles of \textbf{Offensive programming}:
+\begin{itemize}
+\item The failure (unchecked exception)
+is raised as near as possible to the defect: the operation creating an invalid object (``fail-fast'').
+\item No attempt to fix or recover the invalid object is performed.
+%, and all objects observing modified by the execution
+%creating such objects are made be unreachable if the corresponding unchecked exception was to be captured.
+\end{itemize}
 
-\Q@Item@ and \Q@Items@ come from a third party library,  are not annotated with contracts and the authors may change their behaviour in the future.
-All the code using \Q@Boat@  (client code) would like to 
-assume the boat has not sunk.
-In turn, that depends on the behaviour of \Q@Items.weight()@, thus the meaning of the \Q@Boat@ invariant is parametric on the everchanging meaning of  \Q@Items.weight()@.
-In this sense, we are only interested in \emph{self-consistency}.
-Can we somehow enforce that for every possible well typed \Q@Item@ and \Q@Items@, client code will interact only with valid (non sunk)  boats?
-That is, we are unable or unwilling to constrain \Q@Item@ and \Q@Items@ to
-cooperate into making \Q@Boat@s unsinkable; we aim
-to make so that \Q@Boat@s can be correct independently of
-possibly buggy, possibly even malicious \Q@Item@ and \Q@Items@ implementations.
-
-%Thanks to the encapsulation, any kind of check in the language,
-%as in `\Q@if(cargo.weight()>=300){..}@', would delegate the 
-%behaviour to untrusted code in \Q@Items@.
-Since the code of \Q@Items@ is completely unrestrained, 
-even if at a certain moment, a boat respects its
-invariant, there is no guarantee that
-it will hold at another moment,
-even if methods \Q@load/unload@ are not called.
-Aliasing would be the most obvious cause, but also I/O can be to blame.
-Worse, the \Q@cargo@ may internally record how many times
-it has been used, providing low weight whenever we try to test its behaviour, and a high one otherwise.
-
-
-In this paper we will formally define  \textbf{Validation}, an \textbf{ultra-lightweight runtime verification technique} 
- keeping object state under control, and 
- a Java-like imperative language
- with conventional field update and exceptions handling
- but where the type system and the input/output functionalities
- have been tweaked just enough to support Validation.
- To this aim we will leverage on recent developments in the area of object capabilities,
- aliasing and immutability control, and strong exception safety.
-%Our approach share the same philosophy of checked casts:
-
-
-%That is: the type system is just powerful enough,
-%and semantics is just constrained enough,
-% so that, independently of the rest of the program,
-% we can assume the \Q@Boat@ validity
-% while working with \Q@Boat@ instances,
-%and being promptly notified of sinking \Q@Boat@s;
-
-
-\noindent\textit{Similarity with checked casts:}
+\subsection{Random stuff }
+We show that a naive approach that just checks \Q@.validate()@ at the end of constructors and setters would be insufficient. We take advantage of TM+OC to conservatively identify classes where validation is possible.
+%
+%\noindent\textit{Similarity with checked casts:}%
 %\subsection{Extended type system and similarity with checked casts}
 Even if not as good as full static verification, from a formal perspective
- our system clearly \textbf{aid reasoning}:
-For example, while checking the correctness of a method,
-in addition to the semantic of the language
-and the properties ensured by the type system,
-programmers can assume the validity of all the parameters and of all the
-objects in their ROG.
-Programmers are still responsible to create and mutate objects in order to preserve their validity;
+ our system clearly \textbf{aid reasoning}.
+However, programmers are still responsible to create and mutate objects in order to preserve their validity;
 but once an object has been successfully created/mutated, is guaranteed to be valid.
 Attempting to create a new invalid object, or to mutate an object into an invalid one causes
 a run time error.
@@ -195,250 +77,73 @@ or even on the same one in another moment.
 In the same sense, object construction and ROG mutation are soundly checked by our system,
 and success in a mutation means that in that specific execution, the validity was preserved.
 
+
+
+
+%load Item i
+%  playCargo(this.cargo(),i)
+%
+%static playCargo(mut Cargo c, Item i)
+%  c.add(i)
+%  c.remove(i)
+%  
+% 
+%valid/validation/validity
+%
+%name of the method: valid/validate
+%-----------------------------------
+%
+%
+%%awesome capability objects
+%
+%%awesome type modifiers
+%
+%awesome exception safety %%no, we try to sell Exception safety as an application of TM
+%
+%%with those 3 together we get validation
+%
+%%is like a extended type system %? yes by comparision with casts?
+%
+%contrast with class invariants
+%
+%
+%valid only access fields
+%
+%valid
+%
+%
+%patterns wrapper/state variable allows for flexible invariants
+%
+%verify the programmer intentions are self-consistent
+%
+%encoding post conditions and pre conditions as specialized types
+%
+%code example
+%
+
 %%%
 %%%May coonect with "OffensiveProgramming/DefensiveProgramming".
 %%%
 
 
-\noindent\textit{Paper structure:}
-First we show an informal definition of \emph{sound invariant checking}, and we compare it with 
-the meaning of invariants in other approaches.
-Then in Section~\ref{s:example} by way of a general example we show how arduous our goal is.
-Unsurprisingly aliasing is an issue, but so are subtyping, encapsulation, exceptions, and undesired side effects like mutation and I/O.
-As we will explain in Section~\ref{s:related}, state of the art runtime verification systems
-ignore at least some of the challenges highlighted by our example,
-making them unsound from the perspective of our definition of Validation.
-
-% TODO (alex): The above needs cites and unsound needs explanation!
-
-
-In Section~\ref{s:language} we discuss our approach in the context of
-a nominally and statically typed object-oriented language with
-imperative features such as field update, input/output and exceptions.
-It can perform I/O using  \textbf{object capabilities}.
-It supports a rich type system offering \textbf{aliasing and immutability control} and \textbf{strong exception safety}.
-We show how to ensure our property for various categories of objects, and 
-how those features are important building blocks to support our approach.
-
-Finally in Section~\ref{s:meaning} we formally define \emph{sound invariant checking} and
-a language supporting it by a rich type system.
- Section~\ref{s:related} discusses the related work and Section~\ref{s:conclusion} concludes.
-
-
-
-\saveSpace\saveSpace
-\section{Defining Validation}
-\label{s:def}
 \saveSpace
-The programmer may specifies their desired validation by adding an \Q@.valid()@ method:
-Each class that has an \Q@.valid()@ method is a
-\emph{validate class}.
-Such \Q@valid@ methods must return a boolean and take no parameter.
-It should reason only over the reachable object graph (ROG) of \Q@this@, and
-it must be \textbf{deterministic}:
-it should not mutate any pre-existing objects and it should not interact with the outside world.%
-\footnote{The \Q@valid()@ method could throw exceptions, as discussed later.}
-
-Thus, it cannot access any external input or mutable global state.
-These requirements allow such method to be seen as a logic predicate over the object.
-
-An object is \textit{valid} if its \Q@.valid()@ method
-would deterministically reduce to \Q@true@ in a finite numbers of steps.
-An object is \textit{invalid} in case of \Q@.valid()@ returning \Q@false@,
-non termination and any kind of exception/dynamic error.
-
-We say that a language soundly preserve \textbf{Validation} if
-application code can never handle an invalid object.
-This is obtained by a specialized language semantic invoking the \Q@.valid()@
-method when an object may be invalid; however such invocations are not present in
-the application code: the code manually wrote by the programmer.
-
-%In order for the formal semantic of the language to call the \Q@.valid()@ method
-%and for such method to access the state of
-%It is possible to define Validation over a conventional small step reduction semantic.
-%There are only two cases where reduction steps may involve invalid objects:
-%(1) when a \Q@.valid()@ method is called the receiver may be invalid, and (2) inside of the \Q@.valid()@ method, a possibly
-%invalid \Q@this@ may be used to read the value of the fields.
-%We call these reduction steps \emph{trusted}.
-%Note that we are referring to the individual reduction steps when calling \Q@.valid()@,
-%and accessing fields. We do not need to relax the whole computation of the \Q@.valid()@ method.
-
-% TODO (alex) Huh? Relax the whole computation of the method? What does this even mean?
-
-\noindent This means that, for example, at the point of a method call,
-all the parameters (including \Q@this@) will soundly respect their invariant.
-%\footnote{
-%Our presented solution in Section~\ref{s:meaning} does not requires to run the invariant method
-%for all the objects in every reduction step, and should induce an acceptable overhead. We will consider efficiency later in the paper.}
-
-\noindent At first glance, it may seem that Verification ensures the absence of invalid objects.
-Note our careful wording earlier: we are not stating that all objects are valid all the time.
-A Verification system can just use exceptions to
-steer the execution before the invalid objects have an opportunity to be handled.
-If you were to step with the debugger, you may see invalid objects, and
-validation checks failing.
-
-%Our very strong Validation property allows to reason about any program in a reliable way.
-%On the other side, it limits the freedom of programmers,
-%unable to break SIC even if they needs to and they believe it would be `safe'.
-%We think this can be compared with type systems, where sometime we
-%need to introduce extra indirections to satisfy the type system.
-
- 
-
-
-%Some have attempted using AOP 
-% change the semantic of the language injecting checks and collecting data across the whole system.
- 
-%In this paper we go in the opposite direction and we consider what expressive type
-
-\section{Breaking Things}
-\label{s:example}
+\section{A language supporting sound Validation}
+\label{s:language}
 \saveSpace
+We now present how a real language could support
+Validation. To ease our explanation, we present various categories
+of objects where we can support Validation, starting from the simpler one to handle.
+We will introduce one by one the various
+\textbf{language features} cooperating
+to support Validation.%, and we work under the assumption that there are no static variables.
+We will provide a brief introduction to type modifiers, object capabilities, and exception safety and we will show how they enable sound invariant checking.
 
-\subsection{Breaking objects}
-\saveSpace
-
-Some readers may suggest we should detect violations just before operations that would create an invalid object,
-thus still keeping all objects always valid.
-
-Sadly, this seems impossible in the general case with limited knowledge.
-%, and even if we could detect them it
-%would have nasty consequences.
-Going back to our \Q@Boat@ example,
-\textbf{without any knowledge about the behaviour of \Q@add()@ and \Q@weight()@}%
-%\footnote{A statically verified system with contracts on all methods may have this kind of knowledge.}
-there is no way we can discover the invariant violation without actually adding the objects and checking the 
-weight after the fact; thus in the general case violations can only be detected 
-when an invalid object is already present in the system.
-Remember that to keep our approach lightweight,
-we do not rely on pre-post conditions; thus
-the behaviour of \Q@Items.weight()@ and \Q@Items.add(item)@ is uncertain.
-The names may suggest a specific behaviour, but there is no contract annotated on such methods.
-
-Note also that in the general case there is no way to fix an invalid object,
-or to perform a deep clone and to test the operation on the clone first.
-In environments offering a powerful enough aspect-oriented support,
-it could be possible to detect any field update in the whole ROG of
-any object, following the strategy of 
-Gopinathan et al.~\cite{Gopinathan:2008:RMO:1483018.1483028}.
-Using such power would even be possible to roll-back the very field update that caused 
-the invariant to fail, making the object valid again.
-However, we think this would be a \textbf{terrible idea causing unexpected strange behaviour}: for example
-assume that we are moving object between two boats:
-the overflowing object may be removed from the \Q@cargo@ of the second boat, but it would not
-be placed back in the first boat. It would look like the object has disappeared.
-The important point here is that the program would be in an unexpected state
-even if no object are invalid, and this would happen \textbf{because} of the 
-checking/fixing behaviour, not because of code written by the programmer.
-
-We believe that the only viable option is to detect violations 
-\textbf{after the fact}, that is,
-after an invalid object has been materialised.
+To clearly communicate what kinds of checks the language semantic should insert,
+ we will write them down as if they were ``generated source code''. 
+However our proposed approach is independent of the actual technique to insert these checks, and they may be inserted directly into the bytecode, or they can be part of the underlying semantics of the virtual machine.
+In this section we rely on code example and informal explanations. In the next section we will provide formal definitions.
+We would like to underline that the
+features we need have all been presented in the past, but their application to sound Validation has never been explored.
 
 
-We detect existing invalid objects by encoding Validation as a normal instance method.
-Using the underlying programming language instead of a dedicated specification language allows one to transparently refer to the behaviour/interface of any of these reachable objects without exposing their internal representation.
-Indeed, in the general case, without relying on primitive types and with no assumptions on the meaning of methods,
-\textbf{using the underlying language is the only way to express Validation.}
-
-
-\subsection{Breaking preconceptions}
-Once the need for breaking objects is accepted, 
-many programmers may believe that making the fields private and checking the \Q@.valid()@ method
-at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is enough to enforce the 
-Validation.
-As we will see in this article, in most mainstream object-oriented languages, this is \textbf{very far} from enough.
-Let's focus first on a simpler example, when the boat only has its name:
-\begin{lstlisting}
-class Boat{
-  public Bool validate(){  return !name.isEmpty(); }
-  private String name;
-  public String name(){ return this.name; }
-  public String name(String name){
-    this.name=name;
-    if(!this.validate()){throw $\MComment{error}$}
-    }
-  public Boat(String name){
-    this.name=name;
-    if(!this.validate()){throw $\MComment{error}$}
-    }
-  }
-\end{lstlisting}
-\noindent At first look, this code seems to correctly enforce Validation.
-However our intuition relies not on statically verified properties, or on the semantics of the language,
-but on the expectations about ``correct'' behaviour of \Q@String@, and again
-we want to enforce Validation without assuming the behaviour of the other objects.
-\begin{itemize}
-\item Sample Bug 1:
-Suppose there was a bug in \Q@String.isEmpty()@, causing the method to non-deterministically return \Q@true@ or \Q@false@.
-What would it mean for the \Q@Boat@ Validation?
-Would a \Q@Boat@ be at the same time 
-valid and invalid?
-
-Only deterministic and pure methods can be used for validation.
-Ensuring this cannot be responsibility of the \Q@Boat@ programmer, since it may depend on third party code, as shown in this example.
-However, statically checking if a method is deterministic and pure is hard/impossible in most imperative object-oriented languages.
-
-While we may not expect the presence of bugs in the standard library class \Q@String@, the same behaviour can be achieved with subtyping:
-\saveSpace
-\begin{lstlisting}
-class EvilStr extends String{
-  method Bool isEmpty(){
-    return new Random().bool();
-  }}
-...
-String name=...$\Comment{can this be an EvilStr?}$
-Boat b=new Boat(name);
-\end{lstlisting}
-\saveSpace
-As you can see, when subtyping is present,
-without statically ensuring the purity of \Q@.valid()@ and accounting
-for every possible alias in the system one cannot use modular 
-reasoning to make any sound claims about Validation.
-
-
-\item Sample Bug 2:
-In our simple example, \Q@Boat@ objects can be mutated using the setter, and exposed using the getter.
-We may consider the getter to be safe since in modern languages we expect strings to be immutable objects.
-\footnote{While we can update the field \Q@name@ to point to another string, we cannot mutate the string object itself.
-To obtain  \Q@"Hello"@ from \Q@"hello"@ we need to create a whole new string object that looks like the old one except for the first character. This would be different in older languages like C, where strings are just mutable arrays of characters.}
-
-Again, the assumption that they are immutable depends on the correctness of the code inside \Q@String@: if there was a bug in the \Q@String@ class, or any \Q@String@ subclass, then executing 
-\Q@println(myBoat.name())@ may change \Q@myBoat@ by quietly changing a part of its ROG.
-
-Again, checking
-what methods mutate states cannot be responsibility of the \Q@Boat@ programmer.
-For Validation we need a language supporting aliasing and mutability control.
-
-
-\item Sample Bug 3:
-One of the advantages of checking Validation at run time, is that
-we can allow the program can take corrective actions if a property is violated.
-This may be implemented with a conventional \Q@try-catch@ if violations are represented by throwing errors.
-However, there is an issue with exceptions modelling invalid objects: they can be captured when the invalid object is still in scope. For example:
-
-\begin{lstlisting}
- Boat b=new Boat("Mary");
- try{p.name("");}catch(Throwable t){}$\Comment{ Catch and ignore invariant failure:}$
- assert p.name().isEmpty();$\Comment{now we have a broken object around!}$
-\end{lstlisting}
-
-As you can see, if we can capture Validation failures as normal exceptions (very desirable feature) then we may end up using invalid objects.
-Moreover,
- as shown before with the example of transferring cargo between two boats,
-after an invariant has been violated, even objects with valid invariant may be in an unexpected state.
-
-This is not a special problem relevant to just invariant, but a more general issue with
-recovering from exceptions.
-Other authors have identified the concept of Strong Exception Safety~\cite{Abrahams2000}:
-when a \Q@try-catch@ captures an exception, the visible state at the start of the catch must be the same as before the \Q@try@ block started its execution.
-%Note how this produces a different semantics with respect to static verification, where violations
-%never happened. However this will not necessarily lead to a broken semantics:
-% we aim to create a system where either the application terminate
-%when such a bug is identified, or where those objects and all the witnesses will be garbage collected
-% (as happens in alias burying~\cite{boyland2001alias}).
-%In our example, this means that to continue execution after a detected bug, 
-%we would require to garbage collect the overloaded boat, their cargo and probably most of the commercial port too.
-\end{itemize}
 
