@@ -1027,7 +1027,7 @@ public void testBabelFish() {
 	,"}");
 }
 
-
+// This was a bug as of 18/05/18. Marco stated that he was working on fixing it.
 @Test
 public void testImplementAndBabelFish() {
 	tp("{reuse L42.is/AdamTowel02"
@@ -1038,4 +1038,74 @@ public void testImplementAndBabelFish() {
 			,"}"
 	,"}");
 }
+
+// Should this work? The equivalent works in Java, Python, etc.
+@Test
+public void testNegativeVariable() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"Num s = 1"
+				,"Num j = -s"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// This is probably fine because we may not support this character. 
+// http://unicode.org/cldr/utility/character.jsp?a=00B6
+@Test
+public void testWeirdCharacters() {
+	tp("{reuse L42.is/nanoBase0"
+			,"A: {"
+				,"¶ = Bool.True()"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Should this work? I'm not quite sure why this doesn't work. Something to do with
+// The a.update() call.
+
+@Test
+public void testMutVariable() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Data <>< {"
+				,"var Num a"
+				,""
+				,"mut method Void update()"
+					,"this.a(30Num)"
+			,"}"
+			,"B: {"
+				,"A a = A(a: 1Num)"
+				,"a.update()"
+				,"X[a.a() == 1Num]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Are we not using IEEE 754 floating point standard? 
+@Test
+public void testFloatingPointAdd() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"X[(0.2Num + 0.1Num) != (0.3Num)]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Should this work okay? I think it's placing the == ahead of the + operator in precedence.
+@Test
+public void testOrderOfOperations() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"X[0.2Num + 0.1Num == 0.3Num]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+
+
 }
