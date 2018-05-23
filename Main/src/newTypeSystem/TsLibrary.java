@@ -22,13 +22,13 @@ import tools.Assertions;
 import ast.Ast.Mdf;
 
 public interface TsLibrary extends TypeSystem{
-  
+
   @Override default TOut typeLib(TIn in) {
     assert in.phase!=Phase.None;
     if(in.phase==Phase.Norm){return libraryShallowNorm(in);}
     return libraryWellTyped(in);
     }
-    
+
   default TOut libraryShallowNorm(TIn in) {
     //(library shallow norm)
     //Norm  |- p ~> norm(p)  //remember: norm ignores meth bodies
@@ -47,14 +47,14 @@ public interface TsLibrary extends TypeSystem{
     }
     return normP;
     }
-    
+
   default TOut libraryWellTyped(TIn in) {
 //   (library well typed)
 //   Phase |- p ~> L' //In implementation, if p.top().Phase>=Phase, L'=p.Top()
      ClassB top=in.p.top();
      assert in.phase.subtypeEq(Phase.Typed)://   Phase in {Typed,Coherent}
        "";
-     if(top.getPhase().subtypeEq(in.phase)){ 
+     if(top.getPhase().subtypeEq(in.phase)){
        return new TOk(in,top,Path.Library().toImmNT());
        }
 //   L0={interface? implements Ps M1..Mn Phase'}=norm(p)
@@ -66,7 +66,7 @@ public interface TsLibrary extends TypeSystem{
      //   forall i in 1..n
 //     Phase| p| Ps |- Mi ~> Mi'
      TIn inNested=in.withP(in.p.updateTop(L0));
-     
+
      List<MethodWithType> newMwts;
      if(in.phase==Phase.Coherent && top.getPhase()==Phase.Typed){
        newMwts=new ArrayList<>(mwts);
@@ -131,7 +131,15 @@ public interface TsLibrary extends TypeSystem{
         }
       mwt1=mwt.with_inner(out.toOk().annotated);
     }
-    if(mwt.getMt().isRefine()){
+    if(!mwt.getMt().isRefine()){
+      for(Type pi:supertypes) {
+        ClassB li=in.p.extractClassB(pi.getPath());
+        if(li._getMember(mwt.getMs())!=null) {
+          return new TErr(in,"Method "+mwt.getMs()+" do not refine method from "+pi.getPath(),pi.getPath().toImmNT(),ErrorKind.InvalidImplements);
+          }
+        }
+      }
+    else{
       for(Type t :supertypes){
         Path P=t.getPath();
         ClassB cbP=in.p.extractClassB(P);
@@ -160,7 +168,7 @@ public interface TsLibrary extends TypeSystem{
     return new TOkM(mwt1);
     }
 
-    
+
   static boolean coherent(Program p,boolean force) {
       ClassB top=p.top();
       if (top.isInterface()){return true;}
@@ -223,12 +231,12 @@ public interface TsLibrary extends TypeSystem{
   static Type _extractTi(MethodWithType ck, String name) {
     if(name.startsWith("#")){name=name.substring(1);}
     int i=-1;for(String ni:ck.getMs().getNames()){i+=1;
-      if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i));} 
+      if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i));}
       }
     return null;
     }
 
-  
+
 //coherent(n?,p,T1 x1..Tn xn,
 //refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
 //where

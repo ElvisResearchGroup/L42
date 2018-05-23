@@ -256,9 +256,8 @@ Phase| p| Ps |-M ~> M'
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
   else
     e?=e?'
-  //TODO: replace in code, before was refine? = refine <=>
-  if ?refine=empty, then for no P in Ps M.ms in dom(p(P))
-  if ?refine=refine then //end change, test under as before
+  if ?refine=empty, then not exists P in Ps such that M.ms in dom(p(P))
+  if ?refine=refine then
     forall P in Ps such that p(P)(m(x1..xn))[from P]=M0 //that is, is defined
       all of the following hold:
       M0=refine?' mdf method T' m(T'1 x1..T'n xn)exceptions Ps'
