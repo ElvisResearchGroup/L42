@@ -29,7 +29,7 @@ An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is inv
 We say that a language enforces object validity if:
 \begin{itemize}
 \item \Q@.validate()@ methods are guaranteed to be deterministic and to not mutate any state; they represent logic predicates on the reachable object graph (ROG).
-\item Invalid object are not reachable by application code. Thus programmers can always assume such properties to hold.
+\item Invalid objects are not reachable by application code. Thus programmers can always assume such properties to hold.
 For example, at the point of a method call,
 all the parameters (including \Q@this@) and all the objects in their ROG will be valid.
 \end{itemize}
