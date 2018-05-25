@@ -1,49 +1,53 @@
-% This is LLNCS.DEM the demonstration file of
-% the LaTeX macro package from Springer-Verlag
-% for Lecture Notes in Computer Science,
-% version 2.4 for LaTeX2e as of 16. April 2010
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
 %
-\documentclass[english]{llncs}
-\usepackage[margin=28.7ex]{geometry}
+\documentclass[runningheads]{llncs}
 %
+\usepackage{graphicx}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following line
+% to display URLs in blue roman font according to Springer's eBook style:
+% \renewcommand\UrlFont{\color{blue}\rmfamily}
+
 \input{../Def/Def}
 \newcommand\saveSpace{\vspace{-1.1ex}}
-\usepackage{makeidx}  % allows for indexgeneration
-%
-\begin{document}
-%
-\frontmatter          % for the preliminaries
-%
-\pagestyle{headings}  % switches on printing of running heads
-\addtocmark{Metaprogramming in 42} % additional mark in the TOC
-%
+%\usepackage{makeidx}  % allows for indexgeneration
 
-\mainmatter              % start of the contributions
+\begin{document}
 %
 \title{Metaprogramming in 42:
 Declaratively generate imperative behaviour by functional reasoning}
 %
 \titlerunning{Metaprogramming in 42}  % abbreviated title (for running head)
-%                                     also used for the TOC unless
-%                                     \toctitle is used
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
 %
-%\author{Marco Servetto%\inst{1} %
-% \and Alex Potanin%\inst{1}
-% }
+\author{Marco Servetto\inst{1} %\orcidID{0000-1111-2222-3333} 
+\and
+Hrshikesh Arora\inst{1} %\orcidID{1111-2222-3333-4444} 
+\and
+Alex Potanin\inst{1} %\orcidID{2222--3333-4444-5555}}
+}
 %
-%\authorrunning{Servetto et al.} % abbreviated author list (for running head)
+\authorrunning{M. Servetto et al.}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
 %
-%%%% list of authors for the TOC (use if author list has to be modified)
+\institute{Victoria University of Wellington\\
+\email{marco.servetto@ecs.vuw.ac.nz},
+\email{arorahrsh@ecs.vuw.ac.nz},
+\email{alex.potanin@ecs.vuw.ac.nz}
+}
+%\url{http://www.springer.com/gp/computer-science/lncs} \and
+%ABC Institute, Rupert-Karls-University Heidelberg, Heidelberg, Germany\\
+%\email{\{abc,lncs\}@uni-heidelberg.de}}
 %
-%\institute{Victoria University of Wellington\\
-%\email{marco.servetto@ecs.vuw.ac.nz},
-% \email{alex.potanin@ecs.vuw.ac.nz}
-%} %, \and ...}
-
-\maketitle              % typeset the title of the contribution
-
+\maketitle              % typeset the header of the contribution
+%
 \begin{abstract}
-\saveSpace
 Quasi Quotation~\cite{moggi1999idealized,pitman1980special,sheard2002template} is a very expressive metaprogramming technique: it allows expressing arbitrary behaviour by
 generating arbitrary abstract syntax trees.
 However it is hard to reason about Quasi Quotation statically,
@@ -77,8 +81,8 @@ Finally, we present a prototype implementation of Iterative Composition in the c
 %
 %Deadline November 13, 2017
 
-%\keywords{}
 
+%\keywords{First keyword  \and Second keyword \and Another keyword.}
 \end{abstract}
 
 
@@ -86,6 +90,19 @@ Finally, we present a prototype implementation of Iterative Composition in the c
 \input{body}
 \input{conclusion}
 
-\bibliographystyle{plain}
+
+%
+% ---- Bibliography ----
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+% \bibliographystyle{splncs04}
+% \bibliography{mybibliography}
+%
+
+%\bibliographystyle{plain}
+\bibliographystyle{splncs04}
 \bibliography{main}
+
 \end{document}
