@@ -1,6 +1,6 @@
-\saveSpace
+%\saveSpace
 \section{Compile-time verification: Pow with contracts}
-\saveSpace
+%\saveSpace
 In this section we show how conventional verification techniques for OO can be applied on top of IC.
 While IC is already presented in~\cite{servetto2014meta},
 the idea and the techniques to use IC for verification are novel contributions.
@@ -35,7 +35,7 @@ This time we will use explicit iteration instead of recursion, just to show that
 \newcommand\oneThisSuperExp{\ensuremath{{}^{\textbf{1+this.superExp()}}}}
 \newcommand\powerY{\ensuremath{{}^{\textbf{y}}}}
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 Pow:{
   static method Library base()
@@ -49,7 +49,7 @@ Pow:{
   ...
   }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 We start by examining the base case of our induction: we annotated our 
 code with trivial specifications.
@@ -57,7 +57,7 @@ A code verifier could statically verify this code
 once and for all when \Q@Pow@ is type-checked.
 Then, lets look at the \Q@inductive()@ step:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 Pow:{
   static method Library base() =...$\Comment{as before}$
@@ -81,7 +81,7 @@ Pow:{
   ...
   }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 Here the annotations are much heavier.
 We show the full proof that a theorem proving may generate.
@@ -94,7 +94,7 @@ statically we only know they return a \Q@Library@.
 
 Here we put the pieces together:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 Pow:{...
  $\Comment{@requiresRV y>=0}$
@@ -111,7 +111,7 @@ Pow:{...
    $\Comment{here we statically know that res is statically verified;}$
     return res }  }$\Comment{RV happens here}$
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 Note how when the \Q@Override@ operation  runs, it will
 ensure the resulting class is statically verified:
@@ -207,7 +207,7 @@ that the result is not only \emph{self-consistent} but also the expected one.
 %-------------------------------------------------------------------------------------
 
 \section{IC is as expressive as QQ}
-\saveSpace
+%\saveSpace
 So far we have presented how using pre-post conditions benefits the safety of our approach 
 with respect to QQ.
 \textbf{Independently} from those benefits, 
@@ -222,7 +222,7 @@ all the considerations, ideas and techniques presented in this section are novel
 
 
 \subsection*{Object-orientation (OO) points to declarative languages}
-\saveSpace
+%\saveSpace
 Imperative programming asks you to write down the
 detailed computational steps your machine should perform.
 This allows the programmer to reason about their
@@ -232,9 +232,9 @@ As we all know too well, this tempting approach to understand
 We can see OO
 as taking imperative programming towards a more
 declarative style:
-\saveSpace
+%\saveSpace
 \subsubsection*{Subtyping}
-\saveSpace
+%\saveSpace
  A dynamically dispatched method invocation
 gives us no certainty of the detailed computational steps
 that are going to be performed, and
@@ -249,9 +249,9 @@ care of transforming the programmer request into a result.
 In many OO languages, this reasoning engine amounts to just following a pointer. However,
  as the Visitor Pattern and other  design patterns show us, this is sufficient to encode very interesting behaviour resolution.
 Moreover, some languages implement multiple dispatch~\cite{clifton2000multijava}, making this reasoning engine a lot more expressive.
-\saveSpace
+%\saveSpace
 \subsubsection*{Subclassing}
-\saveSpace
+%\saveSpace
 From this point of view, inheritance
 represents a similar loss/transfer of control:
 The programmer does not know
@@ -264,11 +264,11 @@ the subclass.
 This allows a limited declarative programming style.
 For example, in
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}[language=Java]
 class Rounded extends Button{ ... }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 We declare \Q@Rounded@s to be buttons in a way that
 is parametric on what \Q@Button@s concretely are.
@@ -317,7 +317,7 @@ complicated steps while generating their heirs.
 %\end{itemize}
 
 \subsection*{An algebra of composition operators}
-\saveSpace
+%\saveSpace
 
 In many class based object oriented languages, a class can inherit the code
 from one or more parents.
@@ -341,7 +341,7 @@ method \Q@foo()@ returning a \Q@Library@ literal.
 We can use class \Q@C@ and the \Q@Override@ composition operator to
 attempt creating classes \Q@D1,D2,D3@.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 C:{
   static method Library foo()={method Num m()=2  }  
@@ -355,24 +355,24 @@ D3:Override[m()<-superM1(),superM2()](C.foo(),C.foo(),{
   method Num superM2()
   })
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 By a process known as flattening~\cite{scharli2003traits}, we get the following results for \Q@D1,D2,D3@:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 D1:{method Num m()=2  }  
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 \Q@C.foo()@ is \emph{executed at compile time}
 and we use the result to initialize \Q@D1@.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 D2:{method Num m()=2  method Num n()=0  }  
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 \Q@Override@ works like inheritance; in this case since there is no conflict between
 the two code literals, the result is a library literal containing both
@@ -383,11 +383,11 @@ the two code literals, the result is a library literal containing both
 %Here we try to compose the same code literal twice.
 %This fails since both (identical) sides implement method m.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 D3:{method Num m()=3+2+2 } $\Comment{super calls may be inlined}$
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 We write \Q@Override[m()<-superM1(),superM2()](..)@ to support calling the multiple conflicting versions
 for method \Q@m()@.
@@ -425,7 +425,7 @@ inside class \Q@C@ is not relevant: only the behaviour/contract of such method i
 
 
 \subsection*{Patterns for generating arbitrary behaviour}
-\saveSpace
+%\saveSpace
 The general idea is to define a new declarative operator
 using other declarative operators.
 %(like Override for code composition and Refactor.redirect for generics).
@@ -441,14 +441,14 @@ of class \Q@A@.
 Note the declarative feel of this operation: we just specify the desired properties of the result (having a \Q@toS()@ method), and the detailed implementation is  
  automatically derived by the shape of the library literal provided.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 A: Stringable <>< { .. }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 \subsection*{Babel fish operator \Q@<><@}
-\saveSpace
+%\saveSpace
 Since the main goal of our approach is to generate code, we introduce a \emph{code generation operator} \Q@<><@, called Babel fish.
 It is a binary operator, taking a Decorator and a \Q@Library@, and producing another \Q@Library@.
 
@@ -470,19 +470,19 @@ We can also see \Q@Override@ as a class decorator, and
 write \Q@Override(a,b,c)<><d@ to highlight that the last parameter enjoys preferential composition.
 
 \subsection*{Objective code}
-\saveSpace
+%\saveSpace
 In order to have a clear goal,
 let's imagine a tentative code we would like to obtain:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 Stringable<><{S name Num age method S sayHi() ="Hi, i'm "++this.name()}
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 \noindent should evaluate into
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 {S name Num age
  method S toS()=
@@ -491,7 +491,7 @@ Stringable<><{S name Num age method S sayHi() ="Hi, i'm "++this.name()}
    "Hi, i'm "++this.name()
 }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 How to obtain this kind of result by using IC instead of QQ?
 The main idea is to try to not think about the actual code but about
@@ -502,13 +502,13 @@ put these functions together.
 
 
 \subsection*{Top level operation}
-\saveSpace
+%\saveSpace
 We are going to show the implementation of \Q@Stringable@ in a Java like language where
 we are going to repeat parameter names in the call site when this can improve readability.
 The following is our entry point: we define a babelFish static method
 returning a \Q@Library@.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 Stringable:{
   static method Library <><(Library that) = (
@@ -519,7 +519,7 @@ Stringable:{
     )
 ...
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 
 % The method is called \Q@<><@ and thus can be invoked as binary operator.
@@ -541,12 +541,12 @@ We then use \Q@Override@ to compose our \Q@toS()@ with the original input.
 
 
 \subsection*{Phase 1: base cases}
-\saveSpace
+%\saveSpace
 To define our base case, we first 
  declare a method returning a constant \Q@Library@ value: an approximation for a class
  whose  \Q@toS()@ method delegates to a field.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
   static method Library baseTrait() = {
     T f
@@ -554,7 +554,7 @@ To define our base case, we first
     method S toS()= this.f().toS()
     }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 It has a field called \Q@f@ of type \Q@T@.
 \Q@T@ is a type with an abstract \Q@toS()@ method returning a string \Q@S@.
@@ -568,7 +568,7 @@ but is not \emph{generic} in the Java/C\# sense.
 
 Now we can define our \Q@baseCases(that)@ method.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
   static method Libs baseCases(Library that) = Libs[
       RedirectType(path:"T" into:fi.type())<><
@@ -576,7 +576,7 @@ Now we can define our \Q@baseCases(that)@ method.
       this.baseTrait()
       | with fi in Fields(that)]
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 We extract the fields by observing with introspection
 our input class.
@@ -585,13 +585,13 @@ As available in both Haskell and Python, we assume we can use the common syntax 
 Where the expression \Q@e@ denotes the entries in the newly generated collection.
 In this case we generate our entries with the following interesting code:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
       RedirectType(path:"T" into:fi.type())<><
       Rename(selector:"f" into:fi.selector())<><
       this.baseTrait()
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 Here we apply two decorators to our \Q@baseTrait@. First
 we rename our field name from \Q@f@ to the current field name, then
@@ -629,25 +629,25 @@ conventional nominal type system to avoid errors:
 
 To give an example of the result of \Q@baseCases(that)@, if we were to call 
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 baseCases({
   S name Num age
   method S sayHi() = "Hi, i'm "++this.name()
   })
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
  we would obtain
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 Libs[
   {S name   method S toS() = this.name().toS()};
   {Num age  method S toS() = this.age().toS()};
   ]
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 Note how there is no trace of the \Q@sayHi()@ method, and the
 nested classes named \Q@T@ have been removed to point at the
@@ -655,7 +655,7 @@ external types \Q@S@ and \Q@Num@
 
 
 \subsection*{Phase 2: folding}
-\saveSpace
+%\saveSpace
 Next we fold all our base cases into a single \Q@toS()@ method.
 Traditionally, to fold a list of values into a single value, a binary operation is needed.
 However, here we fold code representing methods,
@@ -663,7 +663,7 @@ so we need a lifted version of fold:
  we supply a \Q@Library@ value where a method
 uses two alternative versions of itself. 
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
     {
     method S toS()= this.superToS1()++", "++this.superToS2()
@@ -671,14 +671,14 @@ uses two alternative versions of itself.
     method S superToS2()
     }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 This corresponds both to multiple inheritance, where a new version of a method is obtained by composing the two super implemenations,
 but also to a binary fold operation from \Q@S superToS1()@ and \Q@S superToS2()@
 into a \Q@S toS()@ result.
 Thus, to apply this folding, we use \Q@Override@ and we leverage on the multiple inheritance interpretation:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
   static method Library fold(Libs that,Library acc) = {
     if that.isEmpty() (return acc)
@@ -690,7 +690,7 @@ Thus, to apply this folding, we use \Q@Override@ and we leverage on the multiple
     return this.fold(that.withoutLeft(),acc:newAcc)
     }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 The base case of this recursive code is the empty list, where \Q@acc@ is returned,
 otherwise \Q@Override@ provides us with multiple inheritance where
@@ -702,20 +702,20 @@ and provide new behaviour, in this case, the two strings separated by a comma.
 
 Continuing with the example from before, starting from the same code literal we would now obtain:
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 {S name Num age
  method S toS() = this.name().toS()++", "++this.age().toS()
 }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 \subsection*{Phase 3: wrapping}
-\saveSpace
+%\saveSpace
 We could be satisfied with such result, but often we wish to wrap our final result
 to present it better.
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
   static method Library close(Library that) =
     Override[toS()<-superToS()](that)<><{
@@ -724,30 +724,30 @@ to present it better.
       }
   }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
   In the \Q@close(that)@ method here, \Q@Override@ adds \Q@[]@ around the string.
 
 Starting from
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 {S name Num age method S sayHi() "Hi, I'm "++this.name()}
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 we would now obtain
 
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 {S name Num age
  method S toS() = "["++this.name().toS()++", "+this.age().toS()++"]"
 }
 \end{lstlisting}
-\saveSpace
+%\saveSpace
 
 \subsection*{Phase 4: composition}
-\saveSpace
+%\saveSpace
 The last operation in the top level method, is composing our generated \Q@toS()@ behaviour with the
 original code (containing also \Q@sayHi@) in order to obtain the final result.
 
