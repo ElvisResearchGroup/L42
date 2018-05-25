@@ -120,7 +120,7 @@ global variables would prevent reasoning over determinism due to the possibility
 %naive is unsound - person 3 bugs
 
 
-\section{Validating Simple Objects}
+\section{The \Q@.validate()@ method}
 
 Thanks to TM and OC, we can now express the \Q@.validate()@ method as follows:
 \saveSpace
@@ -153,8 +153,6 @@ In some sense, those inlined methods and field accesses can be thought as macro-
 
 % JUSTIFY that the fields are valid...
 
-%LATER: This means that we could relax our Strong Exception Safety to hold only on unchecked exceptions (by restricting only \Q@try-catch@ blocks that capture unchecked exceptions.
-
 %validable objects are not circular (do not belong in their ROG of any of its fields)
 %validate as a predicate on object fields never really see this.
 %
@@ -162,7 +160,10 @@ In some sense, those inlined methods and field accesses can be thought as macro-
 %a validate check is never needed/generated/injected when working on a read x
 %multi threading is not relevant/supported
 %validable objects are not circular (do not belong in their ROG of any of its fields)
-\loseSpace
+
+\section{Validating Simple classes}
+In this section we consider how to validate a simple but useful and common category of classes, In the next section we expand our technique.
+
 Consider the following code, where a \Q@Person@ have a single immutable (non final) field \Q@name@.
 \begin{lstlisting}
 class Person {
@@ -173,25 +174,32 @@ class Person {
   public Person(imm String name) {this.name = name;}
 }
 \end{lstlisting}
+\Q@Person@, only has immutable fields and the constructor only uses \Q@this@ to access/update fields. We say such a class is \emph{simple}.%
 
-\Q@Person@, only has immutable fields and the constructor simply use the parameters to directly initialize  the fields. We say such a class is \emph{simple}. Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself we don't check for validity during the constructor as \Q@this@ is not directly reached}:
+%\Q@Person@, only has immutable fields and the constructor 
+%uses the parameters to directly initialize (all) the fields.
+% We say such a class is \emph{simple}.%
+%\footnote{
+%We consider only standard contractors for simplicity of exposition.
+%More complex constructors could be supported, provided that \Q@this@ is only used to access fields, we do discuss them for simplicity.}
+The difference with respect to the UML DataType is that fields are not required to be final, and thus the object can change state during its lifetime. This means that the ROGs of all the \emph{fields} are immutable, but not the object itself.
+Of course UML DataTypes are just a special case of simple classes.
+Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself we don't check for validity during the constructor as \Q@this@ is not directly reached}:
 % If a simple class provides a \Q@.validate()@ method, then validation will be enforced.
 % For \Q@Person@, intuitively, the code would behave as follow:
 \begin{lstlisting}
 class Person {
-	bool initilised;
-  read method imm Bool validate() {return initilised || !name.isEmpty();}
+  read method imm Bool validate() {return !name.isEmpty();}
   private imm String name;
   read method imm String name() {return this.name;}
   mut method imm String name(imm String name) {
     this.name = name;
-    if (!this.validate()) {throw new UncheckedException(...);} $\MComment{check after field update}$
+    if (!this.validate()) {throw new Error(...);} $\MComment{check after field update}$
   }
   public Person(imm String name) {
     this.name = name;
-    if (!this.validate()) {throw new UncheckedException(...);} $\MComment{check at end of constructor}$
-  }
-}
+    if (!this.validate()) {throw new Error(...);} $\MComment{check at end of constructor}$
+}}$\Comment{Generated code, not directly written by the programmer}$
 \end{lstlisting}
 %... $\MComment{validation error}$ 
 
@@ -199,11 +207,8 @@ class Person {
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
 If we were to relax the rules of \Q@.validate()@, make \Q@Person@ not simple, or remove our OC rules, validation would become harder, or even impossible:
-\begin{itemize}
-
-
 %TODO: Move this code somewhere else
-\item Allowing use of object-capabilities:
+\subsubsection*{Unrestricted use of object-capabilities:}
 Allowing \Q@.validate()@ to use an object capability could allow for it to be non deterministic, by either:
 \begin{itemize}
 \item allowing \Q@.validate()@ to (indirectly) access a \Q@mut@ reference to a capability-object,
@@ -214,8 +219,7 @@ Allowing \Q@.validate()@ to use an object capability could allow for it to be no
 Doing this could allow for \Q@.validate()@ to be non-deterministic. For example consider this simple and contrived (mis)use of person:
 \begin{lstlisting}
 class EvilString extends String {
-	@override
-  read method Bool isEmpty() {
+  @Override read method Bool isEmpty() {
     return new Random().bool(); $\Comment{Creates a new capability object out of thin air}$
   }
 }
@@ -232,27 +236,27 @@ Despite the code for \Q@Persion.validate()@ intuitively looking correct and dete
 
 We would have the same problems in any language not restricting object-capabilities, like Java or Rust.
 
-\item Allowing mutation: % TODO: Come up with better title
+\subsubsection*{Allowing internal mutations/back-doors:}
+% TODO: Come up with better title
 Suppose we relax our mutation rules, by allowing interior mutability
 as in Rust and Javari: they allows to have back-doors allowing mutable objects inside of 
 the ROG of an immutable object.
 \begin{lstlisting}
-class AtomicBool{...
+class AtomicBool { ...
   $\Comment{Instances of this library defined back-door class can be}$
   imm method imm Void store(imm Bool val){}$\Comment{ mutated using imm receivers}$
   }
 
 class NastyString extends String {
-	imm AtomicBool evil = new AtomicBool(false);
-	imm method imm Void nasty() {
-		this.evil.store(true); $\Comment{the imm method can mutate the state}$
-	}
+  imm AtomicBool evil = new AtomicBool(false);
+  imm method imm Void nasty() {
+    this.evil.store(true); $\Comment{the imm method can mutate the state}$
+  }
 
-	@Override
-  read method Bool isEmpty() {
-		return this.evil.load() ? false : super.isEmpty();
-	}
-	...
+  @Override read method Bool isEmpty() {
+    return this.evil.load() ? false : super.isEmpty();
+  }
+  ...
 }
 ...
 imm NastyString name = new NastyString("bob");
@@ -317,40 +321,51 @@ For validation we need the language to guarantee true deep immutability.
 %For Validation we need a language supporting aliasing and mutability control.
 %\end{comment}
 
-\item Violating Strong Exception safety:
-One of the advantages of checking Validation at run time, is that
-we can allow the program can take corrective actions if a property is violated.
-This may be implemented with a conventional \Q@try-catch@ if violations are represented by throwing errors.
-However, there is an issue with exceptions modelling invalid objects: they can be captured when the invalid object is still in scope. For example:
+\subsubsection*{Strong Exception Safety:}
+The ability to catch and recover from validation failures is extremely useful as it allows the program to take corrective action.
+This may be implemented with a conventional \Q@try-catch@ since violations are represented by throwing errors.
+ Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block are now unreachable (as happens in alias burying~\cite{boyland2001alias}).
+
+However, if instead we choose not to enforce strong exception safety, an invalid object could be easily made reachable:
 \saveSpace
 \begin{lstlisting}
- imm Person bob=new Person("bob");
- try{bob.name("");}catch(imm Error t){}$\Comment{ Catch and ignore invariant failure:}$
- assert bob.name().isEmpty();$\Comment{now we have a broken object around!}$
+mut Person bob = new Person("bob");
+try {bob.name("");} catch (imm Error t){$\MComment{Catch and ignore validation failure:}$}
+assert bob.name().isEmpty(); $\Comment{now we have a rechable broken object!}$
+
 \end{lstlisting}
 \saveSpace
-As you can see, if we can capture validation failures as normal exceptions (very desirable feature) then we may end up using invalid objects.
+As you can see, recovering from a validation failure in this way is unsound and breaks the guarantees of validation.
+Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
+Since calls to \Q@.validate()@ may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break validation.
+
+%LATER: This means that we could relax our Strong Exception Safety to hold only on unchecked exceptions (by restricting only \Q@try-catch@ blocks that capture unchecked exceptions.
+
+
+
+% One of the advantages of checking Validation at run time, is that
+% we can allow the program can take corrective actions if a property is violated.
+% This may be implemented with a conventional \Q@try-catch@ if violations are represented by throwing errors.
+% However, there is an issue with exceptions modelling invalid objects: they can be captured when the invalid object is still in scope. For example:
+
+
+%As you can see, if we can capture validation failures as normal exceptions %(very desirable feature) then we may end up using invalid objects.
 %Moreover,
 % as shown before with the example of transferring cargo between two boats,
 %after an invariant has been violated, even objects with valid invariant may be in an unexpected state.
 
-This situation is a general issue about reasoning on the state after recovering from exceptions.
-In particular, as shown in the example this prevent sound validation.
-However, for Validation, we only need String Exception Safety against unchecked exceptions, so we may enforce it only on \Q@try-catch@ capturing unchecked exceptions.
+% This situation is a general issue about reasoning on the state after recovering from exceptions.
+% In particular, as shown in the example this prevent sound validation.
 
-Note how this produces a different semantics with respect to static verification, where violations
-never happened. However this will not necessarily lead to a broken semantics:
+% Note how this produces a different semantics with respect to static verification, where violations
+% never happened. However this will not necessarily lead to a broken semantics:
 %Thanks to Strong exception safety we have a system where either the application terminate
 %when an invalid object is detected, or where any witness of the execution causing the invalid object is erased from history
-Thanks to Strong exception safety we have a system where beside the exception itself that is thrown when an invalid object is detected,
-there is no other trace of the invalid object and the computation that has caused his invalidity.
-Any object that has been mutated/created during the \Q@try@ block are now unreachable,
-(as happens in alias burying~\cite{boyland2001alias}).
 %those objects and all the witnesses will be garbage collected
 % (as happens in alias burying~\cite{boyland2001alias}).
 %In our example, this means that to continue execution after a detected bug, 
 %we would require to garbage collect the overloaded boat, their cargo and probably most of the commercial port too.
-\end{itemize}
+
 
 
 

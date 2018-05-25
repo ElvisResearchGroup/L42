@@ -1,12 +1,33 @@
 \saveSpace
-\subsection{Encapsulated Objects}
+\section{Validating Encapsulated classes}
 \label{s:encapsulated}
 \saveSpace
+
+motivation
+
+example
+
+2 way to alias badly
+
+correct example
+
+capsule solve both
+
+concept of exposer
+
+
+
+
+
+Simple classes are very common, but in many cases objects have
+sub-objects that conce
+
 Lets consider the
 complete \Q@Boat@ example, with added modifiers:
 %we can consider the we may have a person with a list of allergies.%
 %\footnote{To avoid discussing generics, we assume class \Q@ListS@: a mutable list of \Q@imm Str@.}
 \begin{lstlisting}
+
 class Boat{$\Comment{too much cargo and the ship may sink}$
   read method imm Bool invariant(){
     return !name.isEmpty() && cargo.weight()<=300;

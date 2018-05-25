@@ -267,4 +267,24 @@ in the former step thanks to monitor expressions inside $\mathit{error}$.
 However, all such $l$ are defined inside $\sigma_0$,
 for the last well formedness condition.
 
+With strong exception safety (together with use of Java-style lambdas) one could do this in a safe way:
+\saveSpace
+\begin{lstlisting}
+static method mut Person try_name(mut Person bob, imm String new_name) {
+  try {
+    mut Person bob_temp = bob.clone(); $\MComment{Assuming a suitable definition}$
+    bob_temp.name(new_name);
+    $\Comment{Name change succeeded, return our updated bob}$
+  } catch (imm Error t) {
+    $\Comment{Catch and ignore validation failure, return the original bob}$
+    return bob;
+  }
+  return bob.name(new_name);
+}
+,,,
+mut Person bob = try_name(new Person("bob"), "");
 
+assert !bob.name().isEmpty(); $\Comment{bob is valid!}$
+
+\end{lstlisting}
+\saveSpace
