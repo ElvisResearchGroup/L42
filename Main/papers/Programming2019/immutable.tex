@@ -1,47 +1,85 @@
 
 
-\section{Type modifiers  in literature}
-
+\section{Background}
+\subsection{Type Modifiers}
 Type modifiers are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification of mutability and aliasing properties of objects.
 With sightly different names and semantics, the three most common modifiers for object references are:
 \begin{itemize}
-\item Mutable \Q@mut@: the referenced object can be mutated, as in a language without modifiers,
-\item Immutable \Q@imm@: the referenced object can never mutate, no matter what happens,
-\item and Readonly \Q@read@: the referenced object cannot be mutated by such reference, but in the program there may be mutable references to this same object, so mutation can still be observed. 
+\item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers,
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such reference, but in the program there may be mutable references to this same object, so mutation can still be observed. 
+\item Immutable (\Q@imm@): the referenced object can never mutate (not even through an alias), and
 \end{itemize}
-\noindent
-Type modifiers are different to field or variable modifiers like Java \Q@final@: TM applies to references,  \Q@final@ specifies what can be done to the field itself.
-Example, compare Java's \Q@final@ modifier to our \Q@imm@ modifier:
+In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
+\loseSpace
+Type modifiers are different to field or variable modifiers like Java’s \Q@final@: TM applies to references,  \Q@final@ specifies what can be done to the field itself. In comparison to \Q@imm@ :
 
 \begin{itemize}
-\item A \Q@final@ variable/field cannot be reassigned, it always refers to the same object. However, the referenced object itself may be mutated.
-\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, neither will its ROG. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
-\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@* const A@, where a \Q@final imm@ variable would be like \Q@const *const A@.}
+\item A \Q@final@ variable/field cannot be reassigned, it always refers to the same object; however, the referenced object itself may be mutated.
+\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its ROG. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
+\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final imm@ variable would be like \Q@const *const A@.}
 \end{itemize}
 
-
-
-\noindent Consider the following  example of usage of \Q@mut@, \Q@imm@ and \Q@read@:
-\begin{lstlisting}
-mut Point mp = new Point(1,2)
-mp.setX(3) $\Comment{ok}$
-imm Point ip = new Point(1,2)
-$\Comment{}$ip.setX(3) $\Comment{type error}$
-read Point rp = mp $\Comment{ok read common supertype of imm/mut}$
-$\Comment{}$rp.setX(3) $\Comment{type error}$
-mp.setX(5) $\Comment{ok, and now we can observe rp.x()==5}$
-ip = new Point(3,5) $\Comment{ok, ip not final}$
-\end{lstlisting}
-\noindent We cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation; in our example we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
- 
 There are several possible interpretations of the semantics of type modifiers.
 Here we assume the full/deep meaning:
 \begin{itemize}
-\item all the objects in the ROG of an immutable object are immutable;
- this corresponds to UML DataTypes,
-\item a mutable field accessed from a \Q@read@ reference is also a \Q@read@ reference,
-\item no casting is allowed between different type modifiers.
+  \item all the objects in the ROG of an immutable object are immutable;
+  this corresponds to UML DataTypes,
+  \item a mutable field accessed from a \Q@read@ reference is also a \Q@read@ reference,
+  \item no casting is allowed between different type modifiers.
 \end{itemize}
+
+
+\noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
+The main progress in the last couple of years is with the flexibility of such type systems: where the programmer should use \Q@imm@ to represent objects that would obviously be modelled as UML DataTypes, and \Q@mut@ nearly everywhere else; the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
+To see a glimpse of this flexibility, consider the following example:
+\saveSpace
+\begin{lstlisting}[escapechar=\%]
+class Point {
+  private imm Int x, y;
+
+  %\Comment{Method whose ‘this’ paramater is mut}%
+  mut method imm Void X(imm Int x) { 
+    this.x = x; %\Comment{Ok, ‘this’ is mut so we can update a field}%
+  } 
+
+  %\Comment{Method whose ‘this’ paramater is read}%
+  read method imm Int X() { 
+    return this.x; %\Comment{Ok, ‘imm’ is more restrictive than ‘read’}%
+  }
+  ...  
+}
+class Circle {
+  public mut Point center;
+  read method read Point center() {
+    return this.center; %\Comment{‘this’ is read, so ‘center’ is also read}%
+  }
+  ...
+}
+...
+mut Point mp = new Point(1,2)
+mp.X(3) %\Comment{ok}%
+imm Point ip = new Point(1,2)
+%\Comment{}%ip.X(3) %\Comment{type error, .X(imm Int) takes a mut, but ip is imm}%
+read Point rp = mp %\Comment{ok read is a common supertype of imm/mut}%
+%\Comment{}%rp.X(3) %\Comment{type error, rp is not mut}%
+mp.X(5) %\Comment{ok}%
+asssert rp.x()==5 %\Comment{suceeds, we modified rp through the alias ‘mp’}%
+ip = new Point(3,5) %\Comment{ok, ip is not final}%
+
+mut Circle mc = new Circle(mCenter, %\MComment{radius}%7)
+imm Circle ic = new Circle(new Point(0,0),7) %\Comment{ok imm}%
+imm Point ip = ic.center() %\Comment{ok, imm objects are deeply immutable}%
+
+read Circle rc = mc
+read Point rp = rc.center() %\Comment{ok, everything can be promoted to read}%
+%\Comment{}%mut Point mp = rc.center() %\Comment{type error, rc is only ‘read’}%
+\end{lstlisting}
+
+
+\noindent We cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation; in our example we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
+Here \Q@imm Circle ic@ and \Q@mut Circle mc@ are both initialized with a \Q@new Circle(...)@.
+This is not a special feature of the \Q@new@ construct: since \Q@new@ returns a \Q@mut@ and any expression typed as a \Q@mut@ that only uses immutable references can safely be promoted to \Q@imm@ (since the returned value could not possibly be aliased). Such flexibility is also visible where \Q@rc.center()@ returns a \Q@read@ but \Q@ic.center()@ returns an \Q@imm@ (since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
+
 %With this kind of type system, we can ensure immutable classes by just declaring all their fields as final and immutable.%
 %\footnote{
 %In Java,  to ensure a class is immutable we need:
@@ -50,27 +88,8 @@ Here we assume the full/deep meaning:
 %and the SecurityManager need to properly tame reflection.}
 
 % Not sure about this paragraph:
-\noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
-The main progress in the last couple of years is with the flexibility of such type systems: where the programmer should use \Q@imm@ to represent objects that obviously are UML DataTypes, and \Q@mut@ nearly everywhere else; the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers adapting them to their use context.
-To see a glimpse of this flexibility, consider the following example:
-\saveSpace
 
-\begin{lstlisting}
-mut Point mCenter = new Point(1,2)
-mut Circle mc = new Circle(mCenter, $\MComment{radius}$7)
-mc.setRadius(3) $\Comment{ok}$
-imm Circle ic = new Circle(new Point(0,0),7) $\Comment{ok imm}$
-imm Point ip = ic.center() $\Comment{ok, ROG immutable}$
-read Circle rc = mc
-read Point rp = rc.center() $\Comment{ok, fields of read Circle are read}$
-$\Comment{}$mut Point mp = rc.center() $\Comment{type error}$ 
-\end{lstlisting}
-\saveSpace
 
-Here \Q@imm Circle ic@ and
-\Q@mut Circle mc@ are both initialized with a \Q@new Circle(...)@.
-This is not a special feature of the \Q@new@ construct: since \Q@new@ returns a \Q@mut@ and any expression typed as a \Q@mut Circle@ can be promoted/recovered into \Q@imm Circle@ if it uses only immutable references.
-Such flexibility is also visible where \Q@rc.center()@ returns a \Q@read@ but \Q@ic.center()@ returns an \Q@imm@.
 
 \loseSpace
 
@@ -81,31 +100,27 @@ when a \Q@try-catch@ catches an exception, the visible state must be the same as
 This can be obtained leveraging TM in the following way:
 \begin{itemize}
 \item all thrown exceptions are immutable objects,
-\item code inside \Q@try@ blocks capturing an exception is typed considering all 
-\Q@mut@ variable declared outside of the block as \Q@read@.
+\item code inside \Q@try@ blocks capturing an exception is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \end{itemize}
 
-
-
-
-\section{Object capabilities in literature}
+\subsection{Object Capabilities}
 
 While type modifiers are a statically verified property of references, object capabilities are run time characteristics of specific objects.
 
 Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionalities: only certain objects with ``special'' powers can do ``special'' actions, and those objects are obtained in a controlled way. We call such objects ``capability objects''. 
-For example, in Java \Q@System.in@ is a capability object (it has the capability to read input), however it is globally accessible, thus any code could use it, preventing reasoning about determinism.
+For example, in Java \Q@System.in@ is a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
 In a language enforcing object capabilities the \Q@main@ method will take a \Q@System@ object as a parameter, and that object has to be used to perform I/O, as in \Q@mySystem.println("hello")@.
-Moreover, there is no visible constructor for the \Q@System@ object and all the I/O methods require a mutable (\Q@mut@) receiver.
-Many other operations, like random numbers and file management may just take a \Q@mut System@ object as a parameter.
-\noindent This design space has been explored in literature by Joe-E~\cite{finifter2008verifiable}.
+Moreover, the \Q@System@ type would have no visible constructor, and all its I/O methods require a mutable (\Q@mut@) receiver.
+Many other operations, like random numbers and file management could also work this way.
+\noindent This design has been explored in literature by Joe-E~\cite{finifter2008verifiable}.
 
 
-We use TM to guarantee that any method that is not (indirectly) passed a \Q@mut@ reference to a capability object will not use that capability:
+Here we use TM to guarantee that any method that is not (indirectly) passed a \Q@mut@ reference to a capability object will not use any capabilities:
 \begin{itemize}
 \item all capability-methods must require a \Q@mut@ receiver,
-\item there are no global variables.\footnote{Note: even just allowing \Q@imm@
-global variables would prevent reasoning over determinism due to the possibility of global variable updates.}
-\item User code cannot directly create a capability object: they can only indirectly do so through an existing \Q@mut@ capability object reference
+\item there are no global variables\footnote{Note: even just allowing \Q@imm@
+global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems},
+\item user code cannot directly create a capability object: they can only indirectly do so through an existing \Q@mut@ capability object reference
 
 % NOTE: SOMEWHERE MAKE IT CLEAR THAT NON-DETERMINISM CAN ONLY OCCUR THROUGH A CAPABILITY OBJECT
 \end{itemize}
@@ -122,34 +137,31 @@ global variables would prevent reasoning over determinism due to the possibility
 
 \section{The \Q@.validate()@ method}
 
-Thanks to TM and OC, we can now express the \Q@.validate()@ method as follows:
+Thanks to TM and OC, we can now express the signature for \Q@.validate()@ method as follows:
 \saveSpace
 \begin{lstlisting}
-read method imm Bool validate(){...}
+read method imm Bool validate();
 \end{lstlisting}
 \saveSpace
 %The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 
 %By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
 
-As this method is declared as \Q@read@ and only takes the implicit (\Q@read@) parameter this, thus we can guarantee the method is pure:
+As this method is declared as \Q@read@, and only takes the implicit parameter this as (\Q@read@), we can guarantee the method is pure:
 \begin{itemize}
 \item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated,
 \item nothing else is accessible (we do not have global variables),
-\item if a capability object (such as \Q@System@) is in the ROG of \Q@this@, then it can only be accessed as \Q@read@, preventing use of it's capability (such as I/O).
+\item if a capability object (such as \Q@System@) is in the ROG of \Q@this@, then it can only be accessed as \Q@read@, preventing use of its capability (such as I/O).
 \end{itemize}
 
 \noindent Also note \Q@.validate()@ is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.
 
 
-Clearly, the \Q@.validate()@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.\footnote{
-At a first look this may seams in open contradiction
+Clearly the \Q@.validate()@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.\footnote{
+At a first look this may seam an open contradiction
 with the aim of this work, however only calls to validate inserted by the language semantic can take an invalid \Q@this@. As for any other method, when the application code calls \Q@.validate()@,
 \Q@this@ is guaranteed to be valid.
-}%
-However, if well allow the method to use \Q@this@ directly (e.g. storing in a variable or passing to a method), we would break the guarantee of validation (namely: `invalid objects are not reachable by application code'). As such we enforce the simple restriction that \Q@.validate()@ may only use \Q@this@ to access fields.
-As a relaxation, we can accept to call instance methods that, in turn, only use \Q@this@ to access fields.
-The semantic of \Q@.validate()@ need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be reinterpreted in the context of \Q@.validate()@, where \Q@this@ may be invalid.
-In some sense, those inlined methods and field accesses can be thought as macro-expanded.
+} However, if we allow the method to use \Q@this@ directly (e.g. storing in a variable or passing it to a method), we would break the guarantee of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \Q@.validate()@ may only use \Q@this@ to access fields.
+As a relaxation, we can accept to call instance methods that in turn, only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@.validate()@ need to be understood with the body of those methods inlined/macro-expanded; thus reinterpreting the semantic of the methods (namely that \Q@this@ may be invalid).
 
 % JUSTIFY that the fields are valid...
 
@@ -162,9 +174,7 @@ In some sense, those inlined methods and field accesses can be thought as macro-
 %validable objects are not circular (do not belong in their ROG of any of its fields)
 
 \section{Validating Simple classes}
-In this section we consider how to validate a simple but useful and common category of classes, In the next section we expand our technique.
-
-Consider the following code, where a \Q@Person@ have a single immutable (non final) field \Q@name@.
+In this section we put consider how to validate a simple but useful category of classes. Consider the following code, where a \Q@Person@ has a single immutable (non final) field \Q@name@:
 \begin{lstlisting}
 class Person {
   read method imm Bool validate() {return !name.isEmpty();}
@@ -174,42 +184,42 @@ class Person {
   public Person(imm String name) {this.name = name;}
 }
 \end{lstlisting}
-\Q@Person@, only has immutable fields and the constructor only uses \Q@this@ to access/update fields. We say such a class is \emph{simple}.%
-
+\Q@Person@, only has immutable fields and the constructor only uses \Q@this@ to access/update fields; qe say such a class is \emph{simple}.
 %\Q@Person@, only has immutable fields and the constructor 
 %uses the parameters to directly initialize (all) the fields.
 % We say such a class is \emph{simple}.%
 %\footnote{
 %We consider only standard contractors for simplicity of exposition.
 %More complex constructors could be supported, provided that \Q@this@ is only used to access fields, we do discuss them for simplicity.}
-The difference with respect to the UML DataType is that fields are not required to be final, and thus the object can change state during its lifetime. This means that the ROGs of all the \emph{fields} are immutable, but not the object itself.
-Of course UML DataTypes are just a special case of simple classes.
-Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself we don't check for validity during the constructor as \Q@this@ is not directly reached}:
+The difference with respect to immutable types (like UML DataTypes) is that fields are not required to be final, thus the object can change state during its lifetime. This means that the ROGs of all the \emph{fields} are immutable, but \emph{not} the object itself.
+Of course immutable types are just a special case of simple classes.
+Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself, we don't check for validity during the constructor as \Q@this@ is not directly reached}:
 % If a simple class provides a \Q@.validate()@ method, then validation will be enforced.
 % For \Q@Person@, intuitively, the code would behave as follow:
-\begin{lstlisting}
+\begin{lstlisting}[escapechar=\%]
 class Person {
   read method imm Bool validate() {return !name.isEmpty();}
+  %\Comment{if we made this public, all users who update the field need to call validate}%
   private imm String name;
   read method imm String name() {return this.name;}
   mut method imm String name(imm String name) {
     this.name = name;
-    if (!this.validate()) {throw new Error(...);} $\MComment{check after field update}$
+    if (!this.validate()) {throw new Error(...);}
   }
   public Person(imm String name) {
     this.name = name;
-    if (!this.validate()) {throw new Error(...);} $\MComment{check at end of constructor}$
-}}$\Comment{Generated code, not directly written by the programmer}$
+    if (!this.validate()) {throw new Error(...);}
+}}
 \end{lstlisting}
 %... $\MComment{validation error}$ 
 
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \Q@.validate()@ method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-If we were to relax the rules of \Q@.validate()@, make \Q@Person@ not simple, or remove our OC rules, validation would become harder, or even impossible:
+If we were to relax (as in Rust), or even eliminate (as in Java), the rules of TM or OC: validation of this simple \Q@Person@ class, would become harder, or even impossible.
 %TODO: Move this code somewhere else
-\subsubsection*{Unrestricted use of object-capabilities:}
-Allowing \Q@.validate()@ to use an object capability could allow for it to be non deterministic, by either:
+\subsubsection*{Use of object-capabilities:}
+Allowing \Q@.validate()@ (to indirectly) use an object capability could allow for it to be non deterministic, by either:
 \begin{itemize}
 \item allowing \Q@.validate()@ to (indirectly) access a \Q@mut@ reference to a capability-object,
 \item relaxing the rule that capability-methods must have a \Q@mut@ receiver, or
@@ -217,40 +227,37 @@ Allowing \Q@.validate()@ to use an object capability could allow for it to be no
 \end{itemize}
 
 Doing this could allow for \Q@.validate()@ to be non-deterministic. For example consider this simple and contrived (mis)use of person:
-\begin{lstlisting}
+\begin{lstlisting}[escapechar=\%]
 class EvilString extends String {
   @Override read method Bool isEmpty() {
-    return new Random().bool(); $\Comment{Creates a new capability object out of thin air}$
+    %\Comment{Creates a new capability object out of thin air}%
+    return new Random().bool();
   }
 }
 ...
 imm String name = new EvilString();
-mut Person schrodinger1 = new Person(name);
-mut Person schrodinger2 = new Person(name);
+mut Person schrodinger = new Person(name);
 
-schrodinger.validate(); $\Comment{would this through an exception?}$
-schrodinger.validate(); $\Comment{what about now?}$
+schrodinger.validate(); $\Comment{would this throw an exception?}$
+schrodinger.validate(); $\Comment{what about this?}$
 \end{lstlisting}
-Despite the code for \Q@Persion.validate()@ intuitively looking correct and deterministic, the above calls to it are not. Obviously this breaks any reasoning and makes our validation unsound, so. Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Persion.validate()@ itself.
+Despite the code for \Q@Persion.validate()@ intuitively looking correct and deterministic, the above calls to it are not. Obviously this breaks any reasoning and makes our validation unsound. Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Persion.validate()@ itself.
 
-
-We would have the same problems in any language not restricting object-capabilities, like Java or Rust.
-
-\subsubsection*{Allowing internal mutations/back-doors:}
+\subsubsection*{Internal mutations/back-doors:}
 % TODO: Come up with better title
 Suppose we relax our mutation rules, by allowing interior mutability
-as in Rust and Javari: they allows to have back-doors allowing mutable objects inside of 
-the ROG of an immutable object.
-\begin{lstlisting}
-class AtomicBool { ...
-  $\Comment{Instances of this library defined back-door class can be}$
-  imm method imm Void store(imm Bool val){}$\Comment{ mutated using imm receivers}$
+as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:
+\begin{lstlisting}[escapechar=\%]
+class AtomicBool {
+  imm method imm Void store(imm Bool val){
+    ... %\Comment{Mutate through an imm reciever}%
   }
+}
 
 class NastyString extends String {
   imm AtomicBool evil = new AtomicBool(false);
   imm method imm Void nasty() {
-    this.evil.store(true); $\Comment{the imm method can mutate the state}$
+    this.evil.store(true); %\Comment{this imm method can do mutation}%
   }
 
   @Override read method Bool isEmpty() {
@@ -260,16 +267,16 @@ class NastyString extends String {
 }
 ...
 imm NastyString name = new NastyString("bob");
-imm Person person = new Person(name); $\Comment{person is valid}$
-name.nasty(); $\Comment{mutate the ROG of person, without it noticing}$
-$\Comment{person is now invalid!}$
+imm Person person = new Person(name); %\Comment{person is valid}%
+name.nasty(); %\Comment{mutate the ROG of person, without it noticing}%
+%\Comment{person is now invalid!}%
 \end{lstlisting}
 
-In this example we can use \Q@NastyString@ back-door to remotely break the invariant of \Q@person@ without
-any interaction with the \Q@person@ object itself.
-Again, ensuring the absence of \Q@String@ mutation cannot be responsibility of the \Q@Person@ programmer.
-For validation we need the language to guarantee true deep immutability.
+In this example we can use the \Q@AtomicBool@ back-door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself.
+It would require some powerful static or dynamic analysis to keep track of every case the ROG of \Q@Person@ could be indirectly mutated, and insert validity checks appropriately, however ensuring deep mutability trivialises this for simple classes.
 
+
+Allowing such back-doors could also be used to break the determinism of the \Q@.validate()@ method, by allowing it to potentially read information previous calls to it have stored.
 
 %In our simple example, \Q@Person@ objects can be mutated using the setter, and exposed using the getter.
 %We may consider the getter to be safe since in modern languages we expect strings to be immutable objects.
@@ -323,16 +330,15 @@ For validation we need the language to guarantee true deep immutability.
 
 \subsubsection*{Strong Exception Safety:}
 The ability to catch and recover from validation failures is extremely useful as it allows the program to take corrective action.
-This may be implemented with a conventional \Q@try-catch@ since violations are represented by throwing errors.
- Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block are now unreachable (as happens in alias burying~\cite{boyland2001alias}).
+This may be implemented with a conventional \Q@try-catch@, since violations are represented by throwing unchecked exceptions. Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
 
-However, if instead we choose not to enforce strong exception safety, an invalid object could be easily made reachable:
+However, if instead we chose not to enforce strong exception safety, an invalid object could be easily made reachable:
 \saveSpace
-\begin{lstlisting}
+\begin{lstlisting}[escapechar=\%]
 mut Person bob = new Person("bob");
-try {bob.name("");} catch (imm Error t){$\MComment{Catch and ignore validation failure:}$}
-assert bob.name().isEmpty(); $\Comment{now we have a rechable broken object!}$
-
+%\Comment{Catch and ignore validation failure:}%
+try {bob.name("");} catch (imm Error t){}
+assert bob.name().isEmpty(); %\Comment{now we have a rechable broken object!}%
 \end{lstlisting}
 \saveSpace
 As you can see, recovering from a validation failure in this way is unsound and breaks the guarantees of validation.

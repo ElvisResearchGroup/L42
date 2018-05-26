@@ -1288,13 +1288,11 @@ commentstyle=\color{red}\ttfamily,
 %  keywordstyle=\ttfamily\bf\small
 }
 \newcommand{\Comment}[1]{%
-  \scalebox{0.83}[1]{\textit{\color{darkBlue}{
-  \textbf{\!\!//#1}}}}%
-  }
+  \texttt{\textbf{\color{darkBlue}{//#1}}}%
+}
 \newcommand{\MComment}[1]{%
-  \scalebox{0.83}[1]{\textit{\color{darkBlue}{
-  \textbf{\!\!\!/*#1*/}}}}%
-  }
+  \texttt{\textbf{\color{darkBlue}{/*#1*/}}}%
+}
 \newcommand{\ReuseUrl}[1]{%
   \scalebox{0.90}[1]{\textit{\color{darkRed}#1}}%
   }

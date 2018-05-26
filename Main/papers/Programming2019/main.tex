@@ -1,4 +1,4 @@
-\documentclass[english,submission]{programming}
+\documentclass[english,submission,code=tt]{programming}
 \makeatletter
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
 \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
@@ -10,7 +10,6 @@
 \makeatother
 \usepackage[backend=biber]{biblatex} % Use Biblatex
 \addbibresource{main.bib}
-\addbibresource{bib.bib}
 \usepackage{mathpartir}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -29,7 +28,7 @@
 \newcommand\loseSpace{\vspace{1ex}}
 \begin{document}
 \paperdetails{
-perspective=art,
+perspective=theoretical,
 area={General-purpose programming}
 }
 \title{Validation}
@@ -38,6 +37,7 @@ area={General-purpose programming}
 %\affiliation{Victoria University of Wellington}
 %\email{marco.servetto@ecs.vuw.ac.nz}
 \author{Alex Potanin}
+\author{Isaac Oscar Gariano}
 \affiliation{Victoria University of Wellington}
 %\email{alex@ecs.vuw.ac.nz}
 
@@ -54,6 +54,7 @@ area={General-purpose programming}
 \end{CCSXML}
 \ccsdesc[300]{General and reference~Computing standards, RFCs and guidelines}
 \maketitle
+
 \begin{abstract}
 Class invariants provide guarantees about the state of objects throughout the execution.
 Runtime verification of class invariants is
@@ -71,12 +72,12 @@ to handle Sound Invariant Checking for the most common categories of objects.
 \input{intro}
 \input{immutable}
 %input{simple}
-\input{encapsulated}
-\input{interconnected}
-\input{meaning}
-\input{related}
-\input{conclusion}
+%\input{encapsulated}
+%\input{interconnected}
+%\input{meaning}
+%\input{related}
+%\input{conclusion}
 
 %\bibliography{main,bib}
-\input{appendix}
+%\input{appendix}
 \end{document}
