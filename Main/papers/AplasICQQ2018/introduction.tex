@@ -38,17 +38,14 @@ Usually programming with QQ requires thinking about the desired method body,
 A typical example is about generating a \Q@pow@ function, where the exponent is well known.
 The ``inefficient'' version would be:
 
-%\saveSpace
 \begin{lstlisting}[language=ML]
 fun power(x:Int,n:Int):Int 
   = if (n=0) then 1 else x*power(x,n-1);
 power7=$\lambda$ x:Int. power x 7;
 \end{lstlisting}
-%\saveSpace
 
 \noindent A more ``efficient'' version using QQ would be:
 
-%\saveSpace
 \begin{lstlisting}[language=ML]
 fun powerAux(n:Int):Expr<x:Int$\vdash$Int> 
   = if (n=0) then [|1|] else [|x * $\$$(powerAux(n-1)) |];
@@ -58,15 +55,12 @@ fun powerGen(n:Int): Int->Int
 
 power7=powerGen 7;
 \end{lstlisting}
-%\saveSpace
 
 \noindent As you can see, by generating the abstract syntax tree, we can obtain exactly:
 
-%\saveSpace
 \begin{lstlisting}[language=ML]
 power7=$\lambda$ x.x*x*x*x*x*x*x*1;
 \end{lstlisting}
-%\saveSpace
 
 \noindent On most machines, \Q@power7@ runs faster than $\lambda$\Q@ x:Int. power x 7@.
 Metaprogramming applications include more than just speed boosts, but we start with this example because it is very popular and simple.
@@ -80,7 +74,6 @@ we know the code for \Q@pow 0@, and given the code for
 Thus we define \Q@base@ and \Q@inductive@ functions, and we
 use them inside \Q@powerAux@:
 
-%\saveSpace
 \begin{lstlisting}[language=ML]
 fun base():Expr< x:Int$\vdash$Int > 
   = [| 1 |]
@@ -91,12 +84,10 @@ fun powerAux(n:Int):Expr< x:Int$\vdash$Int >
   = if (n=0) then base()
    else inductive ( powerAux(n-1) );
 \end{lstlisting}
-%\saveSpace
 
 \noindent Then, we have to bind \Q@x:Int@ to a parameter in a function.
 This is an important conceptual action and thus we make it a function:
 
-%\saveSpace
 \begin{lstlisting}[language=ML]
 fun lambdaX(code:Expr< x:Int$\vdash$Int >):Expr<$\vdash$Int->Int > 
   = [| $\lambda$ x. $\$$( code ) |]
@@ -104,7 +95,6 @@ fun lambdaX(code:Expr< x:Int$\vdash$Int >):Expr<$\vdash$Int->Int >
 fun powerGen(n: Int):Int->Int
   = compile(lambdaX(powerAux(n) ))
 \end{lstlisting}
-%\saveSpace
 
 The code we obtain is much larger, but is not logically more complex --- it is just showing the logical structure better.
 Note how since QQ works near the code representation,
@@ -129,23 +119,19 @@ code reuse}, but lifted at the expression level.
 As a concrete example, in Java operators \Q@+@ and \Q@*@ can be used in the expression \Q@1+2*3@,
 but the operator \Q@extends@ can only be used in the specific context of class declaration, as in
 
-%\saveSpace
 \begin{lstlisting}[language=Java]
 class A extends B { /*some code*/ int m(){return 1+super.m();}}
 \end{lstlisting}
-%\saveSpace
 
 In our proposed approach we lift \Q@extends@ and code literals to operator and constants
 that can be used in conventional expressions. We would write the former example as:
 
-%\saveSpace
 \begin{lstlisting}
 A = Override[m()<-superM()]( 
   {/*code of B*/},
   { /*some code*/ int m(){return 1+this.superM();}}
   )
 \end{lstlisting}
-%\saveSpace
 
 \noindent We support the conventional super call mechanism by annotating the operator with
 the expected super call name: \Q@Override[m()<-superM()](...)@.
@@ -155,7 +141,6 @@ the expected super call name: \Q@Override[m()<-superM()](...)@.
 Going back to our \Q@pow@ example,
 in IC, the base and inductive cases look like this:
 
-%\saveSpace
 \begin{lstlisting}
 Pow = {
   static method Library base()
@@ -178,7 +163,6 @@ Pow7 = Pow.generate(7)
 $\Comment{That would reduce into the desired code as follows:}$
 Pow7 ={method Num pow(Num x)=x.x*x*x*x*x*x*x*1}
 \end{lstlisting}
-%\saveSpace
 
 \noindent In more detail:
 
@@ -212,7 +196,6 @@ by reusing techniques originally developed to verify normal object oriented code
 
 
 The contributions of our work are as follows:
-%\saveSpace
 \begin{itemize}
 \item
 Show how to apply conventional object oriented verification techniques to IC.
@@ -224,7 +207,6 @@ generating code using a composition algebra
 is a flexible and simple technique, if combined with
 reasonable programming patterns.
 \end{itemize}
-%\saveSpace\saveSpace\saveSpace
 
 %-------------------------------------------------------------------------------------
 %-------------------------------------------------------------------------------------
