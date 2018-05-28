@@ -22,7 +22,10 @@ support some form of type modifiers and/or object capabilities.
 In this paper, we rely on TM and OC to define a language ensuring \emph{validation}: that is, it ensures a user defined property ('validity') holds for all instances of a class.
 
 %##what is validation
-A class may provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
+All classes provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
+As a short cut, if a class does not explicitly define a
+\Q@.validate()@ method, it is assumed to have an implicit default implementation of \Q@{return true;}@, i.e. every instance is valid.
+%A class may provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
 %TO DISCUSS: what about validate can only refer to imm and capsule fields?; those that do not, have an implicit default implementation of \Q@{return true;}@, i.e. every instance is valid.
 An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is invalid otherwise (e.g. if it returns \Q@false@, throws an exception or does not terminate).
 We say that a language enforces object validity if:
@@ -44,7 +47,7 @@ them.
 % reasoning through the program.
 Indeed, class-invariants can be represented in our system by defining validity as 
 %your ``and'' was wrong, is ``or''
-the class-invariant holds, or a mutator-method is currently running (this is easily implemented with a boolean flag).
+the class-invariant holding, or a mutator-method is currently running (this is easily implemented with a boolean flag).
 
 \subsection{Our Language}
 Our language supports validation by invoking the \Q@.validate()@ method, before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 

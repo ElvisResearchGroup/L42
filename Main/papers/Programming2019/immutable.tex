@@ -154,6 +154,14 @@ with the aim of this work, however only calls to validate inserted by the langua
 As a relaxation, we can accept to call instance methods that in turn, only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@.validate()@ need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be reinterpreted in the context of \Q@.validate()@, where \Q@this@ may be invalid.
 In some sense, those inlined methods and field accesses can be thought as macro-expanded.
 
+
+Finally,
+the code of \Q@.validate()@ can not access  \Q@mut@ and \Q@read@ fields,
+  because their content can be changed by unrelated code.
+Thus, we the modifiers presented so far, we can only access \Q@imm@ fields.
+We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
+
+
 % JUSTIFY that the fields are valid...
 
 %validable objects are not circular (do not belong in their ROG of any of its fields)
@@ -164,7 +172,7 @@ In some sense, those inlined methods and field accesses can be thought as macro-
 %multi threading is not relevant/supported
 %validable objects are not circular (do not belong in their ROG of any of its fields)
 
-\section{Validating Simple classes}
+\section{Validating immutable state}
 In this section we consider how to validate a simple but useful category of classes.
 In the next section we expand our technique.
  Consider the following code, where a \Q@Person@ has a single immutable (non final) field \Q@name@:
@@ -184,7 +192,7 @@ class Person {
 %\footnote{
 %We consider only standard contractors for simplicity of exposition.
 %More complex constructors could be supported, provided that \Q@this@ is only used to access fields, we do discuss them for simplicity.}
-The difference with respect to the UML DataType 
+The difference with respect to UML DataTypes 
 %immutable types (like UML DataTypes)
 %UML datatypes are aclass property. immutable types are often an instance one (so no final fields) 
  is that fields are not required to be final, thus the object can change state during its lifetime. This means that the ROGs of all the \emph{fields} are immutable, but not the object itself.
