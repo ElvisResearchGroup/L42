@@ -135,14 +135,14 @@ we would be in the same situation as the former example, where \Q@f@ may contain
 a reference to \Q@this@.
 \saveSpace
 \begin{lstlisting}
-mut method imm Void break(read Foo f) {
+mut method imm Void addHeavy(read Foo f) {
   this.items.add(new HeavyItem())
   f.hi() // Can `this' be observed here?
 }
 ...
 mut ShippingList l = new ShippingList();
 read Foo f = new Foo(l);
-l.break(f); // We pass another reference to `l' through f
+l.addHeavy(f); // We pass another reference to `l' through f
 \end{lstlisting}
 \saveSpace
 
@@ -208,7 +208,58 @@ l.break(f); // We pass another reference to `l' through f
 %general capsule mutator method that allows to apply any possible transformation over the content of a capsule %field:
 %At first glance it mayseem from
 \loseSpace
-A simple pattern to allow more flexible use of capsule fields is to define a ‘transform’ function an ‘Transformer’ interface\footnote{In a real language one would probably like to create a generic ‘Transformer’ interface, and auto-generate the ‘transform’ function, together with ‘get’ and ‘set’ functions} like so:
+A simple pattern to allow flexible use of capsule fields is to define a \Q@.transform()@ function and a \Q@ItemTransformer@ interface\footnote{A real language could
+provide a generic \Q@Transformer@ interface and allow to auto-generate the \Q@.transform()@ function, similarly to auto-generating getter/setters.} like so:
+
+
+%interface Foo{ma mb}
+%
+%class Raw implements Foo{
+%  no validate 
+%}
+%class ValidFoo1 implemens Foo{
+%  private capsule Foo inner;
+%  ma(){
+%    this.inner.ma();
+%  }
+%  validate
+%}
+%
+%
+%class Raw {
+%  mut method mut A stuff(read A a) {
+%      if a.bar() {
+%         x = ...
+%      }
+%      return new A(x)
+%  }
+%
+%  read method imm Object stuffPre(read A a) {
+%     return a.bar()
+%  }
+%  read method mut A stuffPost(imm Object o) {
+%     return new A(x)
+%  }
+%  mut method imm Object stuffInner(imm Object) {
+%      x = ...
+%  }
+%}
+%class ValidFoo1 {
+%	cpasule Raw r;
+%  mut method mut A stuff(read A a) {
+%     imm Object p = this.r.stuffPre(a);
+%     imm Object res = this.transformR(r -> r.stuffInner(p));
+%      return this.r.stuffPost(res)
+%  }
+%}
+%
+%
+%
+%class ValidFoo2 implemens Foo{
+%  private capsule Foo inner;
+%  validate
+%}
+
 \saveSpace
 \begin{lstlisting}
 interface ItemTransformer { 
@@ -221,19 +272,26 @@ class ShippingList {
    if (!this.validate) {throw Error(...);}
 }}
 \end{lstlisting}
-This ‘transform’ method can be used to similarly to calling an ‘expose’\footnote{a ‘getter’ that returns a \Q@mut@} function, and then mutating the result, however it ensures that the capsule cannot ‘leak’ out of the object, and does not break validation; for example:
+This \Q@.transformItems()@ method 
+has a similar expressive power to provide a
+\Q@mut@ getter, but ensures that 
+the field content cannot leak out.
+For example:
 \begin{lstlisting}[escapechar=\%]
 imm Void method imm Void doStuff(read C c) {
   imm Item i = c.getItem()
   // Lambda Expression that creates a new ItemTransformer
-  this.transformItems(is -> {
-    is.add(i); // Ok, can capture an ‘imm’ field
-    // Can't capture `this', as it can't be typed as ‘imm’
-    // as ItemTransformer.transform is an ‘imm’ method
-    %\Comment{}%this.items.clear();
+  this.transformItems(items -> {
+    items.add(i); // Ok, can capture `i' because it is `imm'
+    %\Comment{}%this.items.add(i);
+    // Cant instead capture `this': it can't be typed as `imm'
+    // since `ItemTransformer.transform()' is an `imm' method
   })
-  // instead of:
-  %\Comment{}%this.exposeItems().add(i)
 }
 \end{lstlisting}
-Note that since \Q@doStuff@ does not access a capsule field (it merely calls a method that does) it is not itself a capsule mutator, so none of the corresponding restrictions apply to it. Code like the above would also allow one to mutate multiple capsule fields in one method, however each such mutation must be separate,  i.e. they can't see or update the other capsule fields.
+%  // instead of:
+  %\Comment{}%this.exposeItems().add(i)
+
+Note that since \Q@.doStuff()@ does not access a capsule field but merely calls a method that does;
+\Q@.doStuff()@ is not a capsule mutator method, so it is not constrained by the restrictions on capsule mutators. Code like the above would also allow one to mutate multiple capsule fields in one method, however each mutation must be completed in a separate way.%
+%,  i.e. they can't see or update the other capsule fields.
