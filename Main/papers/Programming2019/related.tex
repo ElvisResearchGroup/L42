@@ -1,3 +1,22 @@
+In environments offering a powerful enough aspect-oriented support,
+it could be possible to detect any field update in the whole ROG of
+any object, following the strategy of 
+Gopinathan et al.~\cite{Gopinathan:2008:RMO:1483018.1483028}.
+Using such power would even be possible to roll-back the very field update that caused 
+the invariant to fail, making the object coherent again.
+However, we think this would be a \textbf{terrible idea causing unexpected strange behaviour}: for example
+assume that we are moving object between two boats:
+the overflowing object may be removed from the \Q@cargo@ of the second boat, but it would not
+be placed back in the first boat. It would look like the object has disappeared.
+The important point here is that the program would be in an unexpected state
+even if no object invariants are violated, and this would happen \textbf{because} of the 
+invariant checking/fixing behaviour, not because of code written by the programmer.
+
+We believe that the only viable option is to detect violations after the fact.
+
+
+
+
 \saveSpace
 \section{Performance considerations and Practical experience}
 \saveSpace

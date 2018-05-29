@@ -5,78 +5,146 @@
 %Suppose we wanted to have a type and mutate it's state, but have such mutation's validated:
 
 
-It is very common for an object to be logically defined by the composition of sub-objects.
-The head object would then driving mutation of the sub-objects.
+%It is very common for an object to be logically defined by the composition of sub-objects.
+%The head object would then driving mutation of the sub-objects, and public methods
+%of the sub-objects may be used in the validation. 
+% However, the sub objects may come from a third party library, that is not annotated with contracts, and the %authors may change their behaviour in the future. Worst, they actual dynamic type may be dynamically loaded
+%so that there is no way to predict their behaviour.
+%That is, we are unable or unwilling to constrain sub-objects to
+% cooperate into verification. We aim for verification to be correct independently of
+% possibly buggy, possibly even malicious sub-objects.
 
-% Consider code simulating a port, where a ship is being loaded with cargo:
+
+Consider code managing shipping of items:
 \saveSpace
 %shipping list /UPS cost too much over 300
 \begin{lstlisting}[escapechar=\%]
-class ShippingList{
+class ShippingList {
   imm Int capacity; %\Comment{how much weight the ship can withstand}%
-  private mut Items items;
+  mut Items items;
   ShippingList(mut Items items) {this.items = items;}
-  read method imm Bool invariant() {	%\Comment{to heavy and the ship may sink}%
+  read method imm Bool validate() {	%\Comment{to heavy and the ship may sink}%
     return this.items.weight() <= this.capacity;
   }
   mut method imm Void addItem(imm Item item) {this.items.add(item);}
 }
 \end{lstlisting}
 \saveSpace
-At first glance this class looks easy to validate, just insert calls to validate at the end of the constructor and the load method. However, as the constructor takes a \Q@mut Items@ it is possible for the shipping list's items to be mutated, potentially invalidating the object, by external code with no knowledge of the relationship with the \Q@ShippingList@. If instead we made the constructor take an \Qimm@ or \Qread@ parameter we would have to clone the object before storing it in the shipping list; however this is potentially very expensive. To be able to soundly represent this we add a new \Q@capsule@ type modifier:
+At first glance this class looks easy to validate, just insert calls to validate at the end of the constructor and the \Q@addItem@ method.
+However, the \Q@mut Items cargo@ field makes this code broken in two distinct ways.
+Firstly, the cargo we receive in the constructor may be already compromised:
+\saveSpace
+\begin{lstlisting}
+mut ShippingList l = new ShippingList(evilAlias);
+$\Comment{l is ok now, but we can break it}$
+evilAlias.addItem(new HeavyItem()); $\Comment{l is now invalid as the item's are too heavy}$
+$\Comment{how can we discover it and give error?}$
+\end{lstlisting}
+\saveSpace 
+Secondly, even if the \Q@ShippingList@ has full control at initialization time, such control may be lost later:
+\saveSpace
+\begin{lstlisting}
+mut ShippingList l = new ShippingList(new Items());
+$\Comment{l is ok now}$
+mut Items evilAlias = l.items $\Comment{here l loses control}$
+$\Comment{l is still ok}$
+evilAlias.addItem(new HeavyItem()); $\Comment{we invalidated l now}$
+\end{lstlisting}
+\saveSpace
+% However, as the constructor takes a \Q@mut Items@ 
+As you can see it is possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.
+
+Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (such as via getters).
+Such solution need to be employed in mainstream languages like Java/C\#:
+in order to write correct library code
+defensive cloning~\cite{Bloch08} is needed.
+For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.
+
+To avoid this performance bottleneck, we can leverage on the well known \Q@capsule@ type modifier[], where:
 \begin{itemize}
-\item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable or read reference's can be freely shared across capsule boundaries. This contrasts with previous work where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph; since we only need to restrict mutation for the purposes of validation.
-\item An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
-\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
-\item A field of a \Q@capsule@ type must be instance-private\footnote{that is only accessible as \Q@this.fieldName@ within an instance method}. This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables is implicitly promoted to \Q@capsule@
-\item A capsule field access through a \Q@capsule@ reference is typed as \Q@mut@, other access are typed with the same modifier as the parent,
+\item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable or read references can be freely shared across capsule boundaries. This a relaxation over previous work where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph: for the purposes of validation we only need to restrict mutation.
+\item A capsule local variable can only be used once as \Q@capsule@ or \Q@mut@.
+%An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
+%\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
+\item A field of a \Q@capsule@ type must be instance-private; that is only accessible as \Q@this.fieldName@ within an instance method.
+\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@.
+\item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
+\item A capsule field access inherits the type modifier of the receiver.
 \end{itemize}
 
-Capsule references are usually expressed using linear/affine types~\cite{Boyland01} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverage on destructive reads instead of linear types.\cite{GordonEtAl12,clebsch2015deny}.
+%This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
+\noindent Capsule references are usually expressed using linear/affine types~\cite{Boyland01} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverages on destructive reads.\cite{GordonEtAl12,clebsch2015deny}.
 Destructive reads would be a bad idea for validation as they would likely invalidate objects.
 
-In addition, to the above we put restrictions on any method that uses a \Q@capsule@ field as \Q@mut@, we call such methods `capsule mutators':
+In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ methods using a \Q@capsule@ field (we call such methods `capsule mutators'):
 \begin{itemize}
-\item only a single use of \Q@this@ is allowed (the one that uses the field),
-\item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter),
-\item the return type cannot be \Q@mut@
-\item if the used capsule field is referenced in \Q@validate()@, a \Q@this.validate()@ call is injected at the end of the method,
+\item only a single use of \Q@this@ is allowed (and is the one that uses the field),
+\item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter) and,
+\item the return type cannot be \Q@mut@.
 \end{itemize}
-These restrictions ensure that capsules are essentially an exclusive mutable reference, these restrictions are also particularly important to validation as removing them would be unsound:
-
+\noindent  Moreover, if the used capsule field is referenced in \Q@.validate()@, a \Q@this.validate()@ call is injected at the end of the method.
+Using the capsule field, our \Q@ShippingList@ class would, after automatic insertion of validation checks, could be modified to:
+\saveSpace
+\begin{lstlisting}
 class ShippingList{
-  imm Int capacity; %\Comment{how much weight the ship can withstand}%
+  imm Int capacity; $\Comment{how much weight the ship can withstand}$
   private capsule Items items;
-  ShippingList(capsule Items items) {this.items = items;}
-  read method imm Bool invariant() {	%\Comment{to heavy and the ship may sink}%
+  ShippingList(capsule Items items) {
+    this.items = items; $\Comment{mutation of capsule field}$
+    if (!this.validate) {throw Error(...);} $\Comment{check at end of constructor}$
+  }
+  read method imm Bool validate() {	$\Comment{too heavy and the ship may sink}$
     return this.items.weight() <= this.capacity;
   }
   mut method imm Void addItem(imm Item item) {
-    this.items.add(item); %\Comment{mutation of capsule field}%
+    this.items.add(item); $\Comment{mutation of a capsule field}$
+    $\Comment{check at end of capsule mutator}$
     if (!this.validate) {throw Error(...);}
 }}
+\end{lstlisting}
+\saveSpace
 
-\subsection{}
+\noindent The previous restrictions ensure that capsules are essentially an exclusive mutable reference.
+Removing those restrictions would make validation unsound; for example, if we allow for a \Q@mut@ return type, this example would be accepted:
+
+\saveSpace
+\begin{lstlisting}
 mut method mut Items exposeItems(imm C c) {
   return c.foo(this.items);
 }
+\end{lstlisting}
+\saveSpace
+\noindent However, depending on dynamic dispatch on \Q@c@, \Q@c.foo()@ may just be the identity function.
+Static analysis is usually unable/unwilling to track precise behaviour of dynamic dispatch.
 
+\noindent Allowing \Q@this@ to be used more then once can also cause problems:
+\saveSpace
+\begin{lstlisting}[escapechar=\%]
 mut method imm Void multiThis(imm C c) {
   read Foo f = c.foo(this);
-  this.items.add(heavyStuff);
-  f.hi();//can it observe a broken this?
+  this.items.add(new HeavyItem());
+  f.hi(); %\Comment{can it observe a broken this?}%
 }
-
-mut method imm Void multiThisIndirect(imm C c) {
-  read Foo f = c.foo(this);
-  this.multiThisPar(f);
+\end{lstlisting}
+\saveSpace
+\noindent If the former code was accepted, depending on dynamic dispatch on \Q@c@,
+the reference to \Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe a broken object.
+In order to ensure that a second reference to \Q@this@ is not reachable through the parameters we only accept \Q@imm@ and \Q@capsule@ parameters.
+If we were however to accept a \Q@read@ parameter, as in the example below,
+we would be in the same situation as the former example, where \Q@f@ may contain
+a reference to \Q@this@.
+\saveSpace
+\begin{lstlisting}[escapechar=\%]
+mut method imm Void break(read Foo f) {
+  this.items.add(new HeavyItem())
+  f.hi() %\Comment{Can `this' be observed here?}%
 }
-mut method imm Void multiThisPar(read Foo f) {
-  this.items.add(heavyStuff);
-  f.hi();//can it observe a broken this?  
-  }
-
+...
+mut ShippingList l = new ShippingList();
+read Foo f = new Foo(l);
+l.break(f); %\Comment{We pass another reference to `l' through f}%
+\end{lstlisting}
+\saveSpace
 
 %, we would have the same problem with a \Q@read@ paramater. ... justify why we ned capsule
 % The boat will sink if the weight of the cargo goes over 300. However, 
@@ -103,147 +171,63 @@ mut method imm Void multiThisPar(read Foo f) {
 % The names may suggest a specific behaviour, but there is no contract annotated on such methods.
 
 % Note also that in the general case there is no way to fix a broken object,
-or to perform a deep clone and to test the operation on the clone first.
-In environments offering a powerful enough aspect-oriented support,
-it could be possible to detect any field update in the whole ROG of
-any object, following the strategy of 
-Gopinathan et al.~\cite{Gopinathan:2008:RMO:1483018.1483028}.
-Using such power would even be possible to roll-back the very field update that caused 
-the invariant to fail, making the object coherent again.
-However, we think this would be a \textbf{terrible idea causing unexpected strange behaviour}: for example
-assume that we are moving object between two boats:
-the overflowing object may be removed from the \Q@cargo@ of the second boat, but it would not
-be placed back in the first boat. It would look like the object has disappeared.
-The important point here is that the program would be in an unexpected state
-even if no object invariants are violated, and this would happen \textbf{because} of the 
-invariant checking/fixing behaviour, not because of code written by the programmer.
-
-We believe that the only viable option is to detect violations after the fact.
-
-%2 way to alias badly
-%correct example
-%capsule solve both
-%concept of exposer
-
-Field \Q@mut Items cargo@ makes this code
-broken in two distinct ways. Firstly, the cargo we receive in the constructor may
-be already compromised:
-\saveSpace
-\begin{lstlisting}
-mut Items evilAlias=new Items();
-mut Boat b=new Boat(evilAlias);
-$\Comment{b is ok now, but we do not have control}$
-imm Item sugar=new Item("sugar");
-for(imm Int i=0;i<1000;i++){
-  evilAlias.add(sugar);}$\Comment{this is corrupting b}$
-  $\Comment{how can we discover it and give error?}$
-}
-\end{lstlisting}
-\saveSpace 
-Secondly, even if the \Q@Boat@ has full control 
-in initialization time, such control may be lost later:
-\saveSpace
-\begin{lstlisting}
-mut Boat b = new Boat(new Items());
-$\Comment{b is ok now}$
-mut Boat evilAlias=b.cargo()$\Comment{here we lose control}$
-$\Comment{b still ok}$
-imm Item sugar=new Item("sugar");
-for(imm Int i=0;i<1000;i++){evilAlias.add(..);}
-\end{lstlisting}
-\saveSpace
-% The general idea is that we would like to mutate the cargo object while keeping the control of its aliasing.
-% Intuitively, this is connected to the general idea in object-orientation that you should keep your
-% fields private and limit the way clients can access them.
-
-%To solve these two problems, we introduce the new modifier \Q@capsule@:
-%It represents a ``balloon''~\cite{Almeida97,ServettoEtAl13a} in the object graph.
-%Everything in the ROG of a capsule object is reachable only though that field, however
-%immutable objects can be freely shared across capsule boundaries, since they are referentially transparent.
+%or to perform a deep clone and to test the operation on the clone first.
 
 
 %REWRITE THIS BIT
-Here capsule fields 
-as input to our code-generation / \Q@validate()@-injection; that is, \Q@capsule T f@ is expanded by the language into:
-\begin{itemize}
-\item Induce a \Q@capsule@ parameter for the generated constructor.
-\item Require to be updated with a \Q@capsule@ expression.
-\item Are accessed as a \Q@mut@ field.
-Access is \textbf{not} a destructive read.
- However methods accessing them are kept under
-strict control; either
-\begin{itemize}
-\item they have \Q@read this@: they act like a normal getter, and can not propagate
-writing permission over the ROG of that field.
-Indeed, with \Q@read this@, any field access \Q@this.f@ will be typed \Q@read@ or \Q@imm@.
-\item they have \Q@mut this@, no parameter is \Q@mut@ or \Q@read@,
-the return type is not \Q@mut@ and \Q@this@ appear exactly one time in
-the method body: we call those methods \textbf{exposers}, and the invariant is going to be checked at the end of
-the exposers.
-\end{itemize}
+%Here capsule fields 
+%as input to our code-generation / \Q@validate()@-injection; that is, \Q@capsule T f@ is expanded by the language into:
+%\begin{itemize}
+%\item Induce a \Q@capsule@ parameter for the generated %constructor.
+%\item Require to be updated with a \Q@capsule@ expression.
+%\item Are accessed as a \Q@mut@ field.
+%Access is \textbf{not} a destructive read.
+% However methods accessing them are kept under
+%strict control; either
+%\begin{itemize}
+%\item they have \Q@read this@: they act like a normal %getter, and can not propagate
+%writing permission over the ROG of that field.
+%Indeed, with \Q@read this@, any field access \Q@this.f@ will be typed \Q@read@ or \Q@imm@.
+%\item they have \Q@mut this@, no parameter is \Q@mut@ or \Q@read@,
+%the return type is not \Q@mut@ and \Q@this@ appear exactly one time in
+%the method body: we call those methods \textbf{exposers}, and the invariant is going to be checked at the end of
+%the exposers.
+%\end{itemize}
 
 
-\end{itemize}
-Exposers are the key part of our solution.
-The strong limitations they endorse turn them in ``wrappers'' of an operation 
-on the field, and that operation is guaranteed to not see the \Q@this@ object:
-\begin{itemize}
-\item Only a single use of \Q@this@ is allowed, and is need to access the field, as in \Q@this.f@.
-\item The argument of the method are guaranteed to not refer to the mutable \Q@this@, since \Q@mut@ and \Q@read@
-parameters are disallowed.
-\item the \Q@capsule@ modifier guarantees that 
-\Q@this@ is not in the rog of \Q@this.f@.
-%$\notin\Text{rog}($\Q@this.f@$)$.
-\end{itemize}
-Thus, any operation surrounding \Q@this.f@ will not have access to \Q@this@, so \Q@this@ is not observable
-during such arbitrary computation.
-If \Q@this@ was to become broken, we could not  observe it.
-The first thing after such operation is completed, is to check the \Q@invariant()@ again.
-Those restrictions also enforce that while executing an exposer no object outside the rog of \Q@this@ can be mutated,
-and that I/O can not be performed: the capability objects are externally visible mutable objects and thus the type system will
-never place them into a \Q@capsule@.%
-\footnote{
-Mainstream languages like Java/C\# do not offer modifiers like \Q@capsule@.
-In order to write correct library code in such languages techniques like
-defensive cloning~\cite{Bloch08} are needed.
-For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.
+%\end{itemize}
+%Exposers are the key part of our solution.
+
+
+% Those restrictions also enforce that while executing a capsule-mutator no object outside the ROG of \Q@this@ can be mutated, and thus capability objects cannot be usedI/O can not be performed: the capability objects are externally visible mutable objects and thus the type system will never place them into a \Q@capsule@.
+%\subsection{The true expressibility of capsule modifiers}
+%A capsule mutator method is a wrapper of a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
+%Thus, if \Q@this@ where to become broken during 
+%the method's execution, we could not observe it until after. At first glance, it may seams that capsule %mutators allows for limited kinds of mutations.
+%This is however not the case, consider the following
+%general capsule mutator method that allows to apply any possible transformation over the content of a capsule %field:
+%At first glance it mayseem from
+At first glance it may seem like our restrictions on capsule mutators
+\saveSpace
+\begin{lstlisting}
+interface ItemTransformer { 
+  imm method imm Void transform(mut Items items);
 }
-
-In our approach, an encapsulated object has all fields of type \Q@imm T@ or \Q@capsule T@ .
-This means that every object in the ROG is either immutable or (write-)owned
-by such encapsulated object.
-
-\noindent Here is the corrected \Q@Boat@ with \Q@cargo@ and how it expands to support sound RV of the invariant:
-
-
-\begin{lstlisting}
-class Boat{$\Comment{too much cargo and the ship may sink}$
-  read method imm Bool invariant() {return  cargo.weight()<=300;}
-  imm String name;
-  capsule Items cargo;$\Comment{capsule modifier here}$
-  read method read Items cargo(){return this.cargo;}$\Comment{read here}$
-  mut method imm Void load(imm Item item){this.cargo.add(item);} 
-  mut method imm Item unload(imm String iName) {
-    return this.cargo.extract(iName);
-}}$\Comment{load and unload are exposer methods}$
+class ShippingList {
+  ...
+  mut method imm Void transformItems(imm ItemTransformer t) {
+   t.transform(this.items);
+   if (!this.validate) {throw Error(...);}
+}}
 \end{lstlisting}
-%-----------------
-\begin{lstlisting}
-class Boat{$\Comment{too much cargo and the ship may sink}$
-  read method imm Bool invariant() {return cargo.weight()<=300;}
-  private capsule Items cargo;$\Comment{private and capsule}$
-  public Boat(imm String name,capsule Items cargo){
-    this.name=name;
-    this.cargo=cargo;
-    if(!this.invariant()){throw $\MComment{error}$}
-  }
-  read method read Items cargo(){return this.cargo;}$\Comment{stays the same}$
-  mut method imm Void load(imm Item item){
-    this.cargo.add(item);
-    if(!this.invariant()){throw $\MComment{error}$}$\Comment{invariant check added here}$
-  } 
-  mut method imm Item unload(imm String itemName){
-    return this.cargo.extract(itemName);
-    if(!this.invariant()){throw $\MComment{error}$}$\Comment{invariant check added here}$
-}}$\Comment{Generated code, not directly written by the programmer}$
+One could then use this general \Q@transformItems@ method to perform arbitrary mutations on a \Q@ShippingLists@'s items, as shown below:
+\begin{lstlisting}[escapechar=\%]
+imm Void method imm Void doStuff() {
+ %\Comment{Lambda Expression that creates a new ItemTransformer}%
+ this.transformItems(i -> {
+    i.add(new HeavyItem());
+    %\Comment{}%this.items.clear();%\Comment{Can't capture `this' and is it can't be coerced to imm}%
+ })
+}
 \end{lstlisting}
+Note that since \Q@doStuff@ does not access a capsule field (it merely calls a method that does) it is not itself a capsule mutator, so none of those restrictions apply to it. Code like the above would also allow one to mutate multiple capsule fields in one method, however each such mutation must be independent, i.e. they can't see the other capsule fields.

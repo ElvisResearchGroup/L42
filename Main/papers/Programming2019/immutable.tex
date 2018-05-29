@@ -95,15 +95,14 @@ This can be obtained leveraging TM in the following way:
 
 While type modifiers are a statically verified property of references, object capabilities are run time characteristics of specific objects.
 
-Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionalities: only certain objects with ``special'' powers can do ``special'' actions, and those objects are obtained in a controlled way. We call such objects ``capability objects''. 
-For example, in Java \Q@System.in@ is a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
+Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionalities: only certain objects with ``special'' powers can do ``special'' actions, and those objects are obtained in a controlled way. We call such objects ``capability objects''.
+Their main use case is to allow for fine-grained control over what sections of code is allowed to do. For example, in Java \Q@System.in@ is a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
 In a language enforcing object capabilities the \Q@main@ method will take a \Q@System@ object as a parameter, and that object has to be used to perform I/O, as in \Q@mySystem.println("hello")@.
 Moreover, the \Q@System@ class would have no visible constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
 Many other operations, like random numbers and file management 
 %may just take a \Q@mut System@ object as a parameter.
 could also work this way.
 \noindent This design has been explored in literature by Joe-E~\cite{finifter2008verifiable}.
-
 
 Here we use TM to guarantee that any method that is not (indirectly) passed a \Q@mut@ reference to a capability object will not use any capabilities:
 \begin{itemize}
@@ -173,8 +172,11 @@ We will later introduce a \Q@capsule@ modifier to allow more flexible validation
 %validable objects are not circular (do not belong in their ROG of any of its fields)
 
 \section{Validating immutable state}
-In this section we consider how to validate a simple but useful category of classes.
+In this section we consider validation over fields of \Q@imm@ types.\footnote{
+In a real language, for conciseness one could make the \Q@imm@ modifier the default, allowing it to be omitted and our \Q@Person@ example class would only use 3 type modifiers; however we explicitly use it for clarity.
+}
 In the next section we expand our technique.
+
  Consider the following code, where a \Q@Person@ has a single immutable (non final) field \Q@name@:
 \begin{lstlisting}
 class Person {
@@ -182,7 +184,7 @@ class Person {
   private imm String name;
   read method imm String name() {return this.name;}
   mut method imm Strinig name(imm String name) {this.name = name;}
-  public Person(imm String name) {this.name = name;}
+  Person(imm String name) {this.name = name;}
 }
 \end{lstlisting}
 \Q@Person@, only has immutable fields and the constructor only uses \Q@this@ to access/update fields; we say such a class is \emph{simple}.
@@ -216,7 +218,7 @@ class Person {
     this.name = name;
     if (!this.validate()) {throw new Error(...);} $\Comment{check after field update}$
   }
-  public Person(imm String name) {
+  Person(imm String name) {
     this.name = name;
     if (!this.validate()) {throw new Error(...);} $\Comment{check at end of constructor}$
 }}$\Comment{Generated code, not directly written by the programmer}$
