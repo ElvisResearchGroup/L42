@@ -18,12 +18,12 @@
 Consider code managing shipping of items:
 \saveSpace
 %shipping list /UPS cost too much over 300
-\begin{lstlisting}[escapechar=\%]
+\begin{lstlisting}
 class ShippingList {
-  imm Int capacity; %\Comment{how much weight the ship can withstand}%
+  imm Int capacity; // how much weight the ship can withstand
   mut Items items;
   ShippingList(mut Items items) {this.items = items;}
-  read method imm Bool validate() {	%\Comment{to heavy and the ship may sink}%
+  read method imm Bool validate() {	// too heavy and the ship may sink
     return this.items.weight() <= this.capacity;
   }
   mut method imm Void addItem(imm Item item) {this.items.add(item);}
@@ -36,19 +36,19 @@ Firstly, the cargo we receive in the constructor may be already compromised:
 \saveSpace
 \begin{lstlisting}
 mut ShippingList l = new ShippingList(evilAlias);
-$\Comment{l is ok now, but we can break it}$
-evilAlias.addItem(new HeavyItem()); $\Comment{l is now invalid as the item's are too heavy}$
-$\Comment{how can we discover it and give error?}$
+// l is ok now, but we can break it
+evilAlias.addItem(new HeavyItem()); // l is now invalid as the item's are too heavy
+// how can we discover it and give error?
 \end{lstlisting}
 \saveSpace 
 Secondly, even if the \Q@ShippingList@ has full control at initialization time, such control may be lost later:
 \saveSpace
 \begin{lstlisting}
 mut ShippingList l = new ShippingList(new Items());
-$\Comment{l is ok now}$
-mut Items evilAlias = l.items $\Comment{here l loses control}$
-$\Comment{l is still ok}$
-evilAlias.addItem(new HeavyItem()); $\Comment{we invalidated l now}$
+// l is ok now
+mut Items evilAlias = l.items // here l loses control
+// l is still ok
+evilAlias.addItem(new HeavyItem()); // we invalidated l now
 \end{lstlisting}
 \saveSpace
 % However, as the constructor takes a \Q@mut Items@ 
@@ -87,18 +87,18 @@ Using the capsule field, our \Q@ShippingList@ class would, after automatic inser
 \saveSpace
 \begin{lstlisting}
 class ShippingList{
-  imm Int capacity; $\Comment{how much weight the ship can withstand}$
+  imm Int capacity; // how much weight the ship can withstand
   private capsule Items items;
   ShippingList(capsule Items items) {
-    this.items = items; $\Comment{mutation of capsule field}$
-    if (!this.validate) {throw Error(...);} $\Comment{check at end of constructor}$
+    this.items = items; // mutation of capsule field
+    if (!this.validate) {throw Error(...);} // check at end of constructor
   }
-  read method imm Bool validate() {	$\Comment{too heavy and the ship may sink}$
+  read method imm Bool validate() {	// too heavy and the ship may sink
     return this.items.weight() <= this.capacity;
   }
   mut method imm Void addItem(imm Item item) {
-    this.items.add(item); $\Comment{mutation of a capsule field}$
-    $\Comment{check at end of capsule mutator}$
+    this.items.add(item); // mutation of a capsule field
+    // check at end of capsule mutator
     if (!this.validate) {throw Error(...);}
 }}
 \end{lstlisting}
@@ -119,11 +119,11 @@ Static analysis is usually unable/unwilling to track precise behaviour of dynami
 
 \noindent Allowing \Q@this@ to be used more then once can also cause problems:
 \saveSpace
-\begin{lstlisting}[escapechar=\%]
+\begin{lstlisting}
 mut method imm Void multiThis(imm C c) {
   read Foo f = c.foo(this);
   this.items.add(new HeavyItem());
-  f.hi(); %\Comment{can it observe a broken this?}%
+  f.hi(); // can it observe a broken this?
 }
 \end{lstlisting}
 \saveSpace
@@ -134,15 +134,15 @@ If we were however to accept a \Q@read@ parameter, as in the example below,
 we would be in the same situation as the former example, where \Q@f@ may contain
 a reference to \Q@this@.
 \saveSpace
-\begin{lstlisting}[escapechar=\%]
+\begin{lstlisting}
 mut method imm Void break(read Foo f) {
   this.items.add(new HeavyItem())
-  f.hi() %\Comment{Can `this' be observed here?}%
+  f.hi() // Can `this' be observed here?
 }
 ...
 mut ShippingList l = new ShippingList();
 read Foo f = new Foo(l);
-l.break(f); %\Comment{We pass another reference to `l' through f}%
+l.break(f); // We pass another reference to `l' through f
 \end{lstlisting}
 \saveSpace
 
@@ -207,11 +207,12 @@ l.break(f); %\Comment{We pass another reference to `l' through f}%
 %This is however not the case, consider the following
 %general capsule mutator method that allows to apply any possible transformation over the content of a capsule %field:
 %At first glance it mayseem from
-At first glance it may seem like our restrictions on capsule mutators
+\loseSpace
+A simple pattern to allow more flexible use of capsule fields is to define a ‘transform’ function an ‘Transformer’ interface\footnote{In a real language one would probably like to create a generic ‘Transformer’ interface, and auto-generate the ‘transform’ function, together with ‘get’ and ‘set’ functions} like so:
 \saveSpace
 \begin{lstlisting}
 interface ItemTransformer { 
-  imm method imm Void transform(mut Items items);
+  imm method imm Void transform(mut  items);
 }
 class ShippingList {
   ...
@@ -220,14 +221,19 @@ class ShippingList {
    if (!this.validate) {throw Error(...);}
 }}
 \end{lstlisting}
-One could then use this general \Q@transformItems@ method to perform arbitrary mutations on a \Q@ShippingLists@'s items, as shown below:
+This ‘transform’ method can be used to similarly to calling an ‘expose’\footnote{a ‘getter’ that returns a \Q@mut@} function, and then mutating the result, however it ensures that the capsule cannot ‘leak’ out of the object, and does not break validation; for example:
 \begin{lstlisting}[escapechar=\%]
-imm Void method imm Void doStuff() {
- %\Comment{Lambda Expression that creates a new ItemTransformer}%
- this.transformItems(i -> {
-    i.add(new HeavyItem());
-    %\Comment{}%this.items.clear();%\Comment{Can't capture `this' and is it can't be coerced to imm}%
- })
+imm Void method imm Void doStuff(read C c) {
+  imm Item i = c.getItem()
+  // Lambda Expression that creates a new ItemTransformer
+  this.transformItems(is -> {
+    is.add(i); // Ok, can capture an ‘imm’ field
+    // Can't capture `this', as it can't be typed as ‘imm’
+    // as ItemTransformer.transform is an ‘imm’ method
+    %\Comment{}%this.items.clear();
+  })
+  // instead of:
+  %\Comment{}%this.exposeItems().add(i)
 }
 \end{lstlisting}
-Note that since \Q@doStuff@ does not access a capsule field (it merely calls a method that does) it is not itself a capsule mutator, so none of those restrictions apply to it. Code like the above would also allow one to mutate multiple capsule fields in one method, however each such mutation must be independent, i.e. they can't see the other capsule fields.
+Note that since \Q@doStuff@ does not access a capsule field (it merely calls a method that does) it is not itself a capsule mutator, so none of the corresponding restrictions apply to it. Code like the above would also allow one to mutate multiple capsule fields in one method, however each such mutation must be separate,  i.e. they can't see or update the other capsule fields.

@@ -1240,15 +1240,16 @@ ${}_{}$\\ \noindent${}_{}$\\ \noindent}
 
 \lstdefinelanguage{FortyTwo}[]{Java}{morekeywords={%
   exception,error,mut,imm,
-  read,capsule,lent,
+  read,capsule,lent,assert
   with,in,immutable,trait,using,
   on,var,loop,reuse,method,is
   },
 %  deletekeywords={new,class,this},
- comment=[l]',
+ morecomment=[l]',
  texcl=true
  string=[d][\ttfamily]",
-commentstyle=\color{red}\ttfamily,
+ %\texttt{\textbf{\color{darkBlue}
+commentstyle=\ttfamily\bfseries\color{darkBlue},
 % morestring=[l]',
  stringstyle=\color{red}\ttfamily,
  literate=
