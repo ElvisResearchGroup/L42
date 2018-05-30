@@ -1,3 +1,53 @@
+IN RELATED
+Rather than providing a simple set of rules as to what a \Q@validate@ method can contain, and where to insert calls to it, we could instead rely on implementation-specific static analysis: in which a \Q@validate@ method is valid iff the compiler can prove that it is deterministic and that it’s generated \Q@validate()@ calls are sufficient to enforce validation. Though approaches like this are frequently used such as with unifying Java’s generic-wildcards [], Rust’s ‘borrow checker’, …; we believe that would not produce a good result for our purposes: 
+\begin{itemize}
+	\item it would mean that a programmer would have no way of telling whether their code would compile, in particular code compiling would depend on the specific compiler (version) used.
+	\item the runtime cost of validation would be completely unpridictibable; since it is deterministic there is nothing stopping the compiler from calling \Q@validate@ any number of times, and at any point in time.
+	\item When a validation error could be throw would likewise be unpredictable, though it should happen after an object is made invalid\footnote{technically our definition of validation technically allows the error to happen sooner, as long as it’s not too late; however pre-emptive errors like this would be extremely hard to debug}, it could happen any time before it’s use. Making matters worse, if multiple object’s would be invalidated before either is used, which one’s error would be thrown is unconstrained
+	\item This approach will not work well in the pressence of dynamic code loading, in particular it woud likley significantly slow down such loading or spurioslly fail depending on what other code has been loaded
+\end{itemize}
+
+even if 3 indedpendet line of work have proven ts with those properties
+our work is shit if we do not repeat those proofs a 4th time
+
+42 support ALL we need
+  papers over 42 (together) support all we need and proofs
+  
+pony and gordon
+  have and prove all the property we need, they just need some tweeking for SES
+
+
+
+
+Future
+42, Pony, and Gordon supports much more properties than what we strictly need for the sake of \Q@.validation()@.
+Given enough space we could provide a minimal type system supporting only the property we strictly need.
+
+
+our approach encourage certain verbose patterns to be used.
+We could design some syntax sugar to automate those patterns.
+
+
+In this work we strived to use only 4 type modifiers.
+Pony and other work provide many more type modifiers supporting fine grained reasoning on the role of various objects.
+In the future we could study how to use more modifiers to relax our restrictions.
+
+
+However we are unsure if that it would be a good idea, since a more complex
+type system would be harder for programmers to understand and use.
+
+
+We are currently considering ways to combine our capsule guarantees with 
+flexible ownership while ensuring that the \Q@.validate()@ method would be unable to access
+those \emph{external mutable} references.
+
+
+
+performance in our work splitting validate
+
+
+
+
 \section{Future Work}
 Though we prove\footnote{see appendix} that given a type system properly enforcing our TM and OC approach our language would properly enforce validation, we have only informally described our type-system. It is known […] to be quite difficuilt to properly formalize and prove usefull properties of any but the simplest type-systems; as the properties we want from a type system are not specific to validation such work would be out of scope for our paper. Without a proper formal type system however our language is incomplete.
 
@@ -6,15 +56,6 @@ The language, and type-modifier system we have presented here is quite restricti
 
 
 Though it is possible to relax these restrictions whilst still ensuring our desired semantics, doing so is unlikely to be simple; un particular we believe simplicity of a type-system is valuable, not only does it make it easier to implement and reason about, it can also make it easier to \emph{use}: if a programmer understands the language they are using they are more able to write code in a way that works as expected.
-
-
-Rather than providing a simple set of rules as to what a \Q@validate@ method can contain, and where to insert calls to it, we could instead rely on implementation-specific static analysis: in which a \Q@validate@ method is valid iff the compiler can prove that it is deterministic and that it’s generated \Q@validate()@ calls are sufficient to enforce validation. Though approaches like this are frequently used such as with unifying Java’s generic-wildcards [], Rust’s ‘borrow checker’, …; we believe that would not produce a good result for our purposes: 
-\begin{itemize}
-	\item it would mean that a programmer would have no way of telling whether their code would compile, in particular code compiling would depend on the specific compiler (version) used.
-	\item the runtime cost of validation would be completely unpridictibable; since it is deterministic there is nothing stopping the compiler from calling \Q@validate@ any number of times, and at any point in time.
-	\item When a validation error could be throw would likewise be unpredictable, though it should happen after an object is made invalid\footnote{technically our definition of validation technically allows the error to happen sooner, as long as it’s not too late; however pre-emptive errors like this would be extremely hard to debug}, it could happen any time before it’s use. Making matters worse, if multiple object’s would be invalidated before either is used, which one’s error would be thrown is unconstrained
-	\item This approach will not work well in the pressence of dynamic code loading, in particular it woud likley significantly slow down such loading or spurioslly fail depending on what other code has been loaded
-\end{itemize}
 
 
 An alternative, less powerful but ultimately more usable approach would be to extend our type system and programs with additional (programmer provided, or generated) annotations, such as additional ownership-based type-modifiers, in order to keep track of the properties of objects.

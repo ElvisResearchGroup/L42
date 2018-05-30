@@ -1,11 +1,33 @@
-\saveSpace
-\section{Conclusion}
-\label{s:conclusion}
-\saveSpace
+Related work
+
 Class invariants are a fundamental part of the design by contract methodology. 
 Many languages and tools support some form of invariant verification (e.g. Eiffel~\cite{Meyer:1992:EL:129093}, D~\cite{Alexandrescu:2010:DPL:1875434}, JML~\cite{Burdy2005}, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}).
 %In order to be verified, the invariant needs to be expressed in some formal way.
 Here we focus on multi-object invariants: the class invariant of a given object may depend upon the observable behaviour of any object referenced in its Reachable Object Graph (ROG).
+
+\noindent\textit{Security and DMZ:}
+Static verification let us reason about a complete program
+and verify its correctness.
+Traditional static verification is like a mathematical proof: is valid if it is \textbf{all correct},
+but a single error invalidates all the claims.
+Thus, it is hard to perform verification on large programs, or when independently maintained third party libraries
+are involved.
+To solve this issue, static verification systems are starting to consider a verified core
+and a run-time verified boundary.
+
+You can see our approach as an extremely modularized version of such system:
+every class is its own demilitarized zone, and the rest of the code 
+could have Byzantine behaviour.
+
+Every class that compiles/type checks should be protected against breakage,
+ independently of the code that uses this class or any other surrounding code.
+ That is, our approach works both with open world assumption and in a library setting.
+
+
+\saveSpace
+\section{Conclusion}
+\label{s:conclusion}
+\saveSpace
 
 Static verification requires great effort, but can ensures all invariants \textbf{always} holds, thus all objects are always coherent.
 
@@ -35,24 +57,6 @@ Of course, there is a catch: this result is obtained by modifying/instrumenting 
 semantic of the language, so that (as for type casts) \textbf{violations are detected at run-time}, and exceptions
 are throw in order to stop the execution before involving any broken object.
 
-\noindent\textit{Security and DMZ:}
-Static verification let us reason about a complete program
-and verify its correctness.
-Traditional static verification is like a mathematical proof: is valid if it is \textbf{all correct},
-but a single error invalidates all the claims.
-Thus, it is hard to perform verification on large programs, or when independently maintained third party libraries
-are involved.
-To solve this issue, static verification systems are starting to consider a verified core
-and a run-time verified boundary.
-
-You can see our approach as an extremely modularized version of such system:
-every class is its own demilitarized zone, and the rest of the code 
-could have Byzantine behaviour.
-
-Every class that compiles/type checks should be protected against breakage,
- independently of the code that uses this class or any other surrounding code.
- That is, our approach works both with open world assumption and in a library setting.
-
 \noindent\textit{SIC as extended type system:}
 The philosophy of our approach is to be like an extended type system: 
 \begin{itemize}
@@ -63,6 +67,3 @@ will respect that invariant.
 \end{itemize}
 This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
 both deciding the invariant and enforcing it is controlled by the programmers.
-This change the semantic of invariants: they are not expected to hold all the time,
-but only when checked. Many programmers tries to recover the original semantic
-by checking it in the ``right moments''. This article has shown how taunting and tricky such task really is.
