@@ -134,7 +134,7 @@ read method imm Bool validate();
 \saveSpace
 %The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 
 %By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
-
+If the class containing the validate method has a super-class, we would inject a \Q@super.validate()@ call as the first line of the sub-class’s validate-method, this is required as otherwise ‘broken’ objects could easily be created by simply using subtyping to redefine \Q@validate@.
 As this method is declared as \Q@read@, and only takes the implicit parameter this as (\Q@read@), we can guarantee the method is pure:
 \begin{itemize}
 \item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated,
@@ -155,9 +155,8 @@ In some sense, those inlined methods and field accesses can be thought as macro-
 
 
 Finally,
-the code of \Q@.validate()@ can not access  \Q@mut@ and \Q@read@ fields,
-  because their content can be changed by unrelated code.
-Thus, we the modifiers presented so far, we can only access \Q@imm@ fields.
+the code of \Q@.validate()@ can not access  \Q@mut@ and \Q@read@ fields, because their content can be changed by unrelated code.
+Thus, with the modifiers presented so far, we can only access \Q@imm@ fields.
 We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
 
 
