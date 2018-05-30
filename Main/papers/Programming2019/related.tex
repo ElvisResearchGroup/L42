@@ -276,6 +276,14 @@ In this way, any method taking a `target class' parameter can
 rely on the invariant, while any method taking a `state class' parameter will not.
 As for the Decorator, a common interface can be introduced to support reasoning on both kinds of objects.
 
+Conclusions?
+@StrongExceptionSafety is 
+a very strong property,
+and some languages may be unwilling to commit to always preserve it.
+In particular, depending on the details of a specific language
+ releasing resources as in \Q@finally@ blocks may require
+some relaxation of @StrongExceptionSafety. Sound releasing of resources could be interesting
+future work.
 
 
 %Overall, we are very confused on finding so many approaches asking for the programmer to

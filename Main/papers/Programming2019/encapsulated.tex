@@ -62,7 +62,9 @@ For performance reasons, this is hardly done in practice and is a continuous sou
 
 To avoid this performance bottleneck, we can leverage on the well known \Q@capsule@ type modifier[], where:
 \begin{itemize}
-\item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable or read references can be freely shared across capsule boundaries. This a relaxation over previous work where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph: for the purposes of validation we only need to restrict mutation.
+\item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
+As a relaxation over previous work where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph, the ROG of a \Q@capsule@ can also be referenced as \Q@read@ from outside:
+ for the purposes of validation we only need to restrict mutation.
 \item A capsule local variable can only be used once as \Q@capsule@ or \Q@mut@.
 %An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
 %\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
