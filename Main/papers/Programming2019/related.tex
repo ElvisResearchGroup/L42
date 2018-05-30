@@ -16,53 +16,53 @@ We believe that the only viable option is to detect violations after the fact.
 
 
 
-
-\saveSpace
-\section{Performance considerations and Practical experience}
-\saveSpace
-We believe our sound approach can monitor arbitrary programs
-for a fraction of the cost of many other competitors.
-Many other works%
-~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
- check (that is, run)
-the invariant code at the start and at the end of every public
-method.
-In  our approach,
-we only call the invariant a single time for each mutator method.
-We expect this to result in at least 10 times reduction over
-the number of required invariant checks:
-for mutator methods, we call \Q@invariant()@ only one time instead of two,
-and we
-do not call it at all for non-mutator methods, that
- are usually more numerous and invoked more often.
-
-${}_{}$
-
-\noindent We are in the process of creating a practical language (\url{http://L42.is})
- where sound invariant checking can be enforced by decorating a class.
-In 42 the following code expresses the \Q@Boat@ example.
-\begin{lstlisting}
-Boat:Data<><{
-  S name,$\Comment{the default modifier is imm}$
-  capsule Items cargo,
-  Void load(Item item)
-    this.#cargo().add(item),
-  Item unload(String itemName)
-    this.#cargo().extract(itemName),
-  read method Bool #invariant()
-    !this.name().isEmpty() & this.cargo().weight()<=300Num,
-  }
-\end{lstlisting}
-\Q@Data@ takes that code literal and creates a \Q@Boat@ class with invariant.
-Moreover, \Q@equals@, \Q@toString@ and many other utility methods are generated/added.
-
-The 42 project is starting to reach maturity, and is showing that sound and practical
- run time verification of arbitrary invariants written in the language itself is possible. 
-In 42 we have only final classes and interfaces (code reuse is obtained by metaprogramming)
-This means that every variable of a class type hold an instance of that exact type, and 
-thus, thanks to SIC, exactly that class invariant will hold.
-
-
+%
+%\saveSpace
+%\section{Performance considerations and Practical experience}
+%\saveSpace
+%We believe our sound approach can monitor arbitrary programs
+%for a fraction of the cost of many other competitors.
+%Many other works%
+%~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
+% check (that is, run)
+%the invariant code at the start and at the end of every public
+%method.
+%In  our approach,
+%we only call the invariant a single time for each mutator method.
+%We expect this to result in at least 10 times reduction over
+%the number of required invariant checks:
+%for mutator methods, we call \Q@invariant()@ only one time instead of two,
+%and we
+%do not call it at all for non-mutator methods, that
+% are usually more numerous and invoked more often.
+%
+%${}_{}$
+%
+%\noindent We are in the process of creating a practical language (\url{http://L42.is})
+% where sound invariant checking can be enforced by decorating a class.
+%In 42 the following code expresses the \Q@Boat@ example.
+%\begin{lstlisting}
+%Boat:Data<><{
+%  S name,$\Comment{the default modifier is imm}$
+%  capsule Items cargo,
+%  Void load(Item item)
+%    this.#cargo().add(item),
+%  Item unload(String itemName)
+%    this.#cargo().extract(itemName),
+%  read method Bool #invariant()
+%    !this.name().isEmpty() & this.cargo().weight()<=300Num,
+%  }
+%\end{lstlisting}
+%\Q@Data@ takes that code literal and creates a \Q@Boat@ class with invariant.
+%Moreover, \Q@equals@, \Q@toString@ and many other utility methods are generated/added.
+%
+%The 42 project is starting to reach maturity, and is showing that sound and practical
+% run time verification of arbitrary invariants written in the language itself is possible. 
+%In 42 we have only final classes and interfaces (code reuse is obtained by metaprogramming)
+%This means that every variable of a class type hold an instance of that exact type, and 
+%thus, thanks to SIC, exactly that class invariant will hold.
+%
+%
 
 \saveSpace
 \section{Related work}
@@ -284,7 +284,6 @@ In particular, depending on the details of a specific language
  releasing resources as in \Q@finally@ blocks may require
 some relaxation of @StrongExceptionSafety. Sound releasing of resources could be interesting
 future work.
-
 
 %Overall, we are very confused on finding so many approaches asking for the programmer to
 %actually understand what their code is doing in the details.

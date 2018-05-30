@@ -1,76 +1,333 @@
 %conferences
-@string{esop09="ESOP 2009 - European Symposium on Programming"}
-@string{ictcs16="ICTCS'16 - Italian Conf. on Theoretical Computer Science"}
-@string{oopsla08="ACM SIGPLAN Conference on Object-Oriented Programming,
-Systems, Languages and Applications (OOPSLA 2008)"}
-@string{oopsla12="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2012)"}
-@string{popl11="ACM Symp. on Principles of Programming Languages 2011"}
-@string{oopsla04="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2004)"}
-@string{oopsla05="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2005)"}
-@string{oopsla10="ACM SIGPLAN Conference on Object-Oriented Programming,Systems, Languages and Applications (OOPSLA 2010)"}
 @string{ecoop97="ECOOP'97 - Object-Oriented Programming"}
+@string{ecoop98="ECOOP'98 - Object-Oriented Programming"}
 @string{ecoop03="ECOOP'03 - Object-Oriented Programming"}
 @string{ecoop07="ECOOP'07 - Object-Oriented Programming"}
 @string{ecoop10="ECOOP'10 - Object-Oriented Programming"}
-
+@string{ecoop13="ECOOP'13 - Object-Oriented Programming"}
+@string{ecoop16="ECOOP'16 - Object-Oriented Programming"}
+@string{esop01="ESOP'01 - European Symposium on Programming"}
+@string{esop05="ESOP'05 - European Symposium on Programming"}
+@string{ftfjp05="FTfJP'05 - Formal Techniques for Java-like Programs"}
+@string{ftfjp13="FTfJP'13- Formal Techniques for Java-like Programs"}
+@string{ictcs15="ICTCS'15 - Italian Conf. on Theoretical Computer Science"}
+@string{ictcs16="ICTCS'16 - Italian Conf. on Theoretical Computer Science"}
+@string{icfp14="Intl. Conf. on Functional Programming 2014"}
+@string{lics02="Proc. IEEE Symp. on Logic in Computer Science 2002"}
+@string{oops17="OOPS'17 - Object-Oriented Programming Languages and Systems,
+                Track at SAC'17 - ACM Symp. on Applied Computing"}
+@string{oopsla91="ACM Symp. on Object-Oriented Programming: Systems, Languages and Applications 1991"}
+@string{oopsla98="ACM Symp. on Object-Oriented Programming: Systems, Languages and Applications 1998"}
+@string{oopsla04="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2004)"}
+@string{oopsla05="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2005)"}
+@string{oopsla07="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2007)"}
+@string{oopsla09="ACM SIGPLAN Conference on Object-Oriented Programming,Systems, Languages and Applications (OOPSLA 2009)"}
+@string{oopsla10="ACM SIGPLAN Conference on Object-Oriented Programming,Systems, Languages and Applications (OOPSLA 2010)"}
+@string{oopsla11="ACM SIGPLAN Conference on Object-Oriented Programming,Systems, Languages and Applications (OOPSLA 2011)"}
+@string{oopsla12="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2012)"}
+@string{pepm13 = "PEPM'13 - Partial Evaluation and Program Manipulation"}
+@string{popl12="ACM Symp. on Principles of Programming Languages 2012"}
 
 %journals
 @string{entcs="Electronic Notes in Theoretical Computer Science"}
-@string{scp="Science of Computer Programming"}
+@string{jfp="Journ. of Functional Programming"}
 @string{jot="Journal of Object Technology"}
+@string{tcs="Theoretical Computer Science"}
+@string{toplas="ACM Transactions on Programming Languages and Systems"}
+@string{sigplan="SIGPLAN Notices"}
+
+%publishers
+@string{acm="ACM Press"}
+@string{cup="Cambridge University Press"}
+@string{ieee="IEEE Computer Society"}
+@string{mit="The MIT Press"}
+@string{sv="Springer"}
 
 %series
 @string{lncs="Lecture Notes in Computer Science"}
 
-%publishers
-@string{acm="ACM Press"}
-@string{sv="Springer"}
+@book{Meyer:1992:EL:129093,
+ author = {Meyer, Bertrand},
+ title = {Eiffel: The Language},
+ year = {1992},
+ isbn = {0-13-247925-7},
+ publisher = {Prentice-Hall, Inc.},
+ address = {Upper Saddle River, NJ, USA},
+} 
 
-@inproceedings{AhmedEtAl11,
-  author    = {Amal Ahmed and
+@book{Alexandrescu:2010:DPL:1875434,
+ author = {Alexandrescu, Andrei},
+ title = {The D Programming Language},
+ year = {2010},
+ isbn = {0321635361, 9780321635365},
+ edition = {1st},
+ publisher = {Addison-Wesley Professional},
+}
+
+@inproceedings{Barnett:2004:SPS:2131546.2131549,
+ author = {Barnett, Mike and Leino, K. Rustan M. and Schulte, Wolfram},
+ title = {The Spec\# Programming System: An Overview},
+ booktitle = {Proceedings of the 2004 International Conference on Construction and Analysis of Safe, Secure, and Interoperable Smart Devices},
+ series = {CASSIS'04},
+ year = {2005},
+ isbn = {3-540-24287-2, 978-3-540-24287-1},
+ location = {Marseille, France},
+ pages = {49--69},
+ numpages = {21},
+ url = {http://dx.doi.org/10.1007/978-3-540-30569-9_3},
+ doi = {10.1007/978-3-540-30569-9_3},
+ acmid = {2131549},
+ publisher = {Springer-Verlag},
+ address = {Berlin, Heidelberg},
+} 
+
+@inproceedings{AhrendtEtAl09,
+  author    = {Wolfgang Ahrendt and
+               Frank S. de Boer and
+               Immo Grabe},
+  title     = {Abstract Object Creation in Dynamic Logic},
+  booktitle = {{FM} 2009: Formal Methods},
+  year      = {2009},
+  pages     = {612--627},
+}
+
+@inproceedings{Almeida97,
+  author    = {Paulo S{\'{e}}rgio Almeida},
+title     = {Balloon Types: Controlling Sharing of State in Data Types},
+  booktitle = ecoop97,
+  series = lncs,
+   volume    = {1241},
+ pages     = {32--59},
+  year      = {1997},
+  publisher =	 sv,
+}
+
+@Article{AriolaBlom02,
+  title =	"Skew confluence and the lambda calculus with letrec",
+  author =	"Z. M. Ariola and Stefan Blom",
+  journal =	"Ann. Pure Appl. Logic",
+  year = 	"2002",
+  number =	"1-3",
+  volume =	"117",
+   pages =	"95--168",
+}
+
+@Article{AriolaFelleisen97,
+author = "Zena M. Ariola and Matthias Felleisen",
+title = "The Call-by-Need Lambda Calculus",
+journal = jfp,
+volume = 7,
+number = 3,
+pages = "265--301",
+year = 1997,
+}
+
+@InProceedings{BirkaErnst04,
+  Author =   {Adrian Birka and Michael D. Ernst},
+  Booktitle =  oopsla04,
+   Pages =  {35--49},
+  Title =  {A practical type system and language for reference
+                  immutability},
+  Year =   2004
+}
+
+@book{Bloch08,
+ author = {Bloch, Joshua},
+ title = {Effective {J}ava (2Nd Edition) (The Java Series)},
+ year = {2008},
+ edition = {2},
+ publisher = {Prentice Hall PTR},
+} 
+
+@inproceedings{BocchinoEtAl09,
+  author    = {Robert L. Bocchino Jr. and
+               Vikram S. Adve and
+               Danny Dig and
+               Sarita V. Adve and
+               Stephen Heumann and
+               Rakesh Komuravelli and
+               Jeffrey Overbey and
+               Patrick Simmons and
+               Hyojin Sung and
+               Mohsen Vakilian},
+  title     = {A type and effect system for deterministic parallel Java},
+  booktitle = oopsla09,
+    pages     = {97--116},
+  year      = {2009},
+ editor    = {Shail Arora and
+               Gary T. Leavens},
+     publisher = acm,
+}
+
+@article{Boyland01,
+  author =      {John Boyland},
+ title = {Alias Burying: Unique Variables Without Destructive Reads},
+ journal = {Softw. Pract. Exper.},
+ volume = {31},
+ number = {6},
+ month = may,
+ year = {2001},
+ pages = {533--553},
+} 
+
+@article{Boyland06,
+  author    = {John Boyland},
+  title     = {Why we should not add readonly to {J}ava (yet)},
+  journal   = jot,
+  volume    = {5},
+  number    = {5},
+  year      = {2006},
+  pages     = {5-29},
+ }
+
+@article{Boyland10,
+  author =      {John Boyland},
+  title =       {Semantics of Fractional Permissions with Nesting},
+  journal = toplas,
+  volume = 32,
+  number = 6,
+  year = 2010
+}
+
+
+@article{CapriccioliEtAl15,
+author = {Andrea Capriccioli and Marco Servetto and Elena Zucca},
+title = {An imperative pure calculus},
+  journal   = entcs,
+  volume    = {322},
+  pages     = {87--102},
+  year      = {2016},
+  booktitle=ictcs15,
+}
+
+@inproceedings{CastegrenWrigstad16,
+  author    = {Elias Castegren and
+               Tobias Wrigstad},
+  title     = {Reference Capabilities for Concurrency Control},
+  booktitle = ecoop16,
+  pages     = {5:1--5:26},
+  year      = {2016},
+  editor    = {Shriram Krishnamurthi and
+               Benjamin S. Lerner},
+  series    = {LIPIcs},
+  volume    = {56},
+  publisher = {Schloss Dagstuhl - Leibniz-Zentrum fuer Informatik},
+}
+
+@InProceedings{ClarkeWrigstad03,
+   Author =   {David Clarke and Tobias Wrigstad},
+  Booktitle =  ecoop03,
+  Pages =  {176--200},
+  Publisher =  sv,
+  Series =   lncs,
+  Title =  {External Uniqueness is Unique Enough},
+  Volume =   2473,
+  Year =   2003,
+}
+
+@inproceedings{ClarkeEtAl98,
+  author    = {David G. Clarke and
+               John Potter and
+               James Noble},
+  title     = {Ownership Types for Flexible Alias Protection},
+  booktitle = oopsla98,
+   publisher = acm,
+  year      = {1998},
+  pages     = {48--64},
+}
+
+@incollection{ClarkeEtAl13,
+  author    = {Dave Clarke and
+               Johan {\"{O}}stlund and
+               Ilya Sergey and
+               Tobias Wrigstad},
+  title     = {Ownership Types: {A} Survey},
+  booktitle = {Aliasing in Object-Oriented Programming. Types, Analysis and Verification},
+  pages     = {15--58},
+  year      = {2013},
+    editor    = {Dave Clarke and
+               James Noble and
+               Tobias Wrigstad},
+  series    = lncs,
+  volume    = {7850},
+  publisher = sv,
+}
+
+@inproceedings{ClementsEtAl01,
+  author    = {John Clements and
+               Matthew Flatt and
+               Matthias Felleisen},
+  title     = {Modeling an Algebraic Stepper},
+  booktitle = esop01,
+  year      = {2001},
+  pages     = {320--334},
+}
+
+@InProceedings{DietlEtAl07,
+Author =   {Werner Dietl and Sophia Drossopoulou and Peter M{\"u}ller},
+  Booktitle =  ecoop07,
+  series = lncs,
+  Publisher =  sv,
+  Title =  {Generic Universe Types},
+  Year =   2007,
+    volume    = {4609},
+pages     = {28-53},
+}
+
+@article{FelleisenFriedman89,
+  author    = {Matthias Felleisen and
+               Daniel P. Friedman},
+  title     = {A Syntactic Theory of Sequential State},
+  journal   = tcs,
+  volume    = {69},
+  number    = {3},
+  year      = {1989},
+  pages     = {243--287},
+}
+
+@article{FelleisenHieb92,
+  author    = {Matthias Felleisen and
+               Robert Hieb},
+  title     = {The Revised Report on the Syntactic Theories of Sequential
+               Control and State},
+  journal   = tcs,
+  volume    = {103},
+  number    = {2},
+  year      = {1992},
+  pages     = {235--271},
+}
+
+@book{FelleisenEtAl09,
+  author    = {Matthias Felleisen and
                Robert Bruce Findler and
-               Jeremy G. Siek and
-               Philip Wadler},
-  title     = {Blame for all},
-  publisher = acm,
- booktitle = popl11,
-  pages     = {201--214},
-  year      = {2011},
-   editor    = {Thomas Ball and
-               Mooly Sagiv},
-}
-
-@article{ArkoudasRinard05,
-  author    = {Konstantine Arkoudas and
-               Martin C. Rinard},
-  title     = {Deductive Runtime Certification},
-journal = entcs,
-  volume    = {113},
-  pages     = {45--63},
-  year      = {2005},
-note = "Fourth Workshop on Runtime Verification (RV 2004)",
-}
-
-@Inproceedings {BarnettEtAl05,
-author       = {Mike Barnett and K. Rustan M. Leino and Wolfram Schulte},
-booktitle    = {CASSIS'04 - Construction and Analysis of Safe, Secure and Interoperable Smart
-                Devices},
-pages        = {49-69},
-publisher    = sv,
-series       = lncs,
-title = {The {Spec\#} Programming System: An Overview},
-url          = {http://research.microsoft.com/apps/pubs/default.aspx?id=72985},
-volume       = {3362},
-year         = {2005},
+               Matthew Flatt},
+  title     = {Semantics Engineering with {PLT} Redex},
+  publisher = mit,
+  year      = {2009},
 }
 
 @inproceedings{GianniniEtAl16,
-  author    = {Paola Giannini and Marco Servetto and Elena Zucca},
-  title     = {Types for Immutability and Aliasing Control (extended abstract)},
+  author    = {Paola Giannini and
+               Marco Servetto and
+               Elena Zucca},
+  title     = {Types for Immutability and Aliasing Control},
   booktitle = ictcs16,
-  year      = {2016},
-  note = {In this volume},
+  pages     = {62--74},
+    series    = {{CEUR} Workshop Proceedings},
+  volume    = {1720},
+  publisher = {CEUR-WS.org},
+    url       = {http://ceur-ws.org/Vol-1720/full5.pdf},
+    year = 2016,
 }
+
+@inproceedings{GianniniEtAl17,
+  author    = {Paola Giannini and
+               Marco Servetto and
+               Elena Zucca},
+  title     = {A type and effect system for sharing},
+  booktitle = oops17,
+    year = 2017,
+    note = {To appear}}
 
 @inproceedings{GordonEtAl12,
   author    = {Colin S. Gordon and
@@ -78,7 +335,6 @@ year         = {2005},
                Jared Parsons and
                Aleks Bromfield and
                Joe Duffy},
-
  title     = {Uniqueness and reference immutability for safe parallelism},
  booktitle = oopsla12,
  year = {2012},
@@ -86,402 +342,482 @@ year         = {2005},
  publisher = acm,
  } 
 
-@inproceedings{GronskiFlanagan07,
-  author    = {Jessica Gronski and
-               Cormac Flanagan},
-  title     = {Unifying Hybrid Types and Contracts},
-booktitle = {TFP 2007 - Trends in Functional Programming},
-  series    = {Trends in Functional Programming},
-  volume    = {8},
-  publisher = {Intellect},
- pages     = {54--70},
-  year      = {2007},
-  editor    = {Marco T. Moraz{\'{a}}n},
+@inproceedings{HallerOdersky10,
+  title={Capabilities for uniqueness and borrowing},
+  author    = {Philipp Haller and
+               Martin Odersky},
+  booktitle=ecoop10,
+  pages={354--378},
+  year={2010},
+   publisher = sv,
+  editor    = {Theo D'Hondt},
+  series    = lncs,
+  volume    = {6183},
 }
 
-@article{LeavensEtAl05,
-  author    = {Gary T. Leavens and
-               Yoonsik Cheon and
-               Curtis Clifton and
-               Clyde Ruby and
-               David R. Cok},
-  title     = {How the design of {JML} accommodates both runtime assertion checking
-               and formal verification},
-journal = scp,
-  volume    = {55},
-  number    = {1-3},
-  pages     = {185--208},
-  year      = {2005},
-}
+@inproceedings{Hogg91,
+ author = {John Hogg},
+ title = {Islands: Aliasing Protection in Object-oriented Languages},
+ booktitle = oopsla91,
+ year = {1991},
+  pages = {271--285},
+ publisher = acm,
+} 
 
-@inproceedings{MuellerEtAl16,
-   author    = {Peter M{\"{u}}ller and
-               Malte Schwerhoff and
-               Alexander J. Summers},
-  title     = {Viper: {A} Verification Infrastructure for Permission-Based Reasoning},
- booktitle = {VMCAI'16 - Verification, Model Checking, and Abstract Interpretation},
- editor = {B. Jobstmann and K. R. M. Leino},
- year = {2016},
- publisher = sv,
- series = lncs,
- pages = {41-62},
- volume = {9583}
-}
-
-@inproceedings{NystromEtAl08,
-  author    = {Nathaniel Nystrom and
-               Vijay A. Saraswat and
-               Jens Palsberg and
-               Christian Grothoff},
-  title     = {Constrained types for object-oriented languages},
- booktitle = oopsla08,
-   editor    = {Gail E. Harris},
- year = {2008},
-  pages = {457--474},
+@Article{IgarashiEtAl01,
+ author = {Atsushi Igarashi and Benjamin C. Pierce and Philip Wadler},
+ title = {Featherweight {J}ava: a minimal core calculus for {J}ava and {GJ}},
+ journal = toplas,
   publisher = acm,
+volume = {23},
+ number = {3},
+ year = {2001},
+ pages = {396--450},
+ }
+
+@inproceedings{JeffreyRathke05,
+  author    = {Alan Jeffrey and
+               Julian Rathke},
+  title     = {{J}ava {J}r: Fully Abstract Trace Semantics for a Core {J}ava
+               Language},
+year = {2005},
+  booktitle = esop05,
+  pages     = {423--438},
+ }
+
+@inproceedings{LiEtAl11,
+ author = {Li, Paley and Cameron, Nicholas and Noble, James},
+ title = {Cloning in Ownership},
+ booktitle = oopsla11,
+ year = {2011},
+ pages = {63--66},
+ publisher = acm,
 } 
 
-@article{PearceGroves15,
-title = "Designing a verifying compiler: Lessons learned from developing {W}hiley ",
-  author    = {David J. Pearce and
-               Lindsay Groves},
-journal = scp,
-  volume    = {113},
-pages = "191 - 220",
-year = "2015",
+@book{Milner99,
+  author    = {Robin Milner},
+  title     = {Communicating and mobile systems - the Pi-calculus},
+  publisher = cup,
+  year      = {1999},
 }
 
-@inproceedings{WadlerFindler09,
-  author    = {Philip Wadler and
-               Robert Bruce Findler},
-  title     = {Well-Typed Programs Can't Be Blamed},
-  booktitle = esop09,
+@inproceedings{MullerRudich07,
+  title={Ownership transfer in universe types},
+ author    = {Peter M{\"{u}}ller and
+               Arsenii Rudich},
+  booktitle=oopsla07,
+   pages={461--478},
+  year={2007},
+  publisher = acm,
+  editor    = {Richard P. Gabriel and
+               David F. Bacon and
+               Cristina Videira Lopes and
+               Guy L. Steele Jr.},
+}
+
+@inproceedings{NadenEtAl12,
+  author    = {Karl Naden and
+               Robert Bocchino and
+               Jonathan Aldrich and
+               Kevin Bierhoff},
+ title     = {A type system for borrowing permissions},
+ booktitle = popl12,
+ year = {2012},
+  pages = {557--570},
+ publisher = acm,
+} 
+
+@inproceedings{NobleEtAl98,
+ author = {James Noble and
+               Jan Vitek and
+               John Potter},
+ title = {Flexible Alias Protection},
+ booktitle = ecoop98,
+ year = {1998},
+ pages = {158--185},
+ publisher = sv,
+  editor    = {Eric Jul},
+  series    = lncs,
+  volume    = {1445},
+ } 
+ 
+@inproceedings{OstlundEtAl08,
+  title={Ownership, uniqueness, and immutability},
+  author={Johan {\"{O}}stlund and
+               Tobias Wrigstad and
+               Dave Clarke and
+               Beatrice {\AA}kerblom},
+  booktitle={International Conference on Objects, Components, Models and Patterns},
+  pages={178--197},
+  year={2008},
+ editor    = {Richard F. Paige and
+               Bertrand Meyer},
    series    = lncs,
-  volume    = {5502},
+  volume    = {11},
   publisher = sv,
- pages     = {1--16},
-  year      = {2009},
-  editor    = {Giuseppe Castagna},
+ }
+
+@inproceedings{PetricekEtAl14,
+  author    = {Tomas Petricek and
+               Dominic A. Orchard and
+               Alan Mycroft},
+  title     = {Coeffects: a calculus of context-dependent computation},
+  booktitle = icfp14,
+  pages     = {123--135},
+  year      = {2014},
+   editor    = {Johan Jeuring and
+               Manuel M. T. Chakravarty},
+  publisher = acm,
+ }
+
+@inproceedings{Reynolds02,
+  author    = {John C. Reynolds},
+  title     = {Separation Logic: {A} Logic for Shared Mutable Data Structures},
+  booktitle = lics02,
+  pages     = {55--74},
+  year      = {2002},
+  publisher = ieee,
+ }
+
+@inproceedings{ServettoLindsay13,
+  title = {True small-step reduction for imperative object-oriented languages},
+  author = {Marco Servetto and Lindsay Groves},
+  year = {2013},
+  booktitle = ftfjp13,
+  pages     = {1:1--1:7},
+  editor    = {Werner Dietl},
+   publisher = acm,
 }
 
-@inproceedings{FreePfe91,
-  author    = {Tim Freeman and
-               Frank Pfenning},
-  title     = {Refinement Types for {ML}},
-  booktitle = { {ACM} SIGPLAN'91 Conference on Programming Language
-               Design and Implementation},
-  pages     = {268--277},
-  publisher = {{ACM}},
-  year      = {1991},
-  doi       = {10.1145/113445.113468},
+@inproceedings{ServettoZucca15,
+  author    = {Marco Servetto and
+               Elena Zucca},
+  title     = {Aliasing Control in an Imperative Pure Calculus},
+  booktitle = {Programming Languages and Systems - 13th Asian Symposium (APLAS)},
+  pages     = {208--228},
+   editor    = {Xinyu Feng and
+               Sungwoo Park},
+  series    = lncs,
+  volume    = {9458},
+  publisher = sv,
+  year      = {2015},
 }
 
+@inproceedings{ServettoEtAl13,
+  author    = {Marco Servetto and
+               Julian Mackay and
+               Alex Potanin and
+               James Noble},
+  title     = {The Billion-Dollar Fix - Safe Modular Circular Initialisation
+               with Placeholders and Placeholder Types},
+booktitle = ecoop13,
+  year      = {2013},
+  pages     = {205--229},
+  publisher = sv,
+  series    = lncs,
+  volume    = {7920},
+ }
 
-
-
-%----------------------------------------
-@Article{Burdy2005,
-author="Burdy, Lilian
-and Cheon, Yoonsik
-and Cok, David R.
-and Ernst, Michael D.
-and Kiniry, Joseph R.
-and Leavens, Gary T.
-and Leino, K. Rustan M.
-and Poll, Erik",
-title="An overview of JML tools and applications",
-journal="International Journal on Software Tools for Technology Transfer",
-year="2005",
-month="06",
-day="01",
-volume="7",
-number="3",
-pages="212--232",
-abstract="The Java Modeling Language (JML) can be used to specify the detailed design of Java classes and interfaces by adding annotations to Java source files. The aim of JML is to provide a specification language that is easy to use for Java programmers and that is supported by a wide range of tools for specification typechecking, runtime debugging, static analysis, and verification.",
-issn="1433-2787",
-doi="10.1007/s10009-004-0167-4",
-url="https://doi.org/10.1007/s10009-004-0167-4"
+@inproceedings{ServettoEtAl13a,
+author  = {Marco Servetto and David J. Pearce and Lindsay Groves and Alex Potanin},
+title  =  {Balloon Types for Safe Parallelisation over Arbitrary Object Graphs},
+Year  = {2013},
+booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Programming},
 }
 
-@Inbook{Voigt2013,
-author="Voigt, Janina
-and Irwin, Warwick
-and Churcher, Neville",
-editor="Maciaszek, Leszek A.
-and Zhang, Kang",
-title="Comparing and Evaluating Existing Software Contract Tools",
-bookTitle="Evaluation of Novel Approaches to Software Engineering: 6th International Conference, ENASE 2011, Beijing, China, June 8-11, 2011. Revised Selected Papers",
-year="2013",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="49--63",
-abstract="The idea of using contracts to specify interfaces and interactions between software components was proposed several decades ago. Since then, a number of tools providing support for software contracts have been developed. In this paper, we explore eleven such technologies to investigate their approach to various aspects of software contracts. We present the similarities as well as the areas of significant disagreement and highlight the shortcomings of existing technologies. We briefly introduce PACT, a software contract tool under development, explaining its approach to various aspects of software contracts.",
-isbn="978-3-642-32341-6",
-doi="10.1007/978-3-642-32341-6_4",
-url="https://doi.org/10.1007/978-3-642-32341-6_4"
-}
-
-@inproceedings{gorbovitski08efficient,
-author = "Michael Gorbovitski and Tom Rothamel and Yanhong A. Liu and Scott D. Stoller",
-title = "Efficient Runtime Invariant Checking: A Framework and Case Study",
-booktitle = "Proceedings of the 6th International Workshop on Dynamic Analysis (WODA 2008)",
-publisher="ACM Press",
-year = 2008
-}
-
-@book{Meyer:1992:EL:129093,
-	author = {Meyer, Bertrand},
-	title = {Eiffel: The Language},
-	year = {1992},
-	isbn = {0-13-247925-7},
-	publisher = {Prentice-Hall, Inc.},
-	address = {Upper Saddle River, NJ, USA},
-} 
-
-@book{Alexandrescu:2010:DPL:1875434,
-	author = {Alexandrescu, Andrei},
-	title = {The D Programming Language},
-	year = {2010},
-	isbn = {9780321635365},
-	edition = {1st},
-	publisher = {Addison-Wesley Professional},
+@inproceedings{TschantzErnst05,
+   author = {Matthew S. Tschantz and Michael D. Ernst},
+   title = {Javari: Adding reference immutability to {J}ava},
+   booktitle = oopsla05,
+   pages = {211--230},
+    year = {2005},
+     publisher = acm,
 }
 
 @inproceedings{ZibinEtAl10,
-	author = {Yoav Zibin and Alex Potanin and Paley Li and Mahmood Ali and
+   author = {Yoav Zibin and Alex Potanin and Paley Li and Mahmood Ali and
 	Michael D. Ernst},
-	title = {Ownership and immutability in generic {J}ava},
-	booktitle = oopsla10,
-	pages = {598--617},
-	year = {2010},
-	
-}
-@inproceedings{ServettoZucca15,
-	author    = {Marco Servetto and
-	Elena Zucca},
-	title     = {Aliasing Control in an Imperative Pure Calculus},
-	booktitle = {Programming Languages and Systems - 13th Asian Symposium (APLAS)},
-	pages     = {208--228},
-	editor    = {Xinyu Feng and
-	Sungwoo Park},
-	series    = lncs,
-	volume    = {9458},
-	publisher = sv,
-	year      = {2015},
-}
-@inproceedings{Almeida97,
-	author    = {Paulo S{\'{e}}rgio Almeida},
-	title     = {Balloon Types: Controlling Sharing of State in Data Types},
-	booktitle = ecoop97,
-	series = lncs,
-	volume    = {1241},
-	pages     = {32--59},
-	year      = {1997},
-	publisher =	 sv,
-}
-
-@inproceedings{matsakis2014rust,
-	title={The rust language},
-	author={Matsakis, Nicholas D and Klock II, Felix S},
-	booktitle={ACM SIGAda Ada Letters},
-	volume={34},
-	number={3},
-	pages={103--104},
-	year={2014},
-	organization={ACM}
-}
-@incollection{ClarkeEtAl13,
-	author    = {Dave Clarke and
-	Johan {\"{O}}stlund and
-	Ilya Sergey and
-	Tobias Wrigstad},
-	title     = {Ownership Types: {A} Survey},
-	booktitle = {Aliasing in Object-Oriented Programming. Types, Analysis and Verification},
-	pages     = {15--58},
-	year      = {2013},
-	editor    = {Dave Clarke and
-	James Noble and
-	Tobias Wrigstad},
-	series    = lncs,
-	volume    = {7850},
-	publisher = sv,
-}
-@book{Bloch08,
-	author = {Bloch, Joshua},
-	title = {Effective {J}ava (2Nd Edition) (The Java Series)},
-	year = {2008},
-	edition = {2},
-	publisher = {Prentice Hall PTR},
-} 
-@article{Boyland06,
-	author    = {John Boyland},
-	title     = {Why we should not add readonly to {J}ava (yet)},
-	journal   = jot,
-	volume    = {5},
-	number    = {5},
-	year      = {2006},
-	pages     = {5-29},
-}
-
-@InProceedings{DietlEtAl07,
-	Author =   {Werner Dietl and Sophia Drossopoulou and Peter M{\"u}ller},
-	Booktitle =  ecoop07,
-	series = lncs,
-	Publisher =  sv,
-	Title =  {Generic Universe Types},
-	Year =   2007,
-	volume    = {4609},
-	pages     = {28-53},
-}
-@inproceedings{nelson2012profiling,
-	title={Profiling field initialisation in Java},
-	author={Nelson, Stephen and Pearce, David J and Noble, James},
-	booktitle={International Conference on Runtime Verification},
-	pages={292--307},
-	year={2012},
-	organization={Springer}
+   title = {Ownership and immutability in generic {J}ava},
+   booktitle = oopsla10,
+   pages = {598--617},
+   year = {2010},
+   
 }
 
 @article{JOT:issue_2011_01/article1,
-	author = {Giovanni Lagorio and Marco Servetto},
-	title = {Strong exception-safety for checked and unchecked exceptions},
-	journal = {Journal of Object Technology},
-	volume = {10},
-	issn = {1660-1769},
-	year = {2011},
-	pages = {1:1-20},
-	doi = {10.5381/jot.2011.10.1.a1},
-	url = {http://www.jot.fm/contents/issue_2011_01/article1.html}
+  author = {Giovanni Lagorio and Marco Servetto},
+  title = {Strong exception-safety for checked and unchecked exceptions},
+  journal = {Journal of Object Technology},
+  volume = {10},
+  issn = {1660-1769},
+  year = {2011},
+  pages = {1:1-20},
+  doi = {10.5381/jot.2011.10.1.a1},
+  url = {http://www.jot.fm/contents/issue_2011_01/article1.html}
 }
-@incollection{Gopinathan:2008:RMO:1483018.1483028,
-	author = {Gopinathan, Madhu and Rajamani, Sriram K.},
-	chapter = {Runtime Monitoring of Object Invariants with Guarantee},
-	title = {Runtime Verification},
-	editor = {Leucker, Martin},
-	year = {2008},
-	isbn = {978-3-540-89246-5},
-	pages = {158--172},
-	numpages = {15},
-	url = {http://dx.doi.org/10.1007/978-3-540-89247-2_10},
-	doi = {10.1007/978-3-540-89247-2_10},
-	acmid = {1483028},
-	publisher = {Springer-Verlag},
-	address = {Berlin, Heidelberg},
-} 
-@inproceedings{ServettoEtAl13a,
-	author  = {Marco Servetto and David J. Pearce and Lindsay Groves and Alex Potanin},
-	title  =  {Balloon Types for Safe Parallelisation over Arbitrary Object Graphs},
-	Year  = {2013},
-	booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Programming},
-}
-@article{Boyland01,
-	author =      {John Boyland},
-	title = {Alias Burying: Unique Variables Without Destructive Reads},
-	journal = {Softw. Pract. Exper.},
-	volume = {31},
-	number = {6},
-	month = may,
-	year = {2001},
-	pages = {533--553},
-} 
-@inproceedings{finifter2008verifiable,
-	title={Verifiable functional purity in java},
-	author={Finifter, Matthew and Mettler, Adrian and Sastry, Naveen and Wagner, David},
-	booktitle={Proceedings of the 15th ACM conference on Computer and communications security},
-	pages={161--174},
-	year={2008},
-	organization={ACM}
-}
+
 @Inbook{Abrahams2000,
-	author="Abrahams, David",
-	editor="Jazayeri, Mehdi
-	and Loos, R{\"u}diger G. K.
-	and Musser, David R.",
-	title="Exception-Safety in Generic Components",
-	bookTitle="Generic Programming: International Seminar on Generic Programming Dagstuhl Castle, Germany, April 27--May 1, 1998 Selected Papers",
-	year="2000",
-	publisher="Springer Berlin Heidelberg",
-	address="Berlin, Heidelberg",
-	pages="69--79",
-	abstract="This paper represents the knowledge accumulated in response to a real-world need: that the C++ Standard Template Library exhibit useful and well-defined interactions with exceptions, the error-handling mechanism built-in to the core C++ language. It explores the meaning of exception-safety, reveals surprising myths about exceptions and genericity, describes valuable tools for reasoning about program correctness, and outlines an automated testing procedure for verifying exception-safety.",
-	isbn="978-3-540-39953-7",
-	doi="10.1007/3-540-39953-4_6",
-	url="https://doi.org/10.1007/3-540-39953-4_6"
+author="Abrahams, David",
+editor="Jazayeri, Mehdi
+and Loos, R{\"u}diger G. K.
+and Musser, David R.",
+title="Exception-Safety in Generic Components",
+bookTitle="Generic Programming: International Seminar on Generic Programming Dagstuhl Castle, Germany, April 27--May 1, 1998 Selected Papers",
+year="2000",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="69--79",
+abstract="This paper represents the knowledge accumulated in response to a real-world need: that the C++ Standard Template Library exhibit useful and well-defined interactions with exceptions, the error-handling mechanism built-in to the core C++ language. It explores the meaning of exception-safety, reveals surprising myths about exceptions and genericity, describes valuable tools for reasoning about program correctness, and outlines an automated testing procedure for verifying exception-safety.",
+isbn="978-3-540-39953-7",
+doi="10.1007/3-540-39953-4_6",
+url="https://doi.org/10.1007/3-540-39953-4_6"
 }
 
-@InProceedings{ClarkeWrigstad03,
-	Author =   {David Clarke and Tobias Wrigstad},
-	Booktitle =  ecoop03,
-	Pages =  {176--200},
-	Publisher =  sv,
-	Series =   lncs,
-	Title =  {External Uniqueness is Unique Enough},
-	Volume =   2473,
-	Year =   2003,
-}
-
-@inproceedings{HallerOdersky10,
-	title={Capabilities for uniqueness and borrowing},
-	author    = {Philipp Haller and
-	Martin Odersky},
-	booktitle=ecoop10,
-	pages={354--378},
-	year={2010},
-	publisher = sv,
-	editor    = {Theo D'Hondt},
-	series    = lncs,
-	volume    = {6183},
-}
-@InProceedings{BirkaErnst04,
-	Author =   {Adrian Birka and Michael D. Ernst},
-	Booktitle =  oopsla04,
-	Pages =  {35--49},
-	Title =  {A practical type system and language for reference
-	immutability},
-	Year =   2004
-}
-
-@inproceedings{OstlundEtAl08,
-	title={Ownership, uniqueness, and immutability},
-	author={Johan {\"{O}}stlund and
-	Tobias Wrigstad and
-	Dave Clarke and
-	Beatrice {\AA}kerblom},
-	booktitle={International Conference on Objects, Components, Models and Patterns},
-	pages={178--197},
-	year={2008},
-	editor    = {Richard F. Paige and
-	Bertrand Meyer},
-	series    = lncs,
-	volume    = {11},
-	publisher = sv,
-}
-
-@inproceedings{Barnett:2004:SPS:2131546.2131549,
-	author = {Barnett, Mike and Leino, K. Rustan M. and Schulte, Wolfram},
-	title = {{T}he sdg{dS}pec\# {P}rogramming {S}ystem: {A}n {O}verview},
-	booktitle = {Proceedings of the 2004 International Conference on Construction and Analysis of Safe, Secure, and Interoperable Smart Devices},
-	series = {CASSIS'04},
-	year = {2005},
-	isbn = {978-3-540-24287-1},
-	location = {Marseille, France},
-	pages = {49--69},
-	numpages = {21},
-	url = {http://dx.doi.org/10.1007/978-3-540-30569-9_3},
-	doi = {10.1007/978-3-540-30569-9_3},
-	acmid = {2131549},
-	publisher = {Springer-Verlag},
-	address = {Berlin, Heidelberg},
+@incollection{Gopinathan:2008:RMO:1483018.1483028,
+ author = {Gopinathan, Madhu and Rajamani, Sriram K.},
+ chapter = {Runtime Monitoring of Object Invariants with Guarantee},
+ title = {Runtime Verification},
+ editor = {Leucker, Martin},
+ year = {2008},
+ isbn = {978-3-540-89246-5},
+ pages = {158--172},
+ numpages = {15},
+ url = {http://dx.doi.org/10.1007/978-3-540-89247-2_10},
+ doi = {10.1007/978-3-540-89247-2_10},
+ acmid = {1483028},
+ publisher = {Springer-Verlag},
+ address = {Berlin, Heidelberg},
 } 
 
+@Inbook{Potanin2013,
+author="Potanin, Alex
+and {\"O}stlund, Johan
+and Zibin, Yoav
+and Ernst, Michael D.",
+editor="Clarke, Dave
+and Noble, James
+and Wrigstad, Tobias",
+title="Immutability",
+bookTitle="Aliasing in Object-Oriented Programming. Types, Analysis and Verification",
+year="2013",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="233--269",
+abstract="One of the main reasons aliasing has to be controlled, as highlighted in another chapter [1] of this book [2], is the possibility that a variable can unexpectedly change its value without the referrer's knowledge. This book will not be complete without a discussion of the impact of immutability on reference-abundant imperative object-oriented languages. In this chapter we briefly survey possible definitions of immutability and present recent work by the authors on adding immutability to object-oriented languages and how it impacts aliasing.",
+isbn="978-3-642-36946-9",
+doi="10.1007/978-3-642-36946-9_9",
+url="https://doi.org/10.1007/978-3-642-36946-9_9"
+}
 
- @inproceedings{TschantzErnst05,
- 	author = {Matthew S. Tschantz and Michael D. Ernst},
- 	title = {Javari: Adding reference immutability to {J}ava},
- 	booktitle = oopsla05,
- 	pages = {211--230},
- 	year = {2005},
- 	publisher = acm,
- }
- 
- 
+@inproceedings{matsakis2014rust,
+  title={The rust language},
+  author={Matsakis, Nicholas D and Klock II, Felix S},
+  booktitle={ACM SIGAda Ada Letters},
+  volume={34},
+  number={3},
+  pages={103--104},
+  year={2014},
+  organization={ACM}
+}
+
+@inproceedings{finifter2008verifiable,
+  title={Verifiable functional purity in java},
+  author={Finifter, Matthew and Mettler, Adrian and Sastry, Naveen and Wagner, David},
+  booktitle={Proceedings of the 15th ACM conference on Computer and communications security},
+  pages={161--174},
+  year={2008},
+  organization={ACM}
+}
+@inproceedings{nelson2012profiling,
+  title={Profiling field initialisation in Java},
+  author={Nelson, Stephen and Pearce, David J and Noble, James},
+  booktitle={International Conference on Runtime Verification},
+  pages={292--307},
+  year={2012},
+  organization={Springer}
+}
+
+
+@article{meredith2012overview,
+  title={An overview of the MOP runtime verification framework},
+  author={Meredith, Patrick O?Neil and Jin, Dongyun and Griffith, Dennis and Chen, Feng and Ro{\c{s}}u, Grigore},
+  journal={International Journal on Software Tools for Technology Transfer},
+  volume={14},
+  number={3},
+  pages={249--289},
+  year={2012},
+  publisher={Springer}
+}
+
+@inproceedings{laurent2015assuring,
+  title={Assuring the guardians},
+  author={Laurent, Jonathan and Goodloe, Alwyn and Pike, Lee},
+  booktitle={Runtime Verification},
+  pages={87--101},
+  year={2015},
+  organization={Springer}
+}
+
+@article{ferrari2002guardians,
+  title={Guardians for ambient-based monitoring},
+  author={Ferrari, Gianluigi and Moggi, Eugenio and Pugliese, Rosario},
+  journal={Electronic Notes in Theoretical Computer Science},
+  volume={66},
+  number={3},
+  pages={52--75},
+  year={2002},
+  publisher={Elsevier}
+}
+@article{agten2015sound,
+  title={Sound modular verification of C code executing in an unverified context},
+  author={Agten, Pieter and Jacobs, Bart and Piessens, Frank},
+  journal={ACM SIGPLAN Notices},
+  volume={50},
+  number={1},
+  pages={581--594},
+  year={2015},
+  publisher={ACM}
+}
+
+@inproceedings{findler2001contract,
+  title={Contract soundness for object-oriented languages},
+  author={Findler, Robert Bruce and Felleisen, Matthias},
+  booktitle={ACM SIGPLAN Notices},
+  volume={36},
+  number={11},
+  pages={1--15},
+  year={2001},
+  organization={ACM}
+}
+
+@inproceedings{feldman2006jose,
+  title={Jose: Aspects for design by contract},
+  author={Feldman, Yishai A and Barzilay, Ohad and Tyszberowicz, Shmuel},
+  booktitle={Software Engineering and Formal Methods, 2006. SEFM 2006. Fourth IEEE International Conference on},
+  pages={80--89},
+  year={2006},
+  organization={IEEE}
+}
+
+
+@article{barnett2003runtime,
+  title={Runtime verification of. net contracts},
+  author={Barnett, Mike and Schulte, Wolfram},
+  journal={Journal of Systems and Software},
+  volume={65},
+  number={3},
+  pages={199--208},
+  year={2003},
+  publisher={Elsevier}
+}
+
+@inproceedings{barnett200499,
+  title={99.44\% pure: Useful abstractions in specifications},
+  author={Barnett, Mike and Naumann, David A and Schulte, Wolfram and Sun, Qi},
+  booktitle={ECOOP workshop on Formal Techniques for Java-like Programs (FTfJP)},
+  year={2004}
+}
+
+@inproceedings{fahndrich2010embedded,
+  title={Embedded contract languages},
+  author={F{\"a}hndrich, Manuel and Barnett, Michael and Logozzo, Francesco},
+  booktitle={Proceedings of the 2010 ACM Symposium on Applied Computing},
+  pages={2103--2110},
+  year={2010},
+  organization={ACM}
+}
+
+@article{abercrombie2002jcontractor,
+  title={jContractor: Bytecode instrumentation techniques for implementing design by contract in Java},
+  author={Abercrombie, Parker and Karaorman, Murat},
+  journal={Electronic Notes in Theoretical Computer Science},
+  volume={70},
+  number={4},
+  pages={55--79},
+  year={2002},
+  publisher={Elsevier}
+}
+
+@article{chalin2007logical,
+  title={Are the logical foundations of verifying compiler prototypes matching user expectations?},
+  author={Chalin, Patrice},
+  journal={Formal Aspects of Computing},
+  volume={19},
+  number={2},
+  pages={139--158},
+  year={2007},
+  publisher={Springer}
+}
+
+@article{chalin2008jml,
+  title={JML runtime assertion checking: Improved error reporting and efficiency using strong validity},
+  author={Chalin, Patrice and Rioux, Fr{\'e}d{\'e}ric},
+  journal={FM 2008: Formal Methods},
+  pages={246--261},
+  year={2008},
+  publisher={Springer}
+}
+
+@article{tran2003design,
+  title={Design and implementation of assertions for the common language infrastructure},
+  author={Tran, N and Mingins, Christine and Abramson, David},
+  journal={IEE Proceedings-Software},
+  volume={150},
+  number={5},
+  pages={329--336},
+  year={2003},
+  publisher={IET}
+}
+
+@article{boyland2001alias,
+  title={Alias burying: Unique variables without destructive reads},
+  author={Boyland, John},
+  journal={Software: Practice and Experience},
+  volume={31},
+  number={6},
+  pages={533--553},
+  year={2001},
+  publisher={Wiley Online Library}
+}
+
+@book{pierce2002types,
+  title={Types and programming languages},
+  author={Pierce, Benjamin C},
+  year={2002},
+  publisher={MIT press}
+}
+
+
+@inproceedings{clebsch2015deny,
+  title={Deny capabilities for safe, fast actors},
+  author={Clebsch, Sylvan and Drossopoulou, Sophia and Blessing, Sebastian and McNeil, Andy},
+  booktitle={Proceedings of the 5th International Workshop on Programming Based on Actors, Agents, and Decentralized Control},
+  pages={1--12},
+  year={2015},
+  organization={ACM}
+}
+
+@inproceedings{pearce2011jpure,
+  title={JPure: a modular purity system for Java},
+  author={Pearce, David},
+  booktitle={Compiler construction},
+  pages={104--123},
+  year={2011},
+  organization={Springer}
+}
+
+@article{gil2009we,
+  title={Are We Ready for a Safer Construction Environment?},
+  author={Gil, Joseph and Shragai, Tali},
+  journal={ECOOP 2009--Object-Oriented Programming},
+  pages={495--519},
+  year={2009},
+  publisher={Springer}
+}
+
+@article{nelson2012Thesis,
+  title={Profiling Initialisation Behaviour in Java},
+  author={Nelson, Stephen Frank},
+  year={2012},
+  publisher={Victoria University of Wellington}
+}
