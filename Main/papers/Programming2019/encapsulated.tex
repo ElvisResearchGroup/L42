@@ -300,28 +300,34 @@ Note that since \Q@.doStuff()@ does not access a capsule field but merely calls 
 
 
 \subsection{The box pattern}
-At first glance it would seam that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnectedness, such as with a doubly linked list type:
+At first glance it would seam that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs, such as with a doubly linked list type:
 \begin{lstlisting}[escapechar=\%]
 class List {
-  mut List prev, next;
+  mut List prev;
+  mut List next;
   imm Object elem;
   
-  read method imm Bool checkInvariant() {
-     ... // Check invariants on this, this.prev and this.next
+  read method imm Bool innerValidate() {
+     ... // Check on this, this.prev and this.next
   }
 }
 \end{lstlisting}
 Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@ since we would would want \Q@this.next.prev == this@.
-However, we would like \Q@checkInvariant@ to be the \Q@validate@ method for \Q@list@, but we can’t do so since we would wan’t it to check (among other things) that \Q@this.next.prev == this@, the solution is to use a ‘box’ over our \Q@List@ which we construct so that it can be validated:
+However, we would like \Q@.innerValidate()@ to be the \Q@validate@ method for \Q@list@, but we can’t do so since we would wan’t it to check (among other things) that \Q@this.next.prev == this@, the solution is to use a `box' over our \Q@List@ which we construct so that it can be validated:
 
 \begin{lstlisting}[escapechar=\%]
 class ListBox { 
-  capsule List list;
-  read method imm Bool validate() { return this.list.checkInvariant(); }
+  capsule List inner;
+  read method imm Bool validate() { return this.inner.innerValidate(); }
 }
 \end{lstlisting}
-We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. Though this approach allows the validation of a large set of types one would create, it is however limited:
+We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.
+However, there are some limitations, due to the limitations of capsule mutator methods:
 \begin{itemize}
-	\item Any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters, or returning \Q@mut@ parameters, cannot be trivially forwarded from \Q@ListBox@, since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
-	\item We can’t make \Q@List.elem@ \Q@mut@, since we would likely want it to refer to objects outside our liked list itself, and doing so would violate the \Q@capsule@ restriction on \Q@ListBox.list@; this restriction is necessary as our language is incapable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@
+	\item Any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters or returning \Q@mut@, cannot be trivially forwarded.
+% since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
+	\item We couldn't have a list of mutable objects:
+our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
+This corresponds to full encapsulation and contrasts with flexible encapsulation as in 
+ownership[]. However, neither tradition flexible encapsulation/Ownership nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
 \end{itemize}
