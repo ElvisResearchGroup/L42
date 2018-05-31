@@ -1,10 +1,30 @@
 \section{Future Work}
-Though there are type systems\footnote{see related word} which provably enforce the properties we require for our proof\footnote{see appendix}, the simplistic type system we presented here has not been formalised. As the aim of our work was only to enforce validation, we excluded any complexities and type-system rules that are unnecessary to enforce validation, in essence what we have presented is what we \emph{believe} is the simplest that will work. It could be worthwhile formalising our system or even simplifying it further in a way that still preserves validation.
+Though there are type systems which provably enforce the properties we require for our proof,
+in this work we only informally describe our typing strategy and we
+do not formalize any specific type system.
+As the aim of our work is only to enforce validation, we do not present complexities unnecessary to enforce validation. 
+In essence we present what we \emph{believe} to be the simplest sound system.
+It could be worthwhile formalising the minimal type system required by validation.
 
-The language we have presented here only allows a limited form of a \Q@validate@ method, in particular we make strong restrictions of the use and modification of mutable (‘encapsulated’) state to be able to easily determine a sufficient injection of \Q@validate()@ calls. These restrictions completely prevent certain kinds of validation (such as validating the structure of a linked-linked list of mutable elements) and can necessitate unnatural and cumbersome boilerplate (such as our ‘box’ pattern). However the restrictions we make to ensures that \Q@validate@ is deterministic, namely those the type-system enforces due to it’s signature, seem quite flexible and reasonable; examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 
-We believe it is possible to relax our restrictions whilst still ensuring our desired semantics, however such a language is unlikely to be simple. We chose here to present a simple language, not merely for ease of exposition but to be more easily understood by programmers: if they don’t understand they are less able to write code in a way that behaves as desired. Directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of our language, advanced type-modifier inference, and more flexible ownership types (beyond are highly-restrictive \Q@capsule@).
+%However the restrictions we make to ensures that \Q@validate@ is deterministic, namely those the type-system enforces due to its signature, seem quite flexible and reasonable;
+
+%%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 
-Our work, in comparison to previous RV techniques, aims to be efficient by limiting the number of validation calls, however we have not spent to much effort in doing so, nor have we in any way actually evaluated the performance of our approach. To improve efficiency it could be worth investigating delaying of validation calls (so as to not validate an object that will never be used), elision of validation calls or even only validating part’s of objects (by running the part of \Q@validate@ that could fail).
+The language we have presented here only allows a limited form of a \Q@.validate()@ method
+and capsule mutator methods; in particular
+our strong restrictions of capsule mutator methods
+allows to inject \Q@.validate()@ calls just at the end of such methods.
+These restrictions prevent certain kinds of validation (such as validating the structure of a linked-list of mutable elements) and can necessitate verbose patterns (such as our `box').
+
+We believe it is possible to relax our restrictions whilst
+still ensuring our desired semantics, however such a language is unlikely to be easily understood by programmers;
+being able to predict whether code would be well typed allows programmers
+to better take advantage of the language.
+Directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of our suggested patterns; type-modifier inference, and support for flexible ownership types.
+
+Our work, in comparison to previous RV techniques, aims to be efficient by limiting the number of validation calls, however we have no empirical evaluation of our approach performance.
+To improve efficiency it could be worth investigating elision of unnecessary validation calls
+or even only validating parts of objects (by running the part of \Q@validate@ that could fail).

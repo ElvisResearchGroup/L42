@@ -84,19 +84,20 @@ area={Program verification}
 
 \begin{abstract}
 \emph{Context:} % What is the broad context of the work? What is the importance of the general research area?
-Object-oriented programming languages, through sub typing and dynamic dispatch provide great flexibility by allow writing of code that can be adapted/specialized to behave differently in different contexts.
-However this flexibility hampers code reasoning, which is even more complicated by dynamic class loading (supported by most mainstream OO languages).
-Thus object-behaviour is nearly completely unrestricted. This is further complicated with the support OO languages typically have for exceptions, imperative code, and I/O.
-In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to ensure or even write correct code.
+Object-oriented programming languages, through sub typing and dynamic dispatch provide great flexibility: they allow code to be adapted/specialized to behave differently in different contexts.
+However this flexibility hampers code reasoning, which is made even more complex by dynamic class loading (supported by most mainstream OO languages).
+Thus object behaviour is nearly completely unrestricted. This is further complicated with the support OO languages typically have for exceptions, imperative code, and I/O.
+In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
 
 
 \loseSpace
 \emph{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
 We wish to guarantee that a user defined property (\emph{validity}) holds for all instances of a class: we call such guarantee \emph{validation}.
 
-This concept is closely related to the concept of `class invariants', however, unlike validation, this allows for objects to temporarily be in a ‘broken’ state. However our work allows class invariants to be easily encoded in terms of validity. Prior work on class-invariants is typically unsound due to assumptions about library code (e.g. that they obey the Liskov Substitution Principle), or due to the trust that programmers use the provided tools correctly.
-Even if sound, such prior work, particularly static analysis, typically heavily restricts such features as dynamic-class loading or the use of I/O, and are very performance costly.
+This concept is closely related to the concept of `class invariants', however, unlike validation, they allow for objects to temporarily be in a ‘broken’ state. However our work allows class invariants to be easily encoded in terms of validity. Prior work on class-invariants is typically unsound due to assumptions about library code, or due to trusting programmers to use the provided tools correctly.
 
+Sound prior work, particularly formal verification, heavily restricts dynamic-class loading and the use of I/O, and are very work intensive.
+%particularly static analysis,
 
 \loseSpace
 \emph{Approach:} %What was done that unveiled new knowledge?
@@ -144,14 +145,14 @@ and even after capturing such an exception, validation still holds for all objec
 
 \end{abstract}
 
-%\input{intro}
-%\input{immutable}
-%\input{encapsulated}
-%\input{meaning}
-%\input{related}
+\input{intro}
+\input{immutable}
+\input{encapsulated}
+\input{meaning}
+\input{related}
 \input{futurework}
-%\input{conclusion}
+\input{conclusion}
 
 \printbibliography
-%\input{appendix}
+\input{appendix}
 \end{document}

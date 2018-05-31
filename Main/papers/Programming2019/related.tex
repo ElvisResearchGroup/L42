@@ -72,11 +72,15 @@ In literature there are different options:
 at the start and at the end of every public method
 (though it is unclear how to deal with recursive methods)~\cite{Burdy2005};
 \item
-constantly maintained between calls to public methods~\footnote{\url{https://en.wikipedia.org/wiki/Class_invariant}};
-\item
-constantly maintained when the object is \textit{closed};
-invariant can be manually opened and closed by using special operations; % Add cite here!
+constantly maintained between calls to public methods~\cite{DATEplusURL}
+%\url{https://en.wikipedia.org/wiki/Class_invariant}};
+%\item
+%constantly maintained when the object is \textit{closed};
+%invariant can be manually opened and closed by using special operations; % Add cite here!
 \end{itemize}
+%DONE IN INTRO breaking class invariants = bug in class code
+%braking validation= DEPEND.
+
 
 \newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*$\bullet\,$}
 
@@ -188,14 +192,14 @@ field updates are reverted while capturing an exception.
 
 \noindent\textit{Performance}
 We believe our sound approach can monitor arbitrary programs
-for a fraction of the cost of many other competitors.
+for a fraction of the cost of many other approaches.
 Many other works%
 ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
- check (that is, run)
+ check/run
 the invariant code at the start and at the end of every public
-method; depending on the approach, this may even includes trivial getters.
+method; depending on the approach, this may even include trivial getters.
 In  our approach,
-we only call the invariant a single time for each mutator method.
+we only call the \Q@.validate()@ method a single time for each mutator method.
 We expect this to result in a dramatic reduction over
 the number of required checks:
 for setters and capsule mutator methods, we call \Q@validate()@ only one time instead of two,
@@ -224,9 +228,9 @@ That is, our approach works both with open world assumption and in a library set
 Consider for example the work of Matthew[Class Invariants: The end of the road]:
 in this short paper he verify a \Q@Observer@ class invariant over
 a \Q@Subject/Observer@ pattern.
-However, the proof rely on the method \Q@Subject.register(Observer)@ respecting its contract.
+However, the proof relies on the method \Q@Subject.register(Observer)@ respecting its contract.
 Such assumption is unrealistic in a real system with dynamic class loading,
-and this invariant could trivially be broken by an user defined \Q@EvilSubject@.
+and this invariant could trivially be broken by a user defined \Q@EvilSubject@.
 
 
 \noindent\textit{Dedicated specification language or underling language:}
