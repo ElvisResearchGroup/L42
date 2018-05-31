@@ -1,30 +1,32 @@
 \appendix
 \section{Proofs} 
 
-\begin{Theorem}[Sound Invariant Checking SIC]
-if $c:\text{Cap}\vdash \e: \T$ and
-$c:\text{Cap}\{\_;\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
+\begin{Theorem}[Sound Validation]
+if $c:\Kw{Cap}\vdash \e: \T$ and
+$c:\Kw{Cap}\{\_;\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
 either $H(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
 \end{Theorem}
 
 We believe this property captures very precisely our statement in Section~\ref{s:def}.
 
-It is hard to prove SIC directly,
+It is hard to prove Sound Validation directly,
 so we first define a stronger property,
-called Stronger SIC and
-we show that it is preserved during reduction by mean of conventional Progress and Subject Reduction.
+called Stronger Sound Validation and
+we show that it is preserved during reduction by mean of conventional 
+Progress and Subject Reduction (Progress is one of our assumption,
+while Subject Reduction relies heavily on SubjectReductionBase).
 That is,
-Progress+Subject Reduction $\Rightarrow$ Stronger SIC
-\\*and Stronger SIC $\Rightarrow$ Sound Invariant Checking.
+Progress+Subject Reduction $\Rightarrow$ Stronger Sound Validation
+\\*and Stronger Sound Validation $\Rightarrow$ Sound Validation.
 
-\subsection{Stronger SIC $\Rightarrow$ Sound Invariant Checking}
+\subsection{Stronger Sound Validation $\Rightarrow$ Sound Validation}
 
-Stronger SIC depends on 
+Stronger Sound Validation depends on 
 $\mathit{wellEncapsulated}$, $\mathit{monitored}$
 and $IOK$ (Invariant OK):
 
 \noindent\textbf{Define} $\mathit{wellEncapsulated}(\sigma,\e,l_0)$:\\*
-${}_{}$\quad\quad$\forall l \in rog(\sigma,l_0), \text{not}\ \mathit{mutated}(l,\sigma,\e)$
+${}_{}$\quad\quad$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutated}(l,\sigma,\e)$
 
 \noindent The main idea is that an object is encapsulated if its internal representation is safe from
 modification. 
@@ -49,52 +51,51 @@ give access to the internal state of $l$. Only after that moment, the invariant 
 \noindent\textbf{Define} $IOK(\sigma,e)$:\\
 ${}_{}$\quad\quad  $\forall l\in\dom(\sigma)$
   either
-\begin{itemize}
-   \item${}_{}$\quad\quad   (1) $l$ has not invariant
-   \item${}_{}$\quad\quad   (2) $\mathit{garbage}(l,\sigma,\e)$
-   \item${}_{}$\quad\quad   (3) $H(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$
-   \item${}_{}$\quad\quad   (4) $\mathit{monitored}(\e,l)$
-\end{itemize}
+\begin{enumerate}
+%   \item ${}_{}$ $l$ has not invariant
+   \item $\mathit{garbage}(l,\sigma,\e)$
+   \item $H(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$
+   \item $\mathit{monitored}(\e,l)$
+\end{enumerate}
 
 \noindent
 Finally, the system is in a coherent state with respect to invariant checking 
-if for all the objects in the memory, one of those 4 cases apply:
-the class of the object has no invariant method;
+if for all the objects in the memory, one of those 3 cases apply:
+%the class of the object has no invariant method;
 the object is not (transitively) reachable from the expression, thus can be garbage collected;
 the object invariant holds, and the object is encapsulated;
 or the object is currently monitored.
 
-Thus, on one side, we accept that invariants can be broken for garbage and during the monitoring process.
-on the other side, in addition of requiring object invariant to hold $H$, we
+Thus, on one side, we accept invalid objects in the garbage and during the monitoring process.
+on the other side, in addition of requiring validation to hold $H$, we
 also require those objects to be $\mathit{wellEncapsulated}$;
 it is needed later to prove that the future steps will be $IOK$ too.
 
 
-\begin{Theorem}[Stronger SIC]
-if $c:\text{Cap}\vdash \e_0: \T_0$ and
-$c:\text{Cap}\{\_;\_\}|\e_0\rightarrow^+ \sigma|\e$, then
+\begin{Theorem}[Stronger Sound Validation]
+if $c:\Kw{Cap}\vdash \e_0: \T_0$ and
+$c:\Kw{Cap}\{\_;\_\}|\e_0\rightarrow^+ \sigma|\e$, then
 $IOK(\sigma,\e)$
 \end{Theorem}
 \noindent Starting from only the capability object,
 any well typed expression $\e_0$ can be reduced for an arbitrary amount of steps,
 and $IOK$ will always hold.
 \\
-\textbf{Proof }Stronger SIC $\Rightarrow$ Sound Invariant Checking:\\*
-\noindent To prove that Stronger SIC implies Sound Invariant Checking
-we consider for each $l$ the 4 cases of $IOK$: the $l$ involved in the current redex
+\textbf{Proof }Stronger Sound Validation $\Rightarrow$ Sound Validation:\\*
+\noindent To prove that Stronger Sound Validation implies Sound Validation
+we consider for each $l$ the 3 cases of $IOK$: the $l$ involved in the current redex
 will be one of those.
-Indeed, this proof shows broken invariants are never observed:
-No broken invariant is observed from $l$ if $l$ has no invariant.
+Indeed, this proof shows invalid objects are never observed:
 If $l$ is garbage, is not in the current redex.
-If $H(\sigma,l)$, the invariant holds, so thanks to @InvariantType
-no broken invariant is observed.
+If $H(\sigma,l)$, the invariant holds, so thanks to Determinism
+no invalid object is observed.
 Finally, if $\mathit{monitored}(\e,l)$
 then, either we are executing inside of $\e_1$, thus
 the current redex is inside of a subexpression of the monitor that does not contains $l$, thus
 $l$ is not in the current redex.
 Or we are executing inside $\e_2$:
-by $\Lambda$, all monitor expressions starts with 
-$\e_2=l$\Q@.invariant()@, thus the first execution step
+by our reduction rules, all monitor expressions starts with 
+$\e_2=l$\Q@.validate()@, thus the first execution step
 of $\e_2$ is trusted.
 Following execution steps are also trusted since thanks
 to well formedness the body of invariant methods only
@@ -104,12 +105,12 @@ uses \Q@this@ to access fields.
 \subsection{Subject Reduction}
 
 \noindent\textbf{Define} $\text{fieldGuarded}(\sigma,\e)$:\\*
-${}_{}$\quad\quad$\forall \ctx$ such that $\e=\ctx[l\singleDot\f], $\\*
-${}_{}$\quad\quad\quad either $\sigma(l)$ not has invariant\\*
-${}_{}$\quad\quad\quad or $\forall\, T,C,\quad\ \Sigma^\sigma;\x:\Kw{imm}\,C\,\vdash\ctx[\x]:T$ does not hold\\*
+${}_{}$\quad\quad$\forall \ctx$ such that $\e=\ctx[l\singleDot\f], $
+and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$\\*
+${}_{}$\quad\quad\quad either $\forall\, T,C,\quad\ \Sigma^\sigma;\x:\Kw{imm}\,C\,\vdash\ctx[\x]:T$ does not hold\\*
 ${}_{}$\quad\quad\quad or $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\_$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$ \\*
-\noindent We check that all the mutating field accesses
-from invariant objects are individually guarded by monitors.
+\noindent We check that all the mutating capsule field accesses
+are individually guarded by monitors.
 Note how we use $C$ in $\x:\Kw{imm}\,C$ to guess the type of the accessed field,
 and that we use the full context $\ctx$ instead of the evaluation context $\ctx_v$
 to refer to field accesses everywhere in the expression $\e$.
@@ -128,7 +129,7 @@ $IOK(\sigma_1,e_1)$ and
 $\mathit{fieldGuarded}(\sigma_1,\e_1)$
 \end{Theorem}
 
-\noindent\textbf{Proof }Progress + Subject Reduction $\Rightarrow$ Stronger SIC:\\*
+\noindent\textbf{Proof }Progress + Subject Reduction $\Rightarrow$ Stronger Sound Validation:\\*
 This proof proceed by induction as the usual Progress + Subject Reduction $\Rightarrow$ Soundness
 proof.
 Note that at the start of the execution, the memory is going to be empty, thus
@@ -136,7 +137,7 @@ $IOK(\emptyset,e)$  and $\mathit{fieldGuarded}(\emptyset,\e)$
 will hold.
 Then step by step, objects are created and their status is kept under control.
 Note how here garbage collection is important: 
-when the \Q@invariant()@ method terminate with false, 
+when the \Q@validate()@ method terminate with \Q@false@, 
 execution can continue only if the offending object is classified as garbage.
 
 \subsection{Proof of Subject Reduction}
@@ -144,11 +145,11 @@ We first introduce some lemmas
 derived from the well formedness criteria and the type guarantees
 \begin{Lemma}[ConstructorInstrumentation]
   In our reduction, executing rule \textsc{new} creating an object with invariant $l$, creates a monitor expression for $l$.
-(Holds by definition of $\Lambda$)
+(Holds by rule \textsc{new})
 \end{Lemma}
 \begin{Lemma}[SetterInstrumentation]
   In our reduction, executing rule \textsc{f-update} on an object with invariant $l$, creates a monitor expression for $l$.
-(Holds by definition of $\Lambda$)
+(Holds by rule \textsc{f-update})
 \end{Lemma}
 \begin{Lemma}[ExposerInstrumentation]
 if $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
@@ -156,17 +157,16 @@ $\text{fieldGuarded}(\sigma_0,\e_0)$
 \\*
 then $\text{fieldGuarded}(\sigma_1,\e_1)$
 
-  In our reduction, all occurreces of $l\singleDot\f$ used for mutation, 
-  where l is an object with invariant
+  In our reduction, all occurrences of capsule field access $l\singleDot\f$ used for mutation
    are surrounded by a monitor expression for $l$.
   This means that reduction preserve $\text{fieldGuarded}(\sigma,\e)$.
 \end{Lemma}
-\noindent\textbf{Proof }of @ExposerInstrumentation:\\*
+\noindent\textbf{Proof }of ExposerInstrumentation:\\*
 The only rule that can 
 introduce a new field access is \textsc{m-call}.
-In that case, @ExposerInstrumentation holds
-by well formedness (all field access in methods are of form \Q@this.f@)
- and function $\Lambda$, inserting a monitor while invoking exposer methods.
+In that case, ExposerInstrumentation holds
+by well formedness (all field access in methods are of form \Q@this.f@) 
+and by rule \textsc{m-call} inserting a monitor while invoking exposer methods.
 Note that rule \textsc{monitor exit} is fine because monitors are removed only when
  $e_1$ is a value.
 
@@ -176,19 +176,21 @@ by exactly one application of rule \textsc{ctx} and then one other rule.
 Thus the proof can simply proceed by cases on such other applied rule.
 
 As a further simplification, for each case 
-$\Sigma^{\sigma_1}\vdash e_1: T_1$ holds by @SubjectReductionBase
+$\Sigma^{\sigma_1}\vdash e_1: T_1$ holds by SubjectReductionBase
 and 
 $\mathit{fieldGuarded}(\sigma_1,\e_1)$ 
-holds thanks to @ExposerInstrumentation.
+holds thanks to ExposerInstrumentation.
 Thus, for each case of reduction, we just verify that $IOK(\sigma_1,\e_1)$ holds.
-That is, we need to check that for all locations in $\sigma_1$, one of the cases (1-4) hold.
+That is, we need to check that for all locations in $\sigma_1$, one of the cases (1-3) hold.
 
 
 \noindent\textbf{case field update} $l.f=v\rightarrow \e$:
   \begin{itemize}
-  \item For $l$, either (1) $l$ has not invariant or, by @SetterInstrumentation 
+  \item by SetterInstrumentation 
   \e=\Q@M(@$l;l;l$\Q@.invariant())@;
-  thus (4)$\mathit{monitored}(\e,l)$.
+  thus (3)$\mathit{monitored}(\e,l)$.
+-----------------------------------------------------
+------------------------------------------ 1-2-3-4 123
   \item Every $l_1$ so that $l\in \text{rog}(\sigma,l_1)$ will verify the same case
   of the former step:
   if it was (1)[no invariant] or (2)[garbage],clearly it still holds.
