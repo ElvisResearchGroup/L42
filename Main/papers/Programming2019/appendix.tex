@@ -189,37 +189,36 @@ That is, we need to check that for all locations in $\sigma_1$, one of the cases
   \item by SetterInstrumentation 
   \e=\Q@M(@$l;l;l$\Q@.invariant())@;
   thus (3)$\mathit{monitored}(\e,l)$.
------------------------------------------------------
------------------------------------------- 1-2-3-4 123
   \item Every $l_1$ so that $l\in \text{rog}(\sigma,l_1)$ will verify the same case
   of the former step:
-  if it was (1)[no invariant] or (2)[garbage],clearly it still holds.
-  If it was (4)[monitored] then it still holds too.
-  It could not have been (3): $l_1$ is not $\mathit{wellEncapsulated}$ since 
+  if it was (1)[garbage],clearly it still holds.
+  If it was (3)[monitored] then it still holds too.
+  It could not have been (2): $l_1$ is not $\mathit{wellEncapsulated}$ since 
 $\mathit{mutated}(l,	\sigma,\e)$ (by @MutField).
-  \item Every other $l_0$ do not reach $l$, thus its invariant status is not influenced by this reductions step.
+  \item Every other $l_0$ do not reach $l$, thus its invariant status is not
+ influenced by this reductions step.
 \end{itemize}
 
 \noindent\textbf{case field access} $l.f\rightarrow v$:
 
-    If for $l$ $IOK$ holds by (3),  
+    If for $l$ $IOK$ holds by (2),  
     it is possible that the next step is not encapsulated.
     This would mean that the field $f$ is a capsule and that we are required
 to type it as \Q@mut@ to type the expression for the next step.
 By $\mathit{fieldGuarded}(\sigma_0,\e_0)$
     the former step was inside of a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
     and the $l$ under reduction was the only occurrence of $l$.
-    since $f$ is a capsule, we know that $l\notin \text{rog}(\sigma,l)$
-    by @HeadNonCircular.
+    since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
+    by HeadNonCircular.
     Thus in the new step not $l\, \text{inside}\ \ctx_v[v]$.
-    Thus for l (4)[monitored] holds.
+    Thus for l (3)[monitored] holds.
     
 We still need to show that properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$
  for other objects are
 not disturbed. This is the point where our aliasing and mutability control are most crucial:
 We know that mutable $v$ is (directly) reachable from
 $l$ that have invariant.
-Thanks to @CapsuleTree we know that for all $l_0$ reaching $l$,
+Thanks to CapsuleTree we know that for all $l_0$ reaching $l$,
 $v$ can be reached by $l_0$ only passing trough $l$.
 Thus, we can conclude  $l_0$ is not encapsulated in the former step (containing mutable $l$).
 Thus, $l_0$ is either without invariant, garbage or monitored.
@@ -239,18 +238,19 @@ As for the method call, other objects and properties are not disturbed.
   \begin{itemize}
 \item
     If it was a setter $v=l$, and 
-    thanks to @InvariantType the execution of invariant is deterministic;
-    thus for $l$ in the former step both case (3) and (4) holds.
-    In the next step (3) will hold for $l$.
+    thanks to Determinism the execution of invariant is deterministic;
+    thus for $l$ in the former step both case (2) and (3) holds.
+    In the next step (2) will hold for $l$.
 \item
-    If it was an exposer, thanks to @InvariantType the execution of \Q@invariant()@ is deterministic;
-    thus for $l$ in the former step both $H$ and case (4) holds.
-    Thanks to @ExposerInstrumentation $v$ is offered without mutation permissions, so
-    In the next step $l$ is encapsulated and (3) will hold.
+    If it was a capsule mutator method, thanks to Determinism the execution
+ of \Q@.validate()@ is deterministic;
+    thus for $l$ in the former step both $H$ and case (3) holds.
+    Thanks to ExposerInstrumentation $v$ is offered without mutation permissions, so
+    In the next step $l$ is encapsulated and (2) will hold.
 \item
     If it is was a constructor, 
-    then $v$ is encapsulated and thanks to @InvariantType
-    the execution of invariant is deterministic, thus in the next step (3) will hold.
+    then $v$ is encapsulated and thanks to Determinism
+    the execution of invariant is deterministic, thus in the next step (2) will hold.
 \end{itemize}
 
 \noindent\textbf{case try enter and try ok}
@@ -262,31 +262,9 @@ From the premise we know
 $IOK(\sigma,\sigma_0;\ctx_v[\Kw{try}^\sigma \oC\mathit{error}\cC\Kw{catch}\, \e])$;
 thus we need to show
 $IOK(\sigma;\ctx_v[\e])$.
-By @StrongExceptionSafety we know that $\sigma_0$ is garbage with respect to $\ctx_v[\e]$.
+By StrongExceptionSafety we know that $\sigma_0$ is garbage with respect to $\ctx_v[\e]$.
 
 There could be many $l$ inside $\sigma,\sigma_0$ that are $\mathit{monitored}$
 in the former step thanks to monitor expressions inside $\mathit{error}$.
 However, all such $l$ are defined inside $\sigma_0$,
 for the last well formedness condition.
-
-With strong exception safety (together with use of Java-style lambdas) one could do this in a safe way:
-\saveSpace
-\begin{lstlisting}
-static method mut Person try_name(mut Person bob, imm String new_name) {
-  try {
-    mut Person bob_temp = bob.clone(); $\MComment{Assuming a suitable definition}$
-    bob_temp.name(new_name);
-    $\Comment{Name change succeeded, return our updated bob}$
-  } catch (imm Error t) {
-    $\Comment{Catch and ignore validation failure, return the original bob}$
-    return bob;
-  }
-  return bob.name(new_name);
-}
-,,,
-mut Person bob = try_name(new Person("bob"), "");
-
-assert !bob.name().isEmpty(); $\Comment{bob is valid!}$
-
-\end{lstlisting}
-\saveSpace
