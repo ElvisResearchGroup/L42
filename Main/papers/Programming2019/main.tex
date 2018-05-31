@@ -30,7 +30,7 @@
 \begin{document}
 \paperdetails{
 perspective=theoretical,
-area={General-purpose programming}
+area={Program verification}
 }
 \title{Validation}
 %\author{Authors omitted for double-blind review.}
@@ -42,22 +42,72 @@ area={General-purpose programming}
 \affiliation{Victoria University of Wellington}
 %\email{alex@ecs.vuw.ac.nz}
 
-\keywords{type modifiers, object capabilities, runtime verification}
+\keywords{type modifiers, object capabilities, runtime verification, class invariants}
+
 \begin{CCSXML}
 <ccs2012>
-<concept>
-<concept_id>10002944.10011122.10003459</concept_id>
-<concept_desc>General and reference~Computing standards, RFCs and guidelines</concept_
-,→ desc>
-<concept_significance>300</concept_significance>
-</concept>
+	<concept>
+		<concept_id>10003752.10010124.10010138.10010139</concept_id>
+		<concept_desc>Theory of computation~Invariants</concept_desc>
+		<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+		<concept_id>10003752.10010124.10010138.10010142</concept_id>
+		<concept_desc>Theory of computation~Program verification</concept_desc>
+		<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+		<concept_id>10011007.10011006.10011008.10011009.10011011</concept_id>
+		<concept_desc>Software and its engineering~Object oriented languages</concept_desc>
+		<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+		<concept_id>10011007.10010940.10010992.10010998.10011001</concept_id>
+		<concept_desc>Software and its engineering~Dynamic analysis</concept_desc>
+		<concept_significance>300</concept_significance>
+	</concept>
+	<concept>
+		<concept_id>10011007.10011006.10011008.10011024.10011032</concept_id>
+		<concept_desc>Software and its engineering~Constraints</concept_desc>
+		<concept_significance>300</concept_significance>
+	</concept>
 </ccs2012>
 \end{CCSXML}
-\ccsdesc[300]{General and reference~Computing standards, RFCs and guidelines}
+
+\ccsdesc[500]{Theory of computation~Invariants}
+\ccsdesc[500]{Theory of computation~Program verification}
+\ccsdesc[500]{Software and its engineering~Object oriented languages}
+\ccsdesc[300]{Software and its engineering~Dynamic analysis}
+\ccsdesc[300]{Software and its engineering~Constraints}
+
 \maketitle
 
 \begin{abstract}
-TODO
+\emph{Context:} % What is the broad context of the work? What is the importance of the general research area?
+Object-oriented programming languages, through sub typing and dynamic dispatch, provide the ability to write code that can be easily used in multiple ways, however as the type of an object cannot be determined statically it is difficult to reason about code; this is further complicated when such languages (like Java) provide for dynamic class loading, making object-behaviour nearly completely unrestricted. In order for programmers to write correct code it would be particularly useful for them to be able to verify that their objects obey properties, as well as being able to assume that object’s properly respect the intent of their type. \textbf{TODO: Make a note that OO is very popular?}
+
+
+\emph{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
+We wish to guarantee that user-defined properties (‘validity’) on instances of classes always hold: we call such property ‘validation’. Similar work has been done in the related, but weaker, concept of ‘class invariants’, however current techniques either work on trust: they trust that the programmer can correctly validate the object’s themselves, and that libraries respect their properties. and/or they use, or rely on static-verification or extremely costly runtime-verification. 
+
+
+\emph{Approach:} %What was done that unveiled new knowledge?
+We combine previous work on type-modifiers and object capabilities, that restrict the set of valid-programs in order to be able to assume properties of objects and methods. This work is useful in it’s own right, but we take the novel approach of using these facilities together to ensure, by conservatively injecting runtime-validation code, validation.
+
+
+
+\emph{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
+We present a language’s semantics and validation mechanism, together with an explanation of how it can be used and the unsoundness of a less-restrictive approach. \textbf{TODO: Work on this more…}
+
+
+\emph{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
+We provide an informal argument justifying that our language’s rules enforce validation, in particular we show that without such rules (which most languages lack) validation becomes nearly impossible. We also present a formal proof, that in the presence of a type system with certain properties, our approach soundly enforces validation. As the type-system’s properties have already been explored, formalized, and proved in prior work, we can be sure that our approach can in fact work without error.
+
+
+\emph{Importance:} %Why does this work matter?
+Marco would like to go home, and so having a paper accepted at a conference scheduled their would be of utmost importance to him. \textbf{TODO: Get Marco to write this…}
+	
+%TODO
 %Class invariants provide guarantees about the state of objects throughout the execution.
 %Runtime verification of class invariants is
 %a hard problem due to issues with aliasing, exceptions,
@@ -71,15 +121,15 @@ TODO
 
 \end{abstract}
 
-\input{intro}
-\input{immutable}
+%\input{intro}
+%\input{immutable}
 %input{simple}
-\input{encapsulated}
+%\input{encapsulated}
 %\input{interconnected}
-\input{meaning}
-\input{related}
-\input{futurework}
-\input{conclusion}
+%\input{meaning}
+%\input{related}
+%\input{futurework}
+%\input{conclusion}
 
 %\bibliography{main,bib}
 %\printbibliography
