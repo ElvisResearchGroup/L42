@@ -6,7 +6,12 @@ Reasoning about imperative object oriented (OO) programs is a non trivial task,
 made particularly difficult by mutations, aliasing, dynamic dispatch, dynamic class loading,
 unrestricted I/O and exceptions.
 
-Static verification of method contracts can prove correctness of OO programs, but this is costly and requires to define the desired semantic of the program in a verification language then prove consistency.
+Static verification of method contracts can prove correctness of OO programs,\footnote{
+In literature, both static and run-time verification discuss
+the correctness of common programming patterns in conventional languages. Here instead we define a new language, where
+many conventional programming patterns are disallowed,
+and need to be replaced with other patterns allowing simpler reasoning.
+} but this is costly and requires to define the desired semantic of the program in a verification language then prove consistency.
 This however requires limiting dynamic class loading, ensuring that only statically verified code can be loaded.
 Without this restriction, even predicting the behaviour of an innocent looking call like 
 \Q@myPoint.getX()@ is impossible: the dynamic type of \Q@myPoint@ can refer to a dynamically loaded class
@@ -21,6 +26,8 @@ support some form of type modifiers and/or object capabilities.
 
 \subsection{Validation}
 In this paper, we rely on TM and OC to define a language ensuring \emph{validation}: that is, it ensures a user defined property ('validity') holds for all instances of a class.
+
+
 
 %##what is validation
 All classes provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
