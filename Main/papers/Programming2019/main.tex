@@ -84,71 +84,46 @@ area={Program verification}
 
 \begin{abstract}
 \emph{Context:} % What is the broad context of the work? What is the importance of the general research area?
-Object-oriented programming languages, through sub typing and dynamic dispatch provide great flexibility to write code that can be adapted/specialized to behave differently in different contexts.
-However this flexibility hamper code reasoning; this is further complicated by dynamic class loading.
-This makes object-behaviour nearly completely unrestricted.
-In the absence of `on the fly static verification of dynamically loaded code',
-how can programmers write correct code?
-Ideally we would like to be able to enforce that all objects of a certain type respect a certain property , specified by their type.
+Object-oriented programming languages, through sub typing and dynamic dispatch provide great flexibility by allow writing of code that can be adapted/specialized to behave differently in different contexts.
+However this flexibility hampers code reasoning, which is even more complicated by dynamic class loading (supported by most mainstream OO languages).
+Thus object-behaviour is nearly completely unrestricted. This is further complicated with the support OO languages typically have for exceptions, imperative code, and I/O.
+In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to ensure or even write correct code.
 
+
+\loseSpace
 \emph{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
-We wish to guarantee \emph{validity}:  a user-defined property  ....***...on instances of classes always hold: we call such property ‘validation’.
-We work in the context of an imperative OO language with dynamic dispatch, dynamic class loading, exceptions and I/O.
+We wish to guarantee that a user defined property (\emph{validity}) holds for all instances of a class: we call such guarantee \emph{validation}.
 
-This concept is closely related to the concept of `class invariant', but 
-Our work is related to the well known but weaker concept of `class invariants':
-class invariants can be broken, and observed broken. They are only required to hold before and
-after all public methods, while validity holds for all objects involved in execution.
+This concept is closely related to the concept of `class invariants', however, unlike validation, this allows for objects to temporarily be in a ‘broken’ state. However our work allows class invariants to be easily encoded in terms of validity. Prior work on class-invariants is typically unsound due to assumptions about library code (e.g. that they obey the Liskov Substitution Principle), or due to the trust that programmers use the provided tools correctly.
+Even if sound, such prior work, particularly static analysis, typically heavily restricts such features as dynamic-class loading or the use of I/O, and are very performance costly.
 
 
-%global verification - continuosly anilize and reanileze all method bodies to prove stuff
-%do not require pre-post on everything 
-%(no dynamic loading)
-
-%modular verification - assume pre-post on all the other methods and on any recursive call on
-%the current method and prove pre-post on the current method
-%(no dynamic loading)
-
-%limited verification aka type system work truly modular: no assumption the rest of the code is correct, just type-safe
-
-related work on CI either is unsound (by assuming properties on library code or by trusting the programmer to
-use the tools correctly)
-or do not soundly support some of the following fundamental features: unrestricted dynamic class loading,
-non deterministic I/O, exceptions.
-
-
-%either work on trust:
-%they trust that the programmer can correctly validate the object’s themselves,
-%and that libraries respect their properties.
-%and/or they use, or rely on static-verification 
-%or extremely costly runtime-verification. 
-
-
+\loseSpace
 \emph{Approach:} %What was done that unveiled new knowledge?
 We combine previous work on type-modifiers and object capabilities to ensure properties of objects and methods. 
-Type-modifiers and object capabilities are useful in their own right;
-We ensure validation by using these facilities together and conservatively injecting runtime-validation code.
+Type-modifiers and object capabilities are useful in their own right, but we use these facilities here to ensure validation by conservatively injecting runtime-validation code.
 
 
-
+\loseSpace
 \emph{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
-By mean of examples, we show how hard is to reason on code behaviour in
+By means of examples, we show how hard it is to reason on code behaviour in
 the context of dynamic class loading and I/O.
-Building over type modifiers and object capability, we lay down the foundation needed to
-reason on OO code in this context.
+Building over type modifiers and object capabilities, we lay down the foundation needed to
+reason about OO code in this context.
 We discuss how relaxations in type modifiers and object capabilities would break validation.
-The technique we use for Validation is a fundamental building block that can be used 
-for class invariants and pre-post conditions.
 
+
+\loseSpace
 \emph{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
 We provide an informal argument justifying that our language’s rules enforce validation, in particular we show that without such rules (which most languages lack) validation becomes nearly impossible. We also 
-formally model a language soundly supporting validation. This is formally verified by a proof, parametric on in the presence of a type system with certain properties.
+formally model a language soundly supporting validation; which is formally verified by a proof, parametric on the presence of a type system with certain properties.
 Type-system’s with such properties have already been explored, formalized, and proved in prior work.
 
 
+\loseSpace
 \emph{Importance:} %Why does this work matter?
 Validation allows the programmers to soundly reason on properties of their code.
-This is of great practical importance since is independent of the presences of buggy code, or even dynamically loaded malicious code.
+This is of great practical importance since it is independent of the presence of buggy code, or even dynamically loaded malicious code.
 
 Our work represents a philosophical shift similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
 while mutating objects, however a validation failure is soundly detected by a run-time exception,
@@ -169,15 +144,14 @@ and even after capturing such an exception, validation still holds for all objec
 
 \end{abstract}
 
-\input{intro}
-\input{immutable}
-\input{encapsulated}
-\input{meaning}
-\input{related}
+%\input{intro}
+%\input{immutable}
+%\input{encapsulated}
+%\input{meaning}
+%\input{related}
 \input{futurework}
-\input{conclusion}
+%\input{conclusion}
 
-%\bibliography{main,bib}
 \printbibliography
-\input{appendix}
+%\input{appendix}
 \end{document}

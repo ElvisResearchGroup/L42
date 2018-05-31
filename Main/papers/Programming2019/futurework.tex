@@ -1,61 +1,10 @@
-IN RELATED
-Rather than providing a simple set of rules as to what a \Q@validate@ method can contain, and where to insert calls to it, we could instead rely on implementation-specific static analysis: in which a \Q@validate@ method is valid iff the compiler can prove that it is deterministic and that it’s generated \Q@validate()@ calls are sufficient to enforce validation. Though approaches like this are frequently used such as with unifying Java’s generic-wildcards [], Rust’s ‘borrow checker’, …; we believe that would not produce a good result for our purposes: 
-\begin{itemize}
-	\item it would mean that a programmer would have no way of telling whether their code would compile, in particular code compiling would depend on the specific compiler (version) used.
-	\item the runtime cost of validation would be completely unpridictibable; since it is deterministic there is nothing stopping the compiler from calling \Q@validate@ any number of times, and at any point in time.
-	\item When a validation error could be throw would likewise be unpredictable, though it should happen after an object is made invalid\footnote{technically our definition of validation technically allows the error to happen sooner, as long as it’s not too late; however pre-emptive errors like this would be extremely hard to debug}, it could happen any time before it’s use. Making matters worse, if multiple object’s would be invalidated before either is used, which one’s error would be thrown is unconstrained
-	\item This approach will not work well in the pressence of dynamic code loading, in particular it woud likley significantly slow down such loading or spurioslly fail depending on what other code has been loaded
-\end{itemize}
-
-even if 3 indedpendet line of work have proven ts with those properties
-our work is shit if we do not repeat those proofs a 4th time
-
-42 support ALL we need
-  papers over 42 (together) support all we need and proofs
-  
-pony and gordon
-  have and prove all the property we need, they just need some tweeking for SES
-
-
-
-
-Future
-42, Pony, and Gordon supports much more properties than what we strictly need for the sake of \Q@.validation()@.
-Given enough space we could provide a minimal type system supporting only the property we strictly need.
-
-
-our approach encourage certain verbose patterns to be used.
-We could design some syntax sugar to automate those patterns.
-
-
-In this work we strived to use only 4 type modifiers.
-Pony and other work provide many more type modifiers supporting fine grained reasoning on the role of various objects.
-In the future we could study how to use more modifiers to relax our restrictions.
-
-
-However we are unsure if that it would be a good idea, since a more complex
-type system would be harder for programmers to understand and use.
-
-
-We are currently considering ways to combine our capsule guarantees with 
-flexible ownership while ensuring that the \Q@.validate()@ method would be unable to access
-those \emph{external mutable} references.
-
-
-
-performance in our work splitting validate
-
-
-
-
 \section{Future Work}
-Though we prove\footnote{see appendix} that given a type system properly enforcing our TM and OC approach our language would properly enforce validation, we have only informally described our type-system. It is known […] to be quite difficuilt to properly formalize and prove usefull properties of any but the simplest type-systems; as the properties we want from a type system are not specific to validation such work would be out of scope for our paper. Without a proper formal type system however our language is incomplete.
+Though there are type systems\footnote{see related word} which provably enforce the properties we require for our proof\footnote{see appendix}, the simplistic type system we presented here has not been formalised. As the aim of our work was only to enforce validation, we excluded any complexities and type-system rules that are unnecessary to enforce validation, in essence what we have presented is what we \emph{believe} is the simplest that will work. It could be worthwhile formalising our system or even simplifying it further in a way that still preserves validation.
+
+The language we have presented here only allows a limited form of a \Q@validate@ method, in particular we make strong restrictions of the use and modification of mutable (‘encapsulated’) state to be able to easily determine a sufficient injection of \Q@validate()@ calls. These restrictions completely prevent certain kinds of validation (such as validating the structure of a linked-linked list of mutable elements) and can necessitate unnatural and cumbersome boilerplate (such as our ‘box’ pattern). However the restrictions we make to ensures that \Q@validate@ is deterministic, namely those the type-system enforces due to it’s signature, seem quite flexible and reasonable; examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 
-The language, and type-modifier system we have presented here is quite restrictive, even when choosing to not validate classes; of course such restriction is the main ‘feature’ of the system it does however have some that doo seem excesive, in particular the restrictions on \@capsule@ expressions and capsule-mutator methods can require programmers to write lots of extra boilerplate and functions, and prevent entire classes of object’s from being properlly validated (such as a LinkedList of mutable elements).
+We believe it is possible to relax our restrictions whilst still ensuring our desired semantics, however such a language is unlikely to be simple. We chose here to present a simple language, not merely for ease of exposition but to be more easily understood by programmers: if they don’t understand they are less able to write code in a way that behaves as desired. Directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of our language, advanced type-modifier inference, and more flexible ownership types (beyond are highly-restrictive \Q@capsule@).
 
 
-Though it is possible to relax these restrictions whilst still ensuring our desired semantics, doing so is unlikely to be simple; un particular we believe simplicity of a type-system is valuable, not only does it make it easier to implement and reason about, it can also make it easier to \emph{use}: if a programmer understands the language they are using they are more able to write code in a way that works as expected.
-
-
-An alternative, less powerful but ultimately more usable approach would be to extend our type system and programs with additional (programmer provided, or generated) annotations, such as additional ownership-based type-modifiers, in order to keep track of the properties of objects.
+Our work, in comparison to previous RV techniques, aims to be efficient by limiting the number of validation calls, however we have not spent to much effort in doing so, nor have we in any way actually evaluated the performance of our approach. To improve efficiency it could be worth investigating delaying of validation calls (so as to not validate an object that will never be used), elision of validation calls or even only validating part’s of objects (by running the part of \Q@validate@ that could fail).

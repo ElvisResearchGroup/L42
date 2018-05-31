@@ -10,7 +10,7 @@ Static verification of method contracts can prove correctness of OO programs, bu
 This however requires limiting dynamic class loading, ensuring that only statically verified code can be loaded.
 Without this restriction, even predicting the behaviour of an innocent looking call like 
 \Q@myPoint.getX()@ is impossible: the dynamic type of \Q@myPoint@ can refer to a dynamically loaded class
-whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the user hard drive.
+whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the user’s hard drive.
 
 Recent research on \emph{type modifiers} (TM) and \emph{object capabilities} (OC) offer us a simpler way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
 For example, type modifiers have been used to enforce ownership and to guarantee correct behaviour of parallel code[]. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O[joe].
