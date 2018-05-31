@@ -247,11 +247,15 @@ class EvilString extends String {
   }
 }
 ...
-imm String name = new EvilString();
-mut Person schrodinger1 = new Person(name);$\Comment{would this throw an exception?}$
-mut Person schrodinger2 = new Person(name);$\Comment{what about this?}$
+imm method mut Person createPersons(imm String name){
+  $\Comment{is name an `EvilString'}$
+  mut Person schrodinger1 = new Person(name);$\Comment{would this throw an exception?}$
+  mut Person schrodinger2 = new Person(name);$\Comment{what about this?}$
+  ...}
 \end{lstlisting}
 Despite the code for \Q@Persion.validate()@ intuitively looking correct and deterministic, the above calls to it are not. Obviously this breaks any reasoning and makes our validation unsound. 
+In particular, note how in the presence of dynamic class loading, 
+we can not make any assumption on the dynamic type of \Q@name@.
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Persion.validate()@ itself.
 
