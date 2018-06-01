@@ -147,7 +147,7 @@ The only rule that can
 introduce a new field access is \textsc{mcall}.
 In that case, ExposerInstrumentation holds
 by well formedness (all field accesses in methods are of the form \Q@this.f@) 
-and since \textsc{m call} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by MutField such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
+and since \textsc{mcall} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by MutField such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
 
 Note that \textsc{monitor exit} is fine because monitors are removed only when
  $e_1$ is a value.
@@ -165,21 +165,27 @@ by exactly one application of rule \textsc{ctx} and then one other rule.
 Thus the proof can simply proceed by cases on such other applied rule.
 
 By SubjectReductionBase and ExposerInstrumentation, 
-$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_1,\e_1)$. So we just need to proceed by cases on the reduction rule applied to verify that $OK(\sigma_1,\e_1)$:
+$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_1,\e_1)$. So we just need to proceed by cases on the reduction rule applied to verify that $OK(\sigma_1,\e_1)$ holds:
 
 
 \begin{enumerate}
 \item \textsc{update:} $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
 \begin{itemize}
-  \item by \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR;$, thus $\mathit{monitored}(\e,l)$.
-  \item Every $l_1$ such that $l\in \text{rog}(\sigma,l_1)$ will verify the same case
+  \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
+  \item Every $l_1$ such that $l\in \mathit{rog}(\sigma,l_1)$ will verify the same case
   as the former step:
   \begin{itemize}
   	\item If it was $\mathit{garbage}$, clearly it still is.
   	\item If it was $\mathit{monitored}$, it also still is.
-  	\item If can't have been $\mathit{wellEncapsulated}$ since $mutatable(l, \sigma, e)$, (by MutField)
+    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
+		\begin{itemize}
+			\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
+	    \item Otherwise, by our well-formedess criteria that \Q@.validate()@ only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
+By HeadNotCircle it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
+	  \end{itemize}
   \end{itemize}
-  \item Every other $l_0$ is not reached by $l$ thus it being $\mathit{OK}$ could not have been effected by this reduction step.
+  \item Every other $l_0$ is not in the reachable object graph of $l$
+  thus it being $\mathit{OK}$ could not have been effected by this reduction step.
 \end{itemize}
 
 \noindent\textbf{case field access} $l.f\rightarrow v$:
