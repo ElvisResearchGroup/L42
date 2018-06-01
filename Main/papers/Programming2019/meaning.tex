@@ -219,7 +219,7 @@ $\begin{array}{l}
 \quad
  \inferrule[(try enter)]{{}_{}}{
 \sigma|\Kw{try}\oC \e_1\cC\Kw{catch}\oC\e_2\cC\rightarrow 
-\sigma|\Kw{try}^\sigma\oC\e_1\cC\Kw{catch}\oC\e_2\cC
+\sigma|\Kw{try}^\sigma\oC\e_1\cC\ \Kw{catch}\oC\e_2\cC
  }{}
 \quad
 
@@ -228,12 +228,12 @@ $\begin{array}{l}
 
 
  \inferrule[(try ok)]{{}_{}}{
-\sigma,\sigma'|\Kw{try}^{\sigma}\oC v\cC\Kw{catch}\oC\_\cC\rightarrow \sigma,\sigma'|v
+\sigma,\sigma'|\Kw{try}^{\sigma}\oC v\cC\ \Kw{catch}\oC\_\cC\rightarrow \sigma,\sigma'|v
  }{}
 \quad
 
  \inferrule[(try error)]{{}_{}}{
-\sigma,\_|\Kw{try}^\sigma\oC \mathit{error}\cC\Kw{catch}\oC\e\cC\rightarrow \sigma|\e
+\sigma,\_|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\oC\e\cC\rightarrow \sigma|\e
  }
 \quad
  \inferrule[(access)]{{}_{}}{

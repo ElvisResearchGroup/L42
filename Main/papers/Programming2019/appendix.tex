@@ -33,7 +33,7 @@ and $OK$:
 modification. 
 
 \noindent\textbf{Define} $\mathit{monitored}(\e,l)$:\\*
-\indent$\e=\ctx_v[M(l,\e_1;\e_2)]$ and either $\e_1=l$ or $l$ is not inside $\e_1$.
+\indent$\e=\ctx_v[M(l;\e_1;\e_2)]$ and either $\e_1=l$ or $l$ is not inside $\e_1$.
 
 \noindent An object is monitored if the execution
 is currently inside of a monitor for that object, and
@@ -134,7 +134,7 @@ when the \Q@validate()@ method evaluates to \Q@false@,
 execution can continue only if the offending object is classified as garbage.
 \end{proof}
 
-\subsection{Proof of Subject Reduction}
+\subsection{Expose Instrumentation}
 We first introduce a lemma derived from well formedness and the type system:
 \begin{Lemma}[ExposerInstrumentation]
 If $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
@@ -153,10 +153,7 @@ Note that \textsc{monitor exit} is fine because monitors are removed only when
  $e_1$ is a value.
 \end{proof}
 
-\begin{theorem}
-	Subject Reduction Base $\Rightarrow$ Subject Reduction
-\end{theorem}
-\begin{proof}
+\subsection{Proof of Subject Reduction}
 Any reduction step can be obtained
 by exactly one application of rule \textsc{ctx} and then one other rule.
 
@@ -169,7 +166,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 
 \begin{enumerate}
-\item \textsc{update:} $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
+\item (\textsc{update}) $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
 \begin{itemize}
   \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
   \item Every $l_1$ such that $l\in \mathit{rog}(\sigma,l_1)$ will verify the same case
@@ -181,14 +178,14 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 		\begin{itemize}
 			\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
 	    \item Otherwise, by our well-formedess criteria that \Q@.validate()@ only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
-By HeadNotCircle it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
+By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
 	  \end{itemize}
   \end{itemize}
   \item Every other $l_0$ is not in the reachable object graph of $l$
   thus it being $\mathit{OK}$ could not have been effected by this reduction step.
 \end{itemize}
 
-\noindent\textbf{case field access} $l.f\rightarrow v$:
+\item (\textsc{access}) $\sigma|l\singleDot f \rightarrow \sigma|v$:
 
     If for $l$ $IOK$ holds by (2),  
     it is possible that the next step is not encapsulated.
@@ -198,7 +195,7 @@ By $\mathit{fieldGuarded}(\sigma_0,\e_0)$
     the former step was inside of a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
     and the $l$ under reduction was the only occurrence of $l$.
     since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
-    by HeadNonCircular.
+    by HeadNotCircular.
     Thus in the new step not $l\, \text{inside}\ \ctx_v[v]$.
     Thus for l (3)[monitored] holds.
     
@@ -214,19 +211,21 @@ Thus, $l_0$ is either without invariant, garbage or monitored.
 None of those 3 cases can be disturbed by a field access.
 
 
-\noindent\textbf{case meth call}:\\*
-  This reduction step does not influence any object in the memory and does not
-disturb the properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$.
+\item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
-\noindent\textbf{case new}:\\*
-  If $C$ has invariant, then by @ConstructionInstrumentation the new object is monitored.
-As for the method call, other objects and properties are not disturbed.
+These reduction step does not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $garbage$, $wellEncapsulated$, $valid$ (due to Determinism) or $monitored$ properties of any memory locations, thus $\mathit{OK}$ still holds.
+
+\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR$:
 
 
-\noindent\textbf{case monitor exit} \Q@M(@$l;v;$\Q@true)@$\rightarrow v$ :
-  \begin{itemize}
+Clearly the newly created object ($l$) is monitored. As for \textsc{mcall} , other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
+
+
+\item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:
+
+\begin{itemize}
 \item
-    If it was a setter $v=l$, and 
+    If it was a setter $v = l$, and 
     thanks to Determinism the execution of invariant is deterministic;
     thus for $l$ in the former step both case (2) and (3) holds.
     In the next step (2) will hold for $l$.
@@ -242,20 +241,10 @@ As for the method call, other objects and properties are not disturbed.
     the execution of invariant is deterministic, thus in the next step (2) will hold.
 \end{itemize}
 
-\noindent\textbf{case try enter and try ok}
-This case do not influence any object in the memory and does not
-disturb the properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$.
 
-\noindent\textbf{case try catch} $\sigma,\sigma_0|\Kw{try}^\sigma \oC\mathit{error}\cC\Kw{catch}\, \e\rightarrow \sigma|\e$:\\*
-From the premise we know 
-$IOK(\sigma,\sigma_0;\ctx_v[\Kw{try}^\sigma \oC\mathit{error}\cC\Kw{catch}\, \e])$;
-thus we need to show
-$IOK(\sigma;\ctx_v[\e])$.
-By StrongExceptionSafety we know that $\sigma_0$ is garbage with respect to $\ctx_v[\e]$.
+\item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\oC\e\cC\rightarrow \sigma|\e$:
 
-There could be many $l$ inside $\sigma,\sigma_0$ that are $\mathit{monitored}$
-in the former step thanks to monitor expressions inside $\mathit{error}$.
-However, all such $l$ are defined inside $\sigma_0$,
-for the last well formedness condition.
+By StrongExceptionSafety we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria no location inside $\sigma$ could have been $monitored$.
+
+Since we don’t modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$
 \end{enumerate}
-\end{proof}
