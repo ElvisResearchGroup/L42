@@ -6,32 +6,22 @@ Reasoning about imperative object oriented (OO) programs is a non trivial task,
 made particularly difficult by mutations, aliasing, dynamic dispatch, dynamic class loading,
 unrestricted I/O and exceptions.
 
-Static verification of method contracts can prove correctness of OO programs,\footnote{
-In literature, both static and run-time verification discuss
-the correctness of common programming patterns in conventional languages. Here instead we define a new language, where
-many conventional programming patterns are disallowed,
-and need to be replaced with other patterns allowing simpler reasoning.
-} but this is costly and requires to define the desired semantic of the program in a verification language then prove consistency.
+Static verification of method contracts can prove correctness of OO programs, but this is costly and requires to define the desired semantic of the program in a verification language then prove consistency.
 This however requires limiting dynamic class loading, ensuring that only statically verified code can be loaded.
 Without this restriction, even predicting the behaviour of an innocent looking call like 
 \Q@myPoint.getX()@ is impossible: the dynamic type of \Q@myPoint@ can refer to a dynamically loaded class
-whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the user’s hard drive.
+whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the hard drive.
 
 Recent research on \emph{type modifiers} (TM) and \emph{object capabilities} (OC) offer us a simpler way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
-For example, type modifiers have been used to enforce ownership and to guarantee correct behaviour of parallel code~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O~\cite{finifter2008verifiable}.
+Type modifiers have been used to enforce ownership and  correct behaviour of parallel code~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O~\cite{finifter2008verifiable}.
 Given these benefits, many emerging languages (such as Rust~\cite{matsakis2014rust} and newspeak~\cite{bracha2010modules})
 support some form of type modifiers and/or object capabilities.
 
 \loseSpace
-
-\subsection{Validation}
+\noindent\textit{Validation:}
 \label{s:validation}
-In this paper, we rely on TM and OC to define a language ensuring \emph{validation}: that is, it ensures a user defined property ('validity') holds for all instances of a class.
-
-
-
-%##what is validation
-All classes provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
+In this paper, we rely on TM and OC to define a language where a user defined property is ensured to holds for all instances of a class:
+all classes provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
 As a short cut, if a class does not explicitly define a
 \Q@.validate()@ method, it is assumed to have an implicit default implementation of \Q@{return true;}@, i.e. every instance is valid.
 %A class may provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
@@ -58,8 +48,14 @@ Indeed, class-invariants can be represented in our system by defining validity a
 %your ``and'' was wrong, is ``or''
 the class-invariant holding, or a mutator-method is currently running (this is easily implemented with a boolean flag).
 
-\subsection{Our Language}
-Our language supports validation by invoking the \Q@.validate()@ method, before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 
+\loseSpace
+\noindent\textit{Our approach:}
+Our language\footnote{
+In literature, both static and run-time verification discuss
+the correctness of common programming patterns in conventional languages. Here instead we define a new language, where
+many conventional programming patterns are disallowed,
+and need to be replaced with other patterns allowing simpler reasoning.
+} supports validation by invoking the \Q@.validate()@ method, before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 
 Like assertions, an (unchecked) exception is thrown if such a call returns \Q@false@ (indicating that the object is invalid).
 
 Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type-system ensures the object is not reachable.
@@ -85,7 +81,7 @@ is raised as close as possible to the defect (the operation creating an invalid 
 %\subsection{Extended type system and similarity with checked casts}
  Even if not as good as full static verification, from a formal perspective
  our system clearly aid reasoning.
-However, programmers are still responsible to create and mutate objects in order to preserve their validity;
+Programmers are still responsible to create and mutate objects in order to preserve their validity;
 but once an object has been successfully created/mutated, is guaranteed to be valid.
 Attempting to create a new invalid object, or to mutate an object into an invalid one causes
 a run time error.
@@ -99,7 +95,6 @@ On the other side incorrect C casts just default to undefined behaviour:
 if a C execution continue after a cast, we know absolutely nothing. The same execution
 may fail when run on a different machine, 
 or even on the same one in another moment.
-
 In the same sense, object construction and ROG mutation are soundly checked by our system,
 and success in a mutation means that in that specific execution, the validity was preserved.
 

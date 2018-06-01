@@ -1,7 +1,7 @@
 
 
 \section{Background}
-\subsection{Type Modifiers}
+\noindent\textit{Type Modifiers:}
 Type modifiers are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification of mutability and aliasing properties of objects.
 With sightly different names and semantics, the three most common modifiers for object references are:
 \begin{itemize}
@@ -91,8 +91,8 @@ This can be obtained leveraging TM in the following way:
 \item code inside \Q@try@ blocks capturing an exception is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \end{itemize}
 
-\subsection{Object Capabilities}
-
+\loseSpace
+\noindent\textit{Object Capabilities:}
 While type modifiers are a statically verified property of references, object capabilities are run time characteristics of specific objects.
 
 Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionalities: only certain objects with ``special'' powers can do ``special'' actions, and those objects are obtained in a controlled way. We call such objects ``capability objects''.
@@ -229,8 +229,9 @@ class Person {
 
 If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the validation of this simple \Q@Person@ class, would become harder, or even impossible. We now proceed to show examples where
 relaxation to TM or OC breaks our validation. 
-%TODO: Move this code somewhere else
-\subsubsection*{Unrestricted use of object-capabilities:}
+
+\loseSpace
+\noindent\textit{Unrestricted use of object-capabilities:}
 Allowing \Q@.validate()@ to (indirectly) use an object capability could allow for it to be non deterministic, by either:
 \begin{itemize}
 \item allowing \Q@.validate()@ to (indirectly) access a \Q@mut@ reference to a capability-object,
@@ -259,7 +260,8 @@ we can not make any assumption on the dynamic type of \Q@name@.
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Persion.validate()@ itself.
 
-\subsubsection*{Allowing internal mutations/back-doors:}
+\loseSpace
+\noindent\textit{Allowing internal mutations/back-doors:}
 % TODO: Come up with better title
 Suppose we relax our mutation rules, by allowing interior mutability
 as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:
@@ -344,7 +346,8 @@ Allowing such back-doors could also be used to break the determinism of the \Q@.
 %For Validation we need a language supporting aliasing and mutability control.
 %\end{comment}
 
-\subsubsection*{Strong Exception Safety:}
+\loseSpace
+\noindent\textit{Strong Exception Safety:}
 The ability to catch and recover from validation failures is extremely useful as it allows the program to take corrective action.
 This may be implemented with a conventional \Q@try-catch@, since violations are represented by throwing unchecked exceptions. Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
 

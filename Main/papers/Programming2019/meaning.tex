@@ -65,7 +65,8 @@ We believe adding traditional exceptions would not cause any interesting variati
 \end{itemize}
 
 
-\subsection{Grammar and Well-Formedness Criteria}
+\loseSpace
+\noindent\textit{Grammar and Well-Formedness Criteria:}
 
 \newcommand{\ctxG}{\myCalBig{G}}
 \renewcommand{\vs}{\Many{v}}
@@ -173,9 +174,7 @@ Indeed interfaces do not have an implemented \Q@.validate()@ method, objects imp
 To enrich our formalism with subclassing, we would need to add the 
 well-formed criteria that \Q@validate()@ 
 methods start by checking the result of \Q@super@.\Q@validate()@.
-\saveSpace
-\subsection{Reduction rules}
-\saveSpace
+
 \begin{figure}
 $\begin{array}{l}
  \inferrule[(update)]{{}_{}}{
@@ -245,6 +244,8 @@ $\begin{array}{l}
 \caption{Reduction rules}
 \end{figure}
 
+\loseSpace
+\noindent\textit{Reduction rules:}
 Reduction rules are defined in Figure 2.
 These rules are pretty standard;
 \textsc{mcall}
@@ -288,8 +289,8 @@ checked exceptions.
 
 
 
-\subsection{Axiomatic type properties}
-
+\loseSpace
+\noindent\textit{Axiomatic type properties:}
 As discussed, instead of providing a concrete set of type rules, we provide a set of properties
 that such type system needs to respect.
 To express these properties, we first need some auxiliary definitions:
@@ -450,7 +451,8 @@ if\\* $\emptyset;
 \vdash\e_0:\T$ and $\emptyset;\Gamma\vdash\e_1:\T$,
 i.e. $e_0$ can be typed when seeing all externally defined mutable references as \Q@read@.
 
-\subsection{Statement of Validation}
+\loseSpace
+\noindent\textit{Statement of Validation:}
 We first need to define what it means for an object to be valid: an object is \emph{valid} iff calling its \Q@.validate()@ method would
 deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an error.
 We also require that evaluating \Q@.validate()@ preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.

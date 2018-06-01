@@ -81,8 +81,8 @@ Destructive reads would be a bad idea for validation as they would likely invali
 In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ methods using a \Q@capsule@ field (we call such methods `capsule mutators'):
 \begin{itemize}
 \item only a single use of \Q@this@ is allowed (and is the one that uses the field),
-\item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter) and,
-\item the return type cannot be \Q@mut@.
+\item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter)
+\item and the return type cannot be \Q@mut@.
 \end{itemize}
 \noindent  Moreover, if the used capsule field is referenced in \Q@.validate()@, a \Q@this.validate()@ call is injected at the end of the method.
 Using the capsule field, our \Q@ShippingList@ class would, after automatic insertion of validation checks, could be modified to:
@@ -209,7 +209,9 @@ l.addHeavy(f); // We pass another reference to `l' through f
 %This is however not the case, consider the following
 %general capsule mutator method that allows to apply any possible transformation over the content of a capsule %field:
 %At first glance it mayseem from
-\subsection{The transform pattern}
+
+\loseSpace
+\noindent\textit{The transform pattern:}
 A simple pattern to allow flexible use of capsule fields is to define a \Q@.transform()@ function and a \Q@ItemTransformer@ interface\footnote{A real language could
 provide a generic \Q@Transformer@ interface and allow to auto-generate the \Q@.transform()@ function, similarly to auto-generating getter/setters.} like so:
 
@@ -299,7 +301,8 @@ Note that since \Q@.doStuff()@ does not access a capsule field but merely calls 
 %,  i.e. they can't see or update the other capsule fields.
 
 
-\subsection{The box pattern}
+\loseSpace
+\noindent\textit{The box pattern:}
 At first glance it would seam that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs, such as with a doubly linked list type:
 \begin{lstlisting}[escapechar=\%]
 class List {
