@@ -2,144 +2,137 @@
 \section{Proof} 
 \label{s:proof}
 
-\begin{Theorem}[Sound Validation]
-if $c:\Kw{Cap}\vdash \e: \T$ and
-$c:\Kw{Cap}\{\_;\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
-either $H(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
-\end{Theorem}
+\begin{theorem}[Sound Validation]
+	if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and
+	$c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
+	either $valid(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
+\end{theorem}
 
-We believe this property captures very precisely our statement in Section~\ref{s:def}.
+We believe this property captures very precisely our statement in Section~\ref{s:validation}.
 
 It is hard to prove Sound Validation directly,
 so we first define a stronger property,
-called Stronger Sound Validation and
-we show that it is preserved during reduction by mean of conventional 
+called \emph{Stronger Sound Validation} and
+show that it is preserved during reduction by means of conventional 
 Progress and Subject Reduction (Progress is one of our assumption,
 while Subject Reduction relies heavily on SubjectReductionBase).
 That is,
-Progress+Subject Reduction $\Rightarrow$ Stronger Sound Validation
+Progress+Subject Reduction $\Rightarrow$ Stronger Sound Validation,
 \\*and Stronger Sound Validation $\Rightarrow$ Sound Validation.
 
 \subsection{Stronger Sound Validation $\Rightarrow$ Sound Validation}
 
 Stronger Sound Validation depends on 
 $\mathit{wellEncapsulated}$, $\mathit{monitored}$
-and $IOK$ (Invariant OK):
+and $OK$:
 
 \noindent\textbf{Define} $\mathit{wellEncapsulated}(\sigma,\e,l_0)$:\\*
-${}_{}$\quad\quad$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutated}(l,\sigma,\e)$
+\indent$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutatable}(l,\sigma,\e)$
 
-\noindent The main idea is that an object is encapsulated if its internal representation is safe from
+\noindent The main idea is that an object is well encapsulated if its encapsulated state is safe from
 modification. 
 
 \noindent\textbf{Define} $\mathit{monitored}(\e,l)$:\\*
-${}_{}$\quad\quad  $\e=\ctx_v[M(l,\e_1;\e_2)]$ and either $l=\e_1$ or $l$ not inside $\e_1$.
+\indent$\e=\ctx_v[M(l,\e_1;\e_2)]$ and either $\e_1=l$ or $l$ is not inside $\e_1$.
 
 \noindent An object is monitored if the execution
 is currently inside of a monitor for that object, and
-the monitored expression $\e_1$ \textbf{does not}
-contains $l$ as a proper subexpression.
+the monitored expression $\e_1$ does not
+contains $l$ as a \emph{proper} subexpression.
 
-That is, a monitored object is associated with an expression that can not observe him, but may 
+A monitored object is associated with an expression that can not observe it, but may 
 reference its internal representation directly.
 In this way, we can safely modify its representation before checking for the invariant.
 
-The idea is that at the start the object invariant will hold and $\e_1$ will contains $l$;
+The idea is that at the start the object will be valid and $\e_1$ will contain $l$;
 but during reduction, the $l$ reference will be used in order to
-give access to the internal state of $l$. Only after that moment, the invariant may be broken.
+give access to the internal state of $l$; only after that moment, the object may become invalid.
 
 
-\noindent\textbf{Define} $IOK(\sigma,e)$:\\
-${}_{}$\quad\quad  $\forall l\in\dom(\sigma)$
-  either
-\begin{enumerate}
-%   \item ${}_{}$ $l$ has not invariant
-   \item $\mathit{garbage}(l,\sigma,\e)$
-   \item $H(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$
-   \item $\mathit{monitored}(\e,l)$
-\end{enumerate}
+\noindent\textbf{Define} $OK(\sigma,e)$:\\
+\indent $\forall l\in\dom(\sigma)$
+  either\\
+\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$\\
+\indent\indent 2. $\mathit{valid}(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$\\
+\indent\indent 3. $\mathit{monitored}(\e,l)$
 
-\noindent
-Finally, the system is in a coherent state with respect to invariant checking 
-if for all the objects in the memory, one of those 3 cases apply:
+Finally, the system is in a valid state with respect to validation
+if for all the objects in the memory, one of these 3 cases apply:
 %the class of the object has no invariant method;
-the object is not (transitively) reachable from the expression, thus can be garbage collected;
-the object invariant holds, and the object is encapsulated;
+the object is not (transitively) reachable from the expression (thus can be garbage collected);
+the object is valid, and the object is encapsulated;
 or the object is currently monitored.
 
-Thus, on one side, we accept invalid objects in the garbage and during the monitoring process.
-on the other side, in addition of requiring validation to hold $H$, we
-also require those objects to be $\mathit{wellEncapsulated}$;
-it is needed later to prove that the future steps will be $IOK$ too.
-
-
-\begin{Theorem}[Stronger Sound Validation]
-if $c:\Kw{Cap}\vdash \e_0: \T_0$ and
-$c:\Kw{Cap}\{\_;\_\}|\e_0\rightarrow^+ \sigma|\e$, then
-$IOK(\sigma,\e)$
-\end{Theorem}
+\begin{theorem}[Stronger Sound Validation]
+if $c:\Kw{Cap};\emptyset\vdash \e_0: \T_0$ and
+$c\mapsto\Kw{Cap}\{\_\}|\e_0\rightarrow^+ \sigma|\e$, then
+$OK(\sigma,\e)$
+\end{theorem}
 \noindent Starting from only the capability object,
 any well typed expression $\e_0$ can be reduced for an arbitrary amount of steps,
 and $IOK$ will always hold.
 \\
-\textbf{Proof }Stronger Sound Validation $\Rightarrow$ Sound Validation:\\*
-\noindent To prove that Stronger Sound Validation implies Sound Validation
-we consider for each $l$ the 3 cases of $IOK$: the $l$ involved in the current redex
-will be one of those.
-Indeed, this proof shows invalid objects are never observed:
-If $l$ is garbage, is not in the current redex.
-If $H(\sigma,l)$, the invariant holds, so thanks to Determinism
-no invalid object is observed.
-Finally, if $\mathit{monitored}(\e,l)$
-then, either we are executing inside of $\e_1$, thus
-the current redex is inside of a subexpression of the monitor that does not contains $l$, thus
-$l$ is not in the current redex.
-Or we are executing inside $\e_2$:
-by our reduction rules, all monitor expressions starts with 
-$\e_2=l$\Q@.validate()@, thus the first execution step
-of $\e_2$ is trusted.
-Following execution steps are also trusted since thanks
-to well formedness the body of invariant methods only
-uses \Q@this@ to access fields.
-
+\begin{theorem} Stronger Sound Validation $\Rightarrow$ Sound Validation
+\end{theorem}
+\begin{proof}
+\noindent By Stronger Sound Validation, each $l$ in the current redex must be $OK$:
+\begin{enumerate}
+	\item If $l$ is garbage, it cannot be in the current redex, a contradiction
+	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to Determinism
+	no invalid object could be observed,
+	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
+	\begin{itemize}
+	 \item we are executing inside of $\e_1$ thus the current redex is inside of a subexpression of the monitor that does not contain $l$, a contradiction
+	 \item or we are executing inside $\e_2$:
+	 by our reduction rules, all monitor expressions start with 
+	 $\e_2=l$\Q@.validate()@, thus the first execution step
+	 of $\e_2$ is trusted. Following execution steps are also trusted, since by well formedness the body of invariant methods only use \Q@this@ (now translated to $l$) to access fields.
+	\end{itemize}
+\end{enumerate}
+In any of the possible cases above, Sound Validation holds for $l$, and so it holds for all redexes.
+\end{proof}
 
 \subsection{Subject Reduction}
 
 \noindent\textbf{Define} $\text{fieldGuarded}(\sigma,\e)$:\\*
-${}_{}$\quad\quad$\forall \ctx$ such that $\e=\ctx[l\singleDot\f], $
-and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$\\*
-${}_{}$\quad\quad\quad either $\forall\, T,C,\quad\ \Sigma^\sigma;\x:\Kw{imm}\,C\,\vdash\ctx[\x]:T$ does not hold\\*
-${}_{}$\quad\quad\quad or $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\_$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$ \\*
-\noindent We check that all the mutating capsule field accesses
-are individually guarded by monitors.
-Note how we use $C$ in $\x:\Kw{imm}\,C$ to guess the type of the accessed field,
+\indent$\forall \ctx$ such that $\e=\ctx[l\singleDot\f] $
+and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$, and $\f\mathrel{\mathit{inside}} \Sigma^\sigma(l).\mathit{validate}$\\*
+\indent\indent either 
+$\forall T, \forall C, \Sigma^\sigma;\x:\Kw{mut}\,C\,\not\vdash\ctx[\x]:T$, or\\*
+\indent\indent $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\e$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$
+
+That is, all \emph{mutating} capsule field accesses are individually guarded by monitors.
+Note how we use $C$ in $\x:\Kw{mut}\,C$ to guess the type of the accessed field,
 and that we use the full context $\ctx$ instead of the evaluation context $\ctx_v$
 to refer to field accesses everywhere in the expression $\e$.
 
 
-
-\begin{Theorem}[Subject Reduction]
-if $\Sigma^{\sigma_0}\vdash e_0: T_0$,
+\begin{theorem}[Subject Reduction]
+if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
 $\sigma_0|e_0\rightarrow \sigma_1|e_1$,
-$IOK(\sigma_0,\e_0)$
+$OK(\sigma_0,\e_0)$
 and
 $\mathit{fieldGuarded}(\sigma_0,\e_0)$
 then
-$\Sigma^{\sigma_1}\vdash e_1: T_1$,
-$IOK(\sigma_1,e_1)$ and
+$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$,
+$OK(\sigma_1,e_1)$ and
 $\mathit{fieldGuarded}(\sigma_1,\e_1)$
-\end{Theorem}
+\end{theorem}
 
-\noindent\textbf{Proof }Progress + Subject Reduction $\Rightarrow$ Stronger Sound Validation:\\*
-This proof proceed by induction as the usual Progress + Subject Reduction $\Rightarrow$ Soundness
-proof.
-Note that at the start of the execution, the memory is going to be empty, thus
-$IOK(\emptyset,e)$  and $\mathit{fieldGuarded}(\emptyset,\e)$
-will hold.
-Then step by step, objects are created and their status is kept under control.
-Note how here garbage collection is important: 
-when the \Q@validate()@ method terminate with \Q@false@, 
+\begin{theorem}
+	Progress + Subject Reduction $\Rightarrow$ Stronger Sound Validation
+\end{theorem}
+\begin{proof}
+This proof proceeds by induction in the usual manner.
+
+\emph{Base Case}: At the start of the execution, the memory is going to only contain $c$: since $c$ is defined to be initially $\mathit{valid}$, and has only \Q@mut@ fields, and so it is trivially $\mathit{wellEncapsulated}$, thus $OK(c\mapsto\Kw{Cap},e)$.
+
+\emph{Induction}: By Progress we always have another evaluation step to take, by Subject Reduction such a step will preserve $\mathit{OK}$, and so by induction $\mathit{OK}$ holds after any number of steps.
+
+Note how for the proof garbage collection is important: 
+when the \Q@validate()@ method evaluates to \Q@false@, 
 execution can continue only if the offending object is classified as garbage.
+\end{proof}
 
 \subsection{Proof of Subject Reduction}
 We first introduce some lemmas

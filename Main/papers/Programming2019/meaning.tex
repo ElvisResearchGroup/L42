@@ -18,8 +18,8 @@ system supporting those properties} supports validation.
 To encode object capabilities and I/O, we assume a special location
 $c$ of type \Q@Cap@.
 This location would refer to an object whose fields model, for example, the content of input and output files.
-All its methods must require a \Q@mut this@, an shall mutate the ROG of $c$, and the main expression will start with
-such $c$ location in scope.
+All its methods must require a \Q@mut this@, and shall mutate the ROG of $c$, and the main expression will start with
+such $c$ location in scope. In order to simplify our proof, we assume that $c$ only has \Q@mut@ fields, and is initially valid (i.e. $c.validate()$ will return \Q@true@, until perhaps the ROG of $c$ is mutated).
 We strive to keep our small step semantics as conventional as possible; following Pierce~\cite{pierce2002types} we assume:
 \begin{itemize}
 \item An implicit program/class-table.
@@ -303,9 +303,8 @@ To express these properties, we first need some auxiliary definitions:
 %their class declarations only have immutable or capsule fields. Note how here we see immutable
 %and simple objects as special cases of encapsulated ones.
 
-\noindent\textbf{Define} $\mathit{erog}(\sigma,l_0)$\\*
-${}_{}\quad\quad
-l \in \mathit{erog}(\sigma,l_0)
+\noindent\textbf{Define} $\mathit{erog}(\sigma,l_0)$:\\*
+\indent $l \in \mathit{erog}(\sigma,l_0)
 \text{ if } \Sigma^\sigma(l_0).f \in \{\Kw{imm}\,\_,\Kw{capsule}\,\_\}
 \text{ and } l \in \mathit{rog}(\sigma,\sigma(l_0).f)
 $\\*
@@ -314,17 +313,16 @@ The encapsulated ROG of $l_0$ is composed by all the objects
 in the ROG of its immutable and capsule fields.
 
 
-\noindent\textbf{Define} $\mathit{mutatable}(l,\sigma,\e)$\\*
-${}_{}$\quad\quad with $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\e=\ctx[l]$,\\*
-${}_{}$\quad\quad $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.\\*
+\noindent\textbf{Define} $\mathit{mutatable}(l,\sigma,\e)$:\\*
+\indent with $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\e=\ctx[l]$,\\*
+\indent $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.\\*
 \noindent That is, an object is mutatable by a $\sigma,\e$ if there is an occurrence of 
 $l$ in $e$ that when seen as immutable makes the expression ill-typed.
 
 
 
 \noindent\textbf{Define}$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$:\\*
-${}_{}$\quad\quad
-iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{ where } \sigma_0|e_0\rightarrow \sigma|e\}$
+\indent iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{ where } \sigma_0|e_0\rightarrow \sigma|e\}$
 
 %if $\ \sigma_0|e_0\rightarrow \sigma|e$ then $\sigma_1|\e_1=\sigma|\e$
 % $\exists! \sigma_1|\e_1$ such that $\sigma_0|\e_0\rightarrow \sigma_1|\e_1$\\*
@@ -458,7 +456,7 @@ deterministically produce \Q@true@ in a finite number of steps, i.e. it does not
 We also require that evaluating \Q@.validate()@ preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.
 
 \noindent\textbf{Define} $valid(\sigma,l)$:\\*
-${}_{}$\quad\quad$\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
+\indent $\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
 
 \noindent Now in order for validation to be meaningful it needs to be possible for \Q@validate@ to potentially observe an invalid object.
 We define the set of trusted steps, 
@@ -468,20 +466,20 @@ of calling \Q@.validate()@ is trusted, not the whole evaluation of the \Q@.valid
 
 
 \noindent\textbf{Define} $\mathit{trusted}(\ctx_v,r_l)$:\\*
-${}_{}$\quad\quad either
+\indent either
 $r_l=l$\Q@.validate()@ and
  $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\square$\Q@)@$]$\\*
-${}_{}$\quad\quad or
+\indent or
 $r_l=l$\Q@.f@ and
  $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\ctx_v''$\Q@)@$]$
 
 \noindent Finally, we can now define what it means for a language to soundly enforce validation: every object involved in any untrusted redex is valid.
 
-\begin{Theorem}[Sound Validation]
+\begin{theorem}[Sound Validation]
 if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and
 $c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
 either $valid(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
-\end{Theorem}
+\end{theorem}
 
 We believe this property captures very precisely our statement in Section~\ref{s:validation}.
 The proof is in Appendix~\ref{s:proof}. 
