@@ -70,7 +70,7 @@ $OK(\sigma,\e)$
 \end{theorem}
 \noindent Starting from only the capability object,
 any well typed expression $\e_0$ can be reduced for an arbitrary amount of steps,
-and $IOK$ will always hold.
+and $OK$ will always hold.
 \\
 \begin{theorem} Stronger Sound Validation $\Rightarrow$ Sound Validation
 \end{theorem}
@@ -213,12 +213,12 @@ None of those 3 cases can be disturbed by a field access.
 
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
-These reduction step does not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $garbage$, $wellEncapsulated$, $valid$ (due to Determinism) or $monitored$ properties of any memory locations, thus $\mathit{OK}$ still holds.
+These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $garbage$, $wellEncapsulated$, $valid$ (due to Determinism) or $monitored$ properties of any memory locations, thus $\mathit{OK}$ still holds.
 
 \item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR$:
 
 
-Clearly the newly created object ($l$) is monitored. As for \textsc{mcall} , other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
+Clearly the newly created object ($l$) is monitored. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
 
 
 \item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:

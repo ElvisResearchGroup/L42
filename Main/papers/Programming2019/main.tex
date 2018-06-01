@@ -81,15 +81,17 @@ area={Program verification}
 \maketitle
 
 \begin{abstract}
-\emph{Context:} % What is the broad context of the work? What is the importance of the general research area?
+${}_{}$
+
+
+\noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
 Object-oriented programming languages, through sub typing and dynamic dispatch provide great flexibility: they allow code to be adapted/specialized to behave differently in different contexts.
 However this flexibility hampers code reasoning, which is made even more complex by dynamic class loading (supported by most mainstream OO languages).
 Thus object behaviour is nearly completely unrestricted. This is further complicated with the support OO languages typically have for exceptions, imperative code, and I/O.
 In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
 
-
 \loseSpace
-\emph{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
+\noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
 We wish to guarantee that a user defined property (\emph{validity}) holds for all instances of a class: we call such guarantee \emph{validation}.
 
 Validation is a stronger and simpler variant of `class invariants': Validation always holds, while
@@ -100,13 +102,13 @@ Most prior work on enforcing class-invariants assume unverified/unverifiable res
 For example, static verification often restricts dynamic class loading.
 
 \loseSpace
-\emph{Approach:} %What was done that unveiled new knowledge?
+\noindent\textit{Approach:} %What was done that unveiled new knowledge?
 We combine previous work on type-modifiers and object capabilities to ensure properties of objects and methods. 
 Type-modifiers and object capabilities are useful in their own right, but we use these facilities here to ensure validation by soundly injecting runtime-validation code.
 
 
 \loseSpace
-\emph{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
+\noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
 By means of examples, we show how hard it is to reason on code behaviour in
 the context of dynamic class loading and I/O.
 Building over type modifiers and object capabilities, we lay down the foundation needed to
@@ -115,14 +117,14 @@ We discuss how relaxations in type modifiers and object capabilities would break
 
 
 \loseSpace
-\emph{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
+\noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
 We first provide an informal argument justifying that our rules enforce validation, in particular we show that without type modifiers and object capabilities  validation becomes nearly impossible. We also 
 formally model a language soundly supporting validation; which is formally verified by a proof, parametric on the presence of a type system with certain properties, guaranteed by type modifiers.
 Type systems with such properties have already been explored, formalized, and proved in prior work.
 
 
 \loseSpace
-\emph{Importance:} %Why does this work matter?
+\noindent\textit{Importance:} %Why does this work matter?
 Validation allows the programmers to soundly reason on properties of their code.
 This is of great practical importance since it is independent of the presence of buggy code, or even dynamically loaded malicious code.
 
