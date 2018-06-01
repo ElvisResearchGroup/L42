@@ -94,15 +94,17 @@ In the absence of on the fly static verification of dynamically loaded code, it 
 \emph{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
 We wish to guarantee that a user defined property (\emph{validity}) holds for all instances of a class: we call such guarantee \emph{validation}.
 
-This concept is closely related to the concept of `class invariants', however, unlike validation, they allow for objects to temporarily be in a ‘broken’ state. However our work allows class invariants to be easily encoded in terms of validity. Prior work on class-invariants is typically unsound due to assumptions about library code, or due to trusting programmers to use the provided tools correctly.
-
-Sound prior work, particularly formal verification, heavily restricts dynamic-class loading and the use of I/O, and are very work intensive.
-%particularly static analysis,
+Validation is a stronger and simpler variant of `class invariants': Validation always holds, while
+class invariants allow objects to temporarily be in a ‘broken’ state.
+(It is possible to build class invariants over
+validation).
+Most prior work on enforcing class-invariants assume unverified/unverifiable restrictions on library code, dynamic class loading and I/O, or even just trust programmers to use the provided tools correctly.
+For example, static verification often restricts dynamic class loading.
 
 \loseSpace
 \emph{Approach:} %What was done that unveiled new knowledge?
 We combine previous work on type-modifiers and object capabilities to ensure properties of objects and methods. 
-Type-modifiers and object capabilities are useful in their own right, but we use these facilities here to ensure validation by conservatively injecting runtime-validation code.
+Type-modifiers and object capabilities are useful in their own right, but we use these facilities here to ensure validation by soundly injecting runtime-validation code.
 
 
 \loseSpace
@@ -116,9 +118,9 @@ We discuss how relaxations in type modifiers and object capabilities would break
 
 \loseSpace
 \emph{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
-We provide an informal argument justifying that our language’s rules enforce validation, in particular we show that without such rules (which most languages lack) validation becomes nearly impossible. We also 
-formally model a language soundly supporting validation; which is formally verified by a proof, parametric on the presence of a type system with certain properties.
-Type-system’s with such properties have already been explored, formalized, and proved in prior work.
+We first provide an informal argument justifying that our rules enforce validation, in particular we show that without type modifiers and object capabilities  validation becomes nearly impossible. We also 
+formally model a language soundly supporting validation; which is formally verified by a proof, parametric on the presence of a type system with certain properties, guaranteed by type modifiers.
+Type systems with such properties have already been explored, formalized, and proved in prior work.
 
 
 \loseSpace

@@ -1,39 +1,31 @@
 
-Concluding, 
+\loseSpace
+\noindent Concluding, 
 the philosophy of our approach is to be like an extended type system: 
-\begin{itemize}
-\item The programmer decides to annotate a field with a certain type, or the class with a certain invariant.
-\item If that is a valid type, or a valid invariant, the user is not questioned in its intent.
-\item The system enforce that field will only contain values or that type, or that instance of that class
-will respect that invariant.
-\end{itemize}
+It is the programmer decision
+to annotate a field with a certain type,
+or the class with a certain \Q@.validate()@.
+If the program is well-typed, they are not questioned in their intent.
+During execution the system is the sole responsible to soundly enforce objects validity.
 This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
-both deciding the invariant and enforcing it is controlled by the programmers.
+both deciding properties and enforcing them it is controlled by the programmers.
+This is also different from Static verification,
+where the properties are ensured instead of enforced.
+Static verification is very heavy weight, and often impractical/restrictive.
 
-Static verification requires great effort, but can ensures all invariants \textbf{always} holds, thus all objects are always coherent.
-
-However, Static verification is very heavy weight, and often impractical.
-In the context of a conventional OO language with imperative features,
-we propose an \textbf{ultra-lightweight} verification approach,
-where the programmer specifies \textbf{only} the desired class invariants as an 
-\Q@invariant()@ method written in the language itself.
-This is much more convenient with respect to requiring the specification of methods pre and post conditions,
-since the number of classes is usually order of magnitude smaller then the number of methods,
-and a fully annotated program requires to write down 
-pre-post conditions for each methods, encoding a generalization of its behaviour
-in the dedicated specification language.
+Both static and runtime verification
+aim to monitor a wide range of properties; to this aim they accept a 
+great deal of complexity, and require the programmer to develop a deep understanding
+over the behaviour and the structure of the code.
+For example, the specification of methods pre and post conditions
+encodes a generalization of the program behaviour in the dedicated specification language.
 This means that, even in the best case scenario, 
-using pre-post conditions
-the user is required to specify the program semantic twice:
+using pre-post conditions the user is required to specify the program semantic twice:
 first in the specification language and then in the underlying programming language.
+On the opposite, our approach aims to only verify conditions on immutable or well encapsulated state.
+This makes our approach \emph{ultra-lightweight}:
+the programmer specifies only the desired \Q@.validate()@ method.
 
-
-With just invariants, our system will then 
-\textbf{soundly ensure invariants of all objects involved in the execution}.
-Our approach do not rely on assumption over the behaviour of methods/classes;
-except for the language semantics and the type system guarantees.
-Methods are just treated as black-boxes, producing a result or throwing an error.
-
-Of course, there is a catch: this result is obtained by modifying/instrumenting the
-semantic of the language, so that (as for type casts) \textbf{violations are detected at run-time}, and exceptions
-are throw in order to stop the execution before involving any broken object.
+The popularity of TM and OC is growing, and we expect future languages to support some variation of those.
+Crucially, any language already designed with TM and OC
+can also support sound validation with minimal added complexity.
