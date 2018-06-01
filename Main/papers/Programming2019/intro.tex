@@ -18,8 +18,8 @@ Without this restriction, even predicting the behaviour of an innocent looking c
 whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the user’s hard drive.
 
 Recent research on \emph{type modifiers} (TM) and \emph{object capabilities} (OC) offer us a simpler way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
-For example, type modifiers have been used to enforce ownership and to guarantee correct behaviour of parallel code[]. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O[joe].
-Given these benefits, many emerging languages (such as Rust[] and newspeak[])
+For example, type modifiers have been used to enforce ownership and to guarantee correct behaviour of parallel code~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O~\cite{finifter2008verifiable}.
+Given these benefits, many emerging languages (such as Rust~\cite{matsakis2014rust} and newspeak~\cite{bracha2010modules})
 support some form of type modifiers and/or object capabilities.
 
 \loseSpace

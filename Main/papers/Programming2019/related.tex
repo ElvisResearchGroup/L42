@@ -6,7 +6,10 @@
 
 \noindent\textit{Type Modifiers:}
 We rely on a combination of modifiers that is supported by at least 3 languages/lines of research:
-42[], Gordon[] and Pony[], each of those works is accompanied by proofs of the properties of those modifiers.
+42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
+Gordon~\cite{GordonEtAl12}
+and Pony~\cite{clebsch2015deny,clebsch2017orca},
+each of those works is accompanied by proofs of the properties of those modifiers.
 In our work we just assume the required properties to hold.
  Those approaches all support deep/strong interpretation, without back-doors.
 
@@ -17,7 +20,10 @@ but here we need also aliasing control.
 Also approaches like ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07}
 are not sufficient since they aim to enforce the property only for
 the annotated object and/or its owned objects.
-However, static verification can rely on ownership as a building block~\cite{}.%On ownership verification
+However, static verification can rely on ownership as a building block~\cite{%
+muller2002modular,%
+barnett2011specification%
+}.%On ownership verification
 %Peter Mueller and Arnd Peotzsch Heffter,  eg Müller, P.: Modular Specification and Verification of Object-Oriented Programs, 2002.
 %M. Barnett and M. Fähndrich and K. R. M. Leino and P. Müller and W. Schulte and H. Venter: Specification and Verification: The Spec# Experience. Communications of the ACM, 2011.
 
@@ -68,7 +74,7 @@ Validation is clearly related to class invariants, and can be used to represent 
 To this aim, \Q@.validate()@ will define when the invariant is expected to hold:
 literature on class invariant accepts that sometime the object invariant may not hold,
 and that is exacerbated because of re-entrancy and aliasing
-\cite{}.
+\cite{leino2004object,drossopoulou2008unified}.
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
 %S. Drossopoulou and A. Francalanza and  P. Müller and A. J. Summers: A Unified Framework for Verification Techniques for Object Invariants ECOOP 2008. 
 There are different options:

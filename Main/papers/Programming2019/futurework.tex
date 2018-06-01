@@ -1,5 +1,5 @@
-\section{Future Work}
-Though there are type systems which provably enforce the properties we require for our proof,
+\section{Conclusions and Future Work}
+Though there are type systems which provably enforce the properties we require for our proof (and much more),
 in this work we only informally describe our typing strategy and we
 do not formalize any specific type system.
 As the aim of our work is only to enforce validation, we do not present complexities unnecessary to enforce validation. 
@@ -13,11 +13,12 @@ It could be worthwhile formalising the minimal type system required by validatio
 %%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 
-The language we have presented here only allows a limited form of a \Q@.validate()@ method
+The language we have presented here restricts the form of \Q@.validate()@
 and capsule mutator methods; in particular
 our strong restrictions of capsule mutator methods
 allows to inject \Q@.validate()@ calls just at the end of such methods.
-These restrictions prevent certain kinds of validation (such as validating the structure of a linked-list of mutable elements) and can necessitate verbose patterns (such as our `box').
+While those restrictions do not interferer with simple
+forms of validation, to verify complex mutable data-structures we necessitate verbose patterns (such as our `box').
 
 We believe it is possible to relax our restrictions whilst
 still ensuring our desired semantics, however such a language is unlikely to be easily understood by programmers;

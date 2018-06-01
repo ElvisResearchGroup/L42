@@ -442,7 +442,7 @@ and StrongExceptionSafety ensures no mutation happens on the preserved memory.
 
 To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,ServettoZucca15}
  supports all those assumptions out of the box,
-while both~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny} supports all except StrongExceptionSafety,
+while both~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
 however it should be trivial to modify them to support it:
 the \Q@try-catch@ rule need to be modified so that
 $\Gamma\vdash\Kw{try}\oC\e_0\cC\Kw{catch}\oC\e_1\cC:\T$
@@ -466,8 +466,12 @@ as the call to \Q@.validate()@ and the field access inside a monitor.
 \noindent\textbf{Define} $H(\sigma,l)$:\\*
 ${}_{}$\quad\quad$\sigma | l.validate()\Rightarrow^+ \sigma,\_ | \text{\Q@true@}$\\*
 \noindent\textbf{Define} $\mathit{trusted}(\ctx_v,r_l)$:\\*
-${}_{}$\quad\quad either $\ctx_v[r_l]=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$l$\Q@.validate())@$]$\\*
-${}_{}$\quad\quad or $\ctx_v[r_l]=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\ctx_v''[l\singleDot\f]$\Q@)@$]$
+${}_{}$\quad\quad either
+$r_l=l$\Q@.validate()@ and
+ $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\square$\Q@)@$]$\\*
+${}_{}$\quad\quad or
+$r_l=l$\Q@.f@ and
+ $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\ctx_v''$\Q@)@$]$
 
 ${}_{}$
 

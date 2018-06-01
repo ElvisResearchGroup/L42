@@ -322,12 +322,16 @@ class ListBox {
 }
 \end{lstlisting}
 We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.
-However, there are some limitations, due to the limitations of capsule mutator methods:
-\begin{itemize}
-	\item Any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters or returning \Q@mut@, cannot be trivially forwarded.
+However the limitations of capsule mutator methods means that 
+Any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters or returning \Q@mut@, cannot be trivially forwarded.
+
 % since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
-	\item We couldn't have a list of mutable objects:
-our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
+Our example is about a list of immutable objects.
+To validate a list of mutable objects we would need to use our box pattern not just around the list,
+but around a section of data encapsulating both the list and all the contained elements.
+This is because our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
+Conceptually, it would be better for the list (of mutable objects) to be validated by its
+head, since the behaviour of the contained objects is transparent to the validation criteria. 
 This corresponds to full encapsulation and contrasts with flexible encapsulation as in 
-ownership[]. However, neither tradition flexible encapsulation/Ownership nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
-\end{itemize}
+ownership~\cite{ClarkeEtAl98}. However, neither traditional flexible encapsulation/Ownership nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
+
