@@ -19,7 +19,7 @@ To encode object capabilities and I/O, we assume a special location
 $c$ of type \Q@Cap@.
 This location would refer to an object whose fields model, for example, the content of input and output files.
 All its methods must require a \Q@mut this@, and shall mutate the ROG of $c$, and the main expression will start with
-such $c$ location in scope. In order to simplify our proof, we assume that $c$ only has \Q@mut@ fields, and is initially valid (i.e. $c.validate()$ will return \Q@true@, until perhaps the ROG of $c$ is mutated).
+such $c$ location in scope. In order to simplify our proof, we assume that $c$ only has \Q@mut@ fields, hence it is always valid (i.e. $c.validate()$ is defined to evaluate to \Q@true@).
 We strive to keep our small step semantics as conventional as possible; following Pierce~\cite{pierce2002types} we assume:
 \begin{itemize}
 \item An implicit program/class-table.

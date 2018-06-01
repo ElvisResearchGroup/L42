@@ -77,12 +77,12 @@ and $IOK$ will always hold.
 \begin{proof}
 \noindent By Stronger Sound Validation, each $l$ in the current redex must be $OK$:
 \begin{enumerate}
-	\item If $l$ is garbage, it cannot be in the current redex, a contradiction
+	\item If $l$ is garbage, it cannot be in the current redex, a contradiction.
 	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to Determinism
-	no invalid object could be observed,
+	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
 	\begin{itemize}
-	 \item we are executing inside of $\e_1$ thus the current redex is inside of a subexpression of the monitor that does not contain $l$, a contradiction
+	 \item we are executing inside of $\e_1$ thus the current redex is inside of a sub-expression of the monitor that does not contain $l$, a contradiction.
 	 \item or we are executing inside $\e_2$:
 	 by our reduction rules, all monitor expressions start with 
 	 $\e_2=l$\Q@.validate()@, thus the first execution step
@@ -135,62 +135,51 @@ execution can continue only if the offending object is classified as garbage.
 \end{proof}
 
 \subsection{Proof of Subject Reduction}
-We first introduce some lemmas
-derived from the well formedness criteria and the type guarantees
-\begin{Lemma}[ConstructorInstrumentation]
-  In our reduction, executing rule \textsc{new} creating an object with invariant $l$, creates a monitor expression for $l$.
-(Holds by rule \textsc{new})
-\end{Lemma}
-\begin{Lemma}[SetterInstrumentation]
-  In our reduction, executing rule \textsc{f-update} on an object with invariant $l$, creates a monitor expression for $l$.
-(Holds by rule \textsc{f-update})
-\end{Lemma}
+We first introduce a lemma derived from well formedness and the type system:
 \begin{Lemma}[ExposerInstrumentation]
-if $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
+If $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
 $\text{fieldGuarded}(\sigma_0,\e_0)$
 \\*
 then $\text{fieldGuarded}(\sigma_1,\e_1)$
-
-  In our reduction, all occurrences of capsule field access $l\singleDot\f$ used for mutation
-   are surrounded by a monitor expression for $l$.
-  This means that reduction preserve $\text{fieldGuarded}(\sigma,\e)$.
 \end{Lemma}
-\noindent\textbf{Proof }of ExposerInstrumentation:\\*
+\begin{proof}
 The only rule that can 
-introduce a new field access is \textsc{m-call}.
+introduce a new field access is \textsc{mcall}.
 In that case, ExposerInstrumentation holds
-by well formedness (all field access in methods are of form \Q@this.f@) 
-and by rule \textsc{m-call} inserting a monitor while invoking exposer methods.
-Note that rule \textsc{monitor exit} is fine because monitors are removed only when
- $e_1$ is a value.
+by well formedness (all field accesses in methods are of the form \Q@this.f@) 
+and since \textsc{m call} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by MutField such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
 
-\noindent\textbf{Proof }of Subject Reduction:\\*
+Note that \textsc{monitor exit} is fine because monitors are removed only when
+ $e_1$ is a value.
+\end{proof}
+
+\begin{theorem}
+	Subject Reduction Base $\Rightarrow$ Subject Reduction
+\end{theorem}
+\begin{proof}
 Any reduction step can be obtained
 by exactly one application of rule \textsc{ctx} and then one other rule.
+
+
+
 Thus the proof can simply proceed by cases on such other applied rule.
 
-As a further simplification, for each case 
-$\Sigma^{\sigma_1}\vdash e_1: T_1$ holds by SubjectReductionBase
-and 
-$\mathit{fieldGuarded}(\sigma_1,\e_1)$ 
-holds thanks to ExposerInstrumentation.
-Thus, for each case of reduction, we just verify that $IOK(\sigma_1,\e_1)$ holds.
-That is, we need to check that for all locations in $\sigma_1$, one of the cases (1-3) hold.
+By SubjectReductionBase and ExposerInstrumentation, 
+$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_1,\e_1)$. So we just need to proceed by cases on the reduction rule applied to verify that $OK(\sigma_1,\e_1)$:
 
 
-\noindent\textbf{case field update} $l.f=v\rightarrow \e$:
+\begin{enumerate}
+\item \textsc{update:} $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
+\begin{itemize}
+  \item by \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR;$, thus $\mathit{monitored}(\e,l)$.
+  \item Every $l_1$ such that $l\in \text{rog}(\sigma,l_1)$ will verify the same case
+  as the former step:
   \begin{itemize}
-  \item by SetterInstrumentation 
-  \e=\Q@M(@$l;l;l$\Q@.invariant())@;
-  thus (3)$\mathit{monitored}(\e,l)$.
-  \item Every $l_1$ so that $l\in \text{rog}(\sigma,l_1)$ will verify the same case
-  of the former step:
-  if it was (1)[garbage],clearly it still holds.
-  If it was (3)[monitored] then it still holds too.
-  It could not have been (2): $l_1$ is not $\mathit{wellEncapsulated}$ since 
-$\mathit{mutated}(l,	\sigma,\e)$ (by @MutField).
-  \item Every other $l_0$ do not reach $l$, thus its invariant status is not
- influenced by this reductions step.
+  	\item If it was $\mathit{garbage}$, clearly it still is.
+  	\item If it was $\mathit{monitored}$, it also still is.
+  	\item If can't have been $\mathit{wellEncapsulated}$ since $mutatable(l, \sigma, e)$, (by MutField)
+  \end{itemize}
+  \item Every other $l_0$ is not reached by $l$ thus it being $\mathit{OK}$ could not have been effected by this reduction step.
 \end{itemize}
 
 \noindent\textbf{case field access} $l.f\rightarrow v$:
@@ -262,3 +251,5 @@ There could be many $l$ inside $\sigma,\sigma_0$ that are $\mathit{monitored}$
 in the former step thanks to monitor expressions inside $\mathit{error}$.
 However, all such $l$ are defined inside $\sigma_0$,
 for the last well formedness condition.
+\end{enumerate}
+\end{proof}
