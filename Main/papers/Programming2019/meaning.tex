@@ -15,14 +15,14 @@ To provide a good modularisation for our reasoning,
 we will clearly list the properties we need to rely upon, so that \emph{every type
 system supporting those properties} supports validation.
 
-To encode object capabilities and I/O, we assume a special object
+To encode object capabilities and I/O, we assume a special location
 $c$ of type \Q@Cap@.
-This object would have fields modelling, for example, the content of input and output files.
-All its methods must require a \Q@mut this@, and the main expression will start with
-such  $c$ object in scope.
+This location would refer to an object whose fields model, for example, the content of input and output files.
+All its methods must require a \Q@mut this@, an shall mutate the ROG of $c$, and the main expression will start with
+such $c$ location in scope.
 We strive to keep our small step semantics as conventional as possible; following Pierce~\cite{pierce2002types} we assume:
 \begin{itemize}
-\item An implicit program/class-table
+\item An implicit program/class-table.
 \item Memory $\sigma:\!:\!= l\mapsto C\{\Many{v}\}$ as a finite map from locations $l$ to annotated tuples $C\{\Many{v}\}$ representing objects,
 where $C$ is the class name and $\Many{v}$ contains the values of the fields.
 \item A main expression that is reduced in the context of such memory and program.
@@ -32,14 +32,16 @@ the expression $\e$ can contain locations $l$ and free variables $x$;
 the type of locations is encoded in the memory environment $\Sigma:\!:\!= l\mapsto C$
 and the type of the free variables is encoded in the variable environment $\Gamma:\!:\!= x\mapsto T$.
 \item We use $\Sigma^\sigma$ to trivially extract $\Sigma$ from a memory $\sigma$.
-\item The special capability object $c$, is of type \Q@mut Cap@, and it cannot be created with a \Q@new@ expression.
-\item We have a special, generated, \emph{monitor} expression \Q@M(@$l$\Q@;@$\e_1$\Q@;@$\e_2$\Q@)@, they are inserted by the reduction as an instrumentation engine that validates.
-Initially we will have $\e_2=$ \Q@l.validate()@;
+\item The special capability object location $c$ of the \Q@Cap@ class; instances of \Q@Cap@ cannot be created with a \Q@new@ expression.
+\item We have a special \emph{monitor} expression \Q@M(@$l$\Q@;@$\e_1$\Q@;@$\e_2$\Q@)@.
+Those expressions are not present in the source code but are inserted by the reduction.
+Initially we will have $\e_2= l$\Q@.validate()@;
 $\e_1$ will be reduced until it becomes a value, then
-$\e_2$ will be reduced to test if $l$ is broken. We annotate the monitor-expression with $l$ to proof that if the validation check fails it is precisely $l$ that is invalid. We use a failed monitor expression (i.e. when $\e_2$ is \Q@false@) to represent an \Q@error@  expression.
+$\e_2$ will be reduced to test if $l$ is invalid. We annotate the monitor-expression with $l$ to track
+that if the validation check fails, it is precisely $l$ that is invalid.
+We use a failed monitor expression (i.e. when $\e_2$ is \Q@false@) to represent an \Q@error@ expression.
 \item Before reducing the body of a \Q@try@, we annotate it with a snapshot of 
 the state of the memory. This is used to annotate that such state will not be mutated by executing the body of the \Q@try@.
-
 \end{itemize}
 
 To keep our formalization focused on
@@ -50,9 +52,16 @@ From a formal perspective
 these changes do not change expressiveness:
 \begin{itemize}
 \item We require that all fields are instance-private, as opposed to only capsule fields. One could always provide getters and setters to simulate public fields.
-\item We do not have explicit constructor definitions, rather we assume that all constructors are of the form \Q@$C$($T_0$ $x_0$, ...) { this.$f_0$ = $v_0$; $...$}@, where $T_0, ...$ are the types (including modifiers) of the fields of $C$. To provide more flexible initialization one could always make a factory method.
-\item We require that \Q@.validate()@ can only use \Q@this@ to access fields, this can be achieved by inlining method calls, or if they are recursive, replace them with calls to methods that take the fields of \Q@this@ instead of \Q@this@ itself.
-\item For simplicity, we do not have actual exception objects, rather we just have a concept of an \emph{error} with no associated value. We believe adding traditional exceptions would not cause any interesting variation of our proof.
+\item We do not have explicit constructor definitions, rather we assume that all constructors are of the canonical form
+\Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@,
+ where $T_1,\ldots\T_n$ are the types (including modifiers) of the fields of $C$.
+To provide more flexible initialization one could always make a factory method.
+\item We require that \Q@.validate()@ can only use \Q@this@ to access fields,
+this can be achieved by inlining method calls.
+%or if they are recursive, replacing them with calls to methods that take the fields of \Q@this@ instead of \Q@this@ itself.
+\item For simplicity, we do not have actual exception objects,
+rather we just have a concept of an \emph{error} with no associated value.
+We believe adding traditional exceptions would not cause any interesting variation of our proof.
 \end{itemize}
 
 
@@ -69,31 +78,32 @@ these changes do not change expressiveness:
 \mid\Kw{try}\oC\e_1\cC \Kw{catch}\oC\e_2\cC
 }{expression}\\
 \seguitoProduzione{
-\mid M\oR l;\e_1;\e_2\cR\mid\Kw{try}^{\sigma?}\oC\e_1\cC \Kw{catch}\oC\e_2\cC
+\mid \Kw{M}\oR l;\e_1;\e_2\cR\mid\Kw{try}^{\sigma}\oC\e_1\cC \Kw{catch}\oC\e_2\cC
 }{run-time expr.}\\
 \produzione{v}{l}{value}\\
 \produzione{\ctx_v}{\square
 \mid \ctx_v\singleDot m\oR\es\cR
 \mid v\singleDot\m\oR\Many{v}_1,\ctx_v,\es_2\cR
-\mid \ctx_v\singleDot\f 
-\mid \ctx_v\singleDot\f\equals\e
+%\mid \ctx_v\singleDot\f 
+%\mid \ctx_v\singleDot\f\equals\e
 \mid v\singleDot\f\equals\ctx_v
 }{evaluation ctx}\\
 \seguitoProduzione{
 \mid \Kw{new}\ C\oR\Many{v}_1,\ctx_v,\es_2\cR
-\mid M\oR l;\ctx_v;\e\cR
-\mid M\oR l;v;\ctx_v\cR
+\mid \Kw{M}\oR l;\ctx_v;\e\cR
+\mid \Kw{M}\oR l;v;\ctx_v\cR
 \mid \Kw{try}^\sigma\oC\ctx_v\cC\Kw{catch}\oC\e\cC}{}\\
 
-\produzione{\ctx}{\square\mid\ctx.m\oR\es\cR\mid\e\singleDot\m\oR\es_1,\ctx,\es_2\cR\mid \ctx\singleDot\f 
-\mid \ctx\singleDot\f\equals\e
+\produzione{\ctx}{\square\mid\ctx\singleDot m\oR\es\cR\mid\e\singleDot\m\oR\es_1,\ctx,\es_2\cR
+%\mid \ctx\singleDot\f 
+%\mid \ctx\singleDot\f\equals\e
 \mid \e\singleDot\f\equals\ctx
 \mid \Kw{new}\ C\oR\es_1,\ctx,\es_2\cR
 }{full ctx}\\
 \seguitoProduzione{
 \mid
-M\oR l;\ctx;\e\cR\mid
-M\oR l;\e;\ctx\cR\mid
+\Kw{M}\oR l;\ctx;\e\cR\mid
+\Kw{M}\oR l;\e;\ctx\cR\mid
 \Kw{try}^{\sigma?}\oC\ctx\cC\Kw{catch}\oC\e\cC\mid
 \Kw{try}^{\sigma?}\oC\e\cC\Kw{catch}\oC\ctx\cC
 
@@ -136,12 +146,14 @@ The detailed grammar is exposed in Figure 1.
 As explained before, the only non-standard expression is the monitor.
 We denote with $r_l$ a redex that contains the location $l$.
 
-For simplicity, we require all field access in method bodies to be of the form
-\Q@this.@$f$. Thus we require all fields to be instance-private.
-Due to our reduction rules, all field accesses in the main expression will be of the form $l\singleDot\f$.
-
 \noindent Our well formedness criteria are:
 \begin{itemize}
+\item All field accesses in method bodies are of the form
+\Q@this.@$f$. Thus we require all fields to be instance-private.
+
+\item Field accesses in the main expression, 
+must be of the form $l\singleDot\f$.
+
 \item \Q@.validate()@ takes a \Q@read this@, and uses \Q@this@ only to access fields. Even calling methods on \Q@this@
 is disallowed.
 \item All the fields referred in \Q@.validate()@ are either \Q@imm@ or \Q@capsule@.
@@ -156,10 +168,11 @@ in $\Kw{try}^\sigma\oC\e\cC\_$, $\e$ is not of the form $\ctx[$\Q@M(@$l;\_$\Q@)@
 \end{itemize}
 
 We model subtyping with interfaces 
-and we not consider subclassing.
+and we do not consider subclassing.
 Indeed interfaces do not have an implemented \Q@.validate()@ method, objects implementing those interfaces do.
-To enrich our formalism with subclassing, we would need to add the well 
-formed criteria that \Q@validate()@ methods start by calling \Q@super@.\Q@validate()@.
+To enrich our formalism with subclassing, we would need to add the 
+well-formed criteria that \Q@validate()@ 
+methods start by checking the result of \Q@super@.\Q@validate()@.
 \saveSpace
 \subsection{Reduction rules}
 \saveSpace
@@ -171,7 +184,7 @@ $\begin{array}{l}
  }{}
 \quad
  \inferrule[(new)]{{}_{}}{
-\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l:C{\vs}|
+\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}|
 \Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR
  }{}
 \\[5ex]
@@ -180,7 +193,7 @@ $\begin{array}{l}
 \e'[\Kw{this}=l,\x_1=v_1,\ldots,x_n=v_n]
  }{
   \begin{array}{l}
-  \sigma(l)=C{\_}\\
+  \sigma(l)=C\{\_\}\\
   C.m=\mdf\,\Kw{method}\,\T\,\m\oR\T_1\,\x_1\ldots\T_n\x_n\cR\e\\
 
 \text{if }\ \exists \f\text{ such that}\ \ C.f=\Kw{capsule}\,\_,
@@ -244,8 +257,8 @@ C\singleDot\m=\_\,\Kw{method}\_\,\ctx[\Kw{this}\singleDot\f]
 %\end{array}
 $
 
-\noindent Inserting the monitor expressions during reduction is convenient for the proof,
-but it could instead be done ahead of time.
+%\noindent Inserting the monitor expressions during reduction is convenient for the proof,
+%but it could instead be done ahead of time.
 
 That is, the monitor is added for all field update and new objects, but;
 for method calls the monitor is added only if the method has a \Q@mut@ modifier and its body accesses \Q@capsule@ field.
@@ -373,7 +386,7 @@ if we was to remove the node $l_1$ from the object graph, $l_0$ would not reach 
 
 
 CapsuleTree and HeadNotCircular together 
-shows that capsule fields section the object graph into a tree of nested ‘baloons’,
+shows that capsule fields section the object graph into a tree of nested `balloons',
 where nodes are mutable encapsulated objects and
 edges are given by reachability between those objects in the original memory:
 
@@ -432,17 +445,25 @@ while both~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} s
 however it should be trivial to modify them to support it:
 the \Q@try-catch@ rule could be modified to
 $\emptyset;\Gamma\vdash\Kw{try}\oC\e_0\cC\Kw{catch}\oC\e_1\cC:\T$
-if $\emptyset;\Gamma,\{x:\Kw{read}\,C | x:\Kw{mut}\,C\,\in\Gamma\}\vdash\e_0:\T$ and $\emptyset;\Gamma\vdash\e_1:\T$,
+if\\* $\emptyset;
+\Gamma,\{x:\Kw{read}\,C | x:\Kw{mut}\,C\,\in\Gamma\}
+\vdash\e_0:\T$ and $\emptyset;\Gamma\vdash\e_1:\T$,
 i.e. $e_0$ can be typed when seeing all externally defined mutable references as \Q@read@.
 
 \subsection{Statement of Validation}
-We first need to define what it means for an object to be valid: an object is \emph{valid} iff calling its \Q@.validate()@ method would deterministicly produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an error.
+We first need to define what it means for an object to be valid: an object is \emph{valid} iff calling its \Q@.validate()@ method would
+deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an error.
 We also require that evaluating \Q@.validate()@ preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.
 
 \noindent\textbf{Define} $valid(\sigma,l)$:\\*
 ${}_{}$\quad\quad$\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
 
-\noindent Now in order for validation to be meaningful it need’s to be possible for \Q@validate@ to potentially observe an invalid object, so we say such an observation is \emph{trusted}:
+\noindent Now in order for validation to be meaningful it needs to be possible for \Q@validate@ to potentially observe an invalid object.
+We define the set of trusted steps, 
+as the call to \Q@.validate()@ and the field accesses inside a monitor.
+Note that just the single small-step reduction
+of calling \Q@.validate()@ is trusted, not the whole evaluation of the \Q@.validate()@ expression.
+
 
 \noindent\textbf{Define} $\mathit{trusted}(\ctx_v,r_l)$:\\*
 ${}_{}$\quad\quad either
@@ -452,11 +473,11 @@ ${}_{}$\quad\quad or
 $r_l=l$\Q@.f@ and
  $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\ctx_v''$\Q@)@$]$
 
-\noindent Finally, we can now define our main property, what it means for a language to be soundly enforce validation: every object involved in any untrusted redex is valid.
+\noindent Finally, we can now define what it means for a language to soundly enforce validation: every object involved in any untrusted redex is valid.
 
 \begin{Theorem}[Sound Validation]
-if $\emptyset;c:\text{\Q@mut Cap@}\vdash \e: \T$ and
-$\emptyset;c:\Kw{Cap}(\_)|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
+if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and
+$c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
 either $valid(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
 \end{Theorem}
 
