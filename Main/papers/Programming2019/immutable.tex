@@ -66,7 +66,7 @@ Here \Q@imm Circle ic@ and \Q@mut Circle mc@ are both initialized with \Q@new Ci
 This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q@mut@ and any expression typed as \Q@mut@ that only uses immutable variables can safely be promoted to \Q@imm@.
 % (since the returned value could not possibly be aliased).
 %FALSE: it can be internally aliased!
-Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as read that only
+Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
 uses immutable variables can safely be promoted to \Q@imm@.
 
  %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
