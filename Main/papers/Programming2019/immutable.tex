@@ -138,7 +138,7 @@ read method imm Bool validate();
 \saveSpace
 %The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 
 %By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
-If the class containing the validate method has a super-class, we would automatically check \Q@super.validate()@ at the beginning of the sub-class’s \Q@.validate()@ method, this is required as otherwise `invalid' objects could easily be created by simply using subtyping to redefine \Q@.validate()@.
+If the class containing the validate method has a super-class, we would automatically check \Q@super.validate()@ at the beginning of the sub-class’s \Q@.validate()@ method, this is required as otherwise `invalid' objects could easily be created by simply overriding \Q@.validate()@.
 As this method is declared as \Q@read@, and only takes the implicit parameter \Q@this@ (as \Q@read@), we can guarantee the method is pure:
 \begin{itemize}
 \item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{
@@ -161,8 +161,8 @@ In some sense, those inlined methods and field accesses can be thought as macro-
 
 
 Finally,
-the code of \Q@.validate()@ can not access  \Q@mut@ and \Q@read@ fields, because their content can be changed by unrelated code.
-Thus, with the modifiers presented so far, we can only access \Q@imm@ fields.
+the code of \Q@.validate()@ can not access  \Q@mut@ fields, because their content can be changed by unrelated code.
+With the modifiers presented so far, \Q@.validate()@ can only access \Q@imm@ fields.
 We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
 
 
@@ -207,7 +207,9 @@ The difference with respect to UML DataTypes
 %immutable types
 %No, a type is not a class
 % are just a special case of simple classes.
-Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself, we don't check for validity during the constructor as \Q@this@ is not directly reached, doing so would require the initial/default value of \Q@this@ to be valid.}:
+Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor%
+%\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself, we don't check for validity during the constructor as \Q@this@ is not directly reached, doing so would require the initial/default value of \Q@this@ to be valid.}
+:
 % If a simple class provides a \Q@.validate()@ method, then validation will be enforced.
 % For \Q@Person@, intuitively, the code would behave as follow:
 
@@ -233,7 +235,7 @@ class Person {
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \Q@.validate()@ method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the validation of this simple \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
+\noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the validation of the \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
 relaxation of TM or OC breaks our validation. 
 
 \loseSpace
@@ -245,7 +247,7 @@ Allowing \Q@.validate()@ to (indirectly) use an object capability could allow fo
 \item allowing capability objects to be created out of thin air.
 \end{itemize}
 
-For example consider this simple and contrived (mis)use of person:
+\noindent For example consider this simple and contrived (mis)use of person:
 \begin{lstlisting}
 class EvilString extends String {
   @Override read method Bool isEmpty() {
@@ -300,7 +302,7 @@ In this example we use \Q@AtomicBool@ as a back-door to remotely break the invar
 %your: just points outside: It would require some powerful static or dynamic analysis to keep track of every case the ROG of \Q@Person@ could be indirectly mutated, and insert validity checks appropriately, however ensuring deep mutability trivialises this for simple classes.
 
 
-Allowing such back-doors could also be used to break the determinism of the \Q@.validate()@ method, by allowing it to store and read information about previous calls.
+Allowing such back-doors could also be used to break the determinism of the \Q@.validate()@ method: they may store and read information about previous calls.
 
 %In our simple example, \Q@Person@ objects can be mutated using the setter, and exposed using the getter.
 %We may consider the getter to be safe since in modern languages we expect strings to be immutable objects.
