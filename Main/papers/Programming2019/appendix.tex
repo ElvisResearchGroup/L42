@@ -187,29 +187,30 @@ By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ 
 
 \item (\textsc{access}) $\sigma|l\singleDot f \rightarrow \sigma|v$:
 
-    If for $l$ $IOK$ holds by (2),  
-    it is possible that the next step is not encapsulated.
-    This would mean that the field $f$ is a capsule and that we are required
-to type it as \Q@mut@ to type the expression for the next step.
-By $\mathit{fieldGuarded}(\sigma_0,\e_0)$
-    the former step was inside of a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
-    and the $l$ under reduction was the only occurrence of $l$.
-    since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
-    by HeadNotCircular.
-    Thus in the new step not $l\, \text{inside}\ \ctx_v[v]$.
-    Thus for l (3)[monitored] holds.
-    
-We still need to show that properties $\mathit{monitored}$ and $\mathit{wellEncapsulated}$
- for other objects are
-not disturbed. This is the point where our aliasing and mutability control are most crucial:
-We know that mutable $v$ is (directly) reachable from
-$l$ that have invariant.
-Thanks to CapsuleTree we know that for all $l_0$ reaching $l$,
-$v$ can be reached by $l_0$ only passing trough $l$.
-Thus, we can conclude  $l_0$ is not encapsulated in the former step (containing mutable $l$).
-Thus, $l_0$ is either without invariant, garbage or monitored.
-None of those 3 cases can be disturbed by a field access.
 
+\begin{itemize} 
+	\item If $l$ was $valid$ and $wellEncapsulated$:
+	
+	\begin{itemize}
+	\item If we have now broken $wellEncapsulated$ we must have made something in it’s $erog$  $mutatable$. As we can only type \Q@capsule@ fields as \Q@mut@ and not \Q@imm@ fields, by FieldMut we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is being typed as \Q@mut@.
+	
+	By $\mathit{fieldGuarded}(\sigma_0,\e_0)$ the former step must have been inside a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
+    and the $l$ under reduction was the only occurrence of $l$.
+    Since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
+    by HeadNotCircular. Thus in our new step $l$ is not $inside$ $\ctx_v[v]$. Thus $l$ must be $monitored$ and hence it is $OK$.
+    
+    \item Otherwise, $l$ is still $OK$
+\end{itemize}
+
+\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been garbage), thus $garbage$ is still $OK$.
+
+\item As we don’t change any monitors here, nothing that was $monitored$ could have been made un-$monitored$, and so it is still $OK$.
+
+\item Suppose some $l_0$ was $wellEncapsulated$ and $valid$:
+\begin{itemize}
+	\item Suppose this reduction step has effected this, than it must have been that case that $l$ is in the $rog$ of $l_0$. By CapsulaeTree, $v$ can only be reached from $l_0$ by passing through $l$, and so $l_0$ cannot have been in the $erog$ of $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by $\singleDot\Kw{validate}\oR\cR$, $l_0$’s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can’t have, as we just assumed, effected $l_0$ being $OK$.
+	\item Otherwise $l_0$ is still $OK$.
+\end{itemize}
 
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
@@ -224,25 +225,26 @@ Clearly the newly created object ($l$) is monitored. As for \textsc{mcall}, othe
 \item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:
 
 \begin{itemize}
-\item
-    If it was a setter $v = l$, and 
-    thanks to Determinism the execution of invariant is deterministic;
-    thus for $l$ in the former step both case (2) and (3) holds.
-    In the next step (2) will hold for $l$.
-\item
-    If it was a capsule mutator method, thanks to Determinism the execution
- of \Q@.validate()@ is deterministic;
-    thus for $l$ in the former step both $H$ and case (3) holds.
-    Thanks to ExposerInstrumentation $v$ is offered without mutation permissions, so
-    In the next step $l$ is encapsulated and (2) will hold.
-\item
-    If it is was a constructor, 
-    then $v$ is encapsulated and thanks to Determinism
-    the execution of invariant is deterministic, thus in the next step (2) will hold.
+	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{validate}\oR\cR)$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
+
+	\item  If the monitor was introduced by \textsc{update}, then $v = l$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$. \textbf{TODO: why is it well encapsulated?}
+
+\item If the monitor was introduced by \textsc{mcall}.
+
+%    If it was a capsule mutator method, thanks to Determinism the execution
+% of \Q@.validate()@ is deterministic;
+%    thus for $l$ in the former step both $H$ and case (3) holds.
+%    Thanks to ExposerInstrumentation $v$ is offered without mutation permissions, so
+%    In the next step $l$ is encapsulated and (2) will hold.
+\item Otherwise the monitor was introduced by \textsc{new}.
+
+%    If it is was a constructor, 
+%    then $v$ is encapsulated and thanks to Determinism
+%    the execution of invariant is deterministic, thus in the next step (2) will hold.
 \end{itemize}
 
 
-\item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\oC\e\cC\rightarrow \sigma|\e$:
+\item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
 
 By StrongExceptionSafety we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria no location inside $\sigma$ could have been $monitored$.
 
