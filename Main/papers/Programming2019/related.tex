@@ -224,15 +224,10 @@ Many other works%
 the invariant code at the start and end of every public
 method; depending on the approach, this may even include trivial getters.
 In  our approach, we call the \Q@.validate()@ method
-%once at the end of capsule mutator methods and constructors, and after every field update, and we do not call it in other place;
-%Methods that do not directly update or mutate fields are usually more numerous and invoked more often.
-%We expect this to result in a dramatic reduction over the number of required checks
-
-
 one time at the end of each setter, capsule mutator method and constructor.
 We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
-Of course, \@.validate()@ can be called indirectly, for example by calling a setter.
-We expect this to result in a dramatic reduction over the number of required checks,
+Of course, \Q@.validate()@ can still be called indirectly, for example by calling a setter.
+We expect our approach to result in a dramatic reduction over the number of required checks,
 except for cases when public methods just update many fields directly (without using setters).
 
 
@@ -257,7 +252,7 @@ Every class that compiles/type checks is soundly validated
 independently of the code that uses this class or any other surrounding code.
 Our approach works both with an open world assumption and in a library setting.
 Consider for example the work of Matthew~\cite{parkinson2007class}:
-in this short paper he verified a \Q@Observer@ class invariant over
+in his short paper he verified an \Q@Observer@ class invariant over
 a \Q@Subject/Observer@ pattern.
 However, the proof relies on the method \Q@Subject.register(Observer)@ respecting its contract.
 Such assumption is unrealistic in a real system with dynamic class loading,

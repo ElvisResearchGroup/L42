@@ -151,11 +151,11 @@ This can even be safe in a multi-thread environment: TM are often used to ensure
 \noindent Also note \Q@.validate()@ is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.
 
 
-Clearly the \Q@.validate()@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.\footnote{
+Clearly the \Q@.validate()@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
 At a first look this may seam an open contradiction
 with the aim of this work, however only calls to validate inserted by the language semantic can take an invalid \Q@this@. As for any other method, when the application code calls \Q@.validate()@,
 \Q@this@ is guaranteed to be valid.
-} However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantees of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \Q@.validate()@ may only use \Q@this@ to access fields.
+However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantees of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \Q@.validate()@ may only use \Q@this@ to access fields.
 As a relaxation, we could allow calling instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@.validate()@ need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \Q@.validate()@, where \Q@this@ may be invalid.
 In some sense, those inlined methods and field accesses can be thought as macro-expanded.
 
@@ -229,7 +229,7 @@ class Person {
   Person(imm String name) {
     this.name = name; // check at end of constructor
     if (!this.validate()) {throw new Error(...);}
-}}// Generated code, not directly written by the programmer
+}} // Generated code, not directly written by the programmer
 \end{lstlisting}
 %... $\MComment{validation error}$ 
 
