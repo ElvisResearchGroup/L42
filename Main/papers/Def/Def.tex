@@ -6,6 +6,9 @@
 
 \input{../Def/commonDef}
 \input{../Def/tikzDef}
+
+%\renewcommand*{\Terminale}[1]{\textnormal{\lstinline[mathescape=true]@#1@}}
+
 %--
 %--------------------------------------------------------------------------------------------------------------------------------
 %-----------------listing
@@ -367,12 +370,12 @@
 \newcommand*{\cCurly}{\Terminale{\}}}
 \newcommand*{\oSquare}{\Terminale{[}}
 \newcommand*{\cSquare}{\Terminale{]}}
-\newcommand*{\oR}{\Terminale{(}}
-\newcommand*{\cR}{\Terminale{)}}
-\newcommand*{\oC}{\Terminale{\{}}
-\newcommand*{\cC}{\Terminale{\}}}
-\newcommand*{\oS}{\Terminale{[}}
-\newcommand*{\cS}{\Terminale{]}}
+\newcommand*{\oR}{\oRound}
+\newcommand*{\cR}{\cRound}
+\newcommand*{\oC}{\oCurly}
+\newcommand*{\cC}{\cCurly}
+\newcommand*{\oS}{\oSquare}
+\newcommand*{\cS}{\cSquare}
 
 \newcommand*{\singleDot}{{\Terminale{.}}}
 \newcommand*{\classSep}{{\colon\colon}}
@@ -1239,6 +1242,7 @@ ${}_{}$\\ \noindent${}_{}$\\ \noindent}
 \definecolor{darkBlue}{RGB}{10,0,100}
 
 \lstdefinelanguage{FortyTwo}[]{Java}{morekeywords={%
+  M,
   exception,error,mut,imm,
   read,capsule,lent,assert
   with,in,immutable,trait,using,

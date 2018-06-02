@@ -25,7 +25,7 @@ We strive to keep our small step semantics as conventional as possible; followin
 \item An implicit program/class-table.
 \item Memory $\sigma:\!:\!= l\mapsto C\{\Many{v}\}$ as a finite map from locations $l$ to annotated tuples $C\{\Many{v}\}$ representing objects,
 where $C$ is the class name and $\Many{v}$ contains the values of the fields.
-We use notation $\sigma[l.f=v]$ to update an object field and $\sigma[l.f]$ to access the field.
+We use the notation $\sigma[l.f=v]$ to update an object field and $\sigma[l.f]$ to access the field.
 \item A main expression that is reduced in the context of such memory and program.
 \item A reduction relation $\sigma|\e\rightarrow \sigma'|e'$.
 \item A type system $\Sigma;\Gamma\vdash\e:T$, where 
@@ -181,12 +181,12 @@ methods start by checking the result of \Q@super@.\Q@validate()@.
 $\!\!\!\!\!\begin{array}{l}
  \inferrule[(update)]{{}_{}}{
 \sigma|l.f\equals{}v\rightarrow \sigma[l.f=v]|
-\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR
+\Kw{M}\oR l;l;l\singleDot\Kw{validate}\oR\cR\cR
  }{}
 \quad
  \inferrule[(new)]{{}_{}}{
 \sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}|
-\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR
+\Kw{M}\oR l;l;l\singleDot\Kw{validate}\oR\cR\cR
  }{}
 \\[5ex]
  \inferrule[(mcall)]{{}_{}}{
@@ -201,10 +201,10 @@ $\!\!\!\!\!\begin{array}{l}
 \mdf=\Kw{mut},
 \\*\quad\f\, \text{inside}\, C\singleDot\m
 \text{ and }
-\f\,\text{inside}\, C\singleDot\mathtt{validate}
+\f\,\text{inside}\, C\singleDot\Kw{validate}
 
 \\*
-\text{then }\e'=\Kw{M}\oR l;\e;l\singleDot\mathtt{validate}\oR\cR\cR\\*
+\text{then }\e'=\Kw{M}\oR l;\e;l\singleDot\Kw{validate}\oR\cR\cR\\*
 \text{otherwise }\ \e'= \e
   \end{array}
 }
@@ -462,7 +462,7 @@ We also require that evaluating \Q@.validate()@ preserve existing memory ($\sigm
 \indent $\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
 
 \noindent In order for validation to be meaningful it needs to be possible for \Q@.validate()@ to potentially observe an invalid object. However, invalid objects should not be observed outside of \Q@.validate()@.
-To this aim we define the set of trusted steps, 
+For this purpose we define the set of trusted steps, 
 as the call to \Q@.validate()@ and the field accesses inside a monitor.
 Note that just the single small-step reduction
 of calling \Q@.validate()@ is trusted, not the whole evaluation of the \Q@.validate()@ expression.

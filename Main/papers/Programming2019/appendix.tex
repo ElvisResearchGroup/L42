@@ -164,7 +164,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 \begin{enumerate}
 \item (\textsc{update}) $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
 	\begin{itemize}
-	  \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
+	  \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\Kw{validate}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
 	  \item Every $l_1$ such that $l\in \mathit{rog}(\sigma,l_1)$ will verify the same case as the former step:
 	  \begin{itemize}
 	  	\item If it was $\mathit{garbage}$, clearly it still is.
@@ -208,7 +208,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 	These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $garbage$, $wellEncapsulated$, $valid$ (due to Determinism) or $monitored$ properties of any memory locations, thus $\mathit{OK}$ still holds.
 
-\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR$:
+\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\Kw{validate}\oR\cR\cR$:
 
 	Clearly the newly created object ($l$) is monitored. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
 
