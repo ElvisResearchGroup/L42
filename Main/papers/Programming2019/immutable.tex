@@ -208,7 +208,8 @@ The difference with respect to UML DataTypes
 %No, a type is not a class
 % are just a special case of simple classes.
 Validation for such a class can easily be enforced by generating checks on the result of \Q@.validate()@, immediately after each field update, and at the end of the constructor%
-%\footnote{since the constructor only initialises fields, as with the \Q@.validate()@ method itself, we don't check for validity during the constructor as \Q@this@ is not directly reached, doing so would require the initial/default value of \Q@this@ to be valid.}
+%\footnote{Since the constructor only initialises fields; as with the \Q@.validate()@ method itself, we allow field uses since \Q@this@ is not directly reached.}
+%would require the initial/default value of \Q@this@ to be valid.}
 :
 % If a simple class provides a \Q@.validate()@ method, then validation will be enforced.
 % For \Q@Person@, intuitively, the code would behave as follow:

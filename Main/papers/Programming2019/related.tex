@@ -16,7 +16,7 @@ In our work we just assume the required properties hold.
 Approaches like Javari~\cite{TschantzErnst05,Boyland06} and Rust~\cite{matsakis2014rust}
 are unsuitable since they introduce back-doors, and we can not expect the programmer to use them properly.
 Many approaches just try to preserve purity (as for example~\cite{pearce2011jpure}),
-but here we also nead aliasing control.
+but here we also need aliasing control.
 Approaches like ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07}
 are not sufficient since they aim to enforce properties only for
 annotated objects and/or owned objects.
@@ -43,7 +43,7 @@ Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers
  enforce purity of sections of code in a friendly and modular way.
 Here we present this idea very informally.
 The language Joe-E~\cite{finifter2008verifiable}
-explores on how to use object capabilities to ensure
+explores how to use object capabilities to ensure
 pure behaviour for methods.
 In order to express Joe-E as a subset of Java,
 they leverage on a simplified model of immutability:
@@ -94,7 +94,7 @@ constantly maintained between calls to public methods~\cite{WikiInvariant}
 %DONE IN INTRO breaking class invariants = bug in class code
 %braking validation= DEPEND.
 To encode this range of invariant semantics
-in our approach we can add a mutable boolean \Q@isOpen@ field and add \Q@this.isOpen || ..@
+in our approach we can add a boolean \Q@isOpen@ field and add \Q@this.isOpen || ..@
 in front of the validity condition.
 Validation can be used to manually encode complex scenarios,
 for example if a method called on an object needs to break the invariant of another object ,
@@ -110,10 +110,10 @@ it can do so by manually setting the \Q@isOpen@ flag on the other object.
 
 \noindent\textit{Sound and Unsound monitors:}
 By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
-it seems that most RV works have a philosophy that is radically different from our’s:
+it seems that most RV works have a philosophy that is radically different from ours;
 indeed RV systems and frameworks are often tools empowering the user
 in implementing what kind of monitoring they see fit for their specific problem at hand.
-This means that they are responsible for deciding, designing and encoding both the 
+This means that users are responsible for deciding, designing and encoding both the 
 logic properties and the instrumentation criteria that will perform operations
 in certain moments in time~\cite{meredith2012overview}.
 In practice, this means that the logic, the instrumentation, and the implementation end up connected:
@@ -171,7 +171,7 @@ Assertion  failures  result  in  appropriate  exceptions.}''.\\*
 In this way methods still have to assume any object may be broken; in such case calling any
 public getter would trigger an error, but while the object is just passed around
 (and for example stored in collections), the broken state will not be detected.
-The already discussed~\cite{Gopinathan:2008:RMO:1483018.1483028}
+Gopinathan ~\cite{Gopinathan:2008:RMO:1483018.1483028}
 explains the danger of these approaches very clearly:
 ``\emph{there are many instances where o's invariant is violated by the programmer inadvertently changing the state
 of p when o is in a steady state. Typically, o and p
@@ -229,7 +229,7 @@ In  our approach, we call the \Q@.validate()@ method
 %We expect this to result in a dramatic reduction over the number of required checks
 
 
-one time at the end of each setter, capsule mutator, method and constructor.
+one time at the end of each setter, capsule mutator method and constructor.
 We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
 Of course, \@.validate()@ can be called indirectly, for example by calling a setter.
 We expect this to result in a dramatic reduction over the number of required checks,
