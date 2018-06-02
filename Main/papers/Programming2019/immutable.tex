@@ -63,10 +63,13 @@ $\Comment{}$mut Point mp = rc.center; // type error
 \saveSpace
 
 Here \Q@imm Circle ic@ and \Q@mut Circle mc@ are both initialized with \Q@new Circle(...)@.
-This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q@mut@ and any expression typed as \Q@mut@ that only uses immutable references can safely be promoted to \Q@imm@.
+This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q@mut@ and any expression typed as \Q@mut@ that only uses immutable variables can safely be promoted to \Q@imm@.
 % (since the returned value could not possibly be aliased).
 %FALSE: it can be internally aliased!
-Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@ %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
+Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as read that only
+uses immutable variables can safely be promoted to \Q@imm@.
+
+ %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
 %true fact but not sufficient?
 
 %With this kind of type system, we can ensure immutable classes by just declaring all their fields as final and immutable.%

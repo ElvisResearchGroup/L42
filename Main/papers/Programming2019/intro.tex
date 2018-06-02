@@ -65,7 +65,7 @@ Like assertions, an (unchecked) exception is thrown if such a call returns \Q@fa
 Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type-system ensures the object is not reachable.
 If you were to step with a debugger, you may see invalid objects, and validation checks failing.
 
-\noindent Our approach follows the principles of \textbf{Defensive/Offensive programming}~\cite{WikiDefensive}:
+\noindent Our approach follows the principles of \emph{Defensive/Offensive programming}~\cite{WikiDefensive}:
 \begin{itemize}
 \item The failure (an unchecked exception)
 is raised as close as possible to the defect (the operation creating an invalid object), i.e. we ``fail-fast''.
@@ -93,7 +93,7 @@ Attempting to create a new invalid object, or to mutate an object into an invali
 a run time error.
 
 This is similar to casts in Java with respect to casts in C:
-In both languages the programmer is responsible fir casting values correctly;
+In both languages the programmer is responsible for casting values correctly;
 however, in Java casts are soundly checked: if in a Java program the control flow goes over a cast,
 we know that in that specific
 execution such assumption was correct.
@@ -166,7 +166,7 @@ to support Validation. %, and we work under the assumption that there are no sta
 We will provide a brief introduction to type modifiers, object capabilities, and exception safety.
 
 In Sections \ref{s:validate}, \ref{s:immState}, and \ref{s:encapsulated}, we will show how TM and OC enable validation.
-To clearly communicate what kind of checks the language semantic should provide,
+To clearly communicate what kind of checks the language semantic should enforce,
  we will write them down as if they were `generated source code'.
 However, our proposed approach is independent of the actual technique to insert these checks, and they may instead be inserted directly into bytecode, or they can be part of the underlying semantics of a virtual machine.
 
