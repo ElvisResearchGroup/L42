@@ -25,6 +25,7 @@ We strive to keep our small step semantics as conventional as possible; followin
 \item An implicit program/class-table.
 \item Memory $\sigma:\!:\!= l\mapsto C\{\Many{v}\}$ as a finite map from locations $l$ to annotated tuples $C\{\Many{v}\}$ representing objects,
 where $C$ is the class name and $\Many{v}$ contains the values of the fields.
+We use notation $\sigma[l.f=v]$ to update an object field and $\sigma[l.f]$ to access the field.
 \item A main expression that is reduced in the context of such memory and program.
 \item A reduction relation $\sigma|\e\rightarrow \sigma'|e'$.
 \item A type system $\Sigma;\Gamma\vdash\e:T$, where 
@@ -203,7 +204,7 @@ $\!\!\!\!\!\begin{array}{l}
 \f\,\text{inside}\, C\singleDot\mathtt{validate}
 
 \\*
-\text{then }\e'=\text{M}\oR l;\e;l\singleDot\mathtt{validate}\oR\cR\cR\\*
+\text{then }\e'=\Kw{M}\oR l;\e;l\singleDot\mathtt{validate}\oR\cR\cR\\*
 \text{otherwise }\ \e'= \e
   \end{array}
 }
@@ -441,7 +442,7 @@ and StrongExceptionSafety ensures no mutation happens on the preserved memory.
 
 To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,ServettoZucca15}
  supports all these assumptions out of the box,
-while both~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
+while both Gordon~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
 however it should be trivial to modify them to support it:
 the \Q@try-catch@ rule could be modified to
 $\emptyset;\Gamma\vdash\Kw{try}\ \oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC:\T$
@@ -452,15 +453,16 @@ i.e. $e_0$ can be typed when seeing all externally defined mutable references as
 
 \loseSpace
 \noindent\textit{Statement of Validation:}
-We first need to define what it means for an object to be valid: an object is \emph{valid} iff calling its \Q@.validate()@ method would
+%We first need to define what it means for an object to be valid:
+An object is \emph{valid} iff calling its \Q@.validate()@ method would
 deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an error.
 We also require that evaluating \Q@.validate()@ preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.
 
 \noindent\textbf{Define} $valid(\sigma,l)$:\\*
 \indent $\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
 
-\noindent Now in order for validation to be meaningful it needs to be possible for \Q@validate@ to potentially observe an invalid object.
-We define the set of trusted steps, 
+\noindent In order for validation to be meaningful it needs to be possible for \Q@.validate()@ to potentially observe an invalid object. However, invalid objects should not be observed outside of \Q@.validate()@.
+To this aim we define the set of trusted steps, 
 as the call to \Q@.validate()@ and the field accesses inside a monitor.
 Note that just the single small-step reduction
 of calling \Q@.validate()@ is trusted, not the whole evaluation of the \Q@.validate()@ expression.
