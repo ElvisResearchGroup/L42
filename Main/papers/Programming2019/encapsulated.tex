@@ -23,7 +23,7 @@ class ShippingList {
   imm Int capacity; // how much weight the ship can withstand
   mut Items items;
   ShippingList(mut Items items) {this.items = items;}
-  read method imm Bool validate() {	// too heavy and the ship may sink
+  read method imm Bool validate() {	// too heavy and the ship will sink
     return this.items.weight() <= this.capacity;
   }
   mut method imm Void addItem(imm Item item) {this.items.add(item);}
@@ -38,7 +38,6 @@ Firstly, the cargo we receive in the constructor may be already compromised:
 mut ShippingList l = new ShippingList(evilAlias);
 // l is ok now, but we can break it
 evilAlias.addItem(new HeavyItem()); // l is now invalid!
-// how can we discover it and give error?
 \end{lstlisting}
 \saveSpace 
 Secondly, even if the \Q@ShippingList@ has full control at initialization time, such control may be lost later:
@@ -53,25 +52,23 @@ evilAlias.addItem(new HeavyItem()); // we invalidated l now
 \saveSpace
 % However, as the constructor takes a \Q@mut Items@ 
 As you can see it is possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.
-Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (such as via getters).
-Such solution need to be employed in mainstream languages like Java/C\#:
-in order to write correct library code
-defensive cloning~\cite{Bloch08} is needed.
+Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
+In order to write correct library code in mainstream languages like Java/C++, defensive cloning~\cite{Bloch08} is needed.
 For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.
 
 To avoid this performance bottleneck, we can leverage on the well known \Q@capsule@ type modifier~\cite{ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a}
-(sometime called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
+(sometimes called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
 \begin{itemize}
 \item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
-For the purposes of validation we only need to restrict mutation, so we may relax previous work where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph, and allow the ROG of a \Q@capsule@ to be referenced as \Q@read@ from outside.
+For the purposes of validation we only need to restrict mutation, so we may relax the restrictions previous work has where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph, and allow the ROG of a \Q@capsule@ to be referenced as \Q@read@ from outside.
 \item A capsule local variable can only be used once as \Q@capsule@ or \Q@mut@.
 %An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
 %\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
 \item A field of a \Q@capsule@ type must be instance-private; that is only accessible as\\* \Q@this.fieldName@ within an instance method.
 \item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
-\item A capsule field access has the same type modifier of the receiver.
-\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/Recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
-(this requires some restrictions on \Q@read@ fields that we do not discuss in details for lack of space).
+\item A capsule field access has the same type modifier as the receiver.
+\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
+(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
 \end{itemize}
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
@@ -85,7 +82,7 @@ In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ meth
 \item and the return type cannot be \Q@mut@.
 \end{itemize}
 \noindent  Moreover, if the used capsule field is referenced in \Q@.validate()@, a \Q@this.validate()@ call is injected at the end of the method.
-Using the capsule field, our \Q@ShippingList@ class, after automatic insertion of validation checks, could look like:
+Using a capsule field, our \Q@ShippingList@ class, after automatic insertion of validation checks, could look like:
 \saveSpace
 \begin{lstlisting}
 class ShippingList{
@@ -106,8 +103,8 @@ class ShippingList{
 \end{lstlisting}
 \saveSpace
 
-\noindent The previous restrictions ensure that capsules fields are essentially an exclusive mutable reference.
-Removing those restrictions would make validation unsound; for example, if we allow for a \Q@mut@ return type, this example would be accepted:
+\noindent The previous restrictions ensure that capsule fields are essentially an exclusive mutable reference.
+Removing these restrictions would make validation unsound; for example, if we allow for a \Q@mut@ return type this would be accepted:
 
 \saveSpace
 \begin{lstlisting}
@@ -119,7 +116,7 @@ mut method mut Items exposeItems(imm C c) {
 \noindent Depending on dynamic dispatch on \Q@c@, \Q@c.foo()@ may just be the identity function.
 %Static analysis is usually unable/unwilling to track precise behaviour of dynamic dispatch.
 
-\noindent Allowing \Q@this@ to be used more then once can also cause problems:
+Allowing \Q@this@ to be used more then once can also cause problems:
 \saveSpace
 \begin{lstlisting}
 mut method imm Void multiThis(imm C c) {
@@ -130,11 +127,12 @@ mut method imm Void multiThis(imm C c) {
 \end{lstlisting}
 \saveSpace
 \noindent If the former code was accepted, depending on dynamic dispatch on \Q@c@,
-the reference to \Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe a broken object.
+\Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe a broken object.
+
 In order to ensure that a second reference to \Q@this@ is not reachable through the parameters we only accept \Q@imm@ and \Q@capsule@ parameters.
 If we were however to accept a \Q@read@ parameter, as in the example below,
 we would be in the same situation as the former example, where \Q@f@ may contain
-a reference to \Q@this@.
+a reference to \Q@this@:
 \saveSpace
 \begin{lstlisting}
 mut method imm Void addHeavy(read Foo f) {
@@ -212,15 +210,15 @@ l.addHeavy(f); // We pass another reference to `l' through f
 
 \loseSpace
 \noindent\textit{The transform pattern:}
-A capsule mutator method is a wrapper of a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
+A capsule mutator method is a wrapper over a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
 Thus, if \Q@this@ is made invalid during 
-the method's execution, we could not observe it until after method completion.
-At first glance, it may seams that capsule mutators allows only very limited kinds of mutations.
+the method's execution, we could not observe it until after the method completes.
+At first glance, it may seem that capsule mutators allow only very limited kinds of mutation.
 This is however not the case. 
 
 Consider the following
 simple pattern to allow flexible use of capsule fields: define a \Q@.transform()@ function and a \Q@ItemTransformer@ interface\footnote{A real language could
-provide a generic \Q@Transformer@ interface and allow to auto-generate the \Q@.transform()@ function, similarly to auto-generating getter/setters.} like so:
+provide a generic \Q@Transformer@ interface and allow auto-generation of  \Q@.transform()@ functions, similarly to auto-generating getters \& setters.} like so:
 
 
 %interface Foo{ma mb}
@@ -293,7 +291,7 @@ imm Void method imm Void doStuff(read C c) {
   imm Item i = c.getItem()
   // Lambda Expression that creates a new ItemTransformer
   this.transformItems(items -> items.add(i))
-  }//`i' is captured. We can capture only `imm' and `capsule'
+  } //`i' is captured; we can only capture `imm' and `capsule' varaibles.
 \end{lstlisting}
 
 %    %\Comment{}%this.items.add(i);
@@ -304,15 +302,15 @@ imm Void method imm Void doStuff(read C c) {
 %  // instead of:
   %\Comment{}%this.exposeItems().add(i)
 
-Since \Q@.doStuff()@ does not access a capsule field but merely calls a method that does,
-\Q@.doStuff()@ is \emph{not a capsule mutator method}, so it is not constrained by the restrictions on capsule mutators. Code like the above would also allow one to mutate multiple capsule fields in one method.
-Our pattern cooperate with the language restrictions to ensure each mutation is completed as a separate operation.%
+Since \Q@.doStuff()@ does not access a capsule field but merely calls a method that does.
+it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
+Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation.%
 %,  i.e. they can't see or update the other capsule fields.
 
 
 \loseSpace
 \noindent\textit{The box pattern:}
-At first glance it would seam that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs, such as with a doubly linked list type:
+At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs, such as with a doubly linked list type:
 \begin{lstlisting}[escapechar=\%]
 class List {
   mut List prev;
@@ -320,7 +318,8 @@ class List {
   imm Object elem;
   
   read method imm Bool innerValidate() {
-    return this.next.prev == this && this.prev.next == this;}}
+    return this.next.prev == this && this.prev.next == this
+      && ...;}}
 \end{lstlisting}
 Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
 However, only \Q@capsule@ and \Q@imm@
@@ -331,19 +330,19 @@ The solution is to use a `box' over our \Q@List@, and to validate our `box':
 \begin{lstlisting}[escapechar=\%]
 class ListBox { 
   capsule List inner;
-  read method imm Bool validate() { return this.inner.innerValidate(); }
+  read method imm Bool validate() {return this.inner.innerValidate();}
 ...}
 \end{lstlisting}
 We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.
-However the limitations of capsule mutator methods means that any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters or returning \Q@mut@, cannot be trivially forwarded.
+However the limitations of capsule mutator methods mean that any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters, or returning \Q@mut@, cannot be trivially forwarded.
 
 % since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
 Our example is about a list of immutable objects.
-To validate instead a list of \Q@mut@ objects we would need to use our box pattern not just around the list,
+To instead validate a list of \Q@mut@ objects we would need to use our box pattern not just around the list,
 but around a section of data encapsulating both the list and all the contained elements.
 This is because our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
 Conceptually, it would be better for the list (of mutable objects) to be validated by its
 head, since the behaviour of the contained objects is transparent to the validation criteria. 
 This corresponds to full encapsulation and contrasts with flexible encapsulation as in 
-ownership~\cite{ClarkeEtAl98}. However, neither traditional flexible encapsulation/Ownership nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
+ownership~\cite{ClarkeEtAl98}. However, neither traditional flexible encapsulation/ownership, nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
 

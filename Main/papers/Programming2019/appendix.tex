@@ -77,7 +77,7 @@ and $OK$ will always hold.
 \begin{proof}
 \noindent By Stronger Sound Validation, each $l$ in the current redex must be $OK$:
 \begin{enumerate}
-	\item If $l$ is garbage, it cannot be in the current redex, a contradiction.
+	\item If $l$ is $garbage$, it cannot be in the current redex, a contradiction.
 	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to Determinism
 	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
@@ -131,7 +131,7 @@ This proof proceeds by induction in the usual manner.
 
 Note how for the proof garbage collection is important:
 when the \Q@validate()@ method evaluates to \Q@false@,
-execution can continue only if the offending object is classified as garbage.
+execution can continue only if the offending object is classified as $garbage$.
 \end{proof}
 
 \subsection{Expose Instrumentation}
@@ -199,7 +199,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	\end{itemize}
 
 
-	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been garbage), thus $garbage$ is still $OK$.
+	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $garbage$), thus $garbage$ is still $OK$.
 
 	\item As we don’t change any monitors here, nothing that was $monitored$ could have been made un-$monitored$, and so it is still $OK$.
 \end{itemize}

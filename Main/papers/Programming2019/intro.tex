@@ -3,17 +3,17 @@
 \saveSpace\saveSpace
 
 Reasoning about imperative object oriented (OO) programs is a non trivial task,
-made particularly difficult by mutations, aliasing, dynamic dispatch, dynamic class loading,
+made particularly difficult by mutation, aliasing, dynamic dispatch, dynamic class loading,
 unrestricted I/O and exceptions.
 
-Static verification of method contracts can prove correctness of OO programs, but this is costly and requires to define the desired semantic of the program in a verification language then prove consistency.
+Static verification of method contracts can prove the correctness of OO programs, but this is costly and requires defining the desired semantic of the program in a verification language.
 This however requires limiting dynamic class loading, ensuring that only statically verified code can be loaded.
 Without this restriction, even predicting the behaviour of an innocent looking call like 
 \Q@myPoint.getX()@ is impossible: the dynamic type of \Q@myPoint@ can refer to a dynamically loaded class
-whose method \Q@.getX()@ uses I/O to behave non deterministically, or even to format the hard drive.
+whose method \Q@.getX()@ uses I/O to behave non deterministically, or even format the user’s hard drive.
 
 Recent research on \emph{type modifiers} (TM) and \emph{object capabilities} (OC) offer us a simpler way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
-Type modifiers have been used to enforce ownership and  correct behaviour of parallel code~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}. Object capabilities have been used to enforce certain methods to be deterministic and to not perform I/O~\cite{finifter2008verifiable}.
+Type modifiers have been used to enforce ownership and  correct behaviour of parallel code~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}. Object capabilities have been used to enforce certain methods to be deterministic and not perform I/O~\cite{finifter2008verifiable}.
 Given these benefits, many emerging languages (such as Rust~\cite{matsakis2014rust} and newspeak~\cite{bracha2010modules})
 support some form of type modifiers and/or object capabilities.
 
@@ -29,14 +29,14 @@ As a short cut, if a class does not explicitly define a
 An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is invalid otherwise (e.g. if it returns \Q@false@, throws an exception or does not terminate).
 We say that a language enforces validation if:
 \begin{itemize}
-\item \Q@.validate()@ methods are guaranteed to be deterministic and to not mutate any state; they represent logic predicates on the reachable object graph (ROG).
-\item Invalid objects are not reachable by application code; thus programmers can always assume such properties hold.
+\item \Q@.validate()@ methods are guaranteed to be deterministic and to not mutate any state; they represent logic predicates on the receiver’s reachable object graph (ROG).
+\item Invalid objects are not reachable by application code; thus programmers can always assume the properties checked by \@Q.validate()@ hold.
 For example, at the point of a method call, all the parameters (including \Q@this@) and all the objects in their ROGs will be valid.
 \end{itemize}
 
 \noindent Though this is very similar to enforcing class-invariants, their are a few key differences:
 \begin{itemize}
-\item Class invariants can be \emph{temporarily} broken during class-methods, whereas validation dosen’t allow this
+\item Class invariants can be \emph{temporarily} broken during class-methods, whereas validation doesn’t allow this.
 \item It is the responsibility of the class \emph{author} to ensure the invariant is preserved across all public methods, whereas with validation it is the responsibility of the class \emph{user} to not (indirectly) mutate the class in any way that will break it.
 \end{itemize}
 \noindent Our system is more primitive and general then class invariants, and can be used as a building block to encode 
@@ -46,7 +46,7 @@ them.
 % reasoning through the program.
 Indeed, class-invariants can be represented in our system by defining validity as 
 %your ``and'' was wrong, is ``or''
-the class-invariant holding, or a mutator-method is currently running (this is easily implemented with a boolean flag).
+the class-invariant holding or a mutator-method is currently running (this is easily implemented with a boolean flag).
 
 \loseSpace
 \noindent\textit{Our approach:}
@@ -63,7 +63,7 @@ and need to be replaced with other patterns allowing simpler reasoning.
 Like assertions, an (unchecked) exception is thrown if such a call returns \Q@false@ (indicating that the object is invalid).
 
 Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type-system ensures the object is not reachable.
-If you were to step with the debugger, you may see invalid objects, and validation checks failing.
+If you were to step with a debugger, you may see invalid objects, and validation checks failing.
 
 \noindent Our approach follows the principles of \textbf{Defensive/Offensive programming}~\cite{WikiDefensive}:
 \begin{itemize}
@@ -81,28 +81,28 @@ is raised as close as possible to the defect (the operation creating an invalid 
 % \subsection{Random stuff }
 % We show that a na\"{i}ve approach that just checks \Q@.validate()@ at the end of constructors and setters would be insufficient. We take advantage of TM+OC to conservatively identify classes where validation is possible.
 %
-\noindent\textit{Similarity with checked casts:}%
+\noindent\textit{Similarity with checked casts:}
 %\subsection{Extended type system and similarity with checked casts}
- Even if not as good as full static verification, from a formal perspective
+Even if not as good as full static verification, from a formal perspective
 % our system clearly aid reasoning.
 our system provides sound guarantees that aid reasoning.
 
-Programmers are still responsible to create and mutate objects in order to preserve their validity;
-but once an object has been successfully created/mutated, is guaranteed to be valid.
-Attempting to create a new invalid object, or to mutate an object into an invalid one causes
+Programmers are still responsible for creating and mutate objects in order to preserve their validity;
+but once an object has been successfully created/mutated, it is guaranteed to be valid.
+Attempting to create a new invalid object, or to mutate an object into an invalid one, causes
 a run time error.
 
 This is similar to casts in Java with respect to casts in C:
-In both languages the programmer is responsible to cast values correctly.
-However, in Java casts are soundly checked: if in a Java program the control flow go over a cast,
+In both languages the programmer is responsible fir casting values correctly;
+however, in Java casts are soundly checked: if in a Java program the control flow goes over a cast,
 we know that in that specific
 execution such assumption was correct.
-On the other side incorrect C casts just default to undefined behaviour:
+On the other hand incorrect C casts just default to undefined behaviour:
 if a C execution continue after a cast, we know absolutely nothing. The same execution
 may fail when run on a different machine, 
 or even on the same one in another moment.
-In the same sense, object construction and ROG mutation are soundly checked by our system,
-and success in a mutation means that in that specific execution, the validity was preserved.
+In the same sense as checked-casts, object construction and ROG mutation are soundly checked by our system,
+and success in a mutation means that in that specific execution, validity was preserved.
 
 
 
@@ -168,7 +168,7 @@ We will provide a brief introduction to type modifiers, object capabilities, and
 In Sections \ref{s:validate}, \ref{s:immState}, and \ref{s:encapsulated}, we will show how TM and OC enable validation.
 To clearly communicate what kind of checks the language semantic should provide,
  we will write them down as if they were `generated source code'.
-However, our proposed approach is independent of the actual technique to insert these checks, and they may be inserted directly into the bytecode, or they can be part of the underlying semantics of the virtual machine.
+However, our proposed approach is independent of the actual technique to insert these checks, and they may instead be inserted directly into bytecode, or they can be part of the underlying semantics of a virtual machine.
 
 In Section \ref{s:meaning} we will provide formal definitions, and in Appendix \ref{s:proof} we provide  a proof that our language soundly enforces validation.
 
