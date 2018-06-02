@@ -192,26 +192,24 @@ By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ 
 	\item If $l$ was $valid$ and $wellEncapsulated$:
 	
 	\begin{itemize}
-	\item If we have now broken $wellEncapsulated$ we must have made something in it’s $erog$  $mutatable$. As we can only type \Q@capsule@ fields as \Q@mut@ and not \Q@imm@ fields, by FieldMut we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is being typed as \Q@mut@.
-	
-	By $\mathit{fieldGuarded}(\sigma_0,\e_0)$ the former step must have been inside a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
+	\item If we have now broken $wellEncapsulated$ we must have made something in it’s $erog$  $mutatable$. As we can only type \Q@capsule@ fields as \Q@mut@ and not \Q@imm@ fields, by FieldMut we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is being typed as \Q@mut@. By $\mathit{fieldGuarded}(\sigma_0,\e_0)$ the former step must have been inside a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
     and the $l$ under reduction was the only occurrence of $l$.
     Since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
     by HeadNotCircular. Thus in our new step $l$ is not $inside$ $\ctx_v[v]$. Thus $l$ must be $monitored$ and hence it is $OK$.
     
     \item Otherwise, $l$ is still $OK$
+
+	\end{itemize}
+\item Suppose some other $l_0$ was $wellEncapsulated$ and $valid$:
+\begin{itemize}
+	\item Suppose this reduction step has effected this, than it must have been that case that $l$ is in the $rog$ of $l_0$. By CapsuleTree, $v$ can only be reached from $l_0$ by passing through $l$, and so $l_0$ cannot have been in the $erog$ of $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by $\singleDot\Kw{validate}\oR\cR$, $l_0$’s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can’t have, as we just assumed, effected $l_0$ being $OK$.
+	\item Otherwise $l_0$ is still $OK$.
 \end{itemize}
 
 \item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been garbage), thus $garbage$ is still $OK$.
 
 \item As we don’t change any monitors here, nothing that was $monitored$ could have been made un-$monitored$, and so it is still $OK$.
-
-\item Suppose some $l_0$ was $wellEncapsulated$ and $valid$:
-\begin{itemize}
-	\item Suppose this reduction step has effected this, than it must have been that case that $l$ is in the $rog$ of $l_0$. By CapsulaeTree, $v$ can only be reached from $l_0$ by passing through $l$, and so $l_0$ cannot have been in the $erog$ of $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by $\singleDot\Kw{validate}\oR\cR$, $l_0$’s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can’t have, as we just assumed, effected $l_0$ being $OK$.
-	\item Otherwise $l_0$ is still $OK$.
 \end{itemize}
-
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
 These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $garbage$, $wellEncapsulated$, $valid$ (due to Determinism) or $monitored$ properties of any memory locations, thus $\mathit{OK}$ still holds.
@@ -223,7 +221,6 @@ Clearly the newly created object ($l$) is monitored. As for \textsc{mcall}, othe
 
 
 \item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:
-
 \begin{itemize}
 	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{validate}\oR\cR)$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
 
