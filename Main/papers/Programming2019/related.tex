@@ -216,19 +216,25 @@ field updates are reverted while capturing an exception.
 
 
 \noindent\textit{Performance}
-We believe our sound approach can monitor arbitrary programs
+We believe our sound approach can monitor programs
 for a fraction of the cost of many other approaches.
 Many other works%
 ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
  check/run
-the invariant code at the start and at the end of every public
+the invariant code at the start and end of every public
 method; depending on the approach, this may even include trivial getters.
-In  our approach,
-we only call the \Q@.validate()@ method a single time for each mutator method.
-We expect this to result in a dramatic reduction over
-the number of required checks:
-for setters and capsule mutator methods, we call \Q@validate()@ only one time instead of two,
-and we do not call it at all for other methods, that are usually more numerous and invoked much more often.
+In  our approach, we call the \Q@.validate()@ method
+%once at the end of capsule mutator methods and constructors, and after every field update, and we do not call it in other place;
+%Methods that do not directly update or mutate fields are usually more numerous and invoked more often.
+%We expect this to result in a dramatic reduction over the number of required checks
+
+
+one time at the end of each setter, capsule mutator, method and constructor.
+We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
+Of course, \@.validate()@ can be called indirectly, for example by calling a setter.
+We expect this to result in a dramatic reduction over the number of required checks,
+except for cases when public methods just update many fields directly (without using setters).
+
 
 
 
