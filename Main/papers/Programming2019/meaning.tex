@@ -77,10 +77,10 @@ We believe adding traditional exceptions would not cause any interesting variati
 \produzione{\e}{\x\mid l\mid\Kw{true}\mid\Kw{false}\mid \e\singleDot\m\oR\es\cR\mid \e\singleDot\f 
 \mid\e\singleDot\f\equals\e 
 \mid\Kw{new}\ C\oR\es\cR
-\mid\Kw{try}\oC\e_1\cC \Kw{catch}\oC\e_2\cC
+\mid\Kw{try}\ \oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
 }{expression}\\
 \seguitoProduzione{
-\mid \Kw{M}\oR l;\e_1;\e_2\cR\mid\Kw{try}^{\sigma}\oC\e_1\cC \Kw{catch}\oC\e_2\cC
+\mid \Kw{M}\oR l;\e_1;\e_2\cR\mid\Kw{try}^{\sigma}\oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
 }{run-time expr.}\\
 \produzione{v}{l}{value}\\
 \produzione{\ctx_v}{\square
@@ -94,7 +94,7 @@ We believe adding traditional exceptions would not cause any interesting variati
 \mid \Kw{new}\ C\oR\Many{v}_1,\ctx_v,\es_2\cR
 \mid \Kw{M}\oR l;\ctx_v;\e\cR
 \mid \Kw{M}\oR l;v;\ctx_v\cR
-\mid \Kw{try}^\sigma\oC\ctx_v\cC\Kw{catch}\oC\e\cC}{}\\
+\mid \Kw{try}^\sigma\oC\ctx_v\cC\ \Kw{catch}\ \oC\e\cC}{}\\
 
 \produzione{\ctx}{\square\mid\ctx\singleDot m\oR\es\cR\mid\e\singleDot\m\oR\es_1,\ctx,\es_2\cR
 %\mid \ctx\singleDot\f 
@@ -106,8 +106,8 @@ We believe adding traditional exceptions would not cause any interesting variati
 \mid
 \Kw{M}\oR l;\ctx;\e\cR\mid
 \Kw{M}\oR l;\e;\ctx\cR\mid
-\Kw{try}^{\sigma?}\oC\ctx\cC\Kw{catch}\oC\e\cC\mid
-\Kw{try}^{\sigma?}\oC\e\cC\Kw{catch}\oC\ctx\cC
+\Kw{try}^{\sigma?}\oC\ctx\cC\ \Kw{catch}\ \oC\e\cC\mid
+\Kw{try}^{\sigma?}\oC\e\cC\ \Kw{catch}\ \oC\ctx\cC
 
 }{}\\
 
@@ -118,7 +118,7 @@ We believe adding traditional exceptions would not cause any interesting variati
 % |\e\singleDot\m\oR\es_1, M_l, \es_2, \ctx, \es_3\cR
 % |M_l\singleDot\f\equals\ctx
 % |\Kw{new}\ C\oR\es_1,M_l,\es_2,\ctx,\es_3\cR
-% |\Kw{try}\oC\ctx\cC\Kw{catch}\oC\e\cC
+% |\Kw{try}\oC\ctx\cC\ \Kw{catch}\ \oC\e\cC
 % |\ctx[\ctxG_l]}{}\\
 \produzione{CD}{\Kw{class}\ C\ \Kw{implements}\ \Many{C}\oC\Many{F}\,\Many{M}\cC\mid 
 \Kw{interface}\ C\ \Kw{implements}\ \Many{C}\oC\Many{M}\cC
@@ -137,7 +137,7 @@ We believe adding traditional exceptions would not cause any interesting variati
 \produzione{\mathit{error}}{
 \ctx_v[\Kw{M}\oR l; v;\Kw{false}\cR]
 \quad\text{with }
-\ctx_v \text{not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\Kw{catch}\oC\_\cC]
+\ctx_v \text{not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\ \Kw{catch}\ \oC\_\cC]
 }{validation error}
 \end{grammatica}
 \caption{Grammar}
@@ -219,8 +219,8 @@ $\!\!\!\!\!\begin{array}{l}
 
 \quad
  \inferrule[(try enter)]{{}_{}}{
-\sigma|\Kw{try}\oC \e_1\cC\Kw{catch}\oC\e_2\cC\rightarrow 
-\sigma|\Kw{try}^\sigma\oC\e_1\cC\ \Kw{catch}\oC\e_2\cC
+\sigma|\Kw{try}\ \oC \e_1\cC\ \Kw{catch}\ \oC\e_2\cC\rightarrow 
+\sigma|\Kw{try}^\sigma\oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
  }{}
 \quad
 
@@ -229,12 +229,12 @@ $\!\!\!\!\!\begin{array}{l}
 
 
  \inferrule[(try ok)]{{}_{}}{
-\sigma,\sigma'|\Kw{try}^{\sigma}\oC v\cC\ \Kw{catch}\oC\_\cC\rightarrow \sigma,\sigma'|v
+\sigma,\sigma'|\Kw{try}^{\sigma}\oC v\cC\ \Kw{catch}\ \oC\_\cC\rightarrow \sigma,\sigma'|v
  }{}
 \quad
 
  \inferrule[(try error)]{{}_{}}{
-\sigma,\_|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\oC\e\cC\rightarrow \sigma|\e
+\sigma,\_|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e
  }
 \quad
  \inferrule[(access)]{{}_{}}{
@@ -412,11 +412,11 @@ with no \Q@mut@ free variables is deterministic and does not
 
 
 \begin{Assumption}[StrongExceptionSafety]
-if $\Sigma^{\sigma,\sigma'};\emptyset\vdash \ctx[\Kw{try}^\sigma\oC\e_0\cC\Kw{catch}\oC\e_1\cC]:\T$
+if $\Sigma^{\sigma,\sigma'};\emptyset\vdash \ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]:\T$
 and\\*
 $
-\sigma,\sigma'|\ctx[\Kw{try}^\sigma\oC\e_0\cC\Kw{catch}\oC\e_1\cC]\rightarrow 
-\sigma''|\ctx[\Kw{try}^\sigma\oC\e'\cC\Kw{catch}\oC\e_1\cC]
+\sigma,\sigma'|\ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]\rightarrow 
+\sigma''|\ctx[\Kw{try}^\sigma\oC\e'\cC\ \Kw{catch}\ \oC\e_1\cC]
 $
 then 
 $\sigma''=\sigma,\_$
@@ -444,7 +444,7 @@ To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,S
 while both~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
 however it should be trivial to modify them to support it:
 the \Q@try-catch@ rule could be modified to
-$\emptyset;\Gamma\vdash\Kw{try}\oC\e_0\cC\Kw{catch}\oC\e_1\cC:\T$
+$\emptyset;\Gamma\vdash\Kw{try}\ \oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC:\T$
 if\\* $\emptyset;
 \Gamma,\{x:\Kw{read}\,C | x:\Kw{mut}\,C\,\in\Gamma\}
 \vdash\e_0:\T$ and $\emptyset;\Gamma\vdash\e_1:\T$,
