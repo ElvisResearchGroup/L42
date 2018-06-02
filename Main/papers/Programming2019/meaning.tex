@@ -72,7 +72,8 @@ We believe adding traditional exceptions would not cause any interesting variati
 \renewcommand{\vs}{\Many{v}}
 \renewcommand{\Opt}[1]{#1?}
 \begin{figure}
-\!\!\!\!\begin{grammatica}
+\!\!\!\!
+\begin{grammatica}
 \produzione{\e}{\x\mid l\mid\Kw{true}\mid\Kw{false}\mid \e\singleDot\m\oR\es\cR\mid \e\singleDot\f 
 \mid\e\singleDot\f\equals\e 
 \mid\Kw{new}\ C\oR\es\cR
@@ -139,7 +140,6 @@ We believe adding traditional exceptions would not cause any interesting variati
 \ctx_v \text{not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\Kw{catch}\oC\_\cC]
 }{validation error}
 \end{grammatica}
-
 \caption{Grammar}
 \end{figure}
 
@@ -176,7 +176,8 @@ well-formed criteria that \Q@validate()@
 methods start by checking the result of \Q@super@.\Q@validate()@.
 
 \begin{figure}
-$\begin{array}{l}
+\!\!
+$\!\!\!\!\!\begin{array}{l}
  \inferrule[(update)]{{}_{}}{
 \sigma|l.f\equals{}v\rightarrow \sigma[l.f=v]|
 \Kw{M}\oR l;l;l\singleDot\text{validate}\oR\cR\cR

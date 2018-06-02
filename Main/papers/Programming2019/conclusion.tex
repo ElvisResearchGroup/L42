@@ -10,7 +10,8 @@ During execution the system is the sole responsible to soundly enforce objects v
 This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
 both deciding properties and enforcing them it is controlled by the programmers.
 This is also different from Static verification,
-where the properties are ensured instead of enforced.
+%where the properties are ensured instead of enforced.
+where the properties are ensured ahead of time instead of being enforced during execution.
 Static verification is very heavy weight, and often impractical/restrictive.
 
 Both static and runtime verification
@@ -25,6 +26,8 @@ first in the specification language and then in the underlying programming langu
 On the opposite, our approach aims to only verify conditions on immutable or well encapsulated state.
 This makes our approach \emph{ultra-lightweight}:
 the programmer specifies only the desired \Q@.validate()@ method.
+Moreover, our approach does not aim to replace static or run-time verification,
+but is a building block they can rely upon.
 
 The popularity of TM and OC is growing, and we expect future languages to support some variation of those.
 Crucially, any language already designed with TM and OC

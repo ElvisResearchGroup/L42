@@ -27,7 +27,7 @@ As a short cut, if a class does not explicitly define a
 %A class may provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
 %TO DISCUSS: what about validate can only refer to imm and capsule fields?; those that do not, have an implicit default implementation of \Q@{return true;}@, i.e. every instance is valid.
 An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is invalid otherwise (e.g. if it returns \Q@false@, throws an exception or does not terminate).
-We say that a language enforces object validity if:
+We say that a language enforces validation if:
 \begin{itemize}
 \item \Q@.validate()@ methods are guaranteed to be deterministic and to not mutate any state; they represent logic predicates on the reachable object graph (ROG).
 \item Invalid objects are not reachable by application code; thus programmers can always assume such properties hold.
@@ -39,7 +39,7 @@ For example, at the point of a method call, all the parameters (including \Q@thi
 \item Class invariants can be \emph{temporarily} broken during class-methods, whereas validation dosen’t allow this
 \item It is the responsibility of the class \emph{author} to ensure the invariant is preserved across all public methods, whereas with validation it is the responsibility of the class \emph{user} to not (indirectly) mutate the class in any way that will break it.
 \end{itemize}
-\noindent Our system is more primitive then class invariants, and can be used as a buding block to encode 
+\noindent Our system is more primitive and general then class invariants, and can be used as a building block to encode 
 them.
 % and allows 
 %global (global is not the right word)
@@ -52,7 +52,11 @@ the class-invariant holding, or a mutator-method is currently running (this is e
 \noindent\textit{Our approach:}
 Our language\footnote{
 In literature, both static and run-time verification discuss
-the correctness of common programming patterns in conventional languages. Here instead we define a new language, where
+the correctness of common programming patterns in conventional languages.
+Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object oriented programming.
+ Here instead we define a new language, where TM and OC tame the use of imperative features. In this way
+we have a fresh start where
+% Here instead we define a new language, where
 many conventional programming patterns are disallowed,
 and need to be replaced with other patterns allowing simpler reasoning.
 } supports validation by invoking the \Q@.validate()@ method, before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 
@@ -80,7 +84,9 @@ is raised as close as possible to the defect (the operation creating an invalid 
 \noindent\textit{Similarity with checked casts:}%
 %\subsection{Extended type system and similarity with checked casts}
  Even if not as good as full static verification, from a formal perspective
- our system clearly aid reasoning.
+% our system clearly aid reasoning.
+our system provides sound guarantees that aid reasoning.
+
 Programmers are still responsible to create and mutate objects in order to preserve their validity;
 but once an object has been successfully created/mutated, is guaranteed to be valid.
 Attempting to create a new invalid object, or to mutate an object into an invalid one causes
@@ -147,25 +153,25 @@ and success in a mutation means that in that specific execution, the validity wa
 %%%
 
 
-\saveSpace
-\section{A language supporting sound Validation}
-\label{s:language}
-\saveSpace
-We now present how a real language could support
+\noindent\textit{Structure of our paper:} We now present how a real language could support
 Validation. 
-%To ease our explanation, we present various categories
-%of objects where we can support Validation, starting from the simpler one to handle.
-We will introduce one by one the various
-language features cooperating
-to support Validation.%, and we work under the assumption that there are no static variables.
-We will provide a brief introduction to type modifiers, object capabilities, and exception safety and we will show how they enable sound invariant checking.
-
-To clearly communicate what kinds of checks the language semantic should insert,
- we will write them down as if they were `generated source code'. 
-However our proposed approach is independent of the actual technique to insert these checks, and they may be inserted directly into the bytecode, or they can be part of the underlying semantics of the virtual machine.
-In this section we rely on code example and informal explanations. In Section \ref{s:meaning} we will provide formal definitions.
 We would like to underline that the
 features we need have all been presented in the past, but their application to sound validation has never been explored.
+
+%To ease our explanation, we present various categories
+%of objects where we can support Validation, starting from the simpler one to handle.
+In Section \ref{s:background} we will introduce one by one the various
+language features cooperating
+to support Validation. %, and we work under the assumption that there are no static variables.
+We will provide a brief introduction to type modifiers, object capabilities, and exception safety.
+
+In Sections \ref{s:validate}, \ref{s:immState}, and \ref{s:encapsulated}, we will show how TM and OC enable validation.
+To clearly communicate what kind of checks the language semantic should provide,
+ we will write them down as if they were `generated source code'.
+However, our proposed approach is independent of the actual technique to insert these checks, and they may be inserted directly into the bytecode, or they can be part of the underlying semantics of the virtual machine.
+
+In Section \ref{s:meaning} we will provide formal definitions, and in Appendix \ref{s:proof} we provide  a proof that our language soundly enforces validation.
+
 
 
 

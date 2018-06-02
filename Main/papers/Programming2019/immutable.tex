@@ -1,6 +1,7 @@
 
 
 \section{Background}
+\label{s:background}
 \noindent\textit{Type Modifiers:}
 Type modifiers are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification of mutability and aliasing properties of objects.
 With sightly different names and semantics, the three most common modifiers for object references are:
@@ -126,7 +127,7 @@ global variables would prevent reasoning over determinism due to the possibility
 
 
 \section{The \Q@.validate()@ method}
-
+\label{s:validate}
 Thanks to TM and OC, we can now express the signature for \Q@.validate()@ method as follows:
 \saveSpace
 \begin{lstlisting}
@@ -138,7 +139,9 @@ read method imm Bool validate();
 If the class containing the validate method has a super-class, we would check\\* \Q@super.validate()@ at the beginning of the sub-class’s \Q@.validate()@ method, this is required as otherwise `invalid' objects could easily be created by simply using subtyping to redefine \Q@.validate()@.
 As this method is declared as \Q@read@, and only takes the implicit parameter \Q@this@ (as \Q@read@), we can guarantee the method is pure:
 \begin{itemize}
-\item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated,
+\item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{
+This can be safe also in a multi-thread environment: TM are often used to ensure correct parallelism; for example threads may be required to not share \Q@mut@ data, thus a \Q@read@ reference could only be mutated by a \Q@mut@ reference under the control of the same thread.
+},
 \item nothing else is accessible (we do not have global variables),
 \item if a capability object (such as \Q@System@) is in the ROG of \Q@this@, then it can only be accessed as \Q@read@, preventing use of its capability (such as I/O).
 \end{itemize}
@@ -172,6 +175,7 @@ We will later introduce a \Q@capsule@ modifier to allow more flexible validation
 %validable objects are not circular (do not belong in their ROG of any of its fields)
 
 \section{Validating immutable state}
+\label{s:immState}
 In this section we consider validation over fields of \Q@imm@ types.\footnote{
 In a real language, for conciseness one could make the \Q@imm@ modifier the default, allowing it to be omitted and our \Q@Person@ example class would only use 3 type modifiers; however we explicitly use it for clarity.
 }
@@ -353,7 +357,7 @@ This may be implemented with a conventional \Q@try-catch@, since violations are 
 
 However, if instead we chose not to enforce strong exception safety, an invalid object could be easily made reachable:
 \saveSpace
-\begin{lstlisting}[escapechar=\%]
+\begin{lstlisting}[morekeywords={assert}, escapechar=\%]
 mut Person bob = new Person("bob");
 %\Comment{Catch and ignore validation failure:}%
 try {bob.name("");} catch (imm Error t){}

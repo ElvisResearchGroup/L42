@@ -14,7 +14,7 @@ In our work we just assume the required properties to hold.
  Those approaches all support deep/strong interpretation, without back-doors.
 
 Approaches like Javari~\cite{TschantzErnst05,Boyland06} and Rust~\cite{matsakis2014rust}
-are unsuitable since they introduce back-doors, and expect the programmer to use them properly.
+are unsuitable since they introduce back-doors, and we can not expect the programmer to use them properly.
 Many approaches tries to just preserve purity (as for example~\cite{pearce2011jpure}),
 but here we need also aliasing control.
 Also approaches like ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07}
@@ -108,7 +108,7 @@ it can do so by manually setting  its \Q@isOpen@ flag.
 %M. Barnett and M. Fähndrich and K. R. M. Leino and P. Müller and W. Schulte and H. Venter: Specification and Verification: The Spec# Experience. Communications of the ACM, 2011.
 
 
-\newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*$\bullet\,$}
+\newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
 
 \noindent\textit{Sound and Unsound monitors:}
 By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
@@ -252,7 +252,7 @@ could have Byzantine behaviour.
 Every class that compiles/type checks is soundly validated;
 independently of the code that uses this class or any other surrounding code.
 That is, our approach works both with open world assumption and in a library setting.
-Consider for example the work of Matthew[Class Invariants: The end of the road]:
+Consider for example the work of Matthew~\cite{parkinson2007class}:
 in this short paper he verify a \Q@Observer@ class invariant over
 a \Q@Subject/Observer@ pattern.
 However, the proof relies on the method \Q@Subject.register(Observer)@ respecting its contract.
