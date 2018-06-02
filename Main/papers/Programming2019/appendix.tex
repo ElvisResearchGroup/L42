@@ -192,7 +192,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 		    \item Otherwise, $l$ is still $OK$
     	\end{itemize}
 
-		\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been garbage), thus $garbage$ is still $OK$.
+		\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $garbage$), thus $garbage$ is still $OK$.
 		
 		\item As we don’t change any monitors here, nothing that was $monitored$ could have been made un-$monitored$, and so it is still $OK$.
 		
@@ -216,7 +216,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 \begin{itemize}
 	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{validate}\oR\cR)$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
 
-	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can’t have been garbage and $monitored$), as \textsc{update} itself preserves this property and we haven’t modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
+	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can’t have been $garbage$ and $monitored$), as \textsc{update} itself preserves this property and we haven’t modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
 
 	\item If the monitor was introduced by \textsc{mcall}. Then it was due to calling a capsule-mutator method that mutated a field $f$.
 	\begin{itemize}
