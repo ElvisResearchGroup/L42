@@ -72,7 +72,7 @@ For the purposes of validation we only need to restrict mutation, so we may rela
 \end{itemize}
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-\noindent Capsule references are usually expressed using linear/affine types~\cite{Boyland01} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverages on destructive reads.\cite{GordonEtAl12,clebsch2015deny}.
+\noindent Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverages on destructive reads~\cite{GordonEtAl12,clebsch2015deny}.
 Destructive reads would be a bad idea for validation as they would likely invalidate objects.
 
 In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ methods using a \Q@capsule@ field (we call such methods `capsule mutators'):
@@ -90,7 +90,7 @@ class ShippingList{
   private capsule Items items;
   ShippingList(capsule Items items) {
     this.items = items; // mutation of capsule field
-    if (!this.validate()) {throw Error(...);} //check at end of constructor
+    if (!this.validate()) {throw Error(...);}//check at end of constructor
   }
   read method imm Bool validate() {	// too heavy and the ship may sink
     return this.items.weight() <= this.capacity;
@@ -127,7 +127,7 @@ mut method imm Void multiThis(imm C c) {
 \end{lstlisting}
 \saveSpace
 \noindent If the former code was accepted, depending on dynamic dispatch on \Q@c@,
-\Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe a broken object.
+\Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe an invalid object.
 
 In order to ensure that a second reference to \Q@this@ is not reachable through the parameters we only accept \Q@imm@ and \Q@capsule@ parameters.
 If we were however to accept a \Q@read@ parameter, as in the example below,
@@ -218,7 +218,7 @@ This is however not the case.
 
 Consider the following
 simple pattern to allow flexible use of capsule fields: define a \Q@.transform()@ function and a \Q@ItemTransformer@ interface\footnote{A real language could
-provide a generic \Q@Transformer@ interface and allow auto-generation of  \Q@.transform()@ functions, similarly to auto-generating getters \& setters.} like so:
+provide a generic \Q@Transformer@ interface and allow auto-generation of  \Q@.transform()@ functions, similarly to auto-generating getters and setters.} like so:
 
 
 %interface Foo{ma mb}
@@ -302,7 +302,7 @@ imm Void method imm Void doStuff(read C c) {
 %  // instead of:
   %\Comment{}%this.exposeItems().add(i)
 
-Since \Q@.doStuff()@ does not access a capsule field but merely calls a method that does.
+\Q@.doStuff()@ does not access a capsule field but merely calls a method that does; thus
 it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
 Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation.%
 %,  i.e. they can't see or update the other capsule fields.
@@ -310,7 +310,7 @@ Our pattern cooperates with the language’s restrictions to ensure each mutatio
 
 \loseSpace
 \noindent\textit{The box pattern:}
-At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs, such as with a doubly linked list type:
+At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs, such as a doubly linked list:
 \begin{lstlisting}[escapechar=\%]
 class List {
   mut List prev;
@@ -318,8 +318,7 @@ class List {
   imm Object elem;
   
   read method imm Bool innerValidate() {
-    return this.next.prev == this && this.prev.next == this
-      && ...;}}
+    return this.next.prev == this && this.prev.next == this && ...;}}
 \end{lstlisting}
 Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
 However, only \Q@capsule@ and \Q@imm@
