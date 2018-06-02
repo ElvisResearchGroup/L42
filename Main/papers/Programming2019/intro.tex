@@ -65,7 +65,7 @@ Like assertions, an (unchecked) exception is thrown if such a call returns \Q@fa
 Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type-system ensures the object is not reachable.
 If you were to step with the debugger, you may see invalid objects, and validation checks failing.
 
-\noindent Our approach follows the principles of \textbf{Offensive programming}:
+\noindent Our approach follows the principles of \textbf{Defensive/Offensive programming}~\cite{WikiDefensive}:
 \begin{itemize}
 \item The failure (an unchecked exception)
 is raised as close as possible to the defect (the operation creating an invalid object), i.e. we ``fail-fast''.
