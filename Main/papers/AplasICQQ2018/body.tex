@@ -51,7 +51,7 @@ We start by examining the base case of our induction: we annotated our
 code with trivial specifications.
 A code verifier could statically verify this code 
 once and for all when \Q@Pow@ is type-checked.
-Then, lets look at the \Q@inductive()@ step:
+Then, let us look at the \Q@inductive()@ step:
 
 \begin{lstlisting}
 Pow:{
@@ -622,7 +622,7 @@ uses two alternative versions of itself.
     }
 \end{lstlisting}
 
-This corresponds both to multiple inheritance, where a new version of a method is obtained by composing the two super implemenations,
+This corresponds both to multiple inheritance, where a new version of a method is obtained by composing the two super implementations,
 but also to a binary fold operation from \Q@S superToS1()@ and \Q@S superToS2()@
 into a \Q@S toS()@ result.
 Thus, to apply this folding, we use \Q@Override@ and we leverage on the multiple inheritance interpretation:
