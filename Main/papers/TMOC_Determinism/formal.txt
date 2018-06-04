@@ -32,7 +32,7 @@ Declarations and expressions grammar:
   //optional e, if absent is abstract method. mdf is the modifier for "this"
   e::= x | v | e.f | e1.f=e2 | e.m(es) | new C(es)
     | if x=native(C,es) then e3 else e4
-  v::= i | bytes
+  v::= i | b
   T::= mdf C | Bytes
   p::= Ds e  //program with main expression
 
@@ -189,11 +189,16 @@ REDUCTION:
 
 reduction is mostly conventional. Of course native is interesting:
 
-     C(byte1..byten)->Ok(byte)
+     C(bs)->Ok(b)
 (n-ok)------------------------------------
-     h|if x=native(C,byte1..byten) then e else e' -> h|e[x=byte]
+     h|if x=native(C,bs) then e else e' -> h|e[x=b]
 
-          C(byte1..byten)->Error
+          C(bs)->Error
 (n-error)------------------------------------
-     h|if x=native(ID,byte1..byten) then e else e' -> h|e'
+     h|if x=native(ID,bs) then e else e' -> h|e'
 
+
+
+simpler option:
+  no bites, just 
+  if rand then e1 else e2
