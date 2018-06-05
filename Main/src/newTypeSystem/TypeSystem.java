@@ -81,7 +81,7 @@ public interface TypeSystem{
   public static void checkExists(Program p, Path pi){
     if (pi.isCore()){p.extractClassB(pi);}
     }
-  public static ErrorKind subtype(Program p, Type tSub, Type tSuper) {
+  public static ErrorKind _subtype(Program p, Type tSub, Type tSuper) {
     checkExists(p,tSub.getPath());
     checkExists(p,tSuper.getPath());
     if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){return ErrorKind.NotSubtypeClass;}
@@ -103,12 +103,12 @@ public interface TypeSystem{
     }
   public static boolean methTSubtype(Program p,MethodType mSub,MethodType mSuper){
     if (!Functions.isSubtype(mSuper.getMdf(),mSub.getMdf())){return false;}
-    if (null!=subtype(p,mSub.getReturnType(),mSuper.getReturnType())){
+    if (null!=_subtype(p,mSub.getReturnType(),mSuper.getReturnType())){
       return false;
     }
     if(mSub.getTs().size()!=mSuper.getTs().size()){return false;}
     {int i=-1;for(Type tSub:mSub.getTs()){i+=1;Type tSuper=mSuper.getTs().get(i);
-      if (null!=subtype(p,tSuper,tSub)){
+      if (null!=_subtype(p,tSuper,tSub)){
         return false;
         }
       }}

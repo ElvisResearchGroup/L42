@@ -43,10 +43,10 @@ interfaces has only abstract methods, while classes has
 no abstract methods.
 Well formedness: methods containing native(ID$,...) are contained in $ named classes.
 The language semantic is parametric on a relation
-C(bytes)->R  with R::=Ok(byte)| Error
+C(bs)->R  with R::=Ok(b)| Error
 such relation is well formed:
-  for all C, bytes, exists R so that C(bytes)->R  //always defined
-  ID(bytes)->R and ID(bytes)->R' implies R=R' //ID without dollar is deterministc
+  for all C, bs, exists R so that C(bs)->R  //always defined
+  ID(bs)->R and ID(bs)->R' implies R=R' //ID without dollar is deterministc
 
   Conventional "if e then e1 else e2" is sugar for
   "if unused=native(IF,e.getBytes()) then e1 else e2"
@@ -56,8 +56,8 @@ We do not support exceptions for simplicity, we discuss challenges of exceptions
 Type environments:
 
   G::= x1:T1..xn:Tn
-  h::= i1->C1(is1).. in->Cn(isn)
-  H::= i1:C1.. in:Cn
+  h::= i1->mdf1 C1(is1).. in->mdfn Cn(isn) //mdf only imm/mut
+  H::= i1:T1.. in:Tn  //mdf only imm/mut
 
 I aim to show (variations of) the following:
   -1: **read determinism**
@@ -89,6 +89,11 @@ To my understanding those properties together remove (most of) the need of backd
 ***The key to those properties is that a capability class can only
 implement a normal interface that has all methods with mut modifier
 for this.***
+
+
+
+name/address signature, arguments
+ID foobar_float32_int32_int64
 
 
 for example, assume

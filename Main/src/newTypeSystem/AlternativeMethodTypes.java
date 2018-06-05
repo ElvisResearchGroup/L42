@@ -175,7 +175,7 @@ public class AlternativeMethodTypes {
   }
   public static MethodType _firstMatchReturn(Program p,Type nt,List<MethodType> mts){
   for(MethodType mt:mts){
-    if(null==TypeSystem.subtype(p, mt.getReturnType(), nt)){return mt;}
+    if(null==TypeSystem._subtype(p, mt.getReturnType(), nt)){return mt;}
     }
   return null;
   }

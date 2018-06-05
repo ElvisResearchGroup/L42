@@ -24,15 +24,21 @@ import ast.ExpCore.UpdateVar;
 import tools.Assertions;
 
 public interface TsOperations extends TypeSystem{
-    
+
     default TOut tsPath(TIn in, ExpCore.EPath s) {
-      Type t=new Type(Mdf.Class,s.getInner(),Doc.empty());
-      if(s.getInner().isCore()){    
+      Type t=new Type(Mdf.Class,Path.Any(),Doc.empty());
+      if(s.getInner().isCore()){
         ClassB cb=in.p.extractClassB(s.getInner());
         assert cb!=null;
-        if(cb.isInterface()){t=t.withPath(Path.Any());}
+        if(!cb.isInterface()){
+          boolean hasClassMeth=
+            cb.mwts().stream().anyMatch(m->m.getMt().getMdf().equals(Mdf.Class));
+          if(hasClassMeth) {
+            t=t.withPath(s.getInner());
+            }
+          }
         }
-      ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+      ErrorKind subErr=TypeSystem._subtype(in.p, t, in.expected);
       if(subErr==null){
         return new TOk(in,s,t);
         }
@@ -44,7 +50,7 @@ public interface TsOperations extends TypeSystem{
     //D |-x ~> x :D.G(x) <= T | emptyTr
     //  D.p|- D.G(x) <= T
     Type nt=in.g(s.getInner());
-    ErrorKind subErr=TypeSystem.subtype(in.p,nt,in.expected);
+    ErrorKind subErr=TypeSystem._subtype(in.p,nt,in.expected);
     if(subErr==null){
       return new TOk(in,s,nt);
       }
@@ -55,7 +61,7 @@ public interface TsOperations extends TypeSystem{
     //D |- void~> void:imm Void <= T | emptyTr
     //D.p|-imm Void <= T
     Type t=Path.Void().toImmNT();
-    ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+    ErrorKind subErr=TypeSystem._subtype(in.p, t, in.expected);
     if(subErr==null){
       return new TOk(in,s,t);
       }
@@ -69,22 +75,22 @@ public interface TsOperations extends TypeSystem{
     //  D.p|-T0 <= T
     //  forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
     //Now plugings are assumed to always ask for imm/class parameters
-    if (s.getPath().isPrimitive()){     
-      throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);     
-      }       
+    if (s.getPath().isPrimitive()){
+      throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);
+      }
     List<Type> lt;try{lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);}
     catch(UsingInfo.NonExistantMethod nem){
-      throw new ErrorMessage.PluginMethodUndefined(null,s,null,Position.noInfo);  
+      throw new ErrorMessage.PluginMethodUndefined(null,s,null,Position.noInfo);
     }
     assert s.getEs().size()==lt.size()-1;
-    ErrorKind k=TypeSystem.subtype(in.p,lt.get(0),in.expected);
+    ErrorKind k=TypeSystem._subtype(in.p,lt.get(0),in.expected);
     if(k!=null){return new TErr(in,"",lt.get(0),k);}
     List<ExpCore> newEs=new ArrayList<>();
     TOut out0=type(in.withE(s.getInner(),lt.get(0)));
     if(!out0.isOk()){return out0;}
     TOk okAcc=out0.toOk();
-    {int i=-1;for(ExpCore ei:s.getEs()){i+=1;       
-      Type ti=lt.get(i+1);//1..n      
+    {int i=-1;for(ExpCore ei:s.getEs()){i+=1;
+      Type ti=lt.get(i+1);//1..n
       assert ti.getMdf()==Mdf.Immutable || ti.getMdf()==Mdf.Class;
       TOut outi=type(in.withE(ei,ti));
       if(!outi.isOk()){return outi;}
@@ -100,11 +106,11 @@ public interface TsOperations extends TypeSystem{
       //  T1 = resolve(D.p,guessType(D.G,e))// Note, resolves and guessTypes can go in error, and need to become a type error here
       //  if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
       //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
-      //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps 
+      //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps
       //  D|- e~>  e' :  T3 <=T2|Ts;Ps
       Type T1=GuessTypeCore._of(in.p,in, s.getInner(),true);
       assert T1!=null;
-      Type T2;      
+      Type T2;
       if(s.getKind()!=SignalKind.Return){
         T2=T1.getPath().toImmNT();
         }
@@ -124,10 +130,10 @@ public interface TsOperations extends TypeSystem{
     //D.p|-imm Library <= T
     //D.Phase  |- D.p.evilPush(L) ~> L'
     Type t=Path.Library().toImmNT();
-    ErrorKind subErr=TypeSystem.subtype(in.p, t, in.expected);
+    ErrorKind subErr=TypeSystem._subtype(in.p, t, in.expected);
     if(subErr!=null){
       TErr out=new TErr(in,"-----------",t,subErr);
-      return out;  
+      return out;
       }
     TOut out=typeLib(in.withP(in.p.evilPush(s)));
     if(out.isOk()){
@@ -142,7 +148,7 @@ public interface TsOperations extends TypeSystem{
     //  D|- e ~> e' : _ <= imm Void | Tr
     TOut innerT=type(in.withE(s.getInner(), Path.Void().toImmNT()));
     if(!innerT.isOk()){return innerT.toError();}
-    ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
+    ErrorKind subErr=TypeSystem._subtype(in.p, Path.Void().toImmNT(),in.expected);
     if(subErr==null){
       TOk res= new TOk(in,s.withInner(innerT.toOk().annotated),innerT.toOk().computed);
       res=res.trUnion(innerT.toOk());
@@ -162,7 +168,7 @@ public interface TsOperations extends TypeSystem{
         assert false;
         //TODO: return TErr locked var to improve
         }
-      ErrorKind subErr=TypeSystem.subtype(in.p, Path.Void().toImmNT(),in.expected);
+      ErrorKind subErr=TypeSystem._subtype(in.p, Path.Void().toImmNT(),in.expected);
       if(subErr!=null){
         assert false;//strange exp like Foo(a:=b)
         }
