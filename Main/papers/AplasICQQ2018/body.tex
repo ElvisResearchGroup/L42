@@ -205,8 +205,8 @@ with respect to QQ.
 we now aim to show that IC is as expressive as QQ, and possibly easier to use on the large scale.
 
 To this aim, we will show how, from a very specific point of view, OO languages are declarative.
-We will then show that \Q@Override@ and other composition operators are
-declarative operators, and that they can be combined in a general purpose way to synthesize new declarative operators.
+We will then show \Q@Override@ and other composition operators, and that they can be 
+combined in a general purpose way to synthesize new operators.
 
 Except for the algebra of composition operators, that is already presented in~\cite{servetto2014meta},
 all the considerations, ideas and techniques presented in this section are novel contributions.
@@ -247,7 +247,7 @@ and if in a future release the heir is enriched with
 more methods, such methods will also be injected into
 the subclass.
 
-This allows a limited declarative programming style.
+This allows a limited programming style.
 For example, in
 
 \begin{lstlisting}[language=Java]
@@ -265,7 +265,7 @@ following the double role of both a class and a class generator/decorator.
 You can think of this as giving some suggestions to \Q@Button@
 on what code to generate when creating the class \Q@Rounded@.
 
-It is a very limited declarative language aimed to code composition.
+It is a very limited language aimed to code composition.
 In Java,  the \emph{code composition reasoning engine} is part of the language.
 In Java is a very simple minded reasoning, but it gets much more expressive in other languages, like C++.
 
@@ -276,7 +276,7 @@ However, this point of view lets us interpret many approaches
 (traits~\cite{scharli2003traits}, mixins~\cite{smaragdakis2000mixin}, generics~\cite{igarashi2001featherweight}, family polymorphism~\cite{ernst2001family})
 as ways to enrich what \Q@Button@ can do to generate the
 required \Q@Rounded@ from the hints provided by the programmer:
-a way to enrich the declarative, domain specific language
+a way to enrich the domain specific language
 that the programmer uses to instruct base classes into generating their heirs.
 
 In this article we wish to temporarily forget that base classes can be used as class or as types, and
@@ -400,8 +400,8 @@ inside class \Q@C@ is not relevant: only the behaviour/contract of such method i
 
 
 \subsection*{Patterns for generating arbitrary behaviour}
-The general idea is to define a new declarative operator
-using other declarative operators.
+The general idea is to define a new operator
+using other operators.
 %(like Override for code composition and Refactor.redirect for generics).
 Operators can generate imperative code, but such code is not directly
 specified, it is synthesized by inductive reasoning.
@@ -704,8 +704,8 @@ trait multiple inheritance, redirect/generics and rename
 can be used as a starting point to synthesize arbitrary behaviour for a
 code literal using an inductive mindset.
 Trait multiple inheritance, redirectand rename
-are high level declarative class composition and adaptation operators,
-and the obtained decorator also has this declarative `feel'.
+are high level class composition and adaptation operators,
+and the obtained decorator also has a declarative `feel'.
 
 
 
