@@ -1,0 +1,133 @@
+
+
+G |- e:T
+e can do all new T in e can do
+e can do all that 
+T can do for all x:T in G
+
+
+x:MockFile |- new Nothing(x).readFile()
+x:ReadFile |- new Nothing(x).readFile()
+
+x:Nothing |- new Nothing(x.cap).readFile()
+
+class Nothing{
+  ReadFile cap;
+  method readFile(){cap.read();}
+}
+
+IRF
+
+class Nothing {
+	fn bar() {;}
+}
+class NotNothing: Nothing { 
+	fn bar() { new File(...).write(); }
+}
+
+fn foo(Nothing n) {
+	n.bar()
+}
+
+
+
+native(Label,.....)
+
+classes using native can not be dynamically loaded
+
+
+
+capability not quite a class
+
+capability Root {
+	fn run_native_code();
+}
+
+
+LoadClass(...) 
+
+capability CallFoo restricts Root {
+	fn call_foo(Strings) {
+		Root.run_native_code(s[0],s[1]);
+	}
+}
+
+I1 use Root with expression
+CallFoo m=CallFoo.call_foo(...)
+
+
+
+
+The Error
+
+recurring antipatten in OO research
+I have a problem
+I solved it by addin "not quite object/classes" to an OO/class based system
+
+modules,
+pachages,
+projects
+nested-projects
+While nested classes/just object fields could solve the issue
+
+aspects
+  constructos
+  instances
+  fienlds
+  dyloades
+NOT CLASSES/OBJES
+
+
+The Hope
+
+to have a limited number of "human understandable" concepts
+that works well together
+
+NO ONE says java classes are such concept
+
+interfaces+ trait
+interfaces are trait
+interfaced+final class
+
+
+
+
+
+
+- modules Name { children; }
+- type Name: StorageType
+- expressions = atleast, new Type, lambda...
+
+
+
+lambda calculus
+
+
+Marco Original
+
+Isaac Original 
+Isaac Second Day+sugar?
+
+Marco Class dependency/no modifiers
+
+Marco Original
+addressed problems
+ conventional o capability systems
+   -do no offer static reasoning OR requires alias tracking
+   -require a BULT in "giant" capability library
+bonuses
+  -caching
+  -imparative+function reasoning
+  -may be can be extended to have multiple kinds of acces control instead of just mut
+
+
+Isaac addressed problem
+  we want fine grain control of what "native/non deterministic" think can happen 
+  and we want a static reasoning on such fine grain control
+
+
+ 
+Marco Class dependency
+
+
+

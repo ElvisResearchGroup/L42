@@ -52,7 +52,7 @@ e::=L|void|x| P | chain.m[P,T]((x:e)s)
   | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
 k::=catch throw P x e
 d::=var? T x=e | var? x=chain
-chain::=x|P|chain.m( (x:e)s )|(ds chain)
+chain::=x|P|chain.m( (x:e)s )|(ds chain)|void |L //TODO: void,L added  7/6/2018 to allow return L and return void
 //TODO: update sugared language to require chain as meth receiver and thrown expressions
 _______
 #define Compiled terms
@@ -126,22 +126,22 @@ comments, since they can have annotated Ps
 Part 2: Well formedness
 -----------------------------------------------------------
 
-* C__n,m__n: if for a given L and non-empty n,  C__n in dom(L)
-  or m__n(xs) in dom(L), then for any other L' in the project
+* L: if C__n in dom(L) or m__n(xs) in dom(L),
+  then for any other L' in the project
   C'__n notin dom(L') and m'__n(xs') notin dom(L')
 
 * d: var T x=e is valid only if T not capsule or fwd.
 
-* ms: unique x in xs, 'this' notin xs
+* ms: 'this' notin xs and all x in xs are unique
 
-* mh: Any notin Ps //Ps is thrown exceptions
+* mh: 'Any' notin Ps //Ps is thrown exceptions
 
-* mdf: "%" not present in any term, will be used internally by the type system
+* mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 
 * C:e :  C not Any, Library, Void, This, Thisn
 
 * L: unique LDom in dom(L), Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
-    Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? empty
+    Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? is empty
 
 * L interface:
    methods in interfaces have no body
@@ -169,12 +169,12 @@ Part 2: Well formedness
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
-  //Note: in the code this happens while "Program.methods" adds a methodType to a MethodImplemented. 
+  //Note: in the code this happens while "Program.methods" adds a methodType to a MethodImplemented.
   //TODO: still need to happen in desugaring for methods that are born as MethodWithType
 _______
 #define     //note: FV is trivially defined from cX
 cX(e)//count occurences of xs
-  cX(x)=x         
+  cX(x)=x
   cX(void)=cX(P)=cX(L)=empty
   cX(throw[T1,T2] e)=cX(e)
   cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work
@@ -240,7 +240,7 @@ program primitive operations:
 
 program derived operations:
 
--p.get(n)=p'
+-p.get(n)=L
  p.get(0)=p.top()
  p.get(n+1)=p.pop().get(n)
 
@@ -286,7 +286,7 @@ so we can use information to find a way to
 grow transP(p.pop()) into the same depth as p and p'.
 
 _______
-#define p.growFellow(p0)=p1
+#define p.growFellow(p0)=p1  //could be p0.pushLike(p)
 (L,ctxL,_).growFellow(p0)=p0.push(p0.top()/ctxL)
 
 Following the transL/transP pattern shown above,
@@ -321,6 +321,6 @@ an "LC" can be explored weakly deep if we explore method bodies
 in a shallow way and nested libraries in a weakly deep way.
 an "e" can be explored strongly deep if we explore all its subexpressions
 strongly deep, meaning that we enter into all contained Ls
-In this sense, ctxC and inside are shallow operations.
+In this sense, 'ctxC' and 'inside' are shallow operations.
 L(Cs) is weakly deep, since it can not select Ls inside method bodies.
 On the other hand, well formedness and [from _] are strongly deep.
