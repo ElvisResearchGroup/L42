@@ -146,7 +146,7 @@ public interface TsLibrary extends TypeSystem{
         MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
         if(mwtP==null){continue;}
         MethodType M0=From.from(mwtP.getMt(),P);
-        ErrorKind kind=TypeSystem.subtype(in.p, mwt.getMt().getReturnType(),M0.getReturnType());
+        ErrorKind kind=TypeSystem._subtype(in.p, mwt.getMt().getReturnType(),M0.getReturnType());
         if(kind!=null){
           return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
           }
@@ -204,7 +204,7 @@ public interface TsLibrary extends TypeSystem{
         if(!mt.getTs().isEmpty()){return false;}
         Type Ti_=TypeManipulation._toRead(Ti);
         if (Ti_==null){return false;}//p|-toRead(Ti)<=T
-        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType())){return false;}
+        if(null!=TypeSystem._subtype(p, Ti_,mt.getReturnType())){return false;}
         return true;
         }
       if(m!=Mdf.Mutable){return false;}
@@ -212,7 +212,7 @@ public interface TsLibrary extends TypeSystem{
       if(mt.getTs().isEmpty()){//exposer
         Type Ti_=TypeManipulation.capsuleToLent(Ti);
         if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
-        if(null!=TypeSystem.subtype(p, Ti_,mt.getReturnType())){return false;}
+        if(null!=TypeSystem._subtype(p, Ti_,mt.getReturnType())){return false;}
         return true;
         }
       //setter refine? mut method Void m[n?](T that)
@@ -220,7 +220,7 @@ public interface TsLibrary extends TypeSystem{
       if(mt.getTs().size()!=1){return false;}
       if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
       Type T=mt.getTs().get(0);
-      if(null!=TypeSystem.subtype(p, Ti,T)){return false;}
+      if(null!=TypeSystem._subtype(p, Ti,T)){return false;}
       if(Ti.getMdf()==Mdf.Readable){
         Mdf mT=T.getMdf();
         if(mT!=Mdf.Capsule && mT!=Mdf.Immutable){return false;}

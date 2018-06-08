@@ -97,7 +97,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
      return new TErr(in,"",e0Ok.computed,ErrorKind.NoMostGeneralMdf);
      }
    Type t=new Type(tMdf,in.expected.getPath(),Doc.empty());
-   assert null==TypeSystem.subtype(in.p,t, in.expected);
+   assert null==TypeSystem._subtype(in.p,t, in.expected);
    Block annotated=new Block(s.getDoc(),dsOk.ds,e0Ok.annotated,ksOk.ks,s.getP(),t);
    TOk res=new TOk(in,annotated,t);
    // result Tr: Tr'.capture(p,ks') U Tr U Tr0

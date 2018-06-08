@@ -216,9 +216,9 @@ $equalsAll2:Resource<><Use[$equalsNum2();$equalsPlus2()]<><$equalsNeg2()
 ESDEAll2:Use[$evalAll();$showAll();$doubleAll()]<><$equalsAll2()
 
 Main: {
-  i=ESDAll
-  i1=ESDEAll
-  i2=ESDEAll2
+  class Any i=ESDAll
+  class Any i1=ESDEAll
+  class Any i2=ESDEAll2
   Debug(S"Hello ExpProblemScalaWay")
   return ExitCode.normal()
 

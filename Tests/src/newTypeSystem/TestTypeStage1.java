@@ -73,7 +73,7 @@ public class TestTypeStage1 {
          new String[]{"{ C:{class method This k()}}"}
        },{lineNumber(),"Library",
          new Type(Mdf.Class,Path.Any(),Doc.empty()),
-         new Type(Mdf.Class,Path.Library(), Doc.empty()),
+         new Type(Mdf.Class,Path.Any(), Doc.empty()),
          new String[]{"{ C:{class method This k()}}"}
        },{lineNumber(),"C.k()",
          new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
