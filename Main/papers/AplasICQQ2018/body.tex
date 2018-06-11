@@ -96,13 +96,16 @@ Pow:{...
   static method Library generate(Num y){
     var Library res=this.base()
     for(i in Range(y)){
-      res=Override[exp<-superExp, pow<-superPow](res, this.inductive())
-     $\Comment{Override will check the composition is correct.}$
-     $\Comment{that is: renaming in res pow(x) and exp() as superPow(x) and superExp(),}$
-     $\Comment{ res.superPow(x).ensures  satisfyAtLeast inductive.superPow(x).ensures}$
-      }
-   $\Comment{here we statically know that res is statically verified;}$
+      res=Override[exp<-superExp, pow<-superPow](
+        res,
+        this.inductive())
+    }
+   $\Comment{Override will check the composition is correct.}$
+   $\Comment{that is: renaming in res pow(x) and exp() as}$
+   $\Comment{superPow(x) and superExp();}$
+   $\Comment{res.superPow(x).ensures  satisfyAtLeast inductive.superPow(x).ensures}$
     return res }  }$\Comment{RV happens here}$
+   $\Comment{Here we statically know that res is statically verified;}$
 \end{lstlisting}
 
 Note how when the \Q@Override@ operation  runs, it will
@@ -212,93 +215,32 @@ Except for the algebra of composition operators, that is already presented in~\c
 all the considerations, ideas and techniques presented in this section are novel contributions.
 
 
-\subsection*{Object-orientation (OO) points to declarative languages}
-Imperative programming asks you to write down the
-detailed computational steps your machine should perform.
-This allows the programmer to reason about their
-programs by ``emulating computer'' in their mind.
-As we all know too well, this tempting approach to understand 
- program behaviour does not scale.
-We can see OO
-as taking imperative programming towards a more
-declarative style:
-\subsubsection*{Subtyping}
- A dynamically dispatched method invocation
-gives us no certainty of the detailed computational steps
-that are going to be performed, and
-requires programmers to reason in terms of the
-abstract contract of the method: that is
-the desired properties of the result as function of the arguments.
-The programmers are still in control of the detailed behaviour,
-but such control is delegated to the programmer that
-instantiated such object.
-The receiver object takes up the role of the \emph{reasoning engine} that takes
-care of transforming the programmer request into a result.
-In many OO languages, this reasoning engine amounts to just following a pointer. However,
- as the Visitor Pattern and other  design patterns show us, this is sufficient to encode very interesting behaviour resolution.
-Moreover, some languages implement multiple dispatch~\cite{clifton2000multijava}, making this reasoning engine a lot more expressive.
-\subsubsection*{Subclassing}
-From this point of view, inheritance
-represents a similar loss/transfer of control:
-The programmer does not know
-the full set of methods a class offers:
-this depends on the methods offered by the base class,
-and if in a future release the heir is enriched with
-more methods, such methods will also be injected into
-the subclass.
-
-This allows a limited programming style.
-For example, in
-
-\begin{lstlisting}[language=Java]
-class Rounded extends Button{ ... }
-\end{lstlisting}
-
-We declare \Q@Rounded@s to be buttons in a way that
-is parametric on what \Q@Button@s concretely are.
-The programmer of \Q@Rounded@ just has to specify little bits
-of behaviour to personalize the kind of buttons.
-The concrete code is then automatically derived
-by composing it with the existing code of \Q@Button@.
-You can see \Q@Button@s as
-following the double role of both a class and a class generator/decorator.
-You can think of this as giving some suggestions to \Q@Button@
-on what code to generate when creating the class \Q@Rounded@.
-
-It is a very limited language aimed to code composition.
-In Java,  the \emph{code composition reasoning engine} is part of the language.
-In Java is a very simple minded reasoning, but it gets much more expressive in other languages, like C++.
-
-Since the behaviour of inheritance
-is set in stone, \Q@Button@ is not very active in deciding
-about \Q@Rounded@.
-However, this point of view lets us interpret many approaches
-(traits~\cite{scharli2003traits}, mixins~\cite{smaragdakis2000mixin}, generics~\cite{igarashi2001featherweight}, family polymorphism~\cite{ernst2001family})
-as ways to enrich what \Q@Button@ can do to generate the
-required \Q@Rounded@ from the hints provided by the programmer:
-a way to enrich the domain specific language
-that the programmer uses to instruct base classes into generating their heirs.
-
-In this article we wish to temporarily forget that base classes can be used as class or as types, and
-focus on their active role in the generation
-of code. In this context we will call them Class Decorators.
-Compile-time meta-programming~\cite{sheard2002template} is a good way to give Decorators
-a mind of their own, so that they can perform arbitrary
-complicated steps while generating their heirs.
-
-%Conventional meta-programming techniques, based on AST rewriting by quote/unquote syntax
-%are very flexible, but let/force/inactivate the user to generate the behaviour at the
-%source code level of detail.
-
-%Instead here we will use meta-programming only as a way to decide what declarative operators to apply
-%and how. Meta-programming will not directly generate code, but delegate this responsibility to operators.
-
-%In this paper we show:
-%\begin{itemize}
-%\item The declarative DSL composed by well established class composition operators
-%\item can generate heir code containing arbitrary imperative behaviour,
-%\item and the generation process uses inductive functional reasoning.
-%\end{itemize}
+%\subsection*{Object-orientation (OO) points to declarative languages}
+%Imperative programming asks you to write down the
+%detailed computational steps your machine should perform.
+%This allows the programmer to reason about their
+%programs by ``emulating computer'' in their mind.
+%As we all know too well, this tempting approach to understand 
+% program behaviour does not scale.
+%We can see OO
+%as taking imperative programming towards a more
+%declarative style:
+%\subsubsection*{Subtyping}
+% A dynamically dispatched method invocation
+%gives us no certainty of the detailed computational steps
+%that are going to be performed, and
+%requires programmers to reason in terms of the
+%abstract contract of the method: that is
+%the desired properties of the result as function of the arguments.
+%The programmers are still in control of the detailed behaviour,
+%but such control is delegated to the programmer that
+%instantiated such object.
+%The receiver object takes up the role of the \emph{reasoning engine} that takes
+%care of transforming the programmer request into a result.
+%In many OO languages, this reasoning engine amounts to just following a pointer. However,
+% as the Visitor Pattern and other  design patterns show us, this is sufficient to encode very interesting behaviour resolution.
+%Moreover, some languages implement multiple dispatch~\cite{clifton2000multijava}, making this reasoning engine a lot more expressive.
+%\subsubsection*{Subclassing}
 
 \subsection*{An algebra of composition operators}
 
@@ -399,6 +341,77 @@ inside class \Q@C@ is not relevant: only the behaviour/contract of such method i
 
 
 
+
+
+%******************************
+\subsection*{The concept of class decorators}
+
+Conventional meta-programming techniques, based on AST rewriting by quote/unquote syntax
+are very flexible, but push the user to generate the behaviour at the `source code' level of detail.
+This is similar to the mindset of imperative programming, asking you to write down the
+detailed computational steps your machine should perform.
+This allows the programmer to reason about their programs by `emulating computer' in their mind.
+As we all know too well, this tempting approach to understand  program behaviour does not scale.
+Instead here we will use meta-programming only as a way to decide what declarative operators to apply
+and how. Meta-programming will not directly generate code, but delegate this responsibility to operators.
+
+This approach is similar the the way inheritance
+represents a desirable loss/transfer of control:
+The programmer does not know the full set of methods a class offers:
+this depends on the methods offered by the base class,
+and if in a future release the heir is enriched with
+more methods, such methods will also be injected into
+the subclass.
+
+For example, in
+
+\begin{lstlisting}[language=Java]
+class Rounded extends Button{ ... }
+\end{lstlisting}
+
+We declare \Q@Rounded@s to be buttons in a way that
+is parametric on what \Q@Button@s concretely are.
+The programmer of \Q@Rounded@ just has to specify little bits
+of behaviour to personalize the kind of buttons.
+The concrete code is then automatically derived
+by composing it with the existing code of \Q@Button@.
+You can see \Q@Button@s as
+following the double role of both a class and a class generator/decorator.
+You can think of this as giving some suggestions to \Q@Button@
+on what code to generate when creating the class \Q@Rounded@.
+
+It is a very limited declarative language aimed to code composition.
+In Java,  the \emph{code composition reasoning engine} is part of the language.
+In Java is a very simple minded reasoning, but it gets much more expressive in other languages, like C++.
+
+Since the behaviour of inheritance
+is set in stone, \Q@Button@ is not very active in deciding
+about \Q@Rounded@.
+However, this point of view lets us interpret many approaches
+(traits~\cite{scharli2003traits}, mixins~\cite{smaragdakis2000mixin}, generics~\cite{igarashi2001featherweight}, family polymorphism~\cite{ernst2001family})
+as ways to enrich what \Q@Button@ can do to generate the
+required \Q@Rounded@ from the hints provided by the programmer:
+a way to enrich the domain specific language
+that the programmer uses to instruct base classes into generating their heirs.
+
+In this article we wish to temporarily forget that base classes can be used as class or as types, and
+focus on their active role in the generation
+of code. In this context we will call them \emph{Class Decorators}.
+Compile-time meta-programming~\cite{sheard2002template} is a good way to give Decorators
+a mind of their own, so that they can perform arbitrary
+complicated steps while generating their heirs.
+
+
+
+%*******************
+
+
+
+
+
+
+
+
 \subsection*{Patterns for generating arbitrary behaviour}
 The general idea is to define a new operator
 using other operators.
@@ -445,7 +458,10 @@ In order to have a clear goal,
 let's imagine a tentative code we would like to obtain:
 
 \begin{lstlisting}
-Stringable<><{S name Num age method S sayHi() ="Hi, i'm "++this.name()}
+Stringable<><{
+  S name Num age
+  method S sayHi() = "Hi, i'm "++this.name()
+  }
 \end{lstlisting}
 
 \noindent should evaluate into
@@ -628,15 +644,17 @@ into a \Q@S toS()@ result.
 Thus, to apply this folding, we use \Q@Override@ and we leverage on the multiple inheritance interpretation:
 
 \begin{lstlisting}
-  static method Library fold(Libs that,Library acc) = {
-    if that.isEmpty() (return acc)
-    newAcc=Override[toS()<-superToS1(),superToS2()](that.left(), acc)<><{
-      method S toS()= this.superToS1()++", "++this.superToS2()
-      method S superToS1()
-      method S superToS2()
-      }
-    return this.fold(that.withoutLeft(),acc:newAcc)
+static method Library fold(Libs that,Library acc) = {
+  if that.isEmpty() (return acc)
+  newAcc=Override[toS<-superToS1,superToS2](
+      that.left(),
+      acc)<><{
+    method S toS()= this.superToS1()++", "++this.superToS2()
+    method S superToS1()
+    method S superToS2()
     }
+  return this.fold(that.withoutLeft(),acc:newAcc)
+  }
 \end{lstlisting}
 
 The base case of this recursive code is the empty list, where \Q@acc@ is returned,

@@ -3,7 +3,7 @@
 
 Lisp~\cite{pitman1980special}, MetaML~\cite{moggi1999idealized}, Template Haskell~\cite{sheard2002template} and many other approaches use Quasi Quotation (QQ).
 This can be supported by two kinds of special parenthesis as a syntactic sugar to manipulate Abstract Syntax Trees (ASTs).
-Lisp uses \Q@`@ and \Q@,@, while here we use
+Lisp uses (\Q@`@) and (\Q@,@), while here we use
 \Q@[|  |]@  and \Q@$\$$(  )@ (as Template Haskell) 
 for better readability.
 
@@ -11,8 +11,10 @@ The following example explains their meaning:
 
 \begin{lstlisting}
 Int res0=x*x $\Comment{normal code}$
-Expr<x:Int$\vdash$Int> res1=[| x*x |]$\Comment{new Mul(new Var("x"),new Var("x"))}$
-Expr<x:Int$\vdash$Int> res2=[| x* $\$$(12+3) |]$\Comment{new Mul(new Var("x"),new Lit(15))}$
+Expr<x:Int$\vdash$Int> res1=[| x*x |]
+  $\Comment{new Mul(new Var("x"),new Var("x"))}$
+Expr<x:Int$\vdash$Int> res2=[| x* $\$$(12+3) |]
+  $\Comment{new Mul(new Var("x"),new Lit(15))}$
 \end{lstlisting}
 
 Here \Q@res1@ is initialized using a ``quotation'' of code.
@@ -120,14 +122,14 @@ As a concrete example, in Java operators \Q@+@ and \Q@*@ can be used in the expr
 but the operator \Q@extends@ can only be used in the specific context of class declaration, as in
 
 \begin{lstlisting}[language=Java]
-class A extends B { /*some code*/ int m(){return 1+super.m();}}
+class A extends B{/*some code*/ int m(){return 1+super.m();}}
 \end{lstlisting}
 
 In our proposed approach we lift \Q@extends@ and code literals to operator and constants
 that can be used in conventional expressions. We would write the former example as:
 
 \begin{lstlisting}
-A = Override[m()<-superM()]( 
+A = Override[m<-superM]( 
   {/*code of B*/},
   { /*some code*/ int m(){return 1+this.superM();}}
   )
@@ -152,7 +154,7 @@ Pow = {
     method Num superPow(Num x)$\Comment{no body: it is an abstract method}$
     }
   static method Library inductive(Library that)
-   = Override[pow(x)<-superPow(x)](that, this.inductive())
+   = Override[pow<-superPow](that, this.inductive())
   
   static method Library generate(Num y)
    = if (y==0) then this.base();

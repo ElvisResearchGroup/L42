@@ -60,8 +60,27 @@ strings are internally used by a 42 third party library.
 This is obtained by smart usage of the \Q@Redirect@ and \Q@Rename@ operators.
 
 
+\section{Related work}
+
+Due to space limitations we cannot include an extensive related work section,
+but we tried to discuss other approaches during the exposition.
+The interested reader may refer to the good survey by Smaragdakis et al.~\cite{smaragdakis2015structured}.
+
+Others proposed to use traits and code composition to perform meta-programming~\cite{reppy2007metaprogramming}.
+
+The very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
+more abstract techniques for AST rewriting and manipulation/simplification,
+to go towards the kind of abstraction offered by IC;
+thus recognizing QQ is, at least sometimes, too low level.
+
+We wonder if Ur~\cite{chlipala2010ur} could be extended to represent our \Q@inductive()@ concept:
+Ur is a QQ system focused on guaranteeing generation of well-typed records,
+and it may be possible to extend it to records with abstract members.
+
 
 \section{Conclusion}
+
+
 Quasi Quotation offers the maximum possible expressive power, since it can generate any possible AST.
 We argue that our approach can generate any behaviour, but not any AST.
 For example, we have no direct control on the way local variables, private methods 
@@ -92,17 +111,17 @@ We also speculate how conventional OO verification techniques can be
 used to verify code generated with IC. To the best of our knowledge, there is no
 equivalent verification for QQ.
 
-Due to space limitations we cannot include an extensive related work section,
-but we tried to discuss other approaches during the exposition.
-The interested reader may refer to the good survey by Smaragdakis et al.~\cite{smaragdakis2015structured}.
+We believe the (meta)programming style and structure allowed by IC
+can support metaprogramming in the large, where the result of metaprogramming can be not just
+a single expression or function, but a large section of the program composed by multiple
+classes and interfaces. This rely on the fact that a code literal can contain nested classes/interfaces,
+that can freely refer to each other and even have subtype relations.
+Metaprogramming operators
+can then be applied on such code, 
+and they would preserve those relations.
+One of the biggest technical challenge we encounter while designing the primitive composition operator of 42 
+was to soundly preserve those relations, especially subtyping ones.
 
-Others proposed to use traits and code composition to perform meta-programming~\cite{reppy2007metaprogramming}.
+Any programmer using QQ directly in order to obtain this kind of metaprogramming would
+need ad hoc solutions to address the difficulties we encountered.
 
-The very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
-more abstract techniques for AST rewriting and manipulation/simplification,
-to go towards the kind of abstraction offered by IC;
-thus recognizing QQ is, at least sometimes, too low level.
-
-We wonder if Ur~\cite{chlipala2010ur} could be extended to represent our \Q@inductive()@ concept:
-Ur is a QQ system focused on guaranteeing generation of well-typed records,
-and it may be possible to extend it to records with abstract members.
