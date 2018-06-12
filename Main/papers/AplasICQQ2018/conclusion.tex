@@ -62,11 +62,34 @@ This is obtained by smart usage of the \Q@Redirect@ and \Q@Rename@ operators.
 
 \section{Related work}
 
+Many researchers have explored variations of QQ, as for example
+Template Haskell~\cite{sheard2002template} and MetaML \cite{moggi1999idealized}.
+Of course those works have profound differences between each other, but they all
+focus their attention on AST manipulation.
+
+MorphJ \cite{mj} is an interesting outlier, in the sense that is not QQ, but 
+it still focuses on AST manipulation. It is another domain-specific language which takes in input well-typed Java classes. Syntactically, it consists in a template-like mechanism added on top of Java. This mechanism is called  
+\emph{class morphing} and allows a class to abstract over the structure of other types. For instance, one can define a parametric class \lstinline{Log<X>} which provides, for each method of \lstinline{X}, a method with the same signature which invokes the original method and logs its result on a database.
+A theorem prover ensures that, for any well-typed class in input, a well-typed class is produced.
+
+We are not the first work proposing metaprogramming that do not rely on QQ and do not
+focus on AST manipulation.
+A very relevant concept is meta-traits \cite{reppy2007metaprogramming}:
+ traits that can have \emph{place-holders} to be later filled with types, 
+values, or method names.
+To generate an instance of a meta-trait, one 
+gives actual values for the place-holders. 
+Formally, a meta-trait is a function from some parameters to traits.
+This technique allows to emulate rename operators as well as generic classes/traits.
+This proposal supports separate typechecking of trait definitions. That is, there is no need to perform meta-trait expansion
+ in order to typecheck classes which use a trait.
+
+
+%Spec#
+
 Due to space limitations we cannot include an extensive related work section,
 but we tried to discuss other approaches during the exposition.
 The interested reader may refer to the good survey by Smaragdakis et al.~\cite{smaragdakis2015structured}.
-
-Others proposed to use traits and code composition to perform meta-programming~\cite{reppy2007metaprogramming}.
 
 The very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
 more abstract techniques for AST rewriting and manipulation/simplification,
