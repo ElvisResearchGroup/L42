@@ -153,8 +153,8 @@ Pow = {
     method Num pow(Num x)= x*this.superPow(x)
     method Num superPow(Num x)$\Comment{no body: it is an abstract method}$
     }
-  static method Library inductive(Library that)
-   = Override[pow<-superPow](that, this.inductive())
+  static method Library inductive(Library code)
+   = Override[pow(x)<-superPow(x)](code, this.inductive())
   
   static method Library generate(Num y)
    = if (y==0) then this.base();
@@ -167,25 +167,30 @@ Pow7 ={method Num pow(Num x)=x.x*x*x*x*x*x*x*1}
 \end{lstlisting}
 
 \noindent In more detail:
-
+\begin{itemize}
+\item
 \Q@base()@ is a method with no parameter with \Q@Library@ return type.
 This is equivalent to a non parametrised version of \Q@Expr@ in QQ.
 However, our approach still guarantees that all the results are well typed.
 \Q@base()@ returns a class with a single method \Q@pow(x)@,
 returning 1.
-
+\item
 For the inductive case, the method \Q@pow(x)@ of \Q@inductive()@ is defined in terms of
 another method (\Q@superPow(x)@), representing the delegation to
 the former case in the inductive reasoning.
-Note that the declaration of \Q@superPow(x)@ is an abstract method: a method without body.
-
-To actually perform the induction we use \Q@inductive(that)@.
+%Note that the declaration of \Q@superPow(x)@ is an abstract method: a method without body.
+\item To actually perform the induction we use \Q@inductive(code)@.
 Note how we use the operator \Q@Override@ inside of a normal method body.
-Method \Q@generate(y)@ uses recursion to \textbf{iteratively compose} the result, using induction starting from
+While executing \Q@inductive(code)@,
+\Q@superPow(x)@ will be implemented using
+the \Q@pow(x)@ body from the induction premise: the \Q@code@ parameter.
+Then, \Q@superPow(x)@ is inlined.
+
+\item Method \Q@generate(y)@ uses recursion to \textbf{iteratively compose} the result, using induction starting from
 the base case.
 Note how this method is logically identical to \Q@powerAux@. However,
 since we always work on the actual self contained code neither \Q@lambdaX@ nor \Q@compile@ are needed.
-
+\end{itemize}
 Our approach builds on top of code composition operations like multiple inheritance and generics.
 The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} many successful efforts about proving the
 \emph{semantic correctness} 
