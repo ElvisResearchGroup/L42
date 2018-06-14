@@ -373,6 +373,7 @@ and if in a future release the heir is enriched with
 more methods, such methods will also be injected into
 the subclass.
 
+\noindent
 For example, in
 
 \begin{lstlisting}[language=Java]
@@ -470,7 +471,7 @@ let's imagine a tentative code we would like to obtain:
 \begin{lstlisting}
 Stringable<><{
   S name Num age
-  method S sayHi() = "Hi, i'm "++this.name()
+  method S sayHi() = "Hi, i'm "+this.name()
   }
 \end{lstlisting}
 
@@ -479,9 +480,9 @@ Stringable<><{
 \begin{lstlisting}
 {S name Num age
  method S toS()=
-   "["++this.name().toS()++", "++this.age().toS()++"]"
+   "["+this.name().toS()+", "+this.age().toS()+"]"
  method S sayHi()=
-   "Hi, i'm "++this.name()
+   "Hi, i'm "+this.name()
 }
 \end{lstlisting}
 
@@ -627,7 +628,7 @@ To give an example of the result of \Q@baseCases(that)@, if we were to call
 \begin{lstlisting}
 baseCases({
   S name, Num age,
-  method S sayHi() = "Hi, i'm "++this.name()
+  method S sayHi() = "Hi, i'm "+this.name()
   })
 \end{lstlisting}
 
@@ -656,7 +657,7 @@ uses two alternative versions of itself.
 
 \begin{lstlisting}
     {
-    method S toS()= this.superToS1()++", "++this.superToS2()
+    method S toS()= this.superToS1()+", "+this.superToS2()
     method S superToS1()
     method S superToS2()
     }
@@ -673,7 +674,7 @@ static method Library fold(Libs that,Library acc) {
   newAcc=Override[toS()<-superToS1(),superToS2()](
       that.firstElement(),
       acc)<><{
-    method S toS()= this.superToS1()++", "++this.superToS2()
+    method S toS()= this.superToS1()+", "+this.superToS2()
     method S superToS1()
     method S superToS2()
     }
@@ -694,7 +695,7 @@ Continuing with the example from before, starting from the same code literal we 
 
 \begin{lstlisting}
 {S name, Num age,
- method S toS() = this.name().toS()++", "++this.age().toS()
+ method S toS() = this.name().toS()+", "+this.age().toS()
 }
 \end{lstlisting}
 
@@ -705,7 +706,7 @@ to present it better.
 \begin{lstlisting}
   static method Library close(Library that) =
     Override[toS()<-superToS()](that)<><{
-      method S toS() = "["++this.superToS()++"]"
+      method S toS() = "["+this.superToS()+"]"
       method S superToS()
       }
   }
@@ -718,7 +719,7 @@ to present it better.
 Starting from
 
 \begin{lstlisting}
-{S name, Num age, method S sayHi()= "Hi, I'm "++this.name()}
+{S name, Num age, method S sayHi()= "Hi, I'm "+this.name()}
 \end{lstlisting}
 
 \noindent
@@ -726,7 +727,7 @@ we would now obtain
 
 \begin{lstlisting}
 {S name, Num age,
- method S toS() = "["++this.name().toS()++", "+this.age().toS()++"]"
+ method S toS() = "["+this.name().toS()+", "+this.age().toS()+"]"
 }
 \end{lstlisting}
 
