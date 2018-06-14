@@ -47,6 +47,8 @@ Pow:{
   }
 \end{lstlisting}
 
+
+\noindent
 We start by examining the base case of our induction: we annotated our 
 code with trivial specifications.
 A code verifier could statically verify this code 
@@ -86,6 +88,7 @@ While the library literals above have contracts,
 neither methods \Q@base()@ nor \Q@inductive()@ have any contract:
 statically we only know they return a \Q@Library@.
 
+\noindent
 Here we put the pieces together:
 
 \begin{lstlisting}
@@ -139,7 +142,7 @@ the (meta-)programmer can choose when to do it.
 
 
 
-
+\noindent
 To summarize:
 \begin{itemize}
 \item
@@ -284,12 +287,14 @@ D3:Override[m()<-superM1(),superM2()](C.foo(),C.foo(),{
   })
 \end{lstlisting}
 
+\noindent
 By a process known as flattening~\cite{scharli2003traits}, we get the following results for \Q@D1,D2,D3@:
 
 \begin{lstlisting}
 D1:{method Num m()=2  }  
 \end{lstlisting}
 
+\noindent
 \Q@C.foo()@ is \emph{executed at compile time}
 and we use the result to initialize \Q@D1@.
 
@@ -297,6 +302,7 @@ and we use the result to initialize \Q@D1@.
 D2:{method Num m()=2  method Num n()=0  }  
 \end{lstlisting}
 
+\noindent
 \Q@Override@ works like inheritance; in this case since there is no conflict between
 the two code literals, the result is a library literal containing both
 %\begin{lstlisting}
@@ -508,6 +514,7 @@ Stringable:{
 % The method is called \Q@<><@ and thus can be invoked as binary operator.
 % We use the name \Q@Library@  for our code literals since they can contain nested classes, thus they potentially encapsulate a whole library. 
 
+\noindent
 The method uses inductive reasoning and is divided into 4 meaningful steps:
 \begin{itemize}
 \item[1] Using the input, we generate the base cases;
@@ -549,6 +556,7 @@ this method represents a reusable piece of code, where all the dependencies are 
 That is, this code is \emph{general} (\Q@T@ offers only the required \Q@toS()@ signature)
 but is not \emph{generic} in the Java/C\# sense.
 
+\noindent
 Now we can define our \Q@baseCases(that)@ method.
 
 \begin{lstlisting}
@@ -564,6 +572,7 @@ Now we can define our \Q@baseCases(that)@ method.
     }
 \end{lstlisting}
 
+\noindent
 We extract the fields by observing with introspection
 our input class.
 %As available in both Haskell and Python, we assume we can use the common syntax for list comprehension:
@@ -612,6 +621,7 @@ conventional nominal type system to avoid errors:
  Depending on the target language, this could be a big problem later on.
 
 
+\noindent
 To give an example of the result of \Q@baseCases(that)@, if we were to call 
 
 \begin{lstlisting}
@@ -630,6 +640,7 @@ Libs[
   ]
 \end{lstlisting}
 
+\noindent
 Note how there is no trace of the \Q@sayHi()@ method, and the
 nested classes named \Q@T@ have been removed to point at the
 external types \Q@S@ and \Q@Num@
@@ -678,6 +689,7 @@ Of course we can not just compose \Q@acc@ with the top of our list: they both of
 a \Q@toS()@ method. We need to provide extra code to override the conflicting implementation
 and provide new behaviour, in this case, the two strings separated by a comma.
 
+\noindent
 Continuing with the example from before, starting from the same code literal we would now obtain:
 
 \begin{lstlisting}
@@ -699,14 +711,17 @@ to present it better.
   }
 \end{lstlisting}
 
+\noindent
   In the \Q@close(that)@ method here, \Q@Override@ adds \Q@[]@ around the string.
 
+\noindent
 Starting from
 
 \begin{lstlisting}
 {S name, Num age, method S sayHi()= "Hi, I'm "++this.name()}
 \end{lstlisting}
 
+\noindent
 we would now obtain
 
 \begin{lstlisting}

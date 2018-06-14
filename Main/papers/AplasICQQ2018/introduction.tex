@@ -7,6 +7,7 @@ Lisp uses (\Q@`@) and (\Q@,@), while here we use
 \Q@[|  |]@  and \Q@$\$$(  )@ (as Template Haskell) 
 for better readability.
 
+\noindent
 The following example explains their meaning: 
 
 \begin{lstlisting}
@@ -17,6 +18,7 @@ Expr<x:Int$\vdash$Int> res2=[| x* $\$$(12+3) |]
   $\Comment{new Mul(new Var("x"),new Lit(15))}$
 \end{lstlisting}
 
+\noindent
 Here \Q@res1@ is initialized using a ``quotation'' of code.
 This is equivalent to generating the abstract syntax tree by hand, as shown in the comment.
 \Q@res2@ is initialized using a ``quasi-quotation'' of code: a chunk of code with a hole, that is filled by executing an expression.
@@ -139,7 +141,7 @@ A = Override[m<-superM](
 the expected super call name: \Q@Override[m()<-superM()](...)@.
 
 
-
+\noindent
 Going back to our \Q@pow@ example,
 in IC, the base and inductive cases look like this:
 
@@ -197,11 +199,13 @@ The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} m
 of code containing inheritance and generics.
 On the other hand, static verification of code generated with meta programming is an open research problem.
 
+\noindent
 We speculate our approach may offer the opportunity to solve this problem,
 and by construction generate statically verified code,
 by reusing techniques originally developed to verify normal object oriented code.
 
 
+\noindent
 The contributions of our work are as follows:
 \begin{itemize}
 \item
