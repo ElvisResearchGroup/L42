@@ -3,11 +3,11 @@
 is an ambitious language, aiming to 
  allow thousands of libraries to work together in a safe and maintainable manner.
  To this aim
- the actual 42 syntax is a little different from the one presented here, that is focused on making IC easier to grasp.
+ the actual 42 syntax is a little different from the one presented here, that is focused on making IC easier to understand to a reader experienced in Java.
  
 For example, operations are properly packaged under libraries: indeed most operators
 are accessed under \Q@Refactor@, as in \Q@Refactor.rename(...)@.
-The super call mechanism is different: instead of user specified names, override
+The super call mechanism is different: instead of user specified names (as \Q@superToS1()@), override
 uses conventional names: for \Q@toS()@ they would be \Q@#1toS()@ and \Q@#2toS()@.
 
 Another very important difference is that 42 sightly relaxes the requirement that all library literals are well typed whenever they are involved in execution.
@@ -67,7 +67,7 @@ Template Haskell~\cite{sheard2002template} and MetaML \cite{moggi1999idealized}.
 Of course those works have profound differences between each other, but they all
 focus their attention on AST manipulation.
 
-MorphJ \cite{mj} is an interesting outlier, in the sense that is not QQ, but 
+MorphJ \cite{huang2008expressive} is an interesting outlier, in the sense that is not QQ, but 
 it still focuses on AST manipulation. It is another domain-specific language which takes in input well-typed Java classes. Syntactically, it consists in a template-like mechanism added on top of Java. This mechanism is called  
 \emph{class morphing} and allows a class to abstract over the structure of other types. For instance, one can define a parametric class \lstinline{Log<X>} which provides, for each method of \lstinline{X}, a method with the same signature which invokes the original method and logs its result on a database.
 A theorem prover ensures that, for any well-typed class in input, a well-typed class is produced.
@@ -124,12 +124,10 @@ representation related issues.
 %\end{lstlisting}
 
 Practical experience shows that by using nested classes our approach allows generation of large chunks of code,
-by generating many interconnected classes at the same time. While, QQ is mostly used to generate single method bodies/functions.
+by generating many interconnected classes at the same time. On the other side QQ is mostly used to generate single method bodies/functions.
 
 We show that IC can be used to design highly abstract code generation, 
 while QQ requires (by design) to keep in mind the concrete shape of the generated code.
-
-
 We also speculate how conventional OO verification techniques can be
 used to verify code generated with IC. To the best of our knowledge, there is no
 equivalent verification for QQ.
@@ -137,14 +135,21 @@ equivalent verification for QQ.
 We believe the (meta)programming style and structure allowed by IC
 can support metaprogramming in the large, where the result of metaprogramming can be not just
 a single expression or function, but a large section of the program composed by multiple
-classes and interfaces. This rely on the fact that a code literal can contain nested classes/interfaces,
+classes and interfaces. This relies on the fact that a code literal can contain nested classes/interfaces,
 that can freely refer to each other and even have subtype relations.
 Metaprogramming operators
 can then be applied on such code, 
 and they would preserve those relations.
-One of the biggest technical challenge we encounter while designing the primitive composition operator of 42 
-was to soundly preserve those relations, especially subtyping ones.
+One of the biggest technical challenge we encounter while designing the primitive composition operator of 42 was to soundly preserve those relations, especially subtyping ones.
+A document illustrating formal descriptions of those operators and formally proving 
+their soundness is currently in progress.
 
-Any programmer using QQ directly in order to obtain this kind of metaprogramming would
-need ad hoc solutions to address the difficulties we encountered.
+To have a glimpse of those difficulties, consider how to directly use QQ to perform method rename:
+the natural approach would be to extends QQ allowing
+ holes in the place of method names.
+Filling those holes may introduce clashes in case
+the hole is replaced with the name of an existing method,
+either directly declared in the quasi quoted class body or indirectly declared in any implemented interface.
+This issue clearly make local reasoning challenging, in order to decide to perform a
+rename we need to access the type signature of all the implemented interfaces.
 

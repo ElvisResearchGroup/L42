@@ -148,12 +148,14 @@ method bodies respect the (static) contracts on the method headers.
 This can be handled exactly as static verification is normally handled in OO languages.
 \item
 During code composition we match contracts (\emph{satisfyAtLeast}).
-While sound and complete contract matching could be infeasible, 
-there are simple restrictions making it trivial.
-For example any contract \emph{satisfyAtLeast} the empty contract,
+There could be many possible designs for contract matching.
+Here we rely on the simplest possible matching, following those two rules:
+any contract \emph{satisfyAtLeast} the empty contract
 and two syntactically equivalent contracts \emph{satisfyAtLeast} each others.
-Expressiveness of matching is probably not important since the (meta-)programmer
-is going to write those contracts on purpose to make them matchable.
+It can be surprising that those rules are sufficient;
+the key is that 
+the (meta-)programmer can write contracts
+on purpose to make them matchable.
 \item
 We guarantee all library literals used by the execution are statically verified; but
 statically we do not know the details of their contracts.
@@ -207,9 +209,11 @@ with respect to QQ.
 \textbf{Independently} from those benefits, 
 we now aim to show that IC is as expressive as QQ, and possibly easier to use on the large scale.
 
-To this aim, we will show how, from a very specific point of view, OO languages are declarative.
-We will then show \Q@Override@ and other composition operators, and that they can be 
-combined in a general purpose way to synthesize new operators.
+To this aim,
+we will show how \Q@Override@
+and other composition operators can be 
+combined in a general purpose way to synthesize
+new operators.
 
 Except for the algebra of composition operators, that is already presented in~\cite{servetto2014meta},
 all the considerations, ideas and techniques presented in this section are novel contributions.
@@ -352,12 +356,12 @@ This is similar to the mindset of imperative programming, asking you to write do
 detailed computational steps your machine should perform.
 This allows the programmer to reason about their programs by `emulating computer' in their mind.
 As we all know too well, this tempting approach to understand  program behaviour does not scale.
-Instead here we will use meta-programming only as a way to decide what declarative operators to apply
-and how. Meta-programming will not directly generate code, but delegate this responsibility to operators.
+Instead here we will use meta-programming only as a way to decide what operators to apply. Meta-programming will not directly generate code, but delegate this responsibility to operators.
 
-This approach is similar the the way inheritance
-represents a desirable loss/transfer of control:
-The programmer does not know the full set of methods a class offers:
+Our approach
+induces a desirable loss/transfer of control,
+similar to the one happening in conventional inheritance, where
+the programmer does not know the full set of methods a class offers:
 this depends on the methods offered by the base class,
 and if in a future release the heir is enriched with
 more methods, such methods will also be injected into
@@ -448,7 +452,7 @@ propagate \Q@toS()@ to all the fields.
 This is also an important example: other operations like \Q@equals(that)@, \Q@hashCode()@ and \Q@compare(that)@
 also rely on propagating the operation over the fields.
 That is, all of these operations can be implemented by
-following the same programming pattern.
+following the same programming pattern we are going to show.
 
 We can also see \Q@Override@ as a class decorator, and
 write \Q@Override(a,b,c)<><d@ to highlight that the last parameter enjoys preferential composition.
@@ -491,12 +495,12 @@ returning a \Q@Library@.
 
 \begin{lstlisting}
 Stringable:{
-  static method Library <><(Library that) = (
+  static method Library <><(Library that){
     libs=this.baseCases(that) $\Comment{1}$
     acc=this.fold(libs,acc:{method S toS()= ""})$\Comment{2}$
     res=this.close(acc)$\Comment{3}$
-    Override[](res)<><that$\Comment{4}$
-    )
+    return Override[](res)<><that$\Comment{4}$
+    }
 ...
 \end{lstlisting}
 
@@ -508,6 +512,9 @@ The method uses inductive reasoning and is divided into 4 meaningful steps:
 \begin{itemize}
 \item[1] Using the input, we generate the base cases;
 in this case computing \Q@toS()@ for a class with a \textbf{single specific field}.
+That is, \Q@libs@ is a list, containing 
+as many \Q@Library@ literals as the fields of \Q@that@.
+Each literal has a \Q@toS()@ method that only handle a specific field.
 \item[2] Then we  \textbf{fold} our base cases into a single solution; in this case we specify how to merge two \Q@toS()@ implementations.
 \item[3] Finally we \textbf{close/wrap} our implementation (adding  \Q@[]@).
 \item[4]
@@ -545,18 +552,23 @@ but is not \emph{generic} in the Java/C\# sense.
 Now we can define our \Q@baseCases(that)@ method.
 
 \begin{lstlisting}
-  static method Libs baseCases(Library that) = Libs[
-      RedirectType(path:"T" into:fi.type())<><
-      Rename(selector:"f" into:fi.selector())<><
-      this.baseTrait()
-      | with fi in Fields(that)]
+  static method Libs baseCases(Library that){
+    res=Libs();//empty list
+    for(fi in Fields(that)){
+      tmp=RedirectType(path:"T" into:fi.type())<><
+        Rename(selector:"f" into:fi.selector())<><
+        this.baseTrait()
+      res.add(tmp);
+      }
+    return res;
+    }
 \end{lstlisting}
 
 We extract the fields by observing with introspection
 our input class.
-As available in both Haskell and Python, we assume we can use the common syntax for list comprehension:
-\Q@CollectionType[e| x in list]@
-Where the expression \Q@e@ denotes the entries in the newly generated collection.
+%As available in both Haskell and Python, we assume we can use the common syntax for list comprehension:
+%\Q@CollectionType[e| x in list]@
+%Where the expression \Q@e@ denotes the entries in the newly generated collection.
 In this case we generate our entries with the following interesting code:
 
 \begin{lstlisting}
@@ -581,13 +593,14 @@ with respect to QQ, since it allows one to express logic problems that would end
  defined \textbf{outside} of the decorated class.
  In case of \Q@fi.type()@ denoting a \textbf{nested class} inside of the decorated class,
  we would need to perform \Q@Rename(path:"T" into:fi.type())@ instead.
- \Q@RedirectType@ just switches between the two options and calls the right operation internally.
-
-\Q@Rename@ and \Q@Redirect@ leverage on the
+ \Q@RedirectType@ just switches between the two options and calls the right operation internally.%
+\footnote{
+One may wonder what could the return type of \Q@fi.type()@
+be. \Q@Rename@ and \Q@Redirect@ leverage on the
 conventional nominal type system to avoid errors:
  \Q@fi.type()@ returns a general \Q@Type@ type, and offers operations to extract either
  the internal path (typed \Q@Path@, that would be a well typed argument for \Q@Rename@)
- or the external class (typed \Q@Class@, that would be a well typed argument for \Q@Redirect@).
+ or the external class (typed \Q@Class@, that would be a well typed argument for \Q@Redirect@).}
 
  Note how the convenient and expressive operator \Q@RedirectType@ is a \textbf{derived operator},
  exactly as \Q@Stringable@,
@@ -603,7 +616,7 @@ To give an example of the result of \Q@baseCases(that)@, if we were to call
 
 \begin{lstlisting}
 baseCases({
-  S name Num age
+  S name, Num age,
   method S sayHi() = "Hi, i'm "++this.name()
   })
 \end{lstlisting}
@@ -612,8 +625,8 @@ baseCases({
 
 \begin{lstlisting}
 Libs[
-  {S name   method S toS() = this.name().toS()};
-  {Num age  method S toS() = this.age().toS()};
+  {S name,   method S toS() = this.name().toS()};
+  {Num age,  method S toS() = this.age().toS()};
   ]
 \end{lstlisting}
 
@@ -644,16 +657,16 @@ into a \Q@S toS()@ result.
 Thus, to apply this folding, we use \Q@Override@ and we leverage on the multiple inheritance interpretation:
 
 \begin{lstlisting}
-static method Library fold(Libs that,Library acc) = {
+static method Library fold(Libs that,Library acc) {
   if that.isEmpty() (return acc)
-  newAcc=Override[toS<-superToS1,superToS2](
-      that.left(),
+  newAcc=Override[toS()<-superToS1(),superToS2()](
+      that.firstElement(),
       acc)<><{
     method S toS()= this.superToS1()++", "++this.superToS2()
     method S superToS1()
     method S superToS2()
     }
-  return this.fold(that.withoutLeft(),acc:newAcc)
+  return this.fold(that.withoutFirstElement(),acc:newAcc)
   }
 \end{lstlisting}
 
@@ -668,7 +681,7 @@ and provide new behaviour, in this case, the two strings separated by a comma.
 Continuing with the example from before, starting from the same code literal we would now obtain:
 
 \begin{lstlisting}
-{S name Num age
+{S name, Num age,
  method S toS() = this.name().toS()++", "++this.age().toS()
 }
 \end{lstlisting}
@@ -691,13 +704,13 @@ to present it better.
 Starting from
 
 \begin{lstlisting}
-{S name Num age method S sayHi() "Hi, I'm "++this.name()}
+{S name, Num age, method S sayHi()= "Hi, I'm "++this.name()}
 \end{lstlisting}
 
 we would now obtain
 
 \begin{lstlisting}
-{S name Num age
+{S name, Num age,
  method S toS() = "["++this.name().toS()++", "+this.age().toS()++"]"
 }
 \end{lstlisting}
