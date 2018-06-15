@@ -1,4 +1,5 @@
 \section{Compile-time verification: Pow with contracts}
+\label{s:verification}
 In this section we show how conventional verification techniques for OO can be applied on top of IC.
 While IC is already presented in~\cite{servetto2014meta},
 the idea and the techniques to use IC for verification are novel contributions.
@@ -17,8 +18,11 @@ QQ is based on \emph{quasi} quotations, that is, \emph{parametric code} that
 will become \emph{complete code} when you fill in the holes.
 While in IC, every code literal is \emph{complete code} (with
 the usual OO semantics where methods can be overridden).
-Unsurprisingly, proving correctness of parametric code is much harder
-than for complete code.
+Proving correctness of parametric code (quasi quotations with holes)
+is (to the best of our knowledge) an unexplored research area;
+on the opposite, static verification of object oriented code,
+is a well developed research area, where proving properties
+of abstract classes is standard.
 
 We show this in the next example, where we handle \Q@pow@ as before, but while verifying that the
 result encodes the right \Q@pow@ function. We will use similar notation to JML, with \Q!@ensure! and \Q!@result!.
@@ -204,6 +208,7 @@ that the result is not only \emph{self-consistent} but also the expected one.
 %-------------------------------------------------------------------------------------
 
 \section{IC is as expressive as QQ}
+\label{s:pattern1}
 So far we have presented how using pre-post conditions benefits the safety of our approach 
 with respect to QQ.
 \textbf{Independently} from those benefits, 
