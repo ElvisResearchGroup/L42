@@ -450,9 +450,12 @@ A: Stringable <>< { .. }
 
 \subsection*{Babel fish operator \Q@<><@}
 Since the main goal of our approach is to generate code, we introduce a \emph{code generation operator} \Q@<><@, called Babel fish.
-It is a binary operator, taking a Decorator and a \Q@Library@, and producing another \Q@Library@.
+We consider a language with normal operator overriding, where binary operators are just another syntactic representation for (static or not) method calls with a single parameter.
+Babel fish is a binary operator, where the receiver takes up the role
+of a `decorator' and the parameter is a \Q@Library@. The operator produces another \Q@Library@.
+Thus \Q@Stringable <>< { .. }@ is equivalent to \Q@Stringable.babelFish({ .. })@ 
 
-We consider a language with normal operator overriding thus \Q@Stringable <>< { .. }@ is equivalent to \Q@Stringable.babelFish({ .. })@ 
+
 
 %Here \Q@Stringable@
 %can generate a \Q@toS()@/\Q@toString()@ method inside of the code literal \Q@{ .. }@,
