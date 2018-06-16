@@ -45,7 +45,7 @@ The ``inefficient'' version would be:
 \begin{lstlisting}[language=ML]
 fun power(x:Int,n:Int):Int 
   = if (n=0) then 1 else x*power(x,n-1);
-power7=$\lambda$ x:Int. power x 7;
+power7_a=$\lambda$ x:Int. power x 7;
 \end{lstlisting}
 
 \noindent A more ``efficient'' version using QQ would be:
@@ -57,16 +57,16 @@ fun powerAux(n:Int):Expr<x:Int$\vdash$Int>
 fun powerGen(n:Int): Int->Int
   = compile([| $\lambda$ x. $\$$(powerAux(n)) |]);
 
-power7=powerGen 7;
+power7_b=powerGen 7;
 \end{lstlisting}
 
 \noindent As you can see, by generating the abstract syntax tree, we can obtain exactly:
 
 \begin{lstlisting}[language=ML]
-power7=$\lambda$ x.x*x*x*x*x*x*x*1;
+power7_b=$\lambda$ x.x*x*x*x*x*x*x*1;
 \end{lstlisting}
 
-\noindent On most machines, \Q@power7@ runs faster than $\lambda$\Q@ x:Int. power x 7@.
+\noindent On most machines, \Q@power7_b@ runs faster than \Q@power7_a@.
 Metaprogramming applications include more than just speed boosts, but we start with this example because it is very popular and simple.
 
 The code generator above is quite compact, but it is actually \textbf{hiding} (not removing) the complexity of meta-programming.
@@ -117,7 +117,7 @@ This avoids all scope-extrusion related problems, and (as shown later) enforces 
 
 IC has already been presented in other work~\cite{servetto2014meta};
  IC expressive power is shown by examples,
-but is not compared with QQ; moreover such works suggested IC power is inferior to QQ.
+but is not compared with QQ; moreover such works suggested IC expressive power is inferior to QQ.
 The core idea of IC is to  \emph{rely on  operators of code composition inspired by normal
 code reuse}, but lifted to the expression level.
 As a concrete example, in Java operators \Q@+@ and \Q@*@ can be used in the expression \Q@1+2*3@,
@@ -128,7 +128,9 @@ class A extends B{/*some code*/ int m(){return 1+super.m();}}
 \end{lstlisting}
 
 In our proposed approach we lift \Q@extends@ and code literals to operator and constants
-that can be used in conventional expressions. We would write the former example as:
+that can be used in conventional expressions.
+Class declarations associate a class name with the result of an expression of type \Q@Library@. 
+ We would write the former example as:
 
 \begin{lstlisting}
 A = Override[m<-superM]( 
@@ -142,8 +144,8 @@ the expected super call name: \Q@Override[m()<-superM()](...)@.
 
 
 \noindent
-Going back to our \Q@pow@ example,
-in IC, the base and inductive cases look like this:
+We can rewrite our \Q@pow@ example 
+in IC:
 
 \begin{lstlisting}
 Pow = {
@@ -181,10 +183,11 @@ For the inductive case, the method \Q@pow(x)@ of \Q@inductive()@ is defined in t
 another method (\Q@superPow(x)@), representing the delegation to
 the former case in the inductive reasoning.
 %Note that the declaration of \Q@superPow(x)@ is an abstract method: a method without body.
-\item To actually perform the induction we use \Q@inductive(code)@.
-Note how we use the operator \Q@Override@ inside of a normal method body.
-While executing \Q@inductive(code)@,
-\Q@superPow(x)@ will be implemented using
+\item Method \Q@inductive(code)@ builds
+the code for \Q@x+1@ from the code for \Q@x@.
+Note how we use \Q@Override@ inside of a normal method body.
+This \Q@Override@ will implements
+\Q@superPow(x)@ using
 the \Q@pow(x)@ body from the induction premise: the \Q@code@ parameter.
 Then, \Q@superPow(x)@ is inlined.
 
@@ -198,14 +201,9 @@ The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} m
 \emph{semantic correctness} 
 of code containing inheritance and generics.
 On the other hand, static verification of code generated with meta programming is an open research problem.
-
-\noindent
 We speculate our approach may offer the opportunity to solve this problem,
 and by construction generate statically verified code,
 by reusing techniques originally developed to verify normal object oriented code.
-
-
-\noindent
 The contributions of our work are as follows:
 \begin{itemize}
 \item
@@ -218,6 +216,7 @@ by examples we show that IC is as expressive as QQ, and that
 generating code using a composition algebra
 is a flexible and simple technique, if combined with
 reasonable programming patterns.
+\item In Section~\ref{s:study} we discuss our experience implementing metaprogramming libraries for a language where IC is the only support for code reuse. 
 \end{itemize}
 
 In this paper we do not present a formal language semantic. This is in part for space reasons
