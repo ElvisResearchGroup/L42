@@ -120,7 +120,7 @@ representation related issues.
 %This means that while we can referred to other classes in the program, all variables always have a precise scope,
 %and code literals are \textbf{not} closures; that is, the following is invalid:
 %\begin{lstlisting}
-%C:{
+%C={
 %  method Library foo(Num x)=
 %    {method Num getX()=x}
 %  }$\Comment{ill typed: x not a parameter of method getX()}$
