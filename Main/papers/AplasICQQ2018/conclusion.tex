@@ -32,7 +32,7 @@ An (anonymized) 42 tutorial can be found at \url{l42.is/tutorial.xhtml}, while
 the GitHub project (not anonymized) can be reached at \url{github.com/ElvisResearchGroup/L42}.
 
 \noindent
-At URL \url{github.com/ElvisResearchGroup/L42/tree/master/Tests/src}
+At \url{github.com/ElvisResearchGroup/L42/tree/master/Tests/src}
 you can find about 10k lines of 42 code.
 
 To show that we can replace conventional code reuse,
@@ -53,11 +53,10 @@ a (quite compact thanks to IC) `units of measure' library
 (\url{adamsTowel02/libProject/Data})
 that adds equality, \Q@toS()@, run time invariant checking and other features to library literals.
 
-Finally, to show that IC can scale to work with large units of code,
+ Finally, to show that IC can scale to work with large units of code,
 we have implemented a non-trivial `library loading' library
 (\url{adamsTowel02/libProject/Load} and
-\url{adamsTowel02/libProject/DeployLibrary}), that 
-automatically tweaks libraries to use different implementations for their dependencies;
+\url{adamsTowel02/libProject/DeployLibrary}), that  tweaks libraries to use different implementations for their dependencies;
 this allows, for example, to change what kind of numbers and 
 strings are internally used by a 42 third party library.
 This is obtained by smart usage of the \Q@Redirect@ and \Q@Rename@ operators.
@@ -70,13 +69,12 @@ Template Haskell~\cite{sheard2002template} and MetaML \cite{moggi1999idealized}.
 Of course those works have profound differences between each other, but they all
 focus their attention on AST manipulation.
 
-MorphJ \cite{huang2008expressive} is an interesting outlier, in the sense that is not QQ, but 
+MorphJ \cite{huang2008expressive} is an interesting outlier: it is not QQ but 
 it still focuses on AST manipulation. It is another domain-specific language which takes in input well-typed Java classes. Syntactically, it consists in a template-like mechanism added on top of Java. This mechanism is called  
 \emph{class morphing} and allows a class to abstract over the structure of other types. For instance, one can define a parametric class \lstinline{Log<X>} which provides, for each method of \lstinline{X}, a method with the same signature which invokes the original method and logs its result on a database.
-A theorem prover ensures that, for any well-typed class in input, a well-typed class is produced.
+A theorem proving ensures that, for any well-typed class in input, a well-typed class is produced.
 
-We are not the first work proposing metaprogramming that do not rely on QQ and do not
-focus on AST manipulation.
+We are not the first work proposing metaprogramming that do not rely on QQ and AST manipulation.
 A very relevant concept is meta-traits \cite{reppy2007metaprogramming}:
  traits that can have \emph{place-holders} to be later filled with types, 
 values, or method names.
@@ -84,15 +82,8 @@ To generate an instance of a meta-trait, one
 gives actual values for the place-holders. 
 Formally, a meta-trait is a function from some parameters to traits.
 This technique allows to emulate rename operators as well as generic classes/traits.
-This proposal supports separate typechecking of trait definitions. That is, there is no need to perform meta-trait expansion
+Meta-traits supports separate typechecking of trait definitions:  there is no need to perform meta-trait expansion
  in order to typecheck classes which use a trait.
-
-
-%Spec#
-
-Due to space limitations we cannot include an extensive related work section,
-but we tried to discuss other approaches during the exposition.
-The interested reader may refer to the good survey by Smaragdakis et al.~\cite{smaragdakis2015structured}.
 
 The very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
 more abstract techniques for AST rewriting and manipulation/simplification,
@@ -103,6 +94,9 @@ We wonder if Ur~\cite{chlipala2010ur} could be extended to represent our \Q@indu
 Ur is a QQ system focused on guaranteeing generation of well-typed records,
 and it may be possible to extend it to records with abstract members.
 
+Due to space limitations we cannot include an extensive related work section,
+but we tried to discuss other approaches during the exposition.
+The interested reader may refer to the good survey by Smaragdakis et al.~\cite{smaragdakis2015structured}.
 
 \section{Conclusion}
 
@@ -144,7 +138,7 @@ Metaprogramming operators
 can then be applied on such code, 
 and they would preserve those relations.
 One of the biggest technical challenge we encounter while designing the primitive composition operator of 42 was to soundly preserve those relations, especially subtyping ones.
-A document illustrating formal descriptions of the operators presented in this work building upon~\cite{servetto2014meta} and formally proving 
+A document illustrating formal descriptions of the operators presented in this work (building upon~\cite{servetto2014meta}) and formally proving 
 their soundness is currently in progress.
 
 To have a glimpse of those difficulties, consider how to directly use QQ to perform method rename:
@@ -153,6 +147,6 @@ the natural approach would be to extends QQ allowing
 Filling those holes may introduce clashes in case
 the hole is replaced with the name of an existing method,
 either directly declared in the quasi quoted class body or indirectly declared in any implemented interface.
-This issue clearly make local reasoning challenging, in order to decide to perform a
+This issue clearly make local reasoning challenging, in order to safelly
 rename we need to access the type signature of all the implemented interfaces.
 
