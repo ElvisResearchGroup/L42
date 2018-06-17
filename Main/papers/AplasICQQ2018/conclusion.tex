@@ -33,7 +33,7 @@ the GitHub project (not anonymized) can be reached at \url{github.com/ElvisResea
 
 \noindent
 At \url{github.com/ElvisResearchGroup/L42/tree/master/Tests/src}
-you can find about 10k lines of 42 code.
+you can find about 10,000 lines of 42 code.
 
 To show that we can replace conventional code reuse,
 we have implemented a minimal `collections' library
@@ -70,8 +70,8 @@ Of course those works have profound differences between each other, but they all
 focus their attention on AST manipulation.
 
 MorphJ \cite{huang2008expressive} is an interesting outlier: it is not QQ but 
-it still focuses on AST manipulation. It is another domain-specific language which takes in input well-typed Java classes. Syntactically, it consists in a template-like mechanism added on top of Java. This mechanism is called  
-\emph{class morphing} and allows a class to abstract over the structure of other types. For instance, one can define a parametric class \lstinline{Log<X>} which provides, for each method of \lstinline{X}, a method with the same signature which invokes the original method and logs its result on a database.
+it still focuses on AST manipulation. It is another domain-specific language which takes in well-typed Java classes as input. Syntactically, it consists of a template-like mechanism added on top of Java. This mechanism is called  
+\emph{class morphing} and allows a class to abstract over the structure of other types. For instance, one can define a parametric class \lstinline{Log<X>} which provides, for each method of \lstinline{X}, a method with the same signature which invokes the original method and logs its result in a database.
 A theorem proving ensures that, for any well-typed class in input, a well-typed class is produced.
 
 We are not the first work proposing metaprogramming that do not rely on QQ and AST manipulation.
@@ -82,7 +82,7 @@ To generate an instance of a meta-trait, one
 gives actual values for the place-holders. 
 Formally, a meta-trait is a function from some parameters to traits.
 This technique allows to emulate rename operators as well as generic classes/traits.
-Meta-traits supports separate typechecking of trait definitions:  there is no need to perform meta-trait expansion
+Meta-traits support separate typechecking of trait definitions:  there is no need to perform meta-trait expansion
  in order to typecheck classes which use a trait.
 
 The very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
@@ -103,7 +103,7 @@ The interested reader may refer to the good survey by Smaragdakis et al.~\cite{s
 
 Quasi Quotation offers the maximum possible expressive power, since it can generate any possible AST.
 We conjecture that our approach can generate any behaviour, but not any AST.
-For example, we have no direct control on the way local variables, private methods 
+For example, we have no direct control on the way that the local variables, private methods 
 and in-lining are handled.
 We believe this is a good thing: fine control of the structure of expressions requires
 the (meta-)programmer to understand and handle scope, scope-extrusion, variable hiding and similar
@@ -121,7 +121,7 @@ representation related issues.
 %\end{lstlisting}
 
 Practical experience shows that by using nested classes our approach allows generation of large chunks of code,
-by generating many interconnected classes at the same time. On the other side QQ is mostly used to generate single method bodies/functions.
+by generating many interconnected classes at the same time. On the other side, QQ is mostly used to generate single method bodies/functions.
 
 We show that IC can be used to design highly abstract code generation, 
 while QQ requires (by design) to keep in mind the concrete shape of the generated code.
@@ -129,7 +129,7 @@ We also speculate how conventional OO verification techniques can be
 used to verify code generated with IC. To the best of our knowledge, there is no
 equivalent verification for QQ.
 
-We believe the (meta)programming style and structure allowed by IC
+We believe the (meta-)programming style and structure allowed by IC
 can support metaprogramming in the large, where the result of metaprogramming can be not just
 a single expression or function, but a large section of the program composed by multiple
 classes and interfaces. This relies on the fact that a code literal can contain nested classes/interfaces,
@@ -137,16 +137,16 @@ that can freely refer to each other and even have subtype relations.
 Metaprogramming operators
 can then be applied on such code, 
 and they would preserve those relations.
-One of the biggest technical challenge we encounter while designing the primitive composition operator of 42 was to soundly preserve those relations, especially subtyping ones.
+One of the biggest technical challenges we encountered while designing the primitive composition operator of 42 was to soundly preserve those relations, especially subtyping ones.
 A document illustrating formal descriptions of the operators presented in this work (building upon~\cite{servetto2014meta}) and formally proving 
 their soundness is currently in progress.
 
 To have a glimpse of those difficulties, consider how to directly use QQ to perform method rename:
-the natural approach would be to extends QQ allowing
+the natural approach would be to extend QQ allowing
  holes in the place of method names.
 Filling those holes may introduce clashes in case
 the hole is replaced with the name of an existing method,
 either directly declared in the quasi quoted class body or indirectly declared in any implemented interface.
-This issue clearly make local reasoning challenging, in order to safelly
+This issue clearly makes local reasoning challenging, in order to safely
 rename we need to access the type signature of all the implemented interfaces.
 
