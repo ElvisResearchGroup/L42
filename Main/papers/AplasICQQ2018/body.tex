@@ -9,7 +9,7 @@ we can
 note how the method \Q@inductive(code)@ in IC is equivalent to the method
 \Q@inductive(code)@ in QQ.
 However,
-the method \Q@inductive()@ in IC has no equivalent in QQ.
+the method \Q@inductive()@ in IC has no equivalent in QQ. The method
 \Q@inductive()@ returns the complete code of a class with an abstract method,
 that is then used as a handler to inject behaviour.
 There is no way in traditional QQ to express this same concept,
@@ -21,7 +21,7 @@ the usual OO semantics where methods can be overridden).
 
 We struggled to find literature about proving correct behaviour of parametric code (quasi quotations with holes). On the opposite, static verification of object oriented code,
 is a well developed research area, where proving properties
-of abstract classes is standard.
+of abstract classes is well-known.
 
 We show this in the next example, where we handle \Q@pow@ as before, but while verifying that the
 result encodes the right \Q@pow@ function. We will use similar notation to JML, with \Q!@ensure! and \Q!@result! representing methods pre and post conditions in special comments that are used by a verifying compiler and kept as metadata instead of ignored.
@@ -40,10 +40,10 @@ This time we will use explicit iteration instead of recursion, just to show that
 Pow={
   static method Library base()
     ={
-   $\Comment{@ensures exp()=0}$
+    $\Comment{@ensures exp()=0}$
     method Num exp()=0 
     
-   $\Comment{@ensures pow(x)=x\thisExp}$
+    $\Comment{@ensures pow(x)=x\thisExp}$
     method Num pow(Num x)= 1 
     }
   ...
@@ -63,19 +63,19 @@ Pow={
   static method Library base() =...$\Comment{as before}$
   static method Library inductive() 
     ={
-   $\Comment{@ensures @result=1+this.superExp()}$
+    $\Comment{@ensures @result=1+this.superExp()}$
     method Num exp()=1+this.superExp() 
       
     method Num superExp()$\Comment{no body: it is an abstract method}$
       
-   $\Comment{@ensures @result=x\thisExp}$
-   $\Comment{@proof:}$
-   $\Comment{ @result->x*this.superPow(x)//left side}$
-   $\Comment{  =x* x\thisSuperExp = x\oneThisSuperExp}$
-   $\Comment{ x\thisSuperExp->x\oneThisSuperExp//right side}$
+    $\Comment{@ensures @result=x\thisExp}$
+    $\Comment{@proof:}$
+    $\Comment{ @result->x*this.superPow(x)//left side}$
+    $\Comment{  =x* x\thisSuperExp = x\oneThisSuperExp}$
+    $\Comment{ x\thisSuperExp->x\oneThisSuperExp//right side}$
     method Num pow(Num x)= x*this.superPow(x)
       
-   $\Comment{@ensures pow(x)=x\thisSuperExp}$
+    $\Comment{@ensures pow(x)=x\thisSuperExp}$
     method Num superPow(Num x)$\Comment{no body: it is an abstract method}$
     }
   ...

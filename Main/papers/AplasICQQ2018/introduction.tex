@@ -30,7 +30,7 @@ representing every type of code.
 This ensures the result is syntactically well formed, but
 it allows for the generation of ill-typed code.
 Another option, for example used by MetaML,
-is to have a parametrized type.
+is to have a parameterized type.
 Here we use \Q@Expr<@$\Gamma\vdash T$\Q@>@; where
 $\Gamma$ keeps track of the free variables and $T$ is the expected type
 of the result.
@@ -116,8 +116,8 @@ Libraries are self contained in the sense that they contain no free variables.
 This avoids all scope-extrusion related problems, and (as shown later) enforces local reasoning.
 
 IC has already been presented in other work~\cite{servetto2014meta};
- IC expressive power is shown by examples,
-but is not compared with QQ; moreover such works suggested IC expressive power is inferior to QQ.
+ IC's expressive power is shown by examples,
+but is not compared with QQ; moreover such works suggested IC's expressive power is inferior to QQ.
 The core idea of IC is to  \emph{rely on  operators of code composition inspired by normal
 code reuse}, but lifted to the expression level.
 As a concrete example, in Java operators \Q@+@ and \Q@*@ can be used in the expression \Q@1+2*3@,
@@ -127,13 +127,13 @@ but the operator \Q@extends@ can only be used in the specific context of class d
 class A extends B{/*some code*/ int m(){return 1+super.m();}}
 \end{lstlisting}
 
-In our proposed approach we lift \Q@extends@ and code literals to operator and constants
+In our proposed approach, we lift \Q@extends@ and code literals to operator and constants
 that can be used in conventional expressions.
 Class declarations associate a class name with the result of an expression of type \Q@Library@. 
  We would write the former example as:
 
 \begin{lstlisting}
-A = Override[m<-superM]( 
+A = Override[m()<-superM()]( 
   {/*code of B*/},
   { /*some code*/ int m(){return 1+this.superM();}}
   )
@@ -173,8 +173,8 @@ Pow7 ={method Num pow(Num x)=x.x*x*x*x*x*x*x*1}
 \noindent In more detail:
 \begin{itemize}
 \item
-\Q@base()@ is a method with no parameter with \Q@Library@ return type.
-This is equivalent to a non parametrised version of \Q@Expr@ in QQ.
+\Q@base()@ is a method with no parameter and a \Q@Library@ return type.
+This is equivalent to a non-parameterized version of \Q@Expr@ in QQ.
 However, our approach still guarantees that all the results are well typed.
 \Q@base()@ returns a class with a single method \Q@pow(x)@,
 returning 1.
@@ -186,7 +186,7 @@ the former case in the inductive reasoning.
 \item Method \Q@inductive(code)@ builds
 the code for \Q@x+1@ from the code for \Q@x@.
 Note how we use \Q@Override@ inside of a normal method body.
-This \Q@Override@ will implements
+This \Q@Override@ will implement
 \Q@superPow(x)@ using
 the \Q@pow(x)@ body from the induction premise: the \Q@code@ parameter.
 Then, \Q@superPow(x)@ is inlined.
@@ -200,28 +200,28 @@ Our approach builds on top of code composition operations like multiple inherita
 The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} many successful efforts about proving the
 \emph{semantic correctness} 
 of code containing inheritance and generics.
-On the other hand, static verification of code generated with meta programming is an open research problem.
+On the other hand, static verification of code generated with meta-programming is an open research problem.
 We speculate our approach may offer the opportunity to solve this problem,
-and by construction generate statically verified code,
+and by construction generate statically verified code
 by reusing techniques originally developed to verify normal object oriented code.
 The contributions of our work are as follows:
 \begin{itemize}
 \item
-In Section~\ref{s:verification}
+In Section~\ref{s:verification},
 by examples we demonstrate how to apply conventional object oriented verification techniques to IC.
 
 \item
-In Section~\ref{s:pattern1}
+In Section~\ref{s:pattern1},
 by examples we show that IC is as expressive as QQ, and that
 generating code using a composition algebra
 is a flexible and simple technique, if combined with
 reasonable programming patterns.
-\item In Section~\ref{s:study} we discuss our experience implementing metaprogramming libraries for a language where IC is the only support for code reuse. 
+\item In Section~\ref{s:study}, we discuss our experience implementing metaprogramming libraries for a language where IC is the only support for code reuse. 
 \end{itemize}
 
-In this paper we do not present a formal language semantic. This is in part for space reasons
-and in part because similar semantic has been formalized in former work~\cite{servetto2014meta};
-here we aim to show programming patterns that use this expressive power in surprising and novel ways.
+In this paper we do not present a formal language semantic. This is partly due to space reasons
+and partly because a similar semantic has been formalized in former work~\cite{servetto2014meta}.
+Here we aim to show programming patterns that use this expressive power in surprising and novel ways.
 
 
 %-------------------------------------------------------------------------------------
