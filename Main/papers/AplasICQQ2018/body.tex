@@ -95,10 +95,10 @@ statically we only know they return a \Q@Library@.
 Here we put the pieces together:
 
 \begin{lstlisting}
-Pow={...
- $\Comment{@requiresRV y>=0}$
- $\Comment{@ensuresRV @result.exp().ensures = (@result = y)}$
- $\Comment{and @result.pow(x).ensures = (@result = x\powerY)}$
+Pow = {...
+  $\Comment{@requiresRV y>=0}$
+  $\Comment{@ensuresRV @result.exp().ensures = (@result = y)}$
+  $\Comment{and @result.pow(x).ensures = (@result = x\powerY)}$
   static method Library generate(Num y){
     var Library res=this.base()
     for(i in Range(y)){
@@ -109,16 +109,17 @@ Pow={...
     return res } }
 \end{lstlisting}
 
+\noindent
 When the \Q@Override@ operation  runs, it will
 ensure the resulting class is statically verified:
 every \Q@Library@ value has statically verified contracts. Operations 
 that generate \Q@Library@ values (as \Q@Override@) will also compose those contracts, while verifying such
-contract composition is sound.
+contract compositions are sound.
 In our example
 \Q@Override@ will check that 
 \Q@res.superPow(x).ensures  satisfyAtLeast inductive.superPow(x).ensures@
 (while renaming in \Q@res@ \Q@pow(x)@ and \Q@exp()@ as \Q@superPow(x)@ and \Q@superExp()@).
-In our case it is true since they would be sintactically identical.
+In our case it is true since they would be syntactically identical.
 However, in other cases, this may of course fail.
 We think of those operations as compile time operations lifted at execution.
 \Q@Override@ producing an error is  equivalent to
@@ -136,9 +137,9 @@ verifying compiler~\cite{hoare2003verifying} should do.
 
 This separation of concerns in our verification proposal is a key simplification
 in our model:
-all library values are well typed and statically verified all of the time,
-but what those contracts entail can be only verified at run-time, and
-the (meta-)programmer can choose when to do it.
+all library values are well typed and statically verified all the time,
+but what those contracts entail can be verified only at run-time, and
+that the (meta-)programmer can choose when to do it.
 
 
 
@@ -154,7 +155,7 @@ During code composition we match contracts (\emph{satisfyAtLeast}).
 There could be many possible designs for contract matching.
 Here we rely on the simplest possible matching, following those two rules:
 any contract \emph{satisfyAtLeast} the empty contract
-and two syntactically equivalent contracts \emph{satisfyAtLeast} each others.
+and two syntactically equivalent contracts \emph{satisfyAtLeast} each other.
 It can be surprising that those rules are sufficient;
 the key is that 
 the (meta-)programmer can write contracts
@@ -207,7 +208,7 @@ Run-time verification is a simple and effective way to close this last gap, so t
 
 \section{IC is as expressive as QQ}
 \label{s:pattern1}
-So far we have presented how using pre-post conditions benefits the safety of our approach 
+So far we have presented how using pre and post conditions benefits the safety of our approach 
 with respect to QQ.
 \textbf{Independently} from those benefits, 
 we now aim to show that IC is as expressive as QQ, and possibly easier to use on the large scale.
@@ -252,9 +253,9 @@ all the considerations, ideas and techniques presented in this section are novel
 \subsection*{An algebra of composition operators}
 
 In many class based object oriented languages, a class can inherit the code
-from one or more parents.
-In order to lift this capability as a metaprogramming operation 
-we define an algebra of code composition, where the values
+from one or more parent classes.
+In order to lift this capability as a metaprogramming operation,
+we define an algebra of code composition where the values
 are \Q@Library@ literals and the operations are the composition operators.
 
 \begin{itemize}
@@ -267,7 +268,7 @@ is a functionality taking in input \Q@Library@s and producing a \Q@Library@
 result, or a \emph{composition error}.
 \end{itemize}
 
-
+\noindent
 In the following example, class \Q@C@ contains a single static 
 method \Q@foo()@ returning a \Q@Library@ literal.
 We can use class \Q@C@ and the \Q@Override@ composition operator to
@@ -275,7 +276,7 @@ attempt creating classes \Q@D1,D2,D3@.
 
 \begin{lstlisting}
 C={
-  static method Library foo()={method Num m()=2  }  
+  static method Library foo()={ method Num m()=2 }  
   }
 D1=C.foo()
 D2=Override[](C.foo(),{method Num n()=0 })
@@ -291,7 +292,7 @@ D3=Override[m()<-superM1(),superM2()](C.foo(),C.foo(),{
 By a process known as flattening~\cite{scharli2003traits}, we get the following results for \Q@D1,D2,D3@:
 
 \begin{lstlisting}
-D1={method Num m()=2  }  
+D1={ method Num m()=2 }  
 \end{lstlisting}
 
 \noindent
@@ -299,12 +300,12 @@ D1={method Num m()=2  }
 and we use the result to initialize \Q@D1@.
 
 \begin{lstlisting}
-D2={method Num m()=2  method Num n()=0  }  
+D2={ method Num m()=2  method Num n()=0 }  
 \end{lstlisting}
 
 \noindent
 \Q@Override@ works like inheritance; in this case since there is no conflict between
-the two code literals, the result is a library literal containing both
+the two code literals, the result is a library literal containing both:
 %\begin{lstlisting}
 %D3=//composition error:
 %//two implementations for method m()  
@@ -373,12 +374,12 @@ the subclass.
 For example, in
 
 \begin{lstlisting}[language=Java]
-class Rounded extends Button{ ... }
+class Rounded extends Button { ... }
 \end{lstlisting}
 \noindent we declare \Q@Rounded@s to be buttons in a way that
 is parametric on what \Q@Button@s concretely are.
 The programmer of \Q@Rounded@ just has to specify little bits
-of behaviour to personalize the kind of buttons.
+of behaviour to personalize the kind of button.
 The concrete code is then automatically derived
 by composing it with the existing code of \Q@Button@.
 You can see \Q@Button@s as
@@ -388,7 +389,7 @@ on what code to generate when creating the class \Q@Rounded@.
 It is a very limited declarative language aimed to code composition.
 
 In Java,  the \emph{code composition reasoning engine} is part of the language.
-In Java is a very simple minded reasoning, but it gets much more expressive in other languages, like C++.
+In Java it is a very simple minded reasoning, but it gets much more expressive in other languages, like C++.
 
 Since the behaviour of inheritance
 is set in stone, \Q@Button@ is not very active in deciding
@@ -477,10 +478,9 @@ Stringable<><{
 
 \begin{lstlisting}
 {S name; Num age;
- method S toS()=
-   "["+this.name().toS()+", "+this.age().toS()+"]";
- method S sayHi()=
-   "Hi, i'm "+this.name();
+ method S sayHi() = "Hi, i'm "+this.name();
+ method S toS() 
+   = "["+this.name().toS()+", "+this.age().toS()+"]";
 }
 \end{lstlisting}
 
@@ -502,10 +502,10 @@ returning a \Q@Library@.
 Stringable={
   static method Library <><(Library that){
     libs=this.baseCases(that); $\Comment{step 1}$
-    acc=this.fold(libs,acc:{method S toS()= ""});$\Comment{step 2}$
-    res=this.close(acc);$\Comment{step 3}$
-    return Override[](res)<><that;$\Comment{step 4}$
-    }
+    acc=this.fold(libs,acc:{method S toS()= ""}); $\Comment{step 2}$
+    res=this.close(acc); $\Comment{step 3}$
+    return Override[](res)<><that; $\Comment{step 4}$
+  }
 ...
 \end{lstlisting}
 
@@ -520,7 +520,7 @@ The method uses inductive reasoning and is divided into 4 meaningful steps:
 in this case computing \Q@toS()@ for a class with a \textbf{single specific field}.
 That is, \Q@libs@ is a list, containing 
 as many \Q@Library@ literals as the fields of \Q@that@.
-Each literal has a \Q@toS()@ method that only handle a specific field.
+Each literal has a \Q@toS()@ method that only handles a specific field.
 \item[2] Then we  \textbf{fold} our base cases into a single solution; in this case we specify how to merge two \Q@toS()@ implementations.
 \item[3] Finally we \textbf{close/wrap} our implementation (adding  \Q@[]@).
 \item[4]
@@ -531,18 +531,20 @@ We then use \Q@Override@ to compose our \Q@toS()@ with the original input.
 
 %We will see more of the details of \Q@Override@ while examing the rest of the code.
 
+\noindent
+These four steps are further explained below.
 
-\subsection*{Phase 1: base cases}
+\subsection*{Step 1: base cases}
 To define our base case, we first 
  declare a method returning a constant \Q@Library@ value: an approximation for a class
  whose  \Q@toS()@ method delegates to a field.
 
 \begin{lstlisting}
-  static method Library baseTrait() = {
-    T f;
-    T={method S toS();}$\Comment{nested class}$
-    method S toS()= this.f().toS();
-    }
+static method Library baseTrait() = {
+  T f;
+  T = {method S toS();} $\Comment{nested class}$
+  method S toS() = this.f().toS();
+}
 \end{lstlisting}
 
 It has a field called \Q@f@ of type \Q@T@.
@@ -559,16 +561,16 @@ but is not \emph{generic} in the Java/C\# sense.
 Now we can define our \Q@baseCases(that)@ method.
 
 \begin{lstlisting}
-  static method Libs baseCases(Library that){
-    res=Libs();//empty list
-    for(fi in Fields(that)){
-      tmp=RedirectType(path:"T" into:fi.type())<><
-        Rename(selector:"f" into:fi.selector())<><
-        this.baseTrait();
-      res.add(tmp);
-      }
-    return res;
-    }
+static method Libs baseCases(Library that){
+  res=Libs();//empty list
+  for(fi in Fields(that)){
+    tmp=RedirectType(path:"T" into:fi.type())<><
+      Rename(selector:"f" into:fi.selector())<><
+      this.baseTrait();
+    res.add(tmp);
+  }
+  return res;
+}
 \end{lstlisting}
 
 \noindent
@@ -589,7 +591,7 @@ this.baseTrait()
 we rename our field name from \Q@f@ to the current field name, then
  we redirect \Q@T@ into the current field type.
  \Q@RedirectType@ is not an obvious operation, and is the kind of code manipulation where IC shines
-with respect to QQ, since it handles logic problems that would end up hidden in QQ.
+with respect to QQ, since it handles logical problems that would end up hidden in QQ.
  The operator \Q@RedirectType@ is more general than \Q@Redirect@ as shown in~\cite{servetto2014meta}.
  \Q@Redirect@ is a powerful operator:
  it deletes the nested class \Q@T@ and replaces all
@@ -624,10 +626,11 @@ To give an example of the result of \Q@baseCases(that)@, if we were to call
 baseCases({
   S name; Num age;
   method S sayHi() = "Hi, i'm "+this.name();
-  })
+})
 \end{lstlisting}
 
- we would obtain
+\noindent
+we would obtain
 
 \begin{lstlisting}
 Libs[
@@ -639,10 +642,10 @@ Libs[
 \noindent
 Note how there is no trace of the \Q@sayHi()@ method, and the
 nested classes named \Q@T@ have been removed to point at the
-external types \Q@S@ and \Q@Num@
+external types \Q@S@ and \Q@Num@.
 
 
-\subsection*{Phase 2: folding}
+\subsection*{Step 2: folding}
 Next we fold all our base cases into a single \Q@toS()@ method.
 Traditionally, to fold a list of values into a single value, a binary operation is needed.
 However, here we fold code representing methods,
@@ -669,12 +672,12 @@ static method Library fold(Libs that,Library acc) {
   newAcc=Override[toS()<-superToS1(),superToS2()](
       that.firstElement(),
       acc)<><{
-    method S toS()= this.superToS1()+", "+this.superToS2();
-    method S superToS1();
-    method S superToS2();
+      method S toS()= this.superToS1()+", "+this.superToS2();
+      method S superToS1();
+      method S superToS2();
     };
   return this.fold(that.withoutFirstElement(),acc:newAcc);
-  }
+}
 \end{lstlisting}
 
 The base case of this recursive code is the empty list, where \Q@acc@ is returned,
@@ -694,17 +697,17 @@ Continuing with the example from before, starting from the same code literal we 
 }
 \end{lstlisting}
 
-\subsection*{Phase 3: wrapping}
+\subsection*{Step 3: wrapping}
 We could be satisfied with such result, but often we wish to wrap our final result
 to present it better.
 
 \begin{lstlisting}
-  static method Library close(Library that) =
-    Override[toS()<-superToS()](that)<><{
-      method S toS() = "["+this.superToS()+"]";
-      method S superToS();
-      }
+static method Library close(Library that) =
+  Override[toS()<-superToS()](that)<><{
+    method S toS() = "["+this.superToS()+"]";
+    method S superToS();
   }
+}
 \end{lstlisting}
 
 \noindent
@@ -722,15 +725,15 @@ we would now obtain
 
 \begin{lstlisting}
 {S name; Num age;
-method S toS()="["+this.name().toS()+", "+this.age().toS()+"]";
+ method S toS()="["+this.name().toS()+", "+this.age().toS()+"]";
 }
 \end{lstlisting}
 
-\subsection*{Phase 4: composition}
+\subsection*{Steo 4: composition}
 The last operation in the top level method, is composing our generated \Q@toS()@ behaviour with the
 original code (containing also \Q@sayHi()@) in order to obtain the final result.
 
-We wish to stress how this example code could easily be adapted for \Q@equals(that)@ and
+We wish to stress this example code could easily be adapted for \Q@equals(that)@ and
 a plethora of other field dependent operations.
 With slightly more adaptation it could generate any pattern based on method shape/names in
 any code source.
@@ -741,11 +744,11 @@ to write generators for, let's say, \Q@equals(that)@ and \Q@toS()@ the programme
 Here we preferred to show the concrete code of the Decorator \Q@Stringable@ for the sake of a more
 direct example.
 
-In this section we have a shown how a combination of
+To summarize, in this section, we have a shown how a combination of
 trait multiple inheritance, redirect/generics and rename
 can be used as a starting point to synthesize arbitrary behaviour for a
 code literal using an inductive mindset.
-Trait multiple inheritance, redirectand rename
+Trait multiple inheritance, redirect and rename
 are high level class composition and adaptation operators,
 and the obtained decorator also has a declarative `feel'.
 
