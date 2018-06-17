@@ -24,7 +24,7 @@ is a well developed research area, where proving properties
 of abstract classes is well-known.
 
 We show this in the next example, where we handle \Q@pow@ as before, but while verifying that the
-result encodes the right \Q@pow@ function. We will use similar notation to JML, with \Q!@ensure! and \Q!@result! representing methods pre and post conditions in special comments that are used by a verifying compiler and kept as metadata instead of ignored.
+result encodes the right \Q@pow@ function. We will use similar notation to JML~\cite{jml}, with \Q!@ensure! and \Q!@result! representing methods pre and post conditions in special comments that are used by a verifying compiler and kept as metadata instead of ignored.
 We include \Q!@ensureRV! for conditions that we expect to be verified at run time, instead of statically verified.
 Many static verification approaches use some automatic theorem proving to figure out the proofs. Here, for completeness, we introduce a 
 \Q! @proof! notation, where we insert the full proof, to show what we expect a theorem proving to generate.
