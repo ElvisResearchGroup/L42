@@ -85,31 +85,33 @@ interface ComposeSpec{
 //containing plg comments!
 /**<pre>#define L1 ++p L2 = L0
   L1 ++p L2 = L0
-  with L0=L1 +p.evilPush(L0) L2
-  and ssv(p.evilPush(L1),p.evilPush(L2),p.evilPush(L0))
+    with L0=L1 +(p.evilPush(L0)) L2
+    and ssv(p.evilPush(L1),p.evilPush(L2),p.evilPush(L0))
   //note, we need to refresh the private names here
-
-#define ssv((p1, p2)?, p0), ssv(p,e), refined(p,ms,Ps)=Ps'
-//subtle subtype violation error function, p1,p2 parameters can be absent/empty
 
 </pre>*/void compose();
 
-/**<pre>ssv((p1, p2)?, p0):
-  error if not collect(p0,p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
-  error if dom(p0.top().mwts)!=dom(methods(p0,This0))
-  error if {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to ms that are "refine" in p0
+/**<pre>#define ssv((p1, p2)?, p0), ssv(p,e), refined(p,ms,Ps)=Ps'
+//subtle subtype violation error function, p1,p2 parameters can be absent/empty
+
+ssv((p1, p2)?, p0):
+  collect(p0, p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
+  dom(p0.top().mwts) == dom(methods(p0,This0))
+  forall {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to ms that are "refine" in p0
     ps0=refined(p0,ms,p0.top().Ps),
     psi=refined(pi,ms,pi.top().Ps)
-    and not ps0 subsetEq psi //using p0.equiv //that is, there is some 'surprisingly added' stuff in ps0
+    and ps0 subsetEq psi //using p0.equiv //that is, there is some 'surprisingly added' stuff in ps0
   if (p1, p2)? =empty
-    dsj=empty, otherwise
-    dsj=dom(p1.top()) disjoint dom(p2.top())//that is, present in both p1 and p2
-  forall C in dsj ssv(p1.push(C),p2.push(C),p0.push(C))
-  forall C in dom(p0.top())\dsj ssv(p0.push(C))
-  forall refine? mt e in p0.top() ssv(p0,e)
+    int=empty,
+  otherwise
+    int=dom(p1.top()) intersection dom(p2.top())//that is, present in both p1 and p2
+
+  forall C in int:                    ssv(p1.push(C),p2.push(C),p0.push(C))
+  forall C in dom(p0.top())\int:      ssv(p0.push(C))
+  forall refine? mt e in p0.top():    ssv(p0,e)
 
 ssv(p,e):
-  forall L such that e=ctxC[L], ssv(p.evilPush(L))
+  forall L such that e=ctxC[L]:  ssv(p.evilPush(L))
 
 refined(p,ms,Ps)={P |P in Ps and ms in dom(p(P)) }
   //note: if p(P) is undefined, then not ms in dom(p(P))
@@ -121,30 +123,30 @@ refined(p,ms,Ps)={P |P in Ps and ms in dom(p(P)) }
       implements (Ts\Ts',Ts')
       (mwts\dom(mwt1..mwtn) mwt1[mwts] * mwt1 .. mwtn[mwts] * mwtn)
       (ncs\dom(nc1..nck) nc1[ncs] * nc1 .. nck[ncs] * nck) }
-  with *=interface?1,_  +p  interface?2,_
+  with x * y=  (interface?1,x)  +p  (interface?2,y)
 </pre>*/void innerCompose();
 
 /**<pre>#define interface?,M? +p interface?1,M1 = M2
 interface?,empty +p interface?1,M = M //M is the metavariable for member, introduced in notation and grammar
-interface?1,C:L1 +p interface?2,C:L2 = C: L1 +p.push(C) L2
-interface?1,refine?1 mh1 e?1 +p interface?2,refine?2 mh2 e?2= {refine?1,refine?2} mhi e?i
+interface?1,C:L1 +p interface?2,C:L2 = C: L1 +(p.push(C)) L2
+interface?1,refine?1 mh1 e?1 +p interface?2,refine?2 mh2 e?2 = {refine?1,refine?2} mhi e?i
 //we originally chose that allowing refine+non refine sum was more evil than good,
 //but we want to implement interface methods without mentioning such interface, so we relaxed it
-  with {i,j}={1,2} :
-    p|-mhi<=mhj and e?j=empty,
+  where {i,j}={1,2} such that:
+    p |- mhi<=mhj and e?j=empty,
     if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj
 //interface can not loose, implemented can not loose.
 </pre>*/void sumMember();
 
 
-/**<pre>#define interface?1 mwts1+interface?2 mwts2=interface?
-interface?1 mwts1 + interface?2 mwts2 = interface?2 mwts2 + interface?1 mwts1
+/**<pre>#define interface?1 mwts1 + interface?2 mwts2=interface?
 interface mwts1+interface mwts2=interface
+interface?1 mwts1 + mwts2 = mwts2 + interface?1 mwts1
 mwts1 + interface mwts2=interface
   where
   mwts1.e?s = {empty}
-  class notin mwts1.mhs.mdfs
-  mwts1.mss not uniquely named
+  "class" notin mwts1.mhs.mdfs
+  mwts1.mss do not have number names (that is are not of form m__n(xs) )
 mwts1 +mwts2=empty
   with size({n| refine? mh in (mwts1,mwts2), mh.ms= m__n(xs)})<=1//note, since is not "mh e" we are asking for the abstract methods only
 
