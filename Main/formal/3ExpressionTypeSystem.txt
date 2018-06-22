@@ -48,7 +48,7 @@ D |- L ~> L' : imm Library <= T | emptyTr
   D.Phase  |- D.p.evilPush(L) ~> L'
 
 (x)
-D |-x ~> x :D.G(x) <= T | emptyTr
+D |-x ~> x :D.G(x).T <= T | emptyTr
   where
   D.p|- D.G(x).T <= T
 
@@ -73,7 +73,7 @@ D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   D|- e~>  e' :  T3 <=T2|Ts;Ps
 
 (mcall)
-D |-  e0.m(x1:e1..Xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
+D |-  e0.m(x1:e1..xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
   guessType(D.p,D.G,e0)= _ P0 //assert T'0.P=P0 //again, can go in error guess
@@ -88,7 +88,7 @@ D |-x:=e ~> x:=e' :imm Void <= T | Tr
   D.G(x).var?=var
   D.p|- imm Void <= T
   D|- e ~> e':_<=D.G(x).T|Tr
-  not fwd_or_fwd%_in(D.G(x).T)
+  //assert not fwd_or_fwd%_in(D.G(x).T)//TODO: it was a redundant check, change in code.
 
 (using)
  D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
@@ -105,17 +105,16 @@ D |-x:=e ~> x:=e' :imm Void <= T | Tr
 //for example blocks with empty ds and ks.
 Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
   where
-  mdf in {capsule, imm fwdImm, fwd%Imm}
+  mdf in {capsule, imm, fwdImm, fwd%Imm}
   Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
-//this is another point where x can become undefined
+//this is another point where a variable 'x' can become undefined thanks to toLent(G)
 
 
 
 (block)
-Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
-     : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
+Phase| p| G |- (ds  ks  e0) ~>(ds' ks' e'0 [T]) : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
   G'=G/dom(ds)
   Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
@@ -146,8 +145,10 @@ Phase| p| G |- var?0 T?0   x0=e0 ..var?n T?n   xn=en, ds ~>
     or Ti=T?i
   G'=x0:T0..xn:Tn
   G1= G[ fwd( onlyMutOrImm(G')[with vars=empty] ) ] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line
-  for i in 0..n Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
-  T''i=suggest(T?i,T'i) if fwd_or_fwd%_in(Ti) else T''i=suggest(T?i,noFwd(T'i))
+  for i in 0..n: Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
+  if fwd_or_fwd%_in(Ti)
+    then T''i=suggest(T?i,T'i)
+    else T''i=suggest(T?i,noFwd(T'i))
   G2=x0:T''0..xn:T''n //TODO anti fwd?
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts

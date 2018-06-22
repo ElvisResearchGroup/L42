@@ -4,7 +4,7 @@ to reference the secondary notations used there
 1 Type manipulation
 --------------------------------------------
 
-onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
+onlyMutOrImm(G)={x:G(x) | G(x).mdf in {mut,imm}}//TODO: check what should happen for fwd imm etc
 
 fwd T
   fwd imm P=fwd fwd%imm P=fwdImm P
@@ -53,7 +53,7 @@ toRead(T) //used in gamma and in return type getter
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
   toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
   toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-  otherwise read(T)=T//mdf in imm,read,class
+  otherwise toRead(T)=T//mdf in imm,read,class
 
 toRead(G)
   toRead(G)(x)=toRead(G(x))[with var?=empty] //thus undefined where toRead undefined
