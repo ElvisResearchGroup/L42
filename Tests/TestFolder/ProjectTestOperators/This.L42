@@ -1,0 +1,36 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+CheckEq:{
+  class method Void (Library that, S expected) (
+    s=Location.Lib(that).toS()
+    given=s.replace(S" " into:S"").replace(S.nl() into:S"")
+    Debug.test(given, expected:expected)
+    )
+  }
+Main: {
+  l1={A:{method This m()}}
+  l2={A:{method This1.A m()}}
+  CheckEq(l1, expected:S"{A:{methodThis0m()}}")
+  CheckEq(l2, expected:S"{A:{methodThis1.Am()}}")
+  l3=Use[l1]<><l2
+  CheckEq(l3, expected:S"{A:{methodThis0m()}}")
+  l4=Use[l2]<><l1
+  CheckEq(l4, expected:S"{A:{methodThis1.Am()}}")
+  //is this what we want? asimmetric sum in this way?
+  return ExitCode.normal()
+  /*
+  Issues:
+  -caching seams to run old code something: 
+    pattern: write c1, run (c1), modify c1=c2, run (c2), run (c1)
+  -cut paste on win do nothing
+
+  Improvements:
+  -autosave when run
+  -doc dissapper if "." on invalid prefix
+  -more clear sign if "error happens"
+  -shorter visualization for method signatures
+  -sorting for method signatures
+  -clear console option
+
+  */
+  }
