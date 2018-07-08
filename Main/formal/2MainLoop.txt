@@ -161,15 +161,14 @@ _______
 #define norm(p,L)=norm(p.evilPush(L))
 
 _______
-#define norm(p)=L
+#define norm(p)=L  //Note: norm do not guarantee the order of implemented interfaces as well as the order of methods.
 -norm(p)=p.top()
   if p.top().phase!=None
   otherwise
--norm(p)={interface? implements Ps' norm(p,Ms') Norm}
+-norm(p)={interface? implements (Ps'\p Ps, Ps) norm(p,Ms') Norm} //Note: Ps'\p Ps, Ps correctly trashes the documentation of P in Ps' already in Ps. 
  p.top()={interface? implements Ps Ms None}
- Ps'=collect(p,Ps) //Marco does not likes that Ps get reordered also if they are all present, but is hard to predict what will happen if not reorder only in that fragile circumstance
+ Ps'=collect(p,Ps)
  Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
- //TODO: former line now has a well defined order (for the 2nd and 3rd parts). Fix the order in the code.
 
 -norm(p,refine? mh e?)= refine? mh e'?
   where e'?=empty if e?=empty

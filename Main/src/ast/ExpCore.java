@@ -2105,7 +2105,8 @@ class _Aux {
       if (m instanceof MethodImplemented) {
         MethodImplemented mi = (MethodImplemented)m;
         String key = mi.getS().toString();
-        assert !keys.contains(key);
+        assert !keys.contains(key):
+          "";
         keys.add(key);
       }
     }

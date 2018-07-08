@@ -74,6 +74,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodCla
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSubtypeViolation;
 import newTypeSystem.TypeSystem;
 import programReduction.Methods;
+import programReduction.Norm;
 import programReduction.Program;
 import tools.Map;
 
@@ -225,7 +226,7 @@ public class Compose {
    //assert p0.checkTopInterfacesDefined();
    List<Type> ps0 = p0.top().getSupertypes();
    List<Type> ps0Coll = Methods.collect(p0,ps0);
-   boolean sEq=subsetEq(p0, ps0,ps0Coll);
+   boolean sEq=Norm.subsetEq(p0, ps0,ps0Coll);
    if(!sEq) {
      throw new RefactorErrors.SubtleSubtypeViolation().msg(
        "In "+p0.top().getP()+"\n"+ps0+" does not contains all of "+ps0Coll
@@ -320,16 +321,7 @@ public class Compose {
       }
     }
 
-private static boolean subsetEq(Program p,List<Type> all, List<Type> some) {
-//check all.containsAll(some)
-  for(Type tAll:all)out:{
-    for(Type tSome:some){
-      if (p.equiv(tAll,tSome)){break out;}
-      }
-    return false;
-    }
-  return true;
-  }
+
 /**{@link ComposeSpec#sumMember}*/
 public static  MethodWithType sumMwtij(Program p,MethodWithType mwti,MethodWithType mwt1,MethodWithType mwt2){
   return mwti.withDoc(mwt1.getDoc().sum(mwt2.getDoc())).withP(mwt1.getP().sum(mwt2.getP()));
