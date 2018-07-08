@@ -25,6 +25,7 @@ import coreVisitors.PropagatorVisitor;
 import tools.Assertions;
 import tools.Map;
 import ast.Ast;
+import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
 public class Norm {
@@ -33,7 +34,17 @@ public class Norm {
     for(MethodWithType mwt:list){if(mwt.getMs().equals(ms)){return mwt;}}
     return null;
   }
-
+  
+  public static boolean subsetEq(Program p,List<Type> all, List<Type> some) {
+    //check all.containsAll(some)
+    for(Type tAll:all)out:{
+      for(Type tSome:some){
+        if (p.equiv(tAll,tSome)){break out;}
+        }
+      return false;
+      }
+    return true;
+    }
 
   ExpCore norm(Program p,ExpCore e){
     return e.accept(new CloneVisitor(){
@@ -47,20 +58,44 @@ public class Norm {
     //p.top()={interface? implements Ps Ms} //Ms is free var and is ok
     ClassB l=p.top();
     if(l.getPhase()!=Phase.None) {
-      //TODO: logging an error instead of failing to keep stuff going (just) for now
-      List<Type> ps1 = Methods.collect(p,l.getSupertypes());
-      if(!ps1.equals(l.getSupertypes())) {System.err.println("LoggingError: "+ps1+" "+l.getSupertypes());}
+      assert Norm.subsetEq(p, l.getSupertypes(),Methods.collect(p,l.getSupertypes()));
       return l;
       }
-
     //Ps'=collect(p,Ps)
-    List<Type> ps1 = Methods.collect(p,l.getSupertypes());
+    List<Type> _ps1 = Methods.collect(p,l.getSupertypes());
+    List<Type> ps1=new ArrayList<>();
+    for(Type t:_ps1){
+      boolean none=l.getSupertypes().stream().noneMatch(ti->p.equiv(ti.getPath(),t.getPath()));
+      if(none){ps1.add(t);}
+      }
+    ps1.addAll(l.getSupertypes());
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
     List<MethodWithType> this0Ms=p.methods(Path.outer(0));
-    List<ClassB.Member> ms1 = Stream.concat(
-      this0Ms.stream(),
-      l.getMs().stream().filter(m->m instanceof ClassB.NestedClass)
-      ).map(m->norm(p,m)).collect(Collectors.toList());
+
+    List<ClassB.Member> msOld=new ArrayList<>();
+    List<ClassB.Member> msNc=new ArrayList<>();
+    for(ClassB.Member mi:l.getMs()){
+      if (mi instanceof ClassB.NestedClass){msNc.add(norm(p,mi));}
+      else {msOld.add(mi);}
+      }
+    List<ClassB.Member> ms1=new ArrayList<>();
+    for(MethodWithType mi:this0Ms){
+      MethodSelector msi=mi.getMs();
+      out:{int j=-1;
+        for(ClassB.Member mj:msOld){j+=1;
+          MethodSelector msj;
+          if(mj instanceof ClassB.MethodImplemented){msj=((ClassB.MethodImplemented)mj).getS();}
+          else{msj=((MethodWithType)mj).getMs();}
+          if(!msj.equals(msi)){continue;}
+          msOld.set(j,norm(p,mi));//found it!
+          break out;
+          }
+        //not found
+        ms1.add(norm(p,mi));
+        }
+      }
+    ms1.addAll(msOld);
+    ms1.addAll(msNc);
     ClassB newL=new ClassB(l.getDoc1(),l.isInterface(),ps1,ms1,l.getP(),Phase.Norm,p.getFreshId());
     return newL;
     }

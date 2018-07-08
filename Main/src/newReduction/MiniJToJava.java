@@ -75,9 +75,7 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
     if(!cd.isInterface()) {c(" implements ");}
     else {c(" extends ");}
     c(NotLibrary.class.getCanonicalName());
-    for(String ci:cd.getCns()) {
-      c(", "+ci);
-      }
+    cd.getCns().stream().distinct().forEach(ci->c(", "+ci));
     c("{");
     indent();
     for(M mi: cd.getMs()){
