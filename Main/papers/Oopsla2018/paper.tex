@@ -1,5 +1,6 @@
 %% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\documentclass[acmsmall]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
 %% For double-blind review submission, w/ CCS and ACM Reference
 %\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
 %% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
@@ -33,11 +34,11 @@
 %\copyrightyear{2018}           %% If different from \acmYear
 
 %% Bibliography style
-\bibliographystyle{ACM-Reference-Format}
+\bibliographystyle{plain}
 %% Citation style
 %% Note: author/year citations are required for papers published as an
 %% issue of PACMPL.
-\citestyle{acmauthoryear}   %% For author/year citations
+%\citestyle{acmauthoryear}   %% For author/year citations
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,7 +55,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{xspace}
-\usepackage{times}%is this making all the font into times?
+%\usepackage{times}%is this making all the font into times?
 \usepackage{comment}
 \usepackage{rotating} 
 \usepackage[T1]{fontenc}
@@ -88,8 +89,8 @@
  deletekeywords={double}
 }
 %
-%\newcommand\saveSpace{}
-\newcommand\saveSpace{\vspace{-2pt}}
+\newcommand\saveSpace{}
+%\newcommand\saveSpace{\vspace{-2pt}}
 
 \newcommand\Rotated[1]{\begin{turn}{90}\begin{minipage}{10em}#1\end{minipage}\end{turn}}
 %

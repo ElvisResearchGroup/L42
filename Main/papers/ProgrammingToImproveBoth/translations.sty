@@ -1,0 +1,1160 @@
+% --------------------------------------------------------------------------
+% the TRANSLATIONS package
+% 
+%   internationalization of LaTeX2e packages
+%
+% --------------------------------------------------------------------------
+% Clemens Niederberger
+% Web:    https://github.com/cgnieder/translations
+% E-Mail: contact@mychemistry.eu
+% --------------------------------------------------------------------------
+% Copyright 2012-2017 Clemens Niederberger
+% 
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+% 
+% This work has the LPPL maintenance status `maintained'.
+% 
+% The Current Maintainer of this work is Clemens Niederberger.
+% --------------------------------------------------------------------------
+% If you have any ideas, questions, suggestions or bugs to report, please
+% feel free to contact me.
+% --------------------------------------------------------------------------
+\newcommand*\@trnslt@date{2017/08/31}
+\newcommand*\@trnslt@version{v1.7a}
+\newcommand*\@trnslt@packageinfo{internationalization of LaTeX2e packages}
+
+\ProvidesPackage{translations}[%
+  \@trnslt@date\space
+  \@trnslt@version\space
+  \@trnslt@packageinfo\space (CN)]
+\RequirePackage{scrlfile,etoolbox,pdftexcmds}
+
+% --------------------------------------------------------------------------
+% message handling
+% generic help message:
+\newcommand*\@trnslt@error@message{%
+  For details have a look at the `translations' manual.%
+}
+
+\newrobustcmd*\@trnslt@info[1]{\PackageInfo{translations}{#1}}
+\newrobustcmd*\@trnslt@warning[1]{\PackageWarning{translations}{#1}}
+\newrobustcmd*\@trnslt@error[1]{%
+  \PackageError{translations}{#1}\@trnslt@error@message
+}
+
+% specific errors:
+\newrobustcmd*\@trnslt@err@unknown@lang[1]{%
+  \@trnslt@error{Unknown language `#1'}%
+}
+\newrobustcmd*\@trnslt@warn@unknown@lang[1]{%
+  \PackageWarning{translations}{Unknown language `#1'}%
+}
+\newrobustcmd*\@trnslt@err@already@defined[2]{%
+  \@trnslt@error{The #2 translation for `#1' is already defined.}%
+}
+\newrobustcmd*\@trnslt@err@not@defined[2]{%
+  \@trnslt@error{The \@trnslt@language{#2} translation for `#1' is not defined yet.}%
+}
+\newrobustcmd*\@trnslt@err@dict@already@defined[2]{%
+  \@trnslt@error{The #2 dictionary entry for `#1' is already defined.}%
+}
+\newrobustcmd*\@trnslt@err@dict@not@defined[2]{%
+  \@trnslt@error{The \@trnslt@language{#2} dictionary entry for `#1' is not defined yet.}%
+}
+
+% --------------------------------------------------------------------------
+% check if babel or polyglossia is used
+\AtEndPreamble{
+  \@ifpackageloaded{babel}{}{
+    \@ifpackageloaded{polyglossia}{}
+      {\@trnslt@info{No language package found. I am going to use `english'
+        as default language.}}
+  }
+  % define \languagename if not defined yet:
+  \providecommand*\languagename{english}%
+  \def\@trnslt@current@language{\languagename}%
+  % define \bbl@afterfi if not defined yet:
+  \ifdef\bbl@afterfi{}
+    {\long\def\bbl@afterfi#1\fi{\fi#1}}
+}
+
+% --------------------------------------------------------------------------
+% test string equality, expandably:
+\newcommand\@trnslt@ifstrequal[2]{%
+  \ifnum\pdf@strcmp{\unexpanded{#1}}{\unexpanded{#2}}=\z@
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}
+
+\long\def\@trnslt@getnext@braced#1#2#3{#2\@trnslt@firstofone{#3{#1}}}
+\long\def\@trnslt@firstofone#1{#1}
+\long\def\@trnslt@braced@expanded@fully#1\@trnslt@firstofone#2#3{%
+  \expandafter\@trnslt@getnext@braced
+  \expandafter{\romannumeral-`0#3}{#1}{#2}%
+}
+
+% --------------------------------------------------------------------------
+% book keeping: the following macros will be used as `etoolbox' lists that
+% keep record of defined languages, dialects and aliases
+\newcommand*\@trnslt@languages{}% all languages
+\newcommand*\@trnslt@aliases@pair{}% all aliases and their base
+\newcommand*\@trnslt@aliases@single{}% all aliases
+\newcommand*\@trnslt@dialects@pair{}% all dialects and their base
+\newcommand*\@trnslt@dialects@single{}% all dialects
+
+% --------------------------------------------------------------------------
+% define \@trnslt@if@<name> conditionals that don't leave the checked macro as
+% \relax behind and check for \@trnslt@<name>@#1.  These conditionals should
+% also be expandable in an \edef-like context.  Thanks to e-TeX there's
+% \ifcsname:
+\newrobustcmd*\@trnslt@new@check[1]{%
+  \csdef{@trnslt@if@#1}##1{%
+    \ifcsname @trnslt@#1@##1\endcsname
+      \expandafter\@firstoftwo
+    \else
+      \expandafter\@secondoftwo
+    \fi
+  }%
+}
+
+% --------------------------------------------------------------------------
+% leaves lowercase full expansion of #1 in the input stream (except that it
+% doesn't, because nothing is expanded... :p)
+\newcommand\@trnslt@get@lowercase[1]{%
+  \lowercase\expandafter{\romannumeral-`\Q#1}%
+}
+
+% --------------------------------------------------------------------------
+% \DeclareLanguage
+% #1: language
+\newrobustcmd*\DeclareLanguage[1]{%
+  \@trnslt@declare@language{#1}}
+\@onlypreamble\DeclareLanguage
+
+\newrobustcmd*\@trnslt@declare@language[1]{%
+  \@trnslt@if@language{#1}
+    {}{%
+      \csdef{@trnslt@language@#1}{#1}%
+      \listeadd\@trnslt@languages{#1}%
+    }%
+}
+
+% get the name declared by \DeclareLanguage: the underlying name of a given
+% language; this is not the base of a dialect!
+\newcommand*\@trnslt@language[1]{\csuse{@trnslt@language@#1}}
+
+% a user-level equivalent:
+% \newcommand*\baselanguage[1]{\@trnslt@language{#1}}
+
+% define \@trnslt@if@language{#1}{}{} that actually checks the existence of
+% \@trnslt@language@#1:
+\@trnslt@new@check{language}
+
+% --------------------------------------------------------------------------
+% \DeclareLanguageDialect
+% #1: dialect
+% #2: language
+\newrobustcmd*\DeclareLanguageDialect[2]{%
+  \@trnslt@declare@languagedialect{#1}{#2}}
+\@onlypreamble\DeclareLanguageDialect
+
+\newrobustcmd*\@trnslt@declare@languagedialect[2]{%
+  \@trnslt@if@language{#2}
+    {}{%
+      \@trnslt@warn@unknown@lang{#2}%
+      \@trnslt@declare@language{#2}%
+    }%
+  \@trnslt@if@dialect{#1}
+    {% => ist schon als dialect definiert => irgendwelche weiteren checks?
+    }
+    {%
+      \@trnslt@if@alias{#2}
+        {%
+          \csedef{@trnslt@dialect@#1}{{\@trnslt@alias{#2}}{#1}}%
+          \@trnslt@declare@language{#1}%
+          \listeadd\@trnslt@dialects@single{#1}%
+          \listeadd\@trnslt@dialects@pair{{#1}{\@trnslt@alias{#2}}}%
+        }
+        {%
+          \csdef{@trnslt@dialect@#1}{{#2}{#1}}%
+          \@trnslt@declare@language{#1}%
+          \listeadd\@trnslt@dialects@single{#1}%
+          \listeadd\@trnslt@dialects@pair{{#1}{#2}}%
+        }%
+    }%
+}
+
+% dialect equivalent of \@trnslt@language
+\newcommand*\@trnslt@dialect[1]{\csuse{@trnslt@dialect@#1}}
+
+% this macros fetches the base language for a given dialect, expandably:
+\newcommand*\@trnslt@dialect@of[1]{%
+  \@trnslt@if@dialect{#1}
+    {%
+      \expandafter\expandafter\expandafter
+      \@firstoftwo
+      \csname @trnslt@dialect@#1\endcsname
+    }{}%
+}
+
+% get the underlying name of a language or the name of the base language of a
+% dialect:
+\newcommand*\baselanguage[1]{%
+  \@trnslt@if@dialect{#1}
+    {\@trnslt@language{\@trnslt@dialect@of{#1}}}
+    {\@trnslt@language{#1}}%
+}
+
+% define \@trnslt@if@dialect{#1}{}{} that actually checks the existence of
+% \@trnslt@dialect@#1: 
+\@trnslt@new@check{dialect}
+
+% --------------------------------------------------------------------------
+% \DeclareLanguageAlias
+% #1: alias
+% #2: language
+\newrobustcmd*\DeclareLanguageAlias[2]{%
+  \@trnslt@declare@languagealias{#1}{#2}}
+\@onlypreamble\DeclareLanguageAlias
+
+\newrobustcmd*\@trnslt@declare@languagealias[2]{%
+  \@trnslt@if@language{#2}
+    {}{%
+      \@trnslt@warn@unknown@lang{#2}%
+      \@trnslt@declare@language{#2}%
+    }%
+  \csletcs{@trnslt@language@#1}{@trnslt@language@#2}%
+  \@trnslt@if@dialect{#2}
+    {\csletcs{@trnslt@dialect@#1}{@trnslt@dialect@#2}}
+    {}%
+  \ifcsdef{@trnslt@alias@#1}
+    {}
+    {%
+      \csdef{@trnslt@alias@#1}{#2}%
+      \listadd\@trnslt@aliases@pair{{#1}{#2}}%
+      \listadd\@trnslt@aliases@single{#1}%
+    }%
+}
+
+% alias equivalent of \@trnslt@language
+\newcommand*\@trnslt@alias[1]{\csuse{@trnslt@alias@#1}}
+
+% define \@trnslt@if@alias{#1}{}{} that actually checks the existence of
+% \@trnslt@alias@#1: 
+\@trnslt@new@check{alias}
+
+% --------------------------------------------------------------------------
+% check the current language, expandably:
+% #1: language
+% #2: true
+% #3: false
+\newcommand*\@trnslt@iflanguage[1]{%
+  \@trnslt@braced@expanded@fully
+  \@trnslt@braced@expanded@fully
+  \@trnslt@firstofone
+  \@trnslt@ifstrequal
+    {\@trnslt@language{#1}}
+    {\@trnslt@language{\languagename}}%
+}
+
+% check the current /base/ language, expandably:
+\newcommand*\@trnslt@ifbaselanguage[1]{%
+  \@trnslt@if@dialect{\languagename}
+    {%
+      \@trnslt@braced@expanded@fully
+      \@trnslt@braced@expanded@fully
+      \@trnslt@firstofone
+      \@trnslt@ifstrequal
+        {\@trnslt@language{\@trnslt@dialect@of{\languagename}}}
+        {\@trnslt@language{#1}}%
+    }
+    {\@trnslt@iflanguage{#1}}%
+}
+
+% user commands for the above:
+\newcommand*\ifcurrentlanguage[1]{%
+  \@trnslt@iflanguage{#1}%
+}
+\newcommand*\ifcurrentbaselanguage[1]{%
+  \@trnslt@ifbaselanguage{#1}%
+}
+
+% --------------------------------------------------------------------------
+% Now that we can define languages we also want to be able to define
+% translations:
+% \DeclareTranslation, \NewTranslation, \RenewTranslation and
+% \ProvideTranslation
+% #1: language
+% #2: word
+% #3: replacement
+\newrobustcmd\declaretranslation[3]{%
+  \@trnslt@declare@translation{#2}{#1}{#3}%
+}
+\newrobustcmd\definetranslation[3]{%
+  \@trnslt@new@translation{#2}{#1}{#3}%
+}
+\newrobustcmd\redefinetranslation[3]{%
+  \@trnslt@renew@translation{#2}{#1}{#3}%
+}
+\newrobustcmd\addtranslation[3]{%
+  \@trnslt@provide@translation{#2}{#1}{#3}%
+}
+
+\let\DeclareTranslation\declaretranslation
+\@onlypreamble\DeclareTranslation
+\let\NewTranslation\definetranslation
+\@onlypreamble\NewTranslation
+\let\RenewTranslation\redefinetranslation
+\@onlypreamble\RenewTranslation
+\let\ProvideTranslation\addtranslation
+\@onlypreamble\ProvideTranslation
+
+\newrobustcmd*\declaretranslationfallback{%
+  \declaretranslation{fallback}%
+}
+\newrobustcmd*\definetranslationfallback{%
+  \definetranslation{fallback}%
+}
+\newrobustcmd*\redefinetranslationfallback{%
+  \redefinetranslation{fallback}%
+}
+\newrobustcmd*\addtranslationfallback{%
+  \addtranslation{fallback}%
+}
+
+\let\DeclareTranslationFallback\declaretranslationfallback
+\@onlypreamble\DeclareTranslationFallback
+\let\NewTranslationFallback\definetranslationfallback
+\@onlypreamble\NewTranslationFallback
+\let\RenewTranslationFallback\redefinetranslationfallback
+\@onlypreamble\RenewTranslationFallback
+\let\ProvideTranslationFallback\addtranslationfallback
+\@onlypreamble\ProvideTranslationFallback
+
+% #1: word
+% #2: language
+% #3: replacement
+\newrobustcmd\@trnslt@declare@translation[3]{%
+  \@trnslt@if@language{#2}
+    {%
+      \@trnslt@if@dialect{#2}
+        {%
+          \long\csdef{@trnslt@word@\detokenize{#1}@\@trnslt@dialect{#2}}{#3}%
+          \@trnslt@if@word\@trnslt@dialect@of{#1}{#2}
+            {}
+            {\long\csdef{@trnslt@word@\detokenize{#1}@\@trnslt@dialect@of{#2}}{#3}}%
+        }
+        {\long\csdef{@trnslt@word@\detokenize{#1}@\@trnslt@language{#2}}{#3}}%
+      % save the <word> as <word>:
+      \csdef{@trnslt@word@\detokenize{#1}@literal}{#1}%
+    }
+    {\@trnslt@err@unknown@lang{#2}}%
+}
+
+\newrobustcmd\@trnslt@new@translation[3]{%
+  \@trnslt@if@word\@trnslt@language{#1}{#2}
+    {\@trnslt@err@already@defined{#1}{#2}}
+    {\@trnslt@declare@translation{#1}{#2}{#3}}%
+}
+
+\newrobustcmd\@trnslt@renew@translation[3]{%
+  \@trnslt@if@word\@trnslt@language{#1}{#2}
+    {\@trnslt@declare@translation{#1}{#2}{#3}}
+    {\@trnslt@err@not@defined{#1}{#2}}%
+}
+
+\newrobustcmd\@trnslt@provide@translation[3]{%
+  \@trnslt@if@word\@trnslt@language{#1}{#2}
+    {}
+    {\@trnslt@declare@translation{#1}{#2}{#3}}%
+}
+
+% --------------------------------------------------------------------------
+% let's go through some trouble to check if a translation exists:
+\newcommand*\@trnslt@if@word[3]{%
+  \ifcsname @trnslt@word@\detokenize{#2}@#1{#3}\endcsname
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+}%
+
+% #1: word
+% #2: language
+\newcommand*\@trnslt@if@translation[2]{%
+  \@trnslt@if@word\@trnslt@language{#1}{#2}
+    {\expandafter\@firstoftwo}
+    {%
+      \@trnslt@if@dialect{#2}
+        {%
+          \@trnslt@if@word\@trnslt@dialect{#1}{#2}
+            {\expandafter\@firstoftwo}
+            {%
+              \@trnslt@if@word\@trnslt@dialect@of{#1}{#2}
+                {\expandafter\@firstoftwo}
+                {\expandafter\@secondoftwo}%
+            }
+        }
+        {\expandafter\@secondoftwo}%
+    }%
+}
+
+% #1: language
+% #2: word
+\newcommand*\IfTranslation[2]{\@trnslt@if@translation{#2}{#1}}
+
+% --------------------------------------------------------------------------
+% We also need to be able to look up a translation:
+% \GetTranslationFor and \GetTranslation
+% these need to be expandable!
+% #1: language
+% #2: word
+\newcommand*\GetTranslationFor[2]{%
+  \@trnslt@checkandget@translation@for{#2}{#1}}
+
+\newcommand*\GetTranslation[1]{%
+  \@trnslt@checkandget@translation@for{#1}{\@trnslt@current@language}}
+
+% those will print the translation lowercase... they're also expandable; that
+% is: nearly...
+%   \DeclareTranslation{German}{foo}{Bla}
+%   \edef\foo{\GetLCTranslationFor{German}{foo}}
+%   \show\foo
+%   > \foo=macro:
+%   ->\lowercase {Bla}.
+\newcommand*\GetLCTranslationFor[2]{%
+  \@trnslt@get@lowercase{\@trnslt@checkandget@translation@for{#2}{#1}}%
+}
+
+\newcommand*\GetLCTranslation[1]{%
+  \@trnslt@get@lowercase{%
+    \@trnslt@checkandget@translation@for{#1}{\@trnslt@current@language}%
+  }%
+}
+
+% unexpandable version of the commands that raise a warning if no translation
+% is available:
+\newrobustcmd*\GetTranslationForWarn[2]{%
+  \@trnslt@getandwarn@translation@for{#2}{#1}%
+}
+
+\newrobustcmd*\GetTranslationWarn[1]{%
+  \@trnslt@getandwarn@translation@for{#1}{\@trnslt@current@language}%
+}
+
+\newrobustcmd*\GetLCTranslationForWarn[2]{%
+  \@trnslt@getandwarn@lctranslation@for{#2}{#1}%
+}
+
+\newrobustcmd*\GetLCTranslationWarn[1]{%
+  \@trnslt@getandwarn@lctranslation@for{#1}{\@trnslt@current@language}%
+}
+
+% #1: word #2: language
+\newcommand*\@trnslt@get@translation@for[2]{%
+  \@trnslt@if@dialect{#2}
+    {%
+      \@trnslt@if@translation@value{#1}{\@trnslt@dialect{#2}}
+        {\@trnslt@translation@value{#1}{\@trnslt@dialect{#2}}}
+        {\@trnslt@translation@value{#1}{\@trnslt@dialect@of{#2}}}%
+    }
+    {\@trnslt@translation@value{#1}{\@trnslt@language{#2}}}%
+}
+
+\newcommand*\@trnslt@checkandget@translation@for[2]{%
+  \@trnslt@if@translation{#1}{#2}
+    {\@trnslt@get@translation@for{#1}{#2}}
+    {%
+      \@trnslt@if@translation{#1}{fallback}
+        {\@trnslt@translation@value{#1}{fallback}}
+        {\@trnslt@translation@value{#1}{literal}}%
+    }%
+}
+
+\newcommand*\@trnslt@if@translation@value[2]{%
+  \ifcsdef{@trnslt@word@\detokenize{#1}@#2}%
+}
+
+\newcommand*\@trnslt@translation@value[2]{%
+  \unexpanded\expandafter\expandafter\expandafter{%
+    \csname @trnslt@word@\detokenize{#1}@#2\endcsname
+  }%
+}
+
+% this is not expandable!
+\newrobustcmd*\@trnslt@getandwarn@translation@for[2]{%
+  \@trnslt@if@translation{#1}{#2}
+    {\@trnslt@get@translation@for{#1}{#2}}
+    {%
+      \@trnslt@warning{Translation for `#1' in #2 unknown. You may try to use
+        \string\DeclareTranslation{#2}{#1}{ ... } in your preamble.}%
+      \@trnslt@if@translation{#1}{fallback}
+        {%
+          \@trnslt@info{Using fallback translation for `#1'}%
+          \csuse{@trnslt@word@\detokenize{#1}@fallback}
+        }
+        {\csuse{@trnslt@word@\detokenize{#1}@literal}}%
+    }%
+}
+
+% lowercase version for translation with warnings:
+\newrobustcmd*\@trnslt@getandwarn@lctranslation@for[2]{%
+  \@trnslt@if@translation{#1}{#2}
+    {\@trnslt@get@lowercase{\@trnslt@get@translation@for{#1}{#2}}}
+    {%
+      \@trnslt@warning{Translation for `#1' in #2 unknown. You may try to use
+        \string\DeclareTranslation{#2}{#1}{ ... } in your preamble.}%
+      \@trnslt@if@translation{#1}{fallback}
+        {%
+          \@trnslt@info{Using fallback translation for `#1'}%
+          \@trnslt@get@lowercase{\csuse{@trnslt@word@\detokenize{#1}@fallback}}%
+        }
+        {\@trnslt@get@lowercase{\csuse{@trnslt@word@\detokenize{#1}@literal}}}%
+    }%
+}
+
+% --------------------------------------------------------------------------
+% no idea if the following ones really are needed... let's define them
+% anyway
+% \SaveTranslationFor and \SaveTranslation
+\newrobustcmd*\SaveTranslationFor[3]{%
+  \@trnslt@save@translation@for{#1}{#3}{#2}%
+}
+
+\newrobustcmd*\SaveTranslation[2]{%
+  \@trnslt@save@translation@for{#1}{#2}{\@trnslt@current@language}%
+}
+
+\newrobustcmd*\@trnslt@save@translation@for[3]{%
+  \edef#1{\@trnslt@checkandget@translation@for{#2}{#3}}%
+}
+
+% --------------------------------------------------------------------------
+% The basics are set. What's missing? Right: dictionaries! Those will be files
+% that contain translations for a specific language.
+% --------------------------------------------------------------------------
+% load dictionaries and check for existing ones:
+% \LoadDictionary and \LoadDictionaryFor
+\newrobustcmd*\LoadDictionary[1]{%
+  \@trnslt@load@dictionary@for{#1}{\@trnslt@current@language}}
+\@onlypreamble\LoadDictionary
+
+\newrobustcmd*\LoadDictionaryFor[2]{%
+  \@trnslt@load@dictionary@for{#2}{#1}}
+\@onlypreamble\LoadDictionaryFor
+
+\newrobustcmd*\LoadDictionaryForDialect[2]{%
+  \@trnslt@load@dictionary@for@dialect{#2}{#1}}
+\@onlypreamble\LoadDictionaryFor
+
+% #1: name
+% #2: lang
+% #3: false
+\newrobustcmd*\@trnslt@input@if@dictionary@exists[3]{%
+  \AtBeginDocument{%
+    \InputIfFileExists{#1-\@trnslt@language{#2}.trsl}
+      {\@trnslt@check@dictionary{#1}{#2}}
+      {#3}%
+  }%
+}
+
+% #1: name
+% #2: lang
+% #3: false
+\newrobustcmd*\@trnslt@load@dictionary@for@F[3]{%
+  \@trnslt@input@if@dictionary@exists{#1}{#2}{#3}%
+}
+
+% #1: name
+% #2: lang
+\newrobustcmd*\@trnslt@load@dictionary@for@dialect[2]{%
+  \@trnslt@load@dictionary@for@F{#1}{#2}
+    {%
+      \@trnslt@warning{dictionary file `#1-\@trnslt@language{#2}.trsl' not
+        found.}%
+    }%
+}
+
+% #1: name
+% #2: lang
+\newrobustcmd*\@trnslt@load@dictionary@for[2]{%
+  \@trnslt@load@dictionary@for@F{#1}{#2}
+    {%
+      \@trnslt@load@dictionary@for@F{#1}{\baselanguage{#2}}
+        {%
+          \@trnslt@warning{neither dictionary file
+            `#1-\@trnslt@language{#2}.trsl' nor `#1-\baselanguage{#2}.trsl'
+            found.}%
+        }%
+    }%
+}
+      
+\newrobustcmd*\@trnslt@load@dictionary@silent@for[2]{%
+  \@trnslt@load@dictionary@for@F{#1}{#2}{%
+    \@trnslt@load@dictionary@for@F{#1}{\baselanguage{#2}}{}%
+  }%
+}
+
+% #1: name
+% #2: lang
+\newrobustcmd*\@trnslt@check@dictionary[2]{%
+  \AfterFile{#1-\@trnslt@language{#2}.trsl}
+    {%
+      \edef\@trnslt@tmpa{\@trnslt@language{#2}}%
+      \ifcsdef{@trnslt@dictionary@#1@\@trnslt@tmpa}
+        {\@trnslt@info{loading dictionary `#1' for `#2'.}}
+        {%
+          \@trnslt@warning{file `#1-\@trnslt@language{#2}.trsl' does not
+            appear to be a dictionary}%
+        }%
+    }%
+}
+
+% --------------------------------------------------------------------------
+% the contents of a dictionary; let's declare that is one.
+% #1: lang
+% #2: name
+\newrobustcmd*\ProvideDictionaryFor[2]{%
+  \@trnslt@provide@dictionary@for{#1}{#2}}
+\@onlypreamble\ProvideDictionaryFor
+
+% #1: lang
+% #2: name
+\newrobustcmd*\@trnslt@provide@dictionary@for[2]{%
+  \def\@trnslt@dictionary@name{#2}%
+  \edef\@trnslt@dictionary@lang{\@trnslt@language{#1}}%
+  % this macro can be used to check if we have a dictionary and will also be
+  % used as a list for the dictionary entries:
+  \csdef{@trnslt@dictionary@\@trnslt@dictionary@name @\@trnslt@dictionary@lang}{}%
+  \@ifnextchar[ % ]
+    {\@trnslt@provide@dictionary@version}
+    {
+      \ProvidesFile
+        {#2-\@trnslt@dictionary@lang.trsl}%
+        [(\@trnslt@dictionary@lang\space translation file `#2')]
+    }%
+}
+
+\protected\def\@trnslt@provide@dictionary@version[#1]{%
+  \ProvidesFile
+    {\@trnslt@dictionary@name-\@trnslt@dictionary@lang.trsl}%
+    [(\@trnslt@dictionary@lang\space translation file `\@trnslt@dictionary@name') #1]}
+
+\newcommand*\@trnslt@check@dictionary@entry[2]{%
+  \ifcsdef{%
+    @trnslt@dictionary@\@trnslt@dictionary@name
+    @\@trnslt@dictionary@lang @{#1}{\detokenize{#2}}%
+  }%
+}
+
+\newrobustcmd*\@trnslt@add@dictionary@entry[2]{%
+  \csdef{%
+    @trnslt@dictionary@\@trnslt@dictionary@name
+    @\@trnslt@dictionary@lang @{#1}{\detokenize{#2}}%
+  }{{#1}{#2}}%
+  \listcsadd
+    {@trnslt@dictionary@\@trnslt@dictionary@name @\@trnslt@dictionary@lang}
+    {{#1}{#2}}%
+}
+
+% --------------------------------------------------------------------------
+% now we should be able to add translations without repeatedly type the
+% language ...
+\newrobustcmd*\NewDictTranslation[2]{%
+  \@trnslt@check@dictionary@entry{#1}{#2}
+    {\@trnslt@err@dict@already@defined{#1}{#2}}%
+    {%
+      \@trnslt@add@dictionary@entry{#1}{#2}
+      \@trnslt@new@translation{#1}{\@trnslt@dictionary@lang}{#2}%
+    }%
+}
+\@onlypreamble\NewDictTranslation
+
+\newrobustcmd*\RenewDictTranslation[2]{%
+  \@trnslt@check@dictionary@entry{#1}{#2}
+    {\@trnslt@renew@translation{#1}{\@trnslt@dictionary@lang}{#2}}
+    {\@trnslt@err@dict@not@defined{#1}{#2}}%
+}
+\@onlypreamble\RenewDictTranslation
+
+\newrobustcmd*\DeclareDictTranslation[2]{%
+  \@trnslt@check@dictionary@entry{#1}{#2}
+    {}
+    {\@trnslt@add@dictionary@entry{#1}{#2}}%
+  \@trnslt@declare@translation{#1}{\@trnslt@dictionary@lang}{#2}%
+}
+\@onlypreamble\DeclareDictTranslation
+
+\newrobustcmd*\ProvideDictTranslation[2]{%
+  \@trnslt@check@dictionary@entry{#1}{#2}
+    {}
+    {%
+      \@trnslt@add@dictionary@entry{#1}{#2}%
+      \@trnslt@provide@translation{#1}{\@trnslt@dictionary@lang}{#2}%
+    }%
+}
+\@onlypreamble\ProvideDictTranslation
+
+% --------------------------------------------------------------------------
+% last not least let's inspect which entries a dictionary contains of:
+% \PrintDictionaryFor
+% #1: lang
+% #2: name
+% #3: pre
+% #4: mid
+% #5: post
+\newcommand*\PrintDictionaryFor[5]{%
+  \@trnslt@print@dictionary@for{#1}{#2}{#3}{#4}{#5}%
+}
+
+% #1: lang
+% #2: name
+% #3: pre
+% #4: mid
+% #5: post
+\newcommand*\@trnslt@print@dictionary@for[5]{%
+  \forlistcsloop
+    {\@trnslt@print@dictionary@entry{#3}{#4}{#5}}
+    {@trnslt@dictionary@#2@\@trnslt@language{#1}}%
+}
+
+% #1: pre
+% #2: mid
+% #3: post
+% #4: (key)(translation)
+\newcommand*\@trnslt@print@dictionary@entry[4]{%
+  \@trnslt@print@dictionary@entry@aux{#1}{#2}{#3}#4%
+}
+
+% #1: pre
+% #2: mid
+% #3: post
+% #4: key
+% #5: translation
+\newcommand*\@trnslt@print@dictionary@entry@aux[5]{#1#4#2#5#3}
+
+% ==========================================================================
+% Now that the package is finished let's use the above commands to provide a
+% basis for usage; we need all languages known to `babel' and `polyglossia'
+% as well as aliases to allow different spellings/names; we also need dialects
+% where it makes sense (e.g. British as a dialect of English)
+
+% --------------------------------------------------------------------------
+% dummy language `fallback' -- it is needed for the whole mechansim provided
+% earlier (\DeclareFallbackTranslation...)
+\DeclareLanguage{fallback}
+\DeclareLanguageAlias{Fallback}{fallback}
+
+% --------------------------------------------------------------------------
+% predefined languages
+\DeclareLanguage{afrikaans}
+\DeclareLanguage{albanian}
+\DeclareLanguage{amharic}
+\DeclareLanguage{arabic}
+\DeclareLanguage{armenian}
+\DeclareLanguage{asturian}
+\DeclareLanguage{azerbaijani}
+\DeclareLanguage{basque}
+\DeclareLanguage{bengali}
+\DeclareLanguage{breton}
+\DeclareLanguage{bulgarian}
+\DeclareLanguage{catalan}
+\DeclareLanguage{coptic}
+\DeclareLanguage{czech}
+\DeclareLanguage{danish}
+\DeclareLanguage{dutch}
+\DeclareLanguage{english}
+\DeclareLanguage{esperanto}
+\DeclareLanguage{estonian}
+\DeclareLanguage{ethiop}
+\DeclareLanguage{farsi}
+\DeclareLanguage{finnish}
+\DeclareLanguage{french}
+\DeclareLanguage{friulan}
+\DeclareLanguage{gaelic}
+\DeclareLanguage{galician}
+\DeclareLanguage{german}
+\DeclareLanguage{greek}
+\DeclareLanguage{hebrew}
+\DeclareLanguage{hindustani}
+\DeclareLanguage{hungarian}
+\DeclareLanguage{icelandic}
+\DeclareLanguage{interlingua}
+\DeclareLanguage{italian}
+\DeclareLanguage{japanese}
+\DeclareLanguage{kannada}
+\DeclareLanguage{korean}
+\DeclareLanguage{ladin}
+\DeclareLanguage{lao}
+\DeclareLanguage{latin}
+\DeclareLanguage{latvian}
+\DeclareLanguage{lithuanian}
+\DeclareLanguage{macedonian}
+\DeclareLanguage{malay}
+\DeclareLanguage{malayalam}
+\DeclareLanguage{maldivian}
+\DeclareLanguage{marathi}
+\DeclareLanguage{mongolian}
+% polyglossia seems to support this one but it is unclear which language is
+% actually meant by it:
+% \DeclareLanguage{nko}
+\DeclareLanguage{norwegian}
+\DeclareLanguage{occitan}
+\DeclareLanguage{piedmontese}
+\DeclareLanguage{pinyin}
+\DeclareLanguage{polish}
+\DeclareLanguage{portuges}
+\DeclareLanguage{romanian}
+\DeclareLanguage{romansh}
+\DeclareLanguage{russian}
+\DeclareLanguage{samin}
+\DeclareLanguage{sanskrit}
+\DeclareLanguage{serbocroatian}
+\DeclareLanguage{slovak}
+\DeclareLanguage{slovenian}
+\DeclareLanguage{sorbian}
+% not sure about this: isn't it either a Spanish or English dialect?
+\DeclareLanguage{spanglish}
+\DeclareLanguage{spanish}
+\DeclareLanguage{swedish}
+% polyglossia seems to support this one but it is unclear which language is
+% actually meant by it:
+% \DeclareLanguage{syriac}
+\DeclareLanguage{tamil}
+\DeclareLanguage{telugu}
+\DeclareLanguage{thai}
+\DeclareLanguage{tibetan}
+\DeclareLanguage{turkish}
+\DeclareLanguage{turkmen}
+\DeclareLanguage{ukrainian}
+\DeclareLanguage{vietnamese}
+\DeclareLanguage{welsh}
+
+% --------------------------------------------------------------------------
+% aliases and dialects:
+\DeclareLanguageAlias  {Afrikaans}{afrikaans}
+\DeclareLanguageAlias  {Albanian}{albanian}
+\DeclareLanguageAlias  {Amharic}{amharic}
+\DeclareLanguageAlias  {Arabic}{arabic}
+\DeclareLanguageAlias  {Armenian}{armenian}
+\DeclareLanguageAlias  {Asturian}{asturian}
+\DeclareLanguageAlias  {astur-leonese}{asturian}
+\DeclareLanguageAlias  {Astur-Leonese}{astur-leonese}
+\DeclareLanguageAlias  {asturian-leonese}{asturian}
+\DeclareLanguageAlias  {Asturian-Leonese}{asturian-leonese}
+\DeclareLanguageAlias  {Azerbaijani}{azerbaijani}
+\DeclareLanguageAlias  {Basque}{basque}
+\DeclareLanguageAlias  {Bengali}{bengali}
+\DeclareLanguageAlias  {Breton}{breton}
+\DeclareLanguageAlias  {Bulgarian}{bulgarian}
+\DeclareLanguageAlias  {Catalan}{catalan}
+\DeclareLanguageAlias  {Coptic}{coptic}
+\DeclareLanguageAlias  {coptic egyptian}{coptic}
+\DeclareLanguageAlias  {Coptic Egyptian}{coptic egyptian}
+\DeclareLanguageAlias  {Czech}{czech}
+\DeclareLanguageAlias  {Danish}{danish}
+\DeclareLanguageAlias  {Dutch}{dutch}
+\DeclareLanguageAlias  {Farsi}{farsi}
+\DeclareLanguageAlias  {Finnish}{finnish}
+\DeclareLanguageAlias  {francais}{french}
+\DeclareLanguageAlias  {Francais}{francais}
+\DeclareLanguageDialect{canadien}{french}
+\DeclareLanguageAlias  {Canadien}{canadien}
+\DeclareLanguageAlias  {French}{french}
+\DeclareLanguageDialect{acadian}{french}
+\DeclareLanguageAlias  {Acadian}{acadian}
+\DeclareLanguageAlias  {frenchle}{french}
+\DeclareLanguageDialect{american}{english}
+\DeclareLanguageAlias  {American}{american}
+\DeclareLanguageDialect{australian}{english}
+\DeclareLanguageAlias  {Australian}{australian}
+\DeclareLanguageDialect{british}{english}
+\DeclareLanguageAlias  {British}{british}
+\DeclareLanguageDialect{canadian}{english}
+\DeclareLanguageAlias  {Canadian}{canadian}
+\DeclareLanguageAlias  {English}{english}
+\DeclareLanguageAlias  {UKenglish}{british}
+\DeclareLanguageAlias  {USenglish}{american}
+\DeclareLanguageDialect{newzealand}{english}
+\DeclareLanguageAlias  {Newzealand}{newzealand}
+\DeclareLanguageAlias  {Ethiop}{ethiop}
+\DeclareLanguageAlias  {Esperanto}{esperanto}
+\DeclareLanguageAlias  {Estonian}{estonian}
+\DeclareLanguageAlias  {Friulan}{friulan}
+\DeclareLanguageAlias  {Gaelic}{gaelic}
+\DeclareLanguageDialect{irish}{gaelic}
+\DeclareLanguageDialect{scottish}{gaelic}
+\DeclareLanguageAlias  {Irish}{irish}
+\DeclareLanguageAlias  {irish gaelic}{irish}
+\DeclareLanguageAlias  {Irish Gaelic}{irish}
+\DeclareLanguageAlias  {Scottish}{scottish}
+\DeclareLanguageAlias  {scottish gaelic}{scottish}
+\DeclareLanguageAlias  {Scottish Gaelic}{scottish}
+\DeclareLanguageAlias  {Galician}{galician}
+\DeclareLanguageAlias  {German}{german}
+\DeclareLanguageAlias  {germanb}{german}
+\DeclareLanguageAlias  {ngerman}{german}
+\DeclareLanguageDialect{austrian}{german}
+\DeclareLanguageAlias  {Austrian}{austrian}
+\DeclareLanguageAlias  {naustrian}{austrian}
+\DeclareLanguageAlias  {Greek}{greek}
+\DeclareLanguageAlias  {polutonikogreek}{greek}
+\DeclareLanguageAlias  {ibygreek}{greek}
+\DeclareLanguageAlias  {bgreek}{greek}
+\DeclareLanguageAlias  {Hebrew}{hebrew}
+\DeclareLanguageAlias  {Hindustani}{hindustani}
+\DeclareLanguageAlias  {hindi-urdu}{hindustani}
+\DeclareLanguageAlias  {Hindi-Urdu}{hindi-urdu}
+\DeclareLanguageDialect{hindi}{hindustani}
+\DeclareLanguageAlias  {Hindi}{hindi}
+\DeclareLanguageDialect{urdu}{hindustani}
+\DeclareLanguageAlias  {Urdu}{urdu}
+\DeclareLanguageAlias  {Hungarian}{hungarian}
+\DeclareLanguageAlias  {magyar}{hungarian}
+\DeclareLanguageAlias  {Magyar}{magyar}
+\DeclareLanguageAlias  {Icelandic}{icelandic}
+\DeclareLanguageAlias  {Interlingua}{interlingua}
+\DeclareLanguageAlias  {Italian}{italian}
+\DeclareLanguageAlias  {Japanese}{japanese}
+\DeclareLanguageAlias  {Kannada}{kannada}
+\DeclareLanguageAlias  {Korean}{korean}
+\DeclareLanguageAlias  {Ladin}{ladin}
+\DeclareLanguageAlias  {Lao}{lao}
+\DeclareLanguageAlias  {laotian}{lao}
+\DeclareLanguageAlias  {Laotian}{laotian}
+\DeclareLanguageAlias  {Latin}{latin}
+\DeclareLanguageAlias  {Latvian}{latvian}
+\DeclareLanguageAlias  {lettish}{latvian}
+\DeclareLanguageAlias  {Lettish}{lettish}
+\DeclareLanguageAlias  {Lithuanian}{lithuanian}
+\DeclareLanguageAlias  {Macedonian}{macedonian}
+% hopefully someone who knows better than me can comment on the following
+% family:
+\DeclareLanguageAlias  {Malay}{malay}
+\DeclareLanguageAlias  {bahasa malaysia}{malay}
+\DeclareLanguageAlias  {Bahasa Malaysia}{bahasa malaysia}
+\DeclareLanguageAlias  {bahasa melayu}{bahasa malaysia}
+\DeclareLanguageAlias  {Bahasa Melayu}{bahasa melayu}
+\DeclareLanguageAlias  {bahasa}{bahasa melayu}
+\DeclareLanguageAlias  {Bahasa}{bahasa}
+\DeclareLanguageAlias  {bahasai}{bahasa}
+\DeclareLanguageAlias  {Bahasai}{bahasai}
+\DeclareLanguageAlias  {bahasam}{bahasa}
+\DeclareLanguageAlias  {Bahasam}{bahasam}
+\DeclareLanguageDialect{indonesian}{malay}
+\DeclareLanguageAlias  {Indonesian}{indonesian}
+\DeclareLanguageAlias  {indon}{indonesian}
+% 
+\DeclareLanguageAlias  {Malayalam}{malayalam}
+\DeclareLanguageAlias  {Maldivian}{maldivian}
+\DeclareLanguageAlias  {divehi}{maldivian}
+\DeclareLanguageAlias  {Divehi}{divehi}
+\DeclareLanguageAlias  {Marathi}{marathi}
+\DeclareLanguageAlias  {Mongolian}{mongolian}
+% \DeclareLanguageAlias  {Nko}{nko}
+\DeclareLanguageAlias  {norsk}{norwegian}
+\DeclareLanguageAlias  {Norsk}{norsk}
+\DeclareLanguageAlias  {Norwegian}{norwegian}
+\DeclareLanguageAlias  {nynorsk}{norwegian}
+\DeclareLanguageAlias  {Nynorsk}{nynorsk}
+\DeclareLanguageAlias  {Occitan}{occitan}
+\DeclareLanguageAlias  {lenga d'oc}{occitan}
+\DeclareLanguageAlias  {langue d'oc}{occitan}
+\DeclareLanguageAlias  {Piedmontese}{piedmontese}
+\DeclareLanguageAlias  {piemontese}{piedmontese}
+\DeclareLanguageAlias  {Piemontese}{piemontese}
+\DeclareLanguageAlias  {piemonteis}{piedmontese}
+\DeclareLanguageAlias  {Piemonteis}{piemonteis}
+\DeclareLanguageAlias  {Pinyin}{pinyin}
+\DeclareLanguageAlias  {Polish}{polish}
+\DeclareLanguageDialect{brazil}{portuges}
+\DeclareLanguageAlias  {Brazil}{brazil}
+\DeclareLanguageAlias  {brazilian}{brazil}
+\DeclareLanguageAlias  {Brazilian}{brazilian}
+\DeclareLanguageAlias  {Portuges}{portuges}
+\DeclareLanguageAlias  {portuguese}{portuges}
+\DeclareLanguageAlias  {Portuguese}{portuguese}
+\DeclareLanguageAlias  {Romanian}{romanian}
+\DeclareLanguageAlias  {Romansh}{romansh}
+\DeclareLanguageAlias  {Romansch}{romansh}
+\DeclareLanguageAlias  {Rumantsh}{romansh}
+\DeclareLanguageAlias  {Rumantsch}{romansh}
+\DeclareLanguageAlias  {Romanche}{romansh}
+\DeclareLanguageAlias  {Russian}{russian}
+\DeclareLanguageAlias  {Samin}{samin}
+\DeclareLanguageAlias  {north sami}{samin}
+\DeclareLanguageAlias  {North Sami}{north sami}
+\DeclareLanguageAlias  {northern sami}{north sami}
+\DeclareLanguageAlias  {Northern Sami}{northern sami}
+\DeclareLanguageAlias  {Sanskrit}{sanskrit}
+\DeclareLanguageAlias  {Serbocroatian}{serbocroatian}
+\DeclareLanguageAlias  {serbo-croatian}{serbocroatian}
+\DeclareLanguageAlias  {Serbo-Croatian}{serbocroatian}
+\DeclareLanguageDialect{serbian}{serbocroatian}
+\DeclareLanguageAlias  {Serbian}{serbian}
+\DeclareLanguageAlias  {serbianc}{serbian}
+\DeclareLanguageDialect{croatian}{serbocroatian}
+\DeclareLanguageAlias  {Croatian}{croatian}
+\DeclareLanguageAlias  {Slovak}{slovak}
+\DeclareLanguageAlias  {Slovenian}{slovenian}
+\DeclareLanguageAlias  {slovene}{slovenian}
+\DeclareLanguageAlias  {Slovene}{slovene}
+\DeclareLanguageAlias  {Sorbian}{sorbian}
+\DeclareLanguageDialect{lowersorbian}{sorbian}
+\DeclareLanguageDialect{uppersorbian}{sorbian}
+\DeclareLanguageAlias  {Lowersorbian}{lowersorbian}
+\DeclareLanguageAlias  {Uppersorbian}{uppersorbian}
+\DeclareLanguageAlias  {lsorbian}{lowersorbian}
+\DeclareLanguageAlias  {usorbian}{uppersorbian}
+\DeclareLanguageAlias  {lower sorbian}{lowersorbian}
+\DeclareLanguageAlias  {upper sorbian}{uppersorbian}
+\DeclareLanguageAlias  {lower Sorbian}{lowersorbian}
+\DeclareLanguageAlias  {upper Sorbian}{uppersorbian}
+\DeclareLanguageAlias  {Lower Sorbian}{lowersorbian}
+\DeclareLanguageAlias  {Upper Sorbian}{uppersorbian}
+\DeclareLanguageAlias  {Spanglish}{spanglish}
+\DeclareLanguageAlias  {Spanish}{spanish}
+\DeclareLanguageAlias  {Swedish}{swedish}
+\DeclareLanguageDialect{swissgerman}{german}
+\DeclareLanguageDialect{swissfrench}{french}
+\DeclareLanguageDialect{swissitalian}{italian}
+\DeclareLanguageDialect{swissromansh}{romansh}
+\DeclareLanguageAlias  {Swissgerman}{swissgerman}
+\DeclareLanguageAlias  {swiss german}{swissgerman}
+\DeclareLanguageAlias  {Swiss German}{swissgerman}
+\DeclareLanguageAlias  {Swissfrench}{swissfrench}
+\DeclareLanguageAlias  {swiss french}{swissfrench}
+\DeclareLanguageAlias  {Swiss French}{swissfrench}
+\DeclareLanguageAlias  {Swissitalian}{swissitalian}
+\DeclareLanguageAlias  {swiss italian}{swissitalian}
+\DeclareLanguageAlias  {Swiss Italian}{swissitalian}
+\DeclareLanguageAlias  {Swissromansh}{swissromansh}
+\DeclareLanguageAlias  {swiss romansh}{swissromansh}
+\DeclareLanguageAlias  {Swiss Romansh}{swissromansh}
+% this is to be discussed: swiss could also be an alias of french, italian or
+% romansh:
+\DeclareLanguageAlias  {swiss}{swissgerman}
+\DeclareLanguageAlias  {Swiss}{swiss}
+% \DeclareLanguageAlias  {Syriac}{syriac}
+\DeclareLanguageAlias  {Tamil}{tamil}
+\DeclareLanguageAlias  {Telugu}{telugu}
+\DeclareLanguageAlias  {Thai}{thai}
+\DeclareLanguageAlias  {thaicjk}{thai}
+\DeclareLanguageAlias  {Thaicjk}{thaicjk}
+\DeclareLanguageAlias  {Tibetan}{tibetan}
+\DeclareLanguageAlias  {Turkish}{turkish}
+\DeclareLanguageAlias  {Turkmen}{turkmen}
+\DeclareLanguageAlias  {Ukrainian}{ukrainian}
+\DeclareLanguageAlias  {Vietnamese}{vietnamese}
+\DeclareLanguageAlias  {Welsh}{welsh}
+
+% ==========================================================================
+% OK, we have everything, do we? No, wait: let's load the basic dictionary
+% that is part of this package if it is available for the document language
+% --------------------------------------------------------------------------
+% load basic dictionary if available
+\AtBeginDocument{%
+  \@trnslt@load@dictionary@silent@for
+    {translations-basic-dictionary}
+    \@trnslt@current@language
+}
+
+\endinput
+
+% ==========================================================================
+% HISTORY:
+2012/09/30 v0.2beta - first version (as part of the `exsheets' bundle)
+2012/10/05 v0.2     - \LoadDictionary and \LoadDictionaryFor added and loads of
+                      languages defined.
+2013/03/10 v0.8     - basic dictionaries for English, German, French and Spanish
+                    - new command \DeclareDictTranslation
+2013/04/04 v0.8a    - bug fix in \DeclareDictTranslation
+2013/04/07 v0.9     - slightly improved messages
+2013/04/08 v0.9a    - changed fallback warning into info
+                    - synchronized version number with `exsheets' until now but
+                      won't any more
+2013/06/22 v0.9b    - added Swiss
+2013/06/28 v0.10    - declaring aliases of dialects now works as expected
+                    - declarings dialects of an alias now correctly declares
+                      the dialect to the correct base language
+                    - corrected a few erroneous language declarations
+2013/07/12 v0.10a   - \GetTranslation gets two-folded fallback: use
+                      fallback-translation if no translation for the current
+                      language has been defined; use literal string if /no/
+                      language is used - this should never happen but /will/
+                      happen if neither `babel' nor `polyglossia' have been
+                      loaded, i.e., no language has been chosen /and/ the
+                      package writer did not provide an English translation
+2013/07/16 v1.0     - removed from `exsheets' bundle - `translations' should
+                      be a package of it's own
+                    - load basic dictionary automatically if available
+                    - rudimentary check in \LoadDictionary if loaded file is a
+                      dictionary
+                    - new command \PrintDictionaryFor
+                    - redefined conditionals; they still seemed to make
+                      trouble in some cases
+2013/08/05 v1.1     - added /loads/ of languages, now the list of babel and
+                      polyglossia languages hopefully is complete
+                    - a few languages had falsely been declared as dialect
+                      instead of an alias
+                    - added weekday names and month names to basic dictionary
+                    - new command \baselanguage
+                    - new commands \GetLCTranslation, \GetLCTranslationFor,
+                      \GetLCTranslationWarn and \GetLCTranslationForWarn
+                    - load basic dictionary also for dialects and if it
+                      doesn't exist load it for the corresponding base
+                      language instead
+2013/09/30 v1.1a    - Bug fix in \NewTranslation und \RenewTranslation
+2014/01/10 v1.2     - \ifcurrentlanguage, \ifcurrentbaselanguage
+                    - require cnltx-base
+                    - change the `no language package' warning into an info
+                    - \ProvideTranslation
+                    - \NewDictTranslation, \RenewDictTranslation,
+                      \ProvideDictTranslation
+                    - translations in dictionaries are provided
+                    - \baselanguagename
+2014/01/23 v1.2a    - add \detokenize{} so that translation keys with
+                      non-ascii chars can safely be used
+                    - fix bug in dialect declaration
+                    - rename \baselanguagename => \baselanguage
+                    - drop earlier \baselanguage (it was and still is
+                      available as \@trnslt@language)
+2015/07/09 v1.2b    - add language `korean'
+2015/08/29 v1.2c    - fix bug in \@trnslt@save@translation@for
+2015/09/06 v1.2d    - add alias `slovene' for `slovenian'
+                    - add user command for \@trnslt@if@translation
+2015/11/07 v1.2e    - Some fixes to the French translations in the basic
+                      dictionary, thanks to Denis Bitouz\'e
+                    - add Macedonian language
+2016/04/19 v1.3     - \LoadDictionary first checks if a dictionary for the
+                      dialect exists and loads it if it does; else it looks
+                      for a dictionary of the base language and loads that
+                      instead
+                    - New command \LoadDictionaryForDialect which only loads
+                      the dictionary for a specified dialect – this doesn't
+                      check if a dictionary for a baselanguage exists
+2016/06/02 v1.4     - new commands \declaretranslation, \newtranslation,
+                      \renewtranslation and \providetranslation which can be
+                      used after begin document
+                    - fallback versions for each definition command
+2016/06/02 v1.4a    - rename new commands: they conflict with the translator
+                      package!
+2017/03/03 v1.5     - remove dependency on cnltx-base
+                    - add Dutch dictionary (thanks to kwikwi)
+                    - add Catalan dictionary (thanks to kwikwi)
+2017/03/05 v1.5a    - correct typos in Dutch dictionary
+2017/04/24 v1.5b    - correct typos in Malaysian language names
+2017/05/06 v1.5c    - add Azerbaijani
+2017/05/16 v1.6     - allow translations to contain \par
+                    - improve perfomance by replacing list checks
+2017/07/03 v1.6a    - fix issue #6 (bug in \@trnslt@save@translation@for)
+2017/07/06 v1.7     - return translation values in \unexpanded
+2017/08/31 v1.7a    - add missing dependency on pdftexcmds

@@ -1,0 +1,188 @@
+% alphabeta-lgr.def
+% ===================
+% Composite definitions for 8-bit TeX
+% ******************************************
+% 
+% :Copyright: © 2014 Günter Milde
+% :Licence:   This work may be distributed and/or modified under the
+%             conditions of the `LaTeX Project Public License`_, either
+%             version 1.3 of this license or any later version.
+% :Identification:
+%  ::
+
+\ProvidesFile{alphabeta-lgr}
+[2014/09/04 0.11.2 Composite definitions for 8-bit TeX]
+
+% :Changelog:
+%   .. class:: borderless
+% 
+%   ==========  ====== =======================================================
+%   2014-09-04  0.11.2 outsourced from ``alphabeta.sty``.
+%   ==========  ====== =======================================================
+% 
+% The alphabeta_ package re-defines the math macros for Greek letters to work
+% in both, text and math mode, so that Greek letters can be specified with
+% the established command names in text, too.
+% 
+% The NFSS TextComposite mechanism looks for the next token without expanding
+% it. In order to let compositions like ``\>"\alpha`` work as expected we
+% define TextComposites with the `letter name commands`.
+% 
+% This file expands the font encoding definitions in lgrenc.def_ with
+% composite commands for use with 8-bit TeX fonts. It is sourced by
+% alphabeta_ under 8-bit TeX (pdfTeX, eTeX, TeX).
+% 
+% ::
+
+  \DeclareTextComposite{\accvaria}{LGR}{\alpha}{128}
+  \DeclareTextComposite{\accdasia}{LGR}{\alpha}{129}
+  \DeclareTextComposite{\accpsili}{LGR}{\alpha}{130}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\alpha}{131}
+  \DeclareTextComposite{\acctonos}{LGR}{\alpha}{136}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\alpha}{137}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\alpha}{138}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\alpha}{139}
+  \DeclareTextComposite{\accperispomeni}{LGR}{\alpha}{144}
+  \DeclareTextComposite{\accdasiaperispomeni}{LGR}{\alpha}{145}
+  \DeclareTextComposite{\accpsiliperispomeni}{LGR}{\alpha}{146}
+  \DeclareTextComposite{\accvaria}{LGR}{\eta}{152}
+  \DeclareTextComposite{\accdasia}{LGR}{\eta}{153}
+  \DeclareTextComposite{\accpsili}{LGR}{\eta}{154}
+  \DeclareTextComposite{\acctonos}{LGR}{\eta}{160}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\eta}{161}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\eta}{162}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\eta}{163}
+  \DeclareTextComposite{\accperispomeni}{LGR}{\eta}{168}
+  \DeclareTextComposite{\accdasiaperispomeni}{LGR}{\eta}{169}
+  \DeclareTextComposite{\accpsiliperispomeni}{LGR}{\eta}{170}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\eta}{171}
+  \DeclareTextComposite{\accvaria}{LGR}{\omega}{176}
+  \DeclareTextComposite{\accdasia}{LGR}{\omega}{177}
+  \DeclareTextComposite{\accpsili}{LGR}{\omega}{178}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\omega}{179}
+  \DeclareTextComposite{\acctonos}{LGR}{\omega}{184}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\omega}{185}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\omega}{186}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\omega}{187}
+  \DeclareTextComposite{\accperispomeni}{LGR}{\omega}{192}
+  \DeclareTextComposite{\accdasiaperispomeni}{LGR}{\omega}{193}
+  \DeclareTextComposite{\accpsiliperispomeni}{LGR}{\omega}{194}
+  \DeclareTextComposite{\accvaria}{LGR}{\iota}{200}
+  \DeclareTextComposite{\accdasia}{LGR}{\iota}{201}
+  \DeclareTextComposite{\accpsili}{LGR}{\iota}{202}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\iota}{203}
+  \DeclareTextComposite{\acctonos}{LGR}{\iota}{208}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\iota}{209}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\iota}{210}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\iota}{211}
+  \DeclareTextComposite{\accperispomeni}{LGR}{\iota}{216}
+  \DeclareTextComposite{\accdasiaperispomeni}{LGR}{\iota}{217}
+  \DeclareTextComposite{\accpsiliperispomeni}{LGR}{\iota}{218}
+  \DeclareTextComposite{\accdialytika}{LGR}{\iota}{240}
+  \DeclareTextComposite{\accdialytikavaria}{LGR}{\iota}{241}
+  \DeclareTextComposite{\accdialytikatonos}{LGR}{\iota}{242}
+  \DeclareTextComposite{\accdialytikaperispomeni}{LGR}{\iota}{243}
+  \DeclareTextComposite{\accvaria}{LGR}{\upsilon}{204}
+  \DeclareTextComposite{\accdasia}{LGR}{\upsilon}{205}
+  \DeclareTextComposite{\accpsili}{LGR}{\upsilon}{206}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\upsilon}{207}
+  \DeclareTextComposite{\acctonos}{LGR}{\upsilon}{212}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\upsilon}{213}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\upsilon}{214}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\upsilon}{215}
+  \DeclareTextComposite{\accperispomeni}{LGR}{\upsilon}{220}
+  \DeclareTextComposite{\accdasiaperispomeni}{LGR}{\upsilon}{221}
+  \DeclareTextComposite{\accpsiliperispomeni}{LGR}{\upsilon}{222}
+  \DeclareTextComposite{\accdialytika}{LGR}{\upsilon}{244}
+  \DeclareTextComposite{\accdialytikavaria}{LGR}{\upsilon}{245}
+  \DeclareTextComposite{\accdialytikatonos}{LGR}{\upsilon}{246}
+  \DeclareTextComposite{\accdialytikaperispomeni}{LGR}{\upsilon}{247}
+  \DeclareTextComposite{\accvaria}{LGR}{\epsilon}{224}
+  \DeclareTextComposite{\accdasia}{LGR}{\epsilon}{225}
+  \DeclareTextComposite{\accpsili}{LGR}{\epsilon}{226}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\epsilon}{227}
+  \DeclareTextComposite{\acctonos}{LGR}{\epsilon}{232}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\epsilon}{233}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\epsilon}{234}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\epsilon}{235}
+  \DeclareTextComposite{\accvaria}{LGR}{\omicron}{228}
+  \DeclareTextComposite{\accdasia}{LGR}{\omicron}{229}
+  \DeclareTextComposite{\accpsili}{LGR}{\omicron}{230}
+  \DeclareTextComposite{\accdasiavaria}{LGR}{\omicron}{231}
+  \DeclareTextComposite{\acctonos}{LGR}{\omicron}{236}
+  \DeclareTextComposite{\accdasiaoxia}{LGR}{\omicron}{237}
+  \DeclareTextComposite{\accpsilioxia}{LGR}{\omicron}{238}
+  \DeclareTextComposite{\accpsilivaria}{LGR}{\omicron}{239}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Alpha}{<A}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Alpha}{<`A}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Alpha}{<'A}
+  \DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\Alpha}{<\char126A}
+  \DeclareTextCompositeCommand{\accpsili}{LGR}{\Alpha}{>A}
+  \DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\Alpha}{>`A}
+  \DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\Alpha}{>'A}
+  \DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\Alpha}{>\char126A}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Alpha}{'A}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Alpha}{`A}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Epsilon}{<E}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Epsilon}{<'E}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Epsilon}{<`E}
+  \DeclareTextCompositeCommand{\accpsili}{LGR}{\Epsilon}{>E}
+  \DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\Epsilon}{>'E}
+  \DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\Epsilon}{>`E}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Epsilon}{'E}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Epsilon}{`E}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Eta}{<H}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Eta}{<`H}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Eta}{<'H}
+  \DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\Eta}{<\char126H}
+  \DeclareTextCompositeCommand{\accpsili}{LGR}{\Eta}{>H}
+  \DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\Eta}{>`H}
+  \DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\Eta}{>'H}
+  \DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\Eta}{>\char126H}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Eta}{'H}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Eta}{`H}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Iota}{<I}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Iota}{<`I}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Iota}{<'I}
+  \DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\Iota}{<\char126I}
+  \DeclareTextCompositeCommand{\accpsili}{LGR}{\Iota}{>I}
+  \DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\Iota}{>`I}
+  \DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\Iota}{>'I}
+  \DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\Iota}{>\char126I}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Iota}{'I}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Iota}{`I}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Omicron}{<O}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Omicron}{<`O}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Omicron}{<'O}
+  \DeclareTextCompositeCommand{\accpsili}{LGR}{\Omicron}{>O}
+  \DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\Omicron}{>`O}
+  \DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\Omicron}{>'O}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Omicron}{'O}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Omicron}{`O}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Upsilon}{<U}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Upsilon}{<`U}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Upsilon}{<'U}
+  \DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\Upsilon}{<\char126U}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Upsilon}{'U}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Upsilon}{`U}
+  \DeclareTextCompositeCommand{\accdasia}{LGR}{\Omega}{<W}
+  \DeclareTextCompositeCommand{\accdasiavaria}{LGR}{\Omega}{<`W}
+  \DeclareTextCompositeCommand{\accdasiaoxia}{LGR}{\Omega}{<'W}
+  \DeclareTextCompositeCommand{\accdasiaperispomeni}{LGR}{\Omega}{<\char126W}
+  \DeclareTextCompositeCommand{\accpsili}{LGR}{\Omega}{>W}
+  \DeclareTextCompositeCommand{\accpsilivaria}{LGR}{\Omega}{>`W}
+  \DeclareTextCompositeCommand{\accpsilioxia}{LGR}{\Omega}{>'W}
+  \DeclareTextCompositeCommand{\accpsiliperispomeni}{LGR}{\Omega}{>\char126W}
+  \DeclareTextCompositeCommand{\acctonos}{LGR}{\Omega}{'W}
+  \DeclareTextCompositeCommand{\accvaria}{LGR}{\Omega}{`W}
+  \DeclareTextComposite{\accdialytika}{LGR}{\Iota}{219}
+  \DeclareTextComposite{\accdialytika}{LGR}{\Upsilon}{223}
+  \DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{\Alpha}{\LGR@A@hiatus}
+  \DeclareTextCompositeCommand{\LGR@hiatus}{LGR}{\Epsilon}{\LGR@E@hiatus}
+
+
+% .. References
+% 
+% .. _LaTeX Project Public License: http://www.latex-project.org/lppl.txt
+% .. _alphabeta: alphabeta.sty.html
+% .. _lgrenc.def: lgrenc.def.html

@@ -1,0 +1,2415 @@
+%%
+%% This is file `tracklang.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% tracklang.dtx  (with options: `tracklang.tex,package')
+%% 
+%%  tracklang.dtx
+%%  Copyright 2018 Nicola Talbot
+%% 
+%%  This work may be distributed and/or modified under the
+%%  conditions of the LaTeX Project Public License, either version 1.3
+%%  of this license or (at your option) any later version.
+%%  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%%  and version 1.3 or later is part of all distributions of LaTeX
+%%  version 2005/12/01 or later.
+%% 
+%%  This work has the LPPL maintenance status `maintained'.
+%% 
+%%  The Current Maintainer of this work is Nicola Talbot.
+%% 
+%%  This work consists of the files tracklang.dtx and tracklang.ins and the derived files tracklang.sty, tracklang.tex, tracklang-region-codes.tex, tracklang-scripts.sty, tracklang-scripts.tex.
+%% 
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% load packages that use tracklang for localisation
+%% do code now to initialise
+%% Pass all options to tracklang:
+\ifnum\catcode`\@=11\relax
+  \def\@tracklang@restore@at{}%
+\else
+  \expandafter\edef\csname @tracklang@restore@at\endcsname{%
+    \noexpand\catcode`\noexpand\@=\number\catcode`\@\relax
+  }%
+ \catcode`\@=11\relax
+\fi
+\ifx\@tracklang@languages\undefined
+\else
+  \@tracklang@restore@at
+  \expandafter\endinput
+\fi
+\expandafter\def\csname ver@tracklang.tex\endcsname{%
+ 2018/02/21 v1.3.5 (NLCT) Track Languages Generic Code}
+\long\def\@tracklang@ifundef#1#2#3{%
+  \ifcsname#1\endcsname
+    \expandafter\ifx\csname #1\endcsname\relax
+      #2%
+    \else
+      #3%
+    \fi
+  \else
+    \expandafter\ifx\csname #1\endcsname\relax
+      #2%
+    \else
+      #3%
+    \fi
+  \fi
+}
+\ifx\ifcsname\undefined
+  \long\def\@tracklang@ifundef#1#2#3{%
+    \expandafter\ifx\csname #1\endcsname\relax
+      #2%
+    \else
+      #3%
+    \fi
+  }
+\fi
+\ifx\@@input\undefined
+   \let\@tracklang@input\input
+\else
+   \let\@tracklang@input\@@input
+\fi
+\ifx\@nnil\undefined
+  \def\@tracklang@nnil{\@nil}
+\else
+  \let\@tracklang@nnil\@nnil
+\fi
+\ifx\@for\undefined
+  \long\def\@tracklang@for#1:=#2\do#3{%
+    \expandafter\def\expandafter\@fortmp\expandafter{#2}%
+    \ifx\@fortmp\empty
+    \else
+      \expandafter
+        \@tracklang@forloop #2,\@nil,\@nil\@@ #1{#3}%
+    \fi
+  }
+  \long\def\@tracklang@forloop#1,#2,#3\@@ #4#5{%
+   \def #4{#1}%
+   \ifx#4\@tracklang@nnil
+   \else
+     #5%
+     \def #4{#2}%
+     \ifx#4\@tracklang@nnil
+     \else
+       #5%
+       \@tracklang@iforloop #3\@@ #4{#5}%
+     \fi
+   \fi
+  }
+  \long\def\@tracklang@iforloop#1,#2\@@ #3#4{%
+    \def#3{#1}%
+    \ifx#3\@tracklang@nnil
+      \expandafter
+        \@tracklang@fornoop
+    \else
+      #4\relax
+      \expandafter\@tracklang@iforloop
+    \fi
+    #2\@@ #3{#4}%
+  }
+  \long\def\@tracklang@fornoop#1\@@ #2#3{}
+\else
+  \let\@tracklang@for\@for
+\fi
+\ifx\@namedef\undefined
+  \def\@tracklang@namedef#1{\expandafter\def\csname#1\endcsname}
+\else
+  \let\@tracklang@namedef\@namedef
+\fi
+\def\@tracklang@enamedef#1{\expandafter\edef\csname#1\endcsname}
+\def\@tracklang@nameuse#1{%
+  \@tracklang@ifundef{#1}{}{\csname#1\endcsname}%
+}
+\ifx\@onelevel@sanitize\undefined
+  \def\@tracklang@sanitize#1{%
+    \edef#1{\expandafter\@tracklang@strip@prefix\meaning#1}%
+  }
+  \def\@tracklang@strip@prefix#1>{}
+\else
+  \let\@tracklang@sanitize\@onelevel@sanitize
+\fi
+\def\@tracklang@firstoftwo#1#2{#1}
+\def\@tracklang@secondoftwo#1#2{#2}
+\ifx\PackageError\undefined
+  \def\@tracklang@err#1#2{%
+    \errhelp{#2}%
+    \errmessage{tracklang: #1}}
+\else
+  \def\@tracklang@err#1#2{\PackageError{tracklang}{#1}{#2}}
+\fi
+\newif\ifTrackLangShowWarnings
+\TrackLangShowWarningstrue
+\ifx\PackageWarning\undefined
+  \def\@tracklang@pkgwarn#1#2{%
+    \ifTrackLangShowWarnings
+      {%
+        \newlinechar=`\^^J
+        \def\MessageBreak{^^J}%
+        \message{^^J#1 Warning: #2 on line \the\inputlineno.^^J}%
+      }%
+    \fi
+  }
+\else
+  \def\@tracklang@pkgwarn#1#2{%
+    \ifTrackLangShowWarnings
+      \PackageWarning{#1}{#2}%
+    \fi
+  }
+\fi
+\def\@tracklang@warn#1{\@tracklang@pkgwarn{tracklang}{#1}}%
+\newif\ifTrackLangShowInfo
+\TrackLangShowInfotrue
+\ifx\PackageInfo\undefined
+  \def\@tracklang@info#1{%
+   \ifTrackLangShowInfo
+     {%
+       \newlinechar=`\^^J
+       \def\MessageBreak{^^J}%
+       \message{^^Jtracklang Info: #1 on line \the\inputlineno.^^J}%
+     }%
+   \fi
+  }%
+\else
+  \def\@tracklang@info#1{%
+    \ifTrackLangShowInfo
+      \PackageInfo{tracklang}{#1}%
+    \fi
+  }%
+\fi
+\ifx\IfFileExists\undefined
+ \long\def\@tracklang@IfFileExists#1#2#3{%
+   \openin0=#1 %
+   \ifeof0\relax
+     \def\@tracklang@tmp{#3}%
+   \else
+     \closein0\relax
+     \edef\@filef@und{#1 }%
+     \def\@tracklang@tmp{#2}%
+   \fi
+   \@tracklang@tmp
+ }
+
+\else
+  \let\@tracklang@IfFileExists\IfFileExists
+\fi
+\def\@tracklang@checklocale{%
+  \ifx\TrackLangEnv\empty
+  \else
+    \ifx\TrackLangEnv\@tracklang@locale@posix
+      \def\TrackLangEnv{}%
+    \else
+      \ifx\TrackLangEnv\@tracklang@locale@c
+        \def\TrackLangEnv{}%
+      \else
+        \expandafter\@@tracklang@checklocale
+           \TrackLangEnv\empty\relax
+      \fi
+    \fi
+  \fi
+}
+\def\@@tracklang@checklocale#1#2\relax{%
+  \ifx#1/\relax
+    \def\TrackLangEnv{}%
+  \fi
+}
+\def\@tracklang@locale@posix{POSIX}
+\def\@tracklang@locale@c{C}
+\ifx\directlua\undefined
+  \def\@tracklang@tryshellescape#1{%
+   \def\TrackLangQueryEnv{%
+     \@tracklang@warn{\string\TrackLangQueryEnv\space
+     non-operational as shell escape has been disabled}%
+     \def\TrackLangEnv{}%
+   }%
+   \def\TrackLangQueryOtherEnv##1{%
+     \@tracklang@warn{\string\TrackLangQueryOtherEnv{##1}\space
+     non-operational as shell escape has been disabled}%
+     \def\TrackLangEnv{}%
+   }%
+  }%
+   \ifx\pdfshellescape\undefined
+     \ifx\shellescape\undefined
+        \def\@tracklang@tryshellescape#1{%
+          \def\TrackLangQueryEnv{%
+            \@tracklang@warn{\string\TrackLangQueryEnv\space
+            non-operational as can't determine if the
+            shell escape has been enabled. (Consider using
+            eTeX or pdfTeX.)}%
+            \def\TrackLangEnv{}%
+          }%
+          \def\TrackLangQueryOtherEnv##1{%
+            \@tracklang@warn{\string\TrackLangQueryOtherEnv{##1}\space
+            non-operational as can't determine if the
+            shell escape has been enabled. (Consider using
+            eTeX or pdfTeX.)}%
+            \def\TrackLangEnv{}%
+          }%
+        }%
+     \else
+       \ifx\shellescape\relax
+       \else
+         \ifnum\shellescape=0\relax
+         \else
+           \def\@tracklang@tryshellescape#1{#1}%
+         \fi
+       \fi
+     \fi
+   \else
+     \ifx\pdfshellescape\relax
+       \ifx\shellescape\undefined
+       \else
+         \ifx\shellescape\relax
+         \else
+           \ifnum\shellescape=0\relax
+           \else
+             \def\@tracklang@tryshellescape#1{#1}%
+           \fi
+         \fi
+       \fi
+     \else
+       \ifnum\pdfshellescape=0\relax
+       \else
+         \def\@tracklang@tryshellescape#1{#1}%
+       \fi
+     \fi
+   \fi
+   \@tracklang@tryshellescape
+   {%
+     \def\TrackLangQueryEnv{%
+       \begingroup\endlinechar=-1\relax
+       \everyeof{\noexpand}%
+       \edef\x{\endgroup\def\noexpand\TrackLangEnv{%
+         \@tracklang@input|"kpsewhich --var-value LC_ALL" }}\x
+       \@tracklang@checklocale
+       \ifx\TrackLangEnv\empty
+         \begingroup\endlinechar=-1\relax
+         \everyeof{\noexpand}%
+         \edef\x{\endgroup\def\noexpand\TrackLangEnv{%
+           \@tracklang@input|"kpsewhich --var-value LANG" }}\x
+         \@tracklang@checklocale
+         \ifx\TrackLangEnv\empty
+           \ifx\TeXOSQueryLocale\undefined
+             \@tracklang@warn{Locale environment variables
+              unavailable (tried LC\string_ALL and LANG)}%
+           \else
+             \@tracklang@info{Using texosquery to find locale}%
+             \TeXOSQueryLocale\TrackLangEnv
+             \ifx\TrackLangEnv\empty
+               \@tracklang@warn{Locale can't be found
+               (tried querying LC\string_ALL and LANG variables and
+               tried using texosquery)}%
+             \fi
+           \fi
+         \fi
+       \fi
+     }%
+     \def\TrackLangQueryOtherEnv#1{%
+       \begingroup\endlinechar=-1\relax
+       \everyeof{\noexpand}%
+       \edef\x{\endgroup\def\noexpand\TrackLangEnv{%
+         \@tracklang@input|"kpsewhich --var-value LC_ALL" }}\x
+       \@tracklang@checklocale
+       \ifx\TrackLangEnv\empty
+         \begingroup\endlinechar=-1\relax
+         \everyeof{\noexpand}%
+         \edef\x{\endgroup\def\noexpand\TrackLangEnv{%
+           \@tracklang@input|"kpsewhich --var-value #1" }}\x
+         \@tracklang@checklocale
+         \ifx\TrackLangEnv\empty
+           \begingroup\endlinechar=-1\relax
+           \everyeof{\noexpand}%
+           \edef\x{\endgroup\def\noexpand\TrackLangEnv{%
+             \@tracklang@input|"kpsewhich --var-value LANG"}}\x
+           \@tracklang@checklocale
+           \ifx\TrackLangEnv\empty
+             \ifx\TeXOSQueryLocale\undefined
+             \@tracklang@warn{Locale environment variables unavailable
+              (tried LC\string_ALL, #1 and LANG)}%
+             \else
+               \@tracklang@info{Using texosquery to find locale}%
+               \TeXOSQueryLocale\TrackLangEnv
+               \ifx\TrackLangEnv\empty
+                 \@tracklang@warn{Locale can't be found
+                 (tried querying LC\string_ALL, #1 and LANG variables and
+                 tried using texosquery)}%
+               \fi
+             \fi
+           \fi
+         \fi
+       \fi
+     }%
+  }%
+\else
+   \def\TrackLangQueryEnv{%
+     \edef\TrackLangEnv{\directlua{
+       l = os.getenv("LC_ALL")
+       if l == nil or l == "" or l == "C" or l == "POSIX"
+                   or string.find(l, "^/") then
+         l = os.getenv("LANG")
+         if l == nil or l == "" or l == "C" or l == "POSIX"
+                     or string.find(l, "^/") then
+           l=os.setlocale(nil)
+           if l == nil or l == "C" or l == "POSIX"
+                       or string.find(l, "^/") then
+             l = ""
+           end
+         end
+       end
+       tex.print(l)}}%
+       \ifx\TrackLangEnv\empty
+         \ifx\TeXOSQueryLocale\undefined
+         \@tracklang@warn{Locale can't be found through Lua
+          (tried querying LC\string_ALL and LANG variables and
+           os.setlocale(nil))}%
+         \else
+           \TeXOSQueryLocale\TrackLangEnv
+           \ifx\TrackLangEnv\empty
+             \@tracklang@warn{Locale can't be found through Lua
+             (tried querying LC\string_ALL and LANG variables and
+             os.setlocale(nil) and tried using texosquery)}%
+           \fi
+         \fi
+       \fi
+   }
+   \def\TrackLangQueryOtherEnv#1{%
+     \edef\TrackLangEnv{\directlua{
+       l = os.getenv("LC_ALL")
+       if l == nil or l == "" or l == "C" or l == "POSIX"
+                   or string.find(l, "^/") then
+         l = os.getenv("#1")
+         if l == nil or l == "" or l == "C" or l == "POSIX"
+                     or string.find(l, "^/") then
+           l = os.getenv("LANG")
+           if l == nil or l == "" or l == "C" or l == "POSIX"
+                       or string.find(l, "^/") then
+             l=os.setlocale(nil)
+             if l == nil or l == "C" or l == "POSIX"
+                         or string.find(l, "^/") then
+               l = ""
+             end
+           end
+         end
+       end
+       tex.print(l}}%
+       \ifx\TrackLangEnv\empty
+         \ifx\TeXOSQueryLocale\undefined
+         \@tracklang@warn{Locale can't be found through Lua
+          (tried querying LC\string_ALL, #1 and LANG variables and
+           os.setlocale(nil))}%
+         \else
+           \TeXOSQueryLocale\TrackLangEnv
+           \ifx\TrackLangEnv\empty
+             \@tracklang@warn{Locale can't be found through Lua
+             (tried querying LC\string_ALL, #1 and LANG variables and
+             os.setlocale(nil) and tried using texosquery)}%
+           \fi
+         \fi
+       \fi
+   }
+\fi
+\def\TrackLangParseFromEnv{%
+  \ifx\TrackLangEnv\undefined
+     \@tracklang@warn{\string\TrackLangParseFromEnv\space
+     non-operational as \string\TrackLangEnv\space hasn't been
+     defined}%
+     \def\TrackLangEnvLang{}%
+     \def\TrackLangEnvTerritory{}%
+     \def\TrackLangEnvCodeSet{}%
+     \def\TrackLangEnvModifier{}%
+  \else
+    \ifx\TrackLangEnv\empty
+      \@tracklang@warn{\string\TrackLangParseFromEnv\space
+      non-operational as \string\TrackLangEnv\space is empty}%
+      \def\TrackLangEnvLang{}%
+      \def\TrackLangEnvTerritory{}%
+      \def\TrackLangEnvCodeSet{}%
+      \def\TrackLangEnvModifier{}%
+    \else
+      \@tracklang@parse@locale{\TrackLangEnv}%
+      \let\TrackLangEnvLang\@TrackLangEnvLang
+      \let\TrackLangEnvTerritory\@TrackLangEnvTerritory
+      \let\TrackLangEnvCodeSet\@TrackLangEnvCodeSet
+      \let\TrackLangEnvModifier\@TrackLangEnvModifier
+    \fi
+  \fi
+}
+\def\@tracklang@parse@locale#1{%
+  \def\@TrackLangEnvLang{}%
+  \def\@TrackLangEnvSubLang{}%
+  \def\@TrackLangEnvFirstSubLang{}%
+  \def\@TrackLangEnvTerritory{}%
+  \def\@TrackLangEnvCodeSet{}%
+  \def\@TrackLangEnvVariant{}%
+  \def\@TrackLangEnvModifier{}%
+  \def\@TrackLangEnvScript{}%
+  \def\@TrackLangEnvAdditional{}%
+  \expandafter\ifx\expandafter\relax#1\relax
+  \else
+    \expandafter\@tracklang@parseenv
+      #1..\relax\@tracklang@end@parseenv\@tracklang@result
+    \ifx\@tracklang@result\empty
+    \else
+      \expandafter\@tracklang@split@underscoreorhyp\expandafter
+       {\@tracklang@result}%
+      \let\@TrackLangEnvLang\@tracklang@split@pre
+      \let\@TrackLangEnvTerritory\@tracklang@split@post
+    \fi
+  \fi
+}
+\def\@tracklang@split@underscoreorhyp#1{%
+  \@tracklang@split@underscore{#1}%
+  \ifx\@tracklang@split@post\empty
+    \@tracklang@split@hyphen{#1}%
+    \ifx\@tracklang@split@post\empty
+      \@tracklang@split@otherunderscore{#1}%
+    \fi
+  \fi
+}
+{
+  \catcode`\_8\relax
+  \gdef\@tracklang@split@underscore#1{%
+    \@@tracklang@split@underscore#1__\relax\@tracklang@end@split@underscore
+  }
+  \gdef\@@tracklang@split@underscore#1_#2_#3\@tracklang@end@split@underscore{%
+    \def\@tracklang@split@pre{#1}%
+    \ifx\relax#3\relax
+      \def\@tracklang@split@post{#2}%
+    \else
+      \@tracklang@split@underscore@remainder#2_#3%
+    \fi
+  }
+  \gdef\@tracklang@split@underscore@remainder#1__\relax{%
+    \def\@tracklang@split@post{#1}%
+  }
+}
+{
+  \catcode`\_12\relax
+  \gdef\@tracklang@split@otherunderscore#1{%
+    \@@tracklang@split@otherunderscore#1__\relax\@tracklang@end@split@underscore
+  }
+  \gdef\@@tracklang@split@otherunderscore#1_#2_#3\@tracklang@end@split@underscore{%
+    \def\@tracklang@split@pre{#1}%
+    \ifx\relax#3\relax
+      \def\@tracklang@split@post{#2}%
+    \else
+      \@tracklang@split@otherunderscore@remainder#2_#3%
+    \fi
+  }
+  \gdef\@tracklang@split@otherunderscore@remainder#1__\relax{%
+    \def\@tracklang@split@post{#1}%
+  }
+}
+{
+  \catcode`\-12\relax
+  \gdef\@tracklang@split@hyphen#1{%
+    \@@tracklang@split@hyphen#1--\relax\@tracklang@end@split@hyphen
+  }
+  \gdef\@@tracklang@split@hyphen#1-#2-#3\@tracklang@end@split@hyphen{%
+    \def\@tracklang@split@pre{#1}%
+    \ifx\relax#3\relax
+      \def\@tracklang@split@post{#2}%
+    \else
+      \@tracklang@split@hyphen@remainder#2-#3%
+    \fi
+  }
+  \gdef\@tracklang@split@hyphen@remainder#1--\relax{%
+    \def\@tracklang@split@post{#1}%
+  }
+}
+\gdef\@tracklang@parseenv#1.#2.#3\@tracklang@end@parseenv#4{%
+  \def\@TrackLangEnvCodeSet{#2}%
+  \def#4{#1}%
+  \ifx\@TrackLangEnvCodeSet\empty
+    \tracklangparsemod#4%
+  \else
+    \tracklangparsemod\@TrackLangEnvCodeSet
+  \fi
+}
+{\catcode`\@=12\relax
+  \gdef\tracklangparsemod#1{
+    \expandafter\tracklangparseenvatmod#1@@\relax\tracklangendparseenvatmod
+    \let#1\tracklangtmp
+  }%
+  \gdef\tracklangparseenvatmod#1@#2@#3\tracklangendparseenvatmod{%
+    \def\tracklangtmp{#1}%
+    \expandafter\def\csname @TrackLangEnvModifier\endcsname{#2}%
+    \csname @tracklang@sanitize\expandafter\endcsname
+      \csname @TrackLangEnvModifier\endcsname
+  }
+}
+\def\@tracklang@languages{}
+\def\@tracklang@dialects{}
+\def\@tracklang@ifinlist#1#2#3#4{%
+  \def\@tracklang@doifinlist##1,#1,##2\end@tracklang@doifinlist{%
+     \def\@before{##1}%
+     \def\@after{##2}%
+  }%
+  \expandafter\@tracklang@doifinlist\expandafter,#2,#1,\@nil
+    \end@tracklang@doifinlist
+  \ifx\@after\@tracklang@nnil
+    #4%
+  \else
+    #3%
+  \fi
+}
+\def\@tracklang@add#1#2{%
+  \edef\@tracklang@element{#1}%
+  \ifx\@tracklang@element\empty
+  \else
+    \expandafter\@tracklang@ifinlist\expandafter{\@tracklang@element}#2%
+    {%
+    }%
+    {%
+     \ifx\empty#2\relax
+       \let#2\@tracklang@element
+     \else
+       \edef#2{#2,\@tracklang@element}%
+     \fi
+    }%
+  \fi
+}
+\def\AddTrackedDialect#1#2{%
+ \@tracklang@add{#1}{\@tracklang@dialects}%
+ \@tracklang@add{#2}{\@tracklang@languages}%
+ \@tracklang@enamedef{@tracklang@fromdialect@#1}{#2}%
+ \@tracklang@ifundef{@tracklang@todialect@#2}%
+ {\@tracklang@enamedef{@tracklang@todialect@#2}{#1}}%
+ {%
+   \def\@tracklang@lang{#1}%
+   \expandafter\@tracklang@add\expandafter\@tracklang@lang
+     \csname @tracklang@todialect@#2\endcsname
+ }%
+ \edef\TrackLangLastTrackedDialect{#1}%
+}
+\def\AddTrackedLanguage#1{%
+  \AddTrackedDialect{#1}{#1}%
+}
+\def\@tracklang@known@langs{}
+\def\TrackLangNewLanguage#1#2#3#4#5#6#7{%
+ \@tracklang@add{#1}{\@tracklang@known@langs}%
+ \edef\@tracklang@tmp{#2}%
+ \ifx\@tracklang@tmp\empty
+ \else
+   \@tracklang@enamedef{@tracklang@knownisolang@#2}{#1}%
+   \@tracklang@enamedef{@tracklang@knowniso@639@1@#1}{#2}%
+ \fi
+ \edef\@tracklang@tmp{#3}%
+ \ifx\@tracklang@tmp\empty
+ \else
+   \@tracklang@enamedef{@tracklang@knownisolang@#3}{#1}%
+   \@tracklang@enamedef{@tracklang@knowniso@639@2@#1}{#3}%
+ \fi
+ \edef\@tracklang@tmp{#4}%
+ \ifx\@tracklang@tmp\empty
+ \else
+   \@tracklang@enamedef{@tracklang@knowniso@639@2B@#1}{#4}%
+ \fi
+ \edef\@tracklang@tmp{#5}%
+ \ifx\@tracklang@tmp\empty
+ \else
+   \@tracklang@enamedef{@tracklang@knownisolang@#5}{#1}%
+   \@tracklang@enamedef{@tracklang@knowniso@639@3@#1}{#5}%
+ \fi
+ \edef\@tracklang@tmp{#6}%
+ \ifx\@tracklang@tmp\empty
+ \else
+   \@tracklang@enamedef{@tracklang@knowniso@3166@#1}{#6}%
+ \fi
+ \edef\@tracklang@tmp{#7}%
+ \ifx\@tracklang@tmp\empty
+ \else
+   \@tracklang@enamedef{@tracklang@knowniso@script@#1}{#7}%
+ \fi
+}
+\def\TrackLangIfKnownLang#1#2#3{%
+  \expandafter\@tracklang@ifinlist\expandafter{#1}{\@tracklang@known@langs}%
+  {#2}%
+  {#3}%
+}
+\def\TrackLangIfKnownIsoTwoLetterLang#1#2#3{%
+  \@tracklang@ifundef{@tracklang@knowniso@639@1@#1}%
+  {#3}%
+  {#2}%
+}
+\def\TrackLangGetKnownIsoTwoLetterLang#1{%
+  \@tracklang@nameuse{@tracklang@knowniso@639@1@#1}%
+}
+\def\TrackLangIfKnownIsoThreeLetterLang#1#2#3{%
+  \@tracklang@ifundef{@tracklang@knowniso@639@2@#1}%
+  {#3}%
+  {#2}%
+}
+\def\TrackLangGetKnownIsoThreeLetterLang#1{%
+  \@tracklang@nameuse{@tracklang@knowniso@639@2@#1}%
+}
+\def\TrackLangIfKnownIsoThreeLetterLangB#1#2#3{%
+  \@tracklang@ifundef{@tracklang@knowniso@639@2B@#1}%
+  {#3}%
+  {#2}%
+}
+\def\TrackLangGetKnownIsoThreeLetterLangB#1{%
+  \@tracklang@nameuse{@tracklang@knowniso@639@2B@#1}%
+}
+\def\TrackLangIfKnownLangFromIso#1#2#3{%
+  \@tracklang@ifundef{@tracklang@knownisolang@#1}%
+  {#3}%
+  {#2}%
+}
+\def\TrackLangGetKnownLangFromIso#1{%
+  \@tracklang@nameuse{@tracklang@knownisolang@#1}%
+}
+\def\TrackLangIfHasKnownCountry#1#2#3{%
+  \@tracklang@ifundef{@tracklang@knowniso@3166@#1}%
+  {#3}%
+  {#2}%
+}
+\def\TrackLangGetKnownCountry#1{%
+  \@tracklang@nameuse{@tracklang@knowniso@3166@#1}%
+}
+\def\TrackLangGetDefaultScript#1{%
+  \@tracklang@nameuse{@tracklang@knowniso@script@#1}%
+}
+\def\TrackLangIfHasDefaultScript#1#2#3{%
+  \@tracklang@ifundef{@tracklang@knowniso@script@#1}{#3}{#2}%
+}
+\def\AddTrackedIsoLanguage#1#2#3{%
+  \@tracklang@enamedef{@tracklang@#1@isofromlang@#3}{#2}%
+  \@tracklang@ifundef{@tracklang@#1@isotolang@#2}%
+  {\@tracklang@enamedef{@tracklang@#1@isotolang@#2}{#3}}%
+  {%
+    \def\@tracklang@lang{#3}%
+    \expandafter\@tracklang@add\expandafter\@tracklang@lang
+      \csname @tracklang@#1@isotolang@#2\endcsname
+  }%
+}
+\def\TrackedLanguageFromIsoCode#1#2{%
+  \@tracklang@nameuse{@tracklang@#1@isotolang@#2}%
+}
+\def\TrackedIsoCodeFromLanguage#1#2{%
+  \@tracklang@nameuse{@tracklang@#1@isofromlang@#2}%
+}
+\def\TrackedLanguageFromDialect#1{%
+ \@tracklang@nameuse{@tracklang@fromdialect@#1}%
+}
+\def\TrackedDialectsFromLanguage#1{%
+ \@tracklang@nameuse{@tracklang@todialect@#1}%
+}
+\def\TwoLetterIsoCountryCode{3166-1}
+\def\TwoLetterIsoLanguageCode{639-1}
+\def\ThreeLetterIsoLanguageCode{639-2}
+\def\ThreeLetterExtIsoLanguageCode{639-3}
+\def\SetTrackedDialectModifier#1#2{%
+  \@tracklang@enamedef{@tracklang@modifier@#1}{#2}%
+}
+\def\GetTrackedDialectModifier#1{%
+  \@tracklang@nameuse{@tracklang@modifier@#1}%
+}
+\def\IfHasTrackedDialectModifier#1#2#3{%
+  \@tracklang@ifundef{@tracklang@modifier@#1}{#3}{#2}%
+}
+\def\SetTrackedDialectScript#1#2{%
+  \@tracklang@enamedef{@tracklang@script@#1}{#2}%
+}
+\def\GetTrackedDialectScript#1{%
+  \@tracklang@nameuse{@tracklang@script@#1}%
+}
+\def\IfHasTrackedDialectScript#1#2#3{%
+  \@tracklang@ifundef{@tracklang@script@#1}{#3}{#2}%
+}
+\def\IfTrackedDialectIsScriptCs#1#2#3#4{%
+  \IfHasTrackedDialectScript{#1}%
+  {%
+    \expandafter\ifx\expandafter#2\csname @tracklang@script@#1\endcsname
+      #3%
+    \else
+      #4%
+    \fi
+  }%
+  {%
+    \TrackLangIfHasDefaultScript{\TrackedLanguageFromDialect{#1}}%
+    {%
+      \expandafter\ifx\expandafter
+        #2\csname @tracklang@knowniso@script@\TrackedLanguageFromDialect{#1}\endcsname
+         #3%
+      \else
+         #4%
+      \fi
+    }%
+    {#4}%
+  }%
+}
+\def\SetTrackedDialectVariant#1#2{%
+  \@tracklang@enamedef{@tracklang@variant@#1}{#2}%
+}
+\def\GetTrackedDialectVariant#1{%
+  \@tracklang@nameuse{@tracklang@variant@#1}%
+}
+\def\IfHasTrackedDialectVariant#1#2#3{%
+  \@tracklang@ifundef{@tracklang@variant@#1}{#3}{#2}%
+}
+\def\SetTrackedDialectSubLang#1#2{%
+  \@tracklang@enamedef{@tracklang@sublang@#1}{#2}%
+}
+\def\GetTrackedDialectSubLang#1{%
+  \@tracklang@nameuse{@tracklang@sublang@#1}%
+}
+\def\IfHasTrackedDialectSubLang#1#2#3{%
+  \@tracklang@ifundef{@tracklang@sublang@#1}{#3}{#2}%
+}
+\def\SetTrackedDialectAdditional#1#2{%
+  \@tracklang@enamedef{@tracklang@extra@#1}{#2}%
+}
+\def\GetTrackedDialectAdditional#1{%
+  \@tracklang@nameuse{@tracklang@extra@#1}%
+}
+\def\IfHasTrackedDialectAdditional#1#2#3{%
+  \@tracklang@ifundef{@tracklang@extra@#1}{#3}{#2}%
+}
+\def\GetTrackedLanguageTag#1{%
+  \IfTrackedLanguageHasIsoCode{639-1}{\TrackedLanguageFromDialect{#1}}%
+  {\TrackedIsoCodeFromLanguage{639-1}{\TrackedLanguageFromDialect{#1}}}%
+  {%
+    \IfTrackedLanguageHasIsoCode{639-2}{\TrackedLanguageFromDialect{#1}}%
+    {\TrackedIsoCodeFromLanguage{639-2}{\TrackedLanguageFromDialect{#1}}}%
+    {%
+      \IfTrackedLanguageHasIsoCode{639-3}{\TrackedLanguageFromDialect{#1}}%
+      {\TrackedIsoCodeFromLanguage{639-3}{\TrackedLanguageFromDialect{#1}}}%
+      {und}% undefined
+    }%
+  }%
+  \@tracklang@ifundef{@tracklang@sublang@#1}%
+  {}%
+  {-\csname @tracklang@sublang@#1\endcsname}%
+  \@tracklang@ifundef{@tracklang@script@#1}%
+  {}%
+  {-\csname @tracklang@script@#1\endcsname}%
+  \IfTrackedLanguageHasIsoCode{3166-1}{#1}%
+  {-\TrackedIsoCodeFromLanguage{3166-1}{#1}}%
+  {}%
+  \@tracklang@ifundef{@tracklang@variant@#1}%
+  {}%
+  {-\csname @tracklang@variant@#1\endcsname}%
+  \@tracklang@ifundef{@tracklang@extra@#1}%
+  {}%
+  {-\csname @tracklang@extra@#1\endcsname}%
+}
+\def\SetCurrentTrackedDialect#1{%
+  \edef\CurrentTrackedDialect{#1}%
+  \IfTrackedDialect{\CurrentTrackedDialect}%
+  {}%
+  {%
+    \IfHookHasMappingFromTrackedDialect{\CurrentTrackedDialect}%
+    {%
+      \IfTrackedDialect{\GetTrackedDialectFromMapping\CurrentTrackedDialect}%
+      {%
+        \edef\CurrentTrackedDialect{\GetTrackedDialectFromMapping
+          {\CurrentTrackedDialect}}%
+      }%
+      {%
+        \IfTrackedLanguage{#1}%
+        {%
+          \edef\@tracklang@dialects{\TrackedDialectsFromLanguage{#1}}%
+          \@tracklang@for\@tracklang@dialect:=\@tracklang@dialects\do{%
+            \let\CurrentTrackedDialect\@tracklang@dialect
+          }%
+        }%
+        {}%
+      }%
+    }%
+    {%
+      \IfTrackedLanguage{#1}%
+      {%
+        \edef\@tracklang@dialects{\TrackedDialectsFromLanguage{#1}}%
+        \@tracklang@for\@tracklang@dialect:=\@tracklang@dialects\do{%
+          \let\CurrentTrackedDialect\@tracklang@dialect
+        }%
+      }%
+      {}%
+    }%
+  }%
+  \IfTrackedDialect{\CurrentTrackedDialect}%
+  {%
+    \edef\CurrentTrackedLanguage{%
+      \TrackedLanguageFromDialect{\CurrentTrackedDialect}}%
+    \edef\CurrentTrackedDialectModifier{%
+      \GetTrackedDialectModifier{\CurrentTrackedDialect}}%
+    \edef\CurrentTrackedDialectVariant{%
+      \GetTrackedDialectVariant{\CurrentTrackedDialect}}%
+    \IfHasTrackedDialectScript{\CurrentTrackedDialect}%
+    {%
+      \edef\CurrentTrackedDialectScript{%
+        \GetTrackedDialectScript{\CurrentTrackedDialect}}%
+    }%
+    {%
+      \edef\CurrentTrackedDialectScript{%
+        \TrackLangGetDefaultScript\CurrentTrackedLanguage}%
+    }%
+    \edef\CurrentTrackedDialectSubLang{%
+      \GetTrackedDialectSubLang{\CurrentTrackedDialect}}%
+    \edef\CurrentTrackedDialectAdditional{%
+      \GetTrackedDialectAdditional{\CurrentTrackedDialect}}%
+    \edef\CurrentTrackedLanguageTag{%
+      \GetTrackedLanguageTag{\CurrentTrackedDialect}}%
+    \IfTrackedLanguageHasIsoCode{3166-1}{\CurrentTrackedDialect}%
+    {%
+      \edef\CurrentTrackedRegion{%
+       \TrackedIsoCodeFromLanguage{3166-1}{\CurrentTrackedDialect}}%
+    }%
+    {\def\CurrentTrackedRegion{}}%
+    \IfTrackedLanguageHasIsoCode{639-1}{\CurrentTrackedLanguage}%
+    {%
+      \edef\CurrentTrackedIsoCode{%
+       \TrackedIsoCodeFromLanguage{639-1}{\CurrentTrackedLanguage}}%
+    }%
+    {%
+      \IfTrackedLanguageHasIsoCode{639-2}{\CurrentTrackedLanguage}%
+      {%
+        \edef\CurrentTrackedIsoCode{%
+         \TrackedIsoCodeFromLanguage{639-2}{\CurrentTrackedLanguage}}%
+      }%
+      {%
+        \IfTrackedLanguageHasIsoCode{639-3}{\CurrentTrackedLanguage}%
+        {%
+          \edef\CurrentTrackedIsoCode{%
+           \TrackedIsoCodeFromLanguage{639-3}{\CurrentTrackedLanguage}}%
+        }%
+        {%
+          \def\CurrentTrackedIsoCode{}%
+        }%
+      }%
+    }%
+  }%
+  {%
+    \@tracklang@warn{Unknown dialect label `#1' passed to
+      \string\SetCurrentTrackedDialect}%
+    \edef\CurrentTrackedLanguage{\languagename}%
+    \def\CurrentTrackedDialectModifier{}%
+    \def\CurrentTrackedDialectVariant{}%
+    \def\CurrentTrackedDialectScript{}%
+    \def\CurrentTrackedDialectSubLang{}%
+    \def\CurrentTrackedDialectAdditional{}%
+    \def\CurrentTrackedIsoCode{}%
+    \def\CurrentTrackedRegion{}%
+    \def\CurrentTrackedLanguageTag{und}%
+  }%
+}
+\def\AddTrackedLanguageIsoCodes#1{%
+  \@tracklang@ifundef{@tracklang@knowniso@639@1@#1}%
+  {}%
+  {%
+    \AddTrackedIsoLanguage\TwoLetterIsoLanguageCode
+      {\csname @tracklang@knowniso@639@1@#1\endcsname}{#1}%
+  }%
+  \@tracklang@ifundef{@tracklang@knowniso@639@2@#1}%
+  {}%
+  {%
+    \AddTrackedIsoLanguage\ThreeLetterIsoLanguageCode
+       {\csname @tracklang@knowniso@639@2@#1\endcsname}{#1}%
+    \@tracklang@ifundef{@tracklang@knowniso@639@2B@#1}%
+    {}%
+    {%
+      \AddTrackedIsoLanguage{\ThreeLetterIsoLanguageCode-T}%
+         {\csname @tracklang@knowniso@639@2@#1\endcsname}{#1}%
+      \AddTrackedIsoLanguage{\ThreeLetterIsoLanguageCode-B}%
+         {\csname @tracklang@knowniso@639@2B@#1\endcsname}{#1}%
+    }%
+  }%
+  \@tracklang@ifundef{@tracklang@knowniso@639@3@#1}%
+  {}%
+  {%
+    \AddTrackedIsoLanguage\ThreeLetterExtIsoLanguageCode
+      {\csname @tracklang@knowniso@639@3@#1\endcsname}{#1}%
+  }%
+}
+\def\AddTrackedCountryIsoCode#1{%
+  \@tracklang@ifundef{@tracklang@knowniso@3166@#1}%
+  {}%
+  {%
+    \AddTrackedIsoLanguage{3166-1}%
+      {\csname @tracklang@knowniso@3166@#1\endcsname}{#1}%
+  }%
+}
+\def\TrackPredefinedDialect#1{%
+  \@tracklang@ifundef{@tracklang@add@#1}%
+  {%
+    \@tracklang@err{Dialect or language `#1' is not predefined}{}%
+  }%
+  {\@tracklang@nameuse{@tracklang@add@#1}}%
+}
+\def\@tracklang@hassecondchar#1#2\@end@tracklang@hassecondchar#3#4{%
+  \ifx\relax#2\relax
+    #4%
+  \else
+    #3%
+  \fi
+}
+\def\@tracklang@hasthirdchar#1#2#3\@end@tracklang@hasthirdchar#4#5{%
+  \ifx\relax#3\relax
+    #5%
+  \else
+    #4%
+  \fi
+}
+\def\@tracklang@hasfourthchar#1#2#3#4\@end@tracklang@hasfourthchar#5#6{%
+  \ifx\relax#4\relax
+    #6%
+  \else
+    #5%
+  \fi
+}
+\def\@tracklang@hasfifthchar#1#2#3#4#5\@end@tracklang@hasfifthchar#6#7{%
+  \ifx\relax#5\relax
+    #7%
+  \else
+    #6%
+  \fi
+}
+\def\@tracklang@hasninthchar#1#2#3#4#5#6#7#8#9\@end@tracklang@hasninthchar{%
+  \ifx\relax#9\relax
+    \expandafter\@tracklang@secondoftwo
+  \else
+    \expandafter\@tracklang@firstoftwo
+  \fi
+}
+\def\@tracklang@ifalpha#1#2#3{%
+  \ifx\relax#1\relax
+    #3%
+  \else
+   \ifnum\lccode`#1<`a\relax
+     #3%
+   \else
+     \ifnum\lccode`#1>`z\relax
+      #3%
+     \else
+       #2%
+     \fi
+   \fi
+  \fi
+}
+\def\@tracklang@ifdigit#1#2#3{%
+  \ifx\relax#1\relax
+    #3%
+  \else
+   \ifnum`#1<`0\relax
+     #3%
+   \else
+     \ifnum`#1>`9\relax
+      #3%
+     \else
+       #2%
+     \fi
+   \fi
+  \fi
+}
+\def\@tracklang@ifalldigits#1{%
+ \expandafter\ifx\relax#1\relax
+   \expandafter\@tracklang@secondoftwo
+ \else
+   \expandafter\@@tracklang@ifalldigits#1\@tracklang@nnil
+ \fi
+}
+\def\@@tracklang@ifalldigits#1{%
+  \ifx#1\@tracklang@nnil
+   \def\@tracklang@next{\expandafter\@tracklang@firstoftwo}%
+  \else
+    \@tracklang@ifdigit{#1}%
+    {%
+      \let\@tracklang@next\@@tracklang@ifalldigits
+    }%
+    {%
+      \def\@tracklang@next##1\@tracklang@nnil{%
+        \expandafter\@tracklang@secondoftwo}%
+    }%
+  \fi
+  \@tracklang@next
+}
+\def\@tracklang@ifalphanumeric#1#2#3{%
+  \@tracklang@ifalpha{#1}%
+  {#2}%
+  {%
+    \@tracklang@ifdigit{#1}{#2}{#3}%
+  }%
+}
+\def\TrackLangIfAlphaNumericChar#1#2#3{%
+  \expandafter\ifx\expandafter\relax#1\relax
+    #3%
+  \else
+    \expandafter\@tracklang@hassecondchar#1\relax\relax
+      \@end@tracklang@hassecondchar
+    {#3}%
+    {\expandafter\@tracklang@ifalphanumeric#1{#2}{#3}}%
+  \fi
+}
+\def\TrackLangIfLanguageTag#1#2#3{%
+  \expandafter\@tracklang@hasthirdchar#1\relax\relax\relax
+    \@end@tracklang@hasthirdchar
+  {%
+    \expandafter\@tracklang@hasfourthchar#1\relax\@end@tracklang@hasfourthchar
+    {#3}%
+    {%
+     \expandafter\@tracklang@iflanguage@iii@tag#1{#2}{#3}%
+    }%
+  }%
+  {%
+    \expandafter\@tracklang@hassecondchar#1\relax\relax
+      \@end@tracklang@hassecondchar
+    {%
+     \expandafter\@tracklang@iflanguage@ii@tag#1{#2}{#3}%
+    }%
+    {#3}%
+  }%
+}
+\def\@tracklang@iflanguage@ii@tag#1#2#3#4{%
+  \ifnum\lccode`#1=`#1\relax
+    \ifnum\lccode`#2=`#2\relax
+      #3%
+    \else
+      #4%
+    \fi
+  \else
+    #4%
+  \fi
+}
+\def\@tracklang@iflanguage@iii@tag#1#2#3#4#5{%
+  \ifnum\lccode`#1=`#1\relax
+    \ifnum\lccode`#2=`#2\relax
+      \ifnum\lccode`#3=`#3\relax
+        #4%
+      \else
+        #5%
+      \fi
+    \else
+      #5%
+    \fi
+  \else
+    #5%
+  \fi
+}
+\def\TrackLangIfRegionTag#1#2#3{%
+  \expandafter\@tracklang@hasthirdchar#1\relax\relax\relax
+    \@end@tracklang@hasthirdchar
+  {%
+    \expandafter\@tracklang@hasfourthchar#1\relax\@end@tracklang@hasfourthchar
+    {%
+      #3%
+    }%
+    {%
+      \@tracklang@ifalldigits{#1}{#2}{#3}%
+    }%
+  }%
+  {%
+    \expandafter\@tracklang@hassecondchar#1\relax\relax
+      \@end@tracklang@hassecondchar
+    {%
+     \expandafter\@tracklang@ifregion@ii@tag#1{#2}{#3}%
+    }%
+    {#3}%
+  }%
+}
+\def\@tracklang@ifregion@ii@tag#1#2#3#4{%
+  \ifnum\uccode`#1=`#1\relax
+    \ifnum\uccode`#2=`#2\relax
+      #3%
+    \else
+      #4%
+    \fi
+  \else
+    #4%
+  \fi
+}
+\def\@tracklang@ifregion@iii@tag#1#2#3#4#5{%
+  \ifnum\uccode`#1=`#1\relax
+    \ifnum\uccode`#2=`#2\relax
+      \ifnum\uccode`#3=`#3\relax
+        #4%
+      \else
+        #5%
+      \fi
+    \else
+      #5%
+    \fi
+  \else
+    #5%
+  \fi
+}
+\def\TrackLangIfScriptTag#1#2#3{%
+  \expandafter\@tracklang@hasfifthchar#1\relax\relax\relax\relax\relax
+    \@end@tracklang@hasfifthchar
+  {#3}%
+  {%
+    \expandafter\@tracklang@hasfourthchar#1\relax\relax\relax\relax
+      \@end@tracklang@hasfourthchar
+    {%
+     \expandafter\@tracklang@ifscripttag#1{#2}{#3}%
+    }%
+    {#3}%
+  }%
+}
+\def\@tracklang@ifscripttag#1#2#3#4#5#6{%
+  \ifnum\uccode`#1=`#1\relax
+    \ifnum\lccode`#2=`#2\relax
+      \ifnum\lccode`#3=`#3\relax
+        \ifnum\lccode`#4=`#4\relax
+          #5%
+        \else
+          #6%
+        \fi
+      \else
+        #6%
+      \fi
+    \else
+      #6%
+    \fi
+  \else
+    #6%
+  \fi
+}
+\def\TrackLangIfVariantTag#1#2#3{%
+  \expandafter\@tracklang@hasfifthchar#1\relax\relax\relax\relax\relax
+    \@end@tracklang@hasfifthchar
+  {%
+    \expandafter\@tracklang@hasninthchar#1\relax\relax\relax\relax\relax
+      \relax\relax\relax\relax
+      \@end@tracklang@hasninthchar
+    {#3}%
+    {#2}%
+  }%
+  {%
+    \expandafter\@tracklang@hasfourthchar#1\relax\relax\relax\relax
+      \@end@tracklang@hasfourthchar
+    {%
+      \expandafter\@tracklang@ifvariant@iv@tag#1{#2}{#3}%
+    }%
+    {#3}%
+  }%
+}
+\def\@tracklang@ifvariant@iv@tag#1#2#3#4#5#6{%
+  \@tracklang@ifdigit{#1}%
+  {#5}
+  {#6}%
+}
+\def\@tracklang@parse@extlang{%
+   \TrackLangIfLanguageTag{\@tracklang@split@pre}
+   {%
+     \ifx\@TrackLangEnvSubLang\empty
+       \let\@TrackLangEnvSubLang\@tracklang@split@pre
+       \let\@TrackLangEnvFirstSubLang\@TrackLangEnvSubLang
+     \else
+       \edef\@TrackLangEnvSubLang{\@TrackLangEnvSubLang-\@tracklang@split@pre}%
+     \fi
+     \ifx\@tracklang@split@post\empty
+     \else
+       \expandafter\@tracklang@split@underscoreorhyp\expandafter
+         {\@tracklang@split@post}%
+       \ifx\@tracklang@split@pre\empty
+       \else
+         \@tracklang@parse@extlang
+       \fi
+     \fi
+   }%
+   {}%
+}
+\def\@tracklang@parse@variant{%
+   \TrackLangIfVariantTag{\@tracklang@split@pre}
+   {%
+     \ifx\@TrackLangEnvVariant\empty
+       \let\@TrackLangEnvVariant\@tracklang@split@pre
+     \else
+       \edef\@TrackLangEnvVariant{\@TrackLangEnvVariant
+         -\@tracklang@split@pre}%
+     \fi
+     \ifx\@tracklang@split@post\empty
+     \else
+       \expandafter\@tracklang@split@underscoreorhyp\expandafter
+         {\@tracklang@split@post}%
+       \ifx\@tracklang@split@pre\empty
+       \else
+         \@tracklang@parse@variant
+       \fi
+     \fi
+   }%
+   {}%
+}
+\def\TrackLanguageTag#1{%
+  \edef\@tracklang@tag{#1}%
+  \ifx\@tracklang@tag\empty
+    \@tracklang@warn{Empty tag in \string\TrackLanguageTag}%
+  \else
+    \expandafter\@TrackLanguageTag\expandafter{\@tracklang@tag}%
+  \fi
+}
+\def\@TrackLanguageTag#1{%
+  \@tracklang@ifundef{@tracklang@add@#1}%
+  {%
+     \@tracklang@parselangtag{#1}%
+     \@tracklang@track@locale
+  }%
+  {%
+    \@tracklang@nameuse{@tracklang@add@#1}%
+  }%
+}
+\def\@tracklang@parselangtag#1{%
+  \def\@TrackLangEnvLang{}%
+  \def\@TrackLangEnvSubLang{}%
+  \def\@TrackLangEnvFirstSubLang{}%
+  \def\@TrackLangEnvTerritory{}%
+  \def\@TrackLangEnvCodeSet{}%
+  \def\@TrackLangEnvVariant{}%
+  \def\@TrackLangEnvModifier{}%
+  \def\@TrackLangEnvScript{}%
+  \def\@TrackLangEnvAdditional{}%
+  \@tracklang@split@underscoreorhyp{#1}%
+  \let\@TrackLangEnvLang\@tracklang@split@pre
+  \ifx\@tracklang@split@post\empty
+  \else
+     \expandafter\@tracklang@split@underscoreorhyp\expandafter
+       {\@tracklang@split@post}%
+     \@tracklang@parse@extlang
+     \TrackLangIfScriptTag{\@tracklang@split@pre}%
+     {%
+       \let\@TrackLangEnvScript\@tracklang@split@pre
+       \ifx\@tracklang@split@post\empty
+       \else
+         \expandafter\@tracklang@split@underscoreorhyp\expandafter
+           {\@tracklang@split@post}%
+       \fi
+     }%
+     {}%
+     \TrackLangIfRegionTag{\@tracklang@split@pre}%
+     {%
+       \expandafter\@tracklang@hasthirdchar\@tracklang@split@pre
+          \relax\relax\relax
+          \@end@tracklang@hasthirdchar
+       {%
+         \ifx\TrackLangIfKnownNumericRegion\undefined
+           \@tracklang@input tracklang-region-codes.tex
+         \fi
+         \TrackLangIfKnownNumericRegion{\@tracklang@split@pre}%
+         {%
+           \edef\@TrackLangEnvTerritory{%
+             \TrackLangNumericToAlphaIIRegion{\@tracklang@split@pre}%
+           }%
+         }%
+         {%
+           \let\@TrackLangEnvTerritory\@tracklang@split@pre
+           \@tracklang@warn{Unrecognised numeric region code
+             `\@tracklang@split@pre'}%
+         }%
+       }%
+       {%
+         \let\@TrackLangEnvTerritory\@tracklang@split@pre
+       }%
+     \expandafter\@tracklang@split@underscoreorhyp\expandafter
+         {\@tracklang@split@post}%
+     }%
+     {}%
+     \@tracklang@parse@variant
+     \let\@TrackLangEnvAdditional\@tracklang@split@post
+  \fi
+}%
+\def\GetTrackedDialectFromLanguageTag#1#2{%
+  \def#2{}%
+  \@tracklang@parselangtag{#1}%
+  \edef\@tracklang@dialect{%
+   \@TrackLangEnvLang
+   \@TrackLangEnvSubLang
+   \@TrackLangEnvScript
+   \@TrackLangEnvTerritory
+   \@TrackLangEnvModifier
+   \@TrackLangEnvVariant}%
+   \IfTrackedDialect{\@tracklang@dialect}%
+   {%
+      \let#2\@tracklang@dialect
+   }%
+   {%
+      \edef\@tracklang@lang{\TrackLangGetKnownLangFromIso\@TrackLangEnvLang}%
+      \edef\@tracklang@defscript{\TrackLangGetDefaultScript\@tracklang@lang}%
+      \edef\@tracklang@dialects{\TrackedDialectsFromLanguage\@tracklang@lang}%
+      \@tracklang@for\@tracklang@dialect:=\@tracklang@dialects\do{%
+        \edef\@tracklang@tmp{%
+          \TrackedIsoCodeFromLanguage{3166-1}{\@tracklang@dialect}}%
+        \ifx\@tracklang@tmp\@TrackLangEnvTerritory
+          \edef\@tracklang@tmp{%
+            \GetTrackedDialectSubLang{\@tracklang@dialect}}%
+          \ifx\@tracklang@tmp\@TrackLangEnvSubLang
+            \edef\@tracklang@tmp{%
+              \GetTrackedDialectVariant{\@tracklang@dialect}}%
+            \ifx\@tracklang@tmp\@TrackLangEnvVariant
+              \edef\@tracklang@tmp{%
+                \GetTrackedDialectScript{\@tracklang@dialect}}%
+              \ifx\@tracklang@tmp\@TrackLangEnvScript
+                \let#2\@tracklang@dialect
+              \else
+                \ifx\@TrackLangEnvScript\empty
+                  \ifx\@tracklang@tmp\@tracklang@defscript
+                    \let#2\@tracklang@dialect
+                  \fi
+                \fi
+              \fi
+            \fi
+          \fi
+        \fi
+      }%
+   }%
+}
+\def\TrackLangFromEnv{%
+ \def\TrackLangEnvLang{}%
+ \def\TrackLangEnvTerritory{}%
+ \def\TrackLangEnvCodeSet{}%
+ \def\TrackLangEnvModifier{}%
+  \ifx\TrackLangEnv\undefined
+    \TrackLangQueryEnv
+  \fi
+  \ifx\TrackLangEnv\empty
+     \@tracklang@warn{\string\TrackLangFromEnv\space
+     non-operational as \string\TrackLangEnv\space is empty}%
+  \else
+    \ifx\TrackLangEnv\undefined
+       \@tracklang@warn{\string\TrackLangFromEnv\space
+       non-operational as \string\TrackLangEnv\space hasn't been
+       defined}%
+    \else
+       \@tracklang@parse@track@locale{\TrackLangEnv}%
+       \let\TrackLangEnvLang\@TrackLangEnvLang
+       \let\TrackLangEnvTerritory\@TrackLangEnvTerritory
+       \let\TrackLangEnvCodeSet\@TrackLangEnvCodeSet
+       \let\TrackLangEnvModifier\@TrackLangEnvModifier
+    \fi
+  \fi
+}
+\def\TrackLocale#1{%
+  \@tracklang@ifundef{@tracklang@add@#1}%
+  {%
+    \@tracklang@parse@track@locale{#1}%
+  }%
+  {%
+    \@tracklang@nameuse{@tracklang@add@#1}%
+  }%
+}
+\def\@tracklang@parse@track@locale#1{%
+  \@tracklang@parse@locale{#1}%
+  \@tracklang@track@locale
+}
+\def\@tracklang@track@locale{%
+  \TrackLangIfKnownLangFromIso{\@TrackLangEnvLang}
+  {%
+    \edef\@tracklang@lang{\TrackLangGetKnownLangFromIso\@TrackLangEnvLang}%
+    \let\@tracklang@dialect\@TrackLangEnvLang
+    \ifx\@TrackLangEnvSubLang\empty
+    \else
+      \edef\@tracklang@dialect{\@tracklang@dialect-\@TrackLangEnvSubLang}%
+    \fi
+    \ifx\@TrackLangEnvScript\empty
+    \else
+      \edef\@tracklang@dialect{\@tracklang@dialect-\@TrackLangEnvScript}%
+    \fi
+    \ifx\@TrackLangEnvTerritory\empty
+    \else
+      \edef\@tracklang@dialect{\@tracklang@dialect-\@TrackLangEnvTerritory}%
+    \fi
+    \ifx\@TrackLangEnvModifier\empty
+    \else
+      \edef\@tracklang@dialect{\@tracklang@dialect-\@TrackLangEnvModifier}%
+    \fi
+    \ifx\@TrackLangEnvVariant\empty
+    \else
+      \edef\@tracklang@dialect{\@tracklang@dialect-\@TrackLangEnvVariant}%
+    \fi
+    \@tracklang@ifundef{@tracklang@add@\@tracklang@dialect}%
+    {%
+       \edef\@tracklang@dialect{%
+         \@TrackLangEnvLang
+         \@TrackLangEnvSubLang
+         \@TrackLangEnvScript
+         \@TrackLangEnvTerritory
+         \@TrackLangEnvModifier
+         \@TrackLangEnvVariant}%
+       \AddTrackedDialect{\@tracklang@dialect}{\@tracklang@lang}%
+       \AddTrackedLanguageIsoCodes{\@tracklang@lang}%
+       \ifx\@TrackLangEnvFirstSubLang\empty
+       \else
+         \expandafter\AddTrackedIsoLanguage
+           \expandafter\ThreeLetterExtIsoLanguageCode
+           \expandafter{\@TrackLangEnvFirstSubLang}%
+           {\@tracklang@dialect}%
+       \fi
+    }%
+    {%
+      \csname @tracklang@add@\@tracklang@dialect\endcsname
+    }%
+  }%
+  {%
+    \@tracklang@warn{Unknown language code `\@TrackLangEnvLang'}%
+    \edef\@tracklang@dialect{%
+      \@TrackLangEnvLang
+      \@TrackLangEnvSubLang
+      \@TrackLangEnvScript
+      \@TrackLangEnvTerritory
+      \@TrackLangEnvModifier
+      \@TrackLangEnvVariant}%
+    \AddTrackedDialect{\@tracklang@dialect}{\@TrackLangEnvLang}%
+    \expandafter\@tracklang@hasthirdchar
+       \@TrackLangEnvLang\relax\relax\relax\@end@tracklang@hasthirdchar
+     {%
+       \AddTrackedIsoLanguage{639-2}{\@TrackLangEnvLang}{\@tracklang@lang}%
+     }%
+     {%
+         \AddTrackedIsoLanguage{639-1}{\@TrackLangEnvLang}{\@tracklang@lang}%
+     }%
+  }%
+  \ifx\@TrackLangEnvTerritory\empty
+  \else
+    \AddTrackedIsoLanguage{3166-1}{\@TrackLangEnvTerritory}%
+     {\@tracklang@dialect}%
+  \fi
+  \ifx\@TrackLangEnvModifier\empty
+  \else
+    \SetTrackedDialectModifier{\@tracklang@dialect}{\@TrackLangEnvModifier}%
+  \fi
+  \ifx\@TrackLangEnvVariant\empty
+  \else
+    \SetTrackedDialectVariant{\@tracklang@dialect}{\@TrackLangEnvVariant}%
+  \fi
+  \ifx\@TrackLangEnvScript\empty
+  \else
+    \SetTrackedDialectScript{\@tracklang@dialect}{\@TrackLangEnvScript}%
+  \fi
+  \ifx\@TrackLangEnvSubLang\empty
+  \else
+    \SetTrackedDialectSubLang{\@tracklang@dialect}{\@TrackLangEnvSubLang}%
+  \fi
+  \ifx\@TrackLangEnvAdditional\empty
+  \else
+    \SetTrackedDialectAdditional{\@tracklang@dialect}{\@TrackLangEnvAdditional}%
+  \fi
+}
+\ifx\@tracklang@declareoption\undefined
+  \def\@tracklang@declareoption#1{}
+\fi
+\def\TrackLangDeclareLanguageOption#1#2#3#4#5#6#7{%
+  \@tracklang@ifundef{@tracklang@add@#1}%
+  {%
+    \TrackLangNewLanguage{#1}{#2}{#3}{#4}{#5}{#6}{#7}%
+    \@tracklang@namedef{@tracklang@add@#1}{%
+      \AddTrackedLanguage{#1}%
+      \AddTrackedLanguageIsoCodes{#1}%
+      \AddTrackedCountryIsoCode{#1}%
+    }%
+    \@tracklang@declareoption{#1}%
+  }%
+  {%
+    \@tracklang@err{language option `#1' has already been defined}{}%
+  }%
+}
+\TrackLangDeclareLanguageOption{abkhaz}{ab}{abk}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{afar}{aa}{aar}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{afrikaans}{af}{afr}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{akan}{ak}{aka}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{albanian}{sq}{sqi}{alb}{}{}{Latn}
+\TrackLangDeclareLanguageOption{amharic}{am}{amh}{}{}{ET}{Ethi}
+\TrackLangDeclareLanguageOption{anglosaxon}{}{ang}{}{}{}{Runr}
+\TrackLangDeclareLanguageOption{apache}{}{apa}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{arabic}{ar}{ara}{}{}{}{Arab}
+\TrackLangDeclareLanguageOption{aragonese}{an}{arg}{}{}{ES}{Latn}
+\TrackLangDeclareLanguageOption{armenian}{hy}{hye}{arm}{}{}{Armn}
+\TrackLangDeclareLanguageOption{assamese}{as}{asm}{}{}{}{Beng}
+\TrackLangDeclareLanguageOption{asturian}{}{ast}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{avaric}{av}{ava}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{avestan}{ae}{ave}{}{}{}{Avst}
+\TrackLangDeclareLanguageOption{aymara}{ay}{aym}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{azerbaijani}{az}{aze}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{bahasai}{id}{ind}{}{}{IN}{Latn}
+\TrackLangDeclareLanguageOption{bahasam}{ms}{msa}{may}{}{MY}{Latn}
+\TrackLangDeclareLanguageOption{bambara}{bm}{bam}{}{}{ML}{Latn}
+\TrackLangDeclareLanguageOption{bashkir}{ba}{bak}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{basque}{eu}{eus}{baq}{}{}{Latn}
+\TrackLangDeclareLanguageOption{belarusian}{be}{bel}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{bengali}{bn}{ben}{}{}{}{Beng}
+\TrackLangDeclareLanguageOption{berber}{}{ber}{}{}{}{}
+\TrackLangDeclareLanguageOption{bihari}{bh}{bih}{}{}{}{}
+\TrackLangDeclareLanguageOption{bislama}{bi}{bis}{}{}{VU}{Latn}
+\TrackLangDeclareLanguageOption{bokmal}{nb}{nob}{}{}{NO}{Latn}
+\TrackLangDeclareLanguageOption{bosnian}{bs}{bos}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{breton}{br}{bre}{}{}{FR}{Latn}
+\TrackLangDeclareLanguageOption{bulgarian}{bg}{bul}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{burmese}{my}{mya}{bur}{}{}{Mymr}
+\TrackLangDeclareLanguageOption{catalan}{ca}{cat}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{chamorro}{ch}{cha}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{chechen}{ce}{che}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{chichewa}{ny}{nya}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{chinese}{zh}{zho}{chi}{}{}{Hans}
+\TrackLangDeclareLanguageOption{churchslavonic}{cu}{chu}{}{}{}{Glag}
+\TrackLangDeclareLanguageOption{chuvash}{cv}{chv}{}{}{RU}{Cyrl}
+\TrackLangDeclareLanguageOption{coptic}{}{cop}{}{}{}{Copt}
+\TrackLangDeclareLanguageOption{cornish}{kw}{cor}{}{}{GB}{Latn}
+\TrackLangDeclareLanguageOption{corsican}{co}{cos}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{cree}{cr}{cre}{}{}{}{Cans}
+\TrackLangDeclareLanguageOption{croatian}{hr}{hrv}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{czech}{cs}{ces}{cze}{}{}{Latn}
+\TrackLangDeclareLanguageOption{danish}{da}{dan}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{divehi}{dv}{div}{}{}{MV}{Thaa}
+\TrackLangDeclareLanguageOption{dutch}{nl}{nld}{dut}{}{}{Latn}
+\TrackLangDeclareLanguageOption{dzongkha}{dz}{dzo}{}{}{BT}{Tibt}
+\TrackLangDeclareLanguageOption{easternpunjabi}{pa}{pan}{}{}{IN}{Guru}
+\TrackLangDeclareLanguageOption{english}{en}{eng}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{esperanto}{eo}{epo}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{estonian}{et}{est}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{ewe}{ee}{ewe}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{faroese}{fo}{fao}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{farsi}{fa}{fas}{per}{}{}{Arab}
+\TrackLangDeclareLanguageOption{fijian}{fj}{fij}{}{}{FJ}{Latn}
+\TrackLangDeclareLanguageOption{finnish}{fi}{fin}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{french}{fr}{fra}{fre}{}{}{Latn}
+\TrackLangDeclareLanguageOption{friulan}{}{fur}{}{}{IT}{Latn}
+\TrackLangDeclareLanguageOption{fula}{ff}{ful}{}{}{}{}
+\TrackLangDeclareLanguageOption{galician}{gl}{glg}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{ganda}{lg}{lug}{}{}{UG}{Latn}
+\TrackLangDeclareLanguageOption{georgian}{ka}{kat}{geo}{}{}{Geor}
+\TrackLangDeclareLanguageOption{german}{de}{deu}{ger}{}{}{Latn}
+\TrackLangDeclareLanguageOption{greek}{el}{ell}{gre}{}{}{Grek}
+\TrackLangDeclareLanguageOption{guarani}{gn}{grn}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{gujarati}{gu}{guj}{}{}{}{Gujr}
+\TrackLangDeclareLanguageOption{haitian}{ht}{hat}{}{}{HT}{Latn}
+\TrackLangDeclareLanguageOption{hausa}{ha}{hau}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{hebrew}{he}{heb}{}{}{}{Hebr}
+\TrackLangDeclareLanguageOption{herero}{hz}{her}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{hindi}{hi}{hin}{}{}{}{Deva}
+\TrackLangDeclareLanguageOption{hirimotu}{ho}{hmo}{}{}{PG}{Latn}
+\TrackLangDeclareLanguageOption{icelandic}{is}{isl}{ice}{}{IS}{Latn}
+\TrackLangDeclareLanguageOption{ido}{io}{ido}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{igbo}{ig}{ibo}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{interlingua}{ia}{ina}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{interlingue}{ie}{ile}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{inuktitut}{iu}{iku}{}{}{}{Cans}
+\TrackLangDeclareLanguageOption{inupiaq}{ik}{ipk}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{irish}{ga}{gle}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{italian}{it}{ita}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{japanese}{ja}{jpn}{}{}{}{Hani}
+\TrackLangDeclareLanguageOption{javanese}{jv}{jav}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{kalaallisut}{kl}{kal}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{kannada}{kn}{kan}{}{}{IN}{Knda}
+\TrackLangDeclareLanguageOption{kanuri}{kr}{kau}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{kashmiri}{ks}{kas}{}{}{IN}{}
+\TrackLangDeclareLanguageOption{kazakh}{kk}{kaz}{}{}{}{}
+\TrackLangDeclareLanguageOption{khmer}{km}{khm}{}{}{}{Khmr}
+\TrackLangDeclareLanguageOption{kikuyu}{ki}{kik}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{kinyarwanda}{rw}{kin}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{kirundi}{rn}{run}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{komi}{kv}{kom}{}{}{RU}{Cyrl}
+\TrackLangDeclareLanguageOption{kongo}{kg}{kon}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{korean}{ko}{kor}{}{}{}{Hang}
+\TrackLangDeclareLanguageOption{kurdish}{ku}{kur}{}{}{}{}
+\TrackLangDeclareLanguageOption{kwanyama}{kj}{kua}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{kyrgyz}{ky}{kir}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{lao}{lo}{lao}{}{}{}{Laoo}
+\TrackLangDeclareLanguageOption{latin}{la}{lat}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{latvian}{lv}{lav}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{limburgish}{li}{lim}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{lingala}{ln}{lin}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{lithuanian}{lt}{lit}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{lsorbian}{}{dsb}{}{}{DE}{Latn}
+\TrackLangDeclareLanguageOption{lubakatanga}{lu}{lub}{}{}{CD}{Latn}
+\TrackLangDeclareLanguageOption{luxembourgish}{lb}{ltz}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{macedonian}{mk}{mkd}{mac}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{magyar}{hu}{hun}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{malagasy}{mg}{mlg}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{malayalam}{ml}{mal}{}{}{IN}{Mlym}
+\TrackLangDeclareLanguageOption{maltese}{mt}{mlt}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{manx}{gv}{glv}{}{}{IM}{Latn}
+\TrackLangDeclareLanguageOption{maori}{mi}{mri}{mao}{}{NZ}{Latn}
+\TrackLangDeclareLanguageOption{marathi}{mr}{mar}{}{}{IN}{Deva}
+\TrackLangDeclareLanguageOption{marshallese}{mh}{mah}{}{}{MH}{Latn}
+\TrackLangDeclareLanguageOption{mongolian}{mn}{mon}{}{}{}{Mong}
+\TrackLangDeclareLanguageOption{nauruan}{na}{nau}{}{}{NR}{Latn}
+\TrackLangDeclareLanguageOption{navajo}{nv}{nav}{}{}{US}{Latn}
+\TrackLangDeclareLanguageOption{ndonga}{ng}{ndo}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{nepali}{ne}{nep}{}{}{}{Deva}
+\TrackLangDeclareLanguageOption{nko}{}{nqo}{}{}{}{Nkoo}
+\TrackLangDeclareLanguageOption{northernndebele}{nd}{nde}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{nynorsk}{nn}{nno}{}{}{NO}{Latn}
+\TrackLangDeclareLanguageOption{norsk}{no}{nor}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{northernsotho}{}{nso}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{nuosu}{ii}{iii}{}{}{CN}{Yiii}
+\TrackLangDeclareLanguageOption{occitan}{oc}{oci}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{ojibwe}{oj}{oji}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{oromo}{om}{orm}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{oriya}{or}{ori}{}{}{}{Orya}
+\TrackLangDeclareLanguageOption{ossetian}{os}{oss}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{pali}{pi}{pli}{}{}{}{Brah}
+\TrackLangDeclareLanguageOption{pashto}{ps}{pus}{}{}{}{Arab}
+\TrackLangDeclareLanguageOption{piedmontese}{}{}{}{pms}{IT}{Latn}
+\TrackLangDeclareLanguageOption{polish}{pl}{pol}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{portuges}{pt}{por}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{quechua}{qu}{que}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{romanian}{ro}{ron}{rum}{}{}{Latn}
+\TrackLangDeclareLanguageOption{romansh}{rm}{roh}{}{}{CH}{Latn}
+\TrackLangDeclareLanguageOption{russian}{ru}{rus}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{samin}{se}{sme}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{sanskrit}{sa}{san}{}{}{}{}
+\TrackLangDeclareLanguageOption{samoan}{sm}{smo}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{sango}{sg}{sag}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{sardinian}{sc}{srd}{}{}{IT}{Latn}
+\TrackLangDeclareLanguageOption{scottish}{gd}{gla}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{serbian}{sr}{srp}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{shona}{sn}{sna}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{sindhi}{sd}{snd}{}{}{}{Sind}
+\TrackLangDeclareLanguageOption{sinhalese}{si}{sin}{}{}{LK}{Sinh}
+\TrackLangDeclareLanguageOption{slovak}{sk}{slk}{slo}{}{}{Latn}
+\TrackLangDeclareLanguageOption{slovene}{sl}{slv}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{somali}{so}{som}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{southernndebele}{nr}{nbl}{}{}{ZA}{Latn}
+\TrackLangDeclareLanguageOption{southernsotho}{st}{sot}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{spanish}{es}{spa}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{sudanese}{su}{sun}{}{}{}{Sund}
+\TrackLangDeclareLanguageOption{swahili}{sw}{swa}{}{}{}{}
+\TrackLangDeclareLanguageOption{swati}{ss}{ssw}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{swedish}{sv}{swe}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{syriac}{}{syr}{}{}{}{Syrc}
+\TrackLangDeclareLanguageOption{tagalog}{tl}{tgl}{}{}{PH}{Latn}
+\TrackLangDeclareLanguageOption{tahitian}{ty}{tah}{}{}{PF}{Latn}
+\TrackLangDeclareLanguageOption{tai}{}{tai}{}{}{}{}
+\TrackLangDeclareLanguageOption{tajik}{tg}{tgk}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{tamil}{ta}{tam}{}{}{}{Taml}
+\TrackLangDeclareLanguageOption{tatar}{tt}{tat}{}{}{}{Cyrl}
+\TrackLangDeclareLanguageOption{telugu}{te}{tel}{}{}{IN}{Telu}
+\TrackLangDeclareLanguageOption{thai}{th}{tha}{}{}{TH}{Thai}
+\TrackLangDeclareLanguageOption{tibetan}{bo}{bod}{tib}{}{}{Tibt}
+\TrackLangDeclareLanguageOption{tigrinya}{ti}{tir}{}{}{}{Ethi}
+\TrackLangDeclareLanguageOption{tonga}{to}{ton}{}{}{TO}{Latn}
+\TrackLangDeclareLanguageOption{tsonga}{ts}{tso}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{tswana}{tn}{tsn}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{turkish}{tr}{tur}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{turkmen}{tk}{tuk}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{twi}{tw}{twi}{}{}{GH}{Latn}
+\TrackLangDeclareLanguageOption{ukrainian}{uk}{ukr}{}{}{UA}{Cyrl}
+\TrackLangDeclareLanguageOption{urdu}{ur}{urd}{}{}{}{Arab}
+\TrackLangDeclareLanguageOption{usorbian}{}{hsb}{}{}{DE}{Latn}
+\TrackLangDeclareLanguageOption{uyghur}{ug}{uig}{}{}{CN}{Arab}
+\TrackLangDeclareLanguageOption{uzbek}{uz}{uzb}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{venda}{ve}{ven}{}{}{ZA}{Latn}
+\TrackLangDeclareLanguageOption{vietnamese}{vi}{vie}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{volapuk}{vo}{vol}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{walloon}{wa}{wln}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{welsh}{cy}{cym}{wel}{}{}{Latn}
+\TrackLangDeclareLanguageOption{westernfrisian}{fy}{fry}{}{}{NL}{Latn}
+\TrackLangDeclareLanguageOption{wolof}{wo}{wol}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{xhosa}{xh}{xho}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{yiddish}{yi}{yid}{}{}{}{Hebr}
+\TrackLangDeclareLanguageOption{yoruba}{yo}{yor}{}{}{}{Latn}
+\TrackLangDeclareLanguageOption{zhuang}{za}{zha}{}{}{CN}{Hani}
+\TrackLangDeclareLanguageOption{zulu}{zu}{zul}{}{}{}{Latn}
+\def\TrackLangDeclareDialectOption#1#2#3#4#5#6#7{%
+  \@tracklang@ifundef{@tracklang@add@#1}%
+  {%
+    \ifx\relax#3\relax
+     \ifx\relax#4\relax
+      \ifx\relax#5\relax
+        \@tracklang@namedef{@tracklang@add@#1}{%
+          \AddTrackedDialect{#1}{#2}%
+          \AddTrackedLanguageIsoCodes{#2}%
+          \def\@tracklang@dialect{#1}%
+        }%
+      \else
+        \@tracklang@namedef{@tracklang@add@#1}{%
+          \AddTrackedDialect{#1}{#2}%
+          \AddTrackedLanguageIsoCodes{#2}%
+          \SetTrackedDialectVariant{#1}{#5}%
+          \def\@tracklang@dialect{#1}%
+        }%
+      \fi
+     \else
+       \ifx\relax#5\relax
+         \@tracklang@namedef{@tracklang@add@#1}{%
+           \AddTrackedDialect{#1}{#2}%
+           \AddTrackedLanguageIsoCodes{#2}%
+           \SetTrackedDialectModifier{#1}{#4}%
+           \def\@tracklang@dialect{#1}%
+         }%
+       \else
+         \@tracklang@namedef{@tracklang@add@#1}{%
+           \AddTrackedDialect{#1}{#2}%
+           \AddTrackedLanguageIsoCodes{#2}%
+           \SetTrackedDialectModifier{#1}{#4}%
+           \SetTrackedDialectVariant{#1}{#5}%
+           \def\@tracklang@dialect{#1}%
+         }%
+       \fi
+     \fi
+    \else
+     \ifx\relax#4\relax
+       \ifx\relax#5\relax
+          \@tracklang@namedef{@tracklang@add@#1}{%
+            \AddTrackedDialect{#1}{#2}%
+            \AddTrackedLanguageIsoCodes{#2}%
+            \AddTrackedIsoLanguage{3166-1}{#3}{#1}%
+            \def\@tracklang@dialect{#1}%
+          }%
+       \else
+          \@tracklang@namedef{@tracklang@add@#1}{%
+            \AddTrackedDialect{#1}{#2}%
+            \AddTrackedLanguageIsoCodes{#2}%
+            \AddTrackedIsoLanguage{3166-1}{#3}{#1}%
+            \SetTrackedDialectVariant{#1}{#5}%
+            \def\@tracklang@dialect{#1}%
+          }%
+       \fi
+     \else
+       \ifx\relax#5\relax
+          \@tracklang@namedef{@tracklang@add@#1}{%
+            \AddTrackedDialect{#1}{#2}%
+            \AddTrackedLanguageIsoCodes{#2}%
+            \AddTrackedIsoLanguage{3166-1}{#3}{#1}%
+            \SetTrackedDialectModifier{#1}{#4}%
+            \def\@tracklang@dialect{#1}%
+          }%
+       \else
+          \@tracklang@namedef{@tracklang@add@#1}{%
+            \AddTrackedDialect{#1}{#2}%
+            \AddTrackedLanguageIsoCodes{#2}%
+            \AddTrackedIsoLanguage{3166-1}{#3}{#1}%
+            \SetTrackedDialectModifier{#1}{#4}%
+            \SetTrackedDialectVariant{#1}{#5}%
+            \def\@tracklang@dialect{#1}%
+          }%
+       \fi
+     \fi
+    \fi
+    \ifx\relax#6\relax
+    \else
+      \expandafter
+       \let\expandafter\@tracklang@tmp\csname @tracklang@add@#1\endcsname
+      \expandafter\def\csname @tracklang@add@#1\expandafter\endcsname
+        \expandafter{\@tracklang@tmp\SetTrackedDialectLabelMap{#1}{#6}}%
+    \fi
+    \ifx\relax#7\relax
+    \else
+      \expandafter
+       \let\expandafter\@tracklang@tmp\csname @tracklang@add@#1\endcsname
+      \expandafter\def\csname @tracklang@add@#1\expandafter\endcsname
+        \expandafter{\@tracklang@tmp\SetTrackedDialectScript{#1}{#7}}%
+    \fi
+    \@tracklang@declareoption{#1}%
+  }%
+  {%
+    \@tracklang@err{dialect option `#1' has already been defined}{}%
+  }%
+}
+\TrackLangDeclareDialectOption{acadian}{french}{}{}{}{}{}
+\TrackLangDeclareDialectOption{american}{english}{US}{}{}{}{}
+\TrackLangDeclareDialectOption{australian}{english}{AU}{}{}{}{}
+\TrackLangDeclareDialectOption{austrian}{german}{AT}{}{}{}{}
+\TrackLangDeclareDialectOption{naustrian}{german}{AT}{new}{1996}{}{}
+\TrackLangDeclareDialectOption{bahasa}{bahasai}{IN}{}{}{}{}
+\TrackLangDeclareDialectOption{brazil}{portuges}{BR}{}{}{}{}
+\TrackLangDeclareDialectOption{brazilian}{portuges}{BR}{}{}{}{}
+\TrackLangDeclareDialectOption{british}{english}{GB}{}{}{}{}
+\TrackLangDeclareDialectOption{canadian}{english}{CA}{}{}{}{}
+\TrackLangDeclareDialectOption{canadien}{french}{CA}{}{}{}{}
+\TrackLangDeclareDialectOption{croatia}{croatian}{HR}{}{}{}{}
+\TrackLangDeclareDialectOption{istriacountycroatian}{croatian}{HR}{}{}{}{}
+\TrackLangDeclareDialectOption{istriacountyitalian}{italian}{HR}{}{}{}{}
+\TrackLangDeclareDialectOption{netherlands}{dutch}{NL}{}{}{}{}
+\TrackLangDeclareDialectOption{persian}{farsi}{}{}{}{}{}
+\TrackLangDeclareDialectOption{flemish}{dutch}{BE}{}{}{}{}
+\TrackLangDeclareDialectOption{francais}{french}{}{}{}{}{}
+\TrackLangDeclareDialectOption{frenchb}{french}{}{}{}{}{}
+\TrackLangDeclareDialectOption{france}{french}{FR}{}{}{}{}
+\TrackLangDeclareDialectOption{belgique}{french}{BE}{}{}{}{}
+\TrackLangDeclareDialectOption{belgiangerman}{german}{BE}{}{}{}{}
+\TrackLangDeclareDialectOption{nbelgiangerman}{german}{BE}{new}{1996}{ngerman}{}
+\TrackLangDeclareDialectOption{friulian}{friulan}{IT}{}{}{}{}
+\TrackLangDeclareDialectOption{friulano}{friulan}{IT}{}{}{}{}
+\TrackLangDeclareDialectOption{furlan}{friulan}{IT}{}{}{}{}
+\TrackLangDeclareDialectOption{kurmanji}{kurdish}{}{}{}{}{}
+\TrackLangDeclareDialectOption{galicien}{galician}{}{}{}{}{}
+\TrackLangDeclareDialectOption{deutsch}{german}{}{}{}{}{}
+\TrackLangDeclareDialectOption{ngerman}{german}{}{new}{1996}{}{}
+\TrackLangDeclareDialectOption{ngermanb}{german}{}{new}{1996}{ngerman}{}
+\TrackLangDeclareDialectOption{germanb}{german}{}{}{}{}{}
+\TrackLangDeclareDialectOption{ngermanDE}{german}{DE}{new}{1996}{ngerman}{}
+\TrackLangDeclareDialectOption{germanDE}{german}{DE}{}{}{}{}
+\TrackLangDeclareDialectOption{hungarian}{magyar}{HU}{}{}{}{}
+\TrackLangDeclareDialectOption{indon}{bahasai}{IN}{}{}{}{}
+\TrackLangDeclareDialectOption{indonesian}{bahasai}{IN}{}{}{}{}
+\TrackLangDeclareDialectOption{gaeilge}{irish}{}{}{}{}{}
+\TrackLangDeclareDialectOption{IEirish}{irish}{IE}{}{}{}{}
+\TrackLangDeclareDialectOption{GBirish}{irish}{GB}{}{}{}{}
+\TrackLangDeclareDialectOption{IEenglish}{english}{IE}{}{}{british}{}
+\TrackLangDeclareDialectOption{italy}{italian}{IT}{}{}{}{}
+\TrackLangDeclareDialectOption{vatican}{italian}{VA}{}{}{}{}
+\TrackLangDeclareDialectOption{sanmarino}{italian}{SM}{}{}{}{}
+\TrackLangDeclareDialectOption{sloveneistriaitalian}{italian}{SI}{}{}{}{}
+\TrackLangDeclareDialectOption{jerseyenglish}{english}{JE}{}{}{british}{}
+\TrackLangDeclareDialectOption{jerseyfrench}{french}{JE}{}{}{}{}
+\TrackLangDeclareDialectOption{guernseyenglish}{english}{GG}{}{}{british}{}
+\TrackLangDeclareDialectOption{guernseyfrench}{french}{GG}{}{}{}{}
+\TrackLangDeclareDialectOption{latein}{latin}{}{}{}{}{}
+\TrackLangDeclareDialectOption{lowersorbian}{lsorbian}{DE}{}{}{}{}
+\TrackLangDeclareDialectOption{malay}{bahasam}{MY}{}{}{}{}
+\TrackLangDeclareDialectOption{meyalu}{bahasam}{MY}{}{}{}{}
+\TrackLangDeclareDialectOption{maltamaltese}{maltese}{MT}{}{}{}{}
+\TrackLangDeclareDialectOption{maltaenglish}{english}{MT}{}{}{british}{}
+\TrackLangDeclareDialectOption{newzealand}{english}{NZ}{}{}{}{}
+\TrackLangDeclareDialectOption{isleofmanenglish}{english}{IM}{}{}{british}{}
+\TrackLangDeclareDialectOption{norwegian}{norsk}{NO}{}{}{}{}
+\TrackLangDeclareDialectOption{piemonteis}{piedmontese}{IT}{}{}{}{}
+\TrackLangDeclareDialectOption{polutonikogreek}{greek}{}{polyton}{}{}{}
+\TrackLangDeclareDialectOption{polutoniko}{greek}{}{polyton}{}{}{}
+\TrackLangDeclareDialectOption{portuguese}{portuges}{}{}{}{}{}
+\TrackLangDeclareDialectOption{portugal}{portuges}{PT}{}{}{}{}
+\TrackLangDeclareDialectOption{romansch}{romansh}{}{}{}{}{}
+\TrackLangDeclareDialectOption{rumantsch}{romansh}{}{}{}{}{}
+\TrackLangDeclareDialectOption{romanche}{romansh}{}{}{}{}{}
+\TrackLangDeclareDialectOption{russianb}{russian}{}{}{}{}{}
+\TrackLangDeclareDialectOption{gaelic}{scottish}{}{}{}{}{}
+\TrackLangDeclareDialectOption{GBscottish}{scottish}{GB}{}{}{}{}
+\TrackLangDeclareDialectOption{serbianc}{serbian}{}{}{}{}{Cyrl}
+\TrackLangDeclareDialectOption{serbianl}{serbian}{}{}{}{}{Latn}
+\TrackLangDeclareDialectOption{slovenian}{slovene}{}{}{}{}{}
+\TrackLangDeclareDialectOption{slovenia}{slovene}{SI}{}{}{slovenian}{}
+\TrackLangDeclareDialectOption{sloveneistriaslovenian}{slovene}{SI}{}{}{slovenian}{}
+\TrackLangDeclareDialectOption{spainspanish}{spanish}{ES}{}{}{}{}
+\TrackLangDeclareDialectOption{argentinespanish}{spanish}{AR}{}{}{}{}
+\TrackLangDeclareDialectOption{bolivianspanish}{spanish}{BO}{}{}{}{}
+\TrackLangDeclareDialectOption{chilianspanish}{spanish}{CL}{}{}{}{}
+\TrackLangDeclareDialectOption{columbianspanish}{spanish}{CO}{}{}{}{}
+\TrackLangDeclareDialectOption{costaricanspanish}{spanish}{CR}{}{}{}{}
+\TrackLangDeclareDialectOption{cubanspanish}{spanish}{CU}{}{}{}{}
+\TrackLangDeclareDialectOption{dominicanspanish}{spanish}{DO}{}{}{}{}
+\TrackLangDeclareDialectOption{ecudorianspanish}{spanish}{EC}{}{}{}{}
+\TrackLangDeclareDialectOption{elsalvadorspanish}{spanish}{SV}{}{}{}{}
+\TrackLangDeclareDialectOption{guatemalanspanish}{spanish}{GT}{}{}{}{}
+\TrackLangDeclareDialectOption{honduranspanish}{spanish}{HN}{}{}{}{}
+\TrackLangDeclareDialectOption{mexicanspanish}{spanish}{MX}{}{}{}{}
+\TrackLangDeclareDialectOption{nicaraguanspanish}{spanish}{NI}{}{}{}{}
+\TrackLangDeclareDialectOption{panamaspanish}{spanish}{PA}{}{}{}{}
+\TrackLangDeclareDialectOption{paraguayspanish}{spanish}{PY}{}{}{}{}
+\TrackLangDeclareDialectOption{peruvianspanish}{spanish}{PE}{}{}{}{}
+\TrackLangDeclareDialectOption{puertoricospanish}{spanish}{PR}{}{}{}{}
+\TrackLangDeclareDialectOption{uruguayspanish}{spanish}{UY}{}{}{}{}
+\TrackLangDeclareDialectOption{venezuelanspanish}{spanish}{VE}{}{}{}{}
+\TrackLangDeclareDialectOption{swissgerman}{german}{CH}{}{}{}{}
+\TrackLangDeclareDialectOption{nswissgerman}{german}{CH}{new}{1996}{ngerman}{}
+\TrackLangDeclareDialectOption{swissfrench}{french}{CH}{}{}{}{}
+\TrackLangDeclareDialectOption{swissitalian}{italian}{CH}{}{}{}{}
+\TrackLangDeclareDialectOption{swissromansh}{romansh}{CH}{}{}{}{}
+\TrackLangDeclareDialectOption{UKenglish}{english}{GB}{}{}{}{}
+\TrackLangDeclareDialectOption{ukraineb}{ukrainian}{UA}{}{}{}{}
+\TrackLangDeclareDialectOption{ukraine}{ukrainian}{UA}{}{}{}{}
+\TrackLangDeclareDialectOption{uppersorbian}{usorbian}{DE}{}{}{}{}
+\TrackLangDeclareDialectOption{USenglish}{english}{US}{}{}{}{}
+\TrackLangDeclareDialectOption{valencian}{catalan}{}{}{}{}{}
+\TrackLangDeclareDialectOption{valencien}{catalan}{}{}{}{}{}
+\TrackLangDeclareDialectOption{cymraeg}{welsh}{}{}{}{}{}
+\TrackLangDeclareDialectOption{GBwelsh}{welsh}{GB}{}{}{}{}
+\def\LetTrackLangSynonym#1#2{%
+  \expandafter\let\csname @tracklang@add@#1\expandafter\endcsname
+    \csname @tracklang@add@#2\endcsname
+}
+\def\LetTrackLangOption#1#2{%
+  \LetTrackLangSynonym{#1}{#2}%
+  \@tracklang@declareoption{#1}%
+}
+\LetTrackLangOption{en-US}{american}
+\LetTrackLangOption{en-GB}{british}
+\LetTrackLangOption{en-AU}{australian}
+\LetTrackLangOption{en-NZ}{newzealand}
+\LetTrackLangOption{en-CA}{canadian}
+\LetTrackLangOption{fr-CA}{canadien}
+\LetTrackLangOption{fr-BE}{belgique}
+\LetTrackLangOption{pt-BR}{brazilian}
+\LetTrackLangOption{it-HR}{istriacountyitalian}
+\LetTrackLangOption{nl-BE}{flemish}
+\LetTrackLangOption{fr-FR}{france}
+\LetTrackLangOption{de-DE}{germanDE}
+\LetTrackLangOption{de-BE}{belgiangerman}
+\LetTrackLangOption{en-GG}{guernseyenglish}
+\LetTrackLangOption{fr-GG}{guernseyfrench}
+\LetTrackLangOption{it-IT}{italy}
+\LetTrackLangOption{mt-MT}{maltamaltese}
+\LetTrackLangOption{en-MT}{maltaenglish}
+\LetTrackLangOption{en-IM}{isleofmanenglish}
+\LetTrackLangOption{en-JE}{jerseyenglish}
+\LetTrackLangOption{fr-JE}{jerseyfrench}
+\LetTrackLangOption{nl-NL}{netherlands}
+\LetTrackLangOption{pt-PT}{portugal}
+\LetTrackLangOption{it-SM}{sanmarino}
+\LetTrackLangOption{sl-SI}{slovenia}
+\LetTrackLangOption{it-SI}{sloveneistriaitalian}
+\LetTrackLangOption{es-ES}{spainspanish}
+\LetTrackLangOption{es-AR}{argentinespanish}
+\LetTrackLangOption{es-BO}{bolivianspanish}
+\LetTrackLangOption{es-CL}{chilianspanish}
+\LetTrackLangOption{es-CO}{columbianspanish}
+\LetTrackLangOption{es-CR}{costaricanspanish}
+\LetTrackLangOption{es-CU}{cubanspanish}
+\LetTrackLangOption{es-DO}{dominicanspanish}
+\LetTrackLangOption{es-EC}{ecudorianspanish}
+\LetTrackLangOption{es-SV}{elsalvadorspanish}
+\LetTrackLangOption{es-GT}{guatemalanspanish}
+\LetTrackLangOption{es-HN}{honduranspanish}
+\LetTrackLangOption{es-MX}{mexicanspanish}
+\LetTrackLangOption{es-NI}{nicaraguanspanish}
+\LetTrackLangOption{es-PA}{panamaspanish}
+\LetTrackLangOption{es-PY}{paraguayspanish}
+\LetTrackLangOption{es-PE}{peruvianspanish}
+\LetTrackLangOption{es-PR}{puertoricospanish}
+\LetTrackLangOption{es-UY}{uruguayspanish}
+\LetTrackLangOption{es-VE}{venezuelanspanish}
+\LetTrackLangOption{de-CH}{swissgerman}
+\LetTrackLangOption{fr-CH}{swissfrench}
+\LetTrackLangOption{it-CH}{swissitalian}
+\LetTrackLangOption{rm-CH}{swissromansh}
+\LetTrackLangOption{it-VA}{vatican}
+\LetTrackLangOption{ga-IE}{IEirish}
+\LetTrackLangOption{ga-GB}{GBirish}
+\LetTrackLangOption{en-IE}{IEenglish}
+\LetTrackLangOption{de-AT-1996}{naustrian}
+\LetTrackLangOption{de-AT}{austrian}
+\LetTrackLangOption{id-IN}{bahasa}
+\LetTrackLangOption{ms-MY}{malay}
+\LetTrackLangOption{hr-HR}{croatia}
+\LetTrackLangOption{de-DE-1996}{ngermanDE}
+\LetTrackLangOption{de-CH-1996}{nswissgerman}
+\LetTrackLangOption{hu-HU}{hungarian}
+\LetTrackLangOption{gd-GB}{GBscottish}
+\LetTrackLangOption{cy-GB}{GBwelsh}
+\long\def\IfTrackedLanguage#1#2#3{%
+  \edef\@tracklang@element{#1}%
+  \ifx\@tracklang@element\empty
+    #3%
+  \else
+    \expandafter\@tracklang@ifinlist\expandafter{\@tracklang@element}%
+      \@tracklang@languages
+    {%
+      #2%
+    }%
+    {%
+      #3%
+    }%
+  \fi
+}
+\long\def\IfTrackedDialect#1#2#3{%
+  \@tracklang@ifundef{@tracklang@fromdialect@#1}{#3}{#2}%
+}
+\long\def\IfTrackedIsoCode#1#2#3#4{%
+  \@tracklang@ifundef{@tracklang@#1@isotolang@#2}{#4}{#3}%
+}
+\long\def\IfTrackedLanguageHasIsoCode#1#2#3#4{%
+  \@tracklang@ifundef{@tracklang@#1@isofromlang@#2}{#4}{#3}%
+}
+\long\def\ForEachTrackedLanguage#1#2{%
+  \@tracklang@for#1:=\@tracklang@languages\do{#2}%
+}
+\long\def\ForEachTrackedDialect#1#2{%
+  \@tracklang@for#1:=\@tracklang@dialects\do{#2}%
+}
+\long\def\AnyTrackedLanguages#1#2{%
+  \ifx\@tracklang@languages\empty
+    #2%
+  \else
+    #1%
+  \fi
+}
+\long\def\IfTrackedLanguageFileExists#1#2#3#4#5{%
+   \def\CurrentTrackedTag{}%
+   \SetCurrentTrackedDialect{#1}%
+   \IfTrackedDialect{#1}%
+   {%
+     \edef\CurrentTrackedTag{#1}%
+     \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+     {#4}%
+     {%
+       \IfTrackedLanguageHasIsoCode
+         {639-1}{\CurrentTrackedLanguage}
+       {%
+          \edef\CurrentTrackedIsoCode{%
+             \TrackedIsoCodeFromLanguage
+               {639-1}{\CurrentTrackedLanguage}}%
+          \ifx\CurrentTrackedRegion\empty
+            \let\CurrentTrackedTag\CurrentTrackedIsoCode
+            \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+            {#4}
+            {%
+              \IfTrackedLanguageHasIsoCode
+                {639-2}{\CurrentTrackedLanguage}
+              {%
+                 \edef\CurrentTrackedIsoCode{%
+                    \TrackedIsoCodeFromLanguage
+                      {639-2}{\CurrentTrackedLanguage}}%
+                 \let\CurrentTrackedTag\CurrentTrackedIsoCode
+                 \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                 {#4}%
+                 {%
+                   \let\CurrentTrackedTag\CurrentTrackedLanguage
+                   \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+                 }%
+              }%
+              {%
+               \let\CurrentTrackedTag\CurrentTrackedLanguage
+               \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+              }%
+            }%
+          \else
+            \edef\CurrentTrackedTag{%
+              \CurrentTrackedIsoCode-\CurrentTrackedRegion}%
+            \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+            {#4}
+            {%
+              \IfTrackedLanguageHasIsoCode
+              {639-2}{\CurrentTrackedLanguage}
+              {%
+                \let\org@currenttrackedisocode\CurrentTrackedIsoCode
+                \edef\CurrentTrackedIsoCode{%
+                  \TrackedIsoCodeFromLanguage
+                  {639-2}{\CurrentTrackedLanguage}}%
+                \edef\CurrentTrackedTag{%
+                  \CurrentTrackedIsoCode-\CurrentTrackedRegion}%
+                \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                {#4}%
+                {%
+                  \let\CurrentTrackedTag\org@currenttrackedisocode
+                  \let\org@currenttrackedisocode\CurrentTrackedIsoCode
+                  \let\CurrentTrackedIsoCode\CurrentTrackedTag
+                  \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                  {#4}
+                  {%
+                    \let\CurrentTrackedIsoCode\org@currenttrackedisocode
+                    \let\CurrentTrackedTag\CurrentTrackedIsoCode
+                    \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                    {#4}%
+                    {%
+                      \let\CurrentTrackedTag\CurrentTrackedRegion
+                      \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                      {#4}%
+                      {%
+                        \let\CurrentTrackedTag\CurrentTrackedLanguage
+                        \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+                      }%
+                    }%
+                  }%
+                }%
+              }%
+              {%
+                \let\CurrentTrackedTag\CurrentTrackedIsoCode
+                \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                {#4}%
+                {%
+                  \let\CurrentTrackedTag\CurrentTrackedRegion
+                  \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                  {#4}%
+                  {%
+                    \let\CurrentTrackedTag\CurrentTrackedLanguage
+                    \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+                  }%
+                }%
+              }%
+            }%
+          \fi
+       }%
+       {%
+         \IfTrackedLanguageHasIsoCode
+           {639-2}{\CurrentTrackedLanguage}
+         {%
+            \edef\CurrentTrackedIsoCode{%
+               \TrackedIsoCodeFromLanguage
+               {639-2}{\CurrentTrackedLanguage}}%
+         }%
+         {%
+           \IfTrackedLanguageHasIsoCode
+             {639-3}{\CurrentTrackedLanguage}
+           {%
+              \edef\CurrentTrackedIsoCode{%
+                 \TrackedIsoCodeFromLanguage
+                 {639-3}{\CurrentTrackedLanguage}}%
+           }%
+           {%
+              \let\CurrentTrackedIsoCode\empty
+           }%
+         }%
+         \ifx\CurrentTrackedIsoCode\empty
+           \ifx\CurrentTrackedRegion\empty
+             \let\CurrentTrackedTag\CurrentTrackedLanguage
+             \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+           \else
+             \let\CurrentTrackedTag\CurrentTrackedRegion
+             \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+             {#4}%
+             {%
+               \let\CurrentTrackedTag\CurrentTrackedLanguage
+               \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+             }%
+           \fi
+         \else
+            \ifx\CurrentTrackedRegion\empty
+              \let\CurrentTrackedTag\CurrentTrackedIsoCode
+              \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+              {#4}%
+              {%
+                \let\CurrentTrackedTag\CurrentTrackedLanguage
+                \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+              }%
+            \else
+              \edef\CurrentTrackedTag{%
+                \CurrentTrackedIsoCode-\CurrentTrackedRegion}%
+              \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+              {#4}%
+              {%
+                \let\CurrentTrackedTag\CurrentTrackedIsoCode
+                \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                {#4}%
+                {%
+                  \let\CurrentTrackedTag\CurrentTrackedRegion
+                  \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}%
+                  {#4}%
+                  {%
+                    \let\CurrentTrackedTag\CurrentTrackedLanguage
+                    \@tracklang@IfFileExists{#2\CurrentTrackedTag#3}{#4}{#5}%
+                  }%
+                }%
+              }%
+            \fi
+         \fi
+       }%
+     }%
+   }%
+   {#5}% unknown dialect
+}
+\ifx\ProvidesFile\undefined
+  \long\def\TrackLangProvidesResource#1#2{%
+    \ifx\TrackLangRequireDialectPrefix\undefined
+      \@tracklang@err{Resources files using
+        \string\TrackLangProvidesResource\space
+        must be loaded with \string\TrackLangRequireDialect}%
+    \fi
+    \ifx#2[\relax
+      \def\@tracklang@next{%
+        \@tracklang@providesresource{\TrackLangRequireDialectPrefix-#1.ldf}#2%
+      }
+    \else
+      \expandafter\xdef\csname ver@\TrackLangRequireDialectPrefix
+        -#1.ldf\endcsname{}%
+      {%
+        \newlinechar=`\^^J
+        \def\MessageBreak{^^J}%
+        \message{^^JFile: \TrackLangRequireDialectPrefix-#1.ldf^^J}%
+      }%
+      \long\def\@tracklang@next{#2}%
+    \fi
+    \@tracklang@next
+  }
+  \def\@tracklang@providesresource#1[#2]{%
+    \expandafter\xdef\csname ver@#1\endcsname{#2}%
+     {%
+       \newlinechar=`\^^J
+       \def\MessageBreak{^^J}%
+       \message{^^JFile: #1 #2^^J}%
+     }%
+  }
+\else
+  \def\TrackLangProvidesResource#1{%
+    \ifx\TrackLangRequireDialectPrefix\undefined
+      \@tracklang@err{Resources files using
+        \string\TrackLangProvidesResource\space
+        must be loaded with \string\TrackLangRequireDialect}%
+    \fi
+    \ProvidesFile{\TrackLangRequireDialectPrefix-#1.ldf}%
+  }
+\fi
+\def\TrackLangAddToHook{\noop@TrackLangAddToHook}
+\def\noop@TrackLangAddToHook#1#2{%
+  \@tracklang@err{\string\TrackLangAddToHook\space
+  only permitted within resource files}
+}
+\def\@TrackLangAddToHook#1#2{%
+  \@tracklang@ifundef{#2\CurrentTrackedDialect}%
+  {%
+    \IfTrackedDialectHasMapping{\CurrentTrackedDialect}%
+    {%
+      \edef\@tracklang@tmp{%
+        \csname @tracklang@dialectmap@tohook@\CurrentTrackedDialect\endcsname}%
+      \@tracklang@ifundef{#2\@tracklang@tmp}%
+      {%
+        \@tracklang@ifundef{#2\CurrentTrackedLanguage}%
+        {%
+          #1%
+        }%
+        {%
+          \@tracklang@addtohook{#2}{\CurrentTrackedLanguage}{#1}%
+        }%
+      }%
+      {%
+        \@tracklang@addtohook{#2}{\@tracklang@tmp}{#1}%
+      }%
+    }%
+    {%
+      \@tracklang@ifundef{#2\CurrentTrackedLanguage}%
+      {%
+      }%
+      {%
+        \@tracklang@addtohook{#2}{\CurrentTrackedLanguage}{#1}%
+      }%
+    }%
+  }%
+  {%
+     \@tracklang@addtohook{#2}{\CurrentTrackedDialect}{#1}%
+  }%
+  #1%
+}
+\def\@tracklang@addtohook#1#2#3{%
+ \expandafter\let\expandafter\@tracklang@hook\csname #1#2\endcsname
+ \expandafter
+  \gdef\csname#1#2\expandafter\endcsname\expandafter{\@tracklang@hook#3}%
+}
+\def\TrackLangAddToCaptions#1{\TrackLangAddToHook{#1}{captions}}
+\def\SetTrackedDialectLabelMap#1#2{%
+  \@tracklang@enamedef{@tracklang@dialectmap@tohook@#1}{#2}%
+  \@tracklang@enamedef{@tracklang@dialectmap@fromhook@#2}{#1}%
+}
+\def\IfTrackedDialectHasMapping#1#2#3{%
+  \@tracklang@ifundef{@tracklang@dialectmap@tohook@#1}{#3}{#2}%
+}
+\def\IfHookHasMappingFromTrackedDialect#1#2#3{%
+  \@tracklang@ifundef{@tracklang@dialectmap@fromhook@#1}{#3}{#2}%
+}
+\def\GetTrackedDialectToMapping#1{%
+  \@tracklang@ifundef{@tracklang@dialectmap@tohook@#1}{#1}%
+  {\csname @tracklang@dialectmap@tohook@#1\endcsname}%
+}
+\def\GetTrackedDialectFromMapping#1{%
+  \@tracklang@ifundef{@tracklang@dialectmap@fromhook@#1}{#1}%
+  {\csname @tracklang@dialectmap@fromhook@#1\endcsname}%
+}
+\def\TrackLangRequireResource{\noop@TrackLangRequireResource}
+\def\noop@TrackLangRequireResource#1{%
+  \@tracklang@err{\string\TrackLangRequireResource\space
+  only permitted within resource files}
+}
+\def\@TrackLangRequireResource#1{%
+  \@tracklang@ifundef{ver@\TrackLangRequireDialectPrefix-#1.ldf}%
+  {%
+    \@tracklang@IfFileExists{\TrackLangRequireDialectPrefix-#1.ldf}%
+    {%
+      \input \TrackLangRequireDialectPrefix-#1.ldf
+    }%
+    {%
+      \@tracklang@warn{No `\TrackLangRequireDialectPrefix' support for
+      language/region `#1'\MessageBreak
+      (resource file `\TrackLangRequireDialectPrefix-#1.ldf' not found)}%
+    }%
+  }%
+  {}%
+}
+\def\TrackLangRequireResourceOrDo{%
+  \noop@TrackLangRequireResourceOrDo
+}
+\def\noop@TrackLangRequireResourceOrDo#1#2#3{%
+  \@tracklang@err{\string\TrackLangRequireResourceOrDo\space
+  only permitted within resource files}
+}
+\def\@TrackLangRequireResourceOrDo#1#2#3{%
+  \@tracklang@ifundef{ver@\TrackLangRequireDialectPrefix-#1.ldf}%
+  {%
+    \@tracklang@IfFileExists{\TrackLangRequireDialectPrefix-#1.ldf}%
+    {%
+      \input \TrackLangRequireDialectPrefix-#1.ldf
+      #2%
+    }%
+    {%
+      \@tracklang@warn{No `\TrackLangRequireDialectPrefix' support for
+      language/region `#1'\MessageBreak
+      (resource file `\TrackLangRequireDialectPrefix-#1.ldf' not found)}%
+    }%
+  }%
+  {#3}%
+}
+\def\TrackLangRequestResource{\noop@TrackLangRequestResource}
+\def\noop@TrackLangRequestResource#1#2{%
+  \@tracklang@err{\string\TrackLangRequestResource\space
+  only permitted within resource files}
+}
+\def\@TrackLangRequestResource#1#2{%
+  \@tracklang@ifundef{ver@\TrackLangRequireDialectPrefix-#1.ldf}%
+  {%
+    \@tracklang@IfFileExists{\TrackLangRequireDialectPrefix-#1.ldf}%
+    {%
+      \input \TrackLangRequireDialectPrefix-#1.ldf
+    }%
+    {#2}%
+  }%
+  {}%
+}
+\def\TrackLangRequireDialect{\@TrackLangRequireDialect}
+\def\noop@TrackLangRequireDialect#1{%
+  \ifx[#1\relax
+    \def\@tracklang@next{\@noop@TrackLangRequireDialect[}%
+  \else
+    \def\@tracklang@next{\@noop@TrackLangRequireDialect[]{#1}}%
+  \fi
+  \@tracklang@next
+}
+\def\@noop@TrackLangRequireDialect[#1]#2#3{%
+  \@tracklang@err{\string\TrackLangRequireDialect\space
+  only permitted within resource files}
+}
+\def\@TrackLangRequireDialect#1{%
+  \ifx[#1\relax
+    \def\@tracklang@next{\@@TrackLangRequireDialect[}%
+  \else
+    \def\@tracklang@next{%
+      \@@TrackLangRequireDialect
+        [\TrackLangRequireResource{\CurrentTrackedTag}]{#1}}%
+  \fi
+  \@tracklang@next
+}
+\def\@@TrackLangRequireDialect[#1]#2#3{%
+   \def\TrackLangRequireDialectPrefix{#2}%
+   \IfTrackedLanguageFileExists{#3}%
+   {#2-}% prefix
+   {.ldf}% suffix
+   {%
+     \let\TrackLangRequireResource\@TrackLangRequireResource
+     \let\TrackLangRequireResourceOrDo\@TrackLangRequireResourceOrDo
+     \let\TrackLangRequestResource\@TrackLangRequestResource
+     \let\TrackLangRequireDialect\noop@TrackLangRequireDialect
+     \let\TrackLangAddToHook\@TrackLangAddToHook
+     #1%
+     \let\TrackLangRequireResource\noop@TrackLangRequireResource
+     \let\TrackLangRequireResourceOrDo\noop@TrackLangRequireResourceOrDo
+     \let\TrackLangRequestResource\noop@TrackLangRequestResource
+     \let\TrackLangRequireDialect\@TrackLangRequireDialect
+     \let\TrackLangAddToHook\noop@TrackLangAddToHook
+   }%
+   {%
+     \@tracklang@warn{No `#2' support for dialect `#3'}%
+   }%
+}
+\@tracklang@restore@at
+\endinput
+%%
+%% End of file `tracklang.tex'.

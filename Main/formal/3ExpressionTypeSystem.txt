@@ -187,7 +187,7 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
 Phase |p |G |Tr|-catch return Any x x ~> catch return T'.P x x:T<=T' | Tr'
   where
   not catchRethrow(catch return Any x e)
-  forall T0 in Tr.Ts p |-T0.P<=T'.P
+  forall T0 in Tr.Ts p |-T0.P<=T'.P//this line is not redundant: otherwise we may change the semantic and not capture something
   Phase| p| G| Tr |- catch return T'.P x x ~> catch return T'.P x x :T <= T' | Tr'
 //Note: we limit e=x to avoid mess in rename catch return Any x x.foo()
 
@@ -238,7 +238,7 @@ Phase |- p ~> L'      //In implementation, if p.top().Phase>=Phase, L'=p.Top()
    forall i in 1..n
      Phase| p.updateTop(L0)| Ps |- Mi ~> Mi'
    if Phase=Coherent then coherent(p.udatateTop(L'))
-   //or error not coherent set of abstr. methods:list
+   //or error not coherent set of abstr. methods list
 
 (member nested)
 Phase| p| Ps |-C:L ~>  C:L'
