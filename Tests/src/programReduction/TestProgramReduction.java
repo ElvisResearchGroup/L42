@@ -34,7 +34,7 @@ public static class TestExecution {
  +"B:A.id({D:{}})}",
   "{I1:{interface implements I2 refine class method Library id(Library that)}##star ^## "
  +"I2:{interface class method Library id(Library that)}##star ^## "
- +"A:{ implements I2, I1  refine class method  Library id(Library that)that }##star ^## "
+ +"A:{ implements I1, I2  refine class method  Library id(Library that)that }##star ^## "
  +"B:{D:{}}}"
 
 //  },{lineNumber(),"{I:{method Any m()} B:error void}","This0.I::m()","Any"

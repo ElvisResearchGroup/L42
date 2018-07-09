@@ -34,7 +34,7 @@ public class Norm {
     for(MethodWithType mwt:list){if(mwt.getMs().equals(ms)){return mwt;}}
     return null;
   }
-  
+
   public static boolean subsetEq(Program p,List<Type> all, List<Type> some) {
     //check all.containsAll(some)
     for(Type tAll:all)out:{
@@ -63,12 +63,11 @@ public class Norm {
       }
     //Ps'=collect(p,Ps)
     List<Type> _ps1 = Methods.collect(p,l.getSupertypes());
-    List<Type> ps1=new ArrayList<>();
+    List<Type> ps1=new ArrayList<>(l.getSupertypes());
     for(Type t:_ps1){
       boolean none=l.getSupertypes().stream().noneMatch(ti->p.equiv(ti.getPath(),t.getPath()));
       if(none){ps1.add(t);}
       }
-    ps1.addAll(l.getSupertypes());
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
     List<MethodWithType> this0Ms=p.methods(Path.outer(0));
 

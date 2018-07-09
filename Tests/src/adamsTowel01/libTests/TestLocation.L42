@@ -89,9 +89,9 @@ LibMethodsTest:{
     expected:3Size)//getter, setter and exposer
   Debug.test(Location.Lib({ mut Any field}).methods().size()
     expected:2Size)//getter and exposer
-  Debug.test(Location.Lib({Any field}).has(selector:\"field()") 
+  Debug.test(Location.Lib({Any field}).has(selector:\"field()")
     expected:Bool.true())
-  Debug.test(Location.Lib({Any field}).has(selector:\"foo()") 
+  Debug.test(Location.Lib({Any field}).has(selector:\"foo()")
     expected:Bool.false())
   return ExitCode.normal()
   }
@@ -131,7 +131,7 @@ LibImplementsTest:{
   True if the literal is an interface
   ------
   method Bool isPotentialInterface()
-  True if the literal is either an interface or it can be turned into an interface by the sum operator, or redirected onto 
+  True if the literal is either an interface or it can be turned into an interface by the sum operator, or redirected onto
   an interface by the redirect operator.
   This requires all the methods to be public, abstract and not class.
   ------
@@ -148,7 +148,7 @@ LibImplementsTest:{
   From a library literal you can also use EnsureCoherent<><lib
   to check for coherence.
   Todo: should we make the language stricter and require
-  coherence to have precise types? 
+  coherence to have precise types?
   it is ok now with interfaces since we can use refine!!
 */
 LibIsMethodsTest:{
@@ -160,7 +160,7 @@ LibIsMethodsTest:{
   Debug.test(Location.Lib(
     {class method This m_$_1( S field) method S field_$_1()}
     ).isCloseState() expected:Bool.true())
- 
+
   Debug(S"isInterface()")
   Debug.test(Location.Lib(
     {interface A:{}}
@@ -223,7 +223,7 @@ LibIsMethodsTest:{
   return ExitCode.normal()
   }
 /*
-  As we have seen, it is possible to navigate 
+  As we have seen, it is possible to navigate
   inside of a Lib by using nested(path).
   We can go out one level by using location()
   or go directly to the root using root().
@@ -255,7 +255,7 @@ LibIsMethodsTest:{
   Empty doc if this is a non binded root
   ------
   method Location.Doc doc()
-  The documentation of this library literal.  
+  The documentation of this library literal.
   ------
   location() and doc() from Location,
   == equals(that) class() readableName() is(subtype) toS() since Data
@@ -269,7 +269,7 @@ LibPathRootDocTest:{
   Debug.test(a.nested(path:\"A.B").location()==a.nested(path:\"A") expected: Bool.true())
   Debug.test(a.nested(path:\"A.B").location()==a expected: Bool.false())
   Debug.test(a.nested(path:\"A.B").root()==a.nested(path:\"A") expected: Bool.false())
-  
+
   Debug.test(a.nestedDoc() expected:S"")
   Debug.test(a.nested(path:\"A.B").nestedDoc() expected:S"NB")
   Debug.test(a.doc() expected:S"Top")
@@ -297,7 +297,7 @@ method Location.Type.Parameter.List parameterTypes()
 The return type, exceptions and parameters types for this method.
 Note how types in different locations have different types, since we represent the Location of the code elements.
 parameterTypes().left() is the type for this.
-Thus, to recover the modifier for the method, 
+Thus, to recover the modifier for the method,
 use the code m.parameterTypes().left().mdf()
 -----
 method Bool isAbstract()
@@ -361,8 +361,8 @@ location() and doc() from Location,
 */
 TypeTest:{
   Debug(S"typeTest()")
-  m=Location.Lib({implements Barrretta/*iDoc*/ 
-    Barrretta:{interface 
+  m=Location.Lib({implements Barrretta/*iDoc*/
+    Barrretta:{interface
       method /*hi*/ mut Any/*rDoc*/ foo(This/*pDoc*/ bar) exception Void/*eDoc*/
       }
     method foo(bar) void
@@ -380,7 +380,7 @@ Location.Type.RefTo
 --------------------------------
 The very nested interface RefTo
 bridges Type objects with their referred code:
-In the contex of 42 and metaprogramming this is not 
+In the contex of 42 and metaprogramming this is not
 an obvious task, and there are many subcases.
 Code examing all the cases may look like:
 Location.Type t=someType
@@ -403,7 +403,7 @@ with r=t.refTo() (
     )
   on Location.Type.RefTo.Missing (
     //this code will not be produced ever,as in
-    //C:{} //C.D will never exists 
+    //C:{} //C.D will never exists
     DoStuffWithTextOfMissingPath(r.toS())
     )
   )
@@ -416,7 +416,7 @@ DummyNotUsed:{}
 RefToTest:{
   Debug(S"Test RefTo")
   //test binded Void
-  t1=Location.Lib({method Void m()}).methods().left().returnType()  
+  t1=Location.Lib({method Void m()}).methods().left().returnType()
   with r=t1.refTo() (
     on Location.Type.RefTo.Binded (
       Debug.test(Location.Lib(classObj:r.referredClassObj())
@@ -425,7 +425,7 @@ RefToTest:{
     on Location.Type.RefTo error X""
     )
   //test binded Concept.Equals
-  t2=Location.Lib({method Concept.Equals m()}).methods().left().returnType()  
+  t2=Location.Lib({method Concept.Equals m()}).methods().left().returnType()
   with r=t2.refTo() (
     on Location.Type.RefTo.Binded (
       Debug.test(
@@ -436,7 +436,7 @@ RefToTest:{
     on Location.Type.RefTo error X""
     )
   //test Lib A
-  t3=Location.Lib({method A m()  A:{/*hi*/}}).methods().left().returnType()  
+  t3=Location.Lib({method A m()  A:{/*hi*/}}).methods().left().returnType()
   with r=t3.refTo() (
     on Location.Type.RefTo.Lib (
       Debug.test(r.referredLib()
@@ -445,7 +445,7 @@ RefToTest:{
     on Location.Type.RefTo error X""
     )
   //test Unavailable RefToTest
-  t4=Location.Lib({method RefToTest m()}).methods().left().returnType()  
+  t4=Location.Lib({method RefToTest m()}).methods().left().returnType()
   with r=t4.refTo() (
     on Location.Type.RefTo.Unavailable (
       Debug.test(r expected:S"Unavailable path: This0.RefToTest; code not generated yet.")
@@ -453,14 +453,14 @@ RefToTest:{
     on Location.Type.RefTo error X""
     )
   //TODO: how to obtain unavailable with the new dependency?
-  /*t5=Location.Lib({method DummyNotUsed m()}).methods().left().returnType()  
+  /*t5=Location.Lib({method DummyNotUsed m()}).methods().left().returnType()
   with r=t5.refTo() (
     on Location.Type.RefTo.Unavailable (
       Debug.test(r expected:S"Unavailable path: This0.DummyNotUsed; code not typed yet.")
       )
     on Location.Type.RefTo error X""
     )*/
-  t6=Location.Lib({method DummyMispelled m()}).methods().left().returnType()  
+  t6=Location.Lib({method DummyMispelled m()}).methods().left().returnType()
   with r=t6.refTo() (
     on Location.Type.RefTo.Missing (
       Debug.test(r expected:S"This0.DummyMispelled")
@@ -512,7 +512,7 @@ DocTest:{
     Location.Type.RefTo.Unavailable) expected:Bool.true())
   Debug.test(as.val(1\).text() expected:
     S" I'm instead a RefTo.Unresolved"[S.nl()]"  ")
-  
+
   Debug.test(as.val(2\).title() expected:S"A")
   Debug.test(as.val(2\).title().class().is(subtype:
     Location.Type.RefTo.Lib) expected:Bool.true())

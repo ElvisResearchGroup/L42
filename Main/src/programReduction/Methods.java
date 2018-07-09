@@ -32,17 +32,7 @@ public abstract class Methods implements Program{
     for(Ast.Path pi:ps){res.add(From.fromP(pi,newThis));}
     return res;
     }
-  static private  List<Ast.Type> mergeUnique(Ast.Type p,List<Ast.Type>before, List<Ast.Type>after){
-    List<Ast.Type>res=new ArrayList<>();
-    if(!after.contains(p)){res.add(p);}
-    for(Ast.Type e:before){
-      if(!after.contains(e)){res.add(e);}
-      }
-    res.addAll(after);
-    //Note: we are not coping comment from "before".
-    //It would be very hard to do it and keep norm "stable"
-    return res;
-    }
+
   //We use Type instead of Path to keep the Docs
   public static List<Type> collect(Program p,List<Type> p0ps){
     List<Type> res=collectAux(p,p0ps,new ArrayList<>());
@@ -71,8 +61,9 @@ public abstract class Methods implements Program{
     }
   static List<Type>  collectAux(Program p,Type p0, List<Type> ps,List<Path> visited){
     ClassB l=p.extractClassB(p0.getPath());
-    assert l.isInterface():"should be always discovered by methdos(path)?";
-    //may need to become throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0), p0);
+    if(!l.isInterface()) {
+      throw new ast.ErrorMessage.NonInterfaceImplements(Path.outer(0),p0.getPath());
+      }
     List<Type>psPrime=collectAux(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0.getPath())),l.getSupertypes()),Functions.push(visited,p0.getPath()));
     List<Type>collectedPs=collectAux(p,ps,visited);
     List<Type>res=new ArrayList<>();
@@ -100,9 +91,7 @@ public abstract class Methods implements Program{
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
     List<Ast.Type> p1n=collect(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0)), ps));
     List<ClassB> cb1n=Map.of(pi->p.extractClassB(pi.getPath()), p1n);
-    {int i=-1;for(ClassB cbi:cb1n){i++;if (!cbi.isInterface()){
-      throw new ast.ErrorMessage.NonInterfaceImplements(p0,p1n.get(i).getPath());}
-      }}
+    assert cb1n.stream().allMatch(cbi->cbi.isInterface());
 //          ms1..msk={ms|p(Pi)(ms) is defined}
     HashMap<Ast.MethodSelector,List<ClassB.Member>> ms1k=new LinkedHashMap<>();
     for(ClassB.Member mij:cb0.getMs()){mij.match(

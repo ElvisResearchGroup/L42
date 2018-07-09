@@ -125,9 +125,9 @@ _______
 _______
 #define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
   p(P0)={interface? implements Ps Ms Phase}
-  if Phase!=None, M1'..Mk' are extracted from Ms[from P0]//TODO: do it in the code (not obvious it interact with the required order)
+  //Note we do not do the following: "if Phase!=None, M1'..Mk' are extracted from Ms[from P0]"
+  / because in the code we already "memoize" methods computation
   P1..Pn=collect(p,Ps[from P0])
-  //TODO: in code move the check for "error unless forall i in 1..n, p(Pi) is an interface" into the pattern match on p(P0) in collect() above(look former TODO)
   ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
   forall ms in ms1..msk, there is exactly 1 j in 0..n
     such that p(Pj)(ms)=mh e? //no refine
@@ -165,7 +165,7 @@ _______
 -norm(p)=p.top()
   if p.top().phase!=None
   otherwise
--norm(p)={interface? implements (Ps'\p Ps, Ps) norm(p,Ms') Norm} //Note: Ps'\p Ps, Ps correctly trashes the documentation of P in Ps' already in Ps. 
+-norm(p)={interface? implements Ps,(Ps'\p Ps) norm(p,Ms') Norm} //Note: Ps'\p Ps, Ps correctly trashes the documentation of P in Ps' already in Ps.
  p.top()={interface? implements Ps Ms None}
  Ps'=collect(p,Ps)
  Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
