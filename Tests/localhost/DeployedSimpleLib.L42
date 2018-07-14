@@ -2,28 +2,28 @@
 */
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
-  capsule This0.Abstract.S.SBuilder b815=This0.Abstract.S.#builder()
-  Void unused38608=b815.#H()
-  Void unused38609=b815.#e()
-  Void unused38610=b815.#l()
-  Void unused38611=b815.#l()
-  Void unused38612=b815.#o()
-  Void unused38613=b815.#space()
-  Void unused38614=b815.#W()
-  Void unused38615=b815.#o()
-  Void unused38616=b815.#r()
-  Void unused38617=b815.#l()
-  Void unused38618=b815.#d()
-  Void unused38619=b815.#space()
-  Void unused38620=b815.#D()
-  Void unused38621=b815.#e()
-  Void unused38622=b815.#p()
-  Void unused38623=b815.#l()
-  Void unused38624=b815.#o()
-  Void unused38625=b815.#y()
-  Void unused38626=b815.#e()
-  Void unused38627=b815.#d()
-  b815
+  capsule This0.Abstract.S.SBuilder b825=This0.Abstract.S.#builder()
+  Void unused24696=b825.#H()
+  Void unused24697=b825.#e()
+  Void unused24698=b825.#l()
+  Void unused24699=b825.#l()
+  Void unused24700=b825.#o()
+  Void unused24701=b825.#space()
+  Void unused24702=b825.#W()
+  Void unused24703=b825.#o()
+  Void unused24704=b825.#r()
+  Void unused24705=b825.#l()
+  Void unused24706=b825.#d()
+  Void unused24707=b825.#space()
+  Void unused24708=b825.#D()
+  Void unused24709=b825.#e()
+  Void unused24710=b825.#p()
+  Void unused24711=b825.#l()
+  Void unused24712=b825.#o()
+  Void unused24713=b825.#y()
+  Void unused24714=b825.#e()
+  Void unused24715=b825.#d()
+  b825
   )))
 Abstract: {
 Alu: {/*@plugin
@@ -53,7 +53,7 @@ mut This0 #cast(mut This1.Concept.Classable that)
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This0 is(class Any subtype) 
+  */This0 is(class This1.Concept.Classable subtype) 
 refine read method 
 class This0 class() 
 refine class method /*
@@ -127,7 +127,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1 is(class Any subtype) 
+  */This1 is(class This2.Concept.Classable subtype) 
 refine read method 
 This1 #equalequal(read Any that) 
 read method 
@@ -182,7 +182,7 @@ mut This0 #cast(mut This1.Concept.Classable that)
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 class This0 class() 
 refine class method /*
@@ -413,7 +413,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -485,7 +485,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 class method 
@@ -567,7 +567,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -625,7 +625,7 @@ mut This0 #cast(mut This1.Concept.Classable that)
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 class This0 class() 
 refine class method /*
@@ -1002,7 +1002,7 @@ class method /*
 class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) }
+  */This2.Bool is(class This0 subtype) }
 Base: {interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
 */
 refine read method 
@@ -1028,7 +1028,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This1.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) }
 Wrapper: {interface 
@@ -1095,7 +1095,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 class method 
@@ -1177,7 +1177,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 refine class method 
@@ -1232,7 +1232,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -1318,7 +1318,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -1404,7 +1404,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -1468,7 +1468,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine class method 
@@ -1523,7 +1523,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -1589,7 +1589,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine class method 
@@ -1644,7 +1644,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 read method 
@@ -1724,7 +1724,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -1795,7 +1795,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -1878,7 +1878,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 read method 
 read This2.Collections.MutListAny inner() 
 mut method 
@@ -2101,7 +2101,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 read method 
 read This1.Collections.MutListAny inner() 
 mut method 
@@ -2466,7 +2466,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 class method 
@@ -2606,7 +2606,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -2690,7 +2690,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 class method 
@@ -2817,7 +2817,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -2902,7 +2902,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This1.Bool is(class Any subtype) 
+  */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal(read Any that) 
 method 
@@ -2957,7 +2957,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -3092,7 +3092,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
@@ -3139,7 +3139,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 read method 
@@ -3210,7 +3210,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 read method 
 read This3.Collections.MutListAny inner() 
 mut method 
@@ -3487,7 +3487,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -3521,7 +3521,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 read method 
 read This3.Collections.MutListAny inner() 
 mut method 
@@ -3909,7 +3909,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -3943,7 +3943,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 read method 
 read This3.Collections.MutListAny inner() 
 mut method 
@@ -4268,7 +4268,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -4302,7 +4302,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 read method 
 read This3.Collections.MutListAny inner() 
 mut method 
@@ -4551,7 +4551,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine method 
@@ -4658,7 +4658,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 refine read method /*
@@ -4753,7 +4753,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 refine read method /*
@@ -4788,7 +4788,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 read method 
 read This4.Collections.MutListAny inner() 
 mut method 
@@ -5101,7 +5101,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 refine read method /*
@@ -5136,7 +5136,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 read method 
 read This4.Collections.MutListAny inner() 
 mut method 
@@ -5449,7 +5449,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 refine read method /*
@@ -5484,7 +5484,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 read method 
 read This4.Collections.MutListAny inner() 
 mut method 
@@ -5733,7 +5733,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 Lib: {/*@plugin  toFix 
@@ -5779,7 +5779,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) 
 refine read method 
@@ -5825,7 +5825,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) 
 refine read method 
@@ -5878,7 +5878,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) 
 refine read method 
@@ -5924,7 +5924,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal(read Any that) 
 refine read method 
@@ -6017,7 +6017,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method /*
@@ -6068,7 +6068,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This3.Bool is(class Any subtype) 
+  */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal(read Any that) 
 refine read method 
@@ -6102,7 +6102,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This4.Bool is(class Any subtype) 
+  */This4.Bool is(class This4.Concept.Classable subtype) 
 read method 
 read This4.Collections.MutListAny inner() 
 mut method 
@@ -6390,7 +6390,7 @@ refine class method /*
 refine class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine class method 
@@ -6447,7 +6447,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6499,7 +6499,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6551,7 +6551,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6603,7 +6603,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6659,7 +6659,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6715,7 +6715,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6769,7 +6769,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6825,7 +6825,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6877,7 +6877,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6929,7 +6929,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -6981,7 +6981,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 refine read method 
@@ -7196,7 +7196,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -7594,7 +7594,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -7764,7 +7764,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -7972,7 +7972,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -8058,7 +8058,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -8169,7 +8169,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 read method 
 read This2.Collections.MutListAny inner() 
 mut method 
@@ -8422,7 +8422,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 read method 
 read This2.Collections.MutListAny inner() 
 mut method 
@@ -8675,7 +8675,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 read method 
 read This2.CollectionsMut.MutListAny inner() 
 mut method 
@@ -8916,7 +8916,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 read method 
 read This2.Collections.MutListAny inner() 
 mut method 
@@ -9159,7 +9159,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 
@@ -9245,7 +9245,7 @@ refine class method /*
   
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */This2.Bool is(class Any subtype) 
+  */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal(read Any that) 
 read method 

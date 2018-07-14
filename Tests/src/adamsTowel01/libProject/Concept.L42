@@ -24,7 +24,7 @@ Classable:{interface
   class method/*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
-  */Bool is(class Any subtype)
+  */Bool is(class This subtype)
   }
 
 Base:{interface

@@ -68,7 +68,7 @@ D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   T1 = guessType(D.p,D.G,e)// Note guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,T1.P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
-  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps  with T3!=class Any //TODO: add in code that return classAny is forbidden
+  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps  with T3!=class Any
   //classAny is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
   D|- e~>  e' :  T3 <=T2|Ts;Ps
 

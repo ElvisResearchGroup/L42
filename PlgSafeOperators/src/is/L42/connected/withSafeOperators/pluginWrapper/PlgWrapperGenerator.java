@@ -272,7 +272,7 @@ private static UsingInfo usingConstructor(PlgInfo plgInfo, Constructor<?>[] jcs,
       List<Dec> ks=new ArrayList<>();
       {int i=-1;for(Type ti:mt.getExceptions()){i++;
         MCall mci=((MCall)k0.getInner()).withInner(ExpCore.EPath.wrap(ti.getPath()));
-        ks.add(k0.withInner(mci).withX(k0.getX()+"I"+i));
+        ks.add(k0.withInner(mci).withX(Functions.freshName(k0.getX(),L42.usedNames)));
         }}
       on=on.withInner(((Block)on.getInner()).withDecs(ks));
       b=b.withOns(Collections.singletonList(on));

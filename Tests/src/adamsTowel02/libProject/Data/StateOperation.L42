@@ -22,14 +22,21 @@ exception Fail {
   }
 class method
 Library fieldOperation(Library forReadable, Library forClass)
+exception Fail 
+  this.fieldOperation(forReadable:forReadable,forClassable:forClass,forClassAny:forClass)
+
+class method
+Library fieldOperation(Library forReadable, Library forClassable,Library forClassAny)
 exception Fail {
   return Use[
     Resource(Use[ReadSkeletonTrait()]<><forReadable,
       selector:\"forReadable()");
     Resource(Use[ReadSkeletonTrait()]<><This.readToImm(forReadable),
       selector:\"forImmutable()");
-    Resource(Use[ClassSkeletonTrait()]<><forClass,
-      selector:\"forClass()");
+    Resource(Use[ClassSkeletonTrait();{T:{implements Concept.Classable}}]<><forClassable,
+      selector:\"forClassable()");
+    Resource(Use[ClassSkeletonTrait()]<><forClassAny,
+      selector:\"forClassAny()");
     ]<><This.specializerTrait()
   error on Refactor2.Fail Fail""  
   }
@@ -37,14 +44,19 @@ exception Fail {
 class method Library specializerTrait(){
   class method Library forReadable()
   class method Library forImmutable()
-  class method Library forClass()
+  //class method Library forClass()
+  class method Library forClassable()
+  class method Library forClassAny()
+
   class method
   Library (Selector selector,Location.Type type)
   exception Fail {
     mdf=type.mdf()
     r=type.refTo()
     if mdf.isCmpClass() (
-      return this.specialize(This.forClass(),selector:selector,refTo:r)
+      return this.specialize(This.forClassable(),selector:selector,refTo:r)
+      catch exception Guard return this.specialize(This.forClassAny(),selector:selector,refTo:r)
+      void
       )
     if mdf.isCmpImm() (
       return this.specialize(This.forImmutable(),selector:selector,refTo:r)

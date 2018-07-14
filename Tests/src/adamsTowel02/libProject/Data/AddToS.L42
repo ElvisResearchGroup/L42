@@ -42,16 +42,6 @@ exception Fail{
 //auxiliary functions
 
 class method
-S className(class Any that){
-  with that (
-    on class Void return S"Void"
-    on class Library return S"Library"
-    on class Concept.Classable return that.readableName()
-    )
-   return GetMyName(that)
-   }
-
-class method
 S nodeName(read Any that){
   with that (
     on read Void return S"Void"
@@ -107,10 +97,14 @@ FieldOp:StateOperation.fieldOperation(
     class method S fN()
     read method S baseToS()
       S""[This.fN()]":"[This1.valToS(this.f())]""}
-  forClass:{
+  forClassable:{
     class method S fN()
     read method S baseToS()
-      S""[This.fN()]":"[This1.className(this.f())]""}
+      S""[This.fN()]":"[this.f().readableName()]""}
+  forClassAny:{
+    class method S fN()
+    read method S baseToS()
+      S""[This.fN()]":"[GetMyName(this.f())]""}
   )
 
 FieldOpAddClassName:StateOperation.fieldOperation(
@@ -118,9 +112,13 @@ FieldOpAddClassName:StateOperation.fieldOperation(
     class method S fN()
     read method S baseToS()
       S""[This.fN()]":"[This1.nodeNameAndValToS(this.f())]""}
-  forClass:{// can not do FieldOp.forClass() since uses This1
+  forClassable:{
     class method S fN()
     read method S baseToS()
-      S""[This.fN()]":"[This1.className(this.f())]""}
+      S""[This.fN()]":"[this.f().readableName()]""}
+  forClassAny:{
+    class method S fN()
+    read method S baseToS()
+      S""[This.fN()]":"[GetMyName(this.f())]""}
   )
 }

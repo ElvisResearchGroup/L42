@@ -13,6 +13,19 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodCla
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import programReduction.Program;
 
+/*TODO: known bug: redirect may violate metalevel soundness:
+ 
+ TT:Resource<><{T:{interface} method class T id(class T that){return that}}
+ 
+ TT is well typed, but the result of
+ 
+ C:Redirect[\"T" into Any]<><TT()
+ 
+ is not well typed: we can not return class Any (is ill typed). Otherwise we may cast
+  a class Any obtained thanks to the distinction between tryTyped and tryCohereny
+  back to its original Path (that may not be coherent) and call class methods on it.
+ 
+ */
 public class Redirect {
   public static ClassB redirectS(PData pData,ClassB that,String src,ast.Ast.Path dest) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit{
     return redirectJ(pData,that,PathAux.parseValidCs(src),dest);

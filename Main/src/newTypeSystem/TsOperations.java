@@ -102,12 +102,6 @@ public interface TsOperations extends TypeSystem{
     }
 
     default TOut tsSignal(TIn in, Signal s) {
-      //D |- throw[_,_] e~> throw[T0,T3] e' : T0 <= T0 | Tr
-      //  T1 = resolve(D.p,guessType(D.G,e))// Note, resolves and guessTypes can go in error, and need to become a type error here
-      //  if throw=exception, T2= imm T1.P and Tr=Ts;Ps,P
-      //  if throw=error,     T2= imm T1.P and Tr=Ts;Ps
-      //  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps
-      //  D|- e~>  e' :  T3 <=T2|Ts;Ps
       Type T1=GuessTypeCore._of(in.p,in, s.getInner(),true);
       assert T1!=null;
       Type T2;
@@ -119,11 +113,14 @@ public interface TsOperations extends TypeSystem{
       if(!innerT.isOk()){return innerT.toError();}
       TOk res=innerT.toOk();
       Type T3=res.computed;
+      if(s.getKind()==SignalKind.Return && T3.equals(Type.classAny)){
+        throw new ErrorMessage.InvalidTypeForThrowe(s,T3,Position.noInfo);
+        }
       if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}
       if(s.getKind()==SignalKind.Exception){res=res.exceptionsAdd(T3.getPath());}
       s=s.withInner(res.annotated).withTypeIn(T3).withTypeOut(in.expected);
       return res.withAC(s,in.expected);
-    }
+      }
 
     default TOut tsClassB(TIn in, ClassB s) {
     //D |- L ~> L' : imm Library <= T | emptyTr
