@@ -31,6 +31,7 @@ import coreVisitors.FindPathUsage;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;
 import coreVisitors.PropagatorVisitor;
+import facade.L42;
 import sugarVisitors.CollapsePositions;
 import tools.Assertions;
 

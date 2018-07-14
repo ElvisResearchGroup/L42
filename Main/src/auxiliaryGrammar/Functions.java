@@ -202,37 +202,41 @@ private static HashSet<String>  neededX(Block e,int n){
   neededX.addAll(FreeVariables.of(e.getInner()));
   return neededX;
   }
-public static void addName(String _name, java.util.Map<String,Integer> usedNames){
-  String name=_name;
-  while(Character.isDigit(name.charAt(name.length()-1))){
-    name=name.substring(0,name.length()-1);
-    }
-  String sNumber=_name.substring(name.length());
-  int number=0;
-  if(sNumber.length()!=0){
-    number=Integer.parseInt(sNumber);
-    }
-  Integer i=usedNames.get(name);
-  if(i==null){i=0;}
-  i=Math.max(i, number);
-  assert i>=0;
-  usedNames.put(name,i);
+public static void addName(String fullNname, java.util.Map<String,Integer> usedNames){
+  String name = stripNumbers(fullNname);
+  Integer i = currentHighestNumberForName(fullNname, usedNames, name);
+  addToMap(usedNames,name,i);
   }
-public static String freshName(String _name, java.util.Map<String,Integer> usedNames) {
-  String name=_name;
-  while(Character.isDigit(name.charAt(name.length()-1))){
-    name=name.substring(0,name.length()-1);
-    }
-  String sNumber=_name.substring(name.length());
+private static String stripNumbers(String fullName) {
+  String name=fullName;
+    while(Character.isDigit(name.charAt(name.length()-1))){
+      name=name.substring(0,name.length()-1);
+      }
+  assert fullName.length()-name.length()<8;
+  return name;
+  }
+public static String freshName(String fullName, java.util.Map<String,Integer> usedNames) {
+  String name = stripNumbers(fullName);
+  Integer i = currentHighestNumberForName(fullName, usedNames, name);
+  addToMap(usedNames, name, i+1);
+  return name+(i+1);
+  }
+private static Integer currentHighestNumberForName(String fullName, java.util.Map<String, Integer> usedNames,
+        String name) {
+String sNumber=fullName.substring(name.length());
   int number=0;
   if(sNumber.length()!=0){number=Integer.parseInt(sNumber);}
   Integer i=usedNames.get(name);
   if(i==null){i=0;}
   i=Math.max(i, number);
+return i;
+}
+private static void addToMap(java.util.Map<String, Integer> usedNames, String name, Integer i) {
   assert i>=0;
-  usedNames.put(name,i+1);
-  return name+(i+1);
-  }
+  assert i<100000:
+    i;//to ease debugging, captures that we should not expect so many names
+  usedNames.put(name,i);
+}
 
 
 public static List<Ast.C> freshPathName(List<Ast.C> pathR, java.util.Map<String,Integer> usedNames) {

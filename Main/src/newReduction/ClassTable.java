@@ -48,7 +48,8 @@ public class ClassTable {
       if(cdi.getKind()==null){continue;}
       coherentceChecker(invalid).visit(cdi);
       }
-    assert invalid.isEmpty():invalid;
+    assert invalid.isEmpty()
+      :invalid;
     return true;
     }
   private PropagatorVisitor coherentceChecker(List<Integer>invalid) {

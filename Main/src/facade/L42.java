@@ -49,6 +49,8 @@ import caching.Loader;
 import caching.Phase1CacheKey;
 
 public class L42 {
+  //optimization flags. Removing them can be useful in debugging
+  public static boolean memoizeMethods=true;
   public static enum ExecutionStage{None,Reading,Parsing,CheckingWellFormedness,Desugaring,MetaExecution,Closing;}
   private static ExecutionStage _stage=ExecutionStage.None;
   public static boolean profilerPrintOn=true;
@@ -84,7 +86,12 @@ public class L42 {
   public static String reconstructedStackTrace="";
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
-  public static final java.util.Map<String,Integer> usedNames=new HashMap<>();
+  public static final java.util.Map<String,Integer> usedNames=new HashMap<String,Integer>(){
+    public @Override Integer put(String s,Integer i){
+      assert i<100000:
+      i;
+      return super.put(s,i);}
+    };
   public static void printDebug(String s){
     record.append(s);
     record.append("\n");

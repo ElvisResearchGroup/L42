@@ -23,6 +23,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Functions;
 import auxiliaryGrammar.WellFormednessCore;
 import coreVisitors.From;
+import facade.L42;
 import tools.Map;
 
 public abstract class Methods implements Program{
@@ -80,10 +81,20 @@ public abstract class Methods implements Program{
   static MethodWithType addRefine(MethodWithType mwt){
     return mwt.withMt(mwt.getMt().withRefine(true));
     }
-
+  
+  private HashMap<Ast.Path,List<MethodWithType>> methodsCache=new HashMap<>();
 //  -methods(p,P0)=M1'..Mk'
 //          p(P0)={interface? implements Ps Ms}
   public List<MethodWithType> methods(Ast.Path p0){
+    if(!L42.memoizeMethods){return methodsNoCache(p0);}
+    List<MethodWithType> res=methodsCache.get(p0);
+    if(res!=null){return res;}
+    res=methodsNoCache(p0);
+    methodsCache.put(p0, res);
+    return res;
+    }
+
+  private List<MethodWithType> methodsNoCache(Ast.Path p0){
     if (p0.isPrimitive()){return Collections.emptyList();}
     Program p=this;
     ClassB cb0=p.extractClassB(p0);
