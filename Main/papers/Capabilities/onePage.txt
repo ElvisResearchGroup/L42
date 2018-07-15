@@ -1,0 +1,109 @@
+operation using their name
+as for method calls
+
+
+conventionally, every method can call any other method on all objects
+it can receach, and any static method anywhere.
+
+
+
+I can put a "label" called a set of direct demands
+
+can writeFile
+T writeFile(String fileName,String content){/*native impl*/}
+...
+writeFile T canWrite(){
+  ...writeFile("foo.txt","hi")
+  }
+For example, here the primitive
+
+
+two designs are possible, the first is wrong
+
+
+
+a->b->c
+
+
+
+can: ccall
+ccall() intrinsic
+
+rest of you example
+----
+can:[]
+pr_ccall() intrinsic
+
+can: ccall, pr_call
+ccall() pr_ccall()
+
+rest of you example
+----
+class File{
+
+  }
+
+
+lambda
+FJ
+Caml
+
+
+
+
+
+start off with magic objects
+limitaitons to field access and object creation
+
+
+Foo.foo(System s)
+
+
+Foo.foo(ISystem[CSystem] s)
+
+Foo.foo(ISystem[a] s)
+
+
+
+
+
+if you somehow already have deep imm/mut and read
+it is very cheap to have a coarse grained IO/determinism control.
+With such control caching (the majour roadblock for deep immutability in practique)
+can be provided as a safe language feature
+
+
+oo capabilty systems are
+- hard to reason statically
+- requires correct large standard library magically done
+
+-user can decide the boundary between
+static check and
+dynamic check
+
+
+global
+
+absolute
+
+
+Foo.f=3
+
+class Foo{
+  static int f;
+  statoc{printhello}
+
+
+
+assert pre;
+T res;
+
+try{
+  	return res;
+} finally {
+	assert post(res);
+}
+
+
+oben world
+closed world

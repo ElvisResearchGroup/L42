@@ -243,7 +243,7 @@ toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms)
 //the behaviour of immorcapsule on fwd is not relevant since the method
 // returns a read and will be not well formed if it had fwd parameters
   where
-  Ts->read/*or lent*/ P0;Ps in methTypes(p,P,ms)
+  Ts->mdf P0;Ps in methTypes(p,P,ms), mdf in {read,lent}
   //by well formedness if return type is read, not fwd_or_fwd%_in Ts
 
 //then lent viewpoint adaptation
