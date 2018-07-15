@@ -13,15 +13,16 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodCla
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import programReduction.Program;
 
-/*TODO: known bug: redirect may violate metalevel soundness:
+/*Note the type system prevents to return a class T with T without methods.
+This is needed to avoid the redirect from violating metalevel soundness:
  
  TT:Resource<><{T:{interface} method class T id(class T that){return that}}
  
- TT is well typed, but the result of
+ if we was to allow TT to be well typed, the result of
  
  C:Redirect[\"T" into Any]<><TT()
  
- is not well typed: we can not return class Any (is ill typed). Otherwise we may cast
+ would not be well typed: we can not return class Any (is ill typed). Otherwise we may cast
   a class Any obtained thanks to the distinction between tryTyped and tryCohereny
   back to its original Path (that may not be coherent) and call class methods on it.
  

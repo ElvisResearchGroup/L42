@@ -68,9 +68,12 @@ D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   T1 = guessType(D.p,D.G,e)// Note guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,T1.P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
-  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps  with T3!=class Any
-  //classAny is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
+  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps   
+  if T3=class P then exists ms in dom(p(P))
+  //this forbids return (x:class Any): class Any is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
+  //we also forbid return (x:class P) for any P without methods: a P with methods can not be redirected to Any.
   D|- e~>  e' :  T3 <=T2|Ts;Ps
+
 
 (mcall)
 D |-  e0.m(x1:e1..xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
@@ -180,6 +183,14 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
   T0 = mdf P
   not catchRethrow(catch throw P x e)
   Phase| p| G[x:T0]|- e ~> e' : T <= T' | Tr'
+  if mdf=class then P in {Any,Library,Void} or class in p(P).mhs.mdfs 
+//Note about former line: having A<=IA,
+//class IA ia=A
+//is ok only if IA has class methods, otherwise if A become interface by sum, it would broke.
+//for consistency,
+//class IA ia=(return A catch class IA x x error void)
+//should also be allowed only if IA has class methods
+  
 
 (catch precise any)//notice, needs to be Any, it can't be
 //(exception A() exception B() catch exception C x useXAsB(x) )

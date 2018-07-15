@@ -20,6 +20,7 @@ import ast.Ast.SignalKind;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
+import ast.ExpCore.ClassB.MethodWithType;
 import coreVisitors.FreeVariables;
 import programReduction.Norm;
 import tools.Assertions;
@@ -211,23 +212,27 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if (preciseApplicable){return kTypeCatchPreciseAny(in, tr, k);}
     return kTypeCatch(in,tr,k);
     }
-      // T0 is the declared caught type, which contributes only a path
-      // T1 is the actual caught type, based on the types which can be thrown in context
-      // T2 is the type of the expression, based on x being bound T1
+
   default TOutK kTypeCatch(TIn in,Tr tr1,On k){
     if(k.getKind()==SignalKind.Return && tr1.returns.isEmpty()){
       return new TErr(in,"No returns in scope",null,ErrorKind.NoMostGeneralMdf);
       }
-    Mdf mdf1=TypeManipulation._mostGeneralMdf(k.getKind(),tr1);
-    if(mdf1==null){
+    Mdf mdf=TypeManipulation._mostGeneralMdf(k.getKind(),tr1);
+    if(mdf==null){
     return new TErr(in,"Contrasting mdf expected for return",null,ErrorKind.NoMostGeneralMdf);
     }
-    assert mdf1!=Mdf.MutablePFwd && mdf1!=Mdf.ImmutablePFwd;
-    Type T1 = k.getT().withMdf(mdf1);
-    TOut _out=type(in.addG(k.getX(),false,T1).withE(k.getE(), in.expected));
+    assert mdf!=Mdf.MutablePFwd && mdf!=Mdf.ImmutablePFwd;
+    Type T0 = k.getT().withMdf(mdf);
+    if(mdf==Mdf.Class && !T0.getPath().isPrimitive()){
+      Stream<MethodWithType> s = in.p.extractClassB(T0.getPath()).mwts().stream();
+      if(s.noneMatch(mwt->mwt.getMt().getMdf()==Mdf.Class)){
+        return new TErr(in,"Can not capture 'class "+T0.getPath()+"'; no class methods inside of "+T0.getPath(),null,ErrorKind.NoMostGeneralMdf);      
+        }
+      }
+    TOut _out=type(in.addG(k.getX(),false,T0).withE(k.getE(), in.expected));
     if(!_out.isOk()){return _out.toError();}
     TOk out=_out.toOk();
-    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(T1),out.computed);
+    TOkK res=new TOkK(Tr.instance.trUnion(out),k.withE(out.annotated).withT(T0),out.computed);
     return res;
      /*   Phase| p| G| Tr' |- catch throw T0 x e ~> catch throw T1.P x e' :T2 <= T | Tr
      mdf1 = mostGeneralMdf(throw,Tr') //set of Mdfs admits no single most general mdf, or mdfs is empty

@@ -113,11 +113,13 @@ public interface TsOperations extends TypeSystem{
       if(!innerT.isOk()){return innerT.toError();}
       TOk res=innerT.toOk();
       Type T3=res.computed;
-      if(s.getKind()==SignalKind.Return && T3.equals(Type.classAny)){
-        throw new ErrorMessage.InvalidTypeForThrowe(s,T3,Position.noInfo);
+      Path P=T3.getPath();
+      if(T3.getMdf()==Mdf.Class){
+        if(P.isPrimitive() || in.p.extractClassB(P).getMs().isEmpty()){
+          throw new ErrorMessage.InvalidTypeForThrowe(s,T3,Position.noInfo);}
         }
       if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}
-      if(s.getKind()==SignalKind.Exception){res=res.exceptionsAdd(T3.getPath());}
+      if(s.getKind()==SignalKind.Exception){res=res.exceptionsAdd(P);}
       s=s.withInner(res.annotated).withTypeIn(T3).withTypeOut(in.expected);
       return res.withAC(s,in.expected);
       }
