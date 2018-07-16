@@ -1106,6 +1106,153 @@ public void testOrderOfOperations() {
 	,"}");
 }
 
+// This doesn't work as l3 has no methods avaliable? 
+@Test
+public void testOverride() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+		    	,"l1={class method S foo()this.bar() class method S bar() S\"hi\"}"
+		    	,"l2={class method S bar()S\"hello\"}"
+		    	,"l3=Use.Override[l1]<><l2"
+		    	,"l3.bar()"
+		    	,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testRefactor() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+			  ,"lRed = Refactor2.redirect(path:\"A\" into:S)<><{A:{} method A a(A that)that}"
+			  ,"lRed.a(S\"s\")"
+		    	,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// This should throw an error stating that we can't update because a is not a var but
+// it throws an assertion error.
+@Test
+public void testNonVarUpdate() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"a = 0Num"
+				,"a := 1Num"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testSum() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"Nums: Collections.vector(of: Num)"
+			,"A: {"
+				,"vec = Nums[12Num; 33Num; 16Num]"
+				,"var Num sum = 0Num"
+				,"with e in vec.vals() (sum := sum + e)"
+			    ,"X[sum == 61Num]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Is there a reason why this can't infer the type? I know it works if we give a an
+// explicit type.
+@Test
+public void testInferVarType() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"var a = 0Num"
+				,"a := 1Num"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testEmptyGivesEmpty() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"Nums: Collections.vector(of: Num)"
+			,"A: {"
+				,"k = Nums.empty()"
+				,"X[k.isEmpty()]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Make sure adding two different units doesn't work.
+@Test(expected = newTypeSystem.FormattedError.class)
+public void testBadUnitAdd() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Units.of(Num)"
+			,"B: Units.of(Num) "
+			,"Main: {"
+				,"a = 5A"
+				,"b = 4B"
+				,"c = a + b"
+			,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testGoodUnitAdd() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Units.of(Num)"
+			,"Main: {"
+				,"a = 5A"
+				,"b = 4A"
+				,"c = a + b"
+				,"X[c == 9A]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+// Even if we can't make a unit of a unit, this gives us a "RawJavaException".
+@Test
+public void testUnitofUnit() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Units.of(Num)"
+			,"B: Units.of(A)"
+			,"Main: {"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testCompositeUnit() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Units.of(Num)"
+			,"B: Units.of(Num)"
+			,"C: Units.of(A per: B)"
+			,"Main: {"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+
+// Shouldn't this work? It shows it in the tutorial.
+@Test
+public void testSidedDivision() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: Units.of(Num)"
+			,"B: Units.of(Num)"
+			,"C: Units.of(A per: B)"
+			,"Main: {"
+				,"t = C(41A per: 42B)"
+				,"l = t /~ 32B"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+
 
 
 }
