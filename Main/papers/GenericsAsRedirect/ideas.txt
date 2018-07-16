@@ -1,0 +1,254 @@
+Lib,Tn,class Any
+
+Tn+Tn:Tn
+T0<<<Library:Library
+Tn(class1..classn):T0   //Tn+1(class):Tn
+Trait"Name1""Name2" <<< Library:Tn
+
+~T0=Library (abstract)
+
+
+//42
+Reduce:Trait"T,L"<<<{
+  T:{}
+  E:{}
+  L:~List(E)
+  class method T op(T a, E b)
+  class method T (T initial,L list) (
+    var T res=initial
+    with e in list.vals() (res:=This.op(a:res,b:e))
+    res
+    )
+  }
+R:Reduce(S)(Strings)<<<{class method S (S a, S b)a++b}
+R(a:\"",bs:\[\"hi";\"hello"])
+
+
+
+
+--------------------------------
+
+Coden,Class
+
+Coden <+ Coden:Coden
+Coden+1(Class):Coden
+name!Coden:Coden+1
+//~Code0=Code0   (abstract)
+//Coden|Coden:Coden
+
+lowerCase=Coden : trait declaration
+UpperCase:Code0 :class declaration//and need to be non abstact
+
+td::= trait t = E
+cd::= class C = E
+E::= L  |  t  |  E <+ E  |  E(Path)  |  Path!E  |  ~E  |  E|E
+V::=VO  |  Path!VO
+VO := VO|VO | L
+
+	e0 e1 (: e2) ...
+
+	t e | e2
+
+{
+	x = ex
+	catch (T1 y) ec1(y)
+	catch (T2 y) ec2(y)
+	ey(x)
+}
+
+// ec1: T1 -> R
+// ec2: T2 -> R
+// ey: TX -> R
+
+// : R
+
+ey ex : ec1 : ec2
+
+try ex
+catch ec1
+catch ec2
+else ey
+
+try ex
+else ey
+
+ex ey
+
+// (T!L1)|(Y!L2) == W!(L1[T=W]|L2[Y=W])
+// (T!L1)+(Y!L2) == W!(L1[T=W]+L2[Y=T])
+//hopefully
+// (t1+t2)(A) == t1(A)+t2(A)
+
+T!{T: { t1 }, Y: { y1 }} + Y!{T: { t2 }, Y: { y2 }}
+
+W!{W: { t1[T=W] }, Y: { y1[T=W] }} + W!{T: { t2[Y=W] }, W: { y2[Y=W] }}
+W!{W: { t1[T=W] y2[Y=W] }, Y: { y1[T=W] } T: { t2[Y=W] }}
+
+
+(T!{T: { }, Y: { } T m1(Y)} + Y!{T: { }, Y: { T m() } T m2(Y)} )(A)
+
+(W!{Y: { } W m1(Y), T: { }, W: { T m() } T m2(W)})(A)
+
+({Y: { } A m1(Y), A.m m2(A)})(A)
+
+
+({Y: { } A m1(Y)} + {A.m m2(A)}
+
+==
+(T!{T: { }, Y: { }}(A) + Y!{T: { }, Y: { T m() }}(A))
+
+// (f + g)(A) == f(A) + g(A)
+
+L::={interface? implements Paths Ms }
+M::=td|cd| static? method T m(Txs)e
+e::=x|e.m(es)|Path.m(es)
+
+m = T!{T: {} Baz: ~MyBoxy(T)}
+C: m(Foo)
+B: C.Baz
+
+
+
+
+L1|L2
+
+E1+E2 | E1
+
+(name!(E1|E2)) (A)
+(name1 ! E1 | name2 ! E2) (A)
+
+t: T!E ==> t: T!L (where E==>L)
+
+t1: T!({ T: { Int x() }}|{ T: {}})
+t0: {T: { Int x() }}|{ T: {}}
+t2: T! t0
+C: {};
+y: t(C); //
+
+
+
+
+
+
+
+
+//tList:{ Elem:{} method Elem get(Int x){..}}
+list:Elem!{ Elem:{} method Elem get(Int x){..}}
+
+t:{T:{..} A:{..} ...}
+//g1:T!t 		// T!t
+//g2:A!t
+E ::= <C: P...> E | E ~ P | E P
+
+{
+t:{ A1:{} A2:{} method A m()}
+A:{}
+  {
+  B:{}
+  C: (<A1: t.A1> t~A1)(B)
+  }
+}
+
+C:t
+D:g1(AA)
+
+empty t {
+	empty T { ... }
+	empty A { ... }
+	...
+}
+
+type g1<T: t.T> = t[~t.T];
+
+
+
+
+
+//mini
+reduce:T!L!{
+  T:{}  E:{}  L:list(E)
+  static T op(T a, E b);
+  static T of(T initial,L list) {..}
+}
+
+
+//mini sugar
+reduce:<T,L:list(E)>{
+ //T:{}  L:list(E) E:{}
+  static T op(T a, E b);
+  static T of(T initial,L list) {..}
+}
+
+
+R:reduce(S)(Strings)+{static S op(S a, S b)a + b}
+R.of("", Strings.of("hi","hello"))
+
+
+reduce:T!L!E!{
+  T:{}  E:{}  L:{}
+  static E get(L l, Int index);
+  static Int size(L l);
+  static T op(T a, E b);
+  static T of(T initial,L list) {..}
+}
+
+
+
+intReduce:L!{
+  L:~list(Int)
+  static Int op(Int a, Int b);
+  static Int of(Int initial,This.L list) {..}
+  }
+
+
+trait IntReduce<L: List<Elem=Int>>: Reduce<
+
+
+trait IntReduce<L: List<Elem=Int>> {
+	fn op(a: T, b: Int)->T;
+	fn of(initial: T, list: L)->T {..}
+}
+
+trait List {
+	type Elem;
+	fn get(x: Int)->Self::Elem { .. }
+}
+
+trait GReduce<T, L: GList<Elem>, Elem> {
+	fn op(a: T, b: L::Elem)->T;
+	fn of(initial: T, list: L)->T {..}
+}
+
+greduce: T!E!L! {
+	T: {}
+	E: {}
+	L: ~list(E)
+	static T op(T a, E b);
+  	static T of(T initial,L list) { ... }
+}
+
+R1: greduce(Int, Int, Listy) + {static Int op(Int a, Int b) ...1}
+R2: greduce(Integer64, Integer64, Natural32List) + {static Int op(Int a, T b) ...2}
+R2: greduce(Integer64, Natural32, Natural32List) + {static Int op(Int a, T b) ...2}
+
+// l: Natural32List; <l as GList<Natural32>>.get();
+
+
+
+
+
+
+
+
+
+
+
+trait Reduce<T, L: ListTrait> {
+	fn op(a: T, b: L::Elem)->T;
+	fn of(initial: T, list: L)->T {..}
+}
+
+struct R();
+impl Reduce<S, Strings> for R {
+	fn op(a: S, b: S) = a + b;
+}

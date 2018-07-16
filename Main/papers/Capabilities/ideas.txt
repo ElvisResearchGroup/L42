@@ -1,4 +1,4 @@
-e := e.Cs.m(es)| x:=e1;e2| Cs.f(es) | e0?e1:e2 
+e := e.Cs.m(es)| x:=e1;e2| Cs.f(es) | e0?e1:e2
 M := uses U provides P C m(Cxs) b | MM | CD | ID | uses U provides P static C f(Cxs) b
 b  :=   intrisic | e
 ID :=   provides P interface C {IMs}
@@ -48,9 +48,9 @@ A{
 		int Baz() kjhkjhk
 
 		U:StdIO
-		Void ReadWrite() 
+		Void ReadWrite()
 			x := StdIO.Read();
-			StdIO.Write(x)			
+			StdIO.Write(x)
 
 	}
 
@@ -58,16 +58,16 @@ A{
 
 		// D = { Stdio.Read }
 		Void bar() ...
-		
+
 		// D = {Foo.Stuff}
 		// I = {StdIO.Read, StdIO.Write}
 		U: Foo.Stuff
 		Void bab() ...
 
 		U: StdIO
-		Void Stuff() 
+		Void Stuff()
 			x := StdIO.Read();
-			StdIO.Write(x)			
+			StdIO.Write(x)
 	}
 
 define A inside e
@@ -102,7 +102,7 @@ Linearity:
 	For any 'U P C i(xs)'
 		there exists an algorithm that can compute, from only 'U P' and 'CDs \ e'
 			a set D and I,
-			such that:	for any 
+			such that:	for any
 
 
 ///
@@ -114,7 +114,7 @@ Linearity:
 
 Dynamic Soudness:
 	W : Ok
-	
+
 	W,W' : Ok
 
 	Then:
@@ -166,7 +166,7 @@ an expression execution can do the U denoted by its cap objects
 
 methods can do special things determined by their uses and provides clause
 ISystem[System].write		// System
-ISystem[].write					// 
+ISystem[].write					//
 
 A method, at minmiumum needs to have in their uses every method it calls, or something that implies
 	ISystem[Syste].write
@@ -179,8 +179,8 @@ class C{
 
 ISystem[System] foo()
 	C.new()
-	
-	
+
+
 
 a,U;A|-e:T
 
@@ -230,7 +230,7 @@ ISystem[] y = (ISystem[])x;
 
 // something is Mockable if its of the form
 uses a
-C foo[a] 
+C foo[a]
 
 
 
@@ -251,7 +251,7 @@ i would like B to implement IFoo at run time
 2) create bytecode for interface In extends IFoo,In+1{}
 
 
-if IFoo has a, 
+if IFoo has a,
 Hack.add(IFoo.class,B.class); //load IFoo
 IFoo f=(IFoo)myB; //requires to load I0, cast is OK
 //if IFoo has (only) a() then is all good
@@ -280,18 +280,18 @@ Void t=(Void)execute[StdIO]("Fresh.main")
 
 
 
-CDs | execute[a]("e") --> CDs | (Object)e  
+CDs | execute[a]("e") --> CDs | (Object)e
 
-where: 	CDs; {} |- (Object)e : Object		a; |- e : ok	
+where: 	CDs; {} |- (Object)e : Object		a; |- e : ok
 
-												
-CDs execute[a]("Cs.f")-->Cs.f()   
+
+CDs execute[a]("Cs.f")-->Cs.f()
 																	Uses a' Object f() in CDs(Cs)
 																	a >= a'
 
 -------------------------------    CD is welltype
 CDs ctx[~`CD`]--> CDs,CD ctx[void]
-	
+
 Ls ctx[~`C { Ms }`]--> Ls,C{Ms} ctx[void]
 where: |- C{Ms} : Ok
 			 C{Ms'} not in Ls
@@ -305,7 +305,7 @@ Ls ctx[~"L"]--> Ls,L ctx[void]
 
 -------------------------------    v is not of form "L"
 Ls ctx[~v]--> Ls ctx[error]        or v="L" and L.C in dom(Ls)
-                                   or not Ls,L|-L 
+                                   or not Ls,L|-L
 
 
 T := C | T1 -> T2 | T& | t
@@ -322,7 +322,7 @@ Primitive T->T, bool, identifier
 
 provide: ISystem[a].time
 interface ISystem[a] {
-  uses a 
+  uses a
 	Int time()
 }
 
@@ -349,7 +349,7 @@ for example Foo.bar(x)
 C {
 	uses []
 	static ISystem[CSystem] new(ISystem[CSystem] w) intrinsic
-	
+
   uses []
 	ISystem[CSystem] w() intrinsic
 
@@ -362,7 +362,7 @@ uses a
 static Void foo[a](ISystem[a] x)
 		// Can indirectly call CSystem.time() ONLY
     // if the parameter transitivelly contains a Csystem instance
-    // and the originating call had usability permission CSystem.time 
+    // and the originating call had usability permission CSystem.time
 		x.time{}		//CAN only call ISystem[CSystem] if a >= CSystem
 	}
 
@@ -390,7 +390,7 @@ interface I[_a] {
 
   uses a
 	Int m12()
-	
+
 	uses IO
 	Int m2()
 }
@@ -442,7 +442,7 @@ m(Any x) {
 }
 
 
-catch Any 
+catch Any
 
 
 Foo:{ class method Library bar()}
@@ -474,7 +474,7 @@ Friday
 
 1: do we need nested classes?
 
-2: 2 options: P only in classes 
+2: 2 options: P only in classes
 OR         U P in methods and no P in classes
   how those two options would interact with generic access?
 
@@ -484,12 +484,12 @@ interface OStream[a] {
 	Void Write(Char c) {
 		uses a
 		Void WriteString(String s)
-	
+
 		uses a
 		Void WriteLine(String s);
 	}
 
-	
+
 	uses a
 	Void WriteByte(Byte b);
 }
@@ -540,7 +540,7 @@ Generation features:
 	g4. Overloads....
 	g5. Abstract Generics
 	g6. Global scopey shit
-			... begin(x) .. 
+			... begin(x) ..
 	g7 Higher Order Types subsuming	[functonal dependencies]
 Type system semantics
 	t1. Non-denotational:				List<int> == List<int>
@@ -580,11 +580,11 @@ interface<T: Comparable> ICollection<T> {
 }
 
 
-void count_unique<Y, T: ICollection<Y>>(T l) { 
+void count_unique<Y, T: ICollection<Y>>(T l) {
 	l.count()
 }
 
-void count_unique<Y: Comparable, T: ICollection<Y>>(T l) { 
+void count_unique<Y: Comparable, T: ICollection<Y>>(T l) {
 	l.unique()
 }
 
@@ -592,7 +592,7 @@ void count_unique<Y: Comparable, T: ICollection<Y>>(T l) {
 CountUnque: {
 	Library provide(class Any that) {
 		redirect(T -> that)      <>< {T:{implements ICollection_Comparable} countUnique(T l) l.unique()}
-		catch redirect(T -> that)<>< {T:{implements ICollection} countUnique(T l) l.count()}		
+		catch redirect(T -> that)<>< {T:{implements ICollection} countUnique(T l) l.count()}
 	}
 }
 
@@ -601,12 +601,12 @@ MyGen: {
 		redT {
 			T: {}
 	    class method Library makeM(class Any that) redT {T:{aa}   m()a}
-	    Num f 
+	    Num f
 	    ...
 		}
 	  catch redT{
 			T:{}
-	    class method Library makeM(class Any that) redT{ T:{bb}   m()b } 
+	    class method Library makeM(class Any that) redT{ T:{bb}   m()b }
 	    Num g
 	    ..
 		}
@@ -615,7 +615,7 @@ MyGen: {
 
 Geny(that): RedT {
 	T: {
-		class method Library(class Any that) 
+		class method Library(class Any that)
 			/*
 				returns something that looks like:
 				{
@@ -635,7 +635,7 @@ Geny(that): RedT {
 
 C: {
 	class method m1(that) = redT1 {
-	  T1: {..}  
+	  T1: {..}
 	  class method m2(that) = redT2 {
 	    T2: {..}
   	  class method T1 meth (T2 x) = ...
@@ -667,7 +667,7 @@ ICall:{interface class method Num ()}
 MyI:{implements I ..}
 
 Foo:{
-  class method Num (I that) 
+  class method Num (I that)
     Library l=that(Num)+{implements Concept.Classable
       class method Num bar()
       method () this.bar()
@@ -680,13 +680,13 @@ Bar()
 
 class method Library doFoo(class Any A) { // ... //}
 
-doFoo(MyI) // returns 
-	{ 
+doFoo(MyI) // returns
+	{
 		class method () Int
 	}
 
 class method A foo<T extends Bar<_>>(T a){
-  
+
   return a.bar()
   }
 
@@ -727,3 +727,55 @@ Eval(l,Selector"m()")
 
 throw { &myA }
 catch (&B) { } // if B is a non-public base of myA, will not catch
+
+
+
+
+-----------
+
+Haskell and Java both run in undefined behaviour when calling
+C/native code that run in udefined behaviour.
+They could instead use a process pooling to execute native code in another process.
+
+In I we could
+1- just allow truested C calls
+2- allow any C call but implements process pooling
+3- use I itself to implement process pooling.
+
+One advantage of I is that 2 can be implemented as a little wrapper over 3
+in the sense that an I program can just run another program in a sandbox
+
+
+we can have grant capabilies, that can grant capabilities to other code, but can not act directly.
+That is.
+a main starting with * can do anything without control,
+while a main starting with grant[*] can do things only explicitly
+demands[unrestricted_run[a]]
+unrestricted_run[a](Action[a] l) intrinsic // semantly, just calls l();
+
+demands[unrestricted_run[IO,...]]
+
+
+
+
+
+demands[X]
+void foo();
+
+
+demands[X]
+void bar(X) {
+	foo{x}();
+}
+
+
+
+s ="demand[mint_currency]
+	Money mint_currency() = ...;"
+
+demand[Dynamic]
+	// FAILS, IF:
+	//		"mint_currency" can call (directly or indirectly) a function foo
+	//		such that: the caller of load_invoke did not have capability to call foo
+	//			and foo existed before s was loaded
+Money foo() = return load_invoke(s, "mint_currency");
