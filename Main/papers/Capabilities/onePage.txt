@@ -1,27 +1,149 @@
-operation using their name
-as for method calls
+In imperative languages, reasoning on side effects can be very challenging,
+since any piece of code can potentially do anything.
+In object oriented system when dynamic dispatch is pervasive, we do not even
+have access to such code. For example, executing the innocent looking method foo can format your hard drive.
 
+method Void foo(Point myPoint){ myPoint.getX();}
 
-conventionally, every method can call any other method on all objects
-it can receach, and any static method anywhere.
+Object capabilities allows to delegate the reasoning on (also) side effects
+onto reasoning on aliasing: only special unforgeable objects can do special actions.
+Then, if reasoning over aliasing allows to prove that ROG(myPoint) do not contains
+a fileSystem capability, then we can be certain calling foo(myPoint) will not formal the hard drive.
 
+In this paper we explore another option, where methods can be called only when sufficient
+permission is available in scope.
+For simplicity we will use class and method names as permission labels,
+but conceptually any kind of label would do.
+On default methods requires zero permissions plus all the permissions declared by the methods they directly
+invoke. However methods declarations can chose to declare more permissions in order to restrict their usage.
+For example, if our standard library provide such class:
 
-
-I can put a "label" called a set of direct demands
-
-can writeFile
-T writeFile(String fileName,String content){/*native impl*/}
-...
-writeFile T canWrite(){
-  ...writeFile("foo.txt","hi")
+class System{
+  static String readFile(String fileName){/*magic implementation*/}
   }
-For example, here the primitive
 
+Then every function in the system could read any kind of file. We can use permissions to change this:
 
-two designs are possible, the first is wrong
+class System{
+  System.readFile //permission label!
+  static String readFile(String fileName){/*magic implementation*/}
+  }
 
+Now, only when the permission System.readFile is in scope; for example Documents.readFile is correct:
 
+class Documents{
+  System.readFile, Directory.new, Directory.contains
+  static String readFile(String fileName){
+    if(!new Directory("Documents").contains(fileName){/*error*/}
+    return System.readFile();
+    }
+  }
 
+Documents.readFile acts as a filter, and reads only files presents in the "Documents" folder.
+Of course we can call Documents.readFile if we have System.readFile, Directory.new, Directory.contains.
+Moreover, we can call a method if we have the permission naming such method: in this case it means that
+we can also call Documents.readFile if we have the permission Documents.readFile. However, such permission
+do not allows to call System.readFile directly, as shown below:
+
+class User{
+  Documents.readFile
+  static Void main(){
+    String doc1=Documents.readFile("~/Documents/hi.txt")
+    //String doc2=System.readFile("~/Documents/hi.txt")//not well typed
+    }
+  }
+
+In this way, Documents works as a filter with respect to System: by reasoning on the code of Documents.readFile
+we can understand how the power of System is tamed, and we can chose to give Documents.readFile permissions
+when opportune.
+This is a static and method level interpretation of what happens in practique programming with object
+capabilities, where using the delegator pattern the programmer can create a new object wrapping
+the capability object, and perform restrictions and checks while delegating the method behaviour.
+
+For convenience of use, we allow classes to define a set of `implied' permissions; in this way
+the class name is just a shortcut for those other permissions. For example,
+if Directory was declared as
+
+class Directory implies new, contains,... {...}
+
+then, while declaring Documents.readFile before, we could have written
+`Directory' instead of `Directory.new, Directory.contains'
+
+The system, as presented up to now, is completely static and does not really requires nor take advantage
+of objects. Every method requires an exact set of permissions and thus, can do a specific set of actions.
+Using generics, subtyping and objects we can write permission generic code, in true object capability style:
+
+interface IFiles[a]{
+  a
+  String readFile(String fileName);
+  }
+class Files implements IFiles[System.readFile] {
+  System.readFile
+  String readFile(String fileName){ return System.readFile(fileName);}
+
+  Files.new
+  Files(){}
+  }
+class DocFiles implements IFiles[Documents.readFile] {
+  Documents.readFile
+  String readFile(String fileName){ return Documents.readFile(fileName);}
+
+  DocFiles.new
+  DocFiles(){}
+  }
+class MockFiles implements IFiles[]{
+  String readFile(String fileName){return "";}
+
+  MockFiles(){}
+  }
+
+With those classes defined, the user can write a method User.user parametric on the kind of IFiles:
+
+class User{
+  a
+  Void [a]user(IFiles[a] cap){
+    // internally, cap can be used without static knowledge of what it can do
+    cap.[a]readFile("foo.txt")
+    }
+  }
+
+Notice that 'a' stand for a list of permissions, not a single one. We expect a concrete language syntax may
+infer most of the generic annotations.
+
+The call cap.[a]readFile("foo.txt") is statically ok: we have permission
+'a', that is all we need to call IFiles[a].readFile.
+Dynamically, assuming for example to get a `new DocFiles()' it is also ok:
+we would have permission 'Documents.readFile' that is sufficient to call 'new DocFiles().readFile'
+
+Notice how DocFiles constructor require permission `DocFiles.new', thus it can not be called
+inside User.[DocFiles]user.
+
+Following the presented pattern, the programmer has control on how much static information they requires and
+how they are ready to rely on dynamic (aliasing based) control. For example, we could declare:
+
+class FilesStart extends Files{
+  System.readFile
+  String readFile(String fileName){ return super.readFile(fileName).substring(0,10);}
+
+  Files.new
+  FilesStart(){super();
+  }
+
+And now, our capability object 'new FilesStart()' can do less/worst (but not more)
+then our capability 'new Files()', but from a static perspective there is no difference.
+
+An important benefit of our approach is that it allows safety and control even in the case of
+static methods performing primitive operations.
+This is very useful while mapping native calls in our current program.
+With the simple restiction that certain native calls need to correspond to specific static method calls,
+we believe our system allows to encode safe object cabilities as a user library, instead of requiring
+them to be integrated in the standard library.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+END of short introduction
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 a->b->c
 
 
