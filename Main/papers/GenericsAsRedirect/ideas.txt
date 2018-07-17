@@ -39,11 +39,23 @@ name!Coden:Coden+1
 //Coden|Coden:Coden
 
 
+E   ::= L  |  t  |  E <+ E  |  E(Cs=T) // | E || E
+E <+ E // only on L<+L
 
+list = x -> {
+	Elem : { bool equals(Elem) }
+	This$:{}
+	List:list(This$)
+	List split(Elem seperator) ...
+  }[Elem=>x][This.This$:=This]
+
+// split().split(..).split(..)..........
 
 ------GRAMMAR
 lowerCase=Coden : trait declaration
 UpperCase:Code0 :class declaration//and need to be non abstact
+
+
 
 id  ::= t|C
 td  ::= t = E
@@ -628,3 +640,115 @@ struct R();
 impl Reduce<S, Strings> for R {
 	fn op(a: S, b: S) = a + b;
 }
+
+
+
+
+
+
+
+
+
+ListR:Resource<><{
+  class method Library listT()
+  class method Library (class Any that)Trait(this.listT())"Elem" / that
+  }
+
+ListT:Resource<><{Elem:{}...}
+
+List:{
+  class method Library (class Any that,Size n)= this.gen(that,lib:this.nest(n))
+  class method Library gen(class Any that,Library lib)=Refactor.redirect(\"Elem" into: that)<><lib
+  class method Library nest(Size n)={
+    if n==0Size (return ListT())
+    var Library res=this.nest(n-1Size)
+    res:=Refactor.rename(\"Elem" into: \"This")<><res
+    res:=Refactor.push(\"List")<><res
+    res:=Use[res]<><ListT()
+    return res
+
+   	//Use[ListT()] <>< Refactor.push(\"Elem") <>< nest(n-1);
+    }
+MyList: List(S, n:10Size)
+
+template<typename T, size_t n>
+struct ListN { }
+
+template<typename T>
+struct ListN<T, 0>: List<T> {  }
+
+template<typeanme T>
+struct ListN<T, n>: List<ListN<T, n-1>> { }
+
+
+G:Trait<><{.T:{}..}
+
+G"T"/A.B
+G"T"/Path"A"
+G"T"/Location.Type
+G+G
+
+a+b
+
+impl Add<MyType> for OtherType { ... }
+
+a.foo(b):	// Box<Z>
+
+find a trait 'T' with declerations
+	T<B> { fn add(Box<B>)->R }
+
+--->	a.add(b)
+--->	<a as Add<B>>.add(b)
+
+
+
+a+b
+a.#lplus().#plus(b.#rplus())
+
+a.#plus(b) ||| b.#rplus(a)
+
+a+b
+C:class(A).#plusser(class(B))
+C(a,b)
+
+
+
+Unit:...
+
+M:Unit()
+Kg:Unit()
+KgM:Kg * M
+KgKgM:Unit(Kg times:KgM)
+
+KgKgM(myKg times:myKgM)
+
+myKg*myKgM
+
+interface Plusser { Any method plus(Any) }
+a+b
+a.#plus(b)||| b.#rplus(a) ||| C:class(A).#plusser(class(B)) C(a,b)
+
+
+
+
+C:Trait<><{
+  A:~List(E)
+  B:~List(E)
+  E:{}
+
+  }
+
+
+A:Use[Secret()]<><{
+  method Void foo(){
+    Debug((this.bar()|||this.foo())+1Num)
+    }
+  }
+
+
+
+
+
+
+
+//list of string, containing list of list of S, and so on 10 levels.
