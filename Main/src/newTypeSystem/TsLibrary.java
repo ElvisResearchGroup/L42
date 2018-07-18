@@ -200,7 +200,7 @@ public interface TsLibrary extends TypeSystem{
       Type Ti=_extractTi(ck,mwt.getMs().getName());// internally do noFwd
       if (Ti==null){return false;}
       //if(m==Mdf.Class){return false;}
-      if(m==Mdf.Readable || m==Mdf.Immutable){//getter
+      if(m.isIn(Mdf.Readable,Mdf.Immutable)){//getter
         if(!mt.getTs().isEmpty()){return false;}
         Type Ti_=TypeManipulation._toRead(Ti);
         if (Ti_==null){return false;}//p|-toRead(Ti)<=T
@@ -250,15 +250,15 @@ public interface TsLibrary extends TypeSystem{
       if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
       Mdf m=rt.getMdf();
       if (m==Mdf.Class){return false;}
-      boolean immOrC=(m==Mdf.Immutable || m==Mdf.Capsule);
-      boolean lentOrR=(m==Mdf.Lent || m==Mdf.Readable);
+      boolean immOrC=m.isIn(Mdf.Immutable,Mdf.Capsule);
+      boolean lentOrR=m.isIn(Mdf.Lent,Mdf.Readable);
       for(Type ti:mt.getTs()){
         Mdf mi=ti.getMdf();
         if(mi==Mdf.Lent){return false;}
         if(mi==Mdf.Readable){
           if(!lentOrR){return false;}
           }
-        if(immOrC & (mi==Mdf.Mutable || mi==Mdf.MutableFwd)){return false;}
+        if(immOrC & mi.isIn(Mdf.Mutable,Mdf.MutableFwd)){return false;}
         }
       return true;
     }

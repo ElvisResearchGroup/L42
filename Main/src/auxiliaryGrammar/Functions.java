@@ -126,8 +126,8 @@ public static boolean isSubtype(Mdf mdf1, Mdf m) {
   switch(mdf1){
     case Class:        return false;
     case Capsule:      return m!=Mdf.Class;
-    case Immutable:    return m==Mdf.Readable || m==Mdf.ImmutablePFwd || m==Mdf.ImmutableFwd;//imm<=read,fwd%Imm //,fwdImm
-    case Mutable:      return m==Mdf.Lent || m==Mdf.MutablePFwd ||m==Mdf.Readable|| m==Mdf.MutableFwd;//mut<=lent,fwd%Mut //,read,fwdMut
+    case Immutable:    return m.isIn(Mdf.Readable,Mdf.ImmutablePFwd,Mdf.ImmutableFwd);//imm<=read,fwd%Imm //,fwdImm
+    case Mutable:      return m.isIn(Mdf.Lent,Mdf.MutablePFwd,Mdf.Readable,Mdf.MutableFwd);//mut<=lent,fwd%Mut //,read,fwdMut
     case Lent:         return m==Mdf.Readable;//lent<=read
     case MutablePFwd:  return m==Mdf.MutableFwd;//fwd%Mut<=fwdMut
     case ImmutablePFwd:return m==Mdf.ImmutableFwd;//fwd%Imm<=fwdImm
@@ -159,10 +159,8 @@ private static List<Type> excFilter(Program p, List<Type>mayStay,List<Type>other
 
 
 public static Type sharedAndLentToReadable(Type that){
-  Mdf mdf=that.getMdf();
-  if(mdf==Mdf.Mutable){mdf=Mdf.Readable;}
-  if(mdf==Mdf.Lent){mdf=Mdf.Readable;}
-  return that.withMdf(mdf);
+  if(!that.getMdf().isIn(Mdf.Mutable,Mdf.Lent)) {return that;}
+  return that.withMdf(Mdf.Readable);
   }
 public static Block garbage(Block e, int n) {
   //try to see witch of the dvs in 0..i can be trashed
@@ -412,9 +410,7 @@ public static Type sharedToLent(Type nt) {
   return nt.withMdf(Mdf.Lent);
 }
 public static boolean isSuperTypeOfMut(Mdf mdf){
-  return mdf==Mdf.Mutable
-      ||mdf==Mdf.Lent
-      ||mdf==Mdf.Readable;
+  return mdf.isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable);
   }
 
 public static boolean isInterface(Program p, Path path) {

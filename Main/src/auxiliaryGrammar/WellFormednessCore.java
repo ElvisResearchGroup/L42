@@ -24,24 +24,24 @@ import ast.Ast.Type;
 
 public class WellFormednessCore {
   public static boolean methodTypeWellFormed(MethodType mt){
-  boolean r1=false;
-  boolean r2=false;
+  boolean hasImmFwd=false;
+  boolean hasMutFwd=false;
   //if exists fwdImm _ in Ts then (return type).mdf in {mut, fwdMut, imm, fwdImm}
   //if exists fwdMut _ in Ts then (return type).mdf in {mut, fwdMut}
   for(Type t:mt.getTs()){
     Mdf m=t.getMdf();
-    if(m==Mdf.ImmutableFwd){r1=true;}
-    if(m==Mdf.MutableFwd){r2=true;}
+    if(m==Mdf.ImmutableFwd){hasImmFwd=true;}
+    else if(m==Mdf.MutableFwd){hasMutFwd=true;}
     }
   Mdf m=mt.getReturnType().getMdf();
-  if(r2){
-   if(m!=Mdf.Mutable && m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd){return false;}
+  if(hasMutFwd){
+   if(!m.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.MutablePFwd)){return false;}
   }
-  else if(r1){
-    if(m!=Mdf.Mutable && m!=Mdf.Immutable && !TypeManipulation.fwd_or_fwdP_in(m)){return false;}
-  }
-  //TODO: do we want this extra restriction?
-  if(!r1&&!r2){//no fwd at all
+  else if(hasImmFwd){
+      //equivalent to !m.isIn(Mdf.Mutable,Mdf.Immutable) && !TypeManipulation.fwd_or_fwdP_in(m)
+      if(m.isIn(Mdf.Readable, Mdf.Lent, Mdf.Capsule, Mdf.Class)){return false;}
+      }
+  if(!hasImmFwd&&!hasMutFwd){//no fwd at all
     if(TypeManipulation.fwd_or_fwdP_in(m)){return false;}
     }
   return true;
@@ -106,9 +106,9 @@ public class WellFormednessCore {
       return null;
       }
 
- 
+
   }
-  
+
   public static List<String> max(List<String> l1,List<String>l2){
     if(l1.isEmpty()){return l2;}
     if(l2.isEmpty()){return l1;}

@@ -57,9 +57,9 @@ for(MethodWithType mwt:lPath.mwts()){
   if(mwt.get_inner()!=null){continue;}
   if(mwt.getMt().getMdf()==Mdf.Class){continue;}
   if(mwt.getMs().getNames().size()>1){continue;}
-  if(mwt.getMs().getNames().size()==1 
+  if(mwt.getMs().getNames().size()==1
     && (!mwt.getMt().getReturnType().equals(Type.immVoid)
-      || !mwt.getMs().getNames().get(0).equals("that")  
+      || !mwt.getMs().getNames().get(0).equals("that")
      )){continue;}
   String name=mwt.getMs().getName();
   if(name.startsWith("#")){
@@ -88,13 +88,13 @@ return fields;
     result.add(candidateK);
     return that.withMs(result);
   }
-  
+
   /**
    DataOpen: mutK,immK, L1, path
 create fresh fwdK (not unique)
 return L1[create fwdK, mutK->fwdK+inv immK->fwdK+inv]
 {
-class method mut This fwdKj(T1 x1..Tn xn)  
+class method mut This fwdKj(T1 x1..Tn xn)
 class method mut This mutK(T'1 x1..T'n xn) (
   res=This.fwdKj(x1:x1..xn:xn)
   res.#invariant()
@@ -188,7 +188,7 @@ static private MethodType fwdK(MethodType proto) {
       }
     //setter
     Type res=mwt.getMt().getTs().get(0);
-    if(res.getMdf()==Mdf.Lent || res.getMdf()==Mdf.Readable){throw new RefactorErrors.ClassUnfit();}
+    if(res.getMdf().isIn(Mdf.Lent,Mdf.Readable)){throw new RefactorErrors.ClassUnfit();}
     return  res;
     }
   }
@@ -205,7 +205,7 @@ static private MethodType fwdK(MethodType proto) {
 
 --new simpler design:
   T1 x1..Tn xn=candidates()
-  Ti is type of setter, if not exists, is type of getter, 
+  Ti is type of setter, if not exists, is type of getter,
     where lent->capsule and read->mut
   lent,read are not valid setter types.
 

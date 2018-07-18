@@ -67,7 +67,7 @@ public class AlternativeMethodTypes {
 ////the behaviour of immorcapsule on fwd is not relevant since the method
 //// returns a read and will be not well formed if it had fwd parameters
     Type retT=mt.getReturnType();
-    if(retT.getMdf()!=Mdf.Readable && retT.getMdf()!=Mdf.Lent){return null;}
+    if(!retT.getMdf().isIn(Mdf.Readable,Mdf.Lent)){return null;}
     retT=retT.withMdf(Mdf.Immutable);
     List<Type> ts = Map.of(t->toImmOrCapsule(t),mt.getTs());
     return mt.withReturnType(retT).withTs(ts).withMdf(toImmOrCapsule(mt.getMdf()));

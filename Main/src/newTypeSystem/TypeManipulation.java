@@ -23,11 +23,10 @@ public static Type fwd(Type t){
 //    fwd imm P=fwd fwd%imm P=fwdImm P
 //    fwd mut P=fwd fwd%mut P=fwdMut P
 //    otherwise fwd T=T
-  Mdf m=t.getMdf();
-  if(m==Mdf.Immutable || m==Mdf.ImmutablePFwd){
+  if(t.getMdf().isIn(Mdf.Immutable,Mdf.ImmutablePFwd)){
     return t.withMdf(Mdf.ImmutableFwd);
     }
-  if(m==Mdf.Mutable ||m==Mdf.MutablePFwd){
+  if(t.getMdf().isIn(Mdf.Mutable,Mdf.MutablePFwd)){
     return t.withMdf(Mdf.MutableFwd);
     }
   return t;
@@ -48,10 +47,7 @@ public static Type fwdP(Type t){
   }
 
 public static boolean fwd_or_fwdP_in(Mdf m){
-  return m==Mdf.ImmutableFwd 
-      || m==Mdf.ImmutablePFwd
-      || m==Mdf.MutableFwd
-      || m==Mdf.MutablePFwd;
+  return m.isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd,Mdf.MutableFwd,Mdf.MutablePFwd);
   }
 
 public static boolean fwd_or_fwdP_in(Collection<? extends Type>ts){
@@ -76,11 +72,10 @@ public static Type noFwd(Type t){
 //    noFwd fwdImm P=noFwd fwd%Imm P=imm P
 //    noFwd fwdMut P=noFwd fwd%Mut P=mut P
 //    otherwise noFwd T=T
-  Mdf m=t.getMdf();
-  if(m==Mdf.ImmutableFwd || m==Mdf.ImmutablePFwd){
+  if(t.getMdf().isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd)){
     return t.withMdf(Mdf.Immutable);
     }
-  if(m==Mdf.MutableFwd ||m==Mdf.MutablePFwd){
+  if(t.getMdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){
     return t.withMdf(Mdf.Mutable);
     }
   return t;
@@ -93,7 +88,7 @@ public static List<Type>  noFwd(Collection<Type>ts){
   }
 
 /*public static NormType toImm(NormType t){//used only for fields in coherent
-//  toImm(T)        
+//  toImm(T)
 //    toImm(class P)=class P
 //    otherwise, toImm(mdf P)=imm P
   if(t.getMdf()==Mdf.Class){return t;}
@@ -107,7 +102,7 @@ public static Type toImmOrCapsule(Type t){
   return t.withMdf(toImmOrCapsule(t.getMdf()));
   }
 public static Mdf toImmOrCapsule(Mdf m){
-  if (m==Mdf.Lent ||m==Mdf.Mutable ||m==Mdf.MutableFwd ||m==Mdf.MutablePFwd){
+  if (m.isIn(Mdf.Lent,Mdf.Mutable,Mdf.MutableFwd,Mdf.MutablePFwd)){
     return Mdf.Capsule;
     }
   if(m==Mdf.Readable){return Mdf.Immutable;}
@@ -118,9 +113,8 @@ public static Type _toLent(Type t){
 //    toLent(mut P)=lent P,
 //    toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
 //    otherwise toLent(T)=T
-  Mdf m=t.getMdf();
-  if(m==Mdf.MutableFwd || m==Mdf.MutablePFwd){return null;}
-  if(m==Mdf.Mutable){return t.withMdf(Mdf.Lent);}
+  if(t.getMdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){return null;}
+  if(t.getMdf()==Mdf.Mutable){return t.withMdf(Mdf.Lent);}
   return t;
   }
 
@@ -137,27 +131,26 @@ if(t.getMdf()==Mdf.Capsule){return t.withMdf(Mdf.MutableFwd);}
 return t;
 }
 
-public static Type _toRead(Type t){   
+public static Type _toRead(Type t){
 //  toRead(T)
-//    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined  
+//    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
 //    toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
 //    toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
 //    toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-//    otherwise read(T)=T//mdf in imm,read,class  
-  Mdf m=t.getMdf();
-  if(m==Mdf.MutableFwd || m==Mdf.MutablePFwd){return null;}
-  if(m==Mdf.ImmutableFwd || m==Mdf.ImmutablePFwd){return null;}
-  if(m==Mdf.Lent ||m==Mdf.Mutable||m==Mdf.Capsule){
+//    otherwise read(T)=T//mdf in imm,read,class
+  if(t.getMdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){return null;}
+  if(t.getMdf().isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd)){return null;}
+  if(t.getMdf().isIn(Mdf.Lent,Mdf.Mutable,Mdf.Capsule)){
     return t.withMdf(Mdf.Readable);
     }
   return t;
   }
- 
+
 
 /*public static NormType lentToMut(NormType t){
 //  lentToMut(T)
 //    lentToMut(lent C)=mut C
-//    otherwise lentToMut(T)=T  
+//    otherwise lentToMut(T)=T
   if(t.getMdf()==Mdf.Lent){return t.withMdf(Mdf.Mutable);}
   return t;
   }*/
@@ -171,7 +164,7 @@ public static Type mutToCapsule(Type t){
   return t.withMdf(_m);
   }
 public static Mdf mutToCapsule(Mdf m){
-  assert m!=Mdf.MutableFwd && m!=Mdf.MutablePFwd;
+  assert !m.isIn(Mdf.MutableFwd,Mdf.MutablePFwd);
   if(m==Mdf.Mutable){return Mdf.Capsule;}
   return m;
   }
@@ -180,7 +173,7 @@ public static Type mutToCapsuleAndFwdMutToFwdImm(Type t){
 //mutToCapsuleAndFwdMutToFwdImm(T) //called f in the implementation
 //f(fwd%Mut P) undefined
 //f(mut P)=capsule P
-//f(fwdMut P)= fwdImm P 
+//f(fwdMut P)= fwdImm P
 //otherwise f(T)=T
   return t.withMdf(mutToCapsuleAndFwdMutToFwdImm(t.getMdf()));
   }
@@ -195,7 +188,7 @@ public static Type mutToCapsuleAndFwdToRead(Type t){
 //f(fwd%Mut P) undefined
 //f(mut P)=capsule P
 //f(fwdMut P)= read P
-//f(fwdImm P)= imm P 
+//f(fwdImm P)= imm P
 //otherwise f(T)=T
   return t.withMdf(mutToCapsuleAndFwdToRead(t.getMdf()));
   }
@@ -208,11 +201,11 @@ public static Mdf mutToCapsuleAndFwdToRead(Mdf m){
   }
 
 public static Mdf _mostGeneralMdf(Ast.SignalKind _throw,ATr<?> out){
-//mostGeneralMdf(throw,Tr)  
+//mostGeneralMdf(throw,Tr)
 //  mostGeneralMdf(error,Tr)=imm
 //  mostGeneralMdf(return,empty;Ps) undefined
 //  mostGeneralMdf(return,T1..Tn;Ps)=mostGeneralMdf({T1.mdf .. Tn.mdf})
-//  otherwise 
+//  otherwise
 //  mostGeneralMdf(exception,_;Ps)=imm
   if(_throw!=SignalKind.Return){return Mdf.Immutable;}
   assert !out.returns.isEmpty();

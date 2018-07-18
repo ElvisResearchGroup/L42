@@ -91,7 +91,7 @@ public interface TsOperations extends TypeSystem{
     TOk okAcc=out0.toOk();
     {int i=-1;for(ExpCore ei:s.getEs()){i+=1;
       Type ti=lt.get(i+1);//1..n
-      assert ti.getMdf()==Mdf.Immutable || ti.getMdf()==Mdf.Class;
+      assert ti.getMdf().isIn(Mdf.Immutable,Mdf.Class);
       TOut outi=type(in.withE(ei,ti));
       if(!outi.isOk()){return outi;}
       newEs.add(outi.toOk().annotated);

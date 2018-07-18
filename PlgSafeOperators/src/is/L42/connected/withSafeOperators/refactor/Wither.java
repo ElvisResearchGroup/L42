@@ -144,17 +144,15 @@ private static MCall invk(MethodWithType g){
 private static boolean fOk(Type ti, MethodWithType fi) {
   //(1)exists, (2) has read/imm receiver,(3) no exceptions
   if(fi==null){return false;}
-  Mdf r=fi.getMt().getMdf();
-  if(r!=Mdf.Immutable && r!=Mdf.Readable){return false;}
+  if(!fi.getMt().getMdf().isIn(Mdf.Immutable,Mdf.Readable)){return false;}
   if(!fi.getMt().getExceptions().isEmpty()){return false;}
   //(4)return type T, T.mdf in {read/imm/class}
   Type t=fi.getMt().getReturnType();
-  Mdf m=t.getMdf();
-  if(m!=Mdf.Immutable && m!=Mdf.Readable && m!=Mdf.Class){return false;}
+  if(!t.getMdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class)){return false;}
   //(5)if T=class P then Ti=class P
-  if(m==Mdf.Class){return t.equals(ti);}
+  if(t.getMdf()==Mdf.Class){return t.equals(ti);}
   //(6)if T=read/imm P, then Ti= imm P
-  assert m==Mdf.Immutable || m==Mdf.Readable;
+  assert t.getMdf().isIn(Mdf.Immutable,Mdf.Readable);
   if(ti.getMdf()!=Mdf.Immutable){return false;}
   return t.getPath().equals(ti.getPath());
   }
