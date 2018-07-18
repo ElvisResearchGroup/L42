@@ -26,7 +26,7 @@ public class AlternativeMethodTypes {
   static MethodType mBase(Program p, Path P, MethodSelector ms){
 //p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
 //T'=fwd% T if fwd_or_fwd%_in(Ts)
-//otherwise T'=T       
+//otherwise T'=T
 //(mBase)-------------------------------------------------------------------
 //mdf0 P T1..Tn-> T';Ps in methTypes(p,P,ms)    MethodWithType mwt = (MethodWithType) p.extractClassB(P)._getMember(ms);
     MethodWithType mwt = (MethodWithType) p.extractClassB(P)._getMember(ms);
@@ -35,14 +35,14 @@ public class AlternativeMethodTypes {
     return mBase(mt);
     }
   static MethodType mBase(MethodType mt){
-  Type retT=mt.getReturnType();    
+  Type retT=mt.getReturnType();
     if (fwd_or_fwdP_in(mt.getTs())){
       retT=fwdP(mt.getReturnType());
     }
     return mt.withReturnType(retT);
     }
   static MethodType mNoFwd(MethodType mt){
-//  Ts->T;Ps in methTypes(p,P,ms) 
+//  Ts->T;Ps in methTypes(p,P,ms)
 //(mNoFwd)-------------------------------------------------------------------
 //  noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
     List<Type> ts = Map.of(t->noFwd(t),mt.getTs());
@@ -63,7 +63,7 @@ public class AlternativeMethodTypes {
   static MethodType _mI(MethodType mt){
 //Ts->read P0;Ps in methTypes(p,P,ms) //by well formedness if return type is read, not fwd_or_fwd%_in Ts
 //(mI)-------------------------------------------------------------------
-//toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms) 
+//toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms)
 ////the behaviour of immorcapsule on fwd is not relevant since the method
 //// returns a read and will be not well formed if it had fwd parameters
     Type retT=mt.getReturnType();
@@ -129,7 +129,7 @@ public class AlternativeMethodTypes {
     if(WellFormednessCore.methodTypeWellFormed(res)){return res;}
     return null;
     }
-  
+
   static void add(List<MethodType>l,MethodType t){
     if(t==null){return;}
     l.add(t);
@@ -148,7 +148,7 @@ public class AlternativeMethodTypes {
 //changed order of those 2 to try and see what happens
     MethodType mRead=_mRead(base);
     add(res, mRead);
-    
+
     MethodType mNoFwd=mNoFwd(base);
     add(res,mNoFwd);
     MethodType mImmFwd=_mImmFwd(base);
@@ -159,7 +159,7 @@ public class AlternativeMethodTypes {
     add(res,_mC(mNoFwd));
     add(res,_mI(base));
     if(mRead!=null){add(res,_mI(mRead));}
-    if(mImmFwd!=null){add(res,mNoFwd(mImmFwd));}  
+    if(mImmFwd!=null){add(res,mNoFwd(mImmFwd));}
     if(mt.getMdf()==Mdf.Mutable){add(res,_mVp(base,0));}
     //later, 0 for mvp is the receiver so is ok to start from 1
     {int i=0;for(Type ti:base.getTs()){i+=1;

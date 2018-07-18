@@ -4,7 +4,7 @@ to reference the secondary notations used there
 1 Type manipulation
 --------------------------------------------
 
-onlyMutOrImm(G)={x:G(x) | G(x).mdf in {mut,imm}}//TODO: check what should happen for fwd imm etc
+onlyMutOrImm(G)={x:G(x) | G(x).mdf in {mut,imm}}//note: we correctly remove all fwd variables
 
 fwd T
   fwd imm P=fwd fwd%imm P=fwdImm P

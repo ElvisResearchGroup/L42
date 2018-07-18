@@ -1,4 +1,147 @@
+------GRAMMAR
+lowerCase=Coden : trait declaration
+UpperCase:Code0 :class declaration//and need to be non abstact
 
+id  ::= t|C
+td  ::= t = E
+cd  ::= C = E
+T   ::= Thisn.Cs
+E   ::= L  |  t  |  E <+ E  |  E(Cs=T)
+LI  ::= interface{ implements Ts AMs }
+L   ::= LI | {implements Ts Ms K?}
+LV  ::= LI | {implements Ts MVs K?}
+AM  ::= T m(Txs)
+M   ::= C=E | T m(Txs)e?
+MV  ::= C=L | T m(Txs)e?
+K   ::= constructor(Txs)
+e   ::= x | e.m(es) | this.f | new T(es)
+DE  ::= td | cd
+D   ::= t=LV | C=LV
+p   ::= DEs e
+CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
+
+---------------------------------------------------------------------
+
+  Ds|- E -> E'
+  |-Ds:Ok
+------------------------------------------------Ds subset Ds'
+  Ds' id=CtxV[E] DEs e --> Ds' id=CtxV[E'] DEs e
+
+   Ds |- e --> e'
+ |-Ds:Ok
+------------------------------------
+    Ds e --> Ds e'
+
+
+------------------------------------
+  Dss|- LV1 <+ LV2 -> sum(LV1, LV2)
+
+
+  Ds0(t)=LV
+------------------------------------
+  Ds0;..Dsn|- t  ->LV[0,n]
+
+
+  Dss;{D in MVs}|-E->E'
+--------------------------------------
+  Dss|- {implements Ts MVs C=E Ms K?}->{implements Ts MVs C=E' Ms K?}
+
+
+------------------------------------LV'=redirect(Dss,LV,Cs,T)
+  Dss|- LV(Cs=T)  -> LV'
+
+
+  Ds|-LV1:Ok .. Ds|-LVn:Ok
+------------------------------- Ds= id1=LV1...idn=LVn
+  Ds:Ok
+
+metalevel soundness
+if
+  Ds t=E DEs e ->* Ds t=LV DEs e
+  not Ds|- LV:Ok
+then
+  Exists LV' inside E such that
+  	not Ds|- LV':Ok
+
+E level soundness
+if
+  Ds:Ok
+  Ds|- E ->* LV
+  not Ds|- LV:Ok
+then
+  Exists LV' inside E such that
+  	not Ds|- LV':Ok
+
+------
+Meta-Check:
+
+E' inside E iff  E=Ctx[E']
+
+A:ID<><{ B foo() B.a()}
+B:ID<><{ A foo() B a()}
+
+A:{ B foo() B.a()}
+B:ID<><{ A foo() B a()}
+
+
+A:{ B foo()B.a()} :Lib?
+B:ID<><{ A foo() B a()}
+
+[B]
+A:{ B foo()B.a()} :Lib?
+B:{ A foo() B a()}
+
+[B]
+A:{ B foo()B.a()} :Lib
+B:{ A foo() B a()}
+
+A:{ B foo()B.a()} :Lib
+B:{ A foo() B a()}:Lib?
+
+A:{ B foo()B.a()} :Lib
+B:{ A foo() B a()}:Lib
+
+
+A:{..}
+C:{}+{
+  B:{This1.A m()}
+  C:{}+{
+    T:{T2 m()} T2:{} T
+   }(T=This0.B)
+  }
+
+
+{
+  This1.B // T => This1.B, T2 => This2.A
+}(T=This0.B)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
 
 Lib,Tn,class Any
 
@@ -185,9 +328,14 @@ specialization:x~> [T=>x]{...} || [T=>x]{...}
 
 
 ======================================================= // Class -> Class ... -> Library
-E ::= t| L | E <+ E | E(Tx) | E||E | E[Cs=>Tx] | x ~> E | err
+E ::= t| LE | E <+ E | E(Tx) | E||E | E[Cs=>Tx] | x ~> E | err
 Tx ::= T | x
-V ::= x ~> E | L
+V ::= x -> EEF | L
+EEF ::= y -> EEF | EE
+EE ::=  EEL <+ EE | EE <+ EEL | EE||EEL | EEL[Cs=>x]
+EEL ::= EE | L
+
+
 //CtxV ::= [] | CtxV <+ E  | V <+ CtxV| CtxV(T) | CtxV||E | CtxV[Cs=>T]
 Ctx ::= [] | Ctx <+ E  | E <+ Ctx | Ctx(T) | Ctx||E | E||Ctx | Ctx[Cs=>T] | (x ~> Ctx)
 
@@ -202,6 +350,7 @@ t --> Ds(t)[??]
 L1 <+ L2 --> sum(L1, L2)
 
 L[Cs=>T] --> redirect(L, Cs, T)
+
 
 err||E --> E
 

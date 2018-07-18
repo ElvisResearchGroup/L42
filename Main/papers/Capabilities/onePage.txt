@@ -15,7 +15,12 @@ permission is available in scope.
 For simplicity we will use class and method names as permission labels,
 but conceptually any kind of label would do.
 On default methods requires zero permissions plus all the permissions declared by the methods they directly
-invoke. However methods declarations can chose to declare more permissions in order to restrict their usage.
+invoke.
+
+By default methods require only the permissions for the methods they directly invoke.
+
+
+However methods declarations can chose to declare more permissions in order to restrict their usage.
 For example, if our standard library provide such class:
 
 class System{
@@ -103,14 +108,14 @@ class User{
   a
   Void [a]user(IFiles[a] cap){
     // internally, cap can be used without static knowledge of what it can do
-    cap.[a]readFile("foo.txt")
+    cap.readFile("foo.txt")
     }
   }
 
 Notice that 'a' stand for a list of permissions, not a single one. We expect a concrete language syntax may
 infer most of the generic annotations.
 
-The call cap.[a]readFile("foo.txt") is statically ok: we have permission
+The call cap.readFile("foo.txt") is statically ok: we have permission
 'a', that is all we need to call IFiles[a].readFile.
 Dynamically, assuming for example to get a `new DocFiles()' it is also ok:
 we would have permission 'Documents.readFile' that is sufficient to call 'new DocFiles().readFile'
@@ -144,7 +149,18 @@ them to be integrated in the standard library.
 END of short introduction
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+static native calls
+
+others require magic instantiation restrictions
+at least 1 capability "class"
+at least 1 pre instantiate object
+
+
+
+
 a->b->c
+
 
 
 
