@@ -106,11 +106,11 @@ private List<CsPath> verified;
       CsSPath _current=current;//closure final limitations
       assert ambiguitiesOk(ambiguities);
       assert verified.stream().allMatch(pp->!pp.getCs().equals(_current.getCs())):
-      verified+" "+_current;
+        verified+" "+_current;
       redirectOkAux(p,current,ambiguities,exceptions);
       assert current.getPathsSet().size()==1;
       assert verified.stream().allMatch(pp->!pp.getCs().equals(_current.getCs())):
-      verified+" "+_current.getCs();
+        verified+" "+_current.getCs();
       verified.add(new CsPath(current.getCs(),current.getPathsSet().iterator().next()));
       accumulateVerified(ambiguities);
     }
@@ -177,7 +177,7 @@ private List<CsPath> verified;
   }
   private void redirectOkAux(Program p, CsSPath current, List<CsSPath> ambiguities, List<CsMwtPMwt> exceptions) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit {
     assert current.getPathsSet().size()==1;
-    List<Ast.C>cs=current.getCs();
+    List<Ast.C> cs=current.getCs();
     if(cs.isEmpty() || MembersUtils.isPrivate(cs)){
       throw new RefactorErrors.PathUnfit(cs).msg("Private path");
       }
