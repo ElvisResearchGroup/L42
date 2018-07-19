@@ -91,7 +91,7 @@ D |-x:=e ~> x:=e' :imm Void <= T | Tr
   D.G(x).var?=var
   D.p|- imm Void <= T
   D|- e ~> e':_<=D.G(x).T|Tr
-  //assert not fwd_or_fwd%_in(D.G(x).T)//TODO: it was a redundant check, change in code.
+  assert not fwd_or_fwd%_in(D.G(x).T)
 
 (using)
  D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
@@ -152,7 +152,7 @@ Phase| p| G |- var?0 T?0   x0=e0 ..var?n T?n   xn=en, ds ~>
   if fwd_or_fwd%_in(Ti)
     then T''i=suggest(T?i,T'i)
     else T''i=suggest(T?i,noFwd(T'i))
-  G2=x0:T''0..xn:T''n //TODO anti fwd?
+  G2=x0:T''0..xn:T''n
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
     then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited

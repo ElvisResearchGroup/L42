@@ -172,9 +172,7 @@ public interface TsOperations extends TypeSystem{
         assert false;//strange exp like Foo(a:=b)
         }
       Type expected=in.g(s.getVar());
-      if(TypeManipulation.fwd_or_fwdP_in(expected.getMdf())){
-        assert false;//can it even happen or is blocked by well formedness before?
-        }
+      assert !TypeManipulation.fwd_or_fwdP_in(expected.getMdf());
       TOut innerT=type(in.withE(s.getInner(), expected));
       if(!innerT.isOk()){return innerT;}
       TOk ok=innerT.toOk();
