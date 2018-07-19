@@ -1,3 +1,31 @@
+new 20/07/2018
+
+e::= ...| x #m y
+
+bynaryDispatch(p,G,e)=e if e not of form x1 #m x2 
+bynaryDispatch(p,G,x1 #m x2)=e
+  T1=G(x1)
+  T2=G(x2)
+  chose the smallest i so that either
+    mwt refine? mdf method T #m(T' lefti) in p(T1.P), T1.mdf<=mdf and p|-T2<=T'  
+      then e=x1.#m(lefti:x2)
+    or otherwise
+    mwt refine? mdf method T #m(T' righti) in p(T2.P), T2.mdf<=mdf and p|-T1<=T'  
+      then e=x2.#m(righti:x1)
+      
+Then, everywhere we use guessType, we first do binaryDispatch.
+
+In the full language, 
+desugar[e1 #m e2]:
+desugar[e1 #m e2]=(x1=e1 x1 #m e2) where e1 not of form x
+desugar[x1 #m e2]=(x2=e2 x1 #m x2) where e2 not of form x
+How this correlate with normalization of operations?
+currently we have a!=b -->!(a==b) and all the < << and ><> normalize into > >> and <><
+How this correlate with left or right associativity?
+currently we have all double sign operators associate right:
+  ++,--,**,<<,>>,<><,><>,==
+
+-----------------------------------------------------------------------------
 Since the type system is quite extensive, we first present the
 expression type system, that depends on notation for
 -subtyping " p |- T<=T' "
