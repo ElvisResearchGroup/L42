@@ -21,7 +21,8 @@
 \newtheorem{Assumption}[assumption]{Assumption}
 \newcounter{lemma}
 \newtheorem{Lemma}[lemma]{Lemma}
-\input{../Def/Def}
+%\input{../Def/Def}
+\input{LocalDef}
 %\lstset{language=FortyTwo, morekeywords={imm,new,class,this,assert}}
 \newcommand\saveSpace{\vspace{-3px}}
 \newcommand\loseSpace{\vspace{1ex}}
@@ -31,17 +32,18 @@ perspective=theoretical,
 area={Type systems}
 }
 %\title{Validation}
-\title{Validation of Objects using Type Modifiers and Object Capabilities}
+\title{Separating Use and Reuse to Improve Both}
 %\author{Authors omitted for double-blind review.}
-\author{Isaac Oscar Gariano}
+
+\author{Hrshikesh Arora}
 \author{Marco Servetto}
 %\affiliation{Victoria University of Wellington}
 %\email{marco.servetto@ecs.vuw.ac.nz}
-\author{Alex Potanin}
 \affiliation{Victoria University of Wellington}
 %\email{alex@ecs.vuw.ac.nz}
-
-\keywords{type modifiers, object capabilities, runtime verification, class invariants}
+\author{Bruno C. d. S. Oliveira}
+\affiliation{The University of Hong Kong}
+\keywords{xxx,xxx,xxx}
 
 \begin{CCSXML}
 <ccs2012>
@@ -86,75 +88,36 @@ ${}_{}$
 
 
 \noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
-Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they allow code to be adapted/specialised to behave differently in different contexts.
-However this flexibility hampers code reasoning, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
-Thus object behaviour is nearly completely unrestricted. This is further complicated with the support OO languages typically have for exceptions, imperative code, and I/O.
-In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
 
 \loseSpace
 \noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
-We wish to guarantee that a user defined property (\emph{validity}) holds for all instances of a class: we call such guarantee \emph{validation}.
 
-Validation is a stronger and simpler variant of `class invariants': Validation always holds, while
-class invariants allow objects to temporarily be in a ‘broken’ state.
-(It is however easy to build class invariants over
-validation).
-Most prior work on enforcing class-invariants assume unverified/unverifiable restrictions on library code, dynamic class loading and I/O, or even just trust programmers to use the provided tools correctly.
-For example, static verification often restricts dynamic class loading.
 
 \loseSpace
 \noindent\textit{Approach:} %What was done that unveiled new knowledge?
-We combine previous work on type-modifiers and object capabilities to ensure properties of objects and methods. 
-Type-modifiers and object capabilities are useful in their own right, but we use these facilities here to ensure validation by soundly injecting runtime-validation code.
-
 
 \loseSpace
 \noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
-By means of examples, we show how hard it is to reason about code behaviour in
-the context of dynamic class loading and I/O.
-Building over type modifiers and object capabilities, we lay down the foundation needed to
-reason about OO code in this context.
-We discuss how relaxations in type modifiers and object capabilities would break validation.
-
 
 \loseSpace
 \noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
-We first provide an informal argument justifying that our rules enforce validation, in particular we show that without type modifiers and object capabilities  validation becomes nearly impossible. We also 
-formally model class of languages that soundly support validation; this model is formally verified by a proof, parametric on the presence of a type system which guarantees certain properties of type-modifiers.
-Type systems with such properties have already been explored, formalized, and proved in prior work.
 
 
 \loseSpace
 \noindent\textit{Importance:} %Why does this work matter?
-Validation allows the programmers to soundly reason on properties of their code.
-This is of great practical importance since it is independent of the presence of buggy code, or even dynamically loaded malicious code.
-
-Our work represents a philosophical shift similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
-while mutating objects, however a validation failure is soundly detected by a run-time exception,
-and even after capturing such an exception, validation still holds for all objects involved in the execution.
 
 	
-%TODO
-%Class invariants provide guarantees about the state of objects throughout the execution.
-%Runtime verification of class invariants is
-%a hard problem due to issues with aliasing, exceptions,
-%non-deterministic invariants, I/O, subtyping and untrusted code.
-%We challenge this problem in the context of
-%a Java-like language where the invariants are expressed in the language itself.
-%We formally define \textbf{Sound Invariant Checking}
-%and formally prove that a combination of carefully selected type modifiers, object capabilities,
-% and strong exception safety is sufficient
-%to handle Sound Invariant Checking for the most common categories of objects.
-
 \end{abstract}
 
-%\input{intro}
-%\input{immutable}
-%\input{encapsulated}
-%\input{meaning}
-%\input{related}
-%\input{futurework}
-%\input{conclusion}
+\input{Intro}
+\input{section2}
+\input{section3}
+\input{section4}
+\input{Extensions}
+\input{Examples}
+\input{RelatedWork}
+\input{Conclusion}
+%\input{appendix}
 
 %\printbibliography
 %\input{appendix}
