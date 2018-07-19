@@ -1253,6 +1253,87 @@ public void testSidedDivision() {
 }
 
 
+//Should this be allowed? It wouldn't work in Java as a nested type can't hide an
+//enclosing type.
+@Test
+public void testRepeatedNestedClasses() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"B: {"
+				,"A:{A:{}}"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testOverride2() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"l1 = {class method S foo()this.bar() class method S bar() S\"hi\"}"
+				,"l2 = {class method S bar()S\"hello\"}"
+				,"l3 = Use.Override[l1]<><l2" 
+				,"return l3"
+			,"}"
+			
+			,"B : {"
+				,"l1 = {class method S foo()this.bar() class method S bar() S\"hi\"}"
+				,"l2 = {class method S bar()S\"hello\"}"
+				,"l3 = Use.Over[l1]<><l2" 
+				,"return l3"
+			,"}"
+			
+			,"C: {"
+				,"X[A.foo() == S\"hello\"]"
+				,"X[B.foo() == S\"hi\"]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testRedirect1() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"D: Data <>< {"
+				,"Num that"
+			,"}"
+			
+			,"B: {"
+				,"b = Refactor2.redirect(path:\\\"A\" into:D)<><{A:{} class method A a(A that)that}"
+				,"return b"
+			,"}"
+			
+			,"C: {"
+				,"X[B.a(D(42Num)).that() == 42Num]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testRedirect2() {
+	tp("{reuse L42.is/AdamTowel02"			
+			,"B: {"
+				,"b = Refactor2.redirect(path:\\\"A\" into:S)<><{A:{} class method A a(A that)that ++ S\", World!\"}"
+				,"return b"
+			,"}"
+			
+			,"C: {"
+				,"X[B.a(S\"Hello\") == S\"Hello, World!\"]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
+
+@Test
+public void testBasicClone() {
+	tp("{reuse L42.is/AdamTowel02"
+			,"A: {"
+				,"a = S\"A\""
+				,"X[a.clone() == a]"
+				,"return ExitCode.normal()"
+			,"}"
+	,"}");
+}
 
 
 }
