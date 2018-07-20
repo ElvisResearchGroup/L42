@@ -1,0 +1,220 @@
+%% LyX 2.3.0 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[a4paper,twoside,british]{scrartcl}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont[Mapping=tex-text]{TeX Gyre Schola}
+\setsansfont[Scale=0.93,Mapping=tex-text]{Segoe UI}
+\setmonofont[Scale=1.09]{Latin Modern Mono}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\pdfpageheight\paperheight
+\pdfpagewidth\paperwidth
+
+\providecommand\textquotedblplain{%
+  \bgroup\addfontfeatures{Mapping=}\char34\egroup}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\providecommand*{\code}[1]{\mintinline{Java}!#1!}
+
+\makeatother
+
+\usepackage{minted}
+\setminted{tabsize=4,
+obeytabs=true}
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=british]{english}
+\renewcommand{\listingscaption}{Listing}
+
+\begin{document}
+
+\title{Method Based Capability Control}
+
+\maketitle
+In imperative languages, reasoning on side-effects can be very challenging,
+since any piece of code can potentially do anything. In object oriented
+systems where dynamic dispatch is pervasive, we do not even have access
+to such code. For example, executing the innocent looking method \code{foo}
+can format your hard drive.
+
+\begin{minted}{java}
+void foo(Point myPoint) { myPoint.getX(); }
+\end{minted}
+
+\emph{Object capabilities} allow delegating reasoning on side effects,
+by reasoning on aliasing: only special unforgeable objects can do
+special actions. Then, if reasoning over aliasing proves that the
+reachable-object-graph of \code{myPoint} does not contain a \code{fileSystem}
+(or stronger) capability, then we can be certain calling \code{foo(myPoint)}
+will not format the hard drive.
+
+In this paper we explore alternative approach, where methods can be
+called only when sufficient permissions are available. For simplicity
+we will use class and method names as permission labels, but conceptually
+any kind of label would do. By default a methods permissions require
+only the labels of methods they directly invoke. However method declarations
+can chose to declare more permissions, in-order to restrict their
+usage and aid maintainability. For example, if our standard library
+provides a class:
+
+\begin{minted}{java}
+class System { 
+	static String readFile(String fileName)
+	{ /*magic implementation*/ }
+}
+\end{minted}
+
+Then every function in the system could read any kind of file. We
+can use permissions to change this:
+
+\begin{minted}{java}
+class System { 
+	@Permissions(System.readFile) // permission label! 
+	static String readFile(String fileName) 
+	{ /*magic implementation*/ }
+}
+\end{minted}
+
+Now, only when the permission \code{System.readFile} is in scope
+can \code{System.readFile} be (directly) called; for example this
+is correct:
+
+\begin{minted}{java}
+class Documents {
+	@Permissions(System.readFile, Directory.new, Directory.contains)
+	static String readFile(String fileName) {
+		if (new Directory("~/Documents").contains(fileName))
+			return System.readFile(fileName);
+		else return null; // Not allowed to read the file
+	}
+}
+\end{minted}
+
+\code{Documents.readFile} acts as a filter, and reads only files
+presents in the ‘Documents’ folder. Of course we can call \code{Documents.readFile}
+if we have the \code{System.readFile}, \code{Directory.new} and,
+\code{Directory.contains} permissions. However, merely having the
+permission \code{Documents.readFile} does not give us the  \code{System.readFile}
+permission, and so we cannot directly call it:
+
+\begin{minted}{java}
+@Permissions(Documents.readFile)
+static void main() {
+	String doc1 = Documents.readFile("~/Documents/hi.txt") 
+	// Invalid!
+	//String doc2 = System.readFile("~/Documents/hi.txt")
+}
+\end{minted}
+
+In this way, by reasoning on the code of \code{Documents.readFile},
+we can understand how the power of \code{System} is tamed, in particular,
+we can guarantee that code that only has the \code{Documents.readFile}
+permission can only read files in the documents folder. This is similar
+to object-capabilities where one would provide a \code{Document}
+object with a (private) \code{System} field, and a \code{readFile}
+would be an instance method.
+
+For convenience, we allow classes to define a set of \emph{‘implied}’
+permissions: in this way the class name is just shorthand for those
+other permissions. For example, if Directory was declared as:
+
+\begin{minted}{java}
+@Implies(Directory.new, Directory.contains)
+class Directory {…}
+\end{minted}
+
+then, while declaring \code{Documents.readFile} before, we could
+have written \code{Directory} instead of \code{Directory.new, Directory.contains}
+
+The system as presented up to now is completely static and does not
+require nor take advantage of objects. Every method requires an exact
+set of permissions and thus can do a specific set of actions. Using
+generics, subtyping, and objects we can write permission generic code,
+in true object-capability style:
+
+\begin{minted}{java}
+interface IFiles[A] {
+	@Permissions(A)
+	String readFile(String fileName);
+}
+
+class Files implements IFiles[System.readFile] {
+	@Permissions(Files.new)
+	Files() { }
+
+	@Permissions(System.readFile)
+	@Override System.readFile String readFile(String fileName) { 
+		return System.readFile(fileName); 
+	}
+	
+}
+
+class DocFiles implements IFiles[Documents.readFile] {
+	@Permissions(DocFiles.new)
+	DocFiles() { }
+
+	@Permissions(Documents.readFile)
+	@Override String readFile(String fileName) { 
+		return Documents.readFile(fileName); 
+	}
+}
+
+class MockFiles implements IFiles[] {
+	MockFiles(){ }
+
+	@Permissions()
+	@Override String readFile(String fileName) { return ""; }
+}
+\end{minted}
+
+Notice that unlike a traditional object-capability system, we need
+not restrict the use of the above constructors, since we can independently
+restrict methods; however we can still do so to properly enforce the
+object-capability pattern. With these classes defined, one can now
+write a parametric method \code{foo}:
+
+\begin{minted}{java}
+@Permissions(A)
+[A] String foo(IFiles[A] cap) {
+	// Internally, cap can be used without 
+	// static knowledge of what it can do
+	return cap.readFile("foo.txt");
+}
+\end{minted}
+
+Notice that \code{A} stands for a list of permissions, not a single
+one, however these annotations could be inferred. The call \code{cap.readFile("foo.txt")}
+is valid since \code{foo} has permission \code{A}, which is more
+than sufficient to call \code{IFiles[A].readFile}. Following the
+presented pattern, the programmer has control on how much static information
+they require and how much they are ready to rely on dynamic (aliasing
+based) control. For example, we could declare:
+
+\begin{minted}{java}
+class FilesStart extends Files {
+	@Permissions(Files.new)
+	FilesStart() { super(); }
+
+	@Permissions(System.readFile)
+	@Override String readFile(String fileName) {
+		return super.readFile(fileName).substring(0,10);
+	}
+}
+\end{minted}
+
+And now, our capability object \code{new FilesStart()} can do less
+(but not more) then our capability \code{new Files()}, but from a
+static perspective there is no difference.
+
+An important benefit of our approach is that it allows safety and
+control even in the case of static methods performing primitive operations.
+This is very useful with making native calls; with the simple restriction
+that native calls need to correspond to restricted static method calls,
+we believe our system allows encoding safe object capabilities as
+a user library, instead of requiring them to be integrated in the
+standard library. 
+\end{document}
