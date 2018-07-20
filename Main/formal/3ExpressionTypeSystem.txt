@@ -2,29 +2,95 @@ new 20/07/2018
 
 e::= ...| x #m y
 
-bynaryDispatch(p,G,e)=e if e not of form x1 #m x2 
+bynaryDispatch(p,G,e)=e if e not of form x1 #m x2
 bynaryDispatch(p,G,x1 #m x2)=e
   T1=G(x1)
   T2=G(x2)
-  chose the smallest i so that either
-    mwt refine? mdf method T #m(T' lefti) in p(T1.P), T1.mdf<=mdf and p|-T2<=T'  
-      then e=x1.#m(lefti:x2)
+  chose the smallest i in Nat so that either
+    MethT in methTypes(p,T1.P,#m(left)), p|-T1,T2->_;_<=MethT
+      then e=x1.#m#i(left:x2)
     or otherwise
-    mwt refine? mdf method T #m(T' righti) in p(T2.P), T2.mdf<=mdf and p|-T1<=T'  
-      then e=x2.#m(righti:x1)
-      
+    MethT in methTypes(p,T2.P,#m#i(right)), p|-T2,T1->_;_<=MethT
+      then e=x2.#m#i(right:x1)
+
+a.#plus?(b)
+
+#plus?(left:a, right:b)
+
+bar??(p1:a, p2:b, p3:c)
+a.bar1(p2:b, p3:c)
+b.bar1(p1:a, p3:c)
+c.bar1(p1:a, p2:b)
+
+
 Then, everywhere we use guessType, we first do binaryDispatch.
 
-In the full language, 
+In the full language,
 desugar[e1 #m e2]:
 desugar[e1 #m e2]=(x1=e1 x1 #m e2) where e1 not of form x
 desugar[x1 #m e2]=(x2=e2 x1 #m x2) where e2 not of form x
+
 How this correlate with normalization of operations?
-currently we have a!=b -->!(a==b) and all the < << and ><> normalize into > >> and <><
+currently we have a!=b -->!(a==b) and all the < <<  <= <<= and ><> normalize into > >> >= >>= and <><
 How this correlate with left or right associativity?
 currently we have all double sign operators associate right:
   ++,--,**,<<,>>,<><,><>,==
 
+
+	a**b**c
+	a**(b**c)
+
+		a/(b/c)
+		(a\b)\c
+		(a % b) % c
+
+	((cout << "hello") << 2) << 3
+
+	cout << "hello" << 2 << 3;
+
+
+	big++small++small++small
+
+
+	a < Set[a;b;c]
+	a == b == c == d
+	:= (1/a) + (1/b) ...
+
+    Num.id((1\+2\)*3\)
+    031Num
+
+    S""
+    S.from(_:(
+      b:S.builder()
+      b._%()
+      b._3()
+      b._1()
+      b))
+
+I : {interface}
+C: {
+	implements I
+}
+
+hard= {
+	R: {	Void foo() exceptions(I) }
+}
+Ext: {
+	Void foo() exceptions(C)
+}
+
+
+Redirect[\"R", to: Ext] <>< hard
+
+ ExtSolution:{ EA m1() EB m2() EC m3()}
+ (hard+{Solution:{ A m1() B m2() C m3()}})redirect Solution into ExtSolution
+
+
+
+
+
+a > b ==> #>?(left: a, right: b)
+a < b ==> #>?(left: b, right: a)
 -----------------------------------------------------------------------------
 Since the type system is quite extensive, we first present the
 expression type system, that depends on notation for
@@ -93,14 +159,15 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // and T3 is the type of the value thrown, this allows to use alternative method typing
 D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
-  T1 = guessType(D.p,D.G,e)// Note guessTypes can go in error, and need to become a type error here
+  e0=bynaryDispatch(D.p,D.G,e)
+  T1 = guessType(D.p,D.G,e0)// Note guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,T1.P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
-  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps   
+  if throw=return,    T2= (fwd T1) and Tr=(Ts,T3);Ps
   if T3=class P then exists ms in dom(p(P))
   //this forbids return (x:class Any): class Any is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
   //we also forbid return (x:class P) for any P without methods: a P with methods can not be redirected to Any.
-  D|- e~>  e' :  T3 <=T2|Ts;Ps
+  D|- e0~>  e' :  T3 <=T2|Ts;Ps
 
 
 (mcall)
@@ -211,14 +278,14 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
   T0 = mdf P
   not catchRethrow(catch throw P x e)
   Phase| p| G[x:T0]|- e ~> e' : T <= T' | Tr'
-  if mdf=class then P in {Any,Library,Void} or class in p(P).mhs.mdfs 
+  if mdf=class then P in {Any,Library,Void} or class in p(P).mhs.mdfs
 //Note about former line: having A<=IA,
 //class IA ia=A
 //is ok only if IA has class methods, otherwise if A become interface by sum, it would broke.
 //for consistency,
 //class IA ia=(return A catch class IA x x error void)
 //should also be allowed only if IA has class methods
-  
+
 
 (catch precise any)//notice, needs to be Any, it can't be
 //(exception A() exception B() catch exception C x useXAsB(x) )

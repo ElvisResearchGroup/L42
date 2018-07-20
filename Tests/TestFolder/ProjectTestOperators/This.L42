@@ -7,6 +7,16 @@ CheckEq:{
     Debug.test(given, expected:expected)
     )
   }
+  
+Ext:{method Void foo() exception S, Library}
+IsaacExample:{
+  l1={ A:{method Void foo() exception Num, S}}
+  l2=Refactor2.redirect(path:\"A" into: Ext)<><l1
+  catch exception Refactor2.MethodClash x void
+  error X"should have failed"
+  return ExitCode.normal()
+  }
+
 Main: {
   l1={A:{method This m()}}
   l2={A:{method This1.A m()}}
@@ -18,19 +28,4 @@ Main: {
   CheckEq(l4, expected:S"{A:{methodThis1.Am()}}")
   //is this what we want? asimmetric sum in this way?
   return ExitCode.normal()
-  /*
-  Issues:
-  -caching seams to run old code something: 
-    pattern: write c1, run (c1), modify c1=c2, run (c2), run (c1)
-  -cut paste on win do nothing
-
-  Improvements:
-  -autosave when run
-  -doc dissapper if "." on invalid prefix
-  -more clear sign if "error happens"
-  -shorter visualization for method signatures
-  -sorting for method signatures
-  -clear console option
-
-  */
   }

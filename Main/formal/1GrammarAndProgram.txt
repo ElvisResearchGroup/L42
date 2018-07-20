@@ -250,6 +250,8 @@ program derived operations:
 -p.navigate(P)=p'
  p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
 
+-p.equiv(P0,P1)=p.navigate(P0) == p.navigate(P1)//TODO: formalization recovered from "code", check if is the desired behaviour
+
 -p(P)=L //functional notation
  p(P)=p.navigate(P).top()//but some implementation could be faster
 

@@ -208,8 +208,8 @@ private List<CsPath> verified;
     ClassKind kindDest = ExtractInfo.classKind(null,null,currentExtCb,null,null,null);
     if(isPrivateState || !isNoImplementation){//unexpectedMembers stay empty if there is implementation
       assert kindSrc!=ClassKind.FreeTemplate
-          || kindSrc!=ClassKind.Template
-          || kindSrc!=ClassKind.Interface:
+          && kindSrc!=ClassKind.Template
+          && kindSrc!=ClassKind.Interface:
             kindSrc;
       //TODO: code up can be cleaned to remove extra ExtractInfo checks
       throw new RefactorErrors.ClassUnfit().msgRedirectTemplate(current.getCs(), path, currentExtCb.isInterface());

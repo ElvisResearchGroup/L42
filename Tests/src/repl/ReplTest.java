@@ -10,6 +10,22 @@ import facade.L42;
 import helpers.TestHelper;
 import profiling.Timer;
 
+/*
+Issues:
+-caching seams to run old code something:
+  pattern: write c1, run (c1), modify c1=c2, run (c2), run (c1)
+-cut paste on win do nothing
+
+Improvements:
+-autosave when run
+-doc dissapper if "." on invalid prefix
+-more clear sign if "error happens"
+-shorter visualization for method signatures
+-sorting for method signatures
+-clear console option
+*/
+
+
 public class ReplTest {
 public static void main(String[]arg)throws Throwable{
   ClassLoader.getSystemClassLoader()
