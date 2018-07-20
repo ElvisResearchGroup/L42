@@ -82,7 +82,7 @@ private static void collectStateMethodsAndExposers(
     state.add(mwti.getMs());
     // with non read result, assert is lent
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
-    if(mdf==Mdf.Readable || mdf==Mdf.Immutable){continue;}
+    if(mdf.isIn(Mdf.Readable,Mdf.Immutable)){continue;}
     if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}
     sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(uniqueNum)));
     }
@@ -237,7 +237,7 @@ class WrapAux extends RenameMethodsAux{
       //inded, if this used to call exposer, can not be used to open capsule
       return res;
       }
-    assert res.getMt().getMdf()==Mdf.Lent || res.getMt().getMdf()==Mdf.Mutable;
+    assert res.getMt().getMdf().isIn(Mdf.Lent,Mdf.Mutable);
     //else, replace with the pattern
     if(res.getMt().getReturnType().getMdf()==Mdf.Lent){
       LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(

@@ -31,7 +31,7 @@ public interface TsBlock extends TypeSystem{
     TOut res1;try{res1=tsBlockBase(in,s);}
     catch(ErrorMessage.InvalidTypeForThrowe err){
       if(!err.getPos().equals(Position.noInfo)){throw err;}
-      throw err.withPos(s.getP());      
+      throw err.withPos(s.getP());
       }
     if (res1.isOk()){return res1;}
     if (!promotionMakesSense(in,res1.toError())){return res1;}//promotionMakesSense: mut that need capsule
@@ -133,7 +133,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
       .anyMatch(x->ds.stream()
         .anyMatch(d->d.getX().equals(x)));
     List<Dec> dsFiltered = ds0n.stream().filter(
-          d->{Mdf m=d.get_t().getMdf(); return m==Mdf.Immutable||m==Mdf.Mutable;})
+          d->d.get_t().getMdf().isIn(Mdf.Immutable,Mdf.Mutable))
           .map(d->d.withVar(false).with_t(TypeManipulation.fwd(d.getT().get())))
           .collect(Collectors.toList());
     TIn in1=in.addGds(in.p,dsFiltered); //G1
@@ -226,7 +226,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(mdf==Mdf.Class && !T0.getPath().isPrimitive()){
       Stream<MethodWithType> s = in.p.extractClassB(T0.getPath()).mwts().stream();
       if(s.noneMatch(mwt->mwt.getMt().getMdf()==Mdf.Class)){
-        return new TErr(in,"Can not capture 'class "+T0.getPath()+"'; no class methods inside of "+T0.getPath(),null,ErrorKind.NoMostGeneralMdf);      
+        return new TErr(in,"Can not capture 'class "+T0.getPath()+"'; no class methods inside of "+T0.getPath(),null,ErrorKind.NoMostGeneralMdf);
         }
       }
     TOut _out=type(in.addG(k.getX(),false,T0).withE(k.getE(), in.expected));
@@ -279,9 +279,8 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
 default TOut tsBlockPromotion(TIn in,Block s){
   //Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=capsule P | Tr
   //  Phase |p |toLent(G) |-(ds ks e)~>(ds' ks' e'):mut P <=mut P   | Tr
-  Mdf eM=in.expected.getMdf();
-  assert eM==Mdf.Capsule || eM==Mdf.Immutable ||eM==Mdf.ImmutableFwd || eM==Mdf.ImmutablePFwd:
-    eM;
+  assert in.expected.getMdf().isIn(Mdf.Capsule,Mdf.Immutable,Mdf.ImmutableFwd,Mdf.ImmutablePFwd):
+    in.expected.getMdf();
 
   TIn in2=in.toLent();
   TOut out=type(in2.withE(in.e,in.expected.withMdf(Mdf.Mutable)));
@@ -303,10 +302,9 @@ default boolean promotionMakesSense(TIn in,TErr tErr){
     Type obtained=tErr._computed;
     if(expected==null || obtained==null){return false;}
     if (null!=TypeSystem.subtype(in.p,obtained.getPath(), expected.getPath())){return false;}
-    Mdf eM=expected.getMdf();
-    Mdf oM=obtained.getMdf();
-    boolean acceptableEM=eM==Mdf.Capsule || eM==Mdf.Immutable ||eM==Mdf.ImmutableFwd || eM==Mdf.ImmutablePFwd;
-    return acceptableEM && oM==Mdf.Mutable;
+    boolean acceptableEM=expected.getMdf().isIn(
+        Mdf.Capsule,Mdf.Immutable,Mdf.ImmutableFwd,Mdf.ImmutablePFwd);
+    return acceptableEM && obtained.getMdf()==Mdf.Mutable;
   }
 
 }

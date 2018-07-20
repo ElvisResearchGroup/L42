@@ -91,7 +91,7 @@ public interface TsOperations extends TypeSystem{
     TOk okAcc=out0.toOk();
     {int i=-1;for(ExpCore ei:s.getEs()){i+=1;
       Type ti=lt.get(i+1);//1..n
-      assert ti.getMdf()==Mdf.Immutable || ti.getMdf()==Mdf.Class;
+      assert ti.getMdf().isIn(Mdf.Immutable,Mdf.Class);
       TOut outi=type(in.withE(ei,ti));
       if(!outi.isOk()){return outi;}
       newEs.add(outi.toOk().annotated);
@@ -172,9 +172,7 @@ public interface TsOperations extends TypeSystem{
         assert false;//strange exp like Foo(a:=b)
         }
       Type expected=in.g(s.getVar());
-      if(TypeManipulation.fwd_or_fwdP_in(expected.getMdf())){
-        assert false;//can it even happen or is blocked by well formedness before?
-        }
+      assert !TypeManipulation.fwd_or_fwdP_in(expected.getMdf());
       TOut innerT=type(in.withE(s.getInner(), expected));
       if(!innerT.isOk()){return innerT;}
       TOk ok=innerT.toOk();

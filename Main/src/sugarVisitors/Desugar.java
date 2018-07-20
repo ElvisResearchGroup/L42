@@ -752,19 +752,6 @@ public class Desugar extends CloneVisitor{
     MethodType mt=new MethodType(false,ast.Ast.Mdf.Class,ts,resT,Collections.emptyList());
     return new MethodWithType(doc, ms,mt, Optional.empty(),pos);
     }*/
-  static private Mdf mdfForNamedK(ast.Ast.ConcreteHeader h){
-    boolean canImm=true;
-    for(FieldDec f:h.getFs()){
-      if(!(f.getT() instanceof Type)){return Mdf.Mutable;}//TODO: will disappear?
-      Type nt=(Type)f.getT();
-      Mdf m=nt.getMdf();
-      if(m==Mdf.Lent || m==Mdf.Readable){return Mdf.Lent;}
-      if(m!=Mdf.Immutable && m!=Mdf.Class && m!=Mdf.ImmutableFwd){canImm=false;}
-      if(f.isVar()){canImm=false;}
-      }
-    if(canImm){return Mdf.Immutable;}
-    return Mdf.Mutable;
-  }
 
   static private Stream<Member> field(Position pos,Ast.FieldDec f){
     Stream<Member> s=Stream.of();
@@ -773,27 +760,15 @@ public class Desugar extends CloneVisitor{
     s=Stream.concat(s, Stream.of(
       generateGetter(pos,f,f.getDoc())
       ));
-    Mdf m=f.getT().getMdf();
-    if(m==Mdf.Lent ||
-         m==Mdf.Mutable ||
-         m==Mdf.MutableFwd ||
-         m==Mdf.Capsule ){
+    if(f.getT().getMdf().isIn(Mdf.Lent,Mdf.Mutable,Mdf.MutableFwd,Mdf.Capsule)){
       s=Stream.concat(s, Stream.of(
         generateExposer(pos,f,f.getDoc())
         ));
       }
     return s;
     }
-  private static boolean requireExposer(Type t) {
-    Mdf mdf= ((Type)t).getMdf();
-    return mdf==Mdf.Mutable || mdf==Mdf.Capsule|| mdf==Mdf.Lent;
 
-  }
 
-  static private void cfSetter(Expression.Position pos,ast.Ast.FieldDec f, Doc doc,List<Member> result) {
-    if(!f.isVar()){return;}
-    result.add(generateSetter(pos, f, doc));
-  }
   private static MethodWithType generateSetter(Expression.Position pos, ast.Ast.FieldDec f, Doc doc) {
     Type tt=TypeManipulation.noFwd(f.getT());
     MethodType mti=new MethodType(false,Mdf.Mutable,Collections.singletonList(tt),Type.immVoid,Collections.emptyList());
@@ -820,8 +795,7 @@ public class Desugar extends CloneVisitor{
   private static MethodWithType generateGetter(Expression.Position pos, FieldDec f, Doc doc) {
     Type fieldNt=(Type)f.getT();
     fieldNt=TypeManipulation.noFwd(fieldNt);
-    Mdf mdf=fieldNt.getMdf();
-    if(mdf==Mdf.Capsule || mdf==Mdf.Mutable || mdf==Mdf.Lent){
+    if(fieldNt.getMdf().isIn(Mdf.Capsule,Mdf.Mutable,Mdf.Lent)){
       fieldNt=fieldNt.withMdf(Mdf.Readable);
       }
     MethodType mti=new MethodType(false,Mdf.Readable,Collections.emptyList(),fieldNt,Collections.emptyList());

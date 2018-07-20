@@ -33,11 +33,11 @@ static{
   Type _t=Path.Any().toImmNT();
   MethodType proto=new MethodType(true,Mdf.Capsule,Collections.emptyList(),_t,Collections.emptyList());
   for(Mdf p1:Mdf.values()){
-    if(p1==Mdf.ImmutablePFwd ||p1==Mdf.MutablePFwd){continue;}
+    if(p1.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
     for(Mdf p2:Mdf.values()){
-      if(p2==Mdf.ImmutablePFwd ||p2==Mdf.MutablePFwd){continue;}
+      if(p2.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
       for(Mdf r:Mdf.values()){
-        if(r==Mdf.ImmutablePFwd ||r==Mdf.MutablePFwd){continue;}
+        if(r.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
         List<Type> tsi=Arrays.asList(_t.withMdf(p1),_t.withMdf(p2));
         List<Type> tsiSwap=Arrays.asList(_t.withMdf(p2),_t.withMdf(p1));
         MethodType add1 = proto.withTs(tsi).withReturnType(_t.withMdf(r));
@@ -65,7 +65,7 @@ static Program __p=TestProgram.p("{}");
     System.out.println(mtToS(proto));
 
   }
-  
+
   @Test
   public void testMI(){
     int count=0;
@@ -83,7 +83,7 @@ static Program __p=TestProgram.p("{}");
   @Test
   public void testMvpNoFwdSwap(){
     int countA=0;
-    int countB=0;    
+    int countB=0;
     for(MethodType mt:dataSet){
       MethodType base=mBase(mt);
       //test mVp(mNoFwd(mBase)) == mNoFwd(mVp(mBase))
@@ -102,7 +102,7 @@ static Program __p=TestProgram.p("{}");
       assert v2==null || v1.equals(v2):
         mtToS(v1)+" "+mtToS(v2);
       if(v1!=null && v2!=null){countB+=1;}
-      }    
+      }
     }
   System.out.println(countA);
   System.out.println(countB);
@@ -140,7 +140,7 @@ static Program __p=TestProgram.p("{}");
       }
     return map;
     }
-  
+
   @Test
   public void testMapStr(){
     Set<String>techniques=new HashSet<String>();
@@ -150,7 +150,7 @@ static Program __p=TestProgram.p("{}");
     for(String s:techniques){
       System.out.println(s);
       }
-    
+
     }
   @Test
   public void testMapAll(){
@@ -180,7 +180,7 @@ static Program __p=TestProgram.p("{}");
   return res[0];
   }
   String mtToS(MethodType mt){
-    return 
+    return
            mt.getMdf()+":"+
            mt.getTs().get(0).getMdf()+","+
            ((mt.getTs().size()==2)?mt.getTs().get(1).getMdf():"")+"->"+
@@ -234,7 +234,7 @@ static Program __p=TestProgram.p("{}");
       }
     return -1;
     }
- 
+
 MethodType recLeft(MethodType mt){
   List<Type>newTs=mt.getTs().subList(1, mt.getTs().size());
   Mdf mdf=mt.getTs().get(0).getMdf();
