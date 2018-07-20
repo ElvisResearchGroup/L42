@@ -1,38 +1,19 @@
 \documentclass[a4paper,twoside,british,9pt]{extarticle}
-
+\usepackage[a4paper,bindingoffset=0ex,%
+            left=10ex,right=10ex,top=10ex,bottom=15ex,%
+            footskip=5ex]{geometry}
 \setlength{\parskip}{\medskipamount}
 \setlength{\parindent}{0pt}
-
-%\makeatletter
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
-%\pdfpageheight\paperheight
-%\pdfpagewidth\paperwidth
-
-%\providecommand\textquotedblplain{%
-%  \bgroup\addfontfeatures{Mapping=}\char34\egroup}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
-%\providecommand*{\code}[1]{\mintinline{Java}!#1!}
 \input{../Def/Def}
 \providecommand*{\code}[1]{\Q`#1`}
-%\lstset{language=Java,
-%  showspaces=false,
-%  showtabs=false,
-%  breaklines=true,
-%  showstringspaces=false,
-%  breakatwhitespace=true,
-%  basicstyle=\ttfamily}
 
-%\usepackage{polyglossia}
-%\setdefaultlanguage[variant=british]{english}
-%\renewcommand{\listingscaption}{Listing}
 
 \begin{document}
 
 \title{Method Based Capability Control}
-
+\date{}
 \maketitle
+\vspace{-10ex}
 In imperative languages, reasoning on side-effects can be very challenging,
 since any piece of code can potentially do anything. In object oriented
 systems where dynamic dispatch is pervasive, we do not even know what code
@@ -54,9 +35,8 @@ will not format the hard drive.
 %A method can only call itself, the methods that are in it's permissions set, 
 %and any method that does not have more permissions.
 %-a method Ps m can call Ps' m' iff m=m' or Ps superset Ps' or m in Ps
-In this paper we explore an alternative approach, where methods can only be
+Here we explore an alternative approach, where methods can only be
 called when sufficient permissions are available. 
-
 We will use class and method names as permission labels.
 A method declaration is annotated with it's permissions set $Ps$.
 The method can only call itself, the methods whose names are in it's permissions set, 
@@ -66,8 +46,7 @@ provides a class:
 
 \begin{lstlisting}
 class System { 
-	static String readFile(String fileName){
-		/*magic implementation*/}
+  static String readFile(String fileName){/*magic implementation*/}
 }
 \end{lstlisting}
 
@@ -76,9 +55,8 @@ can use permissions to change this:
 
 \begin{lstlisting}
 class System { 
-	@Permissions(System.readFile) // permission label! 
-	static String readFile(String fileName){
-		/*magic implementation*/ }
+  @Permissions(System.readFile) // permission label! 
+  static String readFile(String fileName){/*magic implementation*/ }
 }
 \end{lstlisting}
 
@@ -90,22 +68,21 @@ would ever be required.
 %restrict method usage: 
 
 Now only within a method whose permissions include \Q@System.readFile@
-\\*can \code{System.readFile} be \emph{directly} called; for example this
+can \code{System.readFile} be \emph{directly} called; for example this
 is correct:
 
 \begin{lstlisting}
 class Documents {
-	@Permissions(System.readFile, Directory.new, Directory.contains)
-	static String readFile(String fileName) {
-		if (!new Directory("~/Documents").contains(fileName)){
-      throw /*error*/;}
-		return System.readFile(fileName);
-	}
+  @Permissions(System.readFile, Directory.new, Directory.contains)
+  static String readFile(String fileName) {
+    if (!new Directory("~/Documents").contains(fileName)){throw /*error*/;}
+    return System.readFile(fileName);
+  }
 }
 \end{lstlisting}
 
 \code{Documents.readFile} acts as a filter, and reads only files
-presents in the `Documents' folder. Of course we can call \code{Documents.readFile}
+presents in the `Documents' folder. Of course we can call \\*\code{Documents.readFile}
 if we have the \code{System.readFile}, \code{Directory.new} and,
 \code{Directory.contains} permissions. However, merely having the
 permission \code{Documents.readFile} does not give us the  \code{System.readFile}
@@ -114,9 +91,8 @@ permission, and so we cannot directly call it:
 \begin{lstlisting}
 @Permissions(Documents.readFile)
 static void main() {
-	String doc1 = Documents.readFile("~/Documents/hi.txt");
-	// Invalid!
-	//String doc2 = System.readFile("~/Documents/hi.txt");
+  String doc1 = Documents.readFile("~/Documents/hi.txt");
+  //String doc2 = System.readFile("~/Documents/hi.txt");//Invalid!
 }
 \end{lstlisting}
 
@@ -140,7 +116,7 @@ class Directory {$\ldots$}
 \end{lstlisting}
 
 then, while declaring \code{Documents.readFile} before, we could
-have written `\code{Directory}' instead of `\code{Directory.new, Directory.contains}'.
+have written `\code{Directory}' instead of \\*`\code{Directory.new, Directory.contains}'.
 
 The system as presented up to now is completely static and does not
 require nor take advantage of objects. Every method requires an exact
@@ -150,59 +126,52 @@ in true object-capability style:
 
 \begin{lstlisting}
 interface IFiles[A] {
-	@Permissions(A)
-	String readFile(String fileName);
+  @Permissions(A)
+  String readFile(String fileName);
 }
-
 class Files implements IFiles[System.readFile] {
-	@Permissions(Files.new)
-	Files() { }
-
-	@Permissions(System.readFile)
-	@Override System.readFile String readFile(String fileName) { 
-		return System.readFile(fileName); 
-	}
-	
+  @Permissions(Files.new)
+  Files(){}
+  
+  @Permissions(System.readFile)
+  System.readFile String readFile(String fileName){return System.readFile(fileName);}
 }
-
 class DocFiles implements IFiles[Documents.readFile] {
-	@Permissions(DocFiles.new)
-	DocFiles() { }
-
-	@Permissions(Documents.readFile)
-	@Override String readFile(String fileName) { 
-		return Documents.readFile(fileName); 
-	}
+  @Permissions(DocFiles.new)
+  DocFiles(){}
+  
+  @Permissions(Documents.readFile)
+  String readFile(String fileName){return Documents.readFile(fileName);}
 }
-
 class MockFiles implements IFiles[] {
-	@Permissions()
-	MockFiles(){ }
-
-	@Permissions()
-	@Override String readFile(String fileName) { return ""; }
+  MockFiles(){}//if @Permissions is omitted, of course it means the empty set 
+  
+  String readFile(String fileName) { return "";}
 }
 \end{lstlisting}
 
-Notice that unlike a traditional object-capability system, we need
-not restrict the use of the above constructors, since we can independently
-restrict methods; however we can still do so to properly enforce the
-object-capability pattern. With these classes defined, one can now
+%Notice that unlike a traditional object-capability system, we need
+%not restrict the use of the above constructors, since we can independently
+%restrict methods; however we can still do so to properly enforce the
+%object-capability pattern.
+ With these classes defined, one can now
 write a parametric method \code{foo}:
 
 \begin{lstlisting}
 @Permissions(A)
 [A] String foo(IFiles[A] cap) {
-	// Internally, cap can be used without static knowledge of what it can do
-	return cap.readFile("foo.txt");
+  // Internally, cap can be used without static knowledge of what it can do
+  return cap.readFile("foo.txt");
 }
 \end{lstlisting}
 
 Notice that \code{A} stands for a list of permissions, not a single
-one, however these annotations can often be inferred. The call \code{cap.readFile("foo.txt")}
+one. 
+We believe that these annotations could often be inferred. The call \code{cap.readFile("foo.txt")}
 is valid since \code{foo} has permission \code{A}, which is more
 than sufficient to call \code{IFiles[A].readFile}.
-For example, if one where to call \code{foo[Documents.readFile](new DocFiles())}, 
+For example, if call \code{foo(new DocFiles())}
+is accepted, the system inferred \code{foo[Documents.readFile](new DocFiles())}, 
 then the body of foo would have the \code{Documents.readFile} permission; this is sufficient for it to call
 \code{cap.readFile("foo.txt")}.
 %For example, if the call \Q@foo(new DocFiles())@ is allowed, % foo[Documents.readFile]  IFile[Documents.readFile]
@@ -217,19 +186,24 @@ based) control. For example, we could declare:
 
 \begin{lstlisting}
 class FilesStart extends Files {
-	@Permissions(Files.new)
-	FilesStart() { super(); }
+  @Permissions(Files.new)
+  FilesStart(){super();}
 
-	@Permissions(System.readFile)
-	@Override String readFile(String fileName) {
-		return super.readFile(fileName).substring(0,10);
-	}
+  @Permissions(System.readFile)
+  String readFile(String fileName){return super.readFile(fileName).substring(0,10);}
 }
 \end{lstlisting}
-
-And now, our capability object \code{new FilesStart()} can do less
-(but not more) then our capability \code{new Files()}, but from a
-static perspective there is no difference.
+Notice how both \Q@Files.readFile@
+and \Q@FilesStart.readFile@
+can directly use \Q@System.readFile@.
+Thus, thanks to dynamic dispatch, from a static reasoning perspective, a call to
+\Q@Files.readFile@ is as powerfull as a call
+to \Q@System.readFile@.
+However, since \Q@Files.new@ is restricted and
+constructors needs to call superconstructors, we may be able to reason over aliasing to refine our understanding of a specific  
+\Q@Files.readFile@ call.
+On the other side, \Q@DocFiles.readFile@ and all its subtypes are bound to
+only call \Q@Documents.readFile@.
 
 An important benefit of our approach is that it allows safety and
 control even in the case of static methods performing primitive operations.

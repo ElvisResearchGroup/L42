@@ -1240,6 +1240,7 @@ ${}_{}$\\ \noindent${}_{}$\\ \noindent}
 
 \definecolor{darkRed}{RGB}{100,0,10}
 \definecolor{darkBlue}{RGB}{10,0,100}
+\newcommand*{\ttfamilywithbold}{\fontfamily{pcr}\selectfont}
 
 \lstdefinelanguage{FortyTwo}[]{Java}{morekeywords={%
   M,
@@ -1248,51 +1249,33 @@ ${}_{}$\\ \noindent${}_{}$\\ \noindent}
   with,in,immutable,trait,using,
   on,var,loop,reuse,method,is
   },
-%  deletekeywords={new,class,this},
- morecomment=[l]',
- texcl=true
- string=[d][\ttfamily]",
- %\texttt{\textbf{\color{darkBlue}
-commentstyle=\ttfamily\bfseries\color{darkBlue},
-% morestring=[l]',
- stringstyle=\color{red}\ttfamily,
- literate=
+   basicstyle=\ttfamily,
+   keywordstyle=\ttfamilywithbold\bfseries\color{darkRed},
+   identifierstyle=\idstyle,
+   showstringspaces=false,
+   mathescape=true,
+%   texcl=true,
+   xleftmargin=0pt,
+   xrightmargin=0pt,
+   breaklines=false,
+   breakatwhitespace=false,
+   breakautoindent=false,
+   tabsize=2,
+   commentstyle=\color{darkBlue}\ttfamily,
+   stringstyle=\color{darkRed}\ttfamily,
+   literate=
                  {\%}{{\mbox{\textbf{\%}}}}1
-                 {[}{{\textbf{[}}}1
-                 {]}{{\textbf{]}}}1
-                 {(}{{\textbf{(}}}1
-                 {)}{{\textbf{)}}}1
-                 {\{}{{\textbf{\{}}}1
-                 {\}}{{\textbf{\}}}}1
-                 {;}{{\textbf{;}}}1
-                 %{Library}{{\textcolor{black}{\textbf{Library}}}}{1}
-                 %{Any}{{\textcolor{black}{\textbf{Any}}}}{1}
-                 %{Void}{{\textcolor{black}{\textbf{Void}}}}{1}
-                 %{Outer}{{\textcolor{black}{\textbf{Outer}}}}{1}
+                 {[}{{\ttfamilywithbold\textbf{[}}}1
+                 {]}{{\ttfamilywithbold\textbf{]}}}1
+                 {(}{{\ttfamilywithbold\textbf{(}}}1
+                 {)}{{\ttfamilywithbold\textbf{)}}}1
+                 {\{}{{\fontfamily{cmr}\selectfont\textbf{\{}}}1
+                 {\}}{{\fontfamily{cmr}\selectfont\textbf{\}}}}1
+                 {;}{{\ttfamilywithbold\textbf{;}}}1
+                 {~} {$\sim$}1
  }
 
-\lstset{language=FortyTwo,
-  basicstyle=\ttfamily\small,
-  keywordstyle=\bfseries\color{darkRed},
-  showstringspaces=false,
-  mathescape=true,
-  xleftmargin=0pt,
-  xrightmargin=0pt,
-  breaklines=false,
-  breakatwhitespace=false,
-  breakautoindent=false,
-  tabsize=2,
-%  linewidth=4\textwidth,% should be enough
-%  backgroundcolor=\color{grey},
-%  frameround=tttt,
-%  frame=single,
-%  frame=lines,
-%  rulecolor=\color{darkGrey},
-%  identifierstyle=\relax
-  identifierstyle=\idstyle
-%  emphstyle=\it,
-%  keywordstyle=\ttfamily\bf\small
-}
+\lstset{language=FortyTwo}
 \newcommand{\Comment}[1]{%
   \texttt{\textbf{\color{darkBlue}{//#1}}}%
 }
@@ -1316,7 +1299,7 @@ commentstyle=\ttfamily\bfseries\color{darkBlue},
 \def\id@style#1#2\relax{%
         \ifcat#1\relax\else
                 \ifnum`#1=\uccode`#1%
-                        \bfseries
+                        \ttfamilywithbold\bfseries
                 \fi
         \fi
 }
