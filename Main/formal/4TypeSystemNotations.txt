@@ -49,6 +49,11 @@ capsuleToLent(T)  //used for return type in get/exposer
   capsuleToLent(capsule P)=lent P
   otherwise capsuleToLent(mdf P)=mdf P
 
+capsuleToMut(T)  //used for return type in get/exposer
+  capsuleToMut(capsule P)=mut P
+  otherwise capsuleToMut(mdf P)=mdf P
+
+
 toRead(T) //used in gamma and in return type getter
   toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
   toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
@@ -141,22 +146,45 @@ Tr.capture(p,catch error P x e)=Tr
 (Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
 (Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
 
-guessType(p,G,e)
+guessType(p,G,e)//TODO: change in code about ds
   guessType(p,G,L)=imm Library
   guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
   guessType(p,G,P)=class P //here will be wrong over interfaces
   chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
     where guessType(p,G,chain)=mdf P
-  guessType(p,G,(var?1 T?1 x1=e1..var?n T?n xn=en e) )=  guessType(p,G',e)
-    where G'=G[x1:T1..Xn:Tn], Ti=T?i, otherwise Ti=guessType(p,G,ei)
+  guessType(p,G,(var?0 T0 x0=e0 ..var?n Tn xn=en e) )=  guessType(p,G[x1:T1,..,xn:Tn],e)
   guessType(p,G,throw _) and guessType(p,G,loop _) undefined
   guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
-suggest(T?,T)=T'
-  suggest(T,_)=T
-  suggest(empty,capsule P)=mut P
-  otherwise
-  suggest(empty,T)=T
+//TODO: in code remove suggest(T?,T)
+  
+staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
+  Ti=G(y1)
+  Tsi=T1..Tn \i//a sequence minus the element in position i
+  xysi=x1:y1,..,xn:yn\i
+  xsi=x1..xn\i
+  chose the smallest j in Nat so that is possible to
+    chose the smallest i in Nat so that 
+      MethT in methTypes(p,Ti.P,#jm(xsi)), p|-Tsi<=MethT.Ts
+staticDispatch(p,G,e.m(xes))= staticDispatch(p,G,e).m(xes)
+staticDispatch(p,G,(ds ks e))= (staticDispatch(p,G',ds) ks staticDispatch(p,G',e) )
+staticDispatch(p,G,e)=e if e not of form #?m(xys), e.m(es), (ds ks e)
+
+staticDispatch(p,G,ds)=ds'
+  ds',0=staticDispatch(0,p,G[ds],ds)
+staticDispatch(p,G,ds)=staticDispatch(p,G,ds')
+  ds',n+1=staticDispatch(0,p,G[ds],ds)
+  dom(G[ds']) superset dom(G[ds]) //else fail, we can not guess/dispatch
+  
+staticDispatch(n,p,G,empty)=n   //recursion end
+staticDispatch(n,p,G,var? T x=e ds)=var? T x:staticDispatch(p,G,e) staticDispatch(n,p,G,ds)//good case
+staticDispatch(n,p,G,var? x=e ds)=var? T x:staticDispatch(p,G,e) staticDispatch(n,p,G,ds)//good case
+  where T=capsuleToMut(guessType(p,G,staticDispatch(p,G,e)))
+staticDispatch(n,p,G,var? T x=e ds)=var? T x:e staticDispatch(n+1,p,G,ds) //remember failure
+  where staticDispatch(p,G,e) undefined
+staticDispatch(n,p,G,var? x=e ds)=var? x:e staticDispatch(n+1,p,G,ds) //remember failure
+  where guessType(p,G,staticDispatch(p,G,e)) undefined
+  
 
 --------------------------------------------
 2 Coherent literal

@@ -1,96 +1,9 @@
-new 20/07/2018
-
-e::= ...| x #m y
-
-bynaryDispatch(p,G,e)=e if e not of form x1 #m x2
-bynaryDispatch(p,G,x1 #m x2)=e
-  T1=G(x1)
-  T2=G(x2)
-  chose the smallest i in Nat so that either
-    MethT in methTypes(p,T1.P,#m(left)), p|-T1,T2->_;_<=MethT
-      then e=x1.#m#i(left:x2)
-    or otherwise
-    MethT in methTypes(p,T2.P,#m#i(right)), p|-T2,T1->_;_<=MethT
-      then e=x2.#m#i(right:x1)
-
-a.#plus?(b)
-
-#plus?(left:a, right:b)
-
-bar??(p1:a, p2:b, p3:c)
-a.bar1(p2:b, p3:c)
-b.bar1(p1:a, p3:c)
-c.bar1(p1:a, p2:b)
-
-
-Then, everywhere we use guessType, we first do binaryDispatch.
-
-In the full language,
+TODO: e::= ...| #?m(x1:y1,..,xn:yn)
+TODO: In the full language,
 desugar[e1 #m e2]:
 desugar[e1 #m e2]=(x1=e1 x1 #m e2) where e1 not of form x
 desugar[x1 #m e2]=(x2=e2 x1 #m x2) where e2 not of form x
-
-How this correlate with normalization of operations?
-currently we have a!=b -->!(a==b) and all the < <<  <= <<= and ><> normalize into > >> >= >>= and <><
-How this correlate with left or right associativity?
-currently we have all double sign operators associate right:
-  ++,--,**,<<,>>,<><,><>,==
-
-
-	a**b**c
-	a**(b**c)
-
-		a/(b/c)
-		(a\b)\c
-		(a % b) % c
-
-	((cout << "hello") << 2) << 3
-
-	cout << "hello" << 2 << 3;
-
-
-	big++small++small++small
-
-
-	a < Set[a;b;c]
-	a == b == c == d
-	:= (1/a) + (1/b) ...
-
-    Num.id((1\+2\)*3\)
-    031Num
-
-    S""
-    S.from(_:(
-      b:S.builder()
-      b._%()
-      b._3()
-      b._1()
-      b))
-
-I : {interface}
-C: {
-	implements I
-}
-
-hard= {
-	R: {	Void foo() exceptions(I) }
-}
-Ext: {
-	Void foo() exceptions(C)
-}
-
-
-Redirect[\"R", to: Ext] <>< hard
-
- ExtSolution:{ EA m1() EB m2() EC m3()}
- (hard+{Solution:{ A m1() B m2() C m3()}})redirect Solution into ExtSolution
-
-
-
-
-
-a > b ==> #>?(left: a, right: b)
-a < b ==> #>?(left: b, right: a)
+TODO: all operator precedence need to become right associative
 -----------------------------------------------------------------------------
 Since the type system is quite extensive, we first present the
 expression type system, that depends on notation for
@@ -159,7 +72,7 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // and T3 is the type of the value thrown, this allows to use alternative method typing
 D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
-  e0=bynaryDispatch(D.p,D.G,e)
+  e0=staticDispatch(D.p,D.G,e)
   T1 = guessType(D.p,D.G,e0)// Note guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,T1.P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
@@ -171,9 +84,10 @@ D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
 
 
 (mcall)
-D |-  e0.m(x1:e1..xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
+D |-  e.m(x1:e1..xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
+  e0=staticDispatch(D.p,D.G,e)
   guessType(D.p,D.G,e0)= _ P0 //assert T'0.P=P0 //again, can go in error guess
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can be not available, error similar to before for guess?
   D.p|-T <= T'
@@ -215,7 +129,8 @@ Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
 Phase| p| G |- (ds  ks  e0) ~>(ds' ks' e'0 [T]) : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
   G'=G/dom(ds)
-  Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
+  ds0=staticDispatch(p,G',ds)
+  Phase| p| G'[ks] |- ds0 ~> ds' |Tr' | G0
   //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
   //here we have the info to capture a failure about ds and discover if
   //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
@@ -233,28 +148,22 @@ Phase| p| G |- ds ~> ds'| Tr | G0
   where ds' is an annotated version of ds.
   The resulting G0 is the enriched G containing info about ds too.
 
-(ds)  // G is clipped for error safety; G2 is clipped and complete
-Phase| p| G |- var?0 T?0   x0=e0 ..var?n T?n   xn=en, ds ~>
-               var?0 T''0  x0=e'0..var?0 T''n  xn=e'n, ds'|Tr U Tr' | G3
+//note: Ts are all there since guessed before. //TODO: code need to change about this rule thanks to staticDispatch
+(ds)  // G is clipped for error safety; G' is clipped and complete
+Phase| p| G |- var?0 T0 x0=e0 ..var?n Tn xn=en,  ds ~>
+               var?0 T0 x0=e'0..var?n Tn xn=e'n, ds'|Tr U Tr' | G3
   where
   dom(ds) disjoint FV(e0..en)
-  for i in 0..n
-    either T?i =empty and Ti=guessType(G,ei)
-    or Ti=T?i
-  G'=x0:T0..xn:Tn
-  G1= G[ fwd( onlyMutOrImm(G')[with vars=empty] ) ] //capturing error for next line if not onlyMutOrImm(G') is used and is errored by next line
-  for i in 0..n: Phase| p| G1|-ei~>e'i: T'i <= fwd% Ti | Tri
-  if fwd_or_fwd%_in(Ti)
-    then T''i=suggest(T?i,T'i)
-    else T''i=suggest(T?i,noFwd(T'i))
-  G2=x0:T''0..xn:T''n
+  G'= G[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]
+  for i in 0..n: Phase| p| G'|-ei~>e'i: T'i <= fwd% Ti | Tri
   Tr=Tr0 U .. U Trn
   if fwd_or_fwd%_in Tr.Ts
     then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
   if fwd_or_fwd%_in { G(x) | x in FV(e0..en) } // x0..xn already excluded
-    then G0=G[fwd%(G2[with vars=empty])]
-    otherwise G0=G[G2]//capturing error for next line, see if the difference between fwd%(G2) ad G2 would fix it. Still, then we need to check for the fwd x in FV(e0..en)..
+    then G0=G[fwd%(x0:T0..xn:Tn)]
+    otherwise G0=G[x0:var?0 T0 ..xn:var?n Tn]
   Phase| p| G0|- ds ~> ds'|Tr' | G3
+
 
 (dsEmpty)
 Phase| p| G |- empty ~> empty| empty;empty | G
