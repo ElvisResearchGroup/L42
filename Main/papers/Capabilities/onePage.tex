@@ -170,9 +170,8 @@ one.
 We believe that these annotations could often be inferred. The call \code{cap.readFile("foo.txt")}
 is valid since \code{foo} has permission \code{A}, which is more
 than sufficient to call \code{IFiles[A].readFile}.
-For example, if call \code{foo(new DocFiles())}
-is accepted, the system inferred \code{foo[Documents.readFile](new DocFiles())}, 
-then the body of foo would have the \code{Documents.readFile} permission; this is sufficient for it to call
+For example, the call \code{foo(new DocFiles())} would be inferred to \code{foo[Documents.readFile](new DocFiles())}, 
+and then the body of foo would have the \code{Documents.readFile} permission; this is sufficient for it to call
 \code{cap.readFile("foo.txt")}.
 %For example, if the call \Q@foo(new DocFiles())@ is allowed, % foo[Documents.readFile]  IFile[Documents.readFile]
 %then \Q@foo@ body would have permission \Q@Documents.readFile@
@@ -195,14 +194,14 @@ class FilesStart extends Files {
 \end{lstlisting}
 Notice how both \Q@Files.readFile@
 and \Q@FilesStart.readFile@
-can directly use \Q@System.readFile@.
+can directly call \Q@System.readFile@.
 Thus, thanks to dynamic dispatch, from a static reasoning perspective, a call to
 \Q@Files.readFile@ is as powerfull as a call
 to \Q@System.readFile@.
 However, since \Q@Files.new@ is restricted and
-constructors needs to call superconstructors, we may be able to reason over aliasing to refine our understanding of a specific  
-\Q@Files.readFile@ call.
-On the other side, \Q@DocFiles.readFile@ and all its subtypes are bound to
+constructors need to call super-constructors, we may be able to refine our understanding of a specific  
+\Q@Files.readFile@ call, by reasoning over aliasing.
+On the other hand, \Q@DocFiles.readFile@ and all overrides of it are bound to
 only call \Q@Documents.readFile@.
 
 An important benefit of our approach is that it allows safety and
