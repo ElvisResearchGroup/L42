@@ -138,7 +138,15 @@ public interface Expression extends Ast {
       return v.visit(this);
     }
   }
-
+  @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class OperationDispatch  implements Expression {
+    String name;
+    Doc doc;
+    Parameters ps;
+    Position p;
+    @Override public <T> T accept(sugarVisitors.Visitor<T> v) {
+      return v.visit(this);
+    }
+  }
   @Value @Wither @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") public static class FCall implements Expression, HasReceiver {
     @NonNull Position p;
     Expression receiver;

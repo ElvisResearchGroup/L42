@@ -14,5 +14,5 @@ public interface Visitor<T> {
   T visit(ClassB s);
   T visit(Loop s);
   T visit(UpdateVar s);
-
+  T visit(OperationDispatch s);
 }

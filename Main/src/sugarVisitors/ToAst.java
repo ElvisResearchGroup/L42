@@ -310,6 +310,16 @@ public class ToAst extends AbstractVisitor<Expression>{
     if(ctx.numParse()!=null){i=1;}
     return addNumParse(ctx,ctx.children.get(i).accept(this));
     }
+  @Override public Expression visitHqRound(HqRoundContext ctx) {
+    String mx=ctx.HashQX().getText();
+    assert mx.endsWith("(");
+    assert mx.startsWith("#?");
+    mx=mx.substring(2,mx.length()-1);
+    RoundContext r = ctx.round();
+    Doc doc=parseDoc(r.docsOpt());
+    assert !mx.startsWith("\\");
+    return new Expression.OperationDispatch(mx,doc,parseMParameters(r.ps()),position(r));
+    }
   @Override public Expression visitMxRound(MxRoundContext ctx) {
     String mx=ctx.MX().getText();
     assert mx.endsWith("(");

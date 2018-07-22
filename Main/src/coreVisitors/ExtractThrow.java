@@ -15,6 +15,7 @@ import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import ast.L42F.E;
 import programReduction.Program;
 import auxiliaryGrammar.Functions;
 
@@ -74,5 +75,5 @@ public class ExtractThrow implements Visitor<ExpCore>{
   public ExpCore visit(WalkBy s) {throw Assertions.codeNotReachable();}
   public ExpCore visit(Loop s) { return new ExpCore.WalkBy(); }
   public ExpCore visit(ExpCore.UpdateVar s) {throw Assertions.codeNotReachable("should be dead code?");}
-
+  public ExpCore visit(ExpCore.OperationDispatch s) {throw Assertions.codeNotReachable("Type system should annotate this away");}
   }

@@ -102,6 +102,12 @@ public class PropagatorVisitor implements Visitor<Void>{
     for(ExpCore e:s.getEs()){lift(e);}
     return null;
     }
+  public Void visit(ExpCore.OperationDispatch s) {
+    liftMs(s.getS());
+    liftDoc(s.getDoc());
+    for(ExpCore e:s.getEs()){lift(e);}
+    return null;
+    }
   public Void visit(Block s) {
     liftDoc(s.getDoc());
     liftDecs(s.getDecs());

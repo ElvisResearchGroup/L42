@@ -152,6 +152,17 @@ public interface L42Listener extends ParseTreeListener {
 	void exitDocs(@NotNull L42Parser.DocsContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#hqRound}.
+	 * @param ctx the parse tree
+	 */
+	void enterHqRound(@NotNull L42Parser.HqRoundContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#hqRound}.
+	 * @param ctx the parse tree
+	 */
+	void exitHqRound(@NotNull L42Parser.HqRoundContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#block}.
 	 * @param ctx the parse tree
 	 */

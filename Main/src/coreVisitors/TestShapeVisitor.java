@@ -25,4 +25,6 @@ public class TestShapeVisitor implements Visitor<Boolean>{
   public Boolean visit(ClassB s)  {return false;}
   public Boolean visit(Loop s)  {return false;}
   public Boolean visit(UpdateVar s) {return false;}
+  public Boolean visit(ExpCore.OperationDispatch s) {return false;}
+
 }

@@ -147,6 +147,9 @@ public class CloneVisitor implements Visitor<Expression>{
   public Expression visit(MCall s) {
     return new MCall(lift(s.getReceiver()),s.getName(),liftDoc(s.getDoc()),liftPs(s.getPs()),s.getP());
   }
+  public Expression visit(Expression.OperationDispatch s) {
+    return new Expression.OperationDispatch(s.getName(),liftDoc(s.getDoc()),liftPs(s.getPs()),s.getP());
+  }
   public Expression visit(ClassB s) {
     Header h = liftH(s.getH());
     List<FieldDec> fs=Map.of(this::liftF,s.getFields());

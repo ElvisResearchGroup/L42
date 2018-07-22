@@ -12,6 +12,7 @@ import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
+import ast.ExpCore.OperationDispatch;
 import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.WalkBy;
@@ -122,7 +123,23 @@ class CtxSplitter implements coreVisitors.Visitor<CtxC>{
     assert !IsCompiled.of(s.getInner());
     return new CtxCInner<Using>(s,s.getInner().accept(this));
     }
-  
+  //operationDispatch: define class for pointing in parameters 
+  private static class CtxCOperationPos extends CtxCAbsPos<OperationDispatch>{
+    CtxCOperationPos(OperationDispatch origin,int pos,CtxC ctx) {super(origin,pos,ctx);}
+    public ExpCore fillHole(ExpCore hole) {return origin.withEsi(pos,ctx.fillHole(hole));}
+    public CtxC divide(ExpCore all) {
+      OperationDispatch _all=(OperationDispatch)all;
+      CtxC ctxInner=ctx.divide(_all.getEs().get(pos));
+      return new CtxCOperationPos(_all,pos,ctxInner);
+      }
+    }
+  //OperationDispatch: if parameters, otherwise error
+  public CtxC visit(OperationDispatch s) {
+    int pos=firstNotCompiled(s.getEs());
+    assert pos<s.getEs().size();
+    return new CtxCOperationPos(s,pos,s.getEs().get(pos).accept(this));
+    }
+
   //block is more complex since it has two sets of es:
   //one nested in the decs, and one nested in the ons; so we define two classes
   private static class CtxCBlock1Pos extends CtxCAbsPos<Block>{

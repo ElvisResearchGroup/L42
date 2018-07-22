@@ -52,6 +52,15 @@ public class TestShapePairVisitor implements Visitor<Boolean>{
       }
     return true;
     }
+  public Boolean visit(ExpCore.OperationDispatch s)  {
+    if(!(this.other instanceof ExpCore.OperationDispatch)){return false;}
+    ExpCore.OperationDispatch other=(ExpCore.OperationDispatch)this.other;
+    if(s.getEs().size()!=other.getEs().size()){return false;}
+    for(int i=0;i<s.getEs().size();i++){
+      if(!lift(s.getEs().get(i),other.getEs().get(i))){return false;}
+      }
+    return true;
+    }  
   public Boolean visit(Using s)  {
     if(!(this.other instanceof Using)){return false;}
     Using other=(Using)this.other;

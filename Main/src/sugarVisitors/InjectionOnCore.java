@@ -99,6 +99,16 @@ public class InjectionOnCore implements Visitor<ExpCore> {
     for(Expression e:s.getPs().getEs()){es.add(e.accept(this));}
     return new MCall(receiver, MethodSelector.of(name,xs),doc,es,s.getP(),null,null);
   }
+  public ExpCore visit(Expression.OperationDispatch s){
+    assert !s.getPs().getE().isPresent():s;
+    String name=s.getName();
+    Doc doc=s.getDoc();
+    List<String> xs=s.getPs().getXs();
+    List<ExpCore>es=new ArrayList<>();
+    for(Expression e:s.getPs().getEs()){es.add(e.accept(this));}
+    return new OperationDispatch(MethodSelector.of(name,xs),doc,es,s.getP());
+  }
+
   public ExpCore visit(Expression.Using s){
     assert !s.getPs().getE().isPresent();
     List<String>xs=s.getPs().getXs();

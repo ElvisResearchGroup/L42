@@ -206,19 +206,26 @@ public class ToFormattedText extends l42FVisitors.ToFormattedText implements Vis
     }
 
   @Override
-  public Void visit(MCall arg0) {
-    if(arg0.getReceiver() instanceof Expression.Signal){c("(");}
-    arg0.getReceiver().accept(this);
-    if(arg0.getReceiver() instanceof Expression.Signal){c(")");}
+  public Void visit(MCall s) {
+    if(s.getReceiver() instanceof Expression.Signal){c("(");}
+    s.getReceiver().accept(this);
+    if(s.getReceiver() instanceof Expression.Signal){c(")");}
     c(".");
-    assert !arg0.getName().isEmpty();
-    c(arg0.getName());
+    assert !s.getName().isEmpty();
+    c(s.getName());
     c("(");
-    formatDoc(arg0.getDoc());
-    formatParameters(arg0.getPs());
+    formatDoc(s.getDoc());
+    formatParameters(s.getPs());
     return c(")");
     }
-
+  @Override
+  public Void visit(Expression.OperationDispatch s) {
+    assert !s.getName().isEmpty();
+    c("#?"+s.getName()+"(");
+    formatDoc(s.getDoc());
+    formatParameters(s.getPs());
+    return c(")");
+    }
    @Override
   public Void visit(FCall arg0) {
     arg0.getReceiver().accept(this);

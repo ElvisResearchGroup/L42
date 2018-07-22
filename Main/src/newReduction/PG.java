@@ -236,6 +236,10 @@ public E visit(Block s) {
   Set<String> fv = FreeVariables.of(s.getDecs());
   return new L42F.Block(fwdFix(fv,ds), ks, e, PG.liftT(p,s.getTypeOut()));
 }
+@Override
+public E visit(ExpCore.OperationDispatch s) {
+  throw Assertions.codeNotReachable("Type system should annotate this away");
+}
 static MethodSelector msOptimizedNew(MethodSelector ms) {
   return ms.withName("New_"+ms.getName());
 }

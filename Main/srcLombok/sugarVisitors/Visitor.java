@@ -29,4 +29,5 @@ public interface Visitor<T> {
   T visit(Loop s);
   T visit(ClassReuse s);
   T visit(UseSquare s);
+  T visit(OperationDispatch s);
 }

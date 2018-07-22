@@ -23,6 +23,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
+import ast.ExpCore.OperationDispatch;
 import ast.ExpCore.Signal;
 import ast.ExpCore.UpdateVar;
 import ast.ExpCore.Using;
@@ -187,6 +188,10 @@ public Type visit(Loop s) {
 @Override
 public Type visit(UpdateVar s) {
   return Path.Void().toImmNT();
+  }
+@Override
+public Type visit(OperationDispatch s) {
+  throw Assertions.codeNotReachable();//TODO:
   }
 }
 

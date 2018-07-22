@@ -48,6 +48,21 @@ public interface ExpCore extends Serializable{
     }
   }
 
+  @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class OperationDispatch implements ExpCore, HasPos<OperationDispatch>{
+    MethodSelector s;
+    Doc doc;
+    List<ExpCore> es;
+    Position p;
+    @Override public <T> T accept(coreVisitors.Visitor<T> v) {
+      return v.visit(this);
+    }
+    public OperationDispatch withEsi(int i,ExpCore ei){
+      List<ExpCore> es2=new ArrayList<>(es);
+      es2.set(i,ei);
+      return this.withEs(es2);
+    }
+  }
+
   @Value @EqualsAndHashCode(exclude = "p") @ToString(exclude = "p") @Wither public static class UpdateVar implements ExpCore,HasPos<UpdateVar>, WithInner<UpdateVar>{
   ExpCore inner;
   String var;

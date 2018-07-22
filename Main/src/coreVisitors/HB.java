@@ -104,7 +104,14 @@ public class HB implements Visitor<ExpCore> {
     }
 @Override
 public ExpCore visit(UpdateVar s) {
-// TODO Auto-generated method stub
-return null;
-}
+  return s.getInner().accept(this);
+  }
+@Override
+public ExpCore visit(ExpCore.OperationDispatch s) {
+  ExpCore result=null;
+  for(ExpCore ei:s.getEs()){
+    result=acc(result,ei.accept(this));
+    }
+    return result;
+  }
 }

@@ -156,6 +156,11 @@ public class PropagatorVisitor implements Visitor<Void>{
     liftPs(s.getPs());
     return null;
     }
+  public Void visit(Expression.OperationDispatch s) {
+    liftDoc(s.getDoc());
+    liftPs(s.getPs());
+    return null;
+    }
   public Void visit(ClassB s) {
     liftH(s.getH());
     s.getFields().forEach(this::liftF);

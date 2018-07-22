@@ -50,6 +50,7 @@ class ContextDirectlyIn extends ContextLocator{
   public static boolean ofRestOf(Ast.HasReceiver s){
     return (s).accept(new ReceiverExcluder<Boolean>() {
     public Boolean visit(MCall s) {return of(s.getPs());}
+    public Boolean visit(Expression.OperationDispatch s) {return of(s.getPs());}
     public Boolean visit(FCall s) {return of(s.getPs());}
     public Boolean visit(SquareCall s) {
       for(Parameters ps:s.getPss()){if(of(ps)){return true;}}

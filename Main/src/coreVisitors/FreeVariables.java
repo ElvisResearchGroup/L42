@@ -57,6 +57,11 @@ public class FreeVariables implements Visitor<Set<String>>{
     for(ExpCore e:s.getEs()){e.accept(this);}
     return s.getInner().accept(this);
   }
+  @Override
+  public Set<String> visit(ExpCore.OperationDispatch s) {
+    for(ExpCore e:s.getEs()){e.accept(this);}
+    return collected;
+  }
   public Set<String> visit(ExpCore.UpdateVar s) {
     if(!inScope.contains(s.getVar())){
       collected.add(s.getVar());

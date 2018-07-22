@@ -64,6 +64,7 @@ public class CheckTerminatingBlock implements Visitor<Void> {
   public Void visit(DocE s) {return fail(s);}
   public Void visit(UnOp s) {return fail(s);}
   public Void visit(MCall s) {return fail(s);}
+  public Void visit(Expression.OperationDispatch s) {return fail(s);}
   public Void visit(FCall s) {return fail(s);}
   public Void visit(SquareCall s) {return fail(s);}
   public Void visit(SquareWithCall s) {return fail(s);}

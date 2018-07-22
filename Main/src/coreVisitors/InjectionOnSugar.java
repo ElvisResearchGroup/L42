@@ -73,8 +73,19 @@ public class InjectionOnSugar implements Visitor<ast.Expression> {
     ast.Ast.Parameters ps=new ast.Ast.Parameters(Optional.<ast.Expression>empty(), xs, es);
     Position pos=s.getP();
     return new Expression.MCall(receiver,name,docs,ps,pos);
-  }
+    }
 
+  @Override public Expression visit(ExpCore.OperationDispatch s) {
+    String name=s.getS().nameToS();
+    Doc docs = s.getDoc();
+    List<String> xs=s.getS().getNames();
+    List<ast.ExpCore> es1=s.getEs();
+    List<ast.Expression> es=new ArrayList<ast.Expression>();
+    for( ast.ExpCore e : es1){es.add(lift(e));}
+    ast.Ast.Parameters ps=new ast.Ast.Parameters(Optional.<ast.Expression>empty(), xs, es);
+    Position pos=s.getP();
+    return new Expression.OperationDispatch(name,docs,ps,pos);
+    }
   @Override public Expression visit(Block s) {
     Doc docs=s.getDoc();
     Expression inner=lift(s.getInner());

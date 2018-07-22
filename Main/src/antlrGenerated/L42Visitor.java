@@ -103,6 +103,13 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	T visitDocs(@NotNull L42Parser.DocsContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#hqRound}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHqRound(@NotNull L42Parser.HqRoundContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

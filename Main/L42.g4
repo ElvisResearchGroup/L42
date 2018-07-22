@@ -82,6 +82,7 @@ ClassSep: '.';
 MX:Lowercase (Uppercase|Lowercase|Digit|'#')*'(';
 X:Lowercase (Uppercase|Lowercase|Digit|'#')*;
 HashX:'#'  (Uppercase|Lowercase|Digit|'#')*'(';
+HashQX:'#?'  (Uppercase|Lowercase|Digit|'#')*'(';
 ContextId: '\\'  (Uppercase|Lowercase|Digit|'#')*;
 //void is a particular X, syntactically
 
@@ -131,8 +132,11 @@ eL1:
 numParse: NumParse;
 eUnOp: UnOp? /*numParse?*/ ePost;
 ePost: eAtom  (squareW|square|Dot mCall|ORoundNoSpace round|docs | stringParse)*;
-eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block|ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot | mxRound | useSquare|numParse? contextId;
+eAtom:classBReuse|classB|numParse? x | xOp|numParse? Path|numParse? block 
+  |ifExpr|whileExpr| signalExpr| loopExpr |WalkBy | w |using | DotDotDot
+  | mxRound | hqRound| useSquare|numParse? contextId;
 mxRound: MX round;
+hqRound: HashQX round;
 contextId: ContextId;
 useSquare: Using square | Using squareW;
 ifExpr: If eTop block (Else eTop)?;

@@ -94,6 +94,10 @@ public class CloneVisitor implements Visitor<ExpCore>{
       liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP(),
       liftTNull(s.getTypeRec()),liftTNull(s.getTypeOut()));
   }
+  public ExpCore visit(ExpCore.OperationDispatch s) {
+    return new ExpCore.OperationDispatch(liftMs(s.getS()),
+      liftDoc(s.getDoc()),Map.of(this::lift,s.getEs()),s.getP());
+      }
   public ExpCore visit(Block s) {
     return new Block(liftDoc(s.getDoc()),
       liftDecs(s.getDecs()),lift(s.getInner()),Map.of(this::liftO,s.getOns()),
