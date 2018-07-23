@@ -282,7 +282,7 @@ public class ReplMain {
 
         this.first2Line="reuse "+cacheLibUrl+"\n"+className+":"+"Load.cacheTowel()";
 
-        sc.useDelimiter("\\z"); //rest of the content
+        sc.useDelimiter("\\Z"); //rest of the content
         this.restOfCode=sc.next();
       } catch (UnsupportedEncodingException e) {
         throw new IllegalArgumentException(e);

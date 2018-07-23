@@ -124,6 +124,41 @@ C:{}+{
 
 
 
+--------------------------------------------------------------------------------------------------------
+---------------------------------------------------------
+--list, we can assume is declared independently of map ---
+list:{
+ E:{}
+ Iter:{E next()=..; Bool hasNext()=..;}
+ This empty()=..
+ Void add(E e)=..
+ Iter toIter()=..
+ }
+--map declaration--
+map={
+ TIn:{}
+ TOut:{}
+ CIn:list(E=TIn)
+ COut:list(E=TOut)
+ TOut f(TIn);
+ COut map(CIn c)={
+  COut res=COut.empty()
+  COut.Iter i=c.toIter()
+  while(i.hasNext()){res.add(this.f(i.next()));}
+  return res;
+  }
+ }
+---usage---
+LN:list(E=Num)
+LS:list(E=S)
+MyMapper:map(CIn=LN)(COut=Ls)+{Ls f(Num n)="["+n+"]"; constructor()}
+//full 42   --  MyMapper:Map(LN,Ls,{Ls (Num n)="["+n+"]"})
+LS myLS=MyMapper().map(myLN)
+
+Negate:{
+  MyMapper:map(CIn=LS)(COut=LN)+{LN f(S s)=s.parseNum(); constructor()}
+  Ln(LS v)=MyMapper.map(v)
+  }
 
 
 

@@ -263,20 +263,21 @@ private List<CsPath> verified;
     //throw Errors42.errorMethodClash(current.getPath().getCBar(),mwtSrc,mwtDest,excOk,parWrong,retOk, thisMdfOk,false);
     }
   private boolean plusEqualAndExc(List<CsSPath> ambiguities, List<CsMwtPMwt> exceptions, List<Ast.C> src,MethodWithType mwtSrc,Path pathDest, MethodWithType mwtDest) throws IncoherentMapping {
-    int countExternal=0;
-    int countExternalSatisfied=0;
+    //int countExternal=0;
+    //int countExternalSatisfied=0;
     List<Path> srcExc = Map.of(t->t.getPath(),mwtSrc.getMt().getExceptions());
     List<Path> destExc = Map.of(t->t.getPath(),mwtDest.getMt().getExceptions());
     exceptions.add(new CsMwtPMwt(src,mwtSrc,pathDest,mwtDest));
     for(Path pi:srcExc){
       if(pi.isPrimitive() || pi.outerNumber()>0){
-        countExternal+=1;
-        if(destExc.contains(pi)){countExternalSatisfied+=1;}
+        //countExternal+=1;
+        //if(destExc.contains(pi)){countExternalSatisfied+=1;}
         continue;}
       plusEqual(ambiguities,pi.getCBar(),destExc);
     }
-    int countInternal=srcExc.size()-countExternal;
-    return countInternal+countExternalSatisfied>=destExc.size();
+    //int countInternal=srcExc.size()-countExternal;
+    //return countInternal+countExternalSatisfied>=destExc.size();
+    return true;//we think the former line could never made a difference
   }
   private boolean redirectOkT(List<CsSPath> ambiguities, Type tSrc, Type tDest) throws IncoherentMapping {
     if(!tSrc.getClass().equals(tDest.getClass())){

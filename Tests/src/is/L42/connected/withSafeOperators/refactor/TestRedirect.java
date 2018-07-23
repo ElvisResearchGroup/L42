@@ -710,6 +710,40 @@ public static class TestRedirect1 {
                 )
           .str(), true
 */
+
+
+    },{
+      lineNumber(), new String[]{"{A:{method Void() exception This1.A Library }}"},
+       "{InnerA:{method Void() exception This2.A Library }\n"+
+       " B:{ method InnerA m(InnerA a) a}}","This0.InnerA","This1.A",
+        "{B:{ method This2.A m(This2.A a) a}}",false
+    },{
+      lineNumber(), new String[]{"{}"},
+       "{I: {interface}, C:{implements I, Any}}",
+       "This0.I","Any",
+        "{C:{implements Any, Any}}",false
+/*
+ Test1
+  EI1 
+  B{    Any }
+ -- 
+  {I1:{interface}
+  A{ I1 Any }       // I1 -> {Any}
+  }[A into B]
+  output: either error or  A->B, I1->Any
+  -----------
+  Test2
+  EI1 
+  B{EI1 Any}
+  
+  {I1:{interface}
+  A{ I1 Any}
+  }[A into B] // I1 -> {EI1, Any}
+  output: either errorIncoherent or  A->B, I1->Any or  A->B,I1->EI1
+  
+ 
+ */
+
     }});
     return TestHelper.skipUntilLine(tests, startLine);
 }

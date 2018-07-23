@@ -46,7 +46,8 @@ public class Origin {
     }
   //public boolean equalequal(Object that){return this.equals(that);}
   public String toS(){
-    String name = L42.root.toString();
+    String name = "<programUnderTest>";
+    if(L42.root!=null) {name=L42.root.toString();}
     String f=this.fileName();
     if(f.startsWith(name)){
       f=f.substring(name.length(), f.length());

@@ -1,59 +1,65 @@
-A::= (Cs->Pz)z //fuctional, well formedness: Pz is never empty
-V::= (Cs->P)z //fuctional
-E::= (Pz1,Pz2)z
+A ::= (Cs->Pz)z //fuctional, well formedness: Pz is never empty
+V ::= (Cs->P)z  //fuctional
+E ::= (Pz1,Pz2)z
 
-Define A  ++ Cs -> Pz =A0
-Cs -> Pz,A  ++ Cs -> Pz’ =A,Cs -> Pz disj Pz’ //well formedness influential here
-A  ++ Cs -> Pz’ = A, Cs -> Pz’
- 
-Define Thisn.P=P’
-  Thisn . Thisk.Cs=This(n+k).Cs
-  Thisn . P=P otherwise //this includes Any,Void,Library
+Define A ++ Cs -> Pz = A0
+  Cs -> Pz, A  ++ Cs -> Pz' = A,Cs -> Pz intersect Pz' //well formedness influential here
+  A ++ Cs -> Pz' = A, Cs -> Pz'
+
+Define Thisn.P=P'
+  Thisn . Thisk.Cs = This(n+k).Cs
+  Thisn . P = P otherwise //this includes Any,Void,Library
 
 Define redirect(p,L,Cs,P)=L0
-  Cs1->P1..Csn->Pn;E=computeMapsAll(p.evilPush(L) ; Cs ->{This1.P};empty;empty)
+  V;E=computeMapsAll(p.evilPush(L) ; Cs ->{This1.P}; empty;empty)
   //former call will go to error if we can not reduce A to empty
-  FOR (Pz1, Pz2) in E: //Those two lines need explanation. How E1++E2 is defined?
-  ERROR IF not Pz2 subsetof  {P | P in Pz1, P.n>0} U {Pi | This0.Csi in Pz1}
+  FOR (Pz1, Pz2) in E:
+  ERROR if exists (Pz1, Pz2) in E :
+    not Pz2 subsetof  {P | P in Pz1, Outer(P)} U {V(Cs) | This0.Cs in Pz1}
   
-  Css=minimize(Cs1..Csn)
-  L0 = L[remove Css][rename Cs1->P1][rename Csn->Pn]
+  Css=minimize(dom(V)) // NEW
+  L0 = L[remove Css][rename V]
 
 Define computeMapsAll(p;A0;V0;E0)=V;E
-computeMapsAll(p;empty;V;E)=V;E
-computeMapsAll(p;Cs->{P},A0;V0;E0)= compute(p;reduceAV(A,V);V;E0,E)
-  A;E=computeMaps(p.evilPush(L) ;Cs ->P; A0)
-  V=V0,{Cs -> P}
+  computeMapsAll(p;empty;V;E)=V;E
+  computeMapsAll(p;Cs->{P},A0;V0;E0)= computeMasAll(p;reduceAV(A;V);V;E0,E)
+    A;E=computeMaps(p.evilPush(L);Cs ->P; A0)
+    V=V0,{Cs -> P}
 
-Define computeMaps(p;Cs->{P};A)=A2;E  
-  ERROR IF Cs = empty ? Private(Cs) ?p.top()(Cs) undefined
-  L  = p(This0.Cs) , ERROR IF  refine? mh_n e? in L or refine? mh e in L 
-  L' = p(P) 
-  ERROR IF L is interface and not L’ is interface
-  ERROR IF L is not interface, mwt in L, mwt.mdf=class and L’ is interface
+Define computeMaps(p;Cs->P;A)=A2;E  
+  ERROR IF Cs = empty or Private(Cs) or p(This0.Cs) undefined
+  L  = p(This0.Cs)
+  ERROR IF refine? mh_n e? in L or refine? mh e in L 
+  L' = p(P)
+  ERROR IF L is interface and L' is not interface
+  ERROR IF L is not interface, mwt in L, mwt.mdf=class and L' is interface // CHANGE
   This0.Cs1,..,This0.Csn, P1..Pk  =  L.Ps[from This0.Cs], where Pi.n>0
-  Ps' = L’.Ps[from P]
-  ERROR IF Ps != empty ? Ps' = empty
+  Ps' = L'.Ps[from P]
+  ERROR IF Ps' = empty and Ps != empty
   ERROR IF Pi notin Ps' //will need to use equiv or even subtyping
-  A0=A + Cs1 -> Ps' + .. + Csn -> Ps'
-  mwt1,..,mwtn,nc1,..,nck= L.Ms[from This0.Cs]//note: implementation does not need to from ncs
-  ERROR IF mwti.ms notin Dom(L')
-  A1=A0 + nc1.C -> P.(nc1.C) + .. + nck.C -> P.(nck.C)
-  mwt’i=L’(mwt.ms)[from P] //note: implementation does not need to from the meth body
-  A2=A1+computeMaps(p;A1;V;E;mwt1,mwt’1)+ … +computeMaps(p;A1;V;E;mwtn,mwt’n)  
-  E=(mwt1.Ps,mwt’1.Ps),..,(mwtn.Ps,mwt’n.Ps)
+  A0=A ++ Cs1 -> Ps' ++ .. ++ Csn -> Ps'
+  mwt1,..,mwtn,nc1,..,nck= L.Ms[from This0.Cs] //note: implementation does not need to from ncs
+  ERROR IF mwti.ms not in Dom(L')
+  A1=A0 ++ Cs.(nc1.C) -> P.(nc1.C) ++ .. ++ Cs.(nck.C) -> P.(nck.C)
+  mwt'i = L'(mwti.ms)[from P] //note: implementation does not need to from the method body
+  A2=A1++computeMaps(p;mwt1,mwt'1)++... ++computeMaps(p;mwtn,mwt'n)  
+  E=(mwt1.Ps,mwt'1.Ps),..,(mwtn.Ps,mwt'n.Ps)
 
-Define reduceAV(A,V)=A \ {Csn -> A(Csn)} .. \{Csn -> A(Csn)}
-  V=Cs1 -> P1..Csn -> Pn
-  ERROR IF Pi notin A(Csi)
-
-Define computeMaps(p;mwt1,mwt2)=A0+..+An+Cs1->Ps'+..+Csk->Ps'
-  refine? mdf method T m(T1 x1 ..Tn xn)exception This0.Cs1..This0.Csk,Ps
-  refine? mdf’ method T’ m(T’1 x1 ..T’n xn)exception Ps’
-  forall P in Ps, P.n>0
-  ERROR IF mdf != mdf’
+Define reduceAV(A;V) = A0
+  reduceAV(Cs->{P, _},A; Cs->P,V) = reduceAV(A; V)
+  reduceAV(A; Cs->P,V) = reduceAV(A; V), where Cs not in dom(A)
+  reduceAV(A; empty) = A
+  
+Define computeMaps(p;mwt1,mwt2)=A0++..++An+Cs1->Ps'+..+Csk->Ps'
+  refine? mdf method T0 m(T1 x1 ..Tn xn)exception This0.Cs1..This0.Csk,Ps
+  refine? mdf' method T'0 m(T'1 x1 ..T'n xn)exception Ps'
+  forall P in Ps, Outer(P)
+  ERROR IF mdf != mdf'
   ERROR IF Ti.mdf != T'i.mdf
-  ERROR IF Ti.P != T'i.P and Ti.P.n>0
-  if Ti.P.n>0 Ai={}
+  ERROR IF Ti.P != T'i.P and Outer(Ti.P)
+  if Outer(Ti.P) Ai={}
   otherwise Ai=Ti.P.Cs -> {T'i.P}
-  ERROR IF #Ps' < k + #((Ps \ POs) disj Ps') ????
+  
+
+  
+  

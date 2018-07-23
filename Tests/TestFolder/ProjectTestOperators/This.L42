@@ -8,11 +8,16 @@ CheckEq:{
     )
   }
   
-Ext:{method Void foo() exception S, Library}
+Ext:{method S foo() exception S, Library}
 IsaacExample:{
-  l1={ A:{method Void foo() exception Num, S}}
+  l1={ Blah:{} A:{method Blah foo() exception Blah, Num, S}}
   l2=Refactor2.redirect(path:\"A" into: Ext)<><l1
-  catch exception Refactor2.MethodClash x void
+  catch exception Refactor2.MethodClash x (
+    Debug(S.nl()++S.nl()++S.nl())
+    Debug(x)
+    Debug(S.nl()++S.nl()++S.nl())
+    return ExitCode.normal()
+    )
   error X"should have failed"
   return ExitCode.normal()
   }
