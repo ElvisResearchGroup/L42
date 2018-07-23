@@ -9,7 +9,7 @@ DEFINE Redirect(p, L0, C0s, P0) ≔
 
 	WHILE LET {P} ≔ A(Cs):
 		ERROR IF Cs = ∅ ∨ Private(Cs) ∨ PathDefined(L0, Cs)
-		
+		 
 		L  ≔ L0[Cs]
 		L′ ≔ p[P]
 
@@ -25,7 +25,7 @@ DEFINE Redirect(p, L0, C0s, P0) ≔
 				IF Outer(P):
 					ERROR IF P ∉ Ps′
 				ELSE:
-					A ⧺= P.Cs ↦ Ps′
+					A ⧺= P.Cs ↦ Ps′\{P ∈ Ps | Outer(P)}
 
 		FOR M ∈ L.Ms: // Redirect Members
 			ERROR IF M.Id ∉ Dom(L′.Ms)
