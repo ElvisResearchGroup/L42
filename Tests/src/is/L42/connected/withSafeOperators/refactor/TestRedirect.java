@@ -722,26 +722,73 @@ public static class TestRedirect1 {
        "{I: {interface}, C:{implements I, Any}}",
        "This0.I","Any",
         "{C:{implements Any, Any}}",false
+    },{
+      lineNumber(), new String[]{"{"+
+          "EA:{interface method Void ma()}\n" +
+          "EB:{interface method Void mb()}\n" +
+          "E:{implements This1.EA This1.EB}}"},
+          "{\n" +
+          " I:{implements IA IB}\n" +
+          " IA:{interface method Void ma()} IB:{interface method Void mb()}\n" +
+          " }",
+          "This0.I","This1.E",
+        "{}",false
+    },{lineNumber(), new String[]{"{"+
+            "E: {interface method Void equals() method Void foo()} \n" +
+            "EA: {implements This1.E}}"},
+            "{\n"+
+            "A: {implements This1.I, This2.E}\n"+
+            "I: {interface implements This2.E refine method Void foo()}\n" +
+            "method I foo()\n" +
+            "}",
+            "This0.A", "This1.EA",
+            "{method This1.E foo()}", false
+    },{lineNumber(), new String[]{"{"+
+    "E1: {interface} E2: {interface}\n" +
+    "EA: {implements This1.E1 This1.E2}}"},
+    "{\n"+
+    "A: {implements This1.I, This2.E2}\n"+
+    "I: {interface}\n" +
+    "method I foo()\n" +
+    "}",
+    "This0.A", "This1.EA",
+    "{method This1.E foo()}", false
+    },{lineNumber(), new String[]{"{"+
+    "EI2:{interface method Void foo()}\n" +
+    "EI1:{interface implements EI2 method Void bar()}\n" +
+    "E:{implements EI1}\n"+
+    "}"
+    },
+    "{\n"+
+    "I:{interface method Void foo()}"+
+    "A:{implements I}"+
+    "method I m(I x)" +
+    "}",
+    "This0.A", "This1.E",
+    "IncoherentMapping::\n" +
+    "verified:[A->This1.E]\n" +
+    "ambiguities:[I->[This1.EI1, This1.EI2]]", true
+
 /*
  Test1
-  EI1 
+  EI1
   B{    Any }
- -- 
+ --
   {I1:{interface}
   A{ I1 Any }       // I1 -> {Any}
   }[A into B]
   output: either error or  A->B, I1->Any
   -----------
   Test2
-  EI1 
+  EI1
   B{EI1 Any}
-  
+
   {I1:{interface}
   A{ I1 Any}
   }[A into B] // I1 -> {EI1, Any}
   output: either errorIncoherent or  A->B, I1->Any or  A->B,I1->EI1
-  
- 
+
+
  */
 
     }});

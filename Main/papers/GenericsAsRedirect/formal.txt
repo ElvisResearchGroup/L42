@@ -2,10 +2,10 @@ A ::= (Cs->Pz)z //fuctional, well formedness: Pz is never empty
 V ::= (Cs->P)z  //fuctional
 E ::= (Pz1,Pz2)z
 
-Define GuessTargets(A; p; Cs; Pz)
-	GuessTargets(A; p; Cs; P, Pz) = P, Guess(p; Cs; Pz)
+Define GuessTargets(A; p; Cs; Pz) // TODO: New
+	GuessTargets(A; p; Cs; P, Pz) = P, GuessTargets(p; Cs; Pz)
 		where: exists A';E: computeMaps(p; Cs->P; A) = A'; E
-			//p(This0.Cs) subseteq dom(p(P))
+			//dom(p(This0.Cs)) subseteq dom(p(P))
 
 	GuessTargets(A; p; Cs; P, Pz) = GuessTargets(p; Cs; Pz) // otherwise
 	GuessTargets(A; p; Cs; empty) = empty
@@ -68,6 +68,94 @@ Define computeMaps(p;mwt1,mwt2)=A0 ++p .. ++p An+Cs1->Ps'+..+Csk->Ps'
   if Outer(Ti.P) Ai={}
   otherwise Ai=Ti.P.Cs -> {T'i.P}
   
+------------------------------------------------------------------
 
+V(L) := LO
+  L0 = L[rename V] // TODO: Define ???
+
+
+p|- Ts->T;Ps <= Ts'->T';Ps'; iff:
+	p|-T <= T'
+	p|-Ts' <= Ts
+	forall P in Ps: exists P' in Ps': p|-P <= P'
+
+RedirectSet(L, Cs) = Csz
+	Cs in Csz
+
+	Cs1 in Csz
+		C in dom(L[Cs1])
+				then Cs1.C in Csz
+
+	Cs1 in Csz
+		This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
+			then Cs2 in Csz
+
+Where:
+	Paths({interface? implements Ps; Mwt0, ..., Mwtn; NCs})
+		= Ps,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
+  Paths(Ts->T;Ps) = Ps,Ts.Ps,T.P
+
+Redirect(p, L, Cs, P) = L0
+	iff:
+		Exists a unique V such that Remove(V(L), dom(V))=L0,
+			Cs->P in V
+			where dom(V) = RedirectSet(L, Cs)
+			and forall Cs' in dom(V):
+					let P := V(Cs')
+          V(L)[Cs'][from This0.Cs'] <p  P;p(P)[from P]
+--------------------------------------------------------------------------------------
+{interface? implements Ps; Mwts; NCs} <p P;{interafce?' implements Ps'; Mwts'; NCs'} iff:
+	if interface? != interface?'
+			then  interface? = empty, and interface?' = interface  and _ class method_ not in Mwts
+
+	forall MS in Dom(Mwts):
+			p|-Mwts'(MS).MT <= Mwts.MT
+
+	Ps subseteq Ps',P
+------------------------------------------
   
   
+-----------
+Implementation
+
+
+RedirectSetA(L, Cs, P, p) = A // RedirectSet(L, Cs)=dom(redirectSetA(L, Cs, P, p))
+	Cs->P in A
+
+	if Cs1->Pz1 in A then:
+		if C in dom(L[Cs1]) then:
+				then Cs1.C->{P in Pz1 | C in dom(p(P)) : P.C } in A // well formedness could cause error
+		
+		if This0.Cs2 in L[Cs1][from This0.Cs1].Ps then:
+            Cs2->U{P in Pz1  | Outers(L[Cs1][from this0.Cs1] subset p(P).Ps) : p(P).Ps} in A
+    
+        for each Mwt in L[Cs1][from This0.Cs1]:
+            Let Ts->T;Ps = Mwt.MT
+            
+            LOOP1: FOR EACH P in Pz1:
+                IF LET Mwt' := p(P)(Mwt.MS):
+                    let Ts'->T';Ps' = Mwt'.MT
+                    
+                    Cs0->P'0,...,Csn->P'n = FOR EACH (Tr,Tr') in Zip(T,Ts;T',Ts'):
+                        IF Tr.mdf != Tr'.mdf:
+                            CONTINUE LOOP1
+
+                        IF Outer(Tr.P):
+                            IF Tr.P != Tr.P1: CONTINUE LOOP1
+                        ELSE:
+                            YIELD Tr.P.Cs -> Tr'.p;
+                    
+                    // IGNORING EXCEPTION SUBTYPING
+                    LOOP2: Csn+1,P'n+1,...,Csk->P'k = FOR EACH P' in Ps'
+                        IF P' in Ps:
+                            CONTINUE LOOP2;
+                        ELSE:
+                            ERROR IF Ps = empty
+                            FOR EACH P IN Ps:
+                                 YIELD P.Cs -> P'
+                    Combine(Cs0->P'0, ..., Csk->P'k) subset eq A
+                   
+Where:
+	Paths({interface? implements Ps; Mwt0, ..., Mwtn; NCs})
+		= Ps,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
+  Paths(Ts->T;Ps) = Ps,Ts.Ps,T.P
