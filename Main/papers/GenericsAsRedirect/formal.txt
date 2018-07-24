@@ -2,9 +2,17 @@ A ::= (Cs->Pz)z //fuctional, well formedness: Pz is never empty
 V ::= (Cs->P)z  //fuctional
 E ::= (Pz1,Pz2)z
 
-Define A ++ Cs -> Pz = A0
-  Cs -> Pz, A  ++ Cs -> Pz' = A,Cs -> Pz intersect Pz' //well formedness influential here
-  A ++ Cs -> Pz' = A, Cs -> Pz'
+Define GuessTargets(A; p; Cs; Pz)
+	GuessTargets(A; p; Cs; P, Pz) = P, Guess(p; Cs; Pz)
+		where: exists A';E: computeMaps(p; Cs->P; A) = A'; E
+			//p(This0.Cs) subseteq dom(p(P))
+
+	GuessTargets(A; p; Cs; P, Pz) = GuessTargets(p; Cs; Pz) // otherwise
+	GuessTargets(A; p; Cs; empty) = empty
+
+Define A ++p Cs -> Pz = A0
+  Cs -> Pz, A  ++p Cs -> Pz' = A,Cs -> Pz intersect GuessTargets(A; p; Cs; Pz') //well formedness influential here
+  A ++p Cs -> Pz' = A, Cs -> GuessTargets(A; p; Cs; Pz')
 
 Define Thisn.P=P'
   Thisn . Thisk.Cs = This(n+k).Cs
@@ -37,12 +45,12 @@ Define computeMaps(p;Cs->P;A)=A2;E
   Ps' = L'.Ps[from P]
   ERROR IF Ps' = empty and Ps != empty
   ERROR IF Pi notin Ps' //will need to use equiv or even subtyping
-  A0=A ++ Cs1 -> Ps' ++ .. ++ Csn -> Ps'
+  A0=A ++p Cs1 -> Ps' ++p .. ++p Csn -> Ps'
   mwt1,..,mwtn,nc1,..,nck= L.Ms[from This0.Cs] //note: implementation does not need to from ncs
   ERROR IF mwti.ms not in Dom(L')
-  A1=A0 ++ Cs.(nc1.C) -> P.(nc1.C) ++ .. ++ Cs.(nck.C) -> P.(nck.C)
+  A1=A0 ++p Cs.(nc1.C) -> P.(nc1.C) ++p .. ++p Cs.(nck.C) -> P.(nck.C)
   mwt'i = L'(mwti.ms)[from P] //note: implementation does not need to from the method body
-  A2=A1++computeMaps(p;mwt1,mwt'1)++... ++computeMaps(p;mwtn,mwt'n)  
+  A2=A1 ++p computeMaps(p;mwt1,mwt'1)++p... ++p computeMaps(p;mwtn,mwt'n)
   E=(mwt1.Ps,mwt'1.Ps),..,(mwtn.Ps,mwt'n.Ps)
 
 Define reduceAV(A;V) = A0
@@ -50,7 +58,7 @@ Define reduceAV(A;V) = A0
   reduceAV(A; Cs->P,V) = reduceAV(A; V), where Cs not in dom(A)
   reduceAV(A; empty) = A
   
-Define computeMaps(p;mwt1,mwt2)=A0++..++An+Cs1->Ps'+..+Csk->Ps'
+Define computeMaps(p;mwt1,mwt2)=A0 ++p .. ++p An+Cs1->Ps'+..+Csk->Ps'
   refine? mdf method T0 m(T1 x1 ..Tn xn)exception This0.Cs1..This0.Csk,Ps
   refine? mdf' method T'0 m(T'1 x1 ..T'n xn)exception Ps'
   forall P in Ps, Outer(P)
