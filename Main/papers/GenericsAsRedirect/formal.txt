@@ -127,7 +127,7 @@ RedirectSetA(L, Cs, P, p) = A // RedirectSet(L, Cs)=dom(redirectSetA(L, Cs, P, p
 				then Cs1.C->{P in Pz1 | C in dom(p(P)) : P.C } in A // well formedness could cause error
 		
 		if This0.Cs2 in L[Cs1][from This0.Cs1].Ps then:
-            Cs2->U{P in Pz1  | Outers(L[Cs1][from this0.Cs1] subset p(P).Ps) : p(P).Ps} in A
+            Cs1->U{P in Pz1 | Outers(L[Cs1][from This0.Cs1]) susbset eq p(P).Ps : p(P).Ps} in A
     
         for each Mwt in L[Cs1][from This0.Cs1]:
             Let Ts->T;Ps = Mwt.MT
@@ -150,12 +150,16 @@ RedirectSetA(L, Cs, P, p) = A // RedirectSet(L, Cs)=dom(redirectSetA(L, Cs, P, p
                         IF P' in Ps:
                             CONTINUE LOOP2;
                         ELSE:
-                            ERROR IF Ps = empty
                             FOR EACH P IN Ps:
                                  YIELD P.Cs -> P'
+                    
                     Combine(Cs0->P'0, ..., Csk->P'k) subset eq A
                    
 Where:
 	Paths({interface? implements Ps; Mwt0, ..., Mwtn; NCs})
 		= Ps,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
   Paths(Ts->T;Ps) = Ps,Ts.Ps,T.P
+
+  
+  
+  
