@@ -1,0 +1,59 @@
+A := // Possible Redirects
+E := // Impossible redirects
+
+GU := // Unprocessed redirects
+GP := // Processed redirects
+--------------------------------
+
+let A@B = C;D
+Where:	C = A intersect B
+	D = A\B
+
+Remove an 'unprocessed' Cs->P from U:
+
+Trim(Cs,P)	// Trim's the two paths to outer-most
+		// C that is in the redirect set...
+
+// S is the state of the algorithm
+RedirectCheckClass(Cs->P) = 
+	let L := p(This0.Cs)[from This0.Cs]
+	let L' := p(P)[from P]
+
+	ERROR if not InterfaceCheck(L, L'):
+	ERROR if dom(L) not subseteq dom(L')
+
+	// Check the implements
+	RedirectCheckImpls(L.Ps; P,L'.Ps)
+	
+	for all C in dom(L.NCs)
+		// This will terminate at the leaf nested-classes
+		RedirectCheckClass(Cs.C->P.C)
+
+	for all MS in dom(L.Mwts):
+		RedirectCheckM(L(MS).Mt, L'(MS).Mt)
+
+RedirectCheckImpls(This0.Css,Ps; Ps')
+	ERROR IF Ps not subseteq Ps'
+	
+	for each Cs in Css
+		RequireRedirect(This0.Cs; Ps')
+	
+RedirectCheckM(Ts->T;This0.Css,Ps | Ts'->T';Ps'''):
+	let Ps'';Ps' = Ps'''@Ps
+		
+	forall (T, T') in Zip(T,Ts; T',Ts')
+		ERROR if T.mdf != T'.mdf
+		RequireRedirect(T.P; T'.P)
+	
+	ERROR if #Ps' > #Css
+	for P' in Ps':
+		RequireRedirect(This0.Css; P')
+
+		
+RequirRedirect(Pz;Pz) // ??? could evaluate to ERROR, or ortherwise do some state manipulation
+
+
+
+
+
+	
