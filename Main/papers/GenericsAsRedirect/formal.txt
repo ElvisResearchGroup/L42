@@ -24,7 +24,7 @@ Define redirect(p,L,Cs,P)=L0
   FOR (Pz1, Pz2) in E:
   ERROR if exists (Pz1, Pz2) in E :
     not Pz2 subsetof  {P | P in Pz1, Outer(P)} U {V(Cs) | This0.Cs in Pz1}
-  
+
   Css=minimize(dom(V)) // NEW
   L0 = L[remove Css][rename V]
 
@@ -34,10 +34,10 @@ Define computeMapsAll(p;A0;V0;E0)=V;E
     A;E=computeMaps(p.evilPush(L);Cs ->P; A0)
     V=V0,{Cs -> P}
 
-Define computeMaps(p;Cs->P;A)=A2;E  
+Define computeMaps(p;Cs->P;A)=A2;E
   ERROR IF Cs = empty or Private(Cs) or p(This0.Cs) undefined
   L  = p(This0.Cs)
-  ERROR IF refine? mh_n e? in L or refine? mh e in L 
+  ERROR IF refine? mh_n e? in L or refine? mh e in L
   L' = p(P)
   ERROR IF L is interface and L' is not interface
   ERROR IF L is not interface, mwt in L, mwt.mdf=class and L' is interface // CHANGE
@@ -57,7 +57,7 @@ Define reduceAV(A;V) = A0
   reduceAV(Cs->{P, _},A; Cs->P,V) = reduceAV(A; V)
   reduceAV(A; Cs->P,V) = reduceAV(A; V), where Cs not in dom(A)
   reduceAV(A; empty) = A
-  
+
 Define computeMaps(p;mwt1,mwt2)=A0 ++p .. ++p An+Cs1->Ps'+..+Csk->Ps'
   refine? mdf method T0 m(T1 x1 ..Tn xn)exception This0.Cs1..This0.Csk,Ps
   refine? mdf' method T'0 m(T'1 x1 ..T'n xn)exception Ps'
@@ -67,7 +67,7 @@ Define computeMaps(p;mwt1,mwt2)=A0 ++p .. ++p An+Cs1->Ps'+..+Csk->Ps'
   ERROR IF Ti.P != T'i.P and Outer(Ti.P)
   if Outer(Ti.P) Ai={}
   otherwise Ai=Ti.P.Cs -> {T'i.P}
-  
+
 ------------------------------------------------------------------
 
 V(L) := LO
@@ -113,53 +113,117 @@ Redirect(p, L, Cs, P) = L0
 
 	Ps subseteq Ps',P
 ------------------------------------------
-  
-  
+
+
 -----------
 Implementation
 
 
-RedirectSetA(L, Cs, P, p) = A // RedirectSet(L, Cs)=dom(redirectSetA(L, Cs, P, p))
-	Cs->P in A
+A(Cs) = {P | Cs->P in CsPz}
+CsP::=Cs -> P
+A ::= CsPz
+------------------
 
+Outers(This0.Cs0, ...., This0.Csn, Ps) = Ps
+	where This0.Cs not in Ps
+
+Define
+A;B ==>p A';B'
+
+Cs -> P,A;B ==>p  Cs.C0->P.C0,...,Cs.Cn->P.Cn, Cs->P, A;B
+	C0,...,Cn, MSs = dom(p(This0.Cs))
+ 	C0,...,Cn subseteq dom(p(P))
+
+Cs -> P,A;B ==>p  A; Cs->P,B
+	C0,...,Cn, MSs = dom(p(This0.Cs))
+	exists i such that:
+	  Cs.Ci->P.Ci in B or Ci notin dom(p(P))
+----------------------------------------------------
+If:		Ps ---> Ps'
+Then for all P in Ps, V(P) in Ps',P0
+
+----------------------------------------
+Cs->P,A;B ==>p  Cs'->P',Cs->P,A;B
+	let Ps := p(This0.Cs).Ps[from This0.Cs]
+	let Ps' := p(P).Ps[from P]
+
+	This0.Cs' in Ps
+	P' in Ps'
+	Outers(Ps) subseteq Ps'
+
+Cs->P,A;B ==>p  A;Cs->P,B
+	let Ps := p(This0.Cs).Ps[from This0.Cs]
+	let Ps' := p(P).Ps[from P]
+	Outers(Ps) not subseteq Ps'
+	or for all P' in Ps',
+		there exists no This0.Cs' in Ps, such that This0.Cs'->P' in B
+--------------------------------------------------------
+
+Cs -> P,A;B ==>p  Cs.C0->P.C0,...,Cs.Cn->P.Cn, Cs->P, A;B
+	C0,...,Cn, MSs = dom(p(This0.Cs))
+ 	C0,...,Cn subseteq dom(p(P))
+
+Cs -> P,A;B ==>p  A; Cs->P,B
+	C0,...,Cn, MSs = dom(p(This0.Cs))
+	exists i such that:
+	  Cs.Ci->P.Ci in B or Ci notin dom(p(P))
+
+
+Define RedirectSetA(L; CsP; p) = A
+=====================================
+CsP in RedirectSetA(L; CsP; p)
+
+CsP'' in RedirectSetA(L; CsP; p):
+  CsP' in RedirectSetA(L; CsP; p)
+  CsP'' in RedirectSetA(L; CsP'; p)
+
+Cs.C'->P.C' in RedirectSetA(L; Cs -> P; p):
+	C' in dom(L(Cs)) and C' in dom(p(P))
+
+
+Cs'->P' in RedirectSetA(L; Cs -> P; p):
+	This0.Cs' in L(Cs).Ps[from This0.Cs]
+	P' in p(P).Ps[from P]
+	//if Outers(L(Cs).Ps[from This0.Cs]) subset eq p(P).Ps[from P]
+	// then Cs->P could be elided
+
+==============
+E,A -> A
+E,A -> E,E1,A
+
+----------------------------------------------------------
 	if Cs1->Pz1 in A then:
-		if C in dom(L[Cs1]) then:
-				then Cs1.C->{P in Pz1 | C in dom(p(P)) : P.C } in A // well formedness could cause error
-		
-		if This0.Cs2 in L[Cs1][from This0.Cs1].Ps then:
-            Cs1->U{P in Pz1 | Outers(L[Cs1][from This0.Cs1]) susbset eq p(P).Ps : p(P).Ps} in A
-    
         for each Mwt in L[Cs1][from This0.Cs1]:
             Let Ts->T;Ps = Mwt.MT
-            
+
             LOOP1: FOR EACH P in Pz1:
-                IF LET Mwt' := p(P)(Mwt.MS):
+                IF LET Mwt' := p(P)(Mwt.MS)[from P]:
                     let Ts'->T';Ps' = Mwt'.MT
-                    
+
                     Cs0->P'0,...,Csn->P'n = FOR EACH (Tr,Tr') in Zip(T,Ts;T',Ts'):
                         IF Tr.mdf != Tr'.mdf:
                             CONTINUE LOOP1
 
                         IF Outer(Tr.P):
-                            IF Tr.P != Tr.P1: CONTINUE LOOP1
+                            IF Tr != Tr': CONTINUE LOOP1
                         ELSE:
-                            YIELD Tr.P.Cs -> Tr'.p;
-                    
+                            YIELD Tr.P.Cs -> Tr'.P;
+
                     // IGNORING EXCEPTION SUBTYPING
-                    LOOP2: Csn+1,P'n+1,...,Csk->P'k = FOR EACH P' in Ps'
-                        IF P' in Ps:
-                            CONTINUE LOOP2;
-                        ELSE:
-                            FOR EACH P IN Ps:
-                                 YIELD P.Cs -> P'
-                    
+                    Csn+1,P'n+1,...,Csk->P'k = FOR EACH P' in Ps'
+                        IF P' not in Ps:
+                            FOR EACH This0.Cs IN Ps:
+                                 YIELD Cs -> P'
+                            ELSE:
+                            	CONTINUE LOOP1;
+
                     Combine(Cs0->P'0, ..., Csk->P'k) subset eq A
-                   
+
 Where:
 	Paths({interface? implements Ps; Mwt0, ..., Mwtn; NCs})
 		= Ps,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
   Paths(Ts->T;Ps) = Ps,Ts.Ps,T.P
 
-  
-  
-  
+
+
+
