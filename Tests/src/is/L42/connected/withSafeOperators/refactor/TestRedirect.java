@@ -767,6 +767,14 @@ public class TestRedirect {
     "IncoherentMapping::\n" +
     "verified:[A->This1.E]\n" +
     "ambiguities:[I->[This1.EI1, This1.EI2]]", true
+
+
+    },{lineNumber(),
+      new String[]{"{E:{class method Void foo()}}"},
+      "{Z:{class method Void foo() exception Z}\n"+
+       "A:{method Void foo() exception Z Z.foo()}}",
+      "This0.Z", "This1.E",
+      "{A:{method Void foo() exception This2.E This2.E.foo()}}", false
     },{lineNumber(),
         new String[]{"{E:{interface method Void foo()}}"},
         "{I:{interface} A:{implements I}}",
@@ -777,7 +785,15 @@ public class TestRedirect {
         "{I:{interface method Void foo() exception I}\n"+
          "A:{implements I refine method Void foo() exception I}}",
         "This0.I", "This1.E",
-        "{A: {implements This2.E refine method Void foo() exception This2.E }}", false
+        "{A: {implements This2.E refine method Void foo() exception This2.E }}", true
+    },{lineNumber(),
+      new String[]{"{E:{interface method Void foo() exception E}}"},
+      "{I:{interface method Void foo()}\n"+
+       "A:{implements I refine method Void foo()}"+
+       "class method (I i)i.foo()}",
+      "This0.I", "This1.E",
+      "{A: {implements This2.E refine method Void foo()}\n" +
+      "class method (I i)i.foo()}", false
     },{lineNumber(),
         new String[]{"{" +
                 "E1:{interface method Void foo()}\n" +

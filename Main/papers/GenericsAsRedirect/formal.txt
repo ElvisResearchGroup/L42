@@ -97,21 +97,28 @@ Where:
 
 Redirect(p, L, Cs, P) = L0
 	iff:
-		Exists a unique V such that Remove(V(L), dom(V))=L0,
+	     let Csz = RedirectSet(L, Cs)
+	     let LR = Remove(L, Csz)
+		Exists a unique V such
+          that V(LR)=L0,
 			Cs->P in V
-			where dom(V) = RedirectSet(L, Cs)
+			where dom(V) = Csz
 			and forall Cs' in dom(V):
 					let P := V(Cs')
-          V(L)[Cs'][from This0.Cs'] <p  P;p(P)[from P]
+          Cs';V(L)[Cs'][from This0.Cs'] <LR;p  P;p(P)[from P]
 --------------------------------------------------------------------------------------
-{interface? implements Ps; Mwts; NCs} <p P;{interafce?' implements Ps'; Mwts'; NCs'} iff:
+Cs;{interface? implements Ps; Mwts; NCs} <LR;p P;{interafce?' implements Ps'; Mwts'; NCs'} iff:
 	if interface? != interface?'
 			then  interface? = empty, and interface?' = interface  and _ class method_ not in Mwts
 
 	forall MS in Dom(Mwts):
-			p|-Mwts'(MS).MT <= Mwts.MT
+	        if Called(This0.Cs, MS, LR)
+			        p|-Mwts'(MS).MT <= Mwts.MT
+            if Refined(This0.Cs, MS, LR)
+                    p|-Mwts'(MS).MT => Mwts.MT
 
 	Ps subseteq Ps',P
+	disjoint { {Mwt.MS | Mwt in p(P) and Mwt.refine = empty} | P in Ps}
 ------------------------------------------
 
 
