@@ -273,7 +273,8 @@ private List<CsPath> verified;
         //countExternal+=1;
         //if(destExc.contains(pi)){countExternalSatisfied+=1;}
         continue;}
-      plusEqual(ambiguities,pi.getCBar(),destExc);
+      if (!destExc.isEmpty())
+        plusEqual(ambiguities,pi.getCBar(),destExc);
     }
     //int countInternal=srcExc.size()-countExternal;
     //return countInternal+countExternalSatisfied>=destExc.size();

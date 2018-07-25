@@ -26,10 +26,8 @@ import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import programReduction.Program;
 
-public class TestRedirect{
 @RunWith(Parameterized.class)
-
-public static class TestRedirect1 {
+public class TestRedirect {
 
   // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
 
@@ -44,6 +42,7 @@ public static class TestRedirect1 {
   @Parameter(4) public String _path2;
   @Parameter(5) public String _expected;
   @Parameter(6) public boolean isError;
+
   @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     ErrorCarry ec = new ErrorCarry();
@@ -768,6 +767,31 @@ public static class TestRedirect1 {
     "IncoherentMapping::\n" +
     "verified:[A->This1.E]\n" +
     "ambiguities:[I->[This1.EI1, This1.EI2]]", true
+    },{lineNumber(),
+        new String[]{"{E:{interface method Void foo()}}"},
+        "{I:{interface} A:{implements I}}",
+        "This0.I", "This1.E",
+        "{A: {implements This2.E}}", false
+    },{lineNumber(),
+        new String[]{"{E:{interface method Void foo()}}"},
+        "{I:{interface method Void foo() exception I}\n"+
+         "A:{implements I refine method Void foo() exception I}}",
+        "This0.I", "This1.E",
+        "{A: {implements This2.E refine method Void foo() exception This2.E }}", false
+    },{lineNumber(),
+        new String[]{"{" +
+                "E1:{interface method Void foo()}\n" +
+                "E2:{interface method Void foo()}\n" +
+                "E: {method E1 e1() method E2 e2()}\n" +
+        "}"},
+        "{\n" +
+            "I1:{interface} I2:{interface} \n"+
+            "B: {method I1 e1() method I2 e2()}\n"+
+            "A:{interface implements I1 I2}\n" +
+        "}",
+
+        "This0.B", "This1.E",
+            "{A: {interface implements This2.E1, This2.E2}}", false
 
 /*
  Test1
@@ -830,7 +854,4 @@ public static class TestRedirect1 {
       }
     }
   }
-}
-
-
 }
