@@ -226,4 +226,39 @@ Where:
 
 
 
+resolve(A)
+
+
+
+resolve(p;V;empty)=V
+
+resolve(p;V;Cs->P,A) = resolve(p; Cs->P,V; A)
+	where Cs not in dom(A)
+
+
+resolve(p; Cs->P,V; A)
+
+resolve(p;Cs->P0..Pn,A)=Cs->P0,A
+  for i in 1..n:
+    p(This0.Cs)[from This0.Cs] incompatible Pi,p(Pi)[from Pi]
+
+incompatible(L, L', P, p):
+	....
+
+
+
+A=redirectSrcA //fail redirect impossible
+V=resolve(A) //failed to resolve ambiguity error
+check(V)  // redirect imppssobile
+then V was a valid map wrt formalization
+
+EC1:{interface A:{ .. }}
+EC2:{interface A:{ .. }}
+ED:{implements EC1, EC2}
+
+{IC:{interface A:{ .. }}ID:{implements IC}}[ID=ED]
+
+
+
+
 
