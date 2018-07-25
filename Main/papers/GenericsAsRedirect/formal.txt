@@ -69,60 +69,84 @@ Define computeMaps(p;mwt1,mwt2)=A0 ++p .. ++p An+Cs1->Ps'+..+Csk->Ps'
   otherwise Ai=Ti.P.Cs -> {T'i.P}
 
 ------------------------------------------------------------------
+================================================================================================================
+------------------------------------------------------------------
+V ::= (Cs->P)z
 
-V(L) := LO
-  L0 = L[rename V] // TODO: Define ???
+Define V(Cs) = P:
+	Cs->P in V
 
+Define V(L) = L0
+	// TODO
 
-p|- Ts->T;Ps <= Ts'->T';Ps'; iff:
-	p|-T <= T'
-	p|-Ts' <= Ts
-	forall P in Ps: exists P' in Ps': p|-P <= P'
+Define Remove(L, Csz) = L0
+	// TODO: (remove the named classes)
 
-RedirectSet(L, Cs) = Csz
-	Cs in Csz
+Define p|- Ts->T;Pz <= Ts'->T';Pz':
+	p|- T <= T'
+	p|- Ts' <= Ts
+	forall P in Pz: exists P' in Pz': p|- P <= P'
 
+Define RedirectSet(L, Cs)=Csz:
+-----------------------------
+Cs    in RedirectSet(L, Cs)
+
+Cs1.C in RedirectSet(L, Cs):
+	Cs1 in RedirectSet(L, Cs)
+	C in dom(L[Cs1])
+
+Cs2   in RedirectSet(L, Cs):
 	Cs1 in Csz
-		C in dom(L[Cs1])
-				then Cs1.C in Csz
+	This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
 
-	Cs1 in Csz
-		This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
-			then Cs2 in Csz
+Define Paths({interface? implements Pz; Mwt0, ..., Mwtn; NCz}) = Pz,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
+	Paths(Ts->T;Pz) = Pz,Ts.Ps,T.P
 
-Where:
-	Paths({interface? implements Ps; Mwt0, ..., Mwtn; NCs})
-		= Ps,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
-  Paths(Ts->T;Ps) = Ps,Ts.Ps,T.P
+Define Redirect(p, L, Cs, P) = L0:
+	let Csz := RedirectSet(L, Cs)
+	exists a unique V such that:
+		P  = V(Cs)
+		L0 = V(Remove(L, Csz))
+		Csz = dom(V)
 
-Redirect(p, L, Cs, P) = L0
-	iff:
-	     let Csz = RedirectSet(L, Cs)
-	     let LR = Remove(L, Csz)
-		Exists a unique V such
-          that V(LR)=L0,
-			Cs->P in V
-			where dom(V) = Csz
-			and forall Cs' in dom(V):
-					let P := V(Cs')
-          Cs';V(L)[Cs'][from This0.Cs'] <LR;p  P;p(P)[from P]
---------------------------------------------------------------------------------------
-Cs;{interface? implements Ps; Mwts; NCs} <LR;p P;{interafce?' implements Ps'; Mwts'; NCs'} iff:
-	if interface? != interface?'
-			then  interface? = empty, and interface?' = interface  and _ class method_ not in Mwts
+		forall Cs' in dom(V):
+			let P' := V(Cs')
+			V(L)(Cs')[from This0.Cs'] >=p P' p(P')[from P'])
 
-	forall MS in Dom(Mwts):
-	        if Called(This0.Cs, MS, LR)
-			        p|-Mwts'(MS).MT <= Mwts.MT
-            if Refined(This0.Cs, MS, LR)
-                    p|-Mwts'(MS).MT => Mwts.MT
+Define {interface? implements Pz; Mwtz; NCz} >=p P{interafce?' implements Pz'; Mwtz'; NCz'}:
+	if interface? != interface?':
+		interface? = empty
+		interface?' = interface
+		class method_ not in Mwtz
 
-	Ps subseteq Ps',P
-	disjoint { {Mwt.MS | Mwt in p(P) and Mwt.refine = empty} | P in Ps}
-------------------------------------------
+	if interface? = interface:
+		Mwtz = Mwtz'
 
+	else: forall MS in dom(Mwtz):
+       	p |- Mwtz'(MS).MT <= Mwtz(MS).MT
 
------------
+	Pz subseteq Pz',P
+------------------------------------------------------------------
+================================================================================================================
+------------------------------------------------------------------
+Define Cs{interface? implements Pz; Mwtz; NCz} >=LR;p P{interafce?' implements Pz'; Mwtz'; NCz'}:
+	if interface? != interface?':
+		interface? = empty
+		interface?' = interface
+		class method_ not in Mwtz
+
+	forall MS in dom(Mwtz):
+	        if Called(This0.Cs; MS; LR)
+			        p |- Mwtz'(MS).MT <= Mwtz(MS).MT
+            if Refined(This0.Cs; MS; LR)
+                    p |- Mwtz(MS).MT <= Mwtz'(MS).MT
+
+	if interface=empty and Coherent({implements Pz; Mwtz}):
+		dom(Mwtz) = dom(Mwtz')
+
+	Pz subseteq Pz',P
+	//disjoint { {Mwt.MS | Mwt in p(P) and Mwt.refine = empty} | P in Pz'}
+------------------------------------------------------
 Implementation
 
 
