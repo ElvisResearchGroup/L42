@@ -139,27 +139,43 @@ map(V,Cs,l-1,{interface? implements Pz mwtz C1: L1, ..., Ck: Lk}) =
   {interface? implements map(V,Cs,l,Pz) map(V,Cs,l,mwtz) C1: map(V,Cs,l,L1), ..., Ck: map(V,Cs,l,Lk)}
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-map(V;Cs;{interface? implements Pz mwtz C1: L1, ..., Ck: Lk}) =
-  {interface?
-  	implements map(V,Cs,Pz)
-  	map(V,C?s,mwtz)
-  	C1: map(V;Cs.C1;L1), ..., Ck: map(V;Cs.Ck;Lk)}
+V(L) = V(empty: L)
 
-map(V;Cs;refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?)=
-  refine? mdf method
-  		map(V,Cs,T)
-  		m(map(V,Cs,T1) x1,..,map(V,Cs,Tn) xn)
-  		exception map(V,Cs,Pz)
-  		mapE(V;Cs;e?)
+V(Cs: {interface? implements Pz mwtz, NCz}) =
+	{interface? implements V(Pz in Cs) V(mwtz in Cs) V(NCz in Cs)
 
-rename(V;Cs;empty) = empty
-rename(V;Cs;L) = map(V;Cs.C;L), for fresh C
+V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
+  refine? mdf method V(T in Cs) m(V(T1 in Cs) x1,..,V(Tn in Cs) xn) exception V(Pz in Cs) V(e? in Cs)
+
+V(C: L in Cs) = C: V(Cs.C: L)
+V(   L in Cs) =    V(Cs.C: L), for fresh C
+// TODO: Other kinds of expressions (just apply V(P in Cs) for all paths)
 
 V(Thisk.Cs' in Cs.C1...Ck) = V(This0.Cs.Cs')
 V(P+n+1 in C1,...,Cn) = P+n+1
 
-V(Cs, P) = P, otherwise
-V(P in Cs)
+V(This0.B in A.empty) = V(This0.A.B)
+V(This1.B in A.B) =
+
+V(mwt, mwtz in Cs) = V(mwt in Cs), V(mwtz in Cs)
+V(nc,  ncz  in Cs) = V(nc  in Cs), V(ncz  in Cs)
+V(P,   Pz   in Cs) = V(P   in Cs), V(Pz   in Cs)
+V(empty in Cs) = empty
+--------------------------------------------
+V({A:{This0.B B:{This1.B }}} in empty)
+--> V(A: {This0.B B:{This1.B }} in empty)
+--> V(A: {This0.B B:{This1.B }})
+--> {A: V(This0.B in A) V(B:{This1.B } in A)}
+--> {A: V(This0.B in A) B: V(A.B:{This1.B})}
+--> {A: V(This0.B in A) B: {V(This1.B in A.B)}}
+--> {A: V(This0.A.B)    B: {V(This0.A.B)}}
+
+
+V = A->This1.C
+
+
+----------------
+(A->C,empty,{A:{This0.B B:{This1.B }}})
 
 ---marco expects
 IsaacMap(A->C,empty,{A:{This0.B B:{This1.B }}})

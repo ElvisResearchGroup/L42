@@ -1,0 +1,87 @@
+V ::= (Cs->P)z
+
+dom(Cs1->P, ..., Csn->P) = Cs1,...,Csn
+
+V(Cs) = PL
+	Cs->P in V
+V(Cs) = This0.Cs:
+	no Cs->P in V
+V(This0.Cs) = V(Cs)
+V(P+1) = P+1
+
+V(L) = V(empty: L)
+
+V(Cs: {interface? implements Pz mwtz, ncz}) =
+	{interface? implements V(Pz in Cs) V(mwtz in Cs) V(ncz in Cs)
+
+V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
+  refine? mdf method V(T in Cs) m(V(T1 in Cs) x1,..,V(Tn in Cs) xn) exception V(Pz in Cs) V(e? in Cs)
+
+V(C:  L in Cs) = C: V(Cs.C: L)
+V(    L in Cs) =    V(Cs.C: L), for fresh C 
+// TODO: Other kinds of expressions (just apply V(P in Cs) for all paths)
+
+V(Thisk.Cs' in Cs.C1...Ck) = V(Cs.Cs')[from This(#Cs+k)]
+	where Cs.Cs' in dom(V) // Just so we don't change anything by doing the from
+
+V(P+n+1 in C1,...,Cn) = P+n+1
+
+V(mdf P in Cs) = mdf V(P in Cs)
+
+V(X, Xz in Cs) = V(X in Cs), V(Xz in Cs)
+	for all metavariables X
+
+V(empty in Cs) = empty
+
+V(Thisk in Cs.C1...Ck) = V(This0.Csk)
+
+Define L[remove Csz in Cs] = L0
+--------------------------------------------------------
+{interface? implements Pz mwtz ncz}[remove Csz in Cs] = {interface? implements Pz mwtz ncz[remove Csz in Cs]}
+
+empty[remove Csz in Cs] = empty
+(C:L, ncz)[remove Cs.C,Csz in Cs] = ncz[remove Csz in Cs]
+(C:L, ncz)[remove Csz in Cs] = C:L[remove Csz in C.Cs], ncz[remove Csz in Cs]
+	Cs.C not in Csz
+----------------------------------------------
+
+p|- Ts->T;Pz <= Ts'->T';Pz':
+	p|- T <= T'
+	p|- Ts' <= Ts
+	forall P in Pz: exists P' in Pz': p|- P <= P'
+
+Define RedirectSet(L, Cs)=Csz:
+-----------------------------
+Cs    in RedirectSet(L, Cs)
+
+Cs1.C in RedirectSet(L, Cs):
+	Cs1 in RedirectSet(L, Cs)
+	C in dom(L[Cs1])
+
+Cs2   in RedirectSet(L, Cs):
+	Cs1 in Csz
+	This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
+---------------------------------------------------------
+
+Paths({interface? implements Pz; mwt0, ..., mwtn; ncz}) = Pz,Paths(mwt0.mt),...,Paths(mwtn.mt)
+	Paths(Ts->T;Pz) = Ts.Ps, T.P, Pz
+
+Define Redirect(p, L, Cs, P) = Redirect(p.evilPush(L), Cs, This1.P):
+Define Redirect(p, Cs, P) = L0:
+  exists a unique V such that: //if more then one V exists, is ambiguos redirect
+    P      = V(Cs)
+    dom(V) = RedirectSet(p.top(), Cs)
+    L0     = V(p.top())[remove dom(V) in empty]
+    forall Cs' in dom(V):
+      P' = V(Cs')
+      V(p(This0.Cs')[from This0.Cs']) >=p P' p(P')[from P'])
+
+Define {interface? implements Pz mwtz ncz} >=p P{interafce?' implements Pz' mwtz' ncz'}:
+  Pz subseteq Pz',P
+  if interface?=empty:
+    forall MS in dom(mwtz):
+      p |- mwtz'(MS).mt <= mwtz(MS).mt
+    if class in mwtz.mdfz then interface?'=empty
+  else:
+    interface? = interface?'
+    mwtz = mwtz' //note: may be we can relax by ignoring 'refine?'

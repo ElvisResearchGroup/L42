@@ -32,6 +32,27 @@ class PathRename extends CloneVisitorWithProgram{
       }
     return that;
     }
+
+  Path rename_path(Path p) {
+      List<Ast.C> Cs = new ArrayList<>(this.whereFromTop());
+      int n = Cs.size();
+      if (!p.isPrimitive() && Cs.size() >= p.outerNumber()) {
+        int k = p.outerNumber();
+        // This is alegedly the best way to remove the last 'k' elements from Cs
+        Cs.subList(Cs.size() - k, Cs.size()).clear();
+        Cs.addAll(p.getCBar());
+
+        return lookup_path(Cs, n, p);
+      } else {
+        return p;
+      }
+  }
+  Path lookup_path(List<Ast.C> Cs, int n, Path p) {
+    // Look Cs in map, if we find it, add 'n' to the other number
+    // otherwise, just return p
+    return null;
+  }
+
   protected Path _processCsPath(CsPath cp,Path that){
     Path srcHere=Path.outer(levels,cp.getCs());
     List<Ast.C> tail=p._equivSubPath(srcHere,that);
