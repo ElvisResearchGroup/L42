@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators.refactor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
@@ -24,33 +25,52 @@ class PathRename extends CloneVisitorWithProgram{
     }
 
   @Override public Path liftP(Path that){
-    if(that.isPrimitive()){return that;}
+    /*if(that.isPrimitive()){return that;}
     if(that.getCBar().isEmpty()){return that;}
     for(CsPath cp: map){
       Path newP=_processCsPath(cp,that);
       if(newP!=null){return newP;}
       }
-    return that;
+    return that;*/
+    return rename_path(that);
     }
 
-  Path rename_path(Path p) {
+  Path rename_path(Path P) {
       List<Ast.C> Cs = new ArrayList<>(this.whereFromTop());
       int n = Cs.size();
-      if (!p.isPrimitive() && Cs.size() >= p.outerNumber()) {
-        int k = p.outerNumber();
+      if (!P.isPrimitive() && Cs.size() >= P.outerNumber()) {
+        int k = P.outerNumber();
         // This is alegedly the best way to remove the last 'k' elements from Cs
         Cs.subList(Cs.size() - k, Cs.size()).clear();
-        Cs.addAll(p.getCBar());
+        Cs.addAll(P.getCBar());
 
-        return lookup_path(Cs, n, p);
+        return lookup_path(Cs, n, P);
       } else {
-        return p;
+        return P;
       }
   }
-  Path lookup_path(List<Ast.C> Cs, int n, Path p) {
+  Path lookup_path(List<Ast.C> Cs, int n, Path P) {
     // Look Cs in map, if we find it, add 'n' to the other number
     // otherwise, just return p
-    return null;
+    for (CsPath CsP : map) {
+      List<Ast.C> Cs2 =  CsP.getCs();
+      Path P2 =  CsP.getPath();
+      // Cs2 is a prefix of Cs
+      if (Collections.indexOfSubList(Cs, Cs2) == 0) {
+        if (P2.isPrimitive()) {
+          // Can't have sub-paths of a primitive
+          assert Cs.size() == Cs2.size();
+          return P2;
+        } else {
+          // Get the rest
+          List<Ast.C> rest = Cs.subList(Cs2.size(), Cs.size());
+          List<Ast.C> result = new ArrayList<>(P2.getCBar());
+          result.addAll(rest);
+          return Path.outer(P2.outerNumber() + n, result);
+        }
+      }
+    }
+    return P;
   }
 
   protected Path _processCsPath(CsPath cp,Path that){
