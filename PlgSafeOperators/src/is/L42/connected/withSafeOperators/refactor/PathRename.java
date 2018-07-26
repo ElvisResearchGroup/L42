@@ -29,7 +29,7 @@ class PathRename extends CloneVisitorWithProgram{
     for(CsPath cp: map){
       Path newP=_processCsPath(cp,that);
       if(newP!=null){return newP;}
-      }    
+      }
     return that;
     }
   protected Path _processCsPath(CsPath cp,Path that){
@@ -39,12 +39,12 @@ class PathRename extends CloneVisitorWithProgram{
     return computeNonNullRes(cp, tail);
     }
   protected Path computeNonNullRes(CsPath cp, List<Ast.C> tail) {
-    if(cp.getPath().isPrimitive()){return cp.getPath();}
+    if(cp.getPath().isPrimitive()){ assert tail.isEmpty(); return cp.getPath();}
     int newOuter=cp.getPath().outerNumber()+levels;
     if(tail.isEmpty()){return cp.getPath().setNewOuter(newOuter);}
     List<Ast.C> newCs=new ArrayList<>(cp.getPath().getCBar());
     newCs.addAll(tail);
     Path destHere=Path.outer(newOuter,newCs);
     return destHere;
-    } 
+    }
   }

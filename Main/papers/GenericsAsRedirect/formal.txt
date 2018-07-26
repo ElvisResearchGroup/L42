@@ -73,11 +73,152 @@ Define computeMaps(p;mwt1,mwt2)=A0 ++p .. ++p An+Cs1->Ps'+..+Csk->Ps'
 ------------------------------------------------------------------
 V ::= (Cs->P)z
 
-Define V(Cs) = P:
-	Cs->P in V
+{Foo: { method This0() } }
+V(Foo->Bar)
 
-Define V(L) = L0
-	// TODO
+V(magic, This0) =?
+
+
+Define V(Thisk.Cs) = Thisk.P:
+	Cs->P in V
+Define V(P) = P:
+	P != This0.Cs
+Define V(mdf P) = mdf V(P)
+Define V(P1,...,Pn) = V(P1),...,V(Pn)
+Define V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
+	refine? mdf method V(T) m(V(T1) x1,..,V(Tn) xn) exception V(Pz)=
+
+--------------
+Define V(Cs, C?1,...,C?k; Thisk.Cs') = V(Cs.Cs')
+Define V(C?1,...,C?n; P+n+1) = P+n+1
+
+--------------------------
+V(L) = Rename(V,empty,0,L)
+
+Rename(V;Cs;n;P1,...,Pn) = V(Cs;P1),...,V(Cs;Pn)
+Define V(Cs, C1,...,Ck; n; Thisk+n.Cs') = V(Cs.Cs')
+Define V(C1,...,Cn; m; P+n+m+1) = P+n+m+1
+
+
+This1.B[from This0.C1.C2]
+This0.C1.B
+
+This0.I[from This0.C1 C2]=This0.C1.C2.I
+This2.I[from Ck]=This4.I
+
+Thisn.Cs[from Thism.C1..Ck]=Thism.C1..C(k-n).Cs if n<=k
+Thisn.Cs[from Thism.C1..Ck]=This(m+n-k).Cs if n>k
+Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
+
+
+I think it is not defined in the following cases
+map(V, l, Any)
+map(V, l, Void)
+map(V, l, Library)
+map(V, l, P)
+  P.n>l
+map(V, l, P)
+  P[from Thisl]=This0.Cs
+  Cs not in dom(V)
+
+Define map(V,Cs,l,P)
+map(Cs1->P1,..,Csn->Pn,Cs,l,P+l)=Pi+l
+  P[from This0.Cs]=This0.Csi
+otherwise map(Cs1->P1,..,Csn->Pn,Cs,l,P)=P
+
+
+mapA(V,Cs,{interface? implements Pz mwtz C1: L1, ..., Ck: Lk}) =
+  {interface? implements map(V,Cs,0,Pz) map(V,Cs,0,mwtz) C1: mapA(V,Cs.C1,L1), ..., Ck: mapA(V,Cs.Ck,Lk)}
+
+map(V,Cs,l,refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?)=
+  refine? mdf method map(V,Cs,l,T) m(map(V,Cs,l,T1) x1,..,map(V,Cs,l,Tn) xn) exception map(V,Cs,l,Pz) map(V,Cs,l,e?)
+
+map(V,Cs,l,T x=e)=map(V,Cs,l,T) x=map(V,Cs,l,e)
+//same for catch and just propagate on the structure otherwise
+map(V,Cs,l-1,{interface? implements Pz mwtz C1: L1, ..., Ck: Lk}) =
+  {interface? implements map(V,Cs,l,Pz) map(V,Cs,l,mwtz) C1: map(V,Cs,l,L1), ..., Ck: map(V,Cs,l,Lk)}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+map(V;Cs;{interface? implements Pz mwtz C1: L1, ..., Ck: Lk}) =
+  {interface?
+  	implements map(V,Cs,Pz)
+  	map(V,C?s,mwtz)
+  	C1: map(V;Cs.C1;L1), ..., Ck: map(V;Cs.Ck;Lk)}
+
+map(V;Cs;refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?)=
+  refine? mdf method
+  		map(V,Cs,T)
+  		m(map(V,Cs,T1) x1,..,map(V,Cs,Tn) xn)
+  		exception map(V,Cs,Pz)
+  		mapE(V;Cs;e?)
+
+rename(V;Cs;empty) = empty
+rename(V;Cs;L) = map(V;Cs.C;L), for fresh C
+
+V(Thisk.Cs' in Cs.C1...Ck) = V(This0.Cs.Cs')
+V(P+n+1 in C1,...,Cn) = P+n+1
+
+V(Cs, P) = P, otherwise
+V(P in Cs)
+
+---marco expects
+IsaacMap(A->C,empty,{A:{This0.B B:{This1.B }}})
+=MarcoMap(A->C,empty,0,{A:{This0.B B:{This1.B }}})
+={A:{This0.B B:{This1.B }}}
+
+while redirect check would need
+{A:{This1.C.B B:{This2.C.B }}}
+
+----
+
+*/
+	VisitPaths(f, e)
+	If primitive(P') or P'.Cs = empty
+     	P'
+	If exists Cs->P in V such that:
+		if primative(P) and p.equiv(Thisl.Cs, P')
+			P
+		otherwise if exists P'=P''.Cs' such that p.equiv(Thisl.Cs, P'')
+			P+l+Cs'
+ 	Otherwise:
+    	P'
+
+
+liftP(V, P', l, p)
+	If primitive(P') or P'.Cs = empty
+     	P'
+	If exists Cs->P in V such that:
+		if primative(P) and p.equiv(Thisl.Cs, P')
+			P
+		otherwise if exists P'=P''.Cs' such that p.equiv(Thisl.Cs, P'')
+			P+l+Cs'
+ 	Otherwise:
+    	P'
+
+Rename(p, V) = L'
+	where L' = p.top()
+		except that for each occurence of a P at level l,
+		P is replaced by liftP(V, P, l, p)
+
+p,level,C?s
+
+p.equiv
+
+p.equivSubPaths
+
+
+V(L) that works for checking and for transforming
+
+V(MT), V(Pz) for checking
+and Rename(V)(Remove(dom(V)(L))
+
+
+
+Define V(Cs;{interface? implements Pz mwtz C1: L1, ..., Ck: Lk}) =
+	{interface? implements V(Cs;Pz) V(Cs;mwtz) C1: V(Cs.C1;L1), ..., Ck: V(Cs.Ck;Lk)}
+Define V(Cs;refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e)=
+refine? mdf method V(Cs;T) m(V(Cs;T1) x1,..,V(Cs;Tn) xn) exception V(Cs;Pz) V(Cs;e)=
+	VisitPaths(f, e)
 
 Define Remove(L, Csz) = L0
 	// TODO: (remove the named classes)
@@ -100,32 +241,27 @@ Cs2   in RedirectSet(L, Cs):
 	This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
 
 Define Paths({interface? implements Pz; Mwt0, ..., Mwtn; NCz}) = Pz,Paths(Mwt0.Mt),...,Paths(Mwtn.Mt)
-	Paths(Ts->T;Pz) = Pz,Ts.Ps,T.P
+	Paths(Ts->T;Pz) = Ts.Ps, T.P, Pz
 
-Define Redirect(p, L, Cs, P) = L0:
-	let Csz := RedirectSet(L, Cs)
-	exists a unique V such that:
-		P  = V(Cs)
-		L0 = V(Remove(L, Csz))
-		Csz = dom(V)
+Define Redirect(p, L, Cs, P) = Redirect(p.evilPush(L), Cs, This1.P):
+Define Redirect(p, Cs, P) = L0:
+  exists a unique V such that: //if more then one V exists, is ambiguos redirect
+    P  = V(Cs)
+    dom(V) = RedirectSet(p.top(), Cs)
+    L0 = Remove(Rename(p.top(), V),dom(V))
+    forall Cs' in dom(V):
+      P' = V(Cs')
+      p(This0.Cs')[from This0.Cs'] >=p P' p(P')[from P'])
 
-		forall Cs' in dom(V):
-			let P' := V(Cs')
-			V(L)(Cs')[from This0.Cs'] >=p P' p(P')[from P'])
-
-Define {interface? implements Pz; Mwtz; NCz} >=p P{interafce?' implements Pz'; Mwtz'; NCz'}:
-	if interface? != interface?':
-		interface? = empty
-		interface?' = interface
-		class method_ not in Mwtz
-
-	if interface? = interface:
-		Mwtz = Mwtz'
-
-	else: forall MS in dom(Mwtz):
-       	p |- Mwtz'(MS).MT <= Mwtz(MS).MT
-
-	Pz subseteq Pz',P
+Define {interface? implements Pz Mwtz NCz} >=p P{interafce?' implements Pz' Mwtz' NCz'}:
+  V(Pz) subseteq Pz',P
+  if interface?=empty:
+    forall MS in dom(Mwtz):
+      p |- Mwtz'(MS).MT <= V(Mwtz)(MS).MT
+    if class in Mwtz.mdfz then interface?'=empty
+  else:
+    interface? = interface?'
+    V(Mwtz) = Mwtz' //note: may be we can relax by ignoring 'refine?'
 ------------------------------------------------------------------
 ================================================================================================================
 ------------------------------------------------------------------
@@ -141,11 +277,11 @@ Define Cs{interface? implements Pz; Mwtz; NCz} >=LR;p P{interafce?' implements P
             if Refined(This0.Cs; MS; LR)
                     p |- Mwtz(MS).MT <= Mwtz'(MS).MT
 
-	if interface=empty and Coherent({implements Pz; Mwtz}):
+	if interface?=empty and Coherent({implements Pz; Mwtz}):
 		dom(Mwtz) = dom(Mwtz')
 
 	Pz subseteq Pz',P
-	//disjoint { {Mwt.MS | Mwt in p(P) and Mwt.refine = empty} | P in Pz'}
+	disjoint { {Mwt.MS | Mwt in p(P) and Mwt.refine = empty} | P in Pz'}
 ------------------------------------------------------
 Implementation
 
