@@ -37,11 +37,12 @@ V(P0 in Cs0)
 	//Cs = Cs.Cs'
 	/*
 	find a Cs"->P"
-
 	*/
-
-
 */
+V(Thisk.Cs' in Cs.C1...Ck) =
+	P.Cs' + (#Cs+k)
+	Where Cs->P in V
+
 V(Thisk.Cs' in Cs.C1...Ck) = Thisk.Cs'
 	where V(Cs.Cs') is undefined
 

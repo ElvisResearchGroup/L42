@@ -121,6 +121,12 @@ _______
   p(P0)={interface implements Ps0 _}
   Ps'=collect(p,Ps0[from P0])
   where "\p" is set minus on lists using p.equiv(P1,P2) //this checks absence of circularity by diverging (i.e. looping until stack overflow)
+-Ps \p Pz'=Ps''
+ empty \p Ps=empty
+ P,Ps\p P',Ps1=Ps\p P',Pz
+   where p.equiv(P,P')
+ (P,Ps\p Ps1)=P,(Ps\p Ps1)
+   otherwise
 
 _______
 #define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant

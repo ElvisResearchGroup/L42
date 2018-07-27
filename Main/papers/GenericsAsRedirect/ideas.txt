@@ -67,16 +67,37 @@ CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
   Ds:Ok
 
 
-TODO:
--define sum(LV1,LV2)
+-define sum(p,LV1,LV2)=LV
+  p.evilPush(LV)|-LV1<+LV2
 
-p|-{implements Tz1 Mz1 K?1} <+ {implements Tz2 Mz2 K?2}
-  ={implements Tz Mz3 K?}
+p|-{implements Tz1 M1..Mn K?1} <+ {implements Tz2 Mz2 K?2} ={implements Tz Mz K?}
+  Tz=minimize(p;Tz1 U Tz2)
+  Mz=p|-M1+Mz2[M1] .. p|-Mn+Mz2[Mn]
   {empty,K?1,K?2}={empty,K?}//may be too sophisticate?
 
-  Tz1,Tz2//equiv?
+p|-interface{implements Tz1 AMs,AMs0} <+ interface?{implements Tz2 AMs} =
+  interface {implements Tz AMs}
+  Tz=minimize(p;Tz1 U Tz2)
+  if interface?=interface then AMs0=empty
 
-  disjoint { {Mwt.MS | Mwt in p(T) and Mwt.refine = empty} | T in Tz2 U Tz1}
+(mwt1, Mz)[mwt2]=mwt1 with mwt1.ms=mwt2.ms
+(nc1, Mz)[nc2]=nc1 with nc1.C=nc2.C
+Mz[M']=empty otherwise
+
+p|-M+empty = M
+p|-M1+M2 = p|-M2+M1
+p|-mh e?+mh = mh e?
+p|-C:LV1+C:LV2 = C:LV  where p.push(C)|-LV1<+LV2=LV
+
+
+minimize(p; P1, P2, Pz) = foo(p, P1, Pz))
+  p.equiv(P1, P2)
+minimize(p; Pz) = Pz
+  otherwise
+
+
+foo(p; Pz) = Pz
+	no P1, P2 in Pz such that P1 != P2 and p.equiv(P1, P2)
 
 interface{ implements Ts AMs }
 {implements Ts Ms K?}

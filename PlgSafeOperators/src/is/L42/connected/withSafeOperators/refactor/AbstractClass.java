@@ -59,16 +59,11 @@ class CollectUsages{
       @Override
       public Path liftP(Path that) {
         // Just for optimisation
-        if (that.isPrimitive() || that.getCBar().isEmpty())
-          return that;
-
-
+        if (that.isPrimitive() || that.getCBar().isEmpty()) {return that;}
         for (List<Ast.C> cs : paths) {
           Path srcHere = Path.outer(levels, cs);
-          if (p._equivSubPath(srcHere, that) != null)
-            coupuledPaths.add(cs);
+          if (p._equivSubPath(srcHere, that) != null) {coupuledPaths.add(cs);}
         }
-
         return that;
       }
     });

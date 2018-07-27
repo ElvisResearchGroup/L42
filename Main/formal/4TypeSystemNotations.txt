@@ -168,8 +168,9 @@ staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
       MethT in methTypes(p,Ti.P,#jm(xsi)), p|-Ti,Tsi<=MethT.Ts
   e=yi.#jm(xysi)
 staticDispatch(p,G,e.m(xes))= staticDispatch(p,G,e).m(xes)
-staticDispatch(p,G,(ds ks e))= (staticDispatch(p,G',ds) ks staticDispatch(p,G',e) )
-staticDispatch(p,G,e)=e if e not of form #?m(xys), e.m(es), (ds ks e)
+staticDispatch(p,G,(ds ks e))= (ds' ks staticDispatch(p,G[ds'],e) )
+  ds'=staticDispatch(p,G,ds)
+staticDispatch(p,G,e)=e if e not of form #?m(xys), e.m(es), (ds ks e
 
 staticDispatch(p,G,ds)=ds'
   ds',0=staticDispatch(0,p,G[ds],ds)
@@ -178,12 +179,23 @@ staticDispatch(p,G,ds)=staticDispatch(p,G,ds')
   dom(G[ds']) superset dom(G[ds]) //else fail, we can not guess/dispatch
 
 staticDispatch(n,p,G,empty)=n   //recursion end
-staticDispatch(n,p,G,var? T x=e ds)=var? T x=staticDispatch(p,G,e) staticDispatch(n,p,G,ds)//good case
-staticDispatch(n,p,G,var? x=e ds)=var? T x=staticDispatch(p,G,e) staticDispatch(n,p,G,ds)//good case
+staticDispatch(n,p,G,var? T x=e ds)=
+	var? T x=staticDispatch(p,G,e)
+	staticDispatch(n,p,G,ds)//good case
+
+staticDispatch(n,p,G,var? x=e ds)=
+	var? T x=staticDispatch(p,G,e)
+	staticDispatch(n,p,G,ds)//good case
   where T=capsuleToMut(guessType(p,G,staticDispatch(p,G,e)))
-staticDispatch(n,p,G,var? T x=e ds)=var? T x=e staticDispatch(n+1,p,G,ds) //remember failure
+
+staticDispatch(n,p,G,var? T x=e ds)=
+	var? T x=e
+	staticDispatch(n+1,p,G,ds) //remember failure
   where staticDispatch(p,G,e) undefined
-staticDispatch(n,p,G,var? x=e ds)=var? x=e staticDispatch(n+1,p,G,ds) //remember failure
+
+staticDispatch(n,p,G,var? x=e ds)=
+	var? x=e
+	staticDispatch(n+1,p,G,ds) //remember failure
   where guessType(p,G,staticDispatch(p,G,e)) undefined
 
 
