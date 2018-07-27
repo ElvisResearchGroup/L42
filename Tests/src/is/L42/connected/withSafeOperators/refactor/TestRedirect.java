@@ -731,7 +731,7 @@ public class TestRedirect {
           " IA:{interface method Void ma()} IB:{interface method Void mb()}\n" +
           " }",
           "This0.I","This1.E",
-        "{}",false
+        "{}",false // FAILS
     },{lineNumber(), new String[]{"{"+
             "E: {interface method Void equals() method Void foo()} \n" +
             "EA: {implements This1.E}}"},
@@ -805,9 +805,13 @@ public class TestRedirect {
             "B: {method I1 e1() method I2 e2()}\n"+
             "A:{interface implements I1 I2}\n" +
         "}",
-
         "This0.B", "This1.E",
             "{A: {interface implements This2.E1, This2.E2}}", false
+    }, {lineNumber(),//
+      new String[]{"{D:{method Library m(This1.D a)}}"},
+      "{ A:{method Library m(This1.A a) } method Void b(This0.A m)}"
+      ,"This0.A","This1.D",
+      "{ method Void b(This1.D m)}",false//
 
 /*
  Test1

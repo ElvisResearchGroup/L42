@@ -221,10 +221,18 @@ public static class TestAbstractClass {//add more test for error cases
   },{lineNumber(),//
     "{C:{B_$_1:{} D:{ method B_$_1 bar() void }}}",
 	  "C",
-	  "PrivacyCoupuled:\n"+
-      "coupuled paths:[[C, B_$_1]]\n"+ 
-      "coupuled selectors:[]",
-	   true
+	  "{}",
+//{C: { D: { method This1.B_$_1 bar() }}}
+//	  "PrivacyCoupuled:\n"+
+//      "coupuled paths:[[C, B_$_1]]\n"+
+//      "coupuled selectors:[]",
+	   false
+  },{lineNumber(),// Should this pass, or the previous one?
+    "{C:{B_$_1:{}} D:{ method B_$_1 bar() void }}",
+    "C",
+    "{C: {} D: {method This1.B_$_1 bar() void}}",
+     false // SHOULD FAIL
+
 }});}
 @Test  public void test() throws PathUnfit, PrivacyCoupuled {
   TestHelper.configureForTest();

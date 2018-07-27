@@ -1,3 +1,14 @@
+//difference w.r.t. 42 formalization
+Have to check parameter lenght
+No type modifiers
++constructor
+No class methods
+No Any/Void/Library
+only new T contains T in e
+library literals not in e
+redirect do not require abstract source
+we do not discuss privatness
+we need to discuss normalization
 ------GRAMMAR
 lowerCase=Coden : trait declaration
 UpperCase:Code0 :class declaration//and need to be non abstact
@@ -54,6 +65,25 @@ CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
   Ds|-LV1:Ok .. Ds|-LVn:Ok
 ------------------------------- Ds= id1=LV1...idn=LVn
   Ds:Ok
+
+
+TODO:
+-define sum(LV1,LV2)
+
+p|-{implements Tz1 Mz1 K?1} <+ {implements Tz2 Mz2 K?2}
+  ={implements Tz Mz3 K?}
+  {empty,K?1,K?2}={empty,K?}//may be too sophisticate?
+
+  Tz1,Tz2//equiv?
+
+  disjoint { {Mwt.MS | Mwt in p(T) and Mwt.refine = empty} | T in Tz2 U Tz1}
+
+interface{ implements Ts AMs }
+{implements Ts Ms K?}
+
+-type rules
+-evaluations/boring but needed
+-from[]
 
 metalevel soundness
 if

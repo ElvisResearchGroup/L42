@@ -443,5 +443,84 @@ ED:{implements EC1, EC2}
 
 
 
+----------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+----------------------------------------------------
+A::=Cs->Pz //A is functional
+A1++A2
+(Cs->Pz,A1)++ (Cs->Pz',A2)= Cs->(Pz intersect Pz'), (A1++A2)
+(Cs->Pz,A1)++ A2=A1 ++ (Cs->Pz,A2)
+empty++A=A++empty=A
 
+Cs->{P}, A ==>p Cs.C->P.C,Cs->{P}, A
+    C in dom(p(This0.Cs))
+    C in dom(p(P))
+
+Cs->{P}, A ==>p Cs'->Pz'++ (Cs->{P}, A)
+    This0.Cs' in p(This0.Cs)[from This0.Cs].Pz
+    Pz' = p(P)[from P].Pz
+
+Cs->{P}, A ==>p Csi->{Pi} ++ (Cs->{P}, A)
+    MS in dom(p(This0.Cs))
+    mwt = p(This0.Cs)(MS)[from this0.Cs]
+    mwt' = p(P)(MS)[from P]
+    _ P1... _ Pn->_ P0; Pz = mwt.MT
+    _ P'1 ... _ P'n->_ P'0; Pz' = mwt'.MT
+    This0.Csi = P'i
+
+Cs->{P}, A ==>p Cs->mwt'.Pz ++ (Cs->{P}, A)
+    MS in dom(p(This0.Cs))
+    mwt = p(This0.Cs)(MS)[from this0.Cs]
+    mwt' = p(P)(MS)[from P]
+    This0.Cs in mwt.Pz
+	/*
+		(This0.Blah) -> {}
+		E:{method Void ()}
+		{Bar:{} I:{method Void () exception Bar} ...}[I->E]
+
+		{I:{method Void () exception This2.Bar} ...}[I->E]
+
+		E:{method Base m() method Void exception Num()}
+		{Bar:{} I:{method Bar m() method Void () exception Bar} ...}[I->E]
+	*/
+/*
+	If V is a redirecty
+	then V is a subset of (Cs->P ==>p**)
+
+	(Cs->P ==>p* A) and A=~=V
+		then either V is the redirectee
+		or there is no redirectee
+
+	and if A!=~=V
+*/
+
+
+Ext2:{implements E1}
+Ext1:{implements E1,E2}
+
+{
+Int1:{implements I1}
+Int2:{implements I1}
+}[Int1->Ext1, Int2->Ext2]
+-----
+
+Cs->P, A ==>p Cs.C->P.C, Cs->P, A
+    C in dom(p(This0.Cs))
+    C in dom(p(P))
+
+Cs->P, A ==>p Cs'->P',Cs->P, A
+    Pz =p(This0.Cs)[from This0.Cs].Pz
+    Pz' = p(P)[from P].Pz
+    This0.Cs' in Pz
+    P' in Pz'
+
+Cs->P, A ==>p Cs'->P',Cs->P, A
+    MS in dom(p(This0.Cs))
+    mwt = p(This0.Cs)(MS)[from this0.Cs]
+    mwt' = p(P)(MS)[from P]
+    _ P1... _ Pn->_ P0; Pz = mwt.MT
+    _ P1' ... _ Pn'->_ P0'; Pz' = mwt'.MT
+    This0.Cs' = Pi and P' = Pi, or
+    This0.Cs' in Pz and P' in Pz'
 

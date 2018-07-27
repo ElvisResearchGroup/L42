@@ -59,7 +59,7 @@ import programReduction.Program;
         }, {lineNumber(),//        ////
           "{ A:{ class method This1.B () } B:{ }}",
           "A","This0",
-          "{ class method This0.B () B:{ } }" 
+          "{ class method This0.B () B:{ } }"
           ,false//
         }, {lineNumber(),//
           "{ A:{ class method This1.B () } B:{ }}" ,"A","C", "{ B:{ }  C:{class method This1.B () }}"    ,false//
@@ -69,7 +69,7 @@ import programReduction.Program;
           "{ B:{ } A1:{ class method B () } }"   ,false//
         }, {lineNumber(),//
           "{ A1:{ A2:{ class method B () }} B:{ }}" ,
-          "A1.A2","This0", 
+          "A1.A2","This0",
           "{ class method B () A1:{ } B:{ }}"   ,false//
         }, {lineNumber(),//
           "{ A1:{ A2:{ class method B () } B:{ } }}",
@@ -160,7 +160,10 @@ import programReduction.Program;
           " Fix:{A:{class method Void ()void}}}"
           ,"Fix","This",
           "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash",true
-          
+        }, {lineNumber(),//
+          "{ A:{B:{C:{} method Library m(This2.A a, This1.B b, This0.C c) }}}"
+          ,"A","D",
+          "{ D:{B:{C:{} method Library m(This1 a, This0 b, This0.C c) }}}",false//
         } });
     }
     @Test public void test() throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit {

@@ -25,15 +25,18 @@ class PathRename extends CloneVisitorWithProgram{
     }
 
   @Override public Path liftP(Path that){
-    /*if(that.isPrimitive()){return that;}
-    if(that.getCBar().isEmpty()){return that;}
-    for(CsPath cp: map){
-      Path newP=_processCsPath(cp,that);
-      if(newP!=null){return newP;}
-      }
-    return that;*/
+    //return oldRename(that);
     return rename_path(that);
     }
+ Path oldRename(Path that) {
+   if(that.isPrimitive()){return that;}
+   if(that.getCBar().isEmpty()){return that;}
+   for(CsPath cp: map){
+     Path newP=_processCsPath(cp,that);
+     if(newP!=null){return newP;}
+     }
+   return that;
+ }
 
   Path rename_path(Path P) {
       List<Ast.C> Cs = new ArrayList<>(this.whereFromTop());
@@ -43,12 +46,37 @@ class PathRename extends CloneVisitorWithProgram{
         // This is alegedly the best way to remove the last 'k' elements from Cs
         Cs.subList(Cs.size() - k, Cs.size()).clear();
         Cs.addAll(P.getCBar());
-
         return lookup_path(Cs, n, P);
       } else {
         return P;
       }
   }
+
+  // V(Cs.Cs') = P
+  Path VCs(List<CsPath> V, List<Ast.C> CsCs1) {
+    for (CsPath CsP : map) {
+      List<Ast.C> Cs =  CsP.getCs();
+      Path P =  CsP.getPath();
+
+      //V(Cs.Cs') = P.Cs':
+      //    Cs->P in V:
+      if (Collections.indexOfSubList(CsCs1, Cs) == 0) {
+        // Get Cs'
+        List<Ast.C> Cs1 = Cs.subList(Cs.size(), CsCs1.size());
+        if (Cs1.isEmpty()) {
+          return P;
+        } else {
+          List<Ast.C> PCs = new ArrayList<>(P.getCBar());
+          PCs.addAll(Cs1); // (P.Cs).Cs'
+          return Path.outer(P.outerNumber(), PCs);
+        }
+      }
+    }
+    //V(Cs) = This0.Cs:
+    //    otherwise
+    return Path.outer(0, CsCs1);
+  }
+
   Path lookup_path(List<Ast.C> Cs, int n, Path P) {
     // Look Cs in map, if we find it, add 'n' to the other number
     // otherwise, just return p
@@ -58,11 +86,9 @@ class PathRename extends CloneVisitorWithProgram{
       // Cs2 is a prefix of Cs
       if (Collections.indexOfSubList(Cs, Cs2) == 0) {
         if (P2.isPrimitive()) {
-          // Can't have sub-paths of a primitive
           assert Cs.size() == Cs2.size();
           return P2;
         } else {
-          // Get the rest
           List<Ast.C> rest = Cs.subList(Cs2.size(), Cs.size());
           List<Ast.C> result = new ArrayList<>(P2.getCBar());
           result.addAll(rest);
