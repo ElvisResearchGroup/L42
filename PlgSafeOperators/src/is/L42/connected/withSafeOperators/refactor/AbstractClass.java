@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import coreVisitors.CloneVisitorWithProgram;
 import platformSpecific.javaTranslation.Resources;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -47,23 +48,28 @@ class CollectUsages{
 
   public static void checkPrivacyCoupuled(Program p,List<Ast.C>path,ClassB l,ClassB clear) throws PrivacyCoupuled{
     CollectUsages us=new CollectUsages();
-    List<CsPath>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(l,path);
+    List<List<Ast.C>>prPath=ExtractInfo.collectPrivatePathsAndSubpaths(l,path);
     List<CsMxMx>prMeth=ExtractInfo.collectPrivateMethodsOfPublicPaths(l,path);
     us.process(p.evilPush(l),clear,prPath,prMeth);
     if(us.coupuledMethods.isEmpty() && us.coupuledPaths.isEmpty()){return;}
     throw new RefactorErrors.PrivacyCoupuled(us.coupuledPaths, us.coupuledMethods);
     }
-  private void process(Program p,ClassB l,List<CsPath>map,List<CsMxMx> renames) {
-    l.accept(new PathRename(p,map){
-    protected Path _processCsPath(CsPath cp,Path that){
-      Path res=super._processCsPath(cp, that);
-      if(res!=null){
-        coupuledPaths.add(cp.getCs());
+  private void process(Program p,ClassB l,List<List<Ast.C>>paths,List<CsMxMx> renames) {
+    l.accept(new CloneVisitorWithProgram(p) {
+      @Override
+      public Path liftP(Path that) {
+        // Just for optimisation
+        if (that.isPrimitive() || that.getCBar().isEmpty())
+          return that;
+
+
+        for (List<Ast.C> cs : paths) {
+          Path srcHere = Path.outer(levels, cs);
+          if (p._equivSubPath(srcHere, that) != null)
+            coupuledPaths.add(cs);
         }
-      return null;
-      }
-    protected Path computeNonNullRes(CsPath cp, List<Ast.C> tail) {
-      return Path.Any();
+
+        return that;
       }
     });
   l.accept(new RenameMethodsAux(p,renames,l){

@@ -723,25 +723,27 @@ public class TestRedirect {
         "{C:{implements Any, Any}}",false
     },{
       lineNumber(), new String[]{"{"+
-          "EA:{interface method Void ma()}\n" +
-          "EB:{interface method Void mb()}\n" +
-          "E:{implements This1.EA This1.EB}}"},
-          "{\n" +
-          " I:{implements IA IB}\n" +
-          " IA:{interface method Void ma()} IB:{interface method Void mb()}\n" +
-          " }",
-          "This0.I","This1.E",
-        "{}",false // FAILS
+          "EA:{interface method Void ma()}" +
+          "EB:{interface method Void mb()}" +
+          "E:{implements This1.EA This1.EB}}"
+      },"{" +
+            "I:{implements IA IB}" +
+            "IA:{interface method Void ma()}" +
+            "IB:{interface method Void mb()}" +
+            "method IA a() method IB b()" +
+      "}",
+      "This0.I","This1.E",
+      "{method EA a() method EB b()}", false // FAILS IncoherentMapping
     },{lineNumber(), new String[]{"{"+
             "E: {interface method Void equals() method Void foo()} \n" +
             "EA: {implements This1.E}}"},
             "{\n"+
             "A: {implements This1.I, This2.E}\n"+
             "I: {interface implements This2.E refine method Void foo()}\n" +
-            "method I foo()\n" +
+            "method I i()\n" +
             "}",
             "This0.A", "This1.EA",
-            "{method This1.E foo()}", false
+            "{method This1.E i()}", false // FAILS IncoherentMapping
     },{lineNumber(), new String[]{"{"+
     "E1: {interface} E2: {interface}\n" +
     "EA: {implements This1.E1 This1.E2}}"},
@@ -751,7 +753,7 @@ public class TestRedirect {
     "method I foo()\n" +
     "}",
     "This0.A", "This1.EA",
-    "{method This1.E foo()}", false
+    "{method This1.E foo()}", false // Should fail with IncohrentMapping?
     },{lineNumber(), new String[]{"{"+
     "EI2:{interface method Void foo()}\n" +
     "EI1:{interface implements EI2 method Void bar()}\n" +
@@ -766,8 +768,7 @@ public class TestRedirect {
     "This0.A", "This1.E",
     "IncoherentMapping::\n" +
     "verified:[A->This1.E]\n" +
-    "ambiguities:[I->[This1.EI1, This1.EI2]]", true
-
+    "ambiguities:[I->[This1.EI1, This1.EI2]]", true // IncoherentMapping due to E normalising to {implements EI1, EI2}
 
     },{lineNumber(),
       new String[]{"{E:{class method Void foo()}}"},
@@ -779,21 +780,22 @@ public class TestRedirect {
         new String[]{"{E:{interface method Void foo()}}"},
         "{I:{interface} A:{implements I}}",
         "This0.I", "This1.E",
-        "{A: {implements This2.E}}", false
+        "{A: {implements This2.E}}", true // SHOULD FAIL, as A dosn't implement This2.E.foo
     },{lineNumber(),
         new String[]{"{E:{interface method Void foo()}}"},
         "{I:{interface method Void foo() exception I}\n"+
          "A:{implements I refine method Void foo() exception I}}",
         "This0.I", "This1.E",
-        "{A: {implements This2.E refine method Void foo() exception This2.E }}", true
+        "{A: {implements This2.E refine method Void foo() exception This2.E }}",
+         true  // SHOULD FAIL, as A dosn't implement This2.E.foo
     },{lineNumber(),
       new String[]{"{E:{interface method Void foo() exception E}}"},
       "{I:{interface method Void foo()}\n"+
        "A:{implements I refine method Void foo()}"+
-       "class method (I i)i.foo()}",
+       "class method Void(I i) i.foo()}",
       "This0.I", "This1.E",
-      "{A: {implements This2.E refine method Void foo()}\n" +
-      "class method (I i)i.foo()}", false
+      "MethodClash::Issues:  Incompatible exceptions ", true
+            // SHOULD FAIL
     },{lineNumber(),
         new String[]{"{" +
                 "E1:{interface method Void foo()}\n" +
@@ -806,12 +808,9 @@ public class TestRedirect {
             "A:{interface implements I1 I2}\n" +
         "}",
         "This0.B", "This1.E",
-            "{A: {interface implements This2.E1, This2.E2}}", false
-    }, {lineNumber(),//
-      new String[]{"{D:{method Library m(This1.D a)}}"},
-      "{ A:{method Library m(This1.A a) } method Void b(This0.A m)}"
-      ,"This0.A","This1.D",
-      "{ method Void b(This1.D m)}",false//
+            "{A: {interface implements This2.E1, This2.E2}}", true
+            // SHOULD FAIL
+
 
 /*
  Test1

@@ -221,12 +221,10 @@ public static class TestAbstractClass {//add more test for error cases
   },{lineNumber(),//
     "{C:{B_$_1:{} D:{ method B_$_1 bar() void }}}",
 	  "C",
-	  "{}",
-//{C: { D: { method This1.B_$_1 bar() }}}
-//	  "PrivacyCoupuled:\n"+
-//      "coupuled paths:[[C, B_$_1]]\n"+
-//      "coupuled selectors:[]",
-	   false
+	  "PrivacyCoupuled:\n"+
+      "coupuled paths:[[C, B_$_1]]\n"+
+      "coupuled selectors:[]",
+	   true
   },{lineNumber(),// Should this pass, or the previous one?
     "{C:{B_$_1:{}} D:{ method B_$_1 bar() void }}",
     "C",

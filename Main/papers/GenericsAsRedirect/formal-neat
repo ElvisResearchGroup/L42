@@ -1,6 +1,54 @@
 V ::= (Cs->P)z
 
 dom(Cs1->P, ..., Csn->P) = Cs1,...,Csn
+--------------------------------------
+//P' = V(Cs') // Actually a redirected path...
+
+V(L) = V(empty L)
+
+V(Cs{interface? implements Pz mwtz, ncz}) =
+  {interface? implements V(Pz in Cs) V(mwtz in Cs) V(ncz in Cs)}
+
+V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
+  refine? mdf method V(T in Cs) m(V(T1 in Cs) x1,..,V(Tn in Cs) xn) exception V(Pz in Cs) V(e? in Cs)
+
+V(C:  L in Cs) = C: V(Cs.C L)
+V(    L in Cs) =    V(Cs.C L), for fresh C
+// TODO: Other kinds of expressions (just apply V(P in Cs) for all paths)
+V(mdf P in Cs) = mdf V(P in Cs)
+
+//we assume the trivial sequence propagation over
+//V(es in Cs), V(mwts in Cs) and so on.
+
+V(X, Xz in Cs) = V(X in Cs), V(Xz in Cs)
+  for all metavariables X
+
+V(empty in Cs) = empty
+
+// Ok, here are the path thingys
+V(Thisk.Cs' in Cs.C1...Ck) =
+	V(Cs.Cs')[from This(#Cs+k)]
+/*
+V(P0 in Cs0)
+	n = #Cs0
+	P0 = Thisk.Cs'
+	Cs0 = Cs.C1...Ck
+
+	//Cs = Cs.Cs'
+	/*
+	find a Cs"->P"
+
+	*/
+
+
+*/
+V(Thisk.Cs' in Cs.C1...Ck) = Thisk.Cs'
+	where V(Cs.Cs') is undefined
+
+V(P+n+1 in C1,...,Cn) = P+n+1
+
+
+V(Cs) = V(P in empty)
 
 // Note: The Cs' part is only needed for rename
 // This also assumes that if Cs.Cs'->P' is in V
@@ -13,34 +61,7 @@ V(This0.Cs) = This0.Cs
 	where V(Cs) is undefined
 
 V(P+1) = P+1
-V(L) = V(empty L)
 
-V(Cs{interface? implements Pz mwtz, ncz}) =
-  {interface? implements V(Pz in Cs) V(mwtz in Cs) V(ncz in Cs)}
-
-V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
-  refine? mdf method V(T in Cs) m(V(T1 in Cs) x1,..,V(Tn in Cs) xn) exception V(Pz in Cs) V(e? in Cs)
-
-V(C:  L in Cs) = C: V(Cs.C L)
-V(    L in Cs) =    V(Cs.C L), for fresh C
-// TODO: Other kinds of expressions (just apply V(P in Cs) for all paths)
-
-V(Thisk.Cs' in Cs.C1...Ck) = V(Cs.Cs')[from This(#Cs+k)]
-
-V(Thisk.Cs' in Cs.C1...Ck) = Thisk.Cs'
-	where V(Cs.Cs') is undefined
-
-V(P+n+1 in C1,...,Cn) = P+n+1
-
-V(mdf P in Cs) = mdf V(P in Cs)
-
-//we assume the trivial sequence propagation over
-//V(es in Cs), V(mwts in Cs) and so on.
-
-V(X, Xz in Cs) = V(X in Cs), V(Xz in Cs)
-  for all metavariables X
-
-V(empty in Cs) = empty
 
 Define L[remove Csz in Cs] = L0
 --------------------------------------------------------
@@ -77,7 +98,7 @@ Paths({interface? implements Pz; mwt0, ..., mwtn; ncz}) = Pz,Paths(mwt0.mt),...,
 Define Redirect(p, L, Cs, P) = Redirect(p.evilPush(L), Cs, P + 1):
 Define Redirect(p, Cs, P) = L0:
   exists a unique V such that: //if more then one V exists, is ambiguos redirect
-    P      = V(Cs)
+    P = V(Cs)
     dom(V) = RedirectSet(p.top(), Cs)
     L0     = V(p.top())[remove dom(V) in empty]
     forall Cs' in dom(V):
@@ -94,12 +115,3 @@ Define {interface? implements Pz mwtz ncz} >=p P{interafce?' implements Pz' mwtz
   else:
     interface? = interface?'
     mwtz = mwtz' //note: may be we can relax by ignoring 'refine?'
-
-
-
-
--------------------------------------------------------------
--------------------------------------------------------------
-
-
-

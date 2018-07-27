@@ -24,79 +24,44 @@ class PathRename extends CloneVisitorWithProgram{
       this.map=map;
     }
 
-  @Override public Path liftP(Path that){
-    //return oldRename(that);
-    return rename_path(that);
-    }
- Path oldRename(Path that) {
-   if(that.isPrimitive()){return that;}
-   if(that.getCBar().isEmpty()){return that;}
-   for(CsPath cp: map){
-     Path newP=_processCsPath(cp,that);
-     if(newP!=null){return newP;}
-     }
-   return that;
- }
-
-  Path rename_path(Path P) {
+  @Override public Path liftP(Path P){
       List<Ast.C> Cs = new ArrayList<>(this.whereFromTop());
       int n = Cs.size();
-      if (!P.isPrimitive() && Cs.size() >= P.outerNumber()) {
+      if (!P.isPrimitive() && n >= P.outerNumber()) {
         int k = P.outerNumber();
         // This is alegedly the best way to remove the last 'k' elements from Cs
         Cs.subList(Cs.size() - k, Cs.size()).clear();
         Cs.addAll(P.getCBar());
-        return lookup_path(Cs, n, P);
-      } else {
-        return P;
-      }
-  }
 
-  // V(Cs.Cs') = P
-  Path VCs(List<CsPath> V, List<Ast.C> CsCs1) {
-    for (CsPath CsP : map) {
-      List<Ast.C> Cs =  CsP.getCs();
-      Path P =  CsP.getPath();
-
-      //V(Cs.Cs') = P.Cs':
-      //    Cs->P in V:
-      if (Collections.indexOfSubList(CsCs1, Cs) == 0) {
-        // Get Cs'
-        List<Ast.C> Cs1 = Cs.subList(Cs.size(), CsCs1.size());
-        if (Cs1.isEmpty()) {
-          return P;
-        } else {
-          List<Ast.C> PCs = new ArrayList<>(P.getCBar());
-          PCs.addAll(Cs1); // (P.Cs).Cs'
-          return Path.outer(P.outerNumber(), PCs);
+        for (CsPath CsP : map) {
+            List<Ast.C> Cs2 =  CsP.getCs();
+            Path P2 =  CsP.getPath();
+            // Cs2 is a prefix of Cs
+            if (Collections.indexOfSubList(Cs, Cs2) == 0) {
+                if (P2.isPrimitive()) {
+                    assert Cs.size() == Cs2.size();
+                    return P2;
+                } else {
+                    List<Ast.C> rest = Cs.subList(Cs2.size(), Cs.size());
+                    List<Ast.C> result = new ArrayList<>(P2.getCBar());
+                    result.addAll(rest);
+                    return Path.outer(P2.outerNumber() + n, result);
+                }
+            }
         }
       }
-    }
-    //V(Cs) = This0.Cs:
-    //    otherwise
-    return Path.outer(0, CsCs1);
+      // No change found
+      return P;
   }
-
-  Path lookup_path(List<Ast.C> Cs, int n, Path P) {
-    // Look Cs in map, if we find it, add 'n' to the other number
-    // otherwise, just return p
-    for (CsPath CsP : map) {
-      List<Ast.C> Cs2 =  CsP.getCs();
-      Path P2 =  CsP.getPath();
-      // Cs2 is a prefix of Cs
-      if (Collections.indexOfSubList(Cs, Cs2) == 0) {
-        if (P2.isPrimitive()) {
-          assert Cs.size() == Cs2.size();
-          return P2;
-        } else {
-          List<Ast.C> rest = Cs.subList(Cs2.size(), Cs.size());
-          List<Ast.C> result = new ArrayList<>(P2.getCBar());
-          result.addAll(rest);
-          return Path.outer(P2.outerNumber() + n, result);
-        }
+  /*
+  @Override public Path liftP(Path that){
+    if(that.isPrimitive()){return that;}
+    if(that.getCBar().isEmpty()){return that;}
+    for(CsPath cp: map){
+      Path newP=_processCsPath(cp,that);
+      if(newP!=null){return newP;}
       }
-    }
-    return P;
+    return that;
   }
 
   protected Path _processCsPath(CsPath cp,Path that){
@@ -113,5 +78,5 @@ class PathRename extends CloneVisitorWithProgram{
     newCs.addAll(tail);
     Path destHere=Path.outer(newOuter,newCs);
     return destHere;
-    }
+    }*/
   }

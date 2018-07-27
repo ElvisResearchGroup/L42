@@ -282,19 +282,19 @@ public class ExtractInfo {
         return null;
       });}
   }
-  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb,List<CsPath> accumulator, List<Ast.C> prefix, boolean collectAll) {
+  private static void auxCollectPrivatePathsAndSubpaths(ClassB cb, List<List<Ast.C>> accumulator, List<Ast.C> prefix, boolean collectAll) {
     for(Member m:cb.getMs()){m.match(
       nc->{
         List<Ast.C> newPrefix=new ArrayList<>(prefix);
         newPrefix.add(nc.getName());
         boolean newCollectAll=collectAll || nc.getName().isUnique();
         auxCollectPrivatePathsAndSubpaths((ClassB)nc.getInner(),accumulator,newPrefix,newCollectAll);
-        if(newCollectAll){accumulator.add(new CsPath(newPrefix,Path.Any()));}
+        if(newCollectAll){accumulator.add(newPrefix);}
         return null;
       },mi->null, mt->null);}
   }
-  public static List<CsPath> collectPrivatePathsAndSubpaths(ClassB cb, List<Ast.C> path) {
-    List<CsPath> result=new ArrayList<>();
+  public static List<List<Ast.C>> collectPrivatePathsAndSubpaths(ClassB cb, List<Ast.C> path) {
+    List<List<Ast.C>> result=new ArrayList<>();
     cb=cb.getClassB(path);
     auxCollectPrivatePathsAndSubpaths(cb,result,path ,false);
     return result;
