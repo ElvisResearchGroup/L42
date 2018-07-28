@@ -409,6 +409,11 @@ public static Type sharedToLent(Type nt) {
   if(nt.getMdf()!=Mdf.Mutable){return nt;}
   return nt.withMdf(Mdf.Lent);
 }
+public static Type capsuleToMut(Type nt) {
+  if(nt.getMdf()!=Mdf.Capsule){return nt;}
+  return nt.withMdf(Mdf.Mutable);
+  }
+
 public static boolean isSuperTypeOfMut(Mdf mdf){
   return mdf.isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable);
   }

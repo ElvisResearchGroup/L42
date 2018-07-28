@@ -102,14 +102,16 @@ public interface TsOperations extends TypeSystem{
     }
 
     default TOut tsSignal(TIn in, Signal s) {
-      Type T1=GuessTypeCore._of(in.p,in, s.getInner(),true);
+      ExpCore e=StaticDispatch.of(in.p,in,s.getInner(),true);
+      s=s.withInner(e);
+      Type T1=GuessTypeCore._of(in.p,in, e,true);
       assert T1!=null;
       Type T2;
       if(s.getKind()!=SignalKind.Return){
         T2=T1.getPath().toImmNT();
         }
       else{T2=TypeManipulation.fwd(T1);}
-      TOut innerT=type(in.withE(s.getInner(), T2));
+      TOut innerT=type(in.withE(e, T2));
       if(!innerT.isOk()){return innerT.toError();}
       TOk res=innerT.toOk();
       Type T3=res.computed;

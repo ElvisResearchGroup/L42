@@ -51,8 +51,8 @@ import coreVisitors.From;
 import coreVisitors.Visitor;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
+import newTypeSystem.G;
 import newTypeSystem.GuessTypeCore;
-import newTypeSystem.GuessTypeCore.G;
 import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
@@ -272,7 +272,7 @@ private Stream<D> fwdGen(D d, String xPrime, Set<String> xs){
   return Stream.of(new D(false,d.getT(),xPrime,e));
   }
 private PG plusDs(List<ExpCore.Block.Dec>ds){
-  return new PG(p,this.gamma.addGuessing(p, ds),ps);
+  return new PG(p,this.gamma.add(p, ds),ps);
   }
 private D visitD(ExpCore.Block.Dec d){
   return new D(d.isVar(),PG.liftT(p,d.getT().get()),d.getX(),d.getInner().accept(this));

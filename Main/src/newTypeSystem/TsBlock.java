@@ -66,8 +66,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   }
 
   default TOut tsBlockBase(TIn in,Block s){
-   //Phase| p| G |- (ds  ks  e0  [_]) ~>(ds' ks' e'0 [T])
-   //     : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
+   s=StaticDispatch.of(in.p, in, s, true);
    List<Block.Dec> ds=s.getDecs();
    List<Block.On> ks=s.getOns();
    TIn in1=in.removeGDs(ds);//G'=G/dom(ds)
@@ -89,7 +88,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
    TOkKs ksOk=_ksOut.toOkKs();
    ks=ksOk.ks;//now resolved
    //Phase| p| G'[G0\dom(G')] |- e0~>e'0:T0 <=T' | Tr0
-   G G0LessG1=dsOk.g.removeGXs(in1.g.keySet());
+   TInG G0LessG1=dsOk.g.removeGXs(in1.g.keySet());
    TOut _e0Out=type(in1.addGG(G0LessG1).withE(s.getE(), in.expected));
    if(!_e0Out.isOk()){return _e0Out.toError();}
    TOk e0Ok=_e0Out.toOk();
@@ -118,43 +117,34 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   }
 
   default TOutDs dsType(TIn in,List<Dec> _ds){
-    if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,G.instance.addGG(in));}
+    if(_ds.isEmpty()){return new TOkDs(Tr.instance,_ds,TInG.instance.addGG(in));}
     int iSplit=splitDs(in,_ds);
     assert iSplit+1<=_ds.size();
-    List<Dec> ds=_ds.subList(iSplit+1,_ds.size());
-    TOutDs guessOut=GuessTypeCore.guessedDs(in.p,in,_ds.subList(0,iSplit+1));//G'
-    if(!guessOut.isOk()){return guessOut;}
-    List<Dec> ds0n=guessOut.toOkDs().ds;
+    List<Dec> ds=_ds.subList(iSplit+1,_ds.size());//ds after split point
+    List<Dec> ds0n=_ds.subList(0,iSplit+1);       //ds before split point
     List<String> fve0n=new ArrayList<>();
-    for(Dec di:_ds.subList(0,iSplit+1)){
+    for(Dec di:ds0n){
       fve0n.addAll(FreeVariables.of(di.getInner()));
       }
-    assert !fve0n.stream()
+    assert !fve0n.stream()//the split is a correct split
       .anyMatch(x->ds.stream()
         .anyMatch(d->d.getX().equals(x)));
-    List<Dec> dsFiltered = ds0n.stream().filter(
-          d->d.get_t().getMdf().isIn(Mdf.Immutable,Mdf.Mutable))
-          .map(d->d.withVar(false).with_t(TypeManipulation.fwd(d.getT().get())))
-          .collect(Collectors.toList());
-    TIn in1=in.addGds(in.p,dsFiltered); //G1
+    //---- split part start
+    TIn in1 = addMutImmAsFwdToG(in, ds0n); //G'
     Tr trAcc=Tr.instance;
     List<Dec>ds1=new ArrayList<>();
     List<Dec>ds1FwdP=new ArrayList<>();
-    {int i=-1;for(Dec di:ds0n){i++;
+    for(Dec di:ds0n){
       Type nt=di.getT().get();
       Type ntFwdP=TypeManipulation.fwdP(nt);
-      TOut _out=type(in1.withE(di.getInner(),ntFwdP));
+      TOut _out=type(in1.withE(di.getInner(),ntFwdP));//type all the ei
       if(!_out.isOk()){return _out.toError();}
       TOk ok=_out.toOk();
       trAcc=trAcc.trUnion(ok);
       Dec di1=di.withInner(ok.annotated);
-      Optional<Type> typeForG2=_ds.get(i).getT();
-      if(TypeManipulation.fwd_or_fwdP_in(nt.getMdf())){//building G2
-        ds1.add(di1.with_t(typeForG2.orElse(ok.computed)));
-        }
-      else{ds1.add(di1.with_t(typeForG2.orElse(TypeManipulation.noFwd(ok.computed))));}
-      ds1FwdP.add(di1.withVar(false).with_t(typeForG2.orElse(TypeManipulation.fwdP(ok.computed))));
-      }}
+      ds1.add(di1);
+      ds1FwdP.add(di1.withVar(false).with_t(TypeManipulation.fwdP(di.get_t())));
+      }
     if(TypeManipulation.fwd_or_fwdP_in(trAcc.returns)){
       boolean xInCommon=fve0n.stream().anyMatch(x->ds0n.stream().anyMatch(d->d.getX().equals(x)));
       if(xInCommon){return new TErr(in,"",null,ErrorKind.AttemptReturnFwd);}
@@ -167,6 +157,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     TIn inG0;
     if(TypeManipulation.fwd_or_fwdP_in(_nts)){inG0=in.addGds(in.p,ds1FwdP);}
     else{inG0=in.addGds(in.p,ds1);}
+    //-----------Split part end
     TOutDs _res= dsType(inG0,ds);
     if(!_res.isOk()){return _res.toError();}
     TOkDs res=_res.toOkDs();
@@ -174,6 +165,15 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
     if(res.trAcc!=null){trAcc=trAcc.trUnion(res.trAcc);}
     return new TOkDs(trAcc,ds1,res.g);
     }
+
+default TIn addMutImmAsFwdToG(TIn in, List<Dec> ds0n) {
+List<Dec> dsFiltered = ds0n.stream().filter(
+      d->d.get_t().getMdf().isIn(Mdf.Immutable,Mdf.Mutable))
+      .map(d->d.withVar(false).with_t(TypeManipulation.fwd(d.getT().get())))
+      .collect(Collectors.toList());
+TIn in1=in.addGds(in.p,dsFiltered);
+return in1;
+}
   default Type suggest(Optional<Type> option,Type alternative) {
     if (option.isPresent()) {return option.get();}
     if(!alternative.getMdf().equals(Mdf.Capsule)) {return alternative;}

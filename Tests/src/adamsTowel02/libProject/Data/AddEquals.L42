@@ -17,7 +17,7 @@ Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
 exception Fail{
   if fNs.isEmpty() (error S"TODO")
   //accumulation
-  acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
+  Use.Override.Decorator acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
     fOp=FieldOp(selector:Selector.from(string:fN++S"()"),type:fT)      
     exception on StateOperation.Fail Fail""
     use[

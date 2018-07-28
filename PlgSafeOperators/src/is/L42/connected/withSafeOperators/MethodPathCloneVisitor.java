@@ -29,6 +29,7 @@ import programReduction.Norm;
 import programReduction.Program;
 import coreVisitors.From;
 import newTypeSystem.GuessTypeCore;
+import newTypeSystem.StaticDispatch;
 import newTypeSystem.TIn;
 import tools.Assertions;
 import tools.Map;
@@ -124,7 +125,9 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
             me->me.getKey(),
             me->new java.util.AbstractMap.SimpleEntry<>(false,me.getValue())
             )));
-      Type tGuessed=newTypeSystem.GuessTypeCore._of(in.p,in,s.getInner(),false);
+      ExpCore _e=StaticDispatch.of(in.p,in,s.getInner(),false);
+      if(_e==null){return super.visit(s);}
+      Type tGuessed=newTypeSystem.GuessTypeCore._of(in.p,in,_e,false);
       if(tGuessed==null){return super.visit(s);}
       guessed=tGuessed.getPath();
       assert guessed!=null;

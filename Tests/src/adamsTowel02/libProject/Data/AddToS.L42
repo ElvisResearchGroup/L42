@@ -15,7 +15,7 @@ class method
 Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
 exception Fail{
   //accumulation
-  acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
+  Use.Override.Decorator acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
     use[
       Refactor2.Method[hide:\"fN()"]<><
       Use[Resource(fN,selector:\"fN()")]<><

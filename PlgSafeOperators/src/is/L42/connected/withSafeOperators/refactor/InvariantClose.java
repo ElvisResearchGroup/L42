@@ -39,6 +39,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ParseFail
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
 import newTypeSystem.GuessTypeCore;
+import newTypeSystem.StaticDispatch;
 import newTypeSystem.TsLibrary;
 import newTypeSystem.TypeManipulation;
 import programReduction.Methods;
@@ -216,7 +217,9 @@ class WrapAux extends RenameMethodsAux{
     }
   @Override
   public ExpCore visit(MCall s) {
-    Type guessed=GuessTypeCore._of(p, g, s.getInner(),false);
+    ExpCore _e=StaticDispatch.of(p,g,s.getInner(),false);
+    if(_e==null){return super.visit(s);}
+    Type guessed=GuessTypeCore._of(p, g, _e,false);
     if(guessed==null){return super.visit(s);}
     MethodSelector ms2=mSToReplaceOrNull(s.getS(),guessed.getPath());
     if(ms2==null){return super.visit(s);}

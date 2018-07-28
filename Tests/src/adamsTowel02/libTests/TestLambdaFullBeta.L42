@@ -253,8 +253,7 @@ $fullBeta:Resource<><Use[$subst();$freeVar();
       method Exp beta(mut BetaArg that){
         e2=this.e2().beta(that)
         with e1=this.e1() (on Lambda (
-          fve=Strings.empty()
-          e2.fv(fve)
+          Strings fve=(acc=Strings.empty(), e2.fv(acc), acc)
           sa=SubstArg(x:e1.x(),e:e2,fve:fve,used:that.#used())
           return e1.body().subst(sa)
           ))

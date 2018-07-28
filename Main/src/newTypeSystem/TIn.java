@@ -1,7 +1,5 @@
 package newTypeSystem;
 
-import static newTypeSystem.GuessTypeCore.G.of;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -24,18 +22,19 @@ import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
 import programReduction.Program;
 
-abstract class AG<This extends AG<This>>implements GuessTypeCore.G{
+abstract class AG<This extends AG<This>>implements G{
   AG(Map<String,Map.Entry<Boolean, Type>>g){this.g=g;}
-  @Override public GuessTypeCore.G addGuessing(Program p, List<Dec> ds) {
-    Map<String, Type> varEnv2=new HashMap<>();
-    for(Entry<String, Entry<Boolean, Type>> e:g.entrySet()){
-      varEnv2.put(e.getKey(),e.getValue().getValue());
-      }
-    for(Dec d:ds){
-      varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d,true));
-      }
-    return of(varEnv2);
+  
+  @Override public G add(Program p, List<Dec> ds) {
+  Map<String, Type> varEnv2=new HashMap<>();
+  for(Entry<String, Entry<Boolean, Type>> e:g.entrySet()){
+    varEnv2.put(e.getKey(),e.getValue().getValue());
     }
+  for(Dec d:ds){
+    if( d.get_t()!=null){varEnv2.put(d.getX(),d.get_t());}
+    }
+  return G.of(varEnv2);
+  }
   //TODO: should not be public
   abstract public This withG(Map<String,Map.Entry<Boolean, Type>>g);//{return new This();}
   abstract This self();//{return this;}
@@ -103,12 +102,12 @@ abstract class AG<This extends AG<This>>implements GuessTypeCore.G{
    return tmp.getValue();
    }
 
- public Set<String> gDom(){return g.keySet();}
+ public Set<String> dom(){return g.keySet();}
 
   //onlyMutOrImm(G)={x:G(x) | G(x) only mut or imm}
   public This toRead(){//toRead(G)(x)=toRead(G(x)) //thus undefined where toRead undefined
     Map<String,Map.Entry<Boolean, Type>>newG=new HashMap<>(g);
-    for(String xi:gDom()){
+    for(String xi:dom()){
       Type ti=g(xi);
       assert ti!=null;
       ti=TypeManipulation._toRead(ti);
@@ -119,7 +118,7 @@ abstract class AG<This extends AG<This>>implements GuessTypeCore.G{
     } 
 public This toLent(){//toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
   Map<String,Map.Entry<Boolean, Type>>newG=new HashMap<>(g);
-  for(String xi:gDom()){
+  for(String xi:dom()){
     Type ti=g(xi);
     assert ti!=null;
     ti=TypeManipulation._toLent(ti);
@@ -144,11 +143,11 @@ public This gKs(List<ExpCore.Block.On>ks){
   return this.self();
   }
 }
-class G extends AG<G>{
-  private G(Map<String,Map.Entry<Boolean, Type>>g){super(g);}
-  @Override public G withG(Map<String,Map.Entry<Boolean, Type>>g) {return new G(g);}
-  @Override G self() {return this;}
-  static final G instance=new G(Collections.emptyMap());
+class TInG extends AG<TInG>{
+  private TInG(Map<String,Map.Entry<Boolean, Type>>g){super(g);}
+  @Override public TInG withG(Map<String,Map.Entry<Boolean, Type>>g) {return new TInG(g);}
+  @Override TInG self() {return this;}
+  static final TInG instance=new TInG(Collections.emptyMap());
   public String toString(){return g.toString();}
   }
 public class TIn extends AG<TIn>{

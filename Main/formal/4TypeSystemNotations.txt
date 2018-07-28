@@ -170,7 +170,7 @@ staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
 staticDispatch(p,G,e.m(xes))= staticDispatch(p,G,e).m(xes)
 staticDispatch(p,G,(ds ks e))= (ds' ks staticDispatch(p,G[ds'],e) )
   ds'=staticDispatch(p,G,ds)
-staticDispatch(p,G,e)=e if e not of form #?m(xys), e.m(es), (ds ks e
+staticDispatch(p,G,e)=e if e not of form #?m(xys), e.m(es), (ds ks e)
 
 staticDispatch(p,G,ds)=ds'
   ds',0=staticDispatch(0,p,G[ds],ds)

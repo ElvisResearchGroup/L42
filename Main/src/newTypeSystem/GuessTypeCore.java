@@ -40,28 +40,6 @@ import programReduction.Program;
 import tools.Assertions;
 
 public class GuessTypeCore implements Visitor<Type>{
-public static interface G{
-  public G addGuessing(Program p,List<ExpCore.Block.Dec> ds);
-  public G addTx(String x,Type t);
-
-  public Type _g(String x);
-  public static G of(Map<String, Type> varEnv){return new G(){
-     public Type _g(String x){return varEnv.get(x);}
-     public G addGuessing(Program p,List<ExpCore.Block.Dec> ds){
-       Map<String, Type> varEnv2=new HashMap<>(varEnv);
-       for(Dec d:ds){
-         varEnv2.put(d.getX(),GuessTypeCore._guessDecType(p, this,d,true));
-         }
-       return of(varEnv2);
-       }
-     public G addTx(String x,Type t){
-       Map<String, Type> varEnv2=new HashMap<>(varEnv);
-       varEnv2.put(x,t);
-       return of(varEnv2);
-       }
-     };
-   }
-  }
 G in;
 Program p;
 boolean forceError;
@@ -141,7 +119,7 @@ public static Map<String,Type> mapForMwt(MethodWithType mwt){
     }}
   return res;
   }
-
+/*
 public static TOutDs guessedDs(Program p, TIn in,List<Dec> toGuess){
 List<Dec> res=new ArrayList<>();//G'
 for(Dec di:toGuess){
@@ -151,7 +129,7 @@ for(Dec di:toGuess){
   res.add(di.with_t(nti)); 
   }
 return new TOkDs(null,res,null);
-}
+}*/
 public static Type _guessDecType(Program p,G in, Dec di,boolean forceError) {
   if(di.getT().isPresent()){return di.getT().get();}
   Type nti=GuessTypeCore._of(p,in, di.getInner(),forceError);
@@ -172,7 +150,7 @@ public Type visit(Block s) {
     throw Assertions.codeNotReachable();
     }
   G oldIn=in;
-  G in2=in.addGuessing(p,s.getDecs());
+  G in2=in.add(p,s.getDecs());
   in=in2;
   try{return s.getInner().accept(this);}
   finally{in=oldIn;}

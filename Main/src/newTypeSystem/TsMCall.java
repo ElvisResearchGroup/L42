@@ -37,7 +37,9 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   }
 
   default TOut tsMCall(TIn in, MCall s) {
-    Type _rec=GuessTypeCore._of(in.p,in, s.getInner(),true);
+    ExpCore e0=StaticDispatch.of(in.p,in,s.getInner(),true);
+    s=s.withInner(e0);
+    Type _rec=GuessTypeCore._of(in.p,in, e0,true);
     assert _rec!=null;
     Path rec=_rec.getPath();
     if(rec.isPrimitive()){
@@ -62,7 +64,6 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     List<TOk> resp=new ArrayList<>();
     List<Type> computed=new ArrayList<>();
     List<ExpCore> annotated=new ArrayList<>();
-    ExpCore e0=s.getInner();
     Type t0=new Type(mType.getMdf(),rec,Doc.empty());
     TOut _res0=type(in.withE(e0,TypeManipulation.mutOnlyToLent(t0)));
     if(!_res0.isOk()){return improveReceiverError(in,t0, _res0.toError());}

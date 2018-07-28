@@ -4,6 +4,23 @@ desugar[e1 #m e2]:
 desugar[e1 #m e2]=(x1=e1 x1 #m e2) where e1 not of form x
 desugar[x1 #m e2]=(x2=e2 x1 #m x2) where e2 not of form x
 TODO: all operator precedence need to become right associative
+
+Steps:
+do staticDispatch with NIY for operator dispatch.
+Test
+simplifiy ds typing
+Test
+add operator dispatch
+use operator dispatch in ts tests
+check cases: method parameter, catch body, throw body
+operator dispatch desugar
+make all operators right associative
+Test
+change operator desugar
+Test
+//cleanup:
+remove suggest
+
 -----------------------------------------------------------------------------
 Since the type system is quite extensive, we first present the
 expression type system, that depends on notation for
@@ -126,11 +143,11 @@ Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
 
 
 (block)
-Phase| p| G |- (ds  ks  e0) ~>(ds' ks' e'0 [T]) : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
+Phase| p| G |- e ~>(ds' ks' e'0 [T]) : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
+  (ds  ks  e0)=staticDispatch(p,G,e)
   G'=G/dom(ds)
-  ds0=staticDispatch(p,G',ds)
-  Phase| p| G'[ks] |- ds0 ~> ds' |Tr' | G0
+  Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
   //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?
   //here we have the info to capture a failure about ds and discover if
   //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)

@@ -89,10 +89,10 @@ class method Library composerTrait(){
   //init
   class method mut This(Libs libs, Library lib0)(
     l0=Location.Lib(lib0)
-    ls=Location.Lib.List[with l in libs.vals() (
+    Location.Lib.List ls=Location.Lib.List[with l in libs.vals() (
       use[Location.Lib(l)])]
     l0ns=This1.filterClash(ls:l0.allNesteds())
-    sels=Selectorss[with nj in l0ns.vals() ( 
+    Selectorss sels=Selectorss[with nj in l0ns.vals() ( 
       use[This1.filterClash(ms:nj.methods())])]
     This(
       openMaps:RenameMethods[with l in libs.vals() (use[Refactor2.Method[]])]
@@ -125,9 +125,9 @@ class method Library composerTrait(){
   mut This(Library top, Path fix)
   exception Location.NotAvailable (
     lFix=Location.Lib(top).nested(path:fix)
-    ls=Location.Lib.List[]
+    Location.Lib.List ls=Location.Lib.List[]
     l0ns=This1.filterClash(ls:lFix.allNesteds())
-    sels=Selectorss[with nj in l0ns.vals() ( 
+    Selectorss sels=Selectorss[with nj in l0ns.vals() ( 
       use[This1.filterClash(ms:nj.methods())])]
     This(
       openMaps:RenameMethods[Refactor2.Method[]]

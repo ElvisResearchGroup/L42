@@ -1,7 +1,6 @@
 package is.L42.connected.withSafeOperators.refactor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
@@ -24,46 +23,15 @@ class PathRename extends CloneVisitorWithProgram{
       this.map=map;
     }
 
-  @Override public Path liftP(Path P){
-      List<Ast.C> Cs = new ArrayList<>(this.whereFromTop());
-      int n = Cs.size();
-      if (!P.isPrimitive() && n >= P.outerNumber()) {
-        int k = P.outerNumber();
-        // This is alegedly the best way to remove the last 'k' elements from Cs
-        Cs.subList(Cs.size() - k, Cs.size()).clear();
-        Cs.addAll(P.getCBar());
-
-        for (CsPath CsP : map) {
-            List<Ast.C> Cs2 =  CsP.getCs();
-            Path P2 =  CsP.getPath();
-            // Cs2 is a prefix of Cs
-            if (Collections.indexOfSubList(Cs, Cs2) == 0) {
-                if (P2.isPrimitive()) {
-                    assert Cs.size() == Cs2.size();
-                    return P2;
-                } else {
-                    List<Ast.C> rest = Cs.subList(Cs2.size(), Cs.size());
-                    List<Ast.C> result = new ArrayList<>(P2.getCBar());
-                    result.addAll(rest);
-                    return Path.outer(P2.outerNumber() + n, result);
-                }
-            }
-        }
-      }
-      // No change found
-      return P;
-  }
-  /*
   @Override public Path liftP(Path that){
     if(that.isPrimitive()){return that;}
     if(that.getCBar().isEmpty()){return that;}
     for(CsPath cp: map){
       Path newP=_processCsPath(cp,that);
       if(newP!=null){return newP;}
-      }
+      }    
     return that;
-  }
-
+    }
   protected Path _processCsPath(CsPath cp,Path that){
     Path srcHere=Path.outer(levels,cp.getCs());
     List<Ast.C> tail=p._equivSubPath(srcHere,that);
@@ -71,12 +39,12 @@ class PathRename extends CloneVisitorWithProgram{
     return computeNonNullRes(cp, tail);
     }
   protected Path computeNonNullRes(CsPath cp, List<Ast.C> tail) {
-    if(cp.getPath().isPrimitive()){ assert tail.isEmpty(); return cp.getPath();}
+    if(cp.getPath().isPrimitive()){return cp.getPath();}
     int newOuter=cp.getPath().outerNumber()+levels;
     if(tail.isEmpty()){return cp.getPath().setNewOuter(newOuter);}
     List<Ast.C> newCs=new ArrayList<>(cp.getPath().getCBar());
     newCs.addAll(tail);
     Path destHere=Path.outer(newOuter,newCs);
     return destHere;
-    }*/
-  }
+    } 
+}

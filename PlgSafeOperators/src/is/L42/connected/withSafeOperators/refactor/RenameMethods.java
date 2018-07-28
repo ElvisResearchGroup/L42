@@ -42,13 +42,13 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfi
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
+import newTypeSystem.G;
 import newTypeSystem.GuessTypeCore;
+import newTypeSystem.StaticDispatch;
 import newTypeSystem.TIn;
 import tools.Assertions;
 import tools.LambdaExceptionUtil;
 import tools.Map;
-
-import newTypeSystem.GuessTypeCore.G;
 
 /*
 
@@ -265,7 +265,8 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
   public ExpCore visit(Block s) {
     G oldG=g;
     try{
-      G baseG=g.addGuessing(p, s.getDecs());
+      Block sGuessed=StaticDispatch.of(p, g, s, false);
+      G baseG=g.add(p, sGuessed.getDecs());
       g=baseG;
       List<Dec> ds = liftDecs(s.getDecs());
       List<On> ons = Map.of((o)->{
@@ -281,7 +282,10 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
 
   public ExpCore visit(MCall s) {
     Type guessed=s.getTypeRec();
-    if(guessed==null) {guessed=GuessTypeCore._of(p, g, s.getInner(),false);}
+    if(guessed==null) {
+      ExpCore _e=StaticDispatch.of(p,g,s.getInner(),false);
+      if(_e!=null){guessed=GuessTypeCore._of(p, g,_e,false);}
+      }
     if(guessed==null){return super.visit(s);}
     MethodSelector ms2=visitMS(s.getS(),guessed.getPath());
     return super.visit(s.withS(ms2));
