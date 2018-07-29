@@ -165,8 +165,8 @@ staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
   xsi=x1..xn\i
   chose the smallest j so that is possible to
     chose the smallest i so that
-      MethT in methTypes(p,Ti.P,#jm(xsi)), p|-Ti,Tsi<=MethT.Ts
-  e=yi.#jm(xysi)
+      MethT in methTypes(p,Ti.P,#m#jxi(xsi)), p|-Ti,Tsi<=MethT.Ts
+  e=yi.#m#jxi(xysi)
 staticDispatch(p,G,e.m(xes))= staticDispatch(p,G,e).m(xes)
 staticDispatch(p,G,(ds ks e))= (ds' ks staticDispatch(p,G[ds'],e) )
   ds'=staticDispatch(p,G,ds)

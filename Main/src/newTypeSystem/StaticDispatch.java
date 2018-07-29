@@ -4,6 +4,7 @@ import ast.ExpCore;
 import ast.ExpCore.Block;
 import ast.ExpCore.Block.Dec;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.EPath;
 import ast.ExpCore.Loop;
 import ast.ExpCore.MCall;
@@ -15,43 +16,35 @@ import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
 import auxiliaryGrammar.Functions;
+import ast.Ast.MethodSelector;
+import ast.Ast.MethodType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ast.Ast;
 import ast.Ast.Type;
+import ast.ErrorMessage;
 import coreVisitors.CloneVisitor;
+import coreVisitors.From;
 import coreVisitors.Visitor;
 import programReduction.Program;
 import tools.Assertions;
 
-/*
-
- guessType(p,G,e)//TODO: change in code about ds
-  guessType(p,G,L)=imm Library
-  guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
-  guessType(p,G,P)=class P //here will be wrong over interfaces
-  chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
-    where guessType(p,G,chain)=mdf P
-  guessType(p,G,(var?0 T0 x0=e0 ..var?n Tn xn=en e) )=  guessType(p,G[x1:T1,..,xn:Tn],e)
-  guessType(p,G,throw _) and guessType(p,G,loop _) undefined
-  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
-------
- */
 public class StaticDispatch implements Visitor<ExpCore>{
-@SuppressWarnings("unchecked")
-public static <T extends ExpCore> T of(Program p,G g,T e,boolean forceError){
+public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
     StaticDispatch sd=new StaticDispatch(p, g, forceError);
     ExpCore res=e.accept(sd);
-    assert res!=null || !forceError;
-    return (T)res;
+    //assert res!=null || !forceError;
+    assert res!=null;
+    return res;
     }
   Program p;
   G g;
   boolean errors=false;
-  boolean forceVoid;
-  private StaticDispatch(Program p,G g,boolean forceError){this.p=p;this.g=g;this.forceVoid=forceError;}
+  boolean forceError;
+  private StaticDispatch(Program p,G g,boolean forceError){this.p=p;this.g=g;this.forceError=forceError;}
   
   //at the end, this.g will include some of ds.
   List<ExpCore.Block.Dec> liftDecs(List<ExpCore.Block.Dec>ds){
@@ -63,19 +56,20 @@ public static <T extends ExpCore> T of(Program p,G g,T e,boolean forceError){
       this.g=this.g.add(p,ds);
       if (this.g.dom().size()!=old.dom().size()){continue;}
       assert this.g.dom().equals(old.dom());
-      if(forceVoid){
+      /*if(forceError){
         return ds.stream()
           .map(d->d.get_t()==null?d.with_t(Type.immVoid):d)
           .collect(Collectors.toList());
-        }
+        }*/
+      if(forceError){throw new ErrorMessage.InferenceFail(ds,null);}
       return ds;
       }
     }
   ExpCore _liftAllowError(ExpCore e){
-    boolean old=this.forceVoid;
-    this.forceVoid=false;
+    boolean old=this.forceError;
+    this.forceError=false;
     try{return e.accept(this);}
-    finally{this.forceVoid=old;}
+    finally{this.forceError=old;}
     }
   //will set this.errors as secondary return value.
   List<ExpCore.Block.Dec> liftDecsAux(List<Dec>ds){
@@ -96,23 +90,105 @@ public static <T extends ExpCore> T of(Program p,G g,T e,boolean forceError){
     }
   public ExpCore visit(MCall s) {
     ExpCore inner=s.getInner().accept(this);
-    if(inner==null){assert !forceVoid;return s;}
+    assert inner!=null;
     return s.withInner(inner);
     }
   public ExpCore visit(Block s) {
     List<Dec> ds1 = liftDecs(s.getDecs());
     assert ds1!=null;
-    assert !forceVoid || ds1.stream().allMatch(d->d.get_t()!=null);
+    assert !forceError || ds1.stream().allMatch(d->d.get_t()!=null);
     G old=g;
     g=g.add(p, ds1);
     try{return s.withDecs(ds1).withE(s.getE().accept(this));}
     finally{g=old;}
   }
   public ExpCore visit(OperationDispatch s) {
-    throw Assertions.codeNotReachable();
+    List<Type> Ts =new ArrayList<>();
+    List<List<Type>> TiTsis =new ArrayList<>();
+    List<List<MethodWithType>>mssi=new ArrayList<>();
+    fillMTs("#"+s.getS().getName()+"#",s.getS().getNames(),s.getEs(),Ts,TiTsis,mssi);
+    int maxJ=0;
+    for(List<MethodWithType> allMsi:mssi){maxJ=Math.max(maxJ, allMsi.size());}
+    for(int j=0;j<maxJ;j+=1){//j: the layer of iterations
+      {int i=-1;for(List<MethodWithType> allMsi:mssi){i+=1;//the method in parameter i
+        if (allMsi.size()<=j ||allMsi.get(j)==null){continue;}//par i have no method for layer j 
+        List<MethodType> mts = AlternativeMethodTypes.types(allMsi.get(j).getMt());
+        if(!oneFits(TiTsis.get(i),mts)){continue;}
+        List<ExpCore> es=new ArrayList<>(s.getEs());
+        es.remove(i);
+        return new ExpCore.MCall(s.getEs().get(i),allMsi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
+        }}
+      }
+    if(forceError){throw new ErrorMessage.OperatorDispachFail(s,s.getP());}
+    return s;
   }
 
-  public ExpCore visit(EPath s) {return s;}
+  private boolean oneFits(List<Type> TiTsi,List<MethodType> mts){
+    Out:for(MethodType mt:mts){//p|-TiTsi  <=mt.getTs()
+      {int par=-1;for(Type t:TiTsi){par+=1;
+        if(par==0){
+          if(Functions.isSubtype(t.getMdf(),mt.getMdf())){continue;}
+          continue Out;
+          }
+        ErrorKind err = TypeSystem._subtype(p,t,mt.getTs().get(par-1));
+        if(err!=null){continue Out;}
+        }}
+      return true;
+      }
+    return false;
+    }
+  private void fillMTs(String nameStart,List<String>names,List<ExpCore>es,
+      List<Type> Ts,List<List<Type>> TiTsis,List<List<MethodWithType>>mssi) {
+    for(ExpCore ei:es){
+      ExpCore.X xi=(ExpCore.X)ei;
+      Type ti=g._g(xi.getInner());
+      assert ti!=null;
+      Ts.add(ti);
+      }
+    {int i=-1;for(Type ti:Ts){i+=1;
+      List<String> namesi=new ArrayList<>();
+      List<Type> tsi=new ArrayList<>();
+      tsi.add(ti);
+      {int j=-1;for(Type tj:Ts){j+=1;
+        if(i!=j){
+          namesi.add(names.get(j));
+          tsi.add(tj);
+          }
+        }}  
+      List<MethodWithType> mwtsi = p.extractClassB(ti.getPath()).mwts();
+      List<MethodWithType> allMsi=new ArrayList<>();
+      for(MethodWithType mwtk:mwtsi){
+        //forall ms in Ti, if ms=msj, allMsi[j]=ms
+        int j=matchMs(nameStart,mwtk.getMs(),new MethodSelector(names.get(i),-1,namesi));
+        if(j!=-1){setSparse(allMsi,j,From.from(mwtk.with_inner(null),ti.getPath()));}
+        }
+      //
+      //index can be larger then number of methods..
+      //
+      mssi.add(allMsi);
+      TiTsis.add(tsi);
+      }}
+    }
+  private <T> void setSparse(List<T>arr,int index,T el){
+    while(index>=arr.size()){arr.add(null);}
+    arr.set(index, el);
+    }
+
+  private int matchMs(String nameStart,MethodSelector actual, MethodSelector ms) {
+    if(!actual.getName().startsWith(nameStart)){return -1;}
+    if(!actual.getNames().equals(ms.getNames())){return -1;}
+    StringBuilder index=new StringBuilder();
+    StringBuilder rest=new StringBuilder();
+    actual.getName().chars().skip(nameStart.length()).forEach(c->{
+      if(rest.length()!=0 || !Character.isDigit(c)){rest.appendCodePoint(c);}
+      else {index.appendCodePoint(c);}
+      });
+    if(!rest.toString().equals(ms.getName())){return -1;}
+    int res=Integer.parseInt(index.toString());
+    return res;
+    }
+
+public ExpCore visit(EPath s) {return s;}
   public ExpCore visit(X s) {return s;}
   public ExpCore visit(_void s) {return s;}
   public ExpCore visit(WalkBy s) {return s;}

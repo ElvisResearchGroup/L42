@@ -35,22 +35,21 @@ public class TestTypeSystemOk {
   @RunWith(Parameterized.class)
   public static class TestOk {
     @Parameter(0) public int _lineNumber;
-    @Parameter(1) public String s1;
-    @Parameter(2) public String s2;
-    @Parameter(3) public String s3;
+    @Parameter(1) public String original;
+    @Parameter(2) public String annotated;
     @Parameters(name = "{index}: line {0}")
     public static List<Object[]> createData() {
       return Arrays.asList(new Object[][] {
-  {lineNumber(),"This0.C",
+  {lineNumber(),
   "{C:{class method Void foo() (This0.foo())} }",
   "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
-},{lineNumber(),"This0.C",
+},{lineNumber(),
   "{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",
   "{C:{class method Void foo() (D.foo()) E:{class method Void foo() (This1.foo())}} D:{class method Void foo() (C.E.foo())}}"
-},{lineNumber(),"This0.C",
+},{lineNumber(),
   "{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",
   "{K:{E:{class method Void foo() (This2.C.foo())}##star^##}##star ^## C:{class method Void foo() (D.foo())}##star^## D:{class method Void foo() (K.E.foo())}##star^##}##star^##"
-},{lineNumber(),"This0.C",
+},{lineNumber(),
   "{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
   "{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}"
   //norm//NO, Norm is executed only in the extracted method
@@ -60,20 +59,103 @@ public class TestTypeSystemOk {
 //},{"This0.C",
 //  "{K:{E:{class method C.foo().foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
 //  "{K:{E:{class method C foo() (C.foo())}##plus^##}##plus^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-},{lineNumber(),"This0.C",
+},{lineNumber(),
   "{C:{ method Void foo() (This0 x= this void)} }",
   "{C:{ method Void foo() (This0 x= this void)}##star^## }##star^##"
-},{lineNumber(),"This0.C",
+},{lineNumber(),
   "{C:{ method Void foo() (C x= this void)} }",
   "{C:{ method Void foo() (C x= this void)}##star^## }##star^##"
 
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b)#?bin(a:a,b:b)"
++ "A:{class method Void #bin#0a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
++ "}",
+"{"
++ "method Void #apply(class A a, class B b) a.#bin#0a(b:b)"
++ "A:{class method Void #bin#0a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
++ "}",
+
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b)#?bin(a:a,b:b)"
++ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
++ "}",
+"{"
++ "method Void #apply(class A a, class B b) b.#bin#0b(a:a)"
++ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
++ "}",
+
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b)#?bin(a:a,b:b)"
++ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(read A a)void}\n"
++ "}",
+"{"
++ "method Void #apply(class A a, class B b) a.#bin#1a(b:b)"
++ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(read A a)void}\n"
++ "}",
+
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b)#?bin(a:a,b:b)"
++ "A:{class method Void #bin#1a(read B b)void} B:{class method Void #bin#0b(read A a)void class method Void #bin#10b(class A a)void}\n"
++ "}",
+"{"
++ "method Void #apply(class A a, class B b) b.#bin#10b(a:a)"
++ "A:{class method Void #bin#1a(read B b)void} B:{class method Void #bin#0b(read A a)void class method Void #bin#10b(class A a)void}\n"
++ "}",
+
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b,class C c)#?m3(a:a,b:b,c:c)"
++ "A:{class method Void #m3#0a(class B b,class C c)void}"
++ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
++ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
++ "}",
+"{"
++ "method Void (class A a, class B b,class C c) a.#m3#0a(b:b,c:c)"
++ "A:{class method Void #m3#0a(class B b,class C c)void}"
++ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
++ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
++ "}"
+
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b,class C c)#?m3(a:a,b:b,c:c)"
++ "A:{class method Void #m3#0a(read B b,class C c)void}"
++ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
++ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
++ "}",
+"{"
++ "method Void (class A a, class B b,class C c) b.#m3#0b(a:a,c:c)"
++ "A:{class method Void #m3#0a(read B b,class C c)void}"
++ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
++ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
++ "}"
+
+},{lineNumber(),
+"{"
++ "method Void (class A a, class B b,class C c)#?m3(a:a,b:b,c:c)"
++ "A:{class method Void #m3#0a(read B b,class C c)void}"
++ "B:{class method Void #m3#0b(read A a,class C c)void}\n"
++ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
++ "}",
+"{"
++ "method Void (class A a, class B b,class C c) c.#m3#0c(a:a,b:b)"
++ "A:{class method Void #m3#0a(read B b,class C c)void}"
++ "B:{class method Void #m3#0b(read A a,class C c)void}\n"
++ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
++ "}"
 
 }});}
 
+    
+    
 @Test()
-public void testAllSteps() {//s1 unused :(
-  ClassB cb1=runTypeSystem(s2);
-  ClassB cb2=(ClassB)Desugar.of(Parser.parse(null,s3)).accept(new InjectionOnCore());
+public void testAllSteps() {
+  ClassB cb1=runTypeSystem(original);
+  ClassB cb2=(ClassB)Desugar.of(Parser.parse(null,annotated)).accept(new InjectionOnCore());
   TestHelper.assertEqualExp(cb1,cb2);
   }
 }

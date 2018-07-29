@@ -265,7 +265,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
   public ExpCore visit(Block s) {
     G oldG=g;
     try{
-      Block sGuessed=StaticDispatch.of(p, g, s, false);
+      Block sGuessed=(Block)StaticDispatch.of(p, g, s, false);
       G baseG=g.add(p, sGuessed.getDecs());
       g=baseG;
       List<Dec> ds = liftDecs(s.getDecs());

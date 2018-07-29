@@ -346,7 +346,16 @@ import coreVisitors.InjectionOnSugar;
     Position pos;
     List<MethodSelector>availables;
   }
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class OperatorDispachFail extends TypeError implements PosImprove{
+    ExpCore.OperationDispatch op;
+    Position pos;
+    }
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InferenceFail extends TypeError implements PosImprove{
+    List<ExpCore.Block.Dec>ds;
+    Position pos;
+    }
 
+  
   //not used right now, may be is not useful
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnlockImpossible extends TypeError {
     Throwable unlockAttemptedBut;
