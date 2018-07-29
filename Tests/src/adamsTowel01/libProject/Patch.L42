@@ -3,9 +3,9 @@
   class method This(Path that)
   
   method
-  Library <><(Library that)
+  Library <><(Library right)
   exception Refactor2.ClassClash,Refactor2.MethodClash{
-    ip=Location.Lib(that).nested(path:this.that())
+    ip=Location.Lib(right).nested(path:this.that())
     itr=ip.allNesteds()
 
 HERE

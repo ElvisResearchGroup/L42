@@ -61,8 +61,8 @@
       return Bool.true()
     return Bool.false()
     }
-  method ==(that){
-    with that (on read This return this.equals(that))
+  method ==(right){
+    with that (on read This return this.equals(right))
     return Bool.false()
     }
   method

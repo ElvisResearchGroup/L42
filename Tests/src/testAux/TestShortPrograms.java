@@ -45,16 +45,16 @@ public class TestShortPrograms {
     TestHelper.assertEqualExp(nc.getInner(),ee2);
   }
 
-@Test public void test1(){tp(""
+/*@Test*/ public void test1(){tp(""
 ,"{ C:{//@exitStatus\n//0\n"
 ,"}}"
 );}
-@Test public void test2(){tp("{"
+/*@Test*/ public void test2(){tp("{"
 ,"  C:{ class method Library m() ({//@exitStatus\n//0\n} )}"
 ,"  D:C.m()"
 ,"}");}
 
-@Test public void test3(){tp("{"
+/*@Test*/ public void test3(){tp("{"
 ,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
@@ -70,7 +70,7 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
-@Test public void test4(){tp("{"
+/*@Test*/ public void test4(){tp("{"
 ,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
@@ -86,7 +86,7 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
-@Test public void test5(){tp("{"
+/*@Test*/ public void test5(){tp("{"
 ,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
@@ -104,7 +104,7 @@ public class TestShortPrograms {
 , " res)"
 ,"}");}
 
-@Test public void test6(){tp("{"
+/*@Test*/ public void test6(){tp("{"
 ,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
@@ -121,7 +121,7 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 
-@Test public void test7(){tp("{"
+/*@Test*/ public void test7(){tp("{"
 ,"  C:{"
 ,"    class method Library ok() ({//@exitStatus\n//0\n\n} )"
 ,"    class method Library ko() ({//@exitStatus\n//42000\n\n} )"
@@ -158,27 +158,27 @@ public class TestShortPrograms {
 ,"    )"
 ,"}");}
 */
-@Test public void test8(){tp("{"
+/*@Test*/ public void test8(){tp("{"
   ," D: { class method Library id(Library that) (that)}"
   ," C: D.id({  method Void foo() (C x= this void)}) "
   ," E: ( c=C {//@exitStatus\n//0\n\n})"
   ,"}");}
 
-@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+/*@Test*///(expected=ErrorMessage.PathsNotSubtype.class)
 public void test8b(){tp(ErrorKind.NotSubtypeClass,"{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: { method Void foo() (D x= this void)} "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+/*@Test*///(expected=ErrorMessage.PathsNotSubtype.class)
 public void test8c(){tp(ErrorKind.NotSubtypeClass,"{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: D.id({ method Void foo() (D x= this void)}) "
     ," E:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
+//@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8d(){tp("{"
     ," A: {Bla:{}}"
     ," D: { class method Void wrongParameter(A.BlaWrong that)void class method Library id(Library that) that}"
@@ -186,7 +186,7 @@ public void test8d(){tp("{"
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
+//@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8e(){tp("{"
     ," A:{"
     ," B:{C.D d }"
@@ -195,7 +195,7 @@ public void test8e(){tp("{"
     ,"Main:( c=C {//@exitStatus"
     ," //0"
     ," })}");}
-@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
+//@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test8f(){tp("{"
     ," A:{"
     ," B:{method Void foo() (class Any unused=C.Dpr void)}"
@@ -206,7 +206,7 @@ public void test8f(){tp("{"
     ," })}");}
 
 
-@Test(expected=PathMetaOrNonExistant.class)
+//@Test(expected=PathMetaOrNonExistant.class)
 public void test9b(){tp("{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: {  H:{ method Void foo() (This2.C.E x= this void)}}"
@@ -214,19 +214,19 @@ public void test9b(){tp("{"
     ,"}");}
 
 
-@Test(expected=PathMetaOrNonExistant.class)
+//@Test(expected=PathMetaOrNonExistant.class)
 public void test9c1(){tp("{"//focus on the difference between c1 and c2. This is the expected behaviour.
     ," D: { class method Library id(Library that) that}"
     ," C: D.id({ H:{ method Void foo() (This2.C.E x= this void)}}) "
     ," F:( c=C {//@exitStatus\n//0\n\n})"//otherwise it does not fails with optimizations on
     ,"}");}
-@Test()
+//@Test()
 public void test9c2(){tp("{"
     ," D: { class method Library id(Library that) that}"
     ," C: D.id({ H:{ method Void foo() (This2.C.H x= this void)}}) "//here C.H vs C.E is the only difference
     ," F:( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
-@Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
+//@Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
 public void test9d(){tp("{"
     ," D: { class method Library trash(Library that) ({})}"
     ," C: D.trash({  H:{ method Void foo() (This2.C.E x= this void)}}) "
@@ -234,26 +234,26 @@ public void test9d(){tp("{"
     ,"}");}
 
 
-@Test public void test9(){tp("{"
+/*@Test*/ public void test9(){tp("{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: D.id({  H:{ method Void foo() (This2.C.H x= this void)}}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.MethodNotPresent.class)
+//@Test(expected=ErrorMessage.MethodNotPresent.class)
 public void test10(){tp("{"
     ," D: {class method Library id(Library that) (that)}"
     ," C: D.id({  method Void foo(D x) ( x.foo(x))}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
-@Test//(expectedExceptions=ErrorMessage.MethodNotPresent.class)
+/*@Test*///(expectedExceptions=ErrorMessage.MethodNotPresent.class)
 public void test11(){tp("{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: D.id({  method Void foo(C x) ( x.foo(x:x))}) "
     ," E: ( c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
+//@Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
 public void test12(){tp("{"
 ,"LibList:{"
 ,"  T:{ }"
@@ -264,13 +264,13 @@ public void test12(){tp("{"
 );}
 
 
-@Test
+/*@Test*/
 public void testClassMethods1(){tp("{"
     ," D: { class method Library a() This.b()   class method Library b() {} }"
     ," E: ( c=D.a() {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test
+/*@Test*/
 public void testClassMethods2(){tp("{"
     ," I: { interface class method Library a()  class method Library b() }"
     ," D:{  implements I  method a() This.b()   method  b() {} }"
@@ -278,13 +278,13 @@ public void testClassMethods2(){tp("{"
     ,"}");}
 
 
-@Test public void testPlaceHolder(){tp(""
+/*@Test*/ public void testPlaceHolder(){tp(""
 ,"{"
 ,"A:{A x, class method A(fwd A x)}"
 ," C:( A myA=A(x:myA)  {//@exitStatus\n//0\n})"
 ,"}"
 );}
-@Test public void testPlaceHolderFactory(){tp(""
+/*@Test*/ public void testPlaceHolderFactory(){tp(""
 ,"{"
 //TODO: try with a mut constructor too,"A:{(fwd A x)}"
 ,"A:{A x, class method A(fwd A x)}"
@@ -294,7 +294,7 @@ public void testClassMethods2(){tp("{"
 ,"}"
 );}
 
-@Test public void testTwoKindExc1(){tp(""
+/*@Test*/ public void testTwoKindExc1(){tp(""
 ,"{"
 ,"A:{class method This()}"
 ,"B:{}"
@@ -307,7 +307,7 @@ public void testClassMethods2(){tp("{"
 ,"}"
 );}
 
-@Test()
+//@Test()
 public void testTwoKindExc2(){try{tp(""
 ,"{"
 ,"A:{class method This()}"
@@ -325,44 +325,44 @@ catch(Resources.Exception exc2) {}
 //both ok, depend on details in reduction strategy
 
 }
-@Test(expected=ErrorMessage.NotOkToStar.class)
+//@Test(expected=ErrorMessage.NotOkToStar.class)
 public void testPlusNotStar(){tp("{"
 ,"A:{ class method This () method Library foo() }"
 ,"E: A().foo()"
 ,"}"
 );}
 
-@Test//(expected=ErrorMessage.PathsNotSubtype.class)
+/*@Test*///(expected=ErrorMessage.PathsNotSubtype.class)
 public void testDeepTyping1(){tp(ErrorKind.NotSubtypeClass,"{"
     ," D: { class method Library wrong()  { A:{method Void v(Any a) a } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
-@Test(expected=ErrorMessage.MethodNotPresent.class)
+//@Test(expected=ErrorMessage.MethodNotPresent.class)
 public void testDeepTyping2(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Library ignore=D.wrong(), {//@exitStatus\n//0\n\n})"
     ,"}");}
 
-@Test(expected=ErrorMessage.MethodNotPresent.class)
+//@Test(expected=ErrorMessage.MethodNotPresent.class)
 public void testDeepTyping3(){tp("{"
     ," D: { class method Library wrong()  { A:{method Void v() this.notDeclared() } } }"
     ," E: ( Void ignore=D.wrong(), {//@exitStatus\n//0\n\n})"//we check that methodNotPresent has priority over PathsNotSubtype in this case
     ,"}");}
-@Test//TODO:(expected=ErrorMessage.MalformedFinalResult.class)
+/*@Test*///TODO:(expected=ErrorMessage.MalformedFinalResult.class)
 public void test13(){tp("{",
     " I:{ interface method I foo() }",
     "A:{  implements I  method I beer()}",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 
-@Test //TODO: why was (expected=ErrorMessage.MalformedFinalResult.class)
+/*@Test*/ //TODO: why was (expected=ErrorMessage.MalformedFinalResult.class)
 public void test13b(){tp("{",
     " I:{ interface method I foo() }",
     "A:{ implements I  }",
     "Main:(x={} {//@exitStatus\n//0\n\n})",
     " }");}
 
-@Test
+/*@Test*/
 public void test14RelaxVarableSameName1(){tp("{",
     " A:{class method Library foo() (   "
     + "  var Library lib={}"
@@ -372,27 +372,27 @@ public void test14RelaxVarableSameName1(){tp("{",
     "Main:A.foo()",
     " }");}
 
-@Test(expected=ErrorMessage.MalformedFinalResult.class)
+//@Test(expected=ErrorMessage.MalformedFinalResult.class)
 public void test14RelaxVarableSameName2(){tp("{",
     " A:{class method Library foo() (   var Library lib={}  (x={//@exitStatus\n//0\n\n} lib:=x  )  (x={} lib:=x) lib   )}",
     "Main:A.foo()",
     " }");}
 
-@Test
+/*@Test*/
 public void test2levels(){tp("{",
     " A:( void {B: ( void {class method Library foo() {//@exitStatus\n//0\n\n}   })})",
     "Main:A.B.foo()",
     " }");}
 
 
-@Test
+/*@Test*/
 public void test5levels(){tp("{",
     " A:( void {B: ( void {C:( void {D:( void {E:( void {class method Library foo() {//@exitStatus\n//0\n\n}   })})})})})",
     "Main:A.B.C.D.E.foo()",
     " }");}
 
 
-@Test
+/*@Test*/
 public void testComposition1(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method Void m()}",
@@ -404,7 +404,7 @@ public void testComposition1(){tp("{",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
-@Test
+/*@Test*/
 public void testComposition2(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m(A that)}",
@@ -415,7 +415,7 @@ public void testComposition2(){tp("{",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
 
-@Test
+/*@Test*/
 public void testComposition3(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m1(A that)  method A m2(A that)}",
@@ -427,7 +427,7 @@ public void testComposition3(){tp("{",
     " }");}
 
 
-@Test
+/*@Test*/
 public void testComposition4(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m1(A that)  method A m2(A that)}",
@@ -444,7 +444,7 @@ public void testComposition4(){tp("{",
     " }");}
 
 
-@Test
+/*@Test*/
 public void testComposition5(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method Void m() }",
@@ -458,7 +458,7 @@ public void testComposition5(){tp("{",
     " }");}
 
 
-@Test
+/*@Test*/
 public void testComposition6(){tp("{",
     "Op:"+operatorAccess(),
     " A:{interface method A m1(A that)  method A m2(A that)}",
@@ -473,7 +473,7 @@ public void testComposition6(){tp("{",
     " }");}
 
 
-@Test
+/*@Test*/
 public void testComposition7(){tp("{",
     "Op:"+operatorAccess(),
     " Q:{ interface method Void m() }",
@@ -485,14 +485,14 @@ public void testComposition7(){tp("{",
     " })",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-@Test
+/*@Test*/
 public void testPluginParts1(){tp("{",
     "L:"+listAccess(),
     "Q:(L l=L() L.N sz=l.size()  ",
     "  l.add(sz) L.N e=l.get(sz) {})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-@Test
+/*@Test*/
 public void testPluginParts1Fail(){tp("{",
     "L:"+listAccess(),
     "Q:(L l=L() L.N sz=l.size()  ",
@@ -501,12 +501,12 @@ public void testPluginParts1Fail(){tp("{",
     " {/*fail*/})",
 //    "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-@Test
+/*@Test*/
 public void testPluginPartsWrapper(){tp("{",
     "W:{//@plugin is.L42.connected.withSafeOperators",
     " //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator",
-    "class method Library <><(Library that)use This",
-    " check #main(_1_Library:that)",
+    "class method Library <><(Library right)use This",
+    " check #main(_1_Library:right)",
     " error void}",
     "A:W<><{/*@plugin  toFix @pluginPart "+A.class.getName()+" */",
     " class method Void #pluginUnresponsive(Library binaryRepr) void  ",
@@ -590,7 +590,7 @@ public static final String listAccess(){return
 +"  }\n";
 }
 //TODO: file 2 line 184, to avoid evil push
-@Test public void testMultipleImplementSameInterface(){tp("{"+
+/*@Test*/ public void testMultipleImplementSameInterface(){tp("{"+
 "  A:{ "+
 "    B:{ "+
 "       C:{interface class method Void m() "+
@@ -608,7 +608,7 @@ public static final String listAccess(){return
  * Aden's tests.
  */
 
-@Test(expected = ErrorMessage.UnclosedParenthesis.class)
+//@Test(expected = ErrorMessage.UnclosedParenthesis.class)
 public void testUnclosedParen() {
 	tp("{"
 	,"C: ("
@@ -618,7 +618,7 @@ public void testUnclosedParen() {
 //If the test above throws an UnclosedParenthesis should this one throw an unopenedParenthesis?
 //This throws the correct error in the IDE. It throws ParenthesisMismatchRange instead
 // Was a bug as of 18/05/18.
-@Test(expected = ErrorMessage.UnopenedParenthesis.class)
+//@Test(expected = ErrorMessage.UnopenedParenthesis.class)
 public void testUnopenedParen() {
 	tp("{"
 	,"C:"
@@ -628,7 +628,7 @@ public void testUnopenedParen() {
 
 // If run in the IDE this will break the IDE until you use a text editor to change the file.
 // Kind of a bug, was a bug as of 18/05/18.
-@Test
+/*@Test*/
 public void testLocalhost() {
 	tp("{reuse localhost/nanoBase0"
 			,"C:{"
@@ -638,7 +638,7 @@ public void testLocalhost() {
 }
 
 
-@Test
+/*@Test*/
 public void testNanoBase() {
 	tp("{reuse L42.is/nanoBase0"
 			,"C:{"
@@ -671,7 +671,7 @@ public void testOtherNanobase() {
 }*/
 
 
-@Test(expected=ErrorMessage.VariableUsedNotInScope.class)
+//@Test(expected=ErrorMessage.VariableUsedNotInScope.class)
 public void testUnderscoreVariableName(){
 	tp("{"
 	," C:{class method Any m(Any that) that}"
@@ -683,7 +683,7 @@ public void testUnderscoreVariableName(){
 
 //This should be correct??
 // This was current as of 18/05/18
-@Test//(expected = ErrorMessage.NotWellFormedMsk.class)
+/*@Test*///(expected = ErrorMessage.NotWellFormedMsk.class)
 public void testAssignExitCode() {
 	tp("{"
 	,"C:{ s = return ExitCode.normal()"
@@ -694,7 +694,7 @@ public void testAssignExitCode() {
 //look so horrible that may be a bug in the speck?
 //and... today do not work, so, there is a delta between impl and speck?
 
-@Test(expected = ErrorMessage.InvalidCharacter.class)
+//@Test(expected = ErrorMessage.InvalidCharacter.class)
 public void testTabBadCharacter() {
 	tp("{"
 	,"C:{ s = 12Num"
@@ -704,7 +704,7 @@ public void testTabBadCharacter() {
 }
 
 //This should work as nanoBase doesn't load in the string class.
-@Test
+/*@Test*/
 public void testClassnameSOk() {
 	tp("{reuse L42.is/nanoBase0"
 		,"S: {"
@@ -718,7 +718,7 @@ public void testClassnameSOk() {
 //This probably shouldn't work, but it throws a Java error.
 //Expecting some sort of parsing error? Or prehaps a meta error.
 // Was a bug as of 18/05/18.
-@Test 
+/*@Test*/ 
 public void testNoClassname() {
 	tp("{"
 	,"{Debug()}"
@@ -731,7 +731,7 @@ public void testNoClassname() {
  * is cached.
  */
 
-@Test
+/*@Test*/
 public void testCollectionNotEmpty() {
 	tp("{reuse L42.is/AdamTowel02"
 	,"CacheAdamTowel02:Load.cacheTowel()"
@@ -745,7 +745,7 @@ public void testCollectionNotEmpty() {
 }
 
 // Test collection size == number of elements.
-@Test
+/*@Test*/
 public void testCollectionSize() {
 	tp("{reuse L42.is/AdamTowel02"
 	,"CacheAdamTowel02:Load.cacheTowel()"
@@ -759,7 +759,7 @@ public void testCollectionSize() {
 }
 
 // Test that an empty collection has a size of 0.
-@Test
+/*@Test*/
 public void testEmptyCollection() {
 	tp("{reuse L42.is/AdamTowel02"
 	,"CacheAdamTowel02:Load.cacheTowel()"
@@ -774,7 +774,7 @@ public void testEmptyCollection() {
 
 //This needs to cache the towel to use S (string) as the class name.
 // This should fail as we're using S as a class name which is already in the towel.
-@Test(expected = ErrorMessage.NotWellFormedMsk.class)
+//@Test(expected = ErrorMessage.NotWellFormedMsk.class)
 public void testClassnameS() {
 	tp("{reuse L42.is/AdamTowel02"
 	,""
@@ -787,7 +787,7 @@ public void testClassnameS() {
 
 // Should throw a type error, not an assertion error as we shouldn't be able to update it.
 // This was a bug as of 18/05/18.
-@Test
+/*@Test*/
 public void testBadUpdate() {
 	tp("{"
 	,"reuse L42.is/AdamTowel02"
@@ -797,7 +797,7 @@ public void testBadUpdate() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testCollectionMethod() {
 	tp("{"
 	,"reuse L42.is/AdamTowel02"
@@ -817,7 +817,7 @@ public void testCollectionMethod() {
 }
 
 //Test equality of collections and test having the exitCode on the only reachable path.
-@Test
+/*@Test*/
 public void testCollectionsEqual() {
 	tp("{reuse L42.is/AdamTowel02"
 	,"CacheAdamTowel02:Load.cacheTowel()"
@@ -836,7 +836,7 @@ public void testCollectionsEqual() {
 }
 
 //Test equality of collections which are not equal.
-@Test
+/*@Test*/
 public void testCollectionsNotEqual() {
 	tp("{reuse L42.is/AdamTowel02"
 	,"CacheAdamTowel02:Load.cacheTowel()"
@@ -853,7 +853,7 @@ public void testCollectionsNotEqual() {
 }
 
 // If this code is run twice in the IDE it will fail, but that is not the case here.
-@Test
+/*@Test*/
 public void testSymbol() {
 	tp("{reuse L42.is/AdamTowel02"
 	,"C: {"
@@ -868,7 +868,7 @@ public void testSymbol() {
 	,"}");
 }
 
-@Test //We should expect some sort of 42 stackoverflow error. We can count to about 5800.
+/*@Test*/ //We should expect some sort of 42 stackoverflow error. We can count to about 5800.
 // This was a bug as of 18/05/2018. Note: The equivalent Java program counts to about 23000.
 public void testStackOverflow() {
 	tp("{reuse L42.is/AdamTowel02"
@@ -889,7 +889,7 @@ public void testStackOverflow() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testGoodRecursion() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -911,7 +911,7 @@ public void testGoodRecursion() {
 
 // Throws an assertion error. It should throw maybe a parsing error or maybe a method not present.
 // This was a bug as of 18/05/2018.
-@Test
+/*@Test*/
 public void testMethodCallOnVariable() {
 	tp("{reuse L42.is/nanoBase0"
 			,"A: {"
@@ -921,7 +921,7 @@ public void testMethodCallOnVariable() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testGetCollectionValue() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"Nums: Collections.vector(of: Num)"
@@ -942,7 +942,7 @@ public void testGetCollectionValue() {
 }
 
 // This works correctly but there isn't a suitable error to expect.
-@Test//(expected = ErrorMessage.)
+/*@Test*///(expected = ErrorMessage.)
 public void testIndexOutOfBounds() {
 	try{tp("{reuse L42.is/AdamTowel02"
 			,"Nums: Collections.vector(of: Num)"
@@ -961,7 +961,7 @@ public void testIndexOutOfBounds() {
 }
 
 
-@Test
+/*@Test*/
 public void testNegativeNumbers() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -973,7 +973,7 @@ public void testNegativeNumbers() {
 
 // Division by zero. Is it intended behaviour to not throw an error?
 // This was a bug as of 18/05/2018. 
-@Test
+/*@Test*/
 public void testDivideByZero() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1016,7 +1016,7 @@ public void testSuggestion() {
 */
 // Is this error due to the fact that we don't have a field in a class extending
 // Data therefore the equals method can't be constructed properly?
-@Test
+/*@Test*/
 public void testBabelFish() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Data <>< {"
@@ -1028,7 +1028,7 @@ public void testBabelFish() {
 }
 
 // This was a bug as of 18/05/18. Marco stated that he was working on fixing it.
-@Test
+/*@Test*/
 public void testImplementAndBabelFish() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Data <>< {implements S"
@@ -1040,7 +1040,7 @@ public void testImplementAndBabelFish() {
 }
 
 // Should this work? The equivalent works in Java, Python, etc.
-@Test
+/*@Test*/
 public void testNegativeVariable() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1053,7 +1053,7 @@ public void testNegativeVariable() {
 
 // This is probably fine because we may not support this character. 
 // http://unicode.org/cldr/utility/character.jsp?a=00B6
-@Test
+/*@Test*/
 public void testWeirdCharacters() {
 	tp("{reuse L42.is/nanoBase0"
 			,"A: {"
@@ -1066,7 +1066,7 @@ public void testWeirdCharacters() {
 // Should this work? I'm not quite sure why this doesn't work. Something to do with
 // The a.update() call.
 
-@Test
+/*@Test*/
 public void testMutVariable() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Data <>< {"
@@ -1085,7 +1085,7 @@ public void testMutVariable() {
 }
 
 // Are we not using IEEE 754 floating point standard? 
-@Test
+/*@Test*/
 public void testFloatingPointAdd() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1096,7 +1096,7 @@ public void testFloatingPointAdd() {
 }
 
 // Should this work okay? I think it's placing the == ahead of the + operator in precedence.
-@Test
+/*@Test*/
 public void testOrderOfOperations() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1107,7 +1107,7 @@ public void testOrderOfOperations() {
 }
 
 // This doesn't work as l3 has no methods avaliable? 
-@Test
+/*@Test*/
 public void testOverride() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1120,7 +1120,7 @@ public void testOverride() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testRefactor() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1133,7 +1133,7 @@ public void testRefactor() {
 
 // This should throw an error stating that we can't update because a is not a var but
 // it throws an assertion error.
-@Test
+/*@Test*/
 public void testNonVarUpdate() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1144,7 +1144,7 @@ public void testNonVarUpdate() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testSum() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"Nums: Collections.vector(of: Num)"
@@ -1160,7 +1160,7 @@ public void testSum() {
 
 // Is there a reason why this can't infer the type? I know it works if we give a an
 // explicit type.
-@Test
+/*@Test*/
 public void testInferVarType() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1171,7 +1171,7 @@ public void testInferVarType() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testEmptyGivesEmpty() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"Nums: Collections.vector(of: Num)"
@@ -1184,7 +1184,7 @@ public void testEmptyGivesEmpty() {
 }
 
 // Make sure adding two different units doesn't work.
-@Test(expected = newTypeSystem.FormattedError.class)
+//@Test(expected = newTypeSystem.FormattedError.class)
 public void testBadUnitAdd() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Units.of(Num)"
@@ -1198,7 +1198,7 @@ public void testBadUnitAdd() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testGoodUnitAdd() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Units.of(Num)"
@@ -1213,7 +1213,7 @@ public void testGoodUnitAdd() {
 }
 
 // Even if we can't make a unit of a unit, this gives us a "RawJavaException".
-@Test
+/*@Test*/
 public void testUnitofUnit() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Units.of(Num)"
@@ -1224,7 +1224,7 @@ public void testUnitofUnit() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testCompositeUnit() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Units.of(Num)"
@@ -1238,7 +1238,7 @@ public void testCompositeUnit() {
 
 
 // Shouldn't this work? It shows it in the tutorial.
-@Test
+/*@Test*/
 public void testSidedDivision() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: Units.of(Num)"
@@ -1255,7 +1255,7 @@ public void testSidedDivision() {
 
 //Should this be allowed? It wouldn't work in Java as a nested type can't hide an
 //enclosing type.
-@Test
+/*@Test*/
 public void testRepeatedNestedClasses() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"B: {"
@@ -1265,7 +1265,7 @@ public void testRepeatedNestedClasses() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testOverride2() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"
@@ -1290,7 +1290,7 @@ public void testOverride2() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testRedirect1() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"D: Data <>< {"
@@ -1309,7 +1309,7 @@ public void testRedirect1() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testRedirect2() {
 	tp("{reuse L42.is/AdamTowel02"			
 			,"B: {"
@@ -1324,7 +1324,7 @@ public void testRedirect2() {
 	,"}");
 }
 
-@Test
+/*@Test*/
 public void testBasicClone() {
 	tp("{reuse L42.is/AdamTowel02"
 			,"A: {"

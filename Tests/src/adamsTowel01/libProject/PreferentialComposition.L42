@@ -42,9 +42,9 @@ Bool needRename(
   }
 
 class method
-Library <><(Library that) 
+Library <><(Library right) 
 exception Refactor2.ClassClash,Refactor2.MethodClash
-  Refactor2.compose(that,and:This.composerTrait())
+  Refactor2.compose(right,and:This.composerTrait())
 class method Library composerTrait(){implements $
   Libs myLibs  
   class method This(Libs myLibs) 
@@ -82,7 +82,7 @@ class method Library composerTrait(){implements $
     return acc
     error on Location.NotAvailable X"PreferentialComposition1"
     }
-  method This ++ (This that)
-    This(myLibs:this.myLibs()++that.myLibs())
+  method This ++ (This right)
+    This(myLibs:this.myLibs()++right.myLibs())
   }
 }

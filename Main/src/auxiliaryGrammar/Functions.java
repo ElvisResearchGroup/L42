@@ -41,6 +41,7 @@ import coreVisitors.IsCompiled;
 import coreVisitors.IsValue;
 import facade.L42;
 import facade.Parser;
+import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 
 public class Functions {
@@ -498,5 +499,16 @@ public static ClassB parseAndDesugar(String locaiton,String s) {
     }
   finally{L42.usedNames.clear();L42.usedNames.putAll(oldN);}
   }
-
+public static Type adaptTypeToVarName(String x, Type t) {//TODO:move in TypeManipulation?
+  assert t!=null;
+  if(t.getMdf()==Mdf.Class){return t;}//forcing another inference would just fail
+  if(TypeManipulation.fwd_or_fwdP_in(t.getMdf())){return t;}//TODO: understand the implications better
+  if(x.startsWith("imm$")){return t.withMdf(Mdf.Immutable);}
+  if(x.startsWith("mut$")){return t.withMdf(Mdf.Mutable);}
+  if(x.startsWith("read$")){return t.withMdf(Mdf.Readable);}
+  if(x.startsWith("lent$")){return t.withMdf(Mdf.Lent);}
+  if(x.startsWith("class$")){return t.withMdf(Mdf.Class);}
+  if(x.startsWith("capsule$")){return t.withMdf(Mdf.Capsule);}
+  return t;
+  }
 }

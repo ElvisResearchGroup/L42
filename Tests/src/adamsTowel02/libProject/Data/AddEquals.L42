@@ -41,8 +41,8 @@ exception Fail{
     read method 
     Bool equals(read This that) 
       Bool.true()//no fields
-    method ==(that) {
-      with that (on read This return this.equals(that))
+    method ==(right) {
+      with that (on read This return this.equals(right))
       return Bool.false()
       }
     }

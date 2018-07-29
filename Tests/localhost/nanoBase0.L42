@@ -2,19 +2,19 @@
 Bool:{interface
   class method This0 ()
   method Void #checkTrue() exception Void
-  method This0 &(This0 that)
+  method This0 &(This0 right)
   }
 True:{  implements Bool
   class method This _private()
   method () (this._private())
   method #checkTrue() (void)
-  method &(that) (that)
+  method &(right) (right)
   }
 False:{ implements Bool
   class method This _private()
   method () (this._private())
   method #checkTrue() (exception void)
-  method &(that) (this)
+  method &(right) (this)
   }
 ExitCode:{
   class method

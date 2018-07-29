@@ -28,38 +28,38 @@ Bool contains(Elem that){
 //################# operators
 
 method
-This -(Elem that)
-  this.withoutAll(val:that)
+This -(Elem right)
+  this.withoutAll(val:right)
 
 
 method
-This --(This that)
-  This[with e in this.vals() ( if !that.contains(e)  (use[e])  )]
+This --(This right)
+  This[with e in this.vals() ( if !right.contains(e)  (use[e])  )]
 
 
 
 method
-This &(This that)
+This &(This right)
   This[with v in this.vals() (
-    if (that>v) (use[v])
+    if (right>v) (use[v])
     )]
 
 
 method
-Bool >>(This that)
-  this >>=that & !(that>>=this)
+Bool >>(This right)
+  this >>=right & !(right>>=this)
 
 method
-Bool >>=(This that) {
-  with e in that.vals() (
+Bool >>=(This right) {
+  with e in right.vals() (
     if ! (this > e) (return Bool.false())
     )
   return Bool.true()
   }
 
 method
-Bool >(Elem that)
-  this.contains(that)
+Bool >(Elem right)
+  this.contains(right)
 
 
 
@@ -71,8 +71,8 @@ Bool equals(read This that){
   catch error IterationFailure ( return Bool.false() )
   return Bool.true()
   }
-method ==(that){
-  with that (on read This return this.equals(that))
+method ==(right){
+  with right (on read This return this.equals(right))
   return Bool.false()
   }
 

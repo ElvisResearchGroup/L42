@@ -49,27 +49,27 @@
       error void)
 
   method
-  Size +(Size that)
+  Size +(This right)
     Size._private(_binaryRepr:use Alu
-      check sumInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check sumInt32(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   method
-  Size -(Size that)
+  Size -(This right)
     Size._private(_binaryRepr:use Alu
-      check subInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check subInt32(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   method
-  Size *(Size that)
+  Size *(This right)
     Size._private(_binaryRepr:use Alu
-      check mulInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check mulInt32(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   method
-  Size /(Size that)
+  Size /(This right)
     Size._private(_binaryRepr: use Alu
-      check divInt32(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check divInt32(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   read method
@@ -79,22 +79,22 @@
       return Bool.true()
     return Bool.false()
     }
-  method ==(that){
-    with that (on read This return this.equals(that))
+  method ==(right){
+    with right (on read This return this.equals(right))
     return Bool.false()
     }
 
-  method Bool >(Size that)  {
+  method Bool >(This right)  {
     use Alu
-      check ifInt32GrtDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
+      check ifInt32GrtDo(n1:right.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
 
 
-  method Bool >=(Size that) {
+  method Bool >=(This right) {
     use Alu
-      check ifInt32GEqDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
+      check ifInt32GEqDo(n1:right.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }

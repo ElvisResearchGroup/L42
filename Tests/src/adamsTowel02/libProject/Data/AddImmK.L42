@@ -1,8 +1,8 @@
 {//Just immK for now
   class method
-  Library<><(Library that)
+  Library<><(Library right)
   exception StateUnfit {
-    i=Introspection(lib:that)
+    i=Introspection(lib:right)
     s=i.state()
     if s.isEmpty() (exception StateUnfit"Empty state")
     k=s.left()

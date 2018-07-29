@@ -24,8 +24,8 @@ EqualMessages:{
   //that check for equal class and then call EqualMessages
   }}
 $:{class method This()
-  class method Library <><(Library that)
-    UnsafeRefactor.MiniData<><UnsafeRefactor.Compose.compose(left:that, right:This.messageTrait())
+  class method Library <><(Library right)
+    UnsafeRefactor.MiniData<><UnsafeRefactor.Compose.compose(left:right, right:This.messageTrait())
   class method Library messageTrait() {implements Message
     S _text, Message.Opt cause
     class method This (S _text, Message.Opt cause)

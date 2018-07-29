@@ -37,41 +37,41 @@ Bool contains(read Elem that){
 //can not take imms since the collection under genration is still mut!
 
 method
-This -(Elem that)
-  this.withoutAll(val:that)
+This -(Elem right)
+  this.withoutAll(val:right)
 
 
 method
-This --(This that){
-  //This[with e in this.vals() ( if !that.contains(e)  (use[e])  )]
-  if that.isEmpty() (return this)
-  return (this-that.left()) --that.withoutLeft()
+This --(This right){
+  //This[with e in this.vals() ( if !right.contains(e)  (use[e])  )]
+  if right.isEmpty() (return this)
+  return (this-right.left()) --right.withoutLeft()
   }
 
 
 method
-This &(This that){
-  //This[with v in this.vals() ( if (that>v) (use[v]) )]
+This &(This right){
+  //This[with v in this.vals() ( if (right>v) (use[v]) )]
   var This res=this
-  with v in this.vals() (if !that.contains(v) (res:=res.withoutAll(val:v)))
+  with v in this.vals() (if !right.contains(v) (res:=res.withoutAll(val:v)))
   return res
   }
 
 method
-Bool >>(This that)
-  this >>=that & !(that>>=this)
+Bool >>(This right)
+  this >>=right & !(right>>=this)
 
 method
-Bool >>=(This that) {
-  with e in that.vals() (
+Bool >>=(This right) {
+  with e in right.vals() (
     if !this.contains(e) (return Bool.false())
     )
   return Bool.true()
   }
 
 method
-Bool >(Elem that)
-  this.contains(that)
+Bool >(Elem right)
+  this.contains(right)
 
 
 
@@ -83,8 +83,8 @@ Bool equals(read This that){
   catch error IterationFailure ( return Bool.false() )
   return Bool.true()
   }
-method ==(that){
-  with that (on read This return this.equals(that))
+method ==(right){
+  with right (on read This return this.equals(right))
   return Bool.false()
   }
 

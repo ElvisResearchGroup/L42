@@ -44,9 +44,9 @@ Library ensureInvariant(Library that)
   }
 
 method
-Library <><(Library that)
+Library <><(Library right)
 exception Fail Refactor2.PathUnfit {
-  inv=this.ensureInvariant(that)
+  inv=this.ensureInvariant(right)
   return PlgInvariantClose.closeJ(
     path:this.of(),top:inv,mutK:This1.mutKName() immK:This1.immKName()
     )

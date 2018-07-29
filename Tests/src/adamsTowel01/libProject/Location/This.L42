@@ -57,8 +57,8 @@ This$:{interface implements Concept.Base
 
 PUnresponsive:{
   class method
-  Library<><(Library that)
-    UnsafeRefactor.Compose.compose(left:This(), right:that)
+  Library<><(Library right)
+    UnsafeRefactor.Compose.compose(left:This(), right:right)
   class method Library(){
     class method
     Library #pluginUnresponsive(Library binaryRepr)
@@ -68,8 +68,8 @@ PUnresponsive:{
 
 This$Impl:{
   class method
-  Library<><(Library that)
-    UnsafeRefactor.Compose.compose(left:This(), right:that)
+  Library<><(Library right)
+    UnsafeRefactor.Compose.compose(left:This(), right:right)
  
   class method Library(){ implements This$
     refine read method class This class()//to work with simple minded sum
@@ -80,8 +80,8 @@ This$Impl:{
   }
 PlgClass:{
   class method
-  Library<><(Library that)
-    PUnresponsive<><UnsafeRefactor.MiniData<><This$Impl<><that
+  Library<><(Library right)
+    PUnresponsive<><UnsafeRefactor.MiniData<><This$Impl<><right
   }
 //###2 Doc 
 //------------------------------------

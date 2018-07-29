@@ -34,8 +34,8 @@
     }
 
   method
-  ==(that){
-    with that (on read This return this.equals(that))
+  ==(right){
+    with right (on read This return this.equals(right))
     return Bool.false()
     }
 
@@ -52,14 +52,14 @@
     This.#from(binaryRepr:use Alu check constFalse() error void)
 
   method
-  This &(This that){
-    if this (return that)
+  This &(This right){
+    if this (return right)
     return this
     }
   method
-  This |(This that){
+  This |(This right){
     if this (return this)
-    return that
+    return right
     }
   method
   This !(){

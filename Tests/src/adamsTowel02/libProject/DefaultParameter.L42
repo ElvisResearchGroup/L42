@@ -4,7 +4,7 @@
   DefaultValueInvalid:Message.$<><{ implements MetaGuard}
 
   method
-  Library <><(Library that)
+  Library <><(Library right)
   exception ParameterNameNotPresent,DefaultValueInvalid{
     origin=this.that()
     p=this.of()
@@ -24,7 +24,7 @@
       )
    //can be more precise, stating that provider needs to be a no arg method with the same class of the parameter, and with compatible this modifier.
     return Refactor.SumMethods(
-      provider and:origin of:p over:name to: newSelector)<><that
+      provider and:origin of:p over:name to: newSelector)<><right
     error on MetaGuard
       DefaultValueInvalid""
     }

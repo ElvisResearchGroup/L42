@@ -26,8 +26,8 @@
 
   method toS() this.clone()
 
-  method ==(that){
-    with that (on read This return this.equals(that))
+  method ==(right){
+    with right (on read This return this.equals(right))
     return Bool.false()
     }
 
@@ -35,8 +35,8 @@
 
   //#####operators
   method
-  S ++ (S that) S.#from(binaryRepr: use Alu
-      check stringConcat(s1:this.#binaryRepr(),s2:that.#binaryRepr())
+  S ++ (This right) S.#from(binaryRepr: use Alu
+      check stringConcat(s1:this.#binaryRepr(),s2:right.#binaryRepr())
       error void)
 
   read method
@@ -48,21 +48,21 @@
     }
 
 method
-This -(This that)
-  this.withoutAll(val:that)
+This -(This right)
+  this.withoutAll(val:right)
 
 
 method
-Bool >>(This that)
-  this >>=that & this.size()>that.size()
+Bool >>(This right)
+  this >>=right & this.size()>right.size()
 
 method
-Bool >>=(This that)
-  this.contains(that)
+Bool >>=(This right)
+  this.contains(right)
 
 method
-Bool >(This that)
-  this.contains(that)
+Bool >(This right)
+  this.contains(right)
 
 
   //#####other sequence like methods

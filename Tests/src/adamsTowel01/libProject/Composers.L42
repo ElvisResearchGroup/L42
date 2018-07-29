@@ -44,14 +44,14 @@ class method Library composerTrait(){
     mut Libs inner
     class method mut This (mut Libs inner)
     
-    method Library <><(Library that)
+    method Library <><(Library right)
     exception 
     ,,,,Refactor2.MethodClash,
     ,,,,Refactor2.ClassClash,
     ,,,,Refactor2.SubtleSubtypeViolation {
-      mut This1 cmp=This1(libs:this.inner(),lib0:that)
+      mut This1 cmp=This1(libs:this.inner(),lib0:right)
       cmp.fillMaps()
-      var Library acc=that
+      var Library acc=right
       with 
       ,,,,li in this.inner().reverse().vals()
       ,,,,mi in cmp.openMaps().#reverse().#vals() (
@@ -141,7 +141,7 @@ class method Library composerTrait(){
   Patcher:{ 
     Path patch
     class method mut This (Path patch)
-    method Library <><(Library that)
+    method Library <><(Library right)
     exception 
     ,,,,Refactor2.MethodClash,
     ,,,,Refactor2.ClassClash,
@@ -150,9 +150,9 @@ class method Library composerTrait(){
     ,,,,Refactor2.SelectorUnfit,
     ,,,,Refactor2.ClassUnfit
     ,,,,Location.NotAvailable (
-      mut This1 cmp=This1(top:that,fix:this.patch())
-      cmp.fillMapsPatch(top:Location.Lib(that),fix:this.patch())
-      var Library acc=that
+      mut This1 cmp=This1(top:right,fix:this.patch())
+      cmp.fillMapsPatch(top:Location.Lib(right),fix:this.patch())
+      var Library acc=right
       acc><>=cmp.open(0Size)  
       acc><>=Refactor2.rename(path:this.patch() into:\"This")
       acc><>=cmp.close()      
@@ -177,12 +177,12 @@ class method Library composerTrait(){
   }
 
 class method
-Library<><(Library that)
+Library<><(Library right)
 exception 
 ,,,,Refactor2.MethodClash,
 ,,,,Refactor2.ClassClash,
 ,,,,Refactor2.SubtleSubtypeViolation 
-  Refactor2.compose(This.composerTrait() and:that)
+  Refactor2.compose(This.composerTrait() and:right)
 
 //utils in the top Composers class
 class method

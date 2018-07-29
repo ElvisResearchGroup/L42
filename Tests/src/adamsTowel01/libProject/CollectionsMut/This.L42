@@ -4,11 +4,14 @@ CollectionErrors:...
 MutListAny:...
 
 class method
-Library vector(class Any of) UnsafeRefactor.Classable<><{
-  return this.eq(of)
-  catch error Library return this.minimal(of)
-  catch error S return this.minimal(of)
-  }
+Library vector(class Any of) (
+  Library tmp={
+    return this.eq(of)
+    catch error Library return this.minimal(of)
+    catch error S return this.minimal(of)
+    }
+   UnsafeRefactor.Classable<><tmp
+   )
 class method
 Library minimal(class Any that) (
   tmp= UnsafeRefactor.Redirect.redirectS(VectorTrait(),

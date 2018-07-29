@@ -69,15 +69,15 @@ mut method  Void removeRight() this.remove(this.size()-1Size)
 
 //#################OPERATORS
 method
-This +(Elem that) this.withAlso(\size,val:that)
+This +(Elem right) this.withAlso(\size,val:right)
 
 method
-This ++(This that){
+This ++(This right){
   //var This res=this//this does not work, iterator would return it read.
-  //with e in that.vals() (res+=e)
+  //with e in right.vals() (res+=e)
   //return res
-  if that.isEmpty() (return this)
-  return (this+that.left()) ++that.withoutLeft()
+  if right.isEmpty() (return this)
+  return (this+right.left()) ++right.withoutLeft()
   }
 
 

@@ -29,7 +29,7 @@ public class CollectDeclaredClassNamesAndMethodNames extends CloneVisitor{
     return super.visit(nc);
     }
   protected MethodSelector liftMs(MethodSelector ms) {
-    xsAdd(Desugar.desugarName(ms.nameToS()));
+    xsAdd(Desugar.desugarName(ms));
     for(String n:ms.getNames()){xsAdd(n);}
     return super.liftMs(ms);
   }

@@ -133,7 +133,8 @@ return new TOkDs(null,res,null);
 public static Type _guessDecType(Program p,G in, Dec di,boolean forceError) {
   if(di.getT().isPresent()){return di.getT().get();}
   Type nti=GuessTypeCore._of(p,in, di.getInner(),forceError);
-  assert nti!=null ||!forceError;
+  assert nti!=null ||
+          !forceError;
   if(nti==null){return null;}
   if(nti.getMdf()==Mdf.Capsule){nti=nti.withMdf(Mdf.Mutable);}
   else if(di.isVar() && TypeManipulation.fwd_or_fwdP_in(nti.getMdf())){

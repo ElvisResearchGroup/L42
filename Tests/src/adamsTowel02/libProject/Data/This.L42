@@ -59,17 +59,17 @@ Base:{
       }
     }
   class method
-  Library<><(Library that)
+  Library<><(Library right)
   exception Fail {
-    return Use.Override[this()]<><that
+    return Use.Override[this()]<><right
     exception on Refactor2.Fail Fail""
     }
   }
 
 class method
-Library <>< (Library that)
+Library <>< (Library right)
 exception Fail Refactor2.PathUnfit {
- var Library res=that
+ var Library res=right
  res><>=Base
  res><>=Invariant(of:\"This")
  immK=this.immK(res, of:Path"This")

@@ -68,10 +68,10 @@ exception Refactor2.PathUnfit (
   )
 
 method
-Library <><(Library that)
+Library <><(Library right)
 exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled,Location.NotAvailable {
   Debug(S"1")
-  var Library res=This.exposeAsLibrary(that,path:this.path())
+  var Library res=This.exposeAsLibrary(right,path:this.path())
   Debug(S"2")
   res:=Optimize.RemoveUnreachableCode<><res
   Debug(S"3")

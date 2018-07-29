@@ -16,8 +16,8 @@
       method responseOf() Message.Opt()
       method is(subtype) {  with subtype (on class This return Bool.true()) return Bool.false()}
       method readableName()GetMyName(This)
-      method ==(that){
-        with that (on read This return this.equals(that))
+      method ==(right){
+        with that (on read This return this.equals(right))
         return Bool.false()
         }
       refine read method class Message class() This
@@ -35,9 +35,9 @@
         )
       }
 
-    class method Library <><(Library that) (
+    class method Library <><(Library right) (
       //either that provides a toS, or I have a default impl, that requires lib()
-      res=UnsafeRefactor.Compose.compose(left:that,right:This.recordWrapperTrait())
+      res=UnsafeRefactor.Compose.compose(left:right,right:This.recordWrapperTrait())
       Library open=  {
         return UnsafeRefactor.Compose.compose(left:res,right:This.recordWrapperToSTrait())
         catch error Library return res

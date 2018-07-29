@@ -33,8 +33,8 @@ Redirect:{
   }
 This$er:{
   class method
-  Library <><(Library that)
-    RenameClass.renameClassS(that,nameSrc:S"This$",nameDest:S"This")
+  Library <><(Library right)
+    RenameClass.renameClassS(right,nameSrc:S"This$",nameDest:S"This")
   }
 MiniDataTrait:{class method Library(){
   implements Concept.Base
@@ -60,8 +60,8 @@ MiniDataTrait:{class method Library(){
     with subtype (on class This return Bool.true())
     return Bool.false()}
 
-  method ==(that) {
-    with that (on read This return this.equals(that))
+  method ==(right) {
+    with right (on read This return this.equals(right))
     return Bool.false()}
 
   read method Bool equals(read This that)
@@ -73,8 +73,8 @@ MiniData:{
     refine read method class This class()
     }
   class method
-  Library <><(Library that)
-    This$er<><Compose.compose(left:MiniDataTrait() right:that)
+  Library <><(Library right)
+    This$er<><Compose.compose(left:MiniDataTrait() right:right)
   }
 ClassableTrait:{class method Library(){
   implements Concept.Classable
@@ -102,7 +102,7 @@ ClassableTrait:{class method Library(){
   }}
 Classable:{
   class method
-  Library <><(Library that)
-    Compose.compose(left:ClassableTrait() right:that)
+  Library <><(Library right)
+    Compose.compose(left:ClassableTrait() right:right)
   }
 }

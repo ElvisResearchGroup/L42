@@ -22,25 +22,25 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     This #from(S.SBuilder builder)
 
     method
-    This +(This that)
+    This +(This right)
 
     method
-    This -(This that)
+    This -(This right)
 
     method
-    This *(This that)
+    This *(This right)
 
     method
-    This /(This that)
+    This /(This right)
 
     read method
     Bool equals(read This that)
 
     method
-    Bool >(This that)
+    Bool >(This right)
 
     method
-    Bool >=(This that)
+    Bool >=(This right)
 
     }
 //***********************
@@ -54,16 +54,16 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
 
 
   method
-  This +(This that)
-    This(this.that()+that.that())
+  This +(This right)
+    This(this.that()+right.that())
 
   method
-  This -(This that)
-    This(this.that()-that.that())
+  This -(This right)
+    This(this.that()-right.that())
 
   method
-  This *(Support that)
-    This(this.that()*that)
+  This *(Support right)
+    This(this.that()*right)
 
   method
   This /(Support that)
@@ -74,12 +74,12 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     this.that()==that.that()
 
   method
-  Bool >(This that)
-    this.that()>that.that()
+  Bool >(This right)
+    this.that()>right.that()
 
   method
-  Bool >=(This that)
-    this.that()>=that.that()
+  Bool >=(This right)
+    this.that()>=right.that()
 
   method
   Support divide(This that)
@@ -101,7 +101,7 @@ class method
 Library traitAnd(){
     T1:{method S #inner()  class method This(S that) }
     T2:{method S #inner()  class method This(S that) }
-    S:{ method This *(This that)  method This /(This that)}
+    S:{ method This *(This right)  method This /(This right)}
     method S #inner()  class method  This(S that)
 
     class method

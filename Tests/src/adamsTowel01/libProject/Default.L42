@@ -4,9 +4,9 @@ DecorationUnfeasable:Message.$<><{ implements MetaGuard}
 
 Parsable:{
   Fail:Message.$<><{ implements Guard}
-  class method Library<><(Library that)
+  class method Library<><(Library right)
   exception Fail{
-    return Refactor2.compose(that and:{
+    return Refactor2.compose(right and:{
       class method// if you do not implement it, it is a constructor?
       //may become an interface Concept.Parsable method?
       This fromS(Concept.ToS that)
@@ -24,18 +24,18 @@ Parsable:{
   }
 SealState:{
   // how to specify which factory to keep out? what getters
-  class method Library<><(Library that){
-    i=Introspection(lib:that)
-    return that
+  class method Library<><(Library right){
+    i=Introspection(lib:right)
+    return right
     }
   }
 
 DataFromToS:{// in the future we can add also hashCode and > =>
-  class method Library<><(Library that) exception DecorationUnfeasable{
+  class method Library<><(Library right) exception DecorationUnfeasable{
     return Extends[{ implements Concept.ToS
     
     read method Bool equals(read This that) this.toS()==that.toS()
-    }]<><Equals<><that
+    }]<><Equals<><right
     catch exception DecorationUnfeasable mg
       exception mg
     exception on MetaGuard
@@ -44,14 +44,14 @@ DataFromToS:{// in the future we can add also hashCode and > =>
   }
 
 Equals:{
-  class method Library<><(Library that) exception DecorationUnfeasable{
+  class method Library<><(Library right) exception DecorationUnfeasable{
     return Extends[{ implements Concept.Equals
-      method ==(that){
-        with that (on read This return this.equals(that))
+      method ==(right){
+        with that (on read This return this.equals(right))
         return Bool.false()
         }
       read method Bool equals(read This that)
-      }]<><that
+      }]<><right
     exception on MetaGuard
       DecorationUnfeasable"Equals"
     }

@@ -176,7 +176,8 @@ staticDispatch(p,G,ds)=ds'
   ds',0=staticDispatch(0,p,G[ds],ds)
 staticDispatch(p,G,ds)=staticDispatch(p,G,ds')
   ds',n+1=staticDispatch(0,p,G[ds],ds)
-  dom(G[ds']) superset dom(G[ds]) //else fail, we can not guess/dispatch
+  ds!=ds'//else fail, we can not guess/dispatch //in code is more efficient to count errors in the whole subtree
+  //dom(G[ds']) superset dom(G[ds]) //Note: not sure if the correct formalism is this line or the former  
 
 staticDispatch(n,p,G,empty)=n   //recursion end
 staticDispatch(n,p,G,var? T x=e ds)=

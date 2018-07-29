@@ -9,7 +9,7 @@ class method This (Selector that,Path of,  Library action,Selector deprecated)
 //   action:{method Size (Size that) that+that}
 //   deprecated: Selector"fooOld(bar)")<><myCode
 method
-Library <><(Library that)
+Library <><(Library right)
 exception InvalidAction{
   this.checkAction(this.action())// check action well formed
 
@@ -18,7 +18,7 @@ exception InvalidAction{
   p=this.of()// path of the method
   fresh=Selector.fresh(like:Selector"#apply(that)")// will be the name of the action
 
-  var Library acc=that
+  var Library acc=right
   acc:=Refactor2.toAbstract(selector:src of:p into:dest)<><acc
   //now src is abstract
   acc:=this.composeAction(acc,fresh:fresh)

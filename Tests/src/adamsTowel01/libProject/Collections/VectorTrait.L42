@@ -59,13 +59,13 @@ mut method  Void removeRight() this.remove(this.size()-1Size)
 
 //#################OPERATORS
 method
-This +(Elem that) this.withAlso(\size,val:that)
+This +(Elem right) this.withAlso(\size,val:right)
 
 method
-This ++(This that){
+This ++(This right){
   mut This res=This.empty()
   with e in this.vals() (res.add(right:e))
-  with e in that.vals() (res.add(right:e))
+  with e in right.vals() (res.add(right:e))
   return res
   }
 

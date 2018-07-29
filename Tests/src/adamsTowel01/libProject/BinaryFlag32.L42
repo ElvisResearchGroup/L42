@@ -64,24 +64,24 @@
   method//@_private
   Library br() this.that().#binaryRepr()
   method
-  This &(This that) this.res(use Alu
-      check andInt32(n1:this.br() n2:that.br())
+  This &(This right) this.res(use Alu
+      check andInt32(n1:this.br() n2:right.br())
       error void)
   method
-  This |(This that) this.res(use Alu
-      check orInt32(n1:this.br() n2:that.br())
+  This |(This right) this.res(use Alu
+      check orInt32(n1:this.br() n2:right.br())
       error void)
   method
-  This <<(Size that) this.res(use Alu
-      check leftShiftInt32(n1:this.br() n2:that.#binaryRepr())
+  This <<(Size right) this.res(use Alu
+      check leftShiftInt32(n1:this.br() n2:right.#binaryRepr())
       error void)
   method
-  This >>(Size that) this.res(use Alu
-      check rightShiftInt32(n1:this.br() n2:that.#binaryRepr())
+  This >>(Size right) this.res(use Alu
+      check rightShiftInt32(n1:this.br() n2:right.#binaryRepr())
       error void)
   method
-  This xor(This that) this.res(use Alu
-      check xorInt32(n1:this.br() n2:that.br())
+  This xor(This right) this.res(use Alu
+      check xorInt32(n1:this.br() n2:right.br())
       error void)
   method
   This ~() this.res(use Alu
@@ -91,22 +91,22 @@
   read method
   Bool equals(read This that) this.that()==that.that()
 
-  method ==(that){
-    with that (on read This return this.equals(that))
+  method ==(right){
+    with that (on read This return this.equals(right))
     return Bool.false()
     }
 
-  method Bool >(This that)  {
+  method Bool >(This right)  {
     use Alu
-      check ifUInt32GrtDo(n1:that.br() n2:this.br())
+      check ifUInt32GrtDo(n1:right.br() n2:this.br())
       return Bool.true()
     return Bool.false()
     }
 
 
-  method Bool >=(This that) {
+  method Bool >=(This right) {
     use Alu
-      check ifUInt32GEqDo(n1:that.br() n2:this.br())
+      check ifUInt32GEqDo(n1:right.br() n2:this.br())
       return Bool.true()
     return Bool.false()
     }

@@ -20,6 +20,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,13 +34,17 @@ import programReduction.Program;
 import tools.Assertions;
 
 public class StaticDispatch implements Visitor<ExpCore>{
-public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
+  public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
     StaticDispatch sd=new StaticDispatch(p, g, forceError);
     ExpCore res=e.accept(sd);
-    //assert res!=null || !forceError;
     assert res!=null;
     return res;
     }
+  public static  List<Dec> of(Program p,G g,List<Dec>ds,boolean forceError){
+    StaticDispatch sd=new StaticDispatch(p, g, forceError);
+    return sd.liftDecs(ds);
+    }
+
   Program p;
   G g;
   boolean errors=false;
@@ -50,39 +55,42 @@ public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
   List<ExpCore.Block.Dec> liftDecs(List<ExpCore.Block.Dec>ds){
     this.g=this.g.add(p,ds);
     while(true){
+      List<ExpCore.Block.Dec>oldDs=ds;
       ds = liftDecsAux(ds); 
       if(!this.errors){return ds;}
       G old=this.g;
       this.g=this.g.add(p,ds);
       if (this.g.dom().size()!=old.dom().size()){continue;}
       assert this.g.dom().equals(old.dom());
-      /*if(forceError){
-        return ds.stream()
-          .map(d->d.get_t()==null?d.with_t(Type.immVoid):d)
-          .collect(Collectors.toList());
-        }*/
+      assert ds.equals(oldDs);
       if(forceError){throw new ErrorMessage.InferenceFail(ds,null);}
+      this.errors=true;
       return ds;
       }
     }
-  ExpCore _liftAllowError(ExpCore e){
-    boolean old=this.forceError;
-    this.forceError=false;
-    try{return e.accept(this);}
-    finally{this.forceError=old;}
+  private ExpCore _liftAllowError(boolean[]error,ExpCore e){
+    StaticDispatch fresh=new StaticDispatch(p,g,false);
+    ExpCore res = e.accept(fresh);
+    error[0]=fresh.errors;
+    return res;
     }
   //will set this.errors as secondary return value.
   List<ExpCore.Block.Dec> liftDecsAux(List<Dec>ds){
     boolean err=false;
     List<Dec>res=new ArrayList<>();
     for(Dec d:ds){
-      ExpCore _e=_liftAllowError(d.getInner());
-      if(_e==null){err=true;res.add(d);continue;}
+      boolean error[]={false};
+      ExpCore _e=_liftAllowError(error,d.getInner());
+      if(error[0]){err=true;res.add(d);continue;}
       d=d.withInner(_e);
       if(d.get_t()!=null){res.add(d);continue;}
       Type _t=GuessTypeCore._of(p,g,_e,false);
-      if(_t==null){err=true;res.add(d);continue;}
-      d=d.with_t(Functions.capsuleToMut(_t));
+      if(_t==null){
+        err=true;res.add(d);continue;
+      }
+      _t=Functions.capsuleToMut(_t);
+      _t=Functions.adaptTypeToVarName(d.getX(),_t);
+      d=d.with_t(_t);
       res.add(d);
       }
     this.errors=err;
@@ -103,23 +111,32 @@ public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
     finally{g=old;}
   }
   public ExpCore visit(OperationDispatch s) {
-    List<Type> Ts =new ArrayList<>();
-    List<List<Type>> TiTsis =new ArrayList<>();
-    List<List<MethodWithType>>mssi=new ArrayList<>();
-    fillMTs("#"+s.getS().getName()+"#",s.getS().getNames(),s.getEs(),Ts,TiTsis,mssi);
-    int maxJ=0;
-    for(List<MethodWithType> allMsi:mssi){maxJ=Math.max(maxJ, allMsi.size());}
-    for(int j=0;j<maxJ;j+=1){//j: the layer of iterations
-      {int i=-1;for(List<MethodWithType> allMsi:mssi){i+=1;//the method in parameter i
-        if (allMsi.size()<=j ||allMsi.get(j)==null){continue;}//par i have no method for layer j 
-        List<MethodType> mts = AlternativeMethodTypes.types(allMsi.get(j).getMt());
-        if(!oneFits(TiTsis.get(i),mts)){continue;}
-        List<ExpCore> es=new ArrayList<>(s.getEs());
-        es.remove(i);
-        return new ExpCore.MCall(s.getEs().get(i),allMsi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
-        }}
+    End:{
+      List<Type> Ts =new ArrayList<>();
+      List<List<Type>> TiTsis =new ArrayList<>();
+      List<List<MethodWithType>>mssi=new ArrayList<>();
+      for(ExpCore ei:s.getEs()){
+        ExpCore.X xi=(ExpCore.X)ei;
+        Type ti=g._g(xi.getInner());
+        if(ti==null){break End;}
+        Ts.add(ti);
+        }
+      fillMTs("#"+s.getS().getName()+"#",s.getS().getNames(),Ts,TiTsis,mssi);
+      int maxJ=0;//index can be larger then number of methods
+      for(List<MethodWithType> allMsi:mssi){maxJ=Math.max(maxJ, allMsi.size());}
+      for(int j=0;j<maxJ;j+=1){//j: the layer of iterations
+        {int i=-1;for(List<MethodWithType> allMsi:mssi){i+=1;//the method in parameter i
+          if (allMsi.size()<=j ||allMsi.get(j)==null){continue;}//par i have no method for layer j 
+          List<MethodType> mts = AlternativeMethodTypes.types(allMsi.get(j).getMt());
+          if(!oneFits(TiTsis.get(i),mts)){continue;}
+          List<ExpCore> es=new ArrayList<>(s.getEs());
+          es.remove(i);
+          return new ExpCore.MCall(s.getEs().get(i),allMsi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
+          }}
+        }
       }
     if(forceError){throw new ErrorMessage.OperatorDispachFail(s,s.getP());}
+    this.errors=true;
     return s;
   }
 
@@ -137,14 +154,8 @@ public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
       }
     return false;
     }
-  private void fillMTs(String nameStart,List<String>names,List<ExpCore>es,
+  private void fillMTs(String nameStart,List<String>names,
       List<Type> Ts,List<List<Type>> TiTsis,List<List<MethodWithType>>mssi) {
-    for(ExpCore ei:es){
-      ExpCore.X xi=(ExpCore.X)ei;
-      Type ti=g._g(xi.getInner());
-      assert ti!=null;
-      Ts.add(ti);
-      }
     {int i=-1;for(Type ti:Ts){i+=1;
       List<String> namesi=new ArrayList<>();
       List<Type> tsi=new ArrayList<>();
@@ -154,17 +165,16 @@ public static  ExpCore of(Program p,G g,ExpCore e,boolean forceError){
           namesi.add(names.get(j));
           tsi.add(tj);
           }
-        }}  
-      List<MethodWithType> mwtsi = p.extractClassB(ti.getPath()).mwts();
+        }}
+      List<MethodWithType> mwtsi;
+      if(ti.getPath().isPrimitive()){mwtsi=Collections.emptyList();}
+      else {mwtsi= p.extractClassB(ti.getPath()).mwts();}
       List<MethodWithType> allMsi=new ArrayList<>();
       for(MethodWithType mwtk:mwtsi){
         //forall ms in Ti, if ms=msj, allMsi[j]=ms
         int j=matchMs(nameStart,mwtk.getMs(),new MethodSelector(names.get(i),-1,namesi));
         if(j!=-1){setSparse(allMsi,j,From.from(mwtk.with_inner(null),ti.getPath()));}
         }
-      //
-      //index can be larger then number of methods..
-      //
       mssi.add(allMsi);
       TiTsis.add(tsi);
       }}

@@ -40,27 +40,27 @@
       error void)
 
   method
-  This +(This that)
+  This +(This right)
     This._private(_binaryRepr:use Plg
-      check sumNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check sumNum(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   method
-  This -(This that)
+  This -(This right)
     This._private(_binaryRepr:use Plg
-      check subNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check subNum(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   method
-  This *(This that)
+  This *(This right)
     This._private(_binaryRepr:use Plg
-      check mulNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check mulNum(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   method
-  This /(This that)
+  This /(This right)
     This._private(_binaryRepr: use Plg
-      check divNum(n1:this.#binaryRepr() n2:that.#binaryRepr())
+      check divNum(n1:this.#binaryRepr() n2:right.#binaryRepr())
       error void)
 
   read method
@@ -71,16 +71,16 @@
     return Bool.false()
     }
 
-  method Bool >(This that)  {
+  method Bool >(This right)  {
     use Plg
-      check ifNumGrtDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
+      check ifNumGrtDo(n1:right.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }
 
-  method Bool >=(This that) {
+  method Bool >=(This right) {
     use Plg
-      check ifNumGEqDo(n1:that.#binaryRepr() n2:this.#binaryRepr())
+      check ifNumGEqDo(n1:right.#binaryRepr() n2:this.#binaryRepr())
       return Bool.true()
     return Bool.false()
     }

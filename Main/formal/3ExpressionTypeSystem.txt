@@ -5,6 +5,18 @@ desugar[e1 #m e2]=(x1=e1 x1 #m e2) where e1 not of form x
 desugar[x1 #m e2]=(x2=e2 x1 #m x2) where e2 not of form x
 TODO: all operator precedence need to become right associative
 
+We are having problems with inference overriding promotions.
+variable name may force inferred mdf:
+mdf$x is a valid var name. The type will be always inferred as mdf.
+left,right makes imm$x
+map makes mut$x
+class will stay class
+== is problematic, since takes reads
+
+that, val will NOT be extracted as variable.
+They need to be the only one in the ms, so the order do not matter.
+
+
 Steps:
 //do staticDispatch with NIY for operator dispatch.
 //Test
@@ -12,8 +24,13 @@ Steps:
 //Test
 //add operator dispatch
 //use operator dispatch in ts tests
-operator dispatch desugar
-make all operators right associative
+//-operator dispatch desugar
+//-operationdispatch desugar
+//-desugaring +(ps)==> #plus#0left(ps)
+replace/search for "(This that)"
+//defer make all operators right associative
+//defer make all operators not right dispatching
+
 Test
 change operator desugar
 Test

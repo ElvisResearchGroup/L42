@@ -19,9 +19,9 @@
       Library #pluginUnresponsive(Library binaryRepr)
         binaryRepr  
       }
-    class method Library <><(Library that)
+    class method Library <><(Library right)
       UnsafeRefactor.MiniData<><UnsafeRefactor.Compose.compose(
-        left:that,
+        left:right,
         right:This.trait()
       )
     }
@@ -91,9 +91,9 @@ SubtleSubtypeViolation:ErrorW<><{
       binaryRepr  
 
     class method
-    Library <><(Library that)
+    Library <><(Library right)
     exception UnresolvedOverloading, ClassUnfit, MethodUnfit
-      This.main(that)
+      This.main(right)
 
     class method
     Library main(Library that)
@@ -143,10 +143,10 @@ RenameClass:{
   method Path src()
   method Path dest()
   class method This (Path src,Path dest)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception  PathUnfit, MethodClash,ClassClash,SubtleSubtypeViolation
     PlgRenameClass.renameClassJ(
-      that,src:this.src(),dest:this.dest())
+      right,src:this.src(),dest:this.dest())
   }
 //TODO: change sugar so that is #default1 or #default2, so that
 //we can have "into" as both selector and path
@@ -161,10 +161,10 @@ RenameClass rename(Path path, Path into)
 HideClass:{
   method Path src()
   class method This (Path src)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception  PathUnfit, ClassUnfit
     PlgRenameClass.hideClassJ(
-      that,src:this.src())
+      right,src:this.src())
   }
 class method
 class Path #default#hide(Void path) Path
@@ -187,9 +187,9 @@ PlgAbstractClass:{
 ToAbstractClass:{
   Path src
   class method This (Path src)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception  PathUnfit, PrivacyCoupuled
-    PlgAbstractClass.toAbstractJ(that,src:this.src())
+    PlgAbstractClass.toAbstractJ(right,src:this.src())
 
   }
 
@@ -226,10 +226,10 @@ PlgToAbstract:{
 ToAbstract:{
   method Selector src()
   class method This (Selector src)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception SelectorUnfit
     PlgToAbstract.toAbstractJ(
-      that,src:this.src())
+      right,src:this.src())
   }
 class method
 ToAbstract toAbstract(Selector selector)
@@ -238,10 +238,10 @@ ToAbstract toAbstract(Selector selector)
 ToAbstractDest:{
   method Selector src()   method Selector dest()
   class method This (Selector src,Selector dest)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception SelectorUnfit,MethodClash
     PlgToAbstract.toAbstractDestJ(
-      that,src:this.src() dest:this.dest())
+      right,src:this.src() dest:this.dest())
   }
 class method
 ToAbstractDest toAbstract(Selector selector,Selector into)
@@ -250,10 +250,10 @@ ToAbstractDest toAbstract(Selector selector,Selector into)
 ToAbstractPath:{
   method Path path() method Selector src()
   class method This (Path path,Selector src)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception SelectorUnfit, PathUnfit
     PlgToAbstract.toAbstractPathJ(
-      that,path:this.path(),src:this.src())
+      right,path:this.path(),src:this.src())
   }
 class method
 ToAbstractPath toAbstract(Selector selector Path of)
@@ -262,10 +262,10 @@ ToAbstractPath toAbstract(Selector selector Path of)
 ToAbstractPathDest:{
   method Path path() method Selector src() method Selector dest()
   class method This (Path path,Selector src,Selector dest)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception SelectorUnfit, PathUnfit, MethodClash
     PlgToAbstract.toAbstractPathDestJ(
-      that,path:this.path(),src:this.src(),dest:this.dest())
+      right,path:this.path(),src:this.src(),dest:this.dest())
   }
 class method
 ToAbstractPathDest toAbstract(Selector selector, Path of,Selector into)
@@ -305,9 +305,9 @@ Redirect:{
   method class Any dest()
   class method This(Path src, class Any dest)
   method
-  Library <><(Library that)
+  Library <><(Library right)
   exception ClassUnfit, IncoherentMapping, MethodClash, PathUnfit
-    PlgRedirect.redirectJ(that,src:this.src(),dest:this.dest())
+    PlgRedirect.redirectJ(right,src:this.src(),dest:this.dest())
   }
 class method
 class Path #default#redirect(Void path) Path
@@ -322,7 +322,7 @@ RedirectRefTo:{
   Path src
   Location.Type.RefTo into
   class method This (Path src, Location.Type.RefTo into)
-  method Library <><(Library that)
+  method Library <><(Library right)
   exception 
   ,,,,ClassUnfit
   ,,,,IncoherentMapping
@@ -333,9 +333,9 @@ RedirectRefTo:{
   ,,,,SubtleSubtypeViolation {
     with r=this.into() (
       on Location.Type.RefTo.Binded
-        return This1.redirect(path:this.src() into:r.referredClassObj())<><that
+        return This1.redirect(path:this.src() into:r.referredClassObj())<><right
       on Location.Type.RefTo.Lib
-        return This1.rename(path:this.src() into:r.referredLib().path())<><that
+        return This1.rename(path:this.src() into:r.referredLib().path())<><right
       )
     exception RefToUnfit"Provided RefTo is not Binded nor Lib: "[this.into()]""
     }
@@ -367,9 +367,9 @@ Method:{
   class method mut This (PlgMethod inner)
   
   read method
-  Library <><(Library that)  
+  Library <><(Library right)  
   exception PathUnfit, SelectorUnfit,MethodClash, ClassUnfit
-    this.inner().act(that)  
+    this.inner().act(right)  
 
   //[] syntax
   class method mut This #seqBuilder() This(inner:PlgMethod())

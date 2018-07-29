@@ -1,6 +1,7 @@
 package sugarVisitors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import ast.Ast.VarDec;
 import ast.Ast.VarDecCE;
 import ast.Ast.VarDecE;
 import ast.Ast.VarDecXE;
+import ast.ExpCore.Block;
 import ast.ExpCore;
 import ast.Expression;
 import ast.Expression.BinOp;
@@ -54,6 +56,7 @@ import ast.Expression.If;
 import ast.Expression.Literal;
 import ast.Expression.Loop;
 import ast.Expression.MCall;
+import ast.Expression.OperationDispatch;
 import ast.Expression.RoundBlock;
 import ast.Expression.SquareCall;
 import ast.Expression.SquareWithCall;
@@ -430,12 +433,21 @@ public class Desugar extends CloneVisitor{
       return visit(getMCall(s.getP(),s2,desugarName(Op.Bang.inner),getPs()));
       }
     if (op.normalized){
-      return visit(getMCall(s.getP(),s.getLeft(),desugarName(s.getOp().inner),getPs(s.getRight())));
+      return visit(binOpToDispatch(s));
       }
     String x=Functions.freshName("opNorm", L42.usedNames);
     BinOp s2=new BinOp(s.getP(),s.getRight(),op.normalizedVersion(),s.getDoc(),new Expression.X(s.getP(),x));
     return visit(getBlock(s.getP(),x, s.getLeft(),s2));
   }
+  private OperationDispatch binOpToDispatch(BinOp s){
+    List<Expression> es=Arrays.asList(s.getLeft(),s.getRight());
+    List<String>xs=Arrays.asList("left","right");
+    Parameters ps=new Parameters(Optional.empty(), xs, es);
+    String opName=desugarName(s.getOp().inner);
+    assert opName.startsWith("#");
+    opName=opName.substring(1);
+    return new OperationDispatch(opName,s.getDoc(), ps, s.getP());
+    }
   public Expression visit(UnOp s) {
     return visit(visit1Step(s));
   }
@@ -486,6 +498,31 @@ public class Desugar extends CloneVisitor{
     assert s.getInner() instanceof Expression.SquareCall:"The other shape is stupid: use[with...]== with...";
     return super.visit(s);
   }
+  
+  @Override
+  public Expression visit(Expression.OperationDispatch s) {
+    s=(OperationDispatch) super.visit(s);
+    assert !s.getPs().getE().isPresent();
+    Parameters ps = s.getPs();
+    List<VarDec> vd=new ArrayList<>();
+    List<Expression>es=new ArrayList<>();
+    {int i=-1;for(Expression p : ps.getEs()){i+=1;String xi=ps.getXs().get(i);
+      if(p instanceof Expression.X){es.add(p);continue;}
+      String opPar=Functions.freshName(varNameFromParName(s.getName(),xi)+"opPar", L42.usedNames);
+      es.add(new X(s.getP(),opPar));
+      vd.add(new VarDecXE(false, Optional.empty(), opPar, p));
+      }}
+    if(vd.isEmpty()){return s;}
+    s=s.withPs(new Parameters(Optional.empty(), ps.getXs(), es));
+    return getBlock(s.getP(),vd,s);
+    }
+  private String varNameFromParName(String op,String xi) {
+    if(op.equals("equalequal")){return "read$";}
+    if(xi.equals("left")||xi.equals("right")){return "imm$";}
+    if(xi.equals("map")){return "mut$";}
+    return "";
+    }
+  
   public Expression visit(Literal s) {
     //we can assumethe receivers are normalized after DesugarContext
     return visit1Step(s).accept(this);
@@ -536,6 +573,16 @@ public class Desugar extends CloneVisitor{
     //return EncodingHelper.wrapStringU(s);//no, this produces a ExpCoreClassB
     return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo);
   }
+  public static String desugarName(MethodSelector ms){
+    String res=ms.nameToS();
+    if(res.startsWith("#")){return res;}
+    res=desugarName(res);
+    if(!res.startsWith("#")){return res;}
+    if(ms.getNames().size()==1 && ms.getNames().get(0).equals("right")){//binary op
+      res+="#0left";
+      }
+    return res;
+    }  
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";
     if(isNormalName(n)){return n;}
@@ -600,7 +647,7 @@ public class Desugar extends CloneVisitor{
     return super.liftH(ch.withName(desugarName(ch.getName())));
   }
   protected MethodSelector liftMs(MethodSelector ms) {
-    return ms.withName(desugarName(ms.getName()));
+    return ms.withName(desugarName(ms));
   }
   private<T0,T> T withExpectedType(Type t,Supplier<T> f){
     if (t==null){t=Path.Any().toImmNT();}
@@ -638,7 +685,7 @@ public class Desugar extends CloneVisitor{
   }
   public MethodImplemented visit(MethodImplemented mi){
     this.varEnv=new HashMap<String, Type>();
-    String mName=desugarName(mi.getS().nameToS());
+    String mName=desugarName(mi.getS());
     mi=mi.withS(mi.getS().withName(mName));
     for(String name:mi.getS().getNames()){
       Functions.addName(name,L42.usedNames);
@@ -653,7 +700,7 @@ public class Desugar extends CloneVisitor{
     }
   public MethodWithType visit(MethodWithType mt){
     this.varEnv=new HashMap<String, Type>();
-    String mName=desugarName(mt.getMs().getName());
+    String mName=desugarName(mt.getMs());
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
     {int i=-1;for(String name:mt.getMs().getNames()){i+=1;
