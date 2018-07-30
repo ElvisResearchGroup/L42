@@ -498,7 +498,7 @@ public class Desugar extends CloneVisitor{
     assert s.getInner() instanceof Expression.SquareCall:"The other shape is stupid: use[with...]== with...";
     return super.visit(s);
   }
-  
+
   @Override
   public Expression visit(Expression.OperationDispatch s) {
     s=(OperationDispatch) super.visit(s);
@@ -518,11 +518,12 @@ public class Desugar extends CloneVisitor{
     }
   private String varNameFromParName(String op,String xi) {
     if(op.equals("equalequal")){return "read$";}
+    if(op.equals("leftrightleft") && xi.equals("left")){return "read$";}
     if(xi.equals("left")||xi.equals("right")){return "imm$";}
     if(xi.equals("map")){return "mut$";}
     return "";
     }
-  
+
   public Expression visit(Literal s) {
     //we can assumethe receivers are normalized after DesugarContext
     return visit1Step(s).accept(this);
@@ -582,7 +583,7 @@ public class Desugar extends CloneVisitor{
       res+="#0left";
       }
     return res;
-    }  
+    }
   public static String desugarName(String n){
     if(n.isEmpty())return "#apply";
     if(isNormalName(n)){return n;}

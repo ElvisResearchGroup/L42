@@ -34,7 +34,7 @@ CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
 ---------------------------------------------------------------------
 
   Ds|- E -> E'
-  |-Ds:Ok
+    |- Ds:Ok
 ------------------------------------------------Ds subset Ds'
   Ds' id=CtxV[E] DEs e --> Ds' id=CtxV[E'] DEs e
 
@@ -67,6 +67,73 @@ CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
   Ds:Ok
 
 
+
+ctxP[LV1 <+ LV2] ==>* Ds
+
+not Ds: Ok
+
+there is no LV3
+such that
+
+ctxP[LV3], A=LV1[from ??], B=LV2[from ??] ==> * Ds'
+where Ds': ok
+
+
+LV1={ method Void foo()=this.bar()}
+Lv2={ }
+
+
+
+t={This0 bar() End foo()=End.foo()}
+C:t+{}
+End = t
+
+
+A:B.foo()
+B:A.bar()
+
+
+
+
+class Group<S extends Shape<S>> implements Shape<Group<S>>{}
+
+interface Shape<S extends Shape<S>>{}
+
+shape={
+	interface
+	S={implements This1}
+	...
+}
+shape(S=Foo)
+
+
+T={implements Shape ...}
+group={
+	implements Shape
+	S={implements Shape ...}
+	...
+  }
+TG=group(S=T)
+TGG=group(S=group)
+
+
+struct S<X: T>{...}
+impl<X: T> T for S<X>
+type SS = S<SS>;
+
+trait Marker {
+	type Inner: T
+}
+struct S<M: Marker> { ... }
+// M::Inner
+type SSMarker;
+impl Marker for SSMarker {
+	Inner = SS;
+}
+type SS = S<SSMarker>;
+
+
+
 -define sum(p,LV1,LV2)=LV
   p.evilPush(LV)|-LV1<+LV2
 
@@ -74,6 +141,50 @@ p|-{implements Tz1 M1..Mn K?1} <+ {implements Tz2 Mz2 K?2} ={implements Tz Mz K?
   Tz=minimize(p;Tz1 U Tz2)
   Mz=p|-M1+Mz2[M1] .. p|-Mn+Mz2[Mn]
   {empty,K?1,K?2}={empty,K?}//may be too sophisticate?
+  // check that we don't implement two interfaces with the same methods...
+
+
+
+
+ as 42 today  --> rename methods
+
+ impl multiple interfaces works as java
+
+ { implements A
+ 	A = interface{X foo()}}
++ {implements B
+	B = interface{Y foo()}}
+==>
+{ implements A
+	X foo()
+ 	A = interface{X foo()}}
++ {implements B
+	Y foo()
+	B = interface{Y foo()}}
+// ERROR, unless X == Y
+
+normalise({implements Pz mwtz NCz})
+= {implements Pz' mwtz,mwtz' NCz}
+where:
+	Pz' = collect(Pz)
+	mwtz =
+		p| (methods(P0)+....+methods(Pn))\dom(mwtz')
+	where Pz' = P0,...,Pn
+-----------------
+
+top level L is WF
+
+p |-WF
+	p.top() = interface? {implementz Pz mwtz NCz}
+	forall P in Pz,
+		p(P).Pz[from P] subseteq Pz
+	forall mwt in p(P)[from P].mwtz
+		mwt in abstract(mwtz)
+   forall C = E in NCz, forall L inside E
+        p.evilPush(L) |-WF
+    //all L inside mwtz.es eare WF
+
+
 
 p|-interface{implements Tz1 AMs,AMs0} <+ interface?{implements Tz2 AMs} =
   interface {implements Tz AMs}
@@ -90,10 +201,10 @@ p|-mh e?+mh = mh e?
 p|-C:LV1+C:LV2 = C:LV  where p.push(C)|-LV1<+LV2=LV
 
 
-minimize(p; P1, P2, Pz) = foo(p, P1, Pz))
+/*minimize(p; P1, P2, Pz) = foo(p, P1, Pz))
   p.equiv(P1, P2)
 minimize(p; Pz) = Pz
-  otherwise
+  otherwise*/
 
 
 foo(p; Pz) = Pz

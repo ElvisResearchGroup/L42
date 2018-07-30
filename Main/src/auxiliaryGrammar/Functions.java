@@ -505,7 +505,11 @@ public static Type adaptTypeToVarName(String x, Type t) {//TODO:move in TypeMani
   if(TypeManipulation.fwd_or_fwdP_in(t.getMdf())){return t;}//TODO: understand the implications better
   if(x.startsWith("imm$")){return t.withMdf(Mdf.Immutable);}
   if(x.startsWith("mut$")){return t.withMdf(Mdf.Mutable);}
-  if(x.startsWith("read$")){return t.withMdf(Mdf.Readable);}
+  if(x.startsWith("read$")){
+    if(t.getMdf().equals(Mdf.Immutable)){return t;}
+    if(t.getMdf().equals(Mdf.Capsule)){return t.withMdf(Mdf.Immutable);}
+    return t.withMdf(Mdf.Readable);
+    }
   if(x.startsWith("lent$")){return t.withMdf(Mdf.Lent);}
   if(x.startsWith("class$")){return t.withMdf(Mdf.Class);}
   if(x.startsWith("capsule$")){return t.withMdf(Mdf.Capsule);}

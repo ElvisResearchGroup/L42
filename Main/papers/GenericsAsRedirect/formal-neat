@@ -54,6 +54,19 @@ V(Cs) = V(P in empty)
 // Note: The Cs' part is only needed for rename
 // This also assumes that if Cs.Cs'->P' is in V
 // and Cs->P in V, then P' = P.Cs', which is true for redirect
+
+"".Cs->P'
+	""->P
+	P'="".C
+
+//good example, what is supposed to happen
+Foo: {implements Any}
+{A:{interface      B:{implements A}}}[A.B=>Foo, A=>Any,]
+
+
+
+
+
 V(Cs.Cs') = P.Cs':
   Cs->P in V
 
@@ -64,10 +77,14 @@ V(This0.Cs) = This0.Cs
 V(P+1) = P+1
 
 
+Define L[remove Csz] = L[remove Csz in empty]
+	empty not in Csz
+
 Define L[remove Csz in Cs] = L0
 --------------------------------------------------------
 {interface? implements Pz mwtz ncz}[remove Csz in Cs] =
 	{interface? implements Pz mwtz ncz[remove Csz in Cs]}
+	where empty not in Csz
 
 empty[remove Csz in Cs] = empty
 (C:L, ncz)[remove Cs.C,Csz in Cs] = ncz[remove Csz in Cs]
@@ -96,19 +113,28 @@ Cs2   in RedirectSet(L, Cs):
 Paths({interface? implements Pz; mwt0, ..., mwtn; ncz}) = Pz,Paths(mwt0.mt),...,Paths(mwtn.mt)
   Paths(Ts->T;Pz) = Ts.Ps, T.P, Pz
 
-Define Redirect(p, L, Cs, P) = Redirect(p.evilPush(L), Cs, P + 1):
+minimize(p; P) = P'
+	where P' is the shortest path such that // TODO: Define formally
+		p.equiv(P, P')
+
+minimize(p; Cs1->P1,...,Csn->Pn) = Cs1->minimize(p; P1), ..., Csn->minimize(p; Pn)
+minimize(p; P, Pz) = minimize(p; P), minimize(p; Pz)
+
+Define Redirect(p, L, Cs, P) = Redirect(p', Cs, minimize(p'; P+1)):
+	p' = p.evilPush(L)
+
 Define Redirect(p, Cs, P) = L0:
   exists a unique V such that: //if more then one V exists, is ambiguos redirect
+  	V = minimize(p; V)
     P = V(Cs)
     dom(V) = RedirectSet(p.top(), Cs)
-    L0     = V(p.top())[remove dom(V) in empty]
+    L0     = V(p.top())[remove dom(V)]
     forall Cs' in dom(V):
       P' = V(Cs')
-      V(p(This0.Cs')[from This0.Cs']) >=p P' p(P')[from P'])
-      //check the redirected is all abstract and has no privates
+      V(Cs' p(This0.Cs')[from This0.Cs']) >=p P' p(P')[from P'])
 
-Define {interface? implements Pz mwtz ncz} >=p P{interafce?' implements Pz' mwtz' ncz'}:
-  Pz subseteq Pz',P
+Define Cs {interface? implements Pz mwtz ncz} >=p P {interafce?' implements Pz' mwtz' ncz'}:
+  minimize(p; Pz) subseteq minimize(p; Pz',P)
   if interface?=empty:
     forall MS in dom(mwtz):
       p |- mwtz'(MS).mt <= mwtz(MS).mt
@@ -116,3 +142,17 @@ Define {interface? implements Pz mwtz ncz} >=p P{interafce?' implements Pz' mwtz
   else:
     interface? = interface?'
     mwtz = mwtz' //note: may be we can relax by ignoring 'refine?'
+
+  forall mwt in mwtz:
+  	mwt.e = empty
+  	not Private(mwt.MS.m)
+
+  forall C in dom(ncz)
+  	not Private(C)
+    V(Cs.C) = P.C
+
+
+ {A:{This5.A.B.C }B:{} B foo()}[B => This2.C.A]
+ {B:{} B foo()}[B => This2.C.A]
+ 	==>{This1.A foo()}
+

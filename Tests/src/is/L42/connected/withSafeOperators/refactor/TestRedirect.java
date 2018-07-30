@@ -36,7 +36,7 @@ public class TestRedirect {
   static int startLine=0;
 
   @Parameter(0) public int _lineNumber;
-  @Parameter(1) public String[] _p;
+  @Parameter(1) public Object _p;
   @Parameter(2) public String _cb1;
   @Parameter(3) public String _path1;
   @Parameter(4) public String _path2;
@@ -810,7 +810,44 @@ public class TestRedirect {
         "This0.B", "This1.E",
             "{A: {interface implements This2.E1, This2.E2}}", true
             // SHOULD FAIL
+    },{lineNumber(),
+      new String[]{"{Foo: {implements This1.EA}, EA: {interface B:{}}}"},
+      "{A:{interface      B:{implements A}}}",
+      "This0.A.B", "This1.Foo",
+          "IncoherentMapping::\n" +
+          "verified:[A.B->This1.Foo, A->This1.EA]\n" +
+          "ambiguities:[A->[This1.EA], A.B->[This1.EA.B]]\n" +
+          "incoherent destinations for A.B:[This1.EA.B, This1.Foo]", true
+    },{lineNumber(),
+      new String[]{"{EA:{interface B:{implements EA}}}"},
+      "{A:{interface      B:{implements A}}}",
+      "This0.A.B", "This1.EA.B",
+          "{}", false
+    },{lineNumber(),
+      new String[]{"{EA:{interface A:{implements EA}}}"},
+      "{interface A:{implements This1}}",
+      "This0.A", "This1.EA.A",
+          "PathUnfit::Private path", true
+    },{lineNumber(),
+      new String[]{"{C:{EB:{}, EA:{method This1.EB f() method This2.C.EB g()}}}"},
+      "{A:{method B f() method B g()} B:{} method B foo()}",
+      "This0.A", "This1.C.EA",
+          "{method This1.C.EB foo()}", false
+    },{lineNumber(),
+      mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}")
+        .push(new ast.Ast.C("C", -1)),
+      "{A:{method B g() method B f()} B:{} method B foo()}",
+      "This0.A", "This1.EA",
+          "{method This1.EA.EB foo()}", false
+          // Should work!
 
+/*
+    C:{ EB:{}
+        EA:{method This1.EB f() This2.C.EB g()}
+      }
+    {A:{method B f() method B g()} B:{} method B foo()}[A to C.EA]
+
+ */
 
 /*
  Test1
@@ -840,11 +877,18 @@ public class TestRedirect {
 
 //},{"This2.D.C","This1.C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
 
+public static Program mkp(String...ss) {
+  Program p=TestHelper.getProgram(ss);
+  return p;
+  }
 
 @Test  public void test() throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit {
 
   TestHelper.configureForTest();
-  Program p=TestHelper.getProgram(_p);
+  Program p;
+  if(_p instanceof String[]) {p=TestHelper.getProgram((String[])_p);}
+  else {p=(Program)_p;}
+  //
   ClassB cb1=getClassB(true,p,"cb1", _cb1);
   Path path1=Path.parse(_path1);
   Path path2=Path.parse(_path2);
