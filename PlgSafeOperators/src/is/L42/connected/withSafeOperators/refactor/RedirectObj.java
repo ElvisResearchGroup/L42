@@ -84,7 +84,7 @@ private List<CsPath> verified;
   }
   public ClassB applyMapPath(Program p,ClassB cb, List<CsPath> mapPath) {
     //TODO: use the new renaming?
-    cb=(ClassB) cb.accept(new PathRename(p,mapPath));
+    cb = new PathRename(p,mapPath).apply();
     cb = removeRedirected(cb, mapPath);
     return cb;
   }
