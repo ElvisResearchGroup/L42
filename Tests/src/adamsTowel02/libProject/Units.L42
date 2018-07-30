@@ -119,7 +119,7 @@ class method
 Library traitPer(){
     T1:{method S #inner()  class method This(S that) }
     T2:{method S #inner()  class method This(S that) }
-    S:{ method This *(This that)  method This /(This that)}
+    S:{ method This *(This right)  method This /(This right)}
     method S #inner()  class method  This(S that)
 
     class method

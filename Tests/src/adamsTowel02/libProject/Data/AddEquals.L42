@@ -42,7 +42,7 @@ exception Fail{
     Bool equals(read This that) 
       Bool.true()//no fields
     method ==(right) {
-      with that (on read This return this.equals(right))
+      with right (on read This return this.equals(right))
       return Bool.false()
       }
     }

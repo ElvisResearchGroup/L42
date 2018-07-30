@@ -44,22 +44,20 @@ class method Library composerTrait(){
     mut Libs inner
     class method mut This (mut Libs inner)
 
-    read method Library <><(Library right)
+    mut method Library <><(Library right)
     exception
     ,,,,Refactor2.MethodClash,
     ,,,,Refactor2.ClassClash,
     ,,,,Refactor2.SubtleSubtypeViolation {
-      cmp=This1(libs:this.inner(),lib0:right)
+      cmp=This1(libs:this.#inner(),lib0:right)
       cmp.fillMaps()
       var Library acc=right
       with
       ,,,,li in this.inner().reverse().vals()
       ,,,,mi in cmp.openMaps().#reverse().#vals() (
-        miInner=mi//TODO:SD issue with desugar: mi is actually mi.#inner()
-        acc:=Refactor2.compose(miInner<><li, and:acc)
+        acc:=Refactor2.compose(mi<><li, and:acc)
         )
-      cmpClose=cmp.close()//TODO:SD inference issue with StaticDispatch
-      return cmpClose<><acc
+      return cmp.close()<><acc
       error on
       ,,,,Refactor2.PathUnfit, Refactor2.SelectorUnfit,Refactor2.ClassUnfit
         X"Composers action method produced invalid maps"
@@ -83,13 +81,14 @@ class method Library composerTrait(){
   mut method mut RenameMethods openMaps()
   mut method mut Refactor2.Method close()
   read method read Libs inputs()
+  mut method  mut Libs #inputs()
   read method Library input()
   read method Location.Lib.List ls()
   read method Location.Lib l0()
   read method Location.Lib.List l0ns()
   read method Selectorss sels()
   //init
-  class method read This(read Libs libs, Library lib0)(
+  class method mut This(mut Libs libs, Library lib0)(
     l0=Location.Lib(lib0)
     Location.Lib.List ls=Location.Lib.List[with l in libs.vals() (
       use[Location.Lib(l)])]
@@ -143,7 +142,7 @@ class method Library composerTrait(){
   Patcher:{
     Path patch
     class method mut This (Path patch)
-    read method Library <><(Library right)
+    mut method Library <><(Library right)
     exception
     ,,,,Refactor2.MethodClash,
     ,,,,Refactor2.ClassClash,
@@ -155,9 +154,9 @@ class method Library composerTrait(){
       mut This1 cmp=This1(top:right,fix:this.patch())
       cmp.fillMapsPatch(top:Location.Lib(right),fix:this.patch())
       var Library acc=right
-      (c=cmp.open(0Size) acc><>=c)//TODO:SD  acc><>=cmp.open(0Size)
+      acc><>=cmp.open(0Size)
       acc><>=Refactor2.rename(path:this.patch() into:\"This")
-      (c=cmp.close() acc><>=c)//TODO:SD
+      acc><>=cmp.close()
       acc
       )
     }

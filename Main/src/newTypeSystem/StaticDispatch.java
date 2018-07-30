@@ -135,7 +135,9 @@ public class StaticDispatch implements Visitor<ExpCore>{
           }}
         }
       }
-    if(forceError){throw new ErrorMessage.OperatorDispachFail(s,s.getP());}
+    if(forceError){
+      throw new ErrorMessage.OperatorDispachFail(s,s.getP());
+      }
     this.errors=true;
     return s;
   }

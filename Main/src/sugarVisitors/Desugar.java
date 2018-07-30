@@ -518,7 +518,7 @@ public class Desugar extends CloneVisitor{
     }
   private String varNameFromParName(String op,String xi) {
     if(op.equals("equalequal")){return "read$";}
-    if(op.equals("leftrightleft") && xi.equals("left")){return "read$";}
+    if(op.equals("leftrightleft") && xi.equals("left")){return "";}//just what the inference would do
     if(xi.equals("left")||xi.equals("right")){return "imm$";}
     if(xi.equals("map")){return "mut$";}
     return "";

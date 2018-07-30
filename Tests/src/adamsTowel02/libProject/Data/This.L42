@@ -1,7 +1,7 @@
 {
 Fail:{interface implements Guard}
-Invariant:K<><...
-Wither:K<><...
+Invariant:K.Imm<><...
+Wither:K.Imm<><...
 StateOperation:...
 AddToS:StateOperation<><...
 AddEquals:StateOperation<><...
@@ -79,26 +79,4 @@ exception Fail Refactor2.PathUnfit {
  res><>=AddEquals(mutK:mutK, of:\"This")
  return res
 }
-
-/*
-class method
-Library <>< (Library that)
-exception StateUnfit, MetaGuard
- {
-  var Library res=that
-  if Introspection(lib:res).classKind().equals(\class._Interface()) (
-    return Extends[res]<><{interface implements 
-      Concept.Classable, Concept.ToS, Concept.Equals
-      }
-    )
-  res><>=K
-  res><>=Wither
-  res><>=AddToS
-  res><>=AddEquals
-  res><>=Invariant
-  res><>=Solid
-  return res
-  //data: toS == class named,  invariant, with  ---  Still missing: fromS, clone mutk
-  }
-*/
 }
