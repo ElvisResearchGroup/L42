@@ -164,7 +164,15 @@ import programReduction.Program;
           "{ A:{B:{C:{} method Library m(This2.A a, This1.B b, This0.C c) }}}"
           ,"A","D",
           "{ D:{B:{C:{} method Library m(This1 a, This0 b, This0.C c) }}}",false//
-        } });
+        }, {lineNumber(),//
+           "{ A: {interface method Library() {implements This1}}}"
+           ,"A","D",
+           "{ D: {interface method Library() {implements This1}}}",false//TODO: Causes a StackOverflow
+        }, {lineNumber(),//
+           "{ A: {method Library() {method This0()}}}"
+           ,"A","D",
+           "{ D: {method Library() {method This0()}}}",false//
+        }});
     }
     @Test public void test() throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit {
       TestHelper.configureForTest();

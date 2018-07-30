@@ -89,7 +89,7 @@ public class Rename {
   /**{@link RenameSpec#directRename} */
   public static ClassB directRename(Program p, ClassB l, List<Ast.C> src, List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash {
     //rename srcC in destC in top
-    ClassB renamedFullL=(ClassB)new PathRename(p,src,dest).visit(l);
+    ClassB renamedFullL=new PathRename(p.evilPush(l),src,dest).apply();
     //clearCb=remove srcC from top
     ClassB noSrcL=renamedFullL.onNestedNavigateToPathAndDo(src,nc->Optional.empty());
     //newCB=take srcC from top, and adjust paths to dest
