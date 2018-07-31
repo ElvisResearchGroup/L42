@@ -1,6 +1,6 @@
 \section{Extensions to our model}
 
-\paragraph{Nested classes}:
+\paragraph{Nested classes:}
 A nested class is just another kind of member in a code literal.
 The general idea is that by composing code with \use,
 nested classes with the same name are recursively composed.
@@ -41,7 +41,7 @@ to consider the class table as a simple map from (nested) types (as both \Q@A@ a
 
 
 
-\paragraph{Rename}:
+\paragraph{Rename:}
 There are a lots of different forms of rename in
 literature~\cite{deep,ancona2002calculus,bracha1992programming}.
 Here we will use a simple variant to rename nested types in other nested types.
@@ -55,7 +55,7 @@ would flatten to
 t={ method B m() B={ method B mb()} }
 D={ method C m() C={ method C mb()} }
 \end{lstlisting}
-Note how the rename only influences its argument.
+The rename only influences its argument.
 Since traits do not induce nominal types, we can
 consistently change their
 internally used names without breaking any code.
@@ -101,14 +101,14 @@ internally used names without breaking any code.
 The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
 with the requirements exposed in~\cite{Zenger-Odersky2005}.
 In the expression problem we have data-variants and operations and we can
-\textbf{extend our solution in both dimensions},
+\emph{extend our solution in both dimensions},
 by adding new data-variants and adding new operations.
-We also aim to \textbf{combine independently developed extensions} so
+We also aim to \emph{combine independently developed extensions} so
 that they can be used jointly.
 To be really modular, we want our extensions to
-preserve \textbf{type safety}
-and allow \textbf{separate compilation} (no re-type-checking),
-while avoiding \textbf{duplication of source code}.
+preserve \emph{type safety}
+and allow \emph{separate compilation} (no re-type-checking),
+while avoiding \emph{duplication of source code}.
 
 Following closely
 the example of Zenger and Odersky~\cite{Zenger-Odersky2005},
@@ -121,7 +121,6 @@ We then proceed to define operations
 \Q@show@ to convert it into a string,
  \Q@eval@ to compute the numeric value and 
 \Q@double@ to double the value of each \Q@Num@.
-
 We thus have 3 classes, 1 interface,
 the definition of the state and 3 operations.
 We model this
@@ -249,18 +248,20 @@ The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
 version where we isolate all the units of behaviour as done in \name.
 
-\noindent\begin{minipage}{0.65\textwidth}
+\noindent\begin{minipage}{0.60\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
 original Scala          & 52     &  15=12+3\\
 Scala  isolated units   & 78    &  15=12+3\\
 Scala  glue-code        & 27   &     3\\
-42 traits               & 48=3+4+6+5 + (4+2*3)*3   &    19=4*3+7\\
+42 traits               & 48
+%=3+4+6+5 + (4+2*3)*3  
+ &    19=4*3+7\\
 42 classes              &   3    &     0\\
 \end{tabular}
 \end{minipage}
-\begin{minipage}{0.35\textwidth}
+\begin{minipage}{0.40\textwidth}
 Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
 We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
 \end{minipage}
@@ -272,18 +273,18 @@ in \name we can just define a class supporting any subset of operations
 and data-variants by listing the desired traits:
 For example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
 with \Q@eval@ and \Q@double@ would look like:
-\saveSpace\saveSpace
-\begin{lstlisting}
-Example= Use evalNum,evalPlus,doubleNum,doublePlus
-\end{lstlisting}\saveSpace\saveSpace
+%\saveSpace\saveSpace
+%\begin{lstlisting}
+\Q@Example= Use evalNum,evalPlus,doubleNum,doublePlus@.
+%\end{lstlisting}\saveSpace\saveSpace
 The composition of all our traits would just require to list all
-of the relevant behaviour; reasonably formatted, it can take up to 3 lines (so a full \name solution would be 48+3=51 lines).
-
+of the relevant behaviour;
+reasonably formatted, it could take up 3 lines.
 On the other side, the presented solution in Scala requires
 27 lines of glue code to put the traits together.
-This means that a full Scala solution \textbf{requiring a single instantiation with all the traits} would be 78+27=105 lines.
+This means that a full Scala solution \emph{requiring a single instantiation with all the traits} would be 78+27=105 lines.
 If we were to require more instantiations with different subset of traits, the glue code would dominate the line count,
-and the Scala solution would end up being up to \textbf{9 times heavier than the
+and the Scala solution would end up being up to \emph{9 times heavier than the
 \name one} (if all the 64 permutations were required).
 
 The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
@@ -299,9 +300,11 @@ with a guarded cast (sometime called a typecase).%
 The interested reader can find a \name implementation of \Q@equals@ with double dispatch
 in the appendix.
 }
-The main idea is that  every data-variant  contains
- the "cast" logic; thus
- we can modularize that into an \Q@equals@ trait.
+The idea is that since every data-variant contains
+ the same "cast" logic, 
+ we can modularize it into an \Q@equals@ trait;
+\Q@equals@ in~\cite{Zenger-Odersky2005} is more involved and
+ and requires glue code.
 \saveSpace\saveSpace
 \begin{lstlisting}
 equals= {
@@ -333,11 +336,8 @@ equalsNeg= Use neg, equals[rename T into Neg],{
     return this.term().equals(that.term());}  }}
 \end{lstlisting}
 \saveSpace\saveSpace
-\noindent Our implementation of \Q@equals@
-is much simpler than the one proposed by~\cite{Zenger-Odersky2005}
- and can be instantiated without any glue code.
 
-\noindent
+\noindent\!\!
 \begin{minipage}{0.46\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
@@ -345,12 +345,16 @@ is much simpler than the one proposed by~\cite{Zenger-Odersky2005}
 original Scala eq           &    40   &   10\\
 isolated Scala eq           &   31    &   10\\
 Scala eq instance           &    29   &    3\\
-42 trait eq d-dispatch      &   21=6+5*3   &    6\\
+42 trait eq d-dispatch      &   21
+%=6+5*3
+   &    6\\
 42 class dd instance        &    22   &   11\\
-42 traits eq Cast            &   13=7+2*3   &    6\\
+42 traits eq Cast            &   13
+%=7+2*3
+   &    6\\
 42 class cast instance      &     3   &    0\\
 \end{tabular}
-\end{minipage}\quad\ \ 
+\end{minipage}\quad\ \ \ \ 
 \begin{minipage}{0.5\textwidth}
 The Scala code here can be made fully isolated with little
 extra syntactic cost. The original Scala eq is 40 lines and

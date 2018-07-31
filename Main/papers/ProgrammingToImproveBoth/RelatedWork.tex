@@ -81,7 +81,7 @@ This allows encoding binary methods, expressing patterns like withers or fluent 
 \subsection{Family
 Polymorphism by disconnecting Use and Reuse}
 \saveSpace
-Our \Q@Use@ operator is similar to deep mixin composition~\cite{Ernst99a,Zenger-Odersky2005, Hutchins06}
+Our \Q@Use@ operator is similar to deep mixin composition~\cite{ernst99a,Zenger-Odersky2005, Hutchins06}
 and family polymorphism~\cite{Ernst06, igarashi2005lightweight, IgarashiViroli07, IgarashiEtAl08}, but is symmetric, and with the operator
 \Q@super@ offers a flexible  explicit conflict resolution.
 Our presented solution to the expression problem is
@@ -204,19 +204,19 @@ synthesized from the other parameters.
 \saveSpace\saveSpace
 \subsection{Tabular comparison of many approaches}
 \saveSpace
-\begin{minipage}[t]{0.30\textwidth}
-In this table we show if some constructs support certain features:
-Direct instantiation (as in \Q@new C()@),
-Self instantiation (as in \Q@new This()@),
-Is this construct a `Unit of use'?, a `Unit of reuse'?,
-Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
-support for binary methods,
-does inheritance of this construct induce subtype?,
-is the code of this construct required to be well-typed before being inherited /imported in a new context?
-is it required to be well-typed before being composed with other code?
-\end{minipage}
+%\begin{minipage}[t]{0.30\textwidth}
+%In this table we show if some constructs support certain features:
+%Direct instantiation (as in \Q@new C()@),
+%Self instantiation (as in \Q@new This()@),
+%Is this construct a `Unit of use'?, a `Unit of reuse'?,
+%Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
+%support for binary methods,
+%does inheritance of this construct induce subtype?,
+%is the code of this construct required to be well-typed before being inherited /imported in a new context?
+%is it required to be well-typed before being composed with other code?
+%\end{minipage}
 %second column
-\begin{minipage}[t]{0.6\textwidth}
+\begin{minipage}[t]{0.9\textwidth}
 \newcommand{\YY}{\textbf{Y}}
 \begin{center}
 \begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
@@ -249,6 +249,15 @@ ${}_{}$\\
 \end{center}
 \end{minipage}
 
-\noindent \textbf{Y} and X means yes and no; we use ``-'' where the question is not applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
+In this table we show if some constructs support certain features:
+Direct instantiation (as in \Q@new C()@),
+Self instantiation (as in \Q@new This()@),
+Is this construct a `Unit of use'?, a `Unit of reuse'?,
+Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
+support for binary methods,
+does inheritance of this construct induce subtype?,
+is the code of this construct required to be well-typed before being inherited /imported in a new context?
+is it required to be well-typed before being composed with other code?
+\textbf{Y} and X means yes and no; we use ``-'' where the question is not applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
 
 

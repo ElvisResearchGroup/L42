@@ -7,7 +7,6 @@ implies subtyping. A Java subclass declaration, such as
 \noindent does two things at the same time:
 it {\bf inherits} code from \lstinline{B}; and it {\bf creates
 a subtype} of \lstinline{B}. Therefore a subclass must \emph{always} also be a subtype of the extended class.
-
 Historically, there has been a lot of focus on
 separating subtyping from subclassing~\cite{cook}.  This separation is claimed to be
 good for code-reuse, design and reasoning. There are at
@@ -33,7 +32,7 @@ desirable. Classes with \emph{binary methods}~\cite{cook,bruce96binary} are a ty
 
 \end{itemize}
 
-Structural typing~\cite{cook} can deal with the first
+\noindent Structural typing~\cite{cook} can deal with the first
 situation well, but not the second. Since structural subtyping
 accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
@@ -43,15 +42,15 @@ programmer can simply {\bf not} declare a subtyping relationship.
 While there is no problem in subtyping without subclassing, in most nominal OO languages subclassing fundamentally implies subtyping. 
 This is because of what we call the
 \emph{this-leaking problem}, illustrated by the following
-(Java) code:
-\saveSpace\saveSpace
+(Java) code, where
+method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
+This code is correct, and there is no subtyping/subclassing{.}\saveSpace\saveSpace
 \begin{lstlisting}[language=Java]
   class A{ int ma(){return Utils.m(this);} }
   class Utils{static int m(A a){..}}
 \end{lstlisting}
 \saveSpace\saveSpace
-Method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
-This code is correct, and there is no subtyping/subclassing.  Now, lets add a class \Q@B@
+  Now, lets add a class \Q@B@
 \saveSpace\saveSpace\saveSpace
 \begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
@@ -87,7 +86,12 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %expected argument of type \lstinline{A}.  
 
 
-Suppose Java code-reuse (the {\bf extends} keyword) was not introducing subtyping: then an invocation of 
+Suppose Java code-reuse (the {\bf extends} keyword) was not introducing subtyping\footnote{
+C++ allows to "extends privately"; this is not
+what we mean by not introducing subtyping: in C++ it is a limitation over
+  subtyping visibility, not over subtyping itself.  Indeed, the
+  former example would be \textbf{accepted} even if \lstinline{B} was to
+  "privately extends" \lstinline{A}}: then an invocation of 
 \lstinline{B.mb} would result in a run-time type error.
 The problem is that the
 self-reference \lstinline{this} in class \lstinline{B} has 
@@ -97,10 +101,7 @@ the method \lstinline{Utils.m} (as a result of the invocation of
 expected argument of type \lstinline{A}.  
 Therefore, every OO language with the minimal features exposed in the example (using \lstinline{this},
 {\bf extends} and method calls) is forced to accept that subclassing implies
-subtyping\footnote{C++ allows to "extends privately", but it is a limitation over
-  subtyping visibility, not over subtyping itself.  Indeed, the
-  former example would be \textbf{accepted} even if \lstinline{B} was to
-  "privately extends" \lstinline{A}}.
+subtyping.
   
 
 What the \emph{this-leaking problem} shows is that adopting a more flexible
@@ -153,8 +154,7 @@ In Section~\ref{sec:formal} we then provide a compact formalization.
 Most of the hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
-and the design of \name synthesizes some of these previously studied
-concepts.
+and the design of \name synthesizes some of these concepts.
 The language design ideas have been implemented in the {\bf full 42 language}, which supports all
 the examples we show in the paper, and is available at: \url{http://l42.is} (can be accessed without breaking double blind review).
 Work on 42 is now slowly reaching maturity after about 5 years of

@@ -10,7 +10,7 @@
 \subsection{Classes in \name: A mechanism for code Use}
 \saveSpace
 %\name has a substantially different design from Java-like languages.
-Consider the example from Section~\ref{sec:intro}, rewritten in \name, introducing classes \Q@Utils@ and \Q@A@:
+Consider the example of Section~\ref{sec:intro} rewritten in \name, introducing classes \Q@Utils@ and \Q@A@:
 \saveSpace\saveSpace
 \begin{lstlisting}
  Utils={ static method int m(A a){return ...} }
@@ -23,12 +23,10 @@ an uppercase letter) and the class implementation, which is used to specify the
 definitions of the class. In our example, in the class declaration
 for \lstinline{A}, the name of the class is \lstinline{A} and the code 
 literal associated with the class is `\Q@{ method int ma(){return Utils.m(this);}}@' and it contains the method \Q@ma()@.
-
 %We will see next some 
 %important differences to Java-like languages in the way 
 %classes and code-literals are type-checked, as we shall see next. 
 %Nevertheless, for this example, things still work in a similar way to Java. 
-
 In the \name code above there is no way to add a class 
 \Q@B@ reusing the code of \Q@A@: class \Q@A@ (uppercase) is designed for code \emph{use} and not \emph{reuse}.
 Indeed, a noticeable difference with Java is the
@@ -63,7 +61,7 @@ original class \lstinline{A} so that the code of the method
 is created by reusing the code from the trait \Q@ta@, introduced by the keyword 
 {\bf \lstinline{Use}}. Note that \use\ expressions cannot contain class names: only trait
 names are allowed.
-That is, \textbf{referring to a trait is the only way to induce code reuse}.
+\emph{Referring to a trait is the only way to induce code reuse}.
 
 The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
 the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere is reused.
@@ -82,7 +80,7 @@ The following second attempt would not work either:
 Indeed, trait names can only be used in \use\ expressions, and thus they can not appear in method bodies or type annotations.
 In this way, the code of a trait can stay agnostic of its name. This is one of the key design decisions in \name:
 traits can be reused in multiple places, and their code can be seen under multiple types.
-In \name, \textbf{Interfaces are the only way to obtain subtyping}. As shown in the code below, interfaces are special kinds of code literals, where all the methods are abstract.
+In \name, \emph{interfaces are the only way to obtain subtyping}. As shown in the code below, interfaces are special kinds of code literals, where all the methods are abstract.
 %In \name
 %subtyping is the way to reason about commonalities between different types.
 Thus, to model the original Java example, we need an interface
@@ -98,8 +96,8 @@ capturing the commonalities between \Q@A@ and \Q@B@:
 \saveSpace\saveSpace
 This code works: \Q@Utils@ relies on interface \Q@IA@ and the trait \Q@ta@
 implements \Q@IA@.
-\Q@ta@ is well typed:
-any class reusing \Q@ta@ will contain the code of \Q@ta@,
+%\Q@ta@ is well typed:
+Any class reusing \Q@ta@ will contain the code of \Q@ta@,
 including the \Q@implements IA@ subtyping declaration; thus any class reusing \Q@ta@ will be a subtype of \Q@IA@. 
 Therefore, while typechecking \Q@Utils.m(this)@ we can assume
 \Q@this<:IA@.
@@ -124,7 +122,7 @@ DJ and TR would require instead to explicitly declare an abstract \Q@ma@ method:
 \end{lstlisting}
 \saveSpace\saveSpace
 \noindent
-The idea in \name is that methods are directly accessible from trait \Q@ta@, exactly as in the Java equivalent
+In \name methods are directly accessible from trait \Q@ta@, exactly as in the Java equivalent
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
@@ -138,8 +136,8 @@ many redundant abstract method declarations.
 
 \paragraph{Semantics of Use}
 Albeit alternative semantic models for traits~\cite{lagorio2009featherweight} have been proposed,
-here we use flattening: \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits.
-\saveSpace\begin{lstlisting}
+we use flattening: \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits{.}%
+\saveSpace\saveSpace\begin{lstlisting}
 A=Use ta
 B=Use ta, { method int mb(){return this.ma();} }
 //equivalent to
@@ -148,13 +146,11 @@ B={implements IA
   method int ma(){return Utils.m(this);}
   method int mb(){return this.ma();} } 
  \end{lstlisting}
-\saveSpace 
-\textbf{In the resulting code there is no mention of the trait
+\saveSpace\saveSpace
+\emph{In the resulting code there is no mention of the trait
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.
-
-
 Summarizing, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) is implemented.
 We believe the code with \Q@IA@ better transmits the programmer intention. Some
 readers may instead see requiring \Q@IA@ as a cost of our approach.
