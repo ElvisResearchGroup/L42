@@ -63,11 +63,16 @@ public class StaticDispatch implements Visitor<ExpCore>{
       if (this.g.dom().size()!=old.dom().size()){continue;}
       assert this.g.dom().equals(old.dom());
       assert ds.equals(oldDs);
-      if(forceError){throw new ErrorMessage.InferenceFail(ds,null);}
+      if(forceError){improveError(ds);}
       this.errors=true;
       return ds;
       }
     }
+private void improveError(List<ExpCore.Block.Dec> ds) {
+//TODO: find inside ds the operation dispatch with vars
+//that can not be inferred.
+throw new ErrorMessage.InferenceFail(ds,null);
+}
   private ExpCore _liftAllowError(boolean[]error,ExpCore e){
     StaticDispatch fresh=new StaticDispatch(p,g,false);
     ExpCore res = e.accept(fresh);
@@ -81,7 +86,9 @@ public class StaticDispatch implements Visitor<ExpCore>{
     for(Dec d:ds){
       boolean error[]={false};
       ExpCore _e=_liftAllowError(error,d.getInner());
-      if(error[0]){err=true;res.add(d);continue;}
+      if(error[0]){
+        err=true;res.add(d);continue;
+        }
       d=d.withInner(_e);
       if(d.get_t()!=null){res.add(d);continue;}
       Type _t=GuessTypeCore._of(p,g,_e,false);

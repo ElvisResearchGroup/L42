@@ -36,7 +36,11 @@ import coreVisitors.InjectionOnSugar;
       }
     }
   @Override public String getMessage() {
-    return super.getMessage();//+this.toString();
+    return msg;//super.getMessage();//+this.toString();
+  }
+  private String msg;
+  public ErrorMessage msg(String msg){
+    this.msg=msg;return this;
   }
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UserLevelError extends ErrorMessage implements PosImprove {

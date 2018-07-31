@@ -430,7 +430,7 @@ RefToTest:{
     on Location.Type.RefTo.Binded (
       Debug.test(
         Location.Lib(classObj:r.referredClassObj()).toS()
-        >S"Bool #equalequal("//contains ==
+        >S"Bool #equalequal#0left("//contains ==
         expected:Bool.true())
       )
     on Location.Type.RefTo error X""
