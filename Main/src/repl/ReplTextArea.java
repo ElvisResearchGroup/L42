@@ -31,6 +31,8 @@ public class ReplTextArea extends SplitPane {
   private final DocPanel docPanel;
 
   public ReplTextArea(CountDownLatch latch, String fname, URL url) {
+	assert url!=null:
+		"";
     assert Platform.isFxApplicationThread();
     htmlFx=new HtmlFx(this);
     htmlFx.createHtmlContent(latch,wv->wv.load(url.toExternalForm()));
