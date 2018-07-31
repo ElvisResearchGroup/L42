@@ -149,6 +149,12 @@ public interface Program {
       assert p2.outerNumber()==p1.outerNumber()-1;
       return p2.setNewOuter(p2.outerNumber()+1);
       }
+
+    /*
+     * p = This1.C.Cs
+     * ctx.orignalCtxM() = "C: _"
+     * return Thus0.Cs
+     * */
     assert p.outerNumber()==1;
     List<Ast.C> cs = p.getCBar();
     if(cs.isEmpty()){return null;}

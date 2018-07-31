@@ -1,8 +1,9 @@
 V ::= (Cs->P)z
 
 dom(Cs1->P, ..., Csn->P) = Cs1,...,Csn
+V(Cs) = P:
+	Cs->P in V
 --------------------------------------
-//P' = V(Cs') // Actually a redirected path...
 
 V(L) = V(empty L)
 
@@ -25,57 +26,9 @@ V(X, Xz in Cs) = V(X in Cs), V(Xz in Cs)
 
 V(empty in Cs) = empty
 
-// Ok, here are the path thingys
-V(Thisk.Cs' in Cs.C1...Ck) =
-	V(Cs.Cs')[from This(#Cs+k)]
-/*
-V(P0 in Cs0)
-	n = #Cs0
-	P0 = Thisk.Cs'
-	Cs0 = Cs.C1...Ck
-
-	//Cs = Cs.Cs'
-	/*
-	find a Cs"->P"
-	*/
-*/
-V(Thisk.Cs' in Cs.C1...Ck) =
-	P.Cs' + (#Cs+k)
-	Where Cs->P in V
-
-V(Thisk.Cs' in Cs.C1...Ck) = Thisk.Cs'
-	where V(Cs.Cs') is undefined
-
-V(P+n+1 in C1,...,Cn) = P+n+1
-
-
-V(Cs) = V(P in empty)
-
-// Note: The Cs' part is only needed for rename
-// This also assumes that if Cs.Cs'->P' is in V
-// and Cs->P in V, then P' = P.Cs', which is true for redirect
-
-"".Cs->P'
-	""->P
-	P'="".C
-
-//good example, what is supposed to happen
-Foo: {implements Any}
-{A:{interface      B:{implements A}}}[A.B=>Foo, A=>Any,]
-
-
-
-
-
-V(Cs.Cs') = P.Cs':
-  Cs->P in V
-
-V(This0.Cs) = V(Cs)
-V(This0.Cs) = This0.Cs
-	where V(Cs) is undefined
-
-V(P+1) = P+1
-
+V(Thisk.Cs' in Cs.C1...Ck) = V(Cs.Cs') + #Cs + k
+V(P in Cs) = P:
+	otherwise
 
 Define L[remove Csz] = L[remove Csz in empty]
 	empty not in Csz
@@ -113,9 +66,11 @@ Cs2   in RedirectSet(L, Cs):
 Paths({interface? implements Pz; mwt0, ..., mwtn; ncz}) = Pz,Paths(mwt0.mt),...,Paths(mwtn.mt)
   Paths(Ts->T;Pz) = Ts.Ps, T.P, Pz
 
-minimize(p; P) = P'
-	where P' is the shortest path such that // TODO: Define formally
-		p.equiv(P, P')
+minize(p; Thisn+1.C.Cs) = minize(p: Thisn.Cs):
+  p.pop(n+1).ctxL(C) = ctxC
+
+minimize(p; P) = P
+	otherwise
 
 minimize(p; Cs1->P1,...,Csn->Pn) = Cs1->minimize(p; P1), ..., Csn->minimize(p; Pn)
 minimize(p; P, Pz) = minimize(p; P), minimize(p; Pz)
@@ -141,7 +96,7 @@ Define Cs {interface? implements Pz mwtz ncz} >=p P {interafce?' implements Pz' 
     if class in mwtz.mdfz then interface?'=empty
   else:
     interface? = interface?'
-    mwtz = mwtz' //note: may be we can relax by ignoring 'refine?'
+    mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
 
   forall mwt in mwtz:
   	mwt.e = empty
@@ -151,8 +106,13 @@ Define Cs {interface? implements Pz mwtz ncz} >=p P {interafce?' implements Pz' 
   	not Private(C)
     V(Cs.C) = P.C
 
+================================
+L[PathRename Cs->Cs']p = V(L):
+	V = collectV(p.evilPush(L); Cs->This0.Cs')
 
- {A:{This5.A.B.C }B:{} B foo()}[B => This2.C.A]
- {B:{} B foo()}[B => This2.C.A]
- 	==>{This1.A foo()}
+collectV(p; Cs->P, V) = collectV(p; Cs.C->P.C, Cs->P, V)
+	Cs.C not in dom(V)
+	C in dom(p(This0.Cs))
 
+collectV(p; V) = V:
+	otherwise

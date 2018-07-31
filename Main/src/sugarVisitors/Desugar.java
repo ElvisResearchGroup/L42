@@ -575,7 +575,7 @@ public class Desugar extends CloneVisitor{
     return new ClassB(Doc.factory(true,"@stringU\n"+EncodingHelper.produceStringUnicode(s)+"\n"),new Ast.TraitHeader(),Collections.emptyList(),Collections.emptyList(),Collections.emptyList(),Position.noInfo);
   }
   public static String desugarName(MethodSelector ms){
-    String res=ms.nameToS();
+    String res=ms.getName();
     if(res.startsWith("#")){return res;}
     res=desugarName(res);
     if(!res.startsWith("#")){return res;}
@@ -702,6 +702,7 @@ public class Desugar extends CloneVisitor{
   public MethodWithType visit(MethodWithType mt){
     this.varEnv=new HashMap<String, Type>();
     String mName=desugarName(mt.getMs());
+    assert !mName.contains("_$_");
     mt=mt.withMs(mt.getMs().withName(mName));
     if(!mt.getInner().isPresent()){return super.visit(mt);}
     {int i=-1;for(String name:mt.getMs().getNames()){i+=1;

@@ -519,6 +519,19 @@ public void testPluginPartsWrapper(){tp("{",
     " a.foo(bar:a0)",
     " catch exception A x {//@exitStatus\n//0\n\n}",
     " {/*fail*/})}");}
+
+
+@Test
+public void testCompositionError(){tp("{",
+    "Op:"+operatorAccess(),
+    "C:Op.compose("
+    + "left:{  D: Op.compose(left:{method This2.C m()} right: {method This1 m()}) } "
+    + "right: {})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+//what do we want to happen here? is this a correct sum or not?
+
+
 public static class A extends RuntimeException{
   public A m(){return this;}
   public static A k(){return new A();}

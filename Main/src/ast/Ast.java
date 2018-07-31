@@ -863,6 +863,7 @@ public interface Ast {
     @javax.annotation.Generated("lombok")
     public MethodSelector(final String name, final long uniqueNum, final List<String> names) {
       this.name = name;
+      assert !this.name.contains("_$_");
       this.uniqueNum = uniqueNum;
       this.names = names;
     }

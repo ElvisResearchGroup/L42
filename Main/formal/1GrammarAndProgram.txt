@@ -83,7 +83,6 @@ ctxC::=[]
 // The context does not enter into libraries
 ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
 ctxL::= {interface? implements Ps MCs ctxM Ms Phase}
-
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
 
@@ -257,6 +256,9 @@ program derived operations:
  p.equiv(This0.Cs,This(n+1).Cs'.C.Cs)=
    p.pop().equiv(This0, Thisn.Cs')
    and p.ctxL(C)=[]
+   //and p.L is of form LV ??? TODO:do we want this extra restriction
+   //TODO: may the version in the code is better?
+
 
 -p(P)=L //functional notation
  p(P)=p.navigate(P).top()//but some implementation could be faster

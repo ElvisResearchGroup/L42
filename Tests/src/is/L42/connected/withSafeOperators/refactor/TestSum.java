@@ -64,7 +64,6 @@ import programReduction.Program;
       "{I1:{interface } I2:{interface implements  I1} }",
       "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation",
       true
-
   }});}
   @Test  public void test() throws MethodClash, SubtleSubtypeViolation, ClassClash {
     TestHelper.configureForTest();

@@ -16,46 +16,108 @@ UpperCase:Code0 :class declaration//and need to be non abstact
 id  ::= t|C
 td  ::= t = E
 cd  ::= C = E
+dl  ::= id = L
 T   ::= Thisn.Cs
 E   ::= L  |  t  |  E <+ E  |  E(Cs=T)
+EV  ::= LV |  t  |  EV <+ EV  |  EV(Cs=T)
 LI  ::= interface{ implements Ts AMs }
 L   ::= LI | {implements Ts Ms K?}
 LV  ::= LI | {implements Ts MVs K?}
 AM  ::= T m(Txs)
-M   ::= C=E | T m(Txs)e?
-MV  ::= C=L | T m(Txs)e?
+M   ::= C = E  | T m(Txs)e?
+MV  ::= C = LV | T m(Txs)e?
 K   ::= constructor(Txs)
 e   ::= x | e.m(es) | this.f | new T(es)
 DE  ::= td | cd
 D   ::= t=LV | C=LV
-p   ::= DEs e
+S   ::= DEs e
 CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
+p   ::= cls; Dz
+
+C:{  D:{This2.C.D m()}+{This1.D m()} }      C:E C:L
+C:({  D:{This2.C.D m()}+{This1.D m()} }+{}) C:E
+
+
+C:{  D: {This2.C m()}+{This1 m()} }      C:E C:L
+
+{C: []} // C.D, exists!
+{D: {This2.C m()}+{This1 m()}, C_evil: []}
+SumRes
+---------------------------------------
+		p.equiv(This2.C, This1) == true
+
+{C: throwAway([])}	// C.D ??
+{D: {This2.C m()}+{This1 m()}, C_evil: []}
+SumRes
+---------------------------------------
+		p.equiv(This2.C, This1) == false
+
+
+C:({  D:{This2.C m()}+{This1 m()} }+{}) C:E
+	$ = {...}
+	D = ...
+	$ = LVR
+
+
+
+define p(P)=LV
+-----------------------------------
+Dz C=L(This0.C.Cs) = L(Cs)
+(C=L, p)(This0.Cs) = L(Cs)
+(C = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
+(cls; t=LV, Dz)[t] = LV[from This(#cls)]
+
+p[P] = p(P)[from P]
+
+p.evilPush(L) = C: L, p
+	for fresh C
+p.push(C) = C:L, p:
+	p = id: { C = L, ...}
+(id:L,p).pop() = p
+(id:L,p).top() = L
+p.minimize(Thisn+1.id_n.Cs) = p.minize(Thisn.Cs):
+  p=id_0:L0..id_n:Ln,_
 
 ---------------------------------------------------------------------
 
-  Ds|- E -> E'
+  id = E; Ds|- E -> E'
     |- Ds:Ok
 ------------------------------------------------Ds subset Ds'
   Ds' id=CtxV[E] DEs e --> Ds' id=CtxV[E'] DEs e
 
-   Ds |- e --> e'
- |-Ds:Ok
+  Ds |- e --> e'
+     |-Ds:Ok
 ------------------------------------
     Ds e --> Ds e'
 
-
 ------------------------------------
-  Dss|- LV1 <+ LV2 -> sum(LV1, LV2)
+  p |- LV1 <+ LV2 -> sum(p; LV1; LV2)
 
+-----------------
+  p |- t -> p[t]
 
-  Ds0(t)=LV
-------------------------------------
-  Ds0;..Dsn|- t  ->LV[0,n]
-
-
+//old
   Dss;{D in MVs}|-E->E'
 --------------------------------------
   Dss|- {implements Ts MVs C=E Ms K?}->{implements Ts MVs C=E' Ms K?}
+
+
+  C = L, cls; Dz |- D=E -> D=E'
+--------------------------------------L = {implements Ts MVs D=E Ms K?}
+          cls;Dz |- C = L-> C = {implements Ts MVs D=E' Ms K?}
+
+
+
+
+  C = L, cls; Dz |- D=E -> D=E'       For fresh C
+--------------------------------------L = {implements Ts MVs D=E Ms K?}
+          cls;Dz |- {implements Ts MVs D=E Ms K?}->{implements Ts MVs D=E' Ms K?}
+
+
+
+p |- E -> E'
+-------------------------------------- where E != L
+p |- D = E -> D = E'
 
 
 ------------------------------------LV'=redirect(Dss,LV,Cs,T)
@@ -1098,3 +1160,39 @@ A:Use[Secret()]<><{
 
 
 //list of string, containing list of list of S, and so on 10 levels.
+======================================================================
+
+------------------------------------------------------
+C = L, cls; Dz ==> C = L[C' := L'], cls; Dz:
+		L = {interface? implements Pz MVz C' = EV Ms}
+		EV not of form L
+		C = L, cls; Dz | EV -->* L'
+
+----------------------------------------
+//current 42 code
+C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
+		L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
+    L' not of form LV
+    C'=L', C = L, cls; Dz ==>* C'=LV  C = L, cls; Dz
+
+//stricter equiv
+C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
+		L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
+    L' not of form LV
+    C"=L', C = L, cls; Dz ==>* C"=LV  C = L, cls; Dz
+    C" fresh
+//solve my assertion
+//try to make equiv stricter
+
+//isaac1
+C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
+		L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
+    L' not of form LV
+    CtxV not of form []
+    C"=L', C = L, cls; Dz ==>* C"=LV  C = L, cls; Dz
+    C" fresh
+//isaac2
+C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
+		L = {interface? implements Pz MVz C' = L' Ms}
+    L' not of form LV
+    C'=L', C = L, cls; Dz ==>* C'=LV  C = L, cls; Dz
