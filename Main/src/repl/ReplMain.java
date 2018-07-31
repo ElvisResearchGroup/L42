@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -141,7 +142,10 @@ public class ReplMain {
   }
 
   private void makeReplTextArea(String fileName,String tabContent) {
-    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,fileName,getClass().getResource("textArea.xhtml")));
+	 URL url = getClass().getResource("textArea.xhtml");
+	 assert url!=null:
+		 "";
+    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,fileName,url));
     Platform.runLater(()->gui.openTab(editor,tabContent));
   }
 
