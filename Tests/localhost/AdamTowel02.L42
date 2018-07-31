@@ -56603,9 +56603,9 @@ This0 #times#0left(This0.Support right) This0.#apply(that:(
   imm$opPar394.#times#0left(right:right)
   ))
 method 
-This0 #divide(This0.Support that) This0.#apply(that:(
+This0 #divide#0left(This0.Support right) This0.#apply(that:(
   This0.Support imm$opPar395=this.that()
-  imm$opPar395.#divide#0left(right:that)
+  imm$opPar395.#divide#0left(right:right)
   ))
 read method 
 This2.Bool equals(read This0 that) (
@@ -62617,7 +62617,7 @@ Load: {/*shape of a loadable library:
 class method 
 Library cacheTowel() This1.ExitCode.normal()
 class method 
-Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable (
+Library #leftrightleft#0left(Library right) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable (
   Void unused21923=(
     Void unused21924=return (
       This1.Refactor2.Redirect opPar161=This1.Refactor2.redirect(path:This1.Refactor2.#default#redirect(path:void).#from(builder:(
@@ -62643,7 +62643,7 @@ Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.C
         Void unused21943=b786.#p()
         b786
         )), into:This1.ConceptMap)
-      opPar161.#leftrightleft#0left(right:that)
+      opPar161.#leftrightleft#0left(right:right)
       )
     
     catch exception This1.Refactor2.PathUnfit err exception (
@@ -62743,7 +62743,7 @@ Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.C
         rcv101.#from(seqBuilder:(
           mut This1.S.SConcat b6=rcv101.#seqBuilder()
           Void unused22020=(
-            lent This1.Location.Lib.List.IteratorVal av=This1.Location.Lib.#apply(that:that).allNesteds().vals()
+            lent This1.Location.Lib.List.IteratorVal av=This1.Location.Lib.#apply(that:right).allNesteds().vals()
             (
               Void unused22021=loop (
                 Void unused22022=av.#next()

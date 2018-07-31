@@ -12,14 +12,14 @@
     ExitCode.normal()
 
   class method
-  Library <>< (Library that)
+  Library <>< (Library right)
   exception ConceptMapMismatch, ConceptMapUnavailable
     {
-    return Refactor2.redirect(path:\"Abstract.ConceptMap" into:ConceptMap)<><that
+    return Refactor2.redirect(path:\"Abstract.ConceptMap" into:ConceptMap)<><right
     catch exception Refactor2.PathUnfit err
       exception ConceptMapUnavailable
           "provided library do not offers Abstract.ConceptMap or "[err.path()]
-          " available paths are "[with av in Location.Lib(that).allNesteds().vals() (
+          " available paths are "[with av in Location.Lib(right).allNesteds().vals() (
               use[S.nl()++av.path().toS()]
             )]""
     exception on Refactor2.ClassUnfit, Refactor2.MethodClash, Refactor2.IncoherentMapping

@@ -22,6 +22,7 @@ import ast.Ast.MethodType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ast.Ast;
@@ -50,13 +51,13 @@ public class StaticDispatch implements Visitor<ExpCore>{
   boolean errors=false;
   boolean forceError;
   private StaticDispatch(Program p,G g,boolean forceError){this.p=p;this.g=g;this.forceError=forceError;}
-  
+
   //at the end, this.g will include some of ds.
   List<ExpCore.Block.Dec> liftDecs(List<ExpCore.Block.Dec>ds){
     this.g=this.g.add(p,ds);
     while(true){
       List<ExpCore.Block.Dec>oldDs=ds;
-      ds = liftDecsAux(ds); 
+      ds = liftDecsAux(ds);
       if(!this.errors){return ds;}
       G old=this.g;
       this.g=this.g.add(p,ds);
@@ -68,16 +69,34 @@ public class StaticDispatch implements Visitor<ExpCore>{
       return ds;
       }
     }
-private void improveError(List<ExpCore.Block.Dec> ds) {
-//TODO: find inside ds the operation dispatch with vars
-//that can not be inferred.
-throw new ErrorMessage.InferenceFail(ds,null);
+private static class ESDispatch extends StaticDispatch{
+  ESDispatch(Program p,G g,List<ExpCore>log){super(p,g,false);this.log=log;}
+  List<ExpCore>log;
+  public void logErr(ExpCore e) {
+    log.add(e);
+    }
+  public StaticDispatch newAllowingError(Program p,G g) {
+    return new ESDispatch(p,g,log);
+    }
 }
+private void improveError(List<ExpCore.Block.Dec> ds) {
+  List<ExpCore>log=new ArrayList<>();
+  new ESDispatch(p, g, log).liftDecs(ds);
+  Optional<OperationDispatch> failed=log.stream()
+    .filter(e-> e instanceof OperationDispatch)
+    .map(e->(OperationDispatch)e).findFirst();
+  if(failed.isPresent()) {throw new ErrorMessage.OperatorDispachFail(failed.get(), failed.get().getP());}
+  throw new ErrorMessage.InferenceFail(ds,null);
+  }
   private ExpCore _liftAllowError(boolean[]error,ExpCore e){
-    StaticDispatch fresh=new StaticDispatch(p,g,false);
+    StaticDispatch fresh=newAllowingError(p,g);
     ExpCore res = e.accept(fresh);
     error[0]=fresh.errors;
     return res;
+    }
+  public void logErr(ExpCore e) {}
+  public StaticDispatch newAllowingError(Program p,G g) {
+    return new StaticDispatch(p,g,false);
     }
   //will set this.errors as secondary return value.
   List<ExpCore.Block.Dec> liftDecsAux(List<Dec>ds){
@@ -93,6 +112,7 @@ throw new ErrorMessage.InferenceFail(ds,null);
       if(d.get_t()!=null){res.add(d);continue;}
       Type _t=GuessTypeCore._of(p,g,_e,false);
       if(_t==null){
+        logErr(_e);
         err=true;res.add(d);continue;
       }
       _t=Functions.capsuleToMut(_t);
@@ -133,7 +153,7 @@ throw new ErrorMessage.InferenceFail(ds,null);
       for(List<MethodWithType> allMsi:mssi){maxJ=Math.max(maxJ, allMsi.size());}
       for(int j=0;j<maxJ;j+=1){//j: the layer of iterations
         {int i=-1;for(List<MethodWithType> allMsi:mssi){i+=1;//the method in parameter i
-          if (allMsi.size()<=j ||allMsi.get(j)==null){continue;}//par i have no method for layer j 
+          if (allMsi.size()<=j ||allMsi.get(j)==null){continue;}//par i have no method for layer j
           List<MethodType> mts = AlternativeMethodTypes.types(allMsi.get(j).getMt());
           if(!oneFits(TiTsis.get(i),mts)){continue;}
           List<ExpCore> es=new ArrayList<>(s.getEs());
@@ -141,6 +161,7 @@ throw new ErrorMessage.InferenceFail(ds,null);
           return new ExpCore.MCall(s.getEs().get(i),allMsi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
           }}
         }
+      logErr(s);//this logs failures *not* caused by absence of inferred types.
       }
     if(forceError){
       throw new ErrorMessage.OperatorDispachFail(s,s.getP());
