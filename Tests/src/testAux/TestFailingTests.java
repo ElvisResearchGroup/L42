@@ -1,5 +1,6 @@
 package testAux;
 
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.junit.Test;
 
 import ast.ErrorMessage;
@@ -39,7 +40,7 @@ public class TestFailingTests {
 	}
 	
 	// Throws an assertion error. It should throw maybe a parsing error or maybe a method not present.
-	// This was a bug as of 18/05/2018. This was fixed as of 31/07/18.
+	// This was a bug as of 18/05/2018. Is this the correct error now?
 	@Test
 	public void testMethodCallOnVariable() {
 		tp("{reuse L42.is/nanoBase0"
@@ -51,7 +52,7 @@ public class TestFailingTests {
 	}
 	
 	// Even if we can't make a unit of a unit, this gives us a "RawJavaException".
-	// This was a bug as of 25/07/18. This was fixed as of 31/07/18.
+	// This was a bug as of 25/07/18. Is this the correct error now?.
 	@Test
 	public void testUnitofUnit() {
 		tp("{reuse L42.is/AdamTowel02"
@@ -74,38 +75,7 @@ public class TestFailingTests {
 				,"{})"
 				,"}");
 	}
-
-	//Test equality of collections and test having the exitCode on the only reachable path.
-	@Test
-	public void testCollectionsEqual() {
-		tp("{reuse L42.is/AdamTowel02"
-				,"CacheAdamTowel02:Load.cacheTowel()"
-				,"Nums: Collections.vector(of: Num)"
-				,"C: {"
-					,"t1 = Nums[1Num; 2Num]"
-					,"Nums t2 = Nums[1Num; 2Num]"
-					,"if !t1.equals(t2) ("
-					,")"
-					,"else ("
-					,"return ExitCode.normal()"
-				,")"
-				,"}"
-				,"}");
-	}
 	
-	
-	// This doesn't work in the IDE, but does work here.
-	@Test
-	public void testTwoCache() {
-		tp("{reuse L42.is/AdamTowel02"
-			,"CacheAdamTowel02:Load.cacheTowel()"
-			,"reuse L42.is/AdamTowel02"
-			,"CacheAdamTowel02:Load.cacheTowel()"
-				,"A: {"
-					,"return ExitCode.normal()"
-				,"}"
-		,"}");
-	}
 
 
 	// Should this work? The equivalent works in Java, Python, etc.
@@ -122,20 +92,18 @@ public class TestFailingTests {
 
 	// Should this work? I'm not quite sure why this doesn't work. Something to do with
 	// The a.update() call.
-
 	@Test
 	public void testMutVariable() {
 		tp("{reuse L42.is/AdamTowel02"
 				,"A: Data <>< {"
-				,"var Num a"
-				,""
-				,"mut method Void update()"
-				,"this.a(30Num)"
+					,"var Num a"
+				,"mut method Void update() {"
+					,"this.a(30Num)"
 				,"}"
 				,"B: {"
-				,"A a = A(a: 1Num)"
-				,"a.update()"
-				,"X[a.a() == 1Num]"
+					,"A a = A(a: 1Num)"
+					,"a.update()"
+					,"X[a.a() != 1Num]"
 				,"return ExitCode.normal()"
 				,"}"
 				,"}");
@@ -288,7 +256,7 @@ public class TestFailingTests {
 				,"}");
 	}
 	//This should be correct??
-	// This was current as of 18/05/18
+	// This was a bug as of 18/05/18
 	@Test//(expected = ErrorMessage.NotWellFormedMsk.class)
 	public void testAssignExitCode() {
 		tp("{"
@@ -331,5 +299,18 @@ public class TestFailingTests {
 				,"}"
 				,"}");
 	}
+	
+	//Should this be allowed? It wouldn't work in Java as a nested type can't hide an
+	//enclosing type.
+	@Test
+	public void testRepeatedNestedClasses() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"B: {"
+				,"A:{A:{}}"
+				,"return ExitCode.normal()"
+				,"}"
+				,"}");
+	}
+
 
 }
