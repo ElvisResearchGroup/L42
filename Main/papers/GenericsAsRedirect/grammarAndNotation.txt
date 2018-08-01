@@ -1,1 +1,49 @@
- 
+id  ::= t|C
+td  ::= t = E
+cd  ::= C = E
+dl  ::= id = L
+T   ::= Thisn.Cs
+E   ::= L  |  t  |  E <+ E  |  E(Cs=T)
+EV  ::= LV |  t  |  EV <+ EV  |  EV(Cs=T)
+LI  ::= interface{ implements Ts AMs }
+L   ::= LI | {implements Ts Ms K?}
+LV  ::= LI | {implements Ts MVs K?}
+AM  ::= T m(Txs)
+M   ::= C = E  | T m(Txs)e?
+MV  ::= C = LV | T m(Txs)e?
+K   ::= constructor(Txs)
+e   ::= x | e.m(es) | this.f | new T(es)
+DE  ::= td | cd
+D   ::= t=LV | C=LV
+S   ::= DEs e
+CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
+p   ::= cls; Dz
+
+define p(P)=LV
+-----------------------------------
+Dz C=L(This0.C.Cs) = L(Cs)
+(C=L, p)(This0.Cs) = L(Cs)
+(C = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
+(cls; t=LV, Dz)[t] = LV[from This(#cls)]
+
+p[P] = p(P)[from P]
+
+p.evilPush(L) = C: L, p
+	for fresh C
+p.push(C) = C:L, p:
+	p = id: { C = L, ...}
+(id:L,p).pop() = p
+(id:L,p).top() = L
+p.minimize(Thisn+1.id_n.Cs) = p.minize(Thisn.Cs):
+  p=id_0:L0..id_n:Ln,_
+  
+
+p |-WF
+	p.top() = interface? {implementz Pz mwtz NCz}
+	forall P in Pz,
+		p(P).Pz[from P] subseteq Pz
+	forall mwt in p(P)[from P].mwtz
+		mwt in abstract(mwtz)
+   forall C = E in NCz, forall L inside E
+        p.evilPush(L) |-WF
+    //all L inside mwtz.es eare WF

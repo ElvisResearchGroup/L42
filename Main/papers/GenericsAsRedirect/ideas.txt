@@ -13,27 +13,6 @@ we need to discuss normalization
 lowerCase=Coden : trait declaration
 UpperCase:Code0 :class declaration//and need to be non abstact
 
-id  ::= t|C
-td  ::= t = E
-cd  ::= C = E
-dl  ::= id = L
-T   ::= Thisn.Cs
-E   ::= L  |  t  |  E <+ E  |  E(Cs=T)
-EV  ::= LV |  t  |  EV <+ EV  |  EV(Cs=T)
-LI  ::= interface{ implements Ts AMs }
-L   ::= LI | {implements Ts Ms K?}
-LV  ::= LI | {implements Ts MVs K?}
-AM  ::= T m(Txs)
-M   ::= C = E  | T m(Txs)e?
-MV  ::= C = LV | T m(Txs)e?
-K   ::= constructor(Txs)
-e   ::= x | e.m(es) | this.f | new T(es)
-DE  ::= td | cd
-D   ::= t=LV | C=LV
-S   ::= DEs e
-CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
-p   ::= cls; Dz
-
 C:{  D:{This2.C.D m()}+{This1.D m()} }      C:E C:L
 C:({  D:{This2.C.D m()}+{This1.D m()} }+{}) C:E
 
@@ -60,86 +39,7 @@ C:({  D:{This2.C m()}+{This1 m()} }+{}) C:E
 
 
 
-define p(P)=LV
------------------------------------
-Dz C=L(This0.C.Cs) = L(Cs)
-(C=L, p)(This0.Cs) = L(Cs)
-(C = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
-(cls; t=LV, Dz)[t] = LV[from This(#cls)]
-
-p[P] = p(P)[from P]
-
-p.evilPush(L) = C: L, p
-	for fresh C
-p.push(C) = C:L, p:
-	p = id: { C = L, ...}
-(id:L,p).pop() = p
-(id:L,p).top() = L
-p.minimize(Thisn+1.id_n.Cs) = p.minize(Thisn.Cs):
-  p=id_0:L0..id_n:Ln,_
-
 ---------------------------------------------------------------------
-
-  id = E; Ds|- E -> E'
-    |- Ds:Ok
-------------------------------------------------Ds subset Ds'
-  Ds' id=CtxV[E] DEs e --> Ds' id=CtxV[E'] DEs e
-
-  Ds |- e --> e'
-     |-Ds:Ok
-------------------------------------
-    Ds e --> Ds e'
-
-------------------------------------
-  p |- LV1 <+ LV2 -> sum(p; LV1; LV2)
-
------------------
-  p |- t -> p[t]
-
-//old
-  Dss;{D in MVs}|-E->E'
---------------------------------------
-  Dss|- {implements Ts MVs C=E Ms K?}->{implements Ts MVs C=E' Ms K?}
-
-
-  C = L, cls; Dz |- D=E -> D=E'
---------------------------------------L = {implements Ts MVs D=E Ms K?}
-          cls;Dz |- C = L-> C = {implements Ts MVs D=E' Ms K?}
-
-
-
-
-  C = L, cls; Dz |- D=E -> D=E'       For fresh C
---------------------------------------L = {implements Ts MVs D=E Ms K?}
-          cls;Dz |- {implements Ts MVs D=E Ms K?}->{implements Ts MVs D=E' Ms K?}
-
-
-
-p |- E -> E'
--------------------------------------- where E != L
-p |- D = E -> D = E'
-
-
-------------------------------------LV'=redirect(Dss,LV,Cs,T)
-  Dss|- LV(Cs=T)  -> LV'
-
-
-  Ds|-LV1:Ok .. Ds|-LVn:Ok
-------------------------------- Ds= id1=LV1...idn=LVn
-  Ds:Ok
-
-
-
-ctxP[LV1 <+ LV2] ==>* Ds
-
-not Ds: Ok
-
-there is no LV3
-such that
-
-ctxP[LV3], A=LV1[from ??], B=LV2[from ??] ==> * Ds'
-where Ds': ok
-
 
 LV1={ method Void foo()=this.bar()}
 Lv2={ }
@@ -195,19 +95,6 @@ impl Marker for SSMarker {
 type SS = S<SSMarker>;
 
 
-
--define sum(p,LV1,LV2)=LV
-  p.evilPush(LV)|-LV1<+LV2
-
-p|-{implements Tz1 M1..Mn K?1} <+ {implements Tz2 Mz2 K?2} ={implements Tz Mz K?}
-  Tz=minimize(p;Tz1 U Tz2)
-  Mz=p|-M1+Mz2[M1] .. p|-Mn+Mz2[Mn]
-  {empty,K?1,K?2}={empty,K?}//may be too sophisticate?
-  // check that we don't implement two interfaces with the same methods...
-
-
-
-
  as 42 today  --> rename methods
 
  impl multiple interfaces works as java
@@ -236,33 +123,6 @@ where:
 
 top level L is WF
 
-p |-WF
-	p.top() = interface? {implementz Pz mwtz NCz}
-	forall P in Pz,
-		p(P).Pz[from P] subseteq Pz
-	forall mwt in p(P)[from P].mwtz
-		mwt in abstract(mwtz)
-   forall C = E in NCz, forall L inside E
-        p.evilPush(L) |-WF
-    //all L inside mwtz.es eare WF
-
-
-
-p|-interface{implements Tz1 AMs,AMs0} <+ interface?{implements Tz2 AMs} =
-  interface {implements Tz AMs}
-  Tz=minimize(p;Tz1 U Tz2)
-  if interface?=interface then AMs0=empty
-
-(mwt1, Mz)[mwt2]=mwt1 with mwt1.ms=mwt2.ms
-(nc1, Mz)[nc2]=nc1 with nc1.C=nc2.C
-Mz[M']=empty otherwise
-
-p|-M+empty = M
-p|-M1+M2 = p|-M2+M1
-p|-mh e?+mh = mh e?
-p|-C:LV1+C:LV2 = C:LV  where p.push(C)|-LV1<+LV2=LV
-
-
 /*minimize(p; P1, P2, Pz) = foo(p, P1, Pz))
   p.equiv(P1, P2)
 minimize(p; Pz) = Pz
@@ -279,22 +139,7 @@ interface{ implements Ts AMs }
 -evaluations/boring but needed
 -from[]
 
-metalevel soundness
-if
-  Ds t=E DEs e ->* Ds t=LV DEs e
-  not Ds|- LV:Ok
-then
-  Exists LV' inside E such that
-  	not Ds|- LV':Ok
 
-E level soundness
-if
-  Ds:Ok
-  Ds|- E ->* LV
-  not Ds|- LV:Ok
-then
-  Exists LV' inside E such that
-  	not Ds|- LV':Ok
 
 ------
 Meta-Check:
@@ -1163,36 +1008,3 @@ A:Use[Secret()]<><{
 ======================================================================
 
 ------------------------------------------------------
-C = L, cls; Dz ==> C = L[C' := L'], cls; Dz:
-		L = {interface? implements Pz MVz C' = EV Ms}
-		EV not of form L
-		C = L, cls; Dz | EV -->* L'
-
-----------------------------------------
-//current 42 code
-C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
-		L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
-    L' not of form LV
-    C'=L', C = L, cls; Dz ==>* C'=LV  C = L, cls; Dz
-
-//stricter equiv
-C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
-		L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
-    L' not of form LV
-    C"=L', C = L, cls; Dz ==>* C"=LV  C = L, cls; Dz
-    C" fresh
-//solve my assertion
-//try to make equiv stricter
-
-//isaac1
-C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
-		L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
-    L' not of form LV
-    CtxV not of form []
-    C"=L', C = L, cls; Dz ==>* C"=LV  C = L, cls; Dz
-    C" fresh
-//isaac2
-C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
-		L = {interface? implements Pz MVz C' = L' Ms}
-    L' not of form LV
-    C'=L', C = L, cls; Dz ==>* C'=LV  C = L, cls; Dz

@@ -68,7 +68,7 @@ Paths({interface? implements Pz; mwt0, ..., mwtn; ncz}) = Pz,Paths(mwt0.mt),...,
 
 minize(p; Thisn+1.C.Cs) = minize(p: Thisn.Cs):
   p.pop(n+1).ctxL(C) = ctxC
-
+                  // = []
 minimize(p; P) = P
 	otherwise
 
@@ -91,7 +91,15 @@ Define Redirect(p, Cs, P) = L0:
 Define Cs {interface? implements Pz mwtz ncz} >=p P {interafce?' implements Pz' mwtz' ncz'}:
   minimize(p; Pz) subseteq minimize(p; Pz',P)
   if interface?=empty:
-    forall MS in dom(mwtz):
+    forall MS in dom(mwtz):L[PathRename Cs->Cs']p = V(L):
+	V = collectV(p.evilPush(L); Cs->This0.Cs')
+
+collectV(p; Cs->P, V) = collectV(p; Cs.C->P.C, Cs->P, V)
+	Cs.C not in dom(V)
+	C in dom(p(This0.Cs))
+
+collectV(p; V) = V:
+	otherwise
       p |- mwtz'(MS).mt <= mwtz(MS).mt
     if class in mwtz.mdfz then interface?'=empty
   else:
