@@ -1,0 +1,64 @@
+Define p |- Ok
+===========================================================
+empty; Dz |- Ok:
+    forall id = LV in Dz:
+        ToC(id) = LV; Dz |- Ok
+
+p |- Ok:
+   p.top() = interface? {implements Pz CVs mtz K?}
+
+   forall P in Pz:
+        p.minimize(p[P].Pz) subseteq p.minimize(Pz)
+
+       forall T m(Txs) in p[P].mt
+            T m(Txs) e? in mtz
+            for some e?
+
+   forall T m(Txs) e? in mtz:
+        p |- T, Txs.Ts : ok
+        if e? = e:
+            p; Txs |- e : T
+
+   if K? = K:
+       p |- K.Txs.Ts : Ok
+
+   forall C' = LV in CDs
+        C' = LV, p |- LV : Ok
+
+Define p |- Ts : Ok
+=================================
+    forall T in Ts:
+        p(T) is defined
+
+Define p; Txs |- e : T
+=====================================
+(var)
+----------------------- T x in Txs
+   p; Txs |- x : T
+
+
+(call)
+   p; Txs |- e1 : T1
+   ...
+   p; Txs |- en : Tn
+   p; Txs |- e : T
+-----------------------------------  T' m(T1 x1 ... Tn xn) e? in p(T)
+   p; Txs |- e.m(e1 ... en) : T'
+
+(field)
+-----------------------------------  p.top().K = constructor(_ T f _)
+   p; Txs |- this.f : T
+
+
+(new)
+   p; Txs |- e1 : T1
+   ...
+   p; Txs |- en : Tn
+-----------------------------------  p(T).K = constructor(T1 x1 ... Tn xn)
+   p; Txs |- new T(e1 ... en)
+
+
+(sub)
+   p; Txs |- e : T
+-----------------------------------  T' in p(T).Pz
+   p; Txs |- e : T'

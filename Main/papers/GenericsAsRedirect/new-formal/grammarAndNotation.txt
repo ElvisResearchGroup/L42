@@ -1,0 +1,62 @@
+id  ::= t | C
+TD  ::= t = E,      CD  ::= C = E
+CL  ::= C = L
+CV  ::= C = LV,     TV  ::= t = LV
+DE  ::= TD | CD
+D   ::= TV | CV
+
+T,P ::= Thisn.Cs
+E   ::= L  |  t  |  E <+ E    |  E(Cs=T)
+EV  ::= LV |  t  |  EV <+ EV  |  EV(Cs=T)
+
+LI  ::= interface {implements Tz amtz}
+L   ::= LI | {implements Tz CDs mtz K?}
+LV  ::= LI | {implements Tz CVs mtz K?}
+
+amt ::= T m(Txs)
+mt  ::= amt | T m(Txs) e
+Tx  ::= T x
+M   ::= CD | mt
+Mid ::= C | m
+K   ::= constructor(Txs)
+e   ::= x | e.m(es) | this.f | new T(es)
+p   ::= CLs; Dz
+
+S   ::= DEs e
+CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
+
+define p(P)=LV
+-----------------------------------
+(empty; C = L, Dz)(This0.C.Cs) = L(Cs)
+(C = L, p)(This0.Cs) = L(Cs)
+(C = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
+(CLs; t = LV, Dz)[t] = LV[from This(#CLs)]
+p[P] = p(P)[from P]
+
+Define operations on p
+--------------------------------------
+p.evilPush(L) = C = L, p
+	for fresh C
+
+p.push(C) = (C = L, p)
+    p = (C' = { _ C = L _ }, _)
+
+(C = L, p).pop() = p
+(C = L, p).top() = L
+
+p.minimize(Thisn+1.id_n.Cs) = p.minimize(Thisn.Cs):
+  p = id_0 = L0.. id_n = Ln, _
+otherwise p.minize(P) = P
+
+
+Define ToC(id) = C
+-------------------
+ToC(C) = C
+ToC(t) = C':
+    for fresh C'
+
+define dom(Mz) = Midz
+===========================================
+dom(empty) = empty
+dom(C = E, Mz) = C, dom(Mz)
+dom(T m(Txs), Mz) = m, dom(Mz)
