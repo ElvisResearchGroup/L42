@@ -1,14 +1,19 @@
 Marco version:
-p::=DEs0;..;DEsn
+p::=DEs0;..;DEsn 
 
 
       Ds'| EV --> EV'
       p=Ds id=EV DE; DEs
       Ds' in p.last()
       |- Ds':Ok
-(top)-------------------------------------
+(top)----------------------------
       p ==>Ds id=EV' DE; DEs
 
+      
+      MVz C=E Ms;p==>MVz C=E' Ms;p
+      p=Ds id={interface? implements Pz MVz C=E Ms} DE; DEs   
+(enter)-----------------------      
+      p ==>Ds id={interface? implements Pz MVz C=E' Ms} DE; DEs
 +++++++++++++++++++++++++++++++++++++
 
 (main-top)
