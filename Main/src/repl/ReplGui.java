@@ -125,9 +125,19 @@ public class ReplGui extends Application {
 
     runB=new Button("Run!");
     runB.setDisable(true);
-    runB.setOnAction(e->ReplMain.runLater(()->{
-      main.runCode(Loader::new);
-    }));
+    runB.setOnAction(e->{
+      for (Tab t : tabPane.getTabs()) {
+        if (t.getText().endsWith("*")) {
+          System.out.println("Saving: " + t.getText());
+          ReplTextArea editor = (ReplTextArea)t.getContent();
+          editor.saveToFile();
+          editor.removeStar();
+        }
+      }
+      ReplMain.runLater(()->{
+        main.runCode(Loader::new);
+      });
+    });
 
     refreshB=new Button("Refresh");
     refreshB.setDisable(true);
