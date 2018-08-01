@@ -66,8 +66,8 @@ Library traitUnit() { implements Concept.Equals, Concept.ToS
     This(this.that()*right)
 
   method
-  This /(Support that)
-    This(this.that()/that)
+  This /(Support right)
+    This(this.that()/right)
 
   read method
   Bool equals(read This that)
