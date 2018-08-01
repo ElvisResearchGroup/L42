@@ -1,42 +1,33 @@
-Define DEs ==> DE's
-=========================================================
-(main-top) Ds id=EV DEs ==> Ds id=L Des
-    EV not of form L
-    Ds' is some subset of Ds
-    Ds' |- Ok
-    Ds' | EV -->* L
-
-(main-enter) Ds id=CtxV[L] DEs ==> Ds id=CtxV[LV] Des
-    L not of form LV
-    C' = ToC(id)
-    C' = L'; Ds ==>* C' = LV; Ds
-
 Define p ==> p'
 =========================================================
-(top) C = L; Dz ==> C = L[C' := L'], cls; Dz:
-		L = {interface? implements Pz MVz C' = EV Ms}
-		EV not of form L
-		C = L, cls; Dz | EV -->* L'
+(top) id = Lp, p ==> id = Lp', p
+		Lp  = interface? {Pz; DVs, id' = Ec, Ds; mtz; K?}
+		Lp' = interface? {Pz; DVs, id' = L', Ds; mtz; K?}
+		Ec not of form L
+		id = Lp, p | Ec -->* L'
 
-(enter) C = L, cls; Dz ==> C = L[C' := CtxV[LV]], cls; Dz:
-	L = {interface? implements Pz MVz C' = CtxV[L'] Ms}
+(enter) id = Lp, p ==> id = Lp', p
+    Lp  = interface? {Pz; DVs, id' = CtxC[L'], Ds; mtz; K?}
+    Lp' = interface? {Pz; DVs, id' = CtxC[LV], Ds; mtz; K?}
+
     L' not of form LV
-    C'=L', C = L, cls; Dz ==>* C'=LV  C = L, cls; Dz
-    // TODO? Use fresh C' or not?
+    id' = L', id = Lp, p ==>* id' = LV, id = Lp, p
+    // TODO? Use fresh id' or not?
 
-Define S ==> S'
-=========================================================
-
-            DEs ==>* Ds
-            Ds |- Ok
-            Ds; empty |- e : T
-            Ds | e -->* e'
+Define Ds e --> DVs e'
+================================================================
+            t = {;Ds;;} ==>* t = {;DVs;;}
+            t = {;DVs;;} |- Ok
+            t = {;DVs;;} |- e : T
+                     DVs | e -->* e'   for fresh t
 (main e)------------------------------ for some type T
-            DEs e --> Ds e'
+                   Ds e --> DVs e'
 
-
-Define p |- EV --> EV'
+Define p |- Ec --> Ec'
 =========================================================
+          p |- E --> E'
+(CtxV) ----------------------------------------------
+          p |- CtxV[E] --> CtxV[E']
 
 (trait) -----------------------------------
           p |- t -> p[t]
@@ -52,12 +43,12 @@ Define p |- EV --> EV'
 
 Define p |- LV1 <+ LV2 = LV3
 ========================================================================================
-p |- {implements Tz1 CVz1 mtz1 K?1} <+ {implements Tz2 CVz2 mtz2 K?2} = {implements Tz CVz mtz K?}
+p |- {Tz1; CVz1; mtz1; K?1} <+ {Tz2; CVz2; mtz2; K?2} = {Tz; CVz; mtz; K?}
   Tz = minimize(p; Tz1 U Tz2)
   p |- CVz1,MTz1 + CVz2,MTz2 = CVz,CVz
   {empty, K?1, K?2} = {empty, K?} //may be too sophisticated?
 
-p|- interface{implements Tz1 amtz,amtz'} <+ interface?{implements Tz2 amtz} = interface {implements Tz amtz}
+p|- interface{Tz1;; amtz,amtz';} <+ interface?{Tz2;;amtz;} = interface {Tz;;amtz;}
   Tz = minimize(p; Tz1 U Tz2)
   if interface? = interface then amtz'=empty
 

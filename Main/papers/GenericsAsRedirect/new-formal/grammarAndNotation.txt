@@ -1,59 +1,59 @@
 id  ::= t | C
-TD  ::= t = E,      CD  ::= C = E
-CL  ::= C = L
-CV  ::= C = LV,     TV  ::= t = LV
-DE  ::= TD | CD
-D   ::= TV | CV
-
 T,P ::= Thisn.Cs
-E   ::= L  |  t  |  E <+ E    |  E(Cs=T)
-EV  ::= LV |  t  |  EV <+ EV  |  EV(Cs=T)
 
-LI  ::= interface {implements Tz amtz}
-L   ::= LI | {implements Tz CDs mtz K?}
-LV  ::= LI | {implements Tz CVs mtz K?}
+CD  ::= C = E  // class declaration
+CV  ::= C = LV // evaluated class declaration
+D   ::= CD | t = L // declaration
+DV  ::= CV | t = LV // evaluated-declaration
 
-amt ::= T m(Txs)
-mt  ::= amt | T m(Txs) e
-Tx  ::= T x
-M   ::= CD | mt
-Mid ::= C | m
-K   ::= constructor(Txs)
-e   ::= x | e.m(es) | this.f | new T(es)
-p   ::= CLs; Dz
+L   ::= interface {Tz;; amtz;} | {Tz; CDs; mtz; K?}  // literal
+LV  ::= interface {Tz;; amtz;} | {Tz; CVs; mtz; K?}  // literal value
+Lp  ::= L  | {; Ds; ;}           // program literal
 
-S   ::= DEs e
-CtxV::= [] | CtxV <+ E | LV<+ CtxV | CtxV(Cs=T)
+amt ::= T m(Txs)  // abstract method
+mt  ::= amt | T m(Txs) e // method
+Tx  ::= T x // paramater-declaration
+M   ::= CD | mt // member
+Mid ::= C | m // member-id
+K   ::= constructor(Txs) // constructor
+e   ::= x | e.m(es) | this.f | new T(es) // expression
+
+E   ::= L  |  t  |  E <+ E    |  E(Cs=T) // library-expression
+Ec  ::= LV |  t  |  Ec <+ Ec  |  Ec(Cs=T) // compiled library-expression
+
+CtxC ::= [] | CtxC <+ E | Ec <+ CtxC | CtxC(Cs=T) // Context of library-compilation
+CtxV ::= [] | CtxV <+ E | LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
+
+p   ::= (id = Lp)s               // program
+=====================================================================================
 
 define p(P)=LV
 -----------------------------------
-(empty; C = L, Dz)(This0.C.Cs) = L(Cs)
-(C = L, p)(This0.Cs) = L(Cs)
-(C = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
-(CLs; t = LV, Dz)[t] = LV[from This(#CLs)]
+(id = Lp, p)(This0.Cs)   = Lp(Cs)
+(id = Lp, p)(Thisn+1.Cs) = p(Thisn.Cs)
+(p, id={;_, t = LV, _;;})[t] = LV[from This(#Dps)]
 p[P] = p(P)[from P]
+
+Define Lp(Cs) = L
+--------------------------------------
+L(empty) = L
+Lp(C.Cs) = L(Cs)
+    Lp = interface? {_; _, C = L, _; _ ; _}
 
 Define operations on p
 --------------------------------------
 p.evilPush(L) = C = L, p
 	for fresh C
 
-p.push(C) = (C = L, p)
-    p = (C' = { _ C = L _ }, _)
+p.push(id) = (id = L, p)
+    p = (id' = {_;_, id = L, _ ;_;_}, _)
 
-(C = L, p).pop() = p
-(C = L, p).top() = L
+(id = Lp, p).pop() = p
+(id = Lp, p).top() = Lp
 
-p.minimize(Thisn+1.id_n.Cs) = p.minimize(Thisn.Cs):
-  p = id_0 = L0.. id_n = Ln, _
+p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
+  p = id0 = Lp0, ..., idn = Lp, _
 otherwise p.minize(P) = P
-
-
-Define ToC(id) = C
--------------------
-ToC(C) = C
-ToC(t) = C':
-    for fresh C'
 
 define dom(Mz) = Midz
 ===========================================

@@ -1,16 +1,12 @@
 Define p |- Ok
 ===========================================================
-empty; Dz |- Ok:
-    forall id = LV in Dz:
-        ToC(id) = LV; Dz |- Ok
-
 p |- Ok:
-   p.top() = interface? {implements Pz CVs mtz K?}
+   p.top() = interface? {Pz; DVs; mtz; K?}
 
    forall P in Pz:
         p.minimize(p[P].Pz) subseteq p.minimize(Pz)
 
-       forall T m(Txs) in p[P].mt
+       forall T m(Txs) in p[P].mt:
             T m(Txs) e? in mtz
             for some e?
 
@@ -22,8 +18,8 @@ p |- Ok:
    if K? = K:
        p |- K.Txs.Ts : Ok
 
-   forall C' = LV in CDs
-        C' = LV, p |- LV : Ok
+   forall id' = LV in DVs
+        id' = LV, p |- Ok
 
 Define p |- Ts : Ok
 =================================
