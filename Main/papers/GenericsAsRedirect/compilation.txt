@@ -1,9 +1,11 @@
 Marco version:
 p::=DEs0;..;DEsn
 
-      Ds' | EV -->* L
+
+      Ds'| EV --> EV'
       p=Ds id=EV DE; DEs
       Ds' in p.last()
+      |- Ds':Ok
 (top)-------------------------------------
       p ==>Ds id=EV' DE; DEs
 
