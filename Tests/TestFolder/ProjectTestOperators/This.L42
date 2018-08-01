@@ -30,6 +30,7 @@ StupidSum:{
     }
     
 Main: {
+  Debug("new Version");
   l1={A:{method This m()}}
   l2={A:{method This1.A m()}}
   CheckEq(l1, expected:S"{A:{methodThis0m()}}")
