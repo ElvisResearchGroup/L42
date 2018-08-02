@@ -1,29 +1,29 @@
 Define Ds e --> DVs e'
 ================================================================           
-            t = {;DVs';;} |- Ok
-            t = {;DVs' D;;} ==> t = {;DVs' D';;}      DVs' subsetof DVs
-(compile)-------------------------------------------- for some type t
+            DVs' |- Ok
+            D; DVs' ==> t = D'; DVs'      DVs' subsetof DVs
+(compile)-------------------------------- for some type t
                  DVs D Ds e --> DVs D' Ds e
 
-            t = {;DVs;;} |- Ok
-            t = {;DVs;;} |- e : T
+            Dvs |- Ok
+            Dvs |- e : T
                      DVs | e --> e' for fresh t
 (main)----------------------------- for some type T
                    DVs e --> DVs e'
 
 Define p ==> p'
 =========================================================
-(top) id = Lp, p ==> id = Lp', p
-		Lp  = interface? {Pz; DVs, id' = Ec, Ds; mtz; K?}
-		Lp' = interface? {Pz; DVs, id' = L', Ds; mtz; K?}
+(top) id = L, DLs; DVs ==> id = L', DLs; DVs
+		L  = interface? {Pz; DVs, id' = Ec, Ds; mtz; K?}
+		L' = interface? {Pz; DVs, id' = L', Ds; mtz; K?}
 		Ec not of form LV// or L
-		id = Lp, p | Ec -->* L'
+		id = L, DLs; DVs | Ec -->* L'
 
-(enter) id = Lp, p ==> id = Lp', p
-    Lp  = interface? {Pz; DVs, id' = CtxC[L'], Ds; mtz; K?}
-    Lp' = interface? {Pz; DVs, id' = CtxC[LV], Ds; mtz; K?}
+(enter) id = L, DLs; DVs ==> id = L', DLs; DVs
+    L  = interface? {Pz; DVs, id' = CtxC[L'], Ds; mtz; K?}
+    L' = interface? {Pz; DVs, id' = CtxC[LV], Ds; mtz; K?}
     L' not of form LV
-    id' = L', id = Lp, p ==>* id' = LV, id = Lp, p
+    id' = L', id = L, DLs; DVs ==>* id' = LV, id = L, DLs; DVs
     // TODO: Use fresh id'?
 
 Define p |- Ec --> Ec'

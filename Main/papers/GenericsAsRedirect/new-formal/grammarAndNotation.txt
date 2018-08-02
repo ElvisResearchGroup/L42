@@ -3,12 +3,12 @@ T,P ::= Thisn.Cs
 
 CD  ::= C = E  // class declaration
 CV  ::= C = LV // evaluated class declaration
-D   ::= CD | t = E // declaration
-DV  ::= CV | t = LV // evaluated-declaration
+D   ::= id = E // declaration
+DL  ::= id = L // partially-evaluated-declaration
+DV  ::= id = LV // evaluated-declaration
 
 L   ::= interface {Tz;; amtz;} | {Tz; CDs; mtz; K?}  // literal
 LV  ::= interface {Tz;; amtz;} | {Tz; CVs; mtz; K?}  // literal value
-Lp  ::= L  | {; Ds; ;}           // program literal
 
 amt ::= T m(Txs) // abstract method
 mt  ::= T m(Txs) e? // method
@@ -24,38 +24,41 @@ Ec  ::= LV |  t  |  Ec <+ Ec  |  Ec(Cs=T) // compiled library-expression
 CtxC ::= [] | CtxC <+ E | Ec <+ CtxC | CtxC(Cs=T) // Context of library-compilation
 CtxV ::= [] | CtxV <+ Ec| LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
 
-p   ::= (id = Lp)s               // program
+p   ::= DLs; DVs // program
 S   ::= Ds e // Source Code
 =====================================================================================
 
 define p(P)=LV
 -----------------------------------
-(id = Lp, p)(This0.Cs)   = Lp(Cs)
-(id = Lp, p)(Thisn+1.Cs) = p(Thisn.Cs)
-(p, id={;_, t = LV, _;;})[t] = LV[from This(#p)]
+(; _, C = L, _)(This0.C.Cs)   = L(Cs)
+(id = L, p)(This0.Cs)   = L(Cs)
+(id = L, p)(This0.Cs)   = L(Cs)
+(id = L, p)(This0.Cs)   = L(Cs)
+(id = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
+(DLs; _, t = LV, _)[t] = LV[from This(#DLs)]
 p[P] = p(P)[from P]
 
-Define Lp(Cs) = L
+Define L(Cs) = L
 --------------------------------------
 L(empty) = L
-Lp(C.Cs) = L(Cs)
-    Lp = interface? {_; _, C = L, _; _ ; _}
+L(C.Cs) = L(Cs)
+    L = interface? {_; _, C = L, _; _ ; _}
 
 Define operations on p
 --------------------------------------
-p.evilPush(L) = C = L, p
+p.evilPush(L) = (C = L, p)
 	for fresh C
 
 p.push(id) = (id = L, p)
-    p = (id' = {_;_, id = L, _ ;_;_}, _)
+    p = (id' = {_;_, id = L, _ ;_;_}, _; DVs)
 
-(id = Lp, p).pop() = p
-(id = Lp, p).top() = Lp
+(id = L, p).pop() = p
+(id = L, p).top() = L
 
 p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
-  p = id0 = Lp0, ..., idn = Lpn, _
+  p = id0 = L0, ..., idn = Ln, _; DVs
   p(Thisn.Cs) = LV
-  // TODO: Check that Lpn is an LV instead?
+  // TODO: Check that Ln is an LV instead?
 otherwise p.minimize(P) = P
 
 define dom(Mz) = Midz

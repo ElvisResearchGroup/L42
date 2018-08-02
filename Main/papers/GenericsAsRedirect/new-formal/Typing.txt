@@ -1,5 +1,9 @@
 Define p |- Ok
 ===========================================================
+DVs |- Ok
+    forall DV in DVs
+        DV; DVs |- Ok
+
 p |- Ok:
    p.top() = interface? {Pz; DVs; mtz; K?}
 
