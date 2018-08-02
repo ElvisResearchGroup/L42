@@ -13,13 +13,13 @@ Define Ds e --> DVs e'
 
 Define p ==> p'
 =========================================================
-        Ctxp[id = Ec] | Ec --> Ec'
+        Ctxp[C = Ec] | Ec --> Ec'
 (top) -----------------------------------
-        Ctxp[id = Ec] ==> Ctxp[id = Ec']  p ==>p[E'] next(p)
+        Ctxp[C = Ec] ==> Ctxp[C = Ec']
 
-       id = L, Ctxp[id = CtxC[L]] ==> id = L', Ctxp[id = CtxC[L]]
-(enter)------------------------------------------------------------// TODO: Use fresh id?
-               Ctxp[id = CtxC[L]] ==> Ctxp[id = CtxC[L']]
+         C = L, Ctxp[C = CtxC[L]] ==> C = L', Ctxp[id = CtxC[L]]
+(enter)------------------------------------------------------------// TODO: Use fresh C?
+         Ctxp[C = CtxC[L]] ==> Ctxp[C = CtxC[L']]
 
 Define p |- Ec --> Ec'
 =========================================================
