@@ -21,17 +21,21 @@ e   ::= x | this | e.m(es) | this.x | new T(es) // expression
 E   ::= L  |  t  |  E <+ E    |  E(Cs=T) // library-expression
 Ec  ::= LV |  t  |  Ec <+ Ec  |  Ec(Cs=T) // compiled library-expression
 
-CtxC ::= [] | CtxC <+ E | Ec <+ CtxC | CtxC(Cs=T) // Context of library-compilation
-CtxV ::= [] | CtxV <+ Ec| LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
-Ctxp ::= id = interface? {Pz; CVs, [], CDs; mtz; K?}, p // Context of program-evaluation
+CtxV ::= [] | CtxV <+ E| LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
+CtxL ::= interface? {Pz; CVs, [], CDs; mtz; K?} // Context of nested-class evaluation
 
 p   ::= DLs; DVs // program
 S   ::= Ds e // Source Code
 =====================================================================================
+Define ToC(id) = C
+-----------------------------
+ToC(t) = C:
+    for fresh C
+ToC(C) = C
 
-define p(P)=LV
+Define p(P) = LV
 -----------------------------------
-(; _, C = L, _)(This0.C.Cs)   = L(Cs)
+(; _, C = L, _)(This0.C.Cs) = L(Cs)
 (id = L, p)(This0.Cs)   = L(Cs)
 (id = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
 (DLs; _, t = LV, _)[t] = LV[from This(#DLs)]

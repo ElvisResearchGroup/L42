@@ -1,9 +1,9 @@
 Define Ds e --> DVs e'
 ================================================================
             DVs' |- Ok
-            D; DVs' ==> D'; DVs'
-(compile)-------------------------------- DVs' subsetof DVs
-            DVs D Ds e --> DVs D' Ds e
+            empty; DVs'; ToC(id) | E --> E'
+(compile)---------------------------------------- DVs' subsetof DVs
+            DVs id = E Ds e --> DVs id = E' Ds e
 
             Dvs |- Ok
             Dvs |- e : T
@@ -11,32 +11,27 @@ Define Ds e --> DVs e'
 (main)---------------------------------- for some type T
             DVs e --> DVs e'
 
-Define p ==> p'
+Define p; C | E --> E'
 =========================================================
-        Ctxp[C = Ec] | Ec --> Ec'
-(top) -----------------------------------
-        Ctxp[C = Ec] ==> Ctxp[C = Ec']
 
-         C = L, Ctxp[C = CtxC[L]] ==> C = L', Ctxp[id = CtxC[L]]
-(enter)------------------------------------------------------------// TODO: Use fresh C?
-         Ctxp[C = CtxC[L]] ==> Ctxp[C = CtxC[L']]
+       C = CtxL[C' = E], p; C' | E --> E'
+(L) --------------------------------------------- // TODO use fresh C'?
+      p; C | CtxL[C' = E] ---> CtxL[C' = E']
 
-Define p |- Ec --> Ec'
-=========================================================
-          p |- Ec --> Ec'
+          p; C | E --> E'
 (CtxV) ----------------------------------------------
-          p |- CtxV[Ec] --> CtxV[Ec']
+          p; C | CtxV[E] --> CtxV[E']
 
 (trait) -----------------------------------
-          p |- t -> p[t]
+          p; C | t -> p[t]
 
-         C = LV3, p |- LV1 <+ LV2 = LV3
-(sum) -------------------------------------- for fresh C
-        p |- LV1 <+ LV2 --> LV3
+         C' = LV3, p |- LV1 <+ LV2 = LV3
+(sum) -------------------------------------- for fresh C'
+        p; C | LV1 <+ LV2 --> LV3
 
             // TODO: Inline and de-42 redirect formalism
 (redirect) ------------------------------------LV'=redirect(p, LV, Cs, P)
-            p |- LV(Cs=P) -> LV'
+            p; C | LV(Cs=P) -> LV'
 
 Define p |- LV1 <+ LV2 = LV3
 ========================================================================================
