@@ -23,6 +23,7 @@ Ec  ::= LV |  t  |  Ec <+ Ec  |  Ec(Cs=T) // compiled library-expression
 
 CtxC ::= [] | CtxC <+ E | Ec <+ CtxC | CtxC(Cs=T) // Context of library-compilation
 CtxV ::= [] | CtxV <+ Ec| LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
+Ctxp ::= interface? {Pz; DVs, [], Ds; mtz; K?}, p // Context of program-evaluation
 
 p   ::= DLs; DVs // program
 S   ::= Ds e // Source Code

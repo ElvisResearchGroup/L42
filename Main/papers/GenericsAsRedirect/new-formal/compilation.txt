@@ -7,24 +7,19 @@ Define Ds e --> DVs e'
 
             Dvs |- Ok
             Dvs |- e : T
-                     DVs | e --> e' for fresh t
-(main)----------------------------- for some type T
+            DVs | e --> e' for fresh t
+(main)---------------------------------- for some type T
                    DVs e --> DVs e'
 
 Define p ==> p'
 =========================================================
-(top) id = L, DLs; DVs ==> id = L', DLs; DVs
-		L  = interface? {Pz; DVs, id' = Ec, Ds; mtz; K?}
-		L' = interface? {Pz; DVs, id' = L', Ds; mtz; K?}
-		Ec not of form LV// or L
-		id = L, DLs; DVs | Ec -->* L'
+        Ctxp[id = Ec] | Ec --> Ec'
+(top) -----------------------------
+        Ctxp[id = Ec] ==> Ctxp[id = Ec']
 
-(enter) id = L, DLs; DVs ==> id = L', DLs; DVs
-    L  = interface? {Pz; DVs, id' = CtxC[L'], Ds; mtz; K?}
-    L' = interface? {Pz; DVs, id' = CtxC[LV], Ds; mtz; K?}
-    L' not of form LV
-    id' = L', id = L, DLs; DVs ==>* id' = LV, id = L, DLs; DVs
-    // TODO: Use fresh id'?
+       id = L, Ctxp[id = CtxC[L]] ==> id = L', Ctxp[id = CtxC[L]]
+(top) ------------------------------------------------------------// TODO: Use fresh id?
+               Ctxp[id = CtxC[L]] ==> Ctxp[id = CtxC[L']]
 
 Define p |- Ec --> Ec'
 =========================================================
@@ -39,10 +34,9 @@ Define p |- Ec --> Ec'
 (sum) -------------------------------------- for fresh C
         p |- LV1 <+ LV2 --> LV3
 
+            // TODO: Inline and de-42 redirect formalism
 (redirect) ------------------------------------LV'=redirect(p, LV, Cs, P)
             p |- LV(Cs=P) -> LV'
-// TODO: Inline and de-42 redirect formalism
-
 
 Define p |- LV1 <+ LV2 = LV3
 ========================================================================================
