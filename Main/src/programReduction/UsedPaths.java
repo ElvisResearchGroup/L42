@@ -91,23 +91,23 @@ static Paths tryTypedPaths(Program p, ExpCore ec){
     }
   List<Ast.MethodType>mhs=new ArrayList<>();
   for(ClassB li:l1n){
-    recursiveAux(li,mhs,Collections.emptyList());  
+    recursiveAux(li,mhs,Collections.emptyList());
     }
   List<Ast.Path> ps0=new ArrayList<>();
   for(Ast.MethodType mhi : mhs){
     addExternalPath(ps0,mhi.getReturnType().getPath());
     for(Type ti: mhi.getTs()){
-      addExternalPath(ps0,ti.getPath());  
+      addExternalPath(ps0,ti.getPath());
       }
     for(Type ti: mhi.getExceptions()){
-      addExternalPath(ps0,ti.getPath());  
+      addExternalPath(ps0,ti.getPath());
       }
     }
   Paths paths1=Paths.empty();
   for(Ast.Path pi:ps0){
     Paths paths1i=null;
     try{//ps1 here is implicit as the set of successful pi
-      paths1i=reachablePaths(p,Paths.reorganize(Collections.singletonList(pi)),Collections.emptyList(),true);  
+      paths1i=reachablePaths(p,Paths.reorganize(Collections.singletonList(pi)),Collections.emptyList(),true);
       }
     catch(PathMetaOrNonExistant|IncompleteClassIsRequired t){}
     if(paths1i!=null){paths1=paths1.union(paths1i);}
@@ -134,7 +134,7 @@ static void recursiveAux(ClassB l,List<Ast.MethodType>mhs,List<Ast.C>cs){
   }
 
 
-  static private Paths reachablePaths(Program p, Paths paths, List<List<Ast.C>> css,boolean forTyped) {  
+  static private Paths reachablePaths(Program p, Paths paths, List<List<Ast.C>> css,boolean forTyped) {
     if (paths.isEmpty()){
       assert css.isEmpty();
       return Paths.empty();
@@ -146,15 +146,15 @@ static void recursiveAux(ClassB l,List<Ast.MethodType>mhs,List<Ast.C>cs){
     if(css1.size()!=css.size() || !css1.containsAll(css)){
       Paths paths0= Paths.empty();
       for(List<Ast.C> csi : css1){
-        assert csi.size()!=0;//may be
+        //assert csi.size()!=0;//may be
         try{
-          ClassB lFirst=p.top().getClassB(Collections.singletonList(csi.get(0)));
-          if(!IsCompiled.of(lFirst)){
+          if(csi.size()==0 ||
+              !IsCompiled.of(p.top().getClassB(Collections.singletonList(csi.get(0))))){
             throw new ErrorMessage.IncompleteClassIsRequired(
-            "library not compiled yet is required to be typed",
-             null,Path.outer(0, csi), Collections.emptyList(),
-             Ast.Position.noInfo
-             );
+              "library not compiled yet is required to be typed",
+               null,Path.outer(0, csi), Collections.emptyList(),
+               Ast.Position.noInfo
+               );
             }
           }
         catch(ErrorMessage.PathMetaOrNonExistant pne){
@@ -170,9 +170,9 @@ static void recursiveAux(ClassB l,List<Ast.MethodType>mhs,List<Ast.C>cs){
       return Paths.empty().push(css);
       }
      Paths res = reachablePaths(p.pop(),paths.pop(),Collections.emptyList(),forTyped);
-     return res.push(css);             
+     return res.push(css);
     }
-   
+
 private static void checkPathMetaOrNonExistant(Program pForError, List<Ast.C> csi, ClassB li, Paths newPaths) {
   //check no thisns
   {int i=0;for(Paths psi=newPaths;!psi.isEmpty();i++,psi=psi.pop()){
@@ -189,16 +189,16 @@ private static void checkPathMetaOrNonExistant(Program pForError, List<Ast.C> cs
     throw pne.withWherePathWasWritten(p);
     }
 }
-  
+
 static private Paths reachableFromL(ClassB l,boolean forTyped){
   Paths paths=Paths.reorganize(l.getSuperPaths());
   for(ClassB.Member mi: l.getMs()){
-    paths=paths.union(reachableFromM(mi,forTyped));    
+    paths=paths.union(reachableFromM(mi,forTyped));
     }
   return paths;
   }
- 
-  static private Paths reachableFromM(Member m,boolean forTyped) {  
+
+  static private Paths reachableFromM(Member m,boolean forTyped) {
     if(m instanceof NestedClass){
       NestedClass nc=(NestedClass)m;
       return reachableFromL((ClassB)nc.getInner(),forTyped).pop();
@@ -222,12 +222,12 @@ static private Paths reachableFromL(ClassB l,boolean forTyped){
     for(ClassB li: l1n){acc=acc.union(reachableFromL(li,true));}
     return result2.union(acc.pop());
     }
-  
+
   static private Paths stronglyDeepImplements(ClassB l0){
     Paths res=Paths.reorganize(l0.getSuperPaths());
     Paths acc=Paths.empty();
     for(Member mi:l0.getMs()){
-      if (mi instanceof MethodWithType && 
+      if (mi instanceof MethodWithType &&
          ((MethodWithType)mi).get_inner()==null){continue;}
       ExpCore e=mi.getInner();
       for(ClassB cbij:CollectClassBs0.of(e)){
@@ -236,10 +236,10 @@ static private Paths reachableFromL(ClassB l,boolean forTyped){
       }
     return res.union(acc.pop());
     }
-  
+
   static private List<Ast.Path> collectNotAnyPaths(Program p,ExpCore e) {
     class HeuristicForNotAnyPathsSplit extends PropagatorVisitor{
-    public Void visit(ClassB s) {return null;} 
+    public Void visit(ClassB s) {return null;}
       protected List<Path> paths=new ArrayList<Path>();
       private void add(Path p){this.paths.add(p);}
     //non determinism heuristic:
@@ -268,14 +268,14 @@ static private Paths reachableFromL(ClassB l,boolean forTyped){
         return null;
         }
     //**if p(Pi).Cache=Typed, Pi is not Any
-      @Override protected void liftP(Path s) { 
+      @Override protected void liftP(Path s) {
         if(s.isPrimitive()){return;}
         try{if(p.extractClassB(s).getPhase()==Phase.Typed){
           super.liftP(s); return;
           }}
         catch(ErrorMessage.PathMetaOrNonExistant pne){/*we do not rise this error while computing the heuristic*/}
         }
-      
+
       //**if using P _ _ inside e, P not Any
       public Void visit(ExpCore.Using s) {
         if (!s.getPath().isPrimitive()){add(s.getPath());}

@@ -161,7 +161,7 @@ public class TestShortPrograms {
 @Test public void test8(){tp("{"
   ," D: { class method Library id(Library that) (that)}"
   ," C: D.id({  method Void foo() (C x= this void)}) "
-  ," E: ( c=C {//@exitStatus\n//0\n\n})"
+  ," E: ( class Any c=C {//@exitStatus\n//0\n\n})"
   ,"}");}
 
 @Test//(expected=ErrorMessage.PathsNotSubtype.class)
@@ -224,20 +224,20 @@ public void test9c1(){tp("{"//focus on the difference between c1 and c2. This is
 public void test9c2(){tp("{"
     ," D: { class method Library id(Library that) that}"
     ," C: D.id({ H:{ method Void foo() (This2.C.H x= this void)}}) "//here C.H vs C.E is the only difference
-    ," F:( c=C {//@exitStatus\n//0\n\n})"
+    ," F:( class Any c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 @Test(/*expected=ErrorMessage.PathsNotSubtype.class/*PathNonExistant.class*/)//correctly no error for trashing the error.
 public void test9d(){tp("{"
     ," D: { class method Library trash(Library that) ({})}"
     ," C: D.trash({  H:{ method Void foo() (This2.C.E x= this void)}}) "
-    ," E: ( c=C {//@exitStatus\n//0\n\n})"
+    ," E: ( class Any c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 
 @Test public void test9(){tp("{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: D.id({  H:{ method Void foo() (This2.C.H x= this void)}}) "
-    ," E: ( c=C {//@exitStatus\n//0\n\n})"
+    ," E: ( class Any c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.MethodNotPresent.class)
@@ -250,7 +250,7 @@ public void test10(){tp("{"
 public void test11(){tp("{"
     ," D: { class method Library id(Library that) (that)}"
     ," C: D.id({  method Void foo(C x) ( x.foo(x:x))}) "
-    ," E: ( c=C {//@exitStatus\n//0\n\n})"
+    ," E: ( class Any c=C {//@exitStatus\n//0\n\n})"
     ,"}");}
 
 @Test(expected=ErrorMessage.PathMetaOrNonExistant.class)
@@ -521,7 +521,7 @@ public void testPluginPartsWrapper(){tp("{",
     " {/*fail*/})}");}
 
 
-@Test
+@Test(expected=platformSpecific.javaTranslation.Resources.Error.class)
 public void testCompositionError(){tp("{",
     "Op:"+operatorAccess(),
     "C:Op.compose("

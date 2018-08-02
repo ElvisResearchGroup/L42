@@ -1,33 +1,36 @@
+Define Ds e --> DVs e'
+================================================================           
+            t = {;DVs';;} |- Ok
+            t = {;DVs' D;;} ==> t = {;DVs' D';;}      DVs' subsetof DVs
+(compile)-------------------------------------------- for some type t
+                 DVs D Ds e --> DVs D' Ds e
+
+            t = {;DVs;;} |- Ok
+            t = {;DVs;;} |- e : T
+                     DVs | e --> e' for fresh t
+(main)----------------------------- for some type T
+                   DVs e --> DVs e'
+
 Define p ==> p'
 =========================================================
 (top) id = Lp, p ==> id = Lp', p
 		Lp  = interface? {Pz; DVs, id' = Ec, Ds; mtz; K?}
 		Lp' = interface? {Pz; DVs, id' = L', Ds; mtz; K?}
-		Ec not of form L
+		Ec not of form LV// or L
 		id = Lp, p | Ec -->* L'
 
 (enter) id = Lp, p ==> id = Lp', p
     Lp  = interface? {Pz; DVs, id' = CtxC[L'], Ds; mtz; K?}
     Lp' = interface? {Pz; DVs, id' = CtxC[LV], Ds; mtz; K?}
-
     L' not of form LV
     id' = L', id = Lp, p ==>* id' = LV, id = Lp, p
-    // TODO? Use fresh id' or not?
-
-Define Ds e --> DVs e'
-================================================================
-            t = {;Ds;;} ==>* t = {;DVs;;}
-            t = {;DVs;;} |- Ok
-            t = {;DVs;;} |- e : T
-                     DVs | e -->* e'   for fresh t
-(main e)------------------------------ for some type T
-                   Ds e --> DVs e'
+    // TODO: Use fresh id'?
 
 Define p |- Ec --> Ec'
 =========================================================
-          p |- E --> E'
+          p |- Ec --> Ec'
 (CtxV) ----------------------------------------------
-          p |- CtxV[E] --> CtxV[E']
+          p |- CtxV[Ec] --> CtxV[Ec']
 
 (trait) -----------------------------------
           p |- t -> p[t]
@@ -38,23 +41,23 @@ Define p |- Ec --> Ec'
 
 (redirect) ------------------------------------LV'=redirect(p, LV, Cs, P)
             p |- LV(Cs=P) -> LV'
-
+// TODO: Inline and de-42 redirect formalism
 
 
 Define p |- LV1 <+ LV2 = LV3
 ========================================================================================
 p |- {Tz1; CVz1; mtz1; K?1} <+ {Tz2; CVz2; mtz2; K?2} = {Tz; CVz; mtz; K?}
   Tz = minimize(p; Tz1 U Tz2)
-  p |- CVz1,MTz1 + CVz2,MTz2 = CVz,CVz
+  p |- CVz1,mtz1 + CVz2,mtz2 = CVz,mtz
   {empty, K?1, K?2} = {empty, K?} //may be too sophisticated?
 
-p|- interface{Tz1;; amtz,amtz';} <+ interface?{Tz2;;amtz;} = interface {Tz;;amtz;}
+p|- interface{Tz1;; amtz,amtz';} <+ interface?{Tz2;;amtz;} = interface {Tz;;amtz,amtz';}
   Tz = minimize(p; Tz1 U Tz2)
   if interface? = interface then amtz'=empty
 
 p |- Mz + Mz' = Mz' + Mz
 p |- Mz + empty = Mz
-p |- (M, Mz) + Mz' = mt, (Mz + Mz')
+p |- (M, Mz) + Mz' = M, (Mz + Mz')
     M.Mid not in dom(Mz')
 
 p |- (T m(Txs) e?, Mz) + (T m(Txs), Mz') = T m(Txs) e?, (Mz + Mz')

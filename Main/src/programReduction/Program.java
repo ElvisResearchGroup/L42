@@ -16,6 +16,7 @@ import ast.ExpCore.ClassB.Phase;
 import ast.PathAux;
 import auxiliaryGrammar.Functions;
 import coreVisitors.From;
+import coreVisitors.IsCompiled;
 import facade.PData;
 import newTypeSystem.ErrorKind;
 import tools.Assertions;
@@ -152,7 +153,7 @@ public interface Program {
 
     /*
      * p = This1.C.Cs
-     * ctx.orignalCtxM() = "C: _"
+     * ctx.orignalCtxM() = "C: _"// or do we mean =C:ctxM ?
      * return Thus0.Cs
      * */
     assert p.outerNumber()==1;
@@ -160,8 +161,10 @@ public interface Program {
     if(cs.isEmpty()){return null;}
     ClassB.Member m=ctx.originalCtxM();
     if(!(m instanceof ClassB.NestedClass)){return null;}
-    Ast.C ncName=((ClassB.NestedClass)m).getName();
+    ClassB.NestedClass nc=(ClassB.NestedClass)m;
+    Ast.C ncName=nc.getName();
     if(!ncName.equals(cs.get(0))){return null;}
+    if(!IsCompiled.of(nc.getE())) {return null;}//Added line 2/8/2018
     return Path.outer(0, cs.subList(1, cs.size()));
     }
   default PData reprAsPData(){

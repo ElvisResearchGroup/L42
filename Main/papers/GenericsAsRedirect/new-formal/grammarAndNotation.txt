@@ -3,35 +3,36 @@ T,P ::= Thisn.Cs
 
 CD  ::= C = E  // class declaration
 CV  ::= C = LV // evaluated class declaration
-D   ::= CD | t = L // declaration
+D   ::= CD | t = E // declaration
 DV  ::= CV | t = LV // evaluated-declaration
 
 L   ::= interface {Tz;; amtz;} | {Tz; CDs; mtz; K?}  // literal
 LV  ::= interface {Tz;; amtz;} | {Tz; CVs; mtz; K?}  // literal value
 Lp  ::= L  | {; Ds; ;}           // program literal
 
-amt ::= T m(Txs)  // abstract method
-mt  ::= amt | T m(Txs) e // method
+amt ::= T m(Txs) // abstract method
+mt  ::= T m(Txs) e? // method
 Tx  ::= T x // paramater-declaration
 M   ::= CD | mt // member
 Mid ::= C | m // member-id
 K   ::= constructor(Txs) // constructor
-e   ::= x | e.m(es) | this.f | new T(es) // expression
+e   ::= x | this | e.m(es) | this.x | new T(es) // expression
 
 E   ::= L  |  t  |  E <+ E    |  E(Cs=T) // library-expression
 Ec  ::= LV |  t  |  Ec <+ Ec  |  Ec(Cs=T) // compiled library-expression
 
 CtxC ::= [] | CtxC <+ E | Ec <+ CtxC | CtxC(Cs=T) // Context of library-compilation
-CtxV ::= [] | CtxV <+ E | LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
+CtxV ::= [] | CtxV <+ Ec| LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
 
 p   ::= (id = Lp)s               // program
+S   ::= Ds e // Source Code
 =====================================================================================
 
 define p(P)=LV
 -----------------------------------
 (id = Lp, p)(This0.Cs)   = Lp(Cs)
 (id = Lp, p)(Thisn+1.Cs) = p(Thisn.Cs)
-(p, id={;_, t = LV, _;;})[t] = LV[from This(#Dps)]
+(p, id={;_, t = LV, _;;})[t] = LV[from This(#p)]
 p[P] = p(P)[from P]
 
 Define Lp(Cs) = L
@@ -52,8 +53,10 @@ p.push(id) = (id = L, p)
 (id = Lp, p).top() = Lp
 
 p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
-  p = id0 = Lp0, ..., idn = Lp, _
-otherwise p.minize(P) = P
+  p = id0 = Lp0, ..., idn = Lpn, _
+  p(Thisn.Cs) = LV
+  // TODO: Check that Lpn is an LV instead?
+otherwise p.minimize(P) = P
 
 define dom(Mz) = Midz
 ===========================================

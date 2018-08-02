@@ -4,31 +4,35 @@ This0.Abstract.S id()
 class method 
 This0.Abstract.S jsEscape(This0.Abstract.S that) (
   var This0.Abstract.S tmp=that
-  Void unused58014=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b825=This0.Abstract.S.#builder()
-    Void unused58017=b825.#backslash()
-    b825
-    )), into:This0.Abstract.S.#from(builder:(
+  Void unused24700=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
     mut This0.Abstract.S.SBuilder b826=This0.Abstract.S.#builder()
-    Void unused58018=b826.#backslash()
-    Void unused58019=b826.#backslash()
+    Void unused24703=b826.#backslash()
     b826
-    )))
-  Void unused58015=tmp := tmp.replace(that:This0.Abstract.S.doubleQuote(), into:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b827=This0.Abstract.S.#builder()
-    Void unused58020=b827.#backslash()
-    b827
-    )).#plusplus(that:This0.Abstract.S.doubleQuote()))
-  Void unused58016=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
-tmp.replace(that:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b828=This0.Abstract.S.#builder()
-    Void unused58021=b828.#sQuote()
-    b828
     )), into:This0.Abstract.S.#from(builder:(
+    mut This0.Abstract.S.SBuilder b827=This0.Abstract.S.#builder()
+    Void unused24704=b827.#backslash()
+    Void unused24705=b827.#backslash()
+    b827
+    )))
+  Void unused24701=tmp := tmp.replace(that:This0.Abstract.S.doubleQuote(), into:(
+    This0.Abstract.S imm$opPar458=This0.Abstract.S.#from(builder:(
+      mut This0.Abstract.S.SBuilder b828=This0.Abstract.S.#builder()
+      Void unused24706=b828.#backslash()
+      b828
+      ))
+    This0.Abstract.S imm$opPar459=This0.Abstract.S.doubleQuote()
+    imm$opPar458.#plusplus#0left(right:imm$opPar459)
+    ))
+  Void unused24702=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
+tmp.replace(that:This0.Abstract.S.#from(builder:(
     mut This0.Abstract.S.SBuilder b829=This0.Abstract.S.#builder()
-    Void unused58022=b829.#backslash()
-    Void unused58023=b829.#sQuote()
+    Void unused24707=b829.#sQuote()
     b829
+    )), into:This0.Abstract.S.#from(builder:(
+    mut This0.Abstract.S.SBuilder b830=This0.Abstract.S.#builder()
+    Void unused24708=b830.#backslash()
+    Void unused24709=b830.#sQuote()
+    b830
     ))))
   tmp
   )
@@ -42,304 +46,323 @@ Void open(This0.Abstract.S title, This0.Abstract.S body, This0.Abstract.Size x, 
         This0.Abstract.S rcv4=(
           This0.Abstract.S.Continue rcv5=(
             This0.Abstract.S rcv6=This0.Abstract.S.#from(builder:(
-              mut This0.Abstract.S.SBuilder b830=This0.Abstract.S.#builder()
-              b830
+              mut This0.Abstract.S.SBuilder b831=This0.Abstract.S.#builder()
+              b831
               ))
             rcv6.#from(seqBuilder:(
-              mut This0.Abstract.S.SConcat b831=rcv6.#seqBuilder()
-              Void unused58024=b831.#add(that:This0.htmlHeader())
-              b831
+              mut This0.Abstract.S.SConcat b832=rcv6.#seqBuilder()
+              Void unused24710=b832.#add(that:This0.htmlHeader())
+              b832
               ))
             )
           rcv5.#from(builder:(
-            mut This0.Abstract.S.SBuilder b832=rcv5.#builder()
-            Void unused58025=b832.#left()
-            Void unused58026=b832.#T()
-            Void unused58027=b832.#I()
-            Void unused58028=b832.#T()
-            Void unused58029=b832.#L()
-            Void unused58030=b832.#E()
-            Void unused58031=b832.#right()
-            b832
+            mut This0.Abstract.S.SBuilder b833=rcv5.#builder()
+            Void unused24711=b833.#left()
+            Void unused24712=b833.#T()
+            Void unused24713=b833.#I()
+            Void unused24714=b833.#T()
+            Void unused24715=b833.#L()
+            Void unused24716=b833.#E()
+            Void unused24717=b833.#right()
+            b833
             ))
           )
         rcv4.#from(seqBuilder:(
-          mut This0.Abstract.S.SConcat b833=rcv4.#seqBuilder()
-          Void unused58032=b833.#add(that:title)
-          b833
+          mut This0.Abstract.S.SConcat b834=rcv4.#seqBuilder()
+          Void unused24718=b834.#add(that:title)
+          b834
           ))
         )
       rcv3.#from(builder:(
-        mut This0.Abstract.S.SBuilder b834=rcv3.#builder()
-        Void unused58033=b834.#left()
-        Void unused58034=b834.#divide()
-        Void unused58035=b834.#T()
-        Void unused58036=b834.#I()
-        Void unused58037=b834.#T()
-        Void unused58038=b834.#L()
-        Void unused58039=b834.#E()
-        Void unused58040=b834.#right()
-        Void unused58041=b834.#left()
-        Void unused58042=b834.#divide()
-        Void unused58043=b834.#H()
-        Void unused58044=b834.#T()
-        Void unused58045=b834.#M()
-        Void unused58046=b834.#L()
-        Void unused58047=b834.#right()
-        Void unused58048=b834.#left()
-        Void unused58049=b834.#B()
-        Void unused58050=b834.#O()
-        Void unused58051=b834.#D()
-        Void unused58052=b834.#Y()
-        Void unused58053=b834.#right()
-        b834
+        mut This0.Abstract.S.SBuilder b835=rcv3.#builder()
+        Void unused24719=b835.#left()
+        Void unused24720=b835.#divide()
+        Void unused24721=b835.#T()
+        Void unused24722=b835.#I()
+        Void unused24723=b835.#T()
+        Void unused24724=b835.#L()
+        Void unused24725=b835.#E()
+        Void unused24726=b835.#right()
+        Void unused24727=b835.#left()
+        Void unused24728=b835.#divide()
+        Void unused24729=b835.#H()
+        Void unused24730=b835.#T()
+        Void unused24731=b835.#M()
+        Void unused24732=b835.#L()
+        Void unused24733=b835.#right()
+        Void unused24734=b835.#left()
+        Void unused24735=b835.#B()
+        Void unused24736=b835.#O()
+        Void unused24737=b835.#D()
+        Void unused24738=b835.#Y()
+        Void unused24739=b835.#right()
+        b835
         ))
       )
     rcv2.#from(seqBuilder:(
-      mut This0.Abstract.S.SConcat b835=rcv2.#seqBuilder()
-      Void unused58054=b835.#add(that:body)
-      b835
+      mut This0.Abstract.S.SConcat b836=rcv2.#seqBuilder()
+      Void unused24740=b836.#add(that:body)
+      b836
       ))
     )
   rcv1.#from(builder:(
-    mut This0.Abstract.S.SBuilder b836=rcv1.#builder()
-    Void unused58055=b836.#left()
-    Void unused58056=b836.#divide()
-    Void unused58057=b836.#B()
-    Void unused58058=b836.#O()
-    Void unused58059=b836.#D()
-    Void unused58060=b836.#Y()
-    Void unused58061=b836.#right()
-    Void unused58062=b836.#left()
-    Void unused58063=b836.#divide()
-    Void unused58064=b836.#H()
-    Void unused58065=b836.#T()
-    Void unused58066=b836.#M()
-    Void unused58067=b836.#L()
-    Void unused58068=b836.#right()
-    b836
+    mut This0.Abstract.S.SBuilder b837=rcv1.#builder()
+    Void unused24741=b837.#left()
+    Void unused24742=b837.#divide()
+    Void unused24743=b837.#B()
+    Void unused24744=b837.#O()
+    Void unused24745=b837.#D()
+    Void unused24746=b837.#Y()
+    Void unused24747=b837.#right()
+    Void unused24748=b837.#left()
+    Void unused24749=b837.#divide()
+    Void unused24750=b837.#H()
+    Void unused24751=b837.#T()
+    Void unused24752=b837.#M()
+    Void unused24753=b837.#L()
+    Void unused24754=b837.#right()
+    b837
     ))
   ), x:x, y:y)
 class method 
 This0.Abstract.S htmlHeader() (
   This0.Abstract.S.Continue rcv7=(
     This0.Abstract.S rcv8=This0.Abstract.S.#from(builder:(
-      mut This0.Abstract.S.SBuilder b837=This0.Abstract.S.#builder()
-      Void unused58069=b837.#left()
-      Void unused58070=b837.#bang()
-      Void unused58071=b837.#D()
-      Void unused58072=b837.#O()
-      Void unused58073=b837.#C()
-      Void unused58074=b837.#T()
-      Void unused58075=b837.#Y()
-      Void unused58076=b837.#P()
-      Void unused58077=b837.#E()
-      Void unused58078=b837.#space()
-      Void unused58079=b837.#h()
-      Void unused58080=b837.#t()
-      Void unused58081=b837.#m()
-      Void unused58082=b837.#l()
-      Void unused58083=b837.#right()
-      Void unused58084=b837.#left()
-      Void unused58085=b837.#h()
-      Void unused58086=b837.#t()
-      Void unused58087=b837.#m()
-      Void unused58088=b837.#l()
-      Void unused58089=b837.#right()
-      Void unused58090=b837.#left()
-      Void unused58091=b837.#h()
-      Void unused58092=b837.#e()
-      Void unused58093=b837.#a()
-      Void unused58094=b837.#d()
-      Void unused58095=b837.#right()
-      Void unused58096=b837.#left()
-      Void unused58097=b837.#m()
-      Void unused58098=b837.#e()
-      Void unused58099=b837.#t()
-      Void unused58100=b837.#a()
-      Void unused58101=b837.#space()
-      Void unused58102=b837.#h()
-      Void unused58103=b837.#t()
-      Void unused58104=b837.#t()
-      Void unused58105=b837.#p()
-      Void unused58106=b837.#less()
-      Void unused58107=b837.#e()
-      Void unused58108=b837.#q()
-      Void unused58109=b837.#u()
-      Void unused58110=b837.#i()
-      Void unused58111=b837.#v()
-      Void unused58112=b837.#equal()
-      Void unused58113=b837.#dQuote()
-      Void unused58114=b837.#c()
-      Void unused58115=b837.#o()
-      Void unused58116=b837.#n()
-      Void unused58117=b837.#t()
-      Void unused58118=b837.#e()
-      Void unused58119=b837.#n()
-      Void unused58120=b837.#t()
-      Void unused58121=b837.#less()
-      Void unused58122=b837.#c()
-      Void unused58123=b837.#l()
-      Void unused58124=b837.#a()
-      Void unused58125=b837.#s()
-      Void unused58126=b837.#s()
-      Void unused58127=b837.#dQuote()
-      Void unused58128=b837.#space()
-      Void unused58129=b837.#c()
-      Void unused58130=b837.#o()
-      Void unused58131=b837.#n()
-      Void unused58132=b837.#t()
-      Void unused58133=b837.#e()
-      Void unused58134=b837.#n()
-      Void unused58135=b837.#t()
-      Void unused58136=b837.#equal()
-      Void unused58137=b837.#dQuote()
-      Void unused58138=b837.#t()
-      Void unused58139=b837.#e()
-      Void unused58140=b837.#x()
-      Void unused58141=b837.#t()
-      Void unused58142=b837.#divide()
-      Void unused58143=b837.#h()
-      Void unused58144=b837.#t()
-      Void unused58145=b837.#m()
-      Void unused58146=b837.#l()
-      Void unused58147=b837.#semicolon()
-      Void unused58148=b837.#space()
-      Void unused58149=b837.#c()
-      Void unused58150=b837.#h()
-      Void unused58151=b837.#a()
-      Void unused58152=b837.#r()
-      Void unused58153=b837.#s()
-      Void unused58154=b837.#e()
-      Void unused58155=b837.#t()
-      Void unused58156=b837.#equal()
-      Void unused58157=b837.#U()
-      Void unused58158=b837.#T()
-      Void unused58159=b837.#F()
-      Void unused58160=b837.#less()
-      Void unused58161=b837.#8()
-      Void unused58162=b837.#dQuote()
-      Void unused58163=b837.#right()
-      Void unused58164=b837.#newline()
-      Void unused58165=b837.#left()
-      Void unused58166=b837.#s()
-      Void unused58167=b837.#c()
-      Void unused58168=b837.#r()
-      Void unused58169=b837.#i()
-      Void unused58170=b837.#p()
-      Void unused58171=b837.#t()
-      Void unused58172=b837.#right()
-      Void unused58173=b837.#newline()
-      Void unused58174=b837.#newline()
-      b837
+      mut This0.Abstract.S.SBuilder b838=This0.Abstract.S.#builder()
+      Void unused24755=b838.#left()
+      Void unused24756=b838.#bang()
+      Void unused24757=b838.#D()
+      Void unused24758=b838.#O()
+      Void unused24759=b838.#C()
+      Void unused24760=b838.#T()
+      Void unused24761=b838.#Y()
+      Void unused24762=b838.#P()
+      Void unused24763=b838.#E()
+      Void unused24764=b838.#space()
+      Void unused24765=b838.#h()
+      Void unused24766=b838.#t()
+      Void unused24767=b838.#m()
+      Void unused24768=b838.#l()
+      Void unused24769=b838.#right()
+      Void unused24770=b838.#left()
+      Void unused24771=b838.#h()
+      Void unused24772=b838.#t()
+      Void unused24773=b838.#m()
+      Void unused24774=b838.#l()
+      Void unused24775=b838.#right()
+      Void unused24776=b838.#left()
+      Void unused24777=b838.#h()
+      Void unused24778=b838.#e()
+      Void unused24779=b838.#a()
+      Void unused24780=b838.#d()
+      Void unused24781=b838.#right()
+      Void unused24782=b838.#left()
+      Void unused24783=b838.#m()
+      Void unused24784=b838.#e()
+      Void unused24785=b838.#t()
+      Void unused24786=b838.#a()
+      Void unused24787=b838.#space()
+      Void unused24788=b838.#h()
+      Void unused24789=b838.#t()
+      Void unused24790=b838.#t()
+      Void unused24791=b838.#p()
+      Void unused24792=b838.#less()
+      Void unused24793=b838.#e()
+      Void unused24794=b838.#q()
+      Void unused24795=b838.#u()
+      Void unused24796=b838.#i()
+      Void unused24797=b838.#v()
+      Void unused24798=b838.#equal()
+      Void unused24799=b838.#dQuote()
+      Void unused24800=b838.#c()
+      Void unused24801=b838.#o()
+      Void unused24802=b838.#n()
+      Void unused24803=b838.#t()
+      Void unused24804=b838.#e()
+      Void unused24805=b838.#n()
+      Void unused24806=b838.#t()
+      Void unused24807=b838.#less()
+      Void unused24808=b838.#c()
+      Void unused24809=b838.#l()
+      Void unused24810=b838.#a()
+      Void unused24811=b838.#s()
+      Void unused24812=b838.#s()
+      Void unused24813=b838.#dQuote()
+      Void unused24814=b838.#space()
+      Void unused24815=b838.#c()
+      Void unused24816=b838.#o()
+      Void unused24817=b838.#n()
+      Void unused24818=b838.#t()
+      Void unused24819=b838.#e()
+      Void unused24820=b838.#n()
+      Void unused24821=b838.#t()
+      Void unused24822=b838.#equal()
+      Void unused24823=b838.#dQuote()
+      Void unused24824=b838.#t()
+      Void unused24825=b838.#e()
+      Void unused24826=b838.#x()
+      Void unused24827=b838.#t()
+      Void unused24828=b838.#divide()
+      Void unused24829=b838.#h()
+      Void unused24830=b838.#t()
+      Void unused24831=b838.#m()
+      Void unused24832=b838.#l()
+      Void unused24833=b838.#semicolon()
+      Void unused24834=b838.#space()
+      Void unused24835=b838.#c()
+      Void unused24836=b838.#h()
+      Void unused24837=b838.#a()
+      Void unused24838=b838.#r()
+      Void unused24839=b838.#s()
+      Void unused24840=b838.#e()
+      Void unused24841=b838.#t()
+      Void unused24842=b838.#equal()
+      Void unused24843=b838.#U()
+      Void unused24844=b838.#T()
+      Void unused24845=b838.#F()
+      Void unused24846=b838.#less()
+      Void unused24847=b838.#8()
+      Void unused24848=b838.#dQuote()
+      Void unused24849=b838.#right()
+      Void unused24850=b838.#newline()
+      Void unused24851=b838.#left()
+      Void unused24852=b838.#s()
+      Void unused24853=b838.#c()
+      Void unused24854=b838.#r()
+      Void unused24855=b838.#i()
+      Void unused24856=b838.#p()
+      Void unused24857=b838.#t()
+      Void unused24858=b838.#right()
+      Void unused24859=b838.#newline()
+      Void unused24860=b838.#newline()
+      b838
       ))
     rcv8.#from(seqBuilder:(
-      mut This0.Abstract.S.SConcat b838=rcv8.#seqBuilder()
-      Void unused58175=b838.#add(that:This0.Abstract.Debug.readFile(fileName:This0.Abstract.Debug.localToAbsolute(fileName:This0.Abstract.S.#from(builder:(
-        mut This0.Abstract.S.SBuilder b839=This0.Abstract.S.#builder()
-        Void unused58176=b839.#e()
-        Void unused58177=b839.#x()
-        Void unused58178=b839.#a()
-        Void unused58179=b839.#m()
-        Void unused58180=b839.#p()
-        Void unused58181=b839.#l()
-        Void unused58182=b839.#e()
-        Void unused58183=b839.#s()
-        Void unused58184=b839.#divide()
-        Void unused58185=b839.#r()
-        Void unused58186=b839.#e()
-        Void unused58187=b839.#s()
-        Void unused58188=b839.#o()
-        Void unused58189=b839.#u()
-        Void unused58190=b839.#r()
-        Void unused58191=b839.#c()
-        Void unused58192=b839.#e()
-        Void unused58193=b839.#s()
-        Void unused58194=b839.#divide()
-        Void unused58195=b839.#j()
-        Void unused58196=b839.#s()
-        Void unused58197=b839.#dot()
-        Void unused58198=b839.#j()
-        Void unused58199=b839.#s()
-        b839
+      mut This0.Abstract.S.SConcat b839=rcv8.#seqBuilder()
+      Void unused24861=b839.#add(that:This0.Abstract.Debug.readFile(fileName:This0.Abstract.Debug.localToAbsolute(fileName:This0.Abstract.S.#from(builder:(
+        mut This0.Abstract.S.SBuilder b840=This0.Abstract.S.#builder()
+        Void unused24862=b840.#e()
+        Void unused24863=b840.#x()
+        Void unused24864=b840.#a()
+        Void unused24865=b840.#m()
+        Void unused24866=b840.#p()
+        Void unused24867=b840.#l()
+        Void unused24868=b840.#e()
+        Void unused24869=b840.#s()
+        Void unused24870=b840.#divide()
+        Void unused24871=b840.#r()
+        Void unused24872=b840.#e()
+        Void unused24873=b840.#s()
+        Void unused24874=b840.#o()
+        Void unused24875=b840.#u()
+        Void unused24876=b840.#r()
+        Void unused24877=b840.#c()
+        Void unused24878=b840.#e()
+        Void unused24879=b840.#s()
+        Void unused24880=b840.#divide()
+        Void unused24881=b840.#j()
+        Void unused24882=b840.#s()
+        Void unused24883=b840.#dot()
+        Void unused24884=b840.#j()
+        Void unused24885=b840.#s()
+        b840
         )))))
-      b838
+      b839
       ))
     )
   rcv7.#from(builder:(
-    mut This0.Abstract.S.SBuilder b840=rcv7.#builder()
-    Void unused58200=b840.#newline()
-    Void unused58201=b840.#left()
-    Void unused58202=b840.#divide()
-    Void unused58203=b840.#s()
-    Void unused58204=b840.#c()
-    Void unused58205=b840.#r()
-    Void unused58206=b840.#i()
-    Void unused58207=b840.#p()
-    Void unused58208=b840.#t()
-    Void unused58209=b840.#right()
-    Void unused58210=b840.#newline()
-    b840
+    mut This0.Abstract.S.SBuilder b841=rcv7.#builder()
+    Void unused24886=b841.#newline()
+    Void unused24887=b841.#left()
+    Void unused24888=b841.#divide()
+    Void unused24889=b841.#s()
+    Void unused24890=b841.#c()
+    Void unused24891=b841.#r()
+    Void unused24892=b841.#i()
+    Void unused24893=b841.#p()
+    Void unused24894=b841.#t()
+    Void unused24895=b841.#right()
+    Void unused24896=b841.#newline()
+    b841
     ))
   )
 method 
 Void open(This0.Abstract.S html, This0.Abstract.Size x, This0.Abstract.Size y) (
-  Void unused58211=This0.Abstract.Debug.#apply(that:html)
+  Void unused24897=This0.Abstract.Debug.#apply(that:html)
   use This0.GuiPlugin check open(wName:this.id().#binaryRepr(), html:html.#binaryRepr(), x:x.#binaryRepr(), y:y.#binaryRepr()) error void
   )
 method 
 Void set(This0.Abstract.S that, This0.Abstract.S id) (
-  Void unused58212=(/*$('#Alpha').replaceWith('htmlstring')
+  Void unused24898=(/*$('#Alpha').replaceWith('htmlstring')
 */
-    This0.Abstract.S cmd=This0.Abstract.S.#from(builder:(
-      mut This0.Abstract.S.SBuilder b841=This0.Abstract.S.#builder()
-      Void unused58216=b841.#$()
-      Void unused58217=b841.#oRound()
-      Void unused58218=b841.#sQuote()
-      Void unused58219=b841.#hash()
-      b841
-      )).#plusplus(that:This0.jsEscape(that:id).#plusplus(that:This0.Abstract.S.#from(builder:(
-      mut This0.Abstract.S.SBuilder b842=This0.Abstract.S.#builder()
-      Void unused58220=b842.#sQuote()
-      Void unused58221=b842.#cRound()
-      Void unused58222=b842.#dot()
-      Void unused58223=b842.#r()
-      Void unused58224=b842.#e()
-      Void unused58225=b842.#p()
-      Void unused58226=b842.#l()
-      Void unused58227=b842.#a()
-      Void unused58228=b842.#c()
-      Void unused58229=b842.#e()
-      Void unused58230=b842.#W()
-      Void unused58231=b842.#i()
-      Void unused58232=b842.#t()
-      Void unused58233=b842.#h()
-      Void unused58234=b842.#oRound()
-      Void unused58235=b842.#sQuote()
-      b842
-      )).#plusplus(that:This0.jsEscape(that:that).#plusplus(that:This0.Abstract.S.#from(builder:(
-      mut This0.Abstract.S.SBuilder b843=This0.Abstract.S.#builder()
-      Void unused58236=b843.#sQuote()
-      Void unused58237=b843.#cRound()
-      Void unused58238=b843.#semicolon()
-      b843
-      ))))))
+    This0.Abstract.S cmd=(
+      This0.Abstract.S imm$opPar466=This0.Abstract.S.#from(builder:(
+        mut This0.Abstract.S.SBuilder b842=This0.Abstract.S.#builder()
+        Void unused24902=b842.#$()
+        Void unused24903=b842.#oRound()
+        Void unused24904=b842.#sQuote()
+        Void unused24905=b842.#hash()
+        b842
+        ))
+      This0.Abstract.S imm$opPar467=(
+        This0.Abstract.S imm$opPar464=This0.jsEscape(that:id)
+        This0.Abstract.S imm$opPar465=(
+          This0.Abstract.S imm$opPar462=This0.Abstract.S.#from(builder:(
+            mut This0.Abstract.S.SBuilder b843=This0.Abstract.S.#builder()
+            Void unused24906=b843.#sQuote()
+            Void unused24907=b843.#cRound()
+            Void unused24908=b843.#dot()
+            Void unused24909=b843.#r()
+            Void unused24910=b843.#e()
+            Void unused24911=b843.#p()
+            Void unused24912=b843.#l()
+            Void unused24913=b843.#a()
+            Void unused24914=b843.#c()
+            Void unused24915=b843.#e()
+            Void unused24916=b843.#W()
+            Void unused24917=b843.#i()
+            Void unused24918=b843.#t()
+            Void unused24919=b843.#h()
+            Void unused24920=b843.#oRound()
+            Void unused24921=b843.#sQuote()
+            b843
+            ))
+          This0.Abstract.S imm$opPar463=(
+            This0.Abstract.S imm$opPar460=This0.jsEscape(that:that)
+            This0.Abstract.S imm$opPar461=This0.Abstract.S.#from(builder:(
+              mut This0.Abstract.S.SBuilder b844=This0.Abstract.S.#builder()
+              Void unused24922=b844.#sQuote()
+              Void unused24923=b844.#cRound()
+              Void unused24924=b844.#semicolon()
+              b844
+              ))
+            imm$opPar460.#plusplus#0left(right:imm$opPar461)
+            )
+          imm$opPar462.#plusplus#0left(right:imm$opPar463)
+          )
+        imm$opPar464.#plusplus#0left(right:imm$opPar465)
+        )
+      imm$opPar466.#plusplus#0left(right:imm$opPar467)
+      )
     This0.Abstract.S x=this.executeJs(that:cmd)
-    Void unused58213=This0.Abstract.Debug.#apply(that:cmd)
-    Void unused58214=(
-      This0.Abstract.Bool cond123=x.#equalequal(that:This0.Abstract.S.#from(builder:(
-        mut This0.Abstract.S.SBuilder b844=This0.Abstract.S.#builder()
-        b844
-        ))).#bang()
+    Void unused24899=This0.Abstract.Debug.#apply(that:cmd)
+    Void unused24900=(
+      This0.Abstract.Bool cond123=(
+        This0.Abstract.S read$opPar108=This0.Abstract.S.#from(builder:(
+          mut This0.Abstract.S.SBuilder b845=This0.Abstract.S.#builder()
+          b845
+          ))
+        x.#equalequal#0left(right:read$opPar108)
+        ).#bang()
       (
-        Void unused58239=cond123.#checkTrue()
+        Void unused24925=cond123.#checkTrue()
         
-        catch exception Void catched33891 void
+        catch exception Void catched40112 void
         
         (This0.Abstract.Debug.#apply(that:x))
         )
       )
-    Void unused58215=return void
+    Void unused24901=return void
     void
     )
   
@@ -353,8 +376,8 @@ method
 This0.Abstract.S executeJs(This0.Abstract.S that) This0.Abstract.S.#from(binaryRepr:use This0.GuiPlugin check executeJs(wName:this.id().#binaryRepr(), command:that.#binaryRepr()) error void)
 method 
 mut This0.Iterator events() This0.Iterator.#apply(id:this.id(), current:This0.Abstract.S.#from(builder:(
-  mut This0.Abstract.S.SBuilder b845=This0.Abstract.S.#builder()
-  b845
+  mut This0.Abstract.S.SBuilder b846=This0.Abstract.S.#builder()
+  b846
   )))
 class method 
 mut This0 #apply(fwd This0.Abstract.S id) 
@@ -397,7 +420,7 @@ refine class method /*
 refine read method 
 This1.S toS() 
 refine read method 
-This0 #equalequal(read Any that) 
+This0 #equalequal#0left(read Any right) 
 read method 
 Void #checkTrue() exception Void 
 class method 
@@ -405,9 +428,9 @@ This0 true()
 class method 
 This0 false() 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This0 #or(This0 that) 
+This0 #or#0left(This0 right) 
 method 
 This0 #bang() 
 read method 
@@ -462,7 +485,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1 is(class This2.Concept.Classable subtype) 
 refine read method 
-This1 #equalequal(read Any that) 
+This1 #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -536,21 +559,21 @@ This0 #from(This1.S.SBuilder builder)
 refine read method 
 This1.S toS() 
 method 
-This0 #plus(This0 that) 
+This0 #plus#0left(This0 right) 
 method 
-This0 #less(This0 that) 
+This0 #less#0left(This0 right) 
 method 
-This0 #times(This0 that) 
+This0 #times#0left(This0 right) 
 method 
-This0 #divide(This0 that) 
+This0 #divide#0left(This0 right) 
 read method 
 This1.Bool equals(read This0 that) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 method 
-This1.Bool #right(This0 that) 
+This1.Bool #right#0left(This0 right) 
 method 
-This1.Bool #rightequal(This0 that) 
+This1.Bool #rightequal#0left(This0 right) 
 method 
 mut This0.Iterator vals() 
 method 
@@ -748,7 +771,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -820,7 +843,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -840,19 +863,19 @@ Any parseError(This1.S that)
 refine read method 
 This1.S toS() 
 method 
-This0 #plus(This0 that) 
+This0 #plus#0left(This0 right) 
 method 
-This0 #less(This0 that) 
+This0 #less#0left(This0 right) 
 method 
-This0 #times(This0 that) 
+This0 #times#0left(This0 right) 
 method 
-This0 #divide(This0 that) 
+This0 #divide#0left(This0 right) 
 read method 
 This1.Bool equals(read This0 that) 
 method 
-This1.Bool #right(This0 that) 
+This1.Bool #right#0left(This0 right) 
 method 
-This1.Bool #rightequal(This0 that) 
+This1.Bool #rightequal#0left(This0 right) 
 Plg: {/*@plugin
 L42.is/connected/withNumbers
 */}
@@ -902,7 +925,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -971,19 +994,19 @@ mut This0 #from(Library binaryRepr)
 read method 
 Library #binaryRepr() 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 read method 
 This1.Bool equals(read This0 that) 
 method 
-This0 #less(This0 that) 
+This0 #less#0left(This0 right) 
 method 
-This1.Bool #rightright(This0 that) 
+This1.Bool #rightright#0left(This0 right) 
 method 
-This1.Bool #rightrightequal(This0 that) 
+This1.Bool #rightrightequal#0left(This0 right) 
 method 
-This1.Bool #right(This0 that) 
+This1.Bool #right#0left(This0 right) 
 method 
 This1.Size indexOfLeft(This0 val) 
 method 
@@ -1363,7 +1386,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This1.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) }
+This2.Bool #equalequal#0left(read Any right) }
 Wrapper: {interface 
 read method 
 Any inner() }
@@ -1377,7 +1400,7 @@ mut method
 mut Any #inner() }
 Equals: {interface 
 read method 
-This2.Bool #equalequal(read Any that) }
+This2.Bool #equalequal#0left(read Any right) }
 Comparable: {interface 
 read method 
 This2.Bool greater(read Any that) }
@@ -1430,7 +1453,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 class method 
 This1.S kind() 
 read method 
@@ -1446,7 +1469,7 @@ $: {
 class method 
 This0 #apply() 
 class method 
-Library #leftrightleft(Library that) 
+Library #leftrightleft#0left(Library right) 
 class method 
 Library messageTrait() }
 Opt: {/*will be Fixed in AdamTowel02
@@ -1512,7 +1535,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 refine class method 
 This1.S kind() 
 refine read method 
@@ -1567,7 +1590,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -1653,7 +1676,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -1739,7 +1762,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -1803,7 +1826,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -1858,7 +1881,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -1924,7 +1947,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -1979,7 +2002,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 read method 
 This3.S _text() 
 read method 
@@ -2059,7 +2082,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -2130,7 +2153,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -2259,9 +2282,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1.Test that) 
+This0 #plus#0left(This1.Test right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This2.Size that, This1.Test val) 
 method 
@@ -2472,9 +2495,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1.S that) 
+This0 #plus#0left(This1.S right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This1.Size that, This1.S val) 
 method 
@@ -2530,21 +2553,21 @@ lent This0.IteratorVal vals()
 read method 
 This1.Bool contains(This1.S that) 
 method 
-This0 #less(This1.S that) 
+This0 #less#0left(This1.S right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This1.Bool #rightright(This0 that) 
+This1.Bool #rightright#0left(This0 right) 
 method 
-This1.Bool #rightrightequal(This0 that) 
+This1.Bool #rightrightequal#0left(This0 right) 
 method 
-This1.Bool #right(This1.S that) 
+This1.Bool #right#0left(This1.S right) 
 read method 
 This1.Bool equals(read This0 that) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 read method 
 This1.Size indexOfLeft(This1.S val) 
 read method 
@@ -2801,7 +2824,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 class method 
@@ -2823,7 +2846,7 @@ This1.Size nameSize()
 refine read method 
 This1.S toS() 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This1.Bool isUnique() 
 class method 
@@ -2941,7 +2964,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -3025,7 +3048,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 class method 
@@ -3152,7 +3175,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -3237,7 +3260,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
-This1.Bool #equalequal(read Any that) 
+This1.Bool #equalequal#0left(read Any right) 
 method 
 This1.Size originSize() 
 method 
@@ -3292,7 +3315,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -3427,7 +3450,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
 */
 refine read method 
@@ -3474,7 +3497,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 read method 
 This3.S _text() 
 read method 
@@ -3581,9 +3604,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This3.Size that, This1 val) 
 method 
@@ -3639,21 +3662,21 @@ lent This0.IteratorVal vals()
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This3.Bool #rightright(This0 that) 
+This3.Bool #rightright#0left(This0 right) 
 method 
-This3.Bool #rightrightequal(This0 that) 
+This3.Bool #rightrightequal#0left(This0 right) 
 method 
-This3.Bool #right(This1 that) 
+This3.Bool #right#0left(This1 right) 
 read method 
 This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -3822,7 +3845,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -3892,9 +3915,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This3.Size that, This1 val) 
 method 
@@ -3950,21 +3973,21 @@ lent This0.IteratorVal vals()
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This3.Bool #rightright(This0 that) 
+This3.Bool #rightright#0left(This0 right) 
 method 
-This3.Bool #rightrightequal(This0 that) 
+This3.Bool #rightrightequal#0left(This0 right) 
 method 
-This3.Bool #right(This1 that) 
+This3.Bool #right#0left(This1 right) 
 read method 
 This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -4080,17 +4103,17 @@ read method
 Void #close() }}}
 PUnresponsive: {
 class method 
-Library #leftrightleft(Library that) 
+Library #leftrightleft#0left(Library right) 
 class method 
 Library #apply() }
 This$Impl: {
 class method 
-Library #leftrightleft(Library that) 
+Library #leftrightleft#0left(Library right) 
 class method 
 Library #apply() }
 PlgClass: {
 class method 
-Library #leftrightleft(Library that) }
+Library #leftrightleft#0left(Library right) }
 Lib: {/*@plugin  toFix
 @pluginPart is.L42.connected.withSafeOperators.location.Lib
 */implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -4244,7 +4267,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -4314,9 +4337,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This3.Size that, This1 val) 
 method 
@@ -4372,21 +4395,21 @@ lent This0.IteratorVal vals()
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This3.Bool #rightright(This0 that) 
+This3.Bool #rightright#0left(This0 right) 
 method 
-This3.Bool #rightrightequal(This0 that) 
+This3.Bool #rightrightequal#0left(This0 right) 
 method 
-This3.Bool #right(This1 that) 
+This3.Bool #right#0left(This1 right) 
 read method 
 This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -4603,7 +4626,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -4673,9 +4696,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This3.Size that, This1 val) 
 method 
@@ -4731,21 +4754,21 @@ lent This0.IteratorVal vals()
 read method 
 This3.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This3.Bool #rightright(This0 that) 
+This3.Bool #rightright#0left(This0 right) 
 method 
-This3.Bool #rightrightequal(This0 that) 
+This3.Bool #rightrightequal#0left(This0 right) 
 method 
-This3.Bool #right(This1 that) 
+This3.Bool #right#0left(This1 right) 
 read method 
 This3.Bool equals(read This0 that) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 read method 
 This3.Size indexOfLeft(This1 val) 
 read method 
@@ -4886,7 +4909,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine method 
 This2.Size originSize() 
 refine method 
@@ -4993,7 +5016,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 refine read method /*
   Extracts the class singleton from another instance of this class
   */class This0 class() }
@@ -5088,7 +5111,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 refine read method /*
   Extracts the class singleton from another instance of this class
   */class This0 class() 
@@ -5159,9 +5182,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This4.Size that, This1 val) 
 method 
@@ -5217,21 +5240,21 @@ lent This0.IteratorVal vals()
 read method 
 This4.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This4.Bool #rightright(This0 that) 
+This4.Bool #rightright#0left(This0 right) 
 method 
-This4.Bool #rightrightequal(This0 that) 
+This4.Bool #rightrightequal#0left(This0 right) 
 method 
-This4.Bool #right(This1 that) 
+This4.Bool #right#0left(This1 right) 
 read method 
 This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -5436,7 +5459,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 refine read method /*
   Extracts the class singleton from another instance of this class
   */class This0 class() 
@@ -5507,9 +5530,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This4.Size that, This1 val) 
 method 
@@ -5565,21 +5588,21 @@ lent This0.IteratorVal vals()
 read method 
 This4.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This4.Bool #rightright(This0 that) 
+This4.Bool #rightright#0left(This0 right) 
 method 
-This4.Bool #rightrightequal(This0 that) 
+This4.Bool #rightrightequal#0left(This0 right) 
 method 
-This4.Bool #right(This1 that) 
+This4.Bool #right#0left(This1 right) 
 read method 
 This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -5784,7 +5807,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 refine read method /*
   Extracts the class singleton from another instance of this class
   */class This0 class() 
@@ -5855,9 +5878,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This4.Size that, This1 val) 
 method 
@@ -5913,21 +5936,21 @@ lent This0.IteratorVal vals()
 read method 
 This4.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This4.Bool #rightright(This0 that) 
+This4.Bool #rightright#0left(This0 right) 
 method 
-This4.Bool #rightrightequal(This0 that) 
+This4.Bool #rightrightequal#0left(This0 right) 
 method 
-This4.Bool #right(This1 that) 
+This4.Bool #right#0left(This1 right) 
 read method 
 This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -6068,7 +6091,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 Lib: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
 */implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
@@ -6114,7 +6137,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() }
 Unavailable: {/*@plugin  toFix 
@@ -6160,7 +6183,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() }
 Binded: {/*@plugin  toFix 
@@ -6213,7 +6236,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() }
 Missing: {/*@plugin  toFix 
@@ -6259,7 +6282,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() }}}
 Doc: {/*user will need typecase to discover precise type, location() not refined
@@ -6352,7 +6375,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method /*
   Extracts the class singleton from another instance of this class
   */class This0 class() 
@@ -6403,7 +6426,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
-This3.Bool #equalequal(read Any that) 
+This3.Bool #equalequal#0left(read Any right) 
 refine read method 
 class This0 class() 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
@@ -6473,9 +6496,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1 that) 
+This0 #plus#0left(This1 right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This4.Size that, This1 val) 
 method 
@@ -6531,21 +6554,21 @@ lent This0.IteratorVal vals()
 read method 
 This4.Bool contains(This1 that) 
 method 
-This0 #less(This1 that) 
+This0 #less#0left(This1 right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This4.Bool #rightright(This0 that) 
+This4.Bool #rightright#0left(This0 right) 
 method 
-This4.Bool #rightrightequal(This0 that) 
+This4.Bool #rightrightequal#0left(This0 right) 
 method 
-This4.Bool #right(This1 that) 
+This4.Bool #right#0left(This1 right) 
 read method 
 This4.Bool equals(read This0 that) 
 refine read method 
-This4.Bool #equalequal(read Any that) 
+This4.Bool #equalequal#0left(read Any right) 
 read method 
 This4.Size indexOfLeft(This1 val) 
 read method 
@@ -6725,7 +6748,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -6738,7 +6761,7 @@ ErrorW: {
 class method 
 Library trait() 
 class method 
-Library #leftrightleft(Library that) }
+Library #leftrightleft#0left(Library right) }
 ParseFail: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail
 @plugin is.L42.connected.withSafeOperators
 */implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
@@ -6782,7 +6805,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6834,7 +6857,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6886,7 +6909,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6938,7 +6961,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6994,7 +7017,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7050,7 +7073,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7104,7 +7127,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7160,7 +7183,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7212,7 +7235,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7264,7 +7287,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7316,7 +7339,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7341,7 +7364,7 @@ Void #exceptionIf(Library binaryRepr) exception This0
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 class method 
-Library #leftrightleft(Library that) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit 
+Library #leftrightleft#0left(Library right) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit 
 class method 
 Library main(Library that) exception This1.UnresolvedOverloading, This1.ClassUnfit, This1.MethodUnfit }
 Compose: {/*@plugin  toFix 
@@ -7380,14 +7403,14 @@ This2.Path dest()
 class method 
 This0 #apply(This2.Path src, This2.Path dest) 
 method 
-Library #leftrightleft(Library that) exception This1.PathUnfit, This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation }
+Library #leftrightleft#0left(Library right) exception This1.PathUnfit, This1.MethodClash, This1.ClassClash, This1.SubtleSubtypeViolation }
 HideClass: {
 method 
 This2.Path src() 
 class method 
 This0 #apply(This2.Path src) 
 method 
-Library #leftrightleft(Library that) exception This1.PathUnfit, This1.ClassUnfit }
+Library #leftrightleft#0left(Library right) exception This1.PathUnfit, This1.ClassUnfit }
 PlgAbstractClass: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.AbstractClass
 */
@@ -7407,7 +7430,7 @@ This2.Path src()
 class method 
 This0 #apply(This2.Path src) 
 method 
-Library #leftrightleft(Library that) exception This1.PathUnfit, This1.PrivacyCoupuled }
+Library #leftrightleft#0left(Library right) exception This1.PathUnfit, This1.PrivacyCoupuled }
 PlgToAbstract: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.ToAbstract
 */
@@ -7433,7 +7456,7 @@ This2.Selector src()
 class method 
 This0 #apply(This2.Selector src) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit }
+Library #leftrightleft#0left(Library right) exception This1.SelectorUnfit }
 ToAbstractDest: {
 method 
 This2.Selector src() 
@@ -7442,7 +7465,7 @@ This2.Selector dest()
 class method 
 This0 #apply(This2.Selector src, This2.Selector dest) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.MethodClash }
+Library #leftrightleft#0left(Library right) exception This1.SelectorUnfit, This1.MethodClash }
 ToAbstractPath: {
 method 
 This2.Path path() 
@@ -7451,7 +7474,7 @@ This2.Selector src()
 class method 
 This0 #apply(This2.Path path, This2.Selector src) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.PathUnfit }
+Library #leftrightleft#0left(Library right) exception This1.SelectorUnfit, This1.PathUnfit }
 ToAbstractPathDest: {
 method 
 This2.Path path() 
@@ -7462,7 +7485,7 @@ This2.Selector dest()
 class method 
 This0 #apply(This2.Path path, This2.Selector src, This2.Selector dest) 
 method 
-Library #leftrightleft(Library that) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash }
+Library #leftrightleft#0left(Library right) exception This1.SelectorUnfit, This1.PathUnfit, This1.MethodClash }
 PlgRedirect: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
 */
@@ -7484,7 +7507,7 @@ class Any dest()
 class method 
 This0 #apply(This2.Path src, class Any dest) 
 method 
-Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
+Library #leftrightleft#0left(Library right) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
 RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 refine read method 
@@ -7531,7 +7554,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -7579,7 +7602,7 @@ This2.Location.Type.RefTo into()
 class method 
 This0 #apply(This2.Path src, This2.Location.Type.RefTo into) 
 method 
-Library #leftrightleft(Library that) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.ClassClash, This1.PathUnfit, This1.RefToUnfit, This1.SubtleSubtypeViolation }
+Library #leftrightleft#0left(Library right) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.ClassClash, This1.PathUnfit, This1.RefToUnfit, This1.SubtleSubtypeViolation }
 PlgMethod: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.refactor.RenameMethods
 */
@@ -7613,7 +7636,7 @@ This1.PlgMethod inner()
 class method 
 mut This0 #apply(This1.PlgMethod inner) 
 read method 
-Library #leftrightleft(Library that) exception This1.PathUnfit, This1.SelectorUnfit, This1.MethodClash, This1.ClassUnfit 
+Library #leftrightleft#0left(Library right) exception This1.PathUnfit, This1.SelectorUnfit, This1.MethodClash, This1.ClassUnfit 
 class method 
 mut This0 #seqBuilder() 
 class method 
@@ -7675,11 +7698,11 @@ This2.Selector into()
 class method 
 This0 #apply(This2.Selector that, This2.Selector and, This2.Path of, This2.S over, This2.Selector into) 
 method 
-Library #leftrightleft(Library that) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }}
+Library #leftrightleft#0left(Library right) exception This1.MethodClash, This1.PathUnfit, This1.SelectorUnfit }}
 Optimize: {
 RemoveUnreachableCode: {
 class method 
-Library #leftrightleft(Library that) }}
+Library #leftrightleft#0left(Library right) }}
 Opt: {
 class method 
 Library #apply(class Any that) 
@@ -7703,7 +7726,9 @@ mut This1.Composers.RenameMethods openMaps()
 mut method 
 mut This1.Refactor2.Method close() 
 read method 
-This1.Composers.Libs inputs() 
+read This1.Composers.Libs inputs() 
+mut method 
+mut This1.Composers.Libs #inputs() 
 read method 
 Library input() 
 read method 
@@ -7715,7 +7740,7 @@ This1.Location.Lib.List l0ns()
 read method 
 This1.Composers.Selectorss sels() 
 class method 
-mut This0 #apply(This1.Composers.Libs libs, Library lib0) 
+mut This0 #apply(mut This1.Composers.Libs libs, Library lib0) 
 mut method 
 mut This1.Refactor2.Method open(This1.Size that) 
 mut method 
@@ -7727,7 +7752,7 @@ class This1.Path #default##apply(Void patch)
 class method 
 mut This0.Patcher #apply(This1.Path patch) 
 class method 
-mut This0 #apply(mut This1.Composers.RenameMethods openMaps, mut This1.Refactor2.Method close, This1.Composers.Libs inputs, Library input, This1.Location.Lib.List ls, This1.Location.Lib l0, This1.Location.Lib.List l0ns, This1.Composers.Selectorss sels) 
+mut This0 #apply(fwd mut This1.Composers.RenameMethods openMaps, fwd mut This1.Refactor2.Method close, fwd mut This1.Composers.Libs inputs, fwd Library input, fwd This1.Location.Lib.List ls, fwd This1.Location.Lib l0, fwd This1.Location.Lib.List l0ns, fwd This1.Composers.Selectorss sels) 
 mut method 
 Void op(This1.Path p, This1.Location.Method m, This1.Size i) 
 Over: {
@@ -7748,7 +7773,9 @@ mut This2.Composers.RenameMethods openMaps()
 mut method 
 mut This2.Refactor2.Method close() 
 read method 
-This2.Composers.Libs inputs() 
+read This2.Composers.Libs inputs() 
+mut method 
+mut This2.Composers.Libs #inputs() 
 read method 
 Library input() 
 read method 
@@ -7760,7 +7787,7 @@ This2.Location.Lib.List l0ns()
 read method 
 This2.Composers.Selectorss sels() 
 class method 
-mut This0 #apply(This2.Composers.Libs libs, Library lib0) 
+mut This0 #apply(mut This2.Composers.Libs libs, Library lib0) 
 mut method 
 mut This2.Refactor2.Method open(This2.Size that) 
 mut method 
@@ -7772,7 +7799,7 @@ class This2.Path #default##apply(Void patch)
 class method 
 mut This0.Patcher #apply(This2.Path patch) 
 class method 
-mut This0 #apply(mut This2.Composers.RenameMethods openMaps, mut This2.Refactor2.Method close, This2.Composers.Libs inputs, Library input, This2.Location.Lib.List ls, This2.Location.Lib l0, This2.Location.Lib.List l0ns, This2.Composers.Selectorss sels) 
+mut This0 #apply(fwd mut This2.Composers.RenameMethods openMaps, fwd mut This2.Refactor2.Method close, fwd mut This2.Composers.Libs inputs, fwd Library input, fwd This2.Location.Lib.List ls, fwd This2.Location.Lib l0, fwd This2.Location.Lib.List l0ns, fwd This2.Composers.Selectorss sels) 
 mut method 
 Void op(This2.Path p, This2.Location.Method m, This2.Size i) 
 Decorator: {
@@ -7782,8 +7809,8 @@ mut method
 mut This3.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
-method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation 
+mut method 
+Library #leftrightleft#0left(Library right) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation 
 method 
 Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
@@ -7791,8 +7818,8 @@ read method
 This3.Path patch() 
 class method 
 mut This0 #apply(This3.Path patch) 
-method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
+mut method 
+Library #leftrightleft#0left(Library right) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
 Override: {
 mut method 
 Void fillMaps() 
@@ -7811,7 +7838,9 @@ mut This2.Composers.RenameMethods openMaps()
 mut method 
 mut This2.Refactor2.Method close() 
 read method 
-This2.Composers.Libs inputs() 
+read This2.Composers.Libs inputs() 
+mut method 
+mut This2.Composers.Libs #inputs() 
 read method 
 Library input() 
 read method 
@@ -7823,7 +7852,7 @@ This2.Location.Lib.List l0ns()
 read method 
 This2.Composers.Selectorss sels() 
 class method 
-mut This0 #apply(This2.Composers.Libs libs, Library lib0) 
+mut This0 #apply(mut This2.Composers.Libs libs, Library lib0) 
 mut method 
 mut This2.Refactor2.Method open(This2.Size that) 
 mut method 
@@ -7835,7 +7864,7 @@ class This2.Path #default##apply(Void patch)
 class method 
 mut This0.Patcher #apply(This2.Path patch) 
 class method 
-mut This0 #apply(mut This2.Composers.RenameMethods openMaps, mut This2.Refactor2.Method close, This2.Composers.Libs inputs, Library input, This2.Location.Lib.List ls, This2.Location.Lib l0, This2.Location.Lib.List l0ns, This2.Composers.Selectorss sels) 
+mut This0 #apply(fwd mut This2.Composers.RenameMethods openMaps, fwd mut This2.Refactor2.Method close, fwd mut This2.Composers.Libs inputs, fwd Library input, fwd This2.Location.Lib.List ls, fwd This2.Location.Lib l0, fwd This2.Location.Lib.List l0ns, fwd This2.Composers.Selectorss sels) 
 mut method 
 Void op(This2.Path p, This2.Location.Method m, This2.Size i) 
 Decorator: {
@@ -7845,8 +7874,8 @@ mut method
 mut This3.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This3.Composers.Libs inner) 
-method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation 
+mut method 
+Library #leftrightleft#0left(Library right) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation 
 method 
 Library foldLeft(Library resolver) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation }
 Patcher: {
@@ -7854,8 +7883,8 @@ read method
 This3.Path patch() 
 class method 
 mut This0 #apply(This3.Path patch) 
-method 
-Library #leftrightleft(Library that) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
+mut method 
+Library #leftrightleft#0left(Library right) exception This3.Refactor2.MethodClash, This3.Refactor2.ClassClash, This3.Refactor2.SubtleSubtypeViolation, This3.Refactor2.PathUnfit, This3.Refactor2.SelectorUnfit, This3.Refactor2.ClassUnfit, This3.Location.NotAvailable }}
 Decorator: {
 read method 
 read This2.Composers.Libs inner() 
@@ -7863,8 +7892,8 @@ mut method
 mut This2.Composers.Libs #inner() 
 class method 
 mut This0 #apply(mut This2.Composers.Libs inner) 
-method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation 
+mut method 
+Library #leftrightleft#0left(Library right) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation 
 method 
 Library foldLeft(Library resolver) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation }
 Patcher: {
@@ -7872,8 +7901,8 @@ read method
 This2.Path patch() 
 class method 
 mut This0 #apply(This2.Path patch) 
-method 
-Library #leftrightleft(Library that) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit, This2.Location.NotAvailable }}
+mut method 
+Library #leftrightleft#0left(Library right) exception This2.Refactor2.MethodClash, This2.Refactor2.ClassClash, This2.Refactor2.SubtleSubtypeViolation, This2.Refactor2.PathUnfit, This2.Refactor2.SelectorUnfit, This2.Refactor2.ClassUnfit, This2.Location.NotAvailable }}
 Collections: {
 class method 
 Library vector(class Any ofMut) 
@@ -7929,7 +7958,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -8099,7 +8128,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -8244,7 +8273,7 @@ class method
 Library #apply() }}
 K: {
 class method 
-Library #leftrightleft(Library that) exception This1.Refactor2.ClassUnfit 
+Library #leftrightleft#0left(Library right) exception This1.Refactor2.ClassUnfit 
 PlgK: {/*@plugin is.L42.connected.withSafeOperators
 @pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
 */
@@ -8255,12 +8284,15 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 class method 
-Library makeKJ(Library that, This2.Path path, This2.Bool isFwd) 
+Library makeKJ(Library that, This2.Path path, This2.Bool immK, This2.Bool isFwd) 
 class method 
-Library #pluginUnresponsive(Library binaryRepr) }}
+Library #pluginUnresponsive(Library binaryRepr) }
+Imm: {
+class method 
+Library #leftrightleft#0left(Library right) exception This2.Refactor2.ClassUnfit }}
 Alphanumeric: {
 class method 
-Library #leftrightleft(Library that) exception This0.Fail 
+Library #leftrightleft#0left(Library right) exception This0.Fail 
 ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 refine read method 
@@ -8307,7 +8339,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -8393,7 +8425,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -8444,14 +8476,14 @@ This1.Url fileName()
 class method 
 This0 #apply(This1.Url fileName) 
 method 
-Library #leftrightleft(Library that) 
+Library #leftrightleft#0left(Library right) 
 SafeOperatorsAccess:/*@_private
 */ {/*@plugin
 L42.is/connected/withSafeOperators
 */}}
 Composers: {/*
 Main feature of Composers:
-you implement an 
+you implement an
   mut method Void op(Path p, Location.Method m, Size i)
        op(p,meth,i) for example can be
          s=meth.selector()
@@ -8462,7 +8494,7 @@ you implement an
 class method 
 Library composerTrait() 
 class method 
-Library #leftrightleft(Library that) exception This1.Refactor2.MethodClash, This1.Refactor2.ClassClash, This1.Refactor2.SubtleSubtypeViolation 
+read Library #leftrightleft#0left(Library right) exception This1.Refactor2.MethodClash, This1.Refactor2.ClassClash, This1.Refactor2.SubtleSubtypeViolation 
 class method 
 This1.Location.Lib.List filterClash(This1.Location.Lib.List ls) 
 class method 
@@ -8540,9 +8572,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This2.Selector that) 
+This0 #plus#0left(This2.Selector right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This2.Size that, This2.Selector val) 
 method 
@@ -8598,21 +8630,21 @@ lent This0.IteratorVal vals()
 read method 
 This2.Bool contains(This2.Selector that) 
 method 
-This0 #less(This2.Selector that) 
+This0 #less#0left(This2.Selector right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This2.Bool #rightright(This0 that) 
+This2.Bool #rightright#0left(This0 right) 
 method 
-This2.Bool #rightrightequal(This0 that) 
+This2.Bool #rightrightequal#0left(This0 right) 
 method 
-This2.Bool #right(This2.Selector that) 
+This2.Bool #right#0left(This2.Selector right) 
 read method 
 This2.Bool equals(read This0 that) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.Size indexOfLeft(This2.Selector val) 
 read method 
@@ -8793,9 +8825,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This1.Selectors that) 
+This0 #plus#0left(This1.Selectors right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This2.Size that, This1.Selectors val) 
 method 
@@ -8851,21 +8883,21 @@ lent This0.IteratorVal vals()
 read method 
 This2.Bool contains(This1.Selectors that) 
 method 
-This0 #less(This1.Selectors that) 
+This0 #less#0left(This1.Selectors right) 
 method 
-This0 #lessless(This0 that) 
+This0 #lessless#0left(This0 right) 
 method 
-This0 #and(This0 that) 
+This0 #and#0left(This0 right) 
 method 
-This2.Bool #rightright(This0 that) 
+This2.Bool #rightright#0left(This0 right) 
 method 
-This2.Bool #rightrightequal(This0 that) 
+This2.Bool #rightrightequal#0left(This0 right) 
 method 
-This2.Bool #right(This1.Selectors that) 
+This2.Bool #right#0left(This1.Selectors right) 
 read method 
 This2.Bool equals(read This0 that) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.Size indexOfLeft(This1.Selectors val) 
 read method 
@@ -9064,9 +9096,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(This2.Refactor2.Method that) 
+This0 #plus#0left(This2.Refactor2.Method right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This2.Size that, This2.Refactor2.Method val) 
 method 
@@ -9299,9 +9331,9 @@ Void removeLeft()
 mut method 
 Void removeRight() 
 method 
-This0 #plus(Library that) 
+This0 #plus#0left(Library right) 
 method 
-This0 #plusplus(This0 that) 
+This0 #plusplus#0left(This0 right) 
 method 
 This0 with(This2.Size that, Library val) 
 method 
@@ -9447,7 +9479,7 @@ Load: {/*shape of a loadable library:
 class method 
 Library cacheTowel() 
 class method 
-Library #leftrightleft(Library that) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
+Library #leftrightleft#0left(Library right) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
 ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
 */
 refine read method 
@@ -9494,7 +9526,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -9580,7 +9612,7 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
-This2.Bool #equalequal(read Any that) 
+This2.Bool #equalequal#0left(read Any right) 
 read method 
 This2.S _text() 
 read method 
@@ -9636,7 +9668,7 @@ Library exposeAsLibrary(Library that, This2.Path path) exception This2.Refactor2
 class method 
 Void checkTargetExists(Library that, This2.Path path) exception This2.Refactor2.PathUnfit 
 method 
-Library #leftrightleft(Library that) exception This2.Refactor2.PathUnfit, This2.Refactor2.PrivacyCoupuled, This2.Location.NotAvailable }}}
+Library #leftrightleft#0left(Library right) exception This2.Refactor2.PathUnfit, This2.Refactor2.PrivacyCoupuled, This2.Location.NotAvailable }}}
 GuiPlugin: {/*@plugin
 L42.is/connected/withHtml
 */}
@@ -9649,13 +9681,13 @@ read method
 This1.Abstract.S current() 
 class method 
 This1.Abstract.S auxFetchEvent(This1.Abstract.S id) exception Void (
-  Void unused58240=(
+  Void unused24926=(
     Library s=use This1.GuiPlugin check eventPending(wName:id.#binaryRepr()) exception void
     
     catch error Library x exception void
     
     (
-      Void unused58241=return This1.Abstract.S.#from(binaryRepr:s)
+      Void unused24927=return This1.Abstract.S.#from(binaryRepr:s)
       void
       )
     )
@@ -9668,9 +9700,9 @@ CurlyBlock-Should be unreachable code
   )
 mut method 
 Void #next() exception Void (
-  Void unused58242=(
+  Void unused24928=(
     This1.Abstract.S s=This0.auxFetchEvent(id:this.id())
-    Void unused58243=return this.current(that:s)
+    Void unused24929=return this.current(that:s)
     void
     )
   

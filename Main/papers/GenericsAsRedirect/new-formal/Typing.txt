@@ -6,20 +6,19 @@ p |- Ok:
    forall P in Pz:
         p.minimize(p[P].Pz) subseteq p.minimize(Pz)
 
-       forall T m(Txs) in p[P].mt:
-            T m(Txs) e? in mtz
-            for some e?
+       forall T m(Txs) in p[P].mtz:
+            T m(Txs) _ in mtz
 
    forall T m(Txs) e? in mtz:
-        p |- T, Txs.Ts : ok
+        p |- T, Txs.Ts : Ok
         if e? = e:
             p; Txs |- e : T
 
    if K? = K:
        p |- K.Txs.Ts : Ok
 
-   forall id' = LV in DVs
-        id' = LV, p |- Ok
+   forall id = LV in DVs
+        id = LV, p |- Ok
 
 Define p |- Ts : Ok
 =================================
@@ -32,18 +31,20 @@ Define p; Txs |- e : T
 ----------------------- T x in Txs
    p; Txs |- x : T
 
+(this)
+-------------------------------
+   p; Txs |- this : This0
 
 (call)
-   p; Txs |- e1 : T1
+   p; Txs |- e0 : T0
    ...
    p; Txs |- en : Tn
-   p; Txs |- e : T
------------------------------------  T' m(T1 x1 ... Tn xn) e? in p(T)
-   p; Txs |- e.m(e1 ... en) : T'
+-----------------------------------  T' m(T1 x1 ... Tn xn) _ in p(T0)
+   p; Txs |- e0.m(e1 ... en) : T'
 
 (field)
------------------------------------  p.top().K = constructor(_ T f _)
-   p; Txs |- this.f : T
+-----------------------------------  p(This0).K = constructor(_ T x _)
+   p; Txs |- this.x : T
 
 
 (new)
@@ -57,4 +58,10 @@ Define p; Txs |- e : T
 (sub)
    p; Txs |- e : T
 -----------------------------------  T' in p(T).Pz
+   p; Txs |- e : T'
+
+   
+(equiv)
+   p; Txs |- e : T
+-----------------------------------  p.minimize(T) = p.minimize(T')
    p; Txs |- e : T'
