@@ -33,8 +33,6 @@ define p(P)=LV
 -----------------------------------
 (; _, C = L, _)(This0.C.Cs)   = L(Cs)
 (id = L, p)(This0.Cs)   = L(Cs)
-(id = L, p)(This0.Cs)   = L(Cs)
-(id = L, p)(This0.Cs)   = L(Cs)
 (id = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
 (DLs; _, t = LV, _)[t] = LV[from This(#DLs)]
 p[P] = p(P)[from P]

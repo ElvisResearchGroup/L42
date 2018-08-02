@@ -1,20 +1,20 @@
 Define Ds e --> DVs e'
 ================================================================           
             DVs' |- Ok
-            D; DVs' ==> t = D'; DVs'      DVs' subsetof DVs
-(compile)-------------------------------- for some type t
-                 DVs D Ds e --> DVs D' Ds e
+            D; DVs' ==> D'; DVs'
+(compile)-------------------------------- DVs' subsetof DVs
+            DVs D Ds e --> DVs D' Ds e
 
             Dvs |- Ok
             Dvs |- e : T
-            DVs | e --> e' for fresh t
+            DVs | e --> e'
 (main)---------------------------------- for some type T
-                   DVs e --> DVs e'
+            DVs e --> DVs e'
 
 Define p ==> p'
 =========================================================
         Ctxp[id = Ec] | Ec --> Ec'
-(top) -----------------------------
+(top) -----------------------------------
         Ctxp[id = Ec] ==> Ctxp[id = Ec']
 
        id = L, Ctxp[id = CtxC[L]] ==> id = L', Ctxp[id = CtxC[L]]
