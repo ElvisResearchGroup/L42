@@ -1012,8 +1012,63 @@ A ={
         B = {}
         X = ({ This2.A.B m()} <+ { This1.B m()})
     }(B=T)
-    
+
 t = { A = ... }
 A' = { B = {} X = ...}
 F = LV
     where LV = { This2.A.B m()} <+ { This1.B m()}
+
+
+
+================================================
+p |- Mz + Mz' = Mz" // elena
+	dom(Mz") = dom(Mz) U dom(Mz')
+
+	if Mid in dom(Mz)\dom(Mz'):
+		Mz"(Mid) = Mz(Mid)
+	if Mid in dom(Mz')\dom(Mz):
+		Mz"(Mid) = Mz'(Mid)
+	if Mid in dom(Mz) intersect dom(Mz'):
+		Mz"(Mid) = p |- Mz(Mid) + Mz'(Mid)
+======================================//elena->marco
+Mz1 <+p Mz2 = Mz1\dom(Mz2), Mz2\dom(Mz1), M1..Mn
+  Mid1..Midn=dom(Mz) intersect dom(Mz')
+  Mz1(Midi) <+p Mz2(Midi) = Mi
+
+Mz <+p Mz' = M1 <+p M1', ..., Mn <+p Mn', Mz1\dom(Mz2), Mz2\dom(Mz1)
+	Mi = Mz(Mid), Mi' = Mz'(Mid)
+		for some Mid
+
+Define p |- Mz <+ Mz' = Mz" // new elana->isaac
+-------------------------------
+
+	M in Mz" iff p |- M in Mz"
+------------------------- forall M
+	p |- Mz + Mz' = Mz"
+
+	Mz(M.Mid) = M
+-------------------- M.Id not in dom(Mz')
+	p |- M in Mz <+ Mz'
+
+
+	Mz'(M.Mid) = M
+----------------------- M.Id not in dom(Mz)
+	p |- M in Mz + Mz'
+
+
+	p |- Mz(M.Mid) + Mz'(M.Mid) = M
+--------------------------------------------
+	p |- M in Mz + Mz'
+=========================================
+
+Define p |+ Mz <+ Mz = Mz // Shuffling
+-----------------------------------------
+    p |- Mz <+ Mz' = Mz"
+----------------------------------- M.Id notin dom(Mz')
+    p |- (M, Mz) <+ Mz' = M, Mz"
+
+    p |- Mz <+ Mz'
+------------------------------------
+	p |- (M, Mz) <+ (M', Mz') = M <+ M',
+	M.Id = M'.Id
+=================================

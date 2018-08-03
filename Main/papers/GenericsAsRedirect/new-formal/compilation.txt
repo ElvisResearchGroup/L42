@@ -1,54 +1,62 @@
-Define Ds e --> DVs e'
+Define Ds e --> Ds' e'
 ================================================================
             DVs' |- Ok
-            empty; DVs'; ToC(id) | E --> E'
+            empty; DVs'; id | E --> E'
 (compile)---------------------------------------- DVs' subsetof DVs
             DVs id = E Ds e --> DVs id = E' Ds e
 
-            Dvs |- Ok
-            Dvs |- e : T
-            DVs | e --> e'
+            DVs |- Ok
+            DVs |- e : T
+            DVs |- e --> e'
 (main)---------------------------------- for some type T
             DVs e --> DVs e'
 
-Define p; C | E --> E'
+Define p; id |- E --> E'
 =========================================================
-
-       C = CtxL[C' = E], p; C' | E --> E'
-(L) --------------------------------------------- // TODO use fresh C'?
-      p; C | CtxL[C' = E] ---> CtxL[C' = E']
-
-          p; C | E --> E'
+          p; id |- E --> E'
 (CtxV) ----------------------------------------------
-          p; C | CtxV[E] --> CtxV[E']
+          p; id |- CtxV[E] --> CtxV[E']
+
+       id = L[C = E], p; C |- E --> E'
+(L) --------------------------------------------- // TODO use fresh C?
+      p; id |- L[C = E] ---> L[C = E']
 
 (trait) -----------------------------------
-          p; C | t -> p[t]
+          p; id |- t -> p[t]
 
-         C' = LV3, p |- LV1 <+ LV2 = LV3
+         LV1 <+p' LV2 = LV3                  p' = C' = LV3, p
 (sum) -------------------------------------- for fresh C'
-        p; C | LV1 <+ LV2 --> LV3
+        p; id |- LV1 <+ LV2 --> LV3
 
             // TODO: Inline and de-42 redirect formalism
 (redirect) ------------------------------------LV'=redirect(p, LV, Cs, P)
-            p; C | LV(Cs=P) -> LV'
+            p; id |- LV(Cs=P) -> LV'
 
-Define p |- LV1 <+ LV2 = LV3
+Define L1 <+p L2 = L3
 ========================================================================================
-p |- {Tz1; CVz1; mtz1; K?1} <+ {Tz2; CVz2; mtz2; K?2} = {Tz; CVz; mtz; K?}
-  Tz = minimize(p; Tz1 U Tz2)
-  p |- CVz1,mtz1 + CVz2,mtz2 = CVz,mtz
+{Tz1; Mz1; K?1} <+p {Tz2; Mz2; K?2} = {Tz; Mz; K?}
+  Tz = p.minimize(Tz1 U Tz2)
+  Mz1 <+p Mz1 = Mz
   {empty, K?1, K?2} = {empty, K?} //may be too sophisticated?
 
-p|- interface{Tz1;; amtz,amtz';} <+ interface?{Tz2;;amtz;} = interface {Tz;;amtz,amtz';}
-  Tz = minimize(p; Tz1 U Tz2)
+interface{Tz1; amtz,amtz';} <+p interface?{Tz2;amtz;} = interface {Tz;amtz,amtz';}
+  Tz = p.minimize(Tz1 U Tz2)
   if interface? = interface then amtz'=empty
 
-p |- Mz + Mz' = Mz' + Mz
-p |- Mz + empty = Mz
-p |- (M, Mz) + Mz' = M, (Mz + Mz')
-    M.Mid not in dom(Mz')
+Define Mz <+p Mz' = Mz"
+------------------------------------------
+M, Mz <+p M', Mz' = M <+p M', Mz <+p Mz
+	//note: only defined when M.Mid = M'.Mid
 
-p |- (T m(Txs) e?, Mz) + (T m(Txs), Mz') = T m(Txs) e?, (Mz + Mz')
-p |- (C = LV, Mz) + (C = LV', Mz')      = C = LV", (Mz + Mz'):
-    p.push(C) |- LV <+ LV' = LV"
+Mz <+p Mz' = Mz, Mz':
+	dom(Mz) disjoint dom(Mz')
+
+Define M <+p M' = M"
+-----------------------------------------
+T' m(Txs') e? <+p T m(Txs) e = T m(Txs) e
+	T', Txs'.Ts =p Ts, Txs
+
+T' m(Txs') e? <+p T m(Txs) = T m(Txs) e?
+	T', Txs'.Ts =p Ts, Txs
+
+(C = L) <+p (C = L') = L <+p.push(C) L'

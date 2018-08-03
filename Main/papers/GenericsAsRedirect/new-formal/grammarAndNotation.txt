@@ -7,32 +7,26 @@ D   ::= id = E // declaration
 DL  ::= id = L // partially-evaluated-declaration
 DV  ::= id = LV // evaluated-declaration
 
-L   ::= interface {Tz;; amtz;} | {Tz; CDs; mtz; K?}  // literal
-LV  ::= interface {Tz;; amtz;} | {Tz; CVs; mtz; K?}  // literal value
+L   ::= interface {Tz; amtz;} | {Tz; Ms;  K?}  // literal
+LV  ::= interface {Tz; amtz;} | {Tz; MVs; K?}  // literal value
 
 amt ::= T m(Txs) // abstract method
 mt  ::= T m(Txs) e? // method
 Tx  ::= T x // paramater-declaration
 M   ::= CD | mt // member
+MV  ::= CV | mt
 Mid ::= C | m // member-id
 K   ::= constructor(Txs) // constructor
-e   ::= x | this | e.m(es) | this.x | new T(es) // expression
-
+e   ::= x | e.m(es) | e.x | new T(es) // expression
 E   ::= L  |  t  |  E <+ E    |  E(Cs=T) // library-expression
-Ec  ::= LV |  t  |  Ec <+ Ec  |  Ec(Cs=T) // compiled library-expression
 
 CtxV ::= [] | CtxV <+ E| LV <+ CtxV | CtxV(Cs=T) // Context of library-evaluation
-CtxL ::= interface? {Pz; CVs, [], CDs; mtz; K?} // Context of nested-class evaluation
+Ctxv ::= [] | ctxv.m(es) | v.m(vs ctxv es) | ctxv.x | new T(vs ctxv es)
+v    ::= new T(vs)
 
 p   ::= DLs; DVs // program
 S   ::= Ds e // Source Code
 =====================================================================================
-Define ToC(id) = C
------------------------------
-ToC(t) = C:
-    for fresh C
-ToC(C) = C
-
 Define p(P) = LV
 -----------------------------------
 (; _, C = L, _)(This0.C.Cs) = L(Cs)
@@ -41,11 +35,19 @@ Define p(P) = LV
 (DLs; _, t = LV, _)[t] = LV[from This(#DLs)]
 p[P] = p(P)[from P]
 
+p.exists(Ps) iff forall P in Ps: p(P) is defined
+
 Define L(Cs) = L
 --------------------------------------
 L(empty) = L
 L(C.Cs) = L(Cs)
-    L = interface? {_; _, C = L, _; _ ; _}
+    L = interface? {_; _, C = L, _; _}
+
+Define L[CD]=L'
+---------------------------------------------
+L[C = E'] = interface? {Tz; MVs C = E' Ms; K?}
+  L = interface? {Tz; MVs C = _ Ms; K?}
+
 
 Define operations on p
 --------------------------------------
@@ -53,15 +55,28 @@ p.evilPush(L) = (C = L, p)
 	for fresh C
 
 p.push(id) = (id = L, p)
-    p = (id' = {_;_, id = L, _ ;_;_}, _; DVs)
+    p = (id' = {_;_, id = L, _ ;_}, _; Ds)
 
 (id = L, p).pop() = p
 (id = L, p).top() = L
 
+Define equivy ops...
+------------------------------
+empty =p empty
+P, Ps =p P', Ps' iff:
+	p.minimize(P) = p.minimize(P')
+	Ps =p Ps'
+
+Pz subseteq_p Pz' iff:
+	p.minimize(Pz) subseteq p.minimize(Pz')
+
+p.minimize(empty) = empty
+p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
+
 p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
-  p = id0 = L0, ..., idn = Ln, _; DVs
-  p(Thisn.Cs) = LV
-  // TODO: Check that Ln is an LV instead?
+  p = id0 = L0, ..., idn = Ln, _; Ds
+  p(Thisn.Cs) = L
+  // TODO: Check that Ln is an L instead?
 otherwise p.minimize(P) = P
 
 define dom(Mz) = Midz

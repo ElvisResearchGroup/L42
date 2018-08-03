@@ -7,8 +7,8 @@ V(Cs) = P:
 
 V(L) = V(empty L)
 
-V(Cs{interface? implements Pz mwtz, ncz}) =
-  {interface? implements V(Pz in Cs) V(mwtz in Cs) V(ncz in Cs)}
+V(Cs{interface? implements Pz Mz}) =
+  {interface? implements V(Pz in Cs) V(Mz in Cs)}
 
 V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
   refine? mdf method V(T in Cs) m(V(T1 in Cs) x1,..,V(Tn in Cs) xn) exception V(Pz in Cs) V(e? in Cs)
@@ -35,14 +35,15 @@ Define L[remove Csz] = L[remove Csz in empty]
 
 Define L[remove Csz in Cs] = L0
 --------------------------------------------------------
-{interface? implements Pz mwtz ncz}[remove Csz in Cs] =
-	{interface? implements Pz mwtz ncz[remove Csz in Cs]}
+{interface? implements Pz Mz}[remove Csz in Cs] =
+	{interface? implements Pz Mz[remove Csz in Cs]}
 	where empty not in Csz
 
 empty[remove Csz in Cs] = empty
-(C:L, ncz)[remove Cs.C,Csz in Cs] = ncz[remove Csz in Cs]
-(C:L, ncz)[remove Csz in Cs] = C:L[remove Csz in C.Cs], ncz[remove Csz in Cs]
+(C:L, Mz)[remove Cs.C,Csz in Cs] = Mz[remove Csz in Cs]
+(C:L, Mz)[remove Csz in Cs] = C:L[remove Csz in C.Cs], Mz[remove Csz in Cs]
   Cs.C not in Csz
+(mwt, Mz)[remove Csz in Cs] = mwt, Mz[remove Csz in Cs]
 ----------------------------------------------
 
 p|- Ts->T;Pz <= Ts'->T';Pz':
@@ -61,26 +62,34 @@ Cs1.C in RedirectSet(L, Cs):
 Cs2   in RedirectSet(L, Cs):
   Cs1 in Csz
   This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
----------------------------------------------------------
 
-Paths({interface? implements Pz; mwt0, ..., mwtn; ncz}) = Pz,Paths(mwt0.mt),...,Paths(mwtn.mt)
-  Paths(Ts->T;Pz) = Ts.Ps, T.P, Pz
+Define Paths(..) = Pz
+------------------------------------------------------
+Paths({interface? implements Pz; Mz}) = Pz, Paths(Mz)
 
-minize(p; Thisn+1.C.Cs) = minize(p: Thisn.Cs):
+Paths(mwt, Mz) = Ts.Ps, T.P, Pz
+	mwt.mt = Ts->T;Pz
+
+Paths(nc, Mz) = Paths(Mz)
+Paths(empty) = empty
+
+==================================================================
+p.minimize(Thisn+1.C.Cs) = p.minimize(Thisn.Cs):
   p.pop(n+1).ctxL(C) = ctxC
-                  // = []
-minimize(p; P) = P
+  p(Thisn+1.C) is of form LV
+
+p.minimize(P) = P
 	otherwise
 
-minimize(p; Cs1->P1,...,Csn->Pn) = Cs1->minimize(p; P1), ..., Csn->minimize(p; Pn)
-minimize(p; P, Pz) = minimize(p; P), minimize(p; Pz)
+p.minimize(Cs1->P1,...,Csn->Pn) = Cs1->p.minimize(P1), ..., Csn->p.minimize(Pn)
+p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
 
-Define Redirect(p, L, Cs, P) = Redirect(p', Cs, minimize(p'; P+1)):
+Define Redirect(p, L, Cs, P) = Redirect(p', Cs, p'.minimize(P+1)):
 	p' = p.evilPush(L)
 
 Define Redirect(p, Cs, P) = L0:
   exists a unique V such that: //if more then one V exists, is ambiguos redirect
-  	V = minimize(p; V)
+  	V = p.minimize(V)
     P = V(Cs)
     dom(V) = RedirectSet(p.top(), Cs)
     L0     = V(p.top())[remove dom(V)]
@@ -88,27 +97,20 @@ Define Redirect(p, Cs, P) = L0:
       P' = V(Cs')
       V(Cs' p(This0.Cs')[from This0.Cs']) >=p P' p(P')[from P'])
 
-Define Cs {interface? implements Pz mwtz ncz} >=p P {interafce?' implements Pz' mwtz' ncz'}:
-  minimize(p; Pz) subseteq minimize(p; Pz',P)
+Define Cs {interface? implements Pz mwtz, ncz} >=p P {interafce?' implements Pz' mwtz', ncz'}:
+  Pz subseteq_p Pz',P
   if interface?=empty:
-    forall MS in dom(mwtz):L[PathRename Cs->Cs']p = V(L):
-	V = collectV(p.evilPush(L); Cs->This0.Cs')
+    forall MS in dom(mwtz):
+      p |- mwtz'(MS).mt <= mwt(MS).mt
 
-collectV(p; Cs->P, V) = collectV(p; Cs.C->P.C, Cs->P, V)
-	Cs.C not in dom(V)
-	C in dom(p(This0.Cs))
-
-collectV(p; V) = V:
-	otherwise
-      p |- mwtz'(MS).mt <= mwtz(MS).mt
-    if class in mwtz.mdfz then interface?'=empty
+    if interface?' = interface then class not in mwtz.mdfz
   else:
     interface? = interface?'
     mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
 
   forall mwt in mwtz:
   	mwt.e = empty
-  	not Private(mwt.MS.m)
+  	not Private(mwt.m)
 
   forall C in dom(ncz)
   	not Private(C)

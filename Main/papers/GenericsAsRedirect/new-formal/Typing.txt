@@ -1,71 +1,65 @@
 Define p |- Ok
 ===========================================================
-DVs |- Ok
-    forall DV in DVs
-        DV; DVs |- Ok
 
-p |- Ok:
-   p.top() = interface? {Pz; DVs; mtz; K?}
+          D1; Ds |- Ok ... Dn; Ds|- Ok
+(Ds ok) ------------------------------ Ds = D1 ... Dn
+	                 Ds |- Ok
 
-   forall P in Pz:
-        p.minimize(p[P].Pz) subseteq p.minimize(Pz)
+		p |- M1 : Ok .... p |- Mn : Ok
+		p |- P1 : Implemented .... p |- Pn : Implemented
+		p |- implements(Pz; Ms)                    if K? = K: p.exists(K.Txs.Ts)
+(p ok) ------------------------------------------- p.top() = interface? {P1...Pn; M1, ..., Mn; K?}
+             p |- Ok
 
-       forall T m(Txs) in p[P].mtz:
-            T m(Txs) _ in mtz
+                  p.minimize(Pz) subseteq p.minimize(p.top().Pz)
+                  amt1 _ in p.top().Ms ... amtn _ in p.top().Ms
+(P implemented) ----------------------------------------------- p[P] = interface {Pz; amt1 ... amtn;}
+                  p |- P : Implemented
 
-   forall T m(Txs) e? in mtz:
-        p |- T, Txs.Ts : Ok
-        if e? = e:
-            p; Txs |- e : T
+(amt-ok) ------------------- p.exists(T, Txs.Ts)
+          p |- T m(Tcs) : Ok
 
-   if K? = K:
-       p |- K.Txs.Ts : Ok
+           p; This0 this, Txs |- e : T
+(mt-ok) ------------------------------ p.exists(T, Txs.Ts)
+          p |- T m(Tcs) e : Ok
 
-   forall id = LV in DVs
-        id = LV, p |- Ok
+              |- C = L, p
+(cd-Ok) -------------------
+	        p |- C = L : OK
 
-Define p |- Ts : Ok
-=================================
-    forall T in Ts:
-        p(T) is defined
 
 Define p; Txs |- e : T
 =====================================
 (var)
 ----------------------- T x in Txs
-   p; Txs |- x : T
-
-(this)
--------------------------------
-   p; Txs |- this : This0
+   p;  Txs |- x : T
 
 (call)
    p; Txs |- e0 : T0
    ...
    p; Txs |- en : Tn
------------------------------------  T' m(T1 x1 ... Tn xn) _ in p(T0)
+-----------------------------------  T' m(T1 x1 ... Tn xn) _ in p[T0].Ms
    p; Txs |- e0.m(e1 ... en) : T'
 
 (field)
------------------------------------  p(This0).K = constructor(_ T x _)
-   p; Txs |- this.x : T
+   p; Txs |- e : T
+---------------------------------------  p[T].K = constructor(_ T' x _)
+   p; Txs |- e.x : T'
 
 
 (new)
-   p; Txs |- e1 : T1
-   ...
-   p; Txs |- en : Tn
------------------------------------  p(T).K = constructor(T1 x1 ... Tn xn)
+   p; Txs |- e1 : T1 ... p; Txs |- en : Tn
+------------------------------------------- p[T].K = constructor(T1 x1 ... Tn xn)
    p; Txs |- new T(e1 ... en)
 
 
 (sub)
    p; Txs |- e : T
------------------------------------  T' in p(T).Pz
+-----------------------------------  T' in p[T].Pz
    p; Txs |- e : T'
 
-   
+
 (equiv)
    p; Txs |- e : T
------------------------------------  p.minimize(T) = p.minimize(T')
+-----------------------------------  T =p T'
    p; Txs |- e : T'
