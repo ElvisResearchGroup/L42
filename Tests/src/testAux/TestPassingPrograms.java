@@ -364,7 +364,7 @@ public class TestPassingPrograms {
 
 
 	// This is not a bug. // TODO Rerun.
-	@Test
+	@Test (expected = ErrorMessage.MethodNotPresent.class)
 	public void testOverride() {
 		tp("{reuse L42.is/AdamTowel02"
 				,"A: {"
@@ -377,17 +377,6 @@ public class TestPassingPrograms {
 			,"}");
 	}
 
-	// This is meant to fail.
-	@Test //TODO Rerun.
-	public void testRefactor() {
-		tp("{reuse L42.is/AdamTowel02"
-				,"A: {"
-					,"lRed = Refactor2.redirect(path:\"A\" into:S)<><{A:{} method A a(A that)that}"
-					,"lRed.a(S\"s\")"
-					,"return ExitCode.normal()"
-				,"}"
-			,"}");
-	}
 
 	@Test
 	public void testSum() {
@@ -415,20 +404,6 @@ public class TestPassingPrograms {
 			,"}");
 	}
 
-	// Make sure adding two different units doesn't work. This has a slightly different error to before.
-	@Test(expected = newTypeSystem.FormattedError.class)
-	public void testBadUnitAdd() {
-		tp("{reuse L42.is/AdamTowel02"
-				,"A: Units.of(Num)"
-				,"B: Units.of(Num) "
-				,"Main: {"
-					,"a = 5A"
-					,"b = 4B"
-					,"c = a + b"
-					,"return ExitCode.normal()"
-				,"}"
-			,"}");
-	}
 
 	@Test
 	public void testGoodUnitAdd() {

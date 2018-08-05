@@ -311,6 +311,16 @@ public class TestFailingTests {
 				,"}"
 				,"}");
 	}
-
+	
+	// This is meant to fail.
+	@Test //Is this the right error message?
+	public void testRefactor() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"A: {"
+					,"lRed = Refactor2.redirect(path:\"A\" into:S)<><{A:{} method A a(A that)that}"
+					,"return ExitCode.normal()"
+				,"}"
+			,"}");
+	}
 
 }
