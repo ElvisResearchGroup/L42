@@ -1,0 +1,16 @@
+{reuse L42.is/AdamTowel02
+
+Part1:Trait({class method S a() class method S b()S"hello"})
+Part2:Trait({class method S a()S"Hi"++this.b() class method S b()})
+Tot:Part1 & Part2 &{}
+Gen1:Trait({T:{} class method T foo()})
+Gen2:Gen1"T"<=S & {class method S foo()S"Done!"}
+Main:{
+  t=Trait({}) & Trait({})
+  Debug.test(Location.Lib(t.code()) expected:S" {}")
+  Debug.test(Tot.a() expected:S"Hihello")
+  Debug.test(Gen2.foo() expected:S"Done!")
+  return ExitCode.normal()
+  }
+
+}

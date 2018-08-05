@@ -55,8 +55,17 @@ FieldOp:StateOperation.fieldOperation(
     T:{implements Concept.Equals}
     read method Bool equals(read This that) this.f()==that.f()
     }
-  forClass:{
+  forClassable:{
     read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
     }
+  forClassAny:{
+    read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
+    }
+//  forLibrary:{//may be is easier to do Data again building over Trait
+//    read method Bool equals(read This that) Location.Lib(this.f())==Location.Lib(that.f())
+//    }
+//  forVoid:{
+//    read method Bool equals(read This that) Bool.true()
+//    }
   )
 }

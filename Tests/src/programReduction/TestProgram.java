@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import ast.Ast;
 import ast.ExpCore;
@@ -40,15 +41,15 @@ public static class TestIsEquivPaths {
   @Parameter(2) public String _path1;
   @Parameter(3) public String _path2;
   @Parameter(4) public boolean equiv;
-  @Parameterized.Parameters
+  @Parameters(name = "{index}: line {0}")
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(),"{B:error void}","Void","Void",true
   },{lineNumber(),"{B:error void}","Void","Library",false
   },{lineNumber(),"{B:{C:error void}}","Void","Void",true
-  },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B.C",true
+  },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B.C",false
   },{lineNumber(),"{B:{C:error void}}","This0.C","This1.B",false
-  },{lineNumber(),"{B:{C:{method m() this.foo({D:error void})}}}","This2.C","This3.B.C",true
+  },{lineNumber(),"{B:{C:{method m() this.foo({D:error void})}}}","This2.C","This3.B.C",false
   },{lineNumber(),"{B:{C:{method m() this.foo({D:error void})}}}","This0.D","This3.B.C.D",false
 
   //  },{lineNumber(),"{B:error void}.m({B:error void})","void","void.m({B:error void})"

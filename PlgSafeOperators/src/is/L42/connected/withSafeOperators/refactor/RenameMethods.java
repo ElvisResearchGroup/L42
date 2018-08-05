@@ -16,6 +16,7 @@ import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.Type;
 import ast.ErrorMessage.NormImpossible;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ExpCore.Block;
@@ -265,7 +266,8 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
   public ExpCore visit(Block s) {
     G oldG=g;
     try{
-      Block sGuessed=(Block)StaticDispatch.of(p, g, s, false);
+      Block sGuessed;try{sGuessed=(Block)StaticDispatch.of(p, g, s, false);}
+      catch(PathMetaOrNonExistant pmone){sGuessed=s;}
       G baseG=g.add(p, sGuessed.getDecs());
       g=baseG;
       List<Dec> ds = liftDecs(s.getDecs());

@@ -40,30 +40,24 @@ import tools.Assertions;
 public interface TypeSystem{
   static TypeSystem instance(){return new Impl();}
 
-  default ExpCore topTypeExpVoid(Program p,ExpCore e){
-    TIn in=TIn.top(Phase.Norm,p, e);
-    TOut out=type(in.withE(e,Path.Void().toImmNT()));
-    if(out.isOk()){return out.toOk().annotated;}
-    TErr err=out.toError();
-    throw new FormattedError(err);
-    }
-  default ExpCore topTypeExp(Program p,ExpCore e){
-    TIn in=TIn.top(Phase.Norm,p, e);
+  default ExpCore _topTypeExp(Program p,ExpCore e,Type t,boolean formatError){
+    TIn in=TIn.top(Phase.Norm,p, e,t);
     TOut out=type(in);
-    if(out.isOk()){
-      TOk res=out.toOk();
-      if(!res.returns.isEmpty()){
-        throw new FormattedError(new TErr(in,"",
-          res.returns.get(0),
-          ErrorKind.MethodLeaksReturns));
-        }
-      return res.annotated;
+    if(!out.isOk()){
+      if(!formatError){return null;}
+      throw new FormattedError(out.toError());
       }
-    TErr err=out.toError();
-    throw new FormattedError(err);
-    }
+    TOk res=out.toOk();
+    if(!res.returns.isEmpty()){
+      if(!formatError){return null;}      
+      throw new FormattedError(new TErr(in,"",
+        res.returns.get(0),
+        ErrorKind.MethodLeaksReturns));
+      }
+    return res.annotated;
+  }
   default ClassB topTypeLib(Phase phase,Program p){
-    TIn in=TIn.top(phase,p, p.top());
+    TIn in=TIn.top(phase,p, p.top(),Type.immLibrary);
     TOut out=typeLib(in);//this already check if the phase is already good enough!
     if(out.isOk()){return (ClassB) out.toOk().annotated;}
     TErr err=out.toError();

@@ -1,10 +1,9 @@
 TODO: e::= ...| #?m(x1:y1,..,xn:yn)
-TODO: In the full language,
-desugar[e1 #m e2]:
-desugar[e1 #m e2]=(x1=e1 x1 #m e2) where e1 not of form x
-desugar[x1 #m e2]=(x2=e2 x1 #m x2) where e2 not of form x
+In the full language,
 TODO: all operator precedence need to become right associative
-
+TODO: foo.bar[..] and foo[..] desugar in similar way,
+ as foo(.bar)[...] ==foo.#from#bar(builder:..)
+ TODO: in 2MainLoop: e-> e / (void unused=e {}) / e.toLibrary()
 We are having problems with inference overriding promotions.
 variable name may force inferred mdf:
 mdf$x is a valid var name. The type will be always inferred as mdf.

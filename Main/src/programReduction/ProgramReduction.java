@@ -2,15 +2,20 @@ package programReduction;
 
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.NestedClass;
+import auxiliaryGrammar.Functions;
 import caching.Loader;
 import caching.Phase1CacheValue;
 
-import java.nio.file.Path;
 import java.util.Collections;
 
 import ast.Ast;
 import ast.ExpCore;
 import ast.Ast.C;
+import ast.Ast.Doc;
+import ast.Ast.MethodSelector;
+import ast.Ast.Path;
+import ast.Ast.Position;
+import ast.Ast.Type;
 import ast.ExpCore.ClassB;
 import coreVisitors.IsCompiled;
 import facade.L42;
@@ -56,11 +61,9 @@ public class ProgramReduction {
     Paths paths1=UsedPaths.tryCoherentPaths(p, ec);
     Program p0=Norm.multiNorm(p,paths);
     Program p1=MultiTypeSystem.typeProgram(paths,paths1, p0);
-    @SuppressWarnings("unused")
-    ExpCore justToTest=MultiTypeSystem.typeMetaExp(p1,MultiTypeSystem.toAny(paths1,ec));
-    ExpCore annEc1=MultiTypeSystem.typeMetaExp(p1,ec);
     saveFirstTimeCache(p1);
-    ClassB res=loader.execute(p1, paths, annEc1);
+    ExpCore e=MultiTypeSystem.typeAndAdapt(ec, p1, paths1);
+    ClassB res=loader.execute(p1, paths, e);
     //ClassB res=reduceE(p1,annEc1,C.of("NameDebug_"+nc.getName()));
     res=privateMangling.RefreshUniqueNames.refresh(res);
     ClassB top=p1.top();
@@ -77,8 +80,8 @@ public class ProgramReduction {
     catch(Program.EmptyProgram ep){}
     ClassB topCb=p.top();
     Phase1CacheValue cv=new Phase1CacheValue(L42.usedNames,topCb,p.getFreshId());
-    Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
-    Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
+    java.nio.file.Path vPath = L42.root.resolve(L42.cacheK.firstSourceName()+".V42");
+    java.nio.file.Path kPath = L42.root.resolve(L42.cacheK.firstSourceName()+".K42");
     cv.saveOnFile(vPath);
     L42.cacheK.saveOnFile(kPath);
     }

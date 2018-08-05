@@ -23,10 +23,25 @@ exception Fail {
 class method
 Library fieldOperation(Library forReadable, Library forClass)
 exception Fail 
-  this.fieldOperation(forReadable:forReadable,forClassable:forClass,forClassAny:forClass)
+  this.fieldOperation(
+    forReadable:forReadable,
+    forClassable:forClass,
+    forClassAny:forClass,
+    forLibrary:forReadable,
+    forVoid:forReadable)
 
 class method
 Library fieldOperation(Library forReadable, Library forClassable,Library forClassAny)
+exception Fail 
+  this.fieldOperation(
+    forReadable:forReadable,
+    forClassable:forClassable,
+    forClassAny:forClassAny,
+    forLibrary:forReadable,
+    forVoid:forReadable)
+
+class method
+Library fieldOperation(Library forReadable, Library forClassable,Library forClassAny,Library forLibrary,Library forVoid)
 exception Fail {
   return Use[
     Resource(Use[ReadSkeletonTrait()]<><forReadable,
@@ -37,6 +52,10 @@ exception Fail {
       selector:\"forClassable()");
     Resource(Use[ClassSkeletonTrait()]<><forClassAny,
       selector:\"forClassAny()");
+    Resource(Use[ReadSkeletonTrait()]<><forLibrary,
+      selector:\"forLibrary()");
+    Resource(Use[ReadSkeletonTrait()]<><forVoid,
+      selector:\"forVoid()");
     ]<><This.specializerTrait()
   error on Refactor2.Fail Fail""  
   }
@@ -44,15 +63,24 @@ exception Fail {
 class method Library specializerTrait(){
   class method Library forReadable()
   class method Library forImmutable()
-  //class method Library forClass()
   class method Library forClassable()
   class method Library forClassAny()
+  class method Library forLibrary()
+  class method Library forVoid()
 
   class method
   Library (Selector selector,Location.Type type)
   exception Fail {
     mdf=type.mdf()
     r=type.refTo()
+    with r (on Location.Type.RefTo.Binded (
+      if Location.Type.RefTo.Binded.equalsClassObj(r.referredClassObj() and:Library) (
+        return this.specialize(This.forLibrary(),selector:selector,refTo:r)
+        )
+      if Location.Type.RefTo.Binded.equalsClassObj(r.referredClassObj() and:Void) (
+        return this.specialize(This.forVoid(),selector:selector,refTo:r)
+        )
+      ))
     if mdf.isCmpClass() (
       return this.specialize(This.forClassable(),selector:selector,refTo:r)
       catch exception Guard return this.specialize(This.forClassAny(),selector:selector,refTo:r)

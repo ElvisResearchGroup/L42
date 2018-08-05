@@ -16,6 +16,7 @@ import ast.ExpCore.WalkBy;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
 import auxiliaryGrammar.Functions;
+import ast.Ast.Doc;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 
@@ -41,9 +42,9 @@ public class StaticDispatch implements Visitor<ExpCore>{
     assert res!=null;
     return res;
     }
-  public static  List<Dec> of(Program p,G g,List<Dec>ds,boolean forceError){
+  public static  List<Dec> of(Program p,G g,List<Dec>ds,Ast.Position pos,boolean forceError){
     StaticDispatch sd=new StaticDispatch(p, g, forceError);
-    return sd.liftDecs(ds);
+    return sd.liftDecs(ds,pos);
     }
 
   Program p;
@@ -53,7 +54,7 @@ public class StaticDispatch implements Visitor<ExpCore>{
   private StaticDispatch(Program p,G g,boolean forceError){this.p=p;this.g=g;this.forceError=forceError;}
 
   //at the end, this.g will include some of ds.
-  List<ExpCore.Block.Dec> liftDecs(List<ExpCore.Block.Dec>ds){
+  List<ExpCore.Block.Dec> liftDecs(List<ExpCore.Block.Dec>ds,Ast.Position pos){
     this.g=this.g.add(p,ds);
     while(true){
       List<ExpCore.Block.Dec>oldDs=ds;
@@ -64,7 +65,7 @@ public class StaticDispatch implements Visitor<ExpCore>{
       if (this.g.dom().size()!=old.dom().size()){continue;}
       assert this.g.dom().equals(old.dom());
       assert ds.equals(oldDs);
-      if(forceError){improveError(ds);}
+      if(forceError){improveError(ds,pos);}
       this.errors=true;
       return ds;
       }
@@ -72,21 +73,35 @@ public class StaticDispatch implements Visitor<ExpCore>{
 private static class ESDispatch extends StaticDispatch{
   ESDispatch(Program p,G g,List<ExpCore>log){super(p,g,false);this.log=log;}
   List<ExpCore>log;
-  public void logErr(ExpCore e) {
+  @Override public void logErr(ExpCore e,G g) {
+    e=e.accept(new CloneVisitor(){
+      public ExpCore visit(X s) {
+        Type _t=g._g(s.getInner());
+        if(_t==null){return s;}
+        return new Block(Doc.factory(true, _t.getMdf().name()), 
+                Collections.emptyList(), new EPath(s.getP(),_t.getPath()), Collections.emptyList(), s.getP(), null);
+      }
+    public ExpCore visit(ClassB s) { return s;}
+    });
     log.add(e);
     }
   public StaticDispatch newAllowingError(Program p,G g) {
     return new ESDispatch(p,g,log);
     }
 }
-private void improveError(List<ExpCore.Block.Dec> ds) {
+private void improveError(List<ExpCore.Block.Dec> ds,Ast.Position pos) {
   List<ExpCore>log=new ArrayList<>();
-  new ESDispatch(p, g, log).liftDecs(ds);
+  new ESDispatch(p, g, log).liftDecs(ds,pos);
   Optional<OperationDispatch> failed=log.stream()
     .filter(e-> e instanceof OperationDispatch)
     .map(e->(OperationDispatch)e).findFirst();
   if(failed.isPresent()) {throw new ErrorMessage.OperatorDispachFail(failed.get(), failed.get().getP());}
-  throw new ErrorMessage.InferenceFail(ds,null);
+  String onMeth="";
+  if(log.get(0) instanceof ExpCore.MCall){onMeth="\nSuch method selector may not be defined.\n";}
+  String msg=sugarVisitors.ToFormattedText.of(log.get(0));
+  msg=msg.replace("\n", " ");
+  if(msg.length()>100){msg=msg.substring(0,100)+"..";}
+  throw new ErrorMessage.InferenceFail(ds,pos).msg("The type of the following expression can not be inferred:"+msg+onMeth);
   }
   private ExpCore _liftAllowError(boolean[]error,ExpCore e){
     StaticDispatch fresh=newAllowingError(p,g);
@@ -94,7 +109,7 @@ private void improveError(List<ExpCore.Block.Dec> ds) {
     error[0]=fresh.errors;
     return res;
     }
-  public void logErr(ExpCore e) {}
+  public void logErr(ExpCore e,G g) {}
   public StaticDispatch newAllowingError(Program p,G g) {
     return new StaticDispatch(p,g,false);
     }
@@ -112,7 +127,7 @@ private void improveError(List<ExpCore.Block.Dec> ds) {
       if(d.get_t()!=null){res.add(d);continue;}
       Type _t=GuessTypeCore._of(p,g,_e,false);
       if(_t==null){
-        logErr(_e);
+        logErr(_e,g);
         err=true;res.add(d);continue;
       }
       _t=Functions.capsuleToMut(_t);
@@ -129,7 +144,7 @@ private void improveError(List<ExpCore.Block.Dec> ds) {
     return s.withInner(inner);
     }
   public ExpCore visit(Block s) {
-    List<Dec> ds1 = liftDecs(s.getDecs());
+    List<Dec> ds1 = liftDecs(s.getDecs(),s.getP());
     assert ds1!=null;
     assert !forceError || ds1.stream().allMatch(d->d.get_t()!=null);
     G old=g;
@@ -161,7 +176,7 @@ private void improveError(List<ExpCore.Block.Dec> ds) {
           return new ExpCore.MCall(s.getEs().get(i),allMsi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
           }}
         }
-      logErr(s);//this logs failures *not* caused by absence of inferred types.
+      logErr(s,g);//this logs failures *not* caused by absence of inferred types.
       }
     if(forceError){
       throw new ErrorMessage.OperatorDispachFail(s,s.getP());

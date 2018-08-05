@@ -123,7 +123,7 @@ public interface TsLibrary extends TypeSystem{
         boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
           P0->null==TypeSystem.subtype(newIn.p, P1, P0.getPath()));
         if(!ok){
-          return new TErr(newIn,"",P1.toImmNT(),ErrorKind.MethodLeaksExceptions);
+          return new TErr(newIn,"In method "+mwt.getMs()+", "+P1.toImmNT()+" not subtype of any of "+mwt.getMt().getExceptions(),P1.toImmNT(),ErrorKind.MethodLeaksExceptions);
           }
         }
       if(!out.toOk().returns.isEmpty()){

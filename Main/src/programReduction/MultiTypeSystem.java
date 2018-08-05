@@ -1,16 +1,26 @@
 package programReduction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import ast.Ast.Type;
+import ast.ErrorMessage;
+import ast.Ast.Doc;
+import ast.Ast.MethodSelector;
+import ast.Ast.Path;
+import ast.Ast.Position;
 import ast.Ast.Stage;
 import ast.Ast;
 import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
+import auxiliaryGrammar.Functions;
 import coreVisitors.CloneVisitor;
+import facade.L42;
+import newTypeSystem.FormattedError;
+import newTypeSystem.GuessTypeCore;
 
 public class MultiTypeSystem {
 
@@ -64,7 +74,31 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
     });
 }
 
-public static ExpCore typeMetaExp(Program p, ExpCore e) {
-  return newTypeSystem.TypeSystem.instance().topTypeExp(p,e);
+
+public static ExpCore typeAndAdapt(ExpCore ec,Program p,Paths paths){
+  ExpCore eAny=MultiTypeSystem.toAny(paths,ec);
+  @SuppressWarnings("unused")
+  ExpCore errorIfFails = newTypeSystem.TypeSystem.instance()._topTypeExp(p,eAny,Type.immAny,true);
+  try{
+    ExpCore e1=new ExpCore.MCall(ec,new MethodSelector("#toLibrary",-1,Collections.emptyList()),
+      Doc.empty(),Collections.emptyList(), Position.noInfo,null,null);
+    ExpCore res = newTypeSystem.TypeSystem.instance()._topTypeExp(p,e1,Type.immLibrary,false);
+    if(res!=null){return res;}
+    }
+  catch(ErrorMessage|AssertionError em){}
+  //TODO: the Assertion error above is because we may create a non guessable expression.
+  //When we implement proper well formedness, we can check for that!
+  try{
+    ExpCore.Block.Dec d=new ExpCore.Block.Dec(
+          false,Type.immVoid,Functions.freshName("unused", L42.usedNames),ec);
+    ExpCore e1=new ExpCore.Block(
+      Doc.empty(),Collections.singletonList(d),ClassB.docClass(Doc.empty()),
+      Collections.emptyList(), Position.noInfo, null);
+    ExpCore res = newTypeSystem.TypeSystem.instance()._topTypeExp(p,e1,Type.immLibrary,false);
+    if(res!=null){return res;}
+    }
+  catch(FormattedError|ErrorMessage t){}
+  return newTypeSystem.TypeSystem.instance()._topTypeExp(p,ec,Type.immLibrary,true);
   }
+
 }

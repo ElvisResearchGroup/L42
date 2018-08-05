@@ -1,0 +1,54 @@
+{Library code,,,,,class method This(Library code)
+  class method This(Library that) This(code:that)
+  ToTrait:{interface class method This1 ()}
+  method This #and#0left(This right)
+  exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+    (This(this & right.code()))//TODO: if I remove the parenthesis, This is seen as a thrown exception...
+  method This #and#1left(class ToTrait right)
+  exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+    this & right()
+  method Library #and#2left(Library right)
+  exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+    Refactor2.compose(this.code() and:right)
+
+  method WithPath #from(S.SBuilder builder)
+    WithPath(path:Path.#from(builder:builder),trait:this)
+  method mut S.SBuilder #builder()
+    S.SBuilder.empty()
+  WithPath:{//can not be Data since it has This1 as field :-(
+    Path path,,,,,This1 trait,,,,,class method This(Path path,This1 trait)
+
+    //TODO: when we stop operator normalization, those need to become  #leftequal(Path right)
+    method This1 #rightequal#0right(Path left)
+    exception Refactor2.PathUnfit, Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+      (This1(Refactor2.rename(path:this.path() into:left)<><this.trait().code()))
+    method This1 #rightequal#1right(class Any left)
+    exception Refactor2.ClassUnfit, Refactor2.IncoherentMapping, Refactor2.MethodClash, Refactor2.PathUnfit
+      (This1(Refactor2.redirect(path:this.path() into:left)<><this.trait().code()))
+    method This1 #rightequal#2right(Location.Type.RefTo left)
+    exception
+    ,,,,Refactor2.ClassUnfit,Refactor2.IncoherentMapping,Refactor2.MethodClash,
+    ,,,,Refactor2.ClassClash,Refactor2.PathUnfit,Refactor2.RefToUnfit,Refactor2.SubtleSubtypeViolation 
+      (This1(Refactor2.redirect(path:this.path() intoRefTo:left)<><this.trait().code()))    
+    }
+  
+  method Library #toLibrary()
+  exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+    Refactor2.compose(Resource(this.code(), selector:\"code()") and:{
+      implements ToTrait
+      method () This1(this.code())
+      class method Library code()
+
+      class method This1 #and#0left(This1 right)
+      exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+        this() & right
+      class method This1 #and#1left(class ToTrait right)
+      exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+        this() & right
+      class method Library #and#2left(Library right)
+      exception Refactor2.MethodClash,Refactor2.ClassClash,Refactor2.SubtleSubtypeViolation
+        this() & right
+      class method WithPath #from(S.SBuilder builder) this().#from(builder:builder)
+      class method mut S.SBuilder #builder() this().#builder()
+      })
+  }

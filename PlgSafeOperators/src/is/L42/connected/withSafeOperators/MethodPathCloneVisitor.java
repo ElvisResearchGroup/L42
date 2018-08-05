@@ -118,7 +118,7 @@ abstract public class MethodPathCloneVisitor extends RenameMembers {
     MethodSelector ms=s.getS();
     Path guessed=null;
     try{
-      TIn in=TIn.top(Phase.Typed, ep, s.getInner());
+      TIn in=TIn.top(Phase.Typed, ep, s.getInner(),Type.immLibrary);
       in=in.withG(
         varEnv.entrySet().stream().collect(
           Collectors.toMap(

@@ -111,7 +111,11 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
       case WellFormedness:
       case TypeError:
       case Unclassified:
-        errorTxt=errorStart+"runStatus: "+kind.name()+":"+msg.getClass().getSimpleName()+"\n"+errorTxt;
+        String intro=errorStart+"runStatus: "+kind.name()+":"+msg.getClass().getSimpleName()+"\n";
+        if(msg.getMessage().length()!=0){
+          intro+="Message: "+msg.getMessage()+"\n";
+          }
+        errorTxt=intro+errorTxt;
         break;
       case MetaError:
         errorTxt=errorStart+"runStatus: "+kind.name()+"\n"+

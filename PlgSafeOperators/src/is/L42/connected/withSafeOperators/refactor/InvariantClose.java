@@ -19,6 +19,7 @@ import ast.Ast.MethodType;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore.Block;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
@@ -78,7 +79,7 @@ private static void collectStateMethodsAndExposers(
     List<CsMxMx> sel, Set<MethodSelector> state
     ) throws ClassUnfit {
   for(MethodWithType mwti:lPath.mwts()){
-    if(!TsLibrary.coherentF(pPath,k,mwti)){continue;}
+    if(!nonMetaCoherentF(pPath, k, mwti)){continue;}
     assert mwti.get_inner()==null;
     state.add(mwti.getMs());
     // with non read result, assert is lent
@@ -88,6 +89,10 @@ private static void collectStateMethodsAndExposers(
     sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(uniqueNum)));
     }
 }
+private static boolean nonMetaCoherentF(Program pPath, MethodWithType k, MethodWithType mwti) {
+  try{return TsLibrary.coherentF(pPath,k,mwti);}
+  catch(PathMetaOrNonExistant pmne){return false;}
+  }
 
 private static class Ks{
   MethodWithType candidateK;

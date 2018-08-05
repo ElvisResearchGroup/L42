@@ -38,9 +38,9 @@ import coreVisitors.InjectionOnSugar;
   @Override public String getMessage() {
     return msg;//super.getMessage();//+this.toString();
   }
-  private String msg;
+  private String msg="";
   public ErrorMessage msg(String msg){
-    this.msg=msg;return this;
+    this.msg+=msg;return this;
   }
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UserLevelError extends ErrorMessage implements PosImprove {
@@ -235,9 +235,9 @@ import coreVisitors.InjectionOnSugar;
   @Wither
   public static abstract class TypeError extends ErrorMessage implements ErrorMessage.PosImprove {
     public final List<facade.ErrorFormatter.Reporter> envs = new ArrayList<>();
-    @Override public String getMessage() {
+    /*@Override public String getMessage() {
       return this.envs.toString();
-    }
+    }*/
   }
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NotOkToStar extends TypeError {

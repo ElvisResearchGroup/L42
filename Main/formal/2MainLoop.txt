@@ -37,9 +37,8 @@ p ==> p'.update(p'.top()[C=L])
   //paths' needs to be coherent, while paths needs only to be typed
   p0=multiNorm(p; paths)//norm the part of p required by eC
   paths;paths' ||-p0 ~> p' //type all the paths
-  Norm | p'| empty |-eC ~> eC' : _<= imm Library | empty;_ //typing eC normally
-  Norm | p'| empty |-toAny(paths',eC) ~> _ :_<= imm Library | empty;_ //check that even replacing all Ps but paths' with Any, eC is still well typed
-  eC' -->p'+ r //execute the expression under the program and obtain a result
+  e=typeAndAdapt(eC,p',paths')
+  e -->p'+ r //execute the expression under the program and obtain a result
   L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
 
 (enter)
@@ -306,7 +305,7 @@ otherwise //M can be mwt or ms e
 
 
 -----------------------------------------------------------
-Part 6: paths;paths' ||-p ~> p,  toAny(paths, eC) //assumes that p does not have evil pushes
+Part 6: paths;paths' ||-p ~> p, typeAndAdapt(eC,p,paths)=e, toAny(paths, eC) //assumes that p does not have evil pushes
 -----------------------------------------------------------
 (pPop)
 paths;paths' ||- p  ~>  p1.update(L)
@@ -340,3 +339,17 @@ _______
   otherwise
   toAny(Css1..Cssn, ctxC[Thisj.Cs1.Cs2])=toAny(Css1..Cssn,ctxC[Any])
   where Cs1 notin Cssj
+  
+_______
+#define typeAndAdapt(eC,p,paths)=e
+//Here we check that even replacing all Ps but paths with Any,
+//eC is still well typed. We adapt the result to always return Library
+- typeAndAdapt(eC,p,paths)=e
+  Norm | p| empty |-toAny(paths,eC) ~> _ :_<= imm Any | empty;_ 
+  either
+  Norm | p| empty |-eC.#toLibrary() ~> e : _<= imm Library | empty;_
+  or
+  Norm | p| empty |-(imm Void unused=eC {}) ~> e : _<= imm Library | empty;_
+  or
+  Norm | p| empty |-eC ~> e : _<= imm Library | empty;_
+  //in case all 3 fails, the last error is forwarded

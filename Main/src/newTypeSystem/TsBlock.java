@@ -66,7 +66,7 @@ default boolean xsNotInDomi(List<String> xs,List<Dec> ds,int ip1){
   }
 
   default TOut tsBlockBase(TIn in,Block s){
-   List<Block.Dec> ds=StaticDispatch.of(in.p, in,s.getDecs(),true);
+   List<Block.Dec> ds=StaticDispatch.of(in.p, in,s.getDecs(),s.getP(),true);
    s=s.withDecs(ds);
    List<Block.On> ks=s.getOns();
    TIn in1=in.removeGDs(ds);//G'=G/dom(ds)
