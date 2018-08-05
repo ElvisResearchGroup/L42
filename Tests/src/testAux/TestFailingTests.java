@@ -322,5 +322,97 @@ public class TestFailingTests {
 				,"}"
 			,"}");
 	}
+	
+	@Test
+	public void testAlphanumeric() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"A: Alphanumeric <>< {"
+					,"S a"
+					,"S b"
+					,"class method S parse(S that) {"
+						//,"index = that.indexOf(S\"@\")"
+						//,"local = that(end: index.get())"
+						//,"domain = that(start: index.get() + 1Size)"
+						//,"return This(that, local: local, domain: domain)"
+						,"return S\"test\""
+					,"}"
+				,"}"
+				,"B:{"
+			    	,"myEmail= A\"arthur.dent@gmail.com\""
+					,"return ExitCode.normal()"
+				,"}"
+			,"}");
+	}
+	
+	@Test
+	public void testAlphanumeric2() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"A: Alphanumeric <>< {"
+					,"S local"
+					,"S domain"
+					,"class method This parse(S that) {"
+						,"index = that.indexOf(S\"@\")"
+					    ,"!index.isPresent() (error Alphanumeric.ParseFail\"@ not found\")"
+						,"local = that(end: index.get())"
+						,"domain = that(start: index.get() + 1Size)"
+					    ,"if domain.contains(S\"@\") (error Alphanumeric.ParseFail\"multiple @ found\")"
+						,"return This(that, local: local, domain: domain)"
+					,"}"
+				,"}"
+				,"B:{"
+			    	,"myEmail= A\"arthur.dent@gmail.com\""
+					,"return ExitCode.normal()"
+				,"}"
+			,"}");
+	}
+
+	// Comments in the 42 code mean it throws a Java error.
+	@Test
+	public void testAlphanumeric3() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"A: Alphanumeric <>< {"
+					,"S local"
+					,"S domain"
+					,"class method This parse(S that) {"
+						,"index = that.indexOf(S\"@\")"
+					    ,"//!index.isPresent() (error Alphanumeric.ParseFail\"@ not found\")"
+						,"local = that(end: index.get())"
+						,"domain = that(start: index.get() + 1Size)"
+					    ,"//if domain.contains(S\"@\") (error Alphanumeric.ParseFail\"multiple @ found\")"
+						,"return This(that, local: local, domain: domain)"
+					,"}"
+				,"}"
+				,"B:{"
+			    	,"myEmail= A\"arthur.dent@gmail.com\""
+					,"return ExitCode.normal()"
+				,"}"
+			,"}");
+	}
+	
+	// No comments = 42 error.
+	@Test
+	public void testAlphanumeric4() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"A: Alphanumeric <>< {"
+					,"S local"
+					,"S domain"
+					,"class method This parse(S that) {"
+						,"index = that.indexOf(S\"@\")"
+					    //,"!index.isPresent() (error Alphanumeric.ParseFail\"@ not found\")"
+						,"local = that(end: index.get())"
+						,"domain = that(start: index.get() + 1Size)"
+					    //,"if domain.contains(S\"@\") (error Alphanumeric.ParseFail\"multiple @ found\")"
+						,"return This(that, local: local, domain: domain)"
+					,"}"
+				,"}"
+				,"B:{"
+			    	,"myEmail= A\"arthur.dent@gmail.com\""
+					,"return ExitCode.normal()"
+				,"}"
+			,"}");
+	}
+
+	
+	
 
 }
