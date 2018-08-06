@@ -101,8 +101,7 @@ public abstract class Methods implements Program{
     List<Ast.Type> ps=cb0.getSupertypes();
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
     List<Ast.Type> p1n=collect(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0)), ps));
-    List<ClassB> cb1n=Map.of(pi->p.extractClassB(pi.getPath()), p1n);
-    assert cb1n.stream().allMatch(cbi->cbi.isInterface());
+    assert Map.of(pi->p.extractClassB(pi.getPath()), p1n).stream().allMatch(cbi->cbi.isInterface());
 //          ms1..msk={ms|p(Pi)(ms) is defined}
     HashMap<Ast.MethodSelector,List<ClassB.Member>> ms1k=new LinkedHashMap<>();
     for(ClassB.Member mij:cb0.getMs()){mij.match(
@@ -113,8 +112,8 @@ public abstract class Methods implements Program{
     for(Ast.Type pi:p1n){//call the memoized methods
       for(ClassB.Member mij:p.methods(pi.getPath())){mij.match(
         nc->null,
-        mi->add(false,ms1k,mi.getS(),mij),
-        mt->add(false,ms1k,mt.getMs(),mij)
+        mi->{assert false; return null;},//add(false,ms1k,mi.getS(),mij),
+        mt->{assert mt.get_inner()==null; return add(false,ms1k,mt.getMs(),mij);}
         );}
       }
 //members in cb0 are now first (may be null), thanks to the add function

@@ -3,38 +3,11 @@ In the full language,
 TODO: all operator precedence need to become right associative
 TODO: foo.bar[..] and foo[..] desugar in similar way,
  as foo(.bar)[...] ==foo.#from#bar(builder:..)
- TODO: in 2MainLoop: e-> e / (void unused=e {}) / e.toLibrary()
-We are having problems with inference overriding promotions.
-variable name may force inferred mdf:
-mdf$x is a valid var name. The type will be always inferred as mdf.
-left,right makes imm$x
-map makes mut$x
-class will stay class
-== is problematic, since takes reads
 
-that, val will NOT be extracted as variable.
-They need to be the only one in the ms, so the order do not matter.
-
-
-Steps:
-//do staticDispatch with NIY for operator dispatch.
-//Test
-//simplifiy ds typing
-//Test
-//add operator dispatch
-//use operator dispatch in ts tests
-//-operator dispatch desugar
-//-operationdispatch desugar
-//-desugaring +(ps)==> #plus#0left(ps)
-replace/search for "(This that)"
-//defer make all operators right associative
-//defer make all operators not right dispatching
-
-Test
-change operator desugar
-Test
-//cleanup:
-remove suggest
+TODO:inference of mdf$x uses mdf to infer its type
+for now: all ops desugar args to imm$fresh, except == to read$fresh and <><
+do not add suggestion for "left".
+TODO: remove 'suggest'
 
 -----------------------------------------------------------------------------
 Since the type system is quite extensive, we first present the

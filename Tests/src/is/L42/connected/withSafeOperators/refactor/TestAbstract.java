@@ -159,8 +159,6 @@ public static class TestAbstractClass {//add more test for error cases
   },{lineNumber(),//
     "{B:{interface method Void m()}}","B","{B:{interface method Void m()}}",false
   },{lineNumber(),//
-    "{B:{interface method Void m() void}}","B","{B:{interface method Void m()}}",false
-  },{lineNumber(),//
     "{C:{B:{ A_$_1:{} }}}","C","{C:{B:{}}}",false
   },{lineNumber(),//
     "{C:{B:{ A_$_1:{} }}}","C.B","{C:{B:{}}}",false

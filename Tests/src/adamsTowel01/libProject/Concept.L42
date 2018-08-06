@@ -27,8 +27,10 @@ Classable:{interface
   */Bool is(class This subtype)
   }
 
-Base:{interface
-  implements ToS, Classable, Equals
+Base:{interface implements ToS, Classable, Equals
+  refine read method class This class()
+  refine class method read This cast(read Concept.Classable that)
+  refine class method mut This #cast(mut Concept.Classable that)
   //class method This from(Base base)
   }
  //boxes: class capsule imm mut lent read & var novar

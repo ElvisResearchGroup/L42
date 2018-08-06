@@ -14,13 +14,17 @@ exception Fail {
 class method
 Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
 exception Fail{
+  op=This.op()
+  opCName=This.opClassName(op:op)
   //accumulation
   Use.Override.Decorator acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
-    use[
-      Refactor2.Method[hide:\"fN()"]<><
-      Use[Resource(fN,selector:\"fN()")]<><
-      This(fSel:Selector.from(string:fN++S"()"),fT:fT)
-      ])]
+    hide=Refactor2.Method[hide:\"fN()"]
+    add=Use[Resource(fN,selector:\"fN()")]
+    rich=this.lib(refTo:fT.refTo()).isInterface()
+    if rich (use[hide<><add<><opCName.select(type:fT,name:fN)])
+    else (use[hide<><add<><op.select(type:fT,name:fN)])
+    exception on Refactor2.Fail Fail"Field operation can not be generated for field "[fN]""
+    void)]
   lib=acc.foldLeft(resolver:{
       read method S #1baseToS()
       read method S #2baseToS()
@@ -36,40 +40,7 @@ exception Fail{
   //lib can override baseToS to provide the real behaviour,
   //the empty baseToS is used for classes with no fields
   return Refactor2.Method[hide:\"baseToS()"]<><Use.Override[miniToS]<><lib
-  error on Refactor2.Fail X"AddToS.finalWrapping - hide"
-  }
-
-//auxiliary functions
-
-class method
-S nodeName(read Any that){
-  with that (
-    on read Void return S"Void"
-    on read Library return S"Library"
-    on read Concept.Classable return that.class().readableName()
-    )
-  return S"?"
-  }
-
-class method
-S valToS(read Any that){
-  with that (
-    on read Concept.ToS (
-      ts=that.toS()
-      if ts.beginsWith(S"[") ( return ts)
-      return S.doubleQuote()++ts++S.doubleQuote()
-      )
-    on read Void  return S.doubleQuote()++S"void"++S.doubleQuote()
-    on read Library  return S.doubleQuote()++S"{..}"++S.doubleQuote()
-    )
-  return S"?"
-  }
-
-class method
-S nodeNameAndValToS(read Any that){
-  S nn=this.nodeName(that)
-  S ts=this.valToS(that)
-  return nn++ts
+  error on Refactor2.Fail X"AddToS.finalWrapping"
   }
 
 class method
@@ -84,41 +55,75 @@ exception Fail {
   exception Fail"field missing or unavailable: "[refTo]""
   }
 
-class method
-Library (Selector fSel,Location.Type fT) exception Fail {
-  rich=this.lib(refTo:fT.refTo()).isInterface()
-  if rich (return FieldOpAddClassName(selector:fSel,type:fT))
-  return FieldOp(selector:fSel,type:fT)
-  exception on StateOperation.Fail Fail""
-  }
-
-FieldOp:StateOperation.fieldOperation(
-  forReadable:{
-    class method S fN()
-    read method S baseToS()
-      S""[This.fN()]":"[This1.valToS(this.f())]""}
-  forClassable:{
-    class method S fN()
-    read method S baseToS()
-      S""[This.fN()]":"[this.f().readableName()]""}
-  forClassAny:{
-    class method S fN()
-    read method S baseToS()
-      S""[This.fN()]":"[GetMyName(this.f())]""}
-  )
-
-FieldOpAddClassName:StateOperation.fieldOperation(
-  forReadable:{
-    class method S fN()
-    read method S baseToS()
-      S""[This.fN()]":"[This1.nodeNameAndValToS(this.f())]""}
-  forClassable:{
-    class method S fN()
-    read method S baseToS()
-      S""[This.fN()]":"[this.f().readableName()]""}
-  forClassAny:{
-    class method S fN()
-    read method S baseToS()
-      S""[This.fN()]":"[GetMyName(this.f())]""}
-  )
+class method FieldOperation op()
+  FieldOperation(
+    forReadable:{read T f,,,,,T:{implements Concept.ToS}
+      class method S fN()
+      read method S baseToS() {
+        ts=this.f().toS()
+        if ts.beginsWith(S"[") ( return S""[This.fN()]":"[ts]"")
+        return S""[This.fN()]":"[S.doubleQuote();ts;S.doubleQuote()]""
+        }}
+    forImmutable:{T f,,,,,T:{implements Concept.ToS}
+      class method S fN() 
+      read method S baseToS() {
+        ts=this.f().toS()
+        if ts.beginsWith(S"[") ( return S""[This.fN()]":"[ts]"")
+        return S""[This.fN()]":"[S.doubleQuote();ts;S.doubleQuote()]""
+        }}
+    forClassable:{class T f,,,,,T:{
+        implements Concept.Classable
+        refine read method class This class()
+        refine class method read This cast(read Concept.Classable that)
+        refine class method mut This #cast(mut Concept.Classable that)
+        }
+      class method S fN()
+      read method S baseToS()
+        S""[This.fN()]":"[this.f().readableName()]""
+      }
+    forClassAny:{class T f,,,,,T:{}
+      class method S fN()
+      read method S baseToS()
+        S""[This.fN()]":"[GetMyName(this.f())]""
+      }
+    forLibrary:{Library f
+      class method S fN()
+      read method S baseToS()
+        S""[This.fN()]":{..}"
+      }
+    forVoid:{Void f
+      class method S fN()
+      read method S baseToS()
+        S""[This.fN()]":void"
+      }
+    )  
+class method FieldOperation opClassName(FieldOperation op)
+  FieldOperation(
+    forReadable:{read T f,,,,,T:{implements Concept.ToS, Concept.Classable
+        refine read method class This class()
+        refine class method read This cast(read Concept.Classable that)
+        refine class method mut This #cast(mut Concept.Classable that)
+        }
+      class method S fN()
+      read method S baseToS() {
+        ts=this.f().toS()
+        if ts.beginsWith(S"[") ( return S""[This.fN()]":"[this.f().class().readableName();ts]"")
+        return S""[This.fN()]":"[this.f().class().readableName();S.doubleQuote();ts;S.doubleQuote()]""
+        }}
+    forImmutable:{T f,,,,,T:{implements Concept.ToS, Concept.Classable
+        refine read method class This class()
+        refine class method read This cast(read Concept.Classable that)
+        refine class method mut This #cast(mut Concept.Classable that)
+        }
+      class method S fN()
+      read method S baseToS() {
+        ts=this.f().toS()
+        if ts.beginsWith(S"[") ( return S""[This.fN()]":"[this.f().class().readableName();ts]"")
+        return S""[This.fN()]":"[this.f().class().readableName();S.doubleQuote();ts;S.doubleQuote()]""
+        }}
+    forClassable:op.forClassable()
+    forClassAny:op.forClassAny()
+    forLibrary:op.forLibrary()
+    forVoid:op.forVoid()
+    )
 }

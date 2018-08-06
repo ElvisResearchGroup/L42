@@ -437,6 +437,7 @@ class _Aux{
     for (Member m : cb.getMs()) {
       if (m instanceof MethodWithType) {
         MethodWithType mwt = (MethodWithType) m;
+        if(cb.isInterface()){assert mwt.get_inner()==null;}
         String key = mwt.getMs().toString();
         assert !keys.contains(key);
         keys.add(key);

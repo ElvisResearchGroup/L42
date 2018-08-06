@@ -4,35 +4,35 @@ This0.Abstract.S id()
 class method 
 This0.Abstract.S jsEscape(This0.Abstract.S that) (
   var This0.Abstract.S tmp=that
-  Void unused24822=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b831=This0.Abstract.S.#builder()
-    Void unused24825=b831.#backslash()
-    b831
+  Void unused24743=tmp := tmp.replace(that:This0.Abstract.S.#from(builder:(
+    mut This0.Abstract.S.SBuilder b829=This0.Abstract.S.#builder()
+    Void unused24746=b829.#backslash()
+    b829
     )), into:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b832=This0.Abstract.S.#builder()
-    Void unused24826=b832.#backslash()
-    Void unused24827=b832.#backslash()
-    b832
+    mut This0.Abstract.S.SBuilder b830=This0.Abstract.S.#builder()
+    Void unused24747=b830.#backslash()
+    Void unused24748=b830.#backslash()
+    b830
     )))
-  Void unused24823=tmp := tmp.replace(that:This0.Abstract.S.doubleQuote(), into:(
-    This0.Abstract.S imm$opPar466=This0.Abstract.S.#from(builder:(
-      mut This0.Abstract.S.SBuilder b833=This0.Abstract.S.#builder()
-      Void unused24828=b833.#backslash()
-      b833
+  Void unused24744=tmp := tmp.replace(that:This0.Abstract.S.doubleQuote(), into:(
+    This0.Abstract.S imm$opPar456=This0.Abstract.S.#from(builder:(
+      mut This0.Abstract.S.SBuilder b831=This0.Abstract.S.#builder()
+      Void unused24749=b831.#backslash()
+      b831
       ))
-    This0.Abstract.S imm$opPar467=This0.Abstract.S.doubleQuote()
-    imm$opPar466.#plusplus#0left(right:imm$opPar467)
+    This0.Abstract.S imm$opPar457=This0.Abstract.S.doubleQuote()
+    imm$opPar456.#plusplus#0left(right:imm$opPar457)
     ))
-  Void unused24824=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
+  Void unused24745=tmp := (//tmp:=tmp.replace(S"\u" into:S"\u005cu")
 tmp.replace(that:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b834=This0.Abstract.S.#builder()
-    Void unused24829=b834.#sQuote()
-    b834
+    mut This0.Abstract.S.SBuilder b832=This0.Abstract.S.#builder()
+    Void unused24750=b832.#sQuote()
+    b832
     )), into:This0.Abstract.S.#from(builder:(
-    mut This0.Abstract.S.SBuilder b835=This0.Abstract.S.#builder()
-    Void unused24830=b835.#backslash()
-    Void unused24831=b835.#sQuote()
-    b835
+    mut This0.Abstract.S.SBuilder b833=This0.Abstract.S.#builder()
+    Void unused24751=b833.#backslash()
+    Void unused24752=b833.#sQuote()
+    b833
     ))))
   tmp
   )
@@ -46,327 +46,327 @@ Void open(This0.Abstract.S title, This0.Abstract.S body, This0.Abstract.Size x, 
         This0.Abstract.S rcv4=(
           This0.Abstract.S.Continue rcv5=(
             This0.Abstract.S rcv6=This0.Abstract.S.#from(builder:(
-              mut This0.Abstract.S.SBuilder b836=This0.Abstract.S.#builder()
-              b836
+              mut This0.Abstract.S.SBuilder b834=This0.Abstract.S.#builder()
+              b834
               ))
             rcv6.#from(seqBuilder:(
-              mut This0.Abstract.S.SConcat b837=rcv6.#seqBuilder()
-              Void unused24832=b837.#add(that:This0.htmlHeader())
-              b837
+              mut This0.Abstract.S.SConcat b835=rcv6.#seqBuilder()
+              Void unused24753=b835.#add(that:This0.htmlHeader())
+              b835
               ))
             )
           rcv5.#from(builder:(
-            mut This0.Abstract.S.SBuilder b838=rcv5.#builder()
-            Void unused24833=b838.#left()
-            Void unused24834=b838.#T()
-            Void unused24835=b838.#I()
-            Void unused24836=b838.#T()
-            Void unused24837=b838.#L()
-            Void unused24838=b838.#E()
-            Void unused24839=b838.#right()
-            b838
+            mut This0.Abstract.S.SBuilder b836=rcv5.#builder()
+            Void unused24754=b836.#left()
+            Void unused24755=b836.#T()
+            Void unused24756=b836.#I()
+            Void unused24757=b836.#T()
+            Void unused24758=b836.#L()
+            Void unused24759=b836.#E()
+            Void unused24760=b836.#right()
+            b836
             ))
           )
         rcv4.#from(seqBuilder:(
-          mut This0.Abstract.S.SConcat b839=rcv4.#seqBuilder()
-          Void unused24840=b839.#add(that:title)
-          b839
+          mut This0.Abstract.S.SConcat b837=rcv4.#seqBuilder()
+          Void unused24761=b837.#add(that:title)
+          b837
           ))
         )
       rcv3.#from(builder:(
-        mut This0.Abstract.S.SBuilder b840=rcv3.#builder()
-        Void unused24841=b840.#left()
-        Void unused24842=b840.#divide()
-        Void unused24843=b840.#T()
-        Void unused24844=b840.#I()
-        Void unused24845=b840.#T()
-        Void unused24846=b840.#L()
-        Void unused24847=b840.#E()
-        Void unused24848=b840.#right()
-        Void unused24849=b840.#left()
-        Void unused24850=b840.#divide()
-        Void unused24851=b840.#H()
-        Void unused24852=b840.#T()
-        Void unused24853=b840.#M()
-        Void unused24854=b840.#L()
-        Void unused24855=b840.#right()
-        Void unused24856=b840.#left()
-        Void unused24857=b840.#B()
-        Void unused24858=b840.#O()
-        Void unused24859=b840.#D()
-        Void unused24860=b840.#Y()
-        Void unused24861=b840.#right()
-        b840
+        mut This0.Abstract.S.SBuilder b838=rcv3.#builder()
+        Void unused24762=b838.#left()
+        Void unused24763=b838.#divide()
+        Void unused24764=b838.#T()
+        Void unused24765=b838.#I()
+        Void unused24766=b838.#T()
+        Void unused24767=b838.#L()
+        Void unused24768=b838.#E()
+        Void unused24769=b838.#right()
+        Void unused24770=b838.#left()
+        Void unused24771=b838.#divide()
+        Void unused24772=b838.#H()
+        Void unused24773=b838.#T()
+        Void unused24774=b838.#M()
+        Void unused24775=b838.#L()
+        Void unused24776=b838.#right()
+        Void unused24777=b838.#left()
+        Void unused24778=b838.#B()
+        Void unused24779=b838.#O()
+        Void unused24780=b838.#D()
+        Void unused24781=b838.#Y()
+        Void unused24782=b838.#right()
+        b838
         ))
       )
     rcv2.#from(seqBuilder:(
-      mut This0.Abstract.S.SConcat b841=rcv2.#seqBuilder()
-      Void unused24862=b841.#add(that:body)
-      b841
+      mut This0.Abstract.S.SConcat b839=rcv2.#seqBuilder()
+      Void unused24783=b839.#add(that:body)
+      b839
       ))
     )
   rcv1.#from(builder:(
-    mut This0.Abstract.S.SBuilder b842=rcv1.#builder()
-    Void unused24863=b842.#left()
-    Void unused24864=b842.#divide()
-    Void unused24865=b842.#B()
-    Void unused24866=b842.#O()
-    Void unused24867=b842.#D()
-    Void unused24868=b842.#Y()
-    Void unused24869=b842.#right()
-    Void unused24870=b842.#left()
-    Void unused24871=b842.#divide()
-    Void unused24872=b842.#H()
-    Void unused24873=b842.#T()
-    Void unused24874=b842.#M()
-    Void unused24875=b842.#L()
-    Void unused24876=b842.#right()
-    b842
+    mut This0.Abstract.S.SBuilder b840=rcv1.#builder()
+    Void unused24784=b840.#left()
+    Void unused24785=b840.#divide()
+    Void unused24786=b840.#B()
+    Void unused24787=b840.#O()
+    Void unused24788=b840.#D()
+    Void unused24789=b840.#Y()
+    Void unused24790=b840.#right()
+    Void unused24791=b840.#left()
+    Void unused24792=b840.#divide()
+    Void unused24793=b840.#H()
+    Void unused24794=b840.#T()
+    Void unused24795=b840.#M()
+    Void unused24796=b840.#L()
+    Void unused24797=b840.#right()
+    b840
     ))
   ), x:x, y:y)
 class method 
 This0.Abstract.S htmlHeader() (
   This0.Abstract.S.Continue rcv7=(
     This0.Abstract.S rcv8=This0.Abstract.S.#from(builder:(
-      mut This0.Abstract.S.SBuilder b843=This0.Abstract.S.#builder()
-      Void unused24877=b843.#left()
-      Void unused24878=b843.#bang()
-      Void unused24879=b843.#D()
-      Void unused24880=b843.#O()
-      Void unused24881=b843.#C()
-      Void unused24882=b843.#T()
-      Void unused24883=b843.#Y()
-      Void unused24884=b843.#P()
-      Void unused24885=b843.#E()
-      Void unused24886=b843.#space()
-      Void unused24887=b843.#h()
-      Void unused24888=b843.#t()
-      Void unused24889=b843.#m()
-      Void unused24890=b843.#l()
-      Void unused24891=b843.#right()
-      Void unused24892=b843.#left()
-      Void unused24893=b843.#h()
-      Void unused24894=b843.#t()
-      Void unused24895=b843.#m()
-      Void unused24896=b843.#l()
-      Void unused24897=b843.#right()
-      Void unused24898=b843.#left()
-      Void unused24899=b843.#h()
-      Void unused24900=b843.#e()
-      Void unused24901=b843.#a()
-      Void unused24902=b843.#d()
-      Void unused24903=b843.#right()
-      Void unused24904=b843.#left()
-      Void unused24905=b843.#m()
-      Void unused24906=b843.#e()
-      Void unused24907=b843.#t()
-      Void unused24908=b843.#a()
-      Void unused24909=b843.#space()
-      Void unused24910=b843.#h()
-      Void unused24911=b843.#t()
-      Void unused24912=b843.#t()
-      Void unused24913=b843.#p()
-      Void unused24914=b843.#less()
-      Void unused24915=b843.#e()
-      Void unused24916=b843.#q()
-      Void unused24917=b843.#u()
-      Void unused24918=b843.#i()
-      Void unused24919=b843.#v()
-      Void unused24920=b843.#equal()
-      Void unused24921=b843.#dQuote()
-      Void unused24922=b843.#c()
-      Void unused24923=b843.#o()
-      Void unused24924=b843.#n()
-      Void unused24925=b843.#t()
-      Void unused24926=b843.#e()
-      Void unused24927=b843.#n()
-      Void unused24928=b843.#t()
-      Void unused24929=b843.#less()
-      Void unused24930=b843.#c()
-      Void unused24931=b843.#l()
-      Void unused24932=b843.#a()
-      Void unused24933=b843.#s()
-      Void unused24934=b843.#s()
-      Void unused24935=b843.#dQuote()
-      Void unused24936=b843.#space()
-      Void unused24937=b843.#c()
-      Void unused24938=b843.#o()
-      Void unused24939=b843.#n()
-      Void unused24940=b843.#t()
-      Void unused24941=b843.#e()
-      Void unused24942=b843.#n()
-      Void unused24943=b843.#t()
-      Void unused24944=b843.#equal()
-      Void unused24945=b843.#dQuote()
-      Void unused24946=b843.#t()
-      Void unused24947=b843.#e()
-      Void unused24948=b843.#x()
-      Void unused24949=b843.#t()
-      Void unused24950=b843.#divide()
-      Void unused24951=b843.#h()
-      Void unused24952=b843.#t()
-      Void unused24953=b843.#m()
-      Void unused24954=b843.#l()
-      Void unused24955=b843.#semicolon()
-      Void unused24956=b843.#space()
-      Void unused24957=b843.#c()
-      Void unused24958=b843.#h()
-      Void unused24959=b843.#a()
-      Void unused24960=b843.#r()
-      Void unused24961=b843.#s()
-      Void unused24962=b843.#e()
-      Void unused24963=b843.#t()
-      Void unused24964=b843.#equal()
-      Void unused24965=b843.#U()
-      Void unused24966=b843.#T()
-      Void unused24967=b843.#F()
-      Void unused24968=b843.#less()
-      Void unused24969=b843.#8()
-      Void unused24970=b843.#dQuote()
-      Void unused24971=b843.#right()
-      Void unused24972=b843.#newline()
-      Void unused24973=b843.#left()
-      Void unused24974=b843.#s()
-      Void unused24975=b843.#c()
-      Void unused24976=b843.#r()
-      Void unused24977=b843.#i()
-      Void unused24978=b843.#p()
-      Void unused24979=b843.#t()
-      Void unused24980=b843.#right()
-      Void unused24981=b843.#newline()
-      Void unused24982=b843.#newline()
-      b843
+      mut This0.Abstract.S.SBuilder b841=This0.Abstract.S.#builder()
+      Void unused24798=b841.#left()
+      Void unused24799=b841.#bang()
+      Void unused24800=b841.#D()
+      Void unused24801=b841.#O()
+      Void unused24802=b841.#C()
+      Void unused24803=b841.#T()
+      Void unused24804=b841.#Y()
+      Void unused24805=b841.#P()
+      Void unused24806=b841.#E()
+      Void unused24807=b841.#space()
+      Void unused24808=b841.#h()
+      Void unused24809=b841.#t()
+      Void unused24810=b841.#m()
+      Void unused24811=b841.#l()
+      Void unused24812=b841.#right()
+      Void unused24813=b841.#left()
+      Void unused24814=b841.#h()
+      Void unused24815=b841.#t()
+      Void unused24816=b841.#m()
+      Void unused24817=b841.#l()
+      Void unused24818=b841.#right()
+      Void unused24819=b841.#left()
+      Void unused24820=b841.#h()
+      Void unused24821=b841.#e()
+      Void unused24822=b841.#a()
+      Void unused24823=b841.#d()
+      Void unused24824=b841.#right()
+      Void unused24825=b841.#left()
+      Void unused24826=b841.#m()
+      Void unused24827=b841.#e()
+      Void unused24828=b841.#t()
+      Void unused24829=b841.#a()
+      Void unused24830=b841.#space()
+      Void unused24831=b841.#h()
+      Void unused24832=b841.#t()
+      Void unused24833=b841.#t()
+      Void unused24834=b841.#p()
+      Void unused24835=b841.#less()
+      Void unused24836=b841.#e()
+      Void unused24837=b841.#q()
+      Void unused24838=b841.#u()
+      Void unused24839=b841.#i()
+      Void unused24840=b841.#v()
+      Void unused24841=b841.#equal()
+      Void unused24842=b841.#dQuote()
+      Void unused24843=b841.#c()
+      Void unused24844=b841.#o()
+      Void unused24845=b841.#n()
+      Void unused24846=b841.#t()
+      Void unused24847=b841.#e()
+      Void unused24848=b841.#n()
+      Void unused24849=b841.#t()
+      Void unused24850=b841.#less()
+      Void unused24851=b841.#c()
+      Void unused24852=b841.#l()
+      Void unused24853=b841.#a()
+      Void unused24854=b841.#s()
+      Void unused24855=b841.#s()
+      Void unused24856=b841.#dQuote()
+      Void unused24857=b841.#space()
+      Void unused24858=b841.#c()
+      Void unused24859=b841.#o()
+      Void unused24860=b841.#n()
+      Void unused24861=b841.#t()
+      Void unused24862=b841.#e()
+      Void unused24863=b841.#n()
+      Void unused24864=b841.#t()
+      Void unused24865=b841.#equal()
+      Void unused24866=b841.#dQuote()
+      Void unused24867=b841.#t()
+      Void unused24868=b841.#e()
+      Void unused24869=b841.#x()
+      Void unused24870=b841.#t()
+      Void unused24871=b841.#divide()
+      Void unused24872=b841.#h()
+      Void unused24873=b841.#t()
+      Void unused24874=b841.#m()
+      Void unused24875=b841.#l()
+      Void unused24876=b841.#semicolon()
+      Void unused24877=b841.#space()
+      Void unused24878=b841.#c()
+      Void unused24879=b841.#h()
+      Void unused24880=b841.#a()
+      Void unused24881=b841.#r()
+      Void unused24882=b841.#s()
+      Void unused24883=b841.#e()
+      Void unused24884=b841.#t()
+      Void unused24885=b841.#equal()
+      Void unused24886=b841.#U()
+      Void unused24887=b841.#T()
+      Void unused24888=b841.#F()
+      Void unused24889=b841.#less()
+      Void unused24890=b841.#8()
+      Void unused24891=b841.#dQuote()
+      Void unused24892=b841.#right()
+      Void unused24893=b841.#newline()
+      Void unused24894=b841.#left()
+      Void unused24895=b841.#s()
+      Void unused24896=b841.#c()
+      Void unused24897=b841.#r()
+      Void unused24898=b841.#i()
+      Void unused24899=b841.#p()
+      Void unused24900=b841.#t()
+      Void unused24901=b841.#right()
+      Void unused24902=b841.#newline()
+      Void unused24903=b841.#newline()
+      b841
       ))
     rcv8.#from(seqBuilder:(
-      mut This0.Abstract.S.SConcat b844=rcv8.#seqBuilder()
-      Void unused24983=b844.#add(that:This0.Abstract.Debug.readFile(fileName:This0.Abstract.Debug.localToAbsolute(fileName:This0.Abstract.S.#from(builder:(
-        mut This0.Abstract.S.SBuilder b845=This0.Abstract.S.#builder()
-        Void unused24984=b845.#e()
-        Void unused24985=b845.#x()
-        Void unused24986=b845.#a()
-        Void unused24987=b845.#m()
-        Void unused24988=b845.#p()
-        Void unused24989=b845.#l()
-        Void unused24990=b845.#e()
-        Void unused24991=b845.#s()
-        Void unused24992=b845.#divide()
-        Void unused24993=b845.#r()
-        Void unused24994=b845.#e()
-        Void unused24995=b845.#s()
-        Void unused24996=b845.#o()
-        Void unused24997=b845.#u()
-        Void unused24998=b845.#r()
-        Void unused24999=b845.#c()
-        Void unused25000=b845.#e()
-        Void unused25001=b845.#s()
-        Void unused25002=b845.#divide()
-        Void unused25003=b845.#j()
-        Void unused25004=b845.#s()
-        Void unused25005=b845.#dot()
-        Void unused25006=b845.#j()
-        Void unused25007=b845.#s()
-        b845
+      mut This0.Abstract.S.SConcat b842=rcv8.#seqBuilder()
+      Void unused24904=b842.#add(that:This0.Abstract.Debug.readFile(fileName:This0.Abstract.Debug.localToAbsolute(fileName:This0.Abstract.S.#from(builder:(
+        mut This0.Abstract.S.SBuilder b843=This0.Abstract.S.#builder()
+        Void unused24905=b843.#e()
+        Void unused24906=b843.#x()
+        Void unused24907=b843.#a()
+        Void unused24908=b843.#m()
+        Void unused24909=b843.#p()
+        Void unused24910=b843.#l()
+        Void unused24911=b843.#e()
+        Void unused24912=b843.#s()
+        Void unused24913=b843.#divide()
+        Void unused24914=b843.#r()
+        Void unused24915=b843.#e()
+        Void unused24916=b843.#s()
+        Void unused24917=b843.#o()
+        Void unused24918=b843.#u()
+        Void unused24919=b843.#r()
+        Void unused24920=b843.#c()
+        Void unused24921=b843.#e()
+        Void unused24922=b843.#s()
+        Void unused24923=b843.#divide()
+        Void unused24924=b843.#j()
+        Void unused24925=b843.#s()
+        Void unused24926=b843.#dot()
+        Void unused24927=b843.#j()
+        Void unused24928=b843.#s()
+        b843
         )))))
-      b844
+      b842
       ))
     )
   rcv7.#from(builder:(
-    mut This0.Abstract.S.SBuilder b846=rcv7.#builder()
-    Void unused25008=b846.#newline()
-    Void unused25009=b846.#left()
-    Void unused25010=b846.#divide()
-    Void unused25011=b846.#s()
-    Void unused25012=b846.#c()
-    Void unused25013=b846.#r()
-    Void unused25014=b846.#i()
-    Void unused25015=b846.#p()
-    Void unused25016=b846.#t()
-    Void unused25017=b846.#right()
-    Void unused25018=b846.#newline()
-    b846
+    mut This0.Abstract.S.SBuilder b844=rcv7.#builder()
+    Void unused24929=b844.#newline()
+    Void unused24930=b844.#left()
+    Void unused24931=b844.#divide()
+    Void unused24932=b844.#s()
+    Void unused24933=b844.#c()
+    Void unused24934=b844.#r()
+    Void unused24935=b844.#i()
+    Void unused24936=b844.#p()
+    Void unused24937=b844.#t()
+    Void unused24938=b844.#right()
+    Void unused24939=b844.#newline()
+    b844
     ))
   )
 method 
 Void open(This0.Abstract.S html, This0.Abstract.Size x, This0.Abstract.Size y) (
-  Void unused25019=This0.Abstract.Debug.#apply(that:html)
+  Void unused24940=This0.Abstract.Debug.#apply(that:html)
   use This0.GuiPlugin check open(wName:this.id().#binaryRepr(), html:html.#binaryRepr(), x:x.#binaryRepr(), y:y.#binaryRepr()) error void
   )
 method 
 Void set(This0.Abstract.S that, This0.Abstract.S id) (
-  Void unused25020=(/*$('#Alpha').replaceWith('htmlstring')
+  Void unused24941=(/*$('#Alpha').replaceWith('htmlstring')
 */
     This0.Abstract.S cmd=(
-      This0.Abstract.S imm$opPar474=This0.Abstract.S.#from(builder:(
-        mut This0.Abstract.S.SBuilder b847=This0.Abstract.S.#builder()
-        Void unused25024=b847.#$()
-        Void unused25025=b847.#oRound()
-        Void unused25026=b847.#sQuote()
-        Void unused25027=b847.#hash()
-        b847
+      This0.Abstract.S imm$opPar464=This0.Abstract.S.#from(builder:(
+        mut This0.Abstract.S.SBuilder b845=This0.Abstract.S.#builder()
+        Void unused24945=b845.#$()
+        Void unused24946=b845.#oRound()
+        Void unused24947=b845.#sQuote()
+        Void unused24948=b845.#hash()
+        b845
         ))
-      This0.Abstract.S imm$opPar475=(
-        This0.Abstract.S imm$opPar472=This0.jsEscape(that:id)
-        This0.Abstract.S imm$opPar473=(
-          This0.Abstract.S imm$opPar470=This0.Abstract.S.#from(builder:(
-            mut This0.Abstract.S.SBuilder b848=This0.Abstract.S.#builder()
-            Void unused25028=b848.#sQuote()
-            Void unused25029=b848.#cRound()
-            Void unused25030=b848.#dot()
-            Void unused25031=b848.#r()
-            Void unused25032=b848.#e()
-            Void unused25033=b848.#p()
-            Void unused25034=b848.#l()
-            Void unused25035=b848.#a()
-            Void unused25036=b848.#c()
-            Void unused25037=b848.#e()
-            Void unused25038=b848.#W()
-            Void unused25039=b848.#i()
-            Void unused25040=b848.#t()
-            Void unused25041=b848.#h()
-            Void unused25042=b848.#oRound()
-            Void unused25043=b848.#sQuote()
-            b848
+      This0.Abstract.S imm$opPar465=(
+        This0.Abstract.S imm$opPar462=This0.jsEscape(that:id)
+        This0.Abstract.S imm$opPar463=(
+          This0.Abstract.S imm$opPar460=This0.Abstract.S.#from(builder:(
+            mut This0.Abstract.S.SBuilder b846=This0.Abstract.S.#builder()
+            Void unused24949=b846.#sQuote()
+            Void unused24950=b846.#cRound()
+            Void unused24951=b846.#dot()
+            Void unused24952=b846.#r()
+            Void unused24953=b846.#e()
+            Void unused24954=b846.#p()
+            Void unused24955=b846.#l()
+            Void unused24956=b846.#a()
+            Void unused24957=b846.#c()
+            Void unused24958=b846.#e()
+            Void unused24959=b846.#W()
+            Void unused24960=b846.#i()
+            Void unused24961=b846.#t()
+            Void unused24962=b846.#h()
+            Void unused24963=b846.#oRound()
+            Void unused24964=b846.#sQuote()
+            b846
             ))
-          This0.Abstract.S imm$opPar471=(
-            This0.Abstract.S imm$opPar468=This0.jsEscape(that:that)
-            This0.Abstract.S imm$opPar469=This0.Abstract.S.#from(builder:(
-              mut This0.Abstract.S.SBuilder b849=This0.Abstract.S.#builder()
-              Void unused25044=b849.#sQuote()
-              Void unused25045=b849.#cRound()
-              Void unused25046=b849.#semicolon()
-              b849
+          This0.Abstract.S imm$opPar461=(
+            This0.Abstract.S imm$opPar458=This0.jsEscape(that:that)
+            This0.Abstract.S imm$opPar459=This0.Abstract.S.#from(builder:(
+              mut This0.Abstract.S.SBuilder b847=This0.Abstract.S.#builder()
+              Void unused24965=b847.#sQuote()
+              Void unused24966=b847.#cRound()
+              Void unused24967=b847.#semicolon()
+              b847
               ))
-            imm$opPar468.#plusplus#0left(right:imm$opPar469)
+            imm$opPar458.#plusplus#0left(right:imm$opPar459)
             )
-          imm$opPar470.#plusplus#0left(right:imm$opPar471)
+          imm$opPar460.#plusplus#0left(right:imm$opPar461)
           )
-        imm$opPar472.#plusplus#0left(right:imm$opPar473)
+        imm$opPar462.#plusplus#0left(right:imm$opPar463)
         )
-      imm$opPar474.#plusplus#0left(right:imm$opPar475)
+      imm$opPar464.#plusplus#0left(right:imm$opPar465)
       )
     This0.Abstract.S x=this.executeJs(that:cmd)
-    Void unused25021=This0.Abstract.Debug.#apply(that:cmd)
-    Void unused25022=(
-      This0.Abstract.Bool cond125=(
-        This0.Abstract.S read$opPar110=This0.Abstract.S.#from(builder:(
-          mut This0.Abstract.S.SBuilder b850=This0.Abstract.S.#builder()
-          b850
+    Void unused24942=This0.Abstract.Debug.#apply(that:cmd)
+    Void unused24943=(
+      This0.Abstract.Bool cond128=(
+        This0.Abstract.S read$opPar114=This0.Abstract.S.#from(builder:(
+          mut This0.Abstract.S.SBuilder b848=This0.Abstract.S.#builder()
+          b848
           ))
-        x.#equalequal#0left(right:read$opPar110)
+        x.#equalequal#0left(right:read$opPar114)
         ).#bang()
       (
-        Void unused25047=cond125.#checkTrue()
+        Void unused24968=cond128.#checkTrue()
         
-        catch exception Void catched40378 void
+        catch exception Void catched39757 void
         
         (This0.Abstract.Debug.#apply(that:x))
         )
       )
-    Void unused25023=return void
+    Void unused24944=return void
     void
     )
   
-  catch return Void result164 result164
+  catch return Void result161 result161
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -376,8 +376,8 @@ method
 This0.Abstract.S executeJs(This0.Abstract.S that) This0.Abstract.S.#from(binaryRepr:use This0.GuiPlugin check executeJs(wName:this.id().#binaryRepr(), command:that.#binaryRepr()) error void)
 method 
 mut This0.Iterator events() This0.Iterator.#apply(id:this.id(), current:This0.Abstract.S.#from(builder:(
-  mut This0.Abstract.S.SBuilder b851=This0.Abstract.S.#builder()
-  b851
+  mut This0.Abstract.S.SBuilder b849=This0.Abstract.S.#builder()
+  b849
   )))
 class method 
 mut This0 #apply(fwd This0.Abstract.S id) 
@@ -390,8 +390,7 @@ class method /*To signal normal program completion
 */Library normal() 
 class method /*To signal a failure in program completion
 */Library failure() }
-Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
+Bool: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 read method 
 Library _binaryRepr() 
 class method 
@@ -439,28 +438,9 @@ class method
 This0 fromS(read This1.Concept.ToS that) 
 class method 
 Any parseError(This1.S that) 
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -486,6 +466,10 @@ refine class method /*
   */This1 is(class This2.Concept.Classable subtype) 
 refine read method 
 This1 #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -725,28 +709,9 @@ read method
 This1 #inner() 
 read method 
 Void #close() }
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -772,6 +737,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -811,21 +780,7 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}}
-Num: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This1.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
+Num: {implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -844,6 +799,12 @@ refine class method /*
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -879,28 +840,9 @@ This1.Bool #rightequal#0left(This0 right)
 Plg: {/*@plugin
 L42.is/connected/withNumbers
 */}
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -926,6 +868,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -966,8 +912,7 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}}
 S: {implements This1.Concept.Base/*, Concept.Equals //needed until we do (also refine) normalization
-*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/, This1.Concept.ToS
+*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals, This1.Concept.ToS
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -1359,23 +1304,9 @@ class method /*
   subtype test; similar to java 'instanceof'.
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This0 subtype) }
-Base: {interface implements This1.ToS, This1.Classable, This1.Equals/*class method This from(Base base)
-*/
+Base: {interface implements This1.ToS, This1.Classable, This1.Equals
 refine read method 
 This2.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This1.Classable cast(read This1.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This1.Classable #cast(mut This1.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This1.Classable class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1386,7 +1317,13 @@ refine class method /*
   if is(subtype) is true, then cast(that) must produce a result.
   */This2.Bool is(class This1.Classable subtype) 
 refine read method 
-This2.Bool #equalequal#0left(read Any right) }
+This2.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This1.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Classable that) }
 Wrapper: {interface 
 read method 
 Any inner() }
@@ -1429,20 +1366,9 @@ read method
 Void #checkEnd() 
 read method 
 Void #close() }}
-Message: {interface implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
+Message: {interface implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 refine read method 
 This1.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1454,6 +1380,10 @@ refine class method /*
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This1.Concept.Base cast(read This1.Concept.Classable that) 
+refine class method 
+mut This1.Concept.Base #cast(mut This1.Concept.Classable that) 
 class method 
 This1.S kind() 
 read method 
@@ -1511,20 +1441,9 @@ as errors, they represent precondition violations.
 Turning an exception Guard into an error Guard
  is equivalent of declaring that such misuse should not happen (blame on the caller),
  still, there is no bug in the program at this stage. Is legit for the caller to try and be blamed
-*/interface implements This1.Message, This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
+*/interface implements This1.Message, This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 refine read method 
 This1.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1537,6 +1456,10 @@ refine class method /*
 refine read method 
 This1.Bool #equalequal#0left(read Any right) 
 refine class method 
+read This1.Concept.Base cast(read This1.Concept.Classable that) 
+refine class method 
+mut This1.Concept.Base #cast(mut This1.Concept.Classable that) 
+refine class method 
 This1.S kind() 
 refine read method 
 This1.S text() 
@@ -1544,28 +1467,9 @@ refine read method
 This1.Message.Opt responseOf() 
 refine read method 
 class This1.Message class() 
-Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Operation: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1591,6 +1495,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -1630,28 +1538,9 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Parameter: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Parameter: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1677,6 +1566,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -1716,28 +1609,9 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Precondition: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Precondition: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1763,6 +1637,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -1802,20 +1680,9 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-ParseFail: {interface implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {interface implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 This2.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1827,6 +1694,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This2.Concept.Base cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Base #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -1835,28 +1706,9 @@ refine read method
 This2.Message.Opt responseOf() 
 refine read method 
 class This2.Message class() }
-CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+CastFail: {implements This1, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1882,6 +1734,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -1923,20 +1779,9 @@ method
 This1 #from(This3.S.SBuilder builder) }}}
 System: {
 Guard: {/* implements Outer.Guard soon (remove "interface" for a bad translation bug: This1_System_Guard is not abstract and does not override abstract method MtoS()
-*/interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 This2.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -1949,6 +1794,10 @@ refine class method /*
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
 refine class method 
+read This2.Concept.Base cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Base #cast(mut This2.Concept.Classable that) 
+refine class method 
 This2.S kind() 
 refine read method 
 This2.S text() 
@@ -1956,28 +1805,9 @@ refine read method
 This2.Message.Opt responseOf() 
 refine read method 
 class This2.Message class() 
-PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+PluginFailure: {implements This1, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -2003,6 +1833,10 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 read method 
 This3.S _text() 
 read method 
@@ -2051,20 +1885,9 @@ class method
 mut This0.Tests #seqBuilder() 
 class method 
 Void #from(This0.Tests seqBuilder) 
-NotImplementedYet: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+NotImplementedYet: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -2083,6 +1906,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -2122,20 +1949,9 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-AssertionFail: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+AssertionFail: {implements This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -2154,6 +1970,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -2784,8 +2604,7 @@ class method
 mut This1.S.SBuilder #builder() }
 Path: {/*@plugin is.L42.connected.withSafeOperators
 @pluginPart java.util.List
-*/implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -2794,19 +2613,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This1.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This1.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -2825,6 +2631,12 @@ refine class method /*
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 class method 
@@ -2880,45 +2692,9 @@ class method
 This1 rawFromS(This2.S that) 
 class method 
 This2.S toS(read This1 that) }
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/, This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals, This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -2965,6 +2741,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -3006,8 +2786,7 @@ method
 This1 #from(This3.S.SBuilder builder) }}}
 Selector: {/*@plugin  toFix 
 @pluginPart ast.Ast$MethodSelector
-*/implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -3018,19 +2797,6 @@ read method
 This1.Bool equals(read This0 that) 
 refine read method 
 This1.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This1.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This1.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -3049,6 +2815,12 @@ refine class method /*
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This0 class() 
+refine class method 
+read This0 cast(read This1.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This1.Concept.Classable that) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) 
 class method 
@@ -3091,45 +2863,9 @@ method
 This0 with(This1.Strings names) 
 class method 
 Any parseError(This1.S that) 
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/, This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals, This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -3176,6 +2912,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -3216,33 +2956,9 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}}
 Location: {interface implements This1.Concept.Base/*that is equals, toS and "know your class"
-*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals/*class method This from(Base base)
-*/
+*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 refine read method 
 This1.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This1.Concept.Classable cast(read This1.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This1.Concept.Classable #cast(mut This1.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  
-  Extracts the class singleton from another instance of this class
-  */class This1.Concept.Classable class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -3261,6 +2977,12 @@ refine class method /*
   */This1.Bool is(class This1.Concept.Classable subtype) 
 refine read method 
 This1.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This1.Concept.Base class() 
+refine class method 
+read This1.Concept.Base cast(read This1.Concept.Classable that) 
+refine class method 
+mut This1.Concept.Base #cast(mut This1.Concept.Classable that) 
 method 
 This1.Size originSize() 
 method 
@@ -3269,28 +2991,9 @@ method
 This0 location() 
 method 
 This0.Doc doc() 
-NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+NotAvailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -3316,6 +3019,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -3355,8 +3062,7 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Mdf: {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Mdf: {implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 read method 
 This2.Size inner() 
 class method 
@@ -3404,29 +3110,6 @@ This2.Bool isFwdMut()
 refine read method 
 This2.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -3451,28 +3134,15 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
-ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+ParseFail: {implements This3.Guard.ParseFail, This3.Guard, This3.Message, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
+refine read method 
+class This0 class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -3498,6 +3168,10 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 read method 
 This3.S _text() 
 read method 
@@ -3792,8 +3466,7 @@ read method
 Void #close() }}}
 Origin: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Origin
-*/implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -3819,16 +3492,6 @@ This0 #apply(This2.S fileName, This2.Size lineStart, This2.Size lineEnd, This2.S
 refine read method 
 This2.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -3846,6 +3509,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -4116,8 +3783,7 @@ class method
 Library #leftrightleft#0left(Library right) }
 Lib: {/*@plugin  toFix
 @pluginPart is.L42.connected.withSafeOperators.location.Lib
-*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -4211,32 +3877,6 @@ refine method /*implemented but refined
 refine read method 
 This2.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -4268,6 +3908,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -4525,8 +4169,7 @@ read method
 Void #close() }}}
 Method: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Method
-*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -4570,32 +4213,6 @@ This1.Type.Exception.List exceptionTypes()
 refine read method 
 This2.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -4627,6 +4244,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 class This0 class() 
 List: {implements This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
@@ -4882,23 +4503,9 @@ read method
 This2 #inner() 
 read method 
 Void #close() }}}
-Type: {interface implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Type: {interface implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 This2.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This2.Concept.Classable class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -4910,6 +4517,12 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This2.Concept.Base class() 
+refine class method 
+read This2.Concept.Base cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Base #cast(mut This2.Concept.Classable that) 
 refine method 
 This2.Size originSize() 
 refine method 
@@ -4929,8 +4542,7 @@ class method
 This1.RefTo #apply(Library that) }
 Return: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Return
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -4959,32 +4571,6 @@ refine method
 This2.Mdf mdf() 
 refine read method 
 This3.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -5017,13 +4603,15 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() }
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method 
+class This0 class() }
 Parameter: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Parameter     
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5055,32 +4643,6 @@ This3.Size pos()
 refine read method 
 This3.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -5112,9 +4674,12 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method 
+class This0 class() 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 refine class method /*
   Cast a (read/imm) object to this type.
@@ -5370,8 +4935,7 @@ read method
 Void #close() }}}
 Exception: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Exception
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5402,32 +4966,6 @@ method
 This3.Size pos() 
 refine read method 
 This3.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -5460,9 +4998,12 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method 
+class This0 class() 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 refine class method /*
   Cast a (read/imm) object to this type.
@@ -5718,8 +5259,7 @@ read method
 Void #close() }}}
 Implemented: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Type$Implemented
-*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2, This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -5750,32 +5290,6 @@ method
 This3.Size pos() 
 refine read method 
 This3.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -5808,9 +5322,12 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
+refine read method 
+class This0 class() 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
 refine class method /*
   Cast a (read/imm) object to this type.
@@ -6064,23 +5581,9 @@ read method
 This2 #inner() 
 read method 
 Void #close() }}}
-RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+RefTo: {interface implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 refine read method 
 This3.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This3.Concept.Classable cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This3.Concept.Classable #cast(mut This3.Concept.Classable that) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This3.Concept.Classable class() 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6092,10 +5595,15 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
+refine read method 
+class This3.Concept.Base class() 
+refine class method 
+read This3.Concept.Base cast(read This3.Concept.Classable that) 
+refine class method 
+mut This3.Concept.Base #cast(mut This3.Concept.Classable that) 
 Lib: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Lib
-*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
-*/, This1
+*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals, This1
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6111,16 +5619,6 @@ This3.Lib referredLib()
 refine read method 
 This4.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This4.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -6138,12 +5636,15 @@ refine class method /*
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() }
 Unavailable: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Unavailable
-*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
-*/, This1
+*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals, This1
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6157,16 +5658,6 @@ This4.Bool equals(read This0 that)
 refine read method 
 This4.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This4.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -6184,12 +5675,15 @@ refine class method /*
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() }
 Binded: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Binded
-*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
-*/, This1/*includes primitives
+*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals, This1/*includes primitives
 */
 class method 
 mut This0 #from(Library binaryRepr) 
@@ -6210,16 +5704,6 @@ This4.Bool equalsClassObj(class Any that, class Any and)
 refine read method 
 This4.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This4.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -6237,12 +5721,15 @@ refine class method /*
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() }
 Missing: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.TypeRefTo$Missing
-*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals/*class method This from(Base base)
-*/, This1
+*/implements This4.Concept.Base, This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals, This1
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6256,16 +5743,6 @@ This4.Bool equals(read This0 that)
 refine read method 
 This4.S toS() 
 refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This4.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This4.Concept.Classable that) 
-refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
   base metaprogramming operations.
@@ -6283,13 +5760,16 @@ refine class method /*
   */This4.Bool is(class This4.Concept.Classable subtype) 
 refine read method 
 This4.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This4.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This4.Concept.Classable that) 
 refine read method 
 class This0 class() }}}
 Doc: {/*user will need typecase to discover precise type, location() not refined
 @plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc
-*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6318,32 +5798,6 @@ method
 This0.Annotation.List annotations() 
 refine read method 
 This2.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6376,13 +5830,15 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
-refine read method /*
-  Extracts the class singleton from another instance of this class
-  */class This0 class() 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method 
+class This0 class() 
 Annotation: {/*@plugin  toFix 
 @pluginPart is.L42.connected.withSafeOperators.location.Doc$Annotation
-*/implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This3.Concept.Base, This3.Concept.ToS, This3.Concept.Classable, This3.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6399,16 +5855,6 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) 
 refine read method 
 This3.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This3.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This3.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6427,6 +5873,10 @@ refine class method /*
   */This3.Bool is(class This3.Concept.Classable subtype) 
 refine read method 
 This3.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This3.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This3.Concept.Classable that) 
 refine read method 
 class This0 class() 
 List: {implements This4.Concept.ToS, This4.Concept.Classable, This4.Concept.Equals
@@ -6724,20 +6174,9 @@ class method
 This0.RedirectRefTo redirect(This1.Path path, This1.Location.Type.RefTo intoRefTo) 
 class method 
 This0.SumMethods sumMethods(This1.Selector that, This1.Selector and, This1.Path of, This1.S over, This1.Selector into) 
-Fail: {interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Fail: {interface implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 This2.S toS() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This2.Concept.Classable cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This2.Concept.Classable #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6749,6 +6188,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This2.Concept.Base cast(read This2.Concept.Classable that) 
+refine class method 
+mut This2.Concept.Base #cast(mut This2.Concept.Classable that) 
 refine class method 
 This2.S kind() 
 refine read method 
@@ -6764,8 +6207,7 @@ class method
 Library #leftrightleft#0left(Library right) }
 ParseFail: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ParseFail
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6778,16 +6220,6 @@ method
 This2.S string() 
 method 
 This2.S expected() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6806,6 +6238,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6820,8 +6256,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 UnresolvedOverloading: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$UnresolvedOverloading
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6830,16 +6265,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6858,6 +6283,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6872,8 +6301,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 ClassUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6882,16 +6310,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6910,6 +6328,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6924,8 +6346,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 MethodUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6934,16 +6355,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -6962,6 +6373,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -6976,8 +6391,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 ClassClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -6990,16 +6404,6 @@ method
 This2.Location.Lib left() 
 method 
 This2.Location.Lib right() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7018,6 +6422,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7032,8 +6440,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 MethodClash: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -7046,16 +6453,6 @@ method
 This2.Location.Method left() 
 method 
 This2.Location.Method right() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7074,6 +6471,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7088,8 +6489,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 PathUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -7100,16 +6500,6 @@ read method
 This2.Bool equals(read This0 that) 
 method 
 This2.Path path() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7128,6 +6518,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7142,8 +6536,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 SelectorUnfit: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -7156,16 +6549,6 @@ method
 This2.Path path() 
 method 
 This2.Selector selector() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7184,6 +6567,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7198,8 +6585,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 IncoherentMapping: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -7208,16 +6594,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7236,6 +6612,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7250,8 +6630,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 PrivacyCoupuled: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -7260,16 +6639,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7288,6 +6657,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7302,8 +6675,7 @@ class method
 Library #pluginUnresponsive(Library binaryRepr) }
 SubtleSubtypeViolation: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
 @plugin is.L42.connected.withSafeOperators
-*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 
 mut This0 #from(Library binaryRepr) 
 read method 
@@ -7312,16 +6684,6 @@ class method
 Void #exceptionIf(Library binaryRepr) exception This0 
 read method 
 This2.Bool equals(read This0 that) 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7340,6 +6702,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 refine read method 
 This2.S text() 
 refine read method 
@@ -7508,28 +6874,9 @@ class method
 This0 #apply(This2.Path src, class Any dest) 
 method 
 Library #leftrightleft#0left(Library right) exception This1.ClassUnfit, This1.IncoherentMapping, This1.MethodClash, This1.PathUnfit }
-RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+RefToUnfit: {implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7555,6 +6902,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -7912,28 +7263,9 @@ class method
 Library minimal(class Any that) 
 class method 
 Library eq(class Any that) 
-IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -7959,6 +7291,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -8082,28 +7418,9 @@ class method
 Library minimal(class Any that) 
 class method 
 Library eq(class Any that) 
-IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+IterationFailure: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -8129,6 +7446,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -8293,28 +7614,9 @@ Library #leftrightleft#0left(Library right) exception This2.Refactor2.ClassUnfit
 Alphanumeric: {
 class method 
 Library #leftrightleft#0left(Library right) exception This0.Fail 
-ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ParseFail: {implements This2.Guard.ParseFail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -8340,6 +7642,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -8379,28 +7685,9 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-Fail: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+Fail: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -8426,6 +7713,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -9480,28 +8771,9 @@ class method
 Library cacheTowel() 
 class method 
 Library #leftrightleft#0left(Library right) exception This0.ConceptMapMismatch, This0.ConceptMapUnavailable 
-ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ConceptMapMismatch: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -9527,6 +8799,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -9566,28 +8842,9 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}
-ConceptMapUnavailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals/*class method This from(Base base)
-*/
+ConceptMapUnavailable: {implements This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 refine read method 
 class This0 class() 
-refine class method /*
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  
-  Cast a (read/imm) object to this type.
-  A class implementing this method should refine the return type to This.
-  if is(subtype) is true, then cast(that) must produce a result.
-  */read This0 cast(read This2.Concept.Classable that) 
-refine class method /*
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  
-  Cast a (mutable) object to this type.
-  A class implementing this method should refine the return type to This.
-  if cast(that) produces a result, then #cast(that) also must produce a result.
-  */mut This0 #cast(mut This2.Concept.Classable that) 
 refine class method /*
   A readable name for this class. Do not need to follow the rule of paths,
   and once defined will not be automatically influenced by
@@ -9613,6 +8870,10 @@ refine class method /*
   */This2.Bool is(class This2.Concept.Classable subtype) 
 refine read method 
 This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
 read method 
 This2.S _text() 
 read method 
@@ -9681,18 +8942,18 @@ read method
 This1.Abstract.S current() 
 class method 
 This1.Abstract.S auxFetchEvent(This1.Abstract.S id) exception Void (
-  Void unused25048=(
+  Void unused24969=(
     Library s=use This1.GuiPlugin check eventPending(wName:id.#binaryRepr()) exception void
     
     catch error Library x exception void
     
     (
-      Void unused25049=return This1.Abstract.S.#from(binaryRepr:s)
+      Void unused24970=return This1.Abstract.S.#from(binaryRepr:s)
       void
       )
     )
   
-  catch return capsule This1.Abstract.S result165 result165
+  catch return capsule This1.Abstract.S result162 result162
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code
@@ -9700,13 +8961,13 @@ CurlyBlock-Should be unreachable code
   )
 mut method 
 Void #next() exception Void (
-  Void unused25050=(
+  Void unused24971=(
     This1.Abstract.S s=This0.auxFetchEvent(id:this.id())
-    Void unused25051=return this.current(that:s)
+    Void unused24972=return this.current(that:s)
     void
     )
   
-  catch return Void result166 result166
+  catch return Void result163 result163
   
   error  {/*@stringU
 CurlyBlock-Should be unreachable code

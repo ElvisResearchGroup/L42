@@ -165,9 +165,10 @@ import programReduction.Program;
           ,"A","D",
           "{ D:{B:{C:{} method Library m(This1 a, This0 b, This0.C c) }}}",false//
         }, {lineNumber(),//
-           "{ A: {interface method Library() {implements This1}}}"
+           "{ A: {interface method Library()}}"
+          //It was causing stack overflow if the A method was implemented with {implements This1}
            ,"A","D",
-           "{ D: {interface method Library() {implements This1}}}",false//TODO: Causes a StackOverflow
+           "{ D: {interface method Library()}}",false
         }, {lineNumber(),//
            "{ A: {method Library() {method This0()}}}"
            ,"A","D",

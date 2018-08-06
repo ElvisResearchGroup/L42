@@ -16,6 +16,7 @@ import ast.ExpCore.ClassB.NestedClass;
 import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Functions;
 import coreVisitors.From;
+import facade.L42;
 import programReduction.Norm;
 import programReduction.Program;
 import tools.Assertions;
@@ -54,7 +55,7 @@ public interface TsLibrary extends TypeSystem{
      ClassB top=in.p.top();
      assert in.phase.subtypeEq(Phase.Typed)://   Phase in {Typed,Coherent}
        "";
-     if(top.getPhase().subtypeEq(in.phase)){
+     if(L42.trustLibraryTypedStage && top.getPhase().subtypeEq(in.phase)){
        return new TOk(in,top,Path.Library().toImmNT());
        }
 //   L0={interface? implements Ps M1..Mn Phase'}=norm(p)

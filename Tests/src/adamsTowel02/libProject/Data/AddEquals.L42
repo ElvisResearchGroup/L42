@@ -7,7 +7,7 @@ exception Fail {
   catch exception Location.NotAvailable
     return Bool.true()
   if !that.implements(classObj:Concept.Equals) (
-    exception Fail"method toS not from Concept.Equals"
+    exception Fail"method == not from Concept.Equals"
     )
   return mToS.isAbstract()
   }
@@ -16,17 +16,12 @@ class method
 Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
 exception Fail{
   if fNs.isEmpty() (error S"TODO")
+  op=This.op()
   //accumulation
   Use.Override.Decorator acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (
-    fOp=FieldOp(selector:Selector.from(string:fN++S"()"),type:fT)      
-    exception on StateOperation.Fail Fail""
-    use[
-      Refactor2.Method[hide:\"fN()"]<><
-      Use[Resource(fN,selector:\"fN()")]<><fOp
-      ]
-    error on Refactor2.Fail X"AddToS.finalWrapping - hide fN"
-    void
-    )]
+    use[op.select(type:fT,name:fN)]
+    exception on Refactor2.Fail Fail"Field operation can not be generated for field "[fN]""
+    void)]
   lib=acc.foldLeft(resolver:{
       read method Bool #1equals(read This that)
       read method Bool #2equals(read This that)
@@ -35,37 +30,39 @@ exception Fail{
         return this.#2equals(that:that)
         }
      })
-  error on Refactor2.Fail X"AddToS.accumulation"
+  error on Refactor2.Fail X"accumulation"
   //final wrapping
   miniEquals={ implements Concept.Equals
     read method 
     Bool equals(read This that) 
-      Bool.true()//no fields
+      Bool.true()
     method ==(right) {
       with right (on read This return this.equals(right))
       return Bool.false()
       }
     }
   return Use.Override[miniEquals]<><lib
-  error on Refactor2.Fail X"AddToS.finalWrapping - hide"
+  error on Refactor2.Fail X"finalWrapping"
   }
-
-FieldOp:StateOperation.fieldOperation(
-  forReadable:{
-    T:{implements Concept.Equals}
-    read method Bool equals(read This that) this.f()==that.f()
-    }
-  forClassable:{
-    read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
-    }
-  forClassAny:{
-    read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
-    }
-//  forLibrary:{//may be is easier to do Data again building over Trait
-//    read method Bool equals(read This that) Location.Lib(this.f())==Location.Lib(that.f())
-//    }
-//  forVoid:{
-//    read method Bool equals(read This that) Bool.true()
-//    }
-  )
+class method FieldOperation op()
+  FieldOperation(
+    forReadable:{ read T f,,,,,T:{implements Concept.Equals}
+      read method Bool equals(read This that) this.f()==that.f()
+      }
+    forImmutable:{ T f,,,,,T:{implements Concept.Equals}
+      read method Bool equals(read This that) this.f()==that.f()
+      }
+    forClassable:{ class T f,,,,,T:{implements Concept.Classable}
+      read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
+      }
+    forClassAny:{ class T f,,,,,T:{}
+      read method Bool equals(read This that) Location.Lib(classObj:this.f())==Location.Lib(classObj:that.f())
+      }
+    forLibrary:{ Library f
+      read method Bool equals(read This that) Location.Lib(this.f())==Location.Lib(that.f())
+      }
+    forVoid:{ Void f
+      read method Bool equals(read This that) Bool.true()
+      }
+    )  
 }

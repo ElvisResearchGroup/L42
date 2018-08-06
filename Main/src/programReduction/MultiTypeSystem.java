@@ -66,6 +66,7 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
   return e.accept(new CloneVisitor(){
     public ExpCore visit(ClassB s) {return s;}
     public ExpCore visit(ExpCore.EPath s) {
+      if(s.getInner().isPrimitive()){return s;}
       if(!paths.containsPrefixFor(s.getInner())){
         return s.withInner(Ast.Path.Any());
         }

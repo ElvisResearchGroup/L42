@@ -51,6 +51,7 @@ import caching.Phase1CacheKey;
 public class L42 {
   //optimization flags. Removing them can be useful in debugging
   public static boolean memoizeMethods=true;
+  public static boolean trustLibraryTypedStage=true;
   public static enum ExecutionStage{None,Reading,Parsing,CheckingWellFormedness,Desugaring,MetaExecution,Closing;}
   private static ExecutionStage _stage=ExecutionStage.None;
   public static boolean profilerPrintOn=true;

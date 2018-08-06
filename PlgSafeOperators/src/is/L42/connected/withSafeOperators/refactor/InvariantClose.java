@@ -84,7 +84,7 @@ private static void collectStateMethodsAndExposers(
     state.add(mwti.getMs());
     // with non read result, assert is lent
     Mdf mdf=mwti.getMt().getReturnType().getMdf();
-    if(mdf.isIn(Mdf.Readable,Mdf.Immutable)){continue;}
+    if(mdf.isIn(Mdf.Readable,Mdf.Immutable,Mdf.Class)){continue;}
     if(mdf!=Mdf.Lent){throw new RefactorErrors.ClassUnfit().msg("Exposer not lent: '"+mwti.getMs()+"' in "+mwti.getP());}
     sel.add(new CsMxMx(path,false,mwti.getMs(),mwti.getMs().withUniqueNum(uniqueNum)));
     }
@@ -109,7 +109,7 @@ private static class Ks{
     fwdK=candidateK.withMs(candidateMs.withUniqueNum(L42.freshPrivate()));
     List<Ast.Type>fwdT=tools.Map.of(TypeManipulation::capsuleToFwdMut,fwdK.getMt().getTs());
     List<Ast.Type>mutT=tools.Map.of(TypeManipulation::noFwd,fwdK.getMt().getTs());
-    List<Ast.Type>immT=tools.Map.of(t->t.withMdf(Mdf.Immutable),fwdK.getMt().getTs());
+    List<Ast.Type>immT=tools.Map.of(t->t.getMdf()==Mdf.Class?t:t.withMdf(Mdf.Immutable),fwdK.getMt().getTs());
     fwdK=fwdK.withMt(candidateMt.withTs(fwdT));
     mutK=mutK.withMt(candidateMt.withTs(mutT));
     immK=immK.withMt(candidateMt.withTs(immT).withReturnType(candidateMt.getReturnType().withMdf(Mdf.Immutable)));
@@ -136,7 +136,7 @@ private static ClassB delegateState(Ks ks,
       delegator(true,newMwts,mwt,uniqueMs);
       continue;
     }
-    if(resMdf==Mdf.Readable || resMdf==Mdf.Immutable ){
+    if(resMdf.isIn(Mdf.Readable,Mdf.Immutable,Mdf.Class) ){
       //  replace decl get() ->decl freshXi()+ delegator get() this.freshXi()
       delegator(false,newMwts,mwt,uniqueMs);
       continue;
@@ -170,7 +170,7 @@ static void delegator(boolean callInvariant,List<ClassB.Member> newMwts, MethodW
       if(original.getMt().getReturnType().getMdf()==Mdf.Immutable){
         e=InvariantClose.eRImm;
         }
-      else {e=InvariantClose.eR;}
+      else {e=InvariantClose.eR;}//I think this also cover Mdf.Class
       }
     String newR=Functions.freshName("r", L42.usedNames);
     String newU=Functions.freshName("unusedInv", L42.usedNames);

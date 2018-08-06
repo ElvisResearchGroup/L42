@@ -84,7 +84,7 @@ public static ClassB wither(Program p,List<Ast.C>path,ClassB top,MethodSelector 
   List<MethodWithType> getters=new ArrayList<>();
   for(Type ti:k.getMt().getTs()){
     Mdf m=ti.getMdf();
-    if(m!=Mdf.Class && m!=Mdf.Immutable){throw new RefactorErrors.MethodUnfit().msg(immK.toString()+" invalid parameter mdf "+m);}
+    if(!m.isIn(Mdf.Class,Mdf.Immutable)){throw new RefactorErrors.MethodUnfit().msg(immK.toString()+" invalid parameter mdf "+m);}
     }
   {int i=-1;for(String n:immK.getNames()){i+=1;
     MethodWithType fi=(MethodWithType)lPath._getMember(MethodSelector.of(n,Collections.emptyList()));
@@ -92,7 +92,8 @@ public static ClassB wither(Program p,List<Ast.C>path,ClassB top,MethodSelector 
     boolean fiOk = fOk(k.getMt().getTs().get(i), fi);
     boolean hfiOk = fOk(k.getMt().getTs().get(i), hfi);
     if (fiOk && hfiOk){throw new ClassUnfit().msg("ambiguos field getter "+n+"() and #"+n+"()");}
-    if (!fiOk && !hfiOk){throw new ClassUnfit().msg("no field getter for "+n+"()");}
+    if (!fiOk && !hfiOk){
+      throw new ClassUnfit().msg("no field getter for "+n+"()");}
     if(hfiOk){fi=hfi;}//fi was not ok
     getters.add(fi);
     }}

@@ -14,11 +14,13 @@ TestWrong:{
     (
     l1=Data<><{NotStringable name}
     catch exception Data.AddEquals.Fail void
+    catch exception Data.AddToS.Fail void
     error X""
     )
     (
     l2=Data<><{Any name}
     catch exception Data.AddEquals.Fail void
+    catch exception Data.AddToS.Fail void
     error X""
     )
   return ExitCode.normal()
@@ -41,7 +43,22 @@ TestOk:{
 
   pp3=PP2(p:PP(p:Person(name:S"Bob",age:10Size)))
   Debug.test(pp3, expected:S"[p:PP[p:[name:"[quoteBob]", age:"[quoteTen]"]]]")
+  return ExitCode.normal()
+  }
 
+LV:Data<><{S name, Library lib,Void v}
+CC:Data<><{S name, class Any lib, class Concept.Base b}
+
+TestLV:{
+  dq = S.doubleQuote()
+  e=LV(name:S"s1", lib:{method Any foo()}, v:void)
+  Debug.test(e, expected:S"[name:"[dq]"s1"[dq]", lib:{..}, v:void]")
+  if e!=e (error X"")
+
+  c=CC(name:S"s2", lib:Library, b:S)
+  Debug.test(c, expected:S"[name:"[dq]"s2"[dq]", lib:Library, b:S]")
+  if c!=c (error X"")
+  if c==e (error X"")
 
   return ExitCode.normal()
   }

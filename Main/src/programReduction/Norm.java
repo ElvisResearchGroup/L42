@@ -90,6 +90,7 @@ public class Norm {
           break out;
           }
         //not found
+        assert mi.get_inner()==null;//is added. Must be from interface
         ms1.add(norm(p,mi));
         }
       }
