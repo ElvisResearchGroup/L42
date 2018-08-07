@@ -1,5 +1,34 @@
 package is.L42.connected.withSafeOperators.refactor;
 
+/*
+
+ { T1 f1 ..Tn fn }
+
+ ksignature
+
+ add K,
+
+ make state delegates   g()->f()  if setter/constr add invariant check
+
+ for all the method calling this.exposer()
+   check method is ok = ...old... restrictions
+   call invariant end
+
+ check validate method follow restrictions= ...old...
+
+ make state private
+
+ TODO: understand behaviour of old, what to change to make the new restrictions
+ Validate: can use private state (instead of directly fields), can use methods only using private state
+   //hard: ( make a private copy of all public methods used inside validate and make validate use such private version )
+
+
+
+
+
+ * */
+
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
