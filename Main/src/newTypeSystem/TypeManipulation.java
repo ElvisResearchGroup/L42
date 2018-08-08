@@ -87,6 +87,9 @@ public static List<Type>  noFwd(Collection<Type>ts){
   return res;
   }
 
+public static Type toImm(Type t) {
+  return t.getMdf() == Mdf.Class ? t : t.withMdf(Mdf.Immutable);
+}
 /*public static NormType toImm(NormType t){//used only for fields in coherent
 //  toImm(T)
 //    toImm(class P)=class P
