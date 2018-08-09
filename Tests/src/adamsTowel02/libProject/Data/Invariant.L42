@@ -35,7 +35,7 @@ Library ensureInvariant(Library that)
     read method Bool #1#invariant()
     read method Void #invariant()(
       if !this.#1#invariant() (
-        error Invariant.Fail"invalid object detected "[this]""
+        error Invariant.Fail"invalid object detected "
         )
       )
     }

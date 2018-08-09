@@ -45,85 +45,141 @@ public class TestCloseInvariant{
     ,true
   },{lineNumber(), 
   "{A a read method Void #invariant() void A:{}}","This",
-  "{ read method This0.A a() this.a_$_2() "
-  + "read method This0.A a_$_2() "
-  + "read method Void #invariant() void "
-  + "class method mut This0 mutK(This0.A a) ( "
-  + "r1=this.k_$_2(a:a) Void unusedInv1=r1.#invariant() r1) "
-  + "class method mut This0 k_$_2(fwd This0.A a) "
-  + "class method This0 immK(This0.A a) ( "
-  + "This0 r2=this.k_$_2(a:a) Void unusedInv2=r2.#invariant() r2) "
-  + "A: {}} "
+  " {\n" +
+      "read method \n" +
+      "This0.A a() this.a_$_2()\n" +
+      "read method \n" +
+      "This0.A a_$_2() \n" +
+      "read method \n" +
+      "Void #invariant() this.#invariant_$_2()\n" +
+      "read method \n" +
+      "Void #invariant_$_2() void\n" +
+      "class method \n" +
+      "mut This0 mutK(This0.A a) (\n" +
+      "  r1=this.k_$_2(a:a)\n" +
+      "  Void unusedInv1=r1.#invariant_$_2()\n" +
+      "  r1\n" +
+      "  )\n" +
+      "class method \n" +
+      "This0 immK(This0.A a) (\n" +
+      "  This0 r2=this.k_$_2(a:a)\n" +
+      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  r2\n" +
+      "  )\n" +
+      "class method \n" +
+      "mut This0 k_$_2(fwd This0.A a) \n" +
+      "A: {}}"
   ,false
   },{lineNumber(), 
   "{var A a read method Void #invariant() void A:{}}","This",
-  "{ mut method Void a(This0.A that) ("
-  + "r1=this.a_$_2(that:that) Void unusedInv1=this.#invariant() r1 ) "
-  + "mut method Void a_$_2(This0.A that) "  
-  + " read method This0.A a() this.a_$_2() "
-  + "read method This0.A a_$_2() "
-  + "read method Void #invariant() void "
-  + "class method mut This0 mutK(This0.A a) ( "
-  + "r2=this.k_$_2(a:a) Void unusedInv2=r2.#invariant() r2) "
-  + "class method mut This0 k_$_2(fwd This0.A a) "
-  + "class method This0 immK(This0.A a) ( "
-  + "This0 r3=this.k_$_2(a:a) Void unusedInv3=r3.#invariant() r3) "
-  + "A: {}} "
+  " {\n" +
+      "mut method \n" +
+      "Void a(This0.A that) (\n" +
+      "  r1=this.a_$_2(that:that)\n" +
+      "  Void unusedInv1=this.#invariant_$_2()\n" +
+      "  r1\n" +
+      "  )\n" +
+      "mut method \n" +
+      "Void a_$_2(This0.A that) \n" +
+      "read method \n" +
+      "This0.A a() this.a_$_2()\n" +
+      "read method \n" +
+      "This0.A a_$_2() \n" +
+      "read method \n" +
+      "Void #invariant() this.#invariant_$_2()\n" +
+      "read method \n" +
+      "Void #invariant_$_2() void\n" +
+      "class method \n" +
+      "mut This0 mutK(This0.A a) (\n" +
+      "  r2=this.k_$_2(a:a)\n" +
+      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  r2\n" +
+      "  )\n" +
+      "class method \n" +
+      "This0 immK(This0.A a) (\n" +
+      "  This0 r3=this.k_$_2(a:a)\n" +
+      "  Void unusedInv3=r3.#invariant_$_2()\n" +
+      "  r3\n" +
+      "  )\n" +
+      "class method \n" +
+      "mut This0 k_$_2(fwd This0.A a) \n" +
+      "A: {}}"
   ,false
   
   },{lineNumber(), 
   "{capsule A a read method Void #invariant() void "
   + " mut method Void doStuff(A that)that(this.#a()) A:{}}","This",
-  "{ read method read This0.A a() this.a_$_2()"
-  + "read method read This0.A a_$_2() "
-  + "mut method lent This0.A #a_$_2() " 
-  + "read method Void #invariant() void "
-  + "mut method Void doStuff(This0.A that) ("
-  + "  r=that(this.#a_$_2()) Void unusedInv=this.#invariant() r ) "
-  + "class method mut This0 mutK(capsule This0.A a) ("
-  + "  r1=this.k_$_2(a:a) Void unusedInv1=r1.#invariant() r1 ) "
-  + "class method mut This0 k_$_2(fwd mut This0.A a) "
-  + "class method This0 immK(This0.A a) ("
-  + "This0 r2=this.k_$_2(a:a) Void unusedInv2=r2.#invariant() r2 ) "
-  + "A: {}} "
+  " {\n" +
+      "read method \n" +
+      "read This0.A a() this.a_$_2()\n" +
+      "read method \n" +
+      "read This0.A a_$_2() \n" +
+      "mut method \n" +
+      "lent This0.A #a_$_2() \n" +
+      "read method \n" +
+      "Void #invariant() this.#invariant_$_2()\n" +
+      "read method \n" +
+      "Void #invariant_$_2() void\n" +
+      "mut method \n" +
+      "Void doStuff(This0.A that) (\n" +
+      "  Void r1=that.#apply(that:this.#a_$_2())\n" +
+      "  Void unusedInv1=this.#invariant_$_2()\n" +
+      "  r1\n" +
+      "  )\n" +
+      "class method \n" +
+      "mut This0 mutK(capsule This0.A a) (\n" +
+      "  r2=this.k_$_2(a:a)\n" +
+      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  r2\n" +
+      "  )\n" +
+      "class method \n" +
+      "This0 immK(This0.A a) (\n" +
+      "  This0 r3=this.k_$_2(a:a)\n" +
+      "  Void unusedInv3=r3.#invariant_$_2()\n" +
+      "  r3\n" +
+      "  )\n" +
+      "class method \n" +
+      "mut This0 k_$_2(fwd mut This0.A a) \n" +
+      "A: {}}"
   ,false
 
   },{lineNumber(), 
   "{capsule A a read method Void #invariant() void mut method Void mutA()( lent A a=this.#a() void) A:{}}","This",
-  "{"
-  + "read method  "
-  + "read This0.A a() this.a_$_2() "
-+ "read method " 
-+ "read This0.A a_$_2() " 
-+ "mut method " 
-+ "lent This0.A #a_$_2() " 
-+ "read method " 
-+ "Void #invariant() void "
-+ "mut method " 
-+ "Void mutA() ( "
-+ "  Void r1=( "
-+ "    lent This0.A a=this.#a_$_2() "//untouched,#a non present
-+ "    void "
-+ "    ) "
-+ "  Void unusedInv1=this.#invariant() "
-+ "  r1 "
-+ "  ) "
-+ "class method " 
-+ "mut This0 mutK(capsule This0.A a) ( "
-+ "  r2=this.k_$_2(a:a) "
-+ "  Void unusedInv2=r2.#invariant() "
-+ "  r2 "
-+ "  ) "
-+ "class method  "
-+ "mut This0 k_$_2(fwd mut This0.A a) " 
-+ "class method " 
-+ "This0 immK(This0.A a) ( "
-+ "  This0 r3=this.k_$_2(a:a) "
-+ "  Void unusedInv3=r3.#invariant() "
-+ "  r3 "
-+ "  ) "
-+ "A: {}"
-  + "}"
+  " {\n" +
+      "read method \n" +
+      "read This0.A a() this.a_$_2()\n" +
+      "read method \n" +
+      "read This0.A a_$_2() \n" +
+      "mut method \n" +
+      "lent This0.A #a_$_2() \n" +
+      "read method \n" +
+      "Void #invariant() this.#invariant_$_2()\n" +
+      "read method \n" +
+      "Void #invariant_$_2() void\n" +
+      "mut method \n" +
+      "Void mutA() (\n" +
+      "  Void r1=(\n" +
+      "    lent This0.A a=this.#a_$_2()\n" +
+      "    void\n" +
+      "    )\n" +
+      "  Void unusedInv1=this.#invariant_$_2()\n" +
+      "  r1\n" +
+      "  )\n" +
+      "class method \n" +
+      "mut This0 mutK(capsule This0.A a) (\n" +
+      "  r2=this.k_$_2(a:a)\n" +
+      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  r2\n" +
+      "  )\n" +
+      "class method \n" +
+      "This0 immK(This0.A a) (\n" +
+      "  This0 r3=this.k_$_2(a:a)\n" +
+      "  Void unusedInv3=r3.#invariant_$_2()\n" +
+      "  r3\n" +
+      "  )\n" +
+      "class method \n" +
+      "mut This0 k_$_2(fwd mut This0.A a) \n" +
+      "A: {}}"
   ,false
   
   },{lineNumber(), "{B:{}}","C",

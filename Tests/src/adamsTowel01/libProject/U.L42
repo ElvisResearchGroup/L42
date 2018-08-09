@@ -1,10 +1,17 @@
-{
-class method mut S.SBuilder #builder() S.SBuilder.empty()
-class method S #from(S.SBuilder builder) (
-  input=S.#from(builder: builder)
-  l=RESURRECT add documentation(input)<><{//@stringU
+{//@plugin
+   //L42.is/connected/withSafeOperators
 
+    class method mut S.SBuilder #builder() S.SBuilder.empty()
+    class method S #from(S.SBuilder builder) (
+    input=S.#from(builder: builder)
+
+    l = use This check addDocumentation({
+        //@string
     }
-  S.#from(binaryRepr: l)
+        path: \""
+        doc: input.binaryRepr()
+        )
+        error X"SafeOperators.addDocumentation(path)"
+    S.#from(binaryRepr: l)
   )
 }

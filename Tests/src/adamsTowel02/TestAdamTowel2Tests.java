@@ -16,7 +16,7 @@ import tools.TestRunner.Opt;
 public class TestAdamTowel2Tests extends TestRunnerPrePost{
   @Parameters(name = "{index}:{1}")
   public static List<Object[]> go(){
-    List<Object[]> tests = goInner(
+    /*List<Object[]> tests = goInner(
       //// global options
       // Opt.NoAss,  // Run without assertions enabled (faster)
       // Opt.NoTrust, // Run without trusting plugins (much slower)
@@ -65,7 +65,15 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "TestTrait.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
-    );
+    );*/
+    List<Object[]> tests = goInner(
+          Opt.ProfilerPrintOff,
+          "TestPointFC.L42",
+          "TestData.L42",
+          "TestDataEncapsulated.L42",
+          "TestToS.L42",
+          Opt.NOP  // Convenience option, so that all of the other options can end with a comma
+        );
     return tests;
   }
 }

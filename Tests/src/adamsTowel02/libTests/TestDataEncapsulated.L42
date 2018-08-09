@@ -18,9 +18,7 @@ AddLeaksExceptions:{
       if allergy==S"NOPE" (exception S"Fail")
       )
     }
-  catch exception Data.Invariant.Fail f
-    return ExitCode.normal()
-  error X"fail expected"
+  return ExitCode.normal()
   }
 
 Person:Data<><{

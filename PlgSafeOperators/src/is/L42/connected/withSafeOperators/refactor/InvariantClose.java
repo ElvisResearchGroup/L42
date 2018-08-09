@@ -29,14 +29,7 @@ package is.L42.connected.withSafeOperators.refactor;
  * */
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import ast.ExpCore;
 import ast.Ast;
@@ -60,6 +53,8 @@ import ast.Util.CsMx;
 import ast.Util.CsMxMx;
 import auxiliaryGrammar.Functions;
 import coreVisitors.CloneVisitor;
+import coreVisitors.CloneVisitorWithProgram;
+import coreVisitors.PropagatorVisitor;
 import facade.L42;
 import facade.PData;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
@@ -79,6 +74,7 @@ import tools.LambdaExceptionUtil;
 import javax.swing.*;
 
 public class InvariantClose {
+  static MethodSelector invName = MethodSelector.of("#invariant", Collections.emptyList());
   public static ClassB closeJ(PData p, List<Ast.C>path, ClassB top, String mutK, String immK)
     throws PathUnfit, ClassUnfit, ParseFail {
     return close(p.p, path, top, mutK, immK);
@@ -86,16 +82,18 @@ public class InvariantClose {
 
   // path is a path inside top
   public static ClassB close(Program p, List<Ast.C> path, ClassB top, String mutK, String immK)
-    throws PathUnfit, ClassUnfit, ParseFail {
+      throws PathUnfit, ClassUnfit, ParseFail {
+
     if (!MembersUtils.isPathDefined(top, path)) throw new RefactorErrors.PathUnfit(path);
     if (MembersUtils.isPrivate(path)) throw new RefactorErrors.PathUnfit(path);
 
     Program pPath = p.evilPush(top).navigate(path);
     ClassB lPath = pPath.top();
 
-    // Check for 'refine? read method imm Void #invariant() throws()'
+    // Check for 'refine? read method imm Void #invariant() throws() e'
     {
-      MethodWithType inv = (MethodWithType) lPath._getMember(MethodSelector.of("#invariant", Collections.emptyList()));
+      MethodWithType inv = (MethodWithType) lPath._getMember(invName);
+
       if (inv == null)
         throw new ClassUnfit().msg("selector #invariant() missing into " + PathAux.as42Path(path));
 
@@ -106,15 +104,48 @@ public class InvariantClose {
       if (!inv.getMt().equals(invMt))
         throw new ClassUnfit().msg("selector #invariant() into " + PathAux.as42Path(path) + " has invalid type " + inv.getMt());
 
-      // TODO: Check the body of validate for sanity...
+      if (inv.getInner() == null)
+        throw new ClassUnfit().msg("selector #invariant() into " + PathAux.as42Path(path) + " has no body");
     }
 
-    // Ge constructor info
+    // Get constructor info
     Ks ks = new Ks(lPath, mutK, immK);
+
+    // Collect all the fields that can, and cannot be referenced in validate
+    Set<String> validatableFields = new HashSet<>();
+    Set<String> otherFields = new HashSet<>();
+    {
+
+      for (int i = 0; i < ks.candidateK.getMt().getTs().size(); i ++) {
+        String var = ks.candidateK.getMs().getNames().get(i);
+        if (TypeManipulation.noFwd(ks.candidateK.getMt().getTs().get(i)).getMdf().isIn(Mdf.Immutable, Mdf.Capsule, Mdf.Class)) {
+          validatableFields.add(var);
+          validatableFields.add("#" + var);
+        } else {
+          otherFields.add(var);
+          otherFields.add("#" + var);
+        }
+      }
+    }
+
+    Set<MethodSelector> invMethods = new HashSet<>(); // The methods called by #invariant
+    {
+      List<MethodSelector> todo = new LinkedList<>();
+      todo.add(invName);
+      while (!todo.isEmpty()) {
+        MethodSelector m = todo.remove(0);
+
+        if (invMethods.contains(m)) // We've already processed this
+          continue;
+
+        invMethods.add(m);
+        // Collect all other-called methods, and check that this is only used to call methods or validatable fields
+        todo.addAll(InvariantChecker.check((MethodWithType)lPath._getMember(m), validatableFields, otherFields));
+      }
+    }
 
     List<CsMxMx> sel = new ArrayList<>();
     Set<MethodSelector> state = new HashSet<>();
-
     for (MethodWithType mwt : lPath.mwts()) {
       try { if (!TsLibrary.coherentF(pPath, ks.candidateK, mwt))
           continue; }
@@ -127,18 +158,15 @@ public class InvariantClose {
       // with non read result, assert is lent
       Mdf mdf = mwt.getMt().getReturnType().getMdf();
 
-      // TODO: Previously: any fields whose return type was not read imm or class were required to return lent
-      // I have relaxed that, those that return lent are considered to be a 'capsule field' getters
-      // mut or other such fields can't be used by validate anyway, so we don't care about them
       if (mdf == Mdf.Lent) {
         sel.add(new CsMxMx(path, false, mwt.getMs(), mwt.getMs().withUniqueNum(ks.uniqueNum)));
       }
     }
 
     // Wrap all calls to exposers (into calls to a unique-numbered one)
-    ClassB newTop = (ClassB)top.accept(new WrapAux(p, sel, top));
+    ClassB newTop = (ClassB)top.accept(new WrapAux(p, sel, top, ks.uniqueNum));
 
-    ClassB res = delegateState(ks, state, newTop.getClassB(path));
+    ClassB res = delegateState(ks, state, invMethods, newTop.getClassB(path));
     if (path.isEmpty()) {
       // Trivial...
       return res;
@@ -148,14 +176,18 @@ public class InvariantClose {
     }
   }
 
-  private static ClassB delegateState(Ks ks, Set<MethodSelector> state, ClassB lPath)
-      throws ClassUnfit {
+  private static ClassB delegateState(Ks ks, Set<MethodSelector> state, Set<MethodSelector> invMethods, ClassB lPath) {
     List<ClassB.Member> newMembers = new ArrayList<>();
+
+    // Make a wrapper for the invariant method
+
     for (MethodWithType mwt : lPath.mwts()) {
-      System.out.println("> " + mwt);
-      // Not a state method, so don't touch it
-      if (!state.contains(mwt.getMs())) {
-        addMember(newMembers, mwt);
+      if (invMethods.contains(mwt.getMs())) {
+        // Delegate all invariant-used methods
+        // so that meta-programming can't redefine the invariant (since the code will have a private-number)
+        MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(ks.uniqueNum));
+        addMember(newMembers, delegate(false, mwt.withInner(null), newMwt, ks.uniqueNum));
+        addMember(newMembers, newMwt);
         continue;
       }
 
@@ -164,8 +196,8 @@ public class InvariantClose {
       Mdf fieldMdf = setter ? mwt.getMt().getTs().get(0).getMdf() :
         mwt.getMt().getReturnType().getMdf();
 
-      // Class methods can't be state methods...
-      if (mdf == Mdf.Class) {
+      // Not a state method, so don't touch it
+      if (!state.contains(mwt.getMs()) || mdf == Mdf.Class) {
         addMember(newMembers, mwt);
         continue;
       }
@@ -173,23 +205,25 @@ public class InvariantClose {
       // The new (real) accessor will have a unique number
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(ks.uniqueNum));
 
+      // Capsule getters should have already been dealt with
+      if (fieldMdf.equals(Mdf.Lent))
+        continue;
+
       // Call the invariant in a setter, but only if it's for a field that could be validated against
       // Note: 'class' references are really immutable
       if (setter && fieldMdf.isIn(Mdf.Immutable, Mdf.Capsule, Mdf.Class)) {
-        addMember(newMembers, delegate(true, mwt, newMwt));
-        addMember(newMembers, newMwt); // Add the real thing...
-      } else if (!fieldMdf.equals(Mdf.Lent)) {
-        // Note: Capsule getters (i.e. exposers) should've already been dealt with
-        // Obviously don't check the invariant for a getter
-        addMember(newMembers, delegate(false, mwt, newMwt));
-        addMember(newMembers, newMwt); // Add the real thing...
+        addMember(newMembers, delegate(true, mwt, newMwt, ks.uniqueNum));
+      } else {
+        addMember(newMembers, delegate(false, mwt, newMwt, ks.uniqueNum));
       }
+
+      addMember(newMembers, newMwt); // Add the real thing...
     }
 
     // Delegate mutK and immK to the real constructor
-    addMember(newMembers, delegate(true, ks.mutK, ks.fwdK));
-    addMember(newMembers, ks.fwdK);
-    addMember(newMembers, delegate(true, ks.immK, ks.fwdK));
+    addMember(newMembers, delegate(true, ks.mutK, ks.fwdK, ks.uniqueNum));
+    addMember(newMembers, delegate(true, ks.immK, ks.fwdK, ks.uniqueNum));
+    addMember(newMembers, ks.fwdK); // The real constructor
 
     // Don't play with the nested classes
     newMembers.addAll(lPath.ns());
@@ -197,13 +231,12 @@ public class InvariantClose {
   }
 
   static void addMember(List<Member> members, Member member) {
-    System.out.println(member);
-    assert !Functions.getIfInDom(members, member).isPresent();
+    assert !Functions.getIfInDom(members, member).isPresent() : member;
     members.add(member);
   }
-  static MethodWithType delegate(boolean callInvariant, MethodWithType original, MethodWithType delegate) {
+  static MethodWithType delegate(boolean callInvariant, MethodWithType original, MethodWithType delegate, long uniqueNum) {
 
-    assert original.get_inner() == null;
+    assert original.get_inner() == null : original;
     assert original.getMs().nameSize() == delegate.getMs().nameSize();
     Position p = original.getP();
 
@@ -235,7 +268,7 @@ public class InvariantClose {
       }
 
       // Wrap up the call
-      original = original.withInner(makeWrapper(wrapTemplate, delegateMCall, null));
+      original = original.withInner(makeWrapper(uniqueNum, wrapTemplate, delegateMCall, null));
     }
 
     return original;
@@ -251,7 +284,7 @@ public class InvariantClose {
     "{method m() (This r=void Void unusedInv=r.#invariant() r)}").getMs().get(0).getInner();
 
 
-  static ExpCore.Block makeWrapper(ExpCore.Block template, ExpCore body, Type type) {
+  static ExpCore.Block makeWrapper(long num, ExpCore.Block template, ExpCore body, Type type) {
     String newR = Functions.freshName("r", L42.usedNames);
     String newU = Functions.freshName("unusedInv", L42.usedNames);
 
@@ -261,6 +294,15 @@ public class InvariantClose {
         if(s.getInner().equals("r"))
             return s.withInner(newR);
         else return s;
+    }
+    //#invariant
+    public ExpCore visit(MCall m) {
+      m = (MCall) super.visit(m);
+      if (m.getS().getName().equals("#invariant")) {
+         return m.withS(m.getS().withUniqueNum(num));
+      } else {
+        return m;
+      }
     }
     protected Block.Dec liftDec(Block.Dec f) {
         String x = f.getX();
@@ -311,14 +353,14 @@ public class InvariantClose {
     }
   }
 
+  static X thisX = new X(Position.noInfo, "this");
   static class WrapAux extends RenameMethodsAux {
-    WrapAux(Program p, List<CsMxMx> renames, ClassB top) { super(p, renames, top); }
-
-    static X thisX = new X(Position.noInfo,"this");
+    WrapAux(Program p, List<CsMxMx> renames, ClassB top, long uniqueNum) { super(p, renames, top); this.uniqueNum = uniqueNum; }
 
     // Are we calling the capsule exposer?
     boolean capsuleAccesser = false;
     int thisUses = 0;
+    long uniqueNum;
 
     @Override
     public ExpCore visit(X s) {
@@ -359,28 +401,84 @@ public class InvariantClose {
       MethodType mt = res.getMt();
 
       // Can we mutate this?
-      if (!mt.getMdf().isIn(Mdf.Lent, Mdf.Mutable, Mdf.Capsule)) return res;
+      // NOTE: Even though a capsule method can mutate this, if it accesses a field
+      // that must be the only thing done with 'this', and 'this' will never be reached
+      // So there's no need to put restrictions on what we can and can't do with it beyond
+      // the fact that a capsule-this can only be used once
+      if (!mt.getMdf().isIn(Mdf.Lent, Mdf.Mutable)) return res;
 
       assert this.thisUses >= 1;
       if (this.thisUses > 1)
         LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
           "A capsule mutator can only use 'this' once '" + res.getMs() + "' in " + res.getP()));
 
-      // TODO: Don't care about? Mdf = capsule (the paper says we have to...)
 
-      // TODO: Is it ok to return a fwd mut?
-      if (TypeManipulation.noFwd(mt.getReturnType()).getMdf().isIn(Mdf.Lent, Mdf.Mutable))
+      // NOTE: A 'mut' return can't alias a capsule field, since capsule fields are seen as lent
+      if (TypeManipulation.noFwd(mt.getReturnType()).getMdf() == Mdf.Lent)
         LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
           "A capsule mutator cannot return lent or mut '" + res.getMs() + "' in "+res.getP()));
 
-      // TODO: Why were we not allowed to declare exceptions?
-      // TODO: Could a 'lent' parameter alias 'this'?
-      if (!mt.getTs().stream().allMatch(t -> t.getMdf().isIn(Mdf.Mutable, Mdf.Readable, Mdf.Lent)))
+      if (mt.getTs().stream().anyMatch(t -> t.getMdf().isIn(Mdf.Mutable, Mdf.Readable, Mdf.Lent)))
         LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
           "A capsule mutator cannot take lent mut or read paramaters '" + res.getMs() + "' in "+res.getP()));
 
       return res.withInner(
-        InvariantClose.makeWrapper(InvariantClose.thisWrapper, res.getInner(), mt.getReturnType()));
+        InvariantClose.makeWrapper(this.uniqueNum, InvariantClose.thisWrapper, res.getInner(), mt.getReturnType()));
+    }
+  }
+
+  static class InvariantChecker extends PropagatorVisitor {
+    public static Set<MethodSelector> check(MethodWithType meth, Set<String> validatableFields, Set<String> otherFields) {
+      InvariantChecker c = new InvariantChecker();
+      c.validatableFields = validatableFields;
+      c.otherFields = otherFields;
+      c.visit(meth); // If the invariant is abstract this will do nothing, except waste memory and time...
+      return c.methodCalls;
+    }
+
+    private InvariantChecker() { super(); }
+    Set<String> validatableFields;
+    Set<String> otherFields;
+    Set<MethodSelector> methodCalls = new HashSet<>();
+    boolean inClass = false; // Are we inside a class literal? (where 'this' will have a different meaning)
+
+    @Override
+    public Void visit(X s) {
+        if (!this.inClass && s.equals(thisX))
+          LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
+            "Can only use this to call getters for imm and capsule fields within #invariant!"));
+
+        return super.visit(s);
+    }
+
+    @Override
+    public Void visit(MCall s) {
+      // Is this a method call on this?
+      if (!this.inClass && s.getInner().equals(thisX)) {
+        s = s.withInner(new ExpCore._void()); // So super.visit(s) dosn't call this.visit(X)
+        if (s.getEs().size() == 0) {
+          // possibly a field access
+          if (validatableFields.contains(s.getS().getName()))
+            return super.visit(s); // Ok, skip
+          else if (otherFields.contains(s.getS().getName()))
+            LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
+              "Can only use this to access imm and capsule fields within #invariant! '" + s + "'"));
+        }
+
+        this.methodCalls.add(s.getS());
+      }
+      return super.visit(s);
+    }
+
+    @Override
+    public Void visit(ClassB l) {
+      boolean oldClass = this.inClass;
+      try {
+        this.inClass = true;
+        return super.visit(l);
+      } finally {
+        this.inClass = oldClass;
+      }
     }
   }
 }
