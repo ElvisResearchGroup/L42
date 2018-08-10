@@ -38,16 +38,15 @@ import programReduction.Program;
 import tools.LambdaExceptionUtil;
 import tools.LambdaExceptionUtil.Function_WithExceptions;
 public class MakeK {
-  public static ClassB makeKS(ClassB that,String path, String name, boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
-    return makeKJ(that,PathAux.parseValidCs(path),name, immK,fwd);
+  public static ClassB makeKS(ClassB that,String name,String path,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
+    return makeKJ(that,name,PathAux.parseValidCs(path),immK,fwd);
     }
-
-  public static ClassB makeKJ(ClassB that,List<Ast.C> path, String name, boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
+  public static ClassB makeKJ(ClassB that,String name,List<Ast.C> path,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
     ClassB lPath=that.getClassB(path);
     List<String> fields = collectFieldNames(lPath);
-    return makeK(that,path,name,fields,immK,fwd);
+    return makeK(that,name,path,fields,immK,fwd);
     }
 
 public static List<String> collectFieldNames(ClassB lPath) {
@@ -73,7 +72,7 @@ for(MethodWithType mwt:lPath.mwts()){
 return fields;
 }
 
-  public static ClassB makeK(ClassB that,List<Ast.C> path, String name, List<String> fieldNames, boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
+  public static ClassB makeK(ClassB that,String name,List<Ast.C> path, List<String> fieldNames,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
     if(path.isEmpty()){return makeK(name,that,that,path,fieldNames,immK,fwd);}
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(!MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
