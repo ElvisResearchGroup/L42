@@ -31,6 +31,15 @@ public static Type fwd(Type t){
     }
   return t;
   }
+
+public static Type fieldToFwd(Type t) {
+  if (t.getMdf() == Mdf.Immutable)
+    return t.withMdf(Mdf.ImmutableFwd);
+  else if (t.getMdf().isIn(Mdf.Mutable,Mdf.Capsule))
+    return t.withMdf(Mdf.MutableFwd);
+  else
+    return t;
+}
 public static Type fwdP(Type t){
 //  fwd% T
 //    fwd% imm P=fwd%Imm P
