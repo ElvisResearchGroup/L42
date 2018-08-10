@@ -1,0 +1,12 @@
+{reuse L42.is/AdamTowel02
+
+
+Main:{
+  S s1=S.U"hi"
+  S s2=S.U"aa\u000dbb"
+  Debug.test(s1 expected:S"hi")
+  Debug.test(s2 expected:S"aa"++S.nl()++S"bb")
+  return ExitCode.normal()
+  }
+
+}

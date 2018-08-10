@@ -2,21 +2,30 @@
 PlgK:Refactor2.JavaImport<><{
   //@plugin is.L42.connected.withSafeOperators
   //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
-    class method Library makeKJ(Library that, Path path,Bool immK,Bool isFwd)
+    class method Library makeKJ(Library that,S name, Path path,Bool immK,Bool isFwd)
 
     class method
     Library #pluginUnresponsive(Library binaryRepr)
-      binaryRepr  
-
+      binaryRepr
     }
 class method
-Library<><(Library right) 
+Library<><(Library right)
 exception Refactor2.ClassUnfit
-  PlgK.makeKJ(right,path:Path"This",immK:Bool.false(),isFwd:Bool.true())
+  PlgK.makeKJ(right,name:S"#apply",path:Path"This",immK:Bool.false(),isFwd:Bool.true())
 Imm:{
   class method
-  Library<><(Library right) 
+  Library<><(Library right)
   exception Refactor2.ClassUnfit
-  PlgK.makeKJ(right,path:Path"This",immK:Bool.true(),isFwd:Bool.true())
+  PlgK.makeKJ(right,,name:S"#apply",path:Path"This",immK:Bool.true(),isFwd:Bool.true())
+  }
+class method Decorator(S name, Path path,Bool immK,Bool isFwd)
+  Decorator(name:name,path:path,immK:immK,isFwd:isFwd)
+Decorator:{
+  S name, Path path,Bool immK,Bool isFwd
+  class method This (S name, Path path,Bool immK,Bool isFwd)
+  method
+  Library<><(Library right)
+  exception Refactor2.ClassUnfit
+    PlgK.makeKJ(right,name:this.name(),path:this.path(),immK:this.immK(),isFwd:this.isFwd())
   }
 }

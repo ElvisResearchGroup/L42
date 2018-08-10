@@ -1,6 +1,7 @@
 {
 Fail:{interface implements Guard}
-Invariant:K.Imm<><...
+AmbiguosConstructor:Message.$<><{implements Fail}
+//Invariant:K.Imm<><...
 Wither:K.Imm<><...
 FieldOperation:K.Imm<><...
 AddToS:FieldOperation<><...
@@ -8,13 +9,13 @@ AddEquals:FieldOperation<><...
 
 class method S mutKName() S"#apply"
 class method S immKName() S"#immK"
-class method Selector immK(Library that,Path of) exception Invariant.Fail{
+class method Selector immK(Library that,Path of) exception AmbiguosConstructor{
   loc=Location.Lib(that).navigate(of)
   ks=Location.Method.List[with m in loc.methods().vals() (
     if m.selector().name()==This.immKName() (use[m]))]
   if ks.size()==1Size (return ks.left().selector())
-  exception on Message Invariant.Fail""
-  exception Invariant.Fail""
+  exception on Message AmbiguosConstructor""
+  exception AmbiguosConstructor""
   }
 
 ExcHelp:{
@@ -71,14 +72,17 @@ Library <>< (Library right)
 exception Fail Refactor2.PathUnfit {
  var Library res=right
  res><>=Base
- //res><>=K1
- //res><>=K2
+ (res><>=K(name:This.mutKName(),path:Path"This",immK:Bool.false(),isFwd:Bool.false())
+ res><>=K(name:This.immKName(),path:Path"This",immK:Bool.true(),isFwd:Bool.false())
+ exception on Refactor2.ClassUnfit AmbiguosConstructor""
+ void
+ )
  immK=this.immK(res, of:Path"This")
  mutK=immK.with(name:This.mutKName())
  res><>=Wither(immK:immK, of:\"This")
  res><>=AddToS(mutK:mutK, of:\"This")
  res><>=AddEquals(mutK:mutK, of:\"This")
- res><>=Invariant(of:\"This", immK:immK,mutK:mutK)
+// res><>=Invariant(of:\"This", immK:immK,mutK:mutK)
  return res
 }
 }
