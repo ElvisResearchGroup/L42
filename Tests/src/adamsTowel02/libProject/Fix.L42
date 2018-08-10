@@ -5,7 +5,7 @@ GetMyName:{
     Location.Type.RefTo.Binded(classObj:that)
       .toS().withoutLeft(val:This2.S"This0.")
   class method
-  Any classCastError(read Concept.Classable that,class Concept.Classable classObj)   
+  Any classCastError(read Concept.Classable that,class Concept.Classable classObj)
     Guard.CastFail"Not "[This(that.class())]"<="[This(classObj)]"; provided object is of type "[This(that.class())]""
   }
 Message:{Opt:This2.Opt(This2.Message)}
@@ -26,6 +26,11 @@ Size:{
 S:{implements Concept.ToS
   method Strings splitOn(This2.S chars)
     StringSplit.splitOn(this.toS(),chars:chars)
+  U:{
+    class method mut This3.S.SBuilder #builder()  This3.S.SBuilder.empty()
+    class method This3.S #from(This3.S.SBuilder builder)
+      This3.S.#from(binaryRepr:Refactor2.makeDoc(This3.S.#from(builder: builder)))
+    }
   }
 
 
@@ -53,7 +58,7 @@ X:{
       error This2.X"Observed bug: "[res]""
       )
     )
-     
+
   Pre:{
     class method mut Tests #seqBuilder() Tests.empty()
     class method Void #from(Tests seqBuilder) (
@@ -69,7 +74,7 @@ X:{
     }
   Tests: Refactor2.compose(
     Refactor2.Method[hide:\"#add(that)"]<><Collections.vector(of:Test)
-    and:{ 
+    and:{
 
     mut method
     Void #add(This3.Bool that, Concept.ToS msg)

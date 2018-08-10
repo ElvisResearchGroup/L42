@@ -36,7 +36,7 @@ Base:{
   //class, ToS == required
   class method Library (){
     implements Concept.Base
-    
+
     refine read method
     class This class()
       This
@@ -71,12 +71,14 @@ Library <>< (Library right)
 exception Fail Refactor2.PathUnfit {
  var Library res=right
  res><>=Base
- res><>=Invariant(of:\"This")
+ //res><>=K1
+ //res><>=K2
  immK=this.immK(res, of:Path"This")
- res><>=Wither(immK:immK, of:\"This")
  mutK=immK.with(name:This.mutKName())
+ res><>=Wither(immK:immK, of:\"This")
  res><>=AddToS(mutK:mutK, of:\"This")
  res><>=AddEquals(mutK:mutK, of:\"This")
+ res><>=Invariant(of:\"This", immK:immK,mutK:mutK)
  return res
 }
 }

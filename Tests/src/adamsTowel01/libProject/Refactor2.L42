@@ -8,16 +8,16 @@
     class method Library trait(){
       //@plugin is.L42.connected.withSafeOperators
       implements Fail
-      
+
       method kind() S"Refactor.Fail"
       method responseOf()Message.Opt()
       method toS() This.readableName()[
         S": ";S.nl();this.text().as42MultilineString()
         ]""
-      
+
       class method
       Library #pluginUnresponsive(Library binaryRepr)
-        binaryRepr  
+        binaryRepr
       }
     class method Library <><(Library right)
       UnsafeRefactor.MiniData<><UnsafeRefactor.Compose.compose(
@@ -45,7 +45,7 @@
     }
   MethodUnfit:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodUnfit
-    } 
+    }
 
   ClassClash:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassClash
@@ -56,28 +56,28 @@
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$MethodClash
     method Location.Method left()
     method Location.Method right()
-    } 
+    }
   PathUnfit:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit
     method Path path()
-    } 
+    }
   SelectorUnfit:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
     method Path path()
     method Selector selector()
-    } 
+    }
   IncoherentMapping:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SelectorUnfit
-    } 
+    }
 
   PrivacyCoupuled:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PrivacyCoupuled
-    } 
+    }
 
 
 SubtleSubtypeViolation:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
-    } 
+    }
 
 //------------------------------
 //JavaImport
@@ -88,7 +88,7 @@ SubtleSubtypeViolation:ErrorW<><{
     //@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.PlgWrapperGenerator
     class method
     Library #pluginUnresponsive(Library binaryRepr)
-      binaryRepr  
+      binaryRepr
 
     class method
     Library <><(Library right)
@@ -106,11 +106,11 @@ SubtleSubtypeViolation:ErrorW<><{
 //Compose
 //------------------------------
 Compose:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.Compose
-  
+
   class method
-  Void #pluginUnresponsive(Library binaryRepr) 
+  Void #pluginUnresponsive(Library binaryRepr)
     error X"Compose(that,and)"
 
   class method
@@ -126,9 +126,9 @@ exception MethodClash,ClassClash,SubtleSubtypeViolation
 //Rename
 //------------------------------
 PlgRenameClass:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.Rename
-  class method Void #pluginUnresponsive(Library binaryRepr) 
+  class method Void #pluginUnresponsive(Library binaryRepr)
     error X"renameClass(Library that,Path src,Path dest)"
 
   class method
@@ -174,9 +174,9 @@ HideClass hide(Path path)
 
 
 PlgAbstractClass:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.AbstractClass
-  class method Void #pluginUnresponsive(Library binaryRepr) 
+  class method Void #pluginUnresponsive(Library binaryRepr)
     error X"abtractClass(Library that,Path src)"
 
   class method
@@ -204,9 +204,9 @@ ToAbstractClass toAbstract(Path path)
 //ToAbstract
 //------------------------------
 PlgToAbstract:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.ToAbstract
-  class method Void #pluginUnresponsive(Library binaryRepr) 
+  class method Void #pluginUnresponsive(Library binaryRepr)
     error X"toAbstractSelector"
 
   class method
@@ -282,18 +282,18 @@ class Path #default#toAbstract(Void of) Path
 rename method:
   if path private, path not found
   if src private, selector not found
-  if dest is private, check not abstract 
+  if dest is private, check not abstract
     on fail??
 */
- 
+
 
 //------------------------------
 //Redirect
 //------------------------------
 PlgRedirect:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.Redirect
-  class method Void #pluginUnresponsive(Library binaryRepr) 
+  class method Void #pluginUnresponsive(Library binaryRepr)
     error {/*redirect(that,src,dest)*/}
 
   class method
@@ -312,7 +312,7 @@ Redirect:{
 class method
 class Path #default#redirect(Void path) Path
 class method
-Redirect redirect(Path path,class Any into) 
+Redirect redirect(Path path,class Any into)
   Redirect(src:path,dest:into)
 
 
@@ -323,7 +323,7 @@ RedirectRefTo:{
   Location.Type.RefTo into
   class method This (Path src, Location.Type.RefTo into)
   method Library <><(Library right)
-  exception 
+  exception
   ,,,,ClassUnfit
   ,,,,IncoherentMapping
   ,,,,MethodClash
@@ -347,11 +347,11 @@ class method RedirectRefTo redirect(Path path, Location.Type.RefTo intoRefTo)
 //Method  //as in Refactor.Method
 //------------------------------
 PlgMethod:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.RenameMethods
-  class method Void #pluginUnresponsive(Library binaryRepr) 
+  class method Void #pluginUnresponsive(Library binaryRepr)
     error {/*redirect(that,src,dest)*/}
-  
+
   //from Java
   class method This ()
   method Library act(Library that)
@@ -365,11 +365,11 @@ PlgMethod:{
 Method:{
   var PlgMethod inner
   class method mut This (PlgMethod inner)
-  
+
   read method
-  Library <><(Library right)  
+  Library <><(Library right)
   exception PathUnfit, SelectorUnfit,MethodClash, ClassUnfit
-    this.inner().act(right)  
+    this.inner().act(right)
 
   //[] syntax
   class method mut This #seqBuilder() This(inner:PlgMethod())
@@ -384,48 +384,66 @@ Method:{
 
   //hide:\"foo()" of:\"Bar";
   mut method Void #add(Selector hide, Path of)
-    this.inner(this.inner().addHideJ(path:of,src:hide)) 
+    this.inner(this.inner().addHideJ(path:of,src:hide))
   //hide:\"foo()";
   mut method Void #add(Selector hide)
     this.inner(this.inner().addHideJ(path:Path"This",src:hide))
   //rename:\"foo()" of:\"Bar" into:\"bar()";
   mut method Void #add(Selector rename Path of Selector into)
-    this.inner(this.inner().addRenameJ(path:of,src:rename,dest:into))  
+    this.inner(this.inner().addRenameJ(path:of,src:rename,dest:into))
   //rename:\"foo()" into:\"bar()";
   mut method Void #add(Selector rename Selector into)
-    this.inner(this.inner().addRenameJ(path:Path"This",src:rename,dest:into))  
+    this.inner(this.inner().addRenameJ(path:Path"This",src:rename,dest:into))
   //closeState:\"Bar";
   mut method Void #add(Path closeState)
-    this.inner(this.inner().addCloseJ(path:closeState)) 
+    this.inner(this.inner().addCloseJ(path:closeState))
   //abstract:\"foo()" of:\"Bar";
   mut method Void #add(Selector abstract Path of)
-    this.inner(this.inner().addAbstractJ(path:of,src:abstract))    
+    this.inner(this.inner().addAbstractJ(path:of,src:abstract))
   //abstract:\"foo()" of:\"Bar" alias:\"..";
   mut method Void #add(Selector abstract Path of Selector alias)
     this.inner(this.inner()
-      .addAbstractAliasJ(path:of,src:abstract,dest:alias))      
+      .addAbstractAliasJ(path:of,src:abstract,dest:alias))
   //abstract:\"foo()";
   mut method Void #add(Selector abstract)
-    this.inner(this.inner().addAbstractJ(path:Path"This",src:abstract))    
+    this.inner(this.inner().addAbstractJ(path:Path"This",src:abstract))
   //abstract:\"foo()" alias:\"..";
   mut method Void #add(Selector abstract Selector alias)
-    this.inner(this.inner().addAbstractAliasJ(path:Path"This",src:abstract,dest:alias))      
+    this.inner(this.inner().addAbstractAliasJ(path:Path"This",src:abstract,dest:alias))
   }
+//------------------------------
+//MakeDoc
+//------------------------------
+MakeDoc:{
+  //@plugin  toFix
+  //@pluginPart is.L42.connected.withSafeOperators.refactor.MakeDoc
+
+  class method
+  Void #pluginUnresponsive(Library binaryRepr)
+    error X"MakeDoc(that)"
+
+  class method
+  Library makeDoc(S that)
+  }
+class method
+Library makeDoc(S that)
+  MakeDoc.makeDoc(that)
+
 
 
 //------------------------------
 //SumMethods
 //------------------------------
 PlgSumMethods:{
-  //@plugin  toFix 
+  //@plugin  toFix
   //@pluginPart is.L42.connected.withSafeOperators.refactor.SumMethods
-  class method Void #pluginUnresponsive(Library binaryRepr) 
+  class method Void #pluginUnresponsive(Library binaryRepr)
     error {/*redirect(that,src,dest)*/}
   class method Library sumMethodsJ(
     Library lib, Path path,Selector src1,Selector src2,Selector dest,S name)
   exception MethodClash, PathUnfit, SelectorUnfit
   }
-  
+
 SumMethods:{
     Selector that
     Selector and
@@ -435,7 +453,7 @@ SumMethods:{
     class method This (Selector that,Selector and, Path of, S over, Selector into)
     method
     Library <>< (Library right)
-    exception  MethodClash, PathUnfit, SelectorUnfit 
+    exception  MethodClash, PathUnfit, SelectorUnfit
       PlgSumMethods.sumMethodsJ(lib:right,path:this.of() src1:this.that(),src2:this.and(), dest:this.into(),name:this.over())
     }
 class method
@@ -443,4 +461,3 @@ SumMethods sumMethods(Selector that,Selector and, Path of, S over, Selector into
   SumMethods(that,and:and, of:of,over:over,into:into)
 
  }
- 

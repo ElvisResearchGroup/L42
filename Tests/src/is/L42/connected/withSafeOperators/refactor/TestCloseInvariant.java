@@ -28,6 +28,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.Ast.Stage;
 import ast.ExpCore.ClassB;
+import ast.ExpCore.ClassB.MethodWithType;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 @RunWith(Parameterized.class)
@@ -186,7 +187,7 @@ public class TestCloseInvariant{
   "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",true
   },{lineNumber(), "{A a "
       //+ "class method mut This ctor(fwd A a) "
-      + "read method Void #invariant() void}","This",
+      + "read method Void #invariant() void class method mut This (A a) class method This immK(A a)}","This",
   "{}",false
   //
 
@@ -207,16 +208,19 @@ public class TestCloseInvariant{
 
   TestHelper.configureForTest();
   ClassB cb1=getClassB(false,null,_cb1);
+  List<MethodWithType> mwts = cb1.mwts();
+  MethodSelector msImmK=mwts.get(mwts.size()-1).getMs();
+  MethodSelector msMutK=mwts.get(mwts.size()-2).getMs();
   List<Ast.C> path=TestHelper.cs(_path);
   if(!isError){
-    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, "mutK", "immK");
+    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, msMutK, msImmK);
     TestHelper.configureForTest();
     ClassB expected=getClassB(false,null,_expected);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
     try{
-      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, "mutK", "immK");
+      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, msMutK, msImmK);
       fail("error expected");
       }
     catch(ClassUnfit|PathUnfit err){
