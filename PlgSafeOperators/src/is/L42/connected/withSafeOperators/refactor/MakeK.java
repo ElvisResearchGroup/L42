@@ -86,7 +86,6 @@ return fields;
       List<Type> ts=new ArrayList<>();
       for(Type t:candidateK.getMt().getTs()){
         assert !t.getMdf().isIn(Mdf.Lent,Mdf.Readable);
-        assert !TypeManipulation.fwd_or_fwdP_in(t.getMdf());
         ts.add(TypeManipulation.toImm(t));
         }
       candidateK=candidateK.withMt(candidateK.getMt().withTs(ts).withReturnType(Type.immThis0));

@@ -1,5 +1,7 @@
 {
 Path of
+Selector immK
+Selector mutK
 class method class Path #default##apply(Void of)Path
 Fail:Message.$<><{ implements This2.Fail}
 
@@ -47,9 +49,7 @@ method
 Library <><(Library right)
 exception Fail Refactor2.PathUnfit {
   inv=this.ensureInvariant(right)
-  return PlgInvariantClose.closeJ(
-    path:this.of(),top:inv,mutK:This1.mutKName() immK:This1.immKName()
-    )
+  return PlgInvariantClose.closeJ(path:this.of(),top:inv,mutK:this.mutK() immK:this.immK())
   exception on Refactor2.Fail Fail""
   }
 
@@ -58,8 +58,8 @@ PlgInvariantClose:Refactor2.JavaImport<><{
   //@plugin is.L42.connected.withSafeOperators
   //@pluginPart is.L42.connected.withSafeOperators.refactor.InvariantClose
   class method
-  Library closeJ(Path path,Library top,S mutK,S immK)
-  exception Refactor2.PathUnfit, Refactor2.ClassUnfit, Refactor2.ParseFail
+  Library closeJ(Path path,Library top,Selector mutK,Selector immK)
+  exception Refactor2.PathUnfit, Refactor2.ClassUnfit
 
   class method
   Library #pluginUnresponsive(Library binaryRepr)

@@ -1,7 +1,7 @@
 {
 Fail:{interface implements Guard}
 AmbiguosConstructor:Message.$<><{implements Fail}
-//Invariant:K.Imm<><...
+Invariant:K.Imm<><...
 Wither:K.Imm<><...
 FieldOperation:K.Imm<><...
 AddToS:FieldOperation<><...
@@ -82,7 +82,7 @@ exception Fail Refactor2.PathUnfit {
  res><>=Wither(immK:immK, of:\"This")
  res><>=AddToS(mutK:mutK, of:\"This")
  res><>=AddEquals(mutK:mutK, of:\"This")
-// res><>=Invariant(of:\"This", immK:immK,mutK:mutK)
+ res><>=Invariant(of:\"This", immK:immK,mutK:mutK)
  return res
 }
 }
