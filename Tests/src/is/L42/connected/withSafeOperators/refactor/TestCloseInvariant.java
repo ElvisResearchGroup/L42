@@ -43,7 +43,7 @@ public class TestCloseInvariant{
     {lineNumber(), "{}","This",
     "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit"
     ,true
-  },{lineNumber(), 
+  },{lineNumber(),
   "{A a read method Void #invariant() void A:{}}","This",
   " {\n" +
       "read method \n" +
@@ -70,7 +70,7 @@ public class TestCloseInvariant{
       "mut This0 k_$_2(fwd This0.A a) \n" +
       "A: {}}"
   ,false
-  },{lineNumber(), 
+  },{lineNumber(),
   "{var A a read method Void #invariant() void A:{}}","This",
   " {\n" +
       "mut method \n" +
@@ -105,8 +105,8 @@ public class TestCloseInvariant{
       "mut This0 k_$_2(fwd This0.A a) \n" +
       "A: {}}"
   ,false
-  
-  },{lineNumber(), 
+
+  },{lineNumber(),
   "{capsule A a read method Void #invariant() void "
   + " mut method Void doStuff(A that)that(this.#a()) A:{}}","This",
   " {\n" +
@@ -143,7 +143,7 @@ public class TestCloseInvariant{
       "A: {}}"
   ,false
 
-  },{lineNumber(), 
+  },{lineNumber(),
   "{capsule A a read method Void #invariant() void mut method Void mutA()( lent A a=this.#a() void) A:{}}","This",
   " {\n" +
       "read method \n" +
@@ -181,9 +181,17 @@ public class TestCloseInvariant{
       "mut This0 k_$_2(fwd mut This0.A a) \n" +
       "A: {}}"
   ,false
-  
+
   },{lineNumber(), "{B:{}}","C",
   "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",true
+  },{lineNumber(), "{A a "
+      //+ "class method mut This ctor(fwd A a) "
+      + "read method Void #invariant() void}","This",
+  "{}",false
+  //
+
+
+
 }});}
 @Test  public void test() throws PathUnfit, ClassUnfit, ParseFail {
   /**
@@ -191,8 +199,8 @@ public class TestCloseInvariant{
    some metaprogramming classes have some parsing
    at class loading time. This uses L42.usedNames.
    Caching currently does not work well with those.
-   
-     Algorithm? Load all the parsing first, then do caching 
+
+     Algorithm? Load all the parsing first, then do caching
      Or normal behaviour? not clean usedNames but make it as
      after parsing meta class loaders?
    */
@@ -203,7 +211,7 @@ public class TestCloseInvariant{
   if(!isError){
     ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, "mutK", "immK");
     TestHelper.configureForTest();
-    ClassB expected=getClassB(false,null,_expected);    
+    ClassB expected=getClassB(false,null,_expected);
     TestHelper.assertEqualExp(expected,res);
     }
   else{

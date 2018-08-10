@@ -115,7 +115,7 @@ public class Plugin implements PluginType{
       ClassB that=ensureExtractClassB(_that);
       List<Ast.C> path=PathAux.parseValidCs(ensureExtractStringU(_path));
       Doc doc=ensureExtractDoc(_doc);
-      return AddDocumentation.addDocumentationOnNestedClass(Resources.getP(),that,path,doc);
+      return AddDocumentation.addDocumentationOnNestedClass(Resources.getP(),that,(List<Ast.C>)_path,doc);
       }
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MaddDocumentation£xthat£xpath£xselector£xdoc(Object _that,Object _path,Object _sel,Object _doc){

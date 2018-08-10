@@ -3,15 +3,14 @@
 
     class method mut S.SBuilder #builder() S.SBuilder.empty()
     class method S #from(S.SBuilder builder) (
-    input=S.#from(builder: builder)
+	    input=S.#from(builder: builder)
+		l = {//@string
+	    }
 
-    l = use This check addDocumentation({
-        //@string
-    }
-        path: \""
-        doc: input.binaryRepr()
-        )
-        error X"SafeOperators.addDocumentation(path)"
-    S.#from(binaryRepr: l)
-  )
+	    r = use This check addDocumentation(l
+            path: Path"".#binaryRepr()
+            doc: input.#binaryRepr()
+        ) error X"SafeOperators.addDocumentation(path)"
+	    S.#from(binaryRepr: r)
+  	)
 }

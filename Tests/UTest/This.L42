@@ -1,0 +1,25 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+U: {//@plugin
+   //L42.is/connected/withSafeOperators
+
+    class method mut S.SBuilder #builder() S.SBuilder.empty()
+    class method S #from(S.SBuilder builder) (
+    input=S.#from(builder: builder)
+
+    l = use This check addDocumentation({
+        //@string
+    }
+        path: \""
+        doc: input.binaryRepr()
+        )
+        error X"SafeOperators.addDocumentation(path)"
+    S.#from(binaryRepr: l)
+  )
+}
+
+Main: {
+  Debug(U"Hello\u20world")
+  return ExitCode.normal()
+  }

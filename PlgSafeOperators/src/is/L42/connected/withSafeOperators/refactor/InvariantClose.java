@@ -116,9 +116,9 @@ public class InvariantClose {
     Set<String> otherFields = new HashSet<>();
     {
 
-      for (int i = 0; i < ks.candidateK.getMt().getTs().size(); i ++) {
-        String var = ks.candidateK.getMs().getNames().get(i);
-        if (TypeManipulation.noFwd(ks.candidateK.getMt().getTs().get(i)).getMdf().isIn(Mdf.Immutable, Mdf.Capsule, Mdf.Class)) {
+      for (int i = 0; i < ks.mutK.getMt().getTs().size(); i ++) {
+        String var = ks.mutK.getMs().getNames().get(i);
+        if (TypeManipulation.noFwd(ks.mutK.getMt().getTs().get(i)).getMdf().isIn(Mdf.Immutable, Mdf.Capsule, Mdf.Class)) {
           validatableFields.add(var);
           validatableFields.add("#" + var);
         } else {
@@ -139,15 +139,21 @@ public class InvariantClose {
           continue;
 
         invMethods.add(m);
+
+        MethodWithType mwt = (MethodWithType)lPath._getMember(m);
+        if (mwt == null) {
+          throw new ClassUnfit().msg("Error method " + m + " of path " + PathAux.as42Path(path) + " does not exist, but it is (transitiviley) called by #invariant");
+        }
+
         // Collect all other-called methods, and check that this is only used to call methods or validatable fields
-        todo.addAll(InvariantChecker.check((MethodWithType)lPath._getMember(m), validatableFields, otherFields));
+        todo.addAll(InvariantChecker.check(mwt, validatableFields, otherFields));
       }
     }
 
     List<CsMxMx> sel = new ArrayList<>();
     Set<MethodSelector> state = new HashSet<>();
     for (MethodWithType mwt : lPath.mwts()) {
-      try { if (!TsLibrary.coherentF(pPath, ks.candidateK, mwt))
+      try { if (!TsLibrary.coherentF(pPath, ks.mutK, mwt))
           continue; }
       catch (PathMetaOrNonExistant e) { continue; }
 
@@ -183,11 +189,14 @@ public class InvariantClose {
 
     for (MethodWithType mwt : lPath.mwts()) {
       if (invMethods.contains(mwt.getMs())) {
+        // TODO: Make the private mwts call privates instead, and don't change the publics
+
         // Delegate all invariant-used methods
         // so that meta-programming can't redefine the invariant (since the code will have a private-number)
         MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(ks.uniqueNum));
         addMember(newMembers, delegate(false, mwt.withInner(null), newMwt, ks.uniqueNum));
         addMember(newMembers, newMwt);
+
         continue;
       }
 
@@ -322,7 +331,6 @@ public class InvariantClose {
   }
 
   static class Ks {
-    MethodWithType candidateK;
     MethodWithType fwdK;
     MethodWithType mutK;
     MethodWithType immK;
@@ -334,8 +342,6 @@ public class InvariantClose {
       MethodWithType k = MakeK.candidateK("k", l, fields, true);
       MethodSelector ms = k.getMs();
       MethodType mt = k.getMt();
-
-      this.candidateK = k;
 
       // use mutKName & remove fwd's
       this.mutK = k.withMs(ms.withName(mutKName))
@@ -440,11 +446,9 @@ public class InvariantClose {
     Set<String> validatableFields;
     Set<String> otherFields;
     Set<MethodSelector> methodCalls = new HashSet<>();
-    boolean inClass = false; // Are we inside a class literal? (where 'this' will have a different meaning)
-
     @Override
     public Void visit(X s) {
-        if (!this.inClass && s.equals(thisX))
+        if (s.equals(thisX))
           LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
             "Can only use this to call getters for imm and capsule fields within #invariant!"));
 
@@ -454,7 +458,7 @@ public class InvariantClose {
     @Override
     public Void visit(MCall s) {
       // Is this a method call on this?
-      if (!this.inClass && s.getInner().equals(thisX)) {
+      if (s.getInner().equals(thisX)) {
         s = s.withInner(new ExpCore._void()); // So super.visit(s) dosn't call this.visit(X)
         if (s.getEs().size() == 0) {
           // possibly a field access
@@ -472,13 +476,7 @@ public class InvariantClose {
 
     @Override
     public Void visit(ClassB l) {
-      boolean oldClass = this.inClass;
-      try {
-        this.inClass = true;
-        return super.visit(l);
-      } finally {
-        this.inClass = oldClass;
-      }
+      return null;
     }
   }
 }
