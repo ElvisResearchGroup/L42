@@ -141,7 +141,7 @@ public class TestCloseInvariant{
       "  r2\n" +
       "  )\n" +
       "class method \n" +
-      "This0 immK(capsule This0.A a) (\n" +
+      "This0 immK(This0.A a) (\n" +
       "  This0 r3=this.mutK_$_2(a:a)\n" +
       "  Void unusedInv3=r3.#invariant_$_2()\n" +
       "  r3\n" +
@@ -180,7 +180,7 @@ public class TestCloseInvariant{
       "  r2\n" +
       "  )\n" +
       "class method \n" +
-      "This0 immK(capsule This0.A a) (\n" +
+      "This0 immK(This0.A a) (\n" +
       "  This0 r3=this.mutK_$_2(a:a)\n" +
       "  Void unusedInv3=r3.#invariant_$_2()\n" +
       "  r3\n" +
@@ -269,6 +269,9 @@ public class TestCloseInvariant{
             "  Void unusedInv2=r2.#invariant_$_2()\n" +
             "  r2\n" +
             "  )}", false
+
+    },{lineNumber(), "{read method Void #invariant() this.bar(b: void) read method Void bar(Void b)}","This",
+      "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit", true
 
 }});}
 @Test  public void test() throws PathUnfit, ClassUnfit, ParseFail {

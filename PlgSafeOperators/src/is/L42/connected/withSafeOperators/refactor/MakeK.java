@@ -83,11 +83,13 @@ return fields;
   private static ClassB makeK(String kName,ClassB top, ClassB that,List<Ast.C>path,List<String> fieldNames,boolean immK,boolean fwd) throws ParseFail, ClassUnfit {
     MethodWithType candidateK = candidateK(kName, that, fieldNames, fwd);
     if(immK){
+      List<Type> ts=new ArrayList<>();
       for(Type t:candidateK.getMt().getTs()){
         assert !t.getMdf().isIn(Mdf.Lent,Mdf.Readable);
-        if(t.getMdf().isIn(Mdf.Mutable,Mdf.MutableFwd)){throw new RefactorErrors.ClassUnfit();}
+        assert !TypeManipulation.fwd_or_fwdP_in(t.getMdf());
+        ts.add(TypeManipulation.toImm(t));
         }
-      candidateK=candidateK.withMt(candidateK.getMt().withReturnType(Type.immThis0));
+      candidateK=candidateK.withMt(candidateK.getMt().withTs(ts).withReturnType(Type.immThis0));
     }
     List<Member> result=new ArrayList<>(that.getMs());
     if(Functions.getIfInDom(result,candidateK.getMs()).isPresent()){throw new RefactorErrors.ClassUnfit();}

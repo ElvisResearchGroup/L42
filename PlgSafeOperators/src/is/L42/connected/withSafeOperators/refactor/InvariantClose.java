@@ -1,34 +1,5 @@
 package is.L42.connected.withSafeOperators.refactor;
 
-/*
-
- { T1 f1 ..Tn fn }
-
- ksignature
-
- add K,
-
- make state delegates   g()->f()  if setter/constr add invariant check
-
- for all the method calling this.exposer()
-   check method is ok = ...old... restrictions
-   call invariant end
-
- check validate method follow restrictions= ...old...
-
- make state private
-
- TODO: understand behaviour of old, what to change to make the new restrictions
- Validate: can use private state (instead of directly fields), can use methods only using private state
-   //hard: ( make a private copy of all public methods used inside validate and make validate use such private version )
-
-
-
-
-
- * */
-
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,8 +42,6 @@ import newTypeSystem.TypeManipulation;
 import programReduction.Methods;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
-
-import javax.swing.*;
 
 public class InvariantClose {
   static MethodSelector invName = MethodSelector.of("#invariant", Collections.emptyList());
@@ -180,7 +149,14 @@ public class InvariantClose {
     }
 
     // Wrap all calls to exposers (into calls to a unique-numbered one)
-    this.top = (ClassB)this.top.accept(new WrapAux());
+
+    this.top = (ClassB)this.top.accept(new WrapAux(this.p,
+        this.exposers.stream().map(m ->
+          new CsMxMx(this.path,
+              false, m, m.withUniqueNum(this.uniqueNum))
+          ).collect(Collectors.toList()),
+        this.top));
+
     this.inner = this.top.getClassB(this.path);
 
     this.delegateState();
@@ -252,9 +228,7 @@ public class InvariantClose {
     this.newMembers.add(member);
   }
   MethodWithType delegate(boolean callInvariant, MethodWithType original, MethodWithType delegate) throws ClassUnfit {
-    if (original.get_inner() != null)
-      throw new ClassUnfit().msg("The method " + original.getMs() + " is not abstract");
-
+    assert original.get_inner() == null;
     assert original.getMs().nameSize() == delegate.getMs().nameSize();
     Position p = original.getP();
 
@@ -339,11 +313,10 @@ public class InvariantClose {
   }
 
   static X thisX = new X(Position.noInfo, "this");
+
   class WrapAux extends RenameMethodsAux {
-    WrapAux() {
-      super(InvariantClose.this.p,
-          exposers.stream().map(m -> new CsMxMx(path, false, m, m.withUniqueNum(uniqueNum))).collect(Collectors.toList()),
-          InvariantClose.this.top);
+    WrapAux(Program p, List<CsMxMx> renames, ClassB top) {
+      super(p, renames, top);
     }
 
     // Are we calling the capsule exposer?
@@ -413,6 +386,18 @@ public class InvariantClose {
       return res.withInner(makeWrapper(InvariantClose.thisWrapper, res.getInner(), mt.getReturnType()));
     }
   }
+  class ThisOnlyReceiver extends PropagatorVisitor {
+    @Override public Void visit(X s) {
+      if (s.equals(thisX))
+        LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
+          "Can only use this to call getters for imm and capsule fields within #invariant!"));
+      return null;
+      }
+    @Override public Void visit(MCall s) {
+      for(ExpCore e:s.getEs()) {e.accept(this);}
+      return s.getInner().equals(thisX) ? null : s.getInner().accept(this);
+     }
+  }
 
   class InvariantChecker extends CloneVisitor {
     private InvariantChecker(List<MethodSelector> methodCalls) {
@@ -432,7 +417,11 @@ public class InvariantClose {
 
     @Override
     public MethodWithType visit(MethodWithType mwt) {
-      ExpCore newInner = this.liftNullable(mwt.get_inner());
+      if (mwt.get_inner() == null)
+        LambdaExceptionUtil.throwAsUnchecked(
+            new ClassUnfit().msg("The method " + mwt.getMs() + " is abstract"));
+
+      ExpCore newInner = this.lift(mwt.getInner());
       MethodSelector newMs = mwt.getMs().withUniqueNum(uniqueNum);
       return mwt.withInner(newInner).withMs(newMs);
     }
