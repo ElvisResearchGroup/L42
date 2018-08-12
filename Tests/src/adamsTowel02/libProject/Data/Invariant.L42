@@ -33,11 +33,12 @@ Library ensureInvariant(Library that)
     return that//if compose is good, Void #invariant was already defined
     catch exception Refactor2.Fail void //we skip former return
     void)
-  return Use.Over[that]<><intoOf<><{implements Concept.ToS
+  return Use.Over[that]<><intoOf<><{
+    read method S #invariantToS()
     read method Bool #1#invariant()
     read method Void #invariant()(
       if !this.#1#invariant() (
-        error Invariant.Fail"invalid object detected "
+        error Invariant.Fail"invalid object detected "[this.#invariantToS()]"!"
         )
       )
     }

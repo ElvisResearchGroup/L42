@@ -1,0 +1,10 @@
+{
+    class method Selector name() Selector"#invariantToS()"
+    class method Bool elideField(Location.Type that)
+        !(that.mdf().isCmpCapsule() | that.mdf().isCmpImm())
+
+    MiniTos: Resource <>< {
+        method S #invariantToS() S"["[this.baseToS()]"]"
+        read method S baseToS() S""
+    }
+}
