@@ -1,0 +1,70 @@
+{reuse L42.is/AdamTowel02
+
+
+Widget:UnsafeRefactor.This$er<><{interface 
+  S id
+  Size left Size top
+  Size width Size height
+  S color
+  List children
+  This$:{interface implements Concept.Base}
+  List:Collections.vector(of:This$)
+  }
+BoxW:Data<><{implements Widget}
+  
+Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
+  method S format(Widget that)
+    S"<div id="[S.doubleQuote();that.id();S.doubleQuote();]
+      " style="[S.doubleQuote()]
+        "position: absolute;"[]
+        "left: "[that.left()]"px;"[]
+        "top: "[that.top()]"px;"[]
+        "height: "[that.height()]"px;"[]
+        "width: "[that.width()]"px;"[]
+        "background-color: "[that.color()]";"[S.doubleQuote()]
+      "><div style="[S.doubleQuote()]"position: relative;"[S.doubleQuote()]">"
+      [with w in that.children().vals() (
+      use[this.format(w)]
+      )]"</div></div>"
+  method Void draw(Widget that)
+    this.set(
+    S"<div id="[S.doubleQuote();S"Top";S.doubleQuote();]
+      "style="[S.doubleQuote()]
+      "position: relative; height: 400px; width: 400px; border: solid black 2px;"
+      [S.doubleQuote()]">"[this.format(that)]"</div>"
+      id:S"Top")
+    }
+
+C:{
+  var S msg=S"<div id='Pressed'>"
+  Gui gui=Gui(id:S"a1")
+  initialState=S"
+      '<div id="Pressed"> </div>
+      '<font size="3" color="blue">Here the ID of the last pressed</font>
+      '<button class="button" onclick="event42('Pressed!')">Click Me!</button>
+      '<div id="Top" ></div>
+      "
+  gui.open(
+    title:S"Test Abs positioning"
+    body:initialState
+    x:600Size
+    y:600Size
+    )
+  var Size move=0Size
+  with event in gui.events() (
+    move+=1Size
+    gui.draw(BoxW(
+      id:S"A"
+      left:20Size
+      top:40Size+move
+      width:20Size
+      height:20Size
+      color:S"red"
+      children:Widget.List[]
+      ))
+    )
+  gui.close()
+  Debug(S"#@Success@#")
+  return ExitCode.normal()
+  }
+}

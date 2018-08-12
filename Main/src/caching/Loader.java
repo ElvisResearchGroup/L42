@@ -66,10 +66,10 @@ public class Loader {
 
   }
   public void eventUsingCache(Set<String> byteCodeNames) {
-    System.out.println("Using cache for "+byteCodeNames);
+    //System.out.println("Using cache for "+byteCodeNames);
   }
   public void eventJavaC(HashMap<String, ClassFile> newClMap) {
-    System.out.println("Javac for  "+newClMap.keySet());
+    //System.out.println("Javac for  "+newClMap.keySet());
   }
 
   public boolean updateCachePath(java.nio.file.Path path) {
@@ -217,7 +217,7 @@ public class Loader {
       seen.addAll(ci);
       HashMap<Integer,String> ciMap=new HashMap<>();
       for(Integer i:ci) {ciMap.put(i,"generated."+ct.className(i));}
-      System.out.println("Dependency about "+ci);
+      //System.out.println("Dependency about "+ci);
       processDep(ciMap);
       }
     }

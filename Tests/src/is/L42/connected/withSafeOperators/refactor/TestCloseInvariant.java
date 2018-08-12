@@ -288,11 +288,11 @@ public class TestCloseInvariant{
 
   TestHelper.configureForTest();
   ClassB cb1=getClassB(false,null,_cb1);
-  List<String> fields = MakeK.collectFieldNames(cb1);
+  List<String> fields = MakeK.collectFieldNames(null,cb1);
   MethodSelector mutK = MethodSelector.of("mutK", fields);
   MethodSelector immK = MethodSelector.of("immK", fields);
-  cb1 = MakeK.makeKJ(cb1, "mutK", Collections.emptyList(), /*imm*/ false, false);
-  cb1 = MakeK.makeKJ(cb1, "immK", Collections.emptyList(), /*imm*/ true, false);
+  cb1 = MakeK.makeKJ(cb1, "mutK", Collections.emptyList(),"-refine", /*imm*/ false, false);
+  cb1 = MakeK.makeKJ(cb1, "immK", Collections.emptyList(),"-refine", /*imm*/ true, false);
 
   List<Ast.C> path=TestHelper.cs(_path);
   if(!isError){

@@ -39,20 +39,28 @@ import tools.LambdaExceptionUtil;
 import tools.LambdaExceptionUtil.Function_WithExceptions;
 public class MakeK {
   public static ClassB makeKS(ClassB that,String name,String path,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
-    return makeKJ(that,name,PathAux.parseValidCs(path),immK,fwd);
+    return makeKJ(that,name,PathAux.parseValidCs(path),"refine",immK,fwd);
     }
-  public static ClassB makeKJ(ClassB that,String name,List<Ast.C> path,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
+  public static ClassB makeKJ(ClassB that,String name,List<Ast.C> path, String excluded,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
+    List<String> excludedPs=null;
+    if(!excluded.equals("-refine")){
+      excludedPs=new ArrayList<>();
+      for(String s:excluded.split(" ")){
+        s=s.trim();
+        if (!s.isEmpty()){excludedPs.add(s);}
+      }
+    }
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
     ClassB lPath=that.getClassB(path);
-    List<String> fields = collectFieldNames(lPath);
+    List<String> fields = collectFieldNames(excludedPs,lPath);
     return makeK(that,name,path,fields,immK,fwd);
     }
 
-public static List<String> collectFieldNames(ClassB lPath) {
+public static List<String> collectFieldNames(List<String> excluded, ClassB lPath) {
 List<String> fields=new ArrayList<>();
 for(MethodWithType mwt:lPath.mwts()){
-  if(mwt.getMt().isRefine()){continue;}//To prevent toS() and class() to be seen as fields
+  if(excluded==null && mwt.getMt().isRefine()){continue;}//To prevent toS() and class() to be seen as fields
   if(mwt.get_inner()!=null){continue;}
   if(mwt.getMt().getMdf()==Mdf.Class){continue;}
   if(mwt.getMs().getNames().size()>1){continue;}
@@ -67,6 +75,7 @@ for(MethodWithType mwt:lPath.mwts()){
     }
   if(!MethodSelector.checkX(name,false)){continue;}
   if(fields.contains(name)){continue;}
+  if(excluded!=null && excluded.contains(name)){continue;}
   fields.add(name);
   }
 return fields;

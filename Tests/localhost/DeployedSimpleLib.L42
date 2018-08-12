@@ -2,28 +2,28 @@
 */
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
-  mut This0.Abstract.S.SBuilder b834=This0.Abstract.S.#builder()
-  Void unused25033=b834.#H()
-  Void unused25034=b834.#e()
-  Void unused25035=b834.#l()
-  Void unused25036=b834.#l()
-  Void unused25037=b834.#o()
-  Void unused25038=b834.#space()
-  Void unused25039=b834.#W()
-  Void unused25040=b834.#o()
-  Void unused25041=b834.#r()
-  Void unused25042=b834.#l()
-  Void unused25043=b834.#d()
-  Void unused25044=b834.#space()
-  Void unused25045=b834.#D()
-  Void unused25046=b834.#e()
-  Void unused25047=b834.#p()
-  Void unused25048=b834.#l()
-  Void unused25049=b834.#o()
-  Void unused25050=b834.#y()
-  Void unused25051=b834.#e()
-  Void unused25052=b834.#d()
-  b834
+  mut This0.Abstract.S.SBuilder b839=This0.Abstract.S.#builder()
+  Void unused25062=b839.#H()
+  Void unused25063=b839.#e()
+  Void unused25064=b839.#l()
+  Void unused25065=b839.#l()
+  Void unused25066=b839.#o()
+  Void unused25067=b839.#space()
+  Void unused25068=b839.#W()
+  Void unused25069=b839.#o()
+  Void unused25070=b839.#r()
+  Void unused25071=b839.#l()
+  Void unused25072=b839.#d()
+  Void unused25073=b839.#space()
+  Void unused25074=b839.#D()
+  Void unused25075=b839.#e()
+  Void unused25076=b839.#p()
+  Void unused25077=b839.#l()
+  Void unused25078=b839.#o()
+  Void unused25079=b839.#y()
+  Void unused25080=b839.#e()
+  Void unused25081=b839.#d()
+  b839
   )))
 Abstract: {
 Alu: {/*@plugin
@@ -7260,7 +7260,7 @@ K: {
 class method 
 Library #leftrightleft#0left(Library right) exception This1.Refactor2.ClassUnfit 
 class method 
-This0.Decorator #apply(This1.S name, This1.Path path, This1.Bool immK, This1.Bool isFwd) 
+This0.Decorator #apply(This1.S name, This1.Path path, This1.S excluded, This1.Bool immK, This1.Bool isFwd) 
 PlgK: {/*@plugin is.L42.connected.withSafeOperators
 @pluginPart is.L42.connected.withSafeOperators.refactor.MakeK
 */
@@ -7271,7 +7271,7 @@ Library #binaryRepr()
 class method 
 Void #exceptionIf(Library binaryRepr) exception This0 
 class method 
-Library makeKJ(Library that, This2.S name, This2.Path path, This2.Bool immK, This2.Bool isFwd) 
+Library makeKJ(Library that, This2.S name, This2.Path path, This2.S excluded, This2.Bool immK, This2.Bool isFwd) 
 class method 
 Library #pluginUnresponsive(Library binaryRepr) }
 Imm: {
@@ -7283,11 +7283,13 @@ This2.S name()
 read method 
 This2.Path path() 
 read method 
+This2.S excluded() 
+read method 
 This2.Bool immK() 
 read method 
 This2.Bool isFwd() 
 class method 
-This0 #apply(This2.S name, This2.Path path, This2.Bool immK, This2.Bool isFwd) 
+This0 #apply(This2.S name, This2.Path path, This2.S excluded, This2.Bool immK, This2.Bool isFwd) 
 method 
 Library #leftrightleft#0left(Library right) exception This2.Refactor2.ClassUnfit }}
 Alphanumeric: {

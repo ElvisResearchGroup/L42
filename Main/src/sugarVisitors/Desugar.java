@@ -239,7 +239,8 @@ public class Desugar extends CloneVisitor{
     if(!s.getFields().isEmpty()){
       List<Member> ms =s.getFields().stream().flatMap(f->Desugar.field(pos,f)).collect(Collectors.toList());
       ms.addAll(s.getMs());
-      s=s.withMs(ms).withH(new Ast.TraitHeader());
+      s=s.withMs(ms);
+      s=s.withFields(Collections.emptyList());
       }
     HashMap<String, Type> oldVarEnv = this.varEnv;
     try{
