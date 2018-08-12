@@ -73,9 +73,12 @@ class method
 Library <>< (Library right)
 exception Fail Refactor2.PathUnfit {
  var Library res=right
+ excluded=S""[with m in Location.Lib(classObj:Concept.Base).methods().vals() ( 
+   use[m.selector().nameAsField();S" "])
+   ]""
  res><>=Base
- (res><>=K(name:This.mutKName(),path:Path"This",immK:Bool.false(),isFwd:Bool.false())
- res><>=K(name:This.immKName(),path:Path"This",immK:Bool.true(),isFwd:Bool.false())
+ (res><>=K(name:This.mutKName(),path:Path"This",excluded:excluded, immK:Bool.false(),isFwd:Bool.false())
+ res><>=K(name:This.immKName(),path:Path"This",excluded:excluded, immK:Bool.true(),isFwd:Bool.false())
  exception on Refactor2.ClassUnfit AmbiguosConstructor""
  void
  )

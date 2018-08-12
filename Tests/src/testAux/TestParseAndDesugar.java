@@ -255,6 +255,16 @@ public class TestParseAndDesugar {
 
 },{lineNumber(),"{ method Any m(Any a, Any b) a<><b}",
 "{method Any m(Any a, Any b) #?leftrightleft(left:a, right:b)}"
+
+
+
+},{lineNumber()," {Any f}",
+" {read method Any f()}"
+
+
+},{lineNumber()," {interface Any f}",
+" {interface read method Any f()}"
+
 /*},{lineNumber(),"{ method Any m(Any a, Any b) a+=b}",
  "{method Any m(Any a, Any b) "
 +"a.inner(that:a.#inner().#plus(that:b))}"*/

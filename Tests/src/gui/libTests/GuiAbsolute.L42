@@ -1,0 +1,44 @@
+{reuse L42.is/AdamTowel02
+Gui:Load<><{reuse L42.is/GuiLib}
+C:{
+  var S msg=S"<div id='Pressed'>"
+  Gui gui=Gui(id:S"a1")
+  initialState=S"
+      '<div id="Pressed"> </div>
+      '<font size="3" color="blue">Here the ID of the last pressed</font>
+      '<button class="button" onclick="event42('Pressed!')">Click Me!</button>
+      '<div id="Top" 
+      'style="position: relative; height: 400px; width: 400px; border: solid black 2px;">
+      '<div id="Foo" 
+      'style="position: absolute; left: 100px; top: 150px; height: 60px; width: 60px; background-color: blue;"
+      '>
+      'Centerish......too much text even on many lines
+      '</div>
+      '<div id="Bar"
+      'style="position: absolute; left: 0px; top: 0px; height: 60px; width: 60px; background-color: red;"
+      '>
+      'topleft
+      '</div>
+      '</div>
+      "
+  gui.open(
+    title:S"Test Abs positioning"
+    body:initialState
+    x:600Size
+    y:600Size
+    )
+  with event in gui.events() (
+    txt=S"
+      '<div id="TR"
+      'style="position: absolute; left: 300px; top: 0px; height: 100px; width: 100px; background-color: red;"
+      '>
+      'topright
+      '</div>
+      "
+    gui.add(txt, id:S"Top")
+    )
+  gui.close()
+  Debug(S"#@Success@#")
+  return ExitCode.normal()
+  }
+}
