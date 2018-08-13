@@ -10,7 +10,7 @@ import platformSpecific.javaTranslation.Resources;
 import facade.L42;
 import static auxiliaryGrammar.EncodingHelper.*;
 
-public class Plugin implements PluginType {
+public class Plugin implements PluginType.WellKnown {
   // +
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MsumInt32£xn1£xn2(Object cb1,Object cb2){

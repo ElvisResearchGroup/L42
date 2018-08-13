@@ -19,9 +19,11 @@ import ast.ExpCore.Signal;
 import ast.ExpCore.Using;
 import ast.ExpCore.X;
 import ast.ExpCore._void;
+import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import ast.ExpCore.UpdateVar;
 import tools.Assertions;
+import platformSpecific.fakeInternet.OnLineCode;
 
 public interface TsOperations extends TypeSystem{
 
@@ -70,6 +72,7 @@ public interface TsOperations extends TypeSystem{
     }
 
     default TOut tsUsing(TIn in, Using s) {
+
     //D |- use P check m(x1:e1.. xn:en) e0 ~>use P check m(x1:e'1.. xn:e'n) e'0 :T0 <= T | Tr0 U..U Trn
     //  plugin(D.p,P,m(x1..xn))=plg, T1..Tn->T0;empty //plg is a free variable, in the small step reduction would be the function representing the behaviour
     //  D.p|-T0 <= T
@@ -78,7 +81,16 @@ public interface TsOperations extends TypeSystem{
     if (s.getPath().isPrimitive()){
       throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);
       }
-    List<Type> lt;try{lt = platformSpecific.fakeInternet.OnLineCode.pluginType(in.p, s);}
+
+    List<Type> lt;try{
+      PluginType p = OnLineCode.plugin(in.p, s);
+      if (!this.isTrusted() && !OnLineCode.isTrusted(p))
+        throw new ErrorMessage.UntrustedPlugin(s, p.url(), Position.noInfo);
+
+      lt = p.typeOf(in.p, s);
+    }
+
+      //UntrustedPlugin
     catch(UsingInfo.NonExistantMethod nem){
       throw new ErrorMessage.PluginMethodUndefined(null,s,null,Position.noInfo);
     }

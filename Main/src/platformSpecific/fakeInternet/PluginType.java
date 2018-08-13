@@ -1,17 +1,17 @@
 package platformSpecific.fakeInternet;
 
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import platformSpecific.fakeInternet.ActionType.NormType;
 import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import platformSpecific.javaTranslation.Resources;
+import tools.LambdaExceptionUtil;
 import tools.StringBuilders;
 import ast.Ast.MethodType;
 import ast.Ast;
@@ -77,6 +77,16 @@ class ProtectedPluginType{
   }
   }
 public interface PluginType {
+  interface WellKnown extends PluginType {
+    @Override default String url() {
+      String p = this.getClass().getCanonicalName();
+      assert p.startsWith("is.L42.connected.");
+      return p;
+   }
+  }
+
+  String url();
+
   default List<ast.Ast.Type> typeOf(Program p, Using u){
     Method m=ProtectedPluginType.getMethod(this,p, u);
     ActionType ann = m.getAnnotation(ActionType.class);

@@ -366,6 +366,15 @@ import coreVisitors.InjectionOnSugar;
     Position pos;
   }
 
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UntrustedPlugin extends TypeError {
+      ExpCore.Using using;
+      String url;
+      Position pos;
+  }
+  @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnsafeCall extends TypeError {
+    ExpCore.MCall mcall;
+    Position pos;
+  }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class InvalidURL extends TypeError {
     String url;
     Position pos;

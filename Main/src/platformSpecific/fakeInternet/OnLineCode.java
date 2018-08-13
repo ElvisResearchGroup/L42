@@ -1,14 +1,13 @@
 package platformSpecific.fakeInternet;
 
 
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import platformSpecific.javaTranslation.Resources;
 import facade.L42;
@@ -16,6 +15,7 @@ import facade.Parser;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import tools.Assertions;
+import tools.LambdaExceptionUtil;
 import tools.Map;
 import ast.Ast;
 import ast.ErrorMessage;
@@ -33,6 +33,40 @@ import programReduction.Program;
 import auxiliaryGrammar.WellFormedness;
 
 public interface OnLineCode {
+  Set<String> trustedPlugins = LambdaExceptionUtil.uncheck(()->{
+      Set<String> res = new HashSet<>();
+
+      InputStream is = PluginType.class.getResourceAsStream("/trustedPlugins.lst");
+      assert is != null;
+
+      Scanner scanner = new Scanner(is);
+
+     while(scanner.hasNextLine())
+       res.add(scanner.nextLine());
+
+      return res;
+    });
+
+
+  static boolean isTrusted(PluginType p) {
+    String url = p.url();
+
+    // For efficiency, do this first
+    if (trustedPlugins.contains(url))
+      return true;
+
+    // Slow-path: check for any (propery) prefix of url
+    for (String prefix : trustedPlugins)
+      if (url.startsWith(prefix + ".") || url.startsWith(prefix + "/"))
+        return true;
+
+    return false;
+  }
+
+  public static boolean isPlugin(ClassB l) {
+    // TODO: Will this work if there is no url?
+    return l.getDoc1()._getParameterForPlugin() != null;
+  }
   public Expression.ClassB code();
   public static Expression.ClassB getCode(String url){
     assert url.startsWith("reuse");
@@ -65,7 +99,7 @@ public interface OnLineCode {
     return plugin(p.extractClassB(u.getPath()).getDoc1());
     }
   public static PluginType plugin(Ast.Doc d){
-    PluginType pt =_isPluginWithPart(d);
+    PluginType pt = _isPluginWithPart(d);
     if(pt!=null){return pt;}
     pt = _isWellKnownPlugin(d);
     if(pt!=null){return pt;}

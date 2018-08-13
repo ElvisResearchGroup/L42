@@ -37,6 +37,9 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   }
 
   default TOut tsMCall(TIn in, MCall s) {
+    if (!this.isTrusted() && s.getS().isUnsafe())
+      throw new ErrorMessage.UnsafeCall(s, s.getP());
+
     ExpCore e0=StaticDispatch.of(in.p,in,s.getInner(),true);
     s=s.withInner(e0);
     Type _rec=GuessTypeCore._of(in.p,in, e0,true);

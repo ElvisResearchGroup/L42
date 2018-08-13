@@ -16,7 +16,7 @@ import facade.L42;
 
 import static auxiliaryGrammar.EncodingHelper.*;
 
-public class Plugin implements PluginType {
+public class Plugin implements PluginType.WellKnown {
 
 	// Connect to database only using a url
 	@ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
