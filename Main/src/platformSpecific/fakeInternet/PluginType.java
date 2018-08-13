@@ -79,7 +79,7 @@ class ProtectedPluginType{
 public interface PluginType {
   interface WellKnown extends PluginType {
     @Override default String url() {
-      String p = this.getClass().getPackage().getName();
+      String p = this.getClass().getCanonicalName();
       assert p.startsWith("is.L42.connected.");
       return p;
    }
