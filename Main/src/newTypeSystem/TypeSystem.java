@@ -1,11 +1,8 @@
 package newTypeSystem;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -37,8 +34,12 @@ import coreVisitors.Visitor;
 import programReduction.Program;
 import tools.Assertions;
 
-public interface TypeSystem{
+public interface TypeSystem {
   static TypeSystem instance(){return new Impl();}
+
+
+  void isTrusted(boolean b);
+  boolean isTrusted();
 
   default ExpCore _topTypeExp(Program p,ExpCore e,Type t,boolean formatError){
     TIn in=TIn.top(Phase.Norm,p, e,t);
@@ -121,7 +122,13 @@ public interface TypeSystem{
     }
   }
 class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
+
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
+  boolean isTrusted = false;
+
+  @Override public void isTrusted(boolean b) { this.isTrusted = b; }
+  @Override public boolean isTrusted() { return this.isTrusted; }
+
   @Override public TOut type(TIn in){
     TOut res=_memoizedTSRes(in);
     if (res!=null){return res;}

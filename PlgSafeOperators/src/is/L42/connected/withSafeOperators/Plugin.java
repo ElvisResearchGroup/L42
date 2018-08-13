@@ -50,7 +50,7 @@ import sugarVisitors.ToFormattedText;
 import tools.Map;
 
 //empty scheleton
-public class Plugin implements PluginType{
+public class Plugin implements PluginType.WellKnown, PluginType.Trusted {
 
    /* //we keep it for testing in testAux
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})

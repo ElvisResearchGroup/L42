@@ -7,8 +7,8 @@ import static auxiliaryGrammar.EncodingHelper.*;
 import auxiliaryGrammar.EncodingHelper;
 
 
-public class Plugin implements PluginType {
-  
+public class Plugin implements PluginType.WellKnown, PluginType.UnTrusted {
+
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public Resources.Void Mopen£xwName£xhtml£xx£xy(Object _wName, Object _html,Object _x,Object _y){
     String wName=ensureExtractStringU(_wName);

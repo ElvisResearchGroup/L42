@@ -7,7 +7,7 @@ import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
 
 
-public class Plugin implements PluginType{
+public class Plugin implements PluginType.WellKnown, PluginType.UnTrusted {
   long originalSystemTime=-1;
   private boolean isFirstCall(){return originalSystemTime==-1;}
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})

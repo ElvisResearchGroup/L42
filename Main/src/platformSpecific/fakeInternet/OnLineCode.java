@@ -33,6 +33,11 @@ import programReduction.Program;
 import auxiliaryGrammar.WellFormedness;
 
 public interface OnLineCode {
+
+  public static boolean isPlugin(ClassB l) {
+    // TODO: Will this work if there is no url?
+    return l.getDoc1()._getParameterForPlugin() != null;
+  }
   public Expression.ClassB code();
   public static Expression.ClassB getCode(String url){
     assert url.startsWith("reuse");
@@ -65,7 +70,7 @@ public interface OnLineCode {
     return plugin(p.extractClassB(u.getPath()).getDoc1());
     }
   public static PluginType plugin(Ast.Doc d){
-    PluginType pt =_isPluginWithPart(d);
+    PluginType pt = _isPluginWithPart(d);
     if(pt!=null){return pt;}
     pt = _isWellKnownPlugin(d);
     if(pt!=null){return pt;}

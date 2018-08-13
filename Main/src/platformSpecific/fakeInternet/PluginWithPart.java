@@ -32,6 +32,9 @@ public class PluginWithPart implements PluginType{
   public final String url;
   public final String part;
   public final Class<?>pointed;
+
+  @Override public String url() { return this.url; }
+
   public PluginWithPart(String url, String part) {
     super();
     this.url = url;

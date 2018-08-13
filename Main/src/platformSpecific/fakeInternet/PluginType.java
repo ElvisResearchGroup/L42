@@ -1,12 +1,10 @@
 package platformSpecific.fakeInternet;
 
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import platformSpecific.fakeInternet.ActionType.NormType;
@@ -77,6 +75,49 @@ class ProtectedPluginType{
   }
   }
 public interface PluginType {
+  interface WellKnown extends PluginType {
+    @Override default String url() {
+      String prefix = "is.L42.connected.";
+      String p = this.getClass().getPackage().getName();
+      assert p.startsWith(prefix);
+      return p.substring(prefix.length());
+   }
+  }
+  interface Trusted extends PluginType {
+     @Override default boolean isTrusted() { return true; }
+  }
+  interface UnTrusted extends PluginType {
+     @Override default boolean isTrusted() { return false; }
+  }
+
+  Set<String> trustedPlugins = _getTrustedPlugins(); // todo: fill this in
+
+  static Set<String> _getTrustedPlugins() {
+    Set<String> trustedPlugins = null;
+    // Initilise trustedPlugins by reading the 'trustedPlugins.lst' resource
+    // if it dosn't exist, we will just treat all plugins as trusted
+    InputStream is = PluginType.class.getResourceAsStream("/trustedPlugins.lst");
+    if (is != null) {
+      trustedPlugins = new HashSet<>();
+
+      Scanner scanner = new Scanner(is);
+
+       while(scanner.hasNextLine())
+          trustedPlugins.add(scanner.nextLine());
+    } else {
+     System.err.println("WARNING trustedPlugins.lst does not exist");
+    }
+
+    return trustedPlugins;
+  }
+
+  String url();
+
+  default boolean isTrusted() {
+    if (trustedPlugins == null) return true;
+    else return trustedPlugins.contains(this.url());
+  }
+
   default List<ast.Ast.Type> typeOf(Program p, Using u){
     Method m=ProtectedPluginType.getMethod(this,p, u);
     ActionType ann = m.getAnnotation(ActionType.class);

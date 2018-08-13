@@ -111,6 +111,12 @@ public interface TsLibrary extends TypeSystem{
     }
 
   default TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
+    if (mwt.getMs().isUnsafe() ||
+       (mwt.getMt().getMdf().isMutable() && platformSpecific.fakeInternet.OnLineCode.isPlugin(in.p.top())))
+      isTrusted(true);
+
+    else isTrusted(false);
+
     MethodWithType mwt1;
     if(mwt.get_inner()==null){
       mwt1=mwt;
@@ -246,7 +252,11 @@ public interface TsLibrary extends TypeSystem{
 
     static boolean coherentK(Program p,MethodWithType ck) {
       MethodType mt=ck.getMt();
+
       if(mt.getMdf()!=Mdf.Class){return false;}
+
+      if (platformSpecific.fakeInternet.OnLineCode.isPlugin(p.top()) && !ck.getMs().isUnsafe()) return false;
+
       Type rt=mt.getReturnType();
       if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
       Mdf m=rt.getMdf();
