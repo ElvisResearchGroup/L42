@@ -33,16 +33,14 @@ public class PluginWithPart implements PluginType{
   public final String part;
   public final Class<?>pointed;
 
-  @Override public String url() {
-    return this.part;
+  @Override public String[] url() {
+    return new String[] {this.part, this.url};
   }
 
   public PluginWithPart(String url, String part) {
     super();
     this.url = url;
     this.part = part;
-
-    assert this.url.equals("toFix") || this.part.startsWith(this.url);
 
     try {
       this.pointed=Class.forName(part);

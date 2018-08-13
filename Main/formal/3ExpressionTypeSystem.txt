@@ -282,7 +282,7 @@ Phase| p| Ps |-M ~> M'
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
     if m not of form #$m and
       _.#$m'(_) inside e or  use P _(_) check _ inside e with plgUntrusted(p(P))
-    then mdf in {mut,lent,capsule} and plgClass(p.top())
+    then mdf in {mut,lent,capsule} and untrustedClass(p.top())
   else
     e?=e?'
   if ?refine=empty, then not exists P in Ps such that M.ms in dom(p(P))
@@ -295,4 +295,3 @@ Phase| p| Ps |-M ~> M'
       forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
       //or error: leaked exception P is not the subtype of a declared exception//description of error messages in the comments
       //or  method declares an exception (P) which is not a subtype of ancestor exceptions
-

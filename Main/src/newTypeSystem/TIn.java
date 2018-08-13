@@ -20,11 +20,12 @@ import ast.ExpCore.Block.Dec;
 import ast.ExpCore.Block.On;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.Phase;
+import platformSpecific.fakeInternet.OnLineCode;
 import programReduction.Program;
 
 abstract class AG<This extends AG<This>>implements G{
   AG(Map<String,Map.Entry<Boolean, Type>>g){this.g=g;}
-  
+
   @Override public G add(Program p, List<Dec> ds) {
   Map<String, Type> varEnv2=new HashMap<>();
   for(Entry<String, Entry<Boolean, Type>> e:g.entrySet()){
@@ -115,7 +116,7 @@ abstract class AG<This extends AG<This>>implements G{
       newG.put(xi,p(false,ti));
       }
     return this.withG(newG);
-    } 
+    }
 public This toLent(){//toLent(G)(x)=toLent(G(x)) //thus undefined where toLent undefined
   Map<String,Map.Entry<Boolean, Type>>newG=new HashMap<>(g);
   for(String xi:dom()){
@@ -130,7 +131,7 @@ public This toLent(){//toLent(G)(x)=toLent(G(x)) //thus undefined where toLent u
     }
   return this.withG(newG);
   }
-public This gKs(List<ExpCore.Block.On>ks){     
+public This gKs(List<ExpCore.Block.On>ks){
 //G[ks]
 //  G[]=G
 //  G[k ks]=toRead(G) with k.throw=error and not catchRethrow(k)
@@ -151,18 +152,20 @@ class TInG extends AG<TInG>{
   public String toString(){return g.toString();}
   }
 public class TIn extends AG<TIn>{
-@Override public TIn withG(Map<String,Map.Entry<Boolean, Type>>g) {return new TIn(this.phase,this.p,this.e,this.expected,g);}
+@Override public TIn withG(Map<String,Map.Entry<Boolean, Type>>g) {return new TIn(this.phase,this.p,this.e,this.isTrusted,this.expected,g);}
 @Override TIn self() {return this;}
 
 final Phase phase;
 public final Program p;
 final ExpCore e;
 final Type expected;
-public static TIn top(Phase phase,Program p,ExpCore e,Type expectedT){
-  return new TIn(phase,p,e,expectedT,Collections.emptyMap());
+final boolean isTrusted;
+public static TIn top(Phase phase,Program p,ExpCore e,boolean isTrusted,Type expectedT){
+  return new TIn(phase,p,e,isTrusted,expectedT,Collections.emptyMap());
   }
-private TIn(Phase phase,Program p,ExpCore e,Type expected,Map<String,Map.Entry<Boolean, Type>>g ){
+private TIn(Phase phase,Program p,ExpCore e,boolean isTrusted,Type expected,Map<String,Map.Entry<Boolean, Type>>g ){
   super(g);
+  this.isTrusted=isTrusted;
   this.phase=phase;this.p=p;
   this.e=e;this.expected=expected;
   }
@@ -175,6 +178,7 @@ public int hashCode() {
   result = prime * result + g.hashCode();
   result = prime * result + p.hashCode();
   result = prime * result + phase.hashCode();
+  result = prime * result + (isTrusted?1:0);
   return result;
   }
 @Override
@@ -188,13 +192,14 @@ public boolean equals(Object obj) {
   if (!expected.equals(other.expected)){ return false;}
   if (!g.equals(other.g)){return false;}
   if (p != other.p){return false;}//simplifing comparing ps
+  if (isTrusted!=other.isTrusted) {return false;}
   return true;
   }
 public TIn withE(ExpCore newE,Type newExpected){
-  return new TIn(this.phase,this.p,newE,newExpected,this.g);
+  return new TIn(this.phase,this.p,newE,this.isTrusted,newExpected,this.g);
   }
 public TIn withP(Program newP){
-  return new TIn(this.phase,newP,this.e,Path.Library().toImmNT(),this.g);
+  return new TIn(this.phase,newP,this.e,true,Path.Library().toImmNT(),this.g);
   }
 
 boolean isCoherent(){
@@ -216,7 +221,12 @@ public static TIn freshGFromMt(Program p,MethodWithType mwt){
     Type ntx=mt.getTs().get(i);
     newG.put(x,p(false,ntx));
     }}
-  return new TIn(Phase.Typed,p,mwt.getInner(),TypeManipulation.fwdP(mt.getReturnType()),newG);
+  boolean isTrusted=false;
+  boolean cml=mwt.getMt().getMdf().isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent);
+  if (mwt.getMs().isUntrusted() ||(cml && p.top().isUntrusted())) {
+    isTrusted=true;
+    }
+  return new TIn(Phase.Typed,p,mwt.getInner(),isTrusted,TypeManipulation.fwdP(mt.getReturnType()),newG);
   }
 }
 

@@ -182,7 +182,7 @@ static String listExample=Functions.multiLine(
       TestHelper.configureForTest();
       ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
       Program p=TestHelper.getProgram( program);
-      TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,this.typeSugg));
+      TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,true,this.typeSugg));
       assert out.isOk():new FormattedError(out.toError());
       Assert.assertEquals(typeExpected,out.toOk().computed);
     }
@@ -316,7 +316,7 @@ public static class TestStage2 {
         ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
         Program p=TestHelper.getProgram(program);
         p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
-        TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e, this.typeSugg));
+        TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,true, this.typeSugg));
         assert out.isOk():FormattedError.format(out.toError());
         Assert.assertEquals(typeExpected,out.toOk().computed);
    }
@@ -387,7 +387,7 @@ public static class TestStage3_notOk {
           ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
           Program p=TestHelper.getProgram(program);
           p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
-          TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e, this.typeSugg));
+          TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,true, this.typeSugg));
 
           assert !out.isOk();
           throw new FormattedError(out.toError());//assert out.toOk().computed.equals(typeExpected);

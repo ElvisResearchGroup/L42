@@ -174,7 +174,7 @@ public interface Ast {
     for(String n:names){assert checkX(n,false);}
     return true;
     }
-  public boolean isUnsafe() {
+  public boolean isUntrusted() {
     return this.name.startsWith("#$");
   }
   public String toSrcEquivalent() {
@@ -590,8 +590,6 @@ public interface Ast {
   public boolean isIn(Mdf a,Mdf b) {return this==a || this==b;}
   public boolean isIn(Mdf a,Mdf b,Mdf c) {return this==a || this==b ||this==c;}
   public boolean isIn(Mdf a,Mdf b,Mdf c,Mdf d) {return this==a || this==b ||this==c || this==d;}
-
-   public boolean isMutable() {return this.isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent); }
 
   public static Mdf fromString(String s) {
    for (Mdf mdf : Mdf.values()) {

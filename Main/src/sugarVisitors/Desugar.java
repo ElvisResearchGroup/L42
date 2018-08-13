@@ -623,7 +623,7 @@ public class Desugar extends CloneVisitor{
         case '_':res+="underscore";break;
         case '#':res+="hash";break;
         case '@':res+="at";break;
-        case '$':res+="$";break;//yes, is not an operator, but is not alphabetic :(
+        case '$':res+="dollar";break;
         case '%':res+="%";break;//yes, is not an operator, but is not alphabetic :(
         case '\\':res+="backslash";break;
         case ' ':res+="space";break;

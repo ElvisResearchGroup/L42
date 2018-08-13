@@ -26,17 +26,9 @@ public interface TsLibrary extends TypeSystem{
 
   @Override default TOut typeLib(TIn in) {
     assert in.phase!=Phase.None;
-
-    boolean oldTrusted = this.isTrusted();
-    try {
-      // Expressions in library-literals are meta-expression, so they are trusted
-      this.isTrusted(true);
-      if(in.phase==Phase.Norm){return libraryShallowNorm(in);}
-      return libraryWellTyped(in);
-    } finally {
-      this.isTrusted(oldTrusted);
+    if(in.phase==Phase.Norm){return libraryShallowNorm(in);}
+    return libraryWellTyped(in);
     }
-  }
 
   default TOut libraryShallowNorm(TIn in) {
     //(library shallow norm)
@@ -119,77 +111,62 @@ public interface TsLibrary extends TypeSystem{
     }
 
   default TOutM memberMethod(TIn in, List<Type> supertypes, MethodWithType mwt) {
-    assert this.isTrusted(); // The containing expression should be a meta-expression, which is always trusted
-
-    if (mwt.getMs().isUnsafe() ||
-       (mwt.getMt().getMdf().isMutable() && platformSpecific.fakeInternet.OnLineCode.isPlugin(in.p.top())))
-      this.isTrusted(true);
-
-    else this.isTrusted(false);
-
-    try {
-      MethodWithType mwt1;
-      if(mwt.get_inner()==null){
-        mwt1=mwt;
+    assert in.isTrusted; // The containing expression should be a meta-expression, which is always trusted
+    MethodWithType mwt1;
+    if(mwt.get_inner()==null){mwt1=mwt;}
+    else{
+      TIn newIn=TIn.freshGFromMt(in.p,mwt);
+      TOut out=type(newIn);
+      if(!out.isOk()){return out.toError();}
+      for(Path P1: out.toOk().exceptions){
+        //exists P0 in Ps0 such that p|-P1<=P0
+        boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
+          P0->null==TypeSystem.subtype(newIn.p, P1, P0.getPath()));
+        if(!ok){
+          return new TErr(newIn,"In method "+mwt.getMs()+", "+P1.toImmNT()+" not subtype of any of "+mwt.getMt().getExceptions(),P1.toImmNT(),ErrorKind.MethodLeaksExceptions);
+          }
+        }
+      if(!out.toOk().returns.isEmpty()){
+        return new TErr(newIn,"",out.toOk().returns.get(0),ErrorKind.MethodLeaksReturns);
+        }
+      mwt1=mwt.with_inner(out.toOk().annotated);
       }
-      else{
-        TIn newIn=TIn.freshGFromMt(in.p,mwt);
-        TOut out=type(newIn);
-        if(!out.isOk()){return out.toError();}
-        for(Path P1: out.toOk().exceptions){
-          //exists P0 in Ps0 such that p|-P1<=P0
-          boolean ok=mwt.getMt().getExceptions().stream().anyMatch(
-            P0->null==TypeSystem.subtype(newIn.p, P1, P0.getPath()));
+    if(!mwt.getMt().isRefine()){
+      for(Type pi:supertypes) {
+        ClassB li=in.p.extractClassB(pi.getPath());
+        if(li._getMember(mwt.getMs())!=null) {
+          return new TErr(in,"Method "+mwt.getMs()+" do not refine method from "+pi.getPath(),pi.getPath().toImmNT(),ErrorKind.InvalidImplements);
+          }
+        }
+      }
+    else{
+      for(Type t :supertypes){
+        Path P=t.getPath();
+        ClassB cbP=in.p.extractClassB(P);
+        MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
+        if(mwtP==null){continue;}
+        MethodType M0=From.from(mwtP.getMt(),P);
+        ErrorKind kind=TypeSystem._subtype(in.p, mwt.getMt().getReturnType(),M0.getReturnType());
+        if(kind!=null){
+          return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
+          }
+        {int i=-1;for(Type Ti:mwt.getMt().getTs()){i+=1; Type T1i=M0.getTs().get(i);
+          if(!in.p.equiv(Ti,T1i)){
+          return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
+          }
+        }}
+        for(Type Pi: mwt.getMt().getExceptions()){
+          //exists Pj in Ps' such that p |- Pi<=Pj
+          boolean ok=M0.getExceptions().stream().anyMatch(
+                    Pj->null==TypeSystem.subtype(in.p, Pi.getPath(), Pj.getPath()));
           if(!ok){
-            return new TErr(newIn,"In method "+mwt.getMs()+", "+P1.toImmNT()+" not subtype of any of "+mwt.getMt().getExceptions(),P1.toImmNT(),ErrorKind.MethodLeaksExceptions);
+            return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
             }
           }
-        if(!out.toOk().returns.isEmpty()){
-          return new TErr(newIn,"",out.toOk().returns.get(0),ErrorKind.MethodLeaksReturns);
-          }
-        mwt1=mwt.with_inner(out.toOk().annotated);
+        }
       }
-      if(!mwt.getMt().isRefine()){
-        for(Type pi:supertypes) {
-          ClassB li=in.p.extractClassB(pi.getPath());
-          if(li._getMember(mwt.getMs())!=null) {
-            return new TErr(in,"Method "+mwt.getMs()+" do not refine method from "+pi.getPath(),pi.getPath().toImmNT(),ErrorKind.InvalidImplements);
-            }
-          }
-        }
-      else{
-        for(Type t :supertypes){
-          Path P=t.getPath();
-          ClassB cbP=in.p.extractClassB(P);
-          MethodWithType mwtP=(MethodWithType) cbP._getMember(mwt.getMs());
-          if(mwtP==null){continue;}
-          MethodType M0=From.from(mwtP.getMt(),P);
-          ErrorKind kind=TypeSystem._subtype(in.p, mwt.getMt().getReturnType(),M0.getReturnType());
-          if(kind!=null){
-            return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
-            }
-          {int i=-1;for(Type Ti:mwt.getMt().getTs()){i+=1; Type T1i=M0.getTs().get(i);
-            if(!in.p.equiv(Ti,T1i)){
-            return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
-            }
-          }}
-          for(Type Pi: mwt.getMt().getExceptions()){
-            //exists Pj in Ps' such that p |- Pi<=Pj
-            boolean ok=M0.getExceptions().stream().anyMatch(
-                      Pj->null==TypeSystem.subtype(in.p, Pi.getPath(), Pj.getPath()));
-            if(!ok){
-            return new TErr(in,"",P.toImmNT(),ErrorKind.InvalidImplements);
-              }
-            }
-          }
-        }
-      return new TOkM(mwt1);
+    return new TOkM(mwt1);
     }
-    finally {
-      this.isTrusted(true);
-    }
-    }
-
 
   static boolean coherent(Program p,boolean force) {
       ClassB top=p.top();
@@ -270,7 +247,7 @@ public interface TsLibrary extends TypeSystem{
 
       if(mt.getMdf()!=Mdf.Class){return false;}
 
-      if (platformSpecific.fakeInternet.OnLineCode.isPlugin(p.top()) && !ck.getMs().isUnsafe()) return false;
+      if (p.top().isUntrusted() && !ck.getMs().isUntrusted()) return false;
 
       Type rt=mt.getReturnType();
       if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}

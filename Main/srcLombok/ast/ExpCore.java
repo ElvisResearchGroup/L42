@@ -169,6 +169,11 @@ public interface ExpCore extends Serializable{
         .map(e->(ClassB.NestedClass)e)
         .collect(Collectors.toList());
       }
+
+    public boolean isUntrusted() {
+      return this.getDoc1()._getParameterFor("untrusted") != null;
+    }
+
     public String toString() {return sugarVisitors.ToFormattedText.of(this);}
     public boolean isConsistent() { return _Aux.isConsistent(this);}
     public ClassB withMember(Member m) {return _Aux.withMember(this, m);}

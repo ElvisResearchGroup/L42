@@ -147,8 +147,6 @@
     //M
   }) mut method Void #%() this.acc({//@stringU
     //%
-  }) mut method Void #$() this.acc({//@stringU
-    //$
   })
   //OPERATORS:
    mut method Void #left() this.acc({//@stringU
@@ -218,10 +216,11 @@
     //\u0040
   }) mut method Void #backslash() this.acc({//@stringU
     //\u005C
+  }) mut method Void #dollar() this.acc({//@stringU
+    //$
   }) mut method Void #space() this.acc({//@stringU
-    // 
+    //\u0020
   }) mut method Void #newline() this.acc({//@stringU
-    //
-    //
+    //\u00A0
   })
 }

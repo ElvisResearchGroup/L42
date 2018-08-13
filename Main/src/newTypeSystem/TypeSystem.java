@@ -31,6 +31,7 @@ import ast.ExpCore._void;
 import auxiliaryGrammar.Functions;
 import coreVisitors.PropagatorVisitor;
 import coreVisitors.Visitor;
+import facade.L42;
 import programReduction.Program;
 import tools.Assertions;
 
@@ -38,11 +39,8 @@ public interface TypeSystem {
   static TypeSystem instance(){return new Impl();}
 
 
-  void isTrusted(boolean b);
-  boolean isTrusted();
-
   default ExpCore _topTypeExp(Program p,ExpCore e,Type t,boolean formatError){
-    TIn in=TIn.top(Phase.Norm,p, e,t);
+    TIn in=TIn.top(Phase.Norm,p, e,true,t);
     TOut out=type(in);
     if(!out.isOk()){
       if(!formatError){return null;}
@@ -50,7 +48,7 @@ public interface TypeSystem {
       }
     TOk res=out.toOk();
     if(!res.returns.isEmpty()){
-      if(!formatError){return null;}      
+      if(!formatError){return null;}
       throw new FormattedError(new TErr(in,"",
         res.returns.get(0),
         ErrorKind.MethodLeaksReturns));
@@ -58,7 +56,7 @@ public interface TypeSystem {
     return res.annotated;
   }
   default ClassB topTypeLib(Phase phase,Program p){
-    TIn in=TIn.top(phase,p, p.top(),Type.immLibrary);
+    TIn in=TIn.top(phase,p, p.top(),true,Type.immLibrary);
     TOut out=typeLib(in);//this already check if the phase is already good enough!
     if(out.isOk()){return (ClassB) out.toOk().annotated;}
     TErr err=out.toError();
@@ -125,10 +123,6 @@ public interface TypeSystem {
 class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
 
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
-  private boolean isTrusted = true;
-
-  @Override public void isTrusted(boolean b) { this.isTrusted = b; }
-  @Override public boolean isTrusted() { return this.isTrusted; }
 
   @Override public TOut type(TIn in){
     TOut res=_memoizedTSRes(in);
@@ -159,7 +153,7 @@ class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
     assert out!=null:
       "";
     assert !map.containsKey(in);
-    //map.put(in, out);//TODO: revert after testing
+    if(L42.memoizeExpressionTyping) {map.put(in, out);}
     }
   private TOut _memoizedTSRes(TIn in) {
     TOut out=map.get(in);

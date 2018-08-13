@@ -199,11 +199,11 @@ staticDispatch(n,p,G,var? x=e ds)=
 	staticDispatch(n+1,p,G,ds) //remember failure
   where guessType(p,G,staticDispatch(p,G,e)) undefined
 
-plgClass({/*@plugin*/ _})
-plgClass({/*@plugin URL*/ _})
-plgUntrusted({/*@plugin */ _})
-plgUntrusted({/*@plugin URL*/ _})
-  with not trusted(URL)
+untrustedClass({/*_ @untrusted _*/ _})
+plgUntrusted({/* _ @plugin url*/ _}) // TODO
+  with not trusted(url)
+plgUntrusted({/* _ @plugin url @pluginPart url._*/ _})
+  with not trusted(url)
 
 --------------------------------------------
 2 Coherent literal
@@ -219,7 +219,7 @@ coherent(p) //classes are coherent if they have a coherent set of abstract metho
   either mwts is empty or
     there is exactly 1 class method M with parameters (T x)s and n? such that
       -forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
-      -if plgClass(p.top()) then M.m is of form #$m
+      -if untrustedClass(p.top()) then M.m is of form #$m
 
 //coherent factory
 coherent(n?,p,T1 x1..Tn xn,

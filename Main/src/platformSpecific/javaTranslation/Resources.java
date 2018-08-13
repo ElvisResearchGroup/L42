@@ -217,7 +217,7 @@ public
     for(Object o:xs){
       es.add(Revertable.doRevert(o));
     }
-    boolean strict=true;
+    boolean strict=true;//TODO: this is used only in writing... what it does?
     for(ExpCore ec:es){
       List<ClassB> cbs = CollectClassBs0.of(ec);
       List<Path> ps = CollectPaths0.of(ec);

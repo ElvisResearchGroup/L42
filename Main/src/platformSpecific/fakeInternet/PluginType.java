@@ -78,14 +78,14 @@ class ProtectedPluginType{
   }
 public interface PluginType {
   interface WellKnown extends PluginType {
-    @Override default String url() {
+    @Override default String[] url() {
       String p = this.getClass().getCanonicalName();
       assert p.startsWith("is.L42.connected.");
-      return p;
+      return new String[] {p};
    }
   }
 
-  String url();
+  String[] url();
 
   default List<ast.Ast.Type> typeOf(Program p, Using u){
     Method m=ProtectedPluginType.getMethod(this,p, u);

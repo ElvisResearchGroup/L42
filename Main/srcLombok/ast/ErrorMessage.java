@@ -359,7 +359,7 @@ import coreVisitors.InjectionOnSugar;
     Position pos;
     }
 
-  
+
   //not used right now, may be is not useful
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnlockImpossible extends TypeError {
     Throwable unlockAttemptedBut;
@@ -368,7 +368,7 @@ import coreVisitors.InjectionOnSugar;
 
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UntrustedPlugin extends TypeError {
       ExpCore.Using using;
-      String url;
+      List<String> url;
       Position pos;
   }
   @Value @Wither @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class UnsafeCall extends TypeError {

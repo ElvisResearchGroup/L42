@@ -1,6 +1,7 @@
 package newTypeSystem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ast.Ast.Doc;
@@ -84,8 +85,8 @@ public interface TsOperations extends TypeSystem{
 
     List<Type> lt;try{
       PluginType p = OnLineCode.plugin(in.p, s);
-      if (!this.isTrusted() && !OnLineCode.isTrusted(p))
-        throw new ErrorMessage.UntrustedPlugin(s, p.url(), Position.noInfo);
+      if (!in.isTrusted && !OnLineCode.isTrusted(p))
+        throw new ErrorMessage.UntrustedPlugin(s, Arrays.asList(p.url()), Position.noInfo);
 
       lt = p.typeOf(in.p, s);
     }

@@ -1,6 +1,5 @@
 package platformSpecific.fakeInternet;
 
-
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,131 +32,145 @@ import programReduction.Program;
 import auxiliaryGrammar.WellFormedness;
 
 public interface OnLineCode {
-  Set<String> trustedPlugins = LambdaExceptionUtil.uncheck(()->{
-      Set<String> res = new HashSet<>();
+  Set<String> trustedPlugins = LambdaExceptionUtil.uncheck(() -> {
+    Set<String> res = new HashSet<>();
 
-      InputStream is = PluginType.class.getResourceAsStream("/trustedPlugins.lst");
-      assert is != null;
+    InputStream is = PluginType.class.getResourceAsStream("/trustedPlugins.lst");
+    assert is != null;
 
-      Scanner scanner = new Scanner(is);
+    Scanner scanner = new Scanner(is);
 
-     while(scanner.hasNextLine())
-       res.add(scanner.nextLine());
+    while (scanner.hasNextLine())
+      res.add(scanner.nextLine());
 
-      return res;
-    });
-
+    return res;
+  });
 
   static boolean isTrusted(PluginType p) {
-    String url = p.url();
-
-    // For efficiency, do this first
-    if (trustedPlugins.contains(url))
-      return true;
-
-    // Slow-path: check for any (propery) prefix of url
-    for (String prefix : trustedPlugins)
-      if (url.startsWith(prefix + ".") || url.startsWith(prefix + "/"))
+    for (String url : p.url()) {
+      // For efficiency, do this first
+      if (trustedPlugins.contains(url))
         return true;
 
+      // Slow-path: check for any (propery) prefix of url
+      for (String prefix : trustedPlugins)
+        if (url.startsWith(prefix + ".") || url.startsWith(prefix + "/"))
+          return true;
+    }
     return false;
   }
 
-  public static boolean isPlugin(ClassB l) {
-    // TODO: Will this work if there is no url?
-    return l.getDoc1()._getParameterForPlugin() != null;
-  }
   public Expression.ClassB code();
-  public static Expression.ClassB getCode(String url){
+
+  public static Expression.ClassB getCode(String url) {
     assert url.startsWith("reuse");
-    url=url.substring("reuse".length());
-    url=url.trim();
-    if(url.startsWith("L42.is/")){
+    url = url.substring("reuse".length());
+    url = url.trim();
+    if (url.startsWith("L42.is/")) {
       return OnLineCodeHelper.getL42Code(url.substring("L42.is/".length()));
-      }
+    }
     throw Assertions.codeNotReachable();
   }
-  static PluginWithPart _isPluginWithPart(Doc doc){
-    String url=doc._getParameterForPlugin();
-    String part=doc._getParameterForPluginPart();
-    if (url==null || part==null){return null;}
-    url=url.trim();
-    part=part.trim();
-    return new PluginWithPart(url,part);
+
+  static PluginWithPart _isPluginWithPart(Doc doc) {
+    String url = doc._getParameterForPlugin();
+    String part = doc._getParameterForPluginPart();
+    if (url == null || part == null) {
+      return null;
     }
-  static PluginType _isWellKnownPlugin(Doc doc){
-    String url=doc._getParameterForPlugin();
-    if (url==null){return null;}
-    url=url.trim();
-    if(url.startsWith("L42.is/connected/")){
-      PluginType plugin= OnLineCodeHelper.getWellKnownPluginType(url.substring("L42.is/connected/".length()));
+    url = url.trim();
+    part = part.trim();
+    return new PluginWithPart(url, part);
+  }
+
+  static PluginType _isWellKnownPlugin(Doc doc) {
+    String url = doc._getParameterForPlugin();
+    if (url == null) {
+      return null;
+    }
+    url = url.trim();
+    if (url.startsWith("L42.is/connected/")) {
+      PluginType plugin = OnLineCodeHelper.getWellKnownPluginType(url.substring("L42.is/connected/".length()));
       return plugin;
-      }
+    }
     return null;
-    }
-  public static PluginType plugin(Program p,ExpCore.Using u){
+  }
+
+  public static PluginType plugin(Program p, ExpCore.Using u) {
     return plugin(p.extractClassB(u.getPath()).getDoc1());
-    }
-  public static PluginType plugin(Ast.Doc d){
+  }
+
+  public static PluginType plugin(Ast.Doc d) {
     PluginType pt = _isPluginWithPart(d);
-    if(pt!=null){return pt;}
+    if (pt != null) {
+      return pt;
+    }
     pt = _isWellKnownPlugin(d);
-    if(pt!=null){return pt;}
+    if (pt != null) {
+      return pt;
+    }
     throw Assertions.codeNotReachable("Other plugings not supported yet");
   }
-  public static ExpCore pluginAction(Program p,ExpCore.Using u){
-    try{
-      Object o= plugin(p,u).execute(p,u);
-      return EncodingHelper.wrapResource(p,o);
-      }
-    catch(Resources.Error err){return EncodingHelper.wrapResource(p,err);}
-  }
-  public static List<Type> pluginType(Program p,ExpCore.Using u){
-    return plugin(p,u).typeOf(p,u);
+
+  public static ExpCore pluginAction(Program p, ExpCore.Using u) {
+    try {
+      Object o = plugin(p, u).execute(p, u);
+      return EncodingHelper.wrapResource(p, o);
+    } catch (Resources.Error err) {
+      return EncodingHelper.wrapResource(p, err);
     }
   }
 
-class OnLineCodeHelper{
-  static PluginType getWellKnownPluginType(String url){
-    String className="is.L42.connected."+url+".Plugin";
+  public static List<Type> pluginType(Program p, ExpCore.Using u) {
+    return plugin(p, u).typeOf(p, u);
+  }
+}
+
+class OnLineCodeHelper {
+  static PluginType getWellKnownPluginType(String url) {
+    String className = "is.L42.connected." + url + ".Plugin";
     try {
-      Class<?> clazz=Class.forName(className);
-      return (PluginType)clazz.newInstance();
+      Class<?> clazz = Class.forName(className);
+      return (PluginType) clazz.newInstance();
     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-      throw new ErrorMessage.InvalidURL("L42.is/connected/"+url,null);
+      throw new ErrorMessage.InvalidURL("L42.is/connected/" + url, null);
     }
-    //is.L42.connected.withSystem.Plugin;
-    /*if(url.startsWith("withSandboxingOver/")){
-        return new?? withSandboxingOver.Plugin(getPluginType(url.substring("withSandboxingOver/".length())));
-    }
-    switch (url){//TODO: NO NONO
-      case "withAlu": return new Plugin();
-      case "withHtml": return new Plugin();
-      case "withIntrospection": return new Plugin();
-      default: throw new ErrorMessage.InvalidURL("L42.is/connected/"+url);
-      }*/
-    }
-  static Expression.ClassB getL42Code(String url){
-    try{
-      Expression data=load(url);//can be classB or classBReuse
-      data=Desugar.of(data);//TODO: can be removed later, but now allows librares to be real source code
-      //    Configuration.reduction.of((ClassB) data.accept(new InjectionOnCore()));
-      return (Expression.ClassB)data;
-      }
-    catch( org.antlr.v4.runtime.misc.ParseCancellationException pce){
-      System.err.println("Url is: "+url);
+    // is.L42.connected.withSystem.Plugin;
+    /*
+     * if(url.startsWith("withSandboxingOver/")){ return new??
+     * withSandboxingOver.Plugin(getPluginType(url.substring("withSandboxingOver/".
+     * length()))); } switch (url){//TODO: NO NONO case "withAlu": return new
+     * Plugin(); case "withHtml": return new Plugin(); case "withIntrospection":
+     * return new Plugin(); default: throw new
+     * ErrorMessage.InvalidURL("L42.is/connected/"+url); }
+     */
+  }
+
+  static Expression.ClassB getL42Code(String url) {
+    try {
+      Expression data = load(url);// can be classB or classBReuse
+      data = Desugar.of(data);// TODO: can be removed later, but now allows librares to be real source code
+      // Configuration.reduction.of((ClassB) data.accept(new InjectionOnCore()));
+      return (Expression.ClassB) data;
+    } catch (org.antlr.v4.runtime.misc.ParseCancellationException pce) {
+      System.err.println("Url is: " + url);
       throw pce;
-      }
     }
+  }
+
   private static Expression load(String name) {
-    //URL res = OnLineCode.class.getResource(name+".L42");
-    //Path res = L42.path.resolve(name+".L42");
-    Path res = Paths.get("localhost",name+".L42");
-    assert res!=null:name;
-    String s= null;
-    if(L42.newK!=null){s=L42.newK.urlToLib.get(name);}
-    if(s==null){s=L42.pathToString(res);}
-    Expression e=Parser.parse(res.toString(),s);
+    // URL res = OnLineCode.class.getResource(name+".L42");
+    // Path res = L42.path.resolve(name+".L42");
+    Path res = Paths.get("localhost", name + ".L42");
+    assert res != null : name;
+    String s = null;
+    if (L42.newK != null) {
+      s = L42.newK.urlToLib.get(name);
+    }
+    if (s == null) {
+      s = L42.pathToString(res);
+    }
+    Expression e = Parser.parse(res.toString(), s);
     assert WellFormedness.checkAll(e);
     return e;
   }

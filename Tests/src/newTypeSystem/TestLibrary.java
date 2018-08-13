@@ -148,7 +148,7 @@ public void test() {
 Program p=TestProgram.p(sProg);
 ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCore());
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
-TOut out;try{out=TypeSystem.instance().type(TIn.top(Phase.Coherent,p,cb1Pre,Type.immLibrary));}
+TOut out;try{out=TypeSystem.instance().type(TIn.top(Phase.Coherent,p,cb1Pre,true,Type.immLibrary));}
 catch(NotOkToStar coh){
   assert s2==ErrorKind.LibraryNotCoherent:s2;
   return;
