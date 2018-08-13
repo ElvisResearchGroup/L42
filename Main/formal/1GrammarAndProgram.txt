@@ -166,10 +166,12 @@ Part 2: Well formedness
 * mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "ms e"
   mwt= refine? mdf method T m(T1 x1..Tn xn)e
   T0=mdf This0
+  if m of form #$m then mdf in {class,mut,lent,capsule}
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
   //Note: in the code this happens while "Program.methods" adds a methodType to a MethodImplemented.
   //TODO: still need to happen in desugaring for methods that are born as MethodWithType
+
 _______
 #define     //note: FV is trivially defined from cX
 cX(e)//count occurences of xs

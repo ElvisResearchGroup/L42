@@ -8,6 +8,12 @@ TODO:inference of mdf$x uses mdf to infer its type
 for now: all ops desugar args to imm$fresh, except == to read$fresh and <><
 do not add suggestion for "left".
 TODO: remove 'suggest'
+TODO: metaprogramming plg restrictions:
+ -plg url+plg url=plg url
+ -plg +plg url?=plg url?
+ -can not rename a $method into a non $ method or vice versa
+ -redirect non plugin to plg is ok
+ -redirect abstract plg to plg and plg url to plg url
 
 -----------------------------------------------------------------------------
 Since the type system is quite extensive, we first present the
@@ -274,6 +280,9 @@ Phase| p| Ps |-M ~> M'
   if e?=e then
     Typed| p| G |- e ~>  e?':_ <=fwd% T | empty;Ps1
     forall P1 in Ps1 exists P0 in Ps0 such that p|-P1<=P0
+    if m not of form #$m and
+      _.#$m'(_) inside e or  use P _(_) check _ inside e with plgUntrusted(p(P))
+    then mdf in {mut,lent,capsule} and plgClass(p.top())
   else
     e?=e?'
   if ?refine=empty, then not exists P in Ps such that M.ms in dom(p(P))
@@ -286,3 +295,4 @@ Phase| p| Ps |-M ~> M'
       forall Pi in Ps0 exists Pj in Ps' such that p |- Pi<=Pj
       //or error: leaked exception P is not the subtype of a declared exception//description of error messages in the comments
       //or  method declares an exception (P) which is not a subtype of ancestor exceptions
+

@@ -177,7 +177,7 @@ staticDispatch(p,G,ds)=ds'
 staticDispatch(p,G,ds)=staticDispatch(p,G,ds')
   ds',n+1=staticDispatch(0,p,G[ds],ds)
   ds!=ds'//else fail, we can not guess/dispatch //in code is more efficient to count errors in the whole subtree
-  //dom(G[ds']) superset dom(G[ds]) //Note: not sure if the correct formalism is this line or the former  
+  //dom(G[ds']) superset dom(G[ds]) //Note: not sure if the correct formalism is this line or the former
 
 staticDispatch(n,p,G,empty)=n   //recursion end
 staticDispatch(n,p,G,var? T x=e ds)=
@@ -199,6 +199,11 @@ staticDispatch(n,p,G,var? x=e ds)=
 	staticDispatch(n+1,p,G,ds) //remember failure
   where guessType(p,G,staticDispatch(p,G,e)) undefined
 
+plgClass({/*@plugin*/ _})
+plgClass({/*@plugin URL*/ _})
+plgUntrusted({/*@plugin */ _})
+plgUntrusted({/*@plugin URL*/ _})
+  with not trusted(URL)
 
 --------------------------------------------
 2 Coherent literal
@@ -212,8 +217,9 @@ coherent(p) //classes are coherent if they have a coherent set of abstract metho
   p.top()={implements _ mwts' ncs} //note, no interface
   mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
   either mwts is empty or
-    there is exactly 1 class method with parameters (T x)s and n? such that
-      forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
+    there is exactly 1 class method M with parameters (T x)s and n? such that
+      -forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
+      -if plgClass(p.top()) then M.m is of form #$m
 
 //coherent factory
 coherent(n?,p,T1 x1..Tn xn,
