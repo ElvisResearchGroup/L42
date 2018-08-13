@@ -32,7 +32,7 @@ Address: Alphanumeric <>< {
   This parse(S that) This(that)
   }
 Family:(p=Persons, a=Address
-  Data<><{ capsule Persons members, var Address address 
+  Data<><{ capsule Persons members, var Address address
     mut method
     Void add(capsule Person member)
       this.#members().add(left:member)
@@ -48,7 +48,7 @@ Main2:{
     )
   /*how to automatically be able to write the following?
   f=Family(
-    members:\[\(name:\"Bob",age:32\);\(name:\"Charls",age:35\)]    
+    members:\[\(name:\"Bob",age:32\);\(name:\"Charls",age:35\)]
     address:\"Willis 25A"
     )
   */
@@ -58,5 +58,26 @@ Main2:{
   ".withoutRight())
   return ExitCode.normal()
   }
-}
 
+RelaxedPerson:Data<><{var Num age,S name, mut Person father
+  read method Bool #invariant()
+    this.name()!=S"" & this.age()>= 0Num
+  }
+Main3:{
+
+  (
+    p=RelaxedPerson(age:2Num, name:S"Bob",
+    father:Person(name:S"Bob",age:32Size)
+    )
+    p.age(Num"-2")
+    catch error Data.Invariant.Fail x
+      Debug.test(x, expected:S"
+        'Data.Invariant.Fail"invalid object detected
+        ' [age:"-2", name:"Bob", father:..]!"
+        ".replace(S.nl() into:S"")
+        )
+    Debug(S"Fail")
+    )
+  return ExitCode.normal()
+  }
+}

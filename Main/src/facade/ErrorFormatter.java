@@ -412,11 +412,11 @@ private static void printType(int i, Program p) {
 @SuppressWarnings("unchecked")
 public static void topFormatErrorMessage(ErrorMessage msg) {
     //System.out.println(ErrorFormatter.formatError(msg).getErrorTxt());
-    System.out.println("###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###");
-    System.out.println("###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###");
+    L42.print42Err("###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###");
+    L42.print42Err("###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###");
     //The text over is the tag for the test to check it is failed
 
-    System.out.println(
+    L42.print42Err(
         formatError(Program.emptyLibraryProgram(),msg).getErrorTxt()
         );
     for(Field f:msg.getClass().getDeclaredFields()){

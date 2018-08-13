@@ -6,5 +6,6 @@ import facade.L42;
 
 public abstract class TestRunnerPrePost extends tools.TestRunner{
   public void pre(){TestHelper.configureForTest();}
-  public void post(){TestHelper.check42Fails(L42.record.toString());}
+  public void post(){TestHelper.check42Fails(L42.record.toString(), L42.recordErr.toString());}
+  {}
 }

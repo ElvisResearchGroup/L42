@@ -1419,6 +1419,11 @@ public class MiniJ {
     @javax.annotation.Generated("lombok")
     public RawJ(final String inner) {
       this.inner = inner;
+      //"£M"
+      int i = this.inner.indexOf("£M");
+      if (i >= 0)
+        assert this.inner.charAt(i - 1) == ' '  || this.inner.charAt(i - 1) == '.':
+          this.inner;
     }
 
     @java.lang.SuppressWarnings("all")

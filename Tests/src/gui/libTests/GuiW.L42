@@ -1,7 +1,7 @@
 {reuse L42.is/AdamTowel02
 
 
-Widget:UnsafeRefactor.This$er<><{interface 
+Widget:UnsafeRefactor.This$er<><{interface
   S id
   Size left Size top
   Size width Size height
@@ -11,7 +11,7 @@ Widget:UnsafeRefactor.This$er<><{interface
   List:Collections.vector(of:This$)
   }
 BoxW:Data<><{implements Widget}
-  
+
 Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
   method S format(Widget that)
     S"<div id="[S.doubleQuote();that.id();S.doubleQuote();]
@@ -52,15 +52,23 @@ C:{
     )
   var Size move=0Size
   with event in gui.events() (
-    move+=1Size
+    move+=5Size
     gui.draw(BoxW(
       id:S"A"
       left:20Size
       top:40Size+move
-      width:20Size
-      height:20Size
+      width:400Size
+      height:200Size
       color:S"red"
-      children:Widget.List[]
+      children:Widget.List[BoxW(
+        id:S"B"
+        left:50Size
+        top:50Size
+        width:50Size
+        height:149Size
+        color:S"blue"
+        children:Widget.List[]
+        )]
       ))
     )
   gui.close()

@@ -2,6 +2,7 @@ package newTypeSystem;
 
 import ast.Ast;
 import ast.Expression;
+import facade.L42;
 import sugarVisitors.CollapsePositions;
 
 public class FormattedError extends RuntimeException {
@@ -13,10 +14,10 @@ public class FormattedError extends RuntimeException {
       if (err.kind==ErrorKind.NotSubtypeClass){
        res+="\nexpected path was :"+err.in.expected.getPath()
         +"\nbut obtained path was :"+err._computed.getPath();
-       } 
+       }
       Ast.Position p=CollapsePositions.of(err.in.e);
       res+="\nin position :"+p;
-      System.err.println(res);
+      L42.print42Err(res);
       return res;
       }
     public FormattedError(TErr err) {

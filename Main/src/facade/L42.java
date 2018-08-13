@@ -2,6 +2,7 @@ package facade;
 
 import static org.junit.Assert.assertArrayEquals;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -83,22 +84,22 @@ public class L42 {
   public static int compilationRounds=0;
   public static boolean trustPluginsAndFinalProgram=true;
   public static StringBuilder record=new StringBuilder();
+  public static StringBuilder recordErr=new StringBuilder();
   public static String messageOfLastTopLevelError="";
   public static String reconstructedStackTrace="";
   public static String[] programArgs=null;
   public static List<URL> pluginPaths=null;
-  public static final java.util.Map<String,Integer> usedNames=new HashMap<String,Integer>(){
-    public @Override Integer put(String s,Integer i){
-      assert i<100000:
-      i;
-      return super.put(s,i);}
-    };
+  public static final java.util.Map<String,Integer> usedNames=new HashMap<String,Integer>();
   public static void printDebug(String s){
     record.append(s);
     record.append("\n");
     System.err.println(s);
   }
-
+  public static void print42Err(String s){
+    recordErr.append(s);
+    recordErr.append("\n");
+    System.err.println(s);
+  }
   private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
    assert Files.isDirectory(p);
    List<URL> fileNames = new ArrayList<>();

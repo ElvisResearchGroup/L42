@@ -136,7 +136,7 @@ public class L42FToMiniJ {
       StringBuilder sb=new StringBuilder();
       sb.append("{return £Xthis."+f+";}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£M"+x.substring(2)+"(){return "+cn+"."+x+"(this);}");
+        sb.append("public "+t+ " £M"+x.substring(2)+"(){return "+cn+"."+x+"(this);}");
         }
       return new RawJ(sb.toString());
       }

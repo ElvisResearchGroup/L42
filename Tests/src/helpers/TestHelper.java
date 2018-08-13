@@ -77,11 +77,11 @@ public class TestHelper {
       return parent.substring(start, end);
     }
   }
-  public static void check42Fails(String s){
+  public static void check42Fails(String s, String err){
     if(s.isEmpty()){fail("String is empty, may have not even started!"); throw new Error();}
     String tag="###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###-###\n"+
                "###--#---#---#---#---#---#---#---#---#---#---#---#---#---#---#---#--###\n";
-    if(s.contains(tag)){
+    if(s.contains(tag) || err.contains(tag)){
       fail("Error of some kind"); throw new Error();
       }
     //if(s.contains("Error kind: MalformedFinalResult")){fail("Error kind: MalformedFinalResult"); throw new Error();}
@@ -258,6 +258,7 @@ public class TestHelper {
     }
   public static void configureForTest() {
     L42.record=new StringBuilder();
+    L42.recordErr=new StringBuilder();
     L42.usedNames.clear();
     L42.cacheK=new Phase1CacheKey();
     L42.root=null;

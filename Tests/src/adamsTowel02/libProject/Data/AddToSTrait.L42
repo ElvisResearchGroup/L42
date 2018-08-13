@@ -4,15 +4,9 @@ Fail:{}
 class method Selector name() Selector"toS()"
 class method Bool elideField(Location.Type that) Bool.false()
 MiniTos: Resource <>< { implements Concept.ToS
-    method toS() S"["[this.baseToS()]"]"
-    read method S baseToS() S""
-    }
-DotDot: Resource <>< {read T f,,,,,T:{implements Concept.ToS}
-      class method S fN()
-      read method S baseToS() (S""[This.fN()]": ...")
-}
-
-
+  method toS() S"["[this.baseToS()]"]"
+  read method S baseToS() S""
+  }
 
 method
 Bool shouldDecorate(Location.Lib that)
@@ -35,10 +29,8 @@ exception Fail{
     hide=Refactor2.Method[hide:\"fN()"]
     add=Use[Resource(fN,selector:\"fN()")]
     rich=this.lib(refTo:fT.refTo()).isInterface()
-    if This.elideField(fT) (use[hide<><add
-        <>< Refactor2.Method[rename:\"f()" into:Selector.from(string:fN++S"()")]
-        <>< Refactor2.redirect(path:\"T"  intoRefTo:fT.refTo())
-        <>< DotDot()
+    if This.elideField(fT) (use[hide <>< add
+        <>< {class method S fN() read method S baseToS() (S""[This.fN()]":..")}
     ])
     else if rich (use[hide<><add<><opCName.select(type:fT,name:fN)])
     else (use[hide<><add<><op.select(type:fT,name:fN)])
@@ -80,7 +72,7 @@ class method FieldOperation op()
         return S""[This.fN()]":"[S.doubleQuote();ts;S.doubleQuote()]""
         }}
     forImmutable:{T f,,,,,T:{implements Concept.ToS}
-      class method S fN() 
+      class method S fN()
       read method S baseToS() {
         ts=this.f().toS()
         if ts.beginsWith(S"[") ( return S""[This.fN()]":"[ts]"")
@@ -111,7 +103,7 @@ class method FieldOperation op()
       read method S baseToS()
         S""[This.fN()]":void"
       }
-    )  
+    )
 class method FieldOperation opClassName(FieldOperation op)
   FieldOperation(
     forReadable:{read T f,,,,,T:{implements Concept.ToS, Concept.Classable

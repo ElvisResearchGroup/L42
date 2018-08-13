@@ -4,7 +4,7 @@
         !(that.mdf().isCmpCapsule() | that.mdf().isCmpImm())
 
     MiniTos: Resource <>< {
-        method S #invariantToS() S"["[this.baseToS()]"]"
+        read method S #invariantToS() S"["[this.baseToS()]"]"
         read method S baseToS() S""
     }
 }
