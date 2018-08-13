@@ -57,7 +57,7 @@ public interface OnLineCode {
 
     // Slow-path: check for any (propery) prefix of url
     for (String prefix : trustedPlugins)
-      if (url.startsWith(prefix + "."))
+      if (url.startsWith(prefix + ".") || url.startsWith(prefix + "/"))
         return true;
 
     return false;
