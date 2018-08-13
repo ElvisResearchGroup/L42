@@ -121,10 +121,11 @@ public interface TypeSystem {
       return false;
     }
   }
+
 class Impl implements TypeSystem,TsOperations,TsBlock,TsMCall,TsLibrary{
 
   HashMap<TIn,TOut>map=new HashMap<>();//memoized map
-  boolean isTrusted = false;
+  private boolean isTrusted = true;
 
   @Override public void isTrusted(boolean b) { this.isTrusted = b; }
   @Override public boolean isTrusted() { return this.isTrusted; }

@@ -30,7 +30,7 @@ append(that:Html id:#id)
 try to learn to use ACE for the IDE?
  */
 
-public class PluginFX implements PluginType.WellKnown, PluginType.UnTrusted {
+public class PluginFX implements PluginType.WellKnown {
 //OLD, unused.
   public static Ast.MethodType Mopen£that£title=mt(Path.Void(),Path.Library(),Path.Library());
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})

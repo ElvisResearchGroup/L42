@@ -23,6 +23,7 @@ import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.fakeInternet.PluginWithPart.UsingInfo;
 import ast.ExpCore.UpdateVar;
 import tools.Assertions;
+import platformSpecific.fakeInternet.OnLineCode;
 
 public interface TsOperations extends TypeSystem{
 
@@ -82,8 +83,8 @@ public interface TsOperations extends TypeSystem{
       }
 
     List<Type> lt;try{
-      PluginType p = platformSpecific.fakeInternet.OnLineCode.plugin(in.p, s);
-      if (!this.isTrusted() && !p.isTrusted())
+      PluginType p = OnLineCode.plugin(in.p, s);
+      if (!this.isTrusted() && !OnLineCode.isTrusted(p))
         throw new ErrorMessage.UntrustedPlugin(s, p.url(), Position.noInfo);
 
       lt = p.typeOf(in.p, s);
