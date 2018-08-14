@@ -1,7 +1,5 @@
 package facade;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;

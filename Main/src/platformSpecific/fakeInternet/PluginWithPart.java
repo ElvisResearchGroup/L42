@@ -33,7 +33,7 @@ public class PluginWithPart implements PluginType{
   public final String part;
   public final Class<?>pointed;
 
-  @Override public String[] url() {
+  @Override public String[] names() {
     return new String[] {this.part, this.url};
   }
 

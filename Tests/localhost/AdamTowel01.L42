@@ -2225,13 +2225,9 @@ Void #M() this.acc(that: {/*@stringU
 M
 */})
 mut method 
-Void #%() this.acc(that: {/*@stringU
-%
-*/})
-mut method 
-Void #$() (//OPERATORS:
+Void #%() (//OPERATORS:
 this.acc(that: {/*@stringU
-$
+%
 */}))
 mut method 
 Void #left() this.acc(that: {/*@stringU
@@ -2356,13 +2352,16 @@ Void #backslash() this.acc(that: {/*@stringU
 \u005C
 */})
 mut method 
+Void #dollar() this.acc(that: {/*@stringU
+$
+*/})
+mut method 
 Void #space() this.acc(that: {/*@stringU
- 
+\u0020
 */})
 mut method 
 Void #newline() this.acc(that: {/*@stringU
-
-
+\u00A0
 */})}}
 UnsafeRefactor: {
 Compose: {/*@plugin  toFix 
@@ -2429,7 +2428,7 @@ Library #leftrightleft#0left(Library right) This1.RenameClass.renameClassS(that:
   Void unused463=b127.#h()
   Void unused464=b127.#i()
   Void unused465=b127.#s()
-  Void unused466=b127.#$()
+  Void unused466=b127.#dollar()
   b127
   )), nameDest:This2.S.#from(builder:(
   mut This2.S.SBuilder b128=This2.S.#builder()
@@ -15491,7 +15490,7 @@ This1.Bool isUnique() (
       This1.S opNorm31=This1.S.#from(builder:(
         mut This1.S.SBuilder b392=This1.S.#builder()
         Void unused2379=b392.#underscore()
-        Void unused2380=b392.#$()
+        Void unused2380=b392.#dollar()
         Void unused2381=b392.#underscore()
         b392
         ))

@@ -86,7 +86,7 @@ public interface TsOperations extends TypeSystem{
     List<Type> lt;try{
       PluginType p = OnLineCode.plugin(in.p, s);
       if (!in.isTrusted && !OnLineCode.isTrusted(p))
-        throw new ErrorMessage.UntrustedPlugin(s, Arrays.asList(p.url()), Position.noInfo);
+        throw new ErrorMessage.UntrustedPlugin(s, Arrays.asList(p.names()), Position.noInfo);
 
       lt = p.typeOf(in.p, s);
     }

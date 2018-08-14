@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import org.apache.commons.lang3.ArrayUtils;
 import platformSpecific.javaTranslation.Resources;
 import facade.L42;
 import facade.Parser;
@@ -32,6 +33,19 @@ import programReduction.Program;
 import auxiliaryGrammar.WellFormedness;
 
 public interface OnLineCode {
+  static String toPackageName(String url) {
+    url = url.trim();
+    if (url.isEmpty() || url.startsWith("#"))
+      return null;
+
+    int split = url.indexOf('/');
+    if (split < 0) return url;
+
+    String[] domainParts = url.substring(0, split).split("\\.");
+    ArrayUtils.reverse(domainParts);
+
+    return String.join(".", domainParts) + url.substring(split).replace('/', '.');
+  }
   Set<String> trustedPlugins = LambdaExceptionUtil.uncheck(() -> {
     Set<String> res = new HashSet<>();
 
@@ -41,20 +55,28 @@ public interface OnLineCode {
     Scanner scanner = new Scanner(is);
 
     while (scanner.hasNextLine())
-      res.add(scanner.nextLine());
+    {
+      String name = toPackageName(scanner.nextLine());
+      if (name != null)
+        res.add(name);
+    }
 
     return res;
   });
 
   static boolean isTrusted(PluginType p) {
-    for (String url : p.url()) {
+    for (String name : p.names()) {
+      if (name.contains("Alu"))
+        ;
+      assert !name.contains("/");
+
       // For efficiency, do this first
-      if (trustedPlugins.contains(url))
+      if (trustedPlugins.contains(name))
         return true;
 
       // Slow-path: check for any (propery) prefix of url
       for (String prefix : trustedPlugins)
-        if (url.startsWith(prefix + ".") || url.startsWith(prefix + "/"))
+        if (name.startsWith(prefix + "."))
           return true;
     }
     return false;
