@@ -152,42 +152,13 @@ public class Plugin implements PluginType.WellKnown {
   
   @ActionType({ActionType.NormType.Library})
   public  Object MconstFalse(){return false;} 
-  
+
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
   public Resources.Void MstringDebug£xthat(Object cb){
     String s=ensureExtractStringU(cb);
     L42.printDebug(s);
     return Resources.Void.instance;
   }
-  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
-  public Resources.Void MfileDebug£xfileName£xcontent(Object _fName,Object _content){
-    String fName=ensureExtractStringU(_fName);
-    String content=ensureExtractStringU(_content);
-    java.nio.file.Path p=Paths.get(fName);
-    try {Files.write(p, content.getBytes());}
-    catch (IOException e) {throw new Error(e);}
-    return Resources.Void.instance;
-  }
-
-  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
-  public Object MfileReadDebug£xfileName(Object _fName){
-    String fName=ensureExtractStringU(_fName);
-    java.nio.file.Path p=Paths.get(fName);
-    try {
-      byte[] res = Files.readAllBytes(p);
-      return new String(res);
-      }
-    catch (IOException e) {throw new Error(e);}
-  }
-  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
-  public Object MlocalToAbsolute£xfileName(Object _fName){
-    String fName=ensureExtractStringU(_fName);
-    java.nio.file.Path p= Paths.get(fName);
-    String s = p.toAbsolutePath().normalize().toString();
-    return s;
-  }
-
-
 
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringConcat£xs1£xs2(Object cb1,Object cb2){
@@ -211,7 +182,7 @@ public class Plugin implements PluginType.WellKnown {
     String r = s1.substring(start, end);
     return r;
   }
-  
+
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
   public Resources.Void MifStringEqualDo£xs1£xs2(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);

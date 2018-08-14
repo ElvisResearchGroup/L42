@@ -2842,9 +2842,9 @@ Void #apply(Library lib) error This1.S.#from(builder:(
   b134
   ))
 class method 
-Void #apply(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.Alu check fileDebug(fileName:fileName.toS().#binaryRepr(), content:content.toS().#binaryRepr()) void
+Void #$(This1.Concept.ToS fileName, This1.Concept.ToS content) use This2.FileSystem check fileDebug(fileName:fileName.toS().#binaryRepr(), content:content.toS().#binaryRepr()) void
 class method 
-This1.S readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.Alu check fileReadDebug(fileName:fileName.toS().#binaryRepr()) error (
+This1.S #$readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This2.FileSystem check fileReadDebug(fileName:fileName.toS().#binaryRepr()) error (
   This1.S.Continue rcv2=(
     This1.S rcv3=This1.S.#from(builder:(
       mut This1.S.SBuilder b135=This1.S.#builder()
@@ -2893,7 +2893,7 @@ This1.S readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.
     ))
   ))
 class method 
-This1.S localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.Alu check localToAbsolute(fileName:fileName.toS().#binaryRepr()) error (
+This1.S #$localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This2.FileSystem check localToAbsolute(fileName:fileName.toS().#binaryRepr()) error (
   This1.S.Continue rcv4=(
     This1.S rcv5=This1.S.#from(builder:(
       mut This1.S.SBuilder b138=This1.S.#builder()

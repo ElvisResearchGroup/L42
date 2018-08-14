@@ -8,8 +8,8 @@
   Void (Library lib) error S"to fix in AdamTowel2"
 
   class method
-  Void (Concept.ToS fileName, Concept.ToS content)
-    use Alu
+  Void #$(Concept.ToS fileName, Concept.ToS content)
+    use FileSystem
       check fileDebug(
         fileName:fileName.toS().#binaryRepr(),
         content:content.toS().#binaryRepr()
@@ -17,15 +17,15 @@
       void
 
   class method
-  S readFile(Concept.ToS fileName)
-    S.#from(binaryRepr:use Alu
+  S #$readFile(Concept.ToS fileName)
+    S.#from(binaryRepr:use FileSystem
       check fileReadDebug(   fileName:fileName.toS().#binaryRepr()  )
       error S"Alu.fileReadDebug reading file:"[fileName]""
       )
 
   class method
-  S localToAbsolute(Concept.ToS fileName)
-    S.#from(binaryRepr:use Alu
+  S #$localToAbsolute(Concept.ToS fileName)
+    S.#from(binaryRepr:use FileSystem
       check localToAbsolute(   fileName:fileName.toS().#binaryRepr()  )
       error S"Alu.fileReadDebug reading file:"[fileName]""
       )
