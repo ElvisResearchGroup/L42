@@ -51,7 +51,7 @@ public class Plugin implements PluginType.WellKnown {
     ExpCore.ClassB that=ensureExtractClassB(_that);
 
     try {
-      that.typeCheck(ExpCore.ClassB.Phase.Coherent);
+      that.typeCheck(ExpCore.ClassB.Phase.Typed);
     } catch (RuntimeException e) {
       throw new Error(e);
     }
