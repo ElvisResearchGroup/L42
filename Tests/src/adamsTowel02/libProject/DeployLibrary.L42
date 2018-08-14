@@ -1,6 +1,6 @@
-{
+{//@untrusted
 Path path,Url url
-class method This (Path path,Url url)
+class method mut This #$(Path path,Url url)
 
 class method Library moveToAbstract(Path that,Library of){
   return Refactor2.rename(
@@ -67,7 +67,7 @@ exception Refactor2.PathUnfit (
   void//just a way to test if path is there
   )
 
-method
+mut method
 Library <><(Library right)
 exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled,Location.NotAvailable {
   Debug(S"1")
@@ -75,6 +75,6 @@ exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled,Location.NotAvailable {
   Debug(S"2")
   res:=Optimize.RemoveUnreachableCode<><res
   Debug(S"3")
-  return DeployTowel(fileName:this.url())<><res
+  return DeployTowel.#$(fileName:this.url())<><res
   }
 }

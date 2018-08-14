@@ -34,9 +34,9 @@ ResourceDeploy:{class method Library (){
   DeployTowel:...
   }}
 AdamTowel01:{class method Library () ...}
-Task0:DeployTowel(fileName:Url"localhost/DeployTowel.L42")
+Task0:DeployTowel.#$(fileName:Url"localhost/DeployTowel.L42")
   <><ResourceDeploy()
-Task1: DeployTowel(fileName:Url"localhost/AdamTowel01.L42")
+Task1: DeployTowel.#$(fileName:Url"localhost/AdamTowel01.L42")
   <><AdamTowel01()
 
 Task2:(

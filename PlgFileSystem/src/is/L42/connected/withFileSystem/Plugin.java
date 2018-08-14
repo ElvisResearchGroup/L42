@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import ast.ExpCore;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
+import programReduction.Program;
+import programReduction.ProgramReduction;
+
 import static auxiliaryGrammar.EncodingHelper.*;
 
 public class Plugin implements PluginType.WellKnown {
@@ -41,4 +45,23 @@ public class Plugin implements PluginType.WellKnown {
     String s = p.toAbsolutePath().normalize().toString();
     return s;
   }
+
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
+  public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
+    ExpCore.ClassB that=ensureExtractClassB(_that);
+
+    try {
+      that.typeCheck(ExpCore.ClassB.Phase.Coherent);
+    } catch (RuntimeException e) {
+      throw new Error(e);
+    }
+
+    String url=ensureExtractStringU(_url);
+
+    String text=sugarVisitors.ToFormattedText.of(that);
+    java.nio.file.Path p=Paths.get(url);
+    try {Files.write(p, text.getBytes());}
+    catch (IOException e) {throw new Error(e);}
+    return Resources.Void.instance;
+    }
 }

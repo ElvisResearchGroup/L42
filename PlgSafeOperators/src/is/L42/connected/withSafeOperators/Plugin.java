@@ -311,17 +311,6 @@ public class Plugin implements PluginType.WellKnown {
       return Rename.renameClass(Resources.getP(),that,src,dest);
       }*/
 
-    @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
-    public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
-      ClassB that=ensureExtractClassB(_that);
-      String url=ensureExtractStringU(_url);
-      String text=sugarVisitors.ToFormattedText.of(that);
-      java.nio.file.Path p=Paths.get(url);
-      try {Files.write(p, text.getBytes());}
-      catch (IOException e) {throw new Error(e);}
-      return Resources.Void.instance;
-      }
-
     /*
     @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public Object MhideState£xthat£xsrc(Object _that,Object _src){

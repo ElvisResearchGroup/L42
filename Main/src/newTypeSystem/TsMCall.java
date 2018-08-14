@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMessages;
-
 import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.MethodType;

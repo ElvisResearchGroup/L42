@@ -1,10 +1,11 @@
-{
+{//@untrusted
 Url fileName
-class method This(Url fileName)
- 
+class method mut This #$(Url fileName)
+
+mut
 method
 Library <><(Library right) (
-  use SafeOperatorsAccess
+  use FileSystemAccess
     check deployCode(right      
       url:this.fileName().#binaryRepr()
       )
@@ -13,8 +14,8 @@ Library <><(Library right) (
   )
  
 
-SafeOperatorsAccess://@_private
+FileSystemAccess://@_private
   {//@plugin
-   //L42.is/connected/withSafeOperators
+   //L42.is/connected/withFileSystem
    }
 }

@@ -3,7 +3,7 @@ Gui:Load<><{reuse L42.is/GuiLib}
 C:{
   list=Strings[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
   var S msg=S"<div id='Alpha'>"
-  Gui gui=Gui(id:S"a1")
+  mut Gui gui=Gui.#$(id:S"a1")
   initialState=S"
       '<div id="Alpha"> </div>
       '<font size="3" color="blue">Press the button to make stuff happens! otherwise stuff happens after a while to make the test an automated one</font>

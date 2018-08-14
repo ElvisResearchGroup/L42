@@ -1,7 +1,8 @@
 {reuse L42.is/AdamTowel02
 GuiLib:{class method Library (){
   reuse L42.is/AdamTowel02
-    Exported:K<><{S id
+    Exported: K.$ <>< {//@untrusted
+      S id
       GuiPlugin:{//@plugin
         //L42.is/connected/withHtml
         }
@@ -16,12 +17,14 @@ GuiLib:{class method Library (){
         //tmp:=tmp.replace(S"\u" into:S"\u005cu")
         tmp
         )
-      method
+
+      mut method
       Void close()
         use GuiPlugin
           check close(wName:this.id().#binaryRepr())
           error void
-      method
+
+      mut method
       Void open(S title, S body, Size x, Size y)
         this.open(
           html:S""[This.htmlHeader()]"<title>"[title]
@@ -39,7 +42,7 @@ GuiLib:{class method Library (){
 //        "
 
 
-      method
+      mut method
       Void open(S html, Size x, Size y) (
         Debug(html)
         use GuiPlugin
@@ -51,7 +54,7 @@ GuiLib:{class method Library (){
             )
           error void
           )
-      method
+      mut method
       Void set(S that,S id) {   //$('#Alpha').replaceWith('htmlstring')
         S qid=S"'"[This.jsEscape(id)]"'"
         S qText=S"'"[This.jsEscape(that)]"'"
@@ -74,7 +77,7 @@ GuiLib:{class method Library (){
         if x!=S"" (Debug(x))
         return void
         }
-      method
+      mut method
       Void add(S that,S id) {
         S qid=S"'"[This.jsEscape(id)]"'"
         S qText=S"'"[This.jsEscape(that)]"'"
@@ -93,19 +96,20 @@ GuiLib:{class method Library (){
         return void
         }
 
-      method
+      mut method
       S executeJs(S that)
         S.#from(binaryRepr: use GuiPlugin
           check executeJs(wName:this.id().#binaryRepr(),command:that.#binaryRepr())
           error void)
 
-      method
+      mut method
       mut Iterator events()
-        Iterator(id: this.id(), current:S"")
+        Iterator.#$(id: this.id(), current:S"")
 
-      Iterator:K<><{S id, var S current
+      Iterator: K.$ <>< {//@untrusted
+        S id, var S current
 
-        class method S auxFetchEvent(S id) exception Void {
+        class method S #$auxFetchEvent(S id) exception Void {
           Library s=use GuiPlugin
             check eventPending(wName:id.#binaryRepr())
             exception void
@@ -115,7 +119,7 @@ GuiLib:{class method Library (){
 
         mut method
         Void #next() exception Void {
-          s=Iterator.auxFetchEvent(id:this.id())
+          s=Iterator.#$auxFetchEvent(id:this.id())
           return this.current(s)
           }
 
@@ -135,7 +139,7 @@ GuiLib:{class method Library (){
 
 Task: (
   Debug(S"Starting deployment")
-  Load.DeployLibrary(
+  Load.DeployLibrary.#$(
     path:Path"Exported",
     url:Url"localhost/GuiLib.L42"
     )<><GuiLib()

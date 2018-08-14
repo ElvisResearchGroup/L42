@@ -149,9 +149,6 @@ public abstract void pre();
 public abstract void post();
 @Test
 public void test() throws Throwable{
-  Path p = Paths.get("nonexistent");
-  Path res = p.toAbsolutePath();
-
   System.out.println("start: "+this.p);
   pre();//TestHelper.configureForTest();
   L42.main(new String[]{this.p.toString()});

@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import org.apache.commons.lang3.ArrayUtils;
 import platformSpecific.javaTranslation.Resources;
 import facade.L42;
 import facade.Parser;
@@ -37,8 +36,8 @@ public interface OnLineCode {
     int split = url.indexOf('/');
     if (split < 0) return url;
 
-    String[] domainParts = url.substring(0, split).split("\\.");
-    ArrayUtils.reverse(domainParts);
+    List<String> domainParts = Arrays.asList(url.substring(0, split).split("\\."));
+    Collections.reverse(domainParts);
 
     return String.join(".", domainParts) + url.substring(split).replace('/', '.');
   }

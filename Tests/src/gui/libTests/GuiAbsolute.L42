@@ -2,7 +2,7 @@
 Gui:Load<><{reuse L42.is/GuiLib}
 C:{
   var S msg=S"<div id='Pressed'>"
-  Gui gui=Gui(id:S"a1")
+  mut Gui gui=Gui.#$(id:S"a1")
   initialState=S"
     '<div id="Pressed"> </div>
     '<font size="3" color="blue">Here the ID of the last pressed</font>

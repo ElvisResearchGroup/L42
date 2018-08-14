@@ -13,7 +13,7 @@ Widget:UnsafeRefactor.This$er<><{interface
 BoxW:Data<><{implements Widget}
 
 Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
-  method S format(Widget that)
+  read method S format(Widget that)
     S"<div id="[S.doubleQuote();that.id();S.doubleQuote();]
       " style="[S.doubleQuote()]
         "position: absolute;"[]
@@ -26,6 +26,8 @@ Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
       [with w in that.children().vals() (
       use[this.format(w)]
       )]"</div></div>"
+
+  mut
   method Void draw(Widget that)
     this.set(
     S"<div id="[S.doubleQuote();S"Top";S.doubleQuote();]
@@ -37,7 +39,7 @@ Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
 
 C:{
   var S msg=S"<div id='Pressed'>"
-  Gui gui=Gui(id:S"a1")
+  mut Gui gui=Gui.#$(id:S"a1")
   initialState=S"
       '<div id="Pressed"> </div>
       '<font size="3" color="blue">Here the ID of the last pressed</font>
