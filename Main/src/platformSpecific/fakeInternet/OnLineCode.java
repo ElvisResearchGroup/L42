@@ -34,10 +34,6 @@ import auxiliaryGrammar.WellFormedness;
 
 public interface OnLineCode {
   static String toPackageName(String url) {
-    url = url.trim();
-    if (url.isEmpty() || url.startsWith("#"))
-      return null;
-
     int split = url.indexOf('/');
     if (split < 0) return url;
 
@@ -46,22 +42,18 @@ public interface OnLineCode {
 
     return String.join(".", domainParts) + url.substring(split).replace('/', '.');
   }
-  Set<String> trustedPlugins = LambdaExceptionUtil.uncheck(() -> {
+  Set<String> trustedPlugins= LambdaExceptionUtil.uncheck(() -> {
     Set<String> res = new HashSet<>();
-
     InputStream is = PluginType.class.getResourceAsStream("/trustedPlugins.lst");
     assert is != null;
-
-    Scanner scanner = new Scanner(is);
-
-    while (scanner.hasNextLine())
-    {
-      String name = toPackageName(scanner.nextLine());
-      if (name != null)
-        res.add(name);
+    try(Scanner scanner = new Scanner(is)){
+      while (scanner.hasNextLine()){
+        String name = scanner.nextLine().trim();
+        if (name.isEmpty() || name.startsWith("#")) {continue;}
+        res.add(toPackageName(name));
+      }
+      return res;
     }
-
-    return res;
   });
 
   static boolean isTrusted(PluginType p) {

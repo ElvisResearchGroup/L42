@@ -24,16 +24,16 @@ public abstract class TestRunner {
 
   @Parameter(0) public Path p;
   @Parameter(1) public String shortName;
-  
+
   private static int numThreads = 1;
-  
+
   public static List<Object[]> goInner(Object ...opts){
     // Parameters are String or Opt.
     // The strings request a specific test.
     // The Opts either change global parameters or add a defined set of tests.
     Path root = findClassRoot();
     List<Object[]> result = new LinkedList<Object[]>();
-    
+
     L42.trustPluginsAndFinalProgram=true;  // If desired, one of the options will set this false
 
     for(Object opt : opts) {
@@ -59,14 +59,14 @@ public abstract class TestRunner {
       }
       throw new Error("caller?");
   }
-  
+
   private static Path findClassRoot() {
     try {
       Class <?> rootObj = Class.forName(findCaller());
       return Paths.get(rootObj.getResource(".").toURI());
     }catch (Throwable e) { throw handleThrowable(e);}
   }
-  
+
   private static Path findTests(Path root){
     try {
       // The root path is probably the directory containing Test.java.
@@ -98,24 +98,24 @@ public abstract class TestRunner {
 //  ret = ret.replace(middle2,  "");
   return ret;
 }
-  
+
   public static void addFilesFromRoot(Path root, String subPath, List<Object[]> files){
   try {
     assert root!=null;
 
     Path p = root.resolve(subPath);
-    
+
     if (Files.isRegularFile(p, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
       addFileFromPath(p, files);
       return;
     }
-    
+
     if (Files.isDirectory(p, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
       StreamSupport.stream (Files.newDirectoryStream(p).spliterator(), false)
       .forEach(test -> addFileFromPath(test, files));
       return;
     }
-    
+
     throw new Error("File "+p.toString()+" unavalable ");
   }
   catch (Throwable t){throw handleThrowable(t);}

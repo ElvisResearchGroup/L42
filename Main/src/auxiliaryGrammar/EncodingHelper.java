@@ -35,6 +35,8 @@ public class EncodingHelper{
     for(int i=0;i<s.length();i++){
       char c=s.charAt(i);
       if(c!='\\'){result.append(c);continue;}
+      //TODO: in release it should throw invalid string unicode, as if
+      //@stringU was not present    throw new Resources.Error("InvalidStringU");
       if(i+5>=s.length()){throw Assertions.codeNotReachable("Invalid string encoding:\n"+s);}
       if(s.charAt(i+1)!='u'){throw Assertions.codeNotReachable("Invalid string encoding:\n"+s);}
       char uc = (char)Integer.parseInt( s.substring(i+2,i+6), 16 );

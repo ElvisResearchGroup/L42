@@ -27,8 +27,8 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
 
       //// big individual deployment options
       //Opt.DeplAT1, // AdamsTowel01
-      Opt.DeplAT2, // AdamsTowel02
-     /*
+      //Opt.DeplAT2, // AdamsTowel02
+
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
@@ -60,10 +60,11 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       //--"TestWither.L42",
       "UseLib.L42",
       "UseOperators1.L42",
-  */    "TestData.L42",
+      "TestData.L42",
       "TestDataEncapsulated.L42",
       "TestToS.L42",
       "TestTrait.L42",
+      "TestUnicode.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

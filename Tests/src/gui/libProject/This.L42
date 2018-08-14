@@ -24,8 +24,8 @@ GuiLib:{class method Library (){
       method
       Void open(S title, S body, Size x, Size y)
         this.open(
-          html:S""[This.htmlHeader()]"<TITLE>"[title]
-          "</TITLE></HTML><BODY>"[body]"</BODY></HTML>"
+          html:S""[This.htmlHeader()]"<title>"[title]
+          "</title></head><body>"[body]"</body></html>"
           x:x
           y:y)
       class method S htmlHeader() S"
@@ -80,7 +80,7 @@ GuiLib:{class method Library (){
         S qText=S"'"[This.jsEscape(that)]"'"
         cmd=S"
           'var template = document.createElement('div');
-          'template.innerHTML = 
+          'template.innerHTML =
           "[qText]"
           ';
           'document.getElementById(
