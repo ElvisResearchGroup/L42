@@ -100,7 +100,7 @@ public class L42 {
     System.err.println(s);
   }
   private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
-   assert Files.isDirectory(p);
+   assert Files.isDirectory(p) : p;
    List<URL> fileNames = new ArrayList<>();
    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(p)){
      for (Path path : directoryStream) {
