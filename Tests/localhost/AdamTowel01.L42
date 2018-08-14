@@ -8,6 +8,9 @@ Library #leftrightleft#0left(Library right) use This0 check #main(_1_Library:rig
 Alu: {/*@plugin
 L42.is/connected/withAlu
 */}
+FileSystem: {/*@plugin
+L42.is/connected/withFileSystem
+*/}
 ExitCode: {
 class method /*To signal normal program completion
 */Library normal()  {/*@exitStatus
@@ -2842,9 +2845,9 @@ Void #apply(Library lib) error This1.S.#from(builder:(
   b134
   ))
 class method 
-Void #$(This1.Concept.ToS fileName, This1.Concept.ToS content) use This2.FileSystem check fileDebug(fileName:fileName.toS().#binaryRepr(), content:content.toS().#binaryRepr()) void
+Void #$(This1.Concept.ToS fileName, This1.Concept.ToS content) use This1.FileSystem check fileDebug(fileName:fileName.toS().#binaryRepr(), content:content.toS().#binaryRepr()) void
 class method 
-This1.S #$readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This2.FileSystem check fileReadDebug(fileName:fileName.toS().#binaryRepr()) error (
+This1.S #$readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.FileSystem check fileReadDebug(fileName:fileName.toS().#binaryRepr()) error (
   This1.S.Continue rcv2=(
     This1.S rcv3=This1.S.#from(builder:(
       mut This1.S.SBuilder b135=This1.S.#builder()
@@ -2893,7 +2896,7 @@ This1.S #$readFile(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This
     ))
   ))
 class method 
-This1.S #$localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This2.FileSystem check localToAbsolute(fileName:fileName.toS().#binaryRepr()) error (
+This1.S #$localToAbsolute(This1.Concept.ToS fileName) This1.S.#from(binaryRepr:use This1.FileSystem check localToAbsolute(fileName:fileName.toS().#binaryRepr()) error (
   This1.S.Continue rcv4=(
     This1.S rcv5=This1.S.#from(builder:(
       mut This1.S.SBuilder b138=This1.S.#builder()
