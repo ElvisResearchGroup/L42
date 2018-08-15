@@ -1,0 +1,40 @@
+# Misunderstandings:
+1.
+	* object capablities (run-time checks)
+2.	* object capabilities (to prevent backdoors through effects)
+	* the dynamic vs static ... appears to be more important than the "always-true" vs "true-at-boundaries
+	* the abstract made it seem like this approach would support mutation, exceptions, I/O etc. in all their glory
+# Research problems
+1.
+	* language design unconvincing
+	* evidence that this new was is important.
+	* [how would you] get programmers to write the valiudate methods required
+	* very inelegant for dealing with structure and cargo together
+	* I would hate to see full blown validating of a list of mutable objects
+	* requriing invariants that can never be broken sounds too rigid.
+	* do not like the name "Validation"
+2.	
+	* Need to demonstrate:
+		* either
+			* how a variety of invariants can be specified and/or checked more easily than in other approaches
+			* checking in the new system comes at a lower performance cost.
+		* how programming validate() methods will work in practice
+		* ability to validate "many interesting and practically useful data-structures"
+		* the "always-true" invariants advocated in this paper are better
+		* handle practical examples without resorting to unsafe features
+		* "We believe our sound approach can monitor programs for a fraction of the cost of many other approaches"
+		* "We expect our approach to result in a dramatic reduction over the number of required checks"
+	* Could [validation] not be encoded in some way with [class invariants]
+	* either
+		* the dynamic vs static approach should be the primary emphasis of the paper
+		* a comparison of the expressiveness of these two kinds of invariants
+	* discussion and comparison to contracts
+	* gradual typing which perform monitoring of objects ... [compare] against such approaches
+	* citations of popular relevant static verification systems (e.g. Boogie) and their restrictions and costs?
+	* citations to and comparisons of the relative expressiveness/performance of prior static and dynamic verification systems.
+	* How do these [capsule] restrictions affect the expressiveness of desired valuidate() properties?
+	* Without pratical or performance evaluation, perhaps the focus of the paper ought to be more on the semantics and metatheory
+	
+
+TODO:
+	replace .validate() to validate
