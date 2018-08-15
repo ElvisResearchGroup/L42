@@ -14,6 +14,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Type;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PosImprove;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.SignalKind;
@@ -29,9 +30,12 @@ import tools.Map;
 public interface TsBlock extends TypeSystem{
   default TOut tsBlock(TIn in, Block s) {
     TOut res1;try{res1=tsBlockBase(in,s);}
-    catch(ErrorMessage.InvalidTypeForThrowe err){
-      if(!err.getPos().equals(Position.noInfo)){throw err;}
-      throw err.withPos(s.getP());
+    catch(ErrorMessage err){
+      if(err instanceof PosImprove){
+      PosImprove pi=(PosImprove)err;
+      err=(ErrorMessage)pi.improvePos(s.getP());
+      }
+      throw err;
       }
     if (res1.isOk()){return res1;}
     if (!promotionMakesSense(in,res1.toError())){return res1;}//promotionMakesSense: mut that need capsule

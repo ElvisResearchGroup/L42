@@ -35,7 +35,7 @@ class ProtectedPluginType{
       for(Method m:that.getDeclaredMethods()){
         options.add(m.getName());
         }
-      throw new ErrorMessage.PluginMethodUndefined(options,uForError,null,null);
+      throw new ErrorMessage.PluginMethodUndefined(options,uForError,null,uForError.getDoc().getP());
       }
     catch (SecurityException e) { throw new Error(e);}
     }

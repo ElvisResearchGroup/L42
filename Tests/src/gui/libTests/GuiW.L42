@@ -15,25 +15,34 @@ Event:Data<><{
   }
 Widget:UnsafeRefactor.This$er<><{interface
   S id
-  Size left Size top
-  Size width Size height
-  S color
+  var Size left 
+  var Size top
+  var Size width
+  var Size height
+  var S color
   mut List children
   This$: {interface implements Concept.Base}
   List: Collections.vector(ofMut:This$)
   mut method Bool dispatch(Event that)
   }
-BoxW:Data<><{implements Widget
+BoxTrait:Resource<><{implements Widget
+  mut method Void process(Event event)
   method dispatch(that) {
     if this.id()==that.targetId() (
-      Debug(S"Event processed: "[that]"")
+      this.process(event:that)
       return Bool.true()
       )
-    with w in this.children().vals() (
+    with w in this.#children().#vals() (
       if w.dispatch(that) (return Bool.true())
       )
     return Bool.false()
     }
+  }
+BoxW:Data<><Use[BoxTrait()]<>< {
+  mut method Void process(Event event) (
+    Debug(S"Event processed: "[event]"")
+    this.left(this.left()+5Size)
+    )
   }
 
 Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
