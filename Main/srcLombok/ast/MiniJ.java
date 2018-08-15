@@ -101,6 +101,16 @@ X implements E{
 @Value @Wither public static class
 RawJ implements E{
   String inner;
+  public RawJ(String inner){
+    assert coherent(inner);
+    this.inner=inner;
+    }
+  static boolean coherent(String inner){
+    int pos=inner.indexOf("£M");
+    if(pos==-1 ||pos==0){return true;}
+    inner=inner.substring(0,pos);
+    return inner.endsWith(" ") || inner.endsWith(".") || inner.endsWith("\n");
+    }
   public <V> V accept(JVisitor<V> v){return v.visit(this);}
   }
 @Value @Wither public static class

@@ -110,7 +110,7 @@ public class L42FToMiniJ {
       StringBuilder sb=new StringBuilder();
       sb.append("{£Xthis."+f+"=£Xthat; return "+Resources.Void.class.getCanonicalName()+".Instance();}");
       if(this.m.isRefine()){
-        sb.append("public "+t+ "£M"+x.substring(2)+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,£Xthat);}");
+        sb.append("public "+t+ " £M"+x.substring(2)+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,£Xthat);}");
         }
       return new RawJ(sb.toString());
       }
