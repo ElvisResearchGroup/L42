@@ -50,6 +50,7 @@ import sugarVisitors.ToFormattedText;
 import tools.Map;
 
 //empty scheleton
+@SuppressWarnings("unchecked")
 public class Plugin implements PluginType.WellKnown {
 
    /* //we keep it for testing in testAux
