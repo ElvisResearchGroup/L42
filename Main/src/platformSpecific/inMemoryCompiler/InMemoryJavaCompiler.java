@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -229,7 +230,11 @@ public class InMemoryJavaCompiler {
                                          boolean recurse)
         throws IOException  {
         ArrayList<JavaFileObject> list=new ArrayList<>();
-        if(kinds.contains(Kind.CLASS)){list.addAll(map.values());}
+        if(kinds.contains(Kind.CLASS)) {
+          for (ClassFile c : map.values())
+            if (c.name.startsWith(packageName + "."))
+              list.add(c);
+        }
         for(JavaFileObject jfo:fileManager.list(location, packageName, kinds, recurse)){
           list.add(jfo);
           }

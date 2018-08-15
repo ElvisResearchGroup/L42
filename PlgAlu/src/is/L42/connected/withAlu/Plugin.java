@@ -127,7 +127,7 @@ public class Plugin implements PluginType.WellKnown {
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringToInt32£xthat(Object cb){
     String s=ensureExtractStringU(cb);
-    try{return new Integer(s);}
+    try{return Integer.valueOf(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
   

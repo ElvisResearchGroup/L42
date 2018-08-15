@@ -3,26 +3,26 @@
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
   mut This0.Abstract.S.SBuilder b854=This0.Abstract.S.#builder()
-  Void unused31011=b854.#H()
-  Void unused31012=b854.#e()
-  Void unused31013=b854.#l()
-  Void unused31014=b854.#l()
-  Void unused31015=b854.#o()
-  Void unused31016=b854.#space()
-  Void unused31017=b854.#W()
-  Void unused31018=b854.#o()
-  Void unused31019=b854.#r()
-  Void unused31020=b854.#l()
-  Void unused31021=b854.#d()
-  Void unused31022=b854.#space()
-  Void unused31023=b854.#D()
-  Void unused31024=b854.#e()
-  Void unused31025=b854.#p()
-  Void unused31026=b854.#l()
-  Void unused31027=b854.#o()
-  Void unused31028=b854.#y()
-  Void unused31029=b854.#e()
-  Void unused31030=b854.#d()
+  Void unused25108=b854.#H()
+  Void unused25109=b854.#e()
+  Void unused25110=b854.#l()
+  Void unused25111=b854.#l()
+  Void unused25112=b854.#o()
+  Void unused25113=b854.#space()
+  Void unused25114=b854.#W()
+  Void unused25115=b854.#o()
+  Void unused25116=b854.#r()
+  Void unused25117=b854.#l()
+  Void unused25118=b854.#d()
+  Void unused25119=b854.#space()
+  Void unused25120=b854.#D()
+  Void unused25121=b854.#e()
+  Void unused25122=b854.#p()
+  Void unused25123=b854.#l()
+  Void unused25124=b854.#o()
+  Void unused25125=b854.#y()
+  Void unused25126=b854.#e()
+  Void unused25127=b854.#d()
   b854
   )))
 Abstract: {
@@ -6325,6 +6325,51 @@ This2.S toS()
 class method 
 Library #pluginUnresponsive(Library binaryRepr) }
 SubtleSubtypeViolation: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$SubtleSubtypeViolation
+@plugin is.L42.connected.withSafeOperators
+*/implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
+class method 
+mut This0 #from(Library binaryRepr) 
+read method 
+Library #binaryRepr() 
+class method 
+Void #exceptionIf(Library binaryRepr) exception This0 
+read method 
+This2.Bool equals(read This0 that) 
+refine class method /*
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  
+  A readable name for this class. Do not need to follow the rule of paths,
+  and once defined will not be automatically influenced by
+  base metaprogramming operations.
+  */This2.S readableName() 
+refine class method /*
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  
+  subtype test; similar to java 'instanceof'.
+  if is(subtype) is true, then cast(that) must produce a result.
+  */This2.Bool is(class This2.Concept.Classable subtype) 
+refine read method 
+This2.Bool #equalequal#0left(read Any right) 
+refine class method 
+read This0 cast(read This2.Concept.Classable that) 
+refine class method 
+mut This0 #cast(mut This2.Concept.Classable that) 
+refine read method 
+This2.S text() 
+refine read method 
+class This0 class() 
+refine class method 
+This2.S kind() 
+refine read method 
+This2.Message.Opt responseOf() 
+refine read method 
+This2.S toS() 
+class method 
+Library #pluginUnresponsive(Library binaryRepr) }
+DeployL42TypeError: {/*@pluginPart is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$DeployL42TypeError
 @plugin is.L42.connected.withSafeOperators
 */implements This1.Fail, This2.Guard, This2.Message, This2.Concept.Base, This2.Concept.ToS, This2.Concept.Classable, This2.Concept.Equals
 class method 

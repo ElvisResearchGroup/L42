@@ -18,12 +18,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.lang.reflect.Field;
 
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import coreVisitors.CloneVisitor;
 import coreVisitors.InjectionOnSugar;
-import javafx.stage.FileChooser;
 import newTypeSystem.FormattedError;
 import profiling.Timer;
 import programReduction.Program;
@@ -100,7 +100,7 @@ public class L42 {
     recordErr.append("\n");
     System.err.println(s);
   }
-  private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+  private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException, SecurityException{
    assert Files.isDirectory(p) : p;
    List<URL> fileNames = new ArrayList<>();
    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(p)){
@@ -113,15 +113,16 @@ public class L42 {
      }
    //System.out.println(fileNames);
    L42.pluginPaths=fileNames;
-   URLClassLoader loader= (URLClassLoader) ClassLoader.getSystemClassLoader();
-   Method method= URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
-   method.setAccessible(true);
-   for(URL url:fileNames){
-     method.invoke(loader, new Object[] { url });
-     }
-   }
 
-  public static void main(String [] arg) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException{
+   // TODO: Test this code
+
+    Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader field
+    scl.setAccessible(true);
+    scl.set(null, new URLClassLoader(fileNames.toArray(new URL[0]), ClassLoader.getSystemClassLoader()));
+
+  }
+
+  public static void main(String [] arg) throws NoSuchFieldException, IllegalAccessException, IllegalArgumentException, SecurityException{
     //assert false;
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;

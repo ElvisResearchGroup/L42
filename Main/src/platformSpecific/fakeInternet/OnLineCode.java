@@ -1,6 +1,7 @@
 package platformSpecific.fakeInternet;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -144,8 +145,8 @@ class OnLineCodeHelper {
     String className = "is.L42.connected." + url + ".Plugin";
     try {
       Class<?> clazz = Class.forName(className);
-      return (PluginType) clazz.newInstance();
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+      return (PluginType) clazz.getConstructor().newInstance();
+    } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
       throw new ErrorMessage.InvalidURL("L42.is/connected/" + url, null);
     }
     // is.L42.connected.withSystem.Plugin;
