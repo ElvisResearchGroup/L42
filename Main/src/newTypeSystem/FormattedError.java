@@ -1,11 +1,12 @@
 package newTypeSystem;
 
 import ast.Ast;
+import ast.ErrorMessage;
 import ast.Expression;
 import facade.L42;
 import sugarVisitors.CollapsePositions;
 
-public class FormattedError extends RuntimeException {
+public class FormattedError extends ErrorMessage {
     private static final long serialVersionUID = 1L;
     public final TErr err;
     public final ErrorKind kind;

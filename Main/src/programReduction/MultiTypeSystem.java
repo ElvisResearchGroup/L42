@@ -27,7 +27,7 @@ public class MultiTypeSystem {
 public static Program typeProgram(Paths paths0,Paths paths1, Program p){
   if(paths0.isEmpty() && paths1.isEmpty()){return p;}
   if(p instanceof FlatProgram){
-    assert paths0.pop().isEmpty() && paths1.pop().isEmpty(); 
+    assert paths0.pop().isEmpty() && paths1.pop().isEmpty();
     ClassB l=pL(paths0.top(),paths1.top(),p);
     return p.updateTop(l);
   }
@@ -71,7 +71,7 @@ public static ExpCore toAny(Paths paths, ExpCore e) {
         return s.withInner(Ast.Path.Any());
         }
       return s;
-      } 
+      }
     });
 }
 
@@ -98,7 +98,7 @@ public static ExpCore typeAndAdapt(ExpCore ec,Program p,Paths paths){
     ExpCore res = newTypeSystem.TypeSystem.instance()._topTypeExp(p,e1,Type.immLibrary,false);
     if(res!=null){return res;}
     }
-  catch(FormattedError|ErrorMessage t){}
+  catch(ErrorMessage t){}
   return newTypeSystem.TypeSystem.instance()._topTypeExp(p,ec,Type.immLibrary,true);
   }
 

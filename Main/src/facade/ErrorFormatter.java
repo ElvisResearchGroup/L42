@@ -32,6 +32,7 @@ import ast.ExpCore.ClassB.MethodWithType;
 import coreVisitors.InjectionOnSugar;
 import coreVisitors.IsCompiled;
 import facade.L42.ExecutionStage;
+import newTypeSystem.FormattedError;
 import platformSpecific.javaTranslation.Resources;
 import programReduction.Program;
 import programReduction.Program.EmptyProgram;
@@ -107,10 +108,14 @@ private static void displayAbstractMethods(ClassB cb,StringBuilder result,String
     //ps+"\n"+errorTxt;
     ErrorMessage.UserLevelError.Kind kind=findKind(msg);
     switch (kind){
+      case Unclassified:
+        if(msg instanceof FormattedError) {
+          errorTxt=msg.getMessage();
+          break;
+          }
+      case TypeError:
       case ParsingError:
       case WellFormedness:
-      case TypeError:
-      case Unclassified:
         String intro=errorStart+"runStatus: "+kind.name()+":"+msg.getClass().getSimpleName()+"\n";
         if(msg.getMessage().length()!=0){
           intro+="Message: "+msg.getMessage()+"\n";

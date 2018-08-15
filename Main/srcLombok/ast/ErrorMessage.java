@@ -22,6 +22,8 @@ import ast.ExpCore.ClassB;
 import coreVisitors.InjectionOnSugar;
 
 @SuppressWarnings("serial") public abstract class ErrorMessage extends RuntimeException {
+  public ErrorMessage(String msg) {super();this.msg(msg);}
+  public ErrorMessage() {super();}
   public static interface PosImprove{
     Position getPos();
     PosImprove withPos(Position val);

@@ -24,6 +24,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import coreVisitors.CloneVisitor;
 import coreVisitors.InjectionOnSugar;
 import javafx.stage.FileChooser;
+import newTypeSystem.FormattedError;
 import profiling.Timer;
 import programReduction.Program;
 import programReduction.ProgramReduction;
@@ -231,7 +232,7 @@ public class L42 {
             }
           });
   */
-      ClassB result= new ProgramReduction(new Loader(null),false).allSteps(p);
+      ClassB result=new ProgramReduction(new Loader(null),false).allSteps(p);
       return checkFinalError(result);
       }
     finally{L42.setExecutionStage(ExecutionStage.None);}
