@@ -15,19 +15,21 @@ Event:Data<><{
   }
 Widget:UnsafeRefactor.This$er<><{interface
   S id
-  var Size left 
-  var Size top
-  var Size width
-  var Size height
-  var S color
-  mut List children
+  Size left 
+  Size top
+  Size width
+  Size height
+  S color
+  read List children
   This$: {interface implements Concept.Base}
   List: Collections.vector(ofMut:This$)
   mut method Bool dispatch(Event that)
   }
-BoxTrait:Resource<><{implements Widget
+DispatchTrait:Resource<><{
+  S id
+  mut Widget.List children  
   mut method Void process(Event event)
-  method dispatch(that) {
+  mut method Bool dispatch(Event that) {
     if this.id()==that.targetId() (
       this.process(event:that)
       return Bool.true()
@@ -38,31 +40,32 @@ BoxTrait:Resource<><{implements Widget
     return Bool.false()
     }
   }
-BoxW:Data<><Use[BoxTrait()]<>< {
-  mut method Void process(Event event) (
-    Debug(S"Event processed: "[event]"")
-    this.left(this.left()+5Size)
-    )
-  }
-
 Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
-  mut method Void display(mut Widget that) (
-    this.draw(that)
-    with event in this.events() (
-      unused=that.dispatch(Event(event))
-      this.draw(that)
+
+  mut method Void display(S title, Size x, Size y,mut Widget body) (
+    this.open(
+      title:title
+      body:S"<div id='Top'></div>"
+      x:x
+      y:y
       )
+    this.draw(body)
+    with event in this.events() (
+      unused=body.dispatch(Event(event))
+      this.draw(body)
+      )
+    this.close()
     )
 
   read method S format(read Widget that)
-    S"<div id='"[that.id()]"' style='"[]
+    S"<div id='"[that.id()]"' onclick=event42('"[that.id()]"::Pressed::more') style='"[]
         "position: absolute;"[]
         "left: "[that.left()]"px;"[]
         "top: "[that.top()]"px;"[]
         "height: "[that.height()]"px;"[]
         "width: "[that.width()]"px;"[]
-        "background-color: "[that.color()]";'>"[]//a comment!
-      "<div style='position: relative;'>"
+        "background-color: "[that.color()]";'>"[]
+        "<div style='position: relative;'>"
         [with w in that.children().vals() (
           use[this.format(w)]
         )]"</div></div>"
@@ -74,29 +77,48 @@ Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
       id:S"Top")
 }
 
-C: {
-  var S msg = S"<div id='Pressed'>"
-  mut Gui gui=Gui.#$(id:S"a1")
-  initialState=S"
-      '<div id="Pressed"> </div>
-      '<font size="3" color="blue">Here the ID of the last pressed</font>
-      '<button class="button" onclick="event42('A::Pressed::more')">Click Me!</button>
-      '<div id="Top" ></div>
-      "
-  gui.open(
-    title:S"Test Abs positioning"
-    body:initialState
-    x:600Size
-    y:600Size
+  //---lib code over, user code under
+BoxW:Data<><Use[DispatchTrait();{implements Widget}]<>< {
+  var Size left 
+  var Size top
+  var Size width
+  var Size height
+  var S color
+  mut Widget.List children
+  mut method Void process(Event event) (
+    Debug(S"Event processed: "[event]"")
+    this.left(this.left()+5Size)
     )
-  wA=BoxW(
+  }
+
+Box:Data<><Use[DispatchTrait()]<><{
+  var Size left 
+  var Size top  
+  mut method Void process(Event event) (
+    Debug(S"Event processed: "[event]"")
+    this.left(this.left()+5Size)
+    )
+  }
+SafeMovable:Data<><{implements Widget
+  capsule Box box
+  class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Widget.List children)
+    This(width:width,height:height,color:color,box:Box(id:id,children:children,left:left,top:top))
+  method id()this.box().id()
+  method children()this.box().children()
+  method left()this.box().left()
+  method top()this.box().top()
+  method dispatch(that)this.#box().dispatch(that)
+  }
+
+C: {
+  wA=SafeMovable(
       id:S"A"
       left:20Size
       top:40Size
       width:400Size
       height:200Size
       color:S"red"
-      children:Widget.List[BoxW(
+      children:Widget.List[SafeMovable(
         id:S"B"
         left:50Size
         top:50Size
@@ -106,8 +128,7 @@ C: {
         children:Widget.List[]
         )]
       )
-  gui.display(wA)
-  gui.close()
+  Gui.#$(id:S"a1").display(title:S"Moving",x:600Size,y:600Size,body:wA)
   Debug(S"#@Success@#")
   return ExitCode.normal()
   }
