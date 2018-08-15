@@ -6,7 +6,7 @@ In order to model our system, we need to formalise an imperative object-oriented
 with exceptions and object capabilities,  and with a rich type system
 supporting \Q@mut, imm, read, capsule@ and strong exception safety.
 Formally modelling the semantics of such a language is easy, but 
-modelling and proving correctness of such rich type system would deserve a paper
+modelling and proving correctness of such a rich type system would deserve a paper
 of its own, and indeed many such papers exist in literature%
 ~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,JOT:issue_2011_01/article1}.
 Thus, we are going to assume that there is an expressive and sound type system enforcing
@@ -20,13 +20,13 @@ $c$ of type \Q@Cap@.
 This location would refer to an object whose fields model, for example, the content of input and output files.
 All its methods must require a \Q@mut this@, and shall mutate the ROG of $c$, and the main expression will start with
 such $c$ location in scope. In order to simplify our proof, we assume that $c$ only has \Q@mut@ fields, hence it is always valid (i.e. $c.validate()$ is defined to evaluate to \Q@true@).
-We strive to keep our small step semantics as conventional as possible; following Pierce~\cite{pierce2002types} we assume:
+We strive to keep our small step semantics as conventional as possible; following Pierce~\cite{pierce2002types}\REVComm{A citation to Featherweight Java (TOPLAS 2001) would be specific than [this]} we assume:
 \begin{itemize}
 \item An implicit program/class-table.
 \item Memory $\sigma:\!:\!= l\mapsto C\{\Many{v}\}$ as a finite map from locations $l$ to annotated tuples $C\{\Many{v}\}$ representing objects,
 where $C$ is the class name and $\Many{v}$ contains the values of the fields.
 We use the notation $\sigma[l.f=v]$ to update an object field and $\sigma[l.f]$ to access the field.
-\item A main expression that is reduced in the context of such memory and program.
+\item A main expression that is reduced in the context of such a memory and program.
 \item A reduction relation $\sigma|\e\rightarrow \sigma'|e'$.
 \item A type system $\Sigma;\Gamma\vdash\e:T$, where 
 the expression $\e$ can contain locations $l$ and free variables $x$;
@@ -247,7 +247,7 @@ $\!\!\!\!\!\begin{array}{l}
 \end{figure}
 
 \loseSpace
-\noindent\textit{Reduction rules:}
+\noindent\textit{Reduction rules:}\REVComm{This discussion is surprisingly short}
 Reduction rules are defined in Figure 2.
 These rules are pretty standard;
 \textsc{mcall}
@@ -294,7 +294,7 @@ checked exceptions.
 \loseSpace
 \noindent\textit{Axiomatic type properties:}
 As discussed, instead of providing a concrete set of type rules, we provide a set of properties
-that such type system needs to respect.
+that such a type system needs to respect.
 To express these properties, we first need some auxiliary definitions:
 
 %\noindent\textbf{Define}
@@ -426,7 +426,7 @@ $\Sigma^\sigma;\emptyset\vdash \ctx[\e_1]:\T$
 \end{Assumption}
 \noindent
 For each \Q@try-catch@, the execution preserves the memory needed to continue the execution in case of error
-(the memory visible outside of the \Q@try@)%
+(the memory visible outside of the \Q@try@).%
 
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
 %@Progress will need to rely on @StrongExceptionSafety internally.

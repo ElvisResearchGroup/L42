@@ -1,7 +1,7 @@
 
 \loseSpace
 The philosophy of our approach is to be like an extended type system: 
-It is the programmer decision
+It is the programmer's decision
 to annotate a field with a certain type,
 or the class with a certain \Q@.validate()@.
 If the program is well-typed, they are not questioned in their intent.
@@ -20,9 +20,9 @@ over the behaviour and the structure of code.
 For example, the specification of method’s pre and post-conditions
 encode a generalization of the program behaviour in the dedicated specification language.
 This means that, even in the best case scenario, 
-using pre/post-conditions the user is required to specify the program semantic twice:
+using pre/post-conditions the user is required to specify the program semantics twice:
 first in the specification language and then in the underlying programming language.
-On the opposite, our approach aims to only verify conditions on immutable or well encapsulated state.
+In comparison, our approach aims to only verify conditions on immutable or well encapsulated state.
 This makes our approach \emph{ultra-lightweight}:
 the programmer specifies only the desired \Q@.validate()@ method.
 Moreover, our approach does not aim to replace static or run-time verification,

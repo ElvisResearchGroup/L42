@@ -25,6 +25,13 @@
 %\lstset{language=FortyTwo, morekeywords={imm,new,class,this,assert}}
 \newcommand\saveSpace{\vspace{-3px}}
 \newcommand\loseSpace{\vspace{1ex}}
+
+
+\newcommand\REV[1]{\textbf{\textcolor{red}{#1}}}
+\newcommand\REVComm[1]{\REV{\footnote{\REV{REV{:} #1}}}}
+
+\newcommand{\IOComm}[1]{{\scriptsize \textcolor{blue}{[Isaac{:} #1]}}}
+\newcommand{\IO}[1]{\textcolor{blue}{#1}}
 \begin{document}
 \paperdetails{
 perspective=theoretical,
@@ -42,6 +49,7 @@ area={Type systems}
 %\email{alex@ecs.vuw.ac.nz}
 
 \keywords{type modifiers, object capabilities, runtime verification, class invariants}
+
 
 \begin{CCSXML}
 <ccs2012>
@@ -95,7 +103,7 @@ In the absence of on the fly static verification of dynamically loaded code, it 
 \noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
 We wish to guarantee that a user defined property (\emph{validity}) holds for all instances of a class: we call such guarantee \emph{validation}.
 
-Validation is a stronger and simpler variant of `class invariants': Validation always holds, while
+Validation is a stronger and simpler variant of `class invariants': validation always holds, while
 class invariants allow objects to temporarily be in a ‘broken’ state.
 (It is however easy to build class invariants over
 validation).
@@ -120,7 +128,7 @@ We discuss how relaxations in type modifiers and object capabilities would break
 \loseSpace
 \noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
 We first provide an informal argument justifying that our rules enforce validation, in particular we show that without type modifiers and object capabilities  validation becomes nearly impossible. We also 
-formally model class of languages that soundly support validation; this model is formally verified by a proof, parametric on the presence of a type system which guarantees certain properties of type-modifiers.
+formally \IO{model a class} of languages that soundly support validation; this model is formally verified by a proof, parametric on the presence of a type system which guarantees certain properties of type-modifiers.
 Type systems with such properties have already been explored, formalized, and proved in prior work.
 
 
@@ -129,7 +137,7 @@ Type systems with such properties have already been explored, formalized, and pr
 Validation allows the programmers to soundly reason on properties of their code.
 This is of great practical importance since it is independent of the presence of buggy code, or even dynamically loaded malicious code.
 
-Our work represents a philosophical shift similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
+Our work represents a \REV{philosophical shift} similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
 while mutating objects, however a validation failure is soundly detected by a run-time exception,
 and even after capturing such an exception, validation still holds for all objects involved in the execution.
 

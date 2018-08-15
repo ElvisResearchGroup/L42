@@ -97,7 +97,7 @@ To encode this range of invariant semantics
 in our approach we can add a boolean \Q@isOpen@ field and add \Q@this.isOpen || ..@
 in front of the validity condition.
 Validation can be used to manually encode complex scenarios,
-for example if a method called on an object needs to break the invariant of another object ,
+for example if a method called on an object needs to break the invariant of another object,
 it can do so by manually setting the \Q@isOpen@ flag on the other object.
 
 
@@ -110,7 +110,7 @@ it can do so by manually setting the \Q@isOpen@ flag on the other object.
 
 \noindent\textit{Sound and Unsound monitors:}
 By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
-it seems that most RV works have a philosophy that is radically different from ours;
+it seems that most RV\REVComm{used before it is defined} works have a philosophy that is radically different from ours;
 indeed RV systems and frameworks are often tools empowering the user
 in implementing what kind of monitoring they see fit for their specific problem at hand.
 This means that users are responsible for deciding, designing and encoding both the 
@@ -180,9 +180,9 @@ the dependency between o and p, calls a method of p in such a way that
 o's invariant is violated. The fact that the violation occurred is detected
 much later, when a method of o is called again, and it is difficult to 
 determine exactly where such violations occur.}''\\*
-Critically, even~\cite{Gopinathan:2008:RMO:1483018.1483028} is still unsound since they do not address neither
+Critically, even~\cite{Gopinathan:2008:RMO:1483018.1483028} is still unsound since they do not address either
 the risk of non-determinism in the invariant, 
-nor the presence of exceptions.
+or the presence of exceptions.
 \sepItems
 Works over C\# recognize the need
 for purity/determinism when method calls are allowed in contracts~\cite{barnett200499}
@@ -194,7 +194,7 @@ They propose a concept of observational purity, that if completely fleshed out
 could possibly be a great addition to our proposed type system.
 We speculate that some 
 primitive language support may be needed, for example implementing the Flyweight pattern 
-as part of the language semantic.
+as part of the language semantics.
 \sepItems
 In environments offering powerful enough aspect-oriented support,
 it could be possible to detect any field update in the whole ROG of
@@ -202,7 +202,7 @@ any object, following the strategy of
 Gopinathan et al.~\cite{Gopinathan:2008:RMO:1483018.1483028}.
 Their approach is very computationally intensive, but it could even allow rolling-back the very field update that caused 
 the invariant/validation to fail, making the object coherent again.
-However, we think this would be a terrible idea causing unexpected strange behaviour, where some but not all
+However, we think this would be a \REV{terrible} idea causing unexpected strange behaviour, where some but not all
 field updates are reverted while capturing an exception.
 %: for example
 %assume that we are moving object between two boats:
@@ -243,7 +243,7 @@ Traditional static verification is like a mathematical proof: a program is valid
 but a single error invalidates all the claims.
 Thus, it is hard to perform verification on large programs, or when independently
 maintained third party libraries are involved.
-To solve this issue, static verification systems are starting to consider a verified core
+To solve this issue, static verification systems are starting to\REVComm{[is this correct?] verification of reference monitors, gradual typing, and contracts have been explored for longer} consider a verified core
 and a run-time verified boundary.
 You can see our approach as an extremely modularized version of such system:
 every class is its own demilitarized zone, and the rest of the code 
@@ -251,7 +251,7 @@ could have Byzantine behaviour.
 Every class that compiles/type checks is soundly validated
 independently of the code that uses this class or any other surrounding code.
 Our approach works both with an open world assumption and in a library setting.
-Consider for example the work of Matthew~\cite{parkinson2007class}:
+Consider for example the work of Matthew~\cite{parkinson2007class}\REVComm{[Change to] Parkinson}:
 in his short paper he verified an \Q@Observer@ class invariant over
 a \Q@Subject/Observer@ pattern.
 However, the proof relies on the method \Q@Subject.register(Observer)@ respecting its contract.
@@ -260,14 +260,14 @@ and this invariant could trivially be broken by a user defined \Q@EvilSubject@.
 
 
 \noindent\textit{Dedicated specification language or underling language:}
-Using a specification languages near to the logic and disjointed from a specific language
-semantic may seem attractive, however
+Using a specification languages near to the logic and disjointed from a specific language's
+semantics may seem attractive, however
 a study~\cite{chalin2007logical} discovered that developers expect
-the specification language to use the semantic of the underling language, including
+the specification language to use the semantics of the underling language, including
 short circuit semantics and arithmetic exceptions; thus for example
 \Q@1/0 || 2>1@
 should not hold, while 
-\Q@2>1 || 1/0@ should hold thanks to short circuit semantic.
+\Q@2>1 || 1/0@ should hold thanks to short circuit semantics.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
 We believe this is evidence that using a method in the underlying language to encode the validation is
