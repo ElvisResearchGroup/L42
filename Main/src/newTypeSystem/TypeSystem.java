@@ -36,6 +36,11 @@ import programReduction.Program;
 import tools.Assertions;
 
 public interface TypeSystem {
+  public static TOut typeCheck(ExpCore.ClassB lib, Phase phase) {
+    return TypeSystem.instance().typeLib(
+        TIn.top(phase, Program.emptyLibraryProgram(), lib, true, Type.immLibrary));
+  }
+
   static TypeSystem instance(){return new Impl();}
 
 

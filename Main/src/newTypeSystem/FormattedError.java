@@ -17,7 +17,6 @@ public class FormattedError extends RuntimeException {
        }
       Ast.Position p=CollapsePositions.of(err.in.e);
       res+="\nin position :"+p;
-      L42.print42Err(res);
       return res;
       }
     public FormattedError(TErr err) {

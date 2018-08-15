@@ -9,7 +9,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import coreVisitors.ExtractThrow;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;

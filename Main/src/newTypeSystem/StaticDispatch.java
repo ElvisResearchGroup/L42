@@ -64,7 +64,7 @@ public class StaticDispatch implements Visitor<ExpCore>{
       this.g=this.g.add(p,ds);
       if (this.g.dom().size()!=old.dom().size()){continue;}
       assert this.g.dom().equals(old.dom());
-      assert ds.equals(oldDs);
+      if (!ds.equals(oldDs)){continue;}
       if(forceError){improveError(ds,pos);}
       this.errors=true;
       return ds;
@@ -78,7 +78,7 @@ private static class ESDispatch extends StaticDispatch{
       public ExpCore visit(X s) {
         Type _t=g._g(s.getInner());
         if(_t==null){return s;}
-        return new Block(Doc.factory(true, _t.getMdf().name()), 
+        return new Block(Doc.factory(true, _t.getMdf().name()),
                 Collections.emptyList(), new EPath(s.getP(),_t.getPath()), Collections.emptyList(), s.getP(), null);
       }
     public ExpCore visit(ClassB s) { return s;}

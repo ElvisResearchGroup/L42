@@ -17,14 +17,14 @@ Main: {
   '[FAIL] This one and the one above are expected to [FAIL].: 'result' != 'other'
   '[End of defined output]
   ")
-  
+
   Debug(S"There should be a Size after this message.")
   Debug(12345Size)
   Debug(S"There should be a [PASS] and a [FAIL] after this message.")
   Debug.test(S"result" expected:S"result")
   Debug.test(S"result" expected:S"other")
   Debug.test(S"result" expected:S"other" message:S"This should be another failing test.")
-  
+
   // I seem to have decided that I want a list version of Debug.test,
   // which should be possible because there's a way of making maps.
   Debug.Test[
@@ -32,9 +32,9 @@ Main: {
     S"result" expected:S"other";
     S"result" expected:S"other" message: S"This one and the one above are expected to [FAIL].";
     ]
-    
+
   Debug(S"[End of output]")
-  
+
   return ExitCode.normal()
   }
 }

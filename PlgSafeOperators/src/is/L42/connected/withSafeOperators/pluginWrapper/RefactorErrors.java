@@ -233,6 +233,13 @@ public class RefactorErrors{
   NotAvailable extends MutMsgExc implements
     FluentSetter<NotAvailable>{}//For Location
 
+  @SuppressWarnings("serial") public static class
+  DeployL42TypeError extends MutMsgExc implements
+    FluentSetter<DeployL42TypeError>{
+    public String toString(){
+      return "DeployL42TypeError:"+this.mutMsg;
+      }
+    }
 }
   /*
  TODO:

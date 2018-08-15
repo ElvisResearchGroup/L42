@@ -38,7 +38,6 @@ import ast.Expression;
 import coreVisitors.FreeVariables;
 import coreVisitors.From;
 import coreVisitors.IsCompiled;
-import coreVisitors.IsValue;
 import facade.L42;
 import facade.Parser;
 import newTypeSystem.TypeManipulation;
