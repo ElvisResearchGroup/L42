@@ -3,49 +3,110 @@ Note: the numbers refer to the reviewer that sad the thing
 # Reviewer Misunderstandings:
 1.
 	* object capablities (run-time checks)
-2.	* object capabilities (to prevent backdoors through effects)
-	* the dynamic vs static ... appears to be more important than the "always-true" vs "true-at-boundaries
+	* object capabilities (to prevent backdoors through effects)
+	!!We do not have the space to insert a full explanation on object capabilities. We need to be sure
+	that they understand their misunderstanding and we may point to an appending explaining them + referencing `more' the Joe paper.
+	
+2.	* the dynamic vs static ... appears to be more important than the "always-true" vs "true-at-boundaries
 	* the abstract made it seem like this approach would support mutation, exceptions, I/O etc. in all their glory
+	!!We can say that we can support an example of a Gui with circular object grapsh, I/O and mutation.
+
 
 # Other problems
 1.
 	* language design unconvincing
 	* evidence that this new was is important.
+	!Hopefully we can convince them that the new language design is interesting independently from vaidation (see pony, gordon and 42)
+	
 	* [how would you] get programmers to write the valiudate methods required
 	* very inelegant for dealing with structure and cargo together
-	* I would hate to see full blown validating of a list of mutable objects
+    * I would hate to see full blown validating of a list of mutable objects
+	!Our goal is not to prove correctness of involved code that is all under the control of the programmer.
+	Our goal is to support simple patterns, but where there can be no control, like dynamic class loading.
+	We believe we are the only one supporting such patterns. (we need to test what the C# code do in conjunction with dynamic class loading)
+	
 	* requriing invariants that can never be broken sounds too rigid.
+	!!Validation is not invariants. You can use validation to encode breakable invariants in various way.
+	A pattern is the bool field, a pattern is the box+pack/unpack.
 	* do not like the name "Validation"
+	!!We are open to suggestions. What we tried to capture is the "minimal guarancee" that must always hold,
+	similarly to the ones offered by the type system. May be "wellFormed" could be an alternative?
 2.	
 	* [Need to demonstrate:]
 		* [either]
 			* how a variety of invariants can be specified and/or checked more easily than in other approaches
+			!!Person with name, even with the control of the implementation of string, would require
+			invariant+precondition on setter/constructor, thus repeating the concept name!="" 3 times.
+			
 			* checking in the new system comes at a lower performance cost.
+			!!hopefully we can test this soon
+			
 		* how programming validate() methods will work in practice
+		!!I'm not sure how to address this.... as for 'get programmers to write the valiudate methods required'
 		* ability to validate "many interesting and practically useful data-structures"
+		!! while we do not support the fine granularity needed to separe 'structure and mutable cargo'
+		we can support many practically usefull data structures, whenever the data structure manipulate immutable data, or equivalently, where all the mutable data is encapsulated.
+		In or experience this happen very often, for example the Gui, a Parser... of course
+		the great absent is collections of mutable elements.
+		
 		* the "always-true" invariants advocated in this paper are better
 		* handle practical examples without resorting to unsafe features
+		!! I have no idea what those two points are...
 		* "We believe our sound approach can monitor programs for a fraction of the cost of many other approaches"
 		* "We expect our approach to result in a dramatic reduction over the number of required checks"
+        !! we will add experimental results
 	* Could [validation] not be encoded in some way with [class invariants]
+        !!Up to a point, the class invariant can be broken sometime, so if you expect something to always hold, 
+        invariant can not be used.
 	* either
 		* the dynamic vs static approach should be the primary emphasis of the paper
+		!!Both static and run time verification exists as well established research areas, and we
+		clearly place ourselves in the RunTime one, thus I do not think the primary emphasis should be to compare our work against another area of research.
+		
 		* a comparison of the expressiveness of these two kinds of invariants
+		!!may be we can make an example where we use the bool field or the pack unpack to solve a difficoult case?
 	* discussion and comparison to contracts
+	  !!Again, I fear this is leaking in other research areas..
 	* gradual typing which perform monitoring of objects ... [compare] against such approaches
+	  !!Unsure, Isaac, can you write a self contained sentence in this direction?
+	  
 	* citations of popular relevant static verification systems (e.g. Boogie) and their restrictions and costs?
+	  !!We can definitively cite them, but our focus is runtime verification
+	  
 	* citations to and comparisons of the relative expressiveness/performance of prior static and dynamic verification systems.
+	  !!We will add some about performance/number of time invariant is executed here.
+	  
 	* How do these [capsule] restrictions affect the expressiveness of desired valuidate() properties?
+	  !!it enforces that validate can not reach "shared mutable state" visible outside of the object "bubble".
+	  Other approaches (dependent types, eiffel escape analysis) have different forms but the same aim.
+	  
 	* Without pratical or performance evaluation, perhaps the focus of the paper ought to be more on the semantics and metatheory
+    !! hopefully, we can get a better practical and performance evaluation
 	
 3.	[Explain:]
 		* how a user u of an instance o of a class C can learn/know about the validity requirements of o encoded in the method validate of a class C
+		!!In the same  way he can learn about conventional contracts: by reading the documentation.
+		
 		* how expressive a language with the validity property can be
+		!!our restrictions are opt-in. You can declare all references to be mut and then you are near as free as in unrestricted Java. You can apply more stringent modifiers only around the fiew classes you wish to actually validate. Those classes then can have arbitrary mutable state, but their validation need to depend only on immutable/capsule fields
 		* what is the overhead of runtime monitorng
+		!!less then other systems, as we will show in our performance
 		* how a capability object/class is distinguished (syntactically?) from a regular object/class
+		!!capability objects to not have any different sysntax. In 42,capability classes can be 
+		instantiated only by using specially marked constructors. Other languages may vary here.
+		
 		* If the programmer decides about the capabilities, can a Random object be a capability in one (part of the) program and not a capability in another (part of the program)?
+		!!No. However, a pseudorandom object could be.
+		
 		* Are there any requirements on object construction, especially on accessibility of an object before it is fully constructed? What hapens if an object is accesed before it is fully constructed?
+		!!Yes, as we stated, constructors can only access this to update fields, thus 'this' is guaranteed to not leak until construction is completed.
+		
 		* Is validate pure considering that it can throw unchecked exceptions? Maybye a one sentence definition of purity can help.
+		!! We will try to improve our explanation. It is deterministic and do not modify the state of existing objects.
 		* why all runtime exceptions should be treated the same under exception safety. Is it possible to seperate validty exceptions from other runtime exceptions and treat them differently?
+		!!It could be possible, we believed checked/unchecked exceptions was a good distinction to rely upon.
+		
 	* Combination of validity with pre/post-conditions may help. However it may cause overhead
+	  !!Yes, Yes
 	* empirical evidence can be very helpful in understanding such [runtime monitoring] overhead
+      !!Yes, done
