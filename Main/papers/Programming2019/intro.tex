@@ -34,19 +34,19 @@ We say that a language enforces validation if:
 For example, at the point of a method call, all the parameters (including \Q@this@) and all the objects in their ROGs will be valid.
 \end{itemize}
 
-\noindent Though this is very similar to enforcing class-invariants, their are a few key differences:
+\noindent Though this is very similar to enforcing class invariants, there are a few key differences:
 \begin{itemize}
-\item Class invariants can be \emph{temporarily} broken during class-methods, whereas validation doesn’t allow this.
-\item \REV{It is the responsibility of the class \emph{author} to ensure the invariant is preserved across all public methods, whereas with validation it is the responsibility of the class \emph{user} to not (indirectly) mutate the object in any way that will break it}.
+\item Class invariants can be \emph{temporarily} broken during instance methods, whereas validation doesn’t allow this.
+\item \REVRComm{It is the responsibility of the class \emph{author} to ensure the invariant is preserved across all public methods, whereas with validation it is the responsibility of the class \emph{user} to not (indirectly) mutate the object in any way that will break it}{2}{What does this mean?}.
 \end{itemize}
-\noindent Our system is more primitive and general then class invariants, and can be used as a building block to encode 
+\noindent Our system is more primitive and general than class invariants, and can be used as a building block to encode 
 them.
 % and allows 
 %global (global is not the right word)
 % reasoning through the program.
-Indeed, class-invariants can be represented in our system by defining validity as 
+\REVRComm{Indeed, class invariants can be represented in our system by defining validity as 
 %your ``and'' was wrong, is ``or''
-the class-invariant holding or a mutator-method is currently running (this is easily implemented with a boolean flag).
+the class invariant holding or a mutator method currently running (this is easily implemented with a boolean flag).}{3}{Hard to understand setence}
 
 \loseSpace
 \noindent\textit{Our approach:}
@@ -57,18 +57,18 @@ Their struggle is proof of how hard it is to deal with the expressive power of u
  Here instead we define a new language, where TM and OC tame the use of imperative features. In this way
 we have a fresh start where
 % Here instead we define a new language, where
-many \REV{conventional programming patterns are disallowed},
+many \REVRComm{conventional programming patterns are disallowed}{2}{[What] patterns are disallowed?},
 and need to be replaced with other patterns allowing simpler reasoning.
 } supports validation by invoking the \Q@.validate()@ method, before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 
 Like assertions, an (unchecked) exception is thrown if such a call returns \Q@false@ (indicating that the object is invalid).
 
-Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type-system ensures the object is not reachable.
+Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type system ensures the object is not reachable.
 If you were to step with a debugger, you may see invalid objects, and validation checks failing.
 
-\noindent Our approach follows the principles of \emph{Defensive/Offensive programming}\REV{~\cite{WikiDefensive}}:
+\noindent Our approach follows the principles of \REVRComm{\emph{Defensive/Offensive programming}~\cite{WikiDefensive}}{2}{Is [this citation] a (or the most) reliable source of defensive programming principles?}:
 \begin{itemize}
 \item The failure (an unchecked exception)
-is raised as close as possible to the defect (the operation creating an invalid object), i.e. we ``fail-fast''.
+is raised \REVRComm{as close as possible to the defect}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.
 \item No attempt to fix or recover the invalid object is performed.
 %, and all objects observing modified by the execution
 %creating such objects are made be unreachable if the corresponding unchecked exception was to be captured.
@@ -94,7 +94,7 @@ a run time error.
 
 This is similar to casts in Java with respect to casts in C:
 In both languages the programmer is responsible for casting values correctly;
-however, in Java casts are soundly checked: if in a Java program the control flow \REV{goes over a cast},
+however, in Java casts are soundly checked: if in a Java program the control flow \REVRComm{goes over a cast}{2}{unclear about whether it describes a cast that succeeds or fails/},
 we know that in that specific
 execution such assumption was correct.
 On the other hand incorrect C casts just default to undefined behaviour:

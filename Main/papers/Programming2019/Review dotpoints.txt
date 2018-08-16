@@ -35,6 +35,21 @@
 	* How do these [capsule] restrictions affect the expressiveness of desired valuidate() properties?
 	* Without pratical or performance evaluation, perhaps the focus of the paper ought to be more on the semantics and metatheory
 	
-
+3.	Explain:
+		*	 how a user u of an instance o of a class C can learn/know about the validity requirements of o encoded in the method validate of a class C
+		* how expressive a language with the validity property can be
+		* what is the overhead of runtime monitorng
+		* how a capability object/class is distinguished (syntactically?) from a regular object/class
+		* If the programmer decides about the capabilities, can a Random object be a capability in one (part of the) program and not a capability in another (part of the program)?
+		* Are there any requirements on object construction, especially on accessibility of an object before it is fully constructed? What hapens if an object is accesed before it is fully constructed?
+		* Is validate pure considering that it can throw unchecked exceptions? Maybye a one sentence definition of purity can help.
+		* why all runtime exceptions should be treated the same under exception safety. Is it possible to seperate validty exceptions from other runtime exceptions and treat them differently?
+	* Combination of validity with pre/post-conditions may help. However it may cause overhead
+	* empirical evidence can be very helpful in understanding such [runtime monitoring] overhead
+	
+	* "We believe our sound approach can monitor
+	
+	
+	
 TODO:
 	replace .validate() to validate

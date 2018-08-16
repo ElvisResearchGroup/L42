@@ -32,7 +32,7 @@ class ShippingList {
 \saveSpace
 At first glance this class looks easy to validate: just insert calls to validate at the end of the constructor and the \Q@addItem@ method.
 However, the \Q@mut Items items@ field makes this code broken in two distinct ways.
-Firstly, the cargo we receive in the constructor may be already compromised:
+Firstly, the cargo we received in the constructor may be already compromised:
 \saveSpace
 \begin{lstlisting}
 mut ShippingList l = new ShippingList(evilAlias);
@@ -54,9 +54,9 @@ evilAlias.addItem(new HeavyItem()); // we invalidated l now
 As you can see it is possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.
 Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
 In order to write correct library code in mainstream languages like Java/C++, defensive cloning~\cite{Bloch08} is needed.
-For performance reasons\REVComm{citation to support this?}, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.
+\REVRComm{For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.}{2}{citation to support this?}
 
-To avoid this performance bottleneck, we can leverage the well known \Q@capsule@ type modifier~\cite{ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a}\REVComm{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
+\REVRComm{To avoid this performance bottleneck, we can leverage the well known \Q@capsule@ type modifier~\cite{ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a}}{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
 (sometimes called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
 \begin{itemize}
 \item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.

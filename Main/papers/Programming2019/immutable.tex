@@ -8,7 +8,7 @@ With sightly different names and semantics, the three most common modifiers for 
 \begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers.
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but in the program there may be mutable references to this same object, so mutation can still be observed. 
-\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantees that the referenced object will never be mutated, not even through another reference.
+\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will never be mutated, not even through another reference.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
@@ -37,10 +37,10 @@ ip = new Point(3, 5); // ok, ip is not final
 
 
 There are several possible interpretations of the semantics of type modifiers.
-Here we assume the \REV{full/deep meaning}:
+Here we assume the \REVRComm{full/deep meaning}{2}{Are these terms used from these prior works? Cite them}:
 \begin{itemize}
-  \item all the objects in the ROG of an immutable object are immutable;
-  this corresponds to UML DataTypes,
+  \item \REVRComm{the objects in the ROG of an immutable object are immutable;
+  this corresponds to UML DataTypes}{3}{what is the reason behind comparing ROG immutability with UML DataTypes},
   \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
   \item no \emph{down}-casting is allowed between different type modifiers.
 \end{itemize}
@@ -87,22 +87,22 @@ uses immutable variables can safely be promoted to \Q@imm@.
 
 TM are very useful in restricting the scope of mutation. 
 Any expression that does not use any \Q@mut@ 
-variable declared outside of such expression does not modify objects visible outside. This consideration is particularly useful to understand code in the presence of exceptions. Other authors have identified the concept of Strong Exception Safety~\cite{Abrahams2000}\REVComm{compare to the notion of transaction} as a general issue when reasoning about objects state after catching an exception:
-when a \Q@try-catch@ catches an exception, the visible objects must be the same as before the \Q@try@ block started its execution.
+variable declared outside of such expression does not modify objects visible outside. This consideration is particularly useful to understand code in the presence of exceptions. Other authors have identified the concept of \REVRComm{Strong Exception Safety~\cite{Abrahams2000} as a general issue when reasoning about objects state after catching an exception:
+when a \Q@try-catch@ catches an exception, the visible objects must be the same as before the \Q@try@ block started its execution.}{2}{compare to the notion of transaction}
 This can be obtained leveraging TM in the following way:
+\REVRComm{
 \begin{itemize}
 \item all thrown exceptions are immutable objects,
 \item code inside a \Q@try@ block is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
-\end{itemize}
+\end{itemize}}{3}{\label{SES1}It is not clear how the above restrictions can guarantee the ... outcome [at footnote \ref{SES2}]}
 
 \loseSpace
-\noindent\textit{Object Capabilities:}
-\REVComm{Citations here?}
+\noindent\REVRComm{\textit{Object Capabilities:}}{2}{Citations here?}
 While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
 
 Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionality: only certain objects with `special' powers can do `special' actions, and those objects are obtained in a controlled way. We call such objects `capability objects'.
 Their main use case is to allow for fine-grained control over what sections of code are allowed to do. For example, in Java \Q@System.in@ is a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
-In a language enforcing object capabilities the \Q@main@ method could take a \Q@System@ object as a parameter, and using that object is the only way to perform I/O, as in \Q@mySystem.println("hello")@.
+In a language enforcing object capabilities the \Q@main@ method could take a \Q@System@ object as a parameter, and using that object is the only way to perform I/O, as in \REVRComm{\Q@mySystem.println("hello")@}{3}{Incorrect variable name}.
 Moreover, the \Q@System@ class would have no visible constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
 Many other operations, like random numbers and file management 
 %may just take a \Q@mut System@ object as a parameter.
@@ -111,7 +111,7 @@ could also work this way.
 
 Here we use TM to guarantee that any method that is not (indirectly) passed a \Q@mut@ reference to a capability object will not use any capabilities:
 \begin{itemize}
-\item all capability-methods must require a \Q@mut@ receiver,
+\item all capability methods must require a \Q@mut@ receiver,
 \item there are no global variables\footnote{Note: even just allowing \Q@imm@
 global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.},
 \item user code cannot directly create a capability object: they can only indirectly do so through an existing \Q@mut@ capability object reference.
@@ -129,7 +129,7 @@ global variables would prevent reasoning over determinism due to the possibility
 %naive is unsound - person 3 bugs
 
 
-\section{The \Q@.validate()@ Method \REVComm{remind of the goals for validate (i.e. that it be pure)}\REVComm{What about possible non-termination of validate()}}
+\section{\REVRComm{The \Q@.validate()@ Method remind of the goals for validate (i.e. that it be pure)}{2}{What about possible non-termination of validate()}}
 \label{s:validate}
 Thanks to TM and OC, we can now express the signature for \Q@.validate()@ method as follows:
 \saveSpace
@@ -149,11 +149,11 @@ This can even be safe in a multi-thread environment: TM are often used to ensure
 \item nothing else is accessible (we do not have global variables).
 \end{itemize}
 
-\noindent Also note \Q@.validate()@ is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.
+\noindent \REVRComm{Also note \Q@.validate()@ is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.}{3}{Can ``leaking'' of an unchecked exceptions have negative consequences for validity? Leaking is usually a negative word used in a negative context.}
 
 
 Clearly the \Q@.validate()@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
-At a first look this may seem an open contradiction
+On a first look this may seem an open contradiction
 with the aim of this work, however only calls to validate inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \Q@.validate()@,
 \Q@this@ is guaranteed to be valid.
 However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantees of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \Q@.validate()@ may only use \Q@this@ to access fields.
@@ -190,7 +190,7 @@ class Person {
   read method imm Bool validate() {return !name.isEmpty();}
   private imm String name;
   read method imm String name() {return this.name;}
-  mut method imm Strinig name(imm String name) {this.name = name;}
+  mut method imm String name(imm String name) {this.name = name;}
   Person(imm String name) {this.name = name;} }
 \end{lstlisting}
 \Q@Person@, only has immutable fields and the constructor only uses \Q@this@ to access/update fields.%; we say such a class is \emph{simple}.
@@ -245,7 +245,7 @@ relaxation of TM or OC breaks our validation.
 Allowing \Q@.validate()@ to (indirectly) use an object capability could allow for it to be non deterministic, by either:
 \begin{itemize}
 \item allowing \Q@.validate()@ to (indirectly) access a \Q@mut@ reference to a capability-object,
-\item relaxing the rule that capability-methods must have a \Q@mut@ receiver, or
+\item relaxing the rule that capability methods must have a \Q@mut@ receiver, or
 \item allowing capability objects to be created out of thin air.
 \end{itemize}
 
@@ -270,10 +270,10 @@ we can not make any assumption on the dynamic type of \Q@name@.
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
 \loseSpace
-\noindent\textit{Allowing internal mutations/back-doors:}
+\noindent\REVRComm{\textit{Allowing internal mutations/back-doors:}}{3}{[This] paragraph and its illustration is not very clear, especially on how it can cause nondeterminism by reading/storing information about previous calls.}
 % TODO: Come up with better title
-Suppose we relax our mutation rules, by allowing interior mutability
-as in Rust and Javari\REVComm{Explain why [they] allow unsafe features}: thus allowing mutation of the ROG of an immutable object through back-doors:
+\REVRComm{Suppose we relax our mutation rules, by allowing interior mutability
+as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:}{2}{Explain why Rust/Javari allow unsafe features}
 \begin{lstlisting}
 class AtomicBool {
   imm method imm Void store(imm Bool val){
@@ -358,7 +358,7 @@ Allowing such back-doors could also be used to break the determinism of the \Q@.
 \loseSpace
 \noindent\textit{Strong Exception Safety:}
 The ability to catch and recover from validation failures is extremely useful as it allows the program to take corrective action.
-This may be implemented with a conventional \Q@try-catch@, since violations are represented by throwing unchecked exceptions. Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
+This may be implemented with a conventional \Q@try-catch@, since violations are represented by throwing unchecked exceptions. \REVRComm{Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias})}{3}{\label{SES2} [see footnote \ref{SES1}]}.
 
 However, if instead we chose not to enforce strong exception safety, an invalid object could be easily made reachable:
 \saveSpace
