@@ -3,7 +3,7 @@
 The philosophy of our approach is to be like an extended type system: 
 It is the programmer's decision
 to annotate a field with a certain type,
-or the class with a certain \Q@.validate()@.
+or the class with a certain \validate.
 If the program is well-typed, they are not questioned in their intent.
 During execution the system is solely responsible for soundly enforcing object validity.
 This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
@@ -24,7 +24,7 @@ using pre/post-conditions the user is required to specify the program semantics 
 first in the specification language and then in the underlying programming language.
 In comparison, our approach aims to only verify conditions on immutable or well encapsulated state.
 This makes our approach \emph{ultra-lightweight}:
-the programmer specifies only the desired \Q@.validate()@ method.
+the programmer specifies only the desired \validate method.
 Moreover, our approach does not aim to replace static or run-time verification,
 but is a building block they can rely upon.
 

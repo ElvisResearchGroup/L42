@@ -6,7 +6,7 @@
 
 \noindent\textit{Type Modifiers:}
 We rely on a combination of modifiers that is supported by at least 3 languages/lines of research:
-\REVRComm{42}{3}{Typesetting error}~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
+\REVComm{42}{3}{Typesetting error}~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
 Gordon~\cite{GordonEtAl12}
 and Pony~\cite{clebsch2015deny,clebsch2017orca},
 each of these works is accompanied by proofs of the properties of those modifiers.
@@ -40,7 +40,7 @@ barnett2011specification%
 \noindent
 \textit{Object Capabilities:}
 Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers seem to be able to
- enforce purity of sections of code in a \REVRComm{friendly}{3}{Nontechnical term} and modular way.
+ enforce purity of sections of code in a \REVComm{friendly}{3}{Nontechnical term} and modular way.
 Here we present this idea very informally.
 The language Joe-E~\cite{finifter2008verifiable}
 explores how to use object capabilities to ensure
@@ -71,7 +71,7 @@ while InvTS~\cite{gorbovitski08efficient} lets you write Python conditions
 while using this domain specific language, and the invariant checking
 will not be triggered.
 Validation is clearly related to class invariants, and can be used to represent them.
-To this aim, \Q@.validate()@ will define when the invariant is expected to hold:
+To this aim, \validate will define when the invariant is expected to hold:
 literature on class invariant accepts that sometime the object invariant may not hold,
 and that is exacerbated because of re-entrancy and aliasing
 \cite{leino2004object,drossopoulou2008unified}.
@@ -110,7 +110,7 @@ it can do so by manually setting the \Q@isOpen@ flag on the other object.
 
 \noindent\textit{Sound and Unsound monitors:}
 By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
-it seems that most \REVRComm{\REVRComm{RV}{2}{used before it is defined}}{3}{Abbreviation without full term} works have a philosophy that is radically different from ours;
+it seems that most \REVComm{\REVComm{RV}{2}{used before it is defined}}{3}{Abbreviation without full term} works have a philosophy that is radically different from ours;
 indeed RV systems and frameworks are often tools empowering the user
 in implementing what kind of monitoring they see fit for their specific problem at hand.
 This means that users are responsible for deciding, designing and encoding both the 
@@ -202,7 +202,7 @@ any object, following the strategy of
 Gopinathan et al.~\cite{Gopinathan:2008:RMO:1483018.1483028}.
 Their approach is very computationally intensive, but it could even allow rolling-back the very field update that caused 
 the invariant/validation to fail, making the object coherent again.
-However, we think this would be a \REVRComm{\REVRComm{terrible}{2}{It seems in poor taste to complain of ``terrible'' ideas, especially without attempting to demonstrate the improvements of the proposed approach.}}{3}{Nontechnical term. It is not a great idea to label previous work as ``terrible''} idea causing unexpected strange behaviour, where some but not all
+However, we think this would be a \REVComm{\REVComm{terrible}{2}{It seems in poor taste to complain of ``terrible'' ideas, especially without attempting to demonstrate the improvements of the proposed approach.}}{3}{Nontechnical term. It is not a great idea to label previous work as ``terrible''} idea causing unexpected strange behaviour, where some but not all
 field updates are reverted while capturing an exception.
 %: for example
 %assume that we are moving object between two boats:
@@ -216,17 +216,17 @@ field updates are reverted while capturing an exception.
 
 
 \noindent\textit{Performance}
-\REVRComm{We believe our sound approach can monitor programs
+\REVComm{We believe our sound approach can monitor programs
 for a fraction of the cost of many other approaches.}{3}{\label{CONTRA2}unsubstantiated and contradictory to [footnote \ref{CONTRA1}]}
 Many other works%
 ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
  check/run
 the invariant code at the start and end of every public
 method; depending on the approach, this may even include trivial getters.
-In  our approach, we call the \Q@.validate()@ method
+In  our approach, we call the \validate method
 one time at the end of each setter, capsule mutator method and constructor.
 We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
-Of course, \Q@.validate()@ can still be called indirectly, for example by calling a setter.
+Of course, \validate can still be called indirectly, for example by calling a setter.
 We expect our approach to result in a dramatic reduction over the number of required checks,
 except for cases when public methods just update many fields directly (without using setters).
 
@@ -243,15 +243,15 @@ Traditional static verification is like a mathematical proof: a program is valid
 but a single error invalidates all the claims.
 Thus, it is hard to perform verification on large programs, or when independently
 maintained third party libraries are involved.
-\REVRComm{To solve this issue, static verification systems are starting to}{2}{[is this correct?] verification of reference monitors, gradual typing, and contracts have been explored for longer} consider a verified core
+\REVComm{To solve this issue, static verification systems are starting to}{2}{[is this correct?] verification of reference monitors, gradual typing, and contracts have been explored for longer} consider a verified core
 and a run-time verified boundary.
 You can see our approach as an extremely modularized version of such system:
 every class is its own demilitarized zone, and the rest of the code 
 could have Byzantine behaviour.
-\REVRComm{Every class that compiles/type checks is soundly validated
+\REVComm{Every class that compiles/type checks is soundly validated
 independently of the code that uses this class or any other surrounding code.}{3}{Is this claim justified}
 Our approach works both with an open world assumption and in a library setting.
-Consider for example the work of \REVRComm{Matthew~\cite{parkinson2007class}}{2}{[Change to] Parkinson}:
+Consider for example the work of \REVComm{Matthew~\cite{parkinson2007class}}{2}{[Change to] Parkinson}:
 in his short paper he verified an \Q@Observer@ class invariant over
 a \Q@Subject/Observer@ pattern.
 However, the proof relies on the method \Q@Subject.register(Observer)@ respecting its contract.

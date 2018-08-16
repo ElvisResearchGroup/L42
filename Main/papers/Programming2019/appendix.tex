@@ -85,7 +85,7 @@ and $OK$ will always hold.
 	 \item we are executing inside of $\e_1$ thus the current redex is inside of a sub-expression of the monitor that does not contain $l$, a contradiction.
 	 \item or we are executing inside $\e_2$:
 	 by our reduction rules, all monitor expressions start with
-	 $\e_2=l$\Q@.validate()@, thus the first execution step
+	 $\e_2=l$\validate, thus the first execution step
 	 of $\e_2$ is trusted. Following execution steps are also trusted, since by well formedness the body of invariant methods only use \Q@this@ (now translated to $l$) to access fields.
 	\end{itemize}
 \end{enumerate}
@@ -172,7 +172,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
 			\begin{itemize}
 				\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
-		    	\item Otherwise, by our well-formedess criteria that \Q@.validate()@ only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
+		    	\item Otherwise, by our well-formedess criteria that \validate only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
 				By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
 		  	\end{itemize}
 	  \end{itemize}

@@ -54,9 +54,9 @@ evilAlias.addItem(new HeavyItem()); // we invalidated l now
 As you can see it is possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.
 Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
 In order to write correct library code in mainstream languages like Java/C++, defensive cloning~\cite{Bloch08} is needed.
-\REVRComm{For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.}{2}{citation to support this?}
+\REVComm{For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.}{2}{citation to support this?}
 
-\REVRComm{To avoid this performance bottleneck, we can leverage the well known \Q@capsule@ type modifier~\cite{ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a}}{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
+\REVComm{To avoid this performance bottleneck, we can leverage the well known \Q@capsule@ type modifier~\cite{ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a}}{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
 (sometimes called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
 \begin{itemize}
 \item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
@@ -81,7 +81,7 @@ In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ meth
 \item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter)
 \item and the return type cannot be \Q@mut@.
 \end{itemize}
-\noindent  Moreover, if the used capsule field is referenced in \Q@.validate()@, a \Q@this.validate()@ call is injected at the end of the method.
+\noindent  Moreover, if the used capsule field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
 Using a capsule field, our \Q@ShippingList@ class, after automatic insertion of validation checks, could look like:
 \saveSpace
 \begin{lstlisting}
@@ -322,8 +322,8 @@ class List {
 \end{lstlisting}
 Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
 However, only \Q@capsule@ and \Q@imm@
-fields can be accessed in \Q@.validate()@.
-Thus, \Q@.innerValidate()@ can not be the \Q@.validate()@ method for \Q@List@.
+fields can be accessed in \validate.
+Thus, \Q@.innerValidate()@ can not be the \validate method for \Q@List@.
 The solution is to use a `box' over our \Q@List@, and to validate our `box':
 
 \loseSpace\loseSpace\loseSpace

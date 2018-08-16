@@ -26,8 +26,16 @@
 \newcommand\saveSpace{\vspace{-3px}}
 \newcommand\loseSpace{\vspace{1ex}}
 
-\newcommand\REVComm[3]{\textcolor{red}{#1\footnote{\textcolor{red}\textbf{{REV#2{:} #3}}}}}
-
+\newcommand{\REVComm}[3]{%
+	\textcolor{red}{%
+		#1\footnote{%
+			\textcolor{red}{%
+				\textbf{REV#2{:} #3}%
+			}%
+		}%
+	}%
+}
+\newcommand{\validate}{\Q@validate@}
 \newcommand{\IOComm}[1]{{\scriptsize \textcolor{blue}{[Isaac{:} #1]}}}
 \newcommand{\IO}[1]{\textcolor{blue}{#1}}
 \begin{document}
