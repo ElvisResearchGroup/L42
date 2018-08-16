@@ -1,108 +1,19 @@
 {reuse L42.is/AdamTowel02
 
-Event:Data<><{
-  S targetId
-  S eventId
-  Strings all
-  class method This(S that)(
-    s=that.splitOn(chars:S"::")
-    This(
-      targetId:s.val(0Size)
-      eventId:s.val(1Size)
-      all:s
-      )
-    )
-  }
-Widget:UnsafeRefactor.This$er<><{interface
-  S id
-  Size left
-  Size top
-  Size width
-  Size height
-  S color
-  read List children
-  This$: {interface implements Concept.Base}
-  List: Collections.vector(ofMut:This$)
-  mut method Bool dispatch(Event that)
-  }
-DispatchTrait:Resource<><{
-  S id
-  mut Widget.List children
-  mut method Void process(Event event)
-  mut method Bool dispatch(Event that) {
-    if this.id()==that.targetId() (
-      this.process(event:that)
-      return Bool.true()
-      )
-    with w in this.#children().#vals() (
-      if w.dispatch(that) (return Bool.true())
-      )
-    return Bool.false()
-    }
-  }
-Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
+Gui:Load<><{reuse L42.is/WidgetGuiLib}
 
-  mut method Void display(S title, Size x, Size y,mut Widget body) (
-    this.open(
-      title:title
-      body:S"<div id='Top'></div>"
-      x:x
-      y:y
-      )
-    this.draw(body)
-    with event in this.events() (
-      unused=body.dispatch(Event(event))
-      this.draw(body)
-      )
-    this.close()
-    )
-
-  read method S format(read Widget that)
-    S"<div id='"[that.id()]"' onclick="[S.doubleQuote()]"event42('"[that.id()]"::Pressed::more')"[S.doubleQuote()]" style='"[]
-        "position: absolute;"[]
-        "left: "[that.left()]"px;"[]
-        "top: "[that.top()]"px;"[]
-        "height: "[that.height()]"px;"[]
-        "width: "[that.width()]"px;"[]
-        "background-color: "[that.color()]";'>"[]
-        "<div style='position: relative;'>"
-        [with w in that.children().vals() (
-          use[this.format(w)]
-        )]"</div></div>"
-
-  mut method Void draw(read Widget that)
-    this.set(S"<div id='Top' style='"[]
-      "position: relative; height: 750px; width: 750px; border: solid black 2px;'>"
-        [this.format(that)]"</div>"
-      id:S"Top")
-}
-
-  //---lib code over, user code under
-BoxW:Data<><Use[DispatchTrait();{implements Widget}]<>< {
+PrintPos: {class method S(read Gui.Widget that) that.id()[]", ("[that.left()]", "[that.top()]"), ("[that.width()]", "[that.height()]")"}
+Box:Data<><Use[Gui.DispatchTrait()]<><{
   var Size left
   var Size top
-  var Size width
-  var Size height
-  var S color
-  mut Widget.List children
-  mut method Void process(Event event) (
-    Debug(S"Event processed: "[event]"")
-    this.left(this.left()+5Size)
-    )
+  mut method Void process(Gui.Event event) void
   }
-
-PrintPos: {class method S(read Widget that) that.id()[]", ("[that.left()]", "[that.top()]"), ("[that.width()]", "[that.height()]")"}
-Box:Data<><Use[DispatchTrait()]<><{
-  var Size left
-  var Size top
-  mut method Void process(Event event) void
-  }
-ButtonW:Data<><Use[DispatchTrait()]<><{implements Widget
+ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
   mut Box outer
   Size leftDelta
   Size topDelta
   method toS() PrintPos(this)
-  mut method Void process(Event event) (
+  mut method Void process(Gui.Event event) (
     Debug(S"Event processed: "[event]"")
     this.#outer().left(this.outer().left()+this.leftDelta())
     this.#outer().top(this.outer().top()+this.topDelta())
@@ -114,7 +25,7 @@ ButtonW:Data<><Use[DispatchTrait()]<><{implements Widget
     width:6Size*scale
     height:6Size*scale
     color:S"grey"
-    children:Widget.List[]
+    children:Gui.Widget.List[]
     outer:outer
     leftDelta:Size"-10"
     topDelta:0Size
@@ -126,7 +37,7 @@ ButtonW:Data<><Use[DispatchTrait()]<><{implements Widget
     width:6Size*scale
     height:6Size*scale
     color:S"grey"
-    children:Widget.List[]
+    children:Gui.Widget.List[]
     outer:outer
     leftDelta:10Size
     topDelta:0Size
@@ -138,7 +49,7 @@ ButtonW:Data<><Use[DispatchTrait()]<><{implements Widget
     width:6Size*scale
     height:6Size*scale
     color:S"grey"
-    children:Widget.List[]
+    children:Gui.Widget.List[]
     outer:outer
     leftDelta:0Size
     topDelta:Size"-10"
@@ -150,15 +61,15 @@ ButtonW:Data<><Use[DispatchTrait()]<><{implements Widget
     width:6Size*scale
     height:6Size*scale
     color:S"grey"
-    children:Widget.List[]
+    children:Gui.Widget.List[]
     outer:outer
     leftDelta:0Size
     topDelta:10Size
     )
   }
-SafeMovable:Data<><{implements Widget
+SafeMovable:Data<><{implements Gui.Widget
   capsule Box box
-  class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Widget.List children) (
+  class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
     capsule Box cbox=(
       box=Box(id:id,children:children,left:left,top:top)
       box.#children().add(right:ButtonW.left(outer:box,scale:height/32Size))
@@ -185,7 +96,7 @@ SafeMovable:Data<><{implements Widget
       )
     return Bool.true()
     }
-  class method Bool overlap(read Widget w1,read Widget w2)(
+  class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2)(
     Debug(S"overlap "[PrintPos(w1)]", "[PrintPos(w2)]"")
 
     if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
@@ -198,7 +109,7 @@ SafeMovable:Data<><{implements Widget
     catch return Bool b (Debug(S"Returned: "[b]"") b)
     error void
     )
-  read method Bool inside(read Widget that){
+  read method Bool inside(read Gui.Widget that){
     Debug(S"inside "[this.id()]" "[that.id()]"")
     if that.left()<0Size (return Bool.false())
     if that.left()+that.width()>this.width() (return Bool.false())
@@ -210,7 +121,7 @@ SafeMovable:Data<><{implements Widget
 
 C: {
   wA=SafeMovable(width:700Size,height:700Size,color:S"green",box:Box(id:S"Green",
-    children:Widget.List[
+    children:Gui.Widget.List[
       SafeMovable(
         id:S"A"
         left:20Size
@@ -218,7 +129,7 @@ C: {
         width:640Size
         height:640Size
         color:S"red"
-        children:Widget.List[
+        children:Gui.Widget.List[
           SafeMovable(
             id:S"D"
             left:280Size
@@ -226,7 +137,7 @@ C: {
             width:64Size
             height:64Size
             color:S"blue"
-            children:Widget.List[]);
+            children:Gui.Widget.List[]);
           SafeMovable(
             id:S"B"
             left:50Size
@@ -234,7 +145,7 @@ C: {
             width:128Size
             height:128Size
             color:S"blue"
-            children:Widget.List[
+            children:Gui.Widget.List[
               SafeMovable(
                 id:S"C"
                 left:2Size
@@ -242,7 +153,7 @@ C: {
                 width:32Size
                 height:32Size
                 color:S"black"
-                children:Widget.List[]
+                children:Gui.Widget.List[]
                 )
               ]
             )]
