@@ -188,10 +188,14 @@ SafeMovable:Data<><{implements Widget
   class method Bool overlap(read Widget w1,read Widget w2)(
     Debug(S"overlap "[PrintPos(w1)]", "[PrintPos(w2)]"")
 
+
+    //overlap B, (40, 170), (128, 128), A_Left, (0, 280), (80, 80)
+    // 40 > 0 + 80  | 0 > 40 + 128
     if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
       (return Bool.false())
 
-    if w1.top()  < w2.top() - w2.height() | w2.top()  < w1.top()  - w1.height()
+    // 170 < 280 - 80
+    if w1.top()  > w2.top() - w2.height() | w2.top()  > w1.top()  - w1.height()
       (return Bool.false())
 
     return Bool.true()
