@@ -28,6 +28,7 @@ import javafx.concurrent.Worker.State;
 import java.awt.event.WindowAdapter;
 import platformSpecific.javaTranslation.Resources;
 import repl.HtmlFx;
+import repl.ReplGui;
 //@SuppressWarnings("serial")
 public class Frame extends Stage{
   private static final HashMap<String,Frame> windows=new HashMap<>();
@@ -39,27 +40,19 @@ public class Frame extends Stage{
     windows.put(wName,f);
     }
   private static Frame createNew(String wName,String html,int x, int y) {
-    FutureTask<Frame> future = new FutureTask<>(()-> {
+    new JFXPanel();//this is added so that an exception "toolkit not initialised" doesnt occur
+    return ReplGui.runAndWait(3,latch->{
       final Frame frame = new Frame(Frame.extractTitle(html));
-      frame.htmlFx.createHtmlContent(new CountDownLatch(3),wv->wv.loadContent(html));
+      frame.htmlFx.createHtmlContent(latch,wv->wv.loadContent(html));
       frame.setMinWidth(x);
       frame.setMinHeight(y);
       frame.setOnCloseRequest(event -> {
-        System.out.println("Stage is closing");
+        System.out.println("Stage "+wName+" is closing");
         Frame.close(wName);
-      });
-      Platform.runLater(new Runnable() {
-        public void run() {
-          new NestedPrivate().start(frame);
-        }
-      });
+        });
+      new NestedPrivate().start(frame);
       return frame;
-    });
-    new JFXPanel(); //this is added so that an exception "toolkit not initialised" doesnt occur
-    Platform.runLater(future);
-    try {return future.get();}
-    catch (ExecutionException e) {throw HtmlFx.propagateException(e.getCause());}
-    catch (InterruptedException e) {throw HtmlFx.propagateException(e);}
+      });
     }
 
   public static class NestedPrivate extends Application {
