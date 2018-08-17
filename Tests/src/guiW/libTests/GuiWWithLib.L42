@@ -67,7 +67,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     topDelta:5Size
     )
   }
-SafeMovable:Data<><{implements Gui.Widget
+SafeMovable:StupidData<><{implements Gui.Widget
   capsule Box box
   class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
     capsule Box cbox=(
@@ -126,7 +126,7 @@ C: {
         height:640Size
         color:S"red"
         children:Gui.Widget.List[
-          /*SafeMovable(
+          SafeMovable(
             id:S"D"
             left:280Size
             top:280Size
@@ -134,7 +134,7 @@ C: {
             height:64Size
             color:S"blue"
             children:Gui.Widget.List[]);
-          SafeMovable(
+          /*SafeMovable(
             id:S"B"
             left:50Size
             top:50Size
