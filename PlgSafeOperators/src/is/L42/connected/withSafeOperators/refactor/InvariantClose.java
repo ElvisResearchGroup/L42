@@ -151,15 +151,15 @@ public class InvariantClose {
     }
 
 
-    if (!this.stupid) {
+    if (!this.stupid)
       // Play with capsule mutators...
-      this.top = (ClassB)this.top.accept(new WrapAux(this.p,
-           this.exposers.stream().map(m ->
-             new CsMxMx(this.path,
-                 false, m, m.withUniqueNum(this.uniqueNum))
-             ).collect(Collectors.toList()),
-           this.top));
-    }
+      this.top = (ClassB)this.top.accept(new WrapAux(this.p, this.makeRenames(this.exposers), this.top));
+    else
+      // Redirect everything to use private geters/setters (so we don't call the public version, which will check the invariant)
+      this.top = (ClassB)this.top.accept(new RenameMethodsAux(this.p, this.makeRenames(this.state), this.top) {
+        // Don't touch method headers
+        @Override protected MethodSelector liftMsInMetDec(MethodSelector ms) { return ms; }
+      });
 
     this.inner = this.top.getClassB(this.path);
     this.delegateState();
@@ -177,6 +177,13 @@ public class InvariantClose {
     }
   }
 
+  List<CsMxMx> makeRenames(Set<MethodSelector> mss) {
+    List<CsMxMx> renames = new ArrayList<>();
+    for (MethodSelector ms : mss )
+      renames.add(new CsMxMx(this.path, false, ms, ms.withUniqueNum(this.uniqueNum)));
+
+    return renames;
+  }
 
   MethodWithType getMwt(MethodSelector ms) throws ClassUnfit {
     MethodWithType res = (MethodWithType)this.inner._getMember(ms);
@@ -314,8 +321,9 @@ public class InvariantClose {
         String x = f.getX();
         if (x.equals("r")) {
           f = f.withX(newR).withInner(body);
-          if (type != null)
-          f = f.with_t(type);
+          if (type != null) f = f.with_t(type);
+        } else if (x.startsWith("unused")) {
+           f = f.withX(Functions.freshName("unused", L42.usedNames));
         }
         return super.liftDec(f);
     }
@@ -396,19 +404,6 @@ public class InvariantClose {
       return res.withInner(makeWrapper(InvariantClose.thisWrapper, res.getInner(), mt.getReturnType()));
     }
   }
-  class ThisOnlyReceiver extends PropagatorVisitor {
-    @Override public Void visit(X s) {
-      if (s.equals(thisX))
-        LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
-          "Can only use this to call getters for imm and capsule fields within #invariant!"));
-      return null;
-      }
-    @Override public Void visit(MCall s) {
-      for(ExpCore e:s.getEs()) {e.accept(this);}
-      return s.getInner().equals(thisX) ? null : s.getInner().accept(this);
-     }
-  }
-
   class InvariantChecker extends CloneVisitor {
     private InvariantChecker(List<MethodSelector> methodCalls) {
       super();

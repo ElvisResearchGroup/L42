@@ -98,8 +98,8 @@ public class HtmlFx extends StackPane{
       Object o=webEngine.executeScript("ace.edit(\"textArea\").getCursorPosition()");
       assert o instanceof JSObject : o.toString();
       JSObject jsobj=(JSObject)o;
-      int row=Integer.parseInt(jsobj.getMember("row").toString());
-      int col=Integer.parseInt(jsobj.getMember("column").toString());
+      int row=(int)Double.parseDouble(jsobj.getMember("row").toString());
+      int col=(int)Double.parseDouble(jsobj.getMember("column").toString());
       try { displayDoc(editor,row,col); }
       catch(IllegalArgumentException e) {}
     }
