@@ -14,7 +14,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
   Size topDelta
   method toS() PrintPos(this)
   mut method Void process(Gui.Event event) (
-    Debug(S"Event processed: "[event]"")
+    Debug(S"Button pressed:"++this.id())
     this.#outer().left(this.outer().left()+this.leftDelta())
     this.#outer().top(this.outer().top()+this.topDelta())
     )
@@ -27,7 +27,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     color:S"grey"
     children:Gui.Widget.List[]
     outer:outer
-    leftDelta:Size"-10"
+    leftDelta:Size"-5"
     topDelta:0Size
     )
   class method mut This right(mut Box outer,Size scale) This(
@@ -39,7 +39,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     color:S"grey"
     children:Gui.Widget.List[]
     outer:outer
-    leftDelta:10Size
+    leftDelta:5Size
     topDelta:0Size
     )
   class method mut This up(mut Box outer,Size scale) This(
@@ -52,7 +52,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     children:Gui.Widget.List[]
     outer:outer
     leftDelta:0Size
-    topDelta:Size"-10"
+    topDelta:Size"-5"
     )
   class method mut This down(mut Box outer,Size scale) This(
     id:outer.id()++S"_Down"
@@ -64,7 +64,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     children:Gui.Widget.List[]
     outer:outer
     leftDelta:0Size
-    topDelta:10Size
+    topDelta:5Size
     )
   }
 SafeMovable:Data<><{implements Gui.Widget
@@ -86,6 +86,7 @@ SafeMovable:Data<><{implements Gui.Widget
   method top()this.box().top()
   method dispatch(that)this.#box().dispatch(that)
   read method Bool #invariant(){
+    Debug(S"Invariant #")
     with w1 in this.box().children().vals() (
       if !this.inside(w1) (return Bool.false())
       with w2 in this.box().children().vals() (
@@ -96,21 +97,16 @@ SafeMovable:Data<><{implements Gui.Widget
       )
     return Bool.true()
     }
-  class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2)(
-    Debug(S"overlap "[PrintPos(w1)]", "[PrintPos(w2)]"")
-
+  class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2){
+    //Debug(S"overlap "[PrintPos(w1)]", "[PrintPos(w2)]"")
     if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
       (return Bool.false())
-
     if w1.top() > w2.top() + w2.height() | w2.top() > w1.top() + w1.height()
       (return Bool.false())
-
     return Bool.true()
-    catch return Bool b (Debug(S"Returned: "[b]"") b)
-    error void
-    )
+     }
   read method Bool inside(read Gui.Widget that){
-    Debug(S"inside "[this.id()]" "[that.id()]"")
+    //Debug(S"inside "[this.id()]" "[that.id()]"")
     if that.left()<0Size (return Bool.false())
     if that.left()+that.width()>this.width() (return Bool.false())
     if that.top()<0Size (return Bool.false())
@@ -130,7 +126,7 @@ C: {
         height:640Size
         color:S"red"
         children:Gui.Widget.List[
-          SafeMovable(
+          /*SafeMovable(
             id:S"D"
             left:280Size
             top:280Size
@@ -148,19 +144,42 @@ C: {
             children:Gui.Widget.List[
               SafeMovable(
                 id:S"C"
-                left:2Size
-                top:2Size
+                left:6Size
+                top:6Size
                 width:32Size
                 height:32Size
                 color:S"black"
                 children:Gui.Widget.List[]
                 )
               ]
-            )]
+            )*/]
           )]
         left:2Size,top:2Size
       ))
-  Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA)
+  Strings events=Strings[
+    S"A_Left::Pressed::_";
+    S"A_Right::Pressed::_";
+    S"A_Up::Pressed::_";
+    S"A_Down::Pressed::_";
+
+    S"B_Left::Pressed::_";
+    S"B_Right::Pressed::_";
+    S"B_Up::Pressed::_";
+    S"B_Down::Pressed::_";
+
+    S"C_Left::Pressed::_";
+    S"C_Right::Pressed::_";
+    S"C_Up::Pressed::_";
+    S"C_Down::Pressed::_";
+
+    S"D_Left::Pressed::_";
+    S"D_Right::Pressed::_";
+    S"D_Up::Pressed::_";
+    S"D_Down::Pressed::_";
+    S"EXIT";
+    ]
+  Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
+
   Debug(S"#@Success@#")
   return ExitCode.normal()
   }

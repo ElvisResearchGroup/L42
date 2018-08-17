@@ -27,9 +27,9 @@ import coreVisitors.InjectionOnSugar;
   public static interface PosImprove{
     Position getPos();
     PosImprove withPos(Position val);
-    default PosImprove improvePos(Position val){
+    default ErrorMessage improvePos(Position val){
       if(this.getPos()!=null){val=CollapsePositions.accumulatePos(this.getPos(),val);}
-      return this.withPos(val);
+      return ((ErrorMessage)this.withPos(val)).msg(((ErrorMessage)this).getMessage());
       }
     static ErrorMessage improve(ErrorMessage err,Position val){
        if(! (err instanceof ErrorMessage.PosImprove)){return err;}

@@ -45,7 +45,9 @@ GuiLib:{class method Library (){
       }
     Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
 
-      mut method Void display(S title, Size x, Size y,mut Widget body) (
+      mut method Void display(S title, Size x, Size y,mut Widget body)
+        this.display(title:title,x:x,y:y,body:body,events:Strings[])
+      mut method Void display(S title, Size x, Size y,mut Widget body,Strings events) (
         this.open(
           title:title
           body:S"<div id='Top'></div>"
@@ -53,10 +55,19 @@ GuiLib:{class method Library (){
           y:y
           )
         this.draw(body)
-        with event in this.events() (
-          unused=body.dispatch(Event(event))
-          this.draw(body)
-          )
+          {
+          with event in events.vals() (
+            if event==S"EXIT" (return void)
+            unused=body.dispatch(Event(event))
+            this.draw(body)
+            )
+          with event in this.events() (
+            if event==S"EXIT" (return void)
+            unused=body.dispatch(Event(event))
+            this.draw(body)
+            )
+          return void
+          }
         this.close()
         )
 

@@ -11,14 +11,13 @@ C:{
       '<script>
       'pressButton=function(){event42('Pressed!');setTimeout(pressButton, 1500);}
       'setTimeout(pressButton, 10000);
-      '</script>      
+      '</script>
       "
   Debug(initialState)
-  S resources=S"file:///"++Debug.localToAbsolute(fileName:S"examples/resources")++S"\"
+  S resources=S"file:///"++Debug.#$localToAbsolute(fileName:S"examples/resources")++S"\"
   Debug(resources)
   gui.open(
     title:S"FIRST!"
-    //put here any folder with the right images in
     body:initialState
     x:600Size
     y:400Size

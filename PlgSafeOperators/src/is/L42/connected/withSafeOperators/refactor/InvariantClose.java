@@ -205,7 +205,7 @@ public class InvariantClose {
 
       // Not a state method
       if (!this.state.contains(mwt.getMs()) || mt.getMdf() == Mdf.Class) {
-        if (this.stupid && mwt.getMs().isUnique()) // Wrap the body up, but only if a public method
+        if (this.stupid && mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) // Wrap the body up, but only if a public method
           mwt = mwt.withInner(makeWrapper(InvariantClose.thisStupidWrapper, mwt.getInner(), mt.getReturnType()));
 
         this.addMember(mwt);
@@ -215,13 +215,15 @@ public class InvariantClose {
       // The new (real) accessor will have a unique number
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum));
 
-      // Exposer, which should have already been dealt with
-      if (fieldMdf.equals(Mdf.Lent) && this.validatableFields.contains(mwt.getMs().getName()))
+      if (this.stupid){
+        this.addMember(delegate(true, mwt, newMwt));
+        }// Exposer, which should have already been dealt with
+      else if (fieldMdf.equals(Mdf.Lent) && this.validatableFields.contains(mwt.getMs().getName())) {
         continue;
-
+        }
       // Call the invariant in a setter, but only if it's for a field that could be validated against
       // Note: 'class' references are really immutable
-      if (setter && this.validatableFields.contains(mwt.getMs().getName())) {
+      else if (setter && this.validatableFields.contains(mwt.getMs().getName())) {
         this.addMember(delegate(true, mwt, newMwt));
       } else {
         this.addMember(delegate(false, mwt, newMwt));
@@ -277,7 +279,7 @@ public class InvariantClose {
     }
   }
 
-  static ExpCore.Block thisStupidWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisWrapper",
+  static ExpCore.Block thisStupidWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisStupidWrapper",
       "{method m() (this.#invariant() r=void this.#invariant() r)}").getMs().get(0).getInner();
 
   static ExpCore.Block thisWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisWrapper",
