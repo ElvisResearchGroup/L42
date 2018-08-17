@@ -65,13 +65,13 @@ public class TestCloseInvariant{
       "class method \n" +
       "mut This0 mutK(This0.A a) (\n" +
       "  r1=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv1=r1.#invariant_$_2()\n" +
+      "  Void unused1=r1.#invariant_$_2()\n" +
       "  r1\n" +
       "  )\n" +
       "class method \n" +
       "This0 immK(This0.A a) (\n" +
       "  This0 r2=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  Void unused1=r2.#invariant_$_2()\n" +
       "  r2\n" +
       "  )\n" +
       "A: {}}"
@@ -86,7 +86,7 @@ public class TestCloseInvariant{
       "mut method \n" +
       "Void a(This0.A that) (\n" +
       "  r1=this.a_$_2(that:that)\n" +
-      "  Void unusedInv1=this.#invariant_$_2()\n" +
+      "  Void unused1=this.#invariant_$_2()\n" +
       "  r1\n" +
       "  )\n" +
       "mut method \n" +
@@ -100,13 +100,13 @@ public class TestCloseInvariant{
       "class method \n" +
       "mut This0 mutK(This0.A a) (\n" +
       "  r2=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  Void unused1=r2.#invariant_$_2()\n" +
       "  r2\n" +
       "  )\n" +
       "class method \n" +
       "This0 immK(This0.A a) (\n" +
       "  This0 r3=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv3=r3.#invariant_$_2()\n" +
+      "  Void unused1=r3.#invariant_$_2()\n" +
       "  r3\n" +
       "  )\n" +
       "A: {}} "
@@ -131,19 +131,19 @@ public class TestCloseInvariant{
       "mut method \n" +
       "Void doStuff(This0.A that) (\n" +
       "  Void r1=that.#apply(that:this.#a_$_2())\n" +
-      "  Void unusedInv1=this.#invariant_$_2()\n" +
+      "  Void unused1=this.#invariant_$_2()\n" +
       "  r1\n" +
       "  )\n" +
       "class method \n" +
       "mut This0 mutK(capsule This0.A a) (\n" +
       "  r2=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  Void unused1=r2.#invariant_$_2()\n" +
       "  r2\n" +
       "  )\n" +
       "class method \n" +
       "This0 immK(This0.A a) (\n" +
       "  This0 r3=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv3=r3.#invariant_$_2()\n" +
+      "  Void unused1=r3.#invariant_$_2()\n" +
       "  r3\n" +
       "  )\n" +
       "A: {}}"
@@ -170,19 +170,19 @@ public class TestCloseInvariant{
       "    lent This0.A a=this.#a_$_2()\n" +
       "    void\n" +
       "    )\n" +
-      "  Void unusedInv1=this.#invariant_$_2()\n" +
+      "  Void unused1=this.#invariant_$_2()\n" +
       "  r1\n" +
       "  )\n" +
       "class method \n" +
       "mut This0 mutK(capsule This0.A a) (\n" +
       "  r2=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  Void unused1=r2.#invariant_$_2()\n" +
       "  r2\n" +
       "  )\n" +
       "class method \n" +
       "This0 immK(This0.A a) (\n" +
       "  This0 r3=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv3=r3.#invariant_$_2()\n" +
+      "  Void unused1=r3.#invariant_$_2()\n" +
       "  r3\n" +
       "  )\n" +
       "A: {}}"
@@ -209,13 +209,13 @@ public class TestCloseInvariant{
       "class method \n" +
       "mut This0 mutK(This0.A a) (\n" +
       "  r1=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv1=r1.#invariant_$_2()\n" +
+      "  Void unused1=r1.#invariant_$_2()\n" +
       "  r1\n" +
       "  )\n" +
       "class method \n" +
       "This0 immK(This0.A a) (\n" +
       "  This0 r2=this.mutK_$_2(a:a)\n" +
-      "  Void unusedInv2=r2.#invariant_$_2()\n" +
+      "  Void unused1=r2.#invariant_$_2()\n" +
       "  r2\n" +
       "  )}",false
   //
@@ -234,13 +234,13 @@ public class TestCloseInvariant{
                 "class method \n" +
                 "mut This0 mutK() (\n" +
                 "  r1=this.mutK_$_2()\n" +
-                "  Void unusedInv1=r1.#invariant_$_2()\n" +
+                "  Void unused1=r1.#invariant_$_2()\n" +
                 "  r1\n" +
                 "  )\n" +
                 "class method \n" +
                 "This0 immK() (\n" +
                 "  This0 r2=this.mutK_$_2()\n" +
-                "  Void unusedInv2=r2.#invariant_$_2()\n" +
+                "  Void unused1=r2.#invariant_$_2()\n" +
                 "  r2\n" +
                 "  )}", false
     },{lineNumber(), "{" +
@@ -260,13 +260,13 @@ public class TestCloseInvariant{
             "class method \n" +
             "mut This0 mutK() (\n" +
             "  r1=this.mutK_$_2()\n" +
-            "  Void unusedInv1=r1.#invariant_$_2()\n" +
+            "  Void unused1=r1.#invariant_$_2()\n" +
             "  r1\n" +
             "  )\n" +
             "class method \n" +
             "This0 immK() (\n" +
             "  This0 r2=this.mutK_$_2()\n" +
-            "  Void unusedInv2=r2.#invariant_$_2()\n" +
+            "  Void unused1=r2.#invariant_$_2()\n" +
             "  r2\n" +
             "  )}", false
 
@@ -296,14 +296,14 @@ public class TestCloseInvariant{
 
   List<Ast.C> path=TestHelper.cs(_path);
   if(!isError){
-    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, mutK, immK);
+    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, mutK, immK, false);
     TestHelper.configureForTest();
     ClassB expected=getClassB(false,null,_expected);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
     try{
-      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, mutK, immK);
+      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, mutK, immK, false);
       fail("error expected");
       }
     catch(ClassUnfit|PathUnfit err){

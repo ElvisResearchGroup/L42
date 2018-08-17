@@ -45,19 +45,20 @@ import tools.LambdaExceptionUtil;
 
 public class InvariantClose {
   static MethodSelector invName = MethodSelector.of("#invariant", Collections.emptyList());
-  public static ClassB closeJ(PData p, List<Ast.C> path, ClassB top, MethodSelector mutKName, MethodSelector immKName)
+  public static ClassB closeJ(PData p, List<Ast.C> path, ClassB top, MethodSelector mutKName, MethodSelector immKName, boolean stupid)
     throws PathUnfit, ClassUnfit {
-    return close(p.p, path, top, mutKName, immKName);
+    return close(p.p, path, top, mutKName, immKName, stupid);
   }
 
   // path is a path inside top
-  public static ClassB close(Program p, List<Ast.C> path, ClassB top, MethodSelector mutKName, MethodSelector immKName)
+  public static ClassB close(Program p, List<Ast.C> path, ClassB top, MethodSelector mutKName, MethodSelector immKName, boolean stupid)
       throws PathUnfit, ClassUnfit {
 
     if (!MembersUtils.isPathDefined(top, path)) throw new RefactorErrors.PathUnfit(path);
     if (MembersUtils.isPrivate(path)) throw new RefactorErrors.PathUnfit(path);
 
     InvariantClose c = new InvariantClose();
+    c.stupid = stupid;
     c.pInner = p.evilPush(top).navigate(path);
     c.inner = c.pInner.top();
     c.p = p;
@@ -73,6 +74,7 @@ public class InvariantClose {
   MethodWithType immK;
   Program p;
   ClassB top; // The class that we were given
+  boolean stupid = false;
 
   Program pInner;
   ClassB inner; // The class were closing
@@ -98,7 +100,7 @@ public class InvariantClose {
         throw new ClassUnfit().msg("selector #invariant() into " + PathAux.as42Path(path) + " has no body");
     }
 
-    // The unique number to use for generate private things
+    // The unique number to use to generate private things
     this.uniqueNum = L42.freshPrivate();
 
     // Collect all the fields that can, and cannot be referenced in validate
@@ -116,7 +118,7 @@ public class InvariantClose {
 
     {
       List<MethodSelector> todo = new LinkedList<>();
-      Set<MethodSelector> done = new HashSet<>(); // The methods called by #invariant
+      Set<MethodSelector>  done = new HashSet<>(); // The methods called by #invariant
       todo.add(invName);
       while (!todo.isEmpty()) {
         MethodSelector m = todo.remove(0);
@@ -148,18 +150,20 @@ public class InvariantClose {
         this.exposers.add(mwt.getMs());
     }
 
-    // Wrap all calls to exposers (into calls to a unique-numbered one)
 
-    this.top = (ClassB)this.top.accept(new WrapAux(this.p,
-        this.exposers.stream().map(m ->
-          new CsMxMx(this.path,
-              false, m, m.withUniqueNum(this.uniqueNum))
-          ).collect(Collectors.toList()),
-        this.top));
+    if (!this.stupid) {
+      // Play with capsule mutators...
+      this.top = (ClassB)this.top.accept(new WrapAux(this.p,
+           this.exposers.stream().map(m ->
+             new CsMxMx(this.path,
+                 false, m, m.withUniqueNum(this.uniqueNum))
+             ).collect(Collectors.toList()),
+           this.top));
+    }
 
     this.inner = this.top.getClassB(this.path);
-
     this.delegateState();
+
     // Don't play with the nested classes
     this.newMembers.addAll(this.inner.ns());
     this.inner = this.inner.withMs(this.newMembers);
@@ -172,6 +176,7 @@ public class InvariantClose {
       return this.top.onClassNavigateToPathAndDo(this.path, l -> this.inner);
     }
   }
+
 
   MethodWithType getMwt(MethodSelector ms) throws ClassUnfit {
     MethodWithType res = (MethodWithType)this.inner._getMember(ms);
@@ -187,19 +192,22 @@ public class InvariantClose {
     this.addMember(fwdK);
 
     for (MethodWithType mwt : inner.mwts()) {
+      MethodType mt = mwt.getMt();
       if (Arrays.asList(this.mutK.getMs(), this.immK.getMs()).contains(mwt.getMs())) {
         // Delegate mutK and immK to the real constructor
         this.addMember(delegate(true, mwt, fwdK));
         continue;
       }
 
-      Mdf mdf = mwt.getMt().getMdf();
       boolean setter = !mwt.getMs().getNames().isEmpty();
-      Mdf fieldMdf = setter ? mwt.getMt().getTs().get(0).getMdf() :
-        mwt.getMt().getReturnType().getMdf();
+      Mdf fieldMdf = setter ? mt.getTs().get(0).getMdf() :
+        mt.getReturnType().getMdf();
 
       // Not a state method
-      if (!this.state.contains(mwt.getMs()) || mwt.getMt().getMdf() == Mdf.Class) {
+      if (!this.state.contains(mwt.getMs()) || mt.getMdf() == Mdf.Class) {
+        if (this.stupid && mwt.getMs().isUnique()) // Wrap the body up, but only if a public method
+          mwt = mwt.withInner(makeWrapper(InvariantClose.thisStupidWrapper, mwt.getInner(), mt.getReturnType()));
+
         this.addMember(mwt);
         continue;
       }
@@ -227,6 +235,7 @@ public class InvariantClose {
     assert !Functions.getIfInDom(this.newMembers, member).isPresent() : member;
     this.newMembers.add(member);
   }
+
   MethodWithType delegate(boolean callInvariant, MethodWithType original, MethodWithType delegate) throws ClassUnfit {
     assert original.get_inner() == null;
     assert original.getMs().nameSize() == delegate.getMs().nameSize();
@@ -244,8 +253,8 @@ public class InvariantClose {
       original.getMt().getReturnType() // return type
     );
 
-    if (!callInvariant) // Just do the call
-        original = original.withInner(delegateMCall);
+    // Just do the call
+    if (!callInvariant) return original.withInner(delegateMCall);
     else{
       ExpCore.Block wrapTemplate;
       if (original.getMt().getMdf()==Mdf.Class) {
@@ -255,32 +264,36 @@ public class InvariantClose {
 
         // Mut constructor
         else wrapTemplate = InvariantClose.resultWrapper;
+      } else if (this.stupid) {
+          if (original.getMs().isUnique()) // Not a public method, so just delegate
+            return original.withInner(delegateMCall);
+          else wrapTemplate = InvariantClose.thisStupidWrapper;
       } else {
           wrapTemplate = InvariantClose.thisWrapper;
       }
 
       // Wrap up the call
-      original = original.withInner(makeWrapper(wrapTemplate, delegateMCall, null));
+      return original.withInner(makeWrapper(wrapTemplate, delegateMCall, null));
     }
-
-    return original;
   }
 
+  static ExpCore.Block thisStupidWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisWrapper",
+      "{method m() (this.#invariant() r=void this.#invariant() r)}").getMs().get(0).getInner();
+
   static ExpCore.Block thisWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisWrapper",
-    "{method m() (r=void Void unusedInv=this.#invariant() r)}").getMs().get(0).getInner();
+    "{method m() (r=void this.#invariant() r)}").getMs().get(0).getInner();
 
   static ExpCore.Block resultWrapper=(ExpCore.Block)Functions.parseAndDesugar("ResultWrapper",
-    "{method m() (r=void Void unusedInv=r.#invariant() r)}").getMs().get(0).getInner();
+    "{method m() (r=void r.#invariant() r)}").getMs().get(0).getInner();
 
   static ExpCore.Block thisResultWrapper = (ExpCore.Block)Functions.parseAndDesugar("ThisResultWrapper",
-    "{method m() (This r=void Void unusedInv=r.#invariant() r)}").getMs().get(0).getInner();
+    "{method m() (This r=void r.#invariant() r)}").getMs().get(0).getInner();
 
   ExpCore.Block makeWrapper(ExpCore.Block template, ExpCore body, Type type) {
     String newR = Functions.freshName("r", L42.usedNames);
-    String newU = Functions.freshName("unusedInv", L42.usedNames);
 
     // Rename to our newR's and newU's, probably slow, but I'm too lazy to expand this out
-    template = (Block)template.accept(new CloneVisitor() {
+    return (Block)template.accept(new CloneVisitor() {
     public ExpCore visit(X s) {
         if(s.getInner().equals("r"))
             return s.withInner(newR);
@@ -297,19 +310,14 @@ public class InvariantClose {
     }
     protected Block.Dec liftDec(Block.Dec f) {
         String x = f.getX();
-        if (x.equals("r")) x = newR;
-        else if (x.equals("unusedInv")) x = newU;
-
-        return super.liftDec(f.withX(x));
+        if (x.equals("r")) {
+          f = f.withX(newR).withInner(body);
+          if (type != null)
+          f = f.with_t(type);
+        }
+        return super.liftDec(f);
     }
     });
-
-    ExpCore.Block.Dec d0 = template.getDecs().get(0);
-    d0 = d0.withInner(body);
-    if (type != null)
-    d0 = d0.with_t(type);
-
-    return template.withDeci(0, d0);
   }
 
   static X thisX = new X(Position.noInfo, "this");

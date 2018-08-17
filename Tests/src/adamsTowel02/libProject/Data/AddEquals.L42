@@ -15,7 +15,7 @@ exception Fail {
 class method
 Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)
 exception Fail{
-  if fNs.isEmpty() (error S"TODO")
+  //if fNs.isEmpty() (error S"TODO")
   op=This.op()
   //accumulation
   Use.Override.Decorator acc=Use.Override[with fN in fNs.vals(), fT in fTs.vals() (

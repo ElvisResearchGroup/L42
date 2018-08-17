@@ -9,6 +9,7 @@ AddToS: AddToSTrait()
 AddInvToS:Use.Override[AddToSTrait()]<><...
 AddEquals:FieldOperation<><...
 
+class method Bool stupid() Bool.false()
 class method S mutKName() S"#apply"
 class method S immKName() S"#immK"
 class method Selector immK(Library that,Path of) exception AmbiguosConstructor{
@@ -69,9 +70,7 @@ Base:{
     }
   }
 
-class method
-Library <>< (Library right)
-exception Fail Refactor2.PathUnfit {
+class method Library <>< (Library right)  exception Fail Refactor2.PathUnfit {
  var Library res=right
  excluded=S""[with m in Location.Lib(classObj:Concept.Base).methods().vals() ( 
    use[m.selector().nameAsField();S" "])
@@ -88,7 +87,7 @@ exception Fail Refactor2.PathUnfit {
  res><>=AddToS(mutK:mutK, of:\"This")
  res><>=AddInvToS(mutK:mutK, of:\"This")
  res><>=AddEquals(mutK:mutK, of:\"This")
- res><>=Invariant(of:\"This", immK:immK,mutK:mutK)
+ res><>=Invariant(of:\"This", immK:immK,mutK:mutK, stupid: This.stupid())
  return res
 }
 }
