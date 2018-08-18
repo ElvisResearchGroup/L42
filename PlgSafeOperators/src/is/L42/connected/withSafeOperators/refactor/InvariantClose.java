@@ -212,7 +212,7 @@ public class InvariantClose {
 
       // Not a state method
       if (!this.state.contains(mwt.getMs()) || mt.getMdf() == Mdf.Class) {
-        if (this.stupid && mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) // Wrap the body up, but only if a public method
+        if (this.stupid && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) // Wrap the body up, but only if a public method
           mwt = mwt.withInner(makeWrapper(InvariantClose.thisStupidWrapper, mwt.getInner(), mt.getReturnType()));
 
         this.addMember(mwt);

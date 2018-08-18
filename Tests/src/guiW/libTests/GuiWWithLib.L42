@@ -2,7 +2,6 @@
 
 Gui:Load<><{reuse L42.is/WidgetGuiLib}
 
-PrintPos: {class method S(read Gui.Widget that) that.id()[]", ("[that.left()]", "[that.top()]"), ("[that.width()]", "[that.height()]")"}
 Box:Data<><Use[Gui.DispatchTrait()]<><{
   var Size left
   var Size top
@@ -12,7 +11,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
   mut Box outer
   Size leftDelta
   Size topDelta
-  method toS() PrintPos(this)
+  method toS() this.id()
   mut method Void process(Gui.Event event) (
     Debug(S"Button pressed:"++this.id())
     this.#outer().left(this.outer().left()+this.leftDelta())
@@ -67,7 +66,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     topDelta:5Size
     )
   }
-SafeMovable:StupidData<><{implements Gui.Widget
+SafeMovable:Data<><{implements Gui.Widget
   capsule Box box
   class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
     capsule Box cbox=(
@@ -98,7 +97,6 @@ SafeMovable:StupidData<><{implements Gui.Widget
     return Bool.true()
     }
   class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2){
-    //Debug(S"overlap "[PrintPos(w1)]", "[PrintPos(w2)]"")
     if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
       (return Bool.false())
     if w1.top() > w2.top() + w2.height() | w2.top() > w1.top() + w1.height()
@@ -162,7 +160,7 @@ C: {
     S"A_Up::Pressed::_";
     S"A_Down::Pressed::_";
 
-    S"B_Left::Pressed::_";
+/*    S"B_Left::Pressed::_";
     S"B_Right::Pressed::_";
     S"B_Up::Pressed::_";
     S"B_Down::Pressed::_";
@@ -171,7 +169,7 @@ C: {
     S"C_Right::Pressed::_";
     S"C_Up::Pressed::_";
     S"C_Down::Pressed::_";
-
+*/
     S"D_Left::Pressed::_";
     S"D_Right::Pressed::_";
     S"D_Up::Pressed::_";
