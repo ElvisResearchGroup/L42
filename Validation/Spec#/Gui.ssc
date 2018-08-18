@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+internal partial class Gui
+{
+	internal struct Event 
+	{
+		internal readonly string targetId;
+		internal readonly string eventId;
+		internal readonly string[] all;
+
+		internal Event(string that)
+		{
+			string[] s = that.Split(new String[]{"::"}, StringSplitOptions.RemoveEmptyEntries);
+			this.targetId = s[0];
+			this.eventId = s[1];
+			this.all = s;
+		}
+	}
+	internal interface Widget 
+	{
+		string id { get; }
+		int left { get; }
+		int top { get; }
+		int width { get; }
+		int height { get; }
+		string colour { get; }
+		
+		/*read*/ List<Widget> children { get; }
+		bool dispatch(Event that) /*mut*/;
+	}
+	internal abstract partial class DispatchTrait
+	{
+		internal string id; 
+		[Peer] [ElementsPeer] internal List<Widget> children; 
+
+		public abstract void process(Event event_) /*mut*/; 
+
+		public bool dispatch(Event that) /*mut*/ 
+		{
+			if (this.id == that.targetId) 
+			{
+				this.process(that);
+				return true;
+			}
+
+			foreach (Widget w in this.children)
+			{
+				if (w.dispatch(that)) return true;
+			}
+			return false;
+		}
+
+		#region boilerplate
+			[Captured] internal DispatchTrait(string id, List<Widget> children) { this.id = id; this.children = children; }
+
+			// C# requires a class to implement all interface methods...
+			/*internal abstract int left { get; }
+			internal abstract int top { get; }
+			internal abstract int width { get; }
+			internal abstract int height { get; }
+			internal abstract string colour { get; }*/
+		#endregion
+
+	}
+}
