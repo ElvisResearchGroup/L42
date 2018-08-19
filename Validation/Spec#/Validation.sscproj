@@ -34,8 +34,8 @@
            CheckContractAdmissibility="True"
            CheckPurity="True"
            ReferenceTypesAreNonNullByDefault="True"
-           RunProgramVerifier="False"
-           RunProgramVerifierWhileEditing="False"
+           RunProgramVerifier="True"
+           RunProgramVerifierWhileEditing="True"
            ProgramVerifierCommandLineOptions=""
            AllowPointersToManagedStructures="False"
            />
@@ -95,10 +95,6 @@
         <File BuildAction="Compile"
                  SubType="Code"
                  RelPath="FakeGui.ssc"
-                 />
-        <File BuildAction="Compile"
-                 SubType="Code"
-                 RelPath="All.ssc"
                  />
       </Include>
     </Files>

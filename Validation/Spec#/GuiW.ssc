@@ -8,14 +8,52 @@ internal sealed class Box: Gui.DispatchTrait
 	internal int left;
 	internal int top;
 
+	[Pure] internal bool invariant_(int width, int height) 
+	{
+		Gui.Debug("Invariant #");
+		for (int i = 0; i < this.children.Count; i++)
+		{
+			Gui.Widget w1 = this.children[i]; //! Read-effect this.children[.] is not admitted for Confined method invariant_.
+			if (!Inside(w1, width, height)) return false; //! Read-effect this.children[.] is not admitted for Confined method invariant_.
+			for (int j = 0; j < this.children.Count; j++)
+			{
+				Gui.Widget w2 = this.children[j];
+				if (w1.id != w2.id && Overlap(w1, w2)) return false;
+			}
+		}
+		return true;
+	}
+
+	[Pure] private static bool Overlap(/*read*/ Gui.Widget w1, /*read*/ Gui.Widget w2) 
+	{
+		if (w1.left > w2.left + w2.width || w2.left > w1.left + w1.width)
+			return false;
+		if (w1.top > w2.top + w2.height || w2.top > w1.top + w1.height)
+			return false;
+
+		return true;
+	}
+
+	[Pure] private static bool Inside(Gui.Widget that, int width, int height)
+	{
+		if (that.left < 0) return false;
+		if (that.left + that.width > width) return false;
+		if (that.top < 0) return false;
+		if (that.top + that.height > height) return false;
+		return true;
+	}
+
+
 	public override void process(Gui.Event event_) /*mut*/ {} 
 
 	#region boilerplate
-		[Captured] internal Box(string id, List<Gui.Widget> children, int left, int top) 
+		[Captured] internal Box(string id, List<Gui.Widget> children, int left, int top)
+			requires Owner.Same(Owner.ElementProxy(children), children);
+			ensures Owner.Same(this, children);
 		{
-			base(id, children);
 			this.left = left;
 			this.top = top;
+			base(id, children);
 		}
 	#endregion
 }
@@ -31,31 +69,40 @@ internal sealed class ButtonW: Gui.DispatchTrait, Gui.Widget
 
 	public override void process(Gui.Event event_) /*mut*/
 	{
-		//Console.Error.WriteLine("Button pressed: " + this.id); // Error: method invocation may violate the modifies clause of the enclosing method
+		Gui.Debug("Button pressed: " + this.id);
 		this.outer.left = this.outer.left + this.leftDelta;
 		this.outer.top = this.outer.top + this.topDelta;
 	}
 
-	[Captured] internal static ButtonW Left(/*mut*/ Box outer, int scale)
+	internal static ButtonW Left(/*mut*/ Box outer, int scale)
+		ensures Owner.Same(result, outer);
 	{
 		return new ButtonW(outer, scale, "_Left", 0, 13, 6, 6, -5, 0);
 	}
-	[Captured] internal static ButtonW Right(/*mut*/ Box outer, int scale)
-	{
-		return new ButtonW(outer, scale, "_Right", 26, 13, 6, 6, 5, 0);
+	internal static ButtonW Right(Box outer, int scale) 
+		ensures Owner.Same(result, outer); 
+	{ 
+		return new ButtonW(outer, scale, "_Right", 26, 13, 6, 6, 5, 0); 
 	}
-	[Captured] internal static ButtonW Up(/*mut*/ Box outer, int scale)
+	internal static ButtonW Up(Box outer, int scale)
+		ensures Owner.Same(result, outer); 
 	{
 		return new ButtonW(outer, scale, "_Up", 13, 0, 6, 6, 0, -5);
 	}
-	[Captured] internal static ButtonW Down(/*mut*/ Box outer, int scale)
+	internal static ButtonW Down(Box outer, int scale)
+		ensures Owner.Same(result, outer); 
 	{
 		return new ButtonW(outer, scale, "_Down", 13, 26, 6, 6, 0, 5);
 	}
 
 	[Captured] ButtonW(/*mut*/ Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta)
+		ensures Owner.Same(this, outer);
 	{
-		base(outer.id + suffix, new List<Gui.Widget>{});
+		List<Gui.Widget> children = new List<Gui.Widget>();
+		Owner.AssignSame(Owner.ElementProxy(children), outer);
+		Owner.AssignSame(children, outer);
+
+		base(outer.id + suffix, children);
 		this._top = top*scale;
 		this._left = left*scale;
 		this._width = width*scale;
@@ -78,7 +125,7 @@ internal sealed class ButtonW: Gui.DispatchTrait, Gui.Widget
 
 		// Can't inherit Gui.Widget.left.get from DispatchTrait since it dosn't implement Gui.Widget
 		string Gui.Widget.id { get { return this.id; } }
-		List<Gui.Widget> Gui.Widget.children { get { return this.children; } }
+		List<Gui.Widget> Gui.Widget.children { [Peer] get { return this.children; } }
 	#endregion
 }
 
@@ -92,64 +139,44 @@ internal sealed class SafeMovable: Gui.Widget
 		this._height = height;
 		this._colour = colour;
 		this.box = box;
-	}
+	} //! Object invariant possibly does not hold
+	
 	internal SafeMovable(string id, int left, int top, int width, int height, string colour, [Captured] List<Gui.Widget> children) 
+		modifies children.**;
+		requires Owner.Same(Owner.ElementProxy(children), children);
 	{
 		Box box = new Box(id, children, left, top);
-		box.children.Add(ButtonW.Left(box, height/32));
-		box.children.Add(ButtonW.Right(box, height/32));
-		box.children.Add(ButtonW.Up(box, height/32));
-		box.children.Add(ButtonW.Down(box, height/32));
+
+		ButtonW bl = ButtonW.Left(box, height/32);
+		ButtonW br = ButtonW.Right(box, height/32);
+		ButtonW bu = ButtonW.Up(box, height/32);
+		ButtonW bd = ButtonW.Down(box, height/32);
+
+		box.children.Add(bl);
+		box.children.Add(br);
+		box.children.Add(bu);
+		box.children.Add(bd);
+
 		this(width, height, colour, box);
 	}
 
 
 	public string id { get { return this.box.id; } }
+	
 	public List<Gui.Widget> children { get { return this.box.children; } }
 	public int left { get { return this.box.left; } }
 	public int top { get { return this.box.top; } }
 
-	public bool dispatch(Gui.Event that) /*mut*/ { 
-		expose (this)
-			return this.box.dispatch(that); 
-		
-	}
+	public bool dispatch(Gui.Event that) /*mut*/ 
+	{ 
+		expose (this) return this.box.dispatch(that);
+	} //! Object invariant possibly does not hold
 
-	public int width { get { return this._width; } }
-	public int height { get { return this._height; } }
+	public int width     { get { return this._width;  } }
+	public int height    { get { return this._height; } }
 	public string colour { get { return this._colour; } }
 
-	invariant this.invariant_();
-
-	static int n = 0;
-	[NoDefaultContract, Pure] private bool invariant_() /*read*/ {
-		Console.Error.WriteLine("Invariant {0}", ++n);
-
-		for (int i = 0; i < this.box.children.Count; i++) {
-			Gui.Widget w1 = this.box.children[i];
-			if (!this.inside(w1)) return false;
-			foreach (Gui.Widget w2 in this.box.children)
-				if (w1.id != w2.id && Overlap(w1, w2))  return false;
-		}
-		return true;
-	}
-	
-	static bool Overlap(/*read*/ Gui.Widget w1, /*read*/ Gui.Widget w2) {
-		if (w1.left > w2.left + w2.width || w2.left > w1.left + w1.width)
-			return false;
-		if (w1.top > w2.top + w2.height || w2.top > w1.top + w1.height)
-			return false;
-
-		return true;
-	}
-
-	[NoDefaultContract] private bool inside(Gui.Widget that) /*read*/ {
-		if (that.left < 0) return false;
-		if (that.left + that.width > this._width) return false;
-		if (that.top < 0) return false;
-		if (that.top + that.height > this._height) return false;
-		return true;
-	}
+	invariant this.box.invariant_(this._width, this._height);
 
 	#region boilerplate
 		// Spec# (unlike neweer versions of C#) does not have auto implemented properties

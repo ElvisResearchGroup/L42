@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Contracts;
 
-internal partial class Gui {
+[Immutable] internal partial class Gui {
+	[Pure] [Verify(false)] internal static void Debug(string s) 
+	{
+		Console.Error.WriteLine(s); //! method invocation may violate the modifies clause of the enclosing method
+	}
 	internal readonly string id;
 
 	internal void display(string title, int x, int y, /*mut*/ Widget body, string[] events) /*mut*/
@@ -40,22 +45,21 @@ internal partial class Gui {
         this.executeJs(cmd);
 	}
 
-	string format(/*read*/ Widget that)
+	[Pure] string formatChildren(/*read*/ Widget that)
 	{
 		StringBuilder children = new StringBuilder();
-		foreach (Widget w in that.children) {
-			children.Append(this.format(w));
-		}
-		return "<div id='" + that.id + "' onclick=\"event42('" + that.id + "::Pressed::more')\" style='"
-          + "position: absolute;"
-          + "left: " + that.left + "px;"
-          + "top: " + that.top + "px;"
-          + "height: " + that.height + "px;"
-          + "width: " + that.width + "px;"
-          + "background-color: " + that.colour + ";'>"
-          + "<div style='position: relative;'>"
-          + children + "</div></div>";
+		for (int i = 0; i < that.children.Count; i++) 
+			children.Append(this.format(that.children[i]));
+		return children.ToString();
 	}
+
+	[Pure] string format(/*read*/ Widget that)     { return format1("<div id='" + id + "' onclick=\"event42('" + id + "::Pressed::more')\" style='position: absolute;", that); }
+	[Pure] string format1(string res, Widget that) { return format2(res + "left: " + that.left + "px;",               that); }
+	[Pure] string format2(string res, Widget that) { return format3(res + "top: " + that.top + "px;",                 that); }
+	[Pure] string format3(string res, Widget that) { return format4(res + "height: " + that.height + "px;",           that); }
+	[Pure] string format4(string res, Widget that) { return format5(res + "width: " + that.width + "px;",             that); }
+	[Pure] string format5(string res, Widget that) { return format6(res + "background-color: " + that.colour + ";'>", that); }
+	[Pure] string format6(string res, Widget that) { return res + "<div style='position: relative;'>" + formatChildren(that) + "</div></div>"; }
 
 	void open(string title, string body, int x, int y)
 	{

@@ -4,7 +4,7 @@ using Microsoft.Contracts;
 
 internal partial class Gui
 {
-	internal struct Event 
+	[Immutable] internal class Event 
 	{
 		internal readonly string targetId;
 		internal readonly string eventId;
@@ -12,11 +12,19 @@ internal partial class Gui
 
 		internal Event(string that)
 		{
-			string[] s = that.Split(new String[]{"::"}, StringSplitOptions.RemoveEmptyEntries);
+			string[] s = that.Split(new String[]{"::"}, StringSplitOptions.None);
+			if (s.Length < 2)
+				throw new System.ArgumentException("Expected a string containing ::", "that");
+
 			this.targetId = s[0];
 			this.eventId = s[1];
 			this.all = s;
 		}
+	}
+
+	static List<Widget> WidgetList()
+	{
+		return new List<Widget>();
 	}
 	internal interface Widget 
 	{
@@ -27,7 +35,11 @@ internal partial class Gui
 		int height { get; }
 		string colour { get; }
 		
-		/*read*/ List<Widget> children { get; }
+		/*read*/ List<Widget> children 
+		{
+			[Peer, ResultNotNewlyAllocated] get
+				ensures Owner.Same(Owner.ElementProxy(result), result);
+		}
 		bool dispatch(Event that) /*mut*/;
 	}
 	internal abstract partial class DispatchTrait
@@ -35,32 +47,33 @@ internal partial class Gui
 		internal string id; 
 		[Peer] [ElementsPeer] internal List<Widget> children; 
 
-		public abstract void process(Event event_) /*mut*/; 
+		public abstract void process(Event event_) /*mut*/
+			modifies this.**;
+		; 
 
 		public bool dispatch(Event that) /*mut*/ 
+			modifies this.**;
 		{
-			if (this.id == that.targetId) 
+			if (this.id == that.targetId)
 			{
 				this.process(that);
 				return true;
 			}
 
-			foreach (Widget w in this.children)
-			{
-				if (w.dispatch(that)) return true;
-			}
+			for (int i = 0; i < this.children.Count; i++)
+				if (this.children[i].dispatch(that)) return true;
 			return false;
 		}
 
 		#region boilerplate
-			[Captured] internal DispatchTrait(string id, List<Widget> children) { this.id = id; this.children = children; }
-
-			// C# requires a class to implement all interface methods...
-			/*internal abstract int left { get; }
-			internal abstract int top { get; }
-			internal abstract int width { get; }
-			internal abstract int height { get; }
-			internal abstract string colour { get; }*/
+			[Captured] internal DispatchTrait(string id, List<Widget> children)
+				requires Owner.Same(Owner.ElementProxy(children), children);
+				ensures Owner.Same(this, children);
+			{ 
+				Owner.AssignSame(this, Owner.ElementProxy(children));
+				this.children = children;
+				this.id = id; 
+			} 
 		#endregion
 
 	}
