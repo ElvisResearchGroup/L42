@@ -58,7 +58,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     List<MethodType> mTypes = AlternativeMethodTypes.types(mDec);
     MethodType mType=AlternativeMethodTypes._firstMatchReturn(in.p,in.expected,mTypes);
     if (mType==null){
-      return new TErr(in,"",ret,ErrorKind.NotSubtypeMdf);
+      return new TErr(in,"None of the types of method "+s.getS()+" fits the required return type.",ret,ErrorKind.NotSubtypeMdf);
       }
 //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
 //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
@@ -107,7 +107,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
   computedMt=computedMt.withTs(tsToCaps).withMdf(TypeManipulation.mutToCapsule(computedMt.getMdf()));
   MethodType mTypeMVP=AlternativeMethodTypes._bestMatchMtype(in.p, computedMt, mTypes);
   if (mTypeMVP==null){
-    return new TErr(in,"mvp candidate notfound",mTypes.get(0).getReturnType(),ErrorKind.NotSubtypeClass);
+    return new TErr(in,(computedMt.getMdf()==Mdf.Lent?"Lent receiver;":"")+"None of the types of method "+s.getS()+" fits the required return type.",mTypes.get(0).getReturnType(),ErrorKind.NotSubtypeClass);
     }
 //To be happy, we can retype the obtained mut parameters into expected capsule
   TOut _newRes0=innerMVPRetype(res0,t0.withMdf(mTypeMVP.getMdf()));
