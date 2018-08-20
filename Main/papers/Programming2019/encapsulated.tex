@@ -323,7 +323,7 @@ class List {
 Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
 However, only \Q@capsule@ and \Q@imm@
 fields can be accessed in \validate.
-Thus, \Q@.innerValidate()@ can not be the \validate method for \Q@List@.
+Thus, \Q@.innerValidate()@ can not be the \validate{} method for \Q@List@.
 The solution is to use a `box' over our \Q@List@, and to validate our `box':
 
 \loseSpace\loseSpace\loseSpace

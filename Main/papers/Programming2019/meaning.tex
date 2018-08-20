@@ -57,7 +57,7 @@ these changes do not change expressiveness:
 \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@,
  where $T_1,\ldots\T_n$ are the types (including modifiers) of the fields of $C$.
 To provide more flexible initialization one could always make a factory method.
-\item We require that \validate can only use \Q@this@ to access fields,
+\item We require that \validate{} can only use \Q@this@ to access fields,
 this can be achieved by inlining method calls.
 %or if they are recursive, replacing them with calls to methods that take the fields of \Q@this@ instead of \Q@this@ itself.
 \item For simplicity, we do not have actual exception objects,
@@ -156,9 +156,9 @@ We denote with $r_l$ a redex that contains the location $l$.
 \item Field accesses in the main expression, 
 must be of the form $l\singleDot\f$.
 
-\item \validate takes a \Q@read this@, and uses \Q@this@ only to access fields. Even calling methods on \Q@this@
+\item \validate{} takes a \Q@read this@, and uses \Q@this@ only to access fields. Even calling methods on \Q@this@
 is disallowed.
-\item All the fields referred in \validate are either \Q@imm@ or \Q@capsule@.
+\item All the fields referred in \validate{} are either \Q@imm@ or \Q@capsule@.
 \item All the methods that access capsule fields 
 either have a \Q@read this@,
 or have a \Q@mut/capsule this@, no \Q@mut@ or \Q@read@ parameters, no \Q@mut@ result and 
@@ -171,7 +171,7 @@ in $\Kw{try}^\sigma\oC\e\cC\_$, $\e$ is not of the form $\ctx[$\Q@M(@$l;\_$\Q@)@
 
 We model subtyping with interfaces 
 and we do not consider subclassing.
-Indeed interfaces do not have an implemented \validate method, objects implementing those interfaces do.
+Indeed interfaces do not have an implemented \validate{} method, objects implementing those interfaces do.
 To enrich our formalism with subclassing, we would need to add the 
 well-formed criteria that \Q@validate()@ 
 methods start by checking the result of \Q@super@.\Q@validate()@.
@@ -454,23 +454,23 @@ i.e. $e_0$ can be typed when seeing all externally defined mutable references as
 \loseSpace
 \noindent\textit{Statement of Validation:}
 %We first need to define what it means for an object to be valid:
-An object is \emph{valid} iff calling its \validate method would
+An object is \emph{valid} iff calling its \validate{} method would
 deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an error.
-We also require that evaluating \validate preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.
+We also require that evaluating \validate{} preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.
 
 \noindent\textbf{Define} $valid(\sigma,l)$:\\*
 \indent $\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
 
-\noindent In order for validation to be meaningful it needs to be possible for \validate to potentially observe an invalid object. However, invalid objects should not be observed outside of \validate.
+\noindent In order for validation to be meaningful it needs to be possible for \validate{} to potentially observe an invalid object. However, invalid objects should not be observed outside of \validate.
 For this purpose we define the set of trusted steps, 
-as the call to \validate and the field accesses inside a monitor.
+as the call to \validate{} and the field accesses inside a monitor.
 Note that just the single small-step reduction
-of calling \validate is trusted, not the whole evaluation of the \validate expression.
+of calling \validate{} is trusted, not the whole evaluation of the \validate{} expression.
 
 
 \noindent\textbf{Define} $\mathit{trusted}(\ctx_v,r_l)$:\\*
 \indent either
-$r_l=l$\validate and
+$r_l=l$\validate{} and
  $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\square$\Q@)@$]$\\*
 \indent or
 $r_l=l$\Q@.f@ and

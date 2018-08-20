@@ -129,9 +129,9 @@ global variables would prevent reasoning over determinism due to the possibility
 %naive is unsound - person 3 bugs
 
 
-\section{\REVComm{The \validate Method remind of the goals for validate (i.e. that it be pure)}{2}{What about possible non-termination of validate()}}
+\section{\REVComm{The \validate{} Method}{2}{remind of the goals for validate (i.e. that it be pure); What about possible non-termination of validate()}}
 \label{s:validate}
-Thanks to TM and OC, we can now express the signature for \validate method as follows:
+Thanks to TM and OC, we can now express the signature for \validate{} method as follows:
 \saveSpace
 \begin{lstlisting}
 read method imm Bool validate();
@@ -139,7 +139,7 @@ read method imm Bool validate();
 \saveSpace
 %The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 
 %By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
-If the class containing the validate method has a super-class, we would automatically check \Q@super.validate()@ at the beginning of the sub-class’s \validate method, this is required as otherwise `invalid' objects could easily be created by simply overriding \validate.
+If the class containing the validate method has a super-class, we would automatically check \Q@super.validate()@ at the beginning of the sub-class’s \validate{} method, this is required as otherwise `invalid' objects could easily be created by simply overriding \validate.
 As this method is declared as \Q@read@, and only takes the implicit parameter \Q@this@ (as \Q@read@), we can guarantee the method is pure:
 \begin{itemize}
 \item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{
@@ -149,21 +149,21 @@ This can even be safe in a multi-thread environment: TM are often used to ensure
 \item nothing else is accessible (we do not have global variables).
 \end{itemize}
 
-\noindent \REVComm{Also note \validate is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.}{3}{Can ``leaking'' of an unchecked exceptions have negative consequences for validity? Leaking is usually a negative word used in a negative context.}
+\noindent \REVComm{Also note \validate{} is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.}{3}{Can ``leaking'' of an unchecked exceptions have negative consequences for validity? Leaking is usually a negative word used in a negative context.}
 
 
-Clearly the \validate method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
+Clearly the \validate{} method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
 On a first look this may seem an open contradiction
 with the aim of this work, however only calls to validate inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \validate,
 \Q@this@ is guaranteed to be valid.
-However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantees of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \validate may only use \Q@this@ to access fields.
-As a relaxation, we could allow calling instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \validate need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \validate, where \Q@this@ may be invalid.
+However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantees of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \validate{} may only use \Q@this@ to access fields.
+As a relaxation, we could allow calling instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \validate{} need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \validate, where \Q@this@ may be invalid.
 In some sense, those inlined methods and field accesses can be thought as macro-expanded.
 
 
 Finally,
-the code of \validate can not access  \Q@mut@ fields, because their content can be changed by unrelated code.
-With the modifiers presented so far, \validate can only access \Q@imm@ fields.
+the code of \validate{} can not access  \Q@mut@ fields, because their content can be changed by unrelated code.
+With the modifiers presented so far, \validate{} can only access \Q@imm@ fields.
 We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
 
 
@@ -209,10 +209,10 @@ The difference with respect to UML DataTypes
 %No, a type is not a class
 % are just a special case of simple classes.
 Validation for such a class can easily be enforced by generating checks on the result of \validate, immediately after each field update, and at the end of the constructor%
-%\footnote{Since the constructor only initialises fields; as with the \validate method itself, we allow field uses since \Q@this@ is not directly reached.}
+%\footnote{Since the constructor only initialises fields; as with the \validate{} method itself, we allow field uses since \Q@this@ is not directly reached.}
 %would require the initial/default value of \Q@this@ to be valid.}
 :
-% If a simple class provides a \validate method, then validation will be enforced.
+% If a simple class provides a \validate{} method, then validation will be enforced.
 % For \Q@Person@, intuitively, the code would behave as follow:
 
 %\Comment{if we made this public, all users who update the field need to call validate}%
@@ -234,7 +234,7 @@ class Person {
 \end{lstlisting}
 %... $\MComment{validation error}$ 
 
-% Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \validate method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
+% Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \validate{} method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
 \noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the validation of the \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
@@ -242,9 +242,9 @@ relaxation of TM or OC breaks our validation.
 
 \loseSpace
 \noindent\textit{Unrestricted use of object-capabilities:}
-Allowing \validate to (indirectly) use an object capability could allow for it to be non deterministic, by either:
+Allowing \validate{} to (indirectly) use an object capability could allow for it to be non deterministic, by either:
 \begin{itemize}
-\item allowing \validate to (indirectly) access a \Q@mut@ reference to a capability-object,
+\item allowing \validate{} to (indirectly) access a \Q@mut@ reference to a capability-object,
 \item relaxing the rule that capability methods must have a \Q@mut@ receiver, or
 \item allowing capability objects to be created out of thin air.
 \end{itemize}
@@ -304,7 +304,7 @@ In this example we use \Q@AtomicBool@ as a back-door to remotely break the invar
 %your: just points outside: It would require some powerful static or dynamic analysis to keep track of every case the ROG of \Q@Person@ could be indirectly mutated, and insert validity checks appropriately, however ensuring deep mutability trivialises this for simple classes.
 
 
-Allowing such back-doors could also be used to break the determinism of the \validate method: they may store and read information about previous calls.
+Allowing such back-doors could also be used to break the determinism of the \validate{} method: they may store and read information about previous calls.
 
 %In our simple example, \Q@Person@ objects can be mutated using the setter, and exposed using the getter.
 %We may consider the getter to be safe since in modern languages we expect strings to be immutable objects.
@@ -371,7 +371,7 @@ assert bob.name().isEmpty(); // now we have a reachable invalid object!
 \saveSpace
 As you can see, recovering from a validation failure in this way is unsound and breaks the guarantees of validation.
 Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
-Since calls to \validate may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break validation.
+Since calls to \validate{} may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break validation.
 
 %LATER: This means that we could relax our Strong Exception Safety to hold only on unchecked exceptions (by restricting only \Q@try-catch@ blocks that capture unchecked exceptions.
 

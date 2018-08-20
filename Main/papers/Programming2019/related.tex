@@ -71,7 +71,7 @@ while InvTS~\cite{gorbovitski08efficient} lets you write Python conditions
 while using this domain specific language, and the invariant checking
 will not be triggered.
 Validation is clearly related to class invariants, and can be used to represent them.
-To this aim, \validate will define when the invariant is expected to hold:
+To this aim, \validate{} will define when the invariant is expected to hold:
 literature on class invariant accepts that sometime the object invariant may not hold,
 and that is exacerbated because of re-entrancy and aliasing
 \cite{leino2004object,drossopoulou2008unified}.
@@ -223,10 +223,10 @@ Many other works%
  check/run
 the invariant code at the start and end of every public
 method; depending on the approach, this may even include trivial getters.
-In  our approach, we call the \validate method
+In  our approach, we call the \validate{} method
 one time at the end of each setter, capsule mutator method and constructor.
 We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
-Of course, \validate can still be called indirectly, for example by calling a setter.
+Of course, \validate{} can still be called indirectly, for example by calling a setter.
 We expect our approach to result in a dramatic reduction over the number of required checks,
 except for cases when public methods just update many fields directly (without using setters).
 

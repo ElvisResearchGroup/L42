@@ -1,4 +1,17 @@
 \saveSpace
+\section{Summary of formalization}
+\saveSpace
+In Appendix A we formalize \name; in particular, we 
+show detailed behaviour and soundness
+of the compilation process itself;
+a similar property was called meta-level-soundness in~\cite{servetto2014meta}.
+Our process requires traits to be well-typed before being reused,
+however code literals are not required to be well typed before flattening.
+This design supports multiple recursive types without having to
+predict the structure of the flattened code, as it was
+needed in~\cite{deep}.
+
+\saveSpace
 \section{Related Work}
 \saveSpace
 Literature on code reuse is too vast to let us do justice to it in a few pages.
