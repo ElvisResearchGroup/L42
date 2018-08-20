@@ -74,7 +74,7 @@ We are now at the starting point again:
 \item or we duplicate the code of the \Q@Bag@ implementation with minimal
   adjustments in \\* \Q@class Bag5 extends AbstractSetOrBag@;
 \item or we introduce an
-\Q@abstract class BagN extends AbstractSetOrBag@ and \Q@class Bag5 extends BagN@
+\Q@abstract class BagN extends AbstractSetOrBag@ and \\*\Q@class Bag5 extends BagN@
 and we modify \Q@Bag@ so that  \Q@class Bag extends BagN@.
 Note that this last solution is changing the public interface of the formerly released \Q@Bag@ class, and
 this may even break retro-compatibility (if a client program was using

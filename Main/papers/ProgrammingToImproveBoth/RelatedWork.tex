@@ -229,6 +229,19 @@ synthesized from the other parameters.
 %is it required to be well-typed before being composed with other code?
 %\end{minipage}
 %second column
+
+
+In this table we show if some constructs support certain features:
+Direct instantiation (as in \Q@new C()@),
+Self instantiation (as in \Q@new This()@),
+Is this construct a `Unit of use'?, a `Unit of reuse'?,
+Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
+support for binary methods,
+does inheritance of this construct induce subtype?,
+is the code of this construct required to be well-typed before being inherited /imported in a new context?
+is it required to be well-typed before being composed with other code?
+\textbf{Y} and X means yes and no; we use ``-'' where the question is not applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
+
 \begin{minipage}[t]{0.9\textwidth}
 \newcommand{\YY}{\textbf{Y}}
 \begin{center}
@@ -262,15 +275,5 @@ ${}_{}$\\
 \end{center}
 \end{minipage}
 
-In this table we show if some constructs support certain features:
-Direct instantiation (as in \Q@new C()@),
-Self instantiation (as in \Q@new This()@),
-Is this construct a `Unit of use'?, a `Unit of reuse'?,
-Does using this construct introduce a type? and is the induced type the type of \Q@this@?,
-support for binary methods,
-does inheritance of this construct induce subtype?,
-is the code of this construct required to be well-typed before being inherited /imported in a new context?
-is it required to be well-typed before being composed with other code?
-\textbf{Y} and X means yes and no; we use ``-'' where the question is not applicable to the current approach. For example the original trait model was untyped, so typing questions makes no sense here.
 
 
