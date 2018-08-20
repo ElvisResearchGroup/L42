@@ -3,23 +3,25 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Contracts;
 
-[Immutable] internal partial class Gui {
-	[Pure] [Verify(false)] internal static void Debug(string s) 
+[Immutable] internal partial class Gui
+{
+	[Pure] [Verify(false)] internal static bool Debug(string s)
+		ensures result == true;
 	{
-		Console.Error.WriteLine(s); //! method invocation may violate the modifies clause of the enclosing method
+		Console.Error.WriteLine(s); //Verification Error: method invocation may violate the modifies clause of the enclosing method
+		return true;
 	}
 	internal readonly string id;
 
-	internal void display(string title, int x, int y, /*mut*/ Widget body, string[] events) /*mut*/
+	internal void display(string title, int x, int y, Widget body, string[] events)
 	{
 		this.open(title, "<div id='Top'></div>", x, y);
 		this.draw(body);
 		this.dispatch(body, events);
-		//this.dispatch(body, this.events);
-
+		// TODO: this.dispatch(body, this.events);
 	}
 
-	void draw(/*read*/ Widget that) /*mut*/
+	void draw(Widget that)
 	{
 		this.set_("<div id='Top' style='position: relative; height: 750px; width: 750px; border: solid black 2px;'>" + this.format(that) + "</div>", "Top");
 	}
@@ -29,7 +31,7 @@ using Microsoft.Contracts;
 		return that.Replace("\\", @"\\").Replace("\"", @"\""").Replace("\'", @"\'").Replace("\n", @"\n");
 	}
 
-	void set_(string that, string id) /*mut*/
+	void set_(string that, string id)
 	{
 		string qid = "'" + JsEscape(id) + "'";
 		string qText = "'" + JsEscape(that) + "'";
@@ -45,7 +47,7 @@ using Microsoft.Contracts;
         this.executeJs(cmd);
 	}
 
-	[Pure] string formatChildren(/*read*/ Widget that)
+	[Pure] string formatChildren(Widget that)
 	{
 		StringBuilder children = new StringBuilder();
 		for (int i = 0; i < that.children.Count; i++) 
@@ -53,7 +55,8 @@ using Microsoft.Contracts;
 		return children.ToString();
 	}
 
-	[Pure] string format(/*read*/ Widget that)     { return format1("<div id='" + id + "' onclick=\"event42('" + id + "::Pressed::more')\" style='position: absolute;", that); }
+	// This horrible looking stream of functions is just to make verification faster compared to putting it all in one function.
+	[Pure] string format(Widget that)     { return format1("<div id='" + id + "' onclick=\"event42('" + id + "::Pressed::more')\" style='position: absolute;", that); }
 	[Pure] string format1(string res, Widget that) { return format2(res + "left: " + that.left + "px;",               that); }
 	[Pure] string format2(string res, Widget that) { return format3(res + "top: " + that.top + "px;",                 that); }
 	[Pure] string format3(string res, Widget that) { return format4(res + "height: " + that.height + "px;",           that); }
@@ -83,18 +86,16 @@ using Microsoft.Contracts;
 
 	void open(string html, int x, int y)  /*mut*/ 
 	{
-		//Console.Error.WriteLine("GuiPlugin.open(wName: {0}, html: {1}, x: {2}, y: {3})", this.id, html, x, y);
+		//Debug("GuiPlugin.open(wName: {0}, html: {1}, x: {2}, y: {3})", this.id, html, x, y);
 		// TODO: PLUGIN
 	}
 
 	string executeJs(string that) /*mut*/ 
 	{
-		//Console.Error.WriteLine("GuiPlugin.executeJs(wName: {0}, command: {1})", this.id, that);
+		//Debug("GuiPlugin.executeJs(wName: {0}, command: {1})", this.id, that);
 		// TODO: PLUGIN
 		return "";
 	}
 
-	#region boilerplate
-		internal Gui(string id) { this.id = id; }
-	#endregion
+	internal Gui(string id) { this.id = id; }
 }

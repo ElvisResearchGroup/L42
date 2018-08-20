@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 internal class MainC
 {
+	// Note: I have split up the Main method into several functions (events, makeA...) etc, since otherwise boogie takes an incredibley long time to verify this file.
 
 	private static SafeMovable makeC() 
 	{
@@ -13,7 +14,7 @@ internal class MainC
 	}
 	private static SafeMovable makeB()
 	{
-		List<Gui.Widget> list = new List<Gui.Widget> {makeC()};
+		List<Gui.Widget> list = new List<Gui.Widget>{makeC()};
 		Owner.AssignSame(list, Owner.ElementProxy(list));
 		return new SafeMovable("B", 50, 50, 128, 128, "blue", list);
 	}
@@ -62,6 +63,7 @@ internal class MainC
 			"EXIT"
 		};
 	}
+
 	internal static void Main(string[] args)
 	{
 		SafeMovable w = make();

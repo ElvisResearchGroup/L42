@@ -12,7 +12,9 @@ internal partial class Gui
 
 		internal Event(string that)
 		{
-			string[] s = that.Split(new String[]{"::"}, StringSplitOptions.None);
+			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
+			// If I don't do some check like this, boogie will complain about potential out-of bounds indexes in the following lines,
+			// (Despite that fact that those lines will throw exceptions anyway if the index is invalid...)
 			if (s.Length < 2)
 				throw new System.ArgumentException("Expected a string containing ::", "that");
 
@@ -22,10 +24,6 @@ internal partial class Gui
 		}
 	}
 
-	static List<Widget> WidgetList()
-	{
-		return new List<Widget>();
-	}
 	internal interface Widget 
 	{
 		string id { get; }
@@ -35,23 +33,24 @@ internal partial class Gui
 		int height { get; }
 		string colour { get; }
 		
-		/*read*/ List<Widget> children 
+		List<Widget> children 
 		{
 			[Peer, ResultNotNewlyAllocated] get
 				ensures Owner.Same(Owner.ElementProxy(result), result);
 		}
-		bool dispatch(Event that) /*mut*/;
+		bool dispatch(Event that);
 	}
+
 	internal abstract partial class DispatchTrait
 	{
 		internal string id; 
 		[Peer] [ElementsPeer] internal List<Widget> children; 
 
-		public abstract void process(Event event_) /*mut*/
+		public abstract void process(Event event_)
 			modifies this.**;
 		; 
 
-		public bool dispatch(Event that) /*mut*/ 
+		public bool dispatch(Event that)
 			modifies this.**;
 		{
 			if (this.id == that.targetId)
@@ -62,19 +61,22 @@ internal partial class Gui
 
 			for (int i = 0; i < this.children.Count; i++)
 				if (this.children[i].dispatch(that)) return true;
+
 			return false;
 		}
+	
+		[Captured] internal DispatchTrait(string id, List<Widget> children)
+			requires Owner.Same(children, Owner.ElementProxy(children));
+			ensures Owner.Same(this, children);
+		{ 
+			Owner.AssignSame(this, children);
+			assume Owner.Same(children, Owner.ElementProxy(children)); // WTF? Why do I have to assume my own pre condition?
 
-		#region boilerplate
-			[Captured] internal DispatchTrait(string id, List<Widget> children)
-				requires Owner.Same(Owner.ElementProxy(children), children);
-				ensures Owner.Same(this, children);
-			{ 
-				Owner.AssignSame(this, Owner.ElementProxy(children));
-				this.children = children;
-				this.id = id; 
-			} 
-		#endregion
-
+			// If I delete the above line, the following line gives the following verification errors:
+			//     assigning the owner of this object may violate the modifies clause
+			//     illegal assignment to ElementsPeer field, elements may have different owners
+			this.children = children;
+			this.id = id; 
+		} 
 	}
 }
