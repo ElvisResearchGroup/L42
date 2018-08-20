@@ -172,7 +172,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
 			\begin{itemize}
 				\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
-		    	\item Otherwise, by our well-formedess criteria that \validate only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
+		    	\item Otherwise, by our well-formedess criteria that \validate{} only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
 				By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
 		  	\end{itemize}
 	  \end{itemize}

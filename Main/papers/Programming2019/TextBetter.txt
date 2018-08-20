@@ -1,3 +1,14 @@
+Gordon
+x1=e1
+x2=e2
+m(x1,x2)
+FV(e1) is all imm/capsule
+or 
+FV(e2) is all imm/capsule
+
+
+res=s.runStackOverflow(()->{do stuff}, soe->{})
+
 ----------
 Recently, a new design for type modifier has emerged, that
 radically improve their usability. (while preserving strong properties)
@@ -6,7 +17,7 @@ on this new design: Gordon, Pony and 42.
 Those type modifiers provide opt-in restrictions/guarantees:
 A programmer can declare all types as mut and the language feels like Java.
 However, when immutable and capsule are used some code may perform better on a multi core machine, either automatically (gordon) or if the program uses actors (pony).
-42 developers also recognize that those modifiers may provide benefit for parallelism, but they focus on the implications on third party library usage safery.
+42 developers also recognize that those modifiers may provide benefit for parallelism, but they focus on the implications on third party library usage safety.
 
 In this paper we show that a language supporting type modifiers as in gordon,pony,42
 can support a sound and efficient form of run-time  verification that we call
@@ -14,6 +25,30 @@ validation.
 We implemented validation on 42 and we show [efficiency]
 We prove that our system is sound on any language supporting certain basic properties.
 [explain validation]
+
+
+Class invariants are allowed to be broken in a controlled way, this create difficulties to ensure soundness of invaraint
+checking. To allow formal reasoning all the sound approaches that we know just use the invariant propery to generate a stronger property that always hold [cites]
+For example, in the case of specSharp, such propery will be 'unpacked or invariant'.
+In this article we call this propery 'validity'. This is clearly a more primitive property with respect to class invaraint:
+for example, "shouldHold->invariant" is just a special case of "shouldHold1->invariant1 & .. & shouldHoldn->invariantn". This is similar to
+plaid typestate[]
+
+
+Comparision with D/Effeil/Jose/JML
+Ease of use: easier +2
+Sound: nope -3
+Efficiency: shit -10
+generality: +3
+
+Comparision with SpecSharp
+Ease of use: harder -10
+Sound: backdoors + throw exceptions + capability -2
+Efficiency: shit +1
+generality: +2
+annotation burden is high and defaults do not help a lot
+
+
 there is a need for brakable properties, but
  there is also a need for always-hold properties
 the wish for braking the invariant is instrumental:
@@ -50,3 +85,16 @@ SW{
     SW{Box{  Button(Box)}}
     }
 }
+
+when call o.foo()
+    check that object o is peer-consistent, it is known 'o.invariant == true'
+
+    
+    
+    
+    sound consitency
+      invariant protocol:
+        box pattern->stability
+        
+    
+    
