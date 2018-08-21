@@ -23,11 +23,11 @@ unrestricted I/O and exceptions.
 % Point: new TM is usable, and there are 3 languages using it for parallelism
 
 Recently, a new design for \emph{type modifiers} (TMs) has emerged that radically improves their usability.
-Three different research languages are being independently developed relying on this new design: \IO{Gordon}~cite{TODO}, Pony~cite{TODO} and 42~cite{TODO}. Those modifiers offer us a simpler way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
-Gordon and Pony use TMs to provide automatic/correct parallelism~cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}.
-\IO{Add explanation of Gordon+Pony lots of code}
+Three different research languages are being independently developed relying on this new design: \IO{Gordon}~\cite{?}, Pony~\cite{?} and L42~\cite{?}. Those modifiers offer us a simpler way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
+Gordon and Pony use TMs to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}.
+\IO{Add explanation of Gordon+Pony lots of code}.
 
-\emph{Object capabilities} (OCs) are a complementary technique 
+\MS{\emph{Object capabilities} (OCs) are a complementary technique }
 	% todo let marco right this:
 		% breif summary of what they are for
 		% citations....
@@ -52,72 +52,54 @@ Gordon and Pony use TMs to provide automatic/correct parallelism~cite{GordonEtAl
 %Given these benefits, many emerging languages (such as Rust~\cite{matsakis2014rust} and newspeak~\cite{bracha2010modules}) support some form of type modifiers and/or object capabilities.
 
 \loseSpace
-\noindent\textit{Validation:}
-\label{s:validation}
-In this paper, we rely on TMs and OCs to define a language where a user defined property is ensured to hold for all instances of a class:
-all classes provide a \Q@Bool validate()@\ method, encoding the expectations all instances should satisfy.
-As a short cut, if a class does not explicitly define a
-\validate{} method, it is assumed to have an implicit default implementation of \Q@{return true;}@, i.e. every instance is valid.
-%A class may provide a \Q@Bool validate()@ method, encoding the expectations all instances should satisfy.
-%TO DISCUSS: what about validate can only refer to imm and capsule fields?; those that do not, have an implicit default implementation of \Q@{return true;}@, i.e. every instance is valid.
-An object \Q@o@ is valid when \Q@o.validate()@ would return \Q@true@, and is invalid otherwise (e.g. if it returns \Q@false@, throws an exception or does not terminate).
-We say that a language enforces validation iff:
-\begin{itemize}
-\item \validate{} methods are guaranteed to be pure; i.e. that they are deterministic and do not mutate any state.%; hence they represent logic predicates on the receiver’s reachable object graph (ROG).
-\item Invalid objects are not reachable by application code; thus programmers can always assume the properties checked by \validate{} hold.
-For example, at the point of a method call, all the parameters (including \Q@this@) and all the objects in their ROGs will be valid.
-\end{itemize}
-%-------------------------------------
-Different verification approaches have different invariant protocols~\cite{FlexibleInvariants}, specifying when the invariant is expected to hold, and when it is allowed to be violated.
-The common invariant protocol~\cite{JML, OOSC..., D, Eiffel} only enforce the invariant on the receiver before and after every public method call. Sadly, this allows such receivers to be invalidated and passed around to other code.
+We propose a way of soundly verifying class invariants by using a minimalistic code instrumentation strategy, which can be applied to languages like \IO{Gordon}, L42 or Pony without adding any additional syntax, nor changing their type systems.
+ A class encodes its invariant by providing a boolean method called \Q@invariant@; we say that an object whose \Q@invariant@ method would return true is \emph{valid}. Our approach uses the guarantees already provided by TMs and OCs to ensure that \Q@invariant@ is \emph{pure}\footnote{We say a method is \emph{pure} if it is deterministic and does not mutate existing state.} and called before a possibly invalid object becomes reachable. Such calls to \Q@invariant@ are not present in the source code but are instead performed by our instrumentation; in addition, if such a call returns \Q@false@ (indicating the receiver was invalid) an unchecked exception is thrown; this is similar to failed assertions in Java.
+
+% As for failed assertions in Java, an unchecked exception is thrown if such a call returns \Q@false@ (indicating that the object is invalid).
+
+% Note that we do not expect invocations of \Q@invariant@ to be present in the code written by the programmer, \Q@invariant@ invocations are injected by our instrumentation.
+
+
+%That is, we do not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type system ensures the object is not reachable.
+% If you were to step with a debugger, you may see invalid objects, and validation checks failing.
+
+% Our approach hijacks the already present TMs and OCs to ensure that a 
+% \Q@invariant@ is automatically called at the right times during execution; an unchecked exception is raise
+% if such method return false. We use TMs and OCs also to check that the \Q@invariant@ method is `pure', hence they represent logic predicates on the receiver reachable object graph (ROG)%
+%We say that an object \Q@o@ is valid when \Q@o.invariant()@ would return \Q@true@, and is invalid otherwise (e.g. if it returns \Q@false@, throws an exception or does not terminate).
+
+%\hrule
+
+Different verification approaches have different invariant protocols~\cite{FlexibleInvariants}, specifying when the invariant is expected to hold and when it is allowed to be violated.
+The common invariant protocol~\cite{?}
+%JML, OOSC..., D, Eiffel
+only enforces the invariant on the receiver before and after every public method call. Sadly, this allows such receivers to be invalidated and passed around to other code.
 
 % TODO: Call the invariant protocl 'validation'
-Our invariant protocol follows the mindset of Spec\#~\cite{TODO}: we allow temporally violating objects invariants when their ROG is being updated; however, we guarantee that such objects are not involved in execution during this process. \footnote{Spec\# 
-is more general, and, as extra feature, allows specially declared methods to use invalid objects, while we require such objects to be never used.}
+Our invariant protocol follows the mindset of Spec\#~\cite{?}: we allow temporally violating an object's invariant\footnote{If you were to step with a debugger, you may still see invalid objects, and \Q@invariant@ calls failing.} when their reachable object graph (ROG) is being updated; however, we guarantee that such objects are not used during this process.\footnote{Spec\# is more general and, as an extra feature, allows specially declared methods to use invalid objects, while we require such objects to never be used.}
 %Our approach ensures that invalid objects are never accessed by code.
 Our system also allows catching invariant failures as exceptions; this is sound since TMs can guarantee that the invalid object is no longer accessible.
 
-Our approach has 2 main benefits over the traditional one: it greatly simplifies reasoning since programmers can assume that objects accessible to them are valid. %programmers can always assume that all the accessed objects are valid. 
-It requires that the invariant be checked significantly less often; we have conducted a case-study which shows that the traditional approach staggeringly performs 10,000 times more runtime-checks than ours.
+Our approach has 2 main benefits over the traditional one: it greatly simplifies reasoning since programmers can assume that objects accessible to them are valid\footnote{
+In particular, all parameters (including \Q@this@) and their ROGs will be valid.}. And it requires that the invariant be checked significantly less often; we have conducted a case-study which shows that the traditional approach staggeringly performs 10,000 times more runtime-checks than ours.
 % systems performs 10,000 less  is up to 10,000 times slower.
 % \item Debugging is easier since the invariant failure always happens when the method invalidating the object is still active on the stack trace.
 %\end{itemize}
 
-Spec\# uses uses heavy anotations to guid static-analysis to reason about ownership.
 
-In contrast to Spec\#, which we use a much simpler and user-friendly TMs
-
-We also improve over the Spec\# approach, which uses static-analysis to reason about ownership. We enforce our guarantees relying on the much simpler and user-friendly TMs. In our case study we can see how our approach requires much less annotations.
+TMs are a simple and easy to use technique 
+to perform aliasing and mutability control.
+Static-analysis, as employed by Spec\#, is
+more fine grained but requires more annotations, and those annotations are more involved.
+\IO{In particular, TMs only  require reasoning about encapsulation locally in classes with an invariant over such encapsulated state.} In our case study, Spec\# required 3 times more annotations than our approach.
+%TODO improve?
+%simplifies the writing of code that is unrelated to invariant-checking
 
 %------------------------------
-Note that we do not require that invariants are never violated, rather we just ensure that invalid objects are never accessed by code. Our system allows catching the invariant failure as an exception; TMs can guarantee that the invalid object is no longer accessible.
-
-Invariant protocols have many options~\cite{FlexibleInvariants}. Here we allow temporally violating
-objects invariants when their ROG is being updated; however, as in Spec\#~\cite{TODO}\footnote{Spec\# 
-however also allows specially declared methods to use invalid objects.}, we guarantee that such objects are not involved in execution during this process. As opposed to Spec\# which uses static-analysis to reason about ownership, we achieve this relying on the much simpler and user-friendly TMs.
-
-In contrast, the common invariant protocol~\cite{JML, OOSC..., D, Eiffel} is that all public-method calls requires and ensures validity of their receiver, both before and after the call. This allows the object to be visible as invalid during the execution of such methods, including allowing private method calls on invalid objects or even passing an invalid objects to other functons. However due to aliasing this approach makes reasoning much more difficuilt, an object can not be assumed to be valid since at any time their might be an executing method call over it. In addition, performig runtime-verification of this approach is much more costly than ours, we have conducted a case-study which showed that it is several orders of magnitude slower.
-
-
-
-This greatly simplify reasoning since programmers can always assume that all the accessed objects are valid.
-In the traditional system (D,EffielPro
-%objectOriented software constuction
-,EffeilAgainst), thanks to unrestricted aliasing, any method may receive an invalid object as a parameter.
-
-This also improves the efficiency of our approach:
-by controlling the scope of invariant violation, we can insert invariant run-time checking
-only in a handful of places, while the traditional system requires invariant checking before and after every public method call (Jose, Effiel, D,(Open)JML,..).
-
-We performed case studies showing the impact of this optimization, and we discovered to be many order of magnitude (...)
-
-
-
-
 %---
 % \item \REVComm{It is the responsibility of the class \emph{author} to ensure the invariant is preserved across all public methods, whereas with validation it is the responsibility of the class \emph{user} to not (indirectly) mutate the object in any way that will break it}{2}{What does this mean?}.
 
-\end{itemize}
+%\end{itemize}
 % \noindent Our system is more primitive and general than class invariants, and can be used as a building block to encode 
 % them.
 % and allows 
@@ -127,31 +109,15 @@ We performed case studies showing the impact of this optimization, and we discov
 %your ``and'' was wrong, is ``or''
 % the class invariant holding or a mutator method currently running (this is easily implemented with a boolean % flag).}{3}{Hard to understand setence}
 
-\loseSpace
-\noindent\textit{Our approach:}
-Our language\footnote{
-In literature, both static and run-time verification discuss
-the correctness of common programming patterns in conventional languages.
-Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object oriented programming.
- Here instead we define a new language, where TM and OC tame the use of imperative features. In this way
-we have a fresh start where
-% Here instead we define a new language, where
-many \REVComm{conventional programming patterns are disallowed}{2}{[What] patterns are disallowed?},
-and need to be replaced with other patterns allowing simpler reasoning.
-} supports validation by invoking the \validate{} method, before a possibly invalid object becomes reachable. Such invocations are not present in the code written by the programmer. 
-Like assertions, an (unchecked) exception is thrown if such a call returns \Q@false@ (indicating that the object is invalid).
-
-Note how validation does not ensure the absence of invalid objects, instead we use exceptions to steer execution to a point where the type system ensures the object is not reachable.
-If you were to step with a debugger, you may see invalid objects, and validation checks failing.
-
-\noindent Our approach follows the principles of \REVComm{\emph{Defensive/Offensive programming}~\cite{WikiDefensive}}{2}{Is [this citation] a (or the most) reliable source of defensive programming principles?}:
+\noindent\IO{Our approach follows the principles of \REVComm{\emph{Defensive/Offensive programming}~\cite{WikiDefensive}}{2}{Is [this citation] a (or the most) reliable source of defensive programming principles?}:
 \begin{itemize}
 \item The failure (an unchecked exception)
 is raised \REVComm{as close as possible to the defect}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.
 \item No attempt to fix or recover the invalid object is performed.
+\end{itemize}
+}
 %, and all objects observing modified by the execution
 %creating such objects are made be unreachable if the corresponding unchecked exception was to be captured.
-\end{itemize}
 
 %This approach contrasts with an alternative approach, %that of static verification, in which case a program that %could produce invalid objects would fail to compile. Our %approach is 
 %more flexible 
@@ -160,6 +126,8 @@ is raised \REVComm{as close as possible to the defect}{3}{[meaning] is not clear
 % \subsection{Random stuff }
 % We show that a na\"{i}ve approach that just checks \validate{} at the end of constructors and setters would be insufficient. We take advantage of TM+OC to conservatively identify classes where validation is possible.
 %
+
+\begin{comment}
 \noindent\textit{Similarity with checked casts:}
 %\subsection{Extended type system and similarity with checked casts}
 Even if not as good as full static verification, from a formal perspective
@@ -183,7 +151,7 @@ or even on the same one in another moment.
 In the same sense as checked-casts, object construction and ROG mutation are soundly checked by our system,
 and success in a mutation means that in that specific execution, validity was preserved.
 
-
+\end{comment}
 
 
 %load Item i
@@ -232,7 +200,11 @@ and success in a mutation means that in that specific execution, validity was pr
 %%%
 
 
-\noindent\textit{Structure of our paper:} We now present how a real language could support
+\noindent\textit{Structure of our paper:}
+TODO...
+
+\begin{comment}
+ We now present how a real language could support
 validation. 
 We would like to underline that the
 features we need have all been presented in the past, but their application to sound validation has never been explored.
@@ -250,7 +222,5 @@ To clearly communicate what kind of checks the language semantics should perform
 However, our proposed approach is independent of the actual technique to insert these checks, and they may instead be inserted directly into bytecode, or they can be part of the underlying semantics of a virtual machine.
 
 In Section \ref{s:meaning} we will provide formal definitions, and in Appendix \ref{s:proof} we provide  a proof that our language soundly enforces validation.
-
-
-
+\end{comment}
 
