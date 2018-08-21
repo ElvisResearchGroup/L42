@@ -41,7 +41,13 @@ internal partial class Gui
 		bool dispatch(Event that);
 	}
 
-	internal abstract partial class DispatchTrait
+	// I need to define this class since the constructor for System.Object is not declared as 'Pure'
+	// This means that the static analayser thinks calls to 'base()' on a class deriving from Object could mutate memory.
+	// This particularlly means that after that call (which is implicitly the first thing in a constructor)
+	// A constructors precondition can no longer be assumed
+	internal class PureObject { [Pure] internal PureObject() {} }
+
+	internal abstract partial class DispatchTrait: PureObject
 	{
 		internal string id; 
 		[Peer] [ElementsPeer] internal List<Widget> children; 
@@ -65,18 +71,13 @@ internal partial class Gui
 			return false;
 		}
 	
-		[Captured] internal DispatchTrait(string id, List<Widget> children)
+		[Captured, Pure] internal DispatchTrait(string id, List<Widget> children)
 			requires Owner.Same(children, Owner.ElementProxy(children));
 			ensures Owner.Same(this, children);
 		{ 
 			Owner.AssignSame(this, children);
-			assume Owner.Same(children, Owner.ElementProxy(children)); // WTF? Why do I have to assume my own pre condition?
-
-			// If I delete the above line, the following line gives the following verification errors:
-			//     assigning the owner of this object may violate the modifies clause
-			//     illegal assignment to ElementsPeer field, elements may have different owners
 			this.children = children;
 			this.id = id; 
-		} 
+		}
 	}
 }
