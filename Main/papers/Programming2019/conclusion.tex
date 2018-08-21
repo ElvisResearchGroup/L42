@@ -31,3 +31,12 @@ but is a building block they can rely upon.
 The popularity of TM and OC is growing, and we expect future languages to support some variation of these.
 Crucially, any language already designed with TM and OC
 can also support sound validation with minimal added complexity.
+
+
+\noindent\textit{Our approach:}
+In literature, both static and run-time verification discuss
+the correctness of common programming patterns in conventional languages.
+Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object oriented programming.
+ Here instead we build on languages using TMs and OCs to tame the use of imperative features. In this way
+we have a fresh start where static variables are disallowed, unchecked exceptions require care to be captured, and I/O is allowed only when an opportune capability object is reachable.
+Following those restrictions allow simpler reasoning.
