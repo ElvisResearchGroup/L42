@@ -1,0 +1,160 @@
+// The following example comes from the ECOOP 2004 paper
+
+using Microsoft.Contracts;
+
+// ---------- Spouse -----------------------------------------------------------------------
+
+public sealed class Person {
+  [Rep] Possession possn;
+  [Peer][Dependent(typeof(Person))] internal Person spouse;
+
+  invariant this.spouse != null ==> this.spouse.spouse == this;
+
+  internal void Marry([Captured] Person! p)
+    requires IsPeerConsistent;
+    requires p != this;
+    requires this.spouse == null;
+    requires p.spouse == null;
+    modifies this.spouse, p.spouse;
+  {
+    additive expose (this) {
+      additive expose (p) {
+        this.spouse = p;
+        p.spouse = this;
+      }
+    }
+  }
+
+  internal void MarryAssignTheOtherWayAround([Captured] Person! p)
+    requires IsPeerConsistent;
+    requires p != this;
+    requires this.spouse == null;
+    requires p.spouse == null;
+    modifies this.spouse, p.spouse;
+  {
+    additive expose (this) {
+      additive expose (p) {
+        // the following two assignments are performed in the other order from above
+        p.spouse = this;  // error: assignment requires this.owner==Placeholder || this.owner==p.owner, which might not hold here
+        this.spouse = p;
+      }
+    }
+  }
+
+  internal void MarryAssignTheOtherWayAround_GoodnessRestored([Captured] Person! p, bool coinFlip)
+    requires IsPeerConsistent;
+    requires p != this;
+    requires this.spouse == null;
+    requires p.spouse == null;
+    modifies this.spouse, p.spouse;
+  {
+    additive expose (this) {
+      additive expose (p) {
+        // After the following owner assignment, the other two assignments can be done in either order
+        Owner.AssignSame(p, this);
+        if (coinFlip) {
+          p.spouse = this;
+          this.spouse = p;
+        } else {
+          this.spouse = p;
+          p.spouse = this;
+        }
+      }
+    }
+  }
+
+  [Captured]
+  internal void Marry_CaptureThis(Person! p)
+    requires p.IsPeerConsistent;
+    requires p != this;
+    requires this.spouse == null;
+    requires p.spouse == null;
+    modifies this.spouse, p.spouse;
+  {
+    additive expose (this) {
+      additive expose (p) {
+        p.spouse = this;
+        this.spouse = p;
+      }
+    }
+  }
+
+  [Captured]
+  internal void Marry_CaptureEither([Captured] Person! p)
+    requires p != this;
+    requires this.spouse == null;
+    requires p.spouse == null;
+    modifies this.spouse, p.spouse;
+  {
+    additive expose (this) {
+      additive expose (p) {
+        this.spouse = p;
+        p.spouse = this;
+      }
+    }
+  }
+
+  void MM() {
+    if (spouse != null) {
+      assert Owner.Same(this, spouse);
+    }
+  }
+
+  void NN() {
+    if (possn != null) {
+      assert Owner.Is(possn, this, typeof(Person));
+    }
+  }
+
+  void PP() {
+    additive expose (this) {
+      object o = new object();
+      Owner.Assign(o, this, typeof(Person));
+      assert Owner.Is(o, this, typeof(Person));
+    }
+  }
+
+  void A0(Person! subject) requires Owner.Different(this,subject); { expose (this) {
+    Owner.Assign(subject, this, typeof(Person));};  // error: subject must be un-owned
+  }
+
+  void A1([Captured] Possession! subject) {
+    Owner.Assign(subject, this, typeof(string));  // error: owner frame is not related to type of owner reference
+  }
+
+  void A2([Captured] Possession! subject) {
+    Owner.Assign(subject, this, typeof(Person));  // ok: new owner is not unpacked, but subject is peer consistent
+  }
+
+  void A3([Captured] Possession! subject)
+    requires subject.IsPeerConsistent && !Owner.Same(this, subject);
+  {
+    additive expose (this) {
+      Owner.Assign(subject, this, typeof(Person));  // finally good
+    }
+  }
+
+  void B0(Person! subject) {
+    Owner.AssignSame(subject, this);  // error: subject must be un-owned
+    assume false;
+  }
+
+  void B1() {
+    if (possn != null) {
+      object subject = new object();
+      Owner.AssignSame(subject, possn);  // this is okay since subject is peer consistent (and we do not permit quantification over all owned objects)
+    }
+  }
+
+  void B2() {
+    additive expose (this) {
+      if (possn != null) {
+        object subject = new object();
+        Owner.AssignSame(subject, possn);  // aah! isn't that nice!
+      }
+    }
+  }
+}
+
+public class Possession {
+}

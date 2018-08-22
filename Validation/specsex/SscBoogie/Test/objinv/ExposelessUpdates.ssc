@@ -1,0 +1,124 @@
+using Microsoft.Contracts;
+
+public class C {
+  public int a;
+  public int b;
+  [Rep] public C next;
+  invariant 0 <= a && a <= 100;                      // J0
+  invariant 0 <= b && b <= 100;                      // J1
+  invariant PureMethod() < 65;                       // J2
+  invariant next != null ==> PropertyGetter < 75;    // J3
+  invariant next != null ==> next.a < 35;            // J4
+  invariant next != null ==> next.ModelField < 25;   // J5
+  invariant Nested() < 120;                          // J6 (depends on ModelField, which depends on 'a')
+  invariant PureWithPrecondition() < 100;            // J7 (does not depend on 'a', except in precondition)
+  invariant Recursive() == 12;                       // J8
+
+  public void Mutator_Good()
+    requires a < 60 && b < 100;
+  {
+    a++;  // this should generate assertions that check J0, J2-J6, and the 'satisfies' clause below
+    b++;  // this should generate assertions that check J1 (well, plus J6 and the 'satisfies' clause below,
+          // because of a coarseness in the current implementation--see comment in LookForFieldVisitor in
+          // CilTranslator.ssc).
+  }
+
+  public void Mutator_Bad0()
+    requires a < 70;
+  {
+    a++;  // error: may violate "PureMethod() < 65"
+  }
+
+  public void Mutator_Bad1()
+    requires 0 < a;
+  {
+    a--;  // error: may violate satisfies clause of "ModelField"
+  }
+
+  [NoDefaultContract] [Pure]
+  int PureMethod()
+    ensures result == a;  // the specification depends on 'a', but not on 'b'
+  {
+    int x = a;
+    return x;
+  }
+
+  int PropertyGetter {
+    [NoDefaultContract] [Pure]
+    get
+      ensures result == a;
+    {
+      return a;  // the (implicit) specification depends on 'a', but not on 'b'
+    }
+  }
+
+  model int ModelField {
+    satisfies ModelField <= a;  // the specification depends on 'a', but not on 'b'
+  }
+
+  [NoDefaultContract] [Pure]
+  int Nested()
+    ensures result == ModelField;
+  {
+    int x = ModelField;
+    return x;
+  }
+
+  [NoDefaultContract] [Pure]
+  int PureWithPrecondition()
+    requires a < 200;
+    ensures result == 58;
+  {
+    return 58;
+  }
+
+  [NoDefaultContract] [Pure]
+  int Recursive()
+    ensures next != null ==> result == next.Recursive();  // this had better not make the checker loop
+    ensures result == 12;
+  {
+    int x = 12;
+    return x;
+  }
+
+  // ------------------------------------------------------------------------------
+
+  public void MutateViaRefParameter()
+  {
+    IncreaseIt_Baby(ref b);  // error (the update of field 'b' should be subjected
+                             // to the same checks as for a field update)
+  }
+  public void MutateViaReturn()
+  {
+    b = LargeNumber();  // error (the update of field 'b' should be subjected
+                        // to the same checks as for a field update)
+  }
+  public void IncreaseIt_Baby(ref int x)
+    ensures 0 <= x;
+  {
+    x = 120;
+  }
+  public int LargeNumber()
+    ensures 0 <= result;
+  {
+    return 120;
+  }
+
+  // ------------------------------------------------------------------------------
+
+  public static int Mx([NoDefaultContract] C! c) {
+    int x = c.a;  // no problem: c is not known to be consistent, but that matters not
+    return x;
+  }
+
+  public static string My([NoDefaultContract] C! c) {
+    // In the following, ToString is called on a value type.  A in previous version,
+    // the bytecode translator erroneously treated c.a as a ref parameter to ToString,
+    // which meant it wanted to assign to c.a after the call (performing the copy-out
+    // of the ref parameter), but since that requires c not to be committed, an error
+    // was reported.  The correct behavior is to not assign c.a after ToString, since
+    // ToString takes no ref parameters.
+    string s = c.a.ToString();  // no problem: c is not known to be consistent, but that matters not
+    return s;
+  }
+}

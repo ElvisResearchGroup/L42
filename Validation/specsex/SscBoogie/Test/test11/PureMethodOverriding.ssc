@@ -1,0 +1,38 @@
+// TODO: Move this test to the ssc "Checkin tests" once they pass again.
+
+using Microsoft.Contracts;
+
+
+public class C {
+
+    [Peer] public C! dummy;
+
+    invariant dummy == this;
+
+    public C() {
+        dummy = this;
+    }
+
+    [Pure][Reads(ReadsAttribute.Reads.Owned)]
+    public override int GetHashCode()
+        ensures result == dummy.GetHashCode() + 1;
+    {
+        return dummy.GetHashCode() + 1;
+    }
+
+    public void test() {
+        int a = dummy.GetHashCode();
+        int b = this.GetHashCode();
+        assert false;
+    }
+
+    // Here is the same code but without the "override".
+    [Pure][Reads(ReadsAttribute.Reads.Owned)]
+    public int Foo()
+        ensures result == dummy.Foo() + 1;
+    {
+        return dummy.Foo() + 1;
+    }
+
+}
+

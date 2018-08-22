@@ -1,0 +1,88 @@
+using Microsoft.Contracts;
+using System.Text;
+
+public class Chunker
+{
+  string! src;
+  public readonly int ChunkSize;
+  invariant 0 < ChunkSize;
+  int n;  // the number of characters returned so far
+  invariant 0 <= n && n <= src.Length;
+
+  [Rep] StringBuilder! sb = new StringBuilder();
+  invariant sb.Length == n;
+
+  public string! NextChunk()
+    modifies this.*;
+    ensures result.Length <= ChunkSize;
+  {
+    expose (this) {
+      string s;
+      if (n + ChunkSize <= src.Length) {
+        s = src.Substring(n, ChunkSize);
+      } else {
+        s = src.Substring(n);
+      }
+      n += s.Length;
+      sb.Append(s);
+      return s;
+    }
+  }
+
+  public string! ChunksReturnedSoFar()
+    ensures result.Length == n;
+  {
+    return sb.ToString();
+  }
+
+  public string! ChunksReturnedSoFarPrime()
+    ensures result.Length == n;
+  {
+    expose (this) {
+      return sb.ToString();
+    }
+  }
+
+  public StringBuilder! ChunksAsStringBuilder() {
+    return sb;  // error
+  }
+
+  public Chunker(string! source, int chunkSize)
+    requires 0 < chunkSize;
+  {
+    src = source;
+    ChunkSize = chunkSize;
+    n = 0;
+  }
+
+  public void Reset()
+    modifies this.*;
+  {
+    expose (this) {
+      sb.Remove(0, n);
+      n = 0;
+    }
+  }
+
+  public string! NextWord()
+    modifies this.n;
+  {
+    expose (this) {
+      int start = n;
+      while (n < src.Length)
+        invariant start <= n && n <= src.Length;
+        invariant sb.Length == start;
+      {
+        if (src[n] == ' ') {
+          n++;
+          break;
+        }
+        n++;
+      }
+      string s = src.Substring(start, n-start);
+      sb.Append(s);
+      return s;
+    }
+  }
+
+}

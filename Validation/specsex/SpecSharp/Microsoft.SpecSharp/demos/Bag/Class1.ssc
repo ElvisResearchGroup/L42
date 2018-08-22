@@ -1,0 +1,57 @@
+using System;
+using Microsoft.SpecSharp;
+
+public class Bag
+{
+  int[]! a;
+  int n;
+  invariant 0 <= n && n <= a.Length;
+
+  public Bag(int[]! initialElements)
+  {
+    this.n = initialElements.Length;
+    this.a = new int[initialElements.Length];
+    base();
+    initialElements.CopyTo(a, 0);
+  }
+ 
+  public Bag(int[]! initialElements, int start, int howMany)
+    requires 0 <= start && 0 <= howMany;
+    requires start + howMany <= initialElements.Length;
+  {
+    this.n = howMany;
+    this.a = new int[howMany];
+    base();
+    Array.Copy(initialElements, start, a, 0, howMany);
+  }
+ 
+  public void Add (int x)
+  {
+    if (n == a.Length)
+    {
+      int[]! b = new int[2*a.Length];
+      Array.Copy(a, 0, b, 0, a.Length);
+      a = b;
+    }
+    a[n] = x;
+    n++;
+  }
+    
+ 
+  public int ExtractMin()
+  {
+    int m = Int32.MaxValue;
+    int mindex = 0;
+    for (int i = 0; i < n; i++)
+    {
+      if (a[i] < m)
+      {
+        mindex = i;
+        m = a[i];
+      }
+    }
+    n--;
+    a[mindex] = a[n];
+    return m;
+  }
+}

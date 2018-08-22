@@ -1,0 +1,79 @@
+using System;
+using Microsoft.Contracts;
+
+public class DrawingEngine {
+  [Rep] [ElementsRep] WorkItem?[] items = new WorkItem?[100];
+  invariant 1 <= items.Length;
+  int count;
+  invariant 0 <= count && count <= items.Length;
+  invariant forall{int i in (0: count); items[i] != null};
+
+  public void AddItem(Instruction instr, int argX, int argY) {
+    if (count == items.Length) {
+      EnlargeArray();
+    }
+    expose (this) {
+      WorkItem w = new WorkItem(instr, argX, argY);
+      items[count] = w;
+      count++;
+    }
+  }
+  void EnlargeArray()
+    ensures count < items.Length;
+  {
+    expose (this) {
+      WorkItem?[] more = new WorkItem?[2*items.Length];
+      Array.Copy(items, 0, more, 0, items.Length);
+      items = more;
+    }
+  }
+  public void Apply() {
+    for (int i = 0; i < count; i++) {
+      WorkItem? w = items[i];
+      assert w != null;
+      expose (this) {
+        w.DoWork();
+      }
+    }
+    count = 0;
+  }
+
+  public void Debugging0() {
+    WorkItem w = new WorkItem(Instruction.MoveTo, 0, 0);
+    w.DoWork();
+    assert count <= items.Length;  // follows from class invariant
+  }
+  void Debugging1(WorkItem w)
+    modifies w.*;
+  {
+    for (int i = 0; i < count; i++) {
+      w.DoWork();
+      assert i < items.Length;  // does not verify
+    }
+    assert count <= items.Length;  // does not verify
+  }
+  void Debugging2(WorkItem w)
+    modifies w.*;
+  {
+    for (int i = 0; i < count; i++) {
+      assert i < items.Length;  // does not verify
+      w.DoWork();
+      assert i < items.Length;  // verifies
+    }
+    assert count <= items.Length;  // does not verify
+  }
+}
+
+public enum Instruction { MoveTo, LineTo, Close, Fill }
+
+class WorkItem {
+  public Instruction instr;
+  public int argX, argY;
+  public WorkItem(Instruction instr, int x, int y) {
+    this.instr = instr;
+    argX = x;  argY = y;
+  }
+  public void DoWork() {
+    // ...
+  }
+}

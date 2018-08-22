@@ -1,0 +1,49 @@
+using System;
+namespace N{
+
+  public class B{
+    protected int x;
+    invariant x >= 0;
+    public virtual int F(int i){ 
+      expose (this) {
+        x = i;
+      } // B's invariant is broken here if i < 0
+      return x;
+    }
+  }
+
+  public class C : B{
+    protected int y;
+    invariant x < y;
+    public C() { y = x +1; }
+    public override int F(int i){ 
+      expose (this) {
+        base.F(i);
+        y = x % 2 == 0 ? i+1 : i;
+      } // C's invariant is broken here if i is odd
+      return y;
+    }
+  }
+
+  public class M {
+    static void ApplyFtoB(B! b, int i){ System.Console.WriteLine(b.F(i)); }
+    static void ApplyFtoC(C! c, int i){ System.Console.WriteLine(c.F(i)); }
+    static void Main() {
+      B! b = new B();
+      C! c = new C();
+      // try different values here, but if an invariant is violated, the object cannot be
+      // used again for calls after the catch since it will be in an inconsistent state
+      int arg = 3;
+      try {
+        ApplyFtoB(b,arg);
+        Console.WriteLine("A");
+        ApplyFtoB(c,arg);
+        Console.WriteLine("B");
+        ApplyFtoC(c,arg);
+        Console.WriteLine("C");
+      }catch(Exception e){
+        Console.WriteLine(e.Message);
+      }
+    }
+  }
+}

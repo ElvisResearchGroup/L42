@@ -1,0 +1,78 @@
+// The following example comes from the ECOOP 2004 paper
+
+// ----------------------------------------------------------------
+// -----  The following is the program from the ECOOP paper,  -----
+// -----  with each specification and program statement       -----
+// -----  encoded into Spec# as directly as possible          -----
+// ----------------------------------------------------------------
+
+using Microsoft.Contracts;
+
+// ---------- List -----------------------------------------------------------------------
+
+public class List {
+  [Rep] Node! head;
+  invariant this.head.prev == null;
+
+  public List() {
+    this.head = new Node();
+    base();
+  }
+}
+
+public sealed class Node {
+  int val;
+  [Peer] [Dependent(typeof(Node))] internal Node prev;
+  [Peer] [Dependent(typeof(Node))] internal Node next;
+
+  invariant prev != this;
+  invariant next != this;
+  invariant next != null ==> next.prev == this;
+  invariant prev != null ==> prev.next == this;
+
+  [NotDelayed] internal Node()
+    ensures prev == null;
+  {
+    base();
+  }
+
+  internal void Insert(int x, bool coinFlip)
+    modifies this.**;
+  {
+    if (next != null && coinFlip) {
+      next.Insert(x, coinFlip);
+    } else {
+      additive expose (this) {
+        next = new Node(x, next, this);
+        additive expose (next) {
+          next.prev = this;
+        }
+      }
+    }
+  }
+
+  [Captured] [NotDelayed] [NoDefaultContract]
+  internal Node(int x, Node n, Node! peer)
+    requires n != null ==> n.IsConsistent && Owner.Same(n, peer);
+    // in the following, the conjuct "n.prev != null" was omitted from the ECOOP paper
+    requires n != null ==> n.prev != null && ((object)n.prev).IsExposable;
+    requires peer.IsExposed || peer.IsExposable;  // this means !peer.Committed
+    modifies n.prev;
+    ensures prev == null;
+    ensures next == n;
+    ensures n != null ==> n.prev == this;
+    ensures this.IsExposable;
+    ensures Owner.Same(this, peer);
+  {
+    base();
+    Owner.AssignSame(this, peer);
+    val = x;
+    prev = null;
+    next = n;
+    if (n != null) {
+      additive expose (n) {
+        n.prev = this;
+      }
+    }
+  }
+}

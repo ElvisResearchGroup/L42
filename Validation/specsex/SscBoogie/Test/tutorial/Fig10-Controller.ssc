@@ -1,0 +1,48 @@
+using Microsoft.Contracts;
+using System;
+
+public class Controller {
+  [Rep] protected Sensor s0;
+  [Rep] protected Sensor s1;
+  protected bool alarm;
+  protected int rate;
+
+  invariant s0.measurement != s1.measurement ==> alarm;
+  invariant rate == (alarm ? 10: 2);
+
+  public Controller() {
+    s0 = new Sensor();
+    s1 = new Sensor();
+    rate = 2;
+  }
+
+  // ...
+}
+
+public class ResettingController : Controller {
+  DateTime alarmTriggered;
+  int clearedAlarms;
+  invariant 0 <= clearedAlarms;
+
+  public void CheckAlarm()  // call periodically
+  {
+    if (alarmTriggered.AddSeconds(5) <= DateTime.UtcNow && 
+        s0.measurement == s1.measurement) {
+      expose ((Controller)this) {
+        alarm = false;
+        rate = 2;
+      }
+      expose (this) {  // optional
+        clearedAlarms++;
+      }
+    }
+  }
+}
+
+public class Sensor {
+  internal int measurement;
+
+  public Sensor()
+    ensures measurement == 0;
+  {}
+}

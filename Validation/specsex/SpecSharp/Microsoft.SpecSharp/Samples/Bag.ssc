@@ -1,0 +1,59 @@
+using System;
+using System.Compiler.Contracts;
+
+public class Bag
+{
+  int[]! a;  // DEMO: leave out the "!" initially
+  int n;
+  invariant 0 <= n && n <= a.Length;  // DEMO: leave this out initially
+
+
+  public Bag (int[]! initialElements)  // DEMO: leave out the "!" initially
+  {
+    this.n = initialElements.Length;
+    this.a =   new int[initialElements.Length];
+    initialElements.CopyTo(a, 0);
+  }
+
+
+  public Bag(int[]!  initialElements, int start, int howMany)
+    requires 0 <= start && 0 <= howMany;
+    requires start + howMany <= initialElements.Length;
+  {
+    this.n = howMany;
+    this.a = new int[howMany];
+    Array.Copy(initialElements, start, a, 0, start+howMany);  // DEMO: fix error
+  }
+
+
+  public void Add (int x)
+  {
+    if (n == a.Length)
+    {
+      int[]! b = new int[2*a.Length];  // DEMO: fix error
+      a.CopyTo(b, 0);
+      a = b;
+    }
+    a[n] = x;
+    n++;
+  }
+    
+
+	public int ExtractMin ()
+  {
+    int m = Int32.MaxValue;
+    int mindex = 0;
+    for (int i = 1; i <= n; i++)  // DEMO: fix this error
+    {
+      if (a[i] < m)
+      {
+        mindex = i;
+        m = a[i];
+      }
+    }
+    n--;
+    a[mindex] = a[n];  // DEMO: fix this error
+    return m;
+  }
+
+}

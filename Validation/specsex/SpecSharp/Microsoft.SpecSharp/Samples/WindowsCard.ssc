@@ -1,0 +1,653 @@
+using System.Compiler.Contracts;
+
+class Memory {
+  [SpecPublic] private byte[]! contents;
+
+  public Memory(int n)
+    requires 0 < n;
+    ensures this.contents.Length == n;
+  {
+    contents = new byte[n];
+  }
+
+  public byte this[int addr]
+  {
+    get
+      requires 0 <= addr;
+      requires addr < contents.Length;
+    {
+      return contents[addr];
+    }
+    
+    set
+      requires 0 <= addr;
+      requires addr < contents.Length;
+    {
+      contents[addr] = value;
+    }
+  }
+
+  // for some reason, Boogie requires this post-condition or else
+  // it doesn't verify branches related to this predicate.
+  //
+  public bool inSandbox(int addr) // REVIEW: can it be "result ==> ..."? (Not until Rob or Manuel can rebuild Fugue from Spec#'s CCI.)
+    ensures (result == false) || (0 <= addr && addr < contents.Length);
+  {
+    return 0 <= addr && addr < contents.Length;
+  }
+
+}
+
+/*
+      type DoubleByte = Short
+      type QuadByte = Integer
+      type OffsetValue = Integer // but needs to be between [-512..511]
+      type OperandValue = Byte or OffsetValue or RTEMode
+*/
+/*
+
+      structure Instruction
+        case Arithmetic
+          kind as ArithmeticOpcode
+          oprnd as Operand
+        case DataTransfer
+          kind  as DataTransferOpcode
+          oprnd as Operand
+        case ControlTransfer
+          kind    as ControlTransferOpcode
+          address as Integer?
+        case MemoryOriented
+          kind  as MemoryOpcode
+          address as Integer
+        case Misc
+          kind as MiscOpcode
+        case MathArithmetic
+          kind as MathArithmeticOpcode
+        case MathDataTransfer
+          kind  as MathDataTransferOpcode
+          oprnd as Operand?
+        case MathControlTransfer
+          kind  as MathControlTransferOpcode
+          address as Integer?
+        case MathMisc
+          kind as MathMiscOpcode
+        
+
+      structure Operand
+        case Literal
+          value as Integer
+        case Indirect
+          address as Integer
+*/
+
+class RTE {
+
+  // Axioms needed by ESC/Java in order to understand modulo arithmetic
+  //@ axiom (\forall int b; (4 * b) % 4 == 0 );
+  //@ axiom 0 % 4 == 0;
+  //@ axiom (\forall int a,b,c,d; a % c == d && b % c == d && a < b ==> a <= (b-c) );
+  //@ axiom (\forall int a,b,c,d; a % c == d && b % c == d ==> (a-b) % c == d);
+  //@ axiom (\forall int a,b; a % 4 == 0 && b % 4 == 0 ==> (a+b) % 4 == 0);
+  
+  //@ axiom 4 % 4 == 0; // needed for MSP - 8 to be a valid address given MSP - 4 != MStackBase
+  
+  // REVIEW: Turn back into enums!! (Can't: Boogie doesn't seem to handle them.)
+  // enum RTEMode
+  const int Primary = 10;
+  const int Math = 11;
+
+  // enum ReturnCode
+  const int Normal = 20;
+  const int SandboxError = 21;
+  const int CallStackError = 22;
+  const int MathStackError = 23;
+  const int DataMemError = 24;
+  const int ProgramMemError = 25;
+
+  // enum ArithmeticOpcode
+  const int ADD = 30;
+  const int SUB = 31;
+  const int AND = 32;
+  const int OR = 33;
+  const int XOR = 34;
+  
+  // enum DataTransferOpcode
+  const int LDA = 40;
+  const int LDAC = 41;
+  const int LDAD = 42;
+  const int LDAI = 43;
+  const int STA = 44;
+  const int STAD = 45;
+  const int STAI = 46;
+      
+  // enum ControlTransferOpcode
+  const int JMP = 50;
+  const int JZ = 51;
+  const int JNZ = 52;
+  const int JC = 53;
+  const int JNC = 54;
+  const int CALL = 55;
+  const int RET = 56;
+
+  // enum MemoryOpcode
+  const int CLR = 60;
+  const int DEC = 61;
+  const int INC = 62;
+        
+  // enum MiscOpcode
+  const int NOP = 70;
+  const int END = 71;
+  const int STOP = 72;
+  const int ESC = 73;
+  const int SYS = 74;
+
+  // enum MathArithmeticOpcode
+  const int mADD = 80;
+  const int mSUB = 81;
+  const int mMUL = 82;
+  const int mDIV = 83;
+  const int mMOD = 84;
+  const int mNEG = 85;
+
+  // enum MathControlTransferOpcode
+  const int mJMP = 90;
+  const int mJZ = 91;
+  const int mJNZ = 92;
+  const int mJGEZ = 93;
+  const int mJLTZ = 94;
+  const int mCALL = 95;
+  const int mRET = 96;
+
+  // enum MathMiscOpcode
+  const int mNOP = 100;
+  const int mEND = 101;
+  const int mSTOP = 102;
+
+  // enum MathDataTransferOpcode
+  const int mPUSH = 110;
+  const int mPOP = 111;
+  const int mPOP1 = 112;
+  const int mPOPA = 113;
+  const int mDUP = 114;
+  const int mSWAP = 115;
+
+  const int Literal = 120;
+  const int Indirect = 121;
+
+  int[]! Instructions;
+
+  int A = 0;
+  bool Z = false;
+  bool C = false;
+
+  int PC = 0;
+
+  int CurrRTEMode = Primary;
+  int RtnCode = 0;
+  
+  Memory! Program = new Memory(64*1024);
+  const int DataSize = 65536; //64*1024;
+  Memory! Data = new Memory(DataSize);
+  invariant DataSize == Data.contents.Length;
+  Memory! Scratch = new Memory(256);
+
+  int[]! CallStack;
+  const int CallStackMax = 10;
+  invariant CallStack.Length == CallStackMax;
+  int CSP = 0;
+  invariant 0 <= CSP;
+  invariant CSP <= CallStackMax;
+
+  int MSP; // current math stack pointer value
+  readonly int MStackBase; // lower bound of math stack
+  readonly int MStackMaxSize; // number of *bytes* in math stack
+  invariant MStackBase <= MSP; // MStackBase == MSP means stack is empty
+  invariant MSP <= MStackBase + MStackMaxSize; // MSP == MStackBase + MStackMaxSize means stack is full
+  invariant MSP % 4 == 0; // every element is 4-index aligned
+  invariant MStackBase % 4 == 0;
+  invariant MStackMaxSize % 4 == 0;
+  invariant MStackBase + MStackMaxSize <= Scratch.contents.Length;
+  invariant 0 <= MStackBase;
+  invariant 0 <= MStackMaxSize;
+
+  readonly int DPP; // = MStackBase + MStackMaxSize;
+  // BUG? Why should I have to make the first of these invariants to get DP() to
+  // verify? The second one I understand, but the first should be derived from
+  // the invariants on MStackBase and MStackMaxSize
+  invariant 0 <= DPP;
+  invariant DPP < Scratch.contents.Length - 1;
+  
+  const int ScratchDefaultValue = 0;
+
+  RTE(int[]! input, int baseAddress, int size)
+    requires 0 <= baseAddress;
+    requires baseAddress % 4 == 0;
+    requires 0 <= size;
+    requires size % 4 == 0;
+    requires baseAddress + size <= 254; // size of Scratch memory - 2 (for DPP)
+  {
+    MStackBase = baseAddress; //0;
+    MStackMaxSize = size; //16;
+    MSP = MStackBase-1;
+    Scratch = new Memory(256);
+    
+    int n = input.Length;
+    Instructions = new int[n];
+    System.Array.Copy(input, 0, Instructions, 0, n);
+    
+    CallStack = new int[CallStackMax];
+    DPP = MStackBase + MStackMaxSize; // put the register in the two bytes above the math stack.
+  }
+  
+  int apply(int op, int a, int b) {
+    switch (op) {
+      case ADD: return a + b;
+      case SUB: return a - b;
+      default: return 0;
+    }
+  }
+
+  int ApplyQuad(int op, int a, int b) {
+    switch (op) {
+      case mADD: return a + b;
+      case mSUB: return a - b;
+      default: return 0;
+    }
+  }
+
+  bool carry(int op, int a, int b) {
+    if (op == ADD)
+      return ((a+b) >> 8) % 2 != 0;
+    else // op == SUB
+      return ((a-b) >> 8) % 2 != 0;
+  }
+
+  int ReadQuad(Memory! m, int addr)
+    requires 0 <= addr;
+    requires addr <= (m.contents.Length - 4);
+  {
+    return m[addr] << 12 + m[addr+1] << 8 + m[addr+2] << 4 + m[addr+3];
+  }
+
+  void WriteQuad(Memory! m, int addr, int value)
+    requires 0 <= addr;
+    requires addr <= m.contents.Length - 4;
+  {
+    m[addr]   = (byte) ((value & 0xf000) >> 12);
+    m[addr+1] = (byte) ((value & 0x0f00) >> 8);
+    m[addr+2] = (byte) ((value & 0x00f0) >> 4);
+    m[addr+3] = (byte)  (value & 0x000f);
+  }
+  
+  int DP()
+    requires 0 <= DPP;
+    requires DPP < Scratch.contents.Length - 1;
+//      requires this.invariantLevel == typeof(RTE); // Can't say this yet: deserializer is not caught up and needs to generate the right stuff from reference to inv field
+  {
+    return (Scratch[DPP] << 8) + Scratch[DPP+1];
+  }
+
+// NOTE: public version doesn't need the preconditions because it has
+// unpack/pack inserted
+  public int DP_public()
+  {
+    return (Scratch[DPP] << 8) + Scratch[DPP+1];
+  }
+
+  void Terminate(int code) {
+    CurrRTEMode = 0;
+    RtnCode = code;
+    return;
+  }
+
+  public int Run()
+  {
+    while ( RtnCode == 0 ) {
+      ExecuteInstruction2();
+    }
+    return RtnCode;
+  }
+
+  void ApplyALU(int opcd, int valType, int val) {
+    int val2;
+    switch (valType) {
+      case Literal: val2 = val; break;
+      case Indirect: 
+        if ( Data.inSandbox(val) )
+          val2 = Data[val]; 
+        else {
+          Terminate(DataMemError);
+          return;
+        }
+        break;
+    }
+    int res = apply(opcd, A, val2);
+    A = res;
+    Z = res == 0;
+    if (opcd== ADD || opcd==SUB)
+      C = carry(opcd, A, val2);
+    return;
+  }
+  
+  public void ExecuteInstruction2()
+  {
+    if ( !(0 <= PC) || !(PC < Instructions.Length) ) {
+      Terminate(ProgramMemError);
+      return;
+    }else{
+    int currInstr = Instructions[PC];
+    int opcd = currInstr;
+    int oprnd = 0; // should be set by Decode()
+    int oprndType = 0; // should be set to Literal or Indirect by Decode()
+    
+    switch ( currInstr ) {
+      case mADD:
+      case mSUB:
+      case mMUL:
+      case mDIV:
+      case mMOD:
+            if (MSP - 4 != MStackBase && MSP != MStackBase) {
+              int a = ReadQuad(Scratch,MSP-8);
+              int b = ReadQuad(Scratch,MSP-4);
+              WriteQuad(Scratch,MSP-8,ApplyQuad(opcd,a,b));
+              MSP = MSP - 4;
+              }
+            else
+              Terminate(MathStackError);
+            PC = PC + 1;
+            break;
+    }
+    }
+  }
+  
+  /*
+  void ExecuteInstruction()
+//    requires CSP <= CallStackMax;
+  {
+    if ( !(0 <= PC) || !(PC < Instructions.Length) ) {
+      Terminate(ProgramMemError);
+      return;
+    }
+    
+    int currInstr = Instructions[PC];
+    int opcd = currInstr;
+    int oprnd = 0; // should be set by Decode()
+    int oprndType = 0; // should be set to Literal or Indirect by Decode()
+    
+    switch ( currInstr ) {
+      case ADD:
+      case SUB:
+      case AND:
+      case OR:
+      case XOR:
+        ApplyALU(opcd, oprndType, oprnd);
+        PC = PC + 1;
+        break;
+      case LDA:
+        switch (oprndType) {
+          case Literal:
+            A = oprnd;
+            break;
+          case Indirect:
+            A = Data[oprnd];
+            break;
+        }
+        PC = PC + 1;
+        break;
+#if USETHISOPCODE
+      case LDAC:
+        if ( Program.inSandbox(PC+A+oprnd) )
+          A = Program[PC + A + oprnd];
+        else
+          Terminate(ProgramMemError); // CHECK TECHREPORT
+        PC = PC + 1;
+        break;
+      case CLR:
+        if (Scratch.inSandbox(oprnd)) {
+          Scratch[oprnd] = (byte) 0;
+          Z = true;
+        }
+        else
+          Terminate(SandboxError);
+        PC = PC + 1;
+        break;
+      case DEC:
+        if (Scratch.inSandbox(oprnd)) {
+          Scratch[oprnd] = (byte)(Scratch[oprnd] - 1);
+          Z = (Scratch[oprnd] - 1) == 0;
+        }
+        else
+          Terminate(SandboxError);
+        PC = PC + 1;
+        break;
+      case INC:
+        if (Scratch.inSandbox(oprnd)) {
+          Scratch[oprnd] = (byte)(Scratch[oprnd] + 1);
+          Z = (Scratch[oprnd] + 1) == 0;
+        }
+        else
+          Terminate(SandboxError);
+        PC = PC + 1;
+        break;
+      case JMP:
+        PC = PC + oprnd + 1;
+        break;
+      case JZ:
+      case JNZ:
+      case JC:
+      case JNC:
+        bool takeBranch;
+        switch (opcd) {
+          case JZ: takeBranch = Z; break;
+          case JNZ: takeBranch = !Z; break;
+          case JC: takeBranch = C; break;
+          case JNC: takeBranch = !C; break;
+        }
+        if (takeBranch)
+          PC = PC + oprnd + 1;
+        else
+          PC = PC + 1;
+        break;
+      case CALL:
+        if (CSP < CallStackMax) {
+          CallStack[CSP] = PC + 1;
+          CSP = CSP + 1;
+          PC = PC + oprnd + 1;
+        }
+        else
+          Terminate(CallStackError);
+        break;
+      case RET:
+        if (CSP > 0) {
+          PC = CallStack[CSP - 1];
+          CSP = CSP - 1;
+        }
+        else
+          Terminate(CallStackError);
+        break;
+      case NOP:
+        PC = PC + 1;
+        break;
+      case END:
+        Terminate(Normal);
+        break;
+      case ESC:
+        CurrRTEMode = Math;
+        PC = PC + 1;
+        break;
+#endif    
+#if USETHISOPCODE
+      case mNEG:
+            if (MSP != MStackBase)
+                WriteQuad(Scratch,MSP-4, -1 * ReadQuad(Scratch,MSP-4));
+            else
+                Terminate(MathStackError);
+            break;
+#endif            
+#if USETHISOPCODE
+      case mADD:
+      case mSUB:
+      case mMUL:
+      case mDIV:
+      case mMOD:
+            if (MSP - 4 != MStackBase && MSP != MStackBase) {
+              int a = ReadQuad(Scratch,MSP-8);
+              int b = ReadQuad(Scratch,MSP-4);
+              WriteQuad(Scratch,MSP-8,ApplyQuad(opcd,a,b));
+              MSP = MSP - 4;
+              }
+            else
+              Terminate(MathStackError);
+            PC = PC + 1;
+            break;
+#endif            
+#if USETHISOPCODE
+      case mJMP:
+        PC = PC + oprnd + 1;
+        break;
+      case mCALL:
+        if (CSP < CallStackMax) {
+          CallStack[CSP] = PC + 1;
+          CSP = CSP + 1;
+          PC = PC +  oprnd + 1;
+        }
+        else
+          Terminate(CallStackError);
+        break;          
+#endif            
+      case mRET:
+        if (CSP > 0) {
+          PC = CallStack[CSP - 1];
+          CSP = CSP - 1;
+        }
+        else
+          Terminate(CallStackError);
+        break;
+#if USETHISOPCODE
+      case mJZ:
+      case mJNZ:
+      case mJGEZ:
+      case mJLTZ:
+        if (MSP != MStackBase) {
+          int val = ReadQuad(Scratch,MSP-4);
+          bool takeBranch2;
+          switch (opcd) {
+            case mJZ: takeBranch2 = (val == 0); break;
+            case mJNZ: takeBranch2 = (val != 0); break;
+            case mJGEZ: takeBranch2 = (val >= 0); break;
+            case mJLTZ: takeBranch2 = (val < 0); break;
+          }
+          if (takeBranch)
+            PC = PC + oprnd + 1;
+          else
+            PC = PC + 1;
+        }
+        else
+          Terminate(MathStackError);
+#endif            
+#if USETHISOPCODE
+      case mDUP:
+        if (MSP != MStackBase && MSP != (MStackBase + MStackMaxSize)) {
+          WriteQuad(Scratch,MSP,ReadQuad(Scratch,MSP-4));
+          MSP = MSP + 4;
+        }
+        else
+          Terminate(MathStackError);
+        PC = PC + 1;
+        break;
+#endif            
+#if USETHISOPCODE
+      case mPUSH:
+        switch (oprndType) {
+          case Literal:
+            if (MSP != MStackBase + MStackMaxSize) {
+              WriteQuad(Scratch,MSP,oprnd);
+              MSP = MSP + 4;
+            }
+            else
+              Terminate(MathStackError);
+            break;
+          case Indirect:
+            if (Scratch.inSandbox(DPP) && Scratch.inSandbox(DPP+1))
+              if (DP() + oprnd * 4 + 4 <= DataSize)
+                if (MSP != MStackBase + MStackMaxSize) {
+                  WriteQuad(Scratch,MSP,ReadQuad(Data,DP()+oprnd*4));
+                  MSP = MSP + 4;
+                }
+                else
+                  Terminate(MathStackError);
+              else
+                Terminate(DataMemError);
+            else
+              Terminate(SandboxError);
+            break;
+        }
+        PC = PC + 1;
+        break;
+      case mSWAP:
+        if (MSP - 4 != MStackBase && MSP != MStackBase ){
+          WriteQuad(Scratch,MSP-8,ReadQuad(Scratch,MSP-4));
+          WriteQuad(Scratch,MSP-4,ReadQuad(Scratch,MSP-8));
+        }
+        else
+          Terminate(MathStackError);
+        PC = PC + 1;
+        break;
+#endif            
+#if USETHISOPCODE
+      case mPOP:
+        if (Scratch.inSandbox(DPP) && Scratch.inSandbox(DPP+1)) {
+          int address = DP() + oprnd * 4 + 4;
+          if (0 <= address && address < DataSize - 4) // CHECK THIS CONDITION AGAINST THE TECHREPORT!!
+            if (MSP != MStackBase) {
+              WriteQuad(Data,address,ReadQuad(Scratch,MSP-4));
+              MSP = MSP - 4;
+            }
+            else
+              Terminate(MathStackError);
+          else
+            Terminate(DataMemError);
+          PC = PC + 2;
+        }
+        else
+          Terminate(SandboxError);
+        break;
+      case mPOPA:
+        MSP = MStackBase;
+        PC = PC + 1;
+        break;
+      case mPOP1:
+        if (MSP != MStackBase)
+          MSP = MSP - 4;
+        else
+          Terminate(MathStackError);
+        PC = PC + 1;
+        break;
+      case mNOP:
+        ; //skip
+        PC = PC + 1;
+        break;
+      case mEND:
+        CurrRTEMode = Primary;
+        PC = PC + 1;
+        break;
+#endif    
+    } // end switch
+  } // end Run()
+  */
+} // end class RTE
+
+/*
+DumpState()
+    WriteLine("A = " + A)
+    WriteLine("Z = " + Z)
+    WriteLine("C = " + C)
+    WriteLine("PC = " + PC)
+    WriteLine("CurrRTEMode = " + CurrRTEMode)
+    WriteLine("RtnCode = " + RtnCode)
+    WriteLine("CSP = " + CSP)
+    WriteLine("MSP = " + MSP)
+    WriteLine("DPP = " + DPP)
+    WriteLine("MStackBase = " + MStackBase)
+    WriteLine("MStackMaxSize = " + MStackMaxSize)
+*/

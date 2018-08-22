@@ -1,0 +1,32 @@
+using Microsoft.Contracts;
+using System.Collections;
+using System;
+
+class Bag {
+  [Rep] int[]! a = new int[2];
+  int ct;
+  invariant 0 <= ct && ct <= a.Length;
+  //invariant 0 < a.Length;
+  public void Add(int x) 
+    modifies this.*;
+  {
+    expose(this) {
+      if (ct == a.Length) {
+        int[] b = new int[2 * a.Length /* +1 */ ];
+        Array.Copy(a, 0, b, 0, a.Length);
+        a = b;
+      }
+      a[ct] = x;
+      ct++;
+    }
+  }
+}
+
+// either of the 2 fixes in comments is enough
+
+//current error:
+// bagAddition.ssc(19,7): Error: Array index possibly above upper bound
+// bagAddition.ssc(15,15):    (trace position related to previous error)
+
+//better error:
+// concrete counter-example: a.Length == 0; ct == 0; a[ct] index possibly above over upper bound

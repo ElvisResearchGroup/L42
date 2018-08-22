@@ -1,0 +1,164 @@
+using Microsoft.Contracts;
+
+public class BasicMethodology {
+  [Additive] protected int x;
+  invariant 10 <= x;
+
+  [Rep] protected Component! c;
+  invariant x <= c.y;
+  
+  [Rep] ExtensibleComponent! ec = new ExtensibleComponent();
+
+  // TODO:  The following constructor causes Simplify to crash.  It seems better to be able to
+  // run the test suite at all than to skip the verification of this constructor.
+  [Microsoft.Contracts.Verify(false)]
+  public BasicMethodology() {
+    this.c = new Component(54);
+    base();
+    this.x = 12;
+  }
+
+  [Additive] public virtual void P() {
+    additive expose (this) {
+      if (x < c.y) {
+        this.x++;
+      } else if (10 < x) {
+        this.x--;
+      }
+    }
+  }
+
+  [NoDefaultContract]
+  public void PeekBelow()
+    requires IsExposable;
+  {
+    additive expose (this) {
+      assert this.ec.IsConsistent;
+      assert this.c.IsExposable;  // since c is of a sealed class, IsConsistent==IsExposable
+    }
+  }
+}
+
+public class SubClass : BasicMethodology {
+  invariant 30 <= x;
+
+  [NotDelayed]
+  public SubClass()
+  {
+    base();
+    additive expose ((BasicMethodology)this) {
+      this.x += 20;
+      if (80 < this.x) {
+	this.x = 80;
+      }
+      if (this.c.y < this.x) {
+        additive expose (this.c) {
+          this.c.y = 80;
+        }
+      }
+    }
+  }
+
+  [Additive] public override void P() {
+    additive expose (this) {
+      base.P();
+      if (this.x < 30) {
+        additive expose ((BasicMethodology)this) {
+          this.x = 32;
+          additive expose (this.c) {
+            this.c.y = 32;
+          }
+        }
+      }
+    }
+  }
+}
+
+public sealed class Component {
+  public int y;
+  invariant y <= 80;
+
+  public Component(int z)
+    requires z <= 80;
+    ensures this.y == z;
+  {
+    this.y = z;
+  }
+
+  public Component(int z, bool bad)
+  {
+    this.y = bad ? z : 0;
+  }  // error: invariant might not hold
+}
+
+public class ExtensibleComponent {  // this is a non-sealed class
+}
+
+// ---------------- Below are some examples that Peter Mueller found to be ----------
+// ---------------- problematic in one version of Boogie.                  ----------
+
+class C {
+  [Additive] public virtual int foo() {
+    return 5;
+  }
+}
+
+class CS : C {
+  public int f;
+  invariant f != 0;
+  
+  [Additive] public override int foo() {
+    return 5 / f;
+  }
+  
+  public CS()   { 
+    f = 1;
+    base();
+  }
+
+  public static void test0() {
+    C t = new CS();
+    assert t.IsExposable;  // error: t is exposable for CS, but not for C
+  }
+
+  public static void test1() {
+    C t = new CS();
+    additive expose ((CS)t) {
+      additive expose (t) {
+        ((CS)t).f = 0;
+        t.foo();  // error: t must be peer consistent in order to call foo
+        ((CS)t).f = 1;
+      }
+    }
+  }
+
+  public static void test2() {
+    C t = new CS();
+    additive expose ((CS)t) {
+      additive expose (t) {
+        ((CS)t).f = 0;
+      }
+    }  // error: object invariant does not hold
+    t.foo();
+    additive expose ((CS)t) {
+      additive expose (t) {
+        ((CS)t).f = 1;
+      }
+    }
+  }
+
+  public static void test3() {
+    C t = new CS();
+    additive expose ((CS)t) {
+      additive expose (t) {
+        ((CS)t).f = -1;
+      }
+    }
+    t.foo();
+    additive expose ((CS)t) {
+      additive expose (t) {
+        ((CS)t).f = 1;
+      }
+    }
+  }
+}

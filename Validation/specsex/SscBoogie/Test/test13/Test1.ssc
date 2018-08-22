@@ -1,0 +1,328 @@
+using Microsoft.Contracts;
+
+sealed class Test1 {
+  [Rep][ElementsRep]  Test1[]! ra = new Test1[10];
+  [Rep][ElementsPeer] Test1[]! pa = new Test1[10];
+  [Rep]               Test1[]! aa = new Test1[10];
+  [Rep]               Test1[]  na;
+  invariant ra.Length == 10 && pa.Length == 10 && aa.Length == 10;
+
+  void test0() {
+    assert false;  // fails: guard against inconsistent prelude
+  }
+
+  void test1(Test1 o) {
+    expose(this) {
+      ra[0] = new Test1();  // ok  -- DONE
+      pa[0] = new Test1();  // ok  -- DONE
+      aa[0] = new Test1();  // ok  -- DONE
+    }
+  }
+
+  void test1a(Test1 o) {
+    expose(this) {
+      ra[0] = o;  // fails: o is not a rep -- DONE
+    }
+  }
+
+  void test1b(Test1 o) {
+    expose(this) {
+      pa[0] = o;  // fails: o is not a peer -- DONE
+    }
+  }
+
+  void test1c(Test1 o) {
+    expose(this) {
+      aa[0] = o;  // fails: o might be owned  -- DONE
+    }
+  }
+
+  void test1d(Test1 o) {
+    expose(this) {
+      ra[0] = null;  // ok  -- DONE
+    }
+  }
+
+  void test2a()
+  {
+    Test1! o = new Test1();
+    expose(this) {
+      Owner.Assign(o,this,typeof(Test1));
+      ra[0] = o;  // ok  -- DONE
+    }
+  }
+
+  void test2b()
+  {
+    Test1! o = new Test1();
+    expose(this) {
+      Owner.Assign(o,this,typeof(Test1));
+      pa[0] = o;  // fails  -- DONE
+    }
+  }
+
+  void test2c()
+  {
+    Test1! o = new Test1();
+    expose(this) {
+      Owner.Assign(o,this,typeof(Test1));
+      aa[0] = o;  // fails  -- DONE
+    }
+  }
+
+  void test3a(Test1! o)
+    requires Owner.Same(o,this);
+  {
+    expose(this) {
+      ra[0] = o;  // fails: o is not a rep -- DONE
+      assume(false);
+    }
+  }
+
+  void test3b(Test1! o)
+    requires Owner.Same(o,this);
+  {
+    expose(this) {
+      pa[0] = o;  // ok -- DONE
+    }
+  }
+
+  void test3c(Test1! o)
+    requires Owner.Same(o,this);
+  {
+    expose(this) {
+      aa[0] = o;  // fails: aa might require a different owner -- DONE
+      assume false;
+    }
+  }
+
+  void test4a(Test1[]! oa) 
+    requires oa.Length == 10 && Owner.None(oa) && !Owner.Same(this,oa);
+  {
+    expose(this) {
+      ra = oa;  // fails: elements might not be rep  -- DONE
+    }
+  }
+
+  void test4b(Test1[]! oa) 
+    requires oa.Length == 10 && Owner.None(oa) && !Owner.Same(this,oa);
+  {
+    expose(this) {
+      pa = oa;  // fails: elements might not be peer  -- DONE
+    }
+  }
+
+  void test4c(Test1[]! oa) 
+    requires oa.Length == 10 && Owner.None(oa) && !Owner.Same(this,oa);
+  {
+    expose(this) {
+      aa = oa;  // ok  -- DONE
+    }
+  }
+
+  void test4d() 
+  {
+    expose(this) {
+      na = null;  // ok  -- DONE
+    }
+  }
+
+  void test5() 
+  {
+    expose(this) {
+      ra = new Test1[10];  // ok  -- DONE
+      pa = new Test1[10];  // ok  -- DONE
+      aa = new Test1[10];  // ok  -- DONE
+    }
+  }
+
+  void test6a() 
+    requires ra[0] != null;
+  {
+    assert Owner.Is((!)ra[0],this,typeof(Test1));  // ok  -- DONE
+    assert Owner.Same((!)ra[0],this);              // fails  -- DONE
+  }
+
+  void test6b() 
+    requires aa[0] != null && pa[0] != null;
+  {
+    assert Owner.Same((!)pa[0],this);              // ok  -- DONE
+    assert Owner.Same((!)aa[0],this);              // fails  -- DONE
+  }
+
+  void test7()
+  {
+    object[]! oa = new object[10];
+    oa[0] = new object();
+    oa[1] = new object();
+    assert Owner.Same((!)oa[0], (!)oa[1]);  // ok  -- DONE
+  }
+
+  void test8(object! o1, object! o2)
+    requires Owner.None(o1) && Owner.None(o2);
+  {
+    object[]! oa = new object[10];
+    oa[0] = o1;
+    oa[1] = o2;
+    assert Owner.Same(o1,o2);  // error -- no transfer since o1 and o2 might be immutable
+  }
+
+  void test9()
+  {
+    object[]! oa = new object[10];
+    object! o1 = new object();
+    assert Owner.None(o1);  // ok  -- DONE
+    oa[0] = o1;
+    assert Owner.None(o1);  // ok  -- DONE
+  }
+
+  object test10(object! t1, object! o1)
+    requires Owner.None(t1) && Owner.None(o1) && !Owner.Same(o1,t1);
+  {
+    object[]! oa = new object[10];
+    oa[0] = o1;
+    object! o3 = new object();
+    oa[1] = t1;
+    return o3;
+  }
+
+  object test11(object! t1, object! o1)
+    requires Owner.None(t1) && Owner.None(o1) && !Owner.Same(o1,t1);
+  {
+    object[]! oa = new object[10];
+    oa[0] = o1;
+    assert Owner.None(oa);
+    assert Owner.None(t1);
+    assert !Owner.Same(o1,t1);
+    assert !Owner.Same(oa,t1);
+    assert !Owner.Same(oa,o1);
+
+    object! o3 = new object();
+    oa[1] = t1;
+
+    assert Owner.Same(o1, t1);  // error  -- no transfer since oa is an object array
+    return o3;
+  }
+
+  void test12a() {
+    assert Owner.Is(Owner.ElementProxy(ra),this,typeof(Test1)); // ok  -- DONE
+    assert Owner.Is(Owner.ElementProxy(pa),this,typeof(Test1)); // fails  -- DONE
+  }
+
+  void test12b() {
+    assert Owner.Same(Owner.ElementProxy(pa),this); // ok
+    assert Owner.Same(Owner.ElementProxy(aa),this); // fails  -- DONE
+  }
+
+  void test12c() {
+    assert Owner.Different(Owner.ElementProxy(ra),this); // ok
+    assert Owner.Different(Owner.ElementProxy(pa),this); // fails  -- DONE
+  }
+
+  void test12d() {
+    object[]! oa = new object[3];
+    assert Owner.None(Owner.ElementProxy(oa)); // ok  -- DONE
+    assert Owner.New(Owner.ElementProxy(oa));  // ok  -- DONE
+
+    oa[0] = oa;
+    assert Owner.None(Owner.ElementProxy(oa)); // ok  -- DONE
+    assert Owner.New(Owner.ElementProxy(oa));  // ok  -- DONE
+    assert Owner.New(oa);         // ok  -- no ownership transfer since oa is an object array
+  }
+
+  void test12e() {
+    object[]! oa = new object[3];
+    expose(this)
+      Owner.Assign(Owner.ElementProxy(oa), this, typeof(Test1));  // ok  -- DONE
+    assert Owner.Is(Owner.ElementProxy(oa), this, typeof(Test1)); // ok  -- DONE
+    assume ra[1] != null;
+    assert Owner.Is((!)ra[1], this, typeof(Test1));  // ok  -- DONE
+    oa[0] = ra[1];                                   // ok  -- DONE
+    assert Owner.Is(Owner.ElementProxy(oa), this, typeof(Test1)); // ok  -- DONE
+    expose(this)
+      Owner.AssignSame(Owner.ElementProxy(oa), ra); // fails: oa already has an element owner  -- DONE
+  }
+
+  void test12f(object! o) 
+    requires Owner.Same(this,o);
+  {
+    assert Owner.Same(Owner.ElementProxy(pa), this);   // ok  -- DONE
+    object[]! oa = new object[3];
+    expose(this)
+      Owner.AssignSame(Owner.ElementProxy(oa), this);  // ok  -- DONE
+    oa[0] = o;                            // ok  -- DONE
+    oa[1] = pa[0];                        // ok  -- DONE
+    assert Owner.Same(Owner.ElementProxy(oa), this);   // ok  -- DONE
+    oa[2] = ra[0];                        // ok  -- no transfer since oa is an object array
+  }
+
+  void test12g() {
+    object! o = new object();
+    expose(this)
+      Owner.Assign(o, this, typeof(Test1)); // ok  -- DONE
+    assert Owner.Is(o, this, typeof(Test1)); // ok  -- DONE
+  }
+
+  void test8a(Test1! o1, Test1! o2)
+    requires Owner.None(o1) && Owner.None(o2);
+  {
+    object[]! oa = new object[10];
+    oa[0] = o1;
+    oa[1] = o2;
+    assert Owner.Same(o1,o2);  // ok -- DONE
+    assert Owner.Same((!)oa[0], (!)oa[1]);  // ok -- DONE
+  }
+
+  void test8b(object! o1, object! o2)
+    requires Owner.None(o1) && Owner.None(o2);
+  {
+    object[]! oa = new object[10];
+    oa[0] = o1;
+    oa[1] = o2;
+    assert Owner.Same((!)oa[0], (!)oa[1]);  // error -- no ownership information since o1 and o2 might be immutable
+  }
+
+  object test11(Test1! t1, Test1! o1)
+    requires Owner.None(t1) && Owner.None(o1) && !Owner.Same(o1,t1);
+  {
+    Test1[]! oa = new Test1[10];
+    oa[0] = o1;
+    assert Owner.None(oa);
+    assert Owner.None(t1);
+    assert !Owner.Same(o1,t1);
+    assert !Owner.Same(oa,t1);
+    assert !Owner.Same(oa,o1);
+
+    object! o3 = new Test1();
+    oa[1] = t1;
+
+    assert Owner.Same(o1, t1);  // ok
+    return o3;
+  }
+
+  void test12e1() {
+    Test1[]! oa = new Test1[3];
+    expose(this)
+      Owner.Assign(Owner.ElementProxy(oa), this, typeof(Test1));  // ok  -- DONE
+    assert Owner.Is(Owner.ElementProxy(oa), this, typeof(Test1)); // ok  -- DONE
+    assume ra[1] != null;
+    assert Owner.Is((!)ra[1], this, typeof(Test1));  // ok  -- DONE
+    oa[0] = ra[1];                                   // ok  -- DONE
+    assert Owner.Is(Owner.ElementProxy(oa), this, typeof(Test1)); // ok  -- DONE
+    expose(this)
+      Owner.AssignSame(Owner.ElementProxy(oa), ra); // fails: oa already has an element owner  -- DONE
+  }
+
+  void test12f1(Test1! o) 
+    requires Owner.Same(this,o);
+  {
+    assert Owner.Same(Owner.ElementProxy(pa), this);   // ok  -- DONE
+    Test1[]! oa = new Test1[3];
+    expose(this)
+      Owner.AssignSame(Owner.ElementProxy(oa), this);  // ok  -- DONE
+    oa[0] = o;                            // ok  -- DONE
+    oa[1] = pa[0];                        // ok  -- DONE
+    assert Owner.Same(Owner.ElementProxy(oa), this);   // ok  -- DONE
+    oa[2] = ra[0];                        // fails  -- DONE
+  }
+}

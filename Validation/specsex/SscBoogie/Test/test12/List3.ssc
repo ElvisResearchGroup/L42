@@ -1,0 +1,75 @@
+// The following example comes from the ECOOP 2004 paper
+
+// ----------------------------------------------------------------
+// -----  The following is a new version of Insert, with a    -----
+// -----  constructor that is simpler than the one in the     -----
+// -----  ECOOP paper                                         -----
+// ----------------------------------------------------------------
+
+using Microsoft.Contracts;
+
+// ---------- List -----------------------------------------------------------------------
+
+public class List {
+  [Owned(true)] Node! head;
+  invariant this.head.prev == null;
+
+  public List() {
+    this.head = new Node();
+    base();
+  }
+}
+
+public sealed class Node {
+  int val;
+  [Owned("peer")] [Dependent(typeof(Node))] internal Node prev;
+  [Owned("peer")] [Dependent(typeof(Node))] internal Node next;
+
+  invariant prev != this;
+  invariant next != this;
+  invariant next != null ==> next.prev == this;
+  invariant prev != null ==> prev.next == this;
+
+  [NotDelayed] internal Node()
+    ensures prev == null;
+  {
+    base();
+  }
+
+  internal void Insert(int x, bool coinFlip)
+  {
+    if (this.next != null && coinFlip) {
+assume false;
+      this.next.Insert(x, coinFlip);
+    } else {
+      additive expose (this) {
+        Node nn = new Node(x);
+        // if necessary:  Owner.AssignSame(nn, this);
+        additive expose (nn) {
+          if (this.next == null) {
+assume false;
+            this.next = nn;
+            nn.prev = this;
+          } else {
+            additive expose (this.next) {
+              nn.next = this.next;
+              nn.prev = this;
+              nn.next.prev = nn;
+              next = nn;
+            }
+assume false;
+          }
+        }
+      }
+    }
+  }
+
+  [NotDelayed]
+  internal Node(int x)
+    ensures next == null && prev == null;
+  {
+    val = x;
+    base();
+  }
+
+}

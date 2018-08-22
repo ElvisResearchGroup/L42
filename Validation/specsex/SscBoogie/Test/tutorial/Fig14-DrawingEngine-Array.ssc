@@ -1,0 +1,49 @@
+using System;
+using Microsoft.Contracts;
+
+namespace DrawingEngineArray {
+
+public class DrawingEngine {
+  [Rep][ElementsRep] Step?[] steps = new Step?[100];
+  invariant 1 <= steps.Length;
+  int cnt;
+  invariant 0 <= cnt && cnt <= steps.Length;
+  invariant forall{int i in (0: cnt); steps[i] != null};
+
+  public void AddStep(byte op, int argX, int argY) {
+    if (cnt == steps.Length) { EnlargeArray(); }
+    expose (this) {
+      Step s = new Step(op, argX, argY);
+      steps[cnt] = s;
+      cnt++;
+    }
+  }
+  void EnlargeArray()
+    ensures cnt < steps.Length;
+  {
+    expose (this) {
+      Step?[] more = new Step?[2*steps.Length];
+      Array.Copy(steps, 0, more, 0, steps.Length);
+      steps = more;
+    }
+  }
+  public void Apply() {
+    for (int i = 0; i < cnt; i++) {
+      Step? s = steps[i];
+      assert s != null;
+      expose (this) { s.DoWork(); }
+    }
+    cnt = 0;
+  }
+}
+
+class Step {
+  public byte op;
+  public int argX, argY;
+  public Step(byte op, int x, int y) {
+    this.op = op;  argX = x;  argY = y;
+  }
+  public void DoWork() { /* ... */ }
+}
+
+}

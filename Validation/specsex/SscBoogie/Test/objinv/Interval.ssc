@@ -1,0 +1,63 @@
+sealed class Cell
+{
+   public int Value;
+
+   public Cell(int value)
+      ensures this.Value == value;
+   {
+      this.Value = value;
+   }
+
+   public void Shift(int delta)
+      ensures this.Value == old(this.Value) + delta;
+   {
+      expose (this)
+      {
+         this.Value += delta;
+      }
+   }
+}
+
+sealed class Interval
+{
+   [Microsoft.Contracts.Rep] public Cell! a;
+   [Microsoft.Contracts.Rep] public Cell! b;
+   invariant a.Value <= b.Value;
+
+   public Interval(int a, int b)
+      requires a <= b;
+   {
+      this.a = new Cell(a);
+      this.b = new Cell(b);
+      base();
+   }
+
+   public int GetLength()
+      ensures 0 <= result;
+   {
+      return this.b.Value - this.a.Value;
+   }
+
+   public void Shift(int delta)
+   {
+      expose (this)
+      {
+         this.a.Shift(delta);
+         this.b.Shift(delta);
+      }
+   }
+
+   public void BadShift(int delta)
+   {
+      this.a.Shift(delta);  // error: Shift expects the receiver "this.a" to be peer consistent (in particular, writable)
+      this.b.Shift(delta);
+   }
+
+   public void BadShift2(int delta)
+   {
+      expose (this)
+      {
+         this.Shift(delta);  // error: Shift expects the receiver "this" to be peer consistent (in particular, fully valid)
+      }
+   }
+}

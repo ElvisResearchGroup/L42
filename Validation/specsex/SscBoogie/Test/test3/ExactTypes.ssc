@@ -1,0 +1,83 @@
+
+using Microsoft.Contracts;
+
+public interface J {}
+  public interface K : J {}
+
+public class W { }
+  class X : W { }
+  class Y0 : X { }
+  abstract class Y1 : X { }
+    class Z0 : Y1 { }
+    class Z1 : Y1 { }
+  class Y2 : X { }
+
+abstract class P { }
+  class Q : P, J { }
+
+// -------------------------------------------------------------------------------
+
+public class F {
+  int[]! a;
+  [Rep] X[]! xs;
+  W! w;
+
+  invariant a.GetType() == typeof(int[]);
+  invariant w.GetType() == typeof(W) || w.GetType() == typeof(Y0);
+  invariant xs.GetType() == typeof(X[]);
+
+  public F(object o)
+    requires o != null && o.GetType() == typeof(int[]);
+  {
+    this.a = (int[])o;
+    this.xs = new X[20];
+    this.w = new W();
+    base();
+  }
+
+  public F(W! w) {
+    this.a = new int[10];
+    this.xs = new X[20];
+    this.w = w;  // bad, see 2 lines below
+    base();
+  }  // error: object invariant violated, because this.w is supposed to be exactly of type W or Y0
+
+  internal virtual void M([Captured] X[]! xs) 
+    requires Owner.Different(this, xs);
+  {
+    expose (this) {
+      this.xs = xs;  // here is the real source of the trouble detected in the next line
+    }  // error: object invariant violated, because the value of this.xs is supposed to be exactly of type X[]
+  }
+
+  Q[] N(P[] p)
+    requires p != null;
+  {
+    return (Q[])p;
+  }
+
+  internal virtual void Assign(X[] xs, X x, int j)
+    modifies xs[*];
+  {
+    assume xs != null && x != null;
+    assume 0 <= j && j < xs.Length && j < this.xs.Length;
+    assume Owner.Same(Owner.ElementProxy(xs), x);
+    assume Owner.Same(Owner.ElementProxy(this.xs), x);
+    expose (this) {
+      this.xs[j] = x;  // no problem, since the type of this.xs is exactly X[]
+    }  // that is, the object invariant does hold here
+    xs[j] = x;  // error: co-variant array check
+  }
+
+  public static void CoVariance(W! w, object[]! oa)
+    requires oa.Length == 5 && Owner.None(w);
+    modifies oa[*];
+  {
+    short[] sa = new short[10];
+    sa[8] = 1000;
+
+    object[] wa = new W[5];
+    wa[2] = w;
+    oa[2] = w;  // error: w might not be of an appropriate type for oa
+  }
+}

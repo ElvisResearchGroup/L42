@@ -1,0 +1,169 @@
+// CircularQueue0.ssc
+// Rosemary Monahan
+// 8th March 2007
+// Circular array implementation of Queue 
+
+//Correction of IsFull method
+
+/*  Illustrates the use of Pure methods, [SpecPublic], [Rep] and [NonDelayed]
+    It also shows how writing the invariant in one format rather than another 
+    can cause problems for the verifier: e.g. the invariants
+    
+     invariant count <= elements.Length;
+     invariant count <= Capacity; 
+     invariant count <= 10; 
+     
+   should be equivalent but the verifier can only prove the one written closest to the code format
+   
+*/
+   
+   
+using System;
+using Microsoft.Contracts;
+ 
+class CirQueue {
+  [SpecPublic][Rep] int[]! elements = new int[10]; 
+  [SpecPublic]int head;
+  [SpecPublic]int tail;
+  [SpecPublic]int count;
+  invariant 0 <= head && head < elements.Length;
+   invariant 0 <= tail && tail < elements.Length;
+   invariant 0 <= count;
+   invariant count <= elements.Length; 
+   
+  
+  /* invariant count <= 10; can be proved if IsFull() is rewritten - see comment below.
+  
+     invariant count <= Capacity; causes an error as we cant use Capacity as part of the code
+     as its pure.  Capacity == elements.Length (see Capacity definition) but the verifier can't
+     prove invariant count <= Capacity.
+     
+     Problems are possibly because the object isn’t consistent at the time the invariant is checked 
+  */
+  
+  
+  public int Head {
+    get { return head; } //automatically pure method
+  }
+
+  public int Tail {
+    get { return tail; } //automatically pure method
+  }
+  
+  public int Count {
+    get { return count; } //automatically pure method
+  }
+  
+  
+  public int Capacity {     
+    [RecursionTermination(200)]
+    get
+      ensures result == elements.Length; 
+    { return elements.Length; } //automatically pure method  
+  }
+
+  [NotDelayed] public CirQueue()
+    ensures Head ==0;
+    ensures Tail == 0;
+    ensures Count == 0;
+    ensures Capacity == 10; //needs [SpecPublic]int[]! elements
+  {
+    head = 0;
+    tail = 0;
+    count = 0;
+  }
+  //both head and tail point to the same place =>empty
+
+  public void EnQueue(int e)
+    requires !IsFull();
+    requires  0 < elements.Length; //unsatisfied frame condition unless we use [Rep] elements
+    modifies this.*;
+    ensures Tail == (old(Tail)+1)%Capacity;
+    ensures Head == old(Head);
+    ensures Count == old(Count)+1;
+    ensures Capacity == old(Capacity);
+  {
+    expose (this) {
+      
+      elements[tail++] = e;
+      tail = tail % (elements.Length);
+      count++;
+    }
+  }
+
+  public int DeQueue()
+    requires !IsEmpty(); 
+    modifies this.*;
+    ensures Tail == old(Tail);
+    ensures Head == (old(Head)+1)%Capacity;
+    ensures Count == old(Count)-1;
+    ensures Capacity == old(Capacity);
+    ensures result == elements[(old(Head))];
+  { 
+    expose (this) {
+      int x = elements[head];
+      head = ((head)+1)%(elements.Length);
+      count--;
+      return x;
+    }
+  }
+
+[Pure] public bool IsEmpty()
+ ensures result == (Count == 0);
+  {
+      return (count == 0);
+  }
+
+[RecursionTermination(300)]
+[Pure] public bool IsFull()
+    ensures result == (Count == Capacity);  
+  {
+      return (Count == elements.Length);  
+  }
+}
+
+public class Program
+{
+  static void Main()
+    modifies Console.Out.*, Console.In.*;
+  {
+    int a;
+    CirQueue q = new CirQueue();
+    q.EnQueue(2);
+    q.EnQueue(4);
+    //q.EnQueue(8);
+    a = q.DeQueue();
+    Console.WriteLine("Last removed element is {0}", a);
+    Console.ReadLine();
+  }
+
+  // Illustrates an unsatisfied precondition for DeQueue
+ 
+   /*static void BadMain()
+    modifies Console.Out.*, Console.In.*;
+  {
+    int a;
+    CirQueue q = new CirQueue();
+    q.EnQueue(2);
+    a = q.DeQueue();
+    a = q.DeQueue(); //Error
+    Console.WriteLine("Last removed element is {0}", a);
+    Console.ReadLine();
+  }*/
+   
+  
+  
+}
+
+/* 
+Verifies:
+
+invariant count <= 10;
+
+[Pure] public bool IsFull()
+    ensures result == (Count == 10);//Capacity);  
+  {
+      return (Count == 10); //elements.Length);  
+  }
+}
+*/

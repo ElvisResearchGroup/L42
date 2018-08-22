@@ -1,0 +1,52 @@
+using Microsoft.Contracts;
+using System.Collections.Generic;
+
+[Verify(true)]
+internal class QuantifierInInvariant{
+  [Rep] private readonly object[]! data = new object[100];
+  private int count;
+        
+  invariant 0 <= count && count <= data.Length;
+  //invariant forall { int k in (0:data.Length); (k >= count) ==> (data[k] == null) };
+  invariant forall { int k in (count:data.Length); (data[k] == null) };
+}
+
+class QuantifierUsingParameterGood{
+  bool foo(int[]! xs, int count)
+    requires 0 <= count; // restriction on count, OK
+  {
+    bool b = forall {int k in (count:xs.Length); xs[k] == 0};
+    return b;
+  }
+}
+class QuantifierUsingParameterBad{
+  bool foo(int[]! xs, int count) // no restriction on count, ERROR
+  {
+    bool b = forall {int k in (count:xs.Length); xs[k] == 0};
+    return b;
+  }
+}
+class QuantifierUsingFieldGood{
+  int count = 0;
+  invariant 0 <= count; // invariant on count, OK
+  bool foo(int[]! xs){
+    bool b = forall {int k in (count:xs.Length); xs[k] == 0};
+    return b;
+  }
+}
+class QuantifierUsingFieldBad{
+  int count = 0;
+  // no invariant on count, ERROR
+  bool foo(int[]! xs)
+  {
+    bool b = forall {int k in (count:xs.Length); xs[k] == 0};
+    return b;
+  }
+}
+class QuantifierUsingLocalGood{
+  bool foo(int[]! xs){
+    int count = 0;
+    bool b = forall {int k in (count:xs.Length); xs[k] == 0};
+    return b;
+  }
+}

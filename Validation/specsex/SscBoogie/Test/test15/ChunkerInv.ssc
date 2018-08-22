@@ -1,0 +1,39 @@
+public class Chunker
+{
+  public Chunker(string! source, int chunkSize)
+    requires 0 < chunkSize;
+  {
+    src = source;
+    ChunkSize = chunkSize;
+    n = 0;
+    base();
+  }
+
+  string! src;
+  public readonly int ChunkSize;
+  invariant 0 < ChunkSize;
+  int n;  // the number of characters returned so far
+  invariant 0 <= n && n <= src.Length;
+
+  public string! NextChunk()
+    ensures result.Length <= ChunkSize;
+  {
+    expose (this) {
+      string s;
+      if (n + ChunkSize <= src.Length) {
+        s = src.Substring(n, ChunkSize);
+      } else {
+        s = src.Substring(n);
+      }
+      n += ChunkSize;
+      return s;
+    }
+  }
+}
+
+//current error:
+// chunkerInv.ssc(30,5): Error: Object invariant possibly does not hold: n <= src.Length
+// chunkerInv.ssc(26,9):    (trace position related to previous error)
+
+//better error:
+// concrete example: n == 1 ; ChunkSize == 1; src.Length == 0
