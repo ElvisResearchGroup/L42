@@ -45,6 +45,8 @@ public class CachingTest {
   public void before() throws IOException {
     try{this.deleteDirectory(Paths.get("L42IDE").resolve("L42.is%2FAdamTowel02"));}
     catch(NoSuchFileException nsfe) {}
+    try{this.deleteDirectory(Paths.get("L42IDE").resolve("L42.is%2FnanoBaseAB"));}
+    catch(NoSuchFileException nsfe) {}
 
     Path projFolder=Paths.get("TestFolder").toAbsolutePath();
     if(!Files.exists(projFolder)){
@@ -214,6 +216,30 @@ public class CachingTest {
     ReplMain.copyResetKVCthenRun(Loader::new, content);
 
     this.deleteDirectory(Paths.get("L42IDE").resolve(test.cacheLibName));
+  }
+
+  @Test
+  public void testCopyResetKVCthenRun_testCacheUpdateInL42IDE() throws IOException {
+    Files.write(Paths.get("localhost","nanoBaseAB.L42"),
+      "{A:{class method Library (){} }Load:{class method Library cacheTowel() {} }}"
+      .getBytes());
+    String content1="reuse L42.is/nanoBaseAB\n" +
+        "CacheAdamTowel02:Load.cacheTowel()\n" +
+        "Main: A()\n";
+    L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
+    ReplMain.copyResetKVCthenRun(Loader::new, content1);
+    // --------
+    Files.write(Paths.get("localhost","nanoBaseAB.L42"),
+        "{B:{class method Library (){} }Load:{class method Library cacheTowel() {} }}"
+        .getBytes());
+    String content2="reuse L42.is/nanoBaseAB\n" +//but now the file is changed
+        "CacheAdamTowel02:Load.cacheTowel()\n" +
+        "Main: B()\n";
+    //If the IDE folder is manually deleted, this test pass. It should recognize it on its own?
+    //this.deleteDirectory(Paths.get("L42IDE").resolve(new CodeInfo(content2).cacheLibName));
+    ReplMain.copyResetKVCthenRun(Loader::new, content2);
+
+
   }
 
   @Test
