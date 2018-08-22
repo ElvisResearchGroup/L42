@@ -219,7 +219,9 @@ public interface TsLibrary extends TypeSystem{
       if(mt.getTs().size()!=1){return false;}
       if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
       Type T=mt.getTs().get(0);
-      if(null!=TypeSystem._subtype(p, Ti,T)){return false;}
+      if(null!=TypeSystem._subtype(p, T, Ti)){
+        return false;
+        }
       if(Ti.getMdf()==Mdf.Readable){
         Mdf mT=T.getMdf();
         if(mT!=Mdf.Capsule && mT!=Mdf.Immutable){return false;}

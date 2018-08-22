@@ -23,10 +23,16 @@
 \newtheorem{Lemma}[lemma]{Lemma}
 \input{../Def/Def}
 %\lstset{language=FortyTwo, morekeywords={imm,new,class,this,assert}}
-\newcommand\saveSpace{\vspace{-3px}}
-\newcommand\loseSpace{\vspace{1ex}}
+\newcommand{\saveSpace}{\vspace{-3px}}
+\newcommand{\loseSpace}{\vspace{1ex}}
 
-\newcommand{\LINE}{{\noindent\rule{\textwidth}{1pt}}}
+\newcommand{\LINE}{%
+%		{\noindent\rule{\textwidth}{1pt}}
+\par%
+	\noindent\makebox[\linewidth]{\textcolor{blue}{\rule{\paperwidth}{1pt}}}%
+\par%
+%
+}
 \newcommand{\REVComm}[3]{%
 	\textcolor{red}{%
 		#1\footnote{%
@@ -116,11 +122,12 @@ In the absence of on the fly static verification of dynamically loaded code, it 
 
 \loseSpace
 \noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
-We wish to guarantee that class-invariants hold for all observable instances of such a class.
-We wish to ensure simpler and stronger reasoning over the the usual convention that class invariants 
-need only hold at the boundaries of instance methods.
+We wish to guarantee that for all observable objects, their class-invariant holds.
+%We wish to guarantee that a class's invariant holds for all its observable instances.
+We wish to ensure simpler and stronger reasoning over the usual convention that class invariants 
+need only hold on boundaries of public instance methods.
 
-Most prior work on enforcing class invariants assumes unverified/unverifiable restrictions on library code, 
+Most prior work on enforcing class invariants assume unverified/unverifiable restrictions on library code, 
 dynamic class loading and I/O, or even just trust programmers to use the provided tools correctly.
 For example, static verification often restricts dynamic class loading, while 
 run-time verification often unsoundly allows non deterministic code in class-invariants.
@@ -142,16 +149,15 @@ controlled situations.
 By means of examples, we show how hard it is to reason about code behaviour in
 the context of dynamic class loading and I/O.
 Building over type modifiers and object capabilities, we lay down the foundation needed to
-reason about OO code in this context. Without such reasoning enforcing class-invariants becomes nearly objects.
-We show, that in comparison to other approaches, type-modifiers and object capabilities allow for 
-such reasoning to be simple.
+reason about OO code in this context. Without such reasoning
+enforcing class-invariants for all objects involved in execution becomes nearly impossible.
+We show, that in comparison to other approaches, type-modifiers and object capabilities allow for such reasoning to be both simpler and sound in a broader scope.
 
 \loseSpace
 \noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
-We formally model a class of languages that soundly enforces that the class-invariants of all observable objects hold.
-This model is formally verified by a proof, parametric on the presence of a type system
-which guarantees certain properties of type modifiers. 
-Type systems with such properties have already been explored, formalized, and proved in prior work.
+We demonstrate, by means of a case study, empirical evidence of the performance and compactness of our approach in comparison to Spec\# and the conventional runtime-verification methodology.
+
+We formally model a class of languages that soundly enforce class-invariants. This model is formally verified by a proof, parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems with such properties have already been explored, formalized, and proved in prior work.
 
 \loseSpace
 \noindent\textit{Importance:} %Why does this work matter?
