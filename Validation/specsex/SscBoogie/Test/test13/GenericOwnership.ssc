@@ -1,0 +1,117 @@
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+
+
+public class Car {
+  int speed;
+  invariant 0 <= speed;
+  [Rep] public Radio! r;
+  invariant r.soundBoosterSetting == 2 * speed;
+
+  [Peer] bool[]! locks;
+  invariant locks.Length == 4;
+
+  [Rep] [ElementsRep] List<Part!>! spares;
+
+  [Captured]
+  public Car(bool[]! initialLocks)
+    requires initialLocks.Length == 4;
+    ensures Owner.Same(this, initialLocks);
+  {
+    speed = 0;
+    r = new Radio();
+    Owner.AssignSame(this, initialLocks);
+    locks = initialLocks;
+    List<Part!> s = new List<Part!>();
+    spares = s;
+    Part p1 = new Part();
+    Owner.AssignSame(p1, Owner.ElementProxy(s));
+    s.Add(p1);
+    Part p2 = new Part();
+    Owner.AssignSame(p2, Owner.ElementProxy(s));
+    s.Add(p2);
+  }
+
+  public void SetSpeed(int kmph)
+    requires 0 <= kmph;
+    modifies this.*, r.*, locks[*];
+  {
+    expose (this) {
+      if (kmph > 0) {
+        locks[0] = true;
+      }
+      speed = kmph;
+      r.soundBoosterSetting = 2 * kmph;
+
+      if (1 <= spares.Count) {
+        spares[0].MuckWith();
+      }
+    }
+  }
+}
+
+public class Radio {
+  public int soundBoosterSetting;
+  invariant 0 <= soundBoosterSetting;
+
+  public Radio()
+    ensures soundBoosterSetting == 0;
+  {
+  }
+}
+
+public class Part {
+  public void MuckWith() { }
+}
+
+
+class ListClient {
+  [Peer] [ElementsPeer] List<ListClient!>! l = new List<ListClient!>();
+
+  ListClient! Get(int i)
+    requires 0 <= i && i < l.Count;
+  {
+    ListClient! res = l[0];
+    assert Owner.Same(res, this);
+    return res;
+  }
+
+  void Set(int i, ListClient! o)
+    requires Owner.Same(o,this);
+    requires 0 <= i && i < l.Count;
+  {
+    l[i] = o;
+  }
+}
+
+/*class Admissible {
+  [Rep][ElementsRep] List<Radio!>! l = new List<Radio!>();
+  invariant l.Count > 0  ==>  l[0].soundBoosterSetting >= 0;
+}*/
+
+class ValueTest {
+  int Max(List<int>! l) 
+    requires l.Count > 0;
+  {
+    int res = l[0];
+    foreach (int i in l) {
+      if (i > res)
+        res = i;
+    }
+    return res;
+  }
+
+  int Driver() {
+    List<int> l = new List<int>();
+    l.Add(4);
+    l.Add(42);
+    l.Add(2);
+    int max = Max(l);
+    return max;
+  }
+}
+
+class BadSpec {
+  [ElementsRep][ElementsPeer] List<Radio!>! l = new List<Radio!>();  // error
+}

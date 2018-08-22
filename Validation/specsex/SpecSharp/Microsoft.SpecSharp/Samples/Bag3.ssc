@@ -1,0 +1,52 @@
+using System;
+
+public class Bag3
+{
+  int[]/*!*/ a;  // DEMO: leave out the "!" initially
+  int n;
+  invariant 0 <= n && n <= a.Length;  // DEMO: leave this out initially
+  invariant 0 < a.Length;
+
+
+  public Bag3 (int[]/*!*/ initialElements)  // DEMO: leave out the "!" initially
+  {
+    this.n = initialElements.Length;
+    this.a = new int[initialElements.Length+1];
+    initialElements.CopyTo(a, 0);
+  }
+
+
+  public void Add (int x)
+  {
+    if (n == a.Length)
+    {
+      int[] b = new int[2*a.Length];
+      a.CopyTo(b, 0);
+      a = b;
+    }
+    a[n] = x;
+    n++;
+  }
+    
+
+  public int ExtractMin ()
+  {
+    int m = Int32.MaxValue;
+    int mindex = 0;
+    for (int i = 0; i < n; i++)
+    {
+      if (a[i] < m)
+      {
+        mindex = i;
+        m = a[i];
+      }
+    }
+    if (0 < n)
+    {
+      n--;
+      a[mindex] = a[n];
+    }
+    return m;
+  }
+
+}

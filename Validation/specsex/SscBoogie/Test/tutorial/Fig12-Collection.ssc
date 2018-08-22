@@ -1,0 +1,52 @@
+using Microsoft.Contracts;
+
+public class Collection {
+  [Rep] internal int[] a = new int[32];
+  public int Count;
+  invariant 0 <= Count && Count <= a.Length;
+
+  public int Get(int i)
+    requires 0 <= i && i < Count;
+    modifies this.0;
+  {
+    return a[i];
+  }
+
+  public Iterator GetIterator() {
+    Iterator iter = new Iterator();
+    Owner.AssignSame(iter, this);
+    iter.c = this;
+    return iter;
+  }
+
+  // ...
+}
+
+public class Iterator {
+  [Peer] internal Collection? c;
+  int i = 0;
+  invariant 0 <= i;
+  public bool MoveNext() {
+    i++;
+    return c != null && i < c.Count;
+  }
+  public int GetCurrent() {
+    if (c != null && i < c.Count) {
+      return c.a[i];
+    } else {
+      return 0;
+    }
+  }
+  public void RemoveCurrent()
+    modifies this.**;
+  {
+    if (c != null && i < c.Count) {
+      for (int j = i+1; j < c.Count; j++)
+        invariant 0 < j && c != null && 0 < c.Count;
+      {
+        expose (c) { c.a[j-1] = c.a[j]; }
+      }
+      expose (c) { c.Count--; }
+    }
+  }
+}

@@ -1,0 +1,120 @@
+using Microsoft.Contracts;
+
+public class Friend {
+  [Additive(false)] internal int x;
+  [Dependent(typeof(Thing))] internal Thing th;
+  invariant th != null;
+  invariant x == th.y;
+  invariant th.f == this;
+
+  [NotDelayed]
+  internal Friend([Captured] Thing! thing)
+    requires thing.f == null;
+    modifies thing.f;
+  {
+    Owner.AssignSame(thing, this);
+    this.th = thing;
+    this.x = thing.y;
+    additive expose (thing) {
+      thing.f = this;
+    }
+  }
+
+  [Captured] [NotDelayed]
+  internal Friend(Thing! thing, bool disambiguator)
+    requires thing.f == null;
+    modifies thing.f;
+  {
+    Owner.AssignSame(this, thing);
+    this.th = thing;
+    this.x = thing.y;
+    additive expose (thing) {
+      thing.f = this;
+    }
+  }
+
+#if METHOD_SPECS_CAN_READ_FIELDS_OF_DELAYED_THINGS
+  public Friend()
+  {
+    base();
+    Thing newThing = new Thing(this);
+    th = newThing;
+  }
+#endif
+}
+
+public sealed class Thing {
+  [Peer][Dependent(typeof(Friend))] internal Friend f;
+  invariant f == null || f.th == this;
+
+  [Dependent(typeof(Friend))] internal int y;  // visibility-based invariant (friend of Friend)
+  invariant 0 <= y;
+
+  public Thing() {}
+
+#if METHOD_SPECS_CAN_READ_FIELDS_OF_DELAYED_THINGS
+  internal Thing([Delayed] Friend! f)
+    ensures this.f == f;
+    ensures this.y == 0;
+  {
+    this.f = f;
+  }
+#endif
+
+  internal void P()
+    requires f != null && f.GetType() == typeof(Friend);
+  {
+    additive expose (this) {
+      additive expose (f) {  // additive expose
+        y++;
+        f.x++;
+      }
+    }
+  }
+
+  internal void Q()
+    requires f != null;
+  {
+    additive expose (this) {
+      expose (f) {  // local expose
+        y++;
+        f.x++;
+      }
+    }
+  }
+
+  internal void R()
+    requires f != null;
+  {
+    expose (f) {
+      f.x++;
+      additive expose (this) {
+        y++;
+      }
+    }
+  }
+
+  internal void S()
+    requires f != null;
+  {
+    expose (f) {
+      f.x++;
+    }  // error: object invariant violated: x == th.y
+  }
+
+  internal void T()
+    requires f != null;
+  {
+    additive expose (this) {
+      y++;  // error: friend not sufficiently exposed (thus may violate visibility-based invariant declared in Friend)
+    }
+  }
+
+  internal void U()
+    requires f == null;
+  {
+    additive expose (this) {
+      y++;
+    }
+  }
+}

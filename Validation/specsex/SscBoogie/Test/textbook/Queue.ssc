@@ -1,0 +1,122 @@
+// Queue.ssc
+// Rosemary Monahan
+// 8th March 2007
+// Array implementation of Queue - non circular 
+
+
+/*  verifies at level 2 using Z3
+    verifies at level 1 using Simplify
+    Error at level 2: Verifying Program.Main ...
+    Error: Method Program.Main(), unsatisfied frame condition
+    
+	  Simplify needs a higher /proverMatchDepth.  The default is 3. The same problem occurs with /proverMatchDepth:5 and 
+	  /proverMatchDepth:7 hadn’t terminated within the first 21 hours.
+    
+ */
+    
+using System;
+using Microsoft.Contracts;
+
+class IntQueue {
+  [Rep] int[]! elements = new int[10];
+  int head;
+  int tail;
+  invariant 0 <= head && head <= elements.Length;
+   invariant 0 <= tail && tail <= elements.Length;
+   invariant head <= tail;
+   
+  public int Head {
+    get { return head; } //automatically pure method
+  }
+
+  public int Tail {
+    get { return tail; } //automatically pure method
+  }
+  
+  public int Capacity {    
+    [RecursionTermination(200)]
+    get
+      ensures result == elements.Length;
+    { return elements.Length; }
+  }
+
+  [NotDelayed] public IntQueue()
+    ensures Head ==0;
+    ensures Tail == 0;
+    ensures Capacity == 10;  //elements.length is Inaccessible
+  {
+    head = 0;
+    tail = 0;
+  } //both head and tail point to the same place =>empty
+
+  public void EnQueue(int e)
+    requires !IsFull();
+    requires  0 < Capacity;
+    modifies this.*;
+    ensures Tail == old(Tail)+1;
+    ensures Head == old(Head);
+    ensures Capacity == old(Capacity);
+  {
+    expose (this) {
+      elements[tail++] = e;
+    }
+  }
+  //Leaving out  requires  (Tail != 0) is picked up by the verifier
+  public int DeQueue()
+    requires !IsEmpty(); 
+    modifies this.*;
+    ensures Tail == old(Tail);
+    ensures Head == old(Head)+1;
+    ensures Capacity == old(Capacity);
+  { 
+    expose (this) {
+      return elements[head++];
+    }
+  }
+
+[Pure] public bool IsEmpty()
+ ensures result == (Head == Tail);
+    // Empty conditions: ((Head == Capacity)||(Tail ==0) || (Head == Tail));
+  {
+      return (head == tail);
+  }
+
+[RecursionTermination(300)]
+[Pure] public bool IsFull()
+    ensures result == (Tail == Capacity);
+  {
+      return (tail ==Capacity);  
+  }
+}
+
+public class Program
+{
+  static void Main()
+    modifies Console.Out.*, Console.In.*;
+  {
+    int a;
+    IntQueue q = new IntQueue();
+    q.EnQueue(2);
+    q.EnQueue(4);
+    q.EnQueue(8);
+    a = q.DeQueue();
+    Console.WriteLine("Last removed element is {0}", a);
+    Console.ReadLine();
+  }
+
+   //Illustrates an unsatisfied precondition for DeQueue
+  
+    /*static void BadMain()
+    modifies Console.Out.*, Console.In.*;
+  {
+    int a;
+    IntQueue q = new IntQueue();
+    q.EnQueue(2);
+    a = q.DeQueue();
+    a = q.DeQueue(); //Error
+    Console.WriteLine("Last removed element is {0}", a);
+    Console.ReadLine();
+  }
+  */
+  
+}

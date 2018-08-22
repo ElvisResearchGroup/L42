@@ -1,0 +1,50 @@
+using System;
+using Microsoft.Contracts;
+
+public class Bag
+{
+  [Rep] int[]! a;
+  int n;
+  invariant 0 <= n && n <= a.Length;
+
+  [NotDelayed]
+  public Bag(int[]! initialElements)
+  {
+    this.n = initialElements.Length;
+    this.a = new int[initialElements.Length];
+    base();
+    initialElements.CopyTo(a, 0);
+  }
+
+  public virtual void Add(int x)
+    modifies this.*;
+  {
+    expose (this)
+    {
+      if (n == a.Length)
+      {
+        int[] b = new int[2*a.Length+1];
+        Array.Copy(a, 0, b, 0, a.Length);
+        a = b;
+      }
+      a[n] = x;
+      n++;
+    }
+  }
+
+  public virtual void AddAgain(int x)
+    modifies this.*;
+  {
+    expose (this)
+    {
+      if (n == a.Length)
+      {
+        int[] b = new int[2*a.Length+1];
+        a.CopyTo(b, 0);
+        a = b;
+      }
+      a[n] = x;
+      n++;
+    }
+  }
+}

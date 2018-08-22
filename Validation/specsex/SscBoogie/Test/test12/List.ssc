@@ -1,0 +1,87 @@
+// The following example comes from the ECOOP 2004 paper
+
+using Microsoft.Contracts;
+
+// ---------- List -----------------------------------------------------------------------
+
+public class List {
+  [Owned(true)] Node! head;
+  invariant this.head.prev == null;
+
+  public List() {
+    this.head = new Node();
+    base();
+  }
+}
+
+public sealed class Node {
+  int val;
+  [Owned("peer")][Dependent(typeof(Node))] internal Node prev;
+  [Owned("peer")][Dependent(typeof(Node))] internal Node next;
+
+  invariant prev != this;
+  invariant next != this;
+  invariant next != null ==> next.prev == this;
+  invariant prev != null ==> prev.next == this;
+
+  [NotDelayed] internal Node()
+    ensures prev == null;
+  {
+    base();
+  }
+
+  internal void Insert(int x, bool coinFlip)
+  {
+    if (this.next != null && coinFlip) {
+      this.next.Insert(x, coinFlip);
+    } else {
+      additive expose (this) {
+        Node nn = new Node(x, this.next);
+        this.next = nn;
+        additive expose (this.next) {
+          this.next.prev = this;
+        }
+      }
+    }
+  }
+
+  internal void InsertBad(int x, bool coinFlip)
+  {
+    if (this.next != null && coinFlip) {
+      this.next.Insert(x, coinFlip);
+    } else {
+      additive expose (this) {
+        this.next = new Node(x, this.next);
+        // leaves out the following update:  this.next.prev = this;
+      }  // error: object invariant violated
+    }
+  }
+
+  public static object M() {
+    Node n = new Node(5, null);  // should be allowed to use null for a captured parameter
+    return n;
+  }
+
+  [Captured] [NotDelayed] [NoDefaultContract]
+  [Verify(false)]
+  internal Node(int x, Node n)
+    requires n != null ==> n.IsConsistent;
+    requires n != null && n.prev != null ==> n.prev.IsExposed;
+    modifies n.prev;
+    ensures this.IsPeerConsistent;  // to make up for NoDefaultContract (Node is a sealed class)  // BOGUS: the implementation doesn't actually ensure this condition, because it may be that old(n.prev).IsExposeed
+    ensures this.prev == null;
+    ensures this.next == n;
+    ensures n != null ==> n.prev == this;
+    ensures n == null ? Owner.New(this) : Owner.Same(this, n);
+  {
+    base();
+    this.val = x;
+    if (n != null) {
+      Owner.AssignSame(this, n);
+      this.next = n;
+      additive expose (n) {
+        n.prev = this;
+      }
+    }
+  }
+}

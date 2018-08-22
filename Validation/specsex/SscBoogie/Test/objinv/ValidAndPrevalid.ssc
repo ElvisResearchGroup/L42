@@ -1,0 +1,133 @@
+sealed class Cell
+{
+   public int Value;
+
+   public Cell()
+      ensures this.Value == 0;
+   {
+   }
+
+   public void Increment()
+      modifies this.*;
+      ensures this.Value == old(this.Value) + 1;
+   {
+      additive expose (this)
+      {
+         this.Value++;
+      }
+   }
+}
+
+class PartOfLine
+{
+}
+
+sealed class Interval : PartOfLine
+{
+   [Microsoft.Contracts.Rep] Cell! a = new Cell();
+   [Microsoft.Contracts.Rep] Cell! b = new Cell();
+   invariant a.Value <= b.Value;
+
+   // TODO:  The following constructor causes Simplify to crash.  It seems better to be able to
+   // run the test suite at all than to skip the verification of this constructor.
+   [Microsoft.Contracts.Verify(false)]
+   public Interval() { }
+
+   public void Foo1()
+   {
+      additive expose (this)
+      {
+         assert ((PartOfLine)this).IsValid;
+         assert ((object)this).IsValid;
+         assert IsPrevalid;  // this means: this.inv == base(Interval) && everything owned by (this,Interval) is fully valid
+      }
+   }
+
+   public void Foo2()
+   {
+      assert IsPrevalid;  // error, since this.inv == Interval, not base(Interval)
+   }
+
+   public void Foo3()
+   {
+      assert ((object)this).IsValid;
+      assert IsValid;
+      expose (this)
+      {
+         assert ((object)this).IsValid;  // error: no longer locally valid
+      }
+   }
+
+   public void Foo3a()
+   {
+      assert ((object)this).IsValid;
+      assert IsValid;
+      additive expose (this) {
+        assert ((object)this).IsValid;
+        assert IsValid;  // error: no longer valid for class Interval
+      }
+   }
+
+   public void Foo4()
+   {
+      additive expose (this)
+      {
+         a.Increment();
+         assert IsPrevalid;
+         b.Increment();  // this re-establishes the invariant of "this"
+      }
+   }
+
+   public void Foo5()
+   {
+      additive expose (this)
+      {
+         a.Increment();
+         assert IsPrevalid;
+         assert a.Value <= b.Value; // error, since the invariant in Interval might be violated
+      }
+   }
+
+   public void Foo6()
+   {
+      additive expose (this)
+      {
+         b.Increment();  // this call preserves the invariant of "this"
+         assert IsPrevalid;
+         assert a.Value <= b.Value;
+      }
+   }
+
+   public void Foo7()
+   {
+      additive expose (this)
+      {
+         additive expose ((PartOfLine)this)
+         {
+            assert IsPrevalid;  // error, since this.inv == base(base(Interval)), not base(Interval)
+         }
+      }
+   }
+
+   public void Foo8()
+   {
+      additive expose (this)
+      {
+         additive expose (a)
+         {
+            assert IsPrevalid;  // error, since not every object owned by (this,Interval) is fully valid
+         }
+      }
+   }
+
+   public void Foo9()
+   {
+      additive expose (this)
+      {
+         additive expose (b)
+         {
+            assert IsPrevalid;  // error, since not every object owned by (this,Interval) is fully valid
+         }
+      }
+   }
+}

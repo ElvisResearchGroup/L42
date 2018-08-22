@@ -1,0 +1,137 @@
+using System;
+using Microsoft.Contracts;
+
+
+public class Stack
+{
+    [SpecPublic]
+    private int size;
+
+    [SpecPublic] [Rep]
+    private string[]! elements;
+
+    invariant 0 <= size && size <= elements.Length;
+    invariant forall {i in (0 : size); elements[i] != null };
+
+    public Stack(int capacity)
+        requires 0 < capacity;
+        ensures size == 0;
+        ensures elements.Length == capacity;
+    {
+        elements = new string[capacity];
+    }
+
+    [Pure]
+    public bool IsEmpty()
+        ensures result == (size == 0);
+    {
+        return size == 0;
+    }
+
+    [Pure]
+    public bool IsFull()
+        ensures result == (size == elements.Length);
+    {
+        return size == elements.Length;
+    }
+
+    [Pure]
+    public bool InBounds(int index)
+        ensures result == (0 <= index && index < size);
+    {
+        return 0 <= index && index < size;
+    }
+
+    [Pure]
+    public string! GetElement(int index)
+        requires InBounds(index);
+        // This is only necessary because we don't/can't assume the purity axioms for 'InBounds':
+        requires 0 <= index && index < size;
+        ensures result == (string!)elements[index];
+    {
+        return (string!)elements[index];
+    }
+
+    [Pure]
+    public string! GetElementEquals0(int index)
+        requires InBounds(index);
+        // This is only necessary because we don't/can't assume the purity axioms for 'InBounds':
+        requires 0 <= index && index < size;
+        ensures result.Equals((string!)elements[index]);
+    {
+        return (string!)elements[index];
+    }
+
+    [Pure]
+    public string GetElementEquals0Nullable(int index)
+        requires InBounds(index);
+        // This is only necessary because we don't/can't assume the purity axioms for 'InBounds':
+        requires 0 <= index && index < size;
+        ensures result != null;
+        ensures result.Equals(elements[index]);
+    {
+        return elements[index];
+    }
+
+    [Pure]
+    public string! GetElementEquals1(int index)
+        requires InBounds(index);
+        // This is only necessary because we don't/can't assume the purity axioms for 'InBounds':
+        requires 0 <= index && index < size;
+        ensures ((string!)elements[index]).Equals(result);
+    {
+        return (string!)elements[index];
+    }
+
+    [Pure]
+    public string GetElementEquals1Nullable(int index)
+        requires InBounds(index);
+        // This is only necessary because we don't/can't assume the purity axioms for 'InBounds':
+        requires 0 <= index && index < size;
+        ensures result != null;
+        ensures ((string!)elements[index]).Equals(result);
+    {
+        return elements[index];
+    }
+
+    public void Push(string! s)
+        requires !IsFull();
+        modifies this.elements[*], this.size;
+        ensures size == old(size) + 1;
+        ensures elements[size - 1] == s;
+        ensures forall {i in (0 : old(size)); elements[i] == old(elements[i])};
+    {
+        expose(this)
+        {
+            elements[size] = s;
+            size += 1;
+        }
+    }
+
+    public string! Pop()
+        requires !IsEmpty();
+        modifies this.elements[*], this.size;
+        ensures size == old(size) - 1;
+        ensures forall {i in (0 : size); elements[i] == old(elements[i])};
+        ensures result.Equals(old(GetElement(size - 1)));
+    {
+        size -= 1;
+        return (string!)elements[size];
+    }
+}
+
+public class StackTest
+{
+    public static void Test0()
+    {
+        Stack s = new Stack(10);
+        s.Push("a");
+        s.Push("b");
+        s.Pop();
+        s.Push("b");
+        s.Pop();
+        string! p1 = s.Pop();
+        assert s.IsEmpty();
+        assert p1.Equals("a");
+    }
+}

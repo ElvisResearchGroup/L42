@@ -1,0 +1,41 @@
+using System;
+
+public class Bag4
+{
+  int[]/*!*/ a;  // DEMO: leave out the "!" initially
+  int n;
+  invariant 0 <= n && n <= a.Length;  // DEMO: leave this out initially
+
+
+  public Bag4(int[]/*!*/ initialElements, int start, int howMany)
+     requires 0 <= start && 0 <= howMany;
+     requires start + howMany <= initialElements.Length;
+  {
+    this.n = howMany;
+    this.a = new int[howMany];
+  }
+
+
+  public int ExtractMin2 ()
+  {
+    int m = Int32.MaxValue;
+    int mindex = 0;
+    for (int i = 0; i < n; i++)
+    {
+      if (a[i] < m)
+      {
+        mindex = i;
+        m = a[i];
+      }
+    }
+    if (n > 0)
+    {
+      /*---------- Uncomment this and the Cil-to-BoogiePL translation produces the right end result
+      n--;
+      a[mindex] = a[n];
+      */
+    }
+    return m;
+  }
+
+}

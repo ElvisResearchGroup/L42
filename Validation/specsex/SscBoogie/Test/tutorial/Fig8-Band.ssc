@@ -1,0 +1,56 @@
+using Microsoft.Contracts;
+
+class Band {
+  int gigs;
+  [Rep] Guitar gt;
+  Accountant accnt;
+
+  invariant 7 <= gt.Level;
+  invariant gigs <= gt.PerformanceCount;
+
+  public void Play() {
+    expose (this) {
+      gigs++;
+      gt.Strum();
+    }
+  }
+
+  public Band() {
+    gt = new Guitar(10);
+    accnt = new Accountant();
+  }
+  
+  // ...
+  
+  [Pure]
+  public int MagicNumber() {
+    return 3 + gt.StringCount();
+  }
+}
+
+class Guitar {
+  public int Level;
+  public int PerformanceCount;
+  
+  public Guitar(int l)
+    ensures Level == l;
+    ensures PerformanceCount == 0;
+  {
+    Level = l;
+  }
+  
+  public void Strum() 
+    ensures PerformanceCount == old(PerformanceCount) + 1;
+    ensures old(Level) <= Level;
+  {
+    PerformanceCount++;
+  }
+  
+  [Pure]
+  public int StringCount() {
+    return 6;
+  }
+}
+
+class Accountant {
+}

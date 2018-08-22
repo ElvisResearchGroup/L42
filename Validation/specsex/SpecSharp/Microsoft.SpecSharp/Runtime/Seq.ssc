@@ -1,0 +1,499 @@
+//-----------------------------------------------------------------------------
+//
+// Copyright (C) Microsoft Corporation.  All Rights Reserved.
+//
+//-----------------------------------------------------------------------------
+#define SpecSharp
+
+using System;
+using System.Diagnostics;
+//using SC = System.Collections;
+#if CCINamespace
+using Microsoft.Cci;
+#else
+using System.Compiler;
+#endif
+using Microsoft.Contracts;
+using System.Collections.Generic;
+
+// "using" Pair (from the other collection classes)
+
+namespace Microsoft.SpecSharp.Collections{
+
+/*internal*/ 
+public class DoubleLinkedNode<T>{
+  /*internal*/ 
+  public T elem;
+  /*internal*/ 
+  public DoubleLinkedNode<T> next, prev;
+  /*internal*/
+  public DoubleLinkedNode(T e) { elem = e; }
+}
+
+/// <summary>
+/// Sequences contain indexable elements. Sequences are similar to ArrayLists, but in opposite to ArrayLists, they are immutable.
+/// Sequences are implmented as double linked list (concatenation to the beginning or end is constant time)
+/// </summary>
+public struct Seq<T>: IEnumerable<T> {   //ICollection 
+  private int count;
+  private DoubleLinkedNode<T> head, last;
+  invariant count > 0 ==> head != null && last != null;
+            
+  //constructors - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  public Seq(T elt) {
+    head = last = new DoubleLinkedNode<T>(elt);
+    count = 1;
+  }
+
+  /// <summary>
+  /// Gets the number of elements actually contained in the sequence.
+  /// </summary>
+  public int Count{[Pure] get { return  count;}}
+    
+  private Seq(DoubleLinkedNode<T> head, DoubleLinkedNode<T> last, int count){
+    this.head = head; this.last = last; this.count = count;
+  }
+  //   public Seq(SC.IEnumerable os)  { 
+  //     head = null; last = null; count = 0;
+  //     foreach(object o in os)
+  //       this.Add(new DoubleLinkedNode(o));
+  //   }
+  //      
+
+  // Iterators - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  /// <summary>
+  /// Returns an enumerator that can iterate through the sequence from beginning to end
+  /// </summary>
+  
+  [Pure] [GlobalAccess(false)] [Escapes(true,false)]
+  public IEnumerator<T>! GetEnumerator() {
+    for (DoubleLinkedNode<T> t = this.head; t != null; t = ((!)t).next)
+      yield return t.elem;
+  }
+  
+  [Pure] [GlobalAccess(false)] [Escapes(true,false)]
+  System.Collections.IEnumerator! System.Collections.IEnumerable.GetEnumerator(){
+    return ((IEnumerable<T>)this).GetEnumerator();
+  }
+
+
+  //IList - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  /// <summary>
+  /// Gets or sets the element at the specified index [Time: this.Count/2]
+  /// </summary>
+  public T this[int index]{
+    get
+      requires index > 0 && index < Count;
+    {
+      if (index < count/2){
+        assert head != null;
+        DoubleLinkedNode<T> cur = head;
+        for(int i = 0;i<count; i++){
+          assert cur.next != null;
+          cur = cur.next;
+        }
+        return cur.elem;
+      } else {
+        assert last != null;
+        DoubleLinkedNode<T> cur = last;
+        for(int i = count-1;i>count; i--){
+          assert cur.prev != null;
+          cur = cur.prev;
+        }
+        return cur.elem;        
+      }
+    }
+    set
+      requires index > 0 && index < Count;
+    {
+      assert this.last != null;
+      if (index == count && this.last.next == null)       
+        this.Add(value);
+      else {
+        Seq<T> r = new Seq<T>();
+        assert head != null;
+        DoubleLinkedNode<T>! cur = head;
+        for(int i = 0;i<index; i++){
+          r.Add(cur.elem);
+          assert cur.next != null;
+          cur = cur.next;
+        }
+        r.Add(value); assert cur.next != null; cur = cur.next;
+        for(int i = index+1; i< count; i++){
+          r.Add(cur.elem);
+          assert cur.next != null;
+          cur = cur.next;
+        }
+        this.count = r.count;
+        this.head = r.head;
+        this.last = r.last;
+      }
+    }        
+  }
+
+  /// <summary>
+  /// True if the seq contains o, false otherwise [Time: this.Count]
+  /// </summary>
+  [Pure] public bool Contains(T o){
+    if (count == 0) return  false;
+    assert head != null;
+    DoubleLinkedNode<T>! cur = head;
+    for(int i = 0; i< count; i++)
+      if(Object.Equals(o,cur.elem))
+        return true;
+      else{
+        assert cur.next != null;
+        cur = cur.next;
+      }
+    return false;
+  }
+  //public int Add(object o){ return _seq.Add(o);}
+  //public bool IsReadOnly{ get {return _seq.IsReadOnly; } }
+  //public bool IsFixedSize { get {return _seq.IsFixedSize; }}
+
+  /// <summary>
+  /// Returns the zero-based index of the first occurrence of the given object in the Vector, -1 if it doesn't occur [Time: this.Count].
+  /// </summary>
+  public int IndexOf(T o) {
+    DoubleLinkedNode<T> cur = head;
+    for(int i = 0; i< count; i++){
+      assert cur != null;
+      if(Object.Equals(o,cur.elem))
+        return i;
+      else{
+        assert cur.next != null;
+        cur = cur.next;
+      }
+    }
+    return -1;
+  }
+  /// <summary>
+  /// Returns the zero-based index of the last occurrence of the given object in the Vector, -1 if it doesn't occur (linear time).
+  /// </summary>
+  public int LastIndexOf(T o) {
+    DoubleLinkedNode<T> cur = last;
+    for(int i = count-1; i>=0; i--){
+      assert cur != null;
+      if(Object.Equals(o,cur.elem))
+        return i;
+      else{
+        assert cur.prev != null;
+        cur = cur.prev;
+      }
+    }
+    return -1;
+  }
+  //public void Insert(int index, object o){_seq.IndexOf(o);}    
+  //public void Remove(object o){_seq.Remove(o);}
+  //public void RemoveAt(int index){_seq.RemoveAt(index);}
+
+  //ToString - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  /// <summary>
+  /// Formats the seq as "Seq{elem_1, ..., elem_n}" [Time: this.Count]
+  /// </summary>
+  public override string ToString() {
+    if (count == 0)
+      return "Seq{}";
+    else {
+      assert head != null;
+      string s = head.prev != null ? "?prev?Seq{": "Seq{";
+      DoubleLinkedNode<T> cur = head;
+      for (int i = 0; i< count; i++){
+        assert cur != null;
+        if (i>0)
+          s+=", ";
+        s+= cur.elem==null?"null":cur.elem.ToString();
+        cur = cur.next;
+      }
+      return s+ (last != null && last.next != null ? "}?last?" : "}");
+    }
+  }
+  //Equality- - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  /// <summary>
+  /// True, if o is a seq and contains the same elements at the same indices, false otherwise [Time: see ==]
+  /// </summary>
+  public override bool Equals (object o){
+    return o is Seq<T> && this == (Seq<T>)o;       
+  }
+
+  /// <summary>
+  /// Equality: True, if s and t contain the same elements at the same indices, false otherwise [Time: Max(s.Count,t.Count)]
+  /// </summary>
+  public static bool operator == (Seq<T> s, Seq<T> t){
+    return s.count == t.count && IsPrefix(s,t);         
+  }
+  public static bool IsPrefix (Seq<T> s, Seq<T> t){
+    DoubleLinkedNode<T> sCur = s.head, tCur = t.head;
+    for(int i = 0; i< s.count; i++) {
+      if (tCur == null) return false;
+      assert sCur != null;
+      if(!Object.Equals(sCur.elem,tCur.elem))
+        return false;
+      else {
+        assert sCur.next != null;
+        sCur = sCur.next;
+        assert tCur.next != null;
+        tCur = tCur.next;
+      }
+    }
+    return true;
+  }
+
+  /// <summary>
+  /// Inequality: True, if s and t do not contain  the same elements at the same indices, false otherwise [Time: see ==]
+  /// </summary>
+  public static bool operator != (Seq<T> s, Seq<T> t){ 
+    return !(s == t); 
+  }
+        
+  /// <summary>
+  /// Returns the hascode of its contained elements [Time: this.Count]
+  /// </summary>
+  public override int GetHashCode (){
+    int h=0;
+    DoubleLinkedNode<T> cur = head;
+    for(int i = 0; i< count; i++){
+      assert cur != null;
+      if (cur.elem != null)
+        h = h ^ cur.elem.GetHashCode();
+      assert cur.next != null;
+      cur = cur.next;
+    }
+    return h;
+  }
+  // Comparison - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  //   
+  //   public static bool operator < (Seq s, Seq t){
+  //     return s.count < t.count && IsPrefix(s,t);         
+  //   }
+  //   public static bool operator <= (Seq s, Seq t){
+  //     return s.count <= t.count && IsPrefix(s,t);
+  //   }
+  //   public static bool operator > (Seq s, Seq t){ 
+  //     return t < s;
+  //   }
+  //   public static bool operator >= (Seq s, Seq t){ 
+  //     return t <= s;
+  //   }
+
+  /// <summary>
+  /// Return the first element of the seq
+  /// </summary>
+  public T Head {
+    get 
+      requires Count > 0;
+    {
+      assert head != null;
+      return head.elem;
+    }
+  }
+  /// <summary>
+  /// Return the last element of the seq
+  /// </summary>
+  public T Last{
+    get 
+      requires Count > 0;
+    {
+      assert last != null;
+      return last.elem;      
+    }
+  }
+     
+  /// <summary>
+  /// Return the subsequence of the seq where the first element is removed
+  /// </summary>
+  public  Seq<T> Tail {
+    get 
+      requires Count > 0;
+    {
+      assert head != null;
+      return new Seq<T>(head.next, last, count-1);       
+    }
+  }
+  /// <summary>
+  /// Return the subsequence of the seq where the last element is removed
+  /// </summary>
+  public  Seq<T> Front {
+    get 
+      requires Count > 0;
+    {
+      assert last != null;
+      return new Seq<T>(head, last.prev, count-1);      
+    }
+  }      
+
+  /// <summary>
+  /// Distributed Concatenation: Returns the sequence where the elements of s 
+  /// (these are sequences themselves) are appended, the first, the second and so on
+  /// </summary>
+  public static Seq<T> Concat(Seq<Seq<T>> s) {
+    DoubleLinkedNode<Seq<T>> cur = s.head;
+    Seq<T> r = new Seq<T>();
+    for(int i =0 ; i< s.count; i++) {
+      assert cur != null;
+      r += cur.elem;
+      cur = cur.next;
+    }
+    return r;
+  }
+
+  /// <summary>
+  /// Returns the sequence where the elements of s are in reverse order, 
+  /// i.e. the last becomes the first, the second last becomes the second, ans so on
+  /// </summary>
+  public static Seq<T> Reverse(Seq<T> s) {
+    if (s.count == 0) return s;
+    DoubleLinkedNode<T> cur = s.last;
+    Seq<T> r = new Seq<T>();
+    for(int i=0 ; i< s.count; i++) {
+      assert cur != null;
+      r.Add(new DoubleLinkedNode<T>(cur.elem));
+      cur = cur.prev;
+    }
+    return r;      
+  }
+  private Seq<T> Dup ()
+    ensures result.Count == this.Count;
+  {
+    Seq<T> r = new Seq<T>();
+    DoubleLinkedNode<T> cur = this.head;
+    for (int i = 0; i < count; i++){
+      assert cur != null;
+      r.Add(new DoubleLinkedNode<T>(cur.elem));
+      cur = cur.next;
+    }
+    return r;
+  }
+        
+  /// <summary>
+  /// Append: Returns the sequence consistsing of the elements of s followed by those of t in order.
+  /// </summary>
+  public static Seq<T> operator + (Seq<T> s, Seq<T> t){
+    if (s.count == 0) return t;
+    if (t.count == 0) return s;
+    assert s.last != null;
+    if (s.last.next != null)
+      s = s.Dup();
+    assert s.last != null;
+    assert t.head != null;
+    if (t.head.prev != null)
+      t = t.Dup();
+    assert t.head != null;
+    Seq<T> r = new Seq<T>(s.head,t.last, s.count+t.count);
+    s.last.next = t.head;
+    t.head.prev = s.last;
+    return r;
+  } 
+
+  /// <summary>
+  /// Adds the object to the sequence [Time: constant]
+  /// </summary>
+  public int Add(T o){
+    if (count == 0 || last == null || last.next== null){ // NB: count != 0 ==> last != null so second disjunct isn't really needed
+      Add(new DoubleLinkedNode<T>(o));
+    } else {
+      Seq<T> s = this.Dup();
+      s.Add(new DoubleLinkedNode<T>(o));
+      this.count=s.count;
+      this.head=s.head;
+      this.last=s.last;
+    }
+    return this.count;
+  }   
+  private void Add(DoubleLinkedNode<T>! cur){
+    if (count == 0){
+      head = cur;
+      last = cur;
+      count = 1;
+    } else {
+      assert last != null;
+      last.next = cur;
+      cur.prev = last;
+      last = cur;
+      count++;
+    }
+  }
+  /// <summary>
+  /// Removes the first occurrence of a specific object from the sequence [Time this.Count]
+  /// </summary>
+  public void Remove(T o){
+    Seq<T> r = new Seq<T>();
+    DoubleLinkedNode<T> cur = this.head;
+    int i = 0; 
+    for(; i< count; i++) {
+      assert cur != null;
+      if (!Object.Equals(cur.elem,o)){
+        r.Add(new DoubleLinkedNode<T>(cur.elem));
+        cur = cur.next;
+      } else
+        break;
+    }
+    if(i!=count){
+      assert cur != null;
+      cur = cur.next; i++;
+      for(; i< count; i++) {
+        assert cur != null;
+        r.Add(new DoubleLinkedNode<T>(cur.elem));
+        cur = cur.next;
+      } 
+    }
+    this.count = r.count;
+    this.head=r.head;
+    this.last=r.last;
+  }   
+
+  /// <summary>
+  /// Returns a subsequence of s, by removing t's elements from s in order.  [Time this.Count]
+  /// </summary>
+  public static Seq<T> operator - (Seq<T> s, Seq<T> t){ 
+    int i =0, j = 0; 
+    DoubleLinkedNode<T> sCur = s.head, tCur = t.head;
+    Seq<T> r = new Seq<T>();
+    while(i < s.count && j <s.count){
+      assert sCur != null;
+      assert tCur != null;
+      if (Object.Equals(sCur.elem,tCur.elem)){
+        i++; j++; 
+        sCur = sCur.next; tCur = tCur.next;
+      } else{ 
+        r.Add(new DoubleLinkedNode<T>(sCur.elem));
+        i++;
+        sCur = sCur.next;
+      }
+    }
+    return r;
+  }
+          
+  /// <summary>
+  /// Returns the sequence of pairs of elements from s1 and s2
+  /// </summary>
+  public static Seq<Pair<S,T>> Zip<S>(Seq<S> s, Seq<T> t) {
+    DoubleLinkedNode<S> sCur = s.head;
+    DoubleLinkedNode<T> tCur = t.head;
+    int m = Math.Min(s.count, t.count);
+    Seq<Pair<S,T>> r = new Seq<Pair<S,T>>();
+    for(int i = 0; i< m; i++, sCur = sCur.next, tCur = tCur.next){
+      assert sCur != null;
+      assert tCur != null;
+      r.Add(new DoubleLinkedNode<Pair<S,T>>(new Pair<S,T>(sCur.elem, tCur.elem)));
+    }
+    return r;
+  }
+  /// <summary>
+  /// Returns a pair of sequences which elements are drawn from a sequence of pairs 
+  /// </summary>
+  public static Pair<Seq<S>,Seq<T>> Unzip<S>(Seq<Pair<S,T>> s){
+    DoubleLinkedNode<Pair<S,T>> cur = s.head;
+    Seq<S> r = new Seq<S>();
+    Seq<T> t = new Seq<T>();
+    for(int i = 0; i< s.count; i++, cur = cur.next){
+      assert cur != null;
+      Pair<S,T> p = cur.elem;
+      r.Add(new DoubleLinkedNode<S>(p.First)); 
+      t.Add(new DoubleLinkedNode<T>(p.Second));
+    }
+    return new Pair<Seq<S>,Seq<T>>(r,t);
+  }
+}
+
+}

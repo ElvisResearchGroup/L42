@@ -1,0 +1,163 @@
+#define MANUAL_PRESERVATION_INVARIANTS
+using System;
+using Microsoft.Contracts;
+
+public class BoundedStack
+{
+  public static void Main(string[] args)
+  {
+    BoundedStack s = new BoundedStack(3);
+    s.Push(0);
+    s.Push(1);
+    s.Push(2);
+    s.Push(3);  // this would be an error, if only Push were declared with an appropriate precondition
+  }
+
+  public int size;
+  invariant 0 <= size;
+  public int max;
+  invariant size <= max;
+  [Rep] public int[]! elems;
+  invariant max <= elems.Length;
+
+
+  public BoundedStack(int capacity)
+    requires 0 <= capacity;
+  {
+    size = 0;
+    max = capacity;
+    elems = new int[capacity];
+    base();
+  }
+
+  public BoundedStack()
+  {
+    size = 0;
+    max = 2;
+    elems = new int[2];
+    base();
+  }
+
+  public virtual void Push(int k)
+    modifies this.*;
+  {
+    expose (this) {
+      int index;
+      bool alreadyMember;
+      alreadyMember = false;
+
+      for (index=0; index<size; index++)
+        invariant 0 <= index;
+        invariant alreadyMember ==> 0 < size;
+      {
+        if (k==elems[index]) {
+          alreadyMember = true;
+          break;
+        }
+      }
+
+      if (alreadyMember) {
+#if MANUAL_PRESERVATION_INVARIANTS
+        int size_save = size;
+        int max_save = max;
+        int[] elems_save = elems;
+#endif
+        for (int j=index; j<size-1; j++)
+          invariant index <= j;
+#if MANUAL_PRESERVATION_INVARIANTS
+          invariant size == size_save;
+          invariant max == max_save;
+          invariant elems == elems_save;
+#endif
+        {
+          elems[j] = elems[j+1];
+        }
+        elems[size-1] = k;
+      } else if (size < max) {
+        elems[size] = k;
+        size++;
+        return;
+      } else {
+        return;
+      }
+    }
+  }
+
+  public virtual void Pop()
+    requires size > 0;
+    modifies this.*;
+  {
+    expose (this) {
+      size--;
+    }
+  }
+
+
+  public int Top() {
+    if (size < 1) {
+      //System.out.println("Empty Stack");
+      return -1;
+    } else {
+      return elems[size-1];
+    }
+  }
+
+  public bool IsEmpty() {
+    if (size==0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+  public int MaxSize() {
+    return max;
+  }
+
+  public bool IsMember(int k) {
+    for (int index=0; index<size; index++)
+      invariant 0 <= index;
+    {
+      if (k==elems[index]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  [Microsoft.Contracts.NoDefaultContract]
+  public int[] GetArray()
+    requires this.IsConsistent;
+  {
+    int[] a = new int[max];
+#if MANUAL_PRESERVATION_INVARIANTS
+    int size_save = size;
+    int[] elems_save = elems;
+#endif
+    for (int j=0; j<size; j++)
+      invariant 0 <= j;
+#if MANUAL_PRESERVATION_INVARIANTS
+      invariant size_save == size;
+      invariant elems_save == elems;
+#endif
+    {
+      a[j] = elems[j];
+    }
+    return a;
+  }
+
+  public int GetNumberOfElements() {
+    return size;
+  }
+
+  public bool IsFull() {
+    return size == max;
+  }
+
+  [Pure]
+  override public string! ToString()
+  {
+    return "BoundedStack{size=" + size + ",elems=" + elems.ToString() + "}";
+  }
+}

@@ -1,0 +1,604 @@
+#define EXPENSIVE
+
+// This file illustrates Spec#'s runtime checking. It is not possible to statically verify
+// it given the current specifications.
+
+namespace Collections 
+{
+  using System;
+  using Microsoft.Contracts;
+  using System.Collections;
+
+
+  public class ArrayList
+  {
+    [SpecPublic] [Rep] private object[]! _items;
+    invariant _items.GetType() == typeof(object[]);
+    [SpecPublic] private int _size;
+  
+    private const int _defaultCapacity = 16;
+
+    invariant 0 <= _size && _size <= _items.Length;
+    invariant forall { int i in (_size : _items.Length); _items[i] == null };  // all unused slots are null
+  
+    [NotDelayed]
+    public ArrayList () 
+      ensures _size/*Count*/ == 0;
+      ensures _items.Length/*Capacity*/ == 16;
+    {
+      _items = new object[_defaultCapacity];
+      base();
+    }
+  
+  
+    [NotDelayed]
+    public ArrayList (int capacity) 
+      requires 0 <= capacity otherwise ArgumentOutOfRangeException;
+      ensures _size/*Count*/ == 0;
+      ensures _items.Length/*Capacity*/ == capacity;
+    {
+      _items = new object[capacity];
+      base();
+    }
+  
+  
+    [NotDelayed]
+    public ArrayList (ICollection! c) 
+      modifies c.*;
+      ensures _size/*Count*/ == c.Count;
+    {
+      _items = new object[c.Count];
+      base();
+      InsertRangeWorker(0, c);
+    }
+  
+
+      
+    public virtual int Capacity 
+    {
+      [Pure] get 
+        ensures 0 <= result;
+      { 
+        return _items.Length; 
+      }
+      
+      set
+        requires Count <= value otherwise ArgumentOutOfRangeException;
+        ensures value <= _items.Length;
+      {
+        expose (this) {
+          EnsureCapacity(value);
+        }
+      }
+    }
+  
+  
+    public virtual int Count 
+    {
+      [Pure] get
+        ensures 0 <= result;
+        ensures result == _size;
+      { return _size; }
+    }
+
+  
+    public virtual object this [int index] 
+    {
+      [Pure] [RecursionTermination(200)]
+      get 
+        requires 0 <= index && index < Count otherwise ArgumentOutOfRangeException;
+        ensures result == _items[index];
+      {
+        assume _items[index] == null || ((!)_items[index]).IsPeerConsistent;  // BOGUS: we should instead mark getter with [return: NoDefaultContract]
+        return _items[index];
+      }
+      set 
+        requires 0 <= index && index < Count otherwise ArgumentOutOfRangeException;
+      {
+        expose (this) {
+          _items[index] = value;
+        }
+      }
+    }
+
+
+    public virtual int Add (object value)
+      ensures Count == old(Count) + 1;
+      ensures this[result] == value;
+      ensures result == old(Count);
+    {
+      expose (this) {
+        if (_size == _items.Length) EnsureCapacity(_size + 1);
+        _items[_size] = value;
+        return _size++;
+      }
+    }
+  
+  
+    [Inside]
+    private void EnsureCapacity (int desiredCapacity) 
+      requires _size <= desiredCapacity && _size <= _items.Length;
+      requires _items.IsPeerConsistent;
+      requires _items.GetType() == typeof(object[]);
+      requires forall { int i in (_size : _items.Length); _items[i] == null };  // all unused slots are null
+      ensures desiredCapacity <= _items.Length;
+      ensures _size == old(_size);
+      ensures _items.GetType() == typeof(object[]);
+      ensures forall { int i in (_size : _items.Length); _items[i] == null };  // all unused slots are null
+    {
+      if (_items.Length < desiredCapacity) 
+      {
+        desiredCapacity = max{16, _items.Length * 2, desiredCapacity};
+        assert desiredCapacity != _items.Length;
+        assert desiredCapacity > 0;
+
+        object[] newItems = new object[desiredCapacity];
+        if (_size > 0) Array.Copy(_items, 0, newItems, 0, _size);
+        _items = newItems;
+      }
+    }
+    
+    
+    public virtual void AddRange (ICollection! c) 
+      requires Owner.Different(this, c);
+      modifies c.*;
+    {
+      InsertRange(_size, c);
+    }
+   
+   
+    [RecursionTermination(400)]
+    public virtual int BinarySearch (int index, int count, object value, IComparer comparer) 
+      requires 0 <= index otherwise ArgumentOutOfRangeException;
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires index + count <= Count otherwise ArgumentException;
+      requires comparer == null || Owner.Different(this, comparer);
+      requires value == null || Owner.Different(this, value);
+      ensures result < Count;
+      ensures 0 <= result ==> this[result] == value;
+    {
+      expose (this) {  // to make _items peer consistent
+        int n = Array.BinarySearch(_items, index, count, value, comparer);
+        assume index <= n && n < index + count ==> _items[n] == value;  // postcondition of Array.BinarySearch
+        return n;
+      }
+    }
+  
+  
+    public virtual int BinarySearch (object value)
+      requires value == null || Owner.Different(this, value);
+      ensures result < Count;
+      ensures 0 <= result && result < Count ==> this[result] == value;
+    {
+      return BinarySearch(0,Count,value,null);
+    }
+
+
+    public virtual int BinarySearch (object value, IComparer comparer)
+      requires value == null || Owner.Different(this, value);
+      requires comparer == null || Owner.Different(this, comparer);
+      ensures result < Count;
+      ensures 0 <= result && result < Count ==> this[result] == value;
+    {
+      return BinarySearch(0,Count,value,comparer);
+    }
+
+
+    public virtual void Clear () 
+      ensures Count == 0;
+    {
+      expose (this) {
+        Array.Clear(_items, 0, _size); // Don't need to doc this but we clear the elements so that the gc can reclaim the references.
+        assume forall{int i in (0: _size); _items[i] == null};  // postcondition of Array.Clear
+        _size = 0;
+      }
+    }
+  
+  
+    public virtual object Clone ()
+    {
+      ArrayList la = new ArrayList(_size);
+      expose (la) {
+        la._size = _size;
+        expose (this) {
+          Array.Copy(_items, 0, la._items, 0, _size);
+        }
+      }
+      return la;
+    }
+  
+  
+    public virtual bool Contains (object item) 
+    {
+      if (item==null) 
+      {
+        for(int i=0; i<_size; i++)
+          if (_items[i]==null)
+            return true;
+        return false;
+      }
+      else 
+      {
+        for(int i=0; i<_size; i++)
+          if (item == _items[i])
+            return true;
+        return false;
+      }
+    }
+
+  
+    public virtual void CopyTo (Array! array) 
+      requires Count <= array.Length otherwise ArgumentOutOfRangeException;
+      requires array.Rank == 1 otherwise ArgumentException;
+      requires Owner.Different(this, array);
+      modifies array.*;
+    {
+      CopyTo(array, 0);
+    }
+
+
+    public virtual void CopyTo (Array! array, int arrayIndex) 
+      requires array.Rank == 1 otherwise ArgumentException;
+      requires 0 <= arrayIndex && arrayIndex + Count <= array.Length otherwise ArgumentOutOfRangeException;
+      requires Owner.Different(this, array);
+      modifies array.*;
+    {
+      expose (this) {
+        Array.Copy(_items, 0, array, arrayIndex, _size);
+      }
+    }
+  
+  
+    public virtual void CopyTo (int index, Array! array, int arrayIndex, int count) 
+      requires array.Rank == 1 otherwise ArgumentException;
+      requires 0 <= index && index < Count otherwise ArgumentOutOfRangeException;
+      requires 0 <= arrayIndex && arrayIndex < array.Length otherwise ArgumentOutOfRangeException;
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires index + count <= Count otherwise ArgumentException;
+      requires  arrayIndex + count <= array.Length otherwise ArgumentException;
+      requires Owner.Different(this, array);
+      modifies array.*;
+    {
+      expose (this) {
+        Array.Copy(_items, index, array, arrayIndex, count);
+      }
+    }
+
+
+    public virtual int IndexOf (object value) 
+      ensures -1 <= result && result < Count;
+#if EXPENSIVE
+      ensures (result == -1 && ! exists { int i in (0:Count); this[i] == value })
+           || (0 <= result && result < Count && this[result] == value);
+#endif           
+    {
+      expose (this) {
+        return Array.IndexOf(_items, value, 0, _size);
+      }
+    }
+  
+  
+    public virtual int IndexOf (object value, int startIndex) 
+      requires 0 <= startIndex && startIndex <= Count otherwise ArgumentOutOfRangeException;
+      ensures -1 <= result && result < Count;
+#if EXPENSIVE
+      ensures (result == -1 && ! exists { int i in (0:Count); this[i] == value })
+           || (0 <= result && result < Count && this[result] == value);
+#endif           
+    {
+      expose (this) {
+        return Array.IndexOf(_items, value, startIndex, _size - startIndex);
+      }
+    }
+
+
+    public virtual int IndexOf (object value, int startIndex, int count) 
+      requires 0 <= startIndex otherwise ArgumentOutOfRangeException;
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires startIndex + count <= Count otherwise ArgumentOutOfRangeException;
+      ensures -1 <= result && result < Count;
+#if EXPENSIVE
+      ensures (result == -1 && ! exists { int i in (0:Count); this[i] == value })
+           || (0 <= result && result < Count && this[result] == value);
+#endif           
+    {
+      expose (this) {
+        return Array.IndexOf(_items, value, startIndex, count);
+      }
+    }
+  
+  
+    public virtual void Insert (int index, object value) 
+      requires 0 <= index && index <= Count otherwise ArgumentOutOfRangeException;
+    {
+      expose (this) {
+        if (_size == _items.Length) EnsureCapacity(_size + 1);
+        if (index < _size) 
+        {
+          Array.Copy(_items, index, _items, index + 1, _size - index);
+        }
+        _items[index] = value;
+        _size++;
+      }
+    }
+  
+  
+    public virtual void InsertRange (int index, ICollection! c) 
+      requires 0 <= index && index <= Count otherwise ArgumentOutOfRangeException;
+      requires Owner.Different(this, c);
+      modifies c.*;
+    {
+      expose (this) {
+        InsertRangeWorker(index, c);
+      }
+    }
+    
+    [Inside]
+    void InsertRangeWorker (int index, ICollection! c) 
+      requires 0 <= index && index <= _size;
+      requires _size <= _items.Length && _items.IsPeerConsistent;
+      requires _items.GetType() == typeof(object[]);
+      requires forall { int i in (_size : _items.Length); _items[i] == null };  // all unused slots are null
+      modifies _items[*], c.*;
+      ensures 0 <= _size && _size <= _items.Length && _size == old(_size + c.Count);
+      ensures _items.GetType() == typeof(object[]);
+      ensures forall { int i in (_size : _items.Length); _items[i] == null };  // all unused slots are null
+    {
+      int count = c.Count;
+      if (count > 0) 
+      {
+        EnsureCapacity(_size + count);
+        if (index < _size) 
+        {
+          Array.Copy(_items, index, _items, index + count, _size - index);
+        }
+        if (index < c.Count) {
+          c.CopyTo(_items, index);  // BOGUS: I think precondition of ICollection.CopyTo should be 'index <= Lengtth', not 'index < Length', so enclosing if statement should not be needed
+        }
+        _size += count;
+      }
+    }
+    
+  
+    public virtual int LastIndexOf (object value)
+      ensures -1 <= result && result < Count;
+#if EXPENSIVE
+      ensures (result == -1 && ! exists { int i in (0:Count); this[i] == value })
+           || (0 <= result && result < Count && this[result] == value);
+#endif
+    {
+      if (_size == 0)
+        return -1;
+      return LastIndexOf(value, _size - 1, _size);
+    }
+
+
+    public virtual int LastIndexOf (object value, int startIndex)
+      requires 0 <= startIndex && startIndex < Count otherwise ArgumentOutOfRangeException;
+      ensures -1 <= result && result <= startIndex;
+#if EXPENSIVE
+      ensures (result == -1 && ! exists { int i in (0:Count); this[i] == value })
+           || (0 <= result && result < Count && this[result] == value);
+#endif           
+    {
+      return LastIndexOf(value, startIndex, startIndex + 1);
+    }
+
+
+    public virtual int LastIndexOf (object value, int startIndex, int count)
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires 0 <= startIndex && startIndex < Count otherwise ArgumentOutOfRangeException;
+      requires 0 <= startIndex+1 - count otherwise ArgumentOutOfRangeException;
+      ensures -1 == result || (startIndex+1 - count <= result && result <= startIndex);
+#if EXPENSIVE
+      ensures (result == -1 && ! exists { int i in (0:Count); this[i] == value })
+           || (0 <= result && result < Count && this[result] == value);
+#endif           
+    {
+      expose (this) {
+        int n = Array.LastIndexOf(_items, value, startIndex, count);
+        assume (n == -1 && ! exists { int i in (0:Count); this[i] == value })
+            || (0 <= n && n < Count && this[n] == value);
+        return n;
+      }
+    }
+  
+  
+    public virtual void Remove (object obj) 
+    {
+      int index = IndexOf(obj);
+      if (0 <= index) 
+        RemoveAt(index);
+    }
+  
+  
+    public virtual void RemoveAt (int index) 
+      requires 0 <= index && index < Count otherwise ArgumentOutOfRangeException;
+    {
+      expose (this) {
+        _size--;
+        if (index < _size) 
+        {
+          Array.Copy(_items, index + 1, _items, index, _size - index);
+        }
+        _items[_size] = null;
+      }
+    }
+  
+  
+    public virtual void RemoveRange (int index, int count) 
+      requires 0 <= index otherwise ArgumentOutOfRangeException;
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires index + count <= Count otherwise ArgumentException;
+    {
+      expose (this) {
+        if (count > 0) 
+        {
+          int i = _size;
+          _size -= count;
+          if (index < _size) 
+          {
+            Array.Copy(_items, index + count, _items, index, _size - index);
+          }
+          object[] itemsBeforeLoop = _items;
+          while (_size < i)
+            invariant 0 <= _size &&_size <= i && i <= _items.Length;
+            invariant _items == itemsBeforeLoop;
+            invariant forall { int j in (i : _items.Length); _items[j] == null };  // all unused slots are null
+          {
+            _items[--i] = null;
+          }
+        }
+      }
+    }
+  
+  
+    public static ArrayList! Repeat (object value, int count) 
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+    {
+      ArrayList list = new ArrayList(max{count, _defaultCapacity});
+      for (int i = 0; i < count; i++)
+        invariant list.IsPeerConsistent;
+      {
+        list.Add(value);
+      }
+      return list;
+    }
+
+
+    public virtual void Reverse () 
+    {
+      Reverse(0, Count);
+    }
+  
+  
+    public virtual void Reverse (int index, int count) 
+      requires 0 <= index otherwise ArgumentOutOfRangeException;
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires index + count <= Count otherwise ArgumentException;
+    {
+      expose (this) {
+        Array.Reverse(_items, index, count);
+      }
+    }
+  
+
+    public virtual void Sort ()
+    {
+      assume Comparer.Default.IsPeerConsistent && Owner.None(Comparer.Default);
+      Sort(0, Count, Comparer.Default);
+    }
+
+
+    public virtual void Sort (IComparer comparer)
+      requires comparer == null || Owner.Different(this, comparer);
+    {
+      Sort(0, Count, comparer);
+    }
+
+
+    public virtual void Sort (int index, int count, IComparer comparer) 
+      requires 0 <= index otherwise ArgumentOutOfRangeException;
+      requires 0 <= count otherwise ArgumentOutOfRangeException;
+      requires index + count <= Count otherwise ArgumentException;
+      requires comparer == null || Owner.Different(this, comparer);
+    {
+      expose (this) {
+        Array.Sort(_items, index, count, comparer);
+      }
+    }
+  
+  
+    public virtual object[] ToArray () 
+    {
+      expose (this) {
+        object[] array = new object[_size];
+        Array.Copy(_items, 0, array, 0, _size);
+        return array;
+      }
+    }
+  
+  
+    public virtual Array ToArray (Type! type) 
+    {
+      expose (this) {
+        Array array = Array.CreateInstance(type, _size);
+        Array.Copy(_items, 0, array, 0, _size);
+        return array;
+      }
+    }
+  
+  
+    public virtual void TrimToSize () 
+    {
+      Capacity = _size;
+    }
+   }
+   
+   
+   
+   
+   
+   public class TestArrayList 
+   {
+    public static void Main (string[] args)
+    {
+      ArrayList a = new ArrayList();
+      assert a.Count == 0;
+      
+      a.Add("apple");
+      a.Add("cranberry");
+      a.Add("banana");
+      assert a.Count == 3;
+      assert a[0] == ((object) "apple");
+      assert a[1] == ((object) "cranberry");
+      assert a[2] == ((object) "banana");
+
+      int idx = a.IndexOf("apple");
+      assert idx == 0;
+      idx = a.IndexOf("cranberry");
+      assert idx  == 1;
+      idx = a.IndexOf("banana");
+      assert idx  == 2;
+      idx = a.IndexOf("donut");
+      assert idx  == -1;
+      
+      a.Sort();
+      assert a.Count == 3;
+      assert a[0] == ((object) "apple");
+      assert a[1] == ((object) "banana");
+      assert a[2] == ((object) "cranberry");
+      
+      int bs = a.BinarySearch("apple");
+      assert bs == 0;
+      bs = a.BinarySearch("banana");
+      assert bs == 1;
+      bs = a.BinarySearch("cranberry");
+      assert bs == 2;
+      bs = a.BinarySearch("donut");
+      assert bs < 0;
+      
+      a.Reverse();
+      assert a.Count == 3;
+      assert a[2] == ((object) "apple");
+      assert a[1] == ((object) "banana");
+      assert a[0] == ((object) "cranberry");
+
+      a.Remove("apple");
+      assert a.Count == 2;
+      assert a[0] == ((object) "cranberry");
+      assert a[1] == ((object) "banana");
+      
+      a.RemoveAt(0);
+      assert a.Count == 1;
+      assert a[0] == ((object) "banana");
+      
+      a.Clear();
+      assert a.Count == 0;
+      
+      int r = ArrayList.Repeat("carrot", 3).Count;
+      assert r == 3;
+    }
+   }
+   
+}   

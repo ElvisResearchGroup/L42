@@ -1,0 +1,171 @@
+using Spec;
+using System.Diagnostics;
+using Microsoft.Contracts;
+
+namespace test3
+{
+  public class MyStrings
+  {
+    public void StringCoolness0()
+    {
+      string s = "hi";
+      string t = s.Insert(1, "foo");
+      assert t.Length == 5;
+      int idx = t.IndexOf("f");  // we know idx != -1, but Boogie does not
+      t.Insert(idx, "hi");       // hence, this produces a precondition error
+    }
+
+    // same as StringCoolness0, but adding a test that suppresses Boogie's
+    // complaint
+    public void StringCoolness1()
+    {
+      string s = "hi";
+      string t = s.Insert(1, "foo");
+      assert t.Length == 5;
+      int idx = t.IndexOf("f");
+      if (idx != -1) {
+        t.Insert(idx, "hi");  // but with a test for -1 first, it works fine
+      }
+    }
+
+    const string! hiString = "hi";
+    const string! fooString = "foo";
+    string! abcString = "abc"; // No need to own an immutable object
+    invariant abcString.Length == 3; // An invariant may dereference owned objects and immutable objects
+
+    // same as StringCoolness1, except reading the strings from fields
+    public void StringCoolness2(bool choice)
+    {
+      string s = hiString;
+      string t;
+      if (choice) {
+        t = s.Insert(1, fooString);
+      } else {
+        t = s.Insert(1, abcString);
+      }
+      assert t.Length == 5;
+      int idx = t.IndexOf("f");
+      if (idx != -1) {
+        t.Insert(idx, hiString);  // but with a test for -1 first, it works fine
+      }
+    }
+
+    public string! StringCoolness3()
+      ensures result.Length == 8;
+    {
+      string s = hiString + abcString + fooString;
+      return s;
+    }
+
+    public string! MyStringInsert(string! a, int i, string! b)
+      requires 0 <= i;
+      requires i <= a.Length;
+      ensures result.Length == a.Length + b.Length;
+    {
+      string r = a.Insert(i, b);
+      assert r != null;
+      assert r.Length == a.Length + b.Length;
+      return r;
+    }
+
+    public int MyStringIndexOf(string! a, string! b)
+      ensures -1 <= result && result < a.Length;
+    {
+      int r = a.IndexOf(b);
+      assert -1 <= r && r < a.Length;
+      return r;
+    }
+
+    public string! MyStringConcat(string str0, string str1)
+      ensures result.Length ==
+        (str0 == null ? 0 : str0.Length) +
+        (str1 == null ? 0 : str1.Length);
+    {
+      string r = str0 + str1;
+      assert r != null;
+      assert r.Length ==
+        (str0 == null ? 0 : str0.Length) +
+        (str1 == null ? 0 : str1.Length);
+      return r;
+    }
+
+    public void UnpackString(string! s) {
+      additive expose (s) {  // error: strings are not allowed to be unpacked (for we have an axiom that says that strings
+                    // are always peer consistent--this axiom would be unsound if we allowed strings to be unpacked)
+                    // Note: A better place to check this condition would be in the compiler, but for now the
+                    // check is done by Boogie.  If this changes, then this test file won't compile, so we should
+                    // then break this method out into a separate test file whose test will be to check that it
+                    // doesn't compile.
+      }
+    }
+  }
+
+  public class XY {
+    [Rep] object o;
+    [Peer] object p;
+
+    public XY() {
+      base();
+    }
+
+    [Additive] public virtual void M0(string! s) {
+      additive expose (this) {
+        this.o = s;  // error: not allowed to take ownership of a string
+      }
+    }
+
+    [Additive] public virtual void M1(string s) {
+      additive expose (this) {
+        this.p = s;  // error: not allowed to change ownership to the owner of a string
+      }
+    }
+
+    [Additive] public virtual void M2() {
+      additive expose (this) {
+        this.o = null;
+        this.p = null;
+      }
+    }
+
+    [Additive] public virtual void M3([Captured] object! x) {
+      additive expose (this) {
+        this.o = x;  // error: not allowed to take ownership of a string
+        assume false;  // prevent further errors (which otherwise has caused a problem with error message ordering in test output)
+      }
+    }
+
+    [Additive] public virtual void M4([Captured] object x) {
+      if (x is string) { // angelan, fixa: or x is immutable
+      } else {
+        this.p = x;
+      }
+    }
+
+    [NoDefaultContract]
+    public static void N0([Captured] object! x, [Captured] object! y)
+      requires x.IsExposable;
+      requires y.IsExposable && y is XY;  // this says that y is somewhat exposed
+    {
+      additive expose (x) {
+        Owner.Assign(x, y, y.GetType());  //Error: the subject might be immutable, in which case its owner is not allowed to be assigned 
+      }
+    }
+
+    public static void N1([Captured] XY! x, object! y)
+    {
+      Owner.AssignSame(x, y);  // Error: the given peer object might be immutable, in which case its owner is not allowed to be assigned
+    }
+
+    public static void N2([Captured] object! x, XY! y)
+    {
+      Owner.AssignSame(x, y);  // Error: the subject might be immutable, in which case its owner is not allowed to be assigned
+    }
+
+    public static string! StartsWithTest(string! s) {
+      if (s.StartsWith("ab")) {
+        return s.Substring(2);  // this should succeed, since there are at least two characters in s
+      }
+      return s;
+    }
+  }
+}

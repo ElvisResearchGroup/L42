@@ -1,0 +1,100 @@
+using System;
+using Microsoft.Contracts;
+
+/* This class contains a mixture of Bag representations.  The intent
+   is to have an abstract representation where a bag is represented as a
+   pair of integers BagSum and BagCount and a concrete representtaion
+   where the Bag is represented as an array.
+*/
+
+public abstract class BagAbstract
+{	
+  model int BagSum {
+    satisfies 0 <= BagSum;
+  }
+
+  model int BagCount {
+    satisfies 0 <= BagCount;
+  }
+
+  public virtual bool IsEmpty {
+    get
+      ensures result <==> BagCount == 0;
+    {
+      return BagCount == 0;
+    }
+  }
+
+  public abstract void Add(int x);
+    requires 0 <= x;
+    modifies this.*;
+    ensures BagSum == old(BagSum) + x;
+    ensures BagCount == old(BagCount) + 1;
+}
+
+public class BagConcrete : BagAbstract
+{
+  [Rep] protected int[]! elems;  //make this Rep so that we can modify the array in Add
+  protected int count;
+  invariant 0 <= count && count <= elems.Length;
+  invariant forall{int i in (0: count); 0 <= elems[i]};
+  invariant 0 <= sum{int i in (0: count); elems[i]};
+
+  override model int BagCount {
+    satisfies BagCount == count;  // temporary hack:  use /cc- with the compiler
+  }
+
+  override model int BagSum {
+    satisfies BagSum == sum{int i in (0: count); elems[i]};  // temporary hack:  use /cc- with the compiler
+  }
+
+  public override void Add(int x)
+  {
+    expose(this)
+    {
+      if (count == elems.Length)
+      {
+        int[]! b = new int[2*elems.Length+1]; // Always grow the array, even if elems.Length == 0!
+        Array.Copy(elems, 0, b, 0, elems.Length);
+        assume sum{int i in (0: elems.Length); elems[i]} == sum{int i in (0: elems.Length); b[i]};  // from the spec of Array.Copy
+        elems = b;
+      }
+      elems[this.count] = x;
+      count++;
+    }
+  }
+
+  public override bool IsEmpty {
+    get {
+      return count == 0;
+    }
+  }
+
+  public static BagAbstract! MakeBag()
+    ensures result.IsNew;
+    ensures result.BagCount == 0;
+    ensures result.BagSum == 0;
+  {
+    BagConcrete b = new BagConcrete();
+    return b;
+  }
+
+  //a constructor method
+  protected BagConcrete()
+    ensures count == 0;
+  {
+    count = 0;
+    elems = new int[100];
+  }
+}
+
+public class Client {
+  public void Main() {
+    BagAbstract b = BagConcrete.MakeBag();
+    assert b.BagCount == 0;
+    b.Add(23);
+    b.Add(10);
+    assert b.BagSum == 33;
+    assert b.BagCount == 2;
+  }
+}

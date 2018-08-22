@@ -1,0 +1,73 @@
+using Microsoft.Contracts;
+public class A {
+  [Rep][ElementsPeer] A[]! others;
+  int x;
+  [Dependent(typeof(B))] public int y;
+  [Dependent(typeof(C))] public int z;
+  invariant forall{int ijk in (0 : others.Length), ijk % 2 == 0; others[ijk] != null ==> others[ijk].x == 7};
+
+  public A() {
+    others = new A[10];
+  }
+
+  public virtual void M() {
+    int ijk = 0;  // this local variable tests for BoogiePL name clashes with the quantified variable "ijk" above
+    ijk++;
+    expose (this) {
+      x = 7;  // error: there may be other relevant objects that haven't been unpacked
+    }
+  }
+
+  public virtual void N() {
+    expose (this) {
+      y++;  // error there may be other relevant objects that haven't been unpacked (although there is never any AbstractCity0 object, the quantifier that gets asserted here only looks at the range and filter expressions given in the quantifier in the invariant)
+    }
+  }
+
+  public virtual void P() {
+    expose (this) {
+      z++;  // fine, since there is never any AbstractCity1 object and the "is" expression is mentioned in a range filter in class C
+    }
+  }
+}
+
+public class B {
+  [Rep][ElementsRep] object[]! others;
+
+  invariant forall{int i in (0 : others.Length);
+              others[i] is AbstractCity0 && ((AbstractCity0)others[i]).a0 != null
+          ==> ((AbstractCity0)others[i]).a0.y == 7};
+
+  public B(int n)
+    requires 0 <= n;
+  {
+    others = new AbstractCity0[n];
+  }
+}
+
+public class C {
+  [Rep][ElementsRep] object[]! others;
+
+  invariant forall{int i in (0 : others.Length),
+                   others[i] is AbstractCity1;
+               ((AbstractCity1)others[i]).a1 != null ==> ((AbstractCity1)others[i]).a1.z == 7};
+
+  public C(int n)
+    requires 0 <= n;
+  {
+    others = new AbstractCity1[n];
+  }
+}
+
+abstract class AbstractCity0 {
+  public A a0;
+}
+
+abstract class AbstractCity1 {
+  public A a1;
+}
+
+class AnotherInvariantNameIssue {
+  int x;
+  invariant forall{int i in (0: x), i % 2 == 0, int j in (i: 2*x), i+j < 200; i < x};
+}

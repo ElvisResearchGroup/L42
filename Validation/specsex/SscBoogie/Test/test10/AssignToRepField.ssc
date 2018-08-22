@@ -1,0 +1,108 @@
+using Microsoft.Contracts;
+
+public class AssignToRepField {
+  [Rep] T f;
+  [Rep] int[] a;
+
+  public AssignToRepField()
+  {
+    T t = new T();
+    int[] x = new int[25];
+    Sqrt();
+    this.f = t;
+    this.a = x;
+  }
+
+  public AssignToRepField(bool b)
+  {
+    this.f = null;
+    this.a = null;
+  }
+
+  public AssignToRepField(int[] x)
+  {
+    this.a = x;  // error: x may already have an owner
+  }
+
+  public AssignToRepField(T t)
+  {
+    this.f = t;  // error: t may already have an owner
+  }
+
+  public virtual void M() {
+    this.f = null;  // assigning null is okay, since f is not mentioned in any invariant
+  }
+
+  public virtual void N() {
+    expose (this) {
+      this.f = null;
+    }
+  }
+
+  public static void Sqrt() { }
+}
+
+public class T { }
+
+public class Abc {
+  T! f;
+  T g;
+
+  public Abc(bool b) {
+    T t = new T();
+    this.f = t;
+    this.g = t;
+    if (b) {
+      t = new T();
+    }
+    this.g = t;
+    this.f = t;
+    base();
+  }
+}
+
+public class RepFieldWithInvariant {
+  [Rep] T f = new T();
+  int x;
+  invariant f == null ==> x == 0;
+
+  public void M() {
+    f = null;  // error: this may break the invariant
+    x = 0;
+  }
+
+  public void N() {
+    expose (this) {  // with an expose around the assignments, this is okay
+      f = null;
+      x = 0;
+    }
+  }
+
+  public void P() {
+    x = 0;
+    f = null;  // doing the assignments in the other order is also okay
+  }
+}
+
+public class AdditiveField {
+  [Additive] protected T f;
+
+  [Additive]
+  public virtual void M() {
+    f = null;  // error: must first expose the object
+  }
+
+  [Additive]
+  public virtual void N() {
+    expose (this) {
+      f = null;  // error: the object must be additively exposed
+    }
+  }
+
+  [Additive]
+  public virtual void P() {
+    additive expose (this) {  // here we go!
+      f = null;
+    }
+  }
+}

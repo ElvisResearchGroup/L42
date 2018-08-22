@@ -1,0 +1,28 @@
+using Microsoft.Contracts;
+
+public class House {
+  [Dependent(typeof(Person))] // This attribute makes sure that class House knows that a visibility-based invariant of class Person depends on owner
+  public Person? owner;
+
+  invariant owner != null ==> owner.home == this;  // This invariant is not ownership-based because owner has no [Rep] attribute
+}
+
+public class Person {
+  [Dependent(typeof(House))] // This attribute makes sure that class Person knows that a visibility-based invariant of class House depends on home
+  public House? home;
+
+  invariant home != null ==> home.owner == this;  // This invariant is not ownership-based because home has no [Rep] attribute
+
+  public void BuyHome(House h) 
+    requires h.owner == null;
+    requires home == null;
+    modifies h.owner;
+  {
+    expose (this) {
+      expose (h) {
+        home = h;
+        h.owner = this;
+      }
+    }
+  }
+}
