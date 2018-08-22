@@ -1,0 +1,86 @@
+{
+OptMinimal: Resource <>< UnsafeRefactor.Classable <><
+{
+    T: {}
+
+    // Internal field and ctor
+    __TOpt _that
+    class method This _new(_TOpt _that)
+
+    class method This() This._new(_TEmpty())
+    class method This(read T that) This._new(_Tof(that))
+
+
+    read method read T get() exception Guard.Operation
+        this._that().that()
+
+    read method read T #get()
+    (
+        return this.get()
+        catch exception Guard.Operation err
+        error err
+    )
+
+    method Bool isPresent()
+    (
+        v = this.get()
+        catch exception v
+            Bool.false()
+        Bool.true()
+    )
+
+    method toS() that.toS()
+
+    __TOpt:
+    {
+        interface implements Concept.ToS
+        read method read T that() exception Guard.Operation
+    }
+
+    _TEmpty: Data <><
+    {
+        implements __TOpt
+        method that() exception X"Value not present in Optional"
+        method toS() S"empty"
+    }
+
+    _Tof: K <><
+    {
+        implements _TOpt
+        read T that
+        method toS()
+        (
+            return this.that()
+            catch return Concept.Tos v
+                v.toS()
+            catch return Void v
+                S"void"
+            catch return Library
+                S"{..}"
+            S"?"
+        )
+    }
+}
+
+OptData: Resource <>< Data <>< Use.Override[OptTrait()] <><
+{
+    T: {implements Concept.Base}
+    __TOpt: {interface implements Concept.Base}
+    _Tof: Data <><
+    {
+        implements _TOpt
+        read T that
+        method toS() that.toS()
+    }
+}
+
+class method Library (class Any that)
+{
+    redirect = Refactor2.redirect(path: \"T", into that)
+    return redirect <>< OptData()
+    catch error Library
+        return redirect <>< OptMinimal()
+    catch error S return this.minimal(of)
+        return redirect <>< OptMinimal()
+}
+}

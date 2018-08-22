@@ -81,6 +81,7 @@ public class HtmlFx extends StackPane{
     }
 
   private void handleKeyPress(KeyEvent keyEvent) {
+
     if(outerPanel==null || !(outerPanel instanceof ReplTextArea)) {return;}
     ReplTextArea editor=((ReplTextArea)outerPanel);
 
@@ -110,6 +111,9 @@ public class HtmlFx extends StackPane{
       editor.removeStar();
       return;
     }
+
+    //if (keyEvent.getCharacter().equals("\n"))
+    //  editor.
     editor.addStar(); //file has been modified (NOT SAVED)
   }
 
