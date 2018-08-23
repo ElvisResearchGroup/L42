@@ -19,6 +19,12 @@ AdamTowel02:{class method Library (){
   ConceptMap:Use[Ontology.ontologicMap()]<><{interface method Load _Load()}
   Load:...
   Trait:...
+  Option:
+    Refactor2.hide(path:\"Hide")<><
+    Refactor2.hide(path:\"OptTrait")<><
+    Refactor2.hide(path:\"OptNoBaseTrait")<><
+    Refactor2.hide(path:\"OptBaseTrait")<><
+    ...
   }}
 Task01: {
   r=Use.Override(patch:\"Fix")<><AdamTowel02()
