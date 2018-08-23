@@ -66,7 +66,7 @@ ButtonW:Data<><Use[Gui.DispatchTrait()]<><{implements Gui.Widget
     topDelta:5Size
     )
   }
-SafeMovable:Data<><{implements Gui.Widget
+SafeMovable:StupidData<><{implements Gui.Widget
   capsule Box box
   class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
     capsule Box cbox=(
@@ -85,7 +85,7 @@ SafeMovable:Data<><{implements Gui.Widget
   method top()this.box().top()
   method dispatch(that)this.#box().dispatch(that)
   read method Bool #invariant(){
-    Debug(S"Invariant #")
+    Debug.incrementCounter(S"Invariant")
     with w1 in this.box().children().vals() (
       if !this.inside(w1) (return Bool.false())
       with w2 in this.box().children().vals() (
@@ -178,6 +178,7 @@ C: {
     ]
   Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
 
+  Debug.printCounter(S"Invariant")
   Debug(S"#@Success@#")
   return ExitCode.normal()
   }
