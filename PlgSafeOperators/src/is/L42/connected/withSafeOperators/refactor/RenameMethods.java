@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ast.Ast;
+import ast.ErrorMessage;
 import ast.ExpCore;
 import ast.PathAux;
 import ast.Ast.Doc;
@@ -186,9 +187,14 @@ private void fillRenamesCoherent(CsMxMx r, Program p, List<CsMxMx> renamesLoc) t
     }
   if(alreadyClosed && this.ignoreUnfit){return;}
   if(alreadyClosed){throw new RefactorErrors.ClassUnfit().msg("Class is already closed");}
-  boolean coherent=newTypeSystem.TsLibrary.coherent(p,false);
+  String msg=null;
+  boolean coherent;try{coherent=newTypeSystem.TsLibrary.coherent(p,true);}
+  catch(ErrorMessage.NotOkToStar em){
+    msg=em.getReason();
+    coherent=false;
+    }
   if(!coherent){
-    throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be closed");}
+    throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be closed:\n"+msg);}
   long prN=L42.freshPrivate();
   for(MethodSelector msi :sel){
     renamesLoc.add(new CsMxMx(r.getCs(),false,msi,msi.withUniqueNum(prN)));
@@ -297,6 +303,7 @@ class RenameMethodsAux extends coreVisitors.CloneVisitorWithProgram{
     }
 
   @Override public List<Member> liftMembers(List<Member> s) {
+    s=new ArrayList<>(s);//TODO: it may be better to make the method do the abstraction
     addToAbstractAliases(s);
     List<Member> res=new ArrayList<>(super.liftMembers(s));
     collapseEqualMs(res);

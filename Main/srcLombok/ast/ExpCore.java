@@ -448,7 +448,7 @@ class _Aux{
         String key = mwt.getMs().toString();
         assert !keys.contains(key);
         keys.add(key);
-        assert mwt.getMt().isRefine() || cb.getP().containsAll(mwt.getP());
+        assert cb.getP().containsAll(mwt.getP());
         //assert mwt.getMt().getTDocs().size() == mwt.getMt().getTs().size();
         }
       if (m instanceof NestedClass) {

@@ -4,6 +4,7 @@ import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.VarDecCE;
+import ast.ErrorMessage;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.Phase;
@@ -95,11 +96,11 @@ public class Rename {
     //newCB=take srcC from top, and adjust paths to dest
     ClassB onlyDestL=redirectDefinition(src,dest,renamedFullL);
     //optionally sum renamed srcC in destC
-    
+
     ClassB res= new Compose(l,l).composeRefreshed(p, noSrcL, onlyDestL);
     //TODO: it can be much more efficient in many cases, if we can check if the sum in not doing any heavy lifting, as in
     //renaming on a non existent target
-    //TODO:try catch methodclash and replace right method location with the "right one" 
+    //TODO:try catch methodclash and replace right method location with the "right one"
     res=ClassOperations.normalizePaths(res);
     //assert !res.toString().contains("This$"):
     //  res.toString();
@@ -115,43 +116,48 @@ public class Rename {
     ms.add(Functions.encapsulateIn(dest, cb,nsCb.getDoc()));
     return ClassB.membersClass(ms,cb.getP(),lprime.getPhase());
     }
-/**{@link RenameSpec#rename}*/   
+/**{@link RenameSpec#rename}*/
 public static ClassB renameClassS(PData p,ClassB cb,String src,String dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
   return renameClassJ(p,cb,PathAux.parseValidCs(src),PathAux.parseValidCs(dest));
-  }  
-/**{@link RenameSpec#rename}*/   
+  }
+/**{@link RenameSpec#rename}*/
 public static ClassB renameClassJ(PData p,ClassB cb,List<Ast.C>src,List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
   if(MembersUtils.isPrivate(src)){
-    throw new RefactorErrors.PathUnfit(src).msg("private path");  
+    throw new RefactorErrors.PathUnfit(src).msg("private path");
     }
   if(MembersUtils.isPrivate(dest)){
-    throw new RefactorErrors.PathUnfit(dest).msg("private path");  
+    throw new RefactorErrors.PathUnfit(dest).msg("private path");
     }
   return renameClassAux(p.p,cb,src,dest);
   }
 
 public static ClassB hideClassJ(PData p,ClassB cb,List<Ast.C> src) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit, ClassUnfit{
   if(MembersUtils.isPrivate(src)){
-    throw new RefactorErrors.PathUnfit(src).msg("private path");  
-    }  
+    throw new RefactorErrors.PathUnfit(src).msg("private path");
+    }
   if(!MembersUtils.isPathDefined(cb, src)){
     throw new RefactorErrors.PathUnfit(src);
     }
   Program pp=p.p;
   pp=pp.evilPush(cb);
   pp=pp.navigate(src);
-  boolean coherent=newTypeSystem.TsLibrary.coherent(pp,false);
-  if(!coherent){throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be hidden");}
+  String msg=null;
+  boolean coherent;try{coherent=newTypeSystem.TsLibrary.coherent(pp,true);}
+  catch(ErrorMessage.NotOkToStar em){
+    msg=em.getReason();
+    coherent=false;
+    }
+  if(!coherent){throw new RefactorErrors.ClassUnfit().msg("Incoherent class can not be hidden:\n"+msg);}
   String nameC="Fresh";
-  
+
   if(!src.isEmpty()){nameC=src.get(src.size()-1).getInner();}
   nameC=Functions.freshName(nameC, L42.usedNames);
-  List<Ast.C> dest=Collections.singletonList(new Ast.C(nameC,L42.freshPrivate()));  
+  List<Ast.C> dest=Collections.singletonList(new Ast.C(nameC,L42.freshPrivate()));
   return directRename(p.p,cb,src,dest);
   }
 
 
-/**{@link RenameSpec#rename}*/   
+/**{@link RenameSpec#rename}*/
 public static ClassB renameClassAux(Program p,ClassB cb,List<Ast.C> src,List<Ast.C> dest) throws MethodClash, SubtleSubtypeViolation, ClassClash, PathUnfit{
   if(!MembersUtils.isPathDefined(cb, src)){
     throw new RefactorErrors.PathUnfit(src);
@@ -180,5 +186,5 @@ public static ClassB renameClassAux(Program p,ClassB cb,List<Ast.C> src,List<Ast
   cb=Pop.directPop(cb);
   return cb;
 }
-  
+
 }

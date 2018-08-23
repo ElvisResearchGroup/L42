@@ -2820,6 +2820,10 @@ Debug: {
 class method 
 Void #apply(read This1.Concept.ToS that) use This1.Alu check stringDebug(that:that.toS().#binaryRepr()) void
 class method 
+Void incrementCounter(read This1.Concept.ToS that) use This1.Alu check incrementCounter(that:that.toS().#binaryRepr()) void
+class method 
+Void printCounter(read This1.Concept.ToS that) use This1.Alu check printCounter(that:that.toS().#binaryRepr()) void
+class method 
 Void #apply(Library lib) error This1.S.#from(builder:(
   mut This1.S.SBuilder b134=This1.S.#builder()
   Void unused513=b134.#t()

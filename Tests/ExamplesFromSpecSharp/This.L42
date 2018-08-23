@@ -1,0 +1,54 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+
+Reader: {interface
+    mut method Size getChar()
+}
+CharList: Collections.vector(of: Size)
+
+ArrayReader: Data <>< {implements Reader
+    var capsule CharList src
+    var Size n
+    read method Bool #invariant() (
+        0Size <=this.n()  & this.n() <= this.src().size()
+    )
+    class method mut This(capsule CharList source)
+        This(src: source, n: 0Size)
+    method getChar() (
+        var Size ch = 0Size
+        if this.n() == this.src().size() (
+            ch := Size"-1"
+        ) else (
+            ch := this.src().val(this.n())
+            this.n(this.n() + 1Size)
+        )
+        ch
+    )   
+}
+OReader:Opt(Reader)
+//current opt is very limited: it work only for immutable types, and no toS/equals
+//look to collections: 4 variations: base/non base * mut/imm
+//Opt(of:Reader) Opt(ofMut:Reader)
+
+Lexer: Data<><{implements Concept.Base
+    capsule OReader rd
+    method toS()S"Lexer"
+    method ==(right)Bool.false()
+    read method S #invariantToS()S"Lexer"
+    read method Bool #invariant() this.rd().isPresent()
+    class method mut This(capsule Reader reader) This(rd: OReader(reader))
+    mut method Size getToken() (
+        var Size t = 0Size
+        var Size ch = Size"0"
+        while ch != Size"-1" (
+            ch := this.#rd().#get().getChar()
+            t := t + ch
+        )
+        t
+    )
+}
+Main: {
+  Debug(S"Hello world"[Lexer(reader: ArrayReader(source: CharList[0Size; 1Size]))]"")
+  return ExitCode.normal()
+  }

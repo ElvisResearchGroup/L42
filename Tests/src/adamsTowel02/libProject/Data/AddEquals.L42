@@ -3,7 +3,7 @@ Fail:{}
 method
 Bool shouldDecorate(Location.Lib that)
 exception Fail {
-  mToS=that.method(selector:\"#equalequal(that)")
+  mToS=that.method(selector:\"#equalequal#0left(right)")
   catch exception Location.NotAvailable
     return Bool.true()
   if !that.implements(classObj:Concept.Equals) (
@@ -33,8 +33,8 @@ exception Fail{
   error on Refactor2.Fail X"accumulation"
   //final wrapping
   miniEquals={ implements Concept.Equals
-    read method 
-    Bool equals(read This that) 
+    read method
+    Bool equals(read This that)
       Bool.true()
     method ==(right) {
       with right (on read This return this.equals(right))
@@ -64,5 +64,5 @@ class method FieldOperation op()
     forVoid:{ Void f
       read method Bool equals(read This that) Bool.true()
       }
-    )  
+    )
 }

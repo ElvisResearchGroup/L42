@@ -1,0 +1,29 @@
+{reuse L42.is/AdamTowel01
+
+Main: {
+  // This test is intended to work with the defined output extension to Tests/src/helpers/TestHelper.java.
+  Debug(S"
+  '[Defined output between][End of defined output]
+  '[End of output]
+  '
+  'Counter1: 0
+  'Counter2: 3
+  'Counter1: 1
+  '[End of defined output]
+  ")
+
+  Debug.printCounter(S"Counter1") // 0
+
+  Debug.incrementCounter(S"Counter2")
+  Debug.incrementCounter(S"Counter2")
+  Debug.incrementCounter(S"Counter2")
+  Debug.printCounter(S"Counter2") // 3
+
+  Debug.incrementCounter(S"Counter1")
+  Debug.printCounter(S"Counter1") // 1
+
+  Debug(S"[End of output]")
+
+  return ExitCode.normal()
+  }
+}

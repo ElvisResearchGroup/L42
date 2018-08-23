@@ -3,6 +3,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
@@ -157,6 +158,24 @@ public class Plugin implements PluginType.WellKnown {
   public Resources.Void MstringDebug£xthat(Object cb){
     String s=ensureExtractStringU(cb);
     L42.printDebug(s);
+    return Resources.Void.instance;
+  }
+
+  static HashMap<String, Long> counters = new HashMap<>();
+  @ActionType({ActionType.NormType.Void, ActionType.NormType.Library})
+  public Resources.Void MincrementCounter£xthat(Object cb){
+    String s=ensureExtractStringU(cb);
+
+    // sets counters[s] to 1 if s was not in dom(counters)
+    // otherwise adds y (which is set to 1) to the value that is already there
+    counters.merge(s, 1L, (x, y) -> x + y);
+    return Resources.Void.instance;
+  }
+
+  @ActionType({ActionType.NormType.Void, ActionType.NormType.Library})
+  public Resources.Void MprintCounter£xthat(Object cb){
+    String s = ensureExtractStringU(cb);
+    L42.printDebug( s + ": " + counters.getOrDefault(s, 0L));
     return Resources.Void.instance;
   }
 

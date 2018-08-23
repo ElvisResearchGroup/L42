@@ -64,6 +64,7 @@ public class Norm {
     //Ps'=collect(p,Ps)
     List<Type> _ps1 = Methods.collect(p,l.getSupertypes());
     List<Type> ps1=new ArrayList<>(l.getSupertypes());
+    Position pos = l.getP();
     for(Type t:_ps1){
       boolean none=l.getSupertypes().stream().noneMatch(ti->p.equiv(ti.getPath(),t.getPath()));
       if(none){ps1.add(t);}
@@ -87,16 +88,20 @@ public class Norm {
           else{msj=((MethodWithType)mj).getMs();}
           if(!msj.equals(msi)){continue;}
           msOld.set(j,norm(p,mi));//found it!
+          if(mj instanceof ClassB.MethodImplemented) {
+            pos=pos.sum(mi.getP());//I'm adding information from mi!
+            }
           break out;
           }
         //not found
         assert mi.get_inner()==null;//is added. Must be from interface
         ms1.add(norm(p,mi));
+        pos=pos.sum(mi.getP());//I'm adding information from mi!
         }
       }
     ms1.addAll(msOld);
     ms1.addAll(msNc);
-    ClassB newL=new ClassB(l.getDoc1(),l.isInterface(),ps1,ms1,l.getP(),Phase.Norm,p.getFreshId());
+    ClassB newL=new ClassB(l.getDoc1(),l.isInterface(),ps1,ms1,pos,Phase.Norm,p.getFreshId());
     return newL;
     }
   @SuppressWarnings("unchecked")

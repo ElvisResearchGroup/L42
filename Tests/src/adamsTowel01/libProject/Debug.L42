@@ -4,6 +4,15 @@
     use Alu
       check stringDebug(that.toS().#binaryRepr())
       void
+
+  class method Void incrementCounter(read Concept.ToS that)
+    use Alu check incrementCounter(that.toS().#binaryRepr())
+    void
+
+  class method Void printCounter(read Concept.ToS that)
+    use Alu check printCounter(that.toS().#binaryRepr())
+    void
+
   class method
   Void (Library lib) error S"to fix in AdamTowel2"
 

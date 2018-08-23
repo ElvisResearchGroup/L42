@@ -1,14 +1,31 @@
-\section{Extensions to our model}
-
-\paragraph{Nested classes:}
+\section{Family
+Polymorphism by disconnecting Use and Reuse}
 A nested class is just another kind of member in a code literal.
-The general idea is that by composing code with \use,
+In Java and Scala if a subclass declares a nested class with the same
+name of a nested of the superclass, the parent declaration is simply hidden.
+Approaches supporting FP~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
+consider such definition a form of \emph{overriding},
+called \emph{further extension}.
+That is, the following Java code is ill typed:
+\saveSpace\saveSpace\begin{lstlisting}[language=Java]
+abstract class A{static class B{..}   abstract B m();}
+class AA extends A{static class B{..}   B m(){..}}
+\end{lstlisting}\saveSpace\saveSpace
+Invalid overriding: method \Q@AA.m()@ return type is \Q@AA.B@, that is unrelated with \Q@A.B@.
+We extends \name with nested classes, so that that
+by composing code with \use,
 nested classes with the same name are recursively composed.
-For simplicity, while we discuss nested classes,
-here we do not consider nested traits,
+The corresponding code in \name instead would work, and behave like a FP further extension.
+\saveSpace\saveSpace\begin{lstlisting}
+a={B={..}   method B m()}
+AA= Use a, {B={..}   method B m(){..}}
+\end{lstlisting}\saveSpace\saveSpace
+
+For simplicity, we discuss nested classes but not nested traits:
 and all traits and code composition expressions are still at top level.
 In this way all dependencies are about top level names, allowing the type system 
 to consider the class table as a simple map from (nested) types (as both \Q@A@ and \Q@A.B.C@) to their definition.
+
 
 %\paragraph{Redirect}${}_{}$\\*
 %Redirect is another composition operator that
@@ -41,10 +58,9 @@ to consider the class table as a simple map from (nested) types (as both \Q@A@ a
 
 
 
-\paragraph{Rename:}
 There are a lots of different forms of rename in
 literature~\cite{deep,ancona2002calculus,bracha1992programming}.
-Here we will use a simple variant to rename nested types in other nested types.
+Here we introduce a simple variant to rename nested types in other nested types.
 For example:
 \begin{lstlisting}
 t={ method B m() B={ method B mb()} }
@@ -59,6 +75,7 @@ The rename only influences its argument.
 Since traits do not induce nominal types, we can
 consistently change their
 internally used names without breaking any code.
+The whole L42 offers many other kinds of renames, but we do not need them to show our next example.
 
 %Here we present two variants: one to rename nested types in other nested types
 %and one to rename methods; this also allows to rename an (nested) interface method

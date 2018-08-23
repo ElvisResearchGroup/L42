@@ -91,8 +91,8 @@ less obvious in PT since both a package and a class have to be introduced to exp
 This allows encoding binary methods, expressing patterns like withers or fluent setters and to instantiate instances of the (future) class(es)  using the reused code.
 \end{itemize}
 \saveSpace
-\subsection{Family
-Polymorphism by disconnecting Use and Reuse}
+\subsection{Implications for Family
+Polymorphism}
 \saveSpace
 Our \Q@Use@ operator is similar to deep mixin composition~\cite{ernst99a,Zenger-Odersky2005, Hutchins06}
 and family polymorphism~\cite{Ernst06, igarashi2005lightweight, IgarashiViroli07, IgarashiEtAl08}, but is symmetric, and with the operator
@@ -114,12 +114,9 @@ class AA extends A{static class B{int f2;}   int k(.B x){return x.f2+new .B().f2
 \end{lstlisting}\saveSpace\saveSpace
 The syntax \lstinline{.B} denotes a relative path, that is, the 
 class \lstinline{B} in scope.
-In Java and Scala declaring a subclass of a nested class with the same
-name of a nested of the superclass only has the effect of hiding parent's declaration.
-Approaches supporting FP~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
-consider such definition a form of \emph{overriding},
-called \emph{further extension}:
-\lstinline{AA.B} further extends \lstinline{A.B}: it is implicitly considered a subclass of \lstinline{A.B}, adding the field \Q@f2@.
+%In Java and Scala declaring a subclass of a nested class with the same
+%name of a nested of the superclass only has the effect of hiding parent's declaration.
+In FP \lstinline{AA.B} further extends \lstinline{A.B}: it is implicitly considered a subclass of \lstinline{A.B}, adding the field \Q@f2@.
 Consider now the following code:
 \saveSpace\saveSpace\begin{lstlisting}
 new AA().k(new AA.B())//well-typed
