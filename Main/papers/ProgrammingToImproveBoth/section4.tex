@@ -67,13 +67,13 @@ pointMul= { method int x() method int y()//repeating getters
 The first trait provides a \emph{binary method} that 
 adds the point object to another point to return a new point. 
 The second trait provides multiplication.
-\noindent In this code all the operations dealing with state are represented as {\bf abstract} methods.
+\noindent In this code all the operations dealing with state are represented as \emph{abstract methods}.
 Notice the abstract \Q@static method This of(..)@ which acts as a factory/constructor
 for points. 
 As for instance methods, static methods are late bound:  flattening can provide an implementation for them.
 Thus, in \name\ they can be abstract, and abstract static methods are similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
 Following the traditional model of traits and classes common in literature~\cite{ducasse2006traits},
-we can compose the two traits, by \textbf{adding glue-code}
+we can compose the two traits, by \emph{adding glue-code}
 to implement methods \Q@x@, \Q@y@ and \Q@of@.
 This approach is verbose but very
 powerful, as illustrated by Wang et al.~\cite{wang2016classless}.
@@ -124,7 +124,7 @@ In \name there is no need to generate
 code, or to explicitly write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The idea is that
 any class that could be completed in the obvious way  is a
-  complete \textbf{coherent} class.  In most other languages, a class is
+  complete \emph{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
 abstract only when the set of abstract methods are not coherent. That
 is, the abstract methods cannot be automatically recognised
@@ -213,7 +213,7 @@ These operations can be combined in 16 different ways.
 We coded this example in four different styles:
 (a) Java7 \emph{(= 115 lines)}%
 \footnote{
-Since we want to focus on the actual code, while counting line numbers we \textbf{omit} white lines and lines containing only open/closed parenthesis.
+Since we want to focus on the actual code, while counting line numbers we \emph{omit} white lines and lines containing only open/closed parenthesis.
 }%
 , (b) Classless Java \emph{(= 82 lines)},
 (c) Scala \emph{(= 81 lines)} and (d) \name \emph{(= 32 lines)}.
@@ -384,7 +384,7 @@ For this example, in Java we encode \Q@Point@ with no operations,
 \Q@PointSum@ reusing \Q@Point@ adding a functional \Q@sum@ operation,
 a \Q@CPoint@ reusing \Q@PointSum@ with a \Q@Color@ field
 and a \Q@FCPoint@ reusing \Q@CPoint@ with a \Q@Flavour@ field.
-This second case study represents a \textbf{worst case scenario} for \name against Java because we model just a single chain of reuse,
+This second case study represents a \emph{worst case scenario} for \name against Java because we model just a single chain of reuse,
 easily supported in plain Java by single inheritance.
 Like the previous experiment, we still found that the Java solution was longer (47 lines) than that in \name (33 lines). This is caused by the absence support for the `This' type, where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated to make sure that the returned type will be correct (the number of members in Java were 27 while 24 (less 3) in \name).
 

@@ -12,9 +12,9 @@ content of the paper, but may clarify misconceptions.
 At first it may seem that our approach requires
 introducing and keeping more names in mind, as for the \Q@set@ and \Q@Set@ example;
 however this is not the case. 
-The \textbf{user} of \Q@Set@ needs to keep in mind
+The \emph{user} of \Q@Set@ needs to keep in mind
 only the class \Q@Set@.
-The \textbf{re-user} of \Q@set@ needs to keep in mind only
+The \emph{re-user} of \Q@set@ needs to keep in mind only
  the trait \Q@set@.
 Those are quite different roles, so they may very well
 be handled by different programmers.
@@ -41,12 +41,12 @@ interface with the same structural type in a single declaration.
 There are indeed two different ways to separate subclassing and subtyping:
 
 \begin{itemize}
-\item \textbf{(1)Classes are not types}
+\item \emph{(1)Classes are not types}
 In this solution (used by Cecil, Toil/PolyToil and most structurally typed languages) classes and types are different concepts; thus subclassing is not subtyping.
 This also means that every method call is dynamically dispatched. Some authors consider this to be a security problem, and it is also out of those concerns that Java designers decided to support \Q@final@ classes.\footnote{
 For example, a Java programmer may assume the call \Q@myPoint.getX()@ to behave as specified in the \Q@Point@ class. However, dynamic class loading may be used in a malicious way to provide a \Q@Point@ instance with a
 dangerous behaviour. This can be easily prevented by declaring \Q@Point@ final. To insist on all calls to be dynamically dispatched requires to disable dynamic class loading or to verify all the dynamically loaded code.}
-\item \textbf{(2)Classes are not extensible}
+\item \emph{(2)Classes are not extensible}
 This is our solution: classes are types, but can not be reused. This requires to introduce another concept for code reuse: Traits.
 We think our solution is much less radical than the former one.
 A key advantage we have is that all class types are exact types, and method calls on class types are statically dispatched; supporting easier reasoning and higher security.

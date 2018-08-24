@@ -343,7 +343,7 @@ ${}_{}$\\*
 \saveSpace
 \subsection{Compilation process}
 \saveSpace
-To understand \name, the compilation process is the \textbf{most interesting part}.
+To understand \name, the compilation process is the \emph{most interesting part}.
 This includes the flattening process and how and when compilation errors may arise.
 It is composed by rules \Rulename{top},\ \Rulename{look-up},\ \Rulename{ctx-c} and \Rulename{sum}.
 To model more composition operators, they would each need their own rule.
@@ -572,7 +572,7 @@ and is what distinguishes our approach from a simple minded code composition mac
 or a rigid module composition~\cite{ancona2002calculus}. 
 It is built on two core ideas:
 
-\paragraph{1: Traits are \textbf{well-typed} before being reused.}
+\paragraph{1: Traits are \emph{well-typed} before being reused.}
  For example in
 
 \saveSpace\saveSpace\begin{lstlisting}
@@ -587,7 +587,7 @@ t1={method int n(){return this.m()+1;}} //ill-typed
 \end{lstlisting}\saveSpace\saveSpace
 
 
-\paragraph{2: Code literals are \textbf{not required to be well-typed} before flattening.}${}_{}$\\*
+\paragraph{2: Code literals are \emph{not required to be well-typed} before flattening.}${}_{}$\\*
 A literal $\mL$ in a declaration $\mD$
 must be well formed and respect
 $\mathit{consistentSubtype}$, but
@@ -616,7 +616,7 @@ for example \Q@String@ may offer a \Q@Int size()@
 method, and \Q@Int@ may offer a \Q@String toString()@ method.
 This means that typing classes 
 \Q@String@ and \Q@Int@ in isolation one at a time is not possible.}
-between multiple $\mC$\Q@=@$\mE$ \textbf{without
+between multiple $\mC$\Q@=@$\mE$ \emph{without
 the need of predicting the resulting shape}%
 \footnote{This is needed in full 42: it is
 impossible to predict the resulting shape since
@@ -685,7 +685,7 @@ In sharp contrast with others (TR, PT, DJ but also Java, C\# and Scala)
 we chose to not support this kind of involved programs.
 
 TR, PT, DJ, Java, C\# and Scala
-accept a great complexity in order to \textbf{predict the structural shape} of the resulting code before doing the actual code reuse/adaptation.
+accept a great complexity in order to \emph{predict the structural shape} of the resulting code before doing the actual code reuse/adaptation.
 Those approaches logically divide the program in groups of mutually dependent classes, where each group may depend on a number of other groups.
 This form a direct acyclic graph of groups.
 To type a group, all depended groups are typed, then

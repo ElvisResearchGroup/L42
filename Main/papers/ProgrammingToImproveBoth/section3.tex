@@ -6,8 +6,8 @@ To illustrate how
 Set and Bag collections first in Java, and then in \name.
 The benefit of \name is that we get reuse 
 without introducing subtyping between Bags and Sets.
-As shown below, this \textbf{improves the 
-use of Bags} by eliminating logical errors arising from incorrect
+As shown below, this improves the 
+use of Bags by eliminating logical errors arising from incorrect
 subtyping relations that are allowed in the Java solution. 
 \saveSpace
 \subsection{Sets and Bags in Java: the need for code reuse without 
@@ -32,7 +32,7 @@ class Bag extends Set{...//for each element in the hash map,
 \end{lstlisting}
 \saveSpace\saveSpace\saveSpace
 \noindent Coding \Q@Bag@ in this way avoids a lot of code
-duplication, but \textbf{we induced unintended subtyping}! 
+duplication, but we induced unintended subtyping! 
 Since subclassing implies subtyping, our code breaks the Liskov substitution principle (LSP)~\cite{martin2000design}: not all bags are sets!\footnote{The LSP is often broken in real programs because of the need of inheritance: LSP allows only refinement not extension. Traits provide extension without breaking LSP.}
 Indeed, the following is allowed{:}%
 \saveSpace\saveSpace
@@ -42,7 +42,7 @@ Set mySet=new Bag(); //OK for the type system but not for LSP
 \saveSpace\saveSpace
 This encumbers the programmer:
 to avoid conceptual errors that are not captured by the type system, 
-they have to \textbf{use} \Q@Bag@ very carefully.
+they have to \emph{use} \Q@Bag@ very carefully.
 
 
 \paragraph{A (broken) attempt to fix the Problem in Java.}
@@ -63,7 +63,7 @@ and we would be surprised to find a use of the type \Q@AbstractSetOrBag@.
 Worst, if we are to constantly apply this mentally, we would introduce a very high number
 of abstract classes that are not supposed to be used as types. Those classes would clutter the 
 public interface of our classes and the project as a whole.
-A \textbf{use}able API should provide only the information relevant to the client.
+A \emph{use}able API should provide only the information relevant to the client.
 In our example, the information \Q@Set<:AbstractSetOrBag@ would be present in the public interface
 of the class \Q@Set@, but such information is not needed to use the class properly!
 Moreover, the original problem is not really solved, but only moved 
@@ -97,7 +97,7 @@ If the designer of the \Q@Set@ class wishes to make it reusable, they can do it 
 set={/*set implementation*/} 
 Set=Use set
 \end{lstlisting}\saveSpace\saveSpace
-Since \Q@set@ can never be used as a type, there is no reason to give it a {\bf fancy-future-aware} name like
+Since \Q@set@ can never be used as a type, there is no reason to give it a fancy-future-aware name like
 \Q@AbstractSetOrBag@.
 When bag is added, the code will look like%
 \saveSpace\saveSpace\begin{lstlisting}

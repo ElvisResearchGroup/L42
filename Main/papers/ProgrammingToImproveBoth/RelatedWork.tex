@@ -144,14 +144,14 @@ provide a simpler model of family polymorphism, soundly supported by
 a straightforward nominal type system:
 by disconnecting use and reuse we outlaw \Q@A a=new AA()@.
 In \name this is also reducing the expressing power a little, but
-in the full 42 language, as well as in DJ, the operator \textbf{redirect} allows to write code that is parametric on families of data types.
+in the full 42 language, as well as in DJ, the operator \emph{redirect} allows to write code that is parametric on families of data types.
 To the same aim, .FJ relies on generics.
 
 Researchers with a strong grasp on Family
 Polymorphism know that support for FP strictly includes
 support for `\Q@This@' type and self instantiation, since the
 class is a member of its own family.
-Scala allows to \textbf{encode} further extension/deep mixin composition,
+Scala allows to \emph{encode} further extension/deep mixin composition,
 but it requires to do it explicitly, growing the amount of required glue-code.
 
 
@@ -186,7 +186,7 @@ The state is computed by the system as an overall result of the whole code compo
 
 In the literature there have been many attempts to add state in traits/module composition languages:
 \begin{itemize}  
-\item The simplest solution have {\bf no constructors}, and fields start with {\bf null} (or zero/false).
+\item The simplest solution have no constructors, and fields start with {\bf null} (or zero/false).
 In this setting fields are another kind of (abstract) member, and two fields with identical types can be merged by sum/use; \Q@new C()@ can be used for all classes, and \Q@init@ methods may be called later, as in
   \Q@Point p=new Point(); p.init(10,30)@.
   

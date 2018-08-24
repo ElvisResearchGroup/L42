@@ -5,8 +5,8 @@ In Java, C++, Scala and C\#, subclassing
 implies subtyping. A Java subclass declaration, such as 
 \Q@class A extends B {}@
 \noindent does two things at the same time:
-it {\bf inherits} code from \lstinline{B}; and it {\bf creates
-a subtype} of \lstinline{B}. Therefore a subclass must \emph{always} also be a subtype of the extended class.
+it {\bf inherits} code from \lstinline{B}; and it creates
+a subtype of \lstinline{B}. Therefore a subclass must \emph{always} also be a subtype of the extended class.
 Historically, there has been a lot of focus on
 separating subtyping from subclassing~\cite{cook}.  This separation is claimed to be
 good for code-reuse, design and reasoning. There are at
@@ -101,7 +101,7 @@ Suppose Java code-reuse (the {\bf extends} keyword) was not introducing subtypin
 C++ allows to "extends privately"; this is not
 what we mean by not introducing subtyping: in C++ it is a limitation over
   subtyping visibility, not over subtyping itself.  Indeed, the
-  former example would be \textbf{accepted} even if \lstinline{B} was to
+  former example would be \emph{accepted} even if \lstinline{B} was to
   "privately extends" \lstinline{A}}: then an invocation of 
 \lstinline{B.mb} would result in a run-time type error.
 The problem is that the
@@ -145,13 +145,13 @@ a module composition language where nested classes with the same name are recurs
 This paper show a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
-\textbf{use} from code designed for \textbf{reuse}.
-We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant \textbf{novel approach} to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+\emph{use} from code designed for \emph{reuse}.
+We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant \emph{novel approach} to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
 %-------
 
 In \name there are two separate concepts: classes
-and traits~\cite{ducasse2006traits}. Classes are meant for code \textbf{use}, and cannot be inherited/extended. Classes in \name are like final classes in
-Java, and can be used as types and as object factories. Traits are meant for code \textbf{reuse} only: multiple traits can be
+and traits~\cite{ducasse2006traits}. Classes are meant for code \emph{use}, and cannot be inherited/extended. Classes in \name are like final classes in
+Java, and can be used as types and as object factories. Traits are meant for code \emph{reuse} only: multiple traits can be
 composed to form a class. However, traits 
 cannot be instantiated or used as types.
 \MS{We will show how this allows fine control of subtyping while handling examples like \Q@Set/Bag@.}
@@ -174,7 +174,7 @@ Most of the hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
 and the design of \name synthesizes some of these concepts.
-The language design ideas have been implemented in the {\bf full 42 language}, which supports all
+The language design ideas have been implemented in the full 42 language, which supports all
 the examples we show in the paper, and is available at: \url{http://l42.is}.
 Work on 42 is now slowly reaching maturity after about 5 years of
 intense research and development. The current implementation 
@@ -200,15 +200,15 @@ In summary, our contributions are:
 
 
 \begin{itemize}
-\item We identify the {\bf this-leaking problem}, that makes dividing inheritance and subtyping difficult.
+\item We identify the this-leaking problem, that makes dividing inheritance and subtyping difficult.
 
 \item We synthesize the key ideas of previous designs that solve the
-  this-leaking problem into {\bf a novel and
-  minimalistic language design}.This language is the logic core of the language 42, and 
+  this-leaking problem into a novel and
+  minimalistic language design.This language is the logic core of the language 42, and 
   all the examples in this paper can be encoded as valid 42 programs
-This design {\bf improves both code use and code reuse}.
+This design improves both code use and code reuse.
 
-\item We propose {\bf a clean and elegant approach to the handling of state} in a trait based language.
+\item We propose a clean and elegant approach to the handling of state in a trait based language.
 
 \item We illustrate how \name, extended with nested classes, enables a
   powerful (but at the same time simple) form of family polymorphism. % the expression problem better than former work.
