@@ -16,9 +16,20 @@ subclassing is helpful.
 \begin{itemize}
 
 \item {\bf Allowing inheritance/reuse even when subtyping is impossible:} 
-In some situations a subclass contains methods whose signatures 
-are incompatible with the superclass, yet inheritance is still
-desirable. Classes with \emph{binary methods}~\cite{cook,bruce96binary} are a typical example.
+Situations where inheritance is desirable are prevented
+by the enforced subtyping relation, for example in the case of \emph{binary methods}~\cite{cook,bruce96binary}.
+\MS{For example,} consider class \Q@Point@ with a method 
+\Q@Point sum(Point o){return new Point(x+o.x,y+o.y);}@.
+Can we reuse the \Q@Point@ code so that \Q@ColorPoint.sum@
+would take and return a \Q@ColorPoint@?
+In Java/C\# declaring \Q@class ColorPoint extends Point{..}@ would result
+in \Q@sum@ still taking a \Q@Point@ and returning a \Q@Point@.
+Moreover, manually redeclaring a \Q@ColorPoint sum(ColorPoint that)@
+would just induce overloading, not overriding.
+%
+%In some situations a subclass contains methods whose signatures 
+%are incompatible with the superclass, yet inheritance is still
+%desirable. Classes with \emph{binary methods}~\cite{cook,bruce96binary} are a typical example.
 
 \item {\bf Preventing unintended subtyping:} For certain classes we
   would like to inherit code without creating a subtype even if, from
@@ -32,8 +43,8 @@ desirable. Classes with \emph{binary methods}~\cite{cook,bruce96binary} are a ty
 
 \end{itemize}
 
-\noindent Structural typing~\cite{cook} can deal with the first
-situation well, but not the second. Since structural subtyping
+\noindent Structural typing~\cite{cook} may deal with the first
+situation, but not the second. Since structural subtyping
 accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
 the second situation nominal subtyping is preferable: an explicit subtyping relation must be signalled by the programmer. Thus if subtyping is not desired, the
@@ -135,14 +146,22 @@ This paper show a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
 \textbf{use} from code designed for \textbf{reuse}.
-We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant \textbf{novel approach} to state in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant \textbf{novel approach} to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+%-------
 
 In \name there are two separate concepts: classes
 and traits~\cite{ducasse2006traits}. Classes are meant for code \textbf{use}, and cannot be inherited/extended. Classes in \name are like final classes in
 Java, and can be used as types and as object factories. Traits are meant for code \textbf{reuse} only: multiple traits can be
 composed to form a class. However, traits 
-cannot be instantiated or used as types. Our design allows
-subtyping and code reuse to be treated separately, which brings several benefits. In particular, 
+cannot be instantiated or used as types.
+\MS{We will show how this allows fine control of subtyping while handling examples like \Q@Set/Bag@.}
+
+\MS{In \name, as in many module composition languages~\cite{ancona_zucca_2002},
+static methods are also dynamically dispatched and can even be abstract. In this context, an abstract static method can perform the role of a constructor.
+We will show how in \name, state is induced by an implicit fixpoint operation over abstract methods.
+This allow to handle examples like \Q@Point/ColorPoint@ in a natural way, and without requiring code duplication.}
+
+Our design brings several benefits. In particular, 
 Family Polymorphism~\cite{ernst2004expression} is
 radically simpler to support soundly.
 This is already clear in the 3 lines of
@@ -150,13 +169,13 @@ research above, and is even more outstanding in the clean \name model.
 
 We first focus on an example-driven presentation to illustrate how to
 improve use and reuse. 
-In Section~\ref{sec:formal} we then provide a compact formalization.
+In Appendix~\ref{sec:formal} we then provide a compact formalization.
 Most of the hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
 and the design of \name synthesizes some of these concepts.
 The language design ideas have been implemented in the {\bf full 42 language}, which supports all
-the examples we show in the paper, and is available at: \url{http://l42.is} (can be accessed without breaking double blind review).
+the examples we show in the paper, and is available at: \url{http://l42.is}.
 Work on 42 is now slowly reaching maturity after about 5 years of
 intense research and development. The current implementation 
 is now robust enough to create realistic medium sized programs running 
