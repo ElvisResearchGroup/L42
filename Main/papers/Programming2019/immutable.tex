@@ -83,18 +83,40 @@ uses immutable variables can safely be promoted to \Q@imm@.
 
 
 
-\loseSpace
 
-TM are very useful in restricting the scope of mutation. 
+\loseSpace
+\noindent{\textit{Exceptions:}}
+M\#, L42 and Pony use TMs for safe and transparent parallelism:
+the code should behave as if the execution was fully sequential.
+Exceptions create additional difficulties in such context: if two operations are running in parallel in
+a fork-join, and the first one produces an exception, it should be safe to cancelled the other operation and
+to propagate the exception outwards. The system need to guarantee
+the progress the second operation accumulated is not observable.
+Pony avoids this problem simply by not supporting exceptions;
+ while
+M\# and L42 will parallelize only expressions that do not leak checked exceptions,
+and they enforce Strong Exception Safety(SES)~\cite{Abrahams2000} for unchecked exceptions.
+
+Other authors have identified the concept of SES\REVComm{as
+a general issue when reasoning about objects state after catching an exception:
+when a \Q@try-catch@ catches an exception, the visible objects must be the same as before the
+\Q@try@ block started its execution.}{2}{compare to the notion of transaction}\footnote{
+Transactions are another way to allow reasoning about exception, but they require costly run time support, that
+can not be afforded by M\# and L42.}
+
+TMs are very useful in restricting the scope of mutation. 
 Any expression that does not use any \Q@mut@ 
-variable declared outside of such expression does not modify objects visible outside. This consideration is particularly useful to understand code in the presence of exceptions. Other authors have identified the concept of \REVComm{Strong Exception Safety~\cite{Abrahams2000} as a general issue when reasoning about objects state after catching an exception:
-when a \Q@try-catch@ catches an exception, the visible objects must be the same as before the \Q@try@ block started its execution.}{2}{compare to the notion of transaction}
-This can be obtained leveraging TM in the following way:
+variable declared outside of such expression does not modify objects visible outside.
+With this observation in mind, we can use TMs to enforce SES in the following way:\footnote{
+A formal proof on why those restriction are sufficient is presented in the work of Lagorio~\cite{?}}
 \REVComm{
 \begin{itemize}
 \item all thrown exceptions are immutable objects,
 \item code inside a \Q@try@ block is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \end{itemize}}{3}{\label{SES1}It is not clear how the above restrictions can guarantee the ... outcome [at footnote \ref{SES2}]}
+This strategy do not restrict throwing exceptions, but only capturing unchecked exceptions.
+We think this restriction is acceptable for run-time verification, other works are much more restrictive,
+for example for Spec\# to be sound, unchecked exceptions can never be captured~\cite{?}.
 
 \loseSpace
 \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
