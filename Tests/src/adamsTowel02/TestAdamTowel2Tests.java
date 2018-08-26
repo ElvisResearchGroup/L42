@@ -66,6 +66,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "TestTrait.L42",
       "TestUnicode.L42",
       "TestDataStupid.L42",
+      "TestOpt.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

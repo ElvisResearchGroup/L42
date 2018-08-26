@@ -68,7 +68,7 @@ Hide:{class method Library <><(Library right)exception Guard
 OptNoBaseTrait:Resource <><Hide<><OptTrait()
 OptBaseTrait: Resource <>< Hide<>< Use.Override[OptTrait()] <><
   {implements Concept.Base
-  T: {implements Concept.Base}
+  T: {implements Concept.ToS, Concept.Equals}
   Tof:{implements Concept.ToS
     mut T that //below is just an optimization to remove typecases
     method toS() this.that().toS()
@@ -87,7 +87,8 @@ class method Library (class Any that) (
   redirect = Refactor2.redirect(path: \"T", into: that)
     {
     return redirect <>< OptBaseTrait()
-    catch exception Refactor2.Fail (
+    catch exception Refactor2.Fail xx (
+      Debug(xx)
       return redirect <>< OptNoBaseTrait()
       error on Refactor2.Fail X"Option(that)"
       error X""
