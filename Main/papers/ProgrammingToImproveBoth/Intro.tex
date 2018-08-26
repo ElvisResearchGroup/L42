@@ -24,7 +24,7 @@ Can we reuse the \Q@Point@ code so that \Q@ColorPoint.sum@
 would take and return a \Q@ColorPoint@?
 In Java/C\# declaring \Q@class ColorPoint extends Point{..}@ would result
 in \Q@sum@ still taking a \Q@Point@ and returning a \Q@Point@.
-Moreover, manually redeclaring a \Q@ColorPoint sum(ColorPoint that)@
+Moreover, manually redeclaring a\\* \Q@ColorPoint sum(ColorPoint that)@
 would just induce overloading, not overriding.
 %
 %In some situations a subclass contains methods whose signatures 
@@ -157,8 +157,9 @@ cannot be instantiated or used as types.
 \MS{We will show how this allows fine control of subtyping while handling examples like \Q@Set/Bag@.}
 
 \MS{In \name, as in many module composition languages~\cite{ancona_zucca_2002},
-static methods are also dynamically dispatched and can even be abstract. In this context, an abstract static method can perform the role of a constructor.
-We will show how in \name, state is induced by an implicit fixpoint operation over abstract methods.
+all methods are dyamically dispatched and can be abstract, including the static ones. The behaviour is similar to Python class-methods.
+We will show how in \name, state is induced by an implicit fixpoint operation over abstract methods,
+where an abstract static method can perform the role of a constructor.
 This allow to handle examples like \Q@Point/ColorPoint@ in a natural way, and without requiring code duplication.}
 
 Our design brings several benefits. In particular, 
