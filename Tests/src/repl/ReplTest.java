@@ -17,7 +17,6 @@ Issues:
 -cut paste on win do nothing
 
 Improvements:
--autosave when run
 -doc dissapper if "." on invalid prefix
 -more clear sign if "error happens"
 -shorter visualization for method signatures

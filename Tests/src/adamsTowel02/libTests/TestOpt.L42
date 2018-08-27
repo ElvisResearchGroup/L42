@@ -14,7 +14,8 @@ Main:{
     ".withoutRight())
   Debug.test(p1==p3, expected: Bool.true())
   Debug.test(p1==p2, expected: Bool.false())
-
+  op1.#get().x(11Num)
+  Debug.test(op3.get().x(), expected: 11Num)
   return ExitCode.normal()
   }
 }

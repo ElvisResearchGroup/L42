@@ -62,3 +62,79 @@ Lexer: Data<><{
         t
     )
 }
+--------------------------------------------------------------------
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+Reader: {interface implements Concept.Equals, Concept.ToS
+  mut method Size getChar()
+  }
+
+CharList: Collections.vector(of: Size)
+
+ArrayReader: Data <>< {implements Reader
+  var capsule CharList src
+  var Size n
+  read method Bool #invariant() (
+    0Size <=this.n()  & this.n() <= this.src().size()
+    )
+  class method mut This(capsule CharList source)
+    This(src: source, n: 0Size)
+  method getChar() (
+    var Size ch = 0Size
+    if this.n() == this.src().size() (
+      ch := Size"-1"
+      )
+    else (
+      ch := this.src().val(this.n())
+      this.n(this.n() + 1Size)
+      )
+    ch
+    )   
+  }
+OReader:Option(Reader)
+
+Lexer: Data<><{implements Concept.Equals, Concept.ToS
+  class method mut This(capsule OReader rd)
+  mut OReader rd
+  read method Bool #invariant() this.rd().isPresent()
+  class method mut This(capsule Reader reader) 
+    This(rd: OReader(reader))
+  mut method Size getToken() (
+    var Size t = 0Size
+    var Size ch = Size"0"
+    while ch != Size"-1" (
+      ch := this.#rd().#get().getChar()
+      t := t + ch
+      )
+    t
+    )
+  capsule method capsule Reader relinquishReader() (this.#rd().#get())
+  }
+Main: {
+  capsule Lexer l=Lexer(reader: ArrayReader(source: CharList[0Size; 1Size]))
+  capsule Reader r=(
+    lInner=l
+    Debug(S"Hello world"[lInner]"")
+    lInner
+    ).relinquishReader()
+  return ExitCode.normal()
+  }
+-----------------------------------------------------------
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+FileListT:Trait({
+  var Strings names
+  var Size selection
+  read method Bool _invariant()
+    0Size<=this.selection() & this.selection()<this.names().size()
+  method Bool isSelectionADirectory()
+  })
+Bools:Collections.vector(of:Bool)
+DirFileList:FileListT &{ 
+  Bools isDirectory
+  read method Bool #invariant()
+    this._invariant() &
+    this.isDirectory().size()==this.names().size()
+  method Bool isSelectionADiretory() Bool.false()
+  }

@@ -1,4 +1,127 @@
 \appendix
+\section{Description of our case studies}
+\subsection{GUI}
+
+We have 21 widgets.
+This includes a top level (green) component and
+4 movable containers.
+Each container has 4 gray buttons one for each cardinal direction. When the button is pressed, the container is moved 
+a little bit in the corresponding direction. 
+The containers can also contain other widgets; in our
+set up there is a big red container containing 2 smaller blue containers. One of those contains a tiny black container.
+Our invariant is that everything in every movable container (and the top level component) should 
+-be inside the container 
+-not overlap with anyhing else inside
+Our containers represent boxes that completley contain other non-overlapping boxes.
+
+This set up is not overly involved, the maximum widget depth is 5.
+We created an automated test pressing each of the 16 buttons onece.
+In L42, using the approach of this paper, this calls the invariant 77 times and ...
+Instead, using the conventional approach, it calls the invariant ... times (and it took 4 days to run)
+
+It can be surprising to see such result.
+We runned our example with less widgets, and our results suggest an exponential grouth in the cost of the conventional approach. For example by removing 2 containers (and their 8 buttons) we get....
+
+We now explain how this exponential explosion happens:
+
+For the outer-most box to check its invariant, it needs to call methods left,top,height and with to all its contained widgets.
+If one of those widget has invariant, when such public method is called,
+its invariant is checked (twice). This requires to call left,top,height and witdh to all its contained widgets, some of those may also have invariants.
+// Isaac will do a better explanation of why the CM is exponesional, but our's is only quadratic
+
+In literature there is attention to prevent method called from an invariant to call public methods on 'this'; this would cause the system to just go in loop.
+However there is no limitation on calling methods on other objects, and if those objects have invariant, this would cause the aforemention explosion. 
+
+Our example also shows that the restrictions of TM's and OC's are flexible enough to encode interactive GUI programs, where widgets may circularlly reference other widgets.
+In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
+The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
+
+
+We encoded our Widget example also on Spec\#.
+The result is the same of L42: the invariant is checked 77 times, and in exactly the same locations of L42.
+However, we found great difficulty to encode our example.
+We used the Boogie static checker to verify all the aliasing-ownership properties needed to
+ensure that the  77 run-time invariant checks soundly enforce that the invariant holds when is expected.
+This of course includes preventing the Gui to ever display two overlapping Widget. 
+
+We believe this comparison is fair since we got both systems to essentially do the same thing:
+* they statically verify ownership/aliasing annotations
+* they check the admissibility/valididty of a the invariant code
+* they perform sufficient runtime-checking of the invariant
+
+To encode the GUI example in L42, we only needed to annotate \Q@mut/read@ the mutable/readable methods
+and types (NUM annotations), and \Q@capsule@ a single field. 
+Spec\# annotations are much more involved that that, and we had to annotate methods
+with purity and ownership annotations. The ownership annotations included paramater, method and field attributes as well as requires, ensures and modifies clauses, as well as explicit onwership assignment statements.
+Since Spec\# annotation can be involded, as for example ...
+we are goint to count the number of tokens (excluding \Q@.@ and parenthesis).
+This gave us a total of NUM tokens, that is more then 3 times the amount needed in L42.
+Moreover, in L42 we only use 2 diffent kinds of annotations (mut/capsule), while in Spec\# we use ... kinds of annotations. This corroborate our statement that our system is easier to use for programmers that are not experts in sw verification.
+Counting the number of charactes we get .... against ... in L42.  
+
+We encoded our Widget example also on Microsoft Code Contract; their system also runned the invariant checking 77 times. Their system is easy to use, but it is unsound since it is built over an unsound/uncomplete static verifier [?].
+
+
+\subsection{Family}
+We wished to make an example where the performance of L42 and the conventional approach 
+was similar. We forged an example when a Family has a list of parents and a list of children;
+all the childrens need to be younger then their parents and every Person need to have a non empty name and a positive age.  
+We model the pass of time with a \Q@processDay@ method, and we simulate 3 years of life (that is, 3*365 days) of a family of 4.
+The age of a Person grow when its birthday is processed.
+Notably, \Q@processDay@ is a mut method that can potentially mutate any person in the system, thus
+L42 have to run a lot of invariant checks. The object graph here is very shallow: the Family holds the Persons and that is it.
+However, even in this case we get about 10 times less invariant calls: Num in the conventional approach and Num in L42.
+
+\subsection{Spec\# 2papers}
+Our goal in this third case study was to show that even if we do not aim to expressiveness, but to simplicity, soudness and efficiency, we are still able to express a reasonable amount of cases.
+We can express all the examples except ....
+Again, we quantify the annotation burden and we discover....
+
+\section{Stack overflow and Out of memory}
+For our system to be sound,
+Stack overflow and Out of memory errors need to be modeled specially.
+If they are just (unchecked) exceptions then they could be catched to 
+generate non deterministic behaviour inside invariant code.
+
+However, it is possible to use capaility objects to capture them as special system events/signals.
+In this way we can maintain the soundness of our system even in this corner case.
+Of course, another option would be to make them into unrecoverable fatal errors.
+
+
+\section{Invariant protocols}
+-valid: if invariant was called, in a finit time invariant wold return true
+-deeply valid: the object and all the objects in its ROG are valid
+-peer valid: you and all your pears are owned valid
+-owned valid: the object and all the object owned are valid
+-Steady state: a method on that object is not currently executing
+
+sound to your own terms
+  invariant protocol 2 parts
+    1where is supposed to hold
+    2where is acually checked
+
+D/E/J 
+-expected: before/after pmc and after constructor
+-checked: before/after pmc and after constructor  
+*sound (while carefully about non pure invariants) 
+*not good for reasoning [flexible object invariants]
+*slow
+
+spec#
+-expected:  default contract implies peer-valid
+-checked: after every field update, constructors and expose-statement (pack/unpack in literature)
+  
+L42:
+-expected: the result of any expression and subexpression is deeply valid,
+  except for 'this' inside of constructors and 'invaliant' methods.
+-checks: after every field update, after the constructors, after every exposer.
+
+implies: whenever a method or constructor is called, the ROG of all parameters is valid.
+if the method is not ``invariant'' then also the ROG of this is valid.
+
+ Microsoft code contracts
+ JML
+
 \section{Proof}
 \label{s:proof}
 
