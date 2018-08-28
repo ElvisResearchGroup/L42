@@ -1,9 +1,185 @@
 \section{Introduction}
-\saveSpace\saveSpace
+%Points:
+%1. L42 et al are 'realistic'
+%2. OC's are like Java, and not like haskell...
+%3. TM are opt in
+%4. Not advocating but merely pointing out that TMs and %OCs can support CI
+%5. Modularity of our approach: don't need to look at %other contracts or invariants
 
-Reasoning about imperative object oriented (OO) programs is a non trivial task,
-made particularly difficult by mutation, aliasing, dynamic dispatch, dynamic class loading,
+%6. PURITY!! (explain why this is important)
+%7. Talk and unpack (as a 3rd? invariant protocal)
+%\saveSpace\saveSpace
+Software verification is the art of reasoning 
+on a program: given a precondition, 
+we can verify that a specific method or expression
+satisfy a postcondition.
+Under this lens, class invariants can be seen as implicit pre and post condition.
+However, in a real system, it may be impossible to ensure any precondition. For example, 
+in the absence of on the fly static verification of dynamically loaded code there is no way to ensure a
+subclass respect behavioural subtyping.
+In particular, run-time verification of pre conditions can not verify the behaviour of all the methods of the parameters.
+
+We present an approach to enforce class invariants without needing any reasoning.
+
+Classes can have a boolean method \Q@invariant@,
+and any call of \Q@invariant@, everywhere in the system is guaranteed to return \Q@true@.
+We obtain such feat in the following way:
+\begin{itemize}
+\item We have a rich type system, supporting type modifiers \Q@read,mut,imm,capsule@. Similar versions of those modifiers are common in literature.
+\item The standard library is designed using object capabilities.
+\item The invariant method can use this only to access immutable and capsule fields.
+\item The constructor uses this only to initialize the fields.
+\item encapsulated state can be accesses with certain limitations
+\item The invariant method is checked at run time after the constructor, after every field update and
+after methods accessing encapsulated state in mutation.
+\item Mutation need to be performed so that all the mutation appear to be atomic with 
+\end{itemize}
+\LINE
+
+Three recent language design leverage on TMs and OCs to provide safe parallelism.
+Those are realistic languages [..].
+The programming style required by OCs, while different from Java, is much more near to Java then Haskell. TMs on the other side are completely opt-in, and code can [..]
+Here we show an approach, allowing those 3 language 
+to  enforce class invariants with a combination of run-time checks and static reasoning.
+We rely on TMs and OCs in they way they are already supported in M\#,Pony and L42.
+
+Here we do not advocate in favour or against adding
+TMs and/or OCs to Java, C\# or any other language, but we point out how languages supporting TMs and OCs can
+enforce class invariants in a very broad scope, where
+each class can be modularly analysed by assuming only that all the other classes are well typed.
+There is no need to verify or even consider possible contracts or invariants present on any other class.
+
+\LINE
+More in the detail, our approach 
+
+Run-time invariant checks are added only in 3 points in the code: at the end of constructors, after field updates and after methods accessing encapsulated state.
+
+
+We implement our approach over L42 and we perform a
+case study showing that our approach requires 
+exponentially less invariant checks with respect to the conventional one: to check before and after every method call.
+
+
+Here we show an approach, allowing those 3 language 
+to  enforce that every observable object respect its class invariants.
+That is, classes can have a boolean method \Q@invariant@,
+and any call of \Q@invariant@, everywhere in the system is guaranteed to return \Q@true@.
+The invariant can be broken by following a programming pattern where the broken object becomes temporarily inaccessible.\footnote{
+This is similar to what happen with pack/unpack in Spec\#.
+Eiffel, D, Jose and other just require the invariant to hold at the start and at the end of every public method. This requirement has been considered too weak by many works~\cite{??}
+}
+
+
+
+
+
+L42 have TMs and OCs
+CI can be soundly implemented over TMs and OCs
+in an efficient and simple way
+
+Since TMs and OCs allows to soundly/simply support CI,
+we should port TMs and OCs in many other languages
+
+
+\LINE
+
+
+We only require all the code to be well typed and 
+
+
+ while 
+there are approaches handling aliasing and mutation,
+this is made particularly difficult by mutation, aliasing, dynamic dispatch, dynamic class loading,
 I/O, and exceptions.
+We propose here 
+
+In
+that the 
+is based on the idea that 
+given certain precondition
+
+
+%empty weakest precondPoints:
+1. L42 et al are 'realistic'
+2. OC's are like Java, and not like haskell...
+3. TM are opt in
+4. Not advocating but merely pointing out that TMs and OCs can support CI
+5. Modularity of our approach: don't need to look at other contracts or invariants
+
+6. PURITY!! (explain why this is important)
+7. Talk and unpack (as a 3rd? invariant protocal)Points:
+1. L42 et al are 'realistic'
+2. OC's are like Java, and not like haskell...
+3. TM are opt in
+4. Not advocating but merely pointing out that TMs and OCs can support CI
+5. Modularity of our approach: don't need to look at other contracts or invariants
+
+6. PURITY!! (explain why this is important)
+7. Talk and unpack (as a 3rd? invariant protocal)ition
+
+%box pattern encodes atomicity of mutation so that
+%the invariant is expected to hold after every atomic mutation
+
+
+%alex: monday 10am
+%----------------
+
+\LINE
+Reasoning about imperative object oriented (OO) programs is a non trivial task,
+made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions.
+% \IO{[dynamic class loading]},
+
+TMs allow reasoning about objects in memory; whereas
+\emph{object capabilities} (OCs) allow reasoning about
+I/O and other interactions with the external world.
+M\#, Pony and L42 all support OCs.
+TMs and OCs offer a simple way to perform high-level reasoning on OO programs, relying on only on a small fixed number of coarse grained properties.
+
+Recently, a new design for \emph{type modifiers} (TMs) has emerged that radically improves their usability.
+Three different research languages are being independently developed relying on this new design: {M\#}\footnote{Microsoft is quite secretive about their M\# project, we believe M\# is the language described in ~\cite{?}.}~\cite{?}, Pony~\cite{?} and L42~\cite{?}.
+These project are reasonably large: several millions lines of M\# code exists and it is used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,?}.
+
+TMs allow reasoning about objects in memory; whereas
+\emph{object capabilities} (OCs) allow reasoning about
+I/O and other interactions with the external world.
+
+
+OCs are a programming style that need to be respected while implementing the primitives of the standard library, and native calls that could be non deterministic, such as reading from files or generating random-number.
+
+In this style operations like I/O are not provided by static methods, but by instance methods of classes whose instantiation is kept under control.
+OCs are typically not part-of the type system nor do they require special runtime support beyond that provided by a memory-safe language. However, languages that allow user code to directly perform native calls, without going through the standard-library, requires some minimal-type system support to enforce the OC pattern over such calls.
+
+% instead of the 
+%expressive but necessarily more involved
+%detailed composable annotations that are common in static-verification.
+
+
+%without 
+%\IO{[restricting dynamic class loading] without requiring static-verification}
+% or employing a verification language.
+
+We propose a way of soundly verifying class invariants by using a minimalistic code instrumentation strategy, which can be applied to languages like M\#, Pony or  L42  without adding any additional syntax, nor changing their type systems.
+ A class encodes its invariants by providing a boolean method called \Q@invariant@; we say that an object whose \Q@invariant@ method would return true is \emph{valid}. Our approach uses the guarantees already provided by TMs and OCs to ensure that \Q@invariant@ is \emph{pure}\footnote{We say a method is \emph{pure} if it is deterministic and does not mutate existing state.} and called before a possibly invalid object becomes reachable. Such calls to \Q@invariant@ are not present in the source code but are instead performed by our instrumentation; in addition, if such a call returns \Q@false@ (indicating the receiver was invalid) an unchecked exception is thrown; this is similar to failed assertions in Java.
+
+Different verification approaches have different invariant protocols~\cite{FlexibleInvariants}, specifying when the invariant is expected to hold and when it is allowed to be violated.
+The common invariant protocol~\cite{?}
+%JML, OOSC..., D, Eiffel
+only enforces the invariant on the receiver before and after every public method call. Sadly, this allows such receivers to be invalidated and passed around to other code.
+
+% TODO: Call the invariant protocl 'validation'
+Our invariant protocol follows the mindset of Spec\#~\cite{?}: we allow temporally violating an object's invariant\footnote{If you were to step with a debugger, you may still see invalid objects, and \Q@invariant@ calls failing.} when their reachable object graph (ROG) is being updated; however, we guarantee that such objects are not used during this process.\footnote{Spec\# is more general and, as an extra feature, allows specially declared methods to use invalid objects, while we require such objects to never be used.}
+Unlike Spec\#~\cite{?}, our system allows sound catching of invariant failures; this is sound since TMs can guarantee that the invalid object is garbage-collectable.
+
+Our approach has 2 main benefits over the traditional one: it greatly simplifies reasoning since programmers can assume that objects accessible to them are valid\footnote{In particular, all parameters (including \Q@this@) and their ROGs will be valid.}. And it requires that the invariant be checked significantly less often; we fully implemented our approach over L42 and we conducted a case-study which shows that the traditional approach staggeringly performs 1,000,000 times more runtime-checks than ours.
+% systems performs 10,000 less  is up to 10,000 times slower.
+% \item Debugging is easier since the invariant failure always happens when the method invalidating the object is still active on the stack trace.
+%\end{itemize}
+Here we present a sound and efficient system, designed to be simple and easy to use for non-verification experts. Our simplicity however comes with a compromise: we can not verify some forms of data-structures, such as collections of mutable elements.\footnote{Our approach does not prevent correctly implement such data-structures, rather we do not support encoding the correctness of such objects as a class-invariant.}
+
+In section \ref{TODO} we compare against a state of the art system, Spec\#, and show how our system can both verify a significant number of the class-invariants they can (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden (about 3 times less).
+This is because we use TMs for aliasing and mutability control, which are a simple, easy, and coarse grained
+technique. On the other hand, the static-analysis employed by Spec\# is more fine grained but requires more frequent and involved annotations.
+
 
 % Static verification of method contracts can prove the correctness of OO programs, but this is costly and requires defining the desired semantics of the program in a verification language.
 % This however requires limiting dynamic class loading, ensuring that only statically verified code can be loaded.
@@ -21,17 +197,6 @@ I/O, and exceptions.
 
 % Point: new TM is usable, and there are 3 languages using it for parallelism
 
-Recently, a new design for \emph{type modifiers} (TMs) has emerged that radically improves their usability.
-Three different research languages are being independently developed relying on this new design: {M\#}\footnote{Microsoft is quite secretive about their M\# project, we believe M\# is the language described in ~\cite{?}.}~\cite{?}, Pony~\cite{?} and L42~\cite{?}.
-These project are reasonably large: several millions lines of M\# code exists and it is used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects.
-
-TMs allow reasoning about objects in memory; whereas
-\emph{object capabilities} (OCs) allow reasoning about
-I/O and other interactions with the external world.
-M\#, Pony and L42 all support OCs.
-
-TMs and OCs offer a simple way to perform high-level reasoning on OO programs, without restricting dynamic class loading or employing a verification language.
-In particular they are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,?}.
 
 
 
@@ -58,9 +223,7 @@ In particular they are used to provide automatic/correct parallelism~\cite{Gordo
 
 %Given these benefits, many emerging languages (such as Rust~\cite{matsakis2014rust} and newspeak~\cite{bracha2010modules}) support some form of type modifiers and/or object capabilities.
 
-\loseSpace
-We propose a way of soundly verifying class invariants by using a minimalistic code instrumentation strategy, which can be applied to languages like M\#, Pony or  L42  without adding any additional syntax, nor changing their type systems.
- A class encodes its invariants by providing a boolean method called \Q@invariant@; we say that an object whose \Q@invariant@ method would return true is \emph{valid}. Our approach uses the guarantees already provided by TMs and OCs to ensure that \Q@invariant@ is \emph{pure}\footnote{We say a method is \emph{pure} if it is deterministic and does not mutate existing state.} and called before a possibly invalid object becomes reachable. Such calls to \Q@invariant@ are not present in the source code but are instead performed by our instrumentation; in addition, if such a call returns \Q@false@ (indicating the receiver was invalid) an unchecked exception is thrown; this is similar to failed assertions in Java.
+
 
 % As for failed assertions in Java, an unchecked exception is thrown if such a call returns \Q@false@ (indicating that the object is invalid).
 
@@ -77,24 +240,6 @@ We propose a way of soundly verifying class invariants by using a minimalistic c
 
 %\hrule
 
-Different verification approaches have different invariant protocols~\cite{FlexibleInvariants}, specifying when the invariant is expected to hold and when it is allowed to be violated.
-The common invariant protocol~\cite{?}
-%JML, OOSC..., D, Eiffel
-only enforces the invariant on the receiver before and after every public method call. Sadly, this allows such receivers to be invalidated and passed around to other code.
-
-% TODO: Call the invariant protocl 'validation'
-Our invariant protocol follows the mindset of Spec\#~\cite{?}: we allow temporally violating an object's invariant\footnote{If you were to step with a debugger, you may still see invalid objects, and \Q@invariant@ calls failing.} when their reachable object graph (ROG) is being updated; however, we guarantee that such objects are not used during this process.\footnote{Spec\# is more general and, as an extra feature, allows specially declared methods to use invalid objects, while we require such objects to never be used.}
-Unlike Spec\#~\cite{?}, our system allows sound catching of invariant failures; this is sound since TMs can guarantee that the invalid object is garbage-collectable.
-
-Our approach has 2 main benefits over the traditional one: it greatly simplifies reasoning since programmers can assume that objects accessible to them are valid\footnote{In particular, all parameters (including \Q@this@) and their ROGs will be valid.}. And it requires that the invariant be checked significantly less often; we fully implemented our approach over L42 and we conducted a case-study which shows that the traditional approach staggeringly performs 10,000 times more runtime-checks than ours.
-% systems performs 10,000 less  is up to 10,000 times slower.
-% \item Debugging is easier since the invariant failure always happens when the method invalidating the object is still active on the stack trace.
-%\end{itemize}
-Here we present a sound and efficient system, designed to be simple and easy to use for non-verification experts. Our simplicity however comes with a compromise: we can not verify some forms of data-structures, such as collections of mutable elements.\footnote{Our approach does not prevent correctly implement such data-structures, rather we do not support encoding the correctness of such objects as a class-invariant.}
-
-In section \ref{TODO} we compare against a state of the art system, Spec\#, and show how our system can both verify a significant number of the class-invariants they can (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden (about 3 times less).
-This is because we use TMs for aliasing and mutability control, which are a simple, easy, and coarse grained
-technique. On the other hand, the static-analysis employed by Spec\# is more fine grained but requires more frequent and involved annotations.
 %TODO improve?
 %simplifies the writing of code that is unrelated to invariant-checking
 
