@@ -100,22 +100,24 @@ given certain precondition
 
 
 %empty weakest precondPoints:
-1. L42 et al are 'realistic'
-2. OC's are like Java, and not like haskell...
-3. TM are opt in
-4. Not advocating but merely pointing out that TMs and OCs can support CI
-5. Modularity of our approach: don't need to look at other contracts or invariants
 
-6. PURITY!! (explain why this is important)
-7. Talk and unpack (as a 3rd? invariant protocal)Points:
-1. L42 et al are 'realistic'
-2. OC's are like Java, and not like haskell...
-3. TM are opt in
-4. Not advocating but merely pointing out that TMs and OCs can support CI
-5. Modularity of our approach: don't need to look at other contracts or invariants
 
-6. PURITY!! (explain why this is important)
-7. Talk and unpack (as a 3rd? invariant protocal)ition
+% 1. L42 et al are 'realistic'
+% 2. OC's are like Java, and not like haskell...
+% 3. TM are opt in
+% 4. Not advocating but merely pointing out that TMs and OCs can support CI
+% 5. Modularity of our approach: don't need to look at other contracts or invariants
+
+% 6. PURITY!! (explain why this is important)
+% 7. Talk and unpack (as a 3rd? invariant protocal)Points:
+% 1. L42 et al are 'realistic'
+% 2. OC's are like Java, and not like haskell...
+% 3. TM are opt in
+% 4. Not advocating but merely pointing out that TMs and OCs can support CI
+% 5. Modularity of our approach: don't need to look at other contracts or invariants
+
+% 6. PURITY!! (explain why this is important)
+% 7. Talk and unpack (as a 3rd? invariant protocal)ition
 
 %box pattern encodes atomicity of mutation so that
 %the invariant is expected to hold after every atomic mutation
@@ -124,31 +126,25 @@ given certain precondition
 %alex: monday 10am
 %----------------
 
-\LINE
+\newpage
 Reasoning about imperative object oriented (OO) programs is a non trivial task,
-made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions.
+made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. \IO{Their are many ways to perform such reasoning, here we use the type-system to restrict, but not prevent, such behaviour of OO in order to be able to soundly enforce class-invariants with runtime-verification (RV) }
 % \IO{[dynamic class loading]},
 
-TMs allow reasoning about objects in memory; whereas
-\emph{object capabilities} (OCs) allow reasoning about
-I/O and other interactions with the external world.
-M\#, Pony and L42 all support OCs.
-TMs and OCs offer a simple way to perform high-level reasoning on OO programs, relying on only on a small fixed number of coarse grained properties.
-
-Recently, a new design for \emph{type modifiers} (TMs) has emerged that radically improves their usability.
+\IO{\emph{Type modifiers} (TMs) are a (typically opt-in) type system feature that allows reasoning about aliasing and mutation; recently, a new design for them} has emerged that radically improves their usability.
 Three different research languages are being independently developed relying on this new design: {M\#}\footnote{Microsoft is quite secretive about their M\# project, we believe M\# is the language described in ~\cite{?}.}~\cite{?}, Pony~\cite{?} and L42~\cite{?}.
 These project are reasonably large: several millions lines of M\# code exists and it is used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,?}.
 
-TMs allow reasoning about objects in memory; whereas
-\emph{object capabilities} (OCs) allow reasoning about
-I/O and other interactions with the external world.
 
+% Intro to OCs
 
-OCs are a programming style that need to be respected while implementing the primitives of the standard library, and native calls that could be non deterministic, such as reading from files or generating random-number.
+\IO{\emph{Object capabilities} (OCs)} are a programming style that need to be respected while implementing the primitives of the standard library, and native calls that could be non deterministic, such as reading from files or generating random-number.
 
 In this style operations like I/O are not provided by static methods, but by instance methods of classes whose instantiation is kept under control.
 OCs are typically not part-of the type system nor do they require special runtime support beyond that provided by a memory-safe language. However, languages that allow user code to directly perform native calls, without going through the standard-library, requires some minimal-type system support to enforce the OC pattern over such calls.
+OCs are also supported by M\#, Pony and L42.
 
+\IO{In this paper we show how we can add sound enforcement of class-invariants to languages that already have such TMs and OCs.\footnote{\IO{I.e. we are not trying to suggest adding TMs and OCs to conventional languages.}}}
 % instead of the 
 %expressive but necessarily more involved
 %detailed composable annotations that are common in static-verification.

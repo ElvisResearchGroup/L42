@@ -3,7 +3,7 @@
 \section{Background}
 \label{s:background}
 \noindent\textit{Type Modifiers:}
-Type modifiers are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification of mutability and aliasing properties of objects.
+Type modifiers \IO{(TM)} are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification \IOComm{really?} of mutability and aliasing properties of objects.
 With sightly different names and semantics, the three most common modifiers for object references are:
 \begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers.
@@ -12,12 +12,12 @@ With sightly different names and semantics, the three most common modifiers for 
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
-TM are different to field or variable modifiers like Java’s \Q@final@: TM applies to references,  \Q@final@ specifies what can be done to the field itself. In comparison to \Q@imm@:
+TMs are different to field or variable modifiers like Java’s \Q@final@: TMs apply to references,  \Q@final@ specifies what can be done to the field itself. In comparison to \Q@imm@:
 
 \begin{itemize}
 \item A \Q@final@ variable/field cannot be reassigned, it always refers to the same object; however, the referenced object itself may be mutated.
-\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its ROG. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
-\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final imm@ variable would be like \Q@const *const A@.}
+\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its \IO{reachable-object-graph (ROG)}. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
+\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like \Q@const *const A@.}
 \end{itemize}
 
 
@@ -39,15 +39,14 @@ ip = new Point(3, 5); // ok, ip is not final
 There are several possible interpretations of the semantics of type modifiers.
 Here we assume the \REVComm{full/deep meaning}{2}{Are these terms used from these prior works? Cite them}:
 \begin{itemize}
-  \item \REVComm{the objects in the ROG of an immutable object are immutable;
-  this corresponds to UML DataTypes}{3}{what is the reason behind comparing ROG immutability with UML DataTypes},
+  \item \REVComm{the objects in the ROG of an immutable object are immutable\IODel{; this corresponds to UML DataTypes}}{3}{what is the reason behind comparing ROG immutability with UML DataTypes},
   \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
   \item no \emph{down}-casting is allowed between different type modifiers.
 \end{itemize}
 
 
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
-The main progress in the last couple of years is with the flexibility of such type systems: where the programmer should use \Q@imm@ to represent objects that would obviously be modelled as UML DataTypes, and \Q@mut@ nearly everywhere else; the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
+The main progress in the last couple of years is with the flexibility of such type systems: where the programmer should use \Q@imm@ to represent objects that \IO{represent data} \IODel{would obviously be modelled as UML DataTypes}, and \Q@mut@ nearly everywhere else; the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
 To see a glimpse of this flexibility, consider the following example:
 \saveSpace
 \begin{lstlisting}
