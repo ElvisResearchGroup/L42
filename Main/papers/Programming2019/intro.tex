@@ -15,13 +15,32 @@ In contrast, pack/unpack marks all objects as either packed or unpacked, where a
 In this approach, an object's invariant is checked only by the pack-operation.
 In order for this to be sound, some for of aliasing and mutation control is necessary. For example, Spec\# uses a theorem prover together with source-code annotations.
 
-% We have performed a simple case study, showing that runtime verification of visible state semantics can cause severe performance overhead. We compared this to the pack/unpack approach used by Spec\#, though the runtime-overhead 
-
-% However, this approach requires minimal annotation b
-
 We have performed a case study showing that visible state semantics is easy to use but can be incredibly inefficient even in simple cases; while the pack/unpack approach can be much harder to use, but also more efficient.
 
-Here we propose a technique with the efficient of pack/unpack, but with a much lower annotation burden.
+
+Here we propose an invariant protocol with the 
+efficiency of pack/unpack, but with a much lower annotation burden.
+
+As for pack/unpack we allow objects to become invalid while their reachable object graph (ROG) is being updated. However in our protocol we guarantee 
+that invalid objects are never used.
+
+Unlike Spec\#~\cite{?}, our protocol allows sound catching of invariant failures, and carefully handle
+the impact of I/O and other non deterministic operations.
+
+We fully implemented our approach over the programming language L42 and we conducted a case-study which shows that our annotation burder is about a third of the one of Speck/#, the most prominent work using pack/unpack. the visible state semantic protocol  staggeringly performs 1,000,000 times more runtime-checks than ours.
+%\footnote{If you were to step with a debugger, you may still see invalid objects, and \Q@invariant@ calls failing.}
+%\footnote{Spec\# is more general and, as an extra feature, allows specially declared methods to use invalid objects, while we require such objects to never be used.}
+%\footnote{In particular, all parameters (including \Q@this@) and all of their ROGs will be valid.}
+
+; we fully implemented our approach over the programming language L42 and we conducted a case-study which shows that the traditional approach staggeringly performs 1,000,000 times more runtime-checks than ours.
+% systems performs 10,000 less  is up to 10,000 times slower.
+% \item Debugging is easier since the invariant failure always happens when the method invalidating the object is still active on the stack trace.
+%\end{itemize}
+
+In section \ref{TODO} we compare against a state of the art system, Spec\#, and show how our system can both verify a significant number of the class-invariants they can (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden (about 3 times less).
+This is because we use TMs for aliasing and mutability control, which are a simple, easy, and coarse grained
+technique. On the other hand, the static-analysis employed by Spec\# is more fine grained but requires more frequent and involved annotations.
+
 \LINE
 
 Reasoning about imperative object oriented (OO) programs is a non trivial task,
