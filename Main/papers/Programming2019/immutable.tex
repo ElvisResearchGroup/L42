@@ -81,9 +81,17 @@ uses immutable variables can safely be promoted to \Q@imm@.
 % Not sure about this paragraph:
 
 
+\newpage
+\LINE
 
 
 \loseSpace
+\noindent{\textit{Exceptions:}}
+In most OO languages exceptions may be thrown at any point, this makes reasoning about the state of a program after catching them quite difficuilt, esppecially when combined with mutation. If an exception was thrown whilst mutating an object, what state is it in? Does such an objeect's invariant hold? The concept of \emph{strong exception safety} (SES)~\cite{?} makes reasoning quite simple: if an exception is caught, the operation that caused it (i.e. the body of the try block) had not mutated state.
+
+
+\LINE
+
 \noindent{\textit{Exceptions:}}
 M\#, L42 and Pony use TMs for safe and transparent parallelism:
 the code should behave as if the execution was fully sequential.
@@ -116,6 +124,8 @@ A formal proof on why those restriction are sufficient is presented in the work 
 This strategy do not restrict throwing exceptions, but only capturing unchecked exceptions.
 We think this restriction is acceptable for run-time verification, other works are much more restrictive,
 for example for Spec\# to be sound, unchecked exceptions can never be captured~\cite{?}.
+
+\LINE
 
 \loseSpace
 \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
