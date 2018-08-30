@@ -56,25 +56,6 @@ Conventional ownership solves these problems by requiring a deep clone of all th
 In order to write correct library code in mainstream languages like Java/C++, defensive cloning~\cite{Bloch08} is needed.
 \REVComm{For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.}{2}{citation to support this?}
 
-\REVComm{To avoid this performance bottleneck, we can leverage the well known \Q@capsule@ type modifier~\cite{ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a}}{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
-(sometimes called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
-\begin{itemize}
-\item Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
-For the purposes of validation we only need to restrict mutation, so we may relax the restrictions previous work has where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph, and allow the ROG of a \Q@capsule@ to be referenced as \Q@read@ from outside.
-\item A capsule local variable can only be used once as \Q@capsule@ or \Q@mut@.
-%An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
-%\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
-\item A field of a \Q@capsule@ type must be instance-private; that is only accessible as\\* \Q@this.fieldName@ within an instance method.
-\item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
-\item A capsule field access has the same type modifier as the receiver.
-\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
-(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
-\end{itemize}
-
-%This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-\noindent Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverages on destructive reads~\cite{GordonEtAl12,clebsch2015deny}.
-Destructive reads would be a bad idea for validation as they would likely invalidate objects.
-
 In addition to the above we put restrictions on any \Q@mut@ and \Q@capsule@ methods using a \Q@capsule@ field (we call such methods `capsule mutators'):
 \begin{itemize}
 \item only a single use of \Q@this@ is allowed (and is the one that uses the field),

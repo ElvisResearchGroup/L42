@@ -17,6 +17,8 @@ With slightly different names and semantics, the three most common modifiers for
 \item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers.
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but in the program there may be mutable references to this same object, so mutation can still be observed. 
 \item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will never be mutated, not even through another reference.
+\item Capsule (\Q@capsule@):
+ Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
@@ -79,13 +81,12 @@ This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q
 % (since the returned value could not possibly be aliased).
 %FALSE: it can be internally aliased!
 Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
-uses immutable variables can safely be promoted to \Q@imm@.
-\IO{From a usability perspective, this means that
+uses immutable variables can safely be promoted to \Q@imm@ or \Q@capsule@.
+From a usability perspective, this means that
 those TMs are opt-in: a programmer can write large sections of code
 mindlessly using \Q@mut@ types and without worrying about rampant
 aliasing. Then, at a later stage, another programmer may still 
-be able to encapsulate those data structures in an immutable
- reference, or as we will see later a \Q@capsule@ reference.}
+be able to encapsulate those data structures in an immutable or capsule reference.
 
 
  %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
@@ -101,6 +102,29 @@ be able to encapsulate those data structures in an immutable
 % Not sure about this paragraph:
 
 
+
+The \Q@capsule@ modifier (sometimes called isolated/iso) is possibly the one where more details differs in literature. Here we refer to its interpretation after the work~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion.
+This concept is at the basis of M\#, L42 and Pony type system~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}.
+Recovery allows to takes a mutable reference and promote it to \Q@capsule@.
+While at first glance this may seams similar to what former work was doing \REVComm{[....]}
+{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
+those similarity are only superficial: former works allows to infer uniqueness/isolation only when starting from references that has been tracked with restrictive annotations along their whole lifetime.
+%(sometimes called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
+\begin{itemize}
+	For the purposes of validation we only need to restrict mutation, so we may relax the restrictions previous work has where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph, and allow the ROG of a \Q@capsule@ to be referenced as \Q@read@ from outside.
+	\item A capsule local variable can only be used once as \Q@capsule@ or \Q@mut@.
+	%An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
+	%\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
+	\item A field of a \Q@capsule@ type must be instance-private; that is only accessible as\\* \Q@this.fieldName@ within an instance method.
+	\item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
+	\item A capsule field access has the same type modifier as the receiver.
+	\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
+	(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
+\end{itemize}
+
+%This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
+\noindent Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverages on destructive reads~\cite{GordonEtAl12,clebsch2015deny}.
+Destructive reads would be a bad idea for validation as they would likely invalidate objects.
 
 
 \loseSpace
