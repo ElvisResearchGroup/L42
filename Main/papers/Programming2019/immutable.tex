@@ -1,154 +1,6 @@
 
 
-\section{Background}
-\label{s:background}
-\noindent\textit{Type Modifiers:}
-Type modifiers \IO{(TM)} are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} allowing static verification \IOComm{really?} of mutability and aliasing properties of objects.
-With sightly different names and semantics, the three most common modifiers for object references are:
-\begin{itemize}
-\item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers.
-\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but in the program there may be mutable references to this same object, so mutation can still be observed. 
-\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will never be mutated, not even through another reference.
-\end{itemize}
-%In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
-%\loseSpace
-TMs are different to field or variable modifiers like Java’s \Q@final@: TMs apply to references,  \Q@final@ specifies what can be done to the field itself. In comparison to \Q@imm@:
 
-\begin{itemize}
-\item A \Q@final@ variable/field cannot be reassigned, it always refers to the same object; however, the referenced object itself may be mutated.
-\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its \IO{reachable-object-graph (ROG)}. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
-\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like \Q@const *const A@.}
-\end{itemize}
-
-
-
-\noindent Consider the following  example usage of \Q@mut@, \Q@imm@ and \Q@read@:
-\begin{lstlisting}
-mut Point mp = new Point(1, 2);
-mp.x = 3; // ok
-imm Point ip = new Point(1, 2);
-$\Comment{}$ip.x = 3; // type error
-read Point rp = mp; // ok read is a common supertype of imm/mut
-$\Comment{}$rp.x = 3; // type error
-mp.x = 5; // ok, and now we can observe rp.x == 5
-ip = new Point(3, 5); // ok, ip is not final
-\end{lstlisting}
-\noindent We cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation; in our example we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
-
-
-There are several possible interpretations of the semantics of type modifiers.
-Here we assume the \REVComm{full/deep meaning}{2}{Are these terms used from these prior works? Cite them}:
-\begin{itemize}
-  \item \REVComm{the objects in the ROG of an immutable object are immutable\IODel{; this corresponds to UML DataTypes}}{3}{what is the reason behind comparing ROG immutability with UML DataTypes},
-  \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
-  \item no \emph{down}-casting is allowed between different type modifiers.
-\end{itemize}
-
-
-\noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
-The main progress in the last couple of years is with the flexibility of such type systems: where the programmer should use \Q@imm@ to represent objects that \IO{represent data} \IODel{would obviously be modelled as UML DataTypes}, and \Q@mut@ nearly everywhere else; the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
-To see a glimpse of this flexibility, consider the following example:
-\saveSpace
-\begin{lstlisting}
-mut Point mCenter = new Point(1, 2);
-mut Circle mc = new Circle(mCenter, /*radius*/7);
-mc.radius = 3; // ok
-imm Circle ic = new Circle(new Point(0, 0), 7); // ok imm
-imm Point ip = ic.center; // ok, ROG immutable
-read Circle rc = mc
-read Point rp = rc.center; // ok, fields of read Circle are read
-$\Comment{}$mut Point mp = rc.center; // type error
-\end{lstlisting}
-\saveSpace
-
-Here \Q@imm Circle ic@ and \Q@mut Circle mc@ are both initialized with \Q@new Circle(...)@.
-This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q@mut@ and any expression typed as \Q@mut@ that only uses immutable variables can safely be promoted to \Q@imm@.
-% (since the returned value could not possibly be aliased).
-%FALSE: it can be internally aliased!
-Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
-uses immutable variables can safely be promoted to \Q@imm@.
-
- %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
-%true fact but not sufficient?
-
-%With this kind of type system, we can ensure immutable classes by just declaring all their fields as final and immutable.%
-%\footnote{
-%In Java,  to ensure a class is immutable we need:
-%the class must be final, all the fields must be final of immutable
-%classes (thus no interface fields, final classes all the way down),
-%and the SecurityManager need to properly tame reflection.}
-
-% Not sure about this paragraph:
-
-
-\newpage
-\LINE
-
-
-\loseSpace
-\noindent{\textit{Exceptions:}}
-In most OO languages exceptions may be thrown at any point, this makes reasoning about the state of a program after catching them quite difficuilt, esppecially when combined with mutation. If an exception was thrown whilst mutating an object, what state is it in? Does such an objeect's invariant hold? The concept of \emph{strong exception safety} (SES)~\cite{?} makes reasoning quite simple: if an exception is caught, the operation that caused it (i.e. the body of the try block) had not mutated state.
-
-
-\LINE
-
-\noindent{\textit{Exceptions:}}
-M\#, L42 and Pony use TMs for safe and transparent parallelism:
-the code should behave as if the execution was fully sequential.
-Exceptions create additional difficulties in such context: if two operations are running in parallel in
-a fork-join, and the first one produces an exception, it should be safe to cancelled the other operation and
-to propagate the exception outwards. The system need to guarantee
-the progress the second operation accumulated is not observable.
-Pony avoids this problem simply by not supporting exceptions;
- while
-M\# and L42 will parallelize only expressions that do not leak checked exceptions,
-and they enforce Strong Exception Safety(SES)~\cite{Abrahams2000} for unchecked exceptions.
-
-Other authors have identified the concept of SES\REVComm{as
-a general issue when reasoning about objects state after catching an exception:
-when a \Q@try-catch@ catches an exception, the visible objects must be the same as before the
-\Q@try@ block started its execution.}{2}{compare to the notion of transaction}\footnote{
-Transactions are another way to allow reasoning about exception, but they require costly run time support, that
-can not be afforded by M\# and L42.}
-
-TMs are very useful in restricting the scope of mutation. 
-Any expression that does not use any \Q@mut@ 
-variable declared outside of such expression does not modify objects visible outside.
-With this observation in mind, we can use TMs to enforce SES in the following way:\footnote{
-A formal proof on why those restriction are sufficient is presented in the work of Lagorio~\cite{?}}
-\REVComm{
-\begin{itemize}
-\item all thrown exceptions are immutable objects,
-\item code inside a \Q@try@ block is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
-\end{itemize}}{3}{\label{SES1}It is not clear how the above restrictions can guarantee the ... outcome [at footnote \ref{SES2}]}
-This strategy do not restrict throwing exceptions, but only capturing unchecked exceptions.
-We think this restriction is acceptable for run-time verification, other works are much more restrictive,
-for example for Spec\# to be sound, unchecked exceptions can never be captured~\cite{?}.
-
-\LINE
-
-\loseSpace
-\noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
-While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
-
-Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionality: only certain objects with `special' powers can do `special' actions, and those objects are obtained in a controlled way. We call such objects `capability objects'.
-Their main use case is to allow for fine-grained control over what sections of code are allowed to do. For example, in Java \Q@System.in@ is a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
-In a language enforcing object capabilities the \Q@main@ method could take a \Q@System@ object as a parameter, and using that object is the only way to perform I/O, as in \REVComm{\Q@mySystem.println("hello")@}{3}{Incorrect variable name}.
-Moreover, the \Q@System@ class would have no visible constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
-Many other operations, like random numbers and file management 
-%may just take a \Q@mut System@ object as a parameter.
-could also work this way.
-\noindent This design has been explored in literature by Joe-E~\cite{finifter2008verifiable}.
-
-Here we use TM to guarantee that any method that is not (indirectly) passed a \Q@mut@ reference to a capability object will not use any capabilities:
-\begin{itemize}
-\item all capability methods must require a \Q@mut@ receiver,
-\item there are no global variables\footnote{Note: even just allowing \Q@imm@
-global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.},
-\item user code cannot directly create a capability object: they can only indirectly do so through an existing \Q@mut@ capability object reference.
-
-% NOTE: SOMEWHERE MAKE IT CLEAR THAT NON-DETERMINISM CAN ONLY OCCUR THROUGH A CAPABILITY OBJECT
-\end{itemize}
 
 %-----------------------------------------------------------
 
@@ -158,6 +10,16 @@ global variables would prevent reasoning over determinism due to the possibility
 
 %show solution is sound --> proof in appendix
 %naive is unsound - person 3 bugs
+
+\section{Our invariant protocol}
+In order for a class to support an invariant under our protocol, the following conditions need to be met:
+\begin{itemize}
+	\item The constructor only uses \Q@this@ to initialize the fields
+	\item The invariant method has the signature \Q@read method imm Bool validate();@
+	and only uses \Q@this@ to access \Q@imm@ and \Q@capsule@ fields
+	\item methods accessing capsule.... exposers.... only once...
+\end{itemize}
+Our invariant protocol relies on TMs and OCs to
 
 
 \section{\REVComm{The \validate{} Method}{2}{remind of the goals for validate (i.e. that it be pure); What about possible non-termination of validate()}}

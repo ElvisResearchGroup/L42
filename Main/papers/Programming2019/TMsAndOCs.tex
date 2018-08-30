@@ -1,0 +1,233 @@
+\section{Type Modifiers and Object Capabilities}
+\label{s:background}
+Reasoning about imperative object oriented (OO) programs is a non trivial task,
+made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. \IO{There are many ways to perform such reasoning, here we use the type-system to restrict, but not prevent, such behaviour in order to be able to soundly enforce class-invariants with runtime-verification (RV).}
+% \IO{[dynamic class loading]},
+
+\IO{\emph{Type modifiers} (TMs), as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently, a new design for them} has emerged that radically improves their usability.
+Three different research languages are being independently developed relying on this new design: {M\#}\footnote{Microsoft is quite secretive about their M\# project, we believe M\# is the language described in ~\cite{?}.}~\cite{?}, Pony~\cite{?} and L42~\cite{?}.
+These project are reasonably large: several millions lines of M\# code exists and it is used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,?}.
+
+While we focus on the specific TMs provided by L42,Pony and M\#, type modifiers
+ are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
+ allowing static reasoning of mutability and aliasing properties of objects.
+With slightly different names and semantics, the three most common modifiers for object references are:
+
+\begin{itemize}
+\item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers.
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but in the program there may be mutable references to this same object, so mutation can still be observed. 
+\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will never be mutated, not even through another reference.
+\end{itemize}
+%In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
+%\loseSpace
+TMs are different to field or variable modifiers like Java’s \Q@final@: TMs apply to references,  \Q@final@ specifies what can be done to the field itself. In comparison to \Q@imm@:
+
+\begin{itemize}
+\item A \Q@final@ variable/field cannot be reassigned, it always refers to the same object; however, the referenced object itself may be mutated.
+\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its \IO{reachable-object-graph (ROG)}. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
+\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like \Q@const *const A@.}
+\end{itemize}
+
+
+
+\noindent Consider the following  example usage of \Q@mut@, \Q@imm@ and \Q@read@:
+\begin{lstlisting}
+mut Point mp = new Point(1, 2);
+mp.x = 3; // ok
+imm Point ip = new Point(1, 2);
+$\Comment{}$ip.x = 3; // type error
+read Point rp = mp; // ok read is a common supertype of imm/mut
+$\Comment{}$rp.x = 3; // type error
+mp.x = 5; // ok, and now we can observe rp.x == 5
+ip = new Point(3, 5); // ok, ip is not final
+\end{lstlisting}
+\noindent We cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation; in our example we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
+
+
+There are several possible interpretations of the semantics of type modifiers.
+Here we assume the full/deep meaning~\cite{??}:%
+%cite Alex work on deep immutability
+\begin{itemize}
+  \item the objects in the ROG of an immutable object are immutable,
+  \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
+%  \item no \emph{down}-casting is allowed between different type modifiers.
+  \item no \emph{down}-casting from \Q@read@ to \Q@mut@ is allowed.
+%  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
+\end{itemize}
+
+
+\noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
+The main progress in the last couple of years is with the flexibility of such type systems:
+ where the programmer should use \Q@imm@ to represent objects that represent immutable data
+and \Q@mut@ nearly everywhere else; the system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
+To see a glimpse of this flexibility, consider the following example:
+\saveSpace
+\begin{lstlisting}
+mut Point mCenter = new Point(1, 2);
+mut Circle mc = new Circle(mCenter, /*radius*/7);
+mc.radius = 3; // ok
+imm Circle ic = new Circle(new Point(0, 0), 7); // ok imm
+imm Point ip = ic.center; // ok, ROG immutable
+read Circle rc = mc
+read Point rp = rc.center; // ok, fields of read Circle are read
+$\Comment{}$mut Point mp = rc.center; // type error
+\end{lstlisting}
+\saveSpace
+
+Here \Q@imm Circle ic@ and \Q@mut Circle mc@ are both initialized with \Q@new Circle(...)@.
+This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q@mut@ and any expression typed as \Q@mut@ that only uses immutable variables can safely be promoted to \Q@imm@.
+% (since the returned value could not possibly be aliased).
+%FALSE: it can be internally aliased!
+Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
+uses immutable variables can safely be promoted to \Q@imm@.
+\IO{From a usability perspective, this means that
+those TMs are opt-in: a programmer can write large sections of code
+mindlessly using \Q@mut@ types and without worrying about rampant
+aliasing. Then, at a later stage, another programmer may still 
+be able to encapsulate those data structures in an immutable
+ reference, or as we will see later a \Q@capsule@ reference.}
+
+
+ %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
+%true fact but not sufficient?
+
+%With this kind of type system, we can ensure immutable classes by just declaring all their fields as final and immutable.%
+%\footnote{
+%In Java,  to ensure a class is immutable we need:
+%the class must be final, all the fields must be final of immutable
+%classes (thus no interface fields, final classes all the way down),
+%and the SecurityManager need to properly tame reflection.}
+
+% Not sure about this paragraph:
+
+
+
+
+\loseSpace
+\noindent{\textit{Exceptions:}}
+In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of a program after an exception is caught: if the exception was thrown whilst mutating an object, what state is the such object in? Does such an object's invariant hold?
+The concept of \emph{strong exception safety} (SES)~\cite{?} simplify reasoning:
+if a \Q@try-catch@ block caught an exception, the state visible before execution of the \Q@try@ has not changed, and the exception object do not expose any object that was being mutated.
+%\LINE
+%\noindent{\textit{Exceptions:}}
+% M\#, L42 and Pony rely on SES for all unchecked exceptions to ensure safe and transparent parallelism,
+% They wish to ensure the code behave as if the execution was fully sequential.
+% Exceptions create additional difficulties in such context: if two operations are running in parallel in
+% a fork-join, and the first one produces an exception, it should be safe to cancel the other operation and
+% to propagate the exception outwards. The system need to guarantee
+% the progress the second operation accumulated is not observable.
+% Pony avoids this problem simply by not supporting exceptions;
+% while
+%M\# and L42 will parallelize only expressions that do not leak checked exceptions,
+%and they enforce Strong Exception Safety(SES)~\cite{Abrahams2000} for unchecked exceptions.
+%Other authors have identified the concept of SES as
+% a general issue when reasoning about objects state after catching an exception.
+% while we need it to soundly capture invariant failures.
+L42 already enforces SES for unchecked exceptions.\footnote{
+This is needed to support safe parallelism. Pony takes a more drastic approach and do not support exceptions in the first place. 
+We are not aware of how M\# handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.
+%We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
+}
+L42 enforces SES using TMs in the following way:\footnote{Transactions are another way to enforce strong-exception safety, but they require specialized and costly run time support.}\footnote{A formal proof on why those restriction are sufficient is presented in the work of Lagorio~\cite{?}.}
+\begin{itemize}
+\item Code inside a \Q@try@ block capturing unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
+\item Only an \Q@imm@ object may be thrown as an unchecked exception.
+\end{itemize} 
+%Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
+
+%With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
+
+Note that this strategy does not restrict throwing exceptions, but only catching unchecked ones.
+SES allows us to soundly capture invariant-failures as unchecked exceptions: 
+the object whose invariant has been broken is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failures it would be sufficient to only enforce SES when capturing exceptions caused by \Q@invariant@ failures.
+The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.
+
+% We think this restriction is acceptable for run-time verification, other works are much more restrictive,
+
+
+
+%The above rules need only be enforced for catch-blocks that could catch invariant-failures (including exceptions thrown within execution of \Q@invariant@) itself;
+%, and since \Q@invariant@ declares no-checked exceptions, this includes all exceptions throw-able by it.
+
+% TMs are very useful in restricting the scope of mutation. 
+% Any expression that does not use any \Q@mut@ 
+% variable declared outside of such expression does not modify objects visible outside.
+% With this observation in mind, we can use TMs to enforce SES in the following way:\footnote{
+% 
+
+% \begin{itemize}
+% \item all thrown exceptions are immutable objects,
+% \item 
+% \end{itemize}
+
+% For the aim of enforcing invariants, we could relax SES to hold only when capturing exceptions caused by invariant failures; but we are building on approaches that enforce SES on all unchecked exceptions .
+
+\loseSpace
+
+
+% Intro to OCs
+
+\textit{Object capabilities (OCs):}
+OCs, which M\#, L42 and Pony have, are a widely used~\cite{???} programming style that allows associating resources with objects. \MS{When} this style
+is respected, code \MS{that} does not possess an alias to the object cannot use the resource.
+
+%Object capabilities are programming style used to control and restrict use of operations such as access to external resources
+Here, as in M\#, use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and native calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead by instance methods of classes whose instantiation is kept under control. OCs are typically not part of the type system nor do they require special runtime support beyond that provided by a memory safe language. However languages, like L42, that allow user code to perform native calls without going through the standard library, require some minimal type system support to enforce the OCs pattern over such calls.
+ 
+
+% \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
+% While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
+
+% Conceptually, an object capability is a communicable, unforgeable token of authority, a key to access special functionality: only certain objects with `special' powers can do `special' actions, and those objects are obtained in a controlled way. We call such objects `capability objects'.
+
+
+% Their main use case is to allow for fine-grained control over what sections of code are allowed to do. 
+
+\lstset{language=Java}
+ For example, in Java, \Q@System.in@
+ \lstset{language=FortyTwo} 
+  \MS{is} a \emph{capability object} that provides access to the standard-input resource, however as it is globally accessible it completely prevents reasoning about determinism. 
+ 
+ % In contrast, in the object-capability style, one would not have-global variables but have the main por
+
+% a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
+
+In contrast, in the object-capability style, the \Q@main@ method could take a \Q@System@ object as a parameter. Calling methods on such \Q@System@ instance would be the only way to perform I/O, as in
+ \Q@main(mut System s)@
+ \lstset{language=Java}
+\Q@{.. s.in.read()..}@.
+Moreover, the only \Q@System@ instance would be created by the runtime system before main. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
+% Other non-deterministic operations would also work this.
+%may just take a \Q@mut System@ object as a parameter.
+% could also work this way.
+This design has been explored in literature by Joe-E~\cite{finifter2008verifiable}. % Really?
+\lstset{language=FortyTwo}
+
+To reason about determinism, we connect TMs with the OC style by requiring:
+\begin{itemize}
+\item Any method that uses non deterministic primitive operations (such as native calls \IO{or access to global variables\footnote{
+Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
+}}) must be an instance method requiring a \Q@mut@ receiver.
+Classes having such methods are \emph{capability classes}, and their instances are \emph{capability objects}.
+\item A capability object can only be created inside a \Q@mut@ method of a capability class; or
+by the run-time system, and passed to the main method.
+% \item If the language has global variables, they should only be 
+%\item There are no global variables.\footnote{}
+\end{itemize}
+%Here we combine TMs with OCs to guarantee 
+%\MS{determinism of} any method that can not access a \Q@mut@ reference to a capability object:
+%all non deterministic primitive operations are instance methods requiring a \Q@mut@ receiver, and
+%	\item all non-deterministic primitives (like native calls) require a \Q@mut@ receiver,
+%instances of capability classes containing such methods can only be created by a \Q@mut@ method of another capability class
+%	\begin{itemize}
+%		\item the runtime-system\footnote{as 42 has no standard-library, we treat meta-code as the runtime-system} before main begins,
+%		\item within a \Q@mut@ method on such a class
+%	\end{itemize}
+%	\item all non-deterministic operations require a \Q@mut@ receiver,
+%	\item all classes 
+%	\item there are no global variables\footnote{Note: even just allowing \Q@imm@
+%global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.},
+% \item user code cannot directly create a capability object: they can only indirectly do so through an existing \Q@mut@ capability object reference.
+
+% NOTE: SOMEWHERE MAKE IT CLEAR THAT NON-DETERMINISM CAN ONLY OCCUR THROUGH A CAPABILITY OBJECT
+%\end{itemize}
