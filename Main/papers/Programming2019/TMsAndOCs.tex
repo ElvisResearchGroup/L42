@@ -11,14 +11,14 @@ These project are reasonably large: several millions lines of M\# code exists an
 While we focus on the specific TMs provided by L42,Pony and M\#, type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
  allowing static reasoning of mutability and aliasing properties of objects.
-With slightly different names and semantics, the three most common modifiers for object references are:
+With slightly different names and semantics, the four most common modifiers for object references are:
 
 \begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, as in most languages without modifiers.
-\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but in the program there may be mutable references to this same object, so mutation can still be observed. 
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may be mutable aliases to this same object, so mutation can still be observed. 
 \item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will never be mutated, not even through another reference.
 \item Capsule (\Q@capsule@):
- Everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
+ everything in the ROG (including itself) of a capsule reference is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
@@ -26,8 +26,7 @@ TMs are different to field or variable modifiers like Java’s \Q@final@: TMs ap
 
 \begin{itemize}
 \item A \Q@final@ variable/field cannot be reassigned, it always refers to the same object; however, the referenced object itself may be mutated.
-\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its \IO{reachable-object-graph (ROG)}. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.
-\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like \Q@const *const A@.}
+\item A reference of an \Q@imm@ type however refers to an object that will never be mutated, and neither will its \IO{reachable-object-graph (ROG)}. However, a field of type \Q@imm@ may be updated to another \Q@imm@ reference.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like \Q@const *const A@.}
 \end{itemize}
 
 
@@ -53,7 +52,7 @@ Here we assume the full/deep meaning~\cite{??}:%
   \item the objects in the ROG of an immutable object are immutable,
   \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
 %  \item no \emph{down}-casting is allowed between different type modifiers.
-  \item no \emph{down}-casting from \Q@read@ to \Q@mut@ is allowed.
+  \item no casting from \Q@read@ to \Q@mut@ is allowed.
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
@@ -65,28 +64,42 @@ and \Q@mut@ nearly everywhere else; the system will be able to transparently pro
 To see a glimpse of this flexibility, consider the following example:
 \saveSpace
 \begin{lstlisting}
-mut Point mCenter = new Point(1, 2);
-mut Circle mc = new Circle(mCenter, /*radius*/7);
-mc.radius = 3; // ok
-imm Circle ic = new Circle(new Point(0, 0), 7); // ok imm
-imm Point ip = ic.center; // ok, ROG immutable
-read Circle rc = mc
-read Point rp = rc.center; // ok, fields of read Circle are read
-$\Comment{}$mut Point mp = rc.center; // type error
+//the same expression can create mut, imm or capsule
+    mut Circle mc = new Circle(new Point(0, 0), 7);
+capsule Circle cc = new Circle(new Point(0, 0), 7);
+    imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 \saveSpace
+Here \Q@mc@, \Q@ic@ and \Q@cc@ are syntactically initialized with the same expression: \Q@new Circle(..)@.
+The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.\footnote{Capsules must encapsulate their entire ROG, thus a new expression
+can not return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
+Moreover, the expression does not use any \Q@mut@ local variables, thus the flexible TMs system
+allows promoting the \Q@mut@ result to \Q@capsule@; thus \Q@cc@ is ok.
+Finally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
+We want to underline that this is not a special feature of \Q@new@ expressions:
+any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@. This is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
+	(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
+\REVComm{\IOComm{I will mention about more foundational works that eventually enabled the work of Gordon}}{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
+%such similarity is only superficial: former work infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
 
-Here \Q@imm Circle ic@ and \Q@mut Circle mc@ are both initialized with \Q@new Circle(...)@.
-This is not a special feature of \Q@new@ expressions: since \Q@new@ returns a \Q@mut@ and any expression typed as \Q@mut@ that only uses immutable variables can safely be promoted to \Q@imm@.
-% (since the returned value could not possibly be aliased).
-%FALSE: it can be internally aliased!
-Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
-uses immutable variables can safely be promoted to \Q@imm@ or \Q@capsule@.
 From a usability perspective, this means that
 those TMs are opt-in: a programmer can write large sections of code
-mindlessly using \Q@mut@ types and without worrying about rampant
-aliasing. Then, at a later stage, another programmer may still 
+mindlessly using \Q@mut@ types and be free to have rampant aliasing. 
+Then, at a later stage, another programmer may still 
 be able to encapsulate those data structures in an immutable or capsule reference.
+
+
+%\saveSpace
+%\begin{lstlisting}
+%mc.radius = 3; // ok
+%imm Point ip = ic.center; // ok, ROG immutable
+%read Circle rc = mc
+%read Point rp = rc.center; // ok, fields of read Circle are read
+%$\Comment{}$mut Point mp = rc.center; // type error
+%\end{lstlisting}
+%\saveSpace
+%Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
+%uses immutable variables can safely be promoted to \Q@imm@ or \Q@capsule@.
 
 
  %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
@@ -103,29 +116,32 @@ be able to encapsulate those data structures in an immutable or capsule referenc
 
 
 
-The \Q@capsule@ modifier (sometimes called isolated/iso) is possibly the one where more details differs in literature. Here we refer to its interpretation after the work~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion.
-This concept is at the basis of M\#, L42 and Pony type system~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}.
-Recovery allows to takes a mutable reference and promote it to \Q@capsule@.
-While at first glance this may seams similar to what former work was doing \REVComm{[....]}
-{2}{Worth mentioning any relationship between capsules and promotion/recovery with the following? [...list of papers...]}
-those similarity are only superficial: former works allows to infer uniqueness/isolation only when starting from references that has been tracked with restrictive annotations along their whole lifetime.
-%(sometimes called isolated/iso~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca}), where:
-\begin{itemize}
-	For the purposes of validation we only need to restrict mutation, so we may relax the restrictions previous work has where capsules are `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph, and allow the ROG of a \Q@capsule@ to be referenced as \Q@read@ from outside.
-	\item A capsule local variable can only be used once as \Q@capsule@ or \Q@mut@.
-	%An expression that uses a capsule variable may only use it as a \Q@capsule@ or \@mut@ once,
-	%\item An expression of a \@capsule@ type can be implicitly promoted to \@mut@,
-	\item A field of a \Q@capsule@ type must be instance-private; that is only accessible as\\* \Q@this.fieldName@ within an instance method.
-	\item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
-	\item A capsule field access has the same type modifier as the receiver.
-	\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
-	(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
-\end{itemize}
+The \Q@capsule@ modifier (sometimes called isolated/iso) is possibly the one whose details differ the most in literature. Here we refer to its interpretation of~\cite{GordonEtAl12} that introduced the concept of recovery/promotion.
+This concept is the basis for the M\#, L42 and Pony type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. 
+
+%\begin{itemize}
+%	\item A capsule local variable can only be used once. %as \Q@capsule@ or \Q@mut@.
+%	\item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
+%	\item A capsule field access has the same type modifier as the receiver.
+%	\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
+%	(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
+% \end{itemize}
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-\noindent Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Existing work either does not include handling of capsule fields~\cite{ServettoEtAl13a,ServettoZucca15} or leverages on destructive reads~\cite{GordonEtAl12,clebsch2015deny}.
-Destructive reads would be a bad idea for validation as they would likely invalidate objects.
+Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Both capsule/isolated fields and variables in M\# and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}, i.e reading a field replaces the value with null and local-variables can only be once. In contrast, capsule fields in L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require destructive reads, but provide a sightly different guarantees with respect to capsule local variables, where the ROG of a \Q@capsule@ field can be referenced from outside but only in controlled ways.
+%while M\# and Pony requires both capsule fields and capsule variables to be `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph.
 
+%Destructive reads would be a bad idea for validation as they would likely invalidate objects.
+
+%x=this.#f()
+%..do all you want with x...
+%// invariant check here!!
+%.
+%this.f(x -> ..)
+%this.f=transform(this.f)
+%invariantCheck()
+%transform(this.#f())
+%invariantCheck()
 
 \loseSpace
 \noindent{\textit{Exceptions:}}

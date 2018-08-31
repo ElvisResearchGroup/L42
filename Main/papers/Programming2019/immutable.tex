@@ -11,14 +11,61 @@
 %show solution is sound --> proof in appendix
 %naive is unsound - person 3 bugs
 
-\section{Our invariant protocol}
+\section{Our Invariant Protocol}
+% We guarantee that invariant holds in more points, for more objects, but we check it a million times less
+... %TODO
+redex
+.invariant
+usable variable rog
+Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is valid.
+This implies that whenever the user is allowed to call x.invariant(), such call would return true.
+The only points where the user is unable to call .invariant() is inside the constructor
+and inside the invariant method itself.
+This guarantee is much stronger then the visible state semantic, where in the presence of call-backs,
+invalid objects may be passed around and become visible to any other code~\cite{??}.
+
+
+\IO{The Visible-State Semantics is bad.} Here we have a much stronger property, called \emph{operational
+ validity}. This means that any object involved in execution (such as by accessing a field, calling a method on it, or) must be valid. As we use runtime-verification to detect invalid objects, it must be possible to access potentially invalid objects within their own \Q@invariant@ method, so we make an exception to the above rule in this case: \Q@this@ itself may be invalid within runtime-injected calls to \Q@invariant@.
+
+
+
+
+
+
+
+
+
+Our invariant protocol 
+state our expected+when ensured% at high level
+and how we ensure it at a high-level.
+
+
+Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
+For the first case, we can type the field access as \Q@read@, but in the second case we
+need to type it as \Q@mut@. 
+We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
+We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
+
+
 In order for a class to support an invariant under our protocol, the following conditions need to be met:
 \begin{itemize}
-	\item The constructor only uses \Q@this@ to initialize the fields
-	\item The invariant method has the signature \Q@read method imm Bool validate();@
-	and only uses \Q@this@ to access \Q@imm@ and \Q@capsule@ fields
-	\item methods accessing capsule.... exposers.... only once...
+	\item The constructor only uses \Q@this@ to initialize the fields.
+	\item The invariant method has the signature \Q@read method imm Bool validate()@.
+	and only uses \Q@this@ to access \Q@imm@ and \Q@capsule@ fields.
+	\item A field of a \Q@capsule@ type must be instance-private; that is only accessed as \Q@this.fieldName@.
+    \item A capsule field can be freely accessed as \Q@read@, but 
+    we require the pattern detailed below to be followed for capsule mutators:
+    \begin{itemize}
+  	  \item only a single use of \Q@this@ is allowed (and is the one that uses the field),
+      \item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter)
+      \item and the return type cannot be \Q@mut@.
+    \end{itemize}
+    \item a run-time invariant check is added at the end of the constructor, after every field update and at the end of every capsule mutator.
 \end{itemize}
+
+
+\LINE
 Our invariant protocol relies on TMs and OCs to
 
 
