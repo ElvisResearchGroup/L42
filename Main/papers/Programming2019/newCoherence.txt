@@ -17,7 +17,8 @@ coherent(p) //interfaces are always coherent
 
 coherent(p)
   p.top()={implements _ mwts ncs} //no interface
-  exists xz such that
+  either for no M in mwts M.mdf=class and M.e=empty //there is no abstract class method
+  or exists xz such that
     forall M in mwts, coherent(p;M;xz)
 //note: this trivially holds if L contains no abstract class-methods
 
