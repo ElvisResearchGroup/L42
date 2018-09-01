@@ -18,12 +18,11 @@ coherent(p) //interfaces are always coherent
 coherent(p)
   p.top()={implements _ mwts ncs} //no interface
   either for no M in mwts M.mdf=class and M.e=empty //there is no abstract class method
-  or exists xz such that
-    forall M in mwts, coherent(p;M;xz)
-//note: this trivially holds if L contains no abstract class-methods
+  or exists xz  and n? such that
+    forall M in mwts, coherent(p;M;xz;n?)
 
-coherent(p;M;xz)
-  M=refine? class method mdf P m(mdf1 P1 x1, ..., mdfn Pn xn) exception _
+coherent(p;M;xz;n?)
+  M=refine? class method mdf P m__n?(mdf1 P1 x1, ..., mdfn Pn xn) exception _
   p|-This<=P
   mdf not in {class, fwd mut, fwd imm}
   lent not in mdf1..mdfn
@@ -32,23 +31,23 @@ coherent(p;M;xz)
   {x1, ..., xn} = xz
   if untrustedClass(p.top()) then m is of form #$m 
 
-coherent(p;M;_)
+coherent(p;M;_;_)
   M.e!=empty //implemented methods are coherent
 
-coherent(p;M;_)
+coherent(p;M;_;_)
   M=refine? mdf method _
   mdf in {lent, mut, capsule}
   forall refine? class method mdf' _ in p.top(), mdf' not in {lent, mut, capsule}
 
-coherent(p;M;_,x)
-  M=refine? mdf method T #?x(mdf' P' that) exception _
+coherent(p;M;_,x;n?)
+  M=refine? mdf method T #?x__n?(mdf' P' that) exception _
   p |- imm Void <= T
   mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
   mdf in {lent, mut, capsule}
   if mdf = lent then mdf' != mut
 
-coherent(p;M;_,x)
-  M=refine? mdf method mdf' P' #?x() exception _
+coherent(p;M;_,x;n?)
+  M=refine? mdf method mdf' P' #?x__n?() exception _
   mdf != class
   mdf' = class iff FieldMdf(p.top(), x, mdf) = {class}
   forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
