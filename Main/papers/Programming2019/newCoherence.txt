@@ -2,12 +2,12 @@ TODO: unsure about New Well formedness: a class with private state but no abstra
 can not have any non class methods?
 what about classes with only imm constructor? no mut methods?
 
-mdf' in FieldsMdf(L, f, mdf) and P in FieldsPaths(L, f, mdf) iff:
-  class method mdf" _(_ mdf' P f _) in L
+mdf' in FieldsMdf(L, x, mdf) and P in FieldsPaths(L, x, mdf) iff:
+  class method mdf" _(_ mdf' P x _) in L
     or mdf" method _ #?f(mdf' P that) in L
   if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
 
-mdf' in FieldsAccessMdf(l, f, mdf) iff:
+mdf' in FieldsAccessMdf(l, x, mdf) iff:
   mdf' method mdf" P #?f() is in L
   mdf' != capsule
   if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule},
@@ -17,18 +17,18 @@ coherent(p) //interfaces are always coherent
 
 coherent(p)
   p.top()={implements _ mwts ncs} //no interface
-  exists xs such that
-    forall M in mwts, coherent(p;M;xs)
+  exists xz such that
+    forall M in mwts, coherent(p;M;xz)
 //note: this trivially holds if L contains no abstract class-methods
 
-coherent(p;M;xs)
+coherent(p;M;xz)
   M=refine? class method mdf P m(mdf1 P1 x1, ..., mdfn Pn xn) exception _
   p|-This<=P
   mdf not in {class, fwd mut, fwd imm}
   lent not in mdf1..mdfn
   if mdf in {imm, capsule} then {mdf1..mdfn} disjoint {mut, fwd mut}
   if read in {mdf1..mdfn) then mdf in {read, lent}
-  {x1, ..., xn} = xs
+  {x1, ..., xn} = xz
   if untrustedClass(p.top()) then m is of form #$m 
 
 coherent(p;M;_)
@@ -37,11 +37,10 @@ coherent(p;M;_)
 coherent(p;M;_)
   M=refine? mdf method _
   mdf in {lent, mut, capsule}
-  forall refine? class method mdf' _ in p.top(), mdf' {lent, mut, capsule}
+  forall refine? class method mdf' _ in p.top(), mdf' not in {lent, mut, capsule}
 
 coherent(p;M;_,x)
   M=refine? mdf method T #?x(mdf' P' that) exception _
-  mdf != class
   p |- imm Void <= T
   mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
   mdf in {lent, mut, capsule}
@@ -53,23 +52,23 @@ coherent(p;M;_,x)
   mdf' = class iff FieldMdf(p.top(), x, mdf) = {class}
   forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
   coherentGetMdf(mdf',mdf,FieldMdf(p.top(),x, mdf),FieldAccessMdf(p.top(),x, mdf))
-  
+ 
 coherentGetMdf(imm,imm,_,_)
 
 coherentGetMdf(imm,mdf,mdfs0,mdfs1)
   mdf!=imm
   mdfs0 subseteq {imm, fwd imm,capsule}
-  {fwd mut, mut, lent} not in mdfs1
+  {fwd mut, mut, lent} disjoint mdfs1
 
-coherentGetMdf(capsule,capsule,_mdfs0,_)
+coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
   mdfs0 subseteq {mut, fwd mut, capsule}
   imm not in mdfs1
 
-coherentGetMdf(lent,mdf,_mdfs0,_)
+coherentGetMdf(lent,mdf,mdfs0,_)
   mdfs0 subseteq {mut, fwd mut, capsule}
   mdf in {lent, mut, capsule}
 
-coherentGetMdf(mut,mdf,_mdfs0,_)
+coherentGetMdf(mut,mdf,mdfs0,_)
   mdfs0 subseteq {mut, fwd mut, capsule}
   mdf in {mut, capsule}
 
