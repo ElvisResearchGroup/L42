@@ -1,60 +1,79 @@
-Definitions:
-    mdf is mutatable iff mdf is in {lent, mut, capsule}
-    mdf' in FM(L, f, mdf) and P in FP(L, f, mdf) iff:
-			if mdf is mutatable then mdf" is mutatable,
-      class method mdf" _(_ mdf' P f _) in L
-        or mdf" method _ #?f(mdf' P that) in L
+TODO: unsure about New Well formedness: a class with private state but no abstract class private state,
+can not have any non class methods?
+what about classes with only imm constructor? no mut methods?
 
-    mdf' in FA(l, f, mdf) iff:
-			if mdf is mutatable then mdf" is mutatable,
-      mdf' method mdf" P #?f() is in L
-      mdf' != capsule
+mdf' in FieldsMdf(L, f, mdf) and P in FieldsPaths(L, f, mdf) iff:
+  class method mdf" _(_ mdf' P f _) in L
+    or mdf" method _ #?f(mdf' P that) in L
+  if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
 
-Coherent:
-Under a program p, a library literall L' is coherent iff, for some L:
+mdf' in FieldsAccessMdf(l, f, mdf) iff:
+  mdf' method mdf" P #?f() is in L
+  mdf' != capsule
+  if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule},
 
-    L is the same as L' except the following are deleted: (note: this rule is just for simplicity)
-        nested classes,
-        non-abstract methods,
-        refine keywords, and
-        exception clauses
-    Either L contains not class-methods or:
-			Let f1,...,fn be variable-names
-		  Every method in L is either of the form:
-					class method mdf P m(mdf1 P1 f1', ..., mdfn Pn fn'), where:
-			      p|-This<=P
-			      mdf not in {class, fwd mut, fwd imm}
-			      each mdfi is not lent
-			      if mdf in {imm, capsule} then each mdfi not in {mut, fwd mut}
-			      if read in {mdf1..mdfn) then mdf in {read, lent}
-						{f1', ..., fn'} = {f1, ..., fn}
-					mdf method _, where:
-						mdf is mutatable
-						there is no class method mdf' _ in L where mdf' is mutatable
-		      mdf method T #?fi(mdf' P' that), where:
-						mdf != class
-						p |- imm Void <= T
-						mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
-						if mdf = lent, then mdf' != mut
-		        mdf is mutatable
-		      mdf method mdf' P' #?fi(), where:
-						mdf != class
-   					mdf' = class iff FM(L, fi, mdf) = {class}
-		        forall P in FP(L, fi, mdf), p |- P <= P'
-	          if mdf' = imm and mdf != imm, then:
-	              FM(L,fi, mdf) subseteq {imm, fwd imm,capsule}, and
-	              {fwd mut, mut, lent} not in FA(L,fi, mdf)
-	          if mdf' = capsule then:
-	              mdf = capsule, and
-	              FM(L, fi, mdf) subseteq {mut, fwd mut, capsule}, and
-	              imm not in FA(L, fi, mdf)
-	          if mdf' = lent then:
-	              FM(L, fi, mdf) subseteq {mut, fwd mut, capsule}, and
-	              mdf is mutatable
-	          if mdf' = mut then:
-	              FM(L, fi, mdf) subseteq {mut, fwd mut, capsule}, and
-	              mdf in {mut, capsule}
+coherent(p) //interfaces are always coherent
+  p.top()={interface implements _ mwts ncs}
 
+coherent(p)
+  p.top()={implements _ mwts ncs} //no interface
+  exists xs such that
+    forall M in mwts, coherent(p;M;xs)
+//note: this trivially holds if L contains no abstract class-methods
+
+coherent(p;M;xs)
+  M=refine? class method mdf P m(mdf1 P1 x1, ..., mdfn Pn xn) exception _
+  p|-This<=P
+  mdf not in {class, fwd mut, fwd imm}
+  lent not in mdf1..mdfn
+  if mdf in {imm, capsule} then {mdf1..mdfn} disjoint {mut, fwd mut}
+  if read in {mdf1..mdfn) then mdf in {read, lent}
+  {x1, ..., xn} = xs
+  if untrustedClass(p.top()) then m is of form #$m 
+
+coherent(p;M;_)
+  M.e!=empty //implemented methods are coherent
+
+coherent(p;M;_)
+  M=refine? mdf method _
+  mdf in {lent, mut, capsule}
+  forall refine? class method mdf' _ in p.top(), mdf' {lent, mut, capsule}
+
+coherent(p;M;_,x)
+  M=refine? mdf method T #?x(mdf' P' that) exception _
+  mdf != class
+  p |- imm Void <= T
+  mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
+  mdf in {lent, mut, capsule}
+  if mdf = lent then mdf' != mut
+
+coherent(p;M;_,x)
+  M=refine? mdf method mdf' P' #?x() exception _
+  mdf != class
+  mdf' = class iff FieldMdf(p.top(), x, mdf) = {class}
+  forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
+  coherentGetMdf(mdf',mdf,FieldMdf(p.top(),x, mdf),FieldAccessMdf(p.top(),x, mdf))
+  
+coherentGetMdf(imm,imm,_,_)
+
+coherentGetMdf(imm,mdf,mdfs0,mdfs1)
+  mdf!=imm
+  mdfs0 subseteq {imm, fwd imm,capsule}
+  {fwd mut, mut, lent} not in mdfs1
+
+coherentGetMdf(capsule,capsule,_mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  imm not in mdfs1
+
+coherentGetMdf(lent,mdf,_mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  mdf in {lent, mut, capsule}
+
+coherentGetMdf(mut,mdf,_mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  mdf in {mut, capsule}
+
+-------------------------------------
 Now for InvariantClose, we just make2 definitions:
     A field f is validatable iff FM(L, f, read) subseteq {imm, fwd imm, capsule, class}
     '_ method mdf P #?f();' is an exposer iff:
