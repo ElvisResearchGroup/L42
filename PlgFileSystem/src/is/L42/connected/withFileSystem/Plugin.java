@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import ast.ExpCore;
+import newTypeSystem.TypeSystem;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
@@ -50,7 +51,8 @@ public class Plugin implements PluginType.WellKnown {
   public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
     ExpCore.ClassB that=ensureExtractClassB(_that);
 
-    //that.typeCheck(ExpCore.ClassB.Phase.Typed);
+    // TODO: Throw an error thbat 42 can understand
+    TypeSystem.typeCheck(that, ExpCore.ClassB.Phase.Typed).assertOk();
 
     String url=ensureExtractStringU(_url);
 

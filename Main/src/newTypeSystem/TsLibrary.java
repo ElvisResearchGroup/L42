@@ -1,8 +1,8 @@
 package newTypeSystem;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import ast.Ast.MethodType;
@@ -17,10 +17,12 @@ import ast.ExpCore.ClassB.Phase;
 import auxiliaryGrammar.Functions;
 import coreVisitors.From;
 import facade.L42;
+import org.antlr.v4.runtime.misc.MultiMap;
 import programReduction.Norm;
 import programReduction.Program;
 import tools.Assertions;
 import ast.Ast.Mdf;
+import tools.LambdaExceptionUtil;
 
 public interface TsLibrary extends TypeSystem{
 
@@ -167,104 +169,272 @@ public interface TsLibrary extends TypeSystem{
       }
     return new TOkM(mwt1);
     }
+    static boolean coherent(Program p, boolean force) {
+      ClassB top = p.top();
+      if (top.isInterface()) return true;
 
-  static boolean coherent(Program p,boolean force) {
-      ClassB top=p.top();
-      if (top.isInterface()){return true;}
-      List<MethodWithType> stateC=top.mwts().stream()
+      Map<Boolean, List<MethodWithType>> stateC=top.mwts().stream()
       .map(m->(MethodWithType)m)
       .filter(m->m.get_inner()==null)
-      .sorted((m1,m2)->m1.getMt().getMdf()==Mdf.Class?-1:1)
-      .collect(Collectors.toList());
-      if(stateC.isEmpty()){return true;}
-      MethodWithType ck=stateC.get(0);
-      if(!coherentK(p,ck)){
-        if(force){
-          throw new ErrorMessage.NotOkToStar(top, ck,"invalid candidate factory", ck.getP());
-          }
-        return false;
+      .collect(Collectors.partitioningBy(m -> m.getMt().getMdf() == Mdf.Class));
+
+      List<MethodWithType> stateK = stateC.get(Boolean.TRUE);
+      List<MethodWithType> stateF = stateC.get(Boolean.FALSE);
+
+      if(stateK.isEmpty()) return true;
+
+      // All factories need to have the same field names
+      Set<String> fieldNames = new HashSet<>(stateK.get(0).getMs().getNames());
+      long uniqueNum = stateK.get(0).getMs().getUniqueNum();
+
+      BinaryMultiMap<String, Mdf> fieldModifiers = new BinaryMultiMap<>();
+      BinaryMultiMap<String, Path> fieldPaths = new BinaryMultiMap<>();
+      BinaryMultiMap<String, Mdf> fieldAccessModifiers = new BinaryMultiMap<>();
+
+      boolean mutOrLCFactories = false;
+
+      BiPredicate<MethodWithType, String> error = (mwt, message) -> {
+        if (force) throw new ErrorMessage.NotOkToStar(top, mwt, message, mwt.getP());
+        else return false;
+      };
+
+      // Check each factory
+      for (MethodWithType ck : stateK)
+      {
+        //  M=refine? class method mdf P m__n?(mdf1 P1 x1, ..., mdfn Pn xn) exception _
+        if (ck.getMs().getUniqueNum() != uniqueNum)
+            return error.test(ck, "All abstract state operations must have the same unique number.");
+
+        //  {x1, ..., xn} = xz
+        if (!fieldNames.containsAll(ck.getMs().getNames()))
+            return error.test(ck, "Factories have different sets of paramater names.");
+
+        // if untrustedClass(p.top()) then m is of form #$m
+        if (p.top().isUntrusted() && !ck.getMs().isUntrusted())
+            return error.test(ck, "Untrusted classes can only have #$ constructors.");
+
+        // p|-This <= P
+        if (null != TypeSystem.subtype(p, Path.outer(0), ck.getReturnPath()))
+            return error.test(ck, "Factory must return a super-type of 'This'.");
+
+        //  mdf not in {class, fwd mut, fwd imm}
+        if (ck.getReturnMdf().isIn(Mdf.Class, Mdf.MutableFwd, Mdf.ImmutableFwd))
+            return error.test(ck, "Factory cannot return '" + ck.getReturnMdf() + "'");
+
+        boolean immOrC = ck.getReturnMdf().isIn(Mdf.Immutable, Mdf.Capsule);
+        boolean lentOrR = ck.getReturnMdf().isIn(Mdf.Lent, Mdf.Readable);
+        boolean mutOrLC = ck.getReturnMdf().isIn(Mdf.Lent, Mdf.Mutable, Mdf.Capsule);
+        mutOrLCFactories |= mutOrLC;
+
+        for (int i = 0; i < ck.getSize(); i++)
+        {
+          String x = ck.getXs().get(i);
+          Mdf mdfi = ck.getMdfs().get(i);
+          Path Pi = ck.getPaths().get(i);
+
+          //  lent not in mdf1..mdfn
+          if (mdfi == Mdf.Lent)
+              return error.test(ck, "Factory cannot have a lent argument.");
+
+          //  if read in {mdf1..mdfn) then mdf in {read, lent}
+          if(mdfi == Mdf.Readable && !lentOrR)
+              return error.test(ck,"Only lent and read returning factories can have read paramaters.");
+
+          //  if mdf in {imm, capsule} then {mdf1..mdfn} disjoint {mut, fwd mut}
+          if (immOrC & mdfi.isIn(Mdf.Mutable, Mdf.MutableFwd))
+              return error.test(ck, "Imm and capsule factories cannot have mut or fwd mut parameters.");
+
+          fieldModifiers.add(mutOrLC, x, mdfi);
+          fieldPaths.add(mutOrLC, x, Pi);
         }
-      for(MethodWithType mwt:stateC.subList(1,stateC.size())){
-        if(!coherentF(p,ck,mwt)){
-          if(force){throw new ErrorMessage.NotOkToStar(top, ck,"abstract method\n"+sugarVisitors.ToFormattedText.of(mwt)+"\ndo not fit candidate factory", top.getP());}
-          return false;
+      }
+
+      List<MethodWithType> getters = new ArrayList<>();
+
+      for (MethodWithType mwt : stateF)
+      {
+        /* coherent(p;M;_;_)
+          M=refine? mdf method _
+          mdf in {lent, mut, capsule}
+          forall refine? class method mdf' _ in p.top(), mdf' not in {lent, mut, capsule}
+        */
+        if (!mutOrLCFactories && mwt.getMdf().isIn(Mdf.Lent, Mdf.Mutable, Mdf.Capsule));
+
+        // A setter
+        else if (mwt.getMs().getNames().equals(List.of("that")))
+        {
+          // M=refine? mdf method T #?x__n?(mdf' P' that) exception _
+          String x = _removeHash(mwt.getMs().getName());
+          if (mwt.getMs().getUniqueNum() != uniqueNum)
+            return error.test(mwt, "All abstract state operations must have the same unique number.");
+          if (!fieldNames.contains(x))
+            return error.test(mwt, "Setter for unknown field.");
+
+          //p |- imm Void <= T
+          if (null != TypeSystem._subtype(p, mwt.getReturnType(), Type.immVoid))
+            return error.test(mwt, "Setters must return a supertype of read Void.");
+
+          //mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
+          if (!mwt.getMdfs().get(0).isIn(Mdf.Immutable, Mdf.Mutable, Mdf.Capsule, Mdf.Class))
+            return error.test(mwt, "Setters cannot take a read, lent, fwd mut, or fwd imm.");
+
+          //mdf in {lent, mut, capsule}
+          if (!mwt.getMdf().isIn(Mdf.Lent, Mdf.Mutable, Mdf.Capsule))
+            return error.test(mwt, "Setters must be lent, mut, or capsule methods.");
+
+          // if mdf = lent then mdf' != mut
+          if (mwt.getMdf().equals(Mdf.Lent) && mwt.getMdfs().get(0).equals(Mdf.Mutable))
+            return error.test(mwt, "A lent setter cannot take a mut.");
+
+          fieldModifiers.add(true, x, mwt.getMdfs().get(0));
+        }
+
+        // A getter, don't fully check it yet, wait until we've collected the fieldModifiers etc.
+        else if (mwt.getMs().getNames().isEmpty())
+        {
+          // M=refine? mdf method T #?x__n?(mdf' P' that) exception _
+          String x = _removeHash(mwt.getMs().getName());
+          if (mwt.getMs().getUniqueNum() != uniqueNum)
+            return error.test(mwt, "All abstract state operations must have the same unique number.");
+          if (!fieldNames.contains(x))
+            return error.test(mwt, "Getter for unknown field.");
+
+          // mdf != class;
+          assert !(mwt.getMdf().equals(Mdf.Class));
+
+          getters.add(mwt);
+
+          if (!mwt.getMdf().equals(Mdf.Capsule))
+            fieldAccessModifiers.add(mwt.getMdf().isIn(Mdf.Lent, Mdf.Mutable, Mdf.Readable), x, mwt.getReturnMdf());
+        }
+
+        else return error.test(mwt, "Abstract method is neither a factory, getter, nor a setter.");
+      }
+
+
+      // Now we can check the getters, as we have collected enough information
+      for (MethodWithType mwt : getters)
+      {
+        String x = _removeHash(mwt.getMs().getName());
+        Mdf mdf = mwt.getMdf();
+        Mdf mdfR = mwt.getReturnMdf();
+        boolean isLCM = mdf.isIn(Mdf.Lent, Mdf.Capsule, Mdf.Mutable);
+
+        // forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
+        if (!fieldPaths.get(isLCM, x).stream().allMatch(P ->
+            null == TypeSystem._subtype(p, mwt.getReturnType().withPath(P), mwt.getReturnType())))
+          return error.test(mwt, "Return class of getter must be a subclass of all possible field values' classes.");
+
+        // coherentGetMdf(mdf',mdf,FieldMdf(p.top(),x, mdf),FieldAccessMdf(p.top(),x, mdf))
+
+        Set<Mdf> mdfs0 = fieldModifiers.get(isLCM, x);
+        Set<Mdf> mdfs1 = fieldAccessModifiers.get(isLCM, x);
+
+        //mdfs0 subseteq {mut, fwd mut, capsule}
+        boolean mutOrC = mdfs0.stream().allMatch(m -> m.isIn(Mdf.Mutable, Mdf.MutableFwd, Mdf.Capsule));
+
+        // coherentGetMdf(imm, ...)
+        if (mdfR.equals(Mdf.Immutable))
+        {
+          // coherentGetMdf(imm,imm, mdfs0,_)
+          if (mdf.equals(Mdf.Immutable))
+          {
+            //  class not in mdfs0
+            if (mdfs0.contains(Mdf.Class))
+              return error.test(mwt, "Cannot get a possibly class field as imm.");
           }
+          ////coherentGetMdf(imm,mdf,mdfs0,mdfs1)
+          else
+          {
+            // mdfs0 subseteq {imm, fwd imm,capsule}
+            if (!mdfs0.stream().allMatch(m -> m.isIn(Mdf.Immutable, Mdf.ImmutableFwd, Mdf.Capsule)))
+              return error.test(mwt, "Can only get imm if the value is guaranteed to be an imm, fwd imm, or capsule");
+            // {mut, lent} disjoint mdfs1
+            if (mdfs1.stream().anyMatch(m -> m.isIn(Mdf.Mutable, Mdf.Lent)))
+              return error.test(mwt, "Cannot return imm when field could have been leaked as mut or lent");
+          }
+        }
+        //coherentGetMdf(read, _, mdfs0,_)
+        else if (mdfR.equals(Mdf.Readable))
+        {
+          //  class not in mdfs0
+          if (mdfs0.contains(Mdf.Class))
+            return error.test(mwt, "Cannot get a possibly class field as read.");
+        }
+        //coherentGetMdf(class,_,{class},_)
+        else if (mdfR.equals(Mdf.Class))
+        {
+          if (!mdfs0.equals(Set.of(Mdf.Class)))
+            return error.test(mwt, "Cannot get a possibly non-class field as class.");
+        }
+        //coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
+        else if (mdfR.equals(Mdf.Capsule))
+        {
+          if (!mdf.equals(Mdf.Capsule))
+            return error.test(mwt, "Can only return a field as capsule from a capsule method.");
+
+          // mdfs0 subseteq {mut, fwd mut, capsule}
+          if (!mutOrC)
+            return error.test(mwt, "Cannot get a field as capsule when it might not be mut, fwd mut, or capsule.");
+
+          // imm not in mdfs1
+          if (mdfs1.contains(Mdf.Immutable))
+            return error.test(mwt, "Cannot get a field as capsule when it may have been leaked as imm.");
+        }
+        //coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
+        else if (mdfR.equals(Mdf.Lent))
+        {
+          // mdfs0 subseteq {mut, fwd mut, capsule}
+          if (!mutOrC)
+            return error.test(mwt, "Cannot get a field as capsule when it might not be mut, fwd mut, or capsule.");
+
+          // mdf in {lent, mut, capsule}
+          if (!mdf.isIn(Mdf.Lent, Mdf.Mutable, Mdf.Capsule))
+            return error.test(mwt, "Can only expose a field as lent from a mut, lent or capsule method.");
+        }
+        //coherentGetMdf(mut,mdf,mdfs0,_)
+        else if (mdfR.equals(Mdf.Mutable))
+        {
+          // mdfs0 subseteq {mut, fwd mut, capsule}
+          if (!mutOrC)
+            return error.test(mwt, "Cannot get a field as mut when it might not be mut, fwd mut, or capsule.");
+
+          // mdf in {mut, capsule}
+          if (!mdf.isIn(Mdf.Mutable, Mdf.Capsule))
+            return error.test(mwt, "Can only expose a field as mut from a mut or capsule method.");
+        }
+        else Assertions.codeNotReachable();
       }
       return true;
     }
-  static boolean coherentF(Program p,MethodWithType ck, MethodWithType mwt) {
-      MethodType mt=mwt.getMt();
-      Mdf m=mt.getMdf();
-      if(mwt.getMs().getUniqueNum()!=ck.getMs().getUniqueNum()){return false;}
-      Type Ti=_extractTi(ck,mwt.getMs().getName());// internally do noFwd
-      if (Ti==null){return false;}
-      //if(m==Mdf.Class){return false;}
-      if(m.isIn(Mdf.Readable,Mdf.Immutable)){//getter
-        if(!mt.getTs().isEmpty()){return false;}
-        Type Ti_=TypeManipulation._toRead(Ti);
-        if (Ti_==null){return false;}//p|-toRead(Ti)<=T
-        if(null!=TypeSystem._subtype(p, Ti_,mt.getReturnType())){return false;}
-        return true;
-        }
-      if(m!=Mdf.Mutable){return false;}
-      //exposer/setter
-      if(mt.getTs().isEmpty()){//exposer
-        Type Ti_=TypeManipulation.capsuleToLent(Ti);
-        if (Ti_==null){return false;}//p|-capsuleToLent(Ti)<=T
-        if(null!=TypeSystem._subtype(p, Ti_,mt.getReturnType())){return false;}
-        return true;
-        }
-      //setter refine? mut method Void m[n?](T that)
-      if(!mt.getReturnType().equals(Type.immVoid)){return false;}
-      if(mt.getTs().size()!=1){return false;}
-      if(!mwt.getMs().getNames().get(0).equals("that")){return false;}
-      Type T=mt.getTs().get(0);
-      if(null!=TypeSystem._subtype(p, T, Ti)){
-        return false;
-        }
-      if(Ti.getMdf()==Mdf.Readable){
-        Mdf mT=T.getMdf();
-        if(mT!=Mdf.Capsule && mT!=Mdf.Immutable){return false;}
-      }
-      return true;
+
+    static String _removeHash(String s) {
+      if (s.startsWith("#")) return s.substring(1);
+      else return s;
     }
+}
 
-  static Type _extractTi(MethodWithType ck, String name) {
-    if(name.startsWith("#")){name=name.substring(1);}
-    int i=-1;for(String ni:ck.getMs().getNames()){i+=1;
-      if (ni.equals(name)){return TypeManipulation.noFwd(ck.getMt().getTs().get(i));}
-      }
-    return null;
-    }
+class BinaryMultiMap<K, V> {
+  private Map<K, Set<V>> true_ = new HashMap<>();
+  private Map<K, Set<V>> false_ = new HashMap<>();
 
+  void add(boolean b, K key, V value) {
+    this.addOnce(false, key, value);
+    if (b) this.addOnce(b, key, value);
+  }
 
-//coherent(n?,p,T1 x1..Tn xn,
-//refine? class method T m[n?] (T1' x1..Tn' xn) exception _)
-//where
-//p|- This0 <=T.P and p|-Ti'<=fwd Ti
-//T.mdf!=class and if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
+  void addOnce(boolean b, K key, V value) {
+    this.get(b).merge(key, Set.of(value), (x, y) -> {
+        Set<V> s = new HashSet<V>(x);
+        s.addAll(y);
+        return s;
+    });
+  }
 
-    static boolean coherentK(Program p,MethodWithType ck) {
-      MethodType mt=ck.getMt();
-
-      if(mt.getMdf()!=Mdf.Class){return false;}
-
-      if (p.top().isUntrusted() && !ck.getMs().isUntrusted()) return false;
-
-      Type rt=mt.getReturnType();
-      if(null!=TypeSystem.subtype(p, Path.outer(0),rt.getPath())){return false;}
-      Mdf m=rt.getMdf();
-      if (m==Mdf.Class){return false;}
-      boolean immOrC=m.isIn(Mdf.Immutable,Mdf.Capsule);
-      boolean lentOrR=m.isIn(Mdf.Lent,Mdf.Readable);
-      for(Type ti:mt.getTs()){
-        Mdf mi=ti.getMdf();
-        if(mi==Mdf.Lent){return false;}
-        if(mi==Mdf.Readable){
-          if(!lentOrR){return false;}
-          }
-        if(immOrC & mi.isIn(Mdf.Mutable,Mdf.MutableFwd)){return false;}
-        }
-      return true;
-    }
+  Map<K, Set<V>> get(boolean b)
+  {
+    if (b) return this.true_;
+    else return this.false_;
+  }
+  Set<V> get(boolean b, K key) { return this.get(b).get(key); }
 }

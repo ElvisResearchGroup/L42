@@ -8,9 +8,9 @@ mdf' in FieldsMdf(L, x, mdf) and P in FieldsPaths(L, x, mdf) iff:
   if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
 
 mdf' in FieldsAccessMdf(l, x, mdf) iff:
-  mdf' method mdf" P #?f() is in L
-  mdf' != capsule
-  if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule},
+  mdf" method mdf' P #?f() is in L
+  mdf" != capsule
+  if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule},
 
 coherent(p) //interfaces are always coherent
   p.top()={interface implements _ mwts ncs}
@@ -49,16 +49,22 @@ coherent(p;M;_,x;n?)
 coherent(p;M;_,x;n?)
   M=refine? mdf method mdf' P' #?x__n?() exception _
   mdf != class
-  mdf' = class iff FieldMdf(p.top(), x, mdf) = {class}
   forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
   coherentGetMdf(mdf',mdf,FieldMdf(p.top(),x, mdf),FieldAccessMdf(p.top(),x, mdf))
  
-coherentGetMdf(imm,imm,_,_)
+coherentGetMdf(imm,imm, mdfs0,_)
+  class not in mdfs0
 
 coherentGetMdf(imm,mdf,mdfs0,mdfs1)
   mdf!=imm
   mdfs0 subseteq {imm, fwd imm,capsule}
-  {fwd mut, mut, lent} disjoint mdfs1
+  {mut, lent} disjoint mdfs1
+
+
+coherentGetMdf(read, _, mdfs0,_)
+  class not in mdfs0
+
+coherentGetMdf(class,_,{class},_)
 
 coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
   mdfs0 subseteq {mut, fwd mut, capsule}

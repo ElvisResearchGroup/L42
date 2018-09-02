@@ -40,7 +40,12 @@ public interface TOut{
   boolean isOk();
   default TOk toOk() {throw new Error();}
   default TErr toError() {throw new Error();}
+
+  default void assertOk()
+  {
+    if (!this.isOk()) throw new FormattedError(this.toError());
   }
+}
 abstract class ATr<This extends ATr<This>>{
 List<Type>returns=Collections.emptyList();
 List<Path>exceptions=Collections.emptyList();

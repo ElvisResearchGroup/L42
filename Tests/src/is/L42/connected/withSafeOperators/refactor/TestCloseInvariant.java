@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import newTypeSystem.FormattedError;
+import newTypeSystem.TIn;
+import newTypeSystem.TOut;
+import newTypeSystem.TypeSystem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -114,8 +118,8 @@ public class TestCloseInvariant{
 
   },{lineNumber(),
   "{capsule A a read method Void #invariant() void "
-  + " mut method Void doStuff(A that)that(this.#a()) A:{}}","This",
-  " {\n" +
+  + " mut method Void doStuff(A that)that(this.#a()) A:{method Void(read A that) void}}","This",
+  "  {\n" +
       "read method \n" +
       "Void #invariant_$_2() void\n" +
       "class method \n" +
@@ -146,7 +150,9 @@ public class TestCloseInvariant{
       "  Void unused3=r3.#invariant_$_2()\n" +
       "  r3\n" +
       "  )\n" +
-      "A: {}}"
+      "A: {\n" +
+      "method \n" +
+      "Void #apply(read This1.A that) void}}"
   ,false
 
   },{lineNumber(),
@@ -192,20 +198,22 @@ public class TestCloseInvariant{
   "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$PathUnfit",true
   },{lineNumber(), "{A a "
       //+ "class method mut This ctor(fwd A a) "
-      + "read method Void #invariant() void class method mut This (A a) class method This k(A a)}","This",
+      + "read method Void #invariant() void class method mut This(A a) This(a: a)  class method This k(A a) This(a: a) A:{}}","This",
   " {\n" +
       "read method \n" +
       "Void #invariant_$_2() void\n" +
       "class method \n" +
       "mut This0 mutK_$_2(fwd This0.A a) \n" +
       "read method \n" +
-      "This0.A a() \n" +
+      "This0.A a() this.a_$_2()\n" +
+      "read method \n" +
+      "This0.A a_$_2() \n" +
       "read method \n" +
       "Void #invariant() void\n" +
       "class method \n" +
-      "mut This0 #apply(This0.A a) \n" +
+      "mut This0 #apply(This0.A a) This0.#apply(a:a)\n" +
       "class method \n" +
-      "This0 k(This0.A a) \n" +
+      "This0 k(This0.A a) This0.#apply(a:a)\n" +
       "class method \n" +
       "mut This0 mutK(This0.A a) (\n" +
       "  r1=this.mutK_$_2(a:a)\n" +
@@ -217,7 +225,8 @@ public class TestCloseInvariant{
       "  This0 r2=this.mutK_$_2(a:a)\n" +
       "  Void unused2=r2.#invariant_$_2()\n" +
       "  r2\n" +
-      "  )}",false
+      "  )\n" +
+      "A: {}}",false
   //
 
     },{lineNumber(), "{read method Void #invariant() (This t = this, void)}","This",
@@ -274,7 +283,7 @@ public class TestCloseInvariant{
       "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit", true
 
 }});}
-@Test  public void test() throws PathUnfit, ClassUnfit, ParseFail {
+  @Test  public void test() throws PathUnfit, ClassUnfit, ParseFail {
   /**
    real issue here:
    some metaprogramming classes have some parsing
@@ -297,6 +306,8 @@ public class TestCloseInvariant{
   List<Ast.C> path=TestHelper.cs(_path);
   if(!isError){
     ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, mutK, immK, false);
+    TypeSystem.typeCheck(res, ClassB.Phase.Coherent).assertOk();
+
     TestHelper.configureForTest();
     ClassB expected=getClassB(false,null,_expected);
     TestHelper.assertEqualExp(expected,res);

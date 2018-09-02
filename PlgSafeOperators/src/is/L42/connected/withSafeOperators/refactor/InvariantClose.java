@@ -136,10 +136,9 @@ public class InvariantClose {
     }
 
     for (MethodWithType mwt : this.inner.mwts()) {
-      try { if (!TsLibrary.coherentF(this.pInner, this.mutK, mwt)) continue; }
-      catch (PathMetaOrNonExistant e) { continue; }
-
-      assert mwt.get_inner() == null;
+      // TODO: Find a better way of determining if 'mwt' is an abstract-state operation
+      if (mwt.getMdf() == Mdf.Class || mwt.get_inner() != null)
+        continue;
 
       this.state.add(mwt.getMs());
 

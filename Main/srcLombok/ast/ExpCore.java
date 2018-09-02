@@ -242,7 +242,17 @@ public interface ExpCore extends Serializable{
       public <T> T match(Function<NestedClass, T> nc, Function<MethodImplemented, T> mi, Function<MethodWithType, T> mt) {
         return mt.apply(this);
         }
-      }
+
+      public int getSize() { return this.getMs().getNames().size(); }
+      public List<String> getXs() { return this.getMs().getNames(); }
+      public List<Mdf> getMdfs() { return this.getMt().getTs().stream().map(Type::getMdf).collect(Collectors.toList()); }
+      public List<Path> getPaths() { return this.getMt().getTs().stream().map(Type::getPath).collect(Collectors.toList()); }
+
+      public Mdf getMdf() { return this.getMt().getMdf(); }
+      public Mdf getReturnMdf() { return this.getMt().getReturnType().getMdf(); }
+      public Path getReturnPath() { return this.getMt().getReturnType().getPath(); }
+      public Type getReturnType() { return this.getMt().getReturnType(); }
+    }
     }
 
   @Value public static class _void implements ExpCore, Ast.Atom {

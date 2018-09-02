@@ -36,8 +36,8 @@ public static List<Object[]> createData() {
 //----- basic attempts
 //ok
 {  lineNumber(),"{}","{C:{method Void()void}}",sameAsFormer
-//err
-},{lineNumber(),"{}","{C:{method Void()}}",ErrorKind.LibraryNotCoherent
+//ok
+},{lineNumber(),"{}","{C:{method Void()}}",sameAsFormer
 
 //ok
 },{lineNumber(),"{}","{C:{method Void()void } D:{}}",sameAsFormer
@@ -150,7 +150,7 @@ ClassB cb1Pre=(ClassB)Desugar.of(Parser.parse(null,s1)).accept(new InjectionOnCo
 cb1Pre=new programReduction.Norm().norm(p.evilPush(cb1Pre));
 TOut out;try{out=TypeSystem.instance().type(TIn.top(Phase.Coherent,p,cb1Pre,true,Type.immLibrary));}
 catch(NotOkToStar coh){
-  assert s2==ErrorKind.LibraryNotCoherent:s2;
+  assert s2==ErrorKind.LibraryNotCoherent: coh;
   return;
   }
 if(s2 instanceof ErrorKind){
