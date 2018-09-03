@@ -1,0 +1,86 @@
+using Microsoft.Contracts;
+using System.Collections.Generic;
+using System;
+
+// Note: if I make this a struct instead of a class the rest of the code becomes much simpler
+// I also won't need to override Object.Equals since structs are value-types and hence use bitwise-equality
+// not reference equality
+class Point
+{
+	public double x;
+	public double y;
+	public Point(double x, double y) { this.x = x; this.y = y; }
+
+	// For some insane reason Object.Equals is markes as [Pure, Reads(ReadsAttribute.Reads.Nothing)]
+	// So obviously the override must be, as well. Of course this method fails to verify as
+	// it reads fields on this and othat, but I just marked it as readining literall nothing!
+	[Pure, Reads(ReadsAttribute.Reads.Nothing)] public override bool Equals(Object? othat)
+    {
+	    Point? that = othat as Point;
+	    return that != null && that.x == this.x && that.y == this.y;
+    }
+}
+
+// Note: neither the '[Peer]' nor the '[Captured]' annotations are needed if I mark 'Point' as a struct
+class Hamster
+{
+	[Peer] public Point pos;
+	public Hamster([Captured] Point pos) { this.pos = pos; }
+}
+
+class Cage
+{
+	[Rep] public Hamster h;
+    // Note: if I make Point a struct ElementsRep is not needed here
+	[Rep, ElementsRep] List<Point> path;
+
+	public Cage([Captured] Hamster h, List<Point> path)
+	{
+		 this.h = h;
+		 // I cannot find a way that will verify without using this clone
+		 // No matter what annotations I try and put on this constructor
+
+		 // Making Point a struct however alivates the need for a clone if I instead mark path as '[Captured]'
+		 this.path = new List<Point>(path);
+    }
+
+	invariant this.path.Contains(this.h.pos);
+
+	public void move()
+	{
+	    // Note: only the first and last lines of the block need to be inside the expose
+	    // However since it creates a block, it's easier just to put an expose over everything
+		expose (this)
+		{
+			int index = 1 +  this.path.IndexOf(this.h.pos);
+			if (index >= this.path.Count) index = 0;
+
+			// The static-verifier is dumb, so I need this here
+			// Don't worry, it will be checked at runtime!
+			assume 0 <= index && index < this.path.Count;
+			this.h.pos = this.path[index];
+		}
+	}
+}
+
+class Program
+{
+  static void Main(String[] args)
+  {
+    Console.WriteLine("hello");
+    Cage c = new Cage(new Hamster(new Point(0, 0)), new List<Point> {
+      new Point(0, 0), new Point(2, 2), new Point(0, 0)
+    });
+
+    Assert(c.h.pos.x == 0 && c.h.pos.y == 0);
+    c.move();
+    Assert(c.h.pos.x == 2 && c.h.pos.y == 2);
+    c.move();
+    Assert(c.h.pos.x == 0 && c.h.pos.y == 0);
+    c.move();
+    Assert(c.h.pos.x == 2 && c.h.pos.y == 2);
+  }
+
+  // Use my own 'Assert' function, so spec# dosn't attempt to verify the assertion
+  static void Assert(bool b) { if (!b) Console.WriteLine("Assertion Failure!"); }
+} 
