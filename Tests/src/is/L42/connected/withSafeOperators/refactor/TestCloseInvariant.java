@@ -255,29 +255,7 @@ public class TestCloseInvariant{
     },{lineNumber(), "{" +
         "read method Void bar() this.#invariant()" +
         "read method Void #invariant() this.bar()}","This",
-        " {\n" +
-            "read method \n" +
-            "Void #invariant_$_2() this.bar_$_2()\n" +
-            "read method \n" +
-            "Void bar_$_2() this.#invariant_$_2()\n" +
-            "class method \n" +
-            "mut This0 mutK_$_2() \n" +
-            "read method \n" +
-            "Void bar() this.#invariant()\n" +
-            "read method \n" +
-            "Void #invariant() this.bar()\n" +
-            "class method \n" +
-            "mut This0 mutK() (\n" +
-            "  r1=this.mutK_$_2()\n" +
-            "  Void unused1=r1.#invariant_$_2()\n" +
-            "  r1\n" +
-            "  )\n" +
-            "class method \n" +
-            "This0 immK() (\n" +
-            "  This0 r2=this.mutK_$_2()\n" +
-            "  Void unused2=r2.#invariant_$_2()\n" +
-            "  r2\n" +
-            "  )}", false
+        "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit", true
 
     },{lineNumber(), "{read method Void #invariant() this.bar(b: void) read method Void bar(Void b)}","This",
       "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit", true
@@ -294,6 +272,22 @@ public class TestCloseInvariant{
      Or normal behaviour? not clean usedNames but make it as
      after parsing meta class loaders?
    */
+
+    /*
+
+      {
+    class method mut This(capsule Concept.ToS x);
+    mut method Void x(mut Concept.ToS that);
+    read method read Concept.ToS x();
+
+    read method Bool #invariant()
+    {
+        this.x().toS().size() != 0Size
+    }
+}
+
+
+     */
 
   TestHelper.configureForTest();
   ClassB cb1=getClassB(false,null,_cb1);

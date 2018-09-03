@@ -90,15 +90,16 @@ ArrayReader: Data <>< {implements Reader
       this.n(this.n() + 1Size)
       )
     ch
-    )   
+    )
   }
 OReader:Option(Reader)
 
-Lexer: Data<><{implements Concept.Equals, Concept.ToS
-  class method mut This(capsule OReader rd)
+Lexer: Data.Invariant(of:Path"This", immK:Selector"immK(rd)", mutK:Selector"#apply(rd)", stupid:Bool.false())<><{//implements Concept.Equals, Concept.ToS
   mut OReader rd
+  class method This immK(OReader rd)
+  class method mut This(capsule OReader rd)
   read method Bool #invariant() this.rd().isPresent()
-  class method mut This(capsule Reader reader) 
+  class method mut This(capsule Reader reader)
     This(rd: OReader(reader))
   mut method Size getToken() (
     var Size t = 0Size
@@ -109,15 +110,18 @@ Lexer: Data<><{implements Concept.Equals, Concept.ToS
       )
     t
     )
+
+  read method S #invariantToS() S""
   capsule method capsule Reader relinquishReader() (this.#rd().#get())
-  }
+  }/*Data <>< .... Invariant <>< Data <>< ...*/
 Main: {
   capsule Lexer l=Lexer(reader: ArrayReader(source: CharList[0Size; 1Size]))
   capsule Reader r=(
     lInner=l
-    Debug(S"Hello world"[lInner]"")
+    //Debug(S"Hello world"[lInner]"")
     lInner
     ).relinquishReader()
+    Debug(S"hello")
   return ExitCode.normal()
   }
 -----------------------------------------------------------
@@ -131,7 +135,7 @@ FileListT:Trait({
   method Bool isSelectionADirectory()
   })
 Bools:Collections.vector(of:Bool)
-DirFileList:FileListT &{ 
+DirFileList:FileListT &{
   Bools isDirectory
   read method Bool #invariant()
     this._invariant() &

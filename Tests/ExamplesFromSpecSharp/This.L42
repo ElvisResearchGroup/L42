@@ -1,57 +1,49 @@
 reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
 
-Reader: {interface implements Concept.Equals, Concept.ToS
-  mut method Size getChar()
-  }
-
-CharList: Collections.vector(of: Size)
-
-ArrayReader: Data <>< {implements Reader
-  var capsule CharList src
-  var Size n
-  read method Bool #invariant() (
-    0Size <=this.n()  & this.n() <= this.src().size()
+Point:Data<><{var Num x, var Num y}
+ListI:Collections.vector(ofMut:Point)
+Hamster:Data<><{var Point pos}
+Cage:Data<><{
+  capsule Hamster h
+  ListI path
+  read method Bool #invariant()
+    this.path().contains(this.h().pos())
+  mut method Void move() (
+    var Size index=1Size+this.path().indexOfLeft(val:this.h().pos())
+    if index>=this.path().size() (index:=0Size)
+    this.move(newPos:this.path().val(index))
     )
-  class method mut This(capsule CharList source)
-    This(src: source, n: 0Size)
-  method getChar() (
-    var Size ch = 0Size
-    if this.n() == this.src().size() (
-      ch := Size"-1"
-      )
-    else (
-      ch := this.src().val(this.n())
-      this.n(this.n() + 1Size)
-      )
-    ch
-    )   
+  mut method Void move(Point newPos)
+    this.#h().pos(newPos)
   }
-OReader:Option(Reader)
+/*
+    [Pure] static bool IsImmutable(Object o)
+        ensures result <==> (Owner.Same(o, freezer) && Owner.Same(Owner.ElementProxy(o, freezer)
+    {
+        return (Owner.Same(o, freezer) && Owner.Same(Owner.ElementProxy(o, freezer);
+    }
+*/
 
-Lexer: {//implements Concept.Equals, Concept.ToS
-  mut OReader rd
-  class method mut This(capsule OReader rd)
-  read method Bool #invariant() this.rd().isPresent()
-  class method mut This(capsule Reader reader) 
-    This(rd: OReader(reader))
-  mut method Size getToken() (
-    var Size t = 0Size
-    var Size ch = Size"0"
-    while ch != Size"-1" (
-      ch := this.#rd().#get().getChar()
-      t := t + ch
-      )
-    t
-    )
-  capsule method capsule Reader relinquishReader() (this.#rd().#get())
-  }
 Main: {
-  capsule Lexer l=Lexer(reader: ArrayReader(source: CharList[0Size; 1Size]))
-  capsule Reader r=(
-    lInner=l
-    //Debug(S"Hello world"[lInner]"")
-    lInner
-    ).relinquishReader()
+  Debug(S"hello")
+  c=Cage(h:Hamster(pos:Point(x:0Num,y:0Num)),path:ListI[
+    Point(x:0Num,y:0Num);Point(x:2Num,y:2Num);Point(x:0Num,y:0Num)
+    ])  
+  Debug.test(c.h() expected:S"
+    '[pos:[x:"0", y:"0"]]
+    ".withoutRight())
+  c.move()
+  Debug.test(c.h() expected:S"
+    '[pos:[x:"2", y:"2"]]
+    ".withoutRight())
+  c.move()
+    Debug.test(c.h() expected:S"
+    '[pos:[x:"0", y:"0"]]
+    ".withoutRight())
+  c.move()
+    Debug.test(c.h() expected:S"
+    '[pos:[x:"2", y:"2"]]
+    ".withoutRight())
   return ExitCode.normal()
   }

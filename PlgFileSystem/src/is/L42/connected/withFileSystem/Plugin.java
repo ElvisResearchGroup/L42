@@ -51,7 +51,7 @@ public class Plugin implements PluginType.WellKnown {
   public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
     ExpCore.ClassB that=ensureExtractClassB(_that);
 
-    // TODO: Throw an error thbat 42 can understand
+    // TODO: Throw an error that 42 can understand
     TypeSystem.typeCheck(that, ExpCore.ClassB.Phase.Typed).assertOk();
 
     String url=ensureExtractStringU(_url);

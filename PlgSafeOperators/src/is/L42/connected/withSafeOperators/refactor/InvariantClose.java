@@ -130,7 +130,7 @@ public class InvariantClose {
         // check that 'this' is only used to call methods or validatable fields
         // and finally, create a private-version, where all non-field accessers are replaced with private numbered
         // versions
-        this.addMember(new InvariantChecker(todo).visit(this.getMwt(m)));
+        this.addMember(new InvariantChecker(done, todo).visit(this.getMwt(m)));
         done.add(m);
       }
     }
@@ -404,12 +404,14 @@ public class InvariantClose {
     }
   }
   class InvariantChecker extends CloneVisitor {
-    private InvariantChecker(List<MethodSelector> methodCalls) {
+    private InvariantChecker(Set<MethodSelector> excludedMethods, List<MethodSelector> methodCalls) {
       super();
+      this.excludedMethods = excludedMethods;
       this.methodCalls = methodCalls;
     }
 
     List<MethodSelector> methodCalls;
+    Set<MethodSelector> excludedMethods;
     @Override
     public ExpCore visit(X s) {
         if (s.equals(thisX))
@@ -443,6 +445,10 @@ public class InvariantClose {
             LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
               "Can only use this to access imm and capsule fields within #invariant! '" + s + "'"));
         }
+
+        if (this.excludedMethods.contains(s.getS()))
+          LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
+              "Cannot call (indirectly) recursive methods in #invariant!'" + s + "'"));
 
         this.methodCalls.add(s.getS());
         return thisCall(s);

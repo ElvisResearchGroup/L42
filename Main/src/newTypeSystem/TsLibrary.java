@@ -261,7 +261,7 @@ public interface TsLibrary extends TypeSystem{
         if (!mutOrLCFactories && mwt.getMdf().isIn(Mdf.Lent, Mdf.Mutable, Mdf.Capsule));
 
         // A setter
-        else if (mwt.getMs().getNames().equals(List.of("that")))
+        else if (mwt.getMs().getNames().equals(Collections.singletonList("that")))
         {
           // M=refine? mdf method T #?x__n?(mdf' P' that) exception _
           String x = _removeHash(mwt.getMs().getName());
@@ -364,7 +364,7 @@ public interface TsLibrary extends TypeSystem{
         //coherentGetMdf(class,_,{class},_)
         else if (mdfR.equals(Mdf.Class))
         {
-          if (!mdfs0.equals(Set.of(Mdf.Class)))
+          if (!mdfs0.equals(Collections.singleton(Mdf.Class)))
             return error.test(mwt, "Cannot get a possibly non-class field as class.");
         }
         //coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
@@ -424,7 +424,7 @@ class BinaryMultiMap<K, V> {
   }
 
   void addOnce(boolean b, K key, V value) {
-    this.get(b).merge(key, Set.of(value), (x, y) -> {
+    this.get(b).merge(key, Collections.singleton(value), (x, y) -> {
         Set<V> s = new HashSet<V>(x);
         s.addAll(y);
         return s;

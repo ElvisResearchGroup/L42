@@ -1,23 +1,141 @@
 \section{Introduction}
 %\newpage
 %\LINE
-Intuitively all valid objects should satisfy the invariant of their class.
+
+Class invariants are an important concept when reasoning about software correctness.
 Class-invariants can be presented as documentation, checked as part of static-verification of class-definitions, or, as we do in this paper, monitored for violations using runtime-verification.
-Here a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
+In our system a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
 
-An \emph{invariant protocol} specifies when class invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
-%Two popular invariant protocols presented in the literature are \emph{visible state semantics}~\cite{???} and pack/unpack~\cite{?}. Visible state semantics treat a class-invariant as an implicit pre-condition on the receiver of every public method, and as a post-condition on every public method and constructor. Thus runtime-verification will check the invariant before and after every public method call, and after \Q@new@ expressions.
-
-Two main sound invariant protocols present in literature are visible state semantic \cite{??} and Pack/Unpack~\cite{?}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound, but can be incredibly inefficient even in simple cases.
+An \emph{invariant protocol}~\cite{?} specifies when class invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
+The two main sound invariant protocols present in literature are visible state semantic \cite{??} and Pack/Unpack~\cite{?}. Visible state semantics expects the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound, but can be incredibly inefficient even in simple cases.
 In contrast, pack/unpack marks all objects as either packed or unpacked, where a packed object is one whose invariant is expected to hold.
 In this approach, an object's invariant is checked only by the pack-operation.
 In order for this to be sound, some form of aliasing and mutation control is necessary. For example, Spec\# uses a theorem prover together with source-code annotations.
+While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
+at run time, while statically verifying aliasing, purity and other similar standard properties.
+Lets consider an example, where for simplicity, we omit accessibility modifiers.
+\begin{lstlisting}
+class Point {int x; int y;
+  /*... constructor, equals and other obvious utility methods*/}
+class Hamster { Point pos; Hamster(Point pos){this.pos=pos;} }
+class Cage {
+  Hamster h;  List<Point> path;
+  Cage(Hamster h, List<Point> path){ this.h=h; this.path=path; }
+  bool invariant(){
+    return this.path.contains(this.h.pos);
+  }
+  void move() {
+    int index=1+this.path.indexOf(this.h.pos);
+    if (index>=this.path.size()) {index=0;}
+    this.h.pos=this.path.get(index);
+  }
+  String toString(){return "hPos:"+this.h.pos+", path:"+this.path;}
+}
+\end{lstlisting}
+Ideally, we would like the invariant to be dynamically checked 
+at the end of the constructor and at the end of the \Q@move@ method.
+However, this would be unsound without some form of aliasing control over \Q@Hamster@,
+the \Q@List@ and all the \Q@Point@s, as shown in the following example\footnote{
+The visible state semantic prevent \Q@toString()@ from producing a non nonsensical result
+by checking the invariant and throwing an invariant error.
+}
+\begin{lstlisting}
+List<Point>ps=Arrays.asList(new Point(2,3),new Point(4,5));
+Cage c=new Cage(new Hamster(new Point(2,3),ps);
+//invariant holds here
+ps.get(0).x=8;//invariant is broken here, since ps
+//was accessible from outside the cage
+c.toString()//the hamster is in a position that is not on the list
+c.invariant();//return false!!
+\end{lstlisting}
+
+Moreover, this is unsound also if we can not ensure determinism of the invariant method;
+for example we could have an \Q@EvilList@
+
+\begin{lstlisting}
+class EvilList<T> extends ArrayList<T>{..
+  @Override boolean contains(T elem){return new Random().bool();}
+}
+..
+List<Point>ps=Arrays.asList(new Point(2,3),new Point(4,5));
+Cage c=new Cage(new Hamster(new Point(2,3),ps);
+//invariant happens to holds at the end of the constructor by chance,
+c.invariant();//here instead it return false!!
+\end{lstlisting}
+
+Despite the code for \Q@Cage.invariant()@ intuitively looking correct and deterministic, the above calls to it are not. Obviously this breaks any reasoning and should be considered unsound. 
+In particular, note how in the presence of dynamic class loading, 
+we can not make any assumption on the dynamic type of \Q@path@.
+%A:TrustInvariant<><{ int num}
+%B:Invariant<><{A a}
+
+Spec\# allows us verify purity and aliasing over this example, so that
+it will statically verify that runtime verification is needed only
+after the constructor and after the \Q@move@ method.
+
+...INSERT spec\#version or say how long it is.
+
+Instead of using static analysis, 
+is becoming more popular to verify aliasing and immutability using a type system.
+For example, there are 3 languages L42, Pony and the language of Gordon at Al~\cite{}
+using Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and deterministic parallelism.%
+\footnote{TMs is called \emph{reference capabilities} in other works. We use the term TM here
+to not confuse them with OCs, another technique we also use in this paper.}
+While studying those languages, we discovered an elegant way to enforce class invariant.
+For example, we can reword the example of before using TMs as in L42 in the following way:
+\begin{lstlisting}
+class Point {int x; int y;
+  /*... constructor, equals and other obvious utility methods*/}
+class Hamster { Point pos; Hamster(Point pos){this.pos=pos;} }
+class Cage {
+  capsule Hamster h;  List<Point> path;
+  Cage(capsule Hamster h, List<Point> path){ this.h=h; this.path=path; }
+  read method bool invariant(){
+    return this.path.contains(this.h.pos);
+  }
+  mut method void move() {
+    int index=1+this.path.indexOf(this.h.pos);
+    if (index>=this.path.size()) {index=0;}
+    this.moveTo(this.path.get(index));
+  }
+  mut method void moveTo(Point p){  this.h.pos=p }//new method
+  read method String toString(){
+    return "hPos:"+this.h.pos+", path:"+this.path;
+  }
+}
+\end{lstlisting}
+Note how we added 2 \Q@read@, 2 \Q@mut@ and 1 \Q@capsule@ annotations.
+In L42 any non annotated type is implicitly immutable.
+We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
+block required in Spec\#.
+In this paper we will show how those minor code modifications are sufficient
+to statically verify that runtime verification is needed only
+after the constructor and after the \Q@moveTo@ method.
+We will also show how designing the standard library in OCs style
+ensures that any \Q@read@ method with no parameters (as \Q@invariant()@) is
+deterministic.
+%We obtain our results thanks to coarse grained type system support and a careful design of the standard library, where all the possible sources of non determinism follow the OCs style.
+
+We evaluate our contribution by means of case studies;
+to perform our case studies we fully implemented our protocol on L42.
+We believe it would be easy to implement our protocol also on those other two languages.
+A experimental version of L42 including our invariant is available here [..].
+In addition of being so much more compact, our approach can also handle capturing unchecked exceptions
+and Isaac may justify IO.
+
+
+\LINE
+
+
+%---------------------
+
 
 Here we propose an invariant protocol with the 
 efficiency of pack/unpack, but with a much lower annotation burden.
 We have performed a case study to quantify the benefit of our approach:
 on a simple use case with 5 objects with class invariants, the visible state semantics 
 require checking the invariant 53 millions times more,
+%5 objects with invariant, all instances of the same class
 while Spec\# and our approach check it only 77 times.
 We found the Spec\# annotation burden to be about 3 times more 
 than our approach.
@@ -39,3 +157,4 @@ In section \ref{TODO} we...
 In section \ref{TODO} we...
 In section \ref{TODO} we...
 
+%http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf

@@ -1,0 +1,49 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+Point:Data<><{var Num x, var Num y}
+ListI:Collections.vector(ofMut:Point)
+Hamster:Data<><{var Point pos}
+Cage:Data<><{
+  capsule Hamster h
+  ListI path
+  read method Bool #invariant()
+    this.path().contains(this.h().pos())
+  mut method Void move() (
+    var Size index=1Size+this.path().indexOfLeft(val:this.h().pos())
+    if index>=this.path().size() (index:=0Size)
+    this.move(newPos:this.path().val(index))
+    )
+  mut method Void move(Point newPos)
+    this.#h().pos(newPos)
+  }
+/*
+    [Pure] static bool IsImmutable(Object o)
+        ensures result <==> (Owner.Same(o, freezer) && Owner.Same(Owner.ElementProxy(o, freezer)
+    {
+        return (Owner.Same(o, freezer) && Owner.Same(Owner.ElementProxy(o, freezer);
+    }
+*/
+
+Main: {
+  Debug(S"hello")
+  c=Cage(h:Hamster(pos:Point(x:0Num,y:0Num)),path:ListI[
+    Point(x:0Num,y:0Num);Point(x:2Num,y:2Num);Point(x:0Num,y:0Num)
+    ])
+  Debug.test(c.h() expected:S"
+    '[pos:[x:"0", y:"0"]]
+    ".withoutRight())
+  c.move()
+  Debug.test(c.h() expected:S"
+    '[pos:[x:"2", y:"2"]]
+    ".withoutRight())
+  c.move()
+    Debug.test(c.h() expected:S"
+    '[pos:[x:"0", y:"0"]]
+    ".withoutRight())
+  c.move()
+    Debug.test(c.h() expected:S"
+    '[pos:[x:"2", y:"2"]]
+    ".withoutRight())
+  return ExitCode.normal()
+  }

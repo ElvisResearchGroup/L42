@@ -18,9 +18,23 @@ redex
 .invariant
 usable variable rog
 Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is valid.
-This implies that whenever the user is allowed to call x.invariant(), such call would return true.
-The only points where the user is unable to call .invariant() is inside the constructor
-and inside the invariant method itself.
+If you can call methods on a value, then calling \Q@.invariant()@ would return \Q@true@. 
+In the constructor and in the invariant method itself, we impose restrictions
+on the use of the variable \Q@this@, so that it can be used only to access/update fields.
+
+%This implies that whenever the user is allowed to call x.invariant(), such call would return true.
+%The only points where the user is unable to call .invariant() is inside the constructor
+%and inside the invariant method itself.
+
+%If you can refer to a variable \Q@x@, then \Q@x.invariant()@ would return \Q@true@. 
+%However, we prevent directly using \Q@this@ inside constructors, invariant itself, and capsule mutators (see \ref{}),
+%rather one can only use \Q@this@ to access fields.
+
+
+
+
+ 
+
 This guarantee is much stronger then the visible state semantic, where in the presence of call-backs,
 invalid objects may be passed around and become visible to any other code~\cite{??}.
 
