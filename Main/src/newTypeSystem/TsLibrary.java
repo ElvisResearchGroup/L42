@@ -457,7 +457,8 @@ class Coherence
       else if (mwt.getMs().getNames().isEmpty())
         this.processGetter(mwt);
 
-      else error(mwt, "Abstract method is neither a factory, getter, nor a setter.");
+      else if (this.check)
+        error(mwt, "Abstract method is neither a factory, getter, nor a setter.");
     }
 
     // Now we can check the getters, as we have collected enough information
