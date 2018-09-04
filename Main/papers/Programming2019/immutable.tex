@@ -12,88 +12,72 @@
 %naive is unsound - person 3 bugs
 
 \section{Our Invariant Protocol}
-% We guarantee that invariant holds in more points, for more objects, but we check it a million times less
-... %TODO
-redex
-.invariant
-usable variable rog
 Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is valid.
-If you can call methods on a value, then calling \Q@.invariant()@ would return \Q@true@. 
-In the constructor and in the invariant method itself, we impose restrictions
-on the use of the variable \Q@this@, so that it can be used only to access/update fields.
+This implies that if you can call methods on a value, calling \Q@invariant@ is guaranteed to return \Q@true@.
+Of course the bodies of both \Q@invariant@ methods and constructors may interact with an invalid \Q@this@.
+This of course prevents explicitly calling \Q@invariant@, but most importantly it 
+prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
 
+
+%Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
+%For the first case, we can type the field access as \Q@read@, but in the second case we
+%need to type it as \Q@mut@. 
+%We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
+%We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
+
+In order for a class to support an invariant under our protocol,
+its \Q@invariant@ method is of the form \Q@read method imm Bool validate() { ... }@
+and \Q@this@ is only used to read \Q@imm@ and \Q@capsule@ fields.
+Moreover, its constructors only uses \Q@this@ to initialize fields.
+
+While mutating the ROG of a \Q@capsule C f@ field mentioned in the invariant, the surrounding object may be invalid.
+To enforce such object to not be accessible in those moments,
+a field access to \Q@f@ is typed as \Q@mut@ only inside of method following a specific pattern:
+\begin{itemize}
+\item The field access is of form \Q@this.f@ and that is the only occurrence of \Q@this@.
+\item The method receiver is \Q@mut@ but none of the other method parameters are \Q@mut@ or \Q@read@.
+\item The return type is not \Q@mut@.
+\end{itemize}
+We call such methods \emph{capsule mutators}.
+%Finally, we require \Q@f@ to be declared \Q@private@.%, and only accessed as \Q@this.f@.
+
+Our invariant protocol injects calls to \Q@invariant@:
+\begin{itemize}
+	\item On newly created objects, after constructor calls.
+	\item After field updates, on the receiver of such update.
+	\item On \Q@this@ at the end of a capsule-mutator.
+\end{itemize}
+
+% Our invariant protocol injects call to \Q@this.invariant@ at the end of constructors, after every field update and at the end of every method containing such \Q@this.f@ access. We call such methods `capsule mutators'.
+
+%Our guarantee is much stronger then the visible state semantic, where in the presence of call-backs,
+%invalid objects may be passed around and become visible to any other code~\cite{??}.
+
+
+%\footnote{we could of course require zero-initialized objects be valid, but this is too strong},
+%so in those cases we do not require \Q@this@ to be valid; however one can only use "this" to read/initialise fields, preventing \Q@this@, or an alias, from being passed around to arbitrary code.
 %This implies that whenever the user is allowed to call x.invariant(), such call would return true.
 %The only points where the user is unable to call .invariant() is inside the constructor
 %and inside the invariant method itself.
-
 %If you can refer to a variable \Q@x@, then \Q@x.invariant()@ would return \Q@true@. 
 %However, we prevent directly using \Q@this@ inside constructors, invariant itself, and capsule mutators (see \ref{}),
 %rather one can only use \Q@this@ to access fields.
+% We guarantee that invariant holds in more points, for more objects, but we check it a million times less
+
+
+
+%\IO{The Visible-State Semantics is bad.} Here we have a much stronger property, called \emph{operational
+% validity}. This means that any object involved in execution (such as by accessing a field, calling a method on it, or) must be valid. As we use runtime-verification to detect invalid objects, it must be possible to access potentially invalid objects within their own \Q@invariant@ method, so we make an exception to the above rule in this case: \Q@this@ itself may be invalid within runtime-injected calls to \Q@invariant@.
 
 
 
 
- 
-
-This guarantee is much stronger then the visible state semantic, where in the presence of call-backs,
-invalid objects may be passed around and become visible to any other code~\cite{??}.
-
-
-\IO{The Visible-State Semantics is bad.} Here we have a much stronger property, called \emph{operational
- validity}. This means that any object involved in execution (such as by accessing a field, calling a method on it, or) must be valid. As we use runtime-verification to detect invalid objects, it must be possible to access potentially invalid objects within their own \Q@invariant@ method, so we make an exception to the above rule in this case: \Q@this@ itself may be invalid within runtime-injected calls to \Q@invariant@.
-
-
-
-
-
-
-
-
-
-Our invariant protocol 
-state our expected+when ensured% at high level
-and how we ensure it at a high-level.
-
-
-Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
-For the first case, we can type the field access as \Q@read@, but in the second case we
-need to type it as \Q@mut@. 
-We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
-We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
-
-
-In order for a class to support an invariant under our protocol, the following conditions need to be met:
-\begin{itemize}
-	\item The constructor only uses \Q@this@ to initialize the fields.
-	\item The invariant method has the signature \Q@read method imm Bool validate()@.
-	and only uses \Q@this@ to access \Q@imm@ and \Q@capsule@ fields.
-	\item A field of a \Q@capsule@ type must be instance-private; that is only accessed as \Q@this.fieldName@.
-    \item A capsule field can be freely accessed as \Q@read@, but 
-    we require the pattern detailed below to be followed for capsule mutators:
-    \begin{itemize}
-  	  \item only a single use of \Q@this@ is allowed (and is the one that uses the field),
-      \item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter)
-      \item and the return type cannot be \Q@mut@.
-    \end{itemize}
-    \item a run-time invariant check is added at the end of the constructor, after every field update and at the end of every capsule mutator.
-\end{itemize}
-
-
-\LINE
-Our invariant protocol relies on TMs and OCs to
-
-
-\section{\REVComm{The \validate{} Method}{2}{remind of the goals for validate (i.e. that it be pure); What about possible non-termination of validate()}}
+\section{\REVComm{The invariant Method}{2}{remind of the goals for validate (i.e. that it be pure); What about possible non-termination of validate()}}
 \label{s:validate}
-Thanks to TM and OC, we can now express the signature for \validate{} method as follows:
-\saveSpace
-\begin{lstlisting}
-read method imm Bool validate();
-\end{lstlisting}
-\saveSpace
+Our invariant protocol relies on TMs and OCs to ensure that the invariant method is deterministic.
+%We require the receiver to be \Q@read@ and to have no arguments.
 %The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 
 %By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
-If the class containing the validate method has a super-class, we would automatically check \Q@super.validate()@ at the beginning of the sub-class’s \validate{} method, this is required as otherwise `invalid' objects could easily be created by simply overriding \validate.
 As this method is declared as \Q@read@, and only takes the implicit parameter \Q@this@ (as \Q@read@), we can guarantee the method is pure:
 \begin{itemize}
 \item the ROG from \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{
@@ -103,12 +87,16 @@ This can even be safe in a multi-thread environment: TM are often used to ensure
 \item nothing else is accessible (we do not have global variables).
 \end{itemize}
 
-\noindent \REVComm{Also note \validate{} is not declared as throwing any exceptions, thus it can only leak unchecked exceptions.}{3}{Can ``leaking'' of an unchecked exceptions have negative consequences for validity? Leaking is usually a negative word used in a negative context.}
+\noindent Also note \Q@invariant@ is declared as not throwing any exceptions,
+	thus only unchecked exceptions can be propagated out.
+	% \REVComm{thus it can only leak unchecked exceptions.}{3}{Can ``leaking'' of an unchecked exceptions have negative consequences for validity? Leaking is usually a negative word used in a negative context.}
 
 
-Clearly the \validate{} method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
+Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
+\LINE
+%here
 On a first look this may seem an open contradiction
-with the aim of this work, however only calls to validate inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \validate,
+with the aim of this work, however only calls to validate inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \Q@invariant@,
 \Q@this@ is guaranteed to be valid.
 However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantees of validation (namely: `invalid objects are not reachable by application code'); as such we enforce the simple restriction that \validate{} may only use \Q@this@ to access fields.
 As a relaxation, we could allow calling instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \validate{} need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \validate, where \Q@this@ may be invalid.
@@ -119,6 +107,12 @@ Finally,
 the code of \validate{} can not access  \Q@mut@ fields, because their content can be changed by unrelated code.
 With the modifiers presented so far, \validate{} can only access \Q@imm@ fields.
 We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
+
+
+
+
+
+If the class containing the validate method has a super-class, we would automatically check \Q@super.validate()@ at the beginning of the sub-class’s \validate{} method, this is required as otherwise `invalid' objects could easily be created by simply overriding \validate.
 
 
 % JUSTIFY that the fields are valid...

@@ -43,6 +43,64 @@ import programReduction.Methods;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
 
+
+/**
+
+ validatable(p, x) iff
+    FieldsMdf(p.top(), x, read) subseteq {imm, capsule, class}
+                    // TODO: and x is transitively referenced in #invariant
+
+ignore(p, mdf) iff
+    mdf in {lent, mut, capsule}
+    for all refine? class method mdf' _ in p.top()
+        mdf' is not in {lent, mut, capsule}
+
+exposer(p, M)
+    M=refine? mdf method  mdf' P' #?x() exception Ps
+    validatable(p, x)
+    mdf' in {mut, lent}
+    !ignore(p, mdf)
+
+IC(p) = {interface? implements Ps Mz'}
+                    coherent(p)
+    p.top() = {interface? implements Ps M1..Mn}
+    read method Bool #invariant() e in M1..Mn
+    Mz' = IC(p; M1; k),..,IC(p; Mn; k) //k is a fresh private number
+                    exists class method _ in M1...Nn
+
+    // TODO: copy #invariant and all methods it transativley calls on this to private version
+    // TODO: check the above methods only use this to call the getter of a validatable field
+    // TODO: redirect calls to exposers to the private version
+    // TODO: check methods that call exposers are proper 'capsule mutators'
+
+IC(p; M; n) = {M[with e?=e], M[with m=m__n]}
+  M =refine? class method mdf P m(mdf1 P1 x1, ..., mdfn Pn xn) exception Ps
+  e = (x' = This.m__n(x1:x1, ..., xn:xn) x'.#invariant__n() x') //x' is fresh
+  {mdf1, ..., mdfn} disjoint {fwd mut, fwd imm}
+
+IC(p; M; n) = {M[with e?=e], M[with m=#?x__n]} // A setter
+    M =refine? mdf method T #?x(mdf' P' that) exception Ps
+    e = (x'=this.#?x__n(that:that) this.#invariant() x') //x' is fresh
+    validatable(p, x)
+    !ignore(p, mdf)
+
+IC(p; M; n) = {M[with e?=e], M[with m=#?x__n]} // A getter, that is not an exposer
+    M=refine? mdf method mdf' P' #?x() exception Ps
+    e = this.#?x__n()
+    !exposer(p, M)
+    !ignore(p, mdf)
+
+IC(p; M; n) = {M[with m=#?x__n]} // An exposer, make it private
+    M=refine? mdf method  mdf' P' #?x() exception Ps
+    exposer(p, M)
+                    !ignore(p, mdf)
+
+IC(p; M; n) = {M}
+                    M.e? != empty or ignore(p, mdf)
+
+
+  */
+
 public class InvariantClose {
   static MethodSelector invName = MethodSelector.of("#invariant", Collections.emptyList());
   public static ClassB closeJ(PData p, List<Ast.C> path, ClassB top, MethodSelector mutKName, MethodSelector immKName, boolean stupid)

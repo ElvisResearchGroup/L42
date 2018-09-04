@@ -70,10 +70,20 @@ we can not make any assumption on the dynamic type of \Q@path@.
 %B:Invariant<><{A a}
 
 Spec\# allows us verify purity and aliasing over this example, so that
-it will statically verify that runtime verification is needed only
+it will statically verify that runtime checks are needed only
 after the constructor and after the \Q@move@ method.
-
-...INSERT spec\#version or say how long it is.
+You can find the
+full Spec\# solution in Appendix ??. Such solution required us to add
+the following annotations:
+\begin{itemize}
+\item \Q@[Pure, Reads(ReadsAttribute.Reads.Nothing)]@ to \Q@Point.equals@
+\item \Q@[Peer]@ to \Q@Hamster.pos@.
+\item \Q@[Rep]@ to \Q@Cage.h@ and \Q@[Rep, ElementsRep]@ to \Q@Cage.path@
+\item the following constructor arguments need to be \Q@[Captured]@:
+\Q@Point@ in \Q@Hamster@, \Q@Hamster@ in \Q@Cage@.
+\item shallow defensive cloning of \Q@path@ is needed in the \Q@Cage@ constructor.
+\item\Q@expose(this){..}@ block is needed inside of \Q@move@.
+\end{itemize}
 
 Instead of using static analysis, 
 is becoming more popular to verify aliasing and immutability using a type system.
@@ -84,27 +94,62 @@ to not confuse them with OCs, another technique we also use in this paper.}
 While studying those languages, we discovered an elegant way to enforce class invariant.
 For example, we can reword the example of before using TMs as in L42 in the following way:
 \begin{lstlisting}
-class Point {int x; int y;
+class Point {Int x; Int y;
   /*... constructor, equals and other obvious utility methods*/}
 class Hamster { Point pos; Hamster(Point pos){this.pos=pos;} }
 class Cage {
   capsule Hamster h;  List<Point> path;
   Cage(capsule Hamster h, List<Point> path){ this.h=h; this.path=path; }
-  read method bool invariant(){
+  read method Bool invariant(){
     return this.path.contains(this.h.pos);
   }
-  mut method void move() {
-    int index=1+this.path.indexOf(this.h.pos);
+  mut method Void move() {
+    Int index=1+this.path.indexOf(this.h.pos);
     if (index>=this.path.size()) {index=0;}
     this.moveTo(this.path.get(index));
   }
-  mut method void moveTo(Point p){  this.h.pos=p }//new method
-  read method String toString(){
+  mut method Void moveTo(Point p){  this.h.pos=p }//new method
+  @Override method String toString(){
     return "hPos:"+this.h.pos+", path:"+this.path;
   }
 }
 \end{lstlisting}
-Note how we added 2 \Q@read@, 2 \Q@mut@ and 1 \Q@capsule@ annotations.
+
+%\begin{lstlisting}
+%Point:Data<><{var Num x, var Num y}
+%Points:Collections.vector(ofMut:Point)
+%Hamster:Data<><{var Point pos}
+%Cage:Data<><{
+%  capsule Hamster h
+%  Points path
+%  read method Bool #invariant()
+%    this.path().contains(this.h().pos())
+%  mut method Void move() (
+%    var Size index=1Size+this.path().indexOfLeft(val:this.h().pos())
+%    if index>=this.path().size() (index:=0Size)
+%    this.move(newPos:this.path().val(index))
+%    )
+%  mut method Void move(Point newPos)
+%    this.#h().pos(newPos)
+%  }
+%\end{lstlisting}
+%In L42 we only need to add 
+%1 \Q@read@, 2 \Q@mut@ and 1 \Q@capsule@ annotations.
+%We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
+%block required in Spec\#.
+
+To keep the syntax familiar, we present our code example in a tweaked Java syntax using type modifiers.
+If a method override an interface method, we inherit the modifiers from the interface.
+Any non annotated type is implicitly immutable.
+Note how we just added 1 \Q@read@, 2 \Q@mut@ and 2 \Q@capsule@ annotations; in L42 constructors can be automatically generated, this would remove the need for 1 of the\Q@capsule@ annotations.
+We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
+block required in Spec\#.
+Many verification approaches takes advantage of the separation between primitive types and objects.
+L42 is a pure OO language without primitive types, so we can not, and we do not need to, rely
+on differences between primitive types and objects.
+We write all the types upper-case, to underline this fact.
+
+
 In L42 any non annotated type is implicitly immutable.
 We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
 block required in Spec\#.
