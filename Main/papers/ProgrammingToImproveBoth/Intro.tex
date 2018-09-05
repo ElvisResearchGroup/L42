@@ -6,7 +6,7 @@ implies subtyping. A Java subclass declaration, such as
 \Q@class A extends B {}@
 \noindent does two things at the same time:
 it {\bf inherits} code from \lstinline{B}; and it creates
-a subtype of \lstinline{B}. Therefore a subclass must \emph{always} also be a subtype of the extended class.
+a subtype of \lstinline{B}. Therefore a subclass must \emph{always} be a subtype of the extended class.
 Historically, there has been a lot of focus on
 separating subtyping from subclassing~\cite{cook}.  This separation is claimed to be
 good for code-reuse, design and reasoning. There are at
@@ -57,8 +57,8 @@ This is because of what we call the
 method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
 This code is correct, and there is no subtyping/subclassing{.}\saveSpace\saveSpace
 \begin{lstlisting}[language=Java]
-  class A{ int ma(){return Utils.m(this);} }
-  class Utils{static int m(A a){..}}
+  class A{ int ma(){ return Utils.m(this); } }
+  class Utils{ static int m(A a){..} }
 \end{lstlisting}
 \saveSpace\saveSpace
   Now, lets add a class \Q@B@
@@ -97,11 +97,11 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %expected argument of type \lstinline{A}.  
 
 
-Suppose Java code-reuse (the {\bf extends} keyword) was not introducing subtyping\footnote{
-C++ allows to "extends privately"; this is not
+Suppose Java code-reuse (the {\bf extends} keyword) \MS{were to not introduce} subtyping\footnote{
+C++ allows "extending privately"; this is not
 what we mean by not introducing subtyping: in C++ it is a limitation over
   subtyping visibility, not over subtyping itself.  Indeed, the
-  former example would be \emph{accepted} even if \lstinline{B} was to
+  former example would be \emph{accepted} even if \lstinline{B} \MS{were to}
   "privately extends" \lstinline{A}}: then an invocation of 
 \lstinline{B.mb} would result in a run-time type error.
 The problem is that the
@@ -127,7 +127,7 @@ languages that address the \emph{this-leaking problem}:
 \begin{itemize}
 \item In {\bf TraitRecordJ (TR)}~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}
 each construct has a single responsibility: classes instantiate objects,
-interfaces induce types, records express state and traits are reuse units.
+interfaces induce types, records express state, and traits are reuse units.
 \item {\bf Package Templates (PT)}~\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}:
 an extension of (full) Java where new packages can be ``synthesized'' by mixing
 and integrating code templates. 
@@ -146,7 +146,7 @@ This paper show a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
 \emph{use} from code designed for \emph{reuse}.
-We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant \emph{novel approach} to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant novel approach to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
 %-------
 
 In \name there are two separate concepts: classes
@@ -154,13 +154,17 @@ and traits~\cite{ducasse2006traits}. Classes are meant for code \emph{use}, and 
 Java, and can be used as types and as object factories. Traits are meant for code \emph{reuse} only: multiple traits can be
 composed to form a class. However, traits 
 cannot be instantiated or used as types.
-\MS{We will show how this allows fine control of subtyping while handling examples like \Q@Set/Bag@.}
+\MS{We will show how this allows fine-grained control of subtyping while handling examples like \Q@Set/Bag@.}
 
 \MS{In \name, as in many module composition languages~\cite{ancona_zucca_2002},
-all methods are dyamically dispatched and can be abstract, including the static ones. The behaviour is similar to Python class-methods.
+all methods can be abstract, including static ones.
+Moreover, module composition can be used to make
+an already implemented method abstract.
+Thus, as for dynamic dispatch, the behaviour of a method call is never set in stone.
+%The behaviour is similar to Python class-methods.
 We will show how in \name, state is induced by an implicit fixpoint operation over abstract methods,
 where an abstract static method can perform the role of a constructor.
-This allow to handle examples like \Q@Point/ColorPoint@ in a natural way, and without requiring code duplication.}
+This allows handling examples like \Q@Point/ColorPoint@ in a natural way, and without requiring code duplication.}
 
 Our design brings several benefits. In particular, 
 Family Polymorphism~\cite{ernst2004expression} is
@@ -205,8 +209,8 @@ In summary, our contributions are:
 
 \item We synthesize the key ideas of previous designs that solve the
   this-leaking problem into a novel and
-  minimalistic language design.This language is the logic core of the language 42, and 
-  all the examples in this paper can be encoded as valid 42 programs
+  minimalistic language design. This language is the core logic of the language 42, and 
+  all the examples in this paper can be encoded as valid 42 programs.
 This design improves both code use and code reuse.
 
 \item We propose a clean and elegant approach to the handling of state in a trait based language.
