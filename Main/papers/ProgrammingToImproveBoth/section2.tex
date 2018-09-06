@@ -7,18 +7,18 @@
 
 %\subsection{The Design of \name: Decoupling Use from Reuse}
 %\saveSpace\saveSpace
-\subsection{Classes in \name: A mechanism for code Use}
+\subsection{Classes in \name: a mechanism for code use}
 \saveSpace
 %\name has a substantially different design from Java-like languages.
 Consider the example of Section~\ref{sec:intro} rewritten in \name, introducing classes \Q@Utils@ and \Q@A@:
 \saveSpace\saveSpace
 \begin{lstlisting}
- Utils={ static method int m(A a){return ...} }
- A= { method int ma(){return Utils.m(this);} }
+ Utils={ static method int m(A a){ return ..; } }
+ A={ method int ma(){ return Utils.m(this); } }
 \end{lstlisting} 
 \saveSpace\saveSpace
 \noindent Classes in \name use a different declaration style compared
-to Java: there is no \lstinline{class} keyword, and an equal sign separates the class name (which must always start with
+to Java: there is no \lstinline{class} keyword, and an equals sign separates the class name (which must always start with
 an uppercase letter) and the class implementation, which is used to specify the
 definitions of the class. In our example, in the class declaration
 for \lstinline{A}, the name of the class is \lstinline{A} and the code 
@@ -38,7 +38,7 @@ Thus, unlike the Java code, introducing a subclass
 is more appropriate when \emph{code-reuse} is intended. 
 
 \saveSpace
-\subsection{Traits in \name: A mechanism for code Reuse}
+\subsection{Traits in \name: a mechanism for code reuse}
 \saveSpace
 Traits in \name cannot be instantiated and do not introduce new
 types. However they provide code reuse.
@@ -46,8 +46,7 @@ types. However they provide code reuse.
 %time aiming at code reuse. 
 Trait declarations 
 look very much like class declarations, but trait names 
-start with a lowercase letter.
-
+start with a lowercase letter: \MS{even syntactically they can not be used as types.}
 \saveSpace\saveSpace
 \begin{lstlisting}
  Utils={ static method int m(A a){return ...} }
@@ -108,13 +107,13 @@ Therefore, while typechecking \Q@Utils.m(this)@ we can assume
 \end{lstlisting}
 \saveSpace\saveSpace
 This also works.  \Q@B@ reuses the code of \Q@ta@, but has no knowledge of \Q@A@.
-Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, also \Q@B@ implements \Q@IA@. 
+Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, \Q@B@ \MS{also} implements \Q@IA@. 
 
 Later, in Section \ref{sec:formal} we will provide the type
 system. 
 For now notice that the former declaration of \Q@B@ is correct even if
 no method called \Q@ma@ is explicitly declared.
-DJ and TR would require instead to explicitly declare an abstract \Q@ma@ method:
+DJ and TR would instead require explicitly declaring an abstract \Q@ma@ method:
 \saveSpace\saveSpace
 \begin{lstlisting}
   B=Use ta, { method int ma()//not required by us
@@ -122,7 +121,7 @@ DJ and TR would require instead to explicitly declare an abstract \Q@ma@ method:
 \end{lstlisting}
 \saveSpace\saveSpace
 \noindent
-In \name methods are directly accessible from trait \Q@ta@, exactly as in the Java equivalent
+In \name methods are directly accessible from \Q@ta@, exactly as in the Java equivalent
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
@@ -134,7 +133,7 @@ dependencies in code literals to be explicitly declared, so that the
 code literal is completely self-contained. However, this results in
 many redundant abstract method declarations.
 
-\paragraph{Semantics of Use}
+\paragraph{Semantics of Use:}
 Albeit alternative semantic models for traits~\cite{lagorio2009featherweight} have been proposed,
 we use flattening: \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits{.}%
 \saveSpace\saveSpace\begin{lstlisting}
@@ -151,11 +150,11 @@ B={implements IA
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.
-Summarizing, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) is implemented.
-We believe the code with \Q@IA@ better transmits the programmer intention. Some
+In summary, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) \MS{must be} implemented.
+We believe the code with \Q@IA@ better transmits programmer intention. Some
 readers may instead see requiring \Q@IA@ as a cost of our approach.
 Even from this point of view, such cost is counter balanced by 
-very natural and simple support for code reuse, `\Q@This@' type and (in the extensions with nested classes seen later)
+the very natural and simple support for code reuse, `\Q@This@' type and (in the extensions with nested classes seen later)
 family polymorphism.
 
 

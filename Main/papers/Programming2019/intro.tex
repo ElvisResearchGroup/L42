@@ -14,6 +14,80 @@ In order for this to be sound, some form of aliasing and mutation control is nec
 While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
 at run time, while statically verifying aliasing, purity and other similar standard properties.
 Lets consider an example, where for simplicity, we omit accessibility modifiers.
+\newpage
+\begin{lstlisting}
+class Point { double x; double y;
+  Point(double x, double y) { this.x = x; this.y = y; }
+  override bool Equals(READ Object? othat) READ {
+    Point? that = othat as Point;
+    return that != null && that.x == this.x && that.y == this.y; }}
+class Hamster { Point pos;
+  Hamster(Point pos) { this.pos = pos; } }
+class Cage {
+  CAPSULE Hamster h; List<Point> path;
+  Cage(CAPSULE Hamster h, List<Point> path) {
+    this.h = h; this.path = path; }
+  bool invariant() READ { return this.path.Contains(this.h.pos); }
+  void move() MUT {
+    int index = 1 + this.path.IndexOf(this.h.pos);
+    if (index >= this.path.Count) index = 0;
+    this.moveTo(this.path[index]); }
+  void moveTo(Point p) MUT { this.h.pos = p; }
+  override String ToString() READ {
+    return "hPos:" + this.h.pos + ", path:" + this.path; }}
+//-----------------------------------------------
+class Point { double x; double y;
+  Point(double x, double y) { this.x = x; this.y = y; }
+  [Pure, Reads(ReadsAttribute.Reads.Nothing)]
+  override bool Equals(Object? othat) {
+    Point? that = othat as Point;
+    return that != null && that.x == this.x && that.y == this.y; }}
+class Hamster { [Peer] Point pos;
+  Hamster([Captured] Point pos) { this.pos = pos; } }
+class Cage {
+  [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
+  Cage([Captured] Hamster h, List<Point> path) {
+    this.h = h; this.path = new List<Point>(path); }
+  invariant this.path.Contains(this.h.pos);
+  void move() { expose (this) {
+    int index = 1 + this.path.IndexOf(this.h.pos);
+    if (index >= this.path.Count) index = 0;
+    this.h.pos = this.path[index]; }}
+  [Pure] override String ToString() {
+    return "hPos:" + this.h.pos + ", path:" + this.path; }}
+\end{lstlisting}
+\newpage
+\begin{lstlisting}
+class SafeMovable implements Widget{
+  @Override read method Widgets children(){return this.box.cs;}
+  @Override read method Int left(){return this.box.l;}
+  @Override read method Int top(){return this.box.t;}
+  @Override read method Int width(){return this.w;}
+  @Override read method Int height(){return this.h;}
+  capsule Box box;
+  Int w; Int h;
+  read method Bool invariant(){//iterate on box.cs, check:
+    //not overlap with each other, are inside the widget bounds
+  }
+  SafeMovable(Int w,Int h,capsule List<Widget> cs) {
+    this.w=w; this.h=h; this.box=boxWithButton(cs);}
+  static method capsule Box boxWithButton(capsule Widgets cs){
+    mut Box b=new Box(5,5,cs);
+    b.cs.add(new Button(0,0,10,10,new MoveAction(b));
+    return b;//b is declare mut, but it is soundly returned capsule
+  }}
+\end{lstlisting}
+
+\begin{lstlisting}
+class Box{
+  Int l; Int t; mut List<Widget> cs;
+  Box(Int l, Int t, mut List<Widget> cs){...} }
+
+class MoveAction implements Action{
+  mut Box outer; MoveAction(mut Box outer){this.outer=outer;}
+  mut method Void process(Event event) {this.outer.l+=1;} }
+\end{lstlisting}
+
 \begin{lstlisting}
 class Point {int x; int y;
   /*... constructor, equals and other obvious utility methods*/}

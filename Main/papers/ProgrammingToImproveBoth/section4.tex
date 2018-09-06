@@ -120,10 +120,11 @@ The class needs to handle all the state, even state conceptually
 
 \subsection{Our proposed approach to State: Coherent Classes}
 
-In \name there is no need to generate
-code, or to explicitly write down constructors and fields. In fact, in
+In \name there is no need to write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The idea is that
-any class that could be completed in the obvious way  is a
+any class that could be completed
+\MS{by implementing methods as constructor calls and field access/update}
+  is a
   complete \emph{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
 abstract only when the set of abstract methods are not coherent. That
@@ -136,20 +137,21 @@ classes is given next, and is formally modelled in Section \ref{sec:formal}:
 \begin{itemize}
 \item A class with no abstract methods is coherent (just like Java
   \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
-\item A class with a single abstract \Q@static@ method returning \Q@This@
+\item \MS{A class with a single abstract \Q@static@ method 
+returning \Q@This@ and with parameters $T_1\ x_1, \ldots, T_n\ x_n$
 is coherent if all the other abstract methods can be seen as \emph{abstract state
-operations} over one of its argument. The single, abstract static
+operations} over one of $x_1, \ldots, x_n$.
+That is:}
+\begin{itemize}
+\item A method $T_i\ x_i$\Q@()@ is interpreted as an abstract state method: a \emph{getter} for $x_i$.
+\item A method \Q@void @$x_i$\Q@(@$T_i\ $\Q@ that)@ is a \emph{setter} for $x_i$.
+\end{itemize}
+
+Note how the single, abstract static
 method acts as a \emph{factory method}.
 The signature of the factory method plays an important role, since
 abstract state operations are identified by using the names of the
 factory method arguments.
-For example,
-if there is a \Q@static method This of(int x, int y)@,
-then
-\begin{itemize}
-\item A method \Q@int x()@ is interpreted as an abstract state method: a \emph{getter} for \Q@x@.
-\item A method \Q@void x(int that)@ is a \emph{setter} for x.
-\end{itemize}
 \end{itemize}
 \noindent
 While getters and setters are fundamental operations, it is possible to
@@ -203,20 +205,20 @@ pointDiv= ...
 PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
 \saveSpace\saveSpace      
-Now the code is fully modularized, and each trait defines exactly one method.
+Now the code is fully modularized, that is: each trait defines exactly one method.
 
 \paragraph{Case Study 1:}
-In order to evaluate our approach,
+In order to evaluate our approach
 we performed a case study:
 we consider 4 different operations \Q@Sum@, \Q@Subtraction@, \Q@Multiplication@ and \Q@Division@.
 These operations can be combined in 16 different ways.
-We coded this example in four different styles:
-(a) Java7 \emph{(= 115 lines)}%
+We wrote this example in four different styles:
+(a) Java7 \emph{(115 lines)},
+(b) Classless Java \emph{(82 lines)},
+(c) Scala \emph{(81 lines)} and (d) \name \emph{(32 lines)}.%
 \footnote{
 Since we want to focus on the actual code, while counting line numbers we \emph{omit} white lines and lines containing only open/closed parenthesis.
-}%
-, (b) Classless Java \emph{(= 82 lines)},
-(c) Scala \emph{(= 81 lines)} and (d) \name \emph{(= 32 lines)}.
+}
 We chose Classless Java~\cite{wang2016classless} since it is a novel approach allowing to encode traits in Java relying on 
 Java 8 default interface methods.
 We then chose Java7, that lacks the features needed to encode traits, to show the impact of this feature.
