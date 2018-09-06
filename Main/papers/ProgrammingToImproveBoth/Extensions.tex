@@ -1,5 +1,6 @@
 \section{Family
-Polymorphism by disconnecting Use and Reuse}
+Polymorphism by Disconnecting Use and Reuse}
+
 A nested class is just another kind of member in a code literal.
 In Java and Scala if a subclass declares a nested class with the same
 name of a nested of the superclass, the parent declaration is simply hidden.
@@ -11,8 +12,8 @@ That is, the following Java code is ill typed:
 abstract class A{static class B{..}   abstract B m();}
 class AA extends A{static class B{..}   B m(){..}}
 \end{lstlisting}\saveSpace\saveSpace
-Invalid overriding: method \Q@AA.m()@ return type is \Q@AA.B@, that is unrelated with \Q@A.B@.
-We extends \name with nested classes, so that that
+Invalid overriding: method \Q@AA.m()@ return type is \Q@AA.B@, that is unrelated to \Q@A.B@.
+We extend \name with nested classes, so that that
 by composing code with \use,
 nested classes with the same name are recursively composed.
 The corresponding code in \name instead would work, and behave like a FP further extension.
@@ -24,7 +25,9 @@ AA= Use a, {B={..}   method B m(){..}}
 For simplicity, we discuss nested classes but not nested traits:
 and all traits and code composition expressions are still at top level.
 In this way all dependencies are about top level names, allowing the type system 
-to consider the class table as a simple map from (nested) types (as both \Q@A@ and \Q@A.B.C@) to their definition.
+to consider the class table as a simple map from (nested) type names
+(such as \Q@A@ and \Q@A.B.C@)
+to their definition.
 
 
 %\paragraph{Redirect}${}_{}$\\*
@@ -60,13 +63,13 @@ to consider the class table as a simple map from (nested) types (as both \Q@A@ a
 
 There are a lots of different forms of rename in
 literature~\cite{deep,ancona2002calculus,bracha1992programming}.
-Here we introduce a simple variant to rename nested types in other nested types.
+Here we introduce a simple variant to rename nested types to other nested types.
 For example:
 \begin{lstlisting}
 t={ method B m() B={ method B mb()} }
 D= t[rename B into C]
 \end{lstlisting}
-would flatten to 
+would flatten to:
 \begin{lstlisting}
 t={ method B m() B={ method B mb()} }
 D={ method C m() C={ method C mb()} }
@@ -119,7 +122,7 @@ The above extensions lets us challenge the expression problem~\cite{wadler1998ex
 with the requirements exposed in~\cite{Zenger-Odersky2005}.
 In the expression problem we have data-variants and operations and we can
 \emph{extend our solution in both dimensions},
-by adding new data-variants and adding new operations.
+by adding new data-variants and operations.
 We also aim to \emph{combine independently developed extensions} so
 that they can be used jointly.
 To be really modular, we want our extensions to
@@ -134,16 +137,16 @@ expressions \Q@Exp@ can
 be \Q@Num@ (for number literal),
 \Q@Plus@ (for binary plus operator)
 and \Q@Neg@ (for unary minus).
-We then proceed to define operations
-\Q@show@ to convert it into a string,
- \Q@eval@ to compute the numeric value and 
-\Q@double@ to double the value of each \Q@Num@.
-We thus have 3 classes, 1 interface,
-the definition of the state and 3 operations.
+\MS{We then proceed to define operations
+\Q@show@ to convert them into strings,
+ \Q@eval@ to compute their numeric values and 
+\Q@double@ to double their containing \Q@Num@s.}
+We thus have $3$ classes, $1$ interface,
+the definition of the state, and $3$ operations.
 We model this
 as a table of features, as in~\cite{deep}:
-a (3classes+1interface)*(1state+3operations)
-table composed by 16 traits.
+a ($3$ classes + $1$ interface)*($1$ state + $3$ operations)
+table composed by $16$ traits.
 The features are atomic: they exactly 
 declare the state of a class
 or define a single operation for a single class.
@@ -168,7 +171,7 @@ To avoid this duplication,  we write
 the trait \Q@eval @with a placeholder \Q@T@ nested class, that can then be renamed
 into the corresponding data-variant.
 Thus, our source code is as follows;
-First we declare the 4 traits to represent the state:
+First we declare the $4$ traits to represent the state:
 \newcommand\multiCode{\vspace{-5pt}}
 \saveSpace
 \begin{lstlisting}
@@ -269,18 +272,18 @@ version where we isolate all the units of behaviour as done in \name.
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala          & 52     &  15=12+3\\
-Scala  isolated units   & 78    &  15=12+3\\
-Scala  glue-code        & 27   &     3\\
-42 traits               & 48
-%=3+4+6+5 + (4+2*3)*3  
- &    19=4*3+7\\
-42 classes              &   3    &     0\\
+original Scala          & $52$     &  $15=12+3$\\
+Scala  isolated units   & $78$    &  $15=12+3$\\
+Scala  glue-code        & $27$   &     $3$\\
+42 traits               & $48$
+%=$3+4+6+5 + (4+2*3)*3$
+ &    $19=4*3+7$\\
+42 classes              &   $3$    &     $0$\\
 \end{tabular}
 \end{minipage}
 \begin{minipage}{0.40\textwidth}
-Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
-We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
+Scala uses $12=4*3$ methods plus $3$ extra factory methods (for \Q@double@).
+We use $12=4*3$ methods plus our abstract state: $4$ fields and $3$ constructors.
 \end{minipage}
 
 \noindent As we can see, to encode atomic units in Scala is
@@ -296,18 +299,18 @@ with \Q@eval@ and \Q@double@ would look like:
 %\end{lstlisting}\saveSpace\saveSpace
 The composition of all our traits would just require to list all
 of the relevant behaviour;
-reasonably formatted, it could take up 3 lines.
+reasonably formatted, it could take up $3$ lines.
 On the other side, the presented solution in Scala requires
-27 lines of glue code to put the traits together.
-This means that a full Scala solution \emph{requiring a single instantiation with all the traits} would be 78+27=105 lines.
+$27$ lines of glue code to put the traits together.
+This means that a full Scala solution \emph{requiring a single instantiation with all the traits} would be $78+27=105$ lines.
 If we were to require more instantiations with different subset of traits, the glue code would dominate the line count,
-and the Scala solution would end up being up to \emph{9 times heavier than the
-\name one} (if all the 64 permutations were required).
+and the Scala solution would end up being up to \emph{$9$ times heavier than the
+\name one} (if all the $64$ permutations were required).
 
-The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
+The line count for \name is very predictable: after defining \Q@exp@ ($3$) and the state traits($4+6+5$),
 for each of the three operations (\Q@eval,show,double@) 
-we just need 4 lines to declare the operation 
-in the interface, and 2 lines for each of the 3 data-variants.
+we just need $4$ lines to declare the operation 
+in the interface, and $2$ lines for each of the $3$ data-variants.
 
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
 Their solution involved double dispatch to avoid casting.
@@ -359,34 +362,34 @@ equalsNeg= Use neg, equals[rename T into Neg],{
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala eq           &    40   &   10\\
-isolated Scala eq           &   31    &   10\\
-Scala eq instance           &    29   &    3\\
-42 trait eq d-dispatch      &   21
+original Scala eq           &    $40$   &   $10$\\
+isolated Scala eq           &   $31$    &   $10$\\
+Scala eq instance           &    $29$   &    $3$\\
+42 trait eq d-dispatch      &   $21$
 %=6+5*3
-   &    6\\
-42 class dd instance        &    22   &   11\\
-42 traits eq Cast            &   13
+   &    $6$\\
+42 class dd instance        &    $22$   &   $11$\\
+42 traits eq Cast            &   $13$
 %=7+2*3
-   &    6\\
-42 class cast instance      &     3   &    0\\
+   &    $6$\\
+42 class cast instance      &     $3$   &    $0$\\
 \end{tabular}
 \end{minipage}\quad\ \ \ \ 
 \begin{minipage}{0.5\textwidth}
 The Scala code here can be made fully isolated with little
-extra syntactic cost. The original Scala eq is 40 lines and
+extra syntactic cost. The original Scala eq is $40$ lines and
 contains a part of the glue code mixed inside.
-The isolated version is 31 lines and to merge all the operations together in Scala, it
-takes 29 lines of glue code. Note that this
-is mostly the same glue code from before (27 lines), that
+The isolated version is $31$ lines and to merge all the operations together in Scala, it
+takes $29$ lines of glue code. Note that this
+is mostly the same glue code from before ($27$ lines), that
 needs to be manually adapted.
 \end{minipage}
 
 In \name we are
-more compact than Scala both when using the double dispatch (21+22 vs 31+29)
-or the guarded cast (13+3 vs 31+29).
+more compact than Scala both when using the double dispatch ($21+22$ vs $31+29$)
+or the guarded cast ($13+3$ vs $31+29$).
 To instantiate the double dispatch 
-version in \name we need 22 lines of glue code.
+version in \name we need $22$ lines of glue code.
 We could remove such glue code using 
 features from the full 42 language, but here we stick to only the features presented in this paper.
 The interesting point is that the nature of our needed glue code 

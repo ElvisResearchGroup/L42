@@ -30,16 +30,16 @@ class A{ int ma(){return Utils.m(this);} }  class Utils{static int m(A a){..}}
 \end{lstlisting}\saveSpace\saveSpace
 Cecil syntactic sugar counters this issue (advantages and pitfalls are discussed in the appendix).
 
-\name is directly inspired by the 3 independently designed research languages as already mentioned:
+\name is directly inspired by the $3$ independently designed research languages as already mentioned:
  TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530}, Package Templates~(PT)\cite{KrogdahlMS09}, DeepFJig(DJ)~\cite{deep}.
 We synthesize
 the best ideas of those very different designs, while at the same time 
 coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
-3 particular language designs.
+$3$ particular language designs.
 The following compares 
 various aspects of the language designs;
-we \underline{underline} 3 properties where one approach shines the most, and 3 properties where one approach is more lacking.
+we \underline{underline} $3$ properties where one approach shines the most, and $3$ properties where one approach is more lacking.
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals}
 \underline{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
@@ -81,7 +81,7 @@ The typing strategy of PT also seems to be connected with this
 decision, so it would be hard to move their approach in a composition
 algebra setting.
 \item {\bf Complete ontological separation between use and reuse}
-While all 3 works allow separating inheritance and subtyping only \underline{TR} properly enforces 
+While all $3$ works allow separating inheritance and subtyping only \underline{TR} properly enforces 
 separation between use (classes and interfaces) and reuse (traits).
 In DJ all classes are both units of use and reuse (however, subtyping is not induced).
 PT imports all the complexity of Java: is possible to separate use and reuse, the model has powerful but non-obvious implications where Java \Q@extends@ and PT are used together.

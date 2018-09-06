@@ -13,49 +13,107 @@ In this approach, an object's invariant is checked only by the pack-operation.
 In order for this to be sound, some form of aliasing and mutation control is necessary. For example, Spec\# uses a theorem prover together with source-code annotations.
 While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
 at run time, while statically verifying aliasing, purity and other similar standard properties.
-Lets consider an example, where for simplicity, we omit accessibility modifiers.
-\newpage
+This allows us to closely compare our approach with Spec\#.
+Lets consider an example: we have a \Q@Hamster@ in a \Q@Cage@.
+The hamster will move across a list of \Q@Point@s.
+The invariant is that the hamster position need to be in such list.
+The code for \Q@Point@ and \Q@Hamster@ is unremarkable.
+We use twice the annotation \Q@read@ on \Q@equals@ so that it does not modify neither the
+receiver nor the parameter.
 \begin{lstlisting}
-class Point { double x; double y;
-  Point(double x, double y) { this.x = x; this.y = y; }
-  override bool Equals(READ Object? othat) READ {
-    Point? that = othat as Point;
-    return that != null && that.x == this.x && that.y == this.y; }}
-class Hamster { Point pos;
-  Hamster(Point pos) { this.pos = pos; } }
-class Cage {
-  CAPSULE Hamster h; List<Point> path;
-  Cage(CAPSULE Hamster h, List<Point> path) {
-    this.h = h; this.path = path; }
-  bool invariant() READ { return this.path.Contains(this.h.pos); }
-  void move() MUT {
-    int index = 1 + this.path.IndexOf(this.h.pos);
-    if (index >= this.path.Count) index = 0;
-    this.moveTo(this.path[index]); }
-  void moveTo(Point p) MUT { this.h.pos = p; }
-  override String ToString() READ {
-    return "hPos:" + this.h.pos + ", path:" + this.path; }}
-//-----------------------------------------------
-class Point { double x; double y;
-  Point(double x, double y) { this.x = x; this.y = y; }
-  [Pure, Reads(ReadsAttribute.Reads.Nothing)]
-  override bool Equals(Object? othat) {
-    Point? that = othat as Point;
-    return that != null && that.x == this.x && that.y == this.y; }}
-class Hamster { [Peer] Point pos;
-  Hamster([Captured] Point pos) { this.pos = pos; } }
-class Cage {
-  [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
-  Cage([Captured] Hamster h, List<Point> path) {
-    this.h = h; this.path = new List<Point>(path); }
-  invariant this.path.Contains(this.h.pos);
-  void move() { expose (this) {
-    int index = 1 + this.path.IndexOf(this.h.pos);
-    if (index >= this.path.Count) index = 0;
-    this.h.pos = this.path[index]; }}
-  [Pure] override String ToString() {
-    return "hPos:" + this.h.pos + ", path:" + this.path; }}
+class Point {
+  Double x; Double y;
+  Point(Double x, Double y) { this.x = x; this.y = y; }
+  @Override read method equals(read Object that) {
+	if(that==null || !(that instanceof Point)){return false;}
+ 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
+  } }
+class Hamster {
+  Point pos; Hamster(Point pos) { this.pos = pos; } }
 \end{lstlisting}
+Then, in the \Q@Cage@
+we use \Q@capsule@ to ensure
+the \Q@Hamster@ ROG is fully under the control
+of the cage object.
+We annotated with \Q@mut@ the methods \Q@move()@
+and \Q@moveTo()@ since they modify
+the receiver ROG by modifying the hamster.
+\begin{lstlisting}
+class Cage {
+  capsule Hamster h; List<Point> path;
+  Cage(capsule Hamster h, List<Point> path) {
+    this.h = h; this.path = path; }
+  read method Bool invariant() {
+    return this.path.contains(this.h.pos); }
+  mut method Void move() {
+    int index = 1 + this.path.indexOf(this.h.pos);
+    if (index >= this.path.Count) index = 0;
+    this.moveTo(this.path.get(index));
+  }
+  mut method Void moveTo(Point p) { this.h.pos = p; } }
+..
+mut Cage c = new Cage(new Hamster(new Point(0,0), 
+	Arrays.asList(new Point(0,0),new Point(1,1))))
+\end{lstlisting}
+Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
+to check if the hamster position is inside the list.
+In our system, the default annotation is \Q@immutable@.
+
+The best Spec\# solution we found that could verify this example is not as natural:
+we needed to define our own equalty for \Q@Point@ instead of relying on \Q@Object.Equals@,
+thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
+Here is our solution:
+\begin{lstlisting}[language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
+class Point {
+  double x; double y;
+  Point(double x, double y) { this.x = x; this.y = y; }
+  [Pure] virtual bool Equal(double x, double y)
+  ensures true; { return x == this.x && y == this.y; } }
+class Hamster {
+  [Peer] Point pos;
+  Hamster([Captured] Point pos) { this.pos = pos; } }
+class PureObject { [Pure] PureObject() { } }
+class Cage: PureObject {
+  [Rep] Hamster h;
+  [Rep, ElementsRep] List<Point> path;
+  Cage([Captured] Hamster h, [Captured] List<Point> path)
+    requires Owner.Same(Owner.ElementProxy(path), path);
+  { this.h = h; this.path = path; }
+  invariant exists {int i in (0 : this.path.Count);
+    this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
+  void Move() { expose (this) {
+    int index = 0;
+    while (index < this.path.Count && 
+      !this.path[index++].Equal(this.h.pos.x, this.h.pos.y));
+    if (index >= this.path.Count) index = 0;
+    this.h.pos = this.path[index];
+  } } }
+..
+List<Point> pl = new List<Point>{new Point(0, 0), new Point(0, 1)};
+Owner.AssignSame(pl, Owner.ElementProxy(pl));
+Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
+
+\end{lstlisting}
+%3 read 2 capsule 3 mut extra method moveTo
+%----
+Summarizing, in Spec\# we had to add ....
+%3 pure,
+%1 peer
+%3 captured
+%2 rep
+%1 ElementsRep
+%1 ensures true
+%1 requires Owner.Same(Owner.ElementProxy(path), path);
+%1 invariant
+%1 exists
+%expose(this)
+%re implementation of indexOf
+%dumb equals(double,double)
+%dumb class PureObject { [Pure] PureObject() { } }
+%Owner.AssignSame(pl, Owner.ElementProxy(pl));
+Also note how we have to manually handle ownership details while instantiating a \Q@new Cage(..)@.
+\begin{comment}
+
 \newpage
 \begin{lstlisting}
 class SafeMovable implements Widget{
@@ -106,6 +164,7 @@ class Cage {
   String toString(){return "hPos:"+this.h.pos+", path:"+this.path;}
 }
 \end{lstlisting}
+\end{comment}
 Ideally, we would like the invariant to be dynamically checked 
 at the end of the constructor and at the end of the \Q@move@ method.
 However, this would be unsound without some form of aliasing control over \Q@Hamster@,
@@ -212,27 +271,27 @@ class Cage {
 %We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
 %block required in Spec\#.
 
-To keep the syntax familiar, we present our code example in a tweaked Java syntax using type modifiers.
-If a method override an interface method, we inherit the modifiers from the interface.
-Any non annotated type is implicitly immutable.
-Note how we just added 1 \Q@read@, 2 \Q@mut@ and 2 \Q@capsule@ annotations; in L42 constructors can be automatically generated, this would remove the need for 1 of the\Q@capsule@ annotations.
-We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
-block required in Spec\#.
-Many verification approaches takes advantage of the separation between primitive types and objects.
+%To keep the syntax familiar, we present our code example in a tweaked Java syntax using type modifiers.
+%If a method override an interface method, we inherit the modifiers from the interface.
+%Any non annotated type is implicitly immutable.
+%Note how we just added 1 \Q@read@, 2 \Q@mut@ and 2 \Q@capsule@ annotations; in L42 constructors can be automatically generated, this would remove the need for 1 of the\Q@capsule@ annotations.
+%We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
+%block required in Spec\#.
+
+Also, many verification approaches takes advantage of the separation between primitive types and objects.
 L42 is a pure OO language without primitive types, so we can not, and we do not need to, rely
 on differences between primitive types and objects.
 We write all the types upper-case, to underline this fact.
 
-
-In L42 any non annotated type is implicitly immutable.
-We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
-block required in Spec\#.
-In this paper we will show how those minor code modifications are sufficient
-to statically verify that runtime verification is needed only
-after the constructor and after the \Q@moveTo@ method.
-We will also show how designing the standard library in OCs style
-ensures that any \Q@read@ method with no parameters (as \Q@invariant()@) is
-deterministic.
+%In L42 any non annotated type is implicitly immutable.
+%We also need to add a new method \Q@moveTo@. This is equivalent to the explicit \Q@expose(this){..}@
+%block required in Spec\#.
+%In this paper we will show how those minor code modifications are sufficient
+%to statically verify that runtime verification is needed only
+%after the constructor and after the \Q@moveTo@ method.
+%We will also show how designing the standard library in OCs style
+%ensures that any \Q@read@ method with no parameters (as \Q@invariant()@) is
+%deterministic.
 %We obtain our results thanks to coarse grained type system support and a careful design of the standard library, where all the possible sources of non determinism follow the OCs style.
 
 We evaluate our contribution by means of case studies;

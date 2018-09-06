@@ -122,7 +122,7 @@ necessary.  In essence we believe that in languages like Java, classes do too ma
 things at once. In particular they act both as units of \emph{use} and
 \emph{reuse}: classes can be \emph{use}d as types and can be instantiated;
 classes can also be subclassed to provide \emph{reuse} of code.
-We are aware of at least 3 independently designed research
+We are aware of at least $3$ independently designed research
 languages that address the \emph{this-leaking problem}:
 \begin{itemize}
 \item In {\bf TraitRecordJ (TR)}~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}
@@ -138,7 +138,7 @@ Such ``synthesized'' packages can be used for code reuse without inducing subtyp
     DeepFJig(DJ)}~\cite{deep,servetto2014meta,fjig} is
 a module composition language where nested classes with the same name are recursively composed.
 \end{itemize}
-%Those 3 languages also shown that family polymorphism 
+%Those $3$ languages also shown that family polymorphism 
 %is easy to support when inheritance and subtyping are separated.
 
 
@@ -146,7 +146,7 @@ This paper show a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
 \emph{use} from code designed for \emph{reuse}.
-We synthesize and simplify the best ideas from those 3 very different designs, and couple them with an elegant novel approach to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+We synthesize and simplify the best ideas from those $3$ very different designs, and couple them with an elegant novel approach to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
 %-------
 
 In \name there are two separate concepts: classes
@@ -169,7 +169,7 @@ This allows handling examples like \Q@Point/ColorPoint@ in a natural way, and wi
 Our design brings several benefits. In particular, 
 Family Polymorphism~\cite{ernst2004expression} is
 radically simpler to support soundly.
-This is already clear in the 3 lines of
+This is already clear in the $3$ lines of
 research above, and is even more outstanding in the clean \name model.
 
 We first focus on an example-driven presentation to illustrate how to
@@ -181,10 +181,10 @@ work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,Krogda
 and the design of \name synthesizes some of these concepts.
 The language design ideas have been implemented in the full 42 language, which supports all
 the examples we show in the paper, and is available at: \url{http://l42.is}.
-Work on 42 is now slowly reaching maturity after about 5 years of
+Work on 42 is now slowly reaching maturity after about $5$ years of
 intense research and development. The current implementation 
 is now robust enough to create realistic medium sized programs running 
-on the JVM, and the standard library consists of over 10000 lines of
+on the JVM, and the standard library consists of over $10000$ lines of
 42 code. 
 %more then a thousand GIT commits and about a thousand tests.
 
@@ -217,8 +217,8 @@ This design improves both code use and code reuse.
 
 \item We illustrate how \name, extended with nested classes, enables a
   powerful (but at the same time simple) form of family polymorphism. % the expression problem better than former work.
-\item We show the simplicity of our approach by providing a compact 1 page formalization.
-\item We perform 3 case studies, comparing our work with other
+\item We show the simplicity of our approach by providing a compact $1$ page formalization (in Appendix A).
+\item We perform $3$ case studies, comparing our work with other
   approaches, and we collect clear data showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}
 \saveSpace
