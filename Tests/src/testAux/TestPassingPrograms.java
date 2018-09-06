@@ -543,6 +543,35 @@ public class TestPassingPrograms {
 				,"}"
 		,"}");
 	}
+	
+	@Test
+	public void testFibs() {
+		tp("{reuse L42.is/AdamTowel02"
+				,"Nums: Use.Over[Collections.vector(of: Num)] <>< {"
+					,"read method"
+					,"Num sum() {"
+						,"var Num res = 0Num"
+						,"with n in this.vals() (res += n)"
+						,"return res"
+						,"}"
+				,"}"
+				,"B : {"
+					,"var Num last = 1Num"
+					,"var Num last2 = 1Num"
+					,"var Nums sums = Nums[]"
+					
+					,"while (last < 4000000Num) ("
+						,"Num fib = last + last2"
+						,"last := last2"
+						,"last2 := fib"
+						
+						,"sums := sums + fib"
+					,")"
+					,"Debug(sums.sum())"
+					,"return ExitCode.normal()"
+				,"}"
+		,"}");
+	}
 
 	@Test
 	public void testCollectionInClass() {
@@ -553,6 +582,109 @@ public class TestPassingPrograms {
 					,"return ExitCode.normal()"
 				,"}"
 		,"}");
-
+				
 	}
+	
+	@Test
+	public void testPeek() {
+		tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Nums: Use.Over[Collections.vector(of: Num)] <>< {"
+	,"  read method"
+	,"  Num sum() {"
+	,"    var Num res= 0Num"
+	,"    with n in this.vals() (res+= n )"
+	,"    return res"
+	,"    }"
+	,"    "
+	,"    method Num peek() {"
+	,"        return this.val(this.size() - 1Size)"
+	,"    }"
+	,"  }"
+	,""
+	,"Main:{"
+	,"    var Nums list = Nums[]"
+	,""
+	,"    var Num i = 0Num"
+	,"    while (i < 15Num) ("
+	,"        i := i + 1Num"
+	,"        list := list + (i * 33Num)"
+	,"    )"
+	,"    X[list.peek() == (i * 33Num)]    "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test
+	public void testBadEquals() {
+		tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Nums: Use.Over[Collections.vector(of: Num)] <>< {"
+	,"}"
+	,""
+	,"Main:{"
+	,"    k = Nums[]"
+	,"    X[k.size() != S\"Test\"]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test(expected=newTypeSystem.FormattedError.class)
+	public void testStrongType() {
+	        tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Meter: Units.of(Num)"
+	,""
+	,"Main: {"
+	,""
+	,"    var Num a = 12Num"
+	,"    a := S\"a\""
+	,"            "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test
+	public void testInner() {
+	        tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Meter: Units.of(Num)"
+	,""
+	,"Main: {"
+	,"    k = 12Meter"
+	,"    X[k.#inner() == 12Num]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test
+	public void testInnerAdd() {
+	        tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Meter: Units.of(Num)"
+	,""
+	,"Main: {"
+	,"    k = 12Meter"
+	,"    s = 13Meter"
+	,"    X[(s + k).#inner() == 25Num]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
+
 }
