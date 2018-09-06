@@ -1,0 +1,54 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+class Stack {
+	[Rep] Cell? top;
+	internal Stack() { this.top = null; }
+
+	internal void Push(Object elem) 
+		requires Guard.IsPeerConsistent(elem);
+	{ 
+		expose(this)
+		{
+			Cell? old_top = this.top;
+			this.top = new Cell(elem);
+			//this.top.elem = elem;
+			this.top.next = old_top;
+		}
+	}
+
+	internal Object? Pop() 
+	{
+		if (this.top == null)
+			return null;
+		
+		Object res = this.top.elem;
+		this.top = this.top.next;
+		return res;
+	}
+
+	class Cell 
+	{
+		[Peer] internal Cell? next;
+		internal Object elem;
+		internal Cell(Object elem) { this.elem = elem; }
+	}
+}
+/*
+internal interface Widget 
+{
+	void dispatch();
+
+	List<Widget> children 
+	{
+		[Peer, ResultNotNewlyAllocated] get
+			ensures Owner.Same(Owner.ElementProxy(result), result);
+	}
+}
+class Trait { [Peer] [ElementsPeer] internal List<Widget> children;  }
+abstract class Stupid: Trait, Widget {
+	public void dispatch() {}
+	List<Widget> Widget.children { get { return this.children;  } }
+}*/
+class Program { static void Main(String[] args) { } }
