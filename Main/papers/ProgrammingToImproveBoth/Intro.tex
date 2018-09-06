@@ -6,7 +6,10 @@ implies subtyping. A Java subclass declaration, such as
 \Q@class A extends B {}@
 \noindent does two things at the same time:
 it {\bf inherits} code from \lstinline{B}; and it creates
-a subtype of \lstinline{B}. Therefore a subclass must \emph{always} be a subtype of the extended class.
+a subtype of \lstinline{B}. Therefore a subclass must \emph{always} be
+a subtype of the extended class.
+Such design choice where subclassing implies subtyping is not
+universaly accepted.
 Historically, there has been a lot of focus on
 separating subtyping from subclassing~\cite{cook}.  This separation is claimed to be
 good for code-reuse, design and reasoning. There are at
@@ -17,15 +20,17 @@ subclassing is helpful.
 
 \item {\bf Allowing inheritance/reuse even when subtyping is impossible:} 
 Situations where inheritance is desirable are prevented
-by the enforced subtyping relation, for example in the case of \emph{binary methods}~\cite{cook,bruce96binary}.
-\MS{For example,} consider class \Q@Point@ with a method 
+by the enforced subtyping relation. A well-known example are the so-called \emph{binary methods}~\cite{cook,bruce96binary}.
+For example, consider a class \Q@Point@ with a method 
 \Q@Point sum(Point o){return new Point(x+o.x,y+o.y);}@.
 Can we reuse the \Q@Point@ code so that \Q@ColorPoint.sum@
 would take and return a \Q@ColorPoint@?
 In Java/C\# declaring \Q@class ColorPoint extends Point{..}@ would result
 in \Q@sum@ still taking a \Q@Point@ and returning a \Q@Point@.
-Moreover, manually redeclaring a\\* \Q@ColorPoint sum(ColorPoint that)@
+Moreover, manually redeclaring a \Q@ColorPoint sum(ColorPoint that)@
 would just induce overloading, not overriding.
+In this case we would like to have inheritance, but we cannot
+have (safe) subtyping.
 %
 %In some situations a subclass contains methods whose signatures 
 %are incompatible with the superclass, yet inheritance is still
@@ -97,7 +102,7 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %expected argument of type \lstinline{A}.  
 
 
-Suppose Java code-reuse (the {\bf extends} keyword) \MS{were to not introduce} subtyping\footnote{
+Suppose Java code-reuse (the {\bf extends} keyword) did not introduce subtyping\footnote{
 C++ allows "extending privately"; this is not
 what we mean by not introducing subtyping: in C++ it is a limitation over
   subtyping visibility, not over subtyping itself.  Indeed, the
@@ -141,12 +146,15 @@ a module composition language where nested classes with the same name are recurs
 %Those $3$ languages also shown that family polymorphism 
 %is easy to support when inheritance and subtyping are separated.
 
-
+While there are various good ideas in those designs, those designs are
+still quite involved.
 This paper show a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
 \emph{use} from code designed for \emph{reuse}.
-We synthesize and simplify the best ideas from those $3$ very different designs, and couple them with an elegant novel approach to state and \MS{self construction} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+We synthesize and simplify the best ideas from those $3$ very
+different designs, and couple them with an elegant novel approach to
+state and self construction in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
 %-------
 
 In \name there are two separate concepts: classes
@@ -154,9 +162,9 @@ and traits~\cite{ducasse2006traits}. Classes are meant for code \emph{use}, and 
 Java, and can be used as types and as object factories. Traits are meant for code \emph{reuse} only: multiple traits can be
 composed to form a class. However, traits 
 cannot be instantiated or used as types.
-\MS{We will show how this allows fine-grained control of subtyping while handling examples like \Q@Set/Bag@.}
+This allows fine-grained control of subtyping while handling examples like \Q@Set/Bag@.
 
-\MS{In \name, as in many module composition languages~\cite{ancona_zucca_2002},
+In \name, as in many module composition languages~\cite{ancona_zucca_2002},
 all methods can be abstract, including static ones.
 Moreover, module composition can be used to make
 an already implemented method abstract.
@@ -164,7 +172,7 @@ Thus, as for dynamic dispatch, the behaviour of a method call is never set in st
 %The behaviour is similar to Python class-methods.
 We will show how in \name, state is induced by an implicit fixpoint operation over abstract methods,
 where an abstract static method can perform the role of a constructor.
-This allows handling examples like \Q@Point/ColorPoint@ in a natural way, and without requiring code duplication.}
+This allows handling examples like \Q@Point/ColorPoint@ in a natural way, without requiring code duplication.
 
 Our design brings several benefits. In particular, 
 Family Polymorphism~\cite{ernst2004expression} is
@@ -205,7 +213,7 @@ In summary, our contributions are:
 
 
 \begin{itemize}
-\item We identify the this-leaking problem, that makes dividing inheritance and subtyping difficult.
+\item We identify the this-leaking problem, that makes separating inheritance and subtyping difficult.
 
 \item We synthesize the key ideas of previous designs that solve the
   this-leaking problem into a novel and
