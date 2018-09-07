@@ -17,19 +17,17 @@ This allows us to closely compare our approach with Spec\#.
 Lets consider an example: we have a \Q@Hamster@ in a \Q@Cage@.
 The hamster will move across a list of \Q@Point@s.
 The invariant is that the hamster position need to be in such list.
-The code for \Q@Point@ and \Q@Hamster@ is unremarkable.
 We use twice the annotation \Q@read@ on \Q@equals@ so that it does not modify neither the
 receiver nor the parameter.
+To save space, here and in the rest of the paper we omit the bodies of constructors that simply initialize the fields.
+%	if(that==null || !(that instanceof Point)){return false;}
+% 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
+%  }
 \begin{lstlisting}
 class Point {
-  Double x; Double y;
-  Point(Double x, Double y) { this.x = x; this.y = y; }
-  @Override read method equals(read Object that) {
-	if(that==null || !(that instanceof Point)){return false;}
- 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
-  } }
-class Hamster {
-  Point pos; Hamster(Point pos) { this.pos = pos; } }
+  Double x; Double y; Point(Double x, Double y) {..}
+  @Override read method Bool equals(read Object that){..} }
+class Hamster {Point pos; Hamster(Point pos) {..} }
 \end{lstlisting}
 Then, in the \Q@Cage@
 we use \Q@capsule@ to ensure
@@ -41,54 +39,55 @@ the receiver ROG by modifying the hamster.
 \begin{lstlisting}
 class Cage {
   capsule Hamster h; List<Point> path;
-  Cage(capsule Hamster h, List<Point> path) {
-    this.h = h; this.path = path; }
+  Cage(capsule Hamster h, List<Point> path) {..}
   read method Bool invariant() {
     return this.path.contains(this.h.pos); }
   mut method Void move() {
-    int index = 1 + this.path.indexOf(this.h.pos);
-    if (index >= this.path.Count) index = 0;
-    this.moveTo(this.path.get(index));
-  }
+    int index= 1 + this.path.indexOf(this.h.pos));
+    this.moveTo(this.path.get(index %  this.path.size()));}
   mut method Void moveTo(Point p) { this.h.pos = p; } }
-..
-mut Cage c = new Cage(new Hamster(new Point(0,0), 
-	Arrays.asList(new Point(0,0),new Point(1,1))))
 \end{lstlisting}
+In our system, the default annotation is \Q@immutable@, thus \Q@Cage.path@ is a deeply immutable list of \Q@Point@s.
 Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
 to check if the hamster position is inside the list.
-In our system, the default annotation is \Q@immutable@.
+The conventional syntax correctly instantiates a \Q@Cage@:
+\Q@new Cage(new Hamster(new Point(..)),List.of(..))@.
 
-The best Spec\# solution we found that could verify this example is not as natural:
-we needed to define our own equalty for \Q@Point@ instead of relying on \Q@Object.Equals@,
-thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
+Our system would perform run-time checks for invariant
+in the end of the constructor, and the \Q@moveTo@
+method, and after any client of \Q@Cage@
+was to update the fields \Q@h@ and \Q@path@.
+The method \Q@moveTo()@ method is the only place where the invariant may be broken. However, there is only a single occurrence of \Q@this@, used to read the \Q@h@ field. Thus, the potentially broken \Q@this@ object is not visible while the hamster position is updated. The invariant is checked at the end of the method, just before \Q@this@ would become visible again.
+This technique loosely correspond to an implicit pack/unpack: we use \Q@this@ only to read the field value, then we work on such value while the invariant of \Q@this@ is not known to hold. Finally we 
+check the invariant before starting using the object again.
+
+Note how since only \Q@Cage@ has an invariant,
+only \Q@Cage@ need to be encode with care, and the code for \Q@Point@ and \Q@Hamster@ is unremarkable.
+This is not the case in Spec\#: all code involved in 
+verification need to be designed with care. The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
+thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@. An extended discussion on why we think this is the best solution can be found in Appendix XX.
 Here is our solution:
-\begin{lstlisting}[language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
-class Point {
-  double x; double y;
-  Point(double x, double y) { this.x = x; this.y = y; }
-  [Pure] virtual bool Equal(double x, double y)
-  ensures true; { return x == this.x && y == this.y; } }
-class Hamster {
-  [Peer] Point pos;
-  Hamster([Captured] Point pos) { this.pos = pos; } }
+%or \small or \footnotesize etc.
+\begin{lstlisting}[
+basicstyle=\footnotesize,
+language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
+class Point { double x; double y;Point(double x, double y) {..}
+  [Pure] virtual bool Equal(double x, double y)ensures true;
+ { return x == this.x && y == this.y; }}
+class Hamster {[Peer] Point pos; Hamster([Captured] Point pos) {..} }
 class PureObject { [Pure] PureObject() { } }
 class Cage: PureObject {
-  [Rep] Hamster h;
-  [Rep, ElementsRep] List<Point> path;
+  [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
   Cage([Captured] Hamster h, [Captured] List<Point> path)
-    requires Owner.Same(Owner.ElementProxy(path), path);
-  { this.h = h; this.path = path; }
+    requires Owner.Same(Owner.ElementProxy(path), path);{..}
   invariant exists {int i in (0 : this.path.Count);
     this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
   void Move() { expose (this) {
-    int index = 0;
-    while (index < this.path.Count && 
-      !this.path[index++].Equal(this.h.pos.x, this.h.pos.y));
-    if (index >= this.path.Count) index = 0;
-    this.h.pos = this.path[index];
+    int i = 0;
+    while(i<this.path.Count && !this.path[i++].Equal(this.h.pos.x, this.h.pos.y));
+    this.h.pos = this.path[i%this.path.Count];
   } } }
-..
+..// Instantiating a Cage also need some care
 List<Point> pl = new List<Point>{new Point(0, 0), new Point(0, 1)};
 Owner.AssignSame(pl, Owner.ElementProxy(pl));
 Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
@@ -112,7 +111,7 @@ Summarizing, in Spec\# we had to add ....
 %dumb class PureObject { [Pure] PureObject() { } }
 %Owner.AssignSame(pl, Owner.ElementProxy(pl));
 Also note how we have to manually handle ownership details while instantiating a \Q@new Cage(..)@.
-\begin{comment}
+\LINE
 
 \newpage
 \begin{lstlisting}
@@ -164,7 +163,7 @@ class Cage {
   String toString(){return "hPos:"+this.h.pos+", path:"+this.path;}
 }
 \end{lstlisting}
-\end{comment}
+\LINE
 Ideally, we would like the invariant to be dynamically checked 
 at the end of the constructor and at the end of the \Q@move@ method.
 However, this would be unsound without some form of aliasing control over \Q@Hamster@,

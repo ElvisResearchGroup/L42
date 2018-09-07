@@ -150,18 +150,18 @@ table composed by $16$ traits.
 The features are atomic: they exactly 
 declare the state of a class
 or define a single operation for a single class.
-\name avoids the large amount of abstract declarations,
+\name avoids the large amount of abstract declarations
 that clutters the solution in~\cite{deep}.
 Intuitively, we would like our traits to look like the following:
 \begin{lstlisting}
-evalPlus= Use plus, {//eval operation for Plus datavariant
+evalPlus= Use plus, {//eval operation for Plus data-variant
   Exp= {interface
     method int eval()}
   Plus= {implements Exp
     method int eval(){
       return this.left().eval()+this.right().eval();}}}
 \end{lstlisting}
-\Q@evalPlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
+\Q@evalPlus@ uses the trait \Q@plus@ to import the state (the \Q@left()@ and \Q@right()@ methods)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
 But, if we were to declare those
 explicitly, we would repeat \Q@Exp@, the abstract
@@ -175,14 +175,12 @@ First we declare the $4$ traits to represent the state:
 \newcommand\multiCode{\vspace{-5pt}}
 \saveSpace
 \begin{lstlisting}
-exp= {
-  Exp= {interface}
-  T= {implements Exp}}
+exp= { $\ \ \ \ $Exp= {interface} $\ \ \ \ $T= {implements Exp}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
-num= Use exp[rename T into Num],{//T renamed in Num is summed with current Num
-  Num= {method int value()  static method Num of(int value)}}
+num= Use exp[rename T into Num],{//T is renamed to Num and summed with
+  Num= {method int value()  static method Num of(int value)}} // this Num
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -197,16 +195,14 @@ neg= Use exp[rename T into Neg],{
 \end{lstlisting}
 Here we define a trait for each data-variant.
 Each trait will contain its version of \Q@Exp@
-and a specific case of expression, with its state.
+and a specific kind of expression, with its state.
 Next, we define the operation \Q@eval@ for all the data-variants.
 The former solutions in~\cite{deep}
-required to repeat the state declaration of the 
+required repeating the state declaration of the 
 data-variant in each operation, while we can just import it.
 
 \begin{lstlisting}
-eval= {//concept of Exp.eval() declared once
-  Exp= {interface      method int eval()}
-  T= {implements Exp}}
+eval= {Exp= {interface $\ \ \ \ $         method int eval()} $\ \ \ \ $     T= {implements Exp}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -225,17 +221,16 @@ evalNeg= Use neg, eval[rename T into Neg], {Neg={ method int eval(){..}}}
 
 The \Q@show@ operation can be trivially defined
 following exactly the same pattern (omitted here for space reasons).
-The operation \Q@double@ is is a challenge for some proposed solution
+The operation \Q@double@ is is a challenge for some proposed solutions
 to the expression problem, as explained by Zhang and Oliveira~\cite{zhang2017evf}.
 The \Q@double@ operation is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
-Thanks to the separation between use and reuse, and the support
-for self-instantiation of every nested class in a given trait,
-in \name, it does not need any special attention
-and can be coded just like \Q@eval@ and \Q@show@.
+Thanks to \name's separation between use and reuse,
+together with support
+for self-instantiation of nested classes
+\Q@double@ does not need any special attention
+and can be written just like \Q@eval@ and \Q@show@.
 \begin{lstlisting}
-double= {
-  Exp= {interface      method Exp double()}
-  T= {implements Exp}}
+double= { $\ \ \ \ $Exp= {interface $\ \ \ \ $ method Exp double()}$\ \ \ \ $ T= {implements Exp} }
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -250,12 +245,12 @@ doublePlus= Use plus,double[rename T in Plus],{
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
-doubleNeg=...
+doubleNeg=....
 \end{lstlisting}
 Here we define a trait for each data-variant implementing the operation \Q@double()@.
 Again, each trait will contain its version of \Q@Exp@ with \Q@double()@
-and a specific case of expression, with the implementation for \Q@double()@
-for that specific case.
+and a specific kind of expression, with the implementation for \Q@double()@
+for that specific kind.
 %We can express \Q@double@ with this level of simplicity
 %thanks to the separation between use and reuse:
 %every trait have its own \Q@Exp@,
@@ -263,53 +258,54 @@ for that specific case.
 %see each other.
 
 Our third case study compares with the results presented
-in Scala\cite{Zenger-Odersky2005}.
+in Scala~\cite{Zenger-Odersky2005}.
 The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
-version where we isolate all the units of behaviour as done in \name.
+version where we isolate all the units of behaviour as is done in \name.
 
 \noindent\begin{minipage}{0.60\textwidth}
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala          & $52$     &  $15=12+3$\\
+Original Scala          & $52$     &  $15=12+3$\\
 Scala  isolated units   & $78$    &  $15=12+3$\\
 Scala  glue-code        & $27$   &     $3$\\
 42 traits               & $48$
 %=$3+4+6+5 + (4+2*3)*3$
- &    $19=4*3+7$\\
+ &    $19=4\times3+7$\\
 42 classes              &   $3$    &     $0$\\
 \end{tabular}
 \end{minipage}
 \begin{minipage}{0.40\textwidth}
-Scala uses $12=4*3$ methods plus $3$ extra factory methods (for \Q@double@).
-We use $12=4*3$ methods plus our abstract state: $4$ fields and $3$ constructors.
+Scala uses $12=4\times3$ methods plus $3$ extra factory methods (for \Q@double@).
+We use $12=4\times3$ methods plus our abstract state: 
+$4$ getters and $3$ factories.
 \end{minipage}
 
-\noindent As we can see, to encode atomic units in Scala is
+\noindent As we can see, encoding atomic units in Scala is
 more verbose,
 but more importantly,
 in \name we can just define a class supporting any subset of operations
 and data-variants by listing the desired traits:
-For example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
-with \Q@eval@ and \Q@double@ would look like:
+for example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
+with \Q@eval@ and \Q@double@ would look like this:
 %\saveSpace\saveSpace
 %\begin{lstlisting}
 \Q@Example= Use evalNum,evalPlus,doubleNum,doublePlus@.
 %\end{lstlisting}\saveSpace\saveSpace
-The composition of all our traits would just require to list all
+The composition of all our traits would just requiring listing all
 of the relevant behaviour;
-reasonably formatted, it could take up $3$ lines.
-On the other side, the presented solution in Scala requires
+reasonably formatted, it could take up to $3$ lines.
+On the other hand, the presented solution in Scala requires
 $27$ lines of glue code to put the traits together.
 This means that a full Scala solution \emph{requiring a single instantiation with all the traits} would be $78+27=105$ lines.
-If we were to require more instantiations with different subset of traits, the glue code would dominate the line count,
-and the Scala solution would end up being up to \emph{$9$ times heavier than the
-\name one} (if all the $64$ permutations were required).
+If we were to require more instantiations with a different subset of traits, the glue code would dominate the line count,
+and the Scala solution would end up being up to $9$ times heavier than the
+\name one (if all $64$ permutations were required).
 
-The line count for \name is very predictable: after defining \Q@exp@ ($3$) and the state traits($4+6+5$),
+The line count for \name is very predictable: after defining \Q@exp@ ($3$) and the state traits ($4+6+5$)
 for each of the three operations (\Q@eval,show,double@) 
-we just need $4$ lines to declare the operation 
+we just needed $4$ lines to declare the operation 
 in the interface, and $2$ lines for each of the $3$ data-variants.
 
 Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
@@ -328,13 +324,11 @@ The idea is that since every data-variant contains
 \saveSpace\saveSpace
 \begin{lstlisting}
 equals= {
-  Exp= {interface
-    method Bool equals(Exp that)}
+  Exp= {interface $\ \ \ \ $ method Bool equals(Exp that)}
   T= {implements Exp
     method Bool exactEquals(T that)
     method equals(that){
-      if(T instanceof This) return this.exactEquals(that);
-      else return false;}}
+      if(T instanceof This){return this.exactEquals(that);}else{ return false;}}}
 \end{lstlisting}
 \multiCode
 \begin{lstlisting}
@@ -362,9 +356,9 @@ equalsNeg= Use neg, equals[rename T into Neg],{
 \begin{tabular}{l |l |l}
 &                              lines  &   methods\\
 \hline
-original Scala eq           &    $40$   &   $10$\\
-isolated Scala eq           &   $31$    &   $10$\\
-Scala eq instance           &    $29$   &    $3$\\
+Original Scala equals       &    $40$   &   $10$\\
+Isolated Scala equals       &   $31$    &   $10$\\
+Scala equals instance       &    $29$   &    $3$\\
 42 trait eq d-dispatch      &   $21$
 %=6+5*3
    &    $6$\\
@@ -386,8 +380,8 @@ needs to be manually adapted.
 \end{minipage}
 
 In \name we are
-more compact than Scala both when using the double dispatch ($21+22$ vs $31+29$)
-or the guarded cast ($13+3$ vs $31+29$).
+more compact than Scala both when using the double dispatch ($21+22$ vs. $31+29$)
+or the guarded cast ($13+3$ vs. $31+29$).
 To instantiate the double dispatch 
 version in \name we need $22$ lines of glue code.
 We could remove such glue code using 
@@ -396,7 +390,7 @@ The interesting point is that the nature of our needed glue code
 is different with respect to the Scala glue code:
 Scala requires lots of trait multiple inheritance declarations to explicitly merge
 nested traits with the same name, while in \name we mostly need 
-to add the negative cases for the double dispatch (as in
+to add the negative cases for the double dispatch (such as
 \Q@Sum={method Bool equalToNum(Num that){return false;}}@).
 
 
