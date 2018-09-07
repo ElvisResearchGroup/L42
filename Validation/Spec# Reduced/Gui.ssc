@@ -1,0 +1,88 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+internal interface Widget 
+{
+	void dispatch();
+
+	List<Widget> children 
+	{
+		[Peer, ResultNotNewlyAllocated] get
+			ensures Owner.Same(Owner.ElementProxy(result), result);
+	}
+}
+
+internal class PureObject { [Pure] internal PureObject() {} }
+
+internal sealed class Box: PureObject
+{
+	[Peer] [ElementsPeer] internal List<Widget> children; 
+
+	internal void dispatch() modifies this.**; { /*foreach (Widget w in this.children) w.dispatch();*/ }
+
+	[Captured] internal Box(List<Widget> children)
+		requires Owner.Same(Owner.ElementProxy(children), children);
+		ensures Owner.Same(this, children);
+	{
+		Owner.AssignSame(this, children);
+		this.children = children;
+	}
+}
+
+internal sealed class ButtonW: Widget 
+{
+	[Peer] internal Box outer;
+	[Peer] [ElementsPeer] internal List<Widget> children; 
+
+	[Captured] internal ButtonW(Box outer) ensures Owner.Same(this, outer);
+	{
+		List<Widget> children = new List<Widget>();
+		Owner.AssignSame(Owner.ElementProxy(children), outer);
+		Owner.AssignSame(children, outer);
+
+		Owner.AssignSame(this, children);
+		this.children = children;
+		this.outer = outer;
+	}
+
+	public void dispatch() {}
+	List<Widget> Widget.children { get { throw new Exception(); /*return this.children;*/ } }
+}
+
+internal sealed class SafeMovable: Widget 
+{
+	internal SafeMovable() 
+	{
+		List<Widget> list = new List<Widget>();
+		Owner.AssignSame(list, Owner.ElementProxy(list));
+		this(list);
+	}
+
+	[Rep] private readonly Box box;
+
+	internal SafeMovable([Captured] Box box) 
+	{
+		this.box = box;
+	}
+	
+	internal SafeMovable([Captured] List<Widget> children) 
+		modifies children.**;
+		requires Owner.Same(Owner.ElementProxy(children), children);
+	{
+		Box box = new Box(children);
+		ButtonW bl = new ButtonW(box);
+		box.children.Add(bl);
+		this(box);
+	}
+
+	public void dispatch()
+	{ 
+		expose (this) this.box.dispatch();
+	}
+
+	//invariant forall {int i in (0: this.box.children.Count); this.box.children[i].children.Count == 0 };
+	List<Widget> Widget.children { get { throw new Exception(); /*return this.box.children;*/ } }
+
+	static void Main(String[] args) { Console.WriteLine("Hello World!"); }
+}

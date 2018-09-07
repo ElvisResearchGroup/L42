@@ -412,7 +412,63 @@ public class TestFailingTests {
 			,"}");
 	}
 
+	@Test
+	public void testAssignSelf() {
+		tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Nums: Use.Over[Collections.vector(of: Num)] <>< {    "
+	,"    method Nums pop() {"
+	,"        this := this.withoutRight()"
+	,"        return this"
+	,"    }"
+	,"  }"
+	,""
+	,"Main:{"
+	,"    k = Nums[]"
+	,""
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
+	@Test
+	public void testReallyBigNumber() {
+		tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Main:{"
+	,"    var Num i = 1Num"
+	,"    var Num val = 53Num"
+	,"    while (i < 100000000000000000Num) ("
+	,"        val := val * i"
+	,"        i := i + 1Num"
+	,"    )"
+	,"        "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
 	
-	
+	@Test
+	public void testUnitWithNum() {
+	        tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Meter: Units.of(Num)"
+	,""
+	,"Main: {"
+	,""
+	,"    res = (6Meter +4Meter)*2Num"
+	,"    X[res == 20Meter]"
+	,"        "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
 
 }

@@ -1,83 +1,79 @@
 using Microsoft.Contracts;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 using System;
 
-// Note: if I make this a struct instead of a class the rest of the code becomes much simpler
-// I also won't need to override Object.Equals since structs are value-types and hence use bitwise-equality
-// not reference equality
-class Point
-{
-	public double x;
-	public double y;
+class Point {
+	public double x, y;
 	public Point(double x, double y) { this.x = x; this.y = y; }
-
-	// For some insane reason Object.Equals is markes as [Pure, Reads(ReadsAttribute.Reads.Nothing)]
-	// So obviously the override must be, as well. Of course this method fails to verify as
-	// it reads fields on this and othat, but I just marked it as readining literall nothing!
-	[Pure, Reads(ReadsAttribute.Reads.Nothing)] public override bool Equals(Object? othat)
-    {
-	    Point? that = othat as Point;
-	    return that != null && that.x == this.x && that.y == this.y;
-    }
+	
+	[Pure] public virtual bool Equal(Point that) { return that.x == this.x && that.y == this.y;  }
+	[Pure] public virtual bool Equal(double x, double y) { return x == this.x && y == this.y;  }
 }
 
-// Note: neither the '[Peer]' nor the '[Captured]' annotations are needed if I mark 'Point' as a struct
-class Hamster
-{
+class EvilPoint: Point {
+	public EvilPoint() { base(0, 0); }
+	[Pure] public override bool Equal(double x, double y) { return RandomBool(); }
+	public static bool RandomBool() { return new Random().NextDouble() >= 0.5; }
+}
+class Hamster {
 	[Peer] public Point pos;
 	public Hamster([Captured] Point pos) { this.pos = pos; }
 }
+internal class PureObject { [Pure] internal PureObject() { } }
 
-class Cage
-{
+class Cage: PureObject {
 	[Rep] public Hamster h;
-    // Note: if I make Point a struct ElementsRep is not needed here
 	[Rep, ElementsRep] List<Point> path;
 
-	public Cage([Captured] Hamster h, List<Point> path)
-	{
-		 this.h = h;
-		 // I cannot find a way that will verify without using this clone
-		 // No matter what annotations I try and put on this constructor
+	public Cage([Captured] Hamster h, [Captured] List<Point> path)
+		requires Owner.Same(Owner.ElementProxy(path), path);
+	{ this.h = h; this.path = path; }
 
-		 // Making Point a struct however alivates the need for a clone if I instead mark path as '[Captured]'
-		 this.path = new List<Point>(path);
-    }
-
-	invariant this.path.Contains(this.h.pos);
-
-	public void move()
-	{
-	    // Note: only the first and last lines of the block need to be inside the expose
-	    // However since it creates a block, it's easier just to put an expose over everything
-		expose (this)
-		{
-			int index = 1 +  this.path.IndexOf(this.h.pos);
-			if (index >= this.path.Count) index = 0;
-
-			// The static-verifier is dumb, so I need this here
-			// Don't worry, it will be checked at runtime!
-			assume 0 <= index && index < this.path.Count;
-			this.h.pos = this.path[index];
-		}
-	}
+	invariant exists {int i in (0 : this.path.Count); this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
+	public void Move() { 
+		int index = 0;
+		while (index < this.path.Count && !this.path[index++].Equal(this.h.pos.x, this.h.pos.y));
+		assume 0 <= index && index < this.path.Count;
+	expose (this) {
+		this.h.pos = this.path[index % this.path.Count];
+	} }
 }
+
 
 class Program
 {
+[Pure][Verify(false)]
+internal static bool RecordInvariant()
+	ensures result == true;
+	{	
+		StackFrame? sf = new StackTrace().GetFrame(4);
+		if (sf == null)
+			throw new Exception();
+
+		MethodBase? meth = sf.GetMethod();
+		if (meth == null)
+			throw new Exception();
+		Console.WriteLine(meth.DeclaringType.FullName + "." + meth.Name);
+
+		return true;
+	}
   static void Main(String[] args)
   {
-    Console.WriteLine("hello");
-    Cage c = new Cage(new Hamster(new Point(0, 0)), new List<Point> {
-      new Point(0, 0), new Point(2, 2), new Point(0, 0)
-    });
-
+	List<Point> pl = new List<Point>{new Point(0, 0), new Point(0, 1)};
+	Owner.AssignSame(pl, Owner.ElementProxy(pl));
+	Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
+	
+	Console.WriteLine("hello");
+//	p.x = 3;
+//		c.check();
     Assert(c.h.pos.x == 0 && c.h.pos.y == 0);
-    c.move();
+    c.Move();
     Assert(c.h.pos.x == 2 && c.h.pos.y == 2);
-    c.move();
+    c.Move();
     Assert(c.h.pos.x == 0 && c.h.pos.y == 0);
-    c.move();
+    c.Move();
     Assert(c.h.pos.x == 2 && c.h.pos.y == 2);
   }
 

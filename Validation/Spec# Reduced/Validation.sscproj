@@ -2,14 +2,14 @@
 <VisualStudioProject>
   <XEN ProjectType="Local"
      SchemaVersion="1.0"
-     Name="Simple"
-     ProjectGuid="30890310-7fb7-4047-b1f6-2092cbcc2ae1"
+     Name="Validation"
+     ProjectGuid="f2cf1d56-3ff9-4d02-b8b9-7f77d1b6fb15"
     >
     <Build>
       <Settings ApplicationIcon=""
-         AssemblyName="Simple"
+         AssemblyName="Validation"
          OutputType="Exe"
-         RootNamespace="Simple"
+         RootNamespace="Validation"
          StartupObject=""
          StandardLibraryLocation=""
          TargetPlatform="v2"
@@ -18,7 +18,7 @@
         <Config Name="Debug"
            AllowUnsafeBlocks="False"
            BaseAddress="285212672"
-           CheckForOverflowUnderflow="False"
+           CheckForOverflowUnderflow="True"
            ConfigurationOverrideFile=""
            DefineConstants="DEBUG;TRACE"
            DocumentationFile=""
@@ -30,20 +30,14 @@
            RegisterForComInterop="False"
            RemoveIntegerChecks="false"
            TreatWarningsAsErrors="False"
-           WarningLevel="4"
+           WarningLevel="5"
            CheckContractAdmissibility="True"
            CheckPurity="True"
            ReferenceTypesAreNonNullByDefault="True"
            RunProgramVerifier="True"
-           RunProgramVerifierWhileEditing="False"
-           ProgramVerifierCommandLineOptions="/print:HamsterInvariant.boogie"
+           RunProgramVerifierWhileEditing="True"
+           ProgramVerifierCommandLineOptions=""
            AllowPointersToManagedStructures="False"
-           DisableAssumeChecks="False"
-           DisableDefensiveChecks="False"
-           DisableGuardedClassesChecks="False"
-           DisableInternalChecks="False"
-           DisableInternalContractsMetadata="False"
-           DisablePublicContractsMetadata="False"
            />
         <Config Name="Release"
            AllowUnsafeBlocks="false"
@@ -86,9 +80,9 @@
                  SubType="Code"
                  BuildAction="Compile"
                  />
-        <File RelPath="HamsterInvariant.ssc"
+        <File BuildAction="Compile"
                  SubType="Code"
-                 BuildAction="Compile"
+                 RelPath="Tests.ssc"
                  />
       </Include>
     </Files>

@@ -21,19 +21,19 @@ keeping track of how many times an element occurs.  We just add some state and o
 For example in Java one could have:
 \saveSpace\saveSpace
 \begin{lstlisting}
-class Set {...//usual hashmap implementation
+class Set {..//usual hashmap implementation
   private Elem[] hashMap;
-  void put(Elem e) /*body*/
-  boolean isIn(Elem e)/*body*/}
-class Bag extends Set{...//for each element in the hash map,
-  private int[] countMap;// keep track of how many times is there
-  @Override void put(Elem e)/*body*/
-  int howManyTimes(Elem e)/*body*/}
+  void put(Elem e){..}
+  boolean isIn(Elem e){..}}
+class Bag extends Set{ ..//for each element in the hash map,
+  private int[] countMap;// keep track of how many occurrences are in the bag
+  @Override void put(Elem e){..}
+  int howManyTimes(Elem e){..}}
 \end{lstlisting}
 \saveSpace\saveSpace\saveSpace
 \noindent Coding \Q@Bag@ in this way avoids a lot of code
 duplication, but we induced unintended subtyping! 
-Since subclassing implies subtyping, our code breaks the Liskov substitution principle (LSP)~\cite{martin2000design}: not all bags are sets!\footnote{The LSP is often broken in real programs because of the need of inheritance: LSP allows only refinement not extension. Traits provide extension without breaking LSP.}
+Since subclassing implies subtyping, our code breaks the Liskov substitution principle (LSP)~\cite{martin2000design}: not all bags are sets!\footnote{The LSP is often broken in real programs because of the need of inheritance: the LSP allows only refinement not extension. Traits provide extension without breaking the LSP.}
 Indeed, the following is allowed{:}%
 \saveSpace\saveSpace
 \begin{lstlisting}
@@ -67,7 +67,7 @@ A \emph{use}able API should provide only the information relevant to the client.
 In our example, the information \Q@Set<:AbstractSetOrBag@ would be present in the public interface
 of the class \Q@Set@, but such information is not needed to use the class properly!
 Moreover, the original problem is not really solved, but only moved 
-further away. For example, one day  we may need bags that can only store up to 5 copies of the same element.
+further away. For example, one day  we may need bags that can only store up to $5$ copies of the same element.
 We are now at the starting point again:
 \begin{itemize}
 \item either we insert \Q@class Bag5 extends Bag@ and we break the LSP; 
@@ -77,7 +77,7 @@ We are now at the starting point again:
 \Q@abstract class BagN extends AbstractSetOrBag@ and \\*\Q@class Bag5 extends BagN@
 and we modify \Q@Bag@ so that  \Q@class Bag extends BagN@.
 Note that this last solution is changing the public interface of the formerly released \Q@Bag@ class, and
-this may even break retro-compatibility (if a client program was using
+this may even break \MS{backwards}-compatibility (if a client program was using
 reflection, for example).
 \end{itemize}
 
