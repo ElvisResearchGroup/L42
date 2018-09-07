@@ -4,11 +4,11 @@
 In this paper we explained a simple model to 
 radically decouple inheritance/code reuse and subtyping.
 One important point is that our decoupling does not
-makes the language more complex:
+make the language more complex:
 % since
 %interfaces (subtyping without subclassing)
 %exists in both Java and C\#.
-we \emph{replace the concept} of abstract classes with
+we replace the concept of abstract classes with
 the concept of traits, while keeping the concepts of
 interfaces and final classes.
 Concrete non final classes are simply not needed in our model.
@@ -26,7 +26,7 @@ included in the full 42 language.
 
 \begin{itemize}
 \item When the operator fails it needs to provide an error that will be reported to the programmer.
-\item When only well typed code is took as input, if a result is produced,
+\item When only well typed code is taken in input, if a result is produced,
  such result is also well typed.
 \item When the result is not well typed,
 the type error must be traced back to
