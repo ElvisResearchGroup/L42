@@ -7,7 +7,9 @@ using System;
 class Point {
 	public double x, y;
 	public Point(double x, double y) { this.x = x; this.y = y; }
-	[Pure] public virtual bool Equal(double x, double y) ensures true; { return x == this.x && y == this.y;  }
+	
+	[Pure] public virtual bool Equal(Point that) { return that.x == this.x && that.y == this.y;  }
+	[Pure] public virtual bool Equal(double x, double y) { return x == this.x && y == this.y;  }
 }
 
 class EvilPoint: Point {
@@ -30,12 +32,12 @@ class Cage: PureObject {
 	{ this.h = h; this.path = path; }
 
 	invariant exists {int i in (0 : this.path.Count); this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
-	public void Move() { expose (this) {
+	public void Move() { 
 		int index = 0;
 		while (index < this.path.Count && !this.path[index++].Equal(this.h.pos.x, this.h.pos.y));
-		if (index >= this.path.Count) index = 0;
 		assume 0 <= index && index < this.path.Count;
-		this.h.pos = this.path[index];
+	expose (this) {
+		this.h.pos = this.path[index % this.path.Count];
 	} }
 }
 
