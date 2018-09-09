@@ -469,6 +469,105 @@ public class TestFailingTests {
 	,"}"
 	,"}");
 	}
+	
+	@Test
+	public void testTutorial() {
+		tp("{"
+		,"reuse L42.is/AdamTowel02"
+		,"CacheAdamTowel02:Load.cacheTowel()"
+		,"ToDeploy: Resource <>< {reuse L42.is/AdamTowel02"
+		,"  //yes, we repeat the reuse"
+		,"  /*..lots of code here..*/"
+		,"  class method"
+		,"  Void main() {}"
+		,""
+		,"  }"
+		,"Task: Deploy.asExecutableJar("
+		,"  main: Selector\"main()\""
+		,"  location: URL\"..\""
+		,"  ) <>< ToDeploy()"
+		,"Main: {"
+		,"    return ExitCode.normal()"
+		,"}"
+		,"}");
+		}
+	
+	// This makes it to a Java error in the IDE.
+	@Test
+	public void testTutorial2() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"{reuse L42.is/AdamsTowel02"
+	,"ToDeploy: Resource <>< {reuse L42.is/AdamTowel02"
+	,"  //yes, we repeat the reuse"
+	,"  class method"
+	,"  Void main() {}"
+	,""
+	,"  }"
+	,"Task: Deploy.asExecutableJar("
+	,"  main: Selector\"main()\""
+	,"  location: URL\"..\""
+	,"  ) <>< ToDeploy()"
+	,"}"
+	,"Main: {"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
+	@Test
+	public void testEmptyLibraryAsProgram() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"{}"
+	,"}");
+	}
+
+	
+	@Test
+	public void testStringBinaryRepr() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Nums: Use.Over[S\"foo\"._binaryRepr()] <>< {"
+	,"}"
+	,""
+	,"Main: {"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test
+	public void testStringBinaryRepr2() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,""
+	,"A: {"
+	,"    s = S\"foo\""
+	,"    l1 = s._binaryRepr()"
+	,"    l2 = {"
+	,"        class method S foo() { "
+	,"            return \"Foo\""
+	,"        }"
+	,"    }"
+	,"    "
+	,"    return Use.Override[l1]<><l2"
+	,"}"
+	,""
+	,"Main: {"
+	,"    Debug(A.foo())"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
 
 
+	
 }

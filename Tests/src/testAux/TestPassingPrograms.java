@@ -686,5 +686,81 @@ public class TestPassingPrograms {
 	,"}");
 	}
 
+	@Test
+	public void test2dArray() {
+	        tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Nums: Collections.vector(of: Num)"
+	,"Nums2: Collections.vector(of: Nums)"
+	,""
+	,"Main: {"
+	,"    Nums a = Nums[12Num]"
+	,"    Nums b = Nums[13Num]"
+	,"    "
+	,"    Nums2 ab = Nums2[a; b]"
+	,"    "
+	,"    X[ab.size() == 2Size]"
+	,"    "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
+	@Test
+	public void test2dArray2() {
+	        tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Nums: Collections.vector(of: Num)"
+	,"Nums2: Collections.vector(of: Nums)"
+	,""
+	,"Main: {"
+	,"    Nums a = Nums[12Num]"
+	,"    Nums b = Nums[13Num]"
+	,"    "
+	,"    Nums2 ab = Nums2[a; b]"
+	,"    X[ab.val(1Size).val(0Size) == 13Num]"
+	,"        "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
+	@Test
+	public void testMutArray() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Nums: Collections.vector(of: Num)"
+	,"Nums2: Collections.vector(of: Nums)"
+	,""
+	,"Main: {"
+	,"    mut Nums foo = Nums[12Num]"
+	,"    foo.add(left: 33Num)"
+	,"    Debug(foo.toS())"
+	,"    "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test(expected = newTypeSystem.FormattedError.class)
+	public void testNonMutArray() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,"Nums: Collections.vector(of: Num)"
+	,"Nums2: Collections.vector(of: Nums)"
+	,""
+	,"Main: {"
+	,"    Nums foo = Nums[12Num]"
+	,"    foo.add(left: 33Num)"
+	,"    Debug(foo.toS())"
+	,"    "
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
 
 }
