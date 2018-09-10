@@ -103,11 +103,10 @@ class Cage: PureObject {
   invariant exists {int i in (0 : this.path.Count);
     this.path[i]
 		.Equal(this.h.pos.x, this.h.pos.y)};
-  void Move() { expose (this) {
+  void Move() {
     int i = 0;
-    while(i<this.path.Count && !this.path[i++]
-		.Equal(this.h.pos.x, this.h.pos.y));
-    this.h.pos = this.path[i%this.path.Count];
+    while(i<path.Count && !path[i].Equal(h.pos.x,h.pos.y)){i++;}
+    expose(this){ this.h.pos = this.path[i%this.path.Count]; }
   } } }
 \end{lstlisting}
 
