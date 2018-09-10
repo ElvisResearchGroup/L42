@@ -5,10 +5,10 @@ made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and ex
 % \IO{[dynamic class loading]},
 
 \IO{\emph{Type modifiers} (TMs), as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently, a new design for them} has emerged that radically improves their usability.
-Three different research languages are being independently developed relying on this new design: {M\#}\footnote{Microsoft is quite secretive about their M\# project, we believe M\# is the language described in ~\cite{?}.}~\cite{?}, Pony~\cite{?} and L42~\cite{?}.
-These project are reasonably large: several millions lines of M\# code exists and it is used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,?}.
+Three different research languages are being independently developed relying on this new design: The language of Gordon et. al.~\cite{?}, Pony~\cite{?} and L42~\cite{?}.
+These project are reasonably large: several millions lines of code written in Gordon et. al.'s language exist and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,?}.
 
-While we focus on the specific TMs provided by L42,Pony and M\#, type modifiers
+While we focus on the specific TMs provided by L42, Pony and Gordon et. al., type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
  allowing static reasoning of mutability and aliasing properties of objects.
 With slightly different names and semantics, the four most common modifiers for object references are:
@@ -117,7 +117,7 @@ be able to encapsulate those data structures in an immutable or capsule referenc
 
 
 The \Q@capsule@ modifier (sometimes called isolated/iso) is possibly the one whose details differ the most in literature. Here we refer to its interpretation of~\cite{GordonEtAl12} that introduced the concept of recovery/promotion.
-This concept is the basis for the M\#, L42 and Pony type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. 
+This concept is the basis for L42, Pony, and Gordon et. al.'s type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. 
 
 %\begin{itemize}
 %	\item A capsule local variable can only be used once. %as \Q@capsule@ or \Q@mut@.
@@ -128,7 +128,7 @@ This concept is the basis for the M\#, L42 and Pony type systems~\cite{GordonEtA
 % \end{itemize}
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Both capsule/isolated fields and variables in M\# and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}, i.e reading a field replaces the value with null and local-variables can only be once. In contrast, capsule fields in L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require destructive reads, but provide a sightly different guarantees with respect to capsule local variables, where the ROG of a \Q@capsule@ field can be referenced from outside but only in controlled ways.
+Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Both capsule/isolated fields and variables in Pony and Gordon et. al.'s rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}, i.e reading a field replaces the value with null and local-variables can only be once. In contrast, capsule fields in L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require destructive reads, but provide a sightly different guarantees with respect to capsule local variables, where the ROG of a \Q@capsule@ field can be referenced from outside but only in controlled ways.
 %while M\# and Pony requires both capsule fields and capsule variables to be `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph.
 
 %Destructive reads would be a bad idea for validation as they would likely invalidate objects.
@@ -165,7 +165,7 @@ if a \Q@try-catch@ block caught an exception, the state visible before execution
 % while we need it to soundly capture invariant failures.
 L42 already enforces SES for unchecked exceptions.\footnote{
 This is needed to support safe parallelism. Pony takes a more drastic approach and do not support exceptions in the first place. 
-We are not aware of how M\# handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.
+We are not aware of how Gordon et. al. handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
 }
 L42 enforces SES using TMs in the following way:\footnote{Transactions are another way to enforce strong-exception safety, but they require specialized and costly run time support.}\footnote{A formal proof on why those restriction are sufficient is presented in the work of Lagorio~\cite{?}.}
@@ -208,11 +208,11 @@ The ability to catch and recover from such failures is extremely useful as it al
 % Intro to OCs
 
 \textit{Object capabilities (OCs):}
-OCs, which M\#, L42 and Pony have, are a widely used~\cite{???} programming style that allows associating resources with objects. \MS{When} this style
+OCs, which L42, Pony, and Gordon et. al.'s work have, are a widely used~\cite{???} programming style that allows associating resources with objects. \MS{When} this style
 is respected, code \MS{that} does not possess an alias to the object cannot use the resource.
 
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in M\#, use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and native calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead by instance methods of classes whose instantiation is kept under control. OCs are typically not part of the type system nor do they require special runtime support beyond that provided by a memory safe language. However languages, like L42, that allow user code to perform native calls without going through the standard library, require some minimal type system support to enforce the OCs pattern over such calls.
+Here, as in Gordon et. al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and native calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead by instance methods of classes whose instantiation is kept under control. OCs are typically not part of the type system nor do they require special runtime support beyond that provided by a memory safe language. However languages, like L42, that allow user code to perform native calls without going through the standard library, require some minimal type system support to enforce the OCs pattern over such calls.
  
 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}

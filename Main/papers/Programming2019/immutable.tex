@@ -103,19 +103,21 @@ Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since
 On a first look this may seem an open contradiction
 with the aim of this work, however only calls to \Q@invariant@ inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \Q@invariant@,
 \Q@this@ is guaranteed to be valid.
-However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantee of our invariant protocol%, this is the reason of our simple restriction that \Q@invariant@ may only use \Q@this@ to access fields.\footnote
-{
+However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantee of our invariant protocol.
 In L42 we implemented a sound relaxation of this restriction, by allowing instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid.
-In some sense, those inlined methods and field accesses can be thought as macro-expanded.}
+In some sense, those inlined methods and field accesses can be thought as macro-expanded, and hence are not dynamically dispatched.
 Finally,
-the code of \validate{} can not access \Q@mut@ fields, because their content can be changed by unrelated code.
+the code of \Q@invariant@ can not access \Q@mut@ fields, because their content can be changed by unrelated code.
 
 %With the modifiers presented so far, \validate{} can only access \Q@imm@ fields.
 %We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
 
 
 L42 does not have \Q@extends@ so we have not handled inheriting invariants.
-In a language with sub-classing, runtime-invariant checks would need to occur on the base-class subobjects, before doing the check on a derived class. In addition, the runtime would only do an invariant check after construction of complete objects.
+In a language with sub-classing, invariant's would implicitly start with a check that \Q@super.invariant()@ returns \Q@true@.
+Note that \Q@invariant@ checks are not performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions.
+
+%In a language with sub-classing, runtime-invariant checks would need to occur on the base-class subobjects, before doing the check on a derived class. In addition, the runtime would only do an invariant check after construction of complete objects.
 
 % containing the \Q@invariant@ method has a super-class, we would automatically check \Q@super.invariant()@ at the beginning of the sub-class’s \Q@invariant@ method.
 %, this is required as otherwise `invalid' objects could easily be created by simply overriding \validate.
@@ -133,36 +135,38 @@ In a language with sub-classing, runtime-invariant checks would need to occur on
 
 \section{Validating immutable state}
 \label{s:immState}
-In this section we consider validation over fields of \Q@imm@ types.\footnote{
-In a real language, for conciseness one could make the \Q@imm@ modifier the default, allowing it to be omitted and our \Q@Person@ example class would only use 3 type modifiers; however we explicitly use it here for clarity.
-}
-In the next section we expand our technique.
+In this section we consider validation over fields of \Q@imm@ types.
+%\footnote{
+%In a real language, for conciseness one could make the \Q@imm@ modifier the default, allowing it to be omitted and our \Q@Person@ example class would only use 3 type modifiers; however we explicitly use it here for clarity.
+%}
+In the next section we detail our technique to \Q@capsule@ fields.
 
 In the following code \Q@Person@ has a single immutable (non final) field \Q@name@:
 \begin{lstlisting}
 class Person {
-  read method imm Bool validate() {return !name.isEmpty();}
-  private imm String name;
-  read method imm String name() {return this.name;}
-  mut method imm String name(imm String name) {this.name = name;}
-  Person(imm String name) {this.name = name;} }
+  read method Bool invariant() {return !name.isEmpty();}
+  private String name;//the default modifier imm is applied here
+  read method String name() {return this.name;}
+  mut method String name(String name) {this.name = name;}
+  Person(String name) {this.name = name;} }
 \end{lstlisting}
-\Q@Person@, only has immutable fields and the constructor only uses \Q@this@ to access/update fields.%; we say such a class is \emph{simple}.
+\Q@Person@ only has immutable fields and the constructor only uses \Q@this@ to access/update fields.
+%; we say such a class is \emph{simple}.
 %\Q@Person@, only has immutable fields and the constructor 
 %uses the parameters to directly initialize (all) the fields.
 % We say such a class is \emph{simple}.%
 %\footnote{
 %We consider only standard contractors for simplicity of exposition.
 %More complex constructors could be supported, provided that \Q@this@ is only used to access fields, we do discuss them for simplicity.}
-The difference with respect to UML DataTypes 
+% The difference with respect to UML DataTypes 
 %immutable types (like UML DataTypes)
 %UML datatypes are aclass property. immutable types are often an instance one (so no final fields) 
- is that fields are not required to be final, thus the object can change state during its lifetime. This means that the ROGs of all the \emph{fields} are immutable, but the object itself may be mutable.
+Note that the \Q@name@ field is not final, thus \Q@Person@ objects can change state during their lifetime. This means that the ROGs of all \Q@Person@s' \emph{fields} are immutable, but they themselves may be mutable.
 %Of course UML DataTypes
 %immutable types
 %No, a type is not a class
 % are just a special case of simple classes.
-Validation for such a class can easily be enforced by generating checks on the result of \validate, immediately after each field update, and at the end of the constructor%
+We can easily enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@ immediately after each field update, and at the end of the constructor.%
 %\footnote{Since the constructor only initialises fields; as with the \validate{} method itself, we allow field uses since \Q@this@ is not directly reached.}
 %would require the initial/default value of \Q@this@ to be valid.}
 :
@@ -173,17 +177,14 @@ Validation for such a class can easily be enforced by generating checks on the r
 %There are many interpretations for your comment
 %why you deleted my code comments?
 \begin{lstlisting}
-class Person {
-  read method imm Bool validate() {return !name.isEmpty();}
-  private imm String name;
-  read method imm String name() {return this.name;}
-  mut method imm String name(imm String name) {
+class Person { .. // Same as before
+  mut method String name(String name) {
     this.name = name; // check after field update
-    if (!this.validate()) {throw new Error(...);} 
+    if (!this.invariant()) {throw new Error(...);} 
   }
-  Person(imm String name) {
+  Person(String name) {
     this.name = name; // check at end of constructor
-    if (!this.validate()) {throw new Error(...);}
+    if (!this.invariant()) {throw new Error(...);}
 }} // Generated code, not directly written by the programmer
 \end{lstlisting}
 %... $\MComment{validation error}$ 
@@ -191,7 +192,7 @@ class Person {
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \validate{} method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-\noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the validation of the \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
+\noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
 relaxation of TM or OC breaks our validation. 
 
 \loseSpace
@@ -204,22 +205,22 @@ Allowing \validate{} to (indirectly) use an object capability could allow for it
 \end{itemize}
 
 \noindent For example consider this simple and contrived (mis)use of person:
-\begin{lstlisting}
+\begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {
   @Override read method Bool isEmpty() {
     // Creates a new capability object out of thin air
     return new Random().bool();
 } }
-...
-imm method mut Person createPersons(imm String name){
-  // we can not be sure wether name is an `EvilString'
-  mut Person schrodinger1 = new Person(name); // exception here?
-  mut Person schrodinger2 = new Person(name); // what about here?
-  ...}
+..
+method mut Person createPersons(String name) {
+  // we can not be sure wether name is an EvilString
+  mut Person schrodinger = new Person(name); // exception here?
+  assert schrodinger.invariant(); // will this fail?
+  ..}
 \end{lstlisting}
-Despite the code for \Q@Person.validate()@ intuitively looking correct and deterministic, the above calls to it are not. Obviously this breaks any reasoning and makes our validation unsound. 
-In particular, note how in the presence of dynamic class loading, 
-we can not make any assumption on the dynamic type of \Q@name@.
+%//  mut Person schrodinger2 = new Person(name); // what about here?
+Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
+In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be.
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
@@ -229,37 +230,35 @@ we can not make any assumption on the dynamic type of \Q@name@.
 \REVComm{Suppose we relax our mutation rules, by allowing interior mutability
 as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:}{2}{Explain why Rust/Javari allow unsafe features}
 \begin{lstlisting}
-class AtomicBool {
-  imm method imm Void store(imm Bool val){
-    ... // Mutate through an imm reciever
-  }
-}
-
-class NastyString extends String {
-  imm AtomicBool evil = new AtomicBool(false);
-  imm method imm Void nasty() {
-    this.evil.store(true); // this imm method can do mutation
-  }
-
+class MagicCounter {
+  method Int increment(){
+    //Magic mutation through an imm reciever, equivalent to i++
+    }}
+class NastyS extends String {..
+  MagicCounter evil = new MagicCounter(0);
   @Override read method Bool isEmpty() {
-    return this.evil.load() ? false : super.isEmpty();
-  }
-  ...
-}
+   return this.evil.increment() != 2; 
+   } }
 ...
-imm NastyString name = new NastyString("bob");
-imm Person person = new Person(name); // person is valid
-name.nasty(); // mutate the ROG of person, without it noticing
-// person is now invalid!
+NastyS name = new NastyS("bob"); //TMs belive name's ROG is imm
+Person person = new Person(name); // person is valid, counter=1
+name.increment(); //counter=2, person is now broken
+person.invariant(); // returns false! //counter=3
+person.invariant(); // returns true //counter=4
 \end{lstlisting}
 
-In this example we use \Q@AtomicBool@ as a back-door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself.
+In this example we use \Q@MagicCounter@ as a back-door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself.
 %mine: yes, too strong: For validation we need the language to guarantee true deep immutability.
 %your: just points outside: It would require some powerful static or dynamic analysis to keep track of every case the ROG of \Q@Person@ could be indirectly mutated, and insert validity checks appropriately, however ensuring deep mutability trivialises this for simple classes.
 
+In this example, we have shown how such back-doors can be used to break determinism of  \Q@invariant@ methods: by allowing the invariant to store and read information about previous calls.
+% Allowing such back-doors could also be used to break the determinism of the \validate{} method:
+% information can be stored about previous calls.
+% In this example you can see how the invariant get to be \Q@false@ and then \Q@true@ again.
 
-Allowing such back-doors could also be used to break the determinism of the \validate{} method: they may store and read information about previous calls.
-
+Back-doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
+briefly discuss how a few trusted language primitives can be used to perform caching and other needed optimizations
+without the need of back-doors.
 %In our simple example, \Q@Person@ objects can be mutated using the setter, and exposed using the getter.
 %We may consider the getter to be safe since in modern languages we expect strings to be immutable objects.
 %\footnote{While we can update the field \Q@name@ to point to another string, we cannot mutate the string object itself.
@@ -311,21 +310,25 @@ Allowing such back-doors could also be used to break the determinism of the \val
 
 \loseSpace
 \noindent\textit{Strong Exception Safety:}
-The ability to catch and recover from validation failures is extremely useful as it allows the program to take corrective action.
-This may be implemented with a conventional \Q@try-catch@, since violations are represented by throwing unchecked exceptions. \REVComm{Due to the guarantees of strong exception safety, the only trace that the invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias})}{3}{\label{SES2} [see footnote \ref{SES1}]}.
+The ability to catch and recover from invariant failures is extremely useful as it allows programs to take corrective action.
+Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try-catch@.
+%\REVComm{
+%	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
+	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked-exceptions are immutable, they can not contain an \Q@read@ reference to any object (such as the \Q@this@ reference seen be \Q@invariant@). Thse two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 
-However, if instead we chose not to enforce strong exception safety, an invalid object could be easily made reachable:
+%}{3}{\label{SES2} [see footnote \ref{SES1}]}.
+However, if instead we chose not to enforce strong exception safety, an invalid object could easily be made reachable:
 \saveSpace
 \begin{lstlisting}[morekeywords={assert}, escapechar=\%]
 mut Person bob = new Person("bob");
 // Catch and ignore validation failure:
-try {bob.name("");} catch (imm Error t){}
-assert bob.name().isEmpty(); // now we have a reachable invalid object!
+try {bob.name("");} catch (Error t) { }
+assert bob.name().isEmpty(); // bob is invalid!
 \end{lstlisting}
 \saveSpace
-As you can see, recovering from a validation failure in this way is unsound and breaks the guarantees of validation.
-Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
-Since calls to \validate{} may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break validation.
+As you can see, recovering from an invariant failure in this way is unsound and would break our protocol.
+%Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
+Since calls to \validate{} may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.
 
 %LATER: This means that we could relax our Strong Exception Safety to hold only on unchecked exceptions (by restricting only \Q@try-catch@ blocks that capture unchecked exceptions.
 
