@@ -2,13 +2,12 @@ using System;
 using Microsoft.Contracts;
 using System.Collections.Generic;
 
-
 internal sealed class Box: Gui.DispatchTrait 
 {
 	internal int left;
 	internal int top;
 
-	public override void process(Gui.Event event_) {} 
+	public override void process(Gui.Event event_) { } 
 
 	[Captured] internal Box(string id, List<Gui.Widget> children, int left, int top)
 		requires Owner.Same(Owner.ElementProxy(children), children);
@@ -20,78 +19,55 @@ internal sealed class Box: Gui.DispatchTrait
 	}
 }
 
-
-internal sealed class ButtonW: Gui.DispatchTrait, Gui.Widget 
-{
-	[Peer] internal Box outer;
-	internal int leftDelta;
-	internal int topDelta;
-
-	[Pure] public override string ToString() { return this.id; }
-
-	public override void process(Gui.Event event_)
-	{
-		Gui.Debug("Button pressed: " + this.id);
-		this.outer.left = this.outer.left + this.leftDelta;
-		this.outer.top = this.outer.top + this.topDelta;
-	}
-
-	internal static ButtonW Left(Box outer, int scale)
-		ensures Owner.Same(result, outer);
-	{
-		return new ButtonW(outer, scale, "_Left", 0, 13, 6, 6, -5, 0);
-	}
-	internal static ButtonW Right(Box outer, int scale) 
-		ensures Owner.Same(result, outer); 
-	{ 
-		return new ButtonW(outer, scale, "_Right", 26, 13, 6, 6, 5, 0); 
-	}
-	internal static ButtonW Up(Box outer, int scale)
-		ensures Owner.Same(result, outer); 
-	{
-		return new ButtonW(outer, scale, "_Up", 13, 0, 6, 6, 0, -5);
-	}
-	internal static ButtonW Down(Box outer, int scale)
-		ensures Owner.Same(result, outer); 
-	{
-		return new ButtonW(outer, scale, "_Down", 13, 26, 6, 6, 0, 5);
-	}
-
-	[Captured] ButtonW(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta)
-		ensures Owner.Same(this, outer);
-	{
-		List<Gui.Widget> children = new List<Gui.Widget>();
-		Owner.AssignSame(Owner.ElementProxy(children), outer);
-		Owner.AssignSame(children, outer);
-
-		base(outer.id + suffix, children);
-		this._top = top*scale;
-		this._left = left*scale;
-		this._width = width*scale;
-		this._height = height*scale;
-
-		this.outer = outer;
-		this.leftDelta = leftDelta;
-		this.topDelta = topDelta;
-	}
-
-	public int left { get { return this._left; } }
-	public int top { get { return this._top; } }
-	public int width { get { return this._width; } }
-	public int height { get { return this._height; } }
-	public string colour { get { return "grey"; } }
-
-	// Spec# (unlike C#) does not have auto implemented properties
-	readonly int _left, _top, _width, _height;
-
-	// Can't inherit Gui.Widget.left.get from DispatchTrait since it dosn't implement Gui.Widget
-	string Gui.Widget.id { get { return this.id; } }
-	List<Gui.Widget> Gui.Widget.children { get { return this.children; } }
-}
-
 internal sealed class SafeMovable: Gui.Widget 
 {
 	[Rep] private readonly Box box;
+
+	internal static Gui.Button Left(Box outer, int scale)
+		ensures Owner.Same(result, outer);
+	{
+		return MakeButton(outer, scale, "_Left", 0, 13, 6, 6, -5, 0);
+	}
+	internal static Gui.Button Right(Box outer, int scale) 
+		ensures Owner.Same(result, outer); 
+	{ 
+		return MakeButton(outer, scale, "_Right", 26, 13, 6, 6, 5, 0); 
+	}
+	internal static Gui.Button Up(Box outer, int scale)
+		ensures Owner.Same(result, outer); 
+	{
+		return MakeButton(outer, scale, "_Up", 13, 0, 6, 6, 0, -5);
+	}
+	internal static Gui.Button Down(Box outer, int scale)
+		ensures Owner.Same(result, outer); 
+	{
+		return MakeButton(outer, scale, "_Down", 13, 26, 6, 6, 0, 5);
+	}
+
+	internal class MoveAction: Gui.Action {
+		[Peer] Box outer;
+		int leftDelta, topDelta;
+		[Captured] internal MoveAction(Box outer, int leftDelta, int topDelta) 
+			ensures Owner.Same(this, outer);
+		{ 
+			Owner.AssignSame(this, outer);
+			this.outer = outer;
+			this.leftDelta = leftDelta;
+			this.topDelta = topDelta;
+		}
+		public void apply(Gui.Event event_) 
+		{
+			Debug.Print("Button pressed");
+			outer.left = outer.left + leftDelta;
+			outer.top  = outer.top + topDelta;
+		}
+	}
+
+	internal static Gui.Button MakeButton(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta)
+		ensures Owner.Same(result, outer);
+	{
+		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta));
+	}
 
 	internal SafeMovable(int width, int height, string colour, [Captured] Box box) 
 	{
@@ -108,10 +84,10 @@ internal sealed class SafeMovable: Gui.Widget
 		Box box = new Box(id, children, left, top);
 
 		// I have to put these in variables (and not pass them directly to box.children.Add) otherwise boogie complains
-		ButtonW bl = ButtonW.Left(box, height/32);
-		ButtonW br = ButtonW.Right(box, height/32);
-		ButtonW bu = ButtonW.Up(box, height/32);
-		ButtonW bd = ButtonW.Down(box, height/32);
+		Gui.Button bl = Left(box, height/32);
+		Gui.Button br = Right(box, height/32);
+		Gui.Button bu = Up(box, height/32);
+		Gui.Button bd = Down(box, height/32);
 
 		box.children.Add(bl);
 		box.children.Add(br);
@@ -135,7 +111,7 @@ internal sealed class SafeMovable: Gui.Widget
 	public int height    { get { return this._height; } }
 	public string colour { get { return this._colour; } }
 
-	invariant Gui.Debug("Invariant #") && forall {int i in (0: this.box.children.Count);
+	invariant Debug.IncrementCounter("Invariant") && forall {int i in (0: this.box.children.Count);
 		   Inside(this.box.children[i], this._width, this._height) 
 		&& forall {int j in (0: this.box.children.Count);
 			// WTF? Without this I get a verification error: '
