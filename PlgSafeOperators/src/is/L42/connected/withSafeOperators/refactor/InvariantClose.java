@@ -251,7 +251,7 @@ public class InvariantClose {
   private void delegateState() throws ClassUnfit {
     // Make the constructor
     MethodWithType fwdK = this.mutK.withMs(this.mutK.getMs().withUniqueNum(uniqueNum))
-        .withMt(this.mutK.getMt().withTs(tools.Map.of(TypeManipulation::fieldToFwd, this.mutK.getMt().getTs())));
+        .withMt(this.mutK.getMt().withTs(tools.Map.of(TypeManipulation::fieldToFwd, this.mutK.getMt().getTs())).withRefine(false));
 
     this.addMember(fwdK);
 
@@ -277,8 +277,7 @@ public class InvariantClose {
       }
 
       // The new (real) accessor will have a unique number
-      MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum));
-
+      MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum)).withMt(mwt.getMt().withRefine(false));
       if (this.stupid){
         this.addMember(delegate(true, mwt, newMwt));
         }// Exposer, which should have already been dealt with
@@ -487,7 +486,7 @@ public class InvariantClose {
 
       ExpCore newInner = this.lift(mwt.getInner());
       MethodSelector newMs = mwt.getMs().withUniqueNum(uniqueNum);
-      return mwt.withInner(newInner).withMs(newMs);
+      return mwt.withInner(newInner).withMs(newMs).withMt(mwt.getMt().withRefine(false));
     }
 
     @Override
