@@ -23,7 +23,7 @@ GuiLib:{class method Library (){
       Size width
       Size height
       S color
-      read method read List children()
+      read List children
       This$: {interface implements Concept.Base}
       List: Collections.vector(ofMut:This$)
       mut method Bool dispatch(Event that)
@@ -51,10 +51,9 @@ GuiLib:{class method Library (){
       method color() S"gray"
       method children() Widget.List[]
       method toS() this.id()
-      mut method Void process(Event event) this.#action()(event:event)
       method dispatch(that) {
         if this.id()==that.targetId() (
-          this.process(event:that)
+          this.#action()(event:that)
           return Bool.true()
           )
         return Bool.false()
@@ -91,13 +90,18 @@ GuiLib:{class method Library (){
         return this.format(div:that)
         }
       read method S format(read Button button)
-        S"<button id='"[button.id()]"' onclick="[S.doubleQuote()]"event42('"[button.id()]"::Pressed::more')"[S.doubleQuote()]" style='"[]
-          "position: absolute;"[]
-          "left: "[button.left()]"px;"[]
-          "top: "[button.top()]"px;"[]
-          "height: "[button.height()]"px;"[]
-          "width: "[button.width()]"px;"[]
-          "'></button>"
+        S"<div id='"[button.id()]"' class=hhBut "[]
+          " onMouseOver="[S.doubleQuote()]"this.style['background-color']='pink'"[S.doubleQuote()]
+          " onMouseOut="[S.doubleQuote()]"this.style['background-color']='gray'"[S.doubleQuote()]
+          " onclick="[S.doubleQuote()]"event42('"[button.id()]"::Pressed::more')"[S.doubleQuote()]
+          " style='"[]
+          " position: absolute;"[]
+          " left: "[button.left()]"px;"[]
+          " top: "[button.top()]"px;"[]
+          " height: "[button.height()]"px;"[]
+          " width: "[button.width()]"px;"[]
+          " background-color: gray;'>"[]
+          "</div>"
       read method S format(read Widget div)
         S"<div id='"[div.id()]"' onclick="[S.doubleQuote()]"event42('"[div.id()]"::Pressed::more')"[S.doubleQuote()]" style='"[]
           "position: absolute;"[]
@@ -112,7 +116,10 @@ GuiLib:{class method Library (){
           )]"</div></div>"
 
       mut method Void draw(read Widget that)
-        this.set(S"<div id='Top' style='"[]
+        this.set(S"<style>"[]
+            "div.hBut:hover {-fx-background-color: white;}"[]
+            "</style>"[]
+            "<div id='Top' style='"[]
             "position: relative; height: 750px; width: 750px; border: solid black 2px;'>"
             [this.format(that)]"</div>"
           id:S"Top")

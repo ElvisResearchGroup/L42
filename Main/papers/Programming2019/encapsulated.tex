@@ -177,13 +177,9 @@ l.addHeavy(f); // We pass another reference to `l' through f
 %At first glance it mayseem from
 
 \saveSpace
-\section{Patterns for flexible verification: case studies}
+\section{Case studies}
 \label{s:patterns}
 \saveSpace
-Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
-patterns allows to circumvent some of the apparent limitations of our system.
-
-
 
 %interface Foo{ma mb}
 %
@@ -233,13 +229,13 @@ patterns allows to circumvent some of the apparent limitations of our system.
 %  validate
 %}
 
-\noindent\textit{The box pattern:}
-At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs. However, this is not the case. The trick is to follow a common pattern in static verification, and to encapsulate all the relevant mutating state into an encapsulated sub-object
-that is never exposed to the users.
-The box pattern let's us introduce our first case study, where both L42 and Spec\# requires
-the box patten in order to work, and where the visible state semantic would have unacceptable performance.
-%, such as a doubly linked list:
-In our example,
+\noindent\textit{Gui and the box pattern:}
+%Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
+%patterns allows to circumvent some of the apparent limitations of our system.
+%
+At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs.
+We show that this is not the case by encoding
+an example of a Gui where the graphic representation of the widgets are guaranteed to not overlap.
 \Q@SafeMovable@ is a \Q@Widget@ whose position can be dynamically changed.
 \Q@Widget@s can contains more widgets as children.
 The invariant of a \Q@SafeMovable sm@
@@ -345,7 +341,29 @@ This gave us a total of NUM tokens, that is more then 3 times the amount needed 
 Moreover, in L42 we only use 2 different kinds of annotations (mut/capsule), while in Spec\# we use ... kinds of annotations. This corroborate our statement that our system is easier to use for programmers that are not experts in sw verification.
 Counting the number of characters we get .... against ... in L42.  
 
+Our design, using an inner \Q@Box@ object is a common pattern in static verification: to encapsulate all the relevant mutating state into an encapsulated sub-object
+that are never exposed to the users.
+We also found natural to use the box pattern
+also in Spec\# requires.
+This dramatically simplifies the handling of the circular object graph, where the button event can refer back, in order to change the widget position.
+
 We encoded our Widget example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier [?].
+
+\noindent\textit{Family, a worst case scenario for L42}
+For our second case study, we wished to make an example where the performance of L42 and the conventional approach was similar. We forged an example when a \Q@Family@ has a list of parents and a list of children;
+all the childrens need to be younger then their parents and every \Q@Person@ need to have a non empty name and a positive age.  
+We model the pass of time with a \Q@processDay@ method, and we simulate $3$ years of life (that is, $3\times365$ days) of a family of $4$.
+The age of a \Q@Person@ grow when its birthday is processed.
+Notably, \Q@processDay@ is a \Q@mut@ method that can potentially mutate any person in the system, thus
+L42 have to run a lot of invariant checks. The object graph here is very shallow: the \Q@Family@ holds the \Q@Person@s and that is it.
+However, even in this case we get about $10$ times less invariant calls: Num in the conventional approach and Num in L42.
+
+\noindent\textit{Expressiveness:}
+Finally, in our this third case study we 
+shown that even if we do not aim to expressiveness, but to simplicity, soundness and efficiency, we are still able to express a reasonable amount of cases.
+We encoded in L42 all the examples present in papers~\cite{??}.
+We can express all the examples except ....
+Again, we quantify the annotation burden and we discover....
 
 
 \noindent\textit{The transform pattern:}
