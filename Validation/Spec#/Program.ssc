@@ -76,7 +76,7 @@ internal class MainC
 	{
 		List<Gui.Widget> list = new List<Gui.Widget>{makeA()};
 		Owner.AssignSame(list, Owner.ElementProxy(list));
-		return new SafeMovable(700, 700, "green", new Box("Green", list, 2, 2));
+		return new SafeMovable(700, 700, "green", "Green", list, 2, 2);
 	}
 
 	private static string[] events() 
