@@ -20,7 +20,7 @@ import tools.Assertions;
 
 public class Coherence
 {
-  static String removeHash(String s) 
+  static String removeHash(String s)
   {
     if (s.startsWith("#")) return s.substring(1);
     else return s;
@@ -155,7 +155,7 @@ public class Coherence
     if (mwt.getMs().getUniqueNum() != uniqueNum)
       error(mwt, "All abstract state operations must have the same unique number.");
     if (!fieldNames.contains(x))
-      error(mwt, "Getter for unknown field.");
+      error(mwt, "Getter for unknown field (" + x + ")");
 
     // mdf != class;
     assert !(mwt.getMdf().equals(Mdf.Class));
@@ -302,7 +302,7 @@ public class Coherence
   }
 }
 
-class BinaryMultiMap<K, V> 
+class BinaryMultiMap<K, V>
 {
   private Map<K, Set<V>> true_ = new HashMap<>();
   private Map<K, Set<V>> false_ = new HashMap<>();

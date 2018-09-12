@@ -38,16 +38,18 @@ internal partial class Gui
 			[Peer, ResultNotNewlyAllocated] get
 				ensures Owner.Same(Owner.ElementProxy(result), result);
 		}
-		bool dispatch(Event that);
+		bool dispatch(Event that) modifies this.**;
 	}
 
+	//internal delegate void Action(Event);
+	internal interface Action { void apply(Event event_) modifies this.**; }
 	// I need to define this class since the constructor for System.Object is not declared as 'Pure'
 	// This means that the static analayser thinks calls to 'base()' on a class deriving from Object could mutate memory.
 	// This particularlly means that after that call (which is implicitly the first thing in a constructor)
 	// A constructors precondition can no longer be assumed
 	internal class PureObject { [Pure] internal PureObject() {} }
 
-	internal abstract partial class DispatchTrait: PureObject
+	internal abstract class DispatchTrait: PureObject
 	{
 		internal string id; 
 		[Peer] [ElementsPeer] internal List<Widget> children; 
@@ -79,5 +81,42 @@ internal partial class Gui
 			this.children = children;
 			this.id = id; 
 		}
+	}
+
+	internal class Button: Widget {
+		[Captured] internal Button(string id, int left, int top, int width, int height, Action action) 
+				ensures Owner.Same(this, action); {
+			Owner.AssignSame(this, action);
+			this._id = id;
+			this._left = left;
+			this._top = top;
+			this._width = width;
+			this.action = action;
+			this._children = new List<Widget>();
+		}
+		[Peer] readonly Action action;
+		public string colour { get { return "gray"; } }
+		[Pure] public override String ToString() { return this.id; }
+		
+		public bool dispatch(Event that)
+		{
+			if (this.id == that.targetId)
+			{
+				this.action.apply(that);
+				return true;
+			}
+			return false;
+		}
+
+		[Peer][ElementsPeer] List<Widget> _children; 
+		public int left { get { return this._left; } }
+		public int top { get { return this._top; } }
+		public int width { get { return this._width; } }
+		public int height { get { return this._height; } }
+		public string id { get { return this._id; } }
+		public List<Widget> children { get { return this._children; } }
+
+		readonly int _left, _top, _width, _height;
+		readonly string _id;
 	}
 }

@@ -5,12 +5,6 @@ using Microsoft.Contracts;
 
 [Immutable] internal partial class Gui
 {
-	[Pure] [Verify(false)] internal static bool Debug(string s)
-		ensures result == true;
-	{
-		Console.Error.WriteLine(s); //Verification Error: method invocation may violate the modifies clause of the enclosing method
-		return true;
-	}
 	internal readonly string id;
 
 	internal void display(string title, int x, int y, Widget body, string[] events)
@@ -55,24 +49,29 @@ using Microsoft.Contracts;
 		return children.ToString();
 	}
 
+	[Pure] string format(Widget that) {
+		Button? b = that as Button;
+		if (b != null) return formatB(b);
+		return formatW(that);
+	}
 	// This horrible looking stream of functions is just to make verification faster compared to putting it all in one function.
-	[Pure] string format(Widget that)     { return format1("<div id='" + id + "' onclick=\"event42('" + id + "::Pressed::more')\" style='position: absolute;", that); }
-	[Pure] string format1(string res, Widget that) { return format2(res + "left: " + that.left + "px;",               that); }
-	[Pure] string format2(string res, Widget that) { return format3(res + "top: " + that.top + "px;",                 that); }
-	[Pure] string format3(string res, Widget that) { return format4(res + "height: " + that.height + "px;",           that); }
-	[Pure] string format4(string res, Widget that) { return format5(res + "width: " + that.width + "px;",             that); }
-	[Pure] string format5(string res, Widget that) { return format6(res + "background-color: " + that.colour + ";'>", that); }
-	[Pure] string format6(string res, Widget that) { return res + "<div style='position: relative;'>" + formatChildren(that) + "</div></div>"; }
+	[Pure] string formatW(Widget that)     { return formatW1("<div id='" + that.id + "' onclick=\"event42('" + that.id + "::Pressed::more')\" style='position: absolute;", that); }
+	[Pure] string formatW1(string res, Widget that) { return formatW2(res + "left: " + that.left + "px;",               that); }
+	[Pure] string formatW2(string res, Widget that) { return formatW3(res + "top: " + that.top + "px;",                 that); }
+	[Pure] string formatW3(string res, Widget that) { return formatW4(res + "height: " + that.height + "px;",           that); }
+	[Pure] string formatW4(string res, Widget that) { return formatW5(res + "width: " + that.width + "px;",             that); }
+	[Pure] string formatW5(string res, Widget that) { return formatW6(res + "background-color: " + that.colour + ";'>", that); }
+	[Pure] string formatW6(string res, Widget that) { return res + "<div style='position: relative;'>" + formatChildren(that) + "</div></div>"; }
 
-	void open(string title, string body, int x, int y)
-	{
-		this.open(HtmlHeader() + "<title>" + title + "</title></head><body>" + body + "</body></html>", x, y);
-	}
+	[Pure] string formatB(Button that)     { return formatB1("<button id='" + that.id + "' onclick=\"event42('" + that.id + "::Pressed::more')\" style='position: absolute;", that); }
+	[Pure] string formatB1(string res, Widget that) { return formatB2(res + "left: " + that.left + "px;",               that); }
+	[Pure] string formatB2(string res, Widget that) { return formatB3(res + "top: " + that.top + "px;",                 that); }
+	[Pure] string formatB3(string res, Widget that) { return formatB4(res + "height: " + that.height + "px;",           that); }
+	[Pure] string formatB4(string res, Widget that) { return res + "width: " + that.width + "px;></button>"; }
 
-	string HtmlHeader()
-	{
-		return "<!DOCTYPE html><html><head><meta http-equiv='content-class' content='text/html; charset=UTF-8'>";
-	}
+	void open(string title, string body, int x, int y) { this.open(HtmlHeader() + "<title>" + title + "</title></head><body>" + body + "</body></html>", x, y); }
+
+	string HtmlHeader() { return "<!DOCTYPE html><html><head><meta http-equiv='content-class' content='text/html; charset=UTF-8'>"; }
 
 	void dispatch(Widget body, IEnumerable<string> events)
 	{
@@ -82,7 +81,6 @@ using Microsoft.Contracts;
 			this.draw(body);
 		}
 	}
-
 
 	void open(string html, int x, int y)  /*mut*/ 
 	{
