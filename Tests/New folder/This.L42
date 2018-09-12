@@ -1,0 +1,32 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+
+Main: Data <>< {
+    Void f
+    read method Bool #invariant() This.print()
+    
+    class method Bool print() (
+        Debug(S"<invariant ?>")
+        Bool.true()
+    )
+    
+    class method mut This ctor() (
+        Debug(S"in ctor")
+        This(f: void)
+    )
+    mut method Void foo() Debug(S"in foo")
+    
+    class method Void main() (
+        Debug(S"before ctor")
+        mut Main m = This.ctor()
+        Debug(S"before foo")
+        m.foo()
+        Debug(S"end")
+    )
+}
+
+Main2: {
+  Main.main()
+  return ExitCode.normal()
+  }

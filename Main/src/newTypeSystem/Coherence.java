@@ -20,28 +20,28 @@ import tools.Assertions;
 
 public class Coherence
 {
-  static String removeHash(String s)
+  public static String removeHash(String s) 
   {
     if (s.startsWith("#")) return s.substring(1);
     else return s;
   }
 
-  ClassB top;
-  boolean check;
-  Program p;
-  Set<String> fieldNames;
-  long uniqueNum;
-  BinaryMultiMap<String, Mdf> fieldModifiers = new BinaryMultiMap<>();
-  BinaryMultiMap<String, Path> fieldPaths = new BinaryMultiMap<>();
-  BinaryMultiMap<String, Mdf> fieldAccessModifiers = new BinaryMultiMap<>();
-  boolean mutOrLCFactories = false;
+  public ClassB top;
+  public boolean check;
+  public Program p;
+  public Set<String> fieldNames;
+  public long uniqueNum;
+  public BinaryMultiMap<String, Mdf> fieldModifiers = new BinaryMultiMap<>();
+  public BinaryMultiMap<String, Path> fieldPaths = new BinaryMultiMap<>();
+  public BinaryMultiMap<String, Mdf> fieldAccessModifiers = new BinaryMultiMap<>();
+  public boolean mutOrLCFactories = false;
 
-  List<MethodWithType> getters = new ArrayList<>();
-  List<MethodWithType> factories = new ArrayList<>();
-  List<MethodWithType> setters = new ArrayList<>();
-  List<MethodWithType> others = new ArrayList<>();
+  public List<MethodWithType> getters = new ArrayList<>();
+  public List<MethodWithType> factories = new ArrayList<>();
+  public List<MethodWithType> setters = new ArrayList<>();
+  public List<MethodWithType> others = new ArrayList<>();
 
-  static Coherence coherence(Program p, boolean check) {
+  public static Coherence coherence(Program p, boolean check) {
     Coherence c = new Coherence();
     c.p = p;
     c.top = p.top();
@@ -300,30 +300,4 @@ public class Coherence
     if (this.check) for (MethodWithType mwt : getters)
       this.checkGetter(mwt);
   }
-}
-
-class BinaryMultiMap<K, V>
-{
-  private Map<K, Set<V>> true_ = new HashMap<>();
-  private Map<K, Set<V>> false_ = new HashMap<>();
-
-  void add(boolean b, K key, V value) {
-    this.addOnce(false, key, value);
-    if (b) this.addOnce(b, key, value);
-  }
-
-  void addOnce(boolean b, K key, V value) {
-    this.get(b).merge(key, Collections.singleton(value), (x, y) -> {
-        Set<V> s = new HashSet<V>(x);
-        s.addAll(y);
-        return s;
-    });
-  }
-
-  Map<K, Set<V>> get(boolean b)
-  {
-    if (b) return this.true_;
-    else return this.false_;
-  }
-  Set<V> get(boolean b, K key) { return this.get(b).get(key); }
 }

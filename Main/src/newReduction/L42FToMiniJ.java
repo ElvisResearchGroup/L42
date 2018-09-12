@@ -28,6 +28,7 @@ import tools.StringBuilders;
 public class L42FToMiniJ {
   public static MiniJ.CD of(ClassTable ct,L42F.CD cd){
     String name=cd.l42ClassName();
+    boolean[]revertInserted={false};
     boolean interf=cd.getKind()==L42F.SimpleKind.Interface;
     List<String> cs=new ArrayList<>();
     if(cd.getMs().stream().anyMatch(m->m.getBody()==SimpleBody.NewWithFwd)){
@@ -37,7 +38,7 @@ public class L42FToMiniJ {
     List<MiniJ.M>ms=new ArrayList<>();
     for(L42F.M m:cd.getMs()){
       MiniJ.M res = methodHeader(ct, m);
-      MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res));
+      MiniJ.S body=m.getBody().accept(new VB(ct,name,cd,m,res,revertInserted));
       ms.add(res.withBody(body));
       if(!(m.getBody() instanceof E)){continue;}
       if(!m.isRefine()){continue;}
@@ -67,19 +68,20 @@ public class L42FToMiniJ {
     }
 
   private static class VB implements BodyVisitor<MiniJ.S>{
-    public VB(ClassTable ct,String cn,CD cd, M m, MiniJ.M mj) {
+    public VB(ClassTable ct,String cn,CD cd, M m, MiniJ.M mj,boolean[]revertInserted) {
       this.ct=ct;
       this.cn=cn;
       this.cd = cd;
       this.m = m;
       this.mj=mj;
+      this.revertInserted=revertInserted;
       }
     ClassTable ct;
     String cn;
     L42F.CD cd;
     L42F.M m;
     MiniJ.M mj;
-
+    boolean[]revertInserted;
     @Override
     public S visitEmpty(SimpleBody s) {
       StringBuilder r=new StringBuilder();
@@ -160,6 +162,8 @@ public class L42FToMiniJ {
       return new RawJ(sb.toString());
       }
     private void appendReverter(StringBuilder res) {
+      if(this.revertInserted[0]){return;}
+      this.revertInserted[0]=true;
       String uniqueNum=m.getSelector().isUnique()?
         "_$_"+m.getSelector().getUniqueNum():"";
       res.append("public ast.ExpCore revert(){\n");
