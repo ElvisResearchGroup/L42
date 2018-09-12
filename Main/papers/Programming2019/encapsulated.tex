@@ -228,96 +228,120 @@ l.addHeavy(f); // We pass another reference to `l' through f
 %  private capsule Foo inner;
 %  validate
 %}
-
-\noindent\textit{Gui and the box pattern:}
+\subsection{GUI}
+Here we show that we are able to verify classes with circular mutable object graphs, that interact with the real world using I/O.
 %Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
 %patterns allows to circumvent some of the apparent limitations of our system.
-%
-At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs.
-We show that this is not the case by encoding
-an example of a Gui where the graphic representation of the widgets are guaranteed to not overlap.
-\Q@SafeMovable@ is a \Q@Widget@ whose position can be dynamically changed.
-\Q@Widget@s can contains more widgets as children.
-The invariant of a \Q@SafeMovable sm@
-is that all \Q@Widget@s inside \Q@sm.children()@,
-do not overlap with each others, and are
-fully contained in the area of \Q@sm@.
+% At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs.
+%We show that this is not the case by encoding
+%Our invariant is that everything in every movable container (and the top level component) should 
+%-be inside the container 
+%-not overlap with anyhing else inside
+%Our containers represent boxes that completley contain other non-overlapping boxes.
+Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s (\MS{see figure}), the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it, and do not overlap. We have a \Q@Widget@ interface which provides methods to get size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s, it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, and are also used in \Q@SafeMovable.invariant@.
 
-Crucially, one of the children may be another
-instance of \Q@SafeMovable@.
-Here we show a simplified solution,
-where for simplicity \Q@SafeMovable@ have just one
-\Q@Button@, and certain sizes/positions are fixed.
+% Gui where the graphic representation of the widgets are guaranteed to not overlap.
+% \Q@SafeMovable@ is a \Q@Widget@ whose position can be dynamically changed.
+% \Q@Widget@s can contains more widgets as children.
+% The invariant of a \Q@SafeMovable sm@
+% is that all \Q@Widget@s inside \Q@sm.children()@,
+% do not overlap with each others, and are
+% fully contained in the area of \Q@sm@.
+
+% Crucially, one of the children may be another
+% instance of \Q@SafeMovable@.
+
+Here we show a simplified solution, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed.
 
 \begin{lstlisting}
 class SafeMovable implements Widget{
-  @Override read method Widgets children(){return this.box.cs;}
+  @Override read method Widgets children(){return this.box.c;}
   @Override read method Int left(){return this.box.l;}
   @Override read method Int top(){return this.box.t;}
   @Override read method Int width(){return 300;}
   @Override read method Int height(){return 300;}
+  @Override  mut method Void dispatch(Event e){
+    for(Widget w:this.box.c){w.dispatch(e);}}
   capsule Box box;
   read method Bool invariant(){..}
-  SafeMovable(capsule List<Widget> cs){this.box=mkBox(cs);}
-  static method capsule Box mkBox(capsule Widgets cs){
+  SafeMovable(capsule List<Widget> cs){this.box=mkBox(c);}
+  static method capsule Box mkBox(capsule Widgets c){
     mut Box b=new Box(5,5,cs);
-    b.cs.add(new Button(0,0,10,10,new MoveAction(b));
+    b.c.add(new Button(0,0,10,10,new MoveAction(b));
     return b;}}//mut b is soundly promoted to capsule
 
-class Box{ Int l; Int t; mut List<Widget> cs;
-  Box(Int l, Int t, mut List<Widget> cs){...} }
+class Box{ Int l; Int t; mut List<Widget> c;
+  Box(Int l, Int t, mut List<Widget> c){...} }
 
 class MoveAction implements Action{
   mut Box outer; MoveAction(mut Box outer){this.outer=outer;}
   mut method Void process(Event event) {this.outer.l+=1;} }
+..
+void main(mut System system){
+  system.newGui().display(new SafeMovable(..));}
 \end{lstlisting}
 
-As you can see, the \Q@Box@ object encapsulates the state of \Q@SafeMovable@ that can change over time:
-\Q@left@,\Q@top@ and all the \Q@children@.
-Also, note how the ROG of \Q@Box@ is circular, since
-the \Q@MoveAction@ inside the \Q@Button@ need to know the \Q@Box@ in order to move it.
-This code is a simplified version of our first case study. In the full code
-the \Q@SafeMovable@ constructor takes in input
-\Q@left,top,width,height@ and can have $0$ or $4$ \Q@Button@s.
-,% we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
-Counting both \Q@SafeMovable@s and \Q@Button@s we have $21$ widgets:
- a top level \Q@SafeMovable@ (green) without buttons and $4$ \Q@SafeMovable@ with
-$4$ buttons each; where each button moves in one of the $4$ cardinal directions.
-When the button is pressed, the container is moved 
-a little bit in the corresponding direction. 
+As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
+\Q@left@, \Q@top@ and \Q@children@. Also note how the ROG of \Q@Box@ is circular, since
+the \Q@MoveAction@s inside a \Q@Button@ needs a reference to the containing \Q@Box@ in order to move it.
+Note that even though the children of a \Q@SafeMovable@ are fully encapsulated we can still easily dispatch events to them by implementing \Q@Widget.dispatch@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID it will then call its \Q@Action@'s \Q@process@ method. 
+
+%Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
+Our example also shows that the restrictions of TMs and OCs are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
+In order to perform this case study, we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library require back-doors into either our type-modifier or capability system to function; demonstrating the practical usability of our restrictions.
+
+
+
+\noindent{\textit{The Invariant:}}
+\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system injects tests for it in two places: the end of its constructor and the end of its \Q@dispatch@ method (since it is a capsule-mutator). Their are no other checks inserted since we never do a field update on  \Q@SafeMovable@s. The code for the invariant is just a couple of simple nested loops:
+\begin{lstlisting}
+read method Bool invariant() {
+  for (Widget w1 : this.box.c) {
+    if(!this.inside(w1)) { return false; }
+    for (Widget w2 : this.box.c) {
+      if (w1 != w2 && SafeMovable.overlap(w1, w2)) {
+        return false;}}}
+  return true;
+}
+\end{lstlisting}
+Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. \Q@the@ call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of this; this instance method call is allowed as the function only uses \Q@this@ to access its \Q@width@ and \Q@height@.
+
+
+\noindent{\textit{Our Experiment:}}
+% This code is a simplified version of our first case study. In the full code the \Q@SafeMovable@ constructors take \Q@left@, \Q@top@, \Q@width@ and \Q@height@ parameters and can either take a \Q@box@ directly or will generate one with $4$ \Q@Button@s}
+% we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
+Counting both \Q@SafeMovable@s and \Q@Button@s our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
+$4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 %Each container has 4 gray buttons one for each cardinal direction.
-In our set up
-the top level \Q@SafeMovable@
-contains a big red \Q@SafeMovable@
- containing $2$ smaller blue \Q@SafeMovable@. One of those contains a tiny black \Q@SafeMovable@.
+% In our set up
+% the top level \Q@SafeMovable@
+% contains a big red \Q@SafeMovable@
+%  containing $2$ smaller blue \Q@SafeMovable@. One of those contains a tiny black \Q@SafeMovable@.
 %Our invariant is that everything in every movable container (and the top level component) should 
 %-be inside the container 
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 
-This set up is not overly involved, the maximum widget depth is $5$.
-We created an automated test pressing each of the $16$ buttons once.
-In L42, using the approach of this paper, this calls the invariant $77$ times.
-Instead, using visible state semantic, 
-the invariant is called more then $53$ million times
-(it took $4$ days to run).
+This set up is not overly involved, the maximum nesting level of \Q@Widget@s is $5$.
+Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant. 
 
-It can be surprising to see such extreme difference.
-We ran our example with less widgets, and our results suggest an exponential growth in the cost of the conventional approach. For example by removing 2 containers (and their 8 buttons) we get....
+\noindent{\textit{Comparison with visible state semantics:}}
+As an experiment we set our implementation to generate invariant checks following the standard approach for visible state semantics (the one used by Eiffel and D), where the invariant is instead check at the start and end of \emph{every} public method of \Q@SafeMovable@s, including the simple getters implementing the \Q@Widgment@ interface. When we ran our test case the invariant was instead called $52,734,053$ times (it took about $4$ days to run), in comparison to the $77$ we got when using our invariant protocol. The reason the number of checks is so high is due to it being exponetial in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@ and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls will themselves invoke invariant checks. Note that like other systems in the literature, we do not perform invariant checks when calling instance methods (such as \Q@this.inside@) on \Q@this@ within the invariant of \Q@SafeMovable@, had we done that we would have gotten an infinite recursion.
 
-We now explain how this exponential explosion happens:
+% It can be surprising to see such extreme difference. We ran our example with less widgets, and our results suggest an exponential growth in the cost of the conventional approach. For example by removing 2 containers (and their 8 buttons) we get....
+% We now explain how this exponential explosion happens:
+% For the outer-most box to check its invariant, it needs to call methods \Q@left,top,height@ and \Q@with@ to all its contained widgets.
+% If one of those widget has \Q@invariant@, when such public method is called,
+% its \Q@invariant@ is checked (twice). This requires to call \Q@left,top,height@ and \Q@with@ to all its contained widgets, some of those may also have \Q@invariant@s.
 
-For the outer-most box to check its invariant, it needs to call methods \Q@left,top,height@ and \Q@with@ to all its contained widgets.
-If one of those widget has \Q@invariant@, when such public method is called,
-its \Q@invariant@ is checked (twice). This requires to call \Q@left,top,height@ and \Q@with@ to all its contained widgets, some of those may also have \Q@invariant@s.
+% In literature there is attention to prevent method called from an invariant to call public methods on \Q@this@; it would cause the system to go in loop.
+% However when calling methods on other objects is allowed, if those objects have invariant, this cause the aforementioned explosion. 
 
-In literature there is attention to prevent method called from an invariant to call public methods on \Q@this@; it would cause the system to go in loop.
-However when calling methods on other objects is allowed, if those objects have invariant, this cause the aforementioned explosion. 
+% Our example also shows that the restrictions of TM's and OC's are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
+% In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
+% The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
-Our example also shows that the restrictions of TM's and OC's are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
-In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
-The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
-
+\noindent{\textit{Comparison with Spec\#}}
 We encoded our Widget example also on Spec\#.
 The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 However, we found great difficulty to encode our example.

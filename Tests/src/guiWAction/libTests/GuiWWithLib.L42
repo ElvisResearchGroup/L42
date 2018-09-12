@@ -17,7 +17,7 @@ MoveAction:Data<><{implements Gui.Action
     this.#outer().top(this.outer().top()+this.topDelta())
     )
   }
-SafeMovable:StupidData<><{implements Gui.Widget
+SafeMovable:Data<><{implements Gui.Widget
   capsule Box box
   class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Left"
@@ -116,7 +116,7 @@ C: {
             height:64Size
             color:S"blue"
             children:Gui.Widget.List[]);
-          /*SafeMovable(
+          SafeMovable(
             id:S"B"
             left:50Size
             top:50Size
@@ -134,7 +134,7 @@ C: {
                 children:Gui.Widget.List[]
                 )
               ]
-            )*/]
+            )]
           )]
         left:2Size,top:2Size
       ))
@@ -158,7 +158,7 @@ C: {
     //S"D_Right::Pressed::_";
     //S"D_Up::Pressed::_";
     //S"D_Down::Pressed::_";
-    S"EXIT";
+    //S"EXIT";
     ]
   Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
 
