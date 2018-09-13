@@ -4,129 +4,132 @@ GuiLib:{class method Library (){
   reuse L42.is/AdamTowel02
     Exported:{
       Event:Data<><{
-      S targetId
-      S eventId
-      Strings all
-      class method This(S that)(
-        s=that.splitOn(chars:S"::")
-        This(
-          targetId:s.val(0Size)
-          eventId:s.val(1Size)
-          all:s
-          )
-        )
-      }
-    Widget:UnsafeRefactor.This$er<><{interface
-      S id
-      Size left
-      Size top
-      Size width
-      Size height
-      S color
-      read List children
-      This$: {interface implements Concept.Base}
-      List: Collections.vector(ofMut:This$)
-      mut method Bool dispatch(Event that)
-      }
-    DispatchTrait:Resource<><{
-      S id
-      mut Widget.List children
-      mut method Void process(Event event)
-      mut method Bool dispatch(Event that) {
-        if this.id()==that.targetId() (
-          this.process(event:that)
-          return Bool.true()
-          )
-        with w in this.#children().#vals() (
-          if w.dispatch(that) (return Bool.true())
-          )
-        return Bool.false()
-        }
-      }
-    Action:{interface  implements Concept.ToS,Concept.Equals
-      mut method Void (Event event)}
-
-    Button:Data<><{implements Widget
-      mut Action action
-      method color() S"gray"
-      method children() Widget.List[]
-      method toS() this.id()
-      method dispatch(that) {
-        if this.id()==that.targetId() (
-          this.#action()(event:that)
-          return Bool.true()
-          )
-        return Bool.false()
-        }
-      }
-    Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
-      mut method Void display(S title, Size x, Size y,mut Widget body)
-        this.display(title:title,x:x,y:y,body:body,events:Strings[])
-      mut method Void display(S title, Size x, Size y,mut Widget body,Strings events) (
-        this.open(
-          title:title
-          body:S"<div id='Top'></div>"
-          x:x
-          y:y
-          )
-        this.draw(body)
-          {
-          with event in events.vals() (
-            if event==S"EXIT" (return void)
-            unused=body.dispatch(Event(event))
-            this.draw(body)
+        S targetId
+        S eventId
+        Strings all
+        class method This(S that)(
+          s=that.splitOn(chars:S"::")
+          This(
+            targetId:s.val(0Size)
+            eventId:s.val(1Size)
+            all:s
             )
-          with event in this.events() (
-            if event==S"EXIT" (return void)
-            unused=body.dispatch(Event(event))
-            this.draw(body)
-            )
-          return void
+          )
+        }
+      Widget:UnsafeRefactor.This$er<><{interface
+        S id
+        Size left
+        Size top
+        Size width
+        Size height
+        S color
+        read List children
+        This$: {interface implements Concept.Base}
+        List: Use[Collections.vector(ofMut:This$)]<><{
+          mut method Bool dispatch(Event that){
+            with w in this.#vals() (
+              if w.dispatch(that) (return Bool.true())
+              )
+            return Bool.false()
+            }
           }
-        this.close()
-        )
-      read method S format(read Widget that){
-        with that (on read Button return this.format(button:that))
-        return this.format(div:that)
+        mut method Bool dispatch(Event that)
         }
-      read method S format(read Button button)
-        S"<div id='"[button.id()]"' class=hhBut "[]
-          " onMouseOver="[S.doubleQuote()]"this.style['background-color']='pink'"[S.doubleQuote()]
-          " onMouseOut="[S.doubleQuote()]"this.style['background-color']='gray'"[S.doubleQuote()]
-          " onclick="[S.doubleQuote()]"event42('"[button.id()]"::Pressed::more')"[S.doubleQuote()]
-          " style='"[]
-          " position: absolute;"[]
-          " left: "[button.left()]"px;"[]
-          " top: "[button.top()]"px;"[]
-          " height: "[button.height()]"px;"[]
-          " width: "[button.width()]"px;"[]
-          " background-color: gray;'>"[]
-          "</div>"
-      read method S format(read Widget div)
-        S"<div id='"[div.id()]"' onclick="[S.doubleQuote()]"event42('"[div.id()]"::Pressed::more')"[S.doubleQuote()]" style='"[]
-          "position: absolute;"[]
-          "left: "[div.left()]"px;"[]
-          "top: "[div.top()]"px;"[]
-          "height: "[div.height()]"px;"[]
-          "width: "[div.width()]"px;"[]
-          "background-color: "[div.color()]";'>"[]
-          "<div style='position: relative;'>"
-          [with w in div.children().vals() (
-            use[this.format(w)]
-          )]"</div></div>"
+      Action:{interface  implements Concept.ToS,Concept.Equals
+        mut method Void (Event event)
+        }
 
-      mut method Void draw(read Widget that)
-        this.set(S"<style>"[]
-            "div.hBut:hover {-fx-background-color: white;}"[]
-            "</style>"[]
-            "<div id='Top' style='"[]
+      Button:Data<><{implements Widget
+        mut Action action
+        S imgName
+        method color() S"gray"
+        method children() Widget.List[]
+        method toS() this.id()
+        method dispatch(that) {
+          if this.id()==that.targetId() (
+            this.#action()(event:that)
+            return Bool.true()
+            )
+          return Bool.false()
+          }
+        }
+      Gui:Use[Load<><{reuse L42.is/GuiLib}]<><{
+        mut method Void display(S title, Size x, Size y,mut Widget body)
+          this.display(title:title,x:x,y:y,body:body,events:Strings[])
+        mut method Void display(S title, Size x, Size y,mut Widget body,Strings events) (
+          this.open(
+            title:title
+            body:S"<div id='Top'></div>"
+            x:x
+            y:y
+            )
+          this.draw(body)
+            {
+            with event in events.vals() (
+              if event==S"EXIT" (return void)
+              unused=body.dispatch(Event(event))
+              this.draw(body)
+              )
+            with event in this.events() (
+              if event==S"EXIT" (return void)
+              unused=body.dispatch(Event(event))
+              this.draw(body)
+              )
+            return void
+            }
+          this.close()
+          )
+        mut method S format(read Widget that){
+          with that (on read Button return this.format(button:that))
+          return this.format(div:that)
+          }
+        mut method S format(read Button button)
+          S"<div id='"[button.id()]"' "[]
+            " onMouseOver="[S.doubleQuote()]"this.style['background-color']='pink'"[S.doubleQuote()]
+            " onMouseOut="[S.doubleQuote()]"this.style['background-color']='gray'"[S.doubleQuote()]
+            " onclick="[S.doubleQuote()]"event42('"[button.id()]"::Pressed::more')"[S.doubleQuote()]
+            " style='"[]
+            " position: absolute;"[]
+            " left: "[button.left()]"px;"[]
+            " top: "[button.top()]"px;"[]
+            " height: "[button.height()]"px;"[]
+            " width: "[button.width()]"px;"[]
+            " background-color: gray;'>"[]
+            "<div"[]
+            "   style='"[]
+            "   margin: 10%;"[]
+            "   height:80%;"[]
+            "   width:80%;"[]
+            "   background: url("[
+                S.doubleQuote();
+                S"file:///"++Debug.#$localToAbsolute(fileName:button.imgName());
+                S.doubleQuote()]
+                ") no-repeat;"[]
+                " background-size:contain;'></div>"[]
+            "</div>"
+        mut method S format(read Widget div)
+          S"<div id='"[div.id()]"' onclick="[S.doubleQuote()]"event42('"[div.id()]"::Pressed::more')"[S.doubleQuote()]" style='"[]
+            "position: absolute;"[]
+            "left: "[div.left()]"px;"[]
+            "top: "[div.top()]"px;"[]
+            "height: "[div.height()]"px;"[]
+            "width: "[div.width()]"px;"[]
+            "background-color: "[div.color()]";'>"[]
+            "<div style='position: relative;'>"
+            [with w in div.children().vals() (
+              use[this.format(w)]
+            )]"</div></div>"
+
+        mut method Void draw(read Widget that)
+          this.set(S"<div id='Top' style='"[]
             "position: relative; height: 750px; width: 750px; border: solid black 2px;'>"
             [this.format(that)]"</div>"
-          id:S"Top")
+            id:S"Top"
+            )
+        }
       }
     }
   }
-}
 Task: (
   Debug(S"Starting deployment")
   Load.DeployLibrary.#$(
