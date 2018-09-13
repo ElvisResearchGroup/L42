@@ -5,58 +5,80 @@
 \save_transient_properties true
 \origin unavailable
 \textclass scrartcl
+\begin_preamble
+\usepackage{xcolor}
+
+\definecolor{AccentB80}{RGB}{197, 213, 255}
+\definecolor{AccentB60}{RGB}{139, 171, 255}
+\definecolor{AccentB40}{RGB}{81,  130, 255}
+\definecolor{Accent}   {RGB}{0,   63,  221}
+\definecolor{AccentD25}{RGB}{0,   46,  165}
+\definecolor{AccentD50}{RGB}{0,   31,  110}
+
+%\renewcommand\Huge{\@setfontsize\Huge{10pt}{26}} % Was 25?
+%\renewcommand\Large{\@setfontsize\Large{10pt}{14}} % Was 14?
+%\large	 10.5 % was 11?
+\newcommand{\StyleTitle}[1]{{\Huge{\textcolor{Accent}{{#1}}}}} % Expanded +0.5pt
+\newcommand{\StyleSubTitle}[1]{{\large{\textcolor{AccentB40}{{#1}}}}} % 25pt after , Expanded +0.5pt
+\renewcommand{\maketitle}{\StyleTitle{\@title}\\\StyleSubTitle{\@author}}
+\newcommand{\zwnbsp}{}
+\renewcommand{\ensuremath}[1]{#1}
+
+\definecolor{blue}{HTML}{0000F0} % 
+\definecolor{purple}{HTML}{700090}
+\definecolor{orange}{HTML}{F07000}
+\definecolor{teal}{HTML}{0090B0}
+\definecolor{brown}{HTML}{A00000}
+\definecolor{green}{HTML}{008000}
+\definecolor{pink}{HTML}{F000F0}
+
+\usepackage{enumitem}
+\setlist{nolistsep}
+
+\usepackage{fontspec} % To set xetex fonts
+\setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
+\setmonofont[Ligatures={Discretionary}, Scale=1.090909090909090909090909]{Latin Modern Mono} % 12/11
+\setsansfont[Numbers={Monospaced},Ligatures={Common, Discretionary}, Scale=1.045454545454545]{Latin Modern Sans} %11.5/11
+
+\unimathsetup{math-style=ISO}
+\setmathfont{TeX Gyre Schola Math}
+
+\raggedright
+\end_preamble
 \use_default_options true
 \begin_modules
 logicalmkup
 \end_modules
 \maintain_unincluded_children false
 \begin_local_layout
-InsetLayout Flex:Code
-        LyxType               charstyle
-        LabelString           code
-        LatexType             command
-%        LatexName             code
-      LatexName lstinline[language=java]
-        Font
-          Family              Typewriter
-        EndFont
-%        Preamble  \providecommand*{\code}[1]{\mintinline{Java}!#1!}
-        EndPreamble
-        InToc                 true
-        HTMLTag               code
-        ResetsFont true
-        Spellcheck            false
-ForcePlain true
-PassThru true
-FreeSpacing true
-End
+
 \end_local_layout
 \language british
 \language_package default
 \inputencoding auto
 \fontencoding global
 \font_roman "tgschola" "TeX Gyre Schola"
-\font_sans "default" "Segoe UI"
+\font_sans "lms" "Latin Modern Sans"
 \font_typewriter "lmtt" "Latin Modern Mono"
 \font_math "auto" "default"
 \font_default_family default
 \use_non_tex_fonts true
 \font_sc false
 \font_osf false
-\font_sf_scale 100 93
+\font_sf_scale 100 104
 \font_tt_scale 100 109
 \use_microtype false
 \use_dash_ligatures true
-\graphics default
+\graphics xetex
 \default_output_format default
-\output_sync 0
+\output_sync 1
 \bibtex_command default
 \index_command default
-\paperfontsize default
+\paperfontsize 10
 \spacing single
 \use_hyperref false
 \papersize a4paper
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -73,7 +95,7 @@ End
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
-\suppress_date false
+\suppress_date true
 \justification false
 \use_refstyle 1
 \use_minted 0
@@ -81,6 +103,13 @@ End
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2.54cm
+\topmargin 2.54cm
+\rightmargin 2.54cm
+\bottommargin 2.54cm
+\headheight 2.15cm
+\headsep 0cm
+\footskip 2.15cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation skip
@@ -92,7 +121,7 @@ End
 \papercolumns 1
 \papersides 2
 \paperpagestyle default
-\listings_params "tabsize=4"
+\bulletLaTeX 0 ""
 \tracking_changes false
 \output_changes false
 \html_math_output 0
@@ -103,437 +132,444 @@ End
 \begin_body
 
 \begin_layout Title
-Inverted Accessibility Control
+Callability Control
+\end_layout
+
+\begin_layout Author
+By Isaac Oscar Gariano and Marco Servetto (Victoria University of Wellington)
 \end_layout
 
 \begin_layout Standard
-Reasoning about what side effects code has is generally a non-trivial task,
- how does on know that if they call a function that it will not access arbitrary
- files on your file-system? A naïve solution might be to inspect the code
- of the function, but even if this is possible it only provides some information
-, what if it calls a dynamically dispatched method on a parameter? One can
- use a dynamic security mechanism, like Java's security manager, where a
- runtime error would occur.
- Here I propose a simple and flexible type-system extension that allows
- one to reason on a fine-grained level on the capabilities of code.
-\end_layout
-
-\begin_layout Standard
-Rather than conventional accessibility where a declaration declares what
- code can can access it, 
-\emph on
-inverted accessibility control
-\emph default
- does the opposite, it declares what code a declaration can access.
- Here I propose a 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[N, ..]
-\end_layout
-
+\begin_inset FormulaMacro
+\newcommand{\empty}{\zwnbsp}
+{\text{﻿}}
 \end_inset
 
- declaration modifier, it indicates that the attached code can call the
- function 
-\begin_inset Flex Code
-status collapsed
 
-\begin_layout Plain Layout
-
-N...
 \end_layout
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\k}[1]{\textcolor{blue}{\texttt{#1}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\t}[1]{\textcolor{teal}{#1}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\f}[1]{\textcolor{purple}{#1}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\l}[1]{\textcolor{brown}{#1}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\v}[1]{\textcolor{orange}{#1}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\m}[1]{\textcolor{green}{#1}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\c}[1]{\texttt{#1}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\ck}[1]{\c{\k{#1}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\ct}[1]{\c{\t{#1}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cf}[1]{\c{\f{#1}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cv}[1]{\c{\v{#1}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\cm}[1]{\c{\m{#1}}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\tab}{\texttt{\ \ \ \ }}
+{    }
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\uses}[1]{\k{calls[}#1\k ]}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+How does one know whether a called function will access arbitrary files
+ on your system? One common option is to say that if the called function
+ is not declared impure (e.g.
+ with Haskell
+\begin_inset Quotes brd
+\end_inset
+
+s 
+\begin_inset Formula $\ct{IO}$
+\end_inset
+
+ monad) it will not read any files (or do any other I/O).
+ Another option is to raise a runtime error or trap if it tries to do so
+ (e.g.
+ with Java
+\begin_inset Quotes brd
+\end_inset
+
+s 
+\begin_inset Formula $\ct{SecurityManager}$
+\end_inset
+
+).
+ The first option is overly restrictive and heavy weight (what if the function
+ only needs access to standard out?) whilst the second hampers static and
+ modular reasoning.
+ We call the operations a function may call its 
+\emph on
+callability
+\emph default
+; we propose a simple and flexible type-system feature that allows one to
+ soundly statically reason about functions callability on a fine-grained
+ level.
+\end_layout
+
+\begin_layout Standard
+In our systems, all functiones are annotated with a base-callability using
+ the syntax 
+\begin_inset Formula $\uses{\f{\f x}_{1},\dots,\f x_{n}}$
+\end_inset
+
+, where each 
+\begin_inset Formula $\f x_{i}$
+\end_inset
+
+ indicates the name of a function (or set of functions) that can be called.
+ Note how here a function declares what 
+\emph on
+it can access
+\emph default
+, compare this with conventional accessibility, (like Scala
+\begin_inset Quotes brd
+\end_inset
+
+s 
+\begin_inset Formula $\k{private[}\t C\k ]$
+\end_inset
+
+ modifier) where a function declares what 
+\emph on
+can access it
+\emph default
+.
+ Our system has three core rules:
+\end_layout
+
+\begin_layout Itemize
+Any function can call call itself.
+\end_layout
+
+\begin_layout Itemize
+A function can call each function in its base-callability.
+\end_layout
+
+\begin_layout Itemize
+If a function 
+\begin_inset Formula $\f f$
+\end_inset
+
+ can call everything in the base-callability of a function 
+\begin_inset Formula $\f g$
+\end_inset
+
+, then 
+\begin_inset Formula $\f f$
+\end_inset
+
+ can call 
+\begin_inset Formula $\f g$
 \end_inset
 
 .
- Compare this with the 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-private[N, ...]
-\end_layout
-
-\end_inset
-
- of Scala, where 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-N, ...
-\end_layout
-
-\end_inset
-
-declares the scopes that can access the declaration:
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
-
-\begin_layout Plain Layout
-
-class Qux
-\end_layout
-
-\begin_layout Plain Layout
-
-{
-\end_layout
-
-\begin_layout Plain Layout
-
-	private[Qux] def bar(): Int = 1 + 2
-\end_layout
-
-\begin_layout Plain Layout
-
-	uses[bar] def foo(): Int = bar() + ...
-\end_layout
-
-\begin_layout Plain Layout
-
-	def baz(): ...
-\end_layout
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
+With these rules harmless language/library primitives/intrinsics (such as
+ integer addition) would be marked with 
+\begin_inset Formula $\uses{\empty}$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-In the above code, the 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-private[Qux]
-\end_layout
-
+, allowing any function to call it.
+ On the other hand, if a primitive 
+\begin_inset Formula $\f f$
 \end_inset
 
- annotation indicates that 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-bar
-\end_layout
-
+ should be restricted (e.g.
+ a function to exit the program), one could anotate it with 
+\begin_inset Formula $\uses{\f f}$
 \end_inset
 
- can 
-\emph on
-only 
-\emph default
-be accessed from within 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-Qux
-\end_layout
-
+, thus allowing only specifically marked functions to call it.
+ Other systems can be envisioned, such as having a dummy 
+\begin_inset Formula $\cf{io}$
 \end_inset
 
-, however the 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[bar]
-\end_layout
-
-\end_inset
-
- annotation indicates that 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-foo
-\end_layout
-
-\end_inset
-
- might call 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-bar
-\end_layout
-
+ function, and than marking all I/O primitives with 
+\begin_inset Formula $\uses{\cf{io}}$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-My system involves a few rules, but the three most important are:
-\end_layout
-
-\begin_layout Itemize
-A function can call call itself
-\end_layout
-
-\begin_layout Itemize
-A function can annotated with 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[A0, ...]
-\end_layout
-
+We also support callability generics and dynamic dispatch, thus allowing
+ the system to become quite flexible; consider for example the following
+ (where 
+\begin_inset Formula $\cf{'a}$
 \end_inset
 
-can call each 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-A0, ...
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-A function that can call 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-A0, ...
-\end_layout
-
-\end_inset
-
- can call a function annotated with 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[A0, ...]
-\end_layout
-
-\end_inset
-
-
+ denotes a generic callability paramater):
 \end_layout
 
 \begin_layout Standard
-These rules allows functions 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-bar
-\end_layout
-
-\end_inset
-
- that simply do arithmetic to be callable from anywhere, a language/standard
- library would declare such primitives with 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[]
-\end_layout
-
-\end_inset
-
-, thus allowing them to be called anywhere.
- If on the other hand such a primitive wanted to be restricted (such as
- a program
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-exit
-\end_layout
-
-\end_inset
-
- function) such function could be annotated as using itself (e.g.
- 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[exit]
-\end_layout
-
-\end_inset
-
-), thus allowing it to only be called in cases that are properly annotated.
-\end_layout
-
-\begin_layout Standard
-Together with generics, and a reasonable refinement rule (such as a function
- must make its 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses
-\end_layout
-
-\end_inset
-
- clause a subset of the one it refines) one can make very expressive but
- powerful code, consider for example the following (where 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-A
-\end_layout
-
-\end_inset
-
- stands for a generic accessibility parameter):
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-inline false
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
+\begin_inset Formula $\texttt{\k{static} \k{extern} \t{long} \f{posix\_read(}\t{int} \v{file\_descriptor}, \t{void*} \v{buffer}, \t{ulong} \v{count}\f )}\lyxlock$
+\end_inset
 
-????
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\uses{\f{posix\_read}}; \m{//} \m{system} \m{function} \m{defined} \m{by} \m{the} \m{OS}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\k{interface} \t{Input\_Stream<}\f{'a}\t > \{}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{    \t{char} \f{get\_char()} \uses{\f{'a}};}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab… \} \m{//} \m{other} \m{usefull} \m{functions}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\k{static} \t{long} \f{stdin\_read(}\t{void*} \v{buffer}, \t{ulong} \v{count}\f ) \uses{\f{posix\_read}} \{}\lyxlock$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\k{return} \cf{posix\_read(}\v{STDIN\_FILENO}, \v{buffer}, \v{count}\f ); \}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\k{static} \t{void} \f{do\_stuff<'a>(}\t{Input\_Stream<}\f{'a}\t > \v{stream}\f ) \uses{\cf{'a}} \{}\lyxlock$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\tab\texttt{… \} \cm{//} \cm{could} \m{have} \m{any} \m{well-typed} \m{code}}$
+\end_inset
+
+
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\c{\t{Input\_Stream<}\f{'a}\t >}$
+\end_inset
+
+ is conceptually similar to a generic 
+\begin_inset Formula $\c{\t{Input\_Stream<T>}}$
+\end_inset
+
+, where 
+\begin_inset Formula $\ct T$
+\end_inset
+
+ denotes a type-paramater.
+\end_layout
+
+\begin_layout Standard
+For any base-callability 
+\begin_inset Formula $\f c$
+\end_inset
+
+ one can then call 
+\begin_inset Formula $\cf{do\_stuff<}\f{c>}$
+\end_inset
+
+and pass it an instance of a class that implements 
+\begin_inset Formula $\ct{\t{Input\_Stream<}}\f c\ct{\t >}$
+\end_inset
+
+.
+ For example, a call 
+\begin_inset Formula $\cf{do\_stuff<[]>(}\v{a\_stream}\cf )$
+\end_inset
+
+ cannot (even indirectly) read from a file, since it dosen
+\begin_inset Quotes brd
+\end_inset
+
+t have the callability 
+\begin_inset Formula $\cf{posix\_read}$
+\end_inset
+
+ or any callability which could indirectly call it.
+ Another important benefit of our system is that we can even reason over
+ a call like 
+\begin_inset Formula $\cf{do\_stuff<[stdin\_read]>(}\v{a\_stream}\cf )$
+\end_inset
+
+, it can read-files, but only standard-input (the file identified by 
+\begin_inset Formula $\cv{STDIN\_FILENO}$
+\end_inset
+
+).
+ Note how the only thing required for this to work is to know the (static)
+ type of 
+\begin_inset Formula $\v{a\_stream}$
+\end_inset
+
+, of course if one does not, they could always use a cast 
+\begin_inset Formula $\c{(\t{Input\_Stream<}\cf{[]}\ct >)}\v{a\_stream}$
+\end_inset
+
+, but risk getting a runtime-exception.
+ In addition, this also allows 
+\begin_inset Formula $\cf{do\_stuff<'a>}$
+\end_inset
+
+ to create arbitrary 
+\begin_inset Formula $\ct{Input\_Stream}$
+\end_inset
+
+ objects, of course it won
+\begin_inset Quotes brd
+\end_inset
+
+t be able to call 
+\begin_inset Formula $\cf{get\_char}$
+\end_inset
+
+ on such objects unless they are an instance of a subtype of 
+\begin_inset Formula $\ct{\t{Input\_Stream<}}\f{\cf{'a}}\t >$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
 This system is designed to soundly enforce reasoning: by looking at the
- declaration of two functions, you can determine whether one may call another.
+ declarations of functions 
+\begin_inset Formula $\f f$
+\end_inset
+
+ and 
+\begin_inset Formula $\f g$
+\end_inset
+
+, and all functions transitivley referenced in their base-capabilities,
+ one can statically determine wether 
+\begin_inset Formula $\f f$
+\end_inset
+
+ can call 
+\begin_inset Formula $\f g$
+\end_inset
+
+.
  In addition, it is also designed to work in an environment with dynamic-code
  loading, if you have reasoned that one function cannot call another, no
  matter what additional code you load or dynamically invoke, that guarantee
  still holds.
-\end_layout
-
-\begin_layout Standard
-I also consider additional features to make the system more user friendly
- without breaking formal reasoning, specifically:
-\end_layout
-
-\begin_layout Itemize
-A 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-provides[A0, ...]
-\end_layout
-
-\end_inset
-
- clause: to allow access to a declaration (such as an IO library) to provide
- access to 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-A0,...
-\end_layout
-
-\end_inset
-
- (such as a set of IO functions).
-\end_layout
-
-\begin_layout Itemize
-Wild-cards, such as 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[*]
-\end_layout
-
-\end_inset
-
- to allow calling arbitrary code, or 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses[A.*]
-\end_layout
-
-\end_inset
-
- to stand for all the declarations inside 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-A
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-Inference of 
-\begin_inset Flex Code
-status collapsed
-
-\begin_layout Plain Layout
-
-uses
-\end_layout
-
-\end_inset
-
- clauses, including inferring functions as generic
+ We have also looked at adding other features to reduce the burdern of our
+ annotations: such as wildcards amd annotation inference.
 \end_layout
 
 \end_body
