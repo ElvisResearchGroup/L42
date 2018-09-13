@@ -1,0 +1,540 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass scrartcl
+\use_default_options true
+\begin_modules
+logicalmkup
+\end_modules
+\maintain_unincluded_children false
+\begin_local_layout
+InsetLayout Flex:Code
+        LyxType               charstyle
+        LabelString           code
+        LatexType             command
+%        LatexName             code
+      LatexName lstinline[language=java]
+        Font
+          Family              Typewriter
+        EndFont
+%        Preamble  \providecommand*{\code}[1]{\mintinline{Java}!#1!}
+        EndPreamble
+        InToc                 true
+        HTMLTag               code
+        ResetsFont true
+        Spellcheck            false
+ForcePlain true
+PassThru true
+FreeSpacing true
+End
+\end_local_layout
+\language british
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "tgschola" "TeX Gyre Schola"
+\font_sans "default" "Segoe UI"
+\font_typewriter "lmtt" "Latin Modern Mono"
+\font_math "auto" "default"
+\font_default_family default
+\use_non_tex_fonts true
+\font_sc false
+\font_osf false
+\font_sf_scale 100 93
+\font_tt_scale 100 109
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification false
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style british
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\listings_params "tabsize=4"
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Inverted Accessibility Control
+\end_layout
+
+\begin_layout Standard
+Reasoning about what side effects code has is generally a non-trivial task,
+ how does on know that if they call a function that it will not access arbitrary
+ files on your file-system? A naïve solution might be to inspect the code
+ of the function, but even if this is possible it only provides some information
+, what if it calls a dynamically dispatched method on a parameter? One can
+ use a dynamic security mechanism, like Java's security manager, where a
+ runtime error would occur.
+ Here I propose a simple and flexible type-system extension that allows
+ one to reason on a fine-grained level on the capabilities of code.
+\end_layout
+
+\begin_layout Standard
+Rather than conventional accessibility where a declaration declares what
+ code can can access it, 
+\emph on
+inverted accessibility control
+\emph default
+ does the opposite, it declares what code a declaration can access.
+ Here I propose a 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[N, ..]
+\end_layout
+
+\end_inset
+
+ declaration modifier, it indicates that the attached code can call the
+ function 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+N...
+\end_layout
+
+\end_inset
+
+.
+ Compare this with the 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+private[N, ...]
+\end_layout
+
+\end_inset
+
+ of Scala, where 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+N, ...
+\end_layout
+
+\end_inset
+
+declares the scopes that can access the declaration:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+class Qux
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+	private[Qux] def bar(): Int = 1 + 2
+\end_layout
+
+\begin_layout Plain Layout
+
+	uses[bar] def foo(): Int = bar() + ...
+\end_layout
+
+\begin_layout Plain Layout
+
+	def baz(): ...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the above code, the 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+private[Qux]
+\end_layout
+
+\end_inset
+
+ annotation indicates that 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+bar
+\end_layout
+
+\end_inset
+
+ can 
+\emph on
+only 
+\emph default
+be accessed from within 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+Qux
+\end_layout
+
+\end_inset
+
+, however the 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[bar]
+\end_layout
+
+\end_inset
+
+ annotation indicates that 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+foo
+\end_layout
+
+\end_inset
+
+ might call 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+bar
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+My system involves a few rules, but the three most important are:
+\end_layout
+
+\begin_layout Itemize
+A function can call call itself
+\end_layout
+
+\begin_layout Itemize
+A function can annotated with 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[A0, ...]
+\end_layout
+
+\end_inset
+
+can call each 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+A0, ...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+A function that can call 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+A0, ...
+\end_layout
+
+\end_inset
+
+ can call a function annotated with 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[A0, ...]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These rules allows functions 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+bar
+\end_layout
+
+\end_inset
+
+ that simply do arithmetic to be callable from anywhere, a language/standard
+ library would declare such primitives with 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[]
+\end_layout
+
+\end_inset
+
+, thus allowing them to be called anywhere.
+ If on the other hand such a primitive wanted to be restricted (such as
+ a program
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+exit
+\end_layout
+
+\end_inset
+
+ function) such function could be annotated as using itself (e.g.
+ 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[exit]
+\end_layout
+
+\end_inset
+
+), thus allowing it to only be called in cases that are properly annotated.
+\end_layout
+
+\begin_layout Standard
+Together with generics, and a reasonable refinement rule (such as a function
+ must make its 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses
+\end_layout
+
+\end_inset
+
+ clause a subset of the one it refines) one can make very expressive but
+ powerful code, consider for example the following (where 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+A
+\end_layout
+
+\end_inset
+
+ stands for a generic accessibility parameter):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+????
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This system is designed to soundly enforce reasoning: by looking at the
+ declaration of two functions, you can determine whether one may call another.
+ In addition, it is also designed to work in an environment with dynamic-code
+ loading, if you have reasoned that one function cannot call another, no
+ matter what additional code you load or dynamically invoke, that guarantee
+ still holds.
+\end_layout
+
+\begin_layout Standard
+I also consider additional features to make the system more user friendly
+ without breaking formal reasoning, specifically:
+\end_layout
+
+\begin_layout Itemize
+A 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+provides[A0, ...]
+\end_layout
+
+\end_inset
+
+ clause: to allow access to a declaration (such as an IO library) to provide
+ access to 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+A0,...
+\end_layout
+
+\end_inset
+
+ (such as a set of IO functions).
+\end_layout
+
+\begin_layout Itemize
+Wild-cards, such as 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[*]
+\end_layout
+
+\end_inset
+
+ to allow calling arbitrary code, or 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses[A.*]
+\end_layout
+
+\end_inset
+
+ to stand for all the declarations inside 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+A
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Inference of 
+\begin_inset Flex Code
+status collapsed
+
+\begin_layout Plain Layout
+
+uses
+\end_layout
+
+\end_inset
+
+ clauses, including inferring functions as generic
+\end_layout
+
+\end_body
+\end_document

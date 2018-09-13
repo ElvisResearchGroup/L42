@@ -2,22 +2,24 @@
 
 Gui:Load<><{reuse L42.is/WidgetGuiLib}
 
-Box:Data<><Use[Gui.DispatchTrait()]<><{
+Box:Data<><{
+  S id
+  mut Gui.Widget.List children
   var Size left
   var Size top
-  mut method Void process(Gui.Event event) void
   }
+
 MoveAction:Data<><{implements Gui.Action
   mut Box outer
   Size leftDelta
   Size topDelta
   method (event) (
-    Debug(S"Button pressed")
+    Debug(S"Button pressed on :"++this.outer().id())
     this.#outer().left(this.outer().left()+this.leftDelta())
     this.#outer().top(this.outer().top()+this.topDelta())
     )
   }
-SafeMovable:Data<><{implements Gui.Widget
+SafeMovable:StupidData<><{implements Gui.Widget
   capsule Box box
   class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Left"
@@ -26,6 +28,7 @@ SafeMovable:Data<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:Size"-5",topDelta:0Size)
+    imgName:S"examples/resources/left.png"
     )
   class method mut Gui.Button right(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Right"
@@ -34,6 +37,7 @@ SafeMovable:Data<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:5Size,topDelta:0Size)
+    imgName:S"examples/resources/right.png"
     )
   class method mut Gui.Button up(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Up"
@@ -42,6 +46,7 @@ SafeMovable:Data<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:0Size,topDelta:Size"-5")
+    imgName:S"examples/resources/up.png"
     )
   class method mut Gui.Button down(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Down"
@@ -50,6 +55,7 @@ SafeMovable:Data<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:0Size,topDelta:5Size)
+    imgName:S"examples/resources/down.png"
     )
 
   class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
@@ -63,11 +69,17 @@ SafeMovable:Data<><{implements Gui.Widget
       )
     This(width:width,height:height,color:color,box:cbox)
     )
-  method id()this.box().id()
-  method children()this.box().children()
-  method left()this.box().left()
-  method top()this.box().top()
-  method dispatch(that)this.#box().dispatch(that)
+
+  method id() this.box().id()
+
+  method children() this.box().children()
+
+  method left() this.box().left()
+
+  method top() this.box().top()
+
+  method dispatch(that) this.#box().#children().dispatch(that)
+
   read method Bool #invariant(){
     Debug.incrementCounter(S"Invariant")
     with w1 in this.box().children().vals() (
@@ -80,6 +92,7 @@ SafeMovable:Data<><{implements Gui.Widget
       )
     return Bool.true()
     }
+
   class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2){
     if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
       (return Bool.false())
@@ -87,6 +100,7 @@ SafeMovable:Data<><{implements Gui.Widget
       (return Bool.false())
     return Bool.true()
      }
+
   read method Bool inside(read Gui.Widget that){
     //Debug(S"inside "[this.id()]" "[that.id()]"")
     if that.left()<0Size (return Bool.false())
@@ -116,7 +130,7 @@ C: {
             height:64Size
             color:S"blue"
             children:Gui.Widget.List[]);
-          SafeMovable(
+          /*SafeMovable(
             id:S"B"
             left:50Size
             top:50Size
@@ -134,7 +148,7 @@ C: {
                 children:Gui.Widget.List[]
                 )
               ]
-            )]
+            )*/]
           )]
         left:2Size,top:2Size
       ))
@@ -149,16 +163,16 @@ C: {
     //S"B_Up::Pressed::_";
     //S"B_Down::Pressed::_";
 
-    S"C_Left::Pressed::_";
-    S"C_Right::Pressed::_";
-    S"C_Up::Pressed::_";
-    S"C_Down::Pressed::_";
+    //S"C_Left::Pressed::_";
+    //S"C_Right::Pressed::_";
+    //S"C_Up::Pressed::_";
+    //S"C_Down::Pressed::_";
 
-    //S"D_Left::Pressed::_";
-    //S"D_Right::Pressed::_";
-    //S"D_Up::Pressed::_";
-    //S"D_Down::Pressed::_";
-    //S"EXIT";
+    S"D_Left::Pressed::_";
+    S"D_Right::Pressed::_";
+    S"D_Up::Pressed::_";
+    S"D_Down::Pressed::_";
+    S"EXIT";
     ]
   Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
 

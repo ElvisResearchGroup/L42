@@ -97,7 +97,7 @@ Task: (
   Debug(S"Starting deployment")
   Load.DeployLibrary.#$(
     path:Path"Exported",
-    url:Url"localhost/WidgetGuiLib.L42"
+    url:Url"localhost/WidgetGuiLibOld.L42"
     )<><Refactor2.rename(path:\"Exported.Gui" into:\"Exported")<><GuiLib()
     )
 }
