@@ -1,0 +1,33 @@
+{reuse L42.is/AdamTowel02
+
+Graph:Data<><{
+  capsule Node.List inner
+  Predicate inv
+  mut method Void transform(Transformer that)that(this.#inner())
+  read method Bool #invariant() this.inv()(this.inner())
+  Predicate:{interface method Bool (read Node.List that)}
+  Transformer:{interface    method Void(mut Node.List that)}
+  Node:Data<><UnsafeRefactor.This$er<><{
+    var S text
+    var mut List nodes
+    This$:{implements Concepts.Equals, Concepts.ToS}
+    List:Collection.vector(ofMut:Node)
+    }
+  }
+GraphSmall:Data<><{implements Graph.Predicate   method(that) that.size()<20Size}
+
+GraphAdd:Data<><{implements Graph.Transformer
+  method(that) (
+    n=Graph.Node(text:that.size().toS(),nodes:Graph.Node.List[])
+    with ni in that.#vals() (n.#nodes().add(right:ni))
+    that.add(right:ni)
+    )
+  }
+Main:{
+  g=Graph(inner:Graph.Node.List[], inv:GraphSmall())
+  g.transform(GraphAdd())
+  g.transform(GraphAdd())
+  Debug(g)
+  return ExitCode.normal()
+  }
+}

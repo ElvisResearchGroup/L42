@@ -81,7 +81,9 @@ public interface TypeSystem {
   public static ErrorKind _subtype(Program p, Type tSub, Type tSuper) {
     checkExists(p,tSub.getPath());
     checkExists(p,tSuper.getPath());
-    if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){return ErrorKind.NotSubtypeClass;}
+    if (!p.subtypeEq(tSub.getPath(),tSuper.getPath())){
+      return ErrorKind.NotSubtypeClass;
+      }
     if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){
       return ErrorKind.NotSubtypeMdf;
       }
