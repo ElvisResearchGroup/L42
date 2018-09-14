@@ -51,7 +51,8 @@
 \newcommand{\parj}{\setlength{\parskip}{0pt}}
 \newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
 \usepackage[para]{footmisc}
-\usepackage[colorlinks,linkcolor={0, 155, 240}]{hyperref}
+\usepackage{hyperref}
+\hypersetup{colorlinks,urlcolor=[RGB]{0, 155, 240}}
 \newcommand{\email}[1]{%
 	\href{mailto:#1}{\texttt{#1}}
 }
@@ -565,7 +566,7 @@ pars{}
 \begin_inset Formula $\ct T$
 \end_inset
 
- denotes a type-paramater.
+ denotes a type-parameter.
 \end_layout
 
 \begin_layout Standard
@@ -586,7 +587,7 @@ and pass it an instance of a class that implements
 \begin_inset Formula $\cf{do\_stuff<[]>(}\v{a\_stream}\cf )$
 \end_inset
 
- cannot (even indirectly) read from a file, since it dosen
+ cannot (even indirectly) read from a file, since it doesn
 \begin_inset Quotes brd
 \end_inset
 
@@ -605,7 +606,7 @@ t have the callability
 \end_inset
 
 ).
- As is usual in OO language, for such a call to type-check, 
+ As is usual in OO languages, for such a call to type-check, 
 \begin_inset Formula $\v{a\_stream}$
 \end_inset
 
@@ -630,7 +631,7 @@ This system is designed to soundly enforce reasoning: by looking at the
 \begin_inset Formula $\f g$
 \end_inset
 
-, and all functions transitivley referenced in their base-capabilities,
+, and all functions transitively referenced in their base-capabilities,
  one can statically determine whether 
 \begin_inset Formula $\f f$
 \end_inset
