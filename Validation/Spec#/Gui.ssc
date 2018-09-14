@@ -38,6 +38,7 @@ internal partial class Gui
 			[Peer, ResultNotNewlyAllocated] get
 				ensures Owner.Same(Owner.ElementProxy(result), result);
 		}
+
 		bool dispatch(Event that) modifies this.**;
 	}
 
@@ -56,9 +57,12 @@ internal partial class Gui
 			this.children = new List<Widget>();
 		}
 		[Peer] readonly Action action;
+		internal readonly string imgName;
+
 		public string colour { get { return "gray"; } }
-		[Pure] public override String ToString() { return this.id; }
-		
+		List<Widget> Gui.Widget.children { get { return this.children; } }
+		[Pure] public override string ToString() { return this.id; }
+
 		public bool dispatch(Event that)
 		{
 			if (this.id == that.targetId)

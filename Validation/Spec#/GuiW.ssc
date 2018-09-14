@@ -33,7 +33,7 @@ internal sealed class SafeMovable: PureObject, Gui.Widget
 	private static Gui.Button MakeButton(SafeMovable outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta)
 		ensures Owner.Same(result, outer);
 	{
-		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta));
+		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), "examples/resources/" + imgName);
 	}
 
 	// Box(string id, List<Gui.Widget> children, int left, int top)

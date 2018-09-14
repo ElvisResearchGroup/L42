@@ -1,17 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 using Microsoft.Contracts;
 
 [Immutable] internal partial class Gui
 {
 	internal readonly string id;
 
+	internal void display(string title, int x, int y, Widget body) 
+		modifies body.**;
+	{ 
+		this.display(title, x, y, body, new string[]{});
+	}
 	internal void display(string title, int x, int y, Widget body, string[] events)
+		modifies body.**;
 	{
 		this.open(title, "<div id='Top'></div>", x, y);
 		this.draw(body);
-		this.dispatch(body, events);
+		
+		foreach (string event_ in events) 
+		{
+			if (event_ == "EXIT") return;
+			body.dispatch(new Event(event_));
+			this.draw(body);
+		}
 		// TODO: this.dispatch(body, this.events);
 	}
 
@@ -61,15 +74,6 @@ using Microsoft.Contracts;
 	void open(string title, string body, int x, int y) { this.open(HtmlHeader() + "<title>" + title + "</title></head><body>" + body + "</body></html>", x, y); }
 
 	string HtmlHeader() { return "<!DOCTYPE html><html><head><meta http-equiv='content-class' content='text/html; charset=UTF-8'>"; }
-
-	void dispatch(Widget body, IEnumerable<string> events)
-	{
-		foreach (string event_ in events) {
-			if (event_ == "EXIT") return;
-			body.dispatch(new Event(event_));
-			this.draw(body);
-		}
-	}
 
 	void open(string html, int x, int y)  /*mut*/ 
 	{
