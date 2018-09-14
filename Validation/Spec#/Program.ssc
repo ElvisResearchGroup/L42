@@ -72,7 +72,7 @@ internal class MainC
 		return new SafeMovable("A", 20, 40, 640, 640, "red", list);
 	}
 
-	private static SafeMovable make()
+	private static void display()
 	{
 		List<Gui.Widget> list = new List<Gui.Widget>{makeA()};
 		Owner.AssignSame(list, Owner.ElementProxy(list));
@@ -107,8 +107,7 @@ internal class MainC
 
 	internal static void Main(string[] args)
 	{
-		SafeMovable w = make();
-		new Gui("a1").display("Moving", 800, 800, w, events());
+		display();
 		Debug.PrintCounter("Invariant");
 		Debug.Print("#@Success@#");
 		Console.Read();

@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel02
 
-Person:StupidData<><{ S name, var Size age, Size birthDay
+Person:Data<><{ S name, var Size age, Size birthDay
   mut method
   Void processDay(Size that){
     if this.birthDay()==that (return this.age(this.age()+1Size))
@@ -8,7 +8,7 @@ Person:StupidData<><{ S name, var Size age, Size birthDay
     }
   read method
   Bool #invariant() (
-    Debug(S"invariant P#")
+    Debug.incrementCounter(S"Invariant")
     this.name()!=S"" & this.age()>= 0Size & this.birthDay()>=0Size & this.birthDay()< 365Size
     )
   }
@@ -33,7 +33,7 @@ Family:StupidData<><{capsule FBox box
     )
   read method
   Bool #invariant() {
-    Debug(S"invariant F#")
+    Debug.incrementCounter(S"Invariant")
     with c in this.box().children().vals() (
       with p in this.box().parents().vals() ( if p.age()<= c.age() (return Bool.false()))
       )
@@ -60,6 +60,7 @@ Main0:{//here we get 19403 against 1109, so only 20 times improvements.
     if r==340Size (f.addKid(Person(name:S"Diana",age:0Size, birthDay:r)))
     )
   Debug(S"3 years passed "[f]"")
+  Debug.printCounter(S"Invariant") //2210 vs 19403
   return ExitCode.normal()
   }
 

@@ -1,3 +1,4 @@
+{
 reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
 
@@ -17,14 +18,6 @@ Cage:Data<><{
   mut method Void move(Point newPos)
     this.#h().pos(newPos)
   }
-/*
-    [Pure] static bool IsImmutable(Object o)
-        ensures result <==> (Owner.Same(o, freezer) && Owner.Same(Owner.ElementProxy(o, freezer)
-    {
-        return (Owner.Same(o, freezer) && Owner.Same(Owner.ElementProxy(o, freezer);
-    }
-*/
-
 Main: {
   Debug(S"hello")
   c=Cage(h:Hamster(pos:Point(x:0Num,y:0Num)),path:ListI[
@@ -47,3 +40,4 @@ Main: {
     ".withoutRight())
   return ExitCode.normal()
   }
+}
