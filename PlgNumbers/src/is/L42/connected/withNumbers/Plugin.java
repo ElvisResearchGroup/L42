@@ -82,4 +82,10 @@ public class Plugin implements PluginType.WellKnown {
     BigRational  i=ensureExtract(BigRational.class,cb);
     return ""+i;
   }
+
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
+  public  Object MnumToStringDouble£xthat(Object cb){
+    BigRational  i=ensureExtract(BigRational.class,cb);
+    return ""+i.doubleValue();
+  }
 }
