@@ -24,7 +24,7 @@ SafeMovable:Data<><{implements Gui.Widget
   class method S buttonContent(Size size, Size rotation) (
     zoom = Num.fromS(size)/25Num
     S"<div style='"[]
-      " padding-bottom:"[zoom*Num"3.5"]"px;"[]
+      " padding-bottom:"[(zoom*Num"1.875").toSDouble()]"px;"[]
       " margin:-2px;"[]
       " font-size:"[(zoom*10Num).toSDouble()]"pt;"[]
       " transform:rotate("[rotation]"deg)';>"[]
