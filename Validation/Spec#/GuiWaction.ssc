@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Contracts;
 
-internal partial class Gui
+internal sealed partial class Gui
 {
-	[Immutable] internal class Event 
+	[Immutable] internal sealed class Event 
 	{
 		internal readonly string targetId, eventId;
 		internal readonly string[] all;
@@ -42,7 +42,7 @@ internal partial class Gui
 		void apply(Event event_) modifies this.**; 
 	}
 
-	internal class Button: Widget 
+	internal sealed class Button: Widget 
 	{
 		[Peer] internal readonly Action action;
 		internal readonly string content;

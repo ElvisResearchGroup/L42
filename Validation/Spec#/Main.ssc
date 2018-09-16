@@ -2,7 +2,7 @@ using System;
 using Microsoft.Contracts;
 using System.Collections.Generic;
 
-internal sealed class C
+internal static class C
 {
 	// Transfers ownership of the elements of the given to the same owner as the list
 	[NoDefaultContract] static List<Gui.Widget> OwnElements([Captured] List<Gui.Widget> list)

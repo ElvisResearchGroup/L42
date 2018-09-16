@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using Microsoft.Contracts;
 
-internal partial class Gui
+internal sealed partial class Gui
 {
 	internal void display(string title, int x, int y, Widget body) 
 		modifies body.**;
