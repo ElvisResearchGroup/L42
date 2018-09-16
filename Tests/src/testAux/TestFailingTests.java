@@ -568,6 +568,36 @@ public class TestFailingTests {
 	,"}");
 	}
 
-
+	@Test
+	public void testCompareToAny() {
+		 tp("{"
+		 ,"reuse L42.is/AdamTowel02"
+		 ,"CacheAdamTowel02:Load.cacheTowel()"
+		 ,""
+		 ,"Main: {"
+		 ,""
+		 ,"Any a = S\"Foo\""
+		 ,"Debug(a == S\"Foo\")"
+		 ,""
+		 ,"return ExitCode.normal()"
+		 ,"}"
+	,"}");
+	}
 	
+	@Test
+	public void testNestedClass() {
+		 tp("{"
+		 ,"reuse L42.is/AdamTowel02"
+		 ,"CacheAdamTowel02:Load.cacheTowel()"
+		 ,""
+		 ,"Main: {"
+		 ,"A: {"
+		 ,"class method Num test() {"
+		 ,"return 1Num"
+		 ,"}"
+		 ,"}"
+		 ,"return ExitCode.normal()"
+		 ,"}"
+	,"}");
+	}	
 }

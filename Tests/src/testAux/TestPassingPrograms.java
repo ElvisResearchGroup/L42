@@ -762,5 +762,104 @@ public class TestPassingPrograms {
 	,"}"
 	,"}");
 	}
+	
+	@Test
+	public void testEqualReadableName() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"A: {"
+	,"    class method S readableName() {"
+	,"        return S\"S\""
+	,"    }"
+	,"}"
+	,""
+	,"Main: {"
+	,"    X[A.readableName() == S.readableName()]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test
+	public void testStringSplit() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Main: {"
+	,"    s = S\"t e s t\""
+	,"    Strings k = s.splitOn(chars: S\" \")"
+	,"    X[k == Strings[S\"t\"; S\"e\"; S\"s\"; S\"t\"]]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+
+	@Test
+	public void testStringGetChar() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Main: {"
+	,"    s = S\"t e s \""
+	,"    Strings k = s.splitOn(chars: S\" \")"
+	,"    X[s.val(0Size) == S\"t\"]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+	}
+	
+	@Test
+	public void testClassReadableName() {
+	tp("{"
+	,"reuse L42.is/AdamTowel02"
+	,"CacheAdamTowel02:Load.cacheTowel()"
+	,""
+	,"Main: {"
+	,"    s = S\"t e s t\""
+	,"    Strings k = s.splitOn(chars: S\" \")"
+	,"    X[s.val(0Size).class().readableName().class().readableName() == S\"S\"]"
+	,"    return ExitCode.normal()"
+	,"}"
+	,"}");
+
+	}
+	
+	@Test
+	public void testReverseFunction() {
+		 tp("{"
+		 ,"reuse L42.is/AdamTowel02"
+		 ,"CacheAdamTowel02:Load.cacheTowel()"
+		 ,""
+		 ,"SH: {"
+		 ,"class method S reverse(S that) {"
+		 ,""
+		 ,"Size size = that.size()"
+		 ,"var Num size2 = Num.fromS(size.toS())"
+		 ,""
+		 ,"var S result = S\"\""
+		 ,""
+		 ,"while (0Num <= size2) ("
+		 ,"result := result ++ (that.val(Size.fromS(size2.toS())))"
+		 ,"size2 := size2 - 1Num"
+		 ,")"
+		 ,"Debug(result)"
+		 ,"return result"
+		 ,"}"
+		 ,"}"
+		 ,""
+		 ,"Main: {"
+		 ,"result = SH.reverse(S\"while (0Num <= size2) (\")"
+		 ,"//Debug(result)"
+		 ,"X[result == S\"( )2ezis =< muN0( elihw\"]"
+		 ,""
+		 ,"return ExitCode.normal()"
+		 ,"}"
+	,"}");
+	}
+
 
 }
