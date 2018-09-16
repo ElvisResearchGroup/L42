@@ -113,13 +113,12 @@ internal sealed class SafeMovable: Gui.Widget
 	}
 
 	public string id { get { return this.box.id; } }
-	public List<Gui.Widget> children { get { return this.box.children; } }
-	[Pure] string Gui.Widget.format_child(Gui gui, int i)
+	[Pure] public int children_count() { return this.box.children.Count; }
+	[Pure] public Gui.Widget children(int i) 
 	{
-		assume 0 <= i && i < this.box.children.Count; // To shut up boogies array bounds checks
-		return gui.format(this.box.children[i]);
-	} 
-
+		assume 0 <= i && i < this.box.children.Count;
+		return this.box.children[i]; 
+	}
 
 	public int left { get { return this.box.left; } }
 	public int top { get { return this.box.top; } }

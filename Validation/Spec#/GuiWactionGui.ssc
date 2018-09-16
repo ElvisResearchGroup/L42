@@ -49,9 +49,9 @@ internal sealed partial class Gui
 	[Pure] string formatW(Widget div)
 	{
 		StringBuilder children = new StringBuilder();
-		for (int i = 0; i < div.children.Count; i++) 
-			children.Append(div.format_child(this, i));
-		
+		for (int i = 0; i < div.children_count(); i++) 
+			children.Append(this.format(div.children(i)));
+
 		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" + 
 			" position: absolute;" + 
 			" left: " + div.left + "px;" + 
