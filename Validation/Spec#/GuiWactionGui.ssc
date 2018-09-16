@@ -53,29 +53,36 @@ internal sealed partial class Gui
 			children.Append(div.format_child(this, i));
 		
 		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" + 
-		" position: absolute;" + 
-		" left: " + div.left + "px;" + 
-		" top: " + div.top + "px;" + 
-		" height: " + div.height + "px;" + 
-		" width: " + div.width + "px;" + 
-		" background-color: " + div.colour + ";'>" +
-		"<div style='position: relative;'>" +
-			children + 
-		"</div></div>"; 
+			" position: absolute;" + 
+			" left: " + div.left + "px;" + 
+			" top: " + div.top + "px;" + 
+			" height: " + div.height + "px;" + 
+			" width: " + div.width + "px;" + 
+			" background-color: " + div.colour + ";'>" +
+			"<div style='position: relative;'>" +
+				children + 
+			"</div></div>"; 
 	}
 
 	[Pure] string formatB(Button button)
 	{
-		return "<button id='" + button.id + "'" +
+		return "<div id='" + button.id + "'" +
+			" onMouseOver=\"this.style['background-color']='pink'\"" +
+			" onMouseOut=\"this.style['background-color']='gray'\"" +
 			" onclick=\"event42('" + button.id + "::Pressed::more')\"" +
 			" style='" + 
 			" position: absolute;" + 
-			" padding: 0px;" +
 			" left: " + button.left + "px;" + 
 			" top: " + button.top + "px;" + 
 			" height: " + button.height + "px;" + 
-			" width: " + button.width + "px;>" + 
-				button.content +
-			"</button>";
-	}
+			" width: " + button.width + "px;" + 
+			" background-color: gray;'>" +
+				"<div" +
+				" style='" +
+				" margin:10%;" +
+				" height:80%;" +
+				" width:80%;" +
+				" background: url(\"file:///" + Path.GetFullPath(button.imgName) + "\") no-repeat;" +
+				" background-size:contain;'></div>" +
+			"</div>";	}
 }

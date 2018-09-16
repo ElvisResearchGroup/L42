@@ -68,36 +68,28 @@ internal sealed class SafeMovable: Gui.Widget
 	internal static Gui.Button Left(Box outer, int scale)
 		ensures Owner.Same(result, outer);
 	{
-		return MakeButton(outer, scale, "_Left", 0, 13, 6, 6, -5, 0, 180);
+		return MakeButton(outer, scale, "_Left", 0, 13, 6, 6, -5, 0, "left.png");
 	}
 	internal static Gui.Button Right(Box outer, int scale) 
 		ensures Owner.Same(result, outer); 
 	{ 
-		return MakeButton(outer, scale, "_Right", 26, 13, 6, 6, 5, 0, 0); 
+		return MakeButton(outer, scale, "_Right", 26, 13, 6, 6, 5, 0, "right.png"); 
 	}
 	internal static Gui.Button Up(Box outer, int scale)
 		ensures Owner.Same(result, outer); 
 	{
-		return MakeButton(outer, scale, "_Up", 13, 0, 6, 6, 0, -5, 270);
+		return MakeButton(outer, scale, "_Up", 13, 0, 6, 6, 0, -5, "up.png");
 	}
 	internal static Gui.Button Down(Box outer, int scale)
 		ensures Owner.Same(result, outer); 
 	{
-		return MakeButton(outer, scale, "_Down", 13, 26, 6, 6, 0, 5, 90);
+		return MakeButton(outer, scale, "_Down", 13, 26, 6, 6, 0, 5, "down.png");
 	}
 
-	internal static Gui.Button MakeButton(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta, int rotation)
+	internal static Gui.Button MakeButton(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta, string imgName)
 		ensures Owner.Same(result, outer);
 	{
-		double zoom = (6.0*scale)/25.0;
-		string content = "<div style='" + 
-		  " padding-bottom:" + zoom*3.5 + "px;" +
-		  " margin:-2px;" +
-		  " font-size:" + zoom*10.0 + "pt;" +
-		  " transform:rotate(" + rotation + "deg)';>" + 
-			  "&#x2794;" + 
-		  "</div>";
-		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), content);
+		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), "examples/resources/" + imgName);
 	}
 
 	internal SafeMovable(string id, int left, int top, int width, int height, string colour, [Captured] List<Gui.Widget> children) 
