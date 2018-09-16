@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+internal partial class Gui
+{
+	[Immutable] internal class Event 
+	{
+		internal readonly string targetId, eventId;
+		internal readonly string[] all;
+
+		internal Event(string that)
+		{
+			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
+			
+			// To shut up boogiees array bounds checks
+			assume s.Length >= 2;
+
+			this.targetId = s[0];
+			this.eventId = s[1];
+			this.all = s;
+		}
+	}
+
+	internal interface Widget 
+	{
+		string id { get; }
+		int left { get; }
+		int top { get; }
+		int width { get; }
+		int height { get; }
+		string colour { get; }
+		
+		List<Widget> children { get; }
+		[Pure] string format_child(Gui gui, int i); // Needed since this.children[i] may not be peer valid
+
+		bool dispatch(Event that) modifies this.**;
+	}
+
+	internal interface Action 
+	{ 
+		void apply(Event event_) modifies this.**; 
+	}
+
+	internal class Button: Widget 
+	{
+		[Peer] internal readonly Action action;
+		internal readonly string content;
+
+		public string colour { get { return "gray"; } }
+		[Pure] public override string ToString() { return this.id; }
+		public bool dispatch(Event that)
+		{
+			if (this.id == that.targetId)
+			{
+				this.action.apply(that);
+				return true;
+			}
+			return false;
+		}
+
+		[Peer][ElementsPeer] List<Widget> children;
+
+		int          Gui.Widget.left     { get { return this.left;     } }
+		int          Gui.Widget.top      { get { return this.top;      } }
+		int          Gui.Widget.width    { get { return this.width;    } }
+		int          Gui.Widget.height   { get { return this.height;   } }
+		string       Gui.Widget.id       { get { return this.id;       } }
+
+		List<Widget> Widget.children { get { return this.children; } }
+		[Pure] string Widget.format_child(Gui gui, int i) { return ""; }  // Should be unreachable code
+
+		internal readonly int left, top, width, height;
+		internal readonly string id;
+
+
+		[Captured] internal Button(string id, int left, int top, int width, int height, Action action, string content) 
+				ensures Owner.Same(this, action); 
+		{
+			Owner.AssignSame(this, action);
+			this.id = id;
+			this.left = left;
+			this.top = top;
+			this.width = width;
+			this.action = action;
+			this.content = content;
+
+			// Since Gui.Widget.children is annotated as not returning newley allocated objects
+			// We have to precompute the result here
+			this.children = new List<Widget>();
+		}
+	}
+}

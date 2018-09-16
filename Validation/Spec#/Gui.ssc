@@ -1,88 +1,49 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
+using System.IO;
 using Microsoft.Contracts;
 
 internal partial class Gui
 {
-	[Immutable] internal class Event 
+	internal readonly string id;
+	string JsEscape(string that) 
 	{
-		internal readonly string targetId;
-		internal readonly string eventId;
-		internal readonly string[] all;
-
-		internal Event(string that)
-		{
-			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
-			// If I don't do some check like this, boogie will complain about potential out-of bounds indexes in the following lines,
-			// (Despite that fact that those lines will throw exceptions anyway if the index is invalid...)
-			if (s.Length < 2)
-				throw new System.ArgumentException("Expected a string containing ::", "that");
-
-			this.targetId = s[0];
-			this.eventId = s[1];
-			this.all = s;
-		}
+		return that.Replace("\\", @"\\").Replace("\"", @"\""").Replace("\'", @"\'").Replace("\n", @"\n");
 	}
 
-	internal interface Widget 
+	void set_(string that, string id)
 	{
-		string id { get; }
-		int left { get; }
-		int top { get; }
-		int width { get; }
-		int height { get; }
-		string colour { get; }
-		
-		List<Widget> children 
-		{
-			[Peer, ResultNotNewlyAllocated] get
-				ensures Owner.Same(Owner.ElementProxy(result), result);
-		}
-
-		bool dispatch(Event that) modifies this.**;
-	}
-
-	//internal delegate void Action(Event);
-	internal interface Action { void apply(Event event_) modifies this.**; }
-
-	internal class Button: Widget {
-		[Captured] internal Button(string id, int left, int top, int width, int height, Action action) 
-				ensures Owner.Same(this, action); {
-			Owner.AssignSame(this, action);
-			this.id = id;
-			this.left = left;
-			this.top = top;
-			this.width = width;
-			this.action = action;
-			this.children = new List<Widget>();
-		}
-		[Peer] readonly Action action;
-		internal readonly string imgName;
-
-		public string colour { get { return "gray"; } }
-		List<Widget> Gui.Widget.children { get { return this.children; } }
-		[Pure] public override string ToString() { return this.id; }
-
-		public bool dispatch(Event that)
-		{
-			if (this.id == that.targetId)
-			{
-				this.action.apply(that);
-				return true;
+		string qid = "'" + JsEscape(id) + "'";
+		string qText = "'" + JsEscape(that) + "'";
+		string cmd = @"var oldElem = document.getElementById(" + qid + @"');
+			oldElem.innerHTML = " + qText + @"';
+			var parentElem = oldElem.parentNode;
+			var innerElem; 
+			while (innerElem = oldElem.firstChild) {
+				parentElem.insertBefore(innerElem, oldElem); 
 			}
-			return false;
-		}
+			parentElem.removeChild(oldElem);";
 
-		[Peer][ElementsPeer] List<Widget> children; 
-		readonly int left, top, width, height;
-		readonly string id;
-
-		// Boilerplate widget implementation
-		int Gui.Widget.left              { get { return this.left;     } }
-		int Gui.Widget.top               { get { return this.top;      } }
-		int Gui.Widget.width             { get { return this.width;    } }
-		int Gui.Widget.height            { get { return this.height;   } }
-		string Gui.Widget.id             { get { return this.id;       } }
-		List<Widget> Gui.Widget.children { get { return this.children; } }
+        this.executeJs(cmd);
 	}
+
+	void open(string title, string body, int x, int y) { this.open(HtmlHeader() + "<title>" + title + "</title></head><body>" + body + "</body></html>", x, y); }
+
+	string HtmlHeader() { return "<!DOCTYPE html><html><head><meta http-equiv='content-class' content='text/html; charset=UTF-8'>"; }
+
+	void open(string html, int x, int y)  /*mut*/ 
+	{
+		//Debug("GuiPlugin.open(wName: {0}, html: {1}, x: {2}, y: {3})", this.id, html, x, y);
+		// TODO: PLUGIN
+	}
+
+	string executeJs(string that) /*mut*/ 
+	{
+		//Debug("GuiPlugin.executeJs(wName: {0}, command: {1})", this.id, that);
+		// TODO: PLUGIN
+		return "";
+	}
+
+	internal Gui(string id) { this.id = id; }
 }

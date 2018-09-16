@@ -76,25 +76,29 @@
     </Build>
     <Files>
       <Include>
-        <File RelPath="AssemblyInfo.ssc"
-                 SubType="Code"
-                 BuildAction="Compile"
-                 />
-        <File RelPath="Program.ssc"
+        <File RelPath="Main.ssc"
                  SubType="Code"
                  BuildAction="Compile"
                  />
         <File BuildAction="Compile"
                  SubType="Code"
-                 RelPath="GuiW.ssc"
+                 RelPath="GuiWWithLib.ssc"
+                 />
+        <File BuildAction="Compile"
+                 SubType="Code"
+                 RelPath="GuiWaction.ssc"
+                 />
+        <File BuildAction="Compile"
+                 SubType="Code"
+                 RelPath="GuiWactionGui.ssc"
+                 />
+        <File BuildAction="Compile"
+                 SubType="Code"
+                 RelPath="Debug.ssc"
                  />
         <File BuildAction="Compile"
                  SubType="Code"
                  RelPath="Gui.ssc"
-                 />
-        <File BuildAction="Compile"
-                 SubType="Code"
-                 RelPath="FakeGui.ssc"
                  />
       </Include>
     </Files>

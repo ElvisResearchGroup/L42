@@ -1,0 +1,185 @@
+using System;
+using Microsoft.Contracts;
+using System.Collections.Generic;
+
+// I need to define this class since the constructor for System.Object is not declared as 'Pure'
+// This means that the static analayser thinks calls to 'base()' on a class deriving from Object could mutate memory.
+// This particularlly means that after that call (which is implicitly the first thing in a constructor)
+// A constructors precondition can no longer be assumed
+internal class PureObject { [Pure] internal PureObject() {} }
+
+internal sealed class Box: PureObject 
+{
+	internal readonly string id; 
+	internal int left, top;
+
+	[Peer] [ElementsPeer] internal readonly List<Gui.Widget> children; 
+
+	// It is practically impossible in Spec# to make a verified class that derives from List<T>,
+	// so rather than add the dispatch method using inheritence, I'm just going to put it here
+	public bool dispatch(Gui.Event that)
+		modifies this.**;
+	{
+		for (int i = 0; i < this.children.Count; i++)
+			if (this.children[i].dispatch(that)) return true;
+
+		return false;
+	}
+
+	[Captured] internal Box(string id, List<Gui.Widget> children, int left, int top)
+		requires Owner.Same(Owner.ElementProxy(children), children);
+		ensures Owner.Same(this, children);
+	{
+		this.left = left;
+		this.top = top;
+		this.id = id;
+
+		Owner.AssignSame(this, children);
+		this.children = children;
+	}
+}
+
+internal sealed class MoveAction: Gui.Action 
+{
+	[Peer] readonly Box outer;
+	readonly int leftDelta, topDelta;
+	
+	public void apply(Gui.Event event_) 
+	{
+		Debug.Print("Button pressed on :" + this.outer.id);
+		outer.left = outer.left + leftDelta;
+		outer.top  = outer.top + topDelta;
+	}
+
+	[Captured] internal MoveAction(Box outer, int leftDelta, int topDelta) 
+		ensures Owner.Same(this, outer);
+	{ 
+		Owner.AssignSame(this, outer);
+		this.outer = outer;
+		this.leftDelta = leftDelta;
+		this.topDelta = topDelta;
+	}
+}
+
+internal sealed class SafeMovable: Gui.Widget 
+{
+	[Rep] private readonly Box box;
+
+	internal static Gui.Button Left(Box outer, int scale)
+		ensures Owner.Same(result, outer);
+	{
+		return MakeButton(outer, scale, "_Left", 0, 13, 6, 6, -5, 0, 180);
+	}
+	internal static Gui.Button Right(Box outer, int scale) 
+		ensures Owner.Same(result, outer); 
+	{ 
+		return MakeButton(outer, scale, "_Right", 26, 13, 6, 6, 5, 0, 0); 
+	}
+	internal static Gui.Button Up(Box outer, int scale)
+		ensures Owner.Same(result, outer); 
+	{
+		return MakeButton(outer, scale, "_Up", 13, 0, 6, 6, 0, -5, 270);
+	}
+	internal static Gui.Button Down(Box outer, int scale)
+		ensures Owner.Same(result, outer); 
+	{
+		return MakeButton(outer, scale, "_Down", 13, 26, 6, 6, 0, 5, 90);
+	}
+
+	internal static Gui.Button MakeButton(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta, int rotation)
+		ensures Owner.Same(result, outer);
+	{
+		double zoom = (6.0*scale)/25.0;
+		string content = "<div style='" + 
+		  " padding-bottom:" + zoom*3.5 + "px;" +
+		  " margin:-2px;" +
+		  " font-size:" + zoom*10.0 + "pt;" +
+		  " transform:rotate(" + rotation + "deg)';>" + 
+			  "&#x2794;" + 
+		  "</div>";
+		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), content);
+	}
+
+	internal SafeMovable(string id, int left, int top, int width, int height, string colour, [Captured] List<Gui.Widget> children) 
+		modifies children.**;
+		requires Owner.Same(Owner.ElementProxy(children), children);
+	{
+		Box box = new Box(id, children, left, top);
+
+		// I have to put these in variables (and not pass them directly to box.children.Add) otherwise boogie complains
+		Gui.Button bl = Left(box, height/32);
+		Gui.Button br = Right(box, height/32);
+		Gui.Button bu = Up(box, height/32);
+		Gui.Button bd = Down(box, height/32);
+
+		box.children.Add(bl);
+		box.children.Add(br);
+		box.children.Add(bu);
+		box.children.Add(bd);
+
+		this(width, height, colour, box);
+	}
+
+	public string id { get { return this.box.id; } }
+	public List<Gui.Widget> children { get { return this.box.children; } }
+	[Pure] string Gui.Widget.format_child(Gui gui, int i)
+	{
+		assume 0 <= i && i < this.box.children.Count; // To shut up boogies array bounds checks
+		return gui.format(this.box.children[i]);
+	} 
+
+
+	public int left { get { return this.box.left; } }
+	public int top { get { return this.box.top; } }
+
+	public bool dispatch(Gui.Event that)
+	{ 
+		expose (this) return this.box.dispatch(that);
+	} // Verification error: Object invariant possibly does not hold
+
+	invariant Debug.IncrementCounter("Invariant") && forall {int i in (0: this.box.children.Count);
+		   Inside(this.box.children[i], this.width, this.height) 
+		&& forall {int j in (0: this.box.children.Count);
+			// WTF? Without this I get a verification error: '
+			//     all of System.Collections.Generic.List<Gui.Widget!>.this[int].get, unsatisfied precondition: index < Count' 
+			   i < this.box.children.Count
+			&& (!this.box.children[i].id.Equals(this.box.children[j].id) ==> !Overlap(this.box.children[i], this.box.children[j]))
+		}
+	};
+
+	[Pure] private static bool Overlap(Gui.Widget w1, Gui.Widget w2) 
+	{
+		if (w1.left > w2.left + w2.width || w2.left > w1.left + w1.width)
+			return false;
+		if (w1.top > w2.top + w2.height || w2.top > w1.top + w1.height)
+			return false;
+
+		return true;
+	}
+	// Since this method is only called in the invariant,
+	// Its significantly easier to just pass the width and height, as opposed to trying to make it an instance method.
+	[Pure] private static bool Inside(Gui.Widget that, int width, int height)
+	{
+		if (that.left < 0) return false;
+		if (that.left + that.width > width) return false;
+		if (that.top < 0) return false;
+		if (that.top + that.height > height) return false;
+		return true;
+	}
+
+	internal SafeMovable(int width, int height, string colour, [Captured] Box box) 
+	{
+		this.width = width;
+		this.height = height;
+		this.colour = colour;
+		this.box = box;
+	} // Verification error: Object invariant possibly does not hold
+
+	// Spec# (unlike neweer versions of C#) does not have auto implemented properties
+	readonly int width, height;
+	readonly string colour;
+
+	int    Gui.Widget.width  { get { return this.width;  } }
+	int    Gui.Widget.height { get { return this.height; } }
+	string Gui.Widget.colour { get { return this.colour; } }
+}
