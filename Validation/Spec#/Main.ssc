@@ -1,3 +1,7 @@
+// 11 annotations, 28 + 11 tokens, 118+65 characters
+
+// Total accross all files:
+//     54 annotations, 131+17 tokens, 775+125 characters
 using System;
 using Microsoft.Contracts;
 using System.Collections.Generic;
@@ -5,7 +9,7 @@ using System.Collections.Generic;
 internal static class MainClass
 {
 	// Transfers ownership of the elements of the given to the same owner as the list
-	[NoDefaultContract] static List<Gui.Widget> OwnElements([Captured] List<Gui.Widget> list)
+	[NoDefaultContract] static List<Gui.Widget>OwnElements([Captured]List<Gui.Widget>list) // 6 annotations, 25+11 tokens, 54+65 characters
 		requires Owner.None(Owner.ElementProxy(list));
 		ensures Owner.Same(Owner.ElementProxy(list), list);
 		ensures result == list; 
@@ -14,7 +18,7 @@ internal static class MainClass
 		return list;
 	}
 
-	internal static void Main(string[] args)
+	internal static void Main(string[] args) // 5 annotations, 5 tokens, 65 chars
 	{
 		// Note: if I try and put this all in one expression, it fails to verify. So I have had to split up the widgets into seperate variables
 		SafeMovable wd = new SafeMovable("D", 280, 280, 64,  64,  "blue",  OwnElements(new List<Gui.Widget>{}      ));

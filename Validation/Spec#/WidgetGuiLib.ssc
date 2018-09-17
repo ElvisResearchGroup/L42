@@ -1,3 +1,4 @@
+// 5 annoations, 9 tokens, 52 characters
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,13 +7,13 @@ using Microsoft.Contracts;
 
 internal sealed partial class Gui
 {
-	internal void display(string title, int x, int y, Widget body) 
+	internal void display(string title, int x, int y, Widget body) // 1 annotation, 3 tokens, 17 characters
 		modifies body.**;
 	{ 
 		this.display(title, x, y, body, new string[]{});
 	}
 
-	internal void display(string title, int x, int y, Widget body, string[] events)
+	internal void display(string title, int x, int y, Widget body, string[] events) // 1 annotation, 3 tokens, 17 characters
 		modifies body.**;
 	{
 		this.open(title, "<div id='Top'></div>", x, y);
@@ -39,20 +40,20 @@ internal sealed partial class Gui
 		this.set_("<div id='Top' style='position: relative; height: 750px; width: 750px; border: solid black 2px;'>" + this.format(that) + "</div>", "Top");
 	}
 
-	[Pure] internal string format(Widget that) 
+	[Pure] internal string format(Widget that) // 1 annotation, 1 token, 6 characters
 	{
 		Button? b = that as Button;
 		if (b != null) return formatB(b);
 		return formatW(that);
 	}
 	
-	[Pure] string formatW(Widget div)
+	[Pure] string formatW(Widget div) // 1 annotation, 1 token, 6 characters
 	{
 		StringBuilder children = new StringBuilder();
 		for (int i = 0; i < div.children_count(); i++) 
 		{
 			Widget? child = div.children(i);
-			assume child != null;
+			assume child != null; // Suppress non-nullity verifaction, not counted
 			children.Append(this.format(child));
 		}
 		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" + 
@@ -67,7 +68,7 @@ internal sealed partial class Gui
 			"</div></div>"; 
 	}
 
-	[Pure] string formatB(Button button)
+	[Pure] string formatB(Button button) // 1 annotation, 1 token, 6 characters
 	{
 		return "<div id='" + button.id + "'" +
 			" onMouseOver=\"this.style['background-color']='pink'\"" +
