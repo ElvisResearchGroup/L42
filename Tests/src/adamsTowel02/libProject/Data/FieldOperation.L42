@@ -1,7 +1,7 @@
 {
 Library forReadable,
 Library forImmutable,
-Library forClassable, 
+Library forClassable,
 Library forClassAny,
 Library forLibrary,
 Library forVoid
@@ -11,13 +11,17 @@ exception Refactor2.Fail{
   r=type.refTo()
   g=Refactor2.redirect(path:\"T"  intoRefTo:r)
   if type.mdf().isCmpClass() (
+    //TODO: if type is a nested, this will not throw the error.
+    //algorithm need rethinking.
+    //Debug(S"handling class field "[type]"")
     return sel<><g<><this.forClassable()
-    catch exception Guard 
+    catch exception Guard
       return sel<><g<><this.forClassAny()
     void
     )
   if type.mdf().isCmpImm() (
     with r (on Location.Type.RefTo.Binded (
+      //Debug(S"handling imm field "[type]"")
       cObj=r.referredClassObj()
       if Location.Type.RefTo.Binded.equalsClassObj(cObj and:Library) (
         return sel<><this.forLibrary()
@@ -28,6 +32,7 @@ exception Refactor2.Fail{
       ))
     return sel<><g<><this.forImmutable()
     )
+    //Debug(S"handling read-mut field "[type]"")
     return sel<><g<><this.forReadable()
   }
 class method
@@ -44,7 +49,7 @@ Trait:Resource<><{
 
   method
   Bool shouldDecorate(Location.Lib that)
-  exception Fail 
+  exception Fail
 
   class method
   Library operationTrait(Strings fNs, Location.Type.Parameter.List fTs)

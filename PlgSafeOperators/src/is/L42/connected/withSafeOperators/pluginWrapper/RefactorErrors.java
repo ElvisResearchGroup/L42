@@ -161,6 +161,16 @@ public class RefactorErrors{
       this.left=left;this.right=right;}
     public Lib left(){return left;}
     public Lib right(){return right;}
+    public String toString(){
+      return "ClassClash: \n"
+        +"  left:"+left.path()+"\n"
+        +"  right:"+right.path()+"\n"
+        +"originating from \n"
+        +"  left:"+left.formatOrigins()+"\n"
+        +"  right:"+right.formatOrigins()+"\n"
+        +super.toString()
+        ;}
+
     }
 
   @SuppressWarnings("serial") public static class
