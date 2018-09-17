@@ -3,9 +3,9 @@
 \input{Formalization}
 
 \section{Benefits without heavy costs}
-In this section we discuss why the design of \name
+In this section we discuss why we believe the design of \name
 is not intrinsically harder to use than Java.
-This appendix is not fundamental to understand the main
+This appendix is not fundamental to understanding the main
 content of the paper, but may clarify misconceptions.
 
 \subsection{Introducing more names}
@@ -20,22 +20,23 @@ Those are quite different roles, so they may very well
 be handled by different programmers.
 As shown in the \Q@set/Set@ example, defining a reusable class
 takes only an extra line with respect to defining a final one.
-In some sense, in Java the default is ``non final'', and
+In Java the default is ``non final'', and
 the programmer can write \Q@final@ to prevent code reuse, while
-in 42 the default is reverted.
+in 42 the default is reversed.
 
-It could be possible to define a syntactic sugar, like
+It could be possible to define  syntax sugar, like this:
 \begin{lstlisting}
 reusable Set={...}
-//expanded into
+//expands into
 set={...}
 Set=set
 \end{lstlisting}
-While this may sound appealing to a Java programmers, it only saves one line, and it may obscure the actual behaviour of the code.
+While this may sound appealing to Java programmers, it only saves one line, and it may obscure the actual behaviour of the code.
 This kind of behaviour is offered in Cecil~\cite{chambers1995typechecking}, where it makes sense, since in 
 Cecil classes are not types.
-Cecil offers syntactic sugar to declare a class and an
-interface with the same structural type in a single declaration.
+Cecil offers syntax sugar to declare classes and
+interfaces with the same structural type
+in a single declaration.
 
 \subsection{Two ways to separate subclassing and subtyping}
 There are indeed two different ways to separate subclassing and subtyping:
