@@ -31,7 +31,11 @@ internal sealed partial class Gui
 		int height { get; }
 		string colour { get; }
 		
+		// Note: I have created these two functions instead of a simple List<Widget> children { get; }
+		// Since the latter does not imply that the returned elements thesmelves are peer valid (just that the list is)
 		[Pure] int children_count();
+		// I have to make this return a nullable, since boogie tries to verify the consistency of the contracts with a dummy 'return null' implementation
+		// But null is not peer valid, if I use Widget? it only requires the result to be peer valid if it is not null.
 		[Pure] Widget? children(int i);
 
 		bool dispatch(Event that) modifies this.**;
