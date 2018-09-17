@@ -158,9 +158,10 @@ static void recursiveAux(ClassB l,List<Ast.MethodType>mhs,List<Ast.C>cs){
             }
           }
         catch(ErrorMessage.PathMetaOrNonExistant pne){
-          throw pne.withListOfNodeNames(csi).withCb(p.top());// .withWherePathWasWritten(p);
-          }
-        Paths pathsi=reachableFromL(p.top().getClassB(csi),forTyped);
+          throw pne.withListOfNodeNames(csi).withCb(p.top());}// .withWherePathWasWritten(p);
+        Paths pathsi;try {pathsi=reachableFromL(p.top().getClassB(csi),forTyped);}
+        catch(ErrorMessage.PathMetaOrNonExistant pne){
+          throw pne.withListOfNodeNames(csi).withCb(p.top());}
         pathsi=pathsi.prefix(csi);
         paths0=paths0.union(pathsi);
         }

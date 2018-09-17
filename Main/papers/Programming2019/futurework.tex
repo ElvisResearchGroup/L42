@@ -4,7 +4,10 @@
 \noindent\IO{Our approach follows the principles of \REVComm{\emph{Defensive/Offensive programming}~\cite{WikiDefensive}}{2}{Is [this citation] a (or the most) reliable source of defensive programming principles?}:
 	\begin{itemize}
 		\item The failure (an unchecked exception)
-		is raised \REVComm{as close as possible to the defect}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.
+		is raised close to the defect.
+    This means that the method directly calling the operation creating an invalid object
+    is still on the stack trace.
+%}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.    
 		\item No attempt to fix or recover the invalid object is performed.
 	\end{itemize}
 }

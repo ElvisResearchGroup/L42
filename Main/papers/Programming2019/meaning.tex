@@ -36,7 +36,7 @@ and the type of the free variables is encoded in the variable environment $\Gamm
 \item The special capability object location $c$ of the \Q@Cap@ class; instances of \Q@Cap@ cannot be created with a \Q@new@ expression.
 \item We have a special \emph{monitor} expression \Q@M(@$l$\Q@;@$\e_1$\Q@;@$\e_2$\Q@)@.
 Those expressions are not present in the source code but are inserted by the reduction.
-\REVComm{Initially we will have $\e_2= l$\validate;
+\REVComm{Initially we will have $\e_2= l$\Q@.invariant()@;
 $\e_1$ will be reduced until it becomes a value, then
 $\e_2$ will be reduced to test if $l$ is invalid.}{3}{Hard to understand sentence} We annotate the monitor-expression with $l$ to track
 that if the validation check fails, it is precisely $l$ that is invalid.

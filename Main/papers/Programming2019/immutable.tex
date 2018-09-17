@@ -225,10 +225,9 @@ In particular, note how in the presence of dynamic class loading, we have no way
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
 \loseSpace
-\noindent\REVComm{\textit{Allowing internal mutations/back-doors:}}{3}{[This] paragraph and its illustration is not very clear, especially on how it can cause nondeterminism by reading/storing information about previous calls.}
-% TODO: Come up with better title
-\REVComm{Suppose we relax our mutation rules, by allowing interior mutability
-as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:}{2}{Explain why Rust/Javari allow unsafe features}
+\noindent\textit{Allowing internal mutation back-doors:}
+Suppose we relax our mutation rules, by allowing interior mutability
+as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:
 \begin{lstlisting}
 class MagicCounter {
   method Int increment(){

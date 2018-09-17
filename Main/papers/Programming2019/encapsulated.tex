@@ -238,7 +238,8 @@ Here we show that we are able to verify classes with circular mutable object gra
 %-be inside the container 
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
-Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s (\MS{see figure}), the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it, and do not overlap. We have a \Q@Widget@ interface which provides methods to get size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s, it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, and are also used in \Q@SafeMovable.invariant@.
+Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s,
+the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it, and do not overlap. We have a \Q@Widget@ interface which provides methods to get size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s, it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, and are also used in \Q@SafeMovable.invariant@.
 
 % Gui where the graphic representation of the widgets are guaranteed to not overlap.
 % \Q@SafeMovable@ is a \Q@Widget@ whose position can be dynamically changed.
@@ -307,10 +308,11 @@ read method Bool invariant() {
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. \Q@the@ call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of this; this instance method call is allowed as the function only uses \Q@this@ to access its \Q@width@ and \Q@height@.
 
 
-\noindent{\textit{Our Experiment:}}
 % This code is a simplified version of our first case study. In the full code the \Q@SafeMovable@ constructors take \Q@left@, \Q@top@, \Q@width@ and \Q@height@ parameters and can either take a \Q@box@ directly or will generate one with $4$ \Q@Button@s}
 % we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
-Counting both \Q@SafeMovable@s and \Q@Button@s our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
+\begin{wrapfigure}{l}{0.34\textwidth}
+    \centering\includegraphics[width=0.34\textwidth]{GuiImg}\end{wrapfigure}
+\noindent{\textit{Our Experiment:}} As shown in the figure, counting both \Q@SafeMovable@s and \Q@Button@s our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 %Each container has 4 gray buttons one for each cardinal direction.
 % In our set up
@@ -321,9 +323,8 @@ $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@Saf
 %-be inside the container 
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
-
 This set up is not overly involved, the maximum nesting level of \Q@Widget@s is $5$.
-Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant. 
+Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant.
 
 \noindent{\textit{Comparison with visible state semantics:}}
 As an experiment we set our implementation to generate invariant checks following the standard approach for visible state semantics (the one used by Eiffel and D), where the invariant is instead check at the start and end of \emph{every} public method of \Q@SafeMovable@s, including the simple getters implementing the \Q@Widgment@ interface. When we ran our test case the invariant was instead called $52,734,053$ times (it took about $4$ days to run), in comparison to the $77$ we got when using our invariant protocol. The reason the number of checks is so high is due to it being exponetial in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@ and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls will themselves invoke invariant checks. Note that like other systems in the literature, we do not perform invariant checks when calling instance methods (such as \Q@this.inside@) on \Q@this@ within the invariant of \Q@SafeMovable@, had we done that we would have gotten an infinite recursion.
@@ -359,7 +360,7 @@ $19$ annotations (one token each, $74$ characters in total).
 Spec\# required $25$ annotations, including methods
 purity, ownership annotations on parameters, methods and field attributes as well as requires, ensures and modifies clauses, and finally also explicit ownership assignment statements.
 Spec\# annotation can be involved, as for example \Q@requires Owner.Same(Owner.ElementProxy(children), children);@
-To estimate the annotation burden we count the number of tokens (excluding \Q@.@ and parenthesis).
+To estimate the annotation burden we count the number of tokens (excluding \Q@.;,@ and parenthesis).
 This gave us $81$ tokens, that is more then $4$ times the amount needed in L42.
 The total annotation character count is $711$; near $10$ times more then L42.
 
@@ -372,6 +373,55 @@ also in Spec\# requires.
 This dramatically simplifies the handling of the circular object graph, where the button event can refer back, in order to change the widget position.
 
 We encoded our Widget example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
+
+
+\noindent\textit{The transform pattern:}
+A capsule mutator method is a wrapper over a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
+Thus, if \Q@this@ is made invalid during 
+the method's execution, we could not observe it until after the method completes.
+At first glance, it may seem that capsule mutators allow only very limited kinds of mutation.
+This is however not the case. 
+
+Consider the following
+simple pattern to allow flexible use of encapsulated content: define a \Q@transform@ function and a \Q@ItemTransformer@ interface like so:
+\saveSpace
+\begin{lstlisting}
+interface Transformer<T>{method Void apply(mut T elem);}
+interface Widget{..
+  mut method Size setTop();//simple setters for immutable fields
+  mut method Void transform(Transformer<List<Widget>> t);
+  }//transformers for possibly encapsulated data
+class SafeMovable{...
+  mut method Void transform(Transformer<List<Widget>> t) {
+   t.apply(this.box.c);
+   if (!this.validate()) {throw Error(...);}}}//injected check
+\end{lstlisting}
+The \Q@.transform()@ method 
+offers an expressive power similar to a
+\Q@mut@ getter, but ensures that 
+the field content cannot leak out.
+For example:
+\begin{lstlisting}[escapechar=\%]
+// Lambda Expression that creates a new Transformer<...>
+this.transform(l -> l.add(new MyWidget(..)))
+\end{lstlisting}
+%//`i' is captured by the closure.
+%// `imm' and `capsule' varaibles can be captured.
+
+%    %\Comment{}%this.items.add(i);
+%    // Cant instead capture `this': it can't be typed %as `imm'
+%    // since `ItemTransformer.transform()' is an %`imm' method
+%  })
+%}
+%  // instead of:
+  %\Comment{}%this.exposeItems().add(i)
+
+Note that the code above does not access a capsule field but merely calls a method that does; thus
+it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
+Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system
+as if it was atomic.%
+%,  i.e. they can't see or update the other capsule fields.
+
 
 \subsection{Family, a worst case scenario for L42}
 %\noindent\textit{Family, a worst case scenario for L42}
@@ -392,49 +442,7 @@ We encoded in L42 all the examples present in papers~\cite{??}.
 We can express all the examples except ....
 Again, we quantify the annotation burden and we discover....
 
-\subsection{The transform pattern}
-%\noindent\textit{The transform pattern:}
-A capsule mutator method is a wrapper over a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
-Thus, if \Q@this@ is made invalid during 
-the method's execution, we could not observe it until after the method completes.
-At first glance, it may seem that capsule mutators allow only very limited kinds of mutation.
-This is however not the case. 
-
-Consider the following
-simple pattern to allow flexible use of capsule fields: define a \Q@transform@ function and a \Q@ItemTransformer@ interface like so:
-\saveSpace
-\begin{lstlisting}
-interface Transformer<T> {method Void apply(mut T items);}
-class ShippingList {...
-  mut method Void transformItems(Transformer<Items> t) {
-   t.apply(this.items);
-   if (!this.validate()) {throw Error(...);}}}//injected check
-\end{lstlisting}
-The \Q@.transformItems()@ method 
-offers an expressive power similar to a
-\Q@mut@ getter, but ensures that 
-the field content cannot leak out.
-For example:
-\begin{lstlisting}[escapechar=\%]
-// Lambda Expression that creates a new Transformer<Items>
-this.transformItems(items -> items.add(new Item(..)))
-\end{lstlisting}
-%//`i' is captured by the closure.
-%// `imm' and `capsule' varaibles can be captured.
-
-%    %\Comment{}%this.items.add(i);
-%    // Cant instead capture `this': it can't be typed %as `imm'
-%    // since `ItemTransformer.transform()' is an %`imm' method
-%  })
-%}
-%  // instead of:
-  %\Comment{}%this.exposeItems().add(i)
-
-Note that the code above does not access a capsule field but merely calls a method that does; thus
-it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
-Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system
-as if it was atomic.%
-%,  i.e. they can't see or update the other capsule fields.
+%\subsection{The transform pattern}
 
 
 %\begin{lstlisting}[escapechar=\%]
