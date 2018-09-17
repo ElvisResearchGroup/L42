@@ -454,7 +454,7 @@ public ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash, Clas
     if(!currentA.isInterface()&&!currentB.isInterface()){
       boolean privateA=ExtractInfo.hasPrivateState(currentA);
       boolean privateB=ExtractInfo.hasPrivateState(currentB);
-      if (privateA && privateB){throw makeClassClash();}
+      if (privateA && privateB){throw makeClassClash().msg("Both left and right have private state");}
       return false;
       }
     if(currentA.isInterface()){
@@ -464,7 +464,14 @@ public ClassB innerCompose(Program p,ClassB a,ClassB b) throws MethodClash, Clas
     boolean implA=!ExtractInfo.isNoImplementation(currentA);
     boolean privateA=ExtractInfo.hasPrivateState(currentA);
     boolean classA=!currentA.mwts().stream().allMatch(mwt->mwt.getMt().getMdf()!=Mdf.Class);
-    if(implA ||privateA||classA){throw makeClassClash();}
+    if(implA ||privateA||classA){
+      String msg="Summing a class and an interface."
+          +" Impossible in this case since the class:\n";
+      if(implA) {msg+="  has implemented methods\n";}
+      if(privateA) {msg+="  has private state\n";}
+      if(classA) {msg+="  has class methods\n";}
+      throw makeClassClash().msg(msg);
+      }
     return true;
     }
 }
