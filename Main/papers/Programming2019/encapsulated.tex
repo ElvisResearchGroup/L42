@@ -357,12 +357,22 @@ they perform sufficient runtime-checking of the invariant.
 %\end{itemize}
 To encode the GUI example in L42, we only needed to annotate using \Q@mut/read/capsule@, for a total of 
 $19$ annotations (one token each, $74$ characters in total).
-Spec\# required $25$ annotations, including methods
+Spec\# required $40$ annotations, including methods
 purity, ownership annotations on parameters, methods and field attributes as well as requires, ensures and modifies clauses, and finally also explicit ownership assignment statements.
 Spec\# annotation can be involved, as for example \Q@requires Owner.Same(Owner.ElementProxy(children), children);@
 To estimate the annotation burden we count the number of tokens (excluding \Q@.;,@ and parenthesis).
-This gave us $81$ tokens, that is more then $4$ times the amount needed in L42.
-The total annotation character count is $711$; near $10$ times more then L42.
+This gave us $113$ tokens, that is more then $5$ times the amount needed in L42.
+The total annotation character count is $830$; $10$ times more then L42.
+% 40   106+17=113 619+211
+%main 11 annotations, 28 + 11 tokens, 118+65 characters
+%safemovable 29 annotations, 78+6 tokens, 501+146 characters
+
+%19   34   207+44
+% auxLib // 14 annotations, 25 tokens, 155+44 characters
+%guiLib// 5 annoations, 9 tokens, 52 characters
+
+
+
 
 Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations. On the basis of those results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
@@ -371,6 +381,9 @@ that are never exposed to the users.
 We also found natural to use the box pattern
 also in Spec\# requires.
 This dramatically simplifies the handling of the circular object graph, where the button event can refer back, in order to change the widget position.
+Also the implementation of the minimal GUI library
+(that our \Q@SaveMovable@ builds upon)
+has a much lower annotation burden.
 
 We encoded our Widget example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
 
