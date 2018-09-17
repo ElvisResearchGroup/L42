@@ -39,10 +39,6 @@
       check numToString(this.#binaryRepr())
       error void)
 
-  method S toSDouble()
-    S.#from(binaryRepr: use Plg
-      check numToStringDouble(this.#binaryRepr())
-      error void)
   method
   This +(This right)
     This._private(_binaryRepr:use Plg

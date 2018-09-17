@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+using Microsoft.Contracts;
+
+internal sealed partial class Gui
+{
+	internal void display(string title, int x, int y, Widget body) 
+		modifies body.**;
+	{ 
+		this.display(title, x, y, body, new string[]{});
+	}
+
+	internal void display(string title, int x, int y, Widget body, string[] events)
+		modifies body.**;
+	{
+		this.open(title, "<div id='Top'></div>", x, y);
+		this.draw(body);
+	
+		foreach (string event_ in events) 
+		{
+			if (event_ == "EXIT") return;
+			body.dispatch(new Event(event_));
+			this.draw(body);
+		}
+		/*foreach (string event_ in this.events()) // TODO: Write this.events()
+		{
+			if (event_ == "EXIT") return;
+			body.dispatch(new Event(event_));
+			this.draw(body);
+		}*/
+
+		//this.close(); // TODO: Write this
+	}
+	
+	void draw(Widget that)
+	{
+		this.set_("<div id='Top' style='position: relative; height: 750px; width: 750px; border: solid black 2px;'>" + this.format(that) + "</div>", "Top");
+	}
+
+	[Pure] internal string format(Widget that) 
+	{
+		Button? b = that as Button;
+		if (b != null) return formatB(b);
+		return formatW(that);
+	}
+	
+	[Pure] string formatW(Widget div)
+	{
+		StringBuilder children = new StringBuilder();
+		for (int i = 0; i < div.children_count(); i++) 
+		{
+			Widget? child = div.children(i);
+			assume child != null;
+			children.Append(this.format(child));
+		}
+		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" + 
+			" position: absolute;" + 
+			" left: " + div.left + "px;" + 
+			" top: " + div.top + "px;" + 
+			" height: " + div.height + "px;" + 
+			" width: " + div.width + "px;" + 
+			" background-color: " + div.colour + ";'>" +
+			"<div style='position: relative;'>" +
+				children + 
+			"</div></div>"; 
+	}
+
+	[Pure] string formatB(Button button)
+	{
+		return "<div id='" + button.id + "'" +
+			" onMouseOver=\"this.style['background-color']='pink'\"" +
+			" onMouseOut=\"this.style['background-color']='gray'\"" +
+			" onclick=\"event42('" + button.id + "::Pressed::more')\"" +
+			" style='" + 
+			" position: absolute;" + 
+			" left: " + button.left + "px;" + 
+			" top: " + button.top + "px;" + 
+			" height: " + button.height + "px;" + 
+			" width: " + button.width + "px;" + 
+			" background-color: gray;'>" +
+				"<div" +
+				" style='" +
+				" margin:10%;" +
+				" height:80%;" +
+				" width:80%;" +
+				" background: url(\"file:///" + Path.GetFullPath(button.imgName) + "\") no-repeat;" +
+				" background-size:contain;'></div>" +
+			"</div>";	}
+}

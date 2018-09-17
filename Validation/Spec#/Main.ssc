@@ -2,7 +2,7 @@ using System;
 using Microsoft.Contracts;
 using System.Collections.Generic;
 
-internal static class C
+internal static class MainClass
 {
 	// Transfers ownership of the elements of the given to the same owner as the list
 	[NoDefaultContract] static List<Gui.Widget> OwnElements([Captured] List<Gui.Widget> list)
@@ -14,15 +14,14 @@ internal static class C
 		return list;
 	}
 
-	[Verify(false)]
 	internal static void Main(string[] args)
 	{
 		// Note: if I try and put this all in one expression, it fails to verify. So I have had to split up the widgets into seperate variables
-		SafeMovable wd = new SafeMovable("D", 280, 280, 64, 64, "blue", OwnElements(new List<Gui.Widget>()));
-		SafeMovable wc =  new SafeMovable("C", 6, 6, 32, 32, "black", OwnElements(new List<Gui.Widget>()));
-		SafeMovable wb = new SafeMovable("B", 50, 50, 128, 128, "blue", OwnElements(new List<Gui.Widget>{wc}));
-		SafeMovable wa = new SafeMovable("A", 20, 40, 640, 640, "red", OwnElements(new List<Gui.Widget> {wd, wb}));
-		SafeMovable w = new SafeMovable(700, 700, "green", new Box("Green", OwnElements(new List<Gui.Widget> {wa}), 2, 2));
+		SafeMovable wd = new SafeMovable("D", 280, 280, 64,  64,  "blue",  OwnElements(new List<Gui.Widget>{}      ));
+		SafeMovable wc = new SafeMovable("C", 6,   6,   32,  32,  "black", OwnElements(new List<Gui.Widget>{}      ));
+		SafeMovable wb = new SafeMovable("B", 50,  50,  128, 128, "blue",  OwnElements(new List<Gui.Widget>{wc}    ));
+		SafeMovable wa = new SafeMovable("A", 20,  40,  640, 640, "red",   OwnElements(new List<Gui.Widget>{wd, wb}));
+		SafeMovable w  = new SafeMovable(700, 700, "green", new Box("Green", OwnElements(new List<Gui.Widget> {wa}), 2, 2));
 
 		string[] events = {
 			"A_Left::Pressed::_",
