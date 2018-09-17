@@ -50,8 +50,11 @@ internal sealed partial class Gui
 	{
 		StringBuilder children = new StringBuilder();
 		for (int i = 0; i < div.children_count(); i++) 
-			children.Append(this.format(div.children(i)));
-
+		{
+			Widget? child = div.children(i);
+			assume child != null;
+			children.Append(this.format(child));
+		}
 		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" + 
 			" position: absolute;" + 
 			" left: " + div.left + "px;" + 

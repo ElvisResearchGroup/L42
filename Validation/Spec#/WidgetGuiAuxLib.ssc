@@ -32,7 +32,7 @@ internal sealed partial class Gui
 		string colour { get; }
 		
 		[Pure] int children_count();
-		[Pure] Widget children(int i);
+		[Pure] Widget? children(int i);
 
 		bool dispatch(Event that) modifies this.**;
 	}
@@ -59,14 +59,14 @@ internal sealed partial class Gui
 			return false;
 		}
 
-		int          Gui.Widget.left     { get { return this.left;     } }
-		int          Gui.Widget.top      { get { return this.top;      } }
-		int          Gui.Widget.width    { get { return this.width;    } }
-		int          Gui.Widget.height   { get { return this.height;   } }
-		string       Gui.Widget.id       { get { return this.id;       } }
+		int    Gui.Widget.left   { get { return this.left;   } }
+		int    Gui.Widget.top    { get { return this.top;    } }
+		int    Gui.Widget.width  { get { return this.width;  } }
+		int    Gui.Widget.height { get { return this.height; } }
+		string Gui.Widget.id     { get { return this.id;     } }
 
 		[Pure] public int children_count() { return 0; }
-		[Pure] public Widget children(int i) { assume false; }
+		[Pure] public Widget? children(int i) { assume false; }
 
 		internal readonly int left, top, width, height;
 		internal readonly string id;
