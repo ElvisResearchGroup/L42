@@ -51556,7 +51556,10 @@ Library select(This4.Location.Type type, This4.S name) exception This4.Refactor2
         
         catch exception Void catched17966 void
         
-        (
+        (/*TODO: if type is a nested, this will not throw the error.
+algorithm need rethinking.
+Debug(S"handling class field "[type]"")
+*/
           Void unused35276=return (
             Library imm$opPar357=(
               Library imm$opPar356=this.forClassable()
@@ -51577,7 +51580,8 @@ Library select(This4.Location.Type type, This4.S name) exception This4.Refactor2
           )
         )
       )
-    Void unused35266=(
+    Void unused35266=(//Debug(S"handling read-mut field "[type]"")
+(
       This4.Bool cond109=type.mdf().isCmpImm()
       (
         Void unused35277=cond109.#checkTrue()
@@ -51601,7 +51605,8 @@ CastT-Should be unreachable code
             catch exception Void catched17971 void
             
             (
-              Void unused35280=(
+              Void unused35280=(/*Debug(S"handling imm field "[type]"")
+*/
                 class Any cObj=r1.referredClassObj()
                 Void unused35281=(
                   This4.Bool cond110=This4.Location.Type.RefTo.Binded.equalsClassObj(that:cObj, and:Library)
@@ -51642,7 +51647,7 @@ CastT-Should be unreachable code
             )
           )
         )
-      )
+      ))
     Void unused35267=return (
       Library imm$opPar365=(
         Library imm$opPar364=this.forReadable()
@@ -60407,7 +60412,10 @@ Library select(This2.Location.Type type, This2.S name) exception This2.Refactor2
         
         catch exception Void catched17966 void
         
-        (
+        (/*TODO: if type is a nested, this will not throw the error.
+algorithm need rethinking.
+Debug(S"handling class field "[type]"")
+*/
           Void unused35276=return (
             Library imm$opPar357=(
               Library imm$opPar356=this.forClassable()
@@ -60428,7 +60436,8 @@ Library select(This2.Location.Type type, This2.S name) exception This2.Refactor2
           )
         )
       )
-    Void unused35266=(
+    Void unused35266=(//Debug(S"handling read-mut field "[type]"")
+(
       This2.Bool cond109=type.mdf().isCmpImm()
       (
         Void unused35277=cond109.#checkTrue()
@@ -60452,7 +60461,8 @@ CastT-Should be unreachable code
             catch exception Void catched17971 void
             
             (
-              Void unused35280=(
+              Void unused35280=(/*Debug(S"handling imm field "[type]"")
+*/
                 class Any cObj=r1.referredClassObj()
                 Void unused35281=(
                   This2.Bool cond110=This2.Location.Type.RefTo.Binded.equalsClassObj(that:cObj, and:Library)
@@ -60493,7 +60503,7 @@ CastT-Should be unreachable code
             )
           )
         )
-      )
+      ))
     Void unused35267=return (
       Library imm$opPar365=(
         Library imm$opPar364=this.forReadable()
@@ -69221,7 +69231,10 @@ Library select(This2.Location.Type type, This2.S name) exception This2.Refactor2
         
         catch exception Void catched17966 void
         
-        (
+        (/*TODO: if type is a nested, this will not throw the error.
+algorithm need rethinking.
+Debug(S"handling class field "[type]"")
+*/
           Void unused35276=return (
             Library imm$opPar357=(
               Library imm$opPar356=this.forClassable()
@@ -69242,7 +69255,8 @@ Library select(This2.Location.Type type, This2.S name) exception This2.Refactor2
           )
         )
       )
-    Void unused35266=(
+    Void unused35266=(//Debug(S"handling read-mut field "[type]"")
+(
       This2.Bool cond109=type.mdf().isCmpImm()
       (
         Void unused35277=cond109.#checkTrue()
@@ -69266,7 +69280,8 @@ CastT-Should be unreachable code
             catch exception Void catched17971 void
             
             (
-              Void unused35280=(
+              Void unused35280=(/*Debug(S"handling imm field "[type]"")
+*/
                 class Any cObj=r1.referredClassObj()
                 Void unused35281=(
                   This2.Bool cond110=This2.Location.Type.RefTo.Binded.equalsClassObj(that:cObj, and:Library)
@@ -69307,7 +69322,7 @@ CastT-Should be unreachable code
             )
           )
         )
-      )
+      ))
     Void unused35267=return (
       Library imm$opPar365=(
         Library imm$opPar364=this.forReadable()
