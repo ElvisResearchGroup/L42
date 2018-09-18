@@ -13,7 +13,7 @@ Person:Data<><{ S name, var Size age, Size birthDay
     )
   }
 Persons:Collections.vector(ofMut: Person)
-Family:StupidData<><{capsule FBox box
+Family:DData<><{capsule FBox box
   FBox:Data<><{mut Persons parents, mut Persons children
     mut method
     Void processDay(Size that) (
@@ -82,7 +82,7 @@ Main0:{//here we get 19403 against 1109, so only 20 times improvements.
   (
     unused=Person1(name:S"", age:2Size)
     Debug(S"unusedCreated")
-    catch error StupidData.Invariant.Fail x
+    catch error DData.Invariant.Fail x
       void
     Debug(S"Fail")
     )

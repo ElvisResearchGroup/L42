@@ -11,7 +11,8 @@ AdamTowel02:{class method Library (){
 
   DataTrait: { Data: Resource <>< ... }
   Data: DataTrait.Data()
-  StupidData: Use.Override[DataTrait.Data()] <>< { class method Bool stupid() Bool.true() }
+  DData: Use.Override[DataTrait.Data()] <>< { class method Size mode() 1Size }
+  EiffelData: Use.Override[DataTrait.Data()] <>< { class method Size mode() 2Size }
   Units:...
   Fix:...
   Alphanumeric:...

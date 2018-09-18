@@ -1,6 +1,6 @@
 {
 Path of
-Bool stupid
+Size mode
 class method class Path #default##apply(Void of)Path
 Fail:Message.$<><{ implements This2.Fail}
 
@@ -49,7 +49,7 @@ method
 Library <><(Library right)
 exception Fail Refactor2.PathUnfit {
   inv=this.ensureInvariant(right)
-  return PlgInvariantClose.closeJ(path:this.of(),top:inv,stupid: this.stupid())
+  return PlgInvariantClose.closeJ(path:this.of(),top:inv,mode: this.mode())
   exception on Refactor2.Fail Fail""
   }
 
@@ -58,7 +58,7 @@ PlgInvariantClose:Refactor2.JavaImport<><{
   //@plugin is.L42.connected.withSafeOperators
   //@pluginPart is.L42.connected.withSafeOperators.refactor.InvariantClose
   class method
-  Library closeJ(Path path,Library top,Bool stupid)
+  Library closeJ(Path path,Library top,Size mode)
   exception Refactor2.PathUnfit, Refactor2.ClassUnfit
 
   class method

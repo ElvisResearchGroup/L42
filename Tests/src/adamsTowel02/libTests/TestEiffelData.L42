@@ -1,0 +1,127 @@
+{reuse L42.is/AdamTowel02
+
+Person:Data<><{ S name, var Size age, Size birthDay
+  mut method
+  Void processDay(Size that){
+    if this.birthDay()==that (return this.age(this.age()+1Size))
+    return void
+    }
+  read method
+  Bool #invariant() (
+    Debug.incrementCounter(S"Invariant")
+    this.name()!=S"" & this.age()>= 0Size & this.birthDay()>=0Size & this.birthDay()< 365Size
+    )
+  }
+Persons:Collections.vector(ofMut: Person)
+Family:EiffelData<><{capsule FBox box
+  FBox:Data<><{mut Persons parents, mut Persons children
+    mut method
+    Void processDay(Size that) (
+      with p in this.#parents().#vals() ( p.processDay(that) )
+      with p in this.#children().#vals() ( p.processDay(that) )
+      )
+    }
+  class method
+  mut This (capsule Persons parents, capsule Persons children)
+    This(box:FBox(parents:parents,children:children))
+  mut method Void
+  processDay(Size that)
+    this.#box().processDay(that)
+  mut method
+  Void addKid(capsule Person that)(
+    this.#box().#children().add(right:that)
+    )
+  read method
+  Bool #invariant() {
+    Debug.incrementCounter(S"Invariant")
+    with c in this.box().children().vals() (
+      with p in this.box().parents().vals() ( if p.age()<= c.age() (return Bool.false()))
+      )
+    return Bool.true()
+    }
+  }
+
+Main0:{//here we get 19403 against 1109, so only 20 times improvements.
+  f=Family(parents:Persons[
+    Person(name:S"Bob",age:32Size, birthDay:40Size);
+    Person(name:S"Alice",age:34Size, birthDay:87Size)
+    ],children:Persons[])
+  Debug(S"0 years passed "[f]"")
+  with r in Range(365Size) (
+    f.processDay(r)
+    )
+
+  with r in Range(365Size) (
+    f.processDay(r)
+    if r==45Size (f.addKid(Person(name:S"Tim",age:0Size, birthDay:r)))
+    )
+  with r in Range(365Size) (
+    f.processDay(r)
+    if r==340Size (f.addKid(Person(name:S"Diana",age:0Size, birthDay:r)))
+    )
+  Debug(S"3 years passed "[f]"")
+  Debug.printCounter(S"Invariant") //2210 vs 19403
+  return ExitCode.normal()
+  }
+
+/*Main1:{
+  Person1 p1=Person1(name:S"Bob",age:10Size)
+  Debug(S"p1Created")
+  Debug(p1==p1)
+  Debug(S"p1==Done")
+  Debug.test(p1 expected:S"
+  '[name:"Bob", age:"10"]
+  ".withoutRight())
+  Debug(S"p1.toS()Done")
+  p2=p1.with(age:20Size)
+  Debug(S"p1.with(age)Done")
+  Debug.test(p2 expected:S"
+  '[name:"Bob", age:"20"]
+  ".withoutRight())
+  Debug(S"p2.toS()Done")
+  (
+    unused=Person1(name:S"", age:2Size)
+    Debug(S"unusedCreated")
+    catch error EiffelData.Invariant.Fail x
+      void
+    Debug(S"Fail")
+    )
+  return ExitCode.normal()
+  }
+
+//--------
+Person2:Data<><{ S name, var Size age
+  read method
+  Bool #invariant() (
+    Debug(S"invariant P#")
+    this.name()!=S"" & this.age()>= 0Size
+    )
+  }
+
+Main2:{
+  Person2 p1=Person2(name:S"Bob",age:10Size)
+  Debug(S"p1Created")
+  Debug(p1==p1)
+  Debug(S"p1==Done")
+  Debug.test(p1 expected:S"
+  '[name:"Bob", age:"10"]
+  ".withoutRight())
+  Debug(S"p1.toS()Done")
+  p2=p1.with(age:20Size)
+  Debug(S"p1.with(age)Done")
+  Debug.test(p2 expected:S"
+  '[name:"Bob", age:"20"]
+  ".withoutRight())
+  Debug(S"p2.toS()Done")
+  (
+    unused=Person2(name:S"", age:2Size)
+    Debug(S"unusedCreated")
+    catch error Data.Invariant.Fail x
+      void
+    Debug(S"Fail")
+    )
+  return ExitCode.normal()
+  }
+*/
+
+}

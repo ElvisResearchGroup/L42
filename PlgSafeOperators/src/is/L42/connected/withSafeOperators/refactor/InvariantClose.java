@@ -98,21 +98,25 @@ IC(p; M; n) = {M}
   */
 
 public class InvariantClose {
+  static final int MODE_L42 = 0;
+  static final int MODE_D = 1;
+  static final int MODE_EIFFEL = 2;
+
   static MethodSelector invName = MethodSelector.of("#invariant", Collections.emptyList());
-  public static ClassB closeJ(PData p, List<Ast.C> path, ClassB top, boolean stupid)
+  public static ClassB closeJ(PData p, List<Ast.C> path, ClassB top, int mode)
     throws PathUnfit, ClassUnfit {
-    return close(p.p, path, top, stupid);
+    return close(p.p, path, top, mode);
   }
 
   // path is a path inside top
-  public static ClassB close(Program p, List<Ast.C> path, ClassB top, boolean stupid)
+  public static ClassB close(Program p, List<Ast.C> path, ClassB top, int mode)
       throws PathUnfit, ClassUnfit {
 
     if (!MembersUtils.isPathDefined(top, path)) throw new RefactorErrors.PathUnfit(path);
     if (MembersUtils.isPrivate(path)) throw new RefactorErrors.PathUnfit(path);
 
     InvariantClose c = new InvariantClose();
-    c.stupid = stupid;
+    c.mode = mode;
     c.pInner = p.evilPush(top).navigate(path);
     c.coherence = Coherence.coherence(c.pInner, true);
     c.inner = c.pInner.top();
@@ -126,7 +130,7 @@ public class InvariantClose {
   List<Ast.C> path;
   Program p;
   ClassB top; // The class that we were given
-  boolean stupid = false;
+  int mode = MODE_L42;
 
   Program pInner;
   ClassB inner; // The class were closing
@@ -223,16 +227,20 @@ public class InvariantClose {
     }
 
 
-    if (!this.stupid)
+    if (this.mode == MODE_L42)
       // Play with capsule mutators...
       this.top = (ClassB)this.top.accept(new WrapAux(this.p, this.makeRenames(this.exposers), this.top));
-    else
-      // Redirect everything to use private geters/setters (so we don't call the public version, which will check the invariant)
+    else if (this.mode == MODE_D)
+      // Redirect everything to use private getters/setters (so we don't call the public version, which will check the invariant)
       this.top = (ClassB)this.top.accept(new RenameMethodsAux(this.p, this.makeRenames(this.state), this.top) {
         // Don't touch method headers
         @Override protected MethodSelector liftMsInMetDec(MethodSelector ms) { return ms; }
       });
-
+    else
+      assert this.mode == MODE_EIFFEL;
+      // Redirect all calls on 'this' to private versions (delegateState will handle actually making the private versions)
+      this.top = (ClassB)this.top.accept(new Privatiser());
+    
     this.inner = this.top.getClassB(this.path);
     this.delegateState();
 
@@ -271,46 +279,47 @@ public class InvariantClose {
 
     for (MethodWithType mwt : inner.mwts()) {
       MethodType mt = mwt.getMt();
-
-      // Not a state method
-      if (!this.state.contains(mwt.getMs())) {
-        if (this.stupid && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) // Wrap the body up, but only if a public instance method
-          mwt = mwt.withInner(makeWrapper(InvariantClose.thisStupidWrapper, mwt.getInner(), mt.getReturnType()));
-
-        // TODO: Delete this horror
-        if (Arrays.asList(this._mutK.getMs(), this._immK.getMs()).contains(mwt.getMs())) {
-          mwt = delegate(true, mwt, _fwdK);
-        }
-
-        this.addMember(mwt);
-        continue;
-      }
-
-      // The new (real) operation will have a unique number
+      // The mwt we (might) delegate to
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum)).withMt(mwt.getMt().withRefine(false));
-      if (!this.stupid && this.exposers.contains(mwt.getMs())) {
-        continue;
+      // Not a state method
+
+      if (Arrays.asList(this._mutK.getMs(), this._immK.getMs()).contains(mwt.getMs())) {
+        // TODO: Delete this horrorible way of handling factories
+        this.delegate(true, mwt, _fwdK);
+      } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
+        // Wrap the body up, but only if a public instance method
+        this.delegate(true, mwt, newMwt);
+      } else if (this.mode == MODE_EIFFEL && mt.getMdf() != Mdf.Class) {
+        // For all instance methods (even private ones) make an invariant check
+        this.delegate(true, mwt, newMwt);
+      } else if (this.mode == MODE_L42 && this.exposers.contains(mwt.getMs())) {
+        // Do nothing, we've already handled it
+      } else if (this.state.contains(mwt.getMs())) {
+        // Call the invariant for factories, and setters of validatable fields
+        if (mwt.getMdf().equals(Mdf.Class) || (!mwt.getMs().getNames().isEmpty()
+              && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName()))))
+          this.delegate(true, mwt, newMwt);
+
+        else this.delegate(false, mwt, newMwt);
+      } else {
+        this.addMember(mwt); // keep the method as is
       }
-
-
-      // Call the invariant for factories, and setters of validatable fields
-      if (this.stupid || mwt.getMdf().equals(Mdf.Class) || (!mwt.getMs().getNames().isEmpty()
-                && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName()))))
-        this.addMember(delegate(true, mwt, newMwt));
-
-      else this.addMember(delegate(false, mwt, newMwt));
-
-      this.addMember(newMwt); // Add the real thing...
     }
   }
 
   void addMember(Member member) {
-    assert !Functions.getIfInDom(this.newMembers, member).isPresent() : member;
-    this.newMembers.add(member);
+    boolean res = this.tryAddMember(member);
+    assert res : member;
+  }
+  boolean tryAddMember(Member member) {
+      if (Functions.getIfInDom(this.newMembers, member).isPresent())
+        return false;
+
+      this.newMembers.add(member);
+      return true;
   }
 
-  MethodWithType delegate(boolean callInvariant, MethodWithType original, MethodWithType delegate) {
-    assert original.get_inner() == null;
+  void delegate(boolean callInvariant, MethodWithType original, MethodWithType delegate) {
     assert original.getMs().nameSize() == delegate.getMs().nameSize();
     Position p = original.getP();
 
@@ -327,7 +336,8 @@ public class InvariantClose {
     );
 
     // Just do the call
-    if (!callInvariant) return original.withInner(delegateMCall);
+    if (!callInvariant || this.mode == MODE_D && original.getMs().isUnique())
+      original = original.withInner(delegateMCall);
     else{
       ExpCore.Block wrapTemplate;
       if (original.getMt().getMdf()==Mdf.Class) {
@@ -335,20 +345,21 @@ public class InvariantClose {
         if (original.getReturnMdf().isImm()) { // TODO: is this stupid?
           wrapTemplate = InvariantClose.thisResultWrapper;
         } else { wrapTemplate = InvariantClose.resultWrapper; }
-      } else if (this.stupid) {
-          if (original.getMs().isUnique()) // Not a public method, so just delegate
-            return original.withInner(delegateMCall);
-          else wrapTemplate = InvariantClose.thisStupidWrapper;
+      } else if (this.mode != MODE_L42) {
+          wrapTemplate = InvariantClose.thisVisibleStateWrapper;
       } else {
           wrapTemplate = InvariantClose.thisWrapper;
       }
 
       // Wrap up the call
-      return original.withInner(makeWrapper(wrapTemplate, delegateMCall, null));
+      original = original.withInner(makeWrapper(wrapTemplate, delegateMCall, null));
     }
+
+    this.addMember(original);
+    this.tryAddMember(delegate); // Who cares if it allregy exists, since we didn't touch it
   }
 
-  static ExpCore.Block thisStupidWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisStupidWrapper",
+  static ExpCore.Block thisVisibleStateWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisVisibleStateWrapper",
     "{method m() (this.#invariant() r=void this.#invariant() r)}").getMs().get(0).getInner();
 
   static ExpCore.Block thisWrapper=(ExpCore.Block)Functions.parseAndDesugar("ThisWrapper",
@@ -463,7 +474,34 @@ public class InvariantClose {
       return mwt.withInner(makeWrapper(InvariantClose.thisWrapper, mwt.getInner(), mwt.getReturnType()));
     }
   }
-  class InvariantChecker extends CloneVisitor {
+
+  class Privatiser extends CloneVisitor {
+    @Override
+    public MethodWithType visit(MethodWithType mwt) {
+      if (mwt.get_inner() == null) // Nothing interesting to do, ignore
+        return super.visit(mwt);
+
+      ExpCore newInner = this.lift(mwt.getInner());
+      return mwt.withInner(newInner);
+    }
+
+    @Override
+    public ExpCore visit(MCall s) {
+      // Is this a method call on this?
+      if (s.getInner().equals(thisX)) {
+        return this.visitThisCall(s);
+      } else {
+        return super.visit(s);
+      }
+    }
+    public MCall visitThisCall(MCall s) {
+      return ((MCall)super.visit(s)).withS(s.getS().withUniqueNum(uniqueNum));
+    }
+
+    @Override
+    public ExpCore visit(ClassB l) { return l; }
+  }
+  class InvariantChecker extends Privatiser {
     private InvariantChecker(Set<MethodSelector> excludedMethods, List<MethodSelector> methodCalls, Set<String> actuallyValidatedFields) {
       super();
       this.excludedMethods = excludedMethods;
@@ -490,9 +528,8 @@ public class InvariantClose {
         LambdaExceptionUtil.throwAsUnchecked(
             new ClassUnfit().msg("The method " + mwt.getMs() + " is abstract"));
 
-      ExpCore newInner = this.lift(mwt.getInner());
       MethodSelector newMs = mwt.getMs().withUniqueNum(uniqueNum);
-      return mwt.withInner(newInner).withMs(newMs).withMt(mwt.getMt().withRefine(false));
+      return super.visit(mwt).withMs(newMs).withMt(mwt.getMt().withRefine(false));
     }
 
     @Override
@@ -504,7 +541,8 @@ public class InvariantClose {
           String name = Coherence.removeHash(s.getS().getName());
           if (validatableFields.contains(name)) {
             this.actuallyValidatedFields.add(name);
-            return thisCall(s); // Ok
+            // Don't continue (and hence don't add to this.methodCalls)
+            return super.visit(s);
           }
           else if (otherFields.contains(name))
             LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
@@ -516,20 +554,15 @@ public class InvariantClose {
               "Cannot call (indirectly) recursive methods in #invariant!'" + s + "'"));
 
         this.methodCalls.add(s.getS());
-        return thisCall(s);
-      } else {
-        return super.visit(s);
       }
-    }
-
-    MCall thisCall(MCall s) {
-      ExpCore receiver = s.getInner();
-      s = s.withInner(new ExpCore._void()); // So super.visit(s) dosn't call this.visit(X)
-
-      return ((MCall)super.visit(s)).withS(s.getS().withUniqueNum(uniqueNum)).withInner(receiver);
+      return super.visit(s);
     }
 
     @Override
-    public ExpCore visit(ClassB l) { return l; }
+    public MCall visitThisCall(MCall s) {
+      // So super.visit(s) dosn't call this.visit(X)
+      ExpCore receiver = s.getInner();
+      return super.visitThisCall(s.withInner(new ExpCore._void())).withInner(receiver);
+    }
   }
 }

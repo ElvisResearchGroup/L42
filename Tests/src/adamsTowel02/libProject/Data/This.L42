@@ -9,7 +9,7 @@ AddToS: AddToSTrait()
 AddInvToS:Use.Override[AddToSTrait()]<><...
 AddEquals:FieldOperation<><...
 
-class method Bool stupid() Bool.false()
+class method Size mode() 0Size
 class method S mutKName() S"#apply"
 class method S immKName() S"#immK"
 class method Selector immK(Library that,Path of) exception AmbiguosConstructor{
@@ -87,7 +87,7 @@ class method Library <>< (Library right)  exception Fail Refactor2.PathUnfit {
  res><>=AddToS(mutK:mutK, of:\"This")
  res><>=AddInvToS(mutK:mutK, of:\"This")
  res><>=AddEquals(mutK:mutK, of:\"This")
- res><>=Invariant(of:\"This", stupid: This.stupid())
+ res><>=Invariant(of:\"This", mode: This.mode())
  return res
 }
 }
