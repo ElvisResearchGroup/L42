@@ -1,271 +1,126 @@
 {reuse L42.is/AdamTowel02
 
-Gui:Load<><{reuse L42.is/WidgetGuiLib}
+Exported: Resource <>< {
+    E: {
+    Gui:Load<><{reuse L42.is/WidgetGuiLib}
 
-Box:Data<><{
-  S id
-  mut Gui.Widget.List children
-  var Size left
-  var Size top
-  }
+    Box:Data<><{
+      S id
+      mut Gui.Widget.List children
+      var Size left
+      var Size top
+      }
 
-MoveAction:Data<><{implements Gui.Action
-  mut Box outer
-  Size leftDelta
-  Size topDelta
-  method (event) (
-    Debug(S"Button pressed on :"++this.outer().id())
-    this.#outer().left(this.outer().left()+this.leftDelta())
-    this.#outer().top(this.outer().top()+this.topDelta())
-    )
-  }
-SafeMovable:EiffelData<><{implements Gui.Widget
-  capsule Box box
-  class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
-    id:outer.id()++S"_Left"
-    left:0Size
-    top:13Size*scale
-    width:6Size*scale
-    height:6Size*scale
-    action:MoveAction(outer:outer,leftDelta:Size"-5",topDelta:0Size)
-    imgName:S"examples/resources/left.png"
-    )
-  class method mut Gui.Button right(mut Box outer,Size scale) Gui.Button(
-    id:outer.id()++S"_Right"
-    left:26Size*scale
-    top:13Size*scale
-    width:6Size*scale
-    height:6Size*scale
-    action:MoveAction(outer:outer,leftDelta:5Size,topDelta:0Size)
-    imgName:S"examples/resources/right.png"
-    )
-  class method mut Gui.Button up(mut Box outer,Size scale) Gui.Button(
-    id:outer.id()++S"_Up"
-    left:13Size*scale
-    top:0Size
-    width:6Size*scale
-    height:6Size*scale
-    action:MoveAction(outer:outer,leftDelta:0Size,topDelta:Size"-5")
-    imgName:S"examples/resources/up.png"
-    )
-  class method mut Gui.Button down(mut Box outer,Size scale) Gui.Button(
-    id:outer.id()++S"_Down"
-    left:13Size*scale
-    top:26Size*scale
-    width:6Size*scale
-    height:6Size*scale
-    action:MoveAction(outer:outer,leftDelta:0Size,topDelta:5Size)
-    imgName:S"examples/resources/down.png"
-    )
-
-  class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
-    capsule Box cbox=(
-      box=Box(id:id,children:children,left:left,top:top)
-      box.#children().add(right:This.left(outer:box,scale:height/32Size))
-      box.#children().add(right:This.right(outer:box,scale:height/32Size))
-      box.#children().add(right:This.up(outer:box,scale:height/32Size))
-      box.#children().add(right:This.down(outer:box,scale:height/32Size))
-      box
-      )
-    This(width:width,height:height,color:color,box:cbox)
-    )
-
-  method id() this.box().id()
-
-  method children() this.box().children()
-
-  method left() this.box().left()
-
-  method top() this.box().top()
-
-  method dispatch(that) this.#box().#children().dispatch(that)
-
-  read method Bool #invariant(){
-    Debug.incrementCounter(S"Invariant")
-    with w1 in this.box().children().vals() (
-      if !this.inside(w1) (return Bool.false())
-      with w2 in this.box().children().vals() (
-        if w1.id()!=w2.id() (
-          if This.overlap(w1:w1,w2:w2) (return Bool.false())
-          )
+    MoveAction:Data<><{implements Gui.Action
+      mut Box outer
+      Size leftDelta
+      Size topDelta
+      method (event) (
+        Debug(S"Button pressed on :"++this.outer().id())
+        this.#outer().left(this.outer().left()+this.leftDelta())
+        this.#outer().top(this.outer().top()+this.topDelta())
         )
-      )
-    return Bool.true()
-    }
+      }
+    SafeMovable:EiffelData<><{implements Gui.Widget
+      capsule Box box
+      class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
+        id:outer.id()++S"_Left"
+        left:0Size
+        top:13Size*scale
+        width:6Size*scale
+        height:6Size*scale
+        action:MoveAction(outer:outer,leftDelta:Size"-5",topDelta:0Size)
+        imgName:S"examples/resources/left.png"
+        )
+      class method mut Gui.Button right(mut Box outer,Size scale) Gui.Button(
+        id:outer.id()++S"_Right"
+        left:26Size*scale
+        top:13Size*scale
+        width:6Size*scale
+        height:6Size*scale
+        action:MoveAction(outer:outer,leftDelta:5Size,topDelta:0Size)
+        imgName:S"examples/resources/right.png"
+        )
+      class method mut Gui.Button up(mut Box outer,Size scale) Gui.Button(
+        id:outer.id()++S"_Up"
+        left:13Size*scale
+        top:0Size
+        width:6Size*scale
+        height:6Size*scale
+        action:MoveAction(outer:outer,leftDelta:0Size,topDelta:Size"-5")
+        imgName:S"examples/resources/up.png"
+        )
+      class method mut Gui.Button down(mut Box outer,Size scale) Gui.Button(
+        id:outer.id()++S"_Down"
+        left:13Size*scale
+        top:26Size*scale
+        width:6Size*scale
+        height:6Size*scale
+        action:MoveAction(outer:outer,leftDelta:0Size,topDelta:5Size)
+        imgName:S"examples/resources/down.png"
+        )
 
-  class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2){
-    if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
-      (return Bool.false())
-    if w1.top() > w2.top() + w2.height() | w2.top() > w1.top() + w1.height()
-      (return Bool.false())
-    return Bool.true()
-     }
+      class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
+        capsule Box cbox=(
+          box=Box(id:id,children:children,left:left,top:top)
+          box.#children().add(right:This.left(outer:box,scale:height/32Size))
+          box.#children().add(right:This.right(outer:box,scale:height/32Size))
+          box.#children().add(right:This.up(outer:box,scale:height/32Size))
+          box.#children().add(right:This.down(outer:box,scale:height/32Size))
+          box
+          )
+        This(width:width,height:height,color:color,box:cbox)
+        )
 
-  read method Bool inside(read Gui.Widget that){
-    //Debug(S"inside "[this.id()]" "[that.id()]"")
-    if that.left()<0Size (return Bool.false())
-    if that.left()+that.width()>this.width() (return Bool.false())
-    if that.top()<0Size (return Bool.false())
-    if that.top()+that.height()>this.height() (return Bool.false())
-    return Bool.true()
-    }
-  }
+      method id() this.box().id()
 
-Main: {
-  wA=SafeMovable(width:700Size,height:700Size,color:S"green",box:Box(id:S"Green",
-    children:Gui.Widget.List[
-      SafeMovable(
-        id:S"A"
-        left:20Size
-        top:40Size
-        width:640Size
-        height:640Size
-        color:S"red"
-        children:Gui.Widget.List[
-          SafeMovable(
-            id:S"D"
-            left:280Size
-            top:280Size
-            width:64Size
-            height:64Size
-            color:S"blue"
-            children:Gui.Widget.List[]);
-          /*SafeMovable(
-            id:S"B"
-            left:50Size
-            top:50Size
-            width:128Size
-            height:128Size
-            color:S"blue"
-            children:Gui.Widget.List[
-              SafeMovable(
-                id:S"C"
-                left:6Size
-                top:6Size
-                width:32Size
-                height:32Size
-                color:S"black"
-                children:Gui.Widget.List[]
-                )
-              ]
-            )*/]
-          )]
-        left:2Size,top:2Size
-      ))
-  Strings events=Strings[
-    S"A_Left::Pressed::_";
-    S"A_Right::Pressed::_";
-    S"A_Up::Pressed::_";
-    S"A_Down::Pressed::_";
+      method children() this.box().children()
 
-  /*  S"B_Left::Pressed::_";
-    S"B_Right::Pressed::_";
-    S"B_Up::Pressed::_";
-    S"B_Down::Pressed::_";
+      method left() this.box().left()
 
-    S"C_Left::Pressed::_";
-    S"C_Right::Pressed::_";
-    S"C_Up::Pressed::_";
-    S"C_Down::Pressed::_";*/
+      method top() this.box().top()
 
-    S"D_Left::Pressed::_";
-    S"D_Right::Pressed::_";
-    S"D_Up::Pressed::_";
-    S"D_Down::Pressed::_";
-    S"EXIT";
-    ]
-  Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
+      method dispatch(that) this.#box().#children().dispatch(that)
 
-  Debug.printCounter(S"Invariant")
-  Debug(S"#@Success@#")
-  return ExitCode.normal()
-  }
-  //gui code without main or library have 70 annotations in C#
-  //21 in L42. C# would be worst if the invariant was written as a C# operation?
-  //with A and D
-  //d: time:1920 calls:287,707
-  //eiffel:
-  //42: time:68 calls:27
+      read method Bool #invariant(){
+        Debug.incrementCounter(S"Invariant")
+        with w1 in this.box().children().vals() (
+          if !this.inside(w1) (return Bool.false())
+          with w2 in this.box().children().vals() (
+            if w1.id()!=w2.id() (
+              if This.overlap(w1:w1,w2:w2) (return Bool.false())
+              )
+            )
+          )
+        return Bool.true()
+        }
 
-  //with A,B,C, D
-  //d: time:344,290 (3d23h) calls:52,734,053
-  //42: time:69 calls:77
-/*
---------------------
-FakeGui
------------
-Immutable
-modifies body.**; *2
-Pure  *8
+      class method Bool overlap(read Gui.Widget w1,read Gui.Widget w2){
+        if w1.left() > w2.left() + w2.width() | w2.left() > w1.left() + w1.width()
+          (return Bool.false())
+        if w1.top() > w2.top() + w2.height() | w2.top() > w1.top() + w1.height()
+          (return Bool.false())
+        return Bool.true()
+         }
 
-#annotations: 11 tokens: 15 characters: 9+4*8+17*2=75
+      read method Bool inside(read Gui.Widget that){
+        //Debug(S"inside "[this.id()]" "[that.id()]"")
+        if that.left()<0Size (return Bool.false())
+        if that.left()+that.width()>this.width() (return Bool.false())
+        if that.top()<0Size (return Bool.false())
+        if that.top()+that.height()>this.height() (return Bool.false())
+        return Bool.true()
+        }
+      }
 
+}
+}
 
-Gui
------------
-Immutable
-Peer  *3
-ResultNotNewlyAllocated
-ensures Owner.Same(Owner.ElementProxy(result), result);
-modifies this.**;  *2
-Captured
-ensures Owner.Same(this, action);
-Owner.AssignSame(this, action);
-Pure
-ElementsPeer
-
-#annotations: 13 tokens: 30 characters: 9+4*3+23+55+17+8+33+31+4+12=204
-
-GuiW
--------------
-internal class PureObject { [Pure] internal PureObject() {} }
-Peer
-Captured  *2
-ensures Owner.Same(this, outer);
-Owner.AssignSame(this, outer);
-ensures Owner.Same(result, outer);
-modifies children.**;  *2
-requires Owner.Same(Owner.ElementProxy(children), children);  *2
-Owner.AssignSame(this, children);
-ensures Owner.Same(result, children);
-expose (res)
-expose (this)
-invariant
-Pure*2
-Rep
-ElementsRep
-
-#annotations: 20 tokens: 51 characters: 61+4+8*2+32+30+34+21*2+60*2+33+37+12+13+9+4*2+3+11=465
-
-Program (not counting Debug)
--------------
-Owner.AssignSame(list, Owner.ElementProxy(list)); *5
-
-#annotations: 5 tokens: 30 characters: 49*5=246
-
-42 GuiWWithLib
------------
-mut *11
-capsule*3
-read*5
-
-#annotations: 19 tokens: 19 characters: 3*11+7*3+4*5=74
-GuiW+Program
-#annotations: 25 tokens: 81 characters: 711
- #/42
-25/19
-81/19 =4.2
-711/74 =9.6
-
-
-GUILIB:
-mut *21
-read * 9
-#annotations: 30 tokens: 30 characters:99
-#annotations: 24 tokens: 45 characters:279
-#/42
-24/30
-45/30
-279/99
-*/
+Task: (
+  Debug(S"Starting deployment")
+  Load.DeployLibrary.#$(
+    path:Path"E",
+    url:Url"localhost/WidgetGuiLibTest.L42"
+    )<><Exported()
+)
 }

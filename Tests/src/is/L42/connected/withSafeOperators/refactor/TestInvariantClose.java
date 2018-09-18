@@ -232,25 +232,7 @@ public class TestInvariantClose{
         "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit", true
 
     },{lineNumber(), "{read method Void #invariant() this.#invariant()}","This",
-            "  {\n" +
-                "read method \n" +
-                "Void #invariant_$_2() this.#invariant_$_2()\n" +
-                "class method \n" +
-                "mut This0 mutK_$_2() \n" +
-                "read method \n" +
-                "Void #invariant() this.#invariant()\n" +
-                "class method \n" +
-                "mut This0 mutK() (\n" +
-                "  r1=this.mutK_$_2()\n" +
-                "  Void unused1=r1.#invariant_$_2()\n" +
-                "  r1\n" +
-                "  )\n" +
-                "class method \n" +
-                "This0 immK() (\n" +
-                "  This0 r2=this.mutK_$_2()\n" +
-                "  Void unused2=r2.#invariant_$_2()\n" +
-                "  r2\n" +
-                "  )}", false
+        "is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors$ClassUnfit", true
     },{lineNumber(), "{" +
         "read method Void bar() this.#invariant()" +
         "read method Void #invariant() this.bar()}","This",
@@ -295,7 +277,7 @@ public class TestInvariantClose{
 
   List<Ast.C> path=TestHelper.cs(_path);
   if(!isError){
-    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_L42);
+    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_EIFFEL);
     TypeSystem.typeCheck(res, ClassB.Phase.Coherent).assertOk();
 
     TestHelper.configureForTest();
@@ -304,7 +286,7 @@ public class TestInvariantClose{
     }
   else{
     try{
-      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_L42);
+      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_EIFFEL);
       fail("error expected");
       }
     catch(ClassUnfit|PathUnfit err){

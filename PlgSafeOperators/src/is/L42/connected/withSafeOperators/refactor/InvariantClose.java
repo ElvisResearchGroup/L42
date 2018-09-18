@@ -177,6 +177,7 @@ public class InvariantClose {
       List<MethodSelector> todo = new LinkedList<>();
       Set<String> actuallyValidatedFields = new HashSet<>();
       Set<MethodSelector>  done = new HashSet<>(); // The methods called by #invariant
+
       todo.add(invName);
       while (!todo.isEmpty()) {
         MethodSelector m = todo.remove(0);
@@ -184,12 +185,20 @@ public class InvariantClose {
         if (done.contains(m)) // We've already processed this
           continue;
 
+        done.add(m);
         // Collect all other-called methods
         // check that 'this' is only used to call methods or validatable fields
         // and finally, create a private-version, where all non-field accessers are replaced with private numbered
         // versions
-        this.addMember(new InvariantChecker(done, todo, actuallyValidatedFields).visit(this.getMwt(m)));
-        done.add(m);
+
+        MethodWithType newMwt = new InvariantChecker(done, todo, actuallyValidatedFields).visit(this.getMwt(m));
+
+        if (this.mode == MODE_EIFFEL) {
+          // Don't do anything for eiffel, the private versions will be made by delegateState
+          continue;
+        }
+
+        this.addMember(newMwt);
       }
       this.validatableFields = actuallyValidatedFields;
     }
@@ -290,11 +299,13 @@ public class InvariantClose {
         // Wrap the body up, but only if a public instance method
         this.delegate(true, mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && mt.getMdf() != Mdf.Class) {
-        // For all instance methods (even private ones) make an invariant check
+        // For all instance methods (even private ones) do an invariant check
         this.delegate(true, mwt, newMwt);
       } else if (this.mode == MODE_L42 && this.exposers.contains(mwt.getMs())) {
         // Do nothing, we've already handled it
       } else if (this.state.contains(mwt.getMs())) {
+        assert this.mode == MODE_L42;
+
         // Call the invariant for factories, and setters of validatable fields
         if (mwt.getMdf().equals(Mdf.Class) || (!mwt.getMs().getNames().isEmpty()
               && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName()))))
@@ -374,7 +385,7 @@ public class InvariantClose {
     String newR = Functions.freshName("r", L42.usedNames);
 
     // Rename to our newR's and newU's, probably slow, but I'm too lazy to expand this out
-    return (Block)template.accept(new CloneVisitor() {
+    Block res = (Block)template.accept(new CloneVisitor() {
     public ExpCore visit(X s) {
         if(s.getInner().equals("r"))
             return s.withInner(newR);
@@ -401,6 +412,8 @@ public class InvariantClose {
         return super.liftDec(f);
     }
     });
+
+    return res;
   }
 
   static X thisX = new X(Position.noInfo, "this");
@@ -478,7 +491,7 @@ public class InvariantClose {
   class Privatiser extends CloneVisitor {
     @Override
     public MethodWithType visit(MethodWithType mwt) {
-      if (mwt.get_inner() == null) // Nothing interesting to do, ignore
+      if (mwt.get_inner() == null || mwt.getMdf().isClass()) // Nothing interesting to do, ignore
         return super.visit(mwt);
 
       ExpCore newInner = this.lift(mwt.getInner());
