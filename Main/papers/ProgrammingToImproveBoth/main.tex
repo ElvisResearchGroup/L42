@@ -88,24 +88,48 @@ ${}_{}$
 
 
 \noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
+trait composition has inspired new research in the area of code reuse for object oriented (OO) languages.
+One of the main advantages of this kind of composition is that 
+it makes possible to separate subtyping from subclassing; 
+which is good for code-reuse, design and reasoning~\cite{cook}.
+For example, some works on trait composition allow renaming of methods, which breaks structural subtyping.
+However, handling of state within traits is difficult, verbose or inelegant.
 
 \loseSpace
 \noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
-
+we identify the 
+\emph{this-leaking problem} as the fundamental limitation that prevents separation of subtyping from subclassing
+in conventional OO languages. We explain that the concept of trait composition addresses this problem.
+by distinguishing code designed for use (as a type)
+from code designed for reuse (i.e. inherited).
+We are aware of at least $3$ concrete independently designed research
+languages following this methodology: TraitRecordJ~\cite{Bettini:2010:ISP:1774088.1774530},
+Package Templates~\cite{KrogdahlMS09}
+and DeepFJig~\cite{deep}.
 
 \loseSpace
 \noindent\textit{Approach:} %What was done that unveiled new knowledge?
+we designed \name, a new language, where
+we improve use and reuse and we support the \Q@This@ type and family polymorphism
+ by distinguishing code designed for use
+from code designed for reuse.
+In this way 
+\name synthesise the 3 approaches above, and improves them with \emph{abstract state operations}:
+a new elegant way to handle state composition in trait based languages.
 
 \loseSpace
-\noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
-
-\loseSpace
-\noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
-
+\noindent\textit{Knowledge and Grounding:}
+%What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
+%What argument, feasibility proof, artifacts, or results and evaluation support this work?
+by mean of case studies, we show that \name's model of traits with abstract state operations
+ is more usable and compact than prior work.
+We formalise our work and prove that type errors cannot arise from composing well typed code.
 
 \loseSpace
 \noindent\textit{Importance:} %Why does this work matter?
-
+This work is the logical core of the programming language 42. This show that 
+the ideas presented in this paper can be applicable to a full general purpose language.
+This form of composition is very flexible and could be used in many new languages.
 	
 \end{abstract}
 

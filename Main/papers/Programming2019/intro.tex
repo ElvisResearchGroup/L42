@@ -22,6 +22,9 @@ using Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and dete
 \footnote{TMs are called \emph{reference capabilities} in other works. We use the term TM here
 to not confuse them with OCs, another technique we also use in this paper.}
 While studying those languages, we discovered an elegant way to enforce class invariants.
+
+In the rest of the introduction we present two versions of the Hamster Example: one in our language and one in Spec\#. While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
+
 In the following, we show an example of correct code in our approach: we have a \Q@Hamster@ in a \Q@Cage@.
 The hamster will move across a \Q@List@ of \Q@Point@s.
 The invariant is that the hamster's position is in the cage's list.
@@ -35,7 +38,9 @@ To save space, here and in the rest of the paper we omit the bodies of construct
 class Point {
   Double x; Double y; Point(Double x, Double y) {..}
   @Override read method Bool equals(read Object that){..} }
-class Hamster {Point pos; Hamster(Point pos) {..} }
+class Hamster {
+  Point pos; //pos is imm by default
+  Hamster(Point pos) {..} }
 \end{lstlisting}
 Then, in \Q@Cage@
 we use \Q@capsule@ to ensure
@@ -46,7 +51,8 @@ and \Q@moveTo@ methods with \Q@mut@, since they modify
 the receivers ROG.
 \begin{lstlisting}
 class Cage {
-  capsule Hamster h; List<Point> path;
+  capsule Hamster h;
+  List<Point> path;//path is imm by default
   Cage(capsule Hamster h, List<Point> path) {..}
   read method Bool invariant() {
     return this.path.contains(this.h.pos); }

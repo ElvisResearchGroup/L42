@@ -39,24 +39,26 @@ interfaces with the same structural type
 in a single declaration.
 
 \subsection{Two ways to separate subclassing and subtyping}
-There are indeed two different ways to separate subclassing and subtyping:
+There are two different ways to separate subclassing and subtyping:
 
 \begin{itemize}
-\item \emph{(1)Classes are not types}
-In this solution (used by Cecil, Toil/PolyToil and most structurally typed languages) classes and types are different concepts; thus subclassing is not subtyping.
-This also means that every method call is dynamically dispatched. Some authors consider this to be a security problem, and it is also out of those concerns that Java designers decided to support \Q@final@ classes.\footnote{
-For example, a Java programmer may assume the call \Q@myPoint.getX()@ to behave as specified in the \Q@Point@ class. However, dynamic class loading may be used in a malicious way to provide a \Q@Point@ instance with a
-dangerous behaviour. This can be easily prevented by declaring \Q@Point@ final. To insist on all calls to be dynamically dispatched requires to disable dynamic class loading or to verify all the dynamically loaded code.}
-\item \emph{(2)Classes are not extensible}
-This is our solution: classes are types, but can not be reused. This requires to introduce another concept for code reuse: Traits.
+\item \emph{(1) Classes are not types:} 
+in this solution (used by Cecil, Toil/PolyToil, and most structurally typed languages) classes and types are different concepts; thus subclassing is not subtyping.
+This also means that every method call is dynamically dispatched. Some authors consider this to be a security problem, and it is out of those concerns that Java designers decided to support \Q@final@ classes.\footnote{
+For example, a Java programmer may assume the call \Q@myPoint.getX()@ to behave as specified in the \Q@Point@ class. However, dynamic class loading may be used in a malicious way to provide a \Q@Point@ instance with 
+dangerous behaviour. This can easily be prevented by declaring \Q@Point@ \Q@final@. To insist that all calls be dynamically dispatched requires disabling dynamic class loading or verifying all dynamically loaded code.}
+\item \emph{(2) Classes are not extensible:}
+this is our solution; classes are types, but can not be reused. This requires introducing another concept for code reuse: traits.
 We think our solution is much less radical than the former one.
-A key advantage we have is that all class types are exact types, and method calls on class types are statically dispatched; supporting easier reasoning and higher security.
-On the other side, all interface types obviously are not exact, since interfaces can not be instantiated,
-and method calls on interface types obviously are dynamically dispatched, since interfaces have no implementation.
-This builds toward a simpler mental model, and prevent bugs where programmers may forget about dynamic dispatch and reasoning over method calls using the specific implementation found in the receiver static type.
+A key advantage is that all class types are exact types, thus method calls on them are statically dispatched; supporting easier reasoning and higher security and efficiency.
+%
+On the other hand, interface types are not exact;
+obviously method calls on interface types are dynamically dispatched, since there is no implementation.
+%
+This builds towards a simpler mental model, and prevents bugs where programmers may forget about dynamic dispatch and reasoning over method calls using the specific implementation found in the receivers static type.
 \end{itemize}
 
-Both ways enforce about the same solution for the \emph{this-leaking} problem:
+Both ways enforce essentially the same solution for the `this-leaking' problem:
 \begin{lstlisting}[language=Java]
   class A{ int ma(){return Utils.m(this);} }
   class Utils{static int m(A a){..}}
@@ -65,7 +67,7 @@ Both ways enforce about the same solution for the \emph{this-leaking} problem:
 In (1) the error is using \Q@A@ as a type in \Q@Utils.m@,
 while in (2) the error is using \Q@extends@.
 
-The solution proposed by (1) would look like
+The solution proposed by (1) would look like this:
 \begin{lstlisting}[language=Java, morekeywords={type, method}]
  type IA{interface method int ma()}//type = interface
  class Utils{static method int m(IA a){return ...} }
@@ -85,20 +87,20 @@ while our solution (2) is just one line longer:
 
 
 \subsection{Class hierarchies}
-By having all the classes final, we prevent class hierarchies.
+By having all classes final, we prevent class hierarchies.
 However,
 we allow both trait hierarchies and interface hierarchies.
 We believe having both these hierarchies,
-one for code reuse and one for subtyping can improve code
-maintainability, since those two hierarchies will be able to evolve independently. Furthermore, having two hierarchies does not makes code comprehension harder since, as for before, they have different roles and thus are relevant only one at the time.
+one for code reuse, and one for subtyping, can improve code
+maintainability, since these two hierarchies will be able to evolve independently. Furthermore, having two hierarchies does not makes code comprehension harder, since as for before, they have different roles and thus are relevant only one at the time.
 
 Often, class hierarchies are used as a hack in order to obtain code reuse (and in those cases, the LSP is often violated).
-In \name, trait hierarchies will just serve the same role better.
+In \name, trait hierarchies will serve the same role better.
 
 
 \subsection{Constructors and initialization}
-Java allows constructors to do arbitrary operations.
-The same behaviour can be obtained in \name by using a factory method; that is, the following:
+Java allows constructors to perform arbitrary operations.
+The same behaviour can be obtained in \name by using a factory method, like so:
 \begin{lstlisting}[language=Java]
 class A{
   public int x;
@@ -119,8 +121,8 @@ A={
 \end{lstlisting}
 
 For space reasons we have not yet explained how to allow traits to have their own state with a default initialization.
-This could be solved by adding to the abstract state operations (getters, setters, withers) a default initializer;
-for example the trait
+This could be solved by adding a default initializer to the abstract state operations (getters, setters, withers).
+For example:
 \begin{lstlisting}
 t={
   method int x();
@@ -128,7 +130,7 @@ t={
   method int defaultX(){return 0;}//new concept here!
 }
 \end{lstlisting}
-would loosely correspond to a Java abstract class
+would loosely correspond to a Java abstract class:
 \begin{lstlisting}[language=Java]
 abstract class T{
   private int x=0;
@@ -137,7 +139,7 @@ abstract class T{
   }
 \end{lstlisting}
 and could be used to obtain concrete classes where the abstract factory does not need to initialize the field \Q@x@.
-For example classes \Q@A@ and \Q@B@ below would be coherent classes
+For example the following classes would be coherent:
 \begin{lstlisting}
 A= Use t,{ static method This of()}
 B= Use t,{ method String s(); static method This of(String s)}
@@ -149,55 +151,59 @@ a.x()==42;//assert a.x()==42
 
 \end{lstlisting}
 
-Finally, when self construction is not needed, declaring the abstract factory can be redundant, and it can indeed be omitted in the full 42 language.
+Finally, when self construction is not needed, declaring the abstract factory can be made redundant, as is done in the full 42 language.
 
-Moreover, when code reuse is involved, \name is much simpler to use then Java,C++ or C\#: a class extending another class needs to define a constructor calling a super constructor.
+Moreover, when code reuse is involved, \name is much simpler to use then Java, C++ or C\#: a class extending another class usually needs to define a constructor calling a super constructor.
    This typically has as many parameters as the full set of fields. Those parameters are then used at least one time in the body of the constructor.
 In \name, to compose traits without adding fields, there is no need to repeat the abstract factory.
 To add a field, you need to define a new abstract factory and implement the "super" factory method by calling the new one.
 Thus, when adding a field the amount of code between 42 and Java is about the same, but is much easier when no fields are added.
 
-How class invariants and state encapsulation is established and preserved without explicit super constructors is a different issue, and a paper on such topic is being prepared right now.
+%How class invariants and state encapsulation is established and preserved without explicit super constructors is a different issue, and a paper on such topic is being prepared right now.
 
 \subsection{Self instantiation is very useful}
 In many cases the absence of self instantiation causes bugs: often programmers ``think'' that \Q@new C()@ inside of class \Q@C@ would create an instance of the ``current class'', while of course \Q@class D extends C@ still creates instances of \Q@C@.
-The absence of self instantiation also prevents to use functional programming patterns in OO languages.
-Just a look at how involved the code is to implement the functional \Q@Point@ in Java is sufficient to dissuade most programmers.
+The absence of self instantiation also prevents using functional programming patterns in OO languages.
+Just looking at how involved it is to implement an immutable \Q@Point@ class in Java with withers, it is sufficient to dissuade most programmers.
 
 \subsection{Comprehensibility and usability}
-Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenario, we believe \name is much more explicit and clear then Scala and other options. We invite the curios reader to look to the complete code of the case studies (below) and compare our solution with the cryptic version of Scala, where behaviour traits are nested inside other traits.
+Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenarios, we believe \name is much more explicit and clear then Scala and other options. 
+%We invite the curios reader to look to the complete code of the case studies (below) and compare our solution with the cryptic version of Scala, where behaviour traits are nested inside other traits.
 
 In particular, with respect to Java/Scala we encourage more explicit code since:
 \begin{itemize}
-\item sub-typing need to be explicitly declared.
-\item when sub typing is needed, an opportune interface needs to be declared. Thus, when using a class type, it is always clear what implementation is referred to.
-\item \name requires to be explicit when subtyping and subclassing are both supposed to happen (by declaring an extra interface).
-\item \Q@this.@ is required to access fields/methods (so they can not be confused with local variables)
-\item our object model is equivalent to an untyped language.
+\item Sub-typing needs to be explicitly declared.
+\item When sub-typing is needed, an interface needs to be declared. Thus, when using a class type, it is always clear what implementation is referred to.
+\item \name requires being explicit when subtyping and subclassing are both desired by requiring an extra interface.
+\item \Q@this@ is required to access fields/methods, so they can not be confused with local variables.
+\item 
+% The runtime semantic do not depend on the Our object model is equivalent to an untyped language.
+Our runtime semantics, as in untyped languages, do not depend on any static type information.
 \end{itemize}
-The last point is quite important: languages where inheritance is not subtyping proposed in the past tend to have more complex object models, instead 
-our flattened language is just a language of interfaces and final classes. Novice programmers may start by learning that. They could learn to use traits later, and to define their own traits even later.
+The last point is quite important: languages where inheritance does not induce subtyping that were proposed in the past tend to have more complex object models, instead 
+our flattened language is just a language of interfaces and final classes. Novice programmers may start by learning that. They could learn to use traits later, and define their own traits even later.
 
 \section{Case studies complete code} 
 
 Here, for reference, you can find the complete
-of the Case Studies.
-It is quite a lot of code, we report it here to
+code of the case studies.
+It is quite long, we report it here to
 help reproducibility of our results. The interested reader
-can navigate it in order to gain a perfect understanding on
+can navigate it in order to gain a better understanding on
 how we encoded the various solutions in the various styles and languages,
 but is not needed to understand the overall value of our paper.
 
-While evaluating our approach, we consider not only lines of code but also number of methods and classes.
-Our particular examples are focused on code reuse, thus method implementations are all trivial.
+While evaluating our approach, we consider not only lines of code but also the number of methods and classes.
+Our particular examples are focused on code reuse, thus the method implementations are all trivial.
 We believe that in this particular context the number of methods/classes is a good indicator.
 
 
 \subsection{Point algebra}
-Here the code of Java7 for the first case study, the \Q@Point@ algebra:
-\begin{lstlisting}[basicstyle=\tiny]
-//0
-class Point {//6
+\subsubsection{Java7}
+\lstset{language=Java,basicstyle=\tiny\ttfamily,numberstyle=\tiny\ttfamily}
+\begin{lstlisting}
+//case 0 of 16
+class Point {//6 lines
   final int x;
   final int y;
 
@@ -440,13 +446,12 @@ class PointSumSubMulDiv extends PointSumSubMul {//11
   }
 }
 \end{lstlisting}
-
-Here you can find the ClassLessJava style code for the Point Algebra:
-\begin{lstlisting}[basicstyle=\tiny]
+\subsubsection{Classless Java}
+\begin{lstlisting}
 // 0
 @Obj // 3 lines
 interface Point {
-  static Point of(int x, int y) {// methods "of" generated by @Obj thus not counted in the line numbers
+  static Point of(int x, int y) { // "of" methods are generated by @Obj thus their lines are not counted
     return new Point() {
       public int x() {
         return x;
@@ -558,7 +563,7 @@ interface PointSumMul extends PointSum, PointMul {
     };
   }
 
-  default PointSumMul sum(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSumMul sum(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() + that.x(), this.y() + that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -582,7 +587,7 @@ interface PointSumSub extends PointSum, PointSub {
     };
   }
 
-  default PointSumSub sum(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSumSub sum(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() + that.x(), this.y() + that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -606,7 +611,7 @@ interface PointSumDiv extends PointSum, PointDiv {
     };
   }
 
-  default PointSumDiv sum(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSumDiv sum(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() + that.x(), this.y() + that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -630,7 +635,7 @@ interface PointSubMul extends PointMul, PointSub {
     };
   }
 
-  default PointSubMul mul(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSubMul mul(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -654,7 +659,7 @@ interface PointSubDiv extends PointSub, PointDiv {
     };
   }
 
-  default PointSubDiv sub(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSubDiv sub(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() - that.x(), this.y() - that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -678,7 +683,7 @@ interface PointMulDiv extends PointMul, PointDiv {
     };
   }
 
-  default PointMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+  default PointMulDiv mul(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -762,7 +767,7 @@ interface PointSumMulDiv extends PointSumMul, PointMulDiv, PointSumDiv {
     return of(this.x() + that.x(), this.y() + that.y());
   }
 
-  default PointSumMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSumMulDiv mul(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -790,7 +795,7 @@ interface PointSubMulDiv extends PointSubMul, PointMulDiv, PointSubDiv {
     return of(this.x() - that.x(), this.y() - that.y());
   }
 
-  default PointSubMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSubMulDiv mul(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -822,7 +827,7 @@ interface PointSumSubMulDiv extends PointSumSubMul, PointSumMulDiv, PointSumSubD
     return of(this.x() - that.x(), this.y() - that.y());
   }
 
-  default PointSumSubMulDiv mul(Point that) {// we have to rewrite the method calling the new "of"
+  default PointSumSubMulDiv mul(Point that) {// we have to rewrite the method to call the new "of"
     return of(this.x() * that.x(), this.y() * that.y());// in order to produce an instance of PointSumMul
   }
 
@@ -831,9 +836,9 @@ interface PointSumSubMulDiv extends PointSumSubMul, PointSumMulDiv, PointSumSubD
   }
 }
 \end{lstlisting}
-
-Here you can find the Scala code for the Point Algebra:
-\begin{lstlisting}[basicstyle=\tiny]
+\subsubsection{Scala}
+\lstset{language=Scala}
+\begin{lstlisting}
 trait tPointState {//5
   type p <: tPointState
   def x: Int
@@ -861,10 +866,10 @@ trait tPointDiv extends tPointState {
     this.of(this.x/that.x,this.y/that.y)  
 }
 //glue code from now on
-class Point0(val x:Int, val y:Int) extends tPointState {//4*16
- override type p = Point0
+class Point(val x:Int, val y:Int) extends tPointState {//4*16
+ override type p = Point
  override def of(x:Int,y:Int)=
-   new Point0(x,y)//3 duplication of "this name"
+   new Point(x,y)// I have to repeat the name of the class 3 times
 }
 
 class PointSum(val x:Int, val y:Int) extends tPointSum {
@@ -957,19 +962,18 @@ class PointSumSubMulDiv(val x:Int, val y:Int) extends tPointSum with tPointSub w
    new PointSumSubMulDiv(x,y)
 }
 \end{lstlisting}
-
-Here you can find the full 42 code for the Point Algebra.
+\subsubsection{42}
 The main differences with respect to \name as presented in
-the paper, is that we use \Q@Resource<><@
-to declare a trait,
-all trait names start with \texttt{\$}
-and are referred with `\Q@()@'.
-Method bodies can be just simple expressions, without the need
-of `\Q@return@'.
-Note that in full 42 there is no primitive type \Q@int@ and
-the class representing numbers is called \Q@Num@.
-
-\begin{lstlisting}[basicstyle=\tiny, mathescape=false]
+the paper are: we use \Q@Resource<><@
+to declare a trait, all trait names start with \texttt{\$}, traits are referred to with a `\Q@()@'.
+Method bodies can be simple expressions, without the need for a `\Q@return@'.
+Note that in full 42 there is no primitive type \Q@int@, here we use \Q@Num@ instead, which is an arbitrary precision rational.
+\lstset{language=Java,basicstyle=\tiny\ttfamily}
+\begin{lstlisting}[
+  language=Java,
+  morekeywords={method,Use,This,constructor,as,into,rename},
+  deletekeywords={double},
+  mathescape=false]
 $p: Resource <>< {//4
   method Num x()
   method Num y()
@@ -1031,9 +1035,11 @@ PointSumSubMulDiv: Use[$pointSum();$pointSub();$pointMul();$pointDiv()] <>< {}
 
 
 \subsection{FCPoint}
-Here is the code of Java7 for the second case study;
-flavoured and colored points:
-\begin{lstlisting}[basicstyle=\tiny]
+\subsubsection{Java7}
+
+%Note: we do not refine method sum return type in many cases. THIS IS AN ERROR!
+\lstset{language=Java, morekeywords={enum}}
+\begin{lstlisting}
 enum Flavor {
   NONE, SOUR, SWEET, SALTY, SPLICY;
 }
@@ -1144,9 +1150,10 @@ class FCPoint extends CPoint {//15 lines
   }
 }
 \end{lstlisting}
-Here is the code in Scala for flavoured and colored points:
-\begin{lstlisting}[basicstyle=\tiny]
-trait tPointState {//8
+\subsubsection{Scala}
+\lstset{language=Scala}
+\begin{lstlisting}
+trait tPointState {//8 lines
   type p <: tPointState
   def x: Int
   def y: Int
@@ -1176,8 +1183,8 @@ trait tFlavored{
   def merge(that:p)=
     this.withFlavor(that.flavor)
   }
-//glue code from now on //12 lines
-class CPoint(val x:Int, val y:Int, val color:Int) extends tPointSum with tColored {
+//glue code from now on
+class CPoint(val x:Int, val y:Int, val color:Int) extends tPointSum with tColored {//12 lines
   override type p = CPoint
   def of(x:Int,y:Int)=
     this.of(x,y,0)
@@ -1212,9 +1219,12 @@ class FCPoint(val x:Int, val y:Int, val color:Int, val flavor:Int) extends tPoin
   }
 \end{lstlisting}
 
-Here you can find the 42 code for flavored and colored points..
-
-\begin{lstlisting}[basicstyle=\tiny, mathescape=false]
+\subsubsection{42}
+\begin{lstlisting}[
+  language=Java,
+  morekeywords={method,Use,This,constructor,as,into,rename},
+  deletekeywords={double},
+  mathescape=false]
 Flavor: Enumeration"sour, sweet, salty, spicy"
 
 Color:Data<><{Num r Num g Num b
@@ -1239,14 +1249,14 @@ $pointSum: Resource <>< Use[$p()] <>< {// 3 lines
 $colored: Resource <>< {// 5 *2 lines
   method Color color()
   method This withColor(Color that)
-  method This merge(This that) //how to merge color handled here
+  method This merge(This that) //how to merge colors
     this.withColor(this.color().mix(that.color()))
   }
 
 $flavored: Resource <>< {
   method Flavor flavor() //very similar to colored
   method This withFlavor(Flavor that)
-  method This merge(This that) //merging flavors handled here
+  method This merge(This that) //how to merge flavors 
     this.withFlavor(that.flavor())//inherits "that" flavor
   }
 
@@ -1261,7 +1271,7 @@ FCPoint: Use[//9 lines
   Refactor2.toAbstract(selector:\"merge(that)", into:\"_2merge(that)")<><$flavored();
   $pointSum()] <>< {
     class method This of(Num x,Num y)
-      This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num),flavor:Flavor.none())
+      This.of(x:x,y:y,color:Color(r:100Num,g:0Num,b:0Num),flavor:Flavor.sour())
     class method This of(Num x, Num y,Color color,Flavor flavor)
     method This merge(This that)
       this._1merge(that)._2merge(that)
@@ -1269,10 +1279,12 @@ FCPoint: Use[//9 lines
 \end{lstlisting}
 
 \subsection{Expression problem}
+\subsubsection{Original Scala}
 Here is the original code of Scala solving the expression problem.
 As you can see, sometimes multiple operations/cases are declared together in
 the same trait.
-\begin{lstlisting}[basicstyle=\tiny]
+\lstset{language=Scala}
+\begin{lstlisting}
 trait Base {
   type exp <: Exp
 
@@ -1448,10 +1460,10 @@ trait EqualsShowPlusNeg extends EqualsPlusNeg with ShowPlusNeg {
 //--- 40 lines for equals
 \end{lstlisting}
 
-
-In the following, the fully modularized Scala code,
-every trait defines exactly one operation for each datavariant:
-\begin{lstlisting}[basicstyle=\tiny]
+\subsubsection{Isolated Scala}
+The following code is fully modularized:
+every trait defines exactly one operation for each datavariant.
+\begin{lstlisting}
 trait Base {
   type exp <: Exp
 
@@ -1605,36 +1617,35 @@ trait DbleNeg extends BaseNeg with Dble {
 
 //glue code: 27 lines
 object All0 extends 
-Eval with Show with Dble 
-with EvalNum with EvalPlus with EvalNeg 
-with ShowNum with ShowPlus with ShowNeg 
-with DbleNum with DblePlus with DbleNeg 
-    {
+    Eval with Show with Dble with 
+    EvalNum with EvalPlus with EvalNeg with 
+    ShowNum with ShowPlus with ShowNeg with 
+    DbleNum with DblePlus with DbleNeg {
   override type exp = Exp
   
   trait Exp extends 
-  super[Eval].Exp with super[Show].Exp with super[Dble].Exp
-  with super[DbleNum].Exp with super[DblePlus].Exp with super[DbleNeg].Exp 
+      super[Eval].Exp with super[Show].Exp with super[Dble].Exp with
+      super[DbleNum].Exp with super[DblePlus].Exp with super[DbleNeg].Exp 
 
   trait NumBehavior extends
-  super[EvalNum].NumBehavior with super[ShowNum].NumBehavior
-  with super[DbleNum].NumBehavior{
+      super[EvalNum].NumBehavior with super[ShowNum].NumBehavior with
+      super[DbleNum].NumBehavior {
     self: BaseNum =>
   }
 
   class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
 
   trait PlusBehavior extends
-  super[EvalPlus].PlusBehavior with super[ShowPlus].PlusBehavior
-  with super[DblePlus].PlusBehavior {
+      super[EvalPlus].PlusBehavior with super[ShowPlus].PlusBehavior with
+      super[DblePlus].PlusBehavior {
     self: BasePlus =>
   }
 
    class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
 
   trait NegBehavior extends
-      super[EvalNeg].NegBehavior with super[ShowNeg].NegBehavior
-      with super[DbleNeg].NegBehavior {
+      super[EvalNeg].NegBehavior with super[ShowNeg].NegBehavior with
+      super[DbleNeg].NegBehavior {
     self: BaseNeg =>
   }
 
@@ -1642,7 +1653,7 @@ with DbleNum with DblePlus with DbleNeg
   
   def Num(v: Int) = new Num(v)
   
-  def Plus(l: exp, r: exp) =new Plus(l,r)
+  def Plus(l: exp, r: exp) = new Plus(l,r)
 
   def Neg(t: exp) = new Neg(t)
 }
@@ -1707,38 +1718,38 @@ trait EqualsNeg extends BaseNeg with Equals {
 }
 //31 lines for equals, 29 glue
 object All extends 
-Eval with Show with Dble with Equals 
-with EvalNum with EvalPlus with EvalNeg 
-with ShowNum with ShowPlus with ShowNeg 
-with DbleNum with DblePlus with DbleNeg 
-with EqualsNum with EqualsPlus with EqualsNeg 
-    {
+    Eval with Show with Dble with Equals with 
+    EvalNum with EvalPlus with EvalNeg with 
+    ShowNum with ShowPlus with ShowNeg with 
+    DbleNum with DblePlus with DbleNeg with 
+    EqualsNum with EqualsPlus with EqualsNeg 
+{
   override type exp = Exp
   
   trait Exp extends 
-  super[Eval].Exp with super[Show].Exp with super[Dble].Exp with super[Equals].Exp
-  with super[DbleNum].Exp with super[DblePlus].Exp with super[DbleNeg].Exp
-  with super[EqualsNum].Exp with super[EqualsPlus].Exp with super[EqualsNeg].Exp
+      super[Eval].Exp with super[Show].Exp with super[Dble].Exp with super[Equals].Exp with
+      super[DbleNum].Exp with super[DblePlus].Exp with super[DbleNeg].Exp with
+      super[EqualsNum].Exp with super[EqualsPlus].Exp with super[EqualsNeg].Exp
 
   trait NumBehavior extends
-  super[EvalNum].NumBehavior with super[ShowNum].NumBehavior
-  with super[DbleNum].NumBehavior with super[EqualsNum].NumBehavior {
+      super[EvalNum].NumBehavior with super[ShowNum].NumBehavior with
+      super[DbleNum].NumBehavior with super[EqualsNum].NumBehavior {
     self: BaseNum =>
   }
 
   class Num(v: Int) extends BaseNum(v) with NumBehavior with Exp
 
   trait PlusBehavior extends
-  super[EvalPlus].PlusBehavior with super[ShowPlus].PlusBehavior
-  with super[DblePlus].PlusBehavior with super[EqualsPlus].PlusBehavior {
+      super[EvalPlus].PlusBehavior with super[ShowPlus].PlusBehavior with
+      super[DblePlus].PlusBehavior with super[EqualsPlus].PlusBehavior {
     self: BasePlus =>
   }
 
-   class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
+  class Plus(l: exp, r: exp) extends BasePlus(l, r) with PlusBehavior with Exp
 
   trait NegBehavior extends
-      super[EvalNeg].NegBehavior with super[ShowNeg].NegBehavior
-      with super[DbleNeg].NegBehavior with super[EqualsNeg].NegBehavior {
+      super[EvalNeg].NegBehavior with super[ShowNeg].NegBehavior with
+      super[DbleNeg].NegBehavior with super[EqualsNeg].NegBehavior {
     self: BaseNeg =>
   }
 
@@ -1746,21 +1757,23 @@ with EqualsNum with EqualsPlus with EqualsNeg
   
   def Num(v: Int) = new Num(v)
   
-  def Plus(l: exp, r: exp) =new Plus(l,r)
+  def Plus(l: exp, r: exp) = new Plus(l,r)
 
   def Neg(t: exp) = new Neg(t)
 }
 \end{lstlisting}
 
-
-Finally, here is the 42 code solving the expression problem.
-The classes \Q@RenNum@,\Q@RenPlus@ and \Q@RenNeg@
-can be understood as declarations of `short-cuts'
-in order to make the full 42 language more in line with the
-(more compact) syntax of \name.
-In 42, these `short-cuts' can be very expressive 
-but here we use them only to better align full 42 and \name.
-\begin{lstlisting}[basicstyle=\tiny, mathescape=false]]
+\subsubsection{42}
+The classes \Q@RenNum@, \Q@RenPlus@, and \Q@RenNeg@
+can be understood as declarations of short cuts
+in order to make the full 42 language more in line with the more compact syntax of \name.
+In 42, these short cuts can be very expressive 
+but here we use them only to better align the full 42 and \name languages.
+\begin{lstlisting}[
+  language=Java,
+  morekeywords={method,Use,This,constructor,as,into,rename},
+  deletekeywords={double},
+  mathescape=false]
 RenNum:{class method Library<>< (Library that) exception Guard
   Refactor2.rename(path:\"T" into:\"Num")<><that
   }
