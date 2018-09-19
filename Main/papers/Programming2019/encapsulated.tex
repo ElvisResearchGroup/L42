@@ -350,7 +350,7 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
 \textit{Comparison with Spec\#.}
-We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 20XX-XX-XX). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties as well as the admissibility of invariants.
+We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties as well as the admissibility of invariants.
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{?}), which gave us only\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds.%. and value presence.
 This aligns the code with L42, which also performs such checks at runtime.} $2$ warnings: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however they check this at run time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks,
 
