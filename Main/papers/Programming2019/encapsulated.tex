@@ -324,15 +324,17 @@ $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@Saf
 This set up is not overly involved, the maximum nesting level of \Q@Widget@s is $5$.
 Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant.
 
-\noindent{\textit{Comparison with visible state semantics:}}
-As an experiment we set our implementation to generate invariant checks following the standard approach for visible state semantics (the one used by Eiffel and D), where the invariant is instead checked at the start and end of \emph{every} public method%
-\footnote{
-	%though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
-42 represents field accesses as method calls; 
-in our experiment \Q@SafeMovable@ only access fields on \Q@this@ ...
-for a fair comparison with other OO languages, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
-}
-of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ interface. When we ran our test case the invariant was instead called $52,734,053$ times (it took about $4$ days to run), in comparison to the $77$ we got when using our invariant protocol. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls will themselves invoke invariant checks. Note that like other systems in the literature, we do not perform invariant checks when calling instance methods on \Q@this@ within the invariant of \Q@SafeMovable@, had we done that we would have obviously gone into an infinite recursion.
+\textit{Comparison with visible state semantics:}
+As an experiment we set our implementation to generate invariant checks following the approach for visible state semantics (the one used by Eiffel\footnote{We also tried the approach of D~\cite{?} where invariants are instead checked on public-method calls, but not private ones; however this produced identical results in our test case.}), where the invariant is instead checked at the start and end of \emph{every} unqualified (i.e. call on \Q@this@) method call%
+\footnote{L42 follows the Eiffel uniform access principle: field accesses are the same as method calls.}
+%though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
+% D and Eiffel have slightly different interpretation of
+% visible state semantic when qualified/unqualified method calls or field accesses are performed.
+% However, in our GUI example those corner cases are
+% not relevant. To be sure, we implemented both of their strategies and obtained the same results.
+of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ interface. When we ran our test case following this approach the invariant was called $52,734,053$ times (it took about $4$ days to run), in comparison to the $77$ we got when using our invariant protocol. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls will themselves invoke invariant checks. % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
+% Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
+
 
 % It can be surprising to see such extreme difference. We ran our example with less widgets, and our results suggest an exponential growth in the cost of the conventional approach. For example by removing 2 containers (and their 8 buttons) we get....
 % We now explain how this exponential explosion happens:
@@ -347,27 +349,61 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 % In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
-\noindent{\textit{Comparison with Spec\#}}
-We encoded our Widget example also on Spec\#.
-The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
-However, we found great difficulty to encode our example.
-We used the Boogie static checker to verify all the aliasing-ownership properties needed to
-ensure that the $77$ run-time invariant checks soundly enforce that the invariant holds when is expected.
-This of course includes preventing the Gui to ever display two overlapping Widget. 
+\textit{Comparison with Spec\#.}
+We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 20XX-XX-XX). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties as well as the admissibility of invariants.
+We ran our code through the Spec\# verifier (powered by Boogie~\cite{?}), which gave us only\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds.%. and value presence.
+This aligns the code with L42, which also performs such checks at runtime.} $2$ warnings: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however they check this at run time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks,
 
-We believe this comparison is fair since we got both systems to essentially do the same thing:
-they statically verify ownership/aliasing annotations,
-they check the admissibility/valididty of a the invariant code and finally 
-they perform sufficient runtime-checking of the invariant.
+% Assuming that Spec\#'s verifier is sound, this means that our code is equally verified in Spec\# and L42, providing a reasonable comparison.
+% Both Spec\# and L42 did the same thing:
+% they statically verify ownership/aliasing annotations,
+% they check the admissibility/valididty of a the invariant code and finally 
+% they perform sufficient runtime-checking of the invariant.
+% We used the Boogie static checker to verify all the aliasing/ownership properties needed to
+% ensure that the $77$ run-time invariant checks soundly enforce that the invariant holds when is expected.
+% This of course includes preventing the Gui to ever display two overlapping Widget. 
+
 %\end{itemize}
-To encode the GUI example in L42, we only needed to annotate using \Q@mut/read/capsule@, for a total of 
-$19$ annotations (one token each, $74$ characters in total).
-Spec\# required $40$ annotations, including methods
-purity, ownership annotations on parameters, methods and field attributes as well as requires, ensures and modifies clauses, and finally also explicit ownership assignment statements.
-Spec\# annotation can be involved, as for example \Q@requires Owner.Same(Owner.ElementProxy(children), children);@
-To estimate the annotation burden we count the number of tokens (excluding \Q@.;,@ and parenthesis).
-This gave us $113$ tokens, that is more then $5$ times the amount needed in L42.
-The total annotation character count is $830$; $10$ times more then L42.
+%The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
+
+We found it quite difficuilt to encode the GUI in Spec\#, due to the ???; In particular we needed to use many more annotations, which were both longer and had a greater variety of kinds. In the following table we summarise the annotation burden\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
+
+\begin{center}
+\begin{tabular}{ c | c | c | c | c}
+ & Spec\# & Spec\# & L42 & L42 \\ 
+ & \!\!program\!\! & library & \!\!program\!\! & library \\
+\hline
+ 
+\!\!\!Total number of annotations 
+ 	& $40$ & $19$ & $19$ & $18$ \\ \hline
+% Totals 	 $59$ $37
+\!\!\!Tokens (except \Q@.,;(){}[]@ and whitespace)\!\!\!
+%(ecluding \Q@;,@ characters, white-space, or parentheses/brackets.) 
+	& $106$ & $34$ & $18$ & $18$  \\ 
+% $140$  & $37$
+Characters (with minimal whitespace) 
+	& $619$ & $207$ & $74$ & $60$ \\ 
+%  $826$ $134$
+\end{tabular}
+\end{center}
+
+To encode the GUI example in L42, the only annotations we needed were the 3 type-modifiers: \Q@mut@, \Q@read@, and \Q@capsule@.
+% , for a total of 
+% $19$ annotations (one token each, $74$ characters in total).
+Our Spec\# code requires, among others, purity, immutability, ownership, method pre/post-conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
+Together these annotations can get quite long, such as the following precondition on \Q@SafeMovable@'s constructor: \\
+\begin{tabular}{r}
+\Q@requires Owner.Same(Owner.ElementProxy(children), children);@
+\end{tabular}
+
+% methods and field attributes as well as requires, ensures and modifies clauses, and finally also %explicit ownership assignment statements.
+% Spec\# annotation can be involved, as for example \Q@requires Owner.Same(Owner.ElementProxy(children), children);@}
+
+% To estimate the annotation burden we count the number of tokens (excluding \Q@.;,@ and parenthesis).
+% This gave us $113$ tokens, that is more then $5$ times the amount needed in L42.
+% The total annotation character count is $830$; $10$ times more then L42.
+
+
 % 40   106+17=113 619+211
 %main 11 annotations, 28 + 11 tokens, 118+65 characters
 %safemovable 29 annotations, 78+6 tokens, 501+146 characters
@@ -376,21 +412,22 @@ The total annotation character count is $830$; $10$ times more then L42.
 % auxLib // 14 annotations, 25 tokens, 155+44 characters
 %guiLib// 5 annoations, 9 tokens, 52 characters
 
+% Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations.
 
+The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children@ method in \Q@Widget@ returning a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only strange thing we had to in L42 was creating \Q@Box@es using 
+an additional variable in a nested scope.
+This is needed to delineate the scope of promotions.
+Based on these results we believe our system is significantly simpler and easier to use.
+% On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
+\textit{The Box Pattern:}
+Our design, using an inner \Q@Box@ object is a common pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated sub-object which is not exposed to the users.
 
-Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations. On the basis of those results we believe  that our system is easier to use for programmers that are not experts in software verification.
+% We also found natural to use the box pattern also in Spec\# requires.
+Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@. It also dramatically simplifies the handling of the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change the enclosing \Q@SafeMovable@s position.
+% Also the implementation of the minimal GUI library (that our \Q@SaveMovable@ builds upon) has a much lower annotation burden.
 
-Our design, using an inner \Q@Box@ object is a common pattern in static verification: to encapsulate all the relevant mutating state into an encapsulated sub-object
-that are never exposed to the users.
-We also found natural to use the box pattern
-also in Spec\# requires.
-This dramatically simplifies the handling of the circular object graph, where the button event can refer back, in order to change the widget position.
-Also the implementation of the minimal GUI library
-(that our \Q@SaveMovable@ builds upon)
-has a much lower annotation burden.
-
-We encoded our Widget example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
+\IOComm{mention it in related work?} We encoded our Widget example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
 
 
 \noindent\textit{The transform pattern:}

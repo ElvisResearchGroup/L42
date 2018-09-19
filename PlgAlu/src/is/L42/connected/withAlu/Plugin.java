@@ -131,10 +131,10 @@ public class Plugin implements PluginType.WellKnown {
     try{return Integer.valueOf(s);}
     catch(NumberFormatException nfe){throw new Resources.Error("InvalidEncodingForI32: "+s);    }
   }
-  
+
   @ActionType({ActionType.NormType.Library})
   public  Object MconstStringEmpty(){return "";}
-  
+
 
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object Mint32ToString£xthat(Object cb){
@@ -150,9 +150,9 @@ public class Plugin implements PluginType.WellKnown {
   }
   @ActionType({ActionType.NormType.Library})
   public  Object MconstTrue(){return true;}
-  
+
   @ActionType({ActionType.NormType.Library})
-  public  Object MconstFalse(){return false;} 
+  public  Object MconstFalse(){return false;}
 
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
   public Resources.Void MstringDebug£xthat(Object cb){
@@ -161,7 +161,7 @@ public class Plugin implements PluginType.WellKnown {
     return Resources.Void.instance;
   }
 
-  static HashMap<String, Long> counters = new HashMap<>();
+  public static HashMap<String, Long> counters = new HashMap<>();
   @ActionType({ActionType.NormType.Void, ActionType.NormType.Library})
   public Resources.Void MincrementCounter£xthat(Object cb){
     String s=ensureExtractStringU(cb);

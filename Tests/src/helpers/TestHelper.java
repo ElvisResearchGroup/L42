@@ -264,6 +264,7 @@ public class TestHelper {
     L42.root=null;
     L42.newK=null;
     L42.resetFreshPrivate();
+    is.L42.connected.withAlu.Plugin.counters.clear();
     Resources.clearRes();
     Timer.restart();
     Timer.activate("TOP");

@@ -235,7 +235,6 @@ public class InvariantClose {
       }
     }
 
-
     if (this.mode == MODE_L42)
       // Play with capsule mutators...
       this.top = (ClassB)this.top.accept(new WrapAux(this.p, this.makeRenames(this.exposers), this.top));
@@ -245,11 +244,12 @@ public class InvariantClose {
         // Don't touch method headers
         @Override protected MethodSelector liftMsInMetDec(MethodSelector ms) { return ms; }
       });
-    else
+    else {
       assert this.mode == MODE_EIFFEL;
       // Redirect all calls on 'this' to private versions (delegateState will handle actually making the private versions)
-      this.top = (ClassB)this.top.accept(new Privatiser());
-    
+      this.top = new Privatiser().of(this.top);
+    }
+
     this.inner = this.top.getClassB(this.path);
     this.delegateState();
 
@@ -298,7 +298,7 @@ public class InvariantClose {
       } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
         // Wrap the body up, but only if a public instance method
         this.delegate(true, mwt, newMwt);
-      } else if (this.mode == MODE_EIFFEL && mt.getMdf() != Mdf.Class) {
+      } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
         // For all instance methods (even private ones) do an invariant check
         this.delegate(true, mwt, newMwt);
       } else if (this.mode == MODE_L42 && this.exposers.contains(mwt.getMs())) {
@@ -492,10 +492,9 @@ public class InvariantClose {
     @Override
     public MethodWithType visit(MethodWithType mwt) {
       if (mwt.get_inner() == null || mwt.getMdf().isClass()) // Nothing interesting to do, ignore
-        return super.visit(mwt);
+        return mwt;
 
-      ExpCore newInner = this.lift(mwt.getInner());
-      return mwt.withInner(newInner);
+      return super.visit(mwt);
     }
 
     @Override
@@ -510,6 +509,8 @@ public class InvariantClose {
     public MCall visitThisCall(MCall s) {
       return ((MCall)super.visit(s)).withS(s.getS().withUniqueNum(uniqueNum));
     }
+
+    public ClassB of(ClassB b) { return (ClassB)super.visit(b); }
 
     @Override
     public ExpCore visit(ClassB l) { return l; }
@@ -537,12 +538,7 @@ public class InvariantClose {
 
     @Override
     public MethodWithType visit(MethodWithType mwt) {
-      if (mwt.get_inner() == null)
-        LambdaExceptionUtil.throwAsUnchecked(
-            new ClassUnfit().msg("The method " + mwt.getMs() + " is abstract"));
-
-      MethodSelector newMs = mwt.getMs().withUniqueNum(uniqueNum);
-      return super.visit(mwt).withMs(newMs).withMt(mwt.getMt().withRefine(false));
+      return super.visit(mwt).withMs(mwt.getMs().withUniqueNum(uniqueNum)).withMt(mwt.getMt().withRefine(false));
     }
 
     @Override

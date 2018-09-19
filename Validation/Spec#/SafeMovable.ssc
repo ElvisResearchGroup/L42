@@ -8,10 +8,10 @@ using System.Collections.Generic;
 // This particularlly means that after that call (which is implicitly the first thing in a constructor)
 // A constructors precondition can no longer be assumed
 internal class PureObject{[Pure] internal PureObject(){}} // 1 annotation, 1 + 5 tokens, 6 + 51 characters
-internal sealed class Box: // 7 annotations, 20+1 tokens, 172+10 characters 
-	PureObject // +1 token, +10 characters 
+internal sealed class Box: // 7 annotations, 20+1 tokens, 172+10 characters
+	PureObject // +1 token, +10 characters
 {
-	internal readonly string id; 
+	internal readonly string id;
 	internal int left, top;
 
 	[Peer,ElementsPeer] internal readonly List<Gui.Widget> children;  // 2 annotations, 2 tokens, 19 characters
@@ -44,8 +44,8 @@ internal sealed class MoveAction: Gui.Action // 4 annotation, 11 token, 6 charac
 {
 	[Peer] readonly Box outer; // 1 annotation, 1 token, 6 characters
 	readonly int leftDelta, topDelta;
-	
-	public void apply(Gui.Event event_) 
+
+	public void apply(Gui.Event event_)
 	{
 		Debug.Print("Button pressed on :" + this.outer.id);
 		outer.left = outer.left + leftDelta;
@@ -54,7 +54,7 @@ internal sealed class MoveAction: Gui.Action // 4 annotation, 11 token, 6 charac
 
 	[Captured] internal MoveAction(Box outer, int leftDelta, int topDelta) // 3 annotations, 10 tokens, 70 characters
 		ensures Owner.Same(this,outer);
-	{ 
+	{
 		Owner.AssignSame(this,outer);
 		this.outer = outer;
 		this.leftDelta = leftDelta;
@@ -71,17 +71,17 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 		return MakeButton(outer, scale, "_Left", 0, 13, 6, 6, -5, 0, "left.png");
 	}
 	internal static Gui.Button Right(Box outer, int scale) // 1 annotation, 5 tokens, 33 characters
-		ensures Owner.Same(result,outer); 
-	{ 
-		return MakeButton(outer, scale, "_Right", 26, 13, 6, 6, 5, 0, "right.png"); 
+		ensures Owner.Same(result,outer);
+	{
+		return MakeButton(outer, scale, "_Right", 26, 13, 6, 6, 5, 0, "right.png");
 	}
 	internal static Gui.Button Up(Box outer, int scale) // 1 annotation, 5 tokens, 33 characters
-		ensures Owner.Same(result,outer); 
+		ensures Owner.Same(result,outer);
 	{
 		return MakeButton(outer, scale, "_Up", 13, 0, 6, 6, 0, -5, "up.png");
 	}
 	internal static Gui.Button Down(Box outer, int scale) // 1 annotation, 5 tokens, 33 characters
-		ensures Owner.Same(result,outer); 
+		ensures Owner.Same(result,outer);
 	{
 		return MakeButton(outer, scale, "_Down", 13, 26, 6, 6, 0, 5, "down.png");
 	}
@@ -121,33 +121,33 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	{
 		return this.box.children.Count;
 	}
-	[Pure]public Gui.Widget?children(int i) 
+	[Pure]public Gui.Widget?children(int i)
 	{
-		assume 0 <= i && i < this.box.children.Count;
-		return this.box.children[i]; 
+		assume 0 <= i && i < this.box.children.Count; // Not counted
+		return this.box.children[i];
 	}
 
 	public int left { get { return this.box.left; } }
 	public int top { get { return this.box.top; } }
 
 	public bool dispatch(Gui.Event that) // 1 annotation, 2 tokens, 12 characters
-	{ 
+	{
 		expose(this) return this.box.dispatch(that);
 	} // Verification error: Object invariant possibly does not hold
-	
+
 	// 1 annotation, 1 token, 9 characters
 	invariant Debug.IncrementCounter("Invariant") && forall {int i in (0: this.box.children.Count);
-		   Inside(this.box.children[i], this.width, this.height) 
+		   Inside(this.box.children[i], this.width, this.height)
 		&& forall {int j in (0: this.box.children.Count);
 			// WTF? Without this I get a verification error: '
-			//     all of System.Collections.Generic.List<Gui.Widget!>.this[int].get, unsatisfied precondition: index < Count' 
+			//     all of System.Collections.Generic.List<Gui.Widget!>.this[int].get, unsatisfied precondition: index < Count'
 			   i < this.box.children.Count
 			&& (!this.box.children[i].id.Equals(this.box.children[j].id) ==> !Overlap(this.box.children[i], this.box.children[j]))
 		}
 	};
 
 	// 1 annotation, 1 token, 6 characters
-	[Pure] private static bool Overlap(Gui.Widget w1, Gui.Widget w2) 
+	[Pure] private static bool Overlap(Gui.Widget w1, Gui.Widget w2)
 	{
 		if (w1.left > w2.left + w2.width || w2.left > w1.left + w1.width)
 			return false;
@@ -177,7 +177,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 		this.box = box;
 	} // Verification error: Object invariant possibly does not hold
 
-	// Spec# (unlike neweer versions of C#) does not have auto implemented properties
+	// Spec# (unlike newer versions of C#) does not have auto implemented properties
 	readonly int width, height;
 	readonly string colour;
 

@@ -1,6 +1,6 @@
 {reuse L42.is/AdamTowel02
 
-Person:Data<><{ S name, var Size age, Size birthDay
+Person:EiffelData<><{ S name, var Size age, Size birthDay
   mut method
   Void processDay(Size that){
     if this.birthDay()==that (return this.age(this.age()+1Size))
@@ -63,65 +63,5 @@ Main0:{//here we get 19403 against 1109, so only 20 times improvements.
   Debug.printCounter(S"Invariant") //2210 vs 19403
   return ExitCode.normal()
   }
-
-/*Main1:{
-  Person1 p1=Person1(name:S"Bob",age:10Size)
-  Debug(S"p1Created")
-  Debug(p1==p1)
-  Debug(S"p1==Done")
-  Debug.test(p1 expected:S"
-  '[name:"Bob", age:"10"]
-  ".withoutRight())
-  Debug(S"p1.toS()Done")
-  p2=p1.with(age:20Size)
-  Debug(S"p1.with(age)Done")
-  Debug.test(p2 expected:S"
-  '[name:"Bob", age:"20"]
-  ".withoutRight())
-  Debug(S"p2.toS()Done")
-  (
-    unused=Person1(name:S"", age:2Size)
-    Debug(S"unusedCreated")
-    catch error EiffelData.Invariant.Fail x
-      void
-    Debug(S"Fail")
-    )
-  return ExitCode.normal()
-  }
-
-//--------
-Person2:Data<><{ S name, var Size age
-  read method
-  Bool #invariant() (
-    Debug(S"invariant P#")
-    this.name()!=S"" & this.age()>= 0Size
-    )
-  }
-
-Main2:{
-  Person2 p1=Person2(name:S"Bob",age:10Size)
-  Debug(S"p1Created")
-  Debug(p1==p1)
-  Debug(S"p1==Done")
-  Debug.test(p1 expected:S"
-  '[name:"Bob", age:"10"]
-  ".withoutRight())
-  Debug(S"p1.toS()Done")
-  p2=p1.with(age:20Size)
-  Debug(S"p1.with(age)Done")
-  Debug.test(p2 expected:S"
-  '[name:"Bob", age:"20"]
-  ".withoutRight())
-  Debug(S"p2.toS()Done")
-  (
-    unused=Person2(name:S"", age:2Size)
-    Debug(S"unusedCreated")
-    catch error Data.Invariant.Fail x
-      void
-    Debug(S"Fail")
-    )
-  return ExitCode.normal()
-  }
-*/
 
 }

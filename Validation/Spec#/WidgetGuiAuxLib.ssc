@@ -1,4 +1,4 @@
-// 14 annotations, 25 tokens, 155+44 characters
+// 14 annotations, 25+6 tokens, 155+44 characters
 using System;
 using System.Collections.Generic;
 using Microsoft.Contracts;
@@ -13,7 +13,7 @@ internal sealed partial class Gui
 		internal Event(string that)
 		{
 			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
-			
+
 			// To shut up boogiees array bounds checks, not counted
 			assume s.Length >= 2;
 
@@ -31,7 +31,7 @@ internal sealed partial class Gui
 		int width { get; }
 		int height { get; }
 		string colour { get; }
-		
+
 		// Note characters and annotations are relative to the prefered version:
 		//    List<Widget>children{get;} // +4 tokens, +26 characters
 		// 3 annotations, 3+3 tokens, 13+17 characters
@@ -47,7 +47,7 @@ internal sealed partial class Gui
 	}
 
 	internal interface Action // 1 annotation, 3 tokens, 17 characters
-	{ 
+	{
 		void apply(Event event_) modifies this.**;
 	}
 
@@ -84,7 +84,7 @@ internal sealed partial class Gui
 		internal readonly string id;
 
 		[Captured] internal Button(string id, int left, int top, int width, int height, Action action, string imgName) // 3 annotations, 10 tokens, 72 characters
-			ensures Owner.Same(this,action); 
+			ensures Owner.Same(this,action);
 		{
 			Owner.AssignSame(this,action);
 			this.id = id;

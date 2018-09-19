@@ -9,7 +9,7 @@ internal sealed partial class Gui
 {
 	internal void display(string title, int x, int y, Widget body) // 1 annotation, 3 tokens, 17 characters
 		modifies body.**;
-	{ 
+	{
 		this.display(title, x, y, body, new string[]{});
 	}
 
@@ -18,8 +18,8 @@ internal sealed partial class Gui
 	{
 		this.open(title, "<div id='Top'></div>", x, y);
 		this.draw(body);
-	
-		foreach (string event_ in events) 
+
+		foreach (string event_ in events)
 		{
 			if (event_ == "EXIT") return;
 			body.dispatch(new Event(event_));
@@ -34,7 +34,7 @@ internal sealed partial class Gui
 
 		//this.close(); // TODO: Write this
 	}
-	
+
 	void draw(Widget that)
 	{
 		this.set_("<div id='Top' style='position: relative; height: 750px; width: 750px; border: solid black 2px;'>" + this.format(that) + "</div>", "Top");
@@ -46,26 +46,26 @@ internal sealed partial class Gui
 		if (b != null) return formatB(b);
 		return formatW(that);
 	}
-	
+
 	[Pure] string formatW(Widget div) // 1 annotation, 1 token, 6 characters
 	{
 		StringBuilder children = new StringBuilder();
-		for (int i = 0; i < div.children_count(); i++) 
+		for (int i = 0; i < div.children_count(); i++)
 		{
 			Widget? child = div.children(i);
 			assume child != null; // Suppress non-nullity verifaction, not counted
 			children.Append(this.format(child));
 		}
-		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" + 
-			" position: absolute;" + 
-			" left: " + div.left + "px;" + 
-			" top: " + div.top + "px;" + 
-			" height: " + div.height + "px;" + 
-			" width: " + div.width + "px;" + 
+		return "<div id='" + div.id + "' onclick=\"event42('" + div.id + "::Pressed::more')\" style='" +
+			" position: absolute;" +
+			" left: " + div.left + "px;" +
+			" top: " + div.top + "px;" +
+			" height: " + div.height + "px;" +
+			" width: " + div.width + "px;" +
 			" background-color: " + div.colour + ";'>" +
 			"<div style='position: relative;'>" +
-				children + 
-			"</div></div>"; 
+				children +
+			"</div></div>";
 	}
 
 	[Pure] string formatB(Button button) // 1 annotation, 1 token, 6 characters
@@ -74,12 +74,12 @@ internal sealed partial class Gui
 			" onMouseOver=\"this.style['background-color']='pink'\"" +
 			" onMouseOut=\"this.style['background-color']='gray'\"" +
 			" onclick=\"event42('" + button.id + "::Pressed::more')\"" +
-			" style='" + 
-			" position: absolute;" + 
-			" left: " + button.left + "px;" + 
-			" top: " + button.top + "px;" + 
-			" height: " + button.height + "px;" + 
-			" width: " + button.width + "px;" + 
+			" style='" +
+			" position: absolute;" +
+			" left: " + button.left + "px;" +
+			" top: " + button.top + "px;" +
+			" height: " + button.height + "px;" +
+			" width: " + button.width + "px;" +
 			" background-color: gray;'>" +
 				"<div" +
 				" style='" +
@@ -88,5 +88,6 @@ internal sealed partial class Gui
 				" width:80%;" +
 				" background: url(\"file:///" + Path.GetFullPath(button.imgName) + "\") no-repeat;" +
 				" background-size:contain;'></div>" +
-			"</div>";	}
+			"</div>";
+	}
 }
