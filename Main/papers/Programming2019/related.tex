@@ -4,30 +4,23 @@
 \label{s:related}
 \saveSpace
 
-\noindent\textit{Type Modifiers:}
-We rely on a combination of modifiers that is supported by at least 3 languages/lines of research:
+\textit{Type Modifiers:}
+We rely on a combination of modifiers that are supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
-Gordon~\cite{GordonEtAl12}
-and Pony~\cite{clebsch2015deny,clebsch2017orca},
-each of these works is accompanied by proofs of the properties of those modifiers.
-In our work we just assume the required properties hold.
- Those approaches all support deep/strong interpretation, without back-doors.
+Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon's~\cite{GordonEtAl12}; 
+each of these works is accompanied by proofs about the properties of those modifiers.
+Since such proofs have already been done, in this work we just assume the required properties.
+Those approaches all support deep/strong interpretation, without back-doors.
 
-Approaches like Javari~\cite{TschantzErnst05,Boyland06} and Rust~\cite{matsakis2014rust}
-are unsuitable since they introduce back-doors, and we can not expect the programmer to use them properly.
-Many approaches just try to preserve purity (as for example~\cite{pearce2011jpure}),
-but here we also need aliasing control.
-Approaches like ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07}
-are not sufficient since they aim to enforce properties only for
-annotated objects and/or owned objects.
-However, static verification can rely on ownership as a building block~\cite{%
+TM approaches like Javari~\cite{TschantzErnst05,Boyland06} and Rust~\cite{matsakis2014rust} are unsuitable since they introduce back-doors which are not easily verifiable as being used properly.
+Many approaches just try to preserve purity (as for example~\cite{pearce2011jpure}), but here we also need aliasing control.
+Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is another popular form of aliasing control that can be used as a building block for static verification~\cite{%
 muller2002modular,%
 barnett2011specification%
 }.%On ownership verification
 %Peter Mueller and Arnd Peotzsch Heffter,  eg Müller, P.: Modular Specification and Verification of Object-Oriented Programs, 2002.
 %M. Barnett and M. Fähndrich and K. R. M. Leino and P. Müller and W. Schulte and H. Venter: Specification and Verification: The Spec# Experience. Communications of the ACM, 2011.
-
-
+\MSComm{add discussion on the work reviewrs pointed out}
 
 %\noindent\textit{Strong Exception Safety:}
 %Exception safety seems at first glance a smaller issue with respect 
@@ -36,90 +29,91 @@ barnett2011specification%
 % do not restrict code that do not capture errors, and
 %only the point of error capturing is constrained.
 
-
-\noindent
 \textit{Object Capabilities:}
-Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers seem to be able to
- enforce purity of sections of code in a modular way, without requiring following a monadic style.
-Here we present this idea very informally.
-The language Joe-E~\cite{finifter2008verifiable}
-explores how to use object capabilities to ensure
-pure behaviour for methods.
-In order to express Joe-E as a subset of Java,
-they leverage on a simplified model of immutability:
-immutable classes are final classes where all the fields are final and refer to other immutable classes.
+Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers, are able to
+ enforce purity of code in a modular way, without requiring following a monadic style.
+The Joe-E language~\cite{finifter2008verifiable} explores how to use object capabilities to ensure pure behaviour for methods.
+However, in order to express Joe-E as a subset of Java, they leverage on a simplified model of immutability:
+immutable classes must be final with only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.
-In Joe-E every method taking only instances of immutable classes as input, is pure.
-Their model would not allow verification of purity for invariant methods of any mutable objects.
-In our model we have a more fine grained representation of immutable/read:
-our’s is \emph{reference based} instead of \emph{class based}.
-This means that in our model, every method taking only \Q@read@ or \Q@imm@ references as input is pure,
-both in the sense that no object visible outside of the method is mutated, but also
-that no I/O is performed.
+In Joe-E every method that only takes instances of immutable classes is pure.
+%\IOComm{Worth mentioning Wyvern? Since alex mentioned that it enforces purirty? Perhaps he can write that section?}
+Their model however would not allow the verification of purity for invariant methods of mutable objects.
+In contrast our model has a more fine grained representation of immutable/readonly: it is \emph{reference based} instead of \emph{class based}. \IOComm {Redundent?} This means that in our model, every method taking only \Q@read@ or \Q@imm@ references as input is pure,
+both in the sense that no object visible outside of the method is mutated, but also that no I/O is performed.
 
-
-
-\noindent\textit{Class invariants:}
+\textit{Class invariants protocols:}
 Class invariants are a fundamental part of the design by contract methodology. 
-Many languages and tools support some form of invariant verification (e.g. Eiffel~\cite{Meyer:1992:EL:129093}, D~\cite{Alexandrescu:2010:DPL:1875434}, JML~\cite{Burdy2005}, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}).
-There is a large body of research in the literature on class invariants:
-JML offers a tool (jmlrac~\cite{Burdy2005}) that is intentionally unsound,
-while InvTS~\cite{gorbovitski08efficient} lets you write Python conditions
- that are verified on a set of Python objects, but the programmer needs to be able
- to predict which objects are in need of being checked and to use a simpler domain
- specific language to target them. That is, the programmer may make a mistake
-while using this domain specific language, and the invariant checking
-will not be triggered.
-Validation is clearly related to class invariants, and can be used to represent them.
-To this aim, \validate{} will define when the invariant is expected to hold:
-literature on class invariant accepts that sometime the object invariant may not hold,
-and that is exacerbated because of re-entrancy and aliasing
-\cite{leino2004object,drossopoulou2008unified}.
+Invariant protocols differ wildeley and can be unsound or complicated, particular due to re-entrancy and aliasing
+\cite{leino2004object,drossopoulou2008unified}\IOComm{Cite bertrand meyer? He refers to these as 'referemce leaking' and 'furtive accesses'}.
+
+%literature on class invariant accepts that sometime the object invariant may not hold,
+%and that is exacerbated because of 
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
 %S. Drossopoulou and A. Francalanza and  P. Müller and A. J. Summers: A Unified Framework for Verification Techniques for Object Invariants ECOOP 2008. 
-There are different options as to when to check invariants:
+There are different options as to what object-invariants are known to hold:
 \begin{itemize}
 \item  when the object is in a \textit{steady} state:
- the execution is not inside any of its methods~\cite{Gopinathan:2008:RMO:1483018.1483028};
-\item
-at the start and at the end of every public method
-(though it is unclear how to deal with recursive methods)~\cite{Burdy2005};
-\item
-constantly maintained between calls to public methods~\cite{WikiInvariant}
+ the execution is not inside any of its (non `helper'~\cite{JML}) methods~\cite{Gopinathan:2008:RMO:1483018.1483028};
+ constantly maintained between calls to public methods~\cite{WikiInvariant},
+\item at the start and at the end of every public method (which may or may not include recursive method calls)~\cite{Burdy2005};\MSComm{add more citations},
+\item at the start and end of every \emph{qualified} call~\cite{?},
+\item only when explicitly required (such as in a method contract or implied by another object's invariant) and after an explicit check (`pack') operation~\cite{?},
 %\url{https://en.wikipedia.org/wiki/Class_invariant}};
 %\item
 %constantly maintained when the object is \textit{closed};
 %invariant can be manually opened and closed by using special operations; % Add cite here!
+\item or, as in this work, when an object could be \emph{involved} in execution.
 \end{itemize}
+Those different protocols are deceivingly similar, and 
+some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a more powerful one (the invariant of \emph{every} object except the receiver holds).
+
+% use the unsound option of assuming one protocol, but actually checking another.
+
 %DONE IN INTRO breaking class invariants = bug in class code
 %braking validation= DEPEND.
-To encode this range of invariant semantics
-in our approach we can add a boolean \Q@isOpen@ field and add \Q@this.isOpen || ..@
-in front of the validity condition.
-Validation can be used to manually encode complex scenarios,
-for example if a method called on an object needs to break the invariant of another object,
-it can do so by manually setting the \Q@isOpen@ flag on the other object.
+
+%To encode this range of invariant semantics
+%in our approach we can add a boolean \Q@isOpen@ field and add \Q@this.isOpen || ..@
+%in front of the validity condition.
+%Validation can be used to manually encode complex scenarios,
+%for example if a method called on an object needs to break the invariant of another object,
+%it can do so by manually setting the \Q@isOpen@ flag on the other object.
 
 
 %On ownership verification
 %Peter Mueller and Arnd Peotzsch Heffter,  eg Müller, P.: Modular Specification and Verification of Object-Oriented Programs, 2002.
 %M. Barnett and M. Fähndrich and K. R. M. Leino and P. Müller and W. Schulte and H. Venter: Specification and Verification: The Spec# Experience. Communications of the ACM, 2011.
 
-
 \newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
 
-\noindent\textit{Sound and Unsound monitors:}
+\LINE
+
+\textit{Runtime verification tools:}
+Many languages and tools support some form of runtime invariant checking (e.g. Eiffel~\cite{Meyer:1992:EL:129093}, D~\cite{Alexandrescu:2010:DPL:1875434}
+and JML~\cite{Burdy2005}).
 By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
-it seems that most runtime verification (RV) works have a philosophy that is radically different from ours;
-indeed RV systems and frameworks are often tools empowering the user
-in implementing what kind of monitoring they see fit for their specific problem at hand.
-This means that users are responsible for deciding, designing and encoding both the 
-logic properties and the instrumentation criteria that will perform operations
-in certain moments in time~\cite{meredith2012overview}.
-In practice, this means that the logic, the instrumentation, and the implementation end up connected:
-a specific instrumentation strategy is good only to test certain logic properties in certain applications.
-No guarantee is given that the implemented instrumentation strategy is able to support
-the required logic in the monitored application.
+it seems that most runtime verification tools (RV) empower users
+to implement what kind of monitoring they see fit for their specific problem at hand. This means that users are responsible for deciding, designing, and encoding both the logical properties and the instrumentation criteria\cite{meredith2012overview}.
+In the context of object-invariants, this means the user defines the invariant protocol, and the soundness of such protocol is not checked by the tool.
+
+In practice, this means that the logic, instrumentation, and implementation end up connected:
+a specific instrumentation strategy is only good to test certain logic properties in certain applications.
+No guarantee is given that the implemented instrumentation strategy is able to support the required logic in the monitored application.
+Some of those tools are designed to support class invariants: for example InvTS~\cite{gorbovitski08efficient} lets you write Python conditions that are verified on a set of Python objects, but the programmer needs to be able
+to predict which objects are in need of being checked and to use a simpler domain specific language to target them. Hence if a programmer makes a mistake while using this domain specific language, invariant checking
+will not be triggered.
+Some tools are intentionally unsound and just perform invariant checks following some heuristic that is expected to catch most of failures: jmlrac~\cite{Burdy2005} and Microsoft Code Contracts~\cite{fahndrich2010embedded}.
+
+\IOComm{Put this in Gui section a footnote: whose heuristic also run the invariant checking $77$ times on our GUI case study}
+
+%In particular, the heuristic of 
+%We encoded our GUI example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
+
+
+
+
+
 
 %
 %In this work we define a language where a minimal, standardized,
@@ -134,111 +128,65 @@ the required logic in the monitored application.
 %the \Q@invariant()@ method), but 
 %the type system implementation is fixed in stone by the language designer.
 
-\noindent Many works attempt to move out of the `RV tool' philosophy to ensure RV Monitors work as expected. Here
-we mention some such works:
-\sepItems
-In avionics, where memory allocation is disallowed, making reasoning about aliasing much simpler~\cite{laurent2015assuring}:
-``\emph{Runtime Verification (RV) can act as the last line of defense to
-protect the public safety, but only if the RV system itself is trusted.}''.
+Many works attempt to move out of the `RV tool' philosophy to ensure RV monitors work as expected, as for example%
+%\sepItems
+%In avionics, where memory allocation is disallowed, making reasoning about aliasing much simpler~\cite{laurent2015assuring}:
+%``\emph{Runtime Verification (RV) can act as the last line of defense to
+%protect the public safety, but only if the RV system itself is trusted.}''.
 %\sepItems
 %In domain specific languages~\cite{ferrari2002guardians}:
 %``\emph{Proof techniques for establishing security properties}''.
-\sepItems
-On assertions over restrictive domain specific languages, to tame some of the C/C++
-undefined behaviour~\cite{agten2015sound}:
-``\emph{no verified assertion in the verified
-module will ever fail at runtime, even if the module runs as part of
-a vulnerable application that is subject to code injection attacks}''.
-\sepItems
-Works on class based OO languages, but focusing only on pre and post conditions~\cite{findler2001contract}:
-``\emph{we  study  the  problem  of  contract  enforcement in
-an object-oriented world from  a foundational perspective.   More
-specifically, we study contracts as refinements of types}''.
-\sepItems
-Jose~\cite{feldman2006jose} seems keen on sound theoretical principles:
-``\emph{There are two issues involved
-in the implementation of such a tool: the correct enforcement of the theoretical principles, and the instrumentation
-of the code. Most previous tools tackle both issues, but have
-subtle failures in one or the other.}'',
-but when it comes to class invariants just perform checks around public methods:
-``\emph{Invariants are checked at the end of the lowest-level constructor,
- and at the beginning and end of every non-private non-static method}''.\\*
-The same behaviour happens in `Code Contracts'~\cite{fahndrich2010embedded},
-jContractor~\cite{abercrombie2002jcontractor}
-and~\cite{tran2003design}:``\emph{Invariants may be checked both before and after
-method  execution  for  calls  crossing  object  boundaries.
-Assertion  failures  result  in  appropriate  exceptions.}''.\\*
-In this way methods still have to assume any object may be broken; in such case calling any
-public getter would trigger an error, but while the object is just passed around
-(and for example stored in collections), the broken state will not be detected.
-Gopinathan ~\cite{Gopinathan:2008:RMO:1483018.1483028}
-explains the danger of these approaches very clearly:
-``\emph{there are many instances where o's invariant is violated by the programmer inadvertently changing the state
-of p when o is in a steady state. Typically, o and p
-are objects exposed by the API, and the programmer (who is the user of the API), unaware of
-the dependency between o and p, calls a method of p in such a way that
-o's invariant is violated. The fact that the violation occurred is detected
-much later, when a method of o is called again, and it is difficult to 
-determine exactly where such violations occur.}''\\*
-Critically, even~\cite{Gopinathan:2008:RMO:1483018.1483028} is still unsound since they do not address either
-the risk of non-determinism in the invariant, 
-or the presence of exceptions.
-\sepItems
-Works over C\# recognize the need
-for purity/determinism when method calls are allowed in contracts~\cite{barnett200499}
-``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
-of functions. The first approach is not scalable, the second overly restrictive and
-the third unsound.}''\\*
-They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-They propose a concept of observational purity, that if completely fleshed out
-could possibly be a great addition to our proposed type system.
-We speculate that some 
-primitive language support may be needed, for example implementing the Flyweight pattern 
-as part of the language semantics.
-\sepItems
-In environments offering powerful enough aspect-oriented support,
-it could be possible to detect any field update in the whole ROG of
-any object, following the strategy of 
-Gopinathan et al.~\cite{Gopinathan:2008:RMO:1483018.1483028}.
-Their approach is very computationally intensive, but we think it is powerful enough that it could even be used to roll-back the very field update that caused 
-the invariant/validation to fail, making the object coherent again.
-While designing our work, we considered the tempting option of roll-back, but
+%\sepItems
+%On assertions over restrictive domain specific languages, to tame some of the C/C++
+%undefined behaviour~\cite{agten2015sound}:
+%``\emph{no verified assertion in the verified
+%module will ever fail at runtime, even if the module runs as part of
+%a vulnerable application thSound and Unsound monitorsat is subject to code injection attacks}''.
+the study of contracts as refinements of types~\cite{findler2001contract}, focusing only on pre and post conditions in OO languages.
+
+Gopinathan \&al.'s.~\cite{Gopinathan:2008:RMO:1483018.1483028} approach keeps invariants under tight control:
+relying on powerful aspect-oriented support, they detect any field update in the whole ROG of any object, and check all the invariants that such update may have violated.
+They argue against any variation of visible state semantic, where  methods still have to assume that any object may be broken; in such case calling any public method would trigger an error, but while the object is just passed around (and for example stored in collections), the broken state will not be detected.
+``\emph{there are many instances where $o$'s invariant is violated by the programmer inadvertently changing the state of $p$ when $o$ is in a steady state. Typically, $o$ and $p$ are objects exposed by the API, and the programmer (who is the user of the API), unaware of the dependency between $o$ and $p$, calls a method of $p$ in such a way that $o$'s invariant is violated. The fact that the violation occurred is detected much later, when a method of $o$ is called again, and it is difficult to determine exactly where such violations occur.}''
+
+However, their approach addresses neither exceptions nor non-determinism caused by I/O, so their work is unsound when those aspects are took in consideration.
+
+Their approach is very computationally intensive, but we think it is powerful enough that it could even be used to roll-back the very field update that caused the invariant to fail, making the object valid again.
+We considered a roll-back approach, however rolling back a single-field update is likley to be completley unexpected, rather we should roll back more meaningful operations, similarly to what happens
+with transational memory. As with transactional-memory, this is likely to be very hard to support efficiently.
 %However we think roll-back this would be a 
 %\REVComm{\REVComm{terrible}{2}{It seems in poor taste to complain of ``terrible'' ideas, especially without attempting to demonstrate the improvements of the proposed approach.}}{3}{Nontechnical term. It is not a great idea to label previous work as ``terrible''}
-ideally not only the field-update breaking the invariant should be reverted,
-the roll-back should be on the operation level, similarly to what happens
-with transational memory, that is very hard to support efficiently.
-Using TMs to enforce strong exception safety is
-a much simpler alternative, providing the same level of safety.
+% ideally not only the field-update breaking the invariant should be reverted, %the roll-back should 
+Using TMs to enforce strong exception safety is a much simpler alternative, providing the same level of safety, albeit being more restrictive (namely that if the operation did succeed it is still effectively rolled-back).
 
 %: for example
 %assume that we are moving object between two boats:
 %the overflowing object may be removed from the \Q@cargo@ of the second boat, but it would not
 %be placed back in the first boat. It would look like the object has disappeared.
-%The important point here is that the program would be in an unexpected state
+%The important pTheir approach is very computationally intensive, but we think it is powerful enough that it could even be used to roll-back the very field update that caused oint here is that the program would be in an unexpected state
 %even if no object invariants are violated, and this would happen \textbf{because} of the 
 %invariant checking/fixing behaviour, not because of code written by the programmer.
 %We believe that the only viable option is to detect violations after the fact.
+\LINE
+\IOComm{ADD THOSE TO PERFORMANCE EIFFEL,D\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}}
 
-
-
-\noindent\textit{Performance}
-Our case study shows that our sound approach can monitor programs
-for a fraction of the cost of many other approaches.
-Many other works%
-~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
- check/run
-the invariant code at the start and end of every public
-method; this even include trivial getters.
-In  our approach, we call the \validate{} method
-one time at the end of each setter, capsule mutator method and constructor.
-We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
-Of course, \validate{} can still be called indirectly, for example by calling a setter.
+%\noindent\textit{Performance}
+%Our case study shows that our sound approach can monitor programs
+%for a fraction of the cost of many other approaches.
+%Many other works%
+%~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
+% check/run
+%the invariant code at the start and end of every public
+%method; this even include trivial getters.
+%In  our approach, we call the \validate{} method
+%one time at the end of each setter, capsule mutator method and constructor.
+%We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
+%Of course, \validate{} can still be called indirectly, for example by calling a setter.
 %We expect our approach to result in a dramatic reduction over the number of required checks,
 %except for cases when public methods just update many fields directly (without using setters).
 
 
-
+\LINE
 
 
 \noindent\textit{Security and DMZ:}
@@ -286,9 +234,38 @@ a developers-friendly solution.
 
 
 
+${}_{}$\sepItems
+Works over C\# recognize the need
+for purity/determinism when method calls are allowed in contracts~\cite{barnett200499}
+``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
+	of functions. The first approach is not scalable, the second overly restrictive and
+	the third unsound.}''\\*
+They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
+They propose a concept of observational purity, that if completely fleshed out
+could possibly be a great addition to our proposed type system.
+We speculate that some 
+primitive language support may be needed, for example implementing the Flyweight pattern 
+as part of the language semantics.
 
 
-
+%1 aliasing control
+%  example hamster can be broken with those 2 lines
+%2 I/O /determinism
+%  hamster EvilPoint with random equal is accepted
+%3 exceptions
+%  spec sharp is happy to be unsound with capturing %unchecked exceptions
+%---
+%*TMs, OCs
+%
+%*expand on invariant protocol
+%
+%*RV tool
+%------------
+%*spec# unsond, parkinson critique, and static %verification is like math proof
+%
+%*Soundness or not
+%
+%*C#purity, dedicate spec language
 
 
 

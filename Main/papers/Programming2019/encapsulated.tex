@@ -426,40 +426,47 @@ Our design, using an inner \Q@Box@ object is a common pattern in static verifica
 % We also found natural to use the box pattern also in Spec\# requires.
 Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@. It also dramatically simplifies the handling of the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change the enclosing \Q@SafeMovable@s position.
 % Also the implementation of the minimal GUI library (that our \Q@SaveMovable@ builds upon) has a much lower annotation burden.
+\LINE
+\textit{The transform pattern:}
+% A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
+% Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
+Suppose one wants to scale a \Q@Widget@, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children, we have a problem since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, to keep control of their ROGs'.
 
-\IOComm{mention it in related work?} We encoded our Widget example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
+% In the above \Q@SafeMovable@ we only had one capsule mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
+% At first glance, it may seem that capsule mutators allow only very limited kinds %of mutation.
+% This is however not the case. 
 
+% Consider the following
+% simple pattern to allow flexible use of encapsulated content: define a
 
-\noindent\textit{The transform pattern:}
-A capsule mutator method is a wrapper over a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
-Thus, if \Q@this@ is made invalid during 
-the method's execution, we could not observe it until after the method completes.
-At first glance, it may seem that capsule mutators allow only very limited kinds of mutation.
-This is however not the case. 
-
-Consider the following
-simple pattern to allow flexible use of encapsulated content: define a \Q@transform@ function and a \Q@ItemTransformer@ interface like so:
+A simple and practical solution would be to define a \Q@transform@ method in \Q@Widget@, and a \Q@Transformer@ interface 
+like so:\footnote{A more general transformer could return a generic \Q@read R@.}
 \saveSpace
 \begin{lstlisting}
 interface Transformer<T>{method Void apply(mut T elem);}
 interface Widget{..
-  mut method Size setTop();//simple setters for immutable fields
-  mut method Void transform(Transformer<List<Widget>> t);
+  mut method Void top(Int that);//setters for immutable data
+  mut method read Void transform(Transformer<Widgets> t);
   }//transformers for possibly encapsulated data
 class SafeMovable{...
-  mut method Void transform(Transformer<List<Widget>> t) {
-   t.apply(this.box.c);
-   if (!this.validate()) {throw Error(...);}}}//injected check
+  mut method read R transform(Transformer<Widgets> t){
+    return t.apply(this.box.c);}} // Well-typed capsule mutator
 \end{lstlisting}
-The \Q@.transform()@ method 
-offers an expressive power similar to a
-\Q@mut@ getter, but ensures that 
-the field content cannot leak out.
-For example:
-\begin{lstlisting}[escapechar=\%]
-// Lambda Expression that creates a new Transformer<...>
-this.transform(l -> l.add(new MyWidget(..)))
+% Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
+%Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
+%,  i.e. they can't see or update the other capsule fields.
+The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but ensures that the \Q@Widgets@ cannot leak out.  With a \Q@Transformer@, a \Q@zoom@ function could be written as:
+\begin{lstlisting}
+static method Void zoom(mut Widget w) {
+  w.transform(ws->{for(wi:ws)zoom(wi,scale);});
+  w.width(w.width()/2);  ...; w.top(w.top()/2); }
 \end{lstlisting}
+% One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
+
+% \begin{lstlisting}[escapechar=\%]
+%// Lambda Expression that creates a new Transformer<...>
+%this.transform(l -> l.add(new MyWidget(..)))
+%\end{lstlisting}
 %//`i' is captured by the closure.
 %// `imm' and `capsule' varaibles can be captured.
 
@@ -471,13 +478,13 @@ this.transform(l -> l.add(new MyWidget(..)))
 %  // instead of:
   %\Comment{}%this.exposeItems().add(i)
 
-Note that the code above does not access a capsule field but merely calls a method that does; thus
-it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
-Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system
-as if it was atomic.%
+%Note that the code above does not access a capsule field but merely calls a method that does; thus
+%it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
+%Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system
+%as if it was atomic.%
 %,  i.e. they can't see or update the other capsule fields.
 
-
+\begin{comment}
 \subsection{Family, a worst case scenario for L42}
 %\noindent\textit{Family, a worst case scenario for L42}
 For our second case study, we wished to make an example where the performance of L42 and the conventional approach was similar. We forged an example when a \Q@Family@ has a list of parents and a list of children;
@@ -498,7 +505,7 @@ We can express all the examples except ....
 Again, we quantify the annotation burden and we discover....
 
 %\subsection{The transform pattern}
-
+\end{comment}
 
 %\begin{lstlisting}[escapechar=\%]
 %class List {
