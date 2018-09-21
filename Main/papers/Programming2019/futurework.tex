@@ -1,16 +1,19 @@
 \section{Conclusions and Future Work}
 
 \LINE
-\noindent\IO{Our approach follows the principles of \REVComm{\emph{Defensive/Offensive programming}~\cite{WikiDefensive}}{2}{Is [this citation] a (or the most) reliable source of defensive programming principles?}:
-	\begin{itemize}
-		\item The failure (an unchecked exception)
-		is raised close to the defect.
-    This means that the method directly calling the operation creating an invalid object
-    is still on the stack trace.
+
+Our approach follows the principles of \emph{Offensive programming}
+~\cite{stephens2015beginning}, where 
+no attempt to fix or recover the invalid object is performed and
+%	\begin{itemize}
+%\item
+ the failure (an unchecked exception)
+		is raised close to the defect:
+    the method directly calling the operation breaking the invariant is still on the stack trace.
 %}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.    
-		\item No attempt to fix or recover the invalid object is performed.
-	\end{itemize}
-}
+%		\item
+%	\end{itemize}
+
 
 The aim of our work is only to enforce validation, so we do not present complexities unnecessary for this purpose. We do not formalize any specific type system, to stay parametric over 
 the various existing type systems which provably enforce the properties we require for our proof (and much more).
