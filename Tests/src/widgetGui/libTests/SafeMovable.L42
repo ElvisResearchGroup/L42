@@ -19,7 +19,7 @@ MoveAction:Data<><{implements Gui.Action
     this.#outer().top(this.outer().top()+this.topDelta())
     )
   }
-SafeMovable:EiffelData<><{implements Gui.Widget
+SafeMovable:Data<><{implements Gui.Widget
   capsule Box box
   class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Left"
@@ -271,8 +271,8 @@ read * 9
 
 /*
 Isaacs Count:
-					tokens	read	mut	capsule	chars
-This.L42			18		6		12	0		60
-SafeMovable.L42		19		5		11	3		74
+                 tokens    read     mut capsule chars
+This.L42            18      6       12   0       60
+SafeMovable.L42     19      5       11   3       74
 */
 }

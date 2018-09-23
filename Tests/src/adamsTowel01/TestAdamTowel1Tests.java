@@ -30,8 +30,8 @@ public class TestAdamTowel1Tests extends TestRunnerPrePost{
       // Opt.DeplAT2, // AdamsTowel02
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
-      
-      /*"TestDebug.L42", // Name of a file in libTests; edit to match your file
+
+      "TestDebug.L42", // Name of a file in libTests; edit to match your file
       "TestHelloWorld.L42",
       //--"TestK.L42",
       "TestParseAnnotations.L42",//was a parsing error, now added to testParseFail"TestParseBadDecoration.L42",
@@ -41,7 +41,7 @@ public class TestAdamTowel1Tests extends TestRunnerPrePost{
       "UseAdamTowel_SBuilder.L42",
       "TestLocation.L42",
       "TestPlgWrapper.L42",
-      "TestComposers.L42",*/
+      "TestComposers.L42",
       "TestCounter.L42",
       //// performance drop if remove /* */ ??"TestParseNoBinding.L42",   // adding this in causes quick failure on the seven things with which it shares execution time
       //// It is surprising but correct that is syntax error to have both // and /**/ in that point.

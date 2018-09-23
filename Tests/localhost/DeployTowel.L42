@@ -15,8 +15,8 @@ This2.Url fileName()
 class method 
 mut This0 #$(This2.Url fileName) 
 mut method 
-Library #leftrightleft#0left(Library right) (
-  Void unused2=use This0.FileSystemAccess check deployCode(that:right, url:this.fileName().#binaryRepr()) error  {/*fileDebug*/}
+Library deployWithError(Library that) (
+  Void unused2=use This0.FileSystemAccess check deployCode(that:that, url:this.fileName().#binaryRepr()) error  {/*fileDebug*/}
   This1.ExitCode.normal()
   )
 FileSystemAccess:/*@_private

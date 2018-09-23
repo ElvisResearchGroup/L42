@@ -8,6 +8,29 @@ GetMyName:{
   Any classCastError(read Concept.Classable that,class Concept.Classable classObj)
     Guard.CastFail"Not "[This(that.class())]"<="[This(classObj)]"; provided object is of type "[This(that.class())]""
   }
+DeployTowel:{//@untrusted
+  Url fileName
+  class method mut This #$(Url fileName)
+
+  mut method Library <><(Library right)
+  exception Refactor2.DeployL42TypeError (
+    use This2.DeployTowel.FileSystemAccess
+      check deployCode(right
+        url:this.fileName().#binaryRepr()
+        )
+      error {/*fileDebug*/}
+    catch error Library x (
+      Refactor2.DeployL42TypeError.#exceptionIf(binaryRepr:x)
+      error x
+      )
+    ExitCode.normal()
+    )
+  mut method Library deployWithError(Library that) {
+    return this<><that
+    error on Refactor2.DeployL42TypeError This2.X""
+    }
+  }
+
 Message:{Opt:This2.Opt(This2.Message)}
 
 Bool:{

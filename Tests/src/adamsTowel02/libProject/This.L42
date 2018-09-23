@@ -29,7 +29,7 @@ AdamTowel02:{class method Library (){
   }}
 Task01: {
   r=Use.Override(patch:\"Fix")<><AdamTowel02()
-  return DeployTowel.#$(fileName:Url"localhost/AdamTowel02.L42")<><r
+  return DeployTowel.#$(fileName:Url"localhost/AdamTowel02.L42").deployWithError(r)
   }
 Task02: {
   Debug(S"[PASS] We got this far, so we have probably deployed a new copy of AdamsTowel02.")

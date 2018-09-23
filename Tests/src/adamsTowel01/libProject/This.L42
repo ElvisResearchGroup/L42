@@ -10,19 +10,19 @@ Url:{
   Library _binaryRepr
   class method
   This(Library _binaryRepr)
- 
+
   method
   Library #binaryRepr()this._binaryRepr()
- 
+
   class method
   This #from(Library binaryRepr)
     This(_binaryRepr:binaryRepr)
-  SBuilder:...  
-  
+  SBuilder:...
+
   class method
-  This #from(SBuilder builder) 
+  This #from(SBuilder builder)
     This.#from(binaryRepr:builder.#binaryRepr())
-    
+
   class method
   mut SBuilder #builder()
     SBuilder.empty()
@@ -35,9 +35,9 @@ ResourceDeploy:{class method Library (){
   }}
 AdamTowel01:{class method Library () ...}
 Task0:DeployTowel.#$(fileName:Url"localhost/DeployTowel.L42")
-  <><ResourceDeploy()
+  .deployWithError(ResourceDeploy())
 Task1: DeployTowel.#$(fileName:Url"localhost/AdamTowel01.L42")
-  <><AdamTowel01()
+  .deployWithError(AdamTowel01())
 
 Task2:(
   use Alu

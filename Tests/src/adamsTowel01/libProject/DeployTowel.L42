@@ -2,17 +2,14 @@
 Url fileName
 class method mut This #$(Url fileName)
 
-mut
-method
-Library <><(Library right) (
+mut method Library deployWithError(Library that) (
   use FileSystemAccess
-    check deployCode(right      
+    check deployCode(that
       url:this.fileName().#binaryRepr()
       )
     error {/*fileDebug*/}
   ExitCode.normal()
   )
- 
 
 FileSystemAccess://@_private
   {//@plugin

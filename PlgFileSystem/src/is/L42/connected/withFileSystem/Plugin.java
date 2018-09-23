@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import ast.ErrorMessage;
 import ast.ExpCore;
+import facade.ErrorFormatter;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import newTypeSystem.TypeSystem;
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
 import programReduction.Program;
-import programReduction.ProgramReduction;
+import tools.LambdaExceptionUtil;
 
 import static auxiliaryGrammar.EncodingHelper.*;
 
@@ -48,18 +51,23 @@ public class Plugin implements PluginType.WellKnown {
   }
 
   @ActionType({ActionType.NormType.Void,ActionType.NormType.Library,ActionType.NormType.Library})
-  public Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url){
+  public static Resources.Void MdeployCode£xthat£xurl(Object _that,Object _url)
+      /*SNEAKY throws RefactorErrors.DeployL42TypeError*/{
     ExpCore.ClassB that=ensureExtractClassB(_that);
-
-    // TODO: Throw an error that 42 can understand
-    TypeSystem.typeCheck(that, ExpCore.ClassB.Phase.Typed).assertOk();
-
     String url=ensureExtractStringU(_url);
-
+    try {deployWellTypedCode(that,url);}
+    catch(ErrorMessage e) {
+      LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.DeployL42TypeError().msg(
+        ErrorFormatter.formatError(Program.emptyLibraryProgram(),e)
+          .getErrorTxt()));//Sneaky throw allows for both plugin and plugingwithpart to cooperate
+      }
+    return Resources.Void.instance;
+  }
+  private static void deployWellTypedCode(ExpCore.ClassB that,String url){
+    TypeSystem.typeCheck(that, ExpCore.ClassB.Phase.Typed).assertOk();
     String text=sugarVisitors.ToFormattedText.of(that);
     java.nio.file.Path p=Paths.get(url);
     try {Files.write(p, text.getBytes());}
     catch (IOException e) {throw new Error(e);}
-    return Resources.Void.instance;
-    }
+  }
 }

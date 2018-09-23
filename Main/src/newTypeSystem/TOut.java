@@ -41,10 +41,8 @@ public interface TOut{
   default TOk toOk() {throw new Error();}
   default TErr toError() {throw new Error();}
 
-  default void assertOk()
-  {
-    if (!this.isOk()) 
-      throw new FormattedError(this.toError());
+  default void assertOk(){
+    if (!this.isOk()) {throw new FormattedError(this.toError());}
   }
 }
 abstract class ATr<This extends ATr<This>>{

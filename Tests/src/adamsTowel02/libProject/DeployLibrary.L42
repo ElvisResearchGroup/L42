@@ -4,9 +4,9 @@ class method mut This #$(Path path,Url url)
 
 class method Library moveToAbstract(Path that,Library of){
   return Refactor2.rename(
-    path:\"PrImpl"++that 
+    path:\"PrImpl"++that
     into:\"Abstract"++that)<><of
-  error on Refactor2.PathUnfit 
+  error on Refactor2.PathUnfit
     This.msg(that, of:of)
   error on Refactor2.Fail
     X"DeployLibrary3"
@@ -20,7 +20,7 @@ X.AssertionFail msg(Path that,Library of) (
   X"map and library mismatch on "[that]" available paths are "[
     with av in available.vals() (
       use[S.nl()++av.path().toS()]
-    )]""  
+    )]""
   )
 
 class method
@@ -69,12 +69,9 @@ exception Refactor2.PathUnfit (
 
 mut method
 Library <><(Library right)
-exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled,Location.NotAvailable {
-  Debug(S"1")
+exception Refactor2.PathUnfit, Refactor2.PrivacyCoupuled, Location.NotAvailable, Refactor2.DeployL42TypeError {
   var Library res=This.exposeAsLibrary(right,path:this.path())
-  Debug(S"2")
   res:=Optimize.RemoveUnreachableCode<><res
-  Debug(S"3")
-  return DeployTowel.#$(fileName:this.url())<><res
+  return Fix.DeployTowel.#$(fileName:this.url())<><res
   }
 }
