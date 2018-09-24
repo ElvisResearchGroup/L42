@@ -1,7 +1,7 @@
 \section{Introduction}
 %\newpage
 %\LINE
-
+\IOComm{Mention how our protocol implies visible state semantics.}
 Class invariants are an important concept when reasoning about software correctness.
 Class-invariants can be presented as documentation, checked as part of static-verification of class-definitions, or, as we do in this paper, monitored for violations using runtime-verification.
 In our system a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
@@ -307,8 +307,8 @@ the impact of I/O and other non deterministic operations.
 
 In order to obtain safety, simplicity and efficiency we traded some expressive power:
 we can not verify some forms of data-structures, such as collections of mutable elements.\footnote{Our approach does not prevent correctly implement such data-structures, rather we do not support encoding the correctness of such objects as a class-invariant.}
-In our case study we show that
-we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
+%In our case study we show that
+%we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
 In section \ref{TODO} we...
 In section \ref{TODO} we...
 In section \ref{TODO} we...

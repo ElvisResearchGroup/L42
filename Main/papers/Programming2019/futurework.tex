@@ -1,6 +1,5 @@
 \section{Conclusions and Future Work}
 
-\LINE
 
 Our approach follows the principles of \emph{Offensive programming}
 ~\cite{stephens2015beginning}, where 
@@ -18,7 +17,7 @@ no attempt to fix or recover the invalid object is performed and
 The aim of our work is only to enforce validation, so we do not present complexities unnecessary for this purpose. We do not formalize any specific type system, to stay parametric over 
 the various existing type systems which provably enforce the properties we require for our proof (and much more).
 In essence we present what we \emph{believe} to be the simplest sound system.
-It could be worthwhile formalising the minimal type system required by validation.
+%It could be worthwhile formalising the minimal type system required by validation.
 
 
 
@@ -27,18 +26,21 @@ It could be worthwhile formalising the minimal type system required by validatio
 %%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 
-The language we have presented here restricts the form of \validate
+The language we presented here restricts the form of \validate
 and capsule mutator methods; in particular
 our strong restrictions of capsule mutator methods
 allows injection of \validate{} calls merely at the end of such methods.
 While these restrictions do not interfere with simple
-forms of validation, to verify complex mutable data-structures we necessitate verbose patterns (such as our `box').
+invariants, to verify complex mutable data-structures the box pattern is required.
+However, we believe this pattern, although verbose, is simple and understandable. While it may be possible for a more
+complex and fragile type system to reduce the need for the box pattern
+ while still ensuring our desired semantics, we prioritize simplicity and generality.
 
-We believe it is possible to relax our restrictions whilst
-still ensuring our desired semantics, however such a language is unlikely to be easily understood by programmers;
-being able to predict whether code would be well typed allows programmers
-to better take advantage of the language.
-Directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of our suggested patterns; type modifier inference, and support for flexible ownership types.
+%, however such a language is unlikely to be easily understood by programmers;
+%being able to predict whether code would be well typed allows programmers
+%to better take advantage of the language.
+
+Directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of the box and the transform patterns; type modifier inference, and support for flexible ownership types.
 
 %Our work, in comparison to previous RV techniques,
 %aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.

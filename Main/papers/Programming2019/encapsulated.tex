@@ -177,7 +177,7 @@ l.addHeavy(f); // We pass another reference to 'l' through f
 %At first glance it mayseem from
 
 \saveSpace
-\section{Case studies}
+\section{GUI Case study}
 \label{s:patterns}
 \saveSpace
 
@@ -228,7 +228,6 @@ l.addHeavy(f); // We pass another reference to 'l' through f
 %  private capsule Foo inner;
 %  validate
 %}
-\subsection{GUI}
 Here we show that we are able to verify classes with circular mutable object graphs, that interact with the real world using I/O.
 %Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
 %patterns allows to circumvent some of the apparent limitations of our system.
@@ -308,8 +307,8 @@ Here \Q@SafeMovable.overlap@ is a static method that simply checks that the boun
 
 % This code is a simplified version of our first case study. In the full code the \Q@SafeMovable@ constructors take \Q@left@, \Q@top@, \Q@width@ and \Q@height@ parameters and can either take a \Q@box@ directly or will generate one with $4$ \Q@Button@s}
 % we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
-\begin{wrapfigure}{l}{0.34\textwidth}
-    \centering\includegraphics[width=0.34\textwidth]{GuiImg}\end{wrapfigure}
+\begin{wrapfigure}{l}{0.4\textwidth}
+    \centering\includegraphics[width=0.4\textwidth]{GuiImg}\end{wrapfigure}
 \noindent{\textit{Our Experiment:}} As shown in the figure, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 %Each container has 4 gray buttons one for each cardinal direction.
@@ -325,7 +324,10 @@ This set up is not overly involved, the maximum nesting level of \Q@Widget@s is 
 Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant.
 
 \textit{Comparison with visible state semantics:}
-As an experiment we set our implementation to generate invariant checks following the approach for visible state semantics (the one used by Eiffel\footnote{We also tried the approach of D~\cite{?} where invariants are instead checked on public-method calls, but not private ones; however this produced identical results in our test case.}), where the invariant is instead checked at the start and end of \emph{every} unqualified (i.e. call on \Q@this@) method call%
+As an experiment we set our implementation to generate invariant checks following the approach for visible state semantics (the one used by Eiffel\footnote{We also tried the approach of D~\cite{?} where invariants are instead checked on public-method calls, but not private ones; however this produced identical results in our test case.
+We expect all run-time approaches based on visible state semantic ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
+to produce similar results.
+}), where the invariant is instead checked at the start and end of \emph{every} unqualified (i.e. call on \Q@this@) method call%
 \footnote{L42 follows the Eiffel uniform access principle: field accesses are the same as method calls.}
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
@@ -352,7 +354,9 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 \textit{Comparison with Spec\#.}
 We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties as well as the admissibility of invariants.
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{?}), which gave us only\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds.%. and value presence.
-This aligns the code with L42, which also performs such checks at runtime.} $2$ warnings: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however they check this at run time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks,
+This aligns the code with L42, which also performs such checks at runtime.} $2$ warnings: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however they check this at run time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{
+We also encoded our GUI on Code Contracts~\cite{?}, whose unsound heuristic also run the invariant checking $77$ times; however Code Contract does not enforce the
+encapsulation of \Q@children@, thus their approach would not be sound in our context.}
 
 % Assuming that Spec\#'s verifier is sound, this means that our code is equally verified in Spec\# and L42, providing a reasonable comparison.
 % Both Spec\# and L42 did the same thing:
@@ -426,7 +430,7 @@ Our design, using an inner \Q@Box@ object is a common pattern in static verifica
 % We also found natural to use the box pattern also in Spec\# requires.
 Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@. It also dramatically simplifies the handling of the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change the enclosing \Q@SafeMovable@s position.
 % Also the implementation of the minimal GUI library (that our \Q@SaveMovable@ builds upon) has a much lower annotation burden.
-\LINE
+%\LINE
 \textit{The transform pattern:}
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
