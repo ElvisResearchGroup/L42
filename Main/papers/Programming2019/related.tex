@@ -235,7 +235,10 @@ Consider for example the work of Parkinson~\cite{parkinson2007class}: in his sho
 Spec\#~\cite{?} is a language built on top of C\#, it adds various annotations such as method contracts, and class-invariants. 
 It primarily follows the `boogie' methodology~\cite{?} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariant is required to hold. Invariants can be `ownership' based~\cite{?}, where an invariant only depends on objects it owns; or `visibility-based', where an invariant may depend on objects it doesn't own, provided that the class of such objects knowns about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{?}, it can become much more difficult to work with and requires many annotations since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified.	
 
-Another system is AutoProof~\cite{?}, a static-verifier for Eiffel that follows the `boogie' methodology but extends it with `semantic-collaboration': using ghost state, objects keep track of the other objects its invariant depends on, as well as the other objects whose invariants depend on it. Dafny~\cite{?} is a new language where all code is statically verified, it supports invariants by injecting pre \& post conditions following the visible state semantics; however it requires that objects be newly allocated (or cloned) before another object's invariant can depend on it. Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non-deterministic I/O.
+Another system is AutoProof~\cite{?}, a static-verifier for Eiffel that follows the `boogie' methodology but extends it with `semantic-collaboration' where objects keep track of their invariants dependence using ghost-state.
+Dafny~\cite{?} is a new language where all code is statically verified, it supports invariants by injecting pre \& post conditions following the visible state semantics;
+however it requires that objects be newly allocated (or cloned) before another object can depend on it in its  invariant.
+Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non-deterministic I/O.
 
 
 
@@ -246,34 +249,44 @@ Another system is AutoProof~\cite{?}, a static-verifier for Eiffel that follows 
 %many works on static verification, such as thoser Spec\#~\cite{??}
 
 
-\textit{Dedicated specification language or underling language:}
-Using a specification languages near to the logic and disjointed from a specific language's
-semantics may seem attractive, however
-a study~\cite{chalin2007logical} discovered that developers expect
-the specification language to use the semantics of the underling language, including
-short circuit semantics and arithmetic exceptions; thus for example
-\Q@1/0 || 2>1@
-should not hold, while 
-\Q@2>1 || 1/0@ should hold thanks to short circuit semantics.
+\textit{Specification languages:}
+Using a specification language based on the mathematical metalanguage and different from the specific language's semantics may seem attractive, since it may express uncomputable concepts and has no mutation and non determinism, and is often easier to formally reason about.
+
+However a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0 || 2>1@ should not hold, while \Q@2>1 || 1/0@ should hold, thanks to short-circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
-We believe this is evidence that using a method in the underlying language to encode the invariant is
-a developers-friendly solution.
+Dafny~\cite{?} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets. Whereas runtime contexts allow mutation, object allocation and print statements. However, the semantics of shared constructs (such as logical short circuiting) is the same in both contexts.
+
+Most runtime verification systems, such as ours, use a meta-circular approach: specifications are simply code in the underlying language. Since specifications are checked at runtime, they are unable to verify uncomputable contracts.
+ Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} ``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
+	of functions. The first approach is not scalable, the second overly restrictive and
+	the third unsound.}''\ 
+They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non-deterministic operations such as I/O and random number generation. For example, the following method verifies:
+\begin{lstlisting}
+[Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
+\end{lstlisting}
+And so the \Q@assert uncertain() == uncertain();@ also verifies but randomly fails with an exception at runtime.
+As you can see failing to handle non-determinism jeopardises reasoning.
+
+A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by ~\cite{?}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting what computations can be performed.
+
+%allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
+
+% They propose a concept of observational purity, that if completely fleshed out could possibly be a great addition to our proposed system. We speculate that some  primitive language support may be needed, for example implementing the Flyweight pattern as part of the language semantics.
+
+
+% The most friendly aattractive to specify contracts (such as class invariants) in the same source language as the code. This common approach is used by most runtime verification systems, like our work, Eiffel and D. However their
+
+
+
+% What's wrong with using the same language for both specification and implementation?
+% What are peoples approaches
 
 
 
 %${}_{}$\sepItems
-Works over C\# recognize the need
-for purity/determinism when method calls are allowed in contracts~\cite{barnett200499}
-``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
-	of functions. The first approach is not scalable, the second overly restrictive and
-	the third unsound.}''\ 
-They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-They propose a concept of observational purity, that if completely fleshed out
-could possibly be a great addition to our proposed system.
-We speculate that some 
-primitive language support may be needed, for example implementing the Flyweight pattern 
-as part of the language semantics.
+
 
 
 
