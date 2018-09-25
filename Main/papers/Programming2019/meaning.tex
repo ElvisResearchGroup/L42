@@ -459,7 +459,7 @@ deterministically produce \Q@true@ in a finite number of steps, i.e. it does not
 We also require that evaluating \validate{} preserve existing memory ($\sigma$), but new objects ($\sigma'$) can be created and freely mutated.
 
 \noindent\textbf{Define} $valid(\sigma,l)$:\\*
-\indent $\sigma | l.validate()\Rightarrow^+ \sigma,\sigma’ | \text{\Q@true@}$
+\indent $\sigma | l.validate()\Rightarrow^+ \sigma,\sigma' | \text{\Q@true@}$
 
 \noindent In order for validation to be meaningful it needs to be possible for \validate{} to potentially observe an invalid object. However, invalid objects should not be observed outside of \validate.
 For this purpose we define the set of trusted steps, 

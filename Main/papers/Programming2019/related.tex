@@ -65,14 +65,14 @@ check and assume the invariant of an object after its construction, they handle 
 \item 
 %\LINE
 The invariant of the receiver before a public method call and at the end of every public method body needs to be ensured. The invariant of the receiver at the beginning of a public method body and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
-Some approaches ensure the invariant of \Q@this@ instead of the receiver of a method call~\cite{?}.
+Some approaches ensure the invariant of \Q@this@ instead of the receiver of a method call~\cite{DBLP:journals/scp/MullerPL06}.
 JML~\cite{JML} relaxes these requirements for helper methods, whose semantic is the same as if they where inlined.
 %\LINE
 %The invariant of the receiver (some approaches require the invariant of 'this' instead~\cite{?}) before a public (or non-helper~\cite{JML}) method call, and at the end of every method body needs to be ensured. The invariant of the receiver at the beginning of a public method body, and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
 
 
 \item The same as above, but only for the bodies of `selectively exported' (i.e. non instance private) methods, and only for `qualified' (i.e. on \Q@this@) calls~\cite{meyer2016class}.
-\item The invariant of an object is assumed only when a contract requires the object be `packed'. It is checked after an explicit `pack' operation, and objects can later be `unpacked'~\cite{?}.
+\item The invariant of an object is assumed only when a contract requires the object be `packed'. It is checked after an explicit `pack' operation, and objects can later be `unpacked'~\cite{DBLP:journals/jot/BarnettDFLS04}.
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};
 %invariant can be manually opened and closed by using special operations; % Add cite here!
@@ -184,11 +184,11 @@ Using TMs to enforce strong exception safety is a much simpler alternative, prov
 %Another approach used in the dynamic language Racket is to interpose on primitive operations like procedure-calls and field updates; this allows one to enforce visible-state semantics by wrapping invariant operations around such operations (as is done in aspect-oriented systems like Jose~{?}). This technique can be used with gradual typing to dynamically enforce `types' of mutable structures in a safe way.
 
 %\LINE
-Chaperones and impersonators~\cite{?} lift the techniques of gradual typing~\cite{takikawa2015towards,??}
+Chaperones and impersonators~\cite{DBLP:conf/oopsla/StricklandTFF12} lift the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
 to work on general purpose predicates, where
 values can be wrapped to ensure an invariant holds.
 This technique is very powerful and can be used to enforce pre and post conditions by wrapping function arguments and return values.
-Their approach allows wrapping invariant operations around method calls as is done in aspect-oriented systems like Jose~\cite{?}.
+Their approach allows wrapping invariant operations around method calls as is done in aspect-oriented systems like Jose~\cite{feldman2006jose}.
 %One of the advantages of their system is that is transparent to the user. 
 %\LINE
 
@@ -223,7 +223,7 @@ This does not happen with a type system since their properties are more coarse g
 %\REVComm{
 %To solve this issue, static verification systems are %starting to
 %}{2}{[is this correct?] verification of reference %monitors, gradual typing, and contracts have been %explored for longer}
-To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{??}, it is possible to 
+To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
 consider a verified core and a run-time verified boundary.
 You can see our approach as an extremely modularized	version of such system: every class is its own demilitarized zone, and the rest 	of the code could have Byzantine behaviour.
 
@@ -233,11 +233,11 @@ Our approach works both with an open world assumption and in a library setting.
 Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the method \Q@Subject.register(Observer)@ to respect its contract. Such assumption is unrealistic in a real system with dynamic class loading, and this invariant could trivially be broken by a user defined \Q@EvilSubject@.
 
 \textit{Static Verification:}
-Spec\#~\cite{?} is a language built on top of C\#, it adds various annotations such as method contracts, and class-invariants. 
-It primarily follows the `boogie' methodology~\cite{?} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariant is required to hold. Invariants can be `ownership' based~\cite{?}, where an invariant only depends on objects it owns; or `visibility-based', where an invariant may depend on objects it doesn't own, provided that the class of such objects knowns about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{?}, it can become much more difficult to work with and requires many annotations since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified.	
+Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts, and class-invariants. 
+It primarily follows the `boogie' methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariant is required to hold. Invariants can be `ownership' based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or `visibility-based'~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects knowns about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{?}, it can become much more difficult to work with and requires many annotations since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified.	
 
-Another system is AutoProof~\cite{?}, a static-verifier for Eiffel that follows the `boogie' methodology but extends it with `semantic-collaboration' where objects keep track of their invariants dependence using ghost-state.
-Dafny~\cite{?} is a new language where all code is statically verified, it supports invariants by injecting pre \& post conditions following the visible state semantics;
+Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static-verifier for Eiffel that follows the `boogie' methodology but extends it with `semantic-collaboration' where objects keep track of their invariants dependence using ghost-state.
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants by injecting pre \& post conditions following the visible state semantics;
 however it requires that objects be newly allocated (or cloned) before another object can depend on it in its  invariant.
 Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non-deterministic I/O.
 
@@ -256,7 +256,7 @@ Using a specification language based on the mathematical metalanguage and differ
 However a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0 || 2>1@ should not hold, while \Q@2>1 || 1/0@ should hold, thanks to short-circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
-Dafny~\cite{?} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets. Whereas runtime contexts allow mutation, object allocation and print statements. However, the semantics of shared constructs (such as logical short circuiting) is the same in both contexts.
+Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets. Whereas runtime contexts allow mutation, object allocation and print statements. However, the semantics of shared constructs (such as logical short circuiting) is the same in both contexts.
 
 Most runtime verification systems, such as ours, use a meta-circular approach: specifications are simply code in the underlying language. Since specifications are checked at runtime, they are unable to verify uncomputable contracts.
  Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} ``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
@@ -270,7 +270,7 @@ Spec\# aims to follow (b) but only considers non-determinism caused by memory mu
 And so the \Q@assert uncertain() == uncertain();@ also verifies but randomly fails with an exception at runtime.
 As you can see failing to handle non-determinism jeopardises reasoning.
 
-A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by ~\cite{?}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting what computations can be performed.
+A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by~\cite{TODO:HybridTypesInvariantsandRefinementsforImperative Objects}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting what computations can be performed.
 
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 

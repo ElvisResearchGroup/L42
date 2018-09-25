@@ -324,7 +324,7 @@ This set up is not overly involved, the maximum nesting level of \Q@Widget@s is 
 Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant.
 
 \textit{Comparison with visible state semantics:}
-As an experiment we set our implementation to generate invariant checks following the approach for visible state semantics (the one used by Eiffel\footnote{We also tried the approach of D~\cite{?} where invariants are instead checked on public-method calls, but not private ones; however this produced identical results in our test case.
+As an experiment we set our implementation to generate invariant checks following the approach for visible state semantics (the one used by Eiffel\footnote{We also tried the approach of D~\cite{Alexandrescu:2010:DPL:1875434,DRef} where invariants are instead checked on public-method calls, but not private ones; however this produced identical results in our test case.
 We expect all run-time approaches based on visible state semantic ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
 to produce similar results.
 }), where the invariant is instead checked at the start and end of \emph{every} unqualified (i.e. call on \Q@this@) method call%
@@ -353,9 +353,9 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 
 \textit{Comparison with Spec\#.}
 We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties as well as the admissibility of invariants.
-We ran our code through the Spec\# verifier (powered by Boogie~\cite{?}), which gave us only\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds.%. and value presence.
+We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which gave us only\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds.%. and value presence.
 This aligns the code with L42, which also performs such checks at runtime.} $2$ warnings: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however they check this at run time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{
-We also encoded our GUI on Code Contracts~\cite{?}, whose unsound heuristic also run the invariant checking $77$ times; however Code Contract does not enforce the
+We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also run the invariant checking $77$ times; however Code Contract does not enforce the
 encapsulation of \Q@children@, thus their approach would not be sound in our context.}
 
 % Assuming that Spec\#'s verifier is sound, this means that our code is equally verified in Spec\# and L42, providing a reasonable comparison.
@@ -370,7 +370,7 @@ encapsulation of \Q@children@, thus their approach would not be sound in our con
 %\end{itemize}
 %The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 
-We found it quite difficuilt to encode the GUI in Spec\#, due to the ???; In particular we needed to use many more annotations, which were both longer and had a greater variety of kinds. In the following table we summarise the annotation burden\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
+We found it quite difficult to encode the GUI in Spec\#, due to the ???; In particular we needed to use many more annotations, which were both longer and had a greater variety of kinds. In the following table we summarise the annotation burden\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
 
 \begin{center}
 \begin{tabular}{ c | c | c | c | c}

@@ -6,8 +6,8 @@ Class invariants are an important concept when reasoning about software correctn
 Class-invariants can be presented as documentation, checked as part of static-verification of class-definitions, or, as we do in this paper, monitored for violations using runtime-verification.
 In our system a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
 
-An \emph{invariant protocol}~\cite{?} specifies when class invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
-The two main sound invariant protocols present in literature are visible state semantic \cite{??} and Pack/Unpack~\cite{?}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound; but can be incredibly inefficient even in simple cases.
+An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when class invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
+The two main sound invariant protocols present in literature are visible state semantic \cite{TODO:ObjectOrientedSoftwareConstruction} and Pack/Unpack~\cite{DBLP:journals/jot/BarnettDFLS04}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound; but can be incredibly inefficient even in simple cases.
 In contrast, pack/unpack marks all objects as either packed or unpacked, where a packed object is one whose invariant is expected to hold.
 In this approach, an object's invariant is checked only by the pack-operation.
 In order for this to be sound, some form of aliasing and mutation control is necessary. For example, Spec\# uses a theorem prover together with source-code annotations.
@@ -17,8 +17,7 @@ This allows us to closely compare our approach with Spec\#.
 
 Instead of using static analysis, 
 it is becoming more popular to verify aliasing and immutability using a type system.
-For example, there are 3 languages: L42, Pony and the language of Gordon et. al.~\cite{?}
-using Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and deterministic parallelism.%
+For example, there are 3 languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and and the language of Gordon et. al.\cite{GordonEtAl12} using Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and deterministic parallelism.%
 \footnote{TMs are called \emph{reference capabilities} in other works. We use the term TM here
 to not confuse them with OCs, another technique we also use in this paper.}
 While studying those languages, we discovered an elegant way to enforce class invariants.
