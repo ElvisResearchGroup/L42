@@ -1,22 +1,37 @@
 \section{Conclusions and Future Work}
-
-
 Our approach follows the principles of \emph{Offensive programming}
 ~\cite{stephens2015beginning}, where 
 no attempt to fix or recover the invalid object is performed and
 %	\begin{itemize}
 %\item
  the failure (an unchecked exception)
-		is raised close to the defect:
-    the method directly calling the operation breaking the invariant is still on the stack trace.
+		is raised close to the defect: the method directly calling the operation breaking the invariant is still on the stack trace.
 %}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.    
 %		\item
 %	\end{itemize}
 
 
-The aim of our work is only to enforce validation, so we do not present complexities unnecessary for this purpose. We do not formalize any specific type system, to stay parametric over 
-the various existing type systems which provably enforce the properties we require for our proof (and much more).
-In essence we present what we \emph{believe} to be the simplest sound system.
+%The aim of our work is only to enforce object invariants, so we do not present complexities unnecessary for this purpose.
+Our work builds on TMs and OCs.
+Their popularity is growing, and we expect future languages to support some variation of these.
+Crucially, any language already designed with TMs and OCs
+can also support our invariant protocol with minimal added complexity.
+
+
+We demonstrate the applicability and simplicity of our approach by a GUI example.
+Our invariant protocol perform several orders of magnitude less checks that the visible state semantic,
+and requires much less annotations 
+then Spec\#, (the most comparable system in this context).
+In the appendix\ref{??}
+we formalize our invariant protocol and we prove it sound. We do not formalise any specific type system, to stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more).
+
+
+One interesting avenue for future work would be
+using invariants to encode pre and post conditions
+as done by~\cite{??}:%dependent/refinement types
+a method could be declared taking in input a record of arguments with invariant, and can return a wrapper over the arguments and the result.
+Such approach may be quite verbose, but would ensure that the precondition on the argument holds for the whole execution of the method, instead of just holding at the beginning.
+
 %It could be worthwhile formalising the minimal type system required by validation.
 
 
@@ -26,8 +41,7 @@ In essence we present what we \emph{believe} to be the simplest sound system.
 %%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 
-The language we presented here restricts the form of \validate
-and capsule mutator methods; in particular
+The language we presented here restricts the form of \validate{} and capsule mutator methods; in particular
 our strong restrictions of capsule mutator methods
 allows injection of \validate{} calls merely at the end of such methods.
 While these restrictions do not interfere with simple

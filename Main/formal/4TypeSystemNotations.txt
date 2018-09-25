@@ -209,52 +209,80 @@ plgUntrusted({/* _ @plugin url @pluginPart url._*/ _})
 2 Coherent literal
 --------------------------------------------
 coherent(p) //interfaces are always coherent
-  where
   p.top()={interface implements _ mwts ncs}
 
-coherent(p) //classes are coherent if they have a coherent set of abstract methods
-  where
-  p.top()={implements _ mwts' ncs} //note, no interface
-  mwts={mwt in mwts'| mwt.e undefined } //collect the abstract methods
-  either mwts is empty or
-    there is exactly 1 class method M with parameters (T x)s and n? such that
-      -forall mwt in mwts coherent(n?,p,noFwd((T x)s), mwt) //all abstract methods are coherent according to those fields
-      -if untrustedClass(p.top()) then M.m is of form #$m
+coherent(p)
+  p.top()={implements _ mwts ncs} //no interface
+  either for no M in mwts M.mdf=class and M.e=empty //there is no abstract class method
+  or exists xz  and n? such that
+    forall M in mwts, coherent(p;M;xz;n?)
 
-//coherent factory
-coherent(n?,p,T1 x1..Tn xn,
-      refine? class method T m__n? (T1' x1..Tn' xn) exception _)
-  where
-    p|- This0 <=T.P and p|-Ti'<=fwd Ti
-    T.mdf!=class
-    lent notin (T1..Tn).mdfs
-    if T.mdf in {imm,capsule}, mut notin (T1..Tn).mdfs
-    if T.mdf notin {lent,read}, read notin (T1..Tn).mdfs
-    //before it was max 1 read, formalized as follow:
-    //forall j in 1..n !=i, read != Tj.mdf
-    //if T.mdf notin {lent,read}, i=0
+coherent(p;M;xz;n?)
+  M=refine? class method mdf P m__n?(mdf1 P1 x1, ..., mdfn Pn xn) exception _
+  p|-This<=P
+  mdf not in {class, fwd mut, fwd imm}
+  lent not in mdf1..mdfn
+  if mdf in {imm, capsule} then {mdf1..mdfn} disjoint {mut, fwd mut}
+  if read in {mdf1..mdfn) then mdf in {read, lent}
+  {x1, ..., xn} = xz
+  if untrustedClass(p.top()) then m is of form #$m
 
-//coherent exposer or getter
-coherent(n?,p,T1 x1..Tn xn,
-    refine? mdf method T m__n?() exception _)
-  where
-  m=#?xi
-  either
-    mdf=mut and p|-capsuleToLent(Ti)<=T //exposer
-  or
-    mdf in {read,imm} and p|-toRead(Ti)<=T //getter //note for James, toRead need to keep imm as imm, toRead code reverted again :)
+coherent(p;M;_;_)
+  M.e!=empty //implemented methods are coherent
 
-//coherent setter
-coherent(n?,p,T1 x1..Tn xn,
-    refine? mut method Void m__n?(T that) exception _)
-  where
-  m=#?xi
-  p|-T<=Ti//setter
-if Ti=read then T.mdf in {capsule,imm}//why this restriction? mut would seams ok?
-//on the other side, we need to restrict read,lent: otherwise evilCode.doStuff(myLent)
-//could keep a reference of myLent inside of a (lent) evilCode
+coherent(p;M;_;_)
+  M=refine? mdf method _
+  mdf in {lent, mut, capsule}
+  forall refine? class method mdf' _ in p.top(), mdf' not in {lent, mut, capsule}
+
+coherent(p;M;_,x;n?)
+  M=refine? mdf method T #?x__n?(mdf' P' that) exception _
+  p |- imm Void <= T
+  mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
+  mdf in {lent, mut, capsule}
+  if mdf = lent then mdf' != mut
+
+coherent(p;M;_,x;n?)
+  M=refine? mdf method mdf' P' #?x__n?() exception _
+  mdf != class
+  forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
+  coherentGetMdf(mdf',mdf,FieldMdf(p.top(),x, mdf),FieldAccessMdf(p.top(),x, mdf))
+
+coherentGetMdf(imm,imm, mdfs0,_)
+  class not in mdfs0
+
+coherentGetMdf(imm,mdf,mdfs0,mdfs1)
+  mdf!=imm
+  mdfs0 subseteq {imm, fwd imm,capsule}
+  {mut, lent} disjoint mdfs1
 
 
+coherentGetMdf(read, _, mdfs0,_)
+  class not in mdfs0
+
+coherentGetMdf(class,_,{class},_)
+
+coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  imm not in mdfs1
+
+coherentGetMdf(lent,mdf,mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  mdf in {lent, mut, capsule}
+
+coherentGetMdf(mut,mdf,mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  mdf in {mut, capsule}
+
+mdf' in FieldsMdf(L, x, mdf) and P in FieldsPaths(L, x, mdf) iff:
+  class method mdf" _(_ mdf' P x _) in L
+    or mdf" method _ #?f(mdf' P that) in L
+  if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
+
+mdf' in FieldsAccessMdf(l, x, mdf) iff:
+  mdf" method mdf' P #?f() is in L
+  mdf" != capsule
+  if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
 
 --------------------------------------------
 3 Multiple method types   T0..Tn-> T';Ps in methTypes(p,P,ms)

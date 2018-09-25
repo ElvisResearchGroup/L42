@@ -28,7 +28,9 @@ This of course prevents explicitly calling \Q@invariant@, but most importantly, 
 In order for a class to have an invariant under our protocol,
 its \Q@invariant@ method must be of the form \Q@read method Bool invariant() {..}@
 and only use \Q@this@ to read \Q@imm@ and \Q@capsule@ fields.
-Moreover, its constructors only uses \Q@this@ to initialize fields.
+Moreover, its constructors may only use \Q@this@ to initialize fields\footnote{This prevents objects from escaping their constructor partially initialised.
+When a more flexible initialisation is required
+a factory method could be used.}.
 
 While mutating the ROG of a \Q@capsule@ field, \Q@f@, mentioned in the invariant, the containing object may be invalid.
 To enforce that the containing object is inaccessible, 

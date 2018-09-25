@@ -252,7 +252,7 @@ the \Q@SafeMovable@ class has an invariant to ensure that its children are compl
 % instance of \Q@SafeMovable@.
 
 Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available at \url{github.com/ElvisResearchGroup/L42/blob/master/Tests/src/widgetGui/libTests/SaveMovable.L42}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. (Note: \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s)
-\begin{lstlisting}
+\begin{lstlisting}[mathescape=false]
 class SafeMovable implements Widget{
   @Override read method Int left(){return this.box.l;}
   @Override read method Int top(){return this.box.t;}
@@ -277,8 +277,8 @@ class MoveAction implements Action{
   mut Box outer; MoveAction(mut Box outer){this.outer=outer;}
   mut method Void process(Event event){this.outer.l+=1;} }
 ..
-void main(mut System system){
-  system.newGui().display(new SafeMovable(..));}
+//main expression: (#$ is a capability method)
+Gui.#$().display(new SafeMovable(..));
 \end{lstlisting}
 
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:

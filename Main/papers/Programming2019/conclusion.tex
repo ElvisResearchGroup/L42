@@ -19,24 +19,21 @@ This is also different from static verification,
 where the properties are ensured ahead of time instead of being enforced during execution.
 %Static verification is very heavy weight, and often impractical/restrictive.
 
-Both static and runtime verification
-aim to monitor a wide range of properties; to this aim they accept a 
-great deal of complexity, and require the programmer to develop a deep understanding
-over the behaviour and the structure of code.
-For example, the specification of method’s pre and post-conditions
-encode a generalization of the program behaviour in the dedicated specification language.
-This means that, even in the best case scenario, 
-using pre/post-conditions the user is required to specify the program semantics twice:
-first in the specification language and then in the underlying programming language.
-In comparison, our approach aims to only verify conditions on immutable or well encapsulated state.
-This makes our approach \emph{ultra-lightweight}:
-the programmer specifies only the desired \validate{} method.
+%Both static and runtime verification
+%aim to monitor a wide range of properties; to this aim they accept a 
+%great deal of complexity, and require the programmer to develop a deep understanding
+%over the behaviour and the structure of code.
+%For example, the specification of method’s pre and post-conditions
+%encode a generalization of the program behaviour in the dedicated specification language.
+%This means that, even in the best case scenario, 
+%using pre/post-conditions the user is required to specify the program semantics twice:
+%first in the specification language and then in the underlying programming language.
+%In comparison, our approach aims to only verify conditions on immutable or well encapsulated state.
+%This makes our approach \emph{ultra-lightweight}:
+%the programmer specifies only the desired \validate{} method.
+
 Moreover, our approach does not aim to replace static or run-time verification,
 but is a building block they can rely upon.
-
-The popularity of TM and OC is growing, and we expect future languages to support some variation of these.
-Crucially, any language already designed with TM and OC
-can also support our invariant protocol with minimal added complexity.
 
 
 %\noindent\textit{Our approach:}

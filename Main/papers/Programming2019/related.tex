@@ -32,10 +32,12 @@ barnett2011specification%
 %only the point of error capturing is constrained.
 
 \textit{Object Capabilities:}
+In literature, OCs are used to provide a wide range of guarantees, and many variations are present.
 Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers, are able to
- enforce purity of code in a modular way, without requiring following a monadic style.
-The Joe-E language~\cite{finifter2008verifiable} explores how to use object capabilities to ensure pure behaviour for methods.
-However, in order to express Joe-E as a subset of Java, they leverage on a simplified model of immutability:
+ enforce purity of code in a modular way, without requiring the use of monads.
+
+L42 and Gordon use OCs simply to reason I/O and non determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
+However, in order for Joe-E to be a subset of Java, they leverage on a simplified model of immutability:
 immutable classes must be final with only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.
 In Joe-E every method that only takes instances of immutable classes is pure.
@@ -211,7 +213,6 @@ Their approach allows wrapping invariant operations around method calls as is do
 
 
 %\LINE
-\LINE
 \textit{Security and DMZ:}
 Our approach allow verifying an object's invariant independently of the actual invariants of other objects.
 This is in contrast with the main goal of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
@@ -296,10 +297,6 @@ A simpler and more restrictive solution to these problems is to prevent `pure' f
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%The same idea could be used in our approach, where 
-%a method could be declared taking in input a record of arguments with invariant, and can return a wrapper over the arguments and the result.
-%Such approach will not be transparent, and would be quite verbose, but would ensure that the precondition on the argument holds for the whole execution of the method.
-
 
 %1 aliasing control
 %  example hamster can be broken with those 2 lines

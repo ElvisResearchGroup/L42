@@ -212,7 +212,7 @@ OCs, which L42, Pony, and Gordon et. al.'s work have, are a widely used~\cite{??
 is respected, code \MS{that} does not possess an alias to the object cannot use the resource.
 
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon et. al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and native calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead by instance methods of classes whose instantiation is kept under control. OCs are typically not part of the type system nor do they require special runtime support beyond that provided by a memory safe language. However languages, like L42, that allow user code to perform native calls without going through the standard library, require some minimal type system support to enforce the OCs pattern over such calls.
+Here, as in Gordon et. al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and native calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead by instance methods of classes whose instantiation is kept under control. OCs are typically not part of the type system nor do they require special runtime support beyond that provided by a memory safe language. However languages, like L42, that allow user code to perform native calls without going through the standard library, require some minimal type system support to enforce the OC pattern over such calls.
  
 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
@@ -232,28 +232,45 @@ Here, as in Gordon et. al.'s work, we use OCs to reason about determinism and I/
 
 % a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
 
-In contrast, in the object-capability style, the \Q@main@ method could take a \Q@System@ object as a parameter. Calling methods on such \Q@System@ instance would be the only way to perform I/O, as in
+In contrast, if Java were to respect the object-capability style, the \Q@main@ method could take a \Q@System@ object as a parameter. Calling methods on that \Q@System@ instance would be the only way to perform I/O, as in
  \Q@main(mut System s)@
  \lstset{language=Java}
 \Q@{.. s.in.read()..}@.
-Moreover, the only \Q@System@ instance would be created by the runtime system before main. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
+Moreover, the only \Q@System@ instance would be the one created by the runtime system before calling \Q@main@. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
 % Other non-deterministic operations would also work this.
 %may just take a \Q@mut System@ object as a parameter.
 % could also work this way.
-This design has been explored in literature by Joe-E~\cite{finifter2008verifiable}. % Really?
+This design has been explored in literature by Joe-E~\cite{finifter2008verifiable}.
 \lstset{language=FortyTwo}
 
-To reason about determinism, we connect TMs with the OC style by requiring:
+To reason about determinism, L42 connects TMs with the OC style as follows: % style by requiring:
 \begin{itemize}
-\item Any method that uses non deterministic primitive operations (such as native calls \IO{or access to global variables\footnote{
-Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
-}}) must be an instance method requiring a \Q@mut@ receiver.
-Classes having such methods are \emph{capability classes}, and their instances are \emph{capability objects}.
-\item A capability object can only be created inside a \Q@mut@ method of a capability class; or
-by the run-time system, and passed to the main method.
+\item Native methods (which have not been white-listed as deterministic) and methods whose name start with \texttt{\#\$} are \emph{capability methods}.%
+\footnote{
+L42 does not have static variables, if it did, getters \& setters for them would be capability methods.
+Even allowing unrestricted access to \Q@imm@
+static variables would prevent reasoning over
+determinism, due to the possibility of global variable
+updates; however constant/final globals of an 
+\Q@imm@ type would not cause such problems.
+}
+\item Constructors of classes declared as \emph{capability classes} are also capability methods.
+\item Only capability methods and \Q@mut@/\Q@capsule@ methods of capability classes can call capability methods.
+\item In L42 there is no \Q@main@ method, but main expressions; such expressions can also call capability methods, thus it can instantiate capability objects and pass them around the rest of the program.
+% \item Any method that uses non deterministic primitive operations (such as native calls \IO{or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
+% }}) must be an instance method requiring a \Q@mut@ receiver.
+% Classes having such methods are \emph{capability classes}, and their instances are \emph{capability objects}.
+% \item A capability object can only be created inside a \Q@mut@ method of a capability class; or
+% by the run-time system, and passed to the main method.
+
 % \item If the language has global variables, they should only be 
 %\item There are no global variables.\footnote{}
 \end{itemize}
+We expect that capability methods to mostly be used internally by capability classes, whereas user code would call normal methods on already existing capability objects.
+
+For the purposes of invariant checking, we only care about the effects methods could have on the running program and heap. As such, \emph{output} native methods (such as ones that print to the terminal) can be white-listed as `deterministic', provided they do not effect program execution, such as non deterministically throwing  exceptions. Methods that perform non-deterministic \emph{input} shouldn't be white-listed.%, including methods that read information passed to white-listed output methods.
+
+
 %Here we combine TMs with OCs to guarantee 
 %\MS{determinism of} any method that can not access a \Q@mut@ reference to a capability object:
 %all non deterministic primitive operations are instance methods requiring a \Q@mut@ receiver, and
