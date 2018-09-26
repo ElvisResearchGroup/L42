@@ -1,13 +1,12 @@
 \section{Introduction}
 %\newpage
 %\LINE
-\IOComm{Mention how our protocol implies visible state semantics.}
 Class invariants are an important concept when reasoning about software correctness.
 Class-invariants can be presented as documentation, checked as part of static-verification of class-definitions, or, as we do in this paper, monitored for violations using runtime-verification.
 In our system a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
 
 An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when class invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
-The two main sound invariant protocols present in literature are visible state semantic \cite{TODO:ObjectOrientedSoftwareConstruction} and Pack/Unpack~\cite{DBLP:journals/jot/BarnettDFLS04}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound; but can be incredibly inefficient even in simple cases.
+The two main sound invariant protocols present in literature are visible state semantic \cite{Meyer:1988:OSC:534929} and Pack/Unpack~\cite{DBLP:journals/jot/BarnettDFLS04}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound; but can be incredibly inefficient even in simple cases.
 In contrast, pack/unpack marks all objects as either packed or unpacked, where a packed object is one whose invariant is expected to hold.
 In this approach, an object's invariant is checked only by the pack-operation.
 In order for this to be sound, some form of aliasing and mutation control is necessary. For example, Spec\# uses a theorem prover together with source-code annotations.

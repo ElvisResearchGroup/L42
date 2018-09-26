@@ -18,7 +18,7 @@ Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is another popular form of
 muller2002modular,%
 barnett2011specification%
 }.
-\IO{Capsule/isolated local variables are affine in that they can be used only once, however this linearity is a property of variables, not expressions or fields. Linear/affine types extend this idea further, however they usually do not consider the ROGs of such types, or work in an OO setting~\cite{Smith:2000:AT:645394.651903,ahmed20073,fahndrich2002adoption}.}
+Capsule/isolated local variables are affine in that they can be used only once, however this linearity is a property of variables, not expressions or fields. Linear/affine types extend this idea further, however they usually do not consider the ROGs of such types, or work in an OO setting~\cite{ahmed20073,fahndrich2002adoption}.
 % The interpretation of capsule/isolated local variable is linear/affine: they can be used at most 1 time. See~\cite{Smith:2000:AT:645394.651903,ahmed20073,fahndrich2002adoption} for foundational work on linear/affine types, where...
 
 %On ownership verification
@@ -43,7 +43,7 @@ immutable classes must be final with only final fields that refer to immutable c
 In Joe-E every method that only takes instances of immutable classes is pure.
 %\IOComm{Worth mentioning Wyvern? Since alex mentioned that it enforces purirty? Perhaps he can write that section?}
 Their model however would not allow the verification of purity for invariant methods of mutable objects.
-In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. \IOComm {Redundent?} This means that in our model, every method taking only \Q@read@ or \Q@imm@ references as input is pure,
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. This means that in our model, every method taking only \Q@read@ or \Q@imm@ references as input is pure,
 both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \textit{Class invariants protocols:}
@@ -270,7 +270,7 @@ Spec\# aims to follow (b) but only considers non-determinism caused by memory mu
 And so the \Q@assert uncertain() == uncertain();@ also verifies but randomly fails with an exception at runtime.
 As you can see failing to handle non-determinism jeopardises reasoning.
 
-A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by~\cite{TODO:HybridTypesInvariantsandRefinementsforImperative Objects}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting what computations can be performed.
+A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting what computations can be performed.
 
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 

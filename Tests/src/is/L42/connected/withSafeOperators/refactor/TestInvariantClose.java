@@ -277,7 +277,7 @@ public class TestInvariantClose{
 
   List<Ast.C> path=TestHelper.cs(_path);
   if(!isError){
-    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_EIFFEL);
+    ClassB res=InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_L42);
     TypeSystem.typeCheck(res, ClassB.Phase.Coherent).assertOk();
 
     TestHelper.configureForTest();
@@ -286,7 +286,7 @@ public class TestInvariantClose{
     }
   else{
     try{
-      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_EIFFEL);
+      InvariantClose.close(Program.emptyLibraryProgram(), path, cb1, InvariantClose.MODE_L42);
       fail("error expected");
       }
     catch(ClassUnfit|PathUnfit err){
