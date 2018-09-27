@@ -14,8 +14,7 @@
 % cooperate into verification. We aim for verification to be correct independently of
 % possibly buggy, possibly even malicious sub-objects.
 
-
-Consider managing shipping items, where we keep an acceptable ship weight:
+Consider managing the shipment of items, where their is a maximum (combined) weight.
 \saveSpace
 %shipping list /UPS cost too much over 300
 \begin{lstlisting}
@@ -33,15 +32,15 @@ class ShippingList {
 \saveSpace
 To handle this class we just inject calls to \Q@invariant@ at the end of the constructor and the \Q@addItem@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.
-Relaxing our system to allows a \Q@mut@ modifier for
+Relaxing our system to allow a \Q@mut@ modifier for
 the \Q@items@ field and the corresponding constructor parameter 
 makes the code broken:
-the cargo we received in the constructor may be already compromised:
+the cargo we received in the constructor may already be compromised:
 \saveSpace
 \begin{lstlisting}
-mut ShippingList l = new ShippingList(evilAlias);
-// l is ok now, but we can break it
-evilAlias.addItem(new HeavyItem()); // l is now invalid!
+mut Items items = ...;
+mut ShippingList l = new ShippingList(items); // l is valid
+items.addItem(new HeavyItem()); // l is now invalid!
 \end{lstlisting}
 \saveSpace 
 As you can see it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
@@ -54,26 +53,22 @@ For performance reasons, this is hardly done in practice and is a continuous sou
 
 Our restrictions on capsule mutators ensure that capsule fields are essentially an exclusive mutable reference.
 Removing these restrictions would break our invariant protocol.
-If we was to allow \Q@x.items@ to be seen as \Q@mut@ even if
-\Q@x@ is not \Q@this@, then even if the \Q@ShippingList@ has full control at initialization time,
-such control may be lost later:
+If we were to allow \Q@x.items@ to be seen as \Q@mut@ if \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
 \saveSpace
 \begin{lstlisting}
-mut ShippingList l = new ShippingList(new Items());
-// l is ok now
+mut ShippingList l = new ShippingList(new Items()); // l is ok
 mut Items evilAlias = l.items // here l loses control
-// l is still ok
-evilAlias.addItem(new HeavyItem()); // we invalidated l now
+evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
 \saveSpace
-If we allow for a \Q@mut@ return type this would be accepted:
+If we allowed a \Q@mut@ return type this would be accepted:
 \saveSpace
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}
 \end{lstlisting}
 \saveSpace
-\noindent Depending on dynamic dispatch on \Q@c@, \Q@c.foo()@ may just be the identity function, thus
-we would get in the same situation of the former example.
+\noindent Depending on dynamic dispatch, \Q@c.foo()@ may just be the identity function, thus
+we would get in the same situation as the former example.
 %Static analysis is usually unable/unwilling to track precise behaviour of dynamic dispatch.
 
 
@@ -95,12 +90,12 @@ mut method imm Void multiThis(C c) {
   f.hi();} // Can `this' be observed here?
 \end{lstlisting}
 \saveSpace
-\noindent If the former code was accepted, depending on dynamic dispatch on \Q@c@,
+\noindent If the former code was accepted, 
 \Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe an invalid object.
 
-In order to ensure that a second reference to \Q@this@ is not reachable through the parameters we only accept \Q@imm@ and \Q@capsule@ parameters.
+In order to ensure that a second reference to \Q@this@ is not reachable through the parameters, we only accept \Q@imm@ and \Q@capsule@ parameters.
 If we were however to accept a \Q@read@ parameter, as in the example below,
-we would be in the same situation as the former example, where \Q@f@ may contain
+we would be in the same situation as before, where \Q@f@ may contain
 a reference to \Q@this@:
 \saveSpace
 \begin{lstlisting}
@@ -238,7 +233,7 @@ Here we show that we are able to verify classes with circular mutable object gra
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
-the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get widget's size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable.invariant@.
+the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get widgets size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable@'s invariant.
 
 % Gui where the graphic representation of the widgets are guaranteed to not overlap.
 % \Q@SafeMovable@ is a \Q@Widget@ whose position can be dynamically changed.
@@ -254,28 +249,28 @@ the \Q@SafeMovable@ class has an invariant to ensure that its children are compl
 Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available at \url{github.com/ElvisResearchGroup/L42/blob/master/Tests/src/widgetGui/libTests/SaveMovable.L42}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. (Note: \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s)
 \begin{lstlisting}[mathescape=false]
 class SafeMovable implements Widget{
-  @Override read method Int left(){return this.box.l;}
-  @Override read method Int top(){return this.box.t;}
-  @Override read method Int width(){return 300;}
-  @Override read method Int height(){return 300;}
-  @Override read method read Widgets children(){
-    return this.box.c;}
-  @Override  mut method Void dispatch(Event e){
-    for(Widget w:this.box.c){w.dispatch(e);}}
   capsule Box box;
+  @Override read method Int left() {return this.box.l;}
+  @Override read method Int top() {return this.box.t;}
+  @Override read method Int width() {return 300;}
+  @Override read method Int height() {return 300;}
+  @Override read method read Widgets children() {
+    return this.box.c;}
+  @Override  mut method Void dispatch(Event e) {
+    for(Widget w:this.box.c){w.dispatch(e);}}
   read method Bool invariant(){..}
-  SafeMovable(capsule Widgets cs){this.box=mkBox(c);}
-  static method capsule Box mkBox(capsule Widgets c){
+  SafeMovable(capsule Widgets cs) {this.box=makeBox(c);}
+  static method capsule Box makeBox(capsule Widgets c) {
     mut Box b=new Box(5,5,cs);
     b.c.add(new Button(0,0,10,10,new MoveAction(b));
-    return b;}}//mut b is soundly promoted to capsule
+    return b;//mut b is soundly promoted to capsule
+}}
+class Box {Int l; Int t; mut Widgets c;
+  Box(Int l, Int t, mut Widgets c) {..}}
 
-class Box{ Int l; Int t; mut Widgets c;
-  Box(Int l, Int t, mut Widgets c){..} }
-
-class MoveAction implements Action{
-  mut Box outer; MoveAction(mut Box outer){this.outer=outer;}
-  mut method Void process(Event event){this.outer.l+=1;} }
+class MoveAction implements Action {
+  mut Box outer; MoveAction(mut Box outer) {this.outer=outer;}
+  mut method Void process(Event event) {this.outer.l+=1;} }
 ..
 //main expression: (#$ is a capability method)
 Gui.#$().display(new SafeMovable(..));
@@ -284,7 +279,7 @@ Gui.#$().display(new SafeMovable(..));
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
 \Q@left@, \Q@top@, and \Q@children@. Also note how the ROG of \Q@Box@ is circular: since
 the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box@ in order to move it.
-Even though the children of a \Q@SafeMovable@ are fully encapsulated we can still easily dispatch events to them by implementing \Q@Widget.dispatch@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID it will then call its \Q@Action@'s \Q@process@ method. 
+Even though the children of a \Q@SafeMovable@ are fully encapsulated we can still easily dispatch events to them by implementing \Q@Widget.dispatch@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID, it will call its \Q@Action@'s \Q@process@ method. 
 
 %Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
 Our example shows that the restrictions of TMs and OCs are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
@@ -292,7 +287,7 @@ In order to perform this case study we had to first implement a simple GUI Libra
 
 
 \textit{The Invariant:}
-\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system injects tests for it in two places: the end of its constructor and the end of its \Q@dispatch@ method (since it is a capsule-mutator). Their are no other checks inserted since we never do a field update on  \Q@SafeMovable@s. The code for the invariant is just a couple of simple nested loops:
+\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (is a capsule-mutator). Their are no other checks inserted since we never do a field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
 \begin{lstlisting}
 read method Bool invariant() {
   for (Widget w1 : this.box.c) {
@@ -302,7 +297,7 @@ read method Bool invariant() {
         return false;}}}
   return true;}
 \end{lstlisting}
-Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as the function only uses \Q@this@ to access its fields.%its \Q@width@ and \Q@height@ fields.
+Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its fields.%its \Q@width@ and \Q@height@ fields.
 
 
 % This code is a simplified version of our first case study. In the full code the \Q@SafeMovable@ constructors take \Q@left@, \Q@top@, \Q@width@ and \Q@height@ parameters and can either take a \Q@box@ directly or will generate one with $4$ \Q@Button@s}
@@ -321,20 +316,21 @@ $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@Saf
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 This set up is not overly involved, the maximum nesting level of \Q@Widget@s is $5$.
-Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@s invariant.
+Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@'s invariant.
 
 \textit{Comparison with visible state semantics:}
 As an experiment we set our implementation to generate invariant checks following the approach for visible state semantics (the one used by Eiffel\footnote{We also tried the approach of D~\cite{Alexandrescu:2010:DPL:1875434,DRef} where invariants are instead checked on public-method calls, but not private ones; however this produced identical results in our test case.
-We expect all run-time approaches based on visible state semantic ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
+We expect all (sound) run-time approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
 to produce similar results.
-}), where the invariant is instead checked at the start and end of \emph{every} unqualified (i.e. call on \Q@this@) method call%
+}), where the invariant is instead checked at the start and end of \emph{every} unqualified method call%
 \footnote{L42 follows the Eiffel uniform access principle: field accesses are the same as method calls.}
+(i.e. on \Q@this@)
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
 % visible state semantic when qualified/unqualified method calls or field accesses are performed.
 % However, in our GUI example those corner cases are
 % not relevant. To be sure, we implemented both of their strategies and obtained the same results.
-of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ interface. When we ran our test case following this approach the invariant was called $52,734,053$ times (it took about $4$ days to run), in comparison to the $77$ we got when using our invariant protocol. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls will themselves invoke invariant checks. % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
+of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ interface. When we ran our test case following this approach, the invariant was called $52,734,053$ times (it took about $4$ days to run), in comparison to the $77$ we got when using our invariant protocol. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls will invoke further invariant checks. % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
 % Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
 
 
@@ -352,8 +348,8 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
 \textit{Comparison with Spec\#.}
-We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties as well as the admissibility of invariants.
-We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which gave us only $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds.%. and value presence.
+We also encoded our GUI example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties, as well as the admissibility of invariants.
+We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which gave us only $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds. %. and value presence.
 This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however Spec\# checks this at run-time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{
 We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also run the invariant checking $77$ times; however Code Contract does not enforce the
 encapsulation of \Q@children@, thus their approach would not be sound in our context.}
@@ -370,10 +366,11 @@ encapsulation of \Q@children@, thus their approach would not be sound in our con
 %\end{itemize}
 %The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 
-We found it quite difficult to encode the GUI in Spec\#, due to it's unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were both longer and had greater variety. In the following table we summarise the annotation burden\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
+We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were both longer and had greater variety. In the following table we summarise the annotation burden,
+for the \emph{program} that defines and displays \Q@SafeMovable@ and our GUI, as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling.\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
 
 \begin{center}
-\begin{tabular}{ c | c | c | c | c}
+\begin{tabular}{ c  c  c  c  c}
  & Spec\# & Spec\# & L42 & L42 \\ 
  & \!\!program\!\! & library & \!\!program\!\! & library \\
 \hline
@@ -383,10 +380,10 @@ We found it quite difficult to encode the GUI in Spec\#, due to it's unintuitive
 % Totals 	 $59$ $37
 \!\!\!Tokens (except \Q@.,;(){}[]@ and whitespace)\!\!\!
 %(ecluding \Q@;,@ characters, white-space, or parentheses/brackets.) 
-	& $106$ & $34$ & $18$ & $18$  \\ 
+	& $106$ & $34$ & $18$ & $18$  \\  \hline
 % $140$  & $37$
 Characters (with minimal whitespace) 
-	& $619$ & $207$ & $74$ & $60$ \\ 
+	& $619$ & $207$ & $74$ & $60$ \\ \hline
 %  $826$ $134$
 \end{tabular}
 \end{center}
@@ -418,23 +415,24 @@ Together these annotations can get quite long, such as the following preconditio
 
 % Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations.
 
-The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children@ method in \Q@Widget@ returning a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only strange thing we had to in L42 was creating \Q@Box@es using 
+The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only strange thing we had to in L42 was creating \Q@Box@es by using 
 an additional variable in a nested scope.
-This is needed to delineate the scope of promotions.
-Based on these results we believe our system is significantly simpler and easier to use.
+This is needed to delineate scopes for promotions.
+Based on these results, we believe our system is significantly simpler and easier to use.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
 \textit{The Box Pattern:}
-Our design, using an inner \Q@Box@ object is a common pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated sub-object which is not exposed to the users.
+Our design, using an inner \Q@Box@ object is a common pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated sub-object which is not exposed to users.
 
 % We also found natural to use the box pattern also in Spec\# requires.
-Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@. It also dramatically simplifies the handling of the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change the enclosing \Q@SafeMovable@s position.
+Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@ position.
 % Also the implementation of the minimal GUI library (that our \Q@SaveMovable@ builds upon) has a much lower annotation burden.
 %\LINE
+
 \textit{The transform pattern:}
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
-Suppose one wants to scale a \Q@Widget@, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children, we have a problem since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, to keep control of their ROGs'.
+Suppose we want to scale a \Q@Widget@, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children, we have a problem since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, to keep control of their ROGs.
 
 % In the above \Q@SafeMovable@ we only had one capsule mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
 % At first glance, it may seem that capsule mutators allow only very limited kinds %of mutation.
@@ -447,23 +445,23 @@ A simple and practical solution would be to define a \Q@transform@ method in \Q@
 like so:\footnote{A more general transformer could return a generic \Q@read R@.}
 \saveSpace
 \begin{lstlisting}
-interface Transformer<T>{method Void apply(mut T elem);}
-interface Widget{..
+interface Transformer<T> {method Void apply(mut T elem);}
+interface Widget {..
   mut method Void top(Int that);//setters for immutable data
   mut method read Void transform(Transformer<Widgets> t);
-  }//transformers for possibly encapsulated data
-class SafeMovable{...
-  mut method read R transform(Transformer<Widgets> t){
+}//transformers for possibly encapsulated data
+class SafeMovable {..
+  mut method Void transform(Transformer<Widgets> t) {
     return t.apply(this.box.c);}} // Well-typed capsule mutator
 \end{lstlisting}
 % Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other capsule fields.
-The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but ensures that the \Q@Widgets@ cannot leak out.  With a \Q@Transformer@, a \Q@zoom@ function could be written as:
+The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but ensures that the \Q@Widgets@ cannot leak out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply written as:
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
-  w.transform(ws->{for(wi:ws)zoom(wi,scale);});
-  w.width(w.width()/2);  ...; w.top(w.top()/2); }
+  w.transform(ws -> {for(wi:ws){zoom(wi,scale);}});
+  w.width(w.width()/2); ..; w.top(w.top()/2); }
 \end{lstlisting}
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
 

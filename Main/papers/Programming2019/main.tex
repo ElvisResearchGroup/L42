@@ -106,26 +106,32 @@ area={Type systems}
 ${}_{}$
 
 \noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
-Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they allow code to be adapted/specialised to behave differently in different contexts.
+Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they
+allow code to be adapted/specialised to behave differently in different contexts.
 %%, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
-However this flexibility hampers code reasoning since object behaviour is usually nearly completely unrestricted. This is further complicated with the support OO languages typically have for exceptions, \IO{memory mutation}, and I/O.
-\IO{Class invariants} are a well known technique \IO{to help write correct code}, however
+However this flexibility hampers code reasoning since object behaviour is usually nearly completely
+unrestricted. This is further complicated with the support OO languages typically have for exceptions,
+memory mutation, and I/O.
+Class invariants are a well known technique to help write correct code, however
 there are various different interpretations of when they should hold.
 % invariant protocols, specifying when the invariant is expected to hold and when is checked. 
 %% In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
 
 \loseSpace
-\noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
-We investigate a protocol where class-invariants are expected to hold for all objects involved in execution, but they are soundly checked only in a few points. Our approach is sound since we ensure that invariants are pure and checked immediately after an invariant violation could have occurred.
-
-This allows for stronger and simpler reasoning, as well as less runtime verification overhead, to the more common approach of `visible state' semantics where only the invariant of \Q@this@ is required to hold, and only at the start and end of instance methods.
+\noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question
+been addressed by others (if at all)?
+We investigate a protocol where class-invariants are expected to hold for all objects involved in execution, but
+they are soundly checked only in a few points. Our approach is sound since we ensure that invariants are pure
+and checked immediately after an invariant violation could have occurred. This allows for stronger and simpler reasoning, as well as less runtime verification overhead, compared to the
+more common approach of `visible state' semantics where only the invariant of \Q@this@ is required to hold, and
+only at the start and end of instance methods.
 
 
 % for all observable objects, their class-invariant holds.
 %We wish to guarantee that a class's invariant holds for all its observable instances.
 
 % Most prior work on enforcing class invariants assume unverified/unverifiable restrictions on library code, dynamic class loading and I/O, or even just trust programmers to use the provided tools correctly.
-% For example, static verification often restricts dynamic class loading, while  run-time verification often unsoundly allows non deterministic code in class-invariants.
+% For example, static verification often restricts dynamic class loading, while run-time verification often unsoundly allows non deterministic code in class-invariants.
 
 %We wish to allow for stronger reasoning over this by ensuring that non boke
 %We wish to guarantee that a user defined property holds for all observable instances of a class.
@@ -133,32 +139,42 @@ This allows for stronger and simpler reasoning, as well as less runtime verifica
 
 \loseSpace
 \noindent\textit{Approach:} %What was done that unveiled new knowledge?
-We combine previous works on type modifiers and object capabilities to ensure purity, determinism, aliasing, and mutability control. Type modifiers and object capabilities are useful in their own right, but we use these facilities here to ensure our \IO{sparsely} injected run-time checks are sufficient. 
-\LINE
+We combine previous works on type modifiers and object capabilities to ensure -properties about purity,
+determinism, aliasing, and mutability control. Type modifiers and object capabilities are useful in their own
+right, but we use these facilities here to ensure our \IO{sparsely} injected run-time checks are sufficient.
 %We have implemented our protocol on top of the L42 language.
 
-\LINE
 \loseSpace
 \noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
-Through examples, we show how hard it is to reason about code behaviour in the context of dynamic dispatch and I/O. We show how type modifiers and object capabilities lay down the foundation needed to reason about OO code in this context, and that without such reasoning, enforcing class-invariants for all objects involved in execution becomes nearly impossible.
-We show that type-modifiers and object capabilities allow for such reasoning to be both simple, modular, and sound in a context where I/O, exceptions, and dynamic-dispatch are present.
+Through examples, we show how hard it is to reason about code behaviour in the context of dynamic dispatch and
+I/O. We show how type modifiers and object capabilities lay down the foundation needed to reason about OO code
+in this context, and that without such reasoning, enforcing class-invariants for all objects involved in
+execution becomes nearly impossible.
+We show that type-modifiers and object capabilities allow for such reasoning to be both simple, modular, and
+sound in a context where I/O, exceptions, and dynamic-dispatch are present.
 
 \loseSpace
 \noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
-We demonstrate, by means of a case study, empirical evidence of the conciseness of our approach in comparison to Spec\#.
-We also show the performance of our protocol in comparison to the conventional runtime-verification approaches taken by D and Eiffel.
+We demonstrate, by means of a case study, empirical evidence of the conciseness of our approach in comparison to
+Spec\#.
+We also show the performance of our protocol in comparison to the conventional runtime-verification approaches
+taken by D and Eiffel.
 
-We formally model a class of languages that support our protocol. This model is formally verified by a proof, parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems with such properties have already been explored, formalized, and proved in prior work.
+We formally model a class of languages that support our protocol. This model is formally verified by a proof,
+parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems
+with such properties have already been explored, formalized, and proved in prior work.
 
 \loseSpace
-\noindent\textit{Importance:} %Why does this work matter?\
+\noindent\textit{Importance:} %Why does this work matter?
 Class-invariants allow programmers to reason as to what states objects might be in. Our approach
 makes such reasoning both sound and strong: if a programmer has access to an object, it and 
 all objects reachable from it are in a valid state.
-In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided it of course type checks. Since our approach also works on existing emerging languages, and adds only marginal program complexity, we believe it is also practical to be used. 
+In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. Since our approach also works on existing emerging languages, and adds only marginal
+program complexity, we believe it is also practical and usable.
 
 %TODO
-% \REVComm{Our work represents a philosophical shift}{2}{This makes it sound like run-time verification has never been considered before.} similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
+% \REVComm{Our work represents a philosophical shift}{2}{This makes it sound like run-time verification has
+% never been considered before.} similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
 % while mutating objects, however a validation failure is soundly detected by a run-time exception,
 % and even after capturing such an exception, validation still holds for all objects involved in the execution.
 %Class invariants provide guarantees about the state of objects throughout the execution.
