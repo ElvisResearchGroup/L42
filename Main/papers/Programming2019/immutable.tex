@@ -12,21 +12,20 @@
 Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is valid.
 This implies that if you can call methods on a object, calling \Q@invariant@ on it is guaranteed to return \Q@true@.
 Of course the bodies of both \Q@invariant@ methods and constructors may interact with an invalid \Q@this@.
-Thus, in those methods, we require that \Q@this@ is only used too read/initialise fields (respectively).
-This of course prevents explicitly calling \Q@invariant@, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
-
 %Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
 %For the first case, we can type the field access as \Q@read@, but in the second case we
 %need to type it as \Q@mut@. 
 %We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
 %We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
-
 In order for a class to have an invariant under our protocol,
 its \Q@invariant@ method must be of the form \Q@read method Bool invariant() {..}@
 and only use \Q@this@ to read \Q@imm@ and \Q@capsule@ fields.
-Moreover, its constructors may only use \Q@this@ to initialize fields\footnote{This prevents objects from escaping their constructor partially initialised.
+Moreover, its constructors may only use \Q@this@ to initialize fields.\footnote{This prevents objects from escaping their constructor partially initialised.
 When a more flexible initialisation is required
-a factory method could be used.}.
+a factory method could be used.}
+%Thus, in their bodies, we require that \Q@this@ is only used too read/initialise fields (respectively).
+This of course prevents explicitly calling \Q@invariant@ inside of \Q@invariants@ and constructors bodies, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
+
 
 While mutating the ROG of a \Q@capsule@ field, \Q@f@, mentioned in the invariant, the containing object may be invalid.
 To enforce that the containing object is inaccessible, 
@@ -42,14 +41,14 @@ a field access to \Q@f@ is typed as \Q@mut@ only inside of methods following a s
 We call such methods \emph{capsule mutators}.
 %Finally, we require \Q@f@ to be declared \Q@private@.%, and only accessed as \Q@this.f@.
 
-Our invariant protocol injects calls to \Q@invariant@:
+Our invariant protocol injects calls to \Q@invariant@
 %\begin{itemize}
 %	\item
- On newly created objects, after constructor calls.
+ on newly created objects, after constructor calls;
 %	\item
- After field updates, on the receiver of such update.
+ after field updates, on the receiver of such update;
 %	\item
- On \Q@this@ at the end of a capsule-mutator.
+ and on \Q@this@ at the end of a capsule-mutator.
 %\end{itemize}
 
 % Our invariant protocol injects call to \Q@this.invariant@ at the end of constructors, after every field update and at the end of every method containing such \Q@this.f@ access. We call such methods `capsule mutators'.
@@ -89,7 +88,7 @@ As this method is declared as \Q@read@, and only takes the implicit parameter \Q
 \item the ROG of \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{
 This is even safe in the multi-thread environments of Pony and Gordon: since actors/threads are prevented from sharing \Q@mut@/\Q@capsule@ data, thus a \Q@read@ reference could only be mutated by a \Q@mut@ reference under the control of the same thread.},
 \item if a capability object (such as \Q@System@) is in the ROG of \Q@this@, then it can only be accessed as \Q@read@, preventing use of non-deterministic capabilities (such as I/O),
-\item no other pre-existing objects are accessible (as we do not have global variables).
+\item no other pre-existing objects are accessible (as L42 do not have global variables).
 \end{itemize}
 
 \noindent Also note \Q@invariant@ is declared as not throwing any exceptions,
@@ -101,11 +100,16 @@ Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since
 On a first look this may seem an open contradiction
 with the aim of this work, however only calls to \Q@invariant@ inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \Q@invariant@,
 \Q@this@ is guaranteed to be valid.
-However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantee of our invariant protocol.
-In L42 we implemented a sound relaxation of this restriction, by allowing instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid.
+We require \Q@invariant@
+to only use \Q@this@ to access fields 
+in order to prevent passing an invalid \Q@this@ to other methods.
+%other 
+%methods can not 
+%However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantee of our invariant protocol.
+In L42 we implemented a sound relaxation of this restriction, by allowing calling instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ need to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid.
 In some sense, those inlined methods and field accesses can be thought as macro-expanded, and hence are not dynamically dispatched.
 Finally,
-the code of \Q@invariant@ can not access \Q@mut@ fields, because their content can be changed by unrelated code.
+the code of \Q@invariant@ cannot access \Q@mut@ fields, because their content can be changed by unrelated code.
 
 %With the modifiers presented so far, \validate{} can only access \Q@imm@ fields.
 %We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
@@ -113,7 +117,7 @@ the code of \Q@invariant@ can not access \Q@mut@ fields, because their content c
 
 L42 does not have \Q@extends@ so we have not handled inheriting invariants.
 In a language with sub-classing, invariant's would implicitly start with a check that \Q@super.invariant()@ returns \Q@true@.
-Note that \Q@invariant@ checks are not performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions.
+Note that \Q@invariant@ checks are not performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions, as it happens in~\cite{JOSE}.
 
 %In a language with sub-classing, runtime-invariant checks would need to occur on the base-class subobjects, before doing the check on a derived class. In addition, the runtime would only do an invariant check after construction of complete objects.
 
@@ -164,10 +168,10 @@ Note that the \Q@name@ field is not final, thus \Q@Person@ objects can change st
 %immutable types
 %No, a type is not a class
 % are just a special case of simple classes.
-We can easily enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@ immediately after each field update, and at the end of the constructor.%
+We can easily enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@ immediately after each field update, and at the end of the constructor:%
 %\footnote{Since the constructor only initialises fields; as with the \validate{} method itself, we allow field uses since \Q@this@ is not directly reached.}
 %would require the initial/default value of \Q@this@ to be valid.}
-:
+
 % If a simple class provides a \validate{} method, then validation will be enforced.
 % For \Q@Person@, intuitively, the code would behave as follow:
 
@@ -190,8 +194,8 @@ class Person { .. // Same as before
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \validate{} method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-\noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TM or OC, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
-relaxation of TM or OC breaks our validation. 
+\noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. We now proceed to show examples where
+relaxation of TMs or OCs breaks our protocol. 
 
 \loseSpace
 \noindent\textit{Unrestricted use of object-capabilities:}
@@ -207,8 +211,7 @@ Allowing \validate{} to (indirectly) use an object capability could allow for it
 class EvilString extends String {
   @Override read method Bool isEmpty() {
     // Creates a new capability object out of thin air
-    return new Random().bool();
-} }
+    return new Random().bool();} }
 ..
 method mut Person createPersons(String name) {
   // we can not be sure wether name is an EvilString
@@ -224,8 +227,15 @@ In particular, note how in the presence of dynamic class loading, we have no way
 
 \loseSpace
 \noindent\textit{Allowing internal mutation back-doors:}
-Suppose we relax our mutation rules, by allowing interior mutability
-as in Rust and Javari: thus allowing mutation of the ROG of an immutable object through back-doors:
+Suppose we relax our rules by allowing interior mutability
+as in Rust and Javari,  where sneaky mutation
+of the ROG of an immutable object is allowed.
+Those back-doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
+briefly discuss how a few trusted language primitives can be used to perform caching and other needed optimizations
+without the need of back-doors.
+
+Our example shows that such back-doors can be used to break determinism of  \Q@invariant@ methods by allowing the invariant to store and read information about previous calls. We use \Q@MagicCounter@ as a back-door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself.
+
 \begin{lstlisting}
 class MagicCounter {
   method Int increment(){
@@ -244,18 +254,11 @@ person.invariant(); // returns false! //counter=3
 person.invariant(); // returns true //counter=4
 \end{lstlisting}
 
-In this example we use \Q@MagicCounter@ as a back-door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself.
 %mine: yes, too strong: For validation we need the language to guarantee true deep immutability.
 %your: just points outside: It would require some powerful static or dynamic analysis to keep track of every case the ROG of \Q@Person@ could be indirectly mutated, and insert validity checks appropriately, however ensuring deep mutability trivialises this for simple classes.
-
-In this example, we have shown how such back-doors can be used to break determinism of  \Q@invariant@ methods: by allowing the invariant to store and read information about previous calls.
 % Allowing such back-doors could also be used to break the determinism of the \validate{} method:
 % information can be stored about previous calls.
 % In this example you can see how the invariant get to be \Q@false@ and then \Q@true@ again.
-
-Back-doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
-briefly discuss how a few trusted language primitives can be used to perform caching and other needed optimizations
-without the need of back-doors.
 %In our simple example, \Q@Person@ objects can be mutated using the setter, and exposed using the getter.
 %We may consider the getter to be safe since in modern languages we expect strings to be immutable objects.
 %\footnote{While we can update the field \Q@name@ to point to another string, we cannot mutate the string object itself.
@@ -311,21 +314,23 @@ The ability to catch and recover from invariant failures is extremely useful as 
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try-catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
-	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked-exceptions are immutable, they can not contain an \Q@read@ reference to any object (such as the \Q@this@ reference seen be \Q@invariant@). Thse two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
-
+	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked-exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen be \Q@invariant@). Thse two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
-However, if instead we chose not to enforce strong exception safety, an invalid object could easily be made reachable:
+If instead we where to not enforce strong exception safety, an invalid object could be made reachable:
 \saveSpace
 \begin{lstlisting}[morekeywords={assert}, escapechar=\%]
 mut Person bob = new Person("bob");
 // Catch and ignore validation failure:
-try {bob.name("");} catch (Error t) { }
+try {bob.name("");} catch (Error t) { }//ill-typed in L42
 assert bob.name().isEmpty(); // bob is invalid!
 \end{lstlisting}
 \saveSpace
 As you can see, recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
-Since calls to \validate{} may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.
+%Since calls to \validate{} may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.
+Note that Spec\# do not ensure SES, and it is 
+intentionally unsound~\cite{??} when unchecked exceptions are captured.
+
 
 %LATER: This means that we could relax our Strong Exception Safety to hold only on unchecked exceptions (by restricting only \Q@try-catch@ blocks that capture unchecked exceptions.
 

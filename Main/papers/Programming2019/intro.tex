@@ -1,12 +1,12 @@
 \section{Introduction}
 %\newpage
 %\LINE
-Class invariants are an important concept when reasoning about software correctness.
-Class-invariants can be presented as documentation, checked as part of static-verification of class-definitions, or, as we do in this paper, monitored for violations using runtime-verification.
-In our system a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
+Object-invariants are an important concept when reasoning about software correctness.
+They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime-verification.
+In our system an object specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \emph{valid} if calling \Q@invariant@ would return \Q@true@.
 
-An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when class invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
-The two main sound invariant protocols present in literature are visible state semantic \cite{Meyer:1988:OSC:534929} and Pack/Unpack~\cite{DBLP:journals/jot/BarnettDFLS04}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound; but can be incredibly inefficient even in simple cases.
+An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
+The two main sound invariant protocols present in literature are `visible state semantic' \cite{Meyer:1988:OSC:534929} and Boogie/Pack-Unpack~\cite{DBLP:journals/jot/BarnettDFLS04}. Visible state semantics expect the receiver's invariant to hold before and after every public method call, and after its constructor. The invariant is simply checked in all such points, and so this approach is obviously sound; but can be incredibly inefficient even in simple cases.
 In contrast, pack/unpack marks all objects as either packed or unpacked, where a packed object is one whose invariant is expected to hold.
 In this approach, an object's invariant is checked only by the pack-operation.
 In order for this to be sound, some form of aliasing and mutation control is necessary. For example, Spec\# uses a theorem prover together with source-code annotations.
@@ -18,35 +18,42 @@ Instead of using static analysis,
 it is becoming more popular to verify aliasing and immutability using a type system.
 For example, there are 3 languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and and the language of Gordon et. al.\cite{GordonEtAl12} using Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and deterministic parallelism.%
 \footnote{TMs are called \emph{reference capabilities} in other works. We use the term TM here
-to not confuse them with OCs, another technique we also use in this paper.}
-While studying those languages, we discovered an elegant way to enforce class invariants.
+to not confuse them with object capabilities, another technique we also use in this paper.}
+While studying those languages, we discovered an elegant way to enforce object-invariants.
 
-In the rest of the introduction we present two versions of the Hamster Example: one in our language and one in Spec\#. While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
 
-In the following, we show an example of correct code in our approach: we have a \Q@Hamster@ in a \Q@Cage@.
+In the rest of the introduction we present two versions of the Hamster Example: one in our language and one in Spec\#.
+We have a \Q@Hamster@ in a \Q@Cage@.
 The hamster will move across a \Q@List@ of \Q@Point@s.
-The invariant is that the hamster's position is in the cage's list.
-We use the \Q@read@ annotation on \Q@equals@ to express that it does not modify either the
-receiver or the parameter.
-To save space, here and in the rest of the paper we omit the bodies of constructors that simply initialize fields.
+The invariant is that the hamster's position is in the cage's list. While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
+
 %	if(that==null || !(that instanceof Point)){return false;}
 % 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
 %  }
 \begin{lstlisting}
-class Point {
-  Double x; Double y; Point(Double x, Double y) {..}
-  @Override read method Bool equals(read Object that){..} }
+class Point { Double x; Double y;
+  Point(Double x, Double y) {..}
+  @Override read method Bool equals(read Object that) {..} }
 class Hamster {
   Point pos; //pos is imm by default
   Hamster(Point pos) {..} }
 \end{lstlisting}
+We use the \Q@read@ annotation on \Q@equals@ to express that it does not modify either the
+receiver or the parameter.
+Many verification approaches take advantage of the separation between primitive types and objects.
+Our approach works in a pure OO setting without primitive types, so we do not rely
+on differences between primitive types and objects.
+We write all our type names in upper case, to underline this fact. To save space, here and in the rest of the paper we omit the bodies of constructors that simply initialize fields.
+
+
 Then, in \Q@Cage@
 we use \Q@capsule@ to ensure
 that the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
 of the containing \Q@Cage@.
-We annotated with the \Q@move@
+We annotated the \Q@move@
 and \Q@moveTo@ methods with \Q@mut@, since they modify
-the receivers ROG.
+the receivers ROG. Our default annotation is \Q@imm@, thus \Q@Cage.path@ is a deeply immutable list of \Q@Point@s.
+
 \begin{lstlisting}
 class Cage {
   capsule Hamster h;
@@ -55,11 +62,10 @@ class Cage {
   read method Bool invariant() {
     return this.path.contains(this.h.pos); }
   mut method Void move() {
-    int index= 1 + this.path.indexOf(this.h.pos));
+    Integer index= 1 + this.path.indexOf(this.h.pos));
     this.moveTo(this.path.get(index %$\,$  this.path.size())); }
   mut method Void moveTo(Point p) { this.h.pos = p; } }
 \end{lstlisting}
-In our system, the default annotation is \Q@imm@, thus \Q@Cage.path@ is a deeply immutable list of \Q@Point@s.
 % Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
 % to check if the hamster position is inside the list.
 % The conventional syntax correctly instantiates a \Q@Cage@:
@@ -74,13 +80,6 @@ The \Q@moveTo@ method is the only place in the above code where the invariant ma
 The invariant is checked at the end of the \Q@moveTo@ method, just before \Q@this@ would become visible again.
 This technique loosely corresponds to an implicit pack/unpack: we use \Q@this@ only to read the field value, then we work on it's value while the invariant of \Q@this@ is not known to hold. Finally we 
 check the invariant before allowing the object to  be used again.
-% However, this would be unsound without some form of aliasing control over \Q@Hamster@,
-% the \Q@List@ and all the \Q@Point@s.
-Many verification approaches take advantage of the separation between primitive types and objects.
-L42 is a pure OO language without primitive types, so we can not, and we do not need to, rely
-on differences between primitive types and objects.
-We write all our type names in upper case, to underline this fact.
-
 
 Note how since only \Q@Cage@ has an invariant,
 only \Q@Cage@ needs to have special restrictions, allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
@@ -105,8 +104,7 @@ class Cage: PureObject {
   Cage([Captured] Hamster h, [Captured] List<Point> path)
     requires Owner.Same(Owner.ElementProxy(path), path);{..}
   invariant exists {int i in (0 : this.path.Count);
-    this.path[i]
-		.Equal(this.h.pos.x, this.h.pos.y)};
+    this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
   void Move() {
     int i = 0;
     while(i<path.Count && !path[i].Equal(h.pos.x,h.pos.y)){i++;}
@@ -114,7 +112,7 @@ class Cage: PureObject {
   } } }
 \end{lstlisting}
 
-\noindent Even with all the above annotations, we still need special care to instantiate a Cage, e.g.
+\noindent Even with all the above annotations, we still need special care to instantiate a Cage:
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -131,7 +129,7 @@ Cage c = new Cage(new Hamster(new Point(0, 0)),
 
 %3 read 2 capsule 3 mut extra method moveTo
 %----
-In Spec\# we had to add $11$ different annotations, from $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra notations such as Spec\#'s \Q@expose@.
+In Spec\# we had to add $11$ different annotations, from $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
 %  Moreover we had been unable to reuse 
 % \Q@Object.Equals@, \Q@List.IndexOf@ and % \Q@List.Contains@.
 % Note: we had to add a new class \Q@PureObject@, since the \Q@Objec@ constructor is not annotated as \Q@[Pure]@.
@@ -283,15 +281,12 @@ In Spec\# we had to add $11$ different annotations, from $8$ different kinds; so
 %We obtain our results thanks to coarse grained type system support and a careful design of the standard library, where all the possible sources of non determinism follow the OCs style.
 %---------------------
 
-In this paper we propose an invariant protocol with the efficiency of pack/unpack, but with a much lower annotation burden.
-
-We evaluate our contribution by means of case studies;
+%We evaluate our contribution by means of case studies;
+We have performed a case study to quantify the benefit of our approach;
 to perform our case studies we fully implemented our protocol on L42.\footnote{
 We believe it would be easy to implement our protocol also on those other two languages.
 An experimental version of L42 including our invariant checking is available here [..].}
-We have performed a case study to quantify the benefit of our approach:
-on a simple case with 1 class with an invariant and 5 instances of the class, the visible state semantics require checking the invariant 53 millions times, while Spec\# and our approach check it only 77 times. We also found the Spec\# annotation burden to be about 3 times more than our approach.
-
+on a simple case with $1$ class with an invariant and $5$ instances of the class, the visible state semantics require checking the invariant $53$ millions times, while Spec\# and our approach check it only $77$ times. We also found the Spec\# annotation burden to be about $4$ times more than our approach.
 In this paper we argue that our protocol is not only more succinct than pack/unpack but is also easier and safer to use.
 Moreover, our approach deals 
 with more 
@@ -299,16 +294,12 @@ scenarios that Spec\#:
 we allow sound catching of invariant failures and other unchecked exceptions, we also carefully handle
 the impact of I/O and other non deterministic operations.
 
-
-%Instead of using static analysis,
-%we obtain our results thanks to coarse grained type system support and a careful design of the standard library.
-
-In order to obtain safety, simplicity and efficiency we traded some expressive power:
-we can not verify some forms of data-structures, such as collections of mutable elements.\footnote{Our approach does not prevent correctly implement such data-structures, rather we do not support encoding the correctness of such objects as a class-invariant.}
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
-In section \ref{TODO} we...
-In section \ref{TODO} we...
-In section \ref{TODO} we...
+Section 2 explains the kind of TMs and OCs we use for this work;
+Section 3 clarifies all the details of our invariant protocol;
+Sections 4 and 5 applies our work to various examples;
+Section 6 shows our case study; Section 7 and 8
+contains related work and conclusions.
 
 %http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf

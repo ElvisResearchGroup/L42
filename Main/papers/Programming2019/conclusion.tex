@@ -47,8 +47,9 @@ The language we presented here restricts the form of \Q@invariant@ and capsule m
 such strong restrictions allow for sound and efficient injection of invariant checks. 
 These restrictions do not get in the way of writing invariants over immutable data, but to verify complex mutable data-structures, the box pattern is required. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for it  while still ensuring our desired semantics, we prioritize simplicity and generality. 
 
-In order to keep our approach simple we require invariants refer only to immutable and encapsulated state. This prevents verification of some forms of data-structures, such as collections of shared \Q@mut@ references.
-
+In order to obtain safety, simplicity and efficiency we traded some expressive power:
+while can easily verify a doubly linked list of immutable elements,
+we can not verify a doubly linked lists of mutable elements. Our approach does not prevent correctly implement such data-structures, but the \Q@invariant@ method can refer only to immutable and encapsulated state, thus it would be unable to access the internal nodes, since they contains \Q@mut@ references to shared objects.
 To verify those data-structures, as future work we could add a special kind of field that could not be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
 
 % To verify those data-structures, in future work
