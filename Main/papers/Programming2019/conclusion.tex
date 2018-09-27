@@ -1,4 +1,5 @@
 \section{Conclusions and Future Work}
+\label{s:conclusion}
 Our approach follows the principles of \emph{offensive programming}
 ~\cite{stephens2015beginning}, where 
 no attempt to fix or recover an invalid object is performed and
@@ -20,9 +21,9 @@ can also support our invariant protocol with minimal added complexity.
 
 
 We demonstrated the applicability and simplicity of our approach with a GUI example.
-Our invariant protocol performs several orders of magnitude less checks than the visible state semantics, and require much less annotations 
+Our invariant protocol performs several orders of magnitude less checks than visible state semantics, and requires much less annotations 
 than Spec\#, (the system with the most comparable goals).
-In appendix~\ref{??} we formalise our invariant protocol and prove it sound. To stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more), we do not formalise any specific type system.
+In appendix~\ref{s:meaning} we formalise our invariant protocol and prove it sound. To stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more), we do not formalise any specific type system.
 
 
 One interesting avenue for future work would be to
@@ -43,12 +44,12 @@ Without good syntax sugar, such an approach could be quite verbose, however it w
 
 %%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
-The language we presented here restricts the form of \Q@invariant@ and capsule mutator methods;
+The language we presented here restricts the forms of \Q@invariant@ and capsule mutator methods;
 such strong restrictions allow for sound and efficient injection of invariant checks. 
-These restrictions do not get in the way of writing invariants over immutable data, but to verify complex mutable data-structures, the box pattern is required. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for it  while still ensuring our desired semantics, we prioritize simplicity and generality. 
+These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data-structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. 
 
-In order to obtain safety, simplicity, and efficiency we traded some expressive power: while can easily verify a doubly linked list of immutable elements, we can not verify a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data-structures, but the \Q@invariant@ method can refer only to immutable and encapsulated state, thus it would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
-In order to verify such data structures we could add a special kind of field that could not be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
+In order to obtain safety, simplicity, and efficiency we traded some expressive power: while can easily verify a doubly linked list of immutable elements, we can not verify a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data-structures, but the \Q@invariant@ method can only refer to immutable and encapsulated state, thus it would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
+In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
 
 % To verify those data-structures, in future work
 % we may investigate a special kind of field that
@@ -69,7 +70,9 @@ In order to verify such data structures we could add a special kind of field tha
 %being able to predict whether code would be well typed allows programmers
 %to better take advantage of the language.
 
-Directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of the box and the transform patterns; type modifier inference, and support for flexible ownership types.
+\IO{For an implementation of our work to be sound, non-deterministic exceptions like stack overflows or out of memory errors cannot be caught in invariants, or else they may use this to behave non-deterministically. Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that allows catch them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap-sizes.}
+
+Other directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of the box and the transform patterns; type modifier inference, and support for flexible ownership types.
 
 %Our work, in comparison to previous RV techniques,
 %aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.

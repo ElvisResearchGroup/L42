@@ -42,7 +42,7 @@
 		}%
 	}%
 }
-
+\newcommand{\TODO}[1]{\textcolor{pink}{\textbf{#1}}}
 \newcommand{\validate}{\Q@invariant@}
 
 \begin{document}
@@ -141,7 +141,7 @@ only at the start and end of instance methods.
 \noindent\textit{Approach:} %What was done that unveiled new knowledge?
 We combine previous works on type modifiers and object capabilities to ensure -properties about purity,
 determinism, aliasing, and mutability control. Type modifiers and object capabilities are useful in their own
-right, but we use these facilities here to ensure our \IO{sparsely} injected run-time checks are sufficient.
+right, but we use these facilities here to ensure our sparsely injected run-time checks are sufficient.
 %We have implemented our protocol on top of the L42 language.
 
 \loseSpace

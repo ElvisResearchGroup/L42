@@ -22,10 +22,9 @@ to not confuse them with object capabilities, another technique we also use in t
 While studying those languages, we discovered an elegant way to enforce invariants.
 
 
-In the rest of the introduction we present two versions of the Hamster Example: one in our language and one in Spec\#.
-We have a \Q@Hamster@ in a \Q@Cage@.
-The hamster will move across a \Q@List@ of \Q@Point@s.
-The invariant is that the hamster's position is in the cage's list. While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
+\IO{\textit{Example:} we now show a simple example, where we have a \Q@Cage@ class containing a path (a list of \Q@Point@s) and \Q@Hamster@ with a location (a \Q@Point); the \Q@Cage@ moves the \Q@Hamster@ across it's path. \Q@Cage@ has an invariant: the \Q@Hamster@'s location is within the \Q@Cage@'s path.
+}
+% While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
 
 %	if(that==null || !(that instanceof Point)){return false;}
 % 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
@@ -37,24 +36,7 @@ class Point { Double x; Double y;
 class Hamster {
   Point pos; //pos is imm by default
   Hamster(Point pos) {..} }
-\end{lstlisting}
-We use the \Q@read@ annotation on \Q@equals@ to express that it does not modify either the
-receiver or the parameter.
-Many verification approaches take advantage of the separation between primitive types and objects.
-Our approach works in a pure OO setting without primitive types, so we do not rely
-on differences between primitive types and objects.
-We write all our type names in upper case, to underline this fact. To save space, here and in the rest of the paper we omit the bodies of constructors that simply initialize fields.
 
-
-Then, in \Q@Cage@
-we use \Q@capsule@ to ensure
-that the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
-of the containing \Q@Cage@.
-We annotated the \Q@move@
-and \Q@moveTo@ methods with \Q@mut@, since they modify
-the receivers ROG. Our default annotation is \Q@imm@, thus \Q@Cage.path@ is a deeply immutable list of \Q@Point@s.
-
-\begin{lstlisting}
 class Cage {
   capsule Hamster h;
   List<Point> path;//path is imm by default
@@ -66,28 +48,36 @@ class Cage {
     this.moveTo(this.path.get(index %$\,$  this.path.size())); }
   mut method Void moveTo(Point p) { this.h.pos = p; } }
 \end{lstlisting}
+Many verification approaches take advantage of the separation between value types and objects.
+\IO{However, our approach works in a pure OO setting (such as L42) without value types.} Hence we write \IO{all type} names in upper case, to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply \IO{initialise fields with the value of constructors parameters}.
+
+We use the \Q@read@ annotation on \Q@equals@ to express that it does not modify either the
+receiver or the parameter. In \Q@Cage@ we use \Q@capsule@ to ensure
+that the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
+of the containing \Q@Cage@. 
+We annotated the \Q@move@
+and \Q@moveTo@ methods with \Q@mut@, since they modify
+their receivers ROG. Our default annotation is \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.
+
 % Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
 % to check if the hamster position is inside the list.
 % The conventional syntax correctly instantiates a \Q@Cage@:
 % \Q@new Cage(new Hamster(new Point(..)), List.of(new Point(...))@.
 
-Our system would perform run-time checks for the invariant
-at the end of the constructor, and the \Q@moveTo@
-method, and after any client of \Q@Cage@
-were to update the \Q@h@ or \Q@path@ fields.
-The \Q@moveTo@ method is the only place in the above code where the invariant may be broken. However, there is only a single occurrence of \Q@this@ used to read the \Q@h@ field. We also leverage over TMs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the hamster position is updated. 
+\IO{
+Our system performs run-time checks for the invariant
+at the end of \Q@Cage@'s constructor, \Q@moveTo@ method, and after any update to one of its fields.}
+The \Q@moveTo@ method is the only place in the above code where the invariant may be broken. However, there is only a single occurrence of \Q@this@ used to read the \Q@h@ field. \IO{We leverage} over TMs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \IO{\Q@Hamster@'s} position is updated. 
 
 The invariant is checked at the end of the \Q@moveTo@ method, just before \Q@this@ would become visible again.
-This technique loosely corresponds to an implicit pack/unpack: we use \Q@this@ only to read the field value, then we work on it's value while the invariant of \Q@this@ is not known to hold. Finally we 
-check the invariant before allowing the object to  be used again.
+This technique loosely corresponds to an implicit pack \IO{\&} unpack: we use \Q@this@ only to read the field value, then we work on it's value while the invariant of \Q@this@ is not known to hold\IO{; finally} we check the invariant before allowing the object to  be used again.
 
-Note how since only \Q@Cage@ has an invariant,
-only \Q@Cage@ needs to have special restrictions, allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
-This is not the case in Spec\#: all code involved in 
-verification needs to be designed with verification in mind.
+% Note how since only \Q@Cage@ has an invariant,
+% only \Q@Cage@ needs to have special restrictions, allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
+% This is not the case in Spec\#: all code involved in  verification needs to be designed with verification in mind.
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
-Note in particular that were were unable to override \Q@Object.Equals@, or even define a usable equals method that takes a point, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@. Here is our solution; an extended discussion on why we think this is the best possible solution in Spec\# can be found in Appendix XX.
+\IO{\textit{Spec\# example:}} Here we show the previous example in Spec\#, the system most similar to ours\footnote{\TODO{An extended discussion on why we think this is the best possible solution in Spec\# can be found in Appendix XX.}}:
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
@@ -111,8 +101,9 @@ class Cage: PureObject {
     expose(this){ this.h.pos = this.path[i%this.path.Count]; }
   } } }
 \end{lstlisting}
-
-\noindent Even with all the above annotations, we still need special care to instantiate a Cage:
+\IO{In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not soley to be used by classes with an invariant, in particular \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular that were were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.}
+ 
+\noindent Even with all the above annotations, we still \IO{needed special care in creating \Q@Cage@s}:
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -129,7 +120,7 @@ Cage c = new Cage(new Hamster(new Point(0, 0)),
 
 %3 read 2 capsule 3 mut extra method moveTo
 %----
-In Spec\# we had to add $11$ different annotations, from $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
+In Spec\# we had to add $11$ different annotations, \IO{of} $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
 %  Moreover we had been unable to reuse 
 % \Q@Object.Equals@, \Q@List.IndexOf@ and % \Q@List.Contains@.
 % Note: we had to add a new class \Q@PureObject@, since the \Q@Objec@ constructor is not annotated as \Q@[Pure]@.
@@ -282,24 +273,19 @@ In Spec\# we had to add $11$ different annotations, from $8$ different kinds; so
 %---------------------
 
 %We evaluate our contribution by means of case studies;
-We have performed a case study to quantify the benefit of our approach;
-to perform our case studies we fully implemented our protocol on L42.\footnote{
-We believe it would be easy to implement our protocol also on those other two languages.
-An experimental version of L42 including our invariant checking is available here [..].}
-on a simple case with $1$ class with an invariant and $5$ instances of the class, the visible state semantics require checking the invariant $53$ millions times, while Spec\# and our approach check it only $77$ times. We also found the Spec\# annotation burden to be about $4$ times more than our approach.
-In this paper we argue that our protocol is not only more succinct than pack/unpack but is also easier and safer to use.
-Moreover, our approach deals 
-with more 
-scenarios that Spec\#:
-we allow sound catching of invariant failures and other unchecked exceptions, we also carefully handle
-the impact of I/O and other non deterministic operations.
-
+\IO{\textit{Contents of this paper:}}
+\IO{We have fully implemented our protocol in L42\footnote{\IO{An experimental version of L42 supporting the protocol described in this paper, together with the full code of our case studies is available at \TODO{\url{...}}.}}\footnote{\IO{We also believe it would be easy to implement our protocol in Pony and Gordon et. al.'s language.}}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $4$ objects with an invariant, 
+our protocol proved to require over half a million times less checks than visible state semantics. We also compared with Spec\#, whose invariant protocol provides the same performance as ours, however the annotation burden was almost 4 times higher than our approach.
+In this paper we argue that our protocol is not only more succinct than the pack-unpack approach, but is also easier and safer to use.
+Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures, an also carefully handle non-deterministic operations like I/O.}
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
-Section 2 explains the kind of TMs and OCs we use for this work;
-Section 3 clarifies all the details of our invariant protocol;
-Sections 4 and 5 applies our work to various examples;
-Section 6 shows our case study; Section 7 and 8
-contains related work and conclusions.
-
+\IO{
+Section \ref{s:background} explains the \emph{type modifier} and \emph{object capability} support we use for this work.
+Section \ref{s:validate} examples the details of our invariant protocol.
+Sections \ref{s:immState} and \ref{s:encapsulated} explains, and motivates, how our protocol can handle invariants over immutable and encapsulated data, respectively.
+Section \ref{s:patterns} presents our GUI case study and compares it against visible state semantics and Spec\#.
+Sections \ref{s:related} and \ref{s:conclusion} provides a summery of related, and our work (respectively).
+Appendices \ref{s:meaning} and \ref{s:proof} contain, respectively, a formalisation of our protocol and proves that it is sound.
+}
 %http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf

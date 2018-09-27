@@ -233,12 +233,12 @@ Consider for example the work of Parkinson~\cite{parkinson2007class}: in his sho
 
 \textit{Static Verification:}
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts and class-invariants. 
-It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects knowns about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{?}, it can become much more difficult to work with and requires many annotations since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like use, does perform run-time checks for invariants and throws unchecked-exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
+It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects knowns about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{s:patterns}, it can become much more difficult to work with and requires significant annotation since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like use, does perform run-time checks for invariants and throws unchecked-exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
 
 
-Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static-verifier for Eiffel that follows the `boogie' methodology but extends it with `semantic-collaboration' where objects keep track of their invariants dependence using ghost-state.
-Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants by injecting pre \& post conditions following the visible state semantics;
-however it requires that objects be newly allocated (or cloned) before another object can depend on it in its  invariant.
+Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static-verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic-collaboration} where objects keep track of their invariants dependencies using ghost-state.
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants by injecting pre and post conditions following visible state semantics;
+however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
 Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non-deterministic I/O.
 
 
@@ -251,26 +251,27 @@ Dafny is also generally highly restrictive with its rules for mutation, and obje
 
 
 \textit{Specification languages:}
-Using a specification language based on the mathematical metalanguage and different from the specific language's semantics may seem attractive, since it may express uncomputable concepts and has no mutation and non determinism, and is often easier to formally reason about.
+Using a specification language based on the mathematical metalanguage and different from the program language's semantics may seem attractive, since it can express uncomputable concepts and has no mutation or non determinism, and is often easier to formally reason about.
 
 However a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0 || 2>1@ should not hold, while \Q@2>1 || 1/0@ should hold, thanks to short-circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
-Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets. Whereas runtime contexts allow mutation, object allocation and print statements. However, the semantics of shared constructs (such as logical short circuiting) is the same in both contexts.
+Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets. Whereas runtime contexts allow mutation, object allocation and print statements. The semantics of shared constructs (such as short circuiting logic operators) is the same in both contexts.
 
 Most runtime verification systems, such as ours, use a meta-circular approach: specifications are simply code in the underlying language. Since specifications are checked at runtime, they are unable to verify uncomputable contracts.
- Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} ``\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
+ Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} `\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
 	of functions. The first approach is not scalable, the second overly restrictive and
-	the third unsound.}''\ 
+	the third unsound.}'.
+
 They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non-deterministic operations such as I/O and random number generation. For example, the following method verifies:
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non-deterministic operations, such as I/O and random number generation. For example, the following method verifies:
 \begin{lstlisting}
 [Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
 \end{lstlisting}
-And so the \Q@assert uncertain() == uncertain();@ also verifies but randomly fails with an exception at runtime.
+And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
 As you can see failing to handle non-determinism jeopardises reasoning.
 
-A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting what computations can be performed.
+A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
 
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 

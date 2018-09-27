@@ -206,7 +206,7 @@ the invalidated object is guaranteed to be garbage collectable when the exceptio
 % Intro to OCs
 
 \textit{Object capabilities (OCs):}
-OCs, which L42, Pony, and Gordon et. al.'s work use, are a widely used~\cite{???} programming style that allows associating resources with objects. When this style
+OCs, which L42, Pony, and Gordon et. al.'s work use, are a widely used\TODO{~\cite{???}} programming style that allows associating resources with objects. When this style
 is respected, code that does not possess an alias to the object cannot use the resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
 Here, as in Gordon et. al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and native calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
