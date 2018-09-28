@@ -9,7 +9,7 @@ it {\bf inherits} code from \lstinline{B}; and it creates
 a subtype of \lstinline{B}. Therefore a subclass must \emph{always} be
 a subtype of the extended class.
 Such design choice where subclassing implies subtyping is not
-universaly accepted.
+universally accepted.
 Historically, there has been a lot of focus on
 separating subtyping from subclassing~\cite{cook}.  This separation is claimed to be
 good for code-reuse, design and reasoning. There are at
@@ -52,7 +52,7 @@ have (safe) subtyping.
 situation, but not the second. Since structural subtyping
 accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
-the second situation nominal subtyping is preferable: an explicit subtyping relation must be signalled by the programmer. Thus if subtyping is not desired, the
+the second situation, nominal subtyping is preferable: an explicit subtyping relation must be signalled by the programmer. Thus if subtyping is not desired, the
 programmer can simply {\bf not} declare a subtyping relationship.
 
 While there is no problem in subtyping without subclassing, in most nominal OO languages subclassing fundamentally implies subtyping. 
@@ -148,7 +148,7 @@ a module composition language where nested classes with the same name are recurs
 
 While there are various good ideas in those designs, those designs are
 still quite involved.
-This paper show a simple language design, called \name,
+This paper shows a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
 \emph{use} from code designed for \emph{reuse}.
@@ -157,7 +157,7 @@ different designs, and couple them with an elegant novel approach to
 state and self construction in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
 %-------
 
-In \name there are two separate concepts: classes
+In \name, there are two separate concepts: classes
 and traits~\cite{ducasse2006traits}. Classes are meant for code \emph{use}, and cannot be inherited/extended. Classes in \name are like final classes in
 Java, and can be used as types and as object factories. Traits are meant for code \emph{reuse} only: multiple traits can be
 composed to form a class. However, traits 
@@ -182,11 +182,11 @@ research above, and is even more outstanding in the clean \name model.
 
 We first focus on an example-driven presentation to illustrate how to
 improve use and reuse. 
-In Appendix~\ref{sec:formal} we then provide a compact formalization.
+In Appendix~\ref{sec:formal}, we then provide a compact formalization.
 Most of the hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig},
-and the design of \name synthesizes some of these concepts.
+and the design of \name synthesizes some of those concepts.
 The language design ideas have been implemented in the full 42 language, which supports all
 the examples we show in the paper, and is available at: \url{http://l42.is}.
 Work on 42 is now slowly reaching maturity after about $5$ years of
@@ -196,7 +196,7 @@ on the JVM, and the standard library consists of over $10000$ lines of
 42 code. 
 %more then a thousand GIT commits and about a thousand tests.
 
-In summary, our contributions are:
+\noindent In summary, our contributions are:
 
 %\marco{We need to talk of unanticipated extensions?}
 %\bruno{Talk more about typing aspects here. Summarise the important 
