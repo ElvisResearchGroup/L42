@@ -39,11 +39,11 @@ subclassing from subtyping, which also addresses various limitations of those
 $3$ particular language designs.
 The following compares 
 various aspects of the language designs;
-we \underline{underline} $3$ properties where one approach shines the most,
+we \textbf{bold} $3$ properties where one approach shines the most,
  and we \uwave{squiggle} $3$ properties where one approach is more lacking.
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals.}
-\underline{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
+\textbf{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
 PT is built on top of Java, thus, it has a very
 involved syntax.
 \name relies on DJ's approach but,
@@ -69,7 +69,7 @@ TR and DJ comes from a tradition of functional module composition, where
 modules are typed in isolation under an environment, and then the composition is performed.
 As we show in this work, this ends up requiring verbose repetition of abstract signatures
 which (for highly modularized code) may end up constituting most of the program.
-Java (and thus \underline{PT}, as a Java extension) show us a better way:
+Java (and thus \textbf{PT}, as a Java extension) show us a better way:
 names are understood from their reuse context.
 The typing of PT offers the same advantages of our typing model, 
 but is more involved and indirect. This may be caused by the
@@ -82,7 +82,7 @@ The typing strategy of PT also seems to be connected with this
 decision, so it would be hard to move their approach in a composition
 algebra setting.
 \item {\bf Complete ontological separation between use and reuse.}
-While all $3$ works allow separating inheritance and subtyping only \underline{TR} properly enforces 
+While all $3$ works allow separating inheritance and subtyping only \textbf{TR} properly enforces 
 separation between use (classes and interfaces) and reuse (traits).
 In DJ all classes are both units of use and reuse (however, subtyping is not induced).
 PT imports all the complexity of Java: it is possible to separate use and reuse, the model has powerful but non-obvious implications where Java \Q@extends@ and PT are used together.
@@ -242,17 +242,18 @@ is it required to be well-typed before being composed with other code?
 \begin{minipage}[t]{0.9\textwidth}
 \newcommand{\YY}{\textbf{Y}}
 \begin{center}
-\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c}
+\begin{tabular}{c c c c c c c c c c c}
+\hline
 &\Rotated{direct instantiation}
 &\Rotated{self instantiation}
 &\Rotated{unit of use}
 &\Rotated{unit of reuse}
 &\Rotated{introduces a type}
-&\Rotated{induced type is the type of  \Q@this@}
+&\Rotated{induced type is\\* the type of  \Q@this@}
 &\Rotated{binary methods}
-&\Rotated{inheritance induces subtyping}
-&\Rotated{typed before imported}
-&\Rotated{typed before composed} 
+&\Rotated{inheritance\\* induces subtyping}
+&\Rotated{typed before\\* imported}
+&\Rotated{typed before\\* composed} 
 \\
 \hline
 Java/Scala classes&\YY &N&\YY &\YY &\YY &\YY &N&\YY &\YY &N\\
@@ -267,7 +268,7 @@ Module composition
 DJ classes &\YY &\YY &\YY &\YY &\YY &X &\YY &N&\YY &\YY \\
 PT
                       &N&\YY &N&\YY &N&-   &-&N&\YY &N\\
-${}_{}$\\
+\hline
 \end{tabular}
 \end{center}
 \end{minipage}

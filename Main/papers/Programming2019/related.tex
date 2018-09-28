@@ -35,7 +35,6 @@ Capsule/isolated local variables are affine in that they can be used only once, 
 In literature, OCs are used to provide a wide range of guarantees, and many variations are present.
 Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers, are able to
  enforce purity of code in a modular way, without requiring the use of monads.
-
 L42 and Gordon use OCs simply to reason about I/O and non determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
 However, in order for Joe-E to be a subset of Java, they leverage on a simplified model of immutability:
 immutable classes must be final with only final fields that refer to immutable classes.
@@ -43,8 +42,8 @@ immutable classes must be final with only final fields that refer to immutable c
 In Joe-E, every method that only takes instances of immutable classes is pure.
 %\IOComm{Worth mentioning Wyvern? Since alex mentioned that it enforces purirty? Perhaps he can write that section?}
 Their model however would not allow the verification of purity for invariant methods of mutable objects.
-In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. This means that in our model, every method taking only \Q@read@ or \Q@imm@ references is pure;
-both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. This means that in our model, every method taking only \Q@read@ or \Q@imm@ references is pure.
+%;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \textit{Class invariants protocols:}
 Class invariants are a fundamental part of the design by contract methodology. 

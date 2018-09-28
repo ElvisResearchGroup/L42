@@ -263,7 +263,7 @@ updates; however constant/final globals of an
 \end{itemize}
 L42 expects capability methods to be mostly used internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
-For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} native methods (such as ones that print to the terminal) can be white-listed as `deterministic', provided they does not effect program execution, such as by non deterministically throwing I/O exceptions.
+For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} native methods (such as a \Q@print@ method) can be white-listed as `deterministic', provided they does not effect program execution, such as by non deterministically throwing I/O exceptions.
 %Methods that perform non-deterministic \emph{input} shouldn't be white-listed.%, including methods that read information passed to white-listed output methods.
 
 

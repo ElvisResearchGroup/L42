@@ -227,13 +227,14 @@ since
 it has good support for traits, and using abstract types, it is possible to support the `\Q@This@' type.
 Rust is similar to Scala in this regard; we believe we would get similar results by comparing against either Scala or Rust.
 
-\noindent\begin{tabular}{l|l|l|l}
+\noindent\begin{tabular}{l l l l}
 Language       & Lines of code & N. of members & N. classes/traits\\
 \hline
 \!Java7           &\!\!\!\!   $115=6+5*4+7*6+9*4+11$        & $50$                &      $16$\\
 \!Classless Java\!\! &\!   $82=3+3*4+5*6+7*4+9$          & $34$                &      $16$\\
 \!Scala          &\!   $81=5+3*4+4*16$  &  $40$                 &    $21 = 16+4+1$\\
 \!\name          &\!   $32=4+3*4+1*16$ & $7$                 &      $21 = 16+4+1$\\
+\hline
 \end{tabular}
 
 \noindent We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } $28$ method bodies across the $16$ classes.
@@ -416,11 +417,13 @@ of the amount of glue-code needed to generate
 
 \noindent The results for the second experiment are presented below.
 
-\noindent \begin{tabular}{l|l|l|l}
+\noindent \begin{tabular}{l l l l}
+\hline
 Language       & Lines of code & N. of members & N. of classes or traits\\
 \hline
 Java           &  $47= 10+9$\ \ \ \ $+$ \ \ \ \  $13+15$         &    $27$             &     $6$\\
 Scala          &  $53=$ \ \ $8+3+6*2+12+18$        &    $31$             &         $6$\\
 \name          &  $33=$\ \ \ $7+3+5*2+$\ \ $4+9$      &    $24$             &         $6$\\
+\hline
 \end{tabular}
 
