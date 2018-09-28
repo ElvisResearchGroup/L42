@@ -59,111 +59,94 @@ if the method is not ``invariant'' then also the ROG of this is valid.
  Microsoft code contracts
  JML
 \end{comment}
+\newpage
 \section{Proof}
 \label{s:proof}
 
-\begin{theorem}[Sound Validation]
-	if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and
-	$c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
-	either $valid(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
-\end{theorem}
-
-We believe this property captures very precisely our statement in Section~\ref{s:validation}.
-
-It is hard to prove Sound Validation directly,
-so we first define a stronger property,
-called \emph{Stronger Sound Validation} and
-show that it is preserved during reduction by means of conventional
-Progress and Subject Reduction (Progress is one of our assumption,
-while Subject Reduction relies heavily on SubjectReductionBase).
-That is,
-Progress+Subject Reduction $\Rightarrow$ Stronger Sound Validation,
-\\*and Stronger Sound Validation $\Rightarrow$ Sound Validation.
-
-\subsection{Stronger Sound Validation $\Rightarrow$ Sound Validation}
-
-Stronger Sound Validation depends on
+\subsection{Stronger Soundness $\Rightarrow$ Soundness}
+\saveSpace
+Stronger Soundness depends on
 $\mathit{wellEncapsulated}$, $\mathit{monitored}$
 and $OK$:
 
-\noindent\textbf{Define} $\mathit{wellEncapsulated}(\sigma,\e,l_0)$:\\*
-\indent$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutatable}(l,\sigma,\e)$
+\indent $\mathit{wellEncapsulated}(\sigma,\e,l_0)$ iff
+$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutatable}(l,\sigma,\e)$.\loseSpace
 
-\noindent The main idea is that an object is well encapsulated if its encapsulated state is safe from
-modification.
+\noindent The main idea is that an object is well encapsulated if its encapsulated state cannot be
+modified by $e$.
 
-\noindent\textbf{Define} $\mathit{monitored}(\e,l)$:\\*
-\indent$\e=\ctx_v[M(l;\e_1;\e_2)]$ and either $\e_1=l$ or $l$ is not inside $\e_1$.
-
-\noindent An object is monitored if the execution
+An object is \emph{monitored} if execution
 is currently inside of a monitor for that object, and
 the monitored expression $\e_1$ does not
-contains $l$ as a \emph{proper} subexpression.
+contain $l$ as a \emph{proper} subexpression:
+
+\indent $\mathit{monitored}(\e,l)$ iff
+$\e=\ctx_v[M(l;\e_1;\e_2)]$ and either $\e_1=l$, or $l$ is not inside $\e_1$.\loseSpace
 
 A monitored object is associated with an expression that can not observe it, but may
 reference its internal representation directly.
-In this way, we can safely modify its representation before checking for the invariant.
+In this way, we can safely modify its representation before checking its invariant.
 
 The idea is that at the start the object will be valid and $\e_1$ will contain $l$;
-but during reduction, the $l$ reference will be used in order to
-give access to the internal state of $l$; only after that moment, the object may become invalid.
+but during reduction, $l$ will be used to
+modify the object; only after that moment, the object may become invalid.
 
 
 \noindent\textbf{Define} $OK(\sigma,e)$:\\
-\indent $\forall l\in\dom(\sigma)$
+\indent $\forall l\in\textit{dom}(\sigma)$
   either\\
-\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$\\
-\indent\indent 2. $\mathit{valid}(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$\\
-\indent\indent 3. $\mathit{monitored}(\e,l)$
+\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$,\\
+\indent\indent 2. $\mathit{valid}(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$, or\\
+\indent\indent 3. $\mathit{monitored}(\e,l)$.
 
-Finally, the system is in a valid state with respect to validation
-if for all the objects in the memory, one of these 3 cases apply:
+Finally, the system is in a valid state
+if all objects in memory, are either
 %the class of the object has no invariant method;
-the object is not (transitively) reachable from the expression (thus can be garbage collected);
-the object is valid, and the object is encapsulated;
-or the object is currently monitored.
+not (transitively) reachable from the expression (thus can be garbage collected);
+valid and encapsulated;
+or currently monitored.
 
-\begin{theorem}[Stronger Sound Validation]
+\begin{theorem}[Stronger Soundness]
 if $c:\Kw{Cap};\emptyset\vdash \e_0: \T_0$ and
 $c\mapsto\Kw{Cap}\{\_\}|\e_0\rightarrow^+ \sigma|\e$, then
-$OK(\sigma,\e)$
+$OK(\sigma,\e)$.
 \end{theorem}
 \noindent Starting from only the capability object,
-any well typed expression $\e_0$ can be reduced for an arbitrary amount of steps,
+any well typed expression $\e_0$ can be reduced in an arbitrary number of steps,
 and $OK$ will always hold.
-\\
-\begin{theorem} Stronger Sound Validation $\Rightarrow$ Sound Validation
+
+\begin{theorem} Stronger Soundness $\Rightarrow$ Soundness
 \end{theorem}
 \begin{proof}
 \noindent By Stronger Sound Validation, each $l$ in the current redex must be $OK$:
 \begin{enumerate}
-	\item If $l$ is $garbage$, it cannot be in the current redex, a contradiction.
+	\item If $l$ is \emph{garbage}, it cannot be in the current redex, a contradiction.
 	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to Determinism
 	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
 	\begin{itemize}
-	 \item we are executing inside of $\e_1$ thus the current redex is inside of a sub-expression of the monitor that does not contain $l$, a contradiction.
+	 \item we are executing inside of $\e_1$, thus the current redex is inside of a sub-expression of the monitor that does not contain $l$, a contradiction.
 	 \item or we are executing inside $\e_2$:
 	 by our reduction rules, all monitor expressions start with
-	 $\e_2=l$\validate, thus the first execution step
-	 of $\e_2$ is trusted. Following execution steps are also trusted, since by well formedness the body of invariant methods only use \Q@this@ (now translated to $l$) to access fields.
+	 $\e_2=l$\Q@.invariant()@, thus the first execution step
+	 of $\e_2$ is trusted. Further execution steps are also trusted, since by well formedness the body of invariant methods only use \Q@this@ (now translated to $l$) to read fields.
 	\end{itemize}
 \end{enumerate}
-In any of the possible cases above, Sound Validation holds for $l$, and so it holds for all redexes.
+In any of the possible cases above, Soundness holds for $l$, and so it holds for all redexes.
 \end{proof}
 
 \subsection{Subject Reduction}
 
 \noindent\textbf{Define} $\text{fieldGuarded}(\sigma,\e)$:\\*
 \indent$\forall \ctx$ such that $\e=\ctx[l\singleDot\f] $
-and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$, and $\f\mathrel{\mathit{inside}} \Sigma^\sigma(l).\mathit{validate}$\\*
+and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$, and $\f\mathrel{\mathit{inside}} \Sigma^\sigma(l).\mathit{invariant}$\\*
 \indent\indent either
 $\forall T, \forall C, \Sigma^\sigma;\x:\Kw{mut}\,C\,\not\vdash\ctx[\x]:T$, or\\*
-\indent\indent $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\e$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$
+\indent\indent $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\e$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$.
 
-That is, all \emph{mutating} capsule field accesses are individually guarded by monitors.
+That is, all \Q@mut@ capsule field accesses are individually guarded by monitors.
 Note how we use $C$ in $\x:\Kw{mut}\,C$ to guess the type of the accessed field,
-and that we use the full context $\ctx$ instead of the evaluation context $\ctx_v$
+and that we use the full context $\ctx$, instead of the evaluation context $\ctx_v$,
 to refer to field accesses everywhere in the expression $\e$.
 
 
@@ -180,63 +163,63 @@ $\mathit{fieldGuarded}(\sigma_1,\e_1)$
 \end{theorem}
 
 \begin{theorem}
-	Progress + Subject Reduction $\Rightarrow$ Stronger Sound Validation
+	Progress + Subject Reduction $\Rightarrow$ Stronger Soundness
 \end{theorem}
 \begin{proof}
 This proof proceeds by induction in the usual manner.
 
-\emph{Base Case}: At the start of the execution, the memory is going to only contain $c$: since $c$ is defined to be initially $\mathit{valid}$, and has only \Q@mut@ fields, and so it is trivially $\mathit{wellEncapsulated}$, thus $OK(c\mapsto\Kw{Cap},e)$.
+\emph{Base case}: At the start of execution, memory only contains $c$: since $c$ is defined to always be $\mathit{valid}$, and has only \Q@mut@ fields, hence it is trivially $\mathit{wellEncapsulated}$, thus $OK(c\mapsto\Kw{Cap},e)$.
 
-\emph{Induction}: By Progress we always have another evaluation step to take, by Subject Reduction such a step will preserve $\mathit{OK}$, and so by induction $\mathit{OK}$ holds after any number of steps.
+\emph{Induction}: By Progress, we always have another evaluation step to take, by Subject Reduction such a step will preserve $\mathit{OK}$, and so by induction, $\mathit{OK}$ holds after any number of steps.
 
-Note how for the proof garbage collection is important:
-when the \Q@validate()@ method evaluates to \Q@false@,
-execution can continue only if the offending object is classified as $garbage$.
+Note how for the proof garbage collectibility is important:
+when the \Q@invariant()@ method evaluates to \Q@false@,
+execution can continue only if the offending object is classified as \emph{garbage}.
 \end{proof}
 
-\subsection{Expose Instrumentation}
-We first introduce a lemma derived from well formedness and the type system:
-\begin{Lemma}[ExposerInstrumentation]
+\subsection{Exposer Instrumentation}
+We first introduce a lemma derived from our well formedness criteria and the type system:
+\begin{Lemma}[Exposer Instrumentation]
 If $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
 $\text{fieldGuarded}(\sigma_0,\e_0)$
 \\*
-then $\text{fieldGuarded}(\sigma_1,\e_1)$
+then $\text{fieldGuarded}(\sigma_1,\e_1)$.
 \end{Lemma}
 \begin{proof}
 The only rule that can
 introduce a new field access is \textsc{mcall}.
-In that case, ExposerInstrumentation holds
+In that case, Exposer Instrumentation holds
 by well formedness (all field accesses in methods are of the form \Q@this.f@)
-and since \textsc{mcall} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by MutField such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
+and since \textsc{mcall} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by Mut Field such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
 
 Note that \textsc{monitor exit} is fine because monitors are removed only when
  $e_1$ is a value.
 \end{proof}
 
-\subsection{Proof of Subject Reduction}
+\subsection{Proof of Subject Reduction}\saveSpace
 Any reduction step can be obtained
-by exactly one application of rule \textsc{ctx} and then one other rule. Thus the proof can simply proceed by cases on such other applied rule.
+by exactly one application of the \textsc{ctxv} rule and one other rule. Thus the proof can simply proceed by cases on the other applied rule.
 
-By SubjectReductionBase and ExposerInstrumentation,
+By Subject Reduction Base and Exposer Instrumentation,
 $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_1,\e_1)$. So we just need to proceed by cases on the reduction rule applied to verify that $OK(\sigma_1,\e_1)$ holds:
 
 
 \begin{enumerate}
 \item (\textsc{update}) $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
 	\begin{itemize}
-	  \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\Kw{validate}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
+	  \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
 	  \item Every $l_1$ such that $l\in \mathit{rog}(\sigma,l_1)$ will verify the same case as the former step:
 	  \begin{itemize}
 	  	\item If it was $\mathit{garbage}$, clearly it still is.
-	  	\item If it was $\mathit{monitored}$, it also still is.
+	  	\item If it was $\mathit{monitored}$, it still is.
 	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
 			\begin{itemize}
 				\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
-		    	\item Otherwise, by our well-formedess criteria that \validate{} only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism it is clearly the case that $\mathit{valid}$ still holds;
+		    	\item Otherwise, by our well-formedess criteria that \validate{} only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism, it is clearly the case that $\mathit{valid}$ still holds;
 				By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
 		  	\end{itemize}
 	  \end{itemize}
-	  \item Every other $l_0$ is not in the reachable object graph of $l$
+	  \item Every other $l_0$ is not in the reachable object graph of $l$,
 	  thus it being $\mathit{OK}$ could not have been effected by this reduction step.
 	\end{itemize}
 
@@ -244,54 +227,53 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	\begin{itemize}
 		\item If $l$ was $valid$ and $wellEncapsulated$:
 		\begin{itemize}
-			\item If we have now broken $wellEncapsulated$ we must have made something in its $erog$  $mutatable$. As we can only type \Q@capsule@ fields as \Q@mut@ and not \Q@imm@ fields, by FieldMut we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is being typed as \Q@mut@. By $\mathit{fieldGuarded}(\sigma_0,\e_0)$ the former step must have been inside a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
+			\item If we have now broken $wellEncapsulated$, we must have made something in its \emph{erog} \emph{mutatable}. As we can only type \Q@capsule@ fields as \Q@mut@ and not \Q@imm@ fields, by Field Mut we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is being typed as \Q@mut@. By $\mathit{fieldGuarded}(\sigma_0,\e_0)$ the former step must have been inside a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
 		    and the $l$ under reduction was the only occurrence of $l$.
 		    Since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
-		    by HeadNotCircular. Thus in our new step $l$ is not $inside$ $\ctx_v[v]$. Thus $l$ must be $monitored$ and hence it is $OK$.
+		    by Head Not Circular. Thus in our new step $l$ is not\emph{inside} $\ctx_v[v]$. Thus $l$ must be \emph{monitored} and hence it is $OK$.
 
 		    \item Otherwise, $l$ is still $OK$
     	\end{itemize}
 
 	\item Suppose some other $l_0$ was $wellEncapsulated$ and $valid$:
 	\begin{itemize}
-			\item If $l$ was in the $rog$ of $l_0$, by CapsulaeTree, if $l$ was in the $erog$ of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by $\singleDot\Kw{validate}\oR\cR$, $l_0$’s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can’t have effected $l_0$ being $OK$.
-			\item Otherwise this reduction step could not have affected $l_0$ so $l_0$ is still $OK$.
+			\item If $l$ was in the \emph{rog} of $l_0$, by CapsulaeTree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by \Q@invariant@’s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can’t have effected $l_0$ being $OK$.
+			\item Otherwise, this reduction step could not have affected $l_0$, so $l_0$ is still $OK$.
 	\end{itemize}
 
 
-	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $garbage$), thus $garbage$ is still $OK$.
+	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $\mathit{garbage}$), thus $\mathit{garbage}$ is still $OK$.
 
-	\item As we don’t change any monitors here, nothing that was $monitored$ could have been made un-$monitored$, and so it is still $OK$.
+	\item As we don’t change any monitors here, nothing that was $\mathit{monitored}$ could have been made un-$\mathit{monitored}$, and so it is still $OK$.
 \end{itemize}
 
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
-	These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $garbage$, $wellEncapsulated$, $valid$ (due to Determinism) or $monitored$ properties of any memory locations, thus $\mathit{OK}$ still holds.
+	These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, $wellEncapsulated$, $valid$ (due to Determinism), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
 
-\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\Kw{validate}\oR\cR\cR$:
+\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR$:
 
 	Clearly the newly created object ($l$) is monitored. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
 
 
 \item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:
 \begin{itemize}
-	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{validate}\oR\cR)$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
+	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{invariant}\oR\cR$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
 
 	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can’t have been $garbage$ and $monitored$), as \textsc{update} itself preserves this property and we haven’t modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
 
-	\item If the monitor was introduced by \textsc{mcall}. Then it was due to calling a capsule-mutator method that mutated a field $f$.
+	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule-mutator method that mutated a field $f$.
 	\begin{itemize}
 		\item A location that was $garbage$ obviously still is, and so is also $OK$.
-		\item No location that was $valid$ could have been made non-valid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before the only way it could be non-$wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules $v$ cannot be typed as \Q@mut@ and so we can’t have affected $wellEncapsulated$, hence such thing is still $OK$.
-		\item The only location that could have been made un-$monitored$ is $l$ itself. By our well-formedness criteria $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non-$wellEncapsulated$, since that would violate CapsuleTree. As nothing else in $l$ was modified, and it must have been $wellEncapsulated$ before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $OK$.
+		\item No location that was $valid$ could have been made invalid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before, the only way it could be non-$wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can’t have affected $wellEncapsulated$, hence such thing is still $OK$.
+		\item The only location that could have been made un-$monitored$ is $l$ itself. By our well-formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non-$wellEncapsulated$, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been $wellEncapsulated$ before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $OK$.
 	\end{itemize}
-	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by CapsuleTree the resulting value, $l$, must be $wellEncapsulated$, since $l$ is also $valid$ we have that $l$ is $OK$.
+	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by Capsule Tree the resulting value, $l$, must be $wellEncapsulated$, since $l$ is also $valid$ we have that $l$ is $OK$.
 
 \end{itemize}
 
 \item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
 
-	By StrongExceptionSafety we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria no location inside $\sigma$ could have been $monitored$.
-
-	Since we don’t modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$
+	By Strong Exception Safety, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria, no location inside $\sigma$ could have been $monitored$.
+	Since we don’t modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$ \IOComm{Put these two lines onto previouse page?}
 \end{enumerate}
