@@ -10,11 +10,11 @@
 \subsection{Classes in \name: a mechanism for code use}
 \saveSpace
 %\name has a substantially different design from Java-like languages.
-Consider the example of Section~\ref{sec:intro} rewritten in \name, introducing classes \Q@Utils@ and \Q@A@:
+Consider the example from Section~\ref{sec:intro} rewritten in \name, introducing classes \Q@Utils@ and \Q@A@:
 \saveSpace\saveSpace
 \begin{lstlisting}
- Utils={ static method int m(A a){ return ..; } }
  A={ method int ma(){ return Utils.m(this); } }
+ Utils={ static method int m(A a){ return ..; } }
 \end{lstlisting} 
 \saveSpace\saveSpace
 \noindent Classes in \name use a different declaration style compared
@@ -27,7 +27,7 @@ literal associated with the class is `\Q@{ method int ma(){return Utils.m(this);
 %important differences to Java-like languages in the way 
 %classes and code-literals are type-checked, as we shall see next. 
 %Nevertheless, for this example, things still work in a similar way to Java. 
-In the \name code above there is no way to add a class 
+In the \name code above, there is no way to add a class 
 \Q@B@ reusing the code of \Q@A@: class \Q@A@ (uppercase) is designed for code \emph{use} and not \emph{reuse}.
 Indeed, a noticeable difference with Java is the
 absence of the \Q@extends@ keyword.
@@ -50,7 +50,7 @@ start with a lowercase letter: \MS{even syntactically they can not be used as ty
 \saveSpace\saveSpace
 \begin{lstlisting}
  Utils={ static method int m(A a){return ...} }
- ta={ method int ma(){return Utils.m(this);}}//type error
+ ta={ method int ma(){return Utils.m(this);}} //type error
  A=Use ta
 \end{lstlisting}
 \saveSpace\saveSpace
@@ -63,14 +63,14 @@ names are allowed.
 \emph{Referring to a trait is the only way to induce code reuse}.
 
 The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
-the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere is reused.
+the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere it is reused.
 In \name we do not commit the same mistake, and the code \Q@Utils.m(this)@ is ill-typed:
 the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A}.
 The following second attempt would not work either:
 \saveSpace\saveSpace
 \begin{lstlisting}
- Utils={ static method int m(ta a){return ...}//syntax error
+ Utils={ static method int m(ta a){return ...}} //syntax error
  ta={ method int ma(){return Utils.m(this);}}
  A=Use ta
 \end{lstlisting}
@@ -86,7 +86,7 @@ Thus, to model the original Java example, we need an interface
 capturing the commonalities between \Q@A@ and \Q@B@:
 \saveSpace\saveSpace
 \begin{lstlisting}
- IA={interface method int ma()}//interface with abstract method
+ IA={interface method int ma()} //interface with abstract method
  Utils={static method int m(IA a){return ...} }
  ta={implements IA //This line is the core of the solution
      method int ma(){return Utils.m(this);}}
@@ -116,12 +116,12 @@ no method called \Q@ma@ is explicitly declared.
 DJ and TR would instead require explicitly declaring an abstract \Q@ma@ method:
 \saveSpace\saveSpace
 \begin{lstlisting}
-  B=Use ta, { method int ma()//not required by us
+  B=Use ta, { method int ma() //not required by us
       method int mb(){return this.ma();} }
 \end{lstlisting}
 \saveSpace\saveSpace
 \noindent
-In \name methods are directly accessible from \Q@ta@, exactly as in the Java equivalent
+In \name, methods are directly accessible from \Q@ta@, exactly as in the Java equivalent
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
@@ -146,7 +146,7 @@ B={implements IA
   method int mb(){return this.ma();} } 
  \end{lstlisting}
 \saveSpace\saveSpace
-\emph{In the resulting code there is no mention of the trait
+\emph{In the resulting code, there is no mention of the trait
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.
