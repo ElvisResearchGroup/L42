@@ -42,14 +42,15 @@ tweaks with respect to our informal description of our approach.
 From a formal perspective 
 these changes do not change expressivity:
 \begin{itemize}
-\item All fields are instance-private, as opposed to only \Q@capsule@ ones. One could always provide getters and setters to simulate public fields.
+\item All fields are instance-private, as opposed to only \Q@capsule@ ones used in \Q@invariant@. One could always provide getters and setters to simulate public fields.
 \item There are no explicit constructor definitions, rather all constructors are of the canonical form
 \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@,
  where $T_1, \ldots, T_n$ are the types (including modifiers) of $C$.
 To provide more flexible initialisation one could always make a factory method.
-\item We require \validate{} methods to only use \Q@this@ to access fields,
-this can be achieved by inlining method calls. 
-This does prevent the calling of recursive methods, allowing them would not cause problems with our protocol, but it does not increase expressivity.
+\item We require \validate{} methods to only use \Q@this@ to access fields.
+This does prevent the calling of recursive methods,
+allowing them would not cause problems with our protocol,
+but it does not increase expressivity.
 %or if they are recursive, replacing them with calls to methods that take the fields of \Q@this@ instead of \Q@this@ itself.
 \item For simplicity, we do not have actual exception objects,
 rather we just have a concept of \emph{errors} with no associated values.
@@ -142,7 +143,8 @@ We annotate the monitor-expression with $l$ to ensure
 that if the invariant check fails, it is precisely $l$ that is invalid.
 We use a failed monitor expression (i.e. when $\e_2$ is the value \Q@false@) to represent throwing unchecked exceptions.
 In addition, our reduction rules annotate the body of \Q@try@ expressions with
-the original state of memory. This is used assume strong exception safety, that is, it will not be mutated by executing the body of the \Q@try@.
+the original state of memory. This is used to propagate the guarantees of strong exception safety,
+that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
 
  Our well formedness criteria are:
 \begin{itemize}
@@ -264,7 +266,7 @@ Their is no need to monitor \Q@capsule@ methods, since their receiver is a uniqu
 The interaction with monitors and exceptions is interesting:
 a monitor releases the value if the invariant check evaluates to \Q@true@, and produces an error if the 
 check evaluates to \Q@false@.
-If either $\e_1$ or $\e_2$ are not allready values, the execution is propagated inside
+If either $\e_1$ or $\e_2$ are not already values, the execution is propagated inside
 by \textsc{ctxv}.
 If either $\e_1$ or $\e_2$ evaluate to an error, such error is captured by 
 \textsc{try error}.

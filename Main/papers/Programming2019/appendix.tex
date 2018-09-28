@@ -172,7 +172,7 @@ This proof proceeds by induction in the usual manner.
 
 \emph{Induction}: By Progress, we always have another evaluation step to take, by Subject Reduction such a step will preserve $\mathit{OK}$, and so by induction, $\mathit{OK}$ holds after any number of steps.
 
-Note how for the proof garbage collectibility is important:
+Note how for the proof garbage collection is important:
 when the \Q@invariant()@ method evaluates to \Q@false@,
 execution can continue only if the offending object is classified as \emph{garbage}.
 \end{proof}
