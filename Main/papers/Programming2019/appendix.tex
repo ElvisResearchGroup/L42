@@ -237,14 +237,14 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 	\item Suppose some other $l_0$ was $wellEncapsulated$ and $valid$:
 	\begin{itemize}
-			\item If $l$ was in the \emph{rog} of $l_0$, by CapsulaeTree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by \Q@invariant@’s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can’t have effected $l_0$ being $OK$.
+			\item If $l$ was in the \emph{rog} of $l_0$, by CapsulaeTree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by \Q@invariant@'s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can't have effected $l_0$ being $OK$.
 			\item Otherwise, this reduction step could not have affected $l_0$, so $l_0$ is still $OK$.
 	\end{itemize}
 
 
 	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $\mathit{garbage}$), thus $\mathit{garbage}$ is still $OK$.
 
-	\item As we don’t change any monitors here, nothing that was $\mathit{monitored}$ could have been made un-$\mathit{monitored}$, and so it is still $OK$.
+	\item As we don't change any monitors here, nothing that was $\mathit{monitored}$ could have been made un-$\mathit{monitored}$, and so it is still $OK$.
 \end{itemize}
 
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
@@ -260,12 +260,12 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 \begin{itemize}
 	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{invariant}\oR\cR$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
 
-	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can’t have been $garbage$ and $monitored$), as \textsc{update} itself preserves this property and we haven’t modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
+	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can't have been $garbage$ and $monitored$), as \textsc{update} itself preserves this property and we haven't modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
 
 	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule-mutator method that mutated a field $f$.
 	\begin{itemize}
 		\item A location that was $garbage$ obviously still is, and so is also $OK$.
-		\item No location that was $valid$ could have been made invalid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before, the only way it could be non-$wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can’t have affected $wellEncapsulated$, hence such thing is still $OK$.
+		\item No location that was $valid$ could have been made invalid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before, the only way it could be non-$wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected $wellEncapsulated$, hence such thing is still $OK$.
 		\item The only location that could have been made un-$monitored$ is $l$ itself. By our well-formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non-$wellEncapsulated$, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been $wellEncapsulated$ before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $OK$.
 	\end{itemize}
 	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by Capsule Tree the resulting value, $l$, must be $wellEncapsulated$, since $l$ is also $valid$ we have that $l$ is $OK$.
@@ -275,5 +275,107 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 \item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
 
 	By Strong Exception Safety, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria, no location inside $\sigma$ could have been $monitored$.
-	Since we don’t modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$ \IOComm{Put these two lines onto previouse page?}
+	Since we don't modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$ \IOComm{Put these two lines onto previouse page?}
 \end{enumerate}
+
+
+
+
+
+\section{Hamster Justification}
+\label{s:proof}
+\lstset{
+%basicstyle=\footnotesize,
+language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
+[Pure][Reads(ReadsAttribute.Reads.Nothing)}
+
+In this section we describe exactly why we chose to annotate the example from section~\ref{s:intro} in the way we did. Note: C\#, and hence, Spec\# have \Q@private@ accessibility by default, however for brevity, we will assume the default is \Q@public@.
+
+\subsection{The \Q@Point@ class} 
+The typical way to create a \Q@Point@ class in C\# is as follows:
+\begin{lstlisting}
+class Point {
+	double x, y;
+	Point(double x, double y) { this.x = x; this.y = y; }
+}
+\end{lstlisting}
+This works exactly as in Spec\#, however we had problems defining equality of \Q@Point@s (see bellow).
+
+\subsection{The \Q@Hamster@ class} 
+The \Q@Hamster@ in C\# would simply look like this:
+\begin{lstlisting}
+class Hamster {
+	Point pos;
+	Hamster(Point pos) { this.pos = pos; }
+}
+\end{lstlisting}
+Though this is legal in Spec\#, it is uterrly usless. As we don't want \Q@Point@ to be an immutable/value class Spec\# has no way of knowing whether the \Q@Point@ referenced by \Q@pos@ is \emph{valid} or \emph{consistant}. Knowing that \Q@pos@ is valid is neccessary to do almost anything with it, since in Spec\#, by default, methods implicitly require their recievers and arguments to be \emph{valid} (compare this with our invariant protocol, which guarantees this to be the case, except for methods called on \Q@this@ inside \Q@invariant@).
+Knowing that \Q@pos@ is consistent is neccessary to mutate it, by updating a field or passing it as an (implicit) argument to a non-\Q@Pure@ method. We do not want \Q@pos@ to ever be mutated, however Spec\# currently has no way of enforcing this without making the \Q@Point@ class immutable\footnote{their is a paper sugesting a simple solution to this problem: assine the owner of the object to a special `freezer' object, which never gives up mutation permission~\cite{DBLP:conf/vstte/LeinoMW08}, however this does not seem to be implemented yet \IOComm{mention this in the introduction?}}, as such we will simply refrain from mutating it.
+
+The solution is to require that \Q@pos@ is a \emph{peer} of the enclosing \Q@Hamster@, this is done by annotating the field with \Q@[Peer]@. Two objects are \emph{peers} if they have the same owner, implying that  whenever one is valid and/or consistent, the other one also is. This means that if we have a \Q@Hamster@, we can play with it's \Q@pos@, in the same ways as we could play with the \Q@Hamster@.
+
+To simplify instantiation of \Q@Hamster@s, we will take an unowned \Q@Point@, and let Spec\# implicitly handle making it a peer of the \Q@Hamster@. This is done by taking a \Q@[Captured] Point@ in the constructor (note how similar this is to taking a \Q@capsule@). With these modifications, the \Q@Hamster@ becomes:
+\begin{lstlisting}
+class Hamster {
+  [Peer] Point pos;
+  Hamster([Captured] Point pos) { this.pos = pos; }
+}
+\end{lstlisting}
+
+\subsection{The \Q@Cage@ class} 
+The natural way to write this in C\# (if it had native support for class-invariants like Spec\#) is:
+\begin{lstlisting}
+class Cage {
+  Hamster h;
+  List<Point> path;
+  Cage(Hamster h, List<Point> path) { this.h = h; this.path = path; }
+  invariant this.path.Contains(this.h.pos);
+  void Move() { 
+    int index = this.path.IndexOf(this.h.pos);
+    this.h.pos = this.path[index % this.path.Count];
+  } 
+}
+\end{lstlisting}
+However, in Spec\#, for the above \Q@invariant@ to be addmissable, \Q@this.path@ and \Q@this.h@ must both be owned by \Q@this@. In addition, the \emph{elements} of \Q@this.path@ need to be owned by \Q@this@, since \Q@this.path.Conatains@ will read them. Note that \Q@this.h.pos@ also needs to be owned by \Q@this@, however since \Q@pos@ is declared as \Q@[Peer]@, if \Q@this@ owns \Q@this.h@, it also owns \Q@this.h.pos@. The solution is to declared \Q@h@, \Q@path@, and the elements of \Q@path@, as \emph{rep} (i.e. they are owned by the containing object). Finally, since \Q@Move@ modifies \Q@this.h@, \Q@this.h@ must needs to be made consistent, which requires that the owner (\Q@this@) is made invalid, this can be achieved by using the \Q@expose(this) { .. }@ statement form, which marks \Q@this@ as invalid, executes the body, checks that the invariant of \Q@this@ holds, and marks it valid again.
+As we did with the \Q@Hamster@, we will simply take unowned \Q@h@, and \@path@ values, however we also need the elements of \Q@path@ to be unowned, this is achieved by requiring that \Q@path@ is unowned, and its elements (denoted by \Q@Owner.ElementProxy(path)@) are owned by the same owner as \Q@path@ (which is \Q@null@).
+\begin{lstlisting}
+class Cage: PureObject {
+  [Rep] public Hamster h;
+  [Rep, ElementsRep] List<Point> path;
+	
+  Cage([Captured] Hamster h, [Captured] List<Point> path)
+    requires Owner.Same(Owner.ElementProxy(path), path);
+  { this.h = h; this.path = path; }
+	
+  invariant this.path.Contains(this.h.pos);
+  void Move() { 
+    int index = this.path.IndexOf(this.h.pos);
+    expose(this) { this.h.pos = this.path[index % this.path.Count]; }
+  } 
+}
+\end{lstlisting}
+
+However the above code has two problems: the constructor fails to verify (it is unconvinced that it's precondition actually holds when we initialise \Q@this.path@), and our list operations (\Q@Contains@ and \Q@IndexOf@) use the default equality comparison, which is \emph{reference} equality in C\#, wheras our intention is to compare the values of the points. 
+The first problem is because the constructor for \Q@Object@ (the default base class if none is provided) is not marked as \Q@[Pure]@, since it is (implicitly) called uppon entry to \Q@Cage@'s constructor, Spec\# has no idea as to what memory could've mutated, and so dosn't know whether the precondition still holds. The solution is to simply explicitly call it, but at the end of the constructor: \Q@Cage(..) .. { this.h = h; this.path = path; base();}@.
+
+\subsection{Defining equality of \Q@Point@s}
+The natural way in C\# to make equality behave as value equality is just to override \Q@Object.Equals@, and let dynamic-dispatch handle the rest:
+\begin{lstlisting}
+class Point {
+  .. // as before
+  override bool Equal(Object o) {
+    Point? that = o as Point;
+    return that != null && this.x == that.x && this.y == that.y;
+  }
+}
+\end{lstlisting}
+However this fails in Spec\# since \Q@Object.Equals@ is annotated with: \Q@[Pure][Reads(ReadsAttribute.Reads.Nothing)]@, and of course every overload of it must also satisfy this. The \Q@Reads@ annotations specifies that the method cannot read fields of \emph{any} object, not even the reciever, this makes overloading the method useless. Our best guess as to why \Q@Object.Equals@ is annotated like that is that they expect it to be the default reference-equality, annotating it like this could aid static verification as it implies that whether or not two objects are equal cannot change, even if their fields are modified.
+
+So we resorted to make our own \Q@Equal@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@[Pure]@, and either annotated with \Q@[Reads(ReadsAttribute.Reads.Nothing)]@ or \Q@[Reads(ReadsAttribute.Reads.Owned)]@ (the default, if the method is \Q@[Pure]@). The latter annotation means it can only read fields of objects owned by the \emph{reciever} of the method, as such, a \Q@[Pure] bool Equal(Point that)@ method can read the fields of \Q@this@, but not the fields of \Q@that@. Of course it would be ridiculous to require that \Q@this@ owns \Q@that@. As such, the only solution is to pass the fields of the other point to the method:
+\begin{lstlisting}
+  [Pure] bool Equal(double x, double y) { return x == this.x && y == this.y;  }
+\end{lstlisting}
+
+Sadly however this mean we can no longer use \Q@List@'s \Q@Contains@ and \Q@IndexOf@ methods, rather we have to expand out their code manually, making these changes takes us to the version we presented in Section \ref{s:intro}.
+
+

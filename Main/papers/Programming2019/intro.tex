@@ -1,4 +1,5 @@
 \section{Introduction}
+\label{s:intro}
 %\newpage
 %\LINE
 Class-invariants are an important concept when reasoning about software correctness.
@@ -74,23 +75,22 @@ This technique loosely corresponds to an implicit pack \MS{and} unpack: we use \
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
 
-\IO{\textit{Spec\# example:}} Here we show the previous example in Spec\#, the system most similar to ours \TODO{(see Appendix X for a more detailed discussion about this solution)}:
+\IO{\textit{Spec\# example:}} Here we show the previous example in Spec\# the system most similar to ours \TODO{(see Appendix X for a more detailed discussion about this solution)}:
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
+// Note: assume everything is 'public'
 class Point { double x; double y; Point(double x, double y) {..}
-  [Pure] virtual bool Equal(double x, double y) {
+  [Pure] bool Equal(double x, double y) {
     return x == this.x && y == this.y; }
 }
-class Hamster{[Peer] Point pos; Hamster([Captured] Point pos){..}
-}
-class PureObject { [Pure] PureObject() { } 
-}
-class Cage: PureObject {
+class Hamster{[Peer] Point pos; Hamster([Captured] Point pos){..}}
+
+class Cage {
   [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
   Cage([Captured] Hamster h, [Captured] List<Point> path)
-    requires Owner.Same(Owner.ElementProxy(path), path);{..}
+    requires Owner.Same(Owner.ElementProxy(path), path);{..; base();}
   invariant exists {int i in (0 : this.path.Count);
     this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
   void Move() {
@@ -117,7 +117,7 @@ Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 
 %3 read 2 capsule 3 mut extra method moveTo
 %----
-In Spec\# we had to add $11$ different annotations, \IO{of} $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
+In Spec\# we had to add $10$ different annotations, \IO{of} $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
 %  Moreover we had been unable to reuse 
 % \Q@Object.Equals@, \Q@List.IndexOf@ and % \Q@List.Contains@.
 % Note: we had to add a new class \Q@PureObject@, since the \Q@Objec@ constructor is not annotated as \Q@[Pure]@.

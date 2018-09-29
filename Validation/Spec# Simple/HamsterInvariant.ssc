@@ -7,29 +7,22 @@ using System;
 class Point {
 	public double x, y;
 	public Point(double x, double y) { this.x = x; this.y = y; }
-	
-	[Pure] public virtual bool Equal(Point that) { return that.x == this.x && that.y == this.y;  }
+
 	[Pure] public virtual bool Equal(double x, double y) { return x == this.x && y == this.y;  }
 }
 
-class EvilPoint: Point {
-	public EvilPoint() { base(0, 0); }
-	[Pure] public override bool Equal(double x, double y) { return RandomBool(); }
-	public static bool RandomBool() { return new Random().NextDouble() >= 0.5; }
-}
 class Hamster {
 	[Peer] public Point pos;
 	public Hamster([Captured] Point pos) { this.pos = pos; }
 }
-internal class PureObject { [Pure] internal PureObject() { } }
 
-class Cage: PureObject {
+class Cage {
 	[Rep] public Hamster h;
 	[Rep, ElementsRep] List<Point> path;
 
 	public Cage([Captured] Hamster h, [Captured] List<Point> path)
 		requires Owner.Same(Owner.ElementProxy(path), path);
-	{ this.h = h; this.path = path; }
+	{ this.h = h; this.path = path; base(); }
 
 	invariant exists {int i in (0 : this.path.Count); this.path[i].Equal(this.h.pos.x, this.h.pos.y)};
 	public void Move() { 
@@ -44,21 +37,6 @@ class Cage: PureObject {
 
 class Program
 {
-[Pure][Verify(false)]
-internal static bool RecordInvariant()
-	ensures result == true;
-	{	
-		StackFrame? sf = new StackTrace().GetFrame(4);
-		if (sf == null)
-			throw new Exception();
-
-		MethodBase? meth = sf.GetMethod();
-		if (meth == null)
-			throw new Exception();
-		Console.WriteLine(meth.DeclaringType.FullName + "." + meth.Name);
-
-		return true;
-	}
   static void Main(String[] args)
   {
 	List<Point> pl = new List<Point>{new Point(0, 0), new Point(0, 1)};
@@ -66,17 +44,12 @@ internal static bool RecordInvariant()
 	Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 	
 	Console.WriteLine("hello");
-//	p.x = 3;
-//		c.check();
-    Assert(c.h.pos.x == 0 && c.h.pos.y == 0);
+    assume c.h.pos.x == 0 && c.h.pos.y == 0;
     c.Move();
-    Assert(c.h.pos.x == 2 && c.h.pos.y == 2);
+    assume c.h.pos.x == 2 && c.h.pos.y == 2;
     c.Move();
-    Assert(c.h.pos.x == 0 && c.h.pos.y == 0);
+    assume c.h.pos.x == 0 && c.h.pos.y == 0;
     c.Move();
-    Assert(c.h.pos.x == 2 && c.h.pos.y == 2);
+    assume c.h.pos.x == 2 && c.h.pos.y == 2;
   }
-
-  // Use my own 'Assert' function, so spec# dosn't attempt to verify the assertion
-  static void Assert(bool b) { if (!b) Console.WriteLine("Assertion Failure!"); }
 } 

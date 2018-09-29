@@ -47,7 +47,8 @@ these changes do not change expressivity:
 \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@,
  where $T_1, \ldots, T_n$ are the types (including modifiers) of $C$.
 To provide more flexible initialisation one could always make a factory method.
-\item We require \validate{} methods to only use \Q@this@ to access fields.
+\item We require \validate{} methods to only use \Q@this@ to access fields,
+this can be achieved by inlining method calls.
 This does prevent the calling of recursive methods,
 allowing them would not cause problems with our protocol,
 but it does not increase expressivity.
