@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="l42" default="all">
+  
+  
+  <property file="l42.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.oracle_1.8" value="${jdk.home.oracle_1.8}/bin"/>
+  <path id="jdk.classpath.oracle_1.8">
+    <fileset dir="${jdk.home.oracle_1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="../../share/java/hamcrest/core.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.oracle_1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.oracle_1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.oracle_1.8"/>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <fileset dir="${javac2.home}">
+      <include name="javac2.jar"/>
+      <include name="jdom.jar"/>
+      <include name="asm-all*.jar"/>
+      <include name="forms-*.jar"/>
+    </fileset>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  <import file="${basedir}/Main/module_l42_main.xml"/>
+  
+  <import file="${basedir}/PlgAlu/module_plgalu.xml"/>
+  
+  <import file="${basedir}/PlgDatabase/module_plgdatabase.xml"/>
+  
+  <import file="${basedir}/PlgGui/module_plggui.xml"/>
+  
+  <import file="${basedir}/PlgLimitations/module_plglimitations.xml"/>
+  
+  <import file="${basedir}/PlgNumbers/module_plgnumbers.xml"/>
+  
+  <import file="${basedir}/PlgSafeOperators/module_plgsafeoperators.xml"/>
+  
+  <import file="${basedir}/PlgFileSystem/module_plgfilesystem.xml"/>
+  
+  <import file="${basedir}/module_l42.xml"/>
+  
+  <import file="${basedir}/Tests/module_tests.xml"/>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.l42_main, clean.module.plgalu, clean.module.plgdatabase, clean.module.plggui, clean.module.plglimitations, clean.module.plgnumbers, clean.module.plgsafeoperators, clean.module.plgfilesystem, clean.module.l42, clean.module.tests, clean.artifact.l42:jar" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.l42_main, compile.module.plgalu, compile.module.plgdatabase, compile.module.plggui, compile.module.plglimitations, compile.module.plgnumbers, compile.module.plgsafeoperators, compile.module.plgfilesystem, compile.module.l42, compile.module.tests" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.l42:jar" value="${basedir}/Main/papers/Programming2019/Artifact"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.L42.jar" value="${artifacts.temp.dir}/L42.jar"/>
+  </target>
+  
+  <target name="clean.artifact.l42:jar" description="clean L42:jar artifact output">
+    <delete dir="${artifact.output.l42:jar}"/>
+  </target>
+  
+  <target name="artifact.l42:jar" depends="init.artifacts, compile.module.l42_main, compile.module.plgalu, compile.module.plgfilesystem, compile.module.plgsafeoperators, compile.module.plggui, compile.module.plgnumbers" description="Build &#39;L42:jar&#39; artifact">
+    <mkdir dir="${artifact.output.l42:jar}"/>
+    <jar destfile="${temp.jar.path.L42.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset file="${basedir}/META-INF/MANIFEST.MF" prefix="META-INF"/>
+      <zipfileset dir="${l42_main.output.dir}"/>
+      <zipfileset dir="${plgalu.output.dir}"/>
+      <zipfileset dir="${plgfilesystem.output.dir}"/>
+      <zipfileset dir="${plgsafeoperators.output.dir}"/>
+      <zipfileset dir="${plggui.output.dir}"/>
+      <zipfileset dir="${plgnumbers.output.dir}"/>
+    </jar>
+    <copy file="${temp.jar.path.L42.jar}" tofile="${artifact.output.l42:jar}/L42.jar"/>
+    <copy file="${basedir}/Main/antlr-4.2.2-complete.jar" tofile="${artifact.output.l42:jar}/antlr-4.2.2-complete.jar"/>
+    <mkdir dir="${artifact.output.l42:jar}/localhost"/>
+    <copy todir="${artifact.output.l42:jar}/localhost">
+      <fileset dir="${basedir}/Tests/localhost"/>
+    </copy>
+    <copy file="${basedir}/Tests/src/widgetGui/libProject/This.L42" tofile="${artifact.output.l42:jar}/WidgetGui.L42"/>
+    <copy file="${basedir}/Tests/src/widgetGui/libTests/SafeMovable.L42" tofile="${artifact.output.l42:jar}/SafeMovable.L42"/>
+    <mkdir dir="${artifact.output.l42:jar}/Spec#"/>
+    <copy file="${basedir}/Validation/Spec#/Debug.ssc" tofile="${artifact.output.l42:jar}/Spec#/Debug.ssc"/>
+    <copy file="${basedir}/Validation/Spec#/GuiLib.ssc" tofile="${artifact.output.l42:jar}/Spec#/GuiLib.ssc"/>
+    <copy file="${basedir}/Validation/Spec#/Main.ssc" tofile="${artifact.output.l42:jar}/Spec#/Main.ssc"/>
+    <copy file="${basedir}/Validation/Spec#/SafeMovable.ssc" tofile="${artifact.output.l42:jar}/Spec#/SafeMovable.ssc"/>
+    <copy file="${basedir}/Validation/Spec#/Validation.sln" tofile="${artifact.output.l42:jar}/Spec#/Validation.sln"/>
+    <copy file="${basedir}/Validation/Spec#/Validation.sscproj" tofile="${artifact.output.l42:jar}/Spec#/Validation.sscproj"/>
+    <copy file="${basedir}/Validation/Spec#/WidgetGuiAuxLib.ssc" tofile="${artifact.output.l42:jar}/Spec#/WidgetGuiAuxLib.ssc"/>
+    <copy file="${basedir}/Validation/Spec#/WidgetGuiLib.ssc" tofile="${artifact.output.l42:jar}/Spec#/WidgetGuiLib.ssc"/>
+    <mkdir dir="${artifact.output.l42:jar}/examples"/>
+    <mkdir dir="${artifact.output.l42:jar}/examples/resources"/>
+    <copy file="${basedir}/Tests/examples/resources/down.png" tofile="${artifact.output.l42:jar}/examples/resources/down.png"/>
+    <copy file="${basedir}/Tests/examples/resources/left.png" tofile="${artifact.output.l42:jar}/examples/resources/left.png"/>
+    <copy file="${basedir}/Tests/examples/resources/right.png" tofile="${artifact.output.l42:jar}/examples/resources/right.png"/>
+    <copy file="${basedir}/Tests/examples/resources/up.png" tofile="${artifact.output.l42:jar}/examples/resources/up.png"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.l42:jar" description="Build all artifacts">
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
