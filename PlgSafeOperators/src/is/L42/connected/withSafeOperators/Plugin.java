@@ -45,7 +45,6 @@ import platformSpecific.fakeInternet.PluginType;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Revertable;
 import privateMangling.RefreshUniqueNames;
-import profiling.Timer;
 import sugarVisitors.ToFormattedText;
 import tools.Map;
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -145,9 +146,15 @@ public class ReplMain {
 
   private void makeReplTextArea(String fileName,String tabContent) {
 	 URL url = getClass().getResource("textArea.xhtml");
+	 if(url.toString().startsWith("jar:")) {
+             try {url = Paths.get("localhost","textArea.xhtml").toUri().toURL();}
+             catch (MalformedURLException e) {throw new Error(e);}
+	   }
+	 //System.out.println("######"+url);
 	 assert url!=null:
 		 "";
-    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,fileName,url));
+    URL _url=url;
+    ReplTextArea editor=ReplGui.runAndWait(4,l->new ReplTextArea(l,fileName,_url));
     Platform.runLater(()->gui.openTab(editor,tabContent));
   }
 

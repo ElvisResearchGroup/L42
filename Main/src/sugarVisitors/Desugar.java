@@ -77,7 +77,6 @@ import coreVisitors.IsCompiled;
 import coreVisitors.Visitor;
 import facade.L42;
 import newTypeSystem.TypeManipulation;
-import profiling.Timer;
 
 public class Desugar extends CloneVisitor{
   public static Expression of(Expression e){

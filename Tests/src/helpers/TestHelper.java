@@ -34,7 +34,6 @@ import facade.L42;
 import facade.Parser;
 import facade.L42.ExecutionStage;
 import platformSpecific.javaTranslation.Resources;
-import profiling.Timer;
 
 public class TestHelper {
 
@@ -266,8 +265,8 @@ public class TestHelper {
     L42.resetFreshPrivate();
     is.L42.connected.withAlu.Plugin.counters.clear();
     Resources.clearRes();
-    Timer.restart();
-    Timer.activate("TOP");
+    //Timer.restart();
+    //Timer.activate("TOP");
   }
 
   public static class ErrorCarry {

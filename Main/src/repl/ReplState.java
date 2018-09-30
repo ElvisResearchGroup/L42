@@ -26,7 +26,6 @@ import facade.ErrorFormatter;
 import facade.L42;
 import facade.Parser;
 import facade.L42.ExecutionStage;
-import profiling.Timer;
 import programReduction.Program;
 import programReduction.ProgramReduction;
 import sugarVisitors.Desugar;
@@ -51,7 +50,7 @@ public static ReplState start(String code, Loader cacheC42){
   try{
     boolean cached=p!=null;
     if(!cached){
-      Timer.activate("RunningWithoutParsedCache");
+      //Timer.activate("RunningWithoutParsedCache");
       p= L42.parseAndDesugar("Repl",code);
       }
     ProgramReduction pr = new ProgramReduction(cacheC42,!cached);

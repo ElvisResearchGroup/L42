@@ -42,7 +42,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import profiling.Timer;
+//import profiling.Timer;
 
 public class ReplGui extends Application {
   static ReplMain main;
@@ -187,9 +187,9 @@ public class ReplGui extends Application {
 
   @Override
   public void stop() throws Exception {
-    if (L42.profilerPrintOn){
+    /*if (L42.profilerPrintOn){
       System.out.print(Timer.report());
-    }
+    }*/
     origStop();
     Platform.exit();
     System.exit(0);

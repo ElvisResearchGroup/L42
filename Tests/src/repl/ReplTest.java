@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import facade.L42;
 import helpers.TestHelper;
-import profiling.Timer;
 
 /*
 Issues:
@@ -29,7 +28,7 @@ public class ReplTest {
 public static void main(String[]arg)throws Throwable{
   ClassLoader.getSystemClassLoader()
   .setDefaultAssertionStatus(true);
-  Timer.activate("TOP");
+  //Timer.activate("TOP");
   ReplMain.main(arg);
   }
 /*@Test

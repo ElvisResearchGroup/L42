@@ -25,7 +25,6 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import coreVisitors.CloneVisitor;
 import coreVisitors.InjectionOnSugar;
 import newTypeSystem.FormattedError;
-import profiling.Timer;
 import programReduction.Program;
 import programReduction.ProgramReduction;
 import sugarVisitors.CollapsePositions;
@@ -154,9 +153,9 @@ public class L42 {
       ErrorFormatter.topFormatErrorMessage(msg);
     }
     finally{
-      if (L42.profilerPrintOn){
+      /*if (L42.profilerPrintOn){
         System.out.print(Timer.report());
-        }
+        }*/
     }
   }
 
