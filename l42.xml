@@ -152,9 +152,9 @@
       <zipfileset dir="${plgsafeoperators.output.dir}"/>
       <zipfileset dir="${plggui.output.dir}"/>
       <zipfileset dir="${plgnumbers.output.dir}"/>
+      <zipfileset src="${basedir}/Main/antlr-4.2.2-complete.jar"/>
     </jar>
     <copy file="${temp.jar.path.L42.jar}" tofile="${artifact.output.l42:jar}/L42.jar"/>
-    <copy file="${basedir}/Main/antlr-4.2.2-complete.jar" tofile="${artifact.output.l42:jar}/antlr-4.2.2-complete.jar"/>
     <mkdir dir="${artifact.output.l42:jar}/localhost"/>
     <copy todir="${artifact.output.l42:jar}/localhost">
       <fileset dir="${basedir}/Tests/localhost"/>
