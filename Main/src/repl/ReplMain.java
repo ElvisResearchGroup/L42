@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -167,7 +169,7 @@ public class ReplMain {
     }
     catch(IllegalArgumentException e) {
       Platform.runLater(()->gui.makeAlert("Invalid Run","Missing two line at the start of 'This.L42' file"));
-      return;
+      throw new Error(e);
     }
     catch(NullPointerException e) {
       throw new Error(e);

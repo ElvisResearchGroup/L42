@@ -67,15 +67,15 @@ Our system performs run-time checks for the invariant
 at the end of \Q@Cage@'s constructor, \Q@moveTo@ method, and after any update to one of its fields.}
 The \Q@moveTo@ method is the only place in the above code where the invariant may be broken. However, there is only a single occurrence of \Q@this@ \MS{and it is} used to read the \Q@h@ field. \IO{We leverage} over TMs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \IO{\Q@Hamster@'s} position is updated. 
 The invariant is checked at the end of the \Q@moveTo@ method, just before \Q@this@ would become visible again.
-This technique loosely corresponds to an implicit pack \MS{and} unpack: we use \Q@this@ only to read the field value, then we work on it's value while the invariant of \Q@this@ is not known to hold\IO{; finally} we check the invariant before allowing the object to  be used again.
+This technique loosely corresponds to an implicit pack and unpack: we use \Q@this@ only to read the field value, then we work on it's value while the invariant of \Q@this@ is not known to hold\IO{; finally} we check the invariant before allowing the object to  be used again.
 
-\MS{Note: since only \Q@Cage@ has an invariant,
+Note: since only \Q@Cage@ has an invariant,
  only \Q@Cage@ have special restrictions, allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
- This is not the case in Spec\#: all code involved in  verification needs to be designed with verification in mind.}
+ This is not the case in Spec\#: all code involved in  verification needs to be designed with verification in mind~\cite{barnett2011specification}.
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
 
-\IO{\textit{Spec\# example:}} Here we show the previous example in Spec\# the system most similar to ours \TODO{(see Appendix X for a more detailed discussion about this solution)}:
+\textit{Spec\# example:} Here we show the previous example in Spec\# the system most similar to ours (see appendix \ref{s:justice} for a more detailed discussion about this solution):
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
@@ -99,7 +99,7 @@ class Cage {
     expose(this){ this.h.pos = this.path[i%this.path.Count]; }
   } } }
 \end{lstlisting}
-\IO{In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not soley to be used by classes with an invariant, in particular \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular \MS{we} were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.}
+In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant, in particular \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
  
 \noindent Even with all the above annotations, we still \IO{needed special care in creating \Q@Cage@s}:
 \begin{lstlisting}[
@@ -117,7 +117,7 @@ Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 
 %3 read 2 capsule 3 mut extra method moveTo
 %----
-In Spec\# we had to add $10$ different annotations, \IO{of} $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
+In Spec\# we had to add $10$ different annotations, of $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds, however we did need to create a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
 %  Moreover we had been unable to reuse 
 % \Q@Object.Equals@, \Q@List.IndexOf@ and % \Q@List.Contains@.
 % Note: we had to add a new class \Q@PureObject@, since the \Q@Objec@ constructor is not annotated as \Q@[Pure]@.
@@ -270,11 +270,11 @@ In Spec\# we had to add $10$ different annotations, \IO{of} $8$ different kinds;
 %---------------------
 
 %We evaluate our contribution by means of case studies;
-\IO{\textit{Contents of this paper:}}
-\IO{We have fully implemented our protocol in L42\footnote{\IO{An experimental version of L42 supporting the protocol described in this paper, together with the full code of our case studies is available at \TODO{\url{...}}.}}\footnote{\IO{We also believe it would be easy to implement our protocol in Pony and Gordon et. al.'s language.}}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with \MS{$5$} objects with an invariant, 
-our protocol proved to \MS{perform only $77$ invariant checks, whereas visible state semantics performs over $53$ million checks}. We also compared with Spec\#, whose invariant protocol provides the same performance as ours, however the annotation burden was almost $4$ times higher than our approach.
+\textit{Contents of this paper:}
+We have fully implemented our protocol in L42\footnote{An experimental version of L42 supporting the protocol described in this paper, together with the full code of our case studies is available at \TODO{\url{...}}.}\footnote{We also believe it would be easy to implement our protocol in Pony and Gordon et. al.'s language.}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $5$ objects with an invariant, 
+our protocol proved to perform only $77$ invariant checks, whereas visible state semantics performs over $53$ million checks. We also compared with Spec\#, whose invariant protocol provides the same performance as ours, however the annotation burden was almost $4$ times higher than our approach.
 In this paper we argue that our protocol is not only more succinct than the pack-unpack approach, but is also easier and safer to use.
-Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures, an also carefully handle non-deterministic operations like I/O.}
+Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures, an also carefully handle non-deterministic operations like I/O.
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
 Section \ref{s:background} explains the \emph{type modifier} and \emph{object capability} support we use for this work.
