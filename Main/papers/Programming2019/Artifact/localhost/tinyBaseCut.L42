@@ -1,0 +1,447 @@
+{()
+Bool:{interface
+  class method This ()
+  method Void #checkTrue() exception Void
+  method This & (This that)
+  method This | (This that)
+  method This ! ()
+  }
+True:{_private()  implements Bool
+  method () (this._private())
+  method #checkTrue() (void)
+  method &(that) (that)
+  method |(that) (this)
+  method !() (False())
+  }
+False:{_private()  implements Bool
+  method () (this._private())
+  method #checkTrue() (exception void)
+  method &(that) (this)
+  method |(that) (that)
+  method !() (True())
+  }
+
+ExitCode:{()
+  class method
+  Library normal(){return {//@exitStatus
+     //0
+    ()}}
+  class method
+  Library failure(){return {//@exitStatus
+     //42000
+    ()}}
+  }
+Alu:{//@plugin
+  //L42.is/connected/withAlu
+  ()}
+N:{(Library that)
+  class method N #numberParser(Library that) (
+    N(using Alu
+      check stringToInt32(that)
+      error void))
+  method S toS() S.#stringParser(using Alu
+      check int32ToString(this.that())
+      error void)
+  method N +(N that) (
+    N(using Alu
+      check sumInt32(n1:this.that() n2:that.that())
+      error void))
+  method N -(N that) (
+    N(using Alu
+      check subInt32(n1:this.that() n2:that.that())
+      error void))
+  method N *(N that) (
+    N(using Alu
+      check mulInt32(n1:this.that() n2:that.that())
+      error void))
+  method N /(N that) (
+    N(using Alu
+      check divInt32(n1:this.that() n2:that.that())
+      error void))
+
+  method Bool ==(N that) {
+    using Alu
+      check ifInt32EqualDo(n1:this.that() n2:that.that())
+      return True()
+    return False()
+    }
+  method Bool <(N that) {
+    using Alu
+      check ifInt32GrtDo(n1:this.that() n2:that.that())
+      return True()
+    return False()
+    }
+  method Bool <=(N that) {
+    using Alu
+      check ifInt32GEqDo(n1:this.that() n2:that.that())
+      return True()
+    return False()
+    }
+  method Bool !=(N that) {
+    using Alu
+      check ifInt32EqualDo(n1:this.that() n2:that.that())
+      return False()
+    return True()
+    }
+  method Bool >(N that) {
+    using Alu
+      check ifInt32GEqDo(n1:this.that() n2:that.that())
+      return False()
+    return True()
+    }
+  method Bool >=(N that) {
+    using Alu
+      check ifInt32GrtDo(n1:this.that() n2:that.that())
+      return False()
+    return True()
+    }
+  }
+
+S:{#stringParser(Library that)
+  method S ++ (S that) (
+    S.#stringParser(using Alu
+      check stringConcat(s1:this.that(),s2:that.that())
+      error void) )
+  method Bool != (S that) !(this==that)
+  method Bool == (S that) {
+    using Alu
+      check ifStringEqualDo(s1:this.that(),s2:that.that())
+      return True()
+    return False()}
+  method S (N that) (
+    S.#stringParser(using Alu
+      check stringCharAt(this.that(),pos:that.that())
+      error void ))
+  method N size () (
+    N(using Alu
+      check stringSize(this.that())
+      error void) )
+  }
+Debug:{unused()
+  class method Void (S that) using Alu check stringDebug(that.that()) void
+  class method Void (S fileName, S content) using Alu check fileDebug(fileName:fileName.that(),content:content.that()) void
+  }
+IntrospectionPlugin:{//@plugin
+  //L42.is/connected/withItself
+  ()
+  class method Library sumLib(Library l1,Library l2) using This check sumLib(l1:l1,l2:l2) error {sumLib()}
+  class method Library adaptLib(Library l1 Library l2) using This check adaptLib(l1:l1,l2:l2) error {adaptLib()}
+  class method Library nameToAdapter(Library that) using This check nameToAdapter(that) error {nameToAdapter()}
+  class method Library typeNameToAdapter(class Any that) using This check typeNameToAdapter(that) error {typeNameToAdapter()}
+  class method Library getFreshName(Library that) using This check getFreshName(that) error{getFreshName()}
+  }  
+Collections:{()
+  class method Library listRow() { _new(Cell head)
+   T:{}
+    Cell:{interface
+      method mut Iterator #elems(Bool that) 
+      method Cell #next() exception Void
+      method Void checkEmpty() exception Void
+      method T #inner()
+      method Void #checkEnd()
+      }
+    CellEnd:{() implements Cell
+      method #elems(that) (Iterator(this,terminate:that))
+      method #next() (exception void)
+      method checkEmpty() (exception void)
+      method #inner() (error {innerOnCellEnd()})
+      method #checkEnd() (void)
+      }
+    CellNext:{(T elem, Cell _next) implements Cell
+      method #elems(that) (Iterator(CellNext(elem:this.elem(), _next:this), terminate:that))
+      method #next() ( this._next() )
+      method checkEmpty() (void)
+      method #inner() (this.elem())
+      method #checkEnd() (
+        this._next().checkEmpty()
+        catch exception (on Void void)
+        error {iterationNotComplete()})
+      }
+    class method
+    This () (This._new(head:CellEnd()))
+    method
+    This #add(T that) (
+      This._new(head:CellNext(
+        elem:that,
+        _next:this.head()))
+      )
+    method Bool isEmpty() { with x=this.head() (on CellEnd  return True() default return False() )}
+    method T top() ( this.head().#inner() )
+    method mut Iterator elems() ( this.head().#elems(True()))
+    method This ++(This that) {
+      var This res=this
+      with e in that.elems() (res:=res.#add(e))
+      return res
+      }
+    method mut Iterator elems_cut() ( this.head().#elems(False()))
+    method This pop() {
+      return This._new(head:this.head().#next()) 
+      catch exception (on Void error {popOnEmpyList()})}    
+    Iterator:{mut (var Cell that,Bool terminate)
+      mut method Void #next() exception Void ( x=this.that().#next(),x.checkEmpty() this.that(x) )
+      read method Void #checkEnd() (if this.terminate() (this.that().#checkEnd()))
+      read method T #inner() (this.that().#inner())
+      read method Void #close() (void)
+      }
+    }
+  class method Library list(class Any that){ 
+    map=IntrospectionPlugin.typeNameToAdapter(that)
+    tRen=IntrospectionPlugin.nameToAdapter(S"T".that())
+    //If I remove this. from under, I get a stupid error msg
+    // vars MUST have positions too :(
+    return this.list(adapter: IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
+    }
+  class method Library list(Library adapter){
+    return IntrospectionPlugin.adaptLib(l1:this.listRow(),l2:adapter)
+    }
+  }
+    
+Name:{(Bool isExternal, Library adapter)
+  class method Name #stringParser(Library that) (Name(isExternal:False(),adapter:
+    using IntrospectionPlugin check nameToAdapter(that) error {nameToAdapter()}
+    ))
+  class method Name (class Any that) (Name(isExternal:True(),adapter:
+    using IntrospectionPlugin check typeNameToAdapter(that) error {typeNameToAdapter()}
+    ))
+  method Bool isInternalPath(){
+    Introspection.Methods ms=Introspection(this.adapter(),node:S"%o_0%").methods()
+    return !ms.pop().pop().isEmpty()
+    }
+  }
+Introspection:{
+  (Library that, S node)
+  class method This(Library that) This(that,node:S"This")
+  method S get() (S.#stringParser(using IntrospectionPlugin check get(this.that(),node:this.node().that()) error {getThatNode()}))
+  method Library getIfExists(N interfaceNum)exception Void (using IntrospectionPlugin check getOrElse(this.that(),interfaceNum:interfaceNum.that(),node:this.node().that()) exception void)
+  method Method get(N methodNum)exception Void (
+    Library name=using IntrospectionPlugin 
+      check getNameOrElse(
+        this.that(),
+        methodNum:methodNum.that(),
+        node:this.node().that())
+      exception void
+    Method(myClass:this,num:methodNum,name:S.#stringParser(name))
+    )
+  Method:{(Outer1 myClass, N num, S name)
+    method S get() (S.#stringParser(
+      using IntrospectionPlugin 
+      check getOrElse(
+        this.myClass().that(),
+        methodNum:this.num().that(),
+        node:this.myClass().node().that())
+      error {invalidMethodNumber()}
+      ))
+    method S getMdf() (S.#stringParser(
+      using IntrospectionPlugin 
+      check getMdfOrElse(
+        this.myClass().that(),
+        methodNum:this.num().that(),
+        node:this.myClass().node().that())
+      error {invalidMethodNumber()}
+      ))
+    method Name returnClass() (Name(isExternal:True(),//TODO: this is a bug, should be computed
+      adapter: using IntrospectionPlugin 
+      check  getTypePathOrElse(
+        this.myClass().that(),
+        methodNum:this.num().that(),
+        node:this.myClass().node().that())
+      error {invalidMethodNumber()}
+      ))
+    method Name getName() (Name.#stringParser(//get name? unuseful!
+      using IntrospectionPlugin 
+      check getNameOrElse(
+        this.myClass().that(),
+        methodNum:this.num().that(),
+        node:this.myClass().node().that())
+      error {invalidMethodNumber()}
+      ))
+    method Bool isField() {
+      using IntrospectionPlugin 
+      check ifIsFieldDo(
+        this.myClass().that(),
+        methodNum:this.num().that(),
+        node:this.myClass().node().that())
+      return True()
+      return False()
+      }
+    method Parameter get(N parameterNum)exception Void (
+      Library name=using IntrospectionPlugin 
+      check getNameOrElse(
+        this.myClass().that(),
+        methodNum:this.num().that(),
+        parameterNum:parameterNum.that()
+        node:this.myClass().node().that())
+      exception void
+      Parameter(myMethod:this,num:parameterNum,name:S.#stringParser(name))
+      )
+    method Parameters parameters(){
+      var ps=Parameters[]
+      var pNum=0N
+      while True() (
+        ps:=ps.#add(this.get(parameterNum:pNum))
+        pNum+=1N
+        )
+      return ps
+      }
+    }
+  Parameter:{(Method myMethod, N num, S name)
+    method Name class() (Name(isExternal:True(),//TODO: this is a bug, should be computed
+      adapter: using IntrospectionPlugin 
+      check  getTypePathOrElse(
+        this.myMethod().myClass().that(),
+        methodNum:this.myMethod().num().that(),
+        parameterNum:this.num().that()
+        node:this.myMethod().myClass().node().that())
+      error {invalidMethodNumber()}
+      ))
+    }
+  Parameters:Collections.list(Parameter)
+  Methods:Collections.list(Method)
+  method Methods methods(){
+    var Methods ms=Methods[]
+    var N mNum=0N
+    while True() (
+      ms:=ms.#add(this.get(methodNum:mNum))
+      mNum+=1N
+      )
+    return ms
+    }
+  method Parameters fields(){
+    ms=this.methods()
+    Method ctor= { with m in ms.elems() (
+      if m.isField() & (m.getMdf()==S"Type") (return m)
+      ) error S"Not a concrete class"}
+    return ctor.parameters()
+    }
+  }
+  
+Opt:{unused()
+  class method Library (class Any that) 
+    Adapt[Name"T" into:Name(that);]<{#new(TOpt that)
+      T:{}
+      TOpt:{interface method T get() }
+      TEmpty:{() implements TOpt method get() error S"Value not present" }
+      TOf:{(T that) implements TOpt method get() this.that()}
+      method T !() this.that().get()
+      method Bool isPresent(){
+        aux=!this
+        return True()
+        catch error (on Any return False())
+        }
+      class method This () This.#new(TEmpty())
+      class method This (T that) This.#new(TOf(that))
+      }
+  }
+  
+  //-------------------------------------------
+  //--------------DECORATORS-------------------
+Use:{ (Resolver resolver,Libs myLibs)
+  Resolver: Opt(Library)
+  Libs: Collections.list(Library)
+  class method This () This(resolver:Resolver(), myLibs:Libs[])
+  method This #add(Library that) (
+    ls=this.myLibs().#add(that)
+    This(resolver:this.resolver(),myLibs:ls)
+    )
+  method This #add(Library resolver)
+    This(resolver:Resolver(resolver),myLibs:this.myLibs()) 
+  method Library < (Library that) {
+    var result=that
+    with libi in this.myLibs().elems() (
+      result:=this.accumulate(l1:result,l2:libi)
+      )
+    return result
+    }
+  method Library accumulate(Library l1,Library l2) {
+    return IntrospectionPlugin.sumLib(l1:l1,l2:l2)
+    catch error x (on Any (
+      if !this.resolver().isPresent() (error x)
+      ms=Introspection(!this.resolver()).methods()
+      S _name=ms.pop().pop().top().name()
+      S _nameLeft=ms.pop().top().name()
+      S _nameRight=ms.top().name()
+      //Debug(S"name is: "++_name)
+      //Debug(S"nameLeft is: "++_nameLeft)
+      //Debug(S"nameRight is: "++_nameRight)
+      Name name=Name.#stringParser(_name.that())
+      Name nameLeft=Name.#stringParser(_nameLeft.that())
+      Name nameRight=Name.#stringParser(_nameRight.that())
+      l1A=Adapt[name into:nameLeft;]<l1
+      l2A=Adapt[name into:nameRight;]<l2
+      lRes=IntrospectionPlugin.sumLib(l1:l1A,l2:l2A)
+      return Adapt[makePrivate:nameLeft;makePrivate:nameRight;]<
+        IntrospectionPlugin.sumLib(l1:!this.resolver(),l2:lRes)
+      ))
+    }
+  method This ++ (This that) {
+    list=this.myLibs()++that.myLibs()
+    Resolver res={
+      if that.resolver().isPresent() (return that.resolver())
+      return this.resolver()
+      }
+    return This(resolver:res, myLibs:list)
+    }
+  }
+Adapt:{(Library adapter)
+  class method This () This(adapter:{})
+  method This #add(Name that, Name into) {
+    if that.isExternal() (error S"start name must be internal")
+    if !that.isInternalPath() (return this.#add(that,of:Name"This",into:into))
+    map=IntrospectionPlugin.adaptLib(
+      l1:into.adapter(), l2:that.adapter())
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map)
+    return This(adapter:lib)
+    }
+  method This #add(Name that, Name of, Name into) {
+    map1=IntrospectionPlugin.adaptLib(
+      l1:into.adapter(), l2:that.adapter())
+    map2=IntrospectionPlugin.adaptLib(
+      l1:map1, l2:of.adapter())
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:map2)
+    return This(adapter:lib)
+    }
+  method This #add(Name makePrivate){
+    fName=Name(isExternal:False(),adapter:IntrospectionPlugin.getFreshName(makePrivate.adapter()))
+    return this.#add(makePrivate into:fName)
+    }
+  method This ++ (This that) (
+    lib=IntrospectionPlugin.sumLib(l1:this.adapter(), l2:that.adapter())
+    This(adapter:lib)
+    )
+  method Library < (Library that) IntrospectionPlugin.adaptLib(
+      l1:that, l2:this.adapter())
+  }
+
+Data:{()
+  method Library < (Library that) Use[this.addEquals(l:that);]<that
+  method Library equalsOnField(Name c,Name n)
+    Adapt[Name"T" into: c; Name"f" into:n;]<{
+      T:{ method Bool ==(Any that)}
+      read method T f()
+      method Bool current(This that) this.f()==that.f()
+      }
+  method Library addEquals(Library l){
+    var decorator=Use[ with field in Introspection(l).fields().elems() (
+      this.equalsOnField(c:field.class(), n:Name.#stringParser(field.name().that()))
+      )]
+    decorator++=Use[resolver:{
+      method Bool current(This that) this.left(that) & this.right(that)
+      method Bool left(This that)
+      method Bool right(This that)
+      };]
+    libAcc1=decorator<{}
+    libAcc2=Use[libAcc1;]<{
+      method Bool current(This that)
+      method Bool ==(Any that){
+        with that (
+          on This return this.current(that)//marked
+          default return False()
+          )}
+      }
+    return Adapt[makePrivate:Name"current(that)";]<libAcc2
+    }
+  }
+
+
+
+}

@@ -1,0 +1,71 @@
+{reuse L42.is/miniBase
+//NameList:Collections.list(Name)
+//Generalize:{(NameList internals)
+//  class method This #begin() This(internals:NameList())
+//  method This #add(Name that) This(internals:this.internals.#add(that))
+//  method This #end() this
+  
+Generalize:{()
+  class method This #begin() This()
+  method This #end() this
+  method Library <(Library that){
+    var result=that
+    result:=Adapt[
+      Name"Bool" into:Name(Template.Bool);
+      Name"N" into:Name(Template.N);
+      Name"S" into:Name(Template.S);
+      Name"Debug" into:Name(Template.Debug);
+      ]<result
+    result:=Adapt[Name"This" into:Name"PrivateImpl"]<result
+    result:=Adapt[Name"PrivateImpl.Exported" into:Name"This"]<result
+    result:=MakePrivate(Name"PrivateImpl" into:result)
+    //result:=IntrospectionPlugin.purgePrivates(result)
+    Debug(S"###############---Generating")
+    Debug(Introspection(result).get())
+    Debug(S"###############---End")
+    return result
+    }  
+  }
+
+Template:{
+  Bool:{ implements S.ToS
+    method Void #checkTrue() exception Void 
+    class method This true()
+    class method This false()
+    method This &(This that)
+    method This |(This that)
+    method This !()
+    }
+  N:{ implements S.ToS
+    class method N #numberParser(Library that)       
+    method N +(N that)       
+    method N -(N that)       
+    method N *(N that)       
+    method N /(N that) 
+    method Bool ==(N that)     
+    method Bool <(N that)     
+    method Bool <=(N that)    
+    method Bool !=(N that)  
+    method Bool >(N that)  
+    method Bool >=(N that)
+    method Library binaryRepr()
+    }
+  
+  S:{ implements  ToS  
+    class method This #stringParser(Library that)    
+    ToS:{interface method S toS()}  
+    method S ++ (ToS that)  
+    method Bool != (S that)  
+    method Bool == (S that)     
+    method S (N that) 
+    method N size ()   
+    class method S doubleQuote()  
+    method S replace(S that, S into)
+    method Library binaryRepr()  
+    }
+    
+  Debug:{
+    class method Void (S that)
+    }
+  }
+}

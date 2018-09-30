@@ -109,7 +109,8 @@ public class L42 {
        }
      }
    catch (IOException ex) {
-     Assertions.codeNotReachable(""+ex);
+     System.err.println("Warning! failed to setClassPath to " + p);
+     return;
      }
    //System.out.println(fileNames);
    L42.pluginPaths=fileNames;

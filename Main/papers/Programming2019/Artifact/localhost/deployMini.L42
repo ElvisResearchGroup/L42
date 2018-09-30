@@ -1,0 +1,34 @@
+{ reuse L42.is/nanoBase1
+
+Deploy:{ (S node, S fileName)
+  class method class This #begin() This
+  class method This #add(S that, S fileName) This(node:that, fileName:fileName)
+  method This #end() this
+  method Library <(Library that){
+    adapter=IntrospectionPlugin.adapter(nameDest:this.node(),nameSrc:S"Template")
+    code=IntrospectionPlugin.adaptLib(l1:that,l2:adapter)
+    //equivalent to code=Adapt[Name"Template" into Name.#stringParser(this.node().binaryRep())]<that
+    This(fileName:this.fileName(),code:code,node:this.node())    
+    //code=that
+    //This(fileName:this.fileName(),code:code,node:S"This")    
+    return ExitCode.normal()
+    }
+    
+  //deploy mini contains new Deploy and Generalize, and some form of Adapt
+  // and templateBNS only BNS
+  //Main:Deploy[S"Top.Exported", fileName:S"examples/Gui.L42"]<{reuse L42.is/templateBNS
+  //Top:Generalize[]<{reuse L42.is/miniBase
+
+  
+  class method
+  S _get(Library that,S node) 
+    S.#stringParser(
+      using IntrospectionPlugin check get(that,node:node.binaryRepr()) error {getThatNode()}
+      )
+
+  class method
+  Void (S fileName, Library code, S node)
+    Debug(fileName:fileName, content:This._get(code,node:node) )
+  }
+  
+}

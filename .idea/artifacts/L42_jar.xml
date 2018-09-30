@@ -1,0 +1,42 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="L42:jar">
+    <output-path>$PROJECT_DIR$/Main/papers/Programming2019/Artifact</output-path>
+    <root id="root">
+      <element id="archive" name="L42.jar">
+        <element id="directory" name="META-INF">
+          <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        </element>
+        <element id="module-output" name="L42_Main" />
+        <element id="module-output" name="PlgAlu" />
+        <element id="module-output" name="PlgFileSystem" />
+        <element id="module-output" name="PlgSafeOperators" />
+        <element id="module-output" name="PlgGui" />
+        <element id="module-output" name="PlgNumbers" />
+      </element>
+      <element id="library" level="module" name="antlr-4.2.2-complete.jar" module-name="L42_Main" />
+      <element id="directory" name="localhost">
+        <element id="dir-copy" path="$PROJECT_DIR$/Tests/localhost" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/Tests/src/widgetGui/libProject/This.L42" output-file-name="WidgetGui.L42" />
+      <element id="file-copy" path="$PROJECT_DIR$/Tests/src/widgetGui/libTests/SafeMovable.L42" />
+      <element id="directory" name="Spec#">
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/Debug.ssc" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/GuiLib.ssc" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/Main.ssc" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/SafeMovable.ssc" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/Validation.sln" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/Validation.sscproj" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/WidgetGuiAuxLib.ssc" />
+        <element id="file-copy" path="$PROJECT_DIR$/Validation/Spec#/WidgetGuiLib.ssc" />
+      </element>
+      <element id="directory" name="examples">
+        <element id="directory" name="resources">
+          <element id="file-copy" path="$PROJECT_DIR$/Tests/examples/resources/down.png" />
+          <element id="file-copy" path="$PROJECT_DIR$/Tests/examples/resources/left.png" />
+          <element id="file-copy" path="$PROJECT_DIR$/Tests/examples/resources/right.png" />
+          <element id="file-copy" path="$PROJECT_DIR$/Tests/examples/resources/up.png" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

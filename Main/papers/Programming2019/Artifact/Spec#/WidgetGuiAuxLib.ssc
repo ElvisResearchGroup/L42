@@ -1,0 +1,98 @@
+// 14 annotations, 25+6 tokens, 155+44 characters
+using System;
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+internal sealed partial class Gui
+{
+	[Immutable] internal sealed class Event //1 annotation, 1 token, 11 characters
+	{
+		internal readonly string targetId, eventId;
+		internal readonly string[] all;
+
+		internal Event(string that)
+		{
+			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
+
+			// To shut up boogiees array bounds checks, not counted
+			assume s.Length >= 2;
+
+			this.targetId = s[0];
+			this.eventId = s[1];
+			this.all = s;
+		}
+	}
+
+	internal interface Widget // 4 annotations, 6+3 tokens, 30+17 characters
+	{
+		string id { get; }
+		int left { get; }
+		int top { get; }
+		int width { get; }
+		int height { get; }
+		string colour { get; }
+
+		// Note characters and annotations are relative to the prefered version:
+		//    List<Widget>children{get;} // +4 tokens, +26 characters
+		// 3 annotations, 3+3 tokens, 13+17 characters
+
+		// Note: I have created these two functions instead of a simple List<Widget> property
+		// since that does not imply that the returned elements thesmelves are peer valid (just that the list is)
+		[Pure]int children_count();
+		// I have to make this return a nullable, since boogie tries to verify the consistency of the contracts with a dummy 'return null' implementation
+		// But null is not peer valid, if I use Widget? it only requires the result to be peer valid if it is not null.
+		[Pure]Widget?children(int i);
+
+		bool dispatch(Event that) modifies this.**; // 1 annotation, 3 tokens, 17 characters
+	}
+
+	internal interface Action // 1 annotation, 3 tokens, 17 characters
+	{
+		void apply(Event event_) modifies this.**;
+	}
+
+	internal sealed class Button: Widget // 8 annotations, 15+3 tokens, 97+27 characters
+	{
+		[Peer] internal readonly Action action; // 1 annotation, 1 token, 6 characters
+		internal readonly string imgName;
+
+		public string colour { get { return "gray"; } }
+		[Pure] public override string ToString() { return this.id; } // 1 annotation, 1 token, 6 characters
+		public bool dispatch(Event that)
+		{
+			if (this.id == that.targetId)
+			{
+				this.action.apply(that);
+				return true;
+			}
+			return false;
+		}
+
+		int    Gui.Widget.left   { get { return this.left;   } }
+		int    Gui.Widget.top    { get { return this.top;    } }
+		int    Gui.Widget.width  { get { return this.width;  } }
+		int    Gui.Widget.height { get { return this.height; } }
+		string Gui.Widget.id     { get { return this.id;     } }
+
+		// Note characters and annotations are relative to the prefered version:
+		//    List<Widget>children{get{return new List<Widget>();}} // +8 tokens, +53 characters
+		// 3 annotations, 3+3 tokens, 13+27 characters
+		[Pure]public int children_count(){return 0;}
+		[Pure]public Widget?children(int i){return null;}
+
+		internal readonly int left, top, width, height;
+		internal readonly string id;
+
+		[Captured] internal Button(string id, int left, int top, int width, int height, Action action, string imgName) // 3 annotations, 10 tokens, 72 characters
+			ensures Owner.Same(this,action);
+		{
+			Owner.AssignSame(this,action);
+			this.id = id;
+			this.left = left;
+			this.top = top;
+			this.width = width;
+			this.action = action;
+			this.imgName = imgName;
+		}
+	}
+}

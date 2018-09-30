@@ -1,0 +1,24 @@
+{ reuse L42.is/nanoBase1
+
+  
+Collections:{_private()//@private
+
+  ListCode: {
+   _private()//@private
+   class method Library () ...
+   }
+   
+  class method
+  Library list(class Any that){ 
+    map=IntrospectionPlugin.typeNameToAdapter(that) //TODO: use IntrospectionPlugin.adapt
+    tRen=IntrospectionPlugin.nameToAdapter(S"Elem".binaryRepr())
+    //If I remove this. from under, I get a stupid error msg
+    // vars MUST have positions too :(
+    return this.list(adapter:IntrospectionPlugin.adaptLib(l1:map,l2:tRen))
+    }
+    
+  class method
+  Library list(Library adapter)
+    IntrospectionPlugin.adaptLib(l1:ListCode(),l2:adapter)
+  }
+}
