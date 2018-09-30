@@ -15,8 +15,8 @@
 \maketitle
 \vspace{-10ex}
 Dependency Injection is a common but verbose technique
-used to divide code OO code into independently testable units.
-Here we propose how an extension to the Trait model,
+used to divide OO code into independently testable units.
+Here we propose extension to the Trait model
 supporting independently testable units without
 the verbosity of Dependency injection.
 We present our solution in the language L42.
@@ -59,7 +59,7 @@ We need to introduce an \Q@IMap@ interface and an \Q@IMapFactory@ interface,
 and Alice need to provide
 a mock implementation designed for testing.
 This makes the code of Alice very involved and indirect:
-Alice \Q@load@ method need to access a \Q@IMapFactory mapFactory@
+Alice \Q@load@ method needs to access a \Q@IMapFactory mapFactory@
 and use it to create new maps, as in \Q@mapFactory.makeMap()@.
 Same for \Q@Item@s: Alice can not write \Q@new Rock(...)@,
 but she need to use an \Q@IItemFactory@.
@@ -72,8 +72,8 @@ it still has great advantages over using the
 possibly buggy \Q@Map@ of Bob: Alice can 
 write a simple but inefficient version of map relying
 on a \Q@HashMap<Point,Item>@.
-The industry rely on dependency injection a lot, proving
-that the benefits overcome the difficulties.
+Professional programmers rely heavily on dependency
+injection: it seams like the benefits overcome the costs.
 
 We would like to present the Java code for this example, but
 Dependency Injection make it so verbose that it would
@@ -87,7 +87,7 @@ Alice: Trait({//this is the code wrote by Alice.
   Rock: {implements Item     class method Rock(Num weight, Point point) }
   class method Map load(S fileName)={
     Map m=Map() //L42 do not use 'new' but instantiate objects calling
-    ..//static methods with empty names, as it happens in Python and other languages.
+    ..//class methods with empty names, as it happens in Python.
     if line.startsWith(S"Rock") (map.set(Rock(weight:.., point: Point(x:..,y:..))))
     ..//Map, Item and Rock are local declaration in Alice code.
     }//Trait composition & merges the members with the same name.
