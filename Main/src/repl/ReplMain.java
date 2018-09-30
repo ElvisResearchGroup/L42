@@ -218,7 +218,7 @@ public class ReplMain {
     boolean cachedBefore= validSystemCache(dirPath);
     if (!cachedBefore){ //if not already cached before
       System.out.println("CREATING CACHE IN L42IDE FOR FIRST2LINE...");
-      if(!Files.exists(dirPath)) {Files.createDirectory(dirPath);}
+      if(!Files.exists(dirPath)) {Files.createDirectories(dirPath);}
       L42.setRootPath(dirPath);
       L42.cacheK.setFileName("This.L42","{"+res.first2Line+"}");
       repl=ReplState.start("{"+res.first2Line+"}", loaderFactory.apply(dirPath.resolve("This.C42"))); //create the cache
