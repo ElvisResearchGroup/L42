@@ -25,14 +25,14 @@ internal sealed partial class Gui
 			body.dispatch(new Event(event_));
 			this.draw(body);
 		}
-		/*foreach (string event_ in this.events()) // TODO: Write this.events()
+		/*foreach (string event_ in this.events()) // We do not implement this part since we are not rendering the GUI
 		{
 			if (event_ == "EXIT") return;
 			body.dispatch(new Event(event_));
 			this.draw(body);
 		}*/
 
-		//this.close(); // TODO: Write this
+		//this.close();
 	}
 
 	void draw(Widget that)

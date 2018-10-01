@@ -219,7 +219,7 @@ Here we show that we are able to verify classes with circular mutable object gra
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
 the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get widgets size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable@'s invariant.
-Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available at \url{github.com/ElvisResearchGroup/L42/blob/master/Tests/src/widgetGui/libTests/SaveMovable.L42}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
+Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artefact at \url{http://l42.is/ProgrammingArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
 
 \begin{lstlisting}[mathescape=false]
 class SafeMovable implements Widget{
@@ -318,8 +318,12 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 % In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
-\textit{Spec\# comparison.}
+\textit{Spec\# comparison:}
 We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties, as well as the admissibility of invariants.
+% To keep the Spec\# code aligned with the L42 one, 
+% we do not use a .NET GUI library, but we just simulate the behaviour of L42, without actually opening a window.
+The back-end of the L42 GUI library is written in Java, and we did not port it to Spec\# rather we just simulate the back-end, and don't actually display a GUI in Spec\#.
+
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which only gave us $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array-bounds. %. and value presence.
 This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however Spec\# checks this at run-time. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of run-time invariant checks.\footnote{
 We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also run the invariant checking $77$ times; however Code Contract does not enforce the
@@ -427,12 +431,14 @@ class SafeMovable {..
 % Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other capsule fields.
-The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but ensures that the \Q@Widgets@ cannot leak out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply written as:
+The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply:
 \saveSpace\begin{lstlisting}
 static method Void zoom(mut Widget w) {
   w.transform(ws -> {for(wi:ws){zoom(wi,scale);}});
   w.width(w.width()/2); ..; w.top(w.top()/2); }
 \end{lstlisting}\saveSpace
+\saveSpace
+\saveSpace
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
 
 % \begin{lstlisting}[escapechar=\%]

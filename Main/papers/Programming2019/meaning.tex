@@ -131,8 +131,7 @@ Adding \Q@imm@ exceptions would not cause any interesting variation of our proof
 \ctx_v \text{not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\ \Kw{catch}\ \oC\_\cC]
 }{validation error}
 \end{grammatica}
-\caption{Grammar \IOComm{use `$\backslash$Coloneqq'?}
-}
+\caption{Grammar}
 \end{figure}
 
 
@@ -155,7 +154,7 @@ that is, the annotated memory will not be mutated by executing the body of the \
 \item Field accesses in the main expression
 must be of the form $l\singleDot\f$.
 
-\item \validate{} methods are of the form $\Kw{read} \Kw{method} \Kw{Bool} invariant\oR\cR\ \e$.
+\item \validate{} methods are of the form \Q@read@ \Q@method@ \Q@Bool@ \Q@invariant()@ \emph{e}.
 Where the only occurrences of \Q@this@ in $e$ are as the reciever for field accesses.
 \item All fields referred to in \validate{} are either \Q@imm@ or \Q@capsule@.
 \item All methods that read \Q@capsule@ fields
@@ -166,12 +165,12 @@ must use \Q@this@ exactly once in their body. We could relax the restrictions fo
 During reduction, locations that are preserved by a \Q@try@ block are
 never monitored; formally 
 for $\Kw{try}^\sigma\oC\e\cC\_$, $\e$ is not of the form $\ctx[$\Q@M(@$l;\_$\Q@)@$]$, for any $l\in\sigma$.
-\IOComm{What about sub expression of $e$?}
 \end{itemize}
 
 \noindent We model subtyping with interfaces 
 and do not consider subclassing.
 In particular interfaces do not have an implemented \validate{} method, rather classes do.
+\newcommand{\rowSpace}{\\\vspace{2.5ex}}
 
 \begin{figure}
 \!\!
@@ -185,7 +184,8 @@ $\!\!\!\!\!\begin{array}{l}
 \sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}|
 \Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR
  }{}
-\\[5ex]
+\\
+\rowSpace
  \inferrule[(mcall)]{{}_{}}{
 \sigma|l\singleDot\m\oR v_1,\ldots,v_n\cR\rightarrow \sigma|
 \e'[\Kw{this}=l,\x_1=v_1,\ldots,x_n=v_n]
@@ -205,7 +205,7 @@ $\!\!\!\!\!\begin{array}{l}
 \text{otherwise }\ \e'= \e
   \end{array}
 }
-\\[5ex]
+\rowSpace
  \inferrule[(monitor exit)]{{}_{}}{
 \sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v
  }{}
@@ -222,9 +222,7 @@ $\!\!\!\!\!\begin{array}{l}
  }{}
 \quad
 
-
-\\[5ex]
-
+\rowSpace
 
  \inferrule[(try ok)]{{}_{}}{
 \sigma,\sigma'|\Kw{try}^{\sigma}\oC v\cC\ \Kw{catch}\ \oC\_\cC\rightarrow \sigma,\sigma'|v
@@ -240,11 +238,11 @@ $\!\!\!\!\!\begin{array}{l}
  }{}
 %\quad
 \end{array}$
-\caption{Reduction rules \IOComm{add vertical spacing}}
+\caption{Reduction rules}
 \end{figure}
 
 \loseSpace
-\noindent\REVComm{\textit{Reduction rules:}}{2}{This discussion is surprisingly short}
+\noindent\textit{Reduction rules:}
 Reduction rules are defined in Figure 2.
 These rules are pretty standard;
 \textsc{mcall}
@@ -318,7 +316,7 @@ $\mathit{mutatable}(l,\sigma,\e) \text{iff}$ for some $T=\Kw{imm}\,\Sigma^\sigma
 \noindent We define
 a deterministic reduction arrow.
 Here we require that there is exactly one reduction possible:\\*
-\indent$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$ iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{ where } \sigma_0|e_0\rightarrow \sigma|e\}$ \IOComm{WTF??}
+\indent$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$ iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{ where } \sigma_0|e_0\rightarrow \sigma|e\}$
 
 %if $\ \sigma_0|e_0\rightarrow \sigma|e$ then $\sigma_1|\e_1=\sigma|\e$
 % $\exists! \sigma_1|\e_1$ such that $\sigma_0|\e_0\rightarrow \sigma_1|\e_1$\\*

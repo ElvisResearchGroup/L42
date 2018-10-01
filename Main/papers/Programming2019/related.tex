@@ -264,14 +264,15 @@ Most runtime verification systems, such as ours, use a meta-circular approach: s
 
 They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
 Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non-deterministic operations, such as I/O and random number generation. For example, the following method verifies:
+\saveSpace
 \begin{lstlisting}
 [Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
-\end{lstlisting}
+\end{lstlisting}\saveSpace
 And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
 As you can see failing to handle non-determinism jeopardises reasoning.
 
 A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non-final fields, or calling any impure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
-
+\saveSpace
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 
 % They propose a concept of observational purity, that if completely fleshed out could possibly be a great addition to our proposed system. We speculate that some  primitive language support may be needed, for example implementing the Flyweight pattern as part of the language semantics.

@@ -22,7 +22,7 @@ Moreover, its constructors may only use \Q@this@ to initialize fields.\footnote{
 
 While mutating the ROG of a \Q@capsule@ field mentioned in the invariant, the containing object may be invalid.
 To enforce that the containing object is inaccessible, an access to such field is typed as \Q@mut@ only inside of methods following a specific pattern: the field access is of the form \Q@this.f@ and there is no other occurrence of \Q@this@, the method receiver is \Q@mut@, none of the other parameters are \Q@mut@ or \Q@read@, and the return type is not \Q@mut@.
-We call such methods \emph{capsule mutators}. \IOComm{Sould we mention that these restrictions only need too apply if the field is actually referenced inside the invariant?}
+We call such methods \emph{capsule mutators}. These additional restrictions do not apply if the field is not read in the invariant,
 %Finally, we require \Q@f@ to be declared \Q@private@.%, and only accessed as \Q@this.f@.
 
 Our invariant protocol injects calls to \Q@invariant@ on newly created objects, after constructor calls; on the receiver, after a field update; and \Q@this@ at the end of a capsule-mutator.

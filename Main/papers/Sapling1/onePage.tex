@@ -10,18 +10,18 @@
 
 \begin{document}
 
-\title{Nested Traits composition for modular software development}
+\title{Nested Trait Composition For Modular Software Development}
 \date{}
 \maketitle
 \vspace{-10ex}
-Dependency Injection is a common but verbose technique
+Dependency injection is a common but verbose technique
 used to divide OO code into independently testable units.
-Here we propose extension to the Trait model
+Here we propose extension to the trait model
 supporting independently testable units without
-the verbosity of Dependency injection.
+the verbosity of dependency injection.
 We present our solution in the language L42.
 
-Traits are units of code reuse, traditionally containing
+Traits are units of code re+use, traditionally containing
 only abstract and implemented methods.
 When two traits \Q@t1@ and \Q@t2@ are composed, the resulting trait contains
 all the methods of \Q@t1@ and \Q@t2@.
@@ -43,15 +43,15 @@ and use the information to fill a \Q@Map@.
 Bob will implement the rest of the game, 
 including all the kinds of \Q@Item@s and
 the \Q@Map@.
-An efficient implementation of the \Q@Map@ is tricky,
-since it needs to be a sparse matrix.
+Bob plans to make an efficient implementation of the \Q@Map@ as a tricky
+sparse matrix.
 Thus, bugs are likely to be present in the \Q@Map@ implementation.
 The various \Q@Item@s will contains a lot of code related to the game logic.
 
 In Java, we can use dependency injection to we write the code so that Alice can 
 completely write and test \Q@load@ before
 Bob completes the rest of the game.
-This requires to introduce a lot of boilerplate code, and 
+This requires introducing a lot of boilerplate code, and 
 to program in a very unnatural way:
 Alice can not write \Q@new Map(..)@
 since the \Q@Map@ class may not be available yet.
@@ -59,10 +59,10 @@ We need to introduce an \Q@IMap@ interface and an \Q@IMapFactory@ interface,
 and Alice need to provide
 a mock implementation designed for testing.
 This makes the code of Alice very involved and indirect:
-Alice \Q@load@ method needs to access a \Q@IMapFactory mapFactory@
+Alice \Q@load@ method needs to access an \Q@IMapFactory mapFactory@
 and use it to create new maps, as in \Q@mapFactory.makeMap()@.
 Same for \Q@Item@s: Alice can not write \Q@new Rock(...)@,
-but she need to use an \Q@IItemFactory@.
+but she needs to use an \Q@IItemFactory@.
 When \Q@load@ is called in the context of a running game,
 the factories will create actual \Q@Map@s, \Q@Rock@s
 and so on, but in the testing environment, 
@@ -76,12 +76,12 @@ Professional programmers rely heavily on dependency
 injection: it seams like the benefits overcome the costs.
 
 We would like to present the Java code for this example, but
-Dependency Injection make it so verbose that it would
-never fit into 1 page. On the other side, our solution 
-is quite compact and is presented below:
+dependency injection make it so verbose that it would
+never fit into 1 page. On the other hand, our solution 
+is quite compact:
 \vspace{-1ex}
 \begin{lstlisting}
-Alice: Trait({//this is the code wrote by Alice.
+Alice: Trait({//this is the code written by Alice.
   Map: {class method Map()   method Void set(Item that)}//Map has two abstract methods
   Item: {interface} //Alice just declares all the abstract signature she need.
   Rock: {implements Item     class method Rock(Num weight, Point point) }
@@ -107,12 +107,12 @@ AliceMock: Alice & {
     map=this.load(fileName: fileName)
     Debug.test(map, expected: expected)
     }
-Test1: AliceMock.test(S"justARock.txt",S"HashMap[Point(..)->Rock(..)]"
+Test1: AliceMock.test(S"justARock.txt",S"HashMap[Point(..)->Rock(..)]")
 Test2: ..
 ..
 \end{lstlisting}
 \vspace{-1ex}
-Concluding, our solution is much more natural to use than conventional Dependency injections,
-and allows to write code more naturally, without using factories.
+Concluding, our solution is much more natural to use than conventional dependency injection,
+and allows writing code more naturally, without using factories.
 
 \end{document}

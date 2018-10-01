@@ -14,7 +14,7 @@ internal sealed partial class Gui
 		{
 			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
 
-			// To shut up boogiees array bounds checks, not counted
+			// To supress Boogie's array bounds checks, not counted as annotations
 			assume s.Length >= 2;
 
 			this.targetId = s[0];
@@ -74,7 +74,7 @@ internal sealed partial class Gui
 		int    Gui.Widget.height { get { return this.height; } }
 		string Gui.Widget.id     { get { return this.id;     } }
 
-		// Note characters and annotations are relative to the prefered version:
+		// Note characters and annotations are relative to the preferred version:
 		//    List<Widget>children{get{return new List<Widget>();}} // +8 tokens, +53 characters
 		// 3 annotations, 3+3 tokens, 13+27 characters
 		[Pure]public int children_count(){return 0;}
