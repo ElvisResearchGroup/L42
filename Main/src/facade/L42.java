@@ -277,4 +277,9 @@ public class L42 {
     }
     public File toFile() {return this.inner.toFile();}
   }
+  private static final List<Runnable> cleanUps=new ArrayList<>();
+  public static void registerCleanUp(Runnable r) {cleanUps.add(r);}
+  public static void afterMainCleanUp() {
+    for(Runnable r:cleanUps) {r.run();}
+  }
 }

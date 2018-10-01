@@ -286,6 +286,9 @@ public class Loader {
         });
       return res;
       }
-    finally{this.saveCache();}//keep cache up to date with the failed run expression (and the correct dependencies)
+    finally{
+      this.saveCache();
+      L42.afterMainCleanUp();
+      }//keep cache up to date with the failed run expression (and the correct dependencies)
     }
   }

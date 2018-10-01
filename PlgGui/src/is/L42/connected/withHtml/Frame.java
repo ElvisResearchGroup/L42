@@ -9,6 +9,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import facade.L42;
 import is.L42.connected.withHtml.FrameFX.NestedPrivate;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -32,6 +33,11 @@ import repl.ReplGui;
 //@SuppressWarnings("serial")
 public class Frame extends Stage{
   private static final HashMap<String,Frame> windows=new HashMap<>();
+  static {//run when the class is loaded
+    L42.registerCleanUp(()->{
+      for(String name:windows.keySet()) {close(name);}
+    });
+  }
   HtmlFx htmlFx=new HtmlFx(new Pane());
   public static void load(String wName,String html,int x,int y){
     Frame f=windows.get(wName);
