@@ -3,7 +3,7 @@
 \saveSpace
 In this paper we explained a simple model to 
 radically decouple inheritance/code reuse and subtyping.
-One important point is that our decoupling does not
+Our decoupling does not
 make the language more complex:
 % since
 %interfaces (subtyping without subclassing)
@@ -15,14 +15,13 @@ Concrete non final classes are simply not needed in our model.
 Thus, we believe that \name benefits
 code reuse in important cases 
 without having negative impacts on the general programming experience.
-The interested reader can find a detailed discussion about this in the appendix.
-
+The interested reader can find a detailed discussion about this in Appendix B.
 
 The model presented here is easy to extend.
 More composition operators can be added in addition to \use.
-In particular variants of the sophisticated operators of DJ are
+Variants of the sophisticated operators of DJ are
 included in the full 42 language.
- Indeed we can add any operator respecting the following criteria:
+ Indeed we can add any operator respecting the following:
 
 \begin{itemize}
 \item When the operator fails it needs to provide an error that will be reported to the programmer.

@@ -69,11 +69,13 @@ For example:
 t={ method B m() B={ method B mb()} }
 D= t[rename B into C]
 \end{lstlisting}
+\saveSpace
 would flatten to:
+\saveSpace
 \begin{lstlisting}
 t={ method B m() B={ method B mb()} }
 D={ method C m() C={ method C mb()} }
-\end{lstlisting}
+\end{lstlisting}\saveSpace
 The rename only influences its argument.
 Since traits do not induce nominal types, we can
 consistently change their
@@ -123,10 +125,9 @@ with the requirements exposed in~\cite{Zenger-Odersky2005}.
 In the expression problem we have data-variants and operations and we can
 \emph{extend our solution in both dimensions},
 by adding new data-variants and operations.
-We also aim to \emph{combine independently developed extensions} so
+We aim to \emph{combine independently developed extensions} so
 that they can be used jointly.
-To be really modular, we want our extensions to
-preserve \emph{type safety}
+To be modular, extensions will preserve \emph{type safety}
 and allow \emph{separate compilation} (no re-type-checking),
 while avoiding \emph{duplication of source code}.
 
@@ -340,7 +341,7 @@ equalsNum= Use num, equals[rename T into Num],{
 \begin{lstlisting}
 equalsPlus= Use plus, equals[rename T into Plus],{
   Plus= {method Bool exactEquals(Plus that){
-    return this.left().equals(that.left())&&this.right().equals(that.right());
+    return this.left().equals(that.left()) && this.right().equals(that.right());
   }  }}
 \end{lstlisting}
 \multiCode

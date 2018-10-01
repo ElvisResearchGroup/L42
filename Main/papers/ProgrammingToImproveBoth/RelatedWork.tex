@@ -24,11 +24,12 @@ In languages like Cecil~\cite{chambers1995typechecking} and PolyToil~\cite{bruce
 classes are not types: it is a more radical solution to `inheritance implies subtyping', and equivalent to a restricted version of \name where only interface names can be used as types.
 This complicates typing of \Q@this@,
 and may prevent any useful application of the \Q@This@ type (PolyToil uses polymorphism to support it).
-For example, in those approaches, the following Java code does not work since \Q@A@ is not a type:
+Those approaches would ban the following code,
+since \Q@A@ is not a type:
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
 class A{ int ma(){return Utils.m(this);} }  class Utils{static int m(A a){..}}
 \end{lstlisting}\saveSpace\saveSpace
-Cecil syntactic sugar counters this issue (advantages and pitfalls are discussed in the appendix).
+Cecil syntactic sugar counters this issue; advantages and pitfalls are discussed in Appendix B.
 
 \name is directly inspired by the $3$ independently designed research languages as already mentioned:
  TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530}, Package Templates~(PT)\cite{KrogdahlMS09} and DeepFJig(DJ)~\cite{deep}.
