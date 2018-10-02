@@ -1,0 +1,107 @@
+General improvements:
+------------------
+We thank the reviewers for their feedback.
+Thanks to their guidance and suggested papers, 
+we have explored more material on class invariants,
+and we have discovered different invariant protocols,
+in addition we have included a case study demonstrating the practicality,
+peformance and annotation burden of our approach.
+
+We originally used the term 'validation' to differentiate our work from class invariants,
+as intended in 'visible state semantics' (used by D, Eiffel, JMl etc.).
+However, our approach is comparable to the invariant protocol of the 'Boogie/pack-unpack' methodology,
+so we have decided to use the usual term class invariant, and to compare against Spec#.
+
+Our new case study shows that our system is usable in real world situations by implementing a GUI with an invariant; this shows we can handle practical examples without resorting to unsafe features.
+This case study shows that our invariant protocol is many orders of magnitude more efficient than 'visible state semantics'. We show that our approach requires about 4 times less annotations that Spec#.
+
+Since this larger evaluation requires a good amount of space, we have moved the formalization in the appendix, and instead focused our paper on explaining and comparing our system to other approaches.
+
+Specific points:
+-----------------------------------------------
+We were unclear in our exposition, our invariants were not "always-true", but just true for all objects rechable in the current program point. 
+While this was formally defined in the reduction rules and the proofs, it was not as clear in the text.
+%This was not so clear in the text but was formally defined in the formalisim.
+
+This does allow for invariants to be broken in a controlled way and is similar to what happens in Spec#; however in their system objects with broken invariant can be "seen" but only used in specially annotated environments.
+-----------------------------------------------
+|It seems in poor taste to complain of "terrible" ideas,
+|Nontechnical terms like friendly and terrible:
+|It is not a great idea to label previous work as ``terrible''.
+*In the former version we used the term "terrible"; we weren't referring to previous work, but rather to an idea we had explored. We now reworded that part.
+
+-----------------------------------------------
+|what "conventional programming patterns are disallowed"?
+*Our approach does support mutation, exceptions, I/O, etc.
+However, we disallow static variables and catching 
+unchecked exceptions is allowed only in certain points.
+
+-----------------------------------------------
+|How does Strong Exception Safety compare to the notion of transactions?
+*Transations are a way to obtain Strong Exception Safety; they require run-time support
+while we leverage on type modifiers.
+
+-----------------------------------------------
+|It is not clear how a user u of an instance o of a class C can learn/know about the validity requirements of o encoded in the method validate of class C? 
+*We expected to be possible to expose validity as part of the class documentation.
+Care would need to be applied when the validity property depends from private fields; for example the documentation may refer to their public getters instead. We did not fleshed out this philosofy  
+completely in the former version, and now our focus is more about mesusable improvements with respect
+to other approaches.
+
+-----------------------------------------------
+|It is not clear how expressive a language with the validity property can be,
+considering the proposed set of several syntactic and semantic restrictions
+required by capsules, capabilities, type modifiers and validate methods.
+*Our restrictions are opt-in, so the language do not lose expressivity.
+However, our restricions do limit wich properties can be validated. In the new version
+we try to be more explicit that we can only monitor properties
+over the immutable and encapsulated state of an object.
+
+-----------------------------------------------
+|Are there any requirements on object construction, especially on accessibility
+of an object before it is fully constructed? What happens if an object is accessed
+before it is fully constructed?
+We require constructors (of classes with invariants) 
+to only use 'this' to update fields. Thus an object can not be accessed
+before it is fully constructed.
+More flexible initialization can be supported by using factories.
+
+-----------------------------------------------
+|can a Random object be a capability in one (part of the) program and not a capability in another (part of the program)?
+No, a 'Random' object, that is, an object using the operative system (for example to get the system time) would be a capability object. However, a 'PseudoRandom' object with a seed that deterministically produce
+a senquence of random looking numbers does not need to be a capability object.
+A capability object may still be needed only while initializing such object in order to
+provide a random seed.
+
+-----------------------------------------------
+|Is the following claim justified [..]``Every class [..] is soundly validated [..].''
+We now say that 'a class is soundly handled by our protocol', meaning
+that the runtime monitoring of our invariant protocol is sufficient to soundly 
+enforce our expectations: that all object 
+
+Is validate pure considering that it can throw unchecked exceptions?
+
+
+(1,2,3,4)
+((e))==(e)
+
+(Type T, T&(Int) get, T&() new) = (
+    (Type T, TypeKey<Int> K) = makeTypeKey(Int,Float);
+    new = (f) &T (K.Pack(0,f))
+    get = (T& v) (
+        (Int, Float)& i = K.UnpackRef(v);
+        *i.0
+    )
+    (T, get)
+);
+
+
+
+
+
+
+
+
+
+
+
