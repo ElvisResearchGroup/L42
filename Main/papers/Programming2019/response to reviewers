@@ -2,10 +2,12 @@ General improvements:
 --------------------------------------
 We thank the reviewers for their feedback.
 Thanks to their guidance and suggested papers, 
-we have explored more material on class invariants,
-and we have discovered different invariant protocols,
-in addition we have included a case study demonstrating the practicality,
-performance and annotation burden of our approach.
+we have explored more material on class invariants.
+The paper has been extensively rewritten. We have made it clear that to obtain safety, simplicity, and efficiency we traded some expressive power: our invariants can only refer to immutable and encapsulated state. 
+Our restrictions are opt-in, so the language as a whole does not lose expressiveness, data structures containing
+non encapsulated data can be written as usual; however their invariant will not be able to refer to such data.
+
+We have added support for our invariant system in the language L42, which uses the type modifiers described in the paper; a working IDE together with our source code for our case study is available at <L42.is/ProgrammingArtifact.zip>.
 
 We originally used the term 'validation' to differentiate our work from class invariants,
 as intended in 'visible state semantics' (used by D, Eiffel, JMl etc.).
@@ -17,12 +19,29 @@ This case study shows that our invariant protocol is many orders of magnitude mo
 
 Since this larger evaluation requires a good amount of space, we have moved the formalization in the appendix, and instead focused our paper on explaining and comparing our system to other approaches.
 
+We are not trying to promote type modifiers and object capabilities, as their are already many papers dedicated to that, and they are used in existing languages like L42 and Pony. Rather we aim to simply build upon them, showing that with minimal additions and changes, such languages can soundly enforce our class invariant protocol.
+
+
 Specific points:
 -----------------------------------------------
+| requiring only invariants that can never be broken sounds too rigid. Breaking
+| and re-establishing invariants is part of correctness methods because it is needed 
+| for much code people actually wish to write.
 We were unclear in our exposition, our invariants were not "always-true", but just true for all objects reachable in the current program point. 
 While this was formally defined in the reduction rules and the proofs, it was not as clear in the text.
+This does allow for invariants to be broken in a controlled way and is similar to what happens with pack-unpack in Spec#, where objects with broken invariants can be "seen" but only used in specially annotated environments.
 
-This does allow for invariants to be broken in a controlled way and is similar to what happens in Spec#; however in their system objects with broken invariant can be "seen" but only used in specially annotated environments.
+---------------------------------------------------------
+| [..] object capabilities (run-time checks) [..]
+| [..] object capabilities (to prevent back-doors through effects) [..]
+| It is not clear how a capability object/class is distinguished (syntactically?) from a regular object/class
+| can a Random object be a capability in one (part of the) program and not a capability in another
+
+Object capabilities do not require runtime checks nor are they about preventing back-doors. They are just a programming style used to write classes controlling access to resources.
+We use them here to prevent use of non-deterministic I/O, in order to ensure that class invariants are deterministic. 
+We have expanded and improved our explanation and we detail how the L42 type system enforces the capability programming style around native calls.
+In particular, a 'Random' object, that is, an object using the operative system (for example that accesses a hardware random number generator) would be a capability object. However, a 'PseudoRandom' object with a seed that deterministically produces a sequence of random looking numbers does not need to be a capability object. A capability object may still be used to initialize such object in order to provide a random seed. 
+
 -----------------------------------------------
 |It seems in poor taste to complain of "terrible" ideas,
 |Nontechnical terms like friendly and terrible:
@@ -32,45 +51,19 @@ In the former version we used the term "terrible"; we weren't referring to previ
 -----------------------------------------------
 |what "conventional programming patterns are disallowed"?
 Our approach does support mutation, exceptions, I/O, etc.
-However, we disallow static variables and catching 
-unchecked exceptions is allowed only in certain points.
+However, we disallow static variables and catching unchecked exceptions is allowed only in certain points.
 
 -----------------------------------------------
 |How does Strong Exception Safety compare to the notion of transactions?
-transactions are a way to obtain Strong Exception Safety; they require run-time support while we leverage on type modifiers.
-
------------------------------------------------
-|It is not clear how a user u of an instance o of a class C can learn/know about the validity requirements of o encoded in the method validate of class C? 
-*We expected to be possible to expose validity as part of the class documentation.
-Care would need to be applied when the validity property depends from private fields; for example the documentation may refer to their public getters instead. We did not fleshed out this philosofy  
-completely in the former version, and now our focus is more about mesusable improvements with respect
-to other approaches.
-
------------------------------------------------
-|It is not clear how expressive a language with the validity property can be,
-considering the proposed set of several syntactic and semantic restrictions
-required by capsules, capabilities, type modifiers and validate methods.
-*Our restrictions are opt-in, so the language do not lose expressivity.
-However, our restricions do limit wich properties can be validated. In the new version
-we try to be more explicit that we can only monitor properties
-over the immutable and encapsulated state of an object.
+Transactions are another way of enforcing strong-exception safety, but they require specialized and costly run-time support. We mention that in the paper.
 
 -----------------------------------------------
 |Are there any requirements on object construction, especially on accessibility
-of an object before it is fully constructed? What happens if an object is accessed
-before it is fully constructed?
+|of an object before it is fully constructed? What happens if an object is accessed
+|before it is fully constructed?
 We require constructors (of classes with invariants) 
-to only use 'this' to update fields. Thus an object can not be accessed
-before it is fully constructed.
+to only use 'this' to update fields. Thus an object can not be accessed before it is fully constructed.
 More flexible initialization can be supported by using factories.
-
------------------------------------------------
-|can a Random object be a capability in one (part of the) program and not a capability in another (part of the program)?
-No, a 'Random' object, that is, an object using the operative system (for example to get the system time) would be a capability object. However, a 'PseudoRandom' object with a seed that deterministically produce
-a senquence of random looking numbers does not need to be a capability object.
-A capability object may still be needed only while initializing such object in order to
-provide a random seed.
-
 
 -----------------------------------------------
 |Is the following claim justified [..]``Every class [..] is soundly validated [..].''
@@ -80,16 +73,36 @@ that in any moment all objects rechable from the current program point are valid
 
 -----------------------------------------------
 |Is validate pure considering that it can throw unchecked exceptions?
-We are now more explicit when we define what we mean by pure.
+We are now more explicit when we define what we mean by pure, i.e. that it is deterministic and does not modify existing memory. We have also added a short discussion on how to handle non deterministic unchecked exceptions like stack overflows and out of memory.
+
+-----------------------------------------------
+| Exception safety is said to be achieved using the following restrictions. ... 
+| It is not clear how the above restrictions can guarantee the following outcome.
+The technique we mention for ensuring strong exception safety has already been shown correct in [44]; we tried to make the paper more clear about this.
+
+-----------------------------------------------
+| It is not clear why all runtime exceptions should be treated the same under exception safety.
+| Is it possible to separate validity exceptions from other runtime exceptions and treat them differently? 
+Yes they don't need to, we have mentioned that, however we do so because it is simpler and is what L42 already does for other reasons.
+
+-----------------------------------------------
+|  Validation is described as "stronger and simpler" and "more primitive and general" than class invariants
+What we were comparing against was visible state semantics, which have been identified as problematic in the literature by various authors (which we have mentioned and cited in the paper); see for example citations 6, 52, 37 in the paper. Importantly, one can not easily encode our invariant protocol in visible state semantics; there is no way to enforce that invalid objects are not passed around using callbacks, and it is challenging to prevent objects from being broken via aliases to one of its fields. 
+
+We have implemented a modified version of our protocol, which does checks in the manner of visible state semantics, however it performs orders of magnitude more checks the that visible state semantics; importantly though, we have shown that with the box pattern we gain a similar level of flexibility to visible state semantics, in that one can temporally break an object during a public method, but it is guaranteed to be valid at the beginning and end of the method. Importantly, we avoid the aforementioned problems with visible state semantics, namely we ensure that an object can only be broken within an instance method call on it (or after a field update or constructor), and not accidentally by other unrelated code.
+
+-----------------------------------------------
+| Regardless, the dynamic vs static approach in this paper appears to be more important 
+Our approach is in some sense hybrid, where standard properties aliasing, immutability and purity are statically checked, while user defined properties that are much harder to statically verify are checked at run time only in a handful of points.
+
+-----------------------------------------------
+|It is not clear how a user u of an instance o of a class C can learn/know about the validity requirements of o encoded in the method validate of class C? 
+| "Our work represents a philosophical shift"
+| "class author" vs "class user"
+We expected to be possible to expose validity as part of the class documentation.
+Care would need to be applied when the validity property depends from private fields; for example the documentation may refer to their public getters instead.
+Those considerations was not fully fleshed out in the former version of the paper,
+we have now decided to focus instead on the quantifiable benefits of our system.
 
 
-
-
-
-
-
-
-
-
-
-
+Other minor comments has been considered and have been integrated by rewording and clarifying sentences.
