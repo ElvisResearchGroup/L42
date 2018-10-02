@@ -18,7 +18,7 @@ Of course the bodies of both \Q@invariant@ methods and constructors may interact
 In order for a class to have an invariant under our protocol,
 its \Q@invariant@ method must be of the form \Q@read method Bool invariant() {..}@
 and only use \Q@this@ to read \Q@imm@ and \Q@capsule@ fields.
-Moreover, its constructors may only use \Q@this@ to initialize fields.\footnote{A factory method could be used when more flexible initialisation is required.} This prevents objects from escaping their constructor partially initialised, and of course prevents explicitly calling \Q@invariant@ inside of \Q@invariants@ and constructors bodies, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
+Moreover, its constructors may only use \Q@this@ to initialise fields.\footnote{A factory method could be used when more flexible initialisation is required.} This prevents objects from escaping their constructor partially initialised, and of course prevents explicitly calling \Q@invariant@ inside of \Q@invariants@ and constructors bodies, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
 
 While mutating the ROG of a \Q@capsule@ field mentioned in the invariant, the containing object may be invalid.
 To enforce that the containing object is inaccessible, an access to such field is typed as \Q@mut@ only inside of methods following a specific pattern: the field access is of the form \Q@this.f@ and there is no other occurrence of \Q@this@, the method receiver is \Q@mut@, none of the other parameters are \Q@mut@ or \Q@read@, and the return type is not \Q@mut@.
@@ -127,7 +127,7 @@ class Person {
   mut method String name(String name) {this.name = name;}
   Person(String name) {this.name = name;} }
 \end{lstlisting}
-\Q@Person@ only has immutable fields and its constructor only uses \Q@this@ to access/update fields.
+\Q@Person@ only has immutable fields and its constructor only uses \Q@this@ to initialise fields.
 %; we say such a class is \emph{simple}.
 %\Q@Person@, only has immutable fields and the constructor 
 %uses the parameters to directly initialize (all) the fields.
