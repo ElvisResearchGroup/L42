@@ -19,7 +19,7 @@ Since this larger evaluation requires a good amount of space, we have moved the 
 
 Specific points:
 -----------------------------------------------
-We were unclear in our exposition, our invariants were not "always-true", but just true for all objects rechable in the current program point. 
+We were unclear in our exposition, our invariants were not "always-true", but just true for all objects rechable from the current program point. 
 While this was formally defined in the reduction rules and the proofs, it was not as clear in the text.
 %This was not so clear in the text but was formally defined in the formalisim.
 
@@ -75,33 +75,10 @@ provide a random seed.
 
 -----------------------------------------------
 |Is the following claim justified [..]``Every class [..] is soundly validated [..].''
-We now say that 'a class is soundly handled by our protocol', meaning
-that the runtime monitoring of our invariant protocol is sufficient to soundly 
-enforce our expectations: that all object 
+We think our sentence was unclear. We now say that 'a class is soundly handled by our protocol', meaning
+that the runtime monitoring of our invariant protocol is sufficient to soundly enforce our expectations:
+that in any moment all objects rechable from the current program point are valid.
 
-Is validate pure considering that it can throw unchecked exceptions?
-
-
-(1,2,3,4)
-((e))==(e)
-
-(Type T, T&(Int) get, T&() new) = (
-    (Type T, TypeKey<Int> K) = makeTypeKey(Int,Float);
-    new = (f) &T (K.Pack(0,f))
-    get = (T& v) (
-        (Int, Float)& i = K.UnpackRef(v);
-        *i.0
-    )
-    (T, get)
-);
-
-
-
-
-
-
-
-
-
-
-
+-----------------------------------------------
+|Is validate pure considering that it can throw unchecked exceptions?
+We are now more explicit when we define what we mean by pure.
