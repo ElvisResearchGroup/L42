@@ -1,11 +1,11 @@
 General improvements:
-------------------
+--------------------------------------
 We thank the reviewers for their feedback.
 Thanks to their guidance and suggested papers, 
 we have explored more material on class invariants,
 and we have discovered different invariant protocols,
 in addition we have included a case study demonstrating the practicality,
-peformance and annotation burden of our approach.
+performance and annotation burden of our approach.
 
 We originally used the term 'validation' to differentiate our work from class invariants,
 as intended in 'visible state semantics' (used by D, Eiffel, JMl etc.).
@@ -19,27 +19,25 @@ Since this larger evaluation requires a good amount of space, we have moved the 
 
 Specific points:
 -----------------------------------------------
-We were unclear in our exposition, our invariants were not "always-true", but just true for all objects rechable in the current program point. 
+We were unclear in our exposition, our invariants were not "always-true", but just true for all objects reachable in the current program point. 
 While this was formally defined in the reduction rules and the proofs, it was not as clear in the text.
-%This was not so clear in the text but was formally defined in the formalisim.
 
 This does allow for invariants to be broken in a controlled way and is similar to what happens in Spec#; however in their system objects with broken invariant can be "seen" but only used in specially annotated environments.
 -----------------------------------------------
 |It seems in poor taste to complain of "terrible" ideas,
 |Nontechnical terms like friendly and terrible:
 |It is not a great idea to label previous work as ``terrible''.
-*In the former version we used the term "terrible"; we weren't referring to previous work, but rather to an idea we had explored. We now reworded that part.
+In the former version we used the term "terrible"; we weren't referring to previous work, but rather to an idea we had explored. We now reworded that part.
 
 -----------------------------------------------
 |what "conventional programming patterns are disallowed"?
-*Our approach does support mutation, exceptions, I/O, etc.
+Our approach does support mutation, exceptions, I/O, etc.
 However, we disallow static variables and catching 
 unchecked exceptions is allowed only in certain points.
 
 -----------------------------------------------
 |How does Strong Exception Safety compare to the notion of transactions?
-*Transations are a way to obtain Strong Exception Safety; they require run-time support
-while we leverage on type modifiers.
+transactions are a way to obtain Strong Exception Safety; they require run-time support while we leverage on type modifiers.
 
 -----------------------------------------------
 |It is not clear how a user u of an instance o of a class C can learn/know about the validity requirements of o encoded in the method validate of class C? 
