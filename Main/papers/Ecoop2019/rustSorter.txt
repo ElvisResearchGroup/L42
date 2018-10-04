@@ -1,0 +1,147 @@
+Base1:C<><{read method T (Args)=e}
+
+// Base1 calls[Base1]
+// Empty calls[]
+// Der calls[Base1]
+// BaseDer calls[BaseDer, Der]
+
+Base1:{class method read This(read Root r) read method T (Args)=e}
+Der:C[Base1]<><{read method T (Args)=e}
+Der:{
+  class method read This(read Base1 _1)
+  private read method Base1 _1()
+  read method T (Args)=e
+  }
+BaseDer:CSelf[Base1]<><{read method T (Args)=e}
+BaseDer:{
+  class method read This(read Base1 _1,read Root r)
+  private read method Base1 _1()
+  read method T (Args)=e
+  }
+
+Root:{
+    
+  }
+any function that takes only cal as read can only do the cal op in cal
+
+ID: {
+    class method Library generate()
+    class method Bool test(Library a, Library b)
+}
+
+
+Signer:{
+  Inner_$_1:{interface}
+  Inner:{interface implements Inner_$_1}
+  class method Library <><(Library right)=
+    Use[{implements Inner,Inner_$_1}]<><right
+}
+
+
+template <typename T> struct Foo {}
+Foo<int>, Foo<float>, ...
+
+("Foo", int)
+
+
+myT.foo()
+==> #(T, "foo")(myT)
+
+    type.name
+    type<type...>
+    name
+
+L3
+fact L3 compiles against L1;
+fact everything in L1 starts with 'L_'
+fact everything in L2 starts with 'L_'
+fact everything in L3 starts with 'L3_'
+fact L1 compatible L2
+then L3 would compile against L2
+
+L3
+int myL3(){
+  A a;
+  return L_bar(L_foo(a.foo).bar)
+  }
+    L1
+    
+L1
+struct A{. foo. }
+fun T L_foo(A)???
+fun int L_bar(T t)??
+struct T{ bar }
+
+L2
+struct A{. foo.  bar.}
+fun T L_foo(A)???
+fun int L_bar(T t)??
+struct T{ bar }
+
+L2 = L1 + L'
+
+
+CL: RedirectAble(A = BarL) <>< L
+
+C1: Redirect(A into RealStd) <>< CL
+C2: Redirect(A, into MockStd) <>< CL
+
+--->
+    Rediractble(A = Barl) <>< L 
+        = RemoveDeadCodeMethods(A) <>< ToAbstract(A) <>< (L + {A: BarL})
+
+writing all the abstract declaration can be boring
+thanks god we can save a class with all the abs decl we need and reuse it with sum.
+However, if we do that is sub obtimal, since we may not be using all the abs decl in our reuse point
+
+
+mathematical properties for multiredirect
+  -look can be usable
+        
+    
+
+trait List { type Elem; ... }
+trait Sorter<E, L: List<Elem = E> = LinkedList<E>> {
+    fn compare(e1: L::Elem, e2: L::Elem): Size;
+    fn L sort(that: L) {..}
+}
+
+trait A: Sorter<String, Strings> {
+    fn compare(e1: String, e2: String): Size { e1.size() - e2.size() }
+}
+struct AI(); impl A for AI{};
+trait Comparable {
+    fn compare(&self, e: Self): Size;
+}
+trait SorterE<E: Comparable, L: List<Elem = E>>: Sorter<E, L> {
+    fn compare(e1: E, e2: E): Size { e1.compare(e2) }
+}
+
+trait Comparable {
+    fn compare(&self, e: Self): Size;
+}
+
+trait SorterFix<L: List<Elem = Message>>: Sorter<Message, L> {
+    fn compare(e1: Message, e2: Message): Size { e1.msg().compare(e2.msg()) }
+}
+
+Sorter:{
+  Elem:{}
+  List:{...}
+  class method Size compare(Elem e1, Elem e2)
+  class method List sort(List that){..}
+  }
+//1  
+A:Sorter[List=Strings]+{
+  class method Size compare(S e1,S e2)=e1.size()-e2.size()}
+//2  
+SorterE:Sorter+{
+  Elem:{method Size compare(Elem e)}
+  class method Size compare(S e1,S e2)=e1.compare(e2)
+  }
+//3
+SorterFix:Sorter[Elem=Message]+{
+  class method Size compare(Message e1,Message e2)=e1.msg().compare(e2.msg())
+  }
+--------------------------------------
+

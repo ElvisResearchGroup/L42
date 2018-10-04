@@ -1,0 +1,368 @@
+
+
+A:{
+  A(B f){this.f=f;}
+  B f;
+  }
+
+B->A
+
+
+
+
+Main:{
+  private constructor Main(){}
+  static <T> T apply(){
+    Main m=new Main()
+    Main.apply(new Foo(m) ..new Foo2(m))
+    }
+  static apply(...){..}
+}
+
+
+foo uses[foo] =...
+Foo:{
+Main m;
+apply(){..}
+}
+
+
+bar uses [a,b]=...
+Bar:{
+A a
+B b
+apply(){...}
+}
+new Bar(a,b).apply()
+
+
+
+
+
+
+
+syntax
+  desugaring
+    with [..]  iterating
+      collections+iteration
+
+
+
+
+linq
+x,y,z
+e1
+e2
+e3
+
+
+
+
+do e1;//  if cond ( x(e) ) else (e1)
+on T x do e0
+
+e1;//  if cond ( return e ) else (e1)
+catch return T x e0
+
+
+setjmp x = e0;
+    e1
+
+G |- e0 : T -> T'
+G, x:T->_ |- e1 : T'
+-------------------------------
+G |- setjmp x = e0; e1 : T'
+
+
+as=a1..an
+bs=b1..bn
+cs=c1..cn
+
+with a in as, b in bs, var c in cs {
+  ai,bi,ci
+  ci=e
+  }
+
+with3Var(as, bs, cs, 
+    (a, b, c) -> ( )
+)
+
+
+
+
+
+
+
+with f in b (
+  Debug(f)
+  f:=e
+  Debug(f)
+  )
+
+  Debug(b.f())
+  b.f(e)
+  Debug(b.f())
+
+  var f=b.f()
+  Debug(f)
+  f:=e //b.f(f)
+  Debug(f)
+
+
+updatey(b, (!c) -> ( print(c); c := 3; print(c)))
+
+ updatey(b, (cupdate, var c) -> ( print(c); c := cupdate(3); print(c)))
+loop(f) = (f(); loop(f))
+
+with3Var(as, bs, cs, f = (a, b, !c) -> e)
+=
+    setjmp return = () void {
+        ait = as.iterator()
+        imm C aitcloser = as.closeHandler();
+        bit = bs.iterator()
+        cit = cs.varIterator()
+        loop(() -> (
+            ao = ait.next()  bo = bit.next() co = cit.next();
+            (a = ao.unwrap(), b = bo.unwrap(), c = co.unwrap()) 
+            ? f(a, b, cs.updater(), c) 
+            : (_) return()
+        ))
+        
+        (loop (
+            ait.goNext()   bit.goNext() cit.goNext() //can throw angry error, not okT error
+            a= ait.current(), b=.. //can throw okT error
+            f(a, b, (x) -> cs.update(x), c)
+        )
+        catch exception Void ())
+        weakFinally( aitcloser()... ) // files: 1 capaility? SES?
+    }
+
+    
+    what should happen if you iterate and mutate over the collection
+    -copy on write
+    -copy before
+    -errors on iterations with versions as in Java
+    -undefined behaviour
+    -error when you mutate the collection
+    -for (int i..n) behaviour
+    -for (int i..coll.size()) behaviour
+    
+    
+    a for(int i=0,i<coll.size();i++){E e=coll.get(i);...}
+
+    b    
+    int size=coll.size()
+    for(int i=0;i<size;i++){...}
+    
+    
+    a for(
+      int i=0;
+      coll1.inRange(i) &&..&& colln.inRange(i);//can false for ok to end
+      i++    
+    ){
+    E e1=coll1.get(i);//can fail angry
+    ..
+    E en=colln.get(i);
+    ...}
+    
+    
+errT
+okT
+if # diff then errT
+if # diff then okT on shorter
+
+next():T, or error
+
+
+update(T):T
+goNext(): void, okT,errT
+current():T
+
+with a2s,b3s.cut() 
+  print(ai,bi)
+
+a1,b1 a2,b2
+a1,b1 a2,b2, err
+
+
+
+
+
+
+
+
+
+G|-try{e}catch(Error){_}:T
+
+
+
+G|-e: T  G\mut,read|-e': T
+------------------------------
+G|-try{e}catch(Error){e'}:T
+
+
+a=sane
+try{a.fuck()}catch(Error){}
+a.isBroken()
+
+
+
+
+
+DoIt: FileAction <>< {
+    //class method T (mut File f)={..f.read()..}
+    class method T #$(no mut, lent, Strings fileNames) = {
+        FD fd = FilePlugin.#$openFd(fileName) 
+           (
+            mut File f=File.#$(fd)
+            T res=This(f)
+            fd.#$close()
+            return res 
+            )
+        catch error Any x (   fd.#$close(),   error x  )
+       }
+    class method T #$(no mut, lent) = {
+        OpenerID fId = FilePlugin.#$openerID() 
+            (
+            mut FileOpener f=fId.#$()
+            T res=This(f)
+            fId.#$close()
+            return res 
+            )
+        catch error Any x (   fId.#$close(),   error x  )
+       }
+   }
+  
+  f.openFile(S)->mut File
+  
+  DoIf(FilePath)->T
+  
+
+  
+  FileAction<><{
+    class method T (mut Files fs)={
+      with f in fs (..)
+      }
+    }
+    
+    3 concepts:
+        satisfied  // I am happy to end
+        finished   // I need to end
+        incomplete // I am not happy to end
+        
+        
+    2 ways to end:
+        some finished
+        none incomplete // all good
+                
+                
+    with([;a1,a2,a3,]    [b1;b2,])
+           s  s  s  f     i  s  f
+    
+    with([;a1,a2,a3,]    [b1;b2,])
+           i  i  i  f     i  i  f
+           
+    a1,b1
+    a1,b1  a2,b2
+--------------------------------------------------------------------
+    c1=input1.iterator();...cn=inputn.iterator();//varIterator if var x in..
+    {int i=0;
+    while(
+      c1.hasElem(i) &&..&& c1.hasElem(i) //hasElem==hasNext
+      && ( c1.incomplete(i) ||..||cn.incomplete(i))
+      ){
+      E1 e1=c1.get(i);..En en=cn.get(i);//get==next
+      {..
+      e3:=e // e3:=c3.update(i,e)
+      ..}
+      i+=1;
+      }
+      c1.close(i);..cn.close(i);
+    }
+-----------------------------------------
+what happens with modifiers
+imm of imm/class
+mut of imm/class
+fix of mut   //#get()??
+mut of mut   //#get()??
+read of read
+read of imm/class
+
+####vector<mdf E> // mdf == Mut | Imm
+V:read method read I iterator()
+V:mut method mut UI varIterator()
+V:mut method mut V# #exposer() // only mdf == mut
+V#:mut method mut I# iterator() // only mdf == mut
+V#:mut method mut UI# #varIter()
+
+I,UI,I#,UI#: read method Bool hasElem(Size i) =  i < this.size()
+I,UI,I#,UI#: read method Bool incomplete(Size) = true
+
+I,UI:read method read E get(Size) mdf==mut
+I,UI:read method      E get(Size) mdf==imm
+I#,UI#:mut method  mut E get(Size) mdf==mut
+
+I,UI,I#,UI#: read method Void close(Size i) = if i<this.size() (error X"")
+UI,UI#: mut method mut E update(Size, mut E)  mdf==mut
+UI,UI#: mut method     E update(Size,     E)  mdf==imm
+
+
+
+
+on arrays based this is faster on more then 1 collection at the time
+and semantic is very intuitive in corner cases
+
+on linked or sparsed collections
+  -copy on array before iterating
+  -slow and complex with interna reset wrapper
+
+  
+  
+
+{
+header
+Ms
+}
+
+{
+[Opt,T,34]
+methods foo() =this.bar_$_34()
+}
+
+
+ArrayBase: { class method Library gen(Size n) use ArrayGenerator() }
+/*
+ClassB ArrayGenerator()
+{
+    // @generator ArrayGenerator(3, Size, 1000)
+    
+    return new ClassB {
+        sum(ClassB b) { // Does the sum intelligently! }
+        redirect() { ... }
+    }
+}
+
+*/
+
+Array: {
+    class method Library gen(Size n) {
+        OptUse(ArrayBase(n)) <>< {
+            T: {}
+            T get(Size index)
+            // other public methods
+        }
+}
+
+
+A: UsePrivateSate[OptT <>< Any] <> {
+    method Void foo() this.get()
+}
+
+A: {
+    // @optimizer ArrayC
+    Any get_$_34()
+}
+
+{
+[Array, T,Size 128]
+}
