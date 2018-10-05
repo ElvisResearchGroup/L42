@@ -3,13 +3,13 @@
 \production{%
 id}     {t \mmid{} C}                                                      {}\\\production{%
 T}      {\Q{This}n\Q{.}Cs}                                                 {}\\\production{%
-CD}     {C\Q{=}E}                                                          {class declaration}\\\production{%
-CV}     {C\Q{=}LV}                                                         {evaluated class declaration}\\\production{%
-D}      {id\Q{=}E}                                                         {declaration}\\\production{%
-DL}     {id\Q{=}L}                                                         {partially-evaluated-declaration}\\\production{%
-DV}     {id\Q{=}LV}                                                       {evaluated-declaration}\\\production{%
-L}      {\Q{interface} \lib{Tz}{amtz}{} \mmid{} \lib{Tz}{Ms}{K$?$}}        {literal}\\\production{%
-LV}     {\Q{interface} \lib{Tz}{amtz}{} \mmid{} \lib{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
+CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
+CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
+D}      {id\eq{}E}                                                         {declaration}\\\production{%
+DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
+DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
+L}      {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{Ms}{K$?$}}        {literal}\\\production{%
+LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
 amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
 mt}     {T m\rp{Txs} e$?$}                                                 {method}\\\production{%
 Tx}     {T x}                                                              {paramater-declaration}\\\production{%
@@ -27,16 +27,40 @@ v}      {\Q{new} T\rp{vs}}                                                 {}\\\
 p}      {DLs\Q{;} DVs}                                                     {program}\\\production{%
 S}      {Ds e}                                                             {source code}
 \end{bnf}
+\\
 
-To look up the definition of a type in the program
+\noindent To look up the value of a type in the program we will use the notation $p(T)$, which is defined by the following, but only if the RHS denotes an $LV$:
+\begin{defye}%
+\defya{(; \_, C\eq{}L, \_)&(\This{0}{C}{Cs})}{L(Cs)}%
+\defya{(id\eq{}L, \_)&(\This{0}{Cs})}{L(Cs)}%
+\defya{(; \_, C\eq{}L, p)&(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
+\end{defye}
 
+\noindent To get the relative value of a trait, we define $p[t]$:
+\begin{defye}%
+\defy{(DLS; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{\#DLs}}}%
+\end{defye}
+
+\noindent To get a the value of a literal, in a way that can be understand from the current location (\This{0}), we define:
+\begin{defye}%
+	\defy{p[T]}{\from{p(T)}{T}}%
+\end{defye}
+
+\noindent And a few simple auxiliary definitions:
+\begin{defye}%
+	\defy{\s{T} \in p}{\forall T \in \s{T} \bullet p(T) \text{ is defined}}%
+	\defy{L({\emptyset})}{L}%
+	\defy{L(\Cs{C}{\s{C}})}{L(Cs) \text{ where } L = \lib{\_}{\_, C\eq{L}, \_}{\_}}%
+	\defy{L[C\eq{E'}]}{\lib{Tz}{\s{MV}\ C\eq{E'}\ \s{M}}{K?}}
+	\defyc{\text{where } L = \lib{Tz}{\s{MV}\ C\eq{\_}\ \s{M}}{K?}}
+\end{defye}
+
+\newpage
+
+\begin{comment}
 Define p(P) = LV
 -----------------------------------
-(; _, C = L, _)(This0.C.Cs) = L(Cs)
-(id = L, p)(This0.Cs)   = L(Cs)
-(id = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
-(DLs; _, t = LV, _)[t] = LV[from This(#DLs)]
-p[P] = p(P)[from P]
+
 
 p.exists(Ps) iff forall P in Ps: p(P) is defined
 
@@ -87,3 +111,4 @@ define dom(Mz) = Midz
 dom(empty) = empty
 dom(C = E, Mz) = C, dom(Mz)
 dom(T m(Txs), Mz) = m, dom(Mz)
+\end{comment}

@@ -59,28 +59,49 @@
 \newcommand\Rotated[1]{\begin{turn}{90}\begin{minipage}{12em}#1\end{minipage}\end{turn}}
 
 \newcommand{\Q}{\lstinline}
-\newenvironment{bnf}{$\begin{array}{lcll}}{\end{array}$}
-\newcommand{\production}[3]{%
-	\text{\itshape #1}&%
-	\!\!\!\!\!\Coloneqq\!\!\!\!\!&%
-	\text{\itshape #2}&%
-	\!\!\!\!\!\mbox{#3}}
+\newenvironment{bnf}{$\begin{aligned}}{\end{aligned}$}
+\newcommand{\production}[3]{\textit{#1}&\Coloneqq\textit{#2}&\text{#3}}
+
+\newenvironment{defye}{\\\indent$\begin{aligned}}{\end{aligned}$\\}
+\newcommand{\defy}[2]{#1&\coloneqq#2\\}
+\newcommand{\defyc}[1]{&\phantom{\coloneqq}\ \ #1\\}
+
+\newcommand{\defya}[2]{#1&\!\!\!\!\!\!&\coloneqq#2\\}
+
 %\newcommand{\prodFull}[3]{#1&::=&\mbox{#2}&\mbox{#3}}
 \newcommand{\prodInline}[2]{#1\Coloneqq#2}
 \newcommand{\prodNextLine}[2]{&&#1&\mbox{#2}}
 \newcommand{\terminal}[1]{\ensuremath{$\texttt{#1}$}}
 %\newcommand{\metavariable}[1]{\ensuremath{\mathit{#1}}}
 
-\newcommand\Rulename[1]{{\textsc{#1}}}
-\newcommand\ctx[1]{\ensuremath{\mathcal{E}_#1}\!}
-\newcommand{\lib}[3]{\Q@\{@\!#1\Q{;}\ #2 \Q{;}\ #3\Q@\}@}
+\newcommand{\Rulename}[1]{{\textsc{#1}}}
+\newcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
+\newcommand{\libi}[3]{\Q!interface!\ \libc{#1}{#2}{#3}}
+\newcommand{\lib}[3]{\Q!interface!\ensuremath{?}\ \libc{#1}{#2}{#3}}
+\newcommand{\libc}[3]{\Q@\{@\!#1\Q{;}\ #2 \Q{;}\ #3\Q@\}@\!\!}
+
 \newcommand{\rp}[1]{\Q{(}\!#1\Q{)}}
-\newcommand{\red}[3]{#1\rp{#2\Q{=}#3}}
+\newcommand{\eq}[1]{\,\Q{=}#1}
+\newcommand{\red}[3]{#1\rp{#2\eq#3}}
 \newcommand{\summ}[2]{#1\ \Q{<+}\ #2}
-\newcommand{\mmid}{\ensuremath{\mid}}
+\newcommand{\from}[2]{#1\ensuremath{[}#2\ensuremath{]}}
+\newcommand{\mmid}{{\ensuremath{{\mid}}}\!}
 \newcommand{\hole}{\ensuremath{\square}}
+\newcommand{\s}[1]{\ensuremath{\mathit{#1s}}}
+\makeatletter
+\newcommand{\This}[1]{\Q!This!#1\nextpath}
+
+\newcommand{\Cs}[1]{#1\nextpath}
+\newcommand{\nextpath}{\@ifnextchar\bgroup{\gobblenextpath}{}}
+\newcommand{\gobblenextpath}[1]{\Q!.!#1\@ifnextchar\bgroup{\gobblenextpath}{}}
+
+
+
+
 %--------------------------
 \newcommand{\mynotes}[3]{{\color{#2} {\sc #1}: #3}}
-\newcommand\isaac[1]{\mynotes{Isaac}{red}{#1}}
-\newcommand\marco[1]{\mynotes{Marco}{blue}{#1}}
+\newcommand\isaac[1]{\mynotes{Isaac}{blue}{#1}}
+
+\newcommand\IO[1]{\color{blue}{#1}}
+\newcommand\marco[1]{\mynotes{Marco}{green}{#1}}
 
