@@ -63,9 +63,9 @@
 \newcommand{\production}[3]{\textit{#1}&\Coloneqq\textit{#2}&\text{#3}}
 
 \newenvironment{defye}{\\\indent$\begin{aligned}}{\end{aligned}$\\}
-\newcommand{\defy}[2]{#1&\coloneqq#2\\}
-\newcommand{\defyc}[1]{&\phantom{\coloneqq}\ \ #1\\}
-
+\newcommand{\defy}[2]{\!\!\!\!\!\!&&#1&\coloneqq#2\\}
+%\newcommand{\defyc}[1]{&\phantom{\coloneqq}\ \ #1\\}
+\newcommand{\defyc}[1]{\!\!\!\!\!\!\rlap{\quad \quad #1}&&\\}
 \newcommand{\defya}[2]{#1&\!\!\!\!\!\!&\coloneqq#2\\}
 
 %\newcommand{\prodFull}[3]{#1&::=&\mbox{#2}&\mbox{#3}}
@@ -90,7 +90,6 @@
 \newcommand{\s}[1]{\ensuremath{\mathit{#1s}}}
 \makeatletter
 \newcommand{\This}[1]{\Q!This!#1\nextpath}
-
 \newcommand{\Cs}[1]{#1\nextpath}
 \newcommand{\nextpath}{\@ifnextchar\bgroup{\gobblenextpath}{}}
 \newcommand{\gobblenextpath}[1]{\Q!.!#1\@ifnextchar\bgroup{\gobblenextpath}{}}

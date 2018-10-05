@@ -31,14 +31,15 @@ S}      {Ds e}                                                             {sour
 
 \noindent To look up the value of a type in the program we will use the notation $p(T)$, which is defined by the following, but only if the RHS denotes an $LV$:
 \begin{defye}%
-\defya{(; \_, C\eq{}L, \_)&(\This{0}{C}{Cs})}{L(Cs)}%
-\defya{(id\eq{}L, \_)&(\This{0}{Cs})}{L(Cs)}%
-\defya{(; \_, C\eq{}L, p)&(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
+\defy{(; \_, C\eq{}L, \_)(\This{0}{C}{Cs})}{\mathit{L(Cs)}}%
+\defy{(id\eq{}L, p)(\This{0}{Cs})}{L(\mathit{Cs})}%
+%p' id=L,A;B = id=L,p
+\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
 \end{defye}
 
 \noindent To get the relative value of a trait, we define $p[t]$:
 \begin{defye}%
-\defy{(DLS; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{\#DLs}}}%
+\defy{(\s{DL}; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{\#DLs}}}
 \end{defye}
 
 \noindent To get a the value of a literal, in a way that can be understand from the current location (\This{0}), we define:
