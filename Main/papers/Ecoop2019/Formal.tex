@@ -1,0 +1,89 @@
+\section{Formal} 
+\begin{bnf}
+\production{%
+id}     {t \mmid{} C}                                                      {}\\\production{%
+T}      {\Q{This}n\Q{.}Cs}                                                 {}\\\production{%
+CD}     {C\Q{=}E}                                                          {class declaration}\\\production{%
+CV}     {C\Q{=}LV}                                                         {evaluated class declaration}\\\production{%
+D}      {id\Q{=}E}                                                         {declaration}\\\production{%
+DL}     {id\Q{=}L}                                                         {partially-evaluated-declaration}\\\production{%
+DV}     {id\Q{=}LV}                                                       {evaluated-declaration}\\\production{%
+L}      {\Q{interface} \lib{Tz}{amtz}{} \mmid{} \lib{Tz}{Ms}{K$?$}}        {literal}\\\production{%
+LV}     {\Q{interface} \lib{Tz}{amtz}{} \mmid{} \lib{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
+amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
+mt}     {T m\rp{Txs} e$?$}                                                 {method}\\\production{%
+Tx}     {T x}                                                              {paramater-declaration}\\\production{%
+M}      {CD \mmid{} mt}                                                    {member}\\\production{%
+MV}     {CV \mmid{} mt}                                                    {}\\\production{%
+Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
+K}      {\Q{constructor}\rp{Txs}}                                          {constructor}\\\production{%
+e}      {x \mmid{} e\Q{.}m\rp{es} \mmid{} e\Q{.}x \mmid{} \Q{new} T\rp{es}}{expression}\\\production{%
+E}      {L \mmid{} t \mmid{} \summ{E}{E} \mmid{} \red{E}{Cs}{T}}           {library-expression}\\\production{%
+\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
+                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
+\ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
+	\mmid{}  \ctx{v}\Q{.}x \mmid{}  \Q{new} T\rp{vs \ctx{v} es}}           {}\\\production{%
+v}      {\Q{new} T\rp{vs}}                                                 {}\\\production{%
+p}      {DLs\Q{;} DVs}                                                     {program}\\\production{%
+S}      {Ds e}                                                             {source code}
+\end{bnf}
+
+To look up the definition of a type in the program
+
+Define p(P) = LV
+-----------------------------------
+(; _, C = L, _)(This0.C.Cs) = L(Cs)
+(id = L, p)(This0.Cs)   = L(Cs)
+(id = L, p)(Thisn+1.Cs) = p(Thisn.Cs)
+(DLs; _, t = LV, _)[t] = LV[from This(#DLs)]
+p[P] = p(P)[from P]
+
+p.exists(Ps) iff forall P in Ps: p(P) is defined
+
+Define L(Cs) = L
+--------------------------------------
+L(empty) = L
+L(C.Cs) = L(Cs)
+    L = interface? {_; _, C = L, _; _}
+
+Define L[CD]=L'
+---------------------------------------------
+L[C = E'] = interface? {Tz; MVs C = E' Ms; K?}
+  L = interface? {Tz; MVs C = _ Ms; K?}
+
+
+Define operations on p
+--------------------------------------
+p.evilPush(L) = (C = L, p)
+	for fresh C
+
+p.push(id) = (id = L, p)
+    p = (id' = {_;_, id = L, _ ;_}, _; Ds)
+
+(id = L, p).pop() = p
+(id = L, p).top() = L
+
+Define equivy ops...
+------------------------------
+empty =p empty
+P, Ps =p P', Ps' iff:
+	p.minimize(P) = p.minimize(P')
+	Ps =p Ps'
+
+Pz subseteq_p Pz' iff:
+	p.minimize(Pz) subseteq p.minimize(Pz')
+
+p.minimize(empty) = empty
+p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
+
+p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
+  p = id0 = L0, ..., idn = Ln, _; Ds
+  p(Thisn.Cs) = L
+  // TODO: Check that Ln is an L instead?
+otherwise p.minimize(P) = P
+
+define dom(Mz) = Midz
+===========================================
+dom(empty) = empty
+dom(C = E, Mz) = C, dom(Mz)
+dom(T m(Txs), Mz) = m, dom(Mz)

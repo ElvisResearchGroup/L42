@@ -1,0 +1,86 @@
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{letltxmacro}
+\usepackage{mathtools}
+\usepackage{mathpartir}
+%\usepackage{stix}
+
+\definecolor{darkRed}{RGB}{100,0,10}
+\definecolor{darkBlue}{RGB}{10,0,100}
+\newcommand*{\ttfamilywithbold}{\fontfamily{pcr}\selectfont}
+%\newcommand*{\ttfamilywithbold}{\ttfamily}
+
+%found on http://tex.stackexchange.com/questions/4198/emphasize-word-beginning-with-uppercase-letters-in-code-with-lstlisting-package
+%\lstset{language=FortyTwo,identifierstyle=\idstyle}
+%
+\makeatletter
+\newcommand*\idstyle{%
+        \expandafter\id@style\the\lst@token\relax
+}
+\def\id@style#1#2\relax{%
+        \ifcat#1\relax\else
+                \ifnum`#1=\uccode`#1%
+                        \ttfamilywithbold\bfseries
+                \fi
+        \fi
+}
+\makeatother
+
+\lstset{language=Java,
+  basicstyle=\upshape\ttfamily\footnotesize,%\small,%\scriptsize,
+  keywordstyle=\upshape\bfseries\color{darkRed},
+  showstringspaces=false,
+  mathescape=true,
+  xleftmargin=0pt,
+  xrightmargin=0pt,
+  breaklines=false,
+  breakatwhitespace=false,
+  breakautoindent=false,
+ identifierstyle=\idstyle,
+ morekeywords={method,Use,This,constructor,as,into,rename},
+ deletekeywords={double}
+}
+
+\newcommand*{\SavedLstInline}{}
+\LetLtxMacro\SavedLstInline\lstinline
+\DeclareRobustCommand*{\lstinline}{%
+	\ifmmode
+	\let\SavedBGroup\bgroup
+	\def\bgroup{%
+		\let\bgroup\SavedBGroup
+		\hbox\bgroup
+	}%
+	\fi
+	\SavedLstInline
+}
+
+\newcommand\saveSpace{\vspace{-2pt}}
+
+\newcommand\Rotated[1]{\begin{turn}{90}\begin{minipage}{12em}#1\end{minipage}\end{turn}}
+
+\newcommand{\Q}{\lstinline}
+\newenvironment{bnf}{$\begin{array}{lcll}}{\end{array}$}
+\newcommand{\production}[3]{%
+	\text{\itshape #1}&%
+	\!\!\!\!\!\Coloneqq\!\!\!\!\!&%
+	\text{\itshape #2}&%
+	\!\!\!\!\!\mbox{#3}}
+%\newcommand{\prodFull}[3]{#1&::=&\mbox{#2}&\mbox{#3}}
+\newcommand{\prodInline}[2]{#1\Coloneqq#2}
+\newcommand{\prodNextLine}[2]{&&#1&\mbox{#2}}
+\newcommand{\terminal}[1]{\ensuremath{$\texttt{#1}$}}
+%\newcommand{\metavariable}[1]{\ensuremath{\mathit{#1}}}
+
+\newcommand\Rulename[1]{{\textsc{#1}}}
+\newcommand\ctx[1]{\ensuremath{\mathcal{E}_#1}\!}
+\newcommand{\lib}[3]{\Q@\{@\!#1\Q{;}\ #2 \Q{;}\ #3\Q@\}@}
+\newcommand{\rp}[1]{\Q{(}\!#1\Q{)}}
+\newcommand{\red}[3]{#1\rp{#2\Q{=}#3}}
+\newcommand{\summ}[2]{#1\ \Q{<+}\ #2}
+\newcommand{\mmid}{\ensuremath{\mid}}
+\newcommand{\hole}{\ensuremath{\square}}
+%--------------------------
+\newcommand{\mynotes}[3]{{\color{#2} {\sc #1}: #3}}
+\newcommand\isaac[1]{\mynotes{Isaac}{red}{#1}}
+\newcommand\marco[1]{\mynotes{Marco}{blue}{#1}}
+

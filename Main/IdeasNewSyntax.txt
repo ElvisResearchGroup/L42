@@ -316,8 +316,54 @@ on linked or sparsed collections
   -copy on array before iterating
   -slow and complex with interna reset wrapper
 
+
   
+
+  mut list of imm
+  mut list of mut
+  imm list imm/mut imm
   
+  mut list of mut
+  mut list of imm
+
+  List:{interface
+    behave like a mut list of mut
+    LMut:{}
+    LImm:{}  
+    //---
+    Fix list:{}
+    Sublist:{}
+  }
+  
+
+Vector: {
+    Elem:{}
+    read method      Size size()
+    read method read Elem  get(Size that)
+  Mut: {implements Vector
+      read method      Size size()=..
+      read method read Elem  get(Size that)=..
+       mut method  mut Elem #get(Size that)=..
+       mut method      Void  set(Size that, mut Elem val)=..
+  }
+  Imm: { implement Vector
+      refine read method      Size size()=..
+      refine read method      Elem  get(Size that)=..
+      //refine  mut method      Void  set(Size that,mut Elem val)
+      refine  mut method      Void  setImm(Size that,Elem val)=...
+  }
+}
+  
+mut Vector.Mut 
+mut Vector.Imm
+read Vector.Imm
+read Vector
+imm Vector
+
+imm VectorMut
+mut VectorMut
+read VectorMut
+
 
 {
 header
