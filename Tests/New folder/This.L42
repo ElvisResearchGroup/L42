@@ -1,7 +1,7 @@
 reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
 
-
+/*
 Main: Data <>< {
     Void f
     read method Bool #invariant() This.print()
@@ -25,8 +25,24 @@ Main: Data <>< {
         Debug(S"end")
     )
 }
+*/
+Testy: (
+    Bool x = if Bool.true() (Bool.true()) else (Bool.true())
+    {}
+)
+
+Testy2: (Bool b = (
+    x = (return Bool.true())
+    catch return Any y y
+    x
+) {})
+
+Testy3: (Bool b = {
+    return Bool.true()
+} {})
 
 Main2: {
-  Main.main()
+  //Main.main()
+  //class Testy t = Testy
   return ExitCode.normal()
   }

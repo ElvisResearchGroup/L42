@@ -157,6 +157,105 @@ guessType(p,G,e)//TODO: change in code about ds
   guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
 
 //TODO: in code remove suggest(T?,T)
+//x
+
+//todo: magic function
+guesParamType(p, Mwt, x, T, T')
+	// Guesses what type the paramater 'x' of mwt
+	should have
+	// if we are call Mwt on a receiver of type T
+	// and the return type of the call is to typed as T'
+
+inferTypes(p, G, ds var? x = e' ds', e, T) = inferTypes(p, G, ds var? T' = e' ds', e, T)
+	where T' = inferType(p, x, G, e, T)
+
+inferTypes(p, G, ds, e, T) = ds
+	when former rule is not applicable
+-------------------------------------------------------
+inferType(p, x, G, x, T) = T
+
+inferType(p, x, G, chain.m(x1:e1..xn:en), T) = inferType(p, x, G, ei, T')
+	where T' = guessParamType(p, p(P), xi, guessType(p,G,chain), T)
+
+inferType(p, x, G, (ds ks e), T?) = inferType(p, x, G[ds], e, T?)
+
+inferType(p, x, G, (ds ks e), T?) = inferType(p, x, G[ds][P x'], e', T?)
+	where
+	ki = catch throw P x' e' // todo what if throw is a return?
+
+inferType(p, x, G, (ds ks e), T?) = inferType(p, x, G[ds], e', T?')
+	di = var? T?' y = e'
+
+ // So on for all the other expressions I havn't mentioned
+	inferType(p, x, G, chain, guessType(p,G,chain))
+
+inferType(p, x, G, chain.m(x1:e1..xn:en), T?),
+inferType(p, x, G, throw chain, T?), and
+inferType(p, x, G, loop chain, T?) ...
+  = inferType(p, x, G, chain, guessType(p,G,chain))
+
+inferType(p,G,x,use P check m(x1:e1..xn:en) e,T?) undefined // Could be done, Marco dosn't care
+
+-------------------------------------------------------
+Marco and Isaac reviewd together start
+//new replaced 1
+staticDispatch(n,p,G,var? x=e ds,e',T?)=
+	var? T x=staticDispatch(p,G,e,empty)
+	staticDispatch(n,p,G,ds)//good case
+  where T=guessType(p,G,x=e, e',T?)
+//new replaced 1
+staticDispatch(n,p,G,var? T x=e ds,e',T?)=
+	var? T x=staticDispatch(p,G,e,T)
+	staticDispatch(n,p,G,ds)//good case
+//new replaced 1
+staticDispatch(n,p,G,var? x=e ds,e',T?)=
+	var? x=e
+	staticDispatch(n+1,p,G,ds) //remember failure
+  where guessType(p,G,x=e, e',T?) undefined
+
+--//new
+guessType(p,G,x=e, e', T?)=capsuleToMut(guessType(p,G, staticDispatch(p,G,e)))
+guessType(p,G,x=e, e', T?)=guessType(p,G,x, e', capsuleToMut(T?))
+
+
+guessType(p,G, x, x, T)=T
+
+guessType(p,G, x, (ds ks e), T?) = guessType(p,G[ds],x, e, T?)
+
+guessType(p,G, x, (ds ks e), T?) =guessType(p,G[ds][P x'], x, e', T?)
+	where ki = catch throw P x' e' // todo what if throw is a return?
+
+guessType(p,G, x, (ds ks e), _) = guessType(p, G[ds],x, e', T?)
+    where di = var? T? y = e'
+
+guessType(p,G, x, chain.m(x1:e1..xn:en), T?) = guessType(p,G, x, ei, T')
+	where T' = guessParamType(p, p(P), xi, guessType(p,G,chain), T?)
+
+guessType(p,G, x, chain.m(x1:e1..xn:en), T?),
+guessType(p,G, x, throw chain, T?), and
+guessType(p,G, x, loop chain, T?) ...
+  = guessType(p,G, x, chain, T?')
+  where T?'=guessType(p,G,chain) if defined, otherwise T?'=empty
+//guessType(p,G,x,use P check m(x1:e1..xn:en) e,T?) undefined // Could be done, Marco dosn't care
+
+TODO: add (ds ks chain) and (ds ks catch throw T x chain ks e) to chain
+and add case for (ds ks e) to guessType(p,G,chain)
+
+Marco and Isaac reviewd together end
+-------------------------------------------------------
+
+
+e = (ds x = e' ds' ks e'')
+e = CtxE'[CtxE[x]]
+and CtxE[x] will only typecheck if x : T
+then we infer that x has type T
+
+staticDispatch(p,G,(ds ks e),T?)=(inferTypes(p, G, ds', (ds' ks' e'), T?) ks' e')
+	where (ds' ks' e') =  staticDispatch(p,G,(ds ks e)) // TODO: make this not fail
+
+staticDispatch(p,G,e,T?)=staticDispatch(p,G,e)
+	otherwise
+
 
 staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
   Ti=G(yi)
@@ -181,11 +280,11 @@ staticDispatch(p,G,ds)=staticDispatch(p,G,ds')
 
 staticDispatch(n,p,G,empty)=n   //recursion end
 staticDispatch(n,p,G,var? T x=e ds)=
-	var? T x=staticDispatch(p,G,e)
+	var? T x=staticDispatch(p,G,e,T)
 	staticDispatch(n,p,G,ds)//good case
 
 staticDispatch(n,p,G,var? x=e ds)=
-	var? T x=staticDispatch(p,G,e)
+	var? T x=staticDispatch(p,G,e,empty)
 	staticDispatch(n,p,G,ds)//good case
   where T=capsuleToMut(guessType(p,G,staticDispatch(p,G,e)))
 

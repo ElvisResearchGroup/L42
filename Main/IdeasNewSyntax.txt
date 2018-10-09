@@ -1,269 +1,187 @@
+Isaac note:
+When generating code for trowing exceptions,
+if you are in a catch, you could use the catched exception as a cause to provide more info for debugging.
+
+Syntax changes:
+* with->for and no more typecase in the with.
+
+* IF::= if tMatch+ e? WB (else (IF|WB))?
+  tMatch::= T x | T x=e
+  WB::= (..) | {..} | throw e | loop e |  ??void??
+
+*Block with catching:
+( Decs1 Ks1 Decs2 e) stay the same, but
+( Decs1 Ks1 Decs2 Ks2 e) is disallowed, and the user have to write
+( Decs1 Ks1 (Decs2 Ks2 e)) instead. This makes much more clear the flow of catching.
+
+*wops A,B,C will retrow errors/exceptions A B C as errors but adding an empty lib for the Position:
+Marco still like it.
+
+Parenthesis reduction proposal:
+  Term ::= Block | throw e | loop e | void
+  Block ::= (...) | { ... }
+  K::= if e | while e | catch T x | for (x in e)s | if c e else | loop
+
+  K e1 e2 is not well formed if neither e1 or e2 are Term.
+  additionally, if e e1 needs e1 to be not an 'ifelse', and if e e1 else e2
+  needs e1 not to be an 'if'
+  Note: it is ok for "K e1)" or "K e1}"
 
 
-A:{
-  A(B f){this.f=f;}
-  B f;
-  }
-
-B->A
+Reducing voids?
+( bla() catch T x e1) ==> ( bla() catch T x e1 void)
+//?may be? ( bla() catch T x) ==> ( bla() catch T x (void))?
+// no since is good to be explicit on silenting exceptions
 
 
+Debug&&X[]
+
+e0&&e1
+==>
+e0 && e1
+(x=e0 (x.#if#and().#checkTrue() catch exception Void unused (x.#else#and()) x & e1))
+similarly for ||
 
 
-Main:{
-  private constructor Main(){}
-  static <T> T apply(){
-    Main m=new Main()
-    Main.apply(new Foo(m) ..new Foo2(m))
-    }
-  static apply(...){..}
-}
-
-
-foo uses[foo] =...
-Foo:{
-Main m;
-apply(){..}
-}
-
-
-bar uses [a,b]=...
-Bar:{
-A a
-B b
-apply(){...}
-}
-new Bar(a,b).apply()
-
-
-
-
-
-
-
-syntax
-  desugaring
-    with [..]  iterating
-      collections+iteration
-
-
-
-
-linq
-x,y,z
-e1
-e2
-e3
-
-
-
-
-do e1;//  if cond ( x(e) ) else (e1)
-on T x do e0
-
-e1;//  if cond ( return e ) else (e1)
-catch return T x e0
-
-
-setjmp x = e0;
-    e1
-
-G |- e0 : T -> T'
-G, x:T->_ |- e1 : T'
--------------------------------
-G |- setjmp x = e0; e1 : T'
-
-
-as=a1..an
-bs=b1..bn
-cs=c1..cn
-
-with a in as, b in bs, var c in cs {
-  ai,bi,ci
-  ci=e
-  }
-
-with3Var(as, bs, cs, 
-    (a, b, c) -> ( )
+if e0 e1 else e2
+==>
+  (x=e0 if x e1 else e2)
+if x e1 else e2
+==>
+(Void fresh=x.#if().#checkTrue()
+ catch exception Void fresh2 (e2)
+ e1
 )
 
 
+arg::=e? (x:e)s
+e[args] ==> e.#square[args]
+
+e.m[arg1;..argn]
+==>
+(x=e
+x.m(sqBuilder:(
+  b=x.sqBuilder()
+  ?#add(sqBuilder:b,arg'1)
+  ..
+  ?#add(sqBuilder:b,arg'n)
+  b
+)))
+where arg'i=argi["\"=b, "\foo"=b.foo()]
+
+
+
+Note, there is no need of new sugar for
+e[for...]
+since 'for ..' is an expression returning void, and
+we can just have the builder offering a method
+method Void add1(Void that)void
+
+
+'refine? method T m(Txs) e?'
+become
+'refine? method T m(Txs); | refine? method T m(Txs)=e; | '
+
+mb ::= ; | : blockcontents ;
+
+
+1  class { }
+2  () :return; class {}
+3  () :return; {}
+4  {return} eats =  x=e or x '={' }
+
+
+
+{ds ks}
+
+{ds ks e?}
+
+Isaacs ideas:
+	de ::= d | e
+	(ds e de des' ks)==>( ds Void x = e de des' ks)
+	(ds e k ks') ==> (ds x = e k ks' x)
+	(ds ks) ==> (ds ks void)
+For curleys: No extra well-formedness or type rules
+	//{des ks} ==> (Void unused=(des ks) catch return x (x) unreachable)
+	{des ks e?} ==> ((des ks e?) catch return x (x))
+
+
+	(ds e ks)
+	(ds y = e ks y)
+
+(ds y = e ks y) expected Y
+then e expected Y
+
+dsT?  dsT
 
 
 
 
+	T z=(y=(ds ks e) catch return x (x:T) y:T)
 
-with f in b (
-  Debug(f)
-  f:=e
-  Debug(f)
-  )
+	T z=(y=(return T()) catch return x (x:T) y:T)
 
-  Debug(b.f())
-  b.f(e)
-  Debug(b.f())
-
-  var f=b.f()
-  Debug(f)
-  f:=e //b.f(f)
-  Debug(f)
+	(ds e ks)
+	(ds x = e ks x) // e happens to have type void
+	(ds Void x = e ks void)
 
 
-updatey(b, (!c) -> ( print(c); c := 3; print(c)))
-
- updatey(b, (cupdate, var c) -> ( print(c); c := cupdate(3); print(c)))
-loop(f) = (f(); loop(f))
-
-with3Var(as, bs, cs, f = (a, b, !c) -> e)
-=
-    setjmp return = () void {
-        ait = as.iterator()
-        imm C aitcloser = as.closeHandler();
-        bit = bs.iterator()
-        cit = cs.varIterator()
-        loop(() -> (
-            ao = ait.next()  bo = bit.next() co = cit.next();
-            (a = ao.unwrap(), b = bo.unwrap(), c = co.unwrap()) 
-            ? f(a, b, cs.updater(), c) 
-            : (_) return()
-        ))
-        
-        (loop (
-            ait.goNext()   bit.goNext() cit.goNext() //can throw angry error, not okT error
-            a= ait.current(), b=.. //can throw okT error
-            f(a, b, (x) -> cs.update(x), c)
-        )
-        catch exception Void ())
-        weakFinally( aitcloser()... ) // files: 1 capaility? SES?
+T x={
+  if a return A
+  B
+  catch error X x C
+  }
+T x = {
+	if c return T()
+	return T()
     }
 
-    
-    what should happen if you iterate and mutate over the collection
-    -copy on write
-    -copy before
-    -errors on iterations with versions as in Java
-    -undefined behaviour
-    -error when you mutate the collection
-    -for (int i..n) behaviour
-    -for (int i..coll.size()) behaviour
-    
-    
-    a for(int i=0,i<coll.size();i++){E e=coll.get(i);...}
-
-    b    
-    int size=coll.size()
-    for(int i=0;i<size;i++){...}
-    
-    
-    a for(
-      int i=0;
-      coll1.inRange(i) &&..&& colln.inRange(i);//can false for ok to end
-      i++    
-    ){
-    E e1=coll1.get(i);//can fail angry
-    ..
-    E en=colln.get(i);
-    ...}
-    
-    
-errT
-okT
-if # diff then errT
-if # diff then okT on shorter
-
-next():T, or error
+T x =if c T() else T() //should this work? should we keep it working?
 
 
-update(T):T
-goNext(): void, okT,errT
-current():T
-
-with a2s,b3s.cut() 
-  print(ai,bi)
-
-a1,b1 a2,b2
-a1,b1 a2,b2, err
+// loop B : T // for all T
 
 
 
 
 
-
-
-
-
-G|-try{e}catch(Error){_}:T
-
-
-
-G|-e: T  G\mut,read|-e': T
-------------------------------
-G|-try{e}catch(Error){e'}:T
-
-
-a=sane
-try{a.fuck()}catch(Error){}
-a.isBroken()
-
-
-
-
-
+---------------------------
 DoIt: FileAction <>< {
     //class method T (mut File f)={..f.read()..}
     class method T #$(no mut, lent, Strings fileNames) = {
-        FD fd = FilePlugin.#$openFd(fileName) 
+        FD fd = FilePlugin.#$openFd(fileName)
            (
             mut File f=File.#$(fd)
             T res=This(f)
             fd.#$close()
-            return res 
+            return res
             )
         catch error Any x (   fd.#$close(),   error x  )
        }
     class method T #$(no mut, lent) = {
-        OpenerID fId = FilePlugin.#$openerID() 
+        OpenerID fId = FilePlugin.#$openerID()
             (
             mut FileOpener f=fId.#$()
             T res=This(f)
             fId.#$close()
-            return res 
+            return res
             )
         catch error Any x (   fId.#$close(),   error x  )
        }
    }
-  
-  f.openFile(S)->mut File
-  
-  DoIf(FilePath)->T
-  
 
-  
+  f.openFile(S)->mut File
+
+  DoIf(FilePath)->T
+
+
+
   FileAction<><{
     class method T (mut Files fs)={
       with f in fs (..)
       }
     }
-    
-    3 concepts:
-        satisfied  // I am happy to end
-        finished   // I need to end
-        incomplete // I am not happy to end
-        
-        
-    2 ways to end:
-        some finished
-        none incomplete // all good
-                
-                
-    with([;a1,a2,a3,]    [b1;b2,])
-           s  s  s  f     i  s  f
-    
-    with([;a1,a2,a3,]    [b1;b2,])
-           i  i  i  f     i  i  f
-           
-    a1,b1
-    a1,b1  a2,b2
+
 --------------------------------------------------------------------
     c1=input1.iterator();...cn=inputn.iterator();//varIterator if var x in..
     {int i=0;
@@ -317,24 +235,24 @@ on linked or sparsed collections
   -slow and complex with interna reset wrapper
 
 
-  
+
 
   mut list of imm
   mut list of mut
   imm list imm/mut imm
-  
+
   mut list of mut
   mut list of imm
 
   List:{interface
     behave like a mut list of mut
     LMut:{}
-    LImm:{}  
+    LImm:{}
     //---
     Fix list:{}
     Sublist:{}
   }
-  
+
 
 Vector: {
     Elem:{}
@@ -353,8 +271,8 @@ Vector: {
       refine  mut method      Void  setImm(Size that,Elem val)=...
   }
 }
-  
-mut Vector.Mut 
+
+mut Vector.Mut
 mut Vector.Imm
 read Vector.Imm
 read Vector
@@ -381,7 +299,7 @@ ArrayBase: { class method Library gen(Size n) use ArrayGenerator() }
 ClassB ArrayGenerator()
 {
     // @generator ArrayGenerator(3, Size, 1000)
-    
+
     return new ClassB {
         sum(ClassB b) { // Does the sum intelligently! }
         redirect() { ... }
