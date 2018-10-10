@@ -88,9 +88,20 @@ become
 1  class{ }
 2  () :return; class{}
 3  () :return; {}
-4  {return} eats =  x=e or x '={' }
-5 {ds ks e} is core block, (e) desugar to {e}, and there is a keyword like body{} to capture return
-6 no curely brackest in expressions, use 'body (ds ks e)'
+4  {return} eats =  x=e or
+5 {return} only for x '={' }, 'x:{}' or 'C:{}'
+6 {ds ks e} is core block, (e) desugar to {e}, and there is a keyword like body{} to capture return
+7 no curly brackets in expressions, use 'body (ds ks e)'
+
+
+Argument: with 5 (and required return) it can not be confusing from Java.
+  * The method works as Java if you put {} and as scala if you do not.
+  * if/while cond { }
+    would be syntax error, forcing them to write
+    if/while cond ( )
+  * x={}
+    do not makes any sense in Java, so it is clearly a new concept.
+
 
 
 desugaring for {ds ks e}
@@ -99,6 +110,7 @@ desugaring for {ds ks e}
 That is: do we want the block to REQUIRE return or to ALLOW return?
 -requiring return is more Java like, and make it like a Java method body
 -requiring return can be more verbose
+- marco version works with the simpler guessType.
 
 de ::= d | e
 desugaring for de:
