@@ -51,9 +51,8 @@ M::=refine? mh e?| ms e | C:e
 e::=L|void|x| P | chain.m[P,T]((x:e)s)
   | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
 k::=catch throw P x e
-chaink ::= catch throw P x chain
 d::=var? T x=e | var? x=e
-chain::=x|P|chain.m( (x:e)s )|(ds chainks chain)|void |L //TODO: void,L added  7/6/2018 to allow return L and return void
+chain::=x|P|chain.m( (x:e)s )|(ds ks catch throw P x chain ks' e)|(ds ks chain)|void |L //TODO: void,L added  7/6/2018 to allow return L and return void
 //TODO: update sugared language to require chain as meth receiver and thrown expressions
 _______
 #define Compiled terms

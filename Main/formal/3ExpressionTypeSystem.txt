@@ -71,8 +71,9 @@ D |-x ~> x :D.G(x).T <= T | emptyTr
   D.p|- D.G(x).T <= T
 
 (loop)
-D |- loop e ~> loop e' : T <= T | Tr
+D |- loop e ~> loop e' : imm Void <= T | Tr
   where
+  D.p|-imm Void <= T
   D|- e ~> e' : _ <= imm Void | Tr
 
 (throw)   // expression of type T0 throws the result of an expression where:

@@ -143,13 +143,13 @@ Tr1 U Tr2
 Tr.capture(p,k1..kn)= Tr.capture(p,k1)...capture(p,kn)
 
 Tr.capture(p,catch error P x e)=Tr
-(Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
-(Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
+  (Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
+  (Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
 
-guessType(p, G, x=e, e', T?) = T:
-    guessType(p, G, x=e, e', T?) = capsuleToMut(guessType(p, G, e))
-    guessType(p, G, x=e, (ds var? x = _ ds' ks e'), T?) = T
-        where {T} = guessTypes(p, G, x, (ds var? x = e ds' ks e'), capsuleToMut(T?)?)
+guessType(p, G, x=e, e', T?) = T
+  guessType(p, G, x=e, e', T?) = capsuleToMut(guessType(p, G, e))
+  guessType(p, G, x=e, (ds var? x = _ ds' ks e'), T?) = T  //e'
+    where {T} = guessTypes(p, G, x, (ds var? x = e ds' ks e'), capsuleToMut(T?)?)  //e'[x=e] //defined only if e' is a block
 
 guessType(p,G,e) = T://TODO: change in code about ds
   guessType(p,G,L)=imm Library
@@ -162,37 +162,38 @@ guessType(p,G,e) = T://TODO: change in code about ds
   guessType(p,G,use P check m(x1:e1..xn:en) e) undefined // TODO: Define this
 
   guessType(p,G,(ds ks e)) = T
-    where {T} = guessTypes(p, G[ds], ks catch return Void x e), for fresh x
+    where {T}=guessType(p, G, k1) U .. U guessType(p, G, kn)
+    and guessType(p,G[ds], e) undefined
 
-guessTypes(p, G, ks) = Tz:
-  guessTypes(p,G,catch throw P x e ks) = Tz U guessTypes(p,G,ks)
-    where Tz = T if guessType(p,G[x:P],e) = T
-    otherwise if guessType(p,G[x:P],e) is undefined, Tz = {}
-  guessTypes(p,G,empty) = {}
+  guessType(p,G,(ds ks e)) = T
+    where T=guessType(p,G[ds], e)
+    and {T?}=guessType(p, G, k1) U .. U guessType(p, G, kn)
 
-guessTypes(p,G,x,e,T?) = Tz:
+  guessType(p,G,catch throw P x e ) = {T}
+    where guessType(p,G[x:P],e) = T
+  otherwise guessType(p,G,catch throw P x e ) = {}
+
+guessTypes(p,G,x,e,T?) = Tz
     guessTypes(p,G,x,x,T) = {T}
 
-    guessTypes(p,G,x,(ds ks e), T?) =
-        guessTypes(p,G[ds],x,ds, T?) U
-        guessTypes(p,G[ds],x,ks, T?) U
+    guessTypes(p,G,x,(d1..dn k1..km e), T?) =
+        guessTypes(p,G[ds],x,d1, T?) U .. U guessTypes(p,G[ds],x,dn, T?) U
+        guessTypes(p,G[ds],x,k1, T?) U .. U guessTypes(p,G[ds],x,km, T?) U
         guessTypes(p,G[ds],x,e, T?)
 
-    guessTypes(p,G,x,var? T? x' = e ds, T?) =
-            guessTypes(p,G, x, e, T?) U guessTypes(p, G, x, ds, T?)
+    guessTypes(p,G,x,var? T? x' = e, T?) = guessTypes(p,G, x, e, T?)
 
-    guessTypes(p,G,x,catch throw P x' e ks, T?) =
-        guessTypes(p,G[x':P], x', e, T?) U guessTypes(p, G, x, ks, T?)
+    guessTypes(p,G,x,catch throw P x' e, T?) = guessTypes(p,G[x':P], x', e, T?)
 
-    guessTypes(p,G, x, e.m(x1:e1..xn:en), T?) = guessTypes(p, G, x, e, empty)
-        where guessType(p, G, e) is undefined
+    guessTypes(p,G, x, e0.m(x1:e1..xn:en), T?) =
+      guessTypes(p, G, x, e0, empty) U..U guessTypes(p, G, x, en, empty)
+        where guessType(p, G, e0) is undefined
 
-    guessTypes(p,G, x, e.m(x1:e1..xn:en), T?) = Tz
-        guessTypes(p,G, x, e,  T) U
-        guessTypes(p,G, x, e1, guessParamType(p, m(x1...xn), T, x1, T?)?) U
-        ... U
-        guessTypes(p,G, x, en, guessParamType(p, m(x1...xn), T, xn, T?)?)
+    guessTypes(p,G, x, e0.m(x1:e1..xn:en), T?) = Tz
+        guessTypes(p,G, x, e0,  T) U
+        guessTypes(p,G, x, e1, T1?) U... U guessTypes(p,G, x, en, Tn?)
             where guessType(p, G, e) = T
+            and Ti?=guessParamType(p, m(x1...xn), T, xi, T?)
 
     guessTypes(p,G, x, throw e, T?) = guessTypes(p,G, x, e, empty)
     guessTypes(p,G, x, loop e, T?) = guessTypes(p,g,x,e, imm Void)
@@ -218,10 +219,10 @@ staticDispatch(p,G,#?m(x1:y1,..,xn:yn), T?)=e
     chose the smallest i so that
       MethT in methTypes(p,Ti.P,#m#jxi(xsi)), p|-Ti,Tsi<=MethT.Ts
   e=yi.#m#jxi(xysi)
-staticDispatch(p,G,e.m(xes), T?)= staticDispatch(p,G,e,e,empty).m(xes)
+staticDispatch(p,G,e.m(xes), T?)= staticDispatch(p,G,e,empty).m(xes)
 staticDispatch(p,G,(ds ks e), T?)= (ds' ks e')
+  ds'=staticDispatch(p,G,ds, (ds ks e), T?)
   e'= staticDispatch(p,G[ds'],e, T?)
-  ds'=staticDispatch(p,G,ds, (ds ks e'), T?) // TODO: Compute e' after?
 
 staticDispatch(p,G,e, T?)=e if e not of form #?m(xys), e.m(es), (ds ks e)
 
@@ -245,7 +246,7 @@ staticDispatch(n,p,G,var? x=e ds, e', T?)=
 staticDispatch(n,p,G,var? T x=e ds, e', T?)=
 	var? T x=e
 	staticDispatch(n+1,p,G,ds, e', T?) //remember failure
-  where staticDispatch(p,G,e, empty) undefined
+  where staticDispatch(p,G,e, T) undefined
 
 staticDispatch(n,p,G,var? x=e ds, e', T?)=
 	var? x=e

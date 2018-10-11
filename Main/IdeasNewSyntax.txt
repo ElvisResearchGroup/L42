@@ -103,10 +103,9 @@ Argument: with 5 (and required return) it can not be confusing from Java.
     do not makes any sense in Java, so it is clearly a new concept.
 
 
-
-desugaring for {ds ks e}
-  (Void unused=(ds ks e) catch return Any y y error {/*unreachable*/})//marco
-  (x=(ds ks e) catch return Any y y x)//isaac
+desugaring for {des ks e}
+  (Void unused=(des ks e) catch return Any y y error {/*unreachable*/})//marco
+  (x=(des ks e) catch return Any y y x)//isaac
 That is: do we want the block to REQUIRE return or to ALLOW return?
 -requiring return is more Java like, and make it like a Java method body
 -requiring return can be more verbose
@@ -115,12 +114,11 @@ That is: do we want the block to REQUIRE return or to ALLOW return?
 de ::= d | e
 desugaring for de:
     (des ks des' e)==>(des ks (des' e))
+    (ds T? _ = e ds' ks e?) ==> (ds T? unused = e ds' ks e?) //'_' will then not be a valid 'x'
 	(ds e de des ks e?)==>( ds Void unused = e de des ks e?)
 	(ds e k ks) ==> (ds x = e k ks x)
 	(ds e k ks e0) ==> (ds Void unused = e k ks e0)
 	(ds ks) ==> (ds ks void)
-
-
 --------------------------------------------
     c1=input1.iterator();...cn=inputn.iterator();//varIterator if var x in..
     {int i=0;
