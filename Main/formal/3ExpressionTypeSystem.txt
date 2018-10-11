@@ -71,9 +71,8 @@ D |-x ~> x :D.G(x).T <= T | emptyTr
   D.p|- D.G(x).T <= T
 
 (loop)
-D |- loop e ~> loop e' : imm Void <= T | Tr
+D |- loop e ~> loop e' : T <= T | Tr
   where
-  D.p|-imm Void <= T
   D|- e ~> e' : _ <= imm Void | Tr
 
 (throw)   // expression of type T0 throws the result of an expression where:
@@ -83,7 +82,7 @@ D |- loop e ~> loop e' : imm Void <= T | Tr
           // and T3 is the type of the value thrown, this allows to use alternative method typing
 D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
   where
-  e0=staticDispatch(D.p,D.G,e)
+  e0=staticDispatch(D.p,D.G,e,empty)
   T1 = guessType(D.p,D.G,e0)// Note guessTypes can go in error, and need to become a type error here
   if throw=exception, T2= imm T1.P and Tr=Ts;Ps,T1.P
   if throw=error,     T2= imm T1.P and Tr=Ts;Ps
@@ -98,7 +97,7 @@ D |- throw e~> throw[T0,T3] e' : T0 <= T0 | Tr
 D |-  e.m(x1:e1..xn:en) ~> e'0.m[P0](x1:e'1..xn:e'n)  : T <= T'| Tr0 U..U Trn U (empty;Ps)
   //e0 will be of form chain
   where
-  e0=staticDispatch(D.p,D.G,e)
+  e0=staticDispatch(D.p,D.G,e,empty)
   guessType(D.p,D.G,e0)= _ P0 //assert T'0.P=P0 //again, can go in error guess
   T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can be not available, error similar to before for guess?
   D.p|-T <= T'
@@ -139,7 +138,7 @@ Phase |p |G |- (ds ks e)~>(ds' ks' e'):capsule P <=mdf P | Tr
 (block)
 Phase| p| G |- e ~>(ds' ks' e'0 [T]) : T <= T' | Tr'.capture(p,ks') U Tr U Tr0
   where
-  (ds  ks  e0)=staticDispatch(p,G,e)
+  (ds  ks  e0)=staticDispatch(p,G,e,T')
   G'=G/dom(ds)
   Phase| p| G'[ks] |- ds ~> ds' |Tr' | G0
   //[ks] removes fwdMut, but we wonder if they could stay and all would be sound?

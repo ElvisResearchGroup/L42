@@ -146,118 +146,70 @@ Tr.capture(p,catch error P x e)=Tr
 (Ts;Ps).capture(p,catch exception P x e)=Ts;{P'| P' in Ps, not p|-P'<=P}
 (Ts;Ps).capture(p,catch return P x e)={T| T in Ts, not p|-T.P<=P};Ps
 
-guessType(p,G,e)//TODO: change in code about ds
+guessType(p, G, x=e, e', T?) = T:
+    guessType(p, G, x=e, e', T?) = capsuleToMut(guessType(p, G, e))
+    guessType(p, G, x=e, (ds var? x = _ ds' ks e'), T?) = T
+        where {T} = guessTypes(p, G, x, (ds var? x = e ds' ks e'), capsuleToMut(T?)?)
+
+guessType(p,G,e) = T://TODO: change in code about ds
   guessType(p,G,L)=imm Library
+  guessType(p,G,x)=G(x)
   guessType(p,G,void)=guessType(p,G,x:=e)=imm Void
   guessType(p,G,P)=class P //here will be wrong over interfaces
   chain.m(x1:e1..xn:en)=p(P)(m(x1..xn)).T//guaranteed to be a normalized method
-    where guessType(p,G,chain)=mdf P
-  guessType(p,G,(var?0 T0 x0=e0 ..var?n Tn xn=en e) )=  guessType(p,G[x1:T1,..,xn:Tn],e)
+    where guessType(p,G,chain)=mdf P // TODO: Use the types of the arguments to refine the return-type
   guessType(p,G,throw _) and guessType(p,G,loop _) undefined
-  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined
+  guessType(p,G,use P check m(x1:e1..xn:en) e) undefined // TODO: Define this
+
+  guessType(p,G,(ds ks e)) = T
+    where {T} = guessTypes(p, G[ds], ks catch return Void x e), for fresh x
+
+guessTypes(p, G, ks) = Tz:
+  guessTypes(p,G,catch throw P x e ks) = Tz U guessTypes(p,G,ks)
+    where Tz = T if guessType(p,G[x:P],e) = T
+    otherwise if guessType(p,G[x:P],e) is undefined, Tz = {}
+  guessTypes(p,G,empty) = {}
+
+guessTypes(p,G,x,e,T?) = Tz:
+    guessTypes(p,G,x,x,T) = {T}
+
+    guessTypes(p,G,x,(ds ks e), T?) =
+        guessTypes(p,G[ds],x,ds, T?) U
+        guessTypes(p,G[ds],x,ks, T?) U
+        guessTypes(p,G[ds],x,e, T?)
+
+    guessTypes(p,G,x,var? T? x' = e ds, T?) =
+            guessTypes(p,G, x, e, T?) U guessTypes(p, G, x, ds, T?)
+
+    guessTypes(p,G,x,catch throw P x' e ks, T?) =
+        guessTypes(p,G[x':P], x', e, T?) U guessTypes(p, G, x, ks, T?)
+
+    guessTypes(p,G, x, e.m(x1:e1..xn:en), T?) = guessTypes(p, G, x, e, empty)
+        where guessType(p, G, e) is undefined
+
+    guessTypes(p,G, x, e.m(x1:e1..xn:en), T?) = Tz
+        guessTypes(p,G, x, e,  T) U
+        guessTypes(p,G, x, e1, guessParamType(p, m(x1...xn), T, x1, T?)?) U
+        ... U
+        guessTypes(p,G, x, en, guessParamType(p, m(x1...xn), T, xn, T?)?)
+            where guessType(p, G, e) = T
+
+    guessTypes(p,G, x, throw e, T?) = guessTypes(p,G, x, e, empty)
+    guessTypes(p,G, x, loop e, T?) = guessTypes(p,g,x,e, imm Void)
+
+    guessTypes(p,G,x,use P check m(x1:e1..xn:en) e,T?) = {} // TODO: Define this
+    guessTypes(p,G,x,x,T?) = {}
+        otherwise
+
+// guess what type the value of paramater 'x' should have
+// in a call to 'ms' on a reciever of type T,
+// whose return type is expected to conform to T?
+guessParamType(p, ms, T, x, T?)? = T?':
+    // TODO: define
 
 //TODO: in code remove suggest(T?,T)
-//x
 
-//todo: magic function
-guesParamType(p, Mwt, x, T, T')
-	// Guesses what type the paramater 'x' of mwt
-	should have
-	// if we are call Mwt on a receiver of type T
-	// and the return type of the call is to typed as T'
-
-inferTypes(p, G, ds var? x = e' ds', e, T) = inferTypes(p, G, ds var? T' = e' ds', e, T)
-	where T' = inferType(p, x, G, e, T)
-
-inferTypes(p, G, ds, e, T) = ds
-	when former rule is not applicable
--------------------------------------------------------
-inferType(p, x, G, x, T) = T
-
-inferType(p, x, G, chain.m(x1:e1..xn:en), T) = inferType(p, x, G, ei, T')
-	where T' = guessParamType(p, p(P), xi, guessType(p,G,chain), T)
-
-inferType(p, x, G, (ds ks e), T?) = inferType(p, x, G[ds], e, T?)
-
-inferType(p, x, G, (ds ks e), T?) = inferType(p, x, G[ds][P x'], e', T?)
-	where
-	ki = catch throw P x' e' // todo what if throw is a return?
-
-inferType(p, x, G, (ds ks e), T?) = inferType(p, x, G[ds], e', T?')
-	di = var? T?' y = e'
-
- // So on for all the other expressions I havn't mentioned
-	inferType(p, x, G, chain, guessType(p,G,chain))
-
-inferType(p, x, G, chain.m(x1:e1..xn:en), T?),
-inferType(p, x, G, throw chain, T?), and
-inferType(p, x, G, loop chain, T?) ...
-  = inferType(p, x, G, chain, guessType(p,G,chain))
-
-inferType(p,G,x,use P check m(x1:e1..xn:en) e,T?) undefined // Could be done, Marco dosn't care
-
--------------------------------------------------------
-Marco and Isaac reviewd together start
-//new replaced 1
-staticDispatch(n,p,G,var? x=e ds,e',T?)=
-	var? T x=staticDispatch(p,G,e,empty)
-	staticDispatch(n,p,G,ds)//good case
-  where T=guessType(p,G,x=e, e',T?)
-//new replaced 1
-staticDispatch(n,p,G,var? T x=e ds,e',T?)=
-	var? T x=staticDispatch(p,G,e,T)
-	staticDispatch(n,p,G,ds)//good case
-//new replaced 1
-staticDispatch(n,p,G,var? x=e ds,e',T?)=
-	var? x=e
-	staticDispatch(n+1,p,G,ds) //remember failure
-  where guessType(p,G,x=e, e',T?) undefined
-
---//new
-guessType(p,G,x=e, e', T?)=capsuleToMut(guessType(p,G, staticDispatch(p,G,e)))
-guessType(p,G,x=e, e', T?)=guessType(p,G,x, e', capsuleToMut(T?))
-
-
-guessType(p,G, x, x, T)=T
-
-guessType(p,G, x, (ds ks e), T?) = guessType(p,G[ds],x, e, T?)
-
-guessType(p,G, x, (ds ks e), T?) =guessType(p,G[ds][P x'], x, e', T?)
-	where ki = catch throw P x' e' // todo what if throw is a return?
-
-guessType(p,G, x, (ds ks e), _) = guessType(p, G[ds],x, e', T?)
-    where di = var? T? y = e'
-
-guessType(p,G, x, chain.m(x1:e1..xn:en), T?) = guessType(p,G, x, ei, T')
-	where T' = guessParamType(p, p(P), xi, guessType(p,G,chain), T?)
-
-guessType(p,G, x, chain.m(x1:e1..xn:en), T?),
-guessType(p,G, x, throw chain, T?), and
-guessType(p,G, x, loop chain, T?) ...
-  = guessType(p,G, x, chain, T?')
-  where T?'=guessType(p,G,chain) if defined, otherwise T?'=empty
-//guessType(p,G,x,use P check m(x1:e1..xn:en) e,T?) undefined // Could be done, Marco dosn't care
-
-TODO: add (ds ks chain) and (ds ks catch throw T x chain ks e) to chain
-and add case for (ds ks e) to guessType(p,G,chain)
-
-Marco and Isaac reviewd together end
--------------------------------------------------------
-
-
-e = (ds x = e' ds' ks e'')
-e = CtxE'[CtxE[x]]
-and CtxE[x] will only typecheck if x : T
-then we infer that x has type T
-
-staticDispatch(p,G,(ds ks e),T?)=(inferTypes(p, G, ds', (ds' ks' e'), T?) ks' e')
-	where (ds' ks' e') =  staticDispatch(p,G,(ds ks e)) // TODO: make this not fail
-
-staticDispatch(p,G,e,T?)=staticDispatch(p,G,e)
-	otherwise
-
-
-staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
+staticDispatch(p,G,#?m(x1:y1,..,xn:yn), T?)=e
   Ti=G(yi)
   Tsi=T1..Tn \i//a sequence minus the element in position i
   xysi=x1:y1,..,xn:yn\i
@@ -266,37 +218,39 @@ staticDispatch(p,G,#?m(x1:y1,..,xn:yn))=e
     chose the smallest i so that
       MethT in methTypes(p,Ti.P,#m#jxi(xsi)), p|-Ti,Tsi<=MethT.Ts
   e=yi.#m#jxi(xysi)
-staticDispatch(p,G,e.m(xes))= staticDispatch(p,G,e).m(xes)
-staticDispatch(p,G,(ds ks e))= (ds' ks staticDispatch(p,G[ds'],e) )
-  ds'=staticDispatch(p,G,ds)
-staticDispatch(p,G,e)=e if e not of form #?m(xys), e.m(es), (ds ks e)
+staticDispatch(p,G,e.m(xes), T?)= staticDispatch(p,G,e,e,empty).m(xes)
+staticDispatch(p,G,(ds ks e), T?)= (ds' ks e')
+  e'= staticDispatch(p,G[ds'],e, T?)
+  ds'=staticDispatch(p,G,ds, (ds ks e'), T?) // TODO: Compute e' after?
 
-staticDispatch(p,G,ds)=ds'
-  ds',0=staticDispatch(0,p,G[ds],ds)
-staticDispatch(p,G,ds)=staticDispatch(p,G,ds')
-  ds',n+1=staticDispatch(0,p,G[ds],ds)
+staticDispatch(p,G,e, T?)=e if e not of form #?m(xys), e.m(es), (ds ks e)
+
+staticDispatch(p,G,ds,e,T?)=ds'
+  ds',0=staticDispatch(0,p,G[ds],ds,e,T?)
+staticDispatch(p,G,ds)=staticDispatch(p,G,ds',e,T?)
+  ds',n+1=staticDispatch(0,p,G[ds],ds,e,T?)
   ds!=ds'//else fail, we can not guess/dispatch //in code is more efficient to count errors in the whole subtree
   //dom(G[ds']) superset dom(G[ds]) //Note: not sure if the correct formalism is this line or the former
 
-staticDispatch(n,p,G,empty)=n   //recursion end
-staticDispatch(n,p,G,var? T x=e ds)=
+staticDispatch(n,p,G,empty, e', T?)=n   //recursion end
+staticDispatch(n,p,G,var? T x=e ds, e', T?)=
 	var? T x=staticDispatch(p,G,e,T)
-	staticDispatch(n,p,G,ds)//good case
+	staticDispatch(n,p,G,ds, e', T?)//good case
 
-staticDispatch(n,p,G,var? x=e ds)=
+staticDispatch(n,p,G,var? x=e ds, e', T?)=
 	var? T x=staticDispatch(p,G,e,empty)
-	staticDispatch(n,p,G,ds)//good case
-  where T=capsuleToMut(guessType(p,G,staticDispatch(p,G,e)))
+	staticDispatch(n,p,G,ds, e', T?)//good case
+  where T=guessType(p, G, x=staticDispatch(p,G,e, empty), e', T?)
 
-staticDispatch(n,p,G,var? T x=e ds)=
+staticDispatch(n,p,G,var? T x=e ds, e', T?)=
 	var? T x=e
-	staticDispatch(n+1,p,G,ds) //remember failure
-  where staticDispatch(p,G,e) undefined
+	staticDispatch(n+1,p,G,ds, e', T?) //remember failure
+  where staticDispatch(p,G,e, empty) undefined
 
-staticDispatch(n,p,G,var? x=e ds)=
+staticDispatch(n,p,G,var? x=e ds, e', T?)=
 	var? x=e
-	staticDispatch(n+1,p,G,ds) //remember failure
-  where guessType(p,G,staticDispatch(p,G,e)) undefined
+	staticDispatch(n+1,p,G,ds,e', T?) //remember failure
+  where guessType(p, G, x=staticDispatch(p,G,e,empty), e', T?) undefined
 
 untrustedClass({/*_ @untrusted _*/ _})
 plgUntrusted({/* _ @plugin url*/ _}) // TODO
