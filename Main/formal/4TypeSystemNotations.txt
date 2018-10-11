@@ -201,6 +201,12 @@ guessTypes(p,G,x,e,T?) = Tz:
     guessTypes(p,G,x,x,T?) = {}
         otherwise
 
+// guess what type the value of paramater 'x' should have
+// in a call to 'ms' on a reciever of type T,
+// whose return type is expected to conform to T?
+guessParamType(p, ms, T, x, T?)? = T?':
+    // TODO: define
+
 //TODO: in code remove suggest(T?,T)
 
 staticDispatch(p,G,#?m(x1:y1,..,xn:yn), T?)=e
