@@ -14,18 +14,20 @@ Syntax changes:
 ( Decs1 Ks1 Decs2 Ks2 e) is disallowed, and the user have to write
 ( Decs1 Ks1 (Decs2 Ks2 e)) instead. This makes much more clear the flow of catching.
 
-*wops A,B,C will retrow errors/exceptions A B C as errors but adding an empty lib for the Position:
+*'wops A,B,C' will retrow errors/exceptions A B C as errors but adding an empty lib for the Position:
 Marco still like it.
 
 Parenthesis reduction proposal:
   Term ::= Block | throw e | loop e | void
   Block ::= (...) | { ... }
   K::= if e | while e | catch T x | for (x in e)s | if c e else | loop
-
-  K e1 e2 is not well formed if neither e1 or e2 are Term.
-  additionally, if e e1 needs e1 to be not an 'ifelse', and if e e1 else e2
-  needs e1 not to be an 'if'
-  Note: it is ok for "K e1)" or "K e1}"
+  Simple option:
+    K e1 requires e1 to be Term, or to be syntactically followed by ") } ] ; else"
+  More complex option:
+    K e1 e2 is not well formed if neither e1 or e2 are Term.
+    additionally, if e e1 needs e1 to be not an 'ifelse', and if e e1 else e2
+    needs e1; not to be an 'if'
+    Note: it is ok for "K e1)" or "K e1}"
 
 
 Reducing voids?
@@ -80,109 +82,46 @@ method Void add1(Void that)void
 
 'refine? method T m(Txs) e?'
 become
-'refine? method T m(Txs); | refine? method T m(Txs)=e; | '
+'refine? method T m(Txs) | refine? method T m(Txs)=e | '
 
-mb ::= ; | : blockcontents ;
-
-
-1  class { }
-2  () :return; class {}
+-----//many get confused by {} for Library and {} for return
+1  class{ }
+2  () :return; class{}
 3  () :return; {}
-4  {return} eats =  x=e or x '={' }
+4  {return} eats =  x=e or
+5 {return} only for x '={' }, 'x:{}' or 'C:{}'
+6 {ds ks e} is core block, (e) desugar to {e}, and there is a keyword like body{} to capture return
+7 no curly brackets in expressions, use 'body (ds ks e)'
+
+
+Argument: with 5 (and required return) it can not be confusing from Java.
+  * The method works as Java if you put {} and as scala if you do not.
+  * if/while cond { }
+    would be syntax error, forcing them to write
+    if/while cond ( )
+  * x={}
+    do not makes any sense in Java, so it is clearly a new concept.
 
 
 
-{ds ks}
+desugaring for {ds ks e}
+  (Void unused=(ds ks e) catch return Any y y error {/*unreachable*/})//marco
+  (x=(ds ks e) catch return Any y y x)//isaac
+That is: do we want the block to REQUIRE return or to ALLOW return?
+-requiring return is more Java like, and make it like a Java method body
+-requiring return can be more verbose
+- marco version works with the simpler guessType.
 
-{ds ks e?}
-
-Isaacs ideas:
-	de ::= d | e
-	(ds e de des' ks)==>( ds Void x = e de des' ks)
-	(ds e k ks') ==> (ds x = e k ks' x)
+de ::= d | e
+desugaring for de:
+    (des ks des' e)==>(des ks (des' e))
+	(ds e de des ks e?)==>( ds Void unused = e de des ks e?)
+	(ds e k ks) ==> (ds x = e k ks x)
+	(ds e k ks e0) ==> (ds Void unused = e k ks e0)
 	(ds ks) ==> (ds ks void)
-For curleys: No extra well-formedness or type rules
-	//{des ks} ==> (Void unused=(des ks) catch return x (x) unreachable)
-	{des ks e?} ==> ((des ks e?) catch return x (x))
 
 
-	(ds e ks)
-	(ds y = e ks y)
-
-(ds y = e ks y) expected Y
-then e expected Y
-
-dsT?  dsT
-
-
-
-
-	T z=(y=(ds ks e) catch return x (x:T) y:T)
-
-	T z=(y=(return T()) catch return x (x:T) y:T)
-
-	(ds e ks)
-	(ds x = e ks x) // e happens to have type void
-	(ds Void x = e ks void)
-
-
-T x={
-  if a return A
-  B
-  catch error X x C
-  }
-T x = {
-	if c return T()
-	return T()
-    }
-
-T x =if c T() else T() //should this work? should we keep it working?
-
-
-// loop B : T // for all T
-
-
-
-
-
----------------------------
-DoIt: FileAction <>< {
-    //class method T (mut File f)={..f.read()..}
-    class method T #$(no mut, lent, Strings fileNames) = {
-        FD fd = FilePlugin.#$openFd(fileName)
-           (
-            mut File f=File.#$(fd)
-            T res=This(f)
-            fd.#$close()
-            return res
-            )
-        catch error Any x (   fd.#$close(),   error x  )
-       }
-    class method T #$(no mut, lent) = {
-        OpenerID fId = FilePlugin.#$openerID()
-            (
-            mut FileOpener f=fId.#$()
-            T res=This(f)
-            fId.#$close()
-            return res
-            )
-        catch error Any x (   fId.#$close(),   error x  )
-       }
-   }
-
-  f.openFile(S)->mut File
-
-  DoIf(FilePath)->T
-
-
-
-  FileAction<><{
-    class method T (mut Files fs)={
-      with f in fs (..)
-      }
-    }
-
---------------------------------------------------------------------
+--------------------------------------------
     c1=input1.iterator();...cn=inputn.iterator();//varIterator if var x in..
     {int i=0;
     while(
@@ -330,3 +269,42 @@ A: {
 {
 [Array, T,Size 128]
 }
+
+---------------------------
+DoIt: FileAction <>< {
+    //class method T (mut File f)={..f.read()..}
+    class method T #$(no mut, lent, Strings fileNames) = {
+        FD fd = FilePlugin.#$openFd(fileName)
+           (
+            mut File f=File.#$(fd)
+            T res=This(f)
+            fd.#$close()
+            return res
+            )
+        catch error Any x (   fd.#$close(),   error x  )
+       }
+    class method T #$(no mut, lent) = {
+        OpenerID fId = FilePlugin.#$openerID()
+            (
+            mut FileOpener f=fId.#$()
+            T res=This(f)
+            fId.#$close()
+            return res
+            )
+        catch error Any x (   fId.#$close(),   error x  )
+       }
+   }
+
+  f.openFile(S)->mut File
+
+  DoIf(FilePath)->T
+
+
+
+  FileAction<><{
+    class method T (mut Files fs)={
+      with f in fs (..)
+      }
+    }
+
+--------------------------------------------------------------------
