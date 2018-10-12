@@ -14,8 +14,14 @@
       error System.Guard.PluginFailure"SafeOperators.makeMethod(that,path,selector,mdfs,exceptionN)"
 
   class method
-  Library liftValue(Any that, Selector selector, Library lib)
+  Library liftValue(Library that, Selector selector, Library lib)
       use  This
       check liftValue(that,selector:selector.#binaryRepr(), lib:lib)
       error System.Guard.PluginFailure"SafeOperators.liftValue(that,selector,lib)"
+  class method
+  Library liftClassAny(class Any that, Selector selector, Library lib)
+      use  This
+      check liftClassAny(that,selector:selector.#binaryRepr(), lib:lib)
+      error System.Guard.PluginFailure"SafeOperators.liftClassAny(that,selector,lib)"
+
   }

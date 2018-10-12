@@ -306,3 +306,44 @@ DoIt: FileAction <>< {
     }
 
 --------------------------------------------------------------------
+Cleanup/Signature[res]<><{
+  A:e
+  $A:{}
+  $This:{}For all Cs1 Cs2 in Css,
+    Cs1 not a subpath of Cs2
+  A$B:e
+  }
+---
+For multiple rename/redirect: it is ok if
+For all Cs1 Cs2 in Css(sources),  Cs1 not a subpath of Cs2
+
+----------
+{implements Resourceable
+    Elem: {}
+    method Library toResource() {
+        if this.isEmpty() (return {class method This1()This1.empty()})
+        resolver={
+          class method T ()
+          class method Void #1init(mut This1 that)
+          class method Void init(mut This1 that) ( this.#1init(that) that.add(right:This()) )
+          }
+        var Library res = { class method Void init(mut This1 that) void }
+        with elem in this.vals() ( res := Use.Over[res]<><Use[R<><elem]<><resolver  )
+        return Refactor2.Method[hide:\"init(that)"]<><Use.Over[res]<>< {
+            method This1() (
+                mut This1 res = This1.empty()
+                This.init(res)
+                res
+            )
+          }
+        }
+    )
+}
+
+Collections:{
+  TraitR:Resource<><Use[This2.Collections.Trait()]<><{..}
+  vector(of)
+    switch of Resoursable, Library
+
+   try TraitR else super..
+}

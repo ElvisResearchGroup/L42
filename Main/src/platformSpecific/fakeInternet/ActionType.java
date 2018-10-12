@@ -20,12 +20,12 @@ public @interface ActionType {
   public static enum NormType{
     Library(Ast.Type.immLibrary),
     Void(Ast.Type.immVoid),
-    ImmAny(Ast.Type.immAny),
-    TypeAny(Ast.Type.classAny),
-    CapsuleAny(Ast.Type.immAny.withMdf(Mdf.Capsule)),
-    MutAny(Ast.Type.immAny.withMdf(Mdf.Mutable)),
-    LentAny(Ast.Type.immAny.withMdf(Mdf.Lent)),
-    ReadAny(Ast.Type.immAny.withMdf(Mdf.Readable));
+    //ImmAny(Ast.Type.immAny),
+    TypeAny(Ast.Type.classAny);
+    //CapsuleAny(Ast.Type.immAny.withMdf(Mdf.Capsule)),
+    //MutAny(Ast.Type.immAny.withMdf(Mdf.Mutable)),
+    //LentAny(Ast.Type.immAny.withMdf(Mdf.Lent)),
+    //ReadAny(Ast.Type.immAny.withMdf(Mdf.Readable));
     Ast.Type type;
     NormType(Ast.Type type){this.type=type;}
   }

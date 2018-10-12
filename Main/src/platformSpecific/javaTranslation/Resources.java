@@ -5,6 +5,8 @@ import facade.L42;
 import facade.PData;
 import newReduction.NotLibrary;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -475,14 +477,18 @@ public
     catch (NoSuchMethodException | SecurityException
          | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
         //Is it a non wrapped java object?
+      StringWriter errorTrace = new StringWriter();
+      PrintWriter printWriter= new PrintWriter(errorTrace);
+      ((Throwable)obj).printStackTrace(printWriter);
       try{
         Method toS = obj.getClass().getMethod("£CtoS",obj.getClass());
         Object s42=toS.invoke(obj,obj);
-        return "RawJavaException,toS:\n"+s42;
+        return "RawJavaException,toS:\n"+s42+"\n"+errorTrace;
         }
       catch (NoSuchMethodException | SecurityException
           | IllegalAccessException | IllegalArgumentException | InvocationTargetException e2) {
-        return "RawJavaException, regular java toString:\n"+obj;
+        return "RawJavaException, regular java toString:\n"
+          +errorTrace;
         }
       }
   }

@@ -1,24 +1,24 @@
 {
-  
+
   InvalidElements:Message.$<><{implements Refactor2.Fail}
   EnumTrait:Resource<><UnsafeRefactor.MiniData<><Enum.enumTrait()
-  
+
   class method
   Library #from(S.SBuilder builder)
-  exception InvalidElements 
+  exception InvalidElements
     This.from(base:S.#from(builder:builder))
-  
+
   class method
   mut S.SBuilder #builder()
     S.SBuilder.empty()
-  
+
   class method
   Selector numToSel(Size that)
   exception InvalidElements{
     if that>=64Size (exception InvalidElements"too many enumeration elements:"[that+1Size]", max is 64")
     return Selector.from(string:S"#"++that.toS()++S"()")
     }
-  
+
   class method
   Selector sToSel(S that)
   exception InvalidElements{
@@ -35,10 +35,10 @@
     StringSplit.splitOn(that,chars:S", "++S.nl())
     //we need to use StringSplit since we are still in the adam2 creation
 
-  class method 
+  class method
   Library traitMeth() (,{
     T inner
-    class method This(T inner)    
+    class method This(T inner)
     T:{implements Concept.Equals
      class method T ord()
      }
@@ -68,8 +68,8 @@
           use[this.enumElem(ord:ord, s:s)]
           )]<><
       Refactor2.Method[rename:\"#apply()" into:\"names()"]<><
-      Resource(ss)
-      
+      Resource(ss)//TODO: this will fail with the new resources
+
     catch exception InvalidElements e (exception e)
     error on Refactor2.Fail X""
     return res

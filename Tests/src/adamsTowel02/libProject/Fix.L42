@@ -39,14 +39,36 @@ Bool:{
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid bool: "[that]""
   }
-Size:{
+Size: /*Resource.FromBinaryRepr <><*/ {
+  /*read method Library #binaryRepr()
+  class method mut This #from(Library binaryRepr)
+
+  method toResource() {
+    return Use.Over[Resource(this.#binaryRepr(),clazz:Library)]<><{
+      class method Library #1#apply()
+      class method This1() This1.#from(binaryRepr:this.#1#apply())
+    }
+    catch exception Any x error x
+  }*/
+
   ParseFail:This2.Message.$<><{ implements Guard.ParseFail}
   class method
   Any parseError(This2.S that)
     ParseFail"The provided string is not a valid Int32: "[that]""
   }
 
-S:{implements Concept.ToS
+S: {implements Concept.ToS
+  /*read method Library #binaryRepr()
+  class method mut This #from(Library binaryRepr)
+
+  method toResource() {
+    return Use.Over[Resource(this.#binaryRepr(),clazz:Library)]<><{
+      class method Library #1#apply()
+      class method This1() This1.#from(binaryRepr:this.#1#apply())
+    }
+    catch exception Any x error x
+  }*/
+
   method Strings splitOn(This2.S chars)
     StringSplit.splitOn(this.toS(),chars:chars)
   U:{
@@ -57,7 +79,6 @@ S:{implements Concept.ToS
         )
     }
   }
-
 
 Selector:{
   ParseFail:This2.Message.$<><{ implements Guard.ParseFail}

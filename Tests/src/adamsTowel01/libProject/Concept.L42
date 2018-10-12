@@ -99,4 +99,9 @@ Iterator:{interface
   // no idea how to put the unsatisfactory version
   //iterator, iterexposer, variterator, variterexposer???
   }
+Resourceable:{interface
+  // this should return a library literal with a 'class method This #apply()'
+  // that when evaluated produces something equivalent to 'this'
+  method Library toResource()
+  }
 }

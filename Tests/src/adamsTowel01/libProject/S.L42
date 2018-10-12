@@ -79,7 +79,7 @@ Size indexOfLeft(S val, Size start){
     current+=1Size
     )
   return Size"-1"
-  } 
+  }
 
 method
 Size indexOfRight(This val){
@@ -204,7 +204,7 @@ This withoutRight()
 
   method
   S (Size end) this(start:0Size, end:end)
-  
+
   method
   Size #default##apply(Void that) this.size()
   method
@@ -267,7 +267,7 @@ This withoutRight()
     ++this.replace(S.nl(), into:S.nl()++S"'")
     ++S.nl()
     ++S.doubleQuote()
-    
+
   method
   Continue #from(S.SConcat seqBuilder)
     Continue(seqBuilder.old()++seqBuilder.accumulator())
@@ -302,6 +302,4 @@ This withoutRight()
   class method This #from(S.SBuilder builder)
     This._private(_binaryRepr:builder.#binaryRepr())
   class method mut S.SBuilder #builder() S.SBuilder.empty()
-
-
   }
