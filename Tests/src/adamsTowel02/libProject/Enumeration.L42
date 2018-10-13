@@ -69,8 +69,7 @@
           )]<><
       Refactor2.Method[rename:\"#apply()" into:\"namesS()"]<><Use[Resource(base.toS())]<><{
         class method S namesS()
-        class method Strings sToSs(S that)
-        class method Strings names()this.sToSs(this.namesS())
+        class method Strings names()Enumeration.sToSs(this.namesS())
         }
 
     catch exception InvalidElements e (exception e)
