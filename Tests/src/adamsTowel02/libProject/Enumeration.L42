@@ -67,8 +67,11 @@
         Use.Override[with ord in Range(start:0Size), s in ss.vals() (
           use[this.enumElem(ord:ord, s:s)]
           )]<><
-      Refactor2.Method[rename:\"#apply()" into:\"names()"]<><
-      Resource(ss)//TODO: this will fail with the new resources
+      Refactor2.Method[rename:\"#apply()" into:\"namesS()"]<><Use[Resource(base.toS())]<><{
+        class method S namesS()
+        class method Strings sToSs(S that)
+        class method Strings names()this.sToSs(this.namesS())
+        }
 
     catch exception InvalidElements e (exception e)
     error on Refactor2.Fail X""
