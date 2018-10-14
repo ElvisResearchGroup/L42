@@ -51,15 +51,16 @@ p|- Ts->T;Pz <= Ts'->T';Pz':
   p|- Ts' <= Ts
   forall P in Pz: exists P' in Pz': p|- P <= P'
 
-Define RedirectSet(L, Cs)=Csz:
+Define RedirectSet(L, Csz)=Csz':
 -----------------------------
-Cs    in RedirectSet(L, Cs)
+Cs    in RedirectSet(L, Csz):
+  Cs in Csz
 
-Cs1.C in RedirectSet(L, Cs):
-  Cs1 in RedirectSet(L, Cs)
+Cs1.C in RedirectSet(L, Csz):
+  Cs1 in RedirectSet(L, Csz)
   C in dom(L[Cs1])
 
-Cs2   in RedirectSet(L, Cs):
+Cs2   in RedirectSet(L, Csz):
   Cs1 in Csz
   This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
 
@@ -84,14 +85,15 @@ p.minimize(P) = P
 p.minimize(Cs1->P1,...,Csn->Pn) = Cs1->p.minimize(P1), ..., Csn->p.minimize(Pn)
 p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
 
-Define Redirect(p, L, Cs, P) = Redirect(p', Cs, p'.minimize(P+1)):
+Define Redirect(p, L, Cs1, P1, ..., Csn, Pn) = Redirect(p', Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1)):
 	p' = p.evilPush(L)
 
-Define Redirect(p, Cs, P) = L0:
+Define Redirect(p, Cs1, P1, ..., Csn, Pn) = L0:
   exists a unique V such that: //if more then one V exists, is ambiguos redirect
   	V = p.minimize(V)
-    P = V(Cs)
-    dom(V) = RedirectSet(p.top(), Cs)
+
+    Pi = V(Csi)
+    dom(V) = RedirectSet(p.top(), Cs1, ..., Csn)
     L0     = V(p.top())[remove dom(V)]
     forall Cs' in dom(V):
       P' = V(Cs')
