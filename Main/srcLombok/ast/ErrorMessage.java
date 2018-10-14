@@ -269,6 +269,10 @@ import coreVisitors.InjectionOnSugar;
   Ast.Path implementer;
   Ast.Path implemented;
   }
+  @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class SealedInterfaceImplements extends ErrorMessage {
+  Ast.Path implementer;
+  Ast.Path implemented;
+  }
   @Value @EqualsAndHashCode(callSuper = false) @ToString(callSuper = true, includeFieldNames = true) public static class NotExaclyOneMethodOrigin extends ErrorMessage {
   Ast.Path guilty;
   Ast.MethodSelector selector;

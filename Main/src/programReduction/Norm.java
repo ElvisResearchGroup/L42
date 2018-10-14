@@ -25,6 +25,7 @@ import coreVisitors.PropagatorVisitor;
 import tools.Assertions;
 import tools.Map;
 import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
@@ -49,7 +50,6 @@ public class Norm {
   ExpCore norm(Program p,ExpCore e){
     return e.accept(new CloneVisitor(){
       public ExpCore visit(ClassB s) {
-        //TODO: enable when there is new TS if(s.getPhase()!=Phase.None){return s;}
         return norm(p.evilPush(s));
         }});
     }
@@ -66,8 +66,10 @@ public class Norm {
     List<Type> ps1=new ArrayList<>(l.getSupertypes());
     Position pos = l.getP();
     for(Type t:_ps1){
-      boolean none=l.getSupertypes().stream().noneMatch(ti->p.equiv(ti.getPath(),t.getPath()));
-      if(none){ps1.add(t);}
+      boolean some=!l.getSupertypes().stream().noneMatch(ti->p.equiv(ti.getPath(),t.getPath()));
+      if(some){continue;}
+      ps1.add(t);//and we check that we do not import a private interface
+      if(!p.noUnique(t.getPath())){throw new ErrorMessage.SealedInterfaceImplements(Path.outer(0),t.getPath());}
       }
     //Ms'=methods(p,This0), {C:e in Ms} //norm now put all the nested classes in the back.
     List<MethodWithType> this0Ms=p.methods(Path.outer(0));

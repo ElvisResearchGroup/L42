@@ -25,7 +25,7 @@ public class TestAdamTowel2 extends TestRunnerPrePost{
       // Opt.Parallel,
       Opt.ProfilerPrintOff,//disable profiler print and final profiling computation
       //// big individual deployment options
-      //Opt.DeplAT1, // AdamsTowel01
+      Opt.DeplAT1, // AdamsTowel01
       // Opt.DeplAT2, // AdamsTowel02
        Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things

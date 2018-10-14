@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ast.Ast;
+import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Path;
 import ast.Ast.Position;
@@ -72,14 +73,25 @@ public interface Program {
     if (p.isPrimitive() ||p1.isPrimitive()){return false;}
     if(p.outerNumber()==p1.outerNumber()){return false;}
     boolean isP1=p.outerNumber()<p1.outerNumber();
+    if(isP1){Path tmp=p1;p1=p;p=tmp;}//p1 is less
     while(true){
-      if(isP1){p1=this._reducePath(p1);}
-      else{p=this._reducePath(p);}
-      if(p==null || p1==null){return false;}
+      p=this._reducePath(p);
+      if(p==null){return false;}
       if(p.outerNumber()==p1.outerNumber()){
         return p.equals(p1);
         }
       }
+    }
+  default boolean noUnique(Ast.Path p){
+    Path pReduced=p;
+    while(pReduced!=null){//reduce pi as much as possible
+      p=pReduced;
+      pReduced=this._reducePath(p);
+      }
+    for(C c:p.getCBar()){
+      if(c.isUnique()){return false;}
+      }
+    return true;
     }
   default List<Ast.C> _equivSubPath(Ast.Path p, Ast.Path pLong){
     if (p.equals(pLong)){return Collections.emptyList();}

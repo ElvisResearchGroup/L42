@@ -173,7 +173,8 @@ _______
 -norm(p)={interface? implements Ps,(Ps'\p Ps) norm(p,Ms') Norm} //Note: Ps'\p Ps, Ps correctly trashes the documentation of P in Ps' already in Ps.
  p.top()={interface? implements Ps Ms None}
  Ps'=collect(p,Ps)
- Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms]
+ forall P in Ps'\p Ps, p.noUnique(P)
+ Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms] 
 
 -norm(p,refine? mh e?)= refine? mh e'?
   where e'?=empty if e?=empty

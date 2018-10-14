@@ -237,6 +237,9 @@ program primitive operations:
 -p.update(L)=p' //this is the only one that can detect evilPush
  (L,ctxLs).update(L')=L',ctxLs
 
+-p.reducePath(P)=P'
+ (L,ctxL,ctxLs).reducePath(This(n+1).C.Cs)=Thisn.Cs
+ ctxL(C)=[] 
 
 program derived operations:
 
@@ -253,13 +256,18 @@ program derived operations:
 -p.equiv(P0,P1)
  p.equiv(P,P)
  p.equiv(P0,P1)=p.equiv(P1,P0)
+ p.equiv(Thisn.Cs,This(n+k).Cs')=p.equiv(Thisn.Cs,p.reducePath(This(n+k).Cs'))
+
+//variant removing the last case and adding those two: what is the better way?
  p.equiv(This(n+1).Cs,This(k+1).Cs')=p.pop().equiv(Thisn.Cs,Thisk.Cs')
  p.equiv(This0.Cs,This(n+1).Cs'.C.Cs)=
    p.pop().equiv(This0, Thisn.Cs')
-   and p.ctxL(C)=[]
+   and p.ctxL(C)=[]//similar to what reducePath checks
    //and p.L is of form LV ??? TODO:do we want this extra restriction
-   //TODO: may the version in the code is better?
 
+-p.noUnique(P)
+  holds if not P of form Thisk._.C__n._
+  or p.noUnique(p.reducePath(P))
 
 -p(P)=L //functional notation
  p(P)=p.navigate(P).top()//but some implementation could be faster
