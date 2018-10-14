@@ -98,7 +98,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	{
 		Box box = new Box(id, children, left, top);
 
-		// I have to put these in variables (and not pass them directly to box.children.Add) otherwise Boogie complains
+		// I have to put these in variables (and not pass them directly to box.children.Add) otherwise boogie complains
 		Gui.Button bl = Left(box, height/32);
 		Gui.Button br = Right(box, height/32);
 		Gui.Button bu = Up(box, height/32);
@@ -139,7 +139,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	invariant Debug.IncrementCounter("Invariant") && forall {int i in (0: this.box.children.Count);
 		   Inside(this.box.children[i], this.width, this.height)
 		&& forall {int j in (0: this.box.children.Count);
-			// Without this I get a verification error: '
+			// WTF? Without this I get a verification error: '
 			//     all of System.Collections.Generic.List<Gui.Widget!>.this[int].get, unsatisfied precondition: index < Count'
 			   i < this.box.children.Count
 			&& (!this.box.children[i].id.Equals(this.box.children[j].id) ==> !Overlap(this.box.children[i], this.box.children[j]))

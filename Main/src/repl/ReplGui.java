@@ -199,6 +199,7 @@ public class ReplGui extends Application {
     running=false;
     runB.setDisable(false);
     runB.setText("Run!");
+    System.out.println("Finished");
   }
   void disableRunB() {
     running=true;

@@ -29,10 +29,13 @@ public class ProgramReduction {
   public Loader loader;
   boolean saveVCache;
   public ClassB allSteps(Program top){
-    while(!IsCompiled.of(top.top())){
+    try { while(!IsCompiled.of(top.top())){
       top=step(top);
       }
-    return top.top();
+    return top.top(); }
+    finally {
+      System.out.println("All reduction steps finished");
+    }
     }
   private Program step(Program p){
 //precondition: at top level we have a L not of form LC
