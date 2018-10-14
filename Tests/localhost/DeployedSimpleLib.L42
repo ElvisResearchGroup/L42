@@ -2,28 +2,28 @@
 */
 class method 
 Void printHelloWorld() This0.Abstract.Debug.#apply(that:This0.Abstract.S.#from(builder:(
-  mut This0.Abstract.S.SBuilder b877=This0.Abstract.S.#builder()
-  Void unused25076=b877.#H()
-  Void unused25077=b877.#e()
-  Void unused25078=b877.#l()
-  Void unused25079=b877.#l()
-  Void unused25080=b877.#o()
-  Void unused25081=b877.#space()
-  Void unused25082=b877.#W()
-  Void unused25083=b877.#o()
-  Void unused25084=b877.#r()
-  Void unused25085=b877.#l()
-  Void unused25086=b877.#d()
-  Void unused25087=b877.#space()
-  Void unused25088=b877.#D()
-  Void unused25089=b877.#e()
-  Void unused25090=b877.#p()
-  Void unused25091=b877.#l()
-  Void unused25092=b877.#o()
-  Void unused25093=b877.#y()
-  Void unused25094=b877.#e()
-  Void unused25095=b877.#d()
-  b877
+  mut This0.Abstract.S.SBuilder b883=This0.Abstract.S.#builder()
+  Void unused25217=b883.#H()
+  Void unused25218=b883.#e()
+  Void unused25219=b883.#l()
+  Void unused25220=b883.#l()
+  Void unused25221=b883.#o()
+  Void unused25222=b883.#space()
+  Void unused25223=b883.#W()
+  Void unused25224=b883.#o()
+  Void unused25225=b883.#r()
+  Void unused25226=b883.#l()
+  Void unused25227=b883.#d()
+  Void unused25228=b883.#space()
+  Void unused25229=b883.#D()
+  Void unused25230=b883.#e()
+  Void unused25231=b883.#p()
+  Void unused25232=b883.#l()
+  Void unused25233=b883.#o()
+  Void unused25234=b883.#y()
+  Void unused25235=b883.#e()
+  Void unused25236=b883.#d()
+  b883
   )))
 Abstract: {
 Alu: {/*@plugin
@@ -153,7 +153,16 @@ method
 mut This3.S.SBuilder #builder() 
 method 
 This1 #from(This3.S.SBuilder builder) }}}
-Size: {implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
+Size:/*Resource.FromBinaryRepr <><*/ {/*read method Library #binaryRepr()
+  class method mut This #from(Library binaryRepr)
+
+  method toResource() {
+    return Use.Over[Resource(this.#binaryRepr(),clazz:Library)]<><{
+      class method Library #1#apply()
+      class method This1() This1.#from(binaryRepr:this.#1#apply())
+    }
+    catch exception Any x error x
+  }*/implements This1.Concept.ToS, This1.Concept.Equals, This1.Concept.Classable/*@_private
 */
 class method 
 mut This0 _private(Library _binaryRepr) 
@@ -556,7 +565,16 @@ mut This3.S.SBuilder #builder()
 method 
 This1 #from(This3.S.SBuilder builder) }}}
 S: {implements This1.Concept.Base/*, Concept.Equals //needed until we do (also refine) normalization
-*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals, This1.Concept.ToS
+*/, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals, This1.Concept.ToS/*read method Library #binaryRepr()
+  class method mut This #from(Library binaryRepr)
+
+  method toResource() {
+    return Use.Over[Resource(this.#binaryRepr(),clazz:Library)]<><{
+      class method Library #1#apply()
+      class method This1() This1.#from(binaryRepr:this.#1#apply())
+    }
+    catch exception Any x error x
+  }*/
 class method 
 mut This0 _private(Library _binaryRepr) 
 read method 
@@ -1014,7 +1032,10 @@ Void #next() exception Void
 read method 
 Void #checkEnd() 
 read method 
-Void #close() }}
+Void #close() }
+Resourceable: {interface 
+method 
+Library toResource() }}
 Message: {interface implements This1.Concept.Base, This1.Concept.ToS, This1.Concept.Classable, This1.Concept.Equals
 refine read method 
 This1.S toS() 

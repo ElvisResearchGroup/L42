@@ -24,6 +24,7 @@ public abstract class ErrorMessage extends RuntimeException {
   }
 
   public ErrorMessage() {
+    
   }
 
 

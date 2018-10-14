@@ -270,14 +270,37 @@ public class Plugin implements PluginType.WellKnown {
       int exceptionN=ensureExtractInt32(_execptionN);
       return MakeMethod.addMethod(lib, path, selector, mdfs, exceptionN);
     }
-    @ActionType({ActionType.NormType.Library,ActionType.NormType.ImmAny,ActionType.NormType.Library,ActionType.NormType.Library})
+    /*@ActionType({ActionType.NormType.Library,
+      ActionType.NormType.ImmAny,
+      ActionType.NormType.Library,
+      ActionType.NormType.Library})
     public  Object MliftValue£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
       ClassB lib=ensureExtractClassB(_lib);
       MethodSelector selector=(MethodSelector)_selector;
       ExpCore val=Revertable.doRevert(_that);//TODO: would go in loop for circular graphs?
       val=From.from(val,Path.outer(1));
       return LiftValue.liftValue(val,  selector, lib);
-    }
+    }*/
+ @ActionType({ActionType.NormType.Library,
+   ActionType.NormType.TypeAny,
+   ActionType.NormType.Library,
+   ActionType.NormType.Library})
+ public  Object MliftClassAny£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
+   ClassB lib=ensureExtractClassB(_lib);
+   MethodSelector selector=(MethodSelector)_selector;
+   ExpCore val=Revertable.doRevert(_that);
+   val=From.from(val,Path.outer(1));
+   return LiftValue.liftValue(val,  selector, lib);
+   }
+
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
+  public  Object MliftValue£xthat£xselector£xlib(Object _that,Object _selector, Object _lib){
+    ClassB lib=ensureExtractClassB(_lib);
+    MethodSelector selector=(MethodSelector)_selector;
+    ClassB val=ensureExtractClassB(_that);
+    val=(ClassB)From.from(val,Path.outer(1));
+    return LiftValue.liftValue(val,  selector, lib);
+  }
 
     /*@ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
     public  Object MaddKs£xthat£xpath£xfields£xmutK£xlentK£xreadK£ximmK£xisFwd(

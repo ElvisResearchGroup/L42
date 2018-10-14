@@ -100,7 +100,9 @@ return fields;
       candidateK=candidateK.withMt(candidateK.getMt().withTs(ts).withReturnType(Type.immThis0));
     }
     List<Member> result=new ArrayList<>(that.getMs());
-    if(Functions.getIfInDom(result,candidateK.getMs()).isPresent()){throw new RefactorErrors.ClassUnfit();}
+    if(Functions.getIfInDom(result,candidateK.getMs()).isPresent()){
+        throw new RefactorErrors.ClassUnfit();
+        }
     result.add(candidateK);
     return that.withMs(result);
   }

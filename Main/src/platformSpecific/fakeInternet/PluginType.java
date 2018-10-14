@@ -20,6 +20,7 @@ import ast.ExpCore;
 import ast.ExpCore.Using;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
+import sugarVisitors.CollapsePositions;
 class ProtectedPluginType{
   static Method getMethod(PluginType that,Program p,Using u){
     String mName=Resources.nameOf(u.getS().nameToS(),u.getS().getNames());
@@ -35,7 +36,7 @@ class ProtectedPluginType{
       for(Method m:that.getDeclaredMethods()){
         options.add(m.getName());
         }
-      throw new ErrorMessage.PluginMethodUndefined(options,uForError,null,uForError.getDoc().getP());
+      throw new ErrorMessage.PluginMethodUndefined(options,uForError,null,CollapsePositions.of(uForError));
       }
     catch (SecurityException e) { throw new Error(e);}
     }

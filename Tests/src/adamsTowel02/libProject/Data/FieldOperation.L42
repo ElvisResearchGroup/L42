@@ -37,7 +37,10 @@ exception Refactor2.Fail{
   }
 class method
 Library <><(Library right) {
-  return K.Imm<><Use[Trait()]<><right
+  //Debug(Location.Lib(Trait()))
+  res=K.Imm<><Use[Trait()]<><right
+  //Debug(S"Done")
+  return res
   error on  Refactor2.Fail X""
   }
 Trait:Resource<><{
