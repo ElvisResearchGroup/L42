@@ -32,7 +32,7 @@ public class TestRedirect {
   // TODO@James: consider making a git hook to block commits unless startLine=0 is enabled
 
   // SKIP NEW TESTS
-  static int startLine=171;
+  static int startLine=51; // was 171
 
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public Object _p;
@@ -71,7 +71,20 @@ public class TestRedirect {
                     "}",
             "This0.A", "This1.EA",
             "{method This1.E i()}", false // FAILS IncoherentMapping
-    },{lineNumber(), new String[]{"{"+
+    },{lineNumber(), new String[]{"{EA1: {} "
+        + "E: {method Void m1() exception EA1 method Void m12() exception EA1}}"},
+        "{A1:{}, A2: {}\n" +
+        "A:{" +
+        "  method Void m1() exception A1" +
+        "  method Void m12() exception A1 A2" +
+        "}" +
+        // Should this fail?
+        "method Void m(A a, A1 a1, A2 a2)" +
+        "}",
+        "This0.A", "This1.E",
+        "{method Void m(This1.E a, This1.EA1 a1, This1.EA1 a2)}", true
+
+    },{lineNumber(), new String[]{"{"+ // PASS!
             "E1: {interface} E2: {interface}\n" +
             "EA: {implements This1.E1 This1.E2}}"},
             "{\n"+
@@ -80,11 +93,13 @@ public class TestRedirect {
                     "method I foo()\n" +
                     "}",
             "This0.A", "This1.EA",
-            "{method This1.E foo()}", false // Should fail with IncohrentMapping?
+            "IncoherentMapping::\n" +
+            "verified:[A->This1.EA]\n" +
+            "ambiguities:[I->[This1.E1, This1.E2]]", true // Should fail with IncohrentMapping?
     },{lineNumber(), new String[]{"{"+
             "EI2:{interface method Void foo()}\n" +
             "EI1:{interface implements EI2 method Void bar()}\n" +
-            "E:{implements EI1}\n"+
+            "E:{implements EI1, EI2}\n"+
             "}"
     },
             "{\n"+
@@ -93,11 +108,9 @@ public class TestRedirect {
                     "method I m(I x)" +
                     "}",
             "This0.A", "This1.E",
-            "IncoherentMapping::\n" +
-                    "verified:[A->This1.E]\n" +
-                    "ambiguities:[I->[This1.EI1, This1.EI2]]", true // IncoherentMapping due to E normalising to {implements EI1, EI2}
+            "{method EI2 m(EI2 x)}", false // Because only EI1 contains just "foo"
 
-    },{lineNumber(),
+    },{lineNumber(), // PASS!
             new String[]{"{E:{class method Void foo()}}"},
             "{Z:{class method Void foo() exception Z}\n"+
                     "A:{method Void foo() exception Z Z.foo()}}",
@@ -107,7 +120,7 @@ public class TestRedirect {
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface} A:{implements I}}",
             "This0.I", "This1.E",
-            "{A: {implements This2.E}}", true // SHOULD FAIL, as A dosn't implement This2.E.foo
+            "{A: {implements This2.E}}", true // SHOULD FAIL, as I dosn't have exactly the methods of E
     },{lineNumber(),
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface method Void foo() exception I}\n"+
@@ -115,7 +128,7 @@ public class TestRedirect {
             "This0.I", "This1.E",
             "{A: {implements This2.E refine method Void foo() exception This2.E }}",
             true  // SHOULD FAIL, as A dosn't implement This2.E.foo
-    },{lineNumber(),
+    },{lineNumber(), // PASS
             new String[]{"{E:{interface method Void foo() exception E}}"},
             "{I:{interface method Void foo()}\n"+
                     "A:{implements I refine method Void foo()}"+
@@ -137,7 +150,7 @@ public class TestRedirect {
             "This0.B", "This1.E",
             "{A: {interface implements This2.E1, This2.E2}}", true
             // SHOULD FAIL
-    },{lineNumber(),
+    },{lineNumber(),//PASS
             new String[]{"{Foo: {implements This1.EA}, EA: {interface B:{}}}"},
             "{A:{interface      B:{implements A}}}",
             "This0.A.B", "This1.Foo",
@@ -145,17 +158,17 @@ public class TestRedirect {
                     "verified:[A.B->This1.Foo, A->This1.EA]\n" +
                     "ambiguities:[A->[This1.EA], A.B->[This1.EA.B]]\n" +
                     "incoherent destinations for A.B:[This1.EA.B, This1.Foo]", true
-    },{lineNumber(),
+    },{lineNumber(),//PASS//Should be shown in the article
             new String[]{"{EA:{interface B:{implements EA}}}"},
-            "{A:{interface      B:{implements A}}}",
+            "{A:{interface      B:{implements A}} class method A m(A.B x)}",
             "This0.A.B", "This1.EA.B",
-            "{}", false
+            "{class method This1.EA m(This1.EA.B x) }", false
     },{lineNumber(),
             new String[]{"{EA:{interface A:{implements EA}}}"},
             "{interface A:{implements This1}}",
             "This0.A", "This1.EA.A",
-            "PathUnfit::Private path", true
-    },{lineNumber(),
+            "PathUnfit::Private path--", true //bad error message
+    },{lineNumber(),//PASS, but next
             new String[]{"{C:{EB:{}, EA:{method This1.EB f() method This2.C.EB g()}}}"},
             "{A:{method B f() method B g()} B:{} method B foo()}",
             "This0.A", "This1.C.EA",

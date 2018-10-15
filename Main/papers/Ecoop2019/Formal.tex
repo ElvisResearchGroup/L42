@@ -114,6 +114,7 @@ p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
   p = id0 = L0, ..., idn = Ln, _; Ds
   p(Thisn.Cs) = L
   // TODO: Check that Ln is an L instead?
+
 otherwise p.minimize(P) = P
 
 define dom(Mz) = Midz
@@ -263,6 +264,8 @@ To typecheck a nested class declaration, we simply push it onto the program and 
 
 
 The expression typesystem is mostly straightforward and similar to feartherwieght Java, notable we we use $p[T]$ to look up information about types, as it properly ‘from’s paths, and use a classes constructor definitions to determine the types of fields.
+
+\begin{verbatim}
 Define p; Txs |- e : T
 =====================================
 (var)
@@ -298,3 +301,4 @@ p; Txs |- e : T'
 p; Txs |- e : T
 -----------------------------------  T =p T'
 p; Txs |- e : T'
+\end{verbatim}

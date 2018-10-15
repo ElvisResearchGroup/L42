@@ -1,130 +1,182 @@
-V ::= (Cs->P)z
+-------------
+Module V: defines V, V(Cs)=P, V(L)=L', dom(V);
+using auxiliary V_Cs(e)=e', V_Cs(T)=T', V_Cs(M)=M', V(Cs=L)=L'
 
-dom(Cs1->P, ..., Csn->P) = Cs1,...,Csn
-V(Cs) = P:
-	Cs->P in V
---------------------------------------
+V ::= (Cs->P)z // Redirection/renaming map
 
-V(L) = V(empty L)
+//______
+//Define V.minimize(p)
+//(Cs1->P1,...,Csn->Pn).minimize(p)=Cs1->p.minimize(P1), ..., Csn->p.minimize(Pn)
+ 
+______
+Define dom(V)
+dom(Cs1->P1, ..., Csn->Pn) = Cs1, ..., Csn
 
-V(Cs{interface? implements Pz Mz}) =
-  {interface? implements V(Pz in Cs) V(Mz in Cs)}
+______
+Define V(Cs)=P 
+V(Cs) = P
+  Cs->P in V // Cs renamed using V
 
-V(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
-  refine? mdf method V(T in Cs) m(V(T1 in Cs) x1,..,V(Tn in Cs) xn) exception V(Pz in Cs) V(e? in Cs)
+______
+Define  V(L)=V(empty=L) // Apply V to L
 
-V(C:  L in Cs) = C: V(Cs.C L)
-V(    L in Cs) =    V(Cs.C L), for fresh C
-// TODO: Other kinds of expressions (just apply V(P in Cs) for all paths)
-V(mdf P in Cs) = mdf V(P in Cs)
+_________
+AuxDefine V(Cs = L)=L'  // Apply V to L, where L is named Cs
+V(Cs = {interface? implements Pz Mz}) = {interface? implements V_Cs(Pz) V_Cs(Mz)}
+  
+_________
+AuxDefine V_Cs(M)=M'
 
-//we assume the trivial sequence propagation over
-//V(es in Cs), V(mwts in Cs) and so on.
+V_Cs(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
+  refine? mdf method V_Cs(T) m(V_Cs(T1) x1,..,V_Cs(Tn) xn) exception V_Cs(Pz) V_Cs(e?)
+V_Cs(C: L) = C: V(Cs.C = L) // Apply V to a nested class, which has name C and is in Cs
+_________
+AuxDefine V_Cs(e)=e // means apply V to 'e', where e was found in nested class 'Cs'
+V_Cs(L) = V(Cs.C = L), for fresh C // Rename a library literal expression
 
-V(X, Xz in Cs) = V(X in Cs), V(Xz in Cs)
-  for all metavariables X
+//Note the difference w.r.t. V_Cs(C: L) above. This is why we need both V_Cs(_) and V(Cs=_)
+// TODO: Other kinds of expressions (just apply V_Cs to all e, L, T and P inside)
 
-V(empty in Cs) = empty
+_________
+AuxDefine V_Cs(T)=T'
+V_Cs(mdf P) = mdf V_Cs(P)
 
+_________
+AuxDefine V_Cs(P)=P' // P found in Cs is renamed to P'
 V(Thisk.Cs' in Cs.C1...Ck) = V(Cs.Cs') + #Cs + k
-V(P in Cs) = P:
-	otherwise
+otherwise
+V(P in Cs) = P
 
-Define L[remove Csz] = L[remove Csz in empty]
-	empty not in Csz
-
-Define L[remove Csz in Cs] = L0
---------------------------------------------------------
-{interface? implements Pz Mz}[remove Csz in Cs] =
-	{interface? implements Pz Mz[remove Csz in Cs]}
-	where empty not in Csz
-
-empty[remove Csz in Cs] = empty
-(C:L, Mz)[remove Cs.C,Csz in Cs] = Mz[remove Csz in Cs]
-(C:L, Mz)[remove Csz in Cs] = C:L[remove Csz in C.Cs], Mz[remove Csz in Cs]
-  Cs.C not in Csz
-(mwt, Mz)[remove Csz in Cs] = mwt, Mz[remove Csz in Cs]
-----------------------------------------------
-
-p|- Ts->T;Pz <= Ts'->T';Pz':
-  p|- T <= T'
-  p|- Ts' <= Ts
-  forall P in Pz: exists P' in Pz': p|- P <= P'
-
-Define RedirectSet(L, Csz)=Csz':
+Define RedirectSet(L; Csz)=Csz':
+// Csz' is the set of nested class names that will be redirected when all the Csz are redirected from L
 -----------------------------
-Cs    in RedirectSet(L, Csz):
-  Cs in Csz
+Cs in RedirectSet(L; Cs, Csz)
 
-Cs1.C in RedirectSet(L, Csz):
-  Cs1 in RedirectSet(L, Csz)
+Cs1.C in RedirectSet(L; Csz)
+  Cs1 in RedirectSet(L; Csz)
   C in dom(L[Cs1])
 
-Cs2   in RedirectSet(L, Csz):
-  Cs1 in Csz
+Cs2 in RedirectSet(L; Csz)
+  Cs1 in RedirectSet(L; Csz)
   This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
 
-Define Paths(..) = Pz
-------------------------------------------------------
-Paths({interface? implements Pz; Mz}) = Pz, Paths(Mz)
+Define RedirectPaths(L) = Pz, RedirectPaths(mwt) = Pz
+// The set of paths referenced in the signatures of L and mwt (excluding nested classes)
+-----------------------------------------------------------------------
+RedirectPaths({interface? implements Pz mwtz ncz}) = Pz, RedirectPaths(mwtz)
 
-Paths(mwt, Mz) = Ts.Ps, T.P, Pz
-	mwt.mt = Ts->T;Pz
-
-Paths(nc, Mz) = Paths(Mz)
-Paths(empty) = empty
+RedirectPaths(mwt) = Ts.Ps, T.P, Pz
+  mwt.mt = Ts->T;Pz
 
 ==================================================================
-p.minimize(Thisn+1.C.Cs) = p.minimize(Thisn.Cs):
-  p.pop(n+1).ctxL(C) = ctxC
-  p(Thisn+1.C) is of form LV
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = 
+    Redirect(p'; Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1))
+  where p' = p.evilPush(L)
 
-p.minimize(P) = P
-	otherwise
-
-p.minimize(Cs1->P1,...,Csn->Pn) = Cs1->p.minimize(P1), ..., Csn->p.minimize(Pn)
-p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
-
-Define Redirect(p, L, Cs1, P1, ..., Csn, Pn) = Redirect(p', Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1)):
-	p' = p.evilPush(L)
-
-Define Redirect(p, Cs1, P1, ..., Csn, Pn) = L0:
+Define Redirect(p; Cs1, P1, ..., Csn, Pn) = L0
   exists a unique V such that: //if more then one V exists, is ambiguos redirect
-  	V = p.minimize(V)
+    V(Cs1)=P1 ... V(Csn)=Pn
+    L0 = V(p.top()[remove dom(V)])
+    dom(V) = RedirectSet(p.top(); Cs1, ..., Csn)
+    forall Cs.C in dom(V): V(Cs.C) = V(Cs).C
+    forall Cs in dom(V):
+      V(Cs)=p.minimize(V(Cs))
+      p|- Cs; V(p[Cs]) >= V(Cs); p[V(Cs)]
 
-    Pi = V(Csi)
-    dom(V) = RedirectSet(p.top(), Cs1, ..., Csn)
-    L0     = V(p.top())[remove dom(V)]
-    forall Cs' in dom(V):
-      P' = V(Cs')
-      V(Cs' p(This0.Cs')[from This0.Cs']) >=p P' p(P')[from P'])
-
-Define Cs {interface? implements Pz mwtz, ncz} >=p P {interafce?' implements Pz' mwtz', ncz'}:
-  Pz subseteq_p Pz',P
+Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implements Pz' mwtz', ncz'}
+  Pz subseteq_p Pz',P//Note: very important, so that F-bound polimoprhism can work
   if interface?=empty:
-    forall MS in dom(mwtz):
+    forall MS in dom(mwtz): //Note: adding a method to an interface would break all implementer
       p |- mwtz'(MS).mt <= mwt(MS).mt
-
     if interface?' = interface then class not in mwtz.mdfz
   else:
     interface? = interface?'
     mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
 
   forall mwt in mwtz:
-  	mwt.e = empty
-  	not Private(mwt.m)
+    mwt.e = empty
+    not Private(mwt.m)
 
   forall C in dom(ncz)
-  	not Private(C)
-    V(Cs.C) = P.C
+    not Private(C)
 
-================================
-L[PathRename Cs->Cs']p = V(L):
-	V = collectV(p.evilPush(L); Cs->This0.Cs')
+---------------------------------------------
+Computability: thanks to RedirectSet we know the dom(V)
+we can compute a part of the mapping by looking to method types.
+All that is left is implements and exceptions
+however, we can match, for example
+A:{implements Cs1..Csn Ms} 
+with the corresponding 
+EB:{implements P1..Pk Ms'} 
+by method names.
+To pass, for each Csi there must be at least 1 Pi with (exactly) the same ms
+in order to be still ambiguos:
+there must be a P,P' in P1..Pk with the same ms.
+For this to be the case, either there are interfaces with no methods
+in Cs1..Csn or P must implement P' and P must add no methods
+Thus, the only case where it may be hard is the degenerate case
+of an interface without methods
+
+
+A:{class method T m() exception A1,A2,A3}
+
+EA:{class method T m() exception EA1,EA2}
+
+A1:{}, A2: {}
+A:{
+  T m() exception A1  T f() exception A1, A2
+}
+
+EA: { 
+  T m exception EA1 ...
+  T f exception EA1 ...
+}
+EA1: {}
+
+interface A {  }
+interface B {  }
+class C implements A,B{ }
+
+interface EA {  }
+interface EB {  }
+class EC implements EA,EB{ }
+
+
+
+
+EI1:{interface}
+EI2:{interface implements EI1}
+
+L={  
+I1:{interface}
+I2:{interface implements I1}
+}[I2=EI2]
+I2=EI2,I1=EI1
+I2=EI2,I1=EI2
+
+
+------
+
+L: {A1: {interface implements A2, ..., An}
+A2: {interface implements A3, ..., An}
+...
+An: {interface}
+}
+
+B1: {interface implements B2, ..., Bn}
+B2: {interface implements B3, ..., Bn}
+...
+Bn: {interface}
+
+L[A1 = B1]
+
+================================//may be move in rename
+L[PathRename Cs->Cs']p = V(L)
+  V = collectV(p.evilPush(L); Cs->This0.Cs')
 
 collectV(p; Cs->P, V) = collectV(p; Cs.C->P.C, Cs->P, V)
-	Cs.C not in dom(V)
-	C in dom(p(This0.Cs))
+  Cs.C not in dom(V)
+  C in dom(p(This0.Cs))
+otherwise
+  collectV(p; V) = V
 
-collectV(p; V) = V:
-	otherwise
