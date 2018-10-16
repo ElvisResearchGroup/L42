@@ -1,7 +1,51 @@
-\section{Introduction} 
+\section{Introduction}
 \begin{lstlisting}
 hi method class Foo{ bar}
 \end{lstlisting}
+
+In literature, in addition to conventional Java style F-bound polimorphism, there
+Another way to obtain generics is to use associated types (to specify generic paramaters) and inheritence (to instantiate the paramaters).
+However, when parametrizing multiple types, the user to specify the full mapping.
+For example in Java
+    interface A<B>{ B m(); }
+    inteface B{String f();}
+    class G<TA extends A<TB>, TB>{//TA and TB explicitly listed
+      String g(TA a TB b){return a.m().f();}
+    }
+    class MyA implements A<MyB>{..}
+    class MyB implements B {..}
+    G<MyA,MyB>//instantiation
+Also scala offers genercs, and could encode the example in the same way, but Scala
+also offers associated types, allowing to write instead....
+
+Rust also offers generics and associated types, but also support calling static methods
+over generic and associated types.
+
+We provide here a fundational model for genericty that subsume the power
+of F-bound polimorphims and  associated types.
+Moreover, it allows for large sets of generic parameter instantiations to be inferred starting from a much smaller mapping.
+For example, in our system we could just write
+    g={
+      A={ method B m()}
+      B={ method String f()}
+      method String g(A a B b)=a.m().f()
+    }
+    MyA={ method MyB m()= new MyB(); ..}
+    MyB={ method String f()="Hello"; ..}
+    g<A=MyA>//instantiation. The mapping A=MyA,B=MyB
+
+We model a minimal calculus with interfaces and final classes, where implementing an interface is the only way to induce subtyping.
+We will show how supporting subtyping constitute the core technical difficulty in our work, inducing ambiguity in the mappings.
+As you can see, we base our generic matches the structor of the type instead of respecting a subtype requirement as in F-bound polymorphis.
+We can easily encode subtype requirements by using implements:
+Print=interface{ method String print();}
+g={
+  A:{implements Print}
+  method A printMe(A a1,A a2){ if(a1.print().size()>a2.print.size()){return a1;} return a2;}
+  }
+MyPrint={implements Print ..}
+g<A=MyPrint> //instantiation
+g<A=Print> //works too
 
 \Q@hi@
 \Q@Hi@
@@ -23,9 +67,9 @@ $\begin{array}{l}
 	a \xrightarrow[b]{} c\quad
 	\forall i<3 a\vdash b:\text{OK}\\\\
 	\forall i<3 a\vdash b:\text{OK}
-}{ 
+}{
 	1+2
-	\rightarrow 
+	\rightarrow
 	3
 }\begin{array}{l}
 a\\b\\c
