@@ -49,7 +49,7 @@ public class TestRedirect {
     List<Object[]> tests= Arrays.asList(new Object[][]{
 
 // TODO: Fix/look at these tests
-    {lineNumber(), new String[]{"{"+
+    {lineNumber(), new String[]{"{"+ // Fails, caint resolve ambiguity when interfaces have different methods
             "EA:{interface method Void ma()}" +
             "EB:{interface method Void mb()}" +
             "E:{implements This1.EA This1.EB}}"
@@ -61,7 +61,22 @@ public class TestRedirect {
             "}",
             "This0.I","This1.E",
             "{method EA a() method EB b()}", false // FAILS IncoherentMapping
-    },{lineNumber(), new String[]{"{"+
+    },{lineNumber(), new String[]{"{EB: {" // Unable to handle subtyping
+        + "AI :{interface}"
+        + "A: {implements AI}"
+        + "method A bar()"
+        + "method Void foo(AI that)}}"},
+
+        "{B: {A:{} method A bar() method Void foo(A that)} method Void baz(B b, B.A ba)}",
+        "This0.B", "This1.EB",
+        "{method This1.E i()}", false // FAILS IncoherentMapping
+
+    },{lineNumber(), new String[]{"{EB: {method Void foo()}}"}, // Unable to handle subtyping
+        "{B: {method Any foo()}}",
+        "This0.B", "This1.EB",
+        "{}", false
+
+    },{lineNumber(), new String[]{"{"+ // Fails, due to no f-bound polymorphism trick
             "E: {interface method Void equals() method Void foo()} \n" +
             "EA: {implements This1.E}}"},
             "{\n"+
@@ -71,7 +86,7 @@ public class TestRedirect {
                     "}",
             "This0.A", "This1.EA",
             "{method This1.E i()}", false // FAILS IncoherentMapping
-    },{lineNumber(), new String[]{"{EA1: {} "
+    },{lineNumber(), new String[]{"{EA1: {} " // Fails, exception spec redirection is ambiguous?
         + "E: {method Void m1() exception EA1 method Void m12() exception EA1}}"},
         "{A1:{}, A2: {}\n" +
         "A:{" +
@@ -84,19 +99,7 @@ public class TestRedirect {
         "This0.A", "This1.E",
         "{method Void m(This1.E a, This1.EA1 a1, This1.EA1 a2)}", true
 
-    },{lineNumber(), new String[]{"{"+ // PASS!
-            "E1: {interface} E2: {interface}\n" +
-            "EA: {implements This1.E1 This1.E2}}"},
-            "{\n"+
-                    "A: {implements This1.I, This2.E2}\n"+
-                    "I: {interface}\n" +
-                    "method I foo()\n" +
-                    "}",
-            "This0.A", "This1.EA",
-            "IncoherentMapping::\n" +
-            "verified:[A->This1.EA]\n" +
-            "ambiguities:[I->[This1.E1, This1.E2]]", true // Should fail with IncohrentMapping?
-    },{lineNumber(), new String[]{"{"+
+    },{lineNumber(), new String[]{"{"+ // Fails, no ambiguity resolution when interfaces have different methods
             "EI2:{interface method Void foo()}\n" +
             "EI1:{interface implements EI2 method Void bar()}\n" +
             "E:{implements EI1, EI2}\n"+
@@ -110,33 +113,19 @@ public class TestRedirect {
             "This0.A", "This1.E",
             "{method EI2 m(EI2 x)}", false // Because only EI1 contains just "foo"
 
-    },{lineNumber(), // PASS!
-            new String[]{"{E:{class method Void foo()}}"},
-            "{Z:{class method Void foo() exception Z}\n"+
-                    "A:{method Void foo() exception Z Z.foo()}}",
-            "This0.Z", "This1.E",
-            "{A:{method Void foo() exception This2.E This2.E.foo()}}", false
-    },{lineNumber(),
+    },{lineNumber(),// Fails, redirecting interface with different methods
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface} A:{implements I}}",
             "This0.I", "This1.E",
             "{A: {implements This2.E}}", true // SHOULD FAIL, as I dosn't have exactly the methods of E
-    },{lineNumber(),
+    },{lineNumber(),// Fails, redirecting interface with different method signature
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface method Void foo() exception I}\n"+
                     "A:{implements I refine method Void foo() exception I}}",
             "This0.I", "This1.E",
             "{A: {implements This2.E refine method Void foo() exception This2.E }}",
             true  // SHOULD FAIL, as A dosn't implement This2.E.foo
-    },{lineNumber(), // PASS
-            new String[]{"{E:{interface method Void foo() exception E}}"},
-            "{I:{interface method Void foo()}\n"+
-                    "A:{implements I refine method Void foo()}"+
-                    "class method Void(I i) i.foo()}",
-            "This0.I", "This1.E",
-            "MethodClash::Issues:  Incompatible exceptions ", true
-            // SHOULD FAIL
-    },{lineNumber(),
+    },{lineNumber(),// Fails, redirecting interface with different methods
             new String[]{"{" +
                     "E1:{interface method Void foo()}\n" +
                     "E2:{interface method Void foo()}\n" +
@@ -149,6 +138,52 @@ public class TestRedirect {
                     "}",
             "This0.B", "This1.E",
             "{A: {interface implements This2.E1, This2.E2}}", true
+            // SHOULD FAIL
+    }, {lineNumber(), // Fails, as no p.equiv
+            mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}")
+                    .push(new ast.Ast.C("C", -1)),
+            "{A:{method B g() method B f()} B:{} method B foo()}",
+            "This0.A", "This1.EA",
+            "{method This1.EA.EB foo()}", false
+            // Should work!
+
+    },{lineNumber(), // Fails, bad error message
+      new String[]{"{EA:{interface A:{implements EA}}}"},
+      "{interface A:{implements This1}}",
+      "This0.A", "This1.EA.A",
+      "PathUnfit::Private path--", true //bad error message
+//===============================================================================
+    },{lineNumber(),//PASS, but next
+      new String[]{"{C:{EB:{}, EA:{method This1.EB f() method This2.C.EB g()}}}"},
+      "{A:{method B f() method B g()} B:{} method B foo()}",
+      "This0.A", "This1.C.EA",
+      "{method This1.C.EB foo()}", false
+    },{lineNumber(), new String[]{"{"+ // PASS!
+        "E1: {interface} E2: {interface}\n" +
+        "EA: {implements This1.E1 This1.E2}}"},
+        "{\n"+
+                "A: {implements This1.I, This2.E2}\n"+
+                "I: {interface}\n" +
+                "method I foo()\n" +
+                "}",
+        "This0.A", "This1.EA",
+        "IncoherentMapping::\n" +
+        "verified:[A->This1.EA]\n" +
+        "ambiguities:[I->[This1.E1, This1.E2]]", true // Should fail with IncohrentMapping?
+
+    },{lineNumber(), // PASS!
+            new String[]{"{E:{class method Void foo()}}"},
+            "{Z:{class method Void foo() exception Z}\n"+
+                    "A:{method Void foo() exception Z Z.foo()}}",
+            "This0.Z", "This1.E",
+            "{A:{method Void foo() exception This2.E This2.E.foo()}}", false
+    },{lineNumber(), // PASS
+            new String[]{"{E:{interface method Void foo() exception E}}"},
+            "{I:{interface method Void foo()}\n"+
+                    "A:{implements I refine method Void foo()}"+
+                    "class method Void(I i) i.foo()}",
+            "This0.I", "This1.E",
+            "MethodClash::Issues:  Incompatible exceptions ", true
             // SHOULD FAIL
     },{lineNumber(),//PASS
             new String[]{"{Foo: {implements This1.EA}, EA: {interface B:{}}}"},
@@ -163,23 +198,6 @@ public class TestRedirect {
             "{A:{interface      B:{implements A}} class method A m(A.B x)}",
             "This0.A.B", "This1.EA.B",
             "{class method This1.EA m(This1.EA.B x) }", false
-    },{lineNumber(),
-            new String[]{"{EA:{interface A:{implements EA}}}"},
-            "{interface A:{implements This1}}",
-            "This0.A", "This1.EA.A",
-            "PathUnfit::Private path--", true //bad error message
-    },{lineNumber(),//PASS, but next
-            new String[]{"{C:{EB:{}, EA:{method This1.EB f() method This2.C.EB g()}}}"},
-            "{A:{method B f() method B g()} B:{} method B foo()}",
-            "This0.A", "This1.C.EA",
-            "{method This1.C.EB foo()}", false
-    }, {lineNumber(),
-            mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}")
-                    .push(new ast.Ast.C("C", -1)),
-            "{A:{method B g() method B f()} B:{} method B foo()}",
-            "This0.A", "This1.EA",
-            "{method This1.EA.EB foo()}", false
-            // Should work!
 // TODO END
     }, {lineNumber(), new String[]{"{A:{}}"},
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","This0.InnerA","This1.A",
