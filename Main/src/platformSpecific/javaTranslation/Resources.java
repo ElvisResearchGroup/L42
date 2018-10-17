@@ -479,7 +479,10 @@ public
         //Is it a non wrapped java object?
       StringWriter errorTrace = new StringWriter();
       PrintWriter printWriter= new PrintWriter(errorTrace);
-      ((Throwable)obj).printStackTrace(printWriter);
+      if(obj instanceof Throwable) {
+        ((Throwable)obj).printStackTrace(printWriter);
+        }
+      else {printWriter.append(""+obj);}
       try{
         Method toS = obj.getClass().getMethod("£CtoS",obj.getClass());
         Object s42=toS.invoke(obj,obj);

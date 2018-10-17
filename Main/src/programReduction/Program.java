@@ -50,6 +50,7 @@ public interface Program {
   List<ExpCore.ClassB.MethodWithType> methods(Ast.Path p);
 
   //program derived operations:
+
   default boolean subtypeEq(Ast.Type tSub,Ast.Type tSuper){
     if(!Functions.isSubtype(tSub.getMdf(),tSuper.getMdf())){return false;}
     return this.subtypeEq(tSub.getPath(),tSuper.getPath());
@@ -82,13 +83,16 @@ public interface Program {
         }
       }
     }
-  default boolean noUnique(Ast.Path p){
+  default Path minimize(Path p) {
     Path pReduced=p;
     while(pReduced!=null){//reduce pi as much as possible
       p=pReduced;
       pReduced=this._reducePath(p);
       }
-    for(C c:p.getCBar()){
+    return p;
+    }
+  default boolean noUnique(Ast.Path p){
+    for(C c:minimize(p).getCBar()){
       if(c.isUnique()){return false;}
       }
     return true;
@@ -151,33 +155,6 @@ public interface Program {
     catch(ErrorMessage.PathMetaOrNonExistant pne){
       throw pne.withListOfNodeNames(p.getCBar()).withCb(top);
       }
-    }
-  default Path _reducePath(Path p,CtxL ctx){
-    if(p.isPrimitive()){return null;}
-    if(p.outerNumber()==0){return null;}
-    if(p.outerNumber()>1){
-      Path p1=p.setNewOuter(p.outerNumber()-1);
-      Path p2=this.pop()._reducePath(p1);
-      if (p2==null){return null;}
-      assert p2.outerNumber()==p1.outerNumber()-1;
-      return p2.setNewOuter(p2.outerNumber()+1);
-      }
-
-    /*
-     * p = This1.C.Cs
-     * ctx.orignalCtxM() = "C: _"// or do we mean =C:ctxM ?
-     * return Thus0.Cs
-     * */
-    assert p.outerNumber()==1;
-    List<Ast.C> cs = p.getCBar();
-    if(cs.isEmpty()){return null;}
-    ClassB.Member m=ctx.originalCtxM();
-    if(!(m instanceof ClassB.NestedClass)){return null;}
-    ClassB.NestedClass nc=(ClassB.NestedClass)m;
-    Ast.C ncName=nc.getName();
-    if(!ncName.equals(cs.get(0))){return null;}
-    if(!IsCompiled.of(nc.getE())) {return null;}//Added line 2/8/2018
-    return Path.outer(0, cs.subList(1, cs.size()));
     }
   default PData reprAsPData(){
     PData res=new PData(this);
@@ -265,7 +242,31 @@ class PushedProgram extends Methods{
 
   public Program updateTop(ClassB l) {return new UpdatedProgram(l,this.splitPoint,this.former);}
 
-  public Path _reducePath(Path p){return _reducePath(p,this.splitPoint);}
+  public Path _reducePath(Path p){
+    if(p.isPrimitive()){return null;}
+    if(p.outerNumber()==0){return null;}
+    if(p.outerNumber()>1){
+      Path p1=p.setNewOuter(p.outerNumber()-1);
+      Path p2=this.pop()._reducePath(p1);
+      if (p2==null){return null;}
+      assert p2.outerNumber()==p1.outerNumber()-1;
+      return p2.setNewOuter(p2.outerNumber()+1);
+      }
+    assert p.outerNumber()==1;
+    List<Ast.C> cs = p.getCBar();
+    if(cs.isEmpty()){return null;}
+    ClassB.Member m=this.splitPoint.originalCtxM();//This1.C.Cs
+    if(!(m instanceof ClassB.NestedClass)){return null;}
+    ClassB.NestedClass nc=(ClassB.NestedClass)m;
+    Ast.C ncName=nc.getName();
+    if(!ncName.equals(cs.get(0))){return null;}
+    if(!IsCompiled.of(nc.getE())) {return null;}//Added line 2/8/2018
+    //here we are sure that ctxL={..C:ctxC[]..}
+    //and that the original hole content was compiled (LC is required in the formalism).
+    //we do not require C:[]
+    //if(!(nc.getE() instanceof ClassB)){return null;}//requiring C:[] would not cause an issue on 17/10/2018
+    return Path.outer(0, cs.subList(1, cs.size()));
+    }
 
   public Program growFellow(Program fellow) {
     CtxL ctx=this.splitPoint.divide(fellow.top());

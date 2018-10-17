@@ -237,11 +237,12 @@ program primitive operations:
 -p.update(L)=p' //this is the only one that can detect evilPush
  (L,ctxLs).update(L')=L',ctxLs
 
--p.reducePath(P)=P' //assert defined only if p.top() of form LV
+-p.reducePath(P)=P' //assert defined only if p.top() of form LC
  p.reducePath(This(n+1).C.Cs)=Thisn.Cs
    where p.pop().reducePath(Thisn.C.Cs) is defined
- (LV,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
-   where ctxL(C)=[]
+ (LC,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
+   where ctxL(C)=ctxC //Note:ctxL(C)=[] would be more restrictive, for example
+   //preventing A:Data<><{method A (..)} to be summed with the constructor.
 
 program derived operations:
 
