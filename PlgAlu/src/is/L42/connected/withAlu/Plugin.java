@@ -172,8 +172,6 @@ public class Plugin implements PluginType.WellKnown {
     return Resources.Void.instance;
   }
 
-  @ActionType({ActionType.NormType.CapsuleAny, ActionType.NormType.ReadAny})
-  public Object MevilCast£xthat(Object val){ return val; }
   @ActionType({ActionType.NormType.Void, ActionType.NormType.Library})
   public Resources.Void MprintCounter£xthat(Object cb){
     String s = ensureExtractStringU(cb);

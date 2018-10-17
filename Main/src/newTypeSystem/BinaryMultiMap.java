@@ -11,14 +11,16 @@ public class BinaryMultiMap<K, V>
   private Map<K, Set<V>> true_ = new HashMap<>();
   private Map<K, Set<V>> false_ = new HashMap<>();
 
-  void add(boolean b, K key, V value) {
+  void add(boolean b, K key, V value)
+  {
     this.addOnce(false, key, value);
     if (b) this.addOnce(b, key, value);
   }
 
-  void addOnce(boolean b, K key, V value) {
+  void addOnce(boolean b, K key, V value)
+  {
     this.get(b).merge(key, Collections.singleton(value), (x, y) -> {
-        Set<V> s = new HashSet<V>(x);
+        Set<V> s = new HashSet<>(x);
         s.addAll(y);
         return s;
     });
@@ -29,5 +31,5 @@ public class BinaryMultiMap<K, V>
     if (b) return this.true_;
     else return this.false_;
   }
-  public Set<V> get(boolean b, K key) { return this.get(b).get(key); }
+  public Set<V> get(boolean b, K key) { return this.get(b).getOrDefault(key, Collections.emptySet()); }
 }

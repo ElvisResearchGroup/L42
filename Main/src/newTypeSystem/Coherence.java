@@ -126,7 +126,7 @@ public class Coherence
 
     //p |- imm Void <= T
     if (null != TypeSystem._subtype(p, mwt.getReturnType(), Type.immVoid))
-      error(mwt, "Setters must return a supertype of read Void.");
+      error(mwt, "Setters must return a supertype of imm Void.");
 
     //mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
     if (!mwt.getMdfs().get(0).isIn(Mdf.Immutable, Mdf.Mutable, Mdf.Capsule, Mdf.Class))
