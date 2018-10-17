@@ -70,6 +70,7 @@ RedirectPaths(mwt) = Ts.Ps, T.P, Pz
 
 ==================================================================
 Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V'(p'.top()[remove Csz])
+  empty not in Cs1 ... Csn
   where p' = p.evilPush(L)
   ChooseRedirect(p'; Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1)) = V'
 
@@ -79,6 +80,12 @@ Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V'(p'.top()[remove Csz])
 //  * for all g such that ValidChooser(g), f(g) = g
 // (I.e. one that turns any chooser into a valid one, but leaves allready valid ones untouched)
 Defien ValidChooser(ChooseRedirect) iff for all p and V
+    if for all Cs->P in V,
+        P = p.minimize(P)
+        P not of the form This0.Cs' // That would be a 'rename' not a 'redirect'
+        Cs not empty
+        // TODO: Add some requirement that each P is allready compiled/type-checked/whatever?
+    then:
     // needed for stability to make sense
     ChooseRedirect(p; V) is defined iff ChooseRedirect(ReduceProblem(p; V); V) is defined
     if ChooseRedirect(p; V) = V' then
