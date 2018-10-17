@@ -212,8 +212,8 @@ LibIsMethodsTest:{
     {class method This m( S field) method S field()}
     ).isEnsuredCoherent() expected:Bool.true())
   Debug.test(Location.Lib(
-    { method S field()}
-    ).isEnsuredCoherent() expected:Bool.false())
+    { method S field()}//This is coherent since it has no class method
+    ).isEnsuredCoherent() expected:Bool.true())
   Debug.test(Location.Lib(
     {class method This m( S field) method S field() method S anotherF()}
     ).isEnsuredCoherent() expected:Bool.false())
