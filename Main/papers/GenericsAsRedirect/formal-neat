@@ -69,18 +69,32 @@ RedirectPaths(mwt) = Ts.Ps, T.P, Pz
   mwt.mt = Ts->T;Pz
 
 ==================================================================
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) =
-    Redirect(p'; Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1))
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V'(p'.top()[remove Csz])
   where p' = p.evilPush(L)
+  ChooseRedirect(p'; Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1)) = V'
 
-Define Redirect(p; V) = V'(p.top()[remove dom(V)])
-  where ValidRedirect(p; V; V') and ChooseRedirect(p; V) = V'
+// This checks if the choice function is valid
+// NOTE: It is uncomputable! Importantly, I cannot come up with a computable function 'f' such that:
+//  * for all g, ValidChooser(f(g))
+//  * for all g such that ValidChooser(g), f(g) = g
+// (I.e. one that turns any chooser into a valid one, but leaves allready valid ones untouched)
+Defien ValidChooser(ChooseRedirect) iff for all p and V
+    // needed for stability to make sense
+    ChooseRedirect(p; V) is defined iff ChooseRedirect(ReduceProblem(p; V); V) is defined
+    if ChooseRedirect(p; V) = V' then
+      V' = ChooseRedirect(ReduceProblem(p; V)) // stability
+      ChooseRedirect(p; V') = V'               // idempotence
+      ValidRedirect(p; V; V')                  // validity
+
+// We should try and prove that the above definition is equivalent to one where we replace the 'validity' check
+// with a meta-level soudness check (I'm not certain though)
 
 Define ValidRedirect(p; V; V') iff
+    empty not in dom(V') // If this weren't true, L[remove Csz] would be undefined
     V subseteq V'
-    dom(V') = RedirectSet(p.top(); dom(V))
+    dom(V') = RedirectSet(p.top(); dom(V)) // TODO: Do we need this? Why?
 
-    forall Cs.C in dom(V'): V'(Cs.C) = V'(Cs).C
+    forall Cs.C1.C2 in dom(V'): V'(Cs.C1.C2) = V'(Cs.C1).C2
     forall Cs in dom(V'):
       V'(Cs)=p.minimize(V'(Cs))
       p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
@@ -103,74 +117,51 @@ Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implement
     not Private(C)
 --------------------------------------------
 // Any other definition of this function would make a sane redirect!
-Define ChooseRedirect(p; V) = V'
-  V' is the unique V' such that ValidRedirect(p; V; V') and
-    for all V'' such that ValidRedirect(p; V; V''),  p |- V' < V''
-  // i.e. V' is the unique 'least' valid redirection
+Define ChooseRedirect(p; V1) = V2
+  V2 is the unique V such that ValidRedirect(p; V1; V2) and
+    for all V3 such that ValidRedirect(p; V1; V3),  p |- V2 > V3
+  // i.e. V' is the unique 'greatest' valid redirection
 --------------------------
-Some helpfull definitions to compute the distance between two paths, so that 'closer' paths have less classes in between them in the subtypining hiearchy.
-
-// Some help for subtyping
-Define p |- P1 = P2 iff
-    p |- P1 <= P2
-    p |- P2 <= P1
-
 Define p |- P1 < P2 iff
     p |- P1 <= P2
     p |/- P2 <= P1
 
-define distance(p, P1, P2) = n
-------------------------------------
 distance(p, P1, P2) = 0
-    p |- P1 = P2
+    p.equiv(P1, P2)
 
-distance(p, P1, P2) = n - 1
-    n is the largest number such that there exists P1', ..., Pn' where
-        n >= 2
-        p |- P1' = P1
-        p |- Pn' = P2
-        p |- P1' < P2'
-        ...
-        p |- Pn-1' < Pn'
+distance(p, P1, P2) = n
+  n is the length of the longest non-empty path between P1 and P2, formed by using the 'p |- <' relation
 
 distance(p, P1, P2) = distance(p, P2, P1)
+
 ====================================================
 Definition for 'V' ordering
 
-p |- V1 < V2 iff
-  p |- V1 <= V2
-  p |/- V2 <= V1
+p |- V1 > V2 iff // i.e. V1 is strictly better than V2
+  p |- V1 >= V2
+  p |/- V2 >= V1
 
-p |- V <= V
+Define mwt.Pi = P'i
+    where mwt.mt = mdf1 P'0 ... mdfn P'n -> mdf0 P'0; Pz
 
-
-p |- V1 U V2 <= V1' U V2' if
-  p |- V1 < V1'
-  p |- V2 <= V2'
-
-// I have written the rules such that V1 <= V2 only if
-// V1 is better than V2 in at least one way,
-// As opposed to simply saying that V1 is at least as good as V2
-// This makes the definition for '<' much more uesefull,
-
-Define mwt.P = P'
-    where mwt.mt = _ -> mdf P'; _
-Define mwt.Pi = Pi'
-    where mwt.mt = mdf1 P1' ... mdf1 P1' -> _; _
-
-// Return path is 'closer'
-p |- Cs->P1, Cs'->P1' <= Cs->P2, Cs'->P2' if
-  for some ms
-  p[This0.Cs'](ms).P = This0.Cs
-  distance(p[P1'](ms).P, P1) <= distance(p[P2'](ms).P, P2)
-
-// Argument path is 'closer'
-p |- Cs->P1, Cs'->P1' <= Cs->P2, Cs'->P2' if
-  for some ms and i
+Define p |- V1 >= V2 // i.e. V1 is at least as good as V2
+  for some ms, i, Cs, and Cs' // Note: Cs could be the same as Cs'
   p[This0.Cs'](ms).Pi = This0.Cs
-  distance(p[P1'](ms).Pi, P1) <= distance(p[P2'](ms).Pi, P2)
+  distance(p, p[V1(Cs')](ms).Pi, V2(Cs)) <= distance(p, p[V2(Cs')](ms).Pi, V2(Cs))
 
+-----------------------------------------------
+Define L[only Csz] = L' // Removes everything not in Csz
 
+L[only Cs,Csz] = L[only Cs] U L[only Csz]
+L[only empty] = {}
+L[only C1...Cn] = {C1: ... {Cn: L(Cs)[with ncz = empty]} ... }
+
+// U above is a 'dumb' sum, namely:
+{Pz C1: L1 ... Cn: Ln Mz} U {interface? Pz' C1: L1' ... Cn: Ln' Mz'} = {interface? Pz Pz' C1: L1 U L1' ... Cn: Ln U Ln' Mz Mz'}
+    dom(Mz) disjoint dom(Mz')
+
+TODO: Remove everything bellow this line!
+=====================================================
 ---------------------------------------------
 Computability: thanks to RedirectSet we know the dom(V)
 we can compute a part of the mapping by looking to method types.
