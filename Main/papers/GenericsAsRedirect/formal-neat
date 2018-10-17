@@ -69,19 +69,21 @@ RedirectPaths(mwt) = Ts.Ps, T.P, Pz
   mwt.mt = Ts->T;Pz
 
 ==================================================================
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = 
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) =
     Redirect(p'; Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1))
   where p' = p.evilPush(L)
 
-Define Redirect(p; Cs1, P1, ..., Csn, Pn) = L0
-  exists a unique V such that: //if more then one V exists, is ambiguos redirect
-    V(Cs1)=P1 ... V(Csn)=Pn
-    L0 = V(p.top()[remove dom(V)])
-    dom(V) = RedirectSet(p.top(); Cs1, ..., Csn)
-    forall Cs.C in dom(V): V(Cs.C) = V(Cs).C
-    forall Cs in dom(V):
-      V(Cs)=p.minimize(V(Cs))
-      p|- Cs; V(p[Cs]) >= V(Cs); p[V(Cs)]
+Define Redirect(p; V) = V'(p.top()[remove dom(V)])
+  where ValidRedirect(p; V; V') and ChooseRedirect(p; V) = V'
+
+Define ValidRedirect(p; V; V') iff
+    V subseteq V'
+    dom(V') = RedirectSet(p.top(); dom(V))
+
+    forall Cs.C in dom(V'): V'(Cs.C) = V'(Cs).C
+    forall Cs in dom(V'):
+      V'(Cs)=p.minimize(V'(Cs))
+      p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
 
 Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implements Pz' mwtz', ncz'}
   Pz subseteq_p Pz',P//Note: very important, so that F-bound polimoprhism can work
@@ -99,6 +101,75 @@ Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implement
 
   forall C in dom(ncz)
     not Private(C)
+--------------------------------------------
+// Any other definition of this function would make a sane redirect!
+Define ChooseRedirect(p; V) = V'
+  V' is the unique V' such that ValidRedirect(p; V; V') and
+    for all V'' such that ValidRedirect(p; V; V''),  p |- V' < V''
+  // i.e. V' is the unique 'least' valid redirection
+--------------------------
+Some helpfull definitions to compute the distance between two paths, so that 'closer' paths have less classes in between them in the subtypining hiearchy.
+
+// Some help for subtyping
+Define p |- P1 = P2 iff
+    p |- P1 <= P2
+    p |- P2 <= P1
+
+Define p |- P1 < P2 iff
+    p |- P1 <= P2
+    p |/- P2 <= P1
+
+define distance(p, P1, P2) = n
+------------------------------------
+distance(p, P1, P2) = 0
+    p |- P1 = P2
+
+distance(p, P1, P2) = n - 1
+    n is the largest number such that there exists P1', ..., Pn' where
+        n >= 2
+        p |- P1' = P1
+        p |- Pn' = P2
+        p |- P1' < P2'
+        ...
+        p |- Pn-1' < Pn'
+
+distance(p, P1, P2) = distance(p, P2, P1)
+====================================================
+Definition for 'V' ordering
+
+p |- V1 < V2 iff
+  p |- V1 <= V2
+  p |/- V2 <= V1
+
+p |- V <= V
+
+
+p |- V1 U V2 <= V1' U V2' if
+  p |- V1 < V1'
+  p |- V2 <= V2'
+
+// I have written the rules such that V1 <= V2 only if
+// V1 is better than V2 in at least one way,
+// As opposed to simply saying that V1 is at least as good as V2
+// This makes the definition for '<' much more uesefull,
+
+Define mwt.P = P'
+    where mwt.mt = _ -> mdf P'; _
+Define mwt.Pi = Pi'
+    where mwt.mt = mdf1 P1' ... mdf1 P1' -> _; _
+
+// Return path is 'closer'
+p |- Cs->P1, Cs'->P1' <= Cs->P2, Cs'->P2' if
+  for some ms
+  p[This0.Cs'](ms).P = This0.Cs
+  distance(p[P1'](ms).P, P1) <= distance(p[P2'](ms).P, P2)
+
+// Argument path is 'closer'
+p |- Cs->P1, Cs'->P1' <= Cs->P2, Cs'->P2' if
+  for some ms and i
+  p[This0.Cs'](ms).Pi = This0.Cs
+  distance(p[P1'](ms).Pi, P1) <= distance(p[P2'](ms).Pi, P2)
+
 
 ---------------------------------------------
 Computability: thanks to RedirectSet we know the dom(V)
