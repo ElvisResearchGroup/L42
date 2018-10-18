@@ -20,7 +20,7 @@ import tools.Assertions;
 
 public class Coherence
 {
-  public static String removeHash(String s) 
+  public static String removeHash(String s)
   {
     if (s.startsWith("#")) return s.substring(1);
     else return s;
@@ -125,7 +125,7 @@ public class Coherence
       error(mwt, "Setter for unknown field.");
 
     //p |- imm Void <= T
-    if (null != TypeSystem._subtype(p, mwt.getReturnType(), Type.immVoid))
+    if (null != TypeSystem._subtype(p, Type.immVoid, mwt.getReturnType()))
       error(mwt, "Setters must return a supertype of imm Void.");
 
     //mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}

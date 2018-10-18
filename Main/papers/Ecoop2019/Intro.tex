@@ -47,6 +47,30 @@ MyPrint={implements Print ..}
 g<A=MyPrint> //instantiation
 g<A=Print> //works too
 
+
+--------------
+example showing ordering need to strictly improve
+EI1: {interface}
+EA1: {implements EI1}
+
+EI2: {interface}
+EA2: {implements EI2}
+
+EB: {EA1 a1 EA1 a1}
+
+{
+A1: {}
+A2: {}
+B: {A1 a1 A2 a2}
+}[B = EB] // A1 -> EI1, A2 -> EA2 a
+          // A1 -> EA1, A2 -> EI2 b
+          // A1 -> EA1, A2 -> EA2 c
+
+a <=b
+b <=a
+c<= a,b
+a <= c
+
 \Q@hi@
 \Q@Hi@
 \Q@class@
