@@ -1,8 +1,9 @@
--------------
+------------- // TODO: Change V to 'R' ? Or perhaps 'M'?
 Module V: defines V, V(Cs)=P, V(L)=L', dom(V);
 using auxiliary V_Cs(e)=e', V_Cs(T)=T', V_Cs(M)=M', V(Cs=L)=L'
 
-V ::= (Cs->P)z // Redirection/renaming map
+V ::= (Cs->P)z // Redirection map
+// A V is a methematical partial function from the set of Cs to the set of P
 
 //______
 //Define V.minimize(p)
@@ -16,71 +17,202 @@ ______
 Define V(Cs)=P 
 V(Cs) = P
   Cs->P in V // Cs renamed using V
-
 ______
-Define  V(L)=V(empty=L) // Apply V to L
+// Apply V to all references to the class-names in dom(L)
+// Note: this only applies to references (i.e. P's), the nested classes themselves (if present) are not redirected
+Define  V(L)=V(empty=L) // Note: the top-level 'class' has no name, so we use 'empty'
 
+// Note: that Ls found found inside expressions (i.e. es) have no names, whereas the RHS of a nested-class definition do
+// However even an unanamed L may be inside a named L, and we need this information to understand what a path refers to.
+// As such we will just geneerate fresh names for unnamaed Ls, thus simplifying things by giving all L's a name.
+
+// We could also just use V_Cs(C: L) and V_Cs(L) to apply V to nested classes and L expressions (respectivley),
+// however this general V(Cs = L) function prevents duplication, and so the above two just forward to it
 _________
-AuxDefine V(Cs = L)=L'  // Apply V to L, where L is named Cs
+// Apply V to class 'Cs' which has body 'L'
+// We need to keep track of the Cs since paths are relative, in order to know if they refer to something in dom(V)
+// we need to know where the is
+AuxDefine V(Cs = L)=L'
+
+// Simply apply V to the Pz and Mz
 V(Cs = {interface? implements Pz Mz}) = {interface? implements V_Cs(Pz) V_Cs(Mz)}
   
 _________
+// Apply V to a member M that was found in nested class Cs
 AuxDefine V_Cs(M)=M'
 
+// Case for methods, apply V to all types, paths and expressions
 V_Cs(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
   refine? mdf method V_Cs(T) m(V_Cs(T1) x1,..,V_Cs(Tn) xn) exception V_Cs(Pz) V_Cs(e?)
+
+// Case for nested classes, apply V to the library literal, giving it the appropriate name
 V_Cs(C: L) = C: V(Cs.C = L) // Apply V to a nested class, which has name C and is in Cs
 _________
-AuxDefine V_Cs(e)=e // means apply V to 'e', where e was found in nested class 'Cs'
-V_Cs(L) = V(Cs.C = L), for fresh C // Rename a library literal expression
-
-//Note the difference w.r.t. V_Cs(C: L) above. This is why we need both V_Cs(_) and V(Cs=_)
+// Apply V to an e, which was found in nested class Cs
+AuxDefine V_Cs(e)=e'
+V_Cs(L) = V(Cs.C = L), for fresh C
 // TODO: Other kinds of expressions (just apply V_Cs to all e, L, T and P inside)
 
 _________
 AuxDefine V_Cs(T)=T'
+// Apply V to a type, by just applying it to the mentioned path
 V_Cs(mdf P) = mdf V_Cs(P)
 
 _________
+// Apply V to the path P that we found in Cs
+// If a prefix of P refers to something in the domain of V, we will redirect it
+// Otherwise we will leave it untouched
 AuxDefine V_Cs(P)=P' // P found in Cs is renamed to P'
-V(Thisk.Cs' in Cs.C1...Ck) = V(Cs.Cs') + #Cs + k
+
+// We found P in Cs (of length k), so give it to V (which is defined relative to This0, but we are in This0.Cs)
+// and from the result (since the start, This0, is actually Thisk from the point of view of This0.Cs,
+// which is where we found the original P)
+V_Cs(P) = V(Cs')[from Thisk]
+    where Cs = C1...Ck
+    P[from This0.CS] = This0.Cs'
+
 otherwise
 V(P in Cs) = P
 
-Define RedirectSet(L; Csz)=Csz':
 // Csz' is the set of nested class names that will be redirected when all the Csz are redirected from L
+// It is the names of the nested classes transitivley mentioned in the 'signature' of each Csz
+Define RedirectSet(L; Csz)=Csz':
 -----------------------------
-Cs in RedirectSet(L; Cs, Csz)
+// If we are redirecting Csz, then we need to redirect Csz
+Csz subseteq RedirectSet(L; Csz)
 
+// Redirect the nested classes of redirected classes
 Cs1.C in RedirectSet(L; Csz)
   Cs1 in RedirectSet(L; Csz)
   C in dom(L[Cs1])
 
+// Redirect the nested class mentioned in the signature of a redirected class
+// We won't however be redirecting references to external paths (i.e. things outside of This0)
 Cs2 in RedirectSet(L; Csz)
   Cs1 in RedirectSet(L; Csz)
-  This0.Cs2 in Paths(L[Cs1])[from This0.Cs1]
+  This0.Cs2 in Paths(L[Cs1])[from This0.Cs1] // TODO: Do a p.minimize?
 
-Define RedirectPaths(L) = Pz, RedirectPaths(mwt) = Pz
 // The set of paths referenced in the signatures of L and mwt (excluding nested classes)
+Define RedirectPaths(L) = Pz, RedirectPaths(mwt) = Pz
 -----------------------------------------------------------------------
+// The set of implemented interfaces
 RedirectPaths({interface? implements Pz mwtz ncz}) = Pz, RedirectPaths(mwtz)
 
+// The set of paths used in the type of a method
 RedirectPaths(mwt) = Ts.Ps, T.P, Pz
   mwt.mt = Ts->T;Pz
 
 ==================================================================
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V'(p'.top()[remove Csz])
-  empty not in Cs1 ... Csn
-  where p' = p.evilPush(L)
-  ChooseRedirect(p'; Cs1, p'.minimize(P1+1), ..., Csn, p'.minimize(Pn+1)) = V'
+// Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the V mapping
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V'(p'.top()[remove Csz]) // Remove the things that will be redirected away
+  empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
+  p' = p.evilPush(L) // to simplify everything, just make L the new top
+  forall Cs in RedirectSet(L, Cs1, ..., Csn):
+    Redirectable(L[Cs]) // Check that the source is valid
 
+  // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
+  ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = V'
+
+// Whether the class This0.Cs can be redirected away
+// Namely: that the class contains no implemented methods or anything private
+Define Redirectable(L)
+  forall mwt in L.mwtz:
+    mwt.e = empty
+    not Private(mwt.m)
+
+  forall C in dom(L.ncz)
+    not Private(C)
+
+// Starting from V and operating on p, is V' a valid redirect mapping?
+Define ValidRedirect(p; V; V') iff
+    empty not in dom(V') // If this weren't true, L[remove Csz] would be undefined
+    V subseteq V'
+    // V' redirects exactly what it's supposed to
+    dom(V') = RedirectSet(p.top(); dom(V)) // TODO: Do we need this? Why?
+
+    // V' consistantly redirects nested classes, if one dosn't want this, they can redirect the nested classes individualy
+    forall Cs.C1.C2 in dom(V'): V'(Cs.C1.C2) = V'(Cs.C1).C2
+    // Everything redirected is both minimized and a structural-supertype of the target
+    forall Cs in dom(V'):
+      V'(Cs)=p.minimize(V'(Cs))
+      // Note: we apply V' to the source of the redirect,
+      p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
+
+// Is the LHS (whose name is 'This0.Cs') a structural supertype of the RHS (whose name is P)
+// We say that A is a structural supertype of B if any code written with respect to A
+// would also type-check against B
+Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implements Pz' mwtz', ncz'}
+  // Check that all the interfaces the LHS implements are also implemented by the RHS
+  Pz subseteq_p Pz',P //Note: The P on the RHS very important, so that F-bound polimoprhism can work TODO: explain what this means
+
+  // If the LHS is not an interface
+  if interface?=empty:
+    // Check that each method-type of the RHS is a subtype of the LHS
+    // (So that it any well-typed call to a method on the LHS would also typecheck if it were to call a method on the RHS)
+    forall MS in dom(mwtz):
+      p |- mwtz'(MS).mt <= mwt(MS).mt
+
+    // One can only call class methods on a non-interface, so if the LHS has any, than the RHS can't be an interface
+    if interface?' = interface then class not in mwtz.mdfz
+
+  // If the LHS is an interface, we need to ensure that any valid implementation of the LHS
+  // Is a valid implemention of the RHS, which requires that the RHS have the exact same method signatures as the LHS
+  else:
+    interface? = interface?' // You can't implement non-interfaces
+    // We ignore the presence of the 'refine' keyword, since this is irealvent to any implementing classes
+    mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
+
+--------------------------------------------
+// Choose a valid completion for the V1 redirect map
+Define ChooseRedirect(p; V1) = V2
+  // Choose the unique greatest valid V2
+  V2 is the unique V such that ValidRedirect(p; V1; V2) and
+    for all V3 such that ValidRedirect(p; V1; V3),  p |- V2 > V3
+
+// We say that V1 is strictly better than V2
+// When V2 is not better than V1 in any way,
+// But V1 is better than V2 in some way
+p |- V1 > V2 iff
+  p |- V1 >= V2
+  p |/- V2 >= V1
+
+// Get the path of the i'th return/paramater type of a method
+Define mwt.Pi = P'i
+    where mwt.mt = mdf1 P'0 ... mdfn P'n -> mdf0 P'0; Pz
+
+// V1 is at least as good as V2, if V1 is strictly better than V2 in some way
+Define p |- V1 >= V2
+  // Is their a case where V1 maps a method type closer than V2 does to the type p.top expects it to have?
+  for some MS, i, Cs, and Cs' // Note: Cs could be the same as Cs'
+  p[This0.Cs'](MS).Pi = This0.Cs
+  distance(p, p[V1(Cs')](MS).Pi, V2(Cs)) <= distance(p, p[V2(Cs')](MS).Pi, V2(Cs))
+=======================================================
+// Some utility functions about Paths/Classes
+
+// P1 < P2 if P1 is a proper subpath of P2
+Define p |- P1 < P2 iff
+    p |- P1 <= P2
+    p |/- P2 <= P1
+
+// The distance between two equivalent paths is 0
+distance(p, P1, P2) = 0
+    p.equiv(P1, P2)
+
+// How far apart P1 and P2 are on a Hasse-diagram of the subtyping relation
+distance(p, P1, P2) = n
+  n is the length of the longest non-empty path between P1 and P2, formed by using the 'p |- <' relation
+
+// To make distance easier to use, we make it symmetric
+distance(p, P1, P2) = distance(p, P2, P1)
+
+=====================================================
 // This checks if the choice function is valid
 // NOTE: It is uncomputable! Importantly, I cannot come up with a computable function 'f' such that:
 //  * for all g, ValidChooser(f(g))
 //  * for all g such that ValidChooser(g), f(g) = g
 // (I.e. one that turns any chooser into a valid one, but leaves allready valid ones untouched)
 Defien ValidChooser(ChooseRedirect) iff for all p and V
-    if for all Cs->P in V,
+    if for all Cs->P in V, // for all valid inputs to ChooseRedirect
         P = p.minimize(P)
         P not of the form This0.Cs' // That would be a 'rename' not a 'redirect'
         Cs not empty
@@ -89,74 +221,14 @@ Defien ValidChooser(ChooseRedirect) iff for all p and V
     // needed for stability to make sense
     ChooseRedirect(p; V) is defined iff ChooseRedirect(ReduceProblem(p; V); V) is defined
     if ChooseRedirect(p; V) = V' then
-      V' = ChooseRedirect(ReduceProblem(p; V)) // stability
       ChooseRedirect(p; V') = V'               // idempotence
+      V' = ChooseRedirect(ReduceProblem(p; V)) // stability
       ValidRedirect(p; V; V')                  // validity
 
 // We should try and prove that the above definition is equivalent to one where we replace the 'validity' check
 // with a meta-level soudness check (I'm not certain though)
 
-Define ValidRedirect(p; V; V') iff
-    empty not in dom(V') // If this weren't true, L[remove Csz] would be undefined
-    V subseteq V'
-    dom(V') = RedirectSet(p.top(); dom(V)) // TODO: Do we need this? Why?
-
-    forall Cs.C1.C2 in dom(V'): V'(Cs.C1.C2) = V'(Cs.C1).C2
-    forall Cs in dom(V'):
-      V'(Cs)=p.minimize(V'(Cs))
-      p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
-
-Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implements Pz' mwtz', ncz'}
-  Pz subseteq_p Pz',P//Note: very important, so that F-bound polimoprhism can work
-  if interface?=empty:
-    forall MS in dom(mwtz): //Note: adding a method to an interface would break all implementer
-      p |- mwtz'(MS).mt <= mwt(MS).mt
-    if interface?' = interface then class not in mwtz.mdfz
-  else:
-    interface? = interface?'
-    mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
-
-  forall mwt in mwtz:
-    mwt.e = empty
-    not Private(mwt.m)
-
-  forall C in dom(ncz)
-    not Private(C)
---------------------------------------------
-// Any other definition of this function would make a sane redirect!
-Define ChooseRedirect(p; V1) = V2
-  V2 is the unique V such that ValidRedirect(p; V1; V2) and
-    for all V3 such that ValidRedirect(p; V1; V3),  p |- V2 > V3
-  // i.e. V' is the unique 'greatest' valid redirection
---------------------------
-Define p |- P1 < P2 iff
-    p |- P1 <= P2
-    p |/- P2 <= P1
-
-distance(p, P1, P2) = 0
-    p.equiv(P1, P2)
-
-distance(p, P1, P2) = n
-  n is the length of the longest non-empty path between P1 and P2, formed by using the 'p |- <' relation
-
-distance(p, P1, P2) = distance(p, P2, P1)
-
-====================================================
-Definition for 'V' ordering
-
-p |- V1 > V2 iff // i.e. V1 is strictly better than V2
-  p |- V1 >= V2
-  p |/- V2 >= V1
-
-Define mwt.Pi = P'i
-    where mwt.mt = mdf1 P'0 ... mdfn P'n -> mdf0 P'0; Pz
-
-Define p |- V1 >= V2 // i.e. V1 is at least as good as V2
-  for some ms, i, Cs, and Cs' // Note: Cs could be the same as Cs'
-  p[This0.Cs'](ms).Pi = This0.Cs
-  distance(p, p[V1(Cs')](ms).Pi, V2(Cs)) <= distance(p, p[V2(Cs')](ms).Pi, V2(Cs))
-
------------------------------------------------
+// Auxilarry operation used by the above
 Define L[only Csz] = L' // Removes everything not in Csz
 
 L[only Cs,Csz] = L[only Cs] U L[only Csz]
@@ -164,244 +236,6 @@ L[only empty] = {}
 L[only C1...Cn] = {C1: ... {Cn: L(Cs)[with ncz = empty]} ... }
 
 // U above is a 'dumb' sum, namely:
-{Pz C1: L1 ... Cn: Ln Mz} U {interface? Pz' C1: L1' ... Cn: Ln' Mz'} = {interface? Pz Pz' C1: L1 U L1' ... Cn: Ln U Ln' Mz Mz'}
+{interface?1 Pz C: L ... Cn: Ln Mz} U {interface?2 Pz' C1: L1' ... Cn: Ln' Mz'} =
+        {interface?1 + interface?2 Pz Pz' C1: L1 U L1' ... Cn: Ln U Ln' Mz Mz'}
     dom(Mz) disjoint dom(Mz')
-
-TODO: Remove everything bellow this line!
-=====================================================
----------------------------------------------
-Computability: thanks to RedirectSet we know the dom(V)
-we can compute a part of the mapping by looking to method types.
-All that is left is implements and exceptions
-however, we can match, for example
-A:{implements Cs1..Csn Ms} 
-with the corresponding 
-EB:{implements P1..Pk Ms'} 
-by method names.
-To pass, for each Csi there must be at least 1 Pi with (exactly) the same ms
-in order to be still ambiguos:
-there must be a P,P' in P1..Pk with the same ms.
-For this to be the case, either there are interfaces with no methods
-in Cs1..Csn or P must implement P' and P must add no methods
-Thus, the only case where it may be hard is the degenerate case
-of an interface without methods
-
-
-A:{class method T m() exception A1,A2,A3}
-
-EA:{class method T m() exception EA1,EA2}
-
-A1:{}, A2: {}
-A:{
-  T m() exception A1  T f() exception A1, A2
-}
-
-EA: { 
-  T m exception EA1 ...
-  T f exception EA1 ...
-}
-EA1: {}
-
-interface A {  }
-interface B {  }
-class C implements A,B{ }
-
-interface EA {  }
-interface EB {  }
-class EC implements EA,EB{ }
-
-
-
-
-EI1:{interface}
-EI2:{interface implements EI1}
-
-L={  
-I1:{interface}
-I2:{interface implements I1}
-}[I2=EI2]
-I2=EI2,I1=EI1
-I2=EI2,I1=EI2
-
-
-------
-
-L: {A1: {interface implements A2, ..., An}
-A2: {interface implements A3, ..., An}
-...
-An: {interface}
-}
-
-B1: {interface implements B2, ..., Bn}
-B2: {interface implements B3, ..., Bn}
-...
-Bn: {interface}
-
-L[A1 = B1]
-
-================================//may be move in rename
-L[PathRename Cs->Cs']p = V(L)
-  V = collectV(p.evilPush(L); Cs->This0.Cs')
-
-collectV(p; Cs->P, V) = collectV(p; Cs.C->P.C, Cs->P, V)
-  Cs.C not in dom(V)
-  C in dom(p(This0.Cs))
-otherwise
-  collectV(p; V) = V
-
-
------------------------------------------------------------------------------------------
-Kind of errors in current implementation
-1 p.equiv
-3 interface with different methods
-2 ambiguity resolution with interface
-1 exception spec coalscing...
-1 self implementation
-
------------------------------------------------------------------------------------------
-
-
-Usefull examples that need to go in paper
----------------------
-EA:{interface XX} 
-EA2:{implements EA XX YY}
-EC:{EA m()}
-----
-{
-A:{XX} 
-C:{ A m()}
-}
-C=EC
----------
-one could redirect A=EA, and C=EC after
-but C=EC is ambiguis A=EA or A=EA2
-worst, there could me many "EA2" everywhere in the system; want EA
-
----------
-
-EA2: {interface}
-EA: {interface implements EA2}
-EB: {EA foo()}
-
-{A: {interface} B: {A foo()}}[ B = EB] // A = EA
----//Also good to go in paper, ambiguos EAA and EA, want EA
-EAA: {interface +}
-EA: {interface implements EAA  +}
-EA1: {interface implements EA  +}
-EA2: {interface implements EA  +}
-EB: {EA1 foo() EA2 bar()}
-
-{A: {MEAA} B: {A foo() A bar()}}[ B = EB] 
-===========================
-Common:{interface }
-EAA1: {interface +}
-EAA2: {interface +}
-EA1: {interface implements EAA1 EAA2  +}
-EA2: {interface implements EAA1 EAA2  +}
-EB: {EA1 foo() EA2 bar()}
-{A: {} B: {A foo() A bar()}}[ B = EB] 
-//here we obviusly can not chose a best result between EAA1 and EAA2, however Common
-
-one of the difficulties is the model of multiple subtyping
-in java, I1 and I2 with same method can be both implementend, in C# too, and ....
-for a clean reasoning.... 42
-
-
-
-Define  p|-V1< V2
-
-p |- V <= V
-
-p |- V1 <= V1' 
-p |- V2 <= V2'
------------------------
-p|- V1,V2 <= V1',V2'
-
-case1: return type the same
-p |- Cs->P1,Cs'->P1'<= Cs->P2
-  This0.Cs=p.top()[Cs'].ms.T
-  p[P1'].ms.T=P1
-  
-case2: param type the same
-p |- Cs->P1,V<= Cs->P2,V
-  This0.Cs =p.top()[Cs'].ms.Ts.i
-  p[V(Cs')].ms.Ts.i=P1
-
-case3: return type subtype
-p |- Cs->P1,V<= Cs->P2,V
-  This0.Cs =p.top()[Cs'].ms.T
-  p[V(Cs')].ms.T=P
-  not p.equiv(P,P1) and not p.equiv(P,P2)
-  p|-P1<=P2
-
-case4: param type supertype
-p |- Cs->P1,V<= Cs->P2,V
-  This0.Cs =p.top()[Cs'].ms.Ts.i
-  p[V(Cs')].ms.Ts.i=P
-  not p.equiv(P,P1) and not p.equiv(P,P2)
-  p|-P1>= P2
-
--------------------
-
-EB: {}
-A: {EB foo C.Z bar}
-C: {B: {} X:{B foo} Z: {}}[X=A]
-C = {B: {}}
-
-ValidR(p,V) iff
-    dom(V) = RedirectSet(p.top(); dom(V)) // maybe unnecessary
-    forall Cs in dom(V):
-      V(Cs)=p.minimize(V(Cs))
-      p|- Cs; V(p[Cs]) >= V(Cs); p[V(Cs)]
-
-given a r function, we can preserve 1 by filtering the output with ValidR
-
-r is a partial function from (p;V)->V'
-such that 
-  p.minimize(V)=V,
-  p.minimize(V')=V'
-  V'=V,_
-  forall P in range(V'), p(P) is a well typed L
-
-and V' = p.minimize(V')
-we find redirect:r
-0- redirect(p,redirect(p,V))=redirect(p,V)
-1- if redirect(p,V')=V and p.pop()|-p.top():ok
-   then p.pop()|-V(p.top()):ok
-  // if redirect apply V on well typed L input, well typed result
-2--Stability://formal after seams broken?
- if redirect(p,V')=V and p'=p[with p.top()[Css=Ls]] and Css disjoint dom(V)
- then redirect(p',V')=V
- //if redirect chose V on L, it would chose the same V on
- //L with different members not in dom(V), this would include privates
-3 - minimilaty
-  if r(p, V) = V' then dom(V') <= RedirectSet(p.top(); dom(V))
-
-Fact--forall r' such that 0,1,2 holds, 
-    forall V,V',p, if  r'(p;V) = V' then ValidR(V', p) holds
-//this is an example showing why 2 is needed in Fact above
-//{F: {class method Void bar()} ...}[F = Void]
-
-
-UniqueR(p, V, V')
-  true iff their is no V'' such that V <= V' and V'' != V' and validR(p, V')
-
-possible rs satisfing 0,1,2,3
-
-Singleton sets:
-  0-r(p, V) is always undefined
-  1- if r(p, V) = V', V = V'
-  2- r(p, V) = V' IFF UniqueR(p, V, V') and 0,1,2,3
-
-Infinite sets:
-  3- if r(p, V) is undefined, their is no V' such that ValidR(p, V') and 0,1,2,3
-    // always suceeds if possible
-  4- if r(p, V) = V' then UniqueR(p, V, V') and not 2// weaker than 2
-    // if it suceeds, the answer is unqiue
-  5- if UniqueR(p, V, V') then r(p, V) = V' and not 2 and 1// stronger than 2
-    // it always suceeds if their is a unique result
-    // but solves some ambiguites
-  5a- range(V') do not P out of thin air but rely on type mentioned in the targets
-  6- other
-    // sometimes it fails, even if their is a solution
-    // and sometimes it resolves ambiguities but not always
