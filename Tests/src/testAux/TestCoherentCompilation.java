@@ -83,7 +83,7 @@ public class TestCoherentCompilation
     "mut method Void #f(mut Void that)"
   );}
 
-  @Test public void test_non_void_setter(){tp( // Error, not ok to star
+  @Test public void test_non_void_setter(){tp( // Works!
     "class method mut This0(Void f)",
     // Returns a supertype of imm Void
     "mut method read Any f(Void that)"
@@ -91,8 +91,14 @@ public class TestCoherentCompilation
 
   @Test public void test_multiple_getters(){tp( // Works!
     "class method capsule This0(capsule Library f)",
-    // Getter types are both supertypes of read Library
+    // Getter types are both supertypes of capsule Library
     "capsule method Any f()",
     "capsule method read Library #f()"
   );}
+  @Test public void test_supertype_getters(){tp(
+      "class method capsule This0 a(Library f)",
+      "class method capsule This0 b(Void f)",
+      // Getter types are both supertypes of capsule Library
+      "method Any f()"
+    );}
 }
