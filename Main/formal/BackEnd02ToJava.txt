@@ -90,11 +90,25 @@ ifT[y x CN S1] else S2 =
 
 ### CT[CD]=JClass
 ---
-CT[interface CN implements CNs {Mxs}]=
-public interface CN implements CNs{CT;CN[Mxs]}
-otherwise
-CT[kind CN implements CNs {Mxs}]=
-public class CN implements CNs{CT;CN[Mxs]}
+CT[kind CN implements CNs {Mxs}]=public kind' CN implements CNs{Members}
+where
+  kind'=interface if kind=interface, kind'=class otherwise //this includes all the optimized kinds
+  G=fields(Mxs)=TX1 x1,..,TXn xn 
+  Members=
+    CT;CN;G[Mxs]
+    CT*TX1 £Xx1;
+    public static BiConsumer<Object,Object> FieldAssFor£x1=(f,o)->{((CN)o).£Xx1=(CT*TX1)f;}
+    ...
+    CT*TXn £Xxn;
+    public static BiConsumer<Object,Object> FieldAssFor£xn=(f,o)->{((CN)o).£Xxn=(CT*TXn)f;}
+    
+//---TODO: for new coherence:
+We need to add a parameter below, G with field names and their types,
+and a function fields(Mxs) that compute it.
+fields: if no getter, no field
+otherwise, field is most common supertype of all constructors +setters
+field getter will cast if needed.
+//----ENDTODO
 
 //a this
 CT;CN[refine? method TX mxs(TX' this,(TX x)s) e]=
