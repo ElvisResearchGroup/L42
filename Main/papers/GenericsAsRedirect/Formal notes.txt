@@ -200,13 +200,16 @@ we find redirect:r
 1- if redirect(p,V')=V and p.pop()|-p.top():ok
    then p.pop()|-V(p.top()):ok
   // if redirect apply V on well typed L input, well typed result
-2--Stability://formal after seams broken?
+2a- Internal Stability://formal after seams broken?
  if redirect(p,V')=V and p'=p[with p.top()[Css=Ls]] and Css disjoint dom(V)
  then redirect(p',V')=V
+2b- External Stability://if you do not add anything to the program
+or change anything that is not connected with the redirect, the choice do not change
+
  //if redirect chose V on L, it would chose the same V on
  //L with different members not in dom(V), this would include privates
-3 - minimilaty
-  if r(p, V) = V' then dom(V') <= RedirectSet(p.top(); dom(V))
+3- minimilaty
+   if r(p, V) = V' then dom(V') <= RedirectSet(p.top(); dom(V))
 
 Fact--forall r' such that 0,1,2 holds,
     forall V,V',p, if  r'(p;V) = V' then ValidR(V', p) holds
@@ -221,11 +224,11 @@ possible rs satisfing 0,1,2,3
 
 Singleton sets:
   0-r(p, V) is always undefined
-  1- if r(p, V) = V', V = V'
+  1- r(p, V) = V' IFF V = V' and ValidRedirect(p; V; V')
   2- r(p, V) = V' IFF UniqueR(p, V, V') and 0,1,2,3
 
 Infinite sets:
-  3- if r(p, V) is undefined, their is no V' such that ValidR(p, V') and 0,1,2,3
+  3- if r(p, V) is undefined, there is no V' such that ValidR(p, V') and 0,1,2,3
     // always suceeds if possible
   4- if r(p, V) = V' then UniqueR(p, V, V') and not 2// weaker than 2
     // if it suceeds, the answer is unqiue

@@ -104,39 +104,45 @@ RedirectPaths(mwt) = Ts.Ps, T.P, Pz
 
 ==================================================================
 // Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the V mapping
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V'(p'.top()[remove Csz]) // Remove the things that will be redirected away
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V(p'.top()[remove Csz]) // Remove the things that will be redirected away
   empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
   p' = p.evilPush(L) // to simplify everything, just make L the new top
   forall Cs in RedirectSet(L, Cs1, ..., Csn):
     Redirectable(L[Cs]) // Check that the source is valid
 
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-  ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = V'
+  ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = V
+
+Required properties of a ChooseRedirect function: 
+ChooseRedirect is a function from p*V->V' such that
+  ChooseRedirect(p,V')=V'
+  forall p' ~V~ p: ChooseRedirect(p',V)=V'
+  ValidRedirect(p,V')
+  // We should try and prove that the above definition is equivalent to one where we replace the ValidRedirect check
+  // with a meta-level soudness check (I'm not certain though)
+______
+Define ValidRedirect(p,V,V')
+  V subseteq V'
+  dom(V') = RedirectSet(p.top(); dom(V))
+  forall P in ran(V'):
+    p.minimize(P)=P 
+    P not of form This0._
+    p|-p(P):OK //P well typed
+  forall Cs in dom(V'):
+    Cs not empty
+    p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
+    forall C in dom(p(Cs)): V'(Cs.C) = V'(Cs).C
+    Redirectable(p.top()(Cs))
 
 // Whether the class This0.Cs can be redirected away
 // Namely: that the class contains no implemented methods or anything private
-Define Redirectable(L)
+Define Redirectable(L) // L42 only
   forall mwt in L.mwtz:
     mwt.e = empty
     not Private(mwt.m)
 
   forall C in dom(L.ncz)
     not Private(C)
-
-// Starting from V and operating on p, is V' a valid redirect mapping?
-Define ValidRedirect(p; V; V') iff
-    empty not in dom(V') // If this weren't true, L[remove Csz] would be undefined
-    V subseteq V'
-    // V' redirects exactly what it's supposed to
-    dom(V') = RedirectSet(p.top(); dom(V)) // TODO: Do we need this? Why?
-
-    // V' consistantly redirects nested classes, if one dosn't want this, they can redirect the nested classes individualy
-    forall Cs.C1.C2 in dom(V'): V'(Cs.C1.C2) = V'(Cs.C1).C2
-    // Everything redirected is both minimized and a structural-supertype of the target
-    forall Cs in dom(V'):
-      V'(Cs)=p.minimize(V'(Cs))
-      // Note: we apply V' to the source of the redirect,
-      p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
 
 // Is the LHS (whose name is 'This0.Cs') a structural supertype of the RHS (whose name is P)
 // We say that A is a structural supertype of B if any code written with respect to A
@@ -163,70 +169,15 @@ Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implement
     mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
 
 --------------------------------------------
-// Choose a valid completion for the V1 redirect map
-Define ChooseRedirect(p; V1) = V2
-  // Choose the unique greatest valid V2
-  V2 is the unique V such that ValidRedirect(p; V1; V2) and
-    for all V3 such that ValidRedirect(p; V1; V3),  p |- V2 > V3
 
-// We say that V1 is strictly better than V2
-// When V2 is not better than V1 in any way,
-// But V1 is better than V2 in some way
-p |- V1 > V2 iff
-  p |- V1 >= V2
-  p |/- V2 >= V1
 
-// Get the path of the i'th return/paramater type of a method
-Define mwt.Pi = P'i
-    where mwt.mt = mdf1 P'0 ... mdfn P'n -> mdf0 P'0; Pz
 
-// V1 is at least as good as V2, if V1 is strictly better than V2 in some way
-Define p |- V1 >= V2
-  // Is their a case where V1 maps a method type closer than V2 does to the type p.top expects it to have?
-  for some MS, i, Cs, and Cs' // Note: Cs could be the same as Cs'
-  p[This0.Cs'](MS).Pi = This0.Cs
-  distance(p, p[V1(Cs')](MS).Pi, V2(Cs)) <= distance(p, p[V2(Cs')](MS).Pi, V2(Cs))
-=======================================================
-// Some utility functions about Paths/Classes
 
-// P1 < P2 if P1 is a proper subpath of P2
-Define p |- P1 < P2 iff
-    p |- P1 <= P2
-    p |/- P2 <= P1
+p' ~V~ p  iff  ReduceProblem(p; V)=ReduceProblem(p'; V)
+ReduceProblem(p; V) = p.updateTop(p.top()[only RedirectSet(p.top(); dom(V))])[only Reachables(ran(V)]
 
-// The distance between two equivalent paths is 0
-distance(p, P1, P2) = 0
-    p.equiv(P1, P2)
-
-// How far apart P1 and P2 are on a Hasse-diagram of the subtyping relation
-distance(p, P1, P2) = n
-  n is the length of the longest non-empty path between P1 and P2, formed by using the 'p |- <' relation
-
-// To make distance easier to use, we make it symmetric
-distance(p, P1, P2) = distance(p, P2, P1)
-
-=====================================================
-// This checks if the choice function is valid
-// NOTE: It is uncomputable! Importantly, I cannot come up with a computable function 'f' such that:
-//  * for all g, ValidChooser(f(g))
-//  * for all g such that ValidChooser(g), f(g) = g
-// (I.e. one that turns any chooser into a valid one, but leaves allready valid ones untouched)
-Defien ValidChooser(ChooseRedirect) iff for all p and V
-    if for all Cs->P in V, // for all valid inputs to ChooseRedirect
-        P = p.minimize(P)
-        P not of the form This0.Cs' // That would be a 'rename' not a 'redirect'
-        Cs not empty
-        // TODO: Add some requirement that each P is allready compiled/type-checked/whatever?
-    then:
-    // needed for stability to make sense
-    ChooseRedirect(p; V) is defined iff ChooseRedirect(ReduceProblem(p; V); V) is defined
-    if ChooseRedirect(p; V) = V' then
-      ChooseRedirect(p; V') = V'               // idempotence
-      V' = ChooseRedirect(ReduceProblem(p; V)) // stability
-      ValidRedirect(p; V; V')                  // validity
-
-// We should try and prove that the above definition is equivalent to one where we replace the 'validity' check
-// with a meta-level soudness check (I'm not certain though)
+// TODO: Define Reachables(p; Pz)
+// TODO: Define p[only Pz]
 
 // Auxilarry operation used by the above
 Define L[only Csz] = L' // Removes everything not in Csz
@@ -237,5 +188,100 @@ L[only C1...Cn] = {C1: ... {Cn: L(Cs)[with ncz = empty]} ... }
 
 // U above is a 'dumb' sum, namely:
 {interface?1 Pz C: L ... Cn: Ln Mz} U {interface?2 Pz' C1: L1' ... Cn: Ln' Mz'} =
-        {interface?1 + interface?2 Pz Pz' C1: L1 U L1' ... Cn: Ln U Ln' Mz Mz'}
-    dom(Mz) disjoint dom(Mz')
+        {interface?1 U interface?2 Pz Pz' C1: L1 U L1' ... Cn: Ln U Ln' Mz Mz'}
+---------------------------------------
+//// TODO: Check we are the new R4...
+// TODO: Special rules for redirecting to Any?
+// TODO: Handle exception clauses (BUT DON't complicate anything unrelated)
+
+// Note: I assume that all paths mentioned in a CCz have been p.minimized
+// Note: the 'interface' constraint currently only benifits early error detection, as we can't use it to infer any more constraints (or can we?)
+
+ChooseRedirect(p; V) = V'
+  CCz = CollectAll(p; InitiliseCCz(p; V))
+  V' = ChooseV(p; CCz) 
+  ValidRedirect(p; V; V') // TODO: Do something more efficient?
+
+CC ::= Cs <= P | P <= Cs | Cs in Pz | interface Cs 
+   | class Cs | Cs.MS <= mt //p |- V(Cs)(Ms).mt <= V(mt)
+
+InitiliseCCz(p; V) := CCz // TODO: Define this, just use the defintion of ValidRedirect
+
+// CollectAll is the main function that collects all constraints
+CollectAll(p; CCz,CCz') := CollectAll(p; CCz'')
+  CCz'' = (CCz, CCz') U Collect(p; CCz)
+  CCz'' != CCz,CCz'
+CollectAll(p; CCz) := CCz
+  Otherwise
+
+// Note: Collect isn't a function, but a relation,
+// I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
+
+Define Collect(p; CCz) := CCz':
+  Collect(p; Cs <= P) = P <= Cs
+    p[P].interface = empty //since all classes are final
+  Collect(p; P <= Cs, class Cs) = Cs <= P
+  Collect(p; Cs in P,Pz) = Cs <= P
+    dom(p[Cs].mwtz) intersect dom(p[P].mwtz) != empty
+  Collect(p; Cs.ms <= mt, Cs <= P) = Cs' <= p.minimize(P')
+    mt.Ts.i.P = This0.Cs'
+    p[P](ms).mt.Ts.i = _ P'
+  Collect(p; Cs.ms <= mt, Cs <= P) = p.minimize(P') <= Cs'
+    mt.T.i = _ This0.Cs'
+    p[P](ms).mt.T= _ P
+  Collect(p; Cs <= P, P <= Cs) = Cs.C <= p.minimize(P.C), p.minimize(P.C) <= Cs.C 
+    //TODO: is unclear if minimize needed: can wwe be in This1.C
+    C in dom(p[Cs])
+  Collect(p; Cs <= P) = Cs.MS <= p.minimize(p[P](MS).mt)
+    // TODO: define p.minimize(mt), the definition should be obvious
+    // Only usefull if we can refine method types when implementing an interface
+    MS in dom(p[Cs])
+
+Auxilary: 
+Supertypes(p; Pz) = intersect {p.minimize(p[P].Pz U {P}) | P in Pz} // TODO: include 'any'?
+
+MostSpecific(p; Pz) = P
+   P in Pz
+   Pz subseteq Supertypes(p; P)
+   // Note: P will be unique in terms of p.equiv, since any other solution Pj
+  // must satisfy Pj <= Pi, and Pi <= Pj (since Pi is also a solution)
+
+
+Define ChooseV(p; CCz) := V
+  // Note: these definitions use well-formdness of V's, namely V1, V2 is ill-formed
+  // if dom(V1) and dom(V2) are not disjoint, thus only one rule below can be applied
+  // for each Cs
+
+ ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz) 
+    P = MostSpecific(p; P0,...,Pn)
+
+  ChooseV(P; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz), Cs -> P, ChooseV(p; CCz)
+    Pz = Supertypes(p; P1, ..., Pn)
+    Pz' = { P in Pz | {P'1, ..., P'k} subseteq Supertypes(p; P)} 
+    // if k = 0, then Pz' = Pz
+    // Pz' is the set of possible solutions
+    P = MostSpecific(p; Pz')
+  
+   ChooseV(p; CCz) = empty
+     otherwise
+
+--------------------------
+// Some classes of ChooseRedirect functions
+
+UniqueR(p, V1) = V2
+  forall p' ~V~ p, V2 is the unique V such that ValidRedirect(p'; V1; V2)
+
+R0: always undefined
+
+R1: r(p, V) = V' IFF V = V' and ValidRedirect(p; V; V)// assert ValidRedirect(ReduceProblem(p; V); V; V)
+
+R2: if r(p, V) = V' then V' = UniqueR(p, V) and not R3// weaker than 3
+  // if it suceeds, the answer is unqiue
+
+R3: r(p; V) = UniqueR(p, V)
+
+R4: if UniqueR(p, V) = V' then r(p, V) = V'
+  // it always suceeds if their is a unique result but solves some ambiguites
+  // same as if r(p, V) is undefined, exists a p' ~V~p such that there is no *unique* V' such that ValidRedirect(p',V, V')
+
+------------------
