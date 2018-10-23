@@ -243,6 +243,11 @@ program primitive operations:
  (LC,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
    where ctxL(C)=ctxC //Note:ctxL(C)=[] would be more restrictive, for example
    //preventing A:Data<><{method A (..)} to be summed with the constructor.
+-p.location()=P // Where we are in the program
+ (L).location()=This0
+ (L, ctxL, ctxLs).location() = This(k+1).Cs.C
+    ctxL(C) = ctxC // We are in C
+    (ctxL[L], ctxLs).location() = Thisk.Cs
 
 program derived operations:
 
