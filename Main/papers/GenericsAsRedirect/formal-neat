@@ -75,22 +75,17 @@ otherwise
 V(P in Cs) = P
 
 // Csz' is the set of nested class names that will be redirected when all the Csz are redirected from L
-// It is the names of the nested classes transitivley mentioned in the 'signature' of each Csz
+// It is the transitive closure of apply 'Reachables' to each class mentioned in Csz
 Define RedirectSet(L; Csz)=Csz':
 -----------------------------
 // If we are redirecting Csz, then we need to redirect Csz
 Csz subseteq RedirectSet(L; Csz)
 
-// Redirect the nested classes of redirected classes
-Cs1.C in RedirectSet(L; Csz)
-  Cs1 in RedirectSet(L; Csz)
-  C in dom(L[Cs1])
-
 // Redirect the nested class mentioned in the signature of a redirected class
 // We won't however be redirecting references to external paths (i.e. things outside of This0)
 Cs2 in RedirectSet(L; Csz)
   Cs1 in RedirectSet(L; Csz)
-  This0.Cs2 in Reachables(L[Cs1])[from This0.Cs1] // TODO: Do a p.minimize?
+  This0.Cs2 in Reachables(L[Cs1]) // TODO: Do a p.minimize?
 
 ==================================================================
 // Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the V mapping
@@ -161,46 +156,50 @@ Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implement
 --------------------------------------------
 
 p' ~V~ p  iff  ReduceProblem(p; V)=ReduceProblem(p'; V)
-ReduceProblem(p; V) = p.updateTop(p.top()[only RedirectSet(p.top(); dom(V))])[only Reachables(p; ran(V)), This0]
+ReduceProblem(p; V) = p[only This0.Cs1, ..., This0.Csn, ReachableSet(p; ran(V))]
+    Cs1, ..., Csn = RedirectSet(p.top(); dom(V))
 
 // The set of paths referenced in the signatures of each P, L and mwt (excluding nested classes)
-Define Reachables(p; P) = Pz, Reachables(L) = Pz, Reachables(mwt) = Pz
+Define Reachables(p; P) = Pz, Reachables(L) = Pz, Reachables(Mz) = Pz
 -----------------------------------------------------------------------
-Reachables(p; P) = Reachables(p[P]), Reachables(p; P.C1, ..., P.Cn)
-    dom(p[P].ncz) = {C1, ..., Cn}
+// Find's all paths that are reachable from the declaration of 'P' in p
+// (i.e. ignoring methods bodies and meta-expressions)
+ReachableSet(p; Pz):
+    Pz subseteq ReachableSet(p; Pz)
+    Pz' subseteq ReachableSet(p; Pz)
+        P in ReachableSet(p; Pz)
+        Pz' = p.minimize(Paths(p[P]))
 
-// The set of implemented interfaces
-Reachables({interface? implements Pz mwtz ncz}) = Pz, RedirectPaths(mwtz)
-
-// The set of paths used in the type of a method
-Reachables(mwt) = Ts.Ps, T.P, Pz
-  mwt.mt = Ts->T;Pz
+Reachables({interface? implements Pz Mz}) = Pz, Paths(Mz)
+Reachables(C: L) = Paths(L)[from This0.C]
+Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
 
 Define p[only Pz] = p', and L[only Pz]=L'
 -----------------------------------------------
-// Note: this ignores any paths that refer to things outside of the program
-// TODO: will the navigate be undefined if the LHS does not contain a Cs? (this will only happen if nothing equivalent to This0 is in Pz)
-p[only Pz] = p.pop(k).top()[only Internal(p; Pz[from Thisk.Cs])].navigate(Cs)
-    p.location() = Thisk.Cs // k is the depth of the program, Cs is the path we are in relative to the top
-    // p.pop(k) flaterns the program into a single library
-    // navigate(Cs) restores the original layout
+// I don't know a 42 equivalent formalisim, but who cares...
+(id = L, p)[only Pz] = (id = L[only Internals(Pz)], p[only (Pz[from This0.ToC(id)])])
+(empty; DVs)[only Pz] = (empty; DVs[only Pz])
+
+(C = LV)[only Pz] = (C = LV[only Pz[From This]])
+    This0.C.Cs in Pz // Something inside C is to be kept, so we need C
+
+(DV)[only Pz] = empty
+    otherwise // A trait, or a class that is to be discareded
+
+ToC(C) = C
+ToC(t) = C
+    for fresh C
 
 L[only Cs,Csz] = L[only Cs] U L[only Csz]
 L[only empty] = {}
-L[only C1...Cn] = {C1: ... {Cn: L(Cs)[with ncz = empty]} ... }
+// Discard method bodies!, we don't want people looking in them, or do we?
+L[only C1...Cn] = {C1: ... {Cn: L(Cs)[with ncz = empty, with mwtz.ez = empty]} ... }
 ------------------------
 // Returns all the nested classes that are accesed from This0 (works best if Pz is minimized)
 Define Internal(Pz) = Csz
     Internal(This0.Cs, Pz) = Cs, Internal(Pz)
     Internal(P, Pz) = Internal(Pz)
         otherwise
-
-// Where we are in the program
-(L).location() = This0
-(L, ctxL, ctxLs).location() = This(k+1).Cs.C
-   ctxL(C) = ctxC // We are in C
-   (ctxL[L], ctxLs).location() = Thisk.Cs
-
 
 // U above is a 'dumb' sum, namely:
 {interface?1 Pz C: L ... Cn: Ln Mz} U {interface?2 Pz' C1: L1' ... Cn: Ln' Mz'} =
@@ -213,27 +212,13 @@ Define Internal(Pz) = Csz
 // Note: I assume that all paths mentioned in a CCz have been p.minimized
 // Note: the 'interface' constraint currently only benifits early error detection, as we can't use it to infer any more constraints (or can we?)
 
-ChooseRedirect(p; V) = V'
-  CCz = CollectAll(p; InitiliseCCz(p; V))
+ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = V'
+  CCz0 = {Cs1 >= P1, P1 >= Cs1, ..., Csn >= Pn, Pn >= Csn}
+  CCz = CollectAll(p; CCz0)
   V' = ChooseV(p; CCz)
   ValidRedirect(p; V; V') // TODO: Do something more efficient?
 
 CC ::= Cs <= P | P <= Cs | Cs in Pz // | interface Cs | class Cs
-
-InitiliseCCz(p; Cs1->P1, ..., Csn->Pn) :=
-		Cs1 >= P1, P1 >= Cs1, ..., Csn >= Pn, Pn >= Csn,
-//		InitiliseCCz(p; RedirectSet(p.top(); dom(V)) )
-
-/*// These are the only constraints that can be deduced without having any constraints
-// The rest are either the initial set, or are introduced by collect
-InitiliseCCz(p; Cs) = interface Cs
-    p(Cs).interface? = interface
-InitiliseCCz(p; Cs) = class Cs
-    class in p(Cs).mwtz.mdfz
-    p(Cs).interface? = empty
-InitiliseCCz(p; Cs) = empty
-    otherwise
-*/
 
 MustInterface(p; Cs) = p(Cs).interface? = interface
 MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
@@ -261,42 +246,20 @@ Define Collect(p; CCz) := CCz':
   Collect(p; P <= Cs) = Cs' in Supertypes(p; P)
   	This0.Cs' in p[Cs].Pz
 
-    // We must have (since we are rediricintg Cs, by >= )
-    // 	V(p[Cs].Pz) subseteq Supertypes(p; V(Cs))
-    // And so
- 	//	V(Cs') in Supertypes(p; V(Cs))
- 	// Since we have
-	// 	P <= V(Cs):
-	// It follows that
-	//	Supertypes(p; V(Cs)) subseteq Supertypes(p; P)
- 	// And so V(Cs') in Supertypes(p; P)
-
   Collect(p; Cs in P,Pz) = Cs <= P
     dom(p[Cs].mwtz) intersect dom(p[P].mwtz) != empty
 
   Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
     // Note: if we disallowed refinement type-1,
-    // We could add an extra rule:
-  //Collect(p; Cs <= P) = p[P.ms].P <= Cs'
-  //  p[Cs.ms].P = This0.Cs'
-
-  // Same logic as above, but for paramater types, causing the right-hand <= to be flipped
+    // We could also apply this rule if we instead had Cs <= P
   Collect(p; P <= Cs) = Cs' <= p[P.ms].Pi
      p[Cs.ms].Pi = This0.Cs'
 
   Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
   	MustInterface(p; Cs)
     p[Cs.ms].P = This0.Cs'
-    // The above constraints imply that:
-    //  p |- V(Cs) <= P
-    //  p |- p[V(Cs).ms].P = V(p[Cs.Ms].P)
-    // From this it follows that:
-    //  p |- p[V(Cs).ms].P <= p[P.ms].P
-    // Which implies that p |- p[V(Cs).ms].P <= p[P.ms].P
-  // Note: if we disallowed type-1 refinement, we would also be able to derive p[P.ms].P <= Cs'
-
-  // The same as above, but for a paramater types
+    // Note: if we disallowed type-1 refinement, we would also be able to derive p[P.ms].P <= Cs'
   Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
     MustInterface(p; Cs)
     p[Cs.ms].Pi = This0.Cs'
@@ -304,36 +267,55 @@ Define Collect(p; CCz) := CCz':
   // Is this rulle insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
-
   Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
     C in dom(p[Cs])
+
+// TODO: Do something with exception specs,
+// Specifically if we define:
+//   p |- Pz throws Pz' iff
+//     forall P in Pz: Supertypes(p; P) intersects Pz'
+// Then:
+//    p |- V(p[Cs.ms].Pz) throws p[V(Cs).ms].Pz
+//    if p |- P <= P', then p |- p[P.ms].Pz throws p[P'.ms].Pz
 
 Auxilary: Supertypes(p; Pz) = intersect {p.minimize(p[P].Pz U {P, Any}) | P in Pz}
 
 MostSpecific(p; Pz) = P
    P in Pz
    Pz subseteq Supertypes(p; P)
-   // Note: P will be unique in terms of p.equiv, since any other solution Pj
-  // must satisfy Pj <= Pi, and Pi <= Pj (since Pi is also a solution)
+   // Note: P will be unique in terms of p.equiv, since any other solution P' is in Pz
+   // so P' in Supertypes(p; P), and since P in Pz, P in Supertypes(p; P')
+   // Thus P <= P', and P' <= P
 
 Define ChooseV(p; CCz) := V
   // Note: these definitions use well-formdness of V's, namely V1, V2 is ill-formed
   // if dom(V1) and dom(V2) are not disjoint, thus only one rule below can be applied
   // for each Cs
-
- ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz)
+  ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz)
     P = MostSpecific(p; P0,...,Pn)
 
   ChooseV(P; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz), Cs -> P, ChooseV(p; CCz)
     Pz = Supertypes(p; P1, ..., Pn)
     Pz' = { P in Pz | {P'1, ..., P'k} subseteq Supertypes(p; P)}
+    // Pz' is the set of possible solutions to the above constraints
     // if k = 0, then Pz' = Pz
-    // Pz' is the set of possible solutions
+
+    Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
+
     P = MostSpecific(p; Pz')
 
    ChooseV(p; CCz) = empty
      otherwise
 
+// Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
+PossibleRedirect(p; Cs; P) iff
+    if MustInterface(p; Cs)
+        p[P].interface? = interface
+        dom(p[P].mwtz) = dom(p[Cs].mwtz) // No extra methods
+    if MustClass(p; Cs)
+        p[P].interface? = empty
+    dom(p[Cs]) subseteq dom(p[P])
+    // TODO: Refine this more?
 --------------------------
 // Some classes of ChooseRedirect functions
 
