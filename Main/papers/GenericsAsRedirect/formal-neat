@@ -8,13 +8,13 @@ V ::= (Cs->P)z // Redirection map
 //______
 //Define V.minimize(p)
 //(Cs1->P1,...,Csn->Pn).minimize(p)=Cs1->p.minimize(P1), ..., Csn->p.minimize(Pn)
- 
+
 ______
 Define dom(V)
 dom(Cs1->P1, ..., Csn->Pn) = Cs1, ..., Csn
 
 ______
-Define V(Cs)=P 
+Define V(Cs)=P
 V(Cs) = P
   Cs->P in V // Cs renamed using V
 ______
@@ -36,7 +36,7 @@ AuxDefine V(Cs = L)=L'
 
 // Simply apply V to the Pz and Mz
 V(Cs = {interface? implements Pz Mz}) = {interface? implements V_Cs(Pz) V_Cs(Mz)}
-  
+
 _________
 // Apply V to a member M that was found in nested class Cs
 AuxDefine V_Cs(M)=M'
@@ -103,7 +103,7 @@ Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V(p'.top()[remove Csz]) // Remove
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
   ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = V
 
-Required properties of a ChooseRedirect function: 
+Required properties of a ChooseRedirect function:
 ChooseRedirect is a function from p*V->V' such that
   ChooseRedirect(p,V')=V'
   forall p' ~V~ p: ChooseRedirect(p',V)=V'
@@ -115,7 +115,7 @@ Define ValidRedirect(p,V,V')
   V subseteq V'
   dom(V') = RedirectSet(p.top(); dom(V))
   forall P in ran(V'):
-    p.minimize(P)=P 
+    p.minimize(P)=P
     P not of form This0._
     p|-p(P):OK //P well typed
   forall Cs in dom(V'):
@@ -139,7 +139,7 @@ Define Redirectable(L) // L42 only
 // would also type-check against B
 Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implements Pz' mwtz', ncz'}
   // Check that all the interfaces the LHS implements are also implemented by the RHS
-  Pz subseteq_p Pz',P //Note: The P on the RHS very important, so that F-bound polimoprhism can work TODO: explain what this means
+  Pz subseteq_p Supertypes(p; Pz') //Note: Using supertypes (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
 
   // If the LHS is not an interface
   if interface?=empty:
@@ -215,22 +215,28 @@ Define Internal(Pz) = Csz
 
 ChooseRedirect(p; V) = V'
   CCz = CollectAll(p; InitiliseCCz(p; V))
-  V' = ChooseV(p; CCz) 
+  V' = ChooseV(p; CCz)
   ValidRedirect(p; V; V') // TODO: Do something more efficient?
 
-CC ::= Cs <= P | P <= Cs | Cs in Pz | interface Cs | class Cs
+CC ::= Cs <= P | P <= Cs | Cs in Pz // | interface Cs | class Cs
 
-InitiliseCCz(p; V) := InitiliseCCz(V), InitiliseCCz(p; RedirectSet(p.top(); dom(V)))
-InitiliseCCz(p; Cs->P) := Cs >= P, P >= Cs // The initial mapping
-// These are the only constraints that can be deduced without having any constraints
+InitiliseCCz(p; Cs1->P1, ..., Csn->Pn) :=
+		Cs1 >= P1, P1 >= Cs1, ..., Csn >= Pn, Pn >= Csn,
+//		InitiliseCCz(p; RedirectSet(p.top(); dom(V)) )
+
+/*// These are the only constraints that can be deduced without having any constraints
 // The rest are either the initial set, or are introduced by collect
 InitiliseCCz(p; Cs) = interface Cs
-    p[Cs].interface? = interface
+    p(Cs).interface? = interface
 InitiliseCCz(p; Cs) = class Cs
-    p[Cs].interface? = empty
-    class in p[Cs].mwtz.mdfz
+    class in p(Cs).mwtz.mdfz
+    p(Cs).interface? = empty
 InitiliseCCz(p; Cs) = empty
     otherwise
+*/
+
+MustInterface(p; Cs) = p(Cs).interface? = interface
+MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
 
 // CollectAll is the main function that collects all constraints
 CollectAll(p; CCz,CCz') := CollectAll(p; CCz'')
@@ -243,39 +249,44 @@ Define p[P.ms] = p.minimize(p[P](ms))
 // where p.minimize(mwt) minimizes everything in the method signature
 Define p[Cs.ms] = p[This0.Cs.ms]
 Define mwt.P = mwt.mt.P
-Define mwt.Pi = mwt.mt.Ts.i.p
+Define mwt.Pi = mwt.mt.Ts.i.P
 
 // Note: Collect isn't a function, but a relation,
 // I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
 Define Collect(p; CCz) := CCz':
   Collect(p; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
-  Collect(p; P <= Cs, class Cs) = Cs <= P
-
+  Collect(p; P <= Cs) = Cs <= P
+	MustClass(p; Cs)
   Collect(p; P <= Cs) = Cs' in Supertypes(p; P)
-    This0.Cs' in p[Cs].Pz
+  	This0.Cs' in p[Cs].Pz
+
+    // We must have (since we are rediricintg Cs, by >= )
+    // 	V(p[Cs].Pz) subseteq Supertypes(p; V(Cs))
+    // And so
+ 	//	V(Cs') in Supertypes(p; V(Cs))
+ 	// Since we have
+	// 	P <= V(Cs):
+	// It follows that
+	//	Supertypes(p; V(Cs)) subseteq Supertypes(p; P)
+ 	// And so V(Cs') in Supertypes(p; P)
+
   Collect(p; Cs in P,Pz) = Cs <= P
     dom(p[Cs].mwtz) intersect dom(p[P].mwtz) != empty
 
   Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
-    // The above constraints imply that:
-    //  p |- P <= V(Cs)
-    // Our constraints for ValidRedirect, require that
-    //  p |- p[V(Cs).ms].mt <= V(p[Cs.ms].mt)
-    // From these two it follows that:
-    //  p |- p[P.ms].P <= p[V(Cs).ms].P
-    //  p |- p[V(Cs).ms].P <= V(p[Cs.ms].P)
-    // Which implies that p |- p[P.ms].P <= V(p[Cs.Ms].P)
-    // Note: if we disallowed interface type refinmenet,
-    // we could make the same inference when given Cs <= P instead
+    // Note: if we disallowed refinement type-1,
+    // We could add an extra rule:
+  //Collect(p; Cs <= P) = p[P.ms].P <= Cs'
+  //  p[Cs.ms].P = This0.Cs'
+
   // Same logic as above, but for paramater types, causing the right-hand <= to be flipped
-  Collect(p; P <= Cs) = Cs' <= p[P.ms].P
+  Collect(p; P <= Cs) = Cs' <= p[P.ms].Pi
      p[Cs.ms].Pi = This0.Cs'
 
-  // Note: if instead we require overriding to not refine method types
-  // we would also be able to derive p[P.ms].P <= Cs'
-  Collect(p; interface Cs; Cs <= P) = Cs' <= p[P.ms].P:
+  Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+  	MustInterface(p; Cs)
     p[Cs.ms].P = This0.Cs'
     // The above constraints imply that:
     //  p |- V(Cs) <= P
@@ -283,15 +294,21 @@ Define Collect(p; CCz) := CCz':
     // From this it follows that:
     //  p |- p[V(Cs).ms].P <= p[P.ms].P
     // Which implies that p |- p[V(Cs).ms].P <= p[P.ms].P
+  // Note: if we disallowed type-1 refinement, we would also be able to derive p[P.ms].P <= Cs'
+
   // The same as above, but for a paramater types
-  Collect(p; interface Cs; Cs <= P) = p[P.ms].Pi <= Cs':
+  Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+    MustInterface(p; Cs)
     p[Cs.ms].Pi = This0.Cs'
 
-  Collect(p; Cs <= P, P <= Cs) = Cs.C <= p.minimize(P.C), p.minimize(P.C) <= Cs.C
-    //TODO: is unclear if minimize needed: can wwe be in This1.C
+  // Is this rulle insufficient? What if we have Cs <= P,
+  // And P' < P, and P has no C, but P' does,
+  // Therefore should we deduce that Cs <= P'?
+
+  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
     C in dom(p[Cs])
 
-Auxilary: Supertypes(p; Pz) = intersect {p.minimize(p[P].Pz U {P}) | P in Pz} // TODO: include 'any'?
+Auxilary: Supertypes(p; Pz) = intersect {p.minimize(p[P].Pz U {P, Any}) | P in Pz}
 
 MostSpecific(p; Pz) = P
    P in Pz
@@ -304,12 +321,12 @@ Define ChooseV(p; CCz) := V
   // if dom(V1) and dom(V2) are not disjoint, thus only one rule below can be applied
   // for each Cs
 
- ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz) 
+ ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz)
     P = MostSpecific(p; P0,...,Pn)
 
   ChooseV(P; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz), Cs -> P, ChooseV(p; CCz)
     Pz = Supertypes(p; P1, ..., Pn)
-    Pz' = { P in Pz | {P'1, ..., P'k} subseteq Supertypes(p; P)} 
+    Pz' = { P in Pz | {P'1, ..., P'k} subseteq Supertypes(p; P)}
     // if k = 0, then Pz' = Pz
     // Pz' is the set of possible solutions
     P = MostSpecific(p; Pz')

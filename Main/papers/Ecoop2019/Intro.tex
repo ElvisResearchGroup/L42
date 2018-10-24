@@ -3,8 +3,92 @@
 hi method class Foo{ bar}
 \end{lstlisting}
 
-In literature, in addition to conventional Java style F-bound polimorphism, there
-Another way to obtain generics is to use associated types (to specify generic paramaters) and inheritence (to instantiate the paramaters).
+
+Associated types are a powerful form of generics, now integrated in both Scala and Rust.
+They are a new kind of member, like methods fields and nested classes.
+Associated types behave as 'virtual' types: they can be overridden, can be abstract and can have
+a default.
+However, the user has to specify those types and their concrete instantiations manually.
+We propose here a different design, where instead of relying on a new kind of member, we reuse the well
+known concept of nested classes. An operation, call Redirect, will redirect some nested classes in some external types.
+To simplify our formalization and to keep the focus on the core of our approach, we 
+present our system on top of a simple 
+Java like languages, with only final classes and interfaces, when code reuse is obtained by
+trait composition instead of conventional inheritance. 
+For example, we could write..
+
+g={
+ NL:{}
+ EL:{}
+ Node={constructor(NL label)
+    }
+    Node={implements Tree
+      //fields are implicitly declared as the constructor parameters
+      constructor(L label,Tree left, Tree right)
+      method Void accept(Visitor v){v.acceptNode(this);}
+    }
+
+  
+
+
+//Node=Data<>< class(Tree){}
+
+  tree={
+    L:{}
+    Visitor:{interface
+      method Void visitNode(Node n)
+      method Void visitLeaf(Leaf n)
+    }
+    Tree={interface      
+      method Void accept(Visitor v)
+    }
+    Node={implements Tree
+      //fields are implicitly declared as the constructor parameters
+      constructor(L label,Tree left, Tree right)
+      method Void accept(Visitor v){v.acceptNode(this);}
+    }
+    Leaf={implements Tree
+      constructor(L label)
+      method Void accept(Visitor v){v.acceptLeaf(this);}
+    }
+  }
+  treeToS=tree<+{
+      L:{method String toString()}
+      method String 
+      method Tree merge(Tree a, Tree b){
+        if(a instanceof Leaf &&
+        }
+    }
+    MyA={ method MyB m()= new MyB(); ..}
+    MyB={ method String f()="Hello"; ..}
+    g<A=MyA>//instantiation. The mapping A=MyA,B=MyB
+
+
+I A B
+I{ C visit(I,V) C accept(A) C accept(B)}
+A{ 
+  C visit(I that,V v) that.acceptA(this,v)
+  C accept(A that,v) new AA(this,that).visit(v)
+  C accept(B) new BB()
+}
+PreVisitor
+Visitor AA AB BA BB
+
+
+
+
+Features:
+Structural based generics embedded in a nominal type system.
+Code is Nominal, Reuse is Structural.
+Static methods support for generics, so generics are not just a trik to make the type system happy but actually
+change the behaviour
+Subsume associate types.
+After the fact generics; redirect is like mixins for generics
+Mapping is inferred-> very large maps are possible -> application to libraries
+
+
+In literature, in addition to conventional Java style F-bound polymorphism, there is
+another way to obtain generics: to use associated types (to specify generic paramaters) and inheritence (to instantiate the paramaters).
 However, when parametrizing multiple types, the user to specify the full mapping.
 For example in Java
     interface A<B>{ B m(); }

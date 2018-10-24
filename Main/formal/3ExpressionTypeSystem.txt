@@ -58,6 +58,14 @@ D |- P~>P:class P' <= T | emptyTr
 //when a class 'A' may become an interface, and annotations 'class A' would be invalid.
 //since classes without class methods may become interfaces, we accept the type class A only
 //when class methods are present.
+//Example
+{T:{} //well typed
+method class T ()=T
+method Void doStuff(class T x)
+}[redirect T=Base]
++
+{method Void doStuff(class Base x)=x.class()}//well typed
+//result would not work
 
 (library propagation)
 D |- L ~> L' : imm Library <= T | emptyTr
@@ -198,7 +206,7 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
   T0 = mdf P
   not catchRethrow(catch throw P x e)
   Phase| p| G[x:T0]|- e ~> e' : T <= T' | Tr'
-  if mdf=class then P in {Any,Library,Void} or class in p(P).mhs.mdfs
+  if mdf=class then P=Any or class in p(P).mhs.mdfs //TODO: fix in the code, it was P in {Any,Library,Void}
 //Note about former line: having A<=IA,
 //class IA ia=A
 //is ok only if IA has class methods, otherwise if A become interface by sum, it would broke.
@@ -212,9 +220,9 @@ Phase| p| G| Tr |- catch throw P x e ~> catch throw P x e' :T <= T' | Tr'
 //because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
 Phase |p |G |Tr|-catch return Any x x ~> catch return T'.P x x:T<=T' | Tr'
   where
-  not catchRethrow(catch return Any x e)
   forall T0 in Tr.Ts p |-T0.P<=T'.P//this line is not redundant: otherwise we may change the semantic and not capture something
   Phase| p| G| Tr |- catch return T'.P x x ~> catch return T'.P x x :T <= T' | Tr'
+  //assert not catchRethrow(catch return Any x x), of course
 //Note: we limit e=x to avoid mess in rename catch return Any x x.foo()
 
 (catch and rethrow any)// could be sugared as "on throw doAndPropagate e"
