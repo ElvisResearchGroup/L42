@@ -1,0 +1,445 @@
+M2: {interface method Void j(B2 x)}
+A:  {interface}
+B:  {interface implements A method M2 m()}
+B2: {interface implements B,A method M2 m()}
+C:  {method Void k(A a, B b) }
+{
+    J:{Void j(T x)}
+    T:{J m()}
+    K:{method Void k(T a, T b)}
+}<K = C> //The solution is K->C, T->B2, J->M2
+
+
+K = This1.C, This1.C <= K
+K = This1.C, This1.C <= K, T<=A, T<=B, 
+-----------
+K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B
+We know
+T has J m, B has M2 m, T<=B
+everything more specific than B must have m whose return is more specific then M2
+thus J must be <=M2
+K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B, J<=This1.M2
+
+
+-----------------------------------
+M: {interface}
+M2: {interface implements M}
+B   {method   M2 m() M m2(), Void dummy()}
+{   J:{}   T:{J m() J m2()}
+}<T = B>
+
+B <~ T
+[B] <~ V([T])
+P @ Cs' === Cs<=P or P<=Cs
+
+T <= This1.B, This1.B <= T,
+
+Collect(p;[B] <~ V([T])) = [B].sel.P <= V([T].sel.P)
+Collect(p;[B] <~ V([T])) = V([T].sel.Pi) <= [B].sel.Pi
+
+
+
+T <= This1.B, This1.B <= T,
+---------------------------------
+Proof that if starting with 'Cs->P' implies Cs <= P and P <= Cs
+
+Assume:
+  ValidRedirect(p; V0; V)
+  Cs->P in V0  
+Therefore:
+  By ValidRedirect(p; V0; V):
+    Cs->P in V
+    V(Cs) = P
+
+  Thus:
+    V(Cs) <= P
+    P <= V(Cs)
+
+
+Proof that Cs <= P, P <= Cs implies P <~ Cs
+Assume:
+  ValidRedirect(p; V0; V)
+  V(Cs) <= P
+  P <= V(Cs)
+Therefore:
+  By ValidRedirect(p; V0; V)
+    [V(Cs)] <~ V([Cs])
+  By V(Cs) <= P and P <= V(Cs):
+    p.equiv(V(Cs), P)
+    [V(Cs)] = [P]
+  Thus:
+    [P] <~ V([Cs])
+    
+-----------------------------------------------------
+from V(T) <=B, [T].m=J, [V(T)] <~ V([T]), [B].m = M2 we know
+    
+
+
+Assumptions:
+  ValidRedirect(p; V; V)
+  V(Cs) <= P
+  This0.Cs' = [Cs].sel.P
+
+Conclusions:
+  From ValidRedirect(p; V; V):
+    [V(Cs)] <~ V([Cs])
+    [V(Cs)].sel.mt <=  V([Cs].sel).mt)
+    [V(Cs)].sel.P <=  V([Cs].sel).P)
+  From V(Cs) <= P:
+     [V(Cs)].sel.mt <= [P].sel.mt
+     [V(Cs)].sel.P  <= [P].sel.P
+
+  [V(Cs)].sel.P <= V(Cs')
+  [V(Cs)].sel.P <= P'
+
+
+Collect(p; Cs <= P0) = P1 ? Cs'
+  This0.Cs' = [Cs].sel.P
+  P1 = [P0].sel.P
+
+Collect(p; P ? Cs)=P<=Cs
+  [P].interface?=empty
+
+Collect(p; P ? Cs)=Cs<=Origin(p; sel; P)
+  sel in dom [Cs]
+  sel in dom [P]    
+
+Origin(p; sel; P) = P'
+  forall P'' in Supertypes(p; P) where sel in dom [P'']
+     p |- P'' <= P'
+
+Collect(p; P ? Cs, P' <= Cs)=Cs<=P
+  [P'].interface?=empty
+
+Collect(p; P ? Cs)=Cs<=P
+  MustClass(Cs)
+
+
+P ? Cs iff:
+    Exists P'' such that
+    P'' <= P
+    P''<=V(Cs)
+    /*==> Exists P' such that
+    mdom([P']) = (mdom([P]) intersect mdom([V(Cs)]))// mdom([P]) intersect mdom([Cs]) subseteq mdom([P'])
+    P <= P'
+    V(Cs) <= P'
+    */
+
+
+
+--------------------
+
+Collect(p; P ? Cs)=
+  [Cs].sel and [P].sel
+
+A # B // A and B have a method in common
+C <= A
+C <= B
+----------
+A <= C'
+B <= C'
+
+where all the methods A and B have in common in C'
+
+
+
+all subtypes of B must have an m returning a subtype of M2
+thus V(J)<=M2
+from T <=B, T.m2=J, B.m2=M we know
+all subtypes of B must have an m2 returning a subtype of M
+thus J<=M
+from B<=T T.m2=J, B.m2=M we know
+all subtypes of T must have an m returning a subtype of J
+thus M<=J
+
+
+T <= This1.B, This1.B <= T ==> T=This1.B
+
+B:{method   M2 m() M m2()} <= T/B:{  J/M m() J/M m2()}
+
+
+-------------
+>>Collect(p; P <= Cs) = p[P.ms].P <= Cs'   p[Cs.ms].P = This0.Cs'
+T <= This1.B
+
+>>Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+    p[Cs.ms].P = This0.Cs'
+            T <= This1.B
+
+  forall p' ~V1~ p, V2 is the unique V such that ValidRedirect(p'; V1; V2)
+  
+  V2 is the unique V such that forall p' ~V1~ p ValidRedirect(p'; V1; V2)
+---------------------
+
+
+Collect(p; Cs <= P) = P' <= Cs'
+
+Cs.m
+    p[Cs.ms].P = This0.Cs'
+
+
+Collect(p; Cs <= P) = Cs' <= p[P.sel].P
+  p[Cs.sel.P] = This0.Cs'
+-----
+Assumptions:
+  ValidRedirect(p; V; V)
+  V(Cs) <= P
+  This0.Cs' = Cs.sel.P
+
+Conclusions:
+  //V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
+  // V(Cs).sel <=  V(Cs.sel)
+
+  
+  p[V(Cs)](sel).P <= V(Cs')
+  p[V(Cs)](sel).P <= p[P](sel).P
+
+
+P'=V(Cs) with P' not of form This0._
+p[P'](sel).P <= p[P](sel).P
+P'.r<=P.r
+
+Cs.r<=P.r
+
+Cs.sel<=P.sel
+Cs<=P
+Cs.sel.P
+
+
+
+
+
+--------------------
+Collect(p; Cs <= P) = Cs' <= p[P](sel).P
+// 	MustInterface(p; Cs)
+  p[Cs](sel).P = This0.Cs'
+
+Assumptions:
+  ValidRedirect(p; V; V)
+  p |- V(Cs) <= P
+  This0.Cs' = p[Cs](sel).P
+
+Conclusions:
+  From ValidRedirect(p; V; V):
+    p |- V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
+    p |- p[V(Cs)](sel).mt <=  V(p[Cs](sel).mt)
+    p |- p[V(Cs)](sel).P <=  V(p[Cs](sel).P)
+  From p |- V(Cs) <= P:
+     P |- p[V(Cs)](sel).mt <= p[P](sel).mt
+     P |- p[V(Cs)](sel).P  <= p[P](sel).P
+
+  p |- p[V(Cs)](sel).P <= V(Cs')
+  P |- p[V(Cs)](sel).P <= p[P](sel).P
+
+------
+
+--------------------
+Collect(p; Cs <= P) = Cs' <= p[P](sel).P
+// 	MustInterface(p; Cs)
+  p[Cs](sel).P = This0.Cs'
+
+Assumptions:
+  ValidRedirect(p; V; V)
+  p |- V(Cs) <= P
+  This0.Cs' = p[Cs](sel).P
+
+Conclusions:
+  From ValidRedirect(p; V; V):
+    p |- V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
+    p |- p[V(Cs)](sel).mt <=  V(p[Cs](sel).mt)
+    p |- p[V(Cs)](sel).P <=  V(p[Cs](sel).P)
+  From p |- V(Cs) <= P:
+     P |- p[V(Cs)](sel).mt == p[P](sel).mt
+     P |- p[V(Cs)](sel).P  == p[P](sel).P
+
+  p |- p[V(Cs)](sel).P <= V(Cs')
+  P |- p[V(Cs)](sel).P  == p[P](sel).P
+
+C <= A
+C <= B
+
+// A <= B
+
+//Collect(p; Cs <= P) = Cs' <= p[P](sel).P
+// 	//MustInterface(p; Cs)
+//  P' = p[P](sel).P
+//  // V(Cs)(sel).P = P''
+//  p[Cs](sel).P = This0.Cs'
+-------------
+
+///
+
+
+
+
+// CC ::= V(Cs) <= P | P <= V(Cs) | V(Cs) in Pz 
+
+A=B
+
+V(A)<=B, B<=V(A)
+both ==> B = V(A)
+isaac  ==> [B] <~ V([A])
+
+
+both ==> B = V(A) + isaac  ==> [B] <~ V[A]
+       ==> [V(A)] <~ V([A])
+
+
+B <~ V[A]
+  ==> V[A]<=B B<=V[A]
+
+// Soudness
+CollectAll(p; Init(V)) = CCz only if:
+  if there exists a V' such that ValidRedirect(p; V; V') then
+    there exists a V' such that ValidRedirect(p; V; V') and p |- V satisfies CCz
+
+
+ValidRedirect(p; V; V') ==>
+  forall Cs in dom(V')
+      p |- V(Cs); p[V(Cs)] <~ Cs; V(p[Cs])
+
+p |- V satisfies (Cs <= P) iff
+  p |- V(Cs) <= P
+
+p |- V satisfies (P <= Cs) iff
+  p |- P <= V(Cs)
+
+p |- V satisfies (Cs in Pz) iff
+  V(Cs) in Pz
+
+
+
+
+
+
+
+
+// Collect
+ J <= M2, J <= M
+
+
+// T <= This1.B
+// P' = M2
+// p[T](m).P = This0.J
+// J <= M2
+// J <= M
+
+
+//Collect(p; Cs <= P) = Cs' <= P'
+// 	//MustInterface(p; Cs)
+//  P' = p[P](sel).P
+//  // V(Cs)(sel).P = P''
+//  p[Cs](sel).P = This0.Cs'
+
+// T<=M2
+//    With the broken rule, our collectr will deduce that J<=M2
+A B classes
+Cs<=A Cs<=B
+
+forall p, V
+  let collect(p;init(V))->*CCz
+  if exists V'=V,_ so that valid(p;V,V')
+  then !contraddiction(CCz)
+
+// Any valid solution V' satsifies CollectAll(p; init(V))
+// If their is a solution V', something satisfies CollectAll(p; init(V))
+// If their is a solution V', one such sollution satisfies CollectAll(p; init(V))
+
+
+K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B
+K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B   J <=M2 
+K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B   J <=M2  B2 <= T
+K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B   J <=M2  B2 <= T  M3 <= J
+
+
+// Cs = T,
+// P = This1.B
+// sel = m
+// Cs' = J
+// P' = M2
+// V(J) <= M2
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+VCs': {interface}
+P': {interface}
+P'': {interface implements VCs', P}
+
+EX: {foo(P) }
+
+P: { P' sel() }
+{
+  Cs': {}
+  Cs: {Cs' sel()}
+  X: { foo(Cs) } 
+}<X = EX> // Cs = P, Cs' = P'
+
+
+
+
+Assumptions:
+  ValidRedirect(p; V; V)
+  p |- V(Cs) <= P
+  This0.Cs' = p[Cs](sel).P
+  MustInterface(p; Cs)
+
+Conclusions:
+  From ValidRedirect(p; V; V):
+    p |- V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
+    p |- p[V(Cs)](sel).mt ==  V(p[Cs](sel).mt)
+    p |- p[V(Cs)](sel).P ==  V(p[Cs](sel).P)
+  From p |- V(Cs) <= P:
+     P |- p[V(Cs)](sel).mt <= p[P](sel).mt
+     P |- p[V(Cs)](sel).P  <= p[P](sel).P
+
+  p |- p[V(Cs)](sel).P ==  V(Cs')
+  P |- p[V(Cs)](sel).P <= p[P](sel).P
+  V(Cs') <= p[P](sel).P
+
+
+~~~~~~~~
+M2: {interface method Void j(B2 x)}
+A:  {interface}
+B:  {interface implements A method M2 m()}
+B2: {interface implements B,A method M2 m()}
+C:  {method Void k(A a, B b) }
+{
+    J:{Void j(T x)}
+    T:{J m()}
+    K:{method Void k(T a, T b)}
+}<K = C> //The solution is K->C, T->B2, J->M2
+
+--------------------------------------------------------------
+
+K<=This1.C, This1.C<=K,
+T <= This1.A, T <= This1.B 
+This1.M2 ? J, J <= This1.M2
+ 
+--------------------------------------------------------------------------------------------
+Collect(p; Cs <= P0) = P1 ? Cs'
+  This0.Cs' = [Cs].sel.P
+  P1 = [P0].sel.P
+
+Collect(p; P ? Cs)=P<=Cs
+  [P].interface?=empty
+
+Collect(p; P ? Cs, P' <= Cs)=Cs<=P
+  [P'].interface?=empty
+
+Collect(p; P ? Cs)= Cs <= P
+  MustClass(Cs)
+
+Collect(p; P ? Cs) = Cs <= Origin(p; sel; P)
+  sel in dom [Cs]
+  sel in dom [P]

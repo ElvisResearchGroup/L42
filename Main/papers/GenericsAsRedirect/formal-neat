@@ -115,7 +115,7 @@ Define ValidRedirect(p,V,V')
     p|-p(P):OK //P well typed
   forall Cs in dom(V'):
     Cs not empty
-    p|- Cs; V'(p[Cs]) >= V'(Cs); p[V'(Cs)]
+    p|- V'(Cs); p[V'(Cs)] <= Cs; V'(p[Cs])
     forall C in dom(p(Cs)): V'(Cs.C) = V'(Cs).C
     Redirectable(p.top()(Cs))
 
@@ -132,9 +132,9 @@ Define Redirectable(L) // L42 only
 // Is the LHS (whose name is 'This0.Cs') a structural supertype of the RHS (whose name is P)
 // We say that A is a structural supertype of B if any code written with respect to A
 // would also type-check against B
-Define p|- Cs; {interface? implements Pz mwtz, ncz} >= P; {interafce?' implements Pz' mwtz', ncz'}
+Define p|- P; {interafce?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
   // Check that all the interfaces the LHS implements are also implemented by the RHS
-  Pz subseteq_p Supertypes(p; Pz') //Note: Using supertypes (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
+  Pz,Any subseteq_p Supertypes(p; Pz') //Note: Using supertypes (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
 
   // If the LHS is not an interface
   if interface?=empty:
@@ -213,12 +213,12 @@ Define Internal(Pz) = Csz
 // Note: the 'interface' constraint currently only benifits early error detection, as we can't use it to infer any more constraints (or can we?)
 
 ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = V'
-  CCz0 = {Cs1 >= P1, P1 >= Cs1, ..., Csn >= Pn, Pn >= Csn}
+  CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
   CCz = CollectAll(p; CCz0)
   V' = ChooseV(p; CCz)
   ValidRedirect(p; V; V') // TODO: Do something more efficient?
 
-CC ::= Cs <= P | P <= Cs | Cs in Pz // | interface Cs | class Cs
+CC ::= Cs <= P | P <= Cs // | Cs in Pz  | interface Cs | class Cs
 
 MustInterface(p; Cs) = p(Cs).interface? = interface
 MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
@@ -242,12 +242,12 @@ Define Collect(p; CCz) := CCz':
   Collect(p; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
   Collect(p; P <= Cs) = Cs <= P
-	MustClass(p; Cs)
-  Collect(p; P <= Cs) = Cs' in Supertypes(p; P)
-  	This0.Cs' in p[Cs].Pz
+	 MustClass(p; Cs)
 
-  Collect(p; Cs in P,Pz) = Cs <= P
-    dom(p[Cs].mwtz) intersect dom(p[P].mwtz) != empty
+  Collect(p; P <= Cs) = Cs <= P'
+  	This0.Cs' in p[Cs].Pz
+    P' in Supertypes(p; P)
+    dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
 
   Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
@@ -301,8 +301,7 @@ Define ChooseV(p; CCz) := V
     // if k = 0, then Pz' = Pz
 
     Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
-
-    P = MostSpecific(p; Pz')
+    P = MostSpecific(p; Pz'')
 
    ChooseV(p; CCz) = empty
      otherwise
@@ -320,7 +319,7 @@ PossibleRedirect(p; Cs; P) iff
 // Some classes of ChooseRedirect functions
 
 UniqueR(p, V1) = V2
-  forall p' ~V~ p, V2 is the unique V such that ValidRedirect(p'; V1; V2)
+  V2 is the unique V such that forall p' ~V1~ p ValidRedirect(p'; V1; V2)
 
 R0: always undefined
 
