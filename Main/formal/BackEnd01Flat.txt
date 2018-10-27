@@ -20,7 +20,7 @@ d::= T x=e
 
 ### L42F
 CD::=kind CN implements CNs{ Mxs }
-Mx::=refine? method T mxs((T x)s) body?//if 'this' is needed, is the first argument
+Mx::=refine? method TX mxs((TX x)s) body?//if 'this' is needed, is the first argument
 //note: no exceptions declared, body empty only if kind=interface
 body::=ex | setter|getter|new|newWithFwd|newFwd |nativeIntSum|nativeIntMul|...|nativeVectorAdd
 kind::=class |interface | nativeInt |nativeString| nativeFloat|nativeVector<CN> | nativeOpt<T>| ...
@@ -133,7 +133,7 @@ PG + T1 x1=e1..Tn xn=en=PG+x1:T1..xn:Tn
 PG*T=PG.p*T
 PG*P=PG.p*P
 
-p*P=p(P).CN
+p*P=p(P).CN//TODO: what happens for Library/Any/Void?
 
 p*(mdf P) =mdf p*P
 
