@@ -119,6 +119,20 @@ desugaring for de:
 	(ds e k ks) ==> (ds x = e k ks x)
 	(ds e k ks e0) ==> (ds Void unused = e k ks e0)
 	(ds ks) ==> (ds ks void)
+
+
+
+
+removing the two fancy rules for catch, and making the type optional:
+
+k::=catch throw? T? x e
+where e need the usual care with parenthesis, and throw=exception can be omitted
+The idea is to use the new type inference support for guessing the type of x looking to e.
+Thus, it is not semantically equal to catch any. Should we enforce it to be?
+
+
+
+
 --------------------------------------------
     c1=input1.iterator();...cn=inputn.iterator();//varIterator if var x in..
     {int i=0;

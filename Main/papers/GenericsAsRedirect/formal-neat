@@ -251,18 +251,35 @@ Define Collect(p; CCz) := CCz':
 
   Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
-    // Note: if we disallowed refinement type-1,
-    // We could also apply this rule if we instead had Cs <= P
-  Collect(p; P <= Cs) = Cs' <= p[P.ms].Pi
+
+  Collect(p; CC) = Cs' <= p[P.ms].Pi
+     CC = P <= Cs or  CC = Cs <= P
      p[Cs.ms].Pi = This0.Cs'
 
   Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
   	MustInterface(p; Cs)
     p[Cs.ms].P = This0.Cs'
-    // Note: if we disallowed type-1 refinement, we would also be able to derive p[P.ms].P <= Cs'
+
   Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
     MustInterface(p; Cs)
     p[Cs.ms].Pi = This0.Cs'
+
+/*  Collect(p; Cs <= P0) = P1 ? Cs'
+    This0.Cs' = [Cs].sel.P
+    P1 = [P0].sel.P
+Collect(p; P ? Cs)=P<=Cs
+  [P].interface?=empty
+
+Collect(p; P ? Cs, P' <= Cs)=Cs<=P
+  [P'].interface?=empty
+
+Collect(p; P ? Cs)= Cs <= P
+  MustClass(Cs)
+
+Collect(p; P ? Cs) = Cs <= Origin(p; sel; P)
+  sel in dom [Cs]
+  sel in dom [P]
+*/
 
   // Is this rulle insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
@@ -291,6 +308,7 @@ Define ChooseV(p; CCz) := V
   // Note: these definitions use well-formdness of V's, namely V1, V2 is ill-formed
   // if dom(V1) and dom(V2) are not disjoint, thus only one rule below can be applied
   // for each Cs
+  // Marco wants to delete this rule, Isaac dosn't
   ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz)
     P = MostSpecific(p; P0,...,Pn)
 
@@ -319,7 +337,13 @@ PossibleRedirect(p; Cs; P) iff
 // Some classes of ChooseRedirect functions
 
 UniqueR(p, V1) = V2
-  V2 is the unique V such that forall p' ~V1~ p ValidRedirect(p'; V1; V2)
+  forall p' ~V1~ p, V2 = MostSpecific(p'; {V | ValidRedirect(p'; V1; V)})
+  forall p' superset p, V2 = MostSpecific(p'; {V | ValidRedirect(p'; V1; V)})
+
+define MostSpecific(p; Vz) = V
+  V in Vz,
+  forall Cs in dom(V), V' in Vz:
+    p |- V(Cs) <= V'(Cs)
 
 R0: always undefined
 
@@ -328,7 +352,7 @@ R1: r(p, V) = V' IFF V = V' and ValidRedirect(p; V; V)// assert ValidRedirect(Re
 R2: if r(p, V) = V' then V' = UniqueR(p, V) and not R3// weaker than 3
   // if it suceeds, the answer is unqiue
 
-R3: r(p; V) = UniqueR(p, V)
+R3: r(p; V) = UniqueR(p, V) // what we now want?
 
 R4: if UniqueR(p, V) = V' then r(p, V) = V'
   // it always suceeds if their is a unique result but solves some ambiguites
