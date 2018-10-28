@@ -409,16 +409,16 @@ Conclusions:
 
 
 ~~~~~~~~
-M2: {interface method Void j(B2 x)}
+M:  {interface method Void j(B2 x)}
 A:  {interface}
-B:  {interface implements A method M2 m()}
-B2: {interface implements B,A method M2 m()}
+B:  {interface implements A method M m()}
+B2: {implements B,A method M m()}
 C:  {method Void k(A a, B b) }
 {
     J:{Void j(T x)}
     T:{J m()}
     K:{method Void k(T a, T b)}
-}<K = C> //The solution is K->C, T->B2, J->M2
+}<K = C> //The solution is K->C, T->B2, J->M
 
 --------------------------------------------------------------
 
@@ -443,3 +443,100 @@ Collect(p; P ? Cs)= Cs <= P
 Collect(p; P ? Cs) = Cs <= Origin(p; sel; P)
   sel in dom [Cs]
   sel in dom [P]
+
+
+-----------------
+M:  {interface method Void j(B2 x)}
+A:  {interface}
+B:  {interface implements A method M m()}
+B2: {implements B,A method M m()}
+C:  {method Void k(A a, B b) }
+{
+    J:{Void j(T x)}
+    T:{J m()}
+    K:{method Void k(T a, T b)}
+}<K = C> // K->C, T->B2, J->M
+
+---------
+    K <= This1.C, This1.C <= K
+5:  T <= This1.A, T <= This1.B
+8:  This1.M ? J
+12: J <= This1.M
+5:  T <= This1.B2
+1:  This1.B2 <= T
+4:  This1.M <= J
+-------------------------
+This1.M <= J  | J <= This1.M | This1.M ? J
+  Pz = {M, Any}
+  Pz' = {M}
+  P = M // J -> M
+This1.C <= K  | K <= This1.C
+  
+This1.B2 <= T | T <= This1.A, T <= This1.B, T <= This1.B2
+
+
+
+
+
+
+----a, faiils in MarcoUnique
+EC: {implements I1, I2}
+EC1: {implements I1, I2}
+I1: {interface}
+I2: {interface}
+ER: {EC m(I1 a, I2 b)}
+
+{
+C: {}
+R: {EC m(C a, C b)}
+}<R = ER>
+
+--b, fails in MarcoUnique, Isaac dosn't want it to fail
+I: {interface}
+EC: {interface implements I}
+//EC2: {implements EC}
+ER: {Void m(EC a, I b)}
+{
+C: {}
+R: {Void m(C a, C b)}
+}<R = ER>
+
+--b, fails in MarcoUnique, Isaac dosn't want it to fail
+I: {interface}
+EC: {interface implements I}
+//EC2: {implements EC}
+ER: {Void m(EC a, EC b)}
+{
+C: {}
+R: {Void m(C a, C b)}
+}<R = ER>
+
+
+--- works in MarcoUnique
+I: {interface}
+EC: {interface implements I}
+ER: {EC m()}
+{
+C: {}
+R: {C m()}
+}<R = ER>
+
+//exact match ??
+//load
+
+-----
+ES:{interface}
+ENum:{interface}
+EMap:{interface
+  method ES s()
+  method ENum num()
+  }
+
+{
+S:{..}
+Num:{interface}
+Map:{interface
+  method S s()
+  method Num num()
+  }
+}[Map=EMap]
