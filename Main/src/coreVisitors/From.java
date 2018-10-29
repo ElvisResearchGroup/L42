@@ -72,8 +72,9 @@ public class From extends CloneVisitor {
   public static <T extends ExpCore.ClassB.Member> T from(T member, Path source){
     return (T)new From(source).liftM(member);
   }
-  public static ExpCore from(ExpCore exp, Path source){
-    return exp.accept(new From(source));
+  public static <T extends ExpCore> T from(T exp, Path source){
+    // This cast is safe, since we never change the type of anything
+    return (T)exp.accept(new From(source));
   }
 
 }

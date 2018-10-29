@@ -46,30 +46,7 @@ import ast.Util.CsMwtPMwt;
 import auxiliaryGrammar.Functions;
 import programReduction.Program;
 public class RedirectObj {
-  private final class NestedRemover extends coreVisitors.CloneVisitor {
-    List<Ast.C> cs;
-    NestedRemover(List<Ast.C> cs){this.cs=cs;}
-    public List<Member> liftMembers(List<Member> s) {
-        List<Member> result=new ArrayList<Member>();
-        for(Member m:s){m.match(
-          nc->manageNC(nc,result),
-          mi->result.add(liftM(m)),
-          mt->result.add(liftM(m))
-          );}
-        return result;
-        }
 
-    private boolean manageNC(NestedClass nc, List<Member> result) {
-        assert !cs.isEmpty();
-        Ast.C top=cs.get(0);
-        if(!top.equals(nc.getName())){return result.add(nc);}//out of path
-        if(cs.size()==1){return true;}
-        List<Ast.C> csLocal=cs;
-        cs=cs.subList(1,cs.size());
-        try{return result.add(this.visit(nc));}
-        finally{cs=csLocal;}
-      }
-    }
 private List<CsPath> verified;
   private ClassB top;
   public RedirectObj(ClassB cb){top=cb;}
@@ -80,26 +57,7 @@ private List<CsPath> verified;
     assert external.isPrimitive() || external.outerNumber()>0;
     p=p.evilPush(top);
     redirectOk(p,internal,external);
-    return applyMapPath(p,top,verified);
-  }
-  public ClassB applyMapPath(Program p,ClassB cb, List<CsPath> mapPath) {
-    //TODO: use the new renaming?
-    cb = new PathRename(p,mapPath).apply();
-    cb = removeRedirected(cb, mapPath);
-    return cb;
-  }
-
-  protected ClassB removeRedirected(ClassB cb, List<CsPath> mapPath) {
-    for(CsPath pp:mapPath){
-      cb=remove(pp.getCs(),cb);
-    }
-    return cb;
-  }
-  public  ClassB remove(List<Ast.C> cs, ClassB l) {
-    if(cs.isEmpty()){
-      return ClassB.membersClass(Collections.emptyList(),Position.noInfo,l.getPhase());
-      }
-    return (ClassB)l.accept(new NestedRemover(cs));
+    return Redirect.applyRedirect(p, new PathMap(verified));
   }
 
   public void redirectOk(Program p,List<Ast.C> internal,Path external) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit{

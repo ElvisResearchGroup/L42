@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -180,6 +181,8 @@ public interface ExpCore extends Serializable{
     public boolean isConsistent() { return _Aux.isConsistent(this);}
     public ClassB withMember(Member m) {return _Aux.withMember(this, m);}
     public Member _getMember(ast.Ast.MethodSelector ms) {return _Aux._getMember(this, ms);}
+    public MethodWithType _getMwt(ast.Ast.MethodSelector ms) { return (ClassB.MethodWithType)(this._getMember(ms)); }
+
     public ClassB onClassNavigateToPathAndDo(List<Ast.C>cs,Function<ClassB,ClassB>op){return _Aux.onClassNavigateToPathAndDo(this, cs, op);}
     public ClassB onNestedNavigateToPathAndDo(List<Ast.C>cs,Function<ClassB.NestedClass,Optional<ClassB.NestedClass>>op){return _Aux.onNestedNavigateToPathAndDo(this, cs, op);}
     public ExpCore.ClassB.NestedClass getNested(List<Ast.C>cs){return _Aux.getNested(this, cs);}
@@ -189,7 +192,8 @@ public interface ExpCore extends Serializable{
     public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,-2);}
 
     public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,-2);}
-
+    public Set<MethodSelector> mdom() { return this.mwts().stream().map(MethodWithType::getMs).collect(Collectors.toSet()); }
+    public Set<Ast.C> Cdom() { return this.ns().stream().map(NestedClass::getName).collect(Collectors.toSet()); }
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
         .map(t->t.getPath())

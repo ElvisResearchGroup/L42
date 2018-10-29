@@ -1,8 +1,7 @@
 package programReduction;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import ast.Ast;
 import ast.Ast.C;
@@ -83,6 +82,9 @@ public interface Program {
         }
       }
     }
+
+  default List<Path> minimizeList(Collection<Path> Ps) { return Ps.stream().map(this::minimize).collect(Collectors.toList()); }
+  default Set<Path> minimizeSet(Collection<Path> Pz) { return Pz.stream().map(this::minimize).collect(Collectors.toSet()); }
   default Path minimize(Path p) {
     Path pReduced=p;
     while(pReduced!=null){//reduce pi as much as possible
@@ -146,6 +148,11 @@ public interface Program {
     Program res=this;
     for(int i=0;i<p.outerNumber();i++){res=res.pop();}
     return res.navigate(p.getCBar());
+  }
+  default ExpCore.ClassB get(Ast.Path P) {
+    if (P.isPrimitive())
+      return ClassB.membersClass(Collections.emptyList(),Position.noInfo, this.top().getPhase()).withInterface(P.equals(Path.Any()));
+    else return From.from(this.extractClassB(P), P);
   }
   default ExpCore.ClassB extractClassB(Ast.Path p){
     Program res1=this;

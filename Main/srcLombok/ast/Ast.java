@@ -351,7 +351,11 @@ public interface Ast {
    public Path pushC(C c){throw Assertions.codeNotReachable("path.pushC on not core:"+this);}
    public List<C> getCBar(){throw Assertions.codeNotReachable("path.getCBar on not core:"+this);}
    public Path setNewOuter(int n){throw Assertions.codeNotReachable("path.setNewOuter on not core:"+this);}
-   public int outerNumber(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
+   public int outerNumber(){ throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
+   public int tryOuterNumber() {
+    try {return this.outerNumber();}
+    catch (AssertionError e) { return -1; }
+   }
    public List<C> sugarNames(){throw Assertions.codeNotReachable("path.outerNumber on not core:"+this);}
 
  }

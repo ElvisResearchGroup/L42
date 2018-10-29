@@ -239,53 +239,49 @@ Define mwt.Pi = mwt.mt.Ts.i.P
 // Note: Collect isn't a function, but a relation,
 // I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
 Define Collect(p; CCz) := CCz':
-1  Collect(p; Cs <= P) = P <= Cs
+  Collect(p; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
-/2 Collect(p; P <= Cs) = Cs <= P
+ Collect(p; P <= Cs) = Cs <= P
 	 MustClass(p; Cs)
 
-/3  Collect(p; P <= Cs) = Cs <= P'
+  Collect(p; P <= Cs) = Cs <= P'
   	This0.Cs' in p[Cs].Pz
     P' in Supertypes(p; P)
     dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
 
-4  Collect(p; P <= Cs) = p[P.ms].P <= Cs'
+  Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
 
-5  Collect(p; CC) = Cs' <= p[P.ms].Pi
+  Collect(p; CC) = Cs' <= p[P.ms].Pi
      CC = P <= Cs or  CC = Cs <= P
      p[Cs.ms].Pi = This0.Cs'
 
-/6:  Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+  Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
   	MustInterface(p; Cs)
     p[Cs.ms].P = This0.Cs'
 
-/7:  Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+  Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
     MustInterface(p; Cs)
     p[Cs.ms].Pi = This0.Cs'
 
-/* 
-  Collect(p; Cs <= P0) = P1 ? Cs'
-    This0.Cs' = [Cs].sel.P
-    P1 = [P0].sel.P
-  Collect(p; P ? Cs)=P<=Cs
-    [P].interface?=empty
-
-  Collect(p; P ? Cs, P' <= Cs)=Cs<=P
-    [P'].interface?=empty
-
-  Collect(p; P ? Cs)= Cs <= P
-    MustClass(Cs)
-
-  Collect(p; P ? Cs) = Cs <= Origin(p; sel; P)
-    sel in dom [Cs]
-    sel in dom [P]
-*/
+  // The ? rule
+  Collect(p; Cs <= P, CCz) = CCz'
+    This0.Cs' = p[Cs.sel].P
+    P' = p[P.sel].P
+    CC in CCz' iff
+      p[P'].interface?=empty and
+        CC = P' <= Cs'
+      or P'' <= Cs' in CCz and p[P''].interface?=empty and
+        CC = Cs'<=P' in CCz'
+      or MustClass(Cs')
+        CC = Cs' <= P'
+      or sel' in dom(p[Cs']) and sel' in dom(p[P'])
+        CC = Cs' <= Origin(p; sel'; P')
 
   // Is this rulle insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
-/13:  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
+  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
     C in dom(p[Cs])
 
 // TODO: Do something with exception specs,
