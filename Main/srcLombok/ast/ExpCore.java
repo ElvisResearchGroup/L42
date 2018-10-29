@@ -192,8 +192,8 @@ public interface ExpCore extends Serializable{
     public static ExpCore.ClassB docClass(Doc d){return new ClassB(d,false,Collections.emptyList(),Collections.emptyList(),Position.noInfo,Phase.Typed,-2);}
 
     public static ExpCore.ClassB membersClass(List<Member> ms,Position pos,Phase phase){return new ClassB(Doc.empty(),false,Collections.emptyList(),ms,pos,phase,-2);}
-    public Set<MethodSelector> mdom() { return this.mwts().stream().map(MethodWithType::getMs).collect(Collectors.toSet()); }
-    public Set<Ast.C> Cdom() { return this.ns().stream().map(NestedClass::getName).collect(Collectors.toSet()); }
+    public Set<MethodSelector> msDom() { return this.mwts().stream().map(MethodWithType::getMs).collect(Collectors.toSet()); }
+    public Set<Ast.C> cDom() { return this.ns().stream().map(NestedClass::getName).collect(Collectors.toSet()); }
     public List<Path> getSuperPaths(){
       return this.getSupertypes().stream()
         .map(t->t.getPath())
@@ -257,6 +257,10 @@ public interface ExpCore extends Serializable{
       public Path getReturnPath() { return this.getMt().getReturnType().getPath(); }
       public Type getReturnType() { return this.getMt().getReturnType(); }
     }
+
+    public static ClassB Void = membersClass(Collections.emptyList(),Position.noInfo, Phase.Coherent).withUniqueId(L42F.Cn.cnVoid.getInner());
+    public static ClassB Library = Void.withUniqueId(L42F.Cn.cnLibrary.getInner());
+    public static ClassB Any = Void.withInterface(true).withUniqueId(L42F.Cn.cnAny.getInner());
     }
 
   @Value public static class _void implements ExpCore, Ast.Atom {

@@ -58,7 +58,6 @@ public interface Program {
   default boolean subtypeEq(Ast.Path p,Ast.Path p1){
     if(p1.equals(Path.Any())){return true;}
     if(equiv(p,p1)){return true;}
-    if(p.isPrimitive()){return false;}
     ClassB cb=this.extractClassB(p);
     for(Path pi:cb.getSuperPaths()){
       if(equiv(From.fromP(pi,p), p1)){return true;}
@@ -149,12 +148,15 @@ public interface Program {
     for(int i=0;i<p.outerNumber();i++){res=res.pop();}
     return res.navigate(p.getCBar());
   }
-  default ExpCore.ClassB get(Ast.Path P) {
-    if (P.isPrimitive())
-      return ClassB.membersClass(Collections.emptyList(),Position.noInfo, this.top().getPhase()).withInterface(P.equals(Path.Any()));
-    else return From.from(this.extractClassB(P), P);
-  }
+  default ExpCore.ClassB fromClassB(Ast.Path P) { return From.from(this.extractClassB(P), P); }
   default ExpCore.ClassB extractClassB(Ast.Path p){
+    if (p.equals(Path.Any())) {
+      return ClassB.Any; }
+    else if (p.equals(Path.Void())) {
+      return ClassB.Void; }
+    else if (p.equals(Path.Library())) {
+      return ClassB.Library; }
+
     Program res1=this;
     for(int i=0;i<p.outerNumber();i++){res1=res1.pop();}
     ExpCore.ClassB top=res1.top();

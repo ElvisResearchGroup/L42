@@ -150,16 +150,8 @@ private List<CsPath> verified;
     ClassB currentIntCb=top.getClassB(cs);
     //path exists by construction.
     Path path=current.getPathsSet().iterator().next();
-    ClassB currentExtCb;
-    if(path.isCore()){
-      assert path.outerNumber()>0:
-        path;
-      currentExtCb= p.extractClassB(path);
-      }
-    else{
-      assert path.isPrimitive();
-      currentExtCb=ClassB.membersClass(Collections.emptyList(),Position.noInfo,top.getPhase()).withInterface(path.equals(Path.Any()));
-    }
+    ClassB currentExtCb = p.extractClassB(path);
+    assert path.tryOuterNumber() != 0;
     assert cs.stream().allMatch(c->!c.isUnique());
     boolean isPrivateState=ExtractInfo.hasPrivateState(currentIntCb);
     boolean isNoImplementation=ExtractInfo.isNoImplementation(currentIntCb);

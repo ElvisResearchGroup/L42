@@ -30,15 +30,13 @@ public interface TsOperations extends TypeSystem{
 
     default TOut tsPath(TIn in, ExpCore.EPath s) {
       Type t=new Type(Mdf.Class,Path.Any(),Doc.empty());
-      if(s.getInner().isCore()){
-        ClassB cb=in.p.extractClassB(s.getInner());
-        assert cb!=null;
-        if(!cb.isInterface()){
-          boolean hasClassMeth=
-            cb.mwts().stream().anyMatch(m->m.getMt().getMdf().equals(Mdf.Class));
-          if(hasClassMeth) {
-            t=t.withPath(s.getInner());
-            }
+      ClassB cb=in.p.extractClassB(s.getInner());
+      assert cb!=null;
+      if(!cb.isInterface()){
+        boolean hasClassMeth=
+          cb.mwts().stream().anyMatch(m->m.getMt().getMdf().equals(Mdf.Class));
+        if(hasClassMeth) {
+          t=t.withPath(s.getInner());
           }
         }
       ErrorKind subErr=TypeSystem._subtype(in.p, t, in.expected);
@@ -79,10 +77,6 @@ public interface TsOperations extends TypeSystem{
     //  D.p|-T0 <= T
     //  forall i 0..n D|- ei ~> e'i : T'i <=Ti |Tri
     //Now plugings are assumed to always ask for imm/class parameters
-    if (s.getPath().isPrimitive()){
-      throw new ErrorMessage.InvalidURL("No plug-in url present for primitive path "+s.getPath(),null);
-      }
-
     List<Type> lt;try{
       PluginType p = OnLineCode.plugin(in.p, s);
       if (!in.isTrusted && !OnLineCode.isTrusted(p))
@@ -130,7 +124,7 @@ public interface TsOperations extends TypeSystem{
       Type T3=res.computed;
       Path P=T3.getPath();
       if(T3.getMdf()==Mdf.Class){
-        if(P.isPrimitive() || in.p.extractClassB(P).getMs().isEmpty()){
+        if(in.p.extractClassB(P).getMs().isEmpty()){
           throw new ErrorMessage.InvalidTypeForThrowe(s,T3,Position.noInfo);}
         }
       if(s.getKind()==SignalKind.Return){res=res.returnsAdd(T3);}

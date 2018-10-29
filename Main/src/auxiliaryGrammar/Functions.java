@@ -419,8 +419,6 @@ public static boolean isSuperTypeOfMut(Mdf mdf){
   }
 
 public static boolean isInterface(Program p, Path path) {
-  if (path.equals(Path.Any())){return true;}
-  if(path.isPrimitive()){return false;}
   return p.extractClassB(path).isInterface();//in typing, this is guaranteed to be there
 }
 public static boolean checkCore(Expression result) {

@@ -43,9 +43,6 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     Type _rec=GuessTypeCore._of(in.p,in, e0,true);
     assert _rec!=null;
     Path rec=_rec.getPath();
-    if(rec.isPrimitive()){
-      throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP(),Collections.emptyList());
-      }
     MethodType mDec=AlternativeMethodTypes._mtDeclared(in.p,rec,s.getS());
     if (mDec==null){
       throw new ErrorMessage.MethodNotPresent(rec,s.getS(),s,s.getP(),

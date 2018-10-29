@@ -212,8 +212,7 @@ private void improveError(List<ExpCore.Block.Dec> ds,Ast.Position pos) {
           }
         }}
       List<MethodWithType> mwtsi;
-      if(ti.getPath().isPrimitive()){mwtsi=Collections.emptyList();}
-      else {mwtsi= p.extractClassB(ti.getPath()).mwts();}
+      mwtsi= p.extractClassB(ti.getPath()).mwts();
       List<MethodWithType> allMsi=new ArrayList<>();
       for(MethodWithType mwtk:mwtsi){
         //forall ms in Ti, if ms=msj, allMsi[j]=ms

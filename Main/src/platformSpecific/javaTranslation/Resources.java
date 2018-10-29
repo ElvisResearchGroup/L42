@@ -227,7 +227,6 @@ public
         if(!cb.getPhase().subtypeEq(Phase.Typed)){strict=false;}
         }
       for(Path path:ps){
-        if(path.isPrimitive()){continue;}
         ClassB extracted=p.extractClassB(path);
         if(!extracted.getPhase().subtypeEq(Phase.Typed)){strict=false;}
         }

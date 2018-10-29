@@ -87,7 +87,7 @@ public class Redirect {
       // Collect(p; Cs <= P) = P <= Cs
       //   p[P].interface? = empty
       for (CsPath CsP : subtypeConstraints) { // Cs <= P
-        if (!this.p.get(CsP.getPath()).isInterface()) { // p[P].interface? = empty
+        if (!this.p.extractClassB(CsP.getPath()).isInterface()) { // p[P].interface? = empty
           progress |= supertypeConstraints.add(CsP.getCs(), CsP.getPath()); }} // P <= Cs
 
       // Collect(p; P <= Cs) = Cs <= P
@@ -105,25 +105,25 @@ public class Redirect {
         for (Path P : p.top().getClassB(CsP.getCs()).getSuperPaths()) { // P in p[Cs].Pz
           if (P.tryOuterNumber() == 0) { // P = This0.Cs'
             for (Path P2 : this.superClasses(P)) // P2 in SuperClasses(p; P)
-              if (intersects(p.get(P).mdom(), p.get(P2).mdom())) // mdom(p[P]) intersects mdom(p[P2])
+              if (intersects(p.extractClassB(P).msDom(), p.extractClassB(P2).msDom())) // mdom(p[P]) intersects mdom(p[P2])
                 progress |= subtypeConstraints.add(CsP.getCs(), P2); }}}
 
 
       BiPredicate<CsPath, CsPzMap> addReturns = (CsP, map) -> {
         boolean res = false;
-        for (MethodWithType mwt : this.p.get(CsP.getPath()).mwts()) { // mwt in p[Cs]
+        for (MethodWithType mwt : this.p.extractClassB(CsP.getPath()).mwts()) { // mwt in p[Cs]
          Path P2 = mwt.getReturnPath(); // P2 = mwt.P
-         MethodWithType mwt2 = p.get(CsP.getPath())._getMwt(mwt.getMs()); // mwt2? = p[P](mwt.ms)
+         MethodWithType mwt2 = p.extractClassB(CsP.getPath())._getMwt(mwt.getMs()); // mwt2? = p[P](mwt.ms)
          if (P2.tryOuterNumber() == 0 && mwt2 != null) { // P2 = This0.Cs', mwt2? != empty
            res |= map.add(P2.getCBar(), mwt2.getReturnPath()); }} // map.add(P2.Cs -> mwt2.P)
         return res; };
 
       BiPredicate<CsPath, CsPzMap> addArgs = (CsP, map) -> {
         boolean res = false;
-        for (MethodWithType mwt : this.p.get(CsP.getPath()).mwts()) { // mwt in p[Cs]
+        for (MethodWithType mwt : this.p.fromClassB(CsP.getPath()).mwts()) { // mwt in p[Cs]
          for (int i = 0; i < mwt.getSize(); i++) { // i in 0..#(mwt.ms.xs)
            Path P2 = mwt.getPaths().get(i); // P2 = mwt.Pi
-           MethodWithType mwt2 = p.get(CsP.getPath())._getMwt(mwt.getMs()); // mwt2? = p[P](mwt.ms)
+           MethodWithType mwt2 = p.fromClassB(CsP.getPath())._getMwt(mwt.getMs()); // mwt2? = p[P](mwt.ms)
            if (P2.tryOuterNumber() == 0 && mwt2 != null) {
              res |= map.add(P2.getCBar(), mwt2.getPaths().get(i)); }}} // map.add(P2.Cs -> mwt2.Pi)
         return res; };
@@ -171,7 +171,7 @@ public class Redirect {
       //   C in dom(p[Cs])
       for (CsPath CsP : subtypeConstraints) { // Cs <= P
         if (supertypeConstraints.contains(CsP.getCs(), CsP.getPath())) { // P <= Cs
-          for (C C : this.p.top().getClassB(CsP.getCs()).Cdom()) {// C in dom(p[Cs])
+          for (C C : this.p.top().getClassB(CsP.getCs()).cDom()) {// C in dom(p[Cs])
             List<C> CsC = withAdd(CsP.getCs(), C);
             Path PC = CsP.getPath().pushC(C);
 
@@ -190,7 +190,7 @@ public class Redirect {
   Set<Path> superClasses(Collection<Path> Pz) {
     assert !Pz.isEmpty();
     return intersect(Pz.stream().map(P -> {
-      List<Path> r = p.get(P).getSuperPaths();
+      List<Path> r = p.fromClassB(P).getSuperPaths();
       r.add(P);
       r.add(Path.Any());
       return this.p.minimizeSet(r); })); }

@@ -95,13 +95,12 @@ public abstract class Methods implements Program{
     }
 
   private List<MethodWithType> methodsNoCache(Ast.Path p0){
-    if (p0.isPrimitive()){return Collections.emptyList();}
     Program p=this;
     ClassB cb0=p.extractClassB(p0);
     List<Ast.Type> ps=cb0.getSupertypes();
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
     List<Ast.Type> p1n=collect(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0)), ps));
-    assert Map.of(pi->p.extractClassB(pi.getPath()), p1n).stream().allMatch(cbi->cbi.isInterface());
+    assert Map.of(pi->p.extractClassB(pi.getPath()), p1n).stream().allMatch(ClassB::isInterface);
 //          ms1..msk={ms|p(Pi)(ms) is defined}
     HashMap<Ast.MethodSelector,List<ClassB.Member>> ms1k=new LinkedHashMap<>();
     for(ClassB.Member mij:cb0.getMs()){mij.match(

@@ -87,12 +87,6 @@ public Type visit(MCall s) {
   if(former==null){return null;}
   Path path=former.getPath();
   assert path!=null;
-  if (!path.isCore()){
-    if(!forceError){return null;}
-    throw new ErrorMessage.MethodNotPresent(path,s.getS(),s,s.getP(),
-      Collections.emptyList()
-      );
-    } 
   ClassB l=p.extractClassB(path);
   MethodWithType meth = (MethodWithType)l._getMember(s.getS());
   if(meth==null){

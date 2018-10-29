@@ -270,7 +270,6 @@ static private Paths reachableFromL(ClassB l,boolean forTyped){
         }
     //**if p(Pi).Cache=Typed, Pi is not Any
       @Override protected void liftP(Path s) {
-        if(s.isPrimitive()){return;}
         try{if(p.extractClassB(s).getPhase()==Phase.Typed){
           super.liftP(s); return;
           }}

@@ -76,7 +76,7 @@ public interface TypeSystem {
     return null;
     }
   public static void checkExists(Program p, Path pi){
-    if (pi.isCore()){p.extractClassB(pi);}
+    p.extractClassB(pi);
     }
   public static ErrorKind _subtype(Program p, Type tSub, Type tSuper) {
     checkExists(p,tSub.getPath());

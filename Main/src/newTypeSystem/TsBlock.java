@@ -227,7 +227,7 @@ return in1;
     }
     assert mdf!=Mdf.MutablePFwd && mdf!=Mdf.ImmutablePFwd;
     Type T0 = k.getT().withMdf(mdf);
-    if(mdf==Mdf.Class && !T0.getPath().isPrimitive()){
+    if(mdf==Mdf.Class && T0.getPath() != Path.Any()){
       Stream<MethodWithType> s = in.p.extractClassB(T0.getPath()).mwts().stream();
       if(s.noneMatch(mwt->mwt.getMt().getMdf()==Mdf.Class)){
         return new TErr(in,"Can not capture 'class "+T0.getPath()+"'; no class methods inside of "+T0.getPath(),null,ErrorKind.NoMostGeneralMdf);
