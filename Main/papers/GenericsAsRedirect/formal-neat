@@ -265,18 +265,26 @@ Define Collect(p; CCz) := CCz':
     p[Cs.ms].Pi = This0.Cs'
 
   // The ? rule
-  Collect(p; Cs <= P, CCz) = CCz'
+  Collect(p; Cs <= P) = P' <= Cs'
     This0.Cs' = p[Cs.sel].P
     P' = p[P.sel].P
-    CC in CCz' iff
-      p[P'].interface?=empty and
-        CC = P' <= Cs'
-      or P'' <= Cs' in CCz and p[P''].interface?=empty and
-        CC = Cs'<=P' in CCz'
-      or MustClass(Cs')
-        CC = Cs' <= P'
-      or sel' in dom(p[Cs']) and sel' in dom(p[P'])
-        CC = Cs' <= Origin(p; sel'; P')
+    p[P'].interface?=empty and
+
+
+  Collect(p; Cs <= P) = Cs' <= p[P.sel].P
+    This0.Cs' = p[Cs.sel].P
+    MustClass(Cs')
+
+  Collect(p; Cs <= P, P' <= Cs') = Cs'<=p[P.sel].P
+    This0.Cs' = p[Cs.sel].P
+    p[P'].interface?=empty
+
+
+  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
+    This0.Cs' = p[Cs.sel].P
+    P' = p[P.sel].P
+    sel' in dom(p[Cs']) intersect dom(p[P'])
+
 
   // Is this rulle insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
