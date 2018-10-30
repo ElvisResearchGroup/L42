@@ -2,6 +2,7 @@ package programReduction;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ast.Ast;
 import ast.Ast.C;
@@ -83,7 +84,7 @@ public interface Program {
     }
 
   default List<Path> minimizeList(Collection<Path> Ps) { return Ps.stream().map(this::minimize).collect(Collectors.toList()); }
-  default Set<Path> minimizeSet(Collection<Path> Pz) { return Pz.stream().map(this::minimize).collect(Collectors.toSet()); }
+  default Set<Path> minimizeSet(Stream<Path> Pz) { return Pz.map(this::minimize).collect(Collectors.toSet()); }
   default Path minimize(Path p) {
     Path pReduced=p;
     while(pReduced!=null){//reduce pi as much as possible

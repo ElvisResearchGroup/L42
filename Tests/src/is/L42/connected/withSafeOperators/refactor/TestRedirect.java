@@ -925,12 +925,15 @@ public static Program mkp(String...ss) {
   Path path2=Path.parse(_path2);
   if(!isError){
     ClassB expected=getClassB(true,p,"expected", _expected);
-    ClassB res=new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);
+    //ClassB res=new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);
+    ClassB res=Redirect.redirect(p,cb1, path1.getCBar(),path2);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);fail("error expected");}
-    catch(ClassUnfit err){
+    //try{new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);fail("error expected");}
+    //try{
+      Redirect.redirect(p,cb1, path1.getCBar(),path2);fail("error expected");//}
+    /*catch(ClassUnfit err){
       String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
       assertEquals(_expected,txt);
       }
@@ -945,7 +948,7 @@ public static Program mkp(String...ss) {
     catch(PathUnfit err){
       String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
       assertEquals(_expected,txt);
-      }
+      }*/
     }
   }
 }

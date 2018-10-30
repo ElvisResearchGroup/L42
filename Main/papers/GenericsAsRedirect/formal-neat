@@ -1,78 +1,78 @@
-------------- // TODO: Change V to 'R' ? Or perhaps 'M'?
-Module V: defines V, V(Cs)=P, V(L)=L', dom(V);
-using auxiliary V_Cs(e)=e', V_Cs(T)=T', V_Cs(M)=M', V(Cs=L)=L'
+-------------
+Module R: defines R, R(Cs)=P, R(L)=L', dom(R);
+using auxiliary R_Cs(e)=e', R_Cs(T)=T', R_Cs(M)=M', R(Cs=L)=L'
 
-V ::= (Cs->P)z // Redirection map
-// A V is a methematical partial function from the set of Cs to the set of P
+R ::= (Cs->P)z // Redirection map
+// A R is a methematical partial function from the set of Cs to the set of P
 
 //______
-//Define V.minimize(p)
+//Define R.minimize(p)
 //(Cs1->P1,...,Csn->Pn).minimize(p)=Cs1->p.minimize(P1), ..., Csn->p.minimize(Pn)
 
 ______
-Define dom(V)
+Define dom(R)
 dom(Cs1->P1, ..., Csn->Pn) = Cs1, ..., Csn
 
 ______
-Define V(Cs)=P
-V(Cs) = P
-  Cs->P in V // Cs renamed using V
+Define R(Cs)=P
+R(Cs) = P
+  Cs->P in R // Cs renamed using R
 ______
-// Apply V to all references to the class-names in dom(L)
+// Apply R to all references to the class-names in dom(L)
 // Note: this only applies to references (i.e. P's), the nested classes themselves (if present) are not redirected
-Define  V(L)=V(empty=L) // Note: the top-level 'class' has no name, so we use 'empty'
+Define  R(L)=R(empty=L) // Note: the top-level 'class' has no name, so we use 'empty'
 
 // Note: that Ls found found inside expressions (i.e. es) have no names, whereas the RHS of a nested-class definition do
 // However even an unanamed L may be inside a named L, and we need this information to understand what a path refers to.
 // As such we will just geneerate fresh names for unnamaed Ls, thus simplifying things by giving all L's a name.
 
-// We could also just use V_Cs(C: L) and V_Cs(L) to apply V to nested classes and L expressions (respectivley),
-// however this general V(Cs = L) function prevents duplication, and so the above two just forward to it
+// We could also just use R_Cs(C: L) and R_Cs(L) to apply R to nested classes and L expressions (respectivley),
+// however this general R(Cs = L) function prevents duplication, and so the above two just forward to it
 _________
-// Apply V to class 'Cs' which has body 'L'
-// We need to keep track of the Cs since paths are relative, in order to know if they refer to something in dom(V)
+// Apply R to class 'Cs' which has body 'L'
+// We need to keep track of the Cs since paths are relative, in order to know if they refer to something in dom(R)
 // we need to know where the is
-AuxDefine V(Cs = L)=L'
+AuxDefine R(Cs = L)=L'
 
-// Simply apply V to the Pz and Mz
-V(Cs = {interface? implements Pz Mz}) = {interface? implements V_Cs(Pz) V_Cs(Mz)}
-
-_________
-// Apply V to a member M that was found in nested class Cs
-AuxDefine V_Cs(M)=M'
-
-// Case for methods, apply V to all types, paths and expressions
-V_Cs(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
-  refine? mdf method V_Cs(T) m(V_Cs(T1) x1,..,V_Cs(Tn) xn) exception V_Cs(Pz) V_Cs(e?)
-
-// Case for nested classes, apply V to the library literal, giving it the appropriate name
-V_Cs(C: L) = C: V(Cs.C = L) // Apply V to a nested class, which has name C and is in Cs
-_________
-// Apply V to an e, which was found in nested class Cs
-AuxDefine V_Cs(e)=e'
-V_Cs(L) = V(Cs.C = L), for fresh C
-// TODO: Other kinds of expressions (just apply V_Cs to all e, L, T and P inside)
+// Simply apply R to the Pz and Mz
+R(Cs = {interface? implements Pz Mz}) = {interface? implements R_Cs(Pz) R_Cs(Mz)}
 
 _________
-AuxDefine V_Cs(T)=T'
-// Apply V to a type, by just applying it to the mentioned path
-V_Cs(mdf P) = mdf V_Cs(P)
+// Apply R to a member M that was found in nested class Cs
+AuxDefine R_Cs(M)=M'
+
+// Case for methods, apply R to all types, paths and expressions
+R_Cs(refine? mdf method T m(T1 x1,..,Tn xn) exception Pz e?) =
+  refine? mdf method R_Cs(T) m(R_Cs(T1) x1,..,R_Cs(Tn) xn) exception R_Cs(Pz) R_Cs(e?)
+
+// Case for nested classes, apply R to the library literal, giving it the appropriate name
+R_Cs(C: L) = C: R(Cs.C = L) // Apply R to a nested class, which has name C and is in Cs
+_________
+// Apply R to an e, which was found in nested class Cs
+AuxDefine R_Cs(e)=e'
+R_Cs(L) = R(Cs.C = L), for fresh C
+// TODO: Other kinds of expressions (just apply R_Cs to all e, L, T and P inside)
 
 _________
-// Apply V to the path P that we found in Cs
-// If a prefix of P refers to something in the domain of V, we will redirect it
+AuxDefine R_Cs(T)=T'
+// Apply R to a type, by just applying it to the mentioned path
+R_Cs(mdf P) = mdf R_Cs(P)
+
+_________
+// Apply R to the path P that we found in Cs
+// If a prefix of P refers to something in the domain of R, we will redirect it
 // Otherwise we will leave it untouched
-AuxDefine V_Cs(P)=P' // P found in Cs is renamed to P'
+AuxDefine R_Cs(P)=P' // P found in Cs is renamed to P'
 
-// We found P in Cs (of length k), so give it to V (which is defined relative to This0, but we are in This0.Cs)
+// We found P in Cs (of length k), so give it to R (which is defined relative to This0, but we are in This0.Cs)
 // and from the result (since the start, This0, is actually Thisk from the point of view of This0.Cs,
 // which is where we found the original P)
-V_Cs(P) = V(Cs')[from Thisk]
+R_Cs(P) = R(Cs')[from Thisk]
     where Cs = C1...Ck
     P[from This0.CS] = This0.Cs'
 
 otherwise
-V(P in Cs) = P
+R(P in Cs) = P
 
 // Csz' is the set of nested class names that will be redirected when all the Csz are redirected from L
 // It is the transitive closure of apply 'Reachables' to each class mentioned in Csz
@@ -88,35 +88,35 @@ Cs2 in RedirectSet(L; Csz)
   This0.Cs2 in Reachables(L[Cs1]) // TODO: Do a p.minimize?
 
 ==================================================================
-// Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the V mapping
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = V(p'.top()[remove Csz]) // Remove the things that will be redirected away
+// Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the R mapping
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = R(p'.top()[remove Csz]) // Remove the things that will be redirected away
   empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
   p' = p.evilPush(L) // to simplify everything, just make L the new top
   forall Cs in RedirectSet(L, Cs1, ..., Csn):
     Redirectable(L[Cs]) // Check that the source is valid
 
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-  ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = V
+  ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
 
 Required properties of a ChooseRedirect function:
-ChooseRedirect is a function from p*V->V' such that
-  ChooseRedirect(p,V')=V'
-  forall p' ~V~ p: ChooseRedirect(p',V)=V'
-  ValidRedirect(p,V')
+ChooseRedirect is a function from p*R->R' such that
+  ChooseRedirect(p,R')=R'
+  forall p' ~R~ p: ChooseRedirect(p',R)=R'
+  ValidRedirect(p,R')
   // We should try and prove that the above definition is equivalent to one where we replace the ValidRedirect check
   // with a meta-level soudness check (I'm not certain though)
 ______
-Define ValidRedirect(p,V,V')
-  V subseteq V'
-  dom(V') = RedirectSet(p.top(); dom(V))
-  forall P in ran(V'):
+Define ValidRedirect(p,R,R')
+  R subseteq R'
+  dom(R') = RedirectSet(p.top(); dom(R))
+  forall P in ran(R'):
     p.minimize(P)=P
     P not of form This0._
     p|-p(P):OK //P well typed
-  forall Cs in dom(V'):
+  forall Cs in dom(R'):
     Cs not empty
-    p|- V'(Cs); p[V'(Cs)] <= Cs; V'(p[Cs])
-    forall C in dom(p(Cs)): V'(Cs.C) = V'(Cs).C
+    p|- R'(Cs); p[R'(Cs)] <= Cs; R'(p[Cs])
+    forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
     Redirectable(p.top()(Cs))
 
 // Whether the class This0.Cs can be redirected away
@@ -134,7 +134,7 @@ Define Redirectable(L) // L42 only
 // would also type-check against B
 Define p|- P; {interafce?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
   // Check that all the interfaces the LHS implements are also implemented by the RHS
-  Pz,Any subseteq_p Supertypes(p; Pz') //Note: Using supertypes (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
+  Pz subseteq_p SuperClasses(p; Pz') //Note: Using SuperClasses (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
 
   // If the LHS is not an interface
   if interface?=empty:
@@ -155,9 +155,9 @@ Define p|- P; {interafce?' implements Pz' mwtz', ncz'} <= Cs; {interface? implem
 
 --------------------------------------------
 
-p' ~V~ p  iff  ReduceProblem(p; V)=ReduceProblem(p'; V)
-ReduceProblem(p; V) = p[only This0.Cs1, ..., This0.Csn, ReachableSet(p; ran(V))]
-    Cs1, ..., Csn = RedirectSet(p.top(); dom(V))
+p' ~R~ p  iff  ReduceProblem(p; R)=ReduceProblem(p'; R)
+ReduceProblem(p; R) = p[only This0.Cs1, ..., This0.Csn, ReachableSet(p; ran(R))]
+    Cs1, ..., Csn = RedirectSet(p.top(); dom(R))
 
 // The set of paths referenced in the signatures of each P, L and mwt (excluding nested classes)
 Define Reachables(p; P) = Pz, Reachables(L) = Pz, Reachables(Mz) = Pz
@@ -212,11 +212,11 @@ Define Internal(Pz) = Csz
 // Note: I assume that all paths mentioned in a CCz have been p.minimized
 // Note: the 'interface' constraint currently only benifits early error detection, as we can't use it to infer any more constraints (or can we?)
 
-ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = V'
+ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = R'
   CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
   CCz = CollectAll(p; CCz0)
-  V' = ChooseV(p; CCz)
-  ValidRedirect(p; V; V') // TODO: Do something more efficient?
+  R' = ChooseR(p; CCz)
+  ValidRedirect(p; R; R') // TODO: Do something more efficient?
 
 CC ::= Cs <= P | P <= Cs // | Cs in Pz  | interface Cs | class Cs
 
@@ -246,7 +246,7 @@ Define Collect(p; CCz) := CCz':
 
   Collect(p; P <= Cs) = Cs <= P'
   	This0.Cs' in p[Cs].Pz
-    P' in Supertypes(p; P)
+    P' in SuperClasses(p; P)
     dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
 
   Collect(p; P <= Cs) = p[P.ms].P <= Cs'
@@ -292,41 +292,45 @@ Define Collect(p; CCz) := CCz':
   Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
     C in dom(p[Cs])
 
+Origin(p; sel; P) = P'
+  forall P'' in Supertypes(p; P) where sel in dom [P'']
+     p |- P'' <= P'
+
 // TODO: Do something with exception specs,
 // Specifically if we define:
 //   p |- Pz throws Pz' iff
-//     forall P in Pz: Supertypes(p; P) intersects Pz'
+//     forall P in Pz: SuperClasses(p; P) intersects Pz'
 // Then:
-//    p |- V(p[Cs.ms].Pz) throws p[V(Cs).ms].Pz
+//    p |- R(p[Cs.ms].Pz) throws p[R(Cs).ms].Pz
 //    if p |- P <= P', then p |- p[P.ms].Pz throws p[P'.ms].Pz
 
-Auxilary: Supertypes(p; Pz) = intersect {p.minimize(p[P].Pz U {P, Any}) | P in Pz}
+Auxilary: SuperClasses(p; Pz) = intersect {p.minimize(p[P].Pz U {P, Any}) | P in Pz}
 
 MostSpecific(p; Pz) = P
    P in Pz
-   Pz subseteq Supertypes(p; P)
+   Pz subseteq SuperClasses(p; P)
    // Note: P will be unique in terms of p.equiv, since any other solution P' is in Pz
-   // so P' in Supertypes(p; P), and since P in Pz, P in Supertypes(p; P')
+   // so P' in SuperClasses(p; P), and since P in Pz, P in SuperClasses(p; P')
    // Thus P <= P', and P' <= P
 
-Define ChooseV(p; CCz) := V
-  // Note: these definitions use well-formdness of V's, namely V1, V2 is ill-formed
-  // if dom(V1) and dom(V2) are not disjoint, thus only one rule below can be applied
+Define ChooseR(p; CCz) := R
+  // Note: these definitions use well-formdness of R's, namely R1, R2 is ill-formed
+  // if dom(R1) and dom(R2) are not disjoint, thus only one rule below can be applied
   // for each Cs
   // Marco wants to delete this rule, Isaac dosn't
-  ChooseV(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseV(p; CCz)
+  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
     P = MostSpecific(p; P0,...,Pn)
 
-  ChooseV(P; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz), Cs -> P, ChooseV(p; CCz)
-    Pz = Supertypes(p; P1, ..., Pn)
-    Pz' = { P in Pz | {P'1, ..., P'k} subseteq Supertypes(p; P)}
+  ChooseR(P; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz), Cs -> P, ChooseR(p; CCz)
+    Pz = SuperClasses(p; P1, ..., Pn)
+    Pz' = { P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
     // Pz' is the set of possible solutions to the above constraints
     // if k = 0, then Pz' = Pz
 
     Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
     P = MostSpecific(p; Pz'')
 
-   ChooseV(p; CCz) = empty
+   ChooseR(p; CCz) = empty
      otherwise
 
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
@@ -337,30 +341,30 @@ PossibleRedirect(p; Cs; P) iff
     if MustClass(p; Cs)
         p[P].interface? = empty
     dom(p[Cs]) subseteq dom(p[P])
-    // TODO: Refine this more?
+    // TODO: Refine this more? For example, e.g. by looking at external paths as well?
 --------------------------
 // Some classes of ChooseRedirect functions
 
-UniqueR(p, V1) = V2
-  forall p' ~V1~ p, V2 = MostSpecific(p'; {V | ValidRedirect(p'; V1; V)})
-  forall p' superset p, V2 = MostSpecific(p'; {V | ValidRedirect(p'; V1; V)})
+UniqueR(p, R1) = R2
+  forall p' ~R1~ p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
+  forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
 
-define MostSpecific(p; Vz) = V
-  V in Vz,
-  forall Cs in dom(V), V' in Vz:
-    p |- V(Cs) <= V'(Cs)
+define MostSpecific(p; Rz) = R
+  R in Rz,
+  forall Cs in dom(R), R' in Rz:
+    p |- R(Cs) <= R'(Cs)
 
 R0: always undefined
 
-R1: r(p, V) = V' IFF V = V' and ValidRedirect(p; V; V)// assert ValidRedirect(ReduceProblem(p; V); V; V)
+R1: r(p, R) = R' IFF R = R' and ValidRedirect(p; R; R)// assert ValidRedirect(ReduceProblem(p; R); R; R)
 
-R2: if r(p, V) = V' then V' = UniqueR(p, V) and not R3// weaker than 3
+R2: if r(p, R) = R' then R' = UniqueR(p, R) and not R3// weaker than 3
   // if it suceeds, the answer is unqiue
 
-R3: r(p; V) = UniqueR(p, V) // what we now want?
+R3: r(p; R) = UniqueR(p, R) // what we now want?
 
-R4: if UniqueR(p, V) = V' then r(p, V) = V'
+R4: if UniqueR(p, R) = R' then r(p, R) = R'
   // it always suceeds if their is a unique result but solves some ambiguites
-  // same as if r(p, V) is undefined, exists a p' ~V~p such that there is no *unique* V' such that ValidRedirect(p',V, V')
+  // same as if r(p, R) is undefined, exists a p' ~R~p such that there is no *unique* R' such that ValidRedirect(p',R, R')
 
 ------------------
