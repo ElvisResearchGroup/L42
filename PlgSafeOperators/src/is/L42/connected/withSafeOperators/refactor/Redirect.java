@@ -47,8 +47,8 @@ public class Redirect {
     assert dest.isCore() || dest.isPrimitive():
       dest;
     if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}
-    //return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
-    return redirect(pData.p, that, src, dest);
+    return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
+    //return redirect(pData.p, that, src, dest);
     }
 
   Program p;
