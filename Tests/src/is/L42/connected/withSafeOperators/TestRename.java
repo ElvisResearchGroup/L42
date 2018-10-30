@@ -84,7 +84,7 @@ public class TestRename {
           new RenameMethods().addRenameJ(path, ms1, ms2).actP(Program.emptyLibraryProgram(), cb1);
           fail("error expected");
         } catch (PathUnfit|SelectorUnfit|MethodClash|ClassUnfit err) {
-          assertEquals(_expected, err.getClass().getName());
+          assertEquals(_expected, ((Object)err).getClass().getName());
         }
       }
     }

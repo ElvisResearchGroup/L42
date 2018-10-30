@@ -99,7 +99,7 @@ public class TestWither{
       fail("error expected");
       }
     catch(ClassUnfit|PathUnfit | SelectorUnfit | MethodUnfit err){
-      assertEquals(_expected,err.getClass().getName());
+      assertEquals(_expected,((Object)err).getClass().getName());
     }
   }
 }

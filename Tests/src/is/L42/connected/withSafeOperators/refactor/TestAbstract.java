@@ -70,7 +70,7 @@ public static class TestAbstractMeth {//add more test for error cases
   else{
     try{ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms,null);fail("error expected");}
     catch(SelectorUnfit| PathUnfit| MethodClash err){
-      assertEquals(_expected,err.getClass().getName());
+      assertEquals(_expected,((Object)err).getClass().getName());
     }
   }
 }
@@ -118,7 +118,7 @@ public static class TestMoveMeth {//add more test for error cases
   else{
     try{ToAbstract.toAbstractAux(Program.emptyLibraryProgram(),cb1, path, ms1,ms2);fail("error expected");}
     catch(SelectorUnfit| PathUnfit| MethodClash err){
-      assertEquals(_expected,err.getClass().getName());
+      assertEquals(_expected,((Object)err).getClass().getName());
     }
   }
 }
@@ -244,7 +244,7 @@ public static class TestAbstractClass {//add more test for error cases
       AbstractClass.toAbstract(Program.emptyLibraryProgram(),cb1, path);
       fail("error expected");}
     catch(PathUnfit | PrivacyCoupuled err){
-      assertEquals(err.toString(),_expected);
+      assertEquals(((Object)err).toString(),_expected);
       }
   }
 }

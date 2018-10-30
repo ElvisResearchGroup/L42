@@ -290,7 +290,7 @@ public class TestInvariantClose{
       fail("error expected");
       }
     catch(ClassUnfit|PathUnfit err){
-      assertEquals(_expected,err.getClass().getName());
+      assertEquals(_expected,((Object)err).getClass().getName());
     }
   }
 }
