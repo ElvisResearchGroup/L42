@@ -46,7 +46,6 @@ public class Redirect {
   public static ClassB redirectJ(PData pData,ClassB that,List<C> src,ast.Ast.Path dest) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit{
     assert dest.isCore() || dest.isPrimitive():
       dest;
-    if(dest.isCore()){dest=dest.setNewOuter(dest.outerNumber()+1);}
     return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
     //return redirect(pData.p, that, src, dest);
     }
@@ -76,7 +75,7 @@ public class Redirect {
     // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
     //    ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
     R = redirecter.chooseRedirect(new PathMap(R.stream().map(
-        CsP -> new CsPath(CsP.getCs(), p.minimize(CsP.getPath()/*From.fromP(CsP.getPath(), Path.outer(1))*/))
+        CsP -> new CsPath(CsP.getCs(), p.minimize(From.fromP(CsP.getPath(), Path.outer(1))))
     ).collect(Collectors.toList())));
 
     // R(p'.top()[remove Csz])
@@ -202,6 +201,8 @@ public class Redirect {
   void collect() {
     boolean progress = false; // Have we done something?
     do {
+      progress = false;
+        System.out.println("ISAAC: Collecting a while...");
       // Collect(p; Cs <= P) = P <= Cs
       //   p[P].interface? = empty
       for (var CsP : subtypeConstraints) { // Cs <= P

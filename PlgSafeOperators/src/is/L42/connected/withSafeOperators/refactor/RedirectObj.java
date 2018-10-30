@@ -54,7 +54,9 @@ private List<CsPath> verified;
   public ClassB redirect(Program p, List<Ast.C> internal,Path external) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit{
     //call redirectOk, if that is ok, no other errors?
     //should cb be normalized first?
+    if (external.isCore()) external = external.setNewOuter(external.outerNumber()+1);
     assert external.isPrimitive() || external.outerNumber()>0;
+
     p=p.evilPush(top);
     redirectOk(p,internal,external);
     return Redirect.applyRedirect(p, new PathMap(verified));
