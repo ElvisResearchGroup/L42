@@ -61,13 +61,14 @@ public class Redirect {
 
   enum ClassKind { Final, Interface, Class }
 
+  Redirect(Program p) { this.p = p; }
   static ClassB redirect(Program p, ClassB L, List<C> src, Path dest) { return redirect(p, L, new PathMap(List.of(new CsPath(src, dest)))); }
-  static ClassB redirect(Program p, ClassB L, PathMap R) {
+  static ClassB redirect(Program p_, ClassB L, PathMap R) {
+    var p = p_.evilPush(L);
     // TODO: Check that empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
-    var redirecter = new Redirect();
+    var redirecter = new Redirect(p);
 
     //p' = p.evilPush(L) // to simplify everything, just make L the new top
-    redirecter.p = p.evilPush(L);
 
     // TODO: forall Cs in RedirectSet(L, Cs1, ..., Csn):
     //      Redirectable(L[Cs]) // Check that the source is valid
@@ -75,7 +76,7 @@ public class Redirect {
     // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
     //    ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
     R = redirecter.chooseRedirect(new PathMap(R.stream().map(
-        CsP -> new CsPath(CsP.getCs(), p.minimize(From.fromP(CsP.getPath(), Path.outer(1))))
+        CsP -> new CsPath(CsP.getCs(), p.minimize(CsP.getPath()/*From.fromP(CsP.getPath(), Path.outer(1))*/))
     ).collect(Collectors.toList())));
 
     // R(p'.top()[remove Csz])
@@ -404,6 +405,12 @@ class CsPzMap implements Iterable<CsPath>
   // Cs |-> Pz
   // (Cs, P)z
   Map<List<C>, Set<Path>> map = new HashMap<>();
+
+  @Override public String toString() {
+    return this.map.entrySet().stream().map(CsPz -> PathAux.as42Path(CsPz.getKey()) + "->" +
+      "{" + CsPz.getValue().stream().map(Object::toString).collect(Collectors.joining(",")) + "}"
+    ).collect(Collectors.joining(",")); }
+
   CsPzMap() { }
   CsPzMap(CsPzMap other) {this.map = new HashMap<>(other.map); }
   CsPzMap(List<CsPath> CsPz) { this(); for (var CsP : CsPz) { this.add(CsP); } }

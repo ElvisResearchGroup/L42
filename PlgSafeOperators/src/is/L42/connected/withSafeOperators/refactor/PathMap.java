@@ -17,6 +17,9 @@ import programReduction.Program;
 
 public class PathMap implements Iterable<CsPath> {
   Map<List<C>, Path> map;
+
+  @Override public String toString() { return this.stream().map(Object::toString).collect(Collectors.joining(",")); }
+
   public PathMap() { this.map = new HashMap<>(); }
   public PathMap(Map<List<C>, Path> map) { this.map = new HashMap<>(map); }
 

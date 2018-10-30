@@ -149,7 +149,6 @@ public interface Program {
     for(int i=0;i<p.outerNumber();i++){res=res.pop();}
     return res.navigate(p.getCBar());
   }
-  default ExpCore.ClassB fromClassB(Ast.Path P) { return From.from(this.extractClassB(P), P); }
   default ExpCore.ClassB extractClassB(Ast.Path p){
     if (p.equals(Path.Any())) {
       return ClassB.Any; }
@@ -321,7 +320,7 @@ class EvilPushed extends Methods{
   public Program updateTop(ClassB l) {return new EvilPushed(l,former);}
 
   public Path _reducePath(Path p) {
-    if(p.outerNumber()>1){
+    if(p.tryOuterNumber()>1){
       Path p1=p.setNewOuter(p.outerNumber()-1);
       Path p2=this.pop()._reducePath(p1);
       if(p2==null){return null;}

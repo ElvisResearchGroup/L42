@@ -25,6 +25,7 @@ import ast.Ast.MethodSelector;
 import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import programReduction.Program;
+import tools.LambdaExceptionUtil;
 
 @RunWith(Parameterized.class)
 public class TestRedirect {
@@ -914,7 +915,7 @@ public static Program mkp(String...ss) {
   }
 
 @Test  public void test() throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit {
-
+  LambdaExceptionUtil.throwAsUnchecked(new Exception("Test redirect has been turned off"));
   TestHelper.configureForTest();
   Program p;
   if(_p instanceof String[]) {p=TestHelper.getProgram((String[])_p);}
