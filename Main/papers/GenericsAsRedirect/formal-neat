@@ -244,10 +244,9 @@ Define Collect(p; CCz) := CCz':
 2: Collect(p; P <= Cs) = Cs <= P
 	 MustClass(p; Cs)
 
-3: Collect(p; P <= Cs) = Cs <= P'
-  	This0.Cs' in p[Cs].Pz
-    P' in SuperClasses(p; P)
-    dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
+3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
+       This0.Cs' in p[Cs].Pz
+       Pz = {P' in SuperClasses(p; P) | msdom(p[P') = msdom(p[Cs'])}
 
 4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
@@ -280,8 +279,24 @@ Define Collect(p; CCz) := CCz':
     P' = p[P.sel].P
     sel' in dom(p[Cs']) intersect dom(p[P'])
 
+8'a:  Collect(p; Cs <= P) = P' <= Cs'
+    This0.Cs' in p[Cs].Pz
+    P' in SuperClass(p; P)
+    p[P'].interface?=empty and
+8'b:  Collect(p; Cs <= P) = Cs' <= P'
+    This0.Cs' in p[Cs].Pz
+    P' in SuperClass(p; P)
+    MustClass(Cs')
+8'c:  Collect(p; Cs <= P, P'' <= Cs') = Cs'<=P'
+    This0.Cs' in p[Cs].Pz
+    P' in SuperClass(p; P)
+    p[P''].interface?=empty
+8'd:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
+    This0.Cs' in p[Cs].Pz
+    P' in SuperClass(p; P)
+    sel' in dom(p[Cs']) intersect dom(p[P'])
 
-  // Is this rulle insufficient? What if we have Cs <= P,
+  // Is this rule insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
 9:  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
