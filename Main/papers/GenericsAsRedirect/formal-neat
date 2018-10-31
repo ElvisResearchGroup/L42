@@ -330,6 +330,10 @@ MostSpecific(p; Pz) = P
    // so P' in SuperClasses(p; P), and since P in Pz, P in SuperClasses(p; P')
    // Thus P <= P', and P' <= P
 
+MostGeneral(p; Pz) = P
+   P in Pz
+   {P} = SuperClasses(p; Pz)
+
 Define ChooseR(p; CCz) := R
   // Note: these definitions use well-formdness of R's, namely R1, R2 is ill-formed
   // if dom(R1) and dom(R2) are not disjoint, thus only one rule below can be applied
