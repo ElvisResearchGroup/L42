@@ -331,8 +331,7 @@ MostSpecific(p; Pz) = P
    // Thus P <= P', and P' <= P
 
 MostGeneral(p; Pz) = P
-   P in Pz
-   {P} = SuperClasses(p; Pz)
+   {P} = SuperClasses(p; Pz) intersect Pz
 
 Define ChooseR(p; CCz) := R
   // Note: these definitions use well-formdness of R's, namely R1, R2 is ill-formed
