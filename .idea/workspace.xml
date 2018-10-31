@@ -11,6 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="426d4399-8f5d-46a4-8b7b-8df28f4246f8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Tests/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat" beforeDir="false" afterPath="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" afterDir="false" />
@@ -35,10 +37,10 @@
     <session id="1711427538">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="18" />
-          <entry key="project.open.time.10" value="4" />
+          <entry key="project.closed" value="21" />
+          <entry key="project.open.time.10" value="5" />
           <entry key="project.open.time.11" value="1" />
-          <entry key="project.open.time.12" value="3" />
+          <entry key="project.open.time.12" value="4" />
           <entry key="project.open.time.14" value="2" />
           <entry key="project.open.time.16" value="1" />
           <entry key="project.open.time.17" value="1" />
@@ -51,7 +53,7 @@
           <entry key="project.open.time.7" value="2" />
           <entry key="project.open.time.8" value="3" />
           <entry key="project.open.time.9" value="4" />
-          <entry key="project.opened" value="30" />
+          <entry key="project.opened" value="32" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -62,7 +64,7 @@
           <entry key="class" value="3" />
           <entry key="formal-neat" value="7" />
           <entry key="gitignore" value="1" />
-          <entry key="java" value="257" />
+          <entry key="java" value="263" />
           <entry key="md" value="1" />
           <entry key="project" value="1" />
           <entry key="txt" value="15" />
@@ -73,7 +75,7 @@
         <counts>
           <entry key="CLASS" value="3" />
           <entry key="Eclipse" value="1" />
-          <entry key="JAVA" value="257" />
+          <entry key="JAVA" value="263" />
           <entry key="PLAIN_TEXT" value="74" />
           <entry key="Scratch" value="6" />
           <entry key="XML" value="2" />
@@ -82,8 +84,8 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="L42" value="3762" />
-          <entry key="formal-neat" value="33212" />
-          <entry key="java" value="32250" />
+          <entry key="formal-neat" value="35445" />
+          <entry key="java" value="34333" />
           <entry key="project" value="12" />
           <entry key="txt" value="3384" />
         </counts>
@@ -91,8 +93,8 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Eclipse" value="12" />
-          <entry key="JAVA" value="32250" />
-          <entry key="PLAIN_TEXT" value="40235" />
+          <entry key="JAVA" value="34333" />
+          <entry key="PLAIN_TEXT" value="42468" />
           <entry key="Scratch" value="123" />
         </counts>
       </usages-collector>
@@ -133,14 +135,14 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
+    <splitter split-orientation="horizontal" split-proportion="0.5646214">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="528">
-                  <caret line="283" column="10" selection-start-line="283" selection-start-column="10" selection-end-line="283" selection-end-column="10" />
+                <state relative-caret-position="237">
+                  <caret line="232" column="42" selection-start-line="232" selection-start-column="42" selection-end-line="232" selection-end-column="42" />
                   <folding>
                     <element signature="imports" expanded="true" />
                     <element signature="method#redirectS#0;class#Redirect#0" expanded="true" />
@@ -153,7 +155,8 @@
                     <element signature="method#chooseRedirect#0;class#Redirect#0" expanded="true" />
                     <element signature="method#ChooseR#0;class#Redirect#0" expanded="true" />
                     <element signature="method#possibleRedirect#0;class#Redirect#0" expanded="true" />
-                    <element signature="method#mostSpecific#0;class#Redirect#0" expanded="true" />
+                    <element signature="method#_mostSpecific#0;class#Redirect#0" expanded="true" />
+                    <element signature="method#_mostGeneral#0;class#Redirect#0" expanded="true" />
                     <element signature="method#computeRedirectSet#0;class#Redirect#0" expanded="true" />
                     <element signature="method#mustClass#0;class#Redirect#0" expanded="true" />
                     <element signature="method#mustInterface#0;class#Redirect#0" expanded="true" />
@@ -179,7 +182,6 @@
                     <element signature="method#CsPzMap#2;class#CsPzMap#0" expanded="true" />
                     <element signature="method#add#0;class#CsPzMap#0" expanded="true" />
                     <element signature="method#add#1;class#CsPzMap#0" expanded="true" />
-                    <element signature="e#17519#17525#0" expanded="true" />
                     <element signature="method#stream#0;class#CsPzMap#0" expanded="true" />
                     <element signature="method#values#0;class#CsPzMap#0" expanded="true" />
                     <element signature="method#iterator#0;class#CsPzMap#0" expanded="true" />
@@ -189,37 +191,60 @@
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/AbstractCollection.java">
+            <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="378">
-                  <caret line="304" column="5" lean-forward="true" selection-start-line="304" selection-start-column="5" selection-end-line="304" selection-end-column="5" />
+                <state relative-caret-position="668">
+                  <caret line="103" selection-start-line="103" selection-end-line="103" />
                   <folding>
-                    <element signature="method#add#0;class#AbstractCollection#0" expanded="true" />
+                    <element signature="imports" expanded="true" />
+                    <element signature="method#toString#0;class#PathMap#0" expanded="true" />
+                    <element signature="method#PathMap#0;class#PathMap#0" expanded="true" />
+                    <element signature="method#PathMap#1;class#PathMap#0" expanded="true" />
+                    <element signature="method#PathMap#2;class#PathMap#0" expanded="true" />
+                    <element signature="method#makeMap#0;class#PathMap#0" expanded="true" />
+                    <element signature="method#PathMap#3;class#PathMap#0" expanded="true" />
+                    <element signature="method#toList#0;class#PathMap#0" expanded="true" />
+                    <element signature="method#stream#0;class#PathMap#0" expanded="true" />
+                    <element signature="method#iterator#0;class#PathMap#0" expanded="true" />
+                    <element signature="method#dom#0;class#PathMap#0" expanded="true" />
+                    <element signature="class#1991:3870" expanded="true" />
+                    <element signature="method#liftP#0;class#1991:3870" expanded="true" />
+                    <element signature="method#remove#0;class#PathMap#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/Spliterators.java">
+            <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/CloneVisitor.java">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="174">
-                  <caret line="680" selection-start-line="680" selection-end-line="680" />
+                  <caret line="110" selection-start-line="110" selection-end-line="110" />
+                  <folding>
+                    <element signature="method#liftT#0;class#CloneVisitor#0" expanded="true" />
+                    <element signature="method#liftM#0;class#CloneVisitor#0" expanded="true" />
+                    <element signature="method#visit#2;class#CloneVisitor#0" expanded="true" />
+                    <element signature="method#liftMT#0;class#CloneVisitor#0" expanded="true" />
+                    <element signature="method#liftMembers#0;class#CloneVisitor#0" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/StreamSpliterators.java">
+            <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/CloneVisitorWithProgram.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="174">
-                  <caret line="293" column="27" selection-start-line="293" selection-start-column="27" selection-end-line="293" selection-end-column="27" />
-                  <folding>
-                    <element signature="class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-                    <element signature="method#doAdvance#0;class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-                    <element signature="method#fillBuffer#0;class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-                    <element signature="method#tryAdvance#0;class#WrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-                  </folding>
+                <state relative-caret-position="284">
+                  <caret line="59" selection-start-line="59" selection-end-line="59" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Main/src/tools/Map.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="96">
+                  <caret line="12" column="38" selection-start-line="12" selection-start-column="38" selection-end-line="12" selection-end-column="38" />
                 </state>
               </provider>
             </entry>
@@ -227,7 +252,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/HashMap.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="182">
+                <state relative-caret-position="289">
                   <caret line="1768" selection-start-line="1768" selection-end-line="1768" />
                   <folding>
                     <element signature="e#65967#67033#0" expanded="true" />
@@ -246,28 +271,244 @@
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Main/src/sugarVisitors/ToAst.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="182">
-                  <caret line="421" selection-start-line="421" selection-end-line="421" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="244">
-                  <caret line="246" column="27" selection-start-line="246" selection-start-column="27" selection-end-line="246" selection-end-column="27" />
+                <state relative-caret-position="265">
+                  <caret line="303" selection-start-line="303" selection-end-line="303" />
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/Main/src/ast/ExpCore.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="433">
+                  <caret line="897" selection-start-line="897" selection-end-line="897" />
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                    <element signature="method#toS#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withEsi#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#MCall#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withS#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDoc#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withEs#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withTypeRec#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withTypeOut#0;class#MCall#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withEsi#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#OperationDispatch#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withS#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDoc#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withEs#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#OperationDispatch#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#UpdateVar#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withVar#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDoc#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#UpdateVar#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#X#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#X#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withE#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDeci#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDeci#1;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#getT#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#Dec#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withVar#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#with_t#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withX#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#Dec#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#domDecs#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withE#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#On#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withKind#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withX#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withT#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#On#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#Block#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDoc#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDecs#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withOns#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withTypeOut#0;class#Block#0;class#ExpCore#0" expanded="true" />
+                    <element signature="e#27736#28117#0" expanded="true" />
+                    <element signature="e#28364#28801#0" expanded="true" />
+                    <element signature="e#28807#28995#0" expanded="true" />
+                    <element signature="e#29001#29178#0" expanded="true" />
+                    <element signature="e#29184#29287#0" expanded="true" />
+                    <element signature="e#29293#29378#0" expanded="true" />
+                    <element signature="e#29384#29459#0" expanded="true" />
+                    <element signature="e#29465#29546#0" expanded="true" />
+                    <element signature="e#29552#29651#0" expanded="true" />
+                    <element signature="e#29657#29781#0" expanded="true" />
+                    <element signature="e#29787#29940#0" expanded="true" />
+                    <element signature="e#29946#30135#0" expanded="true" />
+                    <element signature="e#30141#30247#0" expanded="true" />
+                    <element signature="e#30253#30373#0" expanded="true" />
+                    <element signature="e#30479#30650#0" expanded="true" />
+                    <element signature="e#30656#30839#0" expanded="true" />
+                    <element signature="e#30845#30977#0" expanded="true" />
+                    <element signature="e#30983#31102#0" expanded="true" />
+                    <element signature="e#31108#31244#0" expanded="true" />
+                    <element signature="e#31250#31346#0" expanded="true" />
+                    <element signature="e#31353#31659#0" expanded="true" />
+                    <element signature="e#31422#31550#0" expanded="true" />
+                    <element signature="e#31558#31653#0" expanded="true" />
+                    <element signature="e#31666#31868#0" expanded="true" />
+                    <element signature="e#31875#36572#0" expanded="true" />
+                    <element signature="e#32174#32253#0" expanded="true" />
+                    <element signature="e#32261#32416#0" expanded="true" />
+                    <element signature="e#32424#33077#0" expanded="true" />
+                    <element signature="e#33555#33876#0" expanded="true" />
+                    <element signature="e#33884#34213#0" expanded="true" />
+                    <element signature="e#34221#34558#0" expanded="true" />
+                    <element signature="e#34566#34748#0" expanded="true" />
+                    <element signature="e#34756#35742#0" expanded="true" />
+                    <element signature="e#35750#36315#0" expanded="true" />
+                    <element signature="e#36323#36566#0" expanded="true" />
+                    <element signature="e#36578#41328#0" expanded="true" />
+                    <element signature="e#36912#36997#0" expanded="true" />
+                    <element signature="e#37005#37160#0" expanded="true" />
+                    <element signature="e#37168#37821#0" expanded="true" />
+                    <element signature="e#38302#38632#0" expanded="true" />
+                    <element signature="e#38640#38969#0" expanded="true" />
+                    <element signature="e#38977#39323#0" expanded="true" />
+                    <element signature="e#39331#39522#0" expanded="true" />
+                    <element signature="e#39530#40510#0" expanded="true" />
+                    <element signature="e#40518#41071#0" expanded="true" />
+                    <element signature="e#41079#41322#0" expanded="true" />
+                    <element signature="e#41335#47722#0" expanded="true" />
+                    <element signature="e#41619#41734#0" expanded="true" />
+                    <element signature="e#41742#41829#0" expanded="true" />
+                    <element signature="e#41837#41992#0" expanded="true" />
+                    <element signature="e#42000#42077#0" expanded="true" />
+                    <element signature="e#42085#42162#0" expanded="true" />
+                    <element signature="e#42170#42299#0" expanded="true" />
+                    <element signature="e#42307#42439#0" expanded="true" />
+                    <element signature="e#42447#42514#0" expanded="true" />
+                    <element signature="e#42522#42611#0" expanded="true" />
+                    <element signature="e#42619#42711#0" expanded="true" />
+                    <element signature="e#42719#42801#0" expanded="true" />
+                    <element signature="e#42809#43504#0" expanded="true" />
+                    <element signature="e#44097#44432#0" expanded="true" />
+                    <element signature="e#44440#44780#0" expanded="true" />
+                    <element signature="e#44788#45124#0" expanded="true" />
+                    <element signature="e#45132#45347#0" expanded="true" />
+                    <element signature="e#45355#45551#0" expanded="true" />
+                    <element signature="e#45559#46748#0" expanded="true" />
+                    <element signature="e#46756#47439#0" expanded="true" />
+                    <element signature="e#47447#47716#0" expanded="true" />
+                    <element signature="class#_void#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#_void#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#_void#0;class#_void#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#_void#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#_void#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#_void#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#wrap#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#EPath#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withP#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#EPath#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#WalkBy#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#WalkBy#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#WalkBy#0;class#WalkBy#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#WalkBy#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#WalkBy#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#WalkBy#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#Using#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withEsi#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withPath#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withS#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withDoc#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withEs#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#Using#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#Signal#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withKind#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withTypeOut#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withTypeIn#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#Signal#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#accept#0;class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#Loop#0;class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#equals#0;class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#hashCode#0;class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#toString#0;class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#withInner#0;class#Loop#0;class#ExpCore#0" expanded="true" />
+                    <element signature="class#WithInner#0;class#ExpCore#0" expanded="true" />
+                    <element signature="method#wrapCast#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#checkIndex#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#onNestedNavigateToPathAndDo#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#onClassNavigateToPathAndDo#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#getIndex#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#getIndex#1;class#_Aux#0" expanded="true" />
+                    <element signature="method#getIndex#2;class#_Aux#0" expanded="true" />
+                    <element signature="method#getNested#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#getNestedList#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#getNestedList#1;class#_Aux#0" expanded="true" />
+                    <element signature="method#getClassB#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#withMember#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#_getMember#0;class#_Aux#0" expanded="true" />
+                    <element signature="method#isConsistent#0;class#_Aux#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="361">
-                  <caret line="361" column="37" lean-forward="true" selection-start-line="361" selection-start-column="9" selection-end-line="361" selection-end-column="37" />
+                <state relative-caret-position="203">
+                  <caret line="464" column="54" selection-start-line="464" selection-start-column="54" selection-end-line="464" selection-end-column="54" />
                   <folding>
                     <element signature="method#mkp#0;class#TestRedirect#0" expanded="true" />
                     <element signature="method#test#0;class#TestRedirect#0" expanded="true" />
@@ -276,24 +517,15 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Tests/src/helpers/TestHelper.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="174">
-                  <caret line="145" selection-start-line="145" selection-end-line="145" />
-                </state>
-              </provider>
-            </entry>
-          </file>
         </leaf>
       </split-first>
       <split-second>
-        <leaf>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="708">
-                  <caret line="289" column="3" selection-start-line="289" selection-start-column="3" selection-end-line="289" selection-end-column="3" />
+                <state relative-caret-position="177">
+                  <caret line="273" column="31" selection-start-line="273" selection-start-column="31" selection-end-line="273" selection-end-column="31" />
                 </state>
               </provider>
             </entry>
@@ -311,15 +543,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Reachables</find>
-      <find>ChooseR</find>
-      <find>mustInterface.test</find>
-      <find>subtype</find>
-      <find>sub</find>
-      <find>possible</find>
-      <find>mostspec</find>
-      <find>MostSpecific</find>
-      <find>chooseRedirect</find>
       <find>implements Member</find>
       <find>fromClassB</find>
       <find>from(</find>
@@ -340,7 +563,16 @@
       <find>ConcurrentModificationException</find>
       <find>RuntimeException</find>
       <find>Most Specific failed</find>
+      <find>MostSpecific</find>
+      <find>SuperClasses</find>
+      <find>Collect</find>
+      <find>mostGenera</find>
       <find>mostSpecific</find>
+      <find>Hello</find>
+      <find>hello</find>
+      <find>&lt;</find>
+      <find>&quot;&lt;</find>
+      <find>_most</find>
     </findStrings>
     <replaceStrings>
       <replace>mt</replace>
@@ -415,16 +647,15 @@
         <option value="$PROJECT_DIR$/Main/src/programReduction/CtxL.java" />
         <option value="$PROJECT_DIR$/Main/src/programReduction/Program.java" />
         <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/RedirectObj.java" />
-        <option value="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" />
         <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" />
         <option value="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat" />
+        <option value="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-82" />
-    <option name="width" value="1272" />
-    <option name="height" value="716" />
+    <option name="width" value="956" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -432,50 +663,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="L42" type="b2602c69:ProjectViewProjectNode" />
               <item name="L42" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="formal" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="papers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="papers" type="462c0819:PsiDirectoryNode" />
-              <item name="GenericsAsRedirect" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="coreVisitors" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="L42" type="b2602c69:ProjectViewProjectNode" />
@@ -524,6 +717,30 @@
               <item name="Tests" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="connected" type="462c0819:PsiDirectoryNode" />
+              <item name="withDatabase" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
+              <item name="L42" type="462c0819:PsiDirectoryNode" />
+              <item name="Tests" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="connected" type="462c0819:PsiDirectoryNode" />
+              <item name="withHtml" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
+              <item name="L42" type="462c0819:PsiDirectoryNode" />
+              <item name="Tests" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="connected" type="462c0819:PsiDirectoryNode" />
+              <item name="withNumbers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
+              <item name="L42" type="462c0819:PsiDirectoryNode" />
+              <item name="Tests" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="connected" type="462c0819:PsiDirectoryNode" />
               <item name="withSafeOperators" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -540,6 +757,7 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -551,7 +769,7 @@
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///root/L42/Main/srcLombok/ast/Ast.java" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="TEXT" />
     <property name="last_opened_file_path" value="/usr/share/java/hamcrest/core.jar!/" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15625" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
@@ -573,7 +791,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestRedirect (4)">
+  <component name="RunManager" selected="JUnit.TestRedirect">
     <configuration name="MultiMain" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="repl.MultiMain" />
       <module name="Tests" />
@@ -590,29 +808,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ReplMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="repl.ReplMain" />
+      <module name="L42_Main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in Tests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Tests" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestRedirect (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Tests" />
       <option name="PACKAGE_NAME" value="is.L42.connected.withSafeOperators.refactor" />
       <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
-      <option name="PARAMETERS" value="[1: line 161]" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestRedirect (3)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Tests" />
-      <option name="PACKAGE_NAME" value="is.L42.connected.withSafeOperators.refactor" />
-      <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
-      <option name="PARAMETERS" value="[15: line 234]" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestRedirect (4)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Tests" />
-      <option name="PACKAGE_NAME" value="is.L42.connected.withSafeOperators.refactor" />
-      <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
-      <option name="PARAMETERS" value="[28: line 351]" />
+      <option name="PARAMETERS" value="[6: line 201]" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -631,7 +846,7 @@
       <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
       <option name="METHOD_NAME" value="test" />
       <option name="TEST_OBJECT" value="method" />
-      <option name="PARAMETERS" value="[55: line 873]" />
+      <option name="PARAMETERS" value="[6: line 201]" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -652,52 +867,52 @@
       <item itemvalue="Application.Repl" />
       <item itemvalue="Application.MultiMain" />
       <item itemvalue="JAR Application.Lombok" />
+      <item itemvalue="Application.ReplMain" />
+      <item itemvalue="JUnit.All in Tests" />
       <item itemvalue="JUnit.TestRedirect" />
-      <item itemvalue="JUnit.TestRedirect.test" />
-      <item itemvalue="JUnit.TestRedirect (3)" />
       <item itemvalue="JUnit.TestRedirect (1)" />
-      <item itemvalue="JUnit.TestRedirect (4)" />
+      <item itemvalue="JUnit.TestRedirect.test" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestRedirect (4)" />
         <item itemvalue="JUnit.TestRedirect" />
         <item itemvalue="JUnit.TestRedirect (1)" />
-        <item itemvalue="JUnit.TestRedirect (3)" />
         <item itemvalue="JUnit.TestRedirect.test" />
+        <item itemvalue="JUnit.All in Tests" />
+        <item itemvalue="Application.ReplMain" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="TestRedirect_(1) - 2018.10.31 at 13h 19m 43s.xml">
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 16h 53m 56s.xml">
       <configuration name="TestRedirect (1)" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(1) - 2018.10.31 at 13h 19m 47s.xml">
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 16h 55m 12s.xml">
       <configuration name="TestRedirect (1)" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect - 2018.10.31 at 13h 19m 54s.xml">
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 16h 55m 15s.xml">
+      <configuration name="TestRedirect (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 16h 57m 17s.xml">
+      <configuration name="TestRedirect (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 16h 58m 14s.xml">
+      <configuration name="TestRedirect (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 17h 00m 35s.xml">
+      <configuration name="TestRedirect (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect_(1) - 2018.10.31 at 17h 02m 03s.xml">
+      <configuration name="TestRedirect (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect - 2018.10.31 at 17h 02m 19s.xml">
       <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(4) - 2018.10.31 at 13h 20m 12s.xml">
-      <configuration name="TestRedirect (4)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_(4) - 2018.10.31 at 13h 23m 57s.xml">
-      <configuration name="TestRedirect (4)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_(4) - 2018.10.31 at 13h 24m 16s.xml">
-      <configuration name="TestRedirect (4)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_(4) - 2018.10.31 at 13h 24m 28s.xml">
-      <configuration name="TestRedirect (4)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_(4) - 2018.10.31 at 13h 24m 36s.xml">
-      <configuration name="TestRedirect (4)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect - 2018.10.31 at 13h 24m 43s.xml">
+    <history-entry file="TestRedirect - 2018.10.31 at 17h 05m 13s.xml">
       <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(4) - 2018.10.31 at 13h 24m 53s.xml">
-      <configuration name="TestRedirect (4)" configurationId="JUnit" />
+    <history-entry file="TestRedirect - 2018.10.31 at 17h 15m 01s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -713,8 +928,8 @@
     <frame x="0" y="0" width="1920" height="1080" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.41283423" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19325961" />
+      <window_info auto_hide="true" id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="UI Designer" order="4" />
@@ -763,11 +978,15 @@
           <properties class="java.util.ConcurrentModificationException" package="java.util" />
           <option name="timeStamp" value="24" />
         </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="31" />
+        </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
-          <line>99</line>
+          <line>128</line>
           <properties />
-          <option name="timeStamp" value="26" />
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -777,6 +996,11 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>Pz3.collect(Collectors.toSet())</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>mustClass(List.of(new C(&quot;InnerA&quot;, 0)))</expression-string>
         <language-id>JAVA</language-id>
@@ -794,10 +1018,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="128">
           <caret line="32" column="21" selection-start-line="32" selection-start-column="21" selection-end-line="32" selection-end-column="21" />
-          <folding>
-            <element signature="method#tsUsing#0;class#TsOperations#0" expanded="true" />
-            <element signature="method#tsSignal#0;class#TsOperations#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -805,9 +1025,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="594" lean-forward="true" selection-start-line="594" selection-end-line="594" />
-          <folding>
-            <element signature="method#Cn#0;class#Cn#0;class#L42F#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -815,9 +1032,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
           <caret line="86" column="96" selection-start-line="86" selection-start-column="96" selection-end-line="86" selection-end-column="96" />
-          <folding>
-            <element signature="method#visitBase#0;class#PG#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -825,19 +1039,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="117">
           <caret line="262" column="93" selection-start-line="262" selection-start-column="93" selection-end-line="262" selection-end-column="93" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#ClassB#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#mwts#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#_getMember#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#_getMwt#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#onClassNavigateToPathAndDo#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#getNested#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#cDom#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#getSuperPaths#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#accept#0;class#ClassB#0;class#ExpCore#0" expanded="true" />
-            <element signature="method#_getMember#0;class#_Aux#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -845,11 +1046,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
           <caret line="71" column="37" selection-start-line="71" selection-start-column="15" selection-end-line="71" selection-end-column="37" />
-          <folding>
-            <element signature="docComment;method#hasNext#0;class#Iterator#0" expanded="true" />
-            <element signature="method#remove#0;class#Iterator#0" expanded="true" />
-            <element signature="method#forEachRemaining#0;class#Iterator#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -878,11 +1074,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="89">
           <caret line="704" column="4" selection-start-line="704" selection-start-column="4" selection-end-line="704" selection-end-column="4" />
-          <folding>
-            <element signature="docComment;method#copyOf#0;class#Set#0" expanded="true" />
-            <element signature="e#30107#30137#0" expanded="true" />
-            <element signature="method#copyOf#0;class#Set#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -904,12 +1095,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="720">
           <caret line="246" column="4" selection-start-line="246" selection-start-column="4" selection-end-line="246" selection-end-column="4" />
-          <folding>
-            <element signature="e#8454#9062#0" expanded="true" />
-            <element signature="e#8454#9379#0" expanded="true" />
-            <element signature="e#9385#9899#0" expanded="true" />
-            <element signature="e#9385#10182#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -925,13 +1110,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="163">
           <caret line="1768" selection-start-line="1768" selection-end-line="1768" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/CloneVisitorWithProgram.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -974,9 +1152,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="313">
           <caret line="150" column="12" selection-start-line="150" selection-start-column="12" selection-end-line="150" selection-end-column="12" />
-          <folding>
-            <element signature="method#test#0;class#TestRunner#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -987,11 +1162,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
           <caret line="29" selection-start-line="29" selection-end-line="29" />
-          <folding>
-            <element signature="method#collectAux#0;class#Methods#0" expanded="true" />
-            <element signature="method#collectAux#1;class#Methods#0" expanded="true" />
-            <element signature="method#methodsNoCache#0;class#Methods#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -999,9 +1169,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
           <caret line="51" column="208" lean-forward="true" selection-start-line="51" selection-start-column="208" selection-end-line="51" selection-end-column="208" />
-          <folding>
-            <element signature="method#toString#0;class#CtxL#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1012,29 +1179,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
-          <folding>
-            <element signature="method#toString#0;class#PathMap#0" expanded="true" />
-            <element signature="method#PathMap#0;class#PathMap#0" expanded="true" />
-            <element signature="method#PathMap#1;class#PathMap#0" expanded="true" />
-            <element signature="method#PathMap#2;class#PathMap#0" expanded="true" />
-            <element signature="method#makeMap#0;class#PathMap#0" expanded="true" />
-            <element signature="method#PathMap#3;class#PathMap#0" expanded="true" />
-            <element signature="method#toList#0;class#PathMap#0" expanded="true" />
-            <element signature="method#stream#0;class#PathMap#0" expanded="true" />
-            <element signature="method#iterator#0;class#PathMap#0" expanded="true" />
-            <element signature="method#dom#0;class#PathMap#0" expanded="true" />
-            <element signature="method#apply#0;class#PathMap#0" expanded="true" />
-            <element signature="method#remove#0;class#PathMap#0" expanded="true" />
-            <element signature="class#4169:4900" expanded="true" />
-            <element signature="method#manageNC#0;class#4169:4900" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Main/src/tools/Assertions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
@@ -1042,14 +1186,119 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/AbstractPipeline.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="521" selection-start-line="521" selection-end-line="521" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/From.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="73" selection-start-line="73" selection-end-line="73" />
+          <folding>
+            <element signature="method#From#0;class#From#0" expanded="true" />
+            <element signature="method#liftP#0;class#From#0" expanded="true" />
+            <element signature="method#visit#0;class#From#0" expanded="true" />
+            <element signature="method#normalizeShort#0;class#From#0" expanded="true" />
+            <element signature="method#fromPs#0;class#From#0" expanded="true" />
+            <element signature="method#fromP#0;class#From#0" expanded="true" />
+            <element signature="method#fromT#0;class#From#0" expanded="true" />
+            <element signature="method#from#0;class#From#0" expanded="true" />
+            <element signature="method#from#1;class#From#0" expanded="true" />
+            <element signature="method#from#3;class#From#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/ast/PathAux.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="56" selection-start-line="56" selection-end-line="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/ReferencePipeline.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="194" selection-start-line="194" selection-end-line="194" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/AbstractList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="719" selection-start-line="719" selection-end-line="719" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/ast/Ast.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="995" selection-start-line="995" selection-end-line="995" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/RedirectObj.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="56" column="85" selection-start-line="56" selection-start-column="85" selection-end-line="56" selection-end-column="85" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/org/junit/Assert.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="21" column="113" selection-start-line="21" selection-start-column="113" selection-end-line="21" selection-end-column="113" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/jdk/internal/reflect/NativeMethodAccessorImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="368">
+          <caret line="68" column="33" selection-start-line="68" selection-start-column="33" selection-end-line="68" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/src/helpers/TestHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="145" selection-start-line="145" selection-end-line="145" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/sugarVisitors/ToAst.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="421" selection-start-line="421" selection-end-line="421" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/AbstractCollection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="304" column="5" selection-start-line="304" selection-start-column="5" selection-end-line="304" selection-end-column="5" />
+          <folding>
+            <element signature="method#add#0;class#AbstractCollection#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/Spliterators.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2112">
+          <caret line="680" selection-start-line="680" selection-end-line="680" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main/src/programReduction/Program.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="322" column="13" selection-start-line="322" selection-start-column="13" selection-end-line="322" selection-end-column="13" />
+        <state relative-caret-position="1152">
+          <caret line="162" selection-start-line="162" selection-end-line="162" />
           <folding>
             <element signature="method#minimizeSet#0;class#Program#0" expanded="true" />
             <element signature="method#minimize#0;class#Program#0" expanded="true" />
-            <element signature="method#extractClassB#0;class#Program#0" expanded="true" />
             <element signature="method#emptyLibraryProgram#0;class#Program#0" expanded="true" />
             <element signature="method#emptyLibraryProgram#1;class#Program#0" expanded="true" />
             <element signature="method#FlatProgram#0;class#FlatProgram#0" expanded="true" />
@@ -1057,19 +1306,28 @@
             <element signature="method#PushedProgram#0;class#PushedProgram#0" expanded="true" />
             <element signature="method#_reducePath#0;class#PushedProgram#0" expanded="true" />
             <element signature="method#push#0;class#EvilPushed#0" expanded="true" />
+            <element signature="method#_reducePath#0;class#EvilPushed#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/AbstractPipeline.java">
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/StreamSpliterators.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="521" selection-start-line="521" selection-end-line="521" />
+        <state relative-caret-position="512">
+          <caret line="293" column="27" selection-start-line="293" selection-start-column="27" selection-end-line="293" selection-end-column="27" />
           <folding>
-            <element signature="e#7971#8682#0" expanded="true" />
-            <element signature="e#17476#17682#0" expanded="true" />
-            <element signature="e#17688#18156#0" expanded="true" />
+            <element signature="class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
+            <element signature="method#doAdvance#0;class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
+            <element signature="method#fillBuffer#0;class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
+            <element signature="method#tryAdvance#0;class#WrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/ConcurrentModificationException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="69" column="69" selection-start-line="69" selection-start-column="53" selection-end-line="69" selection-end-column="69" />
         </state>
       </provider>
     </entry>
@@ -1080,10 +1338,121 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/ast/ExpCore.java">
+    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/CloneVisitor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="174">
-          <caret line="1227" selection-start-line="1227" selection-end-line="1227" />
+          <caret line="110" selection-start-line="110" selection-end-line="110" />
+          <folding>
+            <element signature="method#liftT#0;class#CloneVisitor#0" expanded="true" />
+            <element signature="method#liftM#0;class#CloneVisitor#0" expanded="true" />
+            <element signature="method#visit#2;class#CloneVisitor#0" expanded="true" />
+            <element signature="method#liftMT#0;class#CloneVisitor#0" expanded="true" />
+            <element signature="method#liftMembers#0;class#CloneVisitor#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/CloneVisitorWithProgram.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="668">
+          <caret line="103" selection-start-line="103" selection-end-line="103" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#toString#0;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#0;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#1;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#2;class#PathMap#0" expanded="true" />
+            <element signature="method#makeMap#0;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#3;class#PathMap#0" expanded="true" />
+            <element signature="method#toList#0;class#PathMap#0" expanded="true" />
+            <element signature="method#stream#0;class#PathMap#0" expanded="true" />
+            <element signature="method#iterator#0;class#PathMap#0" expanded="true" />
+            <element signature="method#dom#0;class#PathMap#0" expanded="true" />
+            <element signature="class#1991:3870" expanded="true" />
+            <element signature="method#liftP#0;class#1991:3870" expanded="true" />
+            <element signature="method#remove#0;class#PathMap#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="232" column="42" selection-start-line="232" selection-start-column="42" selection-end-line="232" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#redirectS#0;class#Redirect#0" expanded="true" />
+            <element signature="method#redirectJ#0;class#Redirect#0" expanded="true" />
+            <element signature="method#applyRedirect#0;class#Redirect#0" expanded="true" />
+            <element signature="class#ClassKind#0;class#Redirect#0" expanded="true" />
+            <element signature="method#Redirect#0;class#Redirect#0" expanded="true" />
+            <element signature="method#redirect#0;class#Redirect#0" expanded="true" />
+            <element signature="method#redirect#1;class#Redirect#0" expanded="true" />
+            <element signature="method#chooseRedirect#0;class#Redirect#0" expanded="true" />
+            <element signature="method#ChooseR#0;class#Redirect#0" expanded="true" />
+            <element signature="method#possibleRedirect#0;class#Redirect#0" expanded="true" />
+            <element signature="method#_mostSpecific#0;class#Redirect#0" expanded="true" />
+            <element signature="method#_mostGeneral#0;class#Redirect#0" expanded="true" />
+            <element signature="method#computeRedirectSet#0;class#Redirect#0" expanded="true" />
+            <element signature="method#mustClass#0;class#Redirect#0" expanded="true" />
+            <element signature="method#mustInterface#0;class#Redirect#0" expanded="true" />
+            <element signature="method#collectReturns#0;class#Redirect#0" expanded="true" />
+            <element signature="method#collectParams#0;class#Redirect#0" expanded="true" />
+            <element signature="method#superClasses#0;class#Redirect#0" expanded="true" />
+            <element signature="method#superClasses#1;class#Redirect#0" expanded="true" />
+            <element signature="method#withAdd#0;class#Redirect#0" expanded="true" />
+            <element signature="method#seqIterate#0;class#Redirect#0" expanded="true" />
+            <element signature="method#intersects#0;class#Redirect#0" expanded="true" />
+            <element signature="method#intersect#0;class#Redirect#0" expanded="true" />
+            <element signature="method#iterate#0;class#Redirect#0" expanded="true" />
+            <element signature="method#fromPz#0;class#Redirect#0" expanded="true" />
+            <element signature="method#fromMwtz#0;class#Redirect#0" expanded="true" />
+            <element signature="method#_fromPms#0;class#Redirect#0" expanded="true" />
+            <element signature="method#fromMwt#0;class#Redirect#0" expanded="true" />
+            <element signature="method#toP#0;class#Redirect#0" expanded="true" />
+            <element signature="method#origin#0;class#Redirect#0" expanded="true" />
+            <element signature="method#_origin#0;class#Redirect#0" expanded="true" />
+            <element signature="method#toString#0;class#CsPzMap#0" expanded="true" />
+            <element signature="method#CsPzMap#0;class#CsPzMap#0" expanded="true" />
+            <element signature="method#CsPzMap#1;class#CsPzMap#0" expanded="true" />
+            <element signature="method#CsPzMap#2;class#CsPzMap#0" expanded="true" />
+            <element signature="method#add#0;class#CsPzMap#0" expanded="true" />
+            <element signature="method#add#1;class#CsPzMap#0" expanded="true" />
+            <element signature="method#stream#0;class#CsPzMap#0" expanded="true" />
+            <element signature="method#values#0;class#CsPzMap#0" expanded="true" />
+            <element signature="method#iterator#0;class#CsPzMap#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/HashMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="1768" selection-start-line="1768" selection-end-line="1768" />
+          <folding>
+            <element signature="e#65967#67033#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="303" selection-start-line="303" selection-end-line="303" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/ast/ExpCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="433">
+          <caret line="897" selection-start-line="897" selection-end-line="897" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#toS#0;class#ExpCore#0" expanded="true" />
@@ -1181,7 +1550,6 @@
             <element signature="e#29946#30135#0" expanded="true" />
             <element signature="e#30141#30247#0" expanded="true" />
             <element signature="e#30253#30373#0" expanded="true" />
-            <element signature="e#30379#30473#0" expanded="true" />
             <element signature="e#30479#30650#0" expanded="true" />
             <element signature="e#30656#30839#0" expanded="true" />
             <element signature="e#30845#30977#0" expanded="true" />
@@ -1214,8 +1582,10 @@
             <element signature="e#39530#40510#0" expanded="true" />
             <element signature="e#40518#41071#0" expanded="true" />
             <element signature="e#41079#41322#0" expanded="true" />
+            <element signature="e#41335#47722#0" expanded="true" />
             <element signature="e#41619#41734#0" expanded="true" />
             <element signature="e#41742#41829#0" expanded="true" />
+            <element signature="e#41837#41992#0" expanded="true" />
             <element signature="e#42000#42077#0" expanded="true" />
             <element signature="e#42085#42162#0" expanded="true" />
             <element signature="e#42170#42299#0" expanded="true" />
@@ -1302,419 +1672,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/CloneVisitor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="57" selection-start-line="57" selection-end-line="57" />
-          <folding>
-            <element signature="method#liftT#0;class#CloneVisitor#0" expanded="true" />
-            <element signature="method#liftDoc#0;class#CloneVisitor#0" expanded="true" />
-            <element signature="method#visit#2;class#CloneVisitor#0" expanded="true" />
-            <element signature="method#liftMT#0;class#CloneVisitor#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/From.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="73" selection-start-line="73" selection-end-line="73" />
-          <folding>
-            <element signature="method#From#0;class#From#0" expanded="true" />
-            <element signature="method#liftP#0;class#From#0" expanded="true" />
-            <element signature="method#visit#0;class#From#0" expanded="true" />
-            <element signature="method#normalizeShort#0;class#From#0" expanded="true" />
-            <element signature="method#fromPs#0;class#From#0" expanded="true" />
-            <element signature="method#fromP#0;class#From#0" expanded="true" />
-            <element signature="method#fromT#0;class#From#0" expanded="true" />
-            <element signature="method#from#0;class#From#0" expanded="true" />
-            <element signature="method#from#1;class#From#0" expanded="true" />
-            <element signature="method#from#3;class#From#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/ast/PathAux.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="56" selection-start-line="56" selection-end-line="56" />
-          <folding>
-            <element signature="method#getThisn#0;class#PathAux#0" expanded="true" />
-            <element signature="method#isPrimitive#0;class#PathPrimitive#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/ReferencePipeline.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="194" selection-start-line="194" selection-end-line="194" />
-          <folding>
-            <element signature="e#20955#21812#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/AbstractList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="719" selection-start-line="719" selection-end-line="719" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/ast/Ast.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="995" selection-start-line="995" selection-end-line="995" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#Parameters#0;class#Ast#0" expanded="true" />
-            <element signature="method#Parameters#0;class#Parameters#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#Parameters#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#Parameters#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#Parameters#0;class#Ast#0" expanded="true" />
-            <element signature="class#VarDec#0;class#Ast#0" expanded="true" />
-            <element signature="class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#match#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#VarDecXE#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#withVar#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#withT#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#withX#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="method#withInner#0;class#VarDecXE#0;class#Ast#0" expanded="true" />
-            <element signature="class#VarDecE#0;class#Ast#0" expanded="true" />
-            <element signature="method#match#0;class#VarDecE#0;class#Ast#0" expanded="true" />
-            <element signature="method#VarDecE#0;class#VarDecE#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#VarDecE#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#VarDecE#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#VarDecE#0;class#Ast#0" expanded="true" />
-            <element signature="class#VarDecCE#0;class#Ast#0" expanded="true" />
-            <element signature="method#match#0;class#VarDecCE#0;class#Ast#0" expanded="true" />
-            <element signature="method#VarDecCE#0;class#VarDecCE#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#VarDecCE#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#VarDecCE#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#VarDecCE#0;class#Ast#0" expanded="true" />
-            <element signature="class#Header#0;class#Ast#0" expanded="true" />
-            <element signature="class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#match#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#ConcreteHeader#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#withMdf#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#withName#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#withFs#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#withP#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#ConcreteHeader#0;class#Ast#0" expanded="true" />
-            <element signature="class#TraitHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#match#0;class#TraitHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#TraitHeader#0;class#TraitHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#TraitHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#TraitHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#TraitHeader#0;class#Ast#0" expanded="true" />
-            <element signature="class#InterfaceHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#match#0;class#InterfaceHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#InterfaceHeader#0;class#InterfaceHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#InterfaceHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#InterfaceHeader#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#InterfaceHeader#0;class#Ast#0" expanded="true" />
-            <element signature="class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#FieldDec#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#withVar#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#withT#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#withName#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="method#withDoc#0;class#FieldDec#0;class#Ast#0" expanded="true" />
-            <element signature="class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#Type#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#withMdf#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#withPath#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#withDoc#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#Type#0;class#Ast#0" expanded="true" />
-            <element signature="class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#isUnique#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#of#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#isOperator#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#invariant#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#isUntrusted#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#toSrcEquivalent#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#nameToS#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#nameSize#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#name#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#toS#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#fresh#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#parse#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#checkX#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#MethodSelector#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#withName#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#withUniqueNum#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="method#withNames#0;class#MethodSelector#0;class#Ast#0" expanded="true" />
-            <element signature="class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#MethodType#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#withRefine#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#withMdf#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#withTs#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#withReturnType#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#withExceptions#0;class#MethodType#0;class#Ast#0" expanded="true" />
-            <element signature="method#isUnique#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#sToNumber#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#of#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#withInner#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="method#withUniqueNum#0;class#C#0;class#Ast#0" expanded="true" />
-            <element signature="class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#sugarParse#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#sugarParse#1;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#parse#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#parse#1;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#outer#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#outer#1;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#Void#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#Any#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#Library#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#toImmNT#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#isPrimitive#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#isCore#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#popC#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#pushC#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#getCBar#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#setNewOuter#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#outerNumber#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#tryOuterNumber#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="method#sugarNames#0;class#Path#0;class#Ast#0" expanded="true" />
-            <element signature="class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#getPaths#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#_getParameterFor#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#withNewlineTerminator#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#factory#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#factory#1;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#factory#2;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#empty#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#withAnnotations#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#isValidAnnotation#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#toMultiline#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#withS#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#_getParameterForPlugin#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#_getParameterForPluginPart#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#toStringWeak#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#toCodeFormattedString#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#isEmpty#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#sum#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#formatNewLinesAsList#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#readAnnotation#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#readParameter#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#Doc#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#withMultiline#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#withParameters#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="method#withP#0;class#Doc#0;class#Ast#0" expanded="true" />
-            <element signature="class#SignalKind#0;class#Ast#0" expanded="true" />
-            <element signature="method#SignalKind#0;class#SignalKind#0;class#Ast#0" expanded="true" />
-            <element signature="method#fromString#0;class#SignalKind#0;class#Ast#0" expanded="true" />
-            <element signature="class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#Mdf#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isImm#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isMut#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isRead#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isLent#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isCapsule#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isClass#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isFwdImm#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isFwdPImm#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isFwdMut#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isFwdPMut#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isIn#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isIn#1;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#isIn#2;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="method#fromString#0;class#Mdf#0;class#Ast#0" expanded="true" />
-            <element signature="class#OpKind#0;class#Ast#0" expanded="true" />
-            <element signature="class#Op#0;class#Ast#0" expanded="true" />
-            <element signature="class#Stage#0;class#Ast#0" expanded="true" />
-            <element signature="method#Stage#0;class#Stage#0;class#Ast#0" expanded="true" />
-            <element signature="method#fromString#0;class#Stage#0;class#Ast#0" expanded="true" />
-            <element signature="class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#sum#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#containsAll#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#containsAllAux#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#insideTop#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#toString#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#Position#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#equals#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#hashCode#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#withFile#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#withLine1#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#withPos1#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#withLine2#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#withPos2#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="method#with_next#0;class#Position#0;class#Ast#0" expanded="true" />
-            <element signature="class#HasPos#0;class#Ast#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/RedirectObj.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="56" column="85" selection-start-line="56" selection-start-column="85" selection-end-line="56" selection-end-column="85" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/org/junit/Assert.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="21" column="113" selection-start-line="21" selection-start-column="113" selection-end-line="21" selection-end-column="113" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/jdk/internal/reflect/NativeMethodAccessorImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="68" column="33" selection-start-line="68" selection-start-column="33" selection-end-line="68" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/helpers/TestHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="145" selection-start-line="145" selection-end-line="145" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/sugarVisitors/ToAst.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="421" selection-start-line="421" selection-end-line="421" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/ConcurrentModificationException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="80">
-          <caret line="69" column="69" selection-start-line="69" selection-start-column="53" selection-end-line="69" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/Spliterators.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="680" selection-start-line="680" selection-end-line="680" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/stream/StreamSpliterators.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="293" column="27" selection-start-line="293" selection-start-column="27" selection-end-line="293" selection-end-column="27" />
-          <folding>
-            <element signature="class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-            <element signature="method#doAdvance#0;class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-            <element signature="method#fillBuffer#0;class#AbstractWrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-            <element signature="method#tryAdvance#0;class#WrappingSpliterator#0;class#StreamSpliterators#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/HashMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="1768" selection-start-line="1768" selection-end-line="1768" />
-          <folding>
-            <element signature="e#65967#67033#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/java/jdk-11.0.1/lib/src.zip!/java.base/java/util/AbstractCollection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="304" column="5" lean-forward="true" selection-start-line="304" selection-start-column="5" selection-end-line="304" selection-end-column="5" />
-          <folding>
-            <element signature="method#add#0;class#AbstractCollection#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="361" column="37" lean-forward="true" selection-start-line="361" selection-start-column="9" selection-end-line="361" selection-end-column="37" />
+        <state relative-caret-position="203">
+          <caret line="464" column="54" selection-start-line="464" selection-start-column="54" selection-end-line="464" selection-end-column="54" />
           <folding>
             <element signature="method#mkp#0;class#TestRedirect#0" expanded="true" />
             <element signature="method#test#0;class#TestRedirect#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="283" column="10" selection-start-line="283" selection-start-column="10" selection-end-line="283" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#redirectS#0;class#Redirect#0" expanded="true" />
-            <element signature="method#redirectJ#0;class#Redirect#0" expanded="true" />
-            <element signature="method#applyRedirect#0;class#Redirect#0" expanded="true" />
-            <element signature="class#ClassKind#0;class#Redirect#0" expanded="true" />
-            <element signature="method#Redirect#0;class#Redirect#0" expanded="true" />
-            <element signature="method#redirect#0;class#Redirect#0" expanded="true" />
-            <element signature="method#redirect#1;class#Redirect#0" expanded="true" />
-            <element signature="method#chooseRedirect#0;class#Redirect#0" expanded="true" />
-            <element signature="method#ChooseR#0;class#Redirect#0" expanded="true" />
-            <element signature="method#possibleRedirect#0;class#Redirect#0" expanded="true" />
-            <element signature="method#mostSpecific#0;class#Redirect#0" expanded="true" />
-            <element signature="method#computeRedirectSet#0;class#Redirect#0" expanded="true" />
-            <element signature="method#mustClass#0;class#Redirect#0" expanded="true" />
-            <element signature="method#mustInterface#0;class#Redirect#0" expanded="true" />
-            <element signature="method#collectReturns#0;class#Redirect#0" expanded="true" />
-            <element signature="method#collectParams#0;class#Redirect#0" expanded="true" />
-            <element signature="method#superClasses#0;class#Redirect#0" expanded="true" />
-            <element signature="method#superClasses#1;class#Redirect#0" expanded="true" />
-            <element signature="method#withAdd#0;class#Redirect#0" expanded="true" />
-            <element signature="method#seqIterate#0;class#Redirect#0" expanded="true" />
-            <element signature="method#intersects#0;class#Redirect#0" expanded="true" />
-            <element signature="method#intersect#0;class#Redirect#0" expanded="true" />
-            <element signature="method#iterate#0;class#Redirect#0" expanded="true" />
-            <element signature="method#fromPz#0;class#Redirect#0" expanded="true" />
-            <element signature="method#fromMwtz#0;class#Redirect#0" expanded="true" />
-            <element signature="method#_fromPms#0;class#Redirect#0" expanded="true" />
-            <element signature="method#fromMwt#0;class#Redirect#0" expanded="true" />
-            <element signature="method#toP#0;class#Redirect#0" expanded="true" />
-            <element signature="method#origin#0;class#Redirect#0" expanded="true" />
-            <element signature="method#_origin#0;class#Redirect#0" expanded="true" />
-            <element signature="method#toString#0;class#CsPzMap#0" expanded="true" />
-            <element signature="method#CsPzMap#0;class#CsPzMap#0" expanded="true" />
-            <element signature="method#CsPzMap#1;class#CsPzMap#0" expanded="true" />
-            <element signature="method#CsPzMap#2;class#CsPzMap#0" expanded="true" />
-            <element signature="method#add#0;class#CsPzMap#0" expanded="true" />
-            <element signature="method#add#1;class#CsPzMap#0" expanded="true" />
-            <element signature="e#17519#17525#0" expanded="true" />
-            <element signature="method#stream#0;class#CsPzMap#0" expanded="true" />
-            <element signature="method#values#0;class#CsPzMap#0" expanded="true" />
-            <element signature="method#iterator#0;class#CsPzMap#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="708">
-          <caret line="289" column="3" selection-start-line="289" selection-start-column="3" selection-end-line="289" selection-end-column="3" />
         </state>
       </provider>
     </entry>
@@ -1760,12 +1725,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>L42</last-edited>
+          <last-edited>Tests</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

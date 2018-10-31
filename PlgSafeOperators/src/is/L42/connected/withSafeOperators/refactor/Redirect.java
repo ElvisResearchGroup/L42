@@ -16,6 +16,7 @@ import ast.Ast.C;
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.PathAux;
+import com.sun.jdi.Value;
 import coreVisitors.From;
 import facade.PData;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
@@ -62,11 +63,10 @@ public class Redirect {
 
   Redirect(Program p) { this.p = p; }
   static ClassB redirect(Program p, ClassB L, List<C> src, Path dest) { return redirect(p, L, new PathMap(List.of(new CsPath(src, dest)))); }
-  static ClassB redirect(Program p_, ClassB L, PathMap R) {
+  static ClassB redirect(Program p_, ClassB L, PathMap R0) {
     var p = p_.evilPush(L);
     // TODO: Check that empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
     var redirecter = new Redirect(p);
-
     //p' = p.evilPush(L) // to simplify everything, just make L the new top
 
     // TODO: forall Cs in RedirectSet(L, Cs1, ..., Csn):
@@ -74,7 +74,7 @@ public class Redirect {
 
     // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
     //    ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
-    R = redirecter.chooseRedirect(new PathMap(R.stream().map(
+    var R = redirecter.chooseRedirect(new PathMap(R0.stream().map(
         CsP -> new CsPath(CsP.getCs(), p.minimize(From.fromP(CsP.getPath(), Path.outer(1))))
     ).collect(Collectors.toList())));
 
@@ -105,7 +105,8 @@ public class Redirect {
     PathMap res = new PathMap();
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
     //    P = MostSpecific(p; P0,...,Pn)
-    // Marco Says to ignore case where we only have subtypeConstraints
+    // Marco Says to ignore this case
+
     for (var CsPz : this.supertypeConstraints.map.entrySet()) {
       var Cs = CsPz.getKey();
       var Ps1 = CsPz.getValue();
@@ -117,13 +118,16 @@ public class Redirect {
       var Pz = superClasses(Ps1);
 
       //Pz' = { P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-      var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2));
+      var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2)).collect(Collectors.toSet());
 
       // Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
-      var Pz3 = Pz2.filter(P -> possibleRedirect(Cs, P));
+      var Pz3 = Pz2.stream().filter(P -> possibleRedirect(Cs, P)).collect(Collectors.toSet());
 
       // P = MostSpecific(p; Pz'')
-      res.map.put(Cs, mostSpecific(Pz3.collect(Collectors.toSet()))); }
+      var P = _mostSpecific(Pz3);
+      if (P == null)
+        throw new RuntimeException("Most specific failed!");
+      res.map.put(Cs, P); }
 
     return res; }
 
@@ -151,14 +155,20 @@ public class Redirect {
 
     return L2.cDom().containsAll(L1.cDom()); }
 
-  Path mostSpecific(Set<Path> Pz) {
+  Path _mostSpecific(Set<Path> Pz) {
     // TODO: This is horribly inefficient...
     for (Path P : Pz) {
-      if (superClasses(P).containsAll(Pz)); { return P; }}
+      if (superClasses(P).containsAll(Pz)) { return P; }}
 
-    throw new RuntimeException("Most Specific failed!");
+    return null;
   }
-
+  Path _mostGeneral(Set<Path> Pz) {
+      // TODO: This is horribly inefficient...
+      var res = superClasses(Pz);
+      res.retainAll(Pz);
+      if (res.size() == 1) { return res.iterator().next(); }
+      return null;
+    }
   // This is the most horrible piece of code I have ever written...
   void computeRedirectSet(ClassB L, Collection<List<C>> Csz) {
     var todo = new ArrayList<List<C>>(Csz);
@@ -214,16 +224,19 @@ public class Redirect {
         if (mustClass(CsP.getCs())) { // MustClass(p; Cs)
           progress |= subtypeConstraints.add(CsP.getCs(), CsP.getPath()); }} // Cs <= P
 
-      //3: Collect(p; P <= Cs) = Cs <= P'
+      //3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
       //   This0.Cs' in p[Cs].Pz
-      //   P' in SuperClasses(p; P)
-      //   dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
+      //   Pz = {P' in SuperClasses(p; P) | msdom(p[P') = msdom(p[Cs'])}
       for (var CsP : supertypeConstraints) { // P <= Cs
-        for (var P : iterate(this.fromPz(toP(CsP.getCs())))) { // P in p[Cs].Pz
-          if (P.tryOuterNumber() == 0) { // P = This0.Cs'
-            for (var P2 : this.superClasses(P)) // P2 in SuperClasses(p; P)
-              if (intersects(p.extractClassB(P).msDom(), p.extractClassB(P2).msDom())) // mdom(p[P]) intersects mdom(p[P2])
-                progress |= subtypeConstraints.add(CsP.getCs(), P2); }}}
+        for (var PCs2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P in p[Cs].Pz
+          if (PCs2.tryOuterNumber() == 0) { // P = This0.Cs'
+            var msz = p.extractClassB(PCs2).msDom(); // msz = msdom(p[Cs'])
+            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> p.extractClassB(Pi).msDom().equals(msz))
+              .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
+            var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
+            var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
+            if (P1 != null && P2 != null) // P1 <= Cs', Cs' <= P2
+              progress |= supertypeConstraints.add(PCs2.getCBar(), P1) | subtypeConstraints.add(PCs2.getCBar(), P2); }}}
 
       //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
       //   p[Cs.ms].P = This0.Cs'
@@ -252,35 +265,44 @@ public class Redirect {
         if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
           progress |= this.collectParams(CsP, supertypeConstraints::add);}} // p[P.ms].Pi <= p[Cs.ms].Pi.Cs
 
-      //8: Collect(p; Cs <= P, CCz) = CCz'
+      //8/8': Collect(p; Cs <= P, CCz) = CCz'
       for (var CsP : subtypeConstraints) { // Cs <= P
-        // This0.Cs' = p[Cs.sel].P
-        // P' = p[P.sel].P
-        progress |= collectReturns(CsP, (Cs2, P2) -> {
+        BiPredicate<List<C>, Path> body = (Cs2, P2) -> {
           boolean progress2 = false;
 
-          // 8a
+          // 8a/8'a
           if (!p.extractClassB(P2).isInterface()) { // p[P'].interface?=empty and
             progress2 |= supertypeConstraints.add(Cs2, P2); } // CC = P' <= Cs'
 
-          // 8b
-          for (var P3 : supertypeConstraints.get(Cs2)) { // or P'' <= Cs' in CCz and
+          // 8b/8'b
+          for (var P3 : subtypeConstraints.get(Cs2)) { // or Cs' <= P''  in CCz and
             if (!p.extractClassB(P3).isInterface()) { // p[P''].interface?=empty and
               progress2 |= subtypeConstraints.add(Cs2, P2); // CC = Cs'<=P'
               break; }}
 
-          // 8c
+          // 8c/8'c
           if (mustClass(Cs2)) { // or MustClass(Cs')
             progress2 |= subtypeConstraints.add(Cs2, P2); } // CC = Cs' <= P'
 
-          // 8d
+          // 8d/8'd
           for (var ms : p.top().getClassB(Cs2).msDom()) { // or ms' in dom(p[Cs'])
             if (p.extractClassB(P2).msDom().contains(ms)) { // and ms' in dom(p[P'])
               //       CC = Cs' <= Origin(p; sel'; P')
               progress2 |= subtypeConstraints.add(Cs2, this.origin(ms, P2));}}
 
-          return progress2;});}
-      
+          return progress2;};
+
+        // 8: This0.Cs' = p[Cs.sel].P
+        //    P' = p[P.sel].P
+        progress |= collectReturns(CsP, body);
+
+        // 8': This0.Cs' in p[Cs].Pz
+        //     P' in SuperClass(p; P)
+        for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
+          if (P2.tryOuterNumber() == 0) { // P' = This0.Cs'
+            for (var P3 : superClasses(CsP.getPath())) { // P'' in SuperClass(p; P)
+              progress |= body.test(P2.getCBar(), P3); }}}}
+
       //9: Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
       //   C in dom(p[Cs])
       for (var CsP : subtypeConstraints) { // Cs <= P
@@ -421,6 +443,7 @@ class CsPzMap implements Iterable<CsPath>
   boolean add(CsPath keyValue) { return this.add(keyValue.getCs(), keyValue.getPath()); }
   boolean add(List<C> key, Path value)
   {
+    assert value.tryOuterNumber() != 0;
     Set<Path> orig = this.map.get(key);
     if (orig != null) {
       if (orig.contains(value))

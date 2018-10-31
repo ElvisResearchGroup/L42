@@ -246,7 +246,7 @@ Define Collect(p; CCz) := CCz':
 
 3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
        This0.Cs' in p[Cs].Pz
-       Pz = {P' in SuperClasses(p; P) | msdom(p[P') = msdom(p[Cs'])}
+       Pz = {P' in SuperClasses(p; P) | msdom(p[P']) = msdom(p[Cs'])}
 
 4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
@@ -271,7 +271,7 @@ Define Collect(p; CCz) := CCz':
 8b:  Collect(p; Cs <= P) = Cs' <= p[P.sel].P
     This0.Cs' = p[Cs.sel].P
     MustClass(Cs')
-8c:  Collect(p; Cs <= P, P' <= Cs') = Cs'<=p[P.sel].P
+8c:  Collect(p; Cs <= P, Cs' <= P') = Cs'<=p[P.sel].P
     This0.Cs' = p[Cs.sel].P
     p[P'].interface?=empty
 8d:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
@@ -287,7 +287,7 @@ Define Collect(p; CCz) := CCz':
     This0.Cs' in p[Cs].Pz
     P' in SuperClass(p; P)
     MustClass(Cs')
-8'c:  Collect(p; Cs <= P, P'' <= Cs') = Cs'<=P'
+8'c:  Collect(p; Cs <= P, Cs' <= P'') = Cs'<=P'
     This0.Cs' in p[Cs].Pz
     P' in SuperClass(p; P)
     p[P''].interface?=empty

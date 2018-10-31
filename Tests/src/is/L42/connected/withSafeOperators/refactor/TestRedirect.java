@@ -210,7 +210,7 @@ public class TestRedirect {
     },{lineNumber(), new String[]{"{A:{}}"},
         "{InnerA:{}  method InnerA m(InnerA a) a}","InnerA", "This0.A",
         "{ method This1.A m(This1.A a) a}",false
-    },{lineNumber(), new String[]{ // Redirect free templates into primitive types
+    },{lineNumber(), new String[]{ // Redirect free templates into primitive types // TODO:FAILS since InnerAny can be redirected to any subtype of Any
         "{A:{ method Void fun(Library that, Any other)}}"},
         "{InnerVoid:{} InnerLib:{} InnerAny:{}"
         + "InnerA:{method InnerVoid fun(InnerLib that, InnerAny other)}"
@@ -234,10 +234,10 @@ public class TestRedirect {
     },{lineNumber(), new String[]{"{A:{method Void useB(B that)} B:{}}"}, // cascade: a parameter in A redirects B
         "{InnerA:{method Void useB(InnerB that)} InnerB:{} method Void useB(InnerB that)}",
         "InnerA", "This0.A","{ method Void useB(This1.B that)}",false
-    },{lineNumber(), new String[]{"{A:{method Void do() exception B} B:{}}"}, // cascade: an exception in A redirects B
+    },{lineNumber(), new String[]{"{A:{method Void do() exception B} B:{}}"}, // cascade: an exception in A redirects B  // TODO:FAILS, since exception clause is ignored
         "{InnerA:{method Void do() exception InnerB} InnerB:{} method Void useB(InnerB that)}",
         "InnerA", "This0.A","{ method Void useB(This1.B that)}",false
-    },{lineNumber(), new String[]{      // serial cascade: return ~> parameter ~> exception
+    },{lineNumber(), new String[]{      // serial cascade: return ~> parameter ~> exception // TODO:FAILS, since exception clause is ignored
                     "{D:{}}",
                     "{C:{ method Void do() exception This2.D}}",
                     "{B:{ method Void useC(This2.C that)}}",
@@ -245,7 +245,7 @@ public class TestRedirect {
         "{InnerA:{method InnerB getB()} InnerB:{method Void useC(InnerC that)} "
         + "InnerC:{method Void do() exception InnerD} InnerD:{} method InnerD freeIdent(InnerD that)}",
         "InnerA", "This0.A","{ method This4.D freeIdent(This4.D that)}",false
-    },{lineNumber(), new String[]{      // parallel cascade: return, parameter & exception address the same class
+    },{lineNumber(), new String[]{      // parallel cascade: return, parameter & exception address the same class  // TODO:FAILS, since exception clause is ignored
                     "{B:{method B ident(B that)}}",
                     "{A:{method This2.B getB() method Void useB(This2.B that) method Void do() exception This2.B}}"},
         "{InnerA:{method InnerX getB()"
@@ -418,6 +418,8 @@ public class TestRedirect {
     },{lineNumber(), new String[]{   // Redirect, via aliases,
                                      // trying to exploit a rumour that
                                      // identically shaped aliases can be redirected onto one-another
+        // TODO:Fails to compute a redirect for Z. I will have to add my 'PossibleRedirect' rule that I sugested in order to solve this one. (Since Z can be redirected to any supertype of This1.X.Y.Aliases, but we currently have no rule that will work out which one)
+
                     "{"
                     + "X:{Y:{\n"
                     + "       FluffyA:{method This1 fun(Void that)}\n"
@@ -460,6 +462,7 @@ public class TestRedirect {
     },{lineNumber(), new String[]{   // Redirect three classes, via a pile, so that the
                                      // intersection-of-ambiguity rule makes the
                                      // implemented interfaces and method errors unambiguous
+        // TODO:FAILS due to insanity with exceptions!
                     "{Iab:{interface} Ibc:{interface} Ica:{interface}\n"
                     + "Eab:{} Ebc:{} Eca:{}\n"
                     + "A:{ implements Ica Iab method Void fun() exception Eca Eab}\n"
