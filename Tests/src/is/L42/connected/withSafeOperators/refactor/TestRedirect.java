@@ -157,6 +157,8 @@ public class TestRedirect {
       "PathUnfit::Private path--", true //bad error message
 //===============================================================================
     },{lineNumber(),//PASS, but next
+      new String[]{"{}"}, "{A:{}}", "A", "Void", "{}", false
+    },{lineNumber(),//PASS, but next
       new String[]{"{C:{EB:{}, EA:{method This1.EB f() method This2.C.EB g()}}}"},
       "{A:{method B f() method B g()} B:{} method B foo()}",
       "A", "This0.C.EA",
@@ -926,12 +928,14 @@ public static Program mkp(String...ss) {
   Path path2=Path.parse(_path2);
   if(!isError){
     ClassB expected=getClassB(true,p,"expected", _expected);
-    ClassB res=new RedirectObj(cb1).redirect(p,path1,path2);
-    //ClassB res=Redirect.redirect(p,cb1, path1,path2);
+    //ClassB res=new RedirectObj(cb1).redirect(p,path1,path2);
+    ClassB res=Redirect.redirect(p,cb1, path1,path2);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{new RedirectObj(cb1).redirect(p,path1,path2);fail("error expected");}
+    return;
+    //Redirect.redirect(p,cb1, path1,path2);fail("error expected");//}
+    /*try{new RedirectObj(cb1).redirect(p,path1,path2);fail("error expected");}
     catch(ClassUnfit err){
       String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
       assertEquals(_expected,txt);
@@ -947,9 +951,7 @@ public static Program mkp(String...ss) {
     catch(PathUnfit err){
       String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
       assertEquals(_expected,txt);
-      }
-
-    //Redirect.redirect(p,cb1, path1,path2);fail("error expected");//}
+      }*/
     }
   }
 }

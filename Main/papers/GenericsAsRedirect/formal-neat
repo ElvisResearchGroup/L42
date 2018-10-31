@@ -239,48 +239,43 @@ Define mwt.Pi = mwt.mt.Ts.i.P
 // Note: Collect isn't a function, but a relation,
 // I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
 Define Collect(p; CCz) := CCz':
-  Collect(p; Cs <= P) = P <= Cs
+1: Collect(p; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
- Collect(p; P <= Cs) = Cs <= P
+2: Collect(p; P <= Cs) = Cs <= P
 	 MustClass(p; Cs)
 
-  Collect(p; P <= Cs) = Cs <= P'
+3: Collect(p; P <= Cs) = Cs <= P'
   	This0.Cs' in p[Cs].Pz
     P' in SuperClasses(p; P)
     dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
 
-  Collect(p; P <= Cs) = p[P.ms].P <= Cs'
+4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
 
-  Collect(p; CC) = Cs' <= p[P.ms].Pi
+5: Collect(p; CC) = Cs' <= p[P.ms].Pi
      CC = P <= Cs or  CC = Cs <= P
      p[Cs.ms].Pi = This0.Cs'
 
-  Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+6: Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
   	MustInterface(p; Cs)
     p[Cs.ms].P = This0.Cs'
 
-  Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+7: Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
     MustInterface(p; Cs)
     p[Cs.ms].Pi = This0.Cs'
 
   // The ? rule
-  Collect(p; Cs <= P) = P' <= Cs'
+8a:  Collect(p; Cs <= P) = P' <= Cs'
     This0.Cs' = p[Cs.sel].P
     P' = p[P.sel].P
     p[P'].interface?=empty and
-
-
-  Collect(p; Cs <= P) = Cs' <= p[P.sel].P
+8b:  Collect(p; Cs <= P) = Cs' <= p[P.sel].P
     This0.Cs' = p[Cs.sel].P
     MustClass(Cs')
-
-  Collect(p; Cs <= P, P' <= Cs') = Cs'<=p[P.sel].P
+8c:  Collect(p; Cs <= P, P' <= Cs') = Cs'<=p[P.sel].P
     This0.Cs' = p[Cs.sel].P
     p[P'].interface?=empty
-
-
-  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
+8d:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
     This0.Cs' = p[Cs.sel].P
     P' = p[P.sel].P
     sel' in dom(p[Cs']) intersect dom(p[P'])
@@ -289,8 +284,15 @@ Define Collect(p; CCz) := CCz':
   // Is this rulle insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
-  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
+9:  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
     C in dom(p[Cs])
+
+// Add a rule of the form?
+//Collect(p; P <= Cs) = Cs <= P', P' <= Cs
+//	P' is the unique element of SuperClasses(p; P) such that PossibleRedirect(p, P', Cs)
+// Handle cases like:
+//	EB: {}
+//	{X: {interface}, B: {implements X}}<B=EB> // And so X goes to Any?
 
 Origin(p; sel; P) = P'
   forall P'' in Supertypes(p; P) where sel in dom [P'']

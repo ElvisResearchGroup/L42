@@ -199,24 +199,22 @@ public class Redirect {
   boolean mustInterface(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Interface; }
 
   void collect() {
-    boolean progress = false; // Have we done something?
+    boolean progress; // Have we done something?
     do {
       progress = false;
-        System.out.println("ISAAC: Collecting a while...");
-      // Collect(p; Cs <= P) = P <= Cs
+      //1: Collect(p; Cs <= P) = P <= Cs
       //   p[P].interface? = empty
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (!this.p.extractClassB(CsP.getPath()).isInterface()) { // p[P].interface? = empty
           progress |= supertypeConstraints.add(CsP.getCs(), CsP.getPath()); }} // P <= Cs
 
-      // Collect(p; P <= Cs) = Cs <= P
+      //2: Collect(p; P <= Cs) = Cs <= P
       //   MustClass(p; Cs)
       for (var CsP : supertypeConstraints) { // P <= Cs
         if (mustClass(CsP.getCs())) { // MustClass(p; Cs)
           progress |= subtypeConstraints.add(CsP.getCs(), CsP.getPath()); }} // Cs <= P
 
-      // Collect(p; P <= Cs) = Cs <= P'
-      // Collect(p; P <= Cs) = Cs <= P'
+      //3: Collect(p; P <= Cs) = Cs <= P'
       //   This0.Cs' in p[Cs].Pz
       //   P' in SuperClasses(p; P)
       //   dom(p[Cs'].mwtz) intersects dom(p[P'].mwtz)
@@ -227,51 +225,55 @@ public class Redirect {
               if (intersects(p.extractClassB(P).msDom(), p.extractClassB(P2).msDom())) // mdom(p[P]) intersects mdom(p[P2])
                 progress |= subtypeConstraints.add(CsP.getCs(), P2); }}}
 
-      // Collect(p; P <= Cs) = p[P.ms].P <= Cs'
+      //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
       //   p[Cs.ms].P = This0.Cs'
       for (var CsP : supertypeConstraints) { // P <= Cs
         progress |= collectReturns(CsP, supertypeConstraints::add);} // p[P.ms].P <= p[Cs.ms].P.Cs
 
-      // Collect(p; CC) = Cs' <= p[P.ms].Pi
+      //5: Collect(p; CC) = Cs' <= p[P.ms].Pi
       //   CC = P <= Cs or  CC = Cs <= P
       //   p[Cs.ms].Pi = This0.Cs'
       for (var CsP : seqIterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
         // p[Cs.ms].Pi.Cs <= p[P.ms].Pi
-        progress |= collectReturns(CsP, supertypeConstraints::add);}
+        progress |= collectParams(CsP, subtypeConstraints::add);}
 
-      // Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+      //6: Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
       //   MustInterface(p; Cs)
       //   p[Cs.ms].P = This0.Cs'
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
           // p[Cs.ms].P.Cs <= p[P.ms].P
-          progress |= this.collectReturns(CsP, supertypeConstraints::add);}}
+          progress |= this.collectReturns(CsP, subtypeConstraints::add);}}
 
-      // Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+      //7: Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
       //   MustInterface(p; Cs)
       //   p[Cs.ms].Pi = This0.Cs'
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
           progress |= this.collectParams(CsP, supertypeConstraints::add);}} // p[P.ms].Pi <= p[Cs.ms].Pi.Cs
 
-      // Collect(p; Cs <= P, CCz) = CCz'
+      //8: Collect(p; Cs <= P, CCz) = CCz'
       for (var CsP : subtypeConstraints) { // Cs <= P
         // This0.Cs' = p[Cs.sel].P
         // P' = p[P.sel].P
         progress |= collectReturns(CsP, (Cs2, P2) -> {
           boolean progress2 = false;
 
+          // 8a
           if (!p.extractClassB(P2).isInterface()) { // p[P'].interface?=empty and
             progress2 |= supertypeConstraints.add(Cs2, P2); } // CC = P' <= Cs'
 
+          // 8b
           for (var P3 : supertypeConstraints.get(Cs2)) { // or P'' <= Cs' in CCz and
             if (!p.extractClassB(P3).isInterface()) { // p[P''].interface?=empty and
               progress2 |= subtypeConstraints.add(Cs2, P2); // CC = Cs'<=P'
               break; }}
 
+          // 8c
           if (mustClass(Cs2)) { // or MustClass(Cs')
             progress2 |= subtypeConstraints.add(Cs2, P2); } // CC = Cs' <= P'
 
+          // 8d
           for (var ms : p.top().getClassB(Cs2).msDom()) { // or ms' in dom(p[Cs'])
             if (p.extractClassB(P2).msDom().contains(ms)) { // and ms' in dom(p[P'])
               //       CC = Cs' <= Origin(p; sel'; P')
@@ -279,7 +281,7 @@ public class Redirect {
 
           return progress2;});}
       
-      // Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
+      //9: Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
       //   C in dom(p[Cs])
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (supertypeConstraints.contains(CsP.getCs(), CsP.getPath())) { // P <= Cs
@@ -311,10 +313,10 @@ public class Redirect {
     boolean progress = false;
     for (var mwt : iterate(this.fromMwtz(toP(CsP.getCs())))) {
       for (int i = 0; i < mwt.getSize(); i++) { // i in 0..#(mwt.ms.xs)
-        var P2 = mwt.getReturnPath(); // P2 = mwt.P
+        var P2 = mwt.getPaths().get(i); // P2 = mwt.Pi
         var mwt2 = this._fromPms(CsP.getPath(), mwt.getMs()); // mwt2? = p[P](mwt.ms)
         if (P2.tryOuterNumber() == 0 && mwt2 != null) { // P2 = This0.Cs', mwt2? != empty
-          progress |= f.test(P2.getCBar(), mwt2.getReturnPath()); }}} //f(P2.Cs, mwt2.P)
+          progress |= f.test(P2.getCBar(), mwt2.getPaths().get(i)); }}} //f(P2.Cs, mwt2.Pi)
     return progress; }
 
   // Utilities, not directly related to redirect
@@ -424,11 +426,14 @@ class CsPzMap implements Iterable<CsPath>
       if (orig.contains(value))
         return false;
       else {
-        orig.add(value);
-      }
+        try { orig.add(value); }
+        // In case the set happens to be unmodifiable...
+        catch (UnsupportedOperationException __) {
+          var res = new HashSet<Path>(orig);
+          res.add(value);
+          this.map.put(key, res); } }
     } else {
-      this.map.put(key, Collections.singleton(value));
-    }
+      this.map.put(key, Collections.singleton(value)); }
 
     return true;
   }
@@ -440,8 +445,9 @@ class CsPzMap implements Iterable<CsPath>
   public Set<Path> get(List<C> key) { return this.map.getOrDefault(key, Collections.emptySet()); }
   public Stream<CsPath> stream() {
     return this.map.entrySet().stream()
-      .flatMap(e -> e.getValue().stream().map(P -> new CsPath(e.getKey(), P)));
-    }
+      .flatMap(e -> e.getValue().stream().map(P -> new CsPath(e.getKey(), P))); }
   public Set<CsPath> values() { return this.stream().collect(Collectors.toSet()); }
-  @Override public Iterator<CsPath> iterator() {return this.stream().iterator(); }
+  @Override public Iterator<CsPath> iterator() {
+    // Who cares about performance anyway? What's more important is that I want to be able to iterate over something while modifying it!
+    return this.values().iterator(); }
 }
