@@ -27,7 +27,7 @@ import repl.HtmlFx;
 public class TestWebEngine {
   @After
   public void tearDown() throws InterruptedException {
-     Thread.sleep(25000);
+     Thread.sleep(10000);
   }
   @Test
   public void test() throws InvocationTargetException, InterruptedException,FileNotFoundException {
