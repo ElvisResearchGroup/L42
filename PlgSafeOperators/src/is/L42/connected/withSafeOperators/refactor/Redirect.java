@@ -141,7 +141,7 @@ public class Redirect {
         dom(p[Cs]) subseteq dom(p[P])
         // TODO: Refine this more?*/
     var kind = redirectSet.get(Cs);
-
+    assert kind != null;
     // TODO: Check mappings of external paths?
 
     var L1 = p.top().getClassB(Cs);
@@ -169,10 +169,12 @@ public class Redirect {
       if (res.size() == 1) { return res.iterator().next(); }
       return null;
     }
-  // This is the most horrible piece of code I have ever written...
+
   void computeRedirectSet(ClassB L, Collection<List<C>> Csz) {
     var todo = new ArrayList<List<C>>(Csz);
-    Consumer<List<C>> acumulate = Cs -> { if (!redirectSet.containsKey(Cs)) { todo.add(Cs); } };
+    Consumer<Path> accumulate = P -> {
+      if (P.tryOuterNumber() == 0 && !redirectSet.containsKey(P.getCBar())) {
+        todo.add(P.getCBar()); }};
 
     // TODO: Do p.minimizes?
     while (!todo.isEmpty()) {
@@ -184,26 +186,14 @@ public class Redirect {
         L2.mwts().stream().anyMatch(mwt -> mwt.getReturnMdf().isClass()) ? ClassKind.Final :
         ClassKind.Class;
       redirectSet.put(Cs, kind);
-      for (var M : L2.getMs()) {
-        M.match(nc -> {acumulate.accept(withAdd(Cs, nc.getName())); return null; },
-          mi -> {throw Assertions.codeNotReachable();},
-          mwt -> Stream.concat(mwt.getMt().getExceptions().stream(),
-            Stream.concat(mwt.getMt().getTs().stream(),
-            Stream.of(mwt.getMt().getReturnType()))).map(T -> {
-              var P = From.fromP(T.getPath(), toP(Cs));
-              if (P.tryOuterNumber() == 0)
-                acumulate.accept(P.getCBar());
-              return null;
-          }));
-      }
 
-      for (var P : L2.getSuperPaths()) {
-        var P2 = From.fromP(P, toP(Cs));
-          if (P.tryOuterNumber() == 0)
-            acumulate.accept(P.getCBar());
-      }
-    }
-  }
+      for (var mwt : iterate(fromMwtz(L2, toP(Cs)))) {
+        accumulate.accept(mwt.getReturnPath());
+        mwt.getPaths().forEach(accumulate);
+        mwt.getExceptions().forEach(accumulate); }
+
+      L2.ns().forEach(nc -> accumulate.accept(Path.outer(0, Cs).pushC(nc.getName())));
+      fromPz(L2, toP(Cs)).forEach(accumulate); }}
 
   boolean mustClass(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Final; }
   boolean mustInterface(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Interface; }
@@ -218,11 +208,11 @@ public class Redirect {
         if (!this.p.extractClassB(CsP.getPath()).isInterface()) { // p[P].interface? = empty
           progress |= supertypeConstraints.add(CsP.getCs(), CsP.getPath()); }} // P <= Cs
 
-      //2: Collect(p; P <= Cs) = Cs <= P
+      //2: Collect(p; P <= Cs) = Cs <= P TODO: REMOVE
       //   MustClass(p; Cs)
-      for (var CsP : supertypeConstraints) { // P <= Cs
+      /*for (var CsP : supertypeConstraints) { // P <= Cs
         if (mustClass(CsP.getCs())) { // MustClass(p; Cs)
-          progress |= subtypeConstraints.add(CsP.getCs(), CsP.getPath()); }} // Cs <= P
+          progress |= subtypeConstraints.add(CsP.getCs(), CsP.getPath()); }}*/ // Cs <= P
 
       //3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
       //   This0.Cs' in p[Cs].Pz
@@ -274,21 +264,21 @@ public class Redirect {
           if (!p.extractClassB(P2).isInterface()) { // p[P'].interface?=empty and
             progress2 |= supertypeConstraints.add(Cs2, P2); } // CC = P' <= Cs'
 
-          // 8b/8'b
+          /*// 8b/8'b // TODO: Remove
           for (var P3 : subtypeConstraints.get(Cs2)) { // or Cs' <= P''  in CCz and
             if (!p.extractClassB(P3).isInterface()) { // p[P''].interface?=empty and
               progress2 |= subtypeConstraints.add(Cs2, P2); // CC = Cs'<=P'
-              break; }}
+              break; }}*/
 
-          // 8c/8'c
-          if (mustClass(Cs2)) { // or MustClass(Cs')
-            progress2 |= subtypeConstraints.add(Cs2, P2); } // CC = Cs' <= P'
+          // 8c/8'c // TODO: Remove
+          /*if (mustClass(Cs2)) { // or MustClass(Cs')
+            progress2 |= subtypeConstraints.add(Cs2, P2); } */// CC = Cs' <= P'
 
           // 8d/8'd
           for (var ms : p.top().getClassB(Cs2).msDom()) { // or ms' in dom(p[Cs'])
             if (p.extractClassB(P2).msDom().contains(ms)) { // and ms' in dom(p[P'])
               //       CC = Cs' <= Origin(p; sel'; P')
-              progress2 |= subtypeConstraints.add(Cs2, this.origin(ms, P2));}}
+              progress2 |= subtypeConstraints.add(Cs2, origin(ms, P2));}}
 
           return progress2;};
 
@@ -298,10 +288,10 @@ public class Redirect {
 
         // 8': This0.Cs' in p[Cs].Pz
         //     P' in SuperClass(p; P)
-        for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
+        /*for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
           if (P2.tryOuterNumber() == 0) { // P' = This0.Cs'
             for (var P3 : superClasses(CsP.getPath())) { // P'' in SuperClass(p; P)
-              progress |= body.test(P2.getCBar(), P3); }}}}
+              progress |= body.test(P2.getCBar(), P3); }}}*/}
 
       //9: Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
       //   C in dom(p[Cs])
@@ -310,9 +300,27 @@ public class Redirect {
           for (var C : this.p.top().getClassB(CsP.getCs()).cDom()) {// C in dom(p[Cs])
             var CsC = withAdd(CsP.getCs(), C);
             var PC = CsP.getPath().pushC(C);
+            if (!p.extractClassB(CsP.getPath()).cDom().contains(C))
+              throw new RuntimeException("Bad redirect: Nested class dosn't exist");
 
             // Cs.C <= P.C and P.C <= Cs.C
-            progress |= subtypeConstraints.add(CsC, PC) || supertypeConstraints.add(CsC, PC); }}}}
+            progress |= subtypeConstraints.add(CsC, PC) || supertypeConstraints.add(CsC, PC); }}}
+
+      //10: Collect(p; Cs,Csz; Cs.C <= P.C, P.C <= Cs.C) = Cs <= P, P <= Cs
+      for (var CsCPC : subtypeConstraints) { // CsC <= PC
+        var CsC = CsCPC.getCs();
+        var PC  = CsCPC.getPath();
+        if (PC.isCore() && supertypeConstraints.contains(CsC, PC)) { // PC = Thisk.Cs' and PC <= CsC
+          var n1 = CsC.size();
+          var n2 = PC.getCBar().size();
+          if (n1 > 0 && n2 > 0) {
+            var C  = CsC.get(n1 - 1);
+            var Cs = CsC.subList(0, n1 - 1); // CsC = Cs.C
+             // PC = P.C'
+            var P = PC.popC();
+            if (PC.getCBar().get(n2 - 1).equals(C) && redirectSet.containsKey(Cs)) { // C' = C and Cs in CsZ
+              // Cs <= P and P <= Cs
+              progress |= subtypeConstraints.add(Cs, P) || supertypeConstraints.add(Cs, P); }}}}}
 
     // Keep going untill we stop doing anything
     while (progress); }
@@ -391,10 +399,14 @@ public class Redirect {
   // Utility functions to do fromming...
 
   // p[P].Pz
-  Stream<Path> fromPz(Path P) { return From.fromPs(this.p.extractClassB(P).getSuperPaths(), P); }
+  Stream<Path> fromPz(Path P) { return fromPz(this.p.extractClassB(P), P); }
+  // L.Pz[from P]
+  Stream<Path> fromPz(ClassB L, Path P) { return From.fromPs(this.p.extractClassB(P).getSuperPaths(), P); }
 
   // p[P].mwtz
-  Stream<MethodWithType> fromMwtz(Path P) { return p.extractClassB(P).mwts().stream().map(mwt -> fromMwt(mwt, P)); }
+  Stream<MethodWithType> fromMwtz(Path P) { return fromMwtz(p.extractClassB(P), P); }
+  // (L.mwtz)[from P]
+  Stream<MethodWithType> fromMwtz(ClassB L, Path P) { return L.mwts().stream().map(mwt -> fromMwt(mwt, P)); }
 
   // p[P](ms)
   MethodWithType _fromPms(Path P, MethodSelector ms) {

@@ -1,6 +1,8 @@
 package is.L42.connected.withSafeOperators.refactor;
 
 import static helpers.TestHelper.getClassB;
+
+import ast.Ast;
 import helpers.TestHelper.ErrorCarry;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.IncoherentMapping;
@@ -42,12 +44,12 @@ public class TestRedirectNoRemove {
   public static List<Object[]> createData() {
     return Arrays.asList(new Object[][] {
     {lineNumber(), new String[]{"{A:{}}"},
-      "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","This0.InnerA","This1.A",
+      "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","InnerA","This0.A",
       "{InnerA: {} B:{ method This2.A m(This2.A a) a}}",false
     }, {lineNumber(),//
       new String[]{"{D:{method Library m(This1.D a)}}"},
       "{ A:{method Library m(This1.A a) } method Void b(This0.A m)}"
-      ,"This0.A","This1.D",
+      ,"A","This0.D",
       " { method \n" +
       "Void b(This1.D m) \n" +
       "A: {\n" +
@@ -61,17 +63,17 @@ public class TestRedirectNoRemove {
   TestHelper.configureForTest();
   Program p=TestHelper.getProgram(_p);
   ClassB cb1=getClassB(true,p,"cb1", _cb1);
-  Path path1=Path.parse(_path1);
+  List<Ast.C> path1=_path1.isEmpty() ? List.of() : Path.parse("This0." + _path1).getCBar();
   Path path2=Path.parse(_path2);
   if(!isError){
     ClassB expected=getClassB(true,p,"expected", _expected);
     ClassB res=new RedirectObj(cb1){
       protected ClassB removeRedirected(ClassB cb, List<CsPath> mapPath) {return cb;}
-    }.redirect(p,path1.getCBar(),path2);
+    }.redirect(p,path1,path2);
     TestHelper.assertEqualExp(expected,res);
     }
   else{
-    try{new RedirectObj(cb1).redirect(p,path1.getCBar(),path2);fail("error expected");}
+    try{new RedirectObj(cb1).redirect(p,path1,path2);fail("error expected");}
     catch(ClassUnfit err){
       String txt=err.getClass().getSimpleName()+"::"+err.getMessage();
       assertEquals(_expected,txt);

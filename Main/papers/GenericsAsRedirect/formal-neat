@@ -214,7 +214,7 @@ Define Internal(Pz) = Csz
 
 ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = R'
   CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
-  CCz = CollectAll(p; CCz0)
+  CCz = CollectAll(p; RedirectSet(p.top(); Cs1, ..., Csn); CCz0)
   R' = ChooseR(p; CCz)
   ValidRedirect(p; R; R') // TODO: Do something more efficient?
 
@@ -224,10 +224,10 @@ MustInterface(p; Cs) = p(Cs).interface? = interface
 MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
 
 // CollectAll is the main function that collects all constraints
-CollectAll(p; CCz,CCz') := CollectAll(p; CCz'')
-  CCz'' = (CCz, CCz') U Collect(p; CCz)
+CollectAll(p; Csz; CCz,CCz') := CollectAll(p; Csz; CCz'')
+  CCz'' = (CCz, CCz') U Collect(p; Csz; CCz)
   CCz'' != CCz,CCz'
-CollectAll(p; CCz) := CCz
+CollectAll(p; Csz; CCz) := CCz
   Otherwise
 
 Define p[P.ms] = p.minimize(p[P](ms))
@@ -237,77 +237,62 @@ Define mwt.P = mwt.mt.P
 Define mwt.Pi = mwt.mt.Ts.i.P
 
 // Note: Collect isn't a function, but a relation,
-// I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
-Define Collect(p; CCz) := CCz':
-1: Collect(p; Cs <= P) = P <= Cs
+// I.e. Collect(p; Csz; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
+Define Collect(p; Csz; CCz) := CCz':
+1: Collect(p; Csz; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
-2: Collect(p; P <= Cs) = Cs <= P
-	 MustClass(p; Cs)
 
-3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
+//2: Collect(p; Csz; P <= Cs) = Cs <= P // Implied by the above rule
+//	 MustClass(p; Cs)
+
+3: Collect(p; Csz; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
        This0.Cs' in p[Cs].Pz
        Pz = {P' in SuperClasses(p; P) | msdom(p[P']) = msdom(p[Cs'])}
 
-4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
+4: Collect(p; Csz; P <= Cs) = p[P.ms].P <= Cs'
     p[Cs.ms].P = This0.Cs'
 
-5: Collect(p; CC) = Cs' <= p[P.ms].Pi
+5: Collect(p; Csz; CC) = Cs' <= p[P.ms].Pi
      CC = P <= Cs or  CC = Cs <= P
      p[Cs.ms].Pi = This0.Cs'
 
-6: Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+6: Collect(p; Csz; Cs <= P) = Cs' <= p[P.ms].P:
   	MustInterface(p; Cs)
     p[Cs.ms].P = This0.Cs'
 
-7: Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+7: Collect(p; Csz; Cs <= P) = p[P.ms].Pi <= Cs':
     MustInterface(p; Cs)
     p[Cs.ms].Pi = This0.Cs'
 
-  // The ? rule
-8a:  Collect(p; Cs <= P) = P' <= Cs'
+  // The ? rules
+8:  Collect(p; Csz; Cs <= P, CCz) = CollectCS(p; Cs; P; CCz)
     This0.Cs' = p[Cs.sel].P
     P' = p[P.sel].P
-    p[P'].interface?=empty and
-8b:  Collect(p; Cs <= P) = Cs' <= p[P.sel].P
-    This0.Cs' = p[Cs.sel].P
-    MustClass(Cs')
-8c:  Collect(p; Cs <= P, Cs' <= P') = Cs'<=p[P.sel].P
-    This0.Cs' = p[Cs.sel].P
-    p[P'].interface?=empty
-8d:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
-    This0.Cs' = p[Cs.sel].P
-    P' = p[P.sel].P
-    sel' in dom(p[Cs']) intersect dom(p[P'])
+8':  Collect(p; Csz; Cs <= P, CCz) = CollectCS(p; Cs; P; CCz)
+    This0.Cs' in p[Cs].Pz
+    P' in SuperClasses(p; P)
 
-8'a:  Collect(p; Cs <= P) = P' <= Cs'
-    This0.Cs' in p[Cs].Pz
-    P' in SuperClass(p; P)
-    p[P'].interface?=empty and
-8'b:  Collect(p; Cs <= P) = Cs' <= P'
-    This0.Cs' in p[Cs].Pz
-    P' in SuperClass(p; P)
-    MustClass(Cs')
-8'c:  Collect(p; Cs <= P, Cs' <= P'') = Cs'<=P'
-    This0.Cs' in p[Cs].Pz
-    P' in SuperClass(p; P)
-    p[P''].interface?=empty
-8'd:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
-    This0.Cs' in p[Cs].Pz
-    P' in SuperClass(p; P)
-    sel' in dom(p[Cs']) intersect dom(p[P'])
+CollectCS(p; Cs; P;) = P <= Cs // a
+    p[P].interface?=empty
+//Collect8(p; Cs; P; Cs <= P') = Cs <= P //b
+//    p[P'].interface?=empty // Superflous, Since by rule 1, we allready know Cs == P'
+//CollectCS(p; Cs; P;) = P <= Cs // c
+//    MustClass(Cs) // Superflous, implied by 'a' above.
+Collect8(p; Cs; P;) = Cs <= Origin(p; sel; P) //d
+    sel in dom(p[Cs]) intersect dom(p[P])
 
   // Is this rule insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
-9:  Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
+9:  Collect(p; Csz; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
     C in dom(p[Cs])
 
+// The inverse of the above
+10:  Collect(p; Cs,Csz; Cs.C <= P.C, P.C <= Cs.C) = Cs <= P, P <= Cs
+
 // Add a rule of the form?
-//Collect(p; P <= Cs) = Cs <= P', P' <= Cs
+//Collect(p; Csz; P <= Cs) = Cs <= P', P' <= Cs
 //	P' is the unique element of SuperClasses(p; P) such that PossibleRedirect(p, P', Cs)
-// Handle cases like:
-//	EB: {}
-//	{X: {interface}, B: {implements X}}<B=EB> // And so X goes to Any?
 
 Origin(p; sel; P) = P'
   forall P'' in Supertypes(p; P) where sel in dom [P'']
@@ -348,6 +333,9 @@ Define ChooseR(p; CCz) := R
     // if k = 0, then Pz' = Pz
 
     Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
+    // TOOD: Use the above computations in a new collect rule?
+    // Also, should we think more about nested classes?
+    // So that if Pz'' = {P} then we infer that Cs <= P and P <= Cs?
     P = MostSpecific(p; Pz'')
 
    ChooseR(p; CCz) = empty
@@ -358,10 +346,22 @@ PossibleRedirect(p; Cs; P) iff
     if MustInterface(p; Cs)
         p[P].interface? = interface
         dom(p[P].mwtz) = dom(p[Cs].mwtz) // No extra methods
+        // TODO: Add the following?
+        //forall sel in dom(p[P].mwtz)
+        //    P' = p[Cs.sel].P
+        //    P' not of the form This0.Cs'
+        //    p.equiv(p[P.sel].P, P')
+    else
+        // TODO: Add the following?
+        //forall sel in dom(p[P].mwtz)
+        //    P' = p[Cs.sel].P
+        //    P' not of the form This0.Cs'
+        //    p |- p[P.sel].P <= P'
+
     if MustClass(p; Cs)
         p[P].interface? = empty
     dom(p[Cs]) subseteq dom(p[P])
-    // TODO: Refine this more? For example, e.g. by looking at external paths as well?
+    // TODO: Can interface implementations refine type-modifiers? (If so we may be able to add some more rules?)
 --------------------------
 // Some classes of ChooseRedirect functions
 

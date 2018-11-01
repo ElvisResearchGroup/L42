@@ -251,6 +251,7 @@ public interface ExpCore extends Serializable{
       public List<String> getXs() { return this.getMs().getNames(); }
       public List<Mdf> getMdfs() { return this.getMt().getTs().stream().map(Type::getMdf).collect(Collectors.toList()); }
       public List<Path> getPaths() { return this.getMt().getTs().stream().map(Type::getPath).collect(Collectors.toList()); }
+      public List<Path> getExceptions() { return this.getMt().getExceptions().stream().map(Type::getPath).collect(Collectors.toList()); }
 
       public Mdf getMdf() { return this.getMt().getMdf(); }
       public Mdf getReturnMdf() { return this.getMt().getReturnType().getMdf(); }
