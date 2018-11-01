@@ -106,12 +106,11 @@ public class Redirect {
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
     //    P = MostSpecific(p; P0,...,Pn)
     // Marco Says to ignore this case
-
     for (var CsPz : this.supertypeConstraints.map.entrySet()) {
       var Cs = CsPz.getKey();
       var Ps1 = CsPz.getValue();
       assert !Ps1.isEmpty();
-      var Ps2 = this.subtypeConstraints.get(CsPz.getKey());
+      var Ps2 = this.subtypeConstraints.get(CsPz.getKey());  
       //ChooseR(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz)
 
       // Pz = SuperClasses(p; P1, ..., Pn)
@@ -278,6 +277,7 @@ public class Redirect {
           for (var ms : p.top().getClassB(Cs2).msDom()) { // or ms' in dom(p[Cs'])
             if (p.extractClassB(P2).msDom().contains(ms)) { // and ms' in dom(p[P'])
               //       CC = Cs' <= Origin(p; sel'; P')
+              System.out.println("8/8'd");
               progress2 |= subtypeConstraints.add(Cs2, origin(ms, P2));}}
 
           return progress2;};
@@ -291,6 +291,7 @@ public class Redirect {
         /*for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
           if (P2.tryOuterNumber() == 0) { // P' = This0.Cs'
             for (var P3 : superClasses(CsP.getPath())) { // P'' in SuperClass(p; P)
+              System.out.println("8'");
               progress |= body.test(P2.getCBar(), P3); }}}*/}
 
       //9: Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
@@ -304,23 +305,23 @@ public class Redirect {
               throw new RuntimeException("Bad redirect: Nested class dosn't exist");
 
             // Cs.C <= P.C and P.C <= Cs.C
-            progress |= subtypeConstraints.add(CsC, PC) || supertypeConstraints.add(CsC, PC); }}}
+            progress |= subtypeConstraints.add(CsC, PC) | supertypeConstraints.add(CsC, PC); }}}
 
       //10: Collect(p; Cs,Csz; Cs.C <= P.C, P.C <= Cs.C) = Cs <= P, P <= Cs
+      
+      //find all the Cs.C in both      
       for (var CsCPC : subtypeConstraints) { // CsC <= PC
         var CsC = CsCPC.getCs();
         var PC  = CsCPC.getPath();
-        if (PC.isCore() && supertypeConstraints.contains(CsC, PC)) { // PC = Thisk.Cs' and PC <= CsC
-          var n1 = CsC.size();
-          var n2 = PC.getCBar().size();
-          if (n1 > 0 && n2 > 0) {
-            var C  = CsC.get(n1 - 1);
-            var Cs = CsC.subList(0, n1 - 1); // CsC = Cs.C
-             // PC = P.C'
-            var P = PC.popC();
-            if (PC.getCBar().get(n2 - 1).equals(C) && redirectSet.containsKey(Cs)) { // C' = C and Cs in CsZ
-              // Cs <= P and P <= Cs
-              progress |= subtypeConstraints.add(Cs, P) || supertypeConstraints.add(Cs, P); }}}}}
+        if (!PC.isCore() || !supertypeConstraints.contains(CsC, PC)) { continue; } 
+        var n1 = CsC.size();
+        var n2 = PC.getCBar().size();
+        if (n1 == 0 || n2 == 0) { continue; }
+        var C  = CsC.get(n1 - 1);
+        var Cs = CsC.subList(0, n1 - 1);
+        var P = PC.popC();
+        if (!PC.getCBar().get(n2 - 1).equals(C) || !redirectSet.containsKey(Cs)) { continue; }
+        progress |= subtypeConstraints.add(Cs, P) | supertypeConstraints.add(Cs, P); }}
 
     // Keep going untill we stop doing anything
     while (progress); }

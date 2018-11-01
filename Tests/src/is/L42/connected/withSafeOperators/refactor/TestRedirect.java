@@ -57,7 +57,7 @@ public class TestRedirect {
       "EBB: {interface method EA f(EBB x)}" +
       "EB: {interface implements EBB}" +
       "EA: {implements EB}" +
-      "EV:  {method Void m(EA x)}" + // R(B) <= R(EBB)
+      "EV:  {method Void m(EA x)}" +
     "}"},"{" +
       "B: {interface method A f(B x)}" +
       "A: {implements B}" +
@@ -66,24 +66,37 @@ public class TestRedirect {
       "}",
       "V", "This0.EV",
       "{method Void result(This1.EV r, This1.EA a, This1.EBB b)}", false
+    },{lineNumber(), new String[]{"{" +//8'd
+        "EI: {interface method EI m()}" +
+        "EV: {interface implements EI refine method EV m()}" +
+        "EP: {method Void m(EV x)}" +
+        "}"},"{" +//V<=I<=EI, V<=EV<=EI
+          "I: {interface method I m()}" +
+          "V: {interface implements I refine method Void m()}" + //
+          "P: {method Void m(V x)}" +
+          "method Void result(V r, I a)" +
+          "}",
+          "P", "This0.EP",
+          "{method Void result(This1.EV r, This1.EI a)}", false
     }, {lineNumber(), new String[]{"{" +
       "EB: {interface method EA f()}" +
-      "EA: {implements EB}" +
+      "EA: {interface implements EB refine method EA2 f()}" +
+      "EA2: {implements EA refine method EA2 f()}" +
       "EV:  {method Void m(EA x)}" +
     "}"},"{" +
       "B: {interface method A f()}" +
-      "A: {implements B}" +
+      "A: {implements B refine method A f()}" +
       "V: {method Void m(A x)}" +
       "method Void result(V r, A a, B b)" +
       "}",
       "V", "This0.EV",
-      "{method Void result(This1.EV r, This1.EA a, This1.EB b)}", false
+      "{method Void result(This1.EV r, This1.EA2 a, This1.EA b)}", false
 
     }, {lineNumber(), new String[]{"{" +
       "EBB: {interface method EA f(EBB x)}" +
       "EB: {interface implements EBB}" +
       "EA: {interface method EB n()}" +
-      "EV:  {method Void m(EA x)}" + // R(B) <= R(EBB)
+      "EV:  {method Void m(EA x)}" +
     "}"},"{" +
       "B: {interface method A f(B x)}" +
       "A: {method B n()}" +

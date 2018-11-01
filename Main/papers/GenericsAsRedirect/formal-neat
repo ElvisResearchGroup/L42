@@ -83,9 +83,9 @@ Csz subseteq RedirectSet(L; Csz)
 
 // Redirect the nested class mentioned in the signature of a redirected class
 // We won't however be redirecting references to external paths (i.e. things outside of This0)
-Cs2 in RedirectSet(L; Csz)
+Internal(Reachables(L[Cs1])) subseteq RedirectSet(L; Csz)
   Cs1 in RedirectSet(L; Csz)
-  This0.Cs2 in Reachables(L[Cs1]) // TODO: Do a p.minimize?
+  // TODO: Do a p.minimize?
 
 ==================================================================
 // Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the R mapping
@@ -233,8 +233,15 @@ CollectAll(p; Csz; CCz) := CCz
 Define p[P.ms] = p.minimize(p[P](ms))
 // where p.minimize(mwt) minimizes everything in the method signature
 Define p[Cs.ms] = p[This0.Cs.ms]
-Define mwt.P = mwt.mt.P
+Define mwt.P = mwt.mt.T.P
 Define mwt.Pi = mwt.mt.Ts.i.P
+
+Define mwt.Cs = Cs
+	This0.Cs = mwt.mt.T.P
+Define mwt.Csi = Cs
+	This0.Cs = mwt.mt.Ts.i.P
+Define L.Csz = Internal(L.Pz)
+
 
 // Note: Collect isn't a function, but a relation,
 // I.e. Collect(p; Csz; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
@@ -242,45 +249,40 @@ Define Collect(p; Csz; CCz) := CCz':
 1: Collect(p; Csz; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
 
-//2: Collect(p; Csz; P <= Cs) = Cs <= P // Implied by the above rule
-//	 MustClass(p; Cs)
-
 3: Collect(p; Csz; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
-       This0.Cs' in p[Cs].Pz
+       Cs' in p[Cs].Csz
        Pz = {P' in SuperClasses(p; P) | msdom(p[P']) = msdom(p[Cs'])}
 
-4: Collect(p; Csz; P <= Cs) = p[P.ms].P <= Cs'
-    p[Cs.ms].P = This0.Cs'
-
-5: Collect(p; Csz; CC) = Cs' <= p[P.ms].Pi
+4: Collect(p; Csz; P <= Cs) = p[P.ms].P <= p[Cs.ms].Cs
+5: Collect(p; Csz; CC) = p[Cs.ms].Csi <= p[P.ms].Pi
      CC = P <= Cs or  CC = Cs <= P
-     p[Cs.ms].Pi = This0.Cs'
 
-6: Collect(p; Csz; Cs <= P) = Cs' <= p[P.ms].P:
+6: Collect(p; Csz; Cs <= P) = p[Cs.ms].Cs <= p[P.ms].P:
   	MustInterface(p; Cs)
-    p[Cs.ms].P = This0.Cs'
 
-7: Collect(p; Csz; Cs <= P) = p[P.ms].Pi <= Cs':
+7: Collect(p; Csz; Cs <= P) = p[Cs.ms].Csi <= Cs':
     MustInterface(p; Cs)
-    p[Cs.ms].Pi = This0.Cs'
 
   // The ? rules
-8:  Collect(p; Csz; Cs <= P, CCz) = CollectCS(p; Cs; P; CCz)
-    This0.Cs' = p[Cs.sel].P
+8a:  Collect(p; Csz; Cs <= P, CCz) = P' <= p[Cs.sel].Cs
     P' = p[P.sel].P
-8':  Collect(p; Csz; Cs <= P, CCz) = CollectCS(p; Cs; P; CCz)
-    This0.Cs' in p[Cs].Pz
+    p[P'].interface?=empty
+    
+8'a:  Collect(p; Csz; Cs <= P, CCz) = P' <= Cs'
+    Cs' in p[Cs].Csz
     P' in SuperClasses(p; P)
+	p[P'].interface?=empty
+	
+8d:  Collect(p; Csz; Cs <= P, CCz) = Cs' <= Origin(p; sel'; P')
+    Cs' = p[Cs.sel].Cs
+    P' = p[P.sel].P
+    sel' in dom(p[Cs']) intersect dom(p[P']) 
 
-CollectCS(p; Cs; P;) = P <= Cs // a
-    p[P].interface?=empty
-//Collect8(p; Cs; P; Cs <= P') = Cs <= P //b
-//    p[P'].interface?=empty // Superflous, Since by rule 1, we allready know Cs == P'
-//CollectCS(p; Cs; P;) = P <= Cs // c
-//    MustClass(Cs) // Superflous, implied by 'a' above.
-Collect8(p; Cs; P;) = Cs <= Origin(p; sel; P) //d
-    sel in dom(p[Cs]) intersect dom(p[P])
-
+8'd:  Collect(p; Csz; Cs <= P, CCz) = Cs' <= Origin(p; sel'; P')
+    Cs' in p[Cs].Pz
+    P' in SuperClasses(p; P)
+   	sel' in dom(p[Cs']) intersect dom(p[P']) 
+   	
   // Is this rule insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
@@ -343,21 +345,17 @@ Define ChooseR(p; CCz) := R
 
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
 PossibleRedirect(p; Cs; P) iff
+	// TODO: Add the following?
+	//forall sel in dom(p[P].mwtz)
+	//    T = p[Cs.sel].P
+	//    T.P not of the form This0.Cs'
+	//    p |- p[P.sel].T <=  T
+	//	  if MustInterface(p; Cs)
+	//    	T |- T <= p[P.sel].T 
+
     if MustInterface(p; Cs)
         p[P].interface? = interface
         dom(p[P].mwtz) = dom(p[Cs].mwtz) // No extra methods
-        // TODO: Add the following?
-        //forall sel in dom(p[P].mwtz)
-        //    P' = p[Cs.sel].P
-        //    P' not of the form This0.Cs'
-        //    p.equiv(p[P.sel].P, P')
-    else
-        // TODO: Add the following?
-        //forall sel in dom(p[P].mwtz)
-        //    P' = p[Cs.sel].P
-        //    P' not of the form This0.Cs'
-        //    p |- p[P.sel].P <= P'
-
     if MustClass(p; Cs)
         p[P].interface? = empty
     dom(p[Cs]) subseteq dom(p[P])
