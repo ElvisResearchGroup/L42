@@ -134,7 +134,7 @@ Define Redirectable(L) // L42 only
 // would also type-check against B
 Define p|- P; {interafce?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
   // Check that all the interfaces the LHS implements are also implemented by the RHS
-  Pz subseteq_p SuperClasses(p; Pz') //Note: Using SuperClasses (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
+  Pz subseteq_p SuperClasses(p; P) //Note: Using SuperClasses (and not Pz') is very important, so that F-bound polimoprhism can work TODO: explain what this means
 
   // If the LHS is not an interface
   if interface?=empty:
@@ -250,8 +250,9 @@ Define Collect(p; Csz; CCz) := CCz':
     p[P].interface = empty //since all classes are final
 
 3: Collect(p; Csz; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
-       Cs' in p[Cs].Csz
-       Pz = {P' in SuperClasses(p; P) | msdom(p[P']) = msdom(p[Cs'])}
+    // TODO: What if MostSpecific, or MostGeneral, but not both, are undefined?
+    Cs' in p[Cs].Csz
+    Pz = {P' in SuperClasses(p; P) | msdom(p[P']) = msdom(p[Cs'])}
 
 4: Collect(p; Csz; P <= Cs) = p[P.ms].P <= p[Cs.ms].Cs
 5: Collect(p; Csz; CC) = p[Cs.ms].Csi <= p[P.ms].Pi
@@ -260,29 +261,24 @@ Define Collect(p; Csz; CCz) := CCz':
 6: Collect(p; Csz; Cs <= P) = p[Cs.ms].Cs <= p[P.ms].P:
   	MustInterface(p; Cs)
 
-7: Collect(p; Csz; Cs <= P) = p[Cs.ms].Csi <= Cs':
+7: Collect(p; Csz; Cs <= P) = p[P.ms].Pi <= p[Cs.ms].Csi:
     MustInterface(p; Cs)
 
   // The ? rules
-8a:  Collect(p; Csz; Cs <= P, CCz) = P' <= p[Cs.sel].Cs
+8a:  Collect(p; Csz; Cs <= P) = P' <= p[Cs.sel].Cs
     P' = p[P.sel].P
     p[P'].interface?=empty
-    
-8'a:  Collect(p; Csz; Cs <= P, CCz) = P' <= Cs'
-    Cs' in p[Cs].Csz
-    P' in SuperClasses(p; P)
-	p[P'].interface?=empty
-	
-8d:  Collect(p; Csz; Cs <= P, CCz) = Cs' <= Origin(p; sel'; P')
+
+8d:  Collect(p; Csz; Cs <= P) = Cs' <= Origin(p; sel'; P')
     Cs' = p[Cs.sel].Cs
     P' = p[P.sel].P
-    sel' in dom(p[Cs']) intersect dom(p[P']) 
+    sel' in dom(p[Cs']) intersect dom(p[P'])
 
-8'd:  Collect(p; Csz; Cs <= P, CCz) = Cs' <= Origin(p; sel'; P')
+8'd:  Collect(p; Csz; Cs <= P) = Cs' <= Origin(p; sel'; P')
     Cs' in p[Cs].Pz
     P' in SuperClasses(p; P)
-   	sel' in dom(p[Cs']) intersect dom(p[P']) 
-   	
+   	sel' in dom(p[Cs']) intersect dom(p[P'])
+
   // Is this rule insufficient? What if we have Cs <= P,
   // And P' < P, and P has no C, but P' does,
   // Therefore should we deduce that Cs <= P'?
@@ -335,6 +331,8 @@ Define ChooseR(p; CCz) := R
     // if k = 0, then Pz' = Pz
 
     Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
+    // TODO: Check Nested class constraints on Pz''?
+
     // TOOD: Use the above computations in a new collect rule?
     // Also, should we think more about nested classes?
     // So that if Pz'' = {P} then we infer that Cs <= P and P <= Cs?
@@ -349,18 +347,19 @@ PossibleRedirect(p; Cs; P) iff
 	//forall sel in dom(p[P].mwtz)
 	//    T = p[Cs.sel].P
 	//    T.P not of the form This0.Cs'
-	//    p |- p[P.sel].T <=  T
+	//    p |- p[P.sel].T <= T
 	//	  if MustInterface(p; Cs)
 	//    	T |- T <= p[P.sel].T 
+    // TODO: Recursivley check nested classes?
 
+    // TODO: Check type modifiers?
     if MustInterface(p; Cs)
         p[P].interface? = interface
         dom(p[P].mwtz) = dom(p[Cs].mwtz) // No extra methods
     if MustClass(p; Cs)
         p[P].interface? = empty
     dom(p[Cs]) subseteq dom(p[P])
-    // TODO: Can interface implementations refine type-modifiers? (If so we may be able to add some more rules?)
---------------------------
+-------------------------------------------------------------------------------------------------
 // Some classes of ChooseRedirect functions
 
 UniqueR(p, R1) = R2

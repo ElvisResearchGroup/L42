@@ -53,45 +53,40 @@ public class TestRedirect {
     List<Object[]> tests= Arrays.asList(new Object[][]{
 
 // TODO: Fix/look at these tests
-    {lineNumber(), new String[]{"{" +
-      "EBB: {interface method EA f(EBB x)}" +
-      "EB: {interface implements EBB}" +
-      "EA: {implements EB}" +
-      "EV:  {method Void m(EA x)}" +
-    "}"},"{" +
-      "B: {interface method A f(B x)}" +
-      "A: {implements B}" +
-      "V: {method Void m(A x)}" +
-      "method Void result(V r, A a, B b)" +
-      "}",
-      "V", "This0.EV",
-      "{method Void result(This1.EV r, This1.EA a, This1.EBB b)}", false
-    },{lineNumber(), new String[]{"{" +//8'd
-        "EI: {interface method EI m()}" +
-        "EV: {interface implements EI refine method EV m()}" +
-        "EP: {method Void m(EV x)}" +
-        "}"},"{" +//V<=I<=EI, V<=EV<=EI
-          "I: {interface method I m()}" +
-          "V: {interface implements I refine method Void m()}" + //
-          "P: {method Void m(V x)}" +
-          "method Void result(V r, I a)" +
+    {lineNumber(), new String[]{"{" + // Test for possible redirect:
+          "EBB: {interface method Void foo()}" +
+//          "EBB1: {interface implements EBBB method Void bar()}" +
+//          "EBB2: {interface implements EBBB}" +
+//          "EBB3: {interface implements EBBB}" +
+          "EB: {implements EBB method Void bar()}" +
+//          "EB2: {implements EBB1}" +
+          "EA: {method EB m()}}"
+    },"{" +
+          "B: {method Void foo()}" +
+          "A: {method B m()}" +
+          "method Void result(A a, B b)" +
           "}",
-          "P", "This0.EP",
-          "{method Void result(This1.EV r, This1.EI a)}", false
-    }, {lineNumber(), new String[]{"{" +
-      "EB: {interface method EA f()}" +
-      "EA: {interface implements EB refine method EA2 f()}" +
-      "EA2: {implements EA refine method EA2 f()}" +
+          "A", "This0.EA",
+          "{method Void result(This1.EA a, This1.EBB2 x)}", false
+    }, {lineNumber(), new String[]{"{" + // This is just a horribley stupid thing I mindlessley wrote...
+      "EC: {interface}" +
+      "ED: {interface method Void n(EB2 b, EA2 a)}"+
+      "EB:  {interface                method ED m(EC x)}" +
+      "EB2: {interface implements EB  refine method ED m(EC x)}" +
+      "EA:  {interface implements EB2  refine method ED m(EC x)}" +
+      "EA2: {interface implements EA, EB, EB2}" +
       "EV:  {method Void m(EA x)}" +
     "}"},"{" +
-      "B: {interface method A f()}" +
-      "A: {implements B refine method A f()}" +
+      "C :{}" +
+      "D: {interface method Void n(B b, A a)}" +
+      "B: {interface           method D m(C x)}" +
+      "A: {implements B refine method D m(C x)}" +
       "V: {method Void m(A x)}" +
-      "method Void result(V r, A a, B b)" +
+      "method Void result(V r, A a, B b, C c)" +
       "}",
       "V", "This0.EV",
-      "{method Void result(This1.EV r, This1.EA2 a, This1.EA b)}", false
-
+      "{method Void result(This1.EV r, This1.EA2 a, This1.EB2 b, This1.EC c)}", false
+//----------------------------
     }, {lineNumber(), new String[]{"{" +
       "EBB: {interface method EA f(EBB x)}" +
       "EB: {interface implements EBB}" +
