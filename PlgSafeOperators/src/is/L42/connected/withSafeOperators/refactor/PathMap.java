@@ -16,13 +16,20 @@ import coreVisitors.CloneVisitorWithProgram;
 import programReduction.Program;
 
 public class PathMap implements Iterable<CsPath> {
-  Map<List<C>, Path> map;
+  private Map<List<C>, Path> map;
 
-  @Override public String toString() { return this.stream().map(Object::toString).collect(Collectors.joining(",")); }
+  @Override public String toString() { return this.stream().map(Object::toString).collect(Collectors.joining(", ")); }
 
   public PathMap() { this.map = new HashMap<>(); }
-  public PathMap(Map<List<C>, Path> map) { this.map = new HashMap<>(map); }
+  public PathMap(Map<List<C>, Path> map) {
+    this.map = new HashMap<>(map);
+    this.map.entrySet().forEach(Objects::requireNonNull); }
 
+  public Path get(List<C> Cs) { return Objects.requireNonNull(this._get(Cs)); }
+  public Path _get(List<C> Cs) { return this.map.get(Cs); }
+  public boolean contains(List<C> Cs) { return this.map.containsKey(Cs); }
+
+  public void add(List<C> Cs, Path P) { this.map.put(Objects.requireNonNull(Cs), Objects.requireNonNull(P)); }
   // returns R such that
   // Cs-> This0.Dest in R
   //  If Cs->This0.Cs' in R

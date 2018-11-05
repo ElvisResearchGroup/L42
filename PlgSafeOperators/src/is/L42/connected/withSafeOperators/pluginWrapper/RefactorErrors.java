@@ -3,6 +3,7 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
 import is.L42.connected.withSafeOperators.location.Lib;
 import is.L42.connected.withSafeOperators.location.Method;
 import is.L42.connected.withSafeOperators.refactor.MembersUtils;
+import is.L42.connected.withSafeOperators.refactor.Redirect;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Error;
 import tools.Assertions;
@@ -250,6 +251,12 @@ public class RefactorErrors{
       return "DeployL42TypeError:"+this.mutMsg;
       }
     }
+
+  // TODO: Actually write this properlu
+  // RedirectError( {Cs1, ..., Csn, Csn+1, ..., Csn+k}, {P1, ..., Pn}, message)
+  // Represents a redirect failure, {Cs1->P1, ..., Csn -> Pn} are the mappings that were deduced
+  // {Csn+1, Csn+k} failed to have a mapping computed (but should have).
+  public static class RedirectError extends Exception { public RedirectError(List<List<Ast.C>> Csz, List<Path> Pz, String message) { super(message); }}
 }
   /*
  TODO:

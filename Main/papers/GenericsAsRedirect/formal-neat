@@ -114,20 +114,21 @@ Define ValidRedirect(p,R,R')
     P not of form This0._
     p|-p(P):OK //P well typed
   forall Cs in dom(R'):
-    Cs not empty
     p|- R'(Cs); p[R'(Cs)] <= Cs; R'(p[Cs])
     forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
-    Redirectable(p.top()(Cs))
+    Redirectable(Cs, p.top())
 
 // Whether the class This0.Cs can be redirected away
 // Namely: that the class contains no implemented methods or anything private
-Define Redirectable(L) // L42 only
-  forall mwt in L.mwtz:
+Define Redirectable(Cs, L) // L42 only
+  Cs not empty
+  forall C in Cs: not Private(Cs)
+  forall mwt in L[Cs].mwtz:
     mwt.e = empty
     not Private(mwt.m)
 
-  forall C in dom(L.ncz)
-    not Private(C)
+  forall C' in dom(L[Cs].ncz)
+    Redirectable(Cs.C', L)
 
 // Is the LHS (whose name is 'This0.Cs') a structural supertype of the RHS (whose name is P)
 // We say that A is a structural supertype of B if any code written with respect to A
@@ -214,8 +215,9 @@ Define Internal(Pz) = Csz
 
 ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = R'
   CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
-  CCz = CollectAll(p; RedirectSet(p.top(); Cs1, ..., Csn); CCz0)
-  R' = ChooseR(p; CCz)
+  Csz = RedirectSet(p.top(); Cs1, ..., Csn)
+  CCz = CollectAll(p; Csz; CCz0)
+  R' = CompleteR(p; ChooseR(p; CCz))
   ValidRedirect(p; R; R') // TODO: Do something more efficient?
 
 CC ::= Cs <= P | P <= Cs // | Cs in Pz  | interface Cs | class Cs
@@ -340,6 +342,8 @@ Define ChooseR(p; CCz) := R
 
    ChooseR(p; CCz) = empty
      otherwise
+CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.Cn, R')
+    {C1, ..., Cn} = { C in dom(p[Cs]) | p[P.C] is defined }
 
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
 PossibleRedirect(p; Cs; P) iff
@@ -350,7 +354,6 @@ PossibleRedirect(p; Cs; P) iff
 	//    p |- p[P.sel].T <= T
 	//	  if MustInterface(p; Cs)
 	//    	T |- T <= p[P.sel].T 
-    // TODO: Recursivley check nested classes?
 
     // TODO: Check type modifiers?
     if MustInterface(p; Cs)
@@ -358,7 +361,7 @@ PossibleRedirect(p; Cs; P) iff
         dom(p[P].mwtz) = dom(p[Cs].mwtz) // No extra methods
     if MustClass(p; Cs)
         p[P].interface? = empty
-    dom(p[Cs]) subseteq dom(p[P])
+    forall C in dom(p[Cs]): C in dom(p[P]) and PossibleRedirect(p; Cs.C; P.C)
 -------------------------------------------------------------------------------------------------
 // Some classes of ChooseRedirect functions
 

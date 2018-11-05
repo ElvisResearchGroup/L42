@@ -3,6 +3,8 @@ package ast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import java.util.List;
 
 import ast.Ast.Atom;
@@ -58,7 +60,9 @@ public class PathAux {
     for(int i=1;i<path.size();i++){res+="."+path.get(i);}
     return res;
     }
-
+  public static<T> String asSet(Collection<T> s) {
+    if (s.size() == 1) { return s.iterator().next().toString(); }
+    else { return "{" + s.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";}}
 
   public static boolean isValidPrimitiveName(String name){
     Path p=PathPrimitive._parsePrimitive(name);

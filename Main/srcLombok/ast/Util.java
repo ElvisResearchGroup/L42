@@ -45,7 +45,7 @@ public class Util {
   @Data @Wither public static class CsSPath{
     @NonNull List<Ast.C> cs;
     @NonNull java.util.Set<Path> pathsSet;
-    public String toString(){return ""+cs+"->"+pathsSet;}
+    public String toString(){return PathAux.as42Path(cs)+"->"+PathAux.asSet(pathsSet);}
     }
   @Data @Wither public static class CsMwtPMwt{
     @NonNull List<Ast.C> src1;
