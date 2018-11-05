@@ -40,6 +40,8 @@ public class TestRedirect {
   // SKIP NEW TESTS
   static int startLine=51; // was 159
 
+  static Object NestedClassTest = null;
+  static Object ExceptionTest = null;
   @Parameter(0) public int _lineNumber;
   @Parameter(1) public Object _p;
   @Parameter(2) public String _cb1;
@@ -54,18 +56,38 @@ public class TestRedirect {
 
     List<Object[]> tests= Arrays.asList(new Object[][]{
 
-    {lineNumber(), new String[]{"{" + // No way our algorithm can solve this one!
+    {lineNumber(), new String[]{"{ED: {} EB: {C: {ED m}} EA: {method EB m()}}"},
+      "{" +
+        "D:{}" + 
+        "B: {C: {D m}}" +
+        "A: {method B m()}" +
+        "method Void result(A a, B b, D c)" +
+        "}",
+        "A", "This0.EA",
+        "{method Void result(This1.EA a, This1.EA.B b, This1.EC c)}", NestedClassTest
+    },{lineNumber(), new String[]{"{" + // No way our algorithm can solve this one!
+        "EB1: {interface C:{interface implements EB0.C}}" +
+        "EB0: {interface implements EB1 C:{interface}}" +
+        "EA: {method EB0 m()}" + "}"
+    },"{" +
+        "B: {C: {}}" +
+        "A: {method B m()}" + // Should fail!
+        "method Void result(A a, B b)" +
+        "}",
+        "A", "This0.EA",
+        "{method Void result(This1.EA a, This1.EB0 b)}", NestedClassTest
+    },{lineNumber(), new String[]{"{" + // No way our algorithm can solve this one!
           "EB1: {interface C:{implements EBC}}" +
           "EB0: {interface implements EB1 C:{}}" +
           "EBC: {interface}" +
           "EA: {method EB0 m(EBC x)}" + "}"
-    },"{" +
+      },"{" +
           "B: {C: {}}" +
-          "A: {method B m(B.C x)}" + // Foo <= C, B.C <= Blah
+          "A: {method B m(B.C x)}" + // EBA <= A, B.C <= EBC
           "method Void result(A a, B b)" +
           "}",
           "A", "This0.EA",
-          "{method Void result(This1.EA a, This1.EB1 b)}", false
+          "{method Void result(This1.EA a, This1.EB1 b)}", NestedClassTest
     }, {lineNumber(), new String[]{"{" + // Test for possible redirect:
           "EB4: {interface method Void foo() C:{Void f class method Void cm()}}" +
           "EB3: {interface implements EB4    C:{interface class method Void cm()}}" +
@@ -79,7 +101,7 @@ public class TestRedirect {
           "method Void result(A a, B b)" +
           "}",
           "A", "This0.EA",
-          "{method Void result(This1.EA a, This1.EB4 b)}", false
+          "{method Void result(This1.EA a, This1.EB4 b)}", NestedClassTest
     }, {lineNumber(), new String[]{"{" + // This is just a horribley stupid thing I mindlessley wrote...
       "EC: {interface}" +
       "ED: {interface method Void n(EB2 b, EA2 a)}"+
@@ -245,7 +267,7 @@ public class TestRedirect {
                     "A:{interface implements I1 I2}\n" +
                     "}",
             "B", "This0.E",
-            "{A: {interface implements This2.E1, This2.E2}}", null // TODO: OK? Can redirect I1 and I2 to any!
+            "{A: {interface}}", false // TODO: OK? Can redirect I1 and I2 to any!
             // SHOULD FAIL
     }, {lineNumber(), // Fails, as no p.equiv
             mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}")
@@ -297,12 +319,9 @@ public class TestRedirect {
             // SHOULD FAIL
     },{lineNumber(),//PASS
             new String[]{"{Foo: {implements This1.EA}, EA: {interface B:{}}}"},
-            "{A:{interface      B:{implements A}}}",
+            "{A:{interface      B:{implements A}} method Void result(A a, A.B b)}",
             "A.B", "This0.Foo",
-            "IncoherentMapping::\n" +
-                    "verified:[A.B->This1.Foo, A->This1.EA]\n" +
-                    "ambiguities:[A->[This1.EA], A.B->[This1.EA.B]]\n" +
-                    "incoherent destinations for A.B:[This1.EA.B, This1.Foo]", true
+            "{method Void result(This1.EA a, This1.Foo b)}", false
     },{lineNumber(),//PASS//Should be shown in the article
             new String[]{"{EA:{interface B:{implements EA}}}"},
             "{A:{interface      B:{implements A}} class method A m(A.B x)}",
@@ -341,7 +360,7 @@ public class TestRedirect {
         "InnerA", "This0.A","{ method Void useB(This1.B that)}",false
     },{lineNumber(), new String[]{"{A:{method Void do() exception B} B:{}}"}, // cascade: an exception in A redirects B  // TODO:FAILS, since exception clause is ignored
         "{InnerA:{method Void do() exception InnerB} InnerB:{} method Void useB(InnerB that)}",
-        "InnerA", "This0.A","{ method Void useB(This1.B that)}",null
+        "InnerA", "This0.A","{ method Void useB(This1.B that)}",ExceptionTest
     },{lineNumber(), new String[]{      // serial cascade: return ~> parameter ~> exception // TODO:FAILS, since exception clause is ignored
                     "{D:{}}",
                     "{C:{ method Void do() exception This2.D}}",
@@ -349,7 +368,7 @@ public class TestRedirect {
                     "{A:{method This2.B getB()}}"},
         "{InnerA:{method InnerB getB()} InnerB:{method Void useC(InnerC that)} "
         + "InnerC:{method Void do() exception InnerD} InnerD:{} method InnerD freeIdent(InnerD that)}",
-        "InnerA", "This0.A","{ method This4.D freeIdent(This4.D that)}",null
+        "InnerA", "This0.A","{ method This4.D freeIdent(This4.D that)}",ExceptionTest
     },{lineNumber(), new String[]{      // parallel cascade: return, parameter & exception address the same class  // TODO:FAILS, since exception clause is ignored
                     "{B:{method B ident(B that)}}",
                     "{A:{method This2.B getB() method Void useB(This2.B that) method Void do() exception This2.B}}"},
@@ -361,7 +380,7 @@ public class TestRedirect {
         + "InnerY:{} "
         + "InnerZ:{method InnerZ ident(InnerZ that)} "
         + "method Void multiUse(InnerX x, InnerY y, InnerZ z) }",
-        "InnerA", "This0.A","{ method Void multiUse(This2.B x, This2.B y, This2.B z)}",null
+        "InnerA", "This0.A","{ method Void multiUse(This2.B x, This2.B y, This2.B z)}", ExceptionTest
     },{lineNumber(), new String[]{      // redirection of a method containing a library literal
     "{A:{ }}" },
     "{InnerA:{ } M:{class method Library defA_maker() {class method InnerA beA_maker() InnerA()}}}",
@@ -434,7 +453,7 @@ public class TestRedirect {
         + "TestB:{method InnerA moreFun()}"
         + "}",
         "InnerA", "This0.A",
-        "{TestB:{method This2.A moreFun()}}", null // TODO: ERROR? This should not work, as InnerA has class methods
+        "InnerA cannot be redirect to an internet (class method)", true
     },{lineNumber(), new String[]{  // Redirect a FreeTemplate with two interfaces to an OpenClass with one.
                                     // Under the just-one-target-is-unambiguous rule,
                                     // which is a logical consequence of the intersecting-to-one-target-is-unambiguous rule,
@@ -465,7 +484,7 @@ public class TestRedirect {
         + "TestB:{ implements InnerI2 method moreFun() void}\n"
         + "}",
         "%Redirect", "This0.%Redirect",
-        "{TestB:{ implements This2.I2 method moreFun() void}}",false
+        "{TestB:{ implements This2.I2 method moreFun() void}}", NestedClassTest
     },{lineNumber(), new String[]{   // Same test as above, with more interesting method selectors and trivial order changes
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
@@ -479,7 +498,7 @@ public class TestRedirect {
         + "TestB:{ implements InnerI2 method moreFun(that, other) void}\n"
         + "}",
         "%Redirect", "This0.%Redirect",
-        "{TestB:{ implements This2.I2 method moreFun(that, other) void}}",false
+        "{TestB:{ implements This2.I2 method moreFun(that, other) void}}", NestedClassTest
     },{lineNumber(), new String[]{   // Redirect, via a pile, when the underlying types are used in aliases
                     "{"
                     + "I1:{interface method Void fun(Void that)}\n"
@@ -536,7 +555,7 @@ public class TestRedirect {
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
         "Z.Aliases", "This0.X.Y.Aliases",
-        "{TestA:{method This2.X.Y.FluffyA fun()}}",false
+        "{TestA:{method This2.X.Y.FluffyA fun()}}", NestedClassTest
 
         // TODO@James: (NOW) when the test above passes, redirect via a pile, where the types in the internal pile are aliases to a mix of internal, internal->external and external
 
@@ -589,7 +608,7 @@ public class TestRedirect {
         + "TestX:{method This2.Iab abFun() exception This2.Eab\n"
         + "       method This2.Ibc bcFun() exception This2.Ebc\n"
         + "       method This2.Ica caFun() exception This2.Eca}\n"
-        + "}",null
+        + "}",ExceptionTest
 
         // TODO@James do something with piles containing alias types that refer to the library return values of methods
         // but this might not be possible in a unit-test without metaprogramming capability
@@ -769,14 +788,15 @@ public class TestRedirect {
         },
         "{BlockingInterface1:{interface} "
         + "InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
-        + "C:{interface  implements BlockingInterface1 } } \n"
+        + "  C:{interface implements BlockingInterface1 } } \n"
         + "C_impl:{ implements InnerA.C"
-        + "       } "
+        + "       }"
+        + "method Void result(BlockingInterface1 bi, InnerA a, InnerA.C ic)"
         + "}",
         "InnerA", "This0.A",
-        "ClassUnfit::Redirecting InnerA.C to This1.A.C:\n"+
-        "Unexpected implemented interface in dest:[BlockingInterface1]"
-        , null // TODO: OK, due to F-bounded polymorphism
+        " {" + 
+        "method Void result(This1.A.C bi, This1.A a, This1.A.C ic) \n" + 
+        "C_impl: {implements This2.A.C}}", NestedClassTest
     },{lineNumber(), new String[]{  // Matching nested interfaces, the inner of which implements two internal and one external blocking interfaces
                                     // NB: in the test harness, must specify outer numbers for outers.
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
@@ -792,9 +812,7 @@ public class TestRedirect {
         + "       } "
         + "}",
         "InnerA", "This0.A",
-        "ClassUnfit::Redirecting InnerA.C to This1.A.C:\n"+
-        "Unexpected implemented interface in dest:[BlockingInterface1, BlockingInterface2, This1.A.C]"
-         , null // TODO: OK, due to F-bounded polymorphism rule
+        "{C_impl:{implements This2.A.C method Void mostFun()}}", NestedClassTest
 
     },{lineNumber(), new String[]{  // When a cascade redirect renames another interface, the reported unexpected interface is the name before the rename.
         "{  A:{interface class method C fun(Void that)  method Void moreFun(Void that, Library other)} \n"
@@ -825,10 +843,8 @@ public class TestRedirect {
         + "InnerC:{method InnerAB fun() method InnerAB moreFun() } "
         + "}",
         "InnerC", "This0.C",
-        "IncoherentMapping::\n"+
-        "ambiguities:[InnerC->[This1.C], InnerAB->[]]\n"+
-        "incoherent destinations for InnerAB:[This1.A, This1.B]"
-        , null, // TODO: OK, A and B have a common superclass (namely Any), that is a valid target for InnerAB
+        "{}",
+        false,
     },{lineNumber(), new String[]{   // Incoherent redirect: Matching functions (FluffyA.fun()) disagree about the position of their return value
                                      // NB: There is no reliable theory to filter out only nested redirects, so all redirects up to the failure are include in the error.
                     "{X:{Y:{FluffyA:{ class method This2 fun()}" // Target of original redirect
@@ -842,7 +858,7 @@ public class TestRedirect {
         "verified:[InnerZ.FluffyA->This1.X.Y.FluffyA, InnerZ->This1.X]\n"+
         "ambiguities:[InnerZ->[This1.X], InnerZ.FluffyA->[This1.X.FluffyA]]\n"+
         "incoherent destinations for InnerZ.FluffyA:[This1.X.FluffyA, This1.X.Y.FluffyA]"
-        , true
+        , NestedClassTest
     },{lineNumber(), new String[]{   // Try cascading two interfaces on one class, which should fail because
                                      // disambiguating it turned out to be prohibitive.
                     "{I1:{interface method Void fun()}\n"
@@ -855,10 +871,9 @@ public class TestRedirect {
         + "TestB:{ implements InnerI1 InnerI2  method fun() void method moreFun() void}\n"
         + "}",
         "InnerA", "This0.A",
-        "IncoherentMapping::\n"+
-        "verified:[InnerA->This1.A]\n"+
-        "ambiguities:[InnerI1->[This1.I1, This1.I2], InnerI2->[This1.I1, This1.I2]]"
-        , null // TODO: OK, works as expected (no idea why it wasn't supposed to work before...)
+        "{TestB: {implements This2.I1, This2.I2 " + 
+            "refine method Void fun() void " + 
+            "refine method Void moreFun() void}}", false
 
     // TODO@James: when the error for the test above has settled, do a pile redirect of two classes,
     // where one uses two interfaces and the other uses only one of them, to confirm that the disambiguation
@@ -978,10 +993,19 @@ public class TestRedirect {
        " B:{ method InnerA m(InnerA a) a}}","InnerA", "This0.A",
         "{B:{ method This2.A m(This2.A a) a}}",false
     },{
-      lineNumber(), new String[]{"{}"},
-       "{I: {interface}, C:{implements I, Any}}",
-       "I", "Any",
-        "{C:{implements Any, Any}}",false
+      lineNumber(), new String[]{"{EI: {interface}"
+          + "Input: {"
+          + "method Any m1(Any x) "
+          + "method EI m2(EI x)"
+          + "method EI m3(EI x)}}"},
+       "{"
+           + "Map: {method I1 m1(I1 x)"
+           + " method I2 m2(I2 x)"
+           + " method I3 m3(I3 x)}"
+           + "I1: {interface} I2: {interface} I3: {interface}"
+       + "C:{implements I1, I2, I3}}",
+       "Map", "This0.Input",
+        "{C:{implements This2.EI}}",false
 /*
     C:{ EB:{}
         EA:{method This1.EB f() This2.C.EB g()}

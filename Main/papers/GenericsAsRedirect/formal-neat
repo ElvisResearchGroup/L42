@@ -289,6 +289,8 @@ Define Collect(p; Csz; CCz) := CCz':
 
 // The inverse of the above
 10:  Collect(p; Cs,Csz; Cs.C <= P.C, P.C <= Cs.C) = Cs <= P, P <= Cs
+11: Collect(p; Csz; CCz) = P <= Cs, Cs <= P
+	RChoices(CCz) = Cs -> {P} 
 
 // Add a rule of the form?
 //Collect(p; Csz; P <= Cs) = Cs <= P', P' <= Cs
@@ -326,22 +328,18 @@ Define ChooseR(p; CCz) := R
   ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
     P = MostSpecific(p; P0,...,Pn)
 
-  ChooseR(P; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz), Cs -> P, ChooseR(p; CCz)
-    Pz = SuperClasses(p; P1, ..., Pn)
-    Pz' = { P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-    // Pz' is the set of possible solutions to the above constraints
-    // if k = 0, then Pz' = Pz
-
-    Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
-    // TODO: Check Nested class constraints on Pz''?
-
-    // TOOD: Use the above computations in a new collect rule?
-    // Also, should we think more about nested classes?
-    // So that if Pz'' = {P} then we infer that Cs <= P and P <= Cs?
-    P = MostSpecific(p; Pz'')
+  ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
+  	Cs -> Pz = RChoices(p; CCz)
+    P = MostSpecific(p; Pz)
 
    ChooseR(p; CCz) = empty
      otherwise
+     
+RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k), = Cs -> Pz''
+    Pz = SuperClasses(p; P1, ..., Pn)
+    Pz' = { P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
+    Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
+    
 CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.Cn, R')
     {C1, ..., Cn} = { C in dom(p[Cs]) | p[P.C] is defined }
 
@@ -358,7 +356,9 @@ PossibleRedirect(p; Cs; P) iff
     // TODO: Check type modifiers?
     if MustInterface(p; Cs)
         p[P].interface? = interface
-        dom(p[P].mwtz) = dom(p[Cs].mwtz) // No extra methods
+        dom(p[Cs].mwtz) = dom(p[P].mwtz) // No extra methods
+    else
+    	dom(p[Cs].mwtz) subseteq dom(p[P].mwtz) // No extra methods
     if MustClass(p; Cs)
         p[P].interface? = empty
     forall C in dom(p[Cs]): C in dom(p[P]) and PossibleRedirect(p; Cs.C; P.C)

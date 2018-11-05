@@ -101,9 +101,10 @@ public class Redirect {
       var Cs = CsP.getCs();
       try { p.top().getClassB(Cs); }
       catch (ErrorMessage.PathMetaOrNonExistant __) {
-        EB.record("Cannot redirected non-existent nested class " + Cs + "."); }}
+        EB.record("Cannot redirected non-existent nested class " + PathAux.as42Path(Cs) + "."); }}
     var errors = EB.toString();
     if (!errors.isEmpty()) {
+      // TODO: Pass the list of valid Cs's
       throw new RefactorErrors.RedirectError(new ArrayList<>(), new ArrayList<>(), errors); }
 
     //CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
@@ -123,7 +124,7 @@ public class Redirect {
 
     // R' = ChooseR(p; CCz)
     var R1 = chooseR();
-    completeR(R1);
+    //completeR(R1);
     System.out.println("Chosen R was: " + R1);
 
 
@@ -200,12 +201,9 @@ public class Redirect {
       var L1 = p.top().getClassB(Cs);
       var L2 = p.extractClassB(P);
 
-      // TODO: Talk to marco about this, apparently it's impossible..
-      /*if (!L2.getPhase().subtypeEq(ClassB.Phase.Typed)) { // p|-p(P):OK //P well typed
-        // TODO: Check for coherence instead?
-        errors.add("The target is untyped!"); }*/
+      // No need to check for well-typedness of L2, as 42 gurantees this for any 'class Any' given as input is (transitivley) well-typed
 
-      for (var C : L1.cDom()) { // forall C in dom(p(Cs)): R(Cs.C) = R(Cs).C
+      /*for (var C : L1.cDom()) { // forall C in dom(p(Cs)): R(Cs.C) = R(Cs).C
         if (!L2.cDom().contains(C)) {
           errors.record("Target does not contain nested class " + C + ".");
           continue; }
@@ -215,7 +213,7 @@ public class Redirect {
         var PC = P.pushC(C);
         if (PC2 != null && !PC.equals(PC2)) { // TODO: Do a p.equiv instead?
           errors.record("Inconsistent mapping for nested class " + C + ", " + "expected target " + PC + ", but got " + PC2 + ".");} }
-
+        */
       //    p|- P; L2 <= Cs; L1
       var Pz2 = superClasses(P);
       var Pz1 = p.minimizeSet(fromPz(L2, toP(Cs)));
@@ -250,7 +248,7 @@ public class Redirect {
           mwt1 = fromMwt(mwt1, toP(Cs));
           if (!TypeSystem.methTSubtype(p, mwt1.getMt(), mwt2.getMt())) {
             errors.record("The method type for " + mwt2.getMs() + " of the target (" + mwt2.getMt() +
-            ") is not a supertype of the source (" + mwt1.getMt() + ")."); }}}
+            ") is no // TODO: OK, due to F-bounded polymorphismt a supertype of the source (" + mwt1.getMt() + ")."); }}}
 
       result.record(errors.toString()); }
 
@@ -311,10 +309,11 @@ public class Redirect {
       if (kind == ClassKind.Final && L2.isInterface()) { return false; }
       if (!L2.msDom().containsAll(L1.msDom())) { return false; }}
 
+    return true;}
     // Recurislvey check nested classes!
-    return L1.cDom().stream().allMatch(C -> L2.cDom().contains(C) && possibleRedirect(withAdd(Cs, C), P.pushC(C)));}
+    //return L1.cDom().stream().allMatch(C -> L2.cDom().contains(C) && possibleRedirect(withAdd(Cs, C), P.pushC(C)));}
 
-  void completeR(PathMap R) {
+  /*void completeR(PathMap R) {
     for (var CsP : R) {
       for (var C : p.top().getClassB(CsP.getCs()).cDom()) {
         var P = CsP.getPath();
@@ -323,7 +322,7 @@ public class Redirect {
         if (!R.contains(CsC) && p.extractClassB(P).cDom().contains(C)) {
           R.add(CsC, P.pushC(C));
           completeR(R);
-          return; }}}}
+          return; }}}}*/
 
   Path _mostSpecific(Set<Path> Pz) {
     // TODO: This is horribly inefficient...
@@ -380,12 +379,6 @@ public class Redirect {
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (!this.p.extractClassB(CsP.getPath()).isInterface()) { // p[P].interface? = empty
           progress |= supertypeConstraints.add(CsP.getCs(), CsP.getPath(), "Rule 1: " + asSubtype(CsP)); }} // P <= Cs
-
-      //2: Collect(p; P <= Cs) = Cs <= P TODO: REMOVE
-      //   MustClass(p; Cs)
-      /*for (var CsP : supertypeConstraints) { // P <= Cs
-        if (mustClass(CsP.getCs())) { // MustClass(p; Cs)
-          progress |= subtypeConstraints.add(CsP.getCs(), CsP.getPath()); }}*/ // Cs <= P
 
       //3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
       //   This0.Cs' in p[Cs].Pz
@@ -463,7 +456,7 @@ public class Redirect {
 
       //9: Collect(p; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
       //   C in dom(p[Cs])
-      for (var CsP : subtypeConstraints) { // Cs <= P
+      /*for (var CsP : subtypeConstraints) { // Cs <= P
         if (supertypeConstraints.contains(CsP.getCs(), CsP.getPath())) { // P <= Cs
           for (var C : this.p.top().getClassB(CsP.getCs()).cDom()) {// C in dom(p[Cs])
             var CsC = withAdd(CsP.getCs(), C);
@@ -474,10 +467,10 @@ public class Redirect {
             var message = "Rule 9: " + asSametype(CsP);
             // Cs.C <= P.C and P.C <= Cs.C
             progress |= subtypeConstraints.add(CsC, PC, message) | supertypeConstraints.add(CsC, PC, message); }}}
-
+         */
       //10: Collect(p; Cs,Csz; Cs.C <= P.C, P.C <= Cs.C) = Cs <= P, P <= Cs
       
-      //find all the Cs.C in both      
+      /*//find all the Cs.C in both      
       for (var CsCPC : subtypeConstraints) { // CsC <= PC
         var CsC = CsCPC.getCs();
         var PC  = CsCPC.getPath();
@@ -491,7 +484,7 @@ public class Redirect {
         if (!PC.getCBar().get(n2 - 1).equals(C) || !redirectSet.containsKey(Cs)) { continue; }
         var message = "Rule 10: " + asSametype(CsCPC);
         progress |= subtypeConstraints.add(Cs, P, message) | supertypeConstraints.add(Cs, P, message); }}
-
+       */ }
     // Keep going untill we stop doing anything
     while (progress);
     System.out.println("End: " + this.constraints() + "\n"); }

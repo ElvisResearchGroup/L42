@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import ast.Ast;
 import ast.Ast.C;
 import ast.Ast.Path;
+import ast.Ast.Type;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
@@ -83,10 +84,21 @@ public class PathMap implements Iterable<CsPath> {
             if (Cs1.equals(Cs2)) {
               if (P2.isPrimitive()) { return P2; }
               else { return P2.setNewOuter(P2.outerNumber() + n); }}}}
-
         // No change found
         return P; }
-
+      
+      @Override protected List<Type> liftSup(List<Type> supertypes) {
+        var mapped = super.liftSup(supertypes);
+        var visited = new HashSet<Path>();
+        var res = new ArrayList<Type>();
+        for (var T : mapped) {
+          var P = T.getPath();
+          if (P==Path.Any()) { continue; } // Ignore any!
+          if (!visited.contains(p.minimize(P))) {
+            res.add(T);
+            visited.add(p.minimize(P)); }}
+        return res; } // TODO: What should we do about doc comments?
+      
       /*@Override public Path liftP(Path that){
         if(that.isPrimitive()){return that;}
         if(that.getCBar().isEmpty()){return that;}
