@@ -283,6 +283,7 @@ Define Collect(p; CCz) := CCz':
 //11: Collect(p; CCz) = P <= Cs, Cs <= P
 //    	RChoices(CCz) = Cs -> {P}
 
+
 Origin(p; sel; P) = P'
   forall P'' in Supertypes(p; P) where sel in dom [P'']
      p |- P'' <= P'
@@ -313,29 +314,36 @@ Define ChooseR(p; CCz) := R
    ChooseR(p; CCz) = empty
      otherwise
 
+// RChoices(p; CCz) = Pz
+// RChoices(p; CCz') = Pz'
+// RChoices(p; CCz, CCz') undefined
+// RChoices(p; CCz, CCz') subseteq Pz
+// RChoices(p; CCz, CCz') subseteq Pz'
+// = {P}, {}
+
 RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k), = Cs -> Pz''
     Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
     Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
     Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
 
+	// Void <= P
+	// P <= Library
+	//// Library <= P
+	// ...
+	// Pn <= P
+	//... P <= P'k
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
 PossibleRedirect(p; Cs; P) iff
-	// TODO: Add the following?
-	//forall sel in dom(p[Cs].mwtz)
-	//    T = p[Cs.sel].P
-	//    T.P not of the form This0.Cs'
-	//    p |- p[P.sel].T <= T
-	//	  if MustInterface(p; Cs)
-	//    	p |- T <= p[P.sel].T
-
-    // TODO: Check type modifiers?
     if MustInterface(p; Cs)
         p[P].interface? = interface
         dom(p[Cs].mwtz) = dom(p[P].mwtz) // No extra methods
-    else
-    	dom(p[Cs].mwtz) subseteq dom(p[P].mwtz) // No extra methods
-    if MustClass(p; Cs)
-        p[P].interface? = empty
+        forall sel in dom(p[Cs].mwtz)
+		    T = p[Cs.sel].mt.T
+		    T' = p[P.sel].mt.T
+
+		    T.mdf =T'.mdf
+		    if T.P not of the form This0.Cs' // TODO: Implement in code
+		    	p.equiv(T.P, T'.P) 
 
 -------------------------------------------------------------------------------------------------
 // Some classes of ChooseRedirect functions

@@ -262,17 +262,60 @@ public class RefactorErrors{
   public static class RedirectError extends Exception {
     public RedirectError(String message) { super(message); }
 
-    public static class InvalidMapping extends RedirectError {
+    public static class InvalidMapping extends RedirectError {//the map is complete but not valid redirect
       public InvalidMapping(PathMap map, String message) { super(message); }}
 
-    public static class IncompleteMapping extends RedirectError {
+    public static class IncompleteMapping extends RedirectError {//the algorithm could not complete the map
       public IncompleteMapping(Collection<List<C>> redirectSet, PathMap partialMap, String message) { super(message); }}
 
-    public static class NonexistentClasses extends RedirectError {
+    //program agnostic
+    public static class NonexistentClasses extends RedirectError {// Path unfit the user provide non existent or private Cs
       public NonexistentClasses(Collection<List<C>> nonexistents, String message) { super(message); } }
 
-    public static class UnreadirectableClasses extends RedirectError {
+    /* There are 3 reasons a nested class wont be redirectable:
+     *    1. It is private
+     *    2. it has a non abstract method
+     *    3. It has a nested class which will not be redirected
+     * */
+    public static class UnreadirectableClasses extends RedirectError {//ClassUnfit ??  program agnostic
         public UnreadirectableClasses(Collection<List<C>> unredirectables, String message) { super(message); } }}
+/*
+ * 
+ 
+ CCz
+ -if CCz do not contain info for all the RS ?
+ -CCz do not let a choice for some Cs in Rs
+   - I->EI I->{EI}/valid:{}/mostSpecific:{} 
+
+Error possibilities:
+ Input names things that don't exist or private // PathUnfit //NonexistentClasses
+ Non redirectable: // ClassUnfit (a class is unfit if mwt.Pi or mwt.P points to private path) //UnredirectableClasses
+   .. (see above)
+  input
+  PathUnfit: the first Cs in R that does not exists or is private
+  ClassUnfit the first Cs in R such that is not redirectable or refer transitivelly to a non redirectable one
+  may be the error could be Cs 
+  
+  
+  ------
+  processing 
+  L,CCs,CCz do not fit p: UserMapCanNotWork / CompletionCanNotWork 
+   
+ If RChoices(Cs; CCz) fails it must be because: // IncompleteMapping
+   CCz does not constraint Cs
+   CCz does not have a constraint of the from P <= Cs
+   There is no solution for Cs that satisfies CCz
+   There is no solution for Cs that satisfies CCz and possibleRedirect
+   There are solutions, but no most-specific one
+
+  // InvalidMapping
+  We came up with an R, but it dosn't satisfy ValidRedirect
+ ----
+ 
+ 
+ *   
+ */
+  
 }
   /*
  TODO:

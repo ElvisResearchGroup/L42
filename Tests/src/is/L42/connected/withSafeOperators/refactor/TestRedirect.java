@@ -120,19 +120,20 @@ public class TestRedirect {
     }, {lineNumber(), new String[]{"{" + // Test for possible redirect:
         "EI1: {interface}" +
         "EI2: {interface}" +
-        "EC: {implements EI1, EI2}" +
-        "EBB: {interface method Any foo()}" +
+        "EI3: {interface implements EI2}" +
+        "EC: {implements EI1, EI3}" +
+        "EBB: {interface method EI2 foo()}" +
         "EB1: {interface implements EBB refine method EI1 foo()}" +
         "EB0: {interface implements EBB refine method EI2 foo()}" +
-        "EB: {implements EB0, EB1 refine method EC foo()}" +
-        "EA: {method EB m1() method EB m2()}}"
+        "EB: {implements EB0, EB1, EBB refine method EC foo()}" +
+        "EA: {method EB m1() }}"
     },"{" +
-           "B: {interface method This2.EI1 foo()}" +
-           "A: {method B m1() method B m2()}" +
+           "B: {interface method This2.EI2 foo()}" +
+           "A: {method B m1() }" +
            "method Void result(A a, B b)" +
            "}",
            "A", "This0.EA",
-           "{method Void result(This1.EA a, This1.EB1 b)}"
+           "{method Void result(This1.EA a, This1.EBB b)}"
     }, {lineNumber(), new String[]{"{" + // This is just a horribley stupid thing I mindlessley wrote...
       "EC: {interface}" +
       "ED: {interface method Void n(EB2 b, EA2 a)}"+
@@ -277,7 +278,7 @@ public class TestRedirect {
     },{lineNumber(),// Fails, redirecting interface with different methods
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface} A:{implements I}}",
-            "I", "This0.E",
+            "I", "This0.E", // This0.E <= I <= This0.E // {}
         ImpossibleInput
     },{lineNumber(),// Fails, redirecting interface with different method signature
             new String[]{"{E:{interface method Void foo()}}"},
@@ -780,8 +781,7 @@ public class TestRedirect {
         RedirectError.IncompleteMapping.class // Cannot redirect InnerLib/InnerVoid to Library/Any
     },{lineNumber(), new String[]{  // One unimplemented interface; no unexpected members
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) \n"
-        + " C:{interface}}}"
-        },
+        + " C:{interface}}}"},
         "{BlockingInterface1:{interface} "
         + "InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other)\n"
         + "  C:{interface implements BlockingInterface1 } } \n"

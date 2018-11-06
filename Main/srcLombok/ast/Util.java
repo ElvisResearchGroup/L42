@@ -3,6 +3,8 @@ package ast;
 import lombok.experimental.Wither;
 import lombok.Data;
 import lombok.Value;
+import lombok.AllArgsConstructor;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +44,12 @@ public class Util {
       return prefix+"["+flag+"]"+ms1+"->"+ms2;}
     }
 
-  @Data @Wither public static class CsPz{
+  @Data @Wither @AllArgsConstructor public static class CsPz{
     @NonNull List<Ast.C> cs;
     @NonNull java.util.Set<Path> pathsSet;
     public String toString(){return PathAux.as42Path(cs)+"->"+PathAux.asSet(pathsSet);}
     }
-  @Data @Wither public static class CsMwtPMwt{
+  @Data @Wither @AllArgsConstructor public static class CsMwtPMwt{
     @NonNull List<Ast.C> src1;
     @NonNull ClassB.MethodWithType mwt1;
     @NonNull Path src2;

@@ -92,12 +92,21 @@ public class Redirect {
   Map<List<C>, ClassKind> redirectSet = new HashMap<List<C>, ClassKind>();
   // ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = R'
 
+  /*
+   * CollectError(ListFormat ls, string message) { 
+   * }
+   * checkCsExistsWork(Collection<List<C>> Css) { ... }
+   *checkCsExists(Collection<List<C>> Css) { checkCsExistsWork(Cs -> thorw new exception }
+   *checkCsExists(Collection<List<C>> Css) { ... checkCsExistsWork(Cs -> thorw new exception .. }
+   * */
+  
   void checkCsExists(Collection<List<C>> Css) throws RedirectError.NonexistentClasses {
     var errors = new ListFormatter().header("Input to redirect is invalid:\n").prefix("  ").suffix("\n");
     var bad = new ArrayList<List<C>>();
     for (var Cs : Css) {
       try { p.top().getClassB(Cs); }
       catch (ErrorMessage.PathMetaOrNonExistant __) {
+        //if (!debugMode) throw Exception()
         errors.append("Cannot redirected non-existent nested class " + PathAux.as42Path(Cs) + "."); }
         bad.add(Cs); }
 
@@ -163,6 +172,8 @@ public class Redirect {
     if (message.count() > 0) {
       throw new RedirectError.UnreadirectableClasses(bad, message.toString()); }}
 
+  // TODO: Throw a user-error if the problem is in R0
+  // Otherwise, throw an AlgorithmError
   void validRedirect(PathMap R0, PathMap R) throws RedirectError.IncompleteMapping, RedirectError.InvalidMapping {
     boolean incomplete = false;
     var message = new ListFormatter().header("Chosen redirect is invalid:\n").prefix("  ").suffix("\n");
@@ -228,7 +239,7 @@ public class Redirect {
           mwt1 = fromMwt(mwt1, toP(Cs));
           if (!TypeSystem.methTSubtype(p, mwt1.getMt(), mwt2.getMt())) {
             errors.append("The method type for " + mwt2.getMs() + " of the target (" + mwt2.getMt() +
-            ") is no // TODO: OK, due to F-bounded polymorphismt a supertype of the source (" + mwt1.getMt() + ")."); }}}
+            ") isn't a supertype of the source (" + mwt1.getMt() + ")."); }}}
 
       message.append(errors.toString()); }
 
@@ -236,6 +247,7 @@ public class Redirect {
       if (incomplete) throw new RedirectError.IncompleteMapping(this.redirectSet.keySet(), R, message.toString());
       else throw new RedirectError.InvalidMapping(R, message.toString()); }}
 
+  // TODO: Use the initial R, and ignore constraints on it
   PathMap chooseR() {
     PathMap res = new PathMap();
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
@@ -271,28 +283,27 @@ public class Redirect {
     assert kind != null;
 
     // TODO: Check type modifiers?
-
+    // P: {method read P2 foo()}
+    // Cs: {method imm This0.Cs' foo()}
     var L1 = p.top().getClassB(Cs);
     var L2 = p.extractClassB(P);
+    if (kind != ClassKind.Interface) { return true; }
+    
+    if (!L2.isInterface()) { return false; }
+    if (!L2.msDom().equals(L1.msDom())) { return false; }
 
-    if (kind == ClassKind.Interface) {
-      if (!L2.isInterface()) { return false; }
-      if (!L2.msDom().equals(L1.msDom())) { return false; }
-    } else {
       /*if (kind == ClassKind.Final && L2.isInterface()) { return false; }*/ // TODO: Test
-      /*if (!L2.msDom().containsAll(L1.msDom())) { return false; }*/} // TODO: Test
+      /*if (!L2.msDom().containsAll(L1.msDom())) { return false; }*/ // TODO: Test
 
-    if (kind != ClassKind.Interface) { return true; } // TODO: Test for non interfaces
+    //if (kind != ClassKind.Interface) { return true; } // TODO: Test for non interfaces
     for (var mwt : iterate(fromMwtz(L1, toP(Cs)))) { //forall sel in dom(p[P].mwtz)
       var T = mwt.getReturnType(); // T = p[Cs.sel].P
       if (T.getPath().tryOuterNumber() == 0) { continue; } // T.P not of the form This0.Cs'
 
       // We know this exists, thanks to the above code
       var T2 = From.fromT(L2._getMwt(mwt.getMs()).getReturnType(), P);
-      if (!p.subtypeEq(T2, T)) { return false; } // p |- p[P.sel].T <= T
-      // if MustInterface(p; Cs) then p |- T <= p[P.sel].T
-      //if (kind == ClassKind.Interface && !p.subtypeEq(T, T2)) { return false; } // TODO: Test
-      }
+      if (!p.equiv(T2, T)) { return false; } // p |- p[P.sel].T <= T
+    }
 
     return true;}
 
