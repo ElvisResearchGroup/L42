@@ -3,12 +3,15 @@ package is.L42.connected.withSafeOperators.pluginWrapper;
 import is.L42.connected.withSafeOperators.location.Lib;
 import is.L42.connected.withSafeOperators.location.Method;
 import is.L42.connected.withSafeOperators.refactor.MembersUtils;
+import is.L42.connected.withSafeOperators.refactor.PathMap;
 import is.L42.connected.withSafeOperators.refactor.Redirect;
 import platformSpecific.javaTranslation.Resources;
 import platformSpecific.javaTranslation.Resources.Error;
 import tools.Assertions;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import ast.Ast;
 import ast.Ast.C;
@@ -20,7 +23,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB.Member;
 import ast.Util.CsMx;
 import ast.Util.CsPath;
-import ast.Util.CsSPath;
+import ast.Util.CsPz;
 /* fluent setter for errors, a good idea to avoid duplicating constructors, but
  * the main issue is that we need to support enriching the message while try-catching
  */
@@ -35,7 +38,7 @@ interface FluentSetter<T>{
   }
 
 public class RefactorErrors{
-  static String msgMapping(List<CsPath>verified,List<CsSPath>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest) {
+  static String msgMapping(List<CsPath>verified,List<CsPz>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest) {
     assert incoSrc!=null || !ambiguities.isEmpty();
     String res="\n";
     if(!verified.isEmpty()){
@@ -47,7 +50,7 @@ public class RefactorErrors{
       }
     if(!ambiguities.isEmpty()){
       res+="ambiguities:[";
-      for(CsSPath a:ambiguities){
+      for(CsPz a:ambiguities){
         res+=PathAux.as42Path(a.getCs())+"->[";
         if(a.getPathsSet().isEmpty()){res+="], ";}
         else {
@@ -223,7 +226,7 @@ public class RefactorErrors{
     return this.msg("Redirecting "+PathAux.as42Path(src)+" to "+dest+":\n"+
       "Incoherent mapping for:"+formatPairs(srcs, dests));
     }*/
-  public IncoherentMapping msgMapping(List<CsPath>verified,List<CsSPath>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest){
+  public IncoherentMapping msgMapping(List<CsPath>verified,List<CsPz>ambiguities,List<Ast.C> incoSrc,List<Path> incoDest){
     return this.msg(RefactorErrors.msgMapping(verified,ambiguities,incoSrc,incoDest));
         }
   }
@@ -252,11 +255,24 @@ public class RefactorErrors{
       }
     }
 
-  // TODO: Actually write this properlu
+  // TODO: Actually write this properly
   // RedirectError( {Cs1, ..., Csn, Csn+1, ..., Csn+k}, {P1, ..., Pn}, message)
   // Represents a redirect failure, {Cs1->P1, ..., Csn -> Pn} are the mappings that were deduced
   // {Csn+1, Csn+k} failed to have a mapping computed (but should have).
-  public static class RedirectError extends Exception { public RedirectError(List<List<Ast.C>> Csz, List<Path> Pz, String message) { super(message); }}
+  public static class RedirectError extends Exception {
+    public RedirectError(String message) { super(message); }
+
+    public static class InvalidMapping extends RedirectError {
+      public InvalidMapping(PathMap map, String message) { super(message); }}
+
+    public static class IncompleteMapping extends RedirectError {
+      public IncompleteMapping(Collection<List<C>> redirectSet, PathMap partialMap, String message) { super(message); }}
+
+    public static class NonexistentClasses extends RedirectError {
+      public NonexistentClasses(Collection<List<C>> nonexistents, String message) { super(message); } }
+
+    public static class UnreadirectableClasses extends RedirectError {
+        public UnreadirectableClasses(Collection<List<C>> unredirectables, String message) { super(message); } }}
 }
   /*
  TODO:

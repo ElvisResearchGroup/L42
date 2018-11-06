@@ -42,7 +42,7 @@ public class Util {
       return prefix+"["+flag+"]"+ms1+"->"+ms2;}
     }
 
-  @Data @Wither public static class CsSPath{
+  @Data @Wither public static class CsPz{
     @NonNull List<Ast.C> cs;
     @NonNull java.util.Set<Path> pathsSet;
     public String toString(){return PathAux.as42Path(cs)+"->"+PathAux.asSet(pathsSet);}
@@ -55,5 +55,6 @@ public class Util {
     //@NonNull List<Path> paths1; @NonNull List<Path> paths2;
     //public String toString(){return ""+paths1+"->"+paths2;}
     }
+
 
 }

@@ -40,7 +40,7 @@ import ast.ExpCore.ClassB.Member;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.ExpCore.ClassB.NestedClass;
 
-import ast.Util.CsSPath;
+import ast.Util.CsPz;
 import ast.Util.CsPath;
 import ast.Util.CsMwtPMwt;
 import auxiliaryGrammar.Functions;
@@ -64,11 +64,11 @@ private List<CsPath> verified;
 
   public void redirectOk(Program p,List<Ast.C> internal,Path external) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit{
     verified=new ArrayList<>();
-    List<CsSPath> ambiguities=new ArrayList<>();
+    List<CsPz> ambiguities=new ArrayList<>();
     List<CsMwtPMwt> exceptions=new ArrayList<>();
-    ambiguities.add(new CsSPath(internal,new HashSet<>(Arrays.asList(external))));
-    for(CsSPath current=choseUnabigus(ambiguities); current!=null;current=choseUnabigus(ambiguities)){
-      CsSPath _current=current;//closure final limitations
+    ambiguities.add(new CsPz(internal,new HashSet<>(Arrays.asList(external))));
+    for(CsPz current=choseUnabigus(ambiguities); current!=null;current=choseUnabigus(ambiguities)){
+      CsPz _current=current;//closure final limitations
       assert ambiguitiesOk(ambiguities);
       assert verified.stream().allMatch(pp->!pp.getCs().equals(_current.getCs())):
         verified+" "+_current;
@@ -86,7 +86,7 @@ private List<CsPath> verified;
     checkExceptionOk(p,exceptions);
     return;
     }
-  private boolean ambiguitiesOk(List<CsSPath> ambiguities) {
+  private boolean ambiguitiesOk(List<CsPz> ambiguities) {
     return ambiguities.stream().allMatch(e1->ambiguities.stream().allMatch(e2->(e1==e2|| !e1.getCs().equals(e2.getCs()))));
   }
   private void checkExceptionOk(Program p,List<CsMwtPMwt> exceptions) throws MethodClash {
@@ -118,10 +118,10 @@ private List<CsPath> verified;
       for(PathPath pp:verified){if(pp.getPath1().equals(pi)){it.remove();}}
     }
   }*/
-  private void accumulateVerified(List<CsSPath> ambiguities) throws IncoherentMapping {
+  private void accumulateVerified(List<CsPz> ambiguities) throws IncoherentMapping {
     assert ambiguitiesOk(ambiguities);
     for(CsPath pp:verified){
-      CsSPath psp=selectPSP(ambiguities,pp.getCs());
+      CsPz psp=selectPSP(ambiguities,pp.getCs());
       if(psp==null){continue;}
       //ambiguities.add(new PathSPath(pp.getPath1(),Arrays.asList(pp.getPath2())));
       if(psp.getPathsSet().contains(pp.getPath())){ambiguities.remove(psp);}
@@ -132,15 +132,15 @@ private List<CsPath> verified;
         }
     }
   }
-  private CsSPath selectPSP(List<CsSPath> set,List<Ast.C> key){
-    for(CsSPath elem:set){if(elem.getCs().equals(key)){return elem;}}
+  private CsPz selectPSP(List<CsPz> set,List<Ast.C> key){
+    for(CsPz elem:set){if(elem.getCs().equals(key)){return elem;}}
     return null;
   }
   private CsPath selectPP(List<CsPath> set,List<Ast.C> key){
     for(CsPath elem:set){if(elem.getCs().equals(key)){return elem;}}
     return null;
   }
-  private void redirectOkAux(Program p, CsSPath current, List<CsSPath> ambiguities, List<CsMwtPMwt> exceptions) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit {
+  private void redirectOkAux(Program p, CsPz current, List<CsPz> ambiguities, List<CsMwtPMwt> exceptions) throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit {
     assert current.getPathsSet().size()==1;
     List<Ast.C> cs=current.getCs();
     if(cs.isEmpty() || MembersUtils.isPrivate(cs)){
@@ -189,7 +189,7 @@ private List<CsPath> verified;
     //    kindSrc,kindDest,unexpectedMembers, headerOk, Collections.emptyList());
 
   }
-  private void redirectOkMember(Program p,List<CsSPath> ambiguities,List<CsMwtPMwt>exceptions, Member mi, Path pathExt, Member miGet, CsSPath current) throws IncoherentMapping, MethodClash {
+  private void redirectOkMember(Program p,List<CsPz> ambiguities,List<CsMwtPMwt>exceptions, Member mi, Path pathExt, Member miGet, CsPz current) throws IncoherentMapping, MethodClash {
     if(mi instanceof NestedClass){
       assert miGet instanceof NestedClass;
       assert ((NestedClass)mi).getName().equals(((NestedClass)miGet).getName());
@@ -219,7 +219,7 @@ private List<CsPath> verified;
     throw new RefactorErrors.MethodClash(m1,m2).msg("Issues:"+(thisMdfOk?"":" This modifier ")+(retOk?"":" Return type")+(excOk?"":" Incompatible exceptions ")+(parWrong.isEmpty()?"":" wrong parameters "));
     //throw Errors42.errorMethodClash(current.getPath().getCBar(),mwtSrc,mwtDest,excOk,parWrong,retOk, thisMdfOk,false);
     }
-  private boolean plusEqualAndExc(List<CsSPath> ambiguities, List<CsMwtPMwt> exceptions, List<Ast.C> src,MethodWithType mwtSrc,Path pathDest, MethodWithType mwtDest) throws IncoherentMapping {
+  private boolean plusEqualAndExc(List<CsPz> ambiguities, List<CsMwtPMwt> exceptions, List<Ast.C> src,MethodWithType mwtSrc,Path pathDest, MethodWithType mwtDest) throws IncoherentMapping {
     //int countExternal=0;
     //int countExternalSatisfied=0;
     List<Path> srcExc = Map.of(t->t.getPath(),mwtSrc.getMt().getExceptions());
@@ -237,7 +237,7 @@ private List<CsPath> verified;
     //return countInternal+countExternalSatisfied>=destExc.size();
     return true;//we think the former line could never made a difference
   }
-  private boolean redirectOkT(List<CsSPath> ambiguities, Type tSrc, Type tDest) throws IncoherentMapping {
+  private boolean redirectOkT(List<CsPz> ambiguities, Type tSrc, Type tDest) throws IncoherentMapping {
     if(!tSrc.getClass().equals(tDest.getClass())){
       return false;
       }//incompatible internal/external types t1 t2
@@ -247,7 +247,7 @@ private List<CsPath> verified;
     if(!tSrc.getMdf().equals(ntP.getMdf())){return false;}//incompatible internal/external types t1 t2
     return plusEqualCheckExt(ambiguities,tSrc.getPath(),Arrays.asList(ntP.getPath()));
     }
-  private boolean plusEqualCheckExt(List<CsSPath> ambiguities, Path path, List<Path> paths) throws IncoherentMapping {
+  private boolean plusEqualCheckExt(List<CsPz> ambiguities, Path path, List<Path> paths) throws IncoherentMapping {
     if(!path.isPrimitive() && path.outerNumber()==0){
       plusEqual(ambiguities,path.getCBar(),paths);
       assert ambiguitiesOk(ambiguities);
@@ -256,7 +256,7 @@ private List<CsPath> verified;
     assert paths.size()==1;
     return path.equals(paths.get(0));
   }
-  private void redirectOkImpl(ClassKind kindSrc,ClassKind kindDest,List<CsSPath> ambiguities, CsSPath current, ClassB currentIntCb, ClassB currentExtCb) throws ClassUnfit, IncoherentMapping {
+  private void redirectOkImpl(ClassKind kindSrc,ClassKind kindDest,List<CsPz> ambiguities, CsPz current, ClassB currentIntCb, ClassB currentExtCb) throws ClassUnfit, IncoherentMapping {
    // List<Path>unexpectedInterfaces=new ArrayList<>(unexpectedI);
    // Collections.sort(unexpectedInterfaces,(pa,pb)->pa.toString().compareTo(pb.toString()));
     List<Path>extPs=currentExtCb.getSuperPaths();
@@ -281,11 +281,11 @@ private List<CsPath> verified;
     //      kindSrc,kindDest,Collections.emptyList(), true, unexpectedInterfaces);
   }
 
-  private void plusEqual(List<CsSPath> ambiguities, List<Ast.C> pif, List<Path> extPs) throws IncoherentMapping {
+  private void plusEqual(List<CsPz> ambiguities, List<Ast.C> pif, List<Path> extPs) throws IncoherentMapping {
     assert ambiguitiesOk(ambiguities);
     try{assert !extPs.isEmpty();
     assert !extPs.contains(null);
-    for(CsSPath psp:ambiguities){
+    for(CsPz psp:ambiguities){
       if(psp.getCs().equals(pif)){
         psp.setPathsSet(new HashSet<>(psp.getPathsSet()));
         assert !psp.getPathsSet().isEmpty();
@@ -297,10 +297,10 @@ private List<CsPath> verified;
           }
         return;
       }}
-    ambiguities.add(new CsSPath(pif,new HashSet<>(extPs)));
+    ambiguities.add(new CsPz(pif,new HashSet<>(extPs)));
   }finally{assert ambiguitiesOk(ambiguities);}}
-  private CsSPath choseUnabigus(List<CsSPath> ambiguities){
-    for(CsSPath psp:ambiguities){if (psp.getPathsSet().size()==1){return psp;}}
+  private CsPz choseUnabigus(List<CsPz> ambiguities){
+    for(CsPz psp:ambiguities){if (psp.getPathsSet().size()==1){return psp;}}
     return null;
   }
   /*

@@ -13,6 +13,7 @@ import ast.Ast.Doc;
 import ast.Ast.Mdf;
 import ast.Ast.Type;
 import ast.Ast.Path;
+import tools.ListFormatter;
 import platformSpecific.javaTranslation.Resources;
 import tools.Assertions;
 import tools.Map;
@@ -62,7 +63,7 @@ public class PathAux {
     }
   public static<T> String asSet(Collection<T> s) {
     if (s.size() == 1) { return s.iterator().next().toString(); }
-    else { return "{" + s.stream().map(Object::toString).collect(Collectors.joining(", ")) + "}";}}
+    else { return new ListFormatter().header("{").seperator(", ").footer("}").append(s).toString(); }}
 
   public static boolean isValidPrimitiveName(String name){
     Path p=PathPrimitive._parsePrimitive(name);
