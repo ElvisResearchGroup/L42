@@ -301,49 +301,29 @@ MostGeneral(p; Pz) = P
    {P} = SuperClasses(p; Pz) intersect p.minimize(Pz)
 
 Define ChooseR(p; CCz) := R
-  // Note: these definitions use well-formdness of R's, namely R1, R2 is ill-formed
-  // if dom(R1) and dom(R2) are not disjoint, thus only one rule below can be applied for each Cs
-  // Marco wants to delete this rule, Isaac dosn't
-  //ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
-  //  P = MostSpecific(p; P0,...,Pn)
-
   ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
   	Cs -> Pz = RChoices(p; CCz)
     P = MostSpecific(p; Pz)
 
-   ChooseR(p; CCz) = empty
-     otherwise
-
-// RChoices(p; CCz) = Pz
-// RChoices(p; CCz') = Pz'
-// RChoices(p; CCz, CCz') undefined
-// RChoices(p; CCz, CCz') subseteq Pz
-// RChoices(p; CCz, CCz') subseteq Pz'
-// = {P}, {}
+   ChooseR(p; empty) = empty
 
 RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k), = Cs -> Pz''
     Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
     Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-    Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
+    if MustInterface(Cs)
+      Pz'' = {P in Pz' | PossibleInterfaceTarget(p; Cs; P)}
+    else Pz'' = Pz'
 
-	// Void <= P
-	// P <= Library
-	//// Library <= P
-	// ...
-	// Pn <= P
-	//... P <= P'k
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
-PossibleRedirect(p; Cs; P) iff
-    if MustInterface(p; Cs)
-        p[P].interface? = interface
-        dom(p[Cs].mwtz) = dom(p[P].mwtz) // No extra methods
-        forall sel in dom(p[Cs].mwtz)
-		    T = p[Cs.sel].mt.T
-		    T' = p[P.sel].mt.T
-
-		    T.mdf =T'.mdf
-		    if T.P not of the form This0.Cs' // TODO: Implement in code
-		    	p.equiv(T.P, T'.P) 
+PossibleInterfaceTarget(p; Cs; P) iff
+    p[P].interface? = interface
+    dom(p[Cs].mwtz) = dom(p[P].mwtz) // No extra methods
+    forall sel in dom(p[Cs].mwtz)
+		  T = p[Cs.sel].mt.T
+		  T' = p[P.sel].mt.T
+		  T.mdf =T'.mdf
+		  if T.P not of the form This0.Cs' // TODO: Implement in code
+		    p.equiv(T.P, T'.P) 
 
 -------------------------------------------------------------------------------------------------
 // Some classes of ChooseRedirect functions
