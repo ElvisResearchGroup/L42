@@ -32,6 +32,8 @@ import programReduction.Program;
 import tools.Assertions;
 import tools.ListFormatter;
 
+import javax.swing.text.StyledEditorKit;
+
 /*Note the type system prevents to return a class T with T without methods.
 This is needed to avoid the redirect from violating metalevel soundness:
 
@@ -57,7 +59,7 @@ public class Redirect {
     //return redirect(pData.p, that, new PathMap(List.of(new CsPath(src, dest))));
     }
 
-  Program p;
+
   static public ClassB applyRedirect(Program p, PathMap map) {
     //TODO: use the new renaming?
     ClassB L = map.apply(p.top());
@@ -67,26 +69,26 @@ public class Redirect {
 
   enum ClassKind { Final, Interface, Class }
 
-  Redirect(Program p) { this.p = p; }
+  Program p; // The current program we are look at, this may be different from problem.p
 
-  static ClassB redirect(Program p_, ClassB L, PathMap R0) throws RedirectError {
-    var p = p_.evilPush(L);
-    // TODO: Check that empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
-    var redirecter = new Redirect(p);
-    //p' = p.evilPush(L) // to simplify everything, just make L the new top
+  public final Problem problem; // Everything you need to know about what we are trying to do
+  public static class Problem {
+    final Program p; // The program we are redirecting in terms of, with the argument to the redirect at the top
+    final PathMap R; // The user-provided map, in terms of the above p
+    Problem(Program p, ClassB L, PathMap R) {
+      this.p = p.evilPush(L);
+      this.R = new PathMap(R.stream().map(
+        CsP -> new CsPath(CsP.getCs(), this.p.minimize(From.fromP(CsP.getPath(), Path.outer(1))))
+      ).collect(Collectors.toList())); }}
 
-    // TODO: forall Cs in RedirectSet(L, Cs1, ..., Csn):
-    //      Redirectable(L[Cs]) // Check that the source is valid
+  final boolean detailed;
+  <T> T detailed(Supplier<T> f) { return this.detailed ? f.get() : null; }
+  void debugPrint(String m) { /*if (!this.detailed) System.out.println(m);*/ }
 
-    // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-    //    ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
-    var R = redirecter.chooseRedirect(new PathMap(R0.stream().map(
-        CsP -> new CsPath(CsP.getCs(), p.minimize(From.fromP(CsP.getPath(), Path.outer(1))))
-    ).collect(Collectors.toList())));
+  public Redirect(Problem problem, boolean detailed) { this.problem = problem; this.p = problem.p; this.detailed = detailed;}
 
-    // R(p'.top()[remove Csz])
-    return PathMap.remove(redirecter.p.top(), R.dom());
-  }
+  static ClassB redirect(Program p, ClassB L, PathMap R0) throws RedirectError {
+    return new Redirect(new Problem(p, L, R0), false).solve(); }
 
   CsPzMap subtypeConstraints, supertypeConstraints;
   Map<List<C>, ClassKind> redirectSet = new HashMap<List<C>, ClassKind>();
@@ -99,164 +101,225 @@ public class Redirect {
    *checkCsExists(Collection<List<C>> Css) { checkCsExistsWork(Cs -> thorw new exception }
    *checkCsExists(Collection<List<C>> Css) { ... checkCsExistsWork(Cs -> thorw new exception .. }
    * */
-  
-  void checkCsExists(Collection<List<C>> Css) throws RedirectError.NonexistentClasses {
-    var errors = new ListFormatter().header("Input to redirect is invalid:\n").prefix("  ").suffix("\n");
-    var bad = new ArrayList<List<C>>();
+
+  void pathUnfit(ListFormatter formatter, List<C> Cs, String reason) throws RedirectError.PathUnfit {
+    if (this.detailed) { formatter.append("Cannot redirect " + PathAux.as42Path(Cs) + ": " + reason); }
+    else { throw new RedirectError.PathUnfit(Cs, reason, this); }}
+  void checkCsValid(Collection<List<C>> Css) throws RedirectError.DetailedError, RedirectError.PathUnfit {
+    var errors = detailed(() -> new ListFormatter().header("Input to redirect is invalid:\n").prefix("  ").suffix("\n"));
     for (var Cs : Css) {
+      if (Cs.isEmpty()) {
+        pathUnfit(errors, Cs, "it is empty.");
+        continue; }
+      if (Cs.stream().anyMatch(C::isUnique)) {
+        pathUnfit(errors, Cs, "it is private.");
+        continue; }
       try { p.top().getClassB(Cs); }
-      catch (ErrorMessage.PathMetaOrNonExistant __) {
-        //if (!debugMode) throw Exception()
-        errors.append("Cannot redirected non-existent nested class " + PathAux.as42Path(Cs) + "."); }
-        bad.add(Cs); }
+      catch (ErrorMessage.PathMetaOrNonExistant __) { pathUnfit(errors, Cs, "it does not exist."); }}
 
-    if (errors.count() > 0) {
-      throw new RedirectError.NonexistentClasses(bad, errors.toString()); } }
+    if (this.detailed && errors.count() > 0) {
+      throw new RedirectError.DetailedError(errors.toString()); }}
 
-  PathMap chooseRedirect(PathMap R) throws RedirectError {
-    checkCsExists(R.dom());
+  public ClassB solve() throws RedirectError {
+    checkCsValid(this.problem.R.dom());
 
-    //CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
-    this.subtypeConstraints = new CsPzMap(R.toList()) {
+    this.subtypeConstraints = new CsPzMap(this.problem.R.toList()) {
       @Override String format(String Cs, String Pz) {return Cs + " <= " + Pz; }};
     this.supertypeConstraints = new CsPzMap(this.subtypeConstraints) {
       @Override String format(String Cs, String Pz) {return Pz + " <= " + Cs; }};
 
     // Pre-compute the redirect set, mustClass and mustInterface
-    computeRedirectSet(p.top(), R.dom());
-    redirectable(this.redirectSet.keySet());
-
-    // CCz = CollectAll(p; CCz0)
+    computeRedirectSet();
     collect();
 
-    // R' = ChooseR(p; CCz)
     var R1 = chooseR();
-    //completeR(R1);
-    System.out.println("Chosen R was: " + R1);
+    debugPrint("Chosen R was: " + R1);
 
     this.p = p.updateTop(R1.apply(p.top()));
-    validRedirect(R, R1);
+    validRedirect(R1);
 
-    return R1;
-  }
+    return PathMap.remove(this.p.top(), R1.dom()); }
 
-  void redirectable(Collection<List<C>> Csz) throws RedirectError.UnreadirectableClasses {
-    var message = new ListFormatter().header("Requested redirect is invalid:\n").prefix("  ").suffix("\n");
-    var bad = new ArrayList<List<C>>();
+  void unredirectable(ListFormatter formatter, List<C> Cs, String reason) throws RedirectError.Unredirectable {
+    if (this.detailed) { formatter.append(reason); }
+    else { throw new RedirectError.Unredirectable(Cs, reason, this); }}
+  String redirectable(List<C> Cs) throws RedirectError.Unredirectable {
+    var L = this.p.top().getClassB(Cs);
+    var errors = detailed(() ->
+      new ListFormatter().header("Cannot redirect " + PathAux.as42Path(Cs) + ":\n").prefix("    ").suffix("\n"));
 
-    for (var Cs : Csz) { // forall Cs in Csz
-      var L = this.p.top().getClassB(Cs);
-      var errors = new ListFormatter().header("Cannot redirect " + PathAux.as42Path(Cs) + ":\n").prefix("    ").suffix("\n");
-      if (Cs.isEmpty()) { // Cs not empty
-        errors.append("You cant redirect everything!"); }
+    if (Cs.isEmpty()) { // Cs not empty
+      unredirectable(errors, Cs, "It refers to the whole library literal!"); }
 
-      if (Cs.stream().anyMatch(C::isUnique)) { // forall C in Cs: not Private(Cs)
-        errors.append("Cannot redirect a private nested class"); }
+    if (Cs.stream().anyMatch(C::isUnique)) { // forall C in Cs: not Private(Cs)
+      unredirectable(errors, Cs, "It is private."); }
 
-      for (var mwt : L.mwts()) { // forall mwt in L[Cs].mwtz:
-        var ms = mwt.getMs();
-        var mwtErrors = new ListFormatter().header("Cannot redirect " + ms + ": it is ").seperator(" and ").footer(".");
-        if (ms.isUnique()) { // not Private(mwt.m)
-          mwtErrors.append("private"); }
-        if (mwt.get_inner() != null) { // mwt.e = empty
-          mwtErrors.append("implemented"); }
-        errors.append(mwtErrors.toString()); }
+    for (var mwt : L.mwts()) { // forall mwt in L[Cs].mwtz:
+      var ms = mwt.getMs();
+      if (ms.isUnique()) { // not Private(mwt.m)
+        unredirectable(errors, Cs, "It contains a private method: " + ms + "."); }
+      if (mwt.get_inner() != null) { // mwt.e = empty
+        unredirectable(errors, Cs, "It contains a non abstract method: " + ms + "."); }}
 
-      /* forall C in dom(L[Cs]) Cs.C in Csz*/
-      for (var C : L.cDom()) {
-        if (!Csz.contains(withAdd(Cs, C))) {
-          errors.append("Class contains a nested, " + C + ", which is not in the redirect set."); }}
+    return Objects.toString(errors); }
+  void computeRedirectSet() throws RedirectError.DetailedError, RedirectError.Unredirectable {
+    var L = this.p.top();
+    var Csz = this.problem.R.dom();
 
-      if (errors.count() > 0) { bad.add(Cs); message.append(errors.toString()); }}
+    var message = detailed(() -> new ListFormatter().header("Requested redirect is invalid:\n").prefix("  ").suffix("\n"));
+    var todo = new ArrayList<List<C>>(Csz);
+    var done = new ArrayList<List<C>>(); // Just to ensure determinism of error messages
+    Consumer<Path> accumulate = P -> {
+      if (P.tryOuterNumber() == 0 && !redirectSet.containsKey(P.getCBar())) {
+        todo.add(P.getCBar()); }};
 
-    if (message.count() > 0) {
-      throw new RedirectError.UnreadirectableClasses(bad, message.toString()); }}
+    // TODO: Do p.minimizes?
+    while (!todo.isEmpty()) {
+      var Cs = todo.get(0);
+      todo.remove(0);
+      done.add(Cs);
+      ClassB L2 = L.getClassB(Cs);
 
-  // TODO: Throw a user-error if the problem is in R0
-  // Otherwise, throw an AlgorithmError
-  void validRedirect(PathMap R0, PathMap R) throws RedirectError.IncompleteMapping, RedirectError.InvalidMapping {
-    boolean incomplete = false;
-    var message = new ListFormatter().header("Chosen redirect is invalid:\n").prefix("  ").suffix("\n");
-    for (var Cs : redirectSet.keySet()) { //dom(R) = RedirectSet(p.top(); dom(R0))
-      if (!R.dom().contains(Cs)) {
-        incomplete = true;
-        message.append("No mapping for " + PathAux.as42Path(Cs) + " found");  }}
+      ClassKind kind = L2.isInterface() ? ClassKind.Interface :
+        L2.mwts().stream().anyMatch(mwt -> mwt.getMdf().isClass()) ? ClassKind.Final :
+        ClassKind.Class;
+      redirectSet.put(Cs, kind);
 
-    // Check structural subtyping (including NC consistency)
-    for (var CsP : R) {
-      var P = CsP.getPath();
-      var Cs = CsP.getCs();
-      ClassKind ck = redirectSet.get(Cs);
+      var e = redirectable(Cs);
+      detailed(() -> message.append(e));
 
-      var errors = new ListFormatter().header("Cannot redirect " + PathAux.as42Path(Cs) + " to " + P + ":\n")
-          .prefix("    ").seperator("\n");
+      for (var mwt : iterate(fromMwtz(L2, toP(Cs)))) {
+        accumulate.accept(mwt.getReturnPath());
+        mwt.getPaths().forEach(accumulate);
+        mwt.getExceptions().forEach(accumulate); }
 
-      var P2 = R0._get(Cs);
+      fromPz(L2, toP(Cs)).forEach(accumulate); }
 
-      if (P2 != null && !P2.equals(P)) {//R0 subseteq R
-        errors.append("Mapping is inconsistent with input target: " + P2 + ".");}
+    for (var Cs : done) {
+      var errors = detailed(() ->
+        new ListFormatter().header("Cannot completely redirect " + PathAux.as42Path(Cs) + ":\n").prefix("    ").suffix("\n"));
+      for (var C : L.getClassB(Cs).cDom()) {
+        if (!this.redirectSet.containsKey(withAdd(Cs, C))) {
+          unredirectable(errors, Cs, "It contains a nested class " + C + ", which is not in the redirect set."); }}
+      detailed(() -> message.append(errors.toString()));}
 
-      if (!p.minimize(P).equals(P)) { // p.minimize(P)=P
-        errors.append("The target is not minimized, expected " + p.minimize(P) + "."); }
-      if (P.tryOuterNumber() == 0) { // P not of form This0._
-        errors.append("The target is internal!"); }
-      var L1 = p.top().getClassB(Cs);
-      var L2 = p.extractClassB(P);
+    if (this.detailed && message.count() > 0) {
+      throw new RedirectError.DetailedError(message.toString()); }}
 
-      // No need to check for well-typedness of L2, as 42 gurantees this for any 'class Any' given as input is (transitivley) well-typed
+  boolean addConstraint(CsPzMap map, List<C> key, Path value, String message) {
+    var res = map.add(key, value);
+    if (res) this.debugPrint(message + " ==> " + map.format(PathAux.as42Path(key), value.toString()));
+    return res; }
+  boolean addSupertype(List<C> key, Path value, String message) { return addConstraint(this.supertypeConstraints, key, value, message); }
+  boolean addSubtype(List<C> key, Path value, String message) { return addConstraint(this.subtypeConstraints, key, value, message); }
+  void collect() {
+    debugPrint("\nStart: " + this.printConstraints());
+    boolean progress; // Have we done something?
+    do {
+      progress = false;
+      //1: Collect(p; Cs <= P) = P <= Cs
+      //   p[P].interface? = empty
+      for (var CsP : subtypeConstraints) { // Cs <= P
+        if (!this.p.extractClassB(CsP.getPath()).isInterface()) { // p[P].interface? = empty
+          progress |= addSupertype(CsP.getCs(), CsP.getPath(), "Rule 1: " + asSubtype(CsP)); }} // P <= Cs
 
-      //    p|- P; L2 <= Cs; L1
-      var Pz2 = superClasses(P);
-      var Pz1 = p.minimizeSet(fromPz(L2, toP(Cs)));
-      if (!Pz2.containsAll(Pz1)) { //Pz subseteq_p SuperClasses(p; P)
-        errors.append("Target is a subclass of " + PathAux.asSet(Pz2) + ", and not all of " + PathAux.asSet(Pz1)); }
+      //3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
+      //   This0.Cs' in p[Cs].Pz
+      //   Pz = {P' in SuperClasses(p; P) | msdom(p[P') = msdom(p[Cs'])}
+      for (var CsP : supertypeConstraints) { // P <= Cs
+        for (var PCs2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P in p[Cs].Pz
+          if (PCs2.tryOuterNumber() == 0) { // P = This0.Cs'
+            var msz = p.extractClassB(PCs2).msDom(); // msz = msdom(p[Cs'])
+            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> p.extractClassB(Pi).msDom().equals(msz))
+              .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
+            var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
+            var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
+            if (P1 != null && P2 != null) { // P1 <= Cs', Cs' <= P2
+              var message = "Rule 3: " + asSupertype(CsP);
+              progress |= addSupertype(PCs2.getCBar(), P1, message) | addSubtype(PCs2.getCBar(), P2, message); }}}}
 
-      // Check class compatability
-      if (ck.equals(ClassKind.Final) && L2.isInterface()) {
-        errors.append("Cannot redirect a final class, with class methods, to an interface"); }
-      if (ck.equals(ClassKind.Interface) && !L2.isInterface()) {
-        errors.append("Cannot redirect an interface to a final class"); }
+      //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
+      //   p[Cs.ms].P = This0.Cs'
+      for (var CsP : supertypeConstraints) { // P <= Cs
+        progress |= collectReturns(CsP, (Cs, P, ms) -> addSupertype(Cs, P,
+          "Rule 4: " + asSupertype(CsP) + " [" + ms + "]"));} // p[P.ms].P <= p[Cs.ms].P.Cs
 
-      //forall MS in dom(mwtz): p |- mwtz'(MS).mt <= mwt(MS).mt
-      for (var mwt1 : iterate(fromMwtz(L1, toP(Cs)))) {
-        var mwt2 = L2._getMwt(mwt1.getMs());
-        if (mwt2 == null) {
-          errors.append("Target does not contain method " + mwt1.getMs());
-          continue; }
-        mwt2 = fromMwt(mwt2, P);
-        if (!TypeSystem.methTSubtype(p, mwt2.getMt(), mwt1.getMt())) {
-          errors.append("The method type for " + mwt1.getMs() + " of the target (" + mwt2.getMt() +
-          ") is not a subtype of the source (" + mwt1.getMt() + ")."); }}
+      //5: Collect(p; CC) = Cs' <= p[P.ms].Pi
+      //   CC = P <= Cs or  CC = Cs <= P
+      //   p[Cs.ms].Pi = This0.Cs'
+      for (var CsP : seqIterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
+        // p[Cs.ms].Pi.Cs <= p[P.ms].Pi
+        progress |= collectParams(CsP, (Cs, P, ms, i) -> addSubtype(Cs, P,
+            "Rule 5: " + asReltype(CsP) + " [" + ms + "." + i + "]"));}
 
-      // mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
-      // (implied by the above check together with this one)
-      if (ck.equals(ClassKind.Interface)) {
-        for (var mwt2 : iterate(fromMwtz(L2, P))) {
-          var mwt1 = L1._getMwt(mwt2.getMs());
-          if (mwt1 == null) {
-            errors.append("Source does not contain method " + mwt2.getMs());
-            continue; }
-          mwt1 = fromMwt(mwt1, toP(Cs));
-          if (!TypeSystem.methTSubtype(p, mwt1.getMt(), mwt2.getMt())) {
-            errors.append("The method type for " + mwt2.getMs() + " of the target (" + mwt2.getMt() +
-            ") isn't a supertype of the source (" + mwt1.getMt() + ")."); }}}
+      //6: Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+      //   MustInterface(p; Cs)
+      //   p[Cs.ms].P = This0.Cs'
+      for (var CsP : subtypeConstraints) { // Cs <= P
+        if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
+          // p[Cs.ms].P.Cs <= p[P.ms].P
+          progress |= collectReturns(CsP, (Cs, P, ms) -> addSubtype(Cs, P,
+            "Rule 6: " + asSubtype(CsP) + " [" + ms + "]"));}}
 
-      message.append(errors.toString()); }
+      //7: Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+      //   MustInterface(p; Cs)
+      //   p[Cs.ms].Pi = This0.Cs'
+      for (var CsP : subtypeConstraints) { // Cs <= P
+        if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
+          progress |= collectParams(CsP, (Cs, P, ms, i) -> addSupertype(Cs, P,
+              "Rule 7: " + asSubtype(CsP) + " [" + ms + "." + i + "]"));}} // p[P.ms].Pi <= p[Cs.ms].Pi.Cs
 
-    if (message.count() > 0) {
-      if (incomplete) throw new RedirectError.IncompleteMapping(this.redirectSet.keySet(), R, message.toString());
-      else throw new RedirectError.InvalidMapping(R, message.toString()); }}
+      //8/8': Collect(p; Cs <= P, CCz) = CCz'
+      for (var CsP : subtypeConstraints) { // Cs <= P
+        TriPredicate<List<C>, Path, String> body = (Cs2, P2, message) -> {
+          boolean progress2 = false;
 
-  // TODO: Use the initial R, and ignore constraints on it
-  PathMap chooseR() {
-    PathMap res = new PathMap();
+          // 8a/8'a
+          if (!p.extractClassB(P2).isInterface()) { // p[P'].interface?=empty and
+            progress2 |= addSupertype(Cs2, P2, message); } // CC = P' <= Cs'
+
+          // 8d/8'd
+          for (var ms : p.top().getClassB(Cs2).msDom()) { // or ms' in dom(p[Cs'])
+            var P3 = _origin(ms, P2); // P'' = Origin(p; sel'; P')
+            if (P3 != null) {
+              progress2 |= addSubtype(Cs2, P3, message + " [" + ms + "]");}}  // CC = Cs' <= P''
+
+          return progress2;};
+
+        // 8: This0.Cs' = p[Cs.sel].P
+        //    P' = p[P.sel].P
+        progress |= collectReturns(CsP, (Cs, P, ms) -> body.test(Cs, P, "Rule 8: " + asSubtype(CsP) + " [" + ms + "]"));
+
+        // 8': This0.Cs' in p[Cs].Pz
+        //     P' in SuperClass(p; P)
+        /*for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
+          if (P2.tryOuterNumber() == 0) { // P' = This0.Cs'
+            for (var P3 : superClasses(CsP.getPath())) { // P'' in SuperClass(p; P)
+              progress |= body.test(P2.getCBar(), P3, "Rule 8': " + asSubtype(CsP)); }}}*/}}
+
+    // Keep going untill we stop doing anything
+    while (progress);
+    debugPrint("End: " + this.printConstraints() + "\n"); }
+
+  PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.ClassUnfit {
+    var message = detailed(() -> new ListFormatter().header("Failed to choose mapping:\n").prefix("  ").suffix("\n"));
+    PathMap res = new PathMap(this.problem.R);
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
     //    P = MostSpecific(p; P0,...,Pn)
     // Marco Says to ignore this case
-    for (var CsPz : this.supertypeConstraints.mappings()) {
-      var Cs = CsPz.getCs();
-      var Ps1 = CsPz.getPathsSet();
-      assert !Ps1.isEmpty();
+    assert this.redirectSet.keySet().containsAll(subtypeConstraints.dom());
+    assert this.redirectSet.keySet().containsAll(supertypeConstraints.dom());
+
+    for (var Cs : this.redirectSet.keySet()) {
+      var Ps1 = this.supertypeConstraints.get(Cs);
+      if (Ps1.isEmpty()) {
+        if (!this.subtypeConstraints.contains(Cs)) {
+          if (detailed) { message.append("Found no constraints for " + Cs + "."); }
+          else { throw new RedirectError.DeductionFailure(Cs, "We were unable to collect any constraints on it.", this); }
+        } else {
+          var con = this.printConstraint(Cs);
+          if (detailed) { message.append("The only constraints we found for " + Cs + ", were subtype constraints: " + con + "."); }
+          else { throw new RedirectError.DeductionFailure(Cs, "We only found the subtype constraints: " + con + ".", this); }}}
       var Ps2 = this.subtypeConstraints.get(Cs);
       //ChooseR(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz)
 
@@ -266,19 +329,102 @@ public class Redirect {
       //Pz' = { P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
       var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2)).collect(Collectors.toSet());
 
-      // Pz'' = {P in Pz' | PossibleRedirect(p; Cs; P)}
-      var Pz3 = Pz2.stream().filter(P -> possibleRedirect(Cs, P)).collect(Collectors.toSet());
+      var Pz3 = Pz2;
+      if (mustInterface(Cs)) { // if MustInterface(Cs) Pz'' = {P in Pz' | PossibleInterfaceTarget(p; Cs; P)}
+         Pz3 = Pz2.stream().filter(P -> possibleInterfaceTarget(Cs, P)).collect(Collectors.toSet()); }
 
       // P = MostSpecific(p; Pz'')
       var P = _mostSpecific(Pz3);
       if (P == null) {
-        // If there was an error, lets still continue, so we can see what mappings could be worked out
-        System.out.println("Most Specific for " + PathAux.as42Path(Cs) + " failed on: " + PathAux.asSet(Pz3) + " "); }
-      else {
-        res.add(Cs, P); }}
+        var fPz3 = new ListFormatter().seperator(", ").append(Pz3);
+        var cons = this.printConstraint(Cs);
+        if (detailed) { message.append("Cannot find a most specific solution for " + cons + " (possible solutions are: " + fPz3 + ")."); }
+        else {
+          var P2 = res._get(Cs);
+
+          if (P2 != null) { // The mapping was given by the user
+            // Remove!
+            this.subtypeConstraints.remove(Cs, P2); // Remove the users constraints
+            this.supertypeConstraints.remove(Cs, P2); // Remove the users constraints
+            throw new RedirectError.ClassUnfit(Cs, P2, "Since it does not satisfy " + cons + ".", this); }
+          else {
+            throw new RedirectError.DeductionFailure(Cs, "Cannot find a most-specific solution to the constraint "
+              + cons + " (possible solutions are: " + fPz3 + ").", this); }}}
+      else { res.add(Cs, P); }}
+    if (detailed && message.count() > 0) { throw new RedirectError.DetailedError(message.toString()); }
     return res; }
 
-  boolean possibleRedirect(List<C> Cs, Path P) {
+  void invalidRedirect(ListFormatter formatter, List<C> Cs, Path P, String reason)
+      throws RedirectError.DeductionFailure, RedirectError.ClassUnfit {
+    if (this.detailed) { formatter.append(reason); }
+    else {
+      if (this.problem.R.contains(Cs)) { // Was the users fault!
+        throw new RedirectError.ClassUnfit(Cs, P, reason, this); }
+      else {throw new RedirectError.DeductionFailure(Cs, "our best guess, " + P + ", failed: " + reason, this); }}}
+  // Otherwise, throw an AlgorithmError
+  void validRedirect(PathMap R) throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.ClassUnfit {
+    var message = detailed(() -> new ListFormatter().header("Chosen redirect is invalid:\n").prefix("  ").suffix("\n"));
+    // Check structural subtyping (including NC consistency)
+    for (var CsP : R) {
+      var P = CsP.getPath();
+      var Cs = CsP.getCs();
+      ClassKind ck = redirectSet.get(Cs);
+
+      var errors = detailed(() -> new ListFormatter().header("Cannot redirect " + PathAux.as42Path(Cs) + " to " + P + ":\n")
+          .prefix("    ").seperator("\n"));
+
+      assert p.minimize(P).equals(P);
+      assert P.tryOuterNumber() != 0;
+
+      var L1 = p.top().getClassB(Cs);
+      var L2 = p.extractClassB(P);
+
+      // No need to check for well-typedness of L2, as 42 gurantees this for any 'class Any' given as input is (transitivley) well-typed
+
+      // p|- P; L2 <= Cs; L1
+      var Pz2 = superClasses(P);
+      var Pz1 = p.minimizeSet(fromPz(L2, toP(Cs)));
+      if (!Pz2.containsAll(Pz1)) { //Pz subseteq_p SuperClasses(p; P)
+        var Pz11 = new HashSet<>(Pz1);
+        Pz11.removeAll(Pz2);
+        invalidRedirect(errors, Cs, P, "Target is not a subclass of " + PathAux.asSet(Pz11)); }
+
+      // Check class compatability
+      if (ck.equals(ClassKind.Final) && L2.isInterface()) {
+        invalidRedirect(errors, Cs, P, "Cannot redirect a final class, with class methods, to an interface."); }
+      if (ck.equals(ClassKind.Interface) && !L2.isInterface()) {
+        invalidRedirect(errors, Cs, P, "Cannot redirect an interface to a final class"); }
+
+      //forall MS in dom(mwtz): p |- mwtz'(MS).mt <= mwt(MS).mt
+      for (var mwt1 : iterate(fromMwtz(L1, toP(Cs)))) {
+        var mwt2 = L2._getMwt(mwt1.getMs());
+        if (mwt2 == null) {
+          invalidRedirect(errors, Cs, P, "Target does not contain method " + mwt1.getMs() + ".");
+          continue; }
+        mwt2 = fromMwt(mwt2, P);
+        if (!TypeSystem.methTSubtype(p, mwt2.getMt(), mwt1.getMt())) {
+          invalidRedirect(errors, Cs, P, "The method type for " + mwt1.getMs() + " of the target (" + mwt2.getMt() +
+          ") is not a subtype of the source (" + mwt1.getMt() + ")."); }}
+
+      // mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
+      // (implied by the above check together with this one)
+      if (ck.equals(ClassKind.Interface)) {
+        for (var mwt2 : iterate(fromMwtz(L2, P))) {
+          var mwt1 = L1._getMwt(mwt2.getMs());
+          if (mwt1 == null) {
+            invalidRedirect(errors, Cs, P, "Source does not contain method " + mwt2.getMs());
+            continue; }
+          mwt1 = fromMwt(mwt1, toP(Cs));
+          if (!TypeSystem.methTSubtype(p, mwt1.getMt(), mwt2.getMt())) {
+            invalidRedirect(errors, Cs, P, "The method type for " + mwt2.getMs() + " of the target (" + mwt2.getMt() +
+            ") isn't a supertype of the source (" + mwt1.getMt() + ")."); }}}
+
+      detailed(() -> message.append(errors.toString())); }
+
+    if (this.detailed && message.count() > 0) {
+      throw new RedirectError.DetailedError(message.toString()); }}
+
+  boolean possibleInterfaceTarget(List<C> Cs, Path P) {
     var kind = redirectSet.get(Cs);
     assert kind != null;
 
@@ -287,25 +433,20 @@ public class Redirect {
     // Cs: {method imm This0.Cs' foo()}
     var L1 = p.top().getClassB(Cs);
     var L2 = p.extractClassB(P);
-    if (kind != ClassKind.Interface) { return true; }
-    
+
     if (!L2.isInterface()) { return false; }
     if (!L2.msDom().equals(L1.msDom())) { return false; }
 
-      /*if (kind == ClassKind.Final && L2.isInterface()) { return false; }*/ // TODO: Test
-      /*if (!L2.msDom().containsAll(L1.msDom())) { return false; }*/ // TODO: Test
-
-    //if (kind != ClassKind.Interface) { return true; } // TODO: Test for non interfaces
     for (var mwt : iterate(fromMwtz(L1, toP(Cs)))) { //forall sel in dom(p[P].mwtz)
       var T = mwt.getReturnType(); // T = p[Cs.sel].P
-      if (T.getPath().tryOuterNumber() == 0) { continue; } // T.P not of the form This0.Cs'
-
       // We know this exists, thanks to the above code
-      var T2 = From.fromT(L2._getMwt(mwt.getMs()).getReturnType(), P);
-      if (!p.equiv(T2, T)) { return false; } // p |- p[P.sel].T <= T
-    }
+      var T2 = From.fromT(L2._getMwt(mwt.getMs()).getReturnType(), P); // T' = p[P.sel].mt.T
 
-    return true;}
+      if (!T.getMdf().equals(T2.getMdf())) { return false; } // T.mdf =T'.mdf
+      if (T.getPath().tryOuterNumber() != 0) { // if T.P not of the form This0.Cs' // TODO: Implement in code
+        if (!p.equiv(T2.getPath(), T.getPath())) { return false; }}} // p.equiv(T.P, T'.P)
+
+    return true; }
 
   Path _mostSpecific(Set<Path> Pz) {
     Pz = p.minimizeSet(Pz.stream());
@@ -325,120 +466,7 @@ public class Redirect {
 
     return null;}
 
-  void computeRedirectSet(ClassB L, Collection<List<C>> Csz) {
-    var todo = new ArrayList<List<C>>(Csz);
-    Consumer<Path> accumulate = P -> {
-      if (P.tryOuterNumber() == 0 && !redirectSet.containsKey(P.getCBar())) {
-        todo.add(P.getCBar()); }};
-
-    // TODO: Do p.minimizes?
-    while (!todo.isEmpty()) {
-      var Cs = todo.get(0);
-      todo.remove(0);
-      ClassB L2 = L.getClassB(Cs);
-
-      ClassKind kind = L2.isInterface() ? ClassKind.Interface :
-        L2.mwts().stream().anyMatch(mwt -> mwt.getMdf().isClass()) ? ClassKind.Final :
-        ClassKind.Class;
-      redirectSet.put(Cs, kind);
-
-      for (var mwt : iterate(fromMwtz(L2, toP(Cs)))) {
-        accumulate.accept(mwt.getReturnPath());
-        mwt.getPaths().forEach(accumulate);
-        mwt.getExceptions().forEach(accumulate); }
-
-      fromPz(L2, toP(Cs)).forEach(accumulate); }}
-
   boolean mustInterface(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Interface; }
-
-  void collect() {
-    System.out.println("\nStart: " + this.constraints());
-    boolean progress; // Have we done something?
-    do {
-      progress = false;
-      //1: Collect(p; Cs <= P) = P <= Cs
-      //   p[P].interface? = empty
-      for (var CsP : subtypeConstraints) { // Cs <= P
-        if (!this.p.extractClassB(CsP.getPath()).isInterface()) { // p[P].interface? = empty
-          progress |= supertypeConstraints.add(CsP.getCs(), CsP.getPath(), "Rule 1: " + asSubtype(CsP)); }} // P <= Cs
-
-      //3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
-      //   This0.Cs' in p[Cs].Pz
-      //   Pz = {P' in SuperClasses(p; P) | msdom(p[P') = msdom(p[Cs'])}
-      for (var CsP : supertypeConstraints) { // P <= Cs
-        for (var PCs2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P in p[Cs].Pz
-          if (PCs2.tryOuterNumber() == 0) { // P = This0.Cs'
-            var msz = p.extractClassB(PCs2).msDom(); // msz = msdom(p[Cs'])
-            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> p.extractClassB(Pi).msDom().equals(msz))
-              .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
-            var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
-            var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
-            if (P1 != null && P2 != null) { // P1 <= Cs', Cs' <= P2
-              var message = "Rule 3: " + asSupertype(CsP);
-              progress |= supertypeConstraints.add(PCs2.getCBar(), P1, message) | subtypeConstraints.add(PCs2.getCBar(), P2, message); }}}}
-
-      //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
-      //   p[Cs.ms].P = This0.Cs'
-      for (var CsP : supertypeConstraints) { // P <= Cs
-        progress |= collectReturns(CsP, (Cs, P, ms) -> supertypeConstraints.add(Cs, P,
-          "Rule 4: " + asSupertype(CsP) + " [" + ms + "]"));} // p[P.ms].P <= p[Cs.ms].P.Cs
-
-      //5: Collect(p; CC) = Cs' <= p[P.ms].Pi
-      //   CC = P <= Cs or  CC = Cs <= P
-      //   p[Cs.ms].Pi = This0.Cs'
-      for (var CsP : seqIterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
-        // p[Cs.ms].Pi.Cs <= p[P.ms].Pi
-        progress |= collectParams(CsP, (Cs, P, ms, i) -> subtypeConstraints.add(Cs, P,
-            "Rule 5: " + asReltype(CsP) + " [" + ms + "." + i + "]"));}
-
-      //6: Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
-      //   MustInterface(p; Cs)
-      //   p[Cs.ms].P = This0.Cs'
-      for (var CsP : subtypeConstraints) { // Cs <= P
-        if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
-          // p[Cs.ms].P.Cs <= p[P.ms].P
-          progress |= collectReturns(CsP, (Cs, P, ms) -> subtypeConstraints.add(Cs, P,
-            "Rule 6: " + asSubtype(CsP) + " [" + ms + "]"));}}
-
-      //7: Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
-      //   MustInterface(p; Cs)
-      //   p[Cs.ms].Pi = This0.Cs'
-      for (var CsP : subtypeConstraints) { // Cs <= P
-        if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
-          progress |= collectParams(CsP, (Cs, P, ms, i) -> supertypeConstraints.add(Cs, P,
-              "Rule 7: " + asSubtype(CsP) + " [" + ms + "." + i + "]"));}} // p[P.ms].Pi <= p[Cs.ms].Pi.Cs
-
-      //8/8': Collect(p; Cs <= P, CCz) = CCz'
-      for (var CsP : subtypeConstraints) { // Cs <= P
-        TriPredicate<List<C>, Path, String> body = (Cs2, P2, message) -> {
-          boolean progress2 = false;
-
-          // 8a/8'a
-          if (!p.extractClassB(P2).isInterface()) { // p[P'].interface?=empty and
-            progress2 |= supertypeConstraints.add(Cs2, P2, message); } // CC = P' <= Cs'
-
-          // 8d/8'd
-          for (var ms : p.top().getClassB(Cs2).msDom()) { // or ms' in dom(p[Cs'])
-            var P3 = _origin(ms, P2); // P'' = Origin(p; sel'; P')
-            if (P3 != null) {
-              progress2 |= subtypeConstraints.add(Cs2, P3, message + " [" + ms + "]");}}  // CC = Cs' <= P''
-
-          return progress2;};
-
-        // 8: This0.Cs' = p[Cs.sel].P
-        //    P' = p[P.sel].P
-        progress |= collectReturns(CsP, (Cs, P, ms) -> body.test(Cs, P, "Rule 8: " + asSubtype(CsP) + " [" + ms + "]"));
-
-        // 8': This0.Cs' in p[Cs].Pz
-        //     P' in SuperClass(p; P)
-        /*for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
-          if (P2.tryOuterNumber() == 0) { // P' = This0.Cs'
-            for (var P3 : superClasses(CsP.getPath())) { // P'' in SuperClass(p; P)
-              progress |= body.test(P2.getCBar(), P3, "Rule 8': " + asSubtype(CsP)); }}}*/}}
-
-    // Keep going untill we stop doing anything
-    while (progress);
-    System.out.println("End: " + this.constraints() + "\n"); }
 
   // collectReturns(Cs P, f) computes f(Cs', P'), such that
   //    This0.Cs' = p[Cs](ms).P
@@ -556,21 +584,22 @@ public class Redirect {
   String asSupertype(CsPath csp) { return csp.getPath() + " <= " + PathAux.as42Path(csp.getCs()); }
   String asReltype(CsPath csp)  { return PathAux.as42Path(csp.getCs()) + " <=> " + csp.getPath(); }
   String asSametype(CsPath csp)  { return PathAux.as42Path(csp.getCs()) + " == " + csp.getPath(); }
-  String constraints() {
-    assert this.redirectSet.keySet().containsAll(subtypeConstraints.dom());
-    assert this.redirectSet.keySet().containsAll(supertypeConstraints.dom());
-    return this.redirectSet.keySet().stream().map(Cs -> {
-      if (subtypeConstraints.contains(Cs) && supertypeConstraints.contains(Cs)) {
-        return PathAux.asSet(supertypeConstraints.get(Cs)) + " <= " + PathAux.as42Path(Cs) +
-            " <= " + PathAux.asSet(subtypeConstraints.get(Cs));
-      } else if (subtypeConstraints.contains(Cs)) {
-        return PathAux.as42Path(Cs) + " <= " + PathAux.asSet(subtypeConstraints.get(Cs));
-      } else if (supertypeConstraints.contains(Cs)) {
-        return PathAux.asSet(supertypeConstraints.get(Cs)) + " <= " + PathAux.as42Path(Cs);
-      } else {
-        return null;
-      }
-    }).filter(Objects::nonNull).collect(Collectors.joining(", "));
+  String printConstraints() {
+    return new ListFormatter().seperator(", ").append(this.redirectSet.keySet().stream().map(this::printConstraint))
+        .toString();
+  }
+  String printConstraint(List<C> Cs) {
+    var sub = supertypeConstraints.get(Cs);
+    var sup = subtypeConstraints.get(Cs);
+    if (sub.isEmpty() && sup.isEmpty()) {
+      return "";
+    } else if (sub.isEmpty()) {
+      return PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);
+    } else if (sup.isEmpty()) {
+      return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs);
+    } else {
+      return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);
+    }
   }
 }
 
@@ -592,28 +621,30 @@ class CsPzMap implements Iterable<CsPath> {
   // Returns true iff the key, value pair wasn't allready present
   boolean add(CsPath keyValue) { return this.add(keyValue.getCs(), keyValue.getPath()); }
 
-  boolean add(List<C> key, Path value, String message) {
-    var res = this.add(key, value);
-    if (res) System.out.println(message + " ==> " + this.format(PathAux.as42Path(key), value.toString()));
-    return res; }
+  boolean remove(List<C> key, Path value) {
+    return this.update(key, () -> null, Pz -> Pz.contains(value), Pz -> Pz.remove(value)); }
 
-  private boolean add(List<C> key, Path value) {
-    assert value.tryOuterNumber() != 0;
-    Set<Path> orig = this.map.get(key);
-    if (orig != null) {
-      if (orig.contains(value))
-        return false;
-      else {
-        try { orig.add(value); }
-        // In case the set happens to be unmodifiable...
-        catch (UnsupportedOperationException __) {
-          var res = new HashSet<Path>(orig);
-          res.add(value);
-          this.map.put(key, res); } }
-    } else {
-      this.map.put(key, Collections.singleton(value)); }
-
+  // Tries to update the value corresponding to key:
+  //    If their was no value, and def() returns one, add that to the map
+  //    Otherwise if condition holds on the current value, perform op
+  //    If op failed, perform op on a copy of the original value
+  // Returns true if the map was modified (under the assumption that 'op' will modify it's argument)
+  private boolean update(List<C> key, Supplier<Set<Path>> def, Predicate<Set<Path>> condition, Consumer<Set<Path>> op) {
+    var set = this.map.get(key);
+    if (set == null) {
+      var res = def.get();
+      if (res == null || res.isEmpty()) { return false; }
+      this.map.put(key, res);
+      return true; }
+    if (!condition.test(set)) { return false; }
+    try { op.accept(set); }
+    catch (UnsupportedOperationException __) {
+      var res = new HashSet<>(set); op.accept(res); this.map.put(key, res); }
     return true; }
+
+  public boolean add(List<C> key, Path value) {
+    assert value.tryOuterNumber() != 0;
+    return this.update(key, () -> Collections.singleton(value), Pz -> !Pz.contains(value), Pz -> Pz.add(value)); }
 
   public boolean contains(List<C> key, Path value) { return this.get(key).contains(value); }
   public boolean contains(List<C> key) { return !this.get(key).isEmpty(); }

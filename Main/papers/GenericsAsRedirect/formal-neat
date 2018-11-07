@@ -322,7 +322,7 @@ PossibleInterfaceTarget(p; Cs; P) iff
 		  T = p[Cs.sel].mt.T
 		  T' = p[P.sel].mt.T
 		  T.mdf =T'.mdf
-		  if T.P not of the form This0.Cs' // TODO: Implement in code
+		  if T.P not of the form This0.Cs'
 		    p.equiv(T.P, T'.P) 
 
 -------------------------------------------------------------------------------------------------

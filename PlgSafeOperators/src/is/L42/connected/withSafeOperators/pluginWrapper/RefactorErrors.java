@@ -259,26 +259,46 @@ public class RefactorErrors{
   // RedirectError( {Cs1, ..., Csn, Csn+1, ..., Csn+k}, {P1, ..., Pn}, message)
   // Represents a redirect failure, {Cs1->P1, ..., Csn -> Pn} are the mappings that were deduced
   // {Csn+1, Csn+k} failed to have a mapping computed (but should have).
-  public static class RedirectError extends Exception {
-    public RedirectError(String message) { super(message); }
+  public static abstract class RedirectError extends Exception {
+    @Override public String toString() { return "RedirectError " + getClass().getSimpleName() + ": " + this.getMessage(); }
 
-    public static class InvalidMapping extends RedirectError {//the map is complete but not valid redirect
-      public InvalidMapping(PathMap map, String message) { super(message); }}
+    Redirect.Problem _problem = null;
+    protected RedirectError(String message, Redirect _r) {
+      super(message);
+      if (_r != null) { this._problem = _r.problem; } }
 
-    public static class IncompleteMapping extends RedirectError {//the algorithm could not complete the map
-      public IncompleteMapping(Collection<List<C>> redirectSet, PathMap partialMap, String message) { super(message); }}
+    public static class DetailedError extends RedirectError {
+      public DetailedError(String message) { super(message, null); }}
+
+ /*   public String getShortMessage() { return super.getMessage(); }
+    @Override public String getMessage() {
+      if (this._problem != null) {
+        try { new Redirect(this._problem, true).solve(); }
+        catch (RedirectError e) { return this.getShortMessage() + "\n" + e.getMessage(); }
+        throw Assertions.codeNotReachable(); }
+      else { return this.getShortMessage(); }}
+*/
+    public static class ClassUnfit extends RedirectError {
+      public ClassUnfit(List<C> Cs, Path P, String message, Redirect r) {
+        super("Cannot redirect " + PathAux.as42Path(Cs) + " to " + P + ": " + message, r); }}
+
+    public static class DeductionFailure extends RedirectError {
+      public DeductionFailure(List<C> Cs, String message, Redirect r) {
+        super("Cannot deduce a valid redirection for " + PathAux.as42Path(Cs) + ": " + message, r); }}
 
     //program agnostic
-    public static class NonexistentClasses extends RedirectError {// Path unfit the user provide non existent or private Cs
-      public NonexistentClasses(Collection<List<C>> nonexistents, String message) { super(message); } }
+    public static class PathUnfit extends RedirectError {// Path unfit the user provide non existent or private Cs
+      public PathUnfit(List<C> Cs, String message, Redirect r) {
+        super("The class name" + PathAux.as42Path(Cs) + " is invalid: " + message, r); }}
 
     /* There are 3 reasons a nested class wont be redirectable:
      *    1. It is private
      *    2. it has a non abstract method
      *    3. It has a nested class which will not be redirected
      * */
-    public static class UnreadirectableClasses extends RedirectError {//ClassUnfit ??  program agnostic
-        public UnreadirectableClasses(Collection<List<C>> unredirectables, String message) { super(message); } }}
+    public static class Unredirectable extends RedirectError {//ClassUnfit ??  program agnostic
+        public Unredirectable(List<C> Cs, String message, Redirect r) {
+          super("The nested class " + PathAux.as42Path(Cs) + " cannot be redirected: " + message, r); }}}
 /*
  * 
  

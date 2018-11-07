@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import java.lang.Iterable;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class ListFormatter {
@@ -27,7 +28,8 @@ public class ListFormatter {
     this.count += 1;
     return this; }
 
-  public ListFormatter append(Iterable<? extends Object> ss) { for (Object s : ss) { this.append(s.toString()); } return this; }
+  public <T> ListFormatter append(Iterable<T> ss) { for (Object s : ss) { this.append(s.toString()); } return this; }
+  public <T> ListFormatter append(Stream<T> ss) { Iterable<T> i = ss::iterator; return this.append(i); }
   // returns an empty string if 'record' was never called
   // Otherwise, returns:
   //    header + (prefix + s1 + suffix) + seperator + ... + seperator + (prefix + sm + suffix) + footer
