@@ -237,9 +237,9 @@ Define mwt.P = mwt.mt.T.P
 Define mwt.Pi = mwt.mt.Ts.i.P
 
 Define mwt.Cs = Cs
-	This0.Cs = mwt.mt.T.P
+  This0.Cs = mwt.mt.T.P
 Define mwt.Csi = Cs
-	This0.Cs = mwt.mt.Ts.i.P
+  This0.Cs = mwt.mt.Ts.i.P
 Define L.Csz = Internal(L.Pz)
 
 
@@ -249,17 +249,23 @@ Define Collect(p; CCz) := CCz':
 1: Collect(p; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
 
-3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
-    // TODO: What if MostSpecific, or MostGeneral, but not both, are undefined?
+31: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs'
     Cs' in p[Cs].Csz
-    Pz = {P' in SuperClasses(p; P) | msdom(p[P']) = msdom(p[Cs'])}
+    Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
+
+3b: Collect(p; P <= Cs) = Cs' <= MostGeneral(p; Pz)
+    Cs' in p[Cs].Csz
+    Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
+
+3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P', P <= Cs'
+  Cs' in p[Cs].Pz
 
 4: Collect(p; P <= Cs) = p[P.ms].P <= p[Cs.ms].Cs
 5: Collect(p; CC) = p[Cs.ms].Csi <= p[P.ms].Pi
      CC = P <= Cs or  CC = Cs <= P
 
 6: Collect(p; Cs <= P) = p[Cs.ms].Cs <= p[P.ms].P:
-  	MustInterface(p; Cs)
+    MustInterface(p; Cs)
 
 7: Collect(p; Cs <= P) = p[P.ms].Pi <= p[Cs.ms].Csi:
     MustInterface(p; Cs)
@@ -274,24 +280,23 @@ Define Collect(p; CCz) := CCz':
     P' = p[P.sel].P
     sel' in dom(p[Cs']) intersect dom(p[P'])
 
-8'd:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
+8'd:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P') // TODO: Proove this is neccessary
     Cs' in p[Cs].Pz
     P' in SuperClasses(p; P)
-   	sel' in dom(p[Cs']) intersect dom(p[P'])
+    sel' in dom(p[Cs']) intersect dom(p[P'])
 
-//TODO: implement?
-//11a: Collect(p; CCz) = Cs <= P
-//    	RChoices(CCz) = Cs -> {P}
+11a: Collect(p; CCz) = Cs <= P  // TODO: Prove this is neccessary
+    RChoices(CCz) = Cs -> {P}
 
-//11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs
-//    	RChoices(CCz) = Cs -> Pz
+11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs   // TODO: Prove this is neccessary
+    RChoices(CCz) = Cs -> Pz
 
 
 Completeness:
 FORALL(p, CC, R0, :
 
-	(FORALL R : ( ValidRedirect(p, R0, R) --> R satisfies_p CC))   //easy<--  //hard-->
-	<--> (CollectAll(p, CCinit(R0)) implies_p CC)
+  (FORALL R : ( ValidRedirect(p, R0, R) --> R satisfies_p CC))   //easy<--  //hard-->
+  <--> (CollectAll(p, CCinit(R0)) implies_p CC)
 )
 
 this is false: FORALL(p,  R0, R: (R satisfies_p CollectAll(p, CCinit(R0)) -> ValidRedirect(p, R0, R))
@@ -299,12 +304,12 @@ this is false: FORALL(p,  R0, R: (R satisfies_p CollectAll(p, CCinit(R0)) -> Val
 R satisfies_p Cs <= P iff p |- R(Cs) <= P
 R satisfies_p P <= Cs iff p |- P <= R(Cs)
 
-CCz implies_p CC iff	exists CC' in CCz such that CC' implies_p CC
+CCz implies_p CC iff  exists CC' in CCz such that CC' implies_p CC
 
 CC implies_p CC
 
 Cs <= P  implies_p Cs <= P'
-	if p |- P <= P'
+  if p |- P <= P'
 // and other related rules...
 
 
@@ -328,10 +333,14 @@ MostGeneral(p; Pz) = P
 
 Define ChooseR(p; CCz) := R
   ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
-  	Cs -> Pz = RChoices(p; CCz)
+    Cs -> Pz = RChoices(p; CCz)
     P = MostSpecific(p; Pz)
 
+   // Thanks to Rule 11b
+   ChooseR(p; P1 <= Cs, ..., Pn <= Cs, CCz') := Cs -> MostGeneral(p; P1, ..., Pn), ChooseR(p; CCz')
    ChooseR(p; empty) = empty
+
+Rule11 Style
 
 RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k), = Cs -> Pz''
     Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
@@ -345,11 +354,11 @@ PossibleInterfaceTarget(p; Cs; P) iff
     p[P].interface? = interface
     dom(p[Cs].mwtz) = dom(p[P].mwtz) // No extra methods
     forall sel in dom(p[Cs].mwtz)
-		  T = p[Cs.sel].mt.T
-		  T' = p[P.sel].mt.T
-		  T.mdf =T'.mdf
-		  if T.P not of the form This0.Cs'
-		    p.equiv(T.P, T'.P) 
+      T = p[Cs.sel].mt.T
+      T' = p[P.sel].mt.T
+      T.mdf =T'.mdf
+      if T.P not of the form This0.Cs'
+        p.equiv(T.P, T'.P) 
 
 -------------------------------------------------------------------------------------------------
 // Some classes of ChooseRedirect functions
@@ -402,7 +411,7 @@ CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.C
     {C1, ..., Cn} = { C in dom(p[Cs]) | p[P.C] is defined }
 
 In ValidRedirect:
-	forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
+  forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
 
 In PossibleRedirect:
-	forall C in dom(p[Cs]): C in dom(p[P]) and PossibleRedirect(p; Cs.C; P.C)
+  forall C in dom(p[Cs]): C in dom(p[P]) and PossibleRedirect(p; Cs.C; P.C)

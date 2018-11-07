@@ -215,6 +215,7 @@ public class TestHelper {
 
   public static ClassB getClassB(boolean norm,Program p,String source, String e1) {
     if(p==null){p=Program.emptyLibraryProgram();}
+    if (!e1.trim().startsWith("{")) { e1 = "{" + e1 + "}"; }
     Expression code1=Parser.parse("GeneratedByTestHelper_"+source,e1);
     auxiliaryGrammar.WellFormedness.checkAll(code1);
     Expression code2=Desugar.of(code1);

@@ -3,6 +3,7 @@ package is.L42.connected.withSafeOperators.refactor;
 import static helpers.TestHelper.getClassB;
 
 import ast.Ast;
+import ast.Ast.*;
 import ast.ExpCore;
 import ast.L42F;
 import helpers.TestHelper.ErrorCarry;
@@ -22,8 +23,6 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 import platformSpecific.javaTranslation.Resources;
-import ast.Ast.MethodSelector;
-import ast.Ast.Path;
 import ast.ExpCore.ClassB;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
@@ -205,6 +204,44 @@ public class TestRedirect {
           "{method Void result(This1.EB b, Any x)}"
 //------------------------------------------
     },{lineNumber(), new String[]{"{"+ // Fails, cant resolve ambiguity when interfaces have different methods
+            "EA:{interface method Void m()}" +
+            "EA1:{interface implements EA}" +
+            "EA2:{interface implements EA}" +
+            "E:{implements This1.EA1 This1.EA2 method Void m2(EA1 that)}}"
+    },"{" +
+            "I:{implements IA method Void m2(IA that)}" +
+            "IA:{interface method Void m()}" +
+            "method IA a()" +
+            "}",
+            "I", "This0.E",
+            "{method This1.EA1 a()}" // FAILS IncoherentMapping
+    },{lineNumber(), new String[]{"{"+ // Fails, cant resolve ambiguity when interfaces have different methods
+            "EI1:{interface method Any m1()}" +
+            "EI2:{interface method Any m2()}" +
+            "EA1:{interface implements EI1 EI2 refine method Void m1()}" +
+            "EA2:{interface implements EI1 EI2}" +
+            "E:{implements This1.EA1 This1.EA2 method Void bar()}}"
+    },"{" +
+            "I:{implements IA}" +
+            "IA:{interface method Void m1() method Any m2()}" +
+            "method IA a()" +
+            "}",
+            "I", "This0.E",
+            "{method This1.EA1 a()}" // FAILS IncoherentMapping
+    },{lineNumber(), new String[]{"{"+ // Fails, cant resolve ambiguity when interfaces have different methods
+            "EI1:{interface method Void m1()}" +
+            "EI2:{interface method Void m2()}" +
+            "EA1:{interface implements EI1 EI2}" +
+            "EA2:{interface implements EI1 EI2}" +
+            "E:{interface implements This1.EA1 This1.EA2}}"
+    },"{" +
+            "I:{implements IA}" +
+            "IA:{interface method Void m1() method Void m2()}" +
+            "method IA a()" +
+            "}",
+            "I", "This0.E",
+            "{method This1.E a()}" // FAILS IncoherentMapping
+    },{lineNumber(), new String[]{"{"+ // Fails, cant resolve ambiguity when interfaces have different methods
             "EA:{interface method Void ma()}" +
             "EB:{interface method Void mb()}" +
             "E:{implements This1.EA This1.EB}}"
@@ -280,11 +317,9 @@ public class TestRedirect {
             "I", "This0.E",
         RedirectError.InvalidMapping.class // I.foo() and E.foo() are incompatable
     },{lineNumber(),// Fails, redirecting interface with different methods
-            new String[]{"{" +
                     "E1:{interface method Void foo()}\n" +
                     "E2:{interface method Void foo()}\n" +
-                    "E: {method E1 e1() method E2 e2()}\n" +
-                    "}"},
+                    "E: {method E1 e1() method E2 e2()}\n",
             "{\n" +
                     "I1:{interface} I2:{interface} \n"+
                     "B: {method I1 e1() method I2 e2()}\n"+
@@ -294,8 +329,8 @@ public class TestRedirect {
             "{A: {interface}}" // TODO: OK? Can redirect I1 and I2 to any!
             // SHOULD FAIL
     }, {lineNumber(), // Fails, as no p.equiv
-            mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}")
-                    .push(new ast.Ast.C("C", -1)),
+            mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}").push(C.of("C")),
+            //mkp("{C: {EA:{EB:{}, method This2.C.EA.EB g() method This0.EB f()}}}").push(C.of("C")),
             "{A:{method B g() method B f()} B:{} method B foo()}",
             "A", "This0.EA",
             "{method This1.EA.EB foo()}"
@@ -814,7 +849,7 @@ public class TestRedirect {
         + "}"
         + "",
         "InnerA", "This0.A",
-        RedirectError.DeductionFailure.class // Cannot redirect InnerC to C
+        RedirectError.InvalidMapping.class // This1.C is not a subtype of This1.A
 
 
     // IncoherentRedirectMapping: Src(1..), Dest(1..), IncoherentSrc(1..), IncoherentDest(0, 2..)
@@ -1019,15 +1054,13 @@ public class TestRedirect {
 
 //},{"This2.D.C","This1.C",new String[]{"{A:{}}","{C:{}}","{D:##walkBy}"}
 
-public static Program mkp(String...ss) {
-  Program p=TestHelper.getProgram(ss);
-  return p;
-  }
+public static Program mkp(String...ss) { Program p=TestHelper.getProgram(ss); return p; }
 
 @Test  public void test() throws RedirectError {
   TestHelper.configureForTest();
   Program p;
-  if(_p instanceof String[]) {p=TestHelper.getProgram((String[])_p);}
+  if(_p instanceof String) { p = mkp((String)_p); }
+  else if(_p instanceof String[]) {p=TestHelper.getProgram((String[])_p);}
   else {p=(Program)_p;}
   //
   ClassB cb1=getClassB(true,p,"cb1", _cb1);
@@ -1047,8 +1080,8 @@ public static Program mkp(String...ss) {
     var expectedType = (Class)_expected;
     ClassB res = null;
     try { res = Redirect.redirect(p,cb1,map); }
-    catch (Throwable e) {
-      if (expectedType.isInstance(e)) System.err.println(e);
+    catch (RedirectError e) {
+      if (expectedType.isInstance(e)) System.err.println(e.getClass().getSimpleName() + ": " + e.getShortMessage());
       else throw e; }
     if (res != null) { TestHelper.assertEqualExp(new ExpCore.X(null, "ERROR"), res); }
   } else {

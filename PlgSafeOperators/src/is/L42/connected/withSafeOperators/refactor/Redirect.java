@@ -83,7 +83,7 @@ public class Redirect {
 
   final boolean detailed;
   <T> T detailed(Supplier<T> f) { return this.detailed ? f.get() : null; }
-  void debugPrint(String m) { /*if (!this.detailed) System.out.println(m);*/ }
+  void debugPrint(String m) { if (!this.detailed) System.out.println(m); }
 
   public Redirect(Problem problem, boolean detailed) { this.problem = problem; this.p = problem.p; this.detailed = detailed;}
 
@@ -229,14 +229,19 @@ public class Redirect {
       for (var CsP : supertypeConstraints) { // P <= Cs
         for (var PCs2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P in p[Cs].Pz
           if (PCs2.tryOuterNumber() == 0) { // P = This0.Cs'
-            var msz = p.extractClassB(PCs2).msDom(); // msz = msdom(p[Cs'])
-            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> p.extractClassB(Pi).msDom().equals(msz))
+            var Cs2 = PCs2.getCBar();
+            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> possibleInterfaceTarget(Cs2, Pi))
               .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
             var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
             var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
-            if (P1 != null && P2 != null) { // P1 <= Cs', Cs' <= P2
-              var message = "Rule 3: " + asSupertype(CsP);
-              progress |= addSupertype(PCs2.getCBar(), P1, message) | addSubtype(PCs2.getCBar(), P2, message); }}}}
+            if (P1 != null) { // P1 <= Cs'
+              progress |= addSupertype(Cs2, P1, "Rule 3a: " + asSupertype(CsP)); } // TODO?
+            if (P2 != null) { // Cs' <= P2
+              progress |= addSubtype(Cs2, P2, "Rule 3b: " + asSupertype(CsP)); }
+            for (var P3 : subtypeConstraints.get(Cs2)) { // Cs' <= P"
+              var CsP3 = new CsPath(Cs2, P3); //Cs <= P", P <= Cs'
+              progress |= addSubtype(CsP.getCs(), P3, "Rule 3c: " + asSupertype(CsP) + ", " + asSubtype(CsP3))
+                | addSupertype(Cs2, CsP.getPath(), "Rule 3c: " + asSupertype(CsP) + ", " + asSubtype(CsP3)); }}}}
 
       //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
       //   p[Cs.ms].P = This0.Cs'
@@ -290,16 +295,40 @@ public class Redirect {
         //    P' = p[P.sel].P
         progress |= collectReturns(CsP, (Cs, P, ms) -> body.test(Cs, P, "Rule 8: " + asSubtype(CsP) + " [" + ms + "]"));
 
+        // TODO: Proove this is neccessary?
         // 8': This0.Cs' in p[Cs].Pz
         //     P' in SuperClass(p; P)
         /*for (var P2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P' in p[Cs].Pz
           if (P2.tryOuterNumber() == 0) { // P' = This0.Cs'
             for (var P3 : superClasses(CsP.getPath())) { // P'' in SuperClass(p; P)
-              progress |= body.test(P2.getCBar(), P3, "Rule 8': " + asSubtype(CsP)); }}}*/}}
+              progress |= body.test(P2.getCBar(), P3, "Rule 8': " + asSubtype(CsP)); }}}*/}
 
-    // Keep going untill we stop doing anything
+      //11a and 11b
+      // TODO: Proove this is neccessary?
+      for (var Cs : supertypeConstraints.dom()) { // RChoices is only defined for things in superTypeConstraints
+        var Pz = _RChoices(Cs);
+        if (Pz.size() == 1) { // 11a: RChoices(CCz) = Cs -> {P} ==> Cs <= P
+          progress |= addSubtype(Cs, Pz.iterator().next(), "Rule 11a: " + printConstraint(Cs)); }
+        // 11b: RChoices(CCz) = Cs -> Pz ==> MostSpecific(p; Pz) <= Cs
+        var P = _mostSpecific(Pz);
+        if (P != null) {
+          progress |= addSupertype(Cs, P, "Rule 11b: " + printConstraint(Cs)); }}}
+
+    // Keep going until we stop doing anything
     while (progress);
     debugPrint("End: " + this.printConstraints() + "\n"); }
+
+  Set<Path> _RChoices(List<C> Cs) {
+    var Ps1 = this.supertypeConstraints.get(Cs);
+    if (Ps1.isEmpty()) { return null; }
+
+    var Ps2 = this.subtypeConstraints.get(Cs);
+    var Pz = superClasses(Ps1);
+    var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2)).collect(Collectors.toSet());
+
+    return mustInterface(Cs)
+      ? Pz2.stream().filter(P -> possibleInterfaceTarget(Cs, P)).collect(Collectors.toSet())
+      : Pz2; }
 
   PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.InvalidMapping {
     var message = detailed(() -> new ListFormatter().header("Failed to choose mapping:\n").prefix("  ").suffix("\n"));
@@ -311,6 +340,7 @@ public class Redirect {
     assert this.redirectSet.keySet().containsAll(supertypeConstraints.dom());
 
     for (var Cs : this.redirectSet.keySet()) {
+      //var Pz = _RChoices(Cs);
       var Ps1 = this.supertypeConstraints.get(Cs);
       if (Ps1.isEmpty()) {
         if (!this.subtypeConstraints.contains(Cs)) {
@@ -322,25 +352,11 @@ public class Redirect {
           else { throw new RedirectError.DeductionFailure(Cs, "We only found the subtype constraints: " + con + ".", this); }}
         
         continue; }
-      var Ps2 = this.subtypeConstraints.get(Cs);
-      //ChooseR(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz)
 
-      // Pz = SuperClasses(p; P1, ..., Pn)
-      var Pz = superClasses(Ps1);
-
-      //Pz' = { P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-      var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2)).collect(Collectors.toSet());
-
-      var Pz3 = Pz2;
-      if (mustInterface(Cs)) { // if MustInterface(Cs) Pz'' = {P in Pz' | PossibleInterfaceTarget(p; Cs; P)}
-         Pz3 = Pz2.stream().filter(P -> possibleInterfaceTarget(Cs, P)).collect(Collectors.toSet()); }
-
-      // P = MostSpecific(p; Pz'')
-      var P = _mostSpecific(Pz3);
+      var P = _mostGeneral(Ps1);
       if (P == null) {
-        var fPz3 = new ListFormatter().seperator(", ").append(Pz3);
         var cons = this.printConstraint(Cs);
-        if (detailed) { message.append("Cannot find a most specific solution for " + cons + " (possible solutions are: " + fPz3 + ")."); }
+        if (detailed) { message.append("Cannot find a most specific solution for " + cons + "."); }
         else {
           var P2 = res._get(Cs);
 
@@ -352,7 +368,7 @@ public class Redirect {
             throw new RedirectError.InvalidMapping(Cs, P2, "Since it does not satisfy " + cons + ".", this); }
           else {
             throw new RedirectError.DeductionFailure(Cs, "Cannot find a most-specific solution to the constraint "
-              + cons + " (possible solutions are: " + fPz3 + ").", this); }}}
+              + cons + ".", this); }}}
       else { res.add(Cs, P); }}
     if (detailed && message.count() > 0) { throw new RedirectError.DetailedError(message.toString()); }
     return res; }
@@ -594,13 +610,15 @@ public class Redirect {
     var sub = supertypeConstraints.get(Cs);
     var sup = subtypeConstraints.get(Cs);
     if (sub.isEmpty() && sup.isEmpty()) {
-      return "";
-    } else if (sub.isEmpty()) {
-      return PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);
-    } else if (sup.isEmpty()) {
-      return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs);
-    } else {
-      return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);}}}
+      return ""; }
+    else {
+      if (sub.isEmpty()) {
+        return PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup); }
+      else {
+        if (sup.isEmpty()) {
+          return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs); }
+        else {
+          return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);}}}}}
 
 class CsPzMap implements Iterable<CsPath> {
   // Cs |-> Pz
