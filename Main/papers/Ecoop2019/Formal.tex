@@ -3,7 +3,7 @@
 \begin{bnf}
 \production{%
 e}      {x \mmid{} e\Q{.}m\rp{es} \mmid{}T\Q{.}m\rp{es}
-\mmid{} v
+\mmid{} e\Q{.}x \mmid{} \Q{new} T\rp{es}
 }{expression}\\\production{%
 L}      {\libi{Tz}{Ms}
 %}{interface literal}
@@ -23,28 +23,62 @@ E}      {L \mmid{} t \mmid{} \summ{E}{E} \mmid{} \red{E}{Cs}{T}}           {HERO
 \begin{minipage}[t]{0.5\textwidth}
 \begin{bnf}
 \production{%
+T}      {\Q{This}n\Q{.}Cs}                                                 {types}\\\production{%
 Tx}     {T x}                                                              {parameter}\\\production{%
 D}      {id\eq{}E}                                                         {declaration}\\\production{%
 id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
-v}      {\Q{new} T\rp{vs}}                                                 {value}\\\production{%
-T}      {\Q{This}n\Q{.}Cs}                                                 {types}
+v}      {\Q{new} T\rp{vs}}                                                 {value}%\\\production{%
 \end{bnf}
 \end{minipage}
 
 
-We will rely on a simplified object oriented language, where expressions $e$ are variables $x$ (including \Q@this@)
-and conventional (static) method calls.
-Values are of form \Q{new} T\rp{vs} but are considered as run-time expression only: the programmer would just call a static factory method.
+We apply our ideas on a simplified object oriented language with nominal typing and (nested)
+interfaces  and final classes.
+To simplify our terminology, instead of distinguishing between 
+nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
+named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
+
+In the context of nested classes, types are paths. Syntactically,
+we represent them as relative paths of form 
+$\This{n}{Cs}$, where the number $n$ identify the root of our path:
+\Q@This0@ is the current class, \Q@This1@ is the enclosing class, \Q@This2@ is the enclosing enclosing class and so on. $\This{n}{Cs}$
+refers to the class obtained by navigating throughout  $Cs$ starting from $\This{n}$.
+Thus, $\This{0}$ is just the type of the directly enclosing class.
+Note how there can be multiple different types referring to the same class.
+
 Code literals $L$
 serve the role of class/interface bodies; they contain the set of implemented interfaces
 $Tz$, the set of members $Mz$ and their (optional) state.
 In the concrete syntax we will use \Q@implements@ in front of a non empty list of implemented interfaces
 and we will omit parenthesis around a non empty set of fields.
-In the concrete syntax the order of the fields is important because we consider
-an implicitly 
+A class member $M$ can be a nested class or a (static) method.
+Abstract methods are just methods without a body. 
+Well formed interface methods can only be abstract and non-static.
+To facilitate code reuse, classes can have (static) abstract methods, code composition is expected to 
+provide an implementation for those or, as we will see, redirect away the whole class.
+
+Expressions $e$ serve as body of (static) methods. Additionally, the execution rely on a main expression.
+; they
+ are variables $x$ (including \Q@this@)
+and conventional (static) method calls.
+To simplify reasoning about code reuse, field access and \Q@new@ expressions have restricted usage:
+well formed field accesses are of form \Q@this.@$x$ in method bodies and
+$v$\Q@.@$x$  in the main expression, while 
+well formed \Q@new@ expressions have to be of form \Q@new This0(@$xs$\Q@)@ in method bodies
+and of form $v$ in the main expression.
+Values are of form \textit{\Q{new} T\rp{vs}} but are considered as run-time expression only: the programmer would just call a static factory method.
+
+
+In the concrete syntax we assume a syntactic sugar declaring
+a static \Q@of@ method that serve as a factory and all fields getters
+the order of the fields is important because we consider
+an implicitly declared static \Q@of@ method that serve as a factory, thus the order of the field induce the order of the factory arguments. In the core calculus we just assume such factory to be 
+
+
+
 In the core language we will assume getters and setters to be present
 Methods an nested classes
-Expressions serve as body of (static) methods
+
 
 
 \begin{bnf}

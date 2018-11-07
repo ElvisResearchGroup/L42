@@ -133,23 +133,16 @@ Thus, it is not semantically equal to catch any. Should we enforce it to be?
 
 -----------------
 String literals:
-single string literal can accept splicing:
-S"a{b}c"
-desugared as S"a"++b++S"c"
-multiple string literal uses new line for splicing:
+may be:
+S"ddd"  //ddd can not contains ", but can contain new line
+S["ddd[x+y]ddd"] //ddd can not contains "] or [
+S[["ddd[[x+y]]ddd"]] //ddd can not contains "]] or [[
+desugaring:   S"ddd".#splice(x+y,S"ddd") 
 S"
- 'a
- b
- 'c
- "
- and comments can be placed in lines without the '.
- may be, 
-   S"{}
-     ' a{b}
-     "
- could allow splicing?
-Also, consider removing the newline in the end as default.
-
+  'hi
+  '  marco
+  "
+  //this is now just responsibility of the string library
 ------------------------------
 Local variables:
 T? x=e but also

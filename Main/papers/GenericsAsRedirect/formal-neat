@@ -249,7 +249,7 @@ Define Collect(p; CCz) := CCz':
 1: Collect(p; Cs <= P) = P <= Cs
     p[P].interface = empty //since all classes are final
 
-31: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs'
+3a: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs'
     Cs' in p[Cs].Csz
     Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
 
@@ -257,8 +257,12 @@ Define Collect(p; CCz) := CCz':
     Cs' in p[Cs].Csz
     Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
 
-3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P', P <= Cs'
-  Cs' in p[Cs].Pz
+3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P'
+    Cs' in p[Cs].Pz
+
+3d: Collect(p; P <= Cs) = P <= Cs' //TODO: implement in code
+    Cs' in p[Cs].Pz
+
 
 4: Collect(p; P <= Cs) = p[P.ms].P <= p[Cs.ms].Cs
 5: Collect(p; CC) = p[Cs.ms].Csi <= p[P.ms].Pi
@@ -332,13 +336,13 @@ MostGeneral(p; Pz) = P
    {P} = SuperClasses(p; Pz) intersect p.minimize(Pz)
 
 Define ChooseR(p; CCz) := R
-  ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
-    Cs -> Pz = RChoices(p; CCz)
-    P = MostSpecific(p; Pz)
+  //ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
+  //  Cs -> Pz = RChoices(p; CCz)
+  //  P = MostSpecific(p; Pz)
 
    // Thanks to Rule 11b
    ChooseR(p; P1 <= Cs, ..., Pn <= Cs, CCz') := Cs -> MostGeneral(p; P1, ..., Pn), ChooseR(p; CCz')
-   ChooseR(p; empty) = empty
+   ChooseR(p; Cs1 <= P1, ..., Csn <= Pn) = empty
 
 Rule11 Style
 
