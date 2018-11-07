@@ -6,12 +6,7 @@ import ast.Ast;
 import ast.ExpCore;
 import ast.L42F;
 import helpers.TestHelper.ErrorCarry;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.RedirectError;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.IncoherentMapping;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.refactor.RedirectObj;
 import helpers.TestHelper;
 import static helpers.TestHelper.lineNumber;
@@ -41,7 +36,7 @@ public class TestRedirect {
   // SKIP NEW TESTS
   static int startLine=51; // was 159
 
-  static Object NestedClassTest =  RedirectError.Unredirectable.class;
+  static Object NestedClassTest =  RedirectError.ClassUnfit.class;
   static Object NestedClassTest(Object o) { return o; }
   static Object ExceptionTest = RedirectError.DeductionFailure.class;
 
@@ -119,14 +114,14 @@ public class TestRedirect {
         "EI1: {interface}" +
         "EI2: {interface}" +
         "EI3: {interface implements EI2}" +
-        "EC: {implements EI1, EI3}" +
-        "EBB: {interface method EI2 foo()}" +
+        "EC:  {implements EI1, EI3}" +
+        "EBB: {interface method read EI2 foo()}" +
         "EB1: {interface implements EBB refine method EI1 foo()}" +
         "EB0: {interface implements EBB refine method EI2 foo()}" +
-        "EB: {implements EB0, EB1, EBB refine method EC foo()}" +
-        "EA: {method EB m1() }}"
+        "EB:  {implements EB0, EB1, EBB refine method EC foo()}" +
+        "EA:  {method EB m1()}}"
     },"{" +
-           "B: {interface method This2.EI2 foo()}" +
+           "B: {interface method read This2.EI2 foo()}" +
            "A: {method B m1() }" +
            "method Void result(A a, B b)" +
            "}",
@@ -277,13 +272,13 @@ public class TestRedirect {
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface} A:{implements I}}",
             "I", "This0.E", // This0.E <= I <= This0.E // {}
-        RedirectError.ClassUnfit.class
+        RedirectError.InvalidMapping.class
     },{lineNumber(),// Fails, redirecting interface with different method signature
             new String[]{"{E:{interface method Void foo()}}"},
             "{I:{interface method Void foo() exception I}\n"+
                     "A:{implements I refine method Void foo() exception I}}",
             "I", "This0.E",
-        RedirectError.ClassUnfit.class // I.foo() and E.foo() are incompatable
+        RedirectError.InvalidMapping.class // I.foo() and E.foo() are incompatable
     },{lineNumber(),// Fails, redirecting interface with different methods
             new String[]{"{" +
                     "E1:{interface method Void foo()}\n" +
@@ -309,7 +304,7 @@ public class TestRedirect {
       new String[]{"{EA:{interface A:{implements EA}}}"},
       "{interface A:{implements This1}}",
       "A", "This0.EA.A",
-      RedirectError.Unredirectable.class // Cannot redirect This
+      RedirectError.ClassUnfit.class // Cannot redirect This
 //===============================================================================
     },{lineNumber(),//PASS, but next
       new String[]{"{}"}, "{A:{}}", "A", "Void", "{}"
@@ -341,7 +336,7 @@ public class TestRedirect {
                     "A:{implements I refine method Void foo()}"+
                     "class method Void(I i) i.foo()}",
             "I", "This0.E",
-            RedirectError.ClassUnfit.class // Target foo() throws more exceptions that source!
+            RedirectError.InvalidMapping.class // Target foo() throws more exceptions that source!
             // SHOULD FAIL
     },{lineNumber(),//PASS
             new String[]{"{Foo: {implements This1.EA}, EA: {interface B:{}}}"},
@@ -479,7 +474,7 @@ public class TestRedirect {
         + "TestB:{method InnerA moreFun()}"
         + "}",
         "InnerA", "This0.A",
-        RedirectError.ClassUnfit.class
+        RedirectError.InvalidMapping.class
     },{lineNumber(), new String[]{  // Redirect a FreeTemplate with two interfaces to an OpenClass with one.
                                     // Under the just-one-target-is-unambiguous rule,
                                     // which is a logical consequence of the intersecting-to-one-target-is-unambiguous rule,
@@ -649,17 +644,17 @@ public class TestRedirect {
     //   UnexpectedMethods(0..), UnexpectedImplementedInterfaces(0..)
     },{lineNumber(), new String[]{"{A:{ }}"},  // from module with an unexpected function
         "{InnerA:{class method Void fun()} }","InnerA", "This0.A",
-       RedirectError.ClassUnfit.class
+       RedirectError.InvalidMapping.class
     },{lineNumber(), new String[]{"{A:{ }}"},  // same test, but with a method argument, using the new mechanism
         "{InnerA:{class method Void fun(Void that)} }","InnerA", "This0.A",
-        RedirectError.ClassUnfit.class
+        RedirectError.InvalidMapping.class
     },{lineNumber(), new String[]{  // FreeTemplate -> Interface, with some matching methods
         "{A:{interface class method Void fun(Void that)  method Void mostFun(Void that, Library other) }}"
         },
         "{InnerA:{class method Void fun(Void that) class method Void moreFun(Void that)"
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "InnerA", "This0.A",
-        RedirectError.ClassUnfit.class
+        RedirectError.InvalidMapping.class
     },{lineNumber(), new String[]{  // with a mismatch on parameter names in the method selector
                                     // Also Template (by return value) -> Interface, which is infeasible
         "{A:{interface class method Void fun(Void that) class method Void moreFun()"
@@ -670,7 +665,7 @@ public class TestRedirect {
         + "D:{method This1.InnerA makeA() InnerA.fun(void)} "
         + "}",
         "InnerA", "This0.A",
-        RedirectError.ClassUnfit.class
+        RedirectError.InvalidMapping.class
     },{lineNumber(), new String[]{  // Template (by parameter value) -> OpenClass extra subclass
         "{A:{ method Void ignoreMe() void " +
         "     B:{ method Void ignoreMe() void} } }",
@@ -708,7 +703,7 @@ public class TestRedirect {
         + "TestD:{method Void mostFun() {} }\n"
         + "}",
         "D_Source", "This0.D_Target",
-        RedirectError.Unredirectable.class // InnerA.fun(that) is implemented!
+        RedirectError.ClassUnfit.class // InnerA.fun(that) is implemented!
     },{lineNumber(), new String[]{  // OpenClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method //@private \n Void ignoreMeMore() " +
@@ -716,7 +711,7 @@ public class TestRedirect {
         },
         "{InnerA:{ method Void ignoreMe() void C:{} }}",
         "InnerA", "This0.A",
-        RedirectError.Unredirectable.class  // InnerA.ignoreMe() is implemented!
+        RedirectError.ClassUnfit.class  // InnerA.ignoreMe() is implemented!
     },{lineNumber(), new String[]{  // ClosedClass -> ClosedClass (because I can) with missing subclass
         "{A:{ method Void ignoreMe() void " +
         "     method //@private \n Void ignoreMeMore() " +
@@ -734,7 +729,7 @@ public class TestRedirect {
         "{InnerA:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) "
         + "method Void mostFun(Void that, Library other) method Void notSoFun() } }",
         "InnerA", "This0.A",
-        RedirectError.ClassUnfit.class
+        RedirectError.InvalidMapping.class
     },{lineNumber(), new String[]{  // Interface with inner class
         "{A:{interface class method Void fun(Void that)  method Void moreFun(Void that, Library other) }}"
         },
@@ -885,7 +880,7 @@ public class TestRedirect {
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
         "Z.Aliases", "This0.X.Y.Aliases",
-        RedirectError.ClassUnfit.class // Z.notSoFun() and X.Y.Aliases.notSoFun() have incompatable types
+        RedirectError.InvalidMapping.class // Z.notSoFun() and X.Y.Aliases.notSoFun() have incompatable types
     },{lineNumber(), new String[]{   // Redirect to, but not from, incompatible which is a path
                     "{"
                     + "X:{Y:{\n"
@@ -900,7 +895,7 @@ public class TestRedirect {
         + "TestA:{method Z.FluffyA fun()}"
         + "}",
         "Z.Aliases", "This0.X.Y.Aliases",
-        RedirectError.ClassUnfit.class // Z.notSoFun() and X.Y.Aliases.notSoFun() have incompatable types
+        RedirectError.InvalidMapping.class // Z.notSoFun() and X.Y.Aliases.notSoFun() have incompatable types
 // TODO@James: play properly with redirects and primitive types
 
 /* TODO@James : try this test, when I get to method clashes
@@ -1029,7 +1024,7 @@ public static Program mkp(String...ss) {
   return p;
   }
 
-@Test  public void test() throws ClassUnfit, IncoherentMapping, MethodClash, PathUnfit, RedirectError {
+@Test  public void test() throws RedirectError {
   TestHelper.configureForTest();
   Program p;
   if(_p instanceof String[]) {p=TestHelper.getProgram((String[])_p);}

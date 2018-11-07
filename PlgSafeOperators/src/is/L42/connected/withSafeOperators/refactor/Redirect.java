@@ -140,10 +140,10 @@ public class Redirect {
 
     return PathMap.remove(this.p.top(), R1.dom()); }
 
-  void unredirectable(ListFormatter formatter, List<C> Cs, String reason) throws RedirectError.Unredirectable {
+  void unredirectable(ListFormatter formatter, List<C> Cs, String reason) throws RedirectError.ClassUnfit {
     if (this.detailed) { formatter.append(reason); }
-    else { throw new RedirectError.Unredirectable(Cs, reason, this); }}
-  String redirectable(List<C> Cs) throws RedirectError.Unredirectable {
+    else { throw new RedirectError.ClassUnfit(Cs, reason, this); }}
+  String redirectable(List<C> Cs) throws RedirectError.ClassUnfit {
     var L = this.p.top().getClassB(Cs);
     var errors = detailed(() ->
       new ListFormatter().header("Cannot redirect " + PathAux.as42Path(Cs) + ":\n").prefix("    ").suffix("\n"));
@@ -162,7 +162,7 @@ public class Redirect {
         unredirectable(errors, Cs, "It contains a non abstract method: " + ms + "."); }}
 
     return Objects.toString(errors); }
-  void computeRedirectSet() throws RedirectError.DetailedError, RedirectError.Unredirectable {
+  void computeRedirectSet() throws RedirectError.DetailedError, RedirectError.ClassUnfit {
     var L = this.p.top();
     var Csz = this.problem.R.dom();
 
@@ -301,7 +301,7 @@ public class Redirect {
     while (progress);
     debugPrint("End: " + this.printConstraints() + "\n"); }
 
-  PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.ClassUnfit {
+  PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.InvalidMapping {
     var message = detailed(() -> new ListFormatter().header("Failed to choose mapping:\n").prefix("  ").suffix("\n"));
     PathMap res = new PathMap(this.problem.R);
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
@@ -314,12 +314,14 @@ public class Redirect {
       var Ps1 = this.supertypeConstraints.get(Cs);
       if (Ps1.isEmpty()) {
         if (!this.subtypeConstraints.contains(Cs)) {
-          if (detailed) { message.append("Found no constraints for " + Cs + "."); }
+          if (detailed) { message.append("Found no constraints for " + PathAux.as42Path(Cs) + "."); }
           else { throw new RedirectError.DeductionFailure(Cs, "We were unable to collect any constraints on it.", this); }
         } else {
           var con = this.printConstraint(Cs);
-          if (detailed) { message.append("The only constraints we found for " + Cs + ", were subtype constraints: " + con + "."); }
-          else { throw new RedirectError.DeductionFailure(Cs, "We only found the subtype constraints: " + con + ".", this); }}}
+          if (detailed) { message.append("The only constraints we found for " + PathAux.as42Path(Cs) + ", were subtype constraints: " + con + "."); }
+          else { throw new RedirectError.DeductionFailure(Cs, "We only found the subtype constraints: " + con + ".", this); }}
+        
+        continue; }
       var Ps2 = this.subtypeConstraints.get(Cs);
       //ChooseR(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz)
 
@@ -346,7 +348,8 @@ public class Redirect {
             // Remove!
             this.subtypeConstraints.remove(Cs, P2); // Remove the users constraints
             this.supertypeConstraints.remove(Cs, P2); // Remove the users constraints
-            throw new RedirectError.ClassUnfit(Cs, P2, "Since it does not satisfy " + cons + ".", this); }
+            cons = this.printConstraint(Cs);
+            throw new RedirectError.InvalidMapping(Cs, P2, "Since it does not satisfy " + cons + ".", this); }
           else {
             throw new RedirectError.DeductionFailure(Cs, "Cannot find a most-specific solution to the constraint "
               + cons + " (possible solutions are: " + fPz3 + ").", this); }}}
@@ -355,14 +358,14 @@ public class Redirect {
     return res; }
 
   void invalidRedirect(ListFormatter formatter, List<C> Cs, Path P, String reason)
-      throws RedirectError.DeductionFailure, RedirectError.ClassUnfit {
+      throws RedirectError.DeductionFailure, RedirectError.InvalidMapping {
     if (this.detailed) { formatter.append(reason); }
     else {
       if (this.problem.R.contains(Cs)) { // Was the users fault!
-        throw new RedirectError.ClassUnfit(Cs, P, reason, this); }
+        throw new RedirectError.InvalidMapping(Cs, P, reason, this); }
       else {throw new RedirectError.DeductionFailure(Cs, "our best guess, " + P + ", failed: " + reason, this); }}}
   // Otherwise, throw an AlgorithmError
-  void validRedirect(PathMap R) throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.ClassUnfit {
+  void validRedirect(PathMap R) throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.InvalidMapping {
     var message = detailed(() -> new ListFormatter().header("Chosen redirect is invalid:\n").prefix("  ").suffix("\n"));
     // Check structural subtyping (including NC consistency)
     for (var CsP : R) {
@@ -525,8 +528,7 @@ public class Redirect {
           if (firstHalf) {
             try { return inner.next(); }
             catch (NoSuchElementException e) { update(); } }
-          return inner.next(); }
-    };}
+          return inner.next(); }};}
 
   static<T> boolean intersects(Set<T> a, Set<T> b) { return a.stream().anyMatch(b::contains); }
 
@@ -598,10 +600,7 @@ public class Redirect {
     } else if (sup.isEmpty()) {
       return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs);
     } else {
-      return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);
-    }
-  }
-}
+      return PathAux.asSet(sub) + " <= " + PathAux.as42Path(Cs) + " <= " + PathAux.asSet(sup);}}}
 
 class CsPzMap implements Iterable<CsPath> {
   // Cs |-> Pz

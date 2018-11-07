@@ -279,9 +279,35 @@ Define Collect(p; CCz) := CCz':
     P' in SuperClasses(p; P)
    	sel' in dom(p[Cs']) intersect dom(p[P'])
 
-// TODO: Add this?
-//11: Collect(p; CCz) = P <= Cs, Cs <= P
+//TODO: implement?
+//11a: Collect(p; CCz) = Cs <= P
 //    	RChoices(CCz) = Cs -> {P}
+
+//11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs
+//    	RChoices(CCz) = Cs -> Pz
+
+
+Completeness:
+FORALL(p, CC, R0, :
+
+	(FORALL R : ( ValidRedirect(p, R0, R) --> R satisfies_p CC))   //easy<--  //hard-->
+	<--> (CollectAll(p, CCinit(R0)) implies_p CC)
+)
+
+this is false: FORALL(p,  R0, R: (R satisfies_p CollectAll(p, CCinit(R0)) -> ValidRedirect(p, R0, R))
+
+R satisfies_p Cs <= P iff p |- R(Cs) <= P
+R satisfies_p P <= Cs iff p |- P <= R(Cs)
+
+CCz implies_p CC iff	exists CC' in CCz such that CC' implies_p CC
+
+CC implies_p CC
+
+Cs <= P  implies_p Cs <= P'
+	if p |- P <= P'
+// and other related rules...
+
+
 
 
 Origin(p; sel; P) = P'

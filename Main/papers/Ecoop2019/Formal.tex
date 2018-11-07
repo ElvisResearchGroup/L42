@@ -1,34 +1,67 @@
-\section{Formal} 
+\section{Language grammar and well formedness}
+\begin{minipage}{0.63\textwidth}
 \begin{bnf}
 \production{%
-id}     {t \mmid{} C}                                                      {}\\\production{%
-T}      {\Q{This}n\Q{.}Cs}                                                 {}\\\production{%
-CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
-CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
+e}      {x \mmid{} e\Q{.}m\rp{es} \mmid{}T\Q{.}m\rp{es}
+\mmid{} v
+}{expression}\\\production{%
+L}      {\libi{Tz}{Ms}
+%}{interface literal}
+%\\\prodNextLine{%
+\mmid{} \libc{Tz}{Mz}{K}
+}        {code literal}\\\production{%
+M}      {\Q{static}$?$ T m\rp{Txs} e$?$ \mmid{} C\eq{}E }                                                    {member}\\\production{%
+K}      {\rp{Txz}$?$}                                          {state}\\\production{%
+%CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
+%CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
+%source}      {Ds e}                                                             {source code}\\\production{%
+E}      {L \mmid{} t \mmid{} \summ{E}{E} \mmid{} \red{E}{Cs}{T}}           {HERO}%
+%amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
+%mt}     {\Q{static}$?$ T m\rp{Txs} e$?$}                                                 {method}\\\production{%
+\end{bnf}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+\begin{bnf}
+\production{%
+Tx}     {T x}                                                              {parameter}\\\production{%
 D}      {id\eq{}E}                                                         {declaration}\\\production{%
-DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
-DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
-L}      {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{Ms}{K$?$}}        {literal}\\\production{%
-LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
-amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
-mt}     {T m\rp{Txs} e$?$}                                                 {method}\\\production{%
-Tx}     {T x}                                                              {paramater-declaration}\\\production{%
-M}      {CD \mmid{} mt}                                                    {member}\\\production{%
-MV}     {CV \mmid{} mt}                                                    {}\\\production{%
-Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
-K}      {\Q{constructor}\rp{Txs}}                                          {constructor}\\\production{%
-e}      {x \mmid{} e\Q{.}m\rp{es} \mmid{} e\Q{.}x \mmid{} \Q{new} T\rp{es}}{expression}\\\production{%
-E}      {L \mmid{} t \mmid{} \summ{E}{E} \mmid{} \red{E}{Cs}{T}}           {library-expression}\\\production{%
+id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
+v}      {\Q{new} T\rp{vs}}                                                 {value}\\\production{%
+T}      {\Q{This}n\Q{.}Cs}                                                 {types}
+\end{bnf}
+\end{minipage}
+
+
+We will rely on a simplified object oriented language, where expressions $e$ are variables $x$ (including \Q@this@)
+and conventional (static) method calls.
+Values are of form \Q{new} T\rp{vs} but are considered as run-time expression only: the programmer would just call a static factory method.
+Code literals $L$
+serve the role of class/interface bodies; they contain the set of implemented interfaces
+$Tz$, the set of members $Mz$ and their (optional) state.
+In the concrete syntax we will use \Q@implements@ in front of a non empty list of implemented interfaces
+and we will omit parenthesis around a non empty set of fields.
+In the concrete syntax the order of the fields is important because we consider
+an implicitly 
+In the core language we will assume getters and setters to be present
+Methods an nested classes
+Expressions serve as body of (static) methods
+
+
+\begin{bnf}
+\production{%
 \ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
                 \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
+LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
+MV}     {C\eq{}LV \mmid{} mt}                                                    {}\\\production{%
 \ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
-	\mmid{}  \ctx{v}\Q{.}x \mmid{}  \Q{new} T\rp{vs \ctx{v} es}}           {}\\\production{%
-v}      {\Q{new} T\rp{vs}}                                                 {}\\\production{%
-p}      {DLs\Q{;} DVs}                                                     {program}\\\production{%
-S}      {Ds e}                                                             {source code}
+	\mmid{} T\Q{.}m\rp{vs \ctx{v} es}  }           {}\\\production{%
+DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
+DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
+Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
+p}      {DLs\Q{;} DVs}                                                     {program}
 \end{bnf}
 
-We use $t$ and $C$ to syntactically distinguish between trait and class names. A type ($T$) has an interesting syntax, see below for what it means.
+We use $t$ and $C$ to syntactically distinguish between trait and class names.
 An $E$ is a top-level class expression, which can contain class-literals, references to traits, and operations on them, namely our sum $E <+ E$ and redirect $e(Cs=T)$.
 A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
 A literal $L$ has 4 components, an optional interface keyword, a list of implemented interfaces, a list of members, and an optional constructor. For simplicity, interfaces can only contain abstract-methods ($amt$) as members, and cannot have  constructors. A member $M$, is either an (potentially abstract) methood $mt$ or a nested class declaration $(CD)$. A member value $MV$, is a member that has been fully compiled. An $mid$ is an identifier, identifying a member.

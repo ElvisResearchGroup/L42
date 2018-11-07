@@ -265,21 +265,21 @@ public class RefactorErrors{
     Redirect.Problem _problem = null;
     protected RedirectError(String message, Redirect _r) {
       super(message);
-      if (_r != null) { this._problem = _r.problem; } }
+      if (_r != null) { this._problem = _r.problem; }}
 
     public static class DetailedError extends RedirectError {
       public DetailedError(String message) { super(message, null); }}
 
- /*   public String getShortMessage() { return super.getMessage(); }
+    public String getShortMessage() { return super.getMessage(); }
     @Override public String getMessage() {
       if (this._problem != null) {
         try { new Redirect(this._problem, true).solve(); }
         catch (RedirectError e) { return this.getShortMessage() + "\n" + e.getMessage(); }
         throw Assertions.codeNotReachable(); }
       else { return this.getShortMessage(); }}
-*/
-    public static class ClassUnfit extends RedirectError {
-      public ClassUnfit(List<C> Cs, Path P, String message, Redirect r) {
+
+    public static class InvalidMapping extends RedirectError {
+      public InvalidMapping(List<C> Cs, Path P, String message, Redirect r) {
         super("Cannot redirect " + PathAux.as42Path(Cs) + " to " + P + ": " + message, r); }}
 
     public static class DeductionFailure extends RedirectError {
@@ -296,8 +296,8 @@ public class RefactorErrors{
      *    2. it has a non abstract method
      *    3. It has a nested class which will not be redirected
      * */
-    public static class Unredirectable extends RedirectError {//ClassUnfit ??  program agnostic
-        public Unredirectable(List<C> Cs, String message, Redirect r) {
+    public static class ClassUnfit extends RedirectError {
+        public ClassUnfit(List<C> Cs, String message, Redirect r) {
           super("The nested class " + PathAux.as42Path(Cs) + " cannot be redirected: " + message, r); }}}
 /*
  * 
