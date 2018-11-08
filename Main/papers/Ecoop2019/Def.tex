@@ -97,10 +97,12 @@
 \newcommand{\Cs}[1]{#1\nextpath}
 \newcommand{\nextpath}{\@ifnextchar\bgroup{\gobblenextpath}{}}
 \newcommand{\gobblenextpath}[1]{\Q!.!#1\@ifnextchar\bgroup{\gobblenextpath}{}}
+
+\newcommand{\redirect}[1]{#1\Q!<!\nextCsP}
+\newcommand{\nextCsP}{\@ifnextchar\bgroup{\gobblenextCs}{\Q!>!}}
+\newcommand{\gobblenextCs}[1]{#1\Q!\ =\ !\@ifnextchar\bgroup{\gobblenextP}{\errmessage{You missed a P!}}}
+\newcommand{\gobblenextP}[1]{#1\@ifnextchar\bgroup{\Q!,\ !\gobblenextCs}{\Q!>!}}
 \makeatother
-
-
-
 %--------------------------
 \newcommand{\mynotes}[3]{{\color{#2} {\sc #1}: #3}}
 \newcommand\isaac[1]{\mynotes{Isaac}{blue}{#1}}
