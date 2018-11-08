@@ -145,8 +145,8 @@ S"
   //this is now just responsibility of the string library
 ------------------------------
 Local variables:
-T? x=e but also
-T?0 (T?1 x1,T?2 y1)=e
+  T? x=e but also
+  T?0 (T?1 x1,T?2 y1)=e
 desugared as 
 T?0 fresh=e, T?1 x1=fresh.x() T?2 y1=fresh.y() //leading nummbers are not part of the method call
 Similarly,
@@ -163,7 +163,6 @@ if T1 x1, T2 y1 e1 else e2
 if T (x1,y1)=e e1 else e2
 desugared as 
 if T fresh=e ((x1,y1)=fresh e1) else e2
-
 --------------------------------------------
     c1=input1.iterator();...cn=inputn.iterator();//varIterator if var x in..
     {int i=0;

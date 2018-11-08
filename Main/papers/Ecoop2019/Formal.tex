@@ -110,25 +110,72 @@ Redirect %\textit{\red{LV}{$Cs_1:T_1\ldots Cs_n:T_n$}{}}
 takes a library literal and produce a modified version of it where some nested classes has been removed
 and all the types referencing such nested classes are now referring to an external type. It is easy to use this feature to encode a generic list:
 \begin{lstlisting}
-list={
-  Elem:{}
-  LinkedList:{interface}
-  Node:{implements LinkedList    Elem elem, LinkedList next}
-  Empty:{implements LinkedList   ()}
-  static method This0 of() new This0(Empty.of())
-  method This0 add(Elem e) new This0(Node.of(e,this.inner))
-  LinkedList inner
-  }
 list={interface
   Elem:{}
-  Node:{implements This1    Elem elem, This1 next}
-  Empty:{implements This1   ()}
   method This0 push(Elem e)
   method This0 pop()
-  method This0 top()
+  method Elem top()
+  Node:{implements This1
+    method This1 push(Elem e) This0.of(e,this)
+    method This1 pop() this.next()
+    method Elem top() this.elem()
+    Elem elem, This1 next
+    }
+  Empty:{implements This1
+    method This1 push(Elem e) Node.of(e,this)
+    method This1 pop() error
+    method Elem top() error
+    ()}//() means no fields
   }
-\end{lstlisting}
+IntList=list<Elem=Int>
 
+IntList.Empty.of().push(3).top()==4 //example usage
+\end{lstlisting}
+This would flatten into
+\begin{lstlisting}
+list={/*as before*/
+//IntList=list<Elem=Int>
+IntList={interface
+  //Elem={} no more nested class Elem
+  method This0 push(Int e)
+  method This0 pop()
+  method Int top()
+  Node={implements This1
+    method This1 push(Int e) This0.of(e,this)
+    method This1 pop() this.next()
+    method Int top() this.elem()
+    Int elem, This1 next 
+    }//everywhere there was "Elem", now there is "Int"
+  Empty={..}}
+\end{lstlisting}
+Redirect can be propagated in the same way generics parameters are propagate:
+For example, in Java one could write
+\begin{lstlisting}
+class ShapeGroup<T extends Shape>{
+  List<T> shapes;
+  ..}
+\end{lstlisting}
+to denote a class containing a list of a certain kind of \Q@Shape@s.
+In our approach, one could write the equivalent
+\begin{lstlisting}
+shapeGroup={
+  Shape={implements Shape}
+  List=list<Elem=Shape>
+  List shapes
+  ..}
+\end{lstlisting}
+Interestingly, there are two reasonable ways to reuse this code
+
+\Q@Triangolation=shapeGroup<Shape=Triangle>@,
+if we have a \Q@Triangle@ class and we would like the concrete list type
+used inside to be local to the \Q@Triangolation@,
+or 
+\Q@Triangolation=shapeGroup<List=Triangles>@,
+if we have a preferred implementation for the list of triangles that is going to be used by our
+\Q@Triangolation@.
+Those two versions would flatten as follow:
+%Triangolation=shapeGroup<Shape=Triangle>
+%Triangolation=shapeGroup<Shape=Triangle>
 
 \subsection{Preferential sum}
 
