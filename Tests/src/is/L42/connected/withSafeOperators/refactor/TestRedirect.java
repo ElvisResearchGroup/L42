@@ -37,7 +37,7 @@ public class TestRedirect {
 
   static Object NestedClassTest =  RedirectError.ClassUnfit.class;
   static Object NestedClassTest(Object o) { return o; }
-  static Object ExceptionTest = null; //RedirectError.DeductionFailure.class;
+  static Object ExceptionTest = RedirectError.DeductionFailure.class;
 
   // TODO: I am annotating tests with this when the input is complete, but the output is not
   // Due to 'possibleRedirect' failing on the input
@@ -399,6 +399,11 @@ public class TestRedirect {
     }, {lineNumber(), new String[]{"{A:{}}"},
       "{InnerA:{} B:{ method InnerA m(InnerA a) a}}","InnerA", "This0.A",
       "{B:{ method This2.A m(This2.A a) a}}"
+    }, {lineNumber(),//
+          "D:{method Library m(This1.D a)}",
+          "{A:{method Library m(This1.A a) } method Void b(This0.A m)}"
+          ,"A","This0.D",
+          "{method Void b(This1.D m)}"
     },{lineNumber(), new String[]{"{A:{}}"},
         "{InnerA:{}  method InnerA m(InnerA a) a}","InnerA", "This0.A",
         "{ method This1.A m(This1.A a) a}"
@@ -1089,7 +1094,7 @@ public static Program mkp(String...ss) { Program p=TestHelper.getProgram(ss); re
   if (_expected == null) {
     System.err.println("SKIPPED");
   } else if (_expected instanceof Class) {
-    var expectedType = RedirectError.class; //(Class)_expected;
+    var expectedType = (Class)_expected;
     ClassB res = null;
     try { res = Redirect.redirect(p,cb1,map); }
     catch (RedirectError e) {

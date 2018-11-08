@@ -151,7 +151,7 @@ Define p|- P; {interafce?' implements Pz' mwtz', ncz'} <= Cs; {interface? implem
   else:
     interface? = interface?' // You can't implement non-interfaces
     // We ignore the presence of the 'refine' keyword, since this is irealvent to any implementing classes
-    mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
+    mwtz[with refine?s=empty] = mwtz'[with refine?s=empty] // TODO: A p.equiv!!
 
 --------------------------------------------
 
@@ -213,13 +213,11 @@ Define Internal(Pz) = Csz
 
 // Note: the 'interface' constraint currently only benifits early error detection, as we can't use it to infer any more constraints (or can we?)
 
-ChooseRedirect(p; Cs1->P1, ..., Csn->Pn) = R'
-  CCz0 = {Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn}
-  CCz = CollectAll(p; CCz0)
-  R' = ChooseR(p; CCz)
-  ValidRedirect(p; R; R') // TODO: Do something more efficient?
+CCInit(Cs1->P1, ..., Csn->Pn) = Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn
 
-CC ::= Cs <= P | P <= Cs // | Cs in Pz  | interface Cs | class Cs
+ChooseRedirect(p; R) = ChooseR(p; CollectAll(p; CCInit(R)))
+
+CC ::= Cs <= P | P <= Cs
 
 MustInterface(p; Cs) = p(Cs).interface? = interface
 MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
@@ -251,11 +249,11 @@ Define Collect(p; CCz) := CCz':
 
 3a: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs'
     Cs' in p[Cs].Csz
-    Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
+    Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs; P')}
 
 3b: Collect(p; P <= Cs) = Cs' <= MostGeneral(p; Pz)
     Cs' in p[Cs].Csz
-    Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
+    Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs; P')}
 
 3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P' // TODO: Proove this is neccessary
     Cs' in p[Cs].Pz
@@ -295,47 +293,34 @@ Define Collect(p; CCz) := CCz':
 11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs   // TODO: Prove this is neccessary
     RChoices(CCz) = Cs -> Pz
 
-
-Completeness:
-FORALL(p, CC, R0, :
-
-  (FORALL R : ( ValidRedirect(p, R0, R) --> R satisfies_p CC))   //easy<--  //hard-->
-  <--> (CollectAll(p, CCinit(R0)) implies_p CC)
-)
-
-SatisfiedRedirect(p; R0; R) iff
-R satisfies_p CollectAll(p; CCinit(R0)) && PossibleInterfaceTargets(p; R)
-
-UniqueR(p; R1) = R2: iff
-forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
-
-
-ChosenR(p; R1) = R2: iff 
-forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect(p'; R1; R)})
-
-
-TOO Proove: 
-* Our algorithim is ChosenR
-* forall p,R1,R: ValidRedirect(p; R1; R) <== SatisfiedRedirect(p; R1; R)
-* forall p,R1,R: ValidRedirect(p; R1; R) ==> SatisfiedRedirect(p; R1; R) //easy
-* that is, ValidRedirect == SatisfiedRedirect
-
-
-this is false: FORALL(p,  R0, R: (R satisfies_p CollectAll(p, CCinit(R0)) -> ValidRedirect(p, R0, R))
+R satisfies_p CC1,...,CCn iff
+    R satisfies_p CC1
+    ...
+    R satisfies_p CCn
 
 R satisfies_p Cs <= P iff p |- R(Cs) <= P
 R satisfies_p P <= Cs iff p |- P <= R(Cs)
 
-CCz implies_p CC iff  exists CC' in CCz such that CC' implies_p CC
+SatisfiedRedirect(p; R0; R) iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R)
 
-CC implies_p CC
-
-Cs <= P  implies_p Cs <= P'
-  if p |- P <= P'
-// and other related rules...
+UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
 
 
+ChosenR(p; R1) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect(p'; R1; R)})
 
+----------------------------------------
+TOO Proove:
+* Our ChooseRedirect == ChosenR:
+    just proove that ChooseR(p; CCz) = R2 iff
+        forall p' superset p, R2 = MostSpecific(p'; {R | satisfies_p CCz && PossibleRedirect(p; R)})
+
+
+* forall p,R1,R: SatisfiedRedirect(p; R1; R) ==> ValidRedirect(p; R1; R) // Hard, might not be true
+* forall p,R1,R: ValidRedirect(p; R1; R) ==> SatisfiedRedirect(p; R1; R) //easy and true
+
+
+Therefore ChooseRedirect == UniqueR
+-----------------------------------------------------
 
 Origin(p; sel; P) = P'
   forall P'' in Supertypes(p; P) where sel in dom [P'']
@@ -354,33 +339,70 @@ MostGeneral(p; Pz) = P
    {P} = SuperClasses(p; Pz) intersect p.minimize(Pz)
 
 Define ChooseR(p; CCz) := R
-  //ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
-  //  Cs -> Pz = RChoices(p; CCz)
-  //  P = MostSpecific(p; Pz)
+  ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
+    Cs -> Pz = RChoices(p; CCz)
+    P = MostSpecific(p; Pz)
 
-   // Thanks to Rule 11b
-   ChooseR(p; P1 <= Cs, ..., Pn <= Cs, CCz') := Cs -> MostGeneral(p; P1, ..., Pn), ChooseR(p; CCz')
-   ChooseR(p; Cs1 <= P1, ..., Csn <= Pn) = empty
-
-Rule11 Style
+   ChooseR(p; empty) = empty
 
 RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k), = Cs -> Pz''
     Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
     Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-    if MustInterface(Cs)
-      Pz'' = {P in Pz' | PossibleInterfaceTarget(p; Cs; P)}
-    else Pz'' = Pz'
+    Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}
 
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
-PossibleInterfaceTarget(p; Cs; P) iff
-    p[P].interface? = interface
-    dom(p[Cs].mwtz) = dom(p[P].mwtz) // No extra methods
-    forall sel in dom(p[Cs].mwtz)
-      T = p[Cs.sel].mt.T
-      T' = p[P.sel].mt.T
-      T.mdf =T'.mdf
-      if T.P not of the form This0.Cs'
-        p.equiv(T.P, T'.P) 
+
+PossibleRedirect(p; Cs1->P1, ..., Csn->Pn) iff
+    R subseteq R'
+    dom(R') = RedirectSet(p.top(); dom(R))
+    forall P in ran(R'):
+		p.minimize(P)=P
+		P not of form This0._
+		p|-p(P):OK //P well typed
+    forall Cs in dom(R'):
+		Redirectable(dom(R'); p.top())
+
+    // TODO: Proove our algorith ensures the above!
+
+    PossibleTarget(p; Cs1; P1)
+    ...
+    PossibleTarget(p; Csn; Pn)
+
+PossibleTarget(p; Cs; P) iff
+    // assert p.minimize(P).equals(p.minimize(P));
+    L1 = p[Cs]
+    L2 = p[P]
+
+    MustClass(p; Cs) --> L1.interface? = empty
+    MustInterface(p; Cs) --> L1.interface? = interface
+
+    msdom(L1) subseteq msdom(L2)
+    MustInterface(p; Cs) --> msdom(L2) subseteq msdom(L1)
+
+    p.minimize({P' in L1.Pz | P' != This0.Cs'}) subseteq SuperClasses(p; P)
+    forall ms in msdom(L1):
+      p |- L2[ms].mt <~ L1[ms].mt
+      MustInterface(p; Cs) --> p |- L1[ms].mt <~ L2[ms].mt
+
+p |- P <~ P' iff p |- P <= P'
+    P != This0.Cs
+    P != This0.Cs
+
+p |- P <~ P'
+    otherwise
+
+p |- T <~ T' iff
+    T.mdf <= T'.mdf
+    p |- T.P <= T.P'
+
+p |- mdf T1,...,Tn->T; Pz <= mdf' T1',...,Tn'->T'; Pz'
+    mdf' <= mdf
+    p |- T <~ t'
+    p |- T1' <~ T1
+    ...
+    p |- Tn' <~ Tn
+    forall P in Pz:
+        exists P' in Pz' such that p |- P <~ P'
 
 -------------------------------------------------------------------------------------------------
 // Some classes of ChooseRedirect functions
@@ -427,7 +449,7 @@ For nested classes and exceptions?
 //    if p |- P <= P', then p |- p[P.ms].Pz throws p[P'.ms].Pz
 
 
-Apply ComplteR(p;..) to the result of ChooseR
+Apply CompleteR(p;..) to the result of ChooseR
 
 CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.Cn, R')
     {C1, ..., Cn} = { C in dom(p[Cs]) | p[P.C] is defined }

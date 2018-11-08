@@ -123,7 +123,7 @@ public class Redirect {
 
     // Pre-compute the redirect set, mustClass and mustInterface
     computeRedirectSet();
-    //validRedirect(null); // Check user input!
+    validRedirect(null); // Check user input!, only needed to get a more 'acurate' error message
 
     collect();
 
@@ -225,7 +225,7 @@ public class Redirect {
         for (var PCs2 : iterate(this.fromPz(toP(CsP.getCs())))) { // P in p[Cs].Pz
           if (PCs2.tryOuterNumber() == 0) { // P = This0.Cs'
             var Cs2 = PCs2.getCBar();
-            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> possibleInterfaceTarget(Cs2, Pi))
+            var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> possibleTarget(Cs2, Pi))
               .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
             var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
             var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
@@ -305,6 +305,7 @@ public class Redirect {
       // TODO: Proove this is neccessary?
       for (var Cs : supertypeConstraints.dom()) { // RChoices is only defined for things in superTypeConstraints
         var Pz = _RChoices(Cs);
+        // TODO: If Pz is empty, we can produce an error now!
         if (Pz.size() == 1) { // 11a: RChoices(CCz) = Cs -> {P} ==> Cs <= P
           progress |= addSubtype(Cs, Pz.iterator().next(), "Rule 11a: " + printConstraint(Cs)); }
         // 11b: RChoices(CCz) = Cs -> Pz ==> MostSpecific(p; Pz) <= Cs
@@ -478,6 +479,7 @@ public class Redirect {
   boolean possibleTarget(List<C> Cs, Path P) {
     var kind = redirectSet.get(Cs);
     assert kind != null;
+    assert p.minimize(P).equals(p.minimize(P));
 
     var L1 = p.top().getClassB(Cs);
     var L2 = p.extractClassB(P);
