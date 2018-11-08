@@ -324,9 +324,7 @@ public class Redirect {
     var Pz = superClasses(Ps1);
     var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2)).collect(Collectors.toSet());
 
-    return mustInterface(Cs)
-      ? Pz2.stream().filter(P -> possibleInterfaceTarget(Cs, P)).collect(Collectors.toSet())
-      : Pz2; }
+    return Pz2.stream().filter(P -> possibleTarget(Cs, P)).collect(Collectors.toSet()); }
 
   static Random rand = new Random();
   PathMap chooseRandomR() throws RedirectError.DeductionFailure {
@@ -338,6 +336,7 @@ public class Redirect {
       var Ps = Pz.stream().sorted(Comparator.comparing(Path::toString)).collect(Collectors.toList());
       var P = Ps.get(rand.nextInt(Ps.size()));
       res.add(Cs, P); }
+
     return res; }
 
   PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure {
@@ -350,9 +349,8 @@ public class Redirect {
     assert this.redirectSet.keySet().containsAll(supertypeConstraints.dom());
 
     for (var Cs : this.redirectSet.keySet()) {
-      //var Pz = _RChoices(Cs);
-      var Ps1 = _RChoices(Cs);//this.supertypeConstraints.get(Cs);
-      if (Ps1 == null) {
+      var Pz = _RChoices(Cs);//this.supertypeConstraints.get(Cs);
+      if (Pz == null) {
         if (!this.subtypeConstraints.contains(Cs)) {
           if (detailed) { message.append("Found no constraints for " + PathAux.as42Path(Cs) + "."); }
           else { throw new RedirectError.DeductionFailure(Cs, "We were unable to collect any constraints on it.", this); }
@@ -363,7 +361,7 @@ public class Redirect {
         
         continue; }
 
-      var P = _mostSpecific(Ps1);
+      var P = _mostSpecific(Pz);
       if (P == null) {
         var cons = this.printConstraint(Cs);
         if (detailed) { message.append("Cannot find a most specific solution for " + cons + "."); }
@@ -460,9 +458,6 @@ public class Redirect {
     var kind = redirectSet.get(Cs);
     assert kind != null;
 
-    // TODO: Check type modifiers?
-    // P: {method read P2 foo()}
-    // Cs: {method imm This0.Cs' foo()}
     var L1 = p.top().getClassB(Cs);
     var L2 = p.extractClassB(P);
 
@@ -479,6 +474,28 @@ public class Redirect {
         if (!p.equiv(T2.getPath(), T.getPath())) { return false; }}} // p.equiv(T.P, T'.P)
 
     return true; }
+
+  boolean possibleTarget(List<C> Cs, Path P) {
+    var kind = redirectSet.get(Cs);
+    assert kind != null;
+
+    var L1 = p.top().getClassB(Cs);
+    var L2 = p.extractClassB(P);
+    var ck = this.redirectSet.get(Cs);
+
+    if (ck.equals(ClassKind.Final) && L2.isInterface()) { return false; }
+    if (ck.equals(ClassKind.Interface) && !L2.isInterface()) { return false; }
+
+    if (!L2.msDom().containsAll(L1.msDom())) { return false; }
+    if (ck.equals(ClassKind.Interface) && !L1.msDom().containsAll(L2.msDom())) { return false; }
+
+    for (var mwt : iterate(fromMwtz(L1, toP(Cs)))) {
+      // We know this exists, thanks to the above code
+      var mwt2 = fromMwt(L2._getMwt(mwt.getMs()), P);
+      if (!partialMethSubType(mwt2.getMt(), mwt.getMt())) { return false; }
+      if (ck.equals(ClassKind.Interface) && !partialMethSubType(mwt.getMt(), mwt2.getMt())) { return false; }}
+    return superClasses(P).containsAll(p.minimizeSet(fromPz(L1, toP(Cs)).filter(x -> x.tryOuterNumber() != 0))); }
+
 
   Path _mostSpecific(Set<Path> Pz) {
     Pz = p.minimizeSet(Pz.stream());
