@@ -7,32 +7,25 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import ast.Ast;
+import ast.Ast.*;
 import ast.ErrorMessage;
-import ast.L42F;
 import ast.Util.CsPz;
-import ast.Ast.MethodSelector;
 import ast.Util.CsPath;
-import ast.Ast.Path;
-import ast.Ast.C;
 
 import ast.ExpCore.ClassB;
 import ast.ExpCore.ClassB.MethodWithType;
 import ast.PathAux;
-import com.sun.jdi.Value;
+import auxiliaryGrammar.*;
 import coreVisitors.From;
 import facade.PData;
-import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.RedirectError;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.ClassUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.IncoherentMapping;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodClash;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
-import newTypeSystem.TypeSystem;
 import programReduction.Program;
 import tools.Assertions;
 import tools.ListFormatter;
-
-import javax.swing.text.StyledEditorKit;
 
 /*Note the type system prevents to return a class T with T without methods.
 This is needed to avoid the redirect from violating metalevel soundness:
@@ -130,6 +123,8 @@ public class Redirect {
 
     // Pre-compute the redirect set, mustClass and mustInterface
     computeRedirectSet();
+    validRedirect(null); // Check user input!
+
     collect();
 
     var R1 = chooseR();
@@ -234,14 +229,17 @@ public class Redirect {
               .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
             var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
             var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
+
             if (P1 != null) { // P1 <= Cs'
               progress |= addSupertype(Cs2, P1, "Rule 3a: " + asSupertype(CsP)); } // TODO?
             if (P2 != null) { // Cs' <= P2
               progress |= addSubtype(Cs2, P2, "Rule 3b: " + asSupertype(CsP)); }
-            for (var P3 : subtypeConstraints.get(Cs2)) { // Cs' <= P"
+
+            progress |= addSupertype(Cs2, CsP.getPath(), "Rule 3d: " + asSupertype(CsP));
+
+            /*for (var P3 : subtypeConstraints.get(Cs2)) { // Cs' <= P" // TODO: Proove this is neccessary
               var CsP3 = new CsPath(Cs2, P3); //Cs <= P", P <= Cs'
-              progress |= addSubtype(CsP.getCs(), P3, "Rule 3c: " + asSupertype(CsP) + ", " + asSubtype(CsP3))
-                | addSupertype(Cs2, CsP.getPath(), "Rule 3c: " + asSupertype(CsP) + ", " + asSubtype(CsP3)); }}}}
+              progress |= addSubtype(CsP.getCs(), P3, "Rule 3c: " + asSupertype(CsP) + ", " + asSubtype(CsP3)); }*/}}}
 
       //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
       //   p[Cs.ms].P = This0.Cs'
@@ -330,7 +328,19 @@ public class Redirect {
       ? Pz2.stream().filter(P -> possibleInterfaceTarget(Cs, P)).collect(Collectors.toSet())
       : Pz2; }
 
-  PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.InvalidMapping {
+  /*static Random rand = new Random();
+  PathMap chooseRandomR() throws RedirectError.DeductionFailure {
+    PathMap res = new PathMap();
+    for (var Cs : this.redirectSet.keySet()) {
+      var Pz = _RChoices(Cs);
+      if (Pz == null || Pz.isEmpty()) { throw new RedirectError.DeductionFailure(Cs, "", this); }
+
+      var Ps = Pz.stream().sorted(Comparator.comparing(Path::toString)).collect(Collectors.toList());
+      var P = Ps.get(rand.nextInt(Ps.size()));
+      res.add(Cs, P); }
+    return res; }*/
+
+  PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure {
     var message = detailed(() -> new ListFormatter().header("Failed to choose mapping:\n").prefix("  ").suffix("\n"));
     PathMap res = new PathMap(this.problem.R);
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
@@ -365,7 +375,7 @@ public class Redirect {
             this.subtypeConstraints.remove(Cs, P2); // Remove the users constraints
             this.supertypeConstraints.remove(Cs, P2); // Remove the users constraints
             cons = this.printConstraint(Cs);
-            throw new RedirectError.InvalidMapping(Cs, P2, "Since it does not satisfy " + cons + ".", this); }
+            throw new RedirectError.DeductionFailure(Cs, "The given target, " + P2 +", does not satisfy " + cons + ".", this); }
           else {
             throw new RedirectError.DeductionFailure(Cs, "Cannot find a most-specific solution to the constraint "
               + cons + ".", this); }}}
@@ -373,17 +383,20 @@ public class Redirect {
     if (detailed && message.count() > 0) { throw new RedirectError.DetailedError(message.toString()); }
     return res; }
 
-  void invalidRedirect(ListFormatter formatter, List<C> Cs, Path P, String reason)
+  void invalidRedirect(boolean inputCheck, ListFormatter formatter, List<C> Cs, Path P, String reason)
       throws RedirectError.DeductionFailure, RedirectError.InvalidMapping {
     if (this.detailed) { formatter.append(reason); }
     else {
-      if (this.problem.R.contains(Cs)) { // Was the users fault!
+      if (inputCheck) { // Was the users fault!
         throw new RedirectError.InvalidMapping(Cs, P, reason, this); }
       else {throw new RedirectError.DeductionFailure(Cs, "our best guess, " + P + ", failed: " + reason, this); }}}
   // Otherwise, throw an AlgorithmError
   void validRedirect(PathMap R) throws RedirectError.DetailedError, RedirectError.DeductionFailure, RedirectError.InvalidMapping {
     var message = detailed(() -> new ListFormatter().header("Chosen redirect is invalid:\n").prefix("  ").suffix("\n"));
     // Check structural subtyping (including NC consistency)
+    var inputCheck = R == null;
+    if (R == null) { R = this.problem.R; }
+
     for (var CsP : R) {
       var P = CsP.getPath();
       var Cs = CsP.getCs();
@@ -402,27 +415,27 @@ public class Redirect {
 
       // p|- P; L2 <= Cs; L1
       var Pz2 = superClasses(P);
-      var Pz1 = p.minimizeSet(fromPz(L2, toP(Cs)));
+      var Pz1 = p.minimizeSet(fromPz(L1, toP(Cs)).filter(x -> x.tryOuterNumber() != 0));
       if (!Pz2.containsAll(Pz1)) { //Pz subseteq_p SuperClasses(p; P)
         var Pz11 = new HashSet<>(Pz1);
         Pz11.removeAll(Pz2);
-        invalidRedirect(errors, Cs, P, "Target is not a subclass of " + PathAux.asSet(Pz11)); }
+        invalidRedirect(inputCheck, errors, Cs, P, "Target is not a subclass of " + PathAux.asSet(Pz11)); }
 
       // Check class compatability
       if (ck.equals(ClassKind.Final) && L2.isInterface()) {
-        invalidRedirect(errors, Cs, P, "Cannot redirect a final class, with class methods, to an interface."); }
+        invalidRedirect(inputCheck, errors, Cs, P, "Cannot redirect a final class, with class methods, to an interface."); }
       if (ck.equals(ClassKind.Interface) && !L2.isInterface()) {
-        invalidRedirect(errors, Cs, P, "Cannot redirect an interface to a final class"); }
+        invalidRedirect(inputCheck, errors, Cs, P, "Cannot redirect an interface to a final class"); }
 
       //forall MS in dom(mwtz): p |- mwtz'(MS).mt <= mwt(MS).mt
       for (var mwt1 : iterate(fromMwtz(L1, toP(Cs)))) {
         var mwt2 = L2._getMwt(mwt1.getMs());
         if (mwt2 == null) {
-          invalidRedirect(errors, Cs, P, "Target does not contain method " + mwt1.getMs() + ".");
+          invalidRedirect(inputCheck, errors, Cs, P, "Target does not contain method " + mwt1.getMs() + ".");
           continue; }
         mwt2 = fromMwt(mwt2, P);
-        if (!TypeSystem.methTSubtype(p, mwt2.getMt(), mwt1.getMt())) {
-          invalidRedirect(errors, Cs, P, "The method type for " + mwt1.getMs() + " of the target (" + mwt2.getMt() +
+        if (!partialMethSubType(mwt2.getMt(), mwt1.getMt())) {
+          invalidRedirect(inputCheck, errors, Cs, P, "The method type for " + mwt1.getMs() + " of the target (" + mwt2.getMt() +
           ") is not a subtype of the source (" + mwt1.getMt() + ")."); }}
 
       // mwtz[with refine?s=empty] = mwtz'[with refine?s=empty]
@@ -431,11 +444,11 @@ public class Redirect {
         for (var mwt2 : iterate(fromMwtz(L2, P))) {
           var mwt1 = L1._getMwt(mwt2.getMs());
           if (mwt1 == null) {
-            invalidRedirect(errors, Cs, P, "Source does not contain method " + mwt2.getMs());
+            invalidRedirect(inputCheck, errors, Cs, P, "Source does not contain method " + mwt2.getMs());
             continue; }
           mwt1 = fromMwt(mwt1, toP(Cs));
-          if (!TypeSystem.methTSubtype(p, mwt1.getMt(), mwt2.getMt())) {
-            invalidRedirect(errors, Cs, P, "The method type for " + mwt2.getMs() + " of the target (" + mwt2.getMt() +
+          if (!partialMethSubType(mwt1.getMt(), mwt2.getMt())) {
+            invalidRedirect(inputCheck, errors, Cs, P, "The method type for " + mwt2.getMs() + " of the target (" + mwt2.getMt() +
             ") isn't a supertype of the source (" + mwt1.getMt() + ")."); }}}
 
       detailed(() -> message.append(errors.toString())); }
@@ -484,6 +497,19 @@ public class Redirect {
       if (res.size() == 1) { return res.iterator().next(); } }
 
     return null;}
+
+
+  boolean partialSubtype(Type sub, Type sup) {
+    if (sub.getPath().tryOuterNumber() != 0 && sup.getPath().tryOuterNumber() != 0) { return p.subtypeEq(sub, sup); }
+    else { return Functions.isSubtype(sup.getMdf(), sub.getMdf()); }}
+
+  boolean partialMethSubType(MethodType sub, MethodType sup) {
+    assert sub.getTs().size() == sup.getTs().size();
+
+    return Functions.isSubtype(sup.getMdf(), sub.getMdf())
+      && partialSubtype(sub.getReturnType(), sup.getReturnType())
+      && IntStream.range(0, sub.getTs().size()).allMatch(i -> partialSubtype(sup.getTs().get(i), sub.getTs().get(i)))
+      && sub.getExceptions().stream().allMatch(T1 -> sup.getExceptions().stream().anyMatch(T2 -> partialSubtype(T1, T2)));}
 
   boolean mustInterface(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Interface; }
 
@@ -545,8 +571,6 @@ public class Redirect {
             try { return inner.next(); }
             catch (NoSuchElementException e) { update(); } }
           return inner.next(); }};}
-
-  static<T> boolean intersects(Set<T> a, Set<T> b) { return a.stream().anyMatch(b::contains); }
 
   static <T> Set<T> intersect(Stream<Collection<T>> s) {
       Set<T> res = null;

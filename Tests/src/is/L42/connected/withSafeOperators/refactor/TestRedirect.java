@@ -203,6 +203,18 @@ public class TestRedirect {
           "B", "This0.EB",
           "{method Void result(This1.EB b, Any x)}"
 //------------------------------------------
+    },{lineNumber(),
+      "{EA:{interface method Any m()}" +
+      "  EA1:{interface implements EA}" +
+      "  EA2:{interface implements EA refine method Void m()}" +
+      "  E:{implements This1.EA1 This1.EA2 method Void m2(EA1 that)}" +
+      "  EV:{method E m()}}",
+      "{I:{interface implements IA}" +
+      "  IA:{interface method Void m()}" +
+      "  V:{method I m()}" +
+      "  method IA a()}",
+      "V", "This0.EV",
+      "{method This1.EA2 a()}"
     },{lineNumber(), new String[]{"{"+ // Fails, cant resolve ambiguity when interfaces have different methods
             "EA:{interface method Void m()}" +
             "EA1:{interface implements EA}" +
@@ -357,7 +369,7 @@ public class TestRedirect {
                 "method I foo()\n" +
                 "}",
         "A", "This0.EA",
-        RedirectError.DeductionFailure.class // Can't decide whether I should be E1, E2, or Any
+        RedirectError.DeductionFailure.class // UNSPECIFIC: Can't decide whether I should be E1, E2, or Any
 
     },{lineNumber(), // PASS!
             new String[]{"{E:{class method Void foo()}}"},
@@ -849,7 +861,7 @@ public class TestRedirect {
         + "}"
         + "",
         "InnerA", "This0.A",
-        RedirectError.InvalidMapping.class // This1.C is not a subtype of This1.A
+        RedirectError.DeductionFailure.class // This1.C is not a subtype of This1.A
 
 
     // IncoherentRedirectMapping: Src(1..), Dest(1..), IncoherentSrc(1..), IncoherentDest(0, 2..)

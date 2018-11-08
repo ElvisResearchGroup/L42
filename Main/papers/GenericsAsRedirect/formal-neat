@@ -257,10 +257,10 @@ Define Collect(p; CCz) := CCz':
     Cs' in p[Cs].Csz
     Pz = {P' in SuperClasses(p; P) | PossibleInterfaceTarget(p; Cs; P')}
 
-3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P'
+3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P' // TODO: Proove this is neccessary
     Cs' in p[Cs].Pz
 
-3d: Collect(p; P <= Cs) = P <= Cs' //TODO: implement in code
+3d: Collect(p; P <= Cs) = P <= Cs'
     Cs' in p[Cs].Pz
 
 
