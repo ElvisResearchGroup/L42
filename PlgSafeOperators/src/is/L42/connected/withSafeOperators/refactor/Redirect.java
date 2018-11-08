@@ -123,7 +123,7 @@ public class Redirect {
 
     // Pre-compute the redirect set, mustClass and mustInterface
     computeRedirectSet();
-    validRedirect(null); // Check user input!
+    //validRedirect(null); // Check user input!
 
     collect();
 
@@ -131,7 +131,7 @@ public class Redirect {
     debugPrint("Chosen R was: " + R1);
 
     this.p = p.updateTop(R1.apply(p.top()));
-    validRedirect(R1);
+    //validRedirect(R1);
 
     return PathMap.remove(this.p.top(), R1.dom()); }
 
@@ -328,7 +328,7 @@ public class Redirect {
       ? Pz2.stream().filter(P -> possibleInterfaceTarget(Cs, P)).collect(Collectors.toSet())
       : Pz2; }
 
-  /*static Random rand = new Random();
+  static Random rand = new Random();
   PathMap chooseRandomR() throws RedirectError.DeductionFailure {
     PathMap res = new PathMap();
     for (var Cs : this.redirectSet.keySet()) {
@@ -338,11 +338,11 @@ public class Redirect {
       var Ps = Pz.stream().sorted(Comparator.comparing(Path::toString)).collect(Collectors.toList());
       var P = Ps.get(rand.nextInt(Ps.size()));
       res.add(Cs, P); }
-    return res; }*/
+    return res; }
 
   PathMap chooseR() throws RedirectError.DetailedError, RedirectError.DeductionFailure {
     var message = detailed(() -> new ListFormatter().header("Failed to choose mapping:\n").prefix("  ").suffix("\n"));
-    PathMap res = new PathMap(this.problem.R);
+    PathMap res = new PathMap(/*this.problem.R*/);
     //  ChooseR(p; Cs <= P0, ..., Cs <= Pn, CCz) := Cs -> P, ChooseR(p; CCz)
     //    P = MostSpecific(p; P0,...,Pn)
     // Marco Says to ignore this case
@@ -351,8 +351,8 @@ public class Redirect {
 
     for (var Cs : this.redirectSet.keySet()) {
       //var Pz = _RChoices(Cs);
-      var Ps1 = this.supertypeConstraints.get(Cs);
-      if (Ps1.isEmpty()) {
+      var Ps1 = _RChoices(Cs);//this.supertypeConstraints.get(Cs);
+      if (Ps1 == null) {
         if (!this.subtypeConstraints.contains(Cs)) {
           if (detailed) { message.append("Found no constraints for " + PathAux.as42Path(Cs) + "."); }
           else { throw new RedirectError.DeductionFailure(Cs, "We were unable to collect any constraints on it.", this); }
@@ -363,7 +363,7 @@ public class Redirect {
         
         continue; }
 
-      var P = _mostGeneral(Ps1);
+      var P = _mostSpecific(Ps1);
       if (P == null) {
         var cons = this.printConstraint(Cs);
         if (detailed) { message.append("Cannot find a most specific solution for " + cons + "."); }

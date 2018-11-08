@@ -303,6 +303,24 @@ FORALL(p, CC, R0, :
   <--> (CollectAll(p, CCinit(R0)) implies_p CC)
 )
 
+SatisfiedRedirect(p; R0; R) iff
+R satisfies_p CollectAll(p; CCinit(R0)) && PossibleInterfaceTargets(p; R)
+
+UniqueR(p; R1) = R2: iff
+forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
+
+
+ChosenR(p; R1) = R2: iff 
+forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect(p'; R1; R)})
+
+
+TOO Proove: 
+* Our algorithim is ChosenR
+* forall p,R1,R: ValidRedirect(p; R1; R) <== SatisfiedRedirect(p; R1; R)
+* forall p,R1,R: ValidRedirect(p; R1; R) ==> SatisfiedRedirect(p; R1; R) //easy
+* that is, ValidRedirect == SatisfiedRedirect
+
+
 this is false: FORALL(p,  R0, R: (R satisfies_p CollectAll(p, CCinit(R0)) -> ValidRedirect(p, R0, R))
 
 R satisfies_p Cs <= P iff p |- R(Cs) <= P

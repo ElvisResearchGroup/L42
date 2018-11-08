@@ -15,7 +15,7 @@ K}      {\rp{Txz}$?$}                                          {state}\\\product
 %CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
 %CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
 %source}      {Ds e}                                                             {source code}\\\production{%
-E}      {L \mmid{} t \mmid{} \summ{E}{E} \mmid{} \red{E}{Cs}{T}}           {HERO}%
+E}      {L \mmid{} t \mmid{} \summ{$E_1$}{$E_2$} \mmid{} \red{E}{Cs}{T}}           {Code Expr.}%
 %amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
 %mt}     {\Q{static}$?$ T m\rp{Txs} e$?$}                                                 {method}\\\production{%
 \end{bnf}
@@ -34,6 +34,10 @@ v}      {\Q{new} T\rp{vs}}                                                 {valu
 
 We apply our ideas on a simplified object oriented language with nominal typing and (nested)
 interfaces  and final classes.
+Instead of inheritance, code reuse is obtained by trait composition, thus the source code would be
+a sequence of top level declarations $D$ followed by a main expression;
+a lower-case identifier $t$ is a trait name, while an upper case
+identifier $C$ is a class name.
 To simplify our terminology, instead of distinguishing between 
 nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
 named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
@@ -57,29 +61,76 @@ Well formed interface methods can only be abstract and non-static.
 To facilitate code reuse, classes can have (static) abstract methods, code composition is expected to 
 provide an implementation for those or, as we will see, redirect away the whole class.
 
-Expressions $e$ serve as body of (static) methods. Additionally, the execution rely on a main expression.
-; they
- are variables $x$ (including \Q@this@)
+Expressions are used as body of (static) methods and for the main expression.
+They are variables $x$ (including \Q@this@)
 and conventional (static) method calls.
-To simplify reasoning about code reuse, field access and \Q@new@ expressions have restricted usage:
+Field access and \Q@new@ expressions are included but with restricted usage:
 well formed field accesses are of form \Q@this.@$x$ in method bodies and
 $v$\Q@.@$x$  in the main expression, while 
 well formed \Q@new@ expressions have to be of form \Q@new This0(@$xs$\Q@)@ in method bodies
 and of form $v$ in the main expression.
-Values are of form \textit{\Q{new} T\rp{vs}} but are considered as run-time expression only: the programmer would just call a static factory method.
+Those restrictions greatly simply reasoning about code reuse, since they require different classes to
+only communicate by calling (static) methods. Supporting unrestricted fields and constructors would make the formalism much more involved without adding much of a conceptual difficulty.
+Values are of form \textit{\Q{new} T\rp{vs}}.
+
+For brevity, in the concrete syntax we assume a syntactic sugar declaring
+a static \Q@of@ method (that serve as a factory) and all fields getters; 
+thus the order of the fields would induce the order of the factory arguments.
+In the core calculus we just assume such methods to be explicitly declared.
+
+Finally, we examine the shape of a nested class: \textit{C\eq{}E}.
+The right hand side is not just a code literal but a code composition expression $E$.
+In trait composition, the code expression will be reduced/flattened to a code literal $L$
+during compilation.
+Code expressions denote an algebra of code composition, starting from code literal $L$
+and trait names $t$, referring to a literal declared before by \textit{t\eq{}E}.
+We consider two operators: conventional preferential sum 
+ \textit{\summ{$E_1$}{$E_2$}} and our novel redirect\textit{\red{E}{Cs}{T}}.
+
+The compilation process consists in flattening all the $E$ into $L$,
+starting from the innermost leftmost $E$. This means that sum and redirect work on $LV$s:
+a kind of $L$, where all the nested classes are of form \textit{C\eq{}LV}.
+The execution happens after compilation and consist in the conventional execution of the main expression $e$
+in the context of the fully reduced declarations, where all trait composition has
+been flatted away.
+Thus, execution is very simple and standard and behaves like a variation of FJ[] with interfaces
+instead of inheritance, and where nested classes are just a way to hierarchically organize code names.
+On the other side, code composition in this setting is very interesting and powerful, where
+nested classes are much more than name organization: they support in a simple and intuitive way
+expressive code reuse patterns.
+To flatten an $E$ we need to understand the behaviour of the two operators, and how to 
+load the code of a trait: since it was written in another place, the syntactic representation of
+the types need to be updated.
+For each of those points we will first provide some informal explanation and then we will proceed formalizing
+the precise behaviour.
+
+\subsection{Redirect}
+
+Redirect %\textit{\red{LV}{$Cs_1:T_1\ldots Cs_n:T_n$}{}}
+takes a library literal and produce a modified version of it where some nested classes has been removed
+and all the types referencing such nested classes are now referring to an external type. It is easy to use this feature to encode a generic list:
+\begin{lstlisting}
+list={
+  Elem:{}
+  LinkedList:{interface}
+  Node:{implements LinkedList    Elem elem, LinkedList next}
+  Empty:{implements LinkedList   ()}
+  static method This0 of() new This0(Empty.of())
+  method This0 add(Elem e) new This0(Node.of(e,this.inner))
+  LinkedList inner
+  }
+list={interface
+  Elem:{}
+  Node:{implements This1    Elem elem, This1 next}
+  Empty:{implements This1   ()}
+  method This0 push(Elem e)
+  method This0 pop()
+  method This0 top()
+  }
+\end{lstlisting}
 
 
-In the concrete syntax we assume a syntactic sugar declaring
-a static \Q@of@ method that serve as a factory and all fields getters
-the order of the fields is important because we consider
-an implicitly declared static \Q@of@ method that serve as a factory, thus the order of the field induce the order of the factory arguments. In the core calculus we just assume such factory to be 
-
-
-
-In the core language we will assume getters and setters to be present
-Methods an nested classes
-
-
+\subsection{Preferential sum}
 
 \begin{bnf}
 \production{%
