@@ -10,7 +10,7 @@ L}      {\libi{Tz}{Ms}
 %\\\prodNextLine{%
 \mmid{} \libc{Tz}{Mz}{K}
 }        {code literal}\\\production{%
-M}      {\Q{static}$?$ T m\rp{Txs} e$?$ \mmid{} C\eq{}E }                                                    {member}\\\production{%
+M}      {\Q{static}$?$ T m\rp{Txs} e$?$ \mmid{} \Q{private}$?$ C\eq{}E }                                                    {member}\\\production{%
 K}      {\rp{Txz}$?$}                                          {state}\\\production{%
 %CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
 %CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
@@ -48,18 +48,22 @@ $\This{n}{Cs}$, where the number $n$ identify the root of our path:
 \Q@This0@ is the current class, \Q@This1@ is the enclosing class, \Q@This2@ is the enclosing enclosing class and so on. $\This{n}{Cs}$
 refers to the class obtained by navigating throughout  $Cs$ starting from $\This{n}$.
 Thus, $\This{0}$ is just the type of the directly enclosing class.
-Note how there can be multiple different types referring to the same class.
+By using a larger then needed $n$, there could be multiple different types referring to the same class.
+Here we expect all types to be in the normalized form where the smallest possible $n$ is used.
 
 Code literals $L$
 serve the role of class/interface bodies; they contain the set of implemented interfaces
 $Tz$, the set of members $Mz$ and their (optional) state.
 In the concrete syntax we will use \Q@implements@ in front of a non empty list of implemented interfaces
 and we will omit parenthesis around a non empty set of fields.
-A class member $M$ can be a nested class or a (static) method.
+A class member $M$ can be a (private) nested class or a (static) method.
 Abstract methods are just methods without a body. 
 Well formed interface methods can only be abstract and non-static.
 To facilitate code reuse, classes can have (static) abstract methods, code composition is expected to 
 provide an implementation for those or, as we will see, redirect away the whole class.
+We could easily support private methods too, but to simplify our formalism we consider private only for nested classes. In a well formed code literal, in all types of form $\This{n}{Cs}{C}{Cs'}$,
+if $C$ denotes a private nested class, then $Cs$ is empty.
+
 
 Expressions are used as body of (static) methods and for the main expression.
 They are variables $x$ (including \Q@this@)
@@ -78,7 +82,7 @@ a static \Q@of@ method (that serve as a factory) and all fields getters;
 thus the order of the fields would induce the order of the factory arguments.
 In the core calculus we just assume such methods to be explicitly declared.
 
-Finally, we examine the shape of a nested class: \textit{C\eq{}E}.
+Finally, we examine the shape of a nested class: \textit{\Q{private}$?$ C\eq{}E}.
 The right hand side is not just a code literal but a code composition expression $E$.
 In trait composition, the code expression will be reduced/flattened to a code literal $L$
 during compilation.
@@ -109,50 +113,68 @@ the precise behaviour.
 Redirect %\textit{\red{LV}{$Cs_1:T_1\ldots Cs_n:T_n$}{}}
 takes a library literal and produce a modified version of it where some nested classes has been removed
 and all the types referencing such nested classes are now referring to an external type. It is easy to use this feature to encode a generic list:
+
+%final class LinkedList<T> {
+%  boolean isEmpty(){ return impl == Impl.empty; }
+%  T head() { return impl.asCons().elem; }
+%  LinkedList tail(){ return impl.asCons().tail; }
+%  LinkedList cons(T e){return new LinkedList<T>(){{
+%    impl=new Cons(){{elem=e; tail=impl}};}};}
+%  private final Supplier<Cons> impl = empty;
+%  static final Supplier<Cons> empty = ()->{throw ..;};
+%  private static class Cons implements Supplier<Cons>{
+%    T elem; Impl tail; Cons get(){return this;}}
+%  } 
 \begin{lstlisting}
-list={interface
-  Elem:{}
-  method This0 push(Elem e)
-  method This0 pop()
-  method Elem top()
-  Node:{implements This1
-    method This1 push(Elem e) This0.of(e,this)
-    method This1 pop() this.next()
-    method Elem top() this.elem()
-    Elem elem, This1 next
-    }
-  Empty:{implements This1
-    method This1 push(Elem e) Node.of(e,this)
-    method This1 pop() error
-    method Elem top() error
+list={
+  Elem={}
+  static This0 empty()= new This0(Empty.of())
+  boolean isEmpty()= this.impl().isEmpty()
+  Elem head()= this.impl.asCons().tail()
+  This0 tail()=this.impl.asCons().tail()
+  This0 cons(Elem e)=new This0(Cons.of(e, this.impl)
+  private Impl={interface   Bool isEmpty()  Cons asCons()}
+  private Empty={implements This1
+    Bool isEmpty()=true  Cons asCons()=../*error*/
     ()}//() means no fields
+  private Cons={implements This1
+    Bool isEmpty()=false  Cons asCons()=this
+    Elem elem Impl tail }
+  Impl impl
   }
 IntList=list<Elem=Int>
-
+...
 IntList.Empty.of().push(3).top()==4 //example usage
 \end{lstlisting}
 This would flatten into
 \begin{lstlisting}
 list={/*as before*/
 //IntList=list<Elem=Int>
-IntList={interface
+IntList={
   //Elem={} no more nested class Elem
-  method This0 push(Int e)
-  method This0 pop()
-  method Int top()
-  Node={implements This1
-    method This1 push(Int e) This0.of(e,this)
-    method This1 pop() this.next()
-    method Int top() this.elem()
-    Int elem, This1 next 
-    }//everywhere there was "Elem", now there is "Int"
-  Empty={..}}
+  static This0 empty()= new This0(Empty.of())
+  boolean isEmpty()= this.impl().isEmpty()
+  Int head()= this.impl.asCons().tail()
+  This0 tail()=this.impl.asCons().tail()
+  This0 cons(Int e)=new This0(Cons.of(e, this.impl)
+  private Impl={interface   Bool isEmpty()  Cons asCons()}
+  private Empty={/*as before*/}
+  private Cons={implements This1
+    Bool isEmpty()=false  Cons asCons()=this
+    Int elem Impl tail }
+  Impl impl
+  }//everywhere there was "Elem", now there is "Int"
 \end{lstlisting}
+
 Redirect can be propagated in the same way generics parameters are propagate:
-For example, in Java one could write
+For example, in Java one could write code as below,
 \begin{lstlisting}
 class ShapeGroup<T extends Shape>{
   List<T> shapes;
+  ..}
+//alternative implementation
+class ShapeGroup<T extends Shape,L extends List<T>>{
+  L shapes;
   ..}
 \end{lstlisting}
 to denote a class containing a list of a certain kind of \Q@Shape@s.
@@ -164,7 +186,8 @@ shapeGroup={
   List shapes
   ..}
 \end{lstlisting}
-Interestingly, there are two reasonable ways to reuse this code
+With redirect, \Q@shapeGroup@ follow both roles of the two Java examples;
+indeed there are two reasonable ways to reuse this code
 
 \Q@Triangolation=shapeGroup<Shape=Triangle>@,
 if we have a \Q@Triangle@ class and we would like the concrete list type
@@ -174,10 +197,72 @@ or
 if we have a preferred implementation for the list of triangles that is going to be used by our
 \Q@Triangolation@.
 Those two versions would flatten as follow:
-%Triangolation=shapeGroup<Shape=Triangle>
-%Triangolation=shapeGroup<Shape=Triangle>
+\begin{lstlisting}
+//Triangolation=shapeGroup<Shape=Triangle>
+Triangolation={
+  List=/*list with Triangle instead of Elem*/
+  List shapes
+  ..}
+
+//Triangolation=shapeGroup<List=Triangles>
+//exapands to shapeGroup<List=Triangles,Shape=Triangle>
+Triangolation={
+  Triangles shapes
+  ..}
+\end{lstlisting}
+As you can see, with redirect we do not decide a priori what is generic and what is not in a class.
+
+Redirect can not always succeed. For example, if we was to attempt
+\Q@shapeGroup<List=Int>@ the flattening process would fail with an error similar to a 
+invalid generic instantiation.
+Subtype is a fundamental feature of object oriented programming. Our proposed redirect operator
+do not require the type of the target to perfectly match the structural type of the internal nested classes;
+structural subtyping is sufficient.
+This feature adds a lot of flexibility to our redirect,
+however completing the mapping
+(as happens in the example above) is a challenging and technically very interesting
+task when subtyping is took into account. This is strongly connected with ontology matching and
+will be discussed in the technical core of the paper later on.
 
 \subsection{Preferential sum}
+The sum of two traits is conceptually a trait with the sum of the traits members, and the union of the implemented interfaces.
+If the two traits both define a method with the same name, some resolution strategy is applied.
+In the symmetric sum[] the two methods need to have the same signature and at least one of them need to be abstract.
+With preferential sum (sometimes called override), if they are both implemented, the left implementation is chosen.
+Since in our model we have nested classes, nested classes with the same name will be recursively composed.
+
+We chose preferential sum since is simpler to use in short code examples.~\footnote{symmetric sum is often presented in conjunction with a restrict operator that makes some methods abstract.}
+Since the focus of the paper is the novel redirect operator, instead of the well known sum, we will handle summing state and interfaces in the simplest possible way:
+a class with state can only be summed with a class without state, and an interface can only be summed with another interface with identical methods signatures.
+
+In literature it has been shown how trait composition with (recursively composed) nested classes can 
+elegantly handle the expression problem and a range of similar design challenges.
+Here we will show some examples where sum and redirect cooperate to produce interesting code reuse patterns:
+
+\begin{lstlisting}
+listComp=list<+{
+  Elem:{ Int geq(Elem e)}//-1/0/1 for smaller, equals, greater
+  static Elem max2(Elem e1, Elem e2)=if e1.geq(e2)>0 then e1, else e2
+  Elem max(Elem candidate)=
+    if This.isEmpty() then candidate
+    else this.tail().max(This.max2(this.head(),candidate))
+  Elem min(Elem candidate)=...
+  This0 sort()=...
+  }
+\end{lstlisting}
+As you can see, we can \emph{extends} our generic type while refining our generic argument:
+\Q@Elem@ of \Q@listComp@ now needs a \Q@geq@ method.
+
+While this is also possible with conventional inheritance and F-Bound polymorphism, we think this solution is logically simpler then the equivalent Java
+\begin{lstlisting}
+class ListComp<Elem extends Comparable<Elem>> extends LinkedList<Elem>{
+  ../*body as before*/
+  }
+\end{lstlisting}
+
+In the ending of this paper we will show how redirect and sum allows to encode
+difficult code reuse patterns in a much more convenient way that Java, Scala or Rust.
+
 
 \begin{bnf}
 \production{%

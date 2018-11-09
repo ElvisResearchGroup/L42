@@ -479,7 +479,7 @@ public class Redirect {
   boolean possibleTarget(List<C> Cs, Path P) {
     var kind = redirectSet.get(Cs);
     assert kind != null;
-    assert p.minimize(P).equals(p.minimize(P));
+    assert p.minimize(P).equals(P);
 
     var L1 = p.top().getClassB(Cs);
     var L2 = p.extractClassB(P);

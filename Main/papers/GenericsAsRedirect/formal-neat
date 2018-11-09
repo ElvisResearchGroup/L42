@@ -111,10 +111,10 @@ Define ValidRedirect(p,R,R')
   forall P in ran(R'):
     p.minimize(P)=P
     P not of form This0._
-    p|-p(P):OK //P well typed
+    p|-p[P]:OK //P well typed
   forall Cs in dom(R'):
     p|- R'(Cs); p[R'(Cs)] <= Cs; R'(p[Cs])
-    Redirectable(dom(R'); p.top())
+  Redirectable(dom(R'); p.top())
 
 // Whether the class This0.Cs can be redirected away
 // Namely: that the class contains no implemented methods or anything private
@@ -288,10 +288,10 @@ Define Collect(p; CCz) := CCz':
     sel' in dom(p[Cs']) intersect dom(p[P'])
 
 11a: Collect(p; CCz) = Cs <= P  // TODO: Prove this is neccessary
-    RChoices(CCz) = Cs -> {P}
+    RChoices(p; CCz; Cs) = {P}
 
 11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs   // TODO: Prove this is neccessary
-    RChoices(CCz) = Cs -> Pz
+    RChoices(p; CCz; Cs) = Pz
 
 R satisfies_p CC1,...,CCn iff
     R satisfies_p CC1
@@ -301,7 +301,7 @@ R satisfies_p CC1,...,CCn iff
 R satisfies_p Cs <= P iff p |- R(Cs) <= P
 R satisfies_p P <= Cs iff p |- P <= R(Cs)
 
-SatisfiedRedirect(p; R0; R) iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R)
+SatisfiedRedirect(p; R0; R) iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R0; R)
 
 UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
 
@@ -312,7 +312,7 @@ ChosenR(p; R1) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | Satis
 TOO Proove:
 * Our ChooseRedirect == ChosenR:
     just proove that ChooseR(p; CCz) = R2 iff
-        forall p' superset p, R2 = MostSpecific(p'; {R | satisfies_p CCz && PossibleRedirect(p; R)})
+        forall p' superset p, R2 = MostSpecific(p'; {R | satisfies_p CCz && PossibleRedirect(p; R0; R)})
 
 
 * forall p,R1,R: SatisfiedRedirect(p; R1; R) ==> ValidRedirect(p; R1; R) // Hard, might not be true
@@ -339,68 +339,79 @@ MostGeneral(p; Pz) = P
    {P} = SuperClasses(p; Pz) intersect p.minimize(Pz)
 
 Define ChooseR(p; CCz) := R
-  ChooseR(P; CCz, CCz') = Cs -> P, ChooseR(p; CCz')
-    Cs -> Pz = RChoices(p; CCz)
-    P = MostSpecific(p; Pz)
+   Cs1 -> MostSpecific(p; RChoices(p; CCz1))
+   ...
+   Csn -> MostSpecific(p; RChoices(p; CCzn))
 
-   ChooseR(p; empty) = empty
+// forall p, CCz, Cs
+// If exists Pz such that forall p' supereset p: {P | Cs->P satisfies CCz} = Pz
+//    then RChoices(p; CCz; Cs) = Pz
+// Otherwise, RChoices(p; CCz; Cs) is undefined
 
-RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k), = Cs -> Pz''
+RChoices(p; CCz, CCz'; Cs) = RChoices(p; CCz)
+  P <= Cs in CCz
+  Cs <= P not in CCz'
+  P <= Cs not in CCz'
+
+RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k) = Pz''
     Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
     Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
     Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}
 
 // Could Cs be redirected to P? (ignoring any other redirections that may or may not happen...)
 
-PossibleRedirect(p; Cs1->P1, ..., Csn->Pn) iff
-    R subseteq R'
-    dom(R') = RedirectSet(p.top(); dom(R))
-    forall P in ran(R'):
-		p.minimize(P)=P
-		P not of form This0._
-		p|-p(P):OK //P well typed
-    forall Cs in dom(R'):
-		Redirectable(dom(R'); p.top())
+CheckRedirect(p; Cs1->P1, ..., Csn->Pn) iff
+    forall P in P1..Pn:
+      p.minimize(P)=P
+      P not of form This0._
+      p|-p[P]:OK //P well typed //by construction in L42
+    Redirectable(Cs1, ..., Csn; p.top())  
 
-    // TODO: Proove our algorith ensures the above!
+PossibleResult(p; Cs1->P1, ..., Csn->Pn; R) iff
+    R0 subseteq R
+    dom(R) = RedirectSet(p.top(); dom(R0))
+    forall P in P1..Pn:
+      p.minimize(P)=P
+      P not of form This0._
+      p|-p[P]:OK //P well typed //by construction in L42
+    Redirectable(Cs1, ..., Csn; p.top())
+    // TODO: Proove our algorith ensures this!
 
+PossibleTargets(p; Cs1->P1, ..., Csn->Pn) iff
     PossibleTarget(p; Cs1; P1)
     ...
     PossibleTarget(p; Csn; Pn)
 
 PossibleTarget(p; Cs; P) iff
-    // assert p.minimize(P).equals(p.minimize(P));
     L1 = p[Cs]
     L2 = p[P]
 
-    MustClass(p; Cs) --> L1.interface? = empty
-    MustInterface(p; Cs) --> L1.interface? = interface
+    MustClass(p; Cs) --> L2.interface? = empty
+    MustInterface(p; Cs) --> L2.interface? = interface
 
     msdom(L1) subseteq msdom(L2)
     MustInterface(p; Cs) --> msdom(L2) subseteq msdom(L1)
 
-    p.minimize({P' in L1.Pz | P' != This0.Cs'}) subseteq SuperClasses(p; P)
+    p.minimize({P' in L1.Pz | P' not of form This0.Cs}) subseteq SuperClasses(p; P)
     forall ms in msdom(L1):
-      p |- L2[ms].mt <~ L1[ms].mt
-      MustInterface(p; Cs) --> p |- L1[ms].mt <~ L2[ms].mt
+      p |- L2(ms).mt <~ L1(ms).mt //method subtyping ignoring internal paths
+      MustInterface(p; Cs) --> p |- L1(ms).mt <~ L2(ms).mt
 
-p |- P <~ P' iff p |- P <= P'
-    P != This0.Cs
-    P != This0.Cs
+
+p |- P <~ P' iff p |- P <= P' //todo define internal(P)
+    P not of form This0.Cs
+    P' not of form  This0.Cs
 
 p |- P <~ P'
     otherwise
 
 p |- T <~ T' iff
     T.mdf <= T'.mdf
-    p |- T.P <= T.P'
+    p |- T.P <~ T.P'
 
-p |- mdf T1,...,Tn->T; Pz <= mdf' T1',...,Tn'->T'; Pz'
+p |- mdf T1,...,Tn->T'0; Pz <= mdf' T'1,...,T'n->T0; Pz'
     mdf' <= mdf
-    p |- T <~ t'
-    p |- T1' <~ T1
-    ...
-    p |- Tn' <~ Tn
+    p |- T'0 <~ T0   ...   p |- T'n <~ Tn
     forall P in Pz:
         exists P' in Pz' such that p |- P <~ P'
 
@@ -411,7 +422,7 @@ UniqueR(p, R1) = R2
   forall p' ~R1~ p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
   forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
 
-define MostSpecific(p; Rz) = R
+define MostSpecific(p; Rz) = R //for the proof, make it call the other MostSpecific
   R in Rz,
   forall Cs in dom(R), R' in Rz:
     p |- R(Cs) <= R'(Cs)
@@ -457,5 +468,54 @@ CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.C
 In ValidRedirect:
   forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
 
-In PossibleRedirect:
-  forall C in dom(p[Cs]): C in dom(p[P]) and PossibleRedirect(p; Cs.C; P.C)
+In PossibleTarget:
+  forall C in dom(p[Cs]): C in dom(p[P]) and PossibleTarget(p; Cs.C; P.C)
+
+=========================
+CollectTop(p; R) = CollectAll(p; CCInit(R))
+
+//SatisfiedRedirect(p; R0; R)  iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R)
+SatisfiedRedirect(p; R0; R) iff SatisfiedRedirect1(p; CollectTop(p; R0); R) 
+SatisfiedRedirect1(p; CCz; R) iff R satisfies_p CCz && PossibleTargets(p; R) && PossibleResult(p; R0; R)
+
+
+  ChooseRedirect1(P; CCz1,..,CCzn) =
+    Cs1 -> MostSpecific(p; RChoices(p; CCz1)) //RChoices taks the section of CCz with singleton Cs1
+    ..
+    Csn -> MostSpecific(p; RChoices(p; CCzn))
+
+alias ChooseRedirect1=ChooseR
+ChooseRedirect(p; R) = ChooseRedirect1(p; CollectTop(p; R))
+
+ChosenR(p; R) = ChosenR1(p; CollectTop(p; R))
+
+ChosenR1(p; CCz) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect1(p';
+  CCz; R)})
+
+UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
+
+
+
+Proof that ChooseRedirect == UniqueR
+Forall p and R, (such that p is 'valid'?, R is well-formed, and CheckRedirect(p; R))
+1. ChooseRedirect == ChosenR
+1a. Proof: If CCz = CollectTop(p; R)
+    then ChosenR1(p; CCz) == ChooseRedirect1(p; CCz) since the rest is the same
+     // hard part of this proof?
+        // proving that ChosenRedirect1 --> PossibleResult // 2nd hardest part!
+        // the forall p' superset p, MostSpecific... bullshit, is the same as our MostSpecific(p; Pz) thing...
+          // Proving that its ok to ignore it when their are no P <= Cs constraints....
+
+  
+
+2. SatisfiedRedirect == ValidRedirect
+  2a. SatisfiedRedirect ==> ValidRedirect // Hard
+  2b. ValidRedirect ==> SatisfiedRedirect // Easy
+
+
+
+
+//CCz implies_p CCz' iff forall P: P satisfies CCz --> P satisfies CCz'
+(TODO: Talk about infinite programs)
+
+================================================
