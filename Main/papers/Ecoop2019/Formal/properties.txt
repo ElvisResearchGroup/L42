@@ -13,13 +13,13 @@ ValidProblem(p; R) iff:
 
   Redirectable(RedirectSet(p.top(), dom(R)); p.top())
 
-Define PossibleSolution(p; R; R')
+Define PossibleRedirection(p; R; R')
   R subseteq R'
   dom(R') = RedirectSet(p.top(); dom(R))
   ValidProblem(p; R')
 
-Define ValidSolution(p; R; R')
-  PossibleSolution(p; R; R')
+Define ValidRedirection(p; R; R')
+  PossibleRedirection(p; R; R')
   forall Cs in dom(R'):
     p |- R'(Cs); p[R'(Cs)] <= Cs; R'(p[Cs])
 
