@@ -1014,8 +1014,6 @@ public class TestRedirect {
                 )
           .str(), true
 */
-
-
     },{
       lineNumber(), new String[]{"{A:{method Void() exception This1.A Library }}"},
        "{InnerA:{method Void() exception This2.A Library }\n"+

@@ -19,7 +19,7 @@ Apply CompleteR(p;..) to the result of ChooseR
 CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.Cn, R')
   {C1, ..., Cn} = { C in dom(p[Cs]) | p[P.C] is defined }
 
-In ValidRedirect:
+In ValidSolution (or PossibleSolution?):
   forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
 
 In PossibleTarget:

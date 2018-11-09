@@ -1,5 +1,5 @@
 -------------
-Module R: defines R, R(Cs)=P, R(L)=L', dom(R);
+Module R: defines R, R(Cs)=P, R(L)=L', dom(R), ran(R);
 using auxiliary R_Cs(e)=e', R_Cs(T)=T', R_Cs(M)=M', R(Cs=L)=L'
 
 R ::= (Cs->P)z // Redirection map
@@ -13,6 +13,9 @@ ______
 Define dom(R)
 dom(Cs1->P1, ..., Csn->Pn) = Cs1, ..., Csn
 
+______
+Define ran(R)
+dom(Cs1->P1, ..., Csn->Pn) = P1, ..., Pn
 ______
 Define R(Cs)=P
 R(Cs) = P
@@ -74,15 +77,12 @@ R_Cs(P) = R(Cs')[from Thisk]
 otherwise
 R(P in Cs) = P
 
-// Csz' is the set of nested class names that will be redirected when all the Csz are redirected from L
-// It is the transitive closure of apply 'Reachables' to each class mentioned in Csz
-Define RedirectSet(L; Csz)=Csz':
------------------------------
-// If we are redirecting Csz, then we need to redirect Csz
-Csz subseteq RedirectSet(L; Csz)
 
-// Redirect the nested class mentioned in the signature of a redirected class
-// We won't however be redirecting references to external paths (i.e. things outside of This0)
-Internal(Reachables(L[Cs1])) subseteq RedirectSet(L; Csz)
-  Cs1 in RedirectSet(L; Csz)
-  // TODO: Do a p.minimize?
+------------------------
+// Returns all the nested classes that are accesed from This0 (works best if Pz is minimized)
+Define Internals(Pz) = Csz
+  Internals(P, Pz) = Internal(P), Internals(Pz)
+  Internals(P, Pz) = Internals(Pz)
+    otherwise
+
+Internal(This0.Cs) = Cs

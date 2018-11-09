@@ -1,108 +1,67 @@
 // A sketch of the proof, plus some definitions only used internally by
 // (i.e. they are not used by the algorithm, nor the properties we are trying to proove about it)
 
-
 What we want to prove?
-==============================================================================
-forall p, r: RedirectAssumptions(p; R) ==> ChooseRedirect(p; R) == UniqueR(p; R)
+==============================================================================-===
+forall p, R: ValidProblem(p; R) --> CollectRedirect(p; R) == BestRedirect(p; R)
 
-Where: the '==' is understood to also work on undefined
-and RedirectAssumptions(p; R) are the set of properties ensured when
-  * Redirect passes p and R to ChooseRedirect, assuming Redirect was called by the language during normal reduction.
-  * I.e. we can assume the following steps have taken place:
-  * type-checking and reduction starting from user input
-    * We hit a reduction rule of the form: p0;sigma|L<Cs1=P1, , ..., Csn=Pn>
-    * We execute Redirect(p0, L, Cs->P1, ..., Csn->Pn)
-    * It executes ChooseRedirect(p; R)
-This means, we can assume things like well-typedness, well-formedness, R being p.minimized, p not being empty, etc.
-===========================================================================================
+Where BestRedirect(p; R) = R', iff:
+  forall p' such that SimilarProblem(p; R; p'),
+    MostSpecificMapping(p'; {R' | ValidSolution(p'; R; R')}) = R'
+// Also '==' works on undefined as you would expect...
 
-// An attempt at formalising what assumptions are likley useful
-RedirectAssumptions(p; R)
-  // p and R are wellformed
-
-  forall P in ran(R):
-    p.minimize(P)=P
-    P not of form This0._
-    p |- p[P] : OK
-  Redirectable(dom(R); p.top())
+// TODO: Other things to prove?
+// ValidSolution(p; R; R') --> BestRedirect(p; R') = R'
+// The input Redirect passes to CollectRedirect satisfies ValidProblem
+// Meta-level soundness?
+=============================================================================================
+SimilarProblem(p; R; p') iff
+  Csz = RedirectSet(p.top(); dom(R))
+  L = p.top()[only Csz] = p'.top()[only Csz]
+  p.updateTop(L) <= p'.updateTop(L)
+  ValidProblem(p'; R)
 =================================================
-
-// TODO: Proof our algorithm ensures this?
-PossibleResult(p; Cs1->P1, ..., Csn->Pn; R) iff
-  R0 subseteq R
-  dom(R) = RedirectSet(p.top(); dom(R0))
-  forall P in P1..Pn:
-    p.minimize(P)=P
-    P not of form This0._
-    p|-p[P]:OK //P well typed //by construction in L42
-  Redirectable(Cs1, ..., Csn; p.top())
-
-R satisfies_p CC1,...,CCn iff
-  R satisfies_p CC1
-  ...
-  R satisfies_p CCn
-
-R satisfies_p Cs <= P iff p |- R(Cs) <= P
-R satisfies_p P <= Cs iff p |- P <= R(Cs)
-
-SatisfiedRedirect(p; R0; R) iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R0; R)
-
-ChosenR(p; R1) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect(p'; R1; R)})
-//UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
+// Core definitions for the proof
 
 
-TOO Proove:
-* Our ChooseRedirect == ChosenR:
-  just proove that ChooseR(p; CCz) = R2 iff
-    forall p' superset p, R2 = MostSpecific(p'; {R | satisfies_p CCz && PossibleRedirect(p; R0; R)})
+SatisfiedSolution(p; CCz; R) iff:
+  R satisfies_p CCz && PossibleTargets(p; R) && PossibleSolution(p; R0; R)
+
+// Reminder:
+//CollectRedirect(p; R) = CollectSolution(p; CollectConstraints(p; R))
+
+BestSatisfiedRedirect(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
+BestSatisfiedSolution(p; R; CCz) = R':
+  forall p' such that SimilarProblem(p; R; p'),
+    MostSpecificMapping(p'; {R' | SatisfiedSolution(p'; CCz; R')}) = R'
 
 
-* forall p,R1,R: SatisfiedRedirect(p; R1; R) ==> ValidRedirect(p; R1; R) // Hard, might not be true
-* forall p,R1,R: ValidRedirect(p; R1; R) ==> SatisfiedRedirect(p; R1; R) //easy and true
+Define R in CollectMappings(p; CCz), iff:
+  dom(R) = dom(CCz)
+  forall Cs in dom(CCz): R(P) in CollectTargets(p; CCz; Cs)
+--------------------------------------------
+Proof that forall p, R: ValidProblem(p; R) --> CollectRedirect(p; R) = BestRedirect(p; R)
+----------------------------------
+Take arbitrary p and R such that ValidProblem(p; R)
+1. CollectRedirect == BestSatisfiedRedirect
+  1a. Proof: suppose that CCz = CollectConstraints(p; R),
+    show that BestSatisfiedSolution(p; CCz) == CollectSolution(p; CCz) // Since the rest of CollectRedirect and BestSatisfiedRedirect are the same
 
+    // Hard parts of the proof:
+      // proving that PossibleSolution(p; R; CollectSolution(p; CCz))
+      // prooving that the forall p' SimilarProblem(p; R; P') dosn't break our algorithm, since:
+          // forall Cs,
+          // If exists Pz such that forall p' SimilarProblem(p; R; P'): {P | Cs->P satisfies_p' CCz} = Pz
+          //   then CollectTargets(p; CCz; Cs) = Pz
+          // Otherwise, CollectTargets(p; CCz; Cs) is undefined
+          // I.e. the set of things satisfing the constraints is indepent of the program
+          // If it's not, we can than prove that the most-specific is also not independent of the program
 
-Therefore ChooseRedirect == UniqueR
------------------------------------------------------
+    // Easy parts:
+        // CollectSolution chooses the MostSpecificMapping of CollectMappings (see above)
+        // Forall R in CollectMappings, R satisfies_p CCz && PossibleTargets(p; R)
 
-define MostSpecific(p; Rz) = R //for the proof, make it call the other MostSpecific
-  R in Rz,
-  forall Cs in dom(R), R' in Rz:
-    p |- R(Cs) <= R'(Cs)
-
-//SatisfiedRedirect(p; R0; R)  iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R)
-SatisfiedRedirect(p; R0; R) iff SatisfiedRedirect1(p; CollectTop(p; R0); R)
-SatisfiedRedirect1(p; CCz; R) iff R satisfies_p CCz && PossibleTargets(p; R) && PossibleResult(p; R0; R)
-
-
-ChooseRedirect1(P; CCz1,..,CCzn) =
-  Cs1 -> MostSpecific(p; RChoices(p; CCz1)) //RChoices taks the section of CCz with singleton Cs1
-  ..
-  Csn -> MostSpecific(p; RChoices(p; CCzn))
-
-alias ChooseRedirect1=ChooseR
-ChooseRedirect(p; R) = ChooseRedirect1(p; CollectTop(p; R))
-
-ChosenR(p; R) = ChosenR1(p; CollectTop(p; R))
-
-ChosenR1(p; CCz) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect1(p';
-  CCz; R)})
-
-UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
-
-
-
-Proof that ChooseRedirect == UniqueR
-Forall p and R, (such that p is 'valid'?, R is well-formed, and CheckRedirect(p; R))
-1. ChooseRedirect == ChosenR
-1a. Proof: If CCz = CollectTop(p; R)
-  then ChosenR1(p; CCz) == ChooseRedirect1(p; CCz) since the rest is the same
-    // hard part of this proof?
-    // proving that ChosenRedirect1 --> PossibleResult // 2nd hardest part!
-    // the forall p' superset p, MostSpecific... bullshit, is the same as our MostSpecific(p; Pz) thing...
-    // Proving that its ok to ignore it when their are no P <= Cs constraints....
-
-
+       p, MostSpecific... bullshit, is the same as our MostSpecific(p; Pz) thing...
 
 2. SatisfiedRedirect == ValidRedirect
   2a. SatisfiedRedirect ==> ValidRedirect // Hard

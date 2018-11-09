@@ -1,20 +1,21 @@
 // This file defines the core Redirect operator, it and it's definitions should be implemented in L42
 // Util contains some utility definitions used for this formalisism, some of which are implemented in L42 (but shouldn't be too interesting)
 
-// Perform and compute a redirect, using a choice function 'ChooseRedirect' to compute the R mapping
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = R(p'.top()[remove Csz]) // Remove the things that will be redirected away
-  empty not in Cs1 ... Csn // We can't redirect This0, as that does not make sense
+// Perform and compute a redirect, using a choice function 'CollectRedirect' to compute the R mapping
+Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = R(L[remove Csz]) // Remove the things that will be redirected away
   p' = p.evilPush(L) // to simplify everything, just make L the new top
-  Redirectable(RedirectSet(L, Cs1, ..., Csn); L) // Check that the source is valid
+  Redirectable(L; RedirectSet(L, Cs1, ..., Csn)) // Check that the source is valid
 
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-  ChooseRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
+  CollectRedirect(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
 
+================================================================================
 // Whether the class This0.Cs can be redirected away
 // Namely: that the class contains no implemented methods or anything private
-Define Redirectable(Csz; L)
+Define Redirectable(L; Csz)
   forall Cs in Csz
     Cs not empty
+    L[Cs] is defined
     forall C in Cs: not Private(Cs)
     forall mwt in L[Cs].mwtz:
       mwt.e = empty
@@ -23,15 +24,40 @@ Define Redirectable(Csz; L)
     forall C in dom(L[Cs])
       Cs.C in Csz
 
----------------------------------------------------------------------------------------
-CC ::= Cs <= P | P <= Cs
+--------------------------------------------------------------
+// If we are redirecting Csz, then we need to redirect Csz
+Csz subseteq RedirectSet(L; Csz)
 
-CollectTop(p; R) = CollectAll(p; CCInit(R))
-CCInit(Cs1->P1, ..., Csn->Pn) = Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn
-ChooseRedirect(p; R) = ChooseR(p; CollectTop(p; R))
+// Redirect the nested class mentioned in the signature of a redirected class
+// We won't however be redirecting references to external paths (i.e. things outside of This0)
+Internals(Reachables(L[Cs])) subseteq RedirectSet(L; Csz)
+  Cs in RedirectSet(L; Csz)
+  // Note: because the top of the program will be evil pushed, there's no need to p.minimize the result of Reachables
+
+Reachables({interface? implements Pz Mz}) = Pz, Paths(Mz)
+Reachables(C: L) = Paths(L)[from This0.C]
+Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
+==================================================================================================================
+CC ::= Cs <= P | P <= Cs
+CollectRedirect(p; R) = CollectSolution(p; CollectConstraints(p; R))
+CollectConstraints(p; Cs1->P1, ..., Csn->Pn) = CollectAll(p; Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn)
+----------------------------
+// Utils
+dom(Cs <= P) = Cs
+dom(P <= C) = Cs
+dom(CC1,...,CCn) = dom(CC1), ..., dom(CCn)
 
 MustInterface(p; Cs) = p(Cs).interface? = interface
 MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
+
+Define p[P.ms] = p[P](ms)
+Define p[Cs.ms] = p[This0.Cs.ms]
+Define mwt.P = mwt.mt.T.P
+Define mwt.Pi = mwt.mt.Ts.i.P
+
+Define mwt.Cs = Internal(mwt.mt.T.P)
+Define mwt.Csi = Internal(mwt.mt.Ts.i.P)
+Define L.Csz = Internals(L.Pz)
 
 // CollectAll is the main function that collects all constraints
 CollectAll(p; CCz,CCz') := CollectAll(p; CCz'')
@@ -39,19 +65,7 @@ CollectAll(p; CCz,CCz') := CollectAll(p; CCz'')
   CCz'' != CCz,CCz'
 CollectAll(p; CCz) := CCz
   Otherwise
-
-Define p[P.ms] = p[P](ms)
-Define p[Cs.ms] = p[This0.Cs.ms]
-Define mwt.P = mwt.mt.T.P
-Define mwt.Pi = mwt.mt.Ts.i.P
-
-Define mwt.Cs = Cs
-  This0.Cs = mwt.mt.T.P
-Define mwt.Csi = Cs
-  This0.Cs = mwt.mt.Ts.i.P
-Define L.Csz = Internal(L.Pz)
-
-
+=========================================================================
 // Note: Collect isn't a function, but a relation,
 // I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
 Define Collect(p; CCz) := CCz':
@@ -99,30 +113,18 @@ Define Collect(p; CCz) := CCz':
   sel' in dom(p[Cs']) intersect dom(p[P'])
 
 11a: Collect(p; CCz) = Cs <= P  // TODO: Prove this is neccessary
-  RChoices(p; CCz; Cs) = {P}
+  CollectTargets(p; CCz; Cs) = {P}
 
 11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs  // TODO: Prove this is neccessary
-  RChoices(p; CCz; Cs) = Pz
+  CollectTargets(p; CCz; Cs) = Pz
 
--------------------------------------------------
+===================================================================
+Define CollectSolution(p; CCz) := Cs1->P1, ..., Csn->Pn
+  dom(CCz) = Cs1, ..., Csn
+  Pi = MostSpecific(p; CollectTargets(p; CCz; Cs))
 
-Define ChooseR(p; CCz) := R
-  Cs1 -> MostSpecific(p; RChoices(p; CCz1))
-  ...
-  Csn -> MostSpecific(p; RChoices(p; CCzn))
-
-
-// TODO: Proof that forall p, CCz, Cs
-// If exists Pz such that forall p' supereset p: {P | Cs->P satisfies CCz} = Pz
-//   then RChoices(p; CCz; Cs) = Pz
-// Otherwise, RChoices(p; CCz; Cs) is undefined
-
-RChoices(p; CCz, CCz'; Cs) = RChoices(p; CCz)
-  P <= Cs in CCz
-  Cs <= P not in CCz'
-  P <= Cs not in CCz'
-
-RChoices(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k) = Pz''
+CollectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz; Cs) = Pz''
+  Cs not in dom(CCz)
   Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
   Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
   Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}
@@ -142,7 +144,6 @@ MostSpecific(p; Pz) = P
 
 MostGeneral(p; Pz) = P
   {P} = SuperClasses(p; Pz) intersect p.minimize(Pz)
-CheckRedirect
 
 PossibleTargets(p; Cs1->P1, ..., Csn->Pn) iff
   PossibleTarget(p; Cs1; P1)
@@ -159,17 +160,18 @@ PossibleTarget(p; Cs; P) iff
   msdom(L1) subseteq msdom(L2)
   MustInterface(p; Cs) --> msdom(L2) subseteq msdom(L1)
 
-  p.minimize({P' in L1.Pz | P' not of form This0.Cs}) subseteq SuperClasses(p; P)
+  p.minimize({P' in L1.Pz | !Internal(P')}) subseteq SuperClasses(p; P)
   forall ms in msdom(L1):
     p |- L2(ms).mt <~ L1(ms).mt //method subtyping ignoring internal paths
     MustInterface(p; Cs) --> p |- L1(ms).mt <~ L2(ms).mt
 
-p |- P <~ P' iff p |- P <= P' //todo define internal(P) ?
-  P not of form This0.Cs
-  P' not of form  This0.Cs
 
-p |- P <~ P'
-  otherwise
+p |- P <~ P':
+  Internal(P) and Internal(P')
+  // TODO: Is this an abuse? Internal returns a Cs, here I'm using it to ensure that it is deefined
+
+p |- P <~ P':
+  p |- P <= P'
 
 p |- T <~ T' iff
   T.mdf <= T'.mdf
@@ -180,13 +182,3 @@ p |- mdf T1,...,Tn->T'0; Pz <= mdf' T'1,...,T'n->T0; Pz'
   p |- T'0 <~ T0 ... p |- T'n <~ Tn
   forall P in Pz:
     exists P' in Pz' such that p |- P <~ P'
-
-===============================================+++++++++
-For nested classes and exceptions?
-
-
-
-//CCz implies_p CCz' iff forall P: P satisfies CCz --> P satisfies CCz'
-(TODO: Talk about infinite programs)
-
-================================================
