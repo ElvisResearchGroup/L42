@@ -1,0 +1,26 @@
+// Notes and stuff specific to L42 (and irellavent to the paper)
+
+// Here Csz is the redirect set
+9:  Collect(p; Csz; Cs <= P, P <= Cs) = Cs.C <= P.C, P.C <= Cs.C
+  C in dom(p[Cs])
+10: Collect(p; Cs,Csz; Cs.C <= P.C, P.C <= Cs.C) = Cs <= P, P <= Cs
+
+// TODO: Do something with exception specs,
+// Specifically if we define:
+//   p |- Pz throws Pz' iff
+//     forall P in Pz: SuperClasses(p; P) intersects Pz'
+// Then:
+//   p |- R(p[Cs.ms].Pz) throws p[R(Cs).ms].Pz
+//   if p |- P <= P', then p |- p[P.ms].Pz throws p[P'.ms].Pz
+
+
+Apply CompleteR(p;..) to the result of ChooseR
+
+CompleteR(p; Cs -> P, R') = Cs->P, CompleteR(p; Cs.C1 -> P.C1, ..., Cs.Cn -> P.Cn, R')
+  {C1, ..., Cn} = { C in dom(p[Cs]) | p[P.C] is defined }
+
+In ValidRedirect:
+  forall C in dom(p(Cs)): R'(Cs.C) = R'(Cs).C
+
+In PossibleTarget:
+  forall C in dom(p[Cs]): C in dom(p[P]) and PossibleTarget(p; Cs.C; P.C)

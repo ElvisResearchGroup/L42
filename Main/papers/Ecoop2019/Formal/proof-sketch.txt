@@ -1,0 +1,109 @@
+// A sketch of the proof, plus some definitions only used internally by
+// (i.e. they are not used by the algorithm, nor the properties we are trying to proove about it)
+
+
+What we want to prove?
+==============================================================================
+forall p, r: RedirectAssumptions(p; R) ==> ChooseRedirect(p; R) == UniqueR(p; R)
+
+Where: the '==' is understood to also work on undefined
+and RedirectAssumptions(p; R) are the set of properties ensured when
+  * Redirect passes p and R to ChooseRedirect, assuming Redirect was called by the language during normal reduction.
+  * I.e. we can assume the following steps have taken place:
+  * type-checking and reduction starting from user input
+    * We hit a reduction rule of the form: p0;sigma|L<Cs1=P1, , ..., Csn=Pn>
+    * We execute Redirect(p0, L, Cs->P1, ..., Csn->Pn)
+    * It executes ChooseRedirect(p; R)
+This means, we can assume things like well-typedness, well-formedness, R being p.minimized, p not being empty, etc.
+===========================================================================================
+
+// An attempt at formalising what assumptions are likley useful
+RedirectAssumptions(p; R)
+  // p and R are wellformed
+
+  forall P in ran(R):
+    p.minimize(P)=P
+    P not of form This0._
+    p |- p[P] : OK
+  Redirectable(dom(R); p.top())
+=================================================
+
+// TODO: Proof our algorithm ensures this?
+PossibleResult(p; Cs1->P1, ..., Csn->Pn; R) iff
+  R0 subseteq R
+  dom(R) = RedirectSet(p.top(); dom(R0))
+  forall P in P1..Pn:
+    p.minimize(P)=P
+    P not of form This0._
+    p|-p[P]:OK //P well typed //by construction in L42
+  Redirectable(Cs1, ..., Csn; p.top())
+
+R satisfies_p CC1,...,CCn iff
+  R satisfies_p CC1
+  ...
+  R satisfies_p CCn
+
+R satisfies_p Cs <= P iff p |- R(Cs) <= P
+R satisfies_p P <= Cs iff p |- P <= R(Cs)
+
+SatisfiedRedirect(p; R0; R) iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R0; R)
+
+ChosenR(p; R1) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect(p'; R1; R)})
+//UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
+
+
+TOO Proove:
+* Our ChooseRedirect == ChosenR:
+  just proove that ChooseR(p; CCz) = R2 iff
+    forall p' superset p, R2 = MostSpecific(p'; {R | satisfies_p CCz && PossibleRedirect(p; R0; R)})
+
+
+* forall p,R1,R: SatisfiedRedirect(p; R1; R) ==> ValidRedirect(p; R1; R) // Hard, might not be true
+* forall p,R1,R: ValidRedirect(p; R1; R) ==> SatisfiedRedirect(p; R1; R) //easy and true
+
+
+Therefore ChooseRedirect == UniqueR
+-----------------------------------------------------
+
+define MostSpecific(p; Rz) = R //for the proof, make it call the other MostSpecific
+  R in Rz,
+  forall Cs in dom(R), R' in Rz:
+    p |- R(Cs) <= R'(Cs)
+
+//SatisfiedRedirect(p; R0; R)  iff R satisfies_p CollectAll(p; CCInit(R0)) && PossibleRedirect(p; R)
+SatisfiedRedirect(p; R0; R) iff SatisfiedRedirect1(p; CollectTop(p; R0); R)
+SatisfiedRedirect1(p; CCz; R) iff R satisfies_p CCz && PossibleTargets(p; R) && PossibleResult(p; R0; R)
+
+
+ChooseRedirect1(P; CCz1,..,CCzn) =
+  Cs1 -> MostSpecific(p; RChoices(p; CCz1)) //RChoices taks the section of CCz with singleton Cs1
+  ..
+  Csn -> MostSpecific(p; RChoices(p; CCzn))
+
+alias ChooseRedirect1=ChooseR
+ChooseRedirect(p; R) = ChooseRedirect1(p; CollectTop(p; R))
+
+ChosenR(p; R) = ChosenR1(p; CollectTop(p; R))
+
+ChosenR1(p; CCz) = R2: iff  forall p' superset p, R2 = MostSpecific(p'; {R | SatisfiedRedirect1(p';
+  CCz; R)})
+
+UniqueR(p; R1) = R2: iff forall p' superset p, R2 = MostSpecific(p'; {R | ValidRedirect(p'; R1; R)})
+
+
+
+Proof that ChooseRedirect == UniqueR
+Forall p and R, (such that p is 'valid'?, R is well-formed, and CheckRedirect(p; R))
+1. ChooseRedirect == ChosenR
+1a. Proof: If CCz = CollectTop(p; R)
+  then ChosenR1(p; CCz) == ChooseRedirect1(p; CCz) since the rest is the same
+    // hard part of this proof?
+    // proving that ChosenRedirect1 --> PossibleResult // 2nd hardest part!
+    // the forall p' superset p, MostSpecific... bullshit, is the same as our MostSpecific(p; Pz) thing...
+    // Proving that its ok to ignore it when their are no P <= Cs constraints....
+
+
+
+2. SatisfiedRedirect == ValidRedirect
+  2a. SatisfiedRedirect ==> ValidRedirect // Hard
+  2b. ValidRedirect ==> SatisfiedRedirect // Easy
