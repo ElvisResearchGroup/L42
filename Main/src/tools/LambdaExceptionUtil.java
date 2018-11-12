@@ -76,6 +76,10 @@ public final class LambdaExceptionUtil {
         };
     }
 
+    public static<E extends Exception> Throwable catchThrow(Runnable_WithExceptions<E> r) {
+      try { r.run(); return null; }
+      catch (Throwable t) { return t; } }
+
     /** uncheck(() -> Class.forName("xxx")); */
     public static void uncheck(@SuppressWarnings("rawtypes") Runnable_WithExceptions t) {
         try { t.run(); }

@@ -140,6 +140,8 @@ public interface Ast {
   public String toString() {
    return (mdf.inner+" "+this.path.toString()).trim();
   }
+
+  public static Type of(Path P) { return new Type(Mdf.Immutable, P, Doc.empty()); }
  }
 
 

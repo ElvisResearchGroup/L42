@@ -38,7 +38,7 @@ _________
 AuxDefine R(Cs = L)=L'
 
 // Simply apply R to the Pz and Mz
-R(Cs = {interface? implements Pz Mz}) = {interface? implements R_Cs(Pz) R_Cs(Mz)}
+R(Cs = {interface? implements Pz Mz}) = {interface? implements R_Cs(Pz)\{Any} R_Cs(Mz)}
 
 _________
 // Apply R to a member M that was found in nested class Cs

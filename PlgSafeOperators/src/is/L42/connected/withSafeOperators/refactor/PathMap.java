@@ -21,8 +21,9 @@ public class PathMap implements Iterable<CsPath> {
 
   @Override public String toString() { return this.stream().map(Object::toString).collect(Collectors.joining(", ")); }
 
-  public PathMap() { this.map = new HashMap<>(); }
-  public PathMap(PathMap that) { this.map = new HashMap<>(that.map); }
+  public PathMap() { this(new HashMap<>()); }
+  public PathMap(PathMap that) { this(that.map); }
+  public PathMap(Map<List<C>, Path> map) { this.map = map; }
 
   public Path get(List<C> Cs) { return Objects.requireNonNull(this._get(Cs)); }
   public Path _get(List<C> Cs) { return this.map.get(Cs); }

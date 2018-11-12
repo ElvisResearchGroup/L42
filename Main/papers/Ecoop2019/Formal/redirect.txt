@@ -2,12 +2,12 @@
 // Util contains some utility definitions used for this formalisism, some of which are implemented in L42 (but shouldn't be too interesting)
 
 // Perform and compute a redirect, using a choice function 'CollectRedirection' to compute the R mapping
-Define Redirect(p; L; Cs1, P1, ..., Csn, Pn) = R(L[remove Csz]) // Remove the things that will be redirected away
+Define Redirect(p; L; Cs1 -> P1, ..., Csn -> Pn) = R(L[remove Csz]) // Remove the things that will be redirected away
   p' = p.evilPush(L) // to simplify everything, just make L the new top
-  Redirectable(L; RedirectSet(L, Cs1, ..., Csn)) // Check that the source is valid
-
+  Csz = RedirectSet(L; Cs1, ..., Csn)
+  Redirectable(L; ) // Check that the source is valid
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-  CollectRedirection(p'; Cs1, p'.minimize(P1[from This1]), ..., Csn, p'.minimize(Pn[from This1])) = R
+  R = CollectRedirection(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
 
 ================================================================================
 // Whether the class This0.Cs can be redirected away
@@ -39,7 +39,7 @@ Reachables(C: L) = Paths(L)[from This0.C]
 Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
 ==================================================================================================================
 CC ::= Cs <= P | P <= Cs
-CollectRedirection(p; R) = CollectSolution(p; CollectConstraints(p; R))
+CollectRedirection(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
 CollectConstraints(p; Cs1->P1, ..., Csn->Pn) = CollectAll(p; Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn)
 ----------------------------
 // Utils
@@ -119,12 +119,13 @@ Define Collect(p; CCz) := CCz':
   CollectTargets(p; CCz; Cs) = Pz
 
 ===================================================================
-Define CollectSolution(p; CCz) := Cs1->P1, ..., Csn->Pn
-  dom(CCz) = Cs1, ..., Csn
-  Pi = MostSpecific(p; CollectTargets(p; CCz; Cs))
+Define CollectSolution(p; R; CCz) := Cs1->P1, ..., Csn->Pn
+  redirectSet(p.top(), dom(R)) = Cs1, ..., Csn
+  Pi = MostSpecific(p; CollectTargets(p; CCz; Csi))
 
 CollectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz; Cs) = Pz''
   Cs not in dom(CCz)
+  // Note: SuperClasses will be undefined if n = 0
   Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
   Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
   Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}

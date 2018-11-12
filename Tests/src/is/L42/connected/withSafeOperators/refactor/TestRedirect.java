@@ -7,7 +7,9 @@ import ast.Ast.*;
 import ast.ExpCore;
 import ast.L42F;
 import helpers.TestHelper.ErrorCarry;
+import is.L42.connected.withSafeOperators.pluginWrapper.*;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.RedirectError;
+import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.RedirectError.*;
 import is.L42.connected.withSafeOperators.refactor.RedirectObj;
 import helpers.TestHelper;
 import static helpers.TestHelper.lineNumber;
@@ -16,7 +18,7 @@ import static org.junit.Assert.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
@@ -25,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 import platformSpecific.javaTranslation.Resources;
 import ast.ExpCore.ClassB;
 import programReduction.Program;
-import tools.LambdaExceptionUtil;
+import tools.*;
 
 @RunWith(Parameterized.class)
 public class TestRedirect {
@@ -527,6 +529,8 @@ public class TestRedirect {
         + "}",
         "InnerA", "This0.A",
         RedirectError.InvalidMapping.class
+
+    // NOTE: This redirect has 4 possible solutions! (the most we have with any finite solutions)
     },{lineNumber(), new String[]{  // Redirect a FreeTemplate with two interfaces to an OpenClass with one.
                                     // Under the just-one-target-is-unambiguous rule,
                                     // which is a logical consequence of the intersecting-to-one-target-is-unambiguous rule,
@@ -1093,11 +1097,16 @@ public static Program mkp(String...ss) { Program p=TestHelper.getProgram(ss); re
     System.err.println("SKIPPED");
   } else if (_expected instanceof Class) {
     var expectedType = (Class)_expected;
+    if (!Redirect.earlyErrorDetection) {
+      if (expectedType.equals(InvalidMapping.class)) { expectedType = DeductionFailure.class; }
+      if (expectedType.equals(PathUnfit.class)) { expectedType = ClassUnfit.class; }}
+
     ClassB res = null;
     try { res = Redirect.redirect(p,cb1,map); }
     catch (RedirectError e) {
-      if (expectedType.isInstance(e)) System.err.println(e.getClass().getSimpleName() + ": " + e.getShortMessage());
-      else throw e; }
+      System.err.println(e.getClass().getSimpleName() + ": " + e.getShortMessage());
+      Assert.assertEquals(expectedType, e.getClass());//earlyErrorDetection
+    }
     if (res != null) { TestHelper.assertEqualExp(new ExpCore.X(null, "ERROR"), res); }
   } else {
     ClassB expected=getClassB(true,p,"expected", _expected.toString());

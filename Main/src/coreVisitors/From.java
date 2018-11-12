@@ -35,7 +35,6 @@ public class From extends CloneVisitor {
     return Path.outer(p0.outerNumber()-i,cs.subList(i,cs.size()));
   }
 
-  public static Stream<Path> fromPs(Collection<Path> Ps, Path P) { return Ps.stream().map(Pi -> fromP(Pi, P)); }
   public static Path fromP(Path p0, Path source){
     if(p0.isPrimitive()){return p0;}
     LinkedList<Ast.C> cs0=new LinkedList<>(p0.getCBar());

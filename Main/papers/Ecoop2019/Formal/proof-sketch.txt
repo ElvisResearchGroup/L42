@@ -28,7 +28,7 @@ SatisfiedSolution(p; R; CCz; R') iff:
   R satisfies_p CCz && PossibleTargets(p; R) && PossibleRedirection(p; R; R')
 
 // Reminder:
-//CollectRedirection(p; R) = CollectSolution(p; CollectConstraints(p; R))
+//CollectRedirection(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
 
 BestSatisfiedRedirection(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
 BestSatisfiedSolution(p; R; CCz) = R':
@@ -45,10 +45,10 @@ Proof that forall p, R: ValidProblem(p; R) --> CollectRedirection(p; R) = BestRe
 Take arbitrary p and R such that ValidProblem(p; R)
 1. CollectRedirection == BestSatisfiedRedirection
   1a. Proof: suppose that CCz = CollectConstraints(p; R),
-    show that BestSatisfiedSolution(p; CCz) == CollectSolution(p; CCz) // Since the rest of CollectRedirection and BestSatisfiedRedirection are the same
+    show that BestSatisfiedSolution(p; R; CCz) == CollectSolution(p; R; CCz) // Since the rest of CollectRedirection and BestSatisfiedRedirection are the same
 
     // Hard parts of the proof:
-      // proving that PossibleRedirection(p; R; CollectSolution(p; CCz))
+      // proving that PossibleRedirection(p; R; CollectSolution(p; R; CCz))
       // prooving that the forall p' SimilarProblem(p; R; P') dosn't break our algorithm, since:
           // forall Cs,
           // If exists Pz such that forall p' SimilarProblem(p; R; P'): {P | Cs->P satisfies_p' CCz} = Pz

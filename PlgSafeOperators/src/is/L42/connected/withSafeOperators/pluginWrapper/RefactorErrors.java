@@ -273,7 +273,7 @@ public class RefactorErrors{
     public String getShortMessage() { return super.getMessage(); }
     @Override public String getMessage() {
       if (this._problem != null) {
-        try { new Redirect(this._problem, true).solve(); }
+        try { new Redirect(this._problem, true).redirectTop(); }
         catch (RedirectError e) { return this.getShortMessage() + "\n" + e.getMessage(); }
         throw Assertions.codeNotReachable(); }
       else { return this.getShortMessage(); }}
