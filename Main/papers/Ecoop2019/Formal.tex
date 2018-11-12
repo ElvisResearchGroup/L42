@@ -224,7 +224,7 @@ however completing the mapping
 task when subtyping is took into account. This is strongly connected with ontology matching and
 will be discussed in the technical core of the paper later on.
 
-\subsection{Preferential sum}
+\subsection{Preferential sum and examples of sum and redirect working together}
 The sum of two traits is conceptually a trait with the sum of the traits members, and the union of the implemented interfaces.
 If the two traits both define a method with the same name, some resolution strategy is applied.
 In the symmetric sum[] the two methods need to have the same signature and at least one of them need to be abstract.
@@ -260,51 +260,103 @@ class ListComp<Elem extends Comparable<Elem>> extends LinkedList<Elem>{
   }
 \end{lstlisting}
 
-In the ending of this paper we will show how redirect and sum allows to encode
-difficult code reuse patterns in a much more convenient way that Java, Scala or Rust.
+Another interesting way to use sum is to modularize behaviour delegation: consider the following
+(not efficient for the sake of compactness) implementation of \Q@set@, where the way to compare elements is not fixed:
+\begin{lstlisting}
+set:{
+  Elem:{}
+  List=list<Elem=Elem>
+  static This0 empty()= new This0(List.empty())
+  Bool contains(Elem e)=../*uses eq and hash*/
+  Int size()=..
+  This add(Elem e)=...
+  This remove(Elem e)=...
+  Bool eq(Elem e1,Elem e2)//abstract
+  Int hash(Elem e)//abstract
+  List asList //to allow iteration
+  }
+eqElem={
+  Elem={ Bool equals(Elem e)/*abstract*/}
+  Bool eq(Elem e1,Elem e2)=e1.equals(e2)
+  }
+hashElem={
+  Elem={ Int hash(Elem e)/*abstract*/}
+  Int hash(Elem e)=e.hash()
+  }
+Strings=(set<+eqElem<+eqHash)<Elem=String>
+LongStrings=(set<+eqElem)<Elem=String> <+{
+  Int hash(String e)=e.size()
+  }//for very long strings, size is a faster hash
+\end{lstlisting}
+Note how 
+\Q@(set<+eqElem<+eqHash)<Elem=String>@
+is equivalent to \Q@set<Elem=String> <+eqElem<Elem=String> <+eqHash<Elem=String>@.
+Consider now the signature \Q@Bool equals(Elem e)@.
+This is different from the common signature \Q@Bool equals(Object e)@. What is the best
+signature for \Q@equals@ is an open research question, where most approaches advise either the
+first or the second one. Our \Q@eqElem@, as is wrote, can support both:
+\Q@Strings@ would be correctly define both if \Q@String.equals@ signature
+has a \Q@String@ or an \Q@Object@ parameter.EXPAND on method subtyping.
 
+
+\subsection{Moving traits around in the program}
+It is not trivial to formalize the way types like \Q@This1.A.B@ %$\This{3}{\Q@A@}{\Q@B@}$
+have to be adapted so that when code is moved around in differed depths of nesting the 
+refereed classes stay the same.
+To this aim we define a concept of program $p$, as a representation of 
+the code as seen from a certain point inside of the source code.
+
+The program $p$ is the most interesting form of the grammar,
+used for virtually all reduction and typing rules. On the left of the $;$ is a stack representing which (nested) declaration is currently being processed, the bottom (rightmost) \textit{DL} represents the $D$ of the source-program that is currently being processed. Th right of the $;$ represents the top-level declarations that have already been compiled, this is necessary to look up top-level classes and traits.
+That is, each of the $\textit{DL}_0\ldots\textit{DL}_n$
+represents the outer nested level $0..n$, while
+the \textit{DVs} component represent the already flattened portion of the program top level, that is 
+the outer nested level $n+1$
 
 \begin{bnf}
 \production{%
-\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
-                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
-LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
-MV}     {C\eq{}LV \mmid{} mt}                                                    {}\\\production{%
-\ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
-	\mmid{} T\Q{.}m\rp{vs \ctx{v} es}  }           {}\\\production{%
+p}      {DLs\Q{;} DVs}                                                     {program}\\\production{%
 DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
 DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
-Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
-p}      {DLs\Q{;} DVs}                                                     {program}
+Mid}    {C \mmid{} m}                                                      {member-id}%\\\production{%
 \end{bnf}
 
-We use $t$ and $C$ to syntactically distinguish between trait and class names.
-An $E$ is a top-level class expression, which can contain class-literals, references to traits, and operations on them, namely our sum $E <+ E$ and redirect $e(Cs=T)$.
-A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
-A literal $L$ has 4 components, an optional interface keyword, a list of implemented interfaces, a list of members, and an optional constructor. For simplicity, interfaces can only contain abstract-methods ($amt$) as members, and cannot have  constructors. A member $M$, is either an (potentially abstract) methood $mt$ or a nested class declaration $(CD)$. A member value $MV$, is a member that has been fully compiled. An $mid$ is an identifier, identifying a member.
-Constructors, $K$, contain a $Txs$ indicating the type and names of fields. An $e$ is normal fetherweight-java style expression, it has variables $x$, method calls $e.m(es)$, field accesses $e.x$ and object creation $new es$.
-$CtxV$ is the evalation context for class-expressions $E$, and $ctxv$ is the usuall one for $e$’s.
 
-An $S$ represents what the top-level source-code form of our language is, it’s just a sequence of declarations and a main expression.
-The most interesting form of the grammer is a $p$, it is a ’program’, used as the context for many reductions and typing rules, on the LHS of the $;$ is a stack representing which (nested) declaration is currently being processed, the bottom (rightmost) $DL$ represents the $D$ of the source-program that is currently being processed. Th RHS of the $;$ represents the top-level declarations that have allready been compiled, this is neccessary to look up top-level classes and traits.
+Thus, for example in the program
+\begin{lstlisting}
+A={()}
+t={ B={()}   This1.A m(This0.B b)}
+C={D={E=t}}
+\end{lstlisting}
+the flattened version for \Q@C.D.E@ will be 
+\Q@{ B={()}   This3.A m(This0.B b)}@, where the path
+\Q@This1.A@ is now \Q@This3.A@ while the path \Q@This0.B@ stays the same.
+The program $p$ in the observation point \Q@E=t@ is
+\begin{lstlisting}
+A={()}
+t={ B={()}   This1.A m(This0.B b)}
+C={D={E=t}};
+C={D={E=t}},
+D={E=t}
+\end{lstlisting}
 
-\noindent To look up the value of a type in the program we will use the notation $p(T)$, which is defined by the following, but only if the RHS denotes an $LV$:
+%We will use $p$ as a function, so we will write
+%.....p(T) and p(T.m)
+%we define now From,
+%....
+
+
+%An $S$ represents what the top-level source-code form of our language is, it’s just a sequence of declarations and a main expression.
+\noindent To look up the value of a type in the program we will use the notation $p(T)=\textit{LV}$, which is defined by the following:,% but only if the RHS denotes an $LV$:
 \begin{defye}%
 \defy{(; \_, C\eq{}L, \_)(\This{0}{C}{Cs})}{\mathit{L(Cs)}}%
-\defy{(id\eq{}L, p)(\This{0}{Cs})}{L(\mathit{Cs})}%
+%\defy{(id\eq{}L, p)(\This{0}{Cs})}{L(\mathit{Cs})}%
+\defy{(id\eq{}L, DLs\Q{;} DVs)(\This{0}{Cs})}{L(\mathit{Cs})}%
 %p' id=L,A;B = id=L,p
-\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
+%\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%shorter version, not wrong but confusing
+\defy{(id\eq{}L, DLs\Q{;} DVs)(\This{n+1}{Cs})}{DLs\Q{;} DVs(\This{n}{Cs})}%
 \end{defye}
 
-\noindent To get the relative value of a trait, we define $p[t]$:
-\begin{defye}%
-\defy{(\s{DL}; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{\#DLs}}}
-\end{defye}
-
-\noindent To get a the value of a literal, in a way that can be understand from the current location (\This{0}), we define:
-\begin{defye}%
-	\defy{p[T]}{\from{p(T)}{T}}%
-\end{defye}
 
 \noindent And a few simple auxiliary definitions:
 \begin{defye}%
@@ -314,6 +366,42 @@ The most interesting form of the grammer is a $p$, it is a ’program’, used a
 	\defy{L[C\eq{E'}]}{\lib{Tz}{\s{MV}\ C\eq{E'}\ \s{M}}{K?}}
 	\defyc{\text{where } L = \lib{Tz}{\s{MV}\ C\eq{\_}\ \s{M}}{K?}}
 \end{defye}
+
+
+\noindent To get the relative value of a trait, we define $p[T]$:
+\begin{defye}%
+\defy{(\s{DL}; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{\#DLs}}}
+\end{defye}
+
+\noindent To get a the value of a literal, in a way that can be understand from the current location (\This{0}), we define:
+\begin{defye}%
+	\defy{p[T]}{\from{p(T)}{T}}%
+\end{defye}
+
+
+%We will also use $p[T.m]$ to extra
+
+\begin{bnf}
+\production{%
+\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
+                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
+%LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
+%MV}     {C\eq{}LV \mmid{} mt}                                                    {}\\\production{%
+\ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
+	\mmid{} T\Q{.}m\rp{vs \ctx{v} es}  }           {}%\\\production{%
+%DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
+%DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
+%Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
+%p}      {DLs\Q{;} DVs}                                                     {program}
+\end{bnf}
+
+%A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
+
+%A literal $L$ has 4 components, an optional interface keyword, a list of implemented interfaces, a list of members, and an optional constructor. For simplicity, interfaces can only contain abstract-methods ($amt$) as members, and cannot have  constructors. A member $M$, is either an (potentially abstract) methood $mt$ or a nested class declaration $(CD)$. A member value $MV$, is a member that has been fully compiled. An $mid$ is an identifier, identifying a member.
+%Constructors, $K$, contain a $Txs$ indicating the type and names of fields. An $e$ is normal fetherweight-java style expression, it has variables $x$, method calls $e.m(es)$, field accesses $e.x$ and object creation $new es$.
+
+%$CtxV$ is the evaluation context for class-expressions $E$, and $ctxv$ is the usuall one for $e$’s.
+
 
 \newpage
 
@@ -552,3 +640,58 @@ p; Txs |- e : T
 -----------------------------------  T =p T'
 p; Txs |- e : T'
 \end{verbatim}
+
+\section{Graph example}
+We now consider an example where Redirect simplifies the code quite a lot:
+We have a \Q@Node@ and \Q@Edge@ concepts for a graph.
+The \Q@Node@ have a list of \Q@Edge@s.
+A \Q@isConnected@ function takes a list of \Q@Node@s.
+A \Q@getConnected@ function takes \Q@Node@ and return a set of \Q@Node@s.
+\begin{lstlisting}
+graphUtils={
+  Edges:list<+{Node start() Node end()}
+  Node:{Edges connections()}
+  Nodes:set<Elem=Node>//note that we do not specify equals/hash
+  static Bool isConnected(Nodes nodes)=
+    if(nodes.size()=0) then true
+    else getConnected(nodes.asList().head()).size()==nodes.size()
+  static Nodes getConnected(Node node)=getConnected(node,Nodes.empty())
+  static Nodes getConnected(Node node,Nodes collected)=
+    if(collected.contains(node)) then collected
+    else connectEdges(node.connections(),collected.add(node))
+  static Nodes connectEdges(Edges e,Nodes collected)=
+    if( e.isEmpty()) then collected
+    else connectEdges(e.tail(),collected.add(e.head().end()))
+  }
+\end{lstlisting}
+
+We have shown the full code instead of omitting implementations to show that
+the code inside of an highly general code like the former is pretty conventional.
+Just declare nested classes as if they was the concrete desired types. Note how we can easly create a new \@Nodes@ by doing \Q@Nodes.empty()@.
+
+Here we show how to instantiate \Q@graphUtils@ to a graph representing cities connected by streets,
+where the streets are annotated with their length, and \Q@Edges@ is a priority queue, to optimize
+finding the shortest path between cities.
+
+\begin{lstlisting}
+Map:{
+  Street:{City start,City end, Int size}
+  City:{}
+  Streets:priorityQueue<Elem=Street><+{    
+    Int geq(Street e1,Street e2)=e1.size()-e2.size()}
+  }<+{
+  Streets:{}
+  City:{Streets connections, Int index}//index identify the node
+  Cities:set<Elem=City><+{
+    Bool eq(City e1,City e2) e1.index==e2.index
+    Int hash(City e) e.index
+    }
+  Cities cities
+  //more methods
+  }
+MapUtils=graphUtils<Nodes=Map.Cities>
+//infers Nodes.List, Node, Edges, Edge
+\end{lstlisting}
+
+In Appending 2 we will show our best attempt to encode this graph example in Java, Rust and Scala.
+In short, we discovered...
