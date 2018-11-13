@@ -301,8 +301,10 @@ has a \Q@String@ or an \Q@Object@ parameter.EXPAND on method subtyping.
 
 \subsection{Moving traits around in the program}
 It is not trivial to formalize the way types like \Q@This1.A.B@ %$\This{3}{\Q@A@}{\Q@B@}$
-have to be adapted so that when code is moved around in differed depths of nesting the 
+have to be adapted so that when code is moved around in different depths of nesting the 
 refereed classes stay the same.
+This is needed during flattening, when a trait $t$ is reused, but also during reduction, when a method body is inlined in the main expression, and during typing, where a method body is typed depending on the signature of other methods in the system.
+
 To this aim we define a concept of program $p$, as a representation of 
 the code as seen from a certain point inside of the source code.
 
@@ -327,17 +329,19 @@ Thus, for example in the program
 A={()}
 t={ B={()}   This1.A m(This0.B b)}
 C={D={E=t}}
+H=t<B=A>
 \end{lstlisting}
 the flattened version for \Q@C.D.E@ will be 
 \Q@{ B={()}   This3.A m(This0.B b)}@, where the path
-\Q@This1.A@ is now \Q@This3.A@ while the path \Q@This0.B@ stays the same.
+\Q@This1.A@ is now \Q@This3.A@ while the path \Q@This0.B@ stays the same: types defined internally will
+stay untouched.
 The program $p$ in the observation point \Q@E=t@ is
 \begin{lstlisting}
 A={()}
 t={ B={()}   This1.A m(This0.B b)}
 C={D={E=t}};
-C={D={E=t}},
-D={E=t}
+C={D={E=t}},//this means, we entered in C
+D={E=t}//this means, we entered in D
 \end{lstlisting}
 
 %We will use $p$ as a function, so we will write
@@ -345,85 +349,82 @@ D={E=t}
 %we define now From,
 %....
 
+To fetch a trait form a program, we will use notation $p(t)=LV$, to 
+fetch a class we will use $p(T)$.
 
 %An $S$ represents what the top-level source-code form of our language is, it’s just a sequence of declarations and a main expression.
-\noindent To look up the value of a type in the program we will use the notation $p(T)=\textit{LV}$, which is defined by the following:,% but only if the RHS denotes an $LV$:
+\noindent To look up the definition of a class in the program we will use the notation
+%$p(t)=LV$ and
+$p(T)=\textit{LV}$, which is defined by the following:,% but only if the RHS denotes an $LV$:
 \begin{defye}%
+%\defy{(\_; \_, t\eq{}LV, \_)(t)}{\mathit{LV}}%
 \defy{(; \_, C\eq{}L, \_)(\This{0}{C}{Cs})}{\mathit{L(Cs)}}%
 %\defy{(id\eq{}L, p)(\This{0}{Cs})}{L(\mathit{Cs})}%
 \defy{(id\eq{}L, DLs\Q{;} DVs)(\This{0}{Cs})}{L(\mathit{Cs})}%
 %p' id=L,A;B = id=L,p
 %\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%shorter version, not wrong but confusing
 \defy{(id\eq{}L, DLs\Q{;} DVs)(\This{n+1}{Cs})}{DLs\Q{;} DVs(\This{n}{Cs})}%
+\defy{LV({\emptyset})}{LV}%
+\defy{L(\Cs{C}{\s{C}})}{L_0(Cs) \text{ where } L = \lib{\_}{\_, C\eq{L_0}, \_}{\_}}%
 \end{defye}
 
 
-\noindent And a few simple auxiliary definitions:
+This notation just fetch the referred $LV$ without any modification.
+To adapt the paths we define $\from{T_0}{T_1}$ and $\from{L}{T}$ as following:
 \begin{defye}%
-	\defy{\s{T} \in p}{\forall T \in \s{T} \bullet p(T) \text{ is defined}}%
-	\defy{L({\emptyset})}{L}%
-	\defy{L(\Cs{C}{\s{C}})}{L(Cs) \text{ where } L = \lib{\_}{\_, C\eq{L}, \_}{\_}}%
-	\defy{L[C\eq{E'}]}{\lib{Tz}{\s{MV}\ C\eq{E'}\ \s{M}}{K?}}
-	\defyc{\text{where } L = \lib{Tz}{\s{MV}\ C\eq{\_}\ \s{M}}{K?}}
+	\defy{
+\from{\This{n}{Cs}}{\This{m}{C_1\ldots C_k}}
+}{
+\This{m}{C_1\ldots C_{(k-n)}} \quad \textit{with }n\leq k
+}
+\defy{
+\from{\This{n}{Cs}}{\This{m}{C_1\ldots C_k}}
+}{
+\This{(m+n-k)}{C_1\ldots C_{(k-n)}{Cs}} \quad \textit{with }n> k
+}
+	\defy{
+\from{L}{T}
+}{
+\from{L}{T}_0
+}
+\defy{
+\from{
+\libc{\Q@interface@? Tz}{Mz}{K}
+}{T}_j
+}{
+\libc{\Q@interface@? \from{Tz}{T}_{j+1}}{\from{Mz}{T}_{j+1}}{\from{K}{T}_{j+1}}
+}
+\defy{
+\from{\This{(j+n)}{Cs_0}}{T}_j
+}{
+\This{(j+k)}{Cs_1}\quad \textit{with } \from{\This{n}{Cs_0}}{T}=\This{k}{Cs_1}
+}
+\defy{
+\from{\This{n}{Cs}}{T}_j
+}{
+\from{\This{n}{Cs}}{T} \quad \textit{with }n<j
+}
+%This(j+n).Cs0[from P]j=This(j+k).Cs1
+%  with Thisn.Cs0[from P]=Thisk.Cs1
+%Thisn.Cs[from P]j=Thisn.Cs with n<j
+%All cases for other expressions/terms propagate to submembers, including
+%comments, since they can have annotated Ps
 \end{defye}
 
-
-\noindent To get the relative value of a trait, we define $p[T]$:
+\noindent Finally, we we combine those to notation for the
+most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
 \begin{defye}%
-\defy{(\s{DL}; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{\#DLs}}}
-\end{defye}
-
-\noindent To get a the value of a literal, in a way that can be understand from the current location (\This{0}), we define:
-\begin{defye}%
+  \defy{(DL_1\ldots DL_n; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{n}}}
 	\defy{p[T]}{\from{p(T)}{T}}%
 \end{defye}
-
-
-%We will also use $p[T.m]$ to extra
-
-\begin{bnf}
-\production{%
-\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
-                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
-%LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
-%MV}     {C\eq{}LV \mmid{} mt}                                                    {}\\\production{%
-\ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
-	\mmid{} T\Q{.}m\rp{vs \ctx{v} es}  }           {}%\\\production{%
-%DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
-%DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
-%Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
-%p}      {DLs\Q{;} DVs}                                                     {program}
-\end{bnf}
-
+\\${}_{}$\\
 %A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
 
 %A literal $L$ has 4 components, an optional interface keyword, a list of implemented interfaces, a list of members, and an optional constructor. For simplicity, interfaces can only contain abstract-methods ($amt$) as members, and cannot have  constructors. A member $M$, is either an (potentially abstract) methood $mt$ or a nested class declaration $(CD)$. A member value $MV$, is a member that has been fully compiled. An $mid$ is an identifier, identifying a member.
 %Constructors, $K$, contain a $Txs$ indicating the type and names of fields. An $e$ is normal fetherweight-java style expression, it has variables $x$, method calls $e.m(es)$, field accesses $e.x$ and object creation $new es$.
 
 %$CtxV$ is the evaluation context for class-expressions $E$, and $ctxv$ is the usuall one for $e$’s.
-
-
-\newpage
-
 \begin{comment}
-Define p(P) = LV
------------------------------------
-
-
-p.exists(Ps) iff forall P in Ps: p(P) is defined
-
-Define L(Cs) = L
---------------------------------------
-L(empty) = L
-L(C.Cs) = L(Cs)
-    L = interface? {_; _, C = L, _; _}
-
-Define L[CD]=L'
----------------------------------------------
-L[C = E'] = interface? {Tz; MVs C = E' Ms; K?}
-  L = interface? {Tz; MVs C = _ Ms; K?}
-
-
 Define operations on p
 --------------------------------------
 p.evilPush(L) = (C = L, p)
@@ -462,35 +463,42 @@ dom(C = E, Mz) = C, dom(Mz)
 dom(T m(Txs), Mz) = m, dom(Mz)
 \end{comment}
 
-We have two-top level reduction rules defining our language, of the form $Ds e ––> Ds’ e$ which simply reduces the source-code.
-The first rule $(compile)$ ‘compiles’ each top-level declaration (using a well-typed subset of allready compiled top-level declarations), this reduces the defining expresion.
-The second rule, $(main)$ is executed once all the top-level declarations have compiled (i.e. are now fully evaluated class literals), it typechecks the top-level declarations and the main expression, and then procedes to reduce it.
-In principle only one-typechecking is needed, but we repeat it to avoid declaring more rules.
-\begin{verbatim}
-Define Ds e --> Ds' e'
-================================================================
-DVs' |- Ok
-empty; DVs'; id | E --> E'
-(compile)---------------------------------------- DVs' subsetof DVs
-DVs id = E Ds e --> DVs id = E' Ds e
+\section{Flattening}
 
-DVs |- Ok
-DVs |- e : T
-DVs |- e --> e'
-(main)---------------------------------- for some type T
-DVs e --> DVs e'
-\end{verbatim}
-
-
-
-\section{Compilation}
-
-Aside from the redirect operation itself, compilation is the most interesting part, it is defined by a reduction arrow $p; id |- E --> E’$, the $id$ represents the id of the type/trait that we are currently compiling, it is needed since it will be the name of $This0$, and we use that fact that that is equal to $This1.id$ to compare types for equality.
+Aside from the redirect operation itself, compilation/flattening is the most interesting part,
+it is defined by a reduction arrow $p; id \vdash E \leftarrow E’$, the $id$ represents the id of the type/trait that we are currently compiling, it is needed since it will be the name of $This0$, and we use that fact that that is equal to $This1.id$ to compare types for equality.
 The $(CtxV)$ rule is the standard context, the $(L)$ rule propegates compilation inside of nested-classes, $(trait)$ merely evaluates a trait reference to it’s defined body, $(sum)$ and $(redirect)$ perform our two meta-operations.
 
+\begin{bnf}
+\production{%
+\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
+                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}
+\end{bnf}
 \begin{verbatim}
 Define p; id |- E --> E'
 =========================================================
+\end{verbatim}
+$\begin{array}{l}
+\inferrule[(top)]{
+	a \xrightarrow[b]{} c\quad
+	\forall i<3 a\vdash b:\text{OK}\\\\
+	\forall i<3 a\vdash b:\text{OK}
+}{
+	1+2
+	\rightarrow
+	3
+}\begin{array}{l}
+a\\b\\c
+\end{array}
+\\
+\inferrule[(CtxV)]{
+  p;id\vdash E\Rightarrow E'
+}{
+  p;id\vdash\ctx{V}[E]\Rightarrow\ctx{V}[E']
+}
+
+\end{array}$
+\begin{verbatim}
 p; id |- E --> E'
 (CtxV) ----------------------------------------------
 p; id |- CtxV[E] --> CtxV[E']
@@ -555,6 +563,53 @@ T', Txs'.Ts =p Ts, Txs
 
 (C = L) <+p (C = L') = L <+p.push(C) L'
 \end{verbatim}
+
+
+
+We have two-top level reduction rules defining our language, of the form $Ds e ––> Ds’ e$ which simply reduces the source-code.
+The first rule $(compile)$ ‘compiles’ each top-level declaration (using a well-typed subset of allready compiled top-level declarations), this reduces the defining expresion.
+The second rule, $(main)$ is executed once all the top-level declarations have compiled (i.e. are now fully evaluated class literals), it typechecks the top-level declarations and the main expression, and then procedes to reduce it.
+In principle only one-typechecking is needed, but we repeat it to avoid declaring more rules.
+\begin{verbatim}
+Define Ds e --> Ds' e'
+================================================================
+DVs' |- Ok
+empty; DVs'; id | E --> E'
+(compile)---------------------------------------- DVs' subsetof DVs
+DVs id = E Ds e --> DVs id = E' Ds e
+
+DVs |- Ok
+DVs |- e : T
+DVs |- e --> e'
+(main)---------------------------------- for some type T
+DVs e --> DVs e'
+\end{verbatim}
+
+gff
+\begin{defye}%
+	\defy{L[C\eq{E'}]}{\lib{Tz}{\s{MV}\ C\eq{E'}\ \s{M}}{K?}}
+	\defyc{\text{where } L = \lib{Tz}{\s{MV}\ C\eq{\_}\ \s{M}}{K?}}
+	\defy{\s{T} \in p}{\forall T \in \s{T} \bullet p(T) \text{ is defined}}% WHERE WE USE IT?
+\end{defye}
+
+
+%We will also use $p[T.m]$ to extra
+
+\begin{bnf}
+\production{%
+\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
+                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
+%LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
+%MV}     {C\eq{}LV \mmid{} mt}                                                    {}\\\production{%
+\ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
+	\mmid{} T\Q{.}m\rp{vs \ctx{v} es}  }           {}%\\\production{%
+%DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
+%DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
+%Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
+%p}      {DLs\Q{;} DVs}                                                     {program}
+\end{bnf}
+
+
 
 \section{Type System}
 
