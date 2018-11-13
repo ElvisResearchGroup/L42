@@ -59,10 +59,10 @@ p <= p': // transitive
     p'' <= p'
 
 (DLs; DVs) <= (DLs DLs'; DVs DVs')
-  // I.e. a shallower program, or one with more less top-level declarations
+  // I.e. a shallower program, or one with less top-level declarations
 
 (DLs id = L DLs; DVs) <= (DLs id = L' DLs; DVs)
-  L = L'[remove Csz] // I.e. L has les nested classes
+  L = L'[remove Csz] // I.e. L has less nested classes
 
 // NOTE: We are not adding methods! (as doing so will break redirect)
 
@@ -96,3 +96,48 @@ define MostSpecificMapping(p; Rz) = R
   forall Cs:
     // Note: R(Cs) is undefined, if none of the Rz define it
     R(Cs) = MostSpecific(p; {R'(Cs) | R' in Rz})
+
+Other stuff
+================================
+dom(p) = { p.minimize(P) | p(P) is defined }
+
+Define RedirectSet(p; R) = RedirectSet(p.top(); dom(R)) // Just a simple short hand
+Define ValidProblems = {(p, R) | ValidProblem(p; R)}
+
+CompleteConstraints(p; R; CCz) iff:
+  forall Cs in RedirectSet(p; R):
+    exists P such that P <= Cs in CCz
+
+CollectComplete(p; R) iff CompleteConstraints(p; R; CollectConstraints(p; R))
+
+Lemmas (I.e. Proof these!)
+=================================
+If range(R) not subseteq dom(p), then not PossibleRedirection(p; R0; R)
+
+--------------------------------------------------------------
+Let f be some function from p -> Rz,
+  forall (p, R) in ValidProblems,
+    forall p' in SimilarProblems(p; R),
+      f(p) subseteq f(p')
+
+define MostSpecificSimilar(p; R; f) = R' iff:
+  forall p' such that SimilarProblem(p; R; p'), MostSpecificMapping(p'; f(p)) = R'
+
+forall (p, R) in ValidProblems:
+  if exists p' in SimilarProblems(p; R), and R', such that:
+      R' in f(p')
+      range(R') not subseteq dom(p)
+  then MostSpecificSimilar(p; R; f) is undefined
+-------------------------------------------------------------------------------------------------
+
+dom(CollectConstraints(p; R)) subseteq RedirectSet(p; R)
+
+
+Define p.defineClass(L, C) = p' // But for paper language only!
+=======================================================================================
+  (id0 = L0, id1 = L0, p).defineClass(L, C) = (id0 = L0, id1 = L1.withMember(C: L), p)
+  (id0 = L0; DVs).defineClass(L, C) = (id0 = L0; DVs, C = L)
+
+
+
+

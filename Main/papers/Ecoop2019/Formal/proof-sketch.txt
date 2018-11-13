@@ -3,27 +3,29 @@
 
 What we want to prove?
 ==============================================================================-===
-forall p, R: ValidProblem(p; R) --> CollectRedirection(p; R) == BestRedirection(p; R)
+forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
 
 Where BestRedirection(p; R) = R', iff:
-  forall p' such that SimilarProblem(p; R; p'),
-    MostSpecificMapping(p'; {R' | ValidRedirection(p'; R; R')}) = R'
+  forall p' in SimilarProblems(p; R), MostSpecificMapping(p'; {R' | ValidRedirection(p'; R; R')}) = R'
 // Also '==' works on undefined as you would expect...
 
 // TODO: Other things to prove?
-// ValidRedirection(p; R; R') --> BestRedirection(p; R') = R'
 // The input Redirect passes to CollectRedirection satisfies ValidProblem
 // Meta-level soundness?
 =============================================================================================
-SimilarProblem(p; R; p') iff
+p' in SimilarProblems(p; R) iff
   Csz = RedirectSet(p.top(); dom(R))
+
+  // TODO: Delete method bodies and private things?
+  // And/or make Redirect do this, and add this line to ValidProblem?
   L = p.top()[only Csz] = p'.top()[only Csz]
+
   p.updateTop(L) <= p'.updateTop(L)
   ValidProblem(p'; R)
 =================================================
 // Core definitions for the proof
 
-SatisfiedRedirection(p; R; R') iff SatisfiedSolution(p; R; CollectConstraints(p; R; R'))
+SatisfiedRedirection(p; R; R') iff SatisfiedSolution(p; R; CollectConstraints(p; R); R')
 SatisfiedSolution(p; R; CCz; R') iff:
   R satisfies_p CCz && PossibleTargets(p; R) && PossibleRedirection(p; R; R')
 
@@ -32,23 +34,40 @@ SatisfiedSolution(p; R; CCz; R') iff:
 
 BestSatisfiedRedirection(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
 BestSatisfiedSolution(p; R; CCz) = R':
-  forall p' such that SimilarProblem(p; R; p'),
+  forall p' in SimilarProblems(p; R):
     MostSpecificMapping(p'; {R' | SatisfiedSolution(p'; R; CCz; R')}) = R'
-
 
 Define R in CollectMappings(p; CCz), iff:
   dom(R) = dom(CCz)
-  forall Cs in dom(CCz): R(P) in CollectTargets(p; CCz; Cs)
+  forall Cs in dom(CCz): R(Cs) in CollectTargets(p; CCz; Cs)
 --------------------------------------------
 Proof that forall p, R: ValidProblem(p; R) --> CollectRedirection(p; R) = BestRedirection(p; R)
 ----------------------------------
-Take arbitrary p and R such that ValidProblem(p; R)
-1. CollectRedirection == BestSatisfiedRedirection
-  1a. Proof: suppose that CCz = CollectConstraints(p; R),
-    show that BestSatisfiedSolution(p; R; CCz) == CollectSolution(p; R; CCz) // Since the rest of CollectRedirection and BestSatisfiedRedirection are the same
 
-    // Hard parts of the proof:
-      // proving that PossibleRedirection(p; R; CollectSolution(p; R; CCz))
+------------------------------------------------------
+Proof that forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
+------------------------------------------------------
+Suppose (p, R) in ValidProblems(p; R)
+
+Let CCz = CollectConstraints(p; R)
+0. CCz is (uniqueley) defined // Right?
+
+1. Suppose CollectRedirection(p; R) is undefined, then BestRedirection(p; R) is undefined
+  1.1. Suppose CompleteConstraints(p; CCz), then BestRedirection(p; R) is undefined
+    1.1a: SatisfiedSolutions(p; R; CCz) = // Easy
+
+  1.2. Suppose not CollectComplete(p; R), then BestRedirection(p; R) is undefined // HARD
+1. Suppose not CollectComplete(p; R), then CollectRedirection(p; R) == BestRedirection(p; R)
+  1b. CollectRedirection(p; R) is undefined  // trivial
+  1a. BestRedirection(p; R) is undefined // hard
+
+2. Suppose CollectComplete(p; R), then CollectRedirection(p; R) == BestRedirect(p; R)
+  2.1. CollectRedirection == BestSatisfiedRedirection
+    1a. Proof: suppose that CCz = CollectConstraints(p; R),
+      show that BestSatisfiedSolution(p; R; CCz) == CollectSolution(p; R; CCz) // Since the rest of CollectRedirection and BestSatisfiedRedirection are the same
+
+      // Hard parts of the proof:
+        // proving that PossibleRedirection(p; R; CollectSolution(p; R; CCz))
       // prooving that the forall p' SimilarProblem(p; R; P') dosn't break our algorithm, since:
           // forall Cs,
           // If exists Pz such that forall p' SimilarProblem(p; R; P'): {P | Cs->P satisfies_p' CCz} = Pz
@@ -63,6 +82,49 @@ Take arbitrary p and R such that ValidProblem(p; R)
 
        p, MostSpecific... bullshit, is the same as our MostSpecific(p; Pz) thing...
 
-2. SatisfiedRedirect == ValidRedirection
-  2a. SatisfiedRedirect ==> ValidRedirection // Hard
-  2b. ValidRedirection ==> SatisfiedRedirect // Easy
+  2.2. SatisfiedRedirect == ValidRedirection
+    2a. SatisfiedRedirect ==> ValidRedirection // Hard
+    2b. ValidRedirection ==> SatisfiedRedirect // Easy
+
+
+In either cases 1 and 2, CollectRedirection(p; R) == BestRedirection(p; R)
+
+==========
+Let f and g be partial function from A->B
+
+Then f == g iff: forall a in A, f(a) == b(a)
+Or,
+
+forall a in A,
+  f(a) is undefined iff g(a) is undefined
+  forall b, f(a) = b iff g(a) = b
+------------------------------------------------
+Or alternatively we can consider the cases?
+
+  if f(a) is undefined: g(a) is undefined
+  if f(a) = b: g(a) = b
+
+Proof that that implies f == g? (who cares about the other  direction?)
+  Suppose not, than we must have an a such that f(a) and g(a) disagree,
+      if f(a) is undefined, than by the above we must have g(a) is undefined, so a contradiction
+      if f(a) = b, then by the above, we must have g(a) = b, again a contradiction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

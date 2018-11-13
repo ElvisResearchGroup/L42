@@ -21,8 +21,8 @@ import ast.Util.CsPath;
 import ast.ExpCore.ClassB;
 import ast.PathAux;
 import auxiliaryGrammar.*;
-import coreVisitors.From;
-import facade.PData;
+import coreVisitors.*;
+import facade.*;
 import is.L42.connected.withSafeOperators.pluginWrapper.*;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.RedirectError;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.RedirectError.*;
@@ -499,24 +499,26 @@ public class Redirect {
     // Ok, now it should be a PossibleTarget!
     return Set.of(addL(L.withMs(mwtz))); }
 
-  // Adds L and returns a path referencing it!
-  static int n = 0;
-
   // This function has way too many assumptions:
-  //  "Fresh" + n is a fresh name
-  //  L does not contain This0.Cs
-  //  L has no implemented methods
-  //  L has no nested classes
+  //  L does not mentioon paths of the form This0.Cs
   //  p is equiavlent to p.pop().evilPush(p.top())
   Path addL(ClassB L) { // let's hope that p was evil pushed, I don't know how to check though...
-    var L2 = p.pop().top(); // This1
-    var newC = C.of("Fresh" + n++);
-    var Mz2 = new ArrayList<>(L2.getMs());
-    Mz2.add(new NestedClass(Doc.empty(), newC,
-      new FromedL(L, Path.outer(0, List.of(C.of("EVIL_PUSHED")))).asClassB(), Position.noInfo));
-    // replace This1 with our now thing
-    p = p.pop().updateTop(L2.withMs(Mz2)).evilPush(p.top());
-    return Path.outer(1, List.of(newC)); }
+    var C2 = C.of(Functions.freshName("Fresh", L42.usedNames));
+    var DecreaseN = new CloneVisitor() {
+      @Override protected Path liftP(Path P) {
+        assert !isInternal(P);
+        return P.isCore() ? P.setNewOuter(P.outerNumber() - 1) : P;
+      }
+    };
+    var NC = new NestedClass(Doc.empty(), C2, DecreaseN.visit(L), Position.noInfo);
+    // Add NC to p(This1)
+
+    // L2 = p(This1) + NC
+    var L2 = p.extractClassB(Path.outer(1)).withMember(NC);
+
+    // p = p.growFellow(p.pop().updateTop(L2)); // Both p and p.pop() are evilPushed, so growFellow is undefined
+    p = p.pop().updateTop(L2).evilPush(p.top());
+    return Path.outer(1, List.of(C2)); }
 
   Mdf commonSubMdf(Mdf a, Mdf b) {
     if (a.equals(b)) { return a; }
@@ -576,7 +578,7 @@ public class Redirect {
       assert p.minimize(P).equals(P);
       assert P.tryOuterNumber() != 0;
 
-      var L1 = R.apply(this.get(Cs).asClassB());
+      var L1 = R.apply(this.get(Cs).topL()); // I'm too lazy to make R work on frommedL's, this will suffice
       var L2 = this.get(P);
 
       // No need to check for well-typedness of L2, as 42 gurantees this for any 'class Any' given as input is (transitivley) well-typed

@@ -89,15 +89,13 @@ public class FromedL {
 
   Path from(Path P1) { return From.fromP(P1, P); }
   MethodWithType from(MethodWithType mwt) { return From.from(mwt.with_inner(null), P).with_inner(mwt.get_inner()); }
-  Nested from(NestedClass nc) {
-    return new Nested(nc, this.P); }
+  Nested from(NestedClass nc) { return new Nested(nc, this.P); }
 
   boolean isInterface() { return this.L.isInterface(); }
-  ClassB asClassB() {
+  // Gets the 'top' L, ignores nested classes, and does not from method bodies
+  ClassB topL() {
     var Tz = this.Pz().stream().map(Type::of).collect(Collectors.toList());
-    var Mz = new ArrayList<Member>(this.mwtz());
-    this.ncz().forEach(N -> Mz.add(N.nc.withE(N.FL.asClassB())));
-    return this.L.withSupertypes(Tz).withMs(Mz); }
+    return this.L.withSupertypes(Tz).withMs(List.copyOf(this.mwtz())); }
 
   static Set<Path> reachables(MethodWithType mwt) {
     var res = new HashSet<>(mwt.getPaths());
