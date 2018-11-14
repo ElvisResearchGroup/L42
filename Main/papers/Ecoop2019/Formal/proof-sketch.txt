@@ -6,15 +6,15 @@ What we want to prove?
 forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
 
 Where BestRedirection(p; R) = R', iff:
-  forall p' in SimilarProblems(p; R), MostSpecificMapping(p'; {R' | ValidRedirection(p'; R; R')}) = R'
+  forall p' in SimilarProblems(p; R), MostSpecificRedirection(p'; {R' | ValidRedirection(p'; R; R')}) = R'
 // Also '==' works on undefined as you would expect...
 
 // TODO: Other things to prove?
 // The input Redirect passes to CollectRedirection satisfies ValidProblem
-// Prove internal stability....
-// Meta-level soundness?
+//    Thus Redircet[CollectRedirection := BestRedirection] == Redirect
+// Proof Meta-level soudnes ++ internal stability <==> validredirection
 =============================================================================================
-p' in SimilarProblems(p; R) iff p <= p' and ValidProblem(p'; R)
+p' in SimilarProblems(p; R) iff p <= p' and p.top() = p'.top()
 =================================================
 // Core definitions for the proof
 
@@ -28,7 +28,7 @@ SatisfiedSolution(p; R; CCz; R') iff:
 BestSatisfiedRedirection(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
 BestSatisfiedSolution(p; R; CCz) = R':
   forall p' in SimilarProblems(p; R):
-    MostSpecificMapping(p'; {R' | SatisfiedSolution(p'; R; CCz; R')}) = R'
+    MostSpecificRedirection(p'; {R' | SatisfiedSolution(p'; R; CCz; R')}) = R'
 
 Define R in CollectMappings(p; CCz), iff:
   dom(R) = dom(CCz)
@@ -73,10 +73,11 @@ Let CCz = CollectConstraints(p; R)
           // If it's not, we can than prove that the most-specific is also not independent of the program
 
     // Easy parts:
-        // CollectSolution chooses the MostSpecificMapping of CollectMappings (see above)
+        // CollectSolution chooses the MostSpecificRedirection of CollectMappings (see above)
         // Forall R in CollectMappings, R satisfies_p CCz && PossibleTargets(p; R)
 
-       p, MostSpecific... bullshit, is the same as our MostSpecific(p; Pz) thing...
+       p, MostSpecific... bullshit, is the same as our MostSpecific(p; P// Proof Meta-level soudnes ++ internal stability <==> validredirection
+z) thing...
 
   2b. SatisfiedRedirection(p; R; R') ==> ValidRedirection(p; R; R') // Hard
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,3 +122,13 @@ Proof that that implies f == g? (who cares about the other  direction?)
 
 
 
+
+-------
+Theroem InternalStability:
+  forall p ~R~ p',  BestRedirection_i(p; R) = BestRedirection_i(p'; R)
+
+p ~R~ p'
+  // RedirectSet* also includes nested classes?
+  p.top()[only RedirectSet*(p; R)] = p'.top()[only RedirectSet*(p'; R)]
+  // also delete method bodies...
+--------------------------------------------------------------------------
