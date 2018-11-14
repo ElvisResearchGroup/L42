@@ -2,139 +2,125 @@
 // Util contains some utility definitions used for this formalisism, some of which are implemented in L42 (but shouldn't be too interesting)
 
 // Perform and compute a redirect, using a choice function 'CollectRedirection' to compute the R mapping
-Define Redirect(p; L; Cs1 -> P1, ..., Csn -> Pn) = R(L[remove Csz]) // Remove the things that will be redirected away
+Define Redirect(p; L; R) = R(L[remove Csz]) // Remove the things that will be redirected away
+  R = Cs1 -> P1, ..., Csn -> Pn
   p' = p.evilPush(L) // to simplify everything, just make L the new top
-  Csz = RedirectSet(L; Cs1, ..., Csn)
-  Redirectable(L; ) // Check that the source is valid
+  Csz = RedirectSet(p; R)
+  Redirectable(L;Csz) // Check that the source is valid
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
   R = CollectRedirection(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
 
-================================================================================
-// Whether the class This0.Cs can be redirected away
-// Namely: that the class contains no implemented methods or anything private
+====================================================================
 Define Redirectable(L; Csz)
   forall Cs in Csz
     Cs not empty
-    L[Cs] is defined
-    forall C in Cs: not Private(Cs)
-    forall mwt in L[Cs].mwtz:
-      mwt.e = empty
-      not Private(mwt.m)
-
-    forall C in dom(L[Cs])
+    L(Cs) is defined
+    forall C in Cs: not Private(C)//no unique number
+    forall mwt in L(Cs).mwtz:
+      mwt.e = empty//not in paper
+      not Private(mwt.ms)
+    forall C in dom(L(Cs))
       Cs.C in Csz
 
 --------------------------------------------------------------
 // If we are redirecting Csz, then we need to redirect Csz
-Csz subseteq RedirectSet(L; Csz)
+dom(R) subseteq RedirectSet(p; R)
 
 // Redirect the nested class mentioned in the signature of a redirected class
 // We won't however be redirecting references to external paths (i.e. things outside of This0)
-Internals(Reachables(L[Cs])) subseteq RedirectSet(L; Csz)
-  Cs in RedirectSet(L; Csz)
+Internals(Reachables(p[Cs])) subseteq RedirectSet(p; R)
+  Cs in RedirectSet(p; R)
   // Note: because the top of the program will be evil pushed, there's no need to p.minimize the result of Reachables
 
-Reachables({interface? implements Pz Mz}) = Pz, Paths(Mz)
-Reachables(C: L) = Paths(L)[from This0.C]
+Reachables({interface? implements Pz Mz}) = Pz, Reachables(Mz)
 Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
-==================================================================================================================
+Reachables(C:L)=empty
+====================================================================
 CC ::= Cs <= P | P <= Cs
 CollectRedirection(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
-CollectConstraints(p; Cs1->P1, ..., Csn->Pn) = CollectAll(p; Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn)
-----------------------------
-// Utils
+CollectConstraints(p; Cs1->P1, ..., Csn->Pn) = Collect(p; Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn)
+
 dom(Cs <= P) = Cs
-dom(P <= C) = Cs
-dom(CC1,...,CCn) = dom(CC1), ..., dom(CCn)
+dom(P <= Cs) = Cs
 
 MustInterface(p; Cs) = p(Cs).interface? = interface
 MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
-
-Define p[P.ms] = p[P](ms)
-Define p[Cs.ms] = p[This0.Cs.ms]
-Define mwt.P = mwt.mt.T.P
-Define mwt.Pi = mwt.mt.Ts.i.P
-
-Define mwt.Cs = Internal(mwt.mt.T.P)
-Define mwt.Csi = Internal(mwt.mt.Ts.i.P)
-Define L.Csz = Internals(L.Pz)
-
-// CollectAll is the main function that collects all constraints
-CollectAll(p; CCz,CCz') := CollectAll(p; CCz'')
-  CCz'' = (CCz, CCz') U Collect(p; CCz)
-  CCz'' != CCz,CCz'
-CollectAll(p; CCz) := CCz
-  Otherwise
-=========================================================================
+====================================================================
 // Note: Collect isn't a function, but a relation,
 // I.e. Collect(p; CCz) = Ccz' for multiple different CCz' (even with the same p; CCz)
-Define Collect(p; CCz) := CCz':
-1: Collect(p; Cs <= P) = P <= Cs
+Define Collect(p; CCz):
+0a: CC in Collect(p; CCz,CCz')
+  CC in Collect(p; Collect(p; CCz))
+  // Infiniteley recursive!, We will need to prove termination!
+0b: CC in Collect(p; CC)
+1: P <= Cs in Collect(p; Cs <= P)
   p[P].interface = empty //since all classes are final
 
-3a: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs'
+3a: MostSpecific(p; Pz) <= Cs' in Collect(p; P <= Cs)
   Cs' in p[Cs].Csz
   Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs; P')}
 
-3b: Collect(p; P <= Cs) = Cs' <= MostGeneral(p; Pz)
+3b: Cs' <= MostGeneral(p; Pz) in Collect(p; P <= Cs)
   Cs' in p[Cs].Csz
   Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs; P')}
 
-3c: Collect(p; P <= Cs, Cs' <= P') = Cs <= P' // TODO: Proove this is neccessary
+3c: Cs <= P' in Collect(p; P <= Cs, Cs' <= P')  // TODO: Proove this is neccessary
   Cs' in p[Cs].Pz
 
-3d: Collect(p; P <= Cs) = P <= Cs'
+3d: P <= Cs' in Collect(p; P <= Cs)
   Cs' in p[Cs].Pz
 
-
-4: Collect(p; P <= Cs) = p[P.ms].P <= p[Cs.ms].Cs
-5: Collect(p; CC) = p[Cs.ms].Csi <= p[P.ms].Pi
+4: p[P.ms].P <= p[Cs.ms].Cs in Collect(p; P <= Cs)
+5: p[Cs.ms].Csi <= p[P.ms].Pi in Collect(p; CC)
    CC = P <= Cs or  CC = Cs <= P
 
-6: Collect(p; Cs <= P) = p[Cs.ms].Cs <= p[P.ms].P:
+6: p[Cs.ms].Cs <= p[P.ms].P in Collect(p; Cs <= P)
   MustInterface(p; Cs)
 
-7: Collect(p; Cs <= P) = p[P.ms].Pi <= p[Cs.ms].Csi:
+7: p[P.ms].Pi <= p[Cs.ms].Csi in Collect(p; Cs <= P)
   MustInterface(p; Cs)
 
   // The ? rules
-8a:  Collect(p; Cs <= P) = P' <= p[Cs.sel].Cs
+8a: P' <= p[Cs.sel].Cs in Collect(p; Cs <= P)
   P' = p[P.sel].P
   p[P'].interface?=empty
 
-8d:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P')
+8d:  Cs' <= Origin(p; sel'; P') in Collect(p; Cs <= P)
   Cs' = p[Cs.sel].Cs
   P' = p[P.sel].P
   sel' in dom(p[Cs']) intersect dom(p[P'])
 
-8'd:  Collect(p; Cs <= P) = Cs' <= Origin(p; sel'; P') // TODO: Proove this is neccessary
+8'd: Cs' <= Origin(p; sel'; P') in Collect(p; Cs <= P) // TODO: Proove this is neccessary
   Cs' in p[Cs].Pz
   P' in SuperClasses(p; P)
   sel' in dom(p[Cs']) intersect dom(p[P'])
 
-11a: Collect(p; CCz) = Cs <= P  // TODO: Prove this is neccessary
+11a: Cs <= P in Collect(p; CCz)  // TODO: Prove this is neccessary
   CollectTargets(p; CCz; Cs) = {P}
 
-11b: Collect(p; CCz) = MostSpecific(p; Pz) <= Cs  // TODO: Prove this is neccessary
+11b: MostSpecific(p; Pz) <= Cs in Collect(p; CCz)  // TODO: Prove this is neccessary
   CollectTargets(p; CCz; Cs) = Pz
 
 ===================================================================
 Define CollectSolution(p; R; CCz) := Cs1->P1, ..., Csn->Pn
-  redirectSet(p.top(), dom(R)) = Cs1, ..., Csn
+  redirectSet(p; R) = Cs1, ..., Csn
   Pi = MostSpecific(p; CollectTargets(p; CCz; Csi))
 
-CollectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz; Cs) = Pz''
+Define CollectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz; Cs) = Pz'
   Cs not in dom(CCz)
   // Note: SuperClasses will be undefined if n = 0
-  Pz = SuperClasses(p; P1, ..., Pn) // This internally does a p.minize, and so Pz'' will also be p.minized
-  Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-  Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}
----------------------------------------------
-Origin(p; sel; P) = P' // TODO: Define this using the refine keyword? (as in the code)
-  forall P'' in Supertypes(p; P) where sel in dom [P'']
-    p |- P'' <= P'
+  Pz = SuperClasses(p; P1, ..., Pn) // already minimized result
+  Pz' = {P in Pz | PossibleTarget(p; Cs; P) and p |- P <= P'1, ..., p |- P <= P'k}
+//Note, it is equivalent to
+//{p.minimize(P) | PossibleTarget(p; Cs; P), Cs->P satisfies_p CCz}
 
-SuperClasses(p; Pz) = intersect {p.minimize(p[P].Pz U {P, Any}) | P in Pz}
+---------------------------------------------
+// Note: the code uses the refine keyword, but we don't have that in the paper
+Origin(p; sel; P) = MostGeneral(p; {P' in Supertypes(p; P) | sel in dom p[P']})
+
+SuperClasses(p; P) = p.minimize(p[P].Pz U {P, Any})
+SuperClasses(p; P0,...,Pn) = 
+  SuperClasses(p; P0) intersect .. intersect SuperClasses(p; Pn)
 
 MostSpecific(p; Pz) = P
   P in p.minimize(Pz)
@@ -154,22 +140,16 @@ PossibleTargets(p; Cs1->P1, ..., Csn->Pn) iff
 PossibleTarget(p; Cs; P) iff
   L1 = p[Cs]
   L2 = p[P]
-
   MustClass(p; Cs) --> L2.interface? = empty
   MustInterface(p; Cs) --> L2.interface? = interface
-
   msdom(L1) subseteq msdom(L2)
   MustInterface(p; Cs) --> msdom(L2) subseteq msdom(L1)
-
-  p.minimize({P' in L1.Pz | !Internal(P')}) subseteq SuperClasses(p; P)
+  p.minimize(Externals(L1.Pz)) subseteq SuperClasses(p; P)
   forall ms in msdom(L1):
     p |- L2(ms).mt <~ L1(ms).mt //method subtyping ignoring internal paths
     MustInterface(p; Cs) --> p |- L1(ms).mt <~ L2(ms).mt
 
-
-p |- P <~ P':
-  Internal(P) and Internal(P')
-  // TODO: Is this an abuse? Internal returns a Cs, here I'm using it to ensure that it is deefined
+p |- This0.Cs <~ This0.Cs'
 
 p |- P <~ P':
   p |- P <= P'

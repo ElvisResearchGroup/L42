@@ -54,9 +54,9 @@ Define p <= p' // But for paper language only!
 p <= p' // reflexive
 
 p <= p': // transitive
-  exists p'' such that:
-    p <= p''
-    p'' <= p'
+  exists p" such that:
+    p <= p"
+    p" <= p'
 
 (DLs; DVs) <= (DLs DLs'; DVs DVs')
   // I.e. a shallower program, or one with less top-level declarations

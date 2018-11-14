@@ -229,6 +229,8 @@ program primitive operations:
  (L,_).top()=L
 
 -p.pop()=p'
+ (L,{interface? Ps Ms C_evil:[]},ctxLs).pop()={interface? Ps Ms},ctxLs
+ otherwise // we have C_evil not in dom(ctxL)
  (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
 
 -p.push(ctxL,L)=p'
@@ -310,6 +312,8 @@ grow transP(p.pop()) into the same depth as p and p'.
 _______
 #define p.growFellow(p0)=p1  //could be p0.pushLike(p)
 (L,ctxL,_).growFellow(p0)=p0.push(p0.top()/ctxL)
+//NOTE: it does not work on evil pushed p. Is this what we want?
+//code throw assertion in this case
 
 Following the transL/transP pattern shown above,
 "L/ctxL" is used where L come from a transformation,

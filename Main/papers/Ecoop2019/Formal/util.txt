@@ -79,10 +79,26 @@ R(P in Cs) = P
 
 
 ------------------------
-// Returns all the nested classes that are accesed from This0 (works best if Pz is minimized)
+// Returns all the nested classes that are accessed from This0; assume Pz is minimized
 Define Internals(Pz) = Csz
   Internals(P, Pz) = Internal(P), Internals(Pz)
   Internals(P, Pz) = Internals(Pz)
     otherwise
+  Internals(empty) = empty
 
 Internal(This0.Cs) = Cs
+
+Externals(P, Pz) = P, Externals(Pz)
+  where Internal(P) is undefined
+Externals(P, Pz) = Externals(Pz)
+  otherwise
+Externals(empty) = empty
+-----------------------------------
+Define p[P.ms] = p[P](ms)
+Define p[Cs.ms] = p[This0.Cs.ms]
+Define mwt.P = mwt.mt.T.P
+Define mwt.Pi = mwt.mt.Ts.i.P
+
+Define mwt.Cs = Internal(mwt.mt.T.P)
+Define mwt.Csi = Internal(mwt.mt.Ts.i.P)
+Define L.Csz = Internals(L.Pz)
