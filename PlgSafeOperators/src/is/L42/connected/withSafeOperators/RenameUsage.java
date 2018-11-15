@@ -47,7 +47,7 @@ public class RenameUsage extends MethodPathCloneVisitor {
     if(filtered.isEmpty()){return null;}
     Locator pathOriginal=this.getLocator().copy();
     pathOriginal.toFormerNodeLocator();
-    boolean isIn=pathOriginal.auxMoveInPath(src);//for both ms in methods and in htypes
+    boolean isIn=pathOriginal.auxMoveInPath(src);//for both s in methods and in htypes
     if(!isIn){return null;}
     for(Locator pMx:filtered){
         Locator pathDef=pMx.copy();

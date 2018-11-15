@@ -170,7 +170,7 @@ private static void addMwt(Program p, PlgInfo plgInfo, Method[] jms, Constructor
     }
 
   //add to msResult
-  //TODO: add behaviour if mwt have special comment to define specific ms for use
+  //TODO: add behaviour if mwt have special comment to define specific s for use
   String name=mwt.getMs().nameToS();
   if(name.startsWith("#")){name=name.substring(1);}
   UsingInfo ui;
@@ -427,7 +427,7 @@ public static boolean hasPluginUnresponsive(ClassB l){
 
 /*
 invalidMethodType
-  where: Path, ms
+  where: Path, s
   what: invalid ret/par/exc type
   why: no *primitive par/ret/exc void
        method *123 not present in external ref
@@ -435,10 +435,10 @@ invalidMethodType
        no class/fwd par/ret
 
   no plgunresponsive
-    where: Path, ms
+    where: Path, s
 
 overloading
-  where: Path, ms
+  where: Path, s
   in JavaClass selector/num have x variations/ is not present
 
 
@@ -447,7 +447,7 @@ overloading
     Library originalInput
     internal/ext
     Path /ClassAny
-    opt ms
+    opt s
     opt sublocation (0 ret 1..n pars -1..-k exceptions, this??)
     size code
     issue string

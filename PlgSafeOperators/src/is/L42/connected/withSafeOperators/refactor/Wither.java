@@ -53,7 +53,7 @@ public static ClassB witherJ(PData p,List<Ast.C>path,ClassB top,MethodSelector i
 /**
 contract
 path, path.k exists, k.mdf=class
-for all xi in k.ms.xs
+for all xi in k.s.xs
   (0)the type of xi in k Ti, Ti.mdf in {imm/class}
   only one of path.x() or path.#x()
     (1)exists, (2) has read/imm receiver,(3) no exceptions

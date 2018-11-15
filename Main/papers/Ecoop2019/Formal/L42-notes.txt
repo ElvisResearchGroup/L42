@@ -10,8 +10,8 @@
 //   p |- Pz throws Pz' iff
 //     forall P in Pz: SuperClasses(p; P) intersects Pz'
 // Then:
-//   p |- R(p[Cs.ms].Pz) throws p[R(Cs).ms].Pz
-//   if p |- P <= P', then p |- p[P.ms].Pz throws p[P'.ms].Pz
+//   p |- R(p[Cs.s].Pz) throws p[R(Cs).s].Pz
+//   if p |- P <= P', then p |- p[P.s].Pz throws p[P'.s].Pz
 
 
 Apply CompleteR(p;..) to the result of ChooseR

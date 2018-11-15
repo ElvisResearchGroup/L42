@@ -133,12 +133,12 @@ _______
   //Note we do not do the following: "if Phase!=None, M1'..Mk' are extracted from Ms[from P0]"
   / because in the code we already "memoize" methods computation
   P1..Pn=collect(p,Ps[from P0])
-  ms1..msk={ms|exists i in 0..n : p(Pi)(ms) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
-  forall ms in ms1..msk, there is exactly 1 j in 0..n
-    such that p(Pj)(ms)=mh e? //no refine
+  ms1..msk={s|exists i in 0..n : p(Pi)(s) is defined}//Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
+  forall s in ms1..msk, there is exactly 1 j in 0..n
+    such that p(Pj)(s)=mh e? //no refine
   forall i in 1..k //i comes from k in ms1..msk
     Mi= p(P0)(msi)[from P0],  with p(P0)(msi) of form refine? mh e?,
-    otherwise //note: 'ms e' and missing methods both get mh from implemented interfaces
+    otherwise //note: 's e' and missing methods both get mh from implemented interfaces
     Mi=addRefine(methods(p,Pj)(msi)) //ok if it stay the same since already refine
       for the smallest j in 1..n such that methods(p,Pj)(msi) of form refine? mh
       //this ordering of j leverages the smart ordering of collect()
@@ -174,7 +174,7 @@ _______
  p.top()={interface? implements Ps Ms None}
  Ps'=collect(p,Ps)
  forall P in Ps'\p Ps, p.noUnique(P)
- Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.ms)| M in Ms],[C:e| C:e in Ms] 
+ Ms'=methods(p,This0)\Ms.mss, [methods(p,This0)(M.s)| M in Ms],[C:e| C:e in Ms]
 
 -norm(p,refine? mh e?)= refine? mh e'?
   where e'?=empty if e?=empty
@@ -243,7 +243,7 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
   L1..Ln={L| L inside eC}
   //in path not prime// not repeat check stage
   //Marco and James are confused by those comments
-  mhs={Li(Cs)(ms)[from This0.Cs].mh|forall Cs, Ms, Li in L1..Ln}
+  mhs={Li(Cs)(s)[from This0.Cs].mh|forall Cs, Ms, Li in L1..Ln}
   //mhs is a collections of method headers from many libraries,
   //and the paths are relative to the multiple insides of those libraries
   Ps0={Thisn.Cs |This(n+1).Cs inside mhs}
@@ -287,8 +287,8 @@ extracted class Any will be a valid typed 'class Any', suitable as input for red
 
 - reachableFromM(C:L,Typed?)= reachableFromL(L,Typed?).pop()
 - reachableFromM(mwt,empty)=reorganize({P| P inside mwt})
-- reachableFromM(ms e,empty)=reorganize({P| P inside e})
-otherwise //M can be mwt or ms e
+- reachableFromM(s e,empty)=reorganize({P| P inside e})
+otherwise //M can be mwt or s e
 - reachableFromM(M,Typed)=reachableFromM(M,empty)
     U (reachableFromL(L1,Typed) U...U reachableFromL(Ln,Typed)).pop()
     L1..Ln={L| L inside M.e?}

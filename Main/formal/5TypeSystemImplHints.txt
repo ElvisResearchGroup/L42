@@ -52,12 +52,12 @@ splitDs(ds)->i
   
 tsMCall(TSIn in,MCall e)->TSOut
   Path rec=guessType(e.receiver)
-  mTypes=computeMTypes(in.p,rec,e.ms)//TODO: in code error if meth not there
+  mTypes=computeMTypes(in.p,rec,e.s)//TODO: in code error if meth not there
   //memoizing mTypes would be a mistake since we can not abstract over p and [from rec]
   // 1 select the first match with acceptable return type
   mType=_firstMatchReturn(TSIn.T,mTypes)
   if mType==null return res=Error???
-  //unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
+  //unachievable return type (T) for method (P.s) [line numbers of expression and declaration]
   //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
   resp=TSOut[with ei in e.es.withAlso(left:e.receiver), Ti in mTypes.Ts
     resi=ts(in.with(e:ei, t:mutOnlyToLent(Ti)))

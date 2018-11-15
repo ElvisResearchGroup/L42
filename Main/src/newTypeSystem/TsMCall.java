@@ -57,7 +57,7 @@ default TOut innerMVPRetype(TOk ri,Type ti){
     if (mType==null){
       return new TErr(in,"None of the types of method "+s.getS()+" fits the required return type.",ret,ErrorKind.NotSubtypeMdf);
       }
-//unachievable return type (T) for method (P.ms) [line numbers of expression and declaration]
+//unachievable return type (T) for method (P.s) [line numbers of expression and declaration]
 //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
     List<TOk> resp=new ArrayList<>();
     List<Type> computed=new ArrayList<>();

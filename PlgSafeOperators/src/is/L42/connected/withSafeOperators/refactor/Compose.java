@@ -92,15 +92,15 @@ interface ComposeSpec{
 
 </pre>*/void compose();
 
-/**<pre>#define ssv((p1, p2)?, p0), ssv(p,e), refined(p,ms,Ps)=Ps'
+/**<pre>#define ssv((p1, p2)?, p0), ssv(p,e), refined(p,s,Ps)=Ps'
 //subtle subtype violation error function, p1,p2 parameters can be absent/empty
 
 ssv((p1, p2)?, p0):
   collect(p0, p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
   dom(p0.top().mwts) == dom(methods(p0,This0))
-  forall {i,j}={1,2}, ms in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to ms that are "refine" in p0
-    ps0=refined(p0,ms,p0.top().Ps),
-    psi=refined(pi,ms,pi.top().Ps)
+  forall {i,j}={1,2}, s in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to s that are "refine" in p0
+    ps0=refined(p0,s,p0.top().Ps),
+    psi=refined(pi,s,pi.top().Ps)
     and ps0 subsetEq psi //using p0.equiv //that is, there is some 'surprisingly added' stuff in ps0
   if (p1, p2)? =empty
     int=empty,
@@ -114,8 +114,8 @@ ssv((p1, p2)?, p0):
 ssv(p,e):
   forall L such that e=ctxC[L]:  ssv(p.evilPush(L))
 
-refined(p,ms,Ps)={P |P in Ps and ms in dom(p(P)) }
-  //note: if p(P) is undefined, then not ms in dom(p(P))
+refined(p,s,Ps)={P |P in Ps and s in dom(p(P)) }
+  //note: if p(P) is undefined, then not s in dom(p(P))
 </pre>*/void ssv();
 
 /**<pre>#define L1 +p L2 = L0
@@ -149,7 +149,7 @@ mwts1 + interface mwts2=interface
   "class" notin mwts1.mhs.mdfs
   mwts1.mss do not have number names (that is are not of form m__n(xs) )
 mwts1 +mwts2=empty
-  with size({n| refine? mh in (mwts1,mwts2), mh.ms= m__n(xs)})<=1//note, since is not "mh e" we are asking for the abstract methods only
+  with size({n| refine? mh in (mwts1,mwts2), mh.s= m__n(xs)})<=1//note, since is not "mh e" we are asking for the abstract methods only
 
 </pre>*/void isSumResultInterface();
 
@@ -161,7 +161,7 @@ p|-mh1<=mh2
 
 /**<pre>#define M[Ms]=M?
 nc[nc1..ncn]=nci if nci.C=nc.C
-mwt[mwt1..mwtn]=mwti if mwti.ms=mwt.ms
+mwt[mwt1..mwtn]=mwti if mwti.s=mwt.s
 otherwise=empty
 </pre>*/void selectMember();
 }

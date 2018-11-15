@@ -118,7 +118,7 @@ public class PluginWithPart implements PluginType{
     public boolean staticMethod=false;
     public List<String> names;// avoiding _this, just the parameter names, encoding java types
     public String jMethName=null;//can also be new for constructors and instanceof
-    public boolean needPData=false;//is using.ms.m starts with #
+    public boolean needPData=false;//is using.s.m starts with #
     public List<String> ts=new ArrayList<>();//types as javaCanonicalNames
     public List<Class<?>>jts=new ArrayList<>();
     //assert names.size()==ts.size(), but jts.size()==ts.size() or ts.size()+1 if needPData

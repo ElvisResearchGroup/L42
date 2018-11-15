@@ -18,7 +18,7 @@ Define Redirectable(p; Csz)
     forall C in Cs: not Private(C)//no unique number
     forall mwt in p(This0.Cs).mwtz:
       mwt.e = empty//not in paper
-      not Private(mwt.ms)
+      not Private(mwt.s)
     forall C in dom(p(This0.Cs))
       Cs.C in Csz
 
@@ -70,30 +70,30 @@ Define Collect(p; CCz):
 3d: P <= Cs' in Collect(p; P <= Cs)
   Cs' in p[Cs].Pz
 
-4: p[P.ms].P <= p[Cs.ms].Cs in Collect(p; P <= Cs)
-5: p[Cs.ms].Csi <= p[P.ms].Pi in Collect(p; CC)
+4: p[P.s].P <= p[Cs.s].Cs in Collect(p; P <= Cs)
+5: p[Cs.s].Csi <= p[P.s].Pi in Collect(p; CC)
    CC = P <= Cs or  CC = Cs <= P
 
-6: p[Cs.ms].Cs <= p[P.ms].P in Collect(p; Cs <= P)
+6: p[Cs.s].Cs <= p[P.s].P in Collect(p; Cs <= P)
   MustInterface(p; Cs)
 
-7: p[P.ms].Pi <= p[Cs.ms].Csi in Collect(p; Cs <= P)
+7: p[P.s].Pi <= p[Cs.s].Csi in Collect(p; Cs <= P)
   MustInterface(p; Cs)
 
   // The ? rules
-8a: P' <= p[Cs.sel].Cs in Collect(p; Cs <= P)
-  P' = p[P.sel].P
+8a: P' <= p[Cs.s].Cs in Collect(p; Cs <= P)
+  P' = p[P.s].P
   p[P'].interface?=empty
 
-8d:  Cs' <= Origin(p; sel'; P') in Collect(p; Cs <= P)
-  Cs' = p[Cs.sel].Cs
-  P' = p[P.sel].P
-  sel' in dom(p[Cs']) intersect dom(p[P'])
+8d:  Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P)
+  Cs' = p[Cs.s].Cs
+  P' = p[P.s].P
+  s' in dom(p[Cs']) intersect dom(p[P'])
 
-8'd: Cs' <= Origin(p; sel'; P') in Collect(p; Cs <= P) // TODO: Proove this is neccessary
+8'd: Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P) // TODO: Proove this is neccessary
   Cs' in p[Cs].Pz
   P' in SuperClasses(p; P)
-  sel' in dom(p[Cs']) intersect dom(p[P'])
+  s' in dom(p[Cs']) intersect dom(p[P'])
 
 11a: Cs <= P in Collect(p; CCz)  // TODO: Prove this is neccessary
   CollectTargets(p; CCz; Cs) = {P}
@@ -116,7 +116,7 @@ Define CollectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz
 
 ---------------------------------------------
 // Note: the code uses the refine keyword, but we don't have that in the paper
-Origin(p; sel; P) = MostGeneral(p; {P' in Supertypes(p; P) | sel in dom p[P']})
+Origin(p; s; P) = MostGeneral(p; {P' in Supertypes(p; P) | s in dom p[P']})
 
 SuperClasses(p; P) = p.minimize(p[P].Pz U {P, Any})
 SuperClasses(p; P0,...,Pn) = 
@@ -145,9 +145,9 @@ PossibleTarget(p; Cs; P) iff
   msdom(L1) subseteq msdom(L2)
   MustInterface(p; Cs) --> msdom(L2) subseteq msdom(L1)
   p.minimize(Externals(L1.Pz)) subseteq SuperClasses(p; P)
-  forall ms in msdom(L1):
-    p |- L2(ms).mt <~ L1(ms).mt //method subtyping ignoring internal paths
-    MustInterface(p; Cs) --> p |- L1(ms).mt <~ L2(ms).mt
+  forall s in msdom(L1):
+    p |- L2(s).mt <~ L1(s).mt //method subtyping ignoring internal paths
+    MustInterface(p; Cs) --> p |- L1(s).mt <~ L2(s).mt
 
 p |- This0.Cs <~ This0.Cs'
 

@@ -47,9 +47,9 @@ Define computeMaps(p;Cs->P;A)=A2;E
   ERROR IF Pi notin Ps' //will need to use equiv or even subtyping
   A0=A ++p Cs1 -> Ps' ++p .. ++p Csn -> Ps'
   mwt1,..,mwtn,nc1,..,nck= L.Ms[from This0.Cs] //note: implementation does not need to from ncs
-  ERROR IF mwti.ms not in Dom(L')
+  ERROR IF mwti.s not in Dom(L')
   A1=A0 ++p Cs.(nc1.C) -> P.(nc1.C) ++p .. ++p Cs.(nck.C) -> P.(nck.C)
-  mwt'i = L'(mwti.ms)[from P] //note: implementation does not need to from the method body
+  mwt'i = L'(mwti.s)[from P] //note: implementation does not need to from the method body
   A2=A1 ++p computeMaps(p;mwt1,mwt'1)++p... ++p computeMaps(p;mwtn,mwt'n)
   E=(mwt1.Ps,mwt'1.Ps),..,(mwtn.Ps,mwt'n.Ps)
 
@@ -272,8 +272,8 @@ Define Redirect(p, Cs, P) = L0:
 Define {interface? implements Pz Mwtz NCz} >=p P{interafce?' implements Pz' Mwtz' NCz'}:
   V(Pz) subseteq Pz',P
   if interface?=empty:
-    forall MS in dom(Mwtz):
-      p |- Mwtz'(MS).MT <= V(Mwtz)(MS).MT
+    forall s in dom(Mwtz):
+      p |- Mwtz'(s).MT <= V(Mwtz)(s).MT
     if class in Mwtz.mdfz then interface?'=empty
   else:
     interface? = interface?'
@@ -287,17 +287,17 @@ Define Cs{interface? implements Pz; Mwtz; NCz} >=LR;p P{interafce?' implements P
 		interface?' = interface
 		class method_ not in Mwtz
 
-	forall MS in dom(Mwtz):
-	        if Called(This0.Cs; MS; LR)
-			        p |- Mwtz'(MS).MT <= Mwtz(MS).MT
-            if Refined(This0.Cs; MS; LR)
-                    p |- Mwtz(MS).MT <= Mwtz'(MS).MT
+	forall s in dom(Mwtz):
+	        if Called(This0.Cs; s; LR)
+			        p |- Mwtz'(s).MT <= Mwtz(s).MT
+            if Refined(This0.Cs; s; LR)
+                    p |- Mwtz(s).MT <= Mwtz'(s).MT
 
 	if interface?=empty and Coherent({implements Pz; Mwtz}):
 		dom(Mwtz) = dom(Mwtz')
 
 	Pz subseteq Pz',P
-	disjoint { {Mwt.MS | Mwt in p(P) and Mwt.refine = empty} | P in Pz'}
+	disjoint { {Mwt.s | Mwt in p(P) and Mwt.refine = empty} | P in Pz'}
 ------------------------------------------------------
 Implementation
 
@@ -380,7 +380,7 @@ E,A -> E,E1,A
             Let Ts->T;Ps = Mwt.MT
 
             LOOP1: FOR EACH P in Pz1:
-                IF LET Mwt' := p(P)(Mwt.MS)[from P]:
+                IF LET Mwt' := p(P)(Mwt.s)[from P]:
                     let Ts'->T';Ps' = Mwt'.MT
 
                     Cs0->P'0,...,Csn->P'n = FOR EACH (Tr,Tr') in Zip(T,Ts;T',Ts'):
@@ -462,17 +462,17 @@ Cs->{P}, A ==>p Cs'->Pz'++ (Cs->{P}, A)
     Pz' = p(P)[from P].Pz
 
 Cs->{P}, A ==>p Csi->{Pi} ++ (Cs->{P}, A)
-    MS in dom(p(This0.Cs))
-    mwt = p(This0.Cs)(MS)[from this0.Cs]
-    mwt' = p(P)(MS)[from P]
+    s in dom(p(This0.Cs))
+    mwt = p(This0.Cs)(s)[from this0.Cs]
+    mwt' = p(P)(s)[from P]
     _ P1... _ Pn->_ P0; Pz = mwt.MT
     _ P'1 ... _ P'n->_ P'0; Pz' = mwt'.MT
     This0.Csi = P'i
 
 Cs->{P}, A ==>p Cs->mwt'.Pz ++ (Cs->{P}, A)
-    MS in dom(p(This0.Cs))
-    mwt = p(This0.Cs)(MS)[from this0.Cs]
-    mwt' = p(P)(MS)[from P]
+    s in dom(p(This0.Cs))
+    mwt = p(This0.Cs)(s)[from this0.Cs]
+    mwt' = p(P)(s)[from P]
     This0.Cs in mwt.Pz
 	/*
 		(This0.Blah) -> {}
@@ -516,9 +516,9 @@ Cs->P, A ==>p Cs'->P',Cs->P, A
     P' in Pz'
 
 Cs->P, A ==>p Cs'->P',Cs->P, A
-    MS in dom(p(This0.Cs))
-    mwt = p(This0.Cs)(MS)[from this0.Cs]
-    mwt' = p(P)(MS)[from P]
+    s in dom(p(This0.Cs))
+    mwt = p(This0.Cs)(s)[from this0.Cs]
+    mwt' = p(P)(s)[from P]
     _ P1... _ Pn->_ P0; Pz = mwt.MT
     _ P1' ... _ Pn'->_ P0'; Pz' = mwt'.MT
     This0.Cs' = Pi and P' = Pi, or

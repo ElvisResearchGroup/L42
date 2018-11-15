@@ -30,15 +30,15 @@ _______
 throw::= exception | error | return //James suggests "ball" as a possible replacement for throw
 mdf::= imm|mut|lent|read|capsule|class | fwdImm | fwdMut | fwd%Imm | fwd%Mut
 Phase::=None|Norm|Typed|Coherent //TODO: add (fresh library)names that are put after norms//May be None should be renamed into "Desugared"
-ms::=m(xs) //method selector
-mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.ms generates the corresponding ms
-Ldom::=ms|Cs
+s::=m(xs) //method selector
+mh::= mdf method T m(T1 x1..Tn xn) exception Ps //mh.s = mh.m(mh.xs)
+Ldom::=s|Cs
 P::= Thisn.Cs | Any | Library | Void  //is pronounced "Path"
 T::= mdf P
 C::= <uppercaseIdentifier>n? //uppercase includes % and $
 m::=#?<lowercaseIdentifier>n? //lowercase includes _
 
-//we denote with m__n(xs) or C__n an ms or a C with unique number n,
+//we denote with m__n(xs) or C__n an s or a C with unique number n,
 //m(xs) or C is then the name without the number,
 //m_n?(xs) or C__n? is the name with an optional number,
 //and m_n?(xs)=m(xs), C__n?=C if n?=empty
@@ -47,7 +47,7 @@ _______
 #define core expressions
 //annotations [T1,T2], [P] and [T] are implicitly "?", as in [T]?
 L::={interface? implements Ps M1..Mn Phase}
-M::=refine? mh e?| ms e | C:e
+M::=refine? mh e?| s e | C:e
 e::=L|void|x| P | chain.m[P,T]((x:e)s)
   | throw[T1,T2] chain|loop e|(ds ks e[T]) | use P check m((x:e)s) e | x:=e
 k::=catch throw P x e
@@ -57,7 +57,7 @@ chain::=x|P|chain.m( (x:e)s )|(ds ks catch throw P x chain ks' e)|(ds ks chain)|
 _______
 #define Compiled terms
 LC::={interface? implements Ps MC1..MCn Phase}  //library compiled
-MC::= mwt | ms eC |nc
+MC::= mwt | s eC |nc
 mwt::= refine? mh eC?
 nc::= C:LC
 eC::= x|void|P|LC |throw[T1,T2] eC|loop eC|(dCs kCs eC[T])
@@ -81,7 +81,7 @@ ctxC::=[]
 // The compilation context, e=ctxC[L] selects an L where
 // all of the former Ls are LC.
 // The context does not enter into libraries
-ctxM::= C: ctxC |ms ctxC | refine? mh ctxC
+ctxM::= C: ctxC |s ctxC | refine? mh ctxC
 ctxL::= {interface? implements Ps MCs ctxM Ms Phase}
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
@@ -131,7 +131,7 @@ Part 2: Well formedness
 
 * d: var T x=e is valid only if T not capsule or fwd.
 
-* ms: 'this' notin xs and all x in xs are unique
+* s: 'this' notin xs and all x in xs are unique
 
 * mh: 'Any' notin Ps //Ps is thrown exceptions //TODO: why??? should we remove this restriciton? 24/10/2018
 
@@ -163,7 +163,7 @@ Part 2: Well formedness
   if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
-* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "ms e"
+* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "s e"
   mwt= refine? mdf method T m(T1 x1..Tn xn)e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty

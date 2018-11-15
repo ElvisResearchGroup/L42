@@ -34,8 +34,8 @@ P @ Cs' === Cs<=P or P<=Cs
 
 T <= This1.B, This1.B <= T,
 
-Collect(p;[B] <~ V([T])) = [B].sel.P <= V([T].sel.P)
-Collect(p;[B] <~ V([T])) = V([T].sel.Pi) <= [B].sel.Pi
+Collect(p;[B] <~ V([T])) = [B].s.P <= V([T].s.P)
+Collect(p;[B] <~ V([T])) = V([T].s.Pi) <= [B].s.Pi
 
 
 
@@ -78,34 +78,34 @@ from V(T) <=B, [T].m=J, [V(T)] <~ V([T]), [B].m = M2 we know
 Assumptions:
   ValidRedirect(p; V; V)
   V(Cs) <= P
-  This0.Cs' = [Cs].sel.P
+  This0.Cs' = [Cs].s.P
 
 Conclusions:
   From ValidRedirect(p; V; V):
     [V(Cs)] <~ V([Cs])
-    [V(Cs)].sel.mt <=  V([Cs].sel).mt)
-    [V(Cs)].sel.P <=  V([Cs].sel).P)
+    [V(Cs)].s.mt <=  V([Cs].s).mt)
+    [V(Cs)].s.P <=  V([Cs].s).P)
   From V(Cs) <= P:
-     [V(Cs)].sel.mt <= [P].sel.mt
-     [V(Cs)].sel.P  <= [P].sel.P
+     [V(Cs)].s.mt <= [P].s.mt
+     [V(Cs)].s.P  <= [P].s.P
 
-  [V(Cs)].sel.P <= V(Cs')
-  [V(Cs)].sel.P <= P'
+  [V(Cs)].s.P <= V(Cs')
+  [V(Cs)].s.P <= P'
 
 
 Collect(p; Cs <= P0) = P1 ? Cs'
-  This0.Cs' = [Cs].sel.P
-  P1 = [P0].sel.P
+  This0.Cs' = [Cs].s.P
+  P1 = [P0].s.P
 
 Collect(p; P ? Cs)=P<=Cs
   [P].interface?=empty
 
-Collect(p; P ? Cs)=Cs<=Origin(p; sel; P)
-  sel in dom [Cs]
-  sel in dom [P]    
+Collect(p; P ? Cs)=Cs<=Origin(p; s; P)
+  s in dom [Cs]
+  s in dom [P]    
 
-Origin(p; sel; P) = P'
-  forall P'' in Supertypes(p; P) where sel in dom [P'']
+Origin(p; s; P) = P'
+  forall P'' in Supertypes(p; P) where s in dom [P'']
      p |- P'' <= P'
 
 Collect(p; P ? Cs, P' <= Cs)=Cs<=P
@@ -130,7 +130,7 @@ P ? Cs iff:
 --------------------
 
 Collect(p; P ? Cs)=
-  [Cs].sel and [P].sel
+  [Cs].s and [P].s
 
 A # B // A and B have a method in common
 C <= A
@@ -159,11 +159,11 @@ B:{method   M2 m() M m2()} <= T/B:{  J/M m() J/M m2()}
 
 
 -------------
->>Collect(p; P <= Cs) = p[P.ms].P <= Cs'   p[Cs.ms].P = This0.Cs'
+>>Collect(p; P <= Cs) = p[P.s].P <= Cs'   p[Cs.s].P = This0.Cs'
 T <= This1.B
 
->>Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
-    p[Cs.ms].P = This0.Cs'
+>>Collect(p; Cs <= P) = Cs' <= p[P.s].P:
+    p[Cs.s].P = This0.Cs'
             T <= This1.B
 
   forall p' ~V1~ p, V2 is the unique V such that ValidRedirect(p'; V1; V2)
@@ -175,96 +175,96 @@ T <= This1.B
 Collect(p; Cs <= P) = P' <= Cs'
 
 Cs.m
-    p[Cs.ms].P = This0.Cs'
+    p[Cs.s].P = This0.Cs'
 
 
-Collect(p; Cs <= P) = Cs' <= p[P.sel].P
-  p[Cs.sel.P] = This0.Cs'
+Collect(p; Cs <= P) = Cs' <= p[P.s].P
+  p[Cs.s.P] = This0.Cs'
 -----
 Assumptions:
   ValidRedirect(p; V; V)
   V(Cs) <= P
-  This0.Cs' = Cs.sel.P
+  This0.Cs' = Cs.s.P
 
 Conclusions:
   //V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
-  // V(Cs).sel <=  V(Cs.sel)
+  // V(Cs).s <=  V(Cs.s)
 
   
-  p[V(Cs)](sel).P <= V(Cs')
-  p[V(Cs)](sel).P <= p[P](sel).P
+  p[V(Cs)](s).P <= V(Cs')
+  p[V(Cs)](s).P <= p[P](s).P
 
 
 P'=V(Cs) with P' not of form This0._
-p[P'](sel).P <= p[P](sel).P
+p[P'](s).P <= p[P](s).P
 P'.r<=P.r
 
 Cs.r<=P.r
 
-Cs.sel<=P.sel
+Cs.s<=P.s
 Cs<=P
-Cs.sel.P
+Cs.s.P
 
 
 
 
 
 --------------------
-Collect(p; Cs <= P) = Cs' <= p[P](sel).P
+Collect(p; Cs <= P) = Cs' <= p[P](s).P
 // 	MustInterface(p; Cs)
-  p[Cs](sel).P = This0.Cs'
+  p[Cs](s).P = This0.Cs'
 
 Assumptions:
   ValidRedirect(p; V; V)
   p |- V(Cs) <= P
-  This0.Cs' = p[Cs](sel).P
+  This0.Cs' = p[Cs](s).P
 
 Conclusions:
   From ValidRedirect(p; V; V):
     p |- V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
-    p |- p[V(Cs)](sel).mt <=  V(p[Cs](sel).mt)
-    p |- p[V(Cs)](sel).P <=  V(p[Cs](sel).P)
+    p |- p[V(Cs)](s).mt <=  V(p[Cs](s).mt)
+    p |- p[V(Cs)](s).P <=  V(p[Cs](s).P)
   From p |- V(Cs) <= P:
-     P |- p[V(Cs)](sel).mt <= p[P](sel).mt
-     P |- p[V(Cs)](sel).P  <= p[P](sel).P
+     P |- p[V(Cs)](s).mt <= p[P](s).mt
+     P |- p[V(Cs)](s).P  <= p[P](s).P
 
-  p |- p[V(Cs)](sel).P <= V(Cs')
-  P |- p[V(Cs)](sel).P <= p[P](sel).P
+  p |- p[V(Cs)](s).P <= V(Cs')
+  P |- p[V(Cs)](s).P <= p[P](s).P
 
 ------
 
 --------------------
-Collect(p; Cs <= P) = Cs' <= p[P](sel).P
+Collect(p; Cs <= P) = Cs' <= p[P](s).P
 // 	MustInterface(p; Cs)
-  p[Cs](sel).P = This0.Cs'
+  p[Cs](s).P = This0.Cs'
 
 Assumptions:
   ValidRedirect(p; V; V)
   p |- V(Cs) <= P
-  This0.Cs' = p[Cs](sel).P
+  This0.Cs' = p[Cs](s).P
 
 Conclusions:
   From ValidRedirect(p; V; V):
     p |- V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
-    p |- p[V(Cs)](sel).mt <=  V(p[Cs](sel).mt)
-    p |- p[V(Cs)](sel).P <=  V(p[Cs](sel).P)
+    p |- p[V(Cs)](s).mt <=  V(p[Cs](s).mt)
+    p |- p[V(Cs)](s).P <=  V(p[Cs](s).P)
   From p |- V(Cs) <= P:
-     P |- p[V(Cs)](sel).mt == p[P](sel).mt
-     P |- p[V(Cs)](sel).P  == p[P](sel).P
+     P |- p[V(Cs)](s).mt == p[P](s).mt
+     P |- p[V(Cs)](s).P  == p[P](s).P
 
-  p |- p[V(Cs)](sel).P <= V(Cs')
-  P |- p[V(Cs)](sel).P  == p[P](sel).P
+  p |- p[V(Cs)](s).P <= V(Cs')
+  P |- p[V(Cs)](s).P  == p[P](s).P
 
 C <= A
 C <= B
 
 // A <= B
 
-//Collect(p; Cs <= P) = Cs' <= p[P](sel).P
+//Collect(p; Cs <= P) = Cs' <= p[P](s).P
 // 	//MustInterface(p; Cs)
-//  P' = p[P](sel).P
-//  // V(Cs)(sel).P = P''
-//  p[Cs](sel).P = This0.Cs'
+//  P' = p[P](s).P
+//  // V(Cs)(s).P = P''
+//  p[Cs](s).P = This0.Cs'
 -------------
 
 ///
@@ -327,9 +327,9 @@ p |- V satisfies (Cs in Pz) iff
 
 //Collect(p; Cs <= P) = Cs' <= P'
 // 	//MustInterface(p; Cs)
-//  P' = p[P](sel).P
-//  // V(Cs)(sel).P = P''
-//  p[Cs](sel).P = This0.Cs'
+//  P' = p[P](s).P
+//  // V(Cs)(s).P = P''
+//  p[Cs](s).P = This0.Cs'
 
 // T<=M2
 //    With the broken rule, our collectr will deduce that J<=M2
@@ -354,7 +354,7 @@ K <= This1.C, This1.C <= K, T <= This1.A, T <= This1.B   J <=M2  B2 <= T  M3 <= 
 
 // Cs = T,
 // P = This1.B
-// sel = m
+// s = m
 // Cs' = J
 // P' = M2
 // V(J) <= M2
@@ -378,10 +378,10 @@ P'': {interface implements VCs', P}
 
 EX: {foo(P) }
 
-P: { P' sel() }
+P: { P' s() }
 {
   Cs': {}
-  Cs: {Cs' sel()}
+  Cs: {Cs' s()}
   X: { foo(Cs) } 
 }<X = EX> // Cs = P, Cs' = P'
 
@@ -391,21 +391,21 @@ P: { P' sel() }
 Assumptions:
   ValidRedirect(p; V; V)
   p |- V(Cs) <= P
-  This0.Cs' = p[Cs](sel).P
+  This0.Cs' = p[Cs](s).P
   MustInterface(p; Cs)
 
 Conclusions:
   From ValidRedirect(p; V; V):
     p |- V(Cs); p[V(Cs)] <= Cs; V(p[Cs])
-    p |- p[V(Cs)](sel).mt ==  V(p[Cs](sel).mt)
-    p |- p[V(Cs)](sel).P ==  V(p[Cs](sel).P)
+    p |- p[V(Cs)](s).mt ==  V(p[Cs](s).mt)
+    p |- p[V(Cs)](s).P ==  V(p[Cs](s).P)
   From p |- V(Cs) <= P:
-     P |- p[V(Cs)](sel).mt <= p[P](sel).mt
-     P |- p[V(Cs)](sel).P  <= p[P](sel).P
+     P |- p[V(Cs)](s).mt <= p[P](s).mt
+     P |- p[V(Cs)](s).P  <= p[P](s).P
 
-  p |- p[V(Cs)](sel).P ==  V(Cs')
-  P |- p[V(Cs)](sel).P <= p[P](sel).P
-  V(Cs') <= p[P](sel).P
+  p |- p[V(Cs)](s).P ==  V(Cs')
+  P |- p[V(Cs)](s).P <= p[P](s).P
+  V(Cs') <= p[P](s).P
 
 
 ~~~~~~~~
@@ -428,8 +428,8 @@ This1.M2 ? J, J <= This1.M2
  
 --------------------------------------------------------------------------------------------
 Collect(p; Cs <= P0) = P1 ? Cs'
-  This0.Cs' = [Cs].sel.P
-  P1 = [P0].sel.P
+  This0.Cs' = [Cs].s.P
+  P1 = [P0].s.P
 
 Collect(p; P ? Cs)=P<=Cs
   [P].interface?=empty
@@ -440,9 +440,9 @@ Collect(p; P ? Cs, P' <= Cs)=Cs<=P
 Collect(p; P ? Cs)= Cs <= P
   MustClass(Cs)
 
-Collect(p; P ? Cs) = Cs <= Origin(p; sel; P)
-  sel in dom [Cs]
-  sel in dom [P]
+Collect(p; P ? Cs) = Cs <= Origin(p; s; P)
+  s in dom [Cs]
+  s in dom [P]
 
 
 -----------------

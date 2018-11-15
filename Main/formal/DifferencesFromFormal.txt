@@ -96,14 +96,14 @@ bla[...#...]
 *core logic
 //normalized classB {*  or {+   or {-   with all norm types and all interface method with refined type
 core:
-member::=  C:e | method ms e | mdf method optRefine T m(Txs) optExceptions optE
+member::=  C:e | method s e | mdf method optRefine T m(Txs) optExceptions optE
 classB: {label optInterface optImplements members }
 -if a class is not normalized, label must be empty
 *compiled: all C:e of form C:classB
 *normalized:
  -compiled
  -no historic/indirect types
- -no method ms e
+ -no method s e
  -label is either - + or *
 
 *a well formed normalized class

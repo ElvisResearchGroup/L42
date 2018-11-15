@@ -146,7 +146,7 @@ expected Result: {/*@plugin it.bla/a.A*/
   mut This0 #from(Library binaryRepr)
   read method
   Library #binaryRepr()
-  class method //TODO: update plugin use ms to include instanceof as for new
+  class method //TODO: update plugin use s to include instanceof as for new
   Void #exceptionIf(Library binaryRepr) exception This
     use This check instanceof(_this:binaryRepr)
     exception This.#from(binaryRepr:binaryRepr)
@@ -211,7 +211,7 @@ expected Result: {/*@plugin it.bla/a.A*/
   b=mwt.body.mcall.par1
   u=b.decs(0).inner
   u.P
-  u.ms (edit the xs too)
+  u.s (edit the xs too)
   u.es
   p0=u.es.get().mcall
   p0.inner + more p0 on need
@@ -253,7 +253,7 @@ plgComplete1(lTop,cs,p,l){
   Class<?>c=locateClass(l)
   JMethods jms=c.allpublicMethods()
   mhs=method headers of abstract method in l.getMWTs()
-  ms=emptyList
+  s=emptyList
   for mh in mhs
     foral T in mh,
       if T inside lTop check lTop(T[from cs]) is pluginWithPart
@@ -268,16 +268,16 @@ plgComplete1(lTop,cs,p,l){
   
     if mh has special comment...
     else
-    methName=mh.ms.x
-    methArgs=mh.ms.xs.size()
+    methName=mh.s.x
+    methArgs=mh.s.xs.size()
     jms0={jm in jms| name is methName, argLessPData jm=methArgs}
     if jms0.size!=1 error from jms0
     jm=jms.get(0)
     ui=UsingInfo(c,jm)
     tu=templateUsing.updateAllStuff(ui,mh)
-    ms.add(tu)
+    s.add(tu)
     }
-  return templateWrapper U ms U l
+  return templateWrapper U s U l
   }
   
 PlgWrapper:{interface 
@@ -394,15 +394,15 @@ System42:PlgWrapper.$<<{
   with xs.size()=n
   select all the methods with that name and either argument size n or
   argument size n+1 and the first one is PData.
-  syntetize the 42 ms using name that would be needed to call such method
-  lexicographic ordering over such ms. 
+  syntetize the 42 s using name that would be needed to call such method
+  lexicographic ordering over such s.
   
   BETTERSOLUTION:
   the user specify a method name m (or new/empty) and a parameter number n
   If there is only one such method with that name/parameter number n or n+1 with first par PData
   Proceed.
   Else error.
-  The user can put a comment with an ms, then the method name is ignored and the ms is used to syntetize the using
+  The user can put a comment with an s, then the method name is ignored and the s is used to syntetize the using
   if the user do not specify, the method name and parameter number must identify
   For example 
   method /*@selector foo(_int,_java_lang_Integer)*/

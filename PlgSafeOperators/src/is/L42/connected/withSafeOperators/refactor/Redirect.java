@@ -237,11 +237,11 @@ public class Redirect {
       error.unredirectable(errors, Cs, "It is private."); }
 
     for (var mwt : L.mwtz()) { // forall mwt in L[Cs].mwtz:
-      var ms = mwt.getMs();
-      if (ms.isUnique()) { // not Private(mwt.m)
-        error.unredirectable(errors, Cs, "It contains a private method: " + ms + "."); }
+      var s = mwt.getMs();
+      if (s.isUnique()) { // not Private(mwt.m)
+        error.unredirectable(errors, Cs, "It contains a private method: " + s + "."); }
       if (mwt.get_inner() != null) { // mwt.e = empty
-        error.unredirectable(errors, Cs, "It contains a non abstract method: " + ms + "."); }}
+        error.unredirectable(errors, Cs, "It contains a non abstract method: " + s + "."); }}
 
     error.accumulate(message, errors); }
 
@@ -325,36 +325,36 @@ public class Redirect {
             var CsP3 = new CsPath(Cs2, P3); //Cs <= P", P <= Cs'
             progress |= addSubtype(CsP.getCs(), P3, "Rule 3c: " + asSupertype(CsP) + ", " + asSubtype(CsP3)); }*/}}
 
-      //4: Collect(p; P <= Cs) = p[P.ms].P <= Cs'
-      //   p[Cs.ms].P = This0.Cs'
+      //4: Collect(p; P <= Cs) = p[P.s].P <= Cs'
+      //   p[Cs.s].P = This0.Cs'
       for (var CsP : supertypeConstraints) { // P <= Cs
-        progress |= collectReturns(CsP, (Cs, P, ms) -> addSupertype(Cs, P,
-          "Rule 4: " + asSupertype(CsP) + " [" + ms + "]"));} // p[P.ms].P <= p[Cs.ms].P.Cs
+        progress |= collectReturns(CsP, (Cs, P, s) -> addSupertype(Cs, P,
+          "Rule 4: " + asSupertype(CsP) + " [" + s + "]"));} // p[P.s].P <= p[Cs.s].P.Cs
 
-      //5: Collect(p; CC) = Cs' <= p[P.ms].Pi
+      //5: Collect(p; CC) = Cs' <= p[P.s].Pi
       //   CC = P <= Cs or  CC = Cs <= P
-      //   p[Cs.ms].Pi = This0.Cs'
+      //   p[Cs.s].Pi = This0.Cs'
       for (var CsP : seqIterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
-        // p[Cs.ms].Pi.Cs <= p[P.ms].Pi
-        progress |= collectParams(CsP, (Cs, P, ms, i) -> addSubtype(Cs, P,
-            "Rule 5: " + asReltype(CsP) + " [" + ms + "." + i + "]"));}
+        // p[Cs.s].Pi.Cs <= p[P.s].Pi
+        progress |= collectParams(CsP, (Cs, P, s, i) -> addSubtype(Cs, P,
+            "Rule 5: " + asReltype(CsP) + " [" + s + "." + i + "]"));}
 
-      //6: Collect(p; Cs <= P) = Cs' <= p[P.ms].P:
+      //6: Collect(p; Cs <= P) = Cs' <= p[P.s].P:
       //   MustInterface(p; Cs)
-      //   p[Cs.ms].P = This0.Cs'
+      //   p[Cs.s].P = This0.Cs'
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
-          // p[Cs.ms].P.Cs <= p[P.ms].P
-          progress |= collectReturns(CsP, (Cs, P, ms) -> addSubtype(Cs, P,
-            "Rule 6: " + asSubtype(CsP) + " [" + ms + "]"));}}
+          // p[Cs.s].P.Cs <= p[P.s].P
+          progress |= collectReturns(CsP, (Cs, P, s) -> addSubtype(Cs, P,
+            "Rule 6: " + asSubtype(CsP) + " [" + s + "]"));}}
 
-      //7: Collect(p; Cs <= P) = p[P.ms].Pi <= Cs':
+      //7: Collect(p; Cs <= P) = p[P.s].Pi <= Cs':
       //   MustInterface(p; Cs)
-      //   p[Cs.ms].Pi = This0.Cs'
+      //   p[Cs.s].Pi = This0.Cs'
       for (var CsP : subtypeConstraints) { // Cs <= P
         if (mustInterface(CsP.getCs())) { // MustInterface(CsP.Cs)
-          progress |= collectParams(CsP, (Cs, P, ms, i) -> addSupertype(Cs, P,
-              "Rule 7: " + asSubtype(CsP) + " [" + ms + "." + i + "]"));}} // p[P.ms].Pi <= p[Cs.ms].Pi.Cs
+          progress |= collectParams(CsP, (Cs, P, s, i) -> addSupertype(Cs, P,
+              "Rule 7: " + asSubtype(CsP) + " [" + s + "." + i + "]"));}} // p[P.s].Pi <= p[Cs.s].Pi.Cs
 
       //8/8': Collect(p; Cs <= P, CCz) = CCz'
       for (var CsP : subtypeConstraints) { // Cs <= P
@@ -366,16 +366,16 @@ public class Redirect {
             progress2 |= addSupertype(Cs2, P2, message); } // CC = P' <= Cs'
 
           // 8d/8'd
-          for (var ms : this.get(Cs2).msDom()) { // or ms' in dom(p[Cs'])
-            var P3 = _origin(ms, P2); // P'' = Origin(p; sel'; P')
+          for (var s : this.get(Cs2).msDom()) { // or s' in dom(p[Cs'])
+            var P3 = _origin(s, P2); // P'' = Origin(p; s'; P')
             if (P3 != null) {
-              progress2 |= addSubtype(Cs2, P3, message + " [" + ms + "]");}}  // CC = Cs' <= P''
+              progress2 |= addSubtype(Cs2, P3, message + " [" + s + "]");}}  // CC = Cs' <= P''
 
           return progress2;};
 
-        // 8: This0.Cs' = p[Cs.sel].P
-        //    P' = p[P.sel].P
-        progress |= collectReturns(CsP, (Cs, P, ms) -> body.test(Cs, P, "Rule 8: " + asSubtype(CsP) + " [" + ms + "]"));
+        // 8: This0.Cs' = p[Cs.s].P
+        //    P' = p[P.s].P
+        progress |= collectReturns(CsP, (Cs, P, s) -> body.test(Cs, P, "Rule 8: " + asSubtype(CsP) + " [" + s + "]"));
 
         // TODO: Proove this is neccessary?
         // 8': This0.Cs' in p[Cs].Pz
@@ -414,7 +414,7 @@ public class Redirect {
     // Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}
     var res = Pz2.stream().filter(P -> possibleTarget(Cs, P)).collect(Collectors.toSet());
     return res; }
-//Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> ms, Position p, Phase phase, int uniqueId
+//Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> s, Position p, Phase phase, int uniqueId
   // Creates new things and adds the to the program, in case targets fails,
   Set<Path> createTargets(List<C> Cs) throws DeductionFailure {
     var res = this._collectTargets(Cs);
@@ -597,7 +597,7 @@ public class Redirect {
       if (ck.equals(ClassKind.Interface) && !L2.isInterface()) {
         error.invalidRedirection(inputCheck, errors, Cs, P, "Cannot redirect an interface to a final class"); }
 
-      //forall MS in dom(mwtz): p |- mwtz'(MS).mt <= mwt(MS).mt
+      //forall s in dom(mwtz): p |- mwtz'(s).mt <= mwt(s).mt
       for (var mwt1 : L1.mwts()) {
         var mwt2 = L2._get(mwt1.getMs());
         if (mwt2 == null) {
@@ -679,14 +679,14 @@ public class Redirect {
   boolean mustInterface(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Interface; }
 
   // collectReturns(Cs P, f) computes f(Cs', P'), such that
-  //    This0.Cs' = p[Cs](ms).P
-  //    P' = p[P](ms).P
+  //    This0.Cs' = p[Cs](s).P
+  //    P' = p[P](s).P
   // and returns true if any of the calls to f did
   boolean collectReturns(CsPath CsP, TriPredicate<List<C>, Path, MethodSelector> f) {
     boolean progress = false;
     for (var mwt : this.get(CsP.getCs()).mwtz()) {
       var P2 = mwt.getReturnPath(); // P2 = mwt.P
-      var mwt2 = this.get(CsP.getPath())._get(mwt.getMs()); // mwt2? = p[P](mwt.ms)
+      var mwt2 = this.get(CsP.getPath())._get(mwt.getMs()); // mwt2? = p[P](mwt.s)
       if (P2.tryOuterNumber() == 0 && mwt2 != null) { // P2 = This0.Cs', mwt2? != empty
         progress |= f.test(P2.getCBar(), mwt2.getReturnPath(), mwt.getMs()); }} //f(P2.Cs, mwt2.P)
     return progress; }
@@ -695,9 +695,9 @@ public class Redirect {
   boolean collectParams(CsPath CsP, QuadPredicate<List<C>, Path, MethodSelector, Integer> f) {
     boolean progress = false;
     for (var mwt : this.get(CsP.getCs()).mwtz()) {
-      for (int i = 0; i < mwt.getSize(); i++) { // i in 0..#(mwt.ms.xs)
+      for (int i = 0; i < mwt.getSize(); i++) { // i in 0..#(mwt.s.xs)
         var P2 = mwt.getPaths().get(i); // P2 = mwt.Pi
-        var mwt2 = this.get(CsP.getPath())._get(mwt.getMs()); // mwt2? = p[P](mwt.ms)
+        var mwt2 = this.get(CsP.getPath())._get(mwt.getMs()); // mwt2? = p[P](mwt.s)
         if (P2.tryOuterNumber() == 0 && mwt2 != null) { // P2 = This0.Cs', mwt2? != empty
           progress |= f.test(P2.getCBar(), mwt2.getPaths().get(i), mwt.getMs(), i); }}} //f(P2.Cs, mwt2.Pi)
     return progress; }
@@ -742,17 +742,17 @@ public class Redirect {
   // Makes a Path from a Cs
   static Path toP(List<Ast.C> Cs) { return Path.outer(0, Cs); }
 
-  /*Origin(p; sel; P) = P'
-    forall P'' in Supertypes(p; P) where sel in dom [P'']
+  /*Origin(p; s; P) = P'
+    forall P'' in Supertypes(p; P) where s in dom [P'']
        p |- P'' <= P'*/
-  Path _origin(MethodSelector ms, Path P) {
+  Path _origin(MethodSelector s, Path P) {
     var L = this.get(P);
-    var mwt = L._get(ms);
+    var mwt = L._get(s);
     if (mwt == null) { return null; }
     if (!mwt.getMt().isRefine()) { return L.P; }
 
     for (var P2 : L.Pz()) {
-      var mwt2 = get(P2)._get(ms);
+      var mwt2 = get(P2)._get(s);
       if (mwt2 != null && !mwt2.getMt().isRefine()) {
         return P2; }}
 

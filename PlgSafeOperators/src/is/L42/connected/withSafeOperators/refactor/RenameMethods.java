@@ -143,7 +143,7 @@ public RenameMethods addAbstractS(String cs, String ms){
     //why it seams java is happy with declaring an sneakly unthrow error?
     }
 private void checkConsistency(List<CsMxMx> renamesLoc) {
-// no two mapping for same path.ms
+// no two mapping for same path.s
 //TODO: what to do for multiple mapping to the same path.ms2?
 //is it ok? need to fix the code?
 //never two alias on the same name?

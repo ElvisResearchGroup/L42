@@ -24,9 +24,8 @@ Define ValidRedirection(p; R; R')
 Define p |- P;L <= Cs;L
  p|- P; {interface?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
   p.minimize(Pz) subseteq SuperClasses(p; P) //SuperClasses is Pz',P,Any. In this way F-bound polimoprhism works as usual: {implements Foo} can be redirected to Foo
-  forall MS in dom(mwtz): // This implicity checks sdom(mwtz) subseteq sdom(mwtz') 
-    p |- mwtz'(MS).mt <= mwtz(MS).mt
-    //TODO: use s instead of MS ms sel in both redirect and 42 formal
+  forall s in dom(mwtz): // This implicity checks sdom(mwtz) subseteq sdom(mwtz') 
+    p |- mwtz'(s).mt <= mwtz(s).mt
   if interface?=empty: // If the LHS is not an interface
     // One can only call class methods on a non-interface, so if the RHS has them, than the LHS can't be an interface
     if interface?' = interface then class not in mwtz.mdfz
@@ -34,8 +33,8 @@ Define p |- P;L <= Cs;L
   // Is a valid implemention of the RHS, which requires that the RHS have the exact same method signatures as the LHS
   else:
     interface? = interface?' // You can't implement non-interfaces
-    forall MS in dom(mwtz'): // This implicity checks the msdom
-      p |- mwtz(MS).mt <= mwtz'(MS).mt
+    forall s in dom(mwtz'): // This implicity checks the msdom
+      p |- mwtz(s).mt <= mwtz'(s).mt
 
 Define p <= p' // But for paper language only!
 =======================================================================================

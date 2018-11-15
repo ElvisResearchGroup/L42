@@ -101,7 +101,7 @@ public abstract class Methods implements Program{
 //          P1..Pn=collect(p,Ps[from P0]), error unless forall i, p(Pi) is an interface
     List<Ast.Type> p1n=collect(p,Map.of(pi->pi.withPath(From.fromP(pi.getPath(),p0)), ps));
     assert Map.of(pi->p.extractClassB(pi.getPath()), p1n).stream().allMatch(ClassB::isInterface);
-//          ms1..msk={ms|p(Pi)(ms) is defined}
+//          s1..sk={s|p(Pi)(s) is defined}
     HashMap<Ast.MethodSelector,List<ClassB.Member>> ms1k=new LinkedHashMap<>();
     for(ClassB.Member mij:cb0.getMs()){mij.match(
       nc->null,
@@ -111,24 +111,24 @@ public abstract class Methods implements Program{
     for(Ast.Type pi:p1n){//call the memoized methods
       for(ClassB.Member mij:p.methods(pi.getPath())){mij.match(
         nc->null,
-        mi->{assert false; return null;},//add(false,ms1k,mi.getS(),mij),
+        mi->{assert false; return null;},//add(false,s1k,mi.getS(),mij),
         mt->{assert mt.get_inner()==null; return add(false,ms1k,mt.getMs(),mij);}
         );}
       }
 //members in cb0 are now first (may be null), thanks to the add function
-//          forall ms in ms1..msk, there is exactly 1 j in 0..n
-//            such that p(Pj)(ms)=mh e? //no refine
+//          forall s in s1..sk, there is exactly 1 j in 0..n
+//            such that p(Pj)(s)=mh e? //no refine
     for(Entry<MethodSelector, List<Member>> ei: ms1k.entrySet()){
       if(!exactly1NoRefine(ei.getValue())){
         throw new ast.ErrorMessage.NotExaclyOneMethodOrigin(p0,ei.getKey(),ei.getValue());
         }
       }
     List<ClassB.MethodWithType> ms=new ArrayList<>();
-//        //i comes from k in ms1..msk
-//          Mi= p(P0)(msi)[from P0] if it is of form  refine? mh e?,
+//        //i comes from k in s1..sk
+//          Mi= p(P0)(si)[from P0] if it is of form  refine? mh e?,
 //          otherwise
-//          Mi=addRefine(methods(p,Pj)(msi))
-//            for the smallest j in 1..k such that methods(p,Pj)(msi) of form refine? mh
+//          Mi=addRefine(methods(p,Pj)(si))
+//            for the smallest j in 1..k such that methods(p,Pj)(si) of form refine? mh
     for(Entry<MethodSelector, List<Member>> ei : ms1k.entrySet()){
       List<Member> memsi=ei.getValue();
       if(memsi.get(0)!=null && memsi.get(0) instanceof MethodWithType){

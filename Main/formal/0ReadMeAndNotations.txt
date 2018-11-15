@@ -21,9 +21,9 @@ ASCII rendering of horizontal bar notation:
 
 * we use s instead of overbar, so Cs::=C1..Cn
   This can be ambiguous for metavariables ending with s.
-  In that case, the explicitly defined metavariable takes precedence;
-  for example ms is defined explicitly, so ms is never interpreted as m1..mn
+  In that case, the explicitly defined metavariable takes precedence.
   In case of need we use parenthesis, so (T x)s::=T1 x1..Tn xn
+  and not T x s.
 
 * -->p is p under the arrow, same for +p
   a^i is a apex i, ai is a pedex i

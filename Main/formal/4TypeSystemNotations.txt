@@ -203,9 +203,9 @@ guessTypes(p,G,x,e,T?) = Tz
         otherwise
 
 // guess what type the value of paramater 'x' should have
-// in a call to 'ms' on a reciever of type T,
+// in a call to 's' on a reciever of type T,
 // whose return type is expected to conform to T?
-guessParamType(p, ms, T, x, T?)? = T?':
+guessParamType(p, s, T, x, T?)? = T?':
     // TODO: define
 
 //TODO: in code remove suggest(T?,T)
@@ -339,7 +339,7 @@ mdf' in FieldsAccessMdf(l, x, mdf) iff:
   if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
 
 --------------------------------------------
-3 Multiple method types   T0..Tn-> T';Ps in methTypes(p,P,ms)
+3 Multiple method types   T0..Tn-> T';Ps in methTypes(p,P,s)
 --------------------------------------------
 The main idea giving flexibility to the 42 type system is that
 methods have many types, where only the modifiers change.
@@ -351,51 +351,51 @@ as shown later
 //first managing placeholders
 
 (mBase)
-mdf0 P T1..Tn-> T';Ps in methTypes(p,P,ms)
+mdf0 P T1..Tn-> T';Ps in methTypes(p,P,s)
   where
-  p(P)(ms).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
+  p(P)(s).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
   T'=fwd% T if fwd_or_fwd%_in(Ts)
   otherwise T'=T
 
 (mNoFwd)
-noFwd Ts-> noFwd T;Ps in methTypes(p,P,ms)
+noFwd Ts-> noFwd T;Ps in methTypes(p,P,s)
   where
-  Ts->T;Ps in methTypes(p,P,ms)
+  Ts->T;Ps in methTypes(p,P,s)
 
 //then capsule and imm promotion
 (mC)
-mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,ms)
+mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,s)
   where
-  Ts->mut P0;Ps in methTypes(p,P,ms)
+  Ts->mut P0;Ps in methTypes(p,P,s)
 
 (mI)
-toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,ms)
+toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,s)
 //the behaviour of immorcapsule on fwd is not relevant since the method
 // returns a read and will be not well formed if it had fwd parameters
   where
-  Ts->mdf P0;Ps in methTypes(p,P,ms), mdf in {read,lent}
+  Ts->mdf P0;Ps in methTypes(p,P,s), mdf in {read,lent}
   //by well formedness if return type is read, not fwd_or_fwd%_in Ts
 
 //then lent viewpoint adaptation
 
 (mVp)
-Ts'->toLent(T);Ps in methTypes(p,P,ms)
+Ts'->toLent(T);Ps in methTypes(p,P,s)
   where
-  Ts0 mut P Ts2->T;Ps in methTypes(p,P,ms)
+  Ts0 mut P Ts2->T;Ps in methTypes(p,P,s)
   Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
 
 
 //and then rules about fwd and fwd%
 (mImmFwd)
-mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,ms)
+mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,s)
   where
-  Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in fwdImm
+  Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in fwdImm
   fwd_or_fwd%_in(Ts)
 
 (mRead)
-mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,ms)
+mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s)
   where
-  Ts->fwd%Mut P0;Ps in methTypes(p,P,ms)//could be generalized to make fwdMut in read
+  Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
   fwd_or_fwd%_in(Ts)
 
 It is possible to obtain all the variations with the following table:

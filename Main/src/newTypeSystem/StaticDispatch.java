@@ -165,15 +165,15 @@ private void improveError(List<ExpCore.Block.Dec> ds,Ast.Position pos) {
         }
       fillMTs("#"+s.getS().getName()+"#",s.getS().getNames(),Ts,TiTsis,mssi);
       int maxJ=0;//index can be larger then number of methods
-      for(List<MethodWithType> allMsi:mssi){maxJ=Math.max(maxJ, allMsi.size());}
+      for(List<MethodWithType> allSi:mssi){maxJ=Math.max(maxJ, allSi.size());}
       for(int j=0;j<maxJ;j+=1){//j: the layer of iterations
-        {int i=-1;for(List<MethodWithType> allMsi:mssi){i+=1;//the method in parameter i
-          if (allMsi.size()<=j ||allMsi.get(j)==null){continue;}//par i have no method for layer j
-          List<MethodType> mts = AlternativeMethodTypes.types(allMsi.get(j).getMt());
+        {int i=-1;for(List<MethodWithType> allSi:mssi){i+=1;//the method in parameter i
+          if (allSi.size()<=j ||allSi.get(j)==null){continue;}//par i have no method for layer j
+          List<MethodType> mts = AlternativeMethodTypes.types(allSi.get(j).getMt());
           if(!oneFits(TiTsis.get(i),mts)){continue;}
           List<ExpCore> es=new ArrayList<>(s.getEs());
           es.remove(i);
-          return new ExpCore.MCall(s.getEs().get(i),allMsi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
+          return new ExpCore.MCall(s.getEs().get(i),allSi.get(j).getMs(),s.getDoc(),es,s.getP(),null,null);
           }}
         }
       logErr(s,g);//this logs failures *not* caused by absence of inferred types.
@@ -213,13 +213,13 @@ private void improveError(List<ExpCore.Block.Dec> ds,Ast.Position pos) {
         }}
       List<MethodWithType> mwtsi;
       mwtsi= p.extractClassB(ti.getPath()).mwts();
-      List<MethodWithType> allMsi=new ArrayList<>();
+      List<MethodWithType> allSi=new ArrayList<>();
       for(MethodWithType mwtk:mwtsi){
-        //forall ms in Ti, if ms=msj, allMsi[j]=ms
+        //forall s in Ti, if s=sj, allSi[j]=s
         int j=matchMs(nameStart,mwtk.getMs(),new MethodSelector(names.get(i),-1,namesi));
-        if(j!=-1){setSparse(allMsi,j,From.from(mwtk.with_inner(null),ti.getPath()));}
+        if(j!=-1){setSparse(allSi,j,From.from(mwtk.with_inner(null),ti.getPath()));}
         }
-      mssi.add(allMsi);
+      mssi.add(allSi);
       TiTsis.add(tsi);
       }}
     }

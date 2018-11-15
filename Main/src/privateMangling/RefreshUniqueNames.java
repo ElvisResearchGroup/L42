@@ -43,7 +43,7 @@ public class RefreshUniqueNames {
       public ClassB.NestedClass visit(ClassB.NestedClass nc){
         long newN=newN(map,nc.getName().getUniqueNum());
         return super.visit(nc.withName(nc.getName().withUniqueNum(newN)));
-        //I need to collect the DECLARED C,ms and those are the only that I need to refresh.
+        //I need to collect the DECLARED C,s and those are the only that I need to refresh.
         //refresh all can work only at top level
         }
       @Override protected Path liftP(Path s) {
