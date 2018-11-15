@@ -3,7 +3,7 @@
 
 //CCz implies_p CCz' iff forall R: R satisfies_p CCz --> R satisfies_p CCz'
 
-Define ValidProblem(p; R) iff:
+Define (P, R) in ValidProblems iff:
   forall P in ran(R):
     p.minimize(P)=P
     P not of form This0._
@@ -11,13 +11,13 @@ Define ValidProblem(p; R) iff:
   Redirectable(p; RedirectSet(p, R))
   // All of these, save for the well-typedness, are guaranteed by Redirect
 
-Define PossibleRedirection(p; R; R')
+Define R' in PossibleRedirections(p; R)
   R subseteq R'
   dom(R') = RedirectSet(p; R)
-  ValidProblem(p; R')
+  (P, R') in ValidProblems
 
-Define ValidRedirection(p; R; R')
-  PossibleRedirection(p; R; R')
+Define R' in ValidRedirections(p; R)
+  R' in PossibleRedirections(p; R)
   forall Cs in dom(R'):
     p |- R'(Cs); p[R'(Cs)] <= Cs; R'(p[Cs])
 
@@ -33,7 +33,7 @@ Define p |- P;L <= Cs;L
   // Is a valid implemention of the RHS, which requires that the RHS have the exact same method signatures as the LHS
   else:
     interface? = interface?' // You can't implement non-interfaces
-    forall s in dom(mwtz'): // This implicity checks the msdom
+    forall s in dom(mwtz'): // This implicity checks the sdom
       p |- mwtz(s).mt <= mwtz'(s).mt
 
 Define p <= p' // But for paper language only!
@@ -68,42 +68,22 @@ define MostSpecificRedirection(p; R,Rz) = R
     R(Cs) = MostSpecific(p; {R'(Cs) | R' in R,Rz})
 
 ================================
-//dom(p) = { p.minimize(P) | p(P) is defined }
-
-//Define ValidProblems = {(p, R) | ValidProblem(p; R)}
-//We will write (p, R) in ValidProblem if ValidProblem(p; R)
-
-
 CompletedConstraints(p; R; CCz) iff:
   forall Cs in RedirectSet(p; R):  _ <= Cs in CCz //dom would do it on both directions
 
-//using our algorithm, R constraints all the RedirectSet
-CollectComplete(p; R) iff CompletedConstraints(p; R; CollectConstraints(p; R))
+(CCz,CCz')[Cs] = CCz
+  dom(CCz) subseteq {Cs}
+  Cs notin dom(CCz')
 
 Lemmas (I.e. Proof these!)
 =================================
 forall R0,p,R
-If range(R) not subseteq dom(p), then not PossibleRedirection(p; R0; R)
+If range(R) not subseteq dom(p), then R not in PossibleRedirections(p; R0)
 
 --------------------------------------------------------------
-Let f be some function from (p, R) -> Rz, such that:
-  forall (p, R) in ValidProblems,
-    forall p' in SimilarProblems(p; R),
-      f(p, R) subseteq f(p', R)
 
-define MostSpecificSimilar(p; R; f) = R' iff:
-  forall p' in SimilarProblems(p; R):
-    MostSpecificRedirection(p'; f(p, R)) = R'
 
-// The idea being that BestRedirection = MostSpecificSimilar(p; R; f)
-//  where f(p, R) = {R' | ValidRedirection(p; R; R')}
-// And similar with BestSatisfiedRedirection
 
-forall (p, R) in ValidProblems:
-  if exists p' in SimilarProblems(p; R), and R', such that:
-      R' in f(p', R)
-      range(R') not subseteq dom(p)
-  then MostSpecificSimilar(p; R; f) is undefined
 -------------------------------------------------------------------------------------------------
 
 dom(CollectConstraints(p; R)) subseteq RedirectSet(p; R)

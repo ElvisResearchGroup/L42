@@ -15,8 +15,8 @@ import helpers.TestHelper;
 import static helpers.TestHelper.lineNumber;
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.*;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -56,7 +56,8 @@ public class TestRedirect {
 
     List<Object[]> tests= Arrays.asList(new Object[][]{
 
-    {lineNumber(), new String[]{"{ED: {} EB: {C: {ED m}} EA: {method EB m()}}"},
+    {lineNumber(), "", "{}", "", "", "{}" // This is the most trivial test case
+    }, {lineNumber(), new String[]{"{ED: {} EB: {C: {ED m}} EA: {method EB m()}}"},
       "{" +
         "D:{}" + 
         "B: {C: {D m}}" +
@@ -65,6 +66,17 @@ public class TestRedirect {
         "}",
         "A", "This0.EA",
         NestedClassTest //{method Void result(This1.EA a, This1.EA.B b, This1.EC c)}
+
+    },{lineNumber(), "{" +
+        "EA1: {interface method Any m()}" +
+        "EA2: {implements EA1 refine method Void m()}" +
+        "EV:  {method EA2 n()}" +
+      "}", "{" +
+        "B: {}" +
+        "A: {method B m()}" +
+        "V: {method A n()}" +
+      "}", "V", "This0.EV",
+      "{}"
     },{lineNumber(), new String[]{"{" +
         "EB1: {interface C:{interface implements EB0.C}}" +
         "EB0: {interface implements EB1 C:{interface}}" +
@@ -1075,6 +1087,25 @@ public class TestRedirect {
 
 public static Program mkp(String...ss) { Program p=TestHelper.getProgram(ss); return p; }
 
+// This is better that a.split(b), because:
+//  a.split(b) will process b as a regex, this will not
+//  "".split(",") = [""], wheras split("", ",") = []
+//  ",,,".split(",") = [], wheras split(",,,", ",") = ["", "", ""]
+//  "a,".split(",") = ["a"], wheras split("a,", ",") = ["a", ""]
+// I.e. it behaves reasonably!
+public static List<String> split(String a, String b) {
+    var res = new ArrayList<String>();
+    if (b.isEmpty()) {
+      for (int i = 0; i < a.length(); i++) {
+        res.add(a.substring(i, i+1)); }}
+    else if (!a.isEmpty()) {
+      while (true) {
+        var i = a.indexOf(b);
+        if (i == -1) { res.add(a); break; }
+        res.add(a.substring(0, i));
+        a = a.substring(i + b.length()); }}
+    return res;}
+
 @Test  public void test() throws RedirectError {
   TestHelper.configureForTest();
   Program p;
@@ -1085,12 +1116,12 @@ public static Program mkp(String...ss) { Program p=TestHelper.getProgram(ss); re
   ClassB cb1=getClassB(true,p,"cb1", _cb1);
 
   PathMap map = new PathMap();
-  { var Csz = this._path1.split(",");
-    var Pz = this._path2.split(",");
-    assert Csz.length == Pz.length;
-    for (int i = 0; i < Csz.length; i++) {
-      var Cs = Csz[i].trim();
-      var P = Pz[i].trim();
+  { var Csz = split(this._path1, ",");
+    var Pz = split(this._path2, ",");
+    assert Csz.size() == Pz.size();
+    for (int i = 0; i < Csz.size(); i++) {
+      var Cs = Csz.get(i).trim();
+      var P = Pz.get(i).trim();
       map.add(Cs.equals("This") ? List.of() : Path.parse("This0." + Cs).getCBar(), Path.parse(P)); }}
 
   if (_expected == null) {

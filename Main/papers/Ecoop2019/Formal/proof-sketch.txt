@@ -5,12 +5,16 @@ What we want to prove?
 =================================================================================
 forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
 
-Where BestRedirection(p; R) = R', iff:
-  forall p' in SimilarProblems(p; R), MostSpecificRedirection(p'; {R' | ValidRedirection(p'; R; R')}) = R'
-// Also '==' works on undefined as you would expect...
+Where:
+  // '==' works on undefined as you would expect...
+
+  BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections)
+
+  UniversalMostSpecific(p; R; f) = R' iff:
+    forall p' in SimilarProblems(p; R): MostSpecificRedirection(p'; f(p, R)) = R'
 
 // TODO: Other things to prove?
-// The input Redirect passes to CollectRedirection satisfies ValidProblem
+// The input Redirect passes to CollectRedirection is in ValidProblems
 //    Thus Redircet[CollectRedirection := BestRedirection] == Redirect
 // Proof Meta-level soudnes ++ internal stability <==> validredirection
 =============================================================================================
@@ -18,17 +22,15 @@ p' in SimilarProblems(p; R) iff p <= p' and p.top() = p'.top()
 =================================================
 // Core definitions for the proof
 
-SatisfiedRedirection(p; R; R') iff SatisfiedSolution(p; R; CollectConstraints(p; R); R')
-SatisfiedSolution(p; R; CCz; R') iff:
-  R satisfies_p CCz && PossibleTargets(p; R) && PossibleRedirection(p; R; R')
+R' in SatisfiedRedirections(p; R) iff SatisfiedSolutions(p; R; CollectConstraints(p; R))
+R' in SatisfiedSolutions(CCz)(p; R) iff
+  R satisfies_p CCz && PossibleTargets(p; R) && R' in PossibleRedirections(p; R)
 
 // Reminder:
 //CollectRedirection(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
 
 BestSatisfiedRedirection(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
-BestSatisfiedSolution(p; R; CCz) = R':
-  forall p' in SimilarProblems(p; R):
-    MostSpecificRedirection(p'; {R' | SatisfiedSolution(p'; R; CCz; R')}) = R'
+BestSatisfiedSolution(p; R; CCz) = UniversalMostSpecific(p; R; SatisfiedSolutions(CCz))
 
 Define R in CollectMappings(p; CCz), iff:
   dom(R) = dom(CCz)
@@ -40,33 +42,41 @@ Proof that forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedir
 Suppose (p, R) in ValidProblems(p; R)
 
 Let CCz = CollectConstraints(p; R)
-0. CCz is (uniqueley) defined // Right?
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Proof that CCz is finite:
+//    It has to be, as we never pull Cs's or P's out of thin air,
+//    rather we always get them from somehwere in the program (or our current constraint set), since R and p are neccesarily finite, it follows that CCz is also
+
+// Proof that CCz is consitantly defined:
+// I.e. that we cant show that CC in CCz and CC not in CCz at the same time
+//    well Collect never checks whether something is not in Collect, i.e.
+//    we can never derive a proof that CC is not in CCz directly, we can only derive proofs of CC in CCz (So it's all good)
+// TODO: Prove that CCz is computable? (i.e. we can print everything)
+//    Well it's finite, and everything it uses is computable/decidable...
 
 1. Suppose CollectRedirection(p; R) is undefined, then BestRedirection(p; R) is undefined
-  1.1. Suppose CompleteConstraints(p; CCz), then BestRedirection(p; R) is undefined
-    1.1a: {R' | SatisfiedSolution(p; R; CCz; R')} = {} // Easy
+  1.1. Suppose CompletedConstraints(p; CCz), then BestRedirection(p; R) is undefined
+    1.1a: SatisfiedSolutions(CCz) = {} // Easy
       ~~~~~~~~~~~~~~~~~~~~~~~
-    1.1b: forall R', if ValidRedirection(p; R; CCz; R') --> SatisfiedSolution(p; R; CCz; R') // Moderatly dificuilt
+    1.1b: ValidRedirections(p; R) subseteq SatisfiedSolutions(CCz)(p; R) // Moderatly dificuilt
       ~~~~~~~~~~~~~~~~~~~~~~~
-    Therefore, forall R', not ValidRedirection(p; R; CCz; R'), and so BestRedirection(p; R) is undefined
+    Therefore, ValidRedirections(p; R) = {} and so BestRedirection(p; R) is undefined
 
-  1.2. Suppose not CollectComplete(p; R), then BestRedirection(p; R) is undefined
+  1.2. Suppose not CompletedConstraints(p; CCz), then BestRedirection(p; R) is undefined
     1b. CollectRedirection(p; R) is undefined  // trivial
       ~~~~~~~~~~~~~~~~~~~~~~~
     1a. BestRedirection(p; R) is undefined // hard
       ~~~~~~~~~~~~~~~~~~~~~~~
 
-2. Suppose CollectComplete(p; R), and CollectRedirection(p; R) = R', then BestRedirection(p; R) = R'
-  2a. BestSatisfiedRedirection = R'
+2. Suppose CompletedConstraints(p; CCz), and CollectRedirection(p; R) = R', then BestRedirection(p; R) = R'
+  2a. BestSatisfiedRedirection(p; R) =  R'
     2a.a. BestSatisfiedSolution(p; R; CCz) = R'// Since the rest of CollectRedirection and BestSatisfiedRedirection are the same, and CollectSolution(p; R; CCz) = R'
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       // Hard parts of the proof:
-        // proving that PossibleRedirection(p; R; CollectSolution(p; R; CCz))
-      // prooving that the forall p' SimilarProblem(p; R; P') dosn't break our algorithm, since:
+        // proving that R' in PossibleRedirections(p; R)
+      // prooving that the UniversalMostSpecific dosn't break our algorithm, since:
           // forall Cs,
-          // If exists Pz such that forall p' SimilarProblem(p; R; P'): {P | Cs->P satisfies_p' CCz} = Pz
+          // If exists R such that forall p' in SimilarProblems(p; R): {P | Cs->P satisfies_p' CCz[Cs]} = Pz
           //   then CollectTargets(p; CCz; Cs) = Pz
           // Otherwise, CollectTargets(p; CCz; Cs) is undefined
           // I.e. the set of things satisfing the constraints is indepent of the program
@@ -75,55 +85,117 @@ Let CCz = CollectConstraints(p; R)
     // Easy parts:
         // CollectSolution chooses the MostSpecificRedirection of CollectMappings (see above)
         // Forall R in CollectMappings, R satisfies_p CCz && PossibleTargets(p; R)
+        // the MostSpecificRedirection bullshit, is the same as our MostSpecific(p; Pz) thing...
 
-       p, MostSpecific... bullshit, is the same as our MostSpecific(p; P// Proof Meta-level soudnes ++ internal stability <==> validredirection
-z) thing...
-
-  2b. SatisfiedRedirection(p; R; R') ==> ValidRedirection(p; R; R') // Hard
+  2b. SatisfiedRedirections(p; R) subseteq ValidRedirections(p; R) // Hard
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Therefore, CollectRedirection == BestRedirection
 
-==========
-Let f and g be partial function from A->B
+---------------
+Proof 2b
 
-Then f == g iff: forall a in A, f(a) == b(a)
-Or,
+Assumptions:
+   (p, R0) in ValidProblems(p; R0)
+   CCz = CollectConstraints(p; R0)
+   CompletedConstraints(p; CCz)
+   CollectRedirection(p; R0) is defined
+Goal:
+  SatisfiedRedirections(p; R0) subseteq ValidRedirections(p; R0)
+----------------------------------------------------------------------
+Assumptions:
+  R in SatisfiedRedirections(p; R0)
+  R not in ValidRedirections(p; R0)
+Goal:
+  contradiction
+----------------------------
+Since the only part of valid ValidRedirections not ensured by SatisfiedRedirections is:
+  forall Cs in dom(R): p|- R(Cs); p[R(Cs)] <= Cs; R(p[Cs])
+this must not be true.
+-------------------------------------
+Let:
+  P = R(Cs)
+  L = p[Cs]
+  L' = p[P]
 
-forall a in A,
-  f(a) is undefined iff g(a) is undefined
-  forall b, f(a) = b iff g(a) = b
-------------------------------------------------
-Or alternatively we can consider the cases?
+Assumptions:
+  Cs in dom(R)
+  p |/- P; L' <= Cs; R(L)
+------------------------------
+One of the conditions of the <= must have failed, it can't be a condition on the sdom or interface keyword,
+because those are checked by PossibleTarget, so the only possible failures are that:
+    exists P' in p.minimize(R(L.Pz)) such that: p |/- P <= P'
+    exists s in sdom(L) such that:
+        // Note: L'(s) must exist due to PossibleTarget
+        p |/- L'(s).mt <= R(L(s).mt)
+        if L.interface? = interface: p |/- R(L(s).mt) <= L'(s).mt
+Due to PossibleTarget, the failure must be on a Cs', // TODO: Explain
+As such, we have either
+Case 1: exists Cs' in L.Pz, such that p |/- P <= R(Cs')
+Case 2: exists s in sdom(L) such that p |/- L'(s).P <= R(L(s).Cs)
+Case 3: exists s in sdom(L), and i, such that p |/- R(L(s).Csi) <= L'(s).Pi
 
-  if f(a) is undefined: g(a) is undefined
-  if f(a) = b: g(a) = b
+Case 4: L.interface? = interface and exists s in sdom(L) such that p |/- R(L(s).Cs) <= L'(s).P
+Case 5: L.interface? = interface and exists s in sdom(L), and i, such that p |/- L'(s).Pi <= R(L(s).Csi)
 
-Proof that that implies f == g? (who cares about the other  direction?)
-  Suppose not, than we must have an a such that f(a) and g(a) disagree,
-      if f(a) is undefined, than by the above we must have g(a) is undefined, so a contradiction
-      if f(a) = b, then by the above, we must have g(a) = b, again a contradiction
+In particular, we must have that CCz does not imply one of the above relations.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Since CompletedConstraints(p; CCz) we must have a P' <= Cs in CCz, and by CollectSolution, we must have P' <= P
+----------------------------------------------------------------------
+Assumptions
+  PL <= Cs in CCz, PL <= P
+  PL' <= Cs' in CCz, PL' <= P'
+  R(Cs') = P'
+---------------------------------------------
 
 
+Case 1: exists Cs' in L.Pz, such that p |/- P <= R(Cs')
+============================================================
+  Rule 3a/b/c/d & 8'd
 
--------
+Let Pz = {Px in SuperClasses(p; PL) | PossibleTarget(p; Cs'; Px)}
+
+Suppose Rule 3a did apply,
+  then MostSpecific(p; Pz) is defined, lets say it equals P2
+  Since everything in Pz is a superclass of PL,
+  it follows that PL <= P2, since we have PL <= P
+
+  So we had the constraint, P2 <= Cs'
+  and hence P2 <= P'
+  And so PL <= P'
+  And we have P </= P'
+
+//  and We have PossibleTarget(p; Cs'; R(Cs')), so
+ ........
+
+
+
+Case 2: exists s in sdom(L) such that p |/- L'(s).Cs <= R(L(s).Cs)
+------------------------------
+Let L(s).Cs = Cs'
+L'(s).Cs = P'
+
+PL <= P = R(Cs)
+
+  P' </= R(Cs')
+Since we have PL <= P
+  and s in sdom(L')
+  We have s in sdom(p[PL])
+  We must have p[PL](s).P = PLR
+
+  PLR <= P'
+  By rule 4
+    we must have a constraint
+         PLR <= R(Cs')
+
+  PLR <= P' </= R(Cs')
+  PLR <= R(Cs')
+
+
+
+
+
+
 Theroem InternalStability:
   forall p ~R~ p',  BestRedirection_i(p; R) = BestRedirection_i(p'; R)
 

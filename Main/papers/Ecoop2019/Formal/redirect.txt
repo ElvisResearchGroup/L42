@@ -52,23 +52,25 @@ Define Collect(p; CCz):
 0a: CC in Collect(p; CCz,CCz')
   CC in Collect(p; Collect(p; CCz))
   // Infiniteley recursive!, We will need to prove termination!
+
 0b: CC in Collect(p; CC)
+
 1: P <= Cs in Collect(p; Cs <= P)
   p[P].interface = empty //since all classes are final
 
 3a: MostSpecific(p; Pz) <= Cs' in Collect(p; P <= Cs)
   Cs' in p[Cs].Csz
-  Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs; P')}
+  Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs'; P')}
 
 3b: Cs' <= MostGeneral(p; Pz) in Collect(p; P <= Cs)
   Cs' in p[Cs].Csz
-  Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs; P')}
+  Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs'; P')}
 
 3c: Cs <= P' in Collect(p; P <= Cs, Cs' <= P')  // TODO: Proove this is neccessary
-  Cs' in p[Cs].Pz
+  Cs' in p[Cs].Csz
 
 3d: P <= Cs' in Collect(p; P <= Cs)
-  Cs' in p[Cs].Pz
+  Cs' in p[Cs].Csz
 
 4: p[P.s].P <= p[Cs.s].Cs in Collect(p; P <= Cs)
 5: p[Cs.s].Csi <= p[P.s].Pi in Collect(p; CC)
@@ -91,7 +93,7 @@ Define Collect(p; CCz):
   s' in dom(p[Cs']) intersect dom(p[P'])
 
 8'd: Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P) // TODO: Proove this is neccessary
-  Cs' in p[Cs].Pz
+  Cs' in p[Cs].Csz
   P' in SuperClasses(p; P)
   s' in dom(p[Cs']) intersect dom(p[P'])
 
@@ -142,10 +144,10 @@ PossibleTarget(p; Cs; P) iff
   L2 = p[P]
   MustClass(p; Cs) --> L2.interface? = empty
   MustInterface(p; Cs) --> L2.interface? = interface
-  msdom(L1) subseteq msdom(L2)
-  MustInterface(p; Cs) --> msdom(L2) subseteq msdom(L1)
+  sdom(L1) subseteq sdom(L2)
+  MustInterface(p; Cs) --> sdom(L2) subseteq sdom(L1)
   p.minimize(Externals(L1.Pz)) subseteq SuperClasses(p; P)
-  forall s in msdom(L1):
+  forall s in sdom(L1):
     p |- L2(s).mt <~ L1(s).mt //method subtyping ignoring internal paths
     MustInterface(p; Cs) --> p |- L1(s).mt <~ L2(s).mt
 

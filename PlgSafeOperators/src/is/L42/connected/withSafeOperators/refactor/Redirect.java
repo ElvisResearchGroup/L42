@@ -186,7 +186,7 @@ public class Redirect {
 
     // R = CollectSolution(p; CCz)
     var Rz = collectAllSolutions().collect(Collectors.toList());
-    for (var R : Rz) { validRedirection(R); }
+    for (var R : Rz) { debugPrint("Testing R = " + R); validRedirection(R); }
 
     var R = collectSolution();
     debugPrint("Chosen R was: " + R);
@@ -303,14 +303,14 @@ public class Redirect {
 
       //3: Collect(p; P <= Cs) = MostSpecific(p; Pz) <= Cs', Cs' <= MostGeneral(p; Pz)
       //   This0.Cs' in p[Cs].Pz
-      //   Pz = {P' in SuperClasses(p; P) | msdom(p[P') = msdom(p[Cs'])}
+      //   Pz = {P' in SuperClasses(p; P) | sdom(p[P') = sdom(p[Cs'])}
       for (var CsP : supertypeConstraints) { // P <= Cs
         for (var PCs2 : this.get(CsP.getCs()).Pz()) { // P in p[Cs].Pz
           var Cs2 = internal(PCs2); // P = This0.Cs'
           if (Cs2 == null) { continue; }
 
           var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> possibleTarget(Cs2, Pi))
-            .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | msdom(p[P']) = msz}
+            .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | sdom(p[P']) = msz}
           var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
           var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
 
