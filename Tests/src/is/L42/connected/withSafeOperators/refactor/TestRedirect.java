@@ -67,6 +67,15 @@ public class TestRedirect {
         "B: {interface}" +
         "A: {interface method B m()}" + // EA <= A, EB <= B
         "V: {method A n()}" +
+        
+        // EA2 <= A, CCz...
+        // Just add to CollectTargets a requirement that: Cs->P contradicts CCz
+        // 
+        // iff Cs->P does not satisfy CCz
+        // or MustInterface(p; Cs) and p[Cs.s].Cs -> p[Cs.s].P contradicts CCz
+        //          or p[Cs.s].Csi -> p[Cs.s].Pi contradicts CCz
+        //  or not PossibleTarget(p; Cz)
+        
       "}", "V", "This0.EV", "{}" // FAILS!
     }, {lineNumber(), new String[]{"{ED: {} EB: {C: {ED m}} EA: {method EB m()}}"},
       "{" +

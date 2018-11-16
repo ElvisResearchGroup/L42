@@ -106,11 +106,22 @@ Define CollectSolution(p; R; CCz) := Cs1->P1, ..., Csn->Pn
   redirectSet(p; R) = Cs1, ..., Csn
   Pi = MostSpecific(p; CollectTargets(p; CCz; Csi))
 
-Define CollectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz; Cs) = Pz'
-  Cs not in dom(CCz)
+Define CollectTargets(p; CCz; Cs)=Pz
+P in CollectTargets(p; CCz,CCz'; Cs) iff
+  CCz=P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k
+  Cs not in dom(CCz')
+  P in SuperClasses(p; P1, ..., Pn) // already minimized result
+  PossibleTarget(p; Cs; P) 
+  p |- P <= P'1, ..., p |- P <= P'k
+  not Cs->P contradicts_p CCz,CCz'
   // Note: SuperClasses will be undefined if n = 0
-  Pz = SuperClasses(p; P1, ..., Pn) // already minimized result
-  Pz' = {P in Pz | PossibleTarget(p; Cs; P) and p |- P <= P'1, ..., p |- P <= P'k}
+  
+  
+Cs -> P contradicts_p CCz iff:
+    or MustInterface(p; Cs) and
+      p[Cs.s].P not in CollectTargets(p; CCz; p[Cs.s].Cs)
+      or p[Cs.s].Pi not in CollectTargets(p; CCz; p[Cs.s].Csi)
+	
 //Note, it is equivalent to
 //{p.minimize(P) | PossibleTarget(p; Cs; P), Cs->P satisfies_p CCz}
 

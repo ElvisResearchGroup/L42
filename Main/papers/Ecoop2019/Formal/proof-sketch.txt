@@ -9,9 +9,10 @@ Where:
   // '==' works on undefined as you would expect...
 
   BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections)
-
+  //StableMostSpecific
   UniversalMostSpecific(p; R; f) = R' iff:
     forall p' in SimilarPrograms(p): MostSpecificRedirection(p'; f(p, R)) = R'
+    with f a function (p,R)->Rz
 
 // TODO: Other things to prove?
 // The input Redirect passes to CollectRedirection is in ValidProblems
@@ -103,8 +104,8 @@ Lemma 1: If MostSpecificRedirection(p; R,Rz,Rz') = R, then MostSpecificRedirecti
    R' = MostSpecificRedirection(ValidRedirections(p; R)).
   // How do we show that this won't change with other p's?
   Since SatisfiedSolutions(CCz)(p; R) subseteq PossibleRedirections(p; R), by Theorem 2 and 2c it follows that
-    forall p' in SimilarPrograms(p), ValidRedirections(CCz)(p; R) == ValidRedirections(CCz)(p'; R)
-  By theorem 4 it follows that BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections(CCz)) = R'.
+    forall p' in SimilarPrograms(p), ValidRedirections(p; R) == ValidRedirections(p'; R)
+  By theorem 4 it follows that BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections) = R'.
 
 Therefore, forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
 
