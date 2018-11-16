@@ -11,14 +11,14 @@ Where:
   BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections)
 
   UniversalMostSpecific(p; R; f) = R' iff:
-    forall p' in SimilarProblems(p; R): MostSpecificRedirection(p'; f(p, R)) = R'
+    forall p' in SimilarPrograms(p): MostSpecificRedirection(p'; f(p, R)) = R'
 
 // TODO: Other things to prove?
 // The input Redirect passes to CollectRedirection is in ValidProblems
 //    Thus Redircet[CollectRedirection := BestRedirection] == Redirect
 // Proof Meta-level soudnes ++ internal stability <==> validredirection
 =============================================================================================
-p' in SimilarProblems(p; R) iff p <= p' and p.top() = p'.top()
+p' in SimilarPrograms(p) iff p <= p' and p.top() = p'.top()
 =================================================
 // Core definitions for the proof
 
@@ -53,21 +53,64 @@ Let CCz = CollectConstraints(p; R)
 // TODO: Prove that CCz is computable? (i.e. we can print everything)
 //    Well it's finite, and everything it uses is computable/decidable...
 
+
+Theorem 1: If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
+   exists p' in SimilarPrograms(p) and R' such that R' in ValidRedirections(p'; R') and range(R) not subseteq dom(p)
+  // Proof by construction
+
+Theorem 3: CollectSolution(p; R; CCz) in ValidRedirections(p; R)
+  // Proof by contradiction
+  // might be true...
+
+Theorem 2: ValidRedirections(p; R) subseteq SatisfiedSolutions(CCz)(p; R) // Moderetly hard, but definently true
+  // Direct proof
+
+Theorem 4: If forall p' in SimilarPrograms(p), f(p', R) = f(p, R) then
+  UniversalMostSpecific(p; R; f) = MostSpecificRedirection(f(p; R))
+
+Theorem 5: forall p' in SimilarPrograms(p): (ValidRedirections(p'; R) \ ValidRedirections(p; R)) disjoint PossibleRedirections(p; R)
+  // True?
+
+Lemma 1: If MostSpecificRedirection(p; R,Rz,Rz') = R, then MostSpecificRedirection(p; R,Rz) = R
+  // Obviously
+
+// Note: all the '~~~~~~~~~~~~~~~~~'s bellow indicate easy parts of the proof to fill in
+// Whereass the theorems above are non trivial
 1. Suppose CollectRedirection(p; R) is undefined, then BestRedirection(p; R) is undefined
   1.1. Suppose CompletedConstraints(p; CCz), then BestRedirection(p; R) is undefined
-    1.1a: SatisfiedSolutions(CCz) = {} // Easy
-      ~~~~~~~~~~~~~~~~~~~~~~~
-    1.1b: ValidRedirections(p; R) subseteq SatisfiedSolutions(CCz)(p; R) // Moderatly dificuilt
-      ~~~~~~~~~~~~~~~~~~~~~~~
-    Therefore, ValidRedirections(p; R) = {} and so BestRedirection(p; R) is undefined
+    1.1a. SatisfiedSolutions(CCz) = {}.
+      ~~~~~~~~~~~~~~~~~
+    By Theorem 2, we have ValidRedirections(p; R) = {}, therefore BestRedirection(p; R) is undefined.
 
   1.2. Suppose not CompletedConstraints(p; CCz), then BestRedirection(p; R) is undefined
-    1b. CollectRedirection(p; R) is undefined  // trivial
-      ~~~~~~~~~~~~~~~~~~~~~~~
-    1a. BestRedirection(p; R) is undefined // hard
-      ~~~~~~~~~~~~~~~~~~~~~~~
+    2.2a. CollectRedirection(p; R) is undefined.
+      ~~~~~~~~~~~~~~~~
+    By Theorem 1, BestRedirection(p; R) is undefined.
 
 2. Suppose CompletedConstraints(p; CCz), and CollectRedirection(p; R) = R', then BestRedirection(p; R) = R'
+  2a. R' in SatisfiedSolutions(CCz)(p; R)
+    ~~~~~~~~ // The only non-trivial part is that R' in PossibleRedirections(p; R)
+  2b. MostSpecificRedirection(SatisfiedSolutions(CCz)(p; R)) = R'
+    ~~~~~~~~ // by definition of CollectSolutions
+  2c. forall p' in SimilarPrograms(p), SatisfiedSolutions(CCz)(p; R) == SatisfiedSolutions(CCz)(p'; R)
+    ~~~~~~~~
+  2d. By 2a, 2b and 2c, and theorem 4, UniversalMostSpecific(p; R; SatisfiedSolutions(CCz)) = R'
+    ~~~~~~~~~~~~~~~~~
+  Obviously BestRedirection(p; R) in ValidRedirections(p; R).
+  By Theorem 2 and, Theorem 3 we have:
+     R' in ValidRedirections(p; R) subseteq SatisfiedSolutions(CCz)(p; R)
+  And by 2b and Lemma 1 we have that
+   R' = MostSpecificRedirection(ValidRedirections(p; R)).
+  // How do we show that this won't change with other p's?
+  Since SatisfiedSolutions(CCz)(p; R) subseteq PossibleRedirections(p; R), by Theorem 2 and 2c it follows that
+    forall p' in SimilarPrograms(p), ValidRedirections(CCz)(p; R) == ValidRedirections(CCz)(p'; R)
+  By theorem 4 it follows that BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections(CCz)) = R'.
+
+Therefore, forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
+
+
+
+
   2a. BestSatisfiedRedirection(p; R) =  R'
     2a.a. BestSatisfiedSolution(p; R; CCz) = R'// Since the rest of CollectRedirection and BestSatisfiedRedirection are the same, and CollectSolution(p; R; CCz) = R'
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +119,7 @@ Let CCz = CollectConstraints(p; R)
         // proving that R' in PossibleRedirections(p; R)
       // prooving that the UniversalMostSpecific dosn't break our algorithm, since:
           // forall Cs,
-          // If exists R such that forall p' in SimilarProblems(p; R): {P | Cs->P satisfies_p' CCz[Cs]} = Pz
+          // If exists R such that forall p' in SimilarPrograms(p): {P | Cs->P satisfies_p' CCz[Cs]} = Pz
           //   then CollectTargets(p; CCz; Cs) = Pz
           // Otherwise, CollectTargets(p; CCz; Cs) is undefined
           // I.e. the set of things satisfing the constraints is indepent of the program

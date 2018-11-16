@@ -84,5 +84,12 @@ public final class Assertions {
   public final static Error codeNotReachable() {
     throw new AssertionError("-Code should not be reachable--");
   }
-  
+
+  @FunctionalInterface
+  public interface UncheckedRunnable { void run() throws Throwable; }
+
+  public static void assertNoThrow(UncheckedRunnable r) {
+    try { r.run(); }
+    catch (Throwable t) { throw new AssertionError("Something was thrown!", t); }
+  }
 }

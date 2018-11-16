@@ -48,14 +48,14 @@ This is needed to avoid the redirect from violating metalevel soundness:
  */
 
 public class Redirect {
-  public static ClassB redirectS(PData pData,ClassB that,String src,ast.Ast.Path dest) throws RefactorErrors.ClassUnfit, RefactorErrors.IncoherentMapping, RefactorErrors.MethodClash, RefactorErrors.PathUnfit{
+  public static ClassB redirectS(PData pData,ClassB that,String src,ast.Ast.Path dest) throws RedirectError, RefactorErrors.ClassUnfit, RefactorErrors.IncoherentMapping, RefactorErrors.MethodClash, RefactorErrors.PathUnfit {
     return redirectJ(pData,that,PathAux.parseValidCs(src),dest);
     }
-  public static ClassB redirectJ(PData pData,ClassB that,List<C> src,ast.Ast.Path dest) throws RefactorErrors.ClassUnfit, RefactorErrors.IncoherentMapping, RefactorErrors.MethodClash, RefactorErrors.PathUnfit{
+  public static ClassB redirectJ(PData pData,ClassB that,List<C> src,ast.Ast.Path dest) throws RedirectError, RefactorErrors.ClassUnfit, RefactorErrors.IncoherentMapping, RefactorErrors.MethodClash, RefactorErrors.PathUnfit{
     assert dest.isCore() || dest.isPrimitive():
       dest;
-    return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
-    //return redirect(pData.p, that, new PathMap(List.of(new CsPath(src, dest))));
+    //return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
+    return redirect(pData.p, that, new PathMap(List.of(new CsPath(src, dest))));
     }
 
 
@@ -185,11 +185,12 @@ public class Redirect {
     collectAll(); // CCz = CollectAll()
 
     // R = CollectSolution(p; CCz)
-    var Rz = collectAllSolutions().collect(Collectors.toList());
-    for (var R : Rz) { debugPrint("Testing R = " + R); validRedirection(R); }
+//    var Rz = collectAllSolutions().collect(Collectors.toList());
+//    for (var R : Rz) { debugPrint("Testing R = " + R); validRedirection(R); }
 
     var R = collectSolution();
     debugPrint("Chosen R was: " + R);
+    Assertions.assertNoThrow(() -> validRedirection(R));
     return R; }
 
   void checkCsValid(Collection<List<C>> Csz) throws DetailedError, PathUnfit {
@@ -388,14 +389,16 @@ public class Redirect {
       //11a and 11b
       // TODO: Proove this is neccessary?
       for (var Cs : supertypeConstraints.dom()) { // RChoices is only defined for things in superTypeConstraints
-        var Pz = _collectTargets(Cs);
-        // TODO: If Pz is empty, we can produce an error now!
-        if (Pz.size() == 1) { // 11a: RChoices(CCz) = Cs -> {P} ==> Cs <= P
-          progress |= addSubtype(Cs, Pz.iterator().next(), "Rule 11a: " + printConstraint(Cs)); }
+        var Pz = _collectTargets(Cs); // TODO: If Pz is empty, we can produce an error now!
+        var P1 = _mostGeneral(Pz);
+        var P2 = _mostSpecific(Pz);
+
+        if (P1 != null) { // 11a: RChoices(CCz) = Cs -> {P} ==> Cs <= P
+          progress |= addSubtype(Cs, P1, "Rule 11a: " + printConstraint(Cs)); }
+
         // 11b: RChoices(CCz) = Cs -> Pz ==> MostSpecific(p; Pz) <= Cs
-        var P = _mostSpecific(Pz);
-        if (P != null) {
-          progress |= addSupertype(Cs, P, "Rule 11b: " + printConstraint(Cs)); }}}
+        if (P2 != null) {
+          progress |= addSupertype(Cs, P2, "Rule 11b: " + printConstraint(Cs)); }}}
 
     // Keep going until we stop doing anything
     while (progress);

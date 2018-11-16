@@ -97,11 +97,9 @@ Define Collect(p; CCz):
   P' in SuperClasses(p; P)
   s' in dom(p[Cs']) intersect dom(p[P'])
 
-11a: Cs <= P in Collect(p; CCz)  // TODO: Prove this is neccessary
-  CollectTargets(p; CCz; Cs) = {P}
+11a: Cs <= MostGeneral(CollectTargets(p; CCz; Cs)) in Collect(p; CCz)  // TODO: Prove this is neccessary
 
-11b: MostSpecific(p; Pz) <= Cs in Collect(p; CCz)  // TODO: Prove this is neccessary
-  CollectTargets(p; CCz; Cs) = Pz
+11b: MostSpecific(p; CollectTargets(p; CCz; Cs)) <= Cs in Collect(p; CCz)  // TODO: Prove this is neccessary
 
 ===================================================================
 Define CollectSolution(p; R; CCz) := Cs1->P1, ..., Csn->Pn
