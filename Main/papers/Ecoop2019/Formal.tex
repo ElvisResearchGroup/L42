@@ -306,9 +306,7 @@ refereed classes stay the same.
 This is needed during flattening, when a trait $t$ is reused, but also during reduction, when a method body is inlined in the main expression, and during typing, where a method body is typed depending on the signature of other methods in the system.
 
 To this aim we define a concept of program $p$, as a representation of 
-the code as seen from a certain point inside of the source code.
-
-The program $p$ is the most interesting form of the grammar,
+the code as seen from a certain point inside of the source code. It is the most interesting form of the grammar,
 used for virtually all reduction and typing rules. On the left of the $;$ is a stack representing which (nested) declaration is currently being processed, the bottom (rightmost) \textit{DL} represents the $D$ of the source-program that is currently being processed. Th right of the $;$ represents the top-level declarations that have already been compiled, this is necessary to look up top-level classes and traits.
 That is, each of the $\textit{DL}_0\ldots\textit{DL}_n$
 represents the outer nested level $0..n$, while
@@ -351,6 +349,7 @@ D={E=t}//this means, we entered in D
 
 To fetch a trait form a program, we will use notation $p(t)=LV$, to 
 fetch a class we will use $p(T)$.
+%We will use $p$ as a stack, where 
 
 %An $S$ represents what the top-level source-code form of our language is, it’s just a sequence of declarations and a main expression.
 \noindent To look up the definition of a class in the program we will use the notation
@@ -370,7 +369,7 @@ $p(T)=\textit{LV}$, which is defined by the following:,% but only if the RHS den
 
 
 This notation just fetch the referred $LV$ without any modification.
-To adapt the paths we define $\from{T_0}{T_1}$ and $\from{L}{T}$ as following:
+To adapt the paths we define $\from{T_0}{T_1}$, $\from{L}{T}$ and $p\op{minimize}{T}$ as following:
 \begin{defye}%
 	\defy{
 \from{\This{n}{Cs}}{\This{m}{C_1\ldots C_k}}
@@ -404,6 +403,11 @@ To adapt the paths we define $\from{T_0}{T_1}$ and $\from{L}{T}$ as following:
 }{
 \from{\This{n}{Cs}}{T} \quad \textit{with }n<j
 }
+\defy{
+p\op{minimize}{T}
+}{
+T'....
+}
 %This(j+n).Cs0[from P]j=This(j+k).Cs1
 %  with Thisn.Cs0[from P]=Thisk.Cs1
 %Thisn.Cs[from P]j=Thisn.Cs with n<j
@@ -415,7 +419,7 @@ To adapt the paths we define $\from{T_0}{T_1}$ and $\from{L}{T}$ as following:
 most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
 \begin{defye}%
   \defy{(DL_1\ldots DL_n; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{n}}}
-	\defy{p[T]}{\from{p(T)}{T}}%
+	\defy{p[T]}{p\op{minimize}{\from{p(T)}{T}}}%
 \end{defye}
 \\${}_{}$\\
 %A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
@@ -467,63 +471,73 @@ dom(T m(Txs), Mz) = m, dom(Mz)
 
 Aside from the redirect operation itself, compilation/flattening is the most interesting part,
 it is defined by a reduction arrow $p; id \vdash E \leftarrow E’$, the $id$ represents the id of the type/trait that we are currently compiling, it is needed since it will be the name of $This0$, and we use that fact that that is equal to $This1.id$ to compare types for equality.
-The $(CtxV)$ rule is the standard context, the $(L)$ rule propegates compilation inside of nested-classes, $(trait)$ merely evaluates a trait reference to it’s defined body, $(sum)$ and $(redirect)$ perform our two meta-operations.
+The \textsc{(CtxV)} rule is the standard context, the \textsc{(L-enter)} rule propegates compilation inside of nested-classes, \textsc{(trait)} merely evaluates a trait reference to it’s defined body,
+finally \textsc{(sum)} and \textsc{(redirect)} perform our two meta-operations by propagating to 
+corresponding auxiliary definitions.
+For simplicity rule \textsc{(sum)} is given in a highly non computational form,
+where non deterministically we select the result $LV_3$ and we use it in $p'$ and we also
+require it to be the result of 
+$LV_1 \Q@<+@_{p'} LV_2 = LV_3$.
+This rule uses $p'$ only to check for errors.
 
+
+\noindent$\begin{array}{l}
+\text{Define}\ p;id\vdash E\Rightarrow E', \text{where   
 \begin{bnf}
 \production{%
 \ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
-                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}
-\end{bnf}
-\begin{verbatim}
-Define p; id |- E --> E'
-=========================================================
-\end{verbatim}
-$\begin{array}{l}
-\inferrule[(top)]{
-	a \xrightarrow[b]{} c\quad
-	\forall i<3 a\vdash b:\text{OK}\\\\
-	\forall i<3 a\vdash b:\text{OK}
-}{
-	1+2
-	\rightarrow
-	3
-}\begin{array}{l}
-a\\b\\c
-\end{array}
-\\
+                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {}
+\end{bnf}}\\
+
+%\inferrule[(top)]{
+%	a \xrightarrow[b]{} c\quad
+%	\forall i<3 a\vdash b:\text{OK}\\\\
+%	\forall i<3 a\vdash b:\text{OK}
+%}{
+%	1+2
+%	\rightarrow
+%	3
+%}\begin{array}{l}
+%a\\b\\c
+%\end{array}
+%\\
 \inferrule[(CtxV)]{
   p;id\vdash E\Rightarrow E'
 }{
   p;id\vdash\ctx{V}[E]\Rightarrow\ctx{V}[E']
 }
 
+\quad\quad
+\inferrule[(L-enter)]{
+p\op{push}{id \Q{=} L[C = E]}; C \vdash E \Rightarrow E'
+}{
+p; id \vdash L[C = E] \Rightarrow L[C = E']
+}
+
+\quad\quad
+\inferrule[(trait)]{
+}{
+p; id \vdash t \Rightarrow p[t]
+}
+
+\\[5ex]
+\inferrule[(sum)]{
+LV_1 \Q@<+@_{p'} LV_2 = LV_3\\\\
+C' \textit{fresh} \\p'=p\op{push}{C'\Q@=@ LV_3}
+}{
+p; id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV_3
+}
+\quad\quad
+\inferrule[(redirect)]{{}_{}\\\\{}_{}
+}{
+p; id \vdash \red{LV}{R} \Rightarrow LV???
+}
+
+
 \end{array}$
-\begin{verbatim}
-p; id |- E --> E'
-(CtxV) ----------------------------------------------
-p; id |- CtxV[E] --> CtxV[E']
 
-id = L[C = E], p; C |- E --> E'
-(L) --------------------------------------------- // TODO use fresh C?
-p; id |- L[C = E] ---> L[C = E']
-
-(trait) -----------------------------------
-p; id |- t -> p[t]
-
-LV1 <+p' LV2 = LV3                  p' = C' = LV3, p
-(sum) -------------------------------------- for fresh C'
-p; id |- LV1 <+ LV2 --> LV3
-
-// TODO: Inline and de-42 redirect formalism
-(redirect) ------------------------------------LV'=redirect(p, LV, Cs, P)
-p; id |- LV(Cs=P) -> LV'
-\end{verbatim}
 
 \section{The Sum operation}
-
-The sum operation is defined by the rule $L1 <+p L2 = L3$, it is unconventional as it assumes we allready have the result ($L3$), and simply checks that it is indead correct.
-We believe (but have not proved) that this rule is unambigouse, if $L1 <+ p L2 = L3$ and $L1 <+ p L2 = L3’$, then $L3 = L3’$ (since the order of members does not matter for $L$s).
-
 The main rule fir summong of non-interfaces, sums the members, unions the implemented interfaces (and uses $mininize$ to remove any duplicates), it also ensures that at most one of them has a constructor.
 For summing an interface with a interface/class we require that an interface cannot ’gain’ members due to a sum. The actually L42 implementation is far less restrictive, but requires complicated rules to ensure soudness, due to problems that could arise if a summed nested-interface is implemented.
 Summing of traits/classes with state is a non-trivial problem and not the focus of our paper, their are many prior works on this topic, and our full L42 language simply uses ordinary methods to represent state, however this would take too much effort to explain here.
@@ -532,35 +546,24 @@ Summing of traits/classes with state is a non-trivial problem and not the focus 
 \begin{verbatim}
 Define L1 <+p L2 = L3
 ========================================================================================
-{Tz1; Mz1; K?1} <+p {Tz2; Mz2; K?2} = {Tz; Mz; K?}
-Tz = p.minimize(Tz1 U Tz2)
-Mz1 <+p Mz1 = Mz
-{empty, K?1, K?2} = {empty, K?} //may be too sophisticated?
+interface?{Tz1; Mz1; K?1} <+p interface?{Tz2; Mz2; K?2} = {Tz1 U Tz2; Mz1 <+p Mz1; K?}
+  {empty, K?1, K?2} = {empty, K?} //may be too sophisticated?
+  if interface? = interface then mdom(Mz1)= mdom(Mz2)
 
-interface{Tz1; amtz,amtz';} <+p interface?{Tz2;amtz;} = interface {Tz;amtz,amtz';}
-Tz = p.minimize(Tz1 U Tz2)
-if interface? = interface then amtz'=empty
+Note well formedness, if interface there is no K.
 \end{verbatim}
 
 The rules for summing member are simple, we take two sets of members collect all the oness with unique names, and sum those with duplicates.
 To sum nested classes we merely sum their bodies, to sum two methods we require their signatures to be identical, if they both have bodies, the result has the body of the RHS, otherwise the result has the body (if present) of the LHS.
 \begin{verbatim}
 Define Mz <+p Mz' = Mz"
-------------------------------------------
-M, Mz <+p M', Mz' = M <+p M', Mz <+p Mz
-//note: only defined when M.Mid = M'.Mid
-
-Mz <+p Mz' = Mz, Mz':
-dom(Mz) disjoint dom(Mz')
-
-Define M <+p M' = M"
 -----------------------------------------
-T' m(Txs') e? <+p T m(Txs) e = T m(Txs) e
-T', Txs'.Ts =p Ts, Txs
-
-T' m(Txs') e? <+p T m(Txs) = T m(Txs) e?
-T', Txs'.Ts =p Ts, Txs
-
+M1..Mn,Mz <+pM'1..M'n,Mz'=M1<+pM'1..Mn<+pM'n, Mz,Mz'
+  dom(Mz) disjoint dom(Mz')
+Define M0 <+p M1 = M2 //note: only defined when M.Mid = M'.Mid
+-----------------------------------------
+T m(Txs) e? <+p T m(Txs) e = T m(Txs) e
+T m(Txs) e? <+p T m(Txs) = T m(Txs) e?
 (C = L) <+p (C = L') = L <+p.push(C) L'
 \end{verbatim}
 
