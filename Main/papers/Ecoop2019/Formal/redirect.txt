@@ -66,20 +66,20 @@ Define Collect(p; CCz):
   Cs' in p[Cs].Csz
   Pz = {P' in SuperClasses(p; P) | PossibleTarget(p; Cs'; P')}
 
-3c: Cs <= P' in Collect(p; P <= Cs, Cs' <= P')  // TODO: Proove this is neccessary
+?3c: Cs <= P' in Collect(p; P <= Cs, Cs' <= P')
   Cs' in p[Cs].Csz
 
-3d: P <= Cs' in Collect(p; P <= Cs)
+!3d: P <= Cs' in Collect(p; P <= Cs)
   Cs' in p[Cs].Csz
 
-4: p[P.s].P <= p[Cs.s].Cs in Collect(p; P <= Cs)
-5: p[Cs.s].Csi <= p[P.s].Pi in Collect(p; CC)
+!4: p[P.s].P <= p[Cs.s].Cs in Collect(p; P <= Cs)
+!5: p[Cs.s].Csi <= p[P.s].Pi in Collect(p; CC)
    CC = P <= Cs or  CC = Cs <= P
 
 6: p[Cs.s].Cs <= p[P.s].P in Collect(p; Cs <= P)
   MustInterface(p; Cs)
 
-7: p[P.s].Pi <= p[Cs.s].Csi in Collect(p; Cs <= P)
+!7: p[P.s].Pi <= p[Cs.s].Csi in Collect(p; Cs <= P)
   MustInterface(p; Cs)
 
   // The ? rules
@@ -87,19 +87,19 @@ Define Collect(p; CCz):
   P' = p[P.s].P
   p[P'].interface?=empty
 
-8d:  Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P)
+!8d:  Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P)
   Cs' = p[Cs.s].Cs
   P' = p[P.s].P
   s' in dom(p[Cs']) intersect dom(p[P'])
 
-8'd: Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P) // TODO: Proove this is neccessary
+?8'd: Cs' <= Origin(p; s'; P') in Collect(p; Cs <= P)
   Cs' in p[Cs].Csz
   P' in SuperClasses(p; P)
   s' in dom(p[Cs']) intersect dom(p[P'])
 
-11a: Cs <= MostGeneral(CollectTargets(p; CCz; Cs)) in Collect(p; CCz)  // TODO: Prove this is neccessary
+?11a: Cs <= MostGeneral(CollectTargets(p; CCz; Cs)) in Collect(p; CCz)
 
-11b: MostSpecific(p; CollectTargets(p; CCz; Cs)) <= Cs in Collect(p; CCz)  // TODO: Prove this is neccessary
+!?11b: MostSpecific(p; CollectTargets(p; CCz; Cs)) <= Cs in Collect(p; CCz)
 
 ===================================================================
 Define CollectSolution(p; R; CCz) := Cs1->P1, ..., Csn->Pn
@@ -111,17 +111,25 @@ P in CollectTargets(p; CCz,CCz'; Cs) iff
   CCz=P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k
   Cs not in dom(CCz')
   P in SuperClasses(p; P1, ..., Pn) // already minimized result
+  // Note: SuperClasses will be undefined if n = 0
   PossibleTarget(p; Cs; P) 
   p |- P <= P'1, ..., p |- P <= P'k
+  Cs -> P consistant_p CCz
   not Cs->P contradicts_p CCz,CCz'
-  // Note: SuperClasses will be undefined if n = 0
-  
-  
-Cs -> P contradicts_p CCz iff:
-    or MustInterface(p; Cs) and
-      p[Cs.s].P not in CollectTargets(p; CCz; p[Cs.s].Cs)
-      or p[Cs.s].Pi not in CollectTargets(p; CCz; p[Cs.s].Csi)
-	
+
+empty consistant_p CCz
+Cs->P,R consistant_p CCz iff Cs->P consistant_p CCz and R consistant_p CCz
+
+Cs -> P consistant_p CCz iff:
+  if MustInterface(p; Cs) then, forall s in sdom(p[Cs])
+    CollectableTarget(p; CCz; p[Cs.s].Cs, p[Cs.s].P)
+    CollectableTarget(p; CCz; p[Cs.s].Csi, p[Cs.s].Pi)
+
+
+CollectableTarget(p; CCz; Cs; P) iff
+  P in CollectTargets(p; CCz; Cs)
+  or CollectTargets(p; CCz; Cs) is undefined // TODO: Is this line needed for the proof? (I don't think it actually matters though, it just may be easier to prove with it)
+
 //Note, it is equivalent to
 //{p.minimize(P) | PossibleTarget(p; Cs; P), Cs->P satisfies_p CCz}
 
@@ -143,10 +151,8 @@ MostSpecific(p; Pz) = P
 MostGeneral(p; Pz) = P
   {P} = SuperClasses(p; Pz) intersect p.minimize(Pz)
 
-PossibleTargets(p; Cs1->P1, ..., Csn->Pn) iff
-  PossibleTarget(p; Cs1; P1)
-  ...
-  PossibleTarget(p; Csn; Pn)
+PossibleTargets(p; empty)
+PossibleTargets(p; Cs->P,R) iff PossibleTarget(p; Cs->P) and PossibleTargets(p; R)
 
 PossibleTarget(p; Cs; P) iff
   L1 = p[Cs]

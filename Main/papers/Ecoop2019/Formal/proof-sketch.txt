@@ -25,7 +25,7 @@ p' in SimilarPrograms(p) iff p <= p' and p.top() = p'.top()
 
 R' in SatisfiedRedirections(p; R) iff SatisfiedSolutions(p; R; CollectConstraints(p; R))
 R' in SatisfiedSolutions(CCz)(p; R) iff
-  R satisfies_p CCz && PossibleTargets(p; R) && R' in PossibleRedirections(p; R)
+  R satisfies_p CCz && PossibleTargets(p; R) && R' in PossibleRedirections(p; R) && R consistent_p CCz
 
 // Reminder:
 //CollectRedirection(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
@@ -110,31 +110,32 @@ Lemma 1: If MostSpecificRedirection(p; R,Rz,Rz') = R, then MostSpecificRedirecti
 Therefore, forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
 
 
+=============
+// Rules 3d, 4 and 5 ensure the other cases (i.e. implements, return types and paramater types)
+// Proof sketch that the mapping
+// can't have gone wrong due to an interface method return type not lining up
+R(Cs1) = P1, R(Cs2) = P2
+P1 <= Cs1 // by rule 11b
+P1' <= Cs1 // by rule 4
+P2 <= Cs2 // by rule 11b
 
+         P2.s.P = P1'
+Where: Cs2.s.Cs = Cs1
 
-  2a. BestSatisfiedRedirection(p; R) =  R'
-    2a.a. BestSatisfiedSolution(p; R; CCz) = R'// Since the rest of CollectRedirection and BestSatisfiedRedirection are the same, and CollectSolution(p; R; CCz) = R'
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// So we have P1' <= P1
+// By collectTargets, we have that
+ Cs2 -> P2 consistent_p CCz
+And so Cs1->P1' satisfies_p P1 <= Cs1
+and P1 <= P1'
+and hence P1' = P1,
+a contradiction.
 
-      // Hard parts of the proof:
-        // proving that R' in PossibleRedirections(p; R)
-      // prooving that the UniversalMostSpecific dosn't break our algorithm, since:
-          // forall Cs,
-          // If exists R such that forall p' in SimilarPrograms(p): {P | Cs->P satisfies_p' CCz[Cs]} = Pz
-          //   then CollectTargets(p; CCz; Cs) = Pz
-          // Otherwise, CollectTargets(p; CCz; Cs) is undefined
-          // I.e. the set of things satisfing the constraints is indepent of the program
-          // If it's not, we can than prove that the most-specific is also not independent of the program
-
-    // Easy parts:
-        // CollectSolution chooses the MostSpecificRedirection of CollectMappings (see above)
-        // Forall R in CollectMappings, R satisfies_p CCz && PossibleTargets(p; R)
-        // the MostSpecificRedirection bullshit, is the same as our MostSpecific(p; Pz) thing...
-
-  2b. SatisfiedRedirections(p; R) subseteq ValidRedirections(p; R) // Hard
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Therefore, CollectRedirection == BestRedirection
+=============
+For paramater types:
+	note that rule 8d forces rule 7 to apply
+	since we cannot refine paramater types,
+	this will work!
+===============================================
 
 ---------------
 Proof 2b

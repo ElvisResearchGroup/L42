@@ -59,24 +59,25 @@ public class TestRedirect {
     {lineNumber(), "", "{}", "", "", "{}" // This is the most trivial test case
 
     }, {lineNumber(), "{" +
+        "EB: {interface} " +
+        "EA1: {interface method Void m(Any x)} " +
+        "EA2: {interface implements EA1 refine method Void m(Any x)}" +
+        "EV:  {method EA2 n() method EB nn()}" +
+      "}", "{" +
+        "B: {interface}" +
+        "A: {interface method Void m(B x)}" +
+        "V: {method A n() method B nn()}" +
+      "}", "V", "This0.EV", "{}"
+    }, {lineNumber(), "{" +
         "EB: {interface method Void bad()} " +
         "EA1: {interface method Any m()} " +
-        "EA2: {interface implements EA1 refine method EB m()}" +
+        "EA2: {interface implements EA1 refine method Void m()}" +
         "EV:  {method EA2 n()}" +
       "}", "{" +
         "B: {interface}" +
-        "A: {interface method B m()}" + // EA <= A, EB <= B
+        "A: {interface method B m()}" +
         "V: {method A n()}" +
-        
-        // EA2 <= A, CCz...
-        // Just add to CollectTargets a requirement that: Cs->P contradicts CCz
-        // 
-        // iff Cs->P does not satisfy CCz
-        // or MustInterface(p; Cs) and p[Cs.s].Cs -> p[Cs.s].P contradicts CCz
-        //          or p[Cs.s].Csi -> p[Cs.s].Pi contradicts CCz
-        //  or not PossibleTarget(p; Cz)
-        
-      "}", "V", "This0.EV", "{}" // FAILS!
+      "}", "V", "This0.EV", "{}"
     }, {lineNumber(), new String[]{"{ED: {} EB: {C: {ED m}} EA: {method EB m()}}"},
       "{" +
         "D:{}" + 
