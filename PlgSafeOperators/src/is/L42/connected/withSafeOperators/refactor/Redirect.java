@@ -307,7 +307,7 @@ public class Redirect {
       //   Pz = {P' in SuperClasses(p; P) | sdom(p[P') = sdom(p[Cs'])}
       for (var CsP : supertypeConstraints) { // P <= Cs
         for (var PCs2 : this.get(CsP.getCs()).Pz()) { // P in p[Cs].Pz
-          var Cs2 = internal(PCs2); // P = This0.Cs'
+          var Cs2 = _internal(PCs2); // P = This0.Cs'
           if (Cs2 == null) { continue; }
 
           var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> possibleTarget(Cs2, Pi))
@@ -405,19 +405,43 @@ public class Redirect {
     debugPrint("End: " + this.printConstraints() + "\n"); }
 
   // collectTargets(p; P1 <= Cs, ..., Pn <= Cs, Cs <= P'1, ..., Cs <= P'k, CCz; Cs) = Pz''
-  Set<Path> _collectTargets(List<C> Cs) {
+  Set<Path> _collectTargets(List<C> Cs) { return _collectTargets_(Cs, new HashSet<>()); }
+  Set<Path> _collectTargets_(List<C> Cs, Set<List<C>> stack) {
     var Ps1 = this.supertypeConstraints.get(Cs); // Ps1 = P1, ..., Pn
     var Ps2 = this.subtypeConstraints.get(Cs); // Ps2 = P'1, ..., P'k
     var Pz = _superClasses(Ps1); // Pz = SuperClasses(p; P1, ..., Pn)
     if (Pz == null) { return null; } // SuperClasses was undefined
 
     //Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-    var Pz2 = Pz.stream().filter(P -> superClasses(P).containsAll(Ps2)).collect(Collectors.toSet());
+    return Pz.stream().filter(P ->
+      superClasses(P).containsAll(Ps2)
+      && possibleTarget(Cs, P)
+      && consistent(Cs, P, stack)).collect(Collectors.toSet());}
 
-    // Pz'' = {P in Pz' | PossibleTarget(p; Cs; P)}
-    var res = Pz2.stream().filter(P -> possibleTarget(Cs, P)).collect(Collectors.toSet());
-    return res; }
-//Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> s, Position p, Phase phase, int uniqueId
+  boolean consistent(List<C> Cs, Path P, Set<List<C>> stack) {
+    // There is a very seriouse infinite recursion possibility ...
+    if (!mustInterface(Cs)) { return true; }
+    var L = this.get(P);
+
+    return this.get(Cs).mwtz().stream().allMatch(mwt -> {
+      var mwt2 = L.get(mwt.getMs());
+      if (!collectableTarget(mwt.getReturnPath(), mwt2.getReturnPath(), stack)) {
+        return false; }
+      for (int i = 0; i < mwt.getSize(); i++) {
+        if (!collectableTarget(mwt.getPaths().get(i), mwt2.getPaths().get(i), stack)) {
+          return false; }}
+      return true; });}
+
+  boolean collectableTarget(Path P1, Path P2, Set<List<C>> stack) {
+    var Cs = _internal(P1);
+    if (Cs == null || stack.contains(Cs)) { return true; }
+
+    stack.add(Cs);
+    var Pz = _collectTargets_(Cs, stack);
+    if (Pz == null) { return true; }
+    return Pz.contains(P2);
+  }
+  //Doc doc1, boolean isInterface, List<Type> supertypes, List<Member> s, Position p, Phase phase, int uniqueId
   // Creates new things and adds the to the program, in case targets fails,
   Set<Path> createTargets(List<C> Cs) throws DeductionFailure {
     var res = this._collectTargets(Cs);
@@ -739,7 +763,7 @@ public class Redirect {
   FromedL _get(List<C> Cs) { return this.FL_._get(Cs); }
   FromedL get(List<C> Cs) { return this.FL_.get(Cs); }
   FromedL get(Path P) {
-    var Cs = internal(P);
+    var Cs = _internal(P);
     return Cs != null ? get(Cs) : new FromedL(p, P); }
   //ClassB get(Path P)
   // Makes a Path from a Cs

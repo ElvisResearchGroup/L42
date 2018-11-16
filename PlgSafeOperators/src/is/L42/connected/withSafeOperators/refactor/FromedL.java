@@ -112,5 +112,5 @@ public class FromedL {
   static List<List<C>> internals(Collection<Path> Ps) {
     return Ps.stream().filter(FromedL::isInternal).map(Path::getCBar).collect(Collectors.toList()); }
   
-  static List<C> internal(Path P) { return isInternal(P) ? P.getCBar() : null; }
+  static List<C> _internal(Path P) { return isInternal(P) ? P.getCBar() : null; }
   static boolean isInternal(Path P) { return P.tryOuterNumber() == 0; }}
