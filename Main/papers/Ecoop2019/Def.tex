@@ -77,8 +77,10 @@
 \newcommand{\prodInline}[2]{#1\Coloneqq#2}
 \newcommand{\terminal}[1]{\ensuremath{$\texttt{#1}$}}
 %\newcommand{\metavariable}[1]{\ensuremath{\mathit{#1}}}
+\newcommand{\dom}[1]{\mathit{dom}(#1)}
+\newcommand{\mdom}[1]{\mathit{mdom}(#1)}
 
-\newcommand{\Rulename}[1]{{\textsc{#1}}}
+\newcommand{\Rulename}[1]{{\textsc{(#1)}}}
 \newcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
 \newcommand{\libi}[2]{\Q@\{@\Q!interface!\ #1\Q{;} #2\Q@\}@}
 \newcommand{\lib}[3]{\Q!interface!\ensuremath{?}\ \libc{#1}{#2}{#3}}
@@ -93,6 +95,7 @@
 \newcommand{\mmid}{{\ensuremath{{\mid}}}\!}
 \newcommand{\hole}{\ensuremath{\square}}
 \newcommand{\s}[1]{\ensuremath{\mathit{#1s}}}
+
 \makeatletter
 \newcommand{\This}[1]{\Q!This!#1\nextpath}
 \newcommand{\Cs}[1]{#1\nextpath}

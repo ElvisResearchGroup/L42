@@ -1,4 +1,14 @@
 \section{Language grammar and well formedness}
+We apply our ideas on a simplified object oriented language with nominal typing and (nested)
+interfaces  and final classes.
+Instead of inheritance, code reuse is obtained by trait composition, thus the source code would be
+a sequence of top level declarations $D$ followed by a main expression;
+a lower-case identifier $t$ is a trait name, while an upper case
+identifier $C$ is a class name.
+To simplify our terminology, instead of distinguishing between 
+nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
+named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
+
 \begin{minipage}{0.63\textwidth}
 \begin{bnf}
 \production{%
@@ -32,16 +42,6 @@ v}      {\Q{new} T\rp{vs}}                                                 {valu
 \end{minipage}
 
 
-We apply our ideas on a simplified object oriented language with nominal typing and (nested)
-interfaces  and final classes.
-Instead of inheritance, code reuse is obtained by trait composition, thus the source code would be
-a sequence of top level declarations $D$ followed by a main expression;
-a lower-case identifier $t$ is a trait name, while an upper case
-identifier $C$ is a class name.
-To simplify our terminology, instead of distinguishing between 
-nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
-named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
-
 In the context of nested classes, types are paths. Syntactically,
 we represent them as relative paths of form 
 $\This{n}{Cs}$, where the number $n$ identify the root of our path:
@@ -56,6 +56,12 @@ serve the role of class/interface bodies; they contain the set of implemented in
 $Tz$, the set of members $Mz$ and their (optional) state.
 In the concrete syntax we will use \Q@implements@ in front of a non empty list of implemented interfaces
 and we will omit parenthesis around a non empty set of fields.
+To simplifiy our formalism, we delegate some sanity checks well formedness, and we assume
+all the fields in the state $K$ to have different names;
+no two methods or nested classes with the same name ($m$ or $C$) are declared in a code literal,
+and no nested class is named $\This{n}$ for any number $n$;
+in any method headers, all parameters have different names, and no parameter is named \Q@this@.
+
 A class member $M$ can be a (private) nested class or a (static) method.
 Abstract methods are just methods without a body. 
 Well formed interface methods can only be abstract and non-static.
@@ -63,7 +69,9 @@ To facilitate code reuse, classes can have (static) abstract methods, code compo
 provide an implementation for those or, as we will see, redirect away the whole class.
 We could easily support private methods too, but to simplify our formalism we consider private only for nested classes. In a well formed code literal, in all types of form $\This{n}{Cs}{C}{Cs'}$,
 if $C$ denotes a private nested class, then $Cs$ is empty.
-
+We assume a form of alpha-reaming for private nested classes, that will consistently rename all the 
+paths of form $\This{n}{C}{Cs'}$, where 
+$\This{n}{C}$ refer to such private nested class. The trivial definition of such alpha rename is given in appendix.
 
 Expressions are used as body of (static) methods and for the main expression.
 They are variables $x$ (including \Q@this@)
@@ -91,6 +99,7 @@ and trait names $t$, referring to a literal declared before by \textit{t\eq{}E}.
 We consider two operators: conventional preferential sum 
  \textit{\summ{$E_1$}{$E_2$}} and our novel redirect\textit{\red{E}{Cs}{T}}.
 
+\subsection{Compilation process/flattening}
 The compilation process consists in flattening all the $E$ into $L$,
 starting from the innermost leftmost $E$. This means that sum and redirect work on $LV$s:
 a kind of $L$, where all the nested classes are of form \textit{C\eq{}LV}.
@@ -108,7 +117,7 @@ the types need to be updated.
 For each of those points we will first provide some informal explanation and then we will proceed formalizing
 the precise behaviour.
 
-\subsection{Redirect}
+\subsubsection{Redirect}
 
 Redirect %\textit{\red{LV}{$Cs_1:T_1\ldots Cs_n:T_n$}{}}
 takes a library literal and produce a modified version of it where some nested classes has been removed
@@ -224,7 +233,7 @@ however completing the mapping
 task when subtyping is took into account. This is strongly connected with ontology matching and
 will be discussed in the technical core of the paper later on.
 
-\subsection{Preferential sum and examples of sum and redirect working together}
+\subsubsection{Preferential sum and examples of sum and redirect working together}
 The sum of two traits is conceptually a trait with the sum of the traits members, and the union of the implemented interfaces.
 If the two traits both define a method with the same name, some resolution strategy is applied.
 In the symmetric sum[] the two methods need to have the same signature and at least one of them need to be abstract.
@@ -479,7 +488,28 @@ where non deterministically we select the result $LV_3$ and we use it in $p'$ an
 require it to be the result of 
 $LV_1 \Q@<+@_{p'} LV_2 = LV_3$.
 This rule uses $p'$ only to check for errors.
+On its right, we define the used auxiliary notation,
+showing how to sum literals and members.
+As usual in definitions of sum operators,
+the implemented interfaces is the union of the interfaces of $L_1$ and $L_2$, the members with the same domain are recursivelly composed while the members with disjoint domains are directly included.
+Since method and nested class identifiers must be unique in a well formed $L$ and $M_1 \Q@<+@_p M_2$  being defined only if the identifier is the same,
+our definition forces $\dom{Mz}=\dom{Mz'}$ and
+$\dom{Mz_1}$ disjoint $\dom{Mz_2}$.
+For simplicity here 
+ we require at most one class to have a state; if both have no state, the result will have no state, otherwise the result will have the only present state (
+the set $\{empty,K?\}$ mathematically express this requirement in a compact way);
+we also allow summing
+only interfaces with interfaces and final classes with final classes. When two interfaces are composed both sides must define the same methods.
+This is because other nested classes inside $L_1$ may be implementing such interface, and adding methods to such interface would require those classes to somehow add an implementation for those methods too.
+In literature there are expressive ways to soundly handle merging different state, composing interfaces with final classes and
+adding methods to interfaces, but they are out of scope in this work.
 
+Member composition $M_1 \Q@<+@_p M_2$ uses
+the implementation from the right hand side, if available,
+otherwise if the right hand side is abstract, the body is took from the left side.
+Composing nested classes, not how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them.
+%DO WE NEED p in the sum now that all L are normalized?
+ %Note how the sum is recurvisively propagagated 
 
 \noindent$\begin{array}{l}
 \text{Define}\ p;id\vdash E\Rightarrow E', \text{where   
@@ -523,50 +553,37 @@ p; id \vdash t \Rightarrow p[t]
 \\[5ex]
 \inferrule[(sum)]{
 LV_1 \Q@<+@_{p'} LV_2 = LV_3\\\\
-C' \textit{fresh} \\p'=p\op{push}{C'\Q@=@ LV_3}
+C' \textit{fresh} \\\\
+p'=p\op{push}{C'\Q@=@ LV_3}
 }{
 p; id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV_3
 }
-\quad\quad
-\inferrule[(redirect)]{{}_{}\\\\{}_{}
+\quad
+\begin{array}{l}
+\text{\textbf{Def:}}\ L_1 \Q@<+@_p L_2 = L_3 \\
+\quad  L_1=\lib{Tz_1}{Mz,Mz_1}{K?_1}\\
+\quad  L_2=\lib{Tz_2}{Mz',Mz_2}{K?_2}\\
+\quad  L_3=\lib{Tz_1 \cup Tz_2}{Mz \Q@<+@_p Mz',Mz_1,Mz_2}{K?}\\
+\quad  \{empty, K?_1, K?_2\} = \{empty, K?\}\\
+\quad  \text{if}\ \Q@interface@? = \Q@interface@\  \text{then}\ \mdom{L_1}= \mdom{L_2}\\
+\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@_p T m\rp{Txs} e = T m\rp{Txs} e\\
+\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@_p T m\rp{Txs} = T m\rp{Txs} e?\\
+\text{\textbf{Def:}}\ (C \Q@=@ L) \Q@<+@_p (C \Q@=@ L') = C \Q@=@\ L \Q@<+@_{p'} L, \text{with } p'=p\op{push}{C\Q@=@p(\This{0}{C}}
+\end{array}
+
+
+\\
+\inferrule[(redirect)]{
+  p' = p\op{push}{C\Q@=@ L}\\\\
+  Csz = p'\op{redirectSet}{R}\\\\
+  p'\op{redirectable}{Csz}\\\\
+  R' =p'\op{bestRedirection}{R[\This{n}=\This{n+1}]}
 }{
-p; id \vdash \red{LV}{R} \Rightarrow LV???
+p; id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L\op{remove}{Csz}) 
 }
 
 
 \end{array}$
-
-
-\section{The Sum operation}
-The main rule fir summong of non-interfaces, sums the members, unions the implemented interfaces (and uses $mininize$ to remove any duplicates), it also ensures that at most one of them has a constructor.
-For summing an interface with a interface/class we require that an interface cannot ’gain’ members due to a sum. The actually L42 implementation is far less restrictive, but requires complicated rules to ensure soudness, due to problems that could arise if a summed nested-interface is implemented.
-Summing of traits/classes with state is a non-trivial problem and not the focus of our paper, their are many prior works on this topic, and our full L42 language simply uses ordinary methods to represent state, however this would take too much effort to explain here.
-
-
-\begin{verbatim}
-Define L1 <+p L2 = L3
-========================================================================================
-interface?{Tz1; Mz1; K?1} <+p interface?{Tz2; Mz2; K?2} = {Tz1 U Tz2; Mz1 <+p Mz1; K?}
-  {empty, K?1, K?2} = {empty, K?} //may be too sophisticated?
-  if interface? = interface then mdom(Mz1)= mdom(Mz2)
-
-Note well formedness, if interface there is no K.
-\end{verbatim}
-
-The rules for summing member are simple, we take two sets of members collect all the oness with unique names, and sum those with duplicates.
-To sum nested classes we merely sum their bodies, to sum two methods we require their signatures to be identical, if they both have bodies, the result has the body of the RHS, otherwise the result has the body (if present) of the LHS.
-\begin{verbatim}
-Define Mz <+p Mz' = Mz"
------------------------------------------
-M1..Mn,Mz <+pM'1..M'n,Mz'=M1<+pM'1..Mn<+pM'n, Mz,Mz'
-  dom(Mz) disjoint dom(Mz')
-Define M0 <+p M1 = M2 //note: only defined when M.Mid = M'.Mid
------------------------------------------
-T m(Txs) e? <+p T m(Txs) e = T m(Txs) e
-T m(Txs) e? <+p T m(Txs) = T m(Txs) e?
-(C = L) <+p (C = L') = L <+p.push(C) L'
-\end{verbatim}
-
 
 
 We have two-top level reduction rules defining our language, of the form $Ds e ––> Ds’ e$ which simply reduces the source-code.
