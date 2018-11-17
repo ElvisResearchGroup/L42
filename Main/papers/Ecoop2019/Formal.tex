@@ -479,20 +479,27 @@ dom(T m(Txs), Mz) = m, dom(Mz)
 \section{Flattening}
 
 Aside from the redirect operation itself, compilation/flattening is the most interesting part,
-it is defined by a reduction arrow $p; id \vdash E \leftarrow E’$, the $id$ represents the id of the type/trait that we are currently compiling, it is needed since it will be the name of $This0$, and we use that fact that that is equal to $This1.id$ to compare types for equality.
+it is defined by reduction arrow $\Ds \Rightarrow \Ds'$, where eventually $\Ds'$ is going to reach form $\DVs$  and $p; \id \vdash E \Rightarrow E’$, where eventually $E'$ is going to reach form $LV$. The $\id$ represents the identifier of the type/trait that we are currently compiling, it is needed since it will be the name of $This0$, and we use that fact that that is equal to $This1.id$ to compare types for equality.
+Rule \textsc{(Top)}  selects the leftmost $\id\eq{E}$
+where $E$ is not of form $LV$ and $\DVz$: a 
+well typed subset of the preceeding declarations. 
+$E$ is flattened in the contex of such $DVz$, thus
+by rule \textsc{(Trait)} $DVz$ must contain all the trait names used in $E$.
+
 The \textsc{(CtxV)} rule is the standard context, the \textsc{(L-enter)} rule propegates compilation inside of nested-classes, \textsc{(trait)} merely evaluates a trait reference to it’s defined body,
 finally \textsc{(sum)} and \textsc{(redirect)} perform our two meta-operations by propagating to 
 corresponding auxiliary definitions.
-For simplicity rule \textsc{(sum)} is given in a highly non computational form,
-where non deterministically we select the result $LV_3$ and we use it in $p'$ and we also
-require it to be the result of 
+%For simplicity rule \textsc{(sum)} is given in a highly non computational form,
+%where non deterministically we select the result $LV_3$ and we use it in $p'$ and we also
+%require it to be the result of 
 $LV_1 \Q@<+@_{p'} LV_2 = LV_3$.
-This rule uses $p'$ only to check for errors.
-On its right, we define the used auxiliary notation,
-showing how to sum literals and members.
+%This rule uses $p'$ only to check for errors.
+Rule \textsc{(sum)} just delegate the work on the auxiliar notation defined on its right.
+%On its right, we define the used auxiliary notation,
+%showing how to sum literals and members.
 As usual in definitions of sum operators,
 the implemented interfaces is the union of the interfaces of $L_1$ and $L_2$, the members with the same domain are recursivelly composed while the members with disjoint domains are directly included.
-Since method and nested class identifiers must be unique in a well formed $L$ and $M_1 \Q@<+@_p M_2$  being defined only if the identifier is the same,
+Since method and nested class identifiers must be unique in a well formed $L$ and $M_1 \Q@<+@ M_2$  being defined only if the identifier is the same,
 our definition forces $\dom{Mz}=\dom{Mz'}$ and
 $\dom{Mz_1}$ disjoint $\dom{Mz_2}$.
 For simplicity here 
@@ -504,15 +511,14 @@ This is because other nested classes inside $L_1$ may be implementing such inter
 In literature there are expressive ways to soundly handle merging different state, composing interfaces with final classes and
 adding methods to interfaces, but they are out of scope in this work.
 
-Member composition $M_1 \Q@<+@_p M_2$ uses
+Member composition $M_1 \Q@<+@ M_2$ uses
 the implementation from the right hand side, if available,
 otherwise if the right hand side is abstract, the body is took from the left side.
 Composing nested classes, not how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them.
-%DO WE NEED p in the sum now that all L are normalized?
- %Note how the sum is recurvisively propagagated 
-
+\begin{figure}
+  \caption{Flattening}
 \noindent$\begin{array}{l}
-\text{Define}\ p;id\vdash E\Rightarrow E', \text{where   
+\textbf{Def:}\ Ds\Rightarrow Ds' \text{ and } p;id\vdash E\Rightarrow E',  \text{where   
 \begin{bnf}
 \production{%
 \ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
@@ -531,44 +537,47 @@ Composing nested classes, not how they can not be \Q@private@; it is possible to
 %a\\b\\c
 %\end{array}
 %\\
-\inferrule[(CtxV)]{
-  p;id\vdash E\Rightarrow E'
+\inferrule[(Top)]{
+\DVz \subseteq \DVs\\\\
+\DVz \vdash \textbf{Ok}\\\\
+\Empty; \DVz; id \vdash E \Rightarrow E'
 }{
-  p;id\vdash\ctx{V}[E]\Rightarrow\ctx{V}[E']
-}
+\DVs\ \id \Q@=@ E \Ds \Rightarrow \DVs\ \id \Q@=@ E' \Ds
+}\quad
 
 \quad\quad
 \inferrule[(L-enter)]{
 p\op{push}{id \Q{=} L[C = E]}; C \vdash E \Rightarrow E'
 }{
-p; id \vdash L[C = E] \Rightarrow L[C = E']
+p; \id \vdash L[C = E] \Rightarrow L[C = E']
 }
 
 \quad\quad
 \inferrule[(trait)]{
 }{
-p; id \vdash t \Rightarrow p[t]
+p; \id \vdash t \Rightarrow p[t]
 }
 
 \\[5ex]
 \inferrule[(sum)]{
-LV_1 \Q@<+@_{p'} LV_2 = LV_3\\\\
-C' \textit{fresh} \\\\
-p'=p\op{push}{C'\Q@=@ LV_3}
+LV_1 \Q@<+@ LV_2 = LV_3%\\\\
+%C' \textit{fresh} \\\\
+%p'=p\op{push}{C'\Q@=@ LV_3}
 }{
-p; id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV_3
+p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV_3
 }
 \quad
 \begin{array}{l}
-\text{\textbf{Def:}}\ L_1 \Q@<+@_p L_2 = L_3 \\
+\text{\textbf{Def:}}\ L_1 \Q@<+@ L_2 = L_3 \\
 \quad  L_1=\lib{Tz_1}{Mz,Mz_1}{K?_1}\\
 \quad  L_2=\lib{Tz_2}{Mz',Mz_2}{K?_2}\\
-\quad  L_3=\lib{Tz_1 \cup Tz_2}{Mz \Q@<+@_p Mz',Mz_1,Mz_2}{K?}\\
-\quad  \{empty, K?_1, K?_2\} = \{empty, K?\}\\
+\quad  L_3=\lib{Tz_1 \cup Tz_2}{Mz \Q@<+@ Mz',Mz_1,Mz_2}{K?}\\
+\quad  \{\Empty, K?_1, K?_2\} = \{\Empty, K?\}\\
 \quad  \text{if}\ \Q@interface@? = \Q@interface@\  \text{then}\ \mdom{L_1}= \mdom{L_2}\\
-\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@_p T m\rp{Txs} e = T m\rp{Txs} e\\
-\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@_p T m\rp{Txs} = T m\rp{Txs} e?\\
-\text{\textbf{Def:}}\ (C \Q@=@ L) \Q@<+@_p (C \Q@=@ L') = C \Q@=@\ L \Q@<+@_{p'} L, \text{with } p'=p\op{push}{C\Q@=@p(\This{0}{C}}
+\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} e = T m\rp{Txs} e\\
+\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} = T m\rp{Txs} e?\\
+\text{\textbf{Def:}}\ (C \Q@=@ L) \Q@<+@
+ (C \Q@=@ L') = C \Q@=@\ L \Q@<+@ L,% \text{with } p'=p\op{push}{C\Q@=@p(\This{0}{C}}
 \end{array}
 
 
@@ -579,11 +588,12 @@ p; id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV_3
   p'\op{redirectable}{Csz}\\\\
   R' =p'\op{bestRedirection}{R[\This{n}=\This{n+1}]}
 }{
-p; id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L\op{remove}{Csz}) 
+p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L\op{remove}{Csz}) 
 }
 
 
 \end{array}$
+\end{figure}
 
 
 We have two-top level reduction rules defining our language, of the form $Ds e ––> Ds’ e$ which simply reduces the source-code.
