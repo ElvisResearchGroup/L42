@@ -91,6 +91,8 @@
 \newcommand{\DVz}{\textit{DVz}}
 \newcommand{\DV}{\textit{DV}}
 \newcommand{\Ds}{\textit{Ds}}
+\newcommand{\DLs}{\textit{DLs}}
+
 
 \newcommand{\Empty}{\textit{empty}}
 
@@ -105,7 +107,7 @@
 \newcommand{\s}[1]{\ensuremath{\mathit{#1s}}}
 
 \makeatletter
-\newcommand{\This}[1]{\Q!This!#1\nextpath}
+\newcommand{\This}[1]{\ensuremath{\Q!This!_{#1}}\nextpath}
 \newcommand{\Cs}[1]{#1\nextpath}
 \newcommand{\nextpath}{\@ifnextchar\bgroup{\gobblenextpath}{}}
 \newcommand{\gobblenextpath}[1]{\Q!.!#1\@ifnextchar\bgroup{\gobblenextpath}{}}
