@@ -2,14 +2,14 @@
 // Util contains some utility definitions used for this formalisism, some of which are implemented in L42 (but shouldn't be too interesting)
 
 // Perform and compute a redirect, using a choice function 'CollectRedirection' to compute the R mapping
-Define Redirect(p; L; R) = R(L[remove Csz]) // Remove the things that will be redirected away
+Define Redirect(p; L; R) = R'(L[remove Csz]) // Remove the things that will be redirected away
   R = Cs1 -> P1, ..., Csn -> Pn
   p' = p.evilPush(L) // to simplify everything, just make L the new top
   Csz = RedirectSet(p; R)
   Redirectable(p'; Csz) // Check that the source is valid
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-  R = CollectRedirection(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
-
+  R' = CollectRedirection(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
+	
 ====================================================================
 Define Redirectable(p; Csz)
   forall Cs in Csz
@@ -18,10 +18,9 @@ Define Redirectable(p; Csz)
     forall C in Cs: not Private(C)//no unique number
     forall mwt in p(This0.Cs).mwtz:
       mwt.e = empty//not in paper
-      not Private(mwt.s)
+      not Private(mwt.s) // maybe not in the paper
     forall C in dom(p(This0.Cs))
       Cs.C in Csz
-
 --------------------------------------------------------------
 // If we are redirecting Csz, then we need to redirect Csz
 dom(R) subseteq RedirectSet(p; R)

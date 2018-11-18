@@ -319,7 +319,7 @@ refereed classes stay the same.
 This is needed during flattening, when a trait $t$ is reused, but also during reduction, when a method body is inlined in the main expression, and during typing, where a method body is typed depending on the signature of other methods in the system.
 
 To this aim we define a concept of program 
-$\textit{p}\Coloneqq\textit{Ds\Q{;} DVs}$
+$\textit{p}\Coloneqq\textit{Ds\Q{;} DVz}$
 where 
 $\textit{DV}\Coloneqq\textit{id\eq{LV}}$; as a representation of 
 the code as seen from a certain point inside of the source code. It is the most interesting form of the grammar,
@@ -403,7 +403,7 @@ p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
 p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
   p = id0 = L0, ..., idn = Ln, _; Ds
   p(Thisn.Cs) = L
-  // TODO: Check that Ln is an L instead?
+  // TODO: Check that Ln is an LV instead?
 
 otherwise p.minimize(P) = P
 
@@ -527,20 +527,22 @@ p; \id \vdash t \Rightarrow p[t]
 
 \\[5ex]
 \inferrule[(sum)]{
-LV_1 \Q@<+@ LV_2 = LV_3%\\\\
+L_i=p\op{push}{\id\eq{LV_i}}[\This{0}]\\\\
+L_1 \Q@<+@ L_2 = LV%\\\\
 %C' \textit{fresh} \\\\
 %p'=p\op{push}{C'\Q@=@ LV_3}
 }{
-p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV_3
+p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
 }
 \quad\quad
 \inferrule[(redirect)]{
-  p' = p\op{push}{\id\eq{L}}\\\\
+  p' = p\op{push}{\id\eq{LV}}\\\\
   R' =p'\op{bestRedirection}{R[\This{n}=\This{n+1}]}\\\\
   Csz = p'\op{redirectSet}{R}\\\\
-  p'\op{redirectable}{Csz}
+  p'\op{redirectable}{Csz}\\\\
+  L=p'\op{minimize}{LV}\op{remove}{Csz}
 }{
-p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L\op{remove}{Csz}) 
+p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L) 
 }
 \end{array}$
 \end{figure}

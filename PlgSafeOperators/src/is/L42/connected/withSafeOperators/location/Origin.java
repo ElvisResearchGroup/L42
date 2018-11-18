@@ -49,6 +49,7 @@ public class Origin {
     String name = "<programUnderTest>";
     if(L42.root!=null) {name=L42.root.toString();}
     String f=this.fileName();
+    if(f==null){f=name;}
     if(f.startsWith(name)){
       f=f.substring(name.length(), f.length());
       }

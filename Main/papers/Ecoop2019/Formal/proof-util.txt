@@ -7,7 +7,7 @@ Define (P, R) in ValidProblems iff:
   forall P in ran(R):
     p.minimize(P)=P
     P not of form This0._
-    p |- p[P][with ncz=empty] : OK // Guaranteed by our reduction rules and type-system?
+    p |- p[P][with ncz=empty] : OK // Guaranteed by our reduction rules and type-system? // TODO is this the right from?
   Redirectable(p; RedirectSet(p, R))
   // All of these, save for the well-typedness, are guaranteed by Redirect
 
@@ -36,24 +36,6 @@ Define p |- P;L <= Cs;L
     forall s in dom(mwtz'): // This implicity checks the sdom
       p |- mwtz(s).mt <= mwtz'(s).mt
 
-Define p <= p' // But for paper language only!
-=======================================================================================
-p <= p' // reflexive
-
-p <= p': // transitive
-  exists p" such that:
-    p <= p"
-    p" <= p'
-
-//(DLs; DVs) <= (DLs DLs'; DVs DVs') //broken in the current form, and not needed?
-
-(DLs id = L[remove Csz] DLs'; DVs) <= (DLs id = L DLs'; DVs)// I.e. L has less nested classes
-// TODO: Can this change the meaning of p.minimize?
-
-// NOTE: We are not adding methods! (as doing so will break redirect)
-
-// TODO: Change p to have a DVz for the top-level declarations?
-// Or is their order actually important?
 
 ========================================
 R satisfies_p CC1,...,CCn iff R satisfies_p CC1 ... R satisfies_p CCn
@@ -88,11 +70,56 @@ If range(R) not subseteq dom(p), then R not in PossibleRedirections(p; R0)
 
 dom(CollectConstraints(p; R)) subseteq RedirectSet(p; R)
 
-
-Define p.defineClass(L, C) = p' // But for paper language only!
+Define p <= p' // But for paper language only!
 =======================================================================================
-  (id0 = L0, id1 = L0, p).defineClass(L, C) = (id0 = L0, id1 = L1[mwtz = L1.ncz, C: L], p)
+p <= p' // reflexive
+
+p <= p': // transitive
+  exists p" such that:
+    p <= p"
+    p" <= p'
+
+//(DLs; DVs) <= (DLs DLs'; DVs DVs') //broken in the current form, and not needed?
+
+// (C=L)s; (id=LV)z // Isaac likes this form
+// (id=E)s; (id=LV)z // Marco likes this form
+
+(DLs id = L[remove Csz] DLs'; DVs) <= (DLs id = L DLs'; DVs)// I.e. L has less nested classes
+// TODO: Can this change the meaning of p.minimize?
+
+// NOTE: We are not adding methods! (as doing so will break redirect)
+
+// TODO: Change p to have a DVz for the top-level declarations?
+// Or is their order actually important?
+
+
+Define p.defineClass(L) = (p', This1.C) // But for paper language only!
+=======================================================================================
+  C is fresh
+  (id0 = L0, id1 = L0, p).defineClass(L[from This1], C) = (id0 = L0, id1 = L1[mwtz = L1.ncz, C: L], p)
   (id0 = L0; DVs).defineClass(L, C) = (id0 = L0; DVs, C = L)
+
+-------------------------------------------
+Lemma:,
+forall LV and (non empty?) p, 
+  (p', P) =  p.defineClass(LV),
+  p <= p'
+  p.top() = p'.top()
+  p'[P] = R(p.minimize(LV))
+  R = Cs1 -> P.Cs1, ...,  Csn -> P.Csn
+    where Cs1,...,Csn = dom(LV) \ sdom(LV)
+  // don't need to use the R if the caller of defineClass knows what the resulting P is going to be
+-----------------------------
+{interface? implements Pz, Mz}[ifrom P] = {interface? implements Pz[from P], Mz[ifrom P]}
+(C: L)[ifrom P] = L[ifrom P.C]
+mwtz[ifrom P] = mwtz[with mt = mwtz.mt[from P], e = e[from P]]
+
+p[P] = p.minimize(p(P)[ifrom P])
+-----------------------------------
+
+
+
+
 
 
 

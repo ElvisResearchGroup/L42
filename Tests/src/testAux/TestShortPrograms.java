@@ -425,6 +425,28 @@ public void testComposition3(){tp("{",
     " D:Op.compose(left:B(),right:{ implements A method m2(that) this})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
+/*
+ * Y: {
+  A: {}
+  X: {This2.Y.A m()} <+ {This1.A m()}
+}
+
+ * */
+@Test
+public void testCompositionx1(){tp("{",
+    "Op:"+operatorAccess(),
+    "X:Op.compose(left:{method This1.X m()},right:{method This0 m()})",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
+@Test
+public void testCompositionx2(){tp("{",
+    "Op:"+operatorAccess(),
+    "Y: {",
+      "A: {}", 
+      "X:Op.compose(left:{method This2.Y.A m()},right:{method This1.A m()})",
+    "}",
+    "Main:{//@exitStatus\n//0\n\n}",
+    " }");}
 
 
 @Test
