@@ -76,7 +76,7 @@ p.minimize(P, Pz) = p.minimize(P), p.minimize(Pz)
 p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
   p = id0 = L0, ..., idn = Ln, _; Ds
   p(Thisn.Cs) = L
-  // TODO: Check that Ln is an L instead?
+  // TODO: Check that Ln is an LV instead?
 otherwise p.minimize(P) = P
 
 define dom(Mz) = Midz
