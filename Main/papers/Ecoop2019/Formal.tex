@@ -429,13 +429,26 @@ $\id$ is only used in order to grow the program $p$ in rule
 \textsc{(redirect)}.
 The \textsc{(CtxV)} rule is the standard context, the \textsc{(L-enter)} rule propegates compilation inside of nested-classes, \textsc{(trait)} merely evaluates a trait reference to it’s defined body,
 finally \textsc{(sum)} and \textsc{(redirect)} perform our two meta-operations by propagating to 
-corresponding auxiliary definitions.
+corresponding auxiliary definitions. We will present those two rules in the two sections below.
+Note how we require that they are already in the \emph{minimized}
+form, that is, all the $T$ uses the shortest way to refer to their corresponding nested class. 
+This prevents the programmer from expressing some difficult cases. Consider for example using two different ways to refer to $A$, redirect $A$ and then adding it back:
+\begin{lstlisting}
+B=...
+X={ A:{}    Void m(This1.X.A p1, This0.A p2)} <A=B> <+ {A:{}}
+//should flattening redirect only p2
+X={ A:{}    Void m(This1.X.A p1, This1.B p2)}
+//or both occurrences?
+X={ A:{}    Void m(This1.B p1, This1.B p2)}
+\end{lstlisting}
+The complete L42 language solves those issues, but here we present a simplified version.
 %For simplicity rule \textsc{(sum)} is given in a highly non computational form,
 %where non deterministically we select the result $LV_3$ and we use it in $p'$ and we also
 %require it to be the result of 
 %$LV_1 \Q@<+@_{p'} LV_2 = LV_3$.
 %This rule uses $p'$ only to check for errors.
-Rule \textsc{(sum)} just delegate the work on the auxiliar notation defined below:
+\subsection{Sum}
+Rule \textsc{(sum)} just delegate the work on the auxiliary notation defined below:
 
 \noindent$\begin{array}{l}
 \text{\textbf{Def:}}\ L_1 \Q@<+@ L_2 = \lib{Tz_1 \cup Tz_2}{Mz \Q@<+@ Mz',Mz_1,Mz_2}{K?} \\
@@ -470,7 +483,35 @@ the implementation from the right hand side, if available,
 otherwise if the right hand side is abstract, the body is took from the left side.
 Composing nested classes, not how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them.
 
-Rule \textsc{(redirect)} is the center of our interested for this work. To have a single data structure $p$ where all the types correctly points to the corresponding nested classes, we add the $L$ to the top of our current program, and we add $1$ to all the types provided in the redirect map, since they was relative to $p$ and not $p'$.
+\subsection{Redirect}
+Rule \textsc{(redirect)} is the centre of our interest for this work. As for sum we check that the $LV$ is in minimize form.
+Moreover, to have a single data structure $p'$ where all the types correctly points to the corresponding nested classes, we add the $L$ to the top of our current program. 
+Notation $R/\id$ is defined as\\*
+$Cs_0\eq{\This{n}{C}{Cs}}=Cs_0\eq{\This{n+1}{C}{Cs}}$,
+where either $C\neq\id$ or $n>0$\\*
+In addition of adding $1$ to all the types provided in the redirect map, since they was relative to $p$ and not $p'$, it also 
+checks that $R$ actually refers to types external of $LV$, by preventing types of form
+$\This{0}{\id}{\_}$.
+
+Notation $p\op{redirectSet}{R}$
+computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$.
+
+\noindent $\begin{array}{l}
+\dom{R} \subseteq p\op{redirectSet}{R}\\
+\fop{internals}{\fop{reachables}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
+\\\quad \text{with } Cs \in p\op{redirectSet}{R}
+\end{array}$
+%// Redirect the nested class mentioned in the signature of a redirected class
+%// We won't however be redirecting references to external paths (i.e. things outside of This0)
+%Internals(Reachables(p[Cs])) subseteq RedirectSet(p; R)
+%  Cs in RedirectSet(p; R)
+%  // Note: because the top of the program will be evil pushed, there's no need to p.minimize the result of Reachables
+
+%Reachables({interface? implements Pz Mz}) = Pz, Reachables(Mz)
+%Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
+%Reachables(C:L)=empty
+
+
 We use $p'\op{bestRedirection}{}$ in order
 to complete the provided mapping $R$ into a complete mapping.
 Such mapping must be of the correct .....
@@ -527,8 +568,8 @@ p; \id \vdash t \Rightarrow p[t]
 
 \\[5ex]
 \inferrule[(sum)]{
-L_i=p\op{push}{\id\eq{LV_i}}[\This{0}]\\\\
-L_1 \Q@<+@ L_2 = LV%\\\\
+LV_i=p\op{min}{\id\eq{LV_i}}\\\\
+LV_1 \Q@<+@ LV_2 = LV%\\\\
 %C' \textit{fresh} \\\\
 %p'=p\op{push}{C'\Q@=@ LV_3}
 }{
@@ -536,13 +577,13 @@ p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
 }
 \quad\quad
 \inferrule[(redirect)]{
+  LV=p\op{min}{\id\eq{LV}}\\\\
   p' = p\op{push}{\id\eq{LV}}\\\\
-  R' =p'\op{bestRedirection}{R[\This{n}=\This{n+1}]}\\\\
-  Csz = p'\op{redirectSet}{R}\\\\
+  Csz = p'\op{redirectSet}{R/\id}\\\\
   p'\op{redirectable}{Csz}\\\\
-  L=p'\op{minimize}{LV}\op{remove}{Csz}
+  R' =p'\op{bestRedirection}{R/\id}
 }{
-p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L) 
+p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L\op{remove}{Csz}) 
 }
 \end{array}$
 \end{figure}
@@ -569,7 +610,7 @@ p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L)
 
 %We will also use $p[T.m]$ to extra
 
-\section{Redirect in the details}
+
 
 \section{Appendix?}
 \begin{bnf}
@@ -751,7 +792,7 @@ id\eq{L},\DLs\Q{;} \DVs}%
 %\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%shorter version, not wrong but confusing
 \defy{p\op{push}{\_}(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
 \defy{LV({\emptyset})}{LV}%
-\defy{L(\Cs{C}{\s{C}})}{L_0(Cs) \text{ where } L = \lib{\_}{\_, C\eq{L_0}, \_}{\_}}%
+\defy{\lib{\_}{\_, C\eq{L_0}, \_}{\_}(\Cs{C}{\s{C}})}{L_0(Cs) }%\text{ where } L = \lib{\_}{\_, C\eq{L_0}, \_}{\_}}%
 	\defyc{\text{where } L = a}
 \end{defye}
 
