@@ -494,25 +494,51 @@ checks that $R$ actually refers to types external of $LV$, by preventing types o
 $\This{0}{\id}{\_}$.
 
 Notation $p\op{redirectSet}{R}$
-computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$.
+computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easly computable.
+
+DO WE NEED TO ADD NESTEDS HERE?
 
 \noindent $\begin{array}{l}
 \dom{R} \subseteq p\op{redirectSet}{R}\\
 \fop{internals}{\fop{reachables}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
-\\\quad \text{with } Cs \in p\op{redirectSet}{R}
+\quad \text{with } Cs \in p\op{redirectSet}{R}\\
+\fop{reachables}{\lib{Tz}{Mz}{K?}} = Tz, \fop{reachables}{Mz}\\
+\fop{reachables}{\Q@static@? T_0 m\rp{T_1 x_1\ldots T_n x_n} e?}= T_0\ldots T_n\\
+\fop{internals}{Tz}=\{Cs\mid \This{0}{Cs} \in Tz\}
 \end{array}$
-%// Redirect the nested class mentioned in the signature of a redirected class
-%// We won't however be redirecting references to external paths (i.e. things outside of This0)
-%Internals(Reachables(p[Cs])) subseteq RedirectSet(p; R)
-%  Cs in RedirectSet(p; R)
-%  // Note: because the top of the program will be evil pushed, there's no need to p.minimize the result of Reachables
 
-%Reachables({interface? implements Pz Mz}) = Pz, Reachables(Mz)
-%Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
-%Reachables(C:L)=empty
+The intuition behind redirectSet is that if the signature of a nested class mention another nested class, they must be reidirected together.
+Consider the following simple example:
+\begin{lstlisting}
+t={A={B size()} B={} ...}
+Res=t<A=String>
+\end{lstlisting}
+If we were to redirect \Q@A@, we would need to redirect also \Q@B@:
+the type \Q@B@ is nested inside \Q@t@, thus
+\Q@String@ would not be able to reach it.
+The only reasonable solution is to redirect \Q@A@ and \Q@B@ together.
 
+For $p'\op{bestRedirection}{}$ to be well defined, we need to check that $p\op{redirectable}{Csz}$
+This is again a check local to the $LV$ (the top of the program) and is also easly computable.
 
-We use $p'\op{bestRedirection}{}$ in order
+\noindent $\begin{array}{l}
+\fop{redirectable}{p,Csz} \text{iff}\\\quad
+    \Empty \notin Csz \\\quad
+    \text{if } Cs\in Csz \text{ then } \This{0}{Cs} \in \dom{p}\\\quad
+    \text{if } Cs\in Csz \text{ and }C \in\dom{p(\This{0}{Cs})}
+    \text{ then } Cs\Q@.@C \in Csz\\\quad
+    \text{if } Cs\Q@.@C\Q@.@\_\in Csz
+    \text{ then } p(\This{0}{Cs}) =\lib{\_}{C \eq{L}\_}{\_}    
+\end{array}$
+
+That is, the empty path is not redirectable, every nested class of a redirect path must be redirected away,
+and all paths must traverse only non-private $C$.
+
+Finally,  $p\op{bestRedirection}{R}$ 
+is the centerpiece of our formal framework.
+Given an $p$ and an $R$ that are valid input for redirection as defined above, we can denote the best complete map, mapping any elemnt of $Csz$ into a suitable type in $p$.
+We ...
+can be re redirectable in order
 to complete the provided mapping $R$ into a complete mapping.
 Such mapping must be of the correct .....
 Something does not work: either we check dom(R')==Csz
@@ -583,7 +609,7 @@ p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
   p'\op{redirectable}{Csz}\\\\
   R' =p'\op{bestRedirection}{R/\id}
 }{
-p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(L\op{remove}{Csz}) 
+p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(LV\op{remove}{Csz}) 
 }
 \end{array}$
 \end{figure}
