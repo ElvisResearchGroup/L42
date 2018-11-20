@@ -36,7 +36,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SubtleSub
 import newTypeSystem.TypeManipulation;
 import programReduction.Program;
 import tools.LambdaExceptionUtil;
-import tools.LambdaExceptionUtil.Function_WithExceptions;
+import tools.LambdaExceptionUtil.CheckedFunction;
 public class MakeK {
   public static ClassB makeKS(ClassB that,String name,String path,boolean immK,boolean fwd) throws PathUnfit, ParseFail, ClassUnfit{
     return makeKJ(that,name,PathAux.parseValidCs(path),"refine",immK,fwd);
@@ -85,8 +85,8 @@ return fields;
     if(path.isEmpty()){return makeK(name,that,that,path,fieldNames,immK,fwd);}
     if(!MembersUtils.isPathDefined(that, path)){throw new RefactorErrors.PathUnfit(path);}
     if(!MembersUtils.isPrivate(path)){throw new RefactorErrors.PathUnfit(path);}
-    Function_WithExceptions<NestedClass,Optional<NestedClass>,Exception> f=nc->Optional.of(nc.withInner(makeK(name,that,(ClassB)nc.getInner(),path,fieldNames,immK,fwd)));
-    return that.onNestedNavigateToPathAndDo(path,LambdaExceptionUtil.rethrowFunction(f));
+    CheckedFunction<NestedClass,Optional<NestedClass>,Exception> f=nc->Optional.of(nc.withInner(makeK(name,that,(ClassB)nc.getInner(),path,fieldNames,immK,fwd)));
+    return that.onNestedNavigateToPathAndDo(path,f.uncheck());
     }
 
   private static ClassB makeK(String kName,ClassB top, ClassB that,List<Ast.C>path,List<String> fieldNames,boolean immK,boolean fwd) throws ParseFail, ClassUnfit {

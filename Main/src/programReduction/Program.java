@@ -21,6 +21,7 @@ import coreVisitors.IsCompiled;
 import facade.PData;
 import newTypeSystem.ErrorKind;
 import tools.Assertions;
+import tools.StreamUtils;
 
 public interface Program {
   @SuppressWarnings("serial")
@@ -84,7 +85,6 @@ public interface Program {
     }
 
   default List<Path> minimizeList(Collection<Path> Ps) { return Ps.stream().map(this::minimize).collect(Collectors.toList()); }
-  default Set<Path> minimizeSet(Stream<Path> Pz) { return Pz.map(this::minimize).collect(Collectors.toSet()); }
   default Path minimize(Path p) {
     Path pReduced=p;
     while(pReduced!=null){//reduce pi as much as possible

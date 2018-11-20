@@ -10,12 +10,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="426d4399-8f5d-46a4-8b7b-8df28f4246f8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Main/src/tools/StreamUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Main/src/tools/Utils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Main/srcLombok/tools/CollectionWrapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/Ast.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/Ast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/ErrorMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/ErrorMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/ExpCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/ExpCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/Expression.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/Expression.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/L42F.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/L42F.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/MiniJ.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/MiniJ.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/PathAux.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/PathAux.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/ast/Util.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/ast/Util.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/programReduction/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/programReduction/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/tools/LambdaExceptionUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/tools/LambdaExceptionUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main/src/tools/ListFormatter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main/src/tools/ListFormatter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/MakeK.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/MakeK.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/ToAbstract.java" beforeDir="false" afterPath="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/ToAbstract.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <ignored path="$PROJECT_DIR$/Main/bin/" />
@@ -33,21 +47,12 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ErrorTreeViewConfiguration">
-    <option name="autoscrollToSource" value="true" />
-    <option name="IS_AUTOSCROLL_TO_SOURCE" value="true" />
-  </component>
-  <component name="ExportToHTMLSettings">
-    <option name="printScope" value="1" />
-    <option name="OPEN_IN_BROWSER" value="true" />
-    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
-  </component>
   <component name="FUSProjectUsageTrigger">
     <session id="1711427538">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="36" />
-          <entry key="project.open.time.10" value="10" />
+          <entry key="project.closed" value="27" />
+          <entry key="project.open.time.10" value="8" />
           <entry key="project.open.time.11" value="2" />
           <entry key="project.open.time.12" value="4" />
           <entry key="project.open.time.14" value="2" />
@@ -59,27 +64,26 @@
           <entry key="project.open.time.27" value="1" />
           <entry key="project.open.time.48" value="1" />
           <entry key="project.open.time.5" value="1" />
-          <entry key="project.open.time.6" value="5" />
-          <entry key="project.open.time.7" value="4" />
-          <entry key="project.open.time.8" value="6" />
-          <entry key="project.open.time.9" value="7" />
-          <entry key="project.opened" value="49" />
+          <entry key="project.open.time.6" value="3" />
+          <entry key="project.open.time.7" value="3" />
+          <entry key="project.open.time.8" value="4" />
+          <entry key="project.open.time.9" value="5" />
+          <entry key="project.opened" value="40" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="L42" value="57" />
+          <entry key="L42" value="54" />
           <entry key="LICENSE" value="1" />
           <entry key="bat" value="1" />
           <entry key="class" value="13" />
           <entry key="config" value="2" />
           <entry key="formal-neat" value="14" />
           <entry key="gitignore" value="1" />
-          <entry key="java" value="410" />
-          <entry key="js" value="1" />
+          <entry key="java" value="373" />
           <entry key="md" value="1" />
           <entry key="project" value="1" />
-          <entry key="txt" value="61" />
+          <entry key="txt" value="30" />
           <entry key="xml" value="2" />
         </counts>
       </usages-collector>
@@ -87,28 +91,27 @@
         <counts>
           <entry key="CLASS" value="13" />
           <entry key="Eclipse" value="1" />
-          <entry key="JAVA" value="410" />
-          <entry key="JavaScript" value="1" />
+          <entry key="JAVA" value="373" />
           <entry key="Lombok config file" value="2" />
-          <entry key="PLAIN_TEXT" value="130" />
+          <entry key="PLAIN_TEXT" value="96" />
           <entry key="Scratch" value="6" />
           <entry key="XML" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="L42" value="3763" />
+          <entry key="L42" value="3762" />
           <entry key="formal-neat" value="41905" />
-          <entry key="java" value="112134" />
+          <entry key="java" value="106319" />
           <entry key="project" value="12" />
-          <entry key="txt" value="31277" />
+          <entry key="txt" value="14710" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="Eclipse" value="12" />
-          <entry key="JAVA" value="112134" />
-          <entry key="PLAIN_TEXT" value="76822" />
+          <entry key="JAVA" value="106319" />
+          <entry key="PLAIN_TEXT" value="60254" />
           <entry key="Scratch" value="123" />
         </counts>
       </usages-collector>
@@ -119,209 +122,241 @@
         <counts>
           <entry key="project.closed" value="2" />
           <entry key="project.open.time.10" value="2" />
+          <entry key="project.open.time.11" value="1" />
           <entry key="project.open.time.14" value="1" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.open.time.6" value="1" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="L42" value="2" />
+          <entry key="config" value="1" />
           <entry key="g4" value="1" />
-          <entry key="java" value="7" />
-          <entry key="txt" value="3" />
+          <entry key="java" value="39" />
+          <entry key="txt" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="7" />
-          <entry key="PLAIN_TEXT" value="6" />
+          <entry key="JAVA" value="39" />
+          <entry key="Lombok config file" value="1" />
+          <entry key="PLAIN_TEXT" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="176" />
-          <entry key="txt" value="35" />
+          <entry key="java" value="9539" />
+          <entry key="txt" value="732" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="176" />
-          <entry key="PLAIN_TEXT" value="35" />
+          <entry key="JAVA" value="9539" />
+          <entry key="PLAIN_TEXT" value="732" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages" />
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.54818326">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2160">
-                  <caret line="113" column="95" selection-start-line="113" selection-start-column="95" selection-end-line="113" selection-end-column="95" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/util.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="594">
-                  <caret line="97" column="30" selection-start-line="97" selection-start-column="30" selection-end-line="97" selection-end-column="30" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="382">
-                  <caret line="71" column="1" selection-start-line="71" selection-start-column="1" selection-end-line="71" selection-end-column="1" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRenameClass.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="64">
-                  <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="156">
-                  <caret line="62" column="50" lean-forward="true" selection-start-line="62" selection-start-column="50" selection-end-line="62" selection-end-column="50" />
-                  <folding>
-                    <element signature="method#mkp#0;class#TestRedirect#0" expanded="true" />
-                    <element signature="method#split#0;class#TestRedirect#0" expanded="true" />
-                    <element signature="method#test#0;class#TestRedirect#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="334">
-                  <caret line="438" column="1" selection-start-line="438" selection-start-column="1" selection-end-line="438" selection-end-column="1" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#1647#1939#0" expanded="true" />
-                    <element signature="e#1927#2389#0" expanded="true" />
-                    <element signature="e#2707#5727#0" expanded="true" />
-                    <element signature="e#3683#5195#0" expanded="true" />
-                    <element signature="e#5201#5643#0" expanded="true" />
-                    <element signature="e#7302#8202#0" expanded="true" />
-                    <element signature="e#8206#9006#0" expanded="true" />
-                    <element signature="e#13337#13570#0" expanded="true" />
-                    <element signature="e#13711#13842#0" expanded="true" />
-                    <element signature="e#13845#19332#0" expanded="true" />
-                    <element signature="e#19438#19618#0" expanded="true" />
-                    <element signature="e#19621#20290#0" expanded="true" />
-                    <element signature="e#20199#20777#0" expanded="true" />
-                    <element signature="e#25618#26508#0" expanded="true" />
-                    <element signature="e#27504#30653#0" expanded="true" />
-                    <element signature="e#34577#34679#0" expanded="true" />
-                    <element signature="e#34798#35263#0" expanded="true" />
-                    <element signature="method#toString#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#format#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#CsPzMap#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#CsPzMap#1;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#CsPzMap#2;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#add#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#remove#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#update#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#add#1;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#contains#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#contains#1;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#mappings#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#get#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#dom#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#stream#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#values#0;class#CsPzMap#0" expanded="true" />
-                    <element signature="method#iterator#0;class#CsPzMap#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/stream/ReferencePipeline.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="181">
-                  <caret line="532" selection-start-line="532" selection-end-line="532" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="783">
-                  <caret line="111" column="54" lean-forward="true" selection-start-line="111" selection-start-column="54" selection-end-line="111" selection-end-column="54" />
-                  <folding>
-                    <element signature="method#internals#0;class#FromedL#0" expanded="true" />
-                    <element signature="method#_internal#0;class#FromedL#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Main/src/tools/LambdaExceptionUtil.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="196">
-                  <caret line="46" selection-start-line="42" selection-end-line="46" />
-                  <folding>
-                    <element signature="class#Runnable_WithExceptions#0;class#LambdaExceptionUtil#0" expanded="true" />
-                    <element signature="method#catchThrow#0;class#LambdaExceptionUtil#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/Main/src/tools/Assertions.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="480">
-                  <caret line="90" column="57" selection-start-line="90" selection-start-column="57" selection-end-line="90" selection-end-column="57" />
-                  <folding>
-                    <element signature="method#codeNotReachable#2;class#Assertions#0" expanded="true" />
-                    <element signature="class#UncheRunnable#0;class#Assertions#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/lang/String.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3680">
-                  <caret line="2164" column="4" selection-start-line="2164" selection-start-column="4" selection-end-line="2164" selection-end-column="4" />
-                  <folding>
-                    <element signature="e#87189#91625#0" expanded="true" />
-                    <element signature="e#87189#93772#0" expanded="true" />
-                    <element signature="e#93778#95281#0" expanded="true" />
-                    <element signature="e#93778#95361#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="320">
+              <caret line="20" column="32" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="384">
+              <caret line="63" column="6" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-util.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="64">
+              <caret line="5" column="6" selection-start-line="5" selection-end-line="5" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main/src/tools/Utils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#cast#0;class#Utils#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="415">
+              <caret line="217" column="59" selection-start-line="217" selection-start-column="59" selection-end-line="217" selection-end-column="59" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#13661#19131#0" expanded="true" />
+                <element signature="e#30302#31295#0" expanded="true" />
+                <element signature="e#35511#35608#0" expanded="true" />
+                <element signature="e#35611#35775#0" expanded="true" />
+                <element signature="method#toString#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#format#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#CsPzMap#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#CsPzMap#1;class#CsPzMap#0" expanded="true" />
+                <element signature="method#CsPzMap#2;class#CsPzMap#0" expanded="true" />
+                <element signature="method#add#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#remove#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#update#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#add#1;class#CsPzMap#0" expanded="true" />
+                <element signature="method#contains#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#contains#1;class#CsPzMap#0" expanded="true" />
+                <element signature="method#mappings#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#get#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#dom#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#stream#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#values#0;class#CsPzMap#0" expanded="true" />
+                <element signature="method#iterator#0;class#CsPzMap#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="547">
+              <caret line="105" column="71" selection-start-line="105" selection-start-column="71" selection-end-line="105" selection-end-column="71" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="class#Nested#0;class#FromedL#0" expanded="true" />
+                <element signature="method#Nested#0;class#Nested#0;class#FromedL#0" expanded="true" />
+                <element signature="method#FromedL#0;class#FromedL#0" expanded="true" />
+                <element signature="method#FromedL#1;class#FromedL#0" expanded="true" />
+                <element signature="method#Pz#0;class#FromedL#0" expanded="true" />
+                <element signature="method#prepareMwtz#0;class#FromedL#0" expanded="true" />
+                <element signature="method#prepareNcz#0;class#FromedL#0" expanded="true" />
+                <element signature="method#computeMwt#0;class#FromedL#0" expanded="true" />
+                <element signature="method#computeNested#0;class#FromedL#0" expanded="true" />
+                <element signature="method#mwtz#0;class#FromedL#0" expanded="true" />
+                <element signature="method#ncz#0;class#FromedL#0" expanded="true" />
+                <element signature="method#get#0;class#FromedL#0" expanded="true" />
+                <element signature="method#get#1;class#FromedL#0" expanded="true" />
+                <element signature="method#get#2;class#FromedL#0" expanded="true" />
+                <element signature="method#_get#0;class#FromedL#0" expanded="true" />
+                <element signature="method#_get#1;class#FromedL#0" expanded="true" />
+                <element signature="method#_get#2;class#FromedL#0" expanded="true" />
+                <element signature="method#contains#0;class#FromedL#0" expanded="true" />
+                <element signature="method#contains#1;class#FromedL#0" expanded="true" />
+                <element signature="method#contains#2;class#FromedL#0" expanded="true" />
+                <element signature="method#msDom#0;class#FromedL#0" expanded="true" />
+                <element signature="method#cDom#0;class#FromedL#0" expanded="true" />
+                <element signature="method#from#0;class#FromedL#0" expanded="true" />
+                <element signature="method#from#1;class#FromedL#0" expanded="true" />
+                <element signature="e#3390#3468#0" expanded="true" />
+                <element signature="e#3467#3468#0" expanded="true" />
+                <element signature="method#from#2;class#FromedL#0" expanded="true" />
+                <element signature="method#isInterface#0;class#FromedL#0" expanded="true" />
+                <element signature="method#topL#0;class#FromedL#0" expanded="true" />
+                <element signature="method#reachables#0;class#FromedL#0" expanded="true" />
+                <element signature="method#internals#0;class#FromedL#0" expanded="true" />
+                <element signature="method#isInternal#0;class#FromedL#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/From.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="64">
+              <caret line="12" column="38" selection-start-line="12" selection-start-column="26" selection-end-line="12" selection-end-column="38" />
+              <folding>
+                <element signature="method#liftP#0;class#From#0" expanded="true" />
+                <element signature="method#visit#0;class#From#0" expanded="true" />
+                <element signature="method#normalizeShort#0;class#From#0" expanded="true" />
+                <element signature="method#fromP#0;class#From#0" expanded="true" />
+                <element signature="method#fromT#0;class#From#0" expanded="true" />
+                <element signature="method#from#0;class#From#0" expanded="true" />
+                <element signature="method#from#1;class#From#0" expanded="true" />
+                <element signature="method#from#2;class#From#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main/src/tools/ListFormatter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="528">
+              <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
+              <folding>
+                <element signature="method#append#0;class#ListFormatter#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="640">
+              <caret line="71" column="46" selection-start-line="71" selection-start-column="46" selection-end-line="71" selection-end-column="46" />
+              <folding>
+                <element signature="method#PathMap#0;class#PathMap#0" expanded="true" />
+                <element signature="method#PathMap#1;class#PathMap#0" expanded="true" />
+                <element signature="method#PathMap#2;class#PathMap#0" expanded="true" />
+                <element signature="method#add#0;class#PathMap#0" expanded="true" />
+                <element signature="method#PathMap#4;class#PathMap#0" expanded="true" />
+                <element signature="method#iterator#0;class#PathMap#0" expanded="true" />
+                <element signature="method#collection#0;class#PathMap#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main/src/tools/StreamUtils.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="192">
+              <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#253#373#0" expanded="true" />
+                <element signature="e#252#300#0" expanded="true" />
+                <element signature="e#303#387#0" expanded="true" />
+                <element signature="e#390#487#0" expanded="true" />
+                <element signature="e#1028#1739#0" expanded="true" />
+                <element signature="class#1158:1734" expanded="true" />
+                <element signature="method#advance#0;class#1111:1889" expanded="true" />
+                <element signature="method#hasNext#0;class#1111:1774" expanded="true" />
+                <element signature="method#next#0;class#1158:1738" expanded="true" />
+                <element signature="e#1743#1877#0" expanded="true" />
+                <element signature="e#3999#4145#0" expanded="true" />
+                <element signature="e#4145#4305#0" expanded="true" />
+                <element signature="e#5362#5496#0" expanded="true" />
+                <element signature="e#5659#5788#0" expanded="true" />
+                <element signature="e#5787#5924#0" expanded="true" />
+                <element signature="e#5927#6061#0" expanded="true" />
+                <element signature="e#6064#6219#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -332,39 +367,38 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sel</find>
-      <find>Methodsector</find>
-      <find>(//.*?)ms</find>
-      <find>allMsi</find>
-      <find>(/[/*].*?)ms</find>
-      <find>MS</find>
-      <find>BestSatisfiedRedirection</find>
-      <find>ValidRedirection</find>
-      <find>PossibleTargets</find>
-      <find>ValidProblem</find>
-      <find>Collect</find>
-      <find>ms</find>
-      <find>msdom</find>
-      <find>mdom</find>
-      <find>.Pz</find>
-      <find>.Csz</find>
-      <find>+</find>
-      <find>SimilarProblems</find>
-      <find>Assertions.</find>
-      <find>collect</find>
-      <find>11a</find>
-      <find>PossibleTarget</find>
-      <find>satisfies_p</find>
-      <find>collectTargets</find>
-      <find>...</find>
-      <find>consistent</find>
-      <find>consistant</find>
-      <find>Collec</find>
-      <find>SatisfiedSolutions</find>
-      <find>stack</find>
+      <find>_WithExceptions</find>
+      <find>Supplier_WithExceptions</find>
+      <find>extends Exception</find>
+      <find>([^A-Z][a-z]+)Checked</find>
+      <find>Predicate_WithExceptions</find>
+      <find>Predicate</find>
+      <find>import</find>
+      <find>LambdaExceptionUtil</find>
+      <find>CheckedFu</find>
+      <find>Utils.</find>
+      <find>= nul</find>
+      <find>FunctionalI</find>
+      <find>intersect</find>
+      <find>join</find>
+      <find>toSet</find>
+      <find>Exception</find>
+      <find>Collection</find>
+      <find>.stream</find>
+      <find>StreamUtils.stream</find>
+      <find>&lt;=</find>
+      <find>Cs</find>
+      <find>P</find>
+      <find>concat</find>
+      <find>stream</find>
+      <find>from(</find>
+      <find>minimize</find>
+      <find>p.minize</find>
+      <find>From.from</find>
+      <find>From</find>
+      <find>From.</find>
     </findStrings>
     <replaceStrings>
-      <replace>BestRedirect</replace>
       <replace>CollectRedirect</replace>
       <replace>£</replace>
       <replace>CollectResult</replace>
@@ -389,15 +423,13 @@
       <replace>_collectTargets</replace>
       <replace>validRedirection</replace>
       <replace>Internal</replace>
-      <replace>MethodSelector</replace>
-      <replace>allSi</replace>
-      <replace>$1ms</replace>
-      <replace>$1s</replace>
-      <replace>s</replace>
+      <replace>BestRedirection</replace>
+      <replace>.any</replace>
+      <replace>CheckedSupplier</replace>
+      <replace>$1</replace>
+      <replace>CheckedPredicate</replace>
+      <replace>extends Throwable</replace>
     </replaceStrings>
-    <dirStrings>
-      <dir>$PROJECT_DIR$/Main/papers/Ecoop2019/Formal</dir>
-    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -405,69 +437,65 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/StaticDispatch.java" />
+        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/TsMCall.java" />
+        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/TsOperations.java" />
+        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/TypeSystem.java" />
+        <option value="$PROJECT_DIR$/Main/src/programReduction/UsedPaths.java" />
+        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/TsBlock.java" />
+        <option value="$PROJECT_DIR$/Main/src/platformSpecific/javaTranslation/Resources.java" />
+        <option value="$PROJECT_DIR$/Main/src/auxiliaryGrammar/Functions.java" />
+        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/GuessTypeCore.java" />
+        <option value="$PROJECT_DIR$/Main/src/newReduction/PG.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/location/LibPrimitive.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromClassB.java" />
+        <option value="$PROJECT_DIR$/Main/src/ast/ExpCore.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Frommer.java" />
+        <option value="$PROJECT_DIR$/Tests/src/widgetGui/libTests/SafeMovable.L42" />
+        <option value="$PROJECT_DIR$/Main/src/programReduction/Methods.java" />
+        <option value="$PROJECT_DIR$/Main/src/programReduction/CtxL.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/RedirectObj.java" />
+        <option value="$PROJECT_DIR$/Main/srcLombok/ast/ExpCore.java" />
+        <option value="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirectNoRemove.java" />
+        <option value="$PROJECT_DIR$/Main/srcLombok/ast/Util.java" />
         <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/ListFormatter.java" />
         <option value="$PROJECT_DIR$/Main/Lomboky/ListFormatter.java" />
         <option value="$PROJECT_DIR$/Main/src/ast/PathAux.java" />
         <option value="$PROJECT_DIR$/Main/srcLombok/ast/PathAux.java" />
         <option value="$PROJECT_DIR$/Main/src/tools/Map.java" />
-        <option value="$PROJECT_DIR$/Main/src/tools/ListFormatter.java" />
         <option value="$PROJECT_DIR$/Main/srcLombok/tools/ListFormatter.java" />
         <option value="$PROJECT_DIR$/Tests/src/helpers/TestHelper.java" />
         <option value="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal-neat" />
         <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-utils.txt" />
+        <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/L42-notes.txt" />
         <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/properties.txt" />
         <option value="$PROJECT_DIR$/Main/srcLombok/ast/Ast.java" />
         <option value="$PROJECT_DIR$/Main/src/coreVisitors/From.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/pluginWrapper/RefactorErrors.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java" />
-        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/AlternativeMethodTypes.java" />
-        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/TsMCall.java" />
-        <option value="$PROJECT_DIR$/Main/src/platformSpecific/fakeInternet/PluginWithPart.java" />
-        <option value="$PROJECT_DIR$/Main/src/privateMangling/RefreshUniqueNames.java" />
-        <option value="$PROJECT_DIR$/Main/src/programReduction/Methods.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/RenameUsage.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/pluginWrapper/PlgWrapperGenerator.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Compose.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/RenameMethods.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Wither.java" />
-        <option value="$PROJECT_DIR$/Main/src/newTypeSystem/StaticDispatch.java" />
-        <option value="$PROJECT_DIR$/Tests/src/adamsTowel01/libProject/Location/This.L42" />
-        <option value="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/compilation.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/0ReadMeAndNotations.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/1GrammarAndProgram.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/2MainLoop.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/3ExpressionTypeSystem.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/4TypeSystemNotations.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/5TypeSystemImplHints.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/BackEnd01Flat.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/DifferencesFromFormal.txt" />
-        <option value="$PROJECT_DIR$/Main/formal/PluginParts.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/L42-notes.txt" />
         <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/util.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/DiscussionsAboutQuestionMarco.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/Formal notes.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-lemmas.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-util.txt" />
-        <option value="$PROJECT_DIR$/Main/src/tools/LambdaExceptionUtil.java" />
-        <option value="$PROJECT_DIR$/Main/src/tools/Assertions.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java" />
-        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" />
+        <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/pluginWrapper/RefactorErrors.java" />
         <option value="$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java" />
         <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt" />
-        <option value="$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt" />
+        <option value="$PROJECT_DIR$/Main/srcLombok/tools/CollectionWrapper.java" />
+        <option value="$PROJECT_DIR$/Main/src/platformSpecific/fakeInternet/OnLineCode.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/MakeK.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/ToAbstract.java" />
+        <option value="$PROJECT_DIR$/Main/src/tools/Utils.java" />
+        <option value="$PROJECT_DIR$/Main/src/tools/LambdaExceptionUtil.java" />
+        <option value="$PROJECT_DIR$/Main/src/programReduction/Program.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java" />
+        <option value="$PROJECT_DIR$/Main/src/tools/ListFormatter.java" />
+        <option value="$PROJECT_DIR$/Main/src/tools/StreamUtils.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java" />
+        <option value="$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java" />
       </list>
     </option>
   </component>
-  <component name="JavaAutoRunManager">
-    <enabled-run-configurations>
-      <run-configuration type="JUnit" name="TestRedirect (1)" />
-    </enabled-run-configurations>
-  </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="964" />
-    <option name="width" value="956" />
-    <option name="height" value="1080" />
+    <option name="x" value="1016" />
+    <option name="y" value="-13" />
+    <option name="width" value="1946" />
+    <option name="height" value="2176" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -475,7 +503,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -487,61 +514,26 @@
             <path>
               <item name="L42" type="b2602c69:ProjectViewProjectNode" />
               <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
+              <item name="PlgSafeOperators" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="L42" type="b2602c69:ProjectViewProjectNode" />
               <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="papers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="papers" type="462c0819:PsiDirectoryNode" />
-              <item name="Ecoop2019" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Main" type="462c0819:PsiDirectoryNode" />
-              <item name="papers" type="462c0819:PsiDirectoryNode" />
-              <item name="Ecoop2019" type="462c0819:PsiDirectoryNode" />
-              <item name="Formal" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Tests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Tests" type="462c0819:PsiDirectoryNode" />
+              <item name="PlgSafeOperators" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="L42" type="b2602c69:ProjectViewProjectNode" />
               <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Tests" type="462c0819:PsiDirectoryNode" />
+              <item name="PlgSafeOperators" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="connected" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="L42" type="b2602c69:ProjectViewProjectNode" />
-              <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Tests" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="connected" type="462c0819:PsiDirectoryNode" />
               <item name="withSafeOperators" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="L42" type="b2602c69:ProjectViewProjectNode" />
               <item name="L42" type="462c0819:PsiDirectoryNode" />
-              <item name="Tests" type="462c0819:PsiDirectoryNode" />
+              <item name="PlgSafeOperators" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="connected" type="462c0819:PsiDirectoryNode" />
               <item name="withSafeOperators" type="462c0819:PsiDirectoryNode" />
               <item name="refactor" type="462c0819:PsiDirectoryNode" />
             </path>
@@ -549,6 +541,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -563,7 +556,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15625" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Other File Types" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -585,7 +578,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestRedirect (5)">
+  <component name="RunManager" selected="JUnit.TestRedirect">
     <configuration name="MultiMain" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="repl.MultiMain" />
       <module name="Tests" />
@@ -602,20 +595,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestRedirect (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRedirect (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Tests" />
       <option name="PACKAGE_NAME" value="is.L42.connected.withSafeOperators.refactor" />
       <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
-      <option name="PARAMETERS" value="[0: line 59]" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="TestRedirect (5)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Tests" />
-      <option name="PACKAGE_NAME" value="is.L42.connected.withSafeOperators.refactor" />
-      <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
-      <option name="PARAMETERS" value="[1: line 61]" />
+      <option name="PARAMETERS" value="[46: line 447]" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -634,7 +618,18 @@
       <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
       <option name="METHOD_NAME" value="test" />
       <option name="TEST_OBJECT" value="method" />
-      <option name="PARAMETERS" value="[1: line 61]" />
+      <option name="PARAMETERS" value="[19: line 284]" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestRedirect.test (4)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Tests" />
+      <option name="PACKAGE_NAME" value="is.L42.connected.withSafeOperators.refactor" />
+      <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
+      <option name="METHOD_NAME" value="test" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="PARAMETERS" value="[22: line 320]" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -645,7 +640,7 @@
       <option name="MAIN_CLASS_NAME" value="is.L42.connected.withSafeOperators.refactor.TestRedirect" />
       <option name="METHOD_NAME" value="test" />
       <option name="TEST_OBJECT" value="method" />
-      <option name="PARAMETERS" value="[7: line 135]" />
+      <option name="PARAMETERS" value="[5: line 112]" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -667,51 +662,51 @@
       <item itemvalue="Application.MultiMain" />
       <item itemvalue="JAR Application.Lombok" />
       <item itemvalue="JUnit.TestRedirect" />
-      <item itemvalue="JUnit.TestRedirect (5)" />
+      <item itemvalue="JUnit.TestRedirect.test (4)" />
       <item itemvalue="JUnit.TestRedirect.test" />
-      <item itemvalue="JUnit.TestRedirect (1)" />
       <item itemvalue="JUnit.TestRedirect.test (1)" />
+      <item itemvalue="JUnit.TestRedirect (2)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestRedirect (5)" />
         <item itemvalue="JUnit.TestRedirect" />
+        <item itemvalue="JUnit.TestRedirect (2)" />
         <item itemvalue="JUnit.TestRedirect.test (1)" />
-        <item itemvalue="JUnit.TestRedirect (1)" />
+        <item itemvalue="JUnit.TestRedirect.test (4)" />
         <item itemvalue="JUnit.TestRedirect.test" />
       </list>
     </recent_temporary>
   </component>
   <component name="TestHistory">
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 15h 57m 51s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_test_(1) - 2018.11.16 at 15h 58m 37s.xml">
-      <configuration name="TestRedirect.test (1)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect - 2018.11.16 at 16h 07m 28s.xml">
+    <history-entry file="TestRedirect - 2018.11.12 at 16h 09m 07s.xml">
       <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 16h 07m 54s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 16h 08m 17s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 16h 08m 26s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="TestRedirect - 2018.11.16 at 16h 08m 51s.xml">
+    <history-entry file="TestRedirect - 2018.11.12 at 17h 17m 48s.xml">
       <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 16h 08m 58s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
+    <history-entry file="TestRedirect - 2018.11.12 at 17h 18m 10s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 16h 11m 08s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
+    <history-entry file="TestRedirect - 2018.11.12 at 18h 17m 04s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="TestRedirect_(5) - 2018.11.16 at 16h 11m 17s.xml">
-      <configuration name="TestRedirect (5)" configurationId="JUnit" />
+    <history-entry file="TestRedirect - 2018.11.12 at 18h 17m 47s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect - 2018.11.20 at 15h 24m 00s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect - 2018.11.20 at 15h 25m 47s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect - 2018.11.20 at 15h 33m 38s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect - 2018.11.20 at 15h 35m 26s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestRedirect - 2018.11.20 at 15h 40m 31s.xml">
+      <configuration name="TestRedirect" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TodoView">
@@ -724,26 +719,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1920" height="1080" extended-state="6" />
+    <frame x="-7" y="-7" width="2208" height="1248" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.2617167" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10957643" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="UI Designer" order="4" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32845187" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49921012" visible="true" weight="0.24790795" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3294979" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49921012" visible="true" weight="0.3808244" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39958158" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4997367" weight="0.32845187" />
       <window_info anchor="bottom" id="Tool Output" order="7" weight="0.32885304" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3294979" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32912534" />
       <window_info anchor="bottom" id="ANTLR Preview" order="9" weight="0.56182796" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007899" side_tool="true" weight="0.46129707" />
-      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49499735" weight="0.20292887" />
+      <window_info anchor="bottom" id="Messages" order="11" sideWeight="0.49499735" weight="0.20071685" />
       <window_info anchor="bottom" id="Terminal" order="12" weight="0.3297491" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -782,34 +777,52 @@
           <option name="timeStamp" value="31" />
         </breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java</url>
+          <line>1074</line>
+          <properties />
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
-          <line>463</line>
+          <line>454</line>
           <properties />
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
-          <line>785</line>
+          <line>363</line>
+          <properties />
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
+          <line>737</line>
           <properties />
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
-          <line>584</line>
+          <line>734</line>
+          <properties />
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
+          <line>418</line>
+          <properties />
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
+          <line>660</line>
+          <properties />
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
+          <line>573</line>
           <properties />
           <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
-          <line>428</line>
-          <properties />
-          <option name="timeStamp" value="59" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java</url>
-          <line>431</line>
-          <properties />
-          <option name="timeStamp" value="63" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -818,435 +831,454 @@
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
-    <expressions id="evaluateCodeFragment">
-      <expression>
-        <expression-string>&quot;&quot;.split(&quot;,&quot;)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>return 2;</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-    </expressions>
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>colle</expression-string>
+        <expression-string>this.get(P).Pz().stream().map(x -&gt; this.get(x)._get(ms)).collect(Collectors.toList())</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>mwt2.getReturnPath()</expression-string>
+        <expression-string>this.get(P).Pz().stream().map(x -&gt; this.get(x)).collect(Collectors.toList())</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>mwt.getReturnPath()</expression-string>
+        <expression-string>this.get(P).Pz().stream().map(x -&gt; this.get(x))</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>&quot;xyxxxxy&quot;.split(&quot;x&quot;)</expression-string>
+        <expression-string>this.get(P).Pz()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>&quot;xyxxxy&quot;.split(&quot;x&quot;)</expression-string>
+        <expression-string>this.get(P)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>&quot;xyxxy&quot;.split(&quot;x&quot;)</expression-string>
+        <expression-string>this.p.extractClassB(P)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>&quot;xyx&quot;.split(&quot;x&quot;)</expression-string>
+        <expression-string>FL.get(P)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>&quot;xx&quot;.split(&quot;x&quot;)</expression-string>
+        <expression-string>FL.get(P.getCBar())</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>&quot;,,,,,&quot;.split(&quot;,&quot;)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>&quot;,,,,,&quot;.split(&quot;&quot;)</expression-string>
+        <expression-string>FL.get(Cs)</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/InvariantClose.java">
+    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/formal-util.txt" />
+    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/L42-notes.txt" />
+    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/properties.txt" />
+    <entry file="file://$PROJECT_DIR$/Main/srcLombok/ast/Ast.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6">
-          <caret line="130" column="2" lean-forward="true" selection-start-line="130" selection-start-column="2" selection-end-line="130" selection-end-column="2" />
+        <state relative-caret-position="389">
+          <caret line="143" column="21" selection-start-line="143" selection-start-column="21" selection-end-line="143" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/programReduction/Program.java">
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/stream/Collectors.java" />
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/Map.java" />
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/List.java" />
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/function/Function.java" />
+    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/util.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="43" column="10" selection-start-line="43" selection-start-column="10" selection-end-line="43" selection-end-column="10" />
+        <state relative-caret-position="368">
+          <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/auxiliaryGrammar/Functions.java">
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/pluginWrapper/RefactorErrors.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="98" column="76" selection-start-line="98" selection-start-column="76" selection-end-line="98" selection-end-column="76" />
+        <state relative-caret-position="237">
+          <caret line="275" column="61" selection-start-line="275" selection-start-column="61" selection-end-line="275" selection-end-column="61" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/adamsTowel01/libProject/Patch.L42">
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/Objects.java" />
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/org/junit/internal/runners/model/ReflectiveCallable.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="56" column="9" selection-start-line="56" selection-start-column="9" selection-end-line="56" selection-end-column="9" />
+        <state relative-caret-position="128">
+          <caret line="9" column="60" selection-start-line="9" selection-start-column="60" selection-end-line="9" selection-end-column="60" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/newTypeSystem/AlternativeMethodTypes.java">
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/org/junit/runners/model/FrameworkMethod.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="30" column="116" selection-start-line="30" selection-start-column="116" selection-end-line="30" selection-end-column="116" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/newTypeSystem/TsMCall.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="59" column="46" selection-start-line="59" selection-start-column="46" selection-end-line="59" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/platformSpecific/fakeInternet/PluginWithPart.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/privateMangling/RefreshUniqueNames.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="45" column="79" selection-start-line="45" selection-start-column="79" selection-end-line="45" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/programReduction/Methods.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="86" column="46" selection-start-line="86" selection-end-line="86" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/sugarVisitors/Desugar.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="801" column="35" selection-start-line="801" selection-start-column="35" selection-end-line="801" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/RenameUsage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="49" column="60" selection-start-line="49" selection-start-column="60" selection-end-line="49" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/pluginWrapper/PlgWrapperGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="449" column="8" selection-start-line="449" selection-start-column="8" selection-end-line="449" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Compose.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="163" column="35" selection-start-line="163" selection-start-column="35" selection-end-line="163" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/RenameMethods.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="145" column="32" selection-start-line="145" selection-start-column="32" selection-end-line="145" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Wither.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="57" column="35" selection-start-line="57" selection-start-column="35" selection-end-line="57" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/newTypeSystem/StaticDispatch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="217" column="44" selection-start-line="217" selection-start-column="44" selection-end-line="217" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/ast/ErrorMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="3959" column="105" selection-start-line="3959" selection-start-column="105" selection-end-line="3959" selection-end-column="105" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/ast/ExpCore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="1323" column="73" selection-start-line="1323" selection-start-column="73" selection-end-line="1323" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/src/ast/Expression.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="2648" column="158" selection-start-line="2648" selection-start-column="158" selection-end-line="2648" selection-end-column="158" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/examples/resources/js.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret column="2677" selection-start-column="2677" selection-end-column="2677" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/testAux/TestParseAndDoAst.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="168" column="116" selection-start-line="168" selection-start-column="116" selection-end-line="168" selection-end-column="116" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/adamsTowel01/libProject/Location/This.L42">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="120" selection-start-line="120" selection-end-line="120" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/adamsTowel02/libProject/DeployLibrary.L42">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="40" column="12" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/compilation.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="131" column="32" selection-start-line="131" selection-start-column="32" selection-end-line="131" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/IdeasNewSyntax.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="268" selection-start-line="268" selection-end-line="268" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/0ReadMeAndNotations.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/1GrammarAndProgram.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="165" column="93" selection-start-line="165" selection-start-column="93" selection-end-line="165" selection-end-column="93" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/2MainLoop.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="290" column="29" selection-start-line="290" selection-start-column="29" selection-end-line="290" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/3ExpressionTypeSystem.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="317">
-          <caret line="295" column="57" selection-start-line="295" selection-start-column="57" selection-end-line="295" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/4TypeSystemNotations.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="397" column="38" selection-start-line="397" selection-start-column="38" selection-end-line="397" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/5TypeSystemImplHints.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="59" column="48" selection-start-line="59" selection-start-column="48" selection-end-line="59" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/BackEnd01Flat.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="106" column="48" selection-start-line="106" selection-start-column="48" selection-end-line="106" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/DifferencesFromFormal.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="105" column="13" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/formal/PluginParts.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1113">
-          <caret line="404" column="81" selection-start-line="404" selection-start-column="81" selection-end-line="404" selection-end-column="81" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/L42-notes.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="13" column="55" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/DiscussionsAboutQuestionMarco.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1089">
-          <caret line="177" column="11" selection-start-line="177" selection-start-column="11" selection-end-line="177" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/Formal notes.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3555">
-          <caret line="170" column="14" selection-start-line="170" selection-start-column="14" selection-end-line="170" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/GenericsAsRedirect/formal.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="504">
-          <caret line="62" column="57" selection-start-line="62" selection-start-column="57" selection-end-line="62" selection-end-column="57" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-lemmas.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
-          <caret line="9" column="50" selection-start-line="9" selection-start-column="50" selection-end-line="9" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-util.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="61" column="41" lean-forward="true" selection-start-line="61" selection-start-column="41" selection-end-line="61" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/lang/String.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3680">
-          <caret line="2164" column="4" selection-start-line="2164" selection-start-column="4" selection-end-line="2164" selection-end-column="4" />
-          <folding>
-            <element signature="e#87189#91625#0" expanded="true" />
-            <element signature="e#87189#93772#0" expanded="true" />
-            <element signature="e#93778#95281#0" expanded="true" />
-            <element signature="e#93778#95361#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRenameClass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="64">
-          <caret line="28" column="43" selection-start-line="28" selection-start-column="43" selection-end-line="28" selection-end-column="43" />
+        <state relative-caret-position="182">
+          <caret line="13" column="125" selection-start-line="13" selection-start-column="125" selection-end-line="13" selection-end-column="125" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main/src/tools/Assertions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="90" column="57" selection-start-line="90" selection-start-column="57" selection-end-line="90" selection-end-column="57" />
+        <state relative-caret-position="384">
+          <caret line="84" selection-start-line="84" selection-end-line="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/HashMap.java" />
+    <entry file="file://$PROJECT_DIR$/Tests/src/helpers/TestHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="147" column="64" lean-forward="true" selection-start-line="147" selection-start-column="64" selection-end-line="147" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/org/junit/Assert.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="473">
+          <caret line="156" selection-start-line="156" selection-end-line="156" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/stream/BaseStream.java" />
+    <entry file="file://$PROJECT_DIR$/Main/src/ast/Ast.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="1226" column="73" lean-forward="true" selection-start-line="1226" selection-start-column="73" selection-end-line="1226" selection-end-column="73" />
           <folding>
-            <element signature="method#codeNotReachable#2;class#Assertions#0" expanded="true" />
-            <element signature="class#UncheRunnable#0;class#Assertions#0" expanded="true" />
+            <element signature="class#MethodType#0;class#Ast#0" expanded="true" />
+            <element signature="class#C#0;class#Ast#0" expanded="true" />
+            <element signature="method#hashCode#0;class#C#0;class#Ast#0" expanded="true" />
+            <element signature="method#factory#1;class#Doc#0;class#Ast#0" expanded="true" />
+            <element signature="method#factory#2;class#Doc#0;class#Ast#0" expanded="true" />
+            <element signature="method#Doc#0;class#Doc#0;class#Ast#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/ast/ExpCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="1999" column="33" selection-start-line="1999" selection-start-column="31" selection-end-line="1999" selection-end-column="33" />
+          <folding>
+            <element signature="class#ClassB#0;class#ExpCore#0" expanded="true" />
+            <element signature="e#27736#28117#0" expanded="true" />
+            <element signature="e#28364#28801#0" expanded="true" />
+            <element signature="e#29384#29459#0" expanded="true" />
+            <element signature="e#29552#29651#0" expanded="true" />
+            <element signature="e#29657#29781#0" expanded="true" />
+            <element signature="e#30141#30247#0" expanded="true" />
+            <element signature="e#30379#30473#0" expanded="true" />
+            <element signature="e#30479#30650#0" expanded="true" />
+            <element signature="e#31875#35699#0" expanded="true" />
+            <element signature="method#checkIndex#0;class#_Aux#0" expanded="true" />
+            <element signature="method#getNested#0;class#_Aux#0" expanded="true" />
+            <element signature="method#_getMember#0;class#_Aux#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/programReduction/Norm.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-912">
+          <caret line="38" column="76" lean-forward="true" selection-start-line="38" selection-start-column="76" selection-end-line="38" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestInvariantClose.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="39" column="13" selection-start-line="39" selection-start-column="13" selection-end-line="39" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="662">
+          <caret line="1150" column="15" selection-start-line="1150" selection-start-column="15" selection-end-line="1150" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/Collection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="256" selection-start-line="230" selection-end-line="256" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/function/Predicate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="432">
+          <caret line="139" selection-start-line="66" selection-end-line="139" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/function/Function.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="320">
+          <caret line="99" selection-start-line="65" selection-end-line="99" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/srcLombok/tools/ListFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="31" column="61" selection-end-line="39" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/function/BiConsumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="66" column="22" selection-start-line="66" selection-end-line="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/lang/SuppressWarnings.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="56" column="18" selection-start-line="56" selection-start-column="18" selection-end-line="56" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/lang/Runnable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="55" column="17" selection-start-line="55" selection-start-column="17" selection-end-line="55" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/function/Supplier.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="40" column="17" selection-start-line="40" selection-start-column="17" selection-end-line="40" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/function/Consumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="62" column="30" lean-forward="true" selection-start-line="62" selection-end-line="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/platformSpecific/fakeInternet/OnLineCode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="96">
+          <caret line="44" column="49" selection-start-line="44" selection-start-column="49" selection-end-line="44" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/MakeK.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="488">
+          <caret line="89" column="5" lean-forward="true" selection-start-line="89" selection-start-column="5" selection-end-line="89" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#makeK#0;class#MakeK#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/lombok.config">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/ToAbstract.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="828">
+          <caret line="63" column="45" selection-start-line="63" selection-start-column="45" selection-end-line="63" selection-end-column="45" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/programReduction/Program.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="method#EvilPushed#0;class#EvilPushed#0" expanded="true" />
+            <element signature="method#pop#0;class#EvilPushed#0" expanded="true" />
+            <element signature="method#push#0;class#EvilPushed#0" expanded="true" />
+            <element signature="method#getFreshId#0;class#EvilPushed#0" expanded="true" />
+            <element signature="method#exploredWay#0;class#EvilPushed#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk11/lib/src.zip!/java.base/java/util/stream/Stream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2288">
+          <caret line="1373" column="32" selection-start-line="1373" selection-start-column="32" selection-end-line="1373" selection-end-column="32" />
+          <folding>
+            <element signature="e#55419#55635#0" expanded="true" />
+            <element signature="e#55419#55762#0" expanded="true" />
+            <element signature="e#62941#65299#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/srcLombok/tools/CollectionWrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="5" column="67" selection-start-line="5" selection-start-column="67" selection-end-line="5" selection-end-column="67" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/tools/CollectionWrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+          <folding>
+            <element signature="method#size#0;class#CollectionWrapper#0" expanded="true" />
+            <element signature="method#add#0;class#CollectionWrapper#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main/src/tools/LambdaExceptionUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="46" selection-start-line="42" selection-end-line="46" />
+        <state relative-caret-position="464">
+          <caret line="65" selection-start-line="65" selection-end-line="65" />
           <folding>
-            <element signature="class#Runnable_WithExceptions#0;class#LambdaExceptionUtil#0" expanded="true" />
-            <element signature="method#catchThrow#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="docComment;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#catch_#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#acceptUnchecked#0;class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#acceptCatch#0;class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#1;class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#check#0;class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#andThen#0;class#CheckedConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#acceptUnchecked#0;class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#acceptCatch#0;class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#1;class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#check#0;class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#andThen#0;class#CheckedBiConsumer#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#applyUnchecked#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#applyCatch#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#1;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#check#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#cast#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#compose#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#andThen#0;class#CheckedFunction#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="class#CheckedSupplier#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#getCatch#0;class#CheckedSupplier#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#CheckedSupplier#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#1;class#CheckedSupplier#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#1;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#check#0;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#and#0;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#negate#0;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#or#0;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#not#0;class#CheckedPredicate#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="class#CheckedRunnable#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#runUnchecked#0;class#CheckedRunnable#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#runCatch#0;class#CheckedRunnable#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#0;class#CheckedRunnable#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#uncheck#1;class#CheckedRunnable#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#check#0;class#CheckedRunnable#0;class#LambdaExceptionUtil#0" expanded="true" />
+            <element signature="method#throwAsUnchecked#0;class#LambdaExceptionUtil#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java">
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/PathMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="783">
-          <caret line="111" column="54" lean-forward="true" selection-start-line="111" selection-start-column="54" selection-end-line="111" selection-end-column="54" />
+        <state relative-caret-position="640">
+          <caret line="71" column="46" selection-start-line="71" selection-start-column="46" selection-end-line="71" selection-end-column="46" />
           <folding>
-            <element signature="method#internals#0;class#FromedL#0" expanded="true" />
-            <element signature="method#_internal#0;class#FromedL#0" expanded="true" />
+            <element signature="method#PathMap#0;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#1;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#2;class#PathMap#0" expanded="true" />
+            <element signature="method#add#0;class#PathMap#0" expanded="true" />
+            <element signature="method#PathMap#4;class#PathMap#0" expanded="true" />
+            <element signature="method#iterator#0;class#PathMap#0" expanded="true" />
+            <element signature="method#collection#0;class#PathMap#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar:///usr/lib/jvm/java-11-openjdk/lib/src.zip!/java.base/java/util/stream/ReferencePipeline.java">
+    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="532" selection-start-line="532" selection-end-line="532" />
+        <state relative-caret-position="320">
+          <caret line="20" column="32" selection-start-line="20" selection-start-column="32" selection-end-line="20" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/tools/ListFormatter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
+          <folding>
+            <element signature="method#append#0;class#ListFormatter#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/tools/StreamUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#253#373#0" expanded="true" />
+            <element signature="e#252#300#0" expanded="true" />
+            <element signature="e#303#387#0" expanded="true" />
+            <element signature="e#390#487#0" expanded="true" />
+            <element signature="e#1028#1739#0" expanded="true" />
+            <element signature="class#1158:1734" expanded="true" />
+            <element signature="method#advance#0;class#1111:1889" expanded="true" />
+            <element signature="method#hasNext#0;class#1111:1774" expanded="true" />
+            <element signature="method#next#0;class#1158:1738" expanded="true" />
+            <element signature="e#1743#1877#0" expanded="true" />
+            <element signature="e#3999#4145#0" expanded="true" />
+            <element signature="e#4145#4305#0" expanded="true" />
+            <element signature="e#5362#5496#0" expanded="true" />
+            <element signature="e#5659#5788#0" expanded="true" />
+            <element signature="e#5787#5924#0" expanded="true" />
+            <element signature="e#5927#6061#0" expanded="true" />
+            <element signature="e#6064#6219#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/src/tools/Utils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#cast#0;class#Utils#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/Redirect.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="438" column="1" selection-start-line="438" selection-start-column="1" selection-end-line="438" selection-end-column="1" />
+        <state relative-caret-position="415">
+          <caret line="217" column="59" selection-start-line="217" selection-start-column="59" selection-end-line="217" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1647#1939#0" expanded="true" />
-            <element signature="e#1927#2389#0" expanded="true" />
-            <element signature="e#2707#5727#0" expanded="true" />
-            <element signature="e#3683#5195#0" expanded="true" />
-            <element signature="e#5201#5643#0" expanded="true" />
-            <element signature="e#7302#8202#0" expanded="true" />
-            <element signature="e#8206#9006#0" expanded="true" />
-            <element signature="e#13337#13570#0" expanded="true" />
-            <element signature="e#13711#13842#0" expanded="true" />
-            <element signature="e#13845#19332#0" expanded="true" />
-            <element signature="e#19438#19618#0" expanded="true" />
-            <element signature="e#19621#20290#0" expanded="true" />
-            <element signature="e#20199#20777#0" expanded="true" />
-            <element signature="e#25618#26508#0" expanded="true" />
-            <element signature="e#27504#30653#0" expanded="true" />
-            <element signature="e#34577#34679#0" expanded="true" />
-            <element signature="e#34798#35263#0" expanded="true" />
+            <element signature="e#13661#19131#0" expanded="true" />
+            <element signature="e#30302#31295#0" expanded="true" />
+            <element signature="e#35511#35608#0" expanded="true" />
+            <element signature="e#35611#35775#0" expanded="true" />
             <element signature="method#toString#0;class#CsPzMap#0" expanded="true" />
             <element signature="method#format#0;class#CsPzMap#0" expanded="true" />
             <element signature="method#CsPzMap#0;class#CsPzMap#0" expanded="true" />
@@ -1268,36 +1300,76 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Tests/src/is/L42/connected/withSafeOperators/refactor/TestRedirect.java">
+    <entry file="file://$PROJECT_DIR$/Main/src/coreVisitors/From.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="62" column="50" lean-forward="true" selection-start-line="62" selection-start-column="50" selection-end-line="62" selection-end-column="50" />
+        <state relative-caret-position="64">
+          <caret line="12" column="38" selection-start-line="12" selection-start-column="26" selection-end-line="12" selection-end-column="38" />
           <folding>
-            <element signature="method#mkp#0;class#TestRedirect#0" expanded="true" />
-            <element signature="method#split#0;class#TestRedirect#0" expanded="true" />
-            <element signature="method#test#0;class#TestRedirect#0" expanded="true" />
+            <element signature="method#liftP#0;class#From#0" expanded="true" />
+            <element signature="method#visit#0;class#From#0" expanded="true" />
+            <element signature="method#normalizeShort#0;class#From#0" expanded="true" />
+            <element signature="method#fromP#0;class#From#0" expanded="true" />
+            <element signature="method#fromT#0;class#From#0" expanded="true" />
+            <element signature="method#from#0;class#From#0" expanded="true" />
+            <element signature="method#from#1;class#From#0" expanded="true" />
+            <element signature="method#from#2;class#From#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/util.txt">
+    <entry file="file://$PROJECT_DIR$/PlgSafeOperators/src/is/L42/connected/withSafeOperators/refactor/FromedL.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="97" column="30" selection-start-line="97" selection-start-column="30" selection-end-line="97" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-sketch.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2160">
-          <caret line="113" column="95" selection-start-line="113" selection-start-column="95" selection-end-line="113" selection-end-column="95" />
+        <state relative-caret-position="547">
+          <caret line="105" column="71" selection-start-line="105" selection-start-column="71" selection-end-line="105" selection-end-column="71" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="class#Nested#0;class#FromedL#0" expanded="true" />
+            <element signature="method#Nested#0;class#Nested#0;class#FromedL#0" expanded="true" />
+            <element signature="method#FromedL#0;class#FromedL#0" expanded="true" />
+            <element signature="method#FromedL#1;class#FromedL#0" expanded="true" />
+            <element signature="method#Pz#0;class#FromedL#0" expanded="true" />
+            <element signature="method#prepareMwtz#0;class#FromedL#0" expanded="true" />
+            <element signature="method#prepareNcz#0;class#FromedL#0" expanded="true" />
+            <element signature="method#computeMwt#0;class#FromedL#0" expanded="true" />
+            <element signature="method#computeNested#0;class#FromedL#0" expanded="true" />
+            <element signature="method#mwtz#0;class#FromedL#0" expanded="true" />
+            <element signature="method#ncz#0;class#FromedL#0" expanded="true" />
+            <element signature="method#get#0;class#FromedL#0" expanded="true" />
+            <element signature="method#get#1;class#FromedL#0" expanded="true" />
+            <element signature="method#get#2;class#FromedL#0" expanded="true" />
+            <element signature="method#_get#0;class#FromedL#0" expanded="true" />
+            <element signature="method#_get#1;class#FromedL#0" expanded="true" />
+            <element signature="method#_get#2;class#FromedL#0" expanded="true" />
+            <element signature="method#contains#0;class#FromedL#0" expanded="true" />
+            <element signature="method#contains#1;class#FromedL#0" expanded="true" />
+            <element signature="method#contains#2;class#FromedL#0" expanded="true" />
+            <element signature="method#msDom#0;class#FromedL#0" expanded="true" />
+            <element signature="method#cDom#0;class#FromedL#0" expanded="true" />
+            <element signature="method#from#0;class#FromedL#0" expanded="true" />
+            <element signature="method#from#1;class#FromedL#0" expanded="true" />
+            <element signature="e#3390#3468#0" expanded="true" />
+            <element signature="e#3467#3468#0" expanded="true" />
+            <element signature="method#from#2;class#FromedL#0" expanded="true" />
+            <element signature="method#isInterface#0;class#FromedL#0" expanded="true" />
+            <element signature="method#topL#0;class#FromedL#0" expanded="true" />
+            <element signature="method#reachables#0;class#FromedL#0" expanded="true" />
+            <element signature="method#internals#0;class#FromedL#0" expanded="true" />
+            <element signature="method#isInternal#0;class#FromedL#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/redirect.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="71" column="1" selection-start-line="71" selection-start-column="1" selection-end-line="71" selection-end-column="1" />
+        <state relative-caret-position="384">
+          <caret line="63" column="6" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Main/papers/Ecoop2019/Formal/proof-util.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="64">
+          <caret line="5" column="6" selection-start-line="5" selection-end-line="5" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -1371,17 +1443,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ScopeChooserConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.21563342" />
               </list>
             </option>
           </splitter-proportions>

@@ -1,6 +1,7 @@
 package is.L42.connected.withSafeOperators.refactor;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -11,12 +12,17 @@ import ast.Ast.Type;
 import ast.ErrorMessage;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
+import ast.Util;
 import ast.Util.CsMx;
 import ast.Util.CsPath;
 import coreVisitors.CloneVisitorWithProgram;
+import coreVisitors.From;
 import programReduction.Program;
+import tools.CollectionWrapper;
+import tools.StreamUtils;
+import tools.Utils;
 
-public class PathMap implements Iterable<CsPath> {
+public class PathMap extends CollectionWrapper<CsPath> {
   private Map<List<C>, Path> map;
 
   @Override public String toString() { return this.stream().map(Object::toString).collect(Collectors.joining(", ")); }
@@ -55,13 +61,16 @@ public class PathMap implements Iterable<CsPath> {
 
   public List<CsPath> toList() { return stream().collect(Collectors.toList()); }
 
-  public Stream<CsPath> stream() {
+  @Override public Stream<CsPath> stream() {
     return this.map.entrySet().stream().map(e -> new CsPath(e.getKey(), e.getValue())); }
 
-  public Iterator<CsPath> iterator() { return this.stream().iterator(); }
+  @Override public Iterator<CsPath> iterator() { return this.stream().iterator(); }
 
   // dom(R)
   public Set<List<Ast.C>> dom() { return this.map.keySet(); }
+
+  public PathMap map(Function<Path, Path> f) {
+    return new PathMap(StreamUtils.map(this, CsP -> CsP.withPath(f.apply(CsP.getPath()))));}
 
   //R(L)
   ClassB apply(ClassB L) {
@@ -145,4 +154,7 @@ public class PathMap implements Iterable<CsPath> {
           try { return result.add(this.visit(nc)); }
           finally { cs=csLocal; } } };
       L = (ClassB)L.accept(remover); }
-    return L; } }
+    return L; }
+
+  @Override protected Collection collection() { return this.toList(); }
+}

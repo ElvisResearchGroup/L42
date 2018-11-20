@@ -6,39 +6,27 @@ import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
 import coreVisitors.*;
 import programReduction.*;
+import tools.StreamUtils;
 
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.*;
 
 // A caching wrapper over an L, which does froming only when required?
 public class FromedL {
-  static <T> List<T> withAdd(Collection<T> s, Collection<T>... extras) {
-    var res = new ArrayList<>(s);
-    for (var e : extras) { res.addAll(e); }
-    return res; }
-
-  // Because Java's collection API sucks
-  static <T> List<T> withAdd(Collection<T> s, T... extras) {
-    return withAdd(s, Arrays.asList(extras)); }
-
-  static <K, V> void replaceAllNull(Map<K, V> m, Function<K, V> f) { m.replaceAll((k, v) -> v == null ? f.apply(k) : v); }
-
-  static <I, O> Stream<O> optMap(Stream<I> s, Function<I, O> m) { return s.map(m).filter(Objects::nonNull); }
   public final ClassB L; public final Path P;
+  public final Program p;
 
   //private List<FromedL> Pz = null;
   static class Nested {
     final C C;final FromedL FL; final NestedClass nc;
-    Nested(NestedClass nc, Path P) { this.nc = nc; this.C = nc.getName(); this.FL = new FromedL((ClassB)nc.getInner(), P.pushC(C)); }}
+    Nested(Program p, NestedClass nc, Path P) { this.nc = nc; this.C = nc.getName(); this.FL = new FromedL(p, (ClassB)nc.getInner(), P.pushC(C)); }}
 
-  FromedL(Program p, Path P) { this(p.extractClassB(P), P); }
-  FromedL(ClassB L, Path P) { this.L = L; this.P = P; }
+  FromedL(Program p, Path P) { this(p, p.extractClassB(P), P); }
+  FromedL(Program p, ClassB L, Path P) { this.p = p; this.L = L; this.P = P; }
 
   private List<Path> _Pz = null;
-  Collection<Path> Pz() {
-    if (this._Pz == null) {
-      this._Pz = this.L.getSuperPaths().stream().map(this::from).collect(Collectors.toList()); }
+  List<Path> Pz() {
+    if (this._Pz == null) { this._Pz = StreamUtils.map(this.L.getSuperPaths(), this::from); }
     return this._Pz; }
 
   private Map<MethodSelector, MethodWithType> _mwtz = null; private Map<C, Nested> _ncz = null;
@@ -59,11 +47,11 @@ public class FromedL {
 
   Collection<MethodWithType> mwtz() {
     prepareMwtz();
-    if (!mwtz_computed) { replaceAllNull(this._mwtz, this::computeMwt); mwtz_computed = true; }
+    if (!mwtz_computed) { StreamUtils.replaceAllNull(this._mwtz, this::computeMwt); mwtz_computed = true; }
     return this._mwtz.values(); }
   Collection<Nested> ncz() {
     prepareNcz();
-    if (!ncz_completed) { replaceAllNull(this._ncz, this::computeNested); ncz_completed = true; }
+    if (!ncz_completed) { StreamUtils.replaceAllNull(this._ncz, this::computeNested); ncz_completed = true; }
     return this._ncz.values(); }
 
   MethodWithType get(MethodSelector ms) {
@@ -87,14 +75,16 @@ public class FromedL {
   Set<MethodSelector> msDom() { prepareMwtz(); return this._mwtz.keySet(); }
     Set<C> cDom() { prepareNcz(); return this._ncz.keySet(); }
 
-  Path from(Path P1) { return From.fromP(P1, P); }
-  MethodWithType from(MethodWithType mwt) { return From.from(mwt.with_inner(null), P).with_inner(mwt.get_inner()); }
-  Nested from(NestedClass nc) { return new Nested(nc, this.P); }
+  Path from(Path P1) { return this.p.minimize(From.fromP(P1, P)); }
+  MethodWithType from(MethodWithType mwt) {
+    return new CloneVisitor() {@Override protected Path liftP(Path P){ return from(P); }}
+      .visit(mwt.with_inner(null)).with_inner(mwt.get_inner()); }
+  Nested from(NestedClass nc) { return new Nested(this.p, nc, this.P); }
 
   boolean isInterface() { return this.L.isInterface(); }
   // Gets the 'top' L, ignores nested classes, and does not from method bodies
   ClassB topL() {
-    var Tz = this.Pz().stream().map(Type::of).collect(Collectors.toList());
+    var Tz = StreamUtils.map(this.Pz(), Type::of);
     return this.L.withSupertypes(Tz).withMs(List.copyOf(this.mwtz())); }
 
   static Set<Path> reachables(MethodWithType mwt) {
@@ -110,7 +100,7 @@ public class FromedL {
     return res; }
 
   static List<List<C>> internals(Collection<Path> Ps) {
-    return Ps.stream().filter(FromedL::isInternal).map(Path::getCBar).collect(Collectors.toList()); }
+    return StreamUtils.stream(Ps).filter(FromedL::isInternal).map(Path::getCBar).toList(); }
   
   static List<C> _internal(Path P) { return isInternal(P) ? P.getCBar() : null; }
   static boolean isInternal(Path P) { return P.tryOuterNumber() == 0; }}

@@ -5,12 +5,7 @@ import java.util.Map;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.filtering;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
+import tools.LambdaExceptionUtil.CheckedFunction;
 import ast.Ast;
 import ast.Ast.*;
 import ast.ErrorMessage;
@@ -141,10 +136,7 @@ public class Redirect {
     var p = p0.evilPush(L);
 
     // R = Cs1 -> p.minimize(P1[from This1]), ..., Csn -> p.minimize(Pn[from This1])
-    R = new PathMap(R.stream().map(
-      CsP -> new CsPath(CsP.getCs(), p.minimize(From.fromP(CsP.getPath(), Path.outer(1))))
-    ).collect(Collectors.toList()));
-
+    R = R.map(P -> p.minimize(From.fromP(P, Path.outer(1))));
     var r = new Redirect(new Problem(p, R), false);
 
     // Csz = RedirectSet(L; Cs1, ..., Csn)
@@ -198,7 +190,7 @@ public class Redirect {
     for (var Cs : Csz) {
       if (Cs.isEmpty()) {
         error.pathUnfit(errors, Cs, "it is empty."); continue; }
-      if (Cs.stream().anyMatch(C::isUnique)) {
+      if (StreamUtils.any(Cs, C::isUnique)) {
         error.pathUnfit(errors, Cs, "it is private."); continue; }
 
       if (this._get(Cs) == null) { error.pathUnfit(errors, Cs, "it does not exist."); }}
@@ -223,7 +215,7 @@ public class Redirect {
     // C in dom(L[Cs]): Cs.C in Csz
     var errors = error.formatter(l -> l.header("Cannot completely redirect " + PathAux.as42Path(Cs) + ":\n").prefix("    ").suffix("\n"));
     for (var C : L.cDom()) {
-      if (!this.redirectSet.containsKey(withAdd(Cs, C))) {
+      if (!this.redirectSet.containsKey(StreamUtils.concat(Cs, C))) {
         error.unredirectable(errors, Cs, "It contains a nested class " + C + ", which is not in the redirect set."); }}
     error.accumulate(message, errors); }
 
@@ -234,7 +226,7 @@ public class Redirect {
     if (Cs.isEmpty()) { // Cs not empty
       error.unredirectable(errors, Cs, "It refers to the whole library literal!"); }
 
-    if (Cs.stream().anyMatch(C::isUnique)) { // forall C in Cs: not Private(Cs)
+    if (StreamUtils.any(Cs, C::isUnique)) { // forall C in Cs: not Private(Cs)
       error.unredirectable(errors, Cs, "It is private."); }
 
     for (var mwt : L.mwtz()) { // forall mwt in L[Cs].mwtz:
@@ -263,7 +255,7 @@ public class Redirect {
       // MustInterface(p; Cs) = p(Cs).interface? = interface'
       // MustClass(p; Cs) = p(Cs).interface? = empty and class in p(Cs).mwtz.mdfZ
       ClassKind kind = L.isInterface() ? ClassKind.Interface
-        : L.mwtz().stream().anyMatch(mwt -> mwt.getMdf().isClass()) ? ClassKind.Final
+        : StreamUtils.any(L.mwtz(), mwt -> mwt.getMdf().isClass()) ? ClassKind.Final
         : ClassKind.Class;
 
       redirectSet.put(Cs, kind);
@@ -310,8 +302,7 @@ public class Redirect {
           var Cs2 = _internal(PCs2); // P = This0.Cs'
           if (Cs2 == null) { continue; }
 
-          var Pz = superClasses(CsP.getPath()).stream().filter(Pi -> possibleTarget(Cs2, Pi))
-            .collect(Collectors.toSet()); // px = {P' in SuperClasses(p; P) | sdom(p[P']) = msz}
+          var Pz = StreamUtils.filter(superClasses(CsP.getPath()), Pi -> possibleTarget(Cs2, Pi)); // px = {P' in SuperClasses(p; P) | sdom(p[P']) = msz}
           var P1 = _mostSpecific(Pz); // P1 = MostSpecific(p; Pz)
           var P2 = _mostGeneral(Pz); // P2 = MostGeneral(p; Pz)
 
@@ -335,7 +326,7 @@ public class Redirect {
       //5: Collect(p; CC) = Cs' <= p[P.s].Pi
       //   CC = P <= Cs or  CC = Cs <= P
       //   p[Cs.s].Pi = This0.Cs'
-      for (var CsP : seqIterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
+      for (var CsP : StreamUtils.iterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
         // p[Cs.s].Pi.Cs <= p[P.s].Pi
         progress |= collectParams(CsP, (Cs, P, s, i) -> addSubtype(Cs, P,
             "Rule 5: " + asReltype(CsP) + " [" + s + "." + i + "]"));}
@@ -413,17 +404,17 @@ public class Redirect {
     if (Pz == null) { return null; } // SuperClasses was undefined
 
     //Pz' = {P in Pz | {P'1, ..., P'k} subseteq SuperClasses(p; P)}
-    return Pz.stream().filter(P ->
+    return StreamUtils.filter(Pz, P ->
       superClasses(P).containsAll(Ps2)
       && possibleTarget(Cs, P)
-      && consistent(Cs, P, stack)).collect(Collectors.toSet());}
+      && consistent(Cs, P, stack));}
 
   boolean consistent(List<C> Cs, Path P, Set<List<C>> stack) {
     // There is a very seriouse infinite recursion possibility ...
     if (!mustInterface(Cs)) { return true; }
     var L = this.get(P);
 
-    return this.get(Cs).mwtz().stream().allMatch(mwt -> {
+    return StreamUtils.all(this.get(Cs).mwtz(), mwt -> {
       var mwt2 = L.get(mwt.getMs());
       if (!collectableTarget(mwt.getReturnPath(), mwt2.getReturnPath(), stack)) {
         return false; }
@@ -453,7 +444,7 @@ public class Redirect {
     // In particular, we are not allowed to look at the constraints of anything other than Cs!
 
     var supers = new ArrayList<>(this.subtypeConstraints.get(Cs));
-    supers.addAll(this.get(Cs).Pz().stream().filter(P -> !isInternal(P)).collect(Collectors.toList()));
+    StreamUtils.stream(this.get(Cs).Pz()).filter(FromedL::isInternal).addTo(supers);
 
     //var L = this.p.top().getClassB(Cs);
     /*L.withMs(L.mwts().stream().map(
@@ -472,16 +463,14 @@ public class Redirect {
 
     // Create the thing, it needs at least the supertypes specified by the constraints, and those needed by possibleTarget
     var L = new ClassB(Doc.factory(false, "GENERATED BULLSHIT!"),
-      this.redirectSet.get(Cs).equals(ClassKind.Interface),
-      supers.stream().map(Type::of).collect(toList()), List.of(), Position.noInfo, Phase.None, -2);
+      this.redirectSet.get(Cs).equals(ClassKind.Interface), StreamUtils.map(supers, Type::of),
+      List.of(), Position.noInfo, Phase.None, -2);
     L = new Norm().norm(p.updateTop(L)); // Hopefully this is the right function to do a normalisation
     // Now add any extra methods and changes types, as needed by updateTop
     // (note: if it's an allready existing method we are only allowed to refine it,
     // if we can't refine it, this means that their is no-possible solution!)
 
-    var mwtz = new ArrayList<Member>(L.mwts().stream().filter(mwt -> !this.get(Cs).msDom().contains(mwt.getMs()))
-      .collect(toList()));
-
+    var mwtz = StreamUtils.stream(L.mwts(), s -> s.ifilter(mwt -> this.get(Cs).msDom().contains(mwt.getMs())).<Member>mapCast());
     for (var mwt : this.get(Cs).mwtz()) {
       var mwt2 = L._getMwt(mwt.getMs());
       if (mwt2 == null) {
@@ -552,18 +541,18 @@ public class Redirect {
     assert false : "NOT IMPLEMENTED";
     return null; }
 
-  Stream<PathMap> collectAllSolutions(PathMap R, List<List<C>> Csz) throws DeductionFailure {
-    if (Csz.isEmpty()) { return Stream.of(R); }
+  StreamUtils<PathMap> collectAllSolutions(PathMap R, List<List<C>> Csz) throws DeductionFailure {
+    if (Csz.isEmpty()) { return StreamUtils.of(R); }
     var Cs = Csz.get(0);
     var Csz2 = Csz.subList(1, Csz.size());
     var Pz = createTargets(Cs);
-    return Pz.stream().flatMap(LambdaExceptionUtil.rethrowFunction(P -> {
+    return StreamUtils.stream(Pz).flatMapS(P -> {
       var R2 = new PathMap(R);
       R2.add(Cs, P);
       return collectAllSolutions(R2, Csz2);
-    }));}
+  }); }
 
-  Stream<PathMap> collectAllSolutions() throws DeductionFailure {
+  StreamUtils<PathMap> collectAllSolutions() throws DeductionFailure {
     return collectAllSolutions(new PathMap(), List.copyOf(this.redirectSet.keySet())); }
 
   // collectSolution(p; CCz)
@@ -611,7 +600,7 @@ public class Redirect {
       // No need to check for well-typedness of L2, as 42 gurantees this for any 'class Any' given as input is (transitivley) well-typed
 
       // p|- P; L2 <= Cs; L1
-      var Pz1 = p.minimizeSet(L1.getSuperPaths().stream().filter(x -> !isInternal(x)));
+      var Pz1 = StreamUtils.stream(L1.getSuperPaths()).ifilter(FromedL::isInternal).toSet();
       var Pz2 = superClasses(P);
       if (!Pz2.containsAll(Pz1)) { //Pz subseteq_p SuperClasses(p; P)
         var Pz11 = new HashSet<>(Pz1);
@@ -669,19 +658,13 @@ public class Redirect {
       var mwt2 = L2._get(mwt.getMs());
       if (!partialMethSubType(mwt2.getMt(), mwt.getMt())) { return false; }
       if (ck.equals(ClassKind.Interface) && !partialMethSubType(mwt.getMt(), mwt2.getMt())) { return false; }}
-    var res = superClasses(P).containsAll(p.minimizeSet(L1.Pz().stream().filter(x -> !isInternal(x))));
-      return res; }
+    return StreamUtils.stream(L1.Pz()).ifilter(FromedL::isInternal).allIn(superClasses(P)); }
 
   Path _mostSpecific(Set<Path> Pz) {
-    Pz = p.minimizeSet(Pz.stream());
-    // TODO: This is horribly inefficient...
-    for (Path P : Pz) {
-      if (superClasses(P).containsAll(Pz)) { return P; }}
-
-    return null;}
+    // TODO: This is horribly inefficient ??
+    return StreamUtils.first(Pz, P -> superClasses(P).containsAll(Pz));}
 
   Path _mostGeneral(Set<Path> Pz) {
-    Pz = p.minimizeSet(Pz.stream());
     // TODO: This is horribly inefficient...
     if (!Pz.isEmpty()) {
       var res = superClasses(Pz);
@@ -700,8 +683,8 @@ public class Redirect {
 
     return Functions.isSubtype(sup.getMdf(), sub.getMdf())
       && partialSubtype(sub.getReturnType(), sup.getReturnType())
-      && IntStream.range(0, sub.getTs().size()).allMatch(i -> partialSubtype(sup.getTs().get(i), sub.getTs().get(i)))
-      && sub.getExceptions().stream().allMatch(T1 -> sup.getExceptions().stream().anyMatch(T2 -> partialSubtype(T1, T2)));}
+      && StreamUtils.range(0, sub.getTs().size()).all(i -> partialSubtype(sup.getTs().get(i), sub.getTs().get(i)))
+      && StreamUtils.all(sub.getExceptions(), T1 -> StreamUtils.any(sup.getExceptions(), T2 -> partialSubtype(T1, T2)));}
 
   boolean mustInterface(List<Ast.C> Cs) { return this.redirectSet.get(Cs) == ClassKind.Interface; }
 
@@ -729,37 +712,6 @@ public class Redirect {
           progress |= f.test(P2.getCBar(), mwt2.getPaths().get(i), mwt.getMs(), i); }}} //f(P2.Cs, mwt2.Pi)
     return progress; }
 
-  // Utilities, not directly related to redirect
-
-  // iterates over the first, and then the second collection
-  static <T> Iterable<T> seqIterate(Iterable<T> first, Iterable<T> second) {
-    return () -> new Iterator<T>() {
-        Iterator<T> inner = first.iterator();
-        boolean firstHalf = true;
-
-        void update() { inner = second.iterator(); firstHalf = false; }
-        @Override public boolean hasNext() {
-          var res = this.inner.hasNext();
-          if (!res && firstHalf) {
-            this.update();
-            res = this.inner.hasNext();
-          }
-          return res; }
-        @Override public T next() {
-          if (firstHalf) {
-            try { return inner.next(); }
-            catch (NoSuchElementException e) { update(); } }
-          return inner.next(); }};}
-
-  static <T> Set<T> intersect(Stream<Collection<T>> s) {
-      Set<T> res = null;
-      for (var set : iterate(s)) {
-        if (res == null) { res = new HashSet<>(set); }
-        else { res.retainAll(set); }}
-      return res; }
-
-  static <T> Iterable<T> iterate(Stream<T> s) { return s::iterator; }
-
   FromedL _get(List<C> Cs) { return this.FL_._get(Cs); }
   FromedL get(List<C> Cs) { return this.FL_.get(Cs); }
   FromedL get(Path P) {
@@ -785,11 +737,11 @@ public class Redirect {
 
     throw Assertions.codeNotReachable(); }
   Set<Path> superClasses(List<C> Cs) { return superClasses(toP(Cs)); }
-  Set<Path> superClasses(Path P) { return p.minimizeSet(Stream.concat(get(P).Pz().stream(), Stream.of(P, Path.Any()))); }
+  Set<Path> superClasses(Path P) { return StreamUtils.stream(get(P).Pz()).concat(P, Path.Any()).toSet(); }
 
   //SuperClasses(p; Pz) = intersect {p.minimize(p[P].Pz U {P, Any}) | P in Pz}
   Set<Path> superClasses(Collection<Path> Pz) { return Objects.requireNonNull(_superClasses(Pz)); }
-  Set<Path> _superClasses(Collection<Path> Pz) { return intersect(Pz.stream().map(this::superClasses)); }
+  Set<Path> _superClasses(Collection<Path> Pz) { return StreamUtils.interesect(StreamUtils.map(Pz, this::superClasses)); }
 
   // For debuging
   String asSubtype(CsPath csp) { return PathAux.as42Path(csp.getCs()) + " <= " + csp.getPath(); }
@@ -797,8 +749,8 @@ public class Redirect {
   String asReltype(CsPath csp)  { return PathAux.as42Path(csp.getCs()) + " <=> " + csp.getPath(); }
   String asSametype(CsPath csp)  { return PathAux.as42Path(csp.getCs()) + " == " + csp.getPath(); }
   String printConstraints() {
-    return new ListFormatter().seperator(", ").append(this.redirectSet.keySet().stream().map(this::printConstraint))
-        .toString();
+    // Note: if I use this::printConstraint I get a weird error about an uncaught 'Throwable'...
+    return new ListFormatter().seperator(", ").append(StreamUtils.map(this.redirectSet.keySet(), Cs -> this.printConstraint(Cs))).toString();
   }
   String printConstraint(List<C> Cs) {
     var sub = supertypeConstraints.get(Cs);
@@ -820,10 +772,9 @@ class CsPzMap implements Iterable<CsPath> {
   private Map<List<C>, Set<Path>> map = new HashMap<>();
 
   @Override public String toString() {
-    return this.mappings().stream().map(
+    return StreamUtils.stream(this.mappings()).map(
         CsPz -> this.format(PathAux.as42Path(CsPz.getCs()), PathAux.asSet(CsPz.getPathsSet()))
-
-    ).collect(Collectors.joining(", ")); }
+    ).toString(", "); }
 
   String format(String Cs, String Pz) { return Cs + "->" + Pz; }
   CsPzMap() { }
@@ -861,17 +812,17 @@ class CsPzMap implements Iterable<CsPath> {
   public boolean contains(List<C> key) { return !this.get(key).isEmpty(); }
 
   public Set<CsPz> mappings() {
-    return this.map.entrySet().stream().map(e -> {
+    return StreamUtils.map(this.map.entrySet(), e -> {
       assert !e.getValue().isEmpty();
       return new CsPz(e.getKey(), e.getValue());}
-    ).collect(Collectors.toSet()); }
+    ); }
 
   public Set<Path> get(List<C> key) { return this.map.getOrDefault(key, Collections.emptySet()); }
   public Set<List<C>> dom() { return this.mappings().stream().map(CsPz::getCs).collect(Collectors.toSet()); }
-  public Stream<CsPath> stream() {
-    return this.mappings().stream().flatMap(e -> e.getPathsSet().stream().map(P -> new CsPath(e.getCs(), P))); }
+  public StreamUtils<CsPath> stream() {
+    return StreamUtils.stream(this.mappings()).flatMapS(e -> StreamUtils.stream(e.getPathsSet()).map(P -> new CsPath(e.getCs(), P))); }
 
-  public Set<CsPath> values() { return this.stream().collect(Collectors.toSet()); }
+  public Set<CsPath> values() { return this.stream().toSet(); }
   @Override public Iterator<CsPath> iterator() {
     // Who cares about performance anyway? What's more important is that I want to be able to iterate over something while modifying it!
     return this.values().iterator(); } }

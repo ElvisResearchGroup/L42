@@ -23,7 +23,7 @@ import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.MethodCla
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.PathUnfit;
 import is.L42.connected.withSafeOperators.pluginWrapper.RefactorErrors.SelectorUnfit;
 import programReduction.Program;
-import tools.LambdaExceptionUtil;
+import tools.LambdaExceptionUtil.*;
 
 public class ToAbstract {
 public static ClassB toAbstractPathJ(PData pData,ClassB cb, List<Ast.C> path,MethodSelector sel) throws SelectorUnfit, PathUnfit, MethodClash{
@@ -61,7 +61,7 @@ public static ClassB toAbstractAux(Program p,ClassB cb, List<Ast.C> path,MethodS
     throw new RefactorErrors.PathUnfit(path);
     }
   if(path.isEmpty()){return auxToAbstract(p,cb,path,sel,newSel,cb);}
-  return cb.onClassNavigateToPathAndDo(path,LambdaExceptionUtil.rethrowFunction(cbi->auxToAbstract(p,cbi,path,sel,newSel,cb)));
+  return cb.onClassNavigateToPathAndDo(path, CheckedFunction.uncheck(cbi->auxToAbstract(p,cbi,path,sel,newSel,cb)));
   }
   private static ClassB auxToAbstract(Program p,ClassB cb,List<Ast.C> path,MethodSelector sel,MethodSelector newSel,ClassB top) throws MethodClash {
     List<Member> newMs=new ArrayList<>(cb.getMs());
