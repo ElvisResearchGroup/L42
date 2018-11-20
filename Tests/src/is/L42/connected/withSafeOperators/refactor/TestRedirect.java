@@ -247,9 +247,10 @@ public class TestRedirect {
       "{I:{interface implements IA}" +
       "  IA:{interface method Void m()}" +
       "  V:{method I m()}" +
-      "  method IA a()}",
+      "  method V a(IA ia, I i)}",
       "V", "This0.EV",
-      "{method This1.EA2 a()}"
+      "{method This1.EV a(This1.EA2 ia, This1.EA2 i)}"
+      
     },{lineNumber(), new String[]{"{"+ // Fails, cant resolve ambiguity when interfaces have different methods
             "EA:{interface method Void m()}" +
             "EA1:{interface implements EA}" +

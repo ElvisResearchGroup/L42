@@ -11,7 +11,7 @@ Where:
   BestRedirection(p; R) = UniversalMostSpecific(p; R; ValidRedirections)
   //StableMostSpecific
   UniversalMostSpecific(p; R; f) = R' iff:
-    forall p' in SimilarPrograms(p): MostSpecificRedirection(p'; f(p, R)) = R'
+    forall p' in SimilarPrograms(p): MostSpecificRedirection(p'; f(p', R)) = R'
     with f a function (p,R)->Rz
 
 // TODO: Other things to prove?
