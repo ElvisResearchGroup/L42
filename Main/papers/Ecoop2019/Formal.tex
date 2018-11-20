@@ -364,9 +364,10 @@ D={E=t}//this means, we entered in D
 
 In order to fetch code literals form the program, while transforming the types so that they keep referring to the same nested classes, we rely on notations
 $p[T]$ and p[t].
-Those notations extract a class or a trait from a program while consitently transforming types.
+Those notations extract a class or a trait from a program while consistently transforming types.
 We also use notation $L[C=E]$ to update the code expression in $C$ to $E$.
 For space reasons, those notations are defined in the appendix.
+Moreover, also  type system and the reduction of the main program are in appendix. They are very straight forward: thanks to flattening, they are a simple nominal type system and reduction over a FJ-like language, with no generics or special method dispatch rules.
 
 
 %A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
@@ -496,8 +497,6 @@ $\This{0}{\id}{\_}$.
 Notation $p\op{redirectSet}{R}$
 computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easly computable.
 
-DO WE NEED TO ADD NESTEDS HERE?
-
 \noindent $\begin{array}{l}
 \dom{R} \subseteq p\op{redirectSet}{R}\\
 \fop{internals}{\fop{reachables}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
@@ -507,7 +506,7 @@ DO WE NEED TO ADD NESTEDS HERE?
 \fop{internals}{Tz}=\{Cs\mid \This{0}{Cs} \in Tz\}
 \end{array}$
 
-The intuition behind redirectSet is that if the signature of a nested class mention another nested class, they must be reidirected together.
+The intuition behind redirectSet is that if the signature of a nested class mention another nested class, they must be redirected together.
 Consider the following simple example:
 \begin{lstlisting}
 t={A={B size()} B={} ...}
@@ -518,8 +517,8 @@ the type \Q@B@ is nested inside \Q@t@, thus
 \Q@String@ would not be able to reach it.
 The only reasonable solution is to redirect \Q@A@ and \Q@B@ together.
 
-For $p'\op{bestRedirection}{}$ to be well defined, we need to check that $p\op{redirectable}{Csz}$
-This is again a check local to the $LV$ (the top of the program) and is also easly computable.
+For our redirection (and $p'\op{bestRedirection}{}$) to be well defined, we need to check that $p\op{redirectable}{Csz}$
+This is again a check local to the $LV$ (the top of the program) and is also easily computable.
 
 \noindent $\begin{array}{l}
 \fop{redirectable}{p,Csz} \text{iff}\\\quad
@@ -534,19 +533,33 @@ This is again a check local to the $LV$ (the top of the program) and is also eas
 That is, the empty path is not redirectable, every nested class of a redirect path must be redirected away,
 and all paths must traverse only non-private $C$.
 
-Finally,  $p\op{bestRedirection}{R}$ 
-is the centerpiece of our formal framework.
-Given an $p$ and an $R$ that are valid input for redirection as defined above, we can denote the best complete map, mapping any elemnt of $Csz$ into a suitable type in $p$.
-We ...
-can be re redirectable in order
-to complete the provided mapping $R$ into a complete mapping.
-Such mapping must be of the correct .....
-Something does not work: either we check dom(R')==Csz
-or we use dom(R') instead of Csz. What is the right one?
+Finally,  $p\op{bestRedirection}{R}$, given
+a $p$ and an $R$ that are valid input for redirection as defined above
+can denote the best complete map, mapping any element of $Csz$ into a suitable type in $p$.
+This is the centerpiece of our formal framework and his definition will be the main topic of the next section.
 
-We will comment on the formal definitions used in \textsc{(redirect)} in the next section, that is going to be the formal core of the paper.
+Given the complete mapping $R'$, to produce the flattened result we first
+remove all the elements of $Csz$ from $LV$, and then we
+apply $R'$ as a rename, renaming all internal paths $Cs \in Csz$ to the corresponding external type $R'(Cs)$.
+Those two notations are formally defined as following:
 
-For space reason, the type system and the reduction of the main program are in appendix. They are very straight forward: thanks to flattening, they are a simple nominal type system and reduction over a FJ-like language, with no generics or special method dispatch rules.
+\noindent$\begin{array}{l}
+LV\op{remove}{Cs_1\ldots Cs_n}=LV\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}\\
+LV[Cs\Q@.@C=\_]\op{remove}{Cs\Q@.@C}=LV \text{where } Cs\Q@.@C \notin\dom{LV}\\
+R(L)=R_\Empty(L)\\
+R_{Cs}(\lib{Tz}{Mz}{K?})=\lib{R_{Cs}(Tz)}{R_{Cs}(Mz)}{R_{Cs}(K?)}\\
+R_{Cs}(C\eq{L})=C\eq{R_{Cs\Q@.@C}(L)}\\
+R_{Cs}(M),R_{Cs}(e),R_{Cs}(K)\quad \text{ simply propagate on the structure until $T$ is reached}\\
+R_{C_1\ldots C_n}(T)=\This{n+k+1}{Cs'}\quad\text{where }T\op{from}{\This0{C_1\ldots C_n}}=\This0{Cs},\ 
+R(Cs)=\This{k}{Cs'}\\
+
+\text{otherwise } R_{Cs}(T)=T
+\end{array}$
+
+The second clause of \fop{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
+Rename must keep track of the explored $Cs$ in order to distinguish
+internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
+
 
 
 \begin{figure}
@@ -636,7 +649,101 @@ p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(LV\op{remove}{Csz})
 
 %We will also use $p[T.m]$ to extra
 
+\section{BestRedirect}
+Best redirection balance three aspects:
+\begin{itemize}
+\item Validity: the selected redirect map must be valid.
+This means that if the mapping is applied to well typed code (as in the rule \textsc{(redirect)}) then the result is still well typed.
+\item Stability: this means
+that changing little details on the code base (as for example adding a new nested class) do not change the selected map.
+\item Specificity: when multiple options are available, the most specific is chosen.
+\end{itemize}
+To better divide the various aspect, we will use
+functions of form $(p,R)\rightarrow Rz$, producing valid mappings
+for any program $p$ and starting map $R$.
+All of those functions will respect 
+\opName{possibleRedirections}.
+Rule \textsc{redirect} ensures 
+\opName{possibleRedirections} for the input mapping,
+here we check that is also verified for the complete mapping.
+\noindent$\begin{array}{l}
+\hline
+R' \in \fop{possibleRedirections}{p, R} \text{ if }\\\quad
+R \subseteq R'\\\quad
+\dom{R'} = \fop{redirectSet}{p, R}\\\quad
+(p, R') \in \opName{ValidProblems}\\
+\hline
+(p, R) \in \opName{validProblems} \text{ iff }\\\quad
+\forall T \in ran(R):
+    p.minimize(T)=T
+    T not of form This0._
+    p |- p[T][with ncz=empty] : OK // Guaranteed by our reduction rules and type-system? // TODO is this the right from?
+    Redirectable(p; RedirectSet(p, R))
+%  // All of these, save for the well-typedness, are guaranteed by Redirect
 
+\end{array}$
+
+The most complete such function is 
+$\opName{validRedirections}$, that in turn is based on the judgement
+$p \vdash L:P \subseteq L':Cs$
+to be read as: under the program $p$,
+the literal $L$  referred by type $T$
+is structurally a subtype of the literal $L'$
+found in $Cs$.
+
+\noindent$\begin{array}{l}
+\hline
+R' \in \fop{validRedirections}{p,R}\ \text{iff}\\\quad
+  R' \in \fop{possibleRedirections}{p, R}\\\quad
+  \forall Cs \in \dom{R'}\ \, p \vdash  p[R'(Cs)] : R'(Cs) \subseteq R'(p[Cs]):Cs\\
+\end{array}$
+
+%//SuperClasses is Pz',P,Any. In this way F-bound polimoprhism works as usual: {implements Foo} can be redirected to Foo
+
+\noindent$\begin{array}{l}
+\hline
+p \vdash P \subseteq \lib{Tz}{Mz}{\_}\text{ iff } \\\quad
+% p|- P; {interface?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
+ Tz \subseteq \fop{superClasses}{p, P}\\\quad 
+ \forall m \in \dom{Mz}: \ \,
+%// This implicity checks sdom(mwtz) subseteq sdom(mwtz') 
+    p \vdash p[P](m) \leq Mz(m)\\\quad
+ \text{if }\Q@interface@?=\Q@interface@ \text{ then  } 
+%// If the LHS is not an interface
+%// One can only call class methods on a non-interface, so if the RHS has them, than the LHS can't be an interface
+%  // If the LHS is an interface, we need to ensure that any valid implementation of the LHS
+%  // Is a valid implemention of the RHS, which requires that the RHS have the exact same method signatures as the LHS
+    \forall m \in \dom{p[P]}\ \,  %// This implicity checks the sdom
+      p \vdash Mz(m) \leq p[P](m)\\\quad
+
+  \text{if } \fop{interface}{p[P]} \text{ then  }
+    \Q@static@ T m\rp{Txs}e? \notin Mz
+\text{ else } \Q@interface@?=\Empty
+\\
+\hline
+\fop{isInterface}{L} \text{iff } L=\libi\_\_\\
+\hline
+\fop{superClasses}{p,T}=\{T\}\cup
+\fop{superClasses}{T_1}\cup\ldots\cup\fop{superClasses}{T_n}
+\\\quad\text{ with }\ p[T]=\lib{T_1\ldots T_n}\_\_\\
+\hline
+p\vdash 
+\Q@static@?\, T'_0\, m\rp{T_1 x_1\ldots T_n x_n}\_\leq
+\Q@static@?\, T_0\, m\rp{T'_1 x'_1\ldots T'_n x'_n}\_
+\\\quad\text{ with }
+T_0\in \fop{superClasses}{p,T'_0}\ldots
+T_n\in \fop{superClasses}{p,T'_n}
+\\
+\hline
+
+
+\fop{bestRedirection}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirections}}\\
+\fop{stableMostSpecific}{p, R, f} = R'
+
+ \text{iff}:\\\quad
+    \forall p' \in \fop{similarPrograms}{p}: \fop{mostSpecificRedirection}{p', f(p, R)} = R'
+
+\end{array}$
 
 \section{Appendix?}
 \begin{bnf}

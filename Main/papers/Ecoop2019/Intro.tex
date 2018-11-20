@@ -108,6 +108,57 @@ expanding a partial mapping into a complete one should respect.
 \item \Q@ChoseRedirect@, an efficient algorithm respecting those properties.
 \end{itemize}
 
+Before diving in the formal details, we show an example motivating 
+that expanding the redirect map is not trivial when subtyping is took in consideration.
+Consider an interface \Q@ColorPoint@ implementing \Q@Point@
+and \Q@Root@, \Q@Left@, \Q@Right@ and \Q@Merge@
+forming a diamond interface implementation, where method 
+\Q@m@ return type is refined in \Q@Right@, and thus stay refined in
+\Q@Merge@:
+\begin{lstlisting}
+Point=interface{ ...}
+ColorPoint=interface{ implements Point ...}
+Root=interface{Point m()}
+Left={interface implements EA Point m()}
+Right:{interface implements EA ColorPoint m()}
+Merge={implements Left, Right    ColorPoint m()}
+C={ Merge bind()}
+\end{lstlisting}
+Trait \Q@t@ contains
+ \Q@Target@ with a method returning a \Q@Result@,
+that implements an interface \Q@I@ with a method returning a 
+\Q@ColorPoint@.
+We include an abstract method method 
+\Q@show@ reporting in its signature 
+\Q@Target@, \Q@Result@ and \Q@I@, so we can see where are they
+redirected to.
+\begin{lstlisting}
+t={
+  I=interface{ColorPoint m()}
+  Result=interface{implements I    ColorPoint m()}
+  Target={Result bind()}
+  Target show(Result r, I i)
+  }
+Res=t<Target=C>
+\end{lstlisting}
+The big question is, what is the complete mapping inferred
+from \Q@t<Target=C>@?
+Naively, if \Q@Target=C@, since both \Q@Target@ and \Q@C@
+have a method \Q@bind@, we could connect their result types: \Q@Result=Merge@.
+This is not acceptable, since \Q@Result@ is an interface while \Q@Merge@ is not, and more (possibly private)
+members inside \Q@t@ may be currently implementing \Q@Result@, even if such members are not present now,
+it would be reasonable if they was added in the future, and we want our inferred map to be stable to such
+additions. Note however that is safe to redirect result to any interface implemented by \Q@Merge@,
+Thus we have tree possibilities:\Q@Left@, \Q@Right@ and indirectly \Q@Root@.
+The only possibility is \Q@Result=Right@, since the method \Q@m@ need to
+return a \Q@ColorPoint@.
+However, \Q@Result@ implements \Q@I@, so also \Q@I@ need to be redirected, but to what?
+all possible supertypes of \Q@Right@ are a possible option, so in this case \Q@Root@ and \Q@Right@ itself.
+The only option here is \Q@Right@, again method \Q@m@ need to
+return a \Q@ColorPoint@.
+Thus, the final mapping is \Q@Target=C,Result=Right,I=Right@ and the flattening result would be
+\Q@Res={C show(Right r, Right i)}@.
+
 We first formally define our core language, then we define our redirect operator and
 its formal properties.
 Finally we motivate our model showing
