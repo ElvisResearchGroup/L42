@@ -160,6 +160,14 @@ The only option here is \Q@Right@, again method \Q@m@ need to
 return a \Q@ColorPoint@.
 Thus, the final mapping is \Q@Target=C,Result=Right,I=Right@ and the flattening result would be
 \Q@Res={C show(Right r, Right i)}@.
+Subtyping is a fundamental feature of object oriented programming. Our proposed redirect operator
+do not require the type of the target to perfectly match the structural type of the internal nested classes;
+structural subtyping is sufficient.
+This feature adds a lot of flexibility to our redirect,
+however completing the mapping
+(as happens in the example above) is a challenging and technically very interesting
+task when subtyping is took into account. This is strongly connected with ontology matching and
+will be discussed in the technical core of the paper later on.
 
 We first formally define our core language, then we define our redirect operator and
 its formal properties.

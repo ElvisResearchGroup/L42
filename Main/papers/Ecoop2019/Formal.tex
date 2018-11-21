@@ -1,7 +1,7 @@
 \section{Language grammar and well formedness}
 We apply our ideas on a simplified object oriented language with nominal typing and (nested)
 interfaces  and final classes.
-Instead of inheritance, code reuse is obtained by trait composition, thus the source code would be
+Code reuse is obtained by trait composition, thus the source code would be
 a sequence of top level declarations $D$ followed by a main expression;
 a lower-case identifier $t$ is a trait name, while an upper case
 identifier $C$ is a class name.
@@ -49,19 +49,17 @@ LV}      {\ldots}{}
 In the context of nested classes, types are paths. Syntactically,
 we represent them as relative paths of form 
 $\This{n}{Cs}$, where the number $n$ identify the root of our path:
-\Q@This0@ is the current class, \Q@This1@ is the enclosing class, \Q@This2@ is the enclosing enclosing class and so on. $\This{n}{Cs}$
+\Q@This@/\This0\ is the current class, \This1\ is the enclosing class, \This2\ is the enclosing enclosing class and so on. $\This{n}{Cs}$
 refers to the class obtained by navigating throughout  $Cs$ starting from $\This{n}$.
-Thus, $\This{0}$ is just the type of the directly enclosing class.
 By using a larger then needed $n$, there could be multiple different types referring to the same class.
-Here we expect all types to be in the normalized form where the smallest possible $n$ is used.
+We require all types to be in the form where the smallest possible $n$ is used.
 
 Code literals $L$
-serve the role of class/interface bodies; they contain the set of implemented interfaces
+serve the role of class/trait bodies; they contain the set of implemented interfaces
 $Tz$, the set of members $Mz$ and their (optional) state.
 In the concrete syntax we will use \Q@implements@ in front of a non empty list of implemented interfaces
 and we will omit parenthesis around a non empty set of fields.
-To simplifiy our formalism, we delegate some sanity checks well formedness, and we assume
-all the fields in the state $K$ to have different names;
+To simplify our formalism, we delegate some sanity checks to well formedness: all the fields in the state $K$ have different names;
 no two methods or nested classes with the same name ($m$ or $C$) are declared in a code literal,
 and no nested class is named $\This{n}$ for any number $n$;
 in any method headers, all parameters have different names, and no parameter is named \Q@this@.
@@ -69,7 +67,7 @@ in any method headers, all parameters have different names, and no parameter is 
 A class member $M$ can be a (private) nested class or a (static) method.
 Abstract methods are just methods without a body. 
 Well formed interface methods can only be abstract and non-static.
-To facilitate code reuse, classes can have (static) abstract methods, code composition is expected to 
+To facilitate code reuse, classes can have (static) abstract methods; code composition is expected to 
 provide an implementation for those or, as we will see, redirect away the whole class.
 We could easily support private methods too, but to simplify our formalism we consider private only for nested classes. In a well formed code literal, in all types of form $\This{n}{Cs}{C}{Cs'}$,
 if $C$ denotes a private nested class, then $Cs$ is empty.
@@ -86,7 +84,7 @@ $v$\Q@.@$x$  in the main expression, while
 well formed \Q@new@ expressions have to be of form \Q@new This0(@$xs$\Q@)@ in method bodies
 and of form $v$ in the main expression.
 Those restrictions greatly simply reasoning about code reuse, since they require different classes to
-only communicate by calling (static) methods. Supporting unrestricted fields and constructors would make the formalism much more involved without adding much of a conceptual difficulty.
+only communicate by calling (static) methods. Supporting unrestricted fields and constructors would make the formalism much more involved without adding much of a conceptual underpinning.
 Values are of form \textit{\Q{new} T\rp{vs}}.
 
 For brevity, in the concrete syntax we assume a syntactic sugar declaring
@@ -106,7 +104,7 @@ We consider two operators: conventional preferential sum
 \subsection{Compilation process/flattening}
 The compilation process consists in flattening all the $E$ into $L$,
 starting from the innermost leftmost $E$. This means that sum and redirect work on $LV$s:
-a kind of $L$, where all the nested classes are of form \textit{C\eq{}LV}.
+a kind of $L$, where all the nested classes are of form \textit{\Q@private@? C\eq{}LV}.
 The execution happens after compilation and consist in the conventional execution of the main expression $e$
 in the context of the fully reduced declarations, where all trait composition has
 been flatted away.
@@ -194,54 +192,46 @@ to denote a class containing a list of a certain kind of \Q@Shape@s.
 In our approach, one could write the equivalent
 \begin{lstlisting}
 shapeGroup={
-  Shape={implements Shape}
-  List=list<Elem=Shape>
+  MyShape={implements Shape}
+  List=list<Elem=MyShape>
   List shapes
   ..}
 \end{lstlisting}
 With redirect, \Q@shapeGroup@ follow both roles of the two Java examples;
 indeed there are two reasonable ways to reuse this code
 
-\Q@Triangolation=shapeGroup<Shape=Triangle>@,
+\Q@Triangolation=shapeGroup<MyShape=Triangle>@,
 if we have a \Q@Triangle@ class and we would like the concrete list type
-used inside to be local to the \Q@Triangolation@,
+used inside to be local to the \Q@Triangolation@,\\*
 or 
 \Q@Triangolation=shapeGroup<List=Triangles>@,
 if we have a preferred implementation for the list of triangles that is going to be used by our
 \Q@Triangolation@.
 Those two versions would flatten as follow:
 \begin{lstlisting}
-//Triangolation=shapeGroup<Shape=Triangle>
+//Triangolation=shapeGroup<MyShape=Triangle>
 Triangolation={
   List=/*list with Triangle instead of Elem*/
   List shapes
   ..}
 
 //Triangolation=shapeGroup<List=Triangles>
-//exapands to shapeGroup<List=Triangles,Shape=Triangle>
+//exapands to shapeGroup<List=Triangles,MyShape=Triangle>
 Triangolation={
   Triangles shapes
   ..}
 \end{lstlisting}
-As you can see, with redirect we do not decide a priori what is generic and what is not in a class.
+As you can see, with redirect we do not decide a priori what is generic and what is not.
 
 Redirect can not always succeed. For example, if we was to attempt
 \Q@shapeGroup<List=Int>@ the flattening process would fail with an error similar to a 
 invalid generic instantiation.
-Subtype is a fundamental feature of object oriented programming. Our proposed redirect operator
-do not require the type of the target to perfectly match the structural type of the internal nested classes;
-structural subtyping is sufficient.
-This feature adds a lot of flexibility to our redirect,
-however completing the mapping
-(as happens in the example above) is a challenging and technically very interesting
-task when subtyping is took into account. This is strongly connected with ontology matching and
-will be discussed in the technical core of the paper later on.
 
-\subsubsection{Preferential sum and examples of sum and redirect working together}
+\subsubsection{Preferential sum; sum and redirect working together}
 The sum of two traits is conceptually a trait with the sum of the traits members, and the union of the implemented interfaces.
 If the two traits both define a method with the same name, some resolution strategy is applied.
 In the symmetric sum[] the two methods need to have the same signature and at least one of them need to be abstract.
-With preferential sum (sometimes called override), if they are both implemented, the left implementation is chosen.
+With preferential sum (sometimes called override), if they are both implemented, the right implementation is chosen and the left one is discarded.
 Since in our model we have nested classes, nested classes with the same name will be recursively composed.
 
 We chose preferential sum since is simpler to use in short code examples.~\footnote{symmetric sum is often presented in conjunction with a restrict operator that makes some methods abstract.}
@@ -254,7 +244,7 @@ Here we will show some examples where sum and redirect cooperate to produce inte
 
 \begin{lstlisting}
 listComp=list<+{
-  Elem:{ Int geq(Elem e)}//-1/0/1 for smaller, equals, greater
+  Elem:{ Int geq(This e)}//-1/0/1 for smaller, equals, greater
   static Elem max2(Elem e1, Elem e2)=if e1.geq(e2)>0 then e1, else e2
   Elem max(Elem candidate)=
     if This.isEmpty() then candidate
@@ -303,11 +293,13 @@ LongStrings=(set<+eqElem)<Elem=String> <+{
 \end{lstlisting}
 Note how 
 \Q@(set<+eqElem<+eqHash)<Elem=String>@
-is equivalent to \Q@set<Elem=String> <+eqElem<Elem=String> <+eqHash<Elem=String>@.
-Consider now the signature \Q@Bool equals(Elem e)@.
+is equivalent to\\*
+ \Q@set<Elem=String> <+eqElem<Elem=String> <+eqHash<Elem=String>@.
+
+Consider the signature \Q@Bool equals(Elem e)@.
 This is different from the common signature \Q@Bool equals(Object e)@. What is the best
 signature for \Q@equals@ is an open research question, where most approaches advise either the
-first or the second one. Our \Q@eqElem@, as is wrote, can support both:
+first or the second one. Our \Q@eqElem@, as written, can support both:
 \Q@Strings@ would be correctly define both if \Q@String.equals@ signature
 has a \Q@String@ or an \Q@Object@ parameter.EXPAND on method subtyping.
 
@@ -344,7 +336,7 @@ t={ B={()}   This1.A m(This0.B b)}
 C={D={E=t}}
 H=t<B=A>
 \end{lstlisting}
-the flattened version for \Q@C.D.E@ will be 
+the flattened body of \Q@C.D.E@ will be 
 \Q@{ B={()}   This3.A m(This0.B b)}@, where the path
 \Q@This1.A@ is now \Q@This3.A@ while the path \Q@This0.B@ stays the same: types defined internally will
 stay untouched.
@@ -362,10 +354,19 @@ D={E=t}//this means, we entered in D
 %we define now From,
 %....
 
-In order to fetch code literals form the program, while transforming the types so that they keep referring to the same nested classes, we rely on notations
-$p[T]$ and p[t].
-Those notations extract a class or a trait from a program while consistently transforming types.
-We also use notation $L[C=E]$ to update the code expression in $C$ to $E$.
+In order to fetch the code literals corresponding to $t$,
+we define notation $p[t]$\\*
+(=\Q@{ B={()}   This3.A m(This0.B b)}@).
+Such notation transforms the types so that they keep referring to the same nested classes.
+We also rely on the notation $p[T]$, to extract just methods and the list of implemented interfaces, in a form were they are useful for direct comparison with 
+$T$.
+for example, if the program contains \Q@{B={}  This0 m(This0.B x)}@
+in position 
+\Q@This2.A@, $p[$\Q@This2.A@$]$ would be 
+\Q@{This2.A m(This2.A.B x)}@.
+We also use notation $L[C=E]$ to update the code expression in $C$ to $E$,
+and $p\op{min}{T}=T'$ to minimize types to the required form when the $n$
+is as small as possible.
 For space reasons, those notations are defined in the appendix.
 Moreover, also  type system and the reduction of the main program are in appendix. They are very straight forward: thanks to flattening, they are a simple nominal type system and reduction over a FJ-like language, with no generics or special method dispatch rules.
 
@@ -417,13 +418,13 @@ dom(T m(Txs), Mz) = m, dom(Mz)
 
 \section{Flattening}
 
-Aside from the redirect operation itself, compilation/flattening is the most interesting part,
-it is defined by reduction arrow $\Ds \Rightarrow \Ds'$, where eventually $\Ds'$ is going to reach form $\DVs$  and $p; \id \vdash E \Rightarrow E’$, where eventually $E'$ is going to reach form $LV$. The $\id$ represents the identifier of the type/trait that we are currently compiling, it is needed since it will be the name of $This0$, and we use that fact that that is equal to $This1.id$ to compare types for equality.
+%Aside from the redirect operation itself, compilation/flattening is the most interesting part.
+Flattening is defined by reduction arrow $\Ds \Rightarrow \Ds'$, where eventually $\Ds'$ is going to reach form $\DVs$  and $p; \id \vdash E \Rightarrow E’$, where eventually $E'$ is going to reach form $LV$. The $\id$ represents the identifier of the type/trait that we are currently compiling, it is needed since it will be the name of \This0, and we use to the fact that refers to the same nested class as $\This1{\id}$.
 Rule \textsc{(Top)}  selects the leftmost $\id\eq{E}$
 where $E$ is not of form $LV$ and $\DVz$: a 
 well typed subset of the preceeding declarations. 
-$E$ is flattened in the contex of such $DVz$, thus
-by rule \textsc{(Trait)} $DVz$ must contain all the trait names used in $E$.
+$E$ is flattened in the contex of such $\DVz$, thus
+by rule \textsc{(Trait)} $\DVz$ must contain all the trait names used in $E$.
 In the judgement $p; \id \vdash E \Rightarrow E’$
 $\id$ is only used in order to grow the program $p$ in rule 
 \textsc{(L-enter)}, and $p$ itself is only needed for 
@@ -431,16 +432,14 @@ $\id$ is only used in order to grow the program $p$ in rule
 The \textsc{(CtxV)} rule is the standard context, the \textsc{(L-enter)} rule propegates compilation inside of nested-classes, \textsc{(trait)} merely evaluates a trait reference to it’s defined body,
 finally \textsc{(sum)} and \textsc{(redirect)} perform our two meta-operations by propagating to 
 corresponding auxiliary definitions. We will present those two rules in the two sections below.
-Note how we require that they are already in the \emph{minimized}
+Note how we require their input to be already in the \emph{minimized}
 form, that is, all the $T$ uses the shortest way to refer to their corresponding nested class. 
 This prevents the programmer from expressing some difficult cases. Consider for example using two different ways to refer to $A$, redirect $A$ and then adding it back:
 \begin{lstlisting}
 B=...
 X={ A:{}    Void m(This1.X.A p1, This0.A p2)} <A=B> <+ {A:{}}
-//should flattening redirect only p2
-X={ A:{}    Void m(This1.X.A p1, This1.B p2)}
-//or both occurrences?
-X={ A:{}    Void m(This1.B p1, This1.B p2)}
+//should flattening redirect only p2 or also p1
+X={ A:{}    Void m(??? p1, This1.B p2)}
 \end{lstlisting}
 The complete L42 language solves those issues, but here we present a simplified version.
 %For simplicity rule \textsc{(sum)} is given in a highly non computational form,
@@ -471,8 +470,7 @@ Since method and nested class identifiers must be unique in a well formed $L$ an
 our definition forces $\dom{Mz}=\dom{Mz'}$ and
 $\dom{Mz_1}$ disjoint $\dom{Mz_2}$.
 For simplicity here 
- we require at most one class to have a state; if both have no state, the result will have no state, otherwise the result will have the only present state (
-the set $\{empty,K?\}$ mathematically express this requirement in a compact way);
+ we require at most one class to have a state; if both have no state, the result will have no state, otherwise the result will have the only present state (the set $\{empty,K?\}$ mathematically express this requirement in a compact way);
 we also allow summing
 only interfaces with interfaces and final classes with final classes. When two interfaces are composed both sides must define the same methods.
 This is because other nested classes inside $L_1$ may be implementing such interface, and adding methods to such interface would require those classes to somehow add an implementation for those methods too.
@@ -485,7 +483,7 @@ otherwise if the right hand side is abstract, the body is took from the left sid
 Composing nested classes, not how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them.
 
 \subsection{Redirect}
-Rule \textsc{(redirect)} is the centre of our interest for this work. As for sum we check that the $LV$ is in minimize form.
+Rule \textsc{(redirect)} is the centre of our interest for this work. As for sum we check that the $LV$ is in minimized form.
 Moreover, to have a single data structure $p'$ where all the types correctly points to the corresponding nested classes, we add the $L$ to the top of our current program. 
 Notation $R/\id$ is defined as\\*
 $Cs_0\eq{\This{n}{C}{Cs}}=Cs_0\eq{\This{n+1}{C}{Cs}}$,
