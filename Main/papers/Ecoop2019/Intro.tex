@@ -4,8 +4,8 @@
 %\end{lstlisting}
 
 Associated types are a powerful form of generics, now integrated in both Scala and Rust.
-They are a new kind of member, like methods fields and nested classes.
-Associated types behave as 'virtual' types: they can be overridden, can be abstract and can have
+They are a new kind of member, like methods, fields and nested classes.
+Associated types behave as `virtual' types: they can be overridden, can be abstract and can have
 a default.
 However, the user has to specify those types and their concrete instantiations manually; that is, the user
 have to provide a complete mapping from all virtual type to concrete instantiation.
@@ -16,16 +16,18 @@ respect to code evolution.
 
 The core of our design is to reuse the concept of nested classes instead of relying of a new kind of member for
 associated types.
-An operation, call Redirect, will redirect some nested classes in some external types.
+An operation, called Redirect, will redirect some nested classes in some external types.
 To simplify our formalization and to keep the focus on the core of our approach, we 
 present our system on top of a simple 
 Java like languages, with only final classes and interfaces, when code reuse is obtained by
-trait composition instead of conventional inheritance. 
+trait composition instead of conventional inheritance.
+As in many trait languages, we support \Q@This@ to refer to the current
+class. It is needed so that a method inside of a trait can refer to its eventual type.
 We rely on a simple nominal type system, where subtyping is induced only by implementing interfaces;
 in our approach we can express generics without having a polymorphic type system.
-To simplify the treatment of state, we consider fields to be always instance private, and
-getters and setters to be automatically generated, together with a \Q@static@ method \Q@of(..)@
-that would work as a standard constructor, taking the value of the fields and initializing the instance.
+To simplify the treatment of state, we consider fields and constructors to be always private.
+In our code examples we assume standard getters and setters to be automatically declared, together with a \Q@static@ method \Q@of(..)@
+that would contain a standard constructor call, taking the value of the fields and initializing the instance.
 In this way we can focus our presentation to just (static) methods, nested classes and implements relationships.
 Expanding our presentation to explicitly include visible fields, constructors and sub-classing would
 make it more complicated without adding any conceptual underpinning.
@@ -33,11 +35,11 @@ In our proposed setting we could write:
 \begin{lstlisting}
 String=...
 SBox={String inner;
-  method String inner(){..}//implicit
-  static method SBox of(String inner){..}}//implicit
+  method String inner()=this.inner//implicit
+  static method This of(String inner)=new This(inner)//implicit
 myTtrait={
-  Box={Elem inner}//implicit Box(Elem inner) and Elem inner()
-  Elem={Elem concat(Elem that)}
+  Box={Elem inner}//implicit This of(Elem inner) and Elem inner()
+  Elem={This concat(This that)}
   static method Box merge(Box b,Elem e){return Box.of(b.inner().concat(e));}
   }
 Result=myTrait<Box=SBox>//equivalent to trait<Box=SBox, Elem=String>
@@ -61,10 +63,10 @@ Traits are just units of code reuse, and do not induce nominal types.
 %This creates a parallel with generic classes, where the class name is used
 %as a type generator and not as a type: it needs to take in input the 
 
-We could have just written 
-\Q@Result=myTrait<Elem=String>@, obtaining 
+Redirect could be applied in other ways; \Q@Result2=myTrait<Elem=String>@ 
+for example would flatten into:
 \begin{lstlisting}
-Result={
+Result2={
   Box={String inner}
   static method Box merge(Box b,String e){
     return Box.of(b.inner().concat(e));}}
@@ -83,8 +85,8 @@ if a partial mapping is provided, the system is able to infer the complete mappi
 
 \item(B) \Q@Box@ and \Q@Elem@ are just normal nested classes inside of \Q@myTrait@; indeed
 any nested class can be redirected away.
-In case any of their (static) methods was implemented, the implementation is just discarded.
-In most other approaches, abstract/associated/generic types are special and have some restriction;
+In case any of their (static) methods was implemented, the implementation is just discarded. In case they had fields, they are discarded too.
+In most other approaches, abstract/associated/generic types are special and have some restrictions;
 for example, in Java/Scala static methods and constructors can not be invoked on generic/associated types.
 With redirect, they are just normal nested classes, so there are no special restrictions on how they can be used.
 In our example, note how \Q@merge@ calls \Q@Box.of(..)@.

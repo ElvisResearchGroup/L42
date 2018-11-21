@@ -666,41 +666,48 @@ All of those functions will respect
 Rule \textsc{redirect} ensures 
 \opName{possibleRedirections} for the input mapping,
 here we check that is also verified for the complete mapping.
+
 \noindent$\begin{array}{l}
 \hline
 R' \in \fop{possibleRedirections}{p, R} \text{ if }\\\quad
 R \subseteq R'\\\quad
 \dom{R'} = \fop{redirectSet}{p, R}\\\quad
-(p, R') \in \opName{ValidProblems}\\
+(p, R') \in \opName{validProblems}\\
 \hline
-(p, R) \in \opName{validProblems} \text{ iff }\\\quad
-\forall T \in ran(R):
-    p.minimize(T)=T
-    T not of form This0._
-    p |- p[T][with ncz=empty] : OK // Guaranteed by our reduction rules and type-system? // TODO is this the right from?
-    Redirectable(p; RedirectSet(p, R))
+(p, Cs_1\eq{T_1}\ldots Cs_n\eq{T_n}) \in \opName{validProblems} \text{ iff }
+\forall i \in 1..n:\\\quad
+    p\op{minimize}{T_i}=T_i\\\quad
+    T_i \text{not of form } \This0{\_}\\\quad
+    p \vdash p[T] : \textbf{OK}\\\quad % // Guaranteed by our reduction rules and type-system? // TODO is this the right from?
+    \fop{redirectable}{p, \fop{redirectSet}{p, R}}
 %  // All of these, save for the well-typedness, are guaranteed by Redirect
-
 \end{array}$
 
-The most complete such function is 
-$\opName{validRedirections}$, that in turn is based on the judgement
-$p \vdash L:P \subseteq L':Cs$
+One of those functions is the most  complete:
+$\opName{validRedirections}$. It is based on the judgement
+$p \vdash T \subseteq L$
 to be read as: under the program $p$,
-the literal $L$  referred by type $T$
-is structurally a subtype of the literal $L'$
-found in $Cs$.
+the they T is structurally a subtype of the literal $L$.
+Some more auxiliary notation is used: the obvious \opName{isInterface}
+and the more interesting 
+\opName{superClasses} and method subtyping
+$p\vdash M \leq M'$.
+In \opName{superClasses} we add $T$ so that F-Bound polymorphism may work as expected, so that is possible to redirect \Q@{implements Foo}@
+not only to any class implementing \Q@Foo@ but also to
+\Q@Foo@ itself.
+Method subtyping is given in the expressive form where the return type can be more specific, and the parameter types can be more general.
+PUT LATER?However, he type system of the language is more restrictive when 
+it comes to refine an interface method, allowing only return type refinement. This is not just to align our calculus with existing languages like Java/C\# and C++, but is required to make reasoning about parameter types influential while expanding redirect mappings.END PUT LATER
 
 \noindent$\begin{array}{l}
 \hline
 R' \in \fop{validRedirections}{p,R}\ \text{iff}\\\quad
   R' \in \fop{possibleRedirections}{p, R}\\\quad
   \forall Cs \in \dom{R'}\ \, p \vdash  p[R'(Cs)] : R'(Cs) \subseteq R'(p[Cs]):Cs\\
-\end{array}$
-
+%\end{array}$
+%
 %//SuperClasses is Pz',P,Any. In this way F-bound polimoprhism works as usual: {implements Foo} can be redirected to Foo
-
-\noindent$\begin{array}{l}
+%\noindent$\begin{array}{l}
 \hline
 p \vdash P \subseteq \lib{Tz}{Mz}{\_}\text{ iff } \\\quad
 % p|- P; {interface?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
@@ -717,7 +724,7 @@ p \vdash P \subseteq \lib{Tz}{Mz}{\_}\text{ iff } \\\quad
       p \vdash Mz(m) \leq p[P](m)\\\quad
 
   \text{if } \fop{interface}{p[P]} \text{ then  }
-    \Q@static@ T m\rp{Txs}e? \notin Mz
+    \Q@static@ T m\rp{Txs}\_ \notin Mz
 \text{ else } \Q@interface@?=\Empty
 \\
 \hline
@@ -734,16 +741,69 @@ p\vdash
 T_0\in \fop{superClasses}{p,T'_0}\ldots
 T_n\in \fop{superClasses}{p,T'_n}
 \\
-\hline
-
-
-\fop{bestRedirection}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirections}}\\
-\fop{stableMostSpecific}{p, R, f} = R'
-
- \text{iff}:\\\quad
-    \forall p' \in \fop{similarPrograms}{p}: \fop{mostSpecificRedirection}{p', f(p, R)} = R'
-
 \end{array}$
+
+Note how $\opName{validRedirections}$, while mathematically sound,
+is incredibly hard to compute:
+while it is easy to check if a certain 
+$R' \in \fop{validRedirections}{p,R}$, finding naively all such $R'$
+would require examining every possible permutation.
+In particular, subtyping allows for redirections to be conceptually took out of thin-air.
+Consider the following example:
+\begin{lstlisting}
+I=interface {..}
+A= {method A m(I x)}
+C={implements I ..}
+t={B: {} T: {method T m(B x)}}
+Res=t<T=A>
+\end{lstlisting}
+Clearly, selecting \Q@C@ as a candidate to complete the map is a valid choice but is also an arbitrary choice that should not be made while automatically completing the mapping. What if type \Q@D={implements I ..}@
+was introduced while maintaining the program? the completed redirect map may change unpredictably.
+To avoid those issues, we define the concept of 
+Similar programs:
+
+\noindent$\begin{array}{l}
+DLs; DVz\, DVz'\in \fop{similarPrograms}{DLs; DVz}
+\end{array}$
+
+Note how we just add new declarations at the outermost level.
+We will later prove that this is sufficient to ensure that 
+adding/removing unrelated classes anywhere in the program would still not change the selected completed mapping.
+Finally, we have all the pieces to define 
+\opName{bestRedirection}: the objective of our quest is finally here for us puny readers to be understood.
+
+\noindent$\begin{array}{l}
+\hline
+\fop{bestRedirection}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirections}}\\
+%\hline
+%\fop{stableMostSpecific}{p, R, f} = R'
+% \text{ iff }\forall p' \in \fop{similarPrograms}{p}\\\quad \fop{mostSpecificRedirection}{p', f(p, R)} = R'\\
+\hline
+\fop{stableMostSpecific}{p, R, f} = R_0
+ \text{iff } \forall p' \in \fop{similarPrograms}{p}\\\quad
+      R_0 \in f(p',R)\text{ and }
+\forall R_1 \in f(p',R) \ \, \fop{moreSpecific}{p,R_0,R_1}
+\\
+\hline
+\fop{moreSpecific}{p,
+  Cs_1\eq{T_1}\ldots Cs_n\eq{T_n},
+  Cs_1\eq{T'_1}\ldots Cs_n\eq{T'_n}
+}\\\quad
+  T_1 \in \fop{superClasses}{p',T'_1}\ldots   T_n \in \fop{superClasses}{p',T'_n}
+\end{array}$
+
+The best redirection is a valid redirection
+that is the most specific across all similar programs.
+While \opName{bestRedirection} in the current form is not
+practically computable, it is clear from the formulation
+a good stepping stone to obtain a computable algorithm 
+would be to
+replace \opName{validRedirections}
+with an computable algorithm producing a subset of \opName{validRedirections} and behaving identically for
+all the \opName{similarPrograms}.
+
+
+
 
 \section{Appendix?}
 \begin{bnf}
