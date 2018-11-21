@@ -11,4 +11,7 @@ import tools.LambdaExceptionUtil.*;
 public abstract class Utils {
   @SuppressWarnings("unchecked")
   public static <T> T cast(Object y) { return (T)y; }
+
+  // forces y to be infered as having type T
+  public static <T> T infer(T y) { return y; }
 }

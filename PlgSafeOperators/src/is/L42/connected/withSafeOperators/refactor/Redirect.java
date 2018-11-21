@@ -750,7 +750,13 @@ public class Redirect {
   String asSametype(CsPath csp)  { return PathAux.as42Path(csp.getCs()) + " == " + csp.getPath(); }
   String printConstraints() {
     // Note: if I use this::printConstraint I get a weird error about an uncaught 'Throwable'...
-    return new ListFormatter().seperator(", ").append(StreamUtils.map(this.redirectSet.keySet(), Cs -> this.printConstraint(Cs))).toString();
+
+    var lf = new ListFormatter().seperator(", ");
+    Set<List<C>> Csz = this.redirectSet.keySet();
+
+    Set<String> col2 = StreamUtils.map(Csz, Utils.infer(this::printConstraint));
+    //Set<String> col3 = ;
+    return lf.append(StreamUtils.map(Csz, Utils.<CheckedFunction<List<C>, String, RuntimeException>>infer(this::printConstraint))).toString();
   }
   String printConstraint(List<C> Cs) {
     var sub = supertypeConstraints.get(Cs);
