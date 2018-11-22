@@ -49,8 +49,8 @@ public class Redirect {
   public static ClassB redirectJ(PData pData,ClassB that,List<C> src,ast.Ast.Path dest) throws RedirectError, RefactorErrors.ClassUnfit, RefactorErrors.IncoherentMapping, RefactorErrors.MethodClash, RefactorErrors.PathUnfit{
     assert dest.isCore() || dest.isPrimitive():
       dest;
-    //return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
-    return redirect(pData.p, that, new PathMap(List.of(new CsPath(src, dest))));
+    return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
+    //return redirect(pData.p, that, new PathMap(List.of(new CsPath(src, dest))));
     }
 
 
