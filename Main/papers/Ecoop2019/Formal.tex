@@ -12,6 +12,7 @@ named by a class identifier $C$. Thus, the term \emph{class} may denote either a
 \noindent
 \begin{minipage}{0.65\textwidth}
 \begin{bnf}
+\hline
 \production{%
 e}      {x \mmid{} e\Q{.}m\rp{es} \mmid{}T\Q{.}m\rp{es}
 \mmid{} e\Q{.}x \mmid{} \Q{new} T\rp{es}
@@ -30,11 +31,12 @@ E}      {L \mmid{} t \mmid{} \summ{$E_1$}{$E_2$} \mmid{} E\Q@<@R\Q@>@}          
 %amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
 %mt}     {\Q{static}$?$ T m\rp{Txs} e$?$}                                                 {method}\\\production{%
 \\\production{%
-R}      {$Cs_1 \eq{T_1}\ldots Cs_n\eq{T_n}$}                    {redirect map}
+R}      {$Cs_1 \eq{T_1}\ldots Cs_n\eq{T_n}$}                    {redirect map}\\\hline
 \end{bnf}
 \end{minipage}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{bnf}
+\hline
 \production{%
 T}      {\Q{This}n\Q{.}Cs}                                                 {types}\\\production{%
 Tx}     {T x}                                                              {parameter}\\\production{%
@@ -42,6 +44,7 @@ D}      {id\eq{}E}                                                         {decl
 id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
 v}      {\Q{new} T\rp{vs}}                                                 {value}\\\production{%
 LV}      {\ldots}{}                                                
+\\\hline
 \end{bnf}
 \end{minipage}
 
@@ -71,9 +74,6 @@ To facilitate code reuse, classes can have (static) abstract methods; code compo
 provide an implementation for those or, as we will see, redirect away the whole class.
 We could easily support private methods too, but to simplify our formalism we consider private only for nested classes. In a well formed code literal, in all types of form $\This{n}{Cs}{C}{Cs'}$,
 if $C$ denotes a private nested class, then $Cs$ is empty.
-We assume a form of alpha-reaming for private nested classes, that will consistently rename all the 
-paths of form $\This{n}{C}{Cs'}$, where 
-$\This{n}{C}$ refer to such private nested class. The trivial definition of such alpha rename is given in appendix.
 
 Expressions are used as body of (static) methods and for the main expression.
 They are variables $x$ (including \Q@this@)
@@ -364,11 +364,94 @@ for example, if the program contains \Q@{B={}  This0 m(This0.B x)}@
 in position 
 \Q@This2.A@, $p[$\Q@This2.A@$]$ would be 
 \Q@{This2.A m(This2.A.B x)}@.
-We also use notation $L[C=E]$ to update the code expression in $C$ to $E$,
-and $p\op{min}{T}=T'$ to minimize types to the required form when the $n$
-is as small as possible.
-For space reasons, those notations are defined in the appendix.
-Moreover, also  type system and the reduction of the main program are in appendix. They are very straight forward: thanks to flattening, they are a simple nominal type system and reduction over a FJ-like language, with no generics or special method dispatch rules.
+%We also use notation $L[Cs=E]$ to update the code expression in $Cs$ to $E$,
+%and $p\op{min}{T}=T'$ to minimize types to the required form when the $n$
+%is as small as possible.
+
+
+
+We now present formal definition for those operations.
+We will use members $Mz$ as a function containing both method names $m$
+and class names $C$ in its domain; thus we will assume
+notation $\dom{Mz}$, $Mz(m)$, $Mz(C)$ with the usual meaning.
+Under here, we define useful auxiliary notations to
+access literals $L$ with functional notation with the intent of accessing their members. We define notations $L[Cs=E]=L'$ and $Mz[C=E]=Mz'$ serving the role of function update.
+We use those notations to define $p(T)=LV$ accessing a program $p$ as function. We also define operations on programs: $p\op{push}{D}=p'$, allowing to work with programs as if they was stacks, and
+$p\op{min}{T}=T'$, denoting the shortest type $T'$ referring to the same 
+nested class of $T$.
+We define $\from{T}{T',j}$ and $\from{L}{T,j}$; we omit all the trivial propagation cases of form $\from{M}{T,j}$, $\from{K}{T,j}$ and $\from{e}{T,j}$.
+%Finally, we we combine those to notation for the
+%most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
+
+
+\noindent
+\begin{minipage}{0.48\textwidth}
+\noindent\!\!\!$\begin{array}{l}
+\hline
+(\DLs\Q@;@ \DVs)\op{push}{id\eq{L}} =
+\id\eq{L},\DLs\Q@;@ \DVs\\
+\hline
+(; \_, C\eq{L}, \_)(\This{0}{C}{Cs})=\mathit{L(Cs)}\\
+p\op{push}{\_\eq{L}}(\This{0}{Cs})=L(\mathit{Cs})\\
+p\op{push}{\_}(\This{n+1}{Cs})=p(\This{n}{Cs})\\
+\hline
+\fop{members}{\lib{\_}{Mz}{\_}}=Mz\\\hline
+L(m)=\fop{members}{L}(m)\\\hline
+L(C)=\fop{members}{L}(C)\\\hline
+\dom{L}=\dom{\fop{members}{L}}\\\hline
+\mdom{L}=\{m \in \dom{L}\}\\
+\end{array}$
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+$\begin{array}{l}
+\hline
+(Mz,\Q@private@? C\eq{\_})[C=E]=Mz,\Q@private@? C\eq{E}\\\hline
+LV({\emptyset})=LV\\
+L(C\Q@.@Cs)=L(C)(Cs)\\
+\hline
+L[\Empty=E] = E\\
+\lib{Tz}{Mz}{K?}[C\Q@.@Cs=E]=\\\quad
+\lib{Tz}{Mz[C=Mz(C)[Cs=E]]}{K?}
+\\\hline
+p\op{min}{\This{n+1}{\id_n}{Cs}} = p\op{min}{\This{n}{Cs}}\\\quad
+  \text{where }p = \id_0 \eq{L_0}\ldots\id_n\eq{L_n} \_\Q@;@ Ds\\
+\text{otherwise } p\op{min}{T} = T\\
+\end{array}$
+\end{minipage}
+
+\noindent\!\!\!\!
+$\begin{array}{l}
+\hline
+\from{\This{n}{Cs}}{T,j}
+=
+\This{n}{Cs} \quad \textit{with }n<j
+\\
+\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
+=
+\This{m+j}{C_1\ldots C_{k-n}} \quad \textit{with }n\leq k
+\\
+\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
+=
+\This{m+j+n-k}{C_1\ldots C_{k-n}{Cs}} \quad \textit{with }n> k
+\\
+\from{
+\libc{\Q@interface@? Tz}{Mz}{K}
+}{T,j-1}
+=
+\libc{\Q@interface@? \from{Tz}{T,j}}{\from{Mz}{T,j}}{\from{K}{T,j}}
+\\\hline
+(DL_1\ldots DL_n; \_, t\eq{LV})[t]
+=p\op{min}{\from{LV}{\This{n},0}}\\\hline
+p[T]=p\op{min}{
+\lib{\from{Tz}{T,0}}{\from{Mz}{T,0}}{}
+}
+\quad\text{where }p(T)=\lib{Tz}{Mz}{K?}
+\\\hline
+\end{array}$
+
+
+%For space reasons, those notations are defined in the appendix.
+The type system and the reduction of the main program are in appendix. They are very straight forward: thanks to flattening, they are a simple nominal type system and reduction over a FJ-like language, with no generics or special method dispatch rules.
 
 
 %A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
@@ -451,15 +534,18 @@ The complete L42 language solves those issues, but here we present a simplified 
 Rule \textsc{(sum)} just delegate the work on the auxiliary notation defined below:
 
 \noindent$\begin{array}{l}
-\text{\textbf{Def:}}\ L_1 \Q@<+@ L_2 = \lib{Tz_1 \cup Tz_2}{Mz \Q@<+@ Mz',Mz_1,Mz_2}{K?} \\
+\hline
+L_1 \Q@<+@ L_2 = \lib{Tz_1 \cup Tz_2}{Mz \Q@<+@ Mz',Mz_1,Mz_2}{K?} \\
 \quad  L_1=\lib{Tz_1}{Mz,Mz_1}{K?_1},\quad
 \quad  L_2=\lib{Tz_2}{Mz',Mz_2}{K?_2}\\
 \quad  \{\Empty, K?_1, K?_2\} = \{\Empty, K?\}\\
 \quad  \text{if}\ \Q@interface@? = \Q@interface@\  \text{then}\ \mdom{L_1}= \mdom{L_2}\\
-\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} e = T m\rp{Txs} e\\
-\text{\textbf{Def:}}\ T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} = T m\rp{Txs} e?\\
-\text{\textbf{Def:}}\ (C \Q@=@ L) \Q@<+@
+\hline
+T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} e = T m\rp{Txs} e\\
+T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} = T m\rp{Txs} e?\\
+(C \Q@=@ L) \Q@<+@
  (C \Q@=@ L') = C \Q@=@\ L \Q@<+@ L,% \text{with } p'=p\op{push}{C\Q@=@p(\This{0}{C}}
+\\\hline
 \end{array}$
 
 %On its right, we define the used auxiliary notation,
@@ -480,14 +566,23 @@ adding methods to interfaces, but they are out of scope in this work.
 Member composition $M_1 \Q@<+@ M_2$ uses
 the implementation from the right hand side, if available,
 otherwise if the right hand side is abstract, the body is took from the left side.
-Composing nested classes, not how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them.
+Composing nested classes, note how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them:
+we assume a form of alpha-reaming for private nested classes, that will consistently rename all the 
+paths of form $\This{n}{C}{Cs'}$, where 
+$\This{n}{C}$ refer to such private nested class. The trivial definition of such alpha renaming is given in the appendix.
+
 
 \subsection{Redirect}
 Rule \textsc{(redirect)} is the centre of our interest for this work. As for sum we check that the $LV$ is in minimized form.
 Moreover, to have a single data structure $p'$ where all the types correctly points to the corresponding nested classes, we add the $L$ to the top of our current program. 
 Notation $R/\id$ is defined as\\*
-$Cs_0\eq{\This{n}{C}{Cs}}=Cs_0\eq{\This{n+1}{C}{Cs}}$,
-where either $C\neq\id$ or $n>0$\\*
+$\begin{array}{l}
+\hline
+Cs_0\eq{\This{n}{C}{Cs}}=Cs_0\eq{\This{n+1}{C}{Cs}},
+\text {where either } C\neq\id \text { or } n>0
+\\\hline
+\end{array}$
+
 In addition of adding $1$ to all the types provided in the redirect map, since they was relative to $p$ and not $p'$, it also 
 checks that $R$ actually refers to types external of $LV$, by preventing types of form
 $\This{0}{\id}{\_}$.
@@ -496,15 +591,19 @@ Notation $p\op{redirectSet}{R}$
 computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easly computable.
 
 \noindent $\begin{array}{l}
+\hline
 \dom{R} \subseteq p\op{redirectSet}{R}\\
-\fop{internals}{\fop{reachables}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
+\fop{internals}{\fop{exposedTypes}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
 \quad \text{with } Cs \in p\op{redirectSet}{R}\\
-\fop{reachables}{\lib{Tz}{Mz}{K?}} = Tz, \fop{reachables}{Mz}\\
-\fop{reachables}{\Q@static@? T_0 m\rp{T_1 x_1\ldots T_n x_n} e?}= T_0\ldots T_n\\
+\hline
+\fop{exposedTypes}{\lib{Tz}{Mz}{K?}} = Tz, \fop{exposedTypes}{Mz}\\
+\fop{exposedTypes}{\Q@static@? T_0 m\rp{T_1 x_1\ldots T_n x_n} e?}= T_0\ldots T_n\\
+\hline
 \fop{internals}{Tz}=\{Cs\mid \This{0}{Cs} \in Tz\}
+\\\hline
 \end{array}$
 
-The intuition behind redirectSet is that if the signature of a nested class mention another nested class, they must be redirected together.
+The intuition behind \opName{redirectSet} is that if the signature of a nested class mention another nested class, they must be redirected together.
 Consider the following simple example:
 \begin{lstlisting}
 t={A={B size()} B={} ...}
@@ -519,6 +618,7 @@ For our redirection (and $p'\op{bestRedirection}{}$) to be well defined, we need
 This is again a check local to the $LV$ (the top of the program) and is also easily computable.
 
 \noindent $\begin{array}{l}
+\hline
 \fop{redirectable}{p,Csz} \text{iff}\\\quad
     \Empty \notin Csz \\\quad
     \text{if } Cs\in Csz \text{ then } \This{0}{Cs} \in \dom{p}\\\quad
@@ -526,13 +626,14 @@ This is again a check local to the $LV$ (the top of the program) and is also eas
     \text{ then } Cs\Q@.@C \in Csz\\\quad
     \text{if } Cs\Q@.@C\Q@.@\_\in Csz
     \text{ then } p(\This{0}{Cs}) =\lib{\_}{C \eq{L}\_}{\_}    
+\\\hline
 \end{array}$
 
 That is, the empty path is not redirectable, every nested class of a redirect path must be redirected away,
 and all paths must traverse only non-private $C$.
 
 Finally,  $p\op{bestRedirection}{R}$, given
-a $p$ and an $R$ that are valid input for redirection as defined above
+a $p$ and an $R$ (that are valid input for redirection as defined above)
 can denote the best complete map, mapping any element of $Csz$ into a suitable type in $p$.
 This is the centerpiece of our formal framework and his definition will be the main topic of the next section.
 
@@ -542,19 +643,21 @@ apply $R'$ as a rename, renaming all internal paths $Cs \in Csz$ to the correspo
 Those two notations are formally defined as following:
 
 \noindent$\begin{array}{l}
+\hline
 LV\op{remove}{Cs_1\ldots Cs_n}=LV\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}\\
 LV[Cs\Q@.@C=\_]\op{remove}{Cs\Q@.@C}=LV \text{where } Cs\Q@.@C \notin\dom{LV}\\
+\hline
 R(L)=R_\Empty(L)\\
 R_{Cs}(\lib{Tz}{Mz}{K?})=\lib{R_{Cs}(Tz)}{R_{Cs}(Mz)}{R_{Cs}(K?)}\\
 R_{Cs}(C\eq{L})=C\eq{R_{Cs\Q@.@C}(L)}\\
 R_{Cs}(M),R_{Cs}(e),R_{Cs}(K)\quad \text{ simply propagate on the structure until $T$ is reached}\\
 R_{C_1\ldots C_n}(T)=\This{n+k+1}{Cs'}\quad\text{where }T\op{from}{\This0{C_1\ldots C_n}}=\This0{Cs},\ 
 R(Cs)=\This{k}{Cs'}\\
-
 \text{otherwise } R_{Cs}(T)=T
+\\\hline
 \end{array}$
 
-The second clause of \fop{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
+%The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
 Rename must keep track of the explored $Cs$ in order to distinguish
 internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
 
@@ -563,13 +666,14 @@ internal paths that need to be renamed, and the mapped type need to look out of 
 \begin{figure}
   \caption{Flattening}
 \noindent$\begin{array}{l}
-\textbf{Def:}\ Ds\Rightarrow Ds' \text{ and } p;id\vdash E\Rightarrow E',  \text{where   
+\hline
+Ds\Rightarrow Ds' \text{ and } p;id\vdash E\Rightarrow E',  \text{where   
 \begin{bnf}
 \production{%
 \ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
                 \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {}
-\end{bnf}}\\
-
+\end{bnf}}\\\hline
+\\
 %\inferrule[(top)]{
 %	a \xrightarrow[b]{} c\quad
 %	\forall i<3 a\vdash b:\text{OK}\\\\
@@ -621,7 +725,7 @@ p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
   R' =p'\op{bestRedirection}{R/\id}
 }{
 p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(LV\op{remove}{Csz}) 
-}
+}\\[5ex]\hline
 \end{array}$
 \end{figure}
 
@@ -650,12 +754,13 @@ p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(LV\op{remove}{Csz})
 \section{BestRedirect}
 Best redirection balance three aspects:
 \begin{itemize}
-\item Validity: the selected redirect map must be valid.
-This means that if the mapping is applied to well typed code (as in the rule \textsc{(redirect)}) then the result is still well typed.
-\item Stability: this means
-that changing little details on the code base (as for example adding a new nested class) do not change the selected map.
+\item Validity: if the mapping is applied to well typed code (as in the rule \textsc{(redirect)}) then the result is still well typed.
+\item Stability: changing little details on the code base (as for example adding a new unrelated nested class) do not change the selected map.
+This applies to both $LV$ itself (internal stability)
+and the rest of the program (external stability).
 \item Specificity: when multiple options are available, the most specific is chosen.
 \end{itemize}
+
 To better divide the various aspect, we will use
 functions of form $(p,R)\rightarrow Rz$, producing valid mappings
 for any program $p$ and starting map $R$.
@@ -679,13 +784,15 @@ R \subseteq R'\\\quad
     p \vdash p[T] : \textbf{OK}\\\quad % // Guaranteed by our reduction rules and type-system? // TODO is this the right from?
     \fop{redirectable}{p, \fop{redirectSet}{p, R}}
 %  // All of these, save for the well-typedness, are guaranteed by Redirect
+\\\hline
 \end{array}$
 
-One of those functions is the most  complete:
-$\opName{validRedirections}$. It is based on the judgement
+We now define $\opName{validRedirections}$ as one of such functions.
+This is the most complete function achieving both validity and
+internal stability. It is based on the judgement
 $p \vdash T \subseteq L$
 to be read as: under the program $p$,
-the they T is structurally a subtype of the literal $L$.
+ T is structurally a subtype of the literal $L$.
 Some more auxiliary notation is used: the obvious \opName{isInterface}
 and the more interesting 
 \opName{superClasses} and method subtyping
@@ -694,8 +801,6 @@ In \opName{superClasses} we add $T$ so that F-Bound polymorphism may work as exp
 not only to any class implementing \Q@Foo@ but also to
 \Q@Foo@ itself.
 Method subtyping is given in the expressive form where the return type can be more specific, and the parameter types can be more general.
-PUT LATER?However, he type system of the language is more restrictive when 
-it comes to refine an interface method, allowing only return type refinement. This is not just to align our calculus with existing languages like Java/C\# and C++, but is required to make reasoning about parameter types influential while expanding redirect mappings.END PUT LATER
 
 \noindent$\begin{array}{l}
 \hline
@@ -738,7 +843,7 @@ p\vdash
 \\\quad\text{ with }
 T_0\in \fop{superClasses}{p,T'_0}\ldots
 T_n\in \fop{superClasses}{p,T'_n}
-\\
+\\\hline
 \end{array}$
 
 Note how $\opName{validRedirections}$, while mathematically sound,
@@ -757,18 +862,21 @@ Res=t<T=A>
 \end{lstlisting}
 Clearly, selecting \Q@C@ as a candidate to complete the map is a valid choice but is also an arbitrary choice that should not be made while automatically completing the mapping. What if type \Q@D={implements I ..}@
 was introduced while maintaining the program? the completed redirect map may change unpredictably.
-To avoid those issues, we define the concept of 
-Similar programs:
+As you can see from the former example, stability is an important requirement to allow for code maintainability.
+To model stability, we define the concept of 
+similar programs:
 
 \noindent$\begin{array}{l}
+\hline
 DLs; DVz\, DVz'\in \fop{similarPrograms}{DLs; DVz}
+\\\hline
 \end{array}$
 
 Note how we just add new declarations at the outermost level.
 We will later prove that this is sufficient to ensure that 
 adding/removing unrelated classes anywhere in the program would still not change the selected completed mapping.
-Finally, we have all the pieces to define 
-\opName{bestRedirection}: the objective of our quest is finally here for us puny readers to be understood.
+Finally, we have all formal tools to define 
+\opName{bestRedirection}, representing the high level specification of what correctly completing a mapping means.
 
 \noindent$\begin{array}{l}
 \hline
@@ -787,10 +895,11 @@ Finally, we have all the pieces to define
   Cs_1\eq{T_1}\ldots Cs_n\eq{T_n},
   Cs_1\eq{T'_1}\ldots Cs_n\eq{T'_n}
 }\\\quad
-  T_1 \in \fop{superClasses}{p',T'_1}\ldots   T_n \in \fop{superClasses}{p',T'_n}
+  T'_1 \in \fop{superClasses}{p,T_1}\ldots   T'_n \in \fop{superClasses}{p,T_n}
+\\\hline
 \end{array}$
 
-The best redirection is a valid redirection
+The best redirection is a \opName{validRedirection}
 that is the most specific across all similar programs.
 While \opName{bestRedirection} in the current form is not
 practically computable, it is clear from the formulation
@@ -800,10 +909,164 @@ replace \opName{validRedirections}
 with an computable algorithm producing a subset of \opName{validRedirections} and behaving identically for
 all the \opName{similarPrograms}.
 
+If multiple solutions are available, providing one of those non deterministically would clearly break stability.
+In this case, instead of just refusing to complete the mapping, we attempt to find the most specific solution: a solution where every individual mapping maps to the most specific type with respect to all the other available mappings.
+Choosing the most specific solution is the desired solution in many practical cases; for example consider this variation of the former example, where
+\Q@B@ is the return type instead of an argument type:
+
+\begin{lstlisting}
+I=interface { ..}
+C={implements I ..}
+A={C m()=..}
+t={B={ } T={method B m()} ..}
+Res=t<T=A>
+\end{lstlisting}
+\opName{bestRedirection} complete this mapping as \Q@<T=A, B=C>@ thanks to
+choosing the most specific, since also \Q@B=I@ is a valid option.
+In a language with a global supertype like \Q@Any@/\Q@Object@, that would
+be yet another option.
+Indeed, an alternative version selecting the  least specific
+option may complete the mapping selecting \Q@Any@/\Q@Object@
+every time a nested was declared with empty body. That in turn is very common since it is the Java equivalent of not requiring any
+\Q@extends T@ constraints on a generic type.
 
 
+\section{Properties of \opName{bestRedirection}}
+\subsection{Internal/external stability}
+\subsection{Meta-Level soundness}
+
+\section{A computable \opName{bestRedirection}: \opName{choseRedirection}}
+
+\section{Redirect applications}
+
+\subsection{Graph example}
+We now consider an example where Redirect simplifies the code quite a lot:
+We have a \Q@Node@ and \Q@Edge@ concepts for a graph.
+The \Q@Node@ have a list of \Q@Edge@s.
+A \Q@isConnected@ function takes a list of \Q@Node@s.
+A \Q@getConnected@ function takes \Q@Node@ and return a set of \Q@Node@s.
+\begin{lstlisting}
+graphUtils={
+  Edges:list<+{Node start() Node end()}
+  Node:{Edges connections()}
+  Nodes:set<Elem=Node>//note that we do not specify equals/hash
+  static Bool isConnected(Nodes nodes)=
+    if(nodes.size()=0) then true
+    else getConnected(nodes.asList().head()).size()==nodes.size()
+  static Nodes getConnected(Node node)=getConnected(node,Nodes.empty())
+  static Nodes getConnected(Node node,Nodes collected)=
+    if(collected.contains(node)) then collected
+    else connectEdges(node.connections(),collected.add(node))
+  static Nodes connectEdges(Edges e,Nodes collected)=
+    if( e.isEmpty()) then collected
+    else connectEdges(e.tail(),collected.add(e.head().end()))
+  }
+\end{lstlisting}
+
+We have shown the full code instead of omitting implementations to show that
+the code inside of an highly general code like the former is pretty conventional.
+Just declare nested classes as if they was the concrete desired types. Note how we can easly create a new \@Nodes@ by doing \Q@Nodes.empty()@.
+
+Here we show how to instantiate \Q@graphUtils@ to a graph representing cities connected by streets,
+where the streets are annotated with their length, and \Q@Edges@ is a priority queue, to optimize
+finding the shortest path between cities.
+
+\begin{lstlisting}
+Map:{
+  Street:{City start,City end, Int size}
+  City:{}
+  Streets:priorityQueue<Elem=Street><+{    
+    Int geq(Street e1,Street e2)=e1.size()-e2.size()}
+  }<+{
+  Streets:{}
+  City:{Streets connections, Int index}//index identify the node
+  Cities:set<Elem=City><+{
+    Bool eq(City e1,City e2) e1.index==e2.index
+    Int hash(City e) e.index
+    }
+  Cities cities
+  //more methods
+  }
+MapUtils=graphUtils<Nodes=Map.Cities>
+//infers Nodes.List, Node, Edges, Edge
+\end{lstlisting}
+
+In Appending 2 we will show our best attempt to encode this graph example in Java, Rust and Scala.
+In short, we discovered...
+
+\subsection{Loading libraries}
+
+Most languages have a standard library.
+The standard library have two goals:
+\begin{itemize}
+\item Be a set of useful features for programmers to use.
+\item Be a starting point for third party libraries.
+\end{itemize}
+While the first point is quite obvious, the second one is a little surprising: third party libraries will communicate with
+the user code mostly by using standard library types:
+\Q@String@s, \Q@Collection@s and if we are in a pure OO language,
+also \Q@Boolean@s, \Q@Integer@s, \Q@Double@s and so on.
+The number of types involved in just take input and produce output is much larger then one could expect, since all kind of errors need
+to be considered too, and if the language support reflection, all those classes and their errors may end up being transitively required.
+The goal of the standard library is.
+For example, assume a simple library taking in input a \Q@String@
+and producing a \Q@String@: What are its dependencies?
+
+\Q@String@ has an \Q@isEmpty():Boolean@ method, 
+the \Q@Boolean@ has a \Q@toString():String@ method, a circular dependency.
+\Q@String@ has a \Q@size():Integer@ method, and
+a \Q@getChar(Integer pos):Char@ method.
+another typical method of strings is @split(String regex):ListString@,
+returning a list, that extends some general collection, and so on.
+If reflection is not implemented with Mirrors[],
+any of those object would have a \Q@class():Class@ method,
+and \Q@Class@ would have methods to connect with most other reflection classes.
+
+Those dependencies are usually not a problem because we assume the standard library to be fixed and always available.
+Or, if you prefer, we are forced to design programming languages together with their standard library because those dependencies are too hard to manage directly.
+
+With Redirect we can get free from this chain, and every third party library can just declare a the set of dependencies that are really needed.
+A single redirect application can then ``load'' the library in the current scope, where a variation of the standard library is available, but not necessarily exactly the library used to develop such third party library.
+
+For example, a library may only need pass indexes around, without directly
+doing arithmetic, and may never use ..
+
+\begin{lstlisting}
+library={//this code is fully self contained
+  N={}
+  C={ Bool equal(C x)}
+  S={N size(), C getChar(N index)}
+  S myLibFunction(S x)=....
+  Map=interface{
+    S string()
+    C char()
+    N integer()
+    }
+  }
+...
+Int={..}
+Char={..}
+String={..}
+Map=interface{String string() ... }
+LoadedLib=library<Map=Map>
+\end{lstlisting}
+Since the code of $t$ is self contained (do not refer to any class in the outer program, it is possible to just ship it independently of the standard library of the target.
+The code of $library$ can be typechecked once, and then
+any other program may load it as shown.
+Any program defining a \Q@Map@ interface with some types that we expect libraries to rely upon can be used in conjunction with $library$.
+In this example, if \Q@Char@ is not a valid structural subtype of \Q@C@,
+the redirect would fail with a meaningful error message.
+
+By the stability theorem, we get a good formal characterization of what are the acceptable shapes of the program so that the redirect would succeed.
+However, even if the program do not match the expectations of the library,
+it could be possible to tweak the code to make it work.
+...
 
 \section{Appendix?}
+
+PUT LATER?However, he type system of the language is more restrictive when 
+it comes to refine an interface method, allowing only return type refinement. This is not just to align our calculus with existing languages like Java/C\# and C++, but is required to make reasoning about parameter types influential while expanding redirect mappings.END PUT LATER
+
 \begin{bnf}
 \production{%
 \ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
@@ -905,60 +1168,6 @@ p; Txs |- e : T
 p; Txs |- e : T'
 \end{verbatim}
 
-\section{Graph example}
-We now consider an example where Redirect simplifies the code quite a lot:
-We have a \Q@Node@ and \Q@Edge@ concepts for a graph.
-The \Q@Node@ have a list of \Q@Edge@s.
-A \Q@isConnected@ function takes a list of \Q@Node@s.
-A \Q@getConnected@ function takes \Q@Node@ and return a set of \Q@Node@s.
-\begin{lstlisting}
-graphUtils={
-  Edges:list<+{Node start() Node end()}
-  Node:{Edges connections()}
-  Nodes:set<Elem=Node>//note that we do not specify equals/hash
-  static Bool isConnected(Nodes nodes)=
-    if(nodes.size()=0) then true
-    else getConnected(nodes.asList().head()).size()==nodes.size()
-  static Nodes getConnected(Node node)=getConnected(node,Nodes.empty())
-  static Nodes getConnected(Node node,Nodes collected)=
-    if(collected.contains(node)) then collected
-    else connectEdges(node.connections(),collected.add(node))
-  static Nodes connectEdges(Edges e,Nodes collected)=
-    if( e.isEmpty()) then collected
-    else connectEdges(e.tail(),collected.add(e.head().end()))
-  }
-\end{lstlisting}
-
-We have shown the full code instead of omitting implementations to show that
-the code inside of an highly general code like the former is pretty conventional.
-Just declare nested classes as if they was the concrete desired types. Note how we can easly create a new \@Nodes@ by doing \Q@Nodes.empty()@.
-
-Here we show how to instantiate \Q@graphUtils@ to a graph representing cities connected by streets,
-where the streets are annotated with their length, and \Q@Edges@ is a priority queue, to optimize
-finding the shortest path between cities.
-
-\begin{lstlisting}
-Map:{
-  Street:{City start,City end, Int size}
-  City:{}
-  Streets:priorityQueue<Elem=Street><+{    
-    Int geq(Street e1,Street e2)=e1.size()-e2.size()}
-  }<+{
-  Streets:{}
-  City:{Streets connections, Int index}//index identify the node
-  Cities:set<Elem=City><+{
-    Bool eq(City e1,City e2) e1.index==e2.index
-    Int hash(City e) e.index
-    }
-  Cities cities
-  //more methods
-  }
-MapUtils=graphUtils<Nodes=Map.Cities>
-//infers Nodes.List, Node, Edges, Edge
-\end{lstlisting}
-
-In Appending 2 we will show our best attempt to encode this graph example in Java, Rust and Scala.
-In short, we discovered...
 
 
 
@@ -971,8 +1180,89 @@ fetch a class we will use $p(T)$.
 To look up the definition of a class in the program we will use the notation
 %$p(t)=LV$ and
 $p(T)=\textit{LV}$, which is defined by the following:% but only if the RHS denotes an $LV$:
+
+We will use members $Mz$ as a function containing both method names $m$
+and class names $C$ in its domain; thus we will assume
+notation $\dom{Mz}$, $Mz(m)$, $Mz(C)$ with the usual meaning.
+Under here, we define useful auxiliary notations to
+access literals $L$ with functional notation with the intent of accessing their members. We define notations $L[Cs=E]=L'$ and $Mz[C=E]=Mz'$ serving the role of function update.
+We use those notations to define $p(T)=LV$ accessing a program $p$ as function. We also define operations on programs: $p\op{push}{D}=p'$, allowing to work with programs as if they was stacks, and
+$p\op{min}{T}=T'$, denoting the shortest type $T'$ referring to the same 
+nested class of $T$.
+We define $\from{T}{T',j}$ and $\from{L}{T,j}$; we omit all the trivial propagation cases of form $\from{M}{T,j}$, $\from{K}{T,j}$ and $\from{e}{T,j}$.
+Finally, we we combine those to notation for the
+most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
+
+
 \noindent
-\begin{defye}%
+\begin{minipage}{0.48\textwidth}
+\noindent\!\!\!$\begin{array}{l}
+\hline
+(\DLs\Q@;@ \DVs)\op{push}{id\eq{L}} =
+\id\eq{L},\DLs\Q@;@ \DVs\\
+\hline
+(; \_, C\eq{L}, \_)(\This{0}{C}{Cs})=\mathit{L(Cs)}\\
+p\op{push}{\_\eq{L}}(\This{0}{Cs})=L(\mathit{Cs})\\
+p\op{push}{\_}(\This{n+1}{Cs})=p(\This{n}{Cs})\\
+\hline
+\fop{members}{\lib{\_}{Mz}{\_}}=Mz\\\hline
+L(m)=\fop{members}{L}(m)\\\hline
+L(C)=\fop{members}{L}(C)\\\hline
+\dom{L}=\dom{\fop{members}{L}}\\\hline
+\mdom{L}=\{m \in \dom{L}\}\\
+\end{array}$
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+$\begin{array}{l}
+\hline
+(Mz,\Q@private@? C\eq{\_})[C=E]=Mz,\Q@private@? C\eq{E}\\\hline
+LV({\emptyset})=LV\\
+L(C\Q@.@Cs)=L(C)(Cs)\\
+\hline
+L[\Empty=E] = E\\
+\lib{Tz}{Mz}{K?}[C\Q@.@Cs=E]=\\\quad
+\lib{Tz}{Mz[C=Mz(C)[Cs=E]]}{K?}
+\\\hline
+p\op{min}{\This{n+1}{\id_n}{Cs}} = p\op{min}{\This{n}{Cs}}\\\quad
+  \text{where }p = \id_0 \eq{L_0}\ldots\id_n\eq{L_n} \_\Q@;@ Ds\\
+\text{otherwise } p\op{min}{T} = T\\
+\end{array}$
+\end{minipage}
+
+\noindent\!\!\!\!
+$\begin{array}{l}
+\hline
+\from{\This{n}{Cs}}{T,j}
+=
+\This{n}{Cs} \quad \textit{with }n<j
+\\
+\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
+=
+\This{m+j}{C_1\ldots C_{k-n}} \quad \textit{with }n\leq k
+\\
+\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
+=
+\This{m+j+n-k}{C_1\ldots C_{k-n}{Cs}} \quad \textit{with }n> k
+\\
+\from{
+\libc{\Q@interface@? Tz}{Mz}{K}
+}{T,j-1}
+=
+\libc{\Q@interface@? \from{Tz}{T,j}}{\from{Mz}{T,j}}{\from{K}{T,j}}
+\\\hline
+(DL_1\ldots DL_n; \_, t\eq{LV})[t]
+=p\op{min}{\from{LV}{\This{n},0}}\\\hline
+p[T]=p\op{min}{
+\lib{\from{Tz}{T,0}}{\from{Mz}{T,0}}{}
+}
+\quad\text{where }p(T)=\lib{Tz}{Mz}{K?}
+\\\hline
+\end{array}$
+
+
+sdgsd
+
+\noindent\begin{defye}%
 %\defy{(\_; \_, t\eq{}LV, \_)(t)}{\mathit{LV}}%
 \defy{(\DLs\Q{;} \DVs)\op{push}{id\eq{L}}}{
 id\eq{L},\DLs\Q{;} \DVs}%
@@ -983,75 +1273,13 @@ id\eq{L},\DLs\Q{;} \DVs}%
 %\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%shorter version, not wrong but confusing
 \defy{p\op{push}{\_}(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
 \defy{LV({\emptyset})}{LV}%
-\defy{\lib{\_}{\_, C\eq{L_0}, \_}{\_}(\Cs{C}{\s{C}})}{L_0(Cs) }%\text{ where } L = \lib{\_}{\_, C\eq{L_0}, \_}{\_}}%
+\defy{\lib{\_}{\_, \Q@private@?\,C\eq{L_0}, \_}{\_}(\Cs{C}{\s{C}})}{L_0(Cs) }%\text{ where } L = \lib{\_}{\_, C\eq{L_0}, \_}{\_}}%
 	\defyc{\text{where } L = a}
 \end{defye}
 
 
 This notation just fetch the referred $LV$ without any modification.
 To adapt the paths we define $\from{T_0}{T_1,j}$, $\from{L}{T,j}$ and $p\op{minimize}{T}$ as following:
-\begin{defye}%
-%	\defy{
-%\from{\This{n}{Cs}}{\This{m}{C_1\ldots C_k}}
-%}{
-%\This{m}{C_1\ldots C_{k-n}} \quad \textit{with }n\leq k
-%}
-%\defy{
-%\from{\This{n}{Cs}}{\This{m}{C_1\ldots C_k}}
-%}{
-%\This{m+n-k}{C_1\ldots C_{k-n}{Cs}} \quad \textit{with }n> k
-%}
-%
-%
-\defy{
-\from{\This{n}{Cs}}{T,j}
-}{
-\This{n}{Cs} \quad \textit{with }n<j
-}
-\defy{
-\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
-}{
-\This{m+j}{C_1\ldots C_{k-n}} \quad \textit{with }n\leq k
-}
-\defy{
-\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
-}{
-\This{m+j+n-k}{C_1\ldots C_{k-n}{Cs}} \quad \textit{with }n> k
-}
-%
-%
-%
-%	\defy{
-%\from{L}{T}
-%}{
-%\from{L}{T}_0
-%}
-\defy{
-\from{
-\libc{\Q@interface@? Tz}{Mz}{K}
-}{T,j-1}
-}{
-\libc{\Q@interface@? \from{Tz}{T,j}}{\from{Mz}{T,j}}{\from{K}{T,j}}
-}
-%\defy{
-%\from{\This{(j+n)}{Cs_0}}{T}_j
-%}{
-%\This{(j+k)}{Cs_1}\quad \textit{with } \from{\This{n}{Cs_0}}{T}=\This{k}{Cs_1}
-%}
-\defy{
-p\op{minimize}{T}
-}{
-T'....
-}
-%This(j+n).Cs0[from P]j=This(j+k).Cs1
-%  with Thisn.Cs0[from P]=Thisk.Cs1
-%Thisn.Cs[from P]j=Thisn.Cs with n<j
-%All cases for other expressions/terms propagate to submembers, including
-%comments, since they can have annotated Ps
-\end{defye}
-
-\noindent Finally, we we combine those to notation for the
-most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
 \begin{defye}%
   \defy{(DL_1\ldots DL_n; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{n}}}
 	\defy{p[T]}{p\op{minimize}{\from{p(T)}{T}}}%
