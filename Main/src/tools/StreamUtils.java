@@ -20,27 +20,6 @@ public class StreamUtils<T> implements Iterable<T> {
   public static <T, R, E extends Throwable> Set<R> stream(Set<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toSet(); }
   public static <T, R, E extends Throwable> Collection<R> stream(Collection<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toCollection(); }
 
-  public static <T> Iterable<T> iterate(Iterable<T>... args) {
-    if (args.length == 0) { return List.of(); }
-    return () -> new Iterator<T>() {
-      Iterator<T> current = args[0].iterator();
-      int i = 1;
-
-      boolean advance() {
-        if (i < args.length) { current = args[i++].iterator(); return true; }
-        else { return false; }
-      }
-
-      @Override public boolean hasNext() {
-        while (!current.hasNext()) { if (!advance()) { return false; }}
-        return true; }
-
-      @Override public T next() {
-        while (true) {
-          try { return current.next();}
-          catch (NoSuchElementException e) { if(!advance()) { throw e; } }
-        }}};}
-
   public static StreamUtils<Integer> range(int inclusive, int exclusive) { return from(IntStream.range(inclusive, exclusive).boxed()); }
   public static<T> Set<T> interesect(Collection<Collection<T>> s) { return interesect(stream(s)); }
   public static<T> Set<T> interesect(StreamUtils<Collection<T>> s) {
@@ -49,34 +28,6 @@ public class StreamUtils<T> implements Iterable<T> {
       if (res == null) { res = new HashSet<>(set); }
       else { res.retainAll(set); }}
     return res; }
-
-  // iterates over the first, and then the second collection
-  /*static <T> Iterable<T> seqIterate(Iterable<T> first, Iterable<T> second) {
-    return () -> new Iterator<T>() {
-        Iterator<T> inner = first.iterator();
-        boolean firstHalf = true;
-
-        void update() { inner = second.iterator(); firstHalf = false; }
-        @Override public boolean hasNext() {
-          var res = this.inner.hasNext();
-          if (!res && firstHalf) {
-            this.update();
-            res = this.inner.hasNext();
-          }
-          return res; }
-        @Override public T next() {
-          if (firstHalf) {
-            try { return inner.next(); }
-            catch (NoSuchElementException e) { update(); } }
-          return inner.next(); }};}
-
-  static <T> Set<T> intersect(Stream<Collection<T>> s) {
-      Set<T> res = null;
-      for (var set : iterate(s)) {
-        if (res == null) { res = new HashSet<>(set); }
-        else { res.retainAll(set); }}
-      return res; }
-*/
 
   @Override public Iterator<T> iterator() { return this.s.iterator(); }
 
@@ -88,10 +39,28 @@ public class StreamUtils<T> implements Iterable<T> {
     Collections.addAll(res, args);
     return res; }
 
-  public static<T> List<T> concat(List<T> l, Collection<T>... args) {
+  public static<T> List<T> concat(List<T> l, Iterable<T>... args) {
     var res = new ArrayList<>(l);
-    for (var x : args) { res.addAll(x); }
+    for (var x : args) { for (var y : x) { res.add(y); } }
     return res; }
+  public static <T> Iterable<T> concat(Iterable<T> it, Iterable<T>... args) {
+    return () -> new Iterator<>() {
+      Iterator<T> current = it.iterator();
+      int i = 0;
+
+      private boolean advance() {
+        if (i < args.length) { current = args[i++].iterator(); return true; }
+        else { return false; }}
+
+      @Override public boolean hasNext() {
+        while (!current.hasNext()) { if (!advance()) { return false; }}
+        return true; }
+
+      @Override public T next() {
+        while (true) {
+          try { return current.next();}
+          catch (NoSuchElementException e) { if(!advance()) { throw e; } }
+        }}};}
 
   public StreamUtils<T> concat(StreamUtils<T>... args) {
     var res = this.s;
@@ -119,7 +88,6 @@ public class StreamUtils<T> implements Iterable<T> {
   public static <T,R,E extends Throwable> Set<R> filterMap(Set<T> c, CheckedFunction<T, R, E> f) throws E { return stream(c).filterMap(f).toSet(); }
   public static <T,R,E extends Throwable> Collection<R> filterMap(Collection<T> c, CheckedFunction<T, R, E> f) throws E { return stream(c).filterMap(f).toCollection(); }
 
-
   public <R,E extends Throwable> StreamUtils<R> flatMap(CheckedFunction<T, Collection<R>, E> f) throws E { return from(s.flatMap(x -> f.applyUnchecked(x).stream())); }
   public static <T,R,E extends Throwable> List<R> flatMap(List<T> c, CheckedFunction<T, Collection<R>, E> f) throws E { return stream(c).flatMap(f).toList(); }
   public static <T,R,E extends Throwable> Set<R> flatMap(Set<T> c, CheckedFunction<T, Collection<R>, E> f) throws E { return stream(c).flatMap(f).toSet(); }
@@ -135,15 +103,27 @@ public class StreamUtils<T> implements Iterable<T> {
   public static <R> Set<R> mapCast(Set<? super R> c) { return stream(c).<R>mapCast().toSet(); }
   public static <R> Collection<R> mapCast(Collection<? super R> c) { return stream(c).<R>mapCast().toCollection(); }
 
-  public <E extends Throwable> StreamUtils<T> ifilter(CheckedPredicate<T, E> f) throws E { return from(this.s.filter(f.negate().uncheck())); }
-  public static <T,E extends Throwable> List<T> ifilter(List<T> c, CheckedPredicate<T, E> f) throws E { return stream(c).ifilter(f).toList(); }
-  public static <T,E extends Throwable> Set<T> ifilter(Set<T> c, CheckedPredicate<T, E> f) throws E { return stream(c).ifilter(f).toSet(); }
-  public static <T,E extends Throwable> Collection<T> ifilter(Collection<T> c, CheckedPredicate<T, E> f) throws E { return stream(c).ifilter(f).toCollection(); }
-
   public <E extends Throwable> StreamUtils<T> filter(CheckedPredicate<T, E> f) throws E { return from(s.filter(f.uncheck())); }
   public static <T,E extends Throwable> List<T> filter(List<T> c, CheckedPredicate<T, E> f) throws E { return stream(c).filter(f).toList(); }
   public static <T,E extends Throwable> Set<T> filter(Set<T> c, CheckedPredicate<T, E> f) throws E { return stream(c).filter(f).toSet(); }
   public static <T,E extends Throwable> Collection<T> filter(Collection<T> c, CheckedPredicate<T, E> f) throws E { return stream(c).filter(f).toCollection(); }
+
+  public StreamUtils<T> distinct() { return from(s.distinct()); }
+  public static <T> List<T> distinct(List<T> c) { return stream(c).distinct().toList(); }
+  public static <T> Set<T> distinct(Set<T> c) { return stream(c).distinct().toSet(); } // This function is pointless
+  public static <T> Collection<T> distinct(Collection<T> c) { return stream(c).distinct().toSet(); }
+
+
+  public <E extends Throwable> StreamUtils<T> distinct(CheckedBiPredicate<T, T, E> eq) throws E {
+    // this is likley to be horrible inefficeint
+    var matched = new ArrayList<T>();
+    return this.filter(x -> {
+      if (matched.stream().anyMatch(y -> eq.testUnchecked(x, y))) { return false; }
+      matched.add(x); return true; });}
+
+  public static <T,E extends Throwable> List<T> distinct(List<T> c, CheckedBiPredicate<T, T, E> f) throws E { return stream(c).distinct(f).toList(); }
+  public static <T,E extends Throwable> Set<T> distinct(Set<T> c, CheckedBiPredicate<T, T, E> f) throws E { return stream(c).distinct(f).toSet(); }
+  public static <T,E extends Throwable> Collection<T> distinct(Collection<T> c, CheckedBiPredicate<T, T, E> f) throws E { return stream(c).distinct(f).toSet(); }
 
   public <E extends Throwable> boolean all(CheckedPredicate<T, E> p) throws E { return this.s.allMatch(p.uncheck()); }
   public static <T, E extends Throwable> boolean all(Collection<T> c, CheckedPredicate<T, E> p) throws E { return stream(c).all(p); }

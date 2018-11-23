@@ -73,8 +73,8 @@ public class PathMap extends CollectionWrapper<CsPath> {
     return new PathMap(StreamUtils.map(this, CsP -> CsP.withPath(f.apply(CsP.getPath()))));}
 
   //R(L)
-  ClassB apply(ClassB L) {
-    var visitor = new CloneVisitorWithProgram(Program.emptyLibraryProgram().evilPush(L)) {
+  ClassB apply(Program p) {
+    var visitor = new CloneVisitorWithProgram(p.pop()) {
       private <T> List<T> concat(List<T> a, List<T> b) {
         ArrayList<T> res = new ArrayList<>(a);
         res.addAll(b);
@@ -96,16 +96,14 @@ public class PathMap extends CollectionWrapper<CsPath> {
         return P; }
       
       @Override protected List<Type> liftSup(List<Type> supertypes) {
-        var mapped = super.liftSup(supertypes);
-        var visited = new HashSet<Path>();
-        var res = new ArrayList<Type>();
-        for (var T : mapped) {
-          var P = T.getPath();
-          if (P==Path.Any()) { continue; } // Ignore any!
-          if (!visited.contains(p.minimize(P))) {
-            res.add(T);
-            visited.add(p.minimize(P)); }}
-        return res; } // TODO: What should we do about doc comments?
+        // Marco is going to kill me for this, it destroys doc comments,
+        // and I have no idea what order it will return things in,
+        // it also destroys all your paths by minimizing them.
+
+        return StreamUtils.stream(super.liftSup(supertypes))
+            .flatMap(T -> StreamUtils.concat(new FromedL(p, T.getPath()).Tz(), T))
+            .map(p::minimize).filter(T -> !T.getPath().equals(Path.Any()))
+            .distinct().toList(); }
       
       /*@Override public Path liftP(Path that){
         if(that.isPrimitive()){return that;}
@@ -128,7 +126,7 @@ public class PathMap extends CollectionWrapper<CsPath> {
         Path destHere=Path.outer(newOuter,newCs);
         return destHere;}*/};
 
-    return (ClassB)(visitor.visit(L)); }
+    return (ClassB)(visitor.visit(p.top())); }
 
   // L[remove Csz]
   public static ClassB remove(ClassB L, Collection<List<Ast.C>> Csz) {

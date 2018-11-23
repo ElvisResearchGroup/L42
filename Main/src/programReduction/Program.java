@@ -8,6 +8,7 @@ import ast.Ast;
 import ast.Ast.C;
 import ast.Ast.Doc;
 import ast.Ast.Path;
+import ast.Ast.Type;
 import ast.Ast.Position;
 import ast.ErrorMessage;
 import ast.ExpCore;
@@ -85,6 +86,7 @@ public interface Program {
     }
 
   default List<Path> minimizeList(Collection<Path> Ps) { return Ps.stream().map(this::minimize).collect(Collectors.toList()); }
+  default Type minimize(Type T) { return T.withPath(this.minimize(T.getPath())); }
   default Path minimize(Path p) {
     Path pReduced=p;
     while(pReduced!=null){//reduce pi as much as possible

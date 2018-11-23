@@ -57,7 +57,16 @@ public class TestRedirect {
     List<Object[]> tests= Arrays.asList(new Object[][]{
 
     {lineNumber(), "", "{}", "", "", "{}" // This is the most trivial test case
-
+    }, {lineNumber(), "{" +
+        "EI1: {interface} " +
+        "EI:  {interface implements EI1} " +
+      "}", "{" +
+        "I1: {interface}" +
+        "I2: {interface}" +
+        "I3: {interface}" +
+        "C: {interface implements I1, I2, I3}" +
+      "}", "I1,I2,I3", "This0.EI,This0.EI,Any",
+      "{C: {interface implements This2.EI1 This2.EI}}"
     }, {lineNumber(), "{" +
         "EB: {interface} " +
         "EA1: {interface method Void m(Any x)} " +

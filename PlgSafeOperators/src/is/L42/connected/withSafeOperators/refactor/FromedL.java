@@ -24,10 +24,12 @@ public class FromedL {
   FromedL(Program p, Path P) { this(p, p.extractClassB(P), P); }
   FromedL(Program p, ClassB L, Path P) { this.p = p; this.L = L; this.P = P; }
 
-  private List<Path> _Pz = null;
-  List<Path> Pz() {
-    if (this._Pz == null) { this._Pz = StreamUtils.map(this.L.getSuperPaths(), this::from); }
-    return this._Pz; }
+  private List<Type> _Tz = null;
+  List<Path> Pz() { return StreamUtils.map(this.Tz(), Type::getPath); }
+
+  List<Type> Tz() {
+    if (this._Tz == null) { this._Tz = StreamUtils.map(this.L.getSupertypes(), this::from); }
+    return this._Tz; }
 
   private Map<MethodSelector, MethodWithType> _mwtz = null; private Map<C, Nested> _ncz = null;
   private boolean mwtz_computed = false; private boolean ncz_completed = false;
@@ -75,7 +77,16 @@ public class FromedL {
   Set<MethodSelector> msDom() { prepareMwtz(); return this._mwtz.keySet(); }
     Set<C> cDom() { prepareNcz(); return this._ncz.keySet(); }
 
+  FromedL apply(PathMap R) {
+    return new FromedL(this.p, this.L, this.P) {
+      Path from(Path P1) {
+        if (isInternal(P1)) {
+          var P2 = R._get(P1.getCBar());
+          if (P2 != null) { return P2; }}
+        return super.from(P1); }};}
+
   Path from(Path P1) { return this.p.minimize(From.fromP(P1, P)); }
+  Type from(Type T1) { return T1.withPath(this.from(T1.getPath())); }
   MethodWithType from(MethodWithType mwt) {
     return new CloneVisitor() {@Override protected Path liftP(Path P){ return from(P); }}
       .visit(mwt.with_inner(null)).with_inner(mwt.get_inner()); }

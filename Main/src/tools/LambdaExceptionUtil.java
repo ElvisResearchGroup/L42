@@ -94,9 +94,23 @@ public final class LambdaExceptionUtil {
         default CheckedPredicate<T, E> negate() { return (t) -> !this.test(t); }
         default CheckedPredicate<T, E> or(CheckedPredicate<? super T, ? extends E> that) { Objects.requireNonNull(that); return (t) -> this.test(t) || that.test(t); }
 
-        @SuppressWarnings("unchecked")
-        static <T, E extends Throwable> CheckedPredicate<T, E> not(CheckedPredicate<? super T, ? extends E> target) { Objects.requireNonNull(target); return (CheckedPredicate<T, E>)target.negate(); }}
+        static <T, E extends Throwable> CheckedPredicate<T, E> not(CheckedPredicate<T, E> target) { Objects.requireNonNull(target); return target.negate(); }}
+    public interface CheckedBiPredicate<T, Y, E extends Throwable> {
+        boolean test(T t, Y y) throws E;
 
+        default boolean testUnchecked(T t, Y y) { return this.uncheck().test(t, y); }
+        default Throwable testCatch(T t, Y y) { return catch_(() -> this.test(t, y)); }
+
+        @SuppressWarnings("unchecked")
+        default BiPredicate<T, Y> uncheck() { return ((CheckedBiPredicate<T, Y, RuntimeException>)this)::test; }
+        static<T, Y> BiPredicate<T, Y> uncheck(CheckedBiPredicate<T, Y, ? extends Throwable> f) { return f.uncheck(); }
+        static<T, Y> CheckedBiPredicate<T, Y, ? extends RuntimeException> check(BiPredicate<T, Y> p) { return p::test; }
+
+        default CheckedBiPredicate<T, Y, E> and(CheckedBiPredicate<? super T, ? super Y, ? extends E> that) { Objects.requireNonNull(that); return (t, y) -> this.test(t, y) && that.test(t, y); }
+        default CheckedBiPredicate<T, Y, E> negate() { return (t, y) -> !this.test(t, y); }
+        default CheckedBiPredicate<T, Y, E> or(CheckedBiPredicate<? super T, ? super Y, ? extends E> that) { Objects.requireNonNull(that); return (t, y) -> this.test(t, y) || that.test(t, y); }
+
+        static <T, Y, E extends Throwable> CheckedBiPredicate<T, Y, E> not(CheckedBiPredicate<T, Y, E> target) { Objects.requireNonNull(target); return target.negate(); }}
     @FunctionalInterface
     public interface CheckedRunnable<E extends Throwable> {
         void run() throws E;

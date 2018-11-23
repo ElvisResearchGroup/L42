@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
-import tools.LambdaExceptionUtil.CheckedFunction;
+import tools.LambdaExceptionUtil.*;
 import ast.Ast;
 import ast.Ast.*;
 import ast.ErrorMessage;
@@ -49,14 +49,14 @@ public class Redirect {
   public static ClassB redirectJ(PData pData,ClassB that,List<C> src,ast.Ast.Path dest) throws RedirectError, RefactorErrors.ClassUnfit, RefactorErrors.IncoherentMapping, RefactorErrors.MethodClash, RefactorErrors.PathUnfit{
     assert dest.isCore() || dest.isPrimitive():
       dest;
-    return new is.L42.connected.withSafeOperators.refactor.RedirectObj(that).redirect(pData.p,src, dest);
+    return new RedirectObj(that).redirect(pData.p,src, dest);
     //return redirect(pData.p, that, new PathMap(List.of(new CsPath(src, dest))));
     }
 
 
   static public ClassB applyRedirect(Program p, PathMap map) {
     //TODO: use the new renaming?
-    ClassB L = map.apply(p.top());
+    ClassB L = map.apply(p);
     L = PathMap.remove(L, map.dom());
     return L;
   }
@@ -165,7 +165,7 @@ public class Redirect {
 
     //  R(L[remove this.redirectSet])
     assert this.redirectSet.keySet().equals(R.dom());
-    return R.apply(PathMap.remove(this.p.top(), this.redirectSet.keySet())); }
+    return R.apply(p.updateTop(PathMap.remove(this.p.top(), this.redirectSet.keySet()))); }
 
   // CollectRedirection(this.p; this.problem.R)
   PathMap collectRedirection() throws DetailedError, DeductionFailure, InvalidMapping {
@@ -182,7 +182,8 @@ public class Redirect {
 
     var R = collectSolution();
     debugPrint("Chosen R was: " + R);
-    Assertions.assertNoThrow(() -> validRedirection(R));
+    //Assertions.assertNoThrow(() -> validRedirection(R));
+    validRedirection(R);
     return R; }
 
   void checkCsValid(Collection<List<C>> Csz) throws DetailedError, PathUnfit {
@@ -326,7 +327,7 @@ public class Redirect {
       //5: Collect(p; CC) = Cs' <= p[P.s].Pi
       //   CC = P <= Cs or  CC = Cs <= P
       //   p[Cs.s].Pi = This0.Cs'
-      for (var CsP : StreamUtils.iterate(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
+      for (var CsP : StreamUtils.concat(supertypeConstraints, subtypeConstraints)) { // P <= Cs or Cs <= P
         // p[Cs.s].Pi.Cs <= p[P.s].Pi
         progress |= collectParams(CsP, (Cs, P, s, i) -> addSubtype(Cs, P,
             "Rule 5: " + asReltype(CsP) + " [" + s + "." + i + "]"));}
@@ -470,7 +471,7 @@ public class Redirect {
     // (note: if it's an allready existing method we are only allowed to refine it,
     // if we can't refine it, this means that their is no-possible solution!)
 
-    var mwtz = StreamUtils.stream(L.mwts(), s -> s.ifilter(mwt -> this.get(Cs).msDom().contains(mwt.getMs())).<Member>mapCast());
+    var mwtz = StreamUtils.stream(L.mwts(), s -> s.filter(mwt -> !this.get(Cs).msDom().contains(mwt.getMs())).<Member>mapCast());
     for (var mwt : this.get(Cs).mwtz()) {
       var mwt2 = L._getMwt(mwt.getMs());
       if (mwt2 == null) {
@@ -594,13 +595,13 @@ public class Redirect {
       assert p.minimize(P).equals(P);
       assert P.tryOuterNumber() != 0;
 
-      var L1 = R.apply(this.get(Cs).topL()); // I'm too lazy to make R work on frommedL's, this will suffice
+      var L1 = this.get(Cs).apply(R);
       var L2 = this.get(P);
 
       // No need to check for well-typedness of L2, as 42 gurantees this for any 'class Any' given as input is (transitivley) well-typed
 
       // p|- P; L2 <= Cs; L1
-      var Pz1 = StreamUtils.stream(L1.getSuperPaths()).ifilter(FromedL::isInternal).toSet();
+      var Pz1 = StreamUtils.stream(L1.Pz()).filter(CheckedPredicate.not(FromedL::isInternal)).toSet();
       var Pz2 = superClasses(P);
       if (!Pz2.containsAll(Pz1)) { //Pz subseteq_p SuperClasses(p; P)
         var Pz11 = new HashSet<>(Pz1);
@@ -614,7 +615,7 @@ public class Redirect {
         error.invalidRedirection(inputCheck, errors, Cs, P, "Cannot redirect an interface to a final class"); }
 
       //forall s in dom(mwtz): p |- mwtz'(s).mt <= mwt(s).mt
-      for (var mwt1 : L1.mwts()) {
+      for (var mwt1 : L1.mwtz()) {
         var mwt2 = L2._get(mwt1.getMs());
         if (mwt2 == null) {
           error.invalidRedirection(inputCheck, errors, Cs, P, "Target does not contain method " + mwt1.getMs() + ".");
@@ -627,7 +628,7 @@ public class Redirect {
       // (implied by the above check together with this one)
       if (ck.equals(ClassKind.Interface)) {
         for (var mwt2 : L2.mwtz()) {
-          var mwt1 = L1._getMwt(mwt2.getMs());
+          var mwt1 = L1._get(mwt2.getMs());
           if (mwt1 == null) {
             error.invalidRedirection(inputCheck, errors, Cs, P, "Source does not contain method " + mwt2.getMs());
             continue; }
@@ -658,7 +659,7 @@ public class Redirect {
       var mwt2 = L2._get(mwt.getMs());
       if (!partialMethSubType(mwt2.getMt(), mwt.getMt())) { return false; }
       if (ck.equals(ClassKind.Interface) && !partialMethSubType(mwt.getMt(), mwt2.getMt())) { return false; }}
-    return StreamUtils.stream(L1.Pz()).ifilter(FromedL::isInternal).allIn(superClasses(P)); }
+    return StreamUtils.stream(L1.Pz()).filter(CheckedPredicate.not(FromedL::isInternal)).allIn(superClasses(P)); }
 
   Path _mostSpecific(Set<Path> Pz) {
     // TODO: This is horribly inefficient ??
