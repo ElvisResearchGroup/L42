@@ -26,14 +26,15 @@ Consider an imperative language, such as C♯, which:
 * has dynamic dispatch (e.g. interfaces, delegates, and virtual methods)
 * supports dynamic code loading and execution
 ==TODO shorten the above, or just speek it?==
+Note: for brevity I will omit accessibility modifiers and allow free standing static functions.
 
 >----------------------------------------------------------------------------------
 1. What *could* this method do?
 	```csharp
-	static void m1() { Math.abs(0); }
+	static void M1() { Abs(0); }
 	```
 	> Well it looks like it does nothing, it just gets the absolute value of 0 (which is 0) and discards the result.
-	> But how do we know Math.abs won't send your home folder to an Haker?
+	> But how do we know Abs won't send sensitive information to a third-party? ==I prefered my Russia version...==
 	> Well the documentation dosn't say it will, and we trust the implementator, Microsoft, to follow it.
 	> But, if we didn't trust it, what could we do?
 
@@ -42,7 +43,7 @@ Consider an imperative language, such as C♯, which:
 ==Note: I am now using a user-defined interface, so that I can freely play with it's declaration==
 	```csharp
 	interface I { void Run(); }
-	static void m2(I x) { x.Run(); }
+	static void M2(I x) { x.Run(); }
 	```
 	> This one can do anything the language will let it, so it is likely to be memory and type safe. However it can still do all sorts of stuff, like perform I/O or use reflection to inspect and invoke arbitrary code.
 	> The reason why we don't know what this can do is that `I.Run`, is a *virtual* method, this means that it is *dynamically dispatched* and in this case, literally anyone can override it. So we have to trust the writer of *every*  class that `x` could be at run-time. 
@@ -50,9 +51,9 @@ Consider an imperative language, such as C♯, which:
 >-----------------------------------------------------------------------------------
 4. How about this?
 	```csharp
-	static void m3(String url) {
+	static void M3(String url) {
 		var code = Assembly.LoadFrom(url); // Load code (possibly from the internet)
-		code.GetType("T").GetMethod("M").Invoke(null, null); } // Call T.M()
+		code.GetMethod("M").Invoke(null, null); } // Call M()
 	```
 	> This is very problematic, url could refer to code written by anyone, it might not have even been written yet when m3 was written. So we cannot inspect the code or simply trust their authors.
 
@@ -62,7 +63,7 @@ Consider an imperative language, such as C♯, which:
 #### *callability* is the ability to *call* a function/operation.
 > ------------------------------------------------------------------------------------
 #### A *function’s* callability is the set of things it can *call*.
-
+-------------------------------------------
 > We will abstract away performing an 'operation' (such as reading a file, create a new object, doing integer addition etc)  as *calling* a named function
 > In this way we can look at a functions *callability* to constrain what a function  can do. /* Improve: For example if it only has the ability to call functions we know wont read from the file system, then we know it wont.*/
 
@@ -76,41 +77,40 @@ Consider an imperative language, such as C♯, which:
 
 
 ----------------------------------------------------------------------------------------------------------------------------
-### Operations
-To simplify things we will assume that the language provides only two intrinsic functions:
+### Primitive Operations
+To simplify things we will assume that the language provides only two intrinsic functions/operations:
 ```csharp
-static class Operation {
-	static Object Unrestricted(String operation, params Object[] args);
-	static Object Restricted(String operation, params Object[] args); }
+static Object UnrestrictedPrimitive(String op, params Object[] args);
+static Object RestrictedPrimitive(String op, params Object[] args); }
 ```
 ==Because everything needs to be in a class? Or should I just make them freestanding?==
 > The params thing is just the C♯ way of doing varadics
-> We can use them above to model all the languages primtive operations as either Unrestricted or Restricted.
-> All other functions will have user-written bodies in the same language.
+> We can use them above to model all the languages primitive operation.
+> All other functions will have bodies that are properly typechecked.
 
 >    -------------------------------------------------------------------------------------------
 #### Example
 ```csharp
-Operation.Unrestricted("Add", 1, 2); // Returns 3
-Operation.Restricted("CCall", "puts", "Hello World!"); // Prints Hello World!
+UnrestrictedPrimitive("Add", 1, 2); // Returns 3
+RestrictedPrimitive("CCall", "puts", "Hello World!"); // Prints Hello World!
 ```
-> Note that if a function has Operation.Restricted in it's callability, it is effectively unconstrained, perhaps it could generate and execute arbitrary assembly code that corrupts your heap.
+> Note that if a function can call RestrictedPrimitive, it is effectively unconstrained, perhaps it could generate and execute arbitrary assembly code that corrupts the heap.
 
 ------------------------------------------------------------------------------------------------------------------------------------
 ### The Basics 
 
 #### The `calls[f1, …, fn]` annotation
-> A function declaration can be suffixed with it, indicating that it has `f`, …, `fn` in its callability. (I.e. that it can call them.)
+> A function declaration can be suffixed with it, indicating that it can call `f`, …, `fn`.
 
 ```csharp
 static Void Main(String[] argv) calls[Operation.Restricted] {
-	Operation.Restricted("CCall", "printf", "Hello World!"); }
+	RestrictedPrimitive("CCall", "printf", "Hello World!"); }
 ```
-> At first glance this looks like we have to list every single function we want to call, however this is not what the anotation means, rather it is the starting point of functions that can be called.
-> In addition, the system can in principle infer these annotations, but we will write the out explicitly to aid explanation.
+> At first glance this looks like we have to list every single function we want to call, however this is not what the annotation means, rather it is the starting point of functions that can be called.
+> In addition, the system can in principle infer these annotations, but we will write them out explicitly to aid explanation.
 
 > ----------------------------------------
-#### The Callability  Relation: $f ⇝ g$
+#### The Can-Call  Relation: $f ⇝ g$
 
 > As part of typechecking, whenever their is a call to $g$ from within the body of a function $f$, we will check that f ⇝ g.
 
@@ -134,20 +134,18 @@ A function $f$ can call $g$ iff: $f ⇝ g$
 	void Bar() calls[Baz] { Baz(); }
 	void Foo() calls[Baz] { Bar(); }
 	```
-> Note that these rules imply that functions can always recursively call themselves, so you don't have to write loops.
+> Note that these rules imply that functions can always recursively call themselves and so you have the freedom to write your functions using either recursion or loops.
+
 --------------------------------------------------------------------------------------------------------------------------------------
-### Consequences
+### Restricting Primitive Operations
 ==This slide is about controling when a function can be called==
-```csharp
-static class Operation {
-```
 
 > These rules have two important uses, nameley
 
 > ----------------------------------------------------------------------------------------------------------------------
 1. A function with `calls[]` can be called anywhere:
 	```csharp
-	static Object Unrestricted(String operation, params Object[] args) calls[];
+	static Object UnrestrictedPrimitive(String op, params Object[] args) calls[];
 	```
 	> thanks to Rule 2.
 > ----------------------------------------------------------------------------------------------------------------------
@@ -156,37 +154,37 @@ static class Operation {
 	
 	==TODO give a better (and shorter) explanation for the slide==
 	```csharp
-	static Object Restricted(String operation, params Object[] args) calls[Restricted]; }
+	static Object RestrictedPrimitive(String op, params Object[] args) calls[RestrictedPrimitive]; }
 	```
+	> This pattern allows one to declare their on restricted functions.
 
 --------------------------------------------------------------------------------------------------------------------------------------
 ### The Solution to Problem 1 (Static Dispatch)
 ==This slide is about reasoning on what a function can do based on it's declaration==
-What can `Math.abs(0);` do?
-> To answer this question, we will have to look at the declaration of `Maths.abs(0)`, for it's `calls` annotation, consider the following possibilities
-```csharp
-static class Math {
-```
+What can `Abs(0);` do?
+> To answer this question, we will have to look at the declaration of `Abs(0)`, for it's `calls` annotation, consider the following possibilities
+
 > ------------------------------------------
-1. (indirectly) perform only `Unrestricted` operations:
+1. (indirectly) perform only `UnrestrictedPrimitive` operations:
 	```csharp
 	static Int32 Abs(Int32 x) calls[] { … }
 	```
-	> this is probably what you'd want for an Abs function, it could do arithmetic negation and comparison, but not restricted operations like I/O.
+	> this is probably what you'd want for an `Abs` function, it could do arithmetic negation and comparison, but not restricted operations like I/O.
 
 > ------------------------------------------
-2. also (indirectly) perform *some*  `Restricted` operations:
+2. also (indirectly) perform *some*  `RestrictedPrimitive` operations:
 	```csharp
-	static void Print(String s) calls[Operation.Restricted] {
-		Operation.Restricted("CCall", "puts", s}; }
+	static void Print(String s) calls[RestrictedPrimitive] {
+		RestrictedPrimitive("CCall", "puts", s}; }
 	static Int32 Abs(Int32 x) calls[Print] { … }
 	```
-	> By looking at the body of Print, we know that Abs can only print to stdout, but do no other I/O.
+	> By looking at the body of Print, we know that Abs can call a (trusted) C function that prints to the terminal, but not any other crazy functions. 
+	> This works since the code of `Print` can not be overridden or modified.
 
 > ------------------------------------------
-3. also (indirectly) perform *any* `Restricted` operation:
+3. also (indirectly) perform *any* `RestrictedPrimitive` operation:
 	```csharp
-	static Int32 Abs(Int32 x) calls[Operation.Restricted] { … }
+	static Int32 Abs(Int32 x) calls[RestrictedPrimitive] { … }
 	```
 
 > ------------------------------------------
@@ -194,12 +192,13 @@ static class Math {
 #### Benefits
 *  No need to look at the body of `Abs` 
 > since the language will ensure that it is well-typed
-* No need to look at all code we are compiling with
-> We only need to look at things mensioned by the declaration of Abs
-* Our reasoning is static and sound
-> We don't need to first run the program, and once we do, our conclusions will still hold
+* No need to look at *every* piece of code we are compiling with
+> We only need to look at the functions mentioned by the declaration of `Abs`
+* Our reasoning is static and consistently sound
+> No matter what happens at run time, (including dynamic code loading), our grantees still hold.
+
 --------------------------------------------------------------------------------------------------------------------------------------
-### How to solve Problem 2 (Dynamic Dispatch)
+### How to Solve Problem 2 (Dynamic Dispatch)
 What can `x.Run` do?
 
 > How does this work in dynamic dispatch
@@ -209,10 +208,10 @@ What can `x.Run` do?
 ```csharp
 interface I { void Run() calls[Print]; }
 ```
-> And so it can Print but perform no other restricted operation.
+> And so it can Print but perform no other RestrictedPrimitive operation.
 
-> This approach is however inflexible?
-==Describe properly whats wrong with it==
+> This approach is however inflexible. For it to be useful, it requires a new version of I for each use case.
+==I still need a better explanation of the problem... (I hate problems, solutions are much easier to find)==
 
 > ------------------------------------------------------------------------------------------------------
 #### Callability Generics
@@ -228,22 +227,23 @@ interface I<'a> { void Run() calls['a]; }
 Now to answer the question: what can `x.Run` do?
 > well it depends on how you declare it's type:
 
-1.  Only unrestricted operations:
+1.  Only perform `UnrestrictedPrimitive` operations:
 	```csharp
-	static void m2(I<[]> x) calls[] { x.Run(); }
+	static void M2(I<[]> x) calls[] { x.Run(); }
 	```
-2. Can also print,
+2. Also `Print` things
 	```csharp
-	static void m3(I<[Print]> x) calls[Print] { x.Run();}
+	static void M3(I<[Print]> x) calls[Print] { x.Run();}
 	```
-3. Any *restricted* operation:
+3. Perform any `RestrictedPrimitive` operation:
 	```csharp
-	static void m3(I<[Operation.Restricted]> x) calls[Operation.Restricted] { x.Run();}
+	static void M3(I<[RestrictedPrimitive]> x) calls[RestrictedPrimitive] { x.Run();}
 	```
-5. Whatever you want
+5. Whatever the caller of `M3` decides:
 	```csharp
-	static void m3<'a>(I<'a> x) calls[I<'a>.Run] { x.Run();}
+	static void M3<'a>(I<'a> x) calls[I<'a>.Run] { x.Run();}
 	```
+	==note calls['a]  would also work, the above version makes more sense if you trust implementors of I more than your trust M3 itself. Of course theres nothing stoping M3 from creating a new I object anyway (thought their should be such a language-feature)...==
 --------------------------------------------------------------------------------------------------------------------------------------
 ### How to solve Problem 3 (Dynamic Loading)
 
@@ -259,18 +259,18 @@ class FunctionHandle<'a> {
 		… } 
 	Object Invoke(params Object[] args) calls['a] { /* return f(args)*/ }}
 ```
-> the idea being that `new FunctionHandle(f)` will check that the declared call-ability of f
+> the idea being that `new FunctionHandle<'a>(c, f)` will check the declared call-ability of f, and ensure that it does not exceed 'a
 
 > we can now use this to safely run code downloaded from the internet!
 
 > ---------------------------------------------------------------
 ```csharp
-static void m3(String url) calls[] {
+static void M3(String url) calls[] {
 	var code = Assembly.LoadFrom(url);
-	new FunctionHandle<[]>(code, "T.M").Invoke(); } // calls T.M()
+	new FunctionHandle<[]>(code, "M").Invoke(); } // calls M()
 ```
-> This will throw an exception if T.M isn't declared to only call Unrestricted operations.
-> Note that the check will happen before you invoke `T.M`, giving you an early error.
+> This will throw an exception if M isn't declared to only (indirectly) call UnrestrictedPrimitive operations.
+> Note that the check will happen before you invoke `M`, giving you an early error.
 
 --------------------------------------------------------------------------------------------------------------------------------------
 ### Future Work
