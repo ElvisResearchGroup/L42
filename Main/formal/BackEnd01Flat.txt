@@ -98,14 +98,16 @@ libToCD(empty,p,mwt)=header(empty,p,mwt) body(p,mwt)
 3//get/set
 libToCD(empty,p,mwt)=header(empty,p,mwt) body
   where
-  mdf!=class
-  body =setter if mwt.s.xs not empty, otherwise body=getter
+  mdf!=class, mwt.e?=empty
+  if mwt.s.xs={} body=getter
+  otherwise body =setter if mwt.s.xs={that}, mwt.mt.T=Void
+  otherwise body=unreachable//inhabited abstract method
 
 4//constructor with FWD, note, we return 2 methods
 libToCD(empty,p,mwt )= //we could have  p.top().CN instead of T, but T should be good enough
   header(empty,p,mwt) newWithFwd
   header(empty,p,noFwd(mwt)[with s='New_'++mwt.s]) new
-
+  
 ### header(interface?,p,mwt)=refine? method T mxs((T x)s)
   //first case: mdf=class, and not interface
   header(empty,p,refine? class method T m(T1 x1..Tn xn) e?)=

@@ -30,12 +30,12 @@ import facade.ErrorFormatter;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
 import newReduction.ClassTable;
-import newReduction.L42FToMiniJ;
 import newReduction.L42FToMiniJS;
 import newReduction.MiniJToJava;
 import newReduction.PG;
 import newTypeSystem.G;
 import newReduction.ClassTable.Element;
+import newReduction.L42FToJavaString;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
@@ -114,13 +114,22 @@ public class Loader {
     MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Arrays.asList(m1,m2,m3));
     String text="package generated;\n"+MiniJToJava.of(cdResource);
     List<SourceFile> files =Collections.singletonList(new SourceFile(cdResource.getCn(),text));
-    //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-    //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+    dbgWriteJavaFiles("generated.Resource", text);
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     ClassFile resBytes = clX.map().get("generated.Resource");
     assert resBytes!=null;
     cache.fullMap.put("generated.Resource", resBytes);
     loadResource(clX);
+  }
+
+private void dbgWriteJavaFiles(String className, String text) throws Error {
+  assert className.startsWith("generated."):
+    className;
+  className=className.substring(10);
+  //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+className+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+  //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+  assert !text.contains(";;");
+  assert !text.contains("};");
   }
   private void loadResource(MapClassLoader clX){
     try{
@@ -193,14 +202,13 @@ public class Loader {
     List<SourceFile> readyToJavac=new ArrayList<>();
     for(int cn:dep.keySet()){
       String cnString=dep.get(cn);
-      assert !cl.map().containsKey("generated."+cnString);
-      if(cl.map().containsKey("generated."+cnString)){continue;}
-      MiniJ.CD j=L42FToMiniJ.of(ct, ct.get(cn).cd);
-      String text="package generated;\n"+MiniJToJava.of(j);
+      assert !cl.map().containsKey(cnString);//"generated." is included in cnString
+      if(cl.map().containsKey(cnString)){continue;}
+      StringBuilder j=new L42FToJavaString(ct, ct.get(cn).cd).compute();
+      String text="package generated;\n"+j;
       SourceFile src=new SourceFile(cnString,text);
       readyToJavac.add(src);
-      //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+cnString+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-      //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+      dbgWriteJavaFiles(cnString, text);
       }
     if (readyToJavac.isEmpty()){return;}
     try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
@@ -237,12 +245,13 @@ public class Loader {
       }
     assert ct.isCoherent();
     assert ct.isCoherent(ex);
-    MiniJ.S sJ=L42FToMiniJS.forBody(ct,ex);
-    M m1=new M(true,"Object","execute0",Collections.emptyList(),Collections.emptyList(),sJ);
+    StringBuilder sJ=L42FToMiniJS.forBody(ct,ex);
     String freshName=Functions.freshName("Main£Main", L42.usedNames);
-    MiniJ.CD cd=new MiniJ.CD(false, freshName,Collections.emptyList(),Collections.singletonList(m1));
+    sJ.insert(0,"package generated;\npublic class "+freshName+"{"+
+      "public static Object execute0()");
+    sJ.append("}");
     ct=ct.computeDeps();
-    try{return (ExpCore.ClassB)run(cd);}
+    try{return (ExpCore.ClassB)run(freshName,sJ);}
     catch(InvocationTargetException ite) {
       Throwable cause=ite.getCause();
       if(cause instanceof Resources.L42Throwable){
@@ -260,15 +269,13 @@ public class Loader {
       throw Assertions.codeNotReachable();
       }
     }
-  public Object run(MiniJ.CD j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-    String text="package generated;\n"+MiniJToJava.of(j);
+  public Object run(String cn,StringBuilder j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
     List<SourceFile> files =Collections.singletonList(new SourceFile(
-      j.getCn(),text
+      cn,j.toString()
       ));
-    //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-    //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+j.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
+    dbgWriteJavaFiles("generated."+cn, j.toString());
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
-    Class<?> cl0 = clX.loadClass("generated."+j.getCn());
+    Class<?> cl0 = clX.loadClass("generated."+cn);
     Method m0 = cl0.getDeclaredMethod("execute0");
     Object result = m0.invoke(null);
     return result;

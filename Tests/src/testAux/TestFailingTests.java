@@ -16,7 +16,7 @@ import newTypeSystem.FormattedError;
 import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 
-public class TestFailingTests {
+/*public*/ class TestFailingTests {
 	public static void tp(ErrorKind kind,String ...code) {
 
 		try{tp(code);assert false;}

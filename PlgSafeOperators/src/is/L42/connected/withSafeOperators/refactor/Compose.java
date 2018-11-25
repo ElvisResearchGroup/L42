@@ -49,6 +49,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodType;
 import ast.Ast.Type;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.Ast.Path;
 import ast.Ast.Position;
 import ast.Ast.Type;
@@ -382,8 +383,11 @@ private ClassClash makeClassClash() {
 
 /**{@link ComposeSpec#methodTypeSubtype}*/
 public static boolean mtGT(Program p, MethodType mt1, MethodType mt2) {
-  if (!p.subtypeEq(mt1.getReturnType(), mt2.getReturnType())){return false;}
-  return mtEqRest(p,mt1,mt2);
+  try{
+    if (!p.subtypeEq(mt1.getReturnType(), mt2.getReturnType())){return false;}
+    return mtEqRest(p,mt1,mt2);
+    }
+  catch(PathMetaOrNonExistant pm) {return false;}
 }
 /**{@link ComposeSpec#methodTypeSubtype}*/
 private void checkMtGt(Program p, MethodWithType mwt1, MethodWithType mwt2,MethodType mt1, MethodType mt2) throws MethodClash {

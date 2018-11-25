@@ -47,7 +47,7 @@ import platformSpecific.javaTranslation.Resources;
 import tools.Assertions;
 
 public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
-  public static String of(ClassTable ct){
+  /*public static String of(ClassTable ct){
     List<Integer> ks=new ArrayList<>(ct.keySet());
     Collections.sort(ks);
     String res="";
@@ -55,14 +55,14 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
       ast.L42F.CD cd = ct.get(i).cd;
       CD jCdi=null;
       if (cd.getKind()!=null){
-        jCdi=L42FToMiniJ.of(ct, cd);
+        jCdi=L42FToJavaString.of(ct, cd);
         }
       if(jCdi==null) {continue;}//must be a lib stub
 
       res+=MiniJToJava.of(jCdi)+"\n";
       }
     return res;
-    }
+    }*/
 
   public static String of(MiniJ.CD cd){
     MiniJToJava v=new MiniJToJava();
@@ -132,7 +132,6 @@ public class MiniJToJava extends ToFormattedText implements JVisitor<Void>{
       s.get_else().accept(this);
       return null;
       }
-
     @Override
     public Void visit(MCall s) {
       if(s.getMName().startsWith("£CLoadLib_")) {

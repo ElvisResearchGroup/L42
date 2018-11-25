@@ -102,15 +102,17 @@ where
     CT*CNn £Xxn;
     public static BiConsumer<Object,Object> FieldAssFor£xn=(f,o)->{((CN)o).£Xxn=(CT*TXn)f;}
     
-CN x in CT.fields(Mxs)
-  {CN}={CNi | refine? method _ CNi #?x() in Mxs}
-CN1 x in CT.fields(Mxs)
-  {CN1,CN2}={CNi | refine? method _ CNi #?x() in Mxs}
+CN x__n in CT.fields(Mxs)
+  {CN}={CNi | refine? method _ CNi #?x__n() getter in Mxs}
+  refine? method _  m__n(_ x _) new in Mxs //or newWithFwd
+CN1 x__n in CT.fields(Mxs)
+  {CN1,CN2}={CNi | refine? method _ CNi #?x__n() getter in Mxs}
   CN2 in CT(CN1).CNs
-Object x in CT.fields(Mxs)
-  {CN1,CN2}={CNi | refine? method _ CNi #?x() in Mxs}
+  refine? method _  m__n(_ x _) new in Mxs //or newWithFwd
+Object x__n in CT.fields(Mxs)
+  {CN1,CN2}={CNi | refine? method _ CNi #?x__n() getter in Mxs}
   CN1!=CN2, CN2 notin CT(CN1).CNs and CN1 notin CT(CN2).CNs
-  
+  refine? method _  m__n(_ x _) new in Mxs //or newWithFwd
 
 
 //a this
@@ -137,14 +139,15 @@ CT;CN;G[refine? method T mxs(TX' this,(T x)s)] //no body
 CT,CN;G[refine? method T mxs((T x)s) new] //there can be many new/newFwd
   public static CT*TX £Cmxs(CT*(TX x)s){
     CN Res=new CN();
-    Res.£Xx1=£Xx1;..;Res.£Xxn=£Xxn;
+    Res.£Xx1=£Xx1;..;Res.£Xxn=£Xxn;//for xi in dom(G)
     return Res;
     }
   public CT*TX £Mmxs(CT*(TX x)s) CN.£Cmxs(xs) //only if refine?=refine
 
-CT,CN;G[refine? method T mxs((T x)s) newWithFwd]=//here, if mxs is private, we will add the pedex to the fields
+CT,CN;G[refine? method T mxs((T x)s) newWithFwd]=
   public static CT*TX £Cmxs(CT*(TX x)s){
     CN Res=new CN();
+    //for xi in dom(G)
     Res.£Xx1=£Xx1;Fwd.£CAddIfFwd(x1,Res,CN.FieldAssFor_x1);
     ..;
     Res.£Xxn=£Xxn;Fwd.£CAddIfFwd(xn,Res,CN.FieldAssFor_xn);
@@ -154,15 +157,18 @@ CT,CN;G[refine? method T mxs((T x)s) newWithFwd]=//here, if mxs is private, we w
 
 
 CT,CN;G[refine? method TX #?x(TX' this) getter]=
-  public static CT*TXn £C#?x(CT*CN £Xthis){return CAST £Xthis.£Xx;}
+  public static CT*TXn £C#?x(CT*CN £Xthis){return CAST £Xthis.£Xx;}// if x in dom(G)
+  public static CT*TXn £C#?x(CT*CN £Xthis){throw new Error();}// otherwise
   public CT*TX £M#?x() {return CN.£C#?x(this);} //only if refine?=refine
   where
   CAST=empty if TXn.CN in {G(x),CT(G(x)).CNs}
   otherwise CAST=(CT*TX)
+  //Note: if there is no field for this getter, getter is never called, can throw error
   
 CT,CN;G[refine? method Void #?x(TX this, TX' that) setter]=
   public static Void £C#?x(CT*TX £Xthis, CT*TX' £Xthat){
-    £Xthis.£Xx=£Xthat; return Void.Instance();}
+    £Xthis.£Xx=£Xthat;//if G(x) is defined   
+    return Void.Instance();}
   public CT*TX £M#?x(CT*TX' £Xthat) {return CN.£C#?x(this,£Xthat);} //only if refine?=refine
 
 //TODO: need to handle _Fwd and Instance for interfaces

@@ -19,9 +19,8 @@ import programReduction.Program;
 public class TestLoader {
 @Test  public void testPrintHiHi() throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, CompilationError {
   Loader l=new Loader(null);
-  M m1=new M(true,"Object","execute0",Collections.emptyList(),Collections.emptyList(),new MiniJ.RawJ(
-    "{System.out.println(\"hihi\");return null;}"));
-  l.run(new MiniJ.CD(false, "Hi",Collections.emptyList(),Collections.singletonList(m1)));
+  StringBuilder body=new StringBuilder("package generated; public class Hi{public static Object execute0(){System.out.println(\"hihi\");return null;}}");
+  l.run("Hi",body);
   }
 
 @Test  public void testReturnEmptyLib(){

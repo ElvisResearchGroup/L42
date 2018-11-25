@@ -23,7 +23,7 @@ import ast.ExpCore;
 import ast.ExpCore.ClassB;
 import auxiliaryGrammar.Functions;
 
-public class TestPassingPrograms {
+/*public*/ class TestPassingPrograms {
 	public static void tp(ErrorKind kind,String ...code) {
 
 		try{tp(code);assert false;}

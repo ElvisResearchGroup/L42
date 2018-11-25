@@ -10,6 +10,7 @@ import ast.Ast.C;
 import ast.Ast.Path;
 import ast.Ast.Type;
 import ast.ErrorMessage;
+import ast.ErrorMessage.PathMetaOrNonExistant;
 import ast.ExpCore.*;
 import ast.ExpCore.ClassB.*;
 import ast.Util;
@@ -99,11 +100,18 @@ public class PathMap extends CollectionWrapper<CsPath> {
         // Marco is going to kill me for this, it destroys doc comments,
         // and I have no idea what order it will return things in,
         // it also destroys all your paths by minimizing them.
-
-        return StreamUtils.stream(super.liftSup(supertypes))
+        return super.liftSup(supertypes);/*
+        try {
+          var supLiftSup=super.liftSup(supertypes);
+          return StreamUtils.stream(supLiftSup)
             .flatMap(T -> StreamUtils.concat(new FromedL(p, T.getPath()).Tz(), T))
             .map(p::minimize).filter(T -> !T.getPath().equals(Path.Any()))
-            .distinct().toList(); }
+            .distinct().toList();
+          }
+        catch(PathMetaOrNonExistant pm) {
+          throw pm;//breakpoint can be here
+          }*/
+        }
       
       /*@Override public Path liftP(Path that){
         if(that.isPrimitive()){return that;}

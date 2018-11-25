@@ -18,6 +18,7 @@ import ast.L42F;
 import ast.L42F.CD;
 import ast.L42F.Cn;
 import ast.L42F.D;
+import ast.L42F.SimpleBody;
 import ast.L42F.T;
 import caching.Loader;
 import ast.MiniJ;
@@ -36,23 +37,23 @@ public class ClassTable {
 
   public boolean isCoherent(L42F.E e0){
     List<Integer>invalid=new ArrayList<>();
-    e0.accept(coherentceChecker(invalid));
+    e0.accept(ctCoherentChecker(invalid));
     assert invalid.isEmpty():invalid;
     return true;
     }
 
-  public boolean isCoherent(){
+  public boolean isCoherent(){//the CT is coherent, unrelated with consistency
     List<Integer>invalid=new ArrayList<>();
     for(int i:map.keySet()){
       CD cdi = get(i).cd;
       if(cdi.getKind()==null){continue;}
-      coherentceChecker(invalid).visit(cdi);
+      ctCoherentChecker(invalid).visit(cdi);
       }
     assert invalid.isEmpty()
       :invalid;
     return true;
     }
-  private PropagatorVisitor coherentceChecker(List<Integer>invalid) {
+  private PropagatorVisitor ctCoherentChecker(List<Integer>invalid) {
     return new PropagatorVisitor(){
     @Override protected void liftCn(int cn) {
         if(Cn.cnFwd.getInner()>=cn){return;}
@@ -111,17 +112,23 @@ public String dbgNameOf(int index){
     return get(index).cd.l42ClassName();
     }
 
-  public Element _get(int index) {
+  public Element _get(Integer index) {
     return map.get(index);
     }
-  public Element get(int index) {
+  public Element get(Integer index) {
     Element res=_get(index);
     assert res!=null:""+index+this.isCoherent();
     return res;
     }
   public Set<Integer> keySet(){return map.keySet();}
   public String toString() {return L42FToString.visitCT(this);}
-  public String toJString() {return MiniJToJava.of(this);}
+  public String toJString() {
+    StringBuilder sb=new StringBuilder();
+    for(var e:this.map.values()) {
+      sb.append(new L42FToJavaString(this,e.cd).compute());
+      }
+    return sb.toString();
+    }
   public String toDepJString() {
     StringBuilder res=new StringBuilder();
     map.values().stream().sorted((e1,e2)->e1.cd.getCn()-e2.cd.getCn())
@@ -130,6 +137,43 @@ public String dbgNameOf(int index){
       .forEachOrdered(s->res.append(s+"\n"));
     return res.toString();
     }
+  public Map<String,Integer> fields(List<L42F.M> mxs){
+    var res=new HashMap<String,Integer>();
+    L42F.M k=null;
+    for(var mx:mxs){
+      if (mx.getBody()==SimpleBody.New ||mx.getBody()==SimpleBody.NewWithFwd) {
+        k=mx; break;
+        }
+      }
+    if(k==null) {return res;}
+    for(var mx:mxs){
+      if(mx.getBody()!=SimpleBody.Getter) {continue;}
+      var fName=mx.getSelector().getName();
+      if(fName.startsWith("#")){fName=fName.substring(1);}
+      var fN=fName;//lambdas :(
+      if(k.getTxs().stream().allMatch(tx->!tx.getX().equals(fN))) {continue;}
+      Integer newId=mx.getReturnType().getCn();
+      var name=mx.getSelector().nameToS();//this name have uniqueNum
+      if(name.startsWith("#")){name=name.substring(1);}
+      Integer former=res.get(name);
+      if(former==null){res.put(name, newId);}
+      else {
+        if(former.equals(newId)) {continue;}
+        Element e1=this._get(former);
+        Element e2=this._get(newId);
+        assert e1!=null || former <=Cn.cnFwd.getInner();
+        assert e2!=null || newId <=Cn.cnFwd.getInner();
+        boolean newInFormer=newId.equals(Cn.cnAny.getInner()) 
+          || (e1!=null && e1.cd.getCns().contains(newId));
+        boolean formerInNew=former.equals(Cn.cnAny.getInner())
+          || (e2!=null && e2.cd.getCns().contains(former));
+        if(newInFormer) {continue;}
+        if(formerInNew) {res.put(name,newId);}
+        else {res.put(name,Cn.cnAny.getInner());}
+        }
+      }
+    return res;
+  }
   public static final ClassTable empty=new ClassTable(Collections.emptyMap());
   public static class Element{
     public Element(Program p, CD cd) {this.p=p; this.cd = cd;}

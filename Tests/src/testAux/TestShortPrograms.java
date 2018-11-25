@@ -432,13 +432,13 @@ public void testComposition3(){tp("{",
 }
 
  * */
-@Test
+@Test(expected=Resources.Error.class)
 public void testCompositionx1(){tp("{",
     "Op:"+operatorAccess(),
     "X:Op.compose(left:{method This1.X m()},right:{method This0 m()})",
     "Main:{//@exitStatus\n//0\n\n}",
     " }");}
-@Test
+@Test(expected=Resources.Error.class)
 public void testCompositionx2(){tp("{",
     "Op:"+operatorAccess(),
     "Y: {",
@@ -638,5 +638,21 @@ public static final String listAccess(){return
 "  E:A.ident({//@exitStatus\n//0\n\n}) "+
 "  }");
 }
+
+  @Test public void testFrommedLiterals1(){tp("{"
+        ," A: {}"
+        ," D: {B:{} class method Library src() {C:{} class method Void m(A a,B b,C c)void}}"
+        ," E: D.src() "
+        ," F: {class method Void v()void class method Void mm(A a,D.B b, E.C c)E.m(a:a,b:b,c:c)} "
+        ," G: (F.v() {//@exitStatus\n//0\n\n} )"
+        ,"}");}
+
+  @Test public void testFrommedLiterals2(){tp("{"
+        ," A: {}"
+        ," D: {B:{} class method Library src() {C:{} class method Void m(A a,B b,C c)void}}"
+        ," E: {E1:{E2:{ E3:D.src() }}}"
+        ," F: {class method Void v()void class method Void mm(A a,D.B b, E.E1.E2.E3.C c)E.E1.E2.E3.m(a:a,b:b,c:c)} "
+        ," G: (F.v() {//@exitStatus\n//0\n\n} )"
+        ,"}");}
 
 }

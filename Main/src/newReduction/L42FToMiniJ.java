@@ -229,7 +229,7 @@ public class L42FToMiniJ {
 
     @Override
     public S visitE(E s) {
-      return L42FToMiniJS.forBody(ct, s);
+      return null;//return L42FToMiniJS.forBody(ct, s);
       }
     }
   public static String liftX(String x) {

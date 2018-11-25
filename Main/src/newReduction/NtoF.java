@@ -17,6 +17,7 @@ import ast.Ast.Mdf;
 import ast.Ast.MethodSelector;
 import ast.Ast.MethodType;
 import ast.Ast.Path;
+import ast.Ast.Type;
 import ast.ExpCore;
 import ast.L42F.Body;
 import ast.L42F.CD;
@@ -79,7 +80,7 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
   MethodType mt=mwt.getMt();
   MethodSelector ms=mwt.getMs();
   boolean hasE=mwt.get_inner()!=null;
-  boolean isClass=mt.getMdf()==Mdf.Class;
+  boolean isClass=mt.getMdf().isClass();
 
   if(hasE){//cases 1 and 2
     ExpCore e=mwt.getInner();
@@ -98,9 +99,16 @@ private static Stream<M> liftM(boolean isInterface,Program p, MethodWithType mwt
     return Stream.of(h.withBody(b));
     }
   //case 3
-  Body b=L42F.SimpleBody.Setter;
-  if(ms.getNames().isEmpty()){b=L42F.SimpleBody.Getter;}
-  if(!isClass){return Stream.of(h.withBody(b));}
+  assert !hasE;
+  if(!isClass) {
+    var ns=mwt.getMs().getNames();
+    if(ns.isEmpty()) {return Stream.of(h.withBody(L42F.SimpleBody.Getter));}
+    if(ns.size()==1 && ns.get(0).equals("that") 
+        && mwt.getMt().getReturnType().equals(Type.immVoid)) {
+      return Stream.of(h.withBody(L42F.SimpleBody.Setter));
+      }
+    return Stream.of(h.withBody(new L42F.Unreachable()));
+    }
   //case 4
   MethodWithType mwtNoF=mwt.withMt(mt.withTs(TypeManipulation.noFwd(mt.getTs())));
   mwtNoF=mwtNoF.withMs(PG.msOptimizedNew(ms));
