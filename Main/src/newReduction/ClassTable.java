@@ -21,7 +21,6 @@ import ast.L42F.D;
 import ast.L42F.SimpleBody;
 import ast.L42F.T;
 import caching.Loader;
-import ast.MiniJ;
 import coreVisitors.From;
 import l42FVisitors.PropagatorVisitor;
 import platformSpecific.javaTranslation.Resources;

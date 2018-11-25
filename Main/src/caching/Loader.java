@@ -22,16 +22,13 @@ import ast.ExpCore.EPath;
 import ast.L42F.CD;
 import ast.L42F.Cn;
 import ast.L42F.E;
-import ast.MiniJ.M;
 import auxiliaryGrammar.Functions;
-import ast.MiniJ;
 import ast.Ast.Path;
 import facade.ErrorFormatter;
 import facade.L42;
 import l42FVisitors.CloneVisitor;
 import newReduction.ClassTable;
 import newReduction.L42FToMiniJS;
-import newReduction.MiniJToJava;
 import newReduction.PG;
 import newTypeSystem.G;
 import newReduction.ClassTable.Element;
@@ -101,19 +98,12 @@ public class Loader {
   }
   private void addResource()
       throws CompilationError, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-    M m1=new M(true,"Object","£CLoadLib",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
-      "{return loader.getLib(index);}\n"
-      + "public static "+Loader.class.getCanonicalName()+" loader;"
-      ));
-    M m2=new M(true,Revertable.class.getCanonicalName(),"£COf",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
-      "{return ()->£CPathOf(index);}\n"
-      ));
-    M m3=new M(true,ast.ExpCore.class.getCanonicalName(),"£CPathOf",Collections.singletonList("int"),Collections.singletonList("index"),new MiniJ.RawJ(
-      "{return loader.getPathOf(index);}\n"
-      ));
-    MiniJ.CD cdResource=new MiniJ.CD(false, "Resource",Collections.emptyList(),Arrays.asList(m1,m2,m3));
-    String text="package generated;\n"+MiniJToJava.of(cdResource);
-    List<SourceFile> files =Collections.singletonList(new SourceFile(cdResource.getCn(),text));
+    String l= "public static "+Loader.class.getCanonicalName()+" loader;\n";
+    String m1="public static Object £CLoadLib(int index) {return loader.getLib(index);}\n";
+    String m2="public static "+Revertable.class.getCanonicalName()+" £COf(int index){return ()->£CPathOf(index);}\n";
+    String m3="public static "+ast.ExpCore.class.getCanonicalName()+" £CPathOf(int index){return loader.getPathOf(index);}\n";
+    String text="package generated;\npublic class Resource{"+l+m1+m2+m3+"}";
+    List<SourceFile> files =Collections.singletonList(new SourceFile("generated.Resource",text));
     dbgWriteJavaFiles("generated.Resource", text);
     MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
     ClassFile resBytes = clX.map().get("generated.Resource");
