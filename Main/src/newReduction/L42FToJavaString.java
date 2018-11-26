@@ -63,7 +63,8 @@ public class L42FToJavaString extends ToFormattedText{
       }
       else {m.getBody().accept(new VB(m));}
       if(m.getBody().equals(SimpleBody.Empty)|| m.getBody().equals(SimpleBody.NewFwd)){continue;}
-      //if(!(m.getBody() instanceof E)){continue;}//TODO: can we remove the hand made delegators in SimpleBodies?
+      //Note:delegators are handled in a more consistend way in source code w.r.t. formalization,
+      //where they are repeated by the pattern matching.
       if(!m.isRefine()){continue;}
       methodHeader(true, m);
       c("{return "+cd.l42ClassName()+".£C"+liftMs(m.getSelector())+"(");
@@ -130,19 +131,11 @@ public class L42FToJavaString extends ToFormattedText{
 
     @Override
     public Void visitSetter(SimpleBody s) {
-      String x=liftMs(m.getSelector());
-      String xDy="£M"+x;
-      x="£C"+x;
+      String x="£C"+liftMs(m.getSelector());
       String f = fieldNameFromMethName(x);
-      String t=liftT(m.getReturnType());
-      String t1=liftT(m.getTxs().get(1).getT());
-      String x1=liftX(m.getTxs().get(1).getX());
       c("{");
       if(fs.containsKey(f)) {c("£Xthis.£X"+f+"=£Xthat;");}
       c("return "+Resources.Void.class.getCanonicalName()+".Instance();}");
-      /*if(m.isRefine()){
-        c("public "+t+ " "+xDy+"("+t1+" "+x1+"){return "+cn+"."+x+"(this,£Xthat);}");
-        }*/
       return null;
       }
 
@@ -160,9 +153,7 @@ public class L42FToJavaString extends ToFormattedText{
 
     @Override
     public Void visitGetter(SimpleBody s) {
-      String x=liftMs(m.getSelector());
-      String xDy="£M"+x;
-      x="£C"+x;
+      String x="£C"+liftMs(m.getSelector());
       String f=fieldNameFromMethName(x);
       String t=liftT(m.getReturnType());
       String cast="";
@@ -176,9 +167,6 @@ public class L42FToJavaString extends ToFormattedText{
         if(toCast) {cast="("+t+")";}
         c("{return "+cast+"£Xthis.£X"+f+";}");
         }
-      /*if(m.isRefine()){
-        c("public "+t+ " "+xDy+"(){return "+cn+"."+x+"(this);}");
-        }*/
       return null;
       }
 
@@ -191,10 +179,6 @@ public class L42FToJavaString extends ToFormattedText{
       return factory(true);
       }
     private Void factory(boolean fwd){
-      String x=liftMs(m.getSelector());
-      String xDy="£M"+x;
-      x="£C"+x;
-      String t=liftT(m.getReturnType());
       c("{"+cn+" Res=new "+cn+"();");
       for(String xi:fs.keySet()) {
         String vari=liftX(xi);
@@ -206,11 +190,6 @@ public class L42FToJavaString extends ToFormattedText{
         if(fwd){c(Fwd.class.getCanonicalName()+".£CAddIfFwd("+vari+",Res,"+cn+".FieldAssFor"+fi+");");}
         }
       c("return Res;}");
-      /*if(this.m.isRefine()){
-        c("public "+t+" "+xDy+"(){return "+cn+"."+x+"(this");
-        for(var txi:m.getTxs()){c(", "+liftX(txi.getX()));}
-        c(");}");
-        }*/
       return null;
       }
 
@@ -271,18 +250,4 @@ public class L42FToJavaString extends ToFormattedText{
     c(",null,null,null);\n");
     c("}\n");*/
     }
-
   }
-
-/*
-public class L42FToJavaString extends ToFormattedText implements Visitor<Void>{
-
-  @Override
-  public Void visit(Cast s) {
-    c("((");
-    liftT(s.getT());
-    c(")");
-    liftX(s.getX());
-    c(")");
-    return null;
-  }*/

@@ -118,21 +118,15 @@ Object x__n in CT.fields(Mxs)
 //a this
 CT;CN;G[refine? method TX mxs(TX' this,(TX x)s) e]=
   public static CT*TX £Cmxs(CT*TX' £Xthis,CT*(TX x)s) CT;empty;empty*e[£Xx=x]//for all x
-  onlyIfRefine(refine?,
-    public CT*TX £Mmxs(CT*(TX x)s) {return CN.£Cmxs(this,xs);}
-    )
+  public CT*TX £Mmxs(CT*(TX x)s) {return CN.£Cmxs(this,xs);} //only if refine?=refine
 //b no "this"
 CT;CN;G[refine? method TX mxs((TX x)s) e]=
   public static CT*TX £Cmxs(CT*(TX x)s) CT;empty;empty*e
-  onlyIfRefine(refine?,
-    public CT*TX £Cmxs(CT*(TX x)s) {return CN.£Cmxs(xs);}
-    )
+  public CT*TX £Mmxs(CT*(TX x)s) {return CN.£Cmxs(xs);} //only if refine?=refine
 //c interface this
 CT;CN;G[refine? method T mxs(TX' this,(T x)s)] //no body
   public static CT*TX £Cmxs(CT*TX' £Xthis,CT*(TX x)s){return £Xthis.£Mmxs(xs);}
   default CT*TX £Mmxs(CT*(TX x)s){throw new Error("Interface method invocation");}//is going to be in an interface
-
-
 
 //never happens CT[method T mxs((T x)s)]
 
