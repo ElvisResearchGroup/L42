@@ -73,68 +73,34 @@ public class PathMap extends CollectionWrapper<CsPath> {
   public PathMap map(Function<Path, Path> f) {
     return new PathMap(StreamUtils.map(this, CsP -> CsP.withPath(f.apply(CsP.getPath()))));}
 
-  //R(L)
-  ClassB apply(Program p) {
-    var visitor = new CloneVisitorWithProgram(p.pop()) {
-      private <T> List<T> concat(List<T> a, List<T> b) {
-        ArrayList<T> res = new ArrayList<>(a);
-        res.addAll(b);
-        return Collections.unmodifiableList(res); }
+  private class Visitor extends CloneVisitorWithProgram {
+    Visitor(Program p) { super(p); }
+    @Override public ClassB visit(ClassB that) { return (ClassB)super.visit(that); }
+    @Override public Path liftP(Path P){
+      List<Ast.C> Cs = this.whereFromTop();
+      int n = Cs.size();
+      if (!P.isPrimitive() && n >= P.outerNumber()) {
+        var Cs1 = StreamUtils.concat(Cs.subList(0, Cs.size() - P.outerNumber()), P.getCBar());
+        for (var CsP : PathMap.this) {
+          var Cs2 = CsP.getCs();
+          var P2 = CsP.getPath();
+          if (Cs1.equals(Cs2)) { return P2.isPrimitive() ? P2 : P2.setNewOuter(P2.outerNumber() + n); }}}
+      return P;}}
 
-      @Override public Path liftP(Path P){
-        List<Ast.C> Cs = Collections.unmodifiableList(this.whereFromTop());
-        int n = Cs.size();
-        if (!P.isPrimitive() && n >= P.outerNumber()) {
-          int k = P.outerNumber();
-          List<Ast.C> Cs1 = concat(Cs.subList(0, Cs.size() - k), P.getCBar());
-          for (Map.Entry<List<C>, Path> CsP : map.entrySet()) {
-            List<Ast.C> Cs2 =  CsP.getKey();
-            Path P2 =  CsP.getValue();
-            if (Cs1.equals(Cs2)) {
-              if (P2.isPrimitive()) { return P2; }
-              else { return P2.setNewOuter(P2.outerNumber() + n); }}}}
-        // No change found
-        return P; }
-      
+  //R(L)
+  ClassB apply(ClassB L) { return new Visitor(Program.emptyLibraryProgram().evilPush(L)).visit(L); }
+  //R(p) like R(p.top()) except that it normalises implements lists
+  ClassB apply(Program p) {
+    var visitor = new Visitor(p.pop()) {
       @Override protected List<Type> liftSup(List<Type> supertypes) {
         // Marco is going to kill me for this, it destroys doc comments,
         // and I have no idea what order it will return things in,
         // it also destroys all your paths by minimizing them.
-        return super.liftSup(supertypes);/*
-        try {
-          var supLiftSup=super.liftSup(supertypes);
-          return StreamUtils.stream(supLiftSup)
-            .flatMap(T -> StreamUtils.concat(new FromedL(p, T.getPath()).Tz(), T))
-            .map(p::minimize).filter(T -> !T.getPath().equals(Path.Any()))
-            .distinct().toList();
-          }
-        catch(PathMetaOrNonExistant pm) {
-          throw pm;//breakpoint can be here
-          }*/
-        }
-      
-      /*@Override public Path liftP(Path that){
-        if(that.isPrimitive()){return that;}
-        if(that.getCBar().isEmpty()){return that;}
-        for(CsPath cp: map){
-          Path newP=_processCsPath(cp,that);
-          if(newP!=null){return newP;}}
-        return that;}
-      protected Path _processCsPath(CsPath cp,Path that){
-        Path srcHere=Path.outer(levels,cp.getCs());
-        List<Ast.C> tail=p._equivSubPath(srcHere,that);
-        if(tail==null){return null;}
-        return computeNonNullRes(cp, tail); }
-      protected Path computeNonNullRes(CsPath cp, List<Ast.C> tail) {
-        if(cp.getPath().isPrimitive()){return cp.getPath();}
-        int newOuter=cp.getPath().outerNumber()+levels;
-        if(tail.isEmpty()){return cp.getPath().setNewOuter(newOuter);}
-        List<Ast.C> newCs=new ArrayList<>(cp.getPath().getCBar());
-        newCs.addAll(tail);
-        Path destHere=Path.outer(newOuter,newCs);
-        return destHere;}*/};
-
-    return (ClassB)(visitor.visit(p.top())); }
+        return StreamUtils.stream(super.liftSup(supertypes))
+          .flatMap(T -> StreamUtils.concat(new FromedL(p, T.getPath()).Tz(), T))
+          .map(p::minimize).filter(T -> !T.getPath().equals(Path.Any()))
+          .distinct().toList();}};
+    return visitor.visit(p.top()); }
 
   // L[remove Csz]
   public static ClassB remove(ClassB L, Collection<List<Ast.C>> Csz) {
