@@ -82,7 +82,9 @@
 \setlength{\labelsep}{0.63cm}
 \setlength{\topsep}{0cm}
 \setlength{\leftmargini}{0.63cm}
-
+\setlength{\leftmarginii}{\leftmargini}
+\newcommand{\linebox}[1]{%
+	\parbox{\textwidth}{\rule{0cm}{1em}\strut\smash{#1}\strut}}
 
 \xpatchcmd{\itemize}{\def\makelabel}{% Configure inside itemize
 	\setlength{\topsep}{0pt}%
@@ -93,7 +95,7 @@
 \setbeamertemplate{itemize/enumerate body begin}{\parj}
 \setbeamertemplate{itemize/enumerate body end}{\pars}
 	
-	
+					\newlength{\heightofhw}%
 \setbeamercolor{author}{fg=AccentB40}
 \setbeamerfont{author}{size=\large}
 \setbeamerfont{institute}{size=\normalsize}
@@ -102,17 +104,13 @@
 \setbeamercolor{frametitle}{fg=AccentD50}
 \newlength{\parprefix}
 \setbeamertemplate{frametitle}{%
-	\begin{beamercolorbox}{frametitle}
-		\usebeamerfont{frametitle}
-		{\color{AccentD25} \hrule height 0.75pt \vspace{3pt} \hrule height 1.5pt}
-		\setlength{\parprefix}{\fboxsep}
+	\begin{beamercolorbox}{frametitle}%
+		\usebeamerfont{frametitle}%
+		{\color{AccentD25} \hrule height 0.75pt \vspace{3pt} \hrule height 1.5pt}%
 		\setlength{\fboxsep}{0pt}%
-		\colorbox{AccentB60}{\parbox{\textwidth}{%
-			\vspace{\parprefix}\insertframetitle\vspace{\parprefix}
-		}}%
-		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}		
-	\end{beamercolorbox}
-}
+		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
+		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
+	\end{beamercolorbox}}
 
 %\usepackage{enumitem}
 %\setlist{nolistsep}
@@ -144,12 +142,10 @@
 
 \newcommand{\heading}[1]{%
 	%3       Blue    /12pt   Blue    /1pt    +0.75pt
-%	\large	 % 12Pt
-	\vspace{\fboxsep}
-	\color{Accent} \large #1
-	\vspace{\fboxsep}
-	\hrule height 1pt
-}
+	{\vspace{5pt}\color{Accent}%
+	\linebox{\large #1}%
+	\hrule height 1pt}}
+
 \beamertemplatenavigationsymbolsempty
 
 \setbeamersize{text margin left=1.3333333333333333cm, text margin right=1.3333333333333333cm} % default is 1cm*1cm
