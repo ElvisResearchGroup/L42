@@ -64,7 +64,13 @@
 \newcommand{\comment}[1]{\note{\hl{#1}}}
 \usefonttheme{professionalfonts}
 %\setbeameroption{show notes on second screen}
+
+\newcommand{\heading}[1]{\usebeamerfont*{subtitle}{\usebeamercolor[fg]{subtitle}#1}}
+\beamertemplatenavigationsymbolsempty
+\geometry{papersize={16cm,12cm}} % (4:3)*4cm scale, default is (4:3)*3cm
+\setbeamersize{text margin left=1.3333333333333333cm, text margin right=1.3333333333333333cm} % default is 1cm*1cm
 \end_preamble
+\options handout
 \use_default_options true
 \begin_modules
 foottoend
@@ -82,6 +88,23 @@ InsetLayout Flex:Beamer_Comment
   BgColor        notebg
   ResetsFont       true
 End
+Style Heading
+  Category         MainText
+  LatexType        Command
+  LatexName        heading
+  Font
+    Size           Large
+    Series         Bold
+    Color          Blue
+  EndFont
+End
+Style ColumnsTextWidth
+  CopyStyle        Columns
+  LatexParam       [onlytextwidth]
+  LabelString      "Columns (text width)"
+  LeftMargin       "Columns (text width)xx"
+  ResetArgs        1
+End
 \end_local_layout
 \language british
 \language_package default
@@ -95,8 +118,8 @@ End
 \use_non_tex_fonts true
 \font_sc false
 \font_osf false
-\font_sf_scale 100 104
-\font_tt_scale 100 109
+\font_sf_scale 100 91
+\font_tt_scale 100 95
 \use_microtype false
 \use_dash_ligatures true
 \graphics xetex
@@ -104,7 +127,7 @@ End
 \output_sync 1
 \bibtex_command default
 \index_command default
-\paperfontsize 10
+\paperfontsize 11
 \spacing single
 \use_hyperref false
 \papersize a4paper
@@ -183,7 +206,11 @@ By Isaac Oscar Gariano
 
 \end_inset
 
- (Victoria University of Wellington)
+
+\end_layout
+
+\begin_layout Institute
+(Victoria University of Wellington)
 \end_layout
 
 \begin_layout Standard
@@ -268,7 +295,7 @@ By Isaac Oscar Gariano
 
 \begin_layout Standard
 \begin_inset FormulaMacro
-\newcommand{\tab}{\texttt{\ \ \ \ }}
+\newcommand{\tab}{\texttt{\ \ }}
 {    }
 \end_inset
 
@@ -288,58 +315,66 @@ By Isaac Oscar Gariano
 status open
 
 \begin_layout Plain Layout
-The Problem
+Conventions
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+We will consider C♯, since it
+\end_layout
+
+\begin_layout Itemize
+is statically-typed,
+\end_layout
+
+\begin_layout Itemize
+supports named/identifiable functions (such as static/instance methods or
+ constructors),
+\end_layout
+
+\begin_layout Itemize
+supports dynamic dispatch (with interfaces, virtual methods, etc.),
+\end_layout
+
+\begin_layout Itemize
+supports dynamic code loading, and
+\end_layout
+
+\begin_layout Itemize
+supports dynamic function lookup and invocation (with reflection).
+\end_layout
+
+\begin_layout Standard
+For brevity I will omit accessibility modifiers and allow free standing
+ static functions.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
 \end_inset
 
 
 \end_layout
 
 \begin_layout Frame
-Consider an imperative language, such as C♯, which: 
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-is statically-typed
-\end_layout
-
-\begin_layout Itemize
-has named/identifiable functions (e.g.
- static/instance methods or constructors)
-\end_layout
-
-\begin_layout Itemize
-has dynamic dispatch (e.g.
- interfaces, delegates, and virtual methods)
-\end_layout
-
-\begin_layout Itemize
-supports dynamic code loading and execution
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex Beamer Comment
+\begin_inset Argument 4
 status open
 
 \begin_layout Plain Layout
-TODO shorten the above, or just speek it?
+The Problem
 \end_layout
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Note: for brevity I will omit accessibility modifiers and allow free standing
- static functions
-\end_layout
-
-\begin_layout Enumerate
-\begin_inset Argument 1
-status collapsed
+\begin_inset Argument 2
+status open
 
 \begin_layout Plain Layout
 
@@ -348,25 +383,29 @@ status collapsed
 
 \end_inset
 
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
 What 
 \emph on
 could
 \emph default
- this method do?
-\begin_inset Newline newline
-\end_inset
+ this code do?
+\end_layout
 
-
+\begin_deeper
+\begin_layout Standard
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M1(}\cf ) \{ \cf{Abs(}\cl 0\cf ); \}}$
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Flex Beamer Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 Well it looks like it does nothing, it just gets the absolute value of 0
@@ -381,7 +420,7 @@ status collapsed
 
 \end_inset
 
-Well the documentation dosn’t say it will, and we trust the implementator,
+Well the documentation dosn’t say it will, and we trust the implementer,
  Microsoft, to follow it.
  But, if we didn’t trust it, what could we do?
 \end_layout
@@ -391,16 +430,17 @@ Well the documentation dosn’t say it will, and we trust the implementator,
 
 \end_layout
 
+\end_deeper
 \begin_layout Enumerate
 What about this, what 
 \emph on
 could
 \emph default
  it do?
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_deeper
+\begin_layout Standard
 \begin_inset Flex Beamer Comment
 status collapsed
 
@@ -412,28 +452,25 @@ Note: I am now using a user-defined interface, so that I can freely play
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Formula $\texttt{\ck{interface} \ct I \{ \ck{void} \cf{Run()}; \}}$
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2(}\ct I \cv x\cf ) \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Flex Beamer Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
 This one can do anything the language will let it, so it is likely to be
@@ -451,44 +488,41 @@ This one can do anything the language will let it, so it is likely to be
 
 \end_layout
 
+\end_deeper
 \begin_layout Enumerate
 How about this?
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_deeper
+\begin_layout Standard
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{String} \cv{url}\cf ) \{}$
 \end_inset
 
 
-\begin_inset Newline newline
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\ct{Assembly} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf ); \cm{// Load code (possibly from the internet)}}$
 \end_inset
 
 
-\begin_inset Formula $\texttt{\tab\ck{var} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf );}$
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke(}\ck{null}, \ck{null}\cf ); \} \cm{// call \cf{M()}}}$
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
-\begin_inset Formula $\texttt{\tab\ck{new} \ct{FunctionHandle<}\cf{[]}\ct >\cf (\cv{code}, \cl{"M"}\cf ).\cf{Invoke(}\ck{null}, \ck{null}\cf ); \}}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
+\begin_layout Standard
 \begin_inset Flex Beamer Note
-status collapsed
+status open
 
 \begin_layout Plain Layout
-This will throw an exception if M isn’t declared to only (indirectly) call
- UnrestrictedPrimitive operations.
- Note that the check will happen before you invoke M, giving you an early
- error.
+This is very problematic, url could refer to code written by anyone, it
+ might not have even been written yet when M3 was written.
+ So we cannot inspect the code or simply trust their authors.
 \end_layout
 
 \end_inset
@@ -497,7 +531,11 @@ This will throw an exception if M isn’t declared to only (indirectly) call
 \end_layout
 
 \end_deeper
-\begin_layout Frame
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
 
 \end_layout
 
@@ -514,7 +552,8 @@ Callability
 
 \end_layout
 
-\begin_layout Frame
+\begin_deeper
+\begin_layout Itemize
 
 \emph on
 Callability
@@ -530,12 +569,11 @@ call
  a function.
 \end_layout
 
-\begin_layout Frame
+\begin_layout Itemize
 A function's callability is the set of things it can call.
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
-
+\begin_layout Standard
 \begin_inset Flex Beamer Note
 status open
 
@@ -553,80 +591,61 @@ We will abstract away performing an ‘operation’ (such as reading a file,
 
 \end_layout
 
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Heading
+Restatement of the Problem: 
+\end_layout
+
 \begin_layout Enumerate
-\begin_inset Formula $\texttt{\tab\ck{new} \ct{FunctionHandle<}\cf{[]}\ct >\cf (\cv{code}, \cl{"M"}\cf ).\cf{Invoke(}\ck{null}, \ck{null}\cf ); \}}$
+What is the callability of 
+\begin_inset Formula $\cf{Abs}$
 \end_inset
 
+? (Where 
+\begin_inset Formula $\cf{Abs}$
+\end_inset
 
+is a static method)
+\end_layout
+
+\begin_layout Enumerate
+What is the callability of 
+\begin_inset Formula $\cv x.\cf{Run}$
+\end_inset
+
+? (Where 
+\begin_inset Formula $\cv x$
+\end_inset
+
+ is of an interface type 
+\begin_inset Formula $\ct I$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Enumerate
+What is the callability of 
+\begin_inset Formula $\cf M$
+\end_inset
+
+? (Where 
+\begin_inset Formula $\cf M$
+\end_inset
+
+ was a dynamically loaded static-method)
 \end_layout
 
 \begin_layout Standard
-Heloo
-\end_layout
-
-\begin_layout Frame
-\begin_inset Argument 4
+\begin_inset Flex Beamer Note
 status open
 
 \begin_layout Plain Layout
-EXTRA
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-\begin_inset script superscript
-
-\begin_layout Plain Layout
-1
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-email{isaac@ecs.vuw.ac.nz}
-\end_layout
-
-\end_inset
-
- 
-\begin_inset script superscript
-
-\begin_layout Plain Layout
-2
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-email{marco.servetto@ecs.vuw.ac.nz}
-\end_layout
-
-\end_inset
-
- 
+We will present a system that can answer these questions by constraining
+ their callabilities.
 \end_layout
 
 \end_inset
@@ -636,87 +655,18 @@ email{marco.servetto@ecs.vuw.ac.nz}
 
 \end_deeper
 \begin_layout Standard
-How does one know whether a called function will access arbitrary files
- on your system? One common option is to say that if the called function
- is not declared impure (e.g.
- with Haskell
-\begin_inset Quotes brd
+\begin_inset Separator plain
 \end_inset
 
-s 
-\begin_inset Formula $\ct{IO}$
-\end_inset
 
- monad) it will not read any files (or do any other I/O).
- Another option is to raise a runtime error or trap if it tries to do so
- (e.g.
- with Java
-\begin_inset Quotes brd
-\end_inset
-
-s 
-\begin_inset Formula $\ct{SecurityManager}$
-\end_inset
-
-).
- The first option is overly restrictive and heavy weight (what if the function
- only needs access to standard out?) whilst the second hampers static and
- modular reasoning.
- We call the operations a function may call its 
-\emph on
-callability
-\emph default
-; we propose a simple and flexible type-system feature that allows one to
- soundly statically reason about functions callability on a fine-grained
- level.
- Importantly our system only restricts 
-\emph on
-calling
-\emph default
- functions, it does not restrict what 
-\emph on
-objects
-\emph default
- can be created, passed around, or aliased.
 \end_layout
 
-\begin_layout Standard
-In our systems, all functions are annotated with a base-callability using
- the syntax 
-\begin_inset Formula $\calls{\f{\f x}_{1},\dots,\f x_{n}}$
-\end_inset
-
-, where each 
-\begin_inset Formula $\f x_{i}$
-\end_inset
-
- indicates the name of a function (or set of functions) that can be called.
- Note how here a function declares what 
-\emph on
-it can access
-\emph default
-, compare this with conventional accessibility, (like Scala
-\begin_inset Quotes brd
-\end_inset
-
-s 
-\begin_inset Formula $\k{private[}\t C\k ]$
-\end_inset
-
- modifier) where a function declares what 
-\emph on
-can access it
-\emph default
-.
- Our system has three core rules:
-\begin_inset ERT
+\begin_layout Frame
+\begin_inset Argument 4
 status open
 
 \begin_layout Plain Layout
-
-
-\backslash
-parj{}
+The Basics
 \end_layout
 
 \end_inset
@@ -724,90 +674,244 @@ parj{}
 
 \end_layout
 
-\begin_layout Itemize
-Any function can call call itself.
+\begin_deeper
+\begin_layout Heading
+The 
+\begin_inset Formula $\calls{\f{\f f}_{\l 1},\dots,\f f_{\l n}}$
+\end_inset
+
+ annotation
 \end_layout
 
-\begin_layout Itemize
-A function can call each function in its base-callability.
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+A function declaration can be suffixed with it, indicating that it can call
+ f, …, fn.
 \end_layout
 
-\begin_layout Itemize
-If a function 
+\end_inset
+
+
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Main(}\ct{String[]} \cv{argv}\cf ) \calls{\cf{WriteLine}} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cf{WriteLine(}\cl{"Hello World!"}\cf ); \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+At first glance this looks like we have to list every single function we
+ want to call, however this is not what the annotation means, rather it
+ is the starting point of functions that can be called.
+ In addition, the system can in principle infer these annotations, but we
+ will write them out explicitly to aid explanation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Heading
+The Can-Call Relation: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+As part of typechecking, whenever their is a call to g from within the body
+ of a function f, we will check that f 'can call' g.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\f f\rightsquigarrow\f g$
+\end_inset
+
+, i.e.
+ a function 
 \begin_inset Formula $\f f$
 \end_inset
 
- can call everything in the base-callability of a function 
+can call a function 
 \begin_inset Formula $\f g$
 \end_inset
 
-, then 
+, iff:
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\f g\in Calls(\f f)⇒\f f\rightsquigarrow\f g$
+\end_inset
+
+, i.e.
+ 
+\begin_inset Formula $\f g$
+\end_inset
+
+ is in the 
+\begin_inset Formula $\calls{…}$
+\end_inset
+
+ annotation of 
 \begin_inset Formula $\f f$
 \end_inset
 
- can call 
+.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+this is exactly what the calls annotation means
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Write(}\ct{String} \cv s\cf ) \calls{\cf{WriteChar}} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\ck{foreach (}\ct{Char} \cv c \ck{in} \cv s\ck ) \cf{WriteChar(}\cv c\cf ); \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\backslash
+not
+\backslash
+rightsquigarrow
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\forall\f h\in Calls(\f f)\bullet\f f\rightsquigarrow\f h)⇒\f f\rightsquigarrow\f g$
+\end_inset
+
+, i.e.
+ if 
+\begin_inset Formula $\f f$
+\end_inset
+
+ can call every function in the 
+\begin_inset Formula $\calls{…}$
+\end_inset
+
+ annotation of 
 \begin_inset Formula $\f g$
 \end_inset
 
 .
 \end_layout
 
+\begin_deeper
 \begin_layout Standard
-\begin_inset ERT
+\begin_inset Flex Beamer Note
 status open
 
 \begin_layout Plain Layout
-
-
-\backslash
-pars{}
+this makes sense, since you could have just inlined the body of g, so you're
+ not really gaining any power.
+ Note that if calls(f) is empty, that this vacously holds
 \end_layout
 
 \end_inset
 
-With these rules harmless language/library primitives/intrinsics (such as
- integer addition) would be marked with 
-\begin_inset Formula $\calls{\empty}$
-\end_inset
 
-, allowing any function to call it.
- On the other hand, if a primitive 
-\begin_inset Formula $\f f$
-\end_inset
-
- should be restricted (e.g.
- a function to exit the program), one could annotate it with 
-\begin_inset Formula $\calls{\f f}$
-\end_inset
-
-, thus allowing only specifically marked functions to call it.
- Other systems can be envisioned, such as having a dummy 
-\begin_inset Formula $\cf{io}$
-\end_inset
-
- function, and than marking all I/O primitives with 
-\begin_inset Formula $\calls{\cf{io}}$
-\end_inset
-
-.
 \end_layout
 
-\begin_layout Standard
-We also support callability generics and dynamic dispatch, thus allowing
- the system to become quite flexible; consider for example the following
- (where 
-\begin_inset Formula $\cf{'a}$
-\end_inset
-
- denotes a generic callability parameter):
-\begin_inset ERT
+\begin_layout ExampleBlock
+\begin_inset Argument 2
 status open
 
 \begin_layout Plain Layout
-
-
-\backslash
-parj{}
+Example
 \end_layout
 
 \end_inset
@@ -815,211 +919,932 @@ parj{}
 
 \end_layout
 
+\begin_deeper
 \begin_layout Standard
-\begin_inset Box Boxed
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-thickness "0.4pt"
-separation "3pt"
-shadowsize "4pt"
-framecolor "black"
-backgroundcolor "none"
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{WriteLine(}\ct{String} \cv s\cf ) \calls{\cf{WriteChar}} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cf{Write(}\v s \cf + \cl{"\backslash n"}\cf ); \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Standard
+Note that the previous rules apply transitively, and always allow for recursive
+ calls.
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset Argument 2
 status open
 
 \begin_layout Plain Layout
-\begin_inset Formula $\texttt{\ck{static} \ck{extern} \ct{long} \cf{posix\_read(}\ct{int} \cv{file\_descriptor}, \ct{void*} \cv{buffer}, \ct{ulong} \cv{count}\cf )}$
-\end_inset
+Example
+\end_layout
 
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\tab\calls{\cf{posix\_read}}; \cm{// system function defined by the OS}}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\ck{static} \ct{long} \cf{stdin\_read(}\ct{void*} \cv{buffer}, \ct{ulong} \cv{count}\cf ) \calls{\cf{posix\_read}} \{}\lyxlock$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\tab\ck{return} \cf{posix\_read(}\cv{STDIN\_FILENO}, \cv{buffer}, \cv{count}\cf ); \}}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\ck{interface} \ct{Input\_Stream<}\cf{'a}\ct > \{}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\tab\ct{char} \cf{get\_char()} \calls{\cf{'a}};}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\tab… \} \cm{// other usefull functions}}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\ck{static} \ct{void} \cf{do\_stuff<'a>(}\ct{Input\_Stream<}\cf{'a}\ct > \cv{stream}\cf ) \calls{\cf{'a}} \{}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\tab\texttt{… \} \cm{//} \cm{could have any well-typed code}}$
 \end_inset
 
 
 \end_layout
 
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{HelloWorld(}\cf ) \calls{\cf{WriteLine}} \{}$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-\begin_inset ERT
+\begin_inset Formula $\texttt{\tab\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf ); \}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Main(}\ct{String[]} \v{args}\cf ) \calls{\cf{WriteChar}} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cf{HelloWorld()}; \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Comment
 status open
 
 \begin_layout Plain Layout
-
-
-\backslash
-pars{}
+TODO: Have an example for recursion?
 \end_layout
 
 \end_inset
 
 
-\begin_inset Formula $\c{\t{Input\_Stream<}\f{'a}\t >}$
-\end_inset
-
- is conceptually similar to a generic 
-\begin_inset Formula $\c{\t{Input\_Stream<T>}}$
-\end_inset
-
-, where 
-\begin_inset Formula $\ct T$
-\end_inset
-
- denotes a type-parameter.
 \end_layout
 
+\end_deeper
 \begin_layout Standard
-For any base-callability 
-\begin_inset Formula $\f c$
-\end_inset
-
- one can then call 
-\begin_inset Formula $\cf{do\_stuff<}\f c\cf >$
-\end_inset
-
-and pass it an instance of a class that implements 
-\begin_inset Formula $\ct{\t{Input\_Stream<}}\f c\ct{\t >}$
-\end_inset
-
-.
- For example, a call 
-\begin_inset Formula $\cf{do\_stuff<[]>(}\v{a\_stream}\cf )$
-\end_inset
-
- cannot (even indirectly) read from a file, since it doesn
-\begin_inset Quotes brd
-\end_inset
-
-t have the callability 
-\begin_inset Formula $\cf{posix\_read}$
-\end_inset
-
- or any callability which could indirectly call it.
- Another important benefit of our system is that we can even reason over
- a call like 
-\begin_inset Formula $\cf{do\_stuff<[stdin\_read]>(}\v{a\_stream}\cf )$
-\end_inset
-
-, it can read-files, but only standard-input (the file identified by 
-\begin_inset Formula $\cv{STDIN\_FILENO}$
-\end_inset
-
-).
- As is usual in OO languages, for such a call to type-check, 
-\begin_inset Formula $\v{a\_stream}$
+\begin_inset Separator plain
 \end_inset
 
 
-\begin_inset Quotes brd
-\end_inset
-
-s static-type must be a subtype of 
-\begin_inset Formula $\ct{Input\_Stream<}\cf{[stdin\_read]}\ct >$
-\end_inset
-
- but one could always perform a run-time cast, but risk getting an exception.
 \end_layout
 
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Restricting Primitive Operations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
 \begin_layout Standard
-This system is designed to soundly enforce reasoning: by looking at the
- declarations of functions 
-\begin_inset Formula $\f f$
+To simplify things we will assume that the language provides only two intrinsic
+ functions, 
+\begin_inset Formula $\cf{UnrestrictedPrimitive}$
 \end_inset
 
  and 
-\begin_inset Formula $\f g$
-\end_inset
-
-, and all functions transitively referenced in their base-capabilities,
- one can statically determine whether 
-\begin_inset Formula $\f f$
-\end_inset
-
- can call 
-\begin_inset Formula $\f g$
+\begin_inset Formula $\cf{RestrictedPrimitive}$
 \end_inset
 
 .
- In addition, it is also designed to work in an environment with dynamic-code
- loading, if you have reasoned that one function cannot call another, no
- matter what additional code you load or dynamically invoke, that guarantee
- still holds.
- We have also looked at adding other features to reduce the burden of our
- annotations: such as wildcards and annotation inference.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+The idea being that we don’t care who can call UnrestrictedPrimitive, but
+ we do care about RestrictedPrimitive.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\end_inset
+
+ can be called by any function:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{UnrestrictedPrimitive(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf ) \ck{calls[]};}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\cm{// Example:} \cf{UnrestrictedPrimitive(}\cl{"Add"}, \cl 1, \cl 2\cf ); \cm{// Returns \cl 3}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+The params keyword just makes the function work as a varaidic.
+ Since Rule 2 vacously applys.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Formula $\cf{RestrictedPrimitive}$
+\end_inset
+
+ can only be (directly) called by functions annotated with 
+\begin_inset Formula $\calls{\cf{RestrictedPrimitive},…}$
+\end_inset
+
+:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{RestrictedPrimitive(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf ) \ck{calls[\f{RestrictedPrimitive}]};}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\cm{// Example:} \cf{RestrictedPrimitive(}\cl{"CCall"}, \cl{"puts"}, \cl{"Hello World!"}\cf ); \cm{// Prints \cl{Hello} \cl{World!}}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+RestrictedPrimitive would model VM primitives like reflection as well as
+ calling trusted foreign functions.
+ We could also allow RestrictedPrimitive to perform unsafe operations, such
+ as executing arbitrary machine code, however than we would need to be extra
+ carefull that any code that can call RestrictedPrimitive dosn’t use it
+ to violate invariants of the language such as bypassing our callability
+ system.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+Declaring RestrictedPrimitive as calling itself isn't necessary to allow
+ recursive calls.
+ Instead it has the effect of allowing only those explicitly declared to
+ call it from calling it, effectively disabling rule 2.
+ The same approach can be used to create other restricted functions.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+The Solution to Problem 1 (Static Dispatch) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+What can 
+\begin_inset Formula $\cf{Abs(}\cl 0\cf )$
+\end_inset
+
+ do?
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+To answer this question, we will have to look at the declaration of Abs(0)
+ for its calls annotation, consider the following possibilities:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Enumerate
+(indirectly) perform only 
+\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\end_inset
+
+ operations:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[]} \{…\}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+this is probably what you’d want for an Abs function, it could do arithmetic
+ negation and comparison, but not restricted operations like I/O.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+also (indirectly) perform some 
+\begin_inset Formula $\f{\cf{RestrictedPrimitive}}$
+\end_inset
+
+ operations: 
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{WriteLine(}\ct{String} \cv s\cf ) \ck{calls[\cf{RestrictedPrimitive}]} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cf{RestrictedPrimitive(}\cl{"CCall"}, \cl{"puts"}, \cv s\cf ); \}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{WriteLine}]} \{…\}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+By looking at the body of Print, we know that Abs can call a (trusted) C
+ function that prints to the terminal, but not any other crazy functions.
+ This works since the code of Print can not be overridden or modified.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Enumerate
+also (indirectly) perform 
+\emph on
+any
+\emph default
+ 
+\begin_inset Formula $\cf{RestrictedPrimitive}$
+\end_inset
+
+ operation:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{RestrictedPrimitive}]} \{…\}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Heading
+Benefits 
+\end_layout
+
+\begin_layout Enumerate
+No need to look at the body of 
+\begin_inset Formula $\cf{Abs}$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+since the language will ensure that it is well-typed
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+No need to look at every piece of code we are compiling with
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+We only need to look at the functions mentioned by the declaration of Abs
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Our reasoning is static and consistently sound 
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+No matter what happens at run time, (including dynamic code loading), our
+ grantees still hold.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+How to Solve Problem 2 (Dynamic Dispatch) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+What can 
+\begin_inset Formula $\cv x.\cf{Run()}$
+\end_inset
+
+ do?
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+Well we just look at the static type of x
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{interface} \ct I \{ \ck{void} \cf{Run()} \ck{calls[]}; \}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+And so it can only perform unrestricted primitive operations.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+Deciding what callability interface methods should have isn't easy, so what
+ if we could defer the choice latter?
+\end_layout
+
+\begin_layout Plain Layout
+The obvious solution is to add a layer of abstraction.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Heading
+Callability Polymorphism
+\end_layout
+
+\begin_layout Standard
+Consider this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\ck{interface} \ct{I<}\cf{'a}\ct > \{ \ck{void} \cf{Run()} \ck{calls[\cf{'a}]}; \}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+Here 'a is a generic callability paramter, it can be substiuited for any
+ list of functions.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Example Implementation:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{class} \ct{HelloWorld}: \ct{I<\cf{[WriteLine]}>} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\ck{void} \ct I.\cf{Run()} \ck{calls[\cf{WriteLine}]} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\tab\cf{\cf{WriteLine(}}\cl{"HelloWorld!"}\cf ); \}\}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Standard
+Now to answer the question: what can 
+\begin_inset Formula $\cv x.\cf{Run()}$
+\end_inset
+
+ do?
+\end_layout
+
+\begin_layout Enumerate
+Only perform 
+\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\end_inset
+
+ operations: 
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2(}\ct{I<\cf{[]}>} \cv x) \ck{calls[]} \{ \cv x.\cf{Run()}; \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Also print lines to standard-output:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2(}\ct{I<\cf{[WriteLine]}>} \cv x) \ck{calls[\cf{WriteLine}]} \{ \cv x.\cf{Run()}; \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Perform any 
+\begin_inset Formula $\cf{RestrictedPrimitive}$
+\end_inset
+
+ operation:
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{I<\cf{[RestrictedPrimitive]}>} \cv x) \ck{calls[\cf{RestrictedPrimitive}]} \{ \cv x.\cf{Run()}; \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Defer the decision to the caller of 
+\begin_inset Formula $\cf{M3}$
+\end_inset
+
+: 
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3<'a>(}\ct{I<\cf{['a]}>} \cv x) \ck{calls[\cf{'a}]} \{ \cv x.\cf{Run()}; \}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+Callability generics are of course covariant in their callability paramaters,
+ so you can use and cast between different instanciations of I like any
+ other generic type.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+How to solve Problem 3 (Dynamic Code Loading & Invocation) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+In C♯ to dynamically invoke a static or instance method, you simply write:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cv{methodInfo}.\cf{Invoke(}\cv{receiver}, \cv{args}\cf )}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+Where methodInfo has type MethodInfo.
+ To prevent this from being used as a backdoor into our callability system,
+ we will need to specify the callability of Invoke properly.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Standard
+In our system we will have to declare 
+\begin_inset Formula $\cf{Invoke}$
+\end_inset
+
+like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\cm{/// Represents a method} \textit{\f m}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\ck{class} \ct{MethodInfo} \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\tab…}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\tab\cm{/// Throws an exception if \cf{Invoke<'a>} \ensuremath{\not\rightsquigarrow} \textit{\f m}, otherwise calls \cv{receiver}.\f{\textit{\f m}(}\cv{args}\cf )}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\tab\ct{Object} \cf{Invoke<'a>(}\ct{Object} \cv{receiver}, \ct{Object[]} \cv{args}\cf ) \ck{calls[\cf{'a}]} \{ … \}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\tab\texttt{\tab… \}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+The idea being that Invoke will check that 'a is sufficient to call the
+ identified method.
+ We can now use this to safely run code downloaded from the internet!
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{String} \cv{url}\cf ) \{}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\ct{Assembly} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf ); \cm{// Load code (possibly from the internet)}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke<[]>(}\ck{null}, \ck{null}\cf ); \} \cm{// call \cf{M()}, but only if it can only perform \cf{UnrestrictedPrimitive} operations}}$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Future Work
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Make our annotations less verbose:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+inference of 
+\begin_inset Formula $\ck{calls}$
+\end_inset
+
+ annotations
+\end_layout
+
+\begin_layout Itemize
+wild-cards? 
+\end_layout
+
+\begin_layout Itemize
+allow named groups of functions?
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Soundly support performing unsafe operations (like executing arbitrary machine
+ code)
+\end_layout
+
+\begin_layout Itemize
+Improve the support for dynamic loading:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Allow calling new functions, even if they have themselvs in their 
+\begin_inset Formula $\ck{calls}$
+\end_inset
+
+ annotation
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Formalise the reasoning properties we want from the system
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Proof them!
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Frame
+
+\end_layout
+
+\begin_layout Frame
+
 \end_layout
 
 \end_body
