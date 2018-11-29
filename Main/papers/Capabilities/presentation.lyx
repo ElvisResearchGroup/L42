@@ -16,6 +16,7 @@
 \definecolor{AccentD25}{RGB}{0,   46,  165}
 \definecolor{AccentD50}{RGB}{0,   31,  110}
 
+\setlength{\parskip}{0pt}
 \newcommand{\zwnbsp}{}
 
 \definecolor{blue}{HTML}{0000F0} % 
@@ -26,6 +27,9 @@
 \definecolor{green}{HTML}{008000}
 \definecolor{pink}{HTML}{F000F0}
 \usecolortheme[named=pink]{structure}
+
+\newcommand{\pars}{\medskip}
+\newcommand{\parj}{\vspace{-\medskipamount}}
 
 \setbeamercolor{title}{fg=Accent}
 \setbeamercolor{example text}{fg=AccentD50}
@@ -49,9 +53,10 @@
 	\def\makelabel}{}{}
 \xpatchcmd{\itemize}{\llap}{\rlap}{}{}
 \xpatchcmd{\beamer@enum@}{\llap}{\rlap}{}{}
-\setbeamertemplate{itemize/enumerate body begin}{\vspace{-\medskipamount}}
-\setbeamertemplate{itemize/enumerate body end}{\medskip}
+\setbeamertemplate{itemize/enumerate body begin}{}
+\setbeamertemplate{itemize/enumerate body end}{\pars}
 
+\setbeamertemplate{itemize/enumerate subbody begin}{\pars}
 \setbeamerfont{itemize/enumerate body}{size=\parj}
 \setbeamerfont{itemize/enumerate subbody}{size=\parj}
 	
@@ -62,10 +67,25 @@
 \newsavebox{\mybox}
 \newlength{\myboxwidth}
 
+\newcommand{\thefooter}{}
+\setbeamertemplate{footline}{%\printinunitsof{cm}\prntlen{}%
+	\vspace{-0.13cm}%
+	\parbox[b][1cm][t]{\textwidth}{\thefooter}\vspace{1cm}%
+}
+\renewcommand{\makebeamertitle}{%
+	{%
+\renewcommand{\thefooter}{%
+		\centering \normalsize	\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }%
+		\begin{frame}%
+		\maketitle%
+		\end{frame}%
+	}
+}%
+
 
 \setbeamertemplate{block example begin}{%
 	\setlength{\fboxsep}{0pt}
-	\par\vskip\medskipamount%
+	\par\pars%
 	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
 			\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
 	\setlength{\myboxwidth}{\wd\mybox}%	
@@ -87,7 +107,8 @@
 		\setlength{\fboxsep}{0pt}%
 		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
 		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
-		\vspace{\dimexpr-0.41cm+5pt}%
+		\pars%
+		\vspace{\dimexpr-0.41cm}%
 	\end{beamercolorbox}}
 
 \usepackage{fontspec} % To set xetex fonts
@@ -97,11 +118,6 @@
 
 \unimathsetup{math-style=ISO}
 \setmathfont{TeX Gyre Schola Math}
-
-\setlength{\parskip}{0pt}
-\newcommand{\parj}{\setlength{\parskip}{0pt}}
-%\newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
-\newcommand{\pars}{\setlength{\parskip}{0pt}}
 
 \usepackage{hyperref}
 
@@ -381,7 +397,7 @@ Conventions
 
 \begin_deeper
 \begin_layout Standard
-We will consider C♯, since it
+We will consider C♯ (or another .Net or JVM language), since it
 \begin_inset ERT
 status open
 
@@ -389,7 +405,7 @@ status open
 
 
 \backslash
-medskip
+pars
 \end_layout
 
 \end_inset
@@ -416,6 +432,20 @@ supports dynamic code loading, and
 
 \begin_layout Itemize
 supports dynamic function lookup and invocation (with reflection).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+It will work on any other statically typed language with named functions,
+ such as C or Haskell
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -466,7 +496,7 @@ could
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M1(}\cf ) \{ \cf{Abs(}\cl 0\cf ); \}}$
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M1(}\cf ) \{ \cf{Sign(}\cl 0\cf ); \}}$
 \end_inset
 
 
@@ -477,9 +507,9 @@ could
 status open
 
 \begin_layout Plain Layout
-Well it looks like it does nothing, it just gets the absolute value of 0
- (which is 0) and discards the result.
- But how do we know Abs won’t send sensitive information to a third-party?
+Well it looks like it does nothing, it just gets the sign of 0 (which is
+ 0) and discards the result.
+ But how do we know Sign won’t send sensitive information to a third-party?
 \begin_inset Flex Beamer Comment
 status open
 
@@ -504,7 +534,7 @@ status open
 
 
 \backslash
-medskip
+pars
 \end_layout
 
 \end_inset
@@ -685,6 +715,18 @@ We will abstract away performing an ‘operation’ (such as reading a file,
 \end_layout
 
 \begin_layout Pause
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+parj
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -694,11 +736,11 @@ Restatement of the Problem:
 
 \begin_layout Enumerate
 What is the callability of 
-\begin_inset Formula $\cf{Abs}$
+\begin_inset Formula $\cf{Sign}$
 \end_inset
 
 ? (Where 
-\begin_inset Formula $\cf{Abs}$
+\begin_inset Formula $\cf{Sign}$
 \end_inset
 
  is a static method)
@@ -759,43 +801,7 @@ We will present a system that can answer these questions by constraining
 status open
 
 \begin_layout Plain Layout
-The Basics
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Heading
-The 
-\begin_inset Formula $\calls{\f{\f f}_{\l 1},\dots,\f f_{\l n}}$
-\end_inset
-
- annotation
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex Beamer Note
-status open
-
-\begin_layout Plain Layout
-A function declaration can be suffixed with it, indicating that it can call
- f, …, fn.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout ExampleBlock
-\begin_inset Argument 2
-status open
-
-\begin_layout Plain Layout
-Example
+The Callability Annotation
 \end_layout
 
 \end_inset
@@ -805,53 +811,12 @@ Example
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Main(}\ct{String[]} \cv{argv}\cf ) \calls{\cf{WriteLine}} \{}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\texttt{\tab\cf{WriteLine(}\cl{"Hello World!"}\cf ); \}}$
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Standard
 \begin_inset Flex Beamer Note
 status open
 
 \begin_layout Plain Layout
-At first glance this looks like we have to list every single function we
- want to call, however this is not what the annotation means, rather it
- is the starting point of functions that can be called.
- In addition, the system can in principle infer these annotations, but we
- will write them out explicitly to aid explanation.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Pause
-
-\end_layout
-
-\begin_layout Heading
-The Can-Call Relation: 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex Beamer Note
-status open
-
-\begin_layout Plain Layout
-As part of typechecking, whenever their is a call to g from within the body
- of a function f, we will check that f 'can call' g.
+As part of type-checking, whenever their is a call to g from within the
+ body of a function f, we will check that f 'can call' g.
 \end_layout
 
 \end_inset
@@ -868,11 +833,28 @@ As part of typechecking, whenever their is a call to g from within the body
 \begin_inset Formula $\f f$
 \end_inset
 
-can call a function 
+
+\emph on
+can-call
+\emph default
+ a function 
 \begin_inset Formula $\f g$
 \end_inset
 
 , iff:
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pars
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Pause
@@ -885,15 +867,11 @@ can call a function
 
 , i.e.
  
-\begin_inset Formula $\f g$
-\end_inset
-
- is in the 
-\begin_inset Formula $\calls{…}$
-\end_inset
-
- annotation of 
 \begin_inset Formula $\f f$
+\end_inset
+
+ is annotated with the 
+\begin_inset Formula $\calls{\dots,\f g,\dots}$
 \end_inset
 
 .
@@ -905,7 +883,8 @@ can call a function
 status open
 
 \begin_layout Plain Layout
-this is exactly what the calls annotation means
+A function declaration can be suffixed with a calls annotation with a list
+ of function names.
 \end_layout
 
 \end_inset
@@ -937,6 +916,19 @@ Example
 
 
 \begin_inset Formula $\texttt{\tab\ck{foreach (}\ct{Char} \cv c \ck{in} \cv s\ck ) \cf{WriteChar(}\cv c\cf ); \}}$
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pars
+\end_layout
+
 \end_inset
 
 
@@ -1015,30 +1007,25 @@ Example
 
 \end_deeper
 \end_deeper
-\end_deeper
-\begin_layout Standard
-\begin_inset Separator plain
-\end_inset
-
+\begin_layout Pause
 
 \end_layout
 
-\begin_layout Frame
-\begin_inset Argument 4
+\begin_layout Standard
+The previous rules apply transitively, and always allow for recursive calls.
+\begin_inset ERT
 status open
 
 \begin_layout Plain Layout
-Using the Rules Together
+
+
+\backslash
+parj
 \end_layout
 
 \end_inset
 
 
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-The previous rules apply transitively, and always allow for recursive calls.
 \end_layout
 
 \begin_layout ExampleBlock
@@ -1072,7 +1059,7 @@ Example
 \end_inset
 
 
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Main(}\ct{String[]} \v{args}\cf ) \calls{\cf{WriteChar}} \{}$
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Main(}\ct{String[]} \cv{args}\cf ) \calls{\cf{WriteChar}} \{}$
 \end_inset
 
 
@@ -1087,6 +1074,28 @@ Example
 \end_layout
 
 \end_deeper
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Primitive Operations
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
 \begin_layout Standard
 \begin_inset Flex Beamer Comment
 status open
@@ -1112,14 +1121,6 @@ ion I did, is that ok?
 \end_inset
 
 
-\end_layout
-
-\begin_layout Pause
-
-\end_layout
-
-\begin_layout Heading
-Handling Primitive Operations
 \end_layout
 
 \begin_layout Standard
@@ -1230,7 +1231,7 @@ Example
 \end_inset
 
 
-\begin_inset Formula $\texttt{\tab\ck{calls[\f{RestrictedPrimitive}]};}$
+\begin_inset Formula $\texttt{\tab\ck{calls[\f{Restricted}]};}$
 \end_inset
 
 
@@ -1330,7 +1331,7 @@ How to Solve Problem 1 (Static Dispatch)
 \begin_deeper
 \begin_layout Standard
 What can 
-\begin_inset Formula $\cf{Abs(}\cl 0\cf )$
+\begin_inset Formula $\cf{Sign(}\cl 0\cf )$
 \end_inset
 
  do?
@@ -1341,7 +1342,7 @@ What can
 status open
 
 \begin_layout Plain Layout
-To answer this question, we will have to look at the declaration of Abs(0)
+To answer this question, we will have to look at the declaration of Sign(0)
  for its calls annotation, consider the following possibilities:
 \end_layout
 
@@ -1364,7 +1365,7 @@ To answer this question, we will have to look at the declaration of Abs(0)
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[]} \{…\}}$
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Sign(}\ct{Int32} \cv x\cf ) \ck{calls[]} \{…\}}$
 \end_inset
 
 
@@ -1375,7 +1376,7 @@ To answer this question, we will have to look at the declaration of Abs(0)
 status open
 
 \begin_layout Plain Layout
-this is probably what you’d want for an Abs function, it could do arithmetic
+this is probably what you’d want for an Sign function, it could do arithmetic
  negation and comparison, but not restricted operations like I/O.
 \end_layout
 
@@ -1403,7 +1404,7 @@ some
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{WriteLine}]} \{…\}}$
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Sign(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{WriteLine}]} \{…\}}$
 \end_inset
 
 
@@ -1414,8 +1415,8 @@ some
 status open
 
 \begin_layout Plain Layout
-By looking at the body of Print, we know that Abs can call a (trusted) C
- function that prints to the terminal, but not any other crazy functions.
+By looking at the body of Print, we know that Sign can call a (trusted)
+ C function that prints to the terminal, but not any other crazy functions.
  This works since the code of Print can not be overridden or modified.
 \end_layout
 
@@ -1443,77 +1444,7 @@ any
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{Restricted}]} \{…\}}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Pause
-
-\end_layout
-
-\end_deeper
-\begin_layout Heading
-Benefits 
-\end_layout
-
-\begin_layout Enumerate
-No need to look at the body of 
-\begin_inset Formula $\cf{Abs}$
-\end_inset
-
-
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-\begin_inset Flex Beamer Note
-status open
-
-\begin_layout Plain Layout
-since the language will ensure that it is well-typed
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-No need to look at every piece of code we are compiling with
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-\begin_inset Flex Beamer Note
-status open
-
-\begin_layout Plain Layout
-We only need to look at the functions mentioned by the declaration of Abs
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Our reasoning is static and consistently sound 
-\end_layout
-
-\begin_deeper
-\begin_layout Standard
-\begin_inset Flex Beamer Note
-status open
-
-\begin_layout Plain Layout
-No matter what happens at run time, (including dynamic code loading), our
- grantees still hold.
-\end_layout
-
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Sign(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{Restricted}]} \{…\}}$
 \end_inset
 
 
@@ -1599,6 +1530,18 @@ The obvious solution is to add a layer of abstraction.
 \end_layout
 
 \begin_layout Pause
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pars
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -1670,7 +1613,7 @@ status open
 
 
 \backslash
-medskip
+pars
 \end_layout
 
 \end_inset
@@ -1691,7 +1634,7 @@ status open
 
 
 \backslash
-medskip
+pars
 \end_layout
 
 \end_inset
@@ -1834,7 +1777,7 @@ status open
 
 
 \backslash
-medskip
+pars
 \end_layout
 
 \end_inset
@@ -1847,7 +1790,7 @@ In our system we will have to declare
 \begin_inset Formula $\cf{Invoke}$
 \end_inset
 
-like this:
+ like this:
 \end_layout
 
 \begin_layout Standard
@@ -1928,7 +1871,7 @@ status open
 
 
 \backslash
-medskip
+pars
 \end_layout
 
 \end_inset
@@ -1988,7 +1931,7 @@ medskip
 status open
 
 \begin_layout Plain Layout
-Future Work
+Conclusion
 \end_layout
 
 \end_inset
@@ -1997,11 +1940,92 @@ Future Work
 \end_layout
 
 \begin_deeper
+\begin_layout Enumerate
+No need to look at the body of methods to determine what they can do.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+since the language will ensure that it is well-typed
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+No need to look at every piece of code we are compiling with.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+We only need to look at the functions mentioned by the declaration of Sign
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Our reasoning is static and consistently sound.
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+No matter what happens at run time, (including dynamic code loading), our
+ grantees still hold.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Heading
+Future Work
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pars
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Itemize
 Make our annotations less verbose:
 \end_layout
 
-\begin_deeper
 \begin_layout Itemize
 inference of 
 \begin_inset Formula $\ck{calls}$
@@ -2010,6 +2034,7 @@ inference of
  annotations
 \end_layout
 
+\begin_deeper
 \begin_layout Itemize
 wild-cards? 
 \end_layout
@@ -2030,7 +2055,7 @@ Improve the support for dynamic loading:
 
 \begin_deeper
 \begin_layout Itemize
-Allow calling new functions, even if they have themselvs in their 
+Allow calling new functions, even if they have themselves in their 
 \begin_inset Formula $\ck{calls}$
 \end_inset
 
@@ -2044,7 +2069,7 @@ Formalise the reasoning properties we want from the system
 
 \begin_deeper
 \begin_layout Itemize
-Proof them!
+Prove them!
 \end_layout
 
 \end_deeper
