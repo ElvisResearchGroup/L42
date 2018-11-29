@@ -45,8 +45,9 @@ Forall (p, R) in ValidProblems,
   then E p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R)
 
 
-  If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
-   exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such that range(R') not subseteq dom(p)
+ // If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
+ //  exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such 
+ // that range(R') not subseteq dom(p)
 
   if not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
     exists p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R)
@@ -59,7 +60,7 @@ if forall p' in SimilarPrograms(p), ValidRedirections(p'; R) == ValidRedirection
 then CompletedConstraints(p; CCz)
 
 
-if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) != {}//vr do not grow
+if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) == {}//vr do not grow
 then CompletedConstraints(p; CCz)
 
 -when vr can grow
@@ -89,16 +90,15 @@ Well, lets take an R and an R' (assuming ofcourse that R0 != {})
     Forall Cs that is unchanged and Cs' that is and is not in the original program,
         where Cs' is mentioned in Cs.
     // At least one such Cs and Cs' must exist:
-        // S
-        ince Cs' is neccesarily reachable from some Cs" in dom(R0), R(Cs") = R'(Cs")
+    // Since Cs' is neccesarily reachable from some Cs" in dom(R0), R(Cs") = R'(Cs")
 
     So we have:
         R(Cs) = R'(Cs)
         R(Cs') != R'(Cs') and R'(Cs') not in dom(p)
         Cs' in DirectlyReferencedPaths(p(Cs))
-        If Cs.s.P = Cs' then we would need
-             R(Cs).s.P <= R'(Cs')
-             We obviously have R(Cs).s.P in dom(p)
+        If p[Cs].s.P = Cs' then we would need
+             p[R(Cs)].s.P <= R'(Cs') //and also p[R(Cs)].s.P <= R(Cs')
+             We obviously have p[R(Cs)].s.P in dom(p)
                 since R(Cs) in dom(p) and is well-typed
              Making a program bigger can't change superclassses
              a contradiction, since R'(Cs') is not in dom(p)
@@ -106,12 +106,39 @@ Well, lets take an R and an R' (assuming ofcourse that R0 != {})
         Therefore, forall s, Cs' != Cs.s.P and Cs' not in Cs.Pz
         And so Cs.s.Pi = Cs', for some s and i
         So we must have:
-            R'(Cs') <= R(Cs).s.Pi
-             R(Cs') <= R(Cs).s.Pi
-        Obviously, R(Cs).s.Pi cant be a concrete class.
+            R'(Cs') <= p[R(Cs)].s.Pi
+             R(Cs') <= p[R(Cs)].s.Pi
+        Obviously, p[R(Cs)].s.Pi cant be a concrete class.
+
+V(p') superset V(p)
+  then lets take the R' in V(p') so that exists an R in V(p) 
+  with the smallest amount of differences between R and R'
+
+There must be at least one Cs1->P1 in R that is mapped to Cs1->P1' in R'
+There must be one Cs0->P0 in R that is also mapped to Cs0->P0 in R' and
+exists s such that 
+  p|- P1 <= p[R(Cs0)].s.Ps.i
+  p|- P1' <= p[R(Cs0)].s.Ps.i
 
 
+FROM, last version:
+if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) != {}//vr do not grow
+then CompletedConstraints(p; CCz)
 
+With the above
+Theorem 1.fa:
+if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) == {}//vr do not grow
+then
+exists s, R0 in ValidRedirections(p; R)
+Cs0->P1 in R0, (Cs0->P1' in R0' in ValidRedirections(p; R'))
+forall s neither p|- P1 <= p[R0(Cs0)].s.Ps.i (nor p|- P1' <= p[R0(Cs0)].s.Ps.i)
+  
+---
+Theorem 1.fb:
+if exists R0 in ValidRedirections(p; R) such that:
+  -Cs->P in R0,
+  -forall s not p|- P <= p[R0(_)].s.Ps.i
+then CompletedConstraints(p; CCz)
 
 
 There exists a P such that Cs <= P in CCz:
