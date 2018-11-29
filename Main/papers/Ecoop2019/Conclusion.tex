@@ -1,0 +1,379 @@
+\section{Related work} 
+
+The operator redirect fist emerged with DeepFJig[],
+and was then explored more in MetaFJig[];
+however, in this line of research, it was only
+able to redirect one nested class at a time, thus it was
+impossible to redirect mutually recursive classes.
+
+We apply redirect over a trait composition language[sharly].
+We are particularly inspired by Ferruccio, MetaFJig
+(and UseReuse).
+The main difference in the compilation model with respect to DeepFJig is an improved
+treatment of $\This{n}$: in MetaFJig $\This{n}$ wrote in
+class \Q@A@ is not equivalent to $\This{(n+1)}{\Q@A@}$.
+Moreover, the formalism is simpler and more compact.
+
+Redirect supports a similar expressive power 
+with respect to abstract types refinement,
+and in some sense here is proposed
+as an alternative to them.
+A good formal discussion about Abstract types
+can be found in [
+Foundations of Path-Dependent Types].
+
+\section{Conclusions} 
+
+\section{Appendix?}
+
+PUT LATER?However, he type system of the language is more restrictive when 
+it comes to refine an interface method, allowing only return type refinement. This is not just to align our calculus with existing languages like Java/C\# and C++, but is required to make reasoning about parameter types influential while expanding redirect mappings.END PUT LATER
+
+\begin{bnf}
+\production{%
+\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
+                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {context of library-evaluation}\\\production{%
+%LV}     {\libi{Tz}{amtz}{}\ \ \mmid{}\ \ \libc{Tz}{MVs}{K$?$}}       {literal value}\\\production{%
+%MV}     {C\eq{}LV \mmid{} mt}                                                    {}\\\production{%
+\ctx{v}}{\hole \mmid{}  \ctx{v}\Q{.}m\rp{es} \mmid{}  v\Q{.}m\rp{vs \ctx{v} es} %
+	\mmid{} T\Q{.}m\rp{vs \ctx{v} es}  }           {}%\\\production{%
+%DL}     {id\eq{}L}                                                         {partially-evaluated-declaration}\\\production{%
+%DV}     {id\eq{}LV}                                                       {evaluated-declaration}\\\production{%
+%Mid}    {C \mmid{} m}                                                      {member-id}\\\production{%
+%p}      {DLs\Q{;} DVs}                                                     {program}
+\end{bnf}
+
+
+
+\section{Type System}
+
+The type system is split into two parts: type checking programs and class literals, and the typechecking of expressions. The latter part is mostly convential, it involves typing judgments of the form $p; Txs \vdash e : T$, with the usual program $p$ and variable environement $Txs$ (often called $\Gamma$ in the literature). rule ($Ds ok$) type checks a sequence of top-level declarations by simply push each declaration onto a program and typecheck the resulting program.
+Rule $p ok$ typechecks a program by check the topmost class literal: we type check each of it’s members (including all nested classes), check that it properly implements each interface it claims to, does something weird, and finanly check check that it’s constructor only referenced existing types,
+
+\begin{verbatim}
+
+
+Define p |- Ok
+===========================================================
+
+D1; Ds |- Ok ... Dn; Ds|- Ok
+(Ds ok) ------------------------------ Ds = D1 ... Dn
+Ds |- Ok
+
+p |- M1 : Ok .... p |- Mn : Ok
+p |- P1 : Implemented .... p |- Pn : Implemented
+p |- implements(Pz; Ms) /*WTF?*/                   if K? = K: p.exists(K.Txs.Ts)
+(p ok) ------------------------------------------- p.top() = interface? {P1...Pn; M1, ..., Mn; K?}
+p |- Ok
+
+p.minimize(Pz) subseteq p.minimize(p.top().Pz)
+amt1 _ in p.top().Ms ... amtn _ in p.top().Ms
+(P implemented) ----------------------------------------------- p[P] = interface {Pz; amt1 ... amtn;}
+p |- P : Implemented
+
+(amt-ok) ------------------- p.exists(T, Txs.Ts)
+p |- T m(Tcs) : Ok
+
+p; This0 this, Txs |- e : T
+(mt-ok) ------------------------------ p.exists(T, Txs.Ts)
+p |- T m(Tcs) e : Ok
+
+C = L, p |- Ok
+(cd-Ok) -------------------
+p |- C = L : OK
+
+\end{verbatim}
+
+Rule $(P implemented)$ checks that an interface is properly implemented by the program-top, we simply check that it declares that it implements every one of the interfaces super-interfaces and methods.
+Rules $(amt-ok)$ and $(mt-ok)$ are straightforward, they both check that types mensioned in the method signature exist, and ofcourse for the latter case, that the body respects this signature.
+
+To typecheck a nested class declaration, we simply push it onto the program and typecheck the top-of the program as before.
+
+
+The expression typesystem is mostly straightforward and similar to feartherwieght Java, notable we we use $p[T]$ to look up information about types, as it properly ‘from’s paths, and use a classes constructor definitions to determine the types of fields.
+
+\begin{verbatim}
+Define p; Txs |- e : T
+=====================================
+(var)
+----------------------- T x in Txs
+p;  Txs |- x : T
+
+(call)
+p; Txs |- e0 : T0
+...
+p; Txs |- en : Tn
+-----------------------------------  T' m(T1 x1 ... Tn xn) _ in p[T0].Ms
+p; Txs |- e0.m(e1 ... en) : T'
+
+(field)
+p; Txs |- e : T
+---------------------------------------  p[T].K = constructor(_ T' x _)
+p; Txs |- e.x : T'
+
+
+(new)
+p; Txs |- e1 : T1 ... p; Txs |- en : Tn
+------------------------------------------- p[T].K = constructor(T1 x1 ... Tn xn)
+p; Txs |- new T(e1 ... en)
+
+
+(sub)
+p; Txs |- e : T
+-----------------------------------  T' in p[T].Pz
+p; Txs |- e : T'
+
+
+(equiv)
+p; Txs |- e : T
+-----------------------------------  T =p T'
+p; Txs |- e : T'
+\end{verbatim}
+
+
+
+
+
+FROM and minimize that will go in the appendix:
+
+To fetch a trait form a program, we will use notation $p(t)=LV$, to 
+fetch a class we will use $p(T)$.
+
+To look up the definition of a class in the program we will use the notation
+%$p(t)=LV$ and
+$p(T)=\textit{LV}$, which is defined by the following:% but only if the RHS denotes an $LV$:
+
+We will use members $Mz$ as a function containing both method names $m$
+and class names $C$ in its domain; thus we will assume
+notation $\dom{Mz}$, $Mz(m)$, $Mz(C)$ with the usual meaning.
+Under here, we define useful auxiliary notations to
+access literals $L$ with functional notation with the intent of accessing their members. We define notations $L[Cs=E]=L'$ and $Mz[C=E]=Mz'$ serving the role of function update.
+We use those notations to define $p(T)=LV$ accessing a program $p$ as function. We also define operations on programs: $p\op{push}{D}=p'$, allowing to work with programs as if they was stacks, and
+$p\op{min}{T}=T'$, denoting the shortest type $T'$ referring to the same 
+nested class of $T$.
+We define $\from{T}{T',j}$ and $\from{L}{T,j}$; we omit all the trivial propagation cases of form $\from{M}{T,j}$, $\from{K}{T,j}$ and $\from{e}{T,j}$.
+Finally, we we combine those to notation for the
+most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
+
+
+\noindent
+\begin{minipage}{0.48\textwidth}
+\noindent\!\!\!$\begin{array}{l}
+\hline
+(\DLs\Q@;@ \DVs)\op{push}{id\eq{L}} =
+\id\eq{L},\DLs\Q@;@ \DVs\\
+\hline
+(; \_, C\eq{L}, \_)(\This{0}{C}{Cs})=\mathit{L(Cs)}\\
+p\op{push}{\_\eq{L}}(\This{0}{Cs})=L(\mathit{Cs})\\
+p\op{push}{\_}(\This{n+1}{Cs})=p(\This{n}{Cs})\\
+\hline
+\fop{members}{\lib{\_}{Mz}{\_}}=Mz\\\hline
+L(m)=\fop{members}{L}(m)\\\hline
+L(C)=\fop{members}{L}(C)\\\hline
+\dom{L}=\dom{\fop{members}{L}}\\\hline
+\mdom{L}=\{m \in \dom{L}\}\\
+\end{array}$
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+$\begin{array}{l}
+\hline
+(Mz,\Q@private@? C\eq{\_})[C=E]=Mz,\Q@private@? C\eq{E}\\\hline
+LV({\emptyset})=LV\\
+L(C\Q@.@Cs)=L(C)(Cs)\\
+\hline
+L[\Empty=E] = E\\
+\lib{Tz}{Mz}{K?}[C\Q@.@Cs=E]=\\\quad
+\lib{Tz}{Mz[C=Mz(C)[Cs=E]]}{K?}
+\\\hline
+p\op{min}{\This{n+1}{\id_n}{Cs}} = p\op{min}{\This{n}{Cs}}\\\quad
+  \text{where }p = \id_0 \eq{L_0}\ldots\id_n\eq{L_n} \_\Q@;@ Ds\\
+\text{otherwise } p\op{min}{T} = T\\
+\end{array}$
+\end{minipage}
+
+\noindent\!\!\!\!
+$\begin{array}{l}
+\hline
+\from{\This{n}{Cs}}{T,j}
+=
+\This{n}{Cs} \quad \textit{with }n<j
+\\
+\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
+=
+\This{m+j}{C_1\ldots C_{k-n}} \quad \textit{with }n\leq k
+\\
+\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
+=
+\This{m+j+n-k}{C_1\ldots C_{k-n}{Cs}} \quad \textit{with }n> k
+\\
+\from{
+\libc{\Q@interface@? Tz}{Mz}{K}
+}{T,j-1}
+=
+\libc{\Q@interface@? \from{Tz}{T,j}}{\from{Mz}{T,j}}{\from{K}{T,j}}
+\\\hline
+(DL_1\ldots DL_n; \_, t\eq{LV})[t]
+=p\op{min}{\from{LV}{\This{n},0}}\\\hline
+p[T]=p\op{min}{
+\lib{\from{Tz}{T,0}}{\from{Mz}{T,0}}{}
+}
+\quad\text{where }p(T)=\lib{Tz}{Mz}{K?}
+\\\hline
+\end{array}$
+
+
+sdgsd
+
+\noindent\begin{defye}%
+%\defy{(\_; \_, t\eq{}LV, \_)(t)}{\mathit{LV}}%
+\defy{(\DLs\Q{;} \DVs)\op{push}{id\eq{L}}}{
+id\eq{L},\DLs\Q{;} \DVs}%
+\defy{(; \_, C\eq{}L, \_)(\This{0}{C}{Cs})}{\mathit{L(Cs)}}%
+%\defy{(id\eq{}L, p)(\This{0}{Cs})}{L(\mathit{Cs})}%
+\defy{p\op{push}{\_\eq{L}}(\This{0}{Cs})}{L(\mathit{Cs})}%
+%p' id=L,A;B = id=L,p
+%\defy{(id\eq{}L, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}%shorter version, not wrong but confusing
+\defy{p\op{push}{\_}(\This{n+1}{Cs})}{p(\This{n}{Cs})}%
+\defy{LV({\emptyset})}{LV}%
+\defy{\lib{\_}{\_, \Q@private@?\,C\eq{L_0}, \_}{\_}(\Cs{C}{\s{C}})}{L_0(Cs) }%\text{ where } L = \lib{\_}{\_, C\eq{L_0}, \_}{\_}}%
+	\defyc{\text{where } L = a}
+\end{defye}
+
+
+This notation just fetch the referred $LV$ without any modification.
+To adapt the paths we define $\from{T_0}{T_1,j}$, $\from{L}{T,j}$ and $p\op{minimize}{T}$ as following:
+\begin{defye}%
+  \defy{(DL_1\ldots DL_n; \_, t\eq{LV},\_)[t]}{\from{LV}{\This{n}}}
+	\defy{p[T]}{p\op{minimize}{\from{p(T)}{T}}}%
+\end{defye}
+\\${}_{}$\\
+
+
+
+
+
+
+--
+towel1:.. //{Map:{} }
+towel2:.. //{Map:{} }
+lib:{
+  T:towel1
+  f1
+  ...
+  fn
+  }
+
+MyProgram:{
+  T:towel2
+  Lib:lib[.T=This0.T]
+  ...
+  }
+-- 
+\section{extra}
+
+Features:
+Structural based generics embedded in a nominal type system.
+Code is Nominal, Reuse is Structural.
+Static methods support for generics, so generics are not just a trik to make the type system happy but actually
+change the behaviour
+Subsume associate types.
+After the fact generics; redirect is like mixins for generics
+Mapping is inferred-> very large maps are possible -> application to libraries
+
+
+In literature, in addition to conventional Java style F-bound polymorphism, there is
+another way to obtain generics: to use associated types (to specify generic paramaters) and inheritence (to instantiate the paramaters).
+However, when parametrizing multiple types, the user to specify the full mapping.
+For example in Java
+    interface A<B>{ B m(); }
+    inteface B{String f();}
+    class G<TA extends A<TB>, TB>{//TA and TB explicitly listed
+      String g(TA a TB b){return a.m().f();}
+    }
+    class MyA implements A<MyB>{..}
+    class MyB implements B {..}
+    G<MyA,MyB>//instantiation
+Also scala offers genercs, and could encode the example in the same way, but Scala
+also offers associated types, allowing to write instead....
+
+Rust also offers generics and associated types, but also support calling static methods
+over generic and associated types.
+
+We provide here a fundational model for genericty that subsume the power
+of F-bound polimorphims and  associated types.
+Moreover, it allows for large sets of generic parameter instantiations to be inferred starting from a much smaller mapping.
+For example, in our system we could just write
+    g={
+      A={ method B m()}
+      B={ method String f()}
+      method String g(A a B b)=a.m().f()
+    }
+    MyA={ method MyB m()= new MyB(); ..}
+    MyB={ method String f()="Hello"; ..}
+    g<A=MyA>//instantiation. The mapping A=MyA,B=MyB
+
+We model a minimal calculus with interfaces and final classes, where implementing an interface is the only way to induce subtyping.
+We will show how supporting subtyping constitute the core technical difficulty in our work, inducing ambiguity in the mappings.
+As you can see, we base our generic matches the structor of the type instead of respecting a subtype requirement as in F-bound polymorphis.
+We can easily encode subtype requirements by using implements:
+Print=interface{ method String print();}
+g={
+  A:{implements Print}
+  method A printMe(A a1,A a2){ if(a1.print().size()>a2.print.size()){return a1;} return a2;}
+  }
+MyPrint={implements Print ..}
+g<A=MyPrint> //instantiation
+g<A=Print> //works too
+
+
+--------------
+example showing ordering need to strictly improve
+EI1: {interface}
+EA1: {implements EI1}
+
+EI2: {interface}
+EA2: {implements EI2}
+
+EB: {EA1 a1 EA1 a1}
+
+{
+A1: {}
+A2: {}
+B: {A1 a1 A2 a2}
+}[B = EB] // A1 -> EI1, A2 -> EA2 a
+          // A1 -> EA1, A2 -> EI2 b
+          // A1 -> EA1, A2 -> EA2 c
+
+a <=b
+b <=a
+c<= a,b
+a <= c
+
+\Q@hi@
+\Q@Hi@
+\Q@class@
+
+$ aa \Q@hi@
+\Q@Hi@
+\Q@class@  qaq$
+\begin{bnf}
+	\production{a}{b}{c}\\
+	\production{a}{b}{c}\\
+	\production{a}{b}{c}\\
+\end{bnf}
+
+$\Q@}}][()]@$
+
+$\begin{array}{l}
+\inferrule[(top)]{
+	a \xrightarrow[b]{} c\quad
+	\forall i<3 a\vdash b:\text{OK}\\\\
+	\forall i<3 a\vdash b:\text{OK}
+}{
+	1+2
+	\rightarrow
+	3
+}\begin{array}{l}
+a\\b\\c
+\end{array}
+\end{array}$

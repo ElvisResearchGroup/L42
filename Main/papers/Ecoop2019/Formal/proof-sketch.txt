@@ -32,7 +32,7 @@ R' in SatisfiedSolutions(CCz)(p; R) iff
 
 BestSatisfiedRedirection(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
 BestSatisfiedSolution(p; R; CCz) = UniversalMostSpecific(p; R; SatisfiedSolutions(CCz))
-
+// TODO: Rename UniversalMostSpecific to StableMostSpecific
 Define R in CollectMappings(p; CCz), iff:
   dom(R) = dom(CCz)
   forall Cs in dom(CCz): R(Cs) in CollectTargets(p; CCz; Cs)
@@ -40,7 +40,7 @@ Define R in CollectMappings(p; CCz), iff:
 ------------------------------------------------------
 Proof that forall (p, R) in ValidProblems: CollectRedirection(p; R) == BestRedirection(p; R)
 ------------------------------------------------------
-Suppose (p, R) in ValidProblems(p; R)
+Suppose (p, R) in ValidProblems
 
 Let CCz = CollectConstraints(p; R)
 // Proof that CCz is finite:
@@ -55,13 +55,202 @@ Let CCz = CollectConstraints(p; R)
 //    Well it's finite, and everything it uses is computable/decidable...
 
 
-Theorem 1: If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
-   exists p' in SimilarPrograms(p) and R' such that R' in ValidRedirections(p'; R') and range(R) not subseteq dom(p)
+
+Theorem 1: Forall (p, R) in ValidProblems, and CCz = CollectConstraints(p; R):
+  //you can come up with a redirection in a larger program that is not applicable in the original one
+  If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
+   exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such that range(R') not subseteq dom(p)
   // Proof by construction
+
+
+  If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
+   exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such that range(R') not subseteq dom(p)
+
+!A & B!={} => E p' in S s.t. (E R' in V(p') s.t. notRange(R'))
+
+!A & B!={} => !V p' in S, R' in V(p') !notRange(R')
+
+V p' in S, R' in V(p') !notRange(R') => A || B=={}
+===========================================================
+!A & B != {} => E p' in S s.t.    (E R' in V(p') s.t. notRange(R'))
+!A & B != {} => !(V p' in S s.t. !(E R' in V(p') s.t. notRange(R')))
+
+
+!A & B!={} => !(V p' in S, R' in V(p') !notRange(R'))
+
+(V p' in S, R' in V(p') !notRange(R')) => (A || B={})
+
+
+
+-----------
+Theorem 1.b:
+Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirections(p'; R)
+  if range(R') subseteq dom(p) then
+  either CompletedConstraints(p;CollectConstraints(p; R)) or ValidRedirections(p; R) == {}
+
+By theorem 5, R' in ValidRedirections(p; R) thus
+Theorem 1.c:
+Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirections(p'; R)
+  if range(R') subseteq dom(p) then CompletedConstraints(p;CollectConstraints(p; R))
+
+Theorem 1.d:
+Forall (p, R) in ValidProblems,
+  if (forall p' in SimilarPrograms(p), ValidRedirections(p'; R) = ValidRedirections(p; R) && ValidRedirections(p; R) != {})
+  then CompletedConstraints(p; CollectConstraints(p; R))
+
+Forall (p, R) in ValidProblems,
+  if !CompletedConstraints(p; CollectConstraints(p; R))
+  then exists p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R) || ValidRedirections(p; R) == {}
+  
+
+Theorem 1.e:
+Forall (p, R) in ValidProblems,  
+  if !CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {}
+  then E p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R)
+
+
+  If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
+   exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such that range(R') not subseteq dom(p)
+
+  if not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
+    exists p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R)
+
+if not CompltedConstraints(p; CCz) and ValidRedirections(p; R) != {}
+  then BestRedirection(p; R) is undefined
+  
+
+if forall p' in SimilarPrograms(p), ValidRedirections(p'; R) == ValidRedirections(p; R)
+then CompletedConstraints(p; CCz)
+
+
+if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) != {}//vr do not grow
+then CompletedConstraints(p; CCz)
+
+-when vr can grow
+R' in ValidRedirections(p; R),
+range(R') has interface in method parameter
+
+--
+if exists R' in ValidRedirections(p; R) s.t. Cs->P in R' has interface that do not appear as ret.type (or implements)
+  p(P) is interface
+  forall m in p(Cs) m.T !=Cs~~
+then exists  p' in SimilarPrograms(p),  ValidRedirections(p'; R) != ValidRedirections(p; R)
+
+if exists  p' in SimilarPrograms(p),  ValidRedirections(p'; R) != ValidRedirections(p; R)
+then exists R' in ValidRedirections(p; R) s.t. 
+//   Cs->P in R' has interface that do not appear as ret.type (or implements)
+  Cs->P in R' has interface, R do not constraint Cs
+  Cs appear as meth parameter
+  
+---------------------------------------------------
+//if not CompletedConstraints...
+if ValidRedirections grows...
+
+There exists a P such that Cs <= P in CCz:
+  P is an interface
+  _ <= Cs not in CCz
+
+  Let Csz = { Cs' | _ <= Cs' in CCz}
+  Forall Cs' in Csz:
+    Either Cs does not appear in p(Cs') as a return or implements type
+  Exists Cs' in dom(R) such that
+    Cs is reachable from p(Cs') by only passing through things in Csz
+
+/* It is possible that there exists Cs' in Csz such that
+  Cs' is only reachable from dom(R) by passing through Cs
+*/
+--------------------------------------------
+
+By theorem 5:
+  ValidRedirections(p; R) subseteq ValidRedirections(p'; R)
+  if R' in V(p')/V(p) then range(R')notin dom(p)
+
+exists R' in V(p'), with range(R') notin dom(p)
+
+ 
+
+
+
+------
+if not CompletedConstraints(p; CCz) then there is 
+at least one Cs <=P (without the corresponding) where isInterface(p,P) //easy
+
+then, Cs may be interface or class
+
+if Cs class
+  consider the case where Cs=P was a validRedirection,
+  then consider p' where P is implemented (again) with P0,
+  clearly Cs=P0 is a validRedirection such that range not subset
+  B <=Any
+
+otherwise no valid redirection has Cs=P....
+
+EC: {interface implements EB Void m(EB x)}
+EB: {interface Void m(EB x)}
+EV: {method Void m(EB b)}
+{ 
+  B: {interface Void m(B x)}
+  V: {method Void m(B b)}
+  method Void stuff(B b) b.m(b)
+  Class: {implements B Void m(B x) this.m(x)}
+}<V=EV>//B=EC
+*/
+{ 
+  //EC: {interface Void m(EC x)}
+  //V: {method Void m(EC b)}
+  method Void stuff(EC b) b.m(b)
+  Class: {implements EC Void m(EC x) this.m(x)}
+}
+------------------------------
+I:{interface}
+//A:{interface implements I}
+EV: {method Void m(I b)}
+{ 
+  B: {}
+  V: {method Void m(B b)}
+}<V=EV> // EV <= V <= EV, B <= I
+//clearly B=A, B=I
+--------------------------------
+I  = interface {Void m(I)}
+//A  = interface(I)  {Void m(I)}
+EV = class     {Void m(I)}
+{ 
+  B = class    {Void m(B)}
+  V = class    {Void m(B)}
+}< V = EV> // EV <= V <= EV, B <= I
+//clearly B=A, B=I
+---------------------------------
+EC  = interface {EB m()}
+EB  = interface {EC m()}
+
+//EC' = interface(EC)  {EB' m()}
+//EB' = interface(EB)  {EC' m()}
+
+//EC' = interface(EC)  {EB m()}
+EV = class     {Void m(EB)}
+{ 
+  C = class    {B m()}
+  B = class    {C m()}
+  V = class    {Void m(B)}
+  B stuff(B b) = (
+    C x = b.m();
+    x.m())
+
+/*
+  EB stuff(EB b) = (
+    EC' x = b.m();
+    x.m())
+*/
+}< V = EV> // EV <= V <= EV, B <= EC,
+//clearly B=A, B=I
+// B=EB, C=EC and B=EB', C=EC'
+
+B stuff(B b) = b.m().m()
+--------------------------------
+
 
 Theorem 3: CollectSolution(p; R; CCz) in ValidRedirections(p; R)
   // Proof by contradiction
-  // might be true...
 
 Theorem 2: ValidRedirections(p; R) subseteq SatisfiedSolutions(CCz)(p; R) // Moderetly hard, but definently true
   // Direct proof
@@ -69,17 +258,24 @@ Theorem 2: ValidRedirections(p; R) subseteq SatisfiedSolutions(CCz)(p; R) // Mod
 Theorem 4: If forall p' in SimilarPrograms(p), f(p', R) = f(p, R) then
   UniversalMostSpecific(p; R; f) = MostSpecificRedirection(f(p; R))
 
-Theorem 5: forall p' in SimilarPrograms(p): (ValidRedirections(p'; R) \ ValidRedirections(p; R)) disjoint PossibleRedirections(p; R)
+Theorem 5: 
+  // Making the program bigger can only add redirections that werent Possible in the original (e.g. because they reference paths that dont exist)
+  forall p' in SimilarPrograms(p): (ValidRedirections(p'; R) \ ValidRedirections(p; R)) disjoint PossibleRedirections(p; R)
   // True?
 
 Lemma 1: If MostSpecificRedirection(p; R,Rz,Rz') = R, then MostSpecificRedirection(p; R,Rz) = R
   // Obviously
 
+forall (p, R) in ValidProblems
+
+CCz = CollectConstraints(p; R)
+// trying to proove that, CollectSolution(p; R; CCz) == BestRedirection(p; R)
+
 // Note: all the '~~~~~~~~~~~~~~~~~'s bellow indicate easy parts of the proof to fill in
 // Whereass the theorems above are non trivial
 1. Suppose CollectRedirection(p; R) is undefined, then BestRedirection(p; R) is undefined
   1.1. Suppose CompletedConstraints(p; CCz), then BestRedirection(p; R) is undefined
-    1.1a. SatisfiedSolutions(CCz) = {}.
+    1.1a. SatisfiedSolutions(CCz) = {}. 
       ~~~~~~~~~~~~~~~~~
     By Theorem 2, we have ValidRedirections(p; R) = {}, therefore BestRedirection(p; R) is undefined.
 
@@ -88,7 +284,7 @@ Lemma 1: If MostSpecificRedirection(p; R,Rz,Rz') = R, then MostSpecificRedirecti
       ~~~~~~~~~~~~~~~~
     By Theorem 1, BestRedirection(p; R) is undefined.
 
-2. Suppose CompletedConstraints(p; CCz), and CollectRedirection(p; R) = R', then BestRedirection(p; R) = R'
+2. Suppose /*CompletedConstraints(p; CCz), and*/ CollectRedirection(p; R) = R', then BestRedirection(p; R) = R'
   2a. R' in SatisfiedSolutions(CCz)(p; R)
     ~~~~~~~~ // The only non-trivial part is that R' in PossibleRedirections(p; R)
   2b. MostSpecificRedirection(SatisfiedSolutions(CCz)(p; R)) = R'
