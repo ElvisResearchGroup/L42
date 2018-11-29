@@ -72,7 +72,9 @@
 \usecolortheme[named=pink]{structure}
 
 \setbeamercolor{title}{fg=Accent}
+\setbeamercolor{example text}{fg=AccentD50}
 \setbeamerfont{title}{size=\Huge}
+
 
 \setbeamercolor{local structure}{fg=black}
 \setbeamerfont{local structure}{size=\normalsize}
@@ -93,13 +95,34 @@
 \xpatchcmd{\itemize}{\llap}{\rlap}{}{}
 \xpatchcmd{\beamer@enum@}{\llap}{\rlap}{}{}
 \setbeamertemplate{itemize/enumerate body begin}{\parj}
-\setbeamerfont{itemize/enumerate subbody}{size=\small}
 \setbeamertemplate{itemize/enumerate body end}{\pars}
+
+\setbeamerfont{itemize/enumerate body}{size=\parj}
+\setbeamerfont{itemize/enumerate subbody}{size=\parj}
 	
-					\newlength{\heightofhw}%
 \setbeamercolor{author}{fg=AccentB40}
 \setbeamerfont{author}{size=\large}
 \setbeamerfont{institute}{size=\normalsize}
+
+\newsavebox{\mybox}
+\newlength{\myboxwidth}
+%\newsavebox{\mybox}
+%\savebox{\mybox}{\parbox{4cm}{\lorem}}
+
+
+\setbeamertemplate{block example begin}{%
+	\setlength{\fboxsep}{0pt}
+	\par\vskip\medskipamount%
+	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
+			\rule{0cm}{1em}\insertblocktitle\hspace{1em}\strut}}%
+	\setlength{\myboxwidth}{\wd\mybox}%	
+	\usebox{\mybox}%
+	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\myboxwidth]{block body example}%
+		\rule{0cm}{1em}\begin{minipage}[t]{4cm}}
+\setbeamertemplate{block example end}{%
+		\end{minipage}\strut
+	\end{beamercolorbox}}
+
 
 \setbeamerfont{frametitle}{size=\Large} % 14pt
 \setbeamercolor{frametitle}{fg=AccentD50}
@@ -112,9 +135,6 @@
 		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
 		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
 	\end{beamercolorbox}}
-
-%\usepackage{enumitem}
-%\setlist{nolistsep}
 
 \usepackage{fontspec} % To set xetex fonts
 \setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
@@ -487,6 +507,7 @@ so what if we could defer the choice latter?
 The obvious solution is to add a layer of abstraction.}
 
 \pause{}
+%actionenv
 
 \heading{Callability Polymorphism}
 
