@@ -1,12 +1,7 @@
-%% LyX 2.3.1 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.3.1-1 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
-\documentclass[t,11pt,twoside,british,handout]{beamer}
+\documentclass[11pt,twoside,british,t]{beamer}
 \usepackage{amstext}
-\usepackage{xpatch}
-%\usepackage{showframe}
-%2.85cm
-%2.54cm
-%\usepackage{layout}
 \usepackage{amssymb}
 \usepackage{fontspec}
 \usepackage{unicode-math}
@@ -40,10 +35,7 @@
 \@ifundefined{date}{}{\date{}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{xcolor}
-%\usepackage{scrlayer-scrpage}
-
-%\newcommand{\lfoot}[1]{\ifoot{\textnormal{#1}}}
-%\newcommand{\rfoot}[1]{\ofoot{\textnormal{#1}}}
+\usepackage{xpatch}
 
 \definecolor{AccentB80}{RGB}{197, 213, 255}
 \definecolor{AccentB60}{RGB}{139, 171, 255}
@@ -52,16 +44,8 @@
 \definecolor{AccentD25}{RGB}{0,   46,  165}
 \definecolor{AccentD50}{RGB}{0,   31,  110}
 
-%\renewcommand\Huge{\@setfontsize\Huge{10pt}{26}} % Was 25?
-%\renewcommand\Large{\@setfontsize\Large{10pt}{14}} % Was 14?
-%\large	 10.5 % was 11?
-%\newcommand{\StyleTitle}[1]{{\Huge{\textcolor{Accent}{{#1}}}}} % Expanded +0.5pt
-%\newcommand{\StyleSubTitle}[1]{{\large{\textcolor{AccentB40}{{#1}}}\medskip}} % 25pt after , Expanded +0.5pt
-%\renewcommand{\maketitle}{\StyleTitle{\@title}\\\StyleSubTitle{\@author}}
 \newcommand{\zwnbsp}{}
-%\renewcommand{\ensuremath}[1]{#1}
 
-%\renewcommand{\thanks}[1]{\footnote{#1}}
 \definecolor{blue}{HTML}{0000F0} % 
 \definecolor{purple}{HTML}{700090}
 \definecolor{orange}{HTML}{F07000}
@@ -74,7 +58,6 @@
 \setbeamercolor{title}{fg=Accent}
 \setbeamercolor{example text}{fg=AccentD50}
 \setbeamerfont{title}{size=\Huge}
-
 
 \setbeamercolor{local structure}{fg=black}
 \setbeamerfont{local structure}{size=\normalsize}
@@ -94,8 +77,8 @@
 	\def\makelabel}{}{}
 \xpatchcmd{\itemize}{\llap}{\rlap}{}{}
 \xpatchcmd{\beamer@enum@}{\llap}{\rlap}{}{}
-\setbeamertemplate{itemize/enumerate body begin}{\parj}
-\setbeamertemplate{itemize/enumerate body end}{\pars}
+\setbeamertemplate{itemize/enumerate body begin}{\vspace{-\medskipamount}}
+\setbeamertemplate{itemize/enumerate body end}{\medskip}
 
 \setbeamerfont{itemize/enumerate body}{size=\parj}
 \setbeamerfont{itemize/enumerate subbody}{size=\parj}
@@ -106,15 +89,13 @@
 
 \newsavebox{\mybox}
 \newlength{\myboxwidth}
-%\newsavebox{\mybox}
-%\savebox{\mybox}{\parbox{4cm}{\lorem}}
 
 
 \setbeamertemplate{block example begin}{%
 	\setlength{\fboxsep}{0pt}
 	\par\vskip\medskipamount%
 	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
-			\rule{0cm}{1em}\insertblocktitle\hspace{1em}\strut}}%
+			\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
 	\setlength{\myboxwidth}{\wd\mybox}%	
 	\usebox{\mybox}%
 	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\myboxwidth]{block body example}%
@@ -134,6 +115,7 @@
 		\setlength{\fboxsep}{0pt}%
 		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
 		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
+		\vspace{\dimexpr-0.41cm+5pt}%
 	\end{beamercolorbox}}
 
 \usepackage{fontspec} % To set xetex fonts
@@ -144,11 +126,11 @@
 \unimathsetup{math-style=ISO}
 \setmathfont{TeX Gyre Schola Math}
 
+\setlength{\parskip}{0pt}
 \newcommand{\parj}{\setlength{\parskip}{0pt}}
-\newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
-%\newcommand{\parj}{}
-%\newcommand{\pars}{}
-%\usepackage[para]{footmisc}
+%\newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
+\newcommand{\pars}{\setlength{\parskip}{0pt}}
+
 \usepackage{hyperref}
 
 \hypersetup{colorlinks,urlcolor=[RGB]{0, 155, 240}}
@@ -159,50 +141,24 @@
 \usepackage{soul}
 \newcommand{\comment}[1]{\note{\hl{#1}}}
 \usefonttheme{professionalfonts}
-%\setbeameroption{show notes on second screen}
 
 \newcommand{\heading}[1]{%
 	%3       Blue    /12pt   Blue    /1pt    +0.75pt
 	{\vspace{5pt}\color{Accent}%
 	\linebox{\large #1}%
-	\hrule height 1pt}}
+	\hrule height 1pt}\vspace{5pt}}
 
 \beamertemplatenavigationsymbolsempty
 
-\setbeamersize{text margin left=1.3333333333333333cm, text margin right=1.3333333333333333cm} % default is 1cm*1cm
+\setbeamersize{text margin left=1cm, text margin right=1cm} % default is 1cm*1cm
 \setbeamersize{sidebar width left=0pt, sidebar width right=0pt}
-\geometry{papersize={16cm,12cm}, vmargin=1.3333333333333333cm}
-
-%\newcommand{\StyleTitle}[1]{{\Huge{\textcolor{Accent}{{#1}}}}} % Expanded +0.5pt
-%\newcommand{\StyleSubTitle}[1]{{\large{\textcolor{AccentB40}{{#1}}}\medskip}} % 25pt after , Expanded +0.5pt
-
-%\geometry{ignoreall, vdivide={1.3333333333333cm, *, 6cm}}
-
-%\geometry{
-%	offset={1cm, 1cm},
-%	hdivide={1.3333333333333333cm,  *, 1.3333333333333333cm},
-%	vdivide={-1cm, *, -5.6666666666666666cm},
-%	verbose,papersize={16cm,12cm} , noheadfoot, nomarginpar
-%\geometry{reset, papersize={16cm,12cm}, 
-%	tmargin=1.3333333333333333cm, % distance between top and body?
-%	bmargin=1.3333333333333333cm, % Not working!
-	%lmargin=2.54cm,
-%	rmargin=2.54cm,
-%	headheight=0.7cm,
-%	headsep=0.7cm,
-%	  hmargin=2.666666666666cm,%
-%vmargin={-1.333333cm,-1.33333333cm},%
-%head=0.5cm,% might be changed later
-%headsep=0pt,%
-%foot=5cm% might be changed later} % (4:3)*4cm scale, default is (4:3)*3cm
-
+\geometry{papersize={16cm,12cm}, vmargin=1cm}
 
 \makeatother
 
 \usepackage{polyglossia}
 \setdefaultlanguage[variant=british]{english}
 \begin{document}
-%	\layout
 \title{Callability Control}
 \author{By Isaac Oscar Gariano\textsuperscript{1} and Marco Servetto\textsuperscript{2}}
 \institute{(Victoria University of Wellington)}
@@ -225,13 +181,13 @@
 \global\long\def\cm#1{\c{\m{#1}}}%
 \global\long\def\cl#1{\c{\l{#1}}}%
 
-\global\long\def\tab{\texttt{\ \ \ \ }}%
+\global\long\def\tab{\texttt{\ \ }}%
 
 \global\long\def\calls#1{\ck{calls[}#1\ck ]}%
 
 \begin{frame}{Conventions}
 
-We will consider C♯, since it
+We will consider C♯, since it\medskip
 \begin{itemize}
 \item is statically-typed,
 \item supports named/identifiable functions (such as static/instance methods
@@ -255,14 +211,13 @@ of 0 (which is 0) and discards the result. But how do we know Abs
 won’t send sensitive information to a third-party?\comment{ I prefered my Russia version… }Well
 the documentation dosn’t say it will, and we trust the implementer,
 Microsoft, to follow it. But, if we didn’t trust it, what could we
-do?}
+do?}\medskip
 \item What about this, what \emph{could} it do?
 
 \comment{Note: I am now using a user-defined interface, so that I can freely
 play with it’s declaration }
 
-$\texttt{\ensuremath{\ck{interface}} \ensuremath{\ct I} \{ \ensuremath{\ck{void}} \ensuremath{\cf{Run()}}; \}}$
-
+$\texttt{\ensuremath{\ck{interface}} \ensuremath{\ct I} \{ \ensuremath{\ck{void}} \ensuremath{\cf{Run()}}; \}}$\\
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct I} \ensuremath{\cv x\cf )} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
 
 \note{This one can do anything the language will let it, so it is likely
@@ -274,10 +229,9 @@ and in this case, literally anyone can override it. So we have to
 trust the writer of every class that x could be at run-time.}
 \item How about this?
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{String}} \ensuremath{\cv{url}\cf )} \{}$
-
-$\texttt{\ensuremath{\tab\ct{Assembly}} \ensuremath{\cv{code}} = \ensuremath{\ct{Assembly}}.\ensuremath{\cf{LoadFrom(}\cv{url}\cf )}; \ensuremath{\cm{// Load code (possibly from the internet)}}}$
-
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{String}} \ensuremath{\cv{url}\cf )} \{}$\\
+$\texttt{\ensuremath{\tab\cm{// Load code (possibly from the internet)}}}$\\
+$\texttt{\ensuremath{\tab\ct{Assembly}} \ensuremath{\cv{code}} = \ensuremath{\ct{Assembly}}.\ensuremath{\cf{LoadFrom(}\cv{url}\cf )};}$\\
 $\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremath{\cf{Invoke(}\ck{null}}, \ensuremath{\ck{null}\cf )}; \} \ensuremath{\cm{// call \cf{M()}}}}$
 
 \note{This is very problematic, url could refer to code written by anyone,
@@ -289,7 +243,7 @@ cannot inspect the code or simply trust their authors.}
 \begin{frame}{Callability}
 \begin{itemize}
 \item \emph{Callability} is the \emph{ability} to \emph{call} a function.
-\item A function's callability is the set of things it can call.
+\item A function’s callability is the set of things it can call.
 \end{itemize}
 \note{We will abstract away performing an ‘operation’ (such as reading a
 file, create a new object, doing integer addition etc) as calling
@@ -302,7 +256,7 @@ file system, then we know it wont.{*}/}
 
 \heading{Restatement of the Problem: }
 \begin{enumerate}
-\item What is the callability of $\cf{Abs}$? (Where $\cf{Abs}$is a static
+\item What is the callability of $\cf{Abs}$? (Where $\cf{Abs}$ is a static
 method)
 \item What is the callability of $\cv x.\cf{Run}$? (Where $\cv x$ is of
 an interface type $\ct I$)
@@ -321,8 +275,7 @@ their callabilities.}
 can call f, …, fn.}
 \begin{exampleblock}{Example}
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\cv{argv}\cf )} \ensuremath{\calls{\cf{WriteLine}}} \{}$
-
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\cv{argv}\cf )} \ensuremath{\calls{\cf{WriteLine}}} \{}$\\
 $\texttt{\ensuremath{\tab\cf{WriteLine(}\cl{"Hello World!"}\cf )}; \}}$
 \end{exampleblock}
 \note{At first glance this looks like we have to list every single function
@@ -349,15 +302,12 @@ is in the $\calls{\ldots}$ annotation of $\f f$.
 \note{this is exactly what the calls annotation means}
 \begin{exampleblock}{Example}
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Write(}\ct{String}} \ensuremath{\cv s\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$
-
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Write(}\ct{String}} \ensuremath{\cv s\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
 $\texttt{\ensuremath{\tab\ck{foreach (}\ct{Char}} \ensuremath{\cv c} \ensuremath{\ck{in}} \ensuremath{\cv s\ck )} \ensuremath{\cf{WriteChar(}\cv c\cf )}; \}}$
 \end{exampleblock}
-\end{enumerate}
 
 \pause{}
-\begin{enumerate}
-\item $\forall\f h\in Calls(\f f)\bullet\f f\rightsquigarrow\f h)\Rightarrow\f f\rightsquigarrow\f g$,
+\item $\forall\f h\in Calls(\f g)\bullet\f f\rightsquigarrow\f h)\Rightarrow\f f\rightsquigarrow\f g$,
 i.e. if $\f f$ can call every function in the $\calls{\ldots}$ annotation
 of $\f g$.
 
@@ -366,74 +316,78 @@ so you're not really gaining any power. Note that if calls(f) is empty,
 that this vacously holds}
 \begin{exampleblock}{Example}
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{WriteLine(}\ct{String}} \ensuremath{\cv s\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$
-
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{WriteLine(}\ct{String}} \ensuremath{\cv s\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
 $\texttt{\ensuremath{\tab\cf{Write(}\v s} \ensuremath{\cf +} \ensuremath{\cl{"\backslash n"}\cf )}; \}}$
 \end{exampleblock}
 \end{enumerate}
+\end{frame}
+%
+\begin{frame}{Using the Rules Together}
 
-\pause{}
-
-Note that the previous rules apply transitively, and always allow
-for recursive calls.
+The previous rules apply transitively, and always allow for recursive
+calls.
 \begin{exampleblock}{Example}
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{HelloWorld(}\cf )} \ensuremath{\calls{\cf{WriteLine}}} \{}$
-
-$\texttt{\ensuremath{\tab\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf )}; \}}$
-
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\v{args}\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$
-
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{HelloWorld(}\cf )} \ensuremath{\calls{\cf{WriteLine}}} \{}$\\
+$\texttt{\ensuremath{\tab\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf )}; \}}$\\
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\v{args}\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
 $\texttt{\ensuremath{\tab\cf{HelloWorld()}}; \}}$
 \end{exampleblock}
 \comment{TODO: Have an example for recursion?}
-\end{frame}
-%
-\begin{frame}{Restricting Primitive Operations}
+
+\note{I didn't show you WriteChar, how is it written? What about the string
+concatenation I did, is that ok?}
+
+\pause{}
+
+\heading{Handling Primitive Operations}
 
 To simplify things we will assume that the language provides only
-two intrinsic functions, $\cf{UnrestrictedPrimitive}$ and $\cf{RestrictedPrimitive}$.
+two intrinsic functions, $\cf{Unrestricted}$ and $\cf{Restricted}$.
 
-\note{The idea being that we don’t care who can call UnrestrictedPrimitive,
-but we do care about RestrictedPrimitive.}
+\note{The idea being that we don’t care who can call Unrestricted, but we
+do care about Restricted.}
 
 \pause{}
 \begin{enumerate}
-\item $\cf{UnrestrictedPrimitive}$ can be called by any function:
+\item $\cf{Unrestricted}$ can be called by any function:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{UnrestrictedPrimitive(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\ck{calls[]}};}$
-
-$\texttt{\ensuremath{\cm{// Example:}} \ensuremath{\cf{UnrestrictedPrimitive(}\cl{"Add"}}, \ensuremath{\cl 1}, \ensuremath{\cl 2\cf )}; \ensuremath{\cm{// Returns \cl 3}}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Unrestricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\ck{calls[]}};}$
 
 \note{The params keyword just makes the function work as a varaidic. Since
 Rule 2 vacously applys.}
-\end{enumerate}
+\begin{exampleblock}{Example}
+
+$\texttt{\ensuremath{\cf{Unrestricted(}\cl{"Add"}}, \ensuremath{\cl 1}, \ensuremath{\cl 2\cf )}; \ensuremath{\cm{// Returns \cl 3}}}$
+\end{exampleblock}
 
 \pause{}
-\begin{enumerate}
-\item $\cf{RestrictedPrimitive}$ can only be (directly) called by functions
-annotated with $\calls{\cf{RestrictedPrimitive},\ldots}$:
+\item $\cf{Restricted}$ can only be directly called by functions annotated
+with $\calls{\cf{Restricted},\ldots}$:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{RestrictedPrimitive(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\ck{calls[\f{RestrictedPrimitive}]}};}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Restricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )}}$\\
+$\texttt{\ensuremath{\tab\ck{calls[\f{RestrictedPrimitive}]}};}$
+\begin{exampleblock}{Example}
 
-$\texttt{\ensuremath{\cm{// Example:}} \ensuremath{\cf{RestrictedPrimitive(}\cl{"CCall"}}, \ensuremath{\cl{"puts"}}, \ensuremath{\cl{"Hello World!"}\cf )}; \ensuremath{\cm{// Prints \cl{Hello} \cl{World!}}}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{WriteChar(}\ct{Char}} \ensuremath{\cv c\cf )} \ensuremath{\calls{\cf{Restricted}}} \{}$\\
+$\texttt{\ensuremath{\tab\texttt{\ensuremath{\cf{Restricted(}\cl{"CCall"}}, \ensuremath{\cl{"putchar"}}, \ensuremath{\cl c\cf )}; }}\}}$\\
 
-\note{RestrictedPrimitive would model VM primitives like reflection as well
-as calling trusted foreign functions. We could also allow RestrictedPrimitive
-to perform unsafe operations, such as executing arbitrary machine
-code, however than we would need to be extra carefull that any code
-that can call RestrictedPrimitive dosn’t use it to violate invariants
-of the language such as bypassing our callability system.}
+\end{exampleblock}
+\note{Restricted would model VM primitives like reflection as well as calling
+trusted foreign functions. We could also allow Restricted to perform
+unsafe operations, such as executing arbitrary machine code, however
+than we would need to be extra carefull that any code that can call
+Restricted dosn’t use it to violate invariants of the language such
+as bypassing our callability system.}
 
-\note{Declaring RestrictedPrimitive as calling itself isn't necessary to
-allow recursive calls. Instead it has the effect of allowing only
-those explicitly declared to call it from calling it, effectively
-disabling rule 2. The same approach can be used to create other restricted
-functions.}
+\note{Declaring Restricted as calling itself isn't necessary to allow recursive
+calls. Instead it has the effect of allowing only those explicitly
+declared to call it from calling it, effectively disabling rule 2.
+The same approach can be used to create other restricted functions.}
 \end{enumerate}
 \end{frame}
 %
-\begin{frame}{The Solution to Problem 1 (Static Dispatch) }
+\begin{frame}{How to Solve Problem 1 (Static Dispatch) }
 
 What can $\cf{Abs(}\cl 0\cf )$ do?
 
@@ -442,7 +396,7 @@ Abs(0) for its calls annotation, consider the following possibilities:}
 
 \pause{}
 \begin{enumerate}
-\item (indirectly) perform only $\cf{UnrestrictedPrimitive}$ operations:
+\item (indirectly) perform only $\cf{Unrestricted}$ operations:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[]}} \{…\}}$
 
@@ -451,27 +405,21 @@ arithmetic negation and comparison, but not restricted operations
 like I/O.}
 
 \pause{}
-\item also (indirectly) perform some $\f{\cf{RestrictedPrimitive}}$ operations: 
-
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{WriteLine(}\ct{String}} \ensuremath{\cv s\cf )} \ensuremath{\ck{calls[\cf{RestrictedPrimitive}]}} \{}$
-
-$\texttt{\ensuremath{\tab\cf{RestrictedPrimitive(}\cl{"CCall"}}, \ensuremath{\cl{"puts"}}, \ensuremath{\cv s\cf )}; \}}$
+\item also (indirectly) perform \emph{some} $\f{\cf{Restricted}}$ operations: 
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{WriteLine}]}} \{…\}}$
 
 \note{By looking at the body of Print, we know that Abs can call a (trusted)
 C function that prints to the terminal, but not any other crazy functions.
 This works since the code of Print can not be overridden or modified.}
-\end{enumerate}
 
 \pause{}
-\begin{enumerate}
-\item also (indirectly) perform \emph{any} $\cf{RestrictedPrimitive}$ operation:
+\item also (indirectly) perform \emph{any} $\cf{Restricted}$ operation:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{RestrictedPrimitive}]}} \{…\}}$
-\end{enumerate}
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{Restricted}]}} \{…\}}$
 
 \pause{}
+\end{enumerate}
 
 \heading{Benefits }
 \begin{enumerate}
@@ -491,8 +439,7 @@ our grantees still hold.}
 %
 \begin{frame}{How to Solve Problem 2 (Dynamic Dispatch) }
 
-What can $\cv x.\cf{Run()}$ do?
-
+What can $\cv x.\cf{Run()}$ do?\\
 \note{Well we just look at the static type of x}
 
 \pause{}
@@ -507,38 +454,33 @@ so what if we could defer the choice latter?
 The obvious solution is to add a layer of abstraction.}
 
 \pause{}
-%actionenv
 
-\heading{Callability Polymorphism}
+\heading{Callability Generics}
 
-Consider this:
-
+Consider this:\\
 $\tab\texttt{\ensuremath{\ck{interface}} \ensuremath{\ct{I<}\cf{'a}\ct >} \{ \ensuremath{\ck{void}} \ensuremath{\cf{Run()}} \ensuremath{\ck{calls[\cf{'a}]}}; \}}$
 
 \note{Here 'a is a generic callability paramter, it can be substiuited for
 any list of functions.}
-\begin{exampleblock}{Example Implementation:}
+\begin{exampleblock}{Example}
 
-$\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{HelloWorld}}: \ensuremath{\ct{I<\cf{[WriteLine]}>}} \{}$
-
-$\texttt{\ensuremath{\tab\ck{void}} \ensuremath{\ct I}.\ensuremath{\cf{Run()}} \ensuremath{\ck{calls[\cf{WriteLine}]}} \{}$
-
-$\texttt{\ensuremath{\tab\tab\cf{\cf{WriteLine(}}\cl{"HelloWorld!"}\cf )}; \}\}}$
+$\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{HelloWorld}}: \ensuremath{\ct{I<\cf{[WriteLine]}>}} \{}$\\
+$\texttt{\ensuremath{\tab\ck{void}} \ensuremath{\ct I}.\ensuremath{\cf{Run()}} \ensuremath{\ck{calls[\cf{WriteLine}]}} \{ \ensuremath{\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf )}; \}\}}$
 \end{exampleblock}
 
-\pause{}
+\pause{\medskip}
 
-Now to answer the question: what can $\cv x.\cf{Run()}$ do?
+Now to answer the question: what can $\cv x.\cf{Run()}$ do?\medskip
 \begin{enumerate}
-\item Only perform $\cf{UnrestrictedPrimitive}$ operations: 
+\item Only perform $\cf{Unrestricted}$ operations: 
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct{I<\cf{[]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
 \item Also print lines to standard-output:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct{I<\cf{[WriteLine]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{WriteLine}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
-\item Perform any $\cf{RestrictedPrimitive}$ operation:
+\item Perform any $\cf{Restricted}$ operation:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{I<\cf{[RestrictedPrimitive]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{RestrictedPrimitive}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{I<\cf{[Restricted]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{Restricted}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
 \item Defer the decision to the caller of $\cf{M3}$: 
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3<'a>(}\ct{I<\cf{['a]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{'a}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
@@ -548,43 +490,40 @@ paramaters, so you can use and cast between different instanciations
 of I like any other generic type.}
 \end{frame}
 %
-\begin{frame}{How to solve Problem 3 (Dynamic Code Loading \& Invocation) }
+\begin{frame}{How to Solve Problem 3 (Dynamic Code Loading \& Invocation) }
 
-In C♯ to dynamically invoke a static method, you simply write:
+In C♯ to dynamically invoke a static or instance method, you simply
+write:
 
-$\texttt{\ensuremath{\tab\cv{methInfo}}.\ensuremath{\cf{Invoke(}\cv{receiver}}, \ensuremath{\cv{args}\cf )} \ensuremath{\cm{// Where \cv{methodInfo} has type \ct{MethodInfo}}}}$
+$\texttt{\ensuremath{\tab\cv{methodInfo}}.\ensuremath{\cf{Invoke(}\cv{receiver}}, \ensuremath{\cv{args}\cf )}}$
 
-\note{To prevent this from being used as a backdoor into our callability
-system, we will need to specify the callability of Invoke properly.}
+\note{Where methodInfo has type MethodInfo. To prevent this from being used
+as a backdoor into our callability system, we will need to specify
+the callability of Invoke properly.}
 
-\pause{}
+\pause{\medskip}
 
 In our system we will have to declare $\cf{Invoke}$like this:
 
-$\tab\texttt{\ensuremath{\cm{/// Represents a method}} \textit{\ensuremath{\f m}}}$
-
-$\tab\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{MethodInfo}} \{}$
-
-$\tab\texttt{\ensuremath{\tab}…}$
-
-$\tab\texttt{\ensuremath{\tab\cm{/// Throws an exception if \cf{Invoke<'a>} \ensuremath{\not\rightsquigarrow} \textit{\ensuremath{\f m}}, otherwise calls \cv{receiver}.\f{\textit{\ensuremath{\f m}}(}\cv{args}\cf )}}}$
-
-
-$\tab\texttt{\ensuremath{\tab\ct{Object}} \ensuremath{\cf{Invoke<'a>(}\ct{Object}} \ensuremath{\cv{receiver}}, \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\ck{calls[\cf{'a}]}} \{ … \}}$
-
+$\tab\texttt{\ensuremath{\cm{/// Represents a method}} \textit{\ensuremath{\f m}}}$\\
+$\tab\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{MethodInfo}} \{}$\\
+$\tab\texttt{\ensuremath{\tab}…}$\\
+$\tab\texttt{\ensuremath{\tab\cm{/// Throws an exception if \cf{Invoke<'a>} \ensuremath{\not\rightsquigarrow} \textit{\ensuremath{\f m}},}}}$\\
+$\tab\texttt{\ensuremath{\tab\cm{/// otherwise calls \cv{receiver}.\f{\textit{\ensuremath{\f m}}(}\cv{args}\cf )}}}$\\
+$\tab\texttt{\ensuremath{\tab\ct{Object}} \ensuremath{\cf{Invoke<'a>(}\ct{Object}} \ensuremath{\cv{receiver}}, \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\ck{calls[\cf{'a}]}} \{ … \}}$\\
 $\tab\texttt{\ensuremath{\tab}… \}}$
 
 \note{The idea being that Invoke will check that 'a is sufficient to call
 the identified method. We can now use this to safely run code downloaded
 from the internet!}
 
-\pause{}
+\pause{\medskip}
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{String}} \ensuremath{\cv{url}\cf )} \{}$
-
-$\texttt{\ensuremath{\tab\ct{Assembly}} \ensuremath{\cv{code}} = \ensuremath{\ct{Assembly}}.\ensuremath{\cf{LoadFrom(}\cv{url}\cf )}; \ensuremath{\cm{// Load code (possibly from the internet)}}}$
-
-$\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremath{\cf{Invoke<[]>(}\ck{null}}, \ensuremath{\ck{null}\cf )}; \} \ensuremath{\cm{// call \cf{M()}, but only if it can only perform \cf{UnrestrictedPrimitive} operations}}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{String}} \ensuremath{\cv{url}\cf )} \{}$\\
+$\texttt{\ensuremath{\tab\cm{// Load code (possibly from the internet)}}}$\\
+$\texttt{\ensuremath{\tab\ct{Assembly}} \ensuremath{\cv{code}} = \ensuremath{\ct{Assembly}}.\ensuremath{\cf{LoadFrom(}\cv{url}\cf )};}$\\
+$\texttt{\ensuremath{\tab\cm{// call \cf{M()}, but only if it can only perform \cf{Unrestricted} operations}}}$\\
+$\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremath{\cf{Invoke<[]>(}\ck{null}}, \ensuremath{\ck{null}\cf )}; \}}$
 \end{frame}
 %
 \begin{frame}{Future Work}

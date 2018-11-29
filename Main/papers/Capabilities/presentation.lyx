@@ -7,10 +7,7 @@
 \textclass beamer
 \begin_preamble
 \usepackage{xcolor}
-%\usepackage{scrlayer-scrpage}
-
-%\newcommand{\lfoot}[1]{\ifoot{\textnormal{#1}}}
-%\newcommand{\rfoot}[1]{\ofoot{\textnormal{#1}}}
+\usepackage{xpatch}
 
 \definecolor{AccentB80}{RGB}{197, 213, 255}
 \definecolor{AccentB60}{RGB}{139, 171, 255}
@@ -19,16 +16,8 @@
 \definecolor{AccentD25}{RGB}{0,   46,  165}
 \definecolor{AccentD50}{RGB}{0,   31,  110}
 
-%\renewcommand\Huge{\@setfontsize\Huge{10pt}{26}} % Was 25?
-%\renewcommand\Large{\@setfontsize\Large{10pt}{14}} % Was 14?
-%\large	 10.5 % was 11?
-%\newcommand{\StyleTitle}[1]{{\Huge{\textcolor{Accent}{{#1}}}}} % Expanded +0.5pt
-%\newcommand{\StyleSubTitle}[1]{{\large{\textcolor{AccentB40}{{#1}}}\medskip}} % 25pt after , Expanded +0.5pt
-%\renewcommand{\maketitle}{\StyleTitle{\@title}\\\StyleSubTitle{\@author}}
 \newcommand{\zwnbsp}{}
-%\renewcommand{\ensuremath}[1]{#1}
 
-%\renewcommand{\thanks}[1]{\footnote{#1}}
 \definecolor{blue}{HTML}{0000F0} % 
 \definecolor{purple}{HTML}{700090}
 \definecolor{orange}{HTML}{F07000}
@@ -36,9 +25,70 @@
 \definecolor{brown}{HTML}{A00000}
 \definecolor{green}{HTML}{008000}
 \definecolor{pink}{HTML}{F000F0}
+\usecolortheme[named=pink]{structure}
 
-%\usepackage{enumitem}
-%\setlist{nolistsep}
+\setbeamercolor{title}{fg=Accent}
+\setbeamercolor{example text}{fg=AccentD50}
+\setbeamerfont{title}{size=\Huge}
+
+\setbeamercolor{local structure}{fg=black}
+\setbeamerfont{local structure}{size=\normalsize}
+\setbeamertemplate{itemize item}{•}
+\setbeamertemplate{itemize subitem}{◦}
+
+\setlength{\labelsep}{0.63cm}
+\setlength{\topsep}{0cm}
+\setlength{\leftmargini}{0.63cm}
+\setlength{\leftmarginii}{\leftmargini}
+\newcommand{\linebox}[1]{%
+	\parbox{\textwidth}{\rule{0cm}{1em}\strut\smash{#1}\strut}}
+
+\xpatchcmd{\itemize}{\def\makelabel}{% Configure inside itemize
+	\setlength{\topsep}{0pt}%
+	\setlength{\itemsep}{0pt}%
+	\def\makelabel}{}{}
+\xpatchcmd{\itemize}{\llap}{\rlap}{}{}
+\xpatchcmd{\beamer@enum@}{\llap}{\rlap}{}{}
+\setbeamertemplate{itemize/enumerate body begin}{\vspace{-\medskipamount}}
+\setbeamertemplate{itemize/enumerate body end}{\medskip}
+
+\setbeamerfont{itemize/enumerate body}{size=\parj}
+\setbeamerfont{itemize/enumerate subbody}{size=\parj}
+	
+\setbeamercolor{author}{fg=AccentB40}
+\setbeamerfont{author}{size=\large}
+\setbeamerfont{institute}{size=\normalsize}
+
+\newsavebox{\mybox}
+\newlength{\myboxwidth}
+
+
+\setbeamertemplate{block example begin}{%
+	\setlength{\fboxsep}{0pt}
+	\par\vskip\medskipamount%
+	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
+			\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
+	\setlength{\myboxwidth}{\wd\mybox}%	
+	\usebox{\mybox}%
+	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\myboxwidth]{block body example}%
+		\rule{0cm}{1em}\begin{minipage}[t]{4cm}}
+\setbeamertemplate{block example end}{%
+		\end{minipage}\strut
+	\end{beamercolorbox}}
+
+
+\setbeamerfont{frametitle}{size=\Large} % 14pt
+\setbeamercolor{frametitle}{fg=AccentD50}
+\newlength{\parprefix}
+\setbeamertemplate{frametitle}{%
+	\begin{beamercolorbox}{frametitle}%
+		\usebeamerfont{frametitle}%
+		{\color{AccentD25} \hrule height 0.75pt \vspace{3pt} \hrule height 1.5pt}%
+		\setlength{\fboxsep}{0pt}%
+		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
+		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
+		\vspace{\dimexpr-0.41cm+5pt}%
+	\end{beamercolorbox}}
 
 \usepackage{fontspec} % To set xetex fonts
 \setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
@@ -48,11 +98,11 @@
 \unimathsetup{math-style=ISO}
 \setmathfont{TeX Gyre Schola Math}
 
-%\newcommand{\parj}{\setlength{\parskip}{0pt}}
+\setlength{\parskip}{0pt}
+\newcommand{\parj}{\setlength{\parskip}{0pt}}
 %\newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
-\newcommand{\parj}{}
-\newcommand{\pars}{}
-%\usepackage[para]{footmisc}
+\newcommand{\pars}{\setlength{\parskip}{0pt}}
+
 \usepackage{hyperref}
 
 \hypersetup{colorlinks,urlcolor=[RGB]{0, 155, 240}}
@@ -63,14 +113,20 @@
 \usepackage{soul}
 \newcommand{\comment}[1]{\note{\hl{#1}}}
 \usefonttheme{professionalfonts}
-%\setbeameroption{show notes on second screen}
 
-\newcommand{\heading}[1]{\usebeamerfont*{subtitle}{\usebeamercolor[fg]{subtitle}#1}}
+\newcommand{\heading}[1]{%
+	%3       Blue    /12pt   Blue    /1pt    +0.75pt
+	{\vspace{5pt}\color{Accent}%
+	\linebox{\large #1}%
+	\hrule height 1pt}\vspace{5pt}}
+
 \beamertemplatenavigationsymbolsempty
-\geometry{papersize={16cm,12cm}} % (4:3)*4cm scale, default is (4:3)*3cm
-\setbeamersize{text margin left=1.3333333333333333cm, text margin right=1.3333333333333333cm} % default is 1cm*1cm
+
+\setbeamersize{text margin left=1cm, text margin right=1cm} % default is 1cm*1cm
+\setbeamersize{sidebar width left=0pt, sidebar width right=0pt}
+\geometry{papersize={16cm,12cm}, vmargin=1cm}
 \end_preamble
-\options handout
+\options t
 \use_default_options true
 \begin_modules
 foottoend
@@ -326,6 +382,19 @@ Conventions
 \begin_deeper
 \begin_layout Standard
 We will consider C♯, since it
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+medskip
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
@@ -412,7 +481,7 @@ Well it looks like it does nothing, it just gets the absolute value of 0
  (which is 0) and discards the result.
  But how do we know Abs won’t send sensitive information to a third-party?
 \begin_inset Flex Beamer Comment
-status collapsed
+status open
 
 \begin_layout Plain Layout
  I prefered my Russia version… 
@@ -423,6 +492,19 @@ status collapsed
 Well the documentation dosn’t say it will, and we trust the implementer,
  Microsoft, to follow it.
  But, if we didn’t trust it, what could we do?
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+medskip
 \end_layout
 
 \end_inset
@@ -459,9 +541,10 @@ Note: I am now using a user-defined interface, so that I can freely play
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2(}\ct I \cv x\cf ) \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
@@ -499,16 +582,26 @@ How about this?
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\texttt{\tab\ct{Assembly} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf ); \cm{// Load code (possibly from the internet)}}$
+\begin_inset Newline newline
 \end_inset
 
 
-\end_layout
+\begin_inset Formula $\texttt{\tab\cm{// Load code (possibly from the internet)}}$
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\ct{Assembly} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf );}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke(}\ck{null}, \ck{null}\cf ); \} \cm{// call \cf{M()}}}$
 \end_inset
 
@@ -570,7 +663,7 @@ call
 \end_layout
 
 \begin_layout Itemize
-A function's callability is the set of things it can call.
+A function’s callability is the set of things it can call.
 \end_layout
 
 \begin_layout Standard
@@ -608,7 +701,7 @@ What is the callability of
 \begin_inset Formula $\cf{Abs}$
 \end_inset
 
-is a static method)
+ is a static method)
 \end_layout
 
 \begin_layout Enumerate
@@ -716,9 +809,10 @@ Example
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\tab\cf{WriteLine(}\cl{"Hello World!"}\cf ); \}}$
 \end_inset
 
@@ -838,9 +932,10 @@ Example
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\tab\ck{foreach (}\ct{Char} \cv c \ck{in} \cv s\ck ) \cf{WriteChar(}\cv c\cf ); \}}$
 \end_inset
 
@@ -848,30 +943,13 @@ Example
 \end_layout
 
 \end_deeper
-\end_deeper
-\begin_layout Standard
+\begin_layout Pause
 
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\xout off
-\uuline off
-\uwave off
-\noun off
-\color none
-
-\backslash
-not
-\backslash
-rightsquigarrow
 \end_layout
 
+\end_deeper
 \begin_layout Enumerate
-\begin_inset Formula $\forall\f h\in Calls(\f f)\bullet\f f\rightsquigarrow\f h)⇒\f f\rightsquigarrow\f g$
+\begin_inset Formula $\forall\f h\in Calls(\f g)\bullet\f f\rightsquigarrow\f h)⇒\f f\rightsquigarrow\f g$
 \end_inset
 
 , i.e.
@@ -925,9 +1003,10 @@ Example
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\tab\cf{Write(}\v s \cf + \cl{"\backslash n"}\cf ); \}}$
 \end_inset
 
@@ -936,13 +1015,30 @@ Example
 
 \end_deeper
 \end_deeper
-\begin_layout Pause
+\end_deeper
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
 
 \end_layout
 
+\begin_layout Frame
+\begin_inset Argument 4
+status open
+
+\begin_layout Plain Layout
+Using the Rules Together
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
 \begin_layout Standard
-Note that the previous rules apply transitively, and always allow for recursive
- calls.
+The previous rules apply transitively, and always allow for recursive calls.
 \end_layout
 
 \begin_layout ExampleBlock
@@ -964,23 +1060,26 @@ Example
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\tab\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf ); \}}$
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{Main(}\ct{String[]} \v{args}\cf ) \calls{\cf{WriteChar}} \{}$
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\texttt{\tab\cf{HelloWorld()}; \}}$
 \end_inset
 
@@ -1001,20 +1100,13 @@ TODO: Have an example for recursion?
 
 \end_layout
 
-\end_deeper
 \begin_layout Standard
-\begin_inset Separator plain
-\end_inset
-
-
-\end_layout
-
-\begin_layout Frame
-\begin_inset Argument 4
+\begin_inset Flex Beamer Note
 status open
 
 \begin_layout Plain Layout
-Restricting Primitive Operations
+I didn't show you WriteChar, how is it written? What about the string concatenat
+ion I did, is that ok?
 \end_layout
 
 \end_inset
@@ -1022,15 +1114,22 @@ Restricting Primitive Operations
 
 \end_layout
 
-\begin_deeper
+\begin_layout Pause
+
+\end_layout
+
+\begin_layout Heading
+Handling Primitive Operations
+\end_layout
+
 \begin_layout Standard
 To simplify things we will assume that the language provides only two intrinsic
  functions, 
-\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\begin_inset Formula $\cf{Unrestricted}$
 \end_inset
 
  and 
-\begin_inset Formula $\cf{RestrictedPrimitive}$
+\begin_inset Formula $\cf{Restricted}$
 \end_inset
 
 .
@@ -1041,8 +1140,8 @@ To simplify things we will assume that the language provides only two intrinsic
 status open
 
 \begin_layout Plain Layout
-The idea being that we don’t care who can call UnrestrictedPrimitive, but
- we do care about RestrictedPrimitive.
+The idea being that we don’t care who can call Unrestricted, but we do care
+ about Restricted.
 \end_layout
 
 \end_inset
@@ -1055,7 +1154,7 @@ The idea being that we don’t care who can call UnrestrictedPrimitive, but
 \end_layout
 
 \begin_layout Enumerate
-\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\begin_inset Formula $\cf{Unrestricted}$
 \end_inset
 
  can be called by any function:
@@ -1063,14 +1162,7 @@ The idea being that we don’t care who can call UnrestrictedPrimitive, but
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{UnrestrictedPrimitive(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf ) \ck{calls[]};}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\texttt{\cm{// Example:} \cf{UnrestrictedPrimitive(}\cl{"Add"}, \cl 1, \cl 2\cf ); \cm{// Returns \cl 3}}$
+\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{Unrestricted(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf ) \ck{calls[]};}$
 \end_inset
 
 
@@ -1090,17 +1182,39 @@ The params keyword just makes the function work as a varaidic.
 
 \end_layout
 
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Formula $\texttt{\cf{Unrestricted(}\cl{"Add"}, \cl 1, \cl 2\cf ); \cm{// Returns \cl 3}}$
+\end_inset
+
+
+\end_layout
+
 \end_deeper
 \begin_layout Pause
 
 \end_layout
 
+\end_deeper
 \begin_layout Enumerate
-\begin_inset Formula $\cf{RestrictedPrimitive}$
+\begin_inset Formula $\cf{Restricted}$
 \end_inset
 
- can only be (directly) called by functions annotated with 
-\begin_inset Formula $\calls{\cf{RestrictedPrimitive},…}$
+ can only be directly called by functions annotated with 
+\begin_inset Formula $\calls{\cf{Restricted},…}$
 \end_inset
 
 :
@@ -1108,14 +1222,67 @@ The params keyword just makes the function work as a varaidic.
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{RestrictedPrimitive(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf ) \ck{calls[\f{RestrictedPrimitive}]};}$
+\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{Restricted(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf )}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\ck{calls[\f{RestrictedPrimitive}]};}$
 \end_inset
 
 
 \end_layout
 
+\begin_layout ExampleBlock
+\begin_inset Argument 2
+status open
+
+\begin_layout Plain Layout
+Example
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\cm{// Example:} \cf{RestrictedPrimitive(}\cl{"CCall"}, \cl{"puts"}, \cl{"Hello World!"}\cf ); \cm{// Prints \cl{Hello} \cl{World!}}}$
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{WriteChar(}\ct{Char} \cv c\cf ) \calls{\cf{Restricted}} \{}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\texttt{\ensuremath{\cf{Restricted(}\cl{"CCall"}}, \ensuremath{\cl{"putchar"}}, \ensuremath{\cl c\cf )}; }\}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset Flex Beamer Note
+status open
+
+\begin_layout Plain Layout
+Restricted would model VM primitives like reflection as well as calling
+ trusted foreign functions.
+ We could also allow Restricted to perform unsafe operations, such as executing
+ arbitrary machine code, however than we would need to be extra carefull
+ that any code that can call Restricted dosn’t use it to violate invariants
+ of the language such as bypassing our callability system.
+\end_layout
+
 \end_inset
 
 
@@ -1126,27 +1293,8 @@ The params keyword just makes the function work as a varaidic.
 status open
 
 \begin_layout Plain Layout
-RestrictedPrimitive would model VM primitives like reflection as well as
- calling trusted foreign functions.
- We could also allow RestrictedPrimitive to perform unsafe operations, such
- as executing arbitrary machine code, however than we would need to be extra
- carefull that any code that can call RestrictedPrimitive dosn’t use it
- to violate invariants of the language such as bypassing our callability
- system.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Flex Beamer Note
-status open
-
-\begin_layout Plain Layout
-Declaring RestrictedPrimitive as calling itself isn't necessary to allow
- recursive calls.
+Declaring Restricted as calling itself isn't necessary to allow recursive
+ calls.
  Instead it has the effect of allowing only those explicitly declared to
  call it from calling it, effectively disabling rule 2.
  The same approach can be used to create other restricted functions.
@@ -1171,7 +1319,7 @@ Declaring RestrictedPrimitive as calling itself isn't necessary to allow
 status open
 
 \begin_layout Plain Layout
-The Solution to Problem 1 (Static Dispatch) 
+How to Solve Problem 1 (Static Dispatch) 
 \end_layout
 
 \end_inset
@@ -1208,7 +1356,7 @@ To answer this question, we will have to look at the declaration of Abs(0)
 
 \begin_layout Enumerate
 (indirectly) perform only 
-\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\begin_inset Formula $\cf{Unrestricted}$
 \end_inset
 
  operations:
@@ -1242,28 +1390,18 @@ this is probably what you’d want for an Abs function, it could do arithmetic
 
 \end_deeper
 \begin_layout Enumerate
-also (indirectly) perform some 
-\begin_inset Formula $\f{\cf{RestrictedPrimitive}}$
+also (indirectly) perform 
+\emph on
+some
+\emph default
+ 
+\begin_inset Formula $\f{\cf{Restricted}}$
 \end_inset
 
  operations: 
 \end_layout
 
 \begin_deeper
-\begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{WriteLine(}\ct{String} \cv s\cf ) \ck{calls[\cf{RestrictedPrimitive}]} \{}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\texttt{\tab\cf{RestrictedPrimitive(}\cl{"CCall"}, \cl{"puts"}, \cv s\cf ); \}}$
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
 \begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{WriteLine}]} \{…\}}$
 \end_inset
@@ -1286,18 +1424,18 @@ By looking at the body of Print, we know that Abs can call a (trusted) C
 
 \end_layout
 
-\end_deeper
 \begin_layout Pause
 
 \end_layout
 
+\end_deeper
 \begin_layout Enumerate
 also (indirectly) perform 
 \emph on
 any
 \emph default
  
-\begin_inset Formula $\cf{RestrictedPrimitive}$
+\begin_inset Formula $\cf{Restricted}$
 \end_inset
 
  operation:
@@ -1305,17 +1443,17 @@ any
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{RestrictedPrimitive}]} \{…\}}$
+\begin_inset Formula $\texttt{\ck{static} \ct{Int32} \cf{Abs(}\ct{Int32} \cv x\cf ) \ck{calls[\cf{Restricted}]} \{…\}}$
 \end_inset
 
 
 \end_layout
 
-\end_deeper
 \begin_layout Pause
 
 \end_layout
 
+\end_deeper
 \begin_layout Heading
 Benefits 
 \end_layout
@@ -1410,9 +1548,10 @@ What can
 \end_inset
 
  do?
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Flex Beamer Note
 status open
 
@@ -1464,14 +1603,15 @@ The obvious solution is to add a layer of abstraction.
 \end_layout
 
 \begin_layout Heading
-Callability Polymorphism
+Callability Generics
 \end_layout
 
 \begin_layout Standard
 Consider this:
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\tab\texttt{\ck{interface} \ct{I<}\cf{'a}\ct > \{ \ck{void} \cf{Run()} \ck{calls[\cf{'a}]}; \}}$
 \end_inset
 
@@ -1497,7 +1637,7 @@ Here 'a is a generic callability paramter, it can be substiuited for any
 status open
 
 \begin_layout Plain Layout
-Example Implementation:
+Example
 \end_layout
 
 \end_inset
@@ -1511,17 +1651,11 @@ Example Implementation:
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\texttt{\tab\ck{void} \ct I.\cf{Run()} \ck{calls[\cf{WriteLine}]} \{}$
+\begin_inset Newline newline
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\texttt{\tab\tab\cf{\cf{WriteLine(}}\cl{"HelloWorld!"}\cf ); \}\}}$
+\begin_inset Formula $\texttt{\tab\ck{void} \ct I.\cf{Run()} \ck{calls[\cf{WriteLine}]} \{ \cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf ); \}\}}$
 \end_inset
 
 
@@ -1529,6 +1663,18 @@ Example Implementation:
 
 \end_deeper
 \begin_layout Pause
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+medskip
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -1538,11 +1684,24 @@ Now to answer the question: what can
 \end_inset
 
  do?
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+medskip
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
 Only perform 
-\begin_inset Formula $\cf{UnrestrictedPrimitive}$
+\begin_inset Formula $\cf{Unrestricted}$
 \end_inset
 
  operations: 
@@ -1572,7 +1731,7 @@ Also print lines to standard-output:
 \end_deeper
 \begin_layout Enumerate
 Perform any 
-\begin_inset Formula $\cf{RestrictedPrimitive}$
+\begin_inset Formula $\cf{Restricted}$
 \end_inset
 
  operation:
@@ -1580,7 +1739,7 @@ Perform any
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{I<\cf{[RestrictedPrimitive]}>} \cv x) \ck{calls[\cf{RestrictedPrimitive}]} \{ \cv x.\cf{Run()}; \}}$
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{I<\cf{[Restricted]}>} \cv x) \ck{calls[\cf{Restricted}]} \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
 
@@ -1632,7 +1791,7 @@ Callability generics are of course covariant in their callability paramaters,
 status open
 
 \begin_layout Plain Layout
-How to solve Problem 3 (Dynamic Code Loading & Invocation) 
+How to Solve Problem 3 (Dynamic Code Loading & Invocation) 
 \end_layout
 
 \end_inset
@@ -1668,6 +1827,18 @@ Where methodInfo has type MethodInfo.
 \end_layout
 
 \begin_layout Pause
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+medskip
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -1684,37 +1855,50 @@ like this:
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\tab\texttt{\ck{class} \ct{MethodInfo} \{}$
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\tab\texttt{\tab…}$
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\tab\texttt{\tab\cm{/// Throws an exception if \cf{Invoke<'a>} \ensuremath{\not\rightsquigarrow} \textit{\f m}, otherwise calls \cv{receiver}.\f{\textit{\f m}(}\cv{args}\cf )}}$
+\begin_inset Newline newline
 \end_inset
 
 
-\end_layout
+\begin_inset Formula $\tab\texttt{\tab\cm{/// Throws an exception if \cf{Invoke<'a>} \ensuremath{\not\rightsquigarrow} \textit{\f m},}}$
+\end_inset
 
-\begin_layout Standard
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\tab\texttt{\tab\cm{/// otherwise calls \cv{receiver}.\f{\textit{\f m}(}\cv{args}\cf )}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Formula $\tab\texttt{\tab\ct{Object} \cf{Invoke<'a>(}\ct{Object} \cv{receiver}, \ct{Object[]} \cv{args}\cf ) \ck{calls[\cf{'a}]} \{ … \}}$
 \end_inset
 
 
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Formula $\tab\texttt{\tab… \}}$
 \end_inset
 
@@ -1737,6 +1921,18 @@ The idea being that Invoke will check that 'a is sufficient to call the
 \end_layout
 
 \begin_layout Pause
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+medskip
+\end_layout
+
+\end_inset
+
 
 \end_layout
 
@@ -1745,17 +1941,35 @@ The idea being that Invoke will check that 'a is sufficient to call the
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $\texttt{\tab\ct{Assembly} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf ); \cm{// Load code (possibly from the internet)}}$
+\begin_inset Newline newline
 \end_inset
 
 
-\end_layout
+\begin_inset Formula $\texttt{\tab\cm{// Load code (possibly from the internet)}}$
+\end_inset
 
-\begin_layout Standard
-\begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke<[]>(}\ck{null}, \ck{null}\cf ); \} \cm{// call \cf{M()}, but only if it can only perform \cf{UnrestrictedPrimitive} operations}}$
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\ct{Assembly} \cv{code} = \ct{Assembly}.\cf{LoadFrom(}\cv{url}\cf );}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\cm{// call \cf{M()}, but only if it can only perform \cf{Unrestricted} operations}}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke<[]>(}\ck{null}, \ck{null}\cf ); \}}$
 \end_inset
 
 
