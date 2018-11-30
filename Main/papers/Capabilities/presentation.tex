@@ -60,7 +60,8 @@
 \newcommand{\parj}{\vspace{-\medskipamount}}
 
 \setbeamercolor{title}{fg=Accent}
-\setbeamercolor{example text}{fg=AccentD50}
+\setbeamercolor{example text}{fg=AccentB40}
+%\setbeamerfont{example text}{series=\bfseries}
 \setbeamerfont{title}{size=\Huge}
 
 \setbeamercolor{local structure}{fg=black}
@@ -105,6 +106,7 @@
 \renewcommand{\thefooter}{%
 		\centering \normalsize	\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }%
 		\begin{frame}%
+		\textit{Calls}{\itshape \rmfamily Calls}$\mathit{Calls}$$Calls$
 		\maketitle%
 		\end{frame}%
 	}
@@ -115,7 +117,7 @@
 	\setlength{\fboxsep}{0pt}
 	\par\pars%
 	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
-			\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
+			\usebeamerfont{block title example}\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
 	\setlength{\myboxwidth}{\wd\mybox}%	
 	\usebox{\mybox}%
 	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\myboxwidth]{block body example}%
@@ -140,12 +142,16 @@
 	\end{beamercolorbox}}
 
 \usepackage{fontspec} % To set xetex fonts
-\setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
-\setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
-\setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
+\setmainfont[Ligatures={Common, Discretionary}, Scale=0.9090909090909091]{TeX Gyre Schola}
+%\setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
+%\setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
+
+\setmainfont[Ligatures={Common, Discretionary}, Scale=1]{TeX Gyre Schola} % 11.5/11
+\setmonofont[Ligatures={Discretionary}, Scale=1.0454545454545454]{Consolas} % 11.5/11
+\setsansfont[Ligatures={Discretionary}]{Segoe UI} %11/11
 
 \unimathsetup{math-style=ISO}
-\setmathfont{TeX Gyre Schola Math}
+\setmathfont[Scale=1.045]{TeX Gyre Schola Math}
 
 \usepackage{hyperref}
 
@@ -296,7 +302,7 @@ a function $\f g$, iff:\pars
 
 \pause{}
 \begin{enumerate}
-\item $\f g\in Calls(\f f)\Rightarrow\f f\rightsquigarrow\f g$, i.e. $\f f$
+\item \normalsize  $\f g\in Calls(\f f)\Rightarrow\f f\rightsquigarrow\f g$, i.e. $\f f$
 is annotated with the $\calls{\dots,\f g,\dots}$.
 
 \note{A function declaration can be suffixed with a calls annotation with

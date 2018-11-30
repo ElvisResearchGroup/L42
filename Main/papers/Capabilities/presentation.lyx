@@ -105,19 +105,19 @@
 		\usebeamerfont{frametitle}%
 		{\color{AccentD25} \hrule height 0.75pt \vspace{3pt} \hrule height 1.5pt}%
 		\setlength{\fboxsep}{0pt}%
-		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
+		\colorbox{AccentB60}{\linebox{\ \insertframetitle}}%
 		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
 		\pars%
 		\vspace{\dimexpr-0.41cm}%
 	\end{beamercolorbox}}
 
 \usepackage{fontspec} % To set xetex fonts
-\setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
+\setmainfont[Ligatures={Common, Discretionary}, Scale=0.9090909090909091]{TeX Gyre Schola}
 \setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
 \setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
 
 \unimathsetup{math-style=ISO}
-\setmathfont{TeX Gyre Schola Math}
+\setmathfont[Scale=0.9090909090909091]{TeX Gyre Schola Math}
 
 \usepackage{hyperref}
 
@@ -835,7 +835,7 @@ As part of type-checking, whenever their is a call to g from within the
 
 
 \emph on
-can-call
+ can-call
 \emph default
  a function 
 \begin_inset Formula $\f g$
@@ -1163,7 +1163,15 @@ The idea being that we don’t care who can call Unrestricted, but we do care
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{Unrestricted(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf ) \ck{calls[]};}$
+\begin_inset Formula $\texttt{\ck{static} \ct{Object} \cf{Unrestricted(}\ct{String} \cv{op}, \ck{params} \ct{Object[]} \cv{args}\cf )}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\texttt{\tab\ck{calls[]};}$
 \end_inset
 
 
@@ -1214,8 +1222,8 @@ Example
 \begin_inset Formula $\cf{Restricted}$
 \end_inset
 
- can only be directly called by functions annotated with 
-\begin_inset Formula $\calls{\cf{Restricted},…}$
+ can only be directly called by functions who name it in their 
+\begin_inset Formula $\ck{calls}$
 \end_inset
 
 :
@@ -1642,6 +1650,10 @@ pars
 
 \end_layout
 
+\begin_layout Pause
+
+\end_layout
+
 \begin_layout Enumerate
 Only perform 
 \begin_inset Formula $\cf{Unrestricted}$
@@ -1658,6 +1670,10 @@ Only perform
 
 \end_layout
 
+\begin_layout Pause
+
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
 Also print lines to standard-output:
@@ -1668,6 +1684,10 @@ Also print lines to standard-output:
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2(}\ct{I<\cf{[WriteLine]}>} \cv x) \ck{calls[\cf{WriteLine}]} \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
+
+\end_layout
+
+\begin_layout Pause
 
 \end_layout
 
@@ -1685,6 +1705,10 @@ Perform any
 \begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{I<\cf{[Restricted]}>} \cv x) \ck{calls[\cf{Restricted}]} \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
+
+\end_layout
+
+\begin_layout Pause
 
 \end_layout
 
