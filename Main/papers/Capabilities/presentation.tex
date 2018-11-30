@@ -1,4 +1,4 @@
-%% LyX 2.3.1-1 created this file.  For more info, see http://www.lyx.org/.
+%% LyX 2.3.1 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass[11pt,twoside,british,t]{beamer}
 \usepackage{amstext}
@@ -44,6 +44,7 @@
 \definecolor{AccentD25}{RGB}{0,   46,  165}
 \definecolor{AccentD50}{RGB}{0,   31,  110}
 
+\setlength{\parskip}{0pt}
 \newcommand{\zwnbsp}{}
 
 \definecolor{blue}{HTML}{0000F0} % 
@@ -55,8 +56,12 @@
 \definecolor{pink}{HTML}{F000F0}
 \usecolortheme[named=pink]{structure}
 
+\newcommand{\pars}{\medskip}
+\newcommand{\parj}{\vspace{-\medskipamount}}
+
 \setbeamercolor{title}{fg=Accent}
-\setbeamercolor{example text}{fg=AccentD50}
+\setbeamercolor{example text}{fg=AccentB40}
+%\setbeamerfont{example text}{series=\bfseries}
 \setbeamerfont{title}{size=\Huge}
 
 \setbeamercolor{local structure}{fg=black}
@@ -77,9 +82,10 @@
 	\def\makelabel}{}{}
 \xpatchcmd{\itemize}{\llap}{\rlap}{}{}
 \xpatchcmd{\beamer@enum@}{\llap}{\rlap}{}{}
-\setbeamertemplate{itemize/enumerate body begin}{\vspace{-\medskipamount}}
-\setbeamertemplate{itemize/enumerate body end}{\medskip}
+\setbeamertemplate{itemize/enumerate body begin}{}
+\setbeamertemplate{itemize/enumerate body end}{\pars}
 
+\setbeamertemplate{itemize/enumerate subbody begin}{\pars}
 \setbeamerfont{itemize/enumerate body}{size=\parj}
 \setbeamerfont{itemize/enumerate subbody}{size=\parj}
 	
@@ -90,12 +96,28 @@
 \newsavebox{\mybox}
 \newlength{\myboxwidth}
 
+\newcommand{\thefooter}{}
+\setbeamertemplate{footline}{%\printinunitsof{cm}\prntlen{}%
+	\vspace{-0.13cm}%
+	\parbox[b][1cm][t]{\textwidth}{\thefooter}\vspace{1cm}%
+}
+\renewcommand{\makebeamertitle}{%
+	{%
+\renewcommand{\thefooter}{%
+		\centering \normalsize	\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }%
+		\begin{frame}%
+		\textit{Calls}{\itshape \rmfamily Calls}$\mathit{Calls}$$Calls$
+		\maketitle%
+		\end{frame}%
+	}
+}%
+
 
 \setbeamertemplate{block example begin}{%
 	\setlength{\fboxsep}{0pt}
-	\par\vskip\medskipamount%
+	\par\pars%
 	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
-			\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
+			\usebeamerfont{block title example}\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
 	\setlength{\myboxwidth}{\wd\mybox}%	
 	\usebox{\mybox}%
 	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\myboxwidth]{block body example}%
@@ -115,21 +137,21 @@
 		\setlength{\fboxsep}{0pt}%
 		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
 		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
-		\vspace{\dimexpr-0.41cm+5pt}%
+		\pars%
+		\vspace{\dimexpr-0.41cm}%
 	\end{beamercolorbox}}
 
 \usepackage{fontspec} % To set xetex fonts
-\setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
-\setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
-\setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
+\setmainfont[Ligatures={Common, Discretionary}, Scale=0.9090909090909091]{TeX Gyre Schola}
+%\setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
+%\setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
+
+\setmainfont[Ligatures={Common, Discretionary}, Scale=1]{TeX Gyre Schola} % 11.5/11
+\setmonofont[Ligatures={Discretionary}, Scale=1.0454545454545454]{Consolas} % 11.5/11
+\setsansfont[Ligatures={Discretionary}]{Segoe UI} %11/11
 
 \unimathsetup{math-style=ISO}
-\setmathfont{TeX Gyre Schola Math}
-
-\setlength{\parskip}{0pt}
-\newcommand{\parj}{\setlength{\parskip}{0pt}}
-%\newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
-\newcommand{\pars}{\setlength{\parskip}{0pt}}
+\setmathfont[Scale=1.045]{TeX Gyre Schola Math}
 
 \usepackage{hyperref}
 
@@ -187,7 +209,7 @@
 
 \begin{frame}{Conventions}
 
-We will consider C♯, since it\medskip
+We will consider C♯ (or another .Net or JVM language), since it\pars
 \begin{itemize}
 \item is statically-typed,
 \item supports named/identifiable functions (such as static/instance methods
@@ -196,6 +218,9 @@ or constructors),
 \item supports dynamic code loading, and
 \item supports dynamic function lookup and invocation (with reflection).
 \end{itemize}
+\note{It will work on any other statically typed language with named functions,
+such as C or Haskell}
+
 For brevity I will omit accessibility modifiers and allow free standing
 static functions.
 \end{frame}
@@ -204,14 +229,14 @@ static functions.
 \begin{enumerate}
 \item What \emph{could} this code do?
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M1(}\cf )} \{ \ensuremath{\cf{Abs(}\cl 0\cf )}; \}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M1(}\cf )} \{ \ensuremath{\cf{Sign(}\cl 0\cf )}; \}}$
 
-\note{Well it looks like it does nothing, it just gets the absolute value
-of 0 (which is 0) and discards the result. But how do we know Abs
-won’t send sensitive information to a third-party?\comment{ I prefered my Russia version… }Well
+\note{Well it looks like it does nothing, it just gets the sign of 0 (which
+is 0) and discards the result. But how do we know Sign won’t send
+sensitive information to a third-party?\comment{ I prefered my Russia version… }Well
 the documentation dosn’t say it will, and we trust the implementer,
 Microsoft, to follow it. But, if we didn’t trust it, what could we
-do?}\medskip
+do?}\pars
 \item What about this, what \emph{could} it do?
 
 \comment{Note: I am now using a user-defined interface, so that I can freely
@@ -252,12 +277,12 @@ to constrain what a function can do. /{*} Improve: For example if
 it only has the ability to call functions we know wont read from the
 file system, then we know it wont.{*}/}
 
-\pause{}
+\pause{\parj}
 
 \heading{Restatement of the Problem: }
 \begin{enumerate}
-\item What is the callability of $\cf{Abs}$? (Where $\cf{Abs}$ is a static
-method)
+\item What is the callability of $\cf{Sign}$? (Where $\cf{Sign}$ is a
+static method)
 \item What is the callability of $\cv x.\cf{Run}$? (Where $\cv x$ is of
 an interface type $\ct I$)
 \item What is the callability of $\cf M$? (Where $\cf M$ was a dynamically
@@ -267,43 +292,25 @@ loaded static-method)
 their callabilities.}
 \end{frame}
 %
-\begin{frame}{The Basics}
+\begin{frame}{The Callability Annotation}
 
-\heading{The $\calls{\f{\f f}_{\l 1},\dots,\f f_{\l n}}$ annotation}
-
-\note{A function declaration can be suffixed with it, indicating that it
-can call f, …, fn.}
-\begin{exampleblock}{Example}
-
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\cv{argv}\cf )} \ensuremath{\calls{\cf{WriteLine}}} \{}$\\
-$\texttt{\ensuremath{\tab\cf{WriteLine(}\cl{"Hello World!"}\cf )}; \}}$
-\end{exampleblock}
-\note{At first glance this looks like we have to list every single function
-we want to call, however this is not what the annotation means, rather
-it is the starting point of functions that can be called. In addition,
-the system can in principle infer these annotations, but we will write
-them out explicitly to aid explanation.}
-
-\pause{}
-
-\heading{The Can-Call Relation: }
-
-\note{As part of typechecking, whenever their is a call to g from within
+\note{As part of type-checking, whenever their is a call to g from within
 the body of a function f, we will check that f 'can call' g.}
 
-$\f f\rightsquigarrow\f g$, i.e. a function $\f f$can call a function
-$\f g$, iff:
+$\f f\rightsquigarrow\f g$, i.e. a function $\f f$\emph{can-call}
+a function $\f g$, iff:\pars
 
 \pause{}
 \begin{enumerate}
-\item $\f g\in Calls(\f f)\Rightarrow\f f\rightsquigarrow\f g$, i.e. $\f g$
-is in the $\calls{\ldots}$ annotation of $\f f$.
+\item \normalsize  $\f g\in Calls(\f f)\Rightarrow\f f\rightsquigarrow\f g$, i.e. $\f f$
+is annotated with the $\calls{\dots,\f g,\dots}$.
 
-\note{this is exactly what the calls annotation means}
+\note{A function declaration can be suffixed with a calls annotation with
+a list of function names.}
 \begin{exampleblock}{Example}
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Write(}\ct{String}} \ensuremath{\cv s\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
-$\texttt{\ensuremath{\tab\ck{foreach (}\ct{Char}} \ensuremath{\cv c} \ensuremath{\ck{in}} \ensuremath{\cv s\ck )} \ensuremath{\cf{WriteChar(}\cv c\cf )}; \}}$
+$\texttt{\ensuremath{\tab\ck{foreach (}\ct{Char}} \ensuremath{\cv c} \ensuremath{\ck{in}} \ensuremath{\cv s\ck )} \ensuremath{\cf{WriteChar(}\cv c\cf )}; \}}$\pars
 \end{exampleblock}
 
 \pause{}
@@ -320,27 +327,26 @@ $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{WriteLi
 $\texttt{\ensuremath{\tab\cf{Write(}\v s} \ensuremath{\cf +} \ensuremath{\cl{"\backslash n"}\cf )}; \}}$
 \end{exampleblock}
 \end{enumerate}
-\end{frame}
-%
-\begin{frame}{Using the Rules Together}
+
+\pause{}
 
 The previous rules apply transitively, and always allow for recursive
-calls.
+calls.\parj
 \begin{exampleblock}{Example}
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{HelloWorld(}\cf )} \ensuremath{\calls{\cf{WriteLine}}} \{}$\\
 $\texttt{\ensuremath{\tab\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf )}; \}}$\\
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\v{args}\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
 $\texttt{\ensuremath{\tab\cf{HelloWorld()}}; \}}$
 \end{exampleblock}
+\end{frame}
+%
+\begin{frame}{Primitive Operations}
+
 \comment{TODO: Have an example for recursion?}
 
 \note{I didn't show you WriteChar, how is it written? What about the string
 concatenation I did, is that ok?}
-
-\pause{}
-
-\heading{Handling Primitive Operations}
 
 To simplify things we will assume that the language provides only
 two intrinsic functions, $\cf{Unrestricted}$ and $\cf{Restricted}$.
@@ -366,7 +372,7 @@ $\texttt{\ensuremath{\cf{Unrestricted(}\cl{"Add"}}, \ensuremath{\cl 1}, \ensurem
 with $\calls{\cf{Restricted},\ldots}$:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Restricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )}}$\\
-$\texttt{\ensuremath{\tab\ck{calls[\f{RestrictedPrimitive}]}};}$
+$\texttt{\ensuremath{\tab\ck{calls[\f{Restricted}]}};}$
 \begin{exampleblock}{Example}
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{WriteChar(}\ct{Char}} \ensuremath{\cv c\cf )} \ensuremath{\calls{\cf{Restricted}}} \{}$\\
@@ -389,51 +395,34 @@ The same approach can be used to create other restricted functions.}
 %
 \begin{frame}{How to Solve Problem 1 (Static Dispatch) }
 
-What can $\cf{Abs(}\cl 0\cf )$ do?
+What can $\cf{Sign(}\cl 0\cf )$ do?
 
 \note{To answer this question, we will have to look at the declaration of
-Abs(0) for its calls annotation, consider the following possibilities:}
+Sign(0) for its calls annotation, consider the following possibilities:}
 
 \pause{}
 \begin{enumerate}
 \item (indirectly) perform only $\cf{Unrestricted}$ operations:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[]}} \{…\}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Sign(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[]}} \{…\}}$
 
-\note{this is probably what you’d want for an Abs function, it could do
+\note{this is probably what you’d want for an Sign function, it could do
 arithmetic negation and comparison, but not restricted operations
 like I/O.}
 
 \pause{}
 \item also (indirectly) perform \emph{some} $\f{\cf{Restricted}}$ operations: 
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{WriteLine}]}} \{…\}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Sign(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{WriteLine}]}} \{…\}}$
 
-\note{By looking at the body of Print, we know that Abs can call a (trusted)
+\note{By looking at the body of Print, we know that Sign can call a (trusted)
 C function that prints to the terminal, but not any other crazy functions.
 This works since the code of Print can not be overridden or modified.}
 
 \pause{}
 \item also (indirectly) perform \emph{any} $\cf{Restricted}$ operation:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Abs(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{Restricted}]}} \{…\}}$
-
-\pause{}
-\end{enumerate}
-
-\heading{Benefits }
-\begin{enumerate}
-\item No need to look at the body of $\cf{Abs}$
-
-\note{since the language will ensure that it is well-typed}
-\item No need to look at every piece of code we are compiling with
-
-\note{We only need to look at the functions mentioned by the declaration
-of Abs}
-\item Our reasoning is static and consistently sound 
-
-\note{No matter what happens at run time, (including dynamic code loading),
-our grantees still hold.}
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Int32}} \ensuremath{\cf{Sign(}\ct{Int32}} \ensuremath{\cv x\cf )} \ensuremath{\ck{calls[\cf{Restricted}]}} \{…\}}$
 \end{enumerate}
 \end{frame}
 %
@@ -453,7 +442,7 @@ so what if we could defer the choice latter?
 
 The obvious solution is to add a layer of abstraction.}
 
-\pause{}
+\pause{\pars}
 
 \heading{Callability Generics}
 
@@ -468,9 +457,9 @@ $\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{HelloWorld}}: \ensuremath{\ct{I
 $\texttt{\ensuremath{\tab\ck{void}} \ensuremath{\ct I}.\ensuremath{\cf{Run()}} \ensuremath{\ck{calls[\cf{WriteLine}]}} \{ \ensuremath{\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf )}; \}\}}$
 \end{exampleblock}
 
-\pause{\medskip}
+\pause{\pars}
 
-Now to answer the question: what can $\cv x.\cf{Run()}$ do?\medskip
+Now to answer the question: what can $\cv x.\cf{Run()}$ do?\pars
 \begin{enumerate}
 \item Only perform $\cf{Unrestricted}$ operations: 
 
@@ -501,9 +490,9 @@ $\texttt{\ensuremath{\tab\cv{methodInfo}}.\ensuremath{\cf{Invoke(}\cv{receiver}}
 as a backdoor into our callability system, we will need to specify
 the callability of Invoke properly.}
 
-\pause{\medskip}
+\pause{\pars}
 
-In our system we will have to declare $\cf{Invoke}$like this:
+In our system we will have to declare $\cf{Invoke}$ like this:
 
 $\tab\texttt{\ensuremath{\cm{/// Represents a method}} \textit{\ensuremath{\f m}}}$\\
 $\tab\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{MethodInfo}} \{}$\\
@@ -517,7 +506,7 @@ $\tab\texttt{\ensuremath{\tab}… \}}$
 the identified method. We can now use this to safely run code downloaded
 from the internet!}
 
-\pause{\medskip}
+\pause{\pars}
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{String}} \ensuremath{\cv{url}\cf )} \{}$\\
 $\texttt{\ensuremath{\tab\cm{// Load code (possibly from the internet)}}}$\\
@@ -526,11 +515,31 @@ $\texttt{\ensuremath{\tab\cm{// call \cf{M()}, but only if it can only perform \
 $\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremath{\cf{Invoke<[]>(}\ck{null}}, \ensuremath{\ck{null}\cf )}; \}}$
 \end{frame}
 %
-\begin{frame}{Future Work}
+\begin{frame}{Conclusion}
+\begin{enumerate}
+\item No need to look at the body of methods to determine what they can
+do.
+
+\note{since the language will ensure that it is well-typed}
+\item No need to look at every piece of code we are compiling with.
+
+\note{We only need to look at the functions mentioned by the declaration
+of Sign}
+\item Our reasoning is static and consistently sound.
+
+\note{No matter what happens at run time, (including dynamic code loading),
+our grantees still hold.}
+\end{enumerate}
+
+\pause{}
+
+\heading{Future Work}
+
+\pars
 \begin{itemize}
 \item Make our annotations less verbose:
-\begin{itemize}
 \item inference of $\ck{calls}$ annotations
+\begin{itemize}
 \item wild-cards? 
 \item allow named groups of functions?
 \end{itemize}
@@ -538,12 +547,12 @@ $\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremat
 machine code)
 \item Improve the support for dynamic loading:
 \begin{itemize}
-\item Allow calling new functions, even if they have themselvs in their
+\item Allow calling new functions, even if they have themselves in their
 $\ck{calls}$ annotation
 \end{itemize}
 \item Formalise the reasoning properties we want from the system
 \begin{itemize}
-\item Proof them!
+\item Prove them!
 \end{itemize}
 \end{itemize}
 
