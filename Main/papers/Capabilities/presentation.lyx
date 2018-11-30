@@ -32,7 +32,7 @@
 \newcommand{\parj}{\vspace{-\medskipamount}}
 
 \setbeamercolor{title}{fg=Accent}
-\setbeamercolor{example text}{fg=AccentD50}
+\setbeamercolor{example text}{fg=AccentB40}
 \setbeamerfont{title}{size=\Huge}
 
 \setbeamercolor{local structure}{fg=black}
@@ -141,6 +141,12 @@
 \setbeamersize{text margin left=1cm, text margin right=1cm} % default is 1cm*1cm
 \setbeamersize{sidebar width left=0pt, sidebar width right=0pt}
 \geometry{papersize={16cm,12cm}, vmargin=1cm}
+
+\usepackage{tikz}
+\usepackage{mathtools}
+\usetikzlibrary{calc, positioning}
+\newlength{\W}
+\settoheight{\W}{\ttfamily W}
 \end_preamble
 \options t
 \use_default_options true
@@ -397,7 +403,7 @@ Conventions
 
 \begin_deeper
 \begin_layout Standard
-We will consider C♯ (or another .Net or JVM language), since it
+We will consider C♯ (or other .Net or JVM languages), since it
 \begin_inset ERT
 status open
 
@@ -418,8 +424,8 @@ is statically-typed,
 \end_layout
 
 \begin_layout Itemize
-supports named/identifiable functions (such as static/instance methods or
- constructors),
+supports named/identifiable functions (e.g.
+ static/instance methods and constructors),
 \end_layout
 
 \begin_layout Itemize
@@ -743,7 +749,7 @@ What is the callability of
 \begin_inset Formula $\cf{Sign}$
 \end_inset
 
- is a static method)
+ is a static method.)
 \end_layout
 
 \begin_layout Enumerate
@@ -759,7 +765,7 @@ What is the callability of
 \begin_inset Formula $\ct I$
 \end_inset
 
-)
+.)
 \end_layout
 
 \begin_layout Enumerate
@@ -771,7 +777,7 @@ What is the callability of
 \begin_inset Formula $\cf M$
 \end_inset
 
- was a dynamically loaded static-method)
+ was a dynamically loaded static-method.)
 \end_layout
 
 \begin_layout Standard
@@ -801,7 +807,7 @@ We will present a system that can answer these questions by constraining
 status open
 
 \begin_layout Plain Layout
-The Callability Annotation
+The Callability Rules
 \end_layout
 
 \end_inset
@@ -865,12 +871,16 @@ pars
 \begin_inset Formula $\f g\in Calls(\f f)⇒\f f\rightsquigarrow\f g$
 \end_inset
 
-, i.e.
+,
+\begin_inset space \quad{}
+\end_inset
+
+i.e.
  
 \begin_inset Formula $\f f$
 \end_inset
 
- is annotated with the 
+ is annotated with 
 \begin_inset Formula $\calls{\dots,\f g,\dots}$
 \end_inset
 
@@ -941,10 +951,14 @@ pars
 
 \end_deeper
 \begin_layout Enumerate
-\begin_inset Formula $\forall\f h\in Calls(\f g)\bullet\f f\rightsquigarrow\f h)⇒\f f\rightsquigarrow\f g$
+\begin_inset Formula $(\forall\f h\in Calls(\f g)\bullet\f f\rightsquigarrow\f h)⇒\f f\rightsquigarrow\f g$
 \end_inset
 
-, i.e.
+,
+\begin_inset space \quad{}
+\end_inset
+
+i.e.
  if 
 \begin_inset Formula $\f f$
 \end_inset
@@ -1074,6 +1088,277 @@ Example
 \end_layout
 
 \end_deeper
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pars
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Preview
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{tikzpicture}[>=stealth]
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{func} = [draw, font=
+\backslash
+ttfamily, text=purple]
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{call} = [->, color=purple, very thick];
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{cancall} = [call, color=blue, dashed, very thick];
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{cancallu} = [cancall, bend left = 30];
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{cancalld} = [cancall, bend right = 10];
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{labelt} = [anchor=south, font={
+\backslash
+footnotesize{calls}}];
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{labelc} = [font={
+\backslash
+footnotesize{
+\backslash
+color{blue} 
+\backslash
+ttfamily calls[
+\backslash
+ldots]}}];
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{labelu} = [anchor=south, labelc];
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+tikzstyle{labeld} = [anchor=north, labelc];
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+node[func, name=M]{Main};
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+node[func, name=HW, right = of M]{HelloWorld};
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+node[func, name=WL, right = of HW]{WriteLine};
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+node[func, name=W, right = of WL]{Write};
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+node[func, name=WC, right = of W]{WriteChar};
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+node[func, name=R, right = of WC, draw=none, text=black]{
+\backslash
+begin{minipage}[c][
+\backslash
+W]{0cm}
+\backslash
+clap{
+\backslash
+centering 
+\backslash
+Large $?$}
+\backslash
+end{minipage}};
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (M.east) edge[call] node[labelt]{} (HW.west); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (HW.east) edge[call] node[labelt]{} (WL.west); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (WL.east) edge[call] node[labelt]{} (W.west); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (W.east) edge[call] node[labelt]{} (WC.west); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (WC.east) edge[call] node[labelt]{} (R.west); 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (HW.north) edge[cancallu] node[labelu]{} (WL.north); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (W.north) edge[cancallu] node[labelu]{} (WC.north); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (WL.south) edge[cancalld] node[labeld, yshift=-0.07cm]{} (WC.south); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (M.south) edge[cancalld] node[labeld]{} (WC.south); 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+draw (WC.north) edge[cancallu] node[labelu]{} (R.north); 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tikzpicture}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \end_deeper
 \begin_layout Standard
 \begin_inset Separator plain
@@ -1810,7 +2095,7 @@ pars
 \end_layout
 
 \begin_layout Standard
-In our system we will have to declare 
+For our system to be sound, we could declare 
 \begin_inset Formula $\cf{Invoke}$
 \end_inset
 
@@ -1984,7 +2269,11 @@ since the language will ensure that it is well-typed
 
 \end_deeper
 \begin_layout Enumerate
-No need to look at every piece of code we are compiling with.
+No need to look at 
+\emph on
+every
+\emph default
+ piece of code we are compiling with.
 \end_layout
 
 \begin_deeper
@@ -2050,45 +2339,46 @@ pars
 Make our annotations less verbose:
 \end_layout
 
+\begin_deeper
 \begin_layout Itemize
-inference of 
+Infer 
 \begin_inset Formula $\ck{calls}$
 \end_inset
 
- annotations
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-wild-cards? 
+ annotations?
 \end_layout
 
 \begin_layout Itemize
-allow named groups of functions?
+Support wild-cards?
+\end_layout
+
+\begin_layout Itemize
+Allow named groups of functions?
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Soundly support performing unsafe operations (like executing arbitrary machine
- code)
+Support sound reasoning about unsafe operations (like executing arbitrary
+ machine code).
 \end_layout
 
 \begin_layout Itemize
-Improve the support for dynamic loading:
+Improve support for dynamic code loading:
 \end_layout
 
 \begin_deeper
 \begin_layout Itemize
-Allow calling new functions, even if they have themselves in their 
+Allow calling newly loaded functions, even if they have themselves in their
+ 
 \begin_inset Formula $\ck{calls}$
 \end_inset
 
- annotation
+ annotation.
 \end_layout
 
 \end_deeper
 \begin_layout Itemize
-Formalise the reasoning properties we want from the system
+Formalise the reasoning properties we want from our system:
 \end_layout
 
 \begin_deeper

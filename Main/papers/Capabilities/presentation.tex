@@ -61,7 +61,6 @@
 
 \setbeamercolor{title}{fg=Accent}
 \setbeamercolor{example text}{fg=AccentB40}
-%\setbeamerfont{example text}{series=\bfseries}
 \setbeamerfont{title}{size=\Huge}
 
 \setbeamercolor{local structure}{fg=black}
@@ -106,7 +105,6 @@
 \renewcommand{\thefooter}{%
 		\centering \normalsize	\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }%
 		\begin{frame}%
-		\textit{Calls}{\itshape \rmfamily Calls}$\mathit{Calls}$$Calls$
 		\maketitle%
 		\end{frame}%
 	}
@@ -117,7 +115,7 @@
 	\setlength{\fboxsep}{0pt}
 	\par\pars%
 	\savebox{\mybox}{\usebeamercolor{block title example}\colorbox{bg}{\color{fg}%
-			\usebeamerfont{block title example}\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
+			\rule{0cm}{1em}\insertblocktitle:\hspace{0.5em}\strut}}%
 	\setlength{\myboxwidth}{\wd\mybox}%	
 	\usebox{\mybox}%
 	\begin{beamercolorbox}[wd=\dimexpr\textwidth-\myboxwidth]{block body example}%
@@ -135,7 +133,7 @@
 		\usebeamerfont{frametitle}%
 		{\color{AccentD25} \hrule height 0.75pt \vspace{3pt} \hrule height 1.5pt}%
 		\setlength{\fboxsep}{0pt}%
-		\colorbox{AccentB60}{\linebox{\insertframetitle}}%
+		\colorbox{AccentB60}{\linebox{\ \insertframetitle}}%
 		{\color{AccentD25} \hrule height 1.5pt \vspace{3pt} \hrule height 0.75pt}%
 		\pars%
 		\vspace{\dimexpr-0.41cm}%
@@ -143,15 +141,11 @@
 
 \usepackage{fontspec} % To set xetex fonts
 \setmainfont[Ligatures={Common, Discretionary}, Scale=0.9090909090909091]{TeX Gyre Schola}
-%\setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
-%\setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
-
-\setmainfont[Ligatures={Common, Discretionary}, Scale=1]{TeX Gyre Schola} % 11.5/11
-\setmonofont[Ligatures={Discretionary}, Scale=1.0454545454545454]{Consolas} % 11.5/11
-\setsansfont[Ligatures={Discretionary}]{Segoe UI} %11/11
+\setmonofont[Ligatures={Discretionary}, Scale=0.9545454545454545]{Consolas} % 10.5/11
+\setsansfont[Ligatures={Discretionary}, Scale=0.9090909090909091]{Segoe UI} %10/11
 
 \unimathsetup{math-style=ISO}
-\setmathfont[Scale=1.045]{TeX Gyre Schola Math}
+\setmathfont[Scale=0.9090909090909091]{TeX Gyre Schola Math}
 
 \usepackage{hyperref}
 
@@ -175,6 +169,12 @@
 \setbeamersize{text margin left=1cm, text margin right=1cm} % default is 1cm*1cm
 \setbeamersize{sidebar width left=0pt, sidebar width right=0pt}
 \geometry{papersize={16cm,12cm}, vmargin=1cm}
+
+\usepackage{tikz}
+\usepackage{mathtools}
+\usetikzlibrary{calc, positioning}
+\newlength{\W}
+\settoheight{\W}{\ttfamily W}
 
 \makeatother
 
@@ -209,11 +209,11 @@
 
 \begin{frame}{Conventions}
 
-We will consider C♯ (or another .Net or JVM language), since it\pars
+We will consider C♯ (or other .Net or JVM languages), since it\pars
 \begin{itemize}
 \item is statically-typed,
-\item supports named/identifiable functions (such as static/instance methods
-or constructors),
+\item supports named/identifiable functions (e.g. static/instance methods
+and constructors),
 \item supports dynamic dispatch (with interfaces, virtual methods, etc.),
 \item supports dynamic code loading, and
 \item supports dynamic function lookup and invocation (with reflection).
@@ -282,28 +282,28 @@ file system, then we know it wont.{*}/}
 \heading{Restatement of the Problem: }
 \begin{enumerate}
 \item What is the callability of $\cf{Sign}$? (Where $\cf{Sign}$ is a
-static method)
+static method.)
 \item What is the callability of $\cv x.\cf{Run}$? (Where $\cv x$ is of
-an interface type $\ct I$)
+an interface type $\ct I$.)
 \item What is the callability of $\cf M$? (Where $\cf M$ was a dynamically
-loaded static-method)
+loaded static-method.)
 \end{enumerate}
 \note{We will present a system that can answer these questions by constraining
 their callabilities.}
 \end{frame}
 %
-\begin{frame}{The Callability Annotation}
+\begin{frame}{The Callability Rules}
 
 \note{As part of type-checking, whenever their is a call to g from within
 the body of a function f, we will check that f 'can call' g.}
 
-$\f f\rightsquigarrow\f g$, i.e. a function $\f f$\emph{can-call}
+$\f f\rightsquigarrow\f g$, i.e. a function $\f f$\emph{ can-call}
 a function $\f g$, iff:\pars
 
 \pause{}
 \begin{enumerate}
-\item \normalsize  $\f g\in Calls(\f f)\Rightarrow\f f\rightsquigarrow\f g$, i.e. $\f f$
-is annotated with the $\calls{\dots,\f g,\dots}$.
+\item $\f g\in Calls(\f f)\Rightarrow\f f\rightsquigarrow\f g$,\quad{}i.e.
+$\f f$ is annotated with $\calls{\dots,\f g,\dots}$.
 
 \note{A function declaration can be suffixed with a calls annotation with
 a list of function names.}
@@ -314,8 +314,8 @@ $\texttt{\ensuremath{\tab\ck{foreach (}\ct{Char}} \ensuremath{\cv c} \ensuremath
 \end{exampleblock}
 
 \pause{}
-\item $\forall\f h\in Calls(\f g)\bullet\f f\rightsquigarrow\f h)\Rightarrow\f f\rightsquigarrow\f g$,
-i.e. if $\f f$ can call every function in the $\calls{\ldots}$ annotation
+\item $(\forall\f h\in Calls(\f g)\bullet\f f\rightsquigarrow\f h)\Rightarrow\f f\rightsquigarrow\f g$,\quad{}i.e.
+if $\f f$ can call every function in the $\calls{\ldots}$ annotation
 of $\f g$.
 
 \note{this makes sense, since you could have just inlined the body of g,
@@ -338,7 +338,41 @@ $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{HelloWo
 $\texttt{\ensuremath{\tab\cf{\cf{WriteLine(}}\cl{"Hello World!"}\cf )}; \}}$\\
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{Main(}\ct{String[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\calls{\cf{WriteChar}}} \{}$\\
 $\texttt{\ensuremath{\tab\cf{HelloWorld()}}; \}}$
+
+\pars
 \end{exampleblock}
+\begin{tikzpicture}[>=stealth]
+	\tikzstyle{func} = [draw, font=\ttfamily, text=purple]
+	\tikzstyle{call} = [->, color=purple, very thick];
+	\tikzstyle{cancall} = [call, color=blue, dashed, very thick];
+
+	\tikzstyle{cancallu} = [cancall, bend left = 30];
+	\tikzstyle{cancalld} = [cancall, bend right = 10];
+
+	\tikzstyle{labelt} = [anchor=south, font={\footnotesize{calls}}];
+	\tikzstyle{labelc} = [font={\footnotesize{\color{blue} \ttfamily calls[\ldots]}}];
+	\tikzstyle{labelu} = [anchor=south, labelc];
+	\tikzstyle{labeld} = [anchor=north, labelc];
+	
+	\node[func, name=M]{Main};
+	\node[func, name=HW, right = of M]{HelloWorld};
+	\node[func, name=WL, right = of HW]{WriteLine};
+	\node[func, name=W, right = of WL]{Write};
+	\node[func, name=WC, right = of W]{WriteChar};
+	\node[func, name=R, right = of WC, draw=none, text=black]{\begin{minipage}[c][\W]{0cm}\clap{\centering \Large $?$}\end{minipage}};
+
+	\draw (M.east) edge[call] node[labelt]{} (HW.west); 
+	\draw (HW.east) edge[call] node[labelt]{} (WL.west); 
+	\draw (WL.east) edge[call] node[labelt]{} (W.west); 
+	\draw (W.east) edge[call] node[labelt]{} (WC.west); 
+	\draw (WC.east) edge[call] node[labelt]{} (R.west); 
+
+	\draw (HW.north) edge[cancallu] node[labelu]{} (WL.north); 
+	\draw (W.north) edge[cancallu] node[labelu]{} (WC.north); 
+	\draw (WL.south) edge[cancalld] node[labeld, yshift=-0.07cm]{} (WC.south); 
+	\draw (M.south) edge[cancalld] node[labeld]{} (WC.south); 
+	\draw (WC.north) edge[cancallu] node[labelu]{} (R.north); 
+\end{tikzpicture}
 \end{frame}
 %
 \begin{frame}{Primitive Operations}
@@ -358,7 +392,8 @@ do care about Restricted.}
 \begin{enumerate}
 \item $\cf{Unrestricted}$ can be called by any function:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Unrestricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )} \ensuremath{\ck{calls[]}};}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Unrestricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )}}$\\
+$\texttt{\ensuremath{\tab\ck{calls[]}};}$
 
 \note{The params keyword just makes the function work as a varaidic. Since
 Rule 2 vacously applys.}
@@ -368,8 +403,8 @@ $\texttt{\ensuremath{\cf{Unrestricted(}\cl{"Add"}}, \ensuremath{\cl 1}, \ensurem
 \end{exampleblock}
 
 \pause{}
-\item $\cf{Restricted}$ can only be directly called by functions annotated
-with $\calls{\cf{Restricted},\ldots}$:
+\item $\cf{Restricted}$ can only be directly called by functions who name
+it in their $\ck{calls}$:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Restricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )}}$\\
 $\texttt{\ensuremath{\tab\ck{calls[\f{Restricted}]}};}$
@@ -460,16 +495,24 @@ $\texttt{\ensuremath{\tab\ck{void}} \ensuremath{\ct I}.\ensuremath{\cf{Run()}} \
 \pause{\pars}
 
 Now to answer the question: what can $\cv x.\cf{Run()}$ do?\pars
+
+\pause{}
 \begin{enumerate}
 \item Only perform $\cf{Unrestricted}$ operations: 
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct{I<\cf{[]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
+
+\pause{}
 \item Also print lines to standard-output:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct{I<\cf{[WriteLine]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{WriteLine}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
+
+\pause{}
 \item Perform any $\cf{Restricted}$ operation:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{I<\cf{[Restricted]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{Restricted}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
+
+\pause{}
 \item Defer the decision to the caller of $\cf{M3}$: 
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3<'a>(}\ct{I<\cf{['a]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{'a}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
@@ -492,7 +535,7 @@ the callability of Invoke properly.}
 
 \pause{\pars}
 
-In our system we will have to declare $\cf{Invoke}$ like this:
+For our system to be sound, we could declare $\cf{Invoke}$ like this:
 
 $\tab\texttt{\ensuremath{\cm{/// Represents a method}} \textit{\ensuremath{\f m}}}$\\
 $\tab\texttt{\ensuremath{\ck{class}} \ensuremath{\ct{MethodInfo}} \{}$\\
@@ -521,7 +564,7 @@ $\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremat
 do.
 
 \note{since the language will ensure that it is well-typed}
-\item No need to look at every piece of code we are compiling with.
+\item No need to look at \emph{every} piece of code we are compiling with.
 
 \note{We only need to look at the functions mentioned by the declaration
 of Sign}
@@ -538,19 +581,19 @@ our grantees still hold.}
 \pars
 \begin{itemize}
 \item Make our annotations less verbose:
-\item inference of $\ck{calls}$ annotations
 \begin{itemize}
-\item wild-cards? 
-\item allow named groups of functions?
+\item Infer $\ck{calls}$ annotations?
+\item Support wild-cards?
+\item Allow named groups of functions?
 \end{itemize}
-\item Soundly support performing unsafe operations (like executing arbitrary
-machine code)
-\item Improve the support for dynamic loading:
+\item Support sound reasoning about unsafe operations (like executing arbitrary
+machine code).
+\item Improve support for dynamic code loading:
 \begin{itemize}
-\item Allow calling new functions, even if they have themselves in their
-$\ck{calls}$ annotation
+\item Allow calling newly loaded functions, even if they have themselves
+in their $\ck{calls}$ annotation.
 \end{itemize}
-\item Formalise the reasoning properties we want from the system
+\item Formalise the reasoning properties we want from our system:
 \begin{itemize}
 \item Prove them!
 \end{itemize}
