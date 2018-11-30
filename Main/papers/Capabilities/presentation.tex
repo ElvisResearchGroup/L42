@@ -1,9 +1,7 @@
 %% LyX 2.3.1 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
-\documentclass[11pt,twoside,british,t,handout]{beamer}
+\documentclass[11pt,twoside,british,t]{beamer}
 \usepackage{amstext}
-\usepackage{showframe}
-\usepackage{layouts}
 \usepackage{amssymb}
 \usepackage{fontspec}
 \usepackage{unicode-math}
@@ -97,6 +95,21 @@
 \newsavebox{\mybox}
 \newlength{\myboxwidth}
 
+\newcommand{\thefooter}{}
+\setbeamertemplate{footline}{%\printinunitsof{cm}\prntlen{}%
+	\vspace{-0.13cm}%
+	\parbox[b][1cm][t]{\textwidth}{\thefooter}\vspace{1cm}%
+}
+\renewcommand{\makebeamertitle}{%
+	{%
+\renewcommand{\thefooter}{%
+		\centering \normalsize	\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }%
+		\begin{frame}%
+		\maketitle%
+		\end{frame}%
+	}
+}%
+
 
 \setbeamertemplate{block example begin}{%
 	\setlength{\fboxsep}{0pt}
@@ -153,44 +166,9 @@
 
 \beamertemplatenavigationsymbolsempty
 
-%\setbeamertemplate{headline}{\vspace{-10cm}}
-
-	
-% -0.13
-%	text
-% 1cm space
-% somewjhere between 8 and 9...
-
 \setbeamersize{text margin left=1cm, text margin right=1cm} % default is 1cm*1cm
 \setbeamersize{sidebar width left=0pt, sidebar width right=0pt}
-%\geometry{reset, papersize={16cm,12cm}, tmargin=1cm, textheight=2cm, foot=40cm, height=4cm, ignoreall}
-\geometry{papersize={16cm,12cm}, 
-%	left=1cm, right=1cm,
-%  hmargin=1cm,%
-%	vmargin=0cm,%
-	vmargin=1cm, %, bmargin=0cm,
-%	textheight=20cm
-%	head=0.5cm,% might be changed later
-%	headsep=0pt,%
-%	foot=0.5cm% might be changed later
-}
-\newcommand{\thefooter}{}
-\setbeamertemplate{footline}{%\printinunitsof{cm}\prntlen{}%
-	\vspace{-0.13cm}%
-	\parbox[b][1cm][t]{\textwidth}{\thefooter}\vspace{1cm}%
-}
-
-\setlength{\footskip}{20cm}
-%\setlength\textheight{10in}
-%\setbeamertemplate{footline}{Hello}
-\renewcommand{\makebeamertitle}{
-	{
-\renewcommand{\thefooter}{		\centering \normalsize	\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }
-		\begin{frame}
-		\maketitle
-		\end{frame}
-	}
-}%
+\geometry{papersize={16cm,12cm}, vmargin=1cm}
 
 \makeatother
 
@@ -222,17 +200,9 @@
 \global\long\def\tab{\texttt{\ \ }}%
 
 \global\long\def\calls#1{\ck{calls[}#1\ck ]}%
-\begin{frame}{values}
-\printinunitsof{cm}\pagevalues
-\end{frame}
-\begin{frame}{design}
-\setlayoutscale{0.2}\printinunitsof{cm}\pagedesign
-\end{frame}
-\begin{frame}{diagram}
-\setlayoutscale{0.2}\printinunitsof{cm}\pagediagram
-\end{frame}
+
 \begin{frame}{Conventions}
-% \pagediagram
+
 We will consider C♯ (or another .Net or JVM language), since it\pars
 \begin{itemize}
 \item is statically-typed,
