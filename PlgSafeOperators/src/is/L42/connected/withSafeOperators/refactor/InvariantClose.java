@@ -142,11 +142,6 @@ public class InvariantClose {
   List<Member> newMembers = new ArrayList<>();
   Set<MethodSelector> state = new HashSet<>();
 
-  // TODO: DELETE THESE AND ALL CODE USING THEM
-  // (But only once the java code generator has been fixed)
-  MethodWithType _immK = null;
-  MethodWithType _mutK = null;
-
   public ClassB run() throws ClassUnfit {
     // Check for 'refine? read method imm Void #invariant() throws() e'
     {
@@ -212,18 +207,6 @@ public class InvariantClose {
         throw new ClassUnfit().msg("The factory " + mwt.getMs() + " at " + mwt.getP() + " takes fwd paramaters");
       }
 
-      // TODO: Delete this stupid block of code
-      if (mwt.getMdf().isClass()) {
-        if (mwt.getReturnMdf().isImm()) {
-          assert this._immK == null; // unsound with new coherence allowing many constructors
-          this._immK = mwt;
-        } else {
-          assert mwt.getReturnMdf().isMut() && this._mutK == null; // unsound with new coherence allowing many constructors
-          this._mutK = mwt;
-        }
-        continue;
-        // NOTE: the stupid code assumes that constructors are not inside state
-      }
       this.state.add(mwt.getMs());
 
       if (mwt.getMs().getNames().isEmpty() && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName()))
@@ -281,21 +264,13 @@ public class InvariantClose {
     else return res;
   }
   private void delegateState() {
-    // TODO: Delete this stupid variable
-    MethodWithType _fwdK = this._mutK.withMs(this._mutK.getMs().withUniqueNum(uniqueNum))
-            .withMt(this._mutK.getMt().withTs(tools.Map.of(TypeManipulation::fieldToFwd, this._mutK.getMt().getTs())).withRefine(false));
-    this.addMember(_fwdK);
-
     for (MethodWithType mwt : inner.mwts()) {
       MethodType mt = mwt.getMt();
       // The mwt we (might) delegate to
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum)).withMt(mwt.getMt().withRefine(false));
       // Not a state method
 
-      if (Arrays.asList(this._mutK.getMs(), this._immK.getMs()).contains(mwt.getMs())) {
-        // TODO: Delete this horrorible way of handling factories
-        this.delegate(true, mwt, _fwdK);
-      } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
+      if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
         // Wrap the body up, but only if a public instance method
         this.delegate(true, mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
