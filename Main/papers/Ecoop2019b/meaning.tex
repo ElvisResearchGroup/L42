@@ -155,7 +155,7 @@ that is, the annotated memory will not be mutated by executing the body of the \
 must be of the form $l\singleDot\f$.
 
 \item \Q@invariant@ methods are of the form \Q@read@ \Q@method@ \Q@Bool@ \Q@invariant()@ \emph{e}.
-Where the only occurrences of \Q@this@ in $e$ are as the reciever for field accesses.
+Where the only occurrences of \Q@this@ in $e$ are as the receiver for field accesses.
 \item All fields referred to in \Q@invariant@ are either \Q@imm@ or \Q@capsule@.
 \item All methods that read \Q@capsule@ fields
 are either \Q@read@;
@@ -260,7 +260,7 @@ $
 
 Monitors are added for all field updates and \Q@new@ expressions, but
 for method calls, are only added if the method is \Q@mut@ and its body accesses a \Q@capsule@ field (of \Q@this@).
-Their is no need to monitor \Q@capsule@ methods, since their receiver is a unique alias and hence can never be used again.
+There is no need to monitor \Q@capsule@ methods, since their receiver is a unique alias and hence can never be used again.
 
 The interaction with monitors and exceptions is interesting:
 a monitor releases the value if the invariant check evaluates to \Q@true@, and produces an error if the 

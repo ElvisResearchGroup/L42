@@ -47,7 +47,7 @@ In contrast our model has a more fine grained representation of mutability: it i
 
 \textit{Class invariants protocols:}
 Class invariants are a fundamental part of the design by contract methodology. 
-Invariant protocols differ wildeley and can be unsound or complicated, particular due to re-entrancy and aliasing\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
+Invariant protocols differ wildly and can be unsound or complicated, particular due to re-entrancy and aliasing\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
 
 While invariant protocols all seem to 
 check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular sound approaches include:
@@ -65,7 +65,7 @@ check and assume the invariant of an object after its construction, they handle 
 %\LINE
 The invariant of the receiver before a public method call and at the end of every public method body needs to be ensured. The invariant of the receiver at the beginning of a public method body and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
 Some approaches ensure the invariant of \Q@this@ instead of the receiver of a method call~\cite{DBLP:journals/scp/MullerPL06}.
-JML~\cite{JML} relaxes these requirements for helper methods, whose semantic is the same as if they where inlined.
+JML~\cite{JML} relaxes these requirements for helper methods, whose semantic is the same as if they were inlined.
 %\LINE
 %The invariant of the receiver (some approaches require the invariant of 'this' instead~\cite{?}) before a public (or non-helper~\cite{JML}) method call, and at the end of every method body needs to be ensured. The invariant of the receiver at the beginning of a public method body, and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
 
@@ -137,7 +137,7 @@ Some tools are intentionally unsound and just perform invariant checking followi
 %the \Q@invariant()@ method), but 
 %the type system implementation is fixed in stone by the language designer.
 
-Many works attempt to move out of the `RV tool' philosophy to ensure RV monitors work as expected, as for example
+\REV{Many works attempt to move out of the `RV tool' philosophy to ensure RV monitors work as expected, as for example
 %\sepItems
 %In avionics, where memory allocation is disallowed, making reasoning about aliasing much simpler~\cite{laurent2015assuring}:
 %``\emph{Runtime Verification (RV) can act as the last line of defense to
@@ -151,7 +151,7 @@ Many works attempt to move out of the `RV tool' philosophy to ensure RV monitors
 %``\emph{no verified assertion in the verified
 %module will ever fail at runtime, even if the module runs as part of
 %a vulnerable application thSound and Unsound monitorsat is subject to code injection attacks}''.
-the study of contracts as refinements of types~\cite{findler2001contract}.
+the study of contracts as refinements of types~\cite{findler2001contract}.}{3}{Dose not offer much explanation or comparison}.
 
 Our invariant protocol is much stronger then
 visible state semantics, and keeps the invariant under tight control.
@@ -183,11 +183,11 @@ Using TMs to enforce strong exception safety is a much simpler alternative, prov
 %Another approach used in the dynamic language Racket is to interpose on primitive operations like procedure-calls and field updates; this allows one to enforce visible-state semantics by wrapping invariant operations around such operations (as is done in aspect-oriented systems like Jose~{?}). This technique can be used with gradual typing to dynamically enforce `types' of mutable structures in a safe way.
 
 %\LINE
-\emph{Chaperones and impersonators}~\cite{DBLP:conf/oopsla/StricklandTFF12} lift the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
+\REV{\emph{Chaperones and impersonators}~\cite{DBLP:conf/oopsla/StricklandTFF12} lift the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
 to work on general purpose predicates, where
 values can be wrapped to ensure an invariant holds.
 This technique is very powerful and can be used to enforce pre and post conditions by wrapping function arguments and return values.
-Their approach allows wrapping invariant operations around method calls, as is done in aspect-oriented systems like Jose~\cite{feldman2006jose}.
+Their approach allows wrapping invariant operations around method calls, as is done in aspect-oriented systems like Jose~\cite{feldman2006jose}.}{3}{Dose not offer much explanation or comparison}
 %One of the advantages of their system is that is transparent to the user. 
 %\LINE
 
@@ -212,27 +212,27 @@ Their approach allows wrapping invariant operations around method calls, as is d
 
 
 %\LINE
-\textit{Security and DMZ:}
-Our approach allow verifying an object's invariant independently of the actual invariants of other objects.
+\REV{\textit{Security and DMZ:}
+Our approach allows verifying an object's invariant independently of the actual invariants of other objects.
 This is in contrast with the main goal of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
-This is like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This make it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
+This is like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
 This does not happen with a type system, since its properties are more coarse grained, simpler and easier to check.
- Static-verification has more flexible and fine-grained annotations and is more fragile since it uses a theorem prover as a back-end.
+ Static-verification has more flexible and fine-grained annotations and is more fragile since it uses a theorem prover as a back-end.}{3}{This hole discussion seems muddled.}
 
 %\REVComm{
 %To solve this issue, static verification systems are %starting to
 %}{2}{[is this correct?] verification of reference %monitors, gradual typing, and contracts have been %explored for longer}
-To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
+\REV{To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
 consider a verified core and a run-time verified boundary.
-You can see our approach as an extremely modularized	version of such system: every class is its own demilitarized zone, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
-soundly handled by our protocol, independently of the code that uses such class or any other surrounding code.
+You can see our approach as an extremely modularized	version of such system: every class is its own \REV{demilitarized}{3}{?} zone, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
+soundly handled by our protocol, independently of the code that uses such class or any other surrounding code.}{2}{Why no static core then?}
 
 Our approach works both  in a library setting and the open world assumption.
 Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method to respect its contract. Such assumption is unrealistic in a real world system with dynamic class loading, and could trivially be broken by a user defined \Q@EvilSubject@.
 
-\textit{Static Verification:}
+\REV{\textit{Static Verification:}}{3}{ It would be better to discuss this tradeoff between expressiveness/usability much earlier, and for it to be addressed through a larger, and possibly more balanced, evaluation with Spec\#.}
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts and class-invariants. 
-It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects knowns about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{s:patterns}, it can become much more difficult to work with and requires significant annotation since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like use, does perform run-time checks for invariants and throws unchecked-exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
+It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object-mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it does not restrict aliasing and allows only part of an object's ROG to be owned/encapsulated. However as we showed in section \ref{s:patterns}, it can become much more difficult to work with and requires significant annotation since merely having an alias to an object tells you nothing about it, hampering modification and method calls. Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like us, does perform run-time checks for invariants and throws unchecked-exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
 
 
 Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static-verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic-collaboration} where objects keep track of their invariants dependencies using ghost-state.

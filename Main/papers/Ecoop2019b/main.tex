@@ -1,4 +1,5 @@
 \documentclass[a4paper,UKenglish]{lipics-v2018}
+\setcounter{errorcontextlines}{999}
 %This is a template for producing LIPIcs articles. 
 %See lipics-manual.pdf for further information.
 %for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
@@ -42,6 +43,10 @@
 \input{../Def/Def}
 \newcommand{\saveSpace}{\vspace{-3px}}
 \newcommand{\loseSpace}{\vspace{1ex}}
+
+\newcommand{\REV}[3]{%
+	\textcolor{red}{#1\footnote{
+		\textcolor{red}{\textbf{REV#2{:} #3}}}}}
 
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
@@ -143,7 +148,6 @@
 	
 	
 ${}_{}$
-
 \noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
 Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they
 allow code to be adapted/specialised to behave differently in different contexts.
@@ -158,7 +162,7 @@ there are various different interpretations of when they should hold.
 
 \loseSpace
 \noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question
-been addressed by others (if at all)?
+%been addressed by others (if at all)?
 We investigate a protocol where class-invariants are expected to hold for all objects involved in execution, but
 they are soundly checked only in a few points. Our approach is sound since we ensure that invariants are pure
 and checked immediately after an invariant violation could have occurred. This allows for stronger and simpler reasoning, as well as less runtime verification overhead, compared to the
@@ -187,17 +191,17 @@ right, but we use these facilities here to ensure our sparsely injected run-time
 \noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
 Through examples, we show how hard it is to reason about code behaviour in the context of dynamic dispatch and
 I/O. We show how type modifiers and object capabilities lay down the foundation needed to reason about OO code
-in this context, and that without such reasoning, enforcing class-invariants for all objects involved in
+in this context, and that \REV{without such reasoning, enforcing class-invariants for all objects involved in
 execution becomes nearly impossible.
 We show that type-modifiers and object capabilities allow for such reasoning to be both simple, modular, and
-sound in a context where I/O, exceptions, and dynamic-dispatch are present.
+sound in a context where I/O, exceptions, and dynamic-dispatch are present.}{1}{Not sufficiently substantiated.}
 
 \loseSpace
 \noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
 We demonstrate, by means of a case study, empirical evidence of the conciseness of our approach in comparison to
 Spec\#.
 We also show the performance of our protocol in comparison to the conventional runtime-verification approaches
-taken by D and Eiffel.
+taken by D and \REV{Eiffel}{2}{Old}.
 
 We formally model a class of languages that support our protocol. This model is formally verified by a proof,
 parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems
@@ -205,10 +209,11 @@ with such properties have already been explored, formalized, and proved in prior
 
 \loseSpace
 \noindent\textit{Importance:} %Why does this work matter?
-Class-invariants allow programmers to reason as to what states objects might be in. Our approach
-makes such reasoning both sound and strong: if a programmer has access to an object, it and 
-all objects reachable from it are in a valid state.
-In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. Since our approach also works on existing emerging languages, and adds only marginal
+Class-invariants allow programmers to reason as to what states objects might be in. \REV{\REV{Our approach
+makes such reasoning both sound and strong}{1}{Not sufficiently substantiated}}{3}{I think this is talking  
+about the fact that prior work does not fully deal with I/O, exceptions, etc. in a suitable way, but I'm not sure.}: if a programmer has access to an object, it and 
+all objects reachable from it are in a \REV{valid state}{1}{Definition is unclear}.
+In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. \REV{Since our approach also works on existing emerging languages}{1}{Not sufficiently substantiated.}, and adds only marginal
 program complexity, we believe it is also practical and usable.
 
 %TODO

@@ -1,6 +1,6 @@
 \section{Invariants over encapsulated state}
 \label{s:encapsulated}
-\noindent Consider managing shipping of items, where their is a maximum combined weight.
+\noindent Consider managing shipping of items, where there is a maximum combined weight.
 \saveSpace
 \begin{lstlisting}
 class ShippingList {
@@ -19,7 +19,7 @@ To handle this class we just inject calls to \Q@invariant@ at the end of the con
 This is safe since the \Q@items@ field is declared \Q@capsule@.
 Relaxing our system to allow a \Q@mut@ modifier for
 the \Q@items@ field and the corresponding constructor parameter 
-makes the code broken:
+breaks the code:
 the cargo we received in the constructor may already be compromised:
 \saveSpace
 \begin{lstlisting}
@@ -66,7 +66,7 @@ we would get in the same situation as the former example.
 %\noindent  Moreover, if the used capsule field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
 
 
-Allowing \Q@this@ to be used more then once can also cause problems:
+Allowing \Q@this@ to be used more than once can also cause problems:
 \saveSpace
 \begin{lstlisting}
 mut method imm Void multiThis(C c) {
@@ -75,7 +75,7 @@ mut method imm Void multiThis(C c) {
   f.hi();} // Can `this' be observed here?
 \end{lstlisting}
 \saveSpace
-\noindent If the former code was accepted, 
+\noindent If the former code were accepted, 
 \Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe an invalid object.
 
 In order to ensure that a second reference to \Q@this@ is not reachable through the parameters, we only accept \Q@imm@ and \Q@capsule@ parameters.
@@ -259,7 +259,7 @@ In order to perform this case study we had to first implement a simple GUI Libra
 
 
 \textit{The Invariant:}
-\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (is a capsule-mutator). Their are no other checks inserted since we never do a field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
+\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (is a capsule-mutator). There are no other checks inserted since we never do a field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
 \begin{lstlisting}
 read method Bool invariant() {
   for (Widget w1 : this.box.c) {

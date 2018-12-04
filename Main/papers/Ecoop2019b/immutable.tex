@@ -16,7 +16,7 @@ Of course the bodies of both \Q@invariant@ methods and constructors may interact
 %We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
 %We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
 In order for a class to have an invariant under our protocol,
-its \Q@invariant@ method must be of the form \Q@read method Bool invariant() {..}@
+its \Q@invariant@ method \REV{must be of the form \Q@read method Bool invariant() {..}@}{2}{Can  a program write say mut method invariant or is it syntactically [???]}
 and only use \Q@this@ to read \Q@imm@ and \Q@capsule@ fields.
 Moreover, its constructors may only use \Q@this@ to initialise fields.\footnote{A factory method could be used when more flexible initialisation is required.} This prevents objects from escaping their constructor partially initialised, and of course prevents explicitly calling \Q@invariant@ inside of \Q@invariants@ and constructors bodies, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
 
@@ -118,7 +118,7 @@ In this section we consider validation over fields of \Q@imm@ types.
 %}
 In the next section we detail our technique for \Q@capsule@ fields.
 
-In the following code \Q@Person@ has a single immutable (non final) field \Q@name@:
+\REV{In the following code \Q@Person@ has a single immutable (non final) field \Q@name@:}{3}{It may be easier to follow if the first two code listings are combined, with something (e.g. colors or comments) to signify the dynamically instrumented parts.}
 \begin{lstlisting}
 class Person {
   read method Bool invariant() {return !name.isEmpty();}
@@ -171,8 +171,8 @@ class Person { .. // Same as before
 
 \noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\textit{Unrestricted use of object-capabilities:}
-Allowing \Q@invariant@ to (indirectly) use an object capability could allow for it to be non deterministic. For example consider this simple and contrived (mis)use of person:
+\REV{\textit{Unrestricted use of object-capabilities:}}{3}{Where do OCs factor in to this example? Cite/explain how this example works in Rust and Java.}
+Allowing \Q@invariant@ to (indirectly) use an object capability could make it non-deterministic. For example consider this simple and contrived (mis)use of person:
 \begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {
   @Override read method Bool isEmpty() {
@@ -204,7 +204,7 @@ Our example shows that such back-doors can be used to break determinism of  \Q@i
 \begin{lstlisting}
 class MagicCounter {
   method Int increment(){
-    //Magic mutation through an imm reciever, equivalent to i++
+    //Magic mutation through an imm receiver, equivalent to i++
 }}
 class NastyS extends String {..
   MagicCounter evil = new MagicCounter(0);
@@ -212,7 +212,7 @@ class NastyS extends String {..
     return this.evil.increment() != 2; 
 }}
 ...
-NastyS name = new NastyS("bob"); //TMs belive name's ROG is imm
+NastyS name = new NastyS("bob"); //TMs believe name's ROG is imm
 Person person = new Person(name); // person is valid, counter=1
 name.increment(); //counter=2, person is now broken
 person.invariant(); // returns false! //counter=3
@@ -278,9 +278,9 @@ The ability to catch and recover from invariant failures is extremely useful as 
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try-catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
-	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked-exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@). Thse two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
+	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked-exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
-If instead we where to not enforce strong exception safety, an invalid object could be made reachable:
+\REV{If instead we were to not enforce strong exception safety, an invalid object could be made reachable:}{3}{Why not write "bob.invariant()" instead of "bob.name.isEmpty()"?}
 \saveSpace
 \begin{lstlisting}[morekeywords={assert}, escapechar=\%]
 mut Person bob = new Person("bob");

@@ -48,7 +48,7 @@ The language we presented here restricts the forms of \Q@invariant@ and capsule 
 such strong restrictions allow for sound and efficient injection of invariant checks. 
 These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data-structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. 
 
-In order to obtain safety, simplicity, and efficiency we traded some expressive power: while can easily verify a doubly linked list of immutable elements, we can not verify a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data-structures, but the \Q@invariant@ method can only refer to immutable and encapsulated state, thus it would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
+In order to obtain safety, simplicity, and efficiency we traded some expressive power: while can easily verify a doubly linked list of immutable elements, \REV{we can not verify a doubly linked lists of mutable elements.}{2}{???} Our approach does not prevent correctly implementing such data-structures, but the \Q@invariant@ method can only refer to immutable and encapsulated state, thus it would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
 In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
 
 % To verify those data-structures, in future work
@@ -70,7 +70,7 @@ In order to verify such data structures we could add a special kind of field whi
 %being able to predict whether code would be well typed allows programmers
 %to better take advantage of the language.
 
-For an implementation of our work to be sound, non-deterministic exceptions like stack overflows or out of memory errors cannot be caught in invariants, or else they may use this to behave non-deterministically. Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that allows catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap-sizes.
+For an implementation of our work to be sound, non-deterministic exceptions like stack overflows or out of memory errors cannot be caught in invariants, or else they may use \REV{this}{2}{font} to behave non-deterministically. Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that enables catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap-sizes.
 
 Other directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of the box and the transform patterns; type modifier inference, and support for flexible ownership types.
 
