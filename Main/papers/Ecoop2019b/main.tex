@@ -1,0 +1,248 @@
+\documentclass[a4paper,UKenglish]{lipics-v2018}
+%This is a template for producing LIPIcs articles. 
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+% for section-numbered lemmas etc., use "numberwithinsect"
+
+\usepackage{microtype}%if unwanted, comment out or use option "draft"
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+\bibliographystyle{plainurl}% the recommnded bibstyle
+
+\usepackage{verbatim}
+%\addbibresource{main.bib}
+\usepackage{wrapfig}
+
+
+%
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+
+\usepackage{mathpartir}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\theoremstyle{plain}
+\newcounter{definition}
+\newtheorem{Definition}[definition]{Definition}
+\newcounter{assumption}
+\newtheorem{Assumption}[assumption]{Assumption}
+\newcounter{lemma}
+\newtheorem{Lemma}[lemma]{Lemma}
+
+%
+\usepackage{xspace}
+\input{../Def/Def}
+\newcommand{\saveSpace}{\vspace{-3px}}
+\newcommand{\loseSpace}{\vspace{1ex}}
+
+
+\title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
+%\titlerunning{Dummy short title}%optional, please use if title is longer than one line
+\author{Authors omitted for double-bind review.}{Unspecified Institution.}{}{}{}
+\authorrunning{Authors omitted for double-bind review.} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+\Copyright{Authors omitted for double-bind review.} %mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\begin{comment}
+	%mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty.
+	\author{Isaac Oscar Garian}{Victoria University of Wellington}{isaac@ecs.vuw.ac.nz}{}{}
+	\author{Marco Servetto}{Victoria University of Wellington}{marco.servetto@ecs.vuw.ac.nz}{}{}
+	\author{Alex Potanin}{Victoria University of Wellington}{alex@ecs.vuw.ac.nz}{}{}
+	\authorrunning{Isaac O.\,G., M. Servetto, and A. Potanin} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+	\Copyright{Isaac Oscar G. and Marco Servetto} %mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\end{comment}
+
+\subjclass{Dummy classification}% mandatory: Please choose ACM 2012 classifications from https://www.acm.org/publications/class-2012 or https://dl.acm.org/ccs/ccs_flat.cfm . E.g., cite as "General and reference $\rightarrow$ General literature" or \ccsdesc[100]{General and reference~General lwrapfigureiterature}. 
+
+\begin{comment}
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10003752.10010124.10010138.10010139</concept_id>
+<concept_desc>Theory of computation~Invariants</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003752.1
+%
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+%0010124.10010138.10010142</concept_id>
+<concept_desc>Theory of computation~Program verification</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10011006.10011008.10011009.10011011</concept_id>
+<concept_desc>Software and its engineering~Object oriented languages</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10010940.10010992.10010998.10011001</concept_id>
+<concept_desc>Software and its engineering~Dynamic analysis</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10011006.10011008.10011024.10011032</concept_id>
+<concept_desc>Software and its engineering~Constraints</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Theory of computation~Invariants}
+\ccsdesc[500]{Theory of computation~Program verification}
+\ccsdesc[500]{Software and its engineering~Object oriented languages}
+\ccsdesc[300]{Software and its engineering~Dynamic analysis}
+\ccsdesc[300]{Software and its engineering~Constraints}
+\end{comment}
+
+\keywords{type modifiers, object capabilities, runtime verification, class invariants}%mandatory
+% \category{}%optional, e.g. invited paper
+%\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\funding{}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+%\acknowledgements{I want to thank \dots}%optional
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%\nolinenumbers %uncomment to disable line numbering
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+{{\ensuremath{\mathit{e}}
+		\xspace}}
+	
+	
+${}_{}$
+
+\noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
+Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they
+allow code to be adapted/specialised to behave differently in different contexts.
+%%, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
+However this flexibility hampers code reasoning since object behaviour is usually nearly completely
+unrestricted. This is further complicated with the support OO languages typically have for exceptions,
+memory mutation, and I/O.
+Class invariants are a well known technique to help write correct code, however
+there are various different interpretations of when they should hold.
+% invariant protocols, specifying when the invariant is expected to hold and when is checked. 
+%% In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
+
+\loseSpace
+\noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question
+been addressed by others (if at all)?
+We investigate a protocol where class-invariants are expected to hold for all objects involved in execution, but
+they are soundly checked only in a few points. Our approach is sound since we ensure that invariants are pure
+and checked immediately after an invariant violation could have occurred. This allows for stronger and simpler reasoning, as well as less runtime verification overhead, compared to the
+more common approach of `visible state' semantics where only the invariant of \Q@this@ is required to hold, and
+only at the start and end of instance methods.
+
+
+% for all observable objects, their class-invariant holds.
+%We wish to guarantee that a class's invariant holds for all its observable instances.
+
+% Most prior work on enforcing class invariants assume unverified/unverifiable restrictions on library code, dynamic class loading and I/O, or even just trust programmers to use the provided tools correctly.
+% For example, static verification often restricts dynamic class loading, while run-time verification often unsoundly allows non deterministic code in class-invariants.
+
+%We wish to allow for stronger reasoning over this by ensuring that non boke
+%We wish to guarantee that a user defined property holds for all observable instances of a class.
+%This is a variation of class invariants, where objects in a broken state can never be observed.
+
+\loseSpace
+\noindent\textit{Approach:} %What was done that unveiled new knowledge?
+We combine previous works on type modifiers and object capabilities to ensure properties about purity,
+determinism, aliasing, and mutability control. Type modifiers and object capabilities are useful in their own
+right, but we use these facilities here to ensure our sparsely injected run-time checks are sufficient.
+%We have implemented our protocol on top of the L42 language.
+
+\loseSpace
+\noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
+Through examples, we show how hard it is to reason about code behaviour in the context of dynamic dispatch and
+I/O. We show how type modifiers and object capabilities lay down the foundation needed to reason about OO code
+in this context, and that without such reasoning, enforcing class-invariants for all objects involved in
+execution becomes nearly impossible.
+We show that type-modifiers and object capabilities allow for such reasoning to be both simple, modular, and
+sound in a context where I/O, exceptions, and dynamic-dispatch are present.
+
+\loseSpace
+\noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
+We demonstrate, by means of a case study, empirical evidence of the conciseness of our approach in comparison to
+Spec\#.
+We also show the performance of our protocol in comparison to the conventional runtime-verification approaches
+taken by D and Eiffel.
+
+We formally model a class of languages that support our protocol. This model is formally verified by a proof,
+parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems
+with such properties have already been explored, formalized, and proved in prior work.
+
+\loseSpace
+\noindent\textit{Importance:} %Why does this work matter?
+Class-invariants allow programmers to reason as to what states objects might be in. Our approach
+makes such reasoning both sound and strong: if a programmer has access to an object, it and 
+all objects reachable from it are in a valid state.
+In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. Since our approach also works on existing emerging languages, and adds only marginal
+program complexity, we believe it is also practical and usable.
+
+%TODO
+% \REVComm{Our work represents a philosophical shift}{2}{This makes it sound like run-time verification has
+% never been considered before.} similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
+% while mutating objects, however a validation failure is soundly detected by a run-time exception,
+% and even after capturing such an exception, validation still holds for all objects involved in the execution.
+%Class invariants provide guarantees about the state of objects throughout the execution.
+%Runtime verification of class invariants is
+%a hard problem due to issues with aliasing, exceptions,
+%non-deterministic invariants, I/O, subtyping and untrusted code.
+%We challenge this problem in the context of
+%a Java-like language where the invariants are expressed in the language itself.
+%We formally define \textbf{Sound Invariant Checking}
+%and formally prove that a combination of carefully selected type modifiers, object capabilities,
+% and strong exception safety is sufficient
+%to handle Sound Invariant Checking for the most common categories of objects.
+
+ \end{abstract}
+\input{intro}
+\input{TMsAndOCs}
+%\input{introOverflow}
+\input{immutable}
+\input{encapsulated}
+\input{related}
+\input{conclusion}
+
+\appendix
+
+\input{meaning}
+\input{appendix}
+
+
+\bibliography{main}
+
+
+\end{document}
