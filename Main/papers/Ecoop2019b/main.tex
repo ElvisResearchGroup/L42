@@ -147,75 +147,16 @@ There are various interpretations as to when class invariants should hold and ho
 We present a sound invariant protocol, where invariants hold for all objects involved in execution.
 We soundly support mutation, dynamic dispatch, exceptions and non-determinism, while requiring only a modest number of runtime checks and annotations.
 Invariants are specified as methods whose execution is statically guaranteed to be deterministic and to not 
-access any externally mutable state. % Why do you insist on 'whose execution'?
+access any externally mutable state.
 This design restricts the range of expressible invariants but improves upon the usability and performance of our system compared to prior work.
 
-%Why Spec\#?
-We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages.
+We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages.
 We statically control aliasing, mutability, and determinism using
 a flavour of type-modifiers and object-capabilities already present in three different experimental languages.
 We also formalise our invariant protocol and prove 
 type-modifiers and object-capabilities are sufficient to ensure its soundness.
+\end{abstract}
 
----------------------
-
-We investigate a protocol where class-invariants are expected to hold for all objects involved in execution, but
-they are soundly checked only in a few points. 
-
-Our approach is sound since we ensure that invariants are pure and checked immediately after an invariant violation could have occurred. This allows for stronger and simpler reasoning, as well as less runtime verification overhead, compared to the more common approach of `visible state' semantics where only the invariant of \Q@this@ is required to hold, and
-only at the start and end of instance methods.
-
-We combine previous works on type modifiers and object capabilities to ensure properties about purity,
-determinism, aliasing, and mutability control. Type modifiers and object capabilities are useful in their own
-right, but we use these facilities here to ensure our sparsely injected run-time checks are sufficient.
-%We have implemented our protocol on top of the L42 language.
-
-\loseSpace
-\noindent\textit{Knowledge:} %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
-Through examples, we show how hard it is to reason about code behaviour in the context of dynamic dispatch and
-I/O. We show how type modifiers and object capabilities lay down the foundation needed to reason about OO code
-in this context, and that \REV{without such reasoning, enforcing class-invariants for all objects involved in
-execution becomes nearly impossible.
-We show that type-modifiers and object capabilities allow for such reasoning to be both simple, modular, and
-sound in a context where I/O, exceptions, and dynamic-dispatch are present.}{1}{Not sufficiently substantiated.}
-
-\loseSpace
-\noindent\textit{Grounding:} %What argument, feasibility proof, artifacts, or results and evaluation support this work?
-We demonstrate, by means of a case study, empirical evidence of the conciseness of our approach in comparison to
-Spec\#.
-We also show the performance of our protocol in comparison to the conventional runtime-verification approaches
-taken by D and \REV{Eiffel}{2}{Old}.
-
-We formally model a class of languages that support our protocol. This model is formally verified by a proof,
-parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems
-with such properties have already been explored, formalized, and proved in prior work.
-
-%\loseSpace
-%\noindent\textit{Importance:} %Why does this work matter?
-%Class-invariants allow programmers to reason as to what states objects might be in. \REV{\REV{Our approach
-%makes such reasoning both sound and strong}{1}{Not sufficiently substantiated}}{3}{I think this is talking  
-%about the fact that prior work does not fully deal with I/O, exceptions, etc. in a suitable way, but I'm not sure.}: if a programmer has access to an object, it and 
-%all objects reachable from it are in a \REV{valid state}{1}{Definition is unclear}.
-%In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. \REV{Since our approach also works on existing emerging languages}{1}{Not sufficiently substantiated.}, and adds only marginal
-%program complexity, we believe it is also practical and usable.
-
-%TODO
-% \REVComm{Our work represents a philosophical shift}{2}{This makes it sound like run-time verification has
-% never been considered before.} similar to the jump from unchecked casts in C to checked casts in Java: it is the programmer's responsibility to create valid objects and to preserve validation
-% while mutating objects, however a validation failure is soundly detected by a run-time exception,
-% and even after capturing such an exception, validation still holds for all objects involved in the execution.
-%Class invariants provide guarantees about the state of objects throughout the execution.
-%Runtime verification of class invariants is
-%a hard problem due to issues with aliasing, exceptions,
-%non-deterministic invariants, I/O, subtyping and untrusted code.
-%We challenge this problem in the context of
-%a Java-like language where the invariants are expressed in the language itself.
-%We formally define \textbf{Sound Invariant Checking}
-%and formally prove that a combination of carefully selected type modifiers, object capabilities,
-% and strong exception safety is sufficient
-%to handle Sound Invariant Checking for the most common categories of objects.
-
- \end{abstract}
 \input{intro}
 \input{TMsAndOCs}
 %\input{introOverflow}
