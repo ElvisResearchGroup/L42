@@ -16,18 +16,18 @@ memory mutation, and I/O.
 
 Class-invariants are an important concept when reasoning about software correctness.
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime-verification.
-In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \REV{\emph{valid}}{3}{If this term really is necessary (I'm not sure it is), then perhaps it should be used more regularly.} if calling \Q@invariant@ would return \Q@true@.
+In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@. \IODel{We say that an object is \REV{\emph{valid}}{3}{If this term really is necessary (I'm not sure it is), then perhaps it should be used more regularly.} if calling \Q@invariant@ would return \Q@true@.}
 
 An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
 The two main sound invariant protocols present in literature are \emph{visible state semantic} \cite{Meyer:1988:OSC:534929} and the \emph{Boogie/Pack-Unpack methodology} ~\cite{DBLP:journals/jot/BarnettDFLS04}. Visible state semantics expect receivers invariants to hold before and after every public method call, and after constructors. Invariants are simply checked at all such points, and so this approach is obviously sound; however this can be incredibly inefficient, even in simple cases.
 In contrast, the pack-unpack methodology marks all objects as either \emph{packed} or \emph{unpacked}, where a packed object is one whose invariant is expected to hold.
 In this approach, an object's invariant is checked only by the pack-operation.
-\REV{In order for this to be sound, some form of aliasing and mutation control is necessary.}{1}{If aliasing can be controlled, is there a need to control mutation as well?} For example, Spec\#, which follows the pack-unpack methodology, uses a theorem prover, together with source-code annotations.
+\REV{In order for this to be sound, some form of aliasing and\IO{/or} mutation control is necessary.}{1}{If aliasing can be controlled, is there a need to control mutation as well?} For example, Spec\#, which follows the pack-unpack methodology, uses a theorem prover, together with source-code annotations.
 While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
 at run time, while statically verifying aliasing, purity and other similar standard properties.
 This allows us to closely compare our approach with Spec\#.
 
-\REV{Instead of using static analysis}{1}{A type system can be a static analysis too}, 
+\REV{Instead of using \IO{automated theorem proving} \IODel{static analysis}}{1}{A type system can be a static analysis too}, 
 it is becoming more popular to verify aliasing and immutability using a type system.
 For example, there are 3 languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon et. al.\cite{GordonEtAl12} that use Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and deterministic parallelism.%
 \footnote{TMs are called \emph{reference capabilities} in other works. We use the term TM here
@@ -44,7 +44,10 @@ While studying those languages, we discovered an elegant way to enforce invarian
 %  }
 \begin{lstlisting}
 class Point { Double x; Double y; Point(Double x, Double y) {..}
-  @Override read method Bool equals(read Object that) {..} 
+  @Override read method Bool equals(read Object that) {
+    return that instanceof Point 
+      && this.x == (Point)that.x && this.y == (Point)that.y;
+  } 
 }
 class Hamster {Point pos; //pos is imm by default
   Hamster(Point pos) {..} 
@@ -60,8 +63,8 @@ class Cage {
     this.moveTo(this.path.get(index %$\,$  this.path.size())); }
   mut method Void moveTo(Point p) { this.h.pos = p; } }
 \end{lstlisting}
-\REV{\REV{Many verification approaches take advantage of the separation between primitive value types and objects.}{1}{It is not clear what is the reason to distinguish between primitive and reference types.}}{3}{What does this mean? Cite something?}
-However, our approach works in a pure OO setting distinction. Hence we write all type names in \REV{upper case}{2}{bold}, to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of constructor parameters.
+\REV{\REV{Many verification approaches take advantage of the separation between primitive value types and objects\IO{, since the former are immutable and do not support reference-equality.}}{1}{It is not clear what is the reason to distinguish between primitive and reference types.}}{3}{What does this mean? Cite something?}
+However, our approach works in a pure OO setting distinction. Hence we write all type names in \REV{\IO{\Q@Bold Title Case@}}{2}{bold}, to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of constructor parameters.
 
 We use the \Q@read@ annotation on \Q@equals@ to express that it does not modify either the
 receiver or the parameter. In \Q@Cage@ we use 
@@ -70,7 +73,7 @@ that the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the co
 of the containing \Q@Cage@. 
 We annotated the \Q@move@
 and \Q@moveTo@ methods with \Q@mut@, since they modify
-their receivers ROG. \REV{Our default annotation is \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.}{1}{Does the same apply to the parameter p? A comprehensive list of default annotations should be provided, without deferring to formalism.}
+their receivers ROG. \REV{\IO{The default annotation is always} \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.}{1}{Does the same apply to the parameter p? A comprehensive list of default annotations should be provided, without deferring to formalism.}
 % Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
 % to check if the hamster position is inside the list.
 % The conventional syntax correctly instantiates a \Q@Cage@:

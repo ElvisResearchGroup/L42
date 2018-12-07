@@ -6,7 +6,7 @@ made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and ex
 
 \emph{Type modifiers} (TMs), as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
 Three different research languages are being independently developed relying on this new design: the language of Gordon et. al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
-These project are \REV{reasonably large}{3}{Seems very large to me!}: several million lines of code are written in Gordon et. al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
+These project are \REV{\IO{quite} large}{3}{Seems very large to me!}: several million lines of code are written in Gordon et. al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
 While we focus on the specific TMs provided by L42, Pony, and Gordon et. al., type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
@@ -29,8 +29,8 @@ On the other hand, an \Q@imm@ reference refers to an object that will never be m
 
 
 
-\noindent Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@;
-\REV{we cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation:}{2}{repetitive} in our example we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
+\noindent Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@
+\IODel{; \REV{we cannot use a \Q@read@ reference to cause mutation, but we have no guarantee of the absence of mutation:}{2}{repetitive} in our example}\IO{, where} we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
 
 \begin{lstlisting}
 mut Point mp = new Point(1, 2);
@@ -68,7 +68,7 @@ capsule$\,\,\,$Circle cc = new Circle(new Point(0, 0), 7);
      imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 \saveSpace
-\REV{Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression: \Q@new Circle(..)@.}{2}{obvious from the code}
+\REV{\IODel{Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression: \Q@new Circle(..)@.}}{2}{obvious from the code}
 The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
@@ -177,7 +177,7 @@ L42 enforces SES using TMs in the following way:\footnote{Transactions are anoth
 
 \noindent This strategy does not restrict throwing exceptions, but only catching unchecked ones.
 SES allows us to soundly capture invariant-failures as unchecked exceptions: 
-the invalidated object is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failures it would be sufficient to enforce SES only when capturing exceptions caused by \Q@invariant@ failures.
+the \IO{broken} object is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failures it would be sufficient to enforce SES only when capturing exceptions caused by \Q@invariant@ failures.
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
 
 % We think this restriction is acceptable for run-time verification, other works are much more restrictive,
