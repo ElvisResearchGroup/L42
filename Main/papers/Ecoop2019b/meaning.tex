@@ -2,7 +2,7 @@
 \section{Formalisation}
 \label{s:meaning}
 \saveSpace
-In order to model our system, we need to formalise an imperative object-oriented language
+In order to model our system, we need to formalise an imperative object oriented language
 with exceptions and object capabilities,  and rich type system
 support for \Q@mut@, \Q@imm@, \Q@read@, \Q@capsule@, and strong exception safety.
 Formally modelling the semantics of such a language is easy, but 
@@ -42,7 +42,7 @@ tweaks with respect to our informal description of our approach.
 From a formal perspective 
 these changes do not change expressivity:
 \begin{itemize}
-\item All fields are instance-private, as opposed to only \Q@capsule@ ones used in \Q@invariant@. One could always provide getters and setters to simulate public fields.
+\item All fields are instance private, as opposed to only \Q@capsule@ ones used in \Q@invariant@. One could always provide getters and setters to simulate public fields.
 \item There are no explicit constructor definitions, rather all constructors are of the canonical form
 \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@,
  where $T_1, \ldots, T_n$ are the types (including modifiers) of $C$.
@@ -72,7 +72,7 @@ Adding \Q@imm@ exceptions would not cause any interesting variation of our proof
 }{expression}\\
 \seguitoProduzione{
 \mid \Kw{M}\oR l;\e_1;\e_2\cR\mid\Kw{try}^{\sigma}\oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
-}{run-time expr.}\\
+}{runtime expr.}\\
 \produzione{v}{l}{value}\\
 \produzione{\ctx_v}{\square
 \mid \ctx_v\singleDot m\oR\es\cR
@@ -136,10 +136,10 @@ Adding \Q@imm@ exceptions would not cause any interesting variation of our proof
 
 
 \loseSpace
-\noindent\textit{Grammar and Well-Formedness Criteria:}
+\noindent\textit{Grammar and Well Formedness Criteria:}
 The detailed grammar is defined in Figure 1.
-The only non-standard expression is the monitor. They are not present in the source code, but are inserted by our reduction rules. The object it monitors is the one referenced by $l$, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.invariant()$.
-We annotate the monitor-expression with $l$ to ensure
+The only non standard expression is the monitor. They are not present in the source code, but are inserted by our reduction rules. The object it monitors is the one referenced by $l$, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.invariant()$.
+We annotate the monitor expression with $l$ to ensure
 that if the invariant check fails, it is precisely $l$ that is invalid.
 We use a failed monitor expression (i.e. when $\e_2$ is the value \Q@false@) to represent throwing unchecked exceptions.
 In addition, our reduction rules annotate the body of \Q@try@ expressions with
@@ -148,7 +148,7 @@ that is, the annotated memory will not be mutated by executing the body of the \
 
  Our well formedness criteria are:
 \begin{itemize}
-\item All fields are instance-private; that is field accesses in method bodies are of the form
+\item All fields are instance private; that is field accesses in method bodies are of the form
 \Q@this.@$f$.
 
 \item Field accesses in the main expression
@@ -309,7 +309,7 @@ in the ROG of its immutable and capsule fields:\\*
 $\loseSpace
 
 \noindent An object is \emph{mutatable} in a $\sigma$ and  $\e$ if there is an occurrence of 
-$l$ in $e$, that when seen as \Q@imm@ makes the expression ill-typed:\\*
+$l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
 $\mathit{mutatable}(l,\sigma,\e) \text{iff}$ for some $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\ctx[l]=\e$,\\*
 \indent $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.\loseSpace
 
@@ -386,7 +386,7 @@ $l_0\notin\text{erog}(\sigma,l_1)$.
 
 The execution of an expression
 with no \Q@mut@ free variables is deterministic and does not
-mutate pre-existing memory (and thus does not not perform I/O by mutating pre-existing $c$):
+mutate pre existing memory (and thus does not not perform I/O by mutating pre existing $c$):
 \begin{Assumption}[Determinism]
 if $\emptyset;\Gamma\vdash \e:\T$, 
 $\forall x \Gamma(x)\neq\Kw{mut}\,\_$, and
@@ -447,7 +447,7 @@ We also require evaluating \Q@invariant@ to preserve existing memory ($\sigma$):
 \noindent In order for a class invariant to be meaningful it needs to be possible for it to potentially observe an invalid object. However, invalid objects should not be observed outside of \@@invariant@.
 For this purpose we define the set of trusted steps, 
 as the call to \Q@invariant@ and the field accesses inside its evaluation.
-Note that just the single small-step reduction
+Note that just the single small step reduction
 of calling \Q@invariant@ is trusted, not the whole evaluation of the \Q@invariant@ expression.
 
 \loseSpace

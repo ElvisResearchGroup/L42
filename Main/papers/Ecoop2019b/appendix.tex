@@ -125,7 +125,7 @@ and $OK$ will always hold.
 	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
 	\begin{itemize}
-	 \item we are executing inside of $\e_1$, thus the current redex is inside of a sub-expression of the monitor that does not contain $l$, a contradiction.
+	 \item we are executing inside of $\e_1$, thus the current redex is inside of a sub expression of the monitor that does not contain $l$, a contradiction.
 	 \item or we are executing inside $\e_2$:
 	 by our reduction rules, all monitor expressions start with
 	 $\e_2=l$\Q@.invariant()@, thus the first execution step
@@ -215,7 +215,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
 			\begin{itemize}
 				\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
-		    	\item Otherwise, by our well-formedess criteria that \Q@invariant@ only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism, it is clearly the case that $\mathit{valid}$ still holds;
+		    	\item Otherwise, by our well formedess criteria that \Q@invariant@ only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism, it is clearly the case that $\mathit{valid}$ still holds;
 				By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
 		  	\end{itemize}
 	  \end{itemize}
@@ -237,7 +237,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 	\item Suppose some other $l_0$ was $wellEncapsulated$ and $valid$:
 	\begin{itemize}
-			\item If $l$ was in the \emph{rog} of $l_0$, by CapsulaeTree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by \Q@invariant@'s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can't have effected $l_0$ being $OK$.
+			\item If $l$ was in the \emph{rog} of $l_0$, by CapsulaeTree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non $wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by \Q@invariant@'s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can't have effected $l_0$ being $OK$.
 			\item Otherwise, this reduction step could not have affected $l_0$, so $l_0$ is still $OK$.
 	\end{itemize}
 
@@ -249,7 +249,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
-	These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, $wellEncapsulated$, $valid$ (due to Determinism), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
+	These reduction steps do not modify memory, nor do they modify the memory locations reachable inside of main expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, $wellEncapsulated$, $valid$ (due to Determinism), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
 
 \item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR$:
 
@@ -262,11 +262,11 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can't have been $garbage$ and $monitored$), as \textsc{update} itself preserves this property and we haven't modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
 
-	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule-mutator method that mutated a field $f$.
+	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule mutator method that mutated a field $f$.
 	\begin{itemize}
 		\item A location that was $garbage$ obviously still is, and so is also $OK$.
-		\item No location that was $valid$ could have been made invalid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before, the only way it could be non-$wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected $wellEncapsulated$, hence such thing is still $OK$.
-		\item The only location that could have been made un-$monitored$ is $l$ itself. By our well-formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non-$wellEncapsulated$, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been $wellEncapsulated$ before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $OK$.
+		\item No location that was $valid$ could have been made invalid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before, the only way it could be non $wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected $wellEncapsulated$, hence such thing is still $OK$.
+		\item The only location that could have been made un-$monitored$ is $l$ itself. By our well formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non $wellEncapsulated$, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been $wellEncapsulated$ before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $OK$.
 	\end{itemize}
 	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by Capsule Tree the resulting value, $l$, must be $wellEncapsulated$, since $l$ is also $valid$ we have that $l$ is $OK$.
 
@@ -274,7 +274,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 \item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
 
-	By Strong Exception Safety, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria, no location inside $\sigma$ could have been $monitored$.
+	By Strong Exception Safety, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well formedness criteria, no location inside $\sigma$ could have been $monitored$.
 	Since we don't modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$. 
 \end{enumerate}
 
@@ -306,8 +306,8 @@ class Hamster {
 }
 \end{lstlisting}
 Though this is legal in Spec\#, it is practically useless. Spec\# has no way of knowing whether \Q@pos@ is \emph{valid} or \emph{consistent}. If \Q@pos@ is not known to be valid, one will be unable to pass it to almost any method, since by default methods implicitly require their receivers and arguments to be valid (compare this with our invariant protocol, which guarantees that any reachable object is valid).
-If \Q@pos@ is not known to be consistent, one will be unable to mutate it, by updating one of its fields or by passing it as an argument (or receiver) to a non-\Q@Pure@ method.
-Though we don't want \Q@pos@ to ever mutate, Spec\# currently has no way of enforcing that an \emph{instance} of a non-immutable class is itself immutable\footnote{There is a the describes a simple solution to this problem: assign ownership of the object to a special predefined `freezer' object, which never gives up mutation permission~\cite{DBLP:conf/vstte/LeinoMW08}, however this does not appear to have been implemented; this would provide similar flexibility to the TM system we use, which allows an initially mutable object to be promoted to immutable.}, as such we will simply refrain from mutating it.
+If \Q@pos@ is not known to be consistent, one will be unable to mutate it, by updating one of its fields or by passing it as an argument (or receiver) to a non \Q@Pure@ method.
+Though we don't want \Q@pos@ to ever mutate, Spec\# currently has no way of enforcing that an \emph{instance} of a non immutable class is itself immutable\footnote{There is a the describes a simple solution to this problem: assign ownership of the object to a special predefined `freezer' object, which never gives up mutation permission~\cite{DBLP:conf/vstte/LeinoMW08}, however this does not appear to have been implemented; this would provide similar flexibility to the TM system we use, which allows an initially mutable object to be promoted to immutable.}, as such we will simply refrain from mutating it.
 
 To enable Spec\# to reason about \Q@pos@'s validity, we will require that it be a \emph{peer} of the enclosing \Q@Hamster@; we can do this by annotating \Q@pos@ with \Q@[Peer]@. Peers are objects that have the same owner, implying that  whenever one is valid and/or consistent, the other one also is. This means that if we have a \Q@Hamster@, we can use its \Q@pos@, in the same ways as we could use the \Q@Hamster@.
 
@@ -324,7 +324,7 @@ class Hamster {
 We don't want \Q@Point@ to be an immutable/value type, however if it were, the original annotated version would not have any problems.
 
 \subsection{The \Q@Cage@ class} 
-The natural way to write this class in C\#, if it had native support for class-invariants like Spec\#, would be:
+The natural way to write this class in C\#, if it had native support for class invariants like Spec\#, would be:
 \begin{lstlisting}
 class Cage {
   Hamster h;
