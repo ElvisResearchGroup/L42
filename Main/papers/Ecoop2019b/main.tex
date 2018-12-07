@@ -143,45 +143,28 @@
 \maketitle
 
 \begin{abstract}
-{{\ensuremath{\mathit{e}}
-		\xspace}}
-	
-	
-${}_{}$
-\noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
-Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they
-allow code to be adapted/specialised to behave differently in different contexts.
-%%, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
-However this flexibility hampers code reasoning since object behaviour is usually nearly completely
-unrestricted. This is further complicated with the support OO languages typically have for exceptions,
-memory mutation, and I/O.
-Class invariants are a well known technique to help write correct code, however
-there are various different interpretations of when they should hold.
-% invariant protocols, specifying when the invariant is expected to hold and when is checked. 
-%% In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
+There are various interpretations as to when class invariants should hold and how they should be checked.
+We present a sound invariant protocol, where invariants hold for all objects involved in execution.
+We soundly support mutation, dynamic dispatch, exceptions and non-determinism, while requiring only a modest number of runtime checks and annotations.
+Invariants are specified as methods whose execution is statically guaranteed to be deterministic and to not 
+access any externally mutable state. % Why do you insist on 'whose execution'?
+This design restricts the range of expressible invariants but improves upon the usability and performance of our system compared to prior work.
 
-\loseSpace
-\noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question
-%been addressed by others (if at all)?
+%Why Spec\#?
+We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages.
+We statically control aliasing, mutability, and determinism using
+a flavour of type-modifiers and object-capabilities already present in three different experimental languages.
+We also formalise our invariant protocol and prove 
+type-modifiers and object-capabilities are sufficient to ensure its soundness.
+
+---------------------
+
 We investigate a protocol where class-invariants are expected to hold for all objects involved in execution, but
-they are soundly checked only in a few points. Our approach is sound since we ensure that invariants are pure
-and checked immediately after an invariant violation could have occurred. This allows for stronger and simpler reasoning, as well as less runtime verification overhead, compared to the
-more common approach of `visible state' semantics where only the invariant of \Q@this@ is required to hold, and
+they are soundly checked only in a few points. 
+
+Our approach is sound since we ensure that invariants are pure and checked immediately after an invariant violation could have occurred. This allows for stronger and simpler reasoning, as well as less runtime verification overhead, compared to the more common approach of `visible state' semantics where only the invariant of \Q@this@ is required to hold, and
 only at the start and end of instance methods.
 
-
-% for all observable objects, their class-invariant holds.
-%We wish to guarantee that a class's invariant holds for all its observable instances.
-
-% Most prior work on enforcing class invariants assume unverified/unverifiable restrictions on library code, dynamic class loading and I/O, or even just trust programmers to use the provided tools correctly.
-% For example, static verification often restricts dynamic class loading, while run-time verification often unsoundly allows non deterministic code in class-invariants.
-
-%We wish to allow for stronger reasoning over this by ensuring that non boke
-%We wish to guarantee that a user defined property holds for all observable instances of a class.
-%This is a variation of class invariants, where objects in a broken state can never be observed.
-
-\loseSpace
-\noindent\textit{Approach:} %What was done that unveiled new knowledge?
 We combine previous works on type modifiers and object capabilities to ensure properties about purity,
 determinism, aliasing, and mutability control. Type modifiers and object capabilities are useful in their own
 right, but we use these facilities here to ensure our sparsely injected run-time checks are sufficient.
@@ -207,14 +190,14 @@ We formally model a class of languages that support our protocol. This model is 
 parametric on the presence of a type system which guarantees certain properties of type modifiers. Type systems
 with such properties have already been explored, formalized, and proved in prior work.
 
-\loseSpace
-\noindent\textit{Importance:} %Why does this work matter?
-Class-invariants allow programmers to reason as to what states objects might be in. \REV{\REV{Our approach
-makes such reasoning both sound and strong}{1}{Not sufficiently substantiated}}{3}{I think this is talking  
-about the fact that prior work does not fully deal with I/O, exceptions, etc. in a suitable way, but I'm not sure.}: if a programmer has access to an object, it and 
-all objects reachable from it are in a \REV{valid state}{1}{Definition is unclear}.
-In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. \REV{Since our approach also works on existing emerging languages}{1}{Not sufficiently substantiated.}, and adds only marginal
-program complexity, we believe it is also practical and usable.
+%\loseSpace
+%\noindent\textit{Importance:} %Why does this work matter?
+%Class-invariants allow programmers to reason as to what states objects might be in. \REV{\REV{Our approach
+%makes such reasoning both sound and strong}{1}{Not sufficiently substantiated}}{3}{I think this is talking  
+%about the fact that prior work does not fully deal with I/O, exceptions, etc. in a suitable way, but I'm not sure.}: if a programmer has access to an object, it and 
+%all objects reachable from it are in a \REV{valid state}{1}{Definition is unclear}.
+%In addition our approach works independently of the behaviour of potentially buggy or malicious code, provided all code of course type checks. \REV{Since our approach also works on existing emerging languages}{1}{Not sufficiently substantiated.}, and adds only marginal
+%program complexity, we believe it is also practical and usable.
 
 %TODO
 % \REVComm{Our work represents a philosophical shift}{2}{This makes it sound like run-time verification has

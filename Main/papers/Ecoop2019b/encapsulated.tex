@@ -262,10 +262,10 @@ In order to perform this case study we had to first implement a simple GUI Libra
 \Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (is a capsule-mutator). There are no other checks inserted since we never do a field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
 \begin{lstlisting}
 read method Bool invariant() {
-  for (Widget w1 : this.box.c) {
+  for(Widget w1 : this.box.c) {
     if(!this.inside(w1)) { return false; }
-    for (Widget w2 : this.box.c) {
-      if (w1 != w2 && SafeMovable.overlap(w1, w2)) {return false;}}}
+    for(Widget w2 : this.box.c) {
+      if(w1 != w2 && SafeMovable.overlap(w1, w2)){return false;}}}
   return true;}
 \end{lstlisting}
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its fields.%its \Q@width@ and \Q@height@ fields.

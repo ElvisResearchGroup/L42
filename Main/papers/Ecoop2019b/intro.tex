@@ -2,6 +2,19 @@
 \label{s:intro}
 %\newpage
 %\LINE
+
+Object-oriented programming languages through sub-typing and dynamic dispatch provide great flexibility: they
+allow code to be adapted/specialised to behave differently in different contexts.
+%%, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
+However this flexibility hampers code reasoning since object behaviour is usually nearly completely
+unrestricted. This is further complicated with the support OO languages typically have for exceptions,
+memory mutation, and I/O.
+Class invariants are a well known technique to help write correct code, however
+there are various different interpretations of when they should hold.
+% invariant protocols, specifying when the invariant is expected to hold and when is checked. 
+%% In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
+
+
 Class-invariants are an important concept when reasoning about software correctness.
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime-verification.
 In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@. We say that an object is \REV{\emph{valid}}{3}{If this term really is necessary (I'm not sure it is), then perhaps it should be used more regularly.} if calling \Q@invariant@ would return \Q@true@.
