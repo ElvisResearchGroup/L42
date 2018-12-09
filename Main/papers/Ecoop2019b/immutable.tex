@@ -172,7 +172,7 @@ Since we represent invariant failures by throwing unchecked exceptions, programs
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
 	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
-\REV{If instead we were to not enforce strong exception safety, an invalid object could be made reachable:}{3}{Why not write "bob.invariant()" instead of "bob.name.isEmpty()"?}
+If instead we were to not enforce strong exception safety, an invalid object could be made reachable:
 \saveSpace
 \begin{lstlisting}[morekeywords={assert}, escapechar=\%]
 mut Person bob = new Person("bob");
