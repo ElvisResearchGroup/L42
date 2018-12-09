@@ -1,117 +1,3 @@
-%-----------------------------------------------------------
-%define simple objects
-%show solution  for simple person: requires 3 properties
-%show solution is sound --> proof in appendix
-%naive is unsound - person 3 bugs
-\saveSpace
-\section{Our Invariant Protocol}
-\label{s:validate}
-\saveSpace
-Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}\IO{, i.e. its invariant holds.}
-This implies that if you can call methods on an object, calling \Q@invariant@ on it is guaranteed to return \Q@true@.
-Of course the bodies of both \Q@invariant@ methods and constructors may interact with an invalid \Q@this@.
-%Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
-%For the first case, we can type the field access as \Q@read@, but in the second case we
-%need to type it as \Q@mut@. 
-%We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
-%We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
-%In order for a class to have an invariant under our protocol,
-%\IODel{its }\Q@invariant@ method the form 
-% Can  a program write say mut method invariant or is it syntactically [???]
-\IO{Our protocol enforces that all classes have a method of the form \Q@read method Bool invariant() \{..\}@ that only uses \Q@this@ to read \Q@imm@ and \Q@capsule@ fields. If an \Q@invariant@ method is not defined by the programmer, one that always returns \Q@true@ will be generated for them.}
-
-Moreover, constructors may only use \Q@this@ to initialise fields.\footnote{A factory method could be used when more flexible initialisation is required.} This prevents objects from escaping their constructor partially initialised, and of course prevents explicitly calling \Q@invariant@ inside of \Q@invariants@ and constructors bodies, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
-
-While mutating the ROG of a \Q@capsule@ field mentioned in the invariant, the containing object may be invalid.
-To enforce that the containing object is inaccessible, an access to such field is typed as \Q@mut@ only inside of methods following a specific pattern: the field access is of the form \Q@this.f@ and there is no other occurrence of \Q@this@, the method receiver is \Q@mut@, none of the other parameters are \Q@mut@ or \Q@read@, and the return type is not \Q@mut@.
-We call such methods \emph{capsule mutators}. These additional restrictions do not apply if the field is not read in the invariant,
-%Finally, we require \Q@f@ to be declared \Q@private@.%, and only accessed as \Q@this.f@.
-
-Our invariant protocol injects calls to \Q@invariant@ on newly created objects, after constructor calls; on the receiver, after a field update; and \Q@this@ at the end of a capsule mutator.
-%\end{itemize}
-
-% Our invariant protocol injects call to \Q@this.invariant@ at the end of constructors, after every field update and at the end of every method containing such \Q@this.f@ access. We call such methods `capsule mutators'.
-
-%Our guarantee is much stronger then the visible state semantic, where in the presence of call-backs,
-%invalid objects may be passed around and become visible to any other code~\cite{??}.
-
-
-%\footnote{we could of course require zero-initialized objects be valid, but this is too strong},
-%so in those cases we do not require \Q@this@ to be valid; however one can only use "this" to read/initialise fields, preventing \Q@this@, or an alias, from being passed around to arbitrary code.
-%This implies that whenever the user is allowed to call x.invariant(), such call would return true.
-%The only points where the user is unable to call .invariant() is inside the constructor
-%and inside the invariant method itself.
-%If you can refer to a variable \Q@x@, then \Q@x.invariant()@ would return \Q@true@. 
-%However, we prevent directly using \Q@this@ inside constructors, invariant itself, and capsule mutators (see \ref{}),
-%rather one can only use \Q@this@ to access fields.
-% We guarantee that invariant holds in more points, for more objects, but we check it a million times less
-
-
-
-%\IO{The Visible-State Semantics is bad.} Here we have a much stronger property, called \emph{operational
-% validity}. This means that any object involved in execution (such as by accessing a field, calling a method on it, or) must be valid. As we use runtime-verification to detect invalid objects, it must be possible to access potentially invalid objects within their own \Q@invariant@ method, so we make an exception to the above rule in this case: \Q@this@ itself may be invalid within runtime-injected calls to \Q@invariant@.
-
-
-
-
-%\section{\REVComm{The invariant Method}{2}{remind of the goals for validate (i.e. that it be pure); What about possible non-termination of validate()}}
-%\label{s:validate}
-
-%We require the receiver to be \Q@read@ and to have no arguments.
-%The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 
-%By starting from a \Q@read@ reference and nothing else, we are guaranteed that the method is pure:
-
-Our invariant protocol relies on TMs and OCs to ensure that the invariant method is deterministic\footnote{If the invariant were not deterministic, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}.
-As this method is declared as \Q@read@, and only takes the implicit parameter \Q@this@ (as \Q@read@), we can guarantee the method is pure:
-\begin{itemize}
-\item the ROG of \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
-\item if a capability object is in the ROG of \Q@this@, then it can only be accessed as \Q@read@, preventing calling non deterministic (capability) methods,
-\item no other pre existing objects are accessible (as L42 does not have global variables).
-\end{itemize}
-
-\noindent Also note that \Q@invariant@ is declared as not throwing any exceptions,
-	thus only unchecked exceptions can be propagated out.
-	% \REVComm{thus it can only leak unchecked exceptions.}{3}{Can ``leaking'' of an unchecked exceptions have negative consequences for validity? Leaking is usually a negative word used in a negative context.}
-
-
-Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
-On a first look this may seem an open contradiction
-with the aim of this work, however only calls to \Q@invariant@ inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code calls \Q@invariant@,
-\Q@this@ is guaranteed to be valid.
-We require that \Q@invariant@
-only uses \Q@this@ to access fields,
-in order to prevent passing an invalid \Q@this@ to other methods.
-%other 
-%methods can not 
-%However, if we allow the method to use \Q@this@ directly (e.g. storing it in a local variable or passing it to a method), we would break the guarantee of our invariant protocol.
-In L42 we implemented a sound relaxation of this restriction, by allowing calling instance methods that in turn only use \Q@this@ to access fields, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ needs to be understood with the body of those methods inlined; thus the semantic of the inlined code need to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid.
-In some sense, those inlined methods and field accesses can be thought of as macro expanded, and hence are not dynamically dispatched. 
-Finally, the code of \Q@invariant@ cannot access \Q@mut@ or read fields, because their content can be changed by unrelated code.
-
-%With the modifiers presented so far, \Q@invariant@ can only access \Q@imm@ fields.
-%We will later introduce a \Q@capsule@ modifier to allow more flexible validation.
-
-
-L42 does not have \Q@extends@ so we have not handled inheriting invariants.
-In a language with subclassing, invariant methods would implicitly start with a check that \Q@super.invariant()@ returns \Q@true@.
-Note that invariant checks would not be performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}.
-
-%In a language with sub-classing, runtime-invariant checks would need to occur on the base-class subobjects, before doing the check on a derived class. In addition, the runtime would only do an invariant check after construction of complete objects.
-
-% containing the \Q@invariant@ method has a super-class, we would automatically check \Q@super.invariant()@ at the beginning of the sub-class’s \Q@invariant@ method.
-%, this is required as otherwise `invalid' objects could easily be created by simply overriding \validate.
-
-
-% JUSTIFY that the fields are valid...
-
-%validable objects are not circular (do not belong in their ROG of any of its fields)
-%validate as a predicate on object fields never really see this.
-%
-%clarifications:
-%a validate check is never needed/generated/injected when working on a read x
-%multi threading is not relevant/supported
-%validable objects are not circular (do not belong in their ROG of any of its fields)
-
 \section{Invariants over immutable state}
 \label{s:immState}
 In this section we consider validation over fields of \Q@imm@ types.
@@ -173,7 +59,7 @@ class Person { .. // Same as before
 
 \noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\textit{Unrestricted use of non determinism:} \IO{Allowing \Q@invariant@ to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns true.}
+\textit{Unrestricted use of non determinism:} Allowing \Q@invariant@ to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns true.
 %\Q@invariant@ to be non-deterministic.}%
 %\IODel{Allowing \Q@invariant@ to (indirectly) use an %object capability could make it non-deterministic.} 
 For example consider this simple and contrived (mis)use of person:
@@ -191,8 +77,8 @@ method mut Person createPersons(String name) {
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
 Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
-In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. \IO{Since our system allows non determinism only through capability objects, and 
-restricts their creation, the above example would be prevented.}
+In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non determinism only through capability objects, and 
+restricts their creation, the above example would be prevented.
  %\IO{Languages like Java, Rust and Pony, which do not require the user of object-capabilities to perform non-deterministic operations, suffer from .} 
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
