@@ -1,0 +1,152 @@
+%\subsection{Expressiveness}
+%\noindent\textit{Expressiveness:}
+%Finally, in our this third case study we 
+%shown that even if we do not aim to expressiveness, but to simplicity, soundness and efficiency, we are still able to express a reasonable amount of cases.
+%We encoded in L42 all the examples present in papers~\cite{??}.
+%We can express all the examples except ....
+%Again, we quantify the annotation burden and we discover....
+
+%\subsection{The transform pattern}
+
+
+%\begin{lstlisting}[escapechar=\%]
+%class List {
+%  mut List prev;
+%  mut List next;
+%  Object elem;  
+%  read method Bool ok() {
+%    return this.next.prev==this && this.prev.next==this &&..;}
+%  read method Int size(){
+%    if(next==this){return 1;} return next.size()+1;}}
+%\end{lstlisting}
+%Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
+%However, only \Q@capsule@ and \Q@imm@
+%fields can be accessed in \validate.
+%Thus, \Q@.innerValidate()@ can not be the \Q@invariant@ method for \Q@List@.
+%The solution is to use a `box' over our \Q@List@, and to validate our `box':
+
+%\loseSpace\loseSpace\loseSpace
+%\begin{lstlisting}[escapechar=\%]
+%class ListBox { 
+%  capsule List inner;
+%  read method imm Bool invariant() {return this.inner.ok();}
+%  read method Int size(){ return this.inner.size();}
+%\end{lstlisting}
+%\saveSpace
+%Encoding this example in Spec\# would be much more verbose (see case study XX) and still require
+%a \Q@ListBox@ object,
+%while the visible state semantic of Eiffel or D would cause an large amount of \Q@invariant@ checks
+%if the list had any recursive method; consider for example the \Q@size@ method:
+%if there was an invariant with visible state semantic on \Q@List@, calling \Q@List.size()@ would require 
+%calling \Q@List.invariant()@ before and after the method execution. If the list has more then one element, the recursive \Q@size@ call would also call the invariant twice.
+%We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.
+%However the limitations of capsule mutator methods mean that any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters, or returning \Q@mut@, cannot be trivially forwarded.
+%% since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
+%Our example is about a list of immutable objects.
+%To instead validate a list of \Q@mut@ objects we would need to use our box pattern not just around the list,
+%but around a section of data encapsulating both the list and all the contained elements.
+%This is because our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
+%Conceptually, it would be better for the list (of mutable objects) to be validated by its
+%head, since the behaviour of the contained objects is transparent to the validation criteria. 
+%Our limitation relates to full encapsulation and contrasts with flexible encapsulation as in 
+%ownership~\cite{ClarkeEtAl98}. However, neither traditional flexible encapsulation/ownership, nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
+
+
+%\subsection{Family, a worst case scenario for L42}
+%\noindent\textit{Family, a worst case scenario for L42}
+%For our second case study, we wished to make an example where the performance of L42 and the conventional approach was similar. We forged an example when a \Q@Family@ has a list of parents and a list of children;
+%all the children need to be younger then their parents and every \Q@Person@ need to have a non empty name and a positive age.  
+%We model the pass of time with a \Q@processDay@ method, and we simulate $3$ years of life (that is, $3\times365$ days) of a family of $4$.
+%The age of a \Q@Person@ grow when its birthday is processed.
+%Notably, \Q@processDay@ is a \Q@mut@ method that can potentially mutate any person in the system, thus
+%L42 have to run a lot of invariant checks. The object graph here is very shallow: the \Q@Family@ holds the \Q@Person@s and that is it.
+%However, even in this case we get about $9$ times less invariant calls: $19403$ with visible state semantic  and $2210$ in L42.
+%Also the \Q@Family@ example uses the box pattern.
+
+%\subsection{Family}
+%We wished to make an example where the performance of L42 and the conventional approach 
+%was similar. We forged an example when a Family has a list of parents and a list of children;
+%all the childrens need to be younger then their parents and every Person need to have a non empty name and a positive age.  
+%We model the pass of time with a \Q@processDay@ method, and we simulate 3 years of life (that is, 3*365 days) of a family of 4.
+%The age of a Person grow when its birthday is processed.
+%Notably, \Q@processDay@ is a mut method that can potentially mutate any person in the system, thus
+%L42 have to run a lot of invariant checks. The object graph here is very shallow: the Family holds the Persons and that is it.
+%However, even in this case we get about 10 times less invariant calls: Num in the conventional approach and Num in L42.
+
+%\subsection{Spec\# 2papers}
+%Our goal in this third case study was to show that even if we do not aim to expressiveness, but to simplicity, soudness and efficiency, we are still able to express a reasonable amount of cases.
+%We can express all the examples except ....
+%Again, we quantify the annotation burden and we discover....
+
+%\section{Stack overflow and Out of memory}
+%For our system to be sound,
+%Stack overflow and Out of memory errors need to be modeled specially.
+%If they are just (unchecked) exceptions then they could be catched to 
+%generate non deterministic behaviour inside invariant code.
+
+%However, it is possible to use capaility objects to capture them as special system events/signals.
+%In this way we can maintain the soundness of our system even in this corner case.
+%Of course, another option would be to make them into unrecoverable fatal errors.
+
+\section{More Case Studies}
+
+\subsection{Family}
+
+% TODO: Add ctor declarations
+% TODO: Make Spec# use types in System, not keywords
+\begin{lstlisting}
+class Person { 
+  final String name;
+  Int age;
+  final Int birthday; 
+
+  mut method Void processDay(Int day) {
+    if (this.birthday == day) this.age += 1; }
+  
+  read method Bool invariant() {
+    return this.name != "" && this.age >= 0 &&
+      this.birthday >= 0 && this.birthday < 365; }
+}
+
+class Family { 
+  static class FBox { 
+    mut List<Person> parents;
+    mut List<Person> children;
+    mut method Void processDay(Int day) {
+      for (Person p : this.parents) { p.processDay(day); }
+      for (Person p : this.children) { p.processDay(day); }
+    }
+  }
+  capsule FBox box;
+
+  Family(capsule List<Person> parents, 
+      capsule List<Person> children) { 
+    this.box = new FBox(parents, children); }
+
+  mut method Void processDay(Int day) { 
+    this.box.processDay(day); }
+
+  mut method Void addChild(capsule Person child) { 
+    this.box.children.add(child); }
+
+  read method Bool invariant() {
+    for (Person parent : this.box.children) {
+      for (Person child : this.box.parents) {
+        if (parent.age <= child.age) { return false; }}}
+    return true; }}
+\end{lstlisting}
+
+
+\begin{lstlisting}
+// A family with 2 parents, and no children
+Family fam = new Family(List.of(new Person("Bob", 32, 40), 
+    new Person("Alice", 34, 87)), List.of());
+    
+for (Int day = 0; r < 3*365; day++) { // Run for 3 years
+  fam.processDay(day);
+  if (r == 365 + 45) {
+    fam.addChild(new Person("Tim", 0, day % 365)); }
+  if (r == 2*365 + 340) {
+    fam.addChild(new Person("Diana", 0, day % 365)); }}
+\end{lstlisting}
+

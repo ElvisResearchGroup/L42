@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.lang.reflect.Field;
 
+import newTypeSystem.TypeSystem;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import coreVisitors.CloneVisitor;
@@ -33,6 +34,7 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
+import tools.StreamUtils;
 import tools.StringBuilders;
 import ast.Ast;
 import ast.Ast.Position;
@@ -123,9 +125,14 @@ public class L42 {
   }
 
   public static void main(String [] arg) throws NoSuchFieldException, IllegalAccessException, IllegalArgumentException, SecurityException{
+
     //assert false;
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
+
+    boolean typecheckOnly = false;
+    if (StreamUtils.stream(arg).any(s -> s.equals("-t"))) { typecheckOnly = true; }
+
     try{
       Path path = Paths.get(arg[arg.length-1]).toAbsolutePath();
 
@@ -141,9 +148,15 @@ public class L42 {
         code=L42.pathToString(path);
         L42.cacheK.setFileName(path.getName(path.getNameCount()-1).toString(),code);
         }
-      FinalResult res = L42.runSlow(path.toUri().toString(),code);
-      System.out.println("------------------------------");
-      System.out.println("END (zero for success): "+res.getErrCode());
+      if (typecheckOnly) {
+        ClassB L = parseAndDesugar(path.toUri().toString(),code).top();
+        TypeSystem.typeCheck(L, ExpCore.ClassB.Phase.Typed).assertOk();
+        System.out.println("TypeChecked!");
+      } else {
+        FinalResult res = L42.runSlow(path.toUri().toString(),code);
+        System.out.println("------------------------------");
+        System.out.println("END (zero for success): "+res.getErrCode());
+      }
     }
     catch(ParseCancellationException parser){
       System.out.println(parser.getMessage());

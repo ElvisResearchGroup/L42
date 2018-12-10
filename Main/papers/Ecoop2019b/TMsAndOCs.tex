@@ -62,9 +62,9 @@ To see a glimpse of this flexibility, consider the following example:
 %//the same expression can create mut, imm or capsule
 \saveSpace
 \begin{lstlisting}
-     mut Circle mc = new Circle(new Point(0, 0), 7);
-capsule$\,\,\,$Circle cc = new Circle(new Point(0, 0), 7);
-     imm Circle ic = new Circle(new Point(0, 0), 7);
+    mut Circle mc = new Circle(new Point(0, 0), 7);
+capsule Circle cc = new Circle(new Point(0, 0), 7);
+    imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 \saveSpace
 Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression: \Q@new Circle(..)@.

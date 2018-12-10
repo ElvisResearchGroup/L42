@@ -15,6 +15,7 @@ public class StreamUtils<T> implements Iterable<T> {
   private Stream<T> s; private StreamUtils(Stream<T> s) { this.s = s; }
   private static<T> StreamUtils<T> from (Stream<T> s) { return new StreamUtils<>(s); }
   public static <R> StreamUtils<R> stream(Collection<R> c) { return StreamUtils.from(c.stream()); }
+  public static <R> StreamUtils<R> stream(R[] a) { return StreamUtils.from(Arrays.stream(a)); }
   
   public static <T, R, E extends Throwable> List<R> stream(List<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toList(); }
   public static <T, R, E extends Throwable> Set<R> stream(Set<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toSet(); }

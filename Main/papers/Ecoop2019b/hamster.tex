@@ -1,9 +1,6 @@
 \section{The Hamster example in Spec\#}
 \label{s:justice}
-\lstset{
-%basicstyle=\footnotesize,
-	language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}
-}
+\lstset{language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}}
 
 In this section we describe exactly why we chose to annotate the example from section~\ref{s:intro} in the way we did. For brevity, we will assume the default accessibility is \Q@public@, whilst in both Spec\# and C\#, it is \Q@private@.
 
@@ -101,3 +98,5 @@ We resorted to making our own \Q@Equal@ method. Since it is called in \Q@Cage@'s
 \end{lstlisting}
 
 Sadly however this mean we can no longer use \Q@List@'s \Q@Contains@ and \Q@IndexOf@ methods, rather we have to expand out their code manually; making these changes takes us to the version we presented in Section \ref{s:intro}.
+
+\lstset{language=FortyTwo}
