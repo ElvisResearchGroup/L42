@@ -18,7 +18,7 @@ Of course the bodies of both \Q@invariant@ methods and constructors may interact
 %In order for a class to have an invariant under our protocol,
 %\IODel{its }\Q@invariant@ method the form 
 % Can  a program write say mut method invariant or is it syntactically [???]
-Our protocol enforces that all classes have a method of the form \Q@read method Bool invariant() \{..\}@ that only uses \Q@this@ to read \Q@imm@ and \Q@capsule@ fields. If an \Q@invariant@ method is not defined by the programmer, one that always returns \Q@true@ will be generated for them.
+Our protocol enforces that all classes have a method of the form \Q@read method Bool invariant() {..}@ that only uses \Q@this@ to read \Q@imm@ and \Q@capsule@ fields. If an \Q@invariant@ method is not defined by the programmer, one that always returns \Q@true@ will be generated for them.
 
 Moreover, constructors may only use \Q@this@ to initialise fields.\footnote{A factory method could be used when more flexible initialisation is required.} This prevents objects from escaping their constructor partially initialised, and of course prevents explicitly calling \Q@invariant@ inside of \Q@invariants@ and constructors bodies, but most importantly, together with our other restrictions, it prevents \Q@this@, or an alias to \Q@this@, from being passed around to arbitrary code.
 
