@@ -46,7 +46,7 @@ types. However they provide code reuse.
 %time aiming at code reuse. 
 Trait declarations 
 look very much like class declarations, but trait names 
-start with a lowercase letter: \MS{even syntactically they can not be used as types.}
+start with a lowercase letter: even syntactically they can not be used as types.
 \saveSpace\saveSpace
 \begin{lstlisting}
  Utils={ static method int m(A a){return ...} }
@@ -64,9 +64,11 @@ names are allowed.
 
 The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
 the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere it is reused.
-In \name we do not commit the same mistake, and the code \Q@Utils.m(this)@ is ill-typed:
+In \name 
 the type of \lstinline{this} in
-\Q@ta@ has no relationship to the type \lstinline{A}.
+\Q@ta@ has no relationship to the type \lstinline{A};
+thus the code \Q@Utils.m(this)@ is ill-typed.
+
 The following second attempt would not work either:
 \saveSpace\saveSpace
 \begin{lstlisting}
@@ -107,11 +109,11 @@ Therefore, while typechecking \Q@Utils.m(this)@ we can assume
 \end{lstlisting}
 \saveSpace\saveSpace
 This also works.  \Q@B@ reuses the code of \Q@ta@, but has no knowledge of \Q@A@.
-Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, \Q@B@ \MS{also} implements \Q@IA@. 
+Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, \Q@B@ also implements \Q@IA@. 
 
-Later, in Section \ref{sec:formal} we will provide the type
+Later, in Appendix \ref{sec:formal} we will provide the type
 system. 
-For now notice that the former declaration of \Q@B@ is correct even if
+Here notice that the former declaration of \Q@B@ is correct even if
 no method called \Q@ma@ is explicitly declared.
 DJ and TR would instead require explicitly declaring an abstract \Q@ma@ method:
 \saveSpace\saveSpace
@@ -150,7 +152,7 @@ B={implements IA
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.
-In summary, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) \MS{must be} implemented.
+In summary, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) must be implemented.
 We believe the code with \Q@IA@ better transmits programmer intention. Some
 readers may instead see requiring \Q@IA@ as a cost of our approach.
 Even from this point of view, such cost is counter balanced by 

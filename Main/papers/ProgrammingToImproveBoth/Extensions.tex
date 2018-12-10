@@ -80,7 +80,7 @@ The rename only influences its argument.
 Since traits do not induce nominal types, we can
 consistently change their
 internally used names without breaking any code.
-The whole L42 offers many other kinds of renames, but we do not need them to show our next example.
+The full L42 offers many other kinds of renames, but we do not need them to show our next example.
 
 %Here we present two variants: one to rename nested types in other nested types
 %and one to rename methods; this also allows to rename an (nested) interface method
@@ -138,10 +138,10 @@ expressions \Q@Exp@ can
 be \Q@Num@ (for number literal),
 \Q@Plus@ (for binary plus operator)
 and \Q@Neg@ (for unary minus).
-\MS{We then proceed to define operations
+We then proceed to define operations
 \Q@show@ to convert them into strings,
  \Q@eval@ to compute their numeric values and 
-\Q@double@ to double their containing \Q@Num@s.}
+\Q@double@ to double their containing \Q@Num@s.
 We thus have $3$ classes, $1$ interface,
 the definition of the state, and $3$ operations.
 We model this
@@ -222,7 +222,7 @@ evalNeg= Use neg, eval[rename T into Neg], {Neg={ method int eval(){..}}}
 
 The \Q@show@ operation can be trivially defined
 following exactly the same pattern (omitted here for space reasons).
-The operation \Q@double@ is is a challenge for some proposed solutions
+The operation \Q@double@ is a challenge for some proposed solutions
 to the expression problem, as explained by Zhang and Oliveira~\cite{zhang2017evf}.
 The \Q@double@ operation is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
 Thanks to \name's separation between use and reuse,

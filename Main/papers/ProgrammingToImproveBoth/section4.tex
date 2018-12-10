@@ -21,7 +21,7 @@
 
 To illustrate how \name improves reuse,
 we show a novel approach
-to smoothly integrate state and traits: a challenging problem that has limited the flexibility of traits and
+to smoothly integrating state and traits: a challenging problem that has limited the flexibility of traits and
 reuse in the past.
 The idea of summing pieces of
 code is elegant, and successful in module
@@ -123,7 +123,7 @@ The class needs to handle all the state, even state conceptually
 In \name there is no need to write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The idea is that
 any class that could be completed
-\MS{by implementing methods as constructor calls and field access/update}
+by implementing methods as constructor calls and field access/update
   is a
   complete \emph{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
@@ -132,16 +132,16 @@ is, the abstract methods cannot be automatically recognised
 as factory, getters or setters. Methods recognised as factory, getters and setters are called
 \emph{abstract state operations}.
   
-A definition of coherent
-classes is given next, and is formally modelled in Section \ref{sec:formal}:
+\noindent A definition of coherent
+classes is given next, and is formally modelled in Appendix \ref{sec:formal}:
 \begin{itemize}
 \item A class with no abstract methods is coherent (just like Java
   \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
-\item \MS{A class with a single abstract \Q@static@ method 
+\item A class with a single abstract \Q@static@ method 
 returning \Q@This@ and with parameters $T_1\ x_1, \ldots, T_n\ x_n$
 is coherent if all the other abstract methods can be seen as \emph{abstract state
 operations} over one of $x_1, \ldots, x_n$.
-That is:}
+That is:
 \begin{itemize}
 \item A method $T_i\ x_i$\Q@()@ is interpreted as an abstract state method: a \emph{getter} for $x_i$.
 \item A method \Q@void @$x_i$\Q@(@$T_i\ $\Q@ that)@ is a \emph{setter} for $x_i$.
@@ -217,7 +217,8 @@ We wrote this example in four different styles:
 (b) Classless Java \emph{($82$ lines)},
 (c) Scala \emph{($81$ lines)} and (d) \name \emph{($32$ lines)}.%
 \footnote{
-Since we want to focus on the actual code, while counting line numbers we \emph{omit} empty lines and lines containing only open/closed \MS{parenthesis/braces}.
+Since we want to focus on the actual code, while counting line numbers we \emph{omit} empty lines and lines containing only open/closed
+parenthesis/braces.
 }
 We chose Classless Java~\cite{wang2016classless} since it is a novel approach allowing
 Java8 default interface methods to encode traits in Java.
@@ -251,7 +252,7 @@ of two different operations, $9$ lines for each of the $4$ combinations of three
 operations and finally $11$ lines for the class with all four operations.
  The solution in Classless Java was slightly smaller than Java7,
  but was still longer than the \name solution: it still had to redefine the
- \MS{sum, sub and other} operations in each of the classes. Here the limited
+ sum, sub and other operations in each of the classes. Here the limited
  support for the `\Q@This@' type is to blame, thus Classless Java also has $28$ duplicated method bodies.
 
 Finally, we compare it with a Scala solution.
@@ -271,7 +272,7 @@ This example is the best-case scenario for \name: where a maximum level of reuse
 %The results in each of the styles are presented below.
 In all our case studies, to make a meaningful comparison, we formatted all code in a readable and consistent manner;
 on the other hand for space limitations, the code snippets presented in the article
-\MS{are formatted for compactness}.
+are formatted for compactness.
 
 
 \subsection{State Extensibility}
@@ -298,7 +299,7 @@ CPoint= Use pointSum,colored,{
 \end{lstlisting}
 \saveSpace\saveSpace 
 \noindent 
-where we assume support for overloading \MS{based on} different numbers of parameters.
+where we assume support for overloading based on different numbers of parameters.
 This is a reasonable solution, however the method \Q@CPoint.sum@ resets
 the color to red: we call the \Q@of(int, int)@ method, that now
 delegates to \Q@of(int, int, Color)@ by passing red as the default field
@@ -308,9 +309,9 @@ state supports withers, we can use
 \Q@this@.  This solution is better but still not satisfactory since the color from \Q@that@ is ignored.
 
 \paragraph{A better design:}
-\MS{We can design trait \Q@p@ for reuse and extensibility
+We can design trait \Q@p@ for reuse and extensibility
 by adding an abstract \Q@merge(This)@ method as an extensibility hook;
-\Q@colored@ can now define color merging.}
+\Q@colored@ can now define color merging.
 Using withers we can merge \Q@color@s, or any other kind of state 
 following this pattern.%\bruno{worried that withers are not explained enough.}
 
@@ -382,7 +383,7 @@ thus we can just call \Q@_1merge@ and \Q@_2merge@ without
 To understand how easy it is to extend the state in this
 way we compare the former code with an equivalent version in
 Java.
-For this example, in Java we encode \Q@Point@ with \MS{the fields but} no operations,
+For this example, in Java we encode \Q@Point@ with the fields but no operations,
 \Q@PointSum@ reuses \Q@Point@ adding a functional \Q@sum@ operation,
 \Q@CPoint@ reuses \Q@PointSum@ with a \Q@Color@ field
 and \Q@FCPoint@ reuses \Q@CPoint@ with a \Q@Flavour@ field.
@@ -391,14 +392,14 @@ easily supported in plain Java by single inheritance.
 Like the previous experiment, we still found that the Java solution was longer ($47$ lines) than that
 in \name ($33$ lines). This is caused by the absence of support for the `\Q@This@' type,
 where the withers in each of the \Q@CPoint@/\Q@FCpoint@ classes had to be repeated
-to make sure that the returned type will be correct (the number of members in Java were $27$ while $24$ (less $3$)
+to make sure that the returned type will be correct (the number of members in Java were $27$ while $24$ ($3$ less)
 in \name).
 
 Complex patterns in Java%
 \footnote{Combining the ones used in those works~\cite{saito2008essence,torgersen2004expression},
 with abstract methods
 to allow self instantiation as in~\cite{Zenger-Odersky2005}.}
- allow supporting the `\Q@This@' type and `\Q@This@' type instantiation but they require a lot of set-up code. We experimented those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
+ allow supporting the `\Q@This@' type and `\Q@This@' type instantiation but they require a lot of set-up code. We experimented with those patterns, but it soon became very clear that the resulting code of this approach would have been even larger; albeit without duplicated code.
 Note how the Java code is less modular than the \name code, since \Q@Colored@ and \Q@Flavored@ do not exist
 as individual concepts.
 
