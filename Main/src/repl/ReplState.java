@@ -72,7 +72,7 @@ public static ReplState start(String code, Loader cacheC42){
   public ReplState add(String code){
     Expression.ClassB cbEmpty=new ClassB(Doc.empty(),new ast.Ast.InterfaceHeader(),Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),Position.noInfo);
     //parse
-    ClassB codeTmp= (ClassB)Parser.parseTop("Repl", code);
+    Expression.ClassB codeTmp=(ClassB) Parser.parse("Repl","{"+code+"}");
     Position fullP=codeTmp.getP();
     //new original
     ClassB inner=new ClassB(Doc.empty(),new Ast.TraitHeader(),Collections.emptyList(),
