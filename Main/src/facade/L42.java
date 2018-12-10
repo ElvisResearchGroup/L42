@@ -127,7 +127,7 @@ public class L42 {
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
     try{
-      Path path = Paths.get(arg[arg.length-1]);
+      Path path = Paths.get(arg[arg.length-1]).toAbsolutePath();
 
       String code=null;
       if(Files.isDirectory(path)){
@@ -206,7 +206,7 @@ public class L42 {
   }
   public static Program parseAndDesugar(String fileName,String code) {
     L42.setExecutionStage(ExecutionStage.Parsing);
-    Expression code1=Parser.parse(fileName,code);
+    Expression code1=Parser.parseTop(fileName,code);
     assert code1 instanceof Expression.ClassB || code1 instanceof Expression.ClassReuse:code1;
     L42.setExecutionStage(ExecutionStage.CheckingWellFormedness);
     auxiliaryGrammar.WellFormedness.checkAll(code1);

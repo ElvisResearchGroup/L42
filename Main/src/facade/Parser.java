@@ -57,6 +57,14 @@ public class Parser {
   public static String getFileName(){
     return fileName;
     }
+
+  // TODO: Make parse do this anyway? Or make antlr have a 'top' rule that does it
+  public static Expression parseTop(String fileName, String s) {
+    if (!s.stripLeading().startsWith("{")) {
+      s = "{" + s + "}";
+    }
+    return parse(fileName, s);
+  }
   public synchronized static Expression parse(String fileName,String s){
     String old=Parser.fileName;
     Parser.fileName=fileName;

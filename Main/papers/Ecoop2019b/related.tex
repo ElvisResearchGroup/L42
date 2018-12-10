@@ -332,14 +332,3 @@ A simpler and more restrictive solution to these problems is to prevent `pure' f
 %	\item When a validation error could be throw would likewise be unpredictable, though it should happen after an object is made invalid\footnote{technically our definition of validation technically allows the error to happen sooner, as long as it’s not too late; however pre-emptive errors like this would be extremely hard to debug}, it could happen any time before it’s use. Making matters worse, if multiple object’s would be invalidated before either is used, which one’s error would be thrown is unconstrained
 %	\item This approach will not work well in the pressence of dynamic code loading, in particular it woud likley significantly slow down such loading or spurioslly fail depending on what other code has been loaded
 %\end{itemize}
-
-
-
-%Conclusions? future work?
-%@StrongExceptionSafety is 
-%a very strong property,
-%and some languages may be unwilling to commit to always preserve it.
-%In particular, depending on the details of a specific language
-% releasing resources as in \Q@finally@ blocks may require
-%some relaxation of @StrongExceptionSafety. Sound releasing of resources could be interesting
-%future work.

@@ -1,0 +1,56 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+Person: Data<><{ S name, var Size age, Size birthDay
+  mut method Void processDay(Size that) {
+    if this.birthDay()==that (return this.age(this.age()+1Size))
+    return void }
+  
+  read method Bool #invariant() (
+    Debug.incrementCounter(S"Invariant")
+    this.name()!=S"" & this.age()>= 0Size & this.birthDay()>=0Size & this.birthDay()< 365Size)
+}
+Persons: Collections.vector(ofMut: Person)
+
+
+Family: Data<>< { 
+  capsule FBox box
+  FBox: Data<>< { mut Persons parents, mut Persons children
+    mut method
+    Void processDay(Size that) (
+      with p in this.#parents().#vals() ( p.processDay(that) )
+      with p in this.#children().#vals() ( p.processDay(that) )
+      ) }
+
+  class method mut This (capsule Persons parents, capsule Persons children)
+    This(box:FBox(parents:parents,children:children))
+  
+  mut method Void processDay(Size that)
+    this.#box().processDay(that)
+
+  mut method Void addKid(capsule Person that)(
+    this.#box().#children().add(right:that))
+
+  read method Bool #invariant() {
+    Debug.incrementCounter(S"Invariant")
+    with c in this.box().children().vals() (
+      with p in this.box().parents().vals() ( if p.age()<= c.age() (return Bool.false())))
+    
+    return Bool.true() }
+}
+
+Main: {//here we get 19403 against 1109, so only 20 times improvements.
+  f=Family(parents:Persons[
+    Person(name:S"Bob",age:32Size, birthDay:40Size);
+    Person(name:S"Alice",age:34Size, birthDay:87Size)
+    ],children:Persons[])
+  Debug(S"0 years passed "[f]"")
+  with r in Range(3Size*365Size) (
+    f.processDay(r)
+    if r==365Size+45Size (f.addKid(Person(name:S"Tim",age:0Size, birthDay:r)))
+    if r==(2Size*365Size) + 340Size (f.addKid(Person(name:S"Diana",age:0Size, birthDay:r)))
+  )
+  Debug(S"3 years passed "[f]"")
+  Debug.printCounter(S"Invariant") //2210 vs 19403
+  return ExitCode.normal()
+}
