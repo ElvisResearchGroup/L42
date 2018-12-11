@@ -92,36 +92,34 @@
 
 \subsection{Family}
 
-% TODO: Add ctor declarations
-% TODO: Make Spec# use types in System, not keywords
+% TODO: Talk to marco about ommiting constructor names and using upercase vs lowercase
+
+The following test case was designed to produce a worst-case in the number of invariant checks. We have a \Q!Family! that (indirectly) contains a list of parents and children. The parents and children are of type \Q!Person!. Both Family and \Q!Person! have an invariant, the invariant over \Q!Family! depends on it's contained \Q!Person!s.
 \begin{lstlisting}
 class Person { 
   final String name;
   Int age;
   final Int birthday; 
-
   mut method Void processDay(Int day) {
     if (this.birthday == day) this.age += 1; }
   
   read method Bool invariant() {
     return this.name != "" && this.age >= 0 &&
-      this.birthday >= 0 && this.birthday < 365; }
-}
+      this.birthday >= 0 && this.birthday < 365; }}
 
 class Family { 
-  static class FBox { 
+  static class Box { 
     mut List<Person> parents;
     mut List<Person> children;
     mut method Void processDay(Int day) {
-      for (Person p : this.parents) { p.processDay(day); }
-      for (Person p : this.children) { p.processDay(day); }
-    }
-  }
-  capsule FBox box;
+      for (Person p : this.parents)  { p.processDay(day); }
+      for (Person c : this.children) { c.processDay(day); }}}
+
+  capsule Box box;
 
   Family(capsule List<Person> parents, 
       capsule List<Person> children) { 
-    this.box = new FBox(parents, children); }
+    this.box = new Box(parents, children); }
 
   mut method Void processDay(Int day) { 
     this.box.processDay(day); }
@@ -135,18 +133,24 @@ class Family {
         if (parent.age <= child.age) { return false; }}}
     return true; }}
 \end{lstlisting}
-
+Note that in order for the family to work properly in our invariant protocol, we created a \Q!Box! class to hold the parents and children. This ensures that the invariant only needs to hold at the end of \Q!Family.processDay!. Had we instead made \Q!parents! and \Q!children! directly capsule fields of \Q!Family!, the invariant would need to hold between modifying the two (and not after both have been modified), this could cause problems if a child was updated before their parent.
 
 \begin{lstlisting}
 // A family with 2 parents, and no children
 Family fam = new Family(List.of(new Person("Bob", 32, 40), 
     new Person("Alice", 34, 87)), List.of());
     
-for (Int day = 0; r < 3*365; day++) { // Run for 3 years
+for (Int day = 0; day < 365; day++) { // Run for 1 year
   fam.processDay(day);
-  if (r == 365 + 45) {
-    fam.addChild(new Person("Tim", 0, day % 365)); }
-  if (r == 2*365 + 340) {
-    fam.addChild(new Person("Diana", 0, day % 365)); }}
+}
+for (Int day = 0; day < 365; day++) {
+  fam.processDay(day);
+  if (r == 45) {
+    fam.addChild(new Person("Tim", 0, day)); }}
+
+for (Int day = 0; r < 365; day++) {
+  fam.processDay(day);
+  if (r == 340) {
+    fam.addChild(new Person("Diana", 0, day)); }}
 \end{lstlisting}
 

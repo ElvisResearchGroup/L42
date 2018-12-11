@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.Contracts;
+
+class Person { 
+	internal readonly String name;
+	internal Int32 age;
+	internal readonly Int32 birthday; 
+	internal Person(String n, Int32 a, Int32 b) { 
+		this.name = n; 
+		this.age = a; 
+		this.birthday = b; 
+	}
+
+	internal void processDay(Int32 day) { if (this.birthday == day) this.age += 1; }
+	invariant this.name.Length != 0 && this.age >= 0 && this.birthday >= 0 && this.birthday < 365; // Can't write this.name != "" since String.Equals isn't pure
+}
+
+class Family { 
+	[Rep, ElementsRep] internal List<Person> parents;
+	[Rep, ElementsRep] internal List<Person> children;
+	internal void processDay(Int32 day) {
+		expose (this) {
+			for (Int32 p = 0; p < this.parents.Count; p++) { // As you can guess, foreach (Person p in this.parents) dosn't work...
+				this.parents[p].processDay(day); }
+			for (Int32 c = 0; c < this.children.Count; c++) { 
+				this.children[c].processDay(day); }
+		}
+	}
+
+	internal Family([Captured] List<Person> parents, [Captured] List<Person> children) 
+		requires Owner.Same(Owner.ElementProxy(parents), parents);
+		requires Owner.Same(Owner.ElementProxy(children), children);
+	{ 
+		this.parents = parents; 
+		this.children = children;
+		base();
+	}
+
+	
+	internal void addChild(Person child) {
+		expose (this) { 
+			Person newChild = new Person(child.name, child.age, child.birthday);
+			Owner.AssignSame(newChild, Owner.ElementProxy(this.children));
+			this.children.Add(newChild); }
+	}
+
+	
+	internal void addChildFirst([Captured] Person child) {
+		expose (this) { 
+			Owner.AssignSame(child, Owner.ElementProxy(this.children));
+			this.children.Add(child); }
+	}
+
+	
+	internal void addChildSecond([Captured] Person child) {
+		Owner.AssignSame(child, Owner.ElementProxy(this.children));
+		expose (this) { 
+			this.children.Add(child); }
+	}
+
+	invariant forall {Int32 p in (0: this.parents.Count); // forall {Person p in this.parents; ...} dosn't work!
+		forall {Int32 c in (0: this.children.Count); 
+			p < this.parents.Count && // Spec# verifier needs this...
+			this.parents[p].age > this.children[c].age}};
+}
+
+public class Program
+{
+	static void Main(string[] args) {
+		List<Person> parents = new List<Person>{new Person("Bob", 32, 40), new Person("Alice", 34, 87)};
+		Owner.AssignSame(parents, Owner.ElementProxy(parents));
+		List<Person> children = new List<Person>{};
+		Owner.AssignSame(children, Owner.ElementProxy(children));
+		Family fam = new Family(parents, children);
+
+		for (Int32 day = 0; day < 365; day++) { // Run for 3 years
+			fam.processDay(day);
+		}
+		for (Int32 day = 0; day < 365; day++) {
+			fam.processDay(day);
+			if (day == 45) {
+				fam.addChild(new Person("Tim", 0, day)); }
+		}
+		for (Int32 day = 0; day < 365; day++) {
+			fam.processDay(day);
+			if (day == 340) {
+				fam.addChild(new Person("Diana", 0, day)); }
+		}
+	}
+}

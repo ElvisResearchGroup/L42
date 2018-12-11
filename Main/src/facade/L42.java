@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 import java.lang.reflect.Field;
 
-import newTypeSystem.TypeSystem;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 import coreVisitors.CloneVisitor;
@@ -34,7 +33,6 @@ import sugarVisitors.Desugar;
 import sugarVisitors.InjectionOnCore;
 import sugarVisitors.ToFormattedText;
 import tools.Assertions;
-import tools.StreamUtils;
 import tools.StringBuilders;
 import ast.Ast;
 import ast.Ast.Position;
@@ -101,7 +99,7 @@ public class L42 {
     recordErr.append("\n");
     System.err.println(s);
   }
-  private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException, SecurityException{
+  public static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException, SecurityException{
    assert Files.isDirectory(p) : p;
    List<URL> fileNames = new ArrayList<>();
    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(p)){
@@ -116,23 +114,17 @@ public class L42 {
    //System.out.println(fileNames);
    L42.pluginPaths=fileNames;
 
-   // TODO: Test this code
-
-    Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader field
+    // TODO: Change classpath in a better way
+    /*Field scl = ClassLoader.class.getDeclaredField("scl"); // Get system class loader field
     scl.setAccessible(true);
-    scl.set(null, new URLClassLoader(fileNames.toArray(new URL[0]), ClassLoader.getSystemClassLoader()));
+    scl.set(null, new URLClassLoader(fileNames.toArray(new URL[0]), ClassLoader.getSystemClassLoader()));*/
 
   }
 
   public static void main(String [] arg) throws NoSuchFieldException, IllegalAccessException, IllegalArgumentException, SecurityException{
-
     //assert false;
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
-
-    boolean typecheckOnly = false;
-    if (StreamUtils.stream(arg).any(s -> s.equals("-t"))) { typecheckOnly = true; }
-
     try{
       Path path = Paths.get(arg[arg.length-1]).toAbsolutePath();
 
@@ -148,15 +140,9 @@ public class L42 {
         code=L42.pathToString(path);
         L42.cacheK.setFileName(path.getName(path.getNameCount()-1).toString(),code);
         }
-      if (typecheckOnly) {
-        ClassB L = parseAndDesugar(path.toUri().toString(),code).top();
-        TypeSystem.typeCheck(L, ExpCore.ClassB.Phase.Typed).assertOk();
-        System.out.println("TypeChecked!");
-      } else {
-        FinalResult res = L42.runSlow(path.toUri().toString(),code);
-        System.out.println("------------------------------");
-        System.out.println("END (zero for success): "+res.getErrCode());
-      }
+      FinalResult res = L42.runSlow(path.toUri().toString(),code);
+      System.out.println("------------------------------");
+      System.out.println("END (zero for success): "+res.getErrCode());
     }
     catch(ParseCancellationException parser){
       System.out.println(parser.getMessage());
