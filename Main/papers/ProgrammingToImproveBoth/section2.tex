@@ -64,10 +64,10 @@ names are allowed.
 
 The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
 the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere it is reused.
-In \name 
+\MS{In \name 
 the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A};
-thus the code \Q@Utils.m(this)@ is ill-typed.
+thus the code \Q@Utils.m(this)@ is ill-typed.}
 
 The following second attempt would not work either:
 \saveSpace\saveSpace
@@ -132,12 +132,24 @@ where method \Q@ma@ is imported from \Q@A@.
 This concept is natural for a Java programmer, but was not supported
 in previous work \cite{BETTINI2013521,deep}. Those works require all
 dependencies in code literals to be explicitly declared, so that the
-code literal is completely self-contained. However, this results in
+code literal is self-contained;
+\MS{in this way it can be typed in isolation before flattening.}
+However, this results in
 many redundant abstract method declarations.
 
 \paragraph{Semantics of Use:}
-Albeit alternative semantic models for traits~\cite{lagorio2009featherweight} have been proposed,
-we use flattening: \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits{.}%
+\MS{Trait semantic is defined with flattening:
+ \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits{.}}%
+\footnote{\MS{
+The flattening semantic is the simplest trait
+semantic to formalize and understand.
+However, if implemented naively, it may causes a lot of
+bytecode duplication.
+Delegation semantic%
+~\cite{lagorio2009featherweight},
+is a proposed alternative semantic models for traits
+that is observationally equivalent to flattening but do not require bytecode duplication. The formalism presented here will rely on simple flattening; we expect the techniques of \cite{lagorio2009featherweight} would be useful to produce an efficient implementation in term of bytecode space.
+}}%
 \saveSpace\saveSpace\begin{lstlisting}
 A=Use ta
 B=Use ta, { method int mb(){return this.ma();} }
@@ -151,7 +163,17 @@ B={implements IA
 \emph{In the resulting code, there is no mention of the trait
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@
- and \Q@B@; while subtyping is part of the class interface.
+ and \Q@B@; while subtyping is part of the class interface.%
+\footnote{\MS{
+This position has been defended by 
+Bracha~\cite{bracha1992programming}:
+the choice of inheriting behaviour from some source 
+should be in the hands of the programmer; if a method implementation is not appropriate, such method can be
+overridden. If too many methods do not provide an appropriate behaviour, implementing another source or
+re implementing the behaviour from scratch may also be considered.
+This should not impact the interface exposed to the user, otherwise the programmer may be unable to change its implementation decisions at a later time.
+}}
+%
 In summary, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) must be implemented.
 We believe the code with \Q@IA@ better transmits programmer intention. Some
 readers may instead see requiring \Q@IA@ as a cost of our approach.

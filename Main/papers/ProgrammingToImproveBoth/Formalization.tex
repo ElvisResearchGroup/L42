@@ -179,7 +179,7 @@ $\begin{array}{l}
 {\pushLeft\inferrule[(Method-OK)]{
     \text{if}\ \Opt\me=\me\ \text{then}\ \overline\mD; \mG\vdash\me:\mT_0
   }{ 
-     \mT;\overline\mD \vdash \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR ~\Opt\me
+     \mT;\overline\mD \vdash \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR ~\Opt\me\ :\text{OK}
   } \begin{array}{l} 
   \text{if}\ \Opt{\terminalCode{static}}=\terminalCode{static}\\
   \quad \text{then}\ \mG=\mx_1:\mT_1\ .. \ \mx_n:\mT_n\ \\
@@ -455,9 +455,9 @@ $\begin{array}{l}
 \text{state}(\text{factory}(\mT,\overline\mM), ~\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR)
 \end{array}$
 
-\noindent A Library is \emph{coherent} if 
+\noindent A Literal is \emph{coherent} if 
 all the nested classes are coherent,
-and either the Library is an interface, there are no static methods, or all the static methods
+and either the Literal is an interface, there are no static methods, or all the static methods
 are a valid \emph{state} method of the candidate \emph{factory}.
 Note, by asking for
 $\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM$

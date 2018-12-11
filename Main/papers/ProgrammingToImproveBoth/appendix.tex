@@ -153,7 +153,7 @@ a.x()==42;//assert a.x()==42
 
 Finally, when self construction is not needed, declaring the abstract factory can be made redundant, as is done in the full 42 language.
 
-Moreover, when code reuse is involved, \name is much simpler to use then Java, C++ or C\#: a class extending another class usually needs to define a constructor calling a super constructor.
+Moreover, when code reuse is involved, \name is much simpler to use than Java, C++ or C\#: a class extending another class usually needs to define a constructor calling a super constructor.
    This typically has as many parameters as the full set of fields. Those parameters are then used at least one time in the body of the constructor.
 In \name, to compose traits without adding fields, there is no need to repeat the abstract factory.
 To add a field, you need to define a new abstract factory and implement the "super" factory method by calling the new one.
@@ -167,7 +167,7 @@ The absence of self instantiation also prevents using functional programming pat
 Just looking at how involved it is to implement an immutable \Q@Point@ class in Java with withers, it is sufficient to dissuade most programmers.
 
 \subsection{Comprehensibility and usability}
-Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenarios, we believe \name is much more explicit and clear then Scala and other options. 
+Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenarios, we believe \name is much more explicit and clear than Scala and other options. 
 %We invite the curios reader to look to the complete code of the case studies (below) and compare our solution with the cryptic version of Scala, where behaviour traits are nested inside other traits.
 
 In particular, with respect to Java/Scala we encourage more explicit code since:

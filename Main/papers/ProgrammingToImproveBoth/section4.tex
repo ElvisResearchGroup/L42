@@ -37,7 +37,9 @@ and fields) while achieving the following goals:
 \item making it easy to add new fields;
 \item allowing self instantiation: trait methods can create instances of the classes using them.
 \end{itemize}
-
+\MS{An in depth discussion on how such goals are 
+difficult to achieve and on how they have been challenged
+in the existing literature is available in Section 7.3.}
 \subsection{State of the art}
 We first present the state of the art solution: 
 traits have only methods but classes also have fields and constructors.
@@ -111,7 +113,7 @@ It has some advantages, but also disadvantages:
 %   more complex than a model with methods only.
 The class needs to handle all the state, even state conceptually
    private to a trait. 
- There is no way for a trait to specify a default value for a field.
+\MSComm{REMOVED: There is no way for a trait to specify a default value for a field.}
  Moreover, writing such obvious code to close
   the state/fixpoint in the class 
    with the constructors and fields and getter/setters and factories is tedious and error prone; such code could be automatically
@@ -123,9 +125,10 @@ The class needs to handle all the state, even state conceptually
 In \name there is no need to write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The idea is that
 any class that could be completed
-by implementing methods as constructor calls and field access/update
-  is a
-  complete \emph{coherent} class.  In most other languages, a class is
+by implementing methods as constructor calls \MS{(that just initialize all fields using the value of the corresponding parameter)}
+and field access/update
+is a
+complete \emph{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
 abstract only when the set of abstract methods are not coherent. That
 is, the abstract methods cannot be automatically recognised
