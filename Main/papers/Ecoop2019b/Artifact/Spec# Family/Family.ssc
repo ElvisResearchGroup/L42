@@ -59,7 +59,7 @@ class Family {
 public class Program
 {
 	static void Main(string[] args) {
-		List<Person> parents = new List<Person>{new Person("Bob", 32, 40), new Person("Alice", 34, 87)};
+		List<Person> parents = new List<Person>{new Person("Bob", 11720, 40), new Person("Alice", 12497 87)};
 		Owner.AssignSame(parents, Owner.ElementProxy(parents));
 		List<Person> children = new List<Person>{};
 		Owner.AssignSame(children, Owner.ElementProxy(children));
@@ -79,7 +79,5 @@ public class Program
 				fam.addChild(new Person("Diana", 0, day)); }
 		}
 
-	//	Console.WriteLine(i);
-	//	Console.ReadLine();
 	}
 }
