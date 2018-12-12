@@ -18,7 +18,7 @@ internal sealed class Box: // 7 annotations, 20+1 tokens, 172+10 characters
 
 	// It is practically impossible in Spec# to make a verified class that derives from List<T>,
 	// so rather than add the dispatch method using inheritence, I'm just going to put it here
-	public bool dispatch(Gui.Event that) // 1 annotation, 3 tokens, 17 characters
+	public bool dispatch(Gui.event_ that) // 1 annotation, 3 tokens, 17 characters
 		modifies this.**;
 	{
 		for (int i = 0; i < this.children.Count; i++)
@@ -45,7 +45,7 @@ internal sealed class MoveAction: Gui.Action // 4 annotation, 11 token, 6 charac
 	[Peer] readonly Box outer; // 1 annotation, 1 token, 6 characters
 	readonly int leftDelta, topDelta;
 
-	public void apply(Gui.Event event_)
+	public void apply(Gui.event_ e)
 	{
 		Debug.Print("Button pressed on :" + this.outer.id);
 		outer.left = outer.left + leftDelta;
@@ -130,7 +130,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	public int left { get { return this.box.left; } }
 	public int top { get { return this.box.top; } }
 
-	public bool dispatch(Gui.Event that) // 1 annotation, 2 tokens, 12 characters
+	public bool dispatch(Gui.event_ that) // 1 annotation, 2 tokens, 12 characters
 	{
 		expose(this) return this.box.dispatch(that);
 	} // Verification error: Object invariant possibly does not hold

@@ -5,12 +5,12 @@ using Microsoft.Contracts;
 
 internal sealed partial class Gui
 {
-	[Immutable] internal sealed class Event //1 annotation, 1 token, 11 characters
+	[Immutable] internal struct event_ //1 annotation, 1 token, 11 characters
 	{
 		internal readonly string targetId, eventId;
 		internal readonly string[] all;
 
-		internal Event(string that)
+		internal event_(string that)
 		{
 			string[] s = that.Split(new string[]{"::"}, StringSplitOptions.None);
 
@@ -43,12 +43,12 @@ internal sealed partial class Gui
 		// But null is not peer valid, if I use Widget? it only requires the result to be peer valid if it is not null.
 		[Pure]Widget?children(int i);
 
-		bool dispatch(Event that) modifies this.**; // 1 annotation, 3 tokens, 17 characters
+		bool dispatch(event_ that) modifies this.**; // 1 annotation, 3 tokens, 17 characters
 	}
 
 	internal interface Action // 1 annotation, 3 tokens, 17 characters
 	{
-		void apply(Event event_) modifies this.**;
+		void apply(event_ e) modifies this.**;
 	}
 
 	internal sealed class Button: Widget // 8 annotations, 15+3 tokens, 97+27 characters
@@ -58,7 +58,7 @@ internal sealed partial class Gui
 
 		public string colour { get { return "gray"; } }
 		[Pure] public override string ToString() { return this.id; } // 1 annotation, 1 token, 6 characters
-		public bool dispatch(Event that)
+		public bool dispatch(event_ that)
 		{
 			if (this.id == that.targetId)
 			{
