@@ -207,7 +207,9 @@ public class InvariantClose {
         throw new ClassUnfit().msg("The factory " + mwt.getMs() + " at " + mwt.getP() + " takes fwd paramaters");
       }
 
-      this.state.add(mwt.getMs());
+      if (mwt.getMdf() != Mdf.Class) {
+        this.state.add(mwt.getMs());
+      }
 
       if (mwt.getMs().getNames().isEmpty() && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName()))
             && mwt.getReturnMdf().isIn(Mdf.Mutable, Mdf.Lent)) {
@@ -270,7 +272,10 @@ public class InvariantClose {
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum)).withMt(mwt.getMt().withRefine(false));
       // Not a state method
 
-      if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
+      if (mwt.get_inner() == null && mt.getMdf() == Mdf.Class) {
+        // Constructor, always do an invariant check
+        this.delegate(true, mwt, newMwt);
+      } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
         // Wrap the body up, but only if a public instance method
         this.delegate(true, mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
@@ -281,9 +286,8 @@ public class InvariantClose {
       } else if (this.state.contains(mwt.getMs())) {
         assert this.mode == MODE_L42;
 
-        // Call the invariant for factories, and setters of validatable fields
-        if (mwt.getMdf().equals(Mdf.Class) || (!mwt.getMs().getNames().isEmpty()
-              && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName()))))
+        // Call the invariant for setters of validatable fields
+        if (!mwt.getMs().getNames().isEmpty() && this.validatableFields.contains(Coherence.removeHash(mwt.getMs().getName())))
           this.delegate(true, mwt, newMwt);
 
         else this.delegate(false, mwt, newMwt);
