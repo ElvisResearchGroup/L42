@@ -151,7 +151,7 @@ a.x()==42;//assert a.x()==42
 
 \end{lstlisting}
 
-Finally, when self construction is not needed, declaring the abstract factory can be made redundant, as is done in the full 42 language.
+Finally, when self \MS{instantiation} is not needed, declaring the abstract factory can be made redundant, as is done in the full 42 language.
 
 Moreover, when code reuse is involved, \name is much simpler to use than Java, C++ or C\#: a class extending another class usually needs to define a constructor calling a super constructor.
    This typically has as many parameters as the full set of fields. Those parameters are then used at least one time in the body of the constructor.
@@ -164,7 +164,7 @@ Thus, when adding a field the amount of code between 42 and Java is about the sa
 \subsection{Self instantiation is very useful}
 In many cases the absence of self instantiation causes bugs: often programmers ``think'' that \Q@new C()@ inside of class \Q@C@ would create an instance of the ``current class'', while of course \Q@class D extends C@ still creates instances of \Q@C@.
 The absence of self instantiation also prevents using functional programming patterns in OO languages.
-Just looking at how involved it is to implement an immutable \Q@Point@ class in Java with withers, it is sufficient to dissuade most programmers.
+Just looking at how \MS{tedious} it is to implement an immutable \Q@Point@ class in Java with withers, it is sufficient to dissuade most programmers.
 
 \subsection{Comprehensibility and usability}
 Of course it could take a while to adapt from the Java model to the \name one. However, when it comes to model complex reuse scenarios, we believe \name is much more explicit and clear than Scala and other options. 

@@ -30,7 +30,7 @@ in \Q@sum@ still taking a \Q@Point@ and returning a \Q@Point@.
 Moreover, manually redeclaring a \Q@ColorPoint sum(ColorPoint that)@
 would just induce overloading, not overriding.
 In this case we would like to have inheritance, but we cannot
-have (safe) subtyping.
+have (\MS{sound}) subtyping.
 %
 %In some situations a subclass contains methods whose signatures 
 %are incompatible with the superclass, yet inheritance is still
@@ -146,15 +146,16 @@ a module composition language where nested classes with the same name are recurs
 %Those $3$ languages also shown that family polymorphism 
 %is easy to support when inheritance and subtyping are separated.
 
-While there are various good ideas in those designs, those designs are
-still quite involved.
+%While there are various good ideas in those designs,
+%we believe they are they still require
+%those designs are still quite involved.
 This paper shows a simple language design, called \name,
 addressing the \emph{this-leaking problem} and decoupling subtyping from inheritance.
 We build on traits to distinguish code designed for
 \emph{use} from code designed for \emph{reuse}.
 We synthesize and simplify the best ideas from those $3$ very
 different designs, and couple them with an elegant novel approach to
-state and self construction in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
+state and self \MS{instantiation} in traits that avoids the complexities and redundancies introduced by fields and their initialisation.
 %-------
 
 In \name, there are two separate concepts: classes

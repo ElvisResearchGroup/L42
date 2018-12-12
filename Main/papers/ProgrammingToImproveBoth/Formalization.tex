@@ -516,14 +516,24 @@ The expression typing rules are straightforward and standard.
 \saveSpace
 \subsection{Formal properties}
 \saveSpace
+\newtheorem{theorem}{Theorem}[section]
+\MS{As can be expected, \name ensures conventional soundness of expression reduction. This property is expressed on a completely flattened program (a program where all $E$ are of form $L$):}
+\begin{theorem}[Main Soundness]
+if $\vdash\overline{D}:\text{OK}$,
+e not of form $v_{{\smallDs}}$
+and $\overline{D}\vdash e:T$
+then
+$e\leftarrow_{\overline{D}} \_$
+\end{theorem}
+\saveSpace\saveSpace\saveSpace
+\noindent The proof is standard since the flattened language is just a minor variation over FJ.
+
 In addition to conventional soundness of expression reduction,
 \name ensures soundness of the compilation process itself.
 A similar property was called meta-level-soundness in~\cite{servetto2014meta}; here we can obtain the same result in
 a much simpler setting.
 We denote $\mathit{wrong}(\overline\mD,\mE)$ to be the number of $\mL$s such that
 $\mE=\ctx[\mL]\ \text{and not}\ \overline\mD\vdash\mL:\text{OK}$.
-
-\newtheorem{theorem}{Theorem}[section]
 
 \begin{theorem}[Compilation Soundness]
 
@@ -549,7 +559,6 @@ Note that by well formedness, if \Rulename{sum}
 is applied the result still respect 
 $\mathit{consistentSubtype}$.
 \end{itemize}
-\newpage
 \noindent 
 \textbf{Compilation Soundness has two important corollaries:}
 \begin{itemize}
@@ -679,7 +688,7 @@ A= Use t, {int ma(){return 1;}}
 Here the correctness of \Q@t@ depends on 
 \Q@A@, that is in turn generated using \Q@t@.
 We believe any typing allowing such programs would be fragile with respect to code evolution,
-and could make human understanding of the code-reuse process much harder/involved.
+and could make human understanding of the code-reuse process much harder.
 %
 %Rewriting our example in Java may help to show how involved it is.
 %\saveSpace\begin{lstlisting}
@@ -734,7 +743,7 @@ Finally, with the information of the dependent groups and the current group, it 
 In the world of strongly typed languages we are tempted to
 first check that all will go well, and then perform the flattening. 
 Such methodology would be redundant in our setting: we can only reuse code through trait names; but our point of relaxation is only the code literal: in no way can an error ``move around'' and be duplicated during the compilation process.
-That is, our approach allows safe libraries of traits and classes to be typechecked once, and then deployed and reused by multiple clients: as Theorem A.1 states, in \name no type error will emerge from library code.
+That is, our approach allows safe libraries of traits and classes to be typechecked once, and then deployed and reused by multiple clients: as Theorem A.2 states, in \name no type error will emerge from library code.
 %However, we do not force the programmer to write self-contained code where all the abstract method definition are explicitly declared.
 
 

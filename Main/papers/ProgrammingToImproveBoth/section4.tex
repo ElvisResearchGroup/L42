@@ -23,10 +23,15 @@ To illustrate how \name improves reuse,
 we show a novel approach
 to smoothly integrating state and traits: a challenging problem that has limited the flexibility of traits and
 reuse in the past.
-The idea of summing pieces of
-code is elegant, and successful in module
+The idea of \MS{flattening} is elegant, and successful in module
 composition languages~\cite{ancona2002calculus} and several trait
-models~\cite{ducasse2006traits,Bergel2007,BETTINI2013521,fjig}.  However the research
+models~\cite{ducasse2006traits,Bergel2007,BETTINI2013521,fjig}. 
+\MS{Flattening is elegant in those two settings
+since traits (or modules) only have one kind of member: methods (or functions). In this way 
+flattening is defined a simply collecting 
+all members from all the used traits (or composed modules), where methods with same name and type signature are summed into a single one.
+At most one of those summed methods can have a body, and such body would be propagated in the result.}
+ However the research
 community is struggling to make it work with object state (constructors
 and fields) while achieving the following goals:
 
@@ -103,7 +108,7 @@ It has some advantages, but also disadvantages:
 
 \begin{itemize}
 
-\item {\bf Advantages:} This approach is associative and commutative, even self construction
+\item {\bf Advantages:} This approach is associative and commutative, even self \MS{instantiation}
   can be allowed if the trait requires a static method
   returning \Q@This@. The class will then implement the methods returning \Q@This@
   by forwarding a call to the constructor.
@@ -123,10 +128,11 @@ The class needs to handle all the state, even state conceptually
 \subsection{Our proposed approach to State: Coherent Classes}
 
 In \name there is no need to write down constructors and fields. In fact, in
-\name there is not even syntax for those constructs!  The idea is that
-any class that could be completed
-by implementing methods as constructor calls \MS{(that just initialize all fields using the value of the corresponding parameter)}
-and field access/update
+\name there is not even syntax for those constructs!  The \MS{intuition} is that
+any class \MS{whose all abstract methods could be seen as field getters, setters or factories%
+%\footnote{\MS{An all-args-constructor is a constructor taking in input as many parameter as the fields and using those parameter values just to initialize the corresponding field.}}
+}
+%
 is a
 complete \emph{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
@@ -161,7 +167,10 @@ While getters and setters are fundamental operations, it is possible to
 support more operations. For example:
 \begin{itemize}
 \item \Q@method This withX(int that)@
-may be a ``wither", doing a functional field update: it creates a new instance that is like \Q@this@ but where field \Q@x@ has now \Q@that@ value.
+may create a new instance that is like \Q@this@ \MS{except that} field \Q@x@ has now \Q@that@ value.
+\MS{Those kinds of methods 
+performs functional field updates
+and are called \emph{withers}}.
 \item \Q@method void update(int x,int y)@
 may do two field updates at a time.
 \item\Q@method This clone()@ may do a shallow clone of the object.

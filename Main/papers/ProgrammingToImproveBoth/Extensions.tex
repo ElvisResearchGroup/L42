@@ -4,19 +4,22 @@ Polymorphism by Disconnecting Use and Reuse}
 A nested class is just another kind of member in a code literal.
 In Java and Scala if a subclass declares a nested class with the same
 name of a nested of the superclass, the parent declaration is simply hidden.
-Approaches supporting FP~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
-consider such definition a form of \emph{overriding},
-called \emph{further extension}.
+\MS{The main idea of family polymorphism (FP)~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
+is to instead consider such definition a form of \emph{overriding},
+called \emph{further extension}.}
 That is, the following Java code is ill typed:
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
 abstract class A{static class B{..}   abstract B m();}
-class AA extends A{static class B{..}   B m(){..}}
+class AA extends A{static class B{..}   B m(){..}}//Error: Invalid overriding
+//method AA.m() return type is AA.B, that is unrelated to A.B
 \end{lstlisting}\saveSpace\saveSpace
-Invalid overriding: method \Q@AA.m()@ return type is \Q@AA.B@, that is unrelated to \Q@A.B@.
+
+\MS{In the FP approach, class \Q@AA.B@ would further extends \Q@A.B@, thus also the overriding of method
+\Q@A.m@ would be accepted.}
 We extend \name with nested classes, so that that
 by composing code with \use,
 nested classes with the same name are recursively composed.
-The corresponding code in \name instead would work, and behave like a FP further extension.
+The corresponding code in \name would work, and behave like a FP further extension.
 \saveSpace\saveSpace\begin{lstlisting}
 a={B={..}   method B m()}
 AA= Use a, {B={..}   method B m(){..}}
@@ -320,7 +323,7 @@ in the appendix.
 The idea is that since every data-variant contains
  the same "cast" logic, 
  we can modularize it into an \Q@equals@ trait;
-\Q@equals@ in~\cite{Zenger-Odersky2005} is more involved and
+\Q@equals@ in~\cite{Zenger-Odersky2005} is \MS{complex} and
  and requires glue code.
 \saveSpace\saveSpace
 \begin{lstlisting}

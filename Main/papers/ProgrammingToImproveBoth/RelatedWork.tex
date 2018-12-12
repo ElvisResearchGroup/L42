@@ -38,18 +38,22 @@ the best ideas of those very different designs, while at the same time
 coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
 $3$ particular language designs.
-The following compares 
-various aspects of the language designs;
-we \textbf{bold} $3$ properties where one approach shines the most,
+\MS{TR, DJ and PT are research projects, whose aim is to 
+be a platform to experiment concepts, not to expose a compact syntax to the programmer;
+instead of using case studies to comparing \name against TR,DJ and PT,
+in the following we will compare 
+various aspects of the language designs on a more theoretical level.}
+%The following compares 
+%various aspects of the language designs;
+We \textbf{bold} $3$ properties where one approach shines the most,
  and we \uwave{squiggle} $3$ properties where one approach is more lacking.
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals.}
-\textbf{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
-PT is built on top of Java, thus, it has a very
-involved syntax.
-\name relies on DJ's approach but,
-thanks to our novel representation of state, \name also offers a much simpler and uniform syntax than
-all other approaches.
+Between those tree approaches, \textbf{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
+PT is built on top of Java, thus, it \MS{must support many different syntactic forms.}
+\MS{\name} relies on DJ's approach but,
+thanks to our novel representation of state, \name offers a much simpler and uniform syntax \MS{than
+DJ, TR and PT}.
 \item 
 {\bf Reusable code cannot be ``used'' (that is be instantiated or used as a type).}
 This happens in TR and in PT, but not in \uwave{DJ}. In DJ, to allow reusable code to be directly 
@@ -61,9 +65,9 @@ That is in DJ
 `\Q@A={method A m(){return this;}}@' is not well typed. This is because
 `\Q@B= Use A@' flattens to `\Q@B={method A m(){return this;}}@', which is clearly not well typed.
 Looking at this examples makes it clear
- why we need reusable code to be agnostic of its name as in  TR, PT and \name.
-%Then, either reusable code has no name (as in TR, PT and \name)
-%or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name, as in DJ.
+ why we need reusable code to be agnostic of its name as in  TR, PT \MS{and \name}:
+\MS{either reusable code do  not correspond to a type name (as in TR, PT and \name)
+or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name, as in DJ.}
 
 \item 
 {\bf Requiring abstract signatures is a left over of module composition mindset.}
@@ -73,23 +77,23 @@ As we show in this work, this ends up requiring verbose repetition of abstract s
 which (for highly modularized code) may end up constituting most of the program.
 Java (and thus \textbf{PT}, as a Java extension) show us a better way:
 names are understood from their reuse context.
-The typing of PT offers the same advantages of our typing model, 
-but is more involved and indirect. This may be caused by the
+The typing of PT offers the same advantages of \MS{\name} typing model, 
+but is more indirect. This may be caused by the
 heavy task of integrating with full Java.
 Recent work based on TR is trying to address this issue too~\cite{damiani2017unified}.
 \item {\bf Composition algebra.}
 The idea of using composition operators over atomic values as in an arithmetic expression is very powerful,
-and makes it easy to extend languages with more operators. DJ and TR embrace this idea, while \uwave{PT} takes the traditional Java/C++ approach of using an enhanced class/package declaration syntax.
+and makes it easy to extend languages with more operators. \MS{\name,} DJ and TR embrace this idea, while \uwave{PT} takes the traditional Java/C++ approach of using an enhanced class/package declaration syntax.
 The typing strategy of PT also seems to be connected with this
 decision, so it would be hard to move their approach
 to a composition algebra setting.
 \item {\bf Complete ontological separation between use and reuse.}
-While all $3$ works allow separating inheritance and subtyping only \textbf{TR} properly enforces 
+While \MS{all of \name, TR, DJ and PT} allow separating inheritance and subtyping only \MS{\name and} \textbf{TR} properly enforces 
 separation between use (classes and interfaces) and reuse (traits).
 In DJ all classes are both units of use and reuse (however, subtyping is not induced).
 PT imports all the complexity of Java: it is possible to separate use and reuse, the model has powerful but non-obvious implications where Java \Q@extends@ and PT are used together.
 \item {\bf Naming the self type, even if there is none yet.}
-\uwave{TR} is lacking here, while DJ and PT both allow a class to refer to its name; albeit this is
+\uwave{TR} is lacking here, while \MS{\name, DJ and PT} both allow a class to refer to its name; albeit this is
 less obvious in PT since both a package and a class have to be introduced to express it.
 This allows encoding binary methods, expressing patterns like withers or fluent setters and to instantiate instances of (future) classes  using the reused code.
 \end{itemize}
@@ -177,7 +181,7 @@ but it requires doing it explicitly, growing the amount of required glue-code.
 \saveSpace
 \subsection{State and traits}
 \saveSpace
-The original trait model has no self construction 
+The original trait model has no self \MS{instantiation} 
 and purposely avoided any connection between state and traits.
 Since it was applied to a dynamic language, the relation with the `\Q@This@' type is unclear.
 
@@ -201,7 +205,7 @@ This approach is commutative and associative.
 \item {\bf Constructors compose fields}:
 Here a canonical constructor (as in FJ) taking a parameter for each field and just initializing the fields is assumed to be present.
 It is easy to add fields, however this model (used by \cite{fjig}) is associative but not commutative: composition order influences field order, and thus the constructor signature.
-Self construction is also not possible 
+Self \MS{instantiation} is also not possible 
 since the signature of the constructors change during composition.
 
 
@@ -209,7 +213,7 @@ since the signature of the constructors change during composition.
 Traits declare fields and constructors initialize their fields using any kind of computation.
 Traits whose constructors have the same signature can be composed.
 The composed constructor will execute both constructor bodies in order.
-This approach is designed in DJ to allow self construction.
+This approach is designed in DJ to allow self \MS{instantiation}.
 It is associative and mostly commutative: composition order only influences execution order of side effects during construction.
 However trait composition requires identical constructor signatures: this
 hampers reuse, and if a field is added, its initial value needs to be
