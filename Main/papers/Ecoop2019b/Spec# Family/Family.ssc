@@ -4,27 +4,32 @@ using Microsoft.Contracts;
 
 class Person { 
 	internal readonly String name;
-	internal Int32 age;
+	internal Int32 daysLived;
 	internal readonly Int32 birthday; 
 	internal Person(String n, Int32 a, Int32 b) { 
 		this.name = n; 
-		this.age = a; 
-		this.birthday = b; 
+		this.daysLived = a; 
+		this.birthday = b;
 	}
 
-	internal void processDay(Int32 day) { if (this.birthday == day) this.age += 1; }
-	invariant this.name.Length != 0 && this.age >= 0 && this.birthday >= 0 && this.birthday < 365; // Can't write this.name != "" since String.Equals isn't pure
+	internal void processDay(Int32 dayOfYear) { 
+		this.daysLived += 1;
+		if (this.birthday == dayOfYear) { 
+			Console.WriteLine("Happy birthday " + name + "!"); } 
+	}
+
+	invariant this.name.Length != 0 && this.daysLived >= 0 && this.birthday >= 0 && this.birthday < 365; // Can't write this.name != "" since String.Equals isn't pure
 }
 
 class Family { 
 	[Rep, ElementsRep] internal List<Person> parents;
 	[Rep, ElementsRep] internal List<Person> children;
-	internal void processDay(Int32 day) {
+	internal void processDay(Int32 dayOfYear) {
 		expose (this) {
 			for (Int32 p = 0; p < this.parents.Count; p++) { // As you can guess, foreach (Person p in this.parents) dosn't work...
-				this.parents[p].processDay(day); }
+				this.parents[p].processDay(dayOfYear); }
 			for (Int32 c = 0; c < this.children.Count; c++) { 
-				this.children[c].processDay(day); }
+				this.children[c].processDay(dayOfYear); }
 		}
 	}
 
@@ -40,29 +45,15 @@ class Family {
 	
 	internal void addChild(Person child) {
 		expose (this) { 
-			Person newChild = new Person(child.name, child.age, child.birthday);
+			Person newChild = new Person(child.name, child.daysLived, child.birthday);
 			Owner.AssignSame(newChild, Owner.ElementProxy(this.children));
 			this.children.Add(newChild); }
-	}
-
-	
-	internal void addChildFirst([Captured] Person child) {
-		expose (this) { 
-			Owner.AssignSame(child, Owner.ElementProxy(this.children));
-			this.children.Add(child); }
-	}
-
-	
-	internal void addChildSecond([Captured] Person child) {
-		Owner.AssignSame(child, Owner.ElementProxy(this.children));
-		expose (this) { 
-			this.children.Add(child); }
 	}
 
 	invariant forall {Int32 p in (0: this.parents.Count); // forall {Person p in this.parents; ...} dosn't work!
 		forall {Int32 c in (0: this.children.Count); 
 			p < this.parents.Count && // Spec# verifier needs this...
-			this.parents[p].age > this.children[c].age}};
+			this.parents[p].daysLived > this.children[c].daysLived }};
 }
 
 public class Program
@@ -87,5 +78,8 @@ public class Program
 			if (day == 340) {
 				fam.addChild(new Person("Diana", 0, day)); }
 		}
+
+	//	Console.WriteLine(i);
+	//	Console.ReadLine();
 	}
 }
