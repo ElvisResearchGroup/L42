@@ -5,7 +5,7 @@ using Microsoft.Contracts;
 
 internal sealed partial class Gui
 {
-	[Immutable] internal struct event_ //1 annotation, 1 token, 11 characters
+	[Immutable] internal class event_ //1 annotation, 1 token, 11 characters
 	{
 		internal readonly string targetId, eventId;
 		internal readonly string[] all;
