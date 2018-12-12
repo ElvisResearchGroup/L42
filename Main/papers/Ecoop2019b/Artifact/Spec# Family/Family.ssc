@@ -59,7 +59,7 @@ class Family {
 public class Program
 {
 	static void Main(string[] args) {
-		List<Person> parents = new List<Person>{new Person("Bob", 11720, 40), new Person("Alice", 12497 87)};
+		List<Person> parents = new List<Person>{new Person("Bob", 11720, 40), new Person("Alice", 12497, 87)};
 		Owner.AssignSame(parents, Owner.ElementProxy(parents));
 		List<Person> children = new List<Person>{};
 		Owner.AssignSame(children, Owner.ElementProxy(children));
