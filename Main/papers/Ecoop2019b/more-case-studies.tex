@@ -121,9 +121,8 @@ class Family {
     }
   }
   capsule Box box;
-  Family(capsule List<Person> parents, 
-      capsule List<Person> children) { 
-    this.box = new Box(parents, children); }
+  Family(capsule List<Person> ps,capsule List<Person> cs) { 
+    this.box = new Box(ps, cs); }
   mut method Void processDay(Int dayOfYear) { 
     this.box.processDay(dayOfYear); }
   mut method Void addChild(capsule Person child) { 
@@ -137,12 +136,13 @@ class Family {
 }
 \end{lstlisting}
 Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
-Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay! is atomic: it updates all its contained \Q!Person!s in one go.
+Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay! is atomic: it updates all its contained \Q!Person!s together.
 %This capture the intention of consistently calling \Q@Person.processDay@ once for all the persons as an atomic operation.
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
 Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause problems if, for example, a child was updated before their parent.
 
-We have a simple test case that calls \Q!processDay! on a \Q!Family! $3\times365$ times ($1{,}095$ years worth):
+\noindent We have a simple test case that calls \Q!processDay! on a \Q!Family!, $1{,}095$ ($3\times365$) times.
+%$3\times365$ times ($1{,}095$ days):
 \begin{lstlisting}
 // 2 parents (one 32, the other 34), and no children
 Family fam = new Family(List.of(new Person("Bob", 11720, 40), 
@@ -166,18 +166,30 @@ The idea is that everything we do with the \Q!Family! is a mutation, in addition
 This is a worst case scenario for our approach compared to visible state semantics since it reduces our advantages:
 our approach avoids invariant checks when objects are not mutated
 but in this example most operations are mutations; 
-similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{see section \ref{s:case-study}} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
+similarly, our approach prevents the exponential explosion of nested invariant checks (see section \ref{s:case-study}) when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
 \loseSpace
 
 We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D performs $7{,}995$, Eiffel performs $19{,}335$, and finally, Spec\# performs only $1{,}104$.
 
 Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay! and \Q!addChild! call (for both \Q!Person! and \Q!Family!). 
-
 The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!. In addition, due to Eiffel's `uniform access principle', the field accesses of \Q!Person.daysLived! (in  \Q!Family!'s invariant) are not distinguished from ordinary method calls, thus each one performs two invariant checks.
 % TODO: Actually implement it in eiffel (this will be a nightmare...)
+
 The results for Spec\# are very interesting, since it performs less checks than L42.
 This is the case since \Q!processDay! in \Q!Person! just does a simple field increment, thus the Spec\# verifier is able to statically verify that this wont break the invariant, and so it does not require a corresponding \Q!expose! block, and hence does not perform a runtime invariant check.
-The Spec\# verifier is able to do this as it assumes that arithmetic overflow does not occur, however one can turn on runtime-checking for overflow. This is sound in both the context of Spec\# and L42, since overflow will have the same result as a runtime invariant check failure, namely it will raise an unchecked exception.
+The Spec\# verifier is able to do this as it works on a language semantic where arithmetic overflow does not occur. Such semantic can be enforced by
+a compilation option (disable on default for performance reasons).
+%however one can turn on runtime checking for overflow.
+%and check overflow errors at run time
+With this option turned on, eliding the invariant check is sound since overflow will have the same result as a runtime invariant check failure, namely it will throw an unchecked exception. 
+
+% Spec #:
+%		expose
+%		field modification
+%		construction
+%
+
+% Concluding Spec\# is able to replaces some runtime invariant checks with more efficient runtime overflow checks.
 
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
