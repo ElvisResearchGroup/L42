@@ -163,7 +163,7 @@ for (Int day = 0; r < 365; day++) { // The 3rd year
 \end{lstlisting}
 % The counts (including the invariant keyword, and read on the invariant method)
 % Spec# 14 family, 2 main   = 16
-% L42 	12 family, 1 person = 13
+% L42 	12 family, 1 person = 14
 % Fake 42 = 14 (+2 for box ctor, -1 for family ctor)
 
 The idea is that everything we do with the \Q!Family! is a mutation, in addition the \Q!fam.processDay! calls also mutate the contained \Q!Person!s.
@@ -182,7 +182,26 @@ The visible state semantics of both D and Eiffel perform additional invariant ch
 % TODO: Actually implement it in eiffel (this will be a nightmare...)
 
 The results for Spec\# are very interesting, since it performs less checks than L42.
-This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant, if it is unable to do this it requires that the update be wrapped in an \Q!expose! block. In Spec\#, integer arithmetic is not allowed to overflow\footnote{A compilation option allows overflow to be check at runtime, by throwing  where unchecked exceptions (just as invariant failures) if it occurs}, as such it verifies that the field increment in \Q!processDay! cannot break the invariant.
+This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block. 
+
+Spec\# relies on the absence of arithmetic overflow, and performs runtime checks to ensure this%
+\footnote{%
+Runtime checks are enabled by a compilation option; when they fail, unchecked exceptions are thrown.
+}, as such the verifier concludes that the field increment in \Q!processDay! cannot break the invariant.
+Concluding Spec\# is able to avoid some invariant checks in this case 
+by relying on all arithmetic operations performing runtime overflow checks;
+integer arithmetic in L42 has the common wrap around semantics.
+%L42's integers have common wrap-around semantic.
+
+
+%\footnote{%
+%Such semantic can be enforced by
+%a compilation option, disabled on default for performance reasons.
+%Overflow is detected at runtime, by throwing an unchecked exceptions; just as for invariant failures.%
+%}
+
+% Concluding Spec\# is able to replaces some runtime invariant checks with more efficient runtime overflow checks.
+
 
 %This is the case since \Q!processDay! in \Q!Person! just does a simple field increment, thus the Spec\# verifier is able to statically verify that this wont break the invariant, and so it does not require a corresponding \Q!expose! block, and hence does not perform a runtime invariant check.
 %The Spec\# verifier is able to do this as it works on a language semantic where arithmetic overflow does not occur. Such semantic can be enforced by
@@ -191,7 +210,6 @@ This is the case since \Q!processDay! in \Q!Person! just does a simple field upd
 %%%and check overflow errors at run time
 %With this option turned on, eliding the invariant check is sound since overflow will have the same result as a runtime invariant check failure, namely it will throw an unchecked exception.
 
-% Concluding Spec\# is able to replaces some runtime invariant checks with more efficient runtime overflow checks.
 
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 

@@ -167,7 +167,7 @@ We also encoded our example in Spec\#\footnote{We compiled Spec\# using the late
 The backend of the L42 GUI library is written in Java, and we did not port it to Spec\# rather we just simulate the backend, and don't actually display a GUI in Spec\#.
 
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which only gave us $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array bounds. %. and value presence.
-This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however Spec\# checks this at runtime. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{
+This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method; like our system however Spec\# checks this at runtime. As such the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{%
 We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also run the invariant checking $77$ times; however Code Contract does not enforce the
 encapsulation of \Q@children@, thus their approach would not be sound in our context.}
 
