@@ -58,18 +58,3 @@ We however maintain the general oo design where only methods are possible extens
 can be extendend only by changing the body of a method with a new one, not by
 specifying a change in an arbitrary point of the AST. While this can be seen as a limitation,
 it is needed to preserve the general idea that detailed shape of method bodies is `private' information that should not be visible not relevant to the class user.
-
-
-
-
-
----------
-3 points:
-
-
--Double vs double
-  use lower double
--constructor
-  keep as decided before
--getters/access cause difference eiffel/D
-  use getters to not talk about it
