@@ -1,10 +1,16 @@
 \saveSpace
 \section{Summary of formalisation}
 \saveSpace
-In Appendix A we formalise \name; in particular, we 
-show detailed behaviour and soundness
+In Appendix A we formalise \name; \MS{in addition to conventional soundness,} we 
+discuss detailed behaviour and soundness
 of the compilation process itself;
 a similar property was called meta-level-soundness in~\cite{servetto2014meta}.
+\MS{This property ensures that flattening strictly reduces the number of typing errors.
+In turn, this
+ensure that reusing a trait can not induce new type errors.
+Those properties was already proved in~\cite{servetto2014meta}; here
+the proof is smother thanks to our simpler formalization.
+}
 Our process requires traits to be well-typed before being reused,
 however code literals are not required to be well typed before flattening.
 This design supports mutually recursive types without having to
@@ -29,7 +35,7 @@ since \Q@A@ is not a type:
 \saveSpace\saveSpace\begin{lstlisting}[language=Java]
 class A{ int ma(){return Utils.m(this);} }  class Utils{static int m(A a){..}}
 \end{lstlisting}\saveSpace\saveSpace
-Cecil syntactic sugar counters this issue; advantages and pitfalls are discussed in Appendix B.
+Cecil syntactic sugar counters this issue; advantages and pitfalls are discussed in Appendix B, \MS{especially B.2}.
 
 \name is directly inspired by the $3$ independently designed research languages as already mentioned:
  TraitRecordJ~(TR)\cite{Bettini:2010:ISP:1774088.1774530}, Package Templates~(PT)\cite{KrogdahlMS09} and DeepFJig(DJ)~\cite{deep}.
@@ -38,10 +44,10 @@ the best ideas of those very different designs, while at the same time
 coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
 $3$ particular language designs.
-\MS{TR, DJ and PT are research projects, whose aim is to 
+\MS{TR, DJ and PT are research projects, aiming to 
 be a platform to experiment concepts, not to expose a compact syntax to the programmer;
-instead of using case studies to comparing \name against TR,DJ and PT,
-in the following we will compare 
+instead of using case studies to compare \name against TR,DJ and PT,
+in the following we compare 
 various aspects of the language designs on a more theoretical level.}
 %The following compares 
 %various aspects of the language designs;
@@ -50,7 +56,7 @@ We \textbf{bold} $3$ properties where one approach shines the most,
 \begin{itemize}
 \item {\bf A simple uniform syntax for code literals.}
 Between those tree approaches, \textbf{DJ} is best in this sense: TR has separate syntax for class literals, trait literals and record literals.
-PT is built on top of Java, thus, it \MS{must support many different syntactic forms.}
+PT is built on top of Java, thus, it \MS{must support many different syntactic forms}.
 \MS{\name} relies on DJ's approach but,
 thanks to our novel representation of state, \name offers a much simpler and uniform syntax \MS{than
 DJ, TR and PT}.
@@ -66,7 +72,7 @@ That is in DJ
 `\Q@B= Use A@' flattens to `\Q@B={method A m(){return this;}}@', which is clearly not well typed.
 Looking at this examples makes it clear
  why we need reusable code to be agnostic of its name as in  TR, PT \MS{and \name}:
-\MS{either reusable code do  not correspond to a type name (as in TR, PT and \name)
+\MS{either reusable code does  not correspond to a type name (as in TR, PT and \name)
 or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name, as in DJ.}
 
 \item 

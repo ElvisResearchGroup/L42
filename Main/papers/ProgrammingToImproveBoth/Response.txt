@@ -1,0 +1,75 @@
+-----------------
+Rev1:
+comment about pg2: 
+In a language where subclass do not imply subtyping,
+the programmer is not required to satisfy LSP when he extends/reuse code.
+The 'this leaking problem' shows that LSP can not be broken in the common OO design,
+and that in such design subclass must imply subtyping.
+----
+DJ and TR are first defined at pg 3
+----
+In Abadi/Cardelli all methods can be overridden on a per-instance base.
+Thus they use method overriding (on a field getter) to encode field update.
+This is unrelated to our work, where field getters and setters both exists, but they are boty abstract
+methods, with no body.
+---
+We attempted to implement your suggestion, but we discovered it would take too much space to explain them in detail.
+We also considered just removing them and leave only the total.
+---
+
+Rev2:
+about the 7 important points:
+1: We add that the reason is so that it can be typed before flattening
+2: We reworded our discussion about flattening. Flattening is the expected trait semantic, but alternative (equivalent) semantics exists for the sake of more effient implementations
+3: We cite Bracha and we reword his justification for this design decision
+4: BRUNO HELP
+5: We exapand the explanation in pg9 and pointed to the related work that expands on the detuals.
+6: Classes are coherent if the follow a specific pattern,
+ that is isomorphic to declaring the state by hand. We clarified this in the text.
+7:We reworded this section, saying that this is one objective for our future work, but is not strictly needed for this paper.
+
+We explain better what we mean by modularity in pg 12.
+
+We discussed about allowing classes to be used only as object factories in appendix B.2; we made it more clear in the main paper.
+
+
+Rev3:
+mapping the formalism with the example:
+In neither the model nor the formalism the only difference between 
+trait declarations and class declaration is the fact that trait declarations have lower case trait names (t),
+while class declarations have upper case class names (C).
+Types can only contains upper case identifiers (C), thus trait names (t) can not be used as types.
+In the submitted version subsumption rule delegated subtyping to the '<=' operator, that was indeed not defined. We updated the formalis to define conventional subtyping explicitly.
+Note that the fact that only interfaces can induce subtyping is handled by
+well formedness, as defined in consistentSubtype.
+
+About point ii:
+"we would lose the information that it was an IB object"
+Our goal is not to retain a more precise typing even in the presence of subtyping,
+but to prevent subtyping when is not desirable.
+The 'this leaking' problem is about how to type the usages of 'this' in a method body; since
+interfaces do not have method bodies, the problem do not exist in such context.
+
+About point iii, discussion about section 4.3:
+We did not originally realized that injecting the method merge
+suggested the need to forcast extension points.
+We added a little explanation after that, showing how to modularly add the merge method and its usages.
+We however maintain the general oo design where only methods are possible extension points: code
+can be extendend only by changing the body of a method with a new one, not by
+specifying a change in an arbitrary point of the AST. While this can be seen as a limitation,
+it is needed to preserve the general idea that detailed shape of method bodies is `private' information that should not be visible not relevant to the class user.
+
+
+
+
+
+---------
+3 points:
+
+
+-Double vs double
+  use lower double
+-constructor
+  keep as decided before
+-getters/access cause difference eiffel/D
+  use getters to not talk about it

@@ -114,7 +114,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 
 	public string id { get { return this.box.id; } }
 
-	// Note characters and annotations are relative to the prefered version:
+	// Note characters and annotations are relative to the preferred version:
 	//     public List<Gui.Widget>children{get{return this.box.children;}} // +10 tokens, +63 characters
 	// 3 annotations, 3+9 token, 13+57 characters
 	[Pure]public int children_count()
@@ -158,7 +158,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	}
 	// Since this method is only called in the invariant,
 	// Its significantly easier to just pass the width and height, as opposed to trying to make it an instance method.
-	// Note: counts are relative to the preffered header of:
+	// Note: counts are relative to the preferred header of:
 	//   private bool Inside(Gui.Widget that) // 6 tokens, 36 characters
 	[Pure]private static bool Inside(Gui.Widget that,int width,int height) // 1 annotation, 1+5 tokens, 6+28 characters
 	{

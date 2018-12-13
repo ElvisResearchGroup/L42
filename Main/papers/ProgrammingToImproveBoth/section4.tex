@@ -28,7 +28,7 @@ composition languages~\cite{ancona2002calculus} and several trait
 models~\cite{ducasse2006traits,Bergel2007,BETTINI2013521,fjig}. 
 \MS{Flattening is elegant in those two settings
 since traits (or modules) only have one kind of member: methods (or functions). In this way 
-flattening is defined a simply collecting 
+flattening is defined as simply collecting 
 all members from all the used traits (or composed modules), where methods with same name and type signature are summed into a single one.
 At most one of those summed methods can have a body, and such body would be propagated in the result.}
  However the research
@@ -161,6 +161,8 @@ method acts as a \emph{factory method}.
 The signature of the factory method plays an important role, since
 abstract state operations are identified by using the names of the
 factory method arguments.
+\MS{The idea of creating object in a single atomic step by providing a value for all the fields is well explored (for example by primary constructors in Scala) and does not limit the freedom of the programmer to specify personalized initialization strategy.
+A static method can freely compute the concrete field  before creating the object. Appendix B.4 discusses usability implications of this pattern.}
 \end{itemize}
 \noindent
 While getters and setters are fundamental operations, it is possible to
@@ -176,10 +178,12 @@ may do two field updates at a time.
 \item\Q@method This clone()@ may do a shallow clone of the object.
 \end{itemize}
 
-We are not sure what is the best set of abstract state operations yet,
-but we think this could become a very interesting area of research.
+\MS{The concept of `abstract state operations'
+is novel, and we think it}
+could become a very interesting area of research.
 The work by Wang et al.~\cite{wang2016classless} explores a particular
-set of such abstract state operations.
+set of such abstract state operations,
+\MS{ but we suspect there are more unexplored possible options that could be even more beneficial.}
 
 \paragraph{Points in \name:}
 In \name and with our approach to handle the state, 
@@ -217,7 +221,7 @@ pointDiv= ...
 PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
 \saveSpace\saveSpace      
-Now the code is fully modularized, that is: each trait defines exactly one method.
+Now the code is fully modularized, that is: each trait defines exactly one method \MS{and contains its abstract dependencies. In this way it can be modularly composed with any code requiring such behaviour and offering or requiring such dependencies.}
 
 \paragraph{Case Study 1:}
 In order to evaluate our approach
@@ -383,6 +387,23 @@ Note how we are relying on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
+
+\MS{
+In this last example, when we tried to obtain state extensibility, we refactored the code to introduce  the \Q@merge(This)@ method.
+This suggest that we had to
+anticipate the need for state extensibility
+in order to design our original code.
+As illustrated by the following example, we can instead rely on the \Q@super@ operator to inject the \Q@merge(This)@ method when needed.}
+
+\saveSpace\saveSpace \begin{lstlisting}
+p=/*as originally designed: no merge*/
+pointSum=/*as originally designed: no merge*/
+merge={method This merge(This that)}
+pointSumMerge=Use merge, pointSum[super sum as _1sum], { 
+  method This sum(This that){return this.merge(that)._1sum(that);}}
+colored=/*as before, with merge implementation*/
+CPoint= /*as before, but using pointSumMerge*/
+\end{lstlisting} \saveSpace\saveSpace 
 
 
 %, as in the following example:

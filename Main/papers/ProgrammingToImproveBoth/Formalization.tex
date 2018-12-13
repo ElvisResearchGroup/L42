@@ -144,6 +144,11 @@ $\begin{array}{l}
   }{ 
      \overline\mD \vdash \mt\terminalCode{=}\mL\ :\text{OK}
   }
+
+\quad\inferrule[(s-refl)]{
+  }{ 
+    \overline\mD\vdash\mT \leq \mT
+  }
 }\rowSpace
 
 %  forall i in 1..k T;CDs|-Mi:Ok
@@ -155,7 +160,7 @@ $\begin{array}{l}
     \forall\mM\in\overline\mM,\quad
   \mT;\overline\mD\vdash\mM:\text{OK}
   }{ 
-     \mT;\overline\mD \vdash  \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} ~\overline\mT \ \overline\mM \cC \ :\text{OK}\\
+     \mT;\overline\mD \vdash  \oC \_\ \terminalCode{implements} ~\overline\mT \ \overline\mM \cC \ :\text{OK}
   } 
 %\begin{array}{l} 
 %  \mL=\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT \ \overline\mM \cC \\
@@ -167,7 +172,22 @@ $\begin{array}{l}
   }{ 
      \mT;\overline\mD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
   }
+\quad
+\inferrule[(subtype)]{
+    \overline\mD\vdash\mT_2 \leq \mT_3
+  }{ 
+    \overline\mD\vdash\mT_1 \leq \mT_3
+  }
+\begin{array}{l} 
+    \overline\mD(\mT_1)=
+    \oC\_\  \terminalCode{implements} ~\overline\mT
+\ \_ \cC\\
+\mT_2\in\overline\mT
+\end{array}
 }
+\quad\quad
+
+
 \rowSpace
 
 %  if e?=e then CDs; G|-e:T                         
@@ -190,7 +210,6 @@ $\begin{array}{l}
 %  \quad\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \in \overline\mD(\mT) \\
    \end{array}
 }\rowSpace
-
 
 
 {\pushLeft\inferrule[(subsumption)]{
