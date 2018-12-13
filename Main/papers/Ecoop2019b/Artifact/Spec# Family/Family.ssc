@@ -1,3 +1,4 @@
+// 16 total annotations, 45 tokens
 using System;
 using System.Collections.Generic;
 using Microsoft.Contracts;
@@ -7,62 +8,66 @@ class Person {
 	internal int daysLived;
 	internal readonly int birthday; 
 	internal Person(string n, int a, int b) { 
-		this.name = n; 
-		this.daysLived = a; 
-		this.birthday = b;
+		name = n; 
+		daysLived = a; 
+		birthday = b;
 	}
 
 	internal void processDay(int dayOfYear) { 
-		this.daysLived += 1;
-		if (this.birthday == dayOfYear) { 
+		daysLived += 1;
+		if (birthday == dayOfYear) { 
 			Console.WriteLine("Happy birthday " + name + "!"); } 
 	}
 
-	invariant this.name.Length != 0 && this.daysLived >= 0 && this.birthday >= 0 && this.birthday < 365; // Can't write this.name != "" since string.Equals isn't pure
+	// 1 annotation, 1 token
+	invariant name.Length != 0 && daysLived >= 0 && birthday >= 0 && birthday < 365; // Can't write name != "" since string.Equals isn't pure
 }
 
 class Family { 
-	[Rep, ElementsRep] internal List<Person> parents; // 2 annotations
-	[Rep, ElementsRep] internal List<Person> children; // 2 annotations
-	internal void processDay(int dayOfYear) {
-		expose (this) { // 1 annotation
-			for (int c = 0; c < this.children.Count; c++) {  // As you can guess, foreach (Person p in this.parents) dosn't work...
-				this.children[c].processDay(dayOfYear); }
-			for (int p = 0; p < this.parents.Count; p++) {
-				this.parents[p].processDay(dayOfYear); }
+	[Rep, ElementsRep] internal List<Person> parents; // 2 annotations, 2 tokens
+	[Rep, ElementsRep] internal List<Person> children; // 2 annotations, 2 tokens
+	internal void processDay(int dayOfYear) { // 1 annotation, 2 tokens
+		expose (this) {
+			for (int c = 0; c < children.Count; c++) {  // As you can guess, foreach (Person p in parents) dosn't work...
+				children[c].processDay(dayOfYear); }
+			for (int p = 0; p < parents.Count; p++) {
+				parents[p].processDay(dayOfYear); }
 		}
 	}
 
-	internal Family([Captured] List<Person> parents, [Captured] List<Person> children) // 2 annotations
-		requires Owner.Same(Owner.ElementProxy(parents), parents); // 1 annotation
-		requires Owner.Same(Owner.ElementProxy(children), children); // 1 annotation
+	
+	// 5 annotations, 17 tokens 
+	internal Family([Captured] List<Person> ps, [Captured] List<Person> cs)
+		requires Owner.Same(Owner.ElementProxy(parents), parents);
+		requires Owner.Same(Owner.ElementProxy(children), children); 
 	{ 
-		this.parents = parents; 
-		this.children = children;
-		base(); // 1 annotation
+		parents = ps; 
+		children = cs;
+		base(); // This needs to be here, since Spec# thinks it could invalidate this functions precondition
 	}
 
 	
-	internal void addChild(Person child) {
-		expose (this) { // 1 annotation
+	internal void addChild(Person child) { // 2 annotations, 8 tokens
+		expose (this) {
 			Person newChild = new Person(child.name, child.daysLived, child.birthday);
-			Owner.AssignSame(newChild, Owner.ElementProxy(this.children)); // 1 annotation
-			this.children.Add(newChild); }
+			Owner.AssignSame(newChild, Owner.ElementProxy(children));
+			children.Add(newChild); }
 	}
 
-	invariant forall {int p in (0: this.parents.Count); // forall {Person p in this.parents; ...} dosn't work!
-		forall {int c in (0: this.children.Count); 
-			p < this.parents.Count && // Spec# verifier needs this. (Not counted)
-			this.parents[p].daysLived > this.children[c].daysLived }};
+	// 1 annotation, 1 token
+	invariant forall {int p in (0: parents.Count); // forall {Person p in parents; ...} dosn't work!
+		forall {int c in (0: children.Count); 
+			p < parents.Count && // Spec# verifier needs  (Not counted)
+			parents[p].daysLived > children[c].daysLived }};
 }
 
 public class Program
 {
-	static void Main(string[] args) {
+	static void Main(string[] args) { // 2 annotations, 12 tokens
 		List<Person> parents = new List<Person>{new Person("Bob", 11720, 40), new Person("Alice", 12497, 87)};
-		Owner.AssignSame(parents, Owner.ElementProxy(parents)); // 1 annotation
+		Owner.AssignSame(parents, Owner.ElementProxy(parents));
 		List<Person> children = new List<Person>{};
-		Owner.AssignSame(children, Owner.ElementProxy(children)); // 1 annotation
+		Owner.AssignSame(children, Owner.ElementProxy(children));
 		Family fam = new Family(parents, children);
 
 		for (int day = 0; day < 365; day++) { // Run for 3 years

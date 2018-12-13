@@ -88,6 +88,8 @@
 %In this way we can maintain the soundness of our system even in this corner case.
 %Of course, another option would be to make them into unrecoverable fatal errors.
 
+\lstset{morekeywords={expose}}
+
 \section{More Case Studies}
 
 \subsection{Family}
@@ -214,4 +216,4 @@ integer arithmetic in L42 has the common wrap around semantics.
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
 
-The annotation difficulty with Spec\#\footnote{see the artifact for the full code} was similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we did not have to have any special annotations for that class. The \Q!Family! class was similar to our \Q!Cage! example (see section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks).
+The annotations we had to add in the Spec\#\footnote{see the artifact for the full code} version were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we need 16 annotations, worth a total of 45 tokens, this is only slightly worse than the code we showed here, which has 14 annotations \& tokens.
