@@ -5,7 +5,7 @@
 %naive is unsound - person 3 bugs
 \saveSpace
 \section{Our Invariant Protocol}
-\label{s:validate}
+\label{s:protocol}
 \saveSpace
 Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}, i.e. its invariant holds.
 This implies that if you can call methods on an object, calling \Q@invariant@ on it is guaranteed to return \Q@true@.
@@ -55,7 +55,7 @@ Our invariant protocol injects calls to \Q@invariant@ on newly created objects, 
 
 
 %\section{\REVComm{The invariant Method}{2}{remind of the goals for validate (i.e. that it be pure); What about possible non-termination of validate()}}
-%\label{s:validate}
+%\label{s:protocol}
 
 %We require the receiver to be \Q@read@ and to have no arguments.
 %The method is \Q@read@: thus the method body will see the \Q@this@ object as a \Q@read@ reference; and has no other parameters. 

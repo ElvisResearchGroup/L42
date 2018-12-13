@@ -20,8 +20,8 @@ Family: Data <>< {
   Box: Data <>< {
     mut Persons parents, mut Persons children
     mut method Void processDay(Size dayOfYear) (
-      with p in this.#parents().#vals() (p.processDay(dayOfYear: dayOfYear))
-      with c in this.#children().#vals() (c.processDay(dayOfYear: dayOfYear)))}
+      with c in this.#children().#vals() (c.processDay(dayOfYear: dayOfYear))
+      with p in this.#parents().#vals() (p.processDay(dayOfYear: dayOfYear)))}
 
   class method mut This(capsule Persons parents, capsule Persons children)
     This(box: Box(parents: parents, children: children))
@@ -34,8 +34,8 @@ Family: Data <>< {
 
   read method Bool #invariant() {
     Debug.incrementCounter(S"Invariant")
-    with c in this.box().children().vals() (
-      with p in this.box().parents().vals() (
+    with p in this.box().parents().vals() (
+      with c in this.box().children().vals() (
         if p.daysLived() <= c.daysLived() (return Bool.false())))
     
     return Bool.true() }

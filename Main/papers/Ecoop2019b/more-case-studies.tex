@@ -107,7 +107,7 @@ class Person {
     if (this.birthday == dayOfYear) {
     	Console.print("Happy birthday " + this.name + "!");}}
   read method Bool invariant() {
-    return this.name != "" && this.daysLived >= 0 &&
+    return !this.name.equals("") && this.daysLived >= 0 &&
       this.birthday >= 0 && this.birthday < 365; }
 }
 class Family { 
@@ -129,9 +129,9 @@ class Family {
   mut method Void addChild(capsule Person child) { 
     this.box.children.add(child); }
   read method Bool invariant() {
-    for (Person parent : this.box.children) {
-      for (Person child : this.box.parents) {
-        if (parent.daysLived <= child.daysLived) { 
+    for (Person p : this.box.parents) {
+      for (Person c : this.box.children) {
+        if (p.daysLived <= c.daysLived) { 
           return false; }}}
     return true; }
 }
@@ -142,7 +142,7 @@ Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
 Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause problems if, for example, a child was updated before their parent.
 
-We have a simple test case that calls \Q!processDay! on a \Q!Family! $365*3$ times ($3$ years worth):
+We have a simple test case that calls \Q!processDay! on a \Q!Family! $3\times365$ times ($1{,}095$ years worth):
 \begin{lstlisting}
 // 2 parents (one 32, the other 34), and no children
 Family fam = new Family(List.of(new Person("Bob", 11720, 40), 
@@ -153,12 +153,12 @@ for (Int day = 0; day < 365; day++) { // Run for 1 year
 }
 for (Int day = 0; day < 365; day++) { // The next year
   fam.processDay(day);
-  if (r == 45) {
+  if (day == 45) {
     fam.addChild(new Person("Tim", 0, day)); }}
 
 for (Int day = 0; r < 365; day++) { // The 3rd year
   fam.processDay(day);
-  if (r == 340) {
+  if (day == 340) {
     fam.addChild(new Person("Diana", 0, day)); }}
 \end{lstlisting}
 The idea is that everything we do with the \Q!Family! is a mutation, in addition the \Q!fam.processDay! calls also mutate the contained \Q!Person!s.
@@ -166,31 +166,20 @@ The idea is that everything we do with the \Q!Family! is a mutation, in addition
 This is a worst case scenario for our approach compared to visible state semantics since it reduces our advantages:
 our approach avoids invariant checks when objects are not mutated
 but in this example most operations are mutations; 
-similarly, our approach prevents the exponential explosion of nested invariant checks when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
+similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{see section \ref{s:case-study}} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
+\loseSpace
 
-We ran this test case under several different protocols;
-L42 perform $4,000$ checks,
-D $7,995$ and	Eiffel $19,335$.
-Finally Spec\# performs only $1,104$.
-%the resulting number of checks are:
-%\begin{tabular}{l|r|r}
-%	Protocol & Checks & Ratio to L42 \\
-%	\hline
-%	L42    & $4,000$ & $1.00$ \\
-%	Spec\# & $1,104$ & $0.28$ \\
-%	D      & $7,995$ & $2.00$ \\ 
-%	Eiffel & $19,335$ & $4.83$ \\
-%\end{tabular}
+We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D performs $7{,}995$, Eiffel performs $19{,}335$, and finally, Spec\# performs only $1{,}104$.
 
 Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay! and \Q!addChild! call (for both \Q!Person! and \Q!Family!). 
 
 The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!. In addition, due to Eiffel's `uniform access principle', the field accesses of \Q!Person.daysLived! (in  \Q!Family!'s invariant) are not distinguished from ordinary method calls, thus each one performs two invariant checks.
-% TODO: Make a note that we havn't implemented D properly in the artifact? Though our invariant counts are still acurate.
-
+% TODO: Actually implement it in eiffel (this will be a nightmare...)
 The results for Spec\# are very interesting, since it performs less checks than L42.
 This is the case since \Q!processDay! in \Q!Person! just does a simple field increment, thus the Spec\# verifier is able to statically verify that this wont break the invariant, and so it does not require a corresponding \Q!expose! block, and hence does not perform a runtime invariant check.
-This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for
-\Q@Int@ then L42.
-Spec\# can inject run-time checks to enforce such arithmetic semantic.
+The Spec\# verifier is able to do this as it assumes that arithmetic overflow does not occur, however one can turn on runtime-checking for overflow. This is sound in both the context of Spec\# and L42, since overflow will have the same result as a runtime invariant check failure, namely it will raise an unchecked exception.
 
-The annotation difficult with Spec\#\footnote{see the artefact for the full code} was similar to our previous examples, notable since the fields of \Q!Person! are all immutable types, it didn't require any special annotations for that class. The \Q!Family! class was similar to our \Q!Cage! example (see INTRO), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks).
+%This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
+
+
+The annotation difficulty with Spec\#\footnote{see the artifact for the full code} was similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we did not have to have any special annotations for that class. The \Q!Family! class was similar to our \Q!Cage! example (see section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks).

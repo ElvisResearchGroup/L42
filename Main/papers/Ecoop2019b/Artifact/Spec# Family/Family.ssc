@@ -26,10 +26,10 @@ class Family {
 	[Rep, ElementsRep] internal List<Person> children;
 	internal void processDay(int dayOfYear) {
 		expose (this) {
+                        for (int c = 0; c < this.children.Count; c++) { 
+                                this.children[c].processDay(dayOfYear); }
 			for (int p = 0; p < this.parents.Count; p++) { // As you can guess, foreach (Person p in this.parents) dosn't work...
 				this.parents[p].processDay(dayOfYear); }
-			for (int c = 0; c < this.children.Count; c++) { 
-				this.children[c].processDay(dayOfYear); }
 		}
 	}
 

@@ -94,7 +94,7 @@ Note: since only \Q@Cage@ has an invariant,
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
 
-\textit{Spec\# example:} Here we show the previous example in Spec\# the system most similar to ours (see appendix \ref{s:justice} for a more detailed discussion about this solution):
+\textit{Spec\# example:} Here we show the previous example in Spec\# the system most similar to ours (see appendix \ref{s:hamster} for a more detailed discussion about this solution):
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -296,10 +296,10 @@ In this paper we argue that our protocol is not only more succinct than the pack
 Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures, and also carefully handle non deterministic operations like I/O.
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
-Section \ref{s:background} explains the \emph{type modifier} and \emph{object capability} support we use for this work.
-Section \ref{s:validate} examples the details of our invariant protocol.
-Sections \ref{s:immState} and \ref{s:encapsulated} explains and motivates how our protocol can handle invariants over immutable and encapsulated data, respectively.
-Section \ref{s:patterns} presents our GUI case study and compares it against visible state semantics and Spec\#.
+Section \ref{s:TMsAndOCs} explains the \emph{type modifier} and \emph{object capability} support we use for this work.
+Section \ref{s:protocol} examples the details of our invariant protocol.
+Sections \ref{s:immutable} and \ref{s:encapsulated} explains and motivates how our protocol can handle invariants over immutable and encapsulated data, respectively.
+Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#.
 Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
 Appendices \ref{s:meaning} and \ref{s:proof} contain, respectively, a formalisation of our protocol and proves that it is sound.
 
