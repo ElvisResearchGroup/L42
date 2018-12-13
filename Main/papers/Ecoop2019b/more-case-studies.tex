@@ -145,7 +145,7 @@ Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Fa
 We have a simple test case that calls \Q!processDay! on a \Q!Family! $3\times365$ times ($1{,}095$ years worth):
 \begin{lstlisting}
 // 2 parents (one 32, the other 34), and no children
-Family fam = new Family(List.of(new Person("Bob", 11720, 40), 
+var fam = new Family(List.of(new Person("Bob", 11720, 40), 
     new Person("Alice", 12497, 87)), List.of());
     
 for (Int day = 0; day < 365; day++) { // Run for 1 year
@@ -161,6 +161,11 @@ for (Int day = 0; r < 365; day++) { // The 3rd year
   if (day == 340) {
     fam.addChild(new Person("Diana", 0, day)); }}
 \end{lstlisting}
+% The counts (including the invariant keyword, and read on the invariant method)
+% Spec# 14 family, 2 main   = 16
+% L42 	12 family, 1 person = 13
+% Fake 42 = 14 (+2 for box ctor, -1 for family ctor)
+
 The idea is that everything we do with the \Q!Family! is a mutation, in addition the \Q!fam.processDay! calls also mutate the contained \Q!Person!s.
 
 This is a worst case scenario for our approach compared to visible state semantics since it reduces our advantages:
@@ -174,10 +179,13 @@ We ran this test case using several different languages: L42 (using our protocol
 Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay! and \Q!addChild! call (for both \Q!Person! and \Q!Family!). 
 
 The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!. In addition, due to Eiffel's `uniform access principle', the field accesses of \Q!Person.daysLived! (in  \Q!Family!'s invariant) are not distinguished from ordinary method calls, thus each one performs two invariant checks.
-% TODO: Actually implement it in eiffel (this will be a nightmare...)
+
 The results for Spec\# are very interesting, since it performs less checks than L42.
-This is the case since \Q!processDay! in \Q!Person! just does a simple field increment, thus the Spec\# verifier is able to statically verify that this wont break the invariant, and so it does not require a corresponding \Q!expose! block, and hence does not perform a runtime invariant check.
-The Spec\# verifier is able to do this as it assumes that arithmetic overflow does not occur, however one can turn on runtime-checking for overflow. This is sound in both the context of Spec\# and L42, since overflow will have the same result as a runtime invariant check failure, namely it will raise an unchecked exception.
+This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant, if it is unable to do this it requires that the update be wrapped in an \Q!expose! block. In Spec\#, integer arithmetic is not allowed to overflow\footnote{A compilation option allows overflow to be check at runtime, by throwing  where unchecked exceptions (just as invariant failures) if it occurs}, as such it verifies that the field increment in \Q!processDay! cannot break the invariant.
+
+%The results for Spec\# are very interesting, since it performs less checks than L42.
+%This is the case since \Q!processDay! in \Q!Person! just does a simple field increment, thus the Spec\# verifier is able to statically verify that this wont break the invariant, and so it does not require a corresponding \Q!expose! block, and hence does not perform a runtime invariant check.
+%The Spec\# verifier is able to do this as it assumes that arithmetic overflow does not occur, however one can turn on runtime-checking for overflow. This is sound in both the context of Spec\# and L42, since overflow will have the same result as a runtime invariant %check failure, namely it will raise an unchecked exception.
 
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
