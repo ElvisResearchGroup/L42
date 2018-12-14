@@ -152,6 +152,7 @@ Some tools are intentionally unsound and just perform invariant checking followi
 %module will ever fail at runtime, even if the module runs as part of
 %a vulnerable application thSound and Unsound monitorsat is subject to code injection attacks}''.
 the study of contracts as refinements of types~\cite{findler2001contract}.}{3}{Dose not offer much explanation or comparison}.
+\MS{However, such work is only interested in pre and post conditions, not class invariants.}
 
 Our invariant protocol is much stronger then
 visible state semantics, and keeps the invariant under tight control.
@@ -188,6 +189,7 @@ to work on general purpose predicates, where
 values can be wrapped to ensure an invariant holds.
 This technique is very powerful and can be used to enforce pre and post conditions by wrapping function arguments and return values.
 Their approach allows wrapping invariant operations around method calls, as is done in aspect oriented systems like Jose~\cite{feldman2006jose}.}{3}{Dose not offer much explanation or comparison}
+\MSComm{I think this comparison is sufficient}
 %One of the advantages of their system is that is transparent to the user. 
 %\LINE
 
@@ -212,22 +214,24 @@ Their approach allows wrapping invariant operations around method calls, as is d
 
 
 %\LINE
-\REV{\textit{Security and DMZ:}
+\textit{\MS{Security and scalability}:}
 Our approach allows verifying an object's invariant independently of the actual invariants of other objects.
-This is in contrast with the main goal of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
-This is like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
+This is in contrast with the main \MS{strategy} of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
+\MS{Thus, static verification proceeds like} a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
 This does not happen with a type system, since its properties are more coarse grained, simpler and easier to check.
- Static verification has more flexible and fine grained annotations and is more fragile since it uses a theorem prover as a backend.}{3}{This hole discussion seems muddled.}
+ Static verification has more flexible and fine grained annotations and \MS{often relies} on a fragile theorem prover as a backend.
+\MSComm{above: fixing REV3:This hole discussion seems muddled.}
 
 %\REVComm{
 %To solve this issue, static verification systems are %starting to
 %}{2}{[is this correct?] verification of reference %monitors, gradual typing, and contracts have been %explored for longer}
 \REV{To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
 consider a verified core and a runtime verified boundary.
-You can see our approach as an extremely modularized	version of such system: every class is its own \REV{demilitarized}{3}{?} zone, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
+You can see our approach as an extremely modularized	version of such system: every class is its
+\MS{own verified core}, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
 soundly handled by our protocol, independently of the code that uses such class or any other surrounding code.}{2}{Why no static core then?}
 
-Our approach works both  in a library setting and the open world assumption.
+Our approach works both  in a library setting and with the open world assumption.
 Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method to respect its contract. Such assumption is unrealistic in a real world system with dynamic class loading, and could trivially be broken by a user defined \Q@EvilSubject@.
 
 \REV{\textit{Static Verification:}}{3}{ It would be better to discuss this tradeoff between expressiveness/usability much earlier, and for it to be addressed through a larger, and possibly more balanced, evaluation with Spec\#.}
