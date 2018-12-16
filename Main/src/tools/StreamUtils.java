@@ -16,7 +16,8 @@ public class StreamUtils<T> implements Iterable<T> {
   private static<T> StreamUtils<T> from (Stream<T> s) { return new StreamUtils<>(s); }
   public static <R> StreamUtils<R> stream(Collection<R> c) { return StreamUtils.from(c.stream()); }
   public static <R> StreamUtils<R> stream(R[] a) { return StreamUtils.from(Arrays.stream(a)); }
-  
+
+  public static <T, R, E extends Throwable> R[] stream(T[] c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toArray(); }
   public static <T, R, E extends Throwable> List<R> stream(List<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toList(); }
   public static <T, R, E extends Throwable> Set<R> stream(Set<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toSet(); }
   public static <T, R, E extends Throwable> Collection<R> stream(Collection<T> c, CheckedFunction<StreamUtils<T>, StreamUtils<R>, E> f) throws E { return f.apply(stream(c)).toCollection(); }
@@ -69,6 +70,7 @@ public class StreamUtils<T> implements Iterable<T> {
     return from(res);}
 
   public List<T> toList() { return this.s.collect(Collectors.toCollection(ArrayList::new)); }
+  public T[] toArray() { return (T[])(this.s.toArray()); }
   public Set<T> toSet() { return this.s.collect(Collectors.toCollection(HashSet::new)); }
   public Collection<T> toCollection() { return this.s.collect(Collectors.toList()); }
 
@@ -80,6 +82,7 @@ public class StreamUtils<T> implements Iterable<T> {
   public Collection<? super T> addTo(Collection<? super T> c) { c.addAll(this.toCollection()); return c; }
 
   public <R,E extends Throwable> StreamUtils<R> map(CheckedFunction<T, R, E> f) throws E { return from(s.map(f.uncheck())); }
+
   public static <T,R,E extends Throwable> List<R> map(List<T> c, CheckedFunction<T, R, E> f) throws E { return stream(c).map(f).toList(); }
   public static <T,R,E extends Throwable> Set<R> map(Set<T> c, CheckedFunction<T, R, E> f) throws E { return stream(c).map(f).toSet(); }
   public static <T,R,E extends Throwable> Collection<R> map(Collection<T> c, CheckedFunction<T, R, E> f) throws E { return stream(c).map(f).toCollection(); }
