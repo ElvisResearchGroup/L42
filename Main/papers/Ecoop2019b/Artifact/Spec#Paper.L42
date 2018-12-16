@@ -1,106 +1,59 @@
 {reuse L42.is/AdamTowel02
 
-
-T:Data<><{var Size x, var Size y
-  read method Bool #invariant()0Size<=this.x() & this.x()<this.y()
-
-  class method This() This(x: 0Size, y: 1Size)
-  mut method Void m() (
-    X[this.y() - this.x() >= 0Size]
-    this.x(this.x() + 3Size)
-    this.y(4Size * this.y())
-    )
-  }
-//-------------
-U: Data <>< { var Size g
-    mut method Void n() this.g(3Size)
+// A striped down version of Data.invariant
+Invariant: {
+  class method Library <><(Library right) (
+    Library that = Use.Over[right]<>< {
+      read method Bool #1#invariant()
+      read method Void #invariant()
+        if !this.#1#invariant() (error Data.Invariant.Fail"invalid object detected!")
+    }
+    res = Data.Invariant.PlgInvariantClose.closeJ(path:Path"This", top:that, mode:0Size)
+    catch exception Any x error x
+    res)
 }
-T: Data <>< { var capsule U f
-    read method Bool #invariant() 0Size <= this.f().g()
 
-    mut method Void m() this.#f().n()
-}
-//----------------------
+// Note: Size is the equivalent of Spec#'s int type
 
-Reader: {interface
+// Also, we are not encoding pre & post-conditions that are unrelated to invariant checking
+// pages 41 - ...
+
+// page 42
+Reader: {interface implements Concept.Base // needed for toS etc. to work
     mut method Size getChar()
 }
-CharList: Collections.vector(of: Size)
-
-ArrayReader: Data <>< {implements Reader
-    var capsule CharList src
-    var Size n
-    read method Bool #invariant() (
-        0Size <=this.n()  & this.n() <= this.src().size()
-    )
-    class method mut This(capsule CharList source)
-        This(src: source, n: 0Size)
-    method getChar() (
-        var Size ch = 0Size
-        if this.n() == this.src().size() (
-            ch := Size"-1"
-        ) else (
-            ch := this.src().val(this.n())
-            this.n(this.n() + 1Size)
-        )
-        ch
-    )
-}
-OReader: Opt(Reader)
-
-Lexer: Data<><{
-    capsule OReader rd
-    read method Bool #invariant() this.rd().isPresent()
-    class method mut This(capsule Reader reader) This(rd: OReader(reader))
-    mut method Size getToken() (
-        var Size t = 0Size
-        var Size ch = Size"0"
-        while ch != Size"-1" (
-            ch := this.#rd().#get().getChar()
-            t := t + ch
-        )
-        t
-    )
-}
---------------------------------------------------------------------
-reuse L42.is/AdamTowel02
-CacheAdamTowel02:Load.cacheTowel()
-
-Reader: {interface implements Concept.Equals, Concept.ToS
-  mut method Size getChar()
-  }
 
 CharList: Collections.vector(of: Size)
-
+// page 43
 ArrayReader: Data <>< {implements Reader
   var capsule CharList src
   var Size n
-  read method Bool #invariant() (
-    0Size <=this.n()  & this.n() <= this.src().size()
-    )
-  class method mut This(capsule CharList source)
+  read method Bool #invariant()
+    0Size <= this.n() & this.n() <= this.src().size()
+
+  class method mut ArrayReader(capsule CharList source)
     This(src: source, n: 0Size)
+
   method getChar() (
     var Size ch = 0Size
     if this.n() == this.src().size() (
-      ch := Size"-1"
-      )
+      ch := Size"-1")
     else (
       ch := this.src().val(this.n())
-      this.n(this.n() + 1Size)
-      )
-    ch
-    )
-  }
-OReader:Option(Reader)
+      this.n(this.n() + 1Size))
+    ch)
+}
 
-Lexer: Data.Invariant(of:Path"This", immK:Selector"immK(rd)", mutK:Selector"#apply(rd)", stupid:Bool.false())<><{//implements Concept.Equals, Concept.ToS
-  mut OReader rd
-  class method This immK(OReader rd)
-  class method mut This(capsule OReader rd)
+OReader:Option(Reader)
+// page 44
+Lexer: Invariant <>< {
+  mut OReader rd // Ok, the ctor takes a capsule
   read method Bool #invariant() this.rd().isPresent()
-  class method mut This(capsule Reader reader)
+
+  class method mut This(capsule OReader rd) // The real constructor
+  class method mut Lexer(capsule Reader reader)
     This(rd: OReader(reader))
+  
   mut method Size getToken() (
     var Size t = 0Size
     var Size ch = Size"0"
@@ -109,36 +62,42 @@ Lexer: Data.Invariant(of:Path"This", immK:Selector"immK(rd)", mutK:Selector"#app
       t := t + ch
       )
     t
-    )
+  )
 
-  read method S #invariantToS() S""
-  capsule method capsule Reader relinquishReader() (this.#rd().#get())
-  }/*Data <>< .... Invariant <>< Data <>< ...*/
-Main: {
-  capsule Lexer l=Lexer(reader: ArrayReader(source: CharList[0Size; 1Size]))
-  capsule Reader r=(
-    lInner=l
-    //Debug(S"Hello world"[lInner]"")
-    lInner
-    ).relinquishReader()
-    Debug(S"hello")
-  return ExitCode.normal()
-  }
------------------------------------------------------------
-reuse L42.is/AdamTowel02
-CacheAdamTowel02:Load.cacheTowel()
-FileListT:Trait({
+  // page 45
+  // Note: this method ensures that the Lexer can never be used again
+  // wheras the Spec# version allows it to be, provided it is made valid again
+  capsule method capsule Reader relinquishReader() this.#rd().#get()
+
+  class method This #immK(OReader rd) // workaround for bug in the artifact
+}
+
+// 42 does not support subclassing, a similar effect can be achieved with traits
+// however, theres no way to use the type system to ensure that a certain specific invariant on an object holds
+// unless that object has a final class type.
+// Wheras in Spec#, you can know that all super-class invariants hold (along with subclass ones, which you don't statically know)
+FileListT: Trait({
   var Strings names
   var Size selection
   read method Bool _invariant()
-    0Size<=this.selection() & this.selection()<this.names().size()
-  method Bool isSelectionADirectory()
-  })
+    0Size <= this.selection() & this.selection() < this.names().size()
+  read method Bool isSelectionADirectory()
+})
+
 Bools:Collections.vector(of:Bool)
-DirFileList:FileListT &{
+DirFileList:FileListT & {
   Bools isDirectory
   read method Bool #invariant()
-    this._invariant() &
-    this.isDirectory().size()==this.names().size()
-  method Bool isSelectionADiretory() Bool.false()
-  }
+    this._invariant() & this.isDirectory().size() == this.names().size()
+  method Bool isSelectionADiretory() 
+    this.isDirectory().val(this.selection())
+}
+
+Main: (
+  // Trick to force compilation & typechecking of each of the above types
+  var class Any x = Reader
+  x := Lexer
+  x := DirFileList
+  ExitCode.normal() 
+)
+}
