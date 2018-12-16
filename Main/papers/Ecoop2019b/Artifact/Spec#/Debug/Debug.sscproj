@@ -3,6 +3,7 @@
   <XEN ProjectType="Local"
      SchemaVersion="1.0"
      Name="Debug"
+     ProjectGuid="f90d652c-02ea-40a3-9a8a-f1039ee951b4"
     >
     <Build>
       <Settings ApplicationIcon=""
@@ -56,24 +57,23 @@
       <References>
         <Reference Name="System"
              AssemblyName="System"
+             Private="true"
              />
         <Reference Name="System.Data"
              AssemblyName="System.Data"
+             Private="true"
              />
         <Reference Name="System.Xml"
              AssemblyName="System.Xml"
+             Private="true"
              />
       </References>
     </Build>
     <Files>
       <Include>
-        <File RelPath="AssemblyInfo.ssc"
+        <File BuildAction="Compile"
                  SubType="Code"
-                 BuildAction="Compile"
-                 />
-        <File RelPath="Class1.ssc"
-                 SubType="Code"
-                 BuildAction="Compile"
+                 RelPath="Debug.ssc"
                  />
       </Include>
     </Files>

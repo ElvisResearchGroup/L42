@@ -2,10 +2,10 @@
 using System;
 using Microsoft.Contracts;
 
-[Verify(false)]
-internal static class Debug 
+public static class Debug 
 {
-	[Pure][Verify(false)] internal static void Print(string s) { Console.Error.WriteLine(s); }
-	[Pure][Verify(false)] internal static bool IncrementCounter(string s) ensures result == true; { Console.Error.WriteLine("{0} #?", s); return true;}
-	[Pure][Verify(false)] internal static void PrintCounter(string s) { Console.Error.WriteLine("{0}: ?", s); }
+	static int counter = 0;
+	[Pure] public static void Print(string s) { Console.Error.WriteLine(s); }
+	[Pure] public static bool IncrementCounter() ensures result == true; { counter++; return true;}
+	[Pure] public static void PrintCounter(string s) { Console.Error.WriteLine(s + ": " + counter); }
 }

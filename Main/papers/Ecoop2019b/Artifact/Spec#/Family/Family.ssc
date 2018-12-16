@@ -20,7 +20,8 @@ class Person {
 	}
 
 	// 1 annotation, 1 token
-	invariant name.Length != 0 && daysLived >= 0 && birthday >= 0 && birthday < 365; // Can't write name != "" since string.Equals isn't pure
+	invariant Debug.IncrementCounter() 
+		&& name.Length != 0 && daysLived >= 0 && birthday >= 0 && birthday < 365; // Can't write name != "" since string.Equals isn't pure
 }
 
 class Family { 
@@ -38,8 +39,8 @@ class Family {
 	
 	// 5 annotations, 17 tokens 
 	internal Family([Captured] List<Person> ps, [Captured] List<Person> cs)
-		requires Owner.Same(Owner.ElementProxy(parents), parents);
-		requires Owner.Same(Owner.ElementProxy(children), children); 
+		requires Owner.Same(Owner.ElementProxy(ps), ps);
+		requires Owner.Same(Owner.ElementProxy(cs), cs); 
 	{ 
 		parents = ps; 
 		children = cs;
@@ -55,10 +56,11 @@ class Family {
 	}
 
 	// 1 annotation, 1 token
-	invariant forall {int p in (0: parents.Count); // forall {Person p in parents; ...} dosn't work!
-		forall {int c in (0: children.Count); 
-			p < parents.Count && // Spec# verifier needs  (Not counted)
-			parents[p].daysLived > children[c].daysLived }};
+	invariant Debug.IncrementCounter() &&
+		forall {int p in (0: parents.Count); // forall {Person p in parents; ...} dosn't work!
+			forall {int c in (0: children.Count); 
+				p < parents.Count && // Spec# verifier needs  (Not counted)
+				parents[p].daysLived > children[c].daysLived }};
 }
 
 public class Program
@@ -84,5 +86,6 @@ public class Program
 				fam.addChild(new Person("Diana", 0, day)); }
 		}
 
+		Debug.PrintCounter("Invariant");
 	}
 }
