@@ -3,7 +3,7 @@ Polymorphism by Disconnecting Use and Reuse}
 
 A nested class is just another kind of member in a code literal.
 In Java and Scala if a subclass declares a nested class with the same
-name of a nested of the superclass, the parent declaration is simply hidden.
+name of a nested class of a superclass, the parent declaration is simply hidden.
 \MS{The main idea of family polymorphism (FP)~\cite{igarashi2005lightweight,IgarashiEtAl08,nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07,deep}
 is to instead consider such definition a form of \emph{overriding},
 called \emph{further extension}.}
@@ -14,7 +14,7 @@ class AA extends A{static class B{..}   B m(){..}}//Error: Invalid overriding
 //method AA.m() return type is AA.B, that is unrelated to A.B
 \end{lstlisting}\saveSpace\saveSpace
 
-\MS{In the FP approach, class \Q@AA.B@ would further extends \Q@A.B@, thus also the overriding of method
+\MS{In the FP approach, class \Q@AA.B@ would further extend \Q@A.B@, thus also the overriding of method
 \Q@A.m@ would be accepted.}
 We extend \name with nested classes, so that that
 by composing code with \use,

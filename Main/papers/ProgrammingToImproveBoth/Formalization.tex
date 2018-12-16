@@ -587,7 +587,7 @@ is well-typed after flattening; no need of further checking.
 then the issue was originally present in one of $\mL_1\ldots\mL_n$.
 This also means that as an optimization strategy
  we may remember what method bodies come from traits and what method bodies come from code literals, and only type-check the latter.
-If the result can not be type-checked, either it is intrinsically ill-typed or a 
+If the result can not be type-checked, either it is intrinsically illtyped or a 
 referred type is declared \emph{after} the current class. 
 As we see in the next section, we leverage on this 
 to allow recursive types.
@@ -614,10 +614,10 @@ t={method int m(){return 2;}
    method int n(){return this.m()+1;}}
 \end{lstlisting}\saveSpace\saveSpace
 
-\noindent \Q@t@ is well typed since \Q@m()@ is declared inside of \Q@t@, while the following would be ill-typed:
+\noindent \Q@t@ is well typed since \Q@m()@ is declared inside of \Q@t@, while the following would be illtyped:
 
 \saveSpace\saveSpace\begin{lstlisting}
-t1={method int n(){return this.m()+1;}} //ill-typed
+t1={method int n(){return this.m()+1;}} //illtyped
 \end{lstlisting}\saveSpace\saveSpace
 
 

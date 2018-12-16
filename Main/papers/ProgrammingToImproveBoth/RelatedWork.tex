@@ -5,11 +5,11 @@ In Appendix A we formalise \name; \MS{in addition to conventional soundness,} we
 discuss detailed behaviour and soundness
 of the compilation process itself;
 a similar property was called meta-level-soundness in~\cite{servetto2014meta}.
-\MS{This property ensures that flattening strictly reduces the number of typing errors.
+\MS{This property ensures that flattening strictly reduces the number of type errors.
 In turn, this
 ensure that reusing a trait can not induce new type errors.
-Those properties was already proved in~\cite{servetto2014meta}; here
-the proof is smother thanks to our simpler formalization.
+This property was already proved in~\cite{servetto2014meta}; here
+the proof is smoother thanks to our simpler formalisation.
 }
 Our process requires traits to be well-typed before being reused,
 however code literals are not required to be well typed before flattening.
@@ -44,9 +44,9 @@ the best ideas of those very different designs, while at the same time
 coming up with a simpler and improved design for separating
 subclassing from subtyping, which also addresses various limitations of those
 $3$ particular language designs.
-\MS{TR, DJ and PT are research projects, aiming to 
-be a platform to experiment concepts, not to expose a compact syntax to the programmer;
-instead of using case studies to compare \name against TR,DJ and PT,
+\MS{TR, DJ, and PT are research projects, aiming to 
+be platforms to experiment concepts, not to expose a compact syntax to programmers;
+instead of using case studies to compare \name against TR, DJ, and PT,
 in the following we compare 
 various aspects of the language designs on a more theoretical level.}
 %The following compares 
@@ -59,7 +59,7 @@ Between those tree approaches, \textbf{DJ} is best in this sense: TR has separat
 PT is built on top of Java, thus, it \MS{must support many different syntactic forms}.
 \MS{\name} relies on DJ's approach but,
 thanks to our novel representation of state, \name offers a much simpler and uniform syntax \MS{than
-DJ, TR and PT}.
+DJ, TR, and PT}.
 \item 
 {\bf Reusable code cannot be ``used'' (that is be instantiated or used as a type).}
 This happens in TR and in PT, but not in \uwave{DJ}. In DJ, to allow reusable code to be directly 
@@ -71,8 +71,8 @@ That is in DJ
 `\Q@A={method A m(){return this;}}@' is not well typed. This is because
 `\Q@B= Use A@' flattens to `\Q@B={method A m(){return this;}}@', which is clearly not well typed.
 Looking at this examples makes it clear
- why we need reusable code to be agnostic of its name as in  TR, PT \MS{and \name}:
-\MS{either reusable code does  not correspond to a type name (as in TR, PT and \name)
+ why we need reusable code to be agnostic of its name as in  TR, PT, \MS{and \name}:
+\MS{either reusable code does  not correspond to a type name (as in TR, PT, and \name)
 or all code is reusable and usable, and all code needs to be awkwardly agnostic of its name, as in DJ.}
 
 \item 
@@ -83,18 +83,18 @@ As we show in this work, this ends up requiring verbose repetition of abstract s
 which (for highly modularized code) may end up constituting most of the program.
 Java (and thus \textbf{PT}, as a Java extension) show us a better way:
 names are understood from their reuse context.
-The typing of PT offers the same advantages of \MS{\name} typing model, 
+The typing of PT offers the same advantages of the \MS{\name} typing model, 
 but is more indirect. This may be caused by the
 heavy task of integrating with full Java.
 Recent work based on TR is trying to address this issue too~\cite{damiani2017unified}.
 \item {\bf Composition algebra.}
 The idea of using composition operators over atomic values as in an arithmetic expression is very powerful,
-and makes it easy to extend languages with more operators. \MS{\name,} DJ and TR embrace this idea, while \uwave{PT} takes the traditional Java/C++ approach of using an enhanced class/package declaration syntax.
+and makes it easy to extend languages with more operators. \MS{\name,} DJ, and TR embrace this idea, while \uwave{PT} takes the traditional Java/C++ approach of using an enhanced class/package declaration syntax.
 The typing strategy of PT also seems to be connected with this
 decision, so it would be hard to move their approach
 to a composition algebra setting.
 \item {\bf Complete ontological separation between use and reuse.}
-While \MS{all of \name, TR, DJ and PT} allow separating inheritance and subtyping only \MS{\name and} \textbf{TR} properly enforces 
+While \MS{\name, TR, DJ, and PT} all allow separating inheritance and subtyping only \MS{\name and} \textbf{TR} properly enforce 
 separation between use (classes and interfaces) and reuse (traits).
 In DJ all classes are both units of use and reuse (however, subtyping is not induced).
 PT imports all the complexity of Java: it is possible to separate use and reuse, the model has powerful but non-obvious implications where Java \Q@extends@ and PT are used together.
@@ -138,7 +138,7 @@ new A().k(new A.B())//well-typed
 A a=new AA(); //well-typed assuming AA is a subtype of A
 a.k(new A.B())//runtime error: A.B.f2 does not exist
 \end{lstlisting}\saveSpace\saveSpace
-In the sound \Q@.@FJ type system the last method invocation ill-typed even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
+In the sound \Q@.@FJ type system the last method invocation illtyped even though \lstinline{AA.B} is a subtype of \lstinline{A.B}.
 With minor changes, others~\cite{nystrom2006j,Ernst06,BruceEtAl98,IgarashiViroli07}
 support this example in the same way.
 Inheritance implying subtyping is broken only in a controlled way, and it is allowed whenever it does not lead to unsoundness.
