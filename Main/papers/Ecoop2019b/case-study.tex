@@ -100,7 +100,7 @@ Our example shows that the restrictions of TMs and OCs are flexible enough to en
 In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library require back doors into either our type modifier or capability system to function, demonstrating the practical usability of our restrictions.
 
 
-\textit{The Invariant:}
+\subheading{The Invariant}
 \Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (is a capsule mutator). There are no other checks inserted since we never do a field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
 \begin{lstlisting}
 read method Bool invariant() {
@@ -117,7 +117,7 @@ Here \Q@SafeMovable.overlap@ is a static method that simply checks that the boun
 % we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
 \begin{wrapfigure}{l}{0.4\textwidth}
     \centering\includegraphics[width=0.4\textwidth]{GuiImg}\end{wrapfigure}
-\noindent{\textit{Our Experiment:}} As shown in the figure, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
+\subheading{Our Experiment} As shown in the figure, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 %Each container has 4 gray buttons one for each cardinal direction.
 % In our set up
@@ -160,7 +160,7 @@ of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ int
 % In order to perform this case study, we had to first implemented a simple Gui Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events.
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
-\textit{Spec\# comparison:}
+\subheading{Spec\# comparison}
 We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties, as well as the admissibility of invariants.
 % To keep the Spec\# code aligned with the L42 one, 
 % we do not use a .NET GUI library, but we just simulate the behaviour of L42, without actually opening a window.
@@ -237,7 +237,7 @@ This is needed to delineate scopes for promotions.
 Based on these results, we believe our system is significantly simpler and easier to use.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
-\textit{The Box Pattern:}
+\subheading{The Box Pattern}
 Our design, using an inner \Q@Box@ object is a common pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated sub object which is not exposed to users.
 
 % We also found natural to use the box pattern also in Spec\# requires.
@@ -245,7 +245,7 @@ Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeM
 % Also the implementation of the minimal GUI library (that our \Q@SaveMovable@ builds upon) has a much lower annotation burden.
 %\LINE
 
-\textit{The transform pattern:}
+\subheading{The transform pattern}
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
 Suppose we want to scale a \Q@Widget@, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children, we have a problem since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, to keep control of their ROGs.

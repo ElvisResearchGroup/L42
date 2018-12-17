@@ -4,7 +4,7 @@ Reasoning about imperative object oriented (OO) programs is a non trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to control, but not prevent, such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
 % \IO{[dynamic class loading]},
 
-\emph{Type modifiers} (TMs), as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
+\subheading{Type modifiers (TMs)} as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
 Three different research languages are being independently developed relying on this new design: the language of Gordon et. al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
 These project are quite large: several million lines of code are written in Gordon et. al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
@@ -141,7 +141,7 @@ Capsule references are usually expressed using linear/affine types~\cite{boyland
 %invariantCheck()
 
 %\loseSpace
-\textit{Exceptions:}
+\subheading{Exceptions}
 In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety} (SES)~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
 if a \Q@try-catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated.
@@ -199,12 +199,10 @@ the broken object is guaranteed to be garbage collectable when the exception is 
 
 % For the aim of enforcing invariants, we could relax SES to hold only when capturing exceptions caused by invariant failures; but we are building on approaches that enforce SES on all unchecked exceptions .
 
-\loseSpace
-
 
 % Intro to OCs
 
-\textit{Object capabilities (OCs):}
+\subheading{Object capabilities (OCs)}
 OCs, which L42, Pony, and Gordon et. al.'s work use, are a widely used~\cite{miller2003capability,
 noble2016abstract,karger1988improving} programming style that allows associating resources with objects. When this style
 is respected, code that does not possess an alias to the object cannot use the resource.
@@ -228,14 +226,13 @@ Here, as in Gordon et. al.'s work, we use OCs to reason about determinism and I/
 In contrast, if Java were to respect the object capability style, the \Q@main@ method could take a \Q@System@ parameter, as in
  \Q@main(mut System s)@
  \lstset{language=Java}
-\Q@{.. s.in.read()..}@.
+\Q@{.. s.in.read()..}@. \lstset{language=FortyTwo}%
 Calling methods on that \Q@System@ instance would be the only way to perform I/O;
 moreover, the only \Q@System@ instance would be the one created by the runtime system before calling \Q@main@. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
 % Other non deterministic operations would also work this.
 %may just take a \Q@mut System@ object as a parameter.
 % could also work this way.
 This design has been explored by Joe-E~\cite{finifter2008verifiable}.
-\lstset{language=FortyTwo}
 OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language; however since
 L42 allow user code to perform native calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
 %To reason about determinism, L42 connects TMs with the OC style as follows: % style by requiring:
@@ -250,7 +247,7 @@ updates; however constant/final globals of an
 \Q@imm@ type would not cause such problems.
 }
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
-\item Only capability methods and \Q@mut@/\Q@capsule@ methods of capability classes can call capability methods.
+\item \IO{Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes}
 \item In L42 there is no \Q@main@ method, but main expressions; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around the rest of the program.
 % \item Any method that uses non deterministic primitive operations (such as native calls \IO{or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
 % }}) must be an instance method requiring a \Q@mut@ receiver.
@@ -264,6 +261,15 @@ updates; however constant/final globals of an
 L42 expects capability methods to be used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
 For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} native methods (such as a \Q@print@ method) can be white listed as `deterministic', provided they does not effect program execution, such as by non deterministically throwing I/O exceptions.
+
+\IO{\subheading{Purity}
+With TMs and OCs together, we can statically ensure that a method is \emph{pure}: it is deterministic and does not mutate existing memory. In particular, any method call on \Q!read!/\Q!imm! receiver, that passes only \Q!read!/\Q!imm! parameters is pure: 
+\begin{itemize}
+	\item the ROG of the arguments (including \Q!this!) is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
+	\item if a capability object is in the ROG of any of the arguments (including \Q!this!), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
+	\item no other preexisting objects are accessible (as L42 does not have global variables).
+\end{itemize}
+}
 
 %Methods that perform non-deterministic \emph{input} shouldn't be white-listed.%, including methods that read information passed to white-listed output methods.
 

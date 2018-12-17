@@ -33,14 +33,6 @@ Also the bodies of constructors may interact with an invalid \Q@this@; we restri
 % Can  a program write say mut method invariant or is it syntactically [???]
 Our protocol enforces that all classes have a method of the form \Q@read method Bool invariant() {..}@. If an \Q@invariant@ method is not defined by the programmer, one that always returns \Q@true@ will be generated for them.
 
-Thanks to TMs and OCs, the invariant method is deterministic\footnote{If the invariant were not deterministic, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}.
-As this method is declared as \Q@read@, and only takes the implicit parameter \Q@this@ (as \Q@read@), we can guarantee the method is pure:
-\begin{itemize}
-\item the ROG of \Q@this@ is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
-\item if a capability object is in the ROG of \Q@this@, then it can only be accessed as \Q@read@, preventing calling non deterministic (capability) methods,
-\item no other pre existing objects are accessible (as L42 does not have global variables).
-\end{itemize}
-
 \noindent Also note that \Q@invariant@ is declared as not throwing any exceptions,
 	thus only unchecked exceptions can be propagated out.
 
@@ -199,10 +191,7 @@ In the L42 implementation we support \Q@imm@ objects as exception values. Adding
 \end{figure}
 
 
-\loseSpace
-\noindent\textit{Grammar and Well Formedness Criteria:}
-
-\noindent
+\subheading{Grammar and Well Formedness Criteria}
 The detailed grammar is defined in Figure 1.
 The only non standard expression is the monitor. They are not present in the source code, but are inserted by our reduction rules. The object it monitors is the one referenced by $l$, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.invariant()$.
 We annotate the monitor expression with $l$ to ensure
@@ -316,9 +305,7 @@ $\!\!\!\!\!\begin{array}{l}
 \end{figure}
 
 \loseSpace
-\noindent\textit{Reduction rules:}
-
-\noindent
+\subheading{Reduction rules}
 Reduction rules are defined in Figure 2.
 These rules are pretty standard;
 \textsc{mcall}
@@ -367,11 +354,7 @@ In a language with subclassing, invariant methods would implicitly start with a 
 Note that invariant checks would not be performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}.
 
 
-
-\loseSpace
-\noindent\textit{Statement of Soundness:}
-
-\noindent We define
+\subheading{Statement of Soundness} We define
 a deterministic reduction arrow, requiring exactly one reduction is possible:\\*
 \indent$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$ iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{ where } \sigma_0|e_0\rightarrow \sigma|e\}$
 

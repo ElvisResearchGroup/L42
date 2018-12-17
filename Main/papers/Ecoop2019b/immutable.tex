@@ -59,7 +59,7 @@ class Person { .. // Same as before
 
 \noindent If we were to relax (as in Rust) or even eliminate (as in Java) the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\textit{Unrestricted use of non determinism:} Allowing \Q@invariant@ to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns true.
+\subheading{Unrestricted use of non determinism} Allowing \Q@invariant@ to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns true.
 %\Q@invariant@ to be non-deterministic.}%
 %\IODel{Allowing \Q@invariant@ to (indirectly) use an %object capability could make it non-deterministic.} 
 For example consider this simple and contrived (mis)use of person:
@@ -83,7 +83,7 @@ restricts their creation, the above example would be prevented.
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
-\textit{Allowing internal mutation through back doors:}
+\subheading{Allowing internal mutation through back doors}
 Suppose we relax our rules by allowing interior mutability
 as in Rust and Javari, where sneaky mutation
 of the ROG of an immutable object is allowed.
@@ -165,7 +165,7 @@ person.invariant(); // returns true //counter=4
 %For Validation we need a language supporting aliasing and mutability control.
 %\end{comment}
 
-\textit{Strong Exception Safety:}
+\subheading{Strong Exception Safety}
 The ability to catch and recover from invariant failures is extremely useful as it allows programs to take corrective action.
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try-catch@.
 %\REVComm{

@@ -39,7 +39,7 @@ to not confuse them with object capabilities, another technique we also use in t
 While studying those languages, we discovered an elegant way to enforce invariants.
 
 
-\textit{Example:} we now show a simple example, where we have a \Q@Cage@ class with a list of \Q@Point@s \Q@path@ and \Q@Hamster@ with a \Q@Point@ \Q@pos@; the \Q@Cage@ moves the \Q@Hamster@ across its path. \Q@Cage@ has an invariant: the \Q@Hamster@'s location is within the \Q@Cage@'s path.
+\subheading{Example} we now show a simple example, where we have a \Q@Cage@ class with a list of \Q@Point@s \Q@path@ and \Q@Hamster@ with a \Q@Point@ \Q@pos@; the \Q@Cage@ moves the \Q@Hamster@ across its path. \Q@Cage@ has an invariant: the \Q@Hamster@'s location is within the \Q@Cage@'s path.
 
 % While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
 
@@ -94,7 +94,7 @@ Note: since only \Q@Cage@ has an invariant,
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
 
-\textit{Spec\# example:} Here we show the previous example in Spec\# the system most similar to ours (see appendix \ref{s:hamster} for a more detailed discussion about this solution):
+\subheading{Spec\# example} Here we show the previous example in Spec\# the system most similar to ours (see appendix \ref{s:hamster} for a more detailed discussion about this solution):
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -289,7 +289,7 @@ In Spec\# we had to add $10$ different annotations, of $8$ different kinds; some
 %---------------------
 
 %We evaluate our contribution by means of case studies;
-\textit{Contents of this paper:}
+\subheading{Contents of this paper}
 We have fully implemented our protocol in L42\footnote{An experimental version of L42 supporting the protocol described in this paper, together with the full code of our case studies is available at \url{http://l42.is/ProgrammingArtifact.zip}.}\footnote{We also believe it would be easy to implement our protocol in Pony and Gordon et. al.'s language.}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $5$ objects with an invariant, 
 our protocol proved to perform only $77$ invariant checks, whereas visible state semantics performs over $53$ million checks. We also compared with Spec\#, whose invariant protocol provides the same performance as ours, however the annotation burden was almost $4$ times higher than our approach.
 In this paper we argue that our protocol is not only more succinct than the pack-unpack approach, but is also easier and safer to use.
