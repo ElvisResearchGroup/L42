@@ -292,15 +292,19 @@ public class InvariantClose {
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum)).withMt(mwt.getMt().withRefine(false));
       // Not a state method
 
-      if (Arrays.asList(this._mutK.getMs(), this._immK.getMs()).contains(mwt.getMs())) {
+      boolean isGetter = !mwt.getMdf().isClass() && mwt.getMs().getNames().isEmpty() && mwt.get_inner() == null;
+      if ((this._mutK != null && this._mutK.getMs().equals(mwt.getMs())) ||
+          (this._immK != null && this._immK.getMs().equals(mwt.getMs()))) {
         // TODO: Delete this horrorible way of handling factories
         this.delegate(true, mwt, _fwdK);
       } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
         // Wrap the body up, but only if a public instance method
-        this.delegate(true, mwt, newMwt);
+        // and don't check fields (unless they implement an interface)
+        this.delegate(true/*!isGetter || mwt.getMt().isRefine()*/, mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
         // For all instance methods (even private ones) do an invariant check
-        this.delegate(true, mwt, newMwt);
+        // unless their a field
+        this.delegate(!isGetter, mwt, newMwt);
       } else if (this.mode == MODE_L42 && this.exposers.contains(mwt.getMs())) {
         // Do nothing, we've already handled it
       } else if (this.state.contains(mwt.getMs())) {

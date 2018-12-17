@@ -100,6 +100,7 @@ public class L42 {
     System.err.println(s);
   }
   private static void setClassPath(Path p) throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException, SecurityException{
+   if (!Files.exists(p)) { return; }
    assert Files.isDirectory(p) : p;
    List<URL> fileNames = new ArrayList<>();
    try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(p)){
@@ -127,7 +128,7 @@ public class L42 {
     setClassPath(Paths.get("Plugins"));
     L42.programArgs=arg;
     try{
-      Path path = Paths.get(arg[arg.length-1]);
+      Path path = Paths.get(arg[arg.length-1]).toAbsolutePath();
 
       String code=null;
       if(Files.isDirectory(path)){

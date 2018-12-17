@@ -1,0 +1,12 @@
+{ // This should really be in addams towel...
+  class method Library <><(Library right) (
+    Library that = Use.Over[right]<>< {
+      read method Bool #1#invariant()
+      read method Void #invariant()
+        if !this.#1#invariant() (error Data.Invariant.Fail"invalid object detected!")
+    }
+    res ><>= K(name:S"#immk", path:Path"This", excluded:S"", immK:Bool.true(), isFwd:Bool.false())
+    res = Data.Invariant.PlgInvariantClose.closeJ(path:Path"This", top:that, mode:0Size)
+    catch exception Any x error x
+    res)
+}

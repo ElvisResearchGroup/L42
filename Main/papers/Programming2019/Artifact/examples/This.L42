@@ -1,4 +1,4 @@
-reuse L42.is/AdamTowel02
+{reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
 
 Gui:Load<><{reuse L42.is/WidgetGuiLib}
@@ -20,7 +20,7 @@ MoveAction:Data<><{implements Gui.Action
     this.#outer().top(this.outer().top()+this.topDelta())
     )
   }
-SafeMovable:Data<><{implements Gui.Widget
+SafeMovable:DData<><{implements Gui.Widget
   capsule Box box
   class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Left"
@@ -131,7 +131,7 @@ Main: {
             height:64Size
             color:S"blue"
             children:Gui.Widget.List[]);
-          SafeMovable(
+          /*SafeMovable(
             id:S"B"
             left:50Size
             top:50Size
@@ -149,7 +149,7 @@ Main: {
                 children:Gui.Widget.List[]
                 )
               ]
-            )]
+            )*/]
           )]
         left:2Size,top:2Size
       ))
@@ -159,7 +159,7 @@ Main: {
     S"A_Up::Pressed::_";
     S"A_Down::Pressed::_";
 
-    S"B_Left::Pressed::_";
+/*    S"B_Left::Pressed::_";
     S"B_Right::Pressed::_";
     S"B_Up::Pressed::_";
     S"B_Down::Pressed::_";
@@ -167,13 +167,13 @@ Main: {
     S"C_Left::Pressed::_";
     S"C_Right::Pressed::_";
     S"C_Up::Pressed::_";
-    S"C_Down::Pressed::_";
+    S"C_Down::Pressed::_";*/
 
     S"D_Left::Pressed::_";
     S"D_Right::Pressed::_";
     S"D_Up::Pressed::_";
     S"D_Down::Pressed::_";
-    //S"EXIT";
+    S"EXIT";
     ]
   Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
 
@@ -181,3 +181,4 @@ Main: {
   Debug(S"#@Success@#")
   return ExitCode.normal()
   }
+}
