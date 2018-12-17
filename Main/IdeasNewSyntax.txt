@@ -391,3 +391,10 @@ Collections:{
 
    try TraitR else super..
 }
+
+
+Coherence: adding for ref equality
+read method Void referenceEq(read Any that) exception Void
+//class method Void referenceClassEq(class Any that) exception Void
+Similarly, we can use coherence to add destructive reads
+
