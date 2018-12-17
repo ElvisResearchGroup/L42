@@ -70,7 +70,8 @@ class SafeMovable implements Widget{
   @Override read method Int top() {return this.box.t;}
   @Override read method Int width() {return 300;}
   @Override read method Int height() {return 300;}
-  @Override read method read Widgets children(){return this.box.c;}
+  @Override read method read Widgets children(){
+    return this.box.c;}
   @Override  mut method Void dispatch(Event e) {
     for(Widget w:this.box.c){w.dispatch(e);}}
   read method Bool invariant(){..}
@@ -87,7 +88,7 @@ class MoveAction implements Action {
   mut Box outer; MoveAction(mut Box outer) {this.outer=outer;}
   mut method Void process(Event event) {this.outer.l+=1;} }
 ..
-//main expression; #$ is a capability method creating a Gui object
+//main expression; #$ is a capability method making a Gui object
 Gui.#$().display(new SafeMovable(..));
 \end{lstlisting}\saveSpace
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
@@ -107,7 +108,7 @@ read method Bool invariant() {
   for(Widget w1 : this.box.c) {
     if(!this.inside(w1)) { return false; }
     for(Widget w2 : this.box.c) {
-      if(w1 != w2 && SafeMovable.overlap(w1, w2)){return false;}}}
+      if(w1!=w2 && SafeMovable.overlap(w1, w2)){return false;}}}
   return true;}
 \end{lstlisting}
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its fields.%its \Q@width@ and \Q@height@ fields.

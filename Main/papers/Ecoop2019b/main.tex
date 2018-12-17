@@ -48,7 +48,11 @@
 	\NoteColour{red}{#1\NoteText{\footnote{
 		\textcolor{red}{\textbf{REV#2{:} #3}}}}}}
 
-\newcommand{\subheading}[1]{\subsection{#1}}
+\newcommand{\subheading}[1]{%
+%  \subsection{#1}
+\loseSpace
+\textit{\textbf{#1:\\\noindent}}
+}
 %\HideNotes
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}

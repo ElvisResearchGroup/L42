@@ -4,7 +4,7 @@ Reasoning about imperative object oriented (OO) programs is a non trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to control, but not prevent, such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
 % \IO{[dynamic class loading]},
 
-\subheading{Type modifiers (TMs)} TMs as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
+\subheading{Type modifiers (TMs)} TMs as used in this paper are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
 Three different research languages are being independently developed relying on this new design: the language of Gordon et. al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
 These project are quite large: several million lines of code are written in Gordon et. al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 

@@ -282,4 +282,12 @@ class Game implements Bob, Alice<Item,Rock,Wall,Map>{
 Concluding, our solution is much more natural to use than conventional dependency injection,
 and allows writing code more naturally, without using factories.
 
+\section{Extensions}
+At first sight, it may seams like only the methods declared
+inside \Q@Alice@ can use the methods to access the generic arguments,
+thus making so much harder to define multiple classes in a single
+testing unit.
+This is not the case, 
+
+
 \end{document}
