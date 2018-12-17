@@ -1,0 +1,424 @@
+PrintT:Trait<><{ 
+  E:{interface S print()}
+  T:{implements E print()=S"hello"}
+}
+Print:{class method Library<><(Library right)={
+    for(Trait(right).nesteds()){
+      if....
+      }
+    }  
+  }
+Print:DefaultMeth<><PrintT
+
+Nat:Trait<><{
+  E:{interface}
+  Sum:Data<><{implements E, E left, E right}
+  Prod:Data<><{implements E, E left, E right}
+}
+
+DoStupidStuff: {...}
+
+
+Bool:Trait<><{
+  E:{interface}
+  True:Data<><{implements E}
+  False:Data<><{implements E}
+  }
+NatPrint:Print<><(Nat+{
+  
+  })
+
+//All:Nat+Bool+{}
+Op:Trait<><{ T:{}  P:{}  E:{interface T op(P that)} }
+OpNoArg:Trait<><{ T:{}  E:{interface T op()} }
+
+IsZero:{
+  E:{interface}
+  IsZero:Data<><{implements E E arg}
+  }
+
+EvalNat:Nat+Trait<><Op(\"eval()" ret:Size)<><{
+  Sum:{
+    Size eval() this.left().eval()+this.right().eval()
+    }
+  Prod:{
+    Size eval() this.left().eval()+this.right().eval()
+    }
+  }
+
+MyOp:PN<><Op(\"eval()" ret: E)<><{
+  Zero:{}
+  Succ:{ eval()Succ(this.inner().eval())}
+  Pred:{ eval(){
+    i=this.inner()
+    if i is Zero return i
+    if i is Succ if i.isNumber() return i.inner()
+    return Pred(i.eval())
+    }}
+  Default:{ ... }
+  }
+
+/*
+
+
+*/
+EvalBool:..
+EvalIsZero:Trait<><Op(\"eval()" ret:Size)<><{
+  True:{}
+  IsZero:{Size eval(){
+       if this.inner() is True (error X"nope")
+       return this.inner().eval()==0Size
+       }
+    }
+  }
+
+EvalArith:EvalBool+EvalNat+EvalIsZero
+Usable:EvalArith+Nat+Bool+IsZero+{}
+method m(Usable.E that){ that.eval()}
+
+  :Data<><{implements E, E left, E right}
+  B:Data<><{implements E, S val}
+  }
+V2: Trait <>< {
+  E:{interface}
+  C: Data <>< {implements E}
+}
+V3: V1 + V2 + {
+  D: Data <>< {implements E}
+}
+
+------------------
+
+
+Base: {
+  Expression: { }
+  Eval: {
+    class method (Expression e)
+  }
+}
+
+Nat: {
+  Sum: {implements E}
+  Prod: {implements E}
+  Eval: {
+    class method (E e) {
+      match {
+        case x: Sum =>  x+3
+        case y: Prod => y + 7
+      }
+    }
+  }
+}
+
+Bool: {
+  True: {implements E}
+  Eval: {
+    class method (E e) {
+      match { case x: True => ...}
+    }
+  }
+}
+
+Arith: Nat + Bool {
+  IsZero: {implements E}
+  Eval: {
+    class method (E e) {
+      match  {
+          case x: IsZero
+        // other cases are inheriteed
+      }
+    }
+  }
+}
+
+
+class method foo(Expression e) {
+  Eval(e)
+}
+
+
+
+
+
+---------------------
+
+String foo(){return "hi";}
+throw StackOverflow
+
+
+Boolean isPrime(BigNumeral n){..}
+
+ensure (isPrime(result) && result>n) || throw NDE
+ensure !(throw NDE) => (isPrime(result) && result>n)
+BigNumeral prime(BigNumeral n){
+  throw StackOverflow();
+}
+
+ensure (isPrime(result) && result>n)
+BigNumeral prime(BigNumeral n){
+  throw StackOverflow();
+}
+
+
+trow NDE(*) || res instanceof PREC && res=[0.2]=sq(par) || res instanceof IMPREC && res=[0.02]=sq(par)
+fun(par){
+  boolean failed=false;
+  try{
+    res=effectiveAlgo(par)//may no be verified
+    }
+  catch(Throwable t){failed=true;}
+  failed=!post(res,par);
+  if(!failed){return res;}
+  return dumberAlgo(par);
+  }
+//the attacher can chose one of the OR cases and the parameter, and the algoritm is verified
+
+
+vaquom decay
+solar system out
+earthy out
+50% electronic flare
+my pc electronic flare
+sw failure
+NDE
+NullPointer
+violated explic precondition
+
+-statically verify
+-testing/shenario
+
+-non deterministically select hipotesis/assumpions and then reason on traces
+Tests <=programBehaviour<=Safe
+
+
+1 consider a variant of java where NDE do not happen 
+2 change Java controlstack/memory
+
+----------------------------------------------
+Make a  oo language with mutation and IO talk with a monadic functional language
+
+-translate the functional language in oo with type modifiers and object capabilities
+
+//system library code
+public interface System{
+  public Void write(String fileName,String content);
+  public Integer read(String fileName);
+  }
+public final class CoreSystem implements System{
+  private CoreSystem(){}
+  public Void write(String fileName,String content){/*do write*/}
+  public Integer read(String fileName){return /*do read*/;}
+  }
+//user code
+class Main {
+  public static void main(System s){
+    String n=s.read("a.txt");
+    s.write("a.txt","");
+    s.write("b.txt", n);
+    }
+  }
+------------------------
+MONADIC VERSION
+------------------------
+//library code, do not need to be offered by a system magic library.
+public abstract class IO<T>{
+  private IO(){}
+  protected abstract T act(System s);
+  
+  public static IO<Void> write(String fileName, String content){//factory method
+    return s->s.write(fileName,content);
+  }
+
+  public static IO<String> read(String fileName){//factory method
+    return s->s.read(fileName,content);
+  }
+
+  public <T>static IO<T> return(T val){//factory method
+    return s->val;
+  }
+
+  public <T2> IO<T2> bind(Function<T,IO<T2>>fun){
+    return s->fun.apply(this.act(s)).act(s);
+  } 
+}
+//user code here  
+class Main{ 
+  public static void main(System s){   main().act(s);  }
+  public static IO<Void> main(){return 
+    IO.read("a.txt").bind(n->        //n=IO.read("a.txt")
+    IO.write("a.txt", "").bind(_1-> //IO.write("a.txt","") and
+    IO.write("b.txt", n)             //IO.write("b.txt",n)
+    ));}
+}
+
+
+
+class A{ static m(){System.print("hi");}}
+s->{Am(){s.print("hi");}}
+---------------------------------------
+-ISSUE: there are two kind of ways to do p[]
+
+p.minimize(p(P)[from P])!=p[P]
+p[P]=p.minimize({interface? Tz[from P]0 Mz|mdom(Mz)[from P]0})
+  where p(P)={interface? Tz Mz K}
+
+p.from(P,j)
+p.minimize(T) //L,M,...
+p(P)
+L(Cs)
+
+p.minimize(Thisn+1.idn.Cs) = p.minimize(Thisn.Cs):
+  p = id0 = L0, ..., idn = Ln, _; Ds
+  p(Thisn.Cs) = L
+otherwise p.minimize(P) = P
+p.minimize(private? id=L)={interface? p.minimize(Tz) p.minimize(Mz) p.minimize(K)}
+  p'=p.push(id=L)
+  L={interface? Tz Mz K}
+p.minimize(T m(Txs) e),p.minimize(K) just minimize all the T in the argument
+
+p.min
+ 
+-DECISION: ts check all the method are present from implemented interfaces,
+   but delete the requirement to report all the transitivelly implemented interface.
+   And so NORMALIZATION is  no more a concept in the paper.
+   modify superclasses to work properly
+      (define it however you want, provided that SuperClasses(p; P) = {p.minimize(P') | p |- P <= P'})
+      and it is clearly algorithmic)
+    SuperClasses(p; P) = {P} U SuperClasses(p; P0) U .... U SuperClasses(p; Pn) U {Any}
+      p[P].Pz = P0 ... Pn
+    Define p |- P <= P' iff P' in SuperClasses(p; P)
+-Redirectable should only check that non-private nested classes are in the redirect set.
+-DECISION: Have private methods? If so, make the quintuple, redirectable, and redirectSet ignore them.
+
+- DECISION make p[] call p.minimize() internally
+- Note  p[i] not alwas called in form p[P]._, sometime p[P] passed around to bulk operators like quintuple and R
+
+X: {Y: {method This2.X.Y m()}}<...>
+X: {Y: {method This0 m()}}<...>
+
+
+p[P] = p.minimize(p.normalise(p(P)[from P]))
+
+
+/*
+  p.normalise({implements P0,...,Pn mwtz})
+
+  = p[P0][interface?=empty][remove dom(mwtz)] <+ ... <+ p[Pn][remove dom(mwtz)] <+ {implements P0,...,Pn mwtz}
+*/
+
+instead of requiring well formedness all is norm and minimize, just use [] as above to normalize and minimize all.
+A change is that the T in the R may not be minimized
+
+-------------------------
+Those fails in 42. Should they fail in the paper?
+X: {This1.X m()} <+ {This0 m()} //EX1
+
+Y: {//EX2
+  A: {}
+  X: {This2.Y.A m()} <+ {This1.A m()}
+}
+
+    // Note: if I use this::printConstraint I get a weird error about an uncaught 'Throwable'...
+ListFormatter ls = new ListFormatter().seperator(", ");
+
+Set<List<C>> Csz = this.redirectSet.keySet();
+ls.append(StreamUtils.map(Csz, Cs -> this.printConstraint(Cs)));
+ls.append(StreamUtils.map(Csz, this::printConstraint));
+// append(Collection<?>)
+// StreamUtils.map(Set<T>, CheckedFunction<T, R, E>)
+return ls.toString();
+
+
+delegate Object FunctionHandle<'a>(params Object[] args) calls['a];
+
+/*
+static void M3(String url) calls[RestrictedPrimitive] {
+	var code = Assembly.LoadFrom(url);
+	code.GetMethod("M").Invoke(null, null); } // Call M()
+
+class FunctionHandle<'a> {
+	FunctionHandle(Assembly a, String f) calls[] { 
+		// throw an exception if FunctionHandle<'a>.Invoke ⇝̸ f
+		… } 
+	Object Invoke(params Object[] args) calls['a] { /* return f(args)*/ }}
+
+
+static void M3<'a>(String url) calls['a, Assembly.LoadFrom, MethodInfo.GetCheckHandle] {
+	var code = Assembly.LoadFrom(url);
+	code.GetMethod("M").GetCheckedHandle<'a>().Invoke(); }
+  //before it was, but that required RestictedPrimitive
+  //code.GetMethod("M").Invoke(); }
+*/
+class MethodInfo {
+  ...
+  FunctionHandle<'a> GetHandle<'a>();
+}
+
+//*
+  Assembly a = Assembly.LoadFrom(url);
+  Type t = a.GetType("T");
+  MethodInfo m = t.GetMethod("M");
+  Handle h = m.getHandle<'a>();
+  Object res = h(arg1, arg2, ...);  
+*/
+
+
+class FunctionHandle<'a> { Object Invoke(params Object[] args) calls['a] { ... }}
+
+
+// Add a method to MethodInfo (...)
+class MethodInfo { 
+  FunctionHandle<'a> GetHandle<'a>() calls[ReflectionPrimitive] {
+  // ...
+  }}
+
+
+static void foo() calls[foo] { }
+static void invokeViaReflection(String f) calls[RestrictedPrimitive] {
+  RestrictedPrimitive("reflection.invoke", f);
+}
+
+inveokViaReflection("foo")
+  
+
+not(A::b)
+
+interface X<T> implements Y<Foo<T>> { ... }
+
+-----------
+* Start by presenting the idea of pown:
+ e.g. Nat pown(Nat x) ensures result = x^n { return x* ... *x; /*with n x's*/ }
+* Say how you might want to build it iterativley (why?)
+  Nat pow0(Nat x) ensures result = x^0 { return 1; }
+  Nat pow1(Nat x) ensures result = x^1 { return x*pow0(x); }
+  ....
+* Use metaprogramming to generate each pow_i manually
+  * with propery SV...
+* Show how you can use metaprogramming to make the pow for you
+* Explain how this dosn't require re-statically verfiying each pown?
+
+---------------
+
+
+for (x : StreamUtils.iterate(a, b, c)) {
+  ...
+}
+
+
+grammar
+sum will be later in "extension"
+
+
+static void HelloWorld() calls[WriteLine] {
+  WriteLine("Hello World!");
+}
+
+static void Main(String[] argv) calls[WriteChar] {
+  HelloWorld(); }HelloWorld -> WriteLine -> WriteChar
+
+
+
+<Y> Y cast(Object y) { (Y)y; }
+
+
+String x = cast(3);
