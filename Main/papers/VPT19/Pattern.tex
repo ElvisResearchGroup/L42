@@ -1,0 +1,285 @@
+ \documentclass[submission,copyright,creativecommons]{eptcs}
+\providecommand{\event}{MiniPLOP 2019} % Name of the event you are submitting to
+\usepackage{breakurl}             % Not needed if you use pdflatex only.
+\usepackage{underscore}           % Only needed if you use pdflatex.
+\input{../Def/Def}
+\providecommand*{\code}[1]{\Q`#1`}
+\newcommand{\saveSpace}{\vspace{-3px}}
+\newcommand{\loseSpace}{\vspace{1ex}}
+
+\title{Dependency Extraction}
+\author{Marco Servetto
+\institute{ECS VUW\\ Wellington, New Zealand}
+\institute{Engineering and Computer Science\\
+Victoria University of Wellington}
+\email{marco.servetto@ecs.vuw.ac.nz}
+}
+\def\titlerunning{Dependency Extraction}
+\def\authorrunning{M. Servetto}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Dependency injection is a very heavy weight pattern,
+where new interfaces have to be defined, and new classes
+have to be added.
+Here we propose an alternative, that have the same benefits
+but with much less cost.
+We call it Dependency Extraction
+\end{abstract}
+
+\section{Introduction}
+Testing sections of a large programs in isolation is very useful since it
+allows to isolate the bugs and to test components while other components 
+are not ready yet.
+It also allows to connect bugs with the part of the program causing them.
+
+When a code artefact starts to become large, and have many 
+interconnected parts, testing parts in isolation becomes difficult.
+
+Here we present a solution that works in Java8 (and further versions).
+We think a minor variation of this pattern could be used on many other languages supporting generics and
+either interfaces with default methods, multiple inheritance or trait composition.
+
+\section{Example problem}
+
+A common motivating example for Dependency Injection is the following:
+Alice and Bob are designing a videogame, where there
+is a \Q@Map@ containing \Q@Item@s that are located in certain
+\Q@Point@s.
+Various kinds of \Q@Item@s exists: \Q@Wall@s, \Q@Rock@s,
+\Q@Tree@s and many more.
+Alice will implement the \Q@load@ functionality:
+\begin{quote}
+The \Q@load@ method will parse a formatted text file
+and use the information to fill a \Q@Map@.
+This requires to instantiate an empty map, and to instantiate various kinds of
+\Q@Item@s.
+\end{quote}
+Bob will implement the rest of the game, this includes: 
+\begin{quote}
+The interface \Q@Item@,
+all the classes implementing the \Q@Item@ interface
+and the \Q@Map@ class.
+\end{quote}
+Bob plans to make an efficient implementation of the \Q@Map@ as a tricky
+sparse matrix.
+Thus, bugs are likely to be present in the \Q@Map@ implementation.
+The various \Q@Item@s will contains a lot of code related to the game logic.
+
+\section{The difficulty}
+
+Alice codes need to instantiate classes that are outside of her component.
+How can Alice test her code and check that it is correct independently 
+of the code of Bob? She should be able to do so even before Bob have written
+his part of code.
+
+
+
+
+\section{The conventional solution}
+In Java, we can use dependency injection to we write the code so that Alice can 
+completely write and test \Q@load@ before
+Bob completes the rest of the game.
+This requires introducing a lot of boilerplate code, and 
+to program in a very unnatural way:
+Alice can not write \Q@new Map(..)@
+since the \Q@Map@ class may not be available yet.
+We need to introduce an \Q@IMap@ interface and an \Q@IMapFactory@ interface,
+and Alice need to provide
+a mock implementation designed for testing.
+This makes the code of Alice very involved and indirect:
+Alice \Q@load@ method needs to access an \Q@IMapFactory mapFactory@
+and use it to create new maps, as in \Q@mapFactory.makeMap()@.
+Same for \Q@Item@s: Alice can not write \Q@new Rock(...)@,
+but she needs to use an \Q@IItemFactory@.
+When \Q@load@ is called in the context of a running game,
+the factories will create actual \Q@Map@s, \Q@Rock@s
+and so on, but in the testing environment, 
+mock factories will create mock versions.
+While in Java this is very verbose and involved,
+it still has great advantages over using the
+possibly buggy \Q@Map@ of Bob: Alice can 
+write a simple but inefficient version of map relying
+on a \Q@HashMap<Point,Item>@.
+Professional programmers rely heavily on dependency
+injection: it seams like the benefits overcome the costs.
+
+Here in the following, you can find an example of how such Java code may look like.
+Note how every class would be a file of its own.
+Even if we tried to omit all the non fundamental bits,
+the code is still very long, once the reader is convinced is just a mess, they
+cans skip to the next section
+\begin{lstlisting}
+//--common code------------
+class Point{..}//most of these require their own file
+interface Map{Item get(Point that); void set(Item that);}
+interface Item{ Point point(); Item hit();}//methods about the game logic
+interface Rock extends Item {..}
+interface Wall extends Item {..}
+interface ItemFactory{Rock makeRock(Point point, int weight); ..}
+interface MapFactory{Map makeMap();}
+
+//--Bob code------------
+interface BobRock extends Rock {Point point; int weight; ..}
+interface BobWall extends Wall {Point point; int height; ..}
+
+class BobMap implements Map{..//map implementation by Bob
+  static Map empty(){..}
+  Item get(Point that){..}
+  Void set(Item that){..}
+  }
+class Game{
+  static Void run()=..Loader.load(..).. //implemented by Bob
+  }
+
+//--Alice code----------------------------------
+class MapLoader{
+  ItemFactory items; MapFactory maps;
+  MapLoader(ItemFactory i,MapFactory m){items=i;maps=m;}
+  Map load(String fileName){..maps.makeMap()..}
+  static Map load(String fileName){
+    Map map=maps.makeMap();//we can not write BobMap.empty();
+    //read from file and divide in lines,
+    for(String line: lines) {load(map,line);}
+    }
+  static Void load(Map map,String line){
+    //example line: S"Rock 23 in 12, 7"
+    List<Integer> ns=readInts(line);
+    if (line.startsWith("Rock"))
+      map.set(items.makeRock(ns.get(0),Point.of(ns.get(1),ns.get(2))));
+    if (line.startsWith("Wall")) ..
+    ..
+    }
+  }
+//--Alice testing code-----------------------------
+  
+class MockMap implements Map{
+  Item get(Point that){throw new Error("Not used by Alice code");}
+  void set(Item that){..}
+  String toString(){..}
+  ..
+  }
+class MockMapFactory implements MapFactory{
+  public Map makeMap(){return new MockMap();} }
+class MockItemFactory implements ItemFactory{
+  public Rock makeRock(..){return new MockRock(..);}
+  public Wall makeWall(..){return new MockWall(..);} }
+class MockRock implements Rock{..}
+class MockWall implements Wall{..}
+
+class Tester{
+  static void test(String fileName,String expected){
+    MapLoader m=new MapLoader(new MockMapFactory(),new MockItemFactory());
+    Map map=m.load(fileName)
+    assert map.toString().equals(expected);
+  }}
+\end{lstlisting}
+
+\section{Disadvantages}
+\begin{itemize}
+\item Very verbose.
+\item A lot of interfaces must be defined ahead of time.
+\item Those interface will contain all the needed features of those objects,
+so for example the \Q@Rock@ interface will have all the methods all \Q@Item@s need
+to have to satisfy the game logic of \Q@Bob@, while logically Alice only needed the constructor
+and a \Q@toString@.
+\item New fields have to be added to store factory objects.
+\end{itemize}
+
+
+\section{The proposed solution}
+
+Here we show the complete code of Alice, it is compact enough that we do
+not need to omit any details.
+
+\begin{lstlisting}
+interface Alice<Item, Rock extends Item, Wall extends Item, Map>{
+  Map newMap();
+  Rock newRock(int weight, Point p);
+  Wall newWall(int height, Point p);
+  void set(Map map, Item item);
+  default Map load(String fileName) throws IOException{
+    Map map=newMap();
+    Files.lines(Paths.get(fileName))
+      .forEach(line->load(map,line));
+    return map;
+    }
+  default void load(Map map,String line) {
+    //example line: S"Rock 23 in 12, 7"
+    List<Integer> ns=readInts(line);
+    if (line.startsWith("Rock")){
+      set(map,newRock(ns.get(0),new Point(ns.get(1),ns.get(2))));}
+    if (line.startsWith("Wall")){
+      set(map,newWall(ns.get(0),new Point(ns.get(1),ns.get(2))));}
+    /*..*/
+    }
+  default List<Integer>readInts(String line){
+    try(Scanner s=new Scanner(line)){
+      List<Integer> res=new ArrayList<>();
+      while (s.hasNextInt()) {res.add(s.nextInt());}
+      return res;
+    }}
+  }
+\end{lstlisting}
+As you can see, Alice just define an interface with generic arguments
+to encode all her dependencies with Bob code.
+Methods defined inside the \Q@Alice@ interface allows to work with such 
+generic arguments, that otherwise are just black boxes.
+Note how subtyping requirements between dependencies are expressed
+using F-Bound polymorphism.
+
+Notice how the code of Alice is very similar to what she would have written
+if she was not bothering to use dependency injection. The
+only differences are as follow:
+Instead of \Q@new Map()@ she have to write \Q@newMap()@; same for
+\Q@Rock@, \Q@Wall@ and so on.
+Instead of \Q@map.set(item)@ she have to write \Q@set(map,item)@.
+
+And this is how Alice may test her code:
+\begin{lstlisting}
+public class //            Item   Rock   Wall   Map
+AliceTest implements Alice<String,String,String,StringBuilder>{
+  public StringBuilder newMap() {return new StringBuilder();}
+  public String newRock(int weight, Point p) {return "Rock:"+p+"->"+weight;}
+  public String newWall(int height, Point p) {return "Wall:"+p+"->"+height;}
+  public void set(StringBuilder map, String item) {map.append(item+"\n");}
+  void test(String fileName, String expected) throws IOException{
+    StringBuilder map = load(fileName);
+    Assert.assertEquals(map.toString(),expected);
+    }
+  @Test void test1(){test("justARock.txt","Rock:Point(5,6)->35\n");}
+  @Test void test2(){/**/}
+  /**/
+  }
+\end{lstlisting}
+At first, it may look bewildering that Alice is able to instantiate
+\Q@Item@, \Q@Rock@ and \Q@Wall@ with \Q@String@ and \Q@Map@ with
+\Q@StringBuilder@. However, this is perfect for a testing environment, where
+the only need is to log what happened and then to check that the result
+of the logs is what we expect.
+
+Bob can write his code pretty normally
+\begin{lstlisting}
+interface Bob{
+  Map load(String fileName) throws IOException;
+  /*code using load, Map, Item, Rock, Wall and so on*/
+  }
+interface Map{Item get(Point that); void set(Item that);}
+interface Item{ Point point(); Item hit();}//methods about the game logic
+interface Rock extends Item {..}
+interface Wall extends Item {..}
+\end{lstlisting}
+And this is how Alice and Bob can put their code together:
+
+\begin{lstlisting}
+class Game implements Bob, Alice<Item,Rock,Wall,Map>{
+  static void main(String args[]){new Game().start();}
+  }
+\end{lstlisting}
+
+
+Concluding, our solution is much more natural to use than conventional dependency injection,
+and allows writing code more naturally, without using factories.
+
+\end{document}

@@ -11,7 +11,7 @@
 In the next section, by examples, we will show that all our restrictions and
 requirements are actually needed, and that just violating any one of them would cause our system to be unsound.}
 
-Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can call methods on an object, calling \Q@invariant@ on it is guaranteed to return \Q@true@ in a finite number of steps. However, the \Q!invariant! method itself needs to be able to operate on a potentially invalid \Q!this! (or else our guarantee would be circular), this will only happen when it is automatically called be the language itself, not by explicit calls present in the source code.
+Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can call methods on an object, calling \Q@invariant@ on it is guaranteed to return \Q@true@ in a finite number of steps. However, the \Q!invariant! method itself needs to be able to operate on a potentially invalid \Q!this!, this will only happen when it is automatically called by the language itself, not by explicit calls present in the source code.
 
 \IODel{Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
 On a first look this may seem an open contradiction

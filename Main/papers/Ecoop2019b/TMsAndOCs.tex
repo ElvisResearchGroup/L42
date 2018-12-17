@@ -4,7 +4,7 @@ Reasoning about imperative object oriented (OO) programs is a non trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to control, but not prevent, such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
 % \IO{[dynamic class loading]},
 
-\subheading{Type modifiers (TMs)} as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
+\subheading{Type modifiers (TMs)} TMs as used in this paper, are a type system feature that allows reasoning about aliasing and mutation; recently a new design for them has emerged that radically improves their usability.
 Three different research languages are being independently developed relying on this new design: the language of Gordon et. al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
 These project are quite large: several million lines of code are written in Gordon et. al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic/correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
@@ -263,10 +263,12 @@ L42 expects capability methods to be used mostly internally by capability classe
 For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} native methods (such as a \Q@print@ method) can be white listed as `deterministic', provided they does not effect program execution, such as by non deterministically throwing I/O exceptions.
 
 \IO{\subheading{Purity}
-With TMs and OCs together, we can statically ensure that a method is \emph{pure}: it is deterministic and does not mutate existing memory. In particular, any method call on \Q!read!/\Q!imm! receiver, that passes only \Q!read!/\Q!imm! parameters is pure: 
+TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
+as being deterministic and not mutating existing memory.
+% With TMs and OCs together, we can statically ensure that a method is \emph{pure}: it is deterministic and does not mutate existing memory. In particular, any method call on \Q!read!/\Q!imm! receiver, that passes only \Q!read!/\Q!imm! parameters is pure: 
 \begin{itemize}
-	\item the ROG of the arguments (including \Q!this!) is only accessed as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
-	\item if a capability object is in the ROG of any of the arguments (including \Q!this!), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
+	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
+	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
 	\item no other preexisting objects are accessible (as L42 does not have global variables).
 \end{itemize}
 }
