@@ -46,7 +46,7 @@ The natural way to write this class in C\#, if it had native support for class i
 class Cage {
   Hamster h;
   List<Point> path;
-  Cage(Hamster h, List<Point> path) {this.h = h; this.path = path;}
+  Cage(Hamster h, List<Point> path){this.h=h; this.path=path;}
   invariant this.path.Contains(this.h.pos);
   void Move() { 
     int index = this.path.IndexOf(this.h.pos);
@@ -68,7 +68,7 @@ class Cage {
   invariant this.path.Contains(this.h.pos);
   void Move() { 
     int index = this.path.IndexOf(this.h.pos);
-    expose(this) {this.h.pos = this.path[index % this.path.Count];}
+    expose(this){this.h.pos=this.path[index%this.path.Count];}
   } 
 }
 \end{lstlisting}

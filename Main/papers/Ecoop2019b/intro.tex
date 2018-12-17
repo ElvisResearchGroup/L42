@@ -103,7 +103,7 @@ class Point { double x; double y; Point(double x, double y) {..}
   [Pure] bool Equal(double x, double y) {
     return x == this.x && y == this.y; }
 }
-class Hamster{[Peer] Point pos; Hamster([Captured] Point pos){..}}
+class Hamster{[Peer]Point pos; Hamster([Captured]Point pos){..}}
 
 class Cage {
   [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
@@ -124,7 +124,7 @@ In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and no
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
-List<Point> pl = new List<Point>{new Point(0,0), new Point(0,1)};
+List<Point> pl = new List<Point>{new Point(0,0),new Point(0,1)};
 Owner.AssignSame(pl, Owner.ElementProxy(pl));
 Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 \end{lstlisting}
