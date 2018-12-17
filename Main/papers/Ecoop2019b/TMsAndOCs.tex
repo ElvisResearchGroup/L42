@@ -141,7 +141,7 @@ Capsule references are usually expressed using linear/affine types~\cite{boyland
 %invariantCheck()
 
 %\loseSpace
-\subheading{Exceptions}
+\subheading{Exceptions}\label{s:exceptions}
 In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety} (SES)~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
 if a \Q@try-catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated.
