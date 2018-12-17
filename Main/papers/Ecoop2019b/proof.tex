@@ -1,3 +1,173 @@
+\saveSpace
+\section{Proof and Axioms}
+\label{s:proof}
+\saveSpace
+
+\subheading{Axiomatic type properties}
+As previously discussed, instead of providing a concrete set of type rules, we provide a set of properties
+that the type system needs to respect.
+To express these properties, we first need some auxiliary definitions.
+
+%\noindent\textbf{Define}
+%$\mathit{encapsulatedObj}(C)$:\\*
+%${}_{}$\quad\quad \Q@class @$C$\,\Q@implements @$\Many{C}$\Q@{@$\,\Many{F}\,\Many{M}$\Q@}@
+% and $\forall \mdf\,C\,\f \in \Many{F},\ \mdf \in \{\Kw{imm},\Kw{capsule}\}$\\*
+%\noindent As we discussed, only encapsulated objects can support invariants;
+%their class declarations only have immutable or capsule fields. Note how here we see immutable
+%and simple objects as special cases of encapsulated ones.
+
+The encapsulated ROG of $l_0$ is composed of all the objects
+in the ROG of its immutable and capsule fields:\\*
+\indent $l \in \mathit{erog}(\sigma,l_0)
+\text{ if } \Sigma^\sigma(l_0).f \in \{\Kw{imm}\,\_,\Kw{capsule}\,\_\}
+\text{ and } l \in \mathit{rog}(\sigma,\sigma(l_0).f)
+$\loseSpace
+
+\noindent An object is \emph{mutatable} in a $\sigma$ and  $\e$ if there is an occurrence of 
+$l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
+$\mathit{mutatable}(l,\sigma,\e) \text{iff}$ for some $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\ctx[l]=\e$,\\*
+\indent $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.\loseSpace
+
+%if $\ \sigma_0|e_0\rightarrow \sigma|e$ then $\sigma_1|\e_1=\sigma|\e$
+% $\exists! \sigma_1|\e_1$ such that $\sigma_0|\e_0\rightarrow \sigma_1|\e_1$\\*
+
+%We can now assume the following properties over the type system:
+
+\begin{Assumption}[Progress]
+	if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
+	and $e_0$ is not a value or $\mathit{error}$, then
+	$\sigma_0|e_0\rightarrow \sigma_1|e_1$.
+\end{Assumption}
+
+
+\begin{Assumption}[Subject Reduction Base]
+	if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
+	$\sigma_0|e_0\rightarrow \sigma_1|e_1$,
+	then
+	$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$.
+\end{Assumption}
+
+
+\noindent If the result of a field access is mutable,
+the receiver is also mutable:\saveSpace\saveSpace
+\begin{Assumption}[Mut Field]
+	\ \\
+	\indent(1)\ if $\Sigma;\Gamma\vdash\e\singleDot\f:\Kw{mut}\,\_$
+	then $\Sigma;\Gamma\vdash\e:\Kw{mut}\,\_$
+	and 
+	\\*\indent(2)
+	if $\Sigma;\Gamma\vdash\e_0\singleDot\f\equals\e_1:T$
+	then $\Sigma;\Gamma\vdash\e_0:\Kw{mut}\,\_$.
+\end{Assumption}
+
+\noindent An object is not part of the ROG of its immutable or capsule fields:\saveSpace\saveSpace
+\begin{Assumption}[Head Not Circular]
+	if
+	$\Sigma^\sigma;\Gamma\vdash l:T$,
+	then $l\notin\text{erog}(\sigma,l)$.
+\end{Assumption}
+
+
+\noindent In a well typed $\sigma$ and $e$, if mutatable $l_2$ is reachable from
+$l_1$, and $l_1$ is reachable from $l_0$,
+then all the paths connecting $l_0$ and $l_2$ pass trough $l_1$; thus
+if we were to remove $l_1$ from the object graph, $l_0$ would no longer reach $l_2$:
+\saveSpace\saveSpace
+\begin{Assumption}[Capsule Tree]
+	If   $\Sigma^\sigma;\Gamma\vdash \e:\T$,
+	$l_2\in\text{erog}(\sigma,l_1)$,
+	$l_1\in\text{erog}(\sigma,l_0)$,\\*
+	and
+	$\mathit{mutatable}(l_2,\sigma,\e)$
+	then 
+	$l_2\notin\text{erog}(\sigma\setminus l_1,l_0)$.
+\end{Assumption}
+
+
+Capsule Tree and Head Not Circular together 
+imply that capsule fields section the object graph into a tree of nested `balloons',
+where nodes are mutable encapsulated objects and
+edges are given by reachability between those objects in the original memory:
+$l_2$ is in the encapsulated ROG of $l_1$;
+$l_2$ is mutatable and reachable through $l_1$, thus
+it must be reachable by a \Q@capsule@ field.
+Thanks to Head Not Circular and $l_1\in\text{erog}(\sigma,l_0)$ we can derive 
+$l_0\notin\text{erog}(\sigma,l_1)$.
+
+The execution of an expression
+with no \Q@mut@ free variables is deterministic and does not
+mutate pre existing memory (and thus does not not perform I/O by mutating pre existing $c$):
+\begin{Assumption}[Determinism]
+	if $\emptyset;\Gamma\vdash \e:\T$, 
+	$\forall x \Gamma(x)\neq\Kw{mut}\,\_$, and
+	$\sigma | \e'\rightarrow^+ \sigma' | \e''$
+	then 
+	$\sigma | \e'\Rightarrow^+ \sigma,\_ | \e''$,
+	where $\e'=\e[x_1=l_1,\ldots,x_n=l_n]$ and $\Sigma^\sigma;\emptyset\vdash \e':\T$
+\end{Assumption}
+
+\begin{Assumption}[StrongExceptionSafety]
+	if $\Sigma^{\sigma,\sigma'};\emptyset\vdash \ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]:\T$
+	and\\*
+	$
+	\sigma,\sigma'|\ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]\rightarrow 
+	\sigma''|\ctx[\Kw{try}^\sigma\oC\e'\cC\ \Kw{catch}\ \oC\e_1\cC]
+	$
+	then 
+	$\sigma''=\sigma,\_$
+	and
+	$\Sigma^\sigma;\emptyset\vdash \ctx[\e_1]:\T$
+\end{Assumption}
+\noindent
+For each \Q@try-catch@, execution preserves the memory needed to continue the execution in case of error
+(the memory visible outside of the \Q@try@).%
+
+%Thanks to how our reduction rules are designed, especially \textsc{try error},
+%@Progress will need to rely on @StrongExceptionSafety internally.
+
+Note that our last well formedness rule requires 
+\textsc{update} and \textsc{mcall} to introduce
+monitor expressions only over locations
+that are not preserved by \Q@try@ blocks.
+This can be achieved, since monitors are introduced
+around mutation operations
+(and \Q@new@ expression),
+and Strong Exception Safety ensures no mutation happens on preserved memory.
+
+% To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,ServettoZucca15}
+%  supports all these assumptions out of the box,
+% while both Gordon~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
+% however it should be trivial to modify them to support it:
+% the \Q@try-catch@ rule could be modified to
+% $\emptyset;\Gamma\vdash\Kw{try}\ \oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC:\T$
+% if\\* $\emptyset;
+% \Gamma,\{x:\Kw{read}\,C | x:\Kw{mut}\,C\,\in\Gamma\}
+% \vdash\e_0:\T$ and $\emptyset;\Gamma\vdash\e_1:\T$,
+% i.e. $e_0$ can be typed when seeing all externally defined mutable references as \Q@read@.
+
+
+
+\subsection{Proof of Theorem 1}
+It is hard to prove Soundness directly,
+so we first define a stronger property,
+called \emph{Stronger Soundness} and
+show that it is preserved during reductions by means of conventional
+Progress and Subject Reduction (Progress is one of our assumptions,
+while Subject Reduction relies heavily upon Subject Reduction Base).
+That is,
+Progress $\wedge$ Subject Reduction $\Rightarrow$ Stronger Sound Validation,
+\\*Stronger Soundness $\Rightarrow$ Soundness.
+
+%The structure of the proof is interesting:
+%It is hard to prove Sound Validation directly,
+%so we first define a stronger property,
+%called Stronger Sound Validation and
+%we show that it is preserved during reduction by mean of conventional Progress and Subject Reduction.
+%That is,
+%Progress+Subject Reduction $\Rightarrow$ Stronger Sound Validation
+%and Stronger Sound Validation $\Rightarrow$ Sound Validation.
+
+
 \subsection{Stronger Soundness $\Rightarrow$ Soundness}
 \saveSpace
 Stronger Soundness depends on

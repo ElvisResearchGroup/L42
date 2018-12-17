@@ -29,4 +29,25 @@ Also the bodies of constructors may interact with an invalid \Q@this@; we restri
 
 We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. As this method only takes a \Q!read! parameter (the receiver), we can be sure that it is pure \footnote{If the invariant were not pure, it would be nearly impossible to ensure that it would return \Q@true@ at any point.} (see Section \ref{s:purity}).
 
+To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable}) we require that \Q@invariant@ methods only use \Q@this@ to read \Q@imm@ and \Q@capsule@ fields.
+\IODel{Access \Q@mut@ fields is forbidden because their ROG can be changed by unrelated code. In order to prevent passing an invalid \Q@this@ to other methods.}
+
+In order to ensure that a broken object is not visible whilst mutating one of their capsule fields (see Section \ref{s:encapsulated}), we place restrictions on any method (directly) reading a \Q!capsule! field of a \Q!mut! object, we call such methods \emph{capsule mutators}. Such methods must:
+\begin{itemize}
+\item access the \Q!capsule! field as \Q!this.f!,\footnote{Thus capsule fields are instance private}
+\item have no other occurrences of \Q!this!,
+\item not take any \Q!mut! or \Q!read! parameters (excluding the receiver), and
+\item not have a \Q!mut! return type.
+\end{itemize}
+\IOComm{mention these don't apply to \Q!capsule! recievers..}
 \IODel{\noindent Also note that \Q@invariant@ is declared as not throwing any exceptions, thus only unchecked exceptions can be propagated out.}
+%
+Rather than requiring uninitialised objects to satisfy their invariants, we instead require that objects be fully initialised before use. We ensure this by preventing explicit constructor definitions, and instead assume they have the form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where $T_1, \ldots, T_n$ are the types (including modifiers) of $C$.
+
+\subheading{Monitoring}
+The language runtime will inject calls to \Q!invariant! 
+
+\subheading{Relaxations}
+The above restrictions seem quite severe, however they are simple and make the proof simpler, without making it less intresting. Several relaxations and extensions can be
+
+

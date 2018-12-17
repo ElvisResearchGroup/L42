@@ -50,10 +50,11 @@
 
 \newcommand{\subheading}[1]{%
 %  \subsection{#1}
-\loseSpace
+\loseSpace%
 \textit{\textbf{#1:\\\noindent}}
 }
 %\HideNotes
+\nolinenumbers % Turn of the darn things! (remove this when we submit the paper)
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
 %\titlerunning{Dummy short title}%optional, please use if title is longer than one line
@@ -151,19 +152,18 @@
 \input{intro}
 \input{TMsAndOCs}
 \input{protocol}
+\input{formalism}
 \input{immutable}
 \input{encapsulated}
 \input{case-study} %s:case-study
 \input{related}
 \input{conclusion}
 
-\appendix
 
-\input{formalism}
-\input{proof}
-\input{hamster}
-\input{more-case-studies}
-
-\bibliography{main}
+%\bibliography{main} % The template has this at the end...
+%\appendix
+%\input{proof}
+%\input{hamster}
+%\input{more-case-studies}
 
 \end{document}
