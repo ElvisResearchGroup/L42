@@ -4,23 +4,23 @@
 %show solution is sound --> proof in appendix
 %naive is unsound - person 3 bugs
 \saveSpace
-\section{Formalizing Our Invariant Protocol}
+\section{Our Invariant Protocol}
 \label{s:protocol}
 \saveSpace
-In this section we will formalize our approach over a core language, and we formally state our soundness property (proved in the Appendix).
+\IODel{In this section we will formalize our approach over a core language, and we formally state our soundness property (proved in the Appendix).
 In the next section, by examples, we will show that all our restrictions and
-requirements are actually needed, and that just violating any one of them would cause our system to be unsound.
+requirements are actually needed, and that just violating any one of them would cause our system to be unsound.}
 
-Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}:
-%, i.e. its invariant holds.
-%This implies that 
-If you can call methods on an object, calling \Q@invariant@ on it is guaranteed to return \Q@true@ in a finite number of steps.
+Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can call methods on an object, calling \Q@invariant@ on it is guaranteed to return \Q@true@ in a finite number of steps. However, the \Q!invariant! method itself needs to be able to operate on a potentially invalid \Q!this! (or else our guarantee would be circular), this will only happen when it is automatically called be the language itself, not by explicit calls present in the source code.
 
-Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
+\IODel{Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects.
 On a first look this may seem an open contradiction
-with the aim of this work, however only calls to \Q@invariant@ inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code can call \Q@invariant@,
+ with the aim of this work, however only calls to \Q@invariant@ inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code can call \Q@invariant@,}
+
+
 \Q@this@ is guaranteed to be valid.
 Also the bodies of constructors may interact with an invalid \Q@this@; we restrict their shape so that neither invariant methods nor constructors can observe the invalid object directly, but only its fields.
+
 
 
 %Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
