@@ -89,12 +89,6 @@ public class Parser {
     return p;
   }
 
-static abstract class FilterOutputStreamExposer extends FilterOutputStream {
-  FilterOutputStreamExposer(OutputStream out) { super(out); }
-  static OutputStream getOut(FilterOutputStream fs) {
-    return fs.out;
-  }
-}
 static final class Pos  {
     Pos(int line, int pos, facade.Parser.ParData.State state) {
       this.line = line;   this.pos = pos;   this.state = state;  }
@@ -278,8 +272,8 @@ static final class Pos  {
   private static LoggedPrintStream create(PrintStream toLog) {//from http://stackoverflow.com/questions/4334808/how-could-i-read-java-console-output-into-a-string-buffer
     try {
       final StringBuilder sb = new StringBuilder();
-      /*Field f = FilterOutputStream.class.getDeclaredField("out");
-      f.setAccessible(true);/*
+      Field f = FilterOutputStream.class.getDeclaredField("out");
+      f.setAccessible(true);
       OutputStream psout = (OutputStream) f.get(toLog);
       return new LoggedPrintStream(sb, new FilterOutputStream(psout) {
         boolean lastIsSlash=false;
