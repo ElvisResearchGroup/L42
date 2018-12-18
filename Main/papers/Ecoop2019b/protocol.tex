@@ -27,12 +27,12 @@ Our invariant protocol guarantees that the whole ROG of any object involved in e
 %\IODel{its }\Q@invariant@ method the form 
 % Can  a program write say mut method invariant or is it syntactically [???]
 For simplicity, in the following explanation and in our formalism
-we require that 
+we require 
 %the \Q@this@ receiver is 
-\IO{receivers are} always specified explicitly, and that all fields are instance private (i.e. they require the reliever to be \Q!this!).
-We also do not allow explicit constructor definitions, instead we assume constructors are of the standard form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$. This ensures that partially uninitialised (and likely invalid) objects are not passed around or used.
-
-We will later explain how these and other restrictions can be partially relaxed, as in the code examples.
+receivers to always be specified explicitly, and require that the receivers of field accesses and updates are always \Q!this!; that is, all fields are instance private.
+We also do not allow explicit constructor definitions, instead we assume constructors are of the standard form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$. This ensures that partially uninitialised (and likely invalid) objects are not passed around or used. 
+These restrictions only apply to our formalism; our code examples and the L42 implementation soundly relax these, see below for a discussion.% of why this is sound.
+%We will later explain how these and other restrictions can be partially relaxed, as in the code examples.
 
 \subheading{Invariants}
 We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. As this method only takes a \Q!read! parameter (the receiver), we can be sure that it is pure \footnote{If the invariant were not pure, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}, as discussed in Section \ref{s:purity}.
@@ -77,7 +77,7 @@ In Appendix \ref{s:proof}, we show that these checks, together with our aforemen
 The above restrictions can be partially relaxed without breaking soundness, however this would not make the proof more interesting. In particular:
 \begin{itemize}
 	\item \Q!invariant! methods can be allowed to call instance methods that in turn only use \Q@this@ to read \Q!imm! or \Q!capsule!, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ needs to be understood with the body of those methods inlined; thus the semantic of the inlined code needs to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. In some sense, those inlined methods and field accesses can be thought of as macro expanded, and hence are not dynamically dispatched. Such inlining has been implemented in L42.
- \item \IO{We could allow all fields to be public, however \Q!capsule! fields, mentioned in their containing classes invariant, should not be accessible over a \Q!mut! receiver other than \Q!this!. Even without this relaxation however, getters and setters could be used to simulate public fields.}
+ \item \IO{We could allow all fields to be public, however \Q!capsule! fields, mentioned in the invariant of their containing class, should not be accessible over a \Q!mut! receiver other than \Q!this!. Even without this relaxation, however, getters and setters could be used to simulate public fields.}
 	\item Unrestricted readonly access to \Q!capsule! fields can be allowed by automatically generate getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language.
 	
 	\item Java style constructors could be allowed, provided that \Q!this! is only used as the receiver of field initialisations. L42 does not provide such constructors, but one can always write a static factory method that behaves equivalently.
