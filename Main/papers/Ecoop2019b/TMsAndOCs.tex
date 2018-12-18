@@ -171,9 +171,7 @@ L42 enforces SES using TMs in the following way:\footnote{Transactions are anoth
 \item Only an \Q@imm@ object may be thrown as an unchecked exception.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
-
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
-
 \noindent This strategy does not restrict throwing exceptions, but only catching unchecked ones.
 SES allows us to soundly capture invariant failures as unchecked exceptions: 
 the broken object is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failures it would be sufficient to enforce SES only when capturing exceptions caused by \Q@invariant@ failures.
