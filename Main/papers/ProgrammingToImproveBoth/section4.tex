@@ -40,20 +40,25 @@ and fields) while achieving the following goals:
 \item managing fields in a way that borrows the elegance of summing methods;
 \item actually initializing objects, leaving no null fields;
 \item making it easy to add new fields;
-\item allowing self instantiation: trait methods can create instances of the classes using them.
+\item allowing self instantiation: a trait method can instantiate the class using it.
 \end{itemize}
 An in-depth discussion on how such goals are 
 difficult to achieve and how they have been challenged
 in the existing literature is available in Section 7.3.
+
+\saveSpace\saveSpace
 \subsection{State of the art}
+\saveSpace\saveSpace\saveSpace\saveSpace
+
 We first present the state of the art solution: 
 traits have only methods but classes also have fields and constructors.
 The idea is that the trait code just uses getter/setters/factories, while leaving
 classes to finally define the fields/constructors. That
 is, in this state of the art solution, classes have a richer syntax than traits, allowing
 declaration for fields and constructors. 
-
-\paragraph{Modelling Points} Consider two simple 
+\saveSpace\saveSpace\saveSpace\saveSpace
+\saveSpace\saveSpace\saveSpace\saveSpace
+\paragraph{Points:} Consider two 
 traits dealing with \emph{point} objects with coordinates \lstinline{x} and
 \lstinline{y}.
 \saveSpace\saveSpace
@@ -78,7 +83,7 @@ The second trait provides multiplication.
 Notice the abstract \Q@static method This of(..)@ which acts as a factory/constructor
 for points. 
 As for instance methods, static methods are late bound:  flattening can provide an implementation for them.
-Thus, in \name\ they can be abstract, and abstract static methods are similar to the original concept of member functions in the module composition setting~\cite{ancona2002calculus}.
+Thus, in \name\ they can be abstract, and abstract static methods are similar to the concept of member functions in the module composition setting~\cite{ancona2002calculus}.
 Following the traditional model of traits and classes common in literature~\cite{ducasse2006traits},
 we can compose the two traits, by \emph{adding glue-code}
 to implement methods \Q@x@, \Q@y@ and \Q@of@.
@@ -123,9 +128,10 @@ The class needs to handle all the state, even state conceptually
    with the constructors and fields and getter/setters and factories is tedious and error prone; such code could be automatically
    generated~\cite{wang2016classless}.
 \end{itemize}
-
+\saveSpace\saveSpace\saveSpace\saveSpace
+\saveSpace\saveSpace\saveSpace\saveSpace
 \subsection{Our proposed approach to State: Coherent Classes}
-
+\saveSpace\saveSpace\saveSpace\saveSpace
 In \name there is no need to write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The intuition is that
 a class where \emph{all} abstract methods can be seen as field getters, setters, or factories,
@@ -168,8 +174,8 @@ may create a new instance that is like \Q@this@ except that field \Q@x@ now has 
 Those kinds of methods 
 performs functional field updates
 and are called \emph{withers}.
-\item \Q@method void update(int x, int y)@
-may do two field updates at a time.
+%\item \Q@method void update(int x, int y)@
+%may do two field updates at a time.
 \item\Q@method This clone()@ may do a shallow clone of the object.
 \end{itemize}
 
@@ -179,7 +185,7 @@ is a promising area for further research.
 The work by Wang et al.~\cite{wang2016classless} explores a particular
 set of such abstract state operations,
 but we suspect there are more unexplored possible options that could be even more beneficial.
-
+\saveSpace\saveSpace\saveSpace\saveSpace
 \paragraph{Points in \name:}
 In \name and with our approach to handle the state, 
 \lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed.
@@ -188,12 +194,11 @@ This works because the resulting class is coherent.
 \begin{lstlisting}
 PointAlgebra= Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
-\saveSpace\saveSpace
-\noindent
 %  Note: we declare the methods independently and compose the result
 %  as we wish. 
-
-  \paragraph{Improved solution} So far the current solution still
+\saveSpace\saveSpace\saveSpace\saveSpace
+\saveSpace\saveSpace\saveSpace\saveSpace
+\paragraph{Improved solution:} So far the current solution still
   repeats the abstract methods \Q@x@, \Q@y@ and \Q@of@.
   Moreover, in addition to \Q@sum@ and \Q@mul@ we may want many
   operations over points. It is possible to improve reuse
@@ -217,7 +222,7 @@ PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
 \saveSpace\saveSpace      
 Now the code is fully modularized, that is: each trait defines exactly one method and contains its abstract dependencies. In this way it can be modularly composed with any code requiring such a method.
-
+\saveSpace\saveSpace\saveSpace\saveSpace
 \paragraph{Case Study 1:}
 In order to evaluate our approach
 we performed a case study:
@@ -285,8 +290,9 @@ In all our case studies, to make a meaningful comparison, we formatted all code 
 on the other hand for space limitations, the code snippets presented in the article
 are formatted for compactness.
 
-
+\saveSpace\saveSpace\saveSpace\saveSpace
 \subsection{State Extensibility}
+\saveSpace\saveSpace\saveSpace\saveSpace
 Programmers may want to extend points with more state. For example 
 they may want to add colors to the points. A first attempt at doing
 this would be:
@@ -318,7 +324,7 @@ value.  What should be the behaviour in this case?  If our abstract
 state supports withers, we can use
 \Q@this.withX(newX).withY(newY)@, instead of writing \Q@This.of(...)@, in order to preserve the color from
 \Q@this@.  This solution is better but still not satisfactory since the color from \Q@that@ is ignored.
-
+\saveSpace\saveSpace\saveSpace\saveSpace
 \paragraph{A better design:}
 We can design trait \Q@p@ for reuse and extensibility
 by adding an abstract \Q@merge(This)@ method as an extensibility hook;
@@ -343,8 +349,8 @@ colored= {method Color color()
   }}
 CPoint= /*as before*/
 \end{lstlisting} \saveSpace\saveSpace 
-
-\paragraph{Independent Extensibility}
+\saveSpace\saveSpace\saveSpace\saveSpace
+\paragraph{Independent Extensibility:}
   Of course, quite frequently there can be multiple independent
   extensions~\cite{Zenger-Odersky2005} that need to be composed. Lets suppose that 
   we could have a notion of \Q@flavored@ as well.   
@@ -358,8 +364,8 @@ moves the implementation to another name. This is very useful to implement super
 flavored= {
   method Flavor flavor() //very similar to colored
   method This withFlavor(Flavor that)
-  method This merge(This that) //merging flavors handled here
-  this.withFlavor(that.flavor())}//inherits "that" flavor
+  method This merge(This that){ //merging flavors handled here
+    return this.withFlavor(that.flavor());}}//inherits "that" flavor
 \end{lstlisting}  \saveSpace\saveSpace
 
 \noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
