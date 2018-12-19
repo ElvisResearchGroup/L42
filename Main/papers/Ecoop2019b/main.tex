@@ -51,8 +51,9 @@
 \loseSpace%
 \noindent\textsf{\textbf{\large#1\\\noindent}}
 }
+
 %\HideNotes
-\renewcommand{\IODel}[1]{} % Hide deletions, but not notes
+%\renewcommand{\IODel}[1]{} % Hide deletions, but not notes
 \nolinenumbers % Turn of the darn things! (remove this when we submit the paper)
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
@@ -144,6 +145,25 @@
 %\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% A hack (found on https://tex.stackexchange.com/questions/218653/making-math-behaving-like-mathit)
+% which makes all letters in math mode behave like \mathit
+%\everymath{\it}
+% Make numbers roman (and not italic)
+%\def\mathcodes#1{\mathcode`#1=\numexpr\mathcode`#1-"7000\relax 
+%	\ifx#10\else\expandafter\mathcodes\fi}
+%\mathcodes1234567890
+
+\let\origSingleDot=\singleDot % reduce spacing arround the dot operator
+\renewcommand{\singleDot}{\kern-1.2pt\origSingleDot\kern-1.8pt} 
+% Hack (see https://tex.stackexchange.com/questions/299798/make-characters-active-via-macro-in-math-mode)
+% this makes '.' in math mode an alias for \singleDot
+\begingroup\lccode`~=`.\relax
+\lowercase{\endgroup\def~}{\singleDot}
+\AtBeginDocument{\mathcode`.="8000}
+
+\let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
+\renewcommand{\mapsto}{\mathrel{\origMapsTo}}
+\newcommand{\invariant}{\Kw{invariant}\oR\cR}
 \begin{document}
 \maketitle
 \input{abstract}

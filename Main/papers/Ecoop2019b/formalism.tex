@@ -4,40 +4,35 @@
 
 %----------------------------------
 In order to model our system, we need to formalise an imperative object oriented language
-with exceptions and object capabilities,  and rich type system
-support for \Q@mut@, \Q@imm@, \Q@read@, \Q@capsule@, and strong exception safety.
-Formal modelling the semantics of such a language is simple, but 
-defining such rich type system and proving correctness of it would require a paper
+with exceptions\IO{, object capabilities, and rich type system
+support for TMs and strong exception safety.}
+\IO{Formal models of the runtime semantics of such languages are simple}, but 
+defining \IO{and proving, such a type system} would require a paper
 of its own, and indeed many such papers exist in literature%
 ~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,JOT:issue_2011_01/article1}.
-Thus we are going to assume that there is an expressive and sound type system enforcing
-those properties, and instead focus on invariant checking.
-To provide good modularisation for reasoning, in the Appendix
-we clearly list the properties our proof (also in Appendix) need to rely upon, so that \emph{every} type
-system supporting those properties can support our invariant protocol.
+Thus we are going to assume that \IO{we already have} an expressive and sound type system enforcing \IO{the properties we need}, and instead focus on invariant checking.
+\IO{We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type system, so that any language satisfying them, such as L42, can soundly support our invariant protocol.}
 
-We strive to keep our small step semantics as conventional as possible; following Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01} we assume:
+\IO{To keep} our small step semantics as conventional as possible\IO{, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:}
 \begin{itemize}
-	\item An implicit program/class-table.
-	\item Memory $\sigma\Coloneqq l\mapsto C\{\Many{v}\}$ is a finite map from locations $l$ to annotated tuples $C\{\Many{v}\}$: representing objects,
-	where $C$ is the class name and $\Many{v}$ are the field values.
-	We use the notation $\sigma[l.f=v]$ to update an object's field and $\sigma[l.f]$ to access it.
-	\item A main expression that is reduced in the context of such memory and program.
-	\item A type system $\Sigma;\Gamma\vdash\e:T$, where 
-	the expression $\e$ can contain locations and free variables;
-	the type of locations is encoded in $\Sigma\Coloneqq l\mapsto C$,
-	while the types of free variables are encoded in $\Gamma\Coloneqq x\mapsto T$.
-	\item We use $\Sigma^\sigma$ to trivially extract the corresponding $\Sigma$ from $\sigma$.
+	\item An implicit \IO{program/class table}.
+	\item \IO{Memory, $\sigma\Coloneqq l\mapsto{} C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.}
+	We use the notation $\sigma[l.f=v]$ to update \IO{a field of an object,} and $\sigma[l.f]$ to access \IO{one}.
+	\item A main expression that is reduced in the context of \IO{such a }memory and program.
+	\item A \IO{typing relation,} $\Sigma;\Gamma\vdash\e:T$, where 
+	the expression $\e$ can contain locations and free variables. \IO{The types} of locations \IO{are} encoded in $\Sigma\Coloneqq l\mapsto C$,
+	while the types of free variables are encoded in $\Gamma\Coloneqq x\mapsto T$. \IOComm{Is this the right notation? Shouldn't it be $\Gamma : x \to T$?}
+	\item We use $\Sigma^\sigma$ to trivially extract the corresponding $\Sigma$ from \IO{a} $\sigma$.
 \end{itemize}
-In addition, to encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object whose fields model thins like the content of input and output files. In order to simplify our proof, we additionally assume that:
+\IO{To} encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object whose fields model things like the content of \IO{files}. In order to simplify our proof, \IO{we assume that}:
 \begin{itemize}
 	\item instances of \Q@Cap@ cannot be created with a \Q@new@ expression,
-	\item all methods of \Q@Cap@ must be \Q@mut@, and mutate the ROG of their receiver,
+	\item all methods \IO{in the \Q@Cap@ class} must \IO{require a \Q@mut@ receiver, and will mutate its ROG},
 	\item \Q@Cap@ can only have \Q@mut@ fields, and
 	\item \Q@Cap@'s \Q@invariant@ method is defined to return \Q@true@.
 \end{itemize}
-\noindent
-To keep our formalization focused on
+\IODel{
+To keep our formalisation focused on
 the challenges of invariant checking, 
 we impose limitations on \Q@this@, fields and constructors:
 %there are some
@@ -48,10 +43,9 @@ we impose limitations on \Q@this@, fields and constructors:
 \begin{itemize}
 	\item The \Q@this@ receiver must always be specified explicitly.
 	\item All fields are instance private. Getters and setters could simulate public fields.
-\end{itemize}
-
-Moreover, in the formalism for simplicity, we do not have actual exception objects, we just have a concept of \emph{errors} with no associated values.
-In the L42 implementation we support \Q@imm@ objects as exception values. Adding them to our formalism would not cause any interesting variation of our proof.
+\end{itemize}}
+\IO{For simplicity, we do not formalise actual exception objects, rather we just have \emph{errors}, which correspond to  expressions which are currently  `throwing' an exception, with no corresponding value.
+Our L42 implementation however supports throwing any \Q@imm@ value as an exception, adding this to our formalism} would not cause any interesting variation of our proof.
 
 \newcommand{\ctxG}{\myCalBig{G}}
 \renewcommand{\vs}{\Many{v}}
@@ -105,7 +99,7 @@ In the L42 implementation we support \Q@imm@ objects as exception values. Adding
 		% |\Kw{new}\ C\oR\es_1,M_l,\es_2,\ctx,\es_3\cR
 		% |\Kw{try}\oC\ctx\cC\ \Kw{catch}\ \oC\e\cC
 		% |\ctx[\ctxG_l]}{}\\
-		\produzione{CD}{\Kw{class}\ C\ \Kw{implements}\ \Many{C}\oC\Many{F}\,\Many{M}\cC\mid 
+		\produzione{\mathit{CD}}{\Kw{class}\ C\ \Kw{implements}\ \Many{C}\oC\Many{F}\,\Many{M}\cC\mid 
 			\Kw{interface}\ C\ \Kw{implements}\ \Many{C}\oC\Many{M}\cC
 		}{class declaration}\\
 		\produzione{F}{\T\ \f;}{field}\\
@@ -117,39 +111,32 @@ In the L42 implementation we support \Q@imm@ objects as exception values. Adding
 			\mid v\singleDot\f
 			\mid v_1\singleDot\f\equals v_2
 			\mid \Kw{new}\,C\oR\Many{v}\cR
-			,\quad\text{with }l\in \{v,v_1,v_2,\Many{v}\}
+			,\quad\text{\IO{where} }l\in \{v,v_1,v_2,\Many{v}\}
 		}{redex containing $l$}\\
 		\produzione{\mathit{error}}{
 			\ctx_v[\Kw{M}\oR l; v;\Kw{false}\cR]
-			,\quad\text{with }
-			\ctx_v \text{not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\ \Kw{catch}\ \oC\_\cC]
+			,\quad\text{\IO{where} }
+			\ctx_v \text{ not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\ \Kw{catch}\ \oC\_\cC]
 		}{validation error}
 	\end{grammatica}
-	\caption{Grammar}
+	\caption{Grammar}\label{f:grammar}
 \end{figure}
 
 
-\subheading{Grammar and Well Formedness Criteria}
-The detailed grammar is defined in Figure 1.
-The only non standard expression is the monitor. They are not present in the source code, but are inserted by our reduction rules. The object it monitors is the one referenced by $l$, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.invariant()$.
-We annotate the monitor expression with $l$ to ensure
-that if the invariant check fails, it is precisely $l$ that is invalid.
-We use a failed monitor expression (i.e. when $\e_2$ is the value \Q@false@) to represent throwing unchecked exceptions.
-In addition, our reduction rules annotate the body of \Q@try@ expressions with
-the original state of memory. This is used to propagate the guarantees of strong exception safety,
-that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
+\subheading{\IO{Grammar}}
+The detailed grammar is defined in Figure \ref{f:grammar}. \IO{Most of it is pretty standard, however we have \emph{monitor expressions} of the form $\Kw{M}\oR l;\e_1;\e_2\cR$. They should not be present in the source code, rather they are generated by our reduction rules. Here, $l$ refers to the object being monitored, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.\invariant$. If, at any point in execution, $\e_2$ is \Q!false!, then $l$'s invariant failed to hold; such a monitor expression corresponds to the throwing of an unchecked exception.}
 
-Our well formedness criteria cooperate with the simplified language grammar to enforce the restrictions mentioned before:
+\IO{In addition, our reduction rules will annotate} \Q@try@ expressions with
+the original state of memory. This is used to \IO{model the guarantee} of strong exception safety, that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
+
+\subheading{\IO{Well Formedness Criteria}}
+\IO{We additionally restrict the grammar with the following well formedness criteria:}
 \begin{itemize}
-	\item \Q!invariant! methods and capsule mutators satisfy the restrictions in \ref{s:protocol}.
-	\item Field accesses in method are of the form
-	\Q@this.@$f$, and of form $l\singleDot\f$ in the main expression.
-	
-	%We could relax the restrictions for parameter and return types, since \Q@this@ is \Q@capsule@, it is a unique alias.
-	\item 
-	During reduction, locations that are preserved by a \Q@try@ block are
-	never monitored; formally 
-	for $\Kw{try}^\sigma\oC\e\cC\_$, $\e$ is not of the form $\ctx[$\Q@M(@$l;\_$\Q@)@$]$, for any $l\in\sigma$.restrictions
+	\item $\Kw{invariant}$ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
+	\item \IO{Field accesses in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$.}
+	\item \IO{Field accesses in the main expression are of the form $l.f$ or $l.f\equals\e$.}
+	\item \IO{Locations} that are preserved by a \Q@try@ \IO{blocks} are
+	never monitored, that is, for $\Kw{try}^\sigma\oC\e\cC\ \_$, \IO{if} $\e$ \IO{is of} the form $\ctx[$\Q@M(@$l;\_$\Q@)@$]$, \IO{then} $l\notin\sigma$.
 \end{itemize}
 
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}
@@ -176,15 +163,15 @@ Our well formedness criteria cooperate with the simplified language grammar to e
 		\sigma(l)=C\{\_\}\\
 		C.m=\mdf\,\Kw{method}\,\T\,\m\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\e\\
 		
-		\text{if }\ \exists \f\text{ such that}\ \ C.f=\Kw{capsule}\,\_,
+		\text{if }\ \exists \f\text{ such that } C.f=\Kw{capsule}\,\_,
 		\mdf=\Kw{mut},
 		\\*\quad\f\, \text{inside}\, C\singleDot\m
-		\text{ and }
+		\text{\IO{, and }}
 		\f\,\text{inside}\, C\singleDot\Kw{invariant}
 		
 		\\*
 		\text{then }\e'=\Kw{M}\oR l;\e;l\singleDot\Kw{invariant}\oR\cR\cR\\*
-		\text{otherwise }\ \e'= \e
+		\text{otherwise }\e'= \e
 	\end{array}
 }
 \rowSpace
@@ -220,17 +207,14 @@ Our well formedness criteria cooperate with the simplified language grammar to e
 }{}
 %\quad
 \end{array}$
-\caption{Reduction rules}
+\caption{Reduction rules}\label{f:reductions}
 \end{figure}
 
 \loseSpace
 \subheading{Reduction rules}
-Reduction rules are defined in Figure 2.
-These rules are pretty standard;
-\textsc{mcall}
-uses the auxiliary function \emph{inside},
-formally defined as follows:
-
+\IO{Our} reduction rules are defined in Figure \ref{f:reductions}.
+\IO{They} are pretty standard\IO{, except for our handling of monitor expressions.}
+\IO{We define \emph{inside} as follows:}\par
 $%\begin{array}{l}
 \f\, \textit{inside}\, C\singleDot\m\text{ iff }
 C\singleDot\m=\_\,\Kw{method}\_\,\ctx[\Kw{this}\singleDot\f]
@@ -240,60 +224,55 @@ $
 %\noindent Inserting the monitor expressions during reduction is convenient for the proof,
 %but it could instead be done ahead of time.
 
-\noindent Monitors are added for all field updates and \Q@new@ expressions, and for all
-method calls of capsule mutators.%
-\footnote{%
-There is no need to monitor \Q@capsule@ methods, since their receiver is a unique alias and hence can never be used again.
-}
-Monitor expressions are only a proof device, and an execution on a real hardware do not need to represent them. 
+\noindent Monitors are added \IO{after} all field updates, \Q@new@ expressions, and calls to capsule mutators.%
+\IODel{\footnote{\IODel{%
+There is no need to monitor \Q@capsule@ methods, since their receiver is a unique alias and hence can never be used again.%
+}}}
+\IO{Our formalism of monitor expressions are only a proof device, they need not be part of the language itself, for example L42 implements our invariant protocol by generating wrapper functions over primitive setters and factory methods.}
+\IODel{Monitor expressions are only a proof device, and an execution on a real hardware do not need to represent them. 
 In L42 field updates are always performed throughout a setters,
 thus we can just inject
-calls to \Q@invariant@ on setters, at the end of constructor bodies and at the end of  capsule mutators.
+calls to \Q@invariant@ on setters, at the end of constructor bodies and at the end of  capsule mutators.}
 
-The interaction with monitors, evaluation contexts and exceptions is interesting:
+\IO{Our \textsc{ctxv} rule evaluates monitor expressions, $\Kw{M}\oR l;\e_1;\e_2\cR$, by first evaluating $\e_1$ and then $\e_2$. If $\e_2$ evaluates to \Q@true@, then the monitor succeeded, and will yield the result of $\e_1$. If however $\e_2$ evaluated to \Q!false!, then the monitor will be `caught' by our \textsc{try ok} rule, as will any other uncaught monitor failure in $e_1$ or $e_2$}.
+\IODel{The interaction with monitors, evaluation contexts and exceptions is interesting:
 a monitor releases the value if the invariant check evaluates to \Q@true@, and produces an error if the 
 check evaluates to \Q@false@.
 If either monitor expressions $\e_1$ or $\e_2$ are not already values, the execution is propagated inside
 by \textsc{ctxv}.
 If either $\e_1$ or $\e_2$ evaluate to an error, such error is captured by 
-\textsc{try error}.
-Thanks to strong exception safety,
-we do not need to worry
-if the (partial) execution of $\e_1$ broke the object referenced by $l$.
+\textsc{try error}.}
 
-\subheading{Statement of Soundness} We define
-a deterministic reduction arrow, requiring exactly one reduction is possible:\\*
-\indent$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$ iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{ where } \sigma_0|e_0\rightarrow \sigma|e\}$
+\subheading{Statement of Soundness}
+We define a deterministic reduction arrow, \IO{only if} exactly one reduction is possible:\\*
+\indent$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$ iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{, where } \sigma_0|e_0\rightarrow \sigma|e\}$\IOComm{Arn't our reduction rules allready deterministic?}
 
 \noindent An object is \emph{valid} iff calling its \Q@invariant@ method would
-deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an error.
-We also require evaluating \Q@invariant@ to preserve existing memory ($\sigma$): but new objects ($\sigma'$) can be created and freely mutated.
+deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an \emph{error}.
+We also require evaluating \Q@invariant@ to preserve existing memory ($\sigma$)\IO{, however} new objects ($\sigma'$) can be created and freely mutated.
 
-\indent$valid(\sigma,l)$ iff $\sigma | l.invariant()\Rightarrow^+ \sigma,\sigma' | \text{\Q@true@}$.\loseSpace
-
+\indent$\mathit{valid}(\sigma,l)$ iff $\sigma | l.\invariant {\Rightarrow^+} \sigma,\sigma' | \Kw{true}$.\loseSpace
+\IOComm{When should we use $\Kw{true}$ instead of \Q@true@?}
 
 \noindent 
-To allow the invariant method to be called on an invalid object, and to allow its body to access the fields we define the set of trusted steps:
-the call to \Q@invariant@ and the field accesses inside its evaluation.
-Note that just the single small step reduction
-of calling \Q@invariant@ is trusted, not the whole evaluation of the \Q@invariant@ expression.
+To allow the invariant method to be called on an invalid object, \IO{and access fields on its receiver}, we define the set of trusted execution steps\IO{ as the} the call to \Q@invariant@ itself, and any field accesses inside its evaluation. \IO{Note that this only applies to single small step reductions, and not the entire evaluation of \Q!invariant!.}
 
 \loseSpace
 \noindent $\mathit{trusted}(\ctx_v,r_l)$ iff\\*
 \indent either
-$r_l=l.invariant()$ and
+$r_l=l.\invariant$ and
 $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\square$\Q@)@$]$,\\*
 \indent or
 $r_l=l$\Q@.f@ and
 $\ctx_v=\ctx_v'[$\Q@M(@$l$\Q@;@$v$\Q@;@$\ctx_v''$\Q@)@$]$.
 \loseSpace
 
-\noindent Finally, we define what it means for a language to soundly enforce our invariant protocol: every object involved in any untrusted redex is valid.
+\noindent Finally, we define what it means for \IO{this} language to soundly enforce our invariant protocol: every object \IO{referenced by} any untrusted redex is valid.
 
 \begin{theorem}[Soundness]
 if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and
 $c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
-either $valid(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
+either $\mathit{valid}(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
 \end{theorem}
 
 
