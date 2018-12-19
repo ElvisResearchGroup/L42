@@ -2,13 +2,12 @@
 There are various interpretations as to when class invariants should hold and how they should be checked.
 We present a sound invariant protocol, where invariants hold for all objects involved in execution.
 We soundly support mutation, dynamic dispatch, exceptions and non determinism, while requiring only a modest number of runtime checks and annotations.
-Invariants are specified as methods whose execution is statically guaranteed to be deterministic and to not 
+Invariants are specified as methods whose execution is statically guaranteed to be deterministic and \IODel{to} not 
 access any externally mutable state.
 This design restricts the range of expressible invariants but improves upon the usability and performance of our system compared to prior work.
 
-We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages.
+We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages. \IOComm{mention the family?}
 We statically control aliasing, mutability, and determinism using
 a flavour of type modifiers and object capabilities already present in three different experimental languages.
-We also formalise our invariant protocol and prove 
-type modifiers and object capabilities are sufficient to ensure its soundness.
+We also formalise our invariant protocol and prove \IO{that such} type modifiers and object capabilities are sufficient to ensure \IO{the soundness of our protocol}.
 \end{abstract}

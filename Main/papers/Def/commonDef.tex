@@ -321,29 +321,40 @@ privateNameForSaveWithName#1\endcsname%
 
 \newcommand{\NoteColour}[2]{\textcolor{#1}{#2}}
 \newcommand{\NoteText}[1]{{#1}}
+\newcommand{\NoteComm}[3]{\NoteText{\scriptsize \textcolor{#1}{[#2{:} #3]}}}
+\newcommand{\NoteDel}[2]{\NoteText{\textcolor{#1}{[#1]}}}
+
 \newcommand{\HideNotes}{%
 	\renewcommand{\NoteColour}[2]{##2}%
-	\renewcommand{\NoteText}[1]{}%
+	
+	% Makes \NoteText give the same 'spacing' as a space character
+	% i.e. preceding or suceeding this command by any number of spaces
+	% should be equivalent to a single space
+	\renewcommand{\NoteText}[1]{
+		\ifdim\lastskip>0pt\else\space\fi% add a space if their were none beforhand
+		\llap{\textcolor{red}{$\cdot$}}%
+		\ignorespaces}% ignore following spaces
 }
+
 \newcommand{\EZ}[1]{\NoteColour{blue}{#1}} 
-\newcommand{\EZComm}[1]{\NoteText{\scriptsize \textcolor{blue}{[Elena{:} #1]}}}
+\newcommand{\EZComm}[1]{\NoteComm{blue}{Elenna}{#1}}
 \newcommand{\MS}[1]{\NoteColour{green}{#1}} 
-\newcommand{\MSComm}[1]{\NoteText{\scriptsize \textcolor{green}{[Marco{:} #1]}}}
+\newcommand{\MSComm}[1]{\NoteComm{green}{Marco}{#1}}
 \newcommand{\IO}[1]{\NoteColour{blue}{#1}}
-\newcommand{\IOComm}[1]{\NoteText{\scriptsize \textcolor{blue}{[Isaac{:} #1]}}}
-\newcommand{\IODel}[1]{\NoteText{\textcolor{blue}{[#1]}}}
+\newcommand{\IOComm}[1]{\NoteComm{blue}{Isaac}{#1}}
+\newcommand{\IODel}[1]{\NoteDel{blue}{#1}}
 \newcommand{\AP}[1]{\NoteColour{purple}{#1}} 
-\newcommand{\APComm}[1]{\NoteText{\scriptsize \textcolor{purple}{[Alex{:} #1]}}}
+\newcommand{\APComm}[1]{\NoteComm{purple}{Alex}{#1}}
 \newcommand{\KJX}[1]{\NoteColour{brown}{#1}} 
-\newcommand{\KJXComm}[1]{\NoteText{\scriptsize \textcolor{brown}{[kjx{:} #1]}}}
+\newcommand{\KJXComm}[1]{\NoteComm{brown}{kjx}{#1}}
 \newcommand{\MAZ}[1]{\NoteColour{purple}{#1}}
-\newcommand{\MAZComm}[1]{\NoteText{\scriptsize \textcolor{purple}{[Max{:} #1]}}}
+\newcommand{\MAZComm}[1]{\NoteComm{purple}{Max}{#1}}
 \ifdefined\AC%
   \renewcommand{\AC}[1]{\textcolor{orange}{#1}}%
 \else%
   \newcommand{\AC}[1]{\textcolor{orange}{#1}}%
 \fi%
-\newcommand{\ACComm}[1]{{\scriptsize \textcolor{orange}{\AC{[Andrea{:} #1]}}}}
+\newcommand{\ACComm}[1]{\NoteComm{orange}{Andrea}{#1}}
 \fi
 
 

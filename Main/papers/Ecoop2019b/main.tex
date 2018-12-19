@@ -53,7 +53,6 @@
 }
 
 %\HideNotes
-%\renewcommand{\IODel}[1]{} % Hide deletions, but not notes
 \nolinenumbers % Turn of the darn things! (remove this when we submit the paper)
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
@@ -71,7 +70,7 @@
 	\Copyright{Isaac Oscar G. and Marco Servetto} %mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
 \end{comment}
 
-\subjclass{Dummy classification}% mandatory: Please choose ACM 2012 classifications from https://www.acm.org/publications/class-2012 or https://dl.acm.org/ccs/ccs_flat.cfm . E.g., cite as "General and reference $\rightarrow$ General literature" or \ccsdesc[100]{General and reference~General lwrapfigureiterature}. 
+\subjclass{\IOComm{What should we put here?}}% mandatory: Please choose ACM 2012 classifications from https://www.acm.org/publications/class-2012 or https://dl.acm.org/ccs/ccs_flat.cfm . E.g., cite as "General and reference $\rightarrow$ General literature" or \ccsdesc[100]{General and reference~General lwrapfigureiterature}. 
 
 \begin{comment}
 \begin{CCSXML}
@@ -121,7 +120,6 @@
 \ccsdesc[300]{Software and its engineering~Dynamic analysis}
 \ccsdesc[300]{Software and its engineering~Constraints}
 \end{comment}
-
 \keywords{type modifiers, object capabilities, runtime verification, class invariants}%mandatory
 % \category{}%optional, e.g. invited paper
 %\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
@@ -164,6 +162,7 @@
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
 \renewcommand{\mapsto}{\mathrel{\origMapsTo}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
+\lstset{morekeywords={expose}}
 \begin{document}
 \maketitle
 \input{abstract}
