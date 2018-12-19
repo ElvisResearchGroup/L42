@@ -45,7 +45,7 @@
 \newcommand{\loseSpace}{\vspace{1ex}}
 
 \newcommand{\REV}[3]{%
-	\NoteColour{red}{#1\NoteText{\footnote{
+	\NoteColour{red}{#1\NoteText{\footnote{%
 		\textcolor{red}{\textbf{REV#2{:} #3}}}}}}
 \newcommand{\subheading}[1]{%
 \loseSpace%
@@ -53,6 +53,10 @@
 }
 
 %\HideNotes
+%\renewcommand{\NoteDel}[2]{%
+%	\unskip\space%
+%	\llap{\textcolor{red}{$\cdot$}}%
+%	\ignorespaces}
 \nolinenumbers % Turn of the darn things! (remove this when we submit the paper)
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
@@ -153,16 +157,23 @@
 
 \let\origSingleDot=\singleDot % reduce spacing arround the dot operator
 \renewcommand{\singleDot}{\kern-1.2pt\origSingleDot\kern-1.8pt} 
+
 % Hack (see https://tex.stackexchange.com/questions/299798/make-characters-active-via-macro-in-math-mode)
 % this makes '.' in math mode an alias for \singleDot
-\begingroup\lccode`~=`.\relax
-\lowercase{\endgroup\def~}{\singleDot}
-\AtBeginDocument{\mathcode`.="8000}
+\newcommand{\defActiveMathChar}[2]{%
+	\begingroup\lccode`~=`#1\relax%
+	\lowercase{\endgroup\def~}{#2}%
+	\AtBeginDocument{\mathcode`#1="8000}%
+}
+\defActiveMathChar{.}{\singleDot}
+
+\newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon{}#2\semiColon{}#3\cR}}
 
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
 \renewcommand{\mapsto}{\mathrel{\origMapsTo}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
 \lstset{morekeywords={expose}}
+
 \begin{document}
 \maketitle
 \input{abstract}

@@ -330,10 +330,7 @@ privateNameForSaveWithName#1\endcsname%
 	% Makes \NoteText give the same 'spacing' as a space character
 	% i.e. preceding or suceeding this command by any number of spaces
 	% should be equivalent to a single space
-	\renewcommand{\NoteText}[1]{
-		\ifdim\lastskip>0pt\else\space\fi% add a space if their were none beforhand
-		\llap{\textcolor{red}{$\cdot$}}%
-		\ignorespaces}% ignore following spaces
+	\renewcommand{\NoteText}[1]{\unskip\space\ignorespaces}
 }
 
 \newcommand{\EZ}[1]{\NoteColour{blue}{#1}} 

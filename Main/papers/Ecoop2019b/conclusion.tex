@@ -30,15 +30,15 @@ can also support our invariant protocol with minimal added complexity.
 
 
 We demonstrated the applicability and simplicity of our approach with a GUI example.
-Our invariant protocol performs several orders of magnitude less checks than visible state semantics, and requires much less annotations 
-than Spec\#, (the system with the most comparable goals). \IO{In Section~\ref{s:formalism} we formalised our invariant protocol and in Appendix~\ref{s:proof} we prove it sound.}
+Our invariant protocol performs several orders of magnitude less checks than visible state semantics, and requires much less annotation\IODel{s} 
+than Spec\#, (the system with the most comparable goals). In Section~\ref{s:formalism} we formalised our invariant protocol and in Appendix~\ref{s:proof} we prove it sound.
 %In appendix~\ref{s:formalism} we formalise our invariant protocol and prove it sound. 
 To stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more), we do not formalise any specific type system.
 
 
 One interesting avenue for future work would be to
-use invariants to encode pre and post conditions
-as done by~\cite{Flanagan06hybridtypes}: where pre and post conditions are encoded as the invariants of the parameter and return types (respectively).
+use invariants to encode pre and post condition\IO{s,
+a}s done by~\cite{Flanagan06hybridtypes}: where pre and post conditions are encoded as the invariants of the parameter and return types (respectively).
 Without good syntax sugar, such an approach could be quite verbose, however it would ensure that a methods precondition holds during the entire execution of a method, and not just the beginning. In addition this could be more efficient than traditional runtime checking when the same argument is used in the invocations of methods with the same pre condition, as happens often in practice for recursive methods: where many parameters are simply parsed unmodified in recursive calls.
 
 % a method could be declared as taking a class whose invariant corresponds to the method's pre-condition,  and returning a class whose invariant corresponds to the pos-condition.
@@ -59,10 +59,10 @@ such strong restrictions allow for sound and efficient injection of invariant ch
 These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. 
 
 In order to obtain safety, simplicity, and efficiency we traded some expressive power:
-\MS{the \Q@invariant@ method can only refer to immutable and encapsulated state.}
-\MS{This means that while we} can easily verify that a doubly linked list of immutable elements
-\MS{is correctly linked up,}
-\REV{we can not do the same for a doubly linked lists of mutable elements.}{2}{???} Our approach does not prevent correctly implementing such data structures, but the \Q@invariant@ method would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
+the \Q@invariant@ method can only refer to immutable and encapsulated state.
+This means that while we can easily verify that a doubly linked list of immutable elements
+is correctly linked up,
+we can not do the same for a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data structures, but the \Q@invariant@ method would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
 In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
 
 % To verify those data-structures, in future work
