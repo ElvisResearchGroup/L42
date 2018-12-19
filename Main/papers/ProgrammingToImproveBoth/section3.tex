@@ -44,8 +44,8 @@ This encumbers the programmer:
 to avoid conceptual errors that are not captured by the type system, 
 they have to \emph{use} \Q@Bag@ very carefully.
 
-
-\paragraph{A (broken) attempt to fix the Problem in Java.}
+\saveSpace\saveSpace\saveSpace\saveSpace
+\paragraph{A (broken) attempt to fix the Problem in Java:}
 One could \emph{retroactively} fix this problem by introducing \Q@AbstractSetOrBag@
 and making both \Q@Bag@ and \Q@Set@ inherit from it:
 \saveSpace\saveSpace
@@ -80,8 +80,9 @@ Note that this last solution is changing the public interface of the formerly re
 this may even break backwards-compatibility (if a client program was using
 reflection, for example).
 \end{itemize}
-
+\saveSpace\saveSpace
 \subsection{Sets and Bags in \name}
+\saveSpace\saveSpace\saveSpace\saveSpace
 Instead, in \name, if we were to originally declare
 \saveSpace\saveSpace\begin{lstlisting}
 Set={/*set implementation*/} 
