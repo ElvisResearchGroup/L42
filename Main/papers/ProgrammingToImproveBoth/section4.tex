@@ -23,14 +23,14 @@ To illustrate how \name improves reuse,
 we show a novel approach
 to smoothly integrating state and traits: a challenging problem that has limited the flexibility of traits and
 reuse in the past.
-The idea of \MS{flattening} is elegant and successful in module
+The idea of flattening is elegant and successful in module
 composition languages~\cite{ancona2002calculus} and several trait
 models~\cite{ducasse2006traits,Bergel2007,BETTINI2013521,fjig}. 
-\MS{Flattening is elegant in these two settings
+Flattening is elegant in these two settings
 since traits (or modules) only have one kind of member: methods (or functions). In this way 
 flattening is defined as simply collecting 
 all members from all used traits (or composed modules), where methods with same name and type signature are summed into a single one.
-At most one of those summed methods can have a body, which will be propagated into the result.}
+At most one of those summed methods can have a body, which will be propagated into the result.
  However the research
 community is struggling to make it work with object state (constructors
 and fields) while achieving the following goals:
@@ -42,9 +42,9 @@ and fields) while achieving the following goals:
 \item making it easy to add new fields;
 \item allowing self instantiation: trait methods can create instances of the classes using them.
 \end{itemize}
-\MS{An in depth discussion on how such goals are 
+An in-depth discussion on how such goals are 
 difficult to achieve and how they have been challenged
-in the existing literature is available in Section 7.3.}
+in the existing literature is available in Section 7.3.
 \subsection{State of the art}
 We first present the state of the art solution: 
 traits have only methods but classes also have fields and constructors.
@@ -108,7 +108,7 @@ It has some advantages, but also disadvantages:
 
 \begin{itemize}
 
-\item {\bf Advantages:} This approach is associative and commutative, even self \MS{instantiation}
+\item {\bf Advantages:} This approach is associative and commutative, even self instantiation
   can be allowed if the trait requires a static method
   returning \Q@This@. The class will then implement the methods returning \Q@This@
   by forwarding a call to the constructor.
@@ -118,7 +118,6 @@ It has some advantages, but also disadvantages:
 %   more complex than a model with methods only.
 The class needs to handle all the state, even state conceptually
    private to a trait. 
-\MSComm{REMOVED: There is no way for a trait to specify a default value for a field.}
  Moreover, writing such obvious code to close
   the state/fixpoint in the class 
    with the constructors and fields and getter/setters and factories is tedious and error prone; such code could be automatically
@@ -128,13 +127,9 @@ The class needs to handle all the state, even state conceptually
 \subsection{Our proposed approach to State: Coherent Classes}
 
 In \name there is no need to write down constructors and fields. In fact, in
-\name there is not even syntax for those constructs!  The \MS{intuition} is that
-any class \MS{whose abstract methods could all be seen as field getters, setters, or factories,%
-%\footnote{\MS{An all-args-constructor is a constructor taking in input as many parameter as the fields and using those parameter values just to initialize the corresponding field.}}
-}
-%
-is a
-\emph{coherent} class.  In most other languages, a class is
+\name there is not even syntax for those constructs!  The intuition is that
+a class where \emph{all} abstract methods can be seen as field getters, setters, or factories,
+is a \emph{coherent} class.  In most other languages, a class is
 abstract if it has abstract methods.  Instead, we call a class
 abstract only when the set of abstract methods are not coherent. That
 is, the abstract methods cannot be automatically recognised
@@ -161,29 +156,29 @@ method acts as a \emph{factory method}.
 The signature of the factory method plays an important role, since
 abstract state operations are identified by using the names of the
 factory method arguments.
-\MS{The idea of creating objects in a single atomic step by providing a value for all their fields is well explored (such as with primary constructors in Scala) and does not limit the freedom of programmers to specify personalised initialisation strategies.
-A static method can freely compute concrete field values before creating objects. Appendix B.4 discusses usability implications of this pattern.}
+The idea of creating objects in a single atomic step by providing a value for all their fields is well explored (such as with primary constructors in Scala) and does not limit the freedom of programmers to specify personalised initialisation strategies.
+A static method can freely compute concrete field values before creating objects. Appendix B.4 discusses usability implications of this pattern.
 \end{itemize}
 \noindent
 While getters and setters are fundamental operations, it is possible to
 support more operations. For example:
 \begin{itemize}
 \item \Q@method This withX(int that)@
-may create a new instance that is like \Q@this@ \MS{except that} field \Q@x@ now has value \Q@that@.
-\MS{Those kinds of methods 
+may create a new instance that is like \Q@this@ except that field \Q@x@ now has value \Q@that@.
+Those kinds of methods 
 performs functional field updates
-and are called \emph{withers}}.
+and are called \emph{withers}.
 \item \Q@method void update(int x, int y)@
 may do two field updates at a time.
 \item\Q@method This clone()@ may do a shallow clone of the object.
 \end{itemize}
 
-\MS{The concept of `abstract state operations'
-is novel, and we think it}
-could become a very interesting area of research.
+The concept of `abstract state operations'
+is novel, and we think it
+is a promising area for further research.
 The work by Wang et al.~\cite{wang2016classless} explores a particular
 set of such abstract state operations,
-\MS{ but we suspect there are more unexplored possible options that could be even more beneficial.}
+but we suspect there are more unexplored possible options that could be even more beneficial.
 
 \paragraph{Points in \name:}
 In \name and with our approach to handle the state, 
@@ -195,8 +190,8 @@ PointAlgebra= Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 \saveSpace\saveSpace
 \noindent
-  Note: we declare the methods independently and compose the result
-  as we wish. 
+%  Note: we declare the methods independently and compose the result
+%  as we wish. 
 
   \paragraph{Improved solution} So far the current solution still
   repeats the abstract methods \Q@x@, \Q@y@ and \Q@of@.
@@ -221,7 +216,7 @@ pointDiv= ...
 PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
 \saveSpace\saveSpace      
-Now the code is fully modularized, that is: each trait defines exactly one method \MS{and contains its abstract dependencies. In this way it can be modularly composed with any code requiring such a method.}
+Now the code is fully modularized, that is: each trait defines exactly one method and contains its abstract dependencies. In this way it can be modularly composed with any code requiring such a method.
 
 \paragraph{Case Study 1:}
 In order to evaluate our approach
@@ -262,7 +257,7 @@ Of these, $11$ method bodies were duplicated because Java does not support multi
  On the other hand, the solution in \name was much more compact since we could efficiently
 reuse traits (this is why the number of top-level concepts in \name was larger i.e. $21$ due to the
  presence of traits in this solution).
-In the detail, Java required $6$ lines for the initial \Q@Point@ class,
+In detail, Java required $6$ lines for the initial \Q@Point@ class,
 $5$ lines for each of the $4$ arithmetic operations, $7$ lines for each of the $6$ combinations
 of two different operations, $9$ lines for each of the $4$ combinations of three different 
 operations and finally $11$ lines for the class with all four operations.
@@ -388,12 +383,11 @@ Note how we are relying on the fact that the code literal
 thus we can just call \Q@_1merge@ and \Q@_2merge@ without
  declaring their abstract signature explicitly.
 
-\MS{
 In this last example, when we tried to obtain state extensibility, we refactored the code to introduce  the \Q@merge(This)@ method.
 This suggests that we had to
 anticipate the need for state extensibility
 in order to design our original code.
-As illustrated by the following example, we can instead rely on the \Q@super@ operator to inject the \Q@merge(This)@ method when needed.}
+As illustrated by the following example, we can instead rely on the \Q@super@ operator to inject the \Q@merge(This)@ method when needed.
 
 \saveSpace\saveSpace \begin{lstlisting}
 p=/*as originally designed: no merge*/

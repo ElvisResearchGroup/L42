@@ -46,7 +46,7 @@ types. However they provide code reuse.
 %time aiming at code reuse. 
 Trait declarations 
 look very much like class declarations, but trait names 
-start with a lowercase letter: even syntactically they can not be used as types.
+start with a lowercase letter (even syntactically they can not be used as types).
 \saveSpace\saveSpace
 \begin{lstlisting}
  Utils={ static method int m(A a){return ...} }
@@ -64,10 +64,10 @@ names are allowed.
 
 The crucial point is the call \Q@Utils.m(this)@ inside trait \Q@ta@:
 the corresponding call in the Java code is correct since Java guarantees that such occurrence of \Q@this@ will be a subtype of \Q@A@ everywhere it is reused.
-\MS{In \name 
+In \name 
 the type of \lstinline{this} in
 \Q@ta@ has no relationship to the type \lstinline{A};
-thus the code \Q@Utils.m(this)@ is illtyped.}
+thus the code \Q@Utils.m(this)@ is illtyped.
 
 The following second attempt would not work either:
 \saveSpace\saveSpace
@@ -133,23 +133,25 @@ This concept is natural for a Java programmer, but was not supported
 in previous work \cite{BETTINI2013521,deep}. Those works require all
 dependencies in code literals to be explicitly declared, so that the
 code literal is self-contained;
-\MS{in this way it can be typed in isolation before flattening.}
+in this way it can be typed in isolation before flattening.
 However, this results in
 many redundant abstract method declarations.
 
 \paragraph{Semantics of Use:}
-\MS{The trait semantic is defined with flattening:
- \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits{.}}%
-\footnote{\MS{
-The flattening semantic is the simplest trait
-semantic to formalize and understand.
-However, if implemented naively, it may cause a lot of
+The semantics of traits is defined with flattening, which is 
+simple to formalize and understand.
+However, if implemented naively, flattening may cause a lot of
 bytecode duplication.
-The `delegation semantic'%
+The `delegation semantics'%
 ~\cite{lagorio2009featherweight},
 is a proposed alternative semantic model for traits
-that is observationally equivalent to flattening but do not require bytecode duplication. The formalism presented here will rely on simple flattening; we expect the techniques of \cite{lagorio2009featherweight} would be useful to produce an efficient implementation in term of bytecode space.
-}}%
+that is observationally equivalent to flattening but does not require
+bytecode duplication. The formalism presented here will rely on simple
+flattening, but we expect the techniques of
+\cite{lagorio2009featherweight} would be useful to produce an
+efficient implementation in term of bytecode space. 
+With the flattening semantics
+ \Q@A@ and \Q@B@ are equivalent to the inlined code of all used traits{.}%
 \saveSpace\saveSpace\begin{lstlisting}
 A=Use ta
 B=Use ta, { method int mb(){return this.ma();} }
@@ -164,14 +166,12 @@ B={implements IA
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@
  and \Q@B@; while subtyping is part of the class interface.%
-\footnote{\MS{
 This position has been defended by 
 Bracha~\cite{bracha1992programming}:
 the choice of inheriting behaviour %from some source 
 should be in the hands of the programmer; if a method implementation is not appropriate, such method can be
 overridden. If too many methods do not provide an appropriate behaviour, inheriting code from another location or implementing the behaviour from scratch may also be considered.
 This should not impact the interface exposed to the user, otherwise the programmer may be unable to change their implementation decisions at a later time.
-}}
 %
 In summary, to leak \Q@this@ in \name, either code reuse is disallowed, or an appropriate interface (\Q@IA@ in this case) must be implemented.
 We believe the code with \Q@IA@ better transmits programmer intention. Some
