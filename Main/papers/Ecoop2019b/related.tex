@@ -41,8 +41,8 @@ immutable classes must be final with only final fields that refer to immutable c
 %Instances of immutable classes are immutable objects.
 In Joe-E, every method that only takes instances of immutable classes is pure.
 %\IOComm{Worth mentioning Wyvern? Since alex mentioned that it enforces purirty? Perhaps he can write that section?}
-Their model however would not allow the verification of purity for invariant methods of mutable objects.
-In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. This means that in our model, every method taking only \Q@read@ or \Q@imm@ references is pure.
+Thus their model would not allow the verification of purity for invariant methods of mutable objects.
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. In our work, every method taking only \Q@read@ or \Q@imm@ \IO{\emph{references}} is pure\IO{, regardless of their class type}.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Class invariant protocols}
@@ -64,7 +64,7 @@ check and assume the invariant of an object after its construction, they handle 
 \item 
 %\LINE
 The invariant of the receiver before a public method call and at the end of every public method body needs to be ensured. The invariant of the receiver at the beginning of a public method body and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
-Some approaches ensure the invariant of \Q@this@ instead of the receiver of a method call~\cite{DBLP:journals/scp/MullerPL06}.
+Some approaches ensure the invariant of the receiver of the \emph{calling} method, rather than the \emph{called} method~\cite{DBLP:journals/scp/MullerPL06}.
 JML~\cite{JML} relaxes these requirements for helper methods, whose semantic is the same as if they were inlined.
 %\LINE
 %The invariant of the receiver (some approaches require the invariant of 'this' instead~\cite{?}) before a public (or non-helper~\cite{JML}) method call, and at the end of every method body needs to be ensured. The invariant of the receiver at the beginning of a public method body, and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
@@ -156,7 +156,7 @@ the study of contracts as refinements of types~\cite{findler2001contract}.}{3}{D
 
 Our invariant protocol is much stronger then
 visible state semantics, and keeps the invariant under tight control.
-Gopinathan \&al.'s.~\cite{Gopinathan:2008:RMO:1483018.1483028} approach keeps
+Gopinathan et. al.'s.~\cite{Gopinathan:2008:RMO:1483018.1483028} approach keeps
 a similar level of control:
 relying on powerful aspect oriented support, they detect any field update in the whole ROG of any object, and check all the invariants that such update may have violated.
 We agree with their criticism of visible state semantics, where  methods still have to assume that any object may be broken; in such case calling any public method would trigger an error, but while the object is just passed around (and for example stored in collections), the broken state will not be detected; Gopinathan et. al. says ``\emph{there are many instances where $o$'s invariant is violated by the programmer inadvertently changing the state of $p$ when $o$ is in a steady state. Typically, $o$ and $p$ are objects exposed by the API, and the programmer (who is the user of the API), unaware of the dependency between $o$ and $p$, calls a method of $p$ in such a way that $o$'s invariant is violated. The fact that the violation occurred is detected much later, when a method of $o$ is called again, and it is difficult to determine exactly where such violations occur.}''
@@ -184,11 +184,12 @@ Using TMs to enforce strong exception safety is a much simpler alternative, prov
 %Another approach used in the dynamic language Racket is to interpose on primitive operations like procedure-calls and field updates; this allows one to enforce visible-state semantics by wrapping invariant operations around such operations (as is done in aspect-oriented systems like Jose~{?}). This technique can be used with gradual typing to dynamically enforce `types' of mutable structures in a safe way.
 
 %\LINE
-\REV{\subheading{Chaperones and impersonators}~\cite{DBLP:conf/oopsla/StricklandTFF12} lift the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
+%\subheading{Chaperones and impersonators}
+Chaperones and impersonators~\cite{DBLP:conf/oopsla/StricklandTFF12} lifts the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
 to work on general purpose predicates, where
 values can be wrapped to ensure an invariant holds.
 This technique is very powerful and can be used to enforce pre and post conditions by wrapping function arguments and return values.
-Their approach allows wrapping invariant operations around method calls, as is done in aspect oriented systems like Jose~\cite{feldman2006jose}.}{3}{Dose not offer much explanation or comparison}
+Their approach allows wrapping invariant operations around method calls, as is done in aspect oriented systems like Jose~\cite{feldman2006jose}.
 \MSComm{I think this comparison is sufficient}
 %One of the advantages of their system is that is transparent to the user. 
 %\LINE
