@@ -397,4 +397,20 @@ Coherence: adding for ref equality
 read method Void referenceEq(read Any that) exception Void
 //class method Void referenceClassEq(class Any that) exception Void
 Similarly, we can use coherence to add destructive reads
+----
+New operator method extract.
+Similar to redirect, fundamental for mocking:
+so you can declare classes with methods, then you can extract the methods away
+and redirect them to simpler classes. 
+{
+X:{method S foo(S that)}
+method S(X x)=x.foo(S"hi")
+class method S(X this$,S that)=that 
+}[extract foo(that) of X to (this$,that)]
+=
+{
+X:{}
+class method S(X this$,S that)=that
+method S(X x)=This.exFoo(this$:x,that:S"hi") 
+}
 

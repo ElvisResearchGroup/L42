@@ -261,9 +261,9 @@ class AliceTest implements Alice<String,String,String,StringBuilder>{
   String newRock(int weight, Point p){return "Rock:"+p+"->"+weight;}
   String newWall(int height, Point p){return "Wall:"+p+"->"+height;}
   void set(StringBuilder map, String item){map.append(item+"\n");}
-  void test(String fileName, String expected)throws IOException{
-    StringBuilder map = load(fileName);
-    Assert.assertEquals(map.toString(),expected);
+  void test(String fileName, String expected){
+    try {Assert.assertEquals(load(fileName).toString(),expected);}
+    catch (IOException e) {throw new Error(e);}
     }
   @Test void test1(){test("justARock.txt","Rock:Point(5,6)->35\n");}
   @Test void test2(){..}
@@ -291,6 +291,10 @@ And this is how Alice and Bob can put their code together:
 
 \begin{lstlisting}
 class Game implements Bob, Alice<Item,Rock,Wall,Map>{
+  Map newMap(){return new Map();}
+  Rock newRock(int weight, Point p){return new Rock(weight,p);}
+  Wall newWall(int height, Point p){return new Wall(height,p);}
+  void set(Map map, Item item){map.set(item);}
   static void main(String args[]){new Game().start();}
   }
 \end{lstlisting}
@@ -307,45 +311,78 @@ to wrap logger objects inside Mock objects implementing specific interfaces.
 \item It is easy to refactor non modularized code into following this pattern.
 \end{itemize}
 
-\section{Liabilities and work around}
+\section{Liability: Implementing Generics}
+Java do not support extending/implementing generic arguments, thus
+certain code modularization would not be supported by this pattern;
+for example if Bob wanted to let Tim implement some kinds of \Q@Item@s,
+Tim code will need to see the \Q@Item@
+ interface as declared in Bob code.
+We do not think there is a work around to this issue.
+
+\section{Liability: many classes relying on dependencies}
 Our example looks quite nice since Alice is only defining a single
 method, that conceptually lives in a top level object of a class that is
 instantiated at the top level.
+
 If she had to define many interconnected classes that have
 to use \Q@Alice@ methods to access the generic arguments,
 the situation gets more complicated.
 
-One possibility would be to use conventional dependency injection
-so that every object can have a field (instead of many) with
-such single top level object.
-
-Another option is to use a form of singleton:
+To keep our explanation connected to the videogame example, let assume
+Bob asks Tim to implement the \Q@Item@ interface and all the \Q@Item@s
+classes.
+There are two solutions to this problem: one is
+to use a little bit of conventional dependency injection,
+the other one is to use a form of singleton.
+Here we show the revised code of Bob, that uses conventional dependency injection.
+It is needed since the map needs an instance of \Q@Bob@ (or \Q@Game extends Bob@)
+to extract the Point from the generic \Q@Item@.
 \begin{lstlisting}
-class Top{//this class can be defined just once for all the project
+interface Bob<Item>{
+  Map<Item> load(String fileName) throws IOException;
+  Point getPoint(Item item);
+  default void runGame() {}
+}
+class Map<Item>{
+  Bob<Item> top;//this fields is a dependency, the map need Bob
+  Item get(Point that) {return null;}
+  void set(Item item) {/*..*/top.getPoint(item);/*..*/}
+  List<Item>near(Point that){return null;}
+}
+\end{lstlisting}
+Here instead we show the code of Tim.
+He use a class \Q@Top@ that could be defined 
+just once for all the project.
+When the test or the game is run, \Q@Top.set(..)@ will be called, with either
+just a \Q@Tim@ (for testing) or a complete \Q@Game extends Tim@ for
+deployment.
+\begin{lstlisting}
+class Top{
   static Object instance;
   static void set(Object instance){Top.instance=instance;}
   @SuppressWarnings("unchecked")
-  static <T> T instance(){return (T) instance;}
+  static <T> T instance(T obj){return (T) instance;}
   }
-interface ModuleTop<A,B,C> extends Module<A,B,C>{
-  default C newC() {return Top.<Module<A,B,C>>instance().newC();}
-  default D newD(C c){return Top.<Module<A,B,C>>instance().newD(c);}
-  default C getC(D d){return Top.<Module<A,B,C>>instance().getC(d);}
-  ..
-  }
-class Bar<A,B,C>extends ModuleTop<A,B,C>{
-  ... newC() ... getC(newD(newC())...
+interface Tim<Map>{
+  List<Item>near(Map map,Point that);
+}
+interface TimTop<Map> extends Tim<Map>{
+  default List<Item>near(Map map,Point that){
+    return Top.instance(this).near(map, that);}
+}
+interface Item{Point p();/*..*/}
+class Rock<Map> implements Item, TimTop<Map>{
+  Point p;public Point p() {return p;}
+  public void interact(Map map) {/*..*/near(map,p);/*..*/}
   }
 \end{lstlisting}
-In this way, assuming the testing and the deployment environment
-call \Q@Top.set@ over an opportune object implementing all the relevant interfaces,
- \Q@Bar@ can create instances of \Q@A,B,C@ and call
-methods on them exactly as \Q@Module@ could.
-However, Java do not support extending/implementing generic arguments, thus
-certain code modularization would not be supported by this pattern;
-for example if \Q@Bob@ wanted to let \Q@Tim@ implement some kinds of \Q@Item@s,
-\Q@Tim@ will need to see the \Q@Item@
- interface as declared in \Q@Bob@ code.
+The idea is that all the concrete \Q@Item@s will implement \Q@TimTop@.
+In this way, they will be able to call all the methods of \Q@Tim@ over \Q@this@,
+without the need of having any additional fields.
+Of course this work around have some safety issues, since we need to somehow ensure
+\Q@Top.instance@ contains the right value;
+moreover it relies on a static fields, so we are performing an ugly
+global set up that influence the whole running application.
 
 \section{Related patterns}
 \begin{itemize}
