@@ -1,6 +1,7 @@
 reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
 
+//Here use DData or EiffelData instead of Data to test their protocols
 Person: Data <>< {
   S name, var Size daysLived, Size birthday
   mut method Void processDay(Size dayOfYear) (
@@ -14,6 +15,7 @@ Person: Data <>< {
 }
 Persons: Collections.vector(ofMut: Person)
 
+//Here use DData or EiffelData instead of Data to test their protocols
 Family: Data <>< { 
   capsule Box box
   Box: Data <>< {

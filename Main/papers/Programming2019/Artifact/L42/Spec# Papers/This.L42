@@ -3,7 +3,6 @@ CacheAdamTowel02:Load.cacheTowel()
 // Note: Size is the equivalent of Spec#'s int type
 
 // Also, we are not encoding pre & post-conditions that are unrelated to invariant checking
-// pages 41 - ...
 
 // page 42
 Reader: {interface implements Concept.Base // needed for toS etc. to work
@@ -79,7 +78,7 @@ DirFileList:FileListT & {
 }
 
 Main: (
-  // Trick to force compilation & typechecking of each of the above types
+  // Trick to force compilation and typechecking of each of the above types
   var class Any x = Reader
   x := Lexer
   x := DirFileList
