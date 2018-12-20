@@ -1,10 +1,10 @@
-\section{The Hamster example in Spec\#}
+\section{The Hamster Example in Spec\#}
 \label{s:hamster}
-\lstset{language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}}
+\lstset{language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists,capsule}}
 
-In this section we describe exactly why we chose to annotate the example from section~\ref{s:intro} in the way we did. For brevity, we will assume the default accessibility is \Q@public@, whilst in both Spec\# and C\#, it is \Q@private@.
+In this section we describe exactly why we chose to annotate the example from Section~\ref{s:intro} in the way we did. For brevity, we will assume the default accessibility is \Q@public@, whilst in both Spec\# and C\#, it is \IO{actually} \Q@private@.
 
-\subsection{The \Q@Point@ class} 
+\subheading{The \Q@Point@ Class} 
 The typical way of writing a \Q@Point@ class in C\# is as follows:
 \begin{lstlisting}
 class Point {
@@ -14,7 +14,7 @@ class Point {
 \end{lstlisting}
 This works exactly as is in Spec\#, however we have difficulty if we want to define equality of \Q@Point@s (see below).
 
-\subsection{The \Q@Hamster@ class} 
+\subheading{The \Q@Hamster@ Class} 
 The \Q@Hamster@ class in C\# would simply be:
 \begin{lstlisting}
 class Hamster {
@@ -28,7 +28,7 @@ Though we don't want \Q@pos@ to ever mutate, Spec\# currently has no way of enfo
 
 To enable Spec\# to reason about \Q@pos@'s validity, we will require that it be a \emph{peer} of the enclosing \Q@Hamster@; we can do this by annotating \Q@pos@ with \Q@[Peer]@. Peers are objects that have the same owner, implying that  whenever one is valid and/or consistent, the other one also is. This means that if we have a \Q@Hamster@, we can use its \Q@pos@, in the same ways as we could use the \Q@Hamster@.
 
-To simplify instantiation of \Q@Hamster@s, their constructors will take unowned \Q@Point@s, Spec\# will then automatically make the \Q@Point@ a peer. This is achieved by taking a \Q@[Captured]@ \Q@Point@ in the constructor (note how similar this is to taking a \Q@capsule@ \Q@Point@). Note that unlike our system, this prevents multiple \Q@Hamster@s from sharing the same \Q@Point@, unless both \Q@Hamster@s have the same owner, if \Q@Point@ were immutable, there would be no such restriction.
+To simplify instantiation of \Q@Hamster@s, their constructors will take unowned \Q@Point@s, Spec\# will then automatically make \IO{such} \Q@Point@ a peer. This is achieved by taking a \Q@[Captured]@ \Q@Point@ in the constructor (note how similar this is to taking a \Q@capsule@ \Q@Point@). Note that unlike our system, this prevents multiple \Q@Hamster@s from sharing the same \Q@Point@, unless both \Q@Hamster@s have the same owner, if \Q@Point@ were immutable, there would be no such restriction.
 
 With the aforementioned modifications, the \Q@Hamster@ becomes:
 \begin{lstlisting}
@@ -38,9 +38,9 @@ class Hamster {
 }
 \end{lstlisting}
 
-We don't want \Q@Point@ to be an immutable/value type, however if it were, the original annotated version would not have any problems.
+We don't want \Q@Point@ to be an immutable/value type, however if it were, the original \IO{un}annotated version would not have any problems.
 
-\subsection{The \Q@Cage@ class} 
+\subheading{The \Q@Cage@ Class} 
 The natural way to write this class in C\#, if it had native support for class invariants like Spec\#, would be:
 \begin{lstlisting}
 class Cage {
@@ -50,11 +50,10 @@ class Cage {
   invariant this.path.Contains(this.h.pos);
   void Move() { 
     int index = this.path.IndexOf(this.h.pos);
-    this.h.pos = this.path[index %$\,$ this.path.Count];
-  } 
+    this.h.pos = this.path[index % this.path.Count]; } 
 }
 \end{lstlisting}
-However for the above \Q@invariant@ to be admissible in Spec\#, \Q@this.path@ and \Q@this.h@ must both be owned by \Q@this@. In addition, the \emph{elements} of \Q@this.path@ need to be owned by \Q@this@, since \Q@this.path.Conatains@ will read them. Note that \Q@this.h.pos@ also needs to be owned by \Q@this@, however since \Q@pos@ is declared as \Q@[Peer]@, if \Q@this@ owns \Q@this.h@, it also owns \Q@this.h.pos@. To fix the invariant, we will declare \Q@h@, \Q@path@, and the elements of \Q@path@ as \emph{reps} (i.e. they are owned by the containing object). Finally, since \Q@Move@ modifies \Q@this.h@, \Q@this.h@ needs to be made consistent, which requires that the owner (\Q@this@) be made invalid; this can be achieved by using an \Q@expose(this)@ statement. \Q@expose(this){@\emph{body}\Q@}@ marks \Q@this@ as invalid, executes \emph{body}, checks that the invariant of \Q@this@ holds, and marks \Q@this@ valid again.
+However for the above \Q@invariant@ to be admissible in Spec\#, \Q@this.path@ and \Q@this.h@ must both be owned by \Q@this@. In addition, the \emph{elements} of \Q@this.path@ need to be owned by \Q@this@, since \Q@this.path.Conatains@ will read them. Note that \Q@this.h.pos@ also needs to be owned by \Q@this@, however since \Q@pos@ is declared as \Q@[Peer]@, if \Q@this@ owns \Q@this.h@, it also owns \Q@this.h.pos@. To fix the invariant, we will declare \Q@h@, \Q@path@, and the elements of \Q@path@ as \emph{reps} (i.e. they are owned by the containing object). Finally, since \Q@Move@ modifies \Q@this.h@, \Q@this.h@ needs to be made consistent, which requires that the owner (\Q@this@) be made invalid; this can be achieved by using an \Q@expose(this)@ statement. \Q@expose(this){@\emph{body}\Q@}@ marks \Q@this@ as invalid, executes \emph{body}, checks that the invariant of \Q@this@ holds, and \IO{then} marks \Q@this@ valid again.
 As we did with the \Q@Hamster@, we will simply take unowned \Q@h@ and \Q@path@ values, however we also need the elements of \Q@path@ to be unowned; since Spec\# has no \Q@[ElementsCaptured]@ annotation, we will require \Q@path@ to be unowned, and its elements (denoted by \Q@Owner.ElementProxy(path)@) to be owned by the same owner as \Q@path@ (which is \Q@null@).
 \begin{lstlisting}
 class Cage {
@@ -68,30 +67,28 @@ class Cage {
   invariant this.path.Contains(this.h.pos);
   void Move() { 
     int index = this.path.IndexOf(this.h.pos);
-    expose(this){this.h.pos=this.path[index%this.path.Count];}
-  } 
+    expose(this){this.h.pos=this.path[index%this.path.Count]; }} 
 }
 \end{lstlisting}
 
-The above constructor now fails to verify, since Boogie is unconvinced that its precondition actually holds when we initialise \Q@this.path@. This is because the constructor for \Q@Object@ (the default base class if none is provided) is not marked as \Q@[Pure]@; since it is (implicitly) called upon entry to \Q@Cage@'s constructor, Boogie has no idea as to what memory could've mutated, and so doesn't know whether the precondition still holds. The solution is to simply explicitly call it, but at the end of the constructor: \Q@{this.h = h; this.path = path; base();}@.
+The above constructor now fails to verify, since Boogie is unconvinced that its precondition actually holds when we initialise \Q@this.path@. This is because the constructor for \Q@Object@ (the default base class if none is provided) is not marked as \Q@[Pure]@; since it is (implicitly) called upon entry to \Q@Cage@'s constructor, Boogie has no idea as to what memory could've mutated, and so \IO{it} doesn't know whether the precondition still holds. The solution is to \IODel{simply} explicitly call it, but at the end of the constructor: \Q@{this.h = h; this.path = path; base();}@.
 
-The above \Q@Cage@ code however does not work, since \Q@List@ operations, such as \Q@Contains@ and \Q@IndexOf@, call the virtual \Q@Object.Equals@ method on \Q@Point@s to compare equality, however \Q@Object.Equals@ implements \emph{reference} equality, whereas we want \emph{value} equality.
+The above \Q@Cage@ code however does not work, since \Q@List@ operations, such as \Q@Contains@ and \Q@IndexOf@, \IO{will} call the virtual \Q@Object.Equals@ method \IODel{on \Q@Point@s} to \IODel{compare} \IO{compute} equality \IO{of \Q@Point@s. H}owever \Q@Object.Equals@ implements \emph{reference} equality, whereas we want \emph{value} equality.
 
-\subsection{Defining equality of \Q@Point@s}
+\subheading{Defining Equality of \Q@Point@s}
 The obvious solution in C\# is to just override \Q@Object.Equals@ accordingly, and let dynamic dispatch handle the rest:
 \begin{lstlisting}
 class Point {
   .. // as before
   override bool Equals(Object? o) {
     Point? that = o as Point;
-    return that != null && this.x == that.x && this.y == that.y;
-  }
+    return that!=null && this.x == that.x && this.y == that.y;}
 }
 \end{lstlisting}
-However this fails in Spec\# since \Q@Object.Equals@ is annotated with: \Q@[Pure]@\\*\Q@[Reads(ReadsAttribute.Reads.Nothing)]@, and of course every overload of it must also satisfy this. The \Q@Reads@ annotations specifies that the method cannot read fields of \emph{any} object, not even the receiver, this makes overloading the method useless.
+However this fails in Spec\# since \Q@Object.Equals@ is annotated with\IODel{:} \Q@[Pure]@\\*\Q@[Reads(ReadsAttribute.Reads.Nothing)]@, and of course every overload of it must also satisfy this. The \Q@Reads@ annotations specifies that the method cannot read fields of \emph{any} object, not even the receiver, this makes overloading the method useless.
 % Our best guess as to why \Q@Object.Equals@ is annotated like that is that they expect it to be the default reference-equality, annotating it like this could aid static verification as it implies that whether or not two objects are equal cannot change, even if their fields are modified.
 
-We resorted to making our own \Q@Equal@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@[Pure]@, and either annotated with \Q@[Reads(ReadsAttribute.Reads.Nothing)]@ or\\* \Q@[Reads(ReadsAttribute.Reads.Owned)]@ (the default, if the method is \Q@[Pure]@). The latter annotation means it can only read fields of objects owned by the \emph{receiver} of the method, as such a \Q@[Pure] bool Equal(Point that)@ method can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to pass the fields of the other point to the method:
+We resorted to making our own \Q@Equal@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@[Pure]@, and either annotated with\\* \Q@[Reads(ReadsAttribute.Reads.Nothing)]@ or \Q@[Reads(ReadsAttribute.Reads.Owned)]@\\* (the default, if the method is \Q@[Pure]@). The latter annotation means it can only read fields of objects owned by the \emph{receiver} of the method, \IODel{as such} \IO{so} a \Q@[Pure] bool Equal(Point that)@ method can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to pass the fields of the other point to the method:
 \begin{lstlisting}
 [Pure] bool Equal(double x, double y) {
   return x == this.x && y == this.y;}

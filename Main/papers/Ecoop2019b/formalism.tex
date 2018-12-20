@@ -253,7 +253,7 @@ $\ctx_v=\ctx_v'[\M{l}{v}{\ctx_v''}]$.
 
 \noindent Finally, we define what it means to soundly enforce our invariant protocol: every object referenced by any untrusted redex is valid.
 
-\begin{theorem}[Soundness]
+\begin{theorem}[Soundness]\rm
 if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and
 $c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \sigma|\ctx_v[r_l]$, then
 either $\mathit{valid}(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.

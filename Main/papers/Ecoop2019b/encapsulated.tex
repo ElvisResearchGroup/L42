@@ -149,7 +149,7 @@ l.addHeavy(f); // We pass another reference to `l' through f
 
 
 % Those restrictions also enforce that while executing a capsule-mutator no object outside the ROG of \Q@this@ can be mutated, and thus capability objects cannot be usedI/O can not be performed: the capability objects are externally visible mutable objects and thus the type system will never place them into a \Q@capsule@.
-%\subsection{The true expressibility of capsule modifiers}
+%\subheading{The true expressibility of capsule modifiers}
 %A capsule mutator method is a wrapper of a logical operation on a field, which is guaranteed to not see the \Q@this@ object.
 %Thus, if \Q@this@ where to become broken during 
 %the method's execution, we could not observe it until after. At first glance, it may seems that capsule %mutators allows for limited kinds of mutations.

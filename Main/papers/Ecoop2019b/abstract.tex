@@ -6,8 +6,7 @@ Invariants are specified as methods whose execution is statically guaranteed to 
 access any externally mutable state.
 This design restricts the range of expressible invariants but improves upon the usability and performance of our system compared to prior work.
 
-We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages. \IOComm{mention the family?}
-We statically control aliasing, mutability, and determinism using
+We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages. We statically control aliasing, mutability, and determinism using
 a flavour of type modifiers and object capabilities already present in three different experimental languages.
 We also formalise our invariant protocol and prove that such type modifiers and object capabilities are sufficient to ensure the soundness of our protocol.
 \end{abstract}
