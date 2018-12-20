@@ -301,7 +301,7 @@ public class InvariantClose {
       } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
         // Wrap the body up, but only if a public instance method
         // and don't check fields (unless they implement an interface)
-        this.delegate(true, !isGetter || !isSetter || mwt.getMt().isRefine(), mwt, newMwt);
+        this.delegate(!isGetter || !isSetter || mwt.getMt().isRefine(), mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
         // For all instance methods (even private ones) do an invariant check
         // unless their a field
