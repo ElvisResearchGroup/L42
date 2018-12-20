@@ -292,6 +292,7 @@ public class InvariantClose {
       MethodWithType newMwt = mwt.withMs(mwt.getMs().withUniqueNum(this.uniqueNum)).withMt(mwt.getMt().withRefine(false));
       // Not a state method
 
+      //D INVARIANT CHECKING: trueExpCore.ClassB.MethodWithType(doc=, ms=daysLived(that), mt=Mutable:This1.Size->Void, _inner=null)
       boolean isGetter = !mwt.getMdf().isClass() && mwt.getMs().getNames().isEmpty() && mwt.get_inner() == null;
       boolean isSetter = !mwt.getMdf().isClass() && !mwt.getMs().getNames().isEmpty() && mwt.get_inner() == null;
       if ((this._mutK != null && this._mutK.getMs().equals(mwt.getMs())) ||
@@ -299,9 +300,7 @@ public class InvariantClose {
         // TODO: Delete this horrorible way of handling factories
         this.delegate(true, mwt, _fwdK);
       } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
-        // Wrap the body up, but only if a public instance method
-        // and don't check fields (unless they implement an interface)
-        this.delegate(!isGetter || !isSetter || mwt.getMt().isRefine(), mwt, newMwt);
+        this.delegate((!isGetter && !isSetter) || mwt.getMt().isRefine(), mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
         // For all instance methods (even private ones) do an invariant check
         // unless their a field
@@ -488,6 +487,10 @@ public class InvariantClose {
       if (mwt.getMdfs().stream().anyMatch(m -> m.isIn(Mdf.Mutable, Mdf.Readable, Mdf.Lent)))
         LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
           "A capsule mutator cannot take lent, mut, or read paramaters '" + mwt.getMs() + "' in "+mwt.getP()));
+
+      if (!mwt.getMt().getExceptions().isEmpty())
+        LambdaExceptionUtil.throwAsUnchecked(new RefactorErrors.ClassUnfit().msg(
+          "A capsule mutator cannot leak check exceptions '" + mwt.getMs() + "' in "+mwt.getP()));
 
       return mwt.withInner(makeWrapper(InvariantClose.thisWrapper, mwt.getInner(), mwt.getReturnType()));
     }

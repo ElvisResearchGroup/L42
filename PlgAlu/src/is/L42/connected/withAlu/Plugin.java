@@ -162,6 +162,7 @@ public class Plugin implements PluginType.WellKnown {
   }
 
   public static HashMap<String, Long> counters = new HashMap<>();
+  static { L42.registerCleanUp(() -> counters.clear()); }
   @ActionType({ActionType.NormType.Void, ActionType.NormType.Library})
   public Resources.Void MincrementCounter£xthat(Object cb){
     String s=ensureExtractStringU(cb);
