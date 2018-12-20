@@ -121,9 +121,9 @@ Here \Q@SafeMovable.overlap@ is a static method that simply checks that the boun
 \columnsep=0.5em%
 \begin{wrapfigure}{l}{\imglength}%
 	\setbox0=\hbox{\strut}%
-	\vspace{-2\ht0}%
+	\vspace{-1.3\ht0}%
     \includegraphics[width=\imglength]{GuiImg}%
-	\vspace{-2\ht0}%
+	\vspace{-1.5\ht0}%
 \end{wrapfigure}
 \subheading{Our Experiment}
 As shown in the figure \IO{to the left}, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
@@ -137,20 +137,25 @@ $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@Saf
 %-be inside the container 
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
-This set up is not overly \IODel{involved} \IO{complicated}, the maximum nesting level of \Q@Widget@s is $5$.
+This set up is not overly \IO{complicated}, the maximum nesting level of \Q@Widget@s is $5$.
 Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@'s invariant.
 
 \subheading{Comparison With Visible State Semantics}
-As an experiment\IO{,} we set our implementation to generate invariant checks following the \IODel{approach for} visible state semantics \IO{approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,DRef}}
-\IODel{(the one used by Eiffel\footnote{\IODel{We also tried the approach of D where invariants are instead checked on public method calls, but not private ones; however this produced identical results in our test case.
-}})}, where the invariant \IO{of the receiver} is instead checked at the start and end of \emph{every} \IO{public/}unqualified method call, \IO{respectively}. \IO{Our \Q!SafeMovable! class does not have private methods nor does it call methods on \Q!this!, so this difference was irrelevant. Neither protocol performs invariant checks on field accesses or updates, however due to the `uniform access principle'\footnote{L42 \IO{also} follows the Eiffel uniform access principle: field accesses are the same as method calls.}, Eiffel allows fields to directly implement methods, allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!s \Q!width! and \Q!height! \emph{methods}, however in D, one would have to write getter \emph{methods}, which would invoke invariant checks}.
+As an experiment\IO{,} we set our implementation to generate invariant checks following the  visible state semantics \IO{approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,DRef}},
+where the invariant \IO{of the receiver} is instead checked at the start and end of \emph{every} 
+\IO{public (in D) and qualified\footnote{\IO{That is, the receiver is not \Q!this!.}}} (in Eiffel) method calls.
+\IO{In our \Q!SafeMovable! class, all methods are public, and all calls are qualified, thus} this difference is irrelevant. \IO{Neither protocol performs invariant checks on field accesses or updates,
+however due to the `uniform access principle'%\footnote{%
+%L42 \IO{also} follows the Eiffel uniform access principle: field accesses are the same as method calls.%
+%}
+, Eiffel allows fields to directly implement methods, allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!s \Q!width! and \Q!height! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would invoke invariant checks}.
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
 % visible state semantic when qualified/unqualified method calls or field accesses are performed.
 % However, in our GUI example those corner cases are
 % not relevant. To be sure, we implemented both of their strategies and obtained the same results.
-\IODel{(i.e. on \Q@this@) of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ interface}. When we ran our test case following \IODel{this} \IO{the D} approach, the \IO{\Q!invariant! method} \IODel{invariant} was called $52,734,053$ times (it took about $4$ days to run), \IO{wheras the Eiffel approach only called it $14,816,207$ times;\footnote{%
-We expect all (sound) runtime approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design} to produce similar results.}}
+\IODel{(i.e. on \Q@this@) of \Q@SafeMovable@, including the simple getters implementing the \Q@Widget@ interface}. When we ran our test case following \IODel{this} \IO{the D} approach, the \IO{\Q!invariant! method} \IODel{invariant} was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times;%\footnote{%
+%We expect all (sound) runtime approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design} to produce similar results.}
 in comparison \IO{our invariant protocol only performed $77$ calls}. \IODel{to the $77$ we got when using our invariant protocol.} The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls \IODel{will} \IO{may} invoke further invariant checks. \IO{Note that \Q!width! and \Q!height! are simply getters for fields, whereas the other two are non trivial \emph{methods}.} % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
 % Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
 
@@ -175,7 +180,8 @@ We also encoded our example in Spec\#\footnote{We compiled Spec\# using the late
 The backend of the L42 GUI library is written in Java, \IODel{and} we did not port it to Spec\IO{\#, r}ather we just simulate the backend, and don't actually display a GUI in Spec\#.
 
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which only gave us $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array bounds. %. and value presence.
-This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ metho\IO{d. L}ike our system howeve\IO{r, S}pec\# checks this at runtime. \IODel{As such} \IO{Thus} the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{%
+This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ metho\IO{d. L}ike our system howeve\IO{r, S}pec\# checks the invariant
+at those two points at runtime. \IODel{As such} \IO{Thus} the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{%
 We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also \IODel{run} \IO{calls} the invariant \IODel{checking} $77$ times; however Code Contract does not enforce the
 encapsulation of \Q@children@, thus their approach would not be sound in our context.}
 

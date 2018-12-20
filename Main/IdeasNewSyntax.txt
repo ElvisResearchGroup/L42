@@ -414,3 +414,9 @@ class method S(X this$,S that)=that
 method S(X x)=This.exFoo(this$:x,that:S"hi") 
 }
 
+T:Trait(...)
+T"Foo.bar()=>beer()" //or ->
+T"Foo.bar()"=>sel //or ->
+T[\"Foo.bar()"=>sel]
+T[hide:\"Foo.bar()"]
+T[clear:\"Foo.bar()"]
