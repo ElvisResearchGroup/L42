@@ -1,6 +1,6 @@
 \section{Invariants over encapsulated state}
 \label{s:encapsulated}
-\noindent Consider managing \IO{the} \IODel{shipping} \IO{shipment} of items, where there is a maximum combined weigh\IO{t:}
+\noindent Consider managing the shipment of items, where there is a maximum combined weight:
 \saveSpace
 \begin{lstlisting}
 class ShippingList {
@@ -15,7 +15,7 @@ class ShippingList {
     if (!this.invariant()) {throw Error(...);}}// injected check
 }
 \end{lstlisting}
-\saveSpace
+
 To handle this class we just inject calls to \Q@invariant@ at the end of the constructor and the \Q@addItem@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.
 Relaxing our system to allow a \Q@mut@ modifier for
@@ -28,18 +28,18 @@ mut Items items = ...;
 mut ShippingList l = new ShippingList(items); // l is valid
 items.addItem(new HeavyItem()); // l is now invalid!
 \end{lstlisting}
-\saveSpace 
+
 As you can see it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
 \footnote{%
 Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
-In order to write correct library code in mainstream languages like Java \IO{and} C++, defensive cloning~\cite{Bloch08} is needed.
+In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.
 %\REVComm{
 For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour~\cite{Bloch08}.}
 %}{2}{citation to support this?}
 
 Our restrictions on capsule mutators ensure that capsule fields are essentially an exclusive mutable reference.
 Removing these restrictions would break our invariant protocol.
-If we were to allow \Q@x.items@ to be seen as \Q@mut@\IO{, where} \IODel{if} \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
+If we were to allow \Q@x.items@ to be seen as \Q@mut@, where \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
 \saveSpace
 \begin{lstlisting}
 mut ShippingList l = new ShippingList(new Items()); // l is ok
@@ -47,7 +47,7 @@ mut Items evilAlias = l.items // here l loses control
 evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
 \saveSpace
-If we allowed a \Q@mut@ return type \IODel{this} \IO{the following} would be accepted:
+If we allowed a \Q@mut@ return type the following would be accepted:
 \saveSpace
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}

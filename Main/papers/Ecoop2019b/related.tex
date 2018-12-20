@@ -42,12 +42,12 @@ immutable classes must be final with only final fields that refer to immutable c
 In Joe-E, every method that only takes instances of immutable classes is pure.
 %\IOComm{Worth mentioning Wyvern? Since alex mentioned that it enforces purirty? Perhaps he can write that section?}
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
-In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. In our work, every method taking only \Q@read@ or \Q@imm@ \IO{\emph{references}} is pure\IO{, regardless of their class type}.
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. In our work, every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Class invariant protocols}
 Class invariants are a fundamental part of the design by contract methodology. 
-Invariant protocols differ wildly and can be unsound or complicated, particular due to re \IODel{-} entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
+Invariant protocols differ wildly and can be unsound or complicated, particular due to re entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
 
 While invariant protocols all seem to 
 check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular sound approaches include:
@@ -75,8 +75,8 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantic is 
 %invariant can be manually opened and closed by using special operations; % Add cite here!
 \item Or, as in this work, the invariant of any object which could be \emph{involved} in execution is assumed to hold. It is checked after every modification of the object or its encapsulated ROG.
 \end{itemize}
-\noindent The\IO{se} different protocols can be deceivingly similar, and 
-some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} objec\IO{t, e}xcept \Q@this@\IO{, h}olds).
+\noindent These different protocols can be deceivingly similar, and 
+some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
 
 % use the unsound option of assuming one protocol, but actually checking another.
 
@@ -97,7 +97,7 @@ some approaches like JML suggest verifying a simpler approach (that method calls
 
 \newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
 
-\subheading{Runtime \IO{V}erification \IO{T}ools}
+\subheading{Runtime Verification Tools}
 Many languages and tools support some form of runtime invariant checking (e.g. Eiffel~\cite{Meyer:1992:EL:129093}, D~\cite{Alexandrescu:2010:DPL:1875434},
 and JML~\cite{Burdy2005}).
 By looking to a survey by Voigt et al.~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
@@ -111,7 +111,7 @@ No guarantee is given that the implemented instrumentation strategy is able to s
 Some of these tools are designed to support class invariants: for example InvTS~\cite{gorbovitski08efficient} lets you write Python conditions that are verified on a set of Python objects, but the programmer needs to be able
 to predict which objects are in need of being checked and to use a simpler domain specific language to target them. Hence if a programmer makes a mistake while using this domain specific language, invariant checking
 will not be triggered.
-Some tools are intentionally unsound and just perform invariant checking following some heuristic that is expected to catch most failures: \IO{such as} jmlrac~\cite{Burdy2005} and Microsoft Code Contracts~\cite{fahndrich2010embedded}.
+Some tools are intentionally unsound and just perform invariant checking following some heuristic that is expected to catch most failures: such as jmlrac~\cite{Burdy2005} and Microsoft Code Contracts~\cite{fahndrich2010embedded}.
 
 %In particular, the heuristic of 
 %We encoded our GUI example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
@@ -212,11 +212,11 @@ Their approach allows wrapping invariant operations around method calls, as is d
 
 
 %\LINE
-\subheading{Security and \IO{S}calability}
+\subheading{Security and Scalability}
 Our approach allows verifying an object's invariant independently of the actual invariants of other objects.
 This is in contrast with the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
 Thus, static verification proceeds like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
-This \IODel{does not happen} \IO{is less problematic} with a type system, since its properties are more coarse grained, simpler and easier to check.
+This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
  Static verification has more flexible and fine grained annotations and often relies on a fragile theorem prover as a backend.
 
 %\REVComm{
@@ -229,18 +229,18 @@ own verified core, and the rest of the code could have Byzantine behaviour. Our 
 soundly handled by our protocol, independently of the code that uses such class or any other surrounding code.
 
 Our approach works both  in a library setting and with the open world assumption.
-Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method \IODel{to} respect\IO{ing} its contract. Such assumption is unrealistic in a real world system with dynamic class loading, and could trivially be broken by a user defined \Q@EvilSubject@.
+Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real world system with dynamic class loading, and could trivially be broken by a user defined \Q@EvilSubject@.
 
 \subheading{Static Verification}
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts and class invariants. 
-It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it \IODel{does not restrict aliasing and} also allows only part of an object's ROG to be owned/encapsulated. However as we showed in \IO{S}ection \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation since merely having an alias to an object
+It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it also allows only part of an object's ROG to be owned/encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation since merely having an alias to an object
 is insufficient to modify it or call methods on it.
-%tells you nothing about it, \IODel{hampering} \IO{hindering}
+%tells you nothing about it, hindering
 %modification and method calls.
 Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like us, does perform runtime checks for invariants and throws unchecked exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
 
 
-Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariant\IO{s'} dependencies using ghost state.
+Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
 Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants by injecting pre and post conditions following visible state semantics;
 however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
 Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non deterministic I/O.
@@ -255,9 +255,9 @@ Dafny is also generally highly restrictive with its rules for mutation, and obje
 
 
 \subheading{Specification languages}
-Using a specification language based on the mathematical metalanguage and different from the program language's semantics may seem attractive, since it can express uncomputable concept\IO{s,} \IODel{and} has no mutation or non determinism, and is often easier to formally reason about.
+Using a specification language based on the mathematical metalanguage and different from the program language's semantics may seem attractive, since it can express uncomputable concepts, has no mutation or non determinism, and is often easier to formally reason about.
 
-Howeve\IO{r, a} study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short circuit semantics and arithmetic exceptions; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should \IODel{hold}, thanks to short circuiting.
+However, a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short circuit semantics and arithmetic exceptions; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
 Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets. Whereas runtime contexts allow mutation, object allocation and print statements. The semantics of shared constructs (such as short circuiting logic operators) is the same in both contexts.

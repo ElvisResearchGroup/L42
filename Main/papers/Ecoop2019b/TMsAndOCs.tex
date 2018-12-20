@@ -1,30 +1,30 @@
 \section{Type Modifiers and Object Capabilities}
 \label{s:TMsAndOCs}
 Reasoning about imperative object oriented (OO) programs is a non trivial task,
-made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to \IODel{control} \IO{restrict}, but not prevent\IODel{,} such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
-% \IO{[dynamic class loading]},
+made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to restrict, but not prevent such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
+% [dynamic class loading],
 
-\subheading{Type \IO{M}odifiers (TMs)}
-TMs as used in this paper are a type system feature that allows reasoning about aliasing and mutation\IO{. R}ecently a new design for them has emerged that radically improves their usability\IO{;
-t}hree different research languages are being independently developed relying on this new design: the language of Gordon et.~al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
-These project\IO{s} are quite large: several million lines of code are written in Gordon et.~al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic \IO{and} correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
+\subheading{Type Modifiers (TMs)}
+TMs as used in this paper are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
+three different research languages are being independently developed relying on this new design: the language of Gordon et.~al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
+These projects are quite large: several million lines of code are written in Gordon et.~al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
 While we focus on the specific TMs provided by L42, Pony, and Gordon et.~al., type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
  that allow static reasoning of mutability and aliasing properties of objects.
 With slightly different names and semantics, the four most common modifiers for object references are:
 \begin{itemize}
-\item Mutable (\Q@mut@): the referenced object can be mutated, as in most imperative languages without \IO{modifiers.}
-If all types \IO{are}\IODel{were} \Q@mut@, there \IODel{would be} \IO{is} no restriction on aliasing/mutation.
-\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may be mutable aliases to \IODel{that} \IO{such} object, \IODel{so} \IO{thus} mutation can still be observed. 
-\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference\IO{, however} \Q@imm@ references also guarantee that the referenced object will not mutate through any \IODel{reference} \IO{other alias}.
-\item \REV{\IO{Encapsulated} (\Q@capsule@):
- everything in the ROG of a capsule reference (including itself) is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.}{2}{how easy is it for the programmer to use capsule?} \IOComm{what about read?}
+\item Mutable (\Q@mut@): the referenced object can be mutated, as in most imperative languages without modifiers.
+If all types are \Q@mut@, there is no restriction on aliasing/mutation.
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may be mutable aliases to such object, thus mutation can still be observed. 
+\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will not mutate through any other alias.
+\item Encapsulated (\Q@capsule@):
+ everything in the ROG of a capsule reference (including itself) is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
-TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike \IO{a variable/field of an} \Q@imm@ \IO{type}, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object\IO{, however} the referenced object itself may be mutated.
-On the other hand, an \Q@imm@ reference refers to an object that will never be mutated\IO{, but} an \Q@imm@ variable can be reassigned.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like a \Q@const *const A@.}
+TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of an \Q@imm@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the referenced object itself may be mutated.
+On the other hand, an \Q@imm@ reference refers to an object that will never be mutated, but an \Q@imm@ variable can be reassigned.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like a \Q@const *const A@.}
 %\end{itemize}
 
 Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@, where we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
@@ -47,7 +47,7 @@ Here we assume the full/deep meaning~\cite{ZibinEtAl10}:
   \item the objects in the ROG of an immutable object are immutable,
   \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
 %  \item no \emph{down}-casting is allowed between different type modifiers.
-  \item no casting\IO{/promotion} from \Q@read@ to \Q@mut@ is allowed.
+  \item no casting/promotion from \Q@read@ to \Q@mut@ is allowed.
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
@@ -55,7 +55,7 @@ Here we assume the full/deep meaning~\cite{ZibinEtAl10}:
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
 The main progress in the last few years is with the flexibility of such type systems:
  where the programmer should use \Q@imm@ when  representing immutable data
-and \Q@mut@ nearly everywhere else\IO{. T}he system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
+and \Q@mut@ nearly everywhere else. The system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
 To see a glimpse of this flexibility, consider the following example:
 %//the same expression can create mut, imm or capsule
 \saveSpace
@@ -70,13 +70,13 @@ The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
 Moreover, the expression does not use any \Q@mut@ local variables, thus the flexible TM system
-allows \IODel{promoting} the \Q@mut@ result to \IO{be promoted to} \Q@capsule@\IO{, t}hus \Q@cc@ is ok. 
+allows the \Q@mut@ result to be promoted to \Q@capsule@, thus \Q@cc@ is ok. 
 Additionally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
 We want to underline that this is not a special feature of \Q@new@ expressions:
 any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@.\footnote{%
 This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
 } This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
-Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}\IO{, which} \IODel{that} eventually enabled the work of Gordon et.~al., does not consider promotion and 
+Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon et.~al., does not consider promotion and 
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
 From a usability perspective, this improvement means that
 these TMs are opt-in: a programmer can write large sections of code
@@ -149,7 +149,7 @@ Both Gordon et.~al. and Pony restrict how \Q!capsule! local variables can be use
 \subheading{Exceptions}\label{s:exceptions}
 In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety} (SES)~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
-if a \Q@try@\IO{--}\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated.
+if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated.
 %\LINE
 %\noindent{\textit{Exceptions:}}
 % M\#, L42 and Pony rely on SES for all unchecked exceptions to ensure safe and transparent parallelism,
@@ -170,16 +170,16 @@ This is needed to support safe parallelism. Pony takes a more drastic approach a
 We are not aware of how Gordon et.~al. handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.%
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
 }
-L42 enforces SES using TMs in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof \IODel{on} \IO{of} why \IODel{those} \IO{these} restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
+L42 enforces SES using TMs in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
 \begin{itemize}
 \item Code inside a \Q@try@ block capturing unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
-\item Only \IODel{an} \Q@imm@ object\IO{s} may be thrown as \IODel{an} unchecked exception\IO{s}.
+\item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 \noindent This strategy does not restrict throwing exceptions, but only catching unchecked ones.
 SES allows us to soundly capture invariant failures as unchecked exceptions: 
-the broken object is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failure\IO{s,} it would be sufficient to enforce SES only when capturing exceptions caused by \IODel{\Q@invariant@} \IO{such} failures.
+the broken object is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
 
 % We think this restriction is acceptable for run time verification, other works are much more restrictive,
@@ -205,12 +205,12 @@ the broken object is guaranteed to be garbage collectable when the exception is 
 
 % Intro to OCs
 
-\subheading{Object \IO{C}apabilities (OCs)}
-OCs, which L42, Pony, and Gordon et.~al.'s work \IODel{use} \IO{have}, are a widely used~\cite{miller2003capability,
+\subheading{Object Capabilities (OCs)}
+OCs, which L42, Pony, and Gordon et.~al.'s work have, are a widely used~\cite{miller2003capability,
 noble2016abstract,karger1988improving} programming style that allows associating resources with objects. When this style
-is respected, code that does not possess an alias to \IODel{the} \IO{such an} object cannot use \IODel{the} \IO{its associated} resource.
+is respected, code that does not possess an alias to such an object cannot use its associated resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon et.~al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and \IODel{native} \IO{when performing foreign function} calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
+Here, as in Gordon et.~al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
 % While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
 
@@ -236,14 +236,14 @@ moreover, the only \Q@System@ instance would be the one created by the runtime s
 %may just take a \Q@mut System@ object as a parameter.
 % could also work this way.
 This design has been explored by Joe-E~\cite{finifter2008verifiable}.
-OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language\IO{. However,} since
-L42 allow user code to perform \IODel{native} \IO{foreign} calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
+OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. However, since
+L42 allow user code to perform foreign calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
 %To reason about determinism, L42 connects TMs with the OC style as follows: % style by requiring:
 \begin{itemize}
-\item \IO{Foreign} \IODel{Native} methods (which have not been white listed as deterministic) and methods whose name start with \texttt{\#\$} are \emph{capability methods}.\IODel{${}^{11}$}%
+\item Foreign methods (which have not been white listed as deterministic) and methods whose name start with \texttt{\#\$} are \emph{capability methods}.%
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
-\item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classe\IO{s.}
-\item In L42 there is no \Q@main@ method, \IODel{but} \IO{rather it has several} main expressions; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around \IO{to} the rest of the program.
+\item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes.
+\item In L42 there is no \Q@main@ method, rather it has several main expressions; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around to the rest of the program.
 % \item Any method that uses non deterministic primitive operations (such as native calls \IO{or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
 % }}) must be an instance method requiring a \Q@mut@ receiver.
 % Classes having such methods are \emph{capability classes}, and their instances are \emph{capability objects}.
@@ -255,7 +255,7 @@ L42 allow user code to perform \IODel{native} \IO{foreign} calls without going t
 \end{itemize}
 L42 expects capability methods to be used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
-For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} \IODel{native} methods (such as a \Q@print@ method) can be white listed as `deterministic', provided they do\IODel{es} not effect program execution, such as by non deterministically throwing I/O \IODel{exceptions} \IO{errors}.
+For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) can be white listed as `deterministic', provided they do not effect program execution, such as by non deterministically throwing I/O errors.
 
 \subheading{Purity}\label{s:purity}
 TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
@@ -264,7 +264,7 @@ as being deterministic and not mutating existing memory.
 	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
 	\item no other preexisting objects are accessible (as L42 does not have global variables).\footnote{%
-		\IO{If} L42 \IODel{does not} \IO{did} have static variables, \IODel{if it did} getters and setters for them would be capability methods.
+		If L42 did have static variables, getters and setters for them would be capability methods.
 		Even allowing unrestricted access to \Q@imm@
 		static variables would prevent reasoning over
 		determinism, due to the possibility of global variable

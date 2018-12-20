@@ -1,4 +1,4 @@
-\section{Invariants \IO{O}ver \IO{I}mmutable \IO{S}tate}
+\section{Invariants Over Immutable State}
 \label{s:immutable}
 In this section we consider validation over fields of \Q@imm@ types.
 %\footnote{
@@ -16,7 +16,7 @@ class Person {
   Person(String name) { this.name = name; }
 }
 \end{lstlisting}
-\Q@Person@ only has immutable fields and its constructor only uses \Q@this@ to initialise \IODel{fields} \IO{them}.
+\Q@Person@ only has immutable fields and its constructor only uses \Q@this@ to initialise them.
 %; we say such a class is \emph{simple}.
 %\Q@Person@, only has immutable fields and the constructor 
 %uses the parameters to directly initialize (all) the fields.
@@ -32,7 +32,7 @@ Note that the \Q@name@ field is not final, thus \Q@Person@ objects can change st
 %immutable types
 %No, a type is not a class
 % are just a special case of simple classes.
-We can easily enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@\IO{: i}mmediately after each field update, and at the end of the constructor\IODel{:}\IO{.}%
+We can easily enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.%
 %\footnote{Since the constructor only initialises fields; as with the \Q@invariant@ method itself, we allow field uses since \Q@this@ is not directly reached.}
 %would require the initial/default value of \Q@this@ to be valid.}
 
@@ -57,11 +57,11 @@ class Person { .. // Same as before
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \Q@invariant@ method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-\noindent\IO{Such checks will be generated/injected, and not directly written by the programmer.} If we were to relax (as in Rust\IO{), o}r even eliminate (as in Java\IO{), t}he support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
+\noindent Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\subheading{Unrestricted use of non determinism} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \IO{\Q!true!}.
+\subheading{Unrestricted use of non determinism} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \Q!true!.
 %\Q@invariant@ to be non-deterministic.}%
-%\IODel{Allowing \Q@invariant@ to (indirectly) use an %object capability could make it non-deterministic.} 
+% 
 For example consider this simple and contrived (mis)use of person:
 \begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {
@@ -79,19 +79,19 @@ method mut Person createPersons(String name) {
 Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non determinism only through capability objects, and 
 restricts their creation, the above example would be prevented.
- %\IO{Languages like Java, Rust and Pony, which do not require the user of object-capabilities to perform non-deterministic operations, suffer from .} 
+ %Languages like Java, Rust and Pony, which do not require the user of object-capabilities to perform non-deterministic operations, suffer from . 
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
-\subheading{Allowing \IO{I}nternal \IO{M}utation \IO{T}hrough \IO{B}ack \IO{D}oors}
+\subheading{Allowing Internal Mutation Through Back Doors}
 Suppose we relax our rules by allowing interior mutability
 as in Rust and Javari, where sneaky mutation
-of the ROG of an \IO{`immutable'} object is allowed.
+of the ROG of an `immutable' object is allowed.
 Those back doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
-briefly discuss how a few trusted language primitives can be used to perform caching and other needed \IO{optimisations,}
+briefly discuss how a few trusted language primitives can be used to perform caching and other needed optimisations,
 without the need for back doors.
 
-Our example shows that such back doors can be used to break determinism of \Q@invariant@ method\IO{s, b}y allowing the invariant to store and read information about previous calls. \IO{In the following example w}e use \Q@MagicCounter@ as a back door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itsel\IO{f:}
+Our example shows that such back doors can be used to break determinism of \Q@invariant@ methods, by allowing the invariant to store and read information about previous calls. In the following example we use \Q@MagicCounter@ as a back door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 
 \begin{lstlisting}
 class MagicCounter {
@@ -166,10 +166,10 @@ person.invariant(); // returns true, counter == 4
 
 \subheading{Strong Exception Safety}
 The ability to catch and recover from invariant failures is extremely useful as it allows programs to take corrective action.
-Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \IO{\Q@try@--\Q@catch@}.
+Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try@--\Q@catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
-	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@ \IO{methods}). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
+	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@ methods). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
 If instead we were to not enforce strong exception safety, an invalid object could be made reachable:
 \saveSpace

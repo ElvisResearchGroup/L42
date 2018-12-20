@@ -220,7 +220,7 @@ $
 %but it could instead be done ahead of time.
 
 \noindent Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
-%\IO{Our formalism of monitor expressions are only a proof device, they need not be part of the language itself, for example L42 implements our invariant protocol by generating wrapper functions over primitive setters and factory methods.}
+%Our formalism of monitor expressions are only a proof device, they need not be part of the language itself, for example L42 implements our invariant protocol by generating wrapper functions over primitive setters and factory methods.
 %Monitor expressions are only a proof device, and an execution on a real hardware 
 Monitor expressions are only a proof device, they need not be implemented directly as presented.
 For example, in L42 we implement them by statically injecting calls to \Q!invariant! at the end of setters, factory methods and capsule mutators; this works as L42 does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.

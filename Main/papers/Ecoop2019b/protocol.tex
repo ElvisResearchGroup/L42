@@ -12,7 +12,7 @@ Our invariant protocol guarantees that the whole ROG of any object involved in e
 % However, the \Q!invariant! method itself needs to be able to operate on a potentially invalid \Q!this!, this will only happen when it is automatically called by the language itself, not by explicit calls present in the source code.
 %\IODel{Clearly the \Q@invariant@ method must be able to take an invalid \Q@this@, since the purpose of such method is to distinguish valid and invalid objects. On a first look this may seem an open contradiction
 % with the aim of this work, however only calls to \Q@invariant@ inserted by the language semantics can take an invalid \Q@this@. As for any other method, when the application code can call \Q@invariant@, \Q@this@ is guaranteed to be valid.
-%\IODel{Also the bodies of constructors may interact with an invalid \Q@this@; we restrict their shape so that neither invariant methods nor constructors can observe the invalid object directly, but only its fields. }
+%
 
 %Logically, there are two reasons to access a field: we may wish to read the information stored in such object or we wish to mutate the object contained in the field.
 %For the first case, we can type the field access as \Q@read@, but in the second case we
@@ -20,7 +20,7 @@ Our invariant protocol guarantees that the whole ROG of any object involved in e
 %We call `capsule mutators' a method accessing as \Q@mut@ a capsule field referenced in the invariant.
 %We will show how capsule mutators are analogous of the pack/unpack/expose~\cite{???}.
 %In order for a class to have an invariant under our protocol,
-%\IODel{its }\Q@invariant@ method the form 
+%\Q@invariant@ method the form 
 % Can  a program write say mut method invariant or is it syntactically [???]
 For simplicity, in the following explanation and in our formalism
 we require 
@@ -40,7 +40,7 @@ We prevent accessing \Q@mut@ fields since their ROG could be changed by unrelate
 %since a \Q!read! or \Q!mut! field could be modified through arbitrary aliases 
 %(see Section \ref{s:immutable}). 
 
-%To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %\IODel{Access \Q@mut@ fields is forbidden because their ROG can be changed by unrelated code. In order to prevent passing an invalid \Q@this@ to other methods.}
+%To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
 \subheading{Capsule mutators}
 We call \Q@mut@ methods whose body accesses a \Q@capsule@ field mentioned in the invariant, \emph{capsule mutators}.  
 They must use \Q@this@ exactly once in their body, since fields are instance private, this will be to access the \Q!capsule! field.
@@ -58,7 +58,7 @@ only once, and have no \Q!read! or \Q!mut! parameters, such an invalidated \Q!th
 Preventing \Q!mut! return types ensures that such methods cannot leak out a mutable alias to the \Q!capsule! field, which could then be used to break the invariant.
 Note that these restrictions do not apply when the receiver of the field access is \Q!capsule!, since we guarantee that the receiver is not in the ROG of any of its \Q!capsule! fields, and hence it can never be seen afterwards.
 %\IOComm{mention these don't apply to \Q!capsule! recievers..}
-%\IODel{\noindent Also note that \Q@invariant@ is declared as not throwing any exceptions, thus only unchecked exceptions can be propagated out.}
+%
 
 \subheading{Monitoring}
 The language runtime will insert automatic calls to \Q!invariant!, if such a call returns \Q!false!, an unchecked exception will be thrown. Such calls are inserted in the following points:
