@@ -1,4 +1,4 @@
-{reuse L42.is/AdamTowel02
+reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
 
 Gui:Load<><{reuse L42.is/WidgetGuiLib}
@@ -20,7 +20,8 @@ MoveAction:Data<><{implements Gui.Action
     this.#outer().top(this.outer().top()+this.topDelta())
     )
   }
-SafeMovable:DData<><{implements Gui.Widget
+//Here use DData or EiffelData instead of Data to test their protocols
+SafeMovable:Data<><{implements Gui.Widget
   capsule Box box
   class method mut Gui.Button left(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Left"
@@ -29,7 +30,7 @@ SafeMovable:DData<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:Size"-5",topDelta:0Size)
-    imgName:S"examples/resources/left.png"
+    imgName:S"L42/Gui/left.png"
     )
   class method mut Gui.Button right(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Right"
@@ -38,7 +39,7 @@ SafeMovable:DData<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:5Size,topDelta:0Size)
-    imgName:S"examples/resources/right.png"
+    imgName:S"L42/Gui/right.png"
     )
   class method mut Gui.Button up(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Up"
@@ -47,7 +48,7 @@ SafeMovable:DData<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:0Size,topDelta:Size"-5")
-    imgName:S"examples/resources/up.png"
+    imgName:S"L42/Gui/up.png"
     )
   class method mut Gui.Button down(mut Box outer,Size scale) Gui.Button(
     id:outer.id()++S"_Down"
@@ -56,7 +57,7 @@ SafeMovable:DData<><{implements Gui.Widget
     width:6Size*scale
     height:6Size*scale
     action:MoveAction(outer:outer,leftDelta:0Size,topDelta:5Size)
-    imgName:S"examples/resources/down.png"
+    imgName:S"L42/Gui/down.png"
     )
 
   class method mut This(S id,Size left,Size top,Size width,Size height,S color,capsule Gui.Widget.List children) (
@@ -131,7 +132,7 @@ Main: {
             height:64Size
             color:S"blue"
             children:Gui.Widget.List[]);
-          /*SafeMovable(
+          SafeMovable(
             id:S"B"
             left:50Size
             top:50Size
@@ -149,7 +150,7 @@ Main: {
                 children:Gui.Widget.List[]
                 )
               ]
-            )*/]
+            )]
           )]
         left:2Size,top:2Size
       ))
@@ -159,7 +160,7 @@ Main: {
     S"A_Up::Pressed::_";
     S"A_Down::Pressed::_";
 
-/*    S"B_Left::Pressed::_";
+    S"B_Left::Pressed::_";
     S"B_Right::Pressed::_";
     S"B_Up::Pressed::_";
     S"B_Down::Pressed::_";
@@ -167,13 +168,13 @@ Main: {
     S"C_Left::Pressed::_";
     S"C_Right::Pressed::_";
     S"C_Up::Pressed::_";
-    S"C_Down::Pressed::_";*/
+    S"C_Down::Pressed::_";
 
     S"D_Left::Pressed::_";
     S"D_Right::Pressed::_";
     S"D_Up::Pressed::_";
     S"D_Down::Pressed::_";
-    S"EXIT";
+    //S"EXIT";
     ]
   Gui.#$(id:S"a1").display(title:S"Moving",x:800Size,y:800Size,body:wA,events:events)
 
@@ -181,4 +182,3 @@ Main: {
   Debug(S"#@Success@#")
   return ExitCode.normal()
   }
-}

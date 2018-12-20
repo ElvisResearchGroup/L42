@@ -18,7 +18,7 @@ internal sealed class Box: // 7 annotations, 20+1 tokens, 172+10 characters
 
 	// It is practically impossible in Spec# to make a verified class that derives from List<T>,
 	// so rather than add the dispatch method using inheritence, I'm just going to put it here
-	public bool dispatch(Gui.Event that) // 1 annotation, 3 tokens, 17 characters
+	public bool dispatch(Gui.event_ that) // 1 annotation, 3 tokens, 17 characters
 		modifies this.**;
 	{
 		for (int i = 0; i < this.children.Count; i++)
@@ -45,7 +45,7 @@ internal sealed class MoveAction: Gui.Action // 4 annotation, 11 token, 6 charac
 	[Peer] readonly Box outer; // 1 annotation, 1 token, 6 characters
 	readonly int leftDelta, topDelta;
 
-	public void apply(Gui.Event event_)
+	public void apply(Gui.event_ e)
 	{
 		Debug.Print("Button pressed on :" + this.outer.id);
 		outer.left = outer.left + leftDelta;
@@ -89,7 +89,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	internal static Gui.Button MakeButton(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta, string imgName) // 1 annotation, 5 tokens, 33 characters
 		ensures Owner.Same(result,outer);
 	{
-		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), "examples/resources/" + imgName);
+		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), "L42/Gui/" + imgName);
 	}
 
 	internal SafeMovable(string id, int left, int top, int width, int height, string colour, [Captured] List<Gui.Widget> children) // 3 annotations, 11 tokens, 90 characters
@@ -114,7 +114,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 
 	public string id { get { return this.box.id; } }
 
-	// Note characters and annotations are relative to the prefered version:
+	// Note characters and annotations are relative to the preferred version:
 	//     public List<Gui.Widget>children{get{return this.box.children;}} // +10 tokens, +63 characters
 	// 3 annotations, 3+9 token, 13+57 characters
 	[Pure]public int children_count()
@@ -130,13 +130,13 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	public int left { get { return this.box.left; } }
 	public int top { get { return this.box.top; } }
 
-	public bool dispatch(Gui.Event that) // 1 annotation, 2 tokens, 12 characters
+	public bool dispatch(Gui.event_ that) // 1 annotation, 2 tokens, 12 characters
 	{
 		expose(this) return this.box.dispatch(that);
 	} // Verification error: Object invariant possibly does not hold
 
 	// 1 annotation, 1 token, 9 characters
-	invariant Debug.IncrementCounter("Invariant") && forall {int i in (0: this.box.children.Count);
+	invariant Debug.IncrementCounter() && forall {int i in (0: this.box.children.Count);
 		   Inside(this.box.children[i], this.width, this.height)
 		&& forall {int j in (0: this.box.children.Count);
 			// Without this I get a verification error: '
@@ -158,7 +158,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	}
 	// Since this method is only called in the invariant,
 	// Its significantly easier to just pass the width and height, as opposed to trying to make it an instance method.
-	// Note: counts are relative to the preffered header of:
+	// Note: counts are relative to the preferred header of:
 	//   private bool Inside(Gui.Widget that) // 6 tokens, 36 characters
 	[Pure]private static bool Inside(Gui.Widget that,int width,int height) // 1 annotation, 1+5 tokens, 6+28 characters
 	{
