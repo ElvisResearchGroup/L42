@@ -293,6 +293,7 @@ public class InvariantClose {
       // Not a state method
 
       boolean isGetter = !mwt.getMdf().isClass() && mwt.getMs().getNames().isEmpty() && mwt.get_inner() == null;
+      boolean isSetter = !mwt.getMdf().isClass() && !mwt.getMs().getNames().isEmpty() && mwt.get_inner() == null;
       if ((this._mutK != null && this._mutK.getMs().equals(mwt.getMs())) ||
           (this._immK != null && this._immK.getMs().equals(mwt.getMs()))) {
         // TODO: Delete this horrorible way of handling factories
@@ -300,7 +301,7 @@ public class InvariantClose {
       } else if (this.mode == MODE_D && !mwt.getMs().isUnique() && mt.getMdf() != Mdf.Class) {
         // Wrap the body up, but only if a public instance method
         // and don't check fields (unless they implement an interface)
-        this.delegate(true/*!isGetter || mwt.getMt().isRefine()*/, mwt, newMwt);
+        this.delegate(true, !isGetter || !isSetter || mwt.getMt().isRefine(), mwt, newMwt);
       } else if (this.mode == MODE_EIFFEL && !mt.getMdf().isClass()) {
         // For all instance methods (even private ones) do an invariant check
         // unless their a field
