@@ -1,7 +1,7 @@
 {
 Fail:{interface implements Guard}
 AmbiguosConstructor:Message.$<><{implements Fail}
-Invariant:K.Imm<><...
+Invariant:...
 Wither:K.Imm<><...
 FieldOperation:K.Imm<><...
 AddToSTrait: Resource <><FieldOperation<><...
@@ -87,7 +87,7 @@ class method Library <>< (Library right)  exception Fail Refactor2.PathUnfit {
  res><>=AddToS(mutK:mutK, of:\"This")
  res><>=AddInvToS(mutK:mutK, of:\"This")
  res><>=AddEquals(mutK:mutK, of:\"This")
- res><>=Invariant(of:\"This", mode: This.mode())
+ res><>=Invariant(of:\"This")
  return res
 }
 }

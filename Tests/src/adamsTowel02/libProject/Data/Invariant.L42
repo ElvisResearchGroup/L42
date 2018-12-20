@@ -1,9 +1,23 @@
 {
-Path of
-Size mode
-class method class Path #default##apply(Void of)Path
 Fail:Message.$<><{ implements This2.Fail}
 
+class method class Path #default##apply(Void of)Path
+
+class method Inner #apply(Path of) Inner(of:of)
+
+class method Library <><(Library right) (
+  Library that = Use.Over[right]<>< {
+    read method Bool #1#invariant()
+    read method Void #invariant()
+      if !this.#1#invariant() (error Fail"invalid object detected!")
+  }
+  res = PlgInvariantClose.closeJ(path:Path"This", top:that, mode:This1.mode())
+  catch exception Any x error x
+  res)
+
+
+Inner: K.Imm <>< {
+Path of
 /*
 Right now, invariant can not be applied if methods using exposers
 leak exceptions.
@@ -45,14 +59,15 @@ Library ensureInvariant(Library that)
     Fail"Method '#invariant()' has incompatible type"
   }
 
-method
-Library <><(Library right)
+
+method Library <><(Library right)
 exception Fail Refactor2.PathUnfit {
   inv=this.ensureInvariant(right)
-  return PlgInvariantClose.closeJ(path:this.of(),top:inv,mode: this.mode())
+  return PlgInvariantClose.closeJ(path:this.of(),top:inv,mode: This2.mode())
   exception on Refactor2.Fail Fail""
   }
 
+}
 
 PlgInvariantClose:Refactor2.JavaImport<><{
   //@plugin is.L42.connected.withSafeOperators

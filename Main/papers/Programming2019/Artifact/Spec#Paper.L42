@@ -1,5 +1,5 @@
 {reuse L42.is/AdamTowel02
-Invariant: ... // import invariant code
+//Invariant: ... // import invariant code
 
 // Note: Size is the equivalent of Spec#'s int type
 
@@ -34,7 +34,7 @@ ArrayReader: Data <>< {implements Reader
 
 OReader:Option(Reader)
 // page 44
-Lexer: Invariant <>< {
+Lexer: Data.Invariant <>< {
   mut OReader rd // Ok, the ctor takes a capsule
   read method Bool #invariant() this.rd().isPresent()
 
