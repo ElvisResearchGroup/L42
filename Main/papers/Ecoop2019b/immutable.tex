@@ -59,7 +59,7 @@ class Person { .. // Same as before
 
 \noindent\IO{Such checks will be generated/injected, and not directly written by the programmer.} If we were to relax (as in Rust\IO{), o}r even eliminate (as in Java\IO{), t}he support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\subheading{Unrestricted use of non determinism} Allowing \Q@invariant@ to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \IODel{true} \IO{\Q!true!}.
+\subheading{Unrestricted use of non determinism} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \IO{\Q!true!}.
 %\Q@invariant@ to be non-deterministic.}%
 %\IODel{Allowing \Q@invariant@ to (indirectly) use an %object capability could make it non-deterministic.} 
 For example consider this simple and contrived (mis)use of person:
@@ -85,7 +85,7 @@ restricts their creation, the above example would be prevented.
 
 \subheading{Allowing \IO{I}nternal \IO{M}utation \IO{T}hrough \IO{B}ack \IO{D}oors}
 Suppose we relax our rules by allowing interior mutability
-as in Rust and Javari, where \IODel{sneaky} mutation
+as in Rust and Javari, where sneaky mutation
 of the ROG of an \IO{`immutable'} object is allowed.
 Those back doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
 briefly discuss how a few trusted language primitives can be used to perform caching and other needed \IO{optimisations,}

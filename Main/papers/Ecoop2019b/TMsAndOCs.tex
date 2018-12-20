@@ -65,7 +65,7 @@ capsule Circle cc = new Circle(new Point(0, 0), 7);
     imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 \saveSpace
-Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression\IODel{: \Q@new Circle(..)@}.
+Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
 The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
@@ -79,7 +79,7 @@ This requires some restrictions on \Q@read@ fields not discussed in detail for l
 Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}\IO{, which} \IODel{that} eventually enabled the work of Gordon et.~al., does not consider promotion and 
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
 From a usability perspective, this improvement means that
-these TMs are opt\IODel{-}in: a programmer can write large sections of code
+these TMs are opt-in: a programmer can write large sections of code
 mindlessly using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
 be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ reference.
@@ -109,9 +109,7 @@ be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ refe
 
 % Not sure about this paragraph:
 
-
-
-The \Q@capsule@ modifier (sometimes called isolated/iso) is possibly the one whose details differ the most in literature. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion.
+The \Q@capsule@ modifier (sometimes called isolated/\Q@iso@) is possibly the one whose details differ the most in literature. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion.
 This concept is the basis for L42, Pony, and Gordon et.~al.'s type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. 
 
 %\begin{itemize}
@@ -123,7 +121,16 @@ This concept is the basis for L42, Pony, and Gordon et.~al.'s type systems~\cite
 % \end{itemize}
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-Capsule references are usually expressed using linear/affine types~\cite{boyland2001alias} when they are passed around and manipulated. Both \IO{the} capsule/isolated fields and variables \IO{of} Pony and Gordon et.~al.\IODel{'s} rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}, i.e reading such fields replaces their values with \Q@null@\IO{, a}nd capsule local variables can only be used once. \IO{Capsule local \emph{variables} are also linear in L42, however} \Q!capsule! \IO{\emph{fields}}~\cite{ServettoEtAl13a,ServettoZucca15} do not require destructive reads, but provide sightly different guarantees \IO{compared} \IODel{with respect} to capsule local variables, where the ROG of a \Q@capsule@ field can be referenced from outsid\IO{e,} but only in controlled ways.
+
+The capsule/isolated fields of Gordon et.~al. and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: in order to read them, a new value (such as \Q!null!) will be assigned to them. In contrast, L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require such destructive reads, thus \Q@capsule@ fields can be accessed many times, and their content can be seen from outside; but only in controlled ways.
+Both Gordon et.~al. and Pony restrict how \Q!capsule! local variables can be used by changing the type they are seen as, however both allow the local variable to be `consumed', allowing them to be used as normal capsule/isolated expressions, at the cost of being unable to use the variable again. L42 however uses a simpler approach where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once.
+%Both the capsule/isolated fields and variables of Pony and Gordon et.~al. rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: reading such fields replaces their values with \Q@null@.+++ and a static analysis ensures capsule local variables can be accessed only once after the initialization and every update.
+
+%In contrast,  L42~\cite{ServettoEtAl13a,ServettoZucca15} do not require destructive reads, and treat %\Q@capsule@ local variables and \Q@capsule@ fields differently:
+%\Q@capsule@ local variables are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once;
+%\Q@capsule@ fields can be accessed many times,
+%and thus their content can be seen from outside; but only in controlled ways.
+
 %while M\# and Pony requires both capsule fields and capsule variables to be `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph.
 
 %Destructive reads would be a bad idea for validation as they would likely invalidate objects.
