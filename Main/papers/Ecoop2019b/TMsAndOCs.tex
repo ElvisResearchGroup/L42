@@ -244,8 +244,8 @@ L42 allow user code to perform foreign calls without going through a predefined 
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
 \item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes.
 \item In L42 there is no \Q@main@ method, rather it has several main expressions; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around to the rest of the program.
-% \item Any method that uses non deterministic primitive operations (such as native calls \IO{or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
-% }}) must be an instance method requiring a \Q@mut@ receiver.
+% \item Any method that uses non deterministic primitive operations (such as native calls or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
+% }) must be an instance method requiring a \Q@mut@ receiver.
 % Classes having such methods are \emph{capability classes}, and their instances are \emph{capability objects}.
 % \item A capability object can only be created inside a \Q@mut@ method of a capability class; or
 % by the runtime system, and passed to the main method.

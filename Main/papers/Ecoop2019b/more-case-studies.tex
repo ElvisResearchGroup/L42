@@ -143,7 +143,7 @@ Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family
 Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause problems if, for example, a child was updated before their parent.
 
 \loseSpace
-We have a simple test case that calls \Q!processDay! on a \Q!Family!\IODel{,} $1{,}095$ ($3\times365$) times.
+We have a simple test case that calls \Q!processDay! on a \Q!Family! $1{,}095$ ($3\times365$) times.
 %$3\times365$ times ($1{,}095$ days):
 \begin{lstlisting}
 // 2 parents (one 32, the other 34), and no children
@@ -168,20 +168,19 @@ for (Int day = 0; r < 365; day++) { // The 3rd year
 % L42 	12 family, 1 person = 14
 % Fake 42 = 14 (+2 for box ctor, -1 for family ctor)
 
-The idea is that everything we do with the \Q!Family! is a mutation\IO{;} \IODel{in addition} the \Q!fam.processDay! calls also mutate the contained \Q!Person!s.
+The idea is that everything we do with the \Q!Family! is a mutation; the \Q!fam.processDay! calls also mutate the contained \Q!Person!s.
 
 This is a worst case scenario for our approach compared to visible state semantics since it reduces our advantages:
 our approach avoids invariant checks when objects are not mutated
 but in this example most operations are mutations; 
-similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{\IO{As happened in our GUI case study,} see Section \ref{s:case-study}.} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
+similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{As happened in our GUI case study, see Section \ref{s:case-study}.} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
 \loseSpace
 
-We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D \IO{and Eiffel} perform $7{,}995$\IODel{, Eiffel performs $19{,}335$,} and finally, Spec\# performs only $1{,}104$.
+We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D and Eiffel perform $7{,}995$, and finally, Spec\# performs only $1{,}104$.
 
 Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay! and \Q!addChild! call (for both \Q!Person! and \Q!Family!). 
 
-The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!. \IODel{In addition, due to Eiffel's `uniform access principle', the field accesses of \Q!Person.daysLived! (in  \Q!Family!'s invariant) are not distinguished from ordinary method calls, thus each one performs two invariant checks.}
-
+The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!.
 
 The results for Spec\# are very interesting, since it performs less checks than L42.
 This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block. 
@@ -190,9 +189,9 @@ Spec\# relies on the absence of arithmetic overflow, and performs runtime checks
 \footnote{%
 Runtime checks are enabled by a compilation option; when they fail, unchecked exceptions are thrown.%
 }, as such the verifier concludes that the field increment in \Q!processDay! cannot break the invariant.
-\IODel{Concluding} Spec\# is able to avoid some invariant checks in this case 
+Spec\# is able to avoid some invariant checks in this case 
 by relying on all arithmetic operations performing runtime overflow checks;
-\IO{whereas} integer arithmetic in L42 has the common wrap around semantics.
+whereas integer arithmetic in L42 has the common wrap around semantics.
 %L42's integers have common wrap-around semantic.
 
 
@@ -216,13 +215,13 @@ by relying on all arithmetic operations performing runtime overflow checks;
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
 
-The annotations we had to add in the Spec\# version\footnote{\IO{The Spec\# code is in the artifact.} \IODel{see the artifact for the full code}} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we need\IO{ed} 16 annotations, worth a total of 45 tokens, this is worse than the code \IO{ following our approach that } we showed \IODel{here} \IO{above}, which has 14 annotations and 14 tokens.
+The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
 
 
 \subheading{Spec\# Papers}
-Their are many published papers about the pack/unpack methodology used by Spec\#. To compare against their expressiveness we will consider the three mains ones that introduce\IO{d} their methodology and extensions:
+Their are many published papers about the pack/unpack methodology used by Spec\#. To compare against their expressiveness we will consider the three mains ones that introduced their methodology and extensions:
 \begin{itemize}
-	\item \emph{Verification of Object-Oriented Programs with Invariants:}~\cite{DBLP:journals/jot/BarnettDFLS04} this paper introduces their methodology. In their examples section (pages 41--47), they show how their methodology would work in a class heirarchy with \IODel{a} \Q!Reader! and \Q!ArrayReader! classes. The former represents something that reads characters, whereas the latter is a concrete implementation that reads from an owned array. They extend this further with a \Q!Lexer! that owns a \Q!Reader!, which it uses to read characters and parse them into tokens. They also show an example of a \Q!FileList! class that owns an array of filenames, and a \Q!DirFileList! class that extends it with a stronger invariant. All of these examples can be represented in L42\footnote{\IO{Our encodings are in the artifact.} \IODel{see the artefact.}}. The most interesting considerations are as follow:
+	\item \emph{Verification of Object-Oriented Programs with Invariants:}~\cite{DBLP:journals/jot/BarnettDFLS04} this paper introduces their methodology. In their examples section (pages 41--47), they show how their methodology would work in a class heirarchy with \Q!Reader! and \Q!ArrayReader! classes. The former represents something that reads characters, whereas the latter is a concrete implementation that reads from an owned array. They extend this further with a \Q!Lexer! that owns a \Q!Reader!, which it uses to read characters and parse them into tokens. They also show an example of a \Q!FileList! class that owns an array of filenames, and a \Q!DirFileList! class that extends it with a stronger invariant. All of these examples can be represented in L42\footnote{Our encodings are in the artifact.}. The most interesting considerations are as follow:
 	\begin{itemize}
 		\item Their \Q!ArrayReader! class has a \Q!relinquishReader! method that `unpacks' the \Q!ArrayReader! and returns its owned array.
 %This allows other code to mutate the array freely,
@@ -237,7 +236,7 @@ We can still relinquish the array, but at the cost of making the \Q!ArrayReader!
 % However, we can
  declaring \Q!relinquishReader! as a \Q!capsule method!, this works since our type modifier system guarantees that the receiver of such a method is not aliased, and hence cannot be used again. Note that Spec\# itself cannot represent the \Q!relinquishReader! method at all, since it does not provide explicit pack and unpack operations, rather its \Q!expose! statement performs both an unpack and a pack, thus we cannot unpack an \Q!ArrayReader! without repacking it in the same method.
 %(unless we were to throw an unchecked-exception, however this is unsound~\cite{Leino2004ExceptionSF}).
-		\item Their \Q!DirFileList! example inherits from a \Q!FileList! which has an invariant\IODel{,} and a final method, \IO{this is something their approach was specifically designed to handle} \IODel{ this caused complications for their protocol}. As L42 does not have traditional subclassing, we are unable to express this concept fully, but L42 does have code reuse via trait composition, in which case \Q!DirFileList! can essentially copy and paste the methods from \Q!FileList!, and they will automatically enforce the invariant of \Q!DirFileList!. %The disadvantage however is that if \Q!FileList! is a trait, it cannot also be a type, and so we cannot have a non-final type/class with a concrete invariant, however one can always have a final class with an invariant that wraps over a non final one. This is not an inherent limitation with our invariant protocol, but rather one of the L42 language itself.
+		\item Their \Q!DirFileList! example inherits from a \Q!FileList! which has an invariant, and a final method, this is something their approach was specifically designed to handle. As L42 does not have traditional subclassing, we are unable to express this concept fully, but L42 does have code reuse via trait composition, in which case \Q!DirFileList! can essentially copy and paste the methods from \Q!FileList!, and they will automatically enforce the invariant of \Q!DirFileList!. %The disadvantage however is that if \Q!FileList! is a trait, it cannot also be a type, and so we cannot have a non-final type/class with a concrete invariant, however one can always have a final class with an invariant that wraps over a non final one. This is not an inherent limitation with our invariant protocol, but rather one of the L42 language itself.
 	\end{itemize}
 
 	\item \emph{Object Invariants in Dynamic Contexts:}~\cite{DBLP:conf/ecoop/LeinoM04} this paper shows how one can specify an invariant for a doubly linked list of \Q!int!s (which is an immutable value type). Unlike our protocol however, it allows the invariant of \Q!Node! to refer to sibling \Q!Node!s which are not owned/encapsulated by itself, but rather the enclosing \Q!List!. Our protocol can verify such a linked list\footnote{%
@@ -247,7 +246,6 @@ use reference equality, which the L42 language does not support.
 %We were unable to implement this in L42, as the invariant uses reference equality, which the language does not implement.
 } (since its elements are immutable), however we have to specify the invariant inside the \Q!List! class. We do not see this as a problem, as the \Q!Node! type is only supposed to be used as part of a \Q!List!, thus this restriction does not impact users of \Q!List!.
 	
-	\item \emph{Friends Need a Bit More: Maintaining Invariants Over Shared State:}~\cite{DBLP:conf/mpc/BarnettN04} this paper shows how one can verify invariants over interacting objects, where neither owns/contains the other. They have multiple examples which utilise the `subject/observer' pattern, where a `subject' has some state that an `observer' wants to keep track of. In their \Q!Subject!/\Q!View! example, \Q!View!s are created with references to \Q!Subject!s, and copies of their state. When a \Q!Subject!'s state is modified, it calls a method on its attached \Q!View!s, notifying them of this update. The invariant is that a \Q!View!'s copy of its \Q!Subject!'s state is up to date. Their \Q!Master!/\Q!Clock! example is similar, a \Q!Clock! contains a reference to a \Q!Master!, and saves a copy of the \Q!Master!'s time. The \Q!Master! has a \Q!Tick! method that increases its time, but unlike the \Q!Subject!/\Q!View! example, the \Q!Clock! is not notified. The invariant is that the \Q!Clock!'s time is never ahead of its \Q!Master!'s. Our protocol is unable to verify these interactions, because 
-\IODel{in those examples} the
+	\item \emph{Friends Need a Bit More: Maintaining Invariants Over Shared State:}~\cite{DBLP:conf/mpc/BarnettN04} this paper shows how one can verify invariants over interacting objects, where neither owns/contains the other. They have multiple examples which utilise the `subject/observer' pattern, where a `subject' has some state that an `observer' wants to keep track of. In their \Q!Subject!/\Q!View! example, \Q!View!s are created with references to \Q!Subject!s, and copies of their state. When a \Q!Subject!'s state is modified, it calls a method on its attached \Q!View!s, notifying them of this update. The invariant is that a \Q!View!'s copy of its \Q!Subject!'s state is up to date. Their \Q!Master!/\Q!Clock! example is similar, a \Q!Clock! contains a reference to a \Q!Master!, and saves a copy of the \Q!Master!'s time. The \Q!Master! has a \Q!Tick! method that increases its time, but unlike the \Q!Subject!/\Q!View! example, the \Q!Clock! is not notified. The invariant is that the \Q!Clock!'s time is never ahead of its \Q!Master!'s. Our protocol is unable to verify these interactions, because the
 interacting objects are not immutable or encapsulated by each other.
 \end{itemize}

@@ -40,7 +40,6 @@ However, in order for Joe-E to be a subset of Java, they leverage on a simplifie
 immutable classes must be final with only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.
 In Joe-E, every method that only takes instances of immutable classes is pure.
-%\IOComm{Worth mentioning Wyvern? Since alex mentioned that it enforces purirty? Perhaps he can write that section?}
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
 In contrast our model has a more fine grained representation of mutability: it is \emph{reference based} instead of \emph{class based}. In our work, every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
@@ -51,7 +50,6 @@ Invariant protocols differ wildly and can be unsound or complicated, particular 
 
 While invariant protocols all seem to 
 check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular sound approaches include:
-%\IOComm{Cite bertrand meyer? He refers to these as 'referemce leaking' and 'furtive accesses'}.
 %literature on class invariant accepts that sometime the object invariant may not hold,
 %and that is exacerbated because of 
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
@@ -192,7 +190,6 @@ Their approach allows wrapping invariant operations around method calls, as is d
 %\LINE
 
 %\LINE
-%\IOComm{ADD THOSE TO PERFORMANCE EIFFEL,D\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}}
 
 %\noindent\textit{Performance}
 %Our case study shows that our sound approach can monitor programs

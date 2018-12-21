@@ -18,9 +18,6 @@ Class invariants are an important concept when reasoning about software correctn
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@.
 We say that an object's invariant holds when its \Q@invariant@ method would return \Q@true@.
-%\IODel{We say that an object is \REV{\emph{valid}}{3}{
-%If this term really is necessary (I'm not sure it is), then perhaps it should be used more regularly.}
-%if calling \Q@invariant@ would return \Q@true@.}
 
 An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
 The two main sound invariant protocols present in literature are \emph{visible state semantic} \cite{Meyer:1988:OSC:534929} and the \emph{Boogie/Pack-Unpack methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}. The visible state semantics expect the invariants of receivers to hold before and after every public method call, and after constructors. Invariants are simply checked at all such points, thus this approach is obviously sound; however this can be incredibly inefficient, even in simple cases.
