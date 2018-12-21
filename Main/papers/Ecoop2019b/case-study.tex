@@ -61,7 +61,7 @@ Here we show that we are able to verify classes with circular mutable object gra
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
 the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable@'s invariant.
-Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at\\ \url{http://l42.is/ProgrammingArtifact.zip} \IOComm{change URL}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
+Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at\\ \url{http://l42.is/EcoopArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
 
 \begin{lstlisting}[mathescape=false]
 class SafeMovable implements Widget { capsule Box box;

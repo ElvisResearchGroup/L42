@@ -49,7 +49,7 @@ $l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
 
 
 \noindent If the result of a field access is \Q!mut!\IODel{able},
-the receiver is also mut\Q!mut!\IODel{able}\IO{ field updates are only allowed on \Q!mut! receivers}:\saveSpace\saveSpace
+the receiver is also \Q!mut!\IODel{able}\IO{; field updates are only allowed on \Q!mut! receivers}:\saveSpace\saveSpace
 \begin{Assumption}[Mut Field]\rm
 	\ \\
 	\indent(1)\ if $\Sigma;\Gamma\vdash\e\singleDot\f:\Kw{mut}\,\_$
@@ -99,7 +99,7 @@ with no \Q@mut@ free variables is deterministic and does not
 mutate pre existing memory (and thus does not not perform I/O by mutating \IO{the} pre existing $c$):
 \begin{Assumption}[Determinism]\rm
 	if $\emptyset;\Gamma\vdash \e:\T$, 
-	$\forall x \Gamma(x)\neq\Kw{mut}\,\_$, and
+	$\forall x\, ( \Gamma(x)\neq\Kw{mut}\,\_$), and
 	$\sigma | \e'\rightarrow^+ \sigma' | \e''$
 	then 
 	$\sigma | \e'\Rightarrow^+ \sigma,\_ | \e''$,
@@ -155,10 +155,11 @@ called \emph{Stronger Soundness} and
 show that it is preserved during reductions by means of conventional
 Progress and Subject Reduction (Progress is one of our assumptions,
 while Subject Reduction relies heavily upon Subject Reduction Base).
-That is,
-Progress $\wedge$ Subject Reduction $\Rightarrow$ Stronger \IODel{Sound Validation} \IO{Soudness} \IO{and}
-Stronger Soundness $\Rightarrow$ Soundness.
-
+That is:
+\begin{itemize}
+\item Progress $\wedge$ Subject Reduction $\Rightarrow$ Stronger Soudness, and
+\item Stronger Soundness $\Rightarrow$ Soundness.
+\end{itemize}
 %The structure of the proof is interesting:
 %It is hard to prove Sound Validation directly,
 %so we first define a stronger property,
@@ -343,38 +344,38 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 	\item Suppose some other $l_0$ was \emph{wellEncapsulated} and \emph{valid}:
 	\begin{itemize}
-			\item If $l$ was in the \emph{rog} of $l_0$, by Capsule Tree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non \emph{wellEncapsulated}. In addition, since only things in the \emph{erog} can be referenced by \Q@invariant@'s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is \emph{valid}. And so we can't have effected $l_0$ being $\mathit{OK}$.
+			\item If $l$ was in the \emph{rog} of $l_0$, by Capsule Tree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non \emph{wellEncapsulated}. In addition, since only things in the \emph{erog} can be referenced by \Q@invariant@\IODel{'s}\IO{,} validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is \emph{valid}. And so we can't have effected $l_0$ being $\mathit{OK}$.
 			\item Otherwise, this reduction step could not have affected $l_0$, so $l_0$ is still $\mathit{OK}$.
 	\end{itemize}
 
 
-	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $\mathit{garbage}$), thus $\mathit{garbage}$ is still $\mathit{OK}$.
+	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $\mathit{garbage}$), thus \IO{$l$} \IODel{$\mathit{garbage}$} is still $\mathit{OK}$.
 
 	\item As we don't change any monitors here, nothing that was $\mathit{monitored}$ could have been made un-$\mathit{monitored}$, and so it is still $\mathit{OK}$.
 \end{itemize}
 
 \item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
 
-	These reduction steps do not modify memory, nor do they modify the memory locations reachable inside of main expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, \emph{wellEncapsulated}, \emph{valid} (due to Determinism), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
+	These reduction steps do not modify memory, \IODel{nor do they modify} the memory locations reachable inside of main expression, \IO{or} \IODel{nor do they modify} any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, \emph{wellEncapsulated}, \emph{valid} (due to Determinism), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
 
 \item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR$:
 
-	Clearly the newly created object ($l$) is \emph{monitored}. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
+	Clearly the newly created object\IO{, $l$,} \IODel{($l$)} is \emph{monitored}. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
 
 
 \item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:
 \begin{itemize}
 	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{invariant}\oR\cR$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is \emph{valid}.
 
-	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can't have been \emph{garbage} and \emph{monitored}, as \textsc{update} itself preserves this property and we haven't modified memory in anyway, we must still have that $l$ is \emph{wellEncapsulated}. As $l$ is \emph{valid} and \emph{wellEncapsulated} it is $\mathit{OK}$.
+	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can't have been \emph{garbage} and \emph{monitored}, as \textsc{update} itself preserves this property and we haven't modified memory in anyway, we must still have that $l$ is \emph{wellEncapsulated}. As $l$ is \emph{valid} and \emph{wellEncapsulate\IO{d}}\IO{, i}t is $\mathit{OK}$.
 
 	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule mutator method that mutated a field $f$.
 	\begin{itemize}
 		\item A location that was \emph{garbage} obviously still is, and so is also $\mathit{OK}$.
 		\item No location that was \emph{valid} could have been made invalid since this reduction rule performs no mutation of memory. If a location was \emph{wellEncapsulated} before, the only way it could be non \emph{wellEncapsulated} is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected \emph{wellEncapsulated}, hence such thing is still $\mathit{OK}$.
-		\item The only location that could have been made un \emph{monitored} is $l$ itself. By our well formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non \emph{wellEncapsulated}, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been \emph{wellEncapsulated} before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $\mathit{OK}$.
+		\item The only location that could have been made un \emph{monitored} is $l$ itself. By our well formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non \emph{wellEncapsulated}, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been \emph{wellEncapsulated} before the \textsc{mcall}, \IO{and so} it still is\IODel{, and}\IO{. In addition} since  $l$ is valid, it is $\mathit{OK}$.
 	\end{itemize}
-	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by Capsule Tree the resulting value, $l$, must be \emph{wellEncapsulated}, since $l$ is also \emph{valid} we have that $l$ is $\mathit{OK}$.
+	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by Capsule Tre\IO{e, t}he resulting value, $l$, must be \emph{wellEncapsulated}, since $l$ is also \emph{valid} we have that $l$ is $\mathit{OK}$.
 
 \end{itemize}
 
