@@ -89,7 +89,7 @@ internal sealed class SafeMovable: Gui.Widget // 17 annotations, 46 tokens, 317+
 	internal static Gui.Button MakeButton(Box outer, int scale, string suffix, int left, int top, int width, int height, int leftDelta, int topDelta, string imgName) // 1 annotation, 5 tokens, 33 characters
 		ensures Owner.Same(result,outer);
 	{
-		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), "examples/resources/" + imgName);
+		return new Gui.Button(outer.id + suffix, left*scale, top*scale, width*scale, height*scale, new MoveAction(outer, leftDelta, topDelta), "L42/Gui/" + imgName);
 	}
 
 	internal SafeMovable(string id, int left, int top, int width, int height, string colour, [Captured] List<Gui.Widget> children) // 3 annotations, 11 tokens, 90 characters
