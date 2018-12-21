@@ -260,7 +260,7 @@ For the purposes of invariant checking, we only care about the effects that meth
 
 \subheading{Purity}\label{s:purity}
 TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
-as being deterministic and not mutating existing memory. 
+as being deterministic and not mutating existing memory. Such methods are pure because:
 \begin{itemize}
 	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
