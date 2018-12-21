@@ -38,9 +38,34 @@
 \newcounter{lemma}
 \newtheorem{Lemma}[lemma]{Lemma}
 
+%\nolinenumbers
+%\let\oldpar=\par
+%\newif\ifLin
+%\def\par{\ifLin\nolinenumbers\Linfalse\fi\oldpar}
 %
+%\usepackage{everyhook}
+%\PushPostHook{par}{\markSpace{\textcolor{blue}{$\bullet$}}}
 \usepackage{xspace}
 \input{../Def/Def}
+
+% The following code defines a macro, \markLine that puts it’s argument in the margins on either side of the next line
+% it can be called multiple times for the same line, causing the arguments to placed next to eachother
+\begin{comment} 
+\usepackage{lineno}
+\linenumbers
+\renewcommand\makeLineNumber{}
+\newbox\LeftMarkers \newbox\RightMarkers
+\newcommand{\markLine}[2]{%
+	\setbox\LeftMarkers\hbox{#1\unhbox\LeftMarkers}%
+	\setbox\RightMarkers\hbox{\unhbox\RightMarkers#1}}
+
+\newcommand{\markLineD}[1]{\markLineD{#1}{#1}} % just a shortcut
+\renewcommand{\makeLineNumber}{%
+	\ifvoid\LeftMarkers%
+	\else \hss\unhcopy\LeftMarkers\ \rlap{\hskip\textwidth\ \unhbox\RightMarkers}%
+	\fi}
+\end{comment}
+
 \newcommand{\saveSpace}{\vspace{-3px}}
 \newcommand{\loseSpace}{\vspace{1ex}}
 
@@ -48,8 +73,8 @@
 	\NoteColour{red}{#1\NoteText{\footnote{%
 		\textcolor{red}{\textbf{REV#2{:} #3}}}}}}
 \newcommand{\subheading}[1]{%
-\loseSpace%
-\noindent\textsf{\textbf{\large#1\\\noindent}}
+	\loseSpace%
+	\noindent\textsf{\textbf{\large#1\\\noindent}}
 }
 
 %\HideNotes
@@ -57,7 +82,7 @@
 %	\unskip\space%
 %	\llap{\textcolor{red}{$\cdot$}}%
 %	\ignorespaces}
-\nolinenumbers % Turn of the darn things! (remove this when we submit the paper)
+ % Turn of the darn things! (remove this when we submit the paper)
 
 \title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}
 %\titlerunning{Dummy short title}%optional, please use if title is longer than one line
@@ -175,7 +200,8 @@
 \renewcommand{\mapsto}{\mathrel{\origMapsTo}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
 \lstset{morekeywords={expose, iso}}
-\newcommand{\thm}[1]{\sf #1}
+\newcommand{\thm}[1]{\scalebox{0.9}[0.9]{\sf #1}}
+
 \begin{document}
 \maketitle
 \input{abstract}

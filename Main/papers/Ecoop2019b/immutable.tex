@@ -57,7 +57,7 @@ class Person { .. // Same as before
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \Q@invariant@ method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-\noindent Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
+Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
 \subheading{Unrestricted use of non determinism} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \Q!true!.
 %\Q@invariant@ to be non-deterministic.}%
@@ -76,6 +76,7 @@ method mut Person createPersons(String name) {
   ..}
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
+
 Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non determinism only through capability objects, and 
 restricts their creation, the above example would be prevented.
@@ -92,7 +93,6 @@ briefly discuss how a few trusted language primitives can be used to perform cac
 without the need for back doors.
 
 Our example shows that such back doors can be used to break determinism of \Q@invariant@ methods, by allowing the invariant to store and read information about previous calls. In the following example we use \Q@MagicCounter@ as a back door to remotely break the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
-
 \begin{lstlisting}
 class MagicCounter {
   method Int increment(){
@@ -172,14 +172,14 @@ Since we represent invariant failures by throwing unchecked exceptions, programs
 	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@ methods). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
 If instead we were to not enforce strong exception safety, an invalid object could be made reachable:
-\saveSpace
+%\saveSpace
 \begin{lstlisting}[morekeywords={assert}, escapechar=\%]
 mut Person bob = new Person("bob");
 // Catch and ignore invariant failure:
 try { bob.name(""); } catch (Error t) { } // ill typed in L42
 assert bob.invariant(); // bob is invalid!
 \end{lstlisting}
-\saveSpace
+
 As you can see, recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
 %Since calls to \Q@invariant@ may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.

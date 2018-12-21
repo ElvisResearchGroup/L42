@@ -1,7 +1,6 @@
 \section{Invariants over encapsulated state}
 \label{s:encapsulated}
-\noindent Consider managing the shipment of items, where there is a maximum combined weight:
-\saveSpace
+Consider managing the shipment of items, where there is a maximum combined weight:
 \begin{lstlisting}
 class ShippingList {
   capsule Items items;
@@ -22,7 +21,7 @@ Relaxing our system to allow a \Q@mut@ modifier for
 the \Q@items@ field and the corresponding constructor parameter 
 breaks the code:
 the cargo we received in the constructor may already be compromised:
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 mut Items items = ...;
 mut ShippingList l = new ShippingList(items); // l is valid
@@ -40,20 +39,19 @@ For performance reasons, this is hardly done in practice and is a continuous sou
 Our restrictions on capsule mutators ensure that capsule fields are essentially an exclusive mutable reference.
 Removing these restrictions would break our invariant protocol.
 If we were to allow \Q@x.items@ to be seen as \Q@mut@, where \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
 mut ShippingList l = new ShippingList(new Items()); // l is ok
 mut Items evilAlias = l.items // here l loses control
 evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
-\saveSpace
+
 If we allowed a \Q@mut@ return type the following would be accepted:
-\saveSpace
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}
 \end{lstlisting}
-\saveSpace
-\noindent Depending on dynamic dispatch, \Q@c.foo()@ may just be the identity function, thus
+
+Depending on dynamic dispatch, \Q@c.foo()@ may just be the identity function, thus
 we would get in the same situation as the former example.
 %Static analysis is usually unable/unwilling to track precise behaviour of dynamic dispatch.
 
@@ -68,22 +66,20 @@ we would get in the same situation as the former example.
 
 
 Allowing \Q@this@ to be used more than once can also cause problems:
-\saveSpace
 \begin{lstlisting}
 mut method imm Void multiThis(C c) {
   read Foo f = c.foo(this);
   this.items.add(new HeavyItem());
   f.hi(); } // Can `this' be observed here?
 \end{lstlisting}
-\saveSpace
-\noindent If the former code were accepted, 
+
+If the former code were accepted, 
 \Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe an invalid object.
 
 In order to ensure that a second reference to \Q@this@ is not reachable through the parameters, we only accept \Q@imm@ and \Q@capsule@ parameters.
 If we were however to accept a \Q@read@ parameter, as in the example below,
 we would be in the same situation as before, where \Q@f@ may contain
 a reference to \Q@this@:
-\saveSpace
 \begin{lstlisting}
 mut method imm Void addHeavy(read Foo f) {
   this.items.add(new HeavyItem())
@@ -93,7 +89,6 @@ mut ShippingList l = new ShippingList();
 read Foo f = new Foo(l);
 l.addHeavy(f); // We pass another reference to `l' through f
 \end{lstlisting}
-\saveSpace
 
 %, we would have the same problem with a \Q@read@ paramater. ... justify why we ned capsule
 % The boat will sink if the weight of the cargo goes over 300. However, 

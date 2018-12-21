@@ -36,12 +36,10 @@ For example, there are 3 languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JO
 to not confuse them with object capabilities, another technique we also use in this paper.}
 While studying those languages, we discovered an elegant way to enforce invariants.
 
-
 \subheading{Example}
-We now show a simple example, where we have a \Q@Cage@ class with a list of \Q@Point@s, \Q@path@, and \Q@Hamster@ with a \Q@Point@, \Q@pos@. The \Q@Cage@ will move the \Q@Hamster@ across its path, it has an invariant: the \Q@Hamster@'s location is within the \Q@Cage@'s path.
-
+We now show a simple example, where we have a \Q@Cage@ class with a list of \Q@Point@s, \Q@path@, and \Q@Hamster@ with a \Q@Point@, \Q@pos@. The \Q@Cage@ will move the \Q@Hamster@ across its path, it has an invariant: the \Q@Hamster@'s location is within the \Q@Cage@'s path.%
+%
 % While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
-
 %	if(that==null || !(that instanceof Point)){return false;}
 % 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
 %  }
@@ -66,6 +64,7 @@ class Cage {
   mut method Void moveTo(Point p) { this.h.pos = p; }
 }
 \end{lstlisting}
+
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
 However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of constructor parameters, but we show their signature in order to show any annotations.
 
@@ -118,9 +117,10 @@ class Cage {
     expose(this) {this.h.pos = this.path[i%this.path.Count];}}
 }
 \end{lstlisting}
+
 In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant, in particular \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
  
-Even with all the above annotations, we still needed special care in creating \Q@Cage@s:
+Even with all the above annotations, we still needed special care in creating \Q@Cage@s:\vspace{-1.860px}% magic number that prevents the listings background going onto the next page
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -128,6 +128,7 @@ List<Point> pl = new List<Point>{new Point(0,0),new Point(0,1)};
 Owner.AssignSame(pl, Owner.ElementProxy(pl));
 Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 \end{lstlisting}
+
 Whereas with our system we can simply write:
 \begin{lstlisting}
 List<Point> pl = List.of(new Point(0, 0), new Point(0, 1));

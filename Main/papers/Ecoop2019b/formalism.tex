@@ -1,6 +1,5 @@
 \section{Formal Language Model}
 \label{s:formalism}
-\saveSpace
 
 %----------------------------------
 In order to model our system, we need to formalise an imperative object oriented language
@@ -127,15 +126,13 @@ the original state of memory. This is used to model the guarantee of strong exce
 \subheading{Well Formedness Criteria}
 We additionally restrict the grammar with the following well formedness criteria:
 \begin{itemize}
-	\item $\Kw{invariant}$ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
+	\item \Q@invariant@ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
 	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$, respectively.
 	\item Field accesses and updates in the main expression are of the form $l.f$ or $l.f\equals\e$, respectively.
 	\item Locations that are preserved by \Q@try@ blocks are
 	never monitored, that is, for $\Kw{try}^\sigma\oC\e\cC\ \_$, if $\e$ is of the form $\ctx[\M{l}{\_}{\_}]$, then $l\notin\sigma$.
 \end{itemize}
-
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}
-
 \begin{figure}
 	\!\!
 	$\!\!\!\!\!\begin{array}{l}
@@ -205,7 +202,6 @@ We additionally restrict the grammar with the following well formedness criteria
 \caption{Reduction rules}\label{f:reductions}
 \end{figure}
 
-\loseSpace
 \subheading{Reduction rules}
 Our reduction rules are defined in Figure \ref{f:reductions}.
 They are pretty standard, except for our handling of monitor expressions.
@@ -236,12 +232,12 @@ We define a deterministic reduction to mean that exactly one reduction is possib
 deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an \emph{error}.
 We also require evaluating \Q@invariant@ to preserve existing memory ($\sigma$), however new objects ($\sigma'$) can be created and freely mutated.
 
-\indent$\mathit{valid}(\sigma,l)$ iff $\sigma | l.\invariant {\Rightarrow^+} \sigma,\sigma' | \Kw{true}$.\loseSpace
+\indent$\mathit{valid}(\sigma,l)$ iff $\sigma | l.\invariant {\Rightarrow^+} \sigma,\sigma' | \Kw{true}$.%\loseSpace
 
 \noindent 
 To allow the invariant method to be called on an invalid object, and access fields on such object, we define the set of trusted execution steps as the the call to \Q@invariant@ itself, and any field accesses inside its evaluation. Note that this only applies to single small step reductions, and not the entire evaluation of \Q!invariant!.
 
-\loseSpace
+%\loseSpace
 \noindent $\mathit{trusted}(\ctx_v,r_l)$ iff\\*
 \indent either
 $r_l=l.\invariant$ and
@@ -249,7 +245,7 @@ $\ctx_v=\ctx_v'[\M{l}{v}{\square}]$,\\*
 \indent or
 $r_l=l$\Q@.f@ and
 $\ctx_v=\ctx_v'[\M{l}{v}{\ctx_v''}]$.
-\loseSpace
+%\loseSpace
 
 \noindent Finally, we define what it means to soundly enforce our invariant protocol: every object referenced by any untrusted redex is valid.
 

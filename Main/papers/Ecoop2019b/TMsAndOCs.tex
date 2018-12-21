@@ -23,12 +23,12 @@ If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
-TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of an \Q@imm@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the referenced object itself may be mutated.
+
+\noindent TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of an \Q@imm@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the referenced object itself may be mutated.
 On the other hand, an \Q@imm@ reference refers to an object that will never be mutated, but an \Q@imm@ variable can be reassigned.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like a \Q@const *const A@.}
 %\end{itemize}
 
 Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@, where we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
-
 \begin{lstlisting}
 mut Point mp = new Point(1, 2);
 mp.x = 3; // ok
@@ -51,20 +51,19 @@ Here we assume the full/deep meaning~\cite{ZibinEtAl10}:
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
-
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
 The main progress in the last few years is with the flexibility of such type systems:
  where the programmer should use \Q@imm@ when  representing immutable data
 and \Q@mut@ nearly everywhere else. The system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
 To see a glimpse of this flexibility, consider the following example:
 %//the same expression can create mut, imm or capsule
-\saveSpace
+%\saveSpace
 \begin{lstlisting}
     mut Circle mc = new Circle(new Point(0, 0), 7);
 capsule Circle cc = new Circle(new Point(0, 0), 7);
     imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
-\saveSpace
+
 Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
 The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
@@ -177,6 +176,7 @@ L42 enforces SES using TMs in the following way:\footnote{Transactions are anoth
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
+
 \noindent This strategy does not restrict throwing exceptions, but only catching unchecked ones.
 SES allows us to soundly capture invariant failures as unchecked exceptions: 
 the broken object is guaranteed to be garbage collectable when the exception is captured. For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
@@ -253,13 +253,14 @@ L42 allow user code to perform foreign calls without going through a predefined 
 % \item If the language has global variables, they should only be 
 %\item There are no global variables.\footnote{}
 \end{itemize}
-L42 expects capability methods to be used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
+
+\noindent L42 expects capability methods to be used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
 For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) can be white listed as `deterministic', provided they do not effect program execution, such as by non deterministically throwing I/O errors.
 
 \subheading{Purity}\label{s:purity}
 TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
-as being deterministic and not mutating existing memory.
+as being deterministic and not mutating existing memory. 
 \begin{itemize}
 	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,

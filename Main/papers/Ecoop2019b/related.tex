@@ -1,8 +1,5 @@
-
-\saveSpace
 \section{Related work}
 \label{s:related}
-\saveSpace
 
 \subheading{Type Modifiers}
 We rely on a combination of modifiers that are supported by at least 3 languages/lines of research:
@@ -267,10 +264,10 @@ Most runtime verification systems, such as ours, use a metacircular approach: sp
 
 They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
 Spec\# aims to follow (b) but only considers non determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. For example, the following method verifies:
-\saveSpace
 \begin{lstlisting}
 [Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
-\end{lstlisting}\saveSpace
+\end{lstlisting}
+
 And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
 As you can see failing to handle non determinism jeopardises reasoning.
 

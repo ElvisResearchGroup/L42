@@ -1,7 +1,6 @@
 %\saveSpace
 \section{GUI Case study}
 \label{s:case-study}
-\saveSpace
 
 %interface Foo{ma mb}
 %
@@ -62,7 +61,6 @@ Here we show that we are able to verify classes with circular mutable object gra
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
 the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ is a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable@'s invariant.
 Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at\\ \url{http://l42.is/EcoopArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@, and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
-
 \begin{lstlisting}[mathescape=false]
 class SafeMovable implements Widget { capsule Box box;
   @Override read method Int left() { return this.box.l; }
@@ -90,7 +88,8 @@ class MoveAction implements Action { mut Box outer;
 ..
 //main expression; #$ is a capability method making a Gui object
 Gui.#$().display(new SafeMovable(..));
-\end{lstlisting}\saveSpace
+\end{lstlisting}
+
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
 \Q@left@, \Q@top@, and \Q@children@. Also note how the ROG of \Q@Box@ is circular: since
 the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box@ in order to move it.
@@ -111,6 +110,7 @@ read method Bool invariant() {
       if(w1!=w2 && SafeMovable.overlap(w1, w2)){return false;}}}
   return true;}
 \end{lstlisting}
+
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its fields.%its \Q@width@ and \Q@height@ fields.
 
 
@@ -217,15 +217,14 @@ Characters (with minimal whitespace)
 %  $826$ $134$
 \end{tabular}
 \end{center}
+\lstset{morekeywords={requires}}
 
 To encode the GUI example in L42, the only annotations we needed were the 3 type modifiers: \Q@mut@, \Q@read@, and \Q@capsule@.
 % , for a total of 
 % $19$ annotations (one token each, $74$ characters in total).
 Our Spec\# code requires things such as, purity, immutability, ownership, method pre/post conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
 Together these annotations can get quite long, such as the following precondition on \Q@SafeMovable@'s constructor: \\
-\begin{tabular}{r}
-\Q@requires Owner.Same(Owner.ElementProxy(children), children);@
-\end{tabular}
+\indent\Q@requires Owner.Same(Owner.ElementProxy(children), children);@
 
 % methods and field attributes as well as requires, ensures and modifies clauses, and finally also %explicit ownership assignment statements.
 % Spec\# annotation can be involved, as for example \Q@requires Owner.Same(Owner.ElementProxy(children), children);@}
@@ -244,6 +243,7 @@ Together these annotations can get quite long, such as the following preconditio
 %guiLib// 5 annoations, 9 tokens, 52 characters
 
 % Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations.
+
 \noindent The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only strange thing we had to in L42 was creating \Q@Box@es by using 
 an additional variable in a nested scope.
 This is needed to delineate scopes for promotions.
@@ -272,7 +272,6 @@ Suppose we want to scale a \Q@Widget@, we could add \Q@mut@ setters for \Q@width
 
 A simple and practical solution would be to define a \Q@transform@ method in \Q@Widget@, and a \Q@Transformer@ interface 
 like so:\footnote{A more general transformer could return a generic \Q@read R@.}
-\saveSpace
 \begin{lstlisting}
 interface Transformer<T> { method Void apply(mut T elem); }
 interface Widget { ..
@@ -287,13 +286,12 @@ class SafeMovable { ..
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other capsule fields.
 The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply:
-\saveSpace\begin{lstlisting}
+\begin{lstlisting}
 static method Void zoom(mut Widget w) {
   w.transform(ws -> { for (wi : ws) { zoom(wi,scale); }});
   w.width(w.width() / 2); ..; w.top(w.top() / 2); }
-\end{lstlisting}\saveSpace
-\saveSpace
-\saveSpace
+\end{lstlisting}
+
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
 
 % \begin{lstlisting}[escapechar=\%]

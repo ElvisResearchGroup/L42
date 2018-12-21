@@ -1,4 +1,5 @@
-\section{The Hamster Example in Spec\#}
+\saveSpace
+\section{The Hamster Example in Spec\#}\saveSpace
 \label{s:hamster}
 \lstset{language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists,capsule}}
 
@@ -12,6 +13,7 @@ class Point {
 	Point(double x, double y) { this.x = x; this.y = y; }
 }
 \end{lstlisting}
+
 This works exactly as is in Spec\#, however we have difficulty if we want to define equality of \Q@Point@s (see below).
 
 \subheading{The \Q@Hamster@ Class} 
@@ -22,6 +24,7 @@ class Hamster {
 	Hamster(Point pos) { this.pos = pos; }
 }
 \end{lstlisting}
+
 Though this is legal in Spec\#, it is practically useless. Spec\# has no way of knowing whether \Q@pos@ is \emph{valid} or \emph{consistent}. If \Q@pos@ is not known to be valid, one will be unable to pass it to almost any method, since by default methods implicitly require their receivers and arguments to be valid (compare this with our invariant protocol, which guarantees that any reachable object is valid).
 If \Q@pos@ is not known to be consistent, one will be unable to mutate it, by updating one of its fields or by passing it as an argument (or receiver) to a non \Q@Pure@ method.
 Though we don't want \Q@pos@ to ever mutate, Spec\# currently has no way of enforcing that an \emph{instance} of a non immutable class is itself immutable\footnote{There is a the describes a simple solution to this problem: assign ownership of the object to a special predefined `freezer' object, which never gives up mutation permission~\cite{DBLP:conf/vstte/LeinoMW08}, however this does not appear to have been implemented; this would provide similar flexibility to the TM system we use, which allows an initially mutable object to be promoted to immutable.}, as such we will simply refrain from mutating it.
@@ -53,6 +56,7 @@ class Cage {
     this.h.pos = this.path[index % this.path.Count]; } 
 }
 \end{lstlisting}
+
 However for the above \Q@invariant@ to be admissible in Spec\#, \Q@this.path@ and \Q@this.h@ must both be owned by \Q@this@. In addition, the \emph{elements} of \Q@this.path@ need to be owned by \Q@this@, since \Q@this.path.Conatains@ will read them. Note that \Q@this.h.pos@ also needs to be owned by \Q@this@, however since \Q@pos@ is declared as \Q@[Peer]@, if \Q@this@ owns \Q@this.h@, it also owns \Q@this.h.pos@. To fix the invariant, we will declare \Q@h@, \Q@path@, and the elements of \Q@path@ as \emph{reps} (i.e. they are owned by the containing object). Finally, since \Q@Move@ modifies \Q@this.h@, \Q@this.h@ needs to be made consistent, which requires that the owner (\Q@this@) be made invalid; this can be achieved by using an \Q@expose(this)@ statement. \Q@expose(this){@\emph{body}\Q@}@ marks \Q@this@ as invalid, executes \emph{body}, checks that the invariant of \Q@this@ holds, and then marks \Q@this@ valid again.
 As we did with the \Q@Hamster@, we will simply take unowned \Q@h@ and \Q@path@ values, however we also need the elements of \Q@path@ to be unowned; since Spec\# has no \Q@[ElementsCaptured]@ annotation, we will require \Q@path@ to be unowned, and its elements (denoted by \Q@Owner.ElementProxy(path)@) to be owned by the same owner as \Q@path@ (which is \Q@null@).
 \begin{lstlisting}
@@ -85,6 +89,7 @@ class Point {
     return that!=null && this.x == that.x && this.y == that.y;}
 }
 \end{lstlisting}
+
 However this fails in Spec\# since \Q@Object.Equals@ is annotated with \Q@[Pure]@\\*\Q@[Reads(ReadsAttribute.Reads.Nothing)]@, and of course every overload of it must also satisfy this. The \Q@Reads@ annotations specifies that the method cannot read fields of \emph{any} object, not even the receiver, this makes overloading the method useless.
 % Our best guess as to why \Q@Object.Equals@ is annotated like that is that they expect it to be the default reference-equality, annotating it like this could aid static verification as it implies that whether or not two objects are equal cannot change, even if their fields are modified.
 
