@@ -32,7 +32,7 @@ $l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
 
 %We can now assume the following properties over the type system:
 
-We now have the usual \thm{Progress} and \thm{Subject Reduction Base}. Note that \thm{Subject Reduction Base} only says things about type checking, not invariant checking.\saveSpace\saveSpace
+Here we assume the usual \thm{Progress} and \thm{Subject Reduction Base}. Note that \thm{Subject Reduction Base} only ensures properties about type checking, not invariant checking.\saveSpace\saveSpace
 \begin{Assumption}[Progress]\rm
 	if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
 	and $e_0$ is not form $l$ or $\mathit{error}$, then
@@ -143,7 +143,7 @@ and \thm{Strong Exception Safety} ensures no mutation happens on preserved memor
 
 
 
-\subheading{Proof of Theorem 1}
+\subheading{Proof of Soundness}
 It is hard to prove \thm{Soundness} directly,
 so we first define a stronger property,
 called \thm{Stronger Soundness}, and
@@ -296,7 +296,7 @@ Note that \textsc{monitor exit} is fine because monitors are removed only when
  $e_1$ is a value.
 \end{proof}
 
-\subheading{Proof of \thm{Subject Reduction}}%\saveSpace
+\subheading{Proof of Subject Reduction}%\saveSpace
 Any reduction step can be obtained
 by exactly one application of the \textsc{ctxv} rule and one other rule. Thus the proof can simply proceed by cases on the other applied rule.
 
