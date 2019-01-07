@@ -1,12 +1,11 @@
 \begin{abstract}
-There are various interpretations as to when class invariants should hold and how they should be checked.
-We present a sound invariant protocol, where invariants hold for all objects involved in execution.
-We soundly support mutation, dynamic dispatch, exceptions and non determinism, while requiring only a modest number of runtime checks and annotations.
-Invariants are specified as methods whose execution is statically guaranteed to be deterministic and to not 
-access any externally mutable state.
-This design restricts the range of expressible invariants but improves upon the usability and performance of our system compared to prior work.
+In this paper we use pre existing type modifier and object capability systems to enable a system for sound runtime verification of invariants.
+Our system guarantees that class invariants hold for all objects involved in execution.
+Invariants are specified simply as methods whose execution is statically guaranteed to be deterministic and not access any externally mutable state.
+We automatically call such invariant methods only when objects are created or the state they refer to may have been mutated.
+Our design restricts the range of expressible invariants but improves upon the usability and performance of our system compared to prior work.
+In addition, we soundly support mutation, dynamic dispatch, exceptions, and non determinism, while requiring only a modest amount of annotation.
 
-We present a case study showing that our protocol requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel, and other languages. We statically control aliasing, mutability, and determinism using
-a flavour of type modifiers and object capabilities already present in three different experimental languages.
-We also formalise our invariant protocol and prove that such type modifiers and object capabilities are sufficient to ensure the soundness of our protocol.
+We present a case study showing that our system requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel.
+We also formalise our approach and prove that such pre existing type modifier and object capability systems are sufficient to ensure its soundness.
 \end{abstract}
