@@ -263,7 +263,7 @@ TMs and OCs together statically guarantee that any method with only \Q!read! or 
 as being deterministic and not mutating existing memory. Such methods are pure because:
 \begin{itemize}
 	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
-	Thus, since such methods do not write to memory accessible by another thread, nor read memory that could be mutated by another thread, they are trivially atomic.},
+	Thus, since such methods do not write to memory accessible by another thread, nor read memory that could be mutated by another thread, they are atomic.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
 	\item no other preexisting objects are accessible (as L42 does not have global variables).\footnote{%
 		If L42 did have static variables, getters and setters for them would be capability methods.

@@ -42,7 +42,7 @@ Note that we do not require such fields to be \Q@final@: when a field is updated
 
 %To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
 \subheading{Capsule mutators}
-In order to allow complex mutations of objects with invariants we introduce the notion of \emph{capsule mutator}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of a capsule field. To allow this to be sound, we use our TM system to ensure that the object containing the capsule field is not usable during the fields mutation, and it's invariant is checked immediately afterwards. 
+In order to allow complex mutations of objects with invariants we introduce the notion of \emph{capsule mutator}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of the ROG of a capsule field. We use TMs to ensure that the object containing the capsule field is not usable during the fields mutation, and it's invariant is checked immediately afterwards. 
 
 Formally, \emph{capsule mutators} are \Q@mut@ methods whose body accesses a \Q@capsule@ field mentioned in the invariant of the class containing the field. 
 Capsule mutators must use \Q@this@ exactly once in their body, since fields are instance private, this will be to access the \Q!capsule! field.
@@ -56,7 +56,7 @@ when such exceptions are leaked. However, this would make the runtime semantics 
 
 %\end{itemize}
 %Our type system will ensure that such methods are \Q!mut method!s, and the \Q!capsule! field will be seen as \Q!mut!.
-As capsule mutators use \Q!this! only once, and have no \Q!read! or \Q!mut! parameters, \Q!this! will not be accessible during execution, even if its invariant is violated part way through the capsule mutator.
+As capsule mutators use \Q!this! only once, and have no \Q!read! or \Q!mut! parameters, \Q!this! will not be accessible during execution. This is important, as it allows the invariant to be violated part way through the capsule mutator, but re established by the end.
 Preventing \Q!mut! return types ensures that such methods cannot leak out a mutable alias to the \Q!capsule! field, which could then be used to break the invariant.
 Note that these restrictions do not apply when the receiver of the field access is \Q!capsule!, since we guarantee that the receiver is not in the ROG of any of its \Q!capsule! fields, and hence it can never be seen afterwards.
 

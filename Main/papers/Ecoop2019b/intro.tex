@@ -37,15 +37,7 @@ For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issu
 to not confuse them with object capabilities, another technique we also use in this paper.}
 While studying those languages, we discovered an elegant way to enforce invariants.
 
-We use the guarantees provided by these systems to ensure that:
-\begin{itemize}
-	\item Invariants are deterministic.
-	\item An object's invariant can only refer to objects whose state cannot be mutated by other objects.
-	\item Whilst the state an object's invariant refers to is being mutated, that object cannot be used in execution.
-	\item An object cannot be used until it is fully constructed.
-	\item An object's invariant is checked at runtime, after construction, and after the state it refers to could have been modified; this happens before the object could be used (again).
-\end{itemize}
-Together, these guarantee that at all times if an object is usable in execution, its invariant holds. See Section \ref{s:protocol} for the exact details as to how we make this guarantee.
+We use the guarantees provided by these systems to ensure that that at all times, if an object is usable in execution, its invariant holds. What this means is that if you can do anything with an object, such as pass it as an (implicit) argument to a method, we know that the invariant of it, and all objects reachable from it, holds. In order to achieve this, we use TMs and OCs to restrict how the result of invariant methods may change, this is done by restricting I/O as well as what state the invariant can refer to and what can alias/mutate such state.  We use these restrictions to enable the injection of runtime checks after an object’s invariant could have been violated, but before such object can be used. See Section \ref{s:protocol} for the exact details as to how we make this guarantee.
 
 \subheading{Example}
 Here we show an example illustrating our system in action. Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
