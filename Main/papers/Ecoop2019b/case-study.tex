@@ -113,23 +113,20 @@ read method Bool invariant() {
 
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its fields.%its \Q@width@ and \Q@height@ fields.
 
+
 % This code is a simplified version of our first case study. In the full code the \Q@SafeMovable@ constructors take \Q@left@, \Q@top@, \Q@width@ and \Q@height@ parameters and can either take a \Q@box@ directly or will generate one with $4$ \Q@Button@s}
 % we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
-\begin{figure}
-	%\newlength{\imglength}%
-	%\setlength{\imglength}{0.4\textwidth}%
-	%\columnsep=0.5em%
-	%\begin{wrapfigure}{l}{\imglength}%
-	%	\setbox0=\hbox{\strut}%
-	%	\vspace{-1.3\ht0}%
-	%	\includegraphics[width=\imglength]{GuiImg}%
-	%	\vspace{-1.5\ht0}%
-	%\end{wrapfigure}
-	\centering \includegraphics[width=0.4\textwidth]{GuiImg}
-	\caption{Our GUI}\label{f:gui}
-\end{figure}
+\newlength{\imglength}%
+\setlength{\imglength}{0.4\textwidth}%
+\columnsep=0.5em%
+\begin{wrapfigure}{l}{\imglength}%
+	\setbox0=\hbox{\strut}%
+	\vspace{-1.3\ht0}%
+    \includegraphics[width=\imglength]{GuiImg}%
+	\vspace{-1.5\ht0}%
+\end{wrapfigure}
 \subheading{Our Experiment}
-As shown in Figure~\ref{f:gui}, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
+As shown in the figure to the left, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
 %Each container has 4 gray buttons one for each cardinal direction.
 % In our set up
