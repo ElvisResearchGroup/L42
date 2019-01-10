@@ -25,7 +25,7 @@ If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 %\loseSpace
 
 \noindent TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
-On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like a \Q@const *const A@.}
+On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
 %\end{itemize}
 
 Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@, where we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
@@ -42,7 +42,7 @@ ip = new Point(3, 5); // ok, ip is not final
 
 
 There are several possible interpretations of the semantics of type modifiers.
-Here we assume the full/deep meaning~\cite{ZibinEtAl10}:
+Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
 \begin{itemize}
   \item the objects in the ROG of an immutable object are immutable,
   \item a mutable field accessed from a \Q@read@ reference produces a \Q@read@ reference,
