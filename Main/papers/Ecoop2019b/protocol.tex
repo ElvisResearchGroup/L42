@@ -30,9 +30,11 @@ These restrictions only apply to our formalism; our code examples and the L42 im
 
 \subheading{Invariants}
 We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. As this method only takes a \Q!read! parameter (the receiver), we can be sure that it is pure \footnote{If the invariant were not pure, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}, as discussed in Section \ref{s:purity}.
-The body of \Q@invariant@ methods are limited in their usage of \Q@this@: \Q!this! can only be used to access \Q@imm@ and \Q@capsule@ fields. This restriction ensures that 
+The bodies of \Q@invariant@ methods are limited in their usage of \Q@this@: \Q!this! can only be used to access \Q@imm@ and \Q@capsule@ fields. This restriction ensures that 
 an invalid \Q@this@ cannot be passed around.
-We prevent accessing \Q@mut@ fields since their ROG could be changed by unrelated code (see Section \ref{s:immutable}).% In order to prevent passing an invalid \Q@this@ to other methods.
+We prevent accessing \Q@mut@ fields since their ROG could be changed by unrelated code (see Section \ref{s:immutable}).
+Note that we do not require such fields to be \Q@final@: when a field is updated, we simply check the invariant of the receiver of the update.
+% In order to prevent passing an invalid \Q@this@ to other methods.
 %and unrelated code cannot break the invariant
 %s of arbitrary objects,
 %since a \Q!read! or \Q!mut! field could be modified through arbitrary aliases 
@@ -48,6 +50,7 @@ Excluding the \Q!mut! receiver, such methods cannot have any \Q!mut! or \Q!read!
 To allow capsule mutators to leak checked exceptions,
 we would need check the invariant
 when such exceptions are leaked. However, this would make the runtime semantics of checked exceptions inconsistent with unchecked ones.}.
+
 
 %\end{itemize}
 %Our type system will ensure that such methods are \Q!mut method!s, and the \Q!capsule! field will be seen as \Q!mut!.
@@ -69,9 +72,9 @@ The language runtime will insert automatic calls to \Q!invariant!, if such a cal
 \subheading{Relaxations}
 The above restrictions can be partially relaxed without breaking soundness, however this would not make the proof more interesting. In particular:
 \begin{itemize}
-	\item \Q!invariant! methods can be allowed to call instance methods that in turn only use \Q@this@ to read \Q!imm! or \Q!capsule!, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ needs to be understood with the body of those methods inlined; thus the semantic of the inlined code needs to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. In some sense, those inlined methods and field accesses can be thought of as macro expanded, and hence are not dynamically dispatched. Such inlining has been implemented in L42.
+	\item \Q!invariant! methods can be allowed to call instance methods that in turn only use \Q@this@ to read \Q!imm! or \Q!capsule!, or call other such instance methods. With this relaxation, the semantics of \Q@invariant@ needs to be understood with the body of those methods inlined; thus the semantics of the inlined code needs to be logically reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. In some sense, those inlined methods and field accesses can be thought of as macro expanded, and hence are not dynamically dispatched. Such inlining has been implemented in L42.
 	\item We could allow all fields to be public, however \Q!capsule! fields, mentioned in the invariant of their containing class, should not be accessible over a \Q!mut! receiver other than \Q!this!. Even without this relaxation, however, getters and setters could be used to simulate public fields.
-	\item Unrestricted readonly access to \Q!capsule! fields can be allowed by automatically generate getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language.
+	\item Unrestricted readonly access to \Q!capsule! fields can be allowed by automatically generated getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language.
 	
 	\item Java style constructors could be allowed, provided that \Q!this! is only used as the receiver of field initialisations. L42 does not provide such constructors, but one can always write a static factory method that behaves equivalently.
 \end{itemize}

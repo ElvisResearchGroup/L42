@@ -5,27 +5,27 @@ made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and ex
 % [dynamic class loading],
 
 \subheading{Type Modifiers (TMs)}
-TMs as used in this paper are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
+TMs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
 three different research languages are being independently developed relying on this new design: the language of Gordon et.~al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
 These projects are quite large: several million lines of code are written in Gordon et.~al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
 While we focus on the specific TMs provided by L42, Pony, and Gordon et.~al., type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
- that allow static reasoning of mutability and aliasing properties of objects.
-With slightly different names and semantics, the four most common modifiers for object references are:
+ that allow statically reasoning about mutability and aliasing properties of objects.
+With slightly different names and semantics, the four most common modifiers for references to objects are:
 \begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, as in most imperative languages without modifiers.
 If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may be mutable aliases to such object, thus mutation can still be observed. 
 \item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will not mutate through any other alias.
 \item Encapsulated (\Q@capsule@):
- everything in the ROG of a capsule reference (including itself) is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
+ everything in the reachable object graph (ROG) of a capsule reference (including itself) is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
 
-\noindent TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of an \Q@imm@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the referenced object itself may be mutated.
-On the other hand, an \Q@imm@ reference refers to an object that will never be mutated, but an \Q@imm@ variable can be reassigned.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like a \Q@const *const A@.}
+\noindent TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
+On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@const *A@ and \Q@*const A@, where a \Q@final read@ variable would be like a \Q@const *const A@.}
 %\end{itemize}
 
 Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@, where we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
@@ -64,14 +64,14 @@ capsule Circle cc = new Circle(new Point(0, 0), 7);
     imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 
-Here \Q@mc@, \Q@ic@, and \Q@cc@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
+Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
 The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
 Moreover, the expression does not use any \Q@mut@ local variables, thus the flexible TM system
 allows the \Q@mut@ result to be promoted to \Q@capsule@, thus \Q@cc@ is ok. 
 Additionally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
-We want to underline that this is not a special feature of \Q@new@ expressions:
+We want to emphasise that this is not a special feature of \Q@new@ expressions:
 any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@.\footnote{%
 This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
 } This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
@@ -237,10 +237,10 @@ moreover, the only \Q@System@ instance would be the one created by the runtime s
 % could also work this way.
 This design has been explored by Joe-E~\cite{finifter2008verifiable}.
 OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. However, since
-L42 allow user code to perform foreign calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
+L42 allows user code to perform foreign calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
 %To reason about determinism, L42 connects TMs with the OC style as follows: % style by requiring:
 \begin{itemize}
-\item Foreign methods (which have not been white listed as deterministic) and methods whose name start with \texttt{\#\$} are \emph{capability methods}.%
+\item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability methods}.%
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
 \item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes.
 \item In L42 there is no \Q@main@ method, rather it has several main expressions; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around to the rest of the program.
@@ -256,13 +256,14 @@ L42 allow user code to perform foreign calls without going through a predefined 
 
 \noindent L42 expects capability methods to be used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
-For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) can be white listed as `deterministic', provided they do not effect program execution, such as by non deterministically throwing I/O errors.
+For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) can be whitelisted as `deterministic', provided they do not affect program execution, such as by non deterministically throwing I/O errors.
 
 \subheading{Purity}\label{s:purity}
 TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
 as being deterministic and not mutating existing memory. Such methods are pure because:
 \begin{itemize}
-	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gorden, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@.},
+	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
+	Thus, since such methods do not write to memory accessible by another thread, nor read memory that could be mutated by another thread, they are trivially atomic.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
 	\item no other preexisting objects are accessible (as L42 does not have global variables).\footnote{%
 		If L42 did have static variables, getters and setters for them would be capability methods.
