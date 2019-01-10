@@ -42,7 +42,7 @@ Note that we do not require such fields to be \Q@final@: when a field is updated
 
 %To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
 \subheading{Capsule mutators}
-In order to allow complex mutations of objects with invariants we introduce the notion of \emph{capsule mutator}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of the ROG of a capsule field. We use TMs to ensure that the object containing the capsule field is not usable during the fields mutation, and it's invariant is checked immediately afterwards. 
+In order to allow complex mutations of objects with invariants we introduce the notion of \emph{capsule mutator}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of the ROG of a capsule field. We use TMs to ensure that the object containing the capsule field is not usable whilst the fields ROG is mutated, and it's invariant is checked immediately afterwards. 
 
 Formally, \emph{capsule mutators} are \Q@mut@ methods whose body accesses a \Q@capsule@ field mentioned in the invariant of the class containing the field. 
 Capsule mutators must use \Q@this@ exactly once in their body, since fields are instance private, this will be to access the \Q!capsule! field.
