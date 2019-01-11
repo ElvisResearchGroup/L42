@@ -1,0 +1,76 @@
+\documentclass[submission,copyright,creativecommons]{eptcs}
+\providecommand{\event}{VPT 2019} % Name of the event you are submitting to
+\usepackage{breakurl}             % Not needed if you use pdflatex only.
+\usepackage{underscore}           % Only needed if you use pdflatex.
+\input{../Def/Def}
+\providecommand*{\code}[1]{\Q`#1`}
+\newcommand{\saveSpace}{\vspace{-3px}}
+\newcommand{\loseSpace}{\vspace{1ex}}
+
+\title{Metaprogramming Statically Verified Code}
+\author{Marco Servetto
+\institute{ECS VUW\\ Wellington, New Zealand}
+\institute{Engineering and Computer Science\\
+Victoria University of Wellington}
+\email{marco.servetto@ecs.vuw.ac.nz}
+\and
+Alex Potanin
+\institute{ECS VUW\\ Wellington, New Zealand}
+\institute{Engineering and Computer Science\\
+Victoria University of Wellington}
+\email{alex.potanin@ecs.vuw.ac.nz}
+\and
+Isaac Oscar Gariano
+\institute{ECS VUW\\ Wellington, New Zealand}
+\institute{Engineering and Computer Science\\
+Victoria University of Wellington}
+\email{isaac@ecs.vuw.ac.nz}
+\and
+Hrshikesh Arora
+\institute{ECS VUW\\ Wellington, New Zealand}
+\institute{Engineering and Computer Science\\
+Victoria University of Wellington}
+\email{arorahrsh@myvuw.ac.nz}
+}
+%\institute{NICTA\\ Sydney, Australia}
+%\institute{School of Computer Science and Engineering\\
+%University of New South Wales\thanks{A fine university.}\\
+%Sydney, Australia}
+%\email{rvg@cs.stanford.edu}
+%\and
+%Co Author \qquad\qquad Yet S. Else
+%\institute{Stanford Univeristy\\
+%California, USA}
+%\email{\quad is@gmail.com \quad\qquad somebody@else.org}
+%}
+\def\titlerunning{Metaprogramming Statically verified code}
+\def\authorrunning{Servetto,Potanin,Arora,Gariano}
+
+% Allows one to write /hello/ instead of \Q@hello@.
+% Use // to get a normal text slash
+\chardef\Slash=`\/
+\catcode\Slash=\active
+\chardef\other=12 % char code for other characters
+\def/#1/{%
+	\ifx/#1/% #1 is empty
+		\Slash% just print a slash
+	\else%
+		\lstinline/#1/%
+	\fi%
+}
+
+\lstset{language=Java, morekeywords={@requires, @ensures, result}}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Here we show how we can use the metaprogramming technique of \emph{iterative composition} to generate statically correct code, given correct code as input. This technique does not require that the result of metaprogramming be run through a static verify, since we guarantee it's correctness, assuming the correctness of input.
+
+TODO: What is iterative composition? And how does this work compare//build uppon prior work?
+\end{abstract}
+
+\input{background}
+
+\bibliographystyle{eptcs}
+\bibliography{main}
+\end{document}
