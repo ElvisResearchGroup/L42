@@ -1,6 +1,7 @@
 \section{Combining Contracts and Trait Composition}
-We can handle the composition of traits with contracts in a similar way to what we described for class-based inheritance: the methods in the result of /trait1.extend(trait2)/ contain the /@requires/ and /@ensures/ clauses of the corresponding method (if any) in /trait1/ and /trait2/. This ensures that any \emph{calls} to such methods in /trait1/ and /trait2/ are still correct, and any deductions made from the postconditions of such methods still hold. If however the method is abstract in either /trait1/ or /trait2/, but not both, the implementation of the method must have at least all the /@ensures/ clauses of the abstract method, and the abstract method must have at least all the /@requires/ clauses of the implemented method. This ensures that the implementation is still a correct implementation for the abstract method. For the purposes of this rule, if the method is implemented in both /trait1/ and /trait2/, the version in /trait1/ will be considered abstract, and their will be an implemented copy of it with a /super_/ prefix (and the same contracts) in /trait1/.
-Consider the following examples illustrating how this works:
+We can handle the composition of traits with contracts in a similar way to what we described for class-based inheritance: the methods in the result of /trait1.extend(trait2)/ contain the /@requires/ and /@ensures/ clauses of the corresponding method (if any) in /trait1/ and /trait2/. This ensures that any \emph{calls} to such methods in /trait1/ and /trait2/ are still correct, and any deductions made from the postconditions of such methods still hold. If however the method is implemented in either /trait1/ or /trait2/, but abstract in the other, the implemented version must have at least all the /@requires/ and /@ensures/ clauses of the abstract one. This ensures that the implementation is still a correct implementation for the abstract method. For the purposes of this rule, if the method is implemented in both /trait1/ and /trait2/, the version in /trait1/ will be considered abstract, and their will be an implemented copy of it with a /super_/ prefix (and the same contracts) in /trait1/.
+Consider the following examples illustrating how this works:\\
+\begin{tabular}{lr}%
 \begin{lstlisting}
 Trait t1: class {
   @requires($R_1$)
@@ -14,64 +15,59 @@ Trait t1: class {
 
 // Identical to:
 Trait t1: class {
-  @requires($R_1$)
-  @requires($R_2$)
+  @requires($R_1$) @requires($R_2$)
   // or @requires($R_1$ || $R_2$)
-  @ensures($E_1$)
-  @ensures($E_2$)
+  @ensures($E_1$) @ensures($E_2$)
   // or @ensures($E_1$ && $E_2$)
   Void foo();
 };
 
 Trait good: class {
   @requires($R_1$)
-  @requires($R_2$)
   @ensures($E_1$)
   Void foo();
 }.extend(class {
-  // Precondition is weaker, postcondition is stronger
-  @requires($R_1$)
-  @ensures($E_1$)
-  @ensures($E_2$)
+  // precondition is weaker
+  @requires($R_1$) @requires($R_2$)
+  // postcondition is stronger
+  @ensures($E_1$) @ensures($E_2$)
   Void foo() { ... }
 });
-
+\end{lstlisting}&%
+\begin{lstlisting}
 // Error!
 Trait error: class {
-  @requires($R_1$)
-  @ensures($E_1$)
-  @ensures($E_2$)
+  @requires($R_1$) @requires($R_2$)
+  @ensures($E_1$) @ensures($E_2$)
   Void foo();
 }.extend(class {
-  // Error: precondition is stronger and postcondition is weaker
+  // error: precondition is stronger
   @requires($R_1$)
-  @requires($R_2$)
+  // error: postcondition is weaker
   @ensures($E_1$)
   Void foo() { ... }
 });
 
 Trait really_good: class {
-  @requires($R_1$)
-  @requires($R_2$)
-  @ensures($E_1$)
-  @ensures($E_2$)
+  @requires($R_1$) @requires($R_2$)
+  @ensures($E_1$) @ensures($E_2$)
   Void foo() { ... }
 }.extend(class {
-  // Stronger precondition, weaker postcondition
+  // stronger precondition
   @requires($R_1$)
-  @requires($R_2$)
-  @requires($R_3$)
+  // weaker postcondition
   @ensures($E_1$)
-  super_foo();
+  Void super_foo();
 
-  // Weaker precondition, stronger postcondition
-  @requires($R_1$)
-  @ensures($E_1$)
-  @ensures($E_2$)
-  @ensures($E_3$)
+  // weaker precondition, 
+  @requires($R_1$) @requires($R_2$) @requires($R_3$)
+  // stronger postcondition
+  @ensures($E_1$) @ensures($E_2$) @ensures($E_3$)
   Void foo() { ... }
 })
 \end{lstlisting}
+\end{tabular}
+
 
 
 \subsection{Examples}
