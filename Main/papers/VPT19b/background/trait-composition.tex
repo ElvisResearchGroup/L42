@@ -11,7 +11,7 @@ HelloWorld: pair.extend(class {
   String hello() { this.super_print() + "!"; } // prints "Hello World!"
 });
 \end{lstlisting}
-We use the type /Trait/ as the types of traits, and a class-declaration (without a name) as a \emph{trait literal} expression. Here /trait1.extend(trait2)/ adds all the methods in trait2 to trait1, if their is conflict, methods in /trait2/ will override those in /trait1/. In addition, /trait2/ can declare and call methods in /trait1/ by prefixing their name with /super_/, however they are considered `private' to /trait2/, i.e. only code in /trait2/ itself can see them, not /code/ added in later.
+We use the type /Trait/ as the types of traits, and a class-declaration (without a name) as a \emph{trait literal} expression. Here /trait1.extend(trait2)/ contains all the methods in /trait1/ and /trait2/, if a method appears in both, those in /trait2/ will override those in /trait1/. In addition, /trait2/ can declare and call the original implementation (the one in /trait1/) of overridden methods by prefixing their name with /super_/, however they are considered `private' to /trait2/, i.e. only code in /trait2/ itself can see them, not code added in later. When a method appears in both /trait1/ and /trait2/, their signatures will also be checked to ensure they are identical, this ensures that if both /trait1/ and /trait2/ are well-typed, the result will also be.
 
 In this paper, we will use the \emph{flattening} semantics of traits~\cite{?}, in which trait operations produce a flattened result, equivalent to a trait literal, with no references to any of the input traits to the operation. Thus the above definition for /HelloWorld/ is identical to:
 \begin{lstlisting}
