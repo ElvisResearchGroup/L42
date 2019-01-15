@@ -1,7 +1,7 @@
 
-\section{Introducing Quasi Quotation}
+\section{Introduction}
 
-Lisp~\cite{pitman1980special}, MetaML~\cite{moggi1999idealized}, Template Haskell~\cite{sheard2002template} and many other approaches use Quasi Quotation (QQ).
+\paragraph{Quasi Quotation.} Lisp~\cite{pitman1980special}, MetaML~\cite{moggi1999idealized}, Template Haskell~\cite{sheard2002template} and many other approaches use Quasi Quotation (QQ).
 This can be supported by two kinds of special parenthesis as a syntactic sugar to manipulate Abstract Syntax Trees (ASTs).
 Lisp uses (\Q@`@) and (\Q@,@), while here we use
 \Q@[|  |]@  and \Q@$\$$(  )@ (as Template Haskell) 
@@ -119,7 +119,7 @@ code with a free variable \Q@x:Int@$\vdash$\Q@Int@, while they are
 logically similar concepts.
 
 
-We propose Iterative Composition (IC):
+\paragraph{Iterative Composition.} We propose Iterative Composition (IC):
 while the unit of composition in QQ is the single AST node, 
 IC enforces a higher level of abstraction and does not work directly on the AST.
 The unit of composition in IC is a \emph{Library}:
@@ -214,7 +214,9 @@ the base case.
 Note how this method is logically identical to \Q@powerAux@. However,
 since we always work on the actual self contained code neither \Q@lambdaX@ nor \Q@compile@ are needed.
 \end{itemize}
-Our approach builds on top of code composition operations like multiple inheritance and generics.
+
+
+\paragraph{Contributions.} Our approach builds on top of code composition operations like multiple inheritance and generics.
 The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} many successful efforts about proving the
 \emph{semantic correctness} 
 of code containing inheritance and generics.
