@@ -1,11 +1,12 @@
 \documentclass[submission,copyright,creativecommons]{eptcs}
 \providecommand{\event}{VPT 2019} % Name of the event you are submitting to
-\usepackage{breakurl}             % Not needed if you use pdflatex only.
+%\usepackage{breakurl}             % Not needed if you use pdflatex only.
 \usepackage{underscore}           % Only needed if you use pdflatex.
 \input{../Def/Def}
 \providecommand*{\code}[1]{\Q`#1`}
 \newcommand{\saveSpace}{\vspace{-3px}}
 \newcommand{\loseSpace}{\vspace{1ex}}
+\usepackage{verbatim}
 
 \title{Metaprogramming Statically Verified Code}
 \author{Marco Servetto
@@ -44,7 +45,7 @@ Victoria University of Wellington}
 %\email{\quad is@gmail.com \quad\qquad somebody@else.org}
 %}
 \def\titlerunning{Metaprogramming Statically verified code}
-\def\authorrunning{Servetto,Potanin,Arora,Gariano}
+\def\authorrunning{Servetto, Potanin, Arora, Isaac}
 
 % Allows one to write /hello/ instead of \Q@hello@.
 % Use // to get a normal text slash
@@ -58,19 +59,24 @@ Victoria University of Wellington}
 		\lstinline/#1/%
 	\fi%
 }
+\let\oldinput=\input
+\def\input#1{\oldinput{\detokenize{#1}}} % Don't expand commands in input (needed since / is a command)
 
-\lstset{language=Java, morekeywords={@requires, @ensures, result}}
+\lstset{%
+	language=Java, morekeywords={exists, forall, @requires, @ensures, result},
+%	literate=
+%		{||}{{$\vee$}}1
+%		{&&}{{$\wedge$}}1
+%		{<=}{{$\leq$}}1
+%		{>=}{{$\geq$}}1
+%		{**}{{$^{**}$}}1
+}
 \begin{document}
 \maketitle
-
-\begin{abstract}
-Here we show how we can use the metaprogramming technique of \emph{iterative composition} to generate statically correct code, given correct code as input. This technique does not require that the result of metaprogramming be run through a static verify, since we guarantee it's correctness, assuming the correctness of input.
-
-TODO: What is iterative composition? And how does this work compare//build uppon prior work?
-\end{abstract}
+%\input{abstract}
 
 \input{background}
-
-\bibliographystyle{eptcs}
-\bibliography{main}
+\input{combining}
+%\bibliographystyle{eptcs}
+%\bibliography{main}
 \end{document}
