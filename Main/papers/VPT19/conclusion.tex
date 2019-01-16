@@ -11,7 +11,7 @@ are accessed under \Q@Refactor@, as in \Q@Refactor.rename(...)@.
 The super call mechanism is different: instead of user specified names (as \Q@superToS1()@), override
 uses conventional names: for \Q@toS()@ they would be \Q@#1toS()@ and \Q@#2toS()@.
 
-Another very important difference is that 42 sightly relaxes the requirement that all library literals are well typed whenever they are involved in execution.
+Another very important difference is that 42 slightly relaxes the requirement that all library literals are well typed whenever they are involved in execution.
  This carefully designed relaxation does not weaken the formal properties of the language, and provides two advantages:
  it facilitates the use of mutually recursive type declarations, as very common in OO languages, and it allows 
  to omit some abstract method declarations.
@@ -74,7 +74,7 @@ it still focuses on AST manipulation. It is another domain-specific language whi
 \emph{class morphing} and allows a class to abstract over the structure of other types. For instance, one can define a parametric class \lstinline{Log<X>} which provides, for each method of \lstinline{X}, a method with the same signature which invokes the original method and logs its result in a database.
 A theorem proving ensures that, for any well-typed class in input, a well-typed class is produced.
 
-We are not the first work proposing metaprogramming that do not rely on QQ and AST manipulation.
+We are not the first work proposing metaprogramming that does not rely on QQ and AST manipulation.
 A very relevant concept is meta-traits \cite{reppy2007metaprogramming}:
  traits that can have \emph{place-holders} to be later filled with types, 
 values, or method names.
@@ -85,7 +85,7 @@ This technique allows to emulate rename operators as well as generic classes/tra
 Meta-traits support separate typechecking of trait definitions:  there is no need to perform meta-trait expansion
  in order to typecheck classes which use a trait.
 
-The very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
+A very popular Scala library LMS~(\url{scala-lms.github.io}), in addition to conventional QQ offers
 more abstract techniques for AST rewriting and manipulation/simplification,
 to go towards the kind of abstraction offered by IC;
 thus recognizing QQ is, at least sometimes, too low level.
