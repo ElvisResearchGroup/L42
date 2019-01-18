@@ -1,7 +1,7 @@
 
-\section{Introducing Quasi Quotation}
+\section{Introduction}
 
-Lisp~\cite{pitman1980special}, MetaML~\cite{moggi1999idealized}, Template Haskell~\cite{sheard2002template} and many other approaches use Quasi Quotation (QQ).
+\paragraph{Quasi Quotation.} Lisp~\cite{pitman1980special}, MetaML~\cite{moggi1999idealized}, Template Haskell~\cite{sheard2002template} and many other approaches use Quasi Quotation (QQ).
 This can be supported by two kinds of special parenthesis as a syntactic sugar to manipulate Abstract Syntax Trees (ASTs).
 Lisp uses (\Q@`@) and (\Q@,@), while here we use
 \Q@[|  |]@  and \Q@$\$$(  )@ (as Template Haskell) 
@@ -119,7 +119,7 @@ code with a free variable \Q@x:Int@$\vdash$\Q@Int@, while they are
 logically similar concepts.
 
 
-We propose Iterative Composition (IC):
+\paragraph{Iterative Composition.} We propose Iterative Composition (IC):
 while the unit of composition in QQ is the single AST node, 
 IC enforces a higher level of abstraction and does not work directly on the AST.
 The unit of composition in IC is a \emph{Library}:
@@ -127,10 +127,12 @@ a class body, containing methods and possibly nested classes.
 Libraries are self contained in the sense that they contain no free variables.
 This avoids all scope-extrusion related problems, and (as shown later) enforces local reasoning.
 
-IC has already been presented in other work~\cite{servetto2014meta};
- IC's expressive power is shown by examples,
-but is not compared with QQ; moreover such works suggested IC's expressive power is inferior to QQ.
-The core idea of IC is to  \emph{rely on  operators of code composition inspired by normal
+%% (Alex) The following is commented out because it is just confusing to the reader.
+%IC has already been presented in other work~\cite{servetto2014meta};
+% IC's expressive power is shown by examples,
+%but is not compared with QQ; moreover such works suggested IC's expressive power is inferior to QQ.
+
+The core idea of IC~\cite{servetto2014meta} is to  \emph{rely on  operators of code composition inspired by normal
 code reuse}, but lifted to the expression level.
 As a concrete example, in Java operators \Q@+@ and \Q@*@ can be used in the expression \Q@1+2*3@,
 but the operator \Q@extends@ can only be used in the specific context of class declaration, as in
@@ -214,30 +216,30 @@ the base case.
 Note how this method is logically identical to \Q@powerAux@. However,
 since we always work on the actual self contained code neither \Q@lambdaX@ nor \Q@compile@ are needed.
 \end{itemize}
-Our approach builds on top of code composition operations like multiple inheritance and generics.
+
+
+\paragraph{Contributions.} Our approach builds on top of code composition operations like multiple inheritance and generics.
 The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} many successful efforts about proving the
 \emph{semantic correctness} 
 of code containing inheritance and generics.
 On the other hand, static verification of code generated with meta-programming is an open research problem.
 We speculate our approach may offer the opportunity to solve this problem,
 and by construction generate statically verified code
-by reusing techniques originally developed to verify normal object oriented code.
+by reusing techniques originally developed to verify normal object-oriented code.
 The contributions of our work are as follows:
 \begin{itemize}
 \item
-In Section~\ref{s:verification},
-by examples we demonstrate how to apply conventional object oriented verification techniques to IC.
+In Section~\ref{s:verification} we use examples to demonstrate how to apply conventional object-oriented verification techniques to IC.
 
 \item
-In Section~\ref{s:pattern1},
-by examples we show that IC is as expressive as QQ, and that
+In Section~\ref{s:pattern1} we use examples to show that IC is as expressive as QQ, and that
 generating code using a composition algebra
-is a flexible and simple technique, if combined with
+is flexible and simple technique, as long as it is combined with
 reasonable programming patterns.
 \item In Section~\ref{s:study}, we discuss our experience implementing metaprogramming libraries for a language where IC is the only support for code reuse. 
 \end{itemize}
 
-In this paper we do not present a formal language semantic. This is partly due to space reasons
+In this paper we do not present a formal language semantics. This is partly due to space reasons
 and partly because a similar semantic has been formalized in former work~\cite{servetto2014meta}.
 Here we aim to show programming patterns that use this expressive power in surprising and novel ways.
 
