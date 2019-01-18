@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \def\P@banner{The Art, Science, and Engineering of Programming}
 \ProvidesClass{programming}%
-    [2017/11/16 v1.3a ^^J Articles for \P@banner^^J]
+    [2017/01/11 v1.2 ^^J Articles for \P@banner^^J]
 
 
 %%
@@ -213,9 +213,6 @@
    {fixltx2e}}
    {\RequirePackage{fixltx2e}}%
 
-% don't be too noisy.
- \PassOptionsToPackage{log-declarations=false}{xparse}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Fixes for intermediate versions.
@@ -306,11 +303,7 @@
 \csundef{P@MDback@hrulefill}
 % }}}
 \ifthenelse{\boolean{xetex}\OR\boolean{luatex}}%
-  {\@ifpackagelater{scrbase}{2015/11/22}%
-    {% >= TL 2016; not much is tuenc ready.
-      \PassOptionsToPackage{euenc}{fontspec}}
-    {}
-    \RequirePackage{fontspec}[2013/05/20]
+  {\RequirePackage{fontspec}[2013/05/20]
     \ifthenelse{\boolean{xetex}}%
       {\setmainfont[Numbers=OldStyle,SmallCapsFeatures={Letters=SmallCaps,LetterSpace=5}]{XCharter}\relax}%
       {\setmainfont[Numbers=OldStyle]{XCharter}\relax}
@@ -326,12 +319,12 @@
 \linespread{1.05}
 
 \defcaptionname{english}{\figureautorefname}{figure}
+\defcaptionname{english}{\figureautorefname}{figure}
 \defcaptionname{english}{\tableautorefname}{table}
 \defcaptionname{english}{\lstlistingautorefname}{listing}
 \defcaptionname{english}{\lstnumberautorefname}{line}
 \defcaptionname{english}{\subsectionautorefname}{\sectionautorefname}
 \defcaptionname{english}{\subsubsectionautorefname}{\sectionautorefname}
-\defcaptionname{english}{\appendixautorefname}{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -346,8 +339,7 @@
 
 \ifthenelse{\boolean{xetex}}%
  {}% see above
- {\microtypesetup{letterspace=50}
-  \ifthenelse{\boolean{luatex}}{}{\microtypesetup{tracking}}
+ {\microtypesetup{tracking,letterspace=50}
   \DisableLigatures{encoding = *, family = tt* }}
 
 \newcommand*\P@CodeSetup{%
@@ -424,6 +416,7 @@
   \DeclareGraphicsRule{.ai}{QTm}{*}{}
 }{
   \DeclareGraphicsRule{.ai}{pdf}{*}{}
+  \pdfpagebox=5
 }
 \AppendGraphicsExtensions{.ai,.AI}
 
@@ -440,7 +433,7 @@
         UprightFont    = *-Book ,
         ItalicFont     = *-BookItalic ,
         BoldFont    = *-Bold ,
-        BoldItalicFont     = *-BoldItalic ,
+        BoldItalicFont     = *-Bold Italic ,
       ]
       {FiraSans}}{}
 
@@ -470,9 +463,6 @@
 \lst@AddToHook{FontAdjust}{\P@CodeSetup}
 \lst@AddToHook{DisplayStyle}{\def\baselinestretch{1}\@currsize}
 \lst@AddToHook{TextStyle}{\lstset{breaklines=false}}
-% work around listings being too smart
-\lst@AddToHook{Init}{\let\ttdefault\f@family}
-
 
 \AtEndPreamble{\RequirePackage{siunitx}}
 \AfterPackage{siunitx}{%
@@ -520,8 +510,7 @@
 \setfnpct{after-punct-space={-.2em}}
 
 % koma-hacks
-\RequirePackage{etoolbox}
-\AtEndPreamble{\RequirePackage{scrhack}}
+\RequirePackage{scrhack}
 
 \setkomafont{pageheadfoot}{\firamedium}
 
@@ -594,7 +583,7 @@
 
 \newlength{\P@corebaselineskip}
 \setlength{\P@corebaselineskip}{\baselineskip}
-\newcommand*\P@pagemarkseparator{\kern.06667em :\kern.06667em\relax}
+\newcommand*\P@pagemarkseparator{-}
 
 
 \AtBeginDocument{%
@@ -850,16 +839,13 @@
   \global\let\@author\@@author
   \hypersetup{pdfkeywords = {\P@keywords}}
   \ifdefvoid{\@subtitle}%
-    {\hypersetup{pdftitle={\@title}}}%
-    {\hypersetup{pdftitle={\@title: \@subtitle}}}%
-  \relax%
-  \hypersetup{pdfcreator={programming},pdfproducer={programming}}% WOAMI
-  \ifthenelse{\boolean{pdf}}%
-    {\ifthenelse{\boolean{luatex}}%
-      {\gdef\P@aftertitle{\directlua{pdf.setsuppressoptionalinfo(15)}}}%
-      {\gdef\P@aftertitle{\ifx\pdfsuppressptexinfo\undefined\relax\else\global\pdfsuppressptexinfo=-1\fi}}}%
-    {\gdef\P@aftertitle{}}%
-    \aftergroup\P@aftertitle\relax
+    {\hypersetup{pdftitle={\@title}}}
+    {\hypersetup{pdftitle={\@title: \@subtitle}}}
+    % 2016/Vol1/Issue1 is special
+    \ifthenelse{\equal{\P@Year}{2016}\AND\equal{\P@Volume}{1}\AND\equal{\P@Issue}{1}}%
+      {\hypersetup{pdfcreator={programming},pdfproducer={programming}}}%
+      {}%
+  % %
   \endgroup%
   \global\let\P@affil\@gobble%
 }
@@ -870,13 +856,12 @@
   \noindent{\bfseries\color{P@GrayFG} #1}\enspace}
 
 \newkomafont{abstract}{\fontsize{8.5}{10}\selectfont}
-\renewenvironment{abstract}%
-  {\par\smallskip%
-    \begingroup
-    \newcommand\P@gobblepar[1]{\@ifnextchar\par{\P@gobblepar}{}}
-    {\P@headersection{\abstractname}}
-    \begingroup\usekomafont{abstract}
-    \@ifnextchar\par{\P@gobblepar}{}%
+\renewenvironment{abstract}{%
+  \par\smallskip%
+  \begingroup
+  {\P@headersection{\abstractname}}
+  \begingroup\usekomafont{abstract}
+  \noindent\ignorespaces%
 }{%
   \par
   \endgroup
