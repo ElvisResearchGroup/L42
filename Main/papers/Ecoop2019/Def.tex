@@ -120,9 +120,25 @@
 \newcommand{\gobblenextP}[1]{#1\@ifnextchar\bgroup{\Q!,\ !\gobblenextCs}{\Q!>!}}
 \makeatother
 %--------------------------
-\newcommand{\mynotes}[3]{{\color{#2} {\sc #1}: #3}}
-\newcommand\isaac[1]{\mynotes{Isaac}{blue}{#1}}
 
-\newcommand\IO[1]{\color{blue}{#1}}
-\newcommand\marco[1]{\mynotes{Marco}{green}{#1}}
+\newcommand{\NoteColour}[2]{\textcolor{#1}{#2}}
+\newcommand{\NoteText}[1]{{#1}}
+\newcommand{\NoteComm}[3]{\NoteText{\scriptsize \textcolor{#1}{[{\sc #2}{:} #3]}}}
+\newcommand{\NoteDel}[2]{\NoteText{\textcolor{#1}{[#2]}}}
 
+\newcommand{\HideNotes}{%
+	\renewcommand{\NoteColour}[2]{##2}%
+	
+	% Makes \NoteText give the same 'spacing' as a space character
+	% i.e. preceding or suceeding this command by any number of spaces
+	% should be equivalent to a single space
+	\renewcommand{\NoteText}[1]{\unskip\space\ignorespaces}
+}
+
+\newcommand{\EZ}[1]{\NoteColour{blue}{#1}}
+\newcommand{\EZComm}[1]{\NoteComm{blue}{Elenna}{#1}}
+\newcommand{\MS}[1]{\NoteColour{green}{#1}}
+\newcommand{\MSComm}[1]{\NoteComm{green}{Marco}{#1}}
+\newcommand{\IO}[1]{\NoteColour{blue}{#1}}
+\newcommand{\IOComm}[1]{\NoteComm{blue}{Isaac}{#1}}
+\newcommand{\IODel}[1]{\NoteDel{blue}{#1}}

@@ -1,13 +1,17 @@
+
+\cleardoublepage
 \section{Language grammar and well formedness}
-We apply our ideas on a simplified object oriented language with nominal typing and (nested)
-interfaces  and final classes.
-Code reuse is obtained by trait composition, thus the source code would be
-a sequence of top level declarations $D$ followed by a main expression;
-a lower-case identifier $t$ is a trait name, while an upper case
-identifier $C$ is a class name.
-To simplify our terminology, instead of distinguishing between 
-nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
-named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
+
+
+%We apply our ideas on a simplified object oriented language with nominal typing and (nested) interfaces  and final classes. 
+%Code reuse is obtained by trait composition, thus the source code would be
+%a sequence of top level declarations $D$ followed by a main expression;
+%a lower-case identifier $t$ is a trait name, while an upper case
+%identifier $C$ is a class name.
+%To simplify our terminology, instead of distinguishing between 
+%nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
+%named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
+Here we use the metavariable $x$, $t$, $C$ and $m$ as identifiers for variables/fields, traits, classes and methods (respectively). Where an identifier is a $C$ (a class name) if and only if it starts with a capital letter. In addition we will use the metavariables $n$ and $i$ to refer to natural numbers, and $l$ to refer to memory locations. We will use the notation $Xs$, where $X$ is any metavariable, to refer to a (possibly empty) sequence of $X$s. Similarly $Xz$ will refer to a (possibly empty) \emph{set} of $X$s. \IOComm{Explain this $Xz$ thing in more detail?} Then notation $X?$ represents an $Xs$ with at most one element. Here is the grammar for our language:
 
 \noindent
 \begin{minipage}{0.65\textwidth}
@@ -23,7 +27,7 @@ L}      {\libi{Tz}{Ms}
 \mmid{} \libc{Tz}{Mz}{K}
 }        {code literal}\\\production{%
 M}      {\Q{static}$?$ T m\rp{Txs} e$?$ \mmid{} \Q{private}$?$ C\eq{}E }                                                    {member}\\\production{%
-K}      {\rp{Txz}$?$}                                          {state}\\\production{%
+K}      {Txs \mmid{} \Q{abstract}}                                          {state}\\\production{%
 %CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
 %CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
 %source}      {Ds e}                                                             {source code}\\\production{%
@@ -42,13 +46,37 @@ T}      {\Q{This}n\Q{.}Cs}                                                 {type
 Tx}     {T x}                                                              {parameter}\\\production{%
 D}      {id\eq{}E}                                                         {declaration}\\\production{%
 id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
-v}      {\Q{new} T\rp{vs}}                                                 {value}\\\production{%
+v}      {\Q{new} T\rp{ls}}                                                 {value}\\\production{%
 LV}      {\ldots}{}                                                
 \\\hline
 \end{bnf}
 \end{minipage}
 
+The input to our language will consist of a sequence of top level declarations (a $Ds$) and a main expression (and $e$).
 
+In detail, the forms of our syntax are:
+\begin{itemize}
+	\item Expressions ($e$): these are similar to Featherweight-Java ones, we have conventional variable accesses, instance method calls (where the receiver is an $e$), static method calls (where the receiver is a $T$), field accesses and new expressions.
+	\item Code Literals ($L$): a code literal is like a class declaration in Java-like languages, however they do not provide a name for the class. A code-literal either represents an \Q{interface}, or a \emph{concrete} class (if it has no \Q{interface} keyword). For ease of explanation we will use the term `class' to refer to either an interface or concrete class. The $Tz$ at the start of the code literal lists all the interfaces that are implemented, while the $Mz$ are the classes methods. Concrete classes additionally have a $K$ denoting its state.
+	\item Members ($M$): a class member is either a method declaration or a nested class declaration. A method declaration can optionally be abstract (if it's $e?$ is empty) or static (if it has the \Q{static} keyword). A (nested) class declaration can be \Q{private} and defines a class with name $C$ to be the flattened result of a code expression $E$.	
+	\item State ($K$): \IOComm{Rename this to $S$?} is either the keyword \Q{abstract} represents a class whose fields are unknown, or a list of field declarations (Type and field names) ($Tx$). A class with \Q{abstract} for its state cannot be the receiver of a \Q{new}, unlike a class with an empty $Txs$ for its state.
+	\item Code Expressions ($E$): are the main interesting part of our language, they are either code-literals, references to a trait, a sum operation, or a redirect operation. Such expressions will eventually be flattened (at compile time) to an $LV$ (see below).
+	\item Redirect Map ($R$): A redirect map is a sequence of mappings from $Cs$s to $T$s. A $Cs$ indicates the name of a nested class within the LHS of the redirect operator, wheras the $T$ is the target of the redirect. For example $E<C1.C2 = T>$ refers to the nested class named $C2$ that is in the class named in $C1$ in the result of $E$.
+	\item Types ($T$): a type is a path of the from \This{n}{$Cs$}. This identifies the nested class $Cs$ in the $n^\text{th}$ enclosing code literal ($L$). We need this form, as opposed to a more conventional alternative where the $Cs$s would start from top level, for several reasons:
+	\begin{itemize}
+		\item Not all the enclosing code literals may have names, for example in the LHS of a $<+$ operation is anonymous, so one would need to use $This_0$ to refer to it. \IOComm{Is this true???}
+		\item It allows for code to refer to classes that will be redirected away, for example in ${ C = {}; This0.C m()}<C = ...>$, $C$ will no exist in the flattened program, so relative to the top-level of the program, it has no name. \IOComm{Is this a bad justification}
+	\end{itemize}
+	A major consequence of this representation is that two $Ts$ may refer to the same class even if they are not syntactically identical, in particular $This0$ and $This1.C$ are the same if the immediatley enclosing code literal is the RHS for the declaration of $C$.
+	\item Variable Declaration ($Tx$): a variable declaration declares that $x$ refers to something of type $T$. It is used to declare parameters for methods, and fields of classes.
+	\item Top-level Declarations ($D$):  are bindings from an $id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. \IOComm{Werent we using $D$ in other places of the formalism to refer to either a nested-class declaration or a top-level one?}
+	\item Ids ($id$): these name classes or traits. If their concrete form starts with an upper-case letter they name classes, otherwise traits.
+	\item Values ($v$): these represent fully evaluated runtime expressions ($e$s) which will be stored in memory. This corresponds to a fully reduce \Q{new} expression, here the $T$ will identify a concrete class, and the $ls$ will be (locations) of the field values. \IOComm{Why do we need memory? If we don't have mutation or cyclic structures, can't we just have $v ::= \Q{new} T(vs)$ and drop $l$?}
+	\item Flattened Code Literals ($LV$): these are just like normal code literals except that all of its nested class declarations have an $LV$ on their RHS (ass opposed to an un-flattened $E$).
+\end{itemize}
+
+
+\clearpage
 In the context of nested classes, types are paths. Syntactically,
 we represent them as relative paths of form 
 $\This{n}{Cs}$, where the number $n$ identify the root of our path:
