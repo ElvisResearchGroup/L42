@@ -83,8 +83,11 @@
 \newcommand{\Rulename}[1]{{\textsc{(#1)}}}
 \newcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
 \newcommand{\libi}[2]{\Q@\{@\Q!interface!\ #1\Q{;} #2\Q@\}@}
-\newcommand{\lib}[3]{\Q!interface!\ensuremath{?}\ \libc{#1}{#2}{#3}}
-\newcommand{\libc}[3]{\,\Q@\{@\!#1\Q{;}\ #2 \Q{;}\ #3\Q@\}@\!\!}
+\newcommand{\libc}[3]{\,\Q@\{@#3\Q{;}\ #1\Q{;}\ #2\,\Q@\}@\!\!}
+\newcommand{\lib}[3]{\libc{#2}{#3}{#1}}
+
+
+% New lib form
 
 \newcommand{\id}{\textit{id}}
 \newcommand{\DVs}{\textit{DVs}}
