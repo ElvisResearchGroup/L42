@@ -117,6 +117,53 @@ $e.x$ and $\Q{new}\ T(es)$ in the main expression.
 \IOComm{Require that things allready be minimized? If so where do I put this rule? (After we've defined $p.minimize$...)}
 \end{itemize}
 
+
+
+\subsection{Program and Auxiliary notations}
+
+\begin{bnf}
+	\hline
+	\production{%
+		p} {Ds\Q{;} DVz} {program}\\\production{%
+		DV}      {id\eq{}LV} {evaluated declaration}
+	\\\hline
+\end{bnf}
+
+\IOComm{Is program the right name here? That would be a more appropriate name for the input to the language, how about a meta-state or class tree or something else?}
+In order to type-check and flatten our language we need to be able to lookup classes and traits, this is complicated since class names are represented in the form \This{n}{$Cs$}, which has a different meaning in different places. To this aim we define a program $p$, which will be be used to keep track of the current state and `location' of operations.
+The program is of the form $Ds\Q{;} DVz$, where the $DVz$ represents all the (fully evaluated) top-level declarations (classes or traits). The $Ds$ is a stack of nested classes, where the first $D$ (the top of the stack) is the declaration for \This{0}. The program will only contain top-level declarations that have already been evaluated ($DV$), preventing references to non-flattened traits. \IOComm{Justify why we are doing this?}
+
+We define the following obvious notations to extract the members of a library-literal:
+
+\begin{defs}
+	\defi{\fop{members}{\lib{\_}{\_}{Mz}}}{Mz}{get the members from a code literal}
+	\defi{L(m)}{\fop{members}{L}(m)}{get a method}
+	\defiSep
+	\defi{L(\Empty)}{L}{get a (transitively) nested class declaration}
+	\defi{L(Cs\Q{.}C)}{\fop{members}{L(Cs)}(C)}{}
+	\defiSep
+	\defi{\dom{L}}{\dom{\fop{members}{L}}}{get the names of directly nested members}
+	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
+	\defiSep
+	\defi{L[\Empty=E]}{E}{update nested class}
+	\defi{\lib{K}{Tz}{Mz}[C\Q@.@Cs=E]}{\lib{K}{Tz}{Mz[C=Mz(C)[Cs=E]]}}{}
+	\defi{(Mz,\nc{C}{\_})[C=E]}{Mz,\nc{C}{E}}{update member}
+	\defiSep	
+\end{defs}
+
+We now recursively define the notation to look up classes in a program:
+
+\begin{defs}
+	\defiSep
+	\defi{(\prog{}{\_,\cd{C}{L},\_})(\This{0}{C}{Cs})}{L(Cs)}{top level lookup}
+	\defi{(\cd{\_}{L}, \_)(\This{0}{Cs})}{L(Cs)}{nested class lookup}
+	\defi{(\_, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}{outer lookup}
+	\defiSep
+\end{defs}
+
+Note that the notation $\cd{C}{L}, p$ is equivalent to $\prog{\cd{C}{L},Ds}{DVs}$ where $p = \prog{Ds}{Dvs}$. It `pushes' the declaration $\cd{C}{L}$ to the top of the program stack. 
+
+
 \clearpage
 In the context of nested classes, types are paths. Syntactically,
 we represent them as relative paths of form 
