@@ -67,6 +67,20 @@
 \newenvironment{bnf}{$\begin{aligned}}{\end{aligned}$}
 \newcommand{\production}[3]{\textit{#1}&\Coloneqq\textit{#2}&\text{#3}}
 \newcommand{\prodNextLine}[2]{&\quad\quad\textit{#1}&\text{#2}}
+
+%
+%\newcommand{\pushright}[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}
+%
+
+%\llap{\text{#3}} 
+
+\usepackage{array,tabularx}
+\newenvironment{defs}{\setlength{\tabcolsep}{0pt}\tabularx{\textwidth}{r>{}l>{\hfill}X}}{\endtabularx}
+\newcommand{\defi}[3]{\ensuremath{#1\,}&\ensuremath{\coloneqq#2}&\llap{\text{#3}}\\}
+%\newcommand{\defi}[3]{\ensuremath{#1}&\coloneqq\ensuremath{#2}&\text{#3}\\}
+%\newcommand{\defiNextLine}[2]{&\quad\quad\ensuremath{#1}&\text{#2}\\}
+\newcommand{\defiSep}{\midrule}
+
 \newenvironment{defye}{\\\indent$\begin{aligned}}{\end{aligned}$\\}
 \newcommand{\defy}[2]{\!\!\!\!\!\!&&#1&\coloneqq#2\\}
 %\newcommand{\defyc}[1]{&\phantom{\coloneqq}\ \ #1\\}
@@ -83,11 +97,12 @@
 \newcommand{\Rulename}[1]{{\textsc{(#1)}}}
 \newcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
 \newcommand{\libi}[2]{\Q@\{@\Q!interface!\ #1\Q{;} #2\Q@\}@}
-\newcommand{\libc}[3]{\,\Q@\{@#3\Q{;}\ #1\Q{;}\ #2\,\Q@\}@\!\!}
+\newcommand{\libc}[3]{\Q@\{@#3\Q{;}\ #1\Q{;}\ #2\,\Q@\}@\!}
 \newcommand{\lib}[3]{\libc{#2}{#3}{#1}}
 
-
-% New lib form
+\newcommand{\prog}[2]{#1\Q{;}#2}
+\newcommand{\nc}[2]{\Q{private}?\,#1\Q{=}#2}
+\newcommand{\cd}[2]{#1\Q{=}#2}
 
 \newcommand{\id}{\textit{id}}
 \newcommand{\DVs}{\textit{DVs}}
