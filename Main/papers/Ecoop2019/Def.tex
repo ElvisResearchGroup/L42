@@ -75,10 +75,15 @@
 %\llap{\text{#3}} 
 
 \usepackage{array,tabularx}
-\newenvironment{defs}{\setlength{\tabcolsep}{0pt}\tabularx{\textwidth}{r>{}l>{\hfill}X}}{\endtabularx}
-\newcommand{\defi}[3]{\ensuremath{#1\,}&\ensuremath{\coloneqq#2}&\llap{\text{#3}}\\}
-%\newcommand{\defi}[3]{\ensuremath{#1}&\coloneqq\ensuremath{#2}&\text{#3}\\}
-%\newcommand{\defiNextLine}[2]{&\quad\quad\ensuremath{#1}&\text{#2}\\}
+
+% Version that aligns everything on the :=
+%\newenvironment{defs}{\setlength{\tabcolsep}{0pt}\tabularx{\textwidth}{r>{}l>{\hfill}X}}{\endtabularx}
+%\newcommand{\defi}[3]{\ensuremath{#1\,}&\ensuremath{\coloneqq#2}&\llap{\text{#3}}\\}
+
+\newenvironment{defs}{\setlength{\tabcolsep}{0pt}\noindent\tabularx{\textwidth}{l>{\hfill}X}}{\endtabularx\\}
+\newcommand{\defi}[3]{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
+\newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+
 \newcommand{\defiSep}{\midrule}
 
 \newenvironment{defye}{\\\indent$\begin{aligned}}{\end{aligned}$\\}
