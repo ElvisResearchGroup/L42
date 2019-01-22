@@ -18,32 +18,29 @@ Here we use the metavariable $x$, $t$, $C$ and $m$ as identifiers for variables/
 \begin{bnf}
 \hline
 \production{%
-e}      {x \mmid{} e\Q{.}m\rp{es} \mmid{}T\Q{.}m\rp{es}
-\mmid{} e\Q{.}x \mmid{} \Q{new} T\rp{es}
-}{expression}\\\production{%
-L}      {\lib{K}{Tz}{Mz}%
-}        {code literal}\\\production{%
-M}      {\Q{static}$?$ T m\rp{Txs} e$?$ \mmid{} \Q{private}$?$ C\eq{}E }                                                    {member}\\\production{%
-K}      {\Q{interface} \mmid{} \Q{abstract} \mmid{} Txs}                                          {kind}\\\production{%
+e}      {x \mmid{} \ec{e}{m}{es} \mmid{} \ec{T}{m}{es} \mmid{} \ef{e}{x} \mmid{} \en{T}{es}}{expression}\\\production{%
+L}      {\clit{K}{\Tz}{\Mz}}        {code literal}\\\production{%
+M}      {\meth{T}{m}{\Txs}{e\q} \mmid{} \ncd{C}{E}}                                                    {member}\\\production{%
+K}      {\Q{interface} \mmid{} \Q{abstract} \mmid{} \Txs}                                          {kind}\\\production{%
 %CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
 %CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
 %source}      {Ds e}                                                             {source code}\\\production{%
-E}      {L \mmid{} t \mmid{} \summ{$E_1$}{$E_2$} \mmid{} E\Q@<@R\Q@>@}           {Code Expr.}%
-%amt}    {T m\rp{Txs}}                                                      {abstract method}\\\production{%
-%mt}     {\Q{static}$?$ T m\rp{Txs} e$?$}                                                 {method}\\\production{%
+E}      {L \mmid{} t \mmid{} \summ{E_1}{E_2} \mmid{} \red{E}{R}}           {Code Expr.}%
+%amt}    {T m\rp{\Txs}}                                                      {abstract method}\\\production{%
+%mt}     {\Q{static}$?$ T m\rp{\Txs} e$?$}                                                 {method}\\\production{%
 \\\production{%
-R}      {$Cs_1 \eq{T_1}\ldots Cs_n\eq{T_n}$}                    {redirect map}\\\hline
+R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}\\\hline
 \end{bnf}
 \end{minipage}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{bnf}
 \hline
 \production{%
-T}      {\Q{This}n\Q{.}Cs}                                                 {types}\\\production{%
-Tx}     {T x}                                                              {parameter}\\\production{%
-D}      {id\eq{}E}                                                         {declaration}\\\production{%
+T}      {\This{n}{$Cs$}}                                                 {types}\\\production{%
+\Tx}     {T x}                                                              {parameter}\\\production{%
+D}      {\tld{id}{E}}                                                         {declaration}\\\production{%
 id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
-v}      {\Q{new} T\rp{vs}}                                                 {value}\\\production{%
+v}      {\en{T}{vs}}                                                 {value}\\\production{%
 LV}      {\ldots}{}                                                
 \\\hline
 \end{bnf}
@@ -54,18 +51,18 @@ The input to our language will consist of a sequence of top level declarations (
 In detail, the forms of our syntax are:\IOComm{Why is there lots of space here?}
 \begin{itemize}
 	\item Expressions ($e$): these are similar to Featherweight-Java ones, we have conventional variable accesses, instance method calls (where the receiver is an $e$), static method calls (where the receiver is a $T$), field accesses and new expressions.
-	\item Code Literals ($L$): a code literal is like a class declaration in Java-like languages, however they do not provide a name for the class. The $Tz$ at the start of the code literal lists all the interfaces that are implemented, while the $Mz$ are the classes methods. The $K$ specifies the kind of class (and its fields, if any).
-	\item Members ($M$): a class member is either a method declaration or a nested class declaration. A method declaration can optionally be abstract (if it's $e?$ is empty) or static (if it has the \Q{static} keyword). A (nested) class declaration can be \Q{private} and defines a class with name $C$ to be the flattened result of a code expression $E$.
-	\item Kind ($K$): is either the keyword \Q{interface}, representing a class with no direct instances, \Q{abstract} representing a class whose fields are unknown, or a list of field declarations (Type and field names) ($Tx$), representing a \emph{concrete} class. For ease of explanation we will use the term `class' to refer to any of these three classes, and the term \emph{proper} class to refer to one that is not an \Q{interface}. A non-concrete class cannot be the receiver of a \Q{new}, unlike a class with an empty $Txs$ for its state. 
+	\item Code Literals ($L$): a code literal is like a class declaration in Java-like languages, however they do not provide a name for the class. The $\Tz$ at the start of the code literal lists all the interfaces that are implemented, while the $\Mz$ are the classes methods. The $K$ specifies the kind of class (and its fields, if any).
+	\item Members ($M$): a class member is either a method declaration or a nested class declaration. A method declaration can optionally be abstract (if it's $e\q$ is empty) or static (if it has the \Q{static} keyword). A (nested) class declaration can be \Q{private} and defines a class with name $C$ to be the flattened result of a code expression $E$.
+	\item Kind ($K$): is either the keyword \Q{interface}, representing a class with no direct instances, \Q{abstract} representing a class whose fields are unknown, or a list of field declarations (Type and field names) ($\Tx$), representing a \emph{concrete} class. For ease of explanation we will use the term `class' to refer to any of these three classes, and the term \emph{proper} class to refer to one that is not an \Q{interface}. A non-concrete class cannot be the receiver of a \Q{new}, unlike a class with an empty $\Txs$ for its state. 
 	\item Code Expressions ($E$): are the main interesting part of our language, they are either code-literals, references to a trait, a sum operation, or a redirect operation. Such expressions will eventually be flattened (at compile time) to an $LV$ (see below).
-	\item Redirect Map ($R$): A redirect map is a sequence of mappings from $Cs$s to $T$s. A $Cs$ indicates the name of a nested class within the LHS of the redirect operator, whereas the $T$ is the target of the redirect. For example $E<C1.C2 = T>$ refers to the nested class named $C2$ that is in the class named in $C1$ in the result of $E$.
-	\item Types ($T$): a type is a path of the from \This{n}{$Cs$}. This identifies the nested class $Cs$ in the $n^\text{th}$ enclosing code literal ($L$). We need this form, as opposed to a more conventional alternative where the $Cs$s would start from top level, for several reasons:
+	\item Redirect Map ($R$): A redirect map is a sequence of mappings from $Cs$s to $T$s. A $Cs$ indicates the name of a nested class within the LHS of the redirect operator, whereas the $T$ is the target of the redirect. For example $\red{E}{\Cs{C1}{C2}}{T}$ refers to the nested class named $C2$ that is in the class named in $C1$ in the result of $E$.
+	\item Types ($T$): a type is a path of the from \This{n}{Cs}. This identifies the nested class $Cs$ in the $n^\text{th}$ enclosing code literal ($L$). We need this form, as opposed to a more conventional alternative where the $Cs$s would start from top level, for several reasons:
 	\begin{itemize}
-		\item Not all the enclosing code literals may have names, for example the LHS of a $\summ{}{}$ operation is anonymous, so one would need to use $This_0$ to refer to it. \IOComm{Is this true???}
+		\item Not all the enclosing code literals may have names, for example the LHS of a $\summ{}{}$ operation is anonymous, so one would need to use \This{0} to refer to it. \IOComm{Is this true???}
 		\item It allows for code to refer to classes that will be redirected away, for example in \\\Q!{ C = {}; This0.C m()}<C = ...>!, \Q{C} will no exist in the flattened program, so relative to the top-level of the program, it has no name. \IOComm{Is this a bad justification}
 	\end{itemize}
 	A major consequence of this representation is that two $Ts$ may refer to the same class even if they are not syntactically identical, in particular \This{0} and \This{1}{C} are the same if the immediately enclosing code literal is the RHS for the declaration of $C$.
-	\item Variable Declaration ($Tx$): a variable declaration declares that $x$ refers to something of type $T$. It is used to declare parameters for methods, and fields of classes.
+	\item Variable Declaration ($\Tx$): a variable declaration declares that $x$ refers to something of type $T$. It is used to declare parameters for methods, and fields of classes.
 	\item Top-level Declarations ($D$):  are bindings from an $id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. \IOComm{Werent we using $D$ in other places of the formalism to refer to either a nested-class declaration or a top-level one?}
 	\item Ids ($id$): these name classes or traits. If their concrete form starts with an upper-case letter they name classes, otherwise traits.
 	\item Values ($v$): these represent fully evaluated runtime expressions ($e$s). This corresponds to a fully reduced \Q{new} expression, here the $T$ will identify a concrete class, and the $vs$ will be the field values.
@@ -75,8 +72,8 @@ In detail, the forms of our syntax are:\IOComm{Why is there lots of space here?}
 We additionally impose the following well-formedness \IOComm{Is this spelt correctly?} constraints:
 \begin{itemize}
 \item An $L$ marked as \Q{interface} cannot have an $M$ which is \Q{static} or implemented. \IOComm{Forbid nested classes for simplicity/so as to not confuse people who might be thinking about virtual classes...}
-\item In a $Txs$ each $x$ (i.e. field and parameter names) must be distinct, and not named \Q{this}. Similarly, the method names ($M$) and class names ($C$) inside the $Mz$ of a library literal ($L$) must be distinct. \IOComm{Is $\Q{This}_0$ a valid path, or is \Q{This}0, if the latter is, we need to ensure it doesn't class with a $C$, but the former cannot.}
-\item An $e.x$ or $\Q{new} T(es)$ expression not within the main expression (i.e. inside an $L$) must have $e = \Q{this}$ and $T = \Q{This}_0$. This ensures that fields and constructors are instance-private. \IOComm{But not in the main expression?} \IOComm{Mention that the enclosing $L$ must have appropriate fields? Or should this be a type rule instead? Actually can't we just make this whole well formedness rule a type rule?}
+\item In a $\Txs$ each $x$ (i.e. field and parameter names) must be distinct, and not named \Q{this}. Similarly, the method names ($M$) and class names ($C$) inside the $\Mz$ of a library literal ($L$) must be distinct. \IOComm{Is $\Q{This}_0$ a valid path, or is \Q{This}0, if the latter is, we need to ensure it doesn't class with a $C$, but the former cannot.}
+\item An $e.x$ or $\en{T}{es}$ expression not within the main expression (i.e. inside an $L$) must have $e = \Q{this}$ and $T = \This{0}$. This ensures that fields and constructors are instance-private. \IOComm{But not in the main expression?} \IOComm{Mention that the enclosing $L$ must have appropriate fields? Or should this be a type rule instead? Actually can't we just make this whole well formedness rule a type rule?}
 
 \IOComm{Require that things allready be minimized? If so where do I put this rule? (After we've defined $p.minimize$...)}
 \end{itemize}
@@ -87,71 +84,96 @@ We additionally impose the following well-formedness \IOComm{Is this spelt corre
 \begin{bnf}
 	\hline
 	\production{%
-		p} {Ds\Q{;} DVz} {program}\\\production{%
-		DV}      {id\eq{}LV} {evaluated declaration}
+		p} {\prog{Ds}{\DVz}} {program}\\\production{%
+		DV}      {\tld{id}{LV}} {evaluated declaration}
 	\\\hline
 \end{bnf}
 
 \IOComm{Is program the right name here? That would be a more appropriate name for the input to the language, how about a meta-state or class tree or something else?}
-In order to type-check and flatten our language we need to be able to lookup classes and traits, this is complicated since class names are represented in the form \This{n}{$Cs$}, which has a different meaning in different places. To this aim we define a program $p$, which will be be used to keep track of the current state and `location' of operations.
-The program is of the form $Ds\Q{;} DVz$, where the $DVz$ represents all the (fully evaluated) top-level declarations (classes or traits). The $Ds$ is a stack of nested classes, where the first $D$ (the top of the stack) is the declaration for \This{0}. The program will only contain top-level declarations that have already been evaluated ($DV$), preventing references to non-flattened traits. \IOComm{Justify why we are doing this?}
+In order to type-check and flatten our language we need to be able to lookup classes and traits, this is complicated since class names are represented in the form \This{n}{Cs}, which has a different meaning in different places. To this aim we define a program $p$, which will be be used to keep track of the current state and `location' of operations.
+The program is of the form \prog{Ds}{\DVz}, where the $\DVz$ represents all the (fully evaluated) top-level declarations (classes or traits). The $Ds$ is a stack of nested classes, where the first $D$ (the top of the stack) is the declaration for \This{0}. The program will only contain top-level declarations that have already been evaluated ($DV$), preventing references to non-flattened traits. \IOComm{Justify why we are doing this?}
 
-We define the following obvious notations to extract the members of a code-literal:
+%We will tree sets of members ($\Mz$) as functions, from $\Id$ (method-name or class-name) to $M$, where $\Mz(\Id)$ is the $M$ in $\Mz$ such that $\idd{m}$. Throughout this paper, we will also assume.
+
+We define the following usual functional-notations so that $\Mz$ can be treated as a function from $\Id$ to $M$:
 
 \begin{defs}
-	\defi{\fop{members}{\lib{\_}{\_}{Mz}}}{Mz}{get the members from a code literal}
-	\defi{L(m)}{\fop{members}{L}(m)}{get a method}
+	\defi{\idd{\meth{T}{m}{\Txs}{e\q}}}{m}{get the $\Id$ of a method}
+	\defi{\idd{\ncd{C}{E}}}{C}{get the $\Id$ of a class}
+	\defi{\Mz(\Id)}{M,\where\idd{M} = \Id}{get the corresponding member}
+	\defi{\dom{\Mz}}{\{\Id \text{ where } \Mz(\Id) \text{ is defined} \}}{the $\Id$s of all the members}
+\end{defs}
+
+
+We define the following obvious notations to extract the members of a code-literal
+
+\begin{defs}
+	\defi{\members{\clit{\_}{\_}{\Mz}}}{\Mz}{get the members from a code literal}
+	\defi{L(m)}{\members{L}(m)}{get a method}
 	\defiSep
 	\defi{L(\Empty)}{L}{get a (transitively) nested class declaration}
-	\defi{L(Cs\Q{.}C)}{\fop{members}{L(Cs)}(C)}{}
+	\defi{L(\Cs{Cs}{C})}{\members{L(Cs)}(C)}{}
 	\defiSep
-	\defi{\dom{L}}{\dom{\fop{members}{L}}}{get the names of directly nested members}
+	\defi{\dom{L}}{\dom{\members{L}}}{get the names of directly nested members}
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
 	\defiSep
 	\defi{L[\Empty=E]}{E}{update nested class}
-	\defi{\lib{K}{Tz}{Mz}[C\Q@.@Cs=E]}{\lib{K}{Tz}{Mz[C=Mz(C)[Cs=E]]}}{}
-	\defi{(Mz,\nc{C}{\_})[C=E]}{Mz,\nc{C}{E}}{update member}
-	\defiSep	
+	\defi{\clit{K}{\Tz}{\Mz}[\Cs{C}{Cs}=E]}{\clit{K}{\Tz}{\Mz[C=\Mz(C)[Cs=E]]}}{}
+	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
 \end{defs}
 
 We now recursively define the notation to look up classes in a program:
 
 \begin{defs}
-	\defiSep
 	\defi{(\prog{}{\_,\cd{C}{L},\_})(\This{0}{C}{Cs})}{L(Cs)}{top level lookup}
 	\defi{(\cd{\_}{L}, \_)(\This{0}{Cs})}{L(Cs)}{nested class lookup}
 	\defi{(\_, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}{outer lookup}
-	\defiSep
 \end{defs}
 
-Note that the notation $\cd{C}{L}, p$ is equivalent to $\prog{\cd{C}{L}\ Ds}{DVs}$ where $p = \prog{Ds}{Dvs}$. It `pushes' the declaration $\cd{C}{L}$ to the top of the program stack. 
-When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we will have a program of the form $p = \prog{\cd{C'}{L(C)}, \cd{C}{L}}{DVs}$, and so $p(\This{0}) = L(C) = p(\This{1}{C})$. Similarly, a nested class of $L(C)$ can be entered and so on. This causes a class to have multiple-valid names, to handle this we define an operation that returns the shortest valid one:
+Note that the notation $\tld{C}{L}, p$ is equivalent to $\prog{\tld{C}{L}\ Ds}{DVs}$ where $p = \prog{Ds}{Dvs}$. It `pushes' the declaration $\tld{C}{L}$ to the top of the program stack. 
+When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we will have a program of the form $p = \prog{\cd{C'}{L(C)}, \tld{C}{L}}{DVs}$, and so $p(\This{0}) = L(C) = p(\This{1}{C})$. Similarly, a nested class of $L(C)$ can be entered and so on. This causes a class to have multiple-valid names, to handle this we define an operation that returns the shortest valid one:
 
 \begin{defs}
-	\defi{p\op{min}{\This{n+1}{\id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{text}
-	\defic{\text{where } p = \prog{\cd{id_0}{L_0},...,\cd{id_n}{L_n},\_}{Ds}}{more text}
-	\defi{p\op{min}{T}}{T,\text{otherwise}}{}
+	\defi{\mini{p}{\This{n+1}{\id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
+	\defic{\wwhere p = \prog{\cd{id_0}{L_0},...,\cd{id_n}{L_n},\_}{Ds}}{($id_n$ is the name of \This{n})}
+	\defi{\mini{p}{T}}{T \otherwise}{}
 \end{defs}
-\IOComm{Restrict when $p\op{min}{T}$ is defined?}
+\IOComm{Restrict when \mini{p}{T} is defined?}
 
-Note how based on our definitions above, the meaning of a type $T$ depends on our current context, or program. We will define an operator $T\op{from}{T', j}=T''$ \IOComm{Marco can you explain `what' from does? (not how it does it), in particular, what does the $j$ mean?}
+Note how based on our definitions above, the meaning of a type $T$ depends on our current context, or program. We will define an operator $\fromj{T}{T}{j}=T''$. \IOComm{Marco can you explain `what' from does? (not how it does it), in particular, what does the $j$ mean?} We ommit the definitions for all the trivial propagation cases of form $\fromj{M}{T}{j}$, $\fromj{K}{T}{j}$, and $\fromj{e}{T}{j}$.
 
 \begin{defs}
-	\defiSep
-	\defi{(\prog{}{\_,\cd{C}{L},\_})(\This{0}{C}{Cs})}{L(Cs)}{top level lookup}
-	\defi{(\cd{\_}{L}, \_)(\This{0}{Cs})}{L(Cs)}{nested class lookup}
-	\defi{(\_, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}{outer lookup}
-	\defiSep
+	\defi{\fromj{\This{n}{Cs}}{T}{j}}{%
+		\This{n}{Cs} \where n<j}{... explain ...}
+	
+	\defi{\fromj{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
+		\This{m+j}{C_1\ldots C_{k-n}}\where n\leq k}{... explain ...}
+	
+	\defi{\fromj{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
+		\This{m+j+n-k}{C_1\ldots C_{k-n}{Cs}} \where n> k}{... explain ...}
+	\defi{\fromj{\clit{K}{\Tz}{\Mz}}{T}{j-1}}{%
+		\clit{\fromj{K}{T}{j}} {\fromj{\Tz}{T}{j}} {\fromj{\Mz}{T}{j}}%
+	}{... explain ...}
 \end{defs}
+
+Now that we can use $\scriptsize\textbf{from}$ to read types from different places in the program, we can define how to extract an entire code-literal and interpret it relative to the current program:
+
+\begin{defs}
+	\defi{p[t]}{\mini{p}{\fromj{LV}{\This{n}}{0}}}{extract a trait}
+	\defic{\wwhere p=\prog{D_1\ldots D_n}{\_, \tld{t}{LV}, \_}}{(the program is $n$ levels deep)}
+	\defi{p[T]}{\mini{p}{\clit{\fromj{K}{T}{0}}{\fromj{\Tz}{T}{0}}{\fromj{\Mz}{T}{0}}}}{extract a class definition}
+	\defic{\wwhere p(T)=\clit{K}{\Tz}{\Mz}}{}
+\end{defs}
+
 \clearpage
-
+\IO{
 It is not trivial to formalize the way types like \Q@This1.A.B@ %$\This{3}{\Q@A@}{\Q@B@}$
 have to be adapted so that when code is moved around in different depths of nesting the 
 refereed classes stay the same.
-This is needed during flattening, when a trait $t$ is reused, but also during reduction, when a method body is inlined in the main expression, and during typing, where a method body is typed depending on the signature of other methods in the system.
+This is needed during flattening, when a trait $t$ is reused, but also during reduction, when a method body is inlined in the main expression, and during typing, where a method body is typed depending on the signature of other methods in the system.}
 
 To this aim we define a concept of program 
-$\textit{p}\Coloneqq\textit{Ds\Q{;} DVz}$
+$\textit{p}\Coloneqq\textit{Ds\Q{;} \DVz}$
 where 
 $\textit{DV}\Coloneqq\textit{id\eq{LV}}$; as a representation of 
 the code as seen from a certain point inside of the source code. It is the most interesting form of the grammar,
@@ -211,11 +233,11 @@ in position
 
 
 We now present formal definition for those operations.
-We will use members $Mz$ as a function containing both method names $m$
+We will use members $\Mz$ as a function containing both method names $m$
 and class names $C$ in its domain; thus we will assume
-notation $\dom{Mz}$, $Mz(m)$, $Mz(C)$ with the usual meaning.
+notation $\dom{\Mz}$, $\Mz(m)$, $\Mz(C)$ with the usual meaning.
 Under here, we define useful auxiliary notations to
-access literals $L$ with functional notation with the intent of accessing their members. We define notations $L[Cs=E]=L'$ and $Mz[C=E]=Mz'$ serving the role of function update.
+access literals $L$ with functional notation with the intent of accessing their members. We define notations $L[Cs=E]=L'$ and $\Mz[C=E]=\Mz'$ serving the role of function update.
 We use those notations to define $p(T)=LV$ accessing a program $p$ as function. We also define operations on programs: $p\op{push}{D}=p'$, allowing to work with programs as if they was stacks, and
 $p\op{min}{T}=T'$, denoting the shortest type $T'$ referring to the same 
 nested class of $T$.
@@ -250,35 +272,6 @@ We define $\from{T}{T',j}$ and $\from{L}{T,j}$; we omit all the trivial propagat
 	\end{array}$
 \end{minipage}
 
-\noindent\!\!\!\!
-$\begin{array}{l}
-\hline
-\from{\This{n}{Cs}}{T,j}
-=
-\This{n}{Cs} \quad \textit{with }n<j
-\\
-\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
-=
-\This{m+j}{C_1\ldots C_{k-n}} \quad \textit{with }n\leq k
-\\
-\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k},j}
-=
-\This{m+j+n-k}{C_1\ldots C_{k-n}{Cs}} \quad \textit{with }n> k
-\\
-\from{
-	\libc{\Q@interface@? Tz}{Mz}{K}
-}{T,j-1}
-=
-\libc{\Q@interface@? \from{Tz}{T,j}}{\from{Mz}{T,j}}{\from{K}{T,j}}
-\\\hline
-(DL_1\ldots DL_n; \_, t\eq{LV})[t]
-=p\op{min}{\from{LV}{\This{n},0}}\\\hline
-p[T]=p\op{min}{
-	\lib{\from{Tz}{T,0}}{\from{Mz}{T,0}}{}
-}
-\quad\text{where }p(T)=\lib{Tz}{Mz}{K?}
-\\\hline
-\end{array}$
 
 
 %For space reasons, those notations are defined in the appendix.
@@ -288,7 +281,7 @@ The type system and the reduction of the main program are in appendix. They are 
 %A declaration $D$ is just an $id = E$, representing that $id$ is declared to be the value of $E$, we also have $CD, CV, DL$, and $DV$ that constrain the forms of the LHS and RHS of the declaration.
 
 %A literal $L$ has 4 components, an optional interface keyword, a list of implemented interfaces, a list of members, and an optional constructor. For simplicity, interfaces can only contain abstract-methods ($amt$) as members, and cannot have  constructors. A member $M$, is either an (potentially abstract) methood $mt$ or a nested class declaration $(CD)$. A member value $MV$, is a member that has been fully compiled. An $mid$ is an identifier, identifying a member.
-%Constructors, $K$, contain a $Txs$ indicating the type and names of fields. An $e$ is normal fetherweight-java style expression, it has variables $x$, method calls $e.m(es)$, field accesses $e.x$ and object creation $new es$.
+%Constructors, $K$, contain a $\Txs$ indicating the type and names of fields. An $e$ is normal fetherweight-java style expression, it has variables $x$, method calls $e.m(es)$, field accesses $e.x$ and object creation $new es$.
 
 %$CtxV$ is the evaluation context for class-expressions $E$, and $ctxv$ is the usuall one for $e$’s.
 \begin{comment}
@@ -323,11 +316,11 @@ p(Thisn.Cs) = L
 
 otherwise p.minimize(P) = P
 
-define dom(Mz) = Midz
+define dom(\Mz) = Midz
 ===========================================
 dom(empty) = empty
-dom(C = E, Mz) = C, dom(Mz)
-dom(T m(Txs), Mz) = m, dom(Mz)
+dom(C = E, \Mz) = C, dom(\Mz)
+dom(T m(\Txs), \Mz) = m, dom(\Mz)
 \end{comment}
 
 
@@ -344,7 +337,7 @@ By using a larger then needed $n$, there could be multiple different types refer
 
 Code literals $L$
 serve the role of class/trait bodies; they contain the set of implemented interfaces
-$Tz$, the set of members $Mz$ and their (optional) state.
+$\Tz$, the set of members $\Mz$ and their (optional) state.
 In the concrete syntax we will use \Q@implements@ in front of a non empty list of implemented interfaces
 and we will omit parenthesis around a non empty set of fields.
 To simplify our formalism, we delegate some sanity checks to well formedness: all the fields in the state $K$ have different names;
@@ -384,7 +377,7 @@ during compilation.
 Code expressions denote an algebra of code composition, starting from code literal $L$
 and trait names $t$, referring to a literal declared before by \textit{t\eq{}E}.
 We consider two operators: conventional preferential sum 
- \textit{\summ{$E_1$}{$E_2$}} and our novel redirect\textit{\red{E}{Cs}{T}}.
+ \textit{\summ{E_1}{E_2}} and our novel redirect\textit{\red{E}{Cs}{T}}.
 
 \subsection{Compilation process/flattening}
 The compilation process consists in flattening all the $E$ into $L$,
@@ -593,10 +586,10 @@ has a \Q@String@ or an \Q@Object@ parameter.EXPAND on method subtyping.
 %Aside from the redirect operation itself, compilation/flattening is the most interesting part.
 Flattening is defined by reduction arrow $\Ds \Rightarrow \Ds'$, where eventually $\Ds'$ is going to reach form $\DVs$  and $p; \id \vdash E \Rightarrow E’$, where eventually $E'$ is going to reach form $LV$. The $\id$ represents the identifier of the type/trait that we are currently compiling, it is needed since it will be the name of \This0, and we use to the fact that refers to the same nested class as $\This1{\id}$.
 Rule \textsc{(Top)}  selects the leftmost $\id\eq{E}$
-where $E$ is not of form $LV$ and $\DVz$: a 
+where $E$ is not of form $LV$ and $\\DVz$: a 
 well typed subset of the preceeding declarations. 
-$E$ is flattened in the contex of such $\DVz$, thus
-by rule \textsc{(Trait)} $\DVz$ must contain all the trait names used in $E$.
+$E$ is flattened in the contex of such $\\DVz$, thus
+by rule \textsc{(Trait)} $\\DVz$ must contain all the trait names used in $E$.
 In the judgement $p; \id \vdash E \Rightarrow E’$
 $\id$ is only used in order to grow the program $p$ in rule 
 \textsc{(L-enter)}, and $p$ itself is only needed for 
@@ -624,14 +617,14 @@ Rule \textsc{(sum)} just delegate the work on the auxiliary notation defined bel
 
 \noindent$\begin{array}{l}
 \hline
-L_1 \Q@<+@ L_2 = \lib{Tz_1 \cup Tz_2}{Mz \Q@<+@ Mz',Mz_1,Mz_2}{K?} \\
-\quad  L_1=\lib{Tz_1}{Mz,Mz_1}{K?_1},\quad
-\quad  L_2=\lib{Tz_2}{Mz',Mz_2}{K?_2}\\
+L_1 \Q@<+@ L_2 = \lib{\Tz_1 \cup \Tz_2}{\Mz \Q@<+@ \Mz',\Mz_1,\Mz_2}{K?} \\
+\quad  L_1=\lib{\Tz_1}{\Mz,\Mz_1}{K?_1},\quad
+\quad  L_2=\lib{\Tz_2}{\Mz',\Mz_2}{K?_2}\\
 \quad  \{\Empty, K?_1, K?_2\} = \{\Empty, K?\}\\
 \quad  \text{if}\ \Q@interface@? = \Q@interface@\  \text{then}\ \mdom{L_1}= \mdom{L_2}\\
 \hline
-T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} e = T m\rp{Txs} e\\
-T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} = T m\rp{Txs} e?\\
+T m\rp{\Txs} e? \Q@<+@ T m\rp{\Txs} e = T m\rp{\Txs} e\\
+T m\rp{\Txs} e? \Q@<+@ T m\rp{\Txs} = T m\rp{\Txs} e?\\
 (C \Q@=@ L) \Q@<+@
  (C \Q@=@ L') = C \Q@=@\ L \Q@<+@ L,% \text{with } p'=p\op{push}{C\Q@=@p(\This{0}{C}}
 \\\hline
@@ -642,8 +635,8 @@ T m\rp{Txs} e? \Q@<+@ T m\rp{Txs} = T m\rp{Txs} e?\\
 As usual in definitions of sum operators,
 the implemented interfaces is the union of the interfaces of $L_1$ and $L_2$, the members with the same domain are recursivelly composed while the members with disjoint domains are directly included.
 Since method and nested class identifiers must be unique in a well formed $L$ and $M_1 \Q@<+@ M_2$  being defined only if the identifier is the same,
-our definition forces $\dom{Mz}=\dom{Mz'}$ and
-$\dom{Mz_1}$ disjoint $\dom{Mz_2}$.
+our definition forces $\dom{\Mz}=\dom{\Mz'}$ and
+$\dom{\Mz_1}$ disjoint $\dom{\Mz_2}$.
 For simplicity here 
  we require at most one class to have a state; if both have no state, the result will have no state, otherwise the result will have the only present state (the set $\{empty,K?\}$ mathematically express this requirement in a compact way);
 we also allow summing
@@ -685,10 +678,10 @@ computes the set of nested classes that need to be redirected if $R$ is redirect
 \fop{internals}{\fop{exposedTypes}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
 \quad \text{with } Cs \in p\op{redirectSet}{R}\\
 \hline
-\fop{exposedTypes}{\lib{Tz}{Mz}{K?}} = Tz, \fop{exposedTypes}{Mz}\\
+\fop{exposedTypes}{\lib{\Tz}{\Mz}{K?}} = \Tz, \fop{exposedTypes}{\Mz}\\
 \fop{exposedTypes}{\Q@static@? T_0 m\rp{T_1 x_1\ldots T_n x_n} e?}= T_0\ldots T_n\\
 \hline
-\fop{internals}{Tz}=\{Cs\mid \This{0}{Cs} \in Tz\}
+\fop{internals}{\Tz}=\{Cs\mid \This{0}{Cs} \in \Tz\}
 \\\hline
 \end{array}$
 
@@ -737,7 +730,7 @@ LV\op{remove}{Cs_1\ldots Cs_n}=LV\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}\\
 LV[Cs\Q@.@C=\_]\op{remove}{Cs\Q@.@C}=LV \text{where } Cs\Q@.@C \notin\dom{LV}\\
 \hline
 R(L)=R_\Empty(L)\\
-R_{Cs}(\lib{Tz}{Mz}{K?})=\lib{R_{Cs}(Tz)}{R_{Cs}(Mz)}{R_{Cs}(K?)}\\
+R_{Cs}(\lib{\Tz}{\Mz}{K?})=\lib{R_{Cs}(\Tz)}{R_{Cs}(\Mz)}{R_{Cs}(K?)}\\
 R_{Cs}(C\eq{L})=C\eq{R_{Cs\Q@.@C}(L)}\\
 R_{Cs}(M),R_{Cs}(e),R_{Cs}(K)\quad \text{ simply propagate on the structure until $T$ is reached}\\
 R_{C_1\ldots C_n}(T)=\This{n+k+1}{Cs'}\quad\text{where }T\op{from}{\This0{C_1\ldots C_n}}=\This0{Cs},\ 
@@ -776,9 +769,9 @@ Ds\Rightarrow Ds' \text{ and } p;id\vdash E\Rightarrow E',  \text{where
 %\end{array}
 %\\
 \inferrule[(Top)]{
-\DVz \subseteq \DVs\\\\
-\DVz \vdash \textbf{Ok}\\\\
-\Empty; \DVz; id \vdash E \Rightarrow E'
+\\DVz \subseteq \DVs\\\\
+\\DVz \vdash \textbf{Ok}\\\\
+\Empty; \\DVz; id \vdash E \Rightarrow E'
 }{
 \DVs\ \id \Q@=@ E \Ds \Rightarrow \DVs\ \id \Q@=@ E' \Ds
 }\quad
@@ -832,8 +825,8 @@ p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(LV\op{remove}{Csz})
 %\end{verbatim}
 
 %\begin{defye}%
-%	\defy{L[C\eq{E'}]}{\lib{Tz}{\s{MV}\ C\eq{E'}\ \s{M}}{K?}}
-%	\defyc{\text{where } L = \lib{Tz}{\s{MV}\ C\eq{\_}\ \s{M}}{K?}}
+%	\defy{L[C\eq{E'}]}{\lib{\Tz}{\s{MV}\ C\eq{E'}\ \s{M}}{K?}}
+%	\defyc{\text{where } L = \lib{\Tz}{\s{MV}\ C\eq{\_}\ \s{M}}{K?}}
 %	\defy{\s{T} \in p}{\forall T \in \s{T} \bullet p(T) \text{ is defined}}% WHERE WE USE IT?
 %\end{defye}
 
@@ -901,22 +894,22 @@ R' \in \fop{validRedirections}{p,R}\ \text{iff}\\\quad
 %//SuperClasses is Pz',P,Any. In this way F-bound polimoprhism works as usual: {implements Foo} can be redirected to Foo
 %\noindent$\begin{array}{l}
 \hline
-p \vdash P \subseteq \lib{Tz}{Mz}{\_}\text{ iff } \\\quad
+p \vdash P \subseteq \lib{\Tz}{\Mz}{\_}\text{ iff } \\\quad
 % p|- P; {interface?' implements Pz' mwtz', ncz'} <= Cs; {interface? implements Pz mwtz, ncz}
- Tz \subseteq \fop{superClasses}{p, P}\\\quad 
- \forall m \in \dom{Mz}: \ \,
+ \Tz \subseteq \fop{superClasses}{p, P}\\\quad 
+ \forall m \in \dom{\Mz}: \ \,
 %// This implicity checks sdom(mwtz) subseteq sdom(mwtz') 
-    p \vdash p[P](m) \leq Mz(m)\\\quad
+    p \vdash p[P](m) \leq \Mz(m)\\\quad
  \text{if }\Q@interface@?=\Q@interface@ \text{ then  } 
 %// If the LHS is not an interface
 %// One can only call class methods on a non-interface, so if the RHS has them, than the LHS can't be an interface
 %  // If the LHS is an interface, we need to ensure that any valid implementation of the LHS
 %  // Is a valid implemention of the RHS, which requires that the RHS have the exact same method signatures as the LHS
     \forall m \in \dom{p[P]}\ \,  %// This implicity checks the sdom
-      p \vdash Mz(m) \leq p[P](m)\\\quad
+      p \vdash \Mz(m) \leq p[P](m)\\\quad
 
   \text{if } \fop{interface}{p[P]} \text{ then  }
-    \Q@static@ T m\rp{Txs}\_ \notin Mz
+    \Q@static@ T m\rp{\Txs}\_ \notin \Mz
 \text{ else } \Q@interface@?=\Empty
 \\
 \hline
@@ -957,7 +950,7 @@ similar programs:
 
 \noindent$\begin{array}{l}
 \hline
-DLs; DVz\, DVz'\in \fop{similarPrograms}{DLs; DVz}
+DLs; \DVz\, \DVz'\in \fop{similarPrograms}{DLs; \DVz}
 \\\hline
 \end{array}$
 
