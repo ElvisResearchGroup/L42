@@ -137,34 +137,133 @@ When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we 
 	\defi{\mini{p}{\This{n+1}{\id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
 	\defic{\wwhere p = \prog{\cd{id_0}{L_0},...,\cd{id_n}{L_n},\_}{Ds}}{($id_n$ is the name of \This{n})}
 	\defi{\mini{p}{T}}{T \otherwise}{}
+	
+	\defi{\mini{p}{\ncd{C}{LV}}}{\mini{(\tld{C}{LV}, p)}{LV}}{propagate to a nested class definition}
 \end{defs}
-\IOComm{Restrict when \mini{p}{T} is defined?}
+We will assume that \mini{p}{LV} and \mini{p}{\meth{T}{m}{\Txs}{e\q}} simply propagate to \mini{p}{\ldots} on all their sub-forms.
 
-Note how based on our definitions above, the meaning of a type $T$ depends on our current context, or program. We will define an operator $\fromj{T}{T}{j}=T''$. \IOComm{Marco can you explain `what' from does? (not how it does it), in particular, what does the $j$ mean?} We ommit the definitions for all the trivial propagation cases of form $\fromj{M}{T}{j}$, $\fromj{K}{T}{j}$, and $\fromj{e}{T}{j}$.
+Note how based on our definitions above, the meaning of a type $T$ depends on the current position of the program. We want traits to be usable anywhere within a program, even if it refers to an external class. For example if a trait $t$ implements an interface \This{1}{C}, but we use it declare a class \Cs{A}{B} (relative to the top), the resulting class should implement \This{2}{C}, since that is where the interface declaration is relative to \Cs{A}{B} (from the top of the program). However, if a trait implements a nested-interface, say \This{0}{C}, we would be copying that interface into \Cs{A}{B}, and implementing that version (and not say \This{2}{t}{C}, which is an ill-formed type). To handle this we define an operator $\from{T}{T'}{j}$, this returns the type that should be used instead of the type $T$ that was found $j$ levels of nested-classes/code-literals within the location $T'$.
 
 \begin{defs}
-	\defi{\fromj{\This{n}{Cs}}{T}{j}}{%
-		\This{n}{Cs} \where n<j}{... explain ...}
+	\defi{\from{\This{n}{Cs}}{T}{j}}{%
+		\This{n}{Cs}}{}
+	\defic{\wwhere n<j}{the type dosn't refer to an external type, so keep it as is}
 	
-	\defi{\fromj{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
-		\This{m+j}{C_1\ldots C_{k-n}}{Cs}\where n\leq k}{... explain ...}
+	\defi{\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
+		\This{m+j}{C_1\ldots C_{k-n}}{Cs}}{}
+	\defic{\wwhere n\leq k}{(either this case or the next case is defined)}
 	
-	\defi{\fromj{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
-		\This{m+j+n-k}{Cs} \where n> k}{... explain ...}
-	\defi{\fromj{\clit{K}{\Tz}{\Mz}}{T}{j-1}}{%
-		\clit{\fromj{K}{T}{j}} {\fromj{\Tz}{T}{j}} {\fromj{\Mz}{T}{j}}%
-	}{... explain ...}
+	\defi{\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
+		\This{m+j+n-k}{Cs}}{}
+	\defic{\wwhere n> k}{}
+	\defi{\from{\clit{K}{\Tz}{\Mz}}{T}{j}}{
+		\clit{\from{K}{T}{j+1}} {\from{\Tz}{T}{j+1}} {\from{\Mz}{T}{j+1}}%
+	}{}
+	\defic{}{interpret a code literal, by interpreting its components from $1$ level deeper}
 \end{defs}
 
-Now that we can use $\scriptsize\textbf{from}$ to read types from different places in the program, we can define how to extract an entire code-literal and interpret it relative to the current program:
+Now that we can use $\scriptsize\textbf{from}$ to read types from different places in the program, we can define how to extract a trait so that it can be reused in the current program position; we also define how to extract a class-definition so that the (top-level) types it mentions can be interpreted in the current program:
 
 \begin{defs}
-	\defi{p[t]}{\mini{p}{\fromj{LV}{\This{n}}{0}}}{extract a trait}
+	\defi{p[t]}{\mini{p}{\from{LV}{\This{n}}{0}}}{extract a trait}
 	\defic{\wwhere p=\prog{D_1\ldots D_n}{\_, \tld{t}{LV}, \_}}{(the program is $n$ levels deep)}
-	\defi{p[T]}{\mini{p}{\clit{\fromj{K}{T}{0}}{\fromj{\Tz}{T}{0}}{\fromj{\Mz}{T}{0}}}}{extract a class definition}
+	\defi{p[T]}{\mini{p}{\clit{\from{K}{T}{0}}{\from{\Tz}{T}{0}}{\from{\Mz}{T}{0}}}}{extract a class definition}
 	\defic{\wwhere p(T)=\clit{K}{\Tz}{\Mz}}{}
 \end{defs}
 
+\subsection{Compilation Rules}
+We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction, we also have an arrow $p; id\vdash E\Rightarrow E'$ representing the flattening of a code expression:
+
+\begin{irules}
+	%\inferrule[(top)]{
+	%	a \xrightarrow[b]{} c\quad
+	%	\forall i<3 a\vdash b:\text{OK}\\\\
+	%	\forall i<3 a\vdash b:\text{OK}
+	%}{
+	%	1+2
+	%	\rightarrow
+	%	3
+	%}\begin{array}{l}
+	%a\\b\\c
+	%\end{array}
+	%\\
+	\irule{Top}{
+		\DVz \subseteq \DVs\\\\
+		\DVz \vdash \textbf{Ok}\\\\
+		\prog{\Empty}{\DVz}; id \vdash E \Rightarrow E'
+	}{
+		\DVs\ \tld{\id}{E}\ \Ds \Rightarrow \DVs\ \tld{\id}{E'}\ \Ds
+	}
+
+	\irule{Ctx-V}{
+		p; \id \vdash E \Rightarrow E'
+	}{
+		p; \id \vdash \ctx{V}[E] \Rightarrow \ctx{V}[E'] 
+	}
+
+		
+	\irule{Enter}{
+		(\tld{id}{L[C = E]}, p); C \vdash E \Rightarrow E'
+	}{
+		p; \id \vdash L[C = E] \Rightarrow L[C = E']
+	}
+	
+	\iruleSep
+	\irule{Trait}{
+	}{
+		p; \id \vdash t \Rightarrow p[t]
+	}
+	
+	\irule{Sum}{
+		LV_i'=\mini{(\tld{\Id}{LV_i}, p)}{LV_i}\\\\
+%		LV_1 \Q@<+@ LV_2 = LV%\\\\
+		%C' \textit{fresh} \\\\
+		%p'=p\op{push}{C'\Q@=@ LV_3}
+%		p' = (\tld{id, LV}, p)[]\\\\
+		\summ{LV_1'}{LV_2'} = LV
+	}{
+		p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
+	}
+	\irule{Redirect}{
+		LV'=\mini{(\tld{\id}{LV}, p)}{LV}\\\\
+		p' = (\tld{\id}{LV'}, p)\\\\
+		Csz = p'\op{redirectSet}{R/\id}\\\\
+		p'\op{redirectable}{\Csz}\\\\
+		R' =p'\op{bestRedirection}{R/\id}
+	}{
+		p; \id \vdash \red{LV'}{R} \Rightarrow   R'(LV'\op{remove}{Csz}) 
+	}
+\end{irules}
+
+
+\IOComm{Do we want \This{0} and \This{1}{\Id} to be treated as the same within the \Rulename{sum} rule?}
+Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
+\indent\begin{bnf}
+\production{%
+	\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
+	\mmid{} \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {}
+\end{bnf}
+
+\noindent In details the rules are:
+\begin{itemize}
+	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. It evaluates it using a well-typed subset ($\DVz$) of the previously compiled ($Ds$) declarations. See Section \ref{?} for the definition of the typing judgement $\DVz\vdash\textbf{Ok}$ \IOComm{Why do we use an arbitrary well-typed subset and not a maximal one, or even just all of them?}
+	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
+	\item \Rulename{Enter}: this rule evaluates any nested-class declarations that are not already $LVs$. In particular, this rule will be called by \Rulename{Ctx-V} to evaluate any $L$s that are operands in an $E$, before the $E$ itself is evaluated.
+	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LV$, and hence wont need further evaluation.
+	\item \Rulename{Sum}: this rule first minimizes the operands to the sum, and then reduces to the oprepriate value. See Section \ref{?} for the definition of $\summ{LV_1}{LV_2}=LV$.
+	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps: \IOComm{What is $R/\id$ supposed to be?}
+	\begin{itemize}
+		\item It first creates a new program $p'$, so that \This{0} refers to the (minimized) LHS of the redirect. 
+		\item We then compute $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting'). 
+		\item We verify that these classes are all suitable for redirection (they have to exist, cant have nested classes that aren't going to be redirected, and they cant be private).
+		\item We then compute a complete mapping, $R'$, which is the `best'  redirection that extends from $R$. 
+		\item Finally, we apply the mapping to $LV'$, with the classes we are redirecting away ($Csz$) removed.
+	\end{itemize}
+\end{itemize}
+
+\subsection{The Sum operator}
+
+\subsection{The Redirect operator}
 \clearpage
 \IO{
 It is not trivial to formalize the way types like \Q@This1.A.B@ %$\This{3}{\Q@A@}{\Q@B@}$
@@ -241,7 +340,7 @@ access literals $L$ with functional notation with the intent of accessing their 
 We use those notations to define $p(T)=LV$ accessing a program $p$ as function. We also define operations on programs: $p\op{push}{D}=p'$, allowing to work with programs as if they was stacks, and
 $p\op{min}{T}=T'$, denoting the shortest type $T'$ referring to the same 
 nested class of $T$.
-We define $\from{T}{T',j}$ and $\from{L}{T,j}$; we omit all the trivial propagation cases of form $\from{M}{T,j}$, $\from{K}{T,j}$ and $\from{e}{T,j}$.
+We define $\from{T}{T'}{j}$ and $\from{L}{T}{j}$; we omit all the trivial propagation cases of form $\from{M}{T}{j}$, $\from{K}{T}{j}$ and $\from{e}{T}{j}$.
 %Finally, we we combine those to notation for the
 %most common task of getting the value of a literal, in a way that can be understand from the current location: $p[t]$ and $p[T]$:
 
@@ -745,71 +844,6 @@ internal paths that need to be renamed, and the mapped type need to look out of 
 
 
 
-\begin{figure}
-  \caption{Flattening}
-\noindent$\begin{array}{l}
-\hline
-Ds\Rightarrow Ds' \text{ and } p;id\vdash E\Rightarrow E',  \text{where   
-\begin{bnf}
-\production{%
-\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
-                \mmid{}  \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {}
-\end{bnf}}\\\hline
-\\
-%\inferrule[(top)]{
-%	a \xrightarrow[b]{} c\quad
-%	\forall i<3 a\vdash b:\text{OK}\\\\
-%	\forall i<3 a\vdash b:\text{OK}
-%}{
-%	1+2
-%	\rightarrow
-%	3
-%}\begin{array}{l}
-%a\\b\\c
-%\end{array}
-%\\
-\inferrule[(Top)]{
-\\DVz \subseteq \DVs\\\\
-\\DVz \vdash \textbf{Ok}\\\\
-\Empty; \\DVz; id \vdash E \Rightarrow E'
-}{
-\DVs\ \id \Q@=@ E \Ds \Rightarrow \DVs\ \id \Q@=@ E' \Ds
-}\quad
-
-\quad\quad
-\inferrule[(L-enter)]{
-p\op{push}{id \Q{=} L[C = E]}; C \vdash E \Rightarrow E'
-}{
-p; \id \vdash L[C = E] \Rightarrow L[C = E']
-}
-
-\quad\quad
-\inferrule[(trait)]{
-}{
-p; \id \vdash t \Rightarrow p[t]
-}
-
-\\[5ex]
-\inferrule[(sum)]{
-LV_i=p\op{min}{\id\eq{LV_i}}\\\\
-LV_1 \Q@<+@ LV_2 = LV%\\\\
-%C' \textit{fresh} \\\\
-%p'=p\op{push}{C'\Q@=@ LV_3}
-}{
-p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
-}
-\quad\quad
-\inferrule[(redirect)]{
-  LV=p\op{min}{\id\eq{LV}}\\\\
-  p' = p\op{push}{\id\eq{LV}}\\\\
-  Csz = p'\op{redirectSet}{R/\id}\\\\
-  p'\op{redirectable}{Csz}\\\\
-  R' =p'\op{bestRedirection}{R/\id}
-}{
-p; \id \vdash LV \Q@<@R\Q@>@ \Rightarrow   R'(LV\op{remove}{Csz}) 
-}\\[5ex]\hline
-\end{array}$
-\end{figure}
 
 
 %We have two-top level reduction rules defining our language, of the form $Ds e ––> Ds’ e$ which simply reduces the source-code.

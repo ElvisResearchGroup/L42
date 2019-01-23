@@ -15,7 +15,7 @@
 %%%% Grammar forms
 
 \newcommand{\prog}[2]{\@code{#1\Q{;}#2}}
-	\newcommand{\@meth}[5]{\@code{#1#2\ #3\rp{#3}#4}}
+	\newcommand{\@meth}[5]{\@code{#1#2\ #3\rp{#4}#5}}
 
 % Methods: any, static, instance, abstract, abstract instance, abstract static
 \newcommand{\meth}  [4]{\@meth{\Q{static}\q\,}{#1}{#2}{#3}{\ #4}}
@@ -64,10 +64,24 @@
 \newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
 \newcommand{\Tz}{\ensuremath{\mathit{Tz}}}
 \newcommand{\Txs}{\ensuremath{\mathit{Txs}}}
-
+\newcommand{\Csz}{\ensuremath{\mathit{Csz}}}
 % Meta-notation
 \newcommand{\op}[2]{{\ensuremath{{}_{.\textbf{#1}({#2})}}}}
 \newcommand{\fop}[2]{{\ensuremath{\footnotesize{\textbf{#1}}({#2})}}}
+
+% operators
+
+\newcommand{\members}[1]{\fop{members}{#1}}
+\newcommand{\idd}[1]{\fop{id}{#1}}
+\newcommand{\dom}[1]{\fop{dom}{#1}}
+\newcommand{\mdom}[1]{\fop{mdom}{#1}}
+\newcommand{\mini}[2]{#1\op{min}{#2}}
+\newcommand{\from}[3]{#1\op{from}{#2,#3}}
+
+% Just to typset some words nicecly
+\newcommand{\where}{,\quad\text{where }}
+\newcommand{\wwhere}{\text{where }}
+\newcommand{\otherwise}{,\quad\text{otherwise}}
 
 
 % Environemnts
@@ -79,18 +93,9 @@
 
 \newcommand{\defiSep}{\midrule}
 
-% operators
 
-\newcommand{\members}[1]{\fop{members}{#1}}
-\newcommand{\idd}[1]{\fop{id}{#1}}
-\newcommand{\dom}[1]{\fop{dom}{#1}}
-\newcommand{\mdom}[1]{\fop{mdom}{#1}}
-\newcommand{\mini}[2]{#1\op{min}{#2}}
-\newcommand{\from}[2]{#1\op{from}{#2}}
-\newcommand{\fromj}[3]{#1\op{from}{#2,#3}}
+\newenvironment{irules}{\noindent$$\begin{array}{l}\midrule}{\unskip\\\midrule\end{array}$$}
+\newcommand{\irule}[3]{\inferrule[(#1)]{#2}{#3}\qquad}
+\newcommand{\iruleSep}{\unskip\\[5ex]}
 
-% Just to typset some words nicecly
-\newcommand{\where}{,\quad\text{where }}
-\newcommand{\wwhere}{\text{where }}
-\newcommand{\otherwise}{,\quad\text{otherwise}}
 \makeatother
