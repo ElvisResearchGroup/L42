@@ -5,7 +5,7 @@
 Define Redirect(p; L; R) = R'(L[remove Csz]) // Remove the things that will be redirected away
   R = Cs1 -> P1, ..., Csn -> Pn
   p' = p.evilPush(L) // to simplify everything, just make L the new top
-  Csz = RedirectSet(p; R)
+  Csz = RedirectSet(p'; R)
   Redirectable(p'; Csz) // Check that the source is valid
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
   R' = CollectRedirection(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
