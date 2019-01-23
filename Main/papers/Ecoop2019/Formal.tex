@@ -89,6 +89,15 @@ We additionally impose the following well-formedness \IOComm{Is this spelt corre
 	\\\hline
 \end{bnf}
 
+\IO{
+It is not trivial to formalize the way types like \Q@This1.A.B@ %$\This{3}{\Q@A@}{\Q@B@}$
+have to be adapted so that when code is moved around in different depths of nesting the 
+refereed classes stay the same.
+This is needed during flattening, when a trait $t$ is reused, but also during reduction, when a method body is inlined in the main expression, and during typing, where a method body is typed depending on the signature of other methods in the system.}
+To this aim we define the concept of program, minimization and from (todo:use macros/symbols).
+
+
+
 \IOComm{Is program the right name here? That would be a more appropriate name for the input to the language, how about a meta-state or class tree or something else?}
 In order to type-check and flatten our language we need to be able to lookup classes and traits.
 Since types 
@@ -132,7 +141,7 @@ We define the following obvious notations to extract the members of a code-liter
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
 	\defiSep
 	%\defi{L[\Empty=E]}{E}{update nested class}
-\defi{L[\Cs{C}{Cs}=E]}{L[C=L(C)[Cs=E]]}{update nested class}
+\defi{L[\Cs{C}{Cs}=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
 \defi{\clit{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{%
 	\clit{K}{\Tz}{\Mz, \ncd{C}{E}}%
 }{}
@@ -142,13 +151,18 @@ We define the following obvious notations to extract the members of a code-liter
 We now recursively define the notation to look up classes in a program:
 
 \begin{defs}
-	\defi{(\prog{}{\_,\cd{C}{L},\_})(\This{0}{C}{Cs})}{L(Cs)}{top level lookup}
-	\defi{(\cd{\_}{L}, \_)(\This{0}{Cs})}{L(Cs)}{nested class lookup}
+	\defi{(\prog{\Empty}{\_,\cd{C}{L},\_})(\This{0}{C}{Cs})}{L(Cs)}{top level lookup}
+	\defi{(\cd{\_}{L}, p)(\This{0}{Cs})}{L(Cs)}{nested class lookup}
 	\defi{(\_, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}{outer lookup}
 \end{defs}
 
-Note that the notation $\tld{C}{L}, p$ is equivalent to $\prog{\tld{C}{L}\ Ds}{DVs}$ where $p = \prog{Ds}{Dvs}$. It `pushes' the declaration $\tld{C}{L}$ to the top of the program stack. 
-When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we will have a program of the form $p = \prog{\cd{C'}{L(C)}, \tld{C}{L}}{DVs}$, and so $p(\This{0}) = L(C) = p(\This{1}{C})$. Similarly, a nested class of $L(C)$ can be entered and so on. This causes a class to have multiple-valid names, to handle this we define an operation that returns the shortest valid one:
+Note that the notation $\tld{C}{L}, p$ is equivalent to $\prog{\tld{C}{L},Ds}{DVs}$ where $p = \prog{Ds}{Dvs}$. It `pushes' the declaration $\tld{C}{L}$ to the top of the program stack. 
+
+%When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we will have a program of the form $p = \prog{\cd{C'}{L(C)}, \tld{C}{L}}{DVs}$, and so $p(\This{0}) = L(C) = p(\This{1}{C})$. Similarly, a nested class of $L(C)$ can be entered and so on. 
+
+As discussed before, multiple types can identify the same point in the program.
+%This causes a class to have multiple-valid names, to handle this 
+We define a minimization operation returning the shortest type to the same point:
 
 \begin{defs}
 	\defi{\mini{p}{\This{n+1}{\id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
@@ -157,7 +171,13 @@ When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we 
 \end{defs}
 \IOComm{Restrict when \mini{p}{T} is defined?}
 
-Note how based on our definitions above, the meaning of a type $T$ depends on our current context, or program. We will define an operator $\fromj{T}{T}{j}=T''$. \IOComm{Marco can you explain `what' from does? (not how it does it), in particular, what does the $j$ mean?} We ommit the definitions for all the trivial propagation cases of form $\fromj{M}{T}{j}$, $\fromj{K}{T}{j}$, and $\fromj{e}{T}{j}$.
+Note how based on our definitions above, the meaning of a type $T$ depends on our current context, or program.
+When traits are reused, they are moved around.
+Operator $\fromj{T}{T}{j}=T''$
+modifies the types so that all the internal paths are 
+untouched, and all the external paths are modified to point to the same place in the program.
+
+ We omit the definitions for all the trivial propagation cases of form $\fromj{M}{T}{j}$, $\fromj{K}{T}{j}$, and $\fromj{e}{T}{j}$.
 
 \begin{defs}
 	\defi{\fromj{\This{n}{Cs}}{T}{j}}{%
