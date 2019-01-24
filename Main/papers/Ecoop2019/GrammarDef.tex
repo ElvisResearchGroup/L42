@@ -27,6 +27,7 @@
 
 % Nested class
 \newcommand{\ncd}[2]{\tld{\Q{private}\q\,#1}{#2}}
+\newcommand{\pncd}[2]{\tld{\Q{private}\,#1}{#2}}
 % T Top level declaration
 \newcommand{\tld}[2]{\@code{#1\,\,\Q{=}\!\,\,#2}}
 
@@ -55,7 +56,6 @@
 \newcommand{\en}[2]{\@code{\Q{new}\ #1\rp{#2}}}
 \newcommand{\ef}[2]{\@code{#1\Q{.}#2}}
 \newcommand{\ec}[3]{\ef{#1}{#2\rp{#3}}}
-	
 
 % Because mathmode puts too much space
 \newcommand{\DVz}{\ensuremath{\mathit{DVz}}}
@@ -93,9 +93,9 @@
 \newenvironment{defs}{\setlength{\tabcolsep}{0pt}\noindent\tabularx{\textwidth}{l>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}}
 \newcommand{\defi}[3]{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
+\newcommand{\defip}[3]{\ensuremath{#1\text{ iff }#2}&\llap{\text{#3}}\\}
 \newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
-
-\newcommand{\defiSep}{\midrule}
+\newcommand{\defis}{\midrule}
 
 
 \newenvironment{irules}{\noindent$$\begin{array}{l}\midrule}{\unskip\\\midrule\end{array}$$}

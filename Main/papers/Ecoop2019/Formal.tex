@@ -129,16 +129,14 @@ Note that $\dom{\Mz}$ is implicitly defined as the set of all the $C$ and $m$ wh
 We define the following obvious notations to extract the members of a code-literal
 
 \begin{defs}
-	\defi{\clit{\_}{\_}{\Mz}(m)}{\Mz(m)}{get a method}
-	\defiSep
+	\defi{\clit{\_}{\_}{\Mz,\meth{T}{m}{\Txs}{e\q}}(m)}{\meth{T}{m}{\Txs}{e\q}}{get a method}
+	\defis
 	\defi{L(\Empty)}{L}{get a (transitively) nested class declaration}
-	\defi{L(\Cs{Cs}{C})}{
-  L' \where \ncd{C}{L'}\in \members{L(Cs)}
-}{}
-	\defiSep
+	\defi{\clit{\_}{\_}{Mz, \ncd{C}{L}}(\Cs{C}{Cs})}{L(Cs)}{}
+	\defis
 	\defi{\dom{\clit{\_}{\_}{\Mz}}}{\dom{\Mz}}{get the names of directly nested members}
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
-	\defiSep
+	\defis
 	%\defi{L[\Empty=E]}{E}{update nested class}
 \defi{L[\Cs{C}{Cs}=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
 \defi{\clit{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{%
@@ -146,8 +144,6 @@ We define the following obvious notations to extract the members of a code-liter
 }{}
 %	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
 
-typeset the comment here
-% {_; _; Mz, private? C = L}(C.Cs) = L(Cs)
 
 \end{defs}
 
@@ -302,25 +298,43 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 \end{itemize}
 
 \subsection{The Sum operator}
-The sum operate is simply defined as:
+The sum operator is simply defined as:
 
 \begin{defs}
-\defi{\summ{L_1}{L_2}}{\clit{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}\wherec}{...}
-\defic{L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
-\defic{}{\IOComm{How do we explain the split between $Mz_1$ and $Mz_2$?}}
-\defic{\text{if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
-
-\defiSep
-\defi{\summ{\Q{abstract}}{K}}{K\where K \neq \Q{interface}}{Allow adding state to a proper class}
-\defi{\summ{K}{\Q{abstract}}}{K\where K \neq \Q{interface}}{\IOComm{Delete this rule?}}
+\defi{\summ{L_1}{L_2}}{\clit{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}}{Sum the two code literals}
+\defic{\wwhere L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad \widehat{L_2}=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
+\defic{\text{and if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
+\defis
+\defi{\summ{\Q{abstract}}{K}}{\summ{K}{\Q{abstract}} \coloneqq K \where K \neq \Q{interface}}{Allow adding state to a proper class}
 \defi{\summ{\Q{interface}}{\Q{interface}}}{\Q{interface}}{Interfaces must match}
-\defiSep
-\defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\meth{T}{m}{\Txs}{e}}}{\meth{T}{m}{\Txs}{e}}{...}
-\defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\ameth{T}{m}{\Txs}}}{\meth{T}{m}{\Txs}{e\q}}{...}
-\defi{\summ{(\ncd{C}{L})}{(\ncd{C}{L'})}}{\ncd{C}{(\summ{L}{L'})}}{Recursively Sum}
+\defis
+\defi{\summ{(Mz, M)}{(Mz', M')}}{(\summ{M}{M'}),(\summ{Mz}{Mz'})}{Sum members pairwise}
+\defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\meth{T}{m}{\Txs}{e}}}{\meth{T}{m}{\Txs}{e}}{Override method}
+\defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\ameth{T}{m}{\Txs}}}{\meth{T}{m}{\Txs}{e\q}}{Non override}
+\defi{\summ{(\tld{C}{L})}{(\tld{C}{L'})}}{\tld{C}{(\summ{L}{L'})}}{Recursively sum public classes}
 \end{defs}
+Where $\widehat{L}$ is implicitly defined so that each \pncd{C}{L} in $L$ is transformed to \pncd{C'}{L}, and each reference to it (of the form \This{0}{C}), is transformed to \This{0}{C'}, for some arbitrary fresh $C'$. This ensures that $\summ{LV_1}{LV_2}$ operates transparently with respect to private nested classes. Note that by our well-formedness requirement on $L$, $Mz_1$ and $Mz_2$ cannot both contain a member with the same \Id (since otherwise the result of the sum will be ill-formed).
 
-\subsection{The Redirect operator}
+\subsection{The Redirect Operator}
+
+
+
+\subsubsection{Redirectable}
+\noindent\\ 
+
+%\begin{defs}
+%\defip{p\op{redirectable}{Csz}}{}
+%\defic{\Empty \notin Csz}{}
+%\defic{Cs\in Csz \implies \This{0}{Cs} \in \dom{p}}{}
+%\defic{Cs\in Csz \wedge C \in\dom{p(\This{0}{Cs})} \implies \Cs{Cs}{C} \in Csz}{}
+%\defic{\Cs{Cs}{C}{\_} \in Csz \implies  p(\This{0}{Cs}) =\lib{\_}{C \eq{L}\_}{\_}    }{}
+%\end{defs}
+
+That is, the class itself (i.e. the one with name $\Empty$ is not redirect-able, every nested class of a redirect path must be redirected away,
+and all paths must traverse only non-private $C$.
+
+
+
 \clearpage
 \IO{
 It is not trivial to formalize the way types like \Q@This1.A.B@ %$\This{3}{\Q@A@}{\Q@B@}$
@@ -792,7 +806,21 @@ Member composition $M_1 \Q@<+@ M_2$ uses
 the implementation from the right hand side, if available,
 otherwise if the right hand side is abstract, the body is took from the left side.
 Composing nested classes, note how they can not be \Q@private@; it is possible to sum two literals only if their private nested classes have different private names. This constraint can always be obtained by alpha-renaming them:
-we assume a form of alpha-reaming for private nested classes, that will consistently rename all the 
+we assume a form of alpha-reaming for private nested classes, that will consisten
+\noindent $\begin{array}{l}
+\hline
+\fop{redirectable}{p,Csz} \text{iff}\\\quad
+\Empty \notin Csz \\\quad
+\text{if } Cs\in Csz \text{ then } \This{0}{Cs} \in \dom{p}\\\quad
+\text{if } Cs\in Csz \text{ and }C \in\dom{p(\This{0}{Cs})}
+\text{ then } Cs\Q@.@C \in Csz\\\quad
+\text{if } Cs\Q@.@C\Q@.@\_\in Csz
+\text{ then } p(\This{0}{Cs}) =\lib{\_}{C \eq{L}\_}{\_}    
+\\\hline
+\end{array}$
+
+That is, the empty path is not redirectable, every nested class of a redirect path must be redirected away,
+and all paths must traverse only non-private $C$.tly rename all the 
 paths of form $\This{n}{C}{Cs'}$, where 
 $\This{n}{C}$ refer to such private nested class. The trivial definition of such alpha renaming is given in the appendix.
 
@@ -842,20 +870,7 @@ The only reasonable solution is to redirect \Q@A@ and \Q@B@ together.
 For our redirection (and $p'\op{bestRedirectMap}{}$) to be well defined, we need to check that $p\op{redirectable}{Csz}$
 This is again a check local to the $LV$ (the top of the program) and is also easily computable.
 
-\noindent $\begin{array}{l}
-\hline
-\fop{redirectable}{p,Csz} \text{iff}\\\quad
-    \Empty \notin Csz \\\quad
-    \text{if } Cs\in Csz \text{ then } \This{0}{Cs} \in \dom{p}\\\quad
-    \text{if } Cs\in Csz \text{ and }C \in\dom{p(\This{0}{Cs})}
-    \text{ then } Cs\Q@.@C \in Csz\\\quad
-    \text{if } Cs\Q@.@C\Q@.@\_\in Csz
-    \text{ then } p(\This{0}{Cs}) =\lib{\_}{C \eq{L}\_}{\_}    
-\\\hline
-\end{array}$
 
-That is, the empty path is not redirectable, every nested class of a redirect path must be redirected away,
-and all paths must traverse only non-private $C$.
 
 Finally,  $p\op{bestRedirectMap}{R}$, given
 a $p$ and an $R$ (that are valid input for redirection as defined above)
