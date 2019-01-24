@@ -11,13 +11,13 @@ Define (P, R) in ValidProblems iff:
   Redirectable(p; RedirectSet(p, R))
   // All of these, save for the well-typedness, are guaranteed by Redirect
 
-Define R' in PossibleRedirections(p; R)
+Define R' in PossibleRedirectMaps(p; R)
   R subseteq R'
   dom(R') = RedirectSet(p; R)
   (P, R') in ValidProblems
 
-Define R' in ValidRedirections(p; R)
-  R' in PossibleRedirections(p; R)
+Define R' in ValidRedirectMaps(p; R)
+  R' in PossibleRedirectMaps(p; R)
   forall Cs in dom(R'):
     p |- R'(Cs); p[R'(Cs)] <= Cs; R'(p[Cs])
 
@@ -44,7 +44,7 @@ R satisfies_p Cs <= P iff p |- R(Cs) <= P
 R satisfies_p P <= Cs iff p |- P <= R(Cs)
 
 ===============================================
-define MostSpecificRedirection(p; R,Rz) = R
+define MostSpecificRedirectMap(p; R,Rz) = R
   forall Cs: 
     // forall is limited since R(Cs) is undefined if none of the R,Rz define it
     R(Cs) = MostSpecific(p; {R'(Cs) | R' in R,Rz})
@@ -60,7 +60,7 @@ CompletedConstraints(p; R; CCz) iff:
 Lemmas (I.e. Proof these!)
 =================================
 forall R0,p,R
-If range(R) not subseteq dom(p), then R not in PossibleRedirections(p; R0)
+If range(R) not subseteq dom(p), then R not in PossibleRedirectMaps(p; R0)
 
 --------------------------------------------------------------
 

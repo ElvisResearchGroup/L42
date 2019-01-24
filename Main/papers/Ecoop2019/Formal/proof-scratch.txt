@@ -1,6 +1,6 @@
 
-  If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
-   exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such that range(R') not subseteq dom(p)
+  If not CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {} then
+   exists p' in SimilarPrograms(p) and R' in ValidRedirectMaps(p'; R) such that range(R') not subseteq dom(p)
 
 !A & B!={} => E p' in S s.t. (E R' in V(p') s.t. notRange(R'))
 
@@ -20,68 +20,68 @@ V p' in S, R' in V(p') !notRange(R') => A || B=={}
 
 -----------
 Theorem 1.b:
-Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirections(p'; R)
+Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirectMaps(p'; R)
   if range(R') subseteq dom(p) then
-  either CompletedConstraints(p;CollectConstraints(p; R)) or ValidRedirections(p; R) == {}
+  either CompletedConstraints(p;CollectConstraints(p; R)) or ValidRedirectMaps(p; R) == {}
 
-By theorem 5, R' in ValidRedirections(p; R) thus
+By theorem 5, R' in ValidRedirectMaps(p; R) thus
 Theorem 1.c:
-Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirections(p'; R)
+Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirectMaps(p'; R)
   if range(R') subseteq dom(p) then CompletedConstraints(p;CollectConstraints(p; R))
 
 Theorem 1.d:
 Forall (p, R) in ValidProblems,
-  if (forall p' in SimilarPrograms(p), ValidRedirections(p'; R) = ValidRedirections(p; R) && ValidRedirections(p; R) != {})
+  if (forall p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) = ValidRedirections(p; R) && ValidRedirections(p; R) != {})
   then CompletedConstraints(p; CollectConstraints(p; R))
 
 Forall (p, R) in ValidProblems,
   if !CompletedConstraints(p; CollectConstraints(p; R))
-  then exists p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R) || ValidRedirections(p; R) == {}
+  then exists p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirections(p; R) || ValidRedirections(p; R) == {}
   
 
 Theorem 1.e:
 Forall (p, R) in ValidProblems,  
-  if !CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {}
-  then E p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R)
+  if !CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {}
+  then E p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
 
 
- // If not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
- //  exists p' in SimilarPrograms(p) and R' in ValidRedirections(p'; R) such 
+ // If not CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {} then
+ //  exists p' in SimilarPrograms(p) and R' in ValidRedirectMaps(p'; R) such 
  // that range(R') not subseteq dom(p)
 
-  if not CompletedConstraints(p; CCz) and ValidRedirections(p; R) != {} then
-    exists p' in SimilarPrograms(p), ValidRedirections(p'; R) != ValidRedirections(p; R)
+  if not CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {} then
+    exists p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
 
-if not CompltedConstraints(p; CCz) and ValidRedirections(p; R) != {}
-  then BestRedirection(p; R) is undefined
+if not CompltedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {}
+  then BestRedirectMap(p; R) is undefined
   
 
-if forall p' in SimilarPrograms(p), ValidRedirections(p'; R) == ValidRedirections(p; R)
+if forall p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) == ValidRedirections(p; R)
 then CompletedConstraints(p; CCz)
 
 
-if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) == {}//vr do not grow
+if forall p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) / ValidRedirections(p; R) == {}//vr do not grow
 then CompletedConstraints(p; CCz)
 
 -when vr can grow
-R' in ValidRedirections(p; R),
+R' in ValidRedirectMaps(p; R),
 range(R') has interface in method parameter
 
 --
-if exists R' in ValidRedirections(p; R) s.t. Cs->P in R' has interface that do not appear as ret.type (or implements)
+if exists R' in ValidRedirectMaps(p; R) s.t. Cs->P in R' has interface that do not appear as ret.type (or implements)
   p(P) is interface
   forall m in p(Cs) m.T !=Cs~~
-then exists  p' in SimilarPrograms(p),  ValidRedirections(p'; R) != ValidRedirections(p; R)
+then exists  p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
 
-if exists  p' in SimilarPrograms(p),  ValidRedirections(p'; R) != ValidRedirections(p; R)
-then exists R' in ValidRedirections(p; R) s.t. 
+if exists  p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
+then exists R' in ValidRedirectMaps(p; R) s.t. 
 //   Cs->P in R' has interface that do not appear as ret.type (or implements)
   Cs->P in R' has interface, R do not constraint Cs
   Cs appear as meth parameter
   
 ---------------------------------------------------
 //if not CompletedConstraints...
-if ValidRedirections grow...
+if ValidRedirectMaps grow...
 
 
 Well, lets take an R and an R' (assuming ofcourse that R0 != {})
@@ -122,20 +122,20 @@ exists s such that
 
 
 FROM, last version:
-if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) != {}//vr do not grow
+if forall p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) / ValidRedirections(p; R) != {}//vr do not grow
 then CompletedConstraints(p; CCz)
 
 With the above
 Theorem 1.fa:
-if forall p' in SimilarPrograms(p),  ValidRedirections(p'; R) / ValidRedirections(p; R) == {}//vr do not grow
+if forall p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) / ValidRedirections(p; R) == {}//vr do not grow
 then
-exists s, R0 in ValidRedirections(p; R)
-Cs0->P1 in R0, (Cs0->P1' in R0' in ValidRedirections(p; R'))
+exists s, R0 in ValidRedirectMaps(p; R)
+Cs0->P1 in R0, (Cs0->P1' in R0' in ValidRedirectMaps(p; R'))
 forall s neither p|- P1 <= p[R0(Cs0)].s.Ps.i (nor p|- P1' <= p[R0(Cs0)].s.Ps.i)
   
 ---
 Theorem 1.fb:
-if exists R0 in ValidRedirections(p; R) such that:
+if exists R0 in ValidRedirectMaps(p; R) such that:
   -Cs->P in R0,
   -forall s not p|- P <= p[R0(_)].s.Ps.i
 then CompletedConstraints(p; CCz)
@@ -157,7 +157,7 @@ There exists a P such that Cs <= P in CCz:
 --------------------------------------------
 
 By theorem 5:
-  ValidRedirections(p; R) subseteq ValidRedirections(p'; R)
+  ValidRedirectMaps(p; R) subseteq ValidRedirections(p'; R)
   if R' in V(p')/V(p) then range(R')notin dom(p)
 
 exists R' in V(p'), with range(R') notin dom(p)
@@ -169,9 +169,9 @@ at least one Cs <=P (without the corresponding) where isInterface(p,P) //easy
 then, Cs may be interface or class
 
 if Cs class
-  consider the case where Cs=P was a validRedirection,
+  consider the case where Cs=P was a validRedirectMap,
   then consider p' where P is implemented (again) with P0,
-  clearly Cs=P0 is a validRedirection such that range not subset
+  clearly Cs=P0 is a validRedirectMap such that range not subset
   B <=Any
 
 otherwise no valid redirection has Cs=P....

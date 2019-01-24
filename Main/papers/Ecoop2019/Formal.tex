@@ -263,7 +263,7 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		\forall T \in \dom{R}
 		Csz = p'\op{redirectSet}{R/\Id}\\\\
 		p'\op{redirectable}{\Csz}\\\\
-		R' =p'\op{bestRedirection}{R/\Id}
+		R' =p'\op{bestRedirectMap}{R/\Id}
 	}{
 		p; \Id \vdash \red{LV'}{R} \Rightarrow   R'(LV'\op{remove}{Csz})
 	}
@@ -829,7 +829,7 @@ the type \Q@B@ is nested inside \Q@t@, thus
 \Q@String@ would not be able to reach it.
 The only reasonable solution is to redirect \Q@A@ and \Q@B@ together.
 
-For our redirection (and $p'\op{bestRedirection}{}$) to be well defined, we need to check that $p\op{redirectable}{Csz}$
+For our redirection (and $p'\op{bestRedirectMap}{}$) to be well defined, we need to check that $p\op{redirectable}{Csz}$
 This is again a check local to the $LV$ (the top of the program) and is also easily computable.
 
 \noindent $\begin{array}{l}
@@ -847,7 +847,7 @@ This is again a check local to the $LV$ (the top of the program) and is also eas
 That is, the empty path is not redirectable, every nested class of a redirect path must be redirected away,
 and all paths must traverse only non-private $C$.
 
-Finally,  $p\op{bestRedirection}{R}$, given
+Finally,  $p\op{bestRedirectMap}{R}$, given
 a $p$ and an $R$ (that are valid input for redirection as defined above)
 can denote the best complete map, mapping any element of $Csz$ into a suitable type in $p$.
 This is the centerpiece of our formal framework and his definition will be the main topic of the next section.
@@ -915,14 +915,14 @@ To better divide the various aspect, we will use
 functions of form $(p,R)\rightarrow Rz$, producing valid mappings
 for any program $p$ and starting map $R$.
 All of those functions will respect 
-\opName{possibleRedirections}.
+\opName{possibleRedirectMaps}.
 Rule \textsc{redirect} ensures 
-\opName{possibleRedirections} for the input mapping,
+\opName{possibleRedirectMaps} for the input mapping,
 here we check that is also verified for the complete mapping.
 
 \noindent$\begin{array}{l}
 \hline
-R' \in \fop{possibleRedirections}{p, R} \text{ if }\\\quad
+R' \in \fop{possibleRedirectMaps}{p, R} \text{ if }\\\quad
 R \subseteq R'\\\quad
 \dom{R'} = \fop{redirectSet}{p, R}\\\quad
 (p, R') \in \opName{validProblems}\\
@@ -937,7 +937,7 @@ R \subseteq R'\\\quad
 \\\hline
 \end{array}$
 
-We now define $\opName{validRedirections}$ as one of such functions.
+We now define $\opName{validRedirectMaps}$ as one of such functions.
 This is the most complete function achieving both validity and
 internal stability. It is based on the judgement
 $p \vdash T \subseteq L$
@@ -954,8 +954,8 @@ Method subtyping is given in the expressive form where the return type can be mo
 
 \noindent$\begin{array}{l}
 \hline
-R' \in \fop{validRedirections}{p,R}\ \text{iff}\\\quad
-  R' \in \fop{possibleRedirections}{p, R}\\\quad
+R' \in \fop{validRedirectMaps}{p,R}\ \text{iff}\\\quad
+  R' \in \fop{possibleRedirectMaps}{p, R}\\\quad
   \forall Cs \in \dom{R'}\ \, p \vdash  p[R'(Cs)] : R'(Cs) \subseteq R'(p[Cs]):Cs\\
 %\end{array}$
 %
@@ -996,10 +996,10 @@ T_n\in \fop{superClasses}{p,T'_n}
 \\\hline
 \end{array}$
 
-Note how $\opName{validRedirections}$, while mathematically sound,
+Note how $\opName{validRedirectMaps}$, while mathematically sound,
 is incredibly hard to compute:
 while it is easy to check if a certain 
-$R' \in \fop{validRedirections}{p,R}$, finding naively all such $R'$
+$R' \in \fop{validRedirectMaps}{p,R}$, finding naively all such $R'$
 would require examining every possible permutation.
 In particular, subtyping allows for redirections to be conceptually took out of thin-air.
 Consider the following example:
@@ -1026,14 +1026,14 @@ Note how we just add new declarations at the outermost level.
 We will later prove that this is sufficient to ensure that 
 adding/removing unrelated classes anywhere in the program would still not change the selected completed mapping.
 Finally, we have all formal tools to define 
-\opName{bestRedirection}, representing the high level specification of what correctly completing a mapping means.
+\opName{bestRedirectMap}, representing the high level specification of what correctly completing a mapping means.
 
 \noindent$\begin{array}{l}
 \hline
-\fop{bestRedirection}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirections}}\\
+\fop{bestRedirectMap}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirections}}\\
 %\hline
 %\fop{stableMostSpecific}{p, R, f} = R'
-% \text{ iff }\forall p' \in \fop{similarPrograms}{p}\\\quad \fop{mostSpecificRedirection}{p', f(p, R)} = R'\\
+% \text{ iff }\forall p' \in \fop{similarPrograms}{p}\\\quad \fop{mostSpecificRedirectMap}{p', f(p, R)} = R'\\
 \hline
 \fop{stableMostSpecific}{p, R, f} = R_0
  \text{iff } \forall p' \in \fop{similarPrograms}{p}\\\quad
@@ -1049,14 +1049,14 @@ Finally, we have all formal tools to define
 \\\hline
 \end{array}$
 
-The best redirection is a \opName{validRedirection}
+The best redirection is a \opName{validRedirectMap}
 that is the most specific across all similar programs.
-While \opName{bestRedirection} in the current form is not
+While \opName{bestRedirectMap} in the current form is not
 practically computable, it is clear from the formulation
 a good stepping stone to obtain a computable algorithm 
 would be to
-replace \opName{validRedirections}
-with an computable algorithm producing a subset of \opName{validRedirections} and behaving identically for
+replace \opName{validRedirectMaps}
+with an computable algorithm producing a subset of \opName{validRedirectMaps} and behaving identically for
 all the \opName{similarPrograms}.
 
 If multiple solutions are available, providing one of those non deterministically would clearly break stability.
@@ -1071,7 +1071,7 @@ A={C m()=..}
 t={B={ } T={method B m()} ..}
 Res=t<T=A>
 \end{lstlisting}
-\opName{bestRedirection} complete this mapping as \Q@<T=A, B=C>@ thanks to
+\opName{bestRedirectMap} complete this mapping as \Q@<T=A, B=C>@ thanks to
 choosing the most specific, since also \Q@B=I@ is a valid option.
 In a language with a global supertype like \Q@Any@/\Q@Object@, that would
 be yet another option.
@@ -1081,9 +1081,9 @@ every time a nested was declared with empty body. That in turn is very common si
 \Q@extends T@ constraints on a generic type.
 
 
-\section{Properties of \opName{bestRedirection}}
+\section{Properties of \opName{bestRedirectMap}}
 \subsection{Internal/external stability}
 \subsection{Meta-Level soundness}
 
-\section{A computable \opName{bestRedirection}: \opName{choseRedirection}}
+\section{A computable \opName{bestRedirectMap}: \opName{choseRedirection}}
 
