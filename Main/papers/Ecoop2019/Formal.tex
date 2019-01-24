@@ -145,6 +145,10 @@ We define the following obvious notations to extract the members of a code-liter
 	\clit{K}{\Tz}{\Mz, \ncd{C}{E}}%
 }{}
 %	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
+
+typeset the comment here
+% {_; _; Mz, private? C = L}(C.Cs) = L(Cs)
+
 \end{defs}
 
 We now recursively define the notation to look up classes in a program:
@@ -167,10 +171,10 @@ We define a minimisation operation returning the shortest type to the same point
 	\defi{\mini{p}{\This{n+1}{\Id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
 	\defic{\wwhere p = \prog{\cd{\Id_0}{L_0},...,\cd{\Id_n}{L_n},\_}{Ds}}{($\Id_n$ is the name of \This{n})}
 	\defi{\mini{p}{T}}{T \otherwise}{}
-	\defi{\mini{p}{\ncd{C}{E}}}{\ncd{C}{(\mini{(\tld{C}{\_}, p)}{L})}}{minimise a nested class definition}
-	\defi{\minid{p}{\Id}{L}}{\mini{(\tld{\Id}{L}, p)}{L}}{minimise an $L$ with name \Id}
+	\defi{\mini{p}{\ncd{C}{LV}}}{\ncd{C}{\minid{p}{C}{LV}}}{minimise a nested class definition}
+	\defi{\minid{p}{\Id}{LV}}{\mini{(\tld{\Id}{LV}, p)}{LV}}{minimise an $LV$ with name \Id}
 \end{defs}
-Where \mini{p}{L} simply transforms any contained $T$s and \ncd{C}{E} using the above definitions.
+We omit all the trivial propagation cases of form \mini{p}{LV}, \mini{p}{M}, \mini{p}{K} and \mini{p}{e}.
 \IOComm{Restrict when \mini{p}{T} is defined?}
 
 Note how based on our definitions above, the meaning of a type $T$ depends on the current position of the program. We want traits to be usable anywhere within a program, even if it refers to an external class. For example if a trait $t$ implements an interface \This{1}{C}, but we use it declare a class \Cs{A}{B} (relative to the top), the resulting class should implement \This{2}{C}, since that is where the interface declaration is relative to \Cs{A}{B} (from the top of the program). However, if a trait implements a nested-interface, say \This{0}{C}, we would be copying that interface into \Cs{A}{B}, and implementing that version (and not say \This{2}{t}{C}, which is an ill-formed type). To handle this we define an operator $\from{T}{T'}{j}$, this returns the type that should be used instead of the type $T$ that was found $j$ levels of nested-classes/code-literals within the location $T'$.
@@ -205,7 +209,7 @@ Now that we can use $\scriptsize\textbf{from}$ to read types from different plac
 \end{defs}
 
 \subsection{Compilation Rules}
-We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction, we also have an arrow $p; \Id\vdash E\Rightarrow E'$ representing the flattening of a code expression:
+We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction, we also have an arrow $p; \Id\vdash E\Rightarrow E'$ representing the flattening of a code expression:
 
 \begin{irules}
 	%\inferrule[(top)]{
@@ -236,7 +240,7 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 
 
 	\irule{Enter}{
-		(\tld{\Id}{L[C = E]}, p); C \vdash E \Rightarrow E'
+		\tld{\Id}{L[C = E]}, p; C \vdash E \Rightarrow E'
 	}{
 		p; \Id \vdash L[C = E] \Rightarrow L[C = E']
 	}
@@ -259,7 +263,7 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 	}
 	\irule{Redirect}{
 		LV' = \minid{p}{\Id}{LV}\\\\
-		p' = (\tld{\Id}{LV'}, p)\\\\
+		p' = \tld{\Id}{LV'}, p\\\\
 		Csz = p'\op{redirectSet}{R}\\\\
 		p'\op{redirectable}{\Csz}\\\\
 		R'=p'\op{prepareRedirectMap}{R}\\\\
@@ -280,7 +284,7 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 
 \noindent In details the rules are:
 \begin{itemize}
-	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. It evaluates it using a well-typed subset ($\DVz$) of the previously compiled ($Ds$) declarations. See Section \ref{?} for the definition of the typing judgement $\DVz\vdash\Ok$ \IOComm{Why do we use an arbitrary well-typed subset and not a maximal one, or even just all of them?}
+	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. It evaluates it using a well-typed subset ($\DVz$) of the previously compiled ($\DVs$) declarations. See Section \ref{?} for the definition of the typing judgement $\DVz\vdash\Ok$ \IOComm{Why do we use an arbitrary well-typed subset and not a maximal one, or even just all of them?}
 	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
 	\item \Rulename{Enter}: this rule evaluates any nested-class declarations that are not already $LVs$. In particular, this rule will be called by \Rulename{Ctx-V} to evaluate any $L$s that are operands in an $E$, before the $E$ itself is evaluated.
 	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LV$, and hence wont need further evaluation.

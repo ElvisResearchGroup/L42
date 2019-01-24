@@ -438,14 +438,13 @@ class methods of proper classes
 given an extend map m:
 close Csz; Rs
 1 apply all the closes
-
 2 forall the Cs.s=>Cs'.s' and Cs=>Cs'rename the references
 3 forall Cs =>.. mapping remove the Cs,
   forall Cs ->.. mapping remove the Cs body,
   forall Cs.s=>.. remove the method declaration
   forall Cs.s->.. remove the method body
 4 forall  ..->Cs or ..=>Cs mapping sum the moved class bodies
-5 forall method mapping rename the methods declarations 
+  forall method mapping move the methods declarations 
 
 {A: {TAF foo, TAB bar} B: {TBF foo TBB bar}}
 [A=>B, A.foo=>A.bar, B.bar=>B.foo]
