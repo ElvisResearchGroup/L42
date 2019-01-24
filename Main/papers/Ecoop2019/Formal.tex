@@ -38,7 +38,7 @@ R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}
 \production{%
 T}      {\This{n}{$Cs$}}                                                 {types}\\\production{%
 \Tx}     {T x}                                                              {parameter}\\\production{%
-D}      {\tld{id}{E}}                                                         {declaration}\\\production{%
+D}      {\tld{\Id}{E}}                                                         {declaration}\\\production{%
 id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
 v}      {\en{T}{vs}}                                                 {value}\\\production{%
 LV}      {\ldots}{}                                                
@@ -63,8 +63,8 @@ In detail, the forms of our syntax are:\IOComm{Why is there lots of space here?}
 	\end{itemize}
 	A major consequence of this representation is that two $Ts$ may refer to the same class even if they are not syntactically identical, in particular \This{0} and \This{1}{C} are the same if the immediately enclosing code literal is the RHS for the declaration of $C$.
 	\item Variable Declaration ($\Tx$): a variable declaration declares that $x$ refers to something of type $T$. It is used to declare parameters for methods, and fields of classes.
-	\item Top-level Declarations ($D$):  are bindings from an $id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. \IOComm{Werent we using $D$ in other places of the formalism to refer to either a nested-class declaration or a top-level one?}
-	\item Ids ($id$): these name classes or traits. If their concrete form starts with an upper-case letter they name classes, otherwise traits.
+	\item Top-level Declarations ($D$):  are bindings from an $\Id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. \IOComm{Werent we using $D$ in other places of the formalism to refer to either a nested-class declaration or a top-level one?}
+	\item Ids ($\Id$): these name classes or traits. If their concrete form starts with an upper-case letter they name classes, otherwise traits.
 	\item Values ($v$): these represent fully evaluated runtime expressions ($e$s). This corresponds to a fully reduced \Q{new} expression, here the $T$ will identify a concrete class, and the $vs$ will be the field values.
 	\item Code Literal Value ($LV$): these are just like normal code literals except that all of its nested class declarations have an $LV$ on their RHS (as opposed to an un-flattened $E$).
 \end{itemize}
@@ -85,7 +85,7 @@ We additionally impose the following well-formedness \IOComm{Is this spelt corre
 	\hline
 	\production{%
 		p} {\prog{Ds}{\DVz}} {program}\\\production{%
-		DV}      {\tld{id}{LV}} {evaluated declaration}
+		DV}      {\tld{\Id}{LV}} {evaluated declaration}
 	\\\hline
 \end{bnf}
 
@@ -129,15 +129,14 @@ Note that $\dom{\Mz}$ is implicitly defined as the set of all the $C$ and $m$ wh
 We define the following obvious notations to extract the members of a code-literal
 
 \begin{defs}
-	\defi{\members{\clit{\_}{\_}{\Mz}}}{\Mz}{get the members from a code literal}
-	\defi{L(m)}{\members{L}(m)}{get a method}
+	\defi{\clit{\_}{\_}{\Mz}(m)}{\Mz(m)}{get a method}
 	\defiSep
 	\defi{L(\Empty)}{L}{get a (transitively) nested class declaration}
 	\defi{L(\Cs{Cs}{C})}{
   L' \where \ncd{C}{L'}\in \members{L(Cs)}
 }{}
 	\defiSep
-	\defi{\dom{L}}{\dom{\members{L}}}{get the names of directly nested members}
+	\defi{\dom{\clit{\_}{\_}{\Mz}}}{\dom{\Mz}}{get the names of directly nested members}
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
 	\defiSep
 	%\defi{L[\Empty=E]}{E}{update nested class}
@@ -162,18 +161,21 @@ Note that the notation $\tld{C}{L}, p$ is equivalent to $\prog{\tld{C}{L},Ds}{DV
 
 As discussed before, multiple types can identify the same point in the program.
 %This causes a class to have multiple-valid names, to handle this
-We define a minimization operation returning the shortest type to the same point:
+We define a minimisation operation returning the shortest type to the same point:
 
 \begin{defs}
-	\defi{\mini{p}{\This{n+1}{\id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
-	\defic{\wwhere p = \prog{\cd{id_0}{L_0},...,\cd{id_n}{L_n},\_}{Ds}}{($id_n$ is the name of \This{n})}
+	\defi{\mini{p}{\This{n+1}{\Id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
+	\defic{\wwhere p = \prog{\cd{\Id_0}{L_0},...,\cd{\Id_n}{L_n},\_}{Ds}}{($\Id_n$ is the name of \This{n})}
 	\defi{\mini{p}{T}}{T \otherwise}{}
+	\defi{\mini{p}{\ncd{C}{E}}}{\ncd{C}{(\mini{(\tld{C}{\_}, p)}{L})}}{minimise a nested class definition}
+	\defi{\minid{p}{\Id}{L}}{\mini{(\tld{\Id}{L}, p)}{L}}{minimise an $L$ with name \Id}
 \end{defs}
+Where \mini{p}{L} simply transforms any contained $T$s and \ncd{C}{E} using the above definitions.
 \IOComm{Restrict when \mini{p}{T} is defined?}
 
 Note how based on our definitions above, the meaning of a type $T$ depends on the current position of the program. We want traits to be usable anywhere within a program, even if it refers to an external class. For example if a trait $t$ implements an interface \This{1}{C}, but we use it declare a class \Cs{A}{B} (relative to the top), the resulting class should implement \This{2}{C}, since that is where the interface declaration is relative to \Cs{A}{B} (from the top of the program). However, if a trait implements a nested-interface, say \This{0}{C}, we would be copying that interface into \Cs{A}{B}, and implementing that version (and not say \This{2}{t}{C}, which is an ill-formed type). To handle this we define an operator $\from{T}{T'}{j}$, this returns the type that should be used instead of the type $T$ that was found $j$ levels of nested-classes/code-literals within the location $T'$.
 
-We omit the definitions for all the trivial propagation cases of form $\fromj{M}{T}{j}$, $\fromj{K}{T}{j}$, and $\fromj{e}{T}{j}$.
+We omit the definitions for all the trivial propagation cases of form $\from{M}{T}{j}$, $\from{K}{T}{j}$, and $\from{e}{T}{j}$.
 
 \begin{defs}
 	\defi{\from{\This{n}{Cs}}{T}{j}}{%
@@ -203,7 +205,7 @@ Now that we can use $\scriptsize\textbf{from}$ to read types from different plac
 \end{defs}
 
 \subsection{Compilation Rules}
-We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction, we also have an arrow $p; id\vdash E\Rightarrow E'$ representing the flattening of a code expression:
+We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction, we also have an arrow $p; \Id\vdash E\Rightarrow E'$ representing the flattening of a code expression:
 
 \begin{irules}
 	%\inferrule[(top)]{
@@ -221,48 +223,49 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 	\irule{Top}{
 		\DVz \subseteq \DVs\\\\
 		\DVz \vdash \textbf{Ok}\\\\
-		\prog{\Empty}{\DVz}; id \vdash E \Rightarrow E'
+		\prog{\Empty}{\DVz}; \Id \vdash E \Rightarrow E'
 	}{
-		\DVs\ \tld{\id}{E}\ \Ds \Rightarrow \DVs\ \tld{\id}{E'}\ \Ds
+		\DVs\ \tld{\Id}{E}\ \Ds \Rightarrow \DVs\ \tld{\Id}{E'}\ \Ds
 	}
 
 	\irule{Ctx-V}{
-		p; \id \vdash E \Rightarrow E'
+		p; \Id \vdash E \Rightarrow E'
 	}{
-		p; \id \vdash \ctx{V}[E] \Rightarrow \ctx{V}[E']
+		p; \Id \vdash \ctx{V}[E] \Rightarrow \ctx{V}[E']
 	}
 
 
 	\irule{Enter}{
-		(\tld{id}{L[C = E]}, p); C \vdash E \Rightarrow E'
+		(\tld{\Id}{L[C = E]}, p); C \vdash E \Rightarrow E'
 	}{
-		p; \id \vdash L[C = E] \Rightarrow L[C = E']
+		p; \Id \vdash L[C = E] \Rightarrow L[C = E']
 	}
 
 	\iruleSep
 	\irule{Trait}{
 	}{
-		p; \id \vdash t \Rightarrow p[t]
+		p; \Id \vdash t \Rightarrow p[t]
 	}
 
 	\irule{Sum}{
-		LV_i'=\mini{(\tld{\Id}{LV_i}, p)}{LV_i}\\\\
+		LV_i'=\minid{p}{\Id}{LV_i}\\\\
 %		LV_1 \Q@<+@ LV_2 = LV%\\\\
 		%C' \textit{fresh} \\\\
 		%p'=p\op{push}{C'\Q@=@ LV_3}
-%		p' = (\tld{id, LV}, p)[]\\\\
+%		p' = (\tld{\Id, LV}, p)[]\\\\
 		\summ{LV_1'}{LV_2'} = LV
 	}{
-		p; \id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
+		p; \Id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
 	}
 	\irule{Redirect}{
-		LV'=\mini{(\tld{\id}{LV}, p)}{LV}\\\\
-		p' = (\tld{\id}{LV'}, p)\\\\
-		Csz = p'\op{redirectSet}{R/\id}\\\\
+		LV'=\minid{p}{\Id}{LV}\\\\
+		p' = (\tld{\Id}{LV'}, p)\\\\
+		\forall T \in \dom{R}
+		Csz = p'\op{redirectSet}{R/\Id}\\\\
 		p'\op{redirectable}{\Csz}\\\\
-		R' =p'\op{bestRedirection}{R/\id}
+		R' =p'\op{bestRedirection}{R/\Id}
 	}{
-		p; \id \vdash \red{LV'}{R} \Rightarrow   R'(LV'\op{remove}{Csz})
+		p; \Id \vdash \red{LV'}{R} \Rightarrow   R'(LV'\op{remove}{Csz})
 	}
 \end{irules}
 
@@ -282,7 +285,7 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 	\item \Rulename{Enter}: this rule evaluates any nested-class declarations that are not already $LVs$. In particular, this rule will be called by \Rulename{Ctx-V} to evaluate any $L$s that are operands in an $E$, before the $E$ itself is evaluated.
 	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LV$, and hence wont need further evaluation.
 	\item \Rulename{Sum}: this rule first minimizes the operands to the sum, and then reduces to the oprepriate value. See Section \ref{?} for the definition of $\summ{LV_1}{LV_2}=LV$.
-	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps: \IOComm{What is $R/\id$ supposed to be?}
+	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps: \IOComm{What is $R/\Id$ supposed to be?}
 	\begin{itemize}
 		\item It first creates a new program $p'$, so that \This{0} refers to the (minimized) LHS of the redirect.
 		\item We then compute $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting').
@@ -305,7 +308,7 @@ This is needed during flattening, when a trait $t$ is reused, but also during re
 To this aim we define a concept of program 
 $\textit{p}\Coloneqq\textit{Ds\Q{;} \DVz}$
 where 
-$\textit{DV}\Coloneqq\textit{id\eq{LV}}$; as a representation of 
+$\textit{DV}\Coloneqq\textit{\Id\eq{LV}}$; as a representation of 
 the code as seen from a certain point inside of the source code. It is the most interesting form of the grammar,
 used for virtually all reduction and typing rules. On the left of the `$;$' is a stack representing which (nested) declaration is currently being processed,
 the bottom of the stack (rightmost) \textit{D} represents the top level declaration of the source-program that is currently being processed, while the other elements of the stack are nested classes nested inside of each other.
@@ -381,7 +384,7 @@ We define $\from{T}{T'}{j}$ and $\from{L}{T}{j}$; we omit all the trivial propag
 	\noindent\!\!\!$\begin{array}{l}
 	\hline
 	(\DLs\Q@;@ \DVs)\op{push}{id\eq{L}} =
-	\id\eq{L},\DLs\Q@;@ \DVs\\
+	\Id\eq{L},\DLs\Q@;@ \DVs\\
 	\hline
 	(; \_, C\eq{L}, \_)(\This{0}{C}{Cs})=\mathit{L(Cs)}\\
 	p\op{push}{\_\eq{L}}(\This{0}{Cs})=L(\mathit{Cs})\\
@@ -396,8 +399,8 @@ We define $\from{T}{T'}{j}$ and $\from{L}{T}{j}$; we omit all the trivial propag
 	L(C\Q@.@Cs)=L(C)(Cs)\\
 	\hline
 	\\\hline
-	p\op{min}{\This{n+1}{\id_n}{Cs}} = p\op{min}{\This{n}{Cs}}\\\quad
-	\text{where }p = \id_0 \eq{L_0}\ldots\id_n\eq{L_n} \_\Q@;@ Ds\\
+	p\op{min}{\This{n+1}{\Id_n}{Cs}} = p\op{min}{\This{n}{Cs}}\\\quad
+	\text{where }p = \Id_0 \eq{L_0}\ldots\Id_n\eq{L_n} \_\Q@;@ Ds\\
 	\text{otherwise } p\op{min}{T} = T\\
 	\end{array}$
 \end{minipage}
@@ -714,14 +717,14 @@ has a \Q@String@ or an \Q@Object@ parameter.EXPAND on method subtyping.
 \section{Flattening}
 
 %Aside from the redirect operation itself, compilation/flattening is the most interesting part.
-Flattening is defined by reduction arrow $\Ds \Rightarrow \Ds'$, where eventually $\Ds'$ is going to reach form $\DVs$  and $p; \id \vdash E \Rightarrow E’$, where eventually $E'$ is going to reach form $LV$. The $\id$ represents the identifier of the type/trait that we are currently compiling, it is needed since it will be the name of \This0, and we use to the fact that refers to the same nested class as $\This1{\id}$.
-Rule \textsc{(Top)}  selects the leftmost $\id\eq{E}$
+Flattening is defined by reduction arrow $\Ds \Rightarrow \Ds'$, where eventually $\Ds'$ is going to reach form $\DVs$  and $p; \Id \vdash E \Rightarrow E’$, where eventually $E'$ is going to reach form $LV$. The $\Id$ represents the identifier of the type/trait that we are currently compiling, it is needed since it will be the name of \This0, and we use to the fact that refers to the same nested class as $\This1{\Id}$.
+Rule \textsc{(Top)}  selects the leftmost $\Id\eq{E}$
 where $E$ is not of form $LV$ and $\\DVz$: a 
 well typed subset of the preceeding declarations. 
 $E$ is flattened in the contex of such $\\DVz$, thus
 by rule \textsc{(Trait)} $\\DVz$ must contain all the trait names used in $E$.
-In the judgement $p; \id \vdash E \Rightarrow E’$
-$\id$ is only used in order to grow the program $p$ in rule 
+In the judgement $p; \Id \vdash E \Rightarrow E’$
+$\Id$ is only used in order to grow the program $p$ in rule 
 \textsc{(L-enter)}, and $p$ itself is only needed for 
 \textsc{(redirect)}.
 The \textsc{(CtxV)} rule is the standard context, the \textsc{(L-enter)} rule propegates compilation inside of nested-classes, \textsc{(trait)} merely evaluates a trait reference to it’s defined body,
@@ -787,17 +790,17 @@ $\This{n}{C}$ refer to such private nested class. The trivial definition of such
 \subsection{Redirect}
 Rule \textsc{(redirect)} is the centre of our interest for this work. As for sum we check that the $LV$ is in minimized form.
 Moreover, to have a single data structure $p'$ where all the types correctly points to the corresponding nested classes, we add the $L$ to the top of our current program. 
-Notation $R/\id$ is defined as\\*
+Notation $R/\Id$ is defined as\\*
 $\begin{array}{l}
 \hline
 Cs_0\eq{\This{n}{C}{Cs}}=Cs_0\eq{\This{n+1}{C}{Cs}},
-\text {where either } C\neq\id \text { or } n>0
+\text {where either } C\neq\Id \text { or } n>0
 \\\hline
 \end{array}$
 
 In addition of adding $1$ to all the types provided in the redirect map, since they was relative to $p$ and not $p'$, it also 
 checks that $R$ actually refers to types external of $LV$, by preventing types of form
-$\This{0}{\id}{\_}$.
+$\This{0}{\Id}{\_}$.
 
 Notation $p\op{redirectSet}{R}$
 computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easly computable.
