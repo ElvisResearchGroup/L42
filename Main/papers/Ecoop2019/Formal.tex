@@ -222,7 +222,7 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 	%\\
 	\irule{Top}{
 		\DVz \subseteq \DVs\\\\
-		\DVz \vdash \textbf{Ok}\\\\
+		\DVz \vdash \Ok\\\\
 		\prog{\Empty}{\DVz}; \Id \vdash E \Rightarrow E'
 	}{
 		\DVs\ \tld{\Id}{E}\ \Ds \Rightarrow \DVs\ \tld{\Id}{E'}\ \Ds
@@ -258,14 +258,14 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		p; \Id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
 	}
 	\irule{Redirect}{
-		LV'=\minid{p}{\Id}{LV}\\\\
+		LV' = \minid{p}{\Id}{LV}\\\\
 		p' = (\tld{\Id}{LV'}, p)\\\\
-		\forall T \in \dom{R}
-		Csz = p'\op{redirectSet}{R/\Id}\\\\
+		Csz = p'\op{redirectSet}{R}\\\\
 		p'\op{redirectable}{\Csz}\\\\
-		R' =p'\op{bestRedirectMap}{R/\Id}
+		R'=p'\op{prepareRedirectMap}{R}\\\\
+		R'' =p'\op{bestRedirectMap}{R'}
 	}{
-		p; \Id \vdash \red{LV'}{R} \Rightarrow   R'(LV'\op{remove}{Csz})
+		p; \Id \vdash \red{LV'}{R} \Rightarrow   R''(LV'\op{remove}{Csz})
 	}
 \end{irules}
 
@@ -280,22 +280,41 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 
 \noindent In details the rules are:
 \begin{itemize}
-	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. It evaluates it using a well-typed subset ($\DVz$) of the previously compiled ($Ds$) declarations. See Section \ref{?} for the definition of the typing judgement $\DVz\vdash\textbf{Ok}$ \IOComm{Why do we use an arbitrary well-typed subset and not a maximal one, or even just all of them?}
+	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. It evaluates it using a well-typed subset ($\DVz$) of the previously compiled ($Ds$) declarations. See Section \ref{?} for the definition of the typing judgement $\DVz\vdash\Ok$ \IOComm{Why do we use an arbitrary well-typed subset and not a maximal one, or even just all of them?}
 	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
 	\item \Rulename{Enter}: this rule evaluates any nested-class declarations that are not already $LVs$. In particular, this rule will be called by \Rulename{Ctx-V} to evaluate any $L$s that are operands in an $E$, before the $E$ itself is evaluated.
 	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LV$, and hence wont need further evaluation.
-	\item \Rulename{Sum}: this rule first minimizes the operands to the sum, and then reduces to the oprepriate value. See Section \ref{?} for the definition of $\summ{LV_1}{LV_2}=LV$.
-	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps: \IOComm{What is $R/\Id$ supposed to be?}
+	\item \Rulename{Sum}: this rule first minimizes the operands to the sum, and then reduces to the appropriate value. See Section \ref{?} for the definition of $\summ{LV_1}{LV_2}=LV$.
+	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps:
 	\begin{itemize}
-		\item It first creates a new program $p'$, so that \This{0} refers to the (minimized) LHS of the redirect.
-		\item We then compute $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting').
-		\item We verify that these classes are all suitable for redirection (they have to exist, cant have nested classes that aren't going to be redirected, and they cant be private).
-		\item We then compute a complete mapping, $R'$, which is the `best'  redirection that extends from $R$.
-		\item Finally, we apply the mapping to $LV'$, with the classes we are redirecting away ($Csz$) removed.
+		\item It minimises the input $LV$ to $LV'$
+		\item It creates a new program $p'$, so that \This{0} refers to the (minimised) LHS of the redirect.
+		\item It computes $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting').
+		\item It verifies that these classes are all suitable for redirection (they have to exist, cant have nested classes that aren't going to be redirected, and they cant be private).
+		\item It `prepares' the input mapping $R$: it updates it so that the target types are now relative to $p'$, and checks that they are all well typed.
+		\item It computes a complete map, $R''$, which is the `best' map that extends  $R'$ to map the entire redirect set.
+		\item It applys the mapping to $LV$, with the classes we are redirecting away ($Csz$) removed.
 	\end{itemize}
 \end{itemize}
 
 \subsection{The Sum operator}
+The sum operate is simply defined as:
+
+\begin{defs}
+\defi{\summ{L_1}{L_2}}{\clit{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}\wherec}{...}
+\defic{L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
+\defic{}{\IOComm{How do we explain the split between $Mz_1$ and $Mz_2$?}}
+\defic{\text{if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
+
+\defiSep
+\defi{\summ{\Q{abstract}}{K}}{K\where K \neq \Q{interface}}{Allow adding state to a proper class}
+\defi{\summ{K}{\Q{abstract}}}{K\where K \neq \Q{interface}}{\IOComm{Delete this rule?}}
+\defi{\summ{\Q{interface}}{\Q{interface}}}{\Q{interface}}{Interfaces must match}
+\defiSep
+\defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\meth{T}{m}{\Txs}{e}}}{\meth{T}{m}{\Txs}{e}}{...}
+\defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\ameth{T}{m}{\Txs}}}{\meth{T}{m}{\Txs}{e\q}}{...}
+\defi{\summ{(\ncd{C}{L})}{(\ncd{C}{L'})}}{\ncd{C}{(\summ{L}{L'})}}{Recursively Sum}
+\end{defs}
 
 \subsection{The Redirect operator}
 \clearpage
@@ -748,20 +767,7 @@ The complete L42 language solves those issues, but here we present a simplified 
 \subsection{Sum}
 Rule \textsc{(sum)} just delegate the work on the auxiliary notation defined below:
 
-\noindent$\begin{array}{l}
-\hline
-L_1 \Q@<+@ L_2 = \lib{\Tz_1 \cup \Tz_2}{\Mz \Q@<+@ \Mz',\Mz_1,\Mz_2}{K?} \\
-\quad  L_1=\lib{\Tz_1}{\Mz,\Mz_1}{K?_1},\quad
-\quad  L_2=\lib{\Tz_2}{\Mz',\Mz_2}{K?_2}\\
-\quad  \{\Empty, K?_1, K?_2\} = \{\Empty, K?\}\\
-\quad  \text{if}\ \Q@interface@? = \Q@interface@\  \text{then}\ \mdom{L_1}= \mdom{L_2}\\
-\hline
-T m\rp{\Txs} e? \Q@<+@ T m\rp{\Txs} e = T m\rp{\Txs} e\\
-T m\rp{\Txs} e? \Q@<+@ T m\rp{\Txs} = T m\rp{\Txs} e?\\
-(C \Q@=@ L) \Q@<+@
- (C \Q@=@ L') = C \Q@=@\ L \Q@<+@ L,% \text{with } p'=p\op{push}{C\Q@=@p(\This{0}{C}}
-\\\hline
-\end{array}$
+
 
 %On its right, we define the used auxiliary notation,
 %showing how to sum literals and members.

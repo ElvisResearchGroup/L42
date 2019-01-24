@@ -21,9 +21,9 @@
 \newcommand{\meth}  [4]{\@meth{\Q{static}\q\,}{#1}{#2}{#3}{\ #4}}
 \newcommand{\smeth} [4]{\@meth{\Q{static}\,}  {#1}{#2}{#3}{\ #4}}
 \newcommand{\imeth} [4]{\@meth{}              {#1}{#2}{#3}{\ #4}}
-\newcommand{\ameth} [4]{\@meth{\Q{static}\q\,}{#1}{#2}{#3}{}}
-\newcommand{\asmeth}[4]{\@meth{\Q{static}\,}  {#1}{#2}{#3}{}}
-\newcommand{\aimeth}[4]{\@meth{}              {#1}{#2}{#3}{}}
+\newcommand{\ameth} [3]{\@meth{\Q{static}\q\,}{#1}{#2}{#3}{}}
+\newcommand{\asmeth}[3]{\@meth{\Q{static}\,}  {#1}{#2}{#3}{}}
+\newcommand{\aimeth}[3]{\@meth{}              {#1}{#2}{#3}{}}
 
 % Nested class
 \newcommand{\ncd}[2]{\tld{\Q{private}\q\,#1}{#2}}
@@ -65,6 +65,8 @@
 \newcommand{\Tz}{\ensuremath{\mathit{Tz}}}
 \newcommand{\Txs}{\ensuremath{\mathit{Txs}}}
 \newcommand{\Csz}{\ensuremath{\mathit{Csz}}}
+
+\newcommand{\Ok}{\ensuremath{\textbf{Ok}}}
 % Meta-notation
 \newcommand{\op}[2]{{\ensuremath{{}_{.\textbf{#1}({#2})}}}}
 \newcommand{\fop}[2]{{\ensuremath{\footnotesize{\textbf{#1}}({#2})}}}
@@ -81,6 +83,7 @@
 
 % Just to typset some words nicecly
 \newcommand{\where}{,\quad\text{where }}
+\newcommand{\wherec}{,\quad\text{where:}}
 \newcommand{\wwhere}{\text{where }}
 \newcommand{\otherwise}{,\quad\text{otherwise}}
 
