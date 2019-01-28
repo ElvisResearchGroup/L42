@@ -373,11 +373,11 @@ We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested 
 We define the notation $R(L)$ to return $L$ but with references to $Cs$ replaced by $T$ (for all for all $\redm{Cs}{T} \in R$). We use the notation $R_{Cs}(X)$ to apply the rename to an $X$ found inside nested class $Cs$ (where $X$ is a meta-variable).
 
 \begin{defs}
-\defi{R(L)}{R_\Empty(L)}{(starting point)}
-\defi{R_{Cs}(\ncd{C}{L})}{\ncd{C}{R_{\Cs{Cs}{C}}(L)}}{(propagate to nested class)}
-\defi{R_{C1\ldots Cn}(T)}{\from{R(Cs)}{\This{n}}{0}}{(since $R(Cs)$ is relative to \This{n})}
-\defic{\wwhere \from{T}{\This{0}{C1\ldots Cn}}{0} = Cs\text{, and}}{(get $T$ relative to \This{n})}
-\defi{R_{Cs}(T)}{T\otherwise}{($T$ is not to be renamed)}
+\defi{\reda{R}{Cs}{\ncd{C}{L}}}{\ncd{C}{\reda{R}{\Cs{Cs}{C}}{L}}}{(propagate to nested class)}
+
+%\defi{\reda{R}{C1\ldots Cn}{T}}{\from{R(Cs)}{\This{n}}{0}}{(since $R(Cs)$ is relative to \This{n})}
+%\defic{\wwhere \from{T}{\This{0}{C1\ldots Cn}}{0} = \This{0}{Cs}}{(get $T$ relative to \This{n})}
+%\defi{\reda{R}{Cs}{T}}{T\otherwise}{($T$ is not to be renamed)}
 \end{defs}
 
 \IOComm{Have we said somwhere that we can use $R$ like a function?}
