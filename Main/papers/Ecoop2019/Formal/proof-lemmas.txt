@@ -7,4 +7,4 @@ then forall (p, R) in ValidProblems:
   if exists p' in SimilarProblems(p; R), and R', such that:
       R' in f(p', R)
       range(R') not subseteq dom(p)
-  then UniversalMostSpecific(p; R; f) is undefined
+  then StableMostSpecific(p; R; f) is undefined

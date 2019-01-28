@@ -3,20 +3,20 @@
 
 What we want to prove?
 =================================================================================
-forall (p, R) in ValidProblems: CollectRedirectMap(p; R) == BestRedirection(p; R)
+forall (p, R) in ValidProblems: CollectRedirectMap(p; R) == BestRedirectMap(p; R)
 
 Where:
   // '==' works on undefined as you would expect...
 
-  BestRedirectMap(p; R) = UniversalMostSpecific(p; R; ValidRedirections)
+  BestRedirectMap(p; R) = StableMostSpecific(p; R; ValidRedirectMaps)
   //StableMostSpecific
-  UniversalMostSpecific(p; R; f) = R' iff:
+  StableMostSpecific(p; R; f) = R' iff:
     forall p' in SimilarPrograms(p): MostSpecificRedirectMap(p'; f(p', R)) = R'
     with f a function (p,R)->Rz
 
 // TODO: Other things to prove?
 // The input Redirect passes to CollectRedirectMap is in ValidProblems
-//    Thus Redircet[CollectRedirectMap := BestRedirection] == Redirect
+//    Thus Redircet[CollectRedirectMap := BestRedirectMap] == Redirect
 // Proof Meta-level soudnes ++ internal stability <==> validredirection
 =============================================================================================
 p' in SimilarPrograms(p) iff p <= p' and p.top() = p'.top()
@@ -31,14 +31,14 @@ R' in SatisfiedSolutions(CCz)(p; R) iff
 //CollectRedirectMap(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
 
 BestSatisfiedRedirectMap(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
-BestSatisfiedSolution(p; R; CCz) = UniversalMostSpecific(p; R; SatisfiedSolutions(CCz))
-// TODO: Rename UniversalMostSpecific to StableMostSpecific
+BestSatisfiedSolution(p; R; CCz) = StableMostSpecific(p; R; SatisfiedSolutions(CCz))
+// TODO: Rename StableMostSpecific to StableMostSpecific
 Define R in CollectMappings(p; CCz), iff:
   dom(R) = dom(CCz)
   forall Cs in dom(CCz): R(Cs) in CollectTargets(p; CCz; Cs)
 
 ------------------------------------------------------
-Proof that forall (p, R) in ValidProblems: CollectRedirectMap(p; R) == BestRedirection(p; R)
+Proof that forall (p, R) in ValidProblems: CollectRedirectMap(p; R) == BestRedirectMap(p; R)
 ------------------------------------------------------
 Suppose (p, R) in ValidProblems
 
@@ -95,35 +95,35 @@ Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidRedirectMap
 
 Theorem 1.d:
 Forall (p, R) in ValidProblems,
-  if (forall p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) = ValidRedirections(p; R) && ValidRedirections(p; R) != {})
+  if (forall p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) = ValidRedirectMaps(p; R) && ValidRedirectMaps(p; R) != {})
   then CompletedConstraints(p; CollectConstraints(p; R))
 
 Forall (p, R) in ValidProblems,
   if !CompletedConstraints(p; CollectConstraints(p; R))
-  then exists p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirections(p; R) || ValidRedirections(p; R) == {}
+  then exists p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirectMaps(p; R) || ValidRedirectMaps(p; R) == {}
   
 
 Theorem 1.e:
 Forall (p, R) in ValidProblems,  
   if !CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {}
-  then E p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
+  then E p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirectMaps(p; R)
 
 
   If not CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {} then
    exists p' in SimilarPrograms(p) and R' in ValidRedirectMaps(p'; R) such that range(R') not subseteq dom(p)
 
   if not CompletedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {} then
-    exists p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
+    exists p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) != ValidRedirectMaps(p; R)
 
 if not CompltedConstraints(p; CCz) and ValidRedirectMaps(p; R) != {}
   then BestRedirectMap(p; R) is undefined
   
 
-if forall p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) == ValidRedirections(p; R)
+if forall p' in SimilarPrograms(p), ValidRedirectMaps(p'; R) == ValidRedirectMaps(p; R)
 then CompletedConstraints(p; CCz)
 
 
-if forall p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) / ValidRedirections(p; R) != {}//vr do not grow
+if forall p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) / ValidRedirectMaps(p; R) != {}//vr do not grow
 then CompletedConstraints(p; CCz)
 
 -when vr can grow
@@ -134,9 +134,9 @@ range(R') has interface in method parameter
 if exists R' in ValidRedirectMaps(p; R) s.t. Cs->P in R' has interface that do not appear as ret.type (or implements)
   p(P) is interface
   forall m in p(Cs) m.T !=Cs~~
-then exists  p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
+then exists  p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) != ValidRedirectMaps(p; R)
 
-if exists  p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) != ValidRedirections(p; R)
+if exists  p' in SimilarPrograms(p),  ValidRedirectMaps(p'; R) != ValidRedirectMaps(p; R)
 then exists R' in ValidRedirectMaps(p; R) s.t. 
 //   Cs->P in R' has interface that do not appear as ret.type (or implements)
   Cs->P in R' has interface, R do not constraint Cs
@@ -162,7 +162,7 @@ There exists a P such that Cs <= P in CCz:
 --------------------------------------------
 
 By theorem 5:
-  ValidRedirectMaps(p; R) subseteq ValidRedirections(p'; R)
+  ValidRedirectMaps(p; R) subseteq ValidRedirectMaps(p'; R)
   if R' in V(p')/V(p) then range(R')notin dom(p)
 
 exists R' in V(p'), with range(R') notin dom(p)
@@ -256,14 +256,14 @@ Theorem 2: ValidRedirectMaps(p; R) subseteq SatisfiedSolutions(CCz)(p; R) // Mod
   // Direct proof
 
 Theorem 4: If forall p' in SimilarPrograms(p), f(p', R) = f(p, R) then
-  UniversalMostSpecific(p; R; f) = MostSpecificRedirectMap(f(p; R))
+  StableMostSpecific(p; R; f) = MostSpecificRedirectMap(f(p; R))
 
 Theorem 5: 
   // Making the program bigger can only add redirections that werent Possible in the original (e.g. because they reference paths that dont exist)
-  forall p' in SimilarPrograms(p): (ValidRedirectMaps(p'; R) \ ValidRedirections(p; R)) disjoint PossibleRedirections(p; R)
+  forall p' in SimilarPrograms(p): (ValidRedirectMaps(p'; R) \ ValidRedirectMaps(p; R)) disjoint PossibleRedirectMaps(p; R)
   // True?
 
-Lemma 1: If MostSpecificRedirectMap(p; R,Rz,Rz') = R, then MostSpecificRedirection(p; R,Rz) = R
+Lemma 1: If MostSpecificRedirectMap(p; R,Rz,Rz') = R, then MostSpecificRedirectMap(p; R,Rz) = R
   // Obviously
 
 forall (p, R) in ValidProblems
@@ -273,37 +273,37 @@ CCz = CollectConstraints(p; R)
 
 // Note: all the '~~~~~~~~~~~~~~~~~'s bellow indicate easy parts of the proof to fill in
 // Whereass the theorems above are non trivial
-1. Suppose CollectRedirectMap(p; R) is undefined, then BestRedirection(p; R) is undefined
+1. Suppose CollectRedirectMap(p; R) is undefined, then BestRedirectMap(p; R) is undefined
   1.1. Suppose CompletedConstraints(p; CCz), then BestRedirectMap(p; R) is undefined
     1.1a. SatisfiedSolutions(CCz) = {}. 
       ~~~~~~~~~~~~~~~~~
-    By Theorem 2, we have ValidRedirectMaps(p; R) = {}, therefore BestRedirection(p; R) is undefined.
+    By Theorem 2, we have ValidRedirectMaps(p; R) = {}, therefore BestRedirectMap(p; R) is undefined.
 
   1.2. Suppose not CompletedConstraints(p; CCz), then BestRedirectMap(p; R) is undefined
     2.2a. CollectRedirectMap(p; R) is undefined.
       ~~~~~~~~~~~~~~~~
     By Theorem 1, BestRedirectMap(p; R) is undefined.
 
-2. Suppose /*CompletedConstraints(p; CCz), and*/ CollectRedirectMap(p; R) = R', then BestRedirection(p; R) = R'
+2. Suppose /*CompletedConstraints(p; CCz), and*/ CollectRedirectMap(p; R) = R', then BestRedirectMap(p; R) = R'
   2a. R' in SatisfiedSolutions(CCz)(p; R)
     ~~~~~~~~ // The only non-trivial part is that R' in PossibleRedirectMaps(p; R)
   2b. MostSpecificRedirectMap(SatisfiedSolutions(CCz)(p; R)) = R'
     ~~~~~~~~ // by definition of CollectSolutions
   2c. forall p' in SimilarPrograms(p), SatisfiedSolutions(CCz)(p; R) == SatisfiedSolutions(CCz)(p'; R)
     ~~~~~~~~
-  2d. By 2a, 2b and 2c, and theorem 4, UniversalMostSpecific(p; R; SatisfiedSolutions(CCz)) = R'
+  2d. By 2a, 2b and 2c, and theorem 4, StableMostSpecific(p; R; SatisfiedSolutions(CCz)) = R'
     ~~~~~~~~~~~~~~~~~
-  Obviously BestRedirectMap(p; R) in ValidRedirections(p; R).
+  Obviously BestRedirectMap(p; R) in ValidRedirectMaps(p; R).
   By Theorem 2 and, Theorem 3 we have:
      R' in ValidRedirectMaps(p; R) subseteq SatisfiedSolutions(CCz)(p; R)
   And by 2b and Lemma 1 we have that
-   R' = MostSpecificRedirectMap(ValidRedirections(p; R)).
+   R' = MostSpecificRedirectMap(ValidRedirectMaps(p; R)).
   // How do we show that this won't change with other p's?
   Since SatisfiedSolutions(CCz)(p; R) subseteq PossibleRedirectMaps(p; R), by Theorem 2 and 2c it follows that
-    forall p' in SimilarPrograms(p), ValidRedirectMaps(p; R) == ValidRedirections(p'; R)
-  By theorem 4 it follows that BestRedirectMap(p; R) = UniversalMostSpecific(p; R; ValidRedirections) = R'.
+    forall p' in SimilarPrograms(p), ValidRedirectMaps(p; R) == ValidRedirectMaps(p'; R)
+  By theorem 4 it follows that BestRedirectMap(p; R) = StableMostSpecific(p; R; ValidRedirectMaps) = R'.
 
-Therefore, forall (p, R) in ValidProblems: CollectRedirectMap(p; R) == BestRedirection(p; R)
+Therefore, forall (p, R) in ValidProblems: CollectRedirectMap(p; R) == BestRedirectMap(p; R)
 
 
 =============
@@ -342,7 +342,7 @@ Assumptions:
    CompletedConstraints(p; CCz)
    CollectRedirectMap(p; R0) is defined
 Goal:
-  SatisfiedRedirectMaps(p; R0) subseteq ValidRedirections(p; R0)
+  SatisfiedRedirectMaps(p; R0) subseteq ValidRedirectMaps(p; R0)
 ----------------------------------------------------------------------
 Assumptions:
   R in SatisfiedRedirectMaps(p; R0)
@@ -350,7 +350,7 @@ Assumptions:
 Goal:
   contradiction
 ----------------------------
-Since the only part of valid ValidRedirectMaps not ensured by SatisfiedRedirections is:
+Since the only part of valid ValidRedirectMaps not ensured by SatisfiedRedirectMaps is:
   forall Cs in dom(R): p|- R(Cs); p[R(Cs)] <= Cs; R(p[Cs])
 this must not be true.
 -------------------------------------
@@ -438,7 +438,7 @@ Since we have PL <= P
 
 
 Theroem InternalStability:
-  forall p ~R~ p',  BestRedirectMap_i(p; R) = BestRedirection_i(p'; R)
+  forall p ~R~ p',  BestRedirectMap_i(p; R) = BestRedirectMap_i(p'; R)
 
 p ~R~ p'
   // RedirectSet* also includes nested classes?

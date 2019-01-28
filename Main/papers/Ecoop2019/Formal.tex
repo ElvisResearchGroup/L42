@@ -265,7 +265,8 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		R'=p'\op{prepareRedirectMap}{R}\\\\
 		R'' =p'\op{bestRedirectMap}{R'}
 	}{
-		p; \Id \vdash \red{LV'}{R} \Rightarrow   R''(LV'\op{remove}{Csz})
+		p; \Id \vdash \red{LV'}{R} \Rightarrow   
+		\reda{R''}{}{LV'\op{remove}{Csz}}
 	}
 \end{irules}
 
@@ -355,29 +356,29 @@ That is, the class itself (i.e. the one with name $\Empty$) is not redirectable,
 As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program. In addition, we want to check that the target of a redirect is already fully compiled and typed \IOComm{Why do we need it to be typed? Wouldn't compiled (i.e. an $LV$) be sufficient for redirect to make sense?}
 
 \begin{defs}
-\defi{p\op{prepareRedirectMap}{\redm{Cs}{\This{n}{Cs'}},R}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}},p\op{prepareRedirectMap}{R}}{}
+\defi{p\op{prepareRedirectMap}{\redm{Cs}{\This{n}{Cs'}}}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}}}{}
 \defic{\wwhere p \vdash \This{n+1}{Cs'} : \Ok}{Check that the target is well typed and compiled}
-\defi{p\op{prepareRedirectMap}{\Empty}}{\Empty}{(base case)}
 \end{defs}
 (See Section \ref{?} for the typing rules of form $p \vdash T : \Ok$.)
 
 \subsection{Removing and Renaming}
 
-We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested classes in $Csz$ (and their nested classes). \IOComm{Is $L\op{remove}{\Empty}$ undefined? I think it should be...}
+We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested classes in $Csz$ (and their nested classes).
 
 \begin{defs}
-\defi{L\op{remove}{Cs_1\ldots Cs_n}}{LV\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{Remove each class in order}
-\defi{L[\Cs{Cs}{C}=\_]\op{remove}{\Cs{Cs}{C}}}{L \where \Cs{Cs}{C} \notin\dom{L}}{NO!!}
+\defi{L\op{remove}{Cs_1\ldots Cs_n}}{L\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{Remove each class in an arbitrary order}
+\defi{L[Cs=\_]\op{remove}{Cs}}{L \where Cs \notin\dom{L}}{Remove an existing nested class}
 \end{defs}
 
-We define the notation $R(L)$ to return $L$ but with references to $Cs$ replaced by $T$ (for all for all $\redm{Cs}{T} \in R$). We use the notation $R_{Cs}(X)$ to apply the rename to an $X$ found inside nested class $Cs$ (where $X$ is a meta-variable).
+Note that based on the above, the empty $Cs$ cannot be removed, since, for all $L$, $\Empty \in \dom{L}$. Removing such a class does not make sense. In addition, nested classes are removed with their outers, thus the first rule will implicitly order the removal of the former first.
+
+We define the notation \redaa{R}{Cs}{L} to return $L$ (which we found in class $Cs$) but with references to $Cs'$ replaced by $T$ (for all $\redm{Cs'}{T} \in R$). 
 
 \begin{defs}
-\defi{\reda{R}{Cs}{\ncd{C}{L}}}{\ncd{C}{\reda{R}{\Cs{Cs}{C}}{L}}}{(propagate to nested class)}
-
-%\defi{\reda{R}{C1\ldots Cn}{T}}{\from{R(Cs)}{\This{n}}{0}}{(since $R(Cs)$ is relative to \This{n})}
-%\defic{\wwhere \from{T}{\This{0}{C1\ldots Cn}}{0} = \This{0}{Cs}}{(get $T$ relative to \This{n})}
-%\defi{\reda{R}{Cs}{T}}{T\otherwise}{($T$ is not to be renamed)}
+\defi{\redaa{R}{Cs}{\ncd{C}{L}}}{\ncd{C}{\redaa{R}{\Cs{Cs}{C}}{L}}}{(propagate to nested class)}
+\defi{\redaa{R}{C1\ldots Cn}{T}}{\from{R(Cs)}{\This{n}}{0}}{(fromed since $R(Cs)$ is relative to \This{n})}
+\defic{\wwhere \from{T}{\This{0}{C1\ldots Cn}}{0} = \This{0}{Cs}}{(from to get $T$ relative to \This{n})}
+\defi{\redaa{R}{Cs}{T}}{T\otherwise}{($T$ is not to be renamed)}
 \end{defs}
 
 \IOComm{Have we said somwhere that we can use $R$ like a function?}
@@ -385,6 +386,9 @@ We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)
 %The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
 %Rename must keep track of the explored $Cs$ in order to distinguish
 %internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
+
+\subsection{Best Redirect Map}
+
 
 \clearpage
 \IO{
@@ -1067,7 +1071,7 @@ Finally, we have all formal tools to define
 
 \noindent$\begin{array}{l}
 \hline
-\fop{bestRedirectMap}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirections}}\\
+\fop{bestRedirectMap}{p, R} = \fop{stableMostSpecific}{p, R, \opName{validRedirectMaps}}\\
 %\hline
 %\fop{stableMostSpecific}{p, R, f} = R'
 % \text{ iff }\forall p' \in \fop{similarPrograms}{p}\\\quad \fop{mostSpecificRedirectMap}{p', f(p, R)} = R'\\
@@ -1122,5 +1126,5 @@ every time a nested was declared with empty body. That in turn is very common si
 \subsection{Internal/external stability}
 \subsection{Meta-Level soundness}
 
-\section{A computable \opName{bestRedirectMap}: \opName{choseRedirection}}
+\section{A computable \opName{bestRedirectMap}: \opName{choseRedirectMap}}
 
