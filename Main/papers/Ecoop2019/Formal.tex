@@ -315,25 +315,76 @@ The sum operator is simply defined as:
 \end{defs}
 Where $\widehat{L}$ is implicitly defined so that each \pncd{C}{L} in $L$ is transformed to \pncd{C'}{L}, and each reference to it (of the form \This{0}{C}), is transformed to \This{0}{C'}, for some arbitrary fresh $C'$. This ensures that $\summ{LV_1}{LV_2}$ operates transparently with respect to private nested classes. Note that by our well-formedness requirement on $L$, $Mz_1$ and $Mz_2$ cannot both contain a member with the same \Id (since otherwise the result of the sum will be ill-formed).
 
-\subsection{The Redirect Operator}
+\subsection{Redirect Operator Preparation}
+\subsubsection{Redirect Set} \noindent\\ 
+The redirect set is the full set of (nested) class names that will be `redirected' away, it includes the classes named in the user provided redirect map, and any nested-classes their signature (transitively) depends on.
+%Notation $p\op{redirectSet}{R}$
+%computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easily computable.
 
+\begin{defs}
+	\defip{Cs \in p\op{redirectSet}{R}}{}{}
+	\defic{\redm{Cs}{T} \in R \text{, or}}{}
+	\defic{\exists Cs' \in p\op{redirectSet}{R}\ Cs\in \fop{internals}{\fop{exposedType}{p[\This{0}{Cs'}]}}}{}
+	\defis
+	\defi{\fop{exposedTypes}{\clit{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
+	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0\ldots T_n}{}
+	
+	\defi{\fop{internals}{\Tz}}{\{Cs \mid \This{0}{Cs} \in \Tz\}}{}
+\end{defs}
 
+We use the notation \fop{exposedTypes}{L} to denote the set of types used in the (public) signature of $L$, note that it does not include nested classes (since in our language they are not virtual),  fields (since they are private), or method bodies (as redirect will delete them). The notation \fop{internals}{\Tz} gets the names of the nested classes of \This{0} that \Tz refers to. Since $p[\This{0}]$ will be minimised, this is sufficient to get the list of nested classes that are in the LHS of the redirect, and referenced by \Tz.
+
+%The intuition behind \opName{redirectSet} is that if the signature of a nested class mention another nested class, they must be redirected together.
 
 \subsubsection{Redirectable}
 \noindent\\ 
 
-%\begin{defs}
-%\defip{p\op{redirectable}{Csz}}{}
-%\defic{\Empty \notin Csz}{}
-%\defic{Cs\in Csz \implies \This{0}{Cs} \in \dom{p}}{}
-%\defic{Cs\in Csz \wedge C \in\dom{p(\This{0}{Cs})} \implies \Cs{Cs}{C} \in Csz}{}
-%\defic{\Cs{Cs}{C}{\_} \in Csz \implies  p(\This{0}{Cs}) =\lib{\_}{C \eq{L}\_}{\_}    }{}
-%\end{defs}
+\begin{defs}
+\defip{p\op{redirectable}{Csz}}{}{the $Csz$ can all be (simultaneously) redirected away}
+\defic{\Empty \notin Csz}{(Cant redirect the whole code literal)}
+\defic{\forall Cs \in Csz}{}
+\defic{\quad p(\This{0}{Cs}) \text{ is defined}}{(the nested class must exist)}
+\defic{}{(public nested classes must be redirected if their outer is)}
+\defic{\quad p(\This{0}{Cs}) = \clit{}{}{\tld{C}{L} \_} \imp \Cs{Cs}{C} \in Csz}{}
+\defic{\forall \Cs{Cs}{C}{\_} p(\This{0}{Cs}) \clit{}{\tld{C}{L},\_}{}}{(cant redirect through a private class)}
+\end{defs}
+\IOComm{Is there a reason why we need to require that if a class is redirected, all its public nested class are also?}
+That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
 
-That is, the class itself (i.e. the one with name $\Empty$ is not redirect-able, every nested class of a redirect path must be redirected away,
-and all paths must traverse only non-private $C$.
+\subsection{Prepare Redirect Map}
+As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program. In addition, we want to check that the target of a redirect is already fully compiled and typed \IOComm{Why do we need it to be typed? Wouldn't compiled (i.e. an $LV$) be sufficient for redirect to make sense?}
 
+\begin{defs}
+\defi{p\op{prepareRedirectMap}{\redm{Cs}{\This{n}{Cs'}},R}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}},p\op{prepareRedirectMap}{R}}{}
+\defic{\wwhere p \vdash \This{n+1}{Cs'} : \Ok}{Check that the target is well typed and compiled}
+\defi{p\op{prepareRedirectMap}{\Empty}}{\Empty}{(base case)}
+\end{defs}
+(See Section \ref{?} for the typing rules of form $p \vdash T : \Ok$.)
 
+\subsection{Removing and Renaming}
+
+We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested classes in $Csz$ (and their nested classes). \IOComm{Is $L\op{remove}{\Empty}$ undefined? I think it should be...}
+
+\begin{defs}
+\defi{L\op{remove}{Cs_1\ldots Cs_n}}{LV\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{Remove each class in order}
+\defi{L[\Cs{Cs}{C}=\_]\op{remove}{\Cs{Cs}{C}}}{L \where \Cs{Cs}{C} \notin\dom{L}}{NO!!}
+\end{defs}
+
+We define the notation $R(L)$ to return $L$ but with references to $Cs$ replaced by $T$ (for all for all $\redm{Cs}{T} \in R$). We use the notation $R_{Cs}(X)$ to apply the rename to an $X$ found inside nested class $Cs$ (where $X$ is a meta-variable).
+
+\begin{defs}
+\defi{R(L)}{R_\Empty(L)}{(starting point)}
+\defi{R_{Cs}(\ncd{C}{L})}{\ncd{C}{R_{\Cs{Cs}{C}}(L)}}{(propagate to nested class)}
+\defi{R_{C1\ldots Cn}(T)}{\from{R(Cs)}{\This{n}}{0}}{(since $R(Cs)$ is relative to \This{n})}
+\defic{\wwhere \from{T}{\This{0}{C1\ldots Cn}}{0} = Cs\text{, and}}{(get $T$ relative to \This{n})}
+\defi{R_{Cs}(T)}{T\otherwise}{($T$ is not to be renamed)}
+\end{defs}
+
+\IOComm{Have we said somwhere that we can use $R$ like a function?}
+We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)$, $R_{Cs}(M)$, $R_{Cs}(K)$, and $R_{Cs}(e)$.
+%The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
+%Rename must keep track of the explored $Cs$ in order to distinguish
+%internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
 
 \clearpage
 \IO{
@@ -840,23 +891,6 @@ In addition of adding $1$ to all the types provided in the redirect map, since t
 checks that $R$ actually refers to types external of $LV$, by preventing types of form
 $\This{0}{\Id}{\_}$.
 
-Notation $p\op{redirectSet}{R}$
-computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easly computable.
-
-\noindent $\begin{array}{l}
-\hline
-\dom{R} \subseteq p\op{redirectSet}{R}\\
-\fop{internals}{\fop{exposedTypes}{p[\This{0}{Cs}]}} \subseteq p\op{redirectSet}{R}
-\quad \text{with } Cs \in p\op{redirectSet}{R}\\
-\hline
-\fop{exposedTypes}{\lib{\Tz}{\Mz}{K?}} = \Tz, \fop{exposedTypes}{\Mz}\\
-\fop{exposedTypes}{\Q@static@? T_0 m\rp{T_1 x_1\ldots T_n x_n} e?}= T_0\ldots T_n\\
-\hline
-\fop{internals}{\Tz}=\{Cs\mid \This{0}{Cs} \in \Tz\}
-\\\hline
-\end{array}$
-
-The intuition behind \opName{redirectSet} is that if the signature of a nested class mention another nested class, they must be redirected together.
 Consider the following simple example:
 \begin{lstlisting}
 t={A={B size()} B={} ...}
@@ -877,29 +911,7 @@ a $p$ and an $R$ (that are valid input for redirection as defined above)
 can denote the best complete map, mapping any element of $Csz$ into a suitable type in $p$.
 This is the centerpiece of our formal framework and his definition will be the main topic of the next section.
 
-Given the complete mapping $R'$, to produce the flattened result we first
-remove all the elements of $Csz$ from $LV$, and then we
-apply $R'$ as a rename, renaming all internal paths $Cs \in Csz$ to the corresponding external type $R'(Cs)$.
-Those two notations are formally defined as following:
 
-\noindent$\begin{array}{l}
-\hline
-LV\op{remove}{Cs_1\ldots Cs_n}=LV\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}\\
-LV[Cs\Q@.@C=\_]\op{remove}{Cs\Q@.@C}=LV \text{where } Cs\Q@.@C \notin\dom{LV}\\
-\hline
-R(L)=R_\Empty(L)\\
-R_{Cs}(\lib{\Tz}{\Mz}{K?})=\lib{R_{Cs}(\Tz)}{R_{Cs}(\Mz)}{R_{Cs}(K?)}\\
-R_{Cs}(C\eq{L})=C\eq{R_{Cs\Q@.@C}(L)}\\
-R_{Cs}(M),R_{Cs}(e),R_{Cs}(K)\quad \text{ simply propagate on the structure until $T$ is reached}\\
-R_{C_1\ldots C_n}(T)=\This{n+k+1}{Cs'}\quad\text{where }T\op{from}{\This0{C_1\ldots C_n}}=\This0{Cs},\ 
-R(Cs)=\This{k}{Cs'}\\
-\text{otherwise } R_{Cs}(T)=T
-\\\hline
-\end{array}$
-
-%The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
-Rename must keep track of the explored $Cs$ in order to distinguish
-internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
 
 
 
