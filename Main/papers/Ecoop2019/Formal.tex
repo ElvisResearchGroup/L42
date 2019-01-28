@@ -346,7 +346,7 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 \defic{\quad p(\This{0}{Cs}) \text{ is defined}}{(the nested class must exist)}
 \defic{}{(public nested classes must be redirected if their outer is)}
 \defic{\quad p(\This{0}{Cs}) = \clit{}{}{\tld{C}{L} \_} \imp \Cs{Cs}{C} \in Csz}{}
-\defic{\forall \Cs{Cs}{C}{\_} p(\This{0}{Cs}) \clit{}{\tld{C}{L},\_}{}}{(cant redirect through a private class)}
+\defic{\forall \Cs{Cs}{C}{\_} \in \Csz\ p(\This{0}{Cs}) = \clit{}{\tld{C}{L},\_}{}}{(cant redirect through a private class)}
 \end{defs}
 \IOComm{Is there a reason why we need to require that if a class is redirected, all its public nested class are also?}
 That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
