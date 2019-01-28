@@ -262,6 +262,7 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		p' = \tld{\Id}{LV'}, p\\\\
 		Csz = p'\op{redirectSet}{R}\\\\
 		p'\op{redirectable}{\Csz}\\\\
+		\forall $T$ \in \ran{R}, p\op{validType}{T}\\\\
 		R'=p'\op{prepareRedirectMap}{R}\\\\
 		R'' =p'\op{bestRedirectMap}{R'}
 	}{
@@ -292,7 +293,8 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 		\item It creates a new program $p'$, so that \This{0} refers to the (minimised) LHS of the redirect.
 		\item It computes $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting').
 		\item It verifies that these classes are all suitable for redirection (they have to exist, cant have nested classes that aren't going to be redirected, and they cant be private).
-		\item It `prepares' the input mapping $R$: it updates it so that the target types are now relative to $p'$, and checks that they are all well typed.
+		\item It checks that all the input types are valid, namely that they refer to well-typed compiled classes, and do not improperly refer to a private nested class.
+		\item It `prepares' the input mapping $R$: it updates it so that the target types are now relative to $p'$.
 		\item It computes a complete map, $R''$, which is the `best' map that extends  $R'$ to map the entire redirect set.
 		\item It applys the mapping to $LV$, with the classes we are redirecting away ($Csz$) removed.
 	\end{itemize}
@@ -352,8 +354,10 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 \IOComm{Is there a reason why we need to require that if a class is redirected, all its public nested class are also?}
 That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
 
+\subsection{Valid Type}
+A `valid' type is one that can be used as a target in a redirect map. It must be already fully compiled and typed \IOComm{Why do we need it to be typed? Wouldn't compiled (i.e. an $LV$) be sufficient for redirect to make sense?}, and cannot refer to a private class, unless it is ... .
 \subsection{Prepare Redirect Map}
-As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program. In addition, we want to check that the target of a redirect is already fully compiled and typed \IOComm{Why do we need it to be typed? Wouldn't compiled (i.e. an $LV$) be sufficient for redirect to make sense?}
+As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program. In addition, we want to check that the target of a redirect 
 
 \begin{defs}
 \defi{p\op{prepareRedirectMap}{\redm{Cs}{\This{n}{Cs'}}}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}}}{}
@@ -387,7 +391,30 @@ We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)
 %Rename must keep track of the explored $Cs$ in order to distinguish
 %internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
 
-\subsection{Best Redirect Map}
+\subsection{Valid Redirect Map}
+
+
+We will define $p\op{validRedirectMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to $p(\This{0})$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private-classes in $p(\This{0})$ in order to determine whether a given maping is valid, this allow such details of $p(\This{0})$ to change, without altering the behaviour of redirect.
+
+
+\begin{defs}
+\defip{R' \in p\op{validRedirectMaps}{R}}{}{...}
+\defic{R' \in p\op{PossibleRedirectMaps}{R}}{Check that the mapping might work}
+\defic{\forall Cs \in \dom(R') \ p \vdash R'(Cs) : p[R'(Cs)] \leq Cs : R'(p[Cs])}{}
+\defic{}{Check that the mapping preserves the structural interface}
+\defis
+\defip{R' \in p\op{possibleRedirectMaps}{R}}{}{...}
+\defic{R' \supseteq R}{It is an extension of $R$}
+\defic{\dom{R'} = p\op{redirectSet}{R}}{It completes the redirect map}
+\defic{}{check that the targets of $R'$ are reasonable}
+\end{defs}
+
+\IOComm{That last line makes no sense... (it was done just to make the proof easier and limit the number of definitions), but in reality all we need to check is that the $T$s in the range of $R'$ are well-typed (and not private?)}
+
+
+\begin{defs}
+	
+\end{defs}
 
 
 \clearpage
@@ -961,22 +988,6 @@ Rule \textsc{redirect} ensures
 \opName{possibleRedirectMaps} for the input mapping,
 here we check that is also verified for the complete mapping.
 
-\noindent$\begin{array}{l}
-\hline
-R' \in \fop{possibleRedirectMaps}{p, R} \text{ if }\\\quad
-R \subseteq R'\\\quad
-\dom{R'} = \fop{redirectSet}{p, R}\\\quad
-(p, R') \in \opName{validProblems}\\
-\hline
-(p, Cs_1\eq{T_1}\ldots Cs_n\eq{T_n}) \in \opName{validProblems} \text{ iff }
-\forall i \in 1..n:\\\quad
-    p\op{minimize}{T_i}=T_i\\\quad
-    T_i \text{not of form } \This0{\_}\\\quad
-    p \vdash p[T] : \textbf{OK}\\\quad % // Guaranteed by our reduction rules and type-system? // TODO is this the right from?
-    \fop{redirectable}{p, \fop{redirectSet}{p, R}}
-%  // All of these, save for the well-typedness, are guaranteed by Redirect
-\\\hline
-\end{array}$
 
 We now define $\opName{validRedirectMaps}$ as one of such functions.
 This is the most complete function achieving both validity and

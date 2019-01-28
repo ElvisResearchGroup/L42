@@ -32,7 +32,6 @@ R' in SatisfiedSolutions(CCz)(p; R) iff
 
 BestSatisfiedRedirectMap(p; R) = BestSatisfiedSolution(p; R; CollectConstraints(p; R))
 BestSatisfiedSolution(p; R; CCz) = StableMostSpecific(p; R; SatisfiedSolutions(CCz))
-// TODO: Rename StableMostSpecific to StableMostSpecific
 Define R in CollectMappings(p; CCz), iff:
   dom(R) = dom(CCz)
   forall Cs in dom(CCz): R(Cs) in CollectTargets(p; CCz; Cs)
