@@ -143,6 +143,7 @@ year = 1997,
  year = {2008},
  edition = {2},
  publisher = {Prentice Hall PTR},
+ isbn = {0321356683, 9780321356680}
 } 
 
 @article{Boyland01,
@@ -564,24 +565,18 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
   publisher={ACM}
 }
 
-@INPROCEEDINGS{bawden1999quasiquotation,
-    author = {Alan Bawden},
-    title = {Quasiquotation in Lisp},
-    booktitle = {O. Danvy, Ed., University of Aarhus, Dept. of Computer Science},
-    year = {1999},
-    pages = {88--99}
-}
+@inproceedings{bawden1999quasiquotation,
+  title={Quasiquotation in Lisp.},
+  author = {Alan Bawden},
+  booktitle={Proceedings of the 1999 {ACM} {SIGPLAN} Workshop on Partial Evaluation
+               and Semantics-Based Program Manipulation, San Antonio, Texas, USA,
+               January 22-23, 1999. Technical report {BRICS-NS-99-1}},
+  series={PEPM},
+  pages={4--12},
+  year={1999},
+  editor    = {Olivier Danvy}
+  }
 
-@article{ancona2002calculus,
-  title={A calculus of module systems},
-  author={Ancona, Davide and Zucca, Elena},
-  journal={Journal of functional programming},
-  volume={12},
-  number={02},
-  pages={91--132},
-  year={2002},
-  publisher={Cambridge Univ Press}
-}
 
 @inproceedings{wang2016classless,
   title={Classless Java},
@@ -677,13 +672,17 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
 
 
 @article{Bettini2015282,
-title = "Implementing type-safe software product lines using parametric traits ",
+title = "Implementing type-safe software product lines using parametric traits",
 journal = "Science of Computer Programming ",
 volume = "97, Part 3",
-number = "",
 pages = "282 - 308",
 year = "2015",
-author = "Lorenzo Bettini and Ferruccio Damiani and Ina Schaefer"}
+author    = {Lorenzo Bettini and
+               Ferruccio Damiani and
+               Ina Schaefer},
+  doi       = {10.1016/j.scico.2013.07.016},
+}
+
 
 
 @article{BETTINI2013521,
@@ -693,17 +692,21 @@ volume = "78",
 number = "5",
 pages = "521 - 541",
 year = "2013",
-author = "Lorenzo Bettini and Ferruccio Damiani and Ina Schaefer and Fabio Strocco"
+author = "Lorenzo Bettini and Ferruccio Damiani and Ina Schaefer and Fabio Strocco",
+doi       = {10.1016/j.scico.2011.06.007}
 }
+
 
 @inproceedings{Bettini:2010:ISP:1774088.1774530,
  author = {Bettini, Lorenzo and Damiani, Ferruccio and Schaefer, Ina},
  title = {Implementing Software Product Lines Using Traits},
- booktitle = {SAC '10},
- year = {2010}
-} 
-
-
+ booktitle = {Proceedings of the 2010 ACM Symposium on Applied Computing},
+ series = {SAC '10},
+ year = {2010},
+ isbn = {978-1-60558-639-7},
+ pages = {2096--2102},
+ doi = {10.1145/1774088.1774530},
+ } 
 %--------------
 
 
@@ -727,22 +730,38 @@ author = "Lorenzo Bettini and Ferruccio Damiani and Ina Schaefer and Fabio Stroc
                Stein Krogdahl and
                Birger M{\o}ller{-}Pedersen},
   title     = {Challenges in the Design of the Package Template Mechanism},
-  journal   = {Trans. Aspect-Oriented Software Development},
   volume    = {9},
   pages     = {268--305},
-  year      = {2012}
+  year      = {2012},
+  editor    = {Leavens, Gary T. and Chiba, Shigeru and Haupt, Michael and Ostermann, Klaus and Wohlstadter, Eric},
+  bookTitle = {Transactions on Aspect-Oriented Software Development IX},
+  year      = {2012},
+  publisher = {Springer Berlin Heidelberg},
+  pages={268--305},
+  isbn= {978-3-642-35551-6},
+  doi=  {10.1007/978-3-642-35551-6_7}
 }
 
 
 
+
+
 @inproceedings{DBLP:conf/gpce/AxelsenK12,
-  author    = {Eyvind W. Axelsen and
-               Stein Krogdahl},
-  title     = {Package templates: a definition by semantics-preserving source-to-source
-               transformations to efficient Java code},
-  booktitle = {GPCE'12},
-  year      = {2012}
-  }
+  author    = {Eyvind W. Axelsen and Stein Krogdahl},
+  title     = {Package templates: a definition by semantics-preserving source-to-source transformations to efficient Java code},
+  booktitle = {Proceedings of the 11th International Conference on Generative Programming and Component Engineering},
+  series = {GPCE '12},
+  year      = {2012},
+  issue_date = {March 2013},
+  volume = {48},
+  number = {3},
+  month = sep,
+  doi = {10.1145/2480361.2371409},
+  issn = {0362-1340},
+  isbn = {978-1-4503-1129-8},
+  pages = {50--59},
+  publisher = {ACM},
+} 
 
   
   @Inbook{Bergel2007,
@@ -752,10 +771,9 @@ and Nierstrasz, Oscar
 and Wuyts, Roel",
 editor="De Meuter, Wolfgang",
 title="Stateful Traits",
-bookTitle="Advances in Smalltalk: 14th International Smalltalk Conference, ISC 2006, Prague, Czech Republic, September 4-8, 2006, Revised Selected Papers",
-year="2007",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
+bookTitle="Advances in Smalltalk: 14th International Smalltalk Conference",
+series={ISC},
+year={2007},
 pages="66--90",
 isbn="978-3-540-71836-9",
 doi="10.1007/978-3-540-71836-9_4"
@@ -906,7 +924,7 @@ doi="10.1007/978-3-540-71836-9_4"
   number={2},
   journal={Journal of Functional Programming},
   publisher={Cambridge University Press},
-  author={ANCONA, DAVIDE and ZUCCA, ELENA},
+  author={Ancona, Davide and Zucca, Elena},
   year={2002},
   pages={91–132}
 }
@@ -915,5 +933,6 @@ doi="10.1007/978-3-540-71836-9_4"
   title={The programming language jigsaw: mixins, modularity and multiple inheritance},
   author={Bracha, Gilad},
   year={1992},
-  school={Dept. of Computer Science, University of Utah}
+  school={Dept. of Computer Science, University of Utah},
+  doi={10.1.1.51.662}
 }
