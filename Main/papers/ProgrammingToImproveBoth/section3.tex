@@ -19,7 +19,6 @@ LaLonde~\cite{LaLonde:1991:SSS:110673.110679}.  A reasonable
 implementation for a \Q@Set@ is easy to extend into a \Q@Bag@ by
 keeping track of how many times an element occurs.  We just add some state and override a few methods.
 For example in Java one could have:
-
 \begin{lstlisting}
 class Set {..//usual hashmap implementation
   private Elem[] hashMap;
@@ -30,16 +29,13 @@ class Bag extends Set{ ..//for each element in the hash map,
   @Override void put(Elem e){..}
   int howManyTimes(Elem e){..}}
 \end{lstlisting}
-
-\noindent Coding \Q@Bag@ in this way avoids a lot of code
+Coding \Q@Bag@ in this way avoids a lot of code
 duplication, but we induced unintended subtyping! 
 Since subclassing implies subtyping, our code breaks the Liskov substitution principle (LSP)~\cite{martin2000design}: not all bags are sets!\footnote{The LSP is often broken in real programs because of the need of inheritance: the LSP allows only refinement not extension. Traits provide extension without breaking the LSP.}
 Indeed, the following is allowed{:}%
-
 \begin{lstlisting}
 Set mySet=new Bag(); //OK for the type system but not for LSP
 \end{lstlisting}
-
 This encumbers the programmer:
 to avoid conceptual errors that are not captured by the type system, 
 they have to \emph{use} \Q@Bag@ very carefully.
@@ -48,7 +44,6 @@ they have to \emph{use} \Q@Bag@ very carefully.
 \paragraph{A (broken) attempt to fix the Problem in Java:}
 One could \emph{retroactively} fix this problem by introducing \Q@AbstractSetOrBag@
 and making both \Q@Bag@ and \Q@Set@ inherit from it:
-
 \begin{lstlisting}
 abstract class AbstractSetOrBag {/*old set code goes here*/}
 class Set extends AbstractSetOrBag {} //empty body
@@ -57,7 +52,6 @@ class Bag extends AbstractSetOrBag {/*old bag code goes here*/}
 //AbstractSetOrBag type not designed to be used.
 AbstractSetOrBag unexpected=new Bag(); 
 \end{lstlisting}
-
 This looks unnatural, since \Q@Set@ would extend \Q@AbstractSetOrBag@ without adding anything,
 and we would be surprised to find a use of the type \Q@AbstractSetOrBag@.
 Worst, if we are to constantly apply this mentally, we would introduce a very high number
@@ -100,15 +94,13 @@ Set=Use set
 \end{lstlisting}
 Since \Q@set@ can never be used as a type, there is no reason to give it a fancy-future-aware name like
 \Q@AbstractSetOrBag@.
-When bag is added, the code will look like%
+There are two different ways to add the concept of bags:
 \begin{lstlisting}
-set={/*set implementation*/} 
+set={/*set implementation*/} //version 1
 Set=Use set
 Bag= Use set, {/*bag implementation*/}
-\end{lstlisting}
-or %
-\begin{lstlisting}
-set={/*set implementation*/} 
+
+set={/*set implementation*/} //version 2
 Set=Use set
 bag=Use set, {/*bag implementation*/}
 Bag=Use bag

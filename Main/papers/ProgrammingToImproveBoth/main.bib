@@ -1,9 +1,11 @@
 %conferences
-@string{ecoop97="ECOOP'97 - Object-Oriented Programming"}
-@string{ecoop98="ECOOP'98 - Object-Oriented Programming"}
-@string{ecoop03="ECOOP'03 - Object-Oriented Programming"}
-@string{ecoop07="ECOOP'07 - Object-Oriented Programming"}
-@string{ecoop13="ECOOP'13 - Object-Oriented Programming"}
+@string{ecoop97="ECOOP'97 - European conference on Object-Oriented Programming"}
+@string{ecoop98="ECOOP'98 - European conference on Object-Oriented Programming"}
+@string{ecoop99="ECOOP'99 - European conference on Object-Oriented Programming"}
+@string{ecoop98="ECOOP'98 - European conference on Object-Oriented Programming"}
+@string{ecoop03="ECOOP'03 - European conference on Object-Oriented Programming"}
+@string{ecoop07="ECOOP'07 - European conference on Object-Oriented Programming"}
+@string{ecoop13="ECOOP'13 - European conference on Object-Oriented Programming"}
 @string{esop01="ESOP'01 - European Symposium on Programming"}
 @string{esop05="ESOP'05 - European Symposium on Programming"}
 @string{ftfjp05="FTfJP'05 - Formal Techniques for Java-like Programs"}
@@ -12,8 +14,7 @@
 @string{ictcs16="ICTCS'16 - Italian Conf. on Theoretical Computer Science"}
 @string{icfp14="Intl. Conf. on Functional Programming 2014"}
 @string{lics02="Proc. IEEE Symp. on Logic in Computer Science 2002"}
-@string{oops17="OOPS'17 - Object-Oriented Programming Languages and Systems,
-                Track at SAC'17 - ACM Symp. on Applied Computing"}
+@string{oops17="OOPS'17 - Object-Oriented Programming Languages and Systems, Track at SAC'17 - ACM Symp. on Applied Computing"}
 @string{oopsla91="ACM Symp. on Object-Oriented Programming: Systems, Languages and Applications 1991"}
 @string{oopsla98="ACM Symp. on Object-Oriented Programming: Systems, Languages and Applications 1998"}
 @string{oopsla04="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2004)"}
@@ -23,6 +24,7 @@
 @string{oopsla12="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2012)"}
 @string{pepm13 = "PEPM'13 - Partial Evaluation and Program Manipulation"}
 @string{popl12="ACM Symp. on Principles of Programming Languages 2012"}
+@string{popl90="ACM Symp. on Principles of Programming Languages 1990"}
 
 %journals
 @string{entcs="Electronic Notes in Theoretical Computer Science"}
@@ -55,7 +57,8 @@
 @inproceedings{cook,
  author = {Cook, William R. and Hill, Walter and Canning, Peter S.},
  title = {Inheritance is Not Subtyping},
- booktitle = {POPL '90},
+ booktitle =popl90,
+ series={POPL},
  year = {1990},
  isbn = {0-89791-343-4},
  pages = {125--135},
@@ -159,7 +162,7 @@ year = 1997,
  year = {2008},
  edition = {2},
  publisher = {Prentice Hall PTR},
- isbn = {0321356683, 9780321356680}
+ isbn = {9780321356680}
 } 
 
 @article{Boyland01,
@@ -486,20 +489,22 @@ booktitle = ecoop13,
 @InProceedings{Zenger-Odersky2005,
   author = 	 {Zenger, Mathhias and Odersky, Martin},
   title =        {Independently Extensible Solutions to the Expression Problem},
-  booktitle =    {Foundations of Object-Oriented Languages (FOOL)},
+  booktitle =   {Foundations of Object-Oriented Languages},
+  series    = {FOOL},
   year =         2005,
   month =        jan,
+  doi={10.1.1.107.4449}
 }
 
-
-@Unpublished{EP,
+@online{wadler1998expression,
   author = 	 {Philip Wadler},
   title = 	 {The Expression Problem},
   note = 	 {Note to {J}ava Genericity mailing list},
-  OPTkey = 	 {},
-  month = 	 {Nov.},
+  month = 	 nov,
   year = 	 {1998},
-  OPTannote = 	 {}
+  url="https://homepages.inf.ed.ac.uk/wadler/papers/expression/expression.txt",
+  lastaccess =   {2019-11-12},
+  urldate    =   {2019-11-12}
 }
 
 @inproceedings{ServettoEtAl13a,
@@ -544,13 +549,13 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
  address = {Denville, NJ, USA},
 } 
 
-@article{martin2000design,
+@online{martin2000design,
   title={Design principles and design patterns},
   author={Martin, Robert C.},
-  journal={Object Mentor},
-  volume={1},
-  number={34},
-  year={2000}
+  year={2000},
+  url="http://staff.cs.utu.fi/staff/jouni.smed/doos_06/material/DesignPrinciplesAndPatterns.pdf",
+  lastaccess =   {2019-11-12},
+  urldate    =   {2019-11-12}
 }
 
 @article{ducasse2006traits,
@@ -575,46 +580,47 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
   volume={23},
   number={3},
   pages={396--450},
+  issn = {0164-0925},
   year={2001},
-  publisher={ACM}
+  publisher={ACM},
+  doi={10.1145/503502.503505}
 }
 
 @inproceedings{bawden1999quasiquotation,
   title={Quasiquotation in Lisp.},
   author = {Alan Bawden},
   booktitle={Proceedings of the 1999 {ACM} {SIGPLAN} Workshop on Partial Evaluation
-               and Semantics-Based Program Manipulation, San Antonio, Texas, USA,
-               January 22-23, 1999. Technical report {BRICS-NS-99-1}},
+               and Semantics-Based Program Manipulation},
   series={PEPM},
   pages={4--12},
   year={1999},
-  editor    = {Olivier Danvy}
+  editor    = {Olivier Danvy},
+  doi={10.1.1.309.227}
   }
 
 
 @inproceedings{wang2016classless,
   title={Classless Java},
   author={Wang, Yanlin and Zhang, Haoyuan and Oliveira, Bruno C. d. S. and Servetto, Marco},
-  booktitle={GPCE'16},
-  year={2016}
+  booktitle = {International Conference on Generative Programming: Concepts and Experiences},
+  series={GPCE},
+  year={2016},
+  ISBN={978-1-4503-4446-3},
+  doi= {10.1145/2993236.2993238}
 }
 
-@article{wadler1998expression,
-  title={The expression problem},
-  author={Wadler, Philip},
-  journal={Java-genericity mailing list},
-  year={1998}
-}
-
-
-
-@article{ernst2004expression,
+@inproceedings{ernst2004expression,
   title={The expression problem, Scandinavian style},
   author={Ernst, Erik},
-  journal={ON MECHANISMS FOR SPECIALIZATION},
   pages={27},
-  year={2004}
+  year={2004},
+  booktitle = {MechAnisms for SPEcialization, Generalization and inHerItance},
+  series = {MASPEGHI},
+  edition = "ISRN I3S/RR-2004-15-FR",
+  doi ={10.1007/978-3-540-30554-5_11}
 }
+
+
 
 
 @book{odersky2008programming,
@@ -626,18 +632,19 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
 
 
 @inproceedings{igarashi2005lightweight,
-  title={Lightweight family polymorphism},
-  author={Igarashi, Atsushi and Saito, Chieri and Viroli, Mirko},
-  booktitle={Asian Symposium on Programming Languages and Systems},
-  pages={161--177},
-  issn = {0956-7968},
- pages = {285--331},
- numpages = {47},
- url = {http://dx.doi.org/10.1017/S0956796807006405},
- doi = {10.1017/S0956796807006405},
-  year={2005},
-  organization={Springer}
-}
+  author="Igarashi, Atsushi and Saito, Chieri and Viroli, Mirko",
+  editor="Yi, Kwangkeun",
+  title="Lightweight Family Polymorphism",
+  booktitle="Programming Languages and Systems",
+  year="2005",
+  pages="161--177",
+  isbn="978-3-540-32247-4",
+  doi="10.1007/11575467_12"
+  }
+
+
+
+
 @article{IgarashiEtAl08,
   title={Lightweight family polymorphism},
   author={Saito, Chieri and Igarashi, Atsushi and Viroli, Mirko},
@@ -646,9 +653,12 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
   number={3},
   pages={285--331},
   year={2008},
-  publisher={Cambridge University Press}
-}
-
+  issn = {0956-7968},
+  numpages = {47},
+  doi = {10.1017/S0956796807006405},
+  year={2005},
+  organization={Springer}
+  }
 
 @article{servetto2014meta,
   title={A meta-circular language for active libraries},
@@ -657,9 +667,12 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
   volume={95},
   pages={219--253},
   year={2014},
-  publisher={Elsevier}
-}
-
+  publisher={Elsevier},
+  number = {P2},
+  month = dec,
+  issn = {0167-6423},
+  doi = {10.1016/j.scico.2014.05.003}
+  } 
 
 @article{deep,
   author    = {Andrea Corradi and
@@ -679,7 +692,7 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
                Elena Zucca},
   title     = {Featherweight Jigsaw - Replacing inheritance by composition in Java-like
                languages},
-  journal   = {Inf. Comput.},
+  journal   = {Information and Computation},
   volume    = {214},
   pages     = {86--111},
   year      = {2012},
@@ -744,22 +757,22 @@ doi       = {10.1016/j.scico.2011.06.007}
 }
 
 
-@article{DBLP:journals/taosd/AxelsenSKM12,
-  author    = {Eyvind W. Axelsen and
-               Fredrik S{\o}rensen and
-               Stein Krogdahl and
-               Birger M{\o}ller{-}Pedersen},
-  title     = {Challenges in the Design of the Package Template Mechanism},
-  volume    = {9},
-  pages     = {268--305},
-  year      = {2012},
-  editor    = {Leavens, Gary T. and Chiba, Shigeru and Haupt, Michael and Ostermann, Klaus and Wohlstadter, Eric},
-  bookTitle = {Transactions on Aspect-Oriented Software Development IX},
-  year      = {2012},
-  publisher = {Springer Berlin Heidelberg},
-  pages={268--305},
-  isbn= {978-3-642-35551-6},
-  doi=  {10.1007/978-3-642-35551-6_7}
+@Inbook{DBLP:journals/taosd/AxelsenSKM12,
+author="Axelsen, Eyvind W.
+and S{\o}rensen, Fredrik
+and Krogdahl, Stein
+and M{\o}ller-Pedersen, Birger",
+editor="Leavens, Gary T.
+and Chiba, Shigeru
+and Haupt, Michael
+and Ostermann, Klaus
+and Wohlstadter, Eric",
+title="Challenges in the Design of the Package Template Mechanism",
+bookTitle="Transactions on Aspect-Oriented Software Development IX",
+year="2012",
+pages="268--305",
+isbn="978-3-642-35551-6",
+doi="10.1007/978-3-642-35551-6_7"
 }
 
 
@@ -803,10 +816,15 @@ doi="10.1007/978-3-540-71836-9_4"
 @inproceedings{zhang2017evf,
   title={EVF: An Extensible and Expressive Visitor Framework for Programming Language Reuse},
   author={Zhang, Weixin and Oliveira, Bruno C. d. S.},
-  booktitle={LIPIcs-Leibniz International Proceedings in Informatics},
-  volume={74},
-  year={2017},
-  organization={Schloss Dagstuhl-Leibniz-Zentrum fuer Informatik}
+  booktitle =	{31st European Conference on Object-Oriented Programming (ECOOP 2017)},
+  pages =	{29:1--29:32},
+  series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+  ISBN =	{978-3-95977-035-4},
+  ISSN =	{1868-8969},
+  year =	{2017},
+  volume =	{74},
+  editor =	{Peter M{\"u}ller},
+  doi =		{10.4230/LIPIcs.ECOOP.2017.29}
 }
 
 @inproceedings{damiani2017unified,
@@ -825,11 +843,12 @@ doi="10.1007/978-3-540-71836-9_4"
 @inproceedings{ernst99a,
   title={Propagating class and method combination},
   author={Ernst, Erik},
-  booktitle={ECOOP},
+  booktitle=ecoop99,
+  series=lncs,
   volume={99},
   number={6},
   pages={67--91},
- isbn = {3-540-66156-5},
+  isbn = {3-540-66156-5},
  numpages = {25},
   year={1999},
   organization={Springer}
@@ -847,20 +866,20 @@ doi="10.1007/978-3-540-71836-9_4"
  doi = {10.1145/1167473.1167475}
 }
 
-@book{Ernst06,
+@inproceedings{Ernst06,
   title={A virtual class calculus},
   author={Ernst, Erik and Ostermann, Klaus and Cook, William R.},
   booktitle = {Conference Record of the 33rd ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
- series = {POPL '06},
+  series = {POPL '06},
   year={2006},
   isbn = {1-59593-027-2},
- pages = {270--282},
- numpages = {13},
- doi = {10.1145/1111037.1111062},
+  pages = {270--282},
+  numpages = {13},
+  doi = {10.1145/1111037.1111062},
   publisher={ACM}
 }
 
-@article{IgarashiViroli07,
+@inproceedings{IgarashiViroli07,
   author = {Igarashi, Atsushi and Viroli, Mirko},
  title = {Variant Path Types for Scalable Extensibility},
  booktitle = {Proceedings of the 22Nd Annual ACM SIGPLAN Conference on Object-oriented Programming Systems and Applications},
@@ -886,7 +905,7 @@ doi="10.1007/978-3-540-71836-9_4"
 
 @inproceedings{nystrom2006j,
   author = {Nystrom, Nathaniel and Qi, Xin and Myers, Andrew C.},
- title = {J\&Amp;: Nested Intersection for Scalable Software Composition},
+ title = {J\&: Nested Intersection for Scalable Software Composition},
  booktitle = {Proceedings of the 21st Annual ACM SIGPLAN Conference on Object-oriented Programming Systems, Languages, and Applications},
  series = {OOPSLA '06},
  year = {2006},
@@ -911,8 +930,8 @@ doi="10.1007/978-3-540-71836-9_4"
 @inproceedings{lagorio2009featherweight,
  author = {Lagorio, Giovanni and Servetto, Marco and Zucca, Elena},
  title = {Featherweight Jigsaw: A Minimal Core Calculus for Modular Composition of Classes},
- booktitle = {Proceedings of the 23rd European Conference on ECOOP 2009 --- Object-Oriented Programming},
- series = {Genoa},
+ booktitle = {European Conference on Object-Oriented Programming},
+ series = {ECOOP},
  year = {2009},
  isbn = {978-3-642-03012-3},
  pages = {244--268},
@@ -937,7 +956,9 @@ doi="10.1007/978-3-540-71836-9_4"
   booktitle={European Conference on Object-Oriented Programming},
   pages={123--146},
   year={2004},
-  organization={Springer}
+  organization={Springer},
+  doi={10.1007/978-3-540-24851-4_6},
+  isbn={978-3-540-22159-3}
 }
 @article{chambers1995typechecking,
   title={Typechecking and modules for multimethods},
@@ -978,7 +999,7 @@ doi="10.1007/978-3-540-71836-9_4"
 }
 
 @phdthesis{bracha1992programming,
-  title={The programming language jigsaw: mixins, modularity and multiple inheritance},
+  title={The programming language Jigsaw: mixins, modularity and multiple inheritance},
   author={Bracha, Gilad},
   year={1992},
   school={Dept. of Computer Science, University of Utah},

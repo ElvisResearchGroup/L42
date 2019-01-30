@@ -419,13 +419,10 @@ abstract method \Q@a()@;  we choose to instead give an error since in the full 4
 such patch would 
 be able to turn coherent private nested classes
 into abstract (private) ones.}
-
-
 \begin{lstlisting}
 t1={  A= {interface method Void a()}  }
 t2={  A= {interface}     B= {implements A}  }
 \end{lstlisting}
-
 Implements-clash can happen only when composing nested interfaces. Note that while the first two kind of errors are obtained directly by the definition of 
 $\mL_1+\mL_2$, Implements-clash is obtained from well-formedness, since injecting the resulting 
 $\mL$ in to the program would make it ill-formed by 
@@ -595,14 +592,11 @@ It is built on two core ideas:
 
 \paragraph{1: Traits are \emph{well-typed} before being reused.}
  For example:
-
 \begin{lstlisting}
 t={method int m(){return 2;} 
    method int n(){return this.m()+1;}}
 \end{lstlisting}
-
-\noindent \Q@t@ is well typed since \Q@m()@ is declared inside of \Q@t@, while the following would be illtyped:
-
+\Q@t@ is well typed since \Q@m()@ is declared inside of \Q@t@, while the following would be illtyped:
 \begin{lstlisting}
 t1={method int n(){return this.m()+1;}} //illtyped
 \end{lstlisting}
@@ -616,12 +610,10 @@ it is not type-checked until flattening is complete:
 only the result is required to be well-typed.
 For example the following is correct since
 the result of the flattening is well-typed:
-
 \begin{lstlisting}
 C= Use t, {method int k(){return this.n()+this.m();}}//correct code
 \end{lstlisting}
-
-\noindent The code literal
+The code literal
 \Q@{method int k(){ return this.n()+this.m();}}@
 is not well typed: \Q@n@, \Q@m@ are not locally defined.
 This code would fail in many similar works in literature~\cite{deep,Bettini2015282,Bergel2007} where the
@@ -744,8 +736,7 @@ Finally, with the information of the dependent groups and the current group, it 
 %
 
 
-
-\noindent 
+ 
 In the world of strongly typed languages we are tempted to
 first check that all will go well, and then perform the flattening. 
 Such methodology would be redundant in our setting: we can only reuse code through trait names; but our point of relaxation is only the code literal: in no way can an error ``move around'' and be duplicated during the compilation process.

@@ -48,7 +48,7 @@ have (sound) subtyping.
 
 \end{description}
 
-\noindent Structural typing~\cite{cook} may deal with the first
+Structural typing~\cite{cook} may deal with the first
 situation, but not the second. Since structural subtyping
 accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
@@ -65,17 +65,11 @@ This code is correct, and there is no subtyping/subclassing{.}
   class A{ int ma(){ return Utils.m(this); } }
   class Utils{ static int m(A a){..} }
 \end{lstlisting}
-
-  Now, lets add a class \Q@B@
-
+Now, lets add a class \Q@B@:
 \begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
-
-%%Class \lstinline{B} does two things at the same time: 
-%%1) it \textbf{inherits} the method \lstinline{ma} from
-%%\lstinline{A}; and 2) it creates a \textbf{subtype} of \lstinline{A}.
-\noindent We can see an invocation of \lstinline{A.ma} inside
+We can see an invocation of \lstinline{A.ma} inside
 \lstinline{B.mb}, where the self-reference \lstinline{this} is of type \lstinline{B}. 
 The execution will eventually call \lstinline{Utils.m} with an
 instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline{B} is a subtype of
@@ -197,7 +191,7 @@ on the JVM, and the standard library consists of over $10000$ lines of
 42 code. 
 %more then a thousand GIT commits and about a thousand tests.
 
-\noindent In summary, our contributions are:
+In summary, our contributions are:
 
 %\marco{We need to talk of unanticipated extensions?}
 %\bruno{Talk more about typing aspects here. Summarise the important 

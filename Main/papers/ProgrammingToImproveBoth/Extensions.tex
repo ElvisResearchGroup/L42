@@ -13,7 +13,6 @@ abstract class A{static class B{..}   abstract B m();}
 class AA extends A{static class B{..}   B m(){..}}//Error: Invalid overriding
 //method AA.m() return type is AA.B, that is unrelated to A.B
 \end{lstlisting}
-
 In the FP approach, class \Q@AA.B@ would further extend \Q@A.B@, thus the overriding of method
 \Q@A.m@ would be accepted.
 We extend \name with nested classes, so that 
@@ -25,7 +24,6 @@ extension in FP.
 a={B={..}   method B m()}
 AA= Use a, {B={..}   method B m(){..}}
 \end{lstlisting}
-
 For simplicity, we discuss nested classes but not nested traits:
 and all traits and code composition expressions are still at top level.
 In this way all dependencies are about top level names, allowing the type system 
@@ -70,15 +68,11 @@ literature~\cite{deep,ancona_zucca_2002,bracha1992programming}.
 Here we introduce a simple variant to rename nested types to other nested types.
 For example:
 \begin{lstlisting}
-t={ method B m() B={ method B mb()} }
+t={ method B m() $\ \ $  B={ method B mb()} }
 D= t[rename B into C]
-\end{lstlisting}
-
-would flatten to:
-
-\begin{lstlisting}
-t={ method B m() B={ method B mb()} }
-D={ method C m() C={ method C mb()} }
+//the code above flattens to the following:
+t={ method B m() $\ \ $  B={ method B mb()} }
+D={ method C m() $\ \ $  C={ method C mb()} }
 \end{lstlisting}
 The rename only influences its argument.
 Since traits do not induce nominal types, we can
@@ -163,8 +157,7 @@ evalPlus= Use plus, {//eval operation for Plus data-variant
   Exp= {interface
     method int eval()}
   Plus= {implements Exp
-    method int eval(){
-      return this.left().eval()+this.right().eval();}}}
+    method int eval(){return this.left().eval()+this.right().eval();}}}
 \end{lstlisting}
 \Q@evalPlus@ uses the trait \Q@plus@ to import the state (the \Q@left()@ and \Q@right()@ methods)
 and defines the \Q@eval()@ method from interface \Q@Exp@.
@@ -178,7 +171,6 @@ into the corresponding data-variant.
 Thus, our source code is as follows;
 First we declare the $4$ traits to represent the state:
 \newcommand\multiCode{\vspace{-5pt}}
-
 \begin{lstlisting}
 exp= { $\ \ \ \ $Exp= {interface} $\ \ \ \ $T= {implements Exp}}
 \end{lstlisting}
@@ -205,7 +197,6 @@ Next, we define the operation \Q@eval@ for all the data-variants.
 The former solutions in~\cite{deep}
 required repeating the state declaration of the 
 data-variant in each operation, while we can just import it.
-
 \begin{lstlisting}
 eval= {Exp= {interface $\ \ \ \ $         method int eval()} $\ \ \ \ $     T= {implements Exp}}
 \end{lstlisting}
@@ -223,7 +214,6 @@ evalPlus= Use plus, eval[rename T into Plus], {
 \begin{lstlisting}
 evalNeg= Use neg, eval[rename T into Neg], {Neg={ method int eval(){..}}}
 \end{lstlisting}
-
 The \Q@show@ operation can be trivially defined
 following exactly the same pattern (omitted here for space reasons).
 The operation \Q@double@ is a challenge for some proposed solutions
@@ -269,7 +259,7 @@ so in order to make a more close comparison, we provide an alternative
 version where we isolate all the units of behaviour as is done in \name.
 
 \begin{wraptable}{l}{0.52\textwidth}
-%\noindent\begin{minipage}{0.53\textwidth}
+%\begin{minipage}{0.53\textwidth}
 \begin{tabular}{@{}l l l @{}}
 \toprule
 &                              lines  &   methods\\
@@ -329,7 +319,6 @@ The idea is that since every data-variant contains
  we can modularize it into an \Q@equals@ trait;
 \Q@equals@ in~\cite{Zenger-Odersky2005} is complex and
  and requires glue code.
-
 \begin{lstlisting}
 equals= {
   Exp= {interface $\ \ \ \ $ method Bool equals(Exp that)}
@@ -358,8 +347,6 @@ equalsNeg= Use neg, equals[rename T into Neg],{
     return this.term().equals(that.term());}  }}
 \end{lstlisting}
 
-
-%\noindent
 %\begin{minipage}{0.46\textwidth}
 \begin{wraptable}{l}{0.46\textwidth}
 \begin{tabular}{@{} l l l @{}}

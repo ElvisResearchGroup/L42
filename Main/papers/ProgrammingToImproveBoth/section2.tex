@@ -15,13 +15,11 @@ Consider the example of%
 %~\hyperref[sec:intro]{Section~\ref*{sec:intro}}
 ~\autoref{sec:intro}
 rewritten in \name, introducing classes \Q@Utils@ and \Q@A@:
-
 \begin{lstlisting}
  A={ method int ma(){ return Utils.m(this); } }
  Utils={ static method int m(A a){ return ..; } }
 \end{lstlisting} 
-
-\noindent Classes in \name use a different declaration style compared
+Classes in \name use a different declaration style compared
 to Java: there is no \lstinline{class} keyword, and an equals sign separates the class name (which must always start with
 an uppercase letter) and the class implementation, which is used to specify the
 definitions of the class. In our example, in the class declaration
@@ -51,14 +49,12 @@ types. However they provide code reuse.
 Trait declarations 
 look very much like class declarations, but trait names 
 start with a lowercase letter (even syntactically they can not be used as types).
-
 \begin{lstlisting}
  Utils={ static method int m(A a){return ...} }
  ta={ method int ma(){return Utils.m(this);}} //type error
  A=Use ta
 \end{lstlisting}
-
-\noindent Here \lstinline{ta} is a trait intended to replace the
+Here \lstinline{ta} is a trait intended to replace the
 original class \lstinline{A} so that the code of the method
 \lstinline{ma} can be reused. Then the class \lstinline{A} 
 is created by reusing the code from the trait \Q@ta@, introduced by the keyword 
@@ -74,13 +70,11 @@ the type of \lstinline{this} in
 thus the code \Q@Utils.m(this)@ is illtyped.
 
 The following second attempt would not work either:
-
 \begin{lstlisting}
  Utils={ static method int m(ta a){return ...}} //syntax error
  ta={ method int ma(){return Utils.m(this);}}
  A=Use ta
 \end{lstlisting}
-
 \Q@ta@ is not a type in the first place, since it is a (lowercase) trait name.
 Indeed, trait names can only be used in \use\ expressions, and thus they can not appear in method bodies or type annotations.
 In this way, the code of a trait can stay agnostic of its name. This is one of the key design decisions in \name:
@@ -90,7 +84,6 @@ In \name, \emph{interfaces are the only way to obtain subtyping}. As shown in th
 %subtyping is the way to reason about commonalities between different types.
 Thus, to model the original Java example, we need an interface
 capturing the commonalities between \Q@A@ and \Q@B@:
-
 \begin{lstlisting}
  IA={interface method int ma()} //interface with abstract method
  Utils={static method int m(IA a){return ...} }
@@ -98,7 +91,6 @@ capturing the commonalities between \Q@A@ and \Q@B@:
      method int ma(){return Utils.m(this);}}
  A=Use ta
 \end{lstlisting}
-
 This code works: \Q@Utils@ relies on interface \Q@IA@ and the trait \Q@ta@
 implements \Q@IA@.
 %\Q@ta@ is well typed:
@@ -107,11 +99,9 @@ including the \Q@implements IA@ subtyping declaration; thus any class reusing \Q
 Therefore, while typechecking \Q@Utils.m(this)@ we can assume
 \Q@this<:IA@.
  It is also possible to add a class \Q@B@ as follows:
-
 \begin{lstlisting}
   B=Use ta, { method int mb(){return this.ma();} }
 \end{lstlisting}
-
 This also works.  \Q@B@ reuses the code of \Q@ta@, but has no knowledge of \Q@A@.
 Since \Q@B@ reuses \Q@ta@, and \Q@ta@ implements \Q@IA@, \Q@B@ also implements \Q@IA@. 
 
@@ -120,18 +110,14 @@ system.
 Here notice that the former declaration of \Q@B@ is correct even if
 no method called \Q@ma@ is explicitly declared.
 DJ and TR would instead require explicitly declaring an abstract \Q@ma@ method:
-
 \begin{lstlisting}
   B=Use ta, { method int ma() //not required by us
       method int mb(){return this.ma();} }
 \end{lstlisting}
-
-\noindent
 In \name, methods are directly accessible from \Q@ta@, exactly as in the Java equivalent
 \begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
-
 where method \Q@ma@ is imported from \Q@A@.
 This concept is natural for a Java programmer, but was not supported
 in previous work \cite{BETTINI2013521,deep}. Those works require all
@@ -165,7 +151,6 @@ B={implements IA
   method int ma(){return Utils.m(this);}
   method int mb(){return this.ma();} } 
  \end{lstlisting}
-
 \emph{In the resulting code, there is no mention of the trait
  \Q@ta@}. Information about code-reuse/inheritance
   is a private implementation detail of \Q@A@

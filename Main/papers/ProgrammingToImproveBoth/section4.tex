@@ -57,11 +57,9 @@ classes to finally define the fields/constructors. That
 is, in this state of the art solution, classes have a richer syntax than traits, allowing
 declaration for fields and constructors. 
 
-
 \paragraph{Points:} Consider two 
 traits dealing with \emph{point} objects with coordinates \lstinline{x} and
 \lstinline{y}.
-
 \begin{lstlisting}
 //idealized state of the art trait language, not 42
 pointSum= { method int x()  method int y()//getters
@@ -72,14 +70,11 @@ pointSum= { method int x()  method int y()//getters
 pointMul= { method int x() method int y()//repeating getters
   static method This of(int x,int y)//repeating factory
   method This mul(This that){//multiplication code
-    return This.of(this.x()*that.x(),this.y()*that.y());
-  }}
+    return This.of(this.x()*that.x(),this.y()*that.y());  }}
 \end{lstlisting}
-
 The first trait provides a \emph{binary method} that 
 adds the point object to another point to return a new point. 
-The second trait provides multiplication.
-\noindent In this code all the operations dealing with state are represented as \emph{abstract methods}.
+The second trait provides multiplication. In this code all the operations dealing with state are represented as \emph{abstract methods}.
 Notice the abstract \Q@static method This of(..)@ which acts as a factory/constructor
 for points. 
 As for instance methods, static methods are late bound:  flattening can provide an implementation for them.
@@ -89,7 +84,6 @@ we can compose the two traits, by \emph{adding glue-code}
 to implement methods \Q@x@, \Q@y@ and \Q@of@.
 This approach is verbose but very
 powerful, as illustrated by ClassLess Java~\cite{wang2016classless}.
-
 \begin{lstlisting}
 //idealized state of the art trait language, not 42
 class PointAlgebra=Use pointSum,pointMul, {//not 42 code
@@ -97,16 +91,14 @@ class PointAlgebra=Use pointSum,pointMul, {//not 42 code
     constructor PointAlgebra(int x, int y){ this.x=x   this.y=y }
     method int x(){return x;}//repetitive code
     method int y(){return y;}// in traits terminology, this is all "glue code"
-    static method This of(int x, int y){return new PointAlgebra(x,y);}
-    }
+    static method This of(int x, int y){return new PointAlgebra(x,y);}  }
 \end{lstlisting}
-
 %\bruno{We talk about withers later on. So I think we should consider
  % having withers in this code, so that readers can understand what 
 %withers are!}
 %\marco{with withers it will look more complicated}
 
-\noindent 
+
 
 With a slightly different syntax, this approach is available in both Scala and Rust, and they both require glue code.
 It has some advantages, but also disadvantages: 
@@ -190,13 +182,11 @@ but we suspect there are more unexplored possible options that could be even mor
 In \name and with our approach to handle the state, 
 \lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed.
 This works because the resulting class is coherent.
-
 \begin{lstlisting}
 PointAlgebra= Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 %  Note: we declare the methods independently and compose the result
 %  as we wish. 
-
 
 \paragraph{Improved solution:} So far the current solution still
   repeats the abstract methods \Q@x@, \Q@y@ and \Q@of@.
@@ -204,7 +194,6 @@ PointAlgebra= Use pointSum,pointMul //no glue code needed
   operations over points. It is possible to improve reuse
   and not repeat such declaration by abstracting the common
   declaration into a trait \Q@p@: 
-
 \begin{lstlisting}
 p= { method int x() method int y()
   static method This of(int x,int y)
@@ -220,7 +209,6 @@ pointMul= Use p, {
 pointDiv= ...
 PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
-      
 Now the code is fully modularized, that is: each trait defines exactly one method and contains its abstract dependencies. In this way it can be modularly composed with any code requiring such a method.
 
 \paragraph{Case Study 1:}
@@ -257,7 +245,7 @@ Scala          &   $81=5+3*4+4*16$  &  $40$                 &    $21 = 16+4+1$\\
 \end{tabular}
 \end{center}
 
-\noindent We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } $28$ method bodies across the $16$ classes.
+We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } $28$ method bodies across the $16$ classes.
 Of these, $11$ method bodies were duplicated because Java does not support multiple inheritance
  and the remaining $17$ bodies had to be duplicated to ensure that the right type
  is returned by the method. Those could be avoided if Java supported
@@ -299,26 +287,19 @@ are formatted for compactness.
 Programmers may want to extend points with more state. For example 
 they may want to add colors to the points. A first attempt at doing
 this would be:
-
 \begin{lstlisting}
 colored= { method Color color() }
 CPoint= Use pointSum,colored //Fails: class not coherent
 \end{lstlisting}
- 
 This first attempt does not work: the abstract color method
 is not a getter for any of the parameters of 
 \Q@ static method This of(int x,int y)@. 
-
-\noindent
 A solution is to provide a richer factory:
- 
 \begin{lstlisting}
 CPoint= Use pointSum,colored,{
   static method This of(int x,int y){return This.of(x,y,Color.of(/*red*/));}
   static method This of(int x,int y,Color color) }
 \end{lstlisting}
- 
-\noindent 
 where we assume support for overloading based on different numbers of parameters.
 This is a reasonable solution, however the method \Q@CPoint.sum@ resets
 the color to red: we call the \Q@of(int, int)@ method, that now
@@ -334,7 +315,6 @@ by adding an abstract \Q@merge(This)@ method as an extensibility hook;
 \Q@colored@ can now define color merging.
 Using withers we can merge \Q@color@s, or any other kind of state 
 following this pattern.%\bruno{worried that withers are not explained enough.}
-
  \begin{lstlisting}
 p= { method int x() method int y() //getters
   method This withX(int that) method This withY(int that)//withers
@@ -362,7 +342,7 @@ CPoint= /*as before*/
  makes a method abstract and
 moves the implementation to another name. This is very useful to implement super calls
  and to compose conflicting implementations.
-\noindent Consider the simple \Q@flavored@ trait:
+Consider the simple \Q@flavored@ trait:
  \begin{lstlisting}
 flavored= {
   method Flavor flavor() //very similar to colored
@@ -370,10 +350,8 @@ flavored= {
   method This merge(This that){ //merging flavors handled here
     return this.withFlavor(that.flavor());}}//inherits "that" flavor
 \end{lstlisting}  
-
-\noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@$\_$1merge@ and \Q@$\_$2merge@
+To merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@$\_$1merge@ and \Q@$\_$2merge@
 to refer to the version of \Q@merge@ as defined in the first/second element of \use.
-
  \begin{lstlisting}
 FCPoint= Use
   colored[super merge as $\_$1merge], //this leaves merge as an abstract method, and
@@ -383,11 +361,9 @@ FCPoint= Use
       return This.of(x,y,Color.of(/*red*/),Flavor.none());}
     static method This of(int x, int y,Color color,Flavor flavor)
     method This merge(This that){//merge conflict is solved 
-      return this.$\_$1merge(that).$\_$2merge(that);}//by calling the two versions
-    }
+      return this.$\_$1merge(that).$\_$2merge(that);} }//by calling the two versions
 \end{lstlisting}  
-
-Note how we are relying on the fact that the code literal
+We are relying on the fact that the code literal
  does not need to be complete, 
 thus we can just call \Q@$\_$1merge@ and \Q@$\_$2merge@ without
  declaring their abstract signature explicitly.
@@ -397,7 +373,6 @@ This suggests that we had to
 anticipate the need for state extensibility
 in order to design our original code.
 As illustrated by the following example, we can instead rely on the \Q@super@ operator to inject the \Q@merge(This)@ method when needed.
-
  \begin{lstlisting}
 p=/*as originally designed: no merge*/
 pointSum=/*as originally designed: no merge*/
@@ -407,13 +382,6 @@ pointSumMerge=Use merge, pointSum[super sum as $\_$1sum], {
 colored=/*as before, with merge implementation*/
 CPoint= /*as before, but using pointSumMerge*/
 \end{lstlisting}  
-
-
-%, as in the following example:
-%\begin{lstlisting}
-%t:{method bool geq(This x) x.leq(this)   method bool leq(This x) x.qeq(this) }
-%C:Use t[restrict geq],{method bool geq(This x){return /*actual geq impl*/}}
-%\end{lstlisting}
 
 \paragraph{Case Study 2:}
 To understand how easy it is to extend the state in this
@@ -449,9 +417,7 @@ and the \Q@CPoint@ and \Q@CFPoint@ classes ($12+18$).
 The major benefit of \name is the reduction
 of the amount of glue-code needed to generate 
 \Q@CPoint@ and \Q@CFPoint@ ($4+9$).
-
-\noindent The results for the second experiment are presented below.
-
+The results for the second experiment are presented below.
 
 \begin{center}
 \begin{tabular}{@{} l l l l @{}}

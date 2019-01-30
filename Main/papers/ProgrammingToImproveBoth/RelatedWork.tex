@@ -119,7 +119,6 @@ make use of dependent types.
 As in \Q@.@FJ and \Q@^@FJ~\cite{igarashi2005lightweight,IgarashiEtAl08,IgarashiViroli07,saito2008essence},
  we do not need sophisticated types. 
 The work on DJ~\cite{deep} contains an in-depth comparison between various FP approaches, including an example written in \Q@.@FJ syntax synthesizing the difficulty of supporting FP while keeping Use and Reuse connected:
-
 \begin{lstlisting}
 class A{static class B{int f1;}    int k(.B x){ return x.f1;}}
 class AA extends A{static class B{int f2;}   int k(.B x){return x.f2+new .B().f2;}}
