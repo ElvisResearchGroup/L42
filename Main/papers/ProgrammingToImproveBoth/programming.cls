@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \def\P@banner{The Art, Science, and Engineering of Programming}
 \ProvidesClass{programming}%
-    [2017/01/11 v1.2 ^^J Articles for \P@banner^^J]
+    [2019/01/25 v1.3c ^^J Articles for \P@banner^^J]
 
 
 %%
@@ -20,7 +20,7 @@
 
 \GenerateLogMacros{class}[P]{programming}
 
-\RequirePackage{etoolbox}
+\RequirePackage{etoolbox,xstring}
 \RequirePackage{scrbase}[2014/10/28]
 \@ifpackagelater{scrbase}{2014/10/28}{}{%
   \P@error{KOMA-Script too old}{Please upgrade to at least TeXLive 2015 or similar, or upgrade your MiKTeX 2.9 packages.}}
@@ -118,11 +118,19 @@
 \newcommand*\P@set@license[1]{%
   \renewcommand*\P@license{#1}
   \if@atdocument
-    \setkeys{doclicense}{modifier=#1}
-  \else%
-    \PassOptionsToPackage{doclicense}{modifier=#1}%
+  \P@error{License set too late, move \string\paperdetails up in the document.}%
+  {The license cannot be set to ``#1'' at this point in the process. Please
+    move the \string\paperdetails command before the \string\begin\{document\}
+    command.}
+  \else
+  \@ifpackageloaded{doclicense}%
+    {\undef\doclicenseURL%
+      \setkeys{doclicense}{modifier=#1}%
+      % hack: propagate settings
+      \doclicense@set}
+    {\PassOptionsToPackage{modifier=#1}{doclicense}}
   \fi}
-
+ 
 \P@Key{license}{
   \P@setnum{license}{@tempa}{%
     {ccby}{0},{cc-by}{0},%
@@ -212,6 +220,9 @@
      \typeout{avoid fixltx2e if it does nothing in the first place}]%
    {fixltx2e}}
    {\RequirePackage{fixltx2e}}%
+
+% don't be too noisy.
+ \PassOptionsToPackage{log-declarations=false}{xparse}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -303,7 +314,11 @@
 \csundef{P@MDback@hrulefill}
 % }}}
 \ifthenelse{\boolean{xetex}\OR\boolean{luatex}}%
-  {\RequirePackage{fontspec}[2013/05/20]
+  {\@ifpackagelater{scrbase}{2015/11/22}%
+    {% >= TL 2016; not much is tuenc ready.
+      \PassOptionsToPackage{euenc}{fontspec}}
+    {}
+    \RequirePackage{fontspec}[2013/05/20]
     \ifthenelse{\boolean{xetex}}%
       {\setmainfont[Numbers=OldStyle,SmallCapsFeatures={Letters=SmallCaps,LetterSpace=5}]{XCharter}\relax}%
       {\setmainfont[Numbers=OldStyle]{XCharter}\relax}
@@ -318,13 +333,15 @@
    {}}
 \linespread{1.05}
 
-\defcaptionname{english}{\figureautorefname}{figure}
+\AtBeginDocument{
 \defcaptionname{english}{\figureautorefname}{figure}
 \defcaptionname{english}{\tableautorefname}{table}
 \defcaptionname{english}{\lstlistingautorefname}{listing}
 \defcaptionname{english}{\lstnumberautorefname}{line}
 \defcaptionname{english}{\subsectionautorefname}{\sectionautorefname}
 \defcaptionname{english}{\subsubsectionautorefname}{\sectionautorefname}
+\defcaptionname{english}{\appendixautorefname}{appendix}
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -338,17 +355,17 @@
   {}
 
 \ifthenelse{\boolean{xetex}}%
- {}% see above
- {\microtypesetup{tracking,letterspace=50}
-  \DisableLigatures{encoding = *, family = tt* }}
+  {}% see above
+  {\microtypesetup{letterspace=50}
+   \ifthenelse{\boolean{luatex}}{}{\microtypesetup{tracking}}
+   \DisableLigatures{encoding = *, family = tt* }}
 
 \newcommand*\P@CodeSetup{%
-  \ifthenelse{\boolean{xetex}\or\boolean{luatex}}%
-    {\addfontfeatures{Ligatures={NoCommon}}%
-      \ifthenelse{\boolean{luatex}}%
-        {\addfontfeatures{RawFeature={-tlig,-trep}}}%
-        {\addfontfeatures{Mapping=}}}%
-    {}}
+ \ifthenelse{\boolean{xetex}\or\boolean{luatex}}%
+   {\ifthenelse{\boolean{luatex}}%
+      {\addfontfeatures{RawFeature={-rlig,-tlig,-trep}}}%
+      {\addfontfeatures{Mapping=,Ligatures={NoCommon}}}}%
+    {}}%
 
 \AtBeginEnvironment{verbatim}{\microtypesetup{activate=false}\P@CodeSetup}
 
@@ -372,8 +389,8 @@
   bookmarksnumbered = true,
   pdfpagemode = UseOutlines,
 }{hyperref}
-\AtEndPreamble{%
-  \RequirePackage{hyperref}%
+\BeforeBeginEnvironment{document}{\RequirePackage{hyperref}}
+\AfterPackage{hyperref}{%
   \RequirePackage{hyperxmp}
   \RequirePackage{hypcap}
   \RequirePackage{accsupp}
@@ -412,13 +429,15 @@
 % prefer pdf over png
 \PrependGraphicsExtensions{.pdf,.PDF}
 % ai's are just pdfs.
-\ifthenelse{\boolean{xetex}}{
-  \DeclareGraphicsRule{.ai}{QTm}{*}{}
-}{
-  \DeclareGraphicsRule{.ai}{pdf}{*}{}
-  \pdfpagebox=5
-}
+\ifthenelse{\boolean{xetex}}%
+  {\DeclareGraphicsRule{.ai}{QTm}{*}{}}
+  {\DeclareGraphicsRule{.ai}{pdf}{*}{}}
 \AppendGraphicsExtensions{.ai,.AI}
+
+\ifthenelse{\boolean{xetex}}%
+  {% XeTeX can naturally process eps. This here avoids a warning
+    \PreventPackageFromLoading{epstopdf}}
+  {}
 
 \RequirePackage{multirow,tabularx,booktabs,threeparttable}
 \RequirePackage[figuresright]{rotating}
@@ -433,7 +452,7 @@
         UprightFont    = *-Book ,
         ItalicFont     = *-BookItalic ,
         BoldFont    = *-Bold ,
-        BoldItalicFont     = *-Bold Italic ,
+        BoldItalicFont     = *-BoldItalic ,
       ]
       {FiraSans}}{}
 
@@ -463,6 +482,13 @@
 \lst@AddToHook{FontAdjust}{\P@CodeSetup}
 \lst@AddToHook{DisplayStyle}{\def\baselinestretch{1}\@currsize}
 \lst@AddToHook{TextStyle}{\lstset{breaklines=false}}
+% work around listings being too smart
+% \lst@AddToHook{Init}{\let\ttdefault\f@family\edef\ttdefault{\ttdefault}}
+\patchcmd{\lst@ttfamily}%
+  {\ifx\f@family\ttdefault#1\relax\else#2\fi}%
+  {#1}%
+  {}{\P@warning@noline{Cannot patch listings internals. Ignoring.}}
+
 
 \AtEndPreamble{\RequirePackage{siunitx}}
 \AfterPackage{siunitx}{%
@@ -487,7 +513,9 @@
     abbreviate=false,%
     maxnames=20}
   \@ifpackagelater{biblatex}{2016/09/10}%
-    {\ExecuteBibliographyOptions{urldate=edtf,seconds=true}}%
+    {\@ifpackagelater{biblatex}{2017/12/19}%
+      {\ExecuteBibliographyOptions{urldate=iso,seconds=true}}%
+      {\ExecuteBibliographyOptions{urldate=edtf,seconds=true}}}%
     {\ExecuteBibliographyOptions{urldate=iso8601}}
   \PreventPackageFromLoading[\message{%
     ^^J^^JERROR: You tried to load  the cite package that is not compatible
@@ -506,11 +534,12 @@
 \setlength{\footskip}{0pt}
 \addtokomafont{footnote}{\small}
 \deffootnote[1em]{1.5em}{1em}{\textsuperscript{\thefootnotemark}\,}
-\RequirePackage{fnpct}
-\setfnpct{after-punct-space={-.2em}}
+% HACK. does not work w/ upcoming texlive.
+% \RequirePackage{fnpct}
+% \setfnpct{after-punct-space={-.2em}}
 
 % koma-hacks
-\RequirePackage{scrhack}
+\AtEndPreamble{\RequirePackage{scrhack}}
 
 \setkomafont{pageheadfoot}{\firamedium}
 
@@ -583,7 +612,7 @@
 
 \newlength{\P@corebaselineskip}
 \setlength{\P@corebaselineskip}{\baselineskip}
-\newcommand*\P@pagemarkseparator{-}
+\newcommand*\P@pagemarkseparator{\kern.06667em :\kern.06667em\relax}
 
 
 \AtBeginDocument{%
@@ -592,21 +621,21 @@
 \RequirePackage{comment}
 \excludecomment{CCSXML}
 
+
 \let\@ACMccs\@empty
 \newcommand*\ccsdesc[2][100]{%
-  \@@ACMccs#2[#1]}
-\def\@@ACMccs#1~#2[#3]{%
+  \@@ACMccs#2@#1@}
+\def\@@ACMccs#1~#2@#3@{%
   \def\@tempa{\relax}%
   \ifnum#3>299\def\@tempa{\itshape}\fi%
   \ifnum#3>499\def\@tempa{\bfseries}\fi%
-%
+  %
   \ifcsdef{@ACMccs@#1}{}{%
-    \def\@tempb{\item{}\begingroup}
-    \eappto{\@tempb}{\expandonce\@tempa}
-    \appto{\@tempb}{#1 → }
-    \global\cslet{@ACMccs@#1}\@tempb
-    \gappto\@ACMccs{\csuse{@ACMccs@#1}\endgroup}}%
-  \csgappto{@ACMccs@#1}{#2; }}
+    \csgdef{@ACMccs@#1}{\item{}\textbf{#1} → }
+    \gappto\@ACMccs{\csuse{@ACMccs@#1}}}%
+  \ifstrempty{#2}{}{%
+    \csxappto{@ACMccs@#1}{\begingroup\expandonce\@tempa}
+    \csgappto{@ACMccs@#1}{#2\endgroup; }}}
 
 \let\P@keywords\@empty
 \newcommand*\keywords[1]{\gdef\P@keywords{#1}}
@@ -766,7 +795,7 @@
 \setkomafont{pagenumber}{\firamedium}
 \cfoot{%
   \ifdefvoid\P@ArticleNumber{}{%
-    \usekomafont{pagenumber}\mdseries\P@ArticleNumber\P@pagemarkseparator}%
+    \sffamily\mdseries\P@ArticleNumber\P@pagemarkseparator}%
   \pagemark}
 
 
@@ -786,13 +815,13 @@
       {\dimexpr\linewidth - \doclicenseimagewidth - 1\columnsep\relax}%
       \ignorespaces
       \scriptsize%
-      \textcopyright\ {\@author}\\
+      \textcopyright\ {\@authorrunning}\\
       \doclicenseText\\
       \ifthenelse{\boolean{P@submission}}%
         {Submitted to \textit{\P@banner}.}%
         {In \textit{\P@banner}\ignorespaces%
           \ifcsvoid{P@Volume}{}{, vol.\,\P@Volume\ignorespaces}%
-          \ifcsvoid{P@Issue}{}{, no.\,\P@Issue\ignorespaces}%
+          \ifcsvoid{P@Issue}{}{, \IfInteger{\P@Issue}{no.\,}{}\P@Issue\ignorespaces}%
           \ifcsvoid{P@Year}{}{, \P@Year\ignorespaces}%
           \ifcsvoid{P@ArticleNumber}{}{, article \P@ArticleNumber}%
           ; \P@lastpage\space pages.}%
@@ -804,6 +833,7 @@
 
 \addtokomafont{title}{\Large\sffamily\bfseries\mathversion{bold}}
 \addtokomafont{author}{\large}
+\addtokomafont{subject}{\sffamily\itshape\color{P@GrayFG}}
 
 \renewcommand*\@maketitle{%
   \label{P:firstpage}%
@@ -812,6 +842,11 @@
   \parindent\z@ \raggedright%
   \normalfont%
   \raggedright%
+  \ifdefvoid\@subject%
+    {}%
+    {\vspace*{-2.5\baselineskip}%
+      {\usekomafont{subject}\selectfont%
+          \@subject \par}}%
   {\usekomafont{title}\@title\par}%
   \ifdefvoid\@subtitle{}{%
     {\usekomafont{subtitle}\selectfont%
@@ -839,13 +874,16 @@
   \global\let\@author\@@author
   \hypersetup{pdfkeywords = {\P@keywords}}
   \ifdefvoid{\@subtitle}%
-    {\hypersetup{pdftitle={\@title}}}
-    {\hypersetup{pdftitle={\@title: \@subtitle}}}
-    % 2016/Vol1/Issue1 is special
-    \ifthenelse{\equal{\P@Year}{2016}\AND\equal{\P@Volume}{1}\AND\equal{\P@Issue}{1}}%
-      {\hypersetup{pdfcreator={programming},pdfproducer={programming}}}%
-      {}%
-  % %
+    {\hypersetup{pdftitle={\@title}}}%
+    {\hypersetup{pdftitle={\@title: \@subtitle}}}%
+  \relax%
+  \hypersetup{pdfcreator={programming},pdfproducer={programming}}% WOAMI
+  \ifthenelse{\boolean{pdf}}%
+    {\ifthenelse{\boolean{luatex}}%
+      {\gdef\P@aftertitle{\directlua{pdf.setsuppressoptionalinfo(15)}}}%
+      {\gdef\P@aftertitle{\ifx\pdfsuppressptexinfo\undefined\relax\else\global\pdfsuppressptexinfo=-1\fi}}}%
+    {\gdef\P@aftertitle{}}%
+    \aftergroup\P@aftertitle\relax
   \endgroup%
   \global\let\P@affil\@gobble%
 }
@@ -856,12 +894,13 @@
   \noindent{\bfseries\color{P@GrayFG} #1}\enspace}
 
 \newkomafont{abstract}{\fontsize{8.5}{10}\selectfont}
-\renewenvironment{abstract}{%
-  \par\smallskip%
-  \begingroup
-  {\P@headersection{\abstractname}}
-  \begingroup\usekomafont{abstract}
-  \noindent\ignorespaces%
+\renewenvironment{abstract}%
+  {\par\smallskip%
+    \begingroup
+    \newcommand\P@gobblepar[1]{\@ifnextchar\par{\P@gobblepar}{}}
+    {\P@headersection{\abstractname}}
+    \begingroup\usekomafont{abstract}
+    \@ifnextchar\par{\P@gobblepar}{}%
 }{%
   \par
   \endgroup

@@ -1,19 +1,19 @@
-\documentclass[english,submission,code=tt]{programming}
-\makeatletter
-\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
-\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
-\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
-\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
-\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
-\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
-\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
-\makeatother
+\AtBeginDocument{\paperdetails{
+		submitted=2018-10-01,
+		published=2019-02-01,
+		year=2019,
+		volume=3,
+		issue=3,
+		articlenumber=12,
+}}
+\documentclass[english]{programming}
 \usepackage[backend=biber]{biblatex} % Use Biblatex
 \addbibresource{main.bib}
 \usepackage{mathpartir}
 \usepackage{amsmath}
 \usepackage{amsthm}
-\usepackage[normalem]{ulem}
+%\usepackage[normalem]{ulem}
+\usepackage{wrapfig}
 \theoremstyle{plain}
 \newcounter{definition}
 \newtheorem{Definition}[definition]{Definition}
@@ -21,11 +21,7 @@
 \newtheorem{Assumption}[assumption]{Assumption}
 \newcounter{lemma}
 \newtheorem{Lemma}[lemma]{Lemma}
-%\input{../Def/Def}
 \input{LocalDef}
-%\lstset{language=FortyTwo, morekeywords={imm,new,class,this,assert}}
-\newcommand\saveSpace{\vspace{-1px}}
-\newcommand\loseSpace{\vspace{1ex}}
 \begin{document}
 \paperdetails{
 perspective=theoretical,
@@ -36,12 +32,15 @@ area={Type systems}
 %\author{Authors omitted for double-blind review.}
 
 \author{Hrshikesh Arora}
+\authorinfo{Student at Victoria University of Wellington.\\* Contact him at \email{arorahrsh@ecs.vuw.ac.nz}}
 \author{Marco Servetto}
+\authorinfo{Lecturer at Victoria University of Wellington.\\* Contact him at \email{marco.servetto@ecs.vuw.ac.nz}}
 %\affiliation{Victoria University of Wellington}
 %\email{marco.servetto@ecs.vuw.ac.nz}
 \affiliation{Victoria University of Wellington}
 %\email{alex@ecs.vuw.ac.nz}
 \author{Bruno C. d. S. Oliveira}
+\authorinfo{Assistant Professor at The University of Hong Kong.\\* Contact him at \email{bruno@cs.hku.hk}}
 \affiliation{The University of Hong Kong}
 \keywords{trait composition,subtyping,code reuse}
 
@@ -83,10 +82,7 @@ area={Type systems}
 \maketitle
 
 \begin{abstract}
-${}_{}$
-
-
-\noindent\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
+\textit{Context:} % What is the broad context of the work? What is the importance of the general research area?
 Trait composition has inspired new research in the area of code reuse for object oriented (OO) languages.
 One of the main advantages of this kind of composition is that 
 it makes possible to separate subtyping from subclassing; 
@@ -94,8 +90,8 @@ which is good for code-reuse, design and reasoning~\cite{cook}.
 %%For example, some works on trait composition allow renaming of methods, which breaks structural subtyping.
 However, handling of state within traits is difficult, verbose or inelegant.
 
-\loseSpace
-\noindent\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
+
+\textit{Inquiry:} %What problem or question does the paper address? How has this problem or question been addressed by others (if at all)?
 We identify the 
 \emph{this-leaking problem} as the fundamental limitation that
 prevents the separation of subtyping from subclassing
@@ -107,8 +103,8 @@ languages following this methodology: TraitRecordJ~\cite{Bettini:2010:ISP:177408
 Package Templates~\cite{KrogdahlMS09}
 and DeepFJig~\cite{deep}.
 
-\loseSpace
-\noindent\textit{Approach:} %What was done that unveiled new knowledge?
+
+\textit{Approach:} %What was done that unveiled new knowledge?
 In this paper, we design \name, a new language, where
 we improve use and reuse and support the \Q@This@ type and family polymorphism
  by distinguishing code designed for use
@@ -117,16 +113,16 @@ In this way
 \name synthesise the 3 approaches above, and improves them with \emph{abstract state operations}:
 a new elegant way to handle state composition in trait based languages.
 
-\loseSpace
-\noindent\textit{Knowledge and Grounding:}
+
+\textit{Knowledge and Grounding:}
 %What new facts were uncovered? If the research was not results oriented, what new capabilities are enabled by the work?
 %What argument, feasibility proof, artifacts, or results and evaluation support this work?
 Using case studies, we show that \name's model of traits with abstract state operations
  is more usable and compact than prior work.
 We formalise our work and prove that type errors cannot arise from composing well typed code.
 
-\loseSpace
-\noindent\textit{Importance:} %Why does this work matter?
+
+\textit{Importance:} %Why does this work matter?
 This work is the logical core of the programming language 42. This shows that 
 the ideas presented in this paper can be applicable to a full general purpose language.
 This form of composition is very flexible and could be used in many new languages.
@@ -137,7 +133,6 @@ This form of composition is very flexible and could be used in many new language
 %
 	
 \end{abstract}
-
 \input{Intro}
 \input{section2}
 \input{section3}
