@@ -1,5 +1,9 @@
 % Definitions for the syntactic forms of our language, where relavent
 \usepackage{xspace}
+\usepackage{tabularx}
+\usepackage{letltxmacro}
+\usepackage{mathtools}
+\usepackage{mathpartir}
 
 \makeatletter
 
@@ -37,7 +41,7 @@
 	%\@code{\ensuremath{\Q@\{@#1\Q{;}\ #2\Q{;}\ #3\,\Q@\}@\!}}}
 
 % Thisn.Cs, Cs (the latter has dots!)
-\newcommand{\This}[1]{\ensuremath{\Q!This!_{\@code{#1}}}\@nextpath}
+\renewcommand{\This}[1]{\ensuremath{\Q!This!_{\@code{#1}}}\@nextpath}
 \newcommand{\Cs}[1]{#1\@nextpath}
 	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
 	\newcommand{\@gobblenextpath}[1]{\Q!.!\@code{#1}\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
@@ -59,6 +63,8 @@
 
 % Because mathmode puts too much space
 \newcommand{\DVz}{\ensuremath{\mathit{DVz}}}
+\newcommand{\DVs}{\ensuremath{\mathit{DVs}}}
+\newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
 \newcommand{\Id}{\ensuremath{\mathit{Id}}}
 \newcommand{\Mz}{\ensuremath{\mathit{Mz}}}
 \newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
@@ -73,9 +79,9 @@
 
 % operators
 
-\newcommand{\members}[1]{\fop{members}{#1}}
+\renewcommand{\members}[1]{\fop{members}{#1}}
 \newcommand{\idd}[1]{\fop{id}{#1}}
-\newcommand{\dom}[1]{\fop{dom}{#1}}
+\renewcommand{\dom}[1]{\fop{dom}{#1}}
 \newcommand{\ran}[1]{\fop{ran}{#1}}
 \newcommand{\mdom}[1]{\fop{mdom}{#1}}
 \newcommand{\mini}[2]{#1\op{min}{#2}}
@@ -95,14 +101,47 @@
 
 \newenvironment{defs}{\setlength{\tabcolsep}{0pt}\noindent\tabularx{\textwidth}{l>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}}
+% a := b
 \newcommand{\defi}[3]{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
+% a iff b 
 \newcommand{\defip}[3]{\ensuremath{#1\text{ iff }#2}&\llap{\text{#3}}\\}
+% a % (for things that are always true)
+\newcommand{\defit}[2]{\ensuremath{#1}&\llap{\text{#2}}\\}
+%   b % indentended, for continuiation of another defi form
 \newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+
+
+\newenvironment{bnf}{$\begin{aligned}}{\end{aligned}$}
+\newcommand{\production}[3]{#1&\Coloneqq#2&\text{#3}}
+\newcommand{\prodNextLine}[2]{&\quad\quad#1&\text{#2}}
+% --------------
 \newcommand{\defis}{\midrule}
 
 
 \newenvironment{irules}{\noindent$$\begin{array}{l}\midrule}{\unskip\\\midrule\end{array}$$}
 \newcommand{\irule}[3]{\inferrule[(#1)]{#2}{#3}\qquad}
 \newcommand{\iruleSep}{\unskip\\[5ex]}
+
+% ----------------------------------------------------------------------------
+%\newcommand{\qquad}{\quad\quad}
+
+% Magic to make lstinline work in mathmode....
+\newcommand*{\SavedLstInline}{}
+\LetLtxMacro\SavedLstInline\lstinline
+\DeclareRobustCommand*{\lstinline}{%
+	\ifmmode
+	\let\SavedBGroup\bgroup
+	\def\bgroup{%
+		\let\bgroup\SavedBGroup
+		\hbox\bgroup
+	}%
+	\fi
+	\SavedLstInline
+}
+
+
+\newcommand{\mmid}{{\ensuremath{{\mid}}}\!}
+\newcommand{\Rulename}[1]{{\textsc{(#1)}}}
+\renewcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
 
 \makeatother

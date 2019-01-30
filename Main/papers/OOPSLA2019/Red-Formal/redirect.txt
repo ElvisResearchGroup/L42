@@ -1,14 +1,14 @@
 // This file defines the core Redirect operator, it and it's definitions should be implemented in L42
 // Util contains some utility definitions used for this formalisism, some of which are implemented in L42 (but shouldn't be too interesting)
 
-// Perform and compute a redirect, using a choice function 'CollectRedirection' to compute the R mapping
+// Perform and compute a redirect, using a choice function 'CollectRedirectMap' to compute the R mapping
 Define Redirect(p; L; R) = R'(L[remove Csz]) // Remove the things that will be redirected away
   R = Cs1 -> P1, ..., Csn -> Pn
   p' = p.evilPush(L) // to simplify everything, just make L the new top
-  Csz = RedirectSet(p; R)
+  Csz = RedirectSet(p'; R)
   Redirectable(p'; Csz) // Check that the source is valid
   // Chose a mapping, simplifying the input, and update the paths to be relative to our evil-pushed program
-  R' = CollectRedirection(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
+  R' = CollectRedirectMap(p'; Cs1 -> p'.minimize(P1[from This1]), ..., Csn -> p'.minimize(Pn[from This1]))
 	
 ====================================================================
 Define Redirectable(p; Csz)
@@ -36,7 +36,7 @@ Reachables(mwt) = mwt.mt.Ts.Ps, mwt.mt.T.P, mwt.mt.Pz
 Reachables(C:L)=empty
 ====================================================================
 CC ::= Cs <= P | P <= Cs
-CollectRedirection(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
+CollectRedirectMap(p; R) = CollectSolution(p; R; CollectConstraints(p; R))
 CollectConstraints(p; Cs1->P1, ..., Csn->Pn) = Collect(p; Cs1 <= P1, P1 <= Cs1, ..., Csn <= Pn, Pn <= Csn)
 
 dom(Cs <= P) = Cs

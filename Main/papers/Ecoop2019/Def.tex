@@ -67,20 +67,6 @@
 \newenvironment{bnf}{$\begin{aligned}}{\end{aligned}$}
 \newcommand{\production}[3]{\textit{#1}&\Coloneqq\textit{#2}&\text{#3}}
 \newcommand{\prodNextLine}[2]{&\quad\quad\textit{#1}&\text{#2}}
-
-%
-%\newcommand{\pushright}[1]{\ifmeasuring@#1\else\omit\hfill$\displaystyle#1$\fi\ignorespaces}
-%
-
-%\llap{\text{#3}} 
-
-\usepackage{array,tabularx}
-
-% Version that aligns everything on the :=
-%\newenvironment{defs}{\setlength{\tabcolsep}{0pt}\tabularx{\textwidth}{r>{}l>{\hfill}X}}{\endtabularx}
-%\newcommand{\defi}[3]{\ensuremath{#1\,}&\ensuremath{\coloneqq#2}&\llap{\text{#3}}\\}
-
-
 \newenvironment{defye}{\\\indent$\begin{aligned}}{\end{aligned}$\\}
 \newcommand{\defy}[2]{\!\!\!\!\!\!&&#1&\coloneqq#2\\}
 %\newcommand{\defyc}[1]{&\phantom{\coloneqq}\ \ #1\\}
@@ -91,58 +77,52 @@
 \newcommand{\prodInline}[2]{#1\Coloneqq#2}
 \newcommand{\terminal}[1]{\ensuremath{$\texttt{#1}$}}
 %\newcommand{\metavariable}[1]{\ensuremath{\mathit{#1}}}
+\newcommand{\dom}[1]{\mathit{dom}(#1)}
+\newcommand{\mdom}[1]{\mathit{mdom}(#1)}
 
 \newcommand{\Rulename}[1]{{\textsc{(#1)}}}
 \newcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
 \newcommand{\libi}[2]{\Q@\{@\Q!interface!\ #1\Q{;} #2\Q@\}@}
-\newcommand{\libc}[3]{\Q@\{@#3\Q{;}\ #1\Q{;}\ #2\,\Q@\}@\!}
-\newcommand{\lib}[3]{\libc{#2}{#3}{#1}}
+\newcommand{\lib}[3]{\Q!interface!\ensuremath{?}\ \libc{#1}{#2}{#3}}
+\newcommand{\libc}[3]{\,\Q@\{@\!#1\Q{;}\ #2 \Q{;}\ #3\Q@\}@\!\!}
 
-\newcommand{\nc}[2]{\Q{private}?\,#1\Q{=}#2}
-\newcommand{\cd}[2]{#1\Q{=}#2}
-\newcommand{\me}[4]{\Q{static}\ensuremath{?} #1\ #2\rp{#3}\ #4}
-
+\newcommand{\id}{\textit{id}}
 \newcommand{\DVs}{\textit{DVs}}
+\newcommand{\DVz}{\textit{DVz}}
 \newcommand{\DV}{\textit{DV}}
 \newcommand{\Ds}{\textit{Ds}}
 \newcommand{\DLs}{\textit{DLs}}
 
 
+\newcommand{\Empty}{\textit{empty}}
 
-%\newcommand{\red}[3]{#1\,\Q{<}#2\eq#3\,\Q{>}}
-
-
+\newcommand{\rp}[1]{\Q{(}\!#1\Q{)}}
+\newcommand{\eq}[1]{\,\Q{=}#1}
+\newcommand{\red}[3]{#1\,\Q{<}#2\eq#3\,\Q{>}}
+\newcommand{\summ}[2]{#1\ \Q{<+}\ #2}
+\newcommand{\op}[2]{{\ensuremath{{}_{.\textbf{#1}({#2})}}}}
+\newcommand{\fop}[2]{{\ensuremath{\footnotesize{\textbf{#1}}({#2})}}}
 \newcommand{\opName}[1]{{\ensuremath{\footnotesize{\textbf{#1}}}}}
-%\newcommand{\from}[2]{#1\op{from}{#2}}
+\newcommand{\from}[2]{#1\op{from}{#2}}
 \newcommand{\mmid}{{\ensuremath{{\mid}}}\!}
 \newcommand{\hole}{\ensuremath{\square}}
 \newcommand{\s}[1]{\ensuremath{\mathit{#1s}}}
 
 \makeatletter
+\newcommand{\This}[1]{\ensuremath{\Q!This!_{#1}}\nextpath}
+\newcommand{\Cs}[1]{#1\nextpath}
+\newcommand{\nextpath}{\@ifnextchar\bgroup{\gobblenextpath}{}}
+\newcommand{\gobblenextpath}[1]{\Q!.!#1\@ifnextchar\bgroup{\gobblenextpath}{}}
 
-
-
+\newcommand{\redirect}[1]{#1\Q!<!\nextCsP}
+\newcommand{\nextCsP}{\@ifnextchar\bgroup{\gobblenextCs}{\Q!>!}}
+\newcommand{\gobblenextCs}[1]{#1\Q!\ =\ !\@ifnextchar\bgroup{\gobblenextP}{\errmessage{You missed a P!}}}
+\newcommand{\gobblenextP}[1]{#1\@ifnextchar\bgroup{\Q!,\ !\gobblenextCs}{\Q!>!}}
 \makeatother
 %--------------------------
+\newcommand{\mynotes}[3]{{\color{#2} {\sc #1}: #3}}
+\newcommand\isaac[1]{\mynotes{Isaac}{blue}{#1}}
 
-\newcommand{\NoteColour}[2]{\textcolor{#1}{#2}}
-\newcommand{\NoteText}[1]{{#1}}
-\newcommand{\NoteComm}[3]{\NoteText{\scriptsize \textcolor{#1}{[{\sc #2}{:} #3]}}}
-\newcommand{\NoteDel}[2]{\NoteText{\textcolor{#1}{[#2]}}}
+\newcommand\IO[1]{\color{blue}{#1}}
+\newcommand\marco[1]{\mynotes{Marco}{green}{#1}}
 
-\newcommand{\HideNotes}{%
-	\renewcommand{\NoteColour}[2]{##2}%
-	
-	% Makes \NoteText give the same 'spacing' as a space character
-	% i.e. preceding or suceeding this command by any number of spaces
-	% should be equivalent to a single space
-	\renewcommand{\NoteText}[1]{\unskip\space\ignorespaces}
-}
-
-\newcommand{\EZ}[1]{\NoteColour{blue}{#1}}
-\newcommand{\EZComm}[1]{\NoteComm{blue}{Elenna}{#1}}
-\newcommand{\MS}[1]{\NoteColour{green}{#1}}
-\newcommand{\MSComm}[1]{\NoteComm{green}{Marco}{#1}}
-\newcommand{\IO}[1]{\NoteColour{blue}{#1}}
-\newcommand{\IOComm}[1]{\NoteComm{blue}{Isaac}{#1}}
-\newcommand{\IODel}[1]{\NoteDel{blue}{#1}}
