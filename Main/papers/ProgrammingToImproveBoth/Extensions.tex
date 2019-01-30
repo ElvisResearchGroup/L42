@@ -8,11 +8,11 @@ The main idea of family polymorphism (FP)~\cite{igarashi2005lightweight,Igarashi
 is to instead consider such definition a form of \emph{overriding},
 called \emph{further extension}.
 That is, the following Java code is ill typed:
-\saveSpace\saveSpace\begin{lstlisting}[language=Java]
+\begin{lstlisting}[language=Java]
 abstract class A{static class B{..}   abstract B m();}
 class AA extends A{static class B{..}   B m(){..}}//Error: Invalid overriding
 //method AA.m() return type is AA.B, that is unrelated to A.B
-\end{lstlisting}\saveSpace\saveSpace
+\end{lstlisting}
 
 In the FP approach, class \Q@AA.B@ would further extend \Q@A.B@, thus the overriding of method
 \Q@A.m@ would be accepted.
@@ -21,10 +21,10 @@ by composing code with \use,
 nested classes with the same name are recursively composed.
 The corresponding code in \name would work, and behave like further
 extension in FP.
-\saveSpace\saveSpace\begin{lstlisting}
+\begin{lstlisting}
 a={B={..}   method B m()}
 AA= Use a, {B={..}   method B m(){..}}
-\end{lstlisting}\saveSpace\saveSpace
+\end{lstlisting}
 
 For simplicity, we discuss nested classes but not nested traits:
 and all traits and code composition expressions are still at top level.
@@ -34,7 +34,7 @@ to consider the class table as a simple map from (nested) type names
 to their definition.
 
 
-%\paragraph{Redirect}${}_{}$\\*
+%\paragraph{Redirect}\\*
 %Redirect is another composition operator that
 %leverage on nested classes to emulate generics;
 %the main idea is that a (fully abstract) nested class can be redirect to
@@ -73,13 +73,13 @@ For example:
 t={ method B m() B={ method B mb()} }
 D= t[rename B into C]
 \end{lstlisting}
-\saveSpace
+
 would flatten to:
-\saveSpace
+
 \begin{lstlisting}
 t={ method B m() B={ method B mb()} }
 D={ method C m() C={ method C mb()} }
-\end{lstlisting}\saveSpace
+\end{lstlisting}
 The rename only influences its argument.
 Since traits do not induce nominal types, we can
 consistently change their
@@ -123,7 +123,7 @@ The full L42 offers many other kinds of renames, but we do not need them to show
 
 
 
-\paragraph{Application to the expression problem. Case Study 3:}${}_{}$\\*
+\minisec{Application to the expression problem. Case Study 3:}
 The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
 with the requirements exposed in~\cite{Zenger-Odersky2005}.
 In the expression problem we have data-variants and operations and we can
@@ -178,7 +178,7 @@ into the corresponding data-variant.
 Thus, our source code is as follows;
 First we declare the $4$ traits to represent the state:
 \newcommand\multiCode{\vspace{-5pt}}
-\saveSpace
+
 \begin{lstlisting}
 exp= { $\ \ \ \ $Exp= {interface} $\ \ \ \ $T= {implements Exp}}
 \end{lstlisting}
@@ -268,10 +268,12 @@ The proposed solution is not fully modularized as a table,
 so in order to make a more close comparison, we provide an alternative
 version where we isolate all the units of behaviour as is done in \name.
 
-\noindent\begin{minipage}{0.60\textwidth}
-\begin{tabular}{l |l |l}
+\begin{wraptable}{l}{0.52\textwidth}
+%\noindent\begin{minipage}{0.53\textwidth}
+\begin{tabular}{@{}l l l @{}}
+\toprule
 &                              lines  &   methods\\
-\hline
+\midrule
 Original Scala          & $52$     &  $15=12+3$\\
 Scala  isolated units   & $78$    &  $15=12+3$\\
 Scala  glue-code        & $27$   &     $3$\\
@@ -279,25 +281,26 @@ Scala  glue-code        & $27$   &     $3$\\
 %=$3+4+6+5 + (4+2*3)*3$
  &    $19=4\times3+7$\\
 42 classes              &   $3$    &     $0$\\
+\bottomrule
 \end{tabular}
-\end{minipage}
-\begin{minipage}{0.40\textwidth}
+\end{wraptable}
+%\end{minipage}
+%\begin{minipage}{0.47\textwidth}
 Scala uses $12=4\times3$ methods plus $3$ extra factory methods (for \Q@double@).
 We use $12=4\times3$ methods plus our abstract state: 
 $4$ getters and $3$ factories.
-\end{minipage}
-
-\noindent As we can see, encoding atomic units in Scala is
+%\end{minipage}
+As we can see, encoding atomic units in Scala is
 more verbose,
 but more importantly,
 in \name we can just define a class supporting any subset of operations
 and data-variants by listing the desired traits:
 for example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
 with \Q@eval@ and \Q@double@ would look like this:
-%\saveSpace\saveSpace
+%
 %\begin{lstlisting}
 \Q@Example= Use evalNum,evalPlus,doubleNum,doublePlus@.
-%\end{lstlisting}\saveSpace\saveSpace
+%\end{lstlisting}
 The composition of all our traits would just requiring listing all
 of the relevant behaviour;
 reasonably formatted, it could take up to $3$ lines.
@@ -326,7 +329,7 @@ The idea is that since every data-variant contains
  we can modularize it into an \Q@equals@ trait;
 \Q@equals@ in~\cite{Zenger-Odersky2005} is complex and
  and requires glue code.
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 equals= {
   Exp= {interface $\ \ \ \ $ method Bool equals(Exp that)}
@@ -354,13 +357,15 @@ equalsNeg= Use neg, equals[rename T into Neg],{
   Neg= {method Bool exactEquals(Neg that){
     return this.term().equals(that.term());}  }}
 \end{lstlisting}
-\saveSpace\saveSpace
 
-\noindent\!\!
-\begin{minipage}{0.46\textwidth}
-\begin{tabular}{l |l |l}
+
+%\noindent
+%\begin{minipage}{0.46\textwidth}
+\begin{wraptable}{l}{0.46\textwidth}
+\begin{tabular}{@{} l l l @{}}
+\toprule
 &                              lines  &   methods\\
-\hline
+\midrule
 Original Scala equals       &    $40$   &   $10$\\
 Isolated Scala equals       &   $31$    &   $10$\\
 Scala equals instance       &    $29$   &    $3$\\
@@ -372,9 +377,11 @@ Scala equals instance       &    $29$   &    $3$\\
 %=7+2*3
    &    $6$\\
 42 class cast instance      &     $3$   &    $0$\\
+\bottomrule
 \end{tabular}
-\end{minipage}\quad\ \ \ \ 
-\begin{minipage}{0.5\textwidth}
+\end{wraptable}
+%\end{minipage}\quad\ \ \ \ 
+%\begin{minipage}{0.5\textwidth}
 The Scala code here can be made fully isolated with little
 extra syntactic cost. The original Scala eq is $40$ lines and
 contains a part of the glue code mixed inside.
@@ -382,7 +389,7 @@ The isolated version is $31$ lines and to merge all the operations together in S
 takes $29$ lines of glue code. Note that this
 is mostly the same glue code from before ($27$ lines), that
 needs to be manually adapted.
-\end{minipage}
+%\end{minipage}
 
 In \name we are
 more compact than Scala both when using the double dispatch ($21+22$ vs. $31+29$)
@@ -399,8 +406,7 @@ to add the negative cases for the double dispatch (such as
 \Q@Sum={method Bool equalToNum(Num that){return false;}}@).
 
 
-%\paragraph{Transformations (and queries)}${}_{}$\\*
-%
+%\paragraph{Transformations (and queries)}
 %The expression problem presented up to now is the traditional
 % challenge proposed by~\cite{wadler1998expression};
 %this has been criticized to not really address the fundamental issues
@@ -457,7 +463,7 @@ to add the negative cases for the double dispatch (such as
 
 
 
-%\paragraph{Full power of redirect}${}_{}$\\*
+%\paragraph{Full power of redirect}
 %An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
 %We show an example where a specific kind of \Q@Service@ can produce a \Q@Report@, and 
 %\Q@Report@s can be combined together.

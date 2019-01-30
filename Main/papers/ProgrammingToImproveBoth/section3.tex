@@ -1,6 +1,6 @@
-\saveSpace
+
 \section{Improving Use}
-\saveSpace
+
 To illustrate how 
 \name improves the use of classes, we model a simplified version of
 Set and Bag collections first in Java, and then in \name.
@@ -9,17 +9,17 @@ without introducing subtyping between Bags and Sets.
 As shown below, this improves the 
 use of Bags by eliminating logical errors arising from incorrect
 subtyping relations that are allowed in the Java solution. 
-\saveSpace
+
 \subsection{Sets and Bags in Java: the need for code reuse without 
 subtyping}
-\saveSpace
+
 An iconic example on why connecting inheritance/code reuse and
 subtpying is problematic is provided by
 LaLonde~\cite{LaLonde:1991:SSS:110673.110679}.  A reasonable
 implementation for a \Q@Set@ is easy to extend into a \Q@Bag@ by
 keeping track of how many times an element occurs.  We just add some state and override a few methods.
 For example in Java one could have:
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 class Set {..//usual hashmap implementation
   private Elem[] hashMap;
@@ -30,25 +30,25 @@ class Bag extends Set{ ..//for each element in the hash map,
   @Override void put(Elem e){..}
   int howManyTimes(Elem e){..}}
 \end{lstlisting}
-\saveSpace\saveSpace\saveSpace
+
 \noindent Coding \Q@Bag@ in this way avoids a lot of code
 duplication, but we induced unintended subtyping! 
 Since subclassing implies subtyping, our code breaks the Liskov substitution principle (LSP)~\cite{martin2000design}: not all bags are sets!\footnote{The LSP is often broken in real programs because of the need of inheritance: the LSP allows only refinement not extension. Traits provide extension without breaking the LSP.}
 Indeed, the following is allowed{:}%
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 Set mySet=new Bag(); //OK for the type system but not for LSP
 \end{lstlisting}
-\saveSpace\saveSpace
+
 This encumbers the programmer:
 to avoid conceptual errors that are not captured by the type system, 
 they have to \emph{use} \Q@Bag@ very carefully.
 
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 \paragraph{A (broken) attempt to fix the Problem in Java:}
 One could \emph{retroactively} fix this problem by introducing \Q@AbstractSetOrBag@
 and making both \Q@Bag@ and \Q@Set@ inherit from it:
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 abstract class AbstractSetOrBag {/*old set code goes here*/}
 class Set extends AbstractSetOrBag {} //empty body
@@ -57,7 +57,7 @@ class Bag extends AbstractSetOrBag {/*old bag code goes here*/}
 //AbstractSetOrBag type not designed to be used.
 AbstractSetOrBag unexpected=new Bag(); 
 \end{lstlisting}
-\saveSpace\saveSpace
+
 This looks unnatural, since \Q@Set@ would extend \Q@AbstractSetOrBag@ without adding anything,
 and we would be surprised to find a use of the type \Q@AbstractSetOrBag@.
 Worst, if we are to constantly apply this mentally, we would introduce a very high number
@@ -80,13 +80,13 @@ Note that this last solution is changing the public interface of the formerly re
 this may even break backwards-compatibility (if a client program was using
 reflection, for example).
 \end{itemize}
-\saveSpace\saveSpace
+
 \subsection{Sets and Bags in \name}
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 Instead, in \name, if we were to originally declare
-\saveSpace\saveSpace\begin{lstlisting}
+\begin{lstlisting}
 Set={/*set implementation*/} 
-\end{lstlisting}\saveSpace\saveSpace
+\end{lstlisting}
 Then our code would be impossible to reuse in the first place for any user of our library.
 We consider this an advantage, since unintended code reuse runs into under-documented behaviour nearly all the time!\footnote{See
 ``Design and document for inheritance or else prohibit
@@ -94,25 +94,25 @@ it''~\cite{Bloch08}: the
 self use of public methods is rarely documented, thus is hard to understand the effects of overriding a library method.
 }
 If the designer of the \Q@Set@ class wishes to make it reusable, they can do it explicitly by providing a set trait{:}%
-\saveSpace\saveSpace\begin{lstlisting}
+\begin{lstlisting}
 set={/*set implementation*/} 
 Set=Use set
-\end{lstlisting}\saveSpace\saveSpace
+\end{lstlisting}
 Since \Q@set@ can never be used as a type, there is no reason to give it a fancy-future-aware name like
 \Q@AbstractSetOrBag@.
 When bag is added, the code will look like%
-\saveSpace\saveSpace\begin{lstlisting}
+\begin{lstlisting}
 set={/*set implementation*/} 
 Set=Use set
 Bag= Use set, {/*bag implementation*/}
-\end{lstlisting}\saveSpace\saveSpace
+\end{lstlisting}
 or %
-\saveSpace\saveSpace\begin{lstlisting}
+\begin{lstlisting}
 set={/*set implementation*/} 
 Set=Use set
 bag=Use set, {/*bag implementation*/}
 Bag=Use bag
-\end{lstlisting}\saveSpace\saveSpace
+\end{lstlisting}
 Notice how, thanks to flattening, the resulting code for \Q@Bag@ is identical in both versions
 and, as shown in Section 2, there is no trace of trait \Q@bag@ at run time. 
 Thus if we are the developers of bags, we can temporarily go for the first version.

@@ -1,4 +1,4 @@
-\saveSpace\saveSpace\section{Improving Reuse}\saveSpace
+\section{Improving Reuse}
 
 %\name allows reuse even when subtyping is impossible.
 %\name traits do not induce a new (externally visible) type.
@@ -46,9 +46,9 @@ An in-depth discussion on how such goals are
 difficult to achieve and how they have been challenged
 in the existing literature is available in Section 7.3.
 
-\saveSpace\saveSpace
+
 \subsection{State of the art}
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 
 We first present the state of the art solution: 
 traits have only methods but classes also have fields and constructors.
@@ -56,12 +56,12 @@ The idea is that the trait code just uses getter/setters/factories, while leavin
 classes to finally define the fields/constructors. That
 is, in this state of the art solution, classes have a richer syntax than traits, allowing
 declaration for fields and constructors. 
-\saveSpace\saveSpace\saveSpace\saveSpace
-\saveSpace\saveSpace\saveSpace\saveSpace
+
+
 \paragraph{Points:} Consider two 
 traits dealing with \emph{point} objects with coordinates \lstinline{x} and
 \lstinline{y}.
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 //idealized state of the art trait language, not 42
 pointSum= { method int x()  method int y()//getters
@@ -75,7 +75,7 @@ pointMul= { method int x() method int y()//repeating getters
     return This.of(this.x()*that.x(),this.y()*that.y());
   }}
 \end{lstlisting}
-\saveSpace\saveSpace
+
 The first trait provides a \emph{binary method} that 
 adds the point object to another point to return a new point. 
 The second trait provides multiplication.
@@ -88,8 +88,8 @@ Following the traditional model of traits and classes common in literature~\cite
 we can compose the two traits, by \emph{adding glue-code}
 to implement methods \Q@x@, \Q@y@ and \Q@of@.
 This approach is verbose but very
-powerful, as illustrated by Wang et al.~\cite{wang2016classless}.
-\saveSpace\saveSpace
+powerful, as illustrated by ClassLess Java~\cite{wang2016classless}.
+
 \begin{lstlisting}
 //idealized state of the art trait language, not 42
 class PointAlgebra=Use pointSum,pointMul, {//not 42 code
@@ -100,7 +100,7 @@ class PointAlgebra=Use pointSum,pointMul, {//not 42 code
     static method This of(int x, int y){return new PointAlgebra(x,y);}
     }
 \end{lstlisting}
-\saveSpace\saveSpace
+
 %\bruno{We talk about withers later on. So I think we should consider
  % having withers in this code, so that readers can understand what 
 %withers are!}
@@ -111,14 +111,14 @@ class PointAlgebra=Use pointSum,pointMul, {//not 42 code
 With a slightly different syntax, this approach is available in both Scala and Rust, and they both require glue code.
 It has some advantages, but also disadvantages: 
 
-\begin{itemize}
+\begin{description}
 
-\item {\bf Advantages:} This approach is associative and commutative, even self instantiation
+\item[Advantages:] This approach is associative and commutative, even self instantiation
   can be allowed if the trait requires a static method
   returning \Q@This@. The class will then implement the methods returning \Q@This@
   by forwarding a call to the constructor.
   
-\item {\bf Disadvantages:}
+\item[Disadvantages:]
    %The semantics of \Q@Use@/code composition of a model with fields and constructors is necessarily
 %   more complex than a model with methods only.
 The class needs to handle all the state, even state conceptually
@@ -127,11 +127,11 @@ The class needs to handle all the state, even state conceptually
   the state/fixpoint in the class 
    with the constructors and fields and getter/setters and factories is tedious and error prone; such code could be automatically
    generated~\cite{wang2016classless}.
-\end{itemize}
-\saveSpace\saveSpace\saveSpace\saveSpace
-\saveSpace\saveSpace\saveSpace\saveSpace
+\end{description}
+
+
 \subsection{Our proposed approach to State: Coherent Classes}
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 In \name there is no need to write down constructors and fields. In fact, in
 \name there is not even syntax for those constructs!  The intuition is that
 a class where \emph{all} abstract methods can be seen as field getters, setters, or factories,
@@ -143,7 +143,7 @@ as factory, getters or setters. Methods recognised as factory, getters and sette
 \emph{abstract state operations}.
   
 \noindent A definition of coherent
-classes is given next, and is formally modelled in Appendix \ref{sec:formal}:
+classes is given next, and is formally modelled in \autoref{sec:formal}:
 \begin{itemize}
 \item A class with no abstract methods is coherent (just like Java
   \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
@@ -182,29 +182,29 @@ and are called \emph{withers}.
 The concept of `abstract state operations'
 is novel, and we think it
 is a promising area for further research.
-The work by Wang et al.~\cite{wang2016classless} explores a particular
+ClassLess Java~\cite{wang2016classless} explores a particular
 set of such abstract state operations,
 but we suspect there are more unexplored possible options that could be even more beneficial.
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 \paragraph{Points in \name:}
 In \name and with our approach to handle the state, 
 \lstinline{pointSum} and \lstinline{pointMul} can indeed be directly composed.
 This works because the resulting class is coherent.
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 PointAlgebra= Use pointSum,pointMul //no glue code needed
 \end{lstlisting}  
 %  Note: we declare the methods independently and compose the result
 %  as we wish. 
-\saveSpace\saveSpace\saveSpace\saveSpace
-\saveSpace\saveSpace\saveSpace\saveSpace
+
+
 \paragraph{Improved solution:} So far the current solution still
   repeats the abstract methods \Q@x@, \Q@y@ and \Q@of@.
   Moreover, in addition to \Q@sum@ and \Q@mul@ we may want many
   operations over points. It is possible to improve reuse
   and not repeat such declaration by abstracting the common
   declaration into a trait \Q@p@: 
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 p= { method int x() method int y()
   static method This of(int x,int y)
@@ -220,9 +220,9 @@ pointMul= Use p, {
 pointDiv= ...
 PointAlgebra= Use pointSum,pointMul,pointDiv,...
 \end{lstlisting}
-\saveSpace\saveSpace      
+      
 Now the code is fully modularized, that is: each trait defines exactly one method and contains its abstract dependencies. In this way it can be modularly composed with any code requiring such a method.
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 \paragraph{Case Study 1:}
 In order to evaluate our approach
 we performed a case study:
@@ -244,15 +244,18 @@ since
 it has good support for traits, and using abstract types, it is possible to support the `\Q@This@' type.
 Rust is similar to Scala in this regard; we believe we would get similar results by comparing against either Scala or Rust.
 
-\noindent\begin{tabular}{l l l l}
-Language       & Lines of code & N. of members & N. classes/traits\\
-\hline
-\!Java7           &\!\!\!\!   $115=6+5*4+7*6+9*4+11$        & $50$                &      $16$\\
-\!Classless Java\!\! &\!   $82=3+3*4+5*6+7*4+9$          & $34$                &      $16$\\
-\!Scala          &\!   $81=5+3*4+4*16$  &  $40$                 &    $21 = 16+4+1$\\
-\!\name          &\!   $32=4+3*4+1*16$ & $7$                 &      $21 = 16+4+1$\\
-\hline
+\begin{center}
+\begin{tabular}{@{} l l l l @{}}
+\toprule
+Language       & Lines of code & members & classes/traits\\
+\midrule
+Java7           &  $115=6+5*4+7*6+9*4+11$        & $50$                &      $16$\\
+Classless Java &   $82=3+3*4+5*6+7*4+9$          & $34$                &      $16$\\
+Scala          &   $81=5+3*4+4*16$  &  $40$                 &    $21 = 16+4+1$\\
+\name          &   $32=4+3*4+1*16$ & $7$                 &      $21 = 16+4+1$\\
+\bottomrule
 \end{tabular}
+\end{center}
 
 \noindent We observed that in Java7 we had to duplicate\footnote{A duplicate body is repetition of identical code (may have different types in its scope/environment). The first occurrence is not counted. } $28$ method bodies across the $16$ classes.
 Of these, $11$ method bodies were duplicated because Java does not support multiple inheritance
@@ -290,31 +293,31 @@ In all our case studies, to make a meaningful comparison, we formatted all code 
 on the other hand for space limitations, the code snippets presented in the article
 are formatted for compactness.
 
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 \subsection{State Extensibility}
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 Programmers may want to extend points with more state. For example 
 they may want to add colors to the points. A first attempt at doing
 this would be:
-\saveSpace\saveSpace
+
 \begin{lstlisting}
 colored= { method Color color() }
 CPoint= Use pointSum,colored //Fails: class not coherent
 \end{lstlisting}
-\saveSpace\saveSpace 
+ 
 This first attempt does not work: the abstract color method
 is not a getter for any of the parameters of 
 \Q@ static method This of(int x,int y)@. 
 
 \noindent
 A solution is to provide a richer factory:
-\saveSpace\saveSpace 
+ 
 \begin{lstlisting}
 CPoint= Use pointSum,colored,{
   static method This of(int x,int y){return This.of(x,y,Color.of(/*red*/));}
   static method This of(int x,int y,Color color) }
 \end{lstlisting}
-\saveSpace\saveSpace 
+ 
 \noindent 
 where we assume support for overloading based on different numbers of parameters.
 This is a reasonable solution, however the method \Q@CPoint.sum@ resets
@@ -324,7 +327,7 @@ value.  What should be the behaviour in this case?  If our abstract
 state supports withers, we can use
 \Q@this.withX(newX).withY(newY)@, instead of writing \Q@This.of(...)@, in order to preserve the color from
 \Q@this@.  This solution is better but still not satisfactory since the color from \Q@that@ is ignored.
-\saveSpace\saveSpace\saveSpace\saveSpace
+
 \paragraph{A better design:}
 We can design trait \Q@p@ for reuse and extensibility
 by adding an abstract \Q@merge(This)@ method as an extensibility hook;
@@ -332,7 +335,7 @@ by adding an abstract \Q@merge(This)@ method as an extensibility hook;
 Using withers we can merge \Q@color@s, or any other kind of state 
 following this pattern.%\bruno{worried that withers are not explained enough.}
 
-\saveSpace\saveSpace \begin{lstlisting}
+ \begin{lstlisting}
 p= { method int x() method int y() //getters
   method This withX(int that) method This withY(int that)//withers
   static method This of(int x,int y)
@@ -348,8 +351,8 @@ colored= {method Color color()
     return this.withColor(this.color().mix(that.color());
   }}
 CPoint= /*as before*/
-\end{lstlisting} \saveSpace\saveSpace 
-\saveSpace\saveSpace\saveSpace\saveSpace
+\end{lstlisting}  
+
 \paragraph{Independent Extensibility:}
   Of course, quite frequently there can be multiple independent
   extensions~\cite{Zenger-Odersky2005} that need to be composed. Lets suppose that 
@@ -360,33 +363,33 @@ CPoint= /*as before*/
 moves the implementation to another name. This is very useful to implement super calls
  and to compose conflicting implementations.
 \noindent Consider the simple \Q@flavored@ trait:
-\saveSpace\saveSpace \begin{lstlisting}
+ \begin{lstlisting}
 flavored= {
   method Flavor flavor() //very similar to colored
   method This withFlavor(Flavor that)
   method This merge(This that){ //merging flavors handled here
     return this.withFlavor(that.flavor());}}//inherits "that" flavor
-\end{lstlisting}  \saveSpace\saveSpace
+\end{lstlisting}  
 
-\noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@_1merge@ and \Q@_2merge@
+\noindent In order to merge \Q@colored@ and \Q@flavored@ we use  \Q@super@ to introduce method selectors \Q@$\_$1merge@ and \Q@$\_$2merge@
 to refer to the version of \Q@merge@ as defined in the first/second element of \use.
 
-\saveSpace\saveSpace \begin{lstlisting}
+ \begin{lstlisting}
 FCPoint= Use
-  colored[super merge as _1merge], //this leaves merge as an abstract method, and
-  flavored[super merge as _2merge],//copies the bodies into _1merge and _2merge
+  colored[super merge as $\_$1merge], //this leaves merge as an abstract method, and
+  flavored[super merge as $\_$2merge],//copies the bodies into $\_$1merge and $\_$2merge
   pointSum,{
     static method This of(int x,int y){
       return This.of(x,y,Color.of(/*red*/),Flavor.none());}
     static method This of(int x, int y,Color color,Flavor flavor)
     method This merge(This that){//merge conflict is solved 
-      return this._1merge(that)._2merge(that);}//by calling the two versions
+      return this.$\_$1merge(that).$\_$2merge(that);}//by calling the two versions
     }
-\end{lstlisting}  \saveSpace\saveSpace
+\end{lstlisting}  
 
 Note how we are relying on the fact that the code literal
  does not need to be complete, 
-thus we can just call \Q@_1merge@ and \Q@_2merge@ without
+thus we can just call \Q@$\_$1merge@ and \Q@$\_$2merge@ without
  declaring their abstract signature explicitly.
 
 In this last example, when we tried to obtain state extensibility, we refactored the code to introduce  the \Q@merge(This)@ method.
@@ -395,15 +398,15 @@ anticipate the need for state extensibility
 in order to design our original code.
 As illustrated by the following example, we can instead rely on the \Q@super@ operator to inject the \Q@merge(This)@ method when needed.
 
-\saveSpace\saveSpace \begin{lstlisting}
+ \begin{lstlisting}
 p=/*as originally designed: no merge*/
 pointSum=/*as originally designed: no merge*/
 merge={method This merge(This that)}
-pointSumMerge=Use merge, pointSum[super sum as _1sum], { 
-  method This sum(This that){return this.merge(that)._1sum(that);}}
+pointSumMerge=Use merge, pointSum[super sum as $\_$1sum], { 
+  method This sum(This that){return this.merge(that).$\_$1sum(that);}}
 colored=/*as before, with merge implementation*/
 CPoint= /*as before, but using pointSumMerge*/
-\end{lstlisting} \saveSpace\saveSpace 
+\end{lstlisting}  
 
 
 %, as in the following example:
@@ -449,13 +452,15 @@ of the amount of glue-code needed to generate
 
 \noindent The results for the second experiment are presented below.
 
-\noindent \begin{tabular}{l l l l}
-\hline
-Language       & Lines of code & N. of members & N. of classes or traits\\
-\hline
-Java           &  $47= 10+9$\ \ \ \ $+$ \ \ \ \  $13+15$         &    $27$             &     $6$\\
-Scala          &  $53=$ \ \ $8+3+6*2+12+18$        &    $31$             &         $6$\\
-\name          &  $33=$\ \ \ $7+3+5*2+$\ \ $4+9$      &    $24$             &         $6$\\
-\hline
-\end{tabular}
 
+\begin{center}
+\begin{tabular}{@{} l l l l @{}}
+\toprule
+Language       & Lines of code & members & classes or traits\\
+\midrule
+Java           &  $47= 10+9$\ \ \ \ \ $+$\  \ \ \ \ \ \  $13+15$         &    $27$             &     $6$\\
+Scala          &  $53=$ \ \ $8+3+6*2+12+18$        &    $31$             &         $6$\\
+\name          &  $33=$\ \ \ $7+3+5*2+$\ \ \ $4+9$      &    $24$             &         $6$\\
+\bottomrule
+\end{tabular}
+\end{center}

@@ -1,11 +1,11 @@
-\saveSpace
+
 \section{Introduction}\label{sec:intro}
-\saveSpace
+
 In Java, C++, Scala and C\#, subclassing 
 implies subtyping. A Java subclass declaration, such as 
 \Q@class A extends B {}@
 \noindent does two things at the same time:
-it {\bf inherits} code from \lstinline{B}; and it creates
+it \textbf{inherits} code from \lstinline{B}; and it creates
 a subtype of \lstinline{B}. Therefore a subclass must \emph{always} be
 a subtype of the extended class.
 Such design choice where subclassing implies subtyping is not
@@ -16,9 +16,9 @@ good for code-reuse, design and reasoning. There are at
 least two distinct situations where the separation of subtyping and 
 subclassing is helpful.
 
-\begin{itemize}
+\begin{description}
 
-\item {\bf Allowing inheritance/reuse even when subtyping is impossible:} 
+\item[Allowing inheritance/reuse even when subtyping is impossible:] 
 Situations where inheritance is desirable are prevented
 by the enforced subtyping relation. A well-known example are the so-called \emph{binary methods}~\cite{cook,bruce96binary}.
 For example, consider a class \Q@Point@ with a method 
@@ -36,7 +36,7 @@ have (sound) subtyping.
 %are incompatible with the superclass, yet inheritance is still
 %desirable. Classes with \emph{binary methods}~\cite{cook,bruce96binary} are a typical example.
 
-\item {\bf Preventing unintended subtyping:} For certain classes we
+\item[Preventing unintended subtyping:] For certain classes we
   would like to inherit code without creating a subtype even if, from
   the typing point of view, subtyping is still sound. A typical
   example~\cite{LaLonde:1991:SSS:110673.110679} is \emph{Sets} and
@@ -46,35 +46,35 @@ have (sound) subtyping.
   However, from the logical point-of-view a Bag is \emph{not a
     subtype} of a Set. 
 
-\end{itemize}
+\end{description}
 
 \noindent Structural typing~\cite{cook} may deal with the first
 situation, but not the second. Since structural subtyping
 accounts for the types of the methods only, a Bag would be a subtype
 of a Set if the two interfaces are type compatible. For dealing with
 the second situation, nominal subtyping is preferable: an explicit subtyping relation must be signalled by the programmer. Thus if subtyping is not desired, the
-programmer can simply {\bf not} declare a subtyping relationship.
+programmer can simply \emph{not} declare a subtyping relationship.
 
 While there is no problem in subtyping without subclassing, in most nominal OO languages subclassing fundamentally implies subtyping. 
 This is because of what we call the
 \emph{this-leaking problem}, illustrated by the following
 (Java) code, where
 method \lstinline{A.ma} passes \lstinline{this} as \lstinline{A} to \Q@Utils.m@.
-This code is correct, and there is no subtyping/subclassing{.}\saveSpace\saveSpace
+This code is correct, and there is no subtyping/subclassing{.}
 \begin{lstlisting}[language=Java]
   class A{ int ma(){ return Utils.m(this); } }
   class Utils{ static int m(A a){..} }
 \end{lstlisting}
-\saveSpace\saveSpace
+
   Now, lets add a class \Q@B@
-\saveSpace\saveSpace\saveSpace
+
 \begin{lstlisting}[language=Java]
   class B extends A{ int mb(){return this.ma();} }  
 \end{lstlisting}
-\saveSpace\saveSpace
+
 %%Class \lstinline{B} does two things at the same time: 
-%%1) it {\bf inherits} the method \lstinline{ma} from
-%%\lstinline{A}; and 2) it creates a {\bf subtype} of \lstinline{A}.
+%%1) it \textbf{inherits} the method \lstinline{ma} from
+%%\lstinline{A}; and 2) it creates a \textbf{subtype} of \lstinline{A}.
 \noindent We can see an invocation of \lstinline{A.ma} inside
 \lstinline{B.mb}, where the self-reference \lstinline{this} is of type \lstinline{B}. 
 The execution will eventually call \lstinline{Utils.m} with an
@@ -91,7 +91,7 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %\noindent Then an invocation of 
 %\lstinline{mb} would be type-unsafe (i.e. it would 
 %result in a run-time type error). 
-%Note that here the intention of using the imaginary keyword {\bf
+%Note that here the intention of using the imaginary keyword \textbf{
 %  inherits} is to allow the code from \lstinline{A} to be inherited 
 %without \lstinline{B} becoming a subtype of \lstinline{A}. 
 %However this breaks type-safety. The problem is that the
@@ -102,12 +102,12 @@ instance of \lstinline{B}. However, \emph{this can be correct only if \lstinline
 %expected argument of type \lstinline{A}.  
 
 
-Suppose Java code-reuse (the {\bf extends} keyword) did not introduce subtyping\footnote{
+Suppose Java code-reuse (the \textbf{extends} keyword) did not introduce subtyping\footnote{
 C++ allows "extending privately"; this is not
 what we mean by not introducing subtyping: in C++ it is a limitation over
   subtyping visibility, not over subtyping itself.  Indeed, the
   former example would be \emph{accepted} even if \lstinline{B} were to
-  "privately extends" \lstinline{A}}: then an invocation of 
+  "privately extends" \lstinline{A}.}: then an invocation of 
 \lstinline{B.mb} would result in a run-time type error.
 The problem is that the
 self-reference \lstinline{this} in class \lstinline{B} has 
@@ -116,7 +116,7 @@ the method \lstinline{Utils.m} (as a result of the invocation of
 \lstinline{B.mb}), it will have a type that is incompatible with the
 expected argument of type \lstinline{A}.  
 Therefore, every OO language with the minimal features exposed in the example (using \lstinline{this},
-{\bf extends} and method calls) is forced to accept that subclassing implies
+\textbf{extends} and method calls) is forced to accept that subclassing implies
 subtyping.
   
 
@@ -130,17 +130,16 @@ classes can also be subclassed to provide \emph{reuse} of code.
 We are aware of at least $3$ independently designed research
 languages that address the \emph{this-leaking problem}:
 \begin{itemize}
-\item In {\bf TraitRecordJ (TR)}~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}
+\item In TraitRecordJ (TR)~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282}
 each construct has a single responsibility: classes instantiate objects,
 interfaces induce types, records express state, and traits are reuse units.
-\item {\bf Package Templates (PT)}~\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}:
+\item Package Templates (PT)~\cite{KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12}:
 an extension of (full) Java where new packages can be ``synthesized'' by mixing
 and integrating code templates. 
 Such ``synthesized'' packages can be used for code reuse without inducing subtyping.
 %As an extension of Java, PT allows but does not require
 %separation of inheritance and subtyping.
-\item {\bf
-    DeepFJig(DJ)}~\cite{deep,servetto2014meta,fjig} is
+\item DeepFJig(DJ)~\cite{deep,servetto2014meta,fjig} is
 a module composition language where nested classes with the same name are recursively composed.
 \end{itemize}
 %Those $3$ languages also shown that family polymorphism 
@@ -183,7 +182,8 @@ research above, and is even more outstanding in the clean \name model.
 
 We first focus on an example-driven presentation to illustrate how to
 improve use and reuse. 
-In Appendix~\ref{sec:formal}, we then provide a compact formalization.
+In ~\autoref{sec:formal}, 
+we then provide a compact formalization.
 The hard technical aspects of the
 semantics have been studied in previous 
 work~\cite{Bettini:2010:ISP:1774088.1774530,BETTINI2013521,Bettini2015282,KrogdahlMS09,DBLP:journals/taosd/AxelsenSKM12,DBLP:conf/gpce/AxelsenK12,deep,servetto2014meta,fjig};
@@ -230,6 +230,6 @@ This design improves both code use and code reuse.
 \item We perform $3$ case studies, comparing our work with other
   approaches, and we collect clear data showing that we can express the same examples in a cleaner and more modular manner.
 \end{itemize}
-\saveSpace
-\saveSpace
+
+
 
