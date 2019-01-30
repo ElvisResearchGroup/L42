@@ -16,14 +16,14 @@ Here we use the metavariable $x$, $t$, $C$ and $m$ as identifiers for variables/
 \begin{bnf}
 \hline
 \production{%
-e}      {x \mmid{} \ec{e}{m}{es} \mmid{} \ec{T}{m}{es} \mmid{} \ef{e}{x} \mmid{} \en{T}{es}}{expression}\\\production{%
+e}      {x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}\\\production{%
 L}      {\clit{K}{\Tz}{\Mz}}        {code literal}\\\production{%
-M}      {\meth{T}{m}{\Txs}{e\q} \mmid{} \ncd{C}{E}}                                                    {member}\\\production{%
-K}      {\Q{interface} \mmid{} \Q{abstract} \mmid{} \Txs}                                          {kind}\\\production{%
+M}      {\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}                                                    {member}\\\production{%
+K}      {\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}                                          {kind}\\\production{%
 %CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
 %CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
 %source}      {Ds e}                                                             {source code}\\\production{%
-E}      {L \mmid{} t \mmid{} \summ{E_1}{E_2} \mmid{} \red{E}{R}}           {Code Expr.}%
+E}      {L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}           {Code Expr.}%
 %amt}    {T m\rp{\Txs}}                                                      {abstract method}\\\production{%
 %mt}     {\Q{static}$?$ T m\rp{\Txs} e$?$}                                                 {method}\\\production{%
 \\\production{%
@@ -37,13 +37,13 @@ R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}
 T}      {\This{n}{Cs}}                                                 {types}\\\production{%
 \Tx}     {T x}                                                              {parameter}\\\production{%
 D}      {\tld{\Id}{E}}                                                         {declaration}\\\production{%
-id}     {C \mmid{} t}                                                      {class/trait id}\\\production{%
+id}     {C \mid{} t}                                                      {class/trait id}\\\production{%
 v}      {\en{T}{vs}}                                                 {value}\\\production{%
 LV}      {\ldots}{}                                                
 \\\hline
 \end{bnf}
 \end{minipage}
-
+%\red{A}\ \red{A}{B}\ \red{A}{B}{C}\ \red{A}{B}{C}{D}\ \red{A}{B}{C}{D}{E}
 The input to our language will consist of a sequence of top level declarations (a $Ds$) and a main expression (and $e$).
 
 In detail, the forms of our syntax are:\IOComm{Why is there lots of space here?}
@@ -265,8 +265,8 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
 \indent\begin{bnf}
 \production{%
-	\ctx{V}}{\hole \mmid{}  \summ{\ctx{V}}{E} %
-	\mmid{} \summ{LV}{\ctx{V}} \mmid{} \red{\ctx{V}}{Cs}{T}}  {}
+	\ctx{V}}{\hole \mid{}  \summ{\ctx{V}}{E} %
+	\mid{} \summ{LV}{\ctx{V}} \mid{} \red{\ctx{V}}{Cs}{T}}  {}
 \end{bnf}
 
 \noindent In details the rules are:
@@ -410,3 +410,71 @@ We will define $p\op{validRedirectMaps}{R}$ to produce a set of completions of t
 (See Section \ref{??} for our definition of $p \vdash T : L \leq Cs : L'$, the idea being that $L$ (with name $T$) is a structural `sub-type' of $L'$ (with name $Cs$), and so anything done with $Cs$ can also be done with $P$).
 
 Any map in $p\op{validRedirectMaps}{R}$ would be a valid complete-map for redirect to use. The challenge is what should happen if their are multiple things in this set, or if the result of this set could change if extra classes are added to $p$.
+
+\subsection {Best Redirect Map}
+We will say that the `best' (valid) redirect map is the (unqiue) map that is:
+\begin{itemize}
+	\item valid
+	\item chooses the most `specific' (or most derived) target for each $Cs$ in the redirect set, of all other valid maps.
+	\item Whose targets will still be the most specific even if new (unrelated) declaratios where added to the program.
+\end{itemize}
+
+This ensures that targets that give the most information (are more specific) are chosen, and that adding extra classes to the program will not change the result (i.e. it is stable).
+
+
+\begin{defs}
+
+\defi{p\op{bestRedirectMap}{R}}{p\op{stableMostSpecific}{R, \opn{validRedirectMaps}}}{...}
+\defi{p\op{stableMostSpecific}{R, f}}{R'}{...}
+\defic{\wwhere \forall p' \in p\op{similarPrograms}{} \quad p'\op{mostSpecificRedirectMap}{f(p', R)} = R'}{...}
+\defic{\text{and } f \text{ is a function from } (p, R) \text{ to } Rz}{...}
+\defit{\prog{\DVs}{\DVz,\DVz'} \in (\prog{\DVs}{\DVz})\op{similarPrograms}{}}{}
+\defis
+\defi{p\op{mostSpecificRedirectMap}{Rz}}{R}{...}
+\defic{\wwhere R \in Rz}{...}
+\defic{\text{and } \forall Cs \in \dom{R} \quad R(Cs) = p\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz}}{...}
+
+
+\defi{p\op{mostSpecific}{Tz}}{T}{...}
+\defic{\wwhere T \in Tz \text{ and } Tz \subseteq p\op{superClasses}{T}}{..}
+
+\defi{p\op{superClasses}{T}}{T,Tz\where p[T] = \clit{\_}{Tz}{\_}}{}
+%MostSpecific(p; Pz) = P
+%P in p.minimize(Pz)
+%p.minimize(Pz) subseteq SuperClasses(p; P)
+
+		
+%define MostSpecificRedirectMap(p; R,Rz) = R
+%forall Cs:
+%// forall is limited since R(Cs) is undefined if none of the R,Rz define it
+%R(Cs) = MostSpecific(p; {R'(Cs) | R' in R,Rz})
+
+
+%  BestRedirectMap(p; R) = StableMostSpecific(p; R; ValidRedirectMaps)
+%StableMostSpecific(p; R; f) = R' iff:
+%forall p' in SimilarPrograms(p): MostSpecificRedirectMap(p'; f(p', R)) = R'
+%with f a function (p,R)->Rz
+\end{defs}
+
+\section{Structural Subtyping}
+We define a structural subtyping relation $p \vdash T : L \leq Cs : L'$, to mean that $L$ (with name $T$) is a structural `sub-type' of $L'$ (with name $Cs$):
+
+\begin{defs}
+\defip{p \vdash T : \clit{K}{Tz}{Mz} \leq Cs : \clit{K'}{Tz'}{Mz'}}{}{...}
+\defic{Tz' \subseteq T,Tz \text{, and}}{...}
+\defic{\forall m \in \dom{Mz'} \quad p \vdash Mz(m) \leq Mz'(m)\text{, and}}{...}
+\defic{\text{if } K = \Q{interface} \text{ then}}{...}
+\defic{\qquad K' = \Q{interface} \text{, and}}{...}
+\defic{\forall m \in \dom{Mz} \quad p \vdash Mz'(m) \leq Mz(m)}{...}
+\defis
+\defip{p \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{...}
+\defic{p \vdash T_0 \leq T_0' \text{ and } p \vdash T_1' \leq T_1\ \ldots\ p \vdash T_n' \leq T_n }{...}
+\defip{p \vdash T \leq T'}{T' \in p\op{superClasses}{T}}{}
+\end{defs}
+      
+\IOComm{We should prevent interfaces from having static methods, then we don't need the rule:\\ \indent \indent \Q{if interface?'=empty: if interface? = interface then class not in mwtz'.mdfz}}
+      
+
+
+
+

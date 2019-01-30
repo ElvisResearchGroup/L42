@@ -6,7 +6,7 @@
 \usepackage{mathpartir}
 
 \makeatletter
-
+\newcommand{\@eq}{\,\,\Q{=}\!\,\,}
 % A nice questionmark
 \newcommand{\@code}[1]{\ensuremath{#1}}
 \newcommand{\q}{\ensuremath{?}}
@@ -33,7 +33,7 @@
 \newcommand{\ncd}[2]{\tld{\Q{private}\q\,#1}{#2}}
 \newcommand{\pncd}[2]{\tld{\Q{private}\,#1}{#2}}
 % T Top level declaration
-\newcommand{\tld}[2]{\@code{#1\,\,\Q{=}\!\,\,#2}}
+\newcommand{\tld}[2]{\@code{#1\@eq#2}}
 
 % Class literals
 \newcommand{\clit}[3]{\@code{\cp{#1\Q{;}\ #2\Q{;}\ #3}}}
@@ -52,9 +52,9 @@
 % Redirect operator, and redirect map
 \newcommand{\red}[1]{\@code{#1}\,\Q!<!\!\,\@nextCsP{\,\Q!>!}}
 \newcommand{\redm}{\@nextCsP{}}
-	\newcommand{\@nextCsP}[1]{\@ifnextchar\bgroup{\@gobblenextCs{#1}}{#1}}
-	\newcommand{\@gobblenextCs}[2]{\@code{#2}\@ifnextchar\bgroup{\Q!\ =\ !\@gobblenextP{#1}}{#1\xspace}}
-	\newcommand{\@gobblenextP}[2]{\@code{#2}\@ifnextchar\bgroup{\Q!,\ !\@gobblenextCs{#1}}{#1\xspace}}
+	\newcommand{\@nextCsP}[1]{\@ifnextchar\bgroup{\@gobblenextCs{}{#1}}{#1}}
+	\newcommand{\@gobblenextCs}[3]{#1\@code{#3}\@ifnextchar\bgroup{\@eq \@gobblenextP{#2}}{#2\xspace}}
+	\newcommand{\@gobblenextP}[2]{\@code{#2}\@ifnextchar\bgroup{\@gobblenextCs{\Q{,}\,}{#1}}{#1\xspace}}
 
 % new expression, field access expressions, method call expression\
 \newcommand{\en}[2]{\@code{\Q{new}\ #1\rp{#2}}}
@@ -75,6 +75,7 @@
 \newcommand{\Ok}{\ensuremath{\textbf{Ok}}}
 % Meta-notation
 \newcommand{\op}[2]{{\ensuremath{{}_{.\textbf{#1}({#2})}}}}
+\newcommand{\opn}[1]{{\ensuremath{\textbf{#1}}}}
 \newcommand{\fop}[2]{{\ensuremath{\footnotesize{\textbf{#1}}({#2})}}}
 
 % operators
@@ -125,22 +126,6 @@
 % ----------------------------------------------------------------------------
 %\newcommand{\qquad}{\quad\quad}
 
-% Magic to make lstinline work in mathmode....
-\newcommand*{\SavedLstInline}{}
-\LetLtxMacro\SavedLstInline\lstinline
-\DeclareRobustCommand*{\lstinline}{%
-	\ifmmode
-	\let\SavedBGroup\bgroup
-	\def\bgroup{%
-		\let\bgroup\SavedBGroup
-		\hbox\bgroup
-	}%
-	\fi
-	\SavedLstInline
-}
-
-
-\newcommand{\mmid}{{\ensuremath{{\mid}}}\!}
 \newcommand{\Rulename}[1]{{\textsc{(#1)}}}
 \renewcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
 
