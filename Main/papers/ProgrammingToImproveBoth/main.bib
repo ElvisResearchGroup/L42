@@ -13,18 +13,18 @@
 @string{ictcs15="ICTCS'15 - Italian Conf. on Theoretical Computer Science"}
 @string{ictcs16="ICTCS'16 - Italian Conf. on Theoretical Computer Science"}
 @string{icfp14="Intl. Conf. on Functional Programming 2014"}
-@string{lics02="Proc. IEEE Symp. on Logic in Computer Science 2002"}
-@string{oops17="OOPS'17 - Object-Oriented Programming Languages and Systems, Track at SAC'17 - ACM Symp. on Applied Computing"}
-@string{oopsla91="ACM Symp. on Object-Oriented Programming: Systems, Languages and Applications 1991"}
-@string{oopsla98="ACM Symp. on Object-Oriented Programming: Systems, Languages and Applications 1998"}
+@string{lics02="Proc. IEEE Symposium on Logic in Computer Science 2002"}
+@string{oops17="OOPS'17 - Object-Oriented Programming Languages and Systems, Track at SAC'17 - ACM Symposium on Applied Computing"}
+@string{oopsla91="ACM Symposium on Object-Oriented Programming: Systems, Languages and Applications 1991"}
+@string{oopsla98="ACM Symposium on Object-Oriented Programming: Systems, Languages and Applications 1998"}
 @string{oopsla04="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2004)"}
 @string{oopsla05="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2005)"}
 @string{oopsla10="ACM SIGPLAN Conference on Object-Oriented Programming,Systems, Languages and Applications (OOPSLA 2010)"}
 @string{oopsla11="ACM SIGPLAN Conference on Object-Oriented Programming,Systems, Languages and Applications (OOPSLA 2011)"}
 @string{oopsla12="ACM SIGPLAN Conference on Object-Oriented Programming, Systems, Languages and Applications (OOPSLA 2012)"}
 @string{pepm13 = "PEPM'13 - Partial Evaluation and Program Manipulation"}
-@string{popl12="ACM Symp. on Principles of Programming Languages 2012"}
-@string{popl90="ACM Symp. on Principles of Programming Languages 1990"}
+@string{popl12="ACM Symposium on Principles of Programming Languages 2012"}
+@string{popl90="ACM Symposium on Principles of Programming Languages 1990"}
 
 %journals
 @string{entcs="Electronic Notes in Theoretical Computer Science"}
@@ -69,7 +69,7 @@
 @article{ryu16ThisType,
  author = {Ryu, Sukyoung},
  title = {ThisType for Object-Oriented Languages: From Theory to Practice},
- journal = {ACM Trans. Program. Lang. Syst.},
+ journal = {ACM Transactions on Programming Languages and Systems (TOPLAS)},
  issue_date = {May 2016},
  volume = {38},
  number = {3},
@@ -115,16 +115,21 @@ title     = {Balloon Types: Controlling Sharing of State in Data Types},
 }
 
 @ARTICLE{bruce96binary,
-        AUTHOR = {K. Bruce and L. Cardelli and G. Castagna and
-                  The~Hopkins~Object~Group and G. Leavens and B. Pierce},
-        TITLE = {On Binary Methods},
-        JOURNAL = {Theory and Practice of Object Systems},
-        YEAR = {1996},
-        VOLUME = {1},
-	issn = {1074-3227},
-	pages = {221--242},
-        numpages = {22},
-        NUMBER = {3}
+ author = {Bruce, Kim and Cardelli, Luca and Castagna, Giuseppe and {The~Hopkins~Objects~Group} and Leavens, Gary T. and Pierce, Benjamin},
+ title = {On Binary Methods},
+ journal = {Theory and Practice of Object Systems},
+ issue_date = {Fall 1995},
+ volume = {1},
+ number = {3},
+ month = dec,
+ year = {1995},
+ issn = {1074-3227},
+ pages = {221--242},
+ numpages = {22},
+ url = {http://dl.acm.org/citation.cfm?id=230849.230854},
+ acmid = {230854},
+ publisher = {John Wiley \& Sons, Inc.},
+ address = {New York, NY, USA},
 }
 
 @Article{AriolaBlom02,
@@ -158,7 +163,8 @@ year = 1997,
 
 @book{Bloch08,
  author = {Bloch, Joshua},
- title = {Effective {J}ava (2Nd Edition) (The Java Series)},
+ title = {Effective {J}ava},
+ series = {The Java Series},
  year = {2008},
  edition = {2},
  publisher = {Prentice Hall PTR},
@@ -493,7 +499,6 @@ booktitle = ecoop13,
   series    = {FOOL},
   year =         2005,
   month =        jan,
-  doi={10.1.1.107.4449}
 }
 
 @online{wadler1998expression,
@@ -553,9 +558,9 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
   title={Design principles and design patterns},
   author={Martin, Robert C.},
   year={2000},
-  url="http://staff.cs.utu.fi/staff/jouni.smed/doos_06/material/DesignPrinciplesAndPatterns.pdf",
-  lastaccess =   {2019-11-12},
-  urldate    =   {2019-11-12}
+  url="http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf",
+  note = "{Archived at \url{https://web.archive.org/web/20150906155800/http://www.objectmentor.com/resources/articles/Principles_and_Patterns.pdf}}",
+  urldate    =   {2019-01-12}
 }
 
 @article{ducasse2006traits,
@@ -586,17 +591,34 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
   doi={10.1145/503502.503505}
 }
 
+
+
 @inproceedings{bawden1999quasiquotation,
-  title={Quasiquotation in Lisp.},
-  author = {Alan Bawden},
-  booktitle={Proceedings of the 1999 {ACM} {SIGPLAN} Workshop on Partial Evaluation
-               and Semantics-Based Program Manipulation},
-  series={PEPM},
-  pages={4--12},
-  year={1999},
+  author    = {Alan Bawden},
+  title     = {Quasiquotation in Lisp},
+  booktitle = {Proceedings of the 1999 {ACM} {SIGPLAN} Workshop on Partial Evaluation
+               and Semantics-Based Program Manipulation, San Antonio, Texas, USA,
+               January 22-23, 1999. Technical report {BRICS-NS-99-1}},
+  pages     = {4--12},
+  year      = {1999},
+  crossref  = {DBLP:conf/pepm/1999},
+  timestamp = {Tue, 22 May 2012 15:24:56 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/pepm/Bawden99},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@proceedings{DBLP:conf/pepm/1999,
   editor    = {Olivier Danvy},
-  doi={10.1.1.309.227}
-  }
+  title     = {Proceedings of the 1999 {ACM} {SIGPLAN} Workshop on Partial Evaluation
+               and Semantics-Based Program Manipulation, San Antonio, Texas, USA,
+               January 22-23, 1999. Technical report {BRICS-NS-99-1}},
+  publisher = {University of Aarhus},
+  year      = {1999},
+  timestamp = {Tue, 22 May 2012 15:24:56 +0200},
+  biburl    = {https://dblp.org/rec/bib/conf/pepm/1999},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
 
 
 @inproceedings{wang2016classless,
@@ -706,9 +728,11 @@ booktitle = {WODET 2014 - Workshop on Determinism and Correctness in Parallel Pr
 @article{Bettini2015282,
 title = "Implementing type-safe software product lines using parametric traits",
 journal = "Science of Computer Programming ",
-volume = "97, Part 3",
-pages = "282 - 308",
+volume = "97",
+number = "P3",
+pages = "282--308",
 year = "2015",
+issn = {0167-6423},
 author    = {Lorenzo Bettini and
                Ferruccio Damiani and
                Ina Schaefer},
@@ -722,10 +746,11 @@ title = "TraitRecordJ: A programming language with traits and records",
 journal = "Science of Computer Programming",
 volume = "78",
 number = "5",
-pages = "521 - 541",
+pages = "521--541",
 year = "2013",
+issn = {0167-6423},
 author = "Lorenzo Bettini and Ferruccio Damiani and Ina Schaefer and Fabio Strocco",
-doi       = {10.1016/j.scico.2011.06.007}
+doi       = {10.1016/j.scico.2011.06.007},
 }
 
 
@@ -845,13 +870,13 @@ doi="10.1007/978-3-540-71836-9_4"
   author={Ernst, Erik},
   booktitle=ecoop99,
   series=lncs,
-  volume={99},
-  number={6},
+  volume={1628},
   pages={67--91},
-  isbn = {3-540-66156-5},
+  isbn = {978-3-540-48743-2},
  numpages = {25},
   year={1999},
-  organization={Springer}
+  organization={Springer, Berlin, Heidelberg},
+  doi = {10.1007/3-540-48743-3_4}
 }
 
 @inproceedings{Hutchins06,
@@ -930,8 +955,9 @@ doi="10.1007/978-3-540-71836-9_4"
 @inproceedings{lagorio2009featherweight,
  author = {Lagorio, Giovanni and Servetto, Marco and Zucca, Elena},
  title = {Featherweight Jigsaw: A Minimal Core Calculus for Modular Composition of Classes},
- booktitle = {European Conference on Object-Oriented Programming},
- series = {ECOOP},
+ booktitle = {ECOOP 2009 – Object-Oriented Programming},
+ series = lncs,
+ volume = {5653},
  year = {2009},
  isbn = {978-3-642-03012-3},
  pages = {244--268},
@@ -953,10 +979,13 @@ doi="10.1007/978-3-540-71836-9_4"
 @inproceedings{torgersen2004expression,
   title={The expression problem revisited},
   author={Torgersen, Mads},
-  booktitle={European Conference on Object-Oriented Programming},
+  booktitle={ECOOP 2004 – Object-Oriented Programming},
+  editors = {Martin Odersky},
+  series = lncs,
+  volume= {3086},
   pages={123--146},
   year={2004},
-  organization={Springer},
+  organization={Springer, Berlin, Heidelberg},
   doi={10.1007/978-3-540-24851-4_6},
   isbn={978-3-540-22159-3}
 }
@@ -994,6 +1023,7 @@ doi="10.1007/978-3-540-71836-9_4"
   journal={Journal of Functional Programming},
   publisher={Cambridge University Press},
   author={Ancona, Davide and Zucca, Elena},
+  month=mar,
   year={2002},
   pages={91–132}
 }
@@ -1002,6 +1032,6 @@ doi="10.1007/978-3-540-71836-9_4"
   title={The programming language Jigsaw: mixins, modularity and multiple inheritance},
   author={Bracha, Gilad},
   year={1992},
-  school={Dept. of Computer Science, University of Utah},
-  doi={10.1.1.51.662}
+  month = mar,
+  school={Deptartment of Computer Science, University of Utah},
 }
