@@ -251,12 +251,12 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		p' = \tld{\Id}{LV'}, p\\\\
 		Csz = p'\op{redirectSet}{R}\\\\
 		p'\op{redirectable}{\Csz}\\\\
-		\forall $T$ \in \ran{R}, p\op{validType}{T}\\\\
+		\forall T \in \ran{R}\quad p\op{validType}{T}\\\\
 		R'=p'\op{prepareRedirectMap}{R}\\\\
 		R'' =p'\op{bestRedirectMap}{R'}
 	}{
 		p; \Id \vdash \red{LV'}{R} \Rightarrow   
-		\reda{R''}{}{LV'\op{remove}{Csz}}
+		\reda{R''}{LV'\op{remove}{Csz}}
 	}
 \end{irules}
 
@@ -353,15 +353,19 @@ A `valid' type is one that can be used as a target in a redirect map. It must be
 	\defip{p\op{accessible}{\This{n}{C}{C'}{Cs}}}{p(\This{n}{C}) = \clit{\_}{\_}{\tld{C'}{E}, \_}}{Not a further nested private}
 	\defit{p\op{accessible}{T}\otherwise}{An outer or a direct child of an outer}
 \end{defs}
+%accessible(p,Thisn.Cs.C.C') iff  accessible(Thisn.Cs.C) and p(Thisn.Cs.C)={ ... C=E L LV}
+%accessible(p,Thisn.C)
+%accessible(p,Thisn)
+(See Section \ref{?} for the typing rules of form $p \vdash T : \Ok$.)
+
 \IOComm{Is this rule correct?}
 \subsection{Prepare Redirect Map}
-As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program. In addition, we want to check that the target of a redirect 
+As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program.% In addition, we want to check that the target of a redirect 
 
 \begin{defs}
 \defi{p\op{prepareRedirectMap}{\redm{Cs}{\This{n}{Cs'}}}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}}}{}
-\defic{\wwhere p \vdash \This{n+1}{Cs'} : \Ok}{Check that the target is well typed and compiled}
+%\defic{\wwhere p \vdash \This{n+1}{Cs'} : \Ok}{Check that the target is well typed and compiled}
 \end{defs}
-(See Section \ref{?} for the typing rules of form $p \vdash T : \Ok$.)
 
 \subsection{Removing and Renaming}
 
@@ -397,8 +401,8 @@ We will define $p\op{validRedirectMaps}{R}$ to produce a set of completions of t
 
 \begin{defs}
 \defip{R' \in p\op{validRedirectMaps}{R}}{}{...}
-\defic{R' \in p\op{PossibleRedirectMaps}{R}}{Check that the mapping might work}
-\defic{\forall Cs \in \dom{R'} \ p \vdash R'(Cs) : p[R'(Cs)] \leq Cs : R'(p[Cs])}{}
+\defic{R' \in p\op{possibleRedirectMaps}{R}}{Check that the mapping might work}
+\defic{\forall Cs \in \dom{R'} \ p \vdash R'(Cs) \leq \reda{R'}{p[Cs]}}{}
 \defic{}{Check that the mapping preserves the structural interface}
 \defis
 \defip{R' \in p\op{possibleRedirectMaps}{R}}{}{...}
@@ -460,12 +464,13 @@ This ensures that targets that give the most information (are more specific) are
 We define a structural subtyping relation $p \vdash T : L \leq Cs : L'$, to mean that $L$ (with name $T$) is a structural `sub-type' of $L'$ (with name $Cs$):
 
 \begin{defs}
-\defip{p \vdash T : \clit{K}{Tz}{Mz} \leq Cs : \clit{K'}{Tz'}{Mz'}}{}{...}
-\defic{Tz' \subseteq T,Tz \text{, and}}{...}
-\defic{\forall m \in \dom{Mz'} \quad p \vdash Mz(m) \leq Mz'(m)\text{, and}}{...}
+\defip{p \vdash T \leq \clit{K'}{Tz'}{Mz'}}{}{...}
+\defic{p[T] = \clit{K}{Tz}{Mz}}{...}
+\defic{Tz' \subseteq T,Tz}{...}
+\defic{\forall m \in \dom{Mz'} \quad p \vdash Mz(m) \leq Mz'(m)}{...}
 \defic{\text{if } K = \Q{interface} \text{ then}}{...}
-\defic{\qquad K' = \Q{interface} \text{, and}}{...}
-\defic{\forall m \in \dom{Mz} \quad p \vdash Mz'(m) \leq Mz(m)}{...}
+\defic{\qquad K' = \Q{interface}}{...}
+\defic{\qquad \forall m \in \dom{Mz} \quad p \vdash Mz'(m) \leq Mz(m)}{...}
 \defis
 \defip{p \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{...}
 \defic{p \vdash T_0 \leq T_0' \text{ and } p \vdash T_1' \leq T_1\ \ldots\ p \vdash T_n' \leq T_n }{...}
