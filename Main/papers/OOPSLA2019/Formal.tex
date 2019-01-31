@@ -247,8 +247,8 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		Csz = p'\op{redirectSet}{R}\\\\
 		p'\op{redirectable}{\Csz}\\\\
 		\forall T \in \ran{R}\quad p\op{validType}{T}\\\\
-		R'=p'\op{prepareRedirectMap}{R}\\\\
-		R'' =p'\op{bestRedirectMap}{R'}
+		R'=p'\op{prepareMap}{R}\\\\
+		R'' =p'\op{bestMap}{R'}
 	}{
 		p; \Id \vdash \red{LV'}{R} \Rightarrow   
 		\reda{R''}{LV'\op{remove}{Csz}}
@@ -359,7 +359,7 @@ A `valid' type is one that can be used as a target in a redirect map. It must be
 As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program.% In addition, we want to check that the target of a redirect 
 
 \begin{defs}
-\defi{p\op{prepareRedirectMap}{\redm{Cs}{\This{n}{Cs'}}}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}}}{}
+\defi{p\op{prepareMap}{\redm{Cs}{\This{n}{Cs'}}}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}}}{}
 %\defic{\wwhere p \vdash \This{n+1}{Cs'} : \Ok}{Check that the target is well typed and compiled}
 \end{defs}
 
@@ -392,16 +392,16 @@ We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)
 \subsection{Valid Redirect Map}
 
 
-We will define $p\op{validRedirectMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to $p(\This{0})$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private-classes in $p(\This{0})$ in order to determine whether a given maping is valid, this allow such details of $p(\This{0})$ to change, without altering the behaviour of redirect.
+We will define $p\op{validMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to $p(\This{0})$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private-classes in $p(\This{0})$ in order to determine whether a given maping is valid, this allow such details of $p(\This{0})$ to change, without altering the behaviour of redirect.
 
 
 \begin{defs}
-\defip{R' \in p\op{validRedirectMaps}{R}}{}{...}
-\defic{R' \in p\op{possibleRedirectMaps}{R}}{Check that the mapping might work}
+\defip{R' \in p\op{validMaps}{R}}{}{...}
+\defic{R' \in p\op{possibleMaps}{R}}{Check that the mapping might work}
 \defic{\forall Cs \in \dom{R'} \ p \vdash R'(Cs) \leq \reda{R'}{p[Cs]}}{}
 \defic{}{Check that the mapping preserves the structural interface}
 \defis
-\defip{R' \in p\op{possibleRedirectMaps}{R}}{}{...}
+\defip{R' \in p\op{possibleMaps}{R}}{}{...}
 \defic{R' \supseteq R}{It is an extension of $R$}
 \defic{\dom{R'} = p\op{redirectSet}{R}}{It completes the redirect map}
 \defic{\forall T \in \ran{R'}\ p\op{validType}{T}}{check that the targets of $R'$ are reasonable}
@@ -409,7 +409,7 @@ We will define $p\op{validRedirectMaps}{R}$ to produce a set of completions of t
 
 (See Section \ref{??} for our definition of $p \vdash T : L \leq Cs : L'$, the idea being that $L$ (with name $T$) is a structural `sub-type' of $L'$ (with name $Cs$), and so anything done with $Cs$ can also be done with $P$).
 
-Any map in $p\op{validRedirectMaps}{R}$ would be a valid complete-map for redirect to use. The challenge is what should happen if their are multiple things in this set, or if the result of this set could change if extra classes are added to $p$.
+Any map in $p\op{validMaps}{R}$ would be a valid complete-map for redirect to use. The challenge is what should happen if their are multiple things in this set, or if the result of this set could change if extra classes are added to $p$.
 
 \subsection {Best Redirect Map}
 We will say that the `best' (valid) redirect map is the (unqiue) map that is:
@@ -424,13 +424,13 @@ This ensures that targets that give the most information (are more specific) are
 
 \begin{defs}
 
-\defi{p\op{bestRedirectMap}{R}}{p\op{stableMostSpecific}{R, \opn{validRedirectMaps}}}{...}
+\defi{p\op{bestMap}{R}}{p\op{stableMostSpecific}{R, \opn{validMaps}}}{...}
 \defi{p\op{stableMostSpecific}{R, f}}{R'}{...}
-\defic{\wwhere \forall p' \in p\op{similarPrograms}{} \quad p'\op{mostSpecificRedirectMap}{f(p', R)} = R'}{...}
+\defic{\wwhere \forall p' \in p\op{similarPrograms}{} \quad p'\op{mostSpecificMap}{f(p', R)} = R'}{...}
 \defic{\text{and } f \text{ is a function from } (p, R) \text{ to } Rz}{...}
 \defit{\prog{\DVs}{\DVz,\DVz'} \in (\prog{\DVs}{\DVz})\op{similarPrograms}{}}{}
 \defis
-\defi{p\op{mostSpecificRedirectMap}{Rz}}{R}{...}
+\defi{p\op{mostSpecificMap}{Rz}}{R}{...}
 \defic{\wwhere R \in Rz}{...}
 \defic{\text{and } \forall Cs \in \dom{R} \quad R(Cs) = p\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz}}{...}
 
@@ -445,15 +445,15 @@ This ensures that targets that give the most information (are more specific) are
 %p.minimize(Pz) subseteq SuperClasses(p; P)
 
 		
-%define MostSpecificRedirectMap(p; R,Rz) = R
+%define MostSpecificMap(p; R,Rz) = R
 %forall Cs:
 %// forall is limited since R(Cs) is undefined if none of the R,Rz define it
 %R(Cs) = MostSpecific(p; {R'(Cs) | R' in R,Rz})
 
 
-%  BestRedirectMap(p; R) = StableMostSpecific(p; R; ValidRedirectMaps)
+%  BestMap(p; R) = StableMostSpecific(p; R; ValidMaps)
 %StableMostSpecific(p; R; f) = R' iff:
-%forall p' in SimilarPrograms(p): MostSpecificRedirectMap(p'; f(p', R)) = R'
+%forall p' in SimilarPrograms(p): MostSpecificMap(p'; f(p', R)) = R'
 %with f a function (p,R)->Rz
 \end{defs}
 \IOComm{Warning! The above \opn{superClasses} definition is very different from the one we use in the algorithm/code, which does an intersection (and not a union) of the superclasses of the $Tz$}
