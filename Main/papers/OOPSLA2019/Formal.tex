@@ -12,7 +12,7 @@
 Here we use the metavariable $x$, $t$, $C$ and $m$ as identifiers for variables/fields, traits, classes and methods (respectively). Where an identifier is a $C$ (a class name) if and only if it starts with a capital letter. In addition we will use the metavariables $n$ and $i$ to refer to natural numbers. We will use the notation $Xs$, where $X$ is any metavariable, to refer to a (possibly empty) sequence of $X$s. Similarly $Xz$ will refer to a (possibly empty) \emph{set} of $X$s. \IOComm{Explain this $Xz$ thing in more detail?} Then notation $X?$ represents an $Xs$ with at most one element. Here is the grammar for our language:
 
 \noindent
-\begin{minipage}{0.65\textwidth}
+\begin{minipage}[t]{0.6\textwidth}
 \begin{bnf}
 \production{%
 e}      {x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}\production{%
@@ -29,7 +29,8 @@ E}      {L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}           {Code Ex
 R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}
 \end{bnf}
 \end{minipage}
-\begin{minipage}[t]{0.5\textwidth}
+\hfil
+\begin{minipage}[t]{0.35\textwidth}
 \begin{bnf}
 \production{%
 T}      {\This{n}{Cs}}                                                 {types}\production{%
@@ -247,11 +248,10 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		Csz = p'\op{redirectSet}{R}\\\\
 		p'\op{redirectable}{\Csz}\\\\
 		\forall T \in \ran{R}\quad p\op{validType}{T}\\\\
-		R'=p'\op{prepareMap}{R}\\\\
-		R'' =p'\op{bestMap}{R'}
+		R' =p'\op{bestMap}{p'\op{prepareMap}{R}}
 	}{
 		p; \Id \vdash \red{LV'}{R} \Rightarrow   
-		\reda{R''}{LV'\op{remove}{Csz}}
+		\reda{R'}{LV'\op{remove}{Csz}}
 	}
 \end{irules}
 
