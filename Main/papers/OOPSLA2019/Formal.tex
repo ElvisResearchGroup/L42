@@ -14,33 +14,30 @@ Here we use the metavariable $x$, $t$, $C$ and $m$ as identifiers for variables/
 \noindent
 \begin{minipage}{0.65\textwidth}
 \begin{bnf}
-\hline
 \production{%
-e}      {x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}\\\production{%
-L}      {\clit{K}{\Tz}{\Mz}}        {code literal}\\\production{%
-M}      {\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}                                                    {member}\\\production{%
-K}      {\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}                                          {kind}\\\production{%
-%CD}     {C\eq{}E}                                                          {class declaration}\\\production{%
-%CV}     {C\eq{}LV}                                                         {evaluated class declaration}\\\production{%
-%source}      {Ds e}                                                             {source code}\\\production{%
+e}      {x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}\production{%
+L}      {\clit{K}{\Tz}{\Mz}}        {code literal}\production{%
+M}      {\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}                                                    {member}\production{%
+K}      {\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}                                          {kind}\production{%
+%CD}     {C\eq{}E}                                                          {class declaration}\production{%
+%CV}     {C\eq{}LV}                                                         {evaluated class declaration}\production{%
+%source}      {Ds e}                                                             {source code}\production{%
 E}      {L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}           {Code Expr.}%
-%amt}    {T m\rp{\Txs}}                                                      {abstract method}\\\production{%
-%mt}     {\Q{static}$?$ T m\rp{\Txs} e$?$}                                                 {method}\\\production{%
-\\\production{%
-R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}\\\hline
+%amt}    {T m\rp{\Txs}}                                                      {abstract method}\production{%
+%mt}     {\Q{static}$?$ T m\rp{\Txs} e$?$}                                                 {method}\production{%
+\production{%
+R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}
 \end{bnf}
 \end{minipage}
 \begin{minipage}[t]{0.5\textwidth}
 \begin{bnf}
-\hline
 \production{%
-T}      {\This{n}{Cs}}                                                 {types}\\\production{%
-\Tx}     {T x}                                                              {parameter}\\\production{%
-D}      {\tld{\Id}{E}}                                                         {declaration}\\\production{%
-id}     {C \mid{} t}                                                      {class/trait id}\\\production{%
-v}      {\en{T}{vs}}                                                 {value}\\\production{%
+T}      {\This{n}{Cs}}                                                 {types}\production{%
+\Tx}     {T x}                                                              {parameter}\production{%
+D}      {\tld{\Id}{E}}                                                         {declaration}\production{%
+id}     {C \mid{} t}                                                      {class/trait id}\production{%
+v}      {\en{T}{vs}}                                                 {value}\production{%
 LV}      {\ldots}{}                                                
-\\\hline
 \end{bnf}
 \end{minipage}
 %\red{A}\ \red{A}{B}\ \red{A}{B}{C}\ \red{A}{B}{C}{D}\ \red{A}{B}{C}{D}{E}
@@ -80,11 +77,9 @@ We additionally impose the following well-formedness \IOComm{Is this spelt corre
 \subsection{Program and Auxiliary notations}
 
 \begin{bnf}
-	\hline
 	\production{%
-		p} {\prog{Ds}{\DVz}} {program}\\\production{%
+		p} {\prog{Ds}{\DVz}} {program}\production{%
 		DV}      {\tld{\Id}{LV}} {evaluated declaration}
-	\\\hline
 \end{bnf}
 
 \IOComm{Is program the right name here? That would be a more appropriate name for the input to the language, how about a meta-state or class tree or something else?}
@@ -350,8 +345,9 @@ A `valid' type is one that can be used as a target in a redirect map. It must be
 	\defic{p \vdash T : \Ok}{}
 	\defic{p\op{accessible}{T}}{}
 	\defis
-	\defip{p\op{accessible}{\This{n}{C}{C'}{Cs}}}{p(\This{n}{C}) = \clit{\_}{\_}{\tld{C'}{E}, \_}}{Not a further nested private}
-	\defit{p\op{accessible}{T}\otherwise}{An outer or a direct child of an outer}
+	\defip{p\op{accessible}{\This{n}{Cs}{C}{C'}}}{ p\op{accessible}{\This{n}{Cs}{C}} \text{ and } p(\This{n}{Cs}{C}) = \clit{\_}{\_}{\tld{C'}{E}, \_}}{}
+	\defit{p\op{accessible}{\This{n}{C}}\text{ and } p\op{accessible}{\This{n}}}{}
+%	\defit{p\op{accessible}{T}\otherwise}{An outer or a direct child of an outer}
 \end{defs}
 %accessible(p,Thisn.Cs.C.C') iff  accessible(Thisn.Cs.C) and p(Thisn.Cs.C)={ ... C=E L LV}
 %accessible(p,Thisn.C)
@@ -441,8 +437,9 @@ This ensures that targets that give the most information (are more specific) are
 
 \defi{p\op{mostSpecific}{Tz}}{T}{...}
 \defic{\wwhere T \in Tz \text{ and } Tz \subseteq p\op{superClasses}{T}}{..}
-
-\defi{p\op{superClasses}{T}}{T,Tz\where p[T] = \clit{\_}{Tz}{\_}}{}
+\defis
+\defi{p\op{superClasses}{T}}{T,p\op{superClasses}{Tz}\where p[T] = \clit{\_}{Tz}{\_}}{}
+\defi{p\op{superClasses}{Tz}}{\bigcup_{T\in Tz}{p\op{superClasses}{T}}}{}
 %MostSpecific(p; Pz) = P
 %P in p.minimize(Pz)
 %p.minimize(Pz) subseteq SuperClasses(p; P)
@@ -459,27 +456,21 @@ This ensures that targets that give the most information (are more specific) are
 %forall p' in SimilarPrograms(p): MostSpecificRedirectMap(p'; f(p', R)) = R'
 %with f a function (p,R)->Rz
 \end{defs}
+\IOComm{Warning! The above \opn{superClasses} definition is very different from the one we use in the algorithm/code, which does an intersection (and not a union) of the superclasses of the $Tz$}
 
 \section{Structural Subtyping}
-We define a structural subtyping relation $p \vdash T : L \leq Cs : L'$, to mean that $L$ (with name $T$) is a structural `sub-type' of $L'$ (with name $Cs$):
+We define a structural sub-typing relation $p \vdash T \leq L$, to mean that the type $T$ has a compatible structure with $L$. That is, any code using a class with structure $L$, would also be valid if it used $T$.
 
 \begin{defs}
 \defip{p \vdash T \leq \clit{K'}{Tz'}{Mz'}}{}{...}
 \defic{p[T] = \clit{K}{Tz}{Mz}}{...}
-\defic{Tz' \subseteq T,Tz}{...}
+\defic{p\op{superClasses}{Tz'} \subseteq p\op{superClasses}{T}}{...}
 \defic{\forall m \in \dom{Mz'} \quad p \vdash Mz(m) \leq Mz'(m)}{...}
-\defic{\text{if } K = \Q{interface} \text{ then}}{...}
-\defic{\qquad K' = \Q{interface}}{...}
-\defic{\qquad \forall m \in \dom{Mz} \quad p \vdash Mz'(m) \leq Mz(m)}{...}
+\defic{\text{if } K = \Q{interface} \text{ then } K' = \Q{interface}}{...}
+\defic{\text{if } K = \Q{interface} \text{ then } \forall m \in \dom{Mz} \quad p \vdash Mz'(m) \leq Mz(m)}{...}
 \defis
 \defip{p \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{...}
 \defic{p \vdash T_0 \leq T_0' \text{ and } p \vdash T_1' \leq T_1\ \ldots\ p \vdash T_n' \leq T_n }{...}
 \defip{p \vdash T \leq T'}{T' \in p\op{superClasses}{T}}{}
 \end{defs}
-      
-\IOComm{We should prevent interfaces from having static methods, then we don't need the rule:\\ \indent \indent \Q{if interface?'=empty: if interface? = interface then class not in mwtz'.mdfz}}
-      
-
-
-
 

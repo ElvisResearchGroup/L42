@@ -18,7 +18,7 @@
 
 %%%% Grammar forms
 
-\newcommand{\prog}[2]{\@code{#1\Q{;}#2}}
+\newcommand{\prog}[2]{\@code{#1;#2}}
 	\newcommand{\@meth}[5]{\@code{#1#2\ #3\rp{#4}#5}}
 
 % Methods: any, static, instance, abstract, abstract instance, abstract static
@@ -112,9 +112,13 @@
 \newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 
 
-\newenvironment{bnf}{$\begin{aligned}}{\end{aligned}$}
-\newcommand{\production}[3]{#1&\Coloneqq#2&\text{#3}}
-\newcommand{\prodNextLine}[2]{&\quad\quad#1&\text{#2}}
+\newenvironment{bnf}{
+	\setlength{\tabcolsep}{0pt}%
+	\noindent\tabularx{\textwidth}{rl>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
+	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}%
+}
+\newcommand{\production}[3]{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
+\newcommand{\prodNextLine}[2]{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 % --------------
 \newcommand{\defis}{\midrule}
 
