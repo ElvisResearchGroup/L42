@@ -52,4 +52,21 @@
 }
 
 
+% Based on the source for latex's @ifnextchar and @ifnch @xifnch
+% \@grabnextchar{cmd}
+% chews up the next (non-space) character, let's \nextchar to that character, and then executes cmd
+\long\def\@grabnextchar#1{
+	\def\@@cmd{#1}%
+	\futurelet\@let@token\@grabnch}
+
+\def\@grabnch{%
+	\ifx\@let@token\@sptoken
+	\let\@@do\@xgrabnch
+	\else
+	\let\nextchar=\@let@token
+	\let\@@do\@@cmd
+	\fi
+	\@@do}
+{\def\:{\@xgrabnch} \expandafter\gdef\: {\futurelet\@let@token\@grabnch}}
+
 \makeatother

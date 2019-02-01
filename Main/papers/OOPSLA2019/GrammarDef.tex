@@ -1,4 +1,3 @@
-% Definitions for the syntactic forms of our language, where relavent
 \usepackage{xspace}
 \usepackage{tabularx}
 \usepackage{letltxmacro}
@@ -18,7 +17,6 @@
 
 %%%% Grammar forms
 
-\newcommand{\prog}[2]{\@code{#1;#2}}
 	\newcommand{\@meth}[5]{\@code{#1#2\ #3\rp{#4}#5}}
 
 % Methods: any, static, instance, abstract, abstract instance, abstract static
@@ -30,21 +28,26 @@
 \newcommand{\aimeth}[3]{\@meth{}              {#1}{#2}{#3}{}}
 
 % Nested class
-\newcommand{\ncd}[2]{\tld{\Q{private}\q\,#1}{#2}}
-\newcommand{\pncd}[2]{\tld{\Q{private}\,#1}{#2}}
-% T Top level declaration
-\newcommand{\tld}[2]{\@code{#1\@eq#2}}
+\newcommand{\ncd}[2]{\cd{\Q{private}\q\,#1}{#2}}
+\newcommand{\pcd}[2]{\cd{\Q{private}\,#1}{#2}}
+\newcommand{\cd}[2]{\@code{#1\@eq#2}}
 
 % Class literals
 \newcommand{\clit}[3]{\@code{\cp{#1\Q{;}\ #2\Q{;}\ #3}}}
 	
 	%\@code{\ensuremath{\Q@\{@#1\Q{;}\ #2\Q{;}\ #3\,\Q@\}@\!}}}
 
-% Thisn.Cs, Cs (the latter has dots!)
-\renewcommand{\This}[1]{\ensuremath{\Q!This!_{\@code{#1}}}\@nextpath}
+%New
+\renewcommand{\T}[1]{#1\@nextpath}
+\renewcommand{\This}{\Q{This}\xspace}
+
+% OBSOLETE
+\newcommand{\prog}[2]{\@code{#1;#2}}
+\newcommand{\ThisN}[1]{\ensuremath{\Q!This!_{\@code{#1}}}\@nextpath}
 \newcommand{\Cs}[1]{#1\@nextpath}
 	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
 	\newcommand{\@gobblenextpath}[1]{\Q!.!\@code{#1}\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
+%-------------------
 
 % The sum operator
 \newcommand{\summ}[2]{\@code{#1\ \Q{<+}\ #2}}
@@ -63,6 +66,7 @@
 
 % Because mathmode puts too much space
 \newcommand{\DVz}{\ensuremath{\mathit{DVz}}}
+\newcommand{\Dz}{\ensuremath{\mathit{Dz}}}
 \newcommand{\DVs}{\ensuremath{\mathit{DVs}}}
 \newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
 \newcommand{\Id}{\ensuremath{\mathit{Id}}}
@@ -83,7 +87,7 @@
 \renewcommand{\members}[1]{\fop{members}{#1}}
 \newcommand{\idd}[1]{\fop{id}{#1}}
 \renewcommand{\dom}[1]{\fop{dom}{#1}}
-\newcommand{\ran}[1]{\fop{ran}{#1}}
+\newcommand{\ran}[1]{\fop{range}{#1}}
 \newcommand{\mdom}[1]{\fop{mdom}{#1}}
 \newcommand{\mini}[2]{#1\op{min}{#2}}
 \newcommand{\minid}[3]{#1\op{min}{#2, #3}}
@@ -112,13 +116,13 @@
 \newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 
 
-\newenvironment{bnf}{
+\newenvironment{grammar}{%
 	\setlength{\tabcolsep}{0pt}%
 	\noindent\tabularx{\textwidth}{rl>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}%
 }
-\newcommand{\production}[3]{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
-\newcommand{\prodNextLine}[2]{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+\newcommand{\produ}[3]{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
+\newcommand{\prodc}[2]{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 % --------------
 \newcommand{\defis}{\midrule}
 

@@ -1,117 +1,92 @@
-\section{Language grammar and well formedness}
+\section{Language Grammar and Well-Formedness}
 
 
-%We apply our ideas on a simplified object oriented language with nominal typing and (nested) interfaces  and final classes. 
-%Code reuse is obtained by trait composition, thus the source code would be
-%a sequence of top level declarations $D$ followed by a main expression;
-%a lower-case identifier $t$ is a trait name, while an upper case
-%identifier $C$ is a class name.
-%To simplify our terminology, instead of distinguishing between 
-%nested classes and nested interfaces, we will call \emph{nested class} any member of a code literal 
-%named by a class identifier $C$. Thus, the term \emph{class} may denote either an \emph{interface class} (interface for short) or a \emph{final class}.
-Here we use the metavariable $x$, $t$, $C$ and $m$ as identifiers for variables/fields, traits, classes and methods (respectively). Where an identifier is a $C$ (a class name) if and only if it starts with a capital letter. In addition we will use the metavariables $n$ and $i$ to refer to natural numbers. We will use the notation $Xs$, where $X$ is any metavariable, to refer to a (possibly empty) sequence of $X$s. Similarly $Xz$ will refer to a (possibly empty) \emph{set} of $X$s. \IOComm{Explain this $Xz$ thing in more detail?} Then notation $X?$ represents an $Xs$ with at most one element. Here is the grammar for our language:
+Here we use the meta-variables $x$, $t$, $C$, and $m$ as identifiers for variables/fields, traits, classes and methods (respectively). In the code examples, we will represent $C$ with upper-case identifiers. Meta-variables $n$ and $i$ refer to natural numbers. We will use the notation $Xs$, where $X$ is any metavariable, to refer to a (possibly empty) sequence of $X$s. Similarly $Xz$ will refer to a (possibly empty) \emph{set} of $X$s. Then notation $X?$ represents an $Xs$ with at most one element. Here is the grammar for our language:
 
 \noindent
-\begin{minipage}[t]{0.6\textwidth}
-\begin{bnf}
-\production{%
-e}      {x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}\production{%
-L}      {\clit{K}{\Tz}{\Mz}}        {code literal}\production{%
-M}      {\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}                                                    {member}\production{%
-K}      {\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}                                          {kind}\production{%
-%CD}     {C\eq{}E}                                                          {class declaration}\production{%
-%CV}     {C\eq{}LV}                                                         {evaluated class declaration}\production{%
-%source}      {Ds e}                                                             {source code}\production{%
-E}      {L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}           {Code Expr.}%
-%amt}    {T m\rp{\Txs}}                                                      {abstract method}\production{%
-%mt}     {\Q{static}$?$ T m\rp{\Txs} e$?$}                                                 {method}\production{%
-\production{%
-R}      {\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}                    {redirect map}
-\end{bnf}
+\newlength{\gramwidth}
+\setlength{\gramwidth}{\dimexpr\textwidth-1em}
+\begin{minipage}[t]{0.6\gramwidth}
+\begin{grammar}
+	\produ{e}{x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}
+	\produ{L}{\clit{K}{\Tz}{\Mz}}{code literal}
+	\produ{K}{\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}{kind}
+	\produ{M}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}{member}
+	\produ{E}{L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}{code expression}
+	\produ{R}{\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}{redirect map}
+\end{grammar}
+\end{minipage}\hfil
+\begin{minipage}[t]{0.4\gramwidth}
+\begin{grammar}
+	\produ{T}{C \mid \T{T}{C}}{type}
+	\produ{\Tx}{T x}{parameter/field}
+	\produ{D}{\cd{\Id}{E}}{declaration}
+	\produ{Id}{C \mid{} t}{class/trait ID}
+	\produ{v}{\en{T}{vs}}{value}
+	\\
+\end{grammar}
 \end{minipage}
-\hfil
-\begin{minipage}[t]{0.35\textwidth}
-\begin{bnf}
-\production{%
-T}      {\This{n}{Cs}}                                                 {types}\production{%
-\Tx}     {T x}                                                              {parameter}\production{%
-D}      {\tld{\Id}{E}}                                                         {declaration}\production{%
-id}     {C \mid{} t}                                                      {class/trait id}\production{%
-v}      {\en{T}{vs}}                                                 {value}\production{%
-LV}      {\ldots}{}                                                
-\end{bnf}
-\end{minipage}
-%\red{A}\ \red{A}{B}\ \red{A}{B}{C}\ \red{A}{B}{C}{D}\ \red{A}{B}{C}{D}{E}
-The input to our language will consist of a sequence of top level declarations (a $Ds$) and a main expression (and $e$).
+As with Featherweight Java (FJ)~\cite{?}, in our language a main expression ($e$) will be reduced under a sequence of top level declarations ($Ds$).
 
-In detail, the forms of our syntax are:\IOComm{Why is there lots of space here?}
+
+In detail, the forms of our syntax are:
 \begin{itemize}
-	\item Expressions ($e$): these are similar to Featherweight-Java ones, we have conventional variable accesses, instance method calls (where the receiver is an $e$), static method calls (where the receiver is a $T$), field accesses and new expressions.
-	\item Code Literals ($L$): a code literal is like a class declaration in Java-like languages, however they do not provide a name for the class. The $\Tz$ at the start of the code literal lists all the interfaces that are implemented, while the $\Mz$ are the classes methods. The $K$ specifies the kind of class (and its fields, if any).
-	\item Members ($M$): a class member is either a method declaration or a nested class declaration. A method declaration can optionally be abstract (if it's $e\q$ is empty) or static (if it has the \Q{static} keyword). A (nested) class declaration can be \Q{private} and defines a class with name $C$ to be the flattened result of a code expression $E$.
-	\item Kind ($K$): is either the keyword \Q{interface}, representing a class with no direct instances, \Q{abstract} representing a class whose fields are unknown, or a list of field declarations (Type and field names) ($\Tx$), representing a \emph{concrete} class. For ease of explanation we will use the term `class' to refer to any of these three classes, and the term \emph{proper} class to refer to one that is not an \Q{interface}. A non-concrete class cannot be the receiver of a \Q{new}, unlike a class with an empty $\Txs$ for its state. 
-	\item Code Expressions ($E$): are the main interesting part of our language, they are either code-literals, references to a trait, a sum operation, or a redirect operation. Such expressions will eventually be flattened (at compile time) to an $LV$ (see below).
-	\item Redirect Map ($R$): A redirect map is a sequence of mappings from $Cs$s to $T$s. A $Cs$ indicates the name of a nested class within the LHS of the redirect operator, whereas the $T$ is the target of the redirect. For example $\red{E}{\Cs{C1}{C2}}{T}$ refers to the nested class named $C2$ that is in the class named in $C1$ in the result of $E$.
-	\item Types ($T$): a type is a path of the from \This{n}{Cs}. This identifies the nested class $Cs$ in the $n^\text{th}$ enclosing code literal ($L$). We need this form, as opposed to a more conventional alternative where the $Cs$s would start from top level, for several reasons:
-	\begin{itemize}
-		\item Not all the enclosing code literals may have names, for example the LHS of a $\summ{}{}$ operation is anonymous, so one would need to use \This{0} to refer to it. \IOComm{Is this true???}
-		\item It allows for code to refer to classes that will be redirected away, for example in \\\Q!{ C = {}; This0.C m()}<C = ...>!, \Q{C} will no exist in the flattened program, so relative to the top-level of the program, it has no name. \IOComm{Is this a bad justification}
-	\end{itemize}
-	A major consequence of this representation is that two $Ts$ may refer to the same class even if they are not syntactically identical, in particular \This{0} and \This{1}{C} are the same if the immediately enclosing code literal is the RHS for the declaration of $C$.
-	\item Variable Declaration ($\Tx$): a variable declaration declares that $x$ refers to something of type $T$. It is used to declare parameters for methods, and fields of classes.
-	\item Top-level Declarations ($D$):  are bindings from an $\Id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. \IOComm{Werent we using $D$ in other places of the formalism to refer to either a nested-class declaration or a top-level one?}
-	\item Ids ($\Id$): these name classes or traits. If their concrete form starts with an upper-case letter they name classes, otherwise traits.
-	\item Values ($v$): these represent fully evaluated runtime expressions ($e$s). This corresponds to a fully reduced \Q{new} expression, here the $T$ will identify a concrete class, and the $vs$ will be the field values.
-	\item Code Literal Value ($LV$): these are just like normal code literals except that all of its nested class declarations have an $LV$ on their RHS (as opposed to an un-flattened $E$).
+	\item Expressions ($e$): these are similar to FJ ones, we have conventional variables, instance method calls (where the receiver is an $e$), static method calls (where the receiver is a $T$), field accesses and new expressions.
+	
+	\item Code Literals ($L$): a code literal is like a class declaration in Java-like languages, however they do not provide a name for the class. The $K$ specifies the kind of class (and its fields, if any), the $\Tz$ component contains all the interfaces that are implemented, while the $\Mz$ are the members of the class 
+	
+	\item Kinds ($K$): are either the keyword \Q{interface}, representing a class that can be subtyped, \Q{abstract} representing a class whose fields are unknown (and so cannot be instantiated), or a list of field declarations type and field names) ($\Tx$), representing a \emph{concrete} class, which can be instantiated. For ease of explanation we will use the term `class' to refer to any of these three kinds of classes, and the term \emph{proper} class to refer to one that is not an \Q{interface}, which cannot be subtyped.
+	
+	\item Class Members ($M$): are either a method declaration or a nested class declaration. A method declaration can optionally be abstract (if its $e\q$ is empty) or static (if it has the \Q{static} keyword). A (nested) class declaration can be \Q{private} and defines a class with name $C$ to be the flattened result of a code expression $E$.	
+
+	\item Code Expressions ($E$): are the main interesting part of our language, they are either code-literals, references to a trait, a sum operation, or a redirect operation. Such expressions will eventually be flattened (at compile time) to an $L$, were the RHS of each nested-class is also an $L$ (i.e. an $LV$, see \autoref{?})
+	\item Redirect Maps ($R$): are sequence of mappings from $Cs$s to $T$s. A $Cs$ indicates the name of a nested class within the LHS of the redirect operator, whereas the $T$ is the target of the redirect. For example the redirect $\red{E}{\Cs{C_1}{C_2}}{T}$ redirects the nested class named $C_2$ that is in the class named in $C_1$ in the result of $E$.
+	
+	\item Types ($T$): are paths of the from $\T{C_0}{C_1}{\ldots}{C_n}$, where $C$ refers to the top-level class named $C_0$, and $C1 \ldots C_n$ refers to a sequence of nested classes within it. The special top-level class name \This is used to represent the currently enclosing trait (if their is one). \IOComm{Marco, write something better!}
+
+	\item Parameter/Field Declarations ($\Tx$): simply declare that $x$ refers to something of type $T$.
+	
+	\item Top-level Declarations ($D$):  are bindings from an $\Id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. 
+
+	\item Class/Trait Identifiers ($\Id$): refer to a top-level trait or (nested) class.
+	
+	\item Values ($v$): represent fully evaluated runtime expressions ($e$s). These corresponds to fully reduced \Q{new} expressions, where the $T$ will identify a concrete class, and the $vs$ will be the field values (in order of the field declarations).	
+\end{itemize}
+\IOComm{Note somewhere how nested classes are static and not virtual!}
+
+As a convention, whenever we define a functional notation of the form $X(Y)$, we will use $\dom{X}$, and $\ran{X}$ with their usual meaning.
+
+We additionally impose the following well-formedness constraints:
+\begin{itemize}
+	\item An $L$ marked as an \Q{interface} cannot have an $M$ which is \Q{static} or implemented (i.e. have an $e$ as its body).
+	
+	\item In a $\Txs$ each $x$ (i.e. field or parameter name) must be distinct, and not named \Q{this}. 
+	
+	\item Method names ($m$) and class names ($C$) inside the $\Mz$ of a code-literal ($L$) must be distinct. Thus we will use the notations $\Mz(m)$ and $\Mz(C)$ to extract the (unique) $M$ in $\Mz$ declared with name $m$ or $C$ (respectively).
+	
+	\item The names of the top-level declarations ($Ds$) must all be distinct, and not \This.
+
+	\item Expressions of the form $\ef{e}{x}$ inside method bodies must have $e \Q{this}$. This ensures that fields are instance-private. We do not restrict the shape of $\ef{e}{x}$ expressions in the main expression. \IOComm{Should I move this rule to the type-system?}
+	
+	\item In an $R$, each $Cs$ must be distinct. Thus an $R$ is a (partial) function from $Cs$ to $T$, as such we will use the usual functional $R(Cs)$ to get the $T$ corresponding to the given $Cs$. \IOComm{As all types are now relative to the top-level, does it make sense to make the Cs relative to top-level (and not the LHS, as it is now)?}
+	\item \IOComm{Have some kind of rule preventing circular interfaces?}
 \end{itemize}
 
-We additionally impose the following well-formedness \IOComm{Is this spelt correctly?} constraints:
-\begin{itemize}
-\item An $L$ marked as \Q{interface} cannot have an $M$ which is \Q{static} or implemented. \IOComm{Forbid nested classes for simplicity/so as to not confuse people who might be thinking about virtual classes...}
-\item In a $\Txs$ each $x$ (i.e. field and parameter names) must be distinct, and not named \Q{this}. Similarly, the method names ($M$) and class names ($C$) inside the $\Mz$ of a library literal ($L$) must be distinct. \IOComm{Is $\Q{This}_0$ a valid path, or is \Q{This}0, if the latter is, we need to ensure it doesn't class with a $C$, but the former cannot.}
-\item An $e.x$ or $\en{T}{es}$ expression not within the main expression (i.e. inside an $L$) must have $e = \Q{this}$ and $T = \This{0}$. This ensures that fields and constructors are instance-private. \IOComm{But not in the main expression?} \IOComm{Mention that the enclosing $L$ must have appropriate fields? Or should this be a type rule instead? Actually can't we just make this whole well formedness rule a type rule?}
 
-\IOComm{Require that things allready be minimized? If so where do I put this rule? (After we've defined $p.minimize$...)}
-\end{itemize}
+\subsection{Auxiliary Notations}
+We define a compilation state ($\Sigma$) lists the top-level declarations of our program, and the name of the class ($T$) we are compiling. We also define fully evaluated/flattened declarations, code-literals, and class members to be ones where the RHS of any (nested) class/trait declaration is also fully evaluated:
+
+\begin{grammar}
+	\produ{\Sigma}{\Dz;T}{compilation state}
+	\midrule
+	\produ{DV}{\cd{\Id}{LV}}{evaluated declaration}
+	\produ{LV}{\clit{K}{\Tz}{MVz}}{evaluated code literal}
+	\produ{MV}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{LV}}{evaluated member}
+\end{grammar}
 
 
-\subsection{Program and Auxiliary notations}
 
-\begin{bnf}
-	\production{%
-		p} {\prog{Ds}{\DVz}} {program}\production{%
-		DV}      {\tld{\Id}{LV}} {evaluated declaration}
-\end{bnf}
-
-\IOComm{Is program the right name here? That would be a more appropriate name for the input to the language, how about a meta-state or class tree or something else?}
-In order to type-check and flatten our language we need to be able to lookup classes and traits.
-Since types
- are of the form \This{n}{Cs},
-it is natural to represent the look-up table as a
-stack, where to access \This{n} we
-navigate to the $n^{th}$ element.
-To this aim we define a program $p$, which will be be used to keep track of the current state and `location' of operations.
-The program is of the form \prog{Ds}{\DVz}, where the $\DVz$ represents well typed
-%all the (fully evaluated)
-top-level declarations (classes or traits). The $Ds$ is a stack of nested classes, where the first $D$ (the top of the stack) is the declaration for \This{0}.
-% The program will only contain top-level declarations that have already been evaluated ($DV$), preventing references to non-flattened traits. \IOComm{Justify why we are doing this?}
-
-%We will tree sets of members ($\Mz$) as functions, from $\Id$ (method-name or class-name) to $M$, where $\Mz(\Id)$ is the $M$ in $\Mz$ such that $\idd{m}$. Throughout this paper, we will also assume.
-
-We define the following usual functional notations for  $\Mz$:
-
-\begin{defs}
-%	\defi{\idd{\meth{T}{m}{\Txs}{e\q}}}{m}{get the $\Id$ of a method}
-%	\defi{\idd{\ncd{C}{E}}}{C}{get the $\Id$ of a class}
-%	\defi{\Mz(\Id)}{M,\where\idd{M} = \Id}{get the corresponding member}
-%	\defi{\dom{\Mz}}{\{\Id \text{ where } \Mz(\Id) \text{ is defined} \}}{the $\Id$s of all the members}
-\defi{(Mz,\ncd{C}{E})(C)}{\ncd{C}{E}}{}
-\defi{(Mz,\meth{T}{m}{\Txs}{e\q})(m)}{\meth{T}{m}{\Txs}{e\q}}{}
-%\defi{(Mz,M)[M']}{Mz,M' \text{ where } \dom{M}=\dom{M'}}{}
-\end{defs}
-Note that $\dom{\Mz}$ is implicitly defined as the set of all the $C$ and $m$ where the functional notation is defined.
-
-We define the following obvious notations to extract the members of a code-literal
+We define the following obvious notations to extract the members of a code-literal:
 
 \begin{defs}
 	\defi{\clit{\_}{\_}{\Mz,\meth{T}{m}{\Txs}{e\q}}(m)}{\meth{T}{m}{\Txs}{e\q}}{get a method}
@@ -119,168 +94,99 @@ We define the following obvious notations to extract the members of a code-liter
 	\defi{L(\Empty)}{L}{get a (transitively) nested class declaration}
 	\defi{\clit{\_}{\_}{Mz, \ncd{C}{L}}(\Cs{C}{Cs})}{L(Cs)}{}
 	\defis
-	\defi{\dom{\clit{\_}{\_}{\Mz}}}{\dom{\Mz}}{get the names of directly nested members}
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
 	\defis
 	%\defi{L[\Empty=E]}{E}{update nested class}
-\defi{L[\Cs{C}{Cs}=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
-\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{%
-	\clit{K}{\Tz}{\Mz, \ncd{C}{E}}%
-}{}
+	\defi{L[\Cs{C}{Cs}=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
+	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{\clit{K}{\Tz}{\Mz, \ncd{C}{E}}}{}
 %	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
-
-
 \end{defs}
 
-We now recursively define the notation to look up classes in a program:
+We now recursively define notation to lookup and modify classes from a set of top-level declarations:
 
 \begin{defs}
-	\defi{(\prog{\Empty}{\_,\tld{C}{L},\_})(\This{0}{C}{Cs})}{L(Cs)}{top level lookup}
-	\defi{(\tld{\_}{L}, p)(\This{0}{Cs})}{L(Cs)}{nested class lookup}
-	\defi{(\_, p)(\This{n+1}{Cs})}{p(\This{n}{Cs})}{outer lookup}
+	\defi{(\cd{C}{L}, Dz)(\T{C}{Cs})}{L(Cs)}{top level lookup}
+	\defi{(\cd{C}{E}, Dz)[C = E']}{(\cd{C}{E'}, Dz)}{top level update}
+	\defi{(\cd{C}{L}, Dz)[\T{C}{Cs} = E']}{(\cd{C}{L[Cs = E']}, Dz)}{top level nested update}
 \end{defs}
 
-Note that the notation $\tld{C}{L}, p$ is equivalent to $\prog{\tld{C}{L},Ds}{DVs}$ where $p = \prog{Ds}{Dvs}$. It `pushes' the declaration $\tld{C}{L}$ to the top of the program stack.
-
-%When we `enter' (e.g. by the {\sc L-ENTER} compilation rule) a nested class, we will have a program of the form $p = \prog{\tld{C'}{L(C)}, \tld{C}{L}}{DVs}$, and so $p(\This{0}) = L(C) = p(\This{1}{C})$. Similarly, a nested class of $L(C)$ can be entered and so on.
-
-As discussed before, multiple types can identify the same point in the program.
-%This causes a class to have multiple-valid names, to handle this
-We define a minimisation operation returning the shortest type to the same point:
-
-\begin{defs}
-	\defi{\mini{p}{\This{n+1}{\Id_n}{Cs}}}{p\op{min}{\This{n}{Cs}}}{remove redundant class-name}
-	\defic{\wwhere p = \prog{\tld{\Id_0}{L_0},...,\tld{\Id_n}{L_n},\_}{Ds}}{($\Id_n$ is the name of \This{n})}
-	\defi{\mini{p}{T}}{T \otherwise}{}
-	\defi{\mini{p}{\ncd{C}{LV}}}{\ncd{C}{\minid{p}{C}{LV}}}{minimise a nested class definition}
-	\defi{\minid{p}{\Id}{LV}}{\mini{(\tld{\Id}{LV}, p)}{LV}}{minimise an $LV$ with name \Id}
-\end{defs}
-We omit all the trivial propagation cases of form \mini{p}{LV}, \mini{p}{M}, \mini{p}{K} and \mini{p}{e}.
-\IOComm{Restrict when \mini{p}{T} is defined?}
-
-Note how based on our definitions above, the meaning of a type $T$ depends on the current position of the program. We want traits to be usable anywhere within a program, even if it refers to an external class. For example if a trait $t$ implements an interface \This{1}{C}, but we use it declare a class \Cs{A}{B} (relative to the top), the resulting class should implement \This{2}{C}, since that is where the interface declaration is relative to \Cs{A}{B} (from the top of the program). However, if a trait implements a nested-interface, say \This{0}{C}, we would be copying that interface into \Cs{A}{B}, and implementing that version (and not say \This{2}{t}{C}, which is an ill-formed type). To handle this we define an operator $\from{T}{T'}{j}$, this returns the type that should be used instead of the type $T$ that was found $j$ levels of nested-classes/code-literals within the location $T'$.
-
-We omit the definitions for all the trivial propagation cases of form $\from{M}{T}{j}$, $\from{K}{T}{j}$, and $\from{e}{T}{j}$.
-
-\begin{defs}
-	\defi{\from{\This{n}{Cs}}{T}{j}}{%
-		\This{n}{Cs}}{}
-	\defic{\wwhere n<j}{the type dosn't refer to an external type, so keep it as is}
-	
-	\defi{\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
-		\This{m+j}{C_1\ldots C_{k-n}}{Cs}}{}
-	\defic{\wwhere n\leq k}{(either this case or the next case is defined)}
-	
-	\defi{\from{\This{n+j}{Cs}}{\This{m}{C_1\ldots C_k}}{j}}{%
-		\This{m+j+n-k}{Cs}}{}
-	\defic{\wwhere n> k}{}
-	\defi{\from{\clit{K}{\Tz}{\Mz}}{T}{j}}{
-		\clit{\from{K}{T}{j+1}} {\from{\Tz}{T}{j+1}} {\from{\Mz}{T}{j+1}}%
-	}{}
-	\defic{}{interpret a code literal, by interpreting its components from $1$ level deeper}
-\end{defs}
-
-Now that we can use $\scriptsize\textbf{from}$ to read types from different places in the program, we can define how to extract a trait so that it can be reused in the current program position; we also define how to extract a class-definition so that the (top-level) types it mentions can be interpreted in the current program:
-
-\begin{defs}
-	\defi{p[t]}{\mini{p}{\from{LV}{\This{n}}{0}}}{extract a trait}
-	\defic{\wwhere p=\prog{D_1\ldots D_n}{\_, \tld{t}{LV}, \_}}{(the program is $n$ levels deep)}
-	\defi{p[T]}{\mini{p}{\clit{\from{K}{T}{0}}{\from{\Tz}{T}{0}}{\from{\Mz}{T}{0}}}}{extract a class definition}
-	\defic{\wwhere p(T)=\clit{K}{\Tz}{\Mz}}{}
-\end{defs}
+\IOComm{Should I define $LV[\This := T]$, or say something about it? Could we not use the same notation as our redirect map/renaming? I.e. $LV[\This := T]$ is the same as $
+R_{\This}{LV}$, where $R = \redm{\Empty}{T}$}
 
 \subsection{Compilation Rules}
-We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction, we also have an arrow $p; \Id\vdash E\Rightarrow E'$ representing the flattening of a code expression:
+We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction. We use an arrow $\Sigma\vdash E\Rightarrow E'$ representing the flattening of a code expression $E$, under context $\Sigma$. \IOComm{The idea is that $\Sigma.\Dz$ will contain everything we can use/reference, including parents of $\Sigma.T$, it will also contain a declaration for $\Sigma.T$, but the body might be out of date.} \IOComm{Note I have removed the well typedness requirement for the top-rule, rather I explicitly require that traits be well-typed as are the targets of redirect (the type-system will handle the rest)}
 
 \begin{irules}
-	%\inferrule[(top)]{
-	%	a \xrightarrow[b]{} c\quad
-	%	\forall i<3 a\vdash b:\text{OK}\\\\
-	%	\forall i<3 a\vdash b:\text{OK}
-	%}{
-	%	1+2
-	%	\rightarrow
-	%	3
-	%}\begin{array}{l}
-	%a\\b\\c
-	%\end{array}
-	%\\
 	\irule{Top}{
-		\DVz \subseteq \DVs\\\\
-		\DVz \vdash \Ok\\\\
-		\prog{\Empty}{\DVz}; \Id \vdash E \Rightarrow E'
+		\DVs, C = E; C \vdash E \Rightarrow E'\\\\
+		\text{if } $\Id$ = $t$ \text{ then } $C = \This$ \text{otherwise } $C$ = $\Id$
 	}{
-		\DVs\ \tld{\Id}{E}\ \Ds \Rightarrow \DVs\ \tld{\Id}{E'}\ \Ds
+		\DVs\ \cd{C}{E}\ \Ds \Rightarrow \DVs\ \cd{C}{E'}\ \Ds
 	}
 
 	\irule{Ctx-V}{
-		p; \Id \vdash E \Rightarrow E'
+		\Dz; T \vdash E \Rightarrow E'
 	}{
-		p; \Id \vdash \ctx{V}[E] \Rightarrow \ctx{V}[E']
+		\Dz; T \vdash \ctx{V}[E] \Rightarrow \ctx{V}[E']
 	}
 
 
 	\irule{Enter}{
-		\tld{\Id}{L[C = E]}, p; C \vdash E \Rightarrow E'
+		\Dz[T = L]; \T{T}{C} \vdash E \Rightarrow E'
 	}{
-		p; \Id \vdash L[C = E] \Rightarrow L[C = E']
+		\Dz; T \vdash L[C = E] \Rightarrow L[C = E']
 	}
 
 	\iruleSep
 	\irule{Trait}{
+		\Dz \vdash \cd{t}{LV} : \Ok
 	}{
-		p; \Id \vdash t \Rightarrow p[t]
+		\cd{t}{LV}, \Dz; T \vdash t \Rightarrow LV[\This := T]
 	}
 
 	\irule{Sum}{
-		LV_i'=\minid{p}{\Id}{LV_i}\\\\
+%		LV_i'=\minid{p}{\Id}{LV_i}\\\\
 %		LV_1 \Q@<+@ LV_2 = LV%\\\\
 		%C' \textit{fresh} \\\\
 		%p'=p\op{push}{C'\Q@=@ LV_3}
-%		p' = (\tld{\Id, LV}, p)[]\\\\
-		\summ{LV_1'}{LV_2'} = LV
+%		p' = (\cd{\Id, LV}, p)[]\\\\
+		\summ{LV_1}{LV_2} = LV
 	}{
-		p; \Id \vdash LV_1 \Q@<+@ LV_2 \Rightarrow LV
+		\Dz;T\ \vdash \summ{LV_1}{LV_2} \Rightarrow LV
 	}
 	\irule{Redirect}{
-		LV' = \minid{p}{\Id}{LV}\\\\
-		p' = \tld{\Id}{LV'}, p\\\\
-		Csz = p'\op{redirectSet}{R}\\\\
-		p'\op{redirectable}{\Csz}\\\\
-		\forall T \in \ran{R}\quad p\op{validType}{T}\\\\
-		R' =p'\op{bestMap}{p'\op{prepareMap}{R}}
+		\Sigma = \Dz[T = LV]; T\\\\
+		Csz = \Sigma\op{redirectSet}{R}\\\\
+		\Sigma\op{redirectable}{\Csz}\\\\
+		\forall T \in \ran{R}\quad \Sigma\op{validType}{T}\\\\
+		R' = \Sigma\op{bestMap}{R}
 	}{
-		p; \Id \vdash \red{LV'}{R} \Rightarrow   
-		\reda{R'}{LV'\op{remove}{Csz}}
+		\Dz; T \vdash \red{LV'}{R} \Rightarrow   
+		\redaa{R'}{T}{LV\op{remove}{Csz}}
 	}
 \end{irules}
+\IOComm{The rule for enter is a bit funy, as $L(C)$ could be anything, however we only care that it exists, and it's private modifier.}
 
-
-\IOComm{Do we want \This{0} and \This{1}{\Id} to be treated as the same within the \Rulename{sum} rule?}
 Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
-\indent\begin{bnf}
-\production{%
-	\ctx{V}}{\hole \mid{}  \summ{\ctx{V}}{E} %
-	\mid{} \summ{LV}{\ctx{V}} \mid{} \red{\ctx{V}}{Cs}{T}}  {}
-\end{bnf}
+\indent\begin{grammar}
+\produ{\ctx{V}}{\hole \mid{}  \summ{\ctx{V}}{E} \mid{} \summ{LV}{\ctx{V}} \mid{} \red{\ctx{V}}{Cs}{T}}{}
+\end{grammar}
 
 \noindent In details the rules are:
 \begin{itemize}
-	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. It evaluates it using a well-typed subset ($\DVz$) of the previously compiled ($\DVs$) declarations. See Section \ref{?} for the definition of the typing judgement $\DVz\vdash\Ok$ \IOComm{Why do we use an arbitrary well-typed subset and not a maximal one, or even just all of them?}
+	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. If the declaration is a trait, $t$, it will compile as if the trait was a class named \This.
 	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
 	\item \Rulename{Enter}: this rule evaluates any nested-class declarations that are not already $LVs$. In particular, this rule will be called by \Rulename{Ctx-V} to evaluate any $L$s that are operands in an $E$, before the $E$ itself is evaluated.
-	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LV$, and hence wont need further evaluation.
-	\item \Rulename{Sum}: this rule first minimizes the operands to the sum, and then reduces to the appropriate value. See Section \ref{?} for the definition of $\summ{LV_1}{LV_2}=LV$.
+	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LV$, and hence wont need further evaluation, and replaces references to \This with the name of the currently compiling class.
+	\item \Rulename{Sum}: this rule simply reduces to the appropriate value. See \autoref{?} for the definition of $\summ{LV_1}{LV_2}=LV$. \IOComm{This rule is stupid, we should move it to the section about sum, and inline the definition}.
 	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps:
 	\begin{itemize}
-		\item It minimises the input $LV$ to $LV'$
-		\item It creates a new program $p'$, so that \This{0} refers to the (minimised) LHS of the redirect.
+		\item It creates a new compilation state ($\Sigma$), so that $T$ will refer to the LHS of the redirect.
 		\item It computes $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting').
 		\item It verifies that these classes are all suitable for redirection (they have to exist, cant have nested classes that aren't going to be redirected, and they cant be private).
 		\item It checks that all the input types are valid, namely that they refer to well-typed compiled classes, and do not improperly refer to a private nested class.
-		\item It `prepares' the input mapping $R$: it updates it so that the target types are now relative to $p'$.
-		\item It computes a complete map, $R''$, which is the `best' map that extends  $R'$ to map the entire redirect set.
-		\item It applys the mapping to $LV$, with the classes we are redirecting away ($Csz$) removed.
+		\item It computes a complete map, $R'$, which is the `best' map that extends  $R$ to map the entire redirect set.
+		\item It applies the mapping to $LV$, with the classes we are redirecting away ($Csz$) removed.
 	\end{itemize}
 \end{itemize}
 
@@ -290,7 +196,7 @@ The sum operator is simply defined as:
 \begin{defs}
 \defi{\summ{L_1}{L_2}}{\clit{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}}{Sum the two code literals}
 \defic{\wwhere L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad \widehat{L_2}=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
-\defic{\text{and if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
+\defic{\text{if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
 \defis
 \defi{\summ{\Q{abstract}}{K}}{\summ{K}{\Q{abstract}} \coloneqq K \where K \neq \Q{interface}}{Allow adding state to a proper class}
 \defi{\summ{\Q{interface}}{\Q{interface}}}{\Q{interface}}{Interfaces must match}
@@ -298,9 +204,9 @@ The sum operator is simply defined as:
 \defi{\summ{(Mz, M)}{(Mz', M')}}{(\summ{M}{M'}),(\summ{Mz}{Mz'})}{Sum members pairwise}
 \defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\meth{T}{m}{\Txs}{e}}}{\meth{T}{m}{\Txs}{e}}{Override method}
 \defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\ameth{T}{m}{\Txs}}}{\meth{T}{m}{\Txs}{e\q}}{Non override}
-\defi{\summ{(\tld{C}{L})}{(\tld{C}{L'})}}{\tld{C}{(\summ{L}{L'})}}{Recursively sum public classes}
+\defi{\summ{(\cd{C}{L})}{(\cd{C}{L'})}}{\cd{C}{(\summ{L}{L'})}}{Recursively sum public classes}
 \end{defs}
-Where $\widehat{L}$ is implicitly defined so that each \pncd{C}{L} in $L$ is transformed to \pncd{C'}{L}, and each reference to it (of the form \This{0}{C}), is transformed to \This{0}{C'}, for some arbitrary fresh $C'$. This ensures that $\summ{LV_1}{LV_2}$ operates transparently with respect to private nested classes. Note that by our well-formedness requirement on $L$, $Mz_1$ and $Mz_2$ cannot both contain a member with the same \Id (since otherwise the result of the sum will be ill-formed).
+Where $\widehat{L}$ is implicitly defined so that each \ncd{C}{L} in $L$ is transformed to \ncd{C'}{L}, and each reference to it (of the form \ThisN{0}{C}), is transformed to \ThisN{0}{C'}, for some arbitrary fresh $C'$. This ensures that $\summ{LV_1}{LV_2}$ operates transparently with respect to private nested classes. Note that by our well-formedness requirement on $L$, $Mz_1$ and $Mz_2$ cannot both contain a member with the same $m$ or $C$ (since otherwise the result of the sum will be ill-formed).
 
 \subsection{Redirect Operator Preparation}
 \subsubsection{Redirect Set} \noindent\\ 
@@ -309,31 +215,30 @@ The redirect set is the full set of (nested) class names that will be `redirecte
 %computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easily computable.
 
 \begin{defs}
-	\defip{Cs \in p\op{redirectSet}{R}}{}{}
+	\defip{Cs \in (\Dz; T)\op{redirectSet}{R}}{}{}
 	\defic{\redm{Cs}{T} \in R \text{, or}}{}
-	\defic{\exists Cs' \in p\op{redirectSet}{R}\ Cs\in \fop{internals}{\fop{exposedType}{p[\This{0}{Cs'}]}}}{}
+	\defic{\exists Cs' \in (\Dz; T)\op{redirectSet}{R}\ Cs\in T\op{internals}{\fop{exposedTypes}{\Dz(T)}}}{}
 	\defis
 	\defi{\fop{exposedTypes}{\clit{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
 	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0\ldots T_n}{}
 	
-	\defi{\fop{internals}{\Tz}}{\{Cs \mid \This{0}{Cs} \in \Tz\}}{}
+	\defi{T\op{internals}{\Tz}}{\{Cs \mid \T{T}{Cs} \in \Tz\}}{}
 \end{defs}
 
-We use the notation \fop{exposedTypes}{L} to denote the set of types used in the (public) signature of $L$, note that it does not include nested classes (since in our language they are not virtual),  fields (since they are private), or method bodies (as redirect will delete them). The notation \fop{internals}{\Tz} gets the names of the nested classes of \This{0} that \Tz refers to. Since $p[\This{0}]$ will be minimised, this is sufficient to get the list of nested classes that are in the LHS of the redirect, and referenced by \Tz.
-
+We use the notation \fop{exposedTypes}{L} to denote the set of types used in the (public) signature of $L$, note that it does not include nested classes (since in our language they are not virtual),  fields (since they are private), or method bodies (as redirect will delete them). The notation $T\op{internals}{\Tz}$ gets the names of the nested classes of $T$ that $\Tz$ refers to. 
 %The intuition behind \opName{redirectSet} is that if the signature of a nested class mention another nested class, they must be redirected together.
 
 \subsubsection{Redirectable}
 \noindent\\ 
 
 \begin{defs}
-\defip{p\op{redirectable}{Csz}}{}{the $Csz$ can all be (simultaneously) redirected away}
+\defip{(\Dz; T)\op{redirectable}{Csz}}{}{the $Csz$ can all be (simultaneously) redirected away}
 \defic{\Empty \notin Csz}{(Cant redirect the whole code literal)}
 \defic{\forall Cs \in Csz}{}
-\defic{\quad p(\This{0}{Cs}) \text{ is defined}}{(the nested class must exist)}
+\defic{\quad \Dz(\T{T}{Cs}) \text{ is defined}}{(the nested class must exist)}
 \defic{}{(public nested classes must be redirected if their outer is)}
-\defic{\quad p(\This{0}{Cs}) = \clit{}{}{\tld{C}{L} \_} \imp \Cs{Cs}{C} \in Csz}{}
-\defic{\forall \Cs{Cs}{C}{\_} \in \Csz\ p(\This{0}{Cs}) = \clit{}{\tld{C}{L},\_}{}}{(cant redirect through a private class)}
+\defic{\quad \Dz(\T{T}{Cs}) = \clit{\_}{\_}{\cd{C}{L} \_} \imp \Cs{Cs}{C} \in Csz}{}
+\defic{\forall \Cs{Cs}{C}{\_} \in \Csz\quad \Dz(\T{T}{Cs}) = \clit{\_}{\_}{\cd{C}{L},\_}}{(cant redirect through a private class)}
 \end{defs}
 \IOComm{Is there a reason why we need to require that if a class is redirected, all its public nested class are also?}
 That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
@@ -341,12 +246,13 @@ That is, the class itself (i.e. the one with name $\Empty$) is not redirectable,
 \subsection{Valid Type}
 A `valid' type is one that can be used as a target in a redirect map. It must be already fully compiled and typed \IOComm{Why do we need it to be typed? Wouldn't compiled (i.e. an $LV$) be sufficient for redirect to make sense?}, and cannot refer to a private class, unless it is an outer class, or directly within one.
 \begin{defs}
-	\defip{p\op{validType}{T}}{}{...}
-	\defic{p \vdash T : \Ok}{}
-	\defic{p\op{accessible}{T}}{}
+	\defip{(\Dz; T)\op{validType}{T}}{}{...}
+	\defic{\Dz; T \vdash \Dz(T) : \Ok}{}
+	\defic{(\Dz; T)\op{accessible}{T}}{}
 	\defis
-	\defip{p\op{accessible}{\This{n}{Cs}{C}{C'}}}{ p\op{accessible}{\This{n}{Cs}{C}} \text{ and } p(\This{n}{Cs}{C}) = \clit{\_}{\_}{\tld{C'}{E}, \_}}{}
-	\defit{p\op{accessible}{\This{n}{C}}\text{ and } p\op{accessible}{\This{n}}}{}
+	\defip{(\Dz; \T{T}{Cs})\op{accessible}{\T{T}{Cs'}{C}{C'}}}{}{}
+	\defic{(\Dz; \T{T}{Cs})\op{accessible}{\T{T}{Cs'}{C}} \text{ and } \Dz(\T{T}{Cs'}{C}) = \clit{\_}{\_}{\cd{C'}{E}, \_}}{}
+	\defit{(\Dz; \T{T}{Cs})\op{accessible}{\T{T}{C}}\text{ and } (\Dz; \T{T}{Cs})\op{accessible}{T}}{}
 %	\defit{p\op{accessible}{T}\otherwise}{An outer or a direct child of an outer}
 \end{defs}
 %accessible(p,Thisn.Cs.C.C') iff  accessible(Thisn.Cs.C) and p(Thisn.Cs.C)={ ... C=E L LV}
@@ -355,13 +261,7 @@ A `valid' type is one that can be used as a target in a redirect map. It must be
 (See Section \ref{?} for the typing rules of form $p \vdash T : \Ok$.)
 
 \IOComm{Is this rule correct?}
-\subsection{Prepare Redirect Map}
-As we have added the LHS of the redirect to the program, we need to modify the user-given $R$ so that it can be interpreted in this new program.% In addition, we want to check that the target of a redirect 
 
-\begin{defs}
-\defi{p\op{prepareMap}{\redm{Cs}{\This{n}{Cs'}}}}{\redm{Cs}{\mini{p}{\This{n+1}{Cs'}}}}{}
-%\defic{\wwhere p \vdash \This{n+1}{Cs'} : \Ok}{Check that the target is well typed and compiled}
-\end{defs}
 
 \subsection{Removing and Renaming}
 
@@ -374,16 +274,13 @@ We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested 
 
 Note that based on the above, the empty $Cs$ cannot be removed, since, for all $L$, $\Empty \in \dom{L}$. Removing such a class does not make sense. In addition, nested classes are removed with their outers, thus the first rule will implicitly order the removal of the former first.
 
-We define the notation \redaa{R}{Cs}{L} to return $L$ (which we found in class $Cs$) but with references to $Cs'$ replaced by $T$ (for all $\redm{Cs'}{T} \in R$). 
+We define the notation \redaa{R}{T}{L} to return $L$ but with references to $\T{T}{Cs}$ replaced by $T'$ (for all $\redm{Cs}{T'} \in R$). 
 
 \begin{defs}
-\defi{\redaa{R}{Cs}{\ncd{C}{L}}}{\ncd{C}{\redaa{R}{\Cs{Cs}{C}}{L}}}{(propagate to nested class)}
-\defi{\redaa{R}{C1\ldots Cn}{T}}{\from{R(Cs)}{\This{n}}{0}}{(fromed since $R(Cs)$ is relative to \This{n})}
-\defic{\wwhere \from{T}{\This{0}{C1\ldots Cn}}{0} = \This{0}{Cs}}{(from to get $T$ relative to \This{n})}
-\defi{\redaa{R}{Cs}{T}}{T\otherwise}{($T$ is not to be renamed)}
+\defi{\redaa{R}{T}{\T{T}{Cs}}}{R(Cs)}{}
+\defi{\redaa{R}{T}{T'}}{T'\otherwise}{($T$ is external, or not in $R$)}
 \end{defs}
 
-\IOComm{Have we said somwhere that we can use $R$ like a function?}
 We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)$, $R_{Cs}(M)$, $R_{Cs}(K)$, and $R_{Cs}(e)$.
 %The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
 %Rename must keep track of the explored $Cs$ in order to distinguish
@@ -392,24 +289,21 @@ We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)
 \subsection{Valid Redirect Map}
 
 
-We will define $p\op{validMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to $p(\This{0})$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private-classes in $p(\This{0})$ in order to determine whether a given maping is valid, this allow such details of $p(\This{0})$ to change, without altering the behaviour of redirect.
-
+We will define $p\op{validMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to $p(\ThisN{0})$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private-classes in $p(\ThisN{0})$ in order to determine whether a given maping is valid, this allow such details of $p(\ThisN{0})$ to change, without altering the behaviour of redirect.
 
 \begin{defs}
-\defip{R' \in p\op{validMaps}{R}}{}{...}
-\defic{R' \in p\op{possibleMaps}{R}}{Check that the mapping might work}
-\defic{\forall Cs \in \dom{R'} \ p \vdash R'(Cs) \leq \reda{R'}{p[Cs]}}{}
+\defip{R' \in (\Dz; T)\op{validMaps}{R}}{}{...}
+\defic{R' \in \Sigma\op{possibleMaps}{R}}{Check that the mapping might work}
+\defic{\forall Cs \in \dom{R'} \ \Dz \vdash R'(Cs) \leq \reda{R'}{p[Cs]}}{}
 \defic{}{Check that the mapping preserves the structural interface}
 \defis
-\defip{R' \in p\op{possibleMaps}{R}}{}{...}
+\defip{R' \in \Sigma\op{possibleMaps}{R}}{}{...}
 \defic{R' \supseteq R}{It is an extension of $R$}
-\defic{\dom{R'} = p\op{redirectSet}{R}}{It completes the redirect map}
-\defic{\forall T \in \ran{R'}\ p\op{validType}{T}}{check that the targets of $R'$ are reasonable}
+\defic{\dom{R'} = \Sigma\op{redirectSet}{R}}{It completes the redirect map}
+\defic{\forall T \in \ran{R'}\ \Sigma\op{validType}{T}}{check that the targets of $R'$ are reasonable}
 \end{defs}
 
-(See Section \ref{??} for our definition of $p \vdash T : L \leq Cs : L'$, the idea being that $L$ (with name $T$) is a structural `sub-type' of $L'$ (with name $Cs$), and so anything done with $Cs$ can also be done with $P$).
-
-Any map in $p\op{validMaps}{R}$ would be a valid complete-map for redirect to use. The challenge is what should happen if their are multiple things in this set, or if the result of this set could change if extra classes are added to $p$.
+Any map in $\Sigma\op{validMaps}{R}$ would be a valid complete-map for redirect to use. The challenge is what should happen if their are multiple things in this set, or if the result of this set could change if extra classes are added to $\Sigma$.
 
 \subsection {Best Redirect Map}
 We will say that the `best' (valid) redirect map is the (unqiue) map that is:
@@ -424,22 +318,23 @@ This ensures that targets that give the most information (are more specific) are
 
 \begin{defs}
 
-\defi{p\op{bestMap}{R}}{p\op{stableMostSpecific}{R, \opn{validMaps}}}{...}
-\defi{p\op{stableMostSpecific}{R, f}}{R'}{...}
-\defic{\wwhere \forall p' \in p\op{similarPrograms}{} \quad p'\op{mostSpecificMap}{f(p', R)} = R'}{...}
-\defic{\text{and } f \text{ is a function from } (p, R) \text{ to } Rz}{...}
-\defit{\prog{\DVs}{\DVz,\DVz'} \in (\prog{\DVs}{\DVz})\op{similarPrograms}{}}{}
+\defi{\Sigma\op{bestMap}{R}}{\Sigma\op{stableMostSpecific}{R, \opn{validMaps}}}{...}
+\defi{(\Dz; T)\op{stableMostSpecific}{R, f}}{R'}{...}
+\defic{\wwhere \forall \Dz' \in \Dz\op{similarPrograms}{} \quad \Dz'\op{mostSpecificMap}{f(\Dz'; T, R)} = R'}{...}
+\defic{f : (\Sigma, R) \to Rz}{...}
 \defis
-\defi{p\op{mostSpecificMap}{Rz}}{R}{...}
+\defi{\Dz\op{mostSpecificMap}{Rz}}{R}{...}
 \defic{\wwhere R \in Rz}{...}
-\defic{\text{and } \forall Cs \in \dom{R} \quad R(Cs) = p\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz}}{...}
+\defic{\forall Cs \in \dom{R} \quad R(Cs) = \Dz\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz}}{...}
 
 
-\defi{p\op{mostSpecific}{Tz}}{T}{...}
-\defic{\wwhere T \in Tz \text{ and } Tz \subseteq p\op{superClasses}{T}}{..}
+\defi{\Dz\op{mostSpecific}{Tz}}{T}{...}
+\defic{\wwhere T \in Tz \text{ and } Tz \subseteq \Dz\op{superTypes}{T}}{..}
 \defis
-\defi{p\op{superClasses}{T}}{T,p\op{superClasses}{Tz}\where p[T] = \clit{\_}{Tz}{\_}}{}
-\defi{p\op{superClasses}{Tz}}{\bigcup_{T\in Tz}{p\op{superClasses}{T}}}{}
+\defi{\Dz\op{superTypes}{T}}{T,p\op{superTypes}{Tz}\where p[T] = \clit{\_}{Tz}{\_}}{}
+\defi{\Dz\op{superTypes}{T_1\ldots T_n}}{\Dz\op{superTypes}{T_1}\ldots\Dz\op{superTypes}{T_n}}{}
+
+\IOComm{TODO Define similar programs!}
 %MostSpecific(p; Pz) = P
 %P in p.minimize(Pz)
 %p.minimize(Pz) subseteq SuperClasses(p; P)
@@ -459,18 +354,18 @@ This ensures that targets that give the most information (are more specific) are
 \IOComm{Warning! The above \opn{superClasses} definition is very different from the one we use in the algorithm/code, which does an intersection (and not a union) of the superclasses of the $Tz$}
 
 \section{Structural Subtyping}
-We define a structural sub-typing relation $p \vdash T \leq L$, to mean that the type $T$ has a compatible structure with $L$. That is, any code using a class with structure $L$, would also be valid if it used $T$.
+We define a structural sub-typing relation $\Dz \vdash T \leq L$, to mean that the type $T$ has a compatible structure with $L$. That is, any code using a class with structure $L$, would also be valid if it used $T$.
 
 \begin{defs}
-\defip{p \vdash T \leq \clit{K'}{Tz'}{Mz'}}{}{...}
-\defic{p[T] = \clit{K}{Tz}{Mz}}{...}
-\defic{p\op{superClasses}{Tz'} \subseteq p\op{superClasses}{T}}{...}
+\defip{\Dz \vdash T \leq \clit{K'}{Tz'}{Mz'}}{}{...}
+\defic{\Dz(T) = \clit{K}{Tz}{Mz}}{...}
+\defic{\Dz\op{superTypes}{Tz'} \subseteq \Dz\op{superTypes}{T}}{...}
 \defic{\forall m \in \dom{Mz'} \quad p \vdash Mz(m) \leq Mz'(m)}{...}
 \defic{\text{if } K = \Q{interface} \text{ then } K' = \Q{interface}}{...}
-\defic{\text{if } K = \Q{interface} \text{ then } \forall m \in \dom{Mz} \quad p \vdash Mz'(m) \leq Mz(m)}{...}
+\defic{\text{if } K = \Q{interface} \text{ then } \forall m \in \dom{Mz} \quad \Dz \vdash Mz'(m) \leq Mz(m)}{...}
 \defis
-\defip{p \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{...}
-\defic{p \vdash T_0 \leq T_0' \text{ and } p \vdash T_1' \leq T_1\ \ldots\ p \vdash T_n' \leq T_n }{...}
-\defip{p \vdash T \leq T'}{T' \in p\op{superClasses}{T}}{}
+\defip{\Dz \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{...}
+\defic{\Dz \vdash T_0 \leq T_0' \text{ and } \Dz \vdash T_1' \leq T_1\ \ldots\ \Dz \vdash T_n' \leq T_n }{...}
+\defip{\Dz \vdash T \leq T'}{T' \in p\op{superTypes}{T}}{}
 \end{defs}
 
