@@ -79,7 +79,8 @@ Pow={
 Our approach clearly is more verbose, but is exposing all the hidden complexity
 of the QQ code.
 In short, \Q@base()@ and \Q@inductive()@ 
-are methods returning constant statically verified code. Static verification is a very computationally intensive step, and our approach verifies
+are methods returning constant statically verified code. 
+Static verification is a very computationally intensive step, and our approach verifies
 \Q@base()@ and \Q@inductive()@ once and for all during compilation.
 \Q@Override@ inside \Q@generate(y)@ behaves like mixin composition,
 and the syntax \Q@[exp<-superExp()]@ encodes the

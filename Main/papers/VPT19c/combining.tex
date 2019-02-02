@@ -1,0 +1,81 @@
+\section{Combining Contracts and Trait Composition}\label{s:combining}
+We can handle the composition of traits with contracts in a similar way to what is done for class-based inheritance: the methods in the result of /trait1.extend(trait2)/ contain the /@requires/ and /@ensures/ clauses of the corresponding method (if any) in /trait1/ and /trait2/. This ensures that any \emph{calls} to such methods in /trait1/ and /trait2/ are still correct, and any deductions made from the postconditions of such methods still hold. If a method is implemented in either /trait1/ or /trait2/, but abstract in the other, the implemented version must have at least all the /@requires/ and /@ensures/ clauses of the abstract one. This ensures that the implementation is still a correct implementation for the abstract method.
+
+Note that renaming of methods, such as the /super_/ renaming described in \sref{btc}, is sound provided it is also performed within contracts.\footnote{This of course assumes that the language doesn't provide constructs that depend on method \emph{names} (such as reflection or stack trace operations).}
+
+Consider the following examples illustrating how this works:
+
+\vspace{-3\medskipamount}%
+\noindent\begin{minipage}[t]{0pt}
+\begin{lstlisting}
+Trait trait: class {
+	@requires($R_1$)
+	@ensures($E_1$)
+	Void foo();
+}.extend(class {
+	@requires($R_2$)
+	@ensures($E_2$)
+	Void foo();
+});
+// Identical to:
+Trait trait: class {
+	@requires($R_1$) @requires($R_2$)
+	// or @requires($R_1$ || $R_2$)
+	@ensures($E_1$) @ensures($E_2$)
+	// or @ensures($E_1$ && $E_2$)
+	Void foo();
+};
+
+Trait good: class {
+	@requires($R_1$)
+	@ensures($E_1$)
+	Void foo();
+}.extend(class {
+	// precondition is weaker
+	@requires($R_1$) @requires($R_2$)
+	// postcondition is stronger
+	@ensures($E_1$) @ensures($E_2$)
+	Void foo() { ... }
+});
+\end{lstlisting}
+\end{minipage}\hfill
+\newlength{\listingWidth}
+\settowidth{\listingWidth}{\texttt{a}}
+\begin{minipage}[t]{33\listingWidth}
+\begin{lstlisting}
+// Error!
+Trait error: class {
+	@requires($R_1$) @requires($R_2$)
+	@ensures($E_1$) @ensures($E_2$)
+	Void foo();
+}.extend(class {
+	// stronger precondition
+	@requires($R_1$)
+	// weaker postcondition 
+	@ensures($E_1$)
+	Void foo() { ... }
+});
+
+Trait really_good: class {
+	@requires($R_1$) @requires($R_2$)
+	@ensures($E_1$) @ensures($E_2$)
+	// will be renamed to super_foo
+	Void foo() { ... }
+}.extend(class {
+	// stronger precondition
+	@requires($R_1$)
+	// weaker postcondition
+	@ensures($E_1$)
+	Void super_foo();
+
+	// any contract is ok here
+	@requires($R_3$)
+	@ensures($E_3$)
+	Void foo() { ... }
+})
+\end{lstlisting}%
+\end{minipage}
+
+\noindent These rules guarantee that if all methods in /trait1/ and /trait2/ are correct, then /trait1.extend(trait2)/ will fail with an error, or it will produce a correct result. This means that if all trait literals in the program are statically verified, we can be sure that any traits produced by meta-programming//composition (and hence all class declarations) will be correct by construction, without needing any further static verification.
+
+A more general rule\footnote{We believe it is the most general sound rule that is independent of the method bodies in the traits, however we have not proven it.} would be that an abstract method with pre and post-conditions\footnote{Where the pre//post-conditions are the disjunction//conjunction of all the /@requires////@ensures/ clauses (respectively).} $R_1$ and $E_1$ (respectively) can only be implemented by a method with pre and post-conditions $R_2$ and $E_2$ if $R1 \Rightarrow R2$, and $R2 \wedge E2 \Rightarrow E1$. This would require using a theorem prover to verify that the these implications always hold. However, this could be significantly faster than the alternative of verifying that the implementation of the method is correct under the contract of the abstract version.
