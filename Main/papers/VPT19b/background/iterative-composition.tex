@@ -1,46 +1,45 @@
-\subsection{Iterative Composition}
-Iterative composition~\cite{?} takes the concept of trait composition one step forward, by treating traits as first class objects, and allowing arbitrary code to execute at meta-time. This allows for fully met-circular meta-programming. In this way, classes can be declared from arbitrary expressions (of type /Trait/), and methods can take and return /Trait/s. For example, suppose we want to generate specialised code for /pow/ based on the exponent\footnote{We use /static/ /class/ to mean a class with no constructors or instances, and where each member is implicitly /static/.}:
+\subsection{Iterative  Trait Composition}\label{s:bic}
+Iterative trait composition~\cite{Servetto:2013:MLA:2426890.2426913} takes the concept of trait composition one step forward, by treating traits as first class objects, and allowing arbitrary code to execute at meta-time. This allows for fully met-circular meta-programming. In this way, classes can be declared from arbitrary expressions (of type /Trait/), and methods can take and return /Trait/s. For example, suppose we want to generate specialised code for /pow/ based on the exponent\footnote{We use /static/ /class/ to mean a class with no constructors or instances, and where each member is implicitly /static/.}:
 \begin{lstlisting}
 Trait pow_generate(Nat exp) {
-  if (exp == 0)
-    return static class { 
-      Int pow(Int x) { return 1; }
-    };
-  else if (exp == 1)
-    return static class {
-       Int pow(Int x) { return x; }
-     };
- else if (exp % 2 == 0)
-   return pow_generate(exp/2).extend(static class {
-     Int super_pow(Int x);
-     Int pow(Int x) { return super_pow(x*x); }
-   });
- else 
-   return pow_generate(exp - 1).extend(static class {
-     Int super_pow(Int x);
-     Int pow(Int x) { return x*super_pow(x); }
-   });}
+	if (exp == 0)
+		return static class { 
+			Int pow(Int x) { return 1; }
+		};
+	else if (exp == 1)
+		return static class {
+			Int pow(Int x) { return x; }
+		};
+	else if (exp % 2 == 0)
+		return pow_generate(exp/2).extend(static class {
+			Int super_pow(Int x);
+			Int pow(Int x) { return super_pow(x*x); }
+		});
+	else 
+		return pow_generate(exp - 1).extend(static class {
+			Int super_pow(Int x);
+			Int pow(Int x) { return x*super_pow(x); }
+		});}
 \end{lstlisting}
-In the above code, we have a normal looking recursive /pow_generate/ method: the /pow_generate(...)/ calls (recursively) generate the bodies of /super_pow/. The calls to /super_pow/ (in the trait literals) correspond to the recursive calls in our original /pow/; . The above method can now be called to generate the body of a class:
-
+In the above code, we have a normal looking recursive /pow_generate/ method: the /pow_generate(...)/ calls (recursively) generate the bodies of /super_pow/. The calls to /super_pow/ (in the trait literals) correspond to the recursive calls in our original /pow/. The above method can now be called to generate the body of a class:
 \begin{lstlisting}
 Pow7: pow_generate(7);
 
 // Equivalent to:
 Pow7: static class {
-  Int pow(Int x) { return x*super1_pow(x); } // x**7
+	Int pow(Int x) { return x*super1_pow(x); } // x**7
 
-  private Int super1_pow(Int x) { return super2_pow(x*x); } // x**6
-  private Int super2_pow(Int x) { return x*super3_pow(x); } // x**3
-  private Int super3_pow(Int x) { return super4_pow(x*x); } // x**2
-  private Int super4_pow(Int x) { return x; } // x**1
+	private Int super1_pow(Int x) { return super2_pow(x*x); } // x**6
+	private Int super2_pow(Int x) { return x*super3_pow(x); } // x**3
+	private Int super3_pow(Int x) { return super4_pow(x*x); } // x**2
+	private Int super4_pow(Int x) { return x; } // x**1
 }
 
-// Which could then be inlined/optimised to:
+// Which could then be automatically inlined/optimised to:
 Pow7: static class {
-  Int pow(Int x) { 
-    Int x2 = x*x; // x**2
-    Int x4 = x2*x2; // x**4
-    return x*x2*x4; } // Since 7 = 1 + 2 + 4
+	Int pow(Int x) { 
+		Int x2 = x*x; // x**2
+		Int x4 = x2*x2; // x**4
+		return x*x2*x4; } // Since 7 = 1 + 2 + 4
 }
 \end{lstlisting}

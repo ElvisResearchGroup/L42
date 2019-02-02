@@ -1,3 +1,4 @@
+\PassOptionsToPackage{svgnames}{xcolor}
 \documentclass[submission,copyright,creativecommons]{eptcs}
 \providecommand{\event}{VPT 2019} % Name of the event you are submitting to
 %\usepackage{breakurl}             % Not needed if you use pdflatex only.
@@ -8,44 +9,47 @@
 \newcommand{\loseSpace}{\vspace{1ex}}
 \usepackage{verbatim}
 
-\title{Metaprogramming Statically Verified Code}
-\author{Marco Servetto
-\institute{ECS VUW\\ Wellington, New Zealand}
-\institute{Engineering and Computer Science\\
-Victoria University of Wellington}
-\email{marco.servetto@ecs.vuw.ac.nz}
-\and
-Alex Potanin
-\institute{ECS VUW\\ Wellington, New Zealand}
-\institute{Engineering and Computer Science\\
-Victoria University of Wellington}
-\email{alex.potanin@ecs.vuw.ac.nz}
-\and
-Isaac Oscar Gariano
-\institute{ECS VUW\\ Wellington, New Zealand}
-\institute{Engineering and Computer Science\\
-Victoria University of Wellington}
-\email{isaac@ecs.vuw.ac.nz}
-\and
-Hrshikesh Arora
-\institute{ECS VUW\\ Wellington, New Zealand}
-\institute{Engineering and Computer Science\\
-Victoria University of Wellington}
-\email{arorahrsh@myvuw.ac.nz}
+\title{Iteratively Composing Statically Verified Traits}
+\def\titlerunning{Iteratively Composing Statically Verified Traits}
+
+%magic code from https://tex.stackexchange.com/questions/344794/centering-issues-with-multiple-authors-with-the-same-affiliation-eptcs-format
+\RequirePackage{array}
+\newenvironment{authors}[1]%
+  {\begingroup
+   \gdef\estyle{}%
+   \renewcommand\institute[1]%
+     {\\\multicolumn{#1}{@{}c@{}}{\scriptsize\begin{tabular}[t]{@{}>{\footnotesize}c@{}}##1\end{tabular}}}%
+   \renewcommand\email[1]%
+     {\gdef\estyle{\footnotesize\ttfamily}\\##1\gdef\estyle{}}
+   \begin{tabular}[t]{@{}*{#1}{>{\estyle}c}@{}}
+  }%
+  {\end{tabular}%
+   \endgroup
+  }
+
+\def\anauthor#1#2{%
+	#1%
+	\institute{}
+	\email{#2}%
 }
-%\institute{NICTA\\ Sydney, Australia}
-%\institute{School of Computer Science and Engineering\\
-%University of New South Wales\thanks{A fine university.}\\
-%Sydney, Australia}
-%\email{rvg@cs.stanford.edu}
-%\and
-%Co Author \qquad\qquad Yet S. Else
-%\institute{Stanford Univeristy\\
-%California, USA}
-%\email{\quad is@gmail.com \quad\qquad somebody@else.org}
-%}
-\def\titlerunning{Metaprogramming Statically verified code}
-\def\authorrunning{Servetto, Potanin, Arora, Isaac}
+\def\vuw{\institute{School of Engineering and Computer Science\\%
+			Victoria University of Wellington\\%
+			Wellington, New Zealand}}
+\author{
+	\begin{authors}{2}
+	Isaac Oscar Gariano & Marco Servetto
+	\vuw
+	\email{isaac@ecs.vuw.ac.nz & marco.servetto@ecs.vuw.ac.nz}
+	\end{authors}
+	\and
+	\begin{authors}{2}
+	 Alex Potanin & Hrshikesh Arora
+	 \vuw
+	 \email{alex@ecs.vuw.ac.nz & arorahrsh@myvuw.ac.nz}
+	\end{authors}
+}
+
+\def\authorrunning{Isaac O.\,G., M. Servetto, A. Potanin \& H. Arora}
 
 % Allows one to write /hello/ instead of \Q@hello@.
 % Use // to get a normal text slash
@@ -61,9 +65,37 @@ Victoria University of Wellington}
 }
 \let\oldinput=\input
 \def\input#1{\oldinput{\detokenize{#1}}} % Don't expand commands in input (needed since / is a command)
+\newcommand{\sref}[1]{Section~\ref{s:#1}}
+
+
+%\definecolor{blue}{HTML}{0000F0} %
+%\definecolor{purple}{HTML}{700090}
+%\definecolor{orange}{HTML}{F07000}
+%\definecolor{teal}{HTML}{0090B0}
+%\definecolor{brown}{HTML}{A00000}
+%\definecolor{green}{HTML}{008000}
+%\definecolor{pink}{HTML}{F000F0}
+
+\makeatletter
+\renewcommand*\idstyle{\expandafter\id@style\the\lst@token\relax}
+\def\id@style#1#2\relax{%
+        \ifcat#1\relax\else
+                \ifnum`#1=\uccode`#1%
+                        \color{DarkGreen}%
+                \fi%
+        \fi%
+}
+\makeatother
+
 
 \lstset{%
 	language=Java, morekeywords={exists, forall, @requires, @ensures, result},
+	tabsize=2,
+	identifierstyle=\idstyle,
+%	aboveskip=0pt
+%	keywordstyle=\color{blue},
+%	commentstyle=\color{green},
+%	stringstyle=\color{brown}
 %	literate=
 %		{||}{{$\vee$}}1
 %		{&&}{{$\wedge$}}1
@@ -71,12 +103,18 @@ Victoria University of Wellington}
 %		{>=}{{$\geq$}}1
 %		{**}{{$^{**}$}}1
 }
+%citations
+
 \begin{document}
 \maketitle
-%\input{abstract}
-
+\input{abstract}
+\input{introduction}
 \input{background}
 \input{combining}
-%\bibliographystyle{eptcs}
-%\bibliography{main}
+\input{examples}
+\input{conclusion}
+
+\catcode\Slash=12% turn of my awesome slash
+\bibliographystyle{eptcs}
+\bibliography{paper}
 \end{document}

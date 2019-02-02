@@ -1,5 +1,5 @@
 \begin{abstract}
-Here we show how we can use the metaprogramming technique of \emph{iterative composition} to generate statically correct code, given correct code as input. This technique does not require that the result of metaprogramming be run through a static verify, since we guarantee it's correctness, assuming the correctness of input.
+In this paper we show how the techniques used for method contracts in class-based OO languages, with conventional inheritance, can be applied to the more powerful and general mechanism of \emph{iterative trait composition}. Iterative trait composition extends the notion of \emph{trait composition} by combining it with support for meta-circular meta-programming.
 
-TODO: What is iterative composition? And how does this work compare//build uppon prior work?
+We present a novel extension to the core trait composition operator that guarantees that any meta-code taking in statically verified traits, will produce a `correct' trait. We achieve this property by simply checking the compatibility of method contracts when composing traits. Importantly, our approach does \emph{not} require invoking a static verifier on the result of meta-programming, or during its execution.
 \end{abstract}

@@ -1,19 +1,21 @@
-\subsection{Trait Composition}
-The idea behind \emph{trait composition} is to seperate the notions of \emph{subtyping} and \emph{inheritence}. Only \emph{traits} can be inherited, and only \emph{classes} can be used as types. A \emph{trait} is like an anonymous class, in particular it can contain methods, but because it is anonymous, one cannot directly use it as a type or create instances of it. A class can then be declared from a trait, effectively giving it a name, but such a class will be unrelated to other classes defined from the same trait. Traits can then be `composed` to produce other traits, however since traits cannot be used as types, we are free to perform operations that would break the LSV. Consider the following example:
+\subsection{Trait Composition}\label{s:btc}
+The idea behind \emph{trait composition} is to seperate the notions of \emph{subtyping} and \emph{inheritence}~\cite{useReuse}. Only \emph{traits} can be inherited, and only \emph{classes} can be used as types. A \emph{trait} is like an anonymous class, in particular it can contain methods, but because it is anonymous, one cannot directly use it as a type or create instances of it. Class are then declared from traits, effectively giving them a name, but such classes will be unrelated to other classes defined from the same trait. Traits can be `composed` to produce other traits, however since traits cannot be used as types, we are free to perform operations that would break the LSV. Consider the following example:
 \begin{lstlisting}
 Trait pair = class {
-  String target();
-  String hello() { return "Hello " + this.target(); }
+	String target();
+	String hello() { return "Hello " + this.target(); }
 };
-// Defines a class called 'HelloWorld'
+// Defines a class called HelloWorld
 HelloWorld: pair.extend(class {
-  String target() { return "World"; }
-  String hello() { this.super_print() + "!"; } // prints "Hello World!"
+	String target() { return "World"; }
+	String hello() { this.super_print() + "!"; } // prints "Hello World!"
 });
 \end{lstlisting}
-We use the type /Trait/ as the types of traits, and a class-declaration (without a name) as a \emph{trait literal} expression. Here /trait1.extend(trait2)/ contains all the methods in /trait1/ and /trait2/, if a method appears in both, those in /trait2/ will override those in /trait1/. In addition, /trait2/ can declare and call the original implementation (the one in /trait1/) of overridden methods by prefixing their name with /super_/, however they are considered `private' to /trait2/, i.e. only code in /trait2/ itself can see them, not code added in later. When a method appears in both /trait1/ and /trait2/, their signatures will also be checked to ensure they are identical, this ensures that if both /trait1/ and /trait2/ are well-typed, the result will also be.
+We use the type /Trait/ as the types of traits, and a class declaration (without a name) as a \emph{trait literal} expression. Here /trait1.extend(trait2)/ contains all the methods in /trait1/ and /trait2/. When a method declaration appears in both /trait1/ and /trait2/, their signatures will also be checked to ensure they are identical, this ensures that if both /trait1/ and /trait2/ are well-typed, the result will also be (this property is sometimes called \emph{meta level soudnes}~\cite{Servetto:2010:MMC:1869459.1869498}).
 
-In this paper, we will use the \emph{flattening} semantics of traits~\cite{?}, in which trait operations produce a flattened result, equivalent to a trait literal, with no references to any of the input traits to the operation. Thus the above definition for /HelloWorld/ is identical to:
+However if a method $m$ is also \emph{implemented} (i.e. non abstract) in both /trait1/ and /trait2/, the operation will proceed as if the version in /trait1/ was named /super_$m$/. Unlike conventional OO inheritance, this means that calls to $m$ in /trait1/ will call the implementation in /trait1/, and not the (overriding) implementation in /trait2/. In addition, the renamed /super_$m$/ method will be `private' to /trait2/, i.e. only code in /trait2/ itself can see it, not code added in later. Their are other approaches to dealing with this, such as only renaming the declaration of $m$ to /super_$m$/, so that calls in /trait1/ will call the method in /trait2/. However in order for this to be sound in our context of producing correct code, we would have to prevent the $m$ in /trait2/ from having an incompatible contract to the $m$ in /trait1/, thus breaking our examples in \sref{ex}.
+
+In this paper, we will use the \emph{flattening} semantics of traits, in which trait operations produce a flattened result, equivalent to a trait literal, with no references to any of the input traits to the operation. Thus the above definition for /HelloWorld/ is identical to:
 \begin{lstlisting}
 HelloWorld: class {
 	private String super_hello() { return "Hello " + this.target(); }
@@ -27,4 +29,4 @@ The main advantage of trait composition over conventional inheritance is that tr
 	\item Trait operations that would be unsound in a subtyping environment are allowed, such as removing methods or changing their types.
 	\item The way code is reused in order to construct a class is not exposed to users of the class. This allows the code reuse mechanism to be changed without breaking any uses of a class.
 \end{itemize}
-In addition, this makes traits much simpler to reason about, making it easier to compose them in more complicated ways~\cite{?}.
+In addition, this makes traits much simpler to reason about, making it easier to compose them in more complicated ways.
