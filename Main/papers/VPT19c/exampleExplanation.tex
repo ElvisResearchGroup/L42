@@ -1,0 +1,33 @@
+The three traits /base/, /even/ and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and statically verified before the method /generate(exp)/ can run.
+Writing /class Pow1=base/ would generate a class such that /new Pow1().pow(x)==x**1/.
+The other two traits have abstract methods; implementations for /$\_$pow(x)/ and /$\_$exp()/ must be provided. However, given the contract of /pow(x)/,
+and the fact that /even/ and /odd/ has been statically verified,
+if we supply method bodies respecting the contracts, we will get \emph{correct} code, without the need of further static verification.
+Many works in literature allows to adapt traits by renaming or hiding methods. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
+Method /compose/ starts by renaming /exp/ and /pow/
+so that their implementation could satisfy traits 
+/even/ or /odd/.
+The /+/ operator is the main way to compose traits.
+The result of the plus will contain all the methods from both operands.
+Crucially, it is possible to sum traits where a method is declared on both sides; in this case at least one of the two side need to be abstract and the method signature and contracts annotations need to be \emph{compatible}.
+For the sake of our example, we can just require them to be syntactically identical. Relaxing the constraints for 
+contracts compatibility is an important future work.
+
+The sum is executed when the method /compose/ run, and that is the moment the contracts are matched to be identical.
+
+
+
+The method compose shows the core of our approach:
+Traits are first class values and their methods
+can be renamed, or hidden. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
+Moreover, two traits can be summed, and the sum will...
+The compose method expects current to provide pow and exp methods, and next to have pow and exp, and to declare abstract _pow and _next.
+
+In this way, by inductive reasoning, we can start from a base case in line X and then recursively compose the...
+%
+%Concluding, static verification of metaprogramming is a
+%near unexplored area and we are trying attack the problem by reusing conventional
+%object oriented static verification by
+%relying on
+%composition operators similar to \Q@extends@ and generics to
+%generate behaviour. 

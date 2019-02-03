@@ -55,62 +55,39 @@ However, if the exponent was well known, we could write a more efficient version
 \end{lstlisting}
 In the following, we will explain the following 
 code, that generates statically verified versions of powi using our disciplined metaprogramming technique:
-(WE SHOULD ADD LINE NUMBERS)
-
 %
 %For simplicity, we will only consider pre and post-conditions in a purely functional OO language. Contracts can be extended to other cases, such as to specify class invariants, termination, function purity (where the language is an otherwise imperative language), ownership, etc.~\cite{DBLP:conf/sigada/Leino12,barnett2004spec} However such properties are still typically encoded as pre and post-conditions.
 %
 %prove that 
-
 \begin{lstlisting}
+Trait base=class {//induction base case: it would compute x**1
+  @ensures(result>0) Int exp(){return 1;}  
+  @ensures(result==x**exp()) Int pow(Int x){return x;}
+  }
+Trait even=class {//if _pow(x)== x**_exp(), pow(x) == x**(2*_exp())
+  @ensures(result>0) Int $\_$exp();
+  @ensures(result==2*$\_$exp()) Int exp(){return 2*$\_$exp();}
+  @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
+  @ensures(result==x**exp()) Int pow(Int x){return $\_$pow(x*x);}
+}
+Trait odd=class {//if _pow(x)== x**_exp(), pow(x) == x**(1+_exp())
+  @ensures(result>0) Int $\_$exp();
+  @ensures(result==1+$\_$exp()) Int exp(){return 1+$\_$exp();}
+  @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
+  @ensures(result==x**exp()) Int pow(Int x){return x*$\_$pow(x);}
+}
+//'compose' performs a step of iterative composition
 Trait compose(Trait current, Trait next){
   current = current[rename exp->$\_$exp,pow->$\_$pow];
   return (current+next)[hide $\_$exp,$\_$pow];
-  }
-@requires(exp>0)
+}
+@requires(exp>0)//the entry point for our metaprogramming
 Trait generate(Int exp) {
-  if (exp==1) return 
-    class {
-      @ensures(result>0) Int exp(){return 1;}
-
-      @ensures(result==x**exp()) Int pow(Int x){return x;}
-    };
-  if (exp%2==0) return compose(generate(exp/2),
-    class {
-      @ensures(result>0) Int $\_$exp();
-
-      @ensures(result==2*$\_$exp()) Int exp(){return 2*$\_$exp();}
-
-      @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
-
-      @ensures(result==x**exp()) Int pow(Int x){return $\_$pow(x*x);}
-    });
-  return compose(generate(exp-1),
-    class {
-      @ensures(result>0) Int $\_$exp();
-
-      @ensures(result==1+$\_$exp()) Int exp(){return 1+$\_$exp();}
-
-      @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
-
-      @ensures(result==x**exp()) Int pow(Int x){return x*$\_$pow(x);}
-    });
+  if (exp==1) return base;
+  if (exp%2==0) return compose(generate(exp/2),even);
+  return compose(generate(exp-1),odd);
 };
 Pow7=generate(7)
 ...
 new Pow7().pow(3)==?
 \end{lstlisting}
-The method compose shows the core of our approach:
-Traits are first class values and their methods
-can be renamed, or hidden. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
-Moreover, two traits can be summed, and the sum will...
-The compose method expects current to provide pow and exp methods, and next to have pow and exp, and to declare abstract _pow and _next.
-
-In this way, by inductive reasoning, we can start from a base case in line X and then recursively compose the...
-%
-%Concluding, static verification of metaprogramming is a
-%near unexplored area and we are trying attack the problem by reusing conventional
-%object oriented static verification by
-%relying on
-%composition operators similar to \Q@extends@ and generics to
-%generate behaviour.

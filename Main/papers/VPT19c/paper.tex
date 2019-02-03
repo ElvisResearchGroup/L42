@@ -4,6 +4,12 @@
 %\usepackage{breakurl}             % Not needed if you use pdflatex only.
 \usepackage{underscore}           % Only needed if you use pdflatex.
 \input{../Def/Def}
+\lstset{
+    numbers=left,
+    stepnumber=1,
+    showstringspaces=false,
+}
+
 \providecommand*{\code}[1]{\Q`#1`}
 \newcommand{\saveSpace}{\vspace{-3px}}
 \newcommand{\loseSpace}{\vspace{1ex}}
@@ -111,6 +117,7 @@
 %\input{introduction}
 %\input{background}
 \input{background/static-verification}
+\input{exampleExplanation}
 %\input{combining}
 %\input{examples}
 %\input{conclusion}
