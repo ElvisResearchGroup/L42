@@ -83,7 +83,8 @@
 %\definecolor{pink}{HTML}{F000F0}
 
 \makeatletter
-\renewcommand*\idstyle{\expandafter\id@style\the\lst@token\relax}
+\renewcommand*\idstyle{%
+	\expandafter\id@style\the\lst@token\relax}
 \def\id@style#1#2\relax{%
         \ifcat#1\relax\else
                 \ifnum`#1=\uccode`#1%
@@ -95,7 +96,7 @@
 
 
 \lstset{%
-	language=Java, morekeywords={exists, forall, @requires, @ensures, result},
+	language=Java, morekeywords={exists, forall, @requires, @ensures, result, rename, hide, compose},
 	tabsize=2,
 	identifierstyle=\idstyle,
 %	aboveskip=0pt
@@ -113,6 +114,7 @@
 
 \begin{document}
 \maketitle
+
 %\input{abstract}
 %\input{introduction}
 %\input{background}
