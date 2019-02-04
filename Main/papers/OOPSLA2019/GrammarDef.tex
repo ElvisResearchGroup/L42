@@ -31,22 +31,22 @@
 \newcommand{\ncd}[2]{\cd{\Q{private}\q\,#1}{#2}}
 \newcommand{\pcd}[2]{\cd{\Q{private}\,#1}{#2}}
 \newcommand{\cd}[2]{\@code{#1\@eq#2}}
-
 % Class literals
 \newcommand{\clit}[3]{\@code{\cp{#1\Q{;}\ #2\Q{;}\ #3}}}
 	
 	%\@code{\ensuremath{\Q@\{@#1\Q{;}\ #2\Q{;}\ #3\,\Q@\}@\!}}}
 
-%New
-\renewcommand{\T}[1]{#1\@nextpath}
-\renewcommand{\This}{\Q{This}\xspace}
+% what was once a program... but is now a \Sigma
+\newcommand{\State}[2]{#1;#2}
+\newcommand{\Exists}[2]{\ensuremath{\exists #1\text{ such that } #2}}
+\newcommand{\ForAll}[2]{\ensuremath{\forall #1,\quad #2}}
 
-% OBSOLETE
-\newcommand{\prog}[2]{\@code{#1;#2}}
-\newcommand{\ThisN}[1]{\ensuremath{\Q!This!_{\@code{#1}}}\@nextpath}
-\newcommand{\Cs}[1]{#1\@nextpath}
-	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
-	\newcommand{\@gobblenextpath}[1]{\Q!.!\@code{#1}\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
+%New
+\renewcommand{\This}{\Q{This}\xspace}
+%\renewcommand{\T}[1]{#1\@nextpath}
+%	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
+%	\newcommand{\@gobblenextpath}[1]{\Q!.!\@code{#1}\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
+\renewcommand{\.}{\Q!.!\xspace}
 %-------------------
 
 % The sum operator
@@ -71,6 +71,7 @@
 \newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
 \newcommand{\Id}{\ensuremath{\mathit{Id}}}
 \newcommand{\Mz}{\ensuremath{\mathit{Mz}}}
+\newcommand{\MVz}{\ensuremath{\mathit{MVz}}}
 \newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
 \newcommand{\Tz}{\ensuremath{\mathit{Tz}}}
 \newcommand{\Txs}{\ensuremath{\mathit{Txs}}}
@@ -99,8 +100,7 @@
 \newcommand{\wwhere}{\text{where }}
 \newcommand{\otherwise}{,\quad\text{otherwise}}
 \newcommand{\imp}{\ensuremath{\Rightarrow}}
-\newcommand{\redaa}[3]{\ensuremath{#1_{#2}[#3]}}
-\newcommand{\reda}[2]{\redaa{#1}{}{#2}}
+\newcommand{\reda}[3]{\ensuremath{#1_{#2}[#3]}}
 
 % Environemnts
 
@@ -127,10 +127,29 @@
 \newcommand{\defis}{\midrule}
 
 
-\newenvironment{irules}{\noindent$$\begin{array}{l}\midrule}{\unskip\\\midrule\end{array}$$}
+\newenvironment{irules}{\noindent\[\begin{array}{l}\midrule}{\unskip\\\midrule\end{array}\]}
 \newcommand{\irule}[3]{\inferrule[(#1)]{#2}{#3}\qquad}
 \newcommand{\iruleSep}{\unskip\\[5ex]}
 
+%\newcommand{\irule}[3]{%
+%		\everymath={\displaystyle}%
+%		\ensuremath{
+%			\Rulename{#1}\ \frac{\hspace{-0.5em}\begin{array}{c}#2\end{array}\hspace{-0.5em}}{#3}%
+%	}
+%}
+	
+% this version formats things almost exactly the same as \inferrule, whereas mine (above) looks better!
+%\newcommand{\irule}[3]{%
+%	\everymath={\displaystyle}%
+%	\ensuremath{
+%		\begin{array}{l}%
+%		\begin{array}{l}\Rulename{#1}\end{array}\\%
+%		\frac{\hspace{-1em}
+%				\begin{array}{c}#2\end{array}%
+%			\hspace{-1em}}{#3}%
+%		\end{array}%
+%	}\hfill
+%}
 % ----------------------------------------------------------------------------
 %\newcommand{\qquad}{\quad\quad}
 
