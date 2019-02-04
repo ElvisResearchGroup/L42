@@ -1,44 +1,46 @@
 The three traits /base/, /even/, and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and SV before the method /generate(exp)/ can run.
 As you can see in line /37/, a class body can be an expression in the language itself.
 At compile time such an expression will be run and the resulting /Trait/ will be used as the body of the class.
-For example, we could write /class Pow1=base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
+For example, we could write /class Pow1: base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
 The other two traits have abstract methods; implementations for /$\_$pow(x)/ and /$\_$exp()/ must be provided. However, given the contract of /pow(x)/,
 and the fact that /even/ and /odd/ have both been SV,
-if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need of further SV. \IOComm{Using SV everywere, in different ways (e.g. to mean static-verification, staticly-verify and statically-verified), is confusing, perhaps you could just say `verify' or `verified`}
+if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need of further SV.
 Many works in literature allow adapting traits by renaming or hiding methods\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
-Since all occurrences of names are handled coherently, \textbf{renaming and hiding preserve code correctness}. \IOComm{What does 'coherently' mean here?} \IOComm{As I have told you a hundred times, stop bolding chunks of sentences! If you need to emphasise something you should italicise things (but even then, only italice one or two words)}
+Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
 
 The /compose/ method starts by renaming the /exp/ and /pow/ methods of /current/
 so that they satisfy the contracts in /next/ (which will be 
 /even/ or /odd/).
-The /+/ operator is the main way to compose traits.
+The /+/ operator is the main way to compose traits.%
+~\cite{scharli2003traits,LagorioSZ09}.
 The result of /+/ will contain all the methods from both operands.
-Crucially, it is possible to sum traits where a method is declared on both sides; in this case at least one of the two competing methods needs to be abstract and the signature and contracts annotations of two competing methods need to be \emph{compatible}.
-For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work. \IOComm{Your not allowing weakening or strengthening? Interesting, I would put a sentence or two saying this can be done, but not explain how you actually check it (since none of this is implemented anyway)}
+
+Crucially, it is possible to sum traits where a method is declared on both sides; in this case at least one of the two competing methods needs to be abstract and the signature of the two competing methods need to be \emph{compatible}.
+To make sure that the traditional /+/ operator also handle contracts, we need to require that also contracts annotations are \emph{compatible}.
+For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work.
 Thanks to this constraint \textbf{the sum operator also preserves code correctness}.
 
-The sum is executed when the method /compose/ runs, if the matched contracts are not identical an exception will be raised. A leaked exception during metaprogramming would become a compile time error. \IOComm{Is the mechanism of error handling important here? Just say an 'error' will occur when it is executed or at compile time (meta time is a better term here, as it isnt when the compose method is compiled, but when it is run!)}
-Thus, our approach does not guarantee the success of the code generation process, but it guarantees that only correct code is generated.
+The sum is executed when the method /compose/ runs, if the matched contracts are not identical an exception will be raised. A leaked exception during compile-time metaprogramming would become a compile-time error. 
+Our approach is very similar to~\cite{servetto2014meta}, and does not guarantee the success of the code generation process, but it guarantees that only correct code is generated.
 
 Finally the /$\_$pow(x)/ and /$\_$exp()/ method are hidden, so that the structural shape of the result is
 the same as /base/'s.
-As you can see, method composition is the core of our approach: traits are first class values and can be manipulated with a set of primitive operators that preserve code correctness and well-typing.
-
+As you can see, mOur approach is very similar to~\cite{servetto2014meta}, and does not guarantee the success of the code generation process, but it guarantees that only correct code is generated.
+As you can see, /Trait/s are first class values and can be manipulated with a set of primitive operators that preserve code correctness and well-typing.
 In this way, by inductive reasoning, we can start from the /base/ case and then recursively compose /even/ and /odd/ until we get the desired code.
 Note how the code of /generate(exp)/ follows the same scheme of the code of /pow(x,exp)/ in line 1.
 
-To understand our example better, imagine executing the code of /generate(7)/ while keeping /compose/ in symbolic form. We would get the following:
+To understand our example better, imagine executing the code of /generate(7)/ while keeping /compose/ in symbolic form. We would get the following (where /c==compose/ for brevity:
+\vspace{-1ex}
 \begin{lstlisting}[numbers=none]
-generate(7) == compose(generate(6),odd) == ...
-compose(compose(base,even),odd),even),odd)
+generate(7) == c(generate(6),odd) == ...
+ == c(c(c(c(base,even),odd),even),odd)
 \end{lstlisting}
-As we discussed, /base ~$\ $ pow1(x)/: it offers a method /pow(x)/ computing /x**1/.\\* By applying /compose/ we can conclude that \IOComm{What in the world does this sentence mean? Also what does $~$ mean?}
-\Q@compose(/*pow1(x)*/,even) ~$\ $ pow2(x)@,\\*
-\Q@compose(/*pow2(x)*/,odd) ~$\ $ pow3(x)@,
-\Q@compose(/*pow3(x)*/,even) ~$\ $ pow6(x)@ and finally
-\Q@compose(/*pow6(x)*/,odd) ~$\ $ pow7(x)@.
-The code of each /$\_$pow/ is only executed once for each top-level /pow/ call, so the /hide/ operator can simply inline it.
-This means that the generated code could be identical to the manually optimized version in line 7.
+\vspace{-1ex}
+As /base/ represents /pow1(x)/, /c(base,even)/ represents /pow2(x)/, then \Q@c(/*pow2(x)*/,odd)@ represents \Q@pow3(x)@, \Q@c(/*pow3(x)*/,even)@ represents \Q@pow6(x)@ and finally,
+\Q@c(/*pow6(x)*/,odd)@ represents \Q@pow7(x)@.
+The code of each /$\_$pow/ is only executed once for each top-level /pow/ call, so the /hide/ operator can inline it.
+Thus, the result could be identical to the manually optimized code in line 7.
 
 Note that while our approach guarantees that the resulting code follows its own contracts, it does not statically ensure what contracts it would have.
 As future work, we are investigating how
@@ -59,4 +61,4 @@ May require the static verifier to check that the execution of
 determinism check on the implementation of /Pow7.exp()/, before symbolically executing it.
 
 In conclusion, static verification of metaprogramming is an exciting new area of research; we are attacking the problem by reusing conventional
-object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility. A crucial design decision is that code performing metaprogramming does not need to be statically verified to produce correct code or code annotated with the right contracts; it would be sufficient to run some type of runtime verification during compile-time execution.
+object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility. A crucial design decision is that code performing metaprogramming does not need to be statically verified to produce code annotated with the desired contracts; it would be sufficient to apply some type of runtime verification during compile-time execution.
