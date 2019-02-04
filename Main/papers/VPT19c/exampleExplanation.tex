@@ -16,7 +16,7 @@ The /+/ operator is the main way to compose traits.%
 The result of /+/ will contain all the methods from both operands.
 
 Crucially, it is possible to sum traits where a method is declared on both sides; in this case at least one of the two competing methods needs to be abstract and the signature of the two competing methods need to be \emph{compatible}.
-To make sure that the traditional /+/ operator also handle contracts, we need to require that also contracts annotations are \emph{compatible}.
+To make sure that the traditional /+/ operator also handles contracts, we need to require that contracts annotations are \emph{compatible}.
 For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work.
 Thanks to this constraint \textbf{the sum operator also preserves code correctness}.
 
