@@ -1,19 +1,4 @@
 \section{Language Grammar and Well-Formedness}
-
-\irule{Top}{
-	\State{\DVs, C = E}{C} \vdash E \Rightarrow E'\\
-	\text{if } \Id = t \text{ then } C = \This \text{, otherwise } C = \Id
-}{
-	\DVs\ \cd{C}{E}\ \Ds \Rightarrow \DVs\ \cd{C}{E'}\ \Ds
-}$\displaystyle % dinferences? spacinhg!
-	\inferrule[(Top)]{
-		\State{\DVs, C = E}{C} \vdash E \Rightarrow E'\\\\
-		\text{if } \Id = t \text{ then } C = \This \text{, otherwise } C = \Id
-	}{
-		\DVs\ \cd{C}{E}\ \Ds \Rightarrow \DVs\ \cd{C}{E'}\ \Ds
-	}	
-$
-
 Here we use the meta-variables $x$, $t$, $C$, and $m$ as identifiers for variables/fields, traits, classes and methods (respectively). In the code examples, we will represent $C$ with upper-case identifiers. Meta-variables $n$ and $i$ refer to natural numbers. We will use the notation $Xs$, where $X$ is any metavariable, to refer to a (possibly empty) sequence of $X$s. Similarly $Xz$ will refer to a (possibly empty) \emph{set} of $X$s. Then notation $X?$ represents an $Xs$ with at most one element. Here is the grammar for our language:
 
 \noindent
@@ -164,7 +149,7 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		\ForAll{T \in \ran{R}}{\Sigma\op{validType}{T}}\\\\
 		R' = \Sigma\op{bestMap}{R}
 	}{
-		\State{\Dz}{T} \vdash \red{LV'}{R} \Rightarrow   
+		\State{\Dz}{T} \vdash \red{LV}{R} \Rightarrow   
 		\reda{R'}{T}{LV\op{remove}{Csz}}
 	}
 	}\\\\
@@ -234,8 +219,7 @@ Here we define some auxiliary type-system related notations.
 
 \begin{defs}
 	\defip{\Sigma\op{validType}{T}}{}{...}
-	\defic{\Sigma \vdash \Sigma(T) : \Ok}{}
-	\defic{\Sigma\op{accessible}{T}}{}
+	\defic{\Sigma \vdash \Sigma(T) : \Ok \text{ and }\Sigma\op{accessible}{T}}{}
 	\defis
 	\defip{\Sigma\op{accessible}{T\.C}}{}{}%
 	\defic{
@@ -287,16 +271,16 @@ The redirect set is the full set of (nested) class names that will be `redirecte
 
 \begin{defs}
 	\defip{Cs \in \Sigma\op{redirectSet}{R}}{}{}
-	\defic{\redm{Cs}{T} \in R \text{, or}}{}
-	\defic{\Exists{Cs' \in \Sigma\op{redirectSet}{R}}{Cs\in \Sigma\op{internals}{\fop{exposedTypes}{\Sigma[Cs']}}}}{}
+	\defic{\redm{Cs}{T} \in R \text{ or } \Exists{Cs' \in \Sigma\op{redirectSet}{R}}{T'\.Cs \in \fop{exposedTypes}{\Sigma[Cs']}}}{}
+	\defic{\wwhere \Sigma = \State{\Dz}{T'}}{}
 	\defis
 	\defi{\fop{exposedTypes}{\clit{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
 	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0\ldots T_n}{}
 	
-	\defi{\Sigma\op{internals}{\Tz}}{\{Cs \mid T\.Cs \in \Tz\}\where \Sigma = \State{\Dz}{T}}{}
+%	\defi{\Sigma\op{internals}{\Tz}}{ \Tz\}\where \Sigma = \State{\Dz}{T}}{}
 \end{defs}
 
-We use the notation \fop{exposedTypes}{L} to denote the set of types used in the (public) signature of $L$, note that it does not include nested classes (since in our language they are not virtual),  fields (since they are private), or method bodies (as redirect will delete them). The notation $T\op{internals}{\Tz}$ gets the names of the nested classes of $T$ that $\Tz$ refers to. 
+We use the notation \fop{exposedTypes}{L} to denote the set of types used in the (public) signature of $L$, note that it does not include nested classes (since in our language they are not virtual),  fields (since they are private), or method bodies (as redirect will delete them).
 %The intuition behind \opName{redirectSet} is that if the signature of a nested class mention another nested class, they must be redirected together.
 
 \subsection{Redirectable}
@@ -305,8 +289,8 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 	\defic{\Empty \notin Csz}{(Cant redirect the whole code literal)}
 	\defic{\forall Cs \in Csz}{}
 	\defic{\quad \Sigma[Cs] \text{ is defined}}{(the nested class must exist)}
-	\defic{}{(public nested classes must be redirected if their outer is)}
 	\defic{\quad \Sigma[Cs] = \clit{\_}{\_}{\cd{C}{L} \_} \imp Cs\.C \in Csz}{}
+	\defic{}{(public nested classes must be redirected if their outer is)}
 	\defic{\ForAll{Cs\.C\.\_ \in \Csz}{\Sigma[Cs] = \clit{\_}{\_}{\cd{C}{L},\_}}}{(cant redirect through a private class)}
 \end{defs}
 \IOComm{Is there a reason why we need to require that if a class is redirected, all its public nested class are also?}
@@ -331,7 +315,7 @@ We define the notation \reda{R}{T}{L} to return $L$ but with references to $T\.C
 	\defi{\reda{R}{T}{T'}}{T'\otherwise}{($T'$ is external, or not in $R$)}
 \end{defs}
 
-We omit the definitions for all the trivial propagation cases of form $R_{Cs}(L)$, $R_{Cs}(M)$, $R_{Cs}(K)$, and $R_{Cs}(e)$.
+We omit the definitions for all the trivial propagation cases of form $\reda{R}{T}{L}$, $\reda{R}{T}{M}$, $\reda{R}{T}{K}$, and $\reda{R}{T}{e}$.
 %The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
 %Rename must keep track of the explored $Cs$ in order to distinguish
 %internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
