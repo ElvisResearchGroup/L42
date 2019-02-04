@@ -1,62 +1,62 @@
-The three traits /base/, /even/ and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and statically verified before the method /generate(exp)/ can run.
-Writing /class Pow1=base/ would generate a class such that /new Pow1().pow(x)==x**1/.
+The three traits /base/, /even/ and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and SV before the method /generate(exp)/ can run.
+As you can see in line /37/, a class body can be an expression in the language itself.
+At compile time such expression will run and the resulting /Trait/ will be the body of the class.
+For example, we could just write /class Pow1=base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
 The other two traits have abstract methods; implementations for /$\_$pow(x)/ and /$\_$exp()/ must be provided. However, given the contract of /pow(x)/,
-and the fact that /even/ and /odd/ has been statically verified,
-if we supply method bodies respecting the contracts, we will get \emph{correct} code, without the need of further static verification.
-Many works in literature allows to adapt traits by renaming or hiding methods. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
-Since all the occurrences of names are handled coherently, renaming and hiding preserve code correctness.
+and the fact that /even/ and /odd/ has been SV,
+if we supply method bodies respecting the contracts, we will get \emph{correct} code, without the need of further SV.
+Many works in literature allows to adapt traits by renaming or hiding methods\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
+Since all the occurrences of names are handled coherently, \textbf{renaming and hiding preserve code correctness}.
 
 Method /compose/ starts by renaming /exp/ and /pow/
 so that their implementation could satisfy traits 
 /even/ or /odd/.
 The /+/ operator is the main way to compose traits.
-The result of the plus will contain all the methods from both operands.
-Crucially, it is possible to sum traits where a method is declared on both sides; in this case at least one of the two side needs to be abstract and the method signature and contracts annotations need to be \emph{compatible}.
+The result of /+/ will contain all the methods from both operands.
+Crucially, it is possible to sum traits where a method is declared on both sides; in this case at least one of the two competing methods needs to be abstract and the signature and contracts annotations of two competing methods need to be \emph{compatible}.
 For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work.
-Thanks to this constraints, also the sum operator preserve code correctness.
+Thanks to this constraints, also \textbf{the sum operator preserve code correctness}.
 
 The sum is executed when the method /compose/ runs, and if the matched contracts are not identical an exception will rise. A leaked exception during metaprogramming would become a compile time error.
-Thus, our approach does not guarantee the success of the code generation process, but it guarantees that only \emph{correct} code is generated.
+Thus, our approach does not guarantee the success of the code generation process, but it guarantees that only correct code is generated.
 
 Finally, methods /$\_$pow(x)/ and /$\_$exp()/ are hidden, so that the structural shape of the result is
 the same of the /base/ trait.
-
-As you can see, the method compose shows the core of our approach: traits are first class values and can be manipulated with a set of primitive operators that preserver code correctness and well-typing.
+As you can see, the method compose shows the core of our approach: traits are first class values and can be manipulated with a set of primitive operators that preserve code correctness and well-typing.
 
 In this way, by inductive reasoning, we can start from the /base/ case and then recursively compose /even/ and /odd/ until we get the desired code.
-
-Note how the code of /generate/ follows the same scheme of the code of /pow(x,exp)/ show before, without using metaprogramming.
+Note how the code of /generate(exp)/ follows the same scheme of the code of /pow(x,exp)/ in line /1/.
 
 To understand our example better let's imagine to execute the code of /generate(7)/ while keeping /compose/ in symbolic form. We would get the following:
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none]
 generate(7) == compose(generate(6),odd) == ...
 compose(compose(base,even),odd),even),odd)
-\end{lstlisting}.
-As we discussed, /base ~ pow1(x)/: it offers a method /pow(x)/ computing /x**1/. Applying /compose/ we can conclude that
-/compose(/*pow1(x)*/,even) ~ pow2(x)/,
-/compose(/*pow2(x)*/,odd) ~ pow3(x)/,
-/compose(/*pow3(x)*/,even) ~ pow6(x)/ and finally
-/compose(/*pow6(x)*/,odd) ~ pow7(x)/.
-The code of /$\_$pow/ is always executed only one time, so the hide could always just inline it.
-This means that the generated code may be identical to a manually written optimized version.
+\end{lstlisting}
+As we discussed, /base ~$\ $ pow1(x)/: it offers a method /pow(x)/ computing /x**1/.\\* Applying /compose/ we can conclude that
+\Q@compose(/*pow1(x)*/,even) ~$\ $ pow2(x)@,\\*
+\Q@compose(/*pow2(x)*/,odd) ~$\ $ pow3(x)@,
+\Q@compose(/*pow3(x)*/,even) ~$\ $ pow6(x)@ and finally
+\Q@compose(/*pow6(x)*/,odd) ~$\ $ pow7(x)@.
+The code of /$\_$pow/ is always executed only one time, so the /hide/ operator could always just inline it.
+This means that the generated code may be identical to the manually optimized version in line /7/.
 
 Note that while our approach guarantees that the resulting code follows its own contracts, it does not statically ensure what contracts would it have.
 As future work, we are investigating how
 to perform an addition verification check
 on the result of metaprogramming.
-For example
-\begin{lstlisting}
-@ensures(new Pow7().exp()==7 && Pow7.pow(x).ensures=="result==x**exp()"
+For example, the following code:
+\vspace{-1ex}
+\begin{lstlisting}[numbers=none]
+@ensures(new Pow7().exp()==7&&Pow7.pow.ensures=="result==x**exp()")
 Pow7=generate(7)
 \end{lstlisting}
+\vspace{-1ex}
 May require the static verifier to check that 
 /new Pow7().exp()/ execution will deterministically reduce to /7/ and that the /ensures/ clause of 
-/Pow7.pow(x)/ is syntactically equivalent to 
+/Pow7.pow/ is syntactically equivalent to 
 /result==x**exp()/. Note how this final step of static verification does not need to re-verify the body of
-/Pow7.pow(x)/ and only needs to do a coarse grained 
+/Pow7.pow/ and only needs to do a coarse grained 
 determinism check on the implementation of /Pow7.exp()/ before symbolically executing it.
-%2187
-
 
 Concluding, static verification of metaprogramming is an exciting new area of research; we are attacking the problem by reusing conventional
-object oriented static verification techniques coupled with trait composition, extended to check also for contracts.
+object oriented static verification techniques coupled with trait composition, extended to check also for contracts. A crucial design decision is that code performing metaprogramming do not need to be statically verified to always produce correct code annotated with the right contract; some time of run-time verification (running during compile-time execution) is sufficient.

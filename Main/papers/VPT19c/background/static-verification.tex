@@ -1,14 +1,46 @@
-Object oriented languages typically define the correctness of a program by annotating it with \emph{contracts}~\cite{Meyer:1988:OSC:534929}. In this context, methods are usually annotated with pre and post-conditions\footnote{Here we will use the notation /@requires($predicate$)/ and /@ensures($predicate$)/, where $predicate$ is a boolean expression in terms of the parameters of the method (including /this/), and for the /@ensures/ case, the /result/ of the method call.}. A program is correct if all contracts are satisfied, in the case of pre and post-conditions, this means that before any method is called its precondition holds, and before a method returns, its post-condition holds. Automated static verification of such programs typically works by asking an automated theorem prover (such as an SMT solver) to verify each method is correct individually, by assuming the correctness of every other method, and the methods own pre-condition. This process can however be slow, and since static-verification is undecidable, it is often unpredictable.
+\noindent Object oriented languages supporting static verification (SV) usually extends the syntax for method declarations
+to support \emph{contracts} in the form of pre and post conditions~\cite{Meyer:1988:OSC:534929}.
+Correctness is defined only for code annotated with contracts.
+We say that such code is \emph{correct} if 
+before any method is called its precondition holds, and before a method returns, its post-condition holds.
+Automated (SV) typically works by asking an automated theorem prover to verify each method is correct individually, by assuming the correctness of every other method and the methods own pre-condition~\cite{barnett2004spec}. This process can be very slow, and unpredictable;
+that is, SV is a process that can be applied to annotated code
+to check if such code is correct, but there may be correct code that does not pass static verification
+ on a certain theorem prover.
 
+Metaprogramming is often used to programmatically generate faster specialised code 
+when some parameters can be known in advance. %This allows for user definable optimisations.
+To use metaprogramming and SV together, we could generate code
+containing also contracts, and those contracts could be checked after metaprogramming has been completed.
+SV could then be applied to the code resulting from metaprogramming to ensure it is correct.
+However this could be very time consuming, since it would require to verify all the generated code from scratch.
+Even worst, since SV is unpredictable, there would be no guarantee that the result of a given metaprogram will be verifiable, even if its result is correct by construction.
 
-Class based object oriented programming allows dynamic dispatch through `classes`, which represent a set of methods, however their could be multiple concrete implementations of such methods. To ease static verification, each concrete implementation is verified according to it's contracts, and each use of the method is verified against its (statically known contract. The static verify then simply verifies the Liskov substitution principle, namely that the \emph{contracts} of each method satisfies the contract of any methods it implements.
+We propose a disciplined form of metaprogramming based on trait composition and adaptation~\cite{scharli2003traits,servetto2014meta}.
+We call /Trait/ a contract annotated, correct and well-typed unit of code.
+/Trait/s manually written in the application
+are proven correct by SV.
+The result of /Trait/s composition and adaptation is also correct and well-typed.
+Metaprogramming can not generate code directly, but only by composing and adapting traits, thus also generate code is guaranteed correct.
+However the code resulting from metaprogramming may not be able to pass SV, since theorem provers are usually not complete.
 
-Metaprogramming is often used to programmatically generate specialised code based on known inputs, this allows for user definable optimisations, static verification could then be applied to the result of this code to ensure it is correct. However, due to the potential for large amounts of code to be generated this could be quite slow, making matters worse, since static verification is unpredictable, there is often know guarantee that the result of a given metaprogram will be verifiable, even if its result is correct.
+SV handle /extends/ and /implements/ by verifying that every 
+time a method is implemented//overriden, 
+the Liskov substitution principle is preserved. In this way, there is no need to verify again 
+the inherited code in the context of the derived class.
+This idea is easily adapted
+to handle trait composition, that simply provides another way to implement an /abstract/ method.
+When traits are composed,
+it is sufficient
+to check that the contracts of few methods matches
+to ensure the whole result is correct.
 
-
-The iterative trait composition form of metaprogramming works similar to class based inheritance, traits (or class bodies) are composed//inherited to form larger code. Thus we can apply the mechanism used to verify class-based inheritance to static verification, namely we can check that when traits are composed, the contracts of any methods in both parts match. This means that provided the methods of the input traits are correct, the methods of their composition will also be, without needing to re-verify the result. We can apply trait-composition iteratively, thus we can guarantee that the result of metaprogramming is correct, provided that all trait-literals are statically verified.
-
-Suppose we want to implement a fast exponentiation function\footnote{For simplicity, we will only consider the case for integers, and when the exponent is greater than zero}, we could use recursion and the common technique of `repeated squaring':
+In our examples we will use the notation /@requires($predicate$)/ 
+to specify a precondition, and /@ensures($predicate$)/ 
+to specify a postcondition; predicates are boolean expressions
+in terms of the parameters of the method (including /this/), and for the /@ensures/ case, the /result/ of the method call.
+Suppose we want to implement an efficient exponentiation function, we could use recursion and the common technique of `repeated squaring':
+\vspace{-1ex}
 \begin{lstlisting}
 @requires(exp > 0)
 @ensures(result == x**exp) // Here x**y means x to the power of y
@@ -17,47 +49,45 @@ Int pow(Int x, Int exp) {
 	if (exp %2 == 0) return pow(x*x, exp/2); // exp is even
 	return x*pow(x, exp-1); }  // exp is odd
 \end{lstlisting}
-
-However, if the exponent (/exp/) is already known at compile time, we could unfold this recursion to produce even more efficient code:
-\begin{lstlisting}
+If the exponent /exp/ is known at compile time,
+unfolding the recursion produces more efficient code:
+\vspace{-1ex}
+\begin{lstlisting}[firstnumber=7]
 @ensures(result == x**7) Int pow7(Int x) { 
   Int x2 = x*x; // x**2
   Int x4 = x2*x2; // x**4
   return x*x2*x4; } // Since 7 = 1 + 2 + 4
 \end{lstlisting}
-
-Now we show how we can use the technique of iterative trait composition, together with our contract matching, to generate code like the above at metatime:
-\begin{lstlisting}
-Trait base = class { // base case, x**1
-  @ensures(result > 0) Int exp() { return 1; }
-  @ensures(result == x**exp()) Int pow(Int x){ return x; }
+Now we show how we can use the technique of iterative trait composition, together with our contract matching, to generate code like the above, employing a technique called compile-time-execution~\cite{sheard2002template}:
+\vspace{-1ex}
+\begin{lstlisting}[firstnumber=11]
+Trait base=class {//induction base case: pow(x) == x**1
+  @ensures(result>0) Int exp(){return 1;}  
+  @ensures(result==x**exp()) Int pow(Int x){return x;}
+  }
+Trait even=class {//if _pow(x)== x**_exp(), pow(x) == x**(2*_exp())
+  @ensures(result>0) Int $\_$exp();
+  @ensures(result==2*$\_$exp()) Int exp(){return 2*$\_$exp();}
+  @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
+  @ensures(result==x**exp()) Int pow(Int x){return $\_$pow(x*x);}
 }
-Trait even = class { // case where exp is even
-  @ensures(result > 0) Int $\_$exp();
-  @ensures(result == 2*$\_$exp()) Int exp() { return 2*$\_$exp(); }
-  @ensures(result == x**$\_$exp()) Int $\_$pow(Int x);
-  @ensures(result == x**exp()) Int pow(Int x) { return $\_$pow(x*x); }
+Trait odd=class {//if _pow(x)== x**_exp(), pow(x) == x**(1+_exp())
+  @ensures(result>0) Int $\_$exp();
+  @ensures(result==1+$\_$exp()) Int exp(){return 1+$\_$exp();}
+  @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
+  @ensures(result==x**exp()) Int pow(Int x){return x*$\_$pow(x);}
 }
-Trait odd = class { // case when exp is odd
-  @ensures(result > 0) Int $\_$exp();
-  @ensures(result == 1 + $\_$exp()) Int exp() { return 1+$\_$exp(); }
-  @ensures(result == x**$\_$exp()) Int $\_$pow(Int x);
-  @ensures(result == x**exp()) Int pow(Int x) { return x*$\_$pow(x); }
-}
-//`recur' performs a step of iterative composition
-Trait induct(Trait current, Trait next) {
-  current = rename[current, exp->$\_$exp, pow->$\_$pow];
-  return hide[compose[current, next], $\_$exp, $\_$pow];
-}
-@requires(exp > 0)//the entry point for our metaprogramming
+//'compose' performs a step of iterative composition// whats up with `'
+Trait compose(Trait current, Trait next){
+  current = current[rename exp->$\_$exp, pow->$\_$pow];
+  return (current+next)[hide $\_$exp, $\_$pow];}
+@requires(exp>0)//the entry point for our metaprogramming
 Trait generate(Int exp) {
-  if (exp == 1) return base;
-  if (exp%2 == 0) return recur(generate(exp/2), even);
-  return recur(generate(exp-1), odd);
-}
-// Defines class Pow7, with the result of generate(7) as its body
-Pow7: generate(7)
-...
-// Compute 3**7
-new Pow7().pow(3) == 2187
+  if (exp==1) return base;
+  if (exp%2==0) return compose(generate(exp/2),even);
+  return compose(generate(exp-1),odd);
+};
+class Pow7=generate(7) //generate(7) is executed at compile time
+//the result of generate(7) is the body of class Pow7
+/*example usage:*/new Pow7().pow(3)==2187//Compute 3**7
 \end{lstlisting}
