@@ -218,11 +218,11 @@ A `valid' type is one that can be used as a target in a redirect map. It must al
 	\defip{\Sigma\op{validType}{T}}{}{}
 	\defic{\Sigma \vdash T : \Ok \text{ and }\Sigma\op{accessible}{T}}{}
 	\defis
-	\defip{\Sigma\op{accessible}{T\.C}}{}{}%
+	\defip{\Sigma\op{accessible}{Cs\.C}}{}{}%
 	\defic{
-		\Sigma\op{accessible}{T} \text{ and } \Sigma(T\.C) = \cl{\_}{\_}{\cd{C'}{E}, \_}\text{, or}}{public nested class of an accessible class}
-	\defic{\Sigma = \State{\Dz}{T\.C\.Cs}\text{, or}}{an outer class}
-	\defic{\Sigma = \State{\Dz}{T}}{a nested-class within the current class}
+		\Sigma\op{accessible}{Cs} \text{ and } \Sigma(Cs\.C) = \cl{\_}{\_}{\cd{C}{E}, \_}\text{, or}}{public nested class of an accessible class}
+	\defic{\Sigma = \State{\Dz}{Cs\.C\.Cs'}\text{, or}}{an outer class}
+	\defic{\Sigma = \State{\Dz}{Cs}}{a nested-class within the current class}
 	
 %	\defip{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C\.C'}}{}{}
 %	\defic{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C} \text{ and } \Dz(T\.Cs'\.C) = \cl{\_}{\_}{\cd{C'}{E}, \_}}{}
