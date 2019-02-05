@@ -215,34 +215,20 @@ Here we define some auxiliary type-system related notations.
 A `valid' type is one that can be used as a target in a redirect map. It must already be fully flattened and typed, and cannot refer to a private class, unless it is an outer class, or directly within one. (See Section \ref{?} for the typing rules of form $\Sigma \vdash T : \Ok$.)
 
 \begin{defs}
-	\defip{\Sigma\op{validType}{T}}{}{}
-	\defic{\Sigma \vdash T : \Ok \text{ and }\Sigma\op{accessible}{T}}{}
+	\defip{\Sigma\op{validType}{T}}{\Sigma \vdash T : \Ok \text{ and }\Sigma\op{accessible}{T}}{}
 	\defis
-	\defip{\Sigma\op{accessible}{Cs\.C}}{}{}%
-	\defic{
-		\Sigma\op{accessible}{Cs} \text{ and } \Sigma(Cs\.C) = \cl{\_}{\_}{\cd{C}{E}, \_}\text{, or}}{public nested class of an accessible class}
-	\defic{\Sigma = \State{\Dz}{Cs\.C\.Cs'}\text{, or}}{an outer class}
-	\defic{\Sigma = \State{\Dz}{Cs}}{a nested-class within the current class}
 	
-%	\defip{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C\.C'}}{}{}
-%	\defic{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C} \text{ and } \Dz(T\.Cs'\.C) = \cl{\_}{\_}{\cd{C'}{E}, \_}}{}
-%	\defit{\State{\Dz}{T\.Cs}\op{accessible}{T\.C}\text{ and } \State{\Dz}{T\.Cs}\op{accessible}{T}}{}
-%	\defit{p\op{accessible}{T}\otherwise}{An outer or a direct child of an outer}
+	\defit{(\State{\Dz}{T})\op{accessible}{T\.C}}{nested within the current class}
+	\defit{(\State{\Dz}{T\.Cs})\op{accessible}{T}}{an outer class}
+	\defit{(\State{\Dz}{T}) \text{ if } (\State{\Dz}{T})\op{accessible}{T'} \text{ and } \Dz(T')=\cl{\_}{\_}{\cd{C}{E}, \_}}{public class}
 \end{defs}
-%accessible(p,Thisn.Cs.C.C') iff  accessible(Thisn.Cs.C) and p(Thisn.Cs.C)={ ... C=E L LF}
-%accessible(p,Thisn.C)
-%accessible(p,Thisn)
-%%%%%%
-%(Dz;T).accessible(T.C)
-%(Dz;T.Cs).accessible(T)
-%(Dz;T).accessible(T'.C) if (Dz;T).accessible(T') and Dz(T')={_;_;C=E,_}
-
 
 We now define a way to get the complete set of transitive super-types:
 
 \begin{defs}
-	\defi{\Sigma\op{superTypes}{T}}{T,\Sigma\op{superTypes}{Tz}\where \Sigma(T) = \cl{\_}{Tz}{\_}}{}
-\defi{\Sigma\op{superTypes}{T_1\ldots T_n}}{\Sigma\op{superTypes}{T_1}\ldots\Sigma\op{superTypes}{T_n}}{}
+	\defi{\Sigma\op{superTypes}{T}}{
+		T,\Sigma\op{superTypes}{T_1}, \ldots, \Sigma\op{superTypes}{T_n}}{}
+	\defic{\wwhere \Sigma(T) = \cl{\_}{T_1\ldots T_n}{\_} \text{ and } \Sigma(T_i) = \cl{\Q{interface}}{\_}{\_}}{}
 \end{defs}
 
 We define the usual sub-typing relations, and also define a structural sub-typing relation $\Dz \vdash T \leq L$, to mean that the type $T$ has a compatible structure with $L$. That is, any code using a class with structure $L$, would also be valid if it used $T$.
