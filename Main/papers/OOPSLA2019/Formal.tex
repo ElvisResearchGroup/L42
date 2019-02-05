@@ -220,8 +220,13 @@ A `valid' type is one that can be used as a target in a redirect map. It must al
 	
 	\defit{(\State{\Dz}{T})\op{accessible}{T\.C}}{nested within the current class}
 	\defit{(\State{\Dz}{T\.Cs})\op{accessible}{T}}{an outer class}
-	\defit{(\State{\Dz}{T}) \text{ if } (\State{\Dz}{T})\op{accessible}{T'} \text{ and } \Dz(T')=\cl{\_}{\_}{\cd{C}{E}, \_}}{public class}
+	\defit{(\State{\Dz}{T})\op{accessible}{T'\.C} \text{ if } (\State{\Dz}{T})\op{accessible}{T'} \text{ and } \Dz(T')=\cl{\_}{\_}{\cd{C}{E}, \_}}{public class}
 \end{defs}
+%%%(Dz;T.Cs').validType(T.Cs) if 
+%%  Dz;T.Cs' |- Dz(T.Cs'):OK
+%%  Dz(T).expose(Cs)
+%%%L.expose(C) holds
+%%%L.expose(C.Cs) if L'.expose(Cs) and L={ ... C=L'}
 
 We now define a way to get the complete set of transitive super-types:
 
