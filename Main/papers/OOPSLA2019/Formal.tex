@@ -64,7 +64,7 @@ We additionally impose the following well-formedness constraints:
 	
 	\item The names of the top-level declarations ($Ds$) must all be distinct, and not \This.
 
-	\item Expressions of the form $\ef{e}{x}$ inside method bodies must have $e \Q{this}$. This ensures that fields are instance-private. We do not restrict the shape of $\ef{e}{x}$ expressions in the main expression. \IOComm{Should I move this rule to the type-system?}
+	\item Expressions of the form $\ef{e}{x}$ inside method bodies must have $e = \Q{this}$. This ensures that fields are instance-private. We do not restrict the shape of $\ef{e}{x}$ expressions in the main expression. \IOComm{Should I move this rule to the type-system?}
 	
 	\item In an $R$, each $Cs$ must be distinct. Thus an $R$ is a (partial) function from $Cs$ to $T$, as such we will use the usual functional $R(Cs)$ to get the $T$ corresponding to the given $Cs$. \IOComm{As all types are now relative to the top-level, does it make sense to make the Cs relative to top-level (and not the LHS, as it is now)?}
 	\item \IOComm{Have some kind of rule preventing circular interfaces?}
@@ -115,14 +115,15 @@ We now recursively define notations to lookup and modify classes from a set of t
 R_{\This}{LV}$, where $R = \redm{\Empty}{T}$}
 
 \subsection{Compilation Rules}
-We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction. We use an arrow $\Sigma\vdash E\Rightarrow E'$ representing the flattening of a code expression $E$, under context $\Sigma$. \IOComm{The idea is that $\Sigma.\Dz$ will contain everything we can use/reference, including parents of $\Sigma.T$, it will also contain a declaration for $\Sigma.T$, but the body might be out of date.} \IOComm{Note I have removed the well typedness requirement for the top-rule, rather I explicitly require that traits be well-typed as must the targets of redirect (the type-system will handle the rest)}
+We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction. We use an arrow $\Sigma\vdash E\Rightarrow E'$ representing the flattening of a code expression $E$, under context $\Sigma$. \IOComm{The idea is that $\Sigma.\Dz$ will contain everything we can use/reference, including parents of $\Sigma.T$, it will also contain a declaration for $\Sigma.T$, but the body might be out of date.} 
 
 \begin{irules}
 	\irule{Top}{
 		\State{\DVs, C = E}{C} \vdash E \Rightarrow E'\\\\
-		\text{if } $\Id$ = $t$ \text{ then } $C = \This$ \text{otherwise } $C$ = $\Id$
+		%\text{if } $\Id$ = $t$ \text{ then } $C = \This$ \text{otherwise } $C$ = $\Id$
+		\text{if } \Id \text{ is of form } C, \text{ then } C = \Id
 	}{
-		\DVs\ \cd{C}{E}\ \Ds \Rightarrow \DVs\ \cd{C}{E'}\ \Ds
+		\DVs\ \cd{\Id}{E}\ \Ds \Rightarrow \DVs\ \cd{\Id}{E'}\ \Ds
 	}
 	\irule{Ctx-V}{
 		\State{\Dz}{T} \vdash E \Rightarrow E'
@@ -167,10 +168,6 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 	\end{array}
 \end{irules}
 
-\IOComm{The top of the \Rulename{Trait} rule is broken, as thanks to \Rulename{Top}, \Dz could allready have a \This inside it (but I don't care about it, the trait shouldn't be referencing it anyway)}
-
-\IOComm{The \Rulename{Enter} rule is a bit funny, as $L(C)$ could be anything, however we only care that it exists, and what it's private modifier is.}
-
 Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
 \indent\parbox{\dimexpr\textwidth-\parindent}{\begin{grammar}
 \produ{\ctx{V}}{\hole \mid{}  \summ{\ctx{V}}{E} \mid{} \summ{LV}{\ctx{V}} \mid{} \red{\ctx{V}}{Cs}{T}}{}
@@ -199,7 +196,7 @@ The sum operator is simply defined as:
 
 \begin{defs}
 \defi{\summ{L_1}{L_2}}{\clit{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}}{Sum the two code literals}
-\defic{\wwhere L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad \widehat{L_2}=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
+\defic{\wwhere L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
 \defic{\text{if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
 \defis
 \defi{\summ{\Q{abstract}}{K}}{\summ{K}{\Q{abstract}} \coloneqq K \where K \neq \Q{interface}}{Allow adding state to a proper class}
@@ -234,7 +231,7 @@ Here we define some auxiliary type-system related notations.
 %accessible(p,Thisn.C)
 %accessible(p,Thisn)
 
-A `valid' type is one that can be used as a target in a redirect map. It must be already fully compiled and typed \IOComm{Why do we need it to be typed? Wouldn't compiled (i.e. an $LV$) be sufficient for redirect to make sense?}, and cannot refer to a private class, unless it is an outer class, or directly within one. (See Section \ref{?} for the typing rules of form $\Sigma \vdash $LV$ : \Ok$.)
+A `valid' type is one that can be used as a target in a redirect map. It must be already fully compiled and typed, and cannot refer to a private class, unless it is an outer class, or directly within one. (See Section \ref{?} for the typing rules of form $\Sigma \vdash $LV$ : \Ok$.)
 
 
 We now define a way to get the complete set of transitive super-types:
@@ -295,7 +292,6 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 	\defic{}{(public nested classes must be redirected if their outer is)}
 	\defic{\ForAll{Cs\.C\.\_ \in \Csz}{\Sigma[Cs] = \clit{\_}{\_}{\cd{C}{L},\_}}}{(cant redirect through a private class)}
 \end{defs}
-\IOComm{Is there a reason why we need to require that if a class is redirected, all its public nested class are also?}
 That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
 
 
@@ -305,11 +301,8 @@ We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested 
 
 \begin{defs}
 	\defi{L\op{remove}{Cs_1\ldots Cs_n}}{L\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{remove each class in an arbitrary order}
-	
-	% {K; Tz; Mz, private? C = L}.remove(C.C'.Cs) = {K; Tz; Mz, private? C = L.remove(C'.Cs)}
-	% {K; Tz; Mz, private? C = L}.remove(C) = {K; Tz; Mz}
-	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C\.Cs}}{\clit{K}{\Tz}{\Mz, \ncd{C}{L\op{remove}{Cs}}}}{}
 	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C}}{\clit{K}{\Tz}{\Mz}}{}
+	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C\.Cs}}{\clit{K}{\Tz}{\Mz, \ncd{C}{L\op{remove}{Cs}}}}{}
 \end{defs}
 
 Note that based on the above, the empty $Cs$ cannot be removed as it does not make sense. In addition, nested classes are removed with their outers, thus the first rule will order the removal of more-nested classes first.
@@ -392,4 +385,4 @@ This ensures that targets that give the most information (are more specific) are
 	%forall p' in SimilarPrograms(p): MostSpecificMap(p'; f(p', R)) = R'
 	%with f a function (p,R)->Rz
 \end{defs}
-
+\IOComm{If the LHS of a redirect is ill-typed because it refers to a nested class that dosn't exist yet, adding new classes (in similar programs) could change the result of redirect....}
