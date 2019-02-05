@@ -72,7 +72,7 @@ We additionally impose the following well-formedness constraints:
 
 
 \subsection{Auxiliary Notations}
-We define a compilation state ($\Sigma$) lists the top-level declarations of our program, and the name of the class ($T$) we are compiling. We also define fully evaluated/flattened declarations, code-literals, and class members to be ones where the RHS of any (nested) class/trait declaration is also fully evaluated:
+We define a compilation state ($\Sigma$) that lists the top-level declarations of our program, and the name of the class ($T$) we are currently compiling. We also define fully evaluated/flattened declarations, code-literals, and class members to be ones where the RHS of any (nested) class/trait declaration is also fully evaluated:
 
 \begin{grammar}
 	\produ{\Sigma}{\State{Dz}{T}}{compilation state}
@@ -89,7 +89,7 @@ We define the following obvious notations to extract the members of a code-liter
 \begin{defs}
 	\defi{\clit{\_}{\_}{\Mz,\meth{T}{m}{\Txs}{e\q}}(m)}{\meth{T}{m}{\Txs}{e\q}}{get a method}
 	\defis
-	\defi{L(\Empty)}{L}{get a (transitively) nested class declaration}
+	\defi{L(\Empty)}{L}{get the body of a (transitively) nested class}
 	\defi{\clit{\_}{\_}{Mz, \ncd{C}{L}}(C\.Cs)}{L(Cs)}{}
 	\defis
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
@@ -100,26 +100,22 @@ We define the following obvious notations to extract the members of a code-liter
 %	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
 \end{defs}
 
-We now recursively define notation to lookup and modify classes from a set of top-level declarations:
+We now recursively define notations to lookup and modify classes from a set of top-level declarations or compilation state:
 
 \begin{defs}
 	\defi{(\cd{C}{L}, Dz)(C\.Cs)}{L(Cs)}{top level lookup}
 	\defi{(\cd{C}{E}, Dz)[C = E']}{(\cd{C}{E'}, Dz)}{top level update}
 	\defi{(\cd{C}{L}, Dz)[C\.Cs = E']}{(\cd{C}{L[Cs = E']}, Dz)}{top level nested update}
-\end{defs}
-
-As well as a lookup for the current class in $\Sigma$:
-
-\begin{defs}
-	\defi{(\State{\Dz}{T}(T'))}{\Dz(T')}{top-level class lookup}
-	\defi{(\State{\Dz}{T}[Cs])}{\Dz(T\.Cs)}{local nested class lookup}
+	\defis
+	\defi{(\State{\Dz}{T})(T')}{\Dz(T')}{top-level class lookup}
+	\defi{(\State{\Dz}{T})[Cs]}{\Dz(T\.Cs)}{local nested class lookup}
 \end{defs}
 
 \IOComm{Should I define $LV[\This := T]$, or say something about it? Could we not use the same notation as our redirect map/renaming? I.e. $LV[\This := T]$ is the same as $
 R_{\This}{LV}$, where $R = \redm{\Empty}{T}$}
 
 \subsection{Compilation Rules}
-We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction. We use an arrow $\Sigma\vdash E\Rightarrow E'$ representing the flattening of a code expression $E$, under context $\Sigma$. \IOComm{The idea is that $\Sigma.\Dz$ will contain everything we can use/reference, including parents of $\Sigma.T$, it will also contain a declaration for $\Sigma.T$, but the body might be out of date.} \IOComm{Note I have removed the well typedness requirement for the top-rule, rather I explicitly require that traits be well-typed as are the targets of redirect (the type-system will handle the rest)}
+We now define how our top-level declarations ($Ds$) are `compiled' into fully-evaluated declarations ($\DVs$). We have a top-level reduction arrow $Ds \Rightarrow Ds'$ representing a small-step of this reduction. We use an arrow $\Sigma\vdash E\Rightarrow E'$ representing the flattening of a code expression $E$, under context $\Sigma$. \IOComm{The idea is that $\Sigma.\Dz$ will contain everything we can use/reference, including parents of $\Sigma.T$, it will also contain a declaration for $\Sigma.T$, but the body might be out of date.} \IOComm{Note I have removed the well typedness requirement for the top-rule, rather I explicitly require that traits be well-typed as must the targets of redirect (the type-system will handle the rest)}
 
 \begin{irules}
 	\irule{Top}{
@@ -153,7 +149,9 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 		\reda{R'}{T}{LV\op{remove}{Csz}}
 	}
 	}\\\\
-		\irule{Trait}{\Dz \vdash \cd{t}{LV} : \Ok}{
+	\irule{Trait}{
+		\cd{\This}{LV}, \Dz; T \vdash \This : \Ok
+	}{
 		\cd{t}{LV}, \State{\Dz}{T} \vdash t \Rightarrow LV[\This := T]
 	}\\\\
 	\irule{Sum}{
@@ -169,16 +167,16 @@ We now define how our top-level declarations ($Ds$) are `compiled' into fully-ev
 	\end{array}
 \end{irules}
 
+\IOComm{The top of the \Rulename{Trait} rule is broken, as thanks to \Rulename{Top}, \Dz could allready have a \This inside it (but I don't care about it, the trait shouldn't be referencing it anyway)}
 
-
-\IOComm{The rule for enter is a bit funy, as $L(C)$ could be anything, however we only care that it exists, and it's private modifier.}
+\IOComm{The \Rulename{Enter} rule is a bit funny, as $L(C)$ could be anything, however we only care that it exists, and what it's private modifier is.}
 
 Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
 \indent\parbox{\dimexpr\textwidth-\parindent}{\begin{grammar}
 \produ{\ctx{V}}{\hole \mid{}  \summ{\ctx{V}}{E} \mid{} \summ{LV}{\ctx{V}} \mid{} \red{\ctx{V}}{Cs}{T}}{}
 \end{grammar}}
 
-\noindent In details the rules are:
+\noindent In detail the rules are:
 \begin{itemize}
 	\item \Rulename{Top}: this rule compiles the first non-flattened top-level declaration. If the declaration is a trait, $t$, it will compile as if the trait was a class named \This.
 	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
@@ -270,9 +268,13 @@ The redirect set is the full set of (nested) class names that will be `redirecte
 %computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LV$ (the top of the program) and the domain of $R$. RedirectSet is easily computable.
 
 \begin{defs}
-	\defip{Cs \in \Sigma\op{redirectSet}{R}}{}{}
-	\defic{\redm{Cs}{T} \in R \text{ or } \Exists{Cs' \in \Sigma\op{redirectSet}{R}}{T'\.Cs \in \fop{exposedTypes}{\Sigma[Cs']}}}{}
-	\defic{\wwhere \Sigma = \State{\Dz}{T'}}{}
+	\defit{\text{if } \redm{Cs}{T} \in R \text{ then } Cs \in \Sigma\op{redirectSet}{R}}{}
+	\defit{\text{if } Cs' \in \Sigma\op{redirectSet}{R} \text{ and } T\.Cs \in \fop{exposedTypes}{\Sigma[Cs']} \text{ then } Cs \in \Sigma\op{redirectSet}{R}}{}
+	\defic{\wwhere \Sigma = \State{\Dz}{T}}{}
+%	
+%	\defip{Cs \in \Sigma\op{redirectSet}{R}}{}{}
+%	\defic{\redm{Cs}{T} \in R \text{ or } \Exists{Cs' \in \Sigma\op{redirectSet}{R}}{T'\.Cs \in \fop{exposedTypes}{\Sigma[Cs']}}}{}
+%	\defic{\wwhere \Sigma = \State{\Dz}{T'}}{}
 	\defis
 	\defi{\fop{exposedTypes}{\clit{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
 	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0\ldots T_n}{}
@@ -297,16 +299,22 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
 
 
-\subsection{Removing and Renaming}
+\subsection{Removing}
 
 We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested classes in $Csz$ (and their nested classes).
 
 \begin{defs}
 	\defi{L\op{remove}{Cs_1\ldots Cs_n}}{L\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{remove each class in an arbitrary order}
-	\defi{L[Cs=\_]\op{remove}{Cs}}{L \where Cs \notin\dom{L}}{remove an existing nested class}
+	
+	% {K; Tz; Mz, private? C = L}.remove(C.C'.Cs) = {K; Tz; Mz, private? C = L.remove(C'.Cs)}
+	% {K; Tz; Mz, private? C = L}.remove(C) = {K; Tz; Mz}
+	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C\.Cs}}{\clit{K}{\Tz}{\Mz, \ncd{C}{L\op{remove}{Cs}}}}{}
+	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C}}{\clit{K}{\Tz}{\Mz}}{}
 \end{defs}
 
-Note that based on the above, the empty $Cs$ cannot be removed, since, for all $L$, $\Empty \in \dom{L}$. Removing such a class does not make sense. In addition, nested classes are removed with their outers, thus the first rule will implicitly order the removal of the former first.
+Note that based on the above, the empty $Cs$ cannot be removed as it does not make sense. In addition, nested classes are removed with their outers, thus the first rule will order the removal of more-nested classes first.
+
+\subsection{Renaming}
 
 We define the notation \reda{R}{T}{L} to return $L$ but with references to $T\.Cs$ replaced by $T'$ (for all $\redm{Cs}{T'} \in R$). 
 
@@ -323,7 +331,7 @@ We omit the definitions for all the trivial propagation cases of form $\reda{R}{
 \subsection{Valid Redirect Map}
 
 
-We will define $\Sigma\op{validMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to current-class of $\Sigma$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private-classes in $\Sigma$ in order to determine whether a given maping is valid, this allows such details of $\Sigma$ to change, without altering the behaviour of redirect.
+We will define $\Sigma\op{validMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to the current class of $\Sigma$ will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private classes in $\Sigma$ in order to determine whether a given mapping is valid, this allows such details of $\Sigma$ to change, without altering the behaviour of redirect.
 
 \begin{defs}
 	\defip{R' \in \Sigma\op{validMaps}{R}}{}{...}
@@ -334,17 +342,17 @@ We will define $\Sigma\op{validMaps}{R}$ to produce a set of completions of the 
 	\defip{R' \in \Sigma\op{possibleMaps}{R}}{}{...}
 	\defic{R' \supseteq R}{It is an extension of $R$}
 	\defic{\dom{R'} = \Sigma\op{redirectSet}{R}}{It completes the redirect map}
-	\defic{\ForAll{T \in \ran{R'}}{\Sigma\op{validType}{T}}}{check that the targets of $R'$ are reasonable}
+	\defic{\ForAll{T \in \ran{R'}}{\Sigma\op{validType}{T}}}{Check that the targets of $R'$ are valid}
 \end{defs}
 
-Any map in $\Sigma\op{validMaps}{R}$ would be a valid complete-map for redirect to use. The challenge is what should happen if their are multiple things in this set, or if the result of this set could change if extra classes are added to $\Sigma$.
+Any map in $\Sigma\op{validMaps}{R}$ would be a valid complete map for redirect to use. The challenge is what should happen if there are multiple maps in this set, or if the result of this set could change if extra classes are added to $\Sigma$.
 
-\subsection {Best Redirect Map}
+\subsection {Best Map}
 We will say that the `best' (valid) redirect map is the (unqiue) map that is:
 \begin{itemize}
 	\item valid
 	\item chooses the most `specific' (or most derived) target for each $Cs$ in the redirect set, of all other valid maps.
-	\item Whose targets will still be the most specific even if new (unrelated) declaratios where added to the program.
+	\item Whose targets will still be the most specific even if new (unrelated) class declarations where added to the program. \IOComm{What about method declarations?}
 \end{itemize}
 
 This ensures that targets that give the most information (are more specific) are chosen, and that adding extra classes to the program will not change the result (i.e. it is stable).
