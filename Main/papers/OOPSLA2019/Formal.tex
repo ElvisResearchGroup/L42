@@ -7,7 +7,7 @@ Here we use the meta-variables $x$, $t$, $C$, and $m$ as identifiers for variabl
 \begin{minipage}[t]{0.6\gramwidth}
 \begin{grammar}
 	\produ{e}{x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}
-	\produ{L}{\clit{K}{\Tz}{\Mz}}{code literal}
+	\produ{L}{\cl{K}{\Tz}{\Mz}}{code literal}
 	\produ{K}{\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}{kind}
 	\produ{M}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}{member}
 	\produ{E}{L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}{code expression}
@@ -78,7 +78,7 @@ We define a compilation state ($\Sigma$) that lists the top-level declarations o
 	\produ{\Sigma}{\State{Dz}{T}}{compilation state}
 	\midrule
 	\produ{DV}{\cd{\Id}{LV}}{evaluated declaration}
-	\produ{LV}{\clit{K}{\Tz}{\MVz}}{evaluated code literal}
+	\produ{LV}{\cl{K}{\Tz}{\MVz}}{evaluated code literal}
 	\produ{MV}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{LV}}{evaluated member}
 \end{grammar}
 
@@ -87,16 +87,16 @@ We define a compilation state ($\Sigma$) that lists the top-level declarations o
 We define the following obvious notations to extract the members of a code-literal:
 
 \begin{defs}
-	\defi{\clit{\_}{\_}{\Mz,\meth{T}{m}{\Txs}{e\q}}(m)}{\meth{T}{m}{\Txs}{e\q}}{get a method}
+	\defi{\cl{\_}{\_}{\Mz,\meth{T}{m}{\Txs}{e\q}}(m)}{\meth{T}{m}{\Txs}{e\q}}{get a method}
 	\defis
 	\defi{L(\Empty)}{L}{get the body of a (transitively) nested class}
-	\defi{\clit{\_}{\_}{Mz, \ncd{C}{L}}(C\.Cs)}{L(Cs)}{}
+	\defi{\cl{\_}{\_}{Mz, \ncd{C}{L}}(C\.Cs)}{L(Cs)}{}
 	\defis
 	\defi{\mdom{L}}{\{m \in \dom{L}\}}{get the names of all methods}
 	\defis
 	%\defi{L[\Empty=E]}{E}{update nested class}
 	\defi{L[C\.Cs=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
-	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{\clit{K}{\Tz}{\Mz, \ncd{C}{E}}}{}
+	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{\cl{K}{\Tz}{\Mz, \ncd{C}{E}}}{}
 %	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
 \end{defs}
 
@@ -195,8 +195,8 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 The sum operator is simply defined as:
 
 \begin{defs}
-\defi{\summ{L_1}{L_2}}{\clit{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}}{Sum the two code literals}
-\defic{\wwhere L_1=\clit{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\clit{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
+\defi{\summ{L_1}{L_2}}{\cl{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}}{Sum the two code literals}
+\defic{\wwhere L_1=\cl{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\cl{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
 \defic{\text{if}\ K = \Q{interface}\  \text{then}\ \mdom{L_1}= \mdom{L_2}}{...}
 \defis
 \defi{\summ{\Q{abstract}}{K}}{\summ{K}{\Q{abstract}} \coloneqq K \where K \neq \Q{interface}}{Allow adding state to a proper class}
@@ -218,12 +218,12 @@ Here we define some auxiliary type-system related notations.
 	\defis
 	\defip{\Sigma\op{accessible}{T\.C}}{}{}%
 	\defic{
-		\Sigma\op{accessible}{T} \text{ and } \Sigma(T\.C) = \clit{\_}{\_}{\cd{C'}{E}, \_}\text{, or}}{public nested class of an accessible class}
+		\Sigma\op{accessible}{T} \text{ and } \Sigma(T\.C) = \cl{\_}{\_}{\cd{C'}{E}, \_}\text{, or}}{public nested class of an accessible class}
 	\defic{\Sigma = \State{\Dz}{T\.C\.Cs}\text{, or}}{an outer class}
 	\defic{\Sigma = \State{\Dz}{T}}{a nested-class within the current class}
 	
 %	\defip{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C\.C'}}{}{}
-%	\defic{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C} \text{ and } \Dz(T\.Cs'\.C) = \clit{\_}{\_}{\cd{C'}{E}, \_}}{}
+%	\defic{\State{\Dz}{T\.Cs}\op{accessible}{T\.Cs'\.C} \text{ and } \Dz(T\.Cs'\.C) = \cl{\_}{\_}{\cd{C'}{E}, \_}}{}
 %	\defit{\State{\Dz}{T\.Cs}\op{accessible}{T\.C}\text{ and } \State{\Dz}{T\.Cs}\op{accessible}{T}}{}
 %	\defit{p\op{accessible}{T}\otherwise}{An outer or a direct child of an outer}
 \end{defs}
@@ -237,7 +237,7 @@ A `valid' type is one that can be used as a target in a redirect map. It must be
 We now define a way to get the complete set of transitive super-types:
 
 \begin{defs}
-	\defi{\Sigma\op{superTypes}{T}}{T,\Sigma\op{superTypes}{Tz}\where \Sigma(T) = \clit{\_}{Tz}{\_}}{}
+	\defi{\Sigma\op{superTypes}{T}}{T,\Sigma\op{superTypes}{Tz}\where \Sigma(T) = \cl{\_}{Tz}{\_}}{}
 \defi{\Sigma\op{superTypes}{T_1\ldots T_n}}{\Sigma\op{superTypes}{T_1}\ldots\Sigma\op{superTypes}{T_n}}{}
 \end{defs}
 \IOComm{Warning! The above \opn{superTypes} definition is very different from the \opn{superClasses} one we use in the algorithm/code, which does an intersection (and not a union) of the superclasses of the $Tz$}
@@ -249,8 +249,8 @@ We define the usual sub-typing relations, and also define a structural sub-typin
 \defip{\Sigma \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{...}
 \defic{\Sigma \vdash T_0 \leq T_0' \text{ and } \Sigma \vdash T_1' \leq T_1\ \ldots\ \Sigma \vdash T_n' \leq T_n }{...}
 \defis
-\defip{\Sigma \vdash T \leq \clit{K'}{Tz'}{Mz'}}{}{...}
-\defic{\Sigma(T) = \clit{K}{Tz}{Mz}}{...}
+\defip{\Sigma \vdash T \leq \cl{K'}{Tz'}{Mz'}}{}{...}
+\defic{\Sigma(T) = \cl{K}{Tz}{Mz}}{...}
 \defic{\Sigma\op{superTypes}{Tz'} \subseteq \Sigma\op{superTypes}{T}}{...}
 \defic{\ForAll{m \in \dom{Mz'}}{\Sigma \vdash Mz(m) \leq Mz'(m)}}{...}
 \defic{\text{if } K = \Q{interface} \text{ then } K' = \Q{interface}}{...}
@@ -273,7 +273,7 @@ The redirect set is the full set of (nested) class names that will be `redirecte
 %	\defic{\redm{Cs}{T} \in R \text{ or } \Exists{Cs' \in \Sigma\op{redirectSet}{R}}{T'\.Cs \in \fop{exposedTypes}{\Sigma[Cs']}}}{}
 %	\defic{\wwhere \Sigma = \State{\Dz}{T'}}{}
 	\defis
-	\defi{\fop{exposedTypes}{\clit{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
+	\defi{\fop{exposedTypes}{\cl{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
 	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0\ldots T_n}{}
 	
 %	\defi{\Sigma\op{internals}{\Tz}}{ \Tz\}\where \Sigma = \State{\Dz}{T}}{}
@@ -288,9 +288,9 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 	\defic{\Empty \notin Csz}{(Cant redirect the whole code literal)}
 	\defic{\forall Cs \in Csz}{}
 	\defic{\quad \Sigma[Cs] \text{ is defined}}{(the nested class must exist)}
-	\defic{\quad \Sigma[Cs] = \clit{\_}{\_}{\cd{C}{L} \_} \imp Cs\.C \in Csz}{}
+	\defic{\quad \Sigma[Cs] = \cl{\_}{\_}{\cd{C}{L} \_} \imp Cs\.C \in Csz}{}
 	\defic{}{(public nested classes must be redirected if their outer is)}
-	\defic{\ForAll{Cs\.C\.\_ \in \Csz}{\Sigma[Cs] = \clit{\_}{\_}{\cd{C}{L},\_}}}{(cant redirect through a private class)}
+	\defic{\ForAll{Cs\.C\.\_ \in \Csz}{\Sigma[Cs] = \cl{\_}{\_}{\cd{C}{L},\_}}}{(cant redirect through a private class)}
 \end{defs}
 That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
 
@@ -301,8 +301,8 @@ We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested 
 
 \begin{defs}
 	\defi{L\op{remove}{Cs_1\ldots Cs_n}}{L\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{remove each class in an arbitrary order}
-	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C}}{\clit{K}{\Tz}{\Mz}}{}
-	\defi{\clit{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C\.Cs}}{\clit{K}{\Tz}{\Mz, \ncd{C}{L\op{remove}{Cs}}}}{}
+	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C}}{\cl{K}{\Tz}{\Mz}}{}
+	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C\.Cs}}{\cl{K}{\Tz}{\Mz, \ncd{C}{L\op{remove}{Cs}}}}{}
 \end{defs}
 
 Note that based on the above, the empty $Cs$ cannot be removed as it does not make sense. In addition, nested classes are removed with their outers, thus the first rule will order the removal of more-nested classes first.
