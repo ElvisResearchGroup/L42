@@ -232,6 +232,11 @@ A `valid' type is one that can be used as a target in a redirect map. It must al
 %accessible(p,Thisn.Cs.C.C') iff  accessible(Thisn.Cs.C) and p(Thisn.Cs.C)={ ... C=E L LF}
 %accessible(p,Thisn.C)
 %accessible(p,Thisn)
+%%%%%%
+%(Dz;T).accessible(T.C)
+%(Dz;T.Cs).accessible(T)
+%(Dz;T).accessible(T'.C) if (Dz;T).accessible(T') and Dz(T')={_;_;C=E,_}
+
 
 We now define a way to get the complete set of transitive super-types:
 
