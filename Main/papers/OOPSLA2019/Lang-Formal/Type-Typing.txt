@@ -1,0 +1,83 @@
+Auxilary rule: (see if you can simplify)
+-----------------------------------------------------
+// complete(X) checks that X is sufficiently implemented
+complete(t = LF) // traits are always complete
+complete(C = LF) // class declaration
+	where LF = {K; M; _}
+	forall C' in dom(LF): complete(C' = LF(C'))
+	if K not in {interface, abstract}: forall m in dom(LF): complete(LF(m))
+complete(static? T m(Txs) e) // implemented methods are complete
+----------------------------------------------------------------------------------------------------------
+// Dz.accessible(T, T') means that T' is accessible from within T
+Dz.accessible(T.Cs', T.C?)
+Dz.accessible(T.Cs', T.Cs.C) if Dz.accessible(Cs) and Dz(Cs) = {_; _; C = L, _}
+---------------------------------------------------------------------------------
+
+// The typing rules bellow will be entered in three ways:
+//     DFz |- e will be called after flattening, but before the main expression is executed
+//     Dz; empty; empty |- DF will be called on a trait before we try and use it
+//     Dz; empty; T |- T' will be called for each target of a redirect
+
+(Dz; Tz; T? |- T') // what was once valid type, is now a type-system judgement!
+// here Tz is a list of types that are assumed to be well-typed
+// T? is the name of the current type (or empty if we are in the main expression)
+// T' is the type we are trying to access
+===============================================================================
+T' in Tz or Dz; Tz |- T'            // We are either assuming T' is well-typed, or we type-check it now
+----------------------------------- if T? = T then Dz.accessible(T, T') 
+Dz; Tz; T? |- T'
+
+
+(DFz |- e) // this rule checks that the main expression e is valid, as are all the declarations in DFz
+========================================================================================================================
+
+DFz; Empty |- DF1 ... DFz; Empty |- DFn
+complete(DF1) ... complete(DFn)
+DFz; Empty; Empty |- e : T              // I don't care what type the main expression has
+--------------------------------------- DFz = DF1 ... DFn
+DFz |- e
+
+(Dz; Tz; T? |- DF) // these rules check that DF (which was found in T?) is ok, under the assumption that everything in Tz is ok
+==============================================================================================================================
+
+Dz; Tz |- Cs.C
+------------------------------------ // assumes Dz(Cs.C) = LF
+Dz; Tz; Cs |- private? C = LF
+
+
+This = LF, Dz; Tz |- This
+---------------------------------
+Dz; Tz; Empty |- t = LF
+
+
+(Dz; Tz |- T) // this rule checks that the declaration for T is well-typed, under the assumption that each Tz is well-typed
+===================================
+
+Dz; Tz,T; T |- M1 ... Dz; Tz,T; T |- Mn
+forall T' in Dz.superTypes(T) \ {T}
+	forall m in dom(Dz(T'))
+		Dz(T')(m) = static? T m(Txs)
+		Dz(T)(m)  = static? T m(Txs) e?
+
+if K = T'1 x1 ... T'm xm then Dz; Tz,T; T |- T'1 .... Dz; Tz,T; T |- T'm
+--------------------------------------------------------------------------Dz(T) = {K; Tz; M1 ... Mn}
+Dz; Tz |- T
+
+
+(Dz; Tz; T |- M) // check that M is well-typed, where M was found in T, and each Tz is well-typed
+=============================================
+Dz; Tz; T |- T0, ..., Dz; Tz; T |- Tn
+----------------------------------------------- // abstract method
+Dz; Tz; T |- static? T0 m(T1 x1 ... Tn xn)
+
+
+Dz; Tz; T |- T0, ..., Dz; Tz; T |- Tn
+Dz; Tz; T; T this, T1 x1,  ...., Tn xn |- e : T0
+--------------------------------------------------------- // implemented instance method
+Dz; Tz; T |- T0 m(T1 x1 ... Tn xn) e
+
+
+Dz; Tz; T |- T0, ..., Dz; Tz; T |- Tn
+Dz; Tz; T; T1 x1,  ...., Tn xn |- e : T0
+----------------------------------------------- // implemented static method
+Dz; Tz; T |- static T0 m(T1 x1 ... Tn xn) e

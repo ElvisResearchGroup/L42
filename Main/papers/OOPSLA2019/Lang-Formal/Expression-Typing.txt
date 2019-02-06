@@ -1,0 +1,37 @@
+(Dz; Tz; T?; Txz |- e : T') // check that e has type T', where e is inside T? (or the main expression, if T? = empty), and each Tz is well-typed, where Txz are the free-variables
+=====================================
+
+------------------------- T x in Txz
+Dz; Tz; T?; Txz |- x : T
+
+
+Dz; Tz; T?; Txz |- e0 : T0
+...
+Dz; Tz; T?; Txz |- en : Tn
+----------------------------------------  Dz(T0) = {_; _; T' m(T1 x1 ... Tn xn) e?, _}
+Dz; Tz; T?; Txz |- e0.m(e1 ... en) : T'
+
+
+Dz; Tz; T?; Txz |- e0 : T0
+...
+Dz; Tz; T?; Txz |- en : Tn                Dz; Tz; T? |- T
+----------------------------------------  Dz(T0) = {_; _; T' m(T1 x1 ... Tn xn) e?, _}
+Dz; Tz; T?; Txz |- T.m(e1 ... en) : T'
+
+
+
+Dz; Tz; T?; Txz |- e : T'    if T? = T then e = this
+---------------------------- Dz(T') = {_, T" x, _; _; _}
+Dz; Tz; T?; Txz |- e.x : T"
+
+
+Dz; Tz; T?; Txz |- e1 : T1
+....
+Dz; Tz; T?; Txz |- e1 : Tn                if T? = T then T' = T // No need to check accessibility or well-typedness of T'
+----------------------------------------- Dz(T') = {T1 x1, ..., Tn xn, _; _; _}
+Dz; Tz; T?; Txz |- new T'(e1 ... en): T'
+
+
+Dz; Tz; T?; Txz |- e : T
+---------------------------- T' in Dz.superTypes(T)
+Dz; Tz; T?; Txz |- e : T'
