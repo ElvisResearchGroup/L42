@@ -143,7 +143,7 @@ We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$).
 		\Sigma = \Dz[T = LF]; T\\\\
 		Csz = \Sigma\op{redirectSet}{R}\\\\
 		\Sigma\op{redirectable}{\Csz}\\\\
-		\ForAll{T \in \ran{R}}{\Sigma\op{validType}{T}}\\\\
+		\ForAll{T' \in \ran{R}}{\Dz[T = LF]; \EmptyZ; T \vdash T'}\\\\
 		R' = \Sigma\op{bestMap}{R}
 	}{
 		\State{\Dz}{T} \vdash \red{LF}{R} \Rightarrow   
@@ -151,7 +151,7 @@ We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$).
 	}
 	}\\\\
 	\irule{Trait}{
-		\cd{\This}{LF}, \Dz \vdash \This : \Ok
+		\Dz; \EmptyZ; \Empty \vdash \cd{t}{LF}
 	}{
 		\cd{t}{LF}, \State{\Dz}{T} \vdash t \Rightarrow LF[\This \coloneqq T]
 	}\\\\
@@ -167,6 +167,7 @@ We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$).
 	}
 	\end{array}
 \end{irules}
+\IOComm{If we don't care about making the proof easier, we can delete the $\forall$ line for the \Rulename{Redirect} reduction rule, since it's already required by \opn{validMaps}.}
 
 Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
 \indent\parbox{\dimexpr\textwidth-\parindent}{\begin{grammar}
@@ -178,7 +179,7 @@ Where \ctx{V} is the standard left-to-right evaluation context for code-expressi
 	\item \Rulename{Top}: this rule flattens the first non-flattened top-level declaration. If the declaration is a trait, $t$, it will flatten with a fresh name (i.e. it cannot be referenced by user code at this point).
 	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
 	\item \Rulename{Enter}: this rule flattens any nested-class declarations that are not already $LFs$. In particular, this rule will be called by \Rulename{Ctx-V} to flatten any $L$s that are operands in an $E$, before the $E$ itself is flattened.
-	\item \Rulename{Trait}: this rule simply copies the body of trait to the current location, which will already be an $LF$, and hence wont need further flattening, and replaces references to \This with the name of the currently flattening class.
+	\item \Rulename{Trait}: this rule copies the body of trait to the current location, which will already be an $LF$, and hence wont need further flattening, and replaces references to \This with the name of the currently flattening class. It also verifies that the trait is well-typed (i.e. its body is well-typed, and any types it references are also well-typed and hence fully flattened).
 	\item \Rulename{Sum}: this rule simply reduces to the appropriate value. See \autoref{?} for the definition of $\summ{LF_1}{LF_2}=LF$. Where $L\op{refreshPrivate}{T}$ rewrites each \ncd{C}{L} in $L$ to \ncd{C'}{L}, and each reference to it (of the form $T\.C$), to $T\.C'$, for some arbitrary fresh $C'$. This ensures that $\summ{LF_1}{LF_2}$ operates transparently with respect to private nested classes.  
 	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps:
 	\begin{itemize}
@@ -210,6 +211,7 @@ The sum operator is simply defined as:
 Note that by our well-formedness requirement on $L$, $Mz_1$ and $Mz_2$ cannot both contain a member with the same $m$ or $C$ (since otherwise the result of the sum will be ill-formed).
 
 \subsection{Type system notations}
+\begin{comment}
 Here we define some auxiliary type-system related notations.
 
 A `valid' type is one that can be used as a target in a redirect map. It must already be fully flattened and typed, and cannot refer to a private class, unless it is an outer class, or directly within one. (See Section \ref{?} for the typing rules of form $\Sigma \vdash T : \Ok$.)
@@ -227,6 +229,7 @@ A `valid' type is one that can be used as a target in a redirect map. It must al
 %%  Dz(T).expose(Cs)
 %%%L.expose(C?) holds
 %%%L.expose(C.Cs) if L'.expose(Cs) and L={ ... C=L'}
+\end{comment}
 
 We now define a way to get the complete set of transitive super-types:
 
@@ -329,9 +332,10 @@ We will define $\Sigma\op{validMaps}{R}$ to produce a set of completions of the 
 	\defip{R' \in \Sigma\op{possibleMaps}{R}}{}{}
 	\defic{R' \supseteq R}{It is an extension of $R$}
 	\defic{\dom{R'} = \Sigma\op{redirectSet}{R}}{It completes the redirect map}
-	\defic{\ForAll{T \in \ran{R'}}{\Sigma\op{validType}{T}}}{Check that the targets of $R'$ are valid}
+	\defic{\wwhere \Sigma = \State{\Dz}{T}}{}
+	\defic{\ForAll{T \in \ran{R'}}{\Dz;\EmptyZ;T \vdash T'}}{Check that the targets of $R'$ are valid}
 \end{defs}
-
+\IOComm{If we don't care about making the proof easier, we can easily inline \opn{possibleMaps} into \opn{validMaps}.}
 Any map in $\Sigma\op{validMaps}{R}$ would be a valid complete map for redirect to use. The challenge is what should happen if there are multiple maps in this set, or if the result of this set could change if extra classes are added to $\Sigma$.
 
 \subsection {Best Map}
@@ -379,3 +383,4 @@ This ensures that targets that give the most information (are more specific) are
 	%forall p' in SimilarPrograms(p): MostSpecificMap(p'; f(p', R)) = R'
 	%with f a function (p,R)->Rz
 \end{defs}
+\IOComm{If we don't care about making the proof easier, we can easily inline \opn{stableMostSpecific} into \opn{bestMap}. And if we don't care about formalising the algorithm, we can inline \opn{mostSpecific} into \opn{mostSpecificMap}.}
