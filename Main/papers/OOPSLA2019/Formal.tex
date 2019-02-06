@@ -151,7 +151,7 @@ We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$).
 	}
 	}\\\\
 	\irule{Trait}{
-		\cd{\This}{LF}, \Dz; T \vdash \This : \Ok
+		\cd{\This}{LF}, \Dz \vdash \This : \Ok
 	}{
 		\cd{t}{LF}, \State{\Dz}{T} \vdash t \Rightarrow LF[\This \coloneqq T]
 	}\\\\
@@ -225,7 +225,7 @@ A `valid' type is one that can be used as a target in a redirect map. It must al
 %%%(Dz;T.Cs').validType(T.Cs) if 
 %%  Dz;T.Cs' |- Dz(T.Cs'):OK
 %%  Dz(T).expose(Cs)
-%%%L.expose(C) holds
+%%%L.expose(C?) holds
 %%%L.expose(C.Cs) if L'.expose(Cs) and L={ ... C=L'}
 
 We now define a way to get the complete set of transitive super-types:
@@ -361,7 +361,7 @@ This ensures that targets that give the most information (are more specific) are
 	\defic{\wwhere T \in Tz \text{ and } Tz \subseteq \Sigma\op{superTypes}{T}}{}
 
 \defis
-\defip{(\State{\Dz'}{T}) \in (\State{\Dz'}{T})\op{similarPrograms}{}}{}{}
+\defip{(\State{\Dz'}{T}) \in (\State{\Dz}{T})\op{similarPrograms}{}}{}{}
 \defic{\ForAll{C \in \dom{\Dz}}{\Dz'(C)\op{remove}{Csz} = \Dz(C)}}{\Dz' has more nested classes}
 	%MostSpecific(p; Pz) = P
 	%P in p.minimize(Pz)

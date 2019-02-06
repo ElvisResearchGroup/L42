@@ -1,19 +1,27 @@
-Define p |- Ok
-===========================================================
+          DVz; Empty |- DV1 : Ok, ..., DVz; Empty |- DVn : Ok
+(DVz ok) ------------------------------ DVz = DV1 ... DVn
+	                 DVz |- Ok
 
-          D1; Ds |- Ok ... Dn; Ds|- Ok
-(Ds ok) ------------------------------ Ds = D1 ... Dn
-	                 Ds |- Ok
+	Dz; T?.C |- Ok
+(DV ok) ---------------------------------
+	Dz;  T? |- private? C = LV : Ok            
+	
+	This = LV, Dz; This |- Ok
+(tDV ok) ---------------------------------
+	Dz;  Empty |- t = LV : Ok 
+	
 
-		p |- M1 : Ok .... p |- Mn : Ok
-		p |- P1 : Implemented .... p |- Pn : Implemented
-		p |- implements(Pz; Ms)                    if K? = K: p.exists(K.Txs.Ts)
-(p ok) ------------------------------------------- p.top() = interface? {P1...Pn; M1, ..., Mn; K?}
-             p |- Ok
 
-                  p.minimize(Pz) subseteq p.minimize(p.top().Pz)
+		Dz; T |- M1 : Ok .... p |- Mn : Ok
+		Dz; T |- T1 : Implemented .... p |- Tn : Implemented
+		Dz; T |- implements(Pz; Ms)
+		Dz; T |- K : Ok                    Dz.superTypes(T) = T1...Tn
+(LV ok) -------------------------------------------Dz(T) = {K; _; M1...Mn}
+             Dz |- T : Ok
+	             
+
                   amt1 _ in p.top().Ms ... amtn _ in p.top().Ms
-(P implemented) ----------------------------------------------- p[P] = interface {Pz; amt1 ... amtn;}
+(T implemented) ----------------------------------------------- p[P] = interface {Pz; amt1 ... amtn;}
                   p |- P : Implemented
 
 (amt-ok) ------------------- p.exists(T, Txs.Ts)
