@@ -1,4 +1,5 @@
 \usepackage{xspace}
+\usepackage{xparse}
 \usepackage{tabularx}
 \usepackage{letltxmacro}
 \usepackage{mathtools}
@@ -9,7 +10,7 @@
 % A nice questionmark
 \newcommand{\@code}[1]{\ensuremath{#1}}
 \newcommand{\q}{\ensuremath{?}}
-\newcommand{\Empty}{\ensuremath{\epsilon}}
+\newcommand{\Empty}{\ensuremath{\epsilon}\xspace}
 \newcommand{\EmptyZ}{\ensuremath{\emptyset}}
 \newcommand{\rp}[1]{\Q{(}\!#1\Q{)}}
 \newcommand{\cp}[1]{\,\Q{\{}\!\,#1\,\Q{\}}\!}
@@ -38,12 +39,19 @@
 	%\@code{\ensuremath{\Q@\{@#1\Q{;}\ #2\Q{;}\ #3\,\Q@\}@\!}}}
 
 % what was once a program... but is now a \Sigma
-\newcommand{\State}[2]{#1;#2}
 \newcommand{\Exists}[2]{\ensuremath{\exists #1\text{ such that } #2}}
 \newcommand{\ForAll}[2]{\ensuremath{\forall #1,\ #2}}
 
 %New
 \renewcommand{\This}{\Q{This}\xspace}
+\renewcommand{\S}{\ensuremath{\Sigma}\xspace}
+\renewcommand{\T}[1][\S]{\ensuremath{#1!}}
+\newcommand{\UT}[2][\S]{\ensuremath{{#1}_{#2}}}
+
+\NewDocumentCommand{\Tn}{ O{\T} O{n}}{\ensuremath{{#1}^{#2}}}
+%\newcommand{\State}[2]{#1;#2}
+\NewDocumentCommand{\State}{O{\Dz}O{T}}{\ensuremath{#1; #2}}
+
 %\renewcommand{\T}[1]{#1\@nextpath}
 %	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
 %	\newcommand{\@gobblenextpath}[1]{\Q!.!\@code{#1}\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
@@ -115,6 +123,7 @@
 \newcommand{\defit}[2]{\ensuremath{#1}&\llap{\text{#2}}\\}
 %   b % indentended, for continuiation of another defi form
 \newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+\newcommand{\defin}[1]{#1\\}
 
 
 \newenvironment{grammar}{%
