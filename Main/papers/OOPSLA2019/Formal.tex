@@ -143,7 +143,7 @@ We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$).
 		\Sigma = \Dz[T = LF]; T\\\\
 		Csz = \Sigma\op{redirectSet}{R}\\\\
 		\Sigma\op{redirectable}{\Csz}\\\\
-		\ForAll{T' \in \ran{R}}{\Dz[T = LF]; \EmptyZ; T \vdash T'}\\\\
+		\ForAll{T' \in \ran{R}}{\Dz; \EmptyZ; T \vdash T'}\\\\
 		R' = \Sigma\op{bestMap}{R}
 	}{
 		\State{\Dz}{T} \vdash \red{LF}{R} \Rightarrow   
@@ -333,7 +333,7 @@ We will define $\Sigma\op{validMaps}{R}$ to produce a set of completions of the 
 	\defic{R' \supseteq R}{It is an extension of $R$}
 	\defic{\dom{R'} = \Sigma\op{redirectSet}{R}}{It completes the redirect map}
 	\defic{\wwhere \Sigma = \State{\Dz}{T}}{}
-	\defic{\ForAll{T \in \ran{R'}}{\Dz;\EmptyZ;T \vdash T'}}{Check that the targets of $R'$ are valid}
+	\defic{\ForAll{T \in \ran{R'}}{\Dz[T = \red{\cl{}{}{}}];\EmptyZ;T \vdash T'}}{Check that the targets of $R'$ are valid}
 \end{defs}
 \IOComm{If we don't care about making the proof easier, we can easily inline \opn{possibleMaps} into \opn{validMaps}.}
 Any map in $\Sigma\op{validMaps}{R}$ would be a valid complete map for redirect to use. The challenge is what should happen if there are multiple maps in this set, or if the result of this set could change if extra classes are added to $\Sigma$.
