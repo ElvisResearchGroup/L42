@@ -124,7 +124,7 @@ And finally we define a simple notation to get the $n^\text{th}$ outer class:
 
 \begin{defs}
 \color{blue}
-	\defi{\Tn[(T\.C_1\.\ldots\.C_n)]}{T}{outer class}
+	\defi{\Tn[(Cs\.C_1\.\ldots\.C_n)]}{Cs}{outer class}
 \end{defs}
 
 \subsection{Compilation Rules}
@@ -279,15 +279,10 @@ The redirect set is the full set of (nested) class names that will be `redirecte
 	\defin{\IOComm{only needs $L;T / L$}}
 	\defit{\text{if } \redm{Cs}{T} \in R \text{, then } Cs \in \S\op{redirectSet}{R}}{}
 	\defit{\text{if } Cs' \in \S\op{redirectSet}{R} \text{ and } \IO{\T\.Cs} \in \fop{exposedTypes}{\IO{\S[Cs']}} \text{, then } Cs \in \S\op{redirectSet}{R}}{}
-%	
-%	\defip{Cs \in \S\op{redirectSet}{R}}{}{}
-%	\defic{\redm{Cs}{T} \in R \text{ or } \Exists{Cs' \in \S\op{redirectSet}{R}}{T'\.Cs \in \fop{exposedTypes}{\S[Cs']}}}{}
-%	\defic{\wwhere \S = \State{\Dz}{T'}}{}
 	\defis
 	\defi{\fop{exposedTypes}{\cl{\_}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
 	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0\ldots T_n}{}
-	
-%	\defi{\S\op{internals}{\Tz}}{ \Tz\}\where \S = \State}{}
+	\defi{\fop{exposedTypes}{\ncd{C}{E}}}{\EmptyZ}{}
 \end{defs}
 
 We use the notation \fop{exposedTypes}{L} to denote the set of types used in the (public) signature of $L$, note that it does not include nested classes (since in our language they are not virtual),  fields (since they are private), or method bodies (as redirect will delete them).
@@ -297,7 +292,7 @@ We use the notation \fop{exposedTypes}{L} to denote the set of types used in the
 \begin{defs}
 	\defip{L\op{redirectable}{Csz}}{}{the $Csz$ can all be (simultaneously) redirected away}
 	\defic{\Empty \notin Csz}{(cant redirect the whole code literal)}
-	\defic{Csz \subseteq \dom{Cs}}{(can only redirect things that exist)}
+	\defic{Csz \subseteq \dom{L}}{(can only redirect things that exist)}
 	\defic{\ForAll{Cs \in Csz}{\text{if } L(Cs)\op{public}{C} \text{, then } Cs\.C \in Csz}}{}
 	\defic{}{(public nested classes must be redirected if their outer is)}
 	\defic{\ForAll{Cs\.C\.\_ \in \Csz}{L(Cs)\op{public}{C}}}{(cant redirect through a private class)}
@@ -345,7 +340,7 @@ We will define $\S\op{validMaps}{R}$ to produce a set of completions of the (par
 	\defip{R' \in \S\op{possibleMaps}{R}}{}{}
 	\defic{R' \supseteq R}{It is an extension of $R$}
 	\defic{\dom{R'} = \S\op{redirectSet}{R}}{It completes the redirect map}
-	\defic{\ForAll{T \in \ran{R'}}{\IO{\S \vdash T'}}}{Check that the targets of $R'$ are valid}
+	\defic{\ForAll{T \in \ran{R'}}{\IO{\S \vdash T}}}{Check that the targets of $R'$ are valid}
 \end{defs}
 \IOComm{If we don't care about making the proof easier, we can easily inline \opn{possibleMaps} into \opn{validMaps}.}
 Any map in $\S\op{validMaps}{R}$ would be a valid complete map for redirect to use. The challenge is what should happen if there are multiple maps in this set, or if the result of this set could change if extra classes are added to \S.
@@ -378,7 +373,8 @@ This ensures that targets that give the most information (are more specific) are
 
 \defis
 \defip{\S' \in \S\op{similarStates}{}}{}{}
-\defic{\IO{\T[\S'] = \T} \text{ and } \ForAll{C \in \dom{\S}}{\S'(C)\op{remove}{Csz} = \S(C)}}{\Dz' has more nested classes}
+\defic{\IO{\T[\S'] = \T} \text{ and } \ForAll{C \in \dom{\S}}{\Exists{Csz}{\S'(C)\op{remove}{Csz} = \S(C)}}}{}
+%$\S'$ has more nested classes}
 	%MostSpecific(p; Pz) = P
 	%P in p.minimize(Pz)
 	%p.minimize(Pz) subseteq SuperClasses(p; P)

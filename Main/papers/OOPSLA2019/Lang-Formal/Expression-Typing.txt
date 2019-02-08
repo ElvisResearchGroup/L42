@@ -8,15 +8,15 @@ S; Tz; Txz |- x : T
 S; Tz; Txz |- e0 : T0
 ...
 S; Tz; Txz |- en : Tn
-------------------------------------  S(T0) = {_; _; T' m(T1 x1 ... Tn xn) e?, _}
-S; Tz; Txz |- e0.m(e1 ... en) : T'
+------------------------------------  T m(T1 x1 ... Tn xn) _ in S(T0)
+S; Tz; Txz |- e0.m(e1 ... en) : T
 
 
-S; Tz; Txz |- e0 : T0
+S; Tz; Txz |- e1 : T1
 ...
-S; Tz; Txz |- en : Tn                     S |- T
-----------------------------------------  S(T0) = {_; _; T' m(T1 x1 ... Tn xn) e?, _}
-S; Tz; Txz |- T.m(e1 ... en) : T'
+S; Tz; Txz |- en : Tn                     S |- T0
+----------------------------------------  static T m(T1 x1 ... Tn xn) _ in S(T0)
+S; Tz; Txz |- T0.m(e1 ... en) : T
 
 
 
