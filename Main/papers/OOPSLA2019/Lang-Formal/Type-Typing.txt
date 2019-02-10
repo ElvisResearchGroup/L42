@@ -16,9 +16,9 @@ Auxilary rule: (see if you can simplify)
 // complete(X) checks that X is sufficiently implemented
 complete(t = LF) // traits are always complete
 complete(C = LF) // class declaration
-	where LF = {K; M; _}
-	forall C' in dom(LF): complete(C' = LF(C'))
-	if K not in {interface, abstract}: forall m in dom(LF): complete(LF(m))
+    where LF = {K; M; _}
+    forall C' in dom(LF): complete(C' = LF(C'))
+    if K not in {interface, abstract}: forall m in dom(LF): complete(LF(m))
 complete(static? T m(Txs) e) // implemented methods are complete
 ----------------------------------------------------------------------------------------------------------
 //S.accessible(T) means that T is accessible in the current location of S
@@ -27,71 +27,45 @@ S.accessible(S!n.C?)
 S.accessible(S!n.Cs.C) if S.accessible(Cs) and S(Cs).public(C)
 ---------------------------------------------------------------------------------
 
-// The typing rules bellow will be entered in three ways:
-//     DFz |- e will be called after flattening, but before the main expression is executed
-//     Dz; empty; empty |- DF will be called on a trait before we try and use it
-//     S; empty |- T' will be called for each target of a redirect
-// (As shorthand, I will omit '; empty' )
-
-(S; Tz |- T) // what was once valid type, is now a type-system judgement!
-// here Tz is a list of types that are assumed to be well-typed
-// S is the current state (where S! may be empty if we are type-checking the main expression)
-// T is the type we are trying to access
-===============================================================================
-T in Tz or Tz |- S_T                // Tz[from T] |- p.navigate(T)
------------------------------------ if D = S then S.accessible(T) 
-S; Tz |- T
-
-
-(DFz |- e) // this rule checks that the main expression e is valid, as are all the declarations in DFz
+(|- DFz e) // this is the main rule for our type-system it checks DFz and e
 ================================================================================================================
-DFz; Empty |- DF1 ... DFz; Empty |- DFn
-complete(DF1) ... complete(DFn)
-DFz; Empty; Empty |- e : T              // I don't care what type the main expression has
---------------------------------------- DFz = DF1 ... DFn
-DFz |- e
+    |- DFz
+    DFz; Empty |- e : T
+    ---------------------------------------
+    |- DFz e
 
-(S; Tz |- DF) // these rules check that DF (which was found in S!) is well-typed (assuming the Tz are)
+(|- DFz) // this rule checks the entire DFz
+==================================================================================================================
+    DFz; Empty |- DF1 
+    ... 
+    DFz; Empty |- DFn                          complete(DF1) ... complete(DFn)
+    ------------------------------------------ DFz = DF1, ..., DFn
+               |- DFz
+ 
+(S |- DF) (S |- M) // these rules check that DF (or nested class) (which was found in S!) is well-typed
 ==============================================================================================================================
-
-S; Tz |- S!.C
------------------------------------- // assumes S[C] = LF
-S; Tz |- private? C = LF
-
-
-   Tz |- (This = LF, S)_This  // Tz[from This0.C] |- t = LF, p // for fresh C
----------------------------------
-S; Tz |- t = LF
+    S |- S!.C
+    ------------------------------------ // assumes S[C] = LF
+    S |- private? C = LF
 
 
-(Tz |- S) // this rule checks that the declaration for S! is well-typed, under the assumption that each Tz is well-typed
+    |- (This = LF, S)_This
+    ---------------------------------
+    S |- t = LF
+
+
+(|- S) // this rule checks that the declaration for S! is well-typed
 ===================================
-S; Tz,S! |- M1 ... S; Tz,T |- Mn
-forall T' in S.superTypes(S!) \ {S!}
-	forall m in dom(Dz(T'))
-		Dz(T')(m) = static? T_0' m(Txs)
-		Dz(T)(m)  = static? T_0 m(Txs) e?
-		S |- T_0 <= T_0'
-
-if K = T'1 x1 ... T'm xm then S; Tz,S! |- T'1 .... S; Tz,S! |- T'm
------------------------------------------------------------------- S[] = {K; Tz; M1 ... Mn}
-Dz; Tz |- T
+    S |- M1
+    ...
+    S |- Mn             S[] = {_; _; M1 ... Mn}
+    ------------------- S.transitiveTypes() is defined
+      |- S
 
 
-(S; Tz |- M) // check that M is well-typed, where M was found in S!, and each Tz is well typed
-=============================================
-S; Tz |- T0, ..., S; Tz |- Tn
------------------------------------------------ // abstract method
-S; Tz |- static? T0 m(T1 x1 ... Tn xn)
 
-
-S; Tz |- T0, ..., S; Tz |- Tn
-S; Tz; T this, T1 x1,  ...., Tn xn |- e : T0
---------------------------------------------------------- // implemented instance method
-S; Tz |- T0 m(T1 x1 ... Tn xn) e
-
-
-S; Tz |- T0, ..., S; Tz |- Tn
-S; Tz; T1 x1,  ...., Tn xn |- e : T0
------------------------------------------------ // implemented static method
-S; Tz |- static T0 m(T1 x1 ... Tn xn) e
+(S |- M) // check that M is well-typed, where M was found in S!
+============================================================
+    if e? = e  S; T -> this, T1 -> x1,  ...., Tn -> xn |- e : T0
+    ------------------------------------------------------------ // method
+    S; Tz |- static? T0 m(T1 x1 ... Tn xn) e?
