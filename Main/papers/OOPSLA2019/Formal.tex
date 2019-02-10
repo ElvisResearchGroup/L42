@@ -92,7 +92,6 @@ We define the following obvious notations to extract the members of a code-liter
 	\defi{L[C\.Cs=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
 	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{\cl{K}{\Tz}{\Mz, \ncd{C}{E}}}{}
 	\defit{\cl{\_}{\_}{\cd{C}{E},\_}\op{public}{C}}{$C$ is public}
-	\defi{K(x)}{T}
 \end{defs}
 
 We also define a notation to substitute a type with another one, as well as references to its nested classes:
@@ -164,9 +163,9 @@ We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$).
 	}
 	}\\\\
 	\irule{Trait}{
-		\IO{\Dz; \Empty \vdash \cd{t}{LF}}
+		\IO{\vdash \cd{t}{LF}, \Dz}
 	}{
-		\cd{t}{LF}, \State \vdash t \Rightarrow LF[\This \coloneqq T]
+		\cd{t}{LF}, \State[Dz,Dz'] \vdash t \Rightarrow LF[\This \coloneqq T]
 	}\\\\
 	\irule{Sum}{
 %		LF_i'=\minid{p}{\Id}{LF_i}\\\\
