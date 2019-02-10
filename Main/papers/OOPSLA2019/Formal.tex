@@ -58,10 +58,10 @@ We additionally impose the following well-formedness constraints:
 	\item An $L$ marked as an \Q{interface} cannot have an $M$ which is \Q{static} or implemented (i.e. have an $e$ as its body).
 	
 	\item In a $\Txs$ each $x$ (i.e. field or parameter name) must be distinct, and not named \Q{this}. 
-	
+	\item A \Q{static} method cannot contain \Q{this} in its body.
 	\item Method names ($m$) and class names ($C$) inside the $\Mz$ of a code-literal ($L$) must be distinct. Thus we will use the notations $\Mz(m)$ and $\Mz(C)$ to extract the (unique) $M$ in $\Mz$ declared with name $m$ or $C$ (respectively).
 	
-	\item The names of the top-level declarations ($Ds$) must all be distinct, and not \This.
+	\item The names of the top-level declarations ($Ds$) must all be distinct, and not \This. \IOComm{This only applies to input from the user, not when a $Ds$ is constructed by the formalism.}
 	
 	\item In an $R$, each $Cs$ must be distinct. Thus an $R$ is a (partial) function from $Cs$ to $T$, as such we will use the usual functional $R(Cs)$ to get the $T$ corresponding to the given $Cs$.
 \end{itemize}
@@ -92,7 +92,7 @@ We define the following obvious notations to extract the members of a code-liter
 	\defi{L[C\.Cs=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
 	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{\cl{K}{\Tz}{\Mz, \ncd{C}{E}}}{}
 	\defit{\cl{\_}{\_}{\cd{C}{E},\_}\op{public}{C}}{$C$ is public}
-%	\defi{(\Mz,\ncd{C}{\_})[C=E]}{\Mz,\ncd{C}{E}}{update member}
+	\defi{K(x)}{T}
 \end{defs}
 
 We also define a notation to substitute a type with another one, as well as references to its nested classes:
@@ -365,7 +365,7 @@ This ensures that targets that give the most information (are more specific) are
 	\defis
 	\defi{\S\op{mostSpecificMap}{Rz}}{R}{}
 	\defic{\wwhere R \in Rz}{}
-	\defic{\ForAll{Cs \in \dom{R}}{R(Cs) = \S\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz}}}{}
+	\defic{\ForAll{Cs \in \dom{R}}{R(Cs) = \S\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz\}}}}{}
 	
 	
 	\defi{\S\op{mostSpecific}{Tz}}{T}{}
