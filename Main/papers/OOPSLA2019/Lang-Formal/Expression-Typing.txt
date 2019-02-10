@@ -1,37 +1,38 @@
-(S; Tz; Txz |- e : T) // check that e has type T, where e is inside S! (or the main expression, if S! = empty), and each Tz is well-typed, and Txz are the free-variables
+G : x -> T
+
+(S; G |- e : T) // check that e has type T, where e is inside S! (or the main expression, if S! = empty), G is the usual Gamma
 =====================================
 
--------------------- T x in Txz
-S; Tz; Txz |- x : T
+	----------------
+	S; G |- x : G(x)
+
+	
+	S; G |- e0 : T0
+	...
+	S; G |- en : Tn
+	-----------------------------  S(T0)(m) = T m(T1 x1 ... Tn xn) _
+	S; G |- e0.m(e1 ... en) : T
 
 
-S; Tz; Txz |- e0 : T0
-...
-S; Tz; Txz |- en : Tn
-------------------------------------  T m(T1 x1 ... Tn xn) _ in S(T0)
-S; Tz; Txz |- e0.m(e1 ... en) : T
+	S; G |- e1 : T0
+	...
+	S; G |- en : Tn                   S.accessible(T)
+	--------------------------------  S(T)(m) = static T' m(T1 x1 ... Tn xn) _
+	S; G |- T.m(e1 ... en) : T'
 
 
-S; Tz; Txz |- e1 : T1
-...
-S; Tz; Txz |- en : Tn                     S |- T0
-----------------------------------------  static T m(T1 x1 ... Tn xn) _ in S(T0)
-S; Tz; Txz |- T0.m(e1 ... en) : T
+	S; G |- e : T'               if S! != empty then e = this
+	---------------------------- S(T) = {_, T' x, _; _; _}
+	S; G |- e.x : T
 
 
-
-S; Tz; Txz |- e : T'         if S! != empty then e = this
----------------------------- S(T') = {_, T" x, _; _; _}
-S; Tz; Txz |- e.x : T"
-
-
-S; Tz; Txz |- e1 : T1
-....
-S; Tz; Txz |- e1 : Tn                     if S! != empty then T = S! // No need to check accessibility or well-typedness of T
------------------------------------------ S(T) = {T1 x1, ..., Tn xn, _; _; _}
-S; Tz; Txz |- new T(e1 ... en): T
+	S; G |- e1 : T1
+	....
+	S; G |- e1 : Tn                           if S! != empty then T = S!
+	----------------------------------------- S(T) = {T1 x1, ..., Tn xn, _; _; _}
+	S; G |- new T(e1 ... en): T
 
 
-S; Tz; Txz |- e : T
----------------------------- T' in S.superTypes(T)
-S; Tz; Txz |- e : T'
+	S; G |- e : T
+	---------------------------- T' in S.superTypes(T)
+	S; G |- e : T'
