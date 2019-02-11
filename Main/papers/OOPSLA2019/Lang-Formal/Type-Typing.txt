@@ -27,6 +27,7 @@ Dz.accessible(T.Cs, T.Cs'.C) if Dz.accessible(T.Cs) and Dz(T.Cs).public(C)
 
 //Dz.exportable(T, T') means that T is not more accessible than T' (i.e. T can access T', and anything that can access T can also access T')
 // Note I don't need an explict accessible check, as the following checks imply it
+Dz.exportable(C, C'.Cs) if Dz(C').public(Cs)
 Dz.exportable(T.Cs, T.Cs') if Dz(T).public(Cs')
 Dz.exportable(T.C.Cs, T.C'.Cs') if Dz(T.C').public(Cs') and not Dz(T).public(C)
 ---------------------------------------------------------------------------------
