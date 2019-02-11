@@ -21,10 +21,9 @@ complete(C = LF) // class declaration
     if K not in {interface, abstract}: forall m in dom(LF): complete(LF(m))
 complete(static? T m(Txs) e) // implemented methods are complete
 ----------------------------------------------------------------------------------------------------------
-//S.accessible(T) means that T is accessible in the current location of S
-S.accessible(T) where S! = empty // i.e. we are in the main expression
-S.accessible(S!n.C?)
-S.accessible(S!n.Cs.C) if S.accessible(Cs) and S(Cs).public(C)
+//Dz.accessible(T, T') means that T is accessible from within T'
+Dz.accessible(T.Cs, T.C?)
+Dz.accessible(T.Cs, T.Cs'.C) if Dz.accessible(T.Cs) and Dz(T.Cs).public(C)
 ---------------------------------------------------------------------------------
 
 (|- DFz e) // this is the main rule for our type-system it checks DFz and e
