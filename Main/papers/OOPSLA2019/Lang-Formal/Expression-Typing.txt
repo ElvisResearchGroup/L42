@@ -1,38 +1,38 @@
 G : x -> T
 
-(S; G |- e : T) // check that e has type T, where e is inside S! (or the main expression, if S! = empty), G is the usual Gamma
+(Dz; G |- e : T) // check that e has type T, where e is inside G(this) (or the main expression, if this not in dom(G)), G is the usual Gamma, and Dz the class table
 =====================================
 
 	----------------
-	S; G |- x : G(x)
+	Dz; G |- x : G(x)
 
 	
-	S; G |- e0 : T0
+	Dz; G |- e0 : T0
 	...
-	S; G |- en : Tn
-	-----------------------------  S(T0)(m) = T m(T1 x1 ... Tn xn) _
-	S; G |- e0.m(e1 ... en) : T
+	Dz; G |- en : Tn
+	-----------------------------  Dz(T0)(m) = T m(T1 x1 ... Tn xn) _
+	Dz; G |- e0.m(e1 ... en) : T
 
 
-	S; G |- e1 : T0
+	Dz; G |- e1 : T0
 	...
-	S; G |- en : Tn                   S.accessible(T)
-	--------------------------------  S(T)(m) = static T' m(T1 x1 ... Tn xn) _
-	S; G |- T.m(e1 ... en) : T'
+	Dz; G |- en : Tn                  if this in dom(G) then Dz.accessible(G(this), T)
+	--------------------------------  Dz(T)(m) = static T' m(T1 x1 ... Tn xn) _
+	Dz; G |- T.m(e1 ... en) : T'
 
 
-	S; G |- e : T'               if S! != empty then e = this
-	---------------------------- S(T) = {_, T' x, _; _; _}
-	S; G |- e.x : T
+	Dz; G |- e : T'              if this in dom(G) then e = this
+	---------------------------- Dz(T) = {_, T' x, _; _; _}
+	Dz; G |- e.x : T
 
 
-	S; G |- e1 : T1
+	Dz; G |- e1 : T1
 	....
-	S; G |- e1 : Tn                           if S! != empty then T = S!
-	----------------------------------------- S(T) = {T1 x1, ..., Tn xn, _; _; _}
-	S; G |- new T(e1 ... en): T
+	Dz; G |- e1 : Tn                if this in dom(G) then T = G(this)
+	------------------------------- Dz(T) = {T1 x1, ..., Tn xn, _; _; _}
+	Dz; G |- new T(e1 ... en): T
 
 
-	S; G |- e : T
-	---------------------------- T' in S.superTypes(T)
-	S; G |- e : T'
+	Dz; G |- e : T
+	---------------------------- T' in Dz.superTypes(T)
+	Dz; G |- e : T'

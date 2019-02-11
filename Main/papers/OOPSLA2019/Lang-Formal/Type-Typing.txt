@@ -41,30 +41,30 @@ Dz.accessible(T.Cs, T.Cs'.C) if Dz.accessible(T.Cs) and Dz(T.Cs).public(C)
     ------------------------------------------ DFz = DF1, ..., DFn
                |- DFz
  
-(S |- DF) (S |- M) // these rules check that DF (or nested class) (which was found in S!) is well-typed
+(Dz; T |- DF) (Dz; T |- M) // these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
 ==============================================================================================================================
-    S |- S!.C
-    ------------------------------------ // assumes S[C] = LF
-    S |- private? C = LF
+	   Dz |- T.C
+    ------------------------------------ // assumes Dz(T.C) = LF
+    Dz; T |- private? C = LF
 
 
-    |- (This = LF, S)_This
-    ---------------------------------
-    S |- t = LF
+	This = LF, Dz |- This
+	---------------------------------
+	    Dz; Empty |- t = LF
 
 
-(|- S) // this rule checks that the declaration for S! is well-typed
+(Dz |- T) // this rule checks that the declaration for T is well-typed (assuming everything else in Dz is)
 ===================================
-    S |- M1
+    Dz; T |- M1
     ...
-    S |- Mn             S[] = {_; _; M1 ... Mn}
-    ------------------- S.transitiveTypes() is defined
-      |- S
+    Dz; T |- Mn         Dz(T) = {_; _; M1 ... Mn}
+    ------------------- Dz.transitiveTypes(T) is defined
+	   Dz |- T
 
 
 
-(S |- M) // check that M is well-typed, where M was found in S!
+(Dz; T |- M) // check that M is well-typed, where M was found in T
 ============================================================
-    if e? = e  S; T -> this, T1 -> x1,  ...., Tn -> xn |- e : T0
+    if e? = e  Dz; T -> this, T1 -> x1,  ...., Tn -> xn |- e : T0
     ------------------------------------------------------------ // method
-    S; Tz |- static? T0 m(T1 x1 ... Tn xn) e?
+    Dz; Tz |- static? T0 m(T1 x1 ... Tn xn) e?
