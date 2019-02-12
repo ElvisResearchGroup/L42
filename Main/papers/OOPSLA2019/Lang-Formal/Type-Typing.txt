@@ -34,9 +34,14 @@ p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
 //p.exportable(T1..Tn) = p.exportable(T1) .. p.exportable(Tn) //not needed, usual expansion
 ---------------------------------------------------------------------------------
 Define p(T):
-  (DFz;Ds)(T)=DFz(T)
-  (DFz;id=E0,C1=E1..Cn=En)(This.C1..Cn)=En
-  (DFz;C0=E0..Cn=En)(C0..Cn)=En
+  (C=L,DFz;Ds)(C.Cs)=L(Cs)
+  (DFz;t=E0,C1=E1..Cn=En,Ds)(This.C1..Cn.Cs)=En(Cs) //where Cs is the smallest possible
+  (DFz;C0=E0..Cn=En,Ds)(C0..Cn.Cs)=En(Cs) //where Cs is the smallest possible
+
+
+the program grow and do not change 
+
+
 ---------------------------------------------------------------------------------
 Define p.close(Tz):
 T in p.close(T,_) 
@@ -82,15 +87,15 @@ context
     DFz;Ds,id=_|-Ctx[E]=>Ctx[E']
 
 redirect
-    p=DFz;id0=E0,..,idn=En,id=L
-    Csz = L.redirectSet(id0..idn,id;R0)
+    Csz = L.redirectSet(T^p;R0)
     L.redirectable(Csz)
-    R=p.bestMap(R0) // check that this still makes sense (else redefine it)
+    R=p.bestMap(L,R0) // check that this still makes sense (else redefine it)
     Tz = p.close(range(R))
     forall T in Tz:p.accessible(T)
-    forall T in Tz of form This.Cs or id0.Cs: p.implOk(p(T),p.supertypes(T))
+    T^p = C._
+    forall C.Cs in Tz: p.implOk(p(T),p.supertypes(T))
     ----------------------------
-    DFz;id0=E0,..,idn=En,id=E|-L<R0>=>R[id0..idn,id;L.remove(Csz)]
+    p|-L<R0>=>R[T^p;L.remove(Csz)]
 
 
 (|- DFz e) // this is the main rule for our type-system it checks DFz and e
