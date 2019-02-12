@@ -1,11 +1,15 @@
 grammar: 
 D::= private? id = E //well formedness, top level D have no private
-
+p::=DFz;Ds
+-----------------------------------------------------
 Define: T^p to extract the current type
 T^(DFz; t=E C1=E1..Cn=En)=This.C1..Cn
 T^(DFz; C1=E1..Cn=En)=C1..Cn
-
-Define: fields({_;T1 x1 .. Tn xn;_})=x1:T1..xn:Tn //instead of defining T x in K, dom and range
+-----------------------------------------------------
+Define M in L :
+  M in {_;_;M,Ms}
+-----------------------------------------------------
+Define: fields({T1 x1 .. Tn xn;_;_})=T1 x1 .. Tn xn //instead of defining T x in K
 -----------------------------------------------------
 Define: complete(Ds)
 complete(D1..Dn)=complete(D1)..complete(Dn)
@@ -22,16 +26,77 @@ p.accessible(T.C.Cs) if T^p=T._ and p(T.C).public(Cs)
 Define: L.public(Cs)
 L.public() holds
 {Tz;K;C=L,_}.public(C.Cs)=L.public(Cs)
-----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 Define: p.exportable(T)
 p.exportable(T.Cs') if T^p=T._ and Dz(T).public(Cs') //implies accessible
 p.exportable(C.Cs) if  p(C).public(Cs)
 p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
 //p.exportable(T1..Tn) = p.exportable(T1) .. p.exportable(Tn) //not needed, usual expansion
 ---------------------------------------------------------------------------------
+Define p(T):
+  (DFz;Ds)(T)=DFz(T)
+  (DFz;id=E0,C1=E1..Cn=En)(This.C1..Cn)=En
+  (DFz;C0=E0..Cn=En)(C0..Cn)=En
+---------------------------------------------------------------------------------
+Define p.close(Tz):
+T in p.close(Tz) 
+  where
+  T in p.close(T')
+  T' in p.close(Tz)
+T in p.close(T0,_) if T in exposed(p(T0))
+---------------------------------------------------------------------------------
+Define exposed(L)
+exposed({Tz; K; Mz})=
+  supertypes(Dz,Tz) U {T: T x in K} U exposed(MZ) //may not need Ks types
+exposed(static? T0 m(T1 x1 ... Tn xn) e?)=T0..Tn
+exposed(C=E)=empty
+---------------------------------------------------------------------------------
+Define p.implOk(L), p.implOk(L,T)
+p.implOk(L) iff p.implOf(L,p.supertypes(T^p))
+p.implOk(L,T1..Tn)=p.implOk(L,T1)..p.implOk(L,Tn)
+p.implOk(L,T)
+  where forall static? T0' m(T1 _  ... Tn _) _ in L,
+    static? T0  m(T1 _ ... Tn _) _ in p(T)
+    p |- T0 <= T0'
+
+========================================================================================================
+
+top
+    DFz subseteq DFs
+             |- DFz:Ok
+    DFz;id=E |-E=>E'
+    ---------------------------
+    DFs id=E Ds => DFs id=E' Ds
+
+trait
+    ----------------------
+    t=L,DFz;_|-t=>L
+
+enter
+    DFz;Ds,C=E|-E=>E'
+    ----------------------------
+    DFz;Ds|-L[C=E]=>L[C=E']
+
+context
+    DFz;Ds,id=E|-E=>E'
+    ----------------------------
+    DFz;Ds,id=_|-Ctx[E]=>Ctx[E']
+
+redirect
+    p=DFz;id0=E0,..,idn=En,id=L
+    Csz = L.redirectSet(id0..idn,id;R0)
+    L.redirectable(Csz)
+    R=p.bestMap(R0) // check that this still makes sense (else redefine it)
+    Tz = p.close(range(R))
+    Tz subseteq dom(p)
+    forall T in Tz:p.accessible(T)
+    forall T in Tz of form This.Cs or id0.Cs: p.implOk(p(T))
+    ----------------------------
+    DFz;id0=E0,..,idn=En,id=E|-L<R0>=>R[id0..idn,id;L.remove(Csz)]
+
 
 (|- DFz e) // this is the main rule for our type-system it checks DFz and e
-================================================================================================================
+========================================================================================================
     |- DFz
     DFz; Empty |- e : T
     complete(DFz)   //doing it in the typing of the D was wrong, was called in traits
@@ -39,7 +104,7 @@ p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
     |- DFz e
 
 (|- DFz) // this rule checks the entire DFz
-==================================================================================================================
+=======================================================================================================
     DF1, ..., DFn; Empty |- DF1 
     ... 
     DF1, ..., DFn; Empty |- DFn                
@@ -48,8 +113,7 @@ p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
  
 (p |- DF)  (p |- L)  (p |- M)
 // these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
-//Marco: I think we do not need exportable for implements
-==========================================================================================================================
+====================================================================================================
 	   Dz; Ds,private? id = L |- L
     ------------------------------------
     Dz; Ds|- private? id = L
@@ -57,11 +121,10 @@ p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
 
 (p |- L) // this rule checks that L is well-typed (assuming everything else in p is)
 ===================================
-    L={ Tz;K; M1 ... Mn}
     forall M in L:  p |- M
     p.exportable(exposed(L))
     p.implOk(L)
-    forall T in range(fields(L)): p.accessible(T)
+    forall T _ in fields(L): p.accessible(T)
     -------------------
 	   p |-  L
 
