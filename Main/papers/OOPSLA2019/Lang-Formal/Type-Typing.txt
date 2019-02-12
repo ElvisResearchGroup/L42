@@ -1,75 +1,73 @@
-Auxilary rule: (see if you can simplify)
+grammar: 
+D::= private? id = E //well formedness, top level D have no private
+
+Define: T^p to extract the current type
+T^(DFz; t=E C1=E1..Cn=En)=This.C1..Cn
+T^(DFz; C1=E1..Cn=En)=C1..Cn
+
+Define: fields({_;T1 x1 .. Tn xn;_})=x1:T1..xn:Tn //instead of defining T x in K, dom and range
 -----------------------------------------------------
-// S! is defined in the latex, as is T^n, such that S!n is basically just Thisn
-// and S_T is defined such that (S_T)! = S, i.e. it is like S.naviagate(T)
-
-// translation to thisn/p form:
-//     S_T ==> p.naviagate(T)
-//     S! ==> This0
-//     S!n ==> Thisn
-//     S[] ==> p.top()
-//     S[Cs] ==> p(This0.Cs)
-//     S(T) ==> p(T)
-//     S ==> p
-//     S! == empty ==> p = empty; Dz // I.e. p is just a set of top-level declarations, and so p(This0) will be undefined, but p(This0.C) may not be
-
-// complete(X) checks that X is sufficiently implemented
-complete(t = LF) // traits are always complete
-complete(C = LF) // class declaration
-    where LF = {K; M; _}
-    forall C' in dom(LF): complete(C' = LF(C'))
-    if K not in {interface, abstract}: forall m in dom(LF): complete(LF(m))
-complete(static? T m(Txs) e) // implemented methods are complete
+Define: complete(Ds)
+complete(D1..Dn)=complete(D1)..complete(Dn)
+complete(t = L)
+complete(C = {Tz;K; Mz})
+  K !=abstract
+  forall C = L in Mz: complete(C = L)
+  if static? _ m(_) in Mz, then K =interface  
 ----------------------------------------------------------------------------------------------------------
-//Dz.accessible(T, T') means that T is accessible from within T'
-Dz.accessible(T.Cs, T.C?)
-Dz.accessible(T.Cs, T.Cs'.C) if Dz.accessible(T.Cs) and Dz(T.Cs).public(C)
-
-//Dz.exportable(T, T') means that T is not more accessible than T' (i.e. T can access T', and anything that can access T can also access T')
-// Note I don't need an explict accessible check, as the following checks imply it
-Dz.exportable(C, C'.Cs) if Dz(C').public(Cs)
-Dz.exportable(T.Cs, T.Cs') if Dz(T).public(Cs')
-Dz.exportable(T.C.Cs, T.C'.Cs') if Dz(T.C').public(Cs') and not Dz(T).public(C)
+Define: p.accessible(T)
+p.accessible(T) if T^p=T._
+p.accessible(T.C.Cs) if T^p=T._ and p(T.C).public(Cs)
+----------------------------------------------------------------------------------------------------------
+Define: L.public(Cs)
+L.public() holds
+{Tz;K;C=L,_}.public(C.Cs)=L.public(Cs)
+----------------------------------------------------------------------------------------------------------
+Define: p.exportable(T)
+p.exportable(T.Cs') if T^p=T._ and Dz(T).public(Cs') //implies accessible
+p.exportable(C.Cs) if  p(C).public(Cs)
+p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
+//p.exportable(T1..Tn) = p.exportable(T1) .. p.exportable(Tn) //not needed, usual expansion
 ---------------------------------------------------------------------------------
 
 (|- DFz e) // this is the main rule for our type-system it checks DFz and e
 ================================================================================================================
     |- DFz
     DFz; Empty |- e : T
+    complete(DFz)   //doing it in the typing of the D was wrong, was called in traits
     ---------------------------------------
     |- DFz e
 
 (|- DFz) // this rule checks the entire DFz
 ==================================================================================================================
-    DFz; Empty |- DF1 
+    DF1, ..., DFn; Empty |- DF1 
     ... 
-    DFz; Empty |- DFn                          complete(DF1) ... complete(DFn)
-    ------------------------------------------ DFz = DF1, ..., DFn
-               |- DFz
+    DF1, ..., DFn; Empty |- DFn                
+    ------------------------------------------
+               DF1, ..., DFn |- DFz
  
-(Dz; T |- DF) (Dz; T |- M) // these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
-==============================================================================================================================
-	   Dz |- T.C
-    ------------------------------------ // assumes Dz(T.C) = LF
-    Dz; T |- private? C = LF
+(p |- DF)  (p |- L)  (p |- M)
+// these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
+//Marco: I think we do not need exportable for implements
+==========================================================================================================================
+	   Dz; Ds,private? id = L |- L
+    ------------------------------------
+    Dz; Ds|- private? id = L
 
 
-	This = LF, Dz |- This
-	---------------------------------
-	    Dz; Empty |- t = LF
-
-
-(Dz |- T) // this rule checks that the declaration for T is well-typed (assuming everything else in Dz is)
+(p |- L) // this rule checks that L is well-typed (assuming everything else in p is)
 ===================================
-    Dz; T |- M1         
-    ...                  Dz.implOk(T) and Dz.exportable(T, Dz.superTypes(T)) // do we need an exportable check for implements?
-    Dz; T |- Mn          forall T' x in K: Dz.accessible(T, T') // fields are not public, don't need an exportable check 
-    -------------------  Dz(T) = {K; _; M1 ... Mn}
-	   Dz |- T         
+    L={ Tz;K; M1 ... Mn}
+    forall M in L:  p |- M
+    p.exportable(exposed(L))
+    p.implOk(L)
+    forall T in range(fields(L)): p.accessible(T)
+    -------------------
+	   p |-  L
 
 
-(Dz; T |- M) // check that M is well-typed, where M was found in T
+(p |- M) // check that M is well-typed, where M was found in T
 ==============================================================
-    if e? = e  Dz; T -> this, T1 -> x1,  ...., Tn -> xn |- e : T0   
-    --------------------------------------------------------------- Dz.exportable(T, Ti)
-    Dz; T |- static? T0 m(T1 x1 ... Tn xn) e?
+    if e? = e  p; this:T^p, x1:T1,  ...., xn:Tn |- e : T0   
+    ---------------------------------------------------------------
+    p |- static? T0 m(T1 x1 ... Tn xn) e?
