@@ -47,12 +47,11 @@ T in p.close(Tz)
 T in p.close(T0,_) if T in exposed(p(T0))
 ---------------------------------------------------------------------------------
 Define exposed(L)
-exposed({Tz; K; Mz})= Tz U exposed(MZ)
+exposed({Tz; K; Mz})= Tz U exposed(Mz)
 exposed(static? T0 m(T1 x1 ... Tn xn) e?)=T0..Tn
 exposed(C=E)=empty
 ---------------------------------------------------------------------------------
 Define p.implOk(L), p.implOk(L,T)
-p.implOk(L) iff p.implOf(L,p.supertypes(T^p))
 p.implOk(L,T1..Tn)=p.implOk(L,T1)..p.implOk(L,Tn)
 p.implOk(L,T)
   where forall static? T0' m(T1 _  ... Tn _) _ in L,
@@ -89,7 +88,7 @@ redirect
     R=p.bestMap(R0) // check that this still makes sense (else redefine it)
     Tz = p.close(range(R))
     forall T in Tz:p.accessible(T)
-    forall T in Tz of form This.Cs or id0.Cs: p.implOf(p(T),p.supertypes(T))
+    forall T in Tz of form This.Cs or id0.Cs: p.implOk(p(T),p.supertypes(T))
     ----------------------------
     DFz;id0=E0,..,idn=En,id=E|-L<R0>=>R[id0..idn,id;L.remove(Csz)]
 
