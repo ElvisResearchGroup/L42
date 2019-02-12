@@ -39,6 +39,7 @@ Define p(T):
   (DFz;C0=E0..Cn=En)(C0..Cn)=En
 ---------------------------------------------------------------------------------
 Define p.close(Tz):
+T in p.close(T,_) 
 T in p.close(Tz) 
   where
   T in p.close(T')
@@ -46,8 +47,7 @@ T in p.close(Tz)
 T in p.close(T0,_) if T in exposed(p(T0))
 ---------------------------------------------------------------------------------
 Define exposed(L)
-exposed({Tz; K; Mz})=
-  supertypes(Dz,Tz) U {T: T x in K} U exposed(MZ) //may not need Ks types
+exposed({Tz; K; Mz})= Tz U exposed(MZ)
 exposed(static? T0 m(T1 x1 ... Tn xn) e?)=T0..Tn
 exposed(C=E)=empty
 ---------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ top
 
 trait
     ----------------------
-    t=L,DFz;_|-t=>L
+    p|-t=>p(t)[This=T^p]
 
 enter
     DFz;Ds,C=E|-E=>E'
@@ -88,9 +88,8 @@ redirect
     L.redirectable(Csz)
     R=p.bestMap(R0) // check that this still makes sense (else redefine it)
     Tz = p.close(range(R))
-    Tz subseteq dom(p)
     forall T in Tz:p.accessible(T)
-    forall T in Tz of form This.Cs or id0.Cs: p.implOk(p(T))
+    forall T in Tz of form This.Cs or id0.Cs: p.implOf(p(T),p.supertypes(T))
     ----------------------------
     DFz;id0=E0,..,idn=En,id=E|-L<R0>=>R[id0..idn,id;L.remove(Csz)]
 
@@ -123,7 +122,7 @@ redirect
 ===================================
     forall M in L:  p |- M
     p.exportable(exposed(L))
-    p.implOk(L)
+    p.implOk(L,p.supertypes(T^p))
     forall T _ in fields(L): p.accessible(T)
     -------------------
 	   p |-  L
