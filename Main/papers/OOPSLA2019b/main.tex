@@ -1,0 +1,174 @@
+%% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
+% set review=false to ommit line numbers and stuff
+\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For double-blind review submission, w/ CCS and ACM Reference
+%\documentclass[acmsmall,review,anonymous]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
+%\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For single-blind review submission, w/ CCS and ACM Reference
+%\documentclass[acmsmall,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission, w/ required CCS and ACM Reference
+%\documentclass[acmsmall]{acmart}\settopmatter{}
+
+
+%% Journal information
+%% Supplied to authors by publisher for camera-ready submission;
+%% use defaults for review submission.
+\acmJournal{PACMPL}
+\acmVolume{1}
+\acmNumber{CONF} % CONF = POPL or ICFP or OOPSLA
+\acmArticle{1}
+\acmYear{2018}
+\acmMonth{1}
+\acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission;
+%% use 'none' for review submission.
+\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2018}           %% If different from \acmYear
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format must update the '\documentclass' and
+%% topmatter commands above; see 'acmart-sigplanproc-template.tex'.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+
+\input{main-preamble}
+
+\begin{document}
+
+%% Title information
+\title{Sound Invariant Checking Using Type Modifiers and Object Capabilities.}  
+                                        %% [Short Title] is optional;
+                                        %% when present, will be used in
+                                        %% header instead of Full Title.
+%\titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+%\subtitle{Subtitle}                     %% \subtitle is optional
+%\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+\newcommand{\vuw}[1]{\affiliation{
+		\position{#1}
+		\department{School of Engineering and Computer Science}              %% \department is recommended
+		\institution{Victoria University of Wellington}            %% \institution is required
+		%  \streetaddress{Street1 Address1}
+		\city{Wellington}
+		%  \state{State1}
+		%  \postcode{Post-Code1}
+		\country{New Zealand}                    %% \country is recommended
+}}
+
+%% Author with single affiliation.
+\author{Isaac Oscar Garian}
+%\authornote{with author1 note}          %% \authornote is optional;
+\vuw{Research Assistant}                 %% can be repeated if necessary
+%\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\email{isaac@ecs.vuw.ac.nz}          %% \email
+
+\author{Marco Servetto}
+\vuw{Lecturer}                 %% can be repeated if necessary
+\email{marco.servetto@ecs.vuw.ac.nz}          %% \email
+
+\author{Alex Potanin}
+\vuw{Associate Professor}                 %% can be repeated if necessary
+\email{alex@ecs.vuw.ac.nz}          %% \email
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+\input{main-abstract}
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}
+	<ccs2012>
+	<concept>
+	<concept_id>10003752.10010124.10010138.10010139</concept_id>
+	<concept_desc>Theory of computation~Invariants</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10003752.1
+	%0010124.10010138.10010142</concept_id>
+	<concept_desc>Theory of computation~Program verification</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10011007.10011006.10011008.10011009.10011011</concept_id>
+	<concept_desc>Software and its engineering~Object oriented languages</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10011007.10010940.10010992.10010998.10011001</concept_id>
+	<concept_desc>Software and its engineering~Dynamic analysis</concept_desc>
+	<concept_significance>300</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10011007.10011006.10011008.10011024.10011032</concept_id>
+	<concept_desc>Software and its engineering~Constraints</concept_desc>
+	<concept_significance>300</concept_significance>
+	</concept>
+	</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Theory of computation~Invariants}
+\ccsdesc[500]{Theory of computation~Program verification}
+\ccsdesc[500]{Software and its engineering~Object oriented languages}
+\ccsdesc[300]{Software and its engineering~Dynamic analysis}
+\ccsdesc[300]{Software and its engineering~Constraints}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{type modifiers, object capabilities, runtime verification, class invariants}  %% \keywords are mandatory in final camera-ready submission
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+
+
+\input{main-body}
+\end{document}

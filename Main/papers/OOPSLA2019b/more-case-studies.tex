@@ -1,0 +1,251 @@
+%\subheading{Expressiveness}
+%\noindent\textit{Expressiveness:}
+%Finally, in our this third case study we 
+%shown that even if we do not aim to expressiveness, but to simplicity, soundness and efficiency, we are still able to express a reasonable amount of cases.
+%We encoded in L42 all the examples present in papers~\cite{??}.
+%We can express all the examples except ....
+%Again, we quantify the annotation burden and we discover....
+
+%\subheading{The transform pattern}
+
+
+%\begin{lstlisting}[escapechar=\%]
+%class List {
+%  mut List prev;
+%  mut List next;
+%  Object elem;  
+%  read method Bool ok() {
+%    return this.next.prev==this && this.prev.next==this &&..;}
+%  read method Int size(){
+%    if(next==this){return 1;} return next.size()+1;}}
+%\end{lstlisting}
+%Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
+%However, only \Q@capsule@ and \Q@imm@
+%fields can be accessed in \validate.
+%Thus, \Q@.innerValidate()@ can not be the \Q@invariant@ method for \Q@List@.
+%The solution is to use a `box' over our \Q@List@, and to validate our `box':
+
+%\loseSpace\loseSpace\loseSpace
+%\begin{lstlisting}[escapechar=\%]
+%class ListBox { 
+%  capsule List inner;
+%  read method imm Bool invariant() {return this.inner.ok();}
+%  read method Int size(){ return this.inner.size();}
+%\end{lstlisting}
+%\saveSpace
+%Encoding this example in Spec\# would be much more verbose (see case study XX) and still require
+%a \Q@ListBox@ object,
+%while the visible state semantic of Eiffel or D would cause an large amount of \Q@invariant@ checks
+%if the list had any recursive method; consider for example the \Q@size@ method:
+%if there was an invariant with visible state semantic on \Q@List@, calling \Q@List.size()@ would require 
+%calling \Q@List.invariant()@ before and after the method execution. If the list has more then one element, the recursive \Q@size@ call would also call the invariant twice.
+%We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.
+%However the limitations of capsule mutator methods mean that any \Q@mut@ methods in \Q@ListBox@ taking \Q@read@ or \Q@mut@ parameters, or returning \Q@mut@, cannot be trivially forwarded.
+%% since they necessitate mutating a \Q@capsule@, instead complicated and involved forwarding would be needed, if it is even possible.
+%Our example is about a list of immutable objects.
+%To instead validate a list of \Q@mut@ objects we would need to use our box pattern not just around the list,
+%but around a section of data encapsulating both the list and all the contained elements.
+%This is because our simple \Q@capsule@ modifier requires the whole ROG to be encapsulated.
+%Conceptually, it would be better for the list (of mutable objects) to be validated by its
+%head, since the behaviour of the contained objects is transparent to the validation criteria. 
+%Our limitation relates to full encapsulation and contrasts with flexible encapsulation as in 
+%ownership~\cite{ClarkeEtAl98}. However, neither traditional flexible encapsulation/ownership, nor our language are capable of verifying that \Q@List.elem@ is not (indirectly) referenced within \Q@ListBox.validate()@.
+
+
+%\subheading{Family, a worst case scenario for L42}
+%\noindent\textit{Family, a worst case scenario for L42}
+%For our second case study, we wished to make an example where the performance of L42 and the conventional approach was similar. We forged an example when a \Q@Family@ has a list of parents and a list of children;
+%all the children need to be younger then their parents and every \Q@Person@ need to have a non empty name and a positive age.  
+%We model the pass of time with a \Q@processDay@ method, and we simulate $3$ years of life (that is, $3\times365$ days) of a family of $4$.
+%The age of a \Q@Person@ grow when its birthday is processed.
+%Notably, \Q@processDay@ is a \Q@mut@ method that can potentially mutate any person in the system, thus
+%L42 have to run a lot of invariant checks. The object graph here is very shallow: the \Q@Family@ holds the \Q@Person@s and that is it.
+%However, even in this case we get about $9$ times less invariant calls: $19403$ with visible state semantic  and $2210$ in L42.
+%Also the \Q@Family@ example uses the box pattern.
+
+%\subheading{Family}
+%We wished to make an example where the performance of L42 and the conventional approach 
+%was similar. We forged an example when a Family has a list of parents and a list of children;
+%all the childrens need to be younger then their parents and every Person need to have a non empty name and a positive age.  
+%We model the pass of time with a \Q@processDay@ method, and we simulate 3 years of life (that is, 3*365 days) of a family of 4.
+%The age of a Person grow when its birthday is processed.
+%Notably, \Q@processDay@ is a mut method that can potentially mutate any person in the system, thus
+%L42 have to run a lot of invariant checks. The object graph here is very shallow: the Family holds the Persons and that is it.
+%However, even in this case we get about 10 times less invariant calls: Num in the conventional approach and Num in L42.
+
+%\subheading{Spec\# 2papers}
+%Our goal in this third case study was to show that even if we do not aim to expressiveness, but to simplicity, soudness and efficiency, we are still able to express a reasonable amount of cases.
+%We can express all the examples except ....
+%Again, we quantify the annotation burden and we discover....
+
+%\section{Stack overflow and Out of memory}
+%For our system to be sound,
+%Stack overflow and Out of memory errors need to be modeled specially.
+%If they are just (unchecked) exceptions then they could be catched to 
+%generate non deterministic behaviour inside invariant code.
+
+%However, it is possible to use capaility objects to capture them as special system events/signals.
+%In this way we can maintain the soundness of our system even in this corner case.
+%Of course, another option would be to make them into unrecoverable fatal errors.
+
+\lstset{morekeywords={expose}}
+
+\section{More Case Studies}
+\label{s:MoreCaseStudies}
+\subheading{Family}
+The following test case was designed to produce a worst case in the number of invariant checks. We have a \Q!Family! that (indirectly) contains a list of \Q!parents! and \Q!children!. The \Q!parents! and \Q!children! are of type \Q!Person!. Both \Q!Family! and \Q!Person! have an invariant, the invariant of \Q!Family! depends on its contained \Q!Person!s.
+
+% TODO: Talk to mark about code style
+
+% TODO: Swap parent/child updates in aritifact
+\begin{lstlisting}
+class Person { 
+  final String name;
+  Int daysLived;
+  final Int birthday;
+  Person(String name, Int daysLived, Int birthday) { .. }
+  mut method Void processDay(Int dayOfYear) {
+  	this.daysLived += 1;
+    if (this.birthday == dayOfYear) {
+    	Console.print("Happy birthday " + this.name + "!"); }}
+  read method Bool invariant() {
+    return !this.name.equals("") && this.daysLived >= 0 &&
+      this.birthday >= 0 && this.birthday < 365; }
+}
+class Family { 
+  static class Box { 
+    mut List<Person> parents;
+    mut List<Person> children;
+    Box(mut List<Person> parents, mut List<Person> children){..}
+    mut method Void processDay(Int dayOfYear) {
+      for(Person c : this.children) { c.processDay(dayOfYear); }
+      for(Person p : this.parents) { p.processDay(dayOfYear); }}
+  }
+  capsule Box box;
+  Family(capsule List<Person> ps,capsule List<Person> cs) {
+    this.box = new Box(ps, cs); }
+  mut method Void processDay(Int dayOfYear) { 
+    this.box.processDay(dayOfYear); }
+  mut method Void addChild(capsule Person child) { 
+    this.box.children.add(child); }
+  read method Bool invariant() {
+    for (Person p : this.box.parents) {
+      for (Person c : this.box.children) {
+        if (p.daysLived <= c.daysLived) { 
+          return false; }}}
+    return true; }
+}
+\end{lstlisting}
+Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
+Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay! is atomic: it updates all its contained \Q!Person!s together.
+%This capture the intention of consistently calling \Q@Person.processDay@ once for all the persons as an atomic operation.
+%This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
+Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause problems if, for example, a child was updated before their parent.
+
+\loseSpace
+We have a simple test case that calls \Q!processDay! on a \Q!Family! $1{,}095$ ($3\times365$) times.
+%$3\times365$ times ($1{,}095$ days):
+\begin{lstlisting}
+// 2 parents (one 32, the other 34), and no children
+var fam = new Family(List.of(new Person("Bob", 11720, 40),
+    new Person("Alice", 12497, 87)), List.of());
+    
+for (Int day = 0; day < 365; day++) { // Run for 1 year
+  fam.processDay(day);
+}
+for (Int day = 0; day < 365; day++) { // The next year
+  fam.processDay(day);
+  if (day == 45) {
+    fam.addChild(new Person("Tim", 0, day)); }}
+
+for (Int day = 0; r < 365; day++) { // The 3rd year
+  fam.processDay(day);
+  if (day == 340) {
+    fam.addChild(new Person("Diana", 0, day)); }}
+\end{lstlisting}
+% The counts (including the invariant keyword, and read on the invariant method)
+% Spec# 14 family, 2 main   = 16
+% L42 	12 family, 1 person = 14
+% Fake 42 = 14 (+2 for box ctor, -1 for family ctor)
+
+The idea is that everything we do with the \Q!Family! is a mutation; the \Q!fam.processDay! calls also mutate the contained \Q!Person!s.
+
+This is a worst case scenario for our approach compared to visible state semantics since it reduces our advantages:
+our approach avoids invariant checks when objects are not mutated
+but in this example most operations are mutations; 
+similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{As happened in our GUI case study, see Section \ref{s:case-study}.} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
+\loseSpace
+
+We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D and Eiffel perform $7{,}995$, and finally, Spec\# performs only $1{,}104$.
+
+Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay! and \Q!addChild! call (for both \Q!Person! and \Q!Family!). 
+
+The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!.
+
+The results for Spec\# are very interesting, since it performs less checks than L42.
+This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block. 
+
+Spec\# relies on the absence of arithmetic overflow, and performs runtime checks to ensure this%
+\footnote{%
+Runtime checks are enabled by a compilation option; when they fail, unchecked exceptions are thrown.%
+}, as such the verifier concludes that the field increment in \Q!processDay! cannot break the invariant.
+Spec\# is able to avoid some invariant checks in this case 
+by relying on all arithmetic operations performing runtime overflow checks;
+whereas integer arithmetic in L42 has the common wrap around semantics.
+%L42's integers have common wrap-around semantic.
+
+
+%\footnote{%
+%Such semantic can be enforced by
+%a compilation option, disabled on default for performance reasons.
+%Overflow is detected at runtime, by throwing an unchecked exceptions; just as for invariant failures.%
+%}
+
+% Concluding Spec\# is able to replaces some runtime invariant checks with more efficient runtime overflow checks.
+
+
+%This is the case since \Q!processDay! in \Q!Person! just does a simple field increment, thus the Spec\# verifier is able to statically verify that this wont break the invariant, and so it does not require a corresponding \Q!expose! block, and hence does not perform a runtime invariant check.
+%The Spec\# verifier is able to do this as it works on a language semantic where arithmetic overflow does not occur. Such semantic can be enforced by
+%a compilation option (disable on default for performance reasons).
+%%%%however one can turn on runtime checking for overflow.
+%%%and check overflow errors at run time
+%With this option turned on, eliding the invariant check is sound since overflow will have the same result as a runtime invariant check failure, namely it will throw an unchecked exception.
+
+
+%This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
+
+
+The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
+
+
+\subheading{Spec\# Papers}
+Their are many published papers about the pack/unpack methodology used by Spec\#. To compare against their expressiveness we will consider the three mains ones that introduced their methodology and extensions:
+\begin{itemize}
+	\item \emph{Verification of Object-Oriented Programs with Invariants:}~\cite{DBLP:journals/jot/BarnettDFLS04} this paper introduces their methodology. In their examples section (pages 41--47), they show how their methodology would work in a class heirarchy with \Q!Reader! and \Q!ArrayReader! classes. The former represents something that reads characters, whereas the latter is a concrete implementation that reads from an owned array. They extend this further with a \Q!Lexer! that owns a \Q!Reader!, which it uses to read characters and parse them into tokens. They also show an example of a \Q!FileList! class that owns an array of filenames, and a \Q!DirFileList! class that extends it with a stronger invariant. All of these examples can be represented in L42\footnote{Our encodings are in the artifact.}. The most interesting considerations are as follow:
+	\begin{itemize}
+		\item Their \Q!ArrayReader! class has a \Q!relinquishReader! method that `unpacks' the \Q!ArrayReader! and returns its owned array.
+%This allows other code to mutate the array freely,
+%Then other code can mutate such relinquished array freely.
+The returned array can then be freely mutated and passed around by other code.
+%at the cost of being unable to use the \Q!ArrayReader! until it is packed again
+However, afterwards the \Q!ArrayReader! will be `invalid', and so one can only call methods on it that do not require its invariant to hold. However, it may later be `packed' again (after its invariant is checked).
+%Due to our guarantee that usable objects must have their invariant hold, we are unable to do this.
+In contrast, our approach requires the invariant of all usable objects to hold.
+%In our approach we do not have any visible unusable objects. 
+We can still relinquish the array, but at the cost of making the \Q!ArrayReader! forever unreachable. This can be done by
+% However, we can
+ declaring \Q!relinquishReader! as a \Q!capsule method!, this works since our type modifier system guarantees that the receiver of such a method is not aliased, and hence cannot be used again. Note that Spec\# itself cannot represent the \Q!relinquishReader! method at all, since it does not provide explicit pack and unpack operations, rather its \Q!expose! statement performs both an unpack and a pack, thus we cannot unpack an \Q!ArrayReader! without repacking it in the same method.
+%(unless we were to throw an unchecked-exception, however this is unsound~\cite{Leino2004ExceptionSF}).
+		\item Their \Q!DirFileList! example inherits from a \Q!FileList! which has an invariant, and a final method, this is something their approach was specifically designed to handle. As L42 does not have traditional subclassing, we are unable to express this concept fully, but L42 does have code reuse via trait composition, in which case \Q!DirFileList! can essentially copy and paste the methods from \Q!FileList!, and they will automatically enforce the invariant of \Q!DirFileList!. %The disadvantage however is that if \Q!FileList! is a trait, it cannot also be a type, and so we cannot have a non-final type/class with a concrete invariant, however one can always have a final class with an invariant that wraps over a non final one. This is not an inherent limitation with our invariant protocol, but rather one of the L42 language itself.
+	\end{itemize}
+
+	\item \emph{Object Invariants in Dynamic Contexts:}~\cite{DBLP:conf/ecoop/LeinoM04} this paper shows how one can specify an invariant for a doubly linked list of \Q!int!s (which is an immutable value type). Unlike our protocol however, it allows the invariant of \Q!Node! to refer to sibling \Q!Node!s which are not owned/encapsulated by itself, but rather the enclosing \Q!List!. Our protocol can verify such a linked list\footnote{%
+Our protocol allows for encoding this example, but
+to express the invariant we would need to 
+use reference equality, which the L42 language does not support.
+%We were unable to implement this in L42, as the invariant uses reference equality, which the language does not implement.
+} (since its elements are immutable), however we have to specify the invariant inside the \Q!List! class. We do not see this as a problem, as the \Q!Node! type is only supposed to be used as part of a \Q!List!, thus this restriction does not impact users of \Q!List!.
+	
+	\item \emph{Friends Need a Bit More: Maintaining Invariants Over Shared State:}~\cite{DBLP:conf/mpc/BarnettN04} this paper shows how one can verify invariants over interacting objects, where neither owns/contains the other. They have multiple examples which utilise the `subject/observer' pattern, where a `subject' has some state that an `observer' wants to keep track of. In their \Q!Subject!/\Q!View! example, \Q!View!s are created with references to \Q!Subject!s, and copies of their state. When a \Q!Subject!'s state is modified, it calls a method on its attached \Q!View!s, notifying them of this update. The invariant is that a \Q!View!'s copy of its \Q!Subject!'s state is up to date. Their \Q!Master!/\Q!Clock! example is similar, a \Q!Clock! contains a reference to a \Q!Master!, and saves a copy of the \Q!Master!'s time. The \Q!Master! has a \Q!Tick! method that increases its time, but unlike the \Q!Subject!/\Q!View! example, the \Q!Clock! is not notified. The invariant is that the \Q!Clock!'s time is never ahead of its \Q!Master!'s. Our protocol is unable to verify these interactions, because the
+interacting objects are not immutable or encapsulated by each other.
+\end{itemize}
