@@ -403,7 +403,7 @@ Conventions
 
 \begin_deeper
 \begin_layout Standard
-We will consider C♯ (or other .Net or JVM languages), since it
+We will consider C♯ (or any other .Net or JVM language), since it:
 \begin_inset ERT
 status open
 
@@ -497,7 +497,7 @@ What
 \emph on
 could
 \emph default
- this code do?
+ this function do?
 \end_layout
 
 \begin_deeper
@@ -638,7 +638,7 @@ How about this?
 \end_inset
 
 
-\begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke(}\ck{null}, \ck{null}\cf ); \} \cm{// call \cf{M()}}}$
+\begin_inset Formula $\texttt{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}.\cf{Invoke(}\ck{null}, \ck{null}\cf ); \} \cm{// dynamically} \cm{invoke} \cf{M()}}$
 \end_inset
 
 
@@ -777,7 +777,7 @@ What is the callability of
 \begin_inset Formula $\cf M$
 \end_inset
 
- was a dynamically loaded static-method.)
+ was a dynamically loaded static method.)
 \end_layout
 
 \begin_layout Standard
@@ -1143,7 +1143,6 @@ tikzstyle{cancall} = [call, color=blue, dashed, very thick];
 
 \begin_layout Plain Layout
 
-
 \end_layout
 
 \begin_layout Plain Layout
@@ -1161,7 +1160,6 @@ tikzstyle{cancalld} = [cancall, bend right = 10];
 \end_layout
 
 \begin_layout Plain Layout
-
 
 \end_layout
 
@@ -1264,7 +1262,6 @@ end{minipage}};
 
 \begin_layout Plain Layout
 
-
 \end_layout
 
 \begin_layout Plain Layout
@@ -1303,7 +1300,6 @@ draw (WC.east) edge[call] node[labelt]{} (R.west);
 \end_layout
 
 \begin_layout Plain Layout
-
 
 \end_layout
 
@@ -1507,7 +1503,11 @@ Example
 \begin_inset Formula $\cf{Restricted}$
 \end_inset
 
- can only be directly called by functions who name it in their 
+ can only be directly called by functions that contain 
+\begin_inset Formula $\cf{Restricted}$
+\end_inset
+
+ in their 
 \begin_inset Formula $\ck{calls}$
 \end_inset
 
@@ -1987,7 +1987,7 @@ Perform any
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3(}\ct{I<\cf{[Restricted]}>} \cv x) \ck{calls[\cf{Restricted}]} \{ \cv x.\cf{Run()}; \}}$
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2(}\ct{I<\cf{[Restricted]}>} \cv x) \ck{calls[\cf{Restricted}]} \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
 
@@ -2000,15 +2000,15 @@ Perform any
 \end_deeper
 \begin_layout Enumerate
 Defer the decision to the caller of 
-\begin_inset Formula $\cf{M3}$
+\begin_inset Formula $\cf{M2}$
 \end_inset
 
-: 
+:
 \end_layout
 
 \begin_deeper
 \begin_layout Standard
-\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M3<'a>(}\ct{I<\cf{['a]}>} \cv x) \ck{calls[\cf{'a}]} \{ \cv x.\cf{Run()}; \}}$
+\begin_inset Formula $\texttt{\ck{static} \ck{void} \cf{M2<'a>(}\ct{I<\cf{['a]}>} \cv x) \ck{calls[\cf{'a}]} \{ \cv x.\cf{Run()}; \}}$
 \end_inset
 
 
@@ -2349,6 +2349,14 @@ Infer
 \end_layout
 
 \begin_layout Itemize
+Have a 
+\begin_inset Formula $\ck{cant-call}$
+\end_inset
+
+ annotation?
+\end_layout
+
+\begin_layout Itemize
 Support wild-cards?
 \end_layout
 
@@ -2357,11 +2365,6 @@ Allow named groups of functions?
 \end_layout
 
 \end_deeper
-\begin_layout Itemize
-Support sound reasoning about unsafe operations (like executing arbitrary
- machine code).
-\end_layout
-
 \begin_layout Itemize
 Improve support for dynamic code loading:
 \end_layout
@@ -2382,6 +2385,11 @@ Formalise the reasoning properties we want from our system:
 \end_layout
 
 \begin_deeper
+\begin_layout Itemize
+Reason in the presence of unsafe operations (like executing arbitrary machine
+ code).
+\end_layout
+
 \begin_layout Itemize
 Prove them!
 \end_layout

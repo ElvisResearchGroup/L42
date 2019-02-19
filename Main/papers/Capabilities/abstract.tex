@@ -1,0 +1,190 @@
+%% LyX 2.3.1 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[10pt,twoside,british]{scrartcl}
+\usepackage{amstext}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\setmainfont[Mapping=tex-text]{TeX Gyre Schola}
+\setsansfont[Scale=1.04,Mapping=tex-text]{Latin Modern Sans}
+\setmonofont[Scale=1.09]{Latin Modern Mono}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm,headheight=0.7cm,headsep=0.7cm,footskip=1.05cm}
+\setlength{\parskip}{\medskipamount}
+\setlength{\parindent}{0pt}
+\usepackage[xetex]{xcolor}
+\usepackage{calc}
+\usepackage{endnotes}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\let\footnote=\endnote
+
+\@ifundefined{date}{}{\date{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{xcolor}
+\usepackage{scrlayer-scrpage}
+
+\newcommand{\lfoot}[1]{\ifoot{\textnormal{#1}}}
+\newcommand{\rfoot}[1]{\ofoot{\textnormal{#1}}}
+
+\definecolor{AccentB80}{RGB}{197, 213, 255}
+\definecolor{AccentB60}{RGB}{139, 171, 255}
+\definecolor{AccentB40}{RGB}{81,  130, 255}
+\definecolor{Accent}   {RGB}{0,   63,  221}
+\definecolor{AccentD25}{RGB}{0,   46,  165}
+\definecolor{AccentD50}{RGB}{0,   31,  110}
+
+%\renewcommand\Huge{\@setfontsize\Huge{10pt}{26}} % Was 25?
+%\renewcommand\Large{\@setfontsize\Large{10pt}{14}} % Was 14?
+%\large	 10.5 % was 11?
+\newcommand{\StyleTitle}[1]{{\Huge{\textcolor{Accent}{{#1}}}}} % Expanded +0.5pt
+\newcommand{\StyleSubTitle}[1]{{\large{\textcolor{AccentB40}{{#1}}}\medskip}} % 25pt after , Expanded +0.5pt
+\renewcommand{\maketitle}{\StyleTitle{\@title}\\\StyleSubTitle{\@author}}
+\newcommand{\zwnbsp}{}
+%\renewcommand{\ensuremath}[1]{#1}
+
+\renewcommand{\thanks}[1]{\footnote{#1}}
+\definecolor{blue}{HTML}{0000F0} % 
+\definecolor{purple}{HTML}{700090}
+\definecolor{orange}{HTML}{F07000}
+\definecolor{teal}{HTML}{0090B0}
+\definecolor{brown}{HTML}{A00000}
+\definecolor{green}{HTML}{008000}
+\definecolor{pink}{HTML}{F000F0}
+
+\usepackage{enumitem}
+\setlist{nolistsep}
+
+\usepackage{fontspec} % To set xetex fonts
+\setmainfont[Ligatures={Common, Discretionary}]{TeX Gyre Schola}
+\setmonofont[Ligatures={Discretionary}, Scale=1.090909090909090909090909]{Latin Modern Mono} % 12/11
+\setsansfont[Numbers={Monospaced},Ligatures={Common, Discretionary}, Scale=1.045454545454545]{Latin Modern Sans} %11.5/11
+
+\unimathsetup{math-style=ISO}
+\setmathfont{TeX Gyre Schola Math}
+
+\newcommand{\parj}{\setlength{\parskip}{0pt}}
+\newcommand{\pars}{\setlength{\parskip}{\medskipamount}}
+\usepackage[para]{footmisc}
+\usepackage{hyperref}
+\hypersetup{colorlinks,urlcolor=[RGB]{0, 155, 240}}
+\newcommand{\email}[1]{%
+	\href{mailto:#1}{\texttt{#1}}
+}
+\raggedright
+
+\makeatother
+
+\usepackage{polyglossia}
+\setdefaultlanguage[variant=british]{english}
+\begin{document}
+\title{Callability Control}
+\author{By Isaac Oscar Gariano\textsuperscript{1} and Marco Servetto\textsuperscript{2}
+(Victoria University of Wellington)}
+
+\maketitle
+\global\long\def\empty{\zwnbsp}%
+
+\global\long\def\k#1{\textcolor{blue}{\texttt{#1}}}%
+\global\long\def\t#1{\textcolor{teal}{#1}}%
+\global\long\def\f#1{\textcolor{purple}{#1}}%
+\global\long\def\l#1{\textcolor{brown}{#1}}%
+\global\long\def\v#1{\textcolor{orange}{#1}}%
+\global\long\def\m#1{\textcolor{green}{#1}}%
+
+\global\long\def\c#1{\texttt{#1}}%
+\global\long\def\ck#1{\c{\k{#1}}}%
+\global\long\def\ct#1{\c{\t{#1}}}%
+\global\long\def\cf#1{\c{\f{#1}}}%
+\global\long\def\cv#1{\c{\v{#1}}}%
+\global\long\def\cm#1{\c{\m{#1}}}%
+
+\global\long\def\tab{\texttt{\ \ \ \ }}%
+
+\global\long\def\calls#1{\ck{calls[}#1\ck ]}%
+
+How does one know whether a called function will access arbitrary
+files on your system? One common option is to say that if the called
+function is not declared impure (e.g. with Haskell’s $\ct{IO}$
+monad) it will not read any files (or do any other I/O). Another option
+is to raise a runtime error or trap if it tries to do so (e.g. with
+Java’s $\ct{SecurityManager}$). The first option is overly restrictive
+and heavy weight (what if the function only needs access to standard
+out?) whilst the second hampers static and modular reasoning. We call
+the operations a function may call its \emph{callability}; we propose
+a simple and flexible type-system feature that allows one to soundly
+statically reason about functions callability on a fine-grained level.
+Importantly our system only restricts \emph{calling} functions, it
+does not restrict what \emph{objects} can be created, passed around,
+or aliased.
+
+In our systems, all functions are annotated with a base-callability
+using the syntax $\calls{\f{\f x}_{1},\dots,\f x_{n}}$, where each
+$\f x_{i}$ indicates the name of a function (or set of functions)
+that can be called. Note how here a function declares what \emph{it
+can access}, compare this with conventional accessibility, (like Scala’s
+$\k{private[}\t C\k ]$ modifier) where a function declares what \emph{can
+access it}. Our system has three core rules:\parj{}
+\begin{itemize}
+\item Any function can call call itself.
+\item A function can call each function in its base-callability.
+\item If a function $\f f$ can call everything in the base-callability
+of a function $\f g$, then $\f f$ can call $\f g$.
+\end{itemize}
+\pars{}With these rules harmless language/library primitives/intrinsics
+(such as integer addition) would be marked with $\calls{\empty}$,
+allowing any function to call it. On the other hand, if a primitive
+$\f f$ should be restricted (e.g. a function to exit the program),
+one could annotate it with $\calls{\f f}$, thus allowing only specifically
+marked functions to call it. Other systems can be envisioned, such
+as having a dummy $\cf{io}$ function, and than marking all I/O primitives
+with $\calls{\cf{io}}$.
+
+We also support callability generics and dynamic dispatch, thus allowing
+the system to become quite flexible; consider for example the following
+(where $\cf{'a}$ denotes a generic callability parameter):\parj{}
+
+\fbox{\begin{minipage}[t]{1\columnwidth - 2\fboxsep - 2\fboxrule}%
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{extern}} \ensuremath{\ct{long}} \ensuremath{\cf{posix\_read(}\ct{int}} \ensuremath{\cv{file\_descriptor}}, \ensuremath{\ct{void*}} \ensuremath{\cv{buffer}}, \ensuremath{\ct{ulong}} \ensuremath{\cv{count}\cf )}}$\\
+$\texttt{\ensuremath{\tab\calls{\cf{posix\_read}}}; \ensuremath{\cm{// system function defined by the OS}}}$\\
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{long}} \ensuremath{\cf{stdin\_read(}\ct{void*}} \ensuremath{\cv{buffer}}, \ensuremath{\ct{ulong}} \ensuremath{\cv{count}\cf )} \ensuremath{\calls{\cf{posix\_read}}} \{}$\\
+$\texttt{\ensuremath{\tab\ck{return}} \ensuremath{\cf{posix\_read(}\cv{STDIN\_FILENO}}, \ensuremath{\cv{buffer}}, \ensuremath{\cv{count}\cf )}; \}}$\\
+\\
+$\texttt{\ensuremath{\ck{interface}} \ensuremath{\ct{Input\_Stream<}\cf{'a}\ct >} \{}$\\
+$\texttt{\ensuremath{\tab\ct{char}} \ensuremath{\cf{get\_char()}} \ensuremath{\calls{\cf{'a}}};}$\\
+$\texttt{\ensuremath{\tab}… \} \ensuremath{\cm{// other usefull functions}}}$\\
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{void}} \ensuremath{\cf{do\_stuff<'a>(}\ct{Input\_Stream<}\cf{'a}\ct >} \ensuremath{\cv{stream}\cf )} \ensuremath{\calls{\cf{'a}}} \{}$\\
+$\tab\texttt{… \} \ensuremath{\cm{//}} \ensuremath{\cm{could have any well-typed code}}}$%
+\end{minipage}}
+
+\pars{}$\c{\t{Input\_Stream<}\f{'a}\t >}$ is conceptually similar
+to a generic $\c{\t{Input\_Stream<T>}}$, where $\ct T$ denotes a
+type-parameter.
+
+For any base-callability $\f c$ one can then call $\cf{do\_stuff<}\f c\cf >$and
+pass it an instance of a class that implements $\ct{\t{Input\_Stream<}}\f c\ct{\t >}$.
+For example, a call $\cf{do\_stuff<[]>(}\v{a\_stream}\cf )$ cannot
+(even indirectly) read from a file, since it doesn’t have the callability
+$\cf{posix\_read}$ or any callability which could indirectly call
+it. Another important benefit of our system is that we can even reason
+over a call like $\cf{do\_stuff<[stdin\_read]>(}\v{a\_stream}\cf )$,
+it can read-files, but only standard-input (the file identified by
+$\cv{STDIN\_FILENO}$). As is usual in OO languages, for such a call
+to type-check, $\v{a\_stream}$’s static-type must be a subtype
+of $\ct{Input\_Stream<}\cf{[stdin\_read]}\ct >$ but one could always
+perform a run-time cast, but risk getting an exception.
+
+This system is designed to soundly enforce reasoning: by looking at
+the declarations of functions $\f f$ and $\f g$, and all functions
+transitively referenced in their base-capabilities, one can statically
+determine whether $\f f$ can call $\f g$. In addition, it is also
+designed to work in an environment with dynamic-code loading, if you
+have reasoned that one function cannot call another, no matter what
+additional code you load or dynamically invoke, that guarantee still
+holds. We have also looked at adding other features to reduce the
+burden of our annotations: such as wildcards and annotation inference.
+
+\lfoot{\textsuperscript{1}\email{isaac@ecs.vuw.ac.nz} \textsuperscript{2}\email{marco.servetto@ecs.vuw.ac.nz} }
+
+\rfoot{}
+\end{document}

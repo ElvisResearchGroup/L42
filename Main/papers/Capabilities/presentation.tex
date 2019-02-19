@@ -209,7 +209,7 @@
 
 \begin{frame}{Conventions}
 
-We will consider C♯ (or other .Net or JVM languages), since it\pars
+We will consider C♯ (or any other .Net or JVM language), since it:\pars
 \begin{itemize}
 \item is statically-typed,
 \item supports named/identifiable functions (e.g. static/instance methods
@@ -227,7 +227,7 @@ static functions.
 %
 \begin{frame}[<+->]{The Problem}
 \begin{enumerate}
-\item What \emph{could} this code do?
+\item What \emph{could} this function do?
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M1(}\cf )} \{ \ensuremath{\cf{Sign(}\cl 0\cf )}; \}}$
 
@@ -257,7 +257,7 @@ trust the writer of every class that x could be at run-time.}
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{String}} \ensuremath{\cv{url}\cf )} \{}$\\
 $\texttt{\ensuremath{\tab\cm{// Load code (possibly from the internet)}}}$\\
 $\texttt{\ensuremath{\tab\ct{Assembly}} \ensuremath{\cv{code}} = \ensuremath{\ct{Assembly}}.\ensuremath{\cf{LoadFrom(}\cv{url}\cf )};}$\\
-$\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremath{\cf{Invoke(}\ck{null}}, \ensuremath{\ck{null}\cf )}; \} \ensuremath{\cm{// call \cf{M()}}}}$
+$\texttt{\ensuremath{\tab\cv{\cv{code}.\cf{GetMethod(}\cl{"M"}\cf )}}.\ensuremath{\cf{Invoke(}\ck{null}}, \ensuremath{\ck{null}\cf )}; \} \ensuremath{\cm{// dynamically}} \ensuremath{\cm{invoke}} \ensuremath{\cf{M()}}}$
 
 \note{This is very problematic, url could refer to code written by anyone,
 it might not have even been written yet when M3 was written. So we
@@ -286,7 +286,7 @@ static method.)
 \item What is the callability of $\cv x.\cf{Run}$? (Where $\cv x$ is of
 an interface type $\ct I$.)
 \item What is the callability of $\cf M$? (Where $\cf M$ was a dynamically
-loaded static-method.)
+loaded static method.)
 \end{enumerate}
 \note{We will present a system that can answer these questions by constraining
 their callabilities.}
@@ -403,8 +403,8 @@ $\texttt{\ensuremath{\cf{Unrestricted(}\cl{"Add"}}, \ensuremath{\cl 1}, \ensurem
 \end{exampleblock}
 
 \pause{}
-\item $\cf{Restricted}$ can only be directly called by functions who name
-it in their $\ck{calls}$:
+\item $\cf{Restricted}$ can only be directly called by functions that contain
+$\cf{Restricted}$ in their $\ck{calls}$:
 
 $\texttt{\ensuremath{\ck{static}} \ensuremath{\ct{Object}} \ensuremath{\cf{Restricted(}\ct{String}} \ensuremath{\cv{op}}, \ensuremath{\ck{params}} \ensuremath{\ct{Object[]}} \ensuremath{\cv{args}\cf )}}$\\
 $\texttt{\ensuremath{\tab\ck{calls[\f{Restricted}]}};}$
@@ -510,12 +510,12 @@ $\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct
 \pause{}
 \item Perform any $\cf{Restricted}$ operation:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3(}\ct{I<\cf{[Restricted]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{Restricted}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2(}\ct{I<\cf{[Restricted]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{Restricted}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
 
 \pause{}
-\item Defer the decision to the caller of $\cf{M3}$: 
+\item Defer the decision to the caller of $\cf{M2}$:
 
-$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M3<'a>(}\ct{I<\cf{['a]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{'a}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
+$\texttt{\ensuremath{\ck{static}} \ensuremath{\ck{void}} \ensuremath{\cf{M2<'a>(}\ct{I<\cf{['a]}>}} \ensuremath{\cv x}) \ensuremath{\ck{calls[\cf{'a}]}} \{ \ensuremath{\cv x}.\ensuremath{\cf{Run()}}; \}}$
 \end{enumerate}
 \note{Callability generics are of course covariant in their callability
 paramaters, so you can use and cast between different instanciations
@@ -583,11 +583,10 @@ our grantees still hold.}
 \item Make our annotations less verbose:
 \begin{itemize}
 \item Infer $\ck{calls}$ annotations?
+\item Have a $\ck{cant-call}$ annotation?
 \item Support wild-cards?
 \item Allow named groups of functions?
 \end{itemize}
-\item Support sound reasoning about unsafe operations (like executing arbitrary
-machine code).
 \item Improve support for dynamic code loading:
 \begin{itemize}
 \item Allow calling newly loaded functions, even if they have themselves
@@ -595,6 +594,8 @@ in their $\ck{calls}$ annotation.
 \end{itemize}
 \item Formalise the reasoning properties we want from our system:
 \begin{itemize}
+\item Reason in the presence of unsafe operations (like executing arbitrary
+machine code).
 \item Prove them!
 \end{itemize}
 \end{itemize}
