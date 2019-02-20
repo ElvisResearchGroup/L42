@@ -1,44 +1,103 @@
 e  ::= x | e.m(es) | T.m(es) | e.x | new T(es)
-T  ::= C| T.C
-v  ::= new T(vs)
-
 L  ::= {K; Tz; Mz}
 K  ::= interface | abstract | Txs
 M  ::= static? T m(Txs) e? | D
-D  ::= private? Id=E
 E  ::= L | t | E1<+E2 | E<R>
-R  ::= T1=T'1 .. Tn=T'n
-Tx ::= T x
-Id ::= C | t
+R  ::= Cs1=T1 .. Csn=Tn
 
-LF ::= {K;Tz;MFz}
-MF ::= static? T m(Txs) e? | private? C = LF
-DF ::= Id=LF
-p  ::= DFz;Ds
-top::= Ds e
-CtxE::=[]| CtxE <+E | LF <+CtxE | CtxE<R> 
+T  ::= C| T.C
+Tx ::= T x
+D  ::= private? id = E
+id ::= C | t
+v  ::= new T(vs)
 
 Well formedness:
--forall M =_ Id=E, Id is of form C, Id is not 'This'
--there is no repeated m or C in the members of an L
--all the declared x are not 'this'
--two occurences of the same x are not declared in any
-  parameter list or field list 
+- An L marked as an 'interface' cannot have an M which is static or implemented (i.e. have an e as its body).
+- An M cannot be of the form private? t = E, i.e. it must not declare a trait.
+- In a Txs each x (i.e. field or parameter name) must be distinct, and not named 'this'. 
+- A 'static' method cannot contain 'this' in its body.
+- Method names (m) and class names (C) inside the Mz of a code-literal (L) must be distinct. Thus we will use the notations Mz(m) and Mz(C) to extract the (unique) M in Mz declared with name m or C (respectively).
+- The names of the top-level declarations (Ds) provided in the source code must all be distinct, and not 'This', in addition they cannot have the 'private' modifier.
+- In an R, each Cs must be distinct. Thus an R is a (partial) function from Cs to T, as such we will use the usual functional R(Cs) to get the T corresponding to the given Cs.
+	
+
+# Auxiliary Notations
+============================================================
+
+DF ::= id = LF
+LF ::= {K; Tz; MFz}
+MF ::= static? T m(Txs) e? | private? C = LF
+p  ::= DFz;Ds
+
+// top::= Ds e // WHY?
+-----------------------------------------------------
+Define M in L: 
+	M in {_;_;M,Mz}
+-----------------------------------------------------
+Define E(Cs) = E':
+  E(empty)=E
+  {_;_;Mz, private? C=L}(C.Cs) = L(Cs)
+-----------------------------------------------------------------
+Define: fields({T1 x1 .. Tn xn;_;_}) = T1 x1 .. Tn xn
+-----------------------------------------------------
+Define L[T := T'] = L, by propagating in the usual way to T"[T := T']
+T.Cs[T := T'] = T'.Cs
+T[T' = T"] = T, otherwise 
+-----------------------------------------------------
+
+-----------------------------------------------------
+Define C^id = C'
+	C^C = C and C^t = This
+Define T^p = T:
+	T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C^id.C1..Cn
+-----------------------------------------------------
+Define p(T) = E:
+	sameStart(private? C=E,Ds; C.Cs)
+	(C=L,DFz;Ds)(C.Cs)=L(Cs) where !Ds.sameStart(Cs)
+	(DFz;id=E, private?1 C1=E1 .. private?n Cn=En,Ds)(C^id.C1..Cn.Cs)=En(Cs) where !Ds.sameStart(Cs)
+-----------------------------------------------------
+
+# Compilation Rules
+top
+    DFz subseteq DFs
+             |- DFz:Ok
+    DFz;id=E |-E=>E'
+    ---------------------------
+    DFs id=E Ds => DFs id=E' Ds
+
+Ctx-F
+    DFz;Ds,id=E|-E=>E'
+    ----------------------------
+    DFz;Ds,id=_|-CtxF[E]=>CtxF[E']
 
 
------------------------------------------------------
-Define: T^p to extract the current type
-T^(DFz; t=E C1=E1..Cn=En)=This.C1..Cn
-T^(DFz; C1=E1..Cn=En)=C1..Cn
------------------------------------------------------
-Define M in L :
-  M in {_;_;M,Ms}
------------------------------------------------------
-Define L(Cs) :
-  L(empty)=L
-  {_;_;Mz, _ C=L}(C.Cs) = L(Cs)
------------------------------------------------------
-Define: fields({T1 x1 .. Tn xn;_;_})=T1 x1 .. Tn xn //instead of defining T x in K
+enter
+    DFz;Ds,C=E|-E=>E'
+    ----------------------------
+    DFz;Ds|-{K;Tz;private? C=E,Mz}=>{K;Tz;private? C=E',Mz}
+
+trait
+    ----------------------
+    t = LF, DFz; Ds |-t=>LF[This=T^p]
+
+sum
+	LF1 <+ LF2.refreshPrivate(T^p) = LF3
+	-------------------------------------
+	p |- LF1 <+ LF2 => LF3
+	
+redirect
+    Csz = LF.redirectSet(T^p;R0)
+    LF.redirectable(Csz)
+    R = p.bestMap(LF, R0) // check that this still makes sense (else redefine it)
+    Tz = p.transitiveSignature(range(R))
+    forall T in Tz:p.accessible(T^p;T)
+    T^p = C._
+    forall C.Cs in Tz: p.validImplemntation(p(T),p.supertypes(T))
+    ----------------------------
+    p|-LF<R0>=> R_T^p[LF.remove(Csz)]
+    
+CtxF::=[]| CtxF <+ E | LF <+ CtxF | CtxF<R> 
+
 -----------------------------------------------------
 Define: complete(Ds)
 complete(D1..Dn)=complete(D1)..complete(Dn)
@@ -62,37 +121,27 @@ p.exportable(C.Cs) if  p(C).public(Cs)
 p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
 //p.exportable(T1..Tn) = p.exportable(T1) .. p.exportable(Tn) //not needed, usual expansion
 ---------------------------------------------------------------------------------
-Define p(T):
-  (C=L,DFz;Ds)(C.Cs)=L(Cs) where !sameStart(Ds,Cs)
-  (DFz;t=E0,C1=E1..Cn=En,Ds)(This.C1..Cn.Cs)=En(Cs) where !sameStart(Ds,Cs)
-  (DFz;C0=E0..Cn=En,Ds)(C0..Cn.Cs)=En(Cs) where !sameStart(Ds,Cs)
-sameStart(private? C=E,Ds;C.Cs)
 
 ---------------------------------------------------------------------------------
-Define p.close(Tz):
-T in p.close(T,_) 
-T in p.close(Tz) 
+Define p.transitiveSignature(Tz):
+T in p.transitiveSignature(T,_) 
+T in p.transitiveSignature(Tz) 
   where
-  T in p.close(T')
-  T' in p.close(Tz)
-T in p.close(T0,_) if T in exposed(p(T0))
+  T in p.transitiveSignature(T')
+  T' in p.transitiveSignature(Tz)
+T in p.transitiveSignature(T0,_) if T in 	(p(T0))
 ---------------------------------------------------------------------------------
-Define exposed(L)
-exposed({Tz; K; Mz})= Tz U exposed(Mz)
-exposed(static? T0 m(T1 x1 ... Tn xn) e?)=T0..Tn
-exposed(C=E)=empty
+Define signature(L)
+signature({Tz; K; Mz})= Tz U signature(Mz)
+signature(static? T0 m(T1 x1 ... Tn xn) e?)=T0..Tn
+signature(C=E)=empty
 ---------------------------------------------------------------------------------
-Define p.implOk(L), p.implOk(L,T)
-p.implOk(L,T1..Tn)=p.implOk(L,T1)..p.implOk(L,Tn)
-p.implOk(L,T)
+Define p.validImplemntation(L), p.validImplemntation(L,T)
+p.validImplemntation(L,T1..Tn)=p.validImplemntation(L,T1)..p.validImplemntation(L,Tn)
+p.validImplemntation(L,T)
   where forall static? T0' m(T1 _  ... Tn _) _ in L,
     static? T0  m(T1 _ ... Tn _) _ in p(T)
     p |- T0 <= T0'
-----------------------------------------------------------
-Define L[T1:=T2]
-  replace all the T syntactically in L with T[T1:=T2]
-T.Cs[T=T2]=T2.Cs
-T[T1=T2]=T otherwise 
 ----------------------------------------------------------
 Define: L[R_T]
   replace all the T syntactically in L with T[R_T]
@@ -100,44 +149,13 @@ T.Cs[R_T]=R(Cs)
 T'[R_T]=T' otherwise 
 ========================================================================================================
 
-top
-    DFz subseteq DFs
-             |- DFz:Ok
-    DFz;id=E |-E=>E'
-    ---------------------------
-    DFs id=E Ds => DFs id=E' Ds
-
-trait
-    ----------------------
-    p|-t=>p(t)[This=T^p]
-
-enter
-    DFz;Ds,C=E|-E=>E'
-    ----------------------------
-    DFz;Ds|-{K;Tz;private? C=E,Mz}=>{K;Tz;private? C=E',Mz}
-
-context
-    DFz;Ds,id=E|-E=>E'
-    ----------------------------
-    DFz;Ds,id=_|-Ctx[E]=>Ctx[E']
-
-redirect
-    Csz = L.redirectSet(T^p;R0)
-    L.redirectable(Csz)
-    R=p.bestMap(L,R0) // check that this still makes sense (else redefine it)
-    Tz = p.close(range(R))
-    forall T in Tz:p.accessible(T^p;T)
-    T^p = C._
-    forall C.Cs in Tz: p.implOk(p(T),p.supertypes(T))
-    ----------------------------
-    p|-L<R0>=>L.remove(Csz)[R_T^p]
 
 ==============================================================
 Define: L.redirectSet(T;R)
 T.T1 in L.redirectSet(T;T1=_,R)
 T.T2 in L.redirectSet(T;R)
   T.T1 in L.redirectSet(T;R)
-  T.T2 in exposed(L(T1))
+  T.T2 in signature(L(T1))
 ==============================================================
 Define: L.redirectable(Tz)
 L.redirectable(Tz)
@@ -178,7 +196,7 @@ Define: R' in p.possibleMaps(L,R)
   R subsetEq R'
   dom(R') = L.redirectSet(T^p,R)
   forall T in range(R') :
-    p.accessible(T^p,T) and p.implOk(p(T),p.supertypes(T))
+    p.accessible(T^p,T) and p.validImplemntation(p(T),p.supertypes(T))
 ==============================================================
 Define: p.mostSpecificMap(R1..Rn)=R1
   where forall T in dom(R1) :
@@ -230,8 +248,8 @@ p|-T0<={K1; Tz1; Mz1}
 (p |- L) // this rule checks that L is well-typed (assuming everything else in p is)
 ===================================
     forall M in L:  p |- M
-    p.exportable(exposed(L))
-    p.implOk(L,p.supertypes(T^p))
+    p.exportable(signature(L))
+    p.validImplemntation(L,p.supertypes(T^p))
     forall T _ in fields(L): p.accessible(T^p,T)
     -------------------
 	   p |-  L
