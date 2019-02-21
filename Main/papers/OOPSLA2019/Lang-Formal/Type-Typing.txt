@@ -4,13 +4,13 @@
 e  ::= x | e.m(es) | T.m(es) | e.x | new T(es)
 L  ::= {K; Tz; Mz} //DISCUSSION: if we put Ms instead of Mz then enter can be deterministic
 K  ::= interface | abstract | Txs
-M  ::= static? T m(Txs) e? | D //or private? D and remove private under
+M  ::= static? T m(Txs) e? | private? D
 E  ::= L | t | E1<+E2 | E<R>
 R  ::= Cs1=T1 .. Csn=Tn
 
 T  ::= C| T.C
 Tx ::= T x
-D  ::= private? id = E
+D  ::= id = E
 id ::= C | t
 v  ::= new T(vs)
 
@@ -20,7 +20,7 @@ Well formedness:
 - In a Txs each x (i.e. field or parameter name) must be distinct, and not named 'this'. 
 - A 'static' method cannot contain 'this' in its body.
 - Method names (m) and class names (C) inside the Mz of a code-literal (L) must be distinct. Thus we will use the notations Mz(m) and Mz(C) to extract the (unique) M in Mz declared with name m or C (respectively).
-- The names of the top-level declarations (Ds) provided in the source code must all be distinct, and not 'This', in addition they cannot have the 'private' modifier.
+- The names of the top-level declarations (Ds) provided in the source code must all be distinct, and not 'This'.
 - In an R, each Cs must be distinct. Thus an R is a (partial) function from Cs to T, as such we will use the usual functional R(Cs) to get the T corresponding to the given Cs.
 	
 
@@ -29,7 +29,7 @@ Well formedness:
 
 DF ::= id = LF
 LF ::= {K; Tz; MFz}
-MF ::= static? T m(Txs) e? | private? C = LF
+MF ::= static? T m(Txs) e? | private? DF
 p  ::= DFz;Ds
 
 // top::= Ds e // WHY?
@@ -41,25 +41,24 @@ Define E(Cs) = E':
   E(empty)=E
   {_;_;Mz, private? C=L}(C.Cs) = L(Cs)
 -----------------------------------------------------------------
-Define: fields({K; _; _}) = {T x in K} //Isaac version:not sure is corect/clear
 Define: fields({K; _; _}) = Txs
-fields({K; _; _}) = K if K is of form Txs,//Marco version is longer :(
-fields({K; _; _}) = {} otherwise
+fields({Txs; _; _}) = Txs
+fields({K; _; _}) = Empty, otherwise
 -----------------------------------------------------
 Define L[T := T'] = L, by propagating in the usual way to T"[T := T']
 T.Cs[T := T'] = T'.Cs
 T[T' = T"] = T, otherwise 
 -----------------------------------------------------
 
-Define T^p = T:
-  T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C.C1..Cn //Marco version mimiking Isaac
+Define Tp = T:
+  T^(DFz; id=E C1=E1..Cn=En)=C.C1..Cn
     where if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
-Define sameStart(Ds,T): //was confusing as a first line of another def!
-  sameStart(private? C=E,Ds; C.Cs)
+Define Ds.sameStart(T):
+  (C=E,Ds).sameStart(C.Cs)
 Define p(T) = E:
 	(C=L,DFz;Ds)(C.Cs)=L(Cs) where !Ds.sameStart(Cs)
-	(DFz;id=E, private?1 C1=E1 .. private?n Cn=En,Ds)(C^id.C1..Cn.Cs)=En(Cs) 
+	(DFz;id=E, C1=E1 .. Cn=En,Ds)(C.C1..Cn.Cs)=En(Cs) 
 		where not Ds.sameStart(Cs) and if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
 
@@ -80,26 +79,26 @@ Ctx-F
 
 
 enter
-    DFz;Ds,C=E|-E=>E' //Marco: is it ok to remove the private?
+    DFz;Ds,C=E|-E=>E'
     ----------------------------
     DFz;Ds|-{K;Tz;private? C=E,Mz}=>{K;Tz;private? C=E',Mz}
 
 trait
     ----------------------
-    t = LF, DFz; Ds |-t=>LF[This=T^p]
+    t = LF, DFz; Ds |-t=>LF[This=Tp]
 
 sum
-	LF1 <+ LF2.refreshPrivate(T^p) = LF3
+	LF1 <+ LF2.refreshPrivate(Tp) = LF3
 	-------------------------------------
 	p |- LF1 <+ LF2 => LF3
 	
 redirect
-    Csz = LF.redirectSet(T^p, R)
+    Csz = LF.redirectSet(Tp, R)
     LF.redirectable(Csz)
     p.validTargets(range(R))
     R' = p.bestMap(LF, R)
     ----------------------------
-    p |-LF<R> => LF.remove(Csz)[R']_(T^p)
+    p |-LF<R> => LF.remove(Csz)[R']Tp
     
 CtxF ::= []| CtxF <+ E | LF <+ CtxF | CtxF<R> //please, can we just put all the grammar together?
 
@@ -112,12 +111,12 @@ L1 <+ L2 = {K1 <+ K2; Tz1 U Tz2; (Mz <+ Mz'), Mz1, Mz2}
 	if K = interface then {m in dom(L1)} = {m in dom(L2)}
 -----------------------------------------------------
 Define: K <+ K' = K"
-abstract <+ abstract = abstract //same lines as yours, but I think is simpler
-abstract <+ Txs = Txs <+ abstract = Txs
 interface <+ interface = interface
+abstract <+ abstract = abstract
+abstract <+ Txs = Txs <+ abstract = Txs
 ---------------------------------------------------
 Define: Mz <+ Mz' = Mz"
-M1..Mn <+ M1'..Mn' = (M1 <+ M1') .. (Mn <+ Mn') //why you wrote in that other way?
+M1..Mn <+ M1'..Mn' = (M1 <+ M1') .. (Mn <+ Mn')
 static? T m(Txs) e? <+ static? T m(Txs) e = static? T m(Txs) e
 static? T m(Txs) e? <+ static? T m(Txs) = static? T m(Txs) e?
 (C = L) <+ (C = L') = (C = (L <+ L'))
@@ -130,9 +129,9 @@ Define: L.public(Cs)
 L.public(empty)
 {_; _; C = L, _}.public(C.Cs) iff L.public(Cs)
 ------------------------------------------------------------------------------------
-Define: p.exposable(T, T') //Marco: I think is better in function of each other
+Define: p.exposable(T, T')
 p.exposable(T._, T.Cs) if p(T).public(Cs)
-p.exposable(T.C'._, T.C.Cs) if p(T.C).public(Cs) and not p(T).public(C')
+p.exposable(T.C._, T.C'.Cs) if p(T.C').public(Cs) and not p(T).public(C)
 p.exposable(_, C.Cs) if p(C).public(Cs)
 ------------------------------------------------------------------
 Define: p.accessible(T, T')
@@ -147,12 +146,11 @@ p.supertypes(T) = T, p.supertypes(T1), ..., p.supertypes(Tn)
 Define exposedTypes(L) = Tz :
 exposedTypes({K; Tz; Mz})= Tz, exposedTypes(Mz)
 exposedTypes(static? T0 m(T1 x1 ... Tn xn) _)=T0..Tn
-exposedTypes(private? C=E)=empty
+exposedTypes(private? D)=empty
 ------------------------------------------------
 Define p.reacheableTypes(Tz) = Tz':
 T in p.reacheableTypes(T',_) if T in T',exposedTypes(p(T'))
-T in p.reacheableTypes(Tz) if T in p.reacheableTypes(T') //Marco: more standard in this way
-  where T' in p.reacheableTypes(Tz)
+T in p.reacheableTypes(Tz) if T in p.reacheableTypes(T'), where T' in p.reacheableTypes(Tz)
 ---------------------------------------------------------------------------------
 Define p.validImpls(T) and p.validImpls(T, T')
 p.validImpls(T) if p.validImpls(T, T1) and ... and p.validImpls(T, Tn)
@@ -166,7 +164,7 @@ Define: complete(Ds)
 complete(t = L)
 complete(C = {K; _; Mz})
   K != abstract
-  forall private? C = L in Mz: complete(C = L)
+  forall private? D in Mz: complete(D)
   if static? _ m(_) in Mz, then K =interface  
 -------------------------------------------------------------------
 Define subtyping notations: p|-T<=T', p|- M<=M' and p|-T<=L
@@ -190,12 +188,11 @@ p|-T <= {K'; Tz'; Mz'}
 ----------------------------------------------------------------
 Define L.redirectSet(T, R) = Csz:
 Cs in L.redirectSet(T, R) if Cs in dom(R)
-Cs in L.redirectSet(T, R) if T.Cs in exposedTypes(L(Cs'))//Marco: more standard
-  where Cs' in L.redirectSet(T, R)
+Cs in L.redirectSet(T, R) if T.Cs in exposedTypes(L(Cs')), where Cs' in L.redirectSet(T, R)
 ----------------------------------------------------------
 Define L.redirectable(Csz): //Marco: may be call it validSources?
 L.redirectable(Csz) iff forall Cs in Csz:
-  Cs != empty //Many lines is more standard, the and is implicit
+  Cs != empty
   Cs in dom(L)
   L.public(Cs) 
   forall C = L' in L(Cs), Cs.C in Csz
@@ -204,11 +201,11 @@ Define p.validTargets(Tz): //Marco: call it on R' instead of R?
 p.validTargets(Tz) if p.validTarget(T1) and ... and p.validTarget(Tn)
   where p.reacheableTypes(Tz) = T1..Tn
 (C=L,DFz;Ds).validTarget(C.Cs) if L.public(Cs)
-p.validTarget(T) if p.validImpls(T), p.accessible(T^p, T), p=DFz;Ds and C notin dom(DFz)
+p.validTarget(T) if p.validImpls(T), p.accessible(Tp, T), p=DFz;Ds and C notin dom(DFz)
 ----------------------------------------------------------
-Define L[R]_T = L', by propagating in the usual way to T[R]_T'
-T.Cs[R]_T=R(Cs)
-T'[R]_T = T', otherwise 
+Define L[R]T = L', by propagating in the usual way to T[R]T'
+T.Cs[R]T=R(Cs)
+T'[R]T = T', otherwise 
 ----------------------------------------------------------
 Define L.remove(Csz) = L':
 L.remove(Cs1 ... Csn) = L.remove(Cs1) ... L.remove(Csn)
@@ -234,12 +231,12 @@ Dz;Ds1, private? C=L, Ds2 >Dz;Ds1, private? C=L.remove(T), Ds2
 ==============================================================
 Define: R' in p.validMaps(L,R) iff
   R' in p.possibleMaps(L,R)
-  forall Cs in dom(R'), p|- R'(Cs) <= L(Cs)[R']_T^p
+  forall Cs in dom(R'), p|- R'(Cs) <= L(Cs)[R']Tp
 
 ==============================================================
 Define: R' in p.possibleMaps(L,R)
   R subsetEq R'
-  dom(R') = L.redirectSet(T^p,R)
+  dom(R') = L.redirectSet(Tp,R)
   p.validTargets(range(R))
 ==============================================================
 Define: p.mostSpecificMap(R1..Rn)=R1
@@ -270,23 +267,23 @@ Define: p.mostSpecific(T,Tz)=T
 (p |- DF)  (p |- L)  (p |- M)
 // these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
 ====================================================================================================
-	   Dz; Ds,id = L |- L //private? removed here, Is it ok?
+	   Dz; Ds,D |- L
     ------------------------------------
-    Dz; Ds|- private? id = L
+    Dz; Ds|- private? D
 
 
 (p |- L) // this rule checks that L is well-typed (assuming everything else in p is)
 ===================================
     forall M in L:  p |- M
-    p.exposable(T^p, exposedTypes(L))
-    p.validImpls(T^p)
-    forall T _ in fields(L): p.accessible(T^p,T)
+    p.exposable(Tp, exposedTypes(L))
+    p.validImpls(Tp)
+    forall T _ in fields(L): p.accessible(Tp,T)
     -------------------
 	   p |-  L
 
 
 (p |- M) // check that M is well-typed, where M was found in T
 ==============================================================
-    if e? = e  p; this:T^p, x1:T1,  ...., xn:Tn |- e : T0   
+    if e? = e  p; this:Tp, x1:T1,  ...., xn:Tn |- e : T0   
     ---------------------------------------------------------------
     p |- static? T0 m(T1 x1 ... Tn xn) e?
