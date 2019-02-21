@@ -4,7 +4,7 @@
 e  ::= x | e.m(es) | T.m(es) | e.x | new T(es)
 L  ::= {K; Tz; Mz} //DISCUSSION: if we put Ms instead of Mz then enter can be deterministic
 K  ::= interface | abstract | Txs
-M  ::= static? T m(Txs) e? | D
+M  ::= static? T m(Txs) e? | D //or private? D and remove private under
 E  ::= L | t | E1<+E2 | E<R>
 R  ::= Cs1=T1 .. Csn=Tn
 
@@ -52,7 +52,6 @@ T[T' = T"] = T, otherwise
 -----------------------------------------------------
 
 Define T^p = T:
-  T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C^id.C1..Cn //C^id survived here
   T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C.C1..Cn //Marco version mimiking Isaac
     where if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
@@ -202,11 +201,10 @@ L.redirectable(Csz) iff forall Cs in Csz:
   forall C = L' in L(Cs), Cs.C in Csz
 --------------------------------------------------------------
 Define p.validTargets(Tz): //Marco: call it on R' instead of R?
-p.validTargets(Tz)=p.validTarget(T1)..p.validTarget(Tn)
-  where p.reacheableTypes(Tz)=T1..Tn
-(C=L,DFz;Ds).validTarget(C.Cs) = L.public(Cs)
-otherwise //I'm not sure this otherwise is clear, should be ok since I use '=' instead of 'if' above
-p.validTarget(T) = p.validImpls(T) and p.accessible(T^p, T)
+p.validTargets(Tz) if p.validTarget(T1) and ... and p.validTarget(Tn)
+  where p.reacheableTypes(Tz) = T1..Tn
+(C=L,DFz;Ds).validTarget(C.Cs) if L.public(Cs)
+p.validTarget(T) if p.validImpls(T) and p.accessible(T^p, T) //otherwise???
 ----------------------------------------------------------
 Define L[R]_T = L', by propagating in the usual way to T[R]_T'
 T.Cs[R]_T=R(Cs)
@@ -272,7 +270,7 @@ Define: p.mostSpecific(T,Tz)=T
 (p |- DF)  (p |- L)  (p |- M)
 // these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
 ====================================================================================================
-	   Dz; Ds,private? id = L |- L
+	   Dz; Ds,id = L |- L //private? removed here, Is it ok?
     ------------------------------------
     Dz; Ds|- private? id = L
 
