@@ -204,7 +204,7 @@ Define p.validTargets(Tz): //Marco: call it on R' instead of R?
 p.validTargets(Tz) if p.validTarget(T1) and ... and p.validTarget(Tn)
   where p.reacheableTypes(Tz) = T1..Tn
 (C=L,DFz;Ds).validTarget(C.Cs) if L.public(Cs)
-p.validTarget(T) if p.validImpls(T) and p.accessible(T^p, T) //otherwise???
+p.validTarget(T) if p.validImpls(T), p.accessible(T^p, T), p=DFz;Ds and C notin dom(DFz)
 ----------------------------------------------------------
 Define L[R]_T = L', by propagating in the usual way to T[R]_T'
 T.Cs[R]_T=R(Cs)
