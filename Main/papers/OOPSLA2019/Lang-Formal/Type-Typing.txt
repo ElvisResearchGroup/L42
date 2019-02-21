@@ -2,7 +2,7 @@
 ===============================================================
 
 e  ::= x | e.m(es) | T.m(es) | e.x | new T(es)
-L  ::= {K; Tz; Mz}
+L  ::= {K; Tz; Mz} //DISCUSSION: if we put Ms instead of Mz then enter can be deterministic
 K  ::= interface | abstract | Txs
 M  ::= static? T m(Txs) e? | D
 E  ::= L | t | E1<+E2 | E<R>
@@ -41,7 +41,10 @@ Define E(Cs) = E':
   E(empty)=E
   {_;_;Mz, private? C=L}(C.Cs) = L(Cs)
 -----------------------------------------------------------------
-Define: fields({K; _; _}) = {T x in K}
+Define: fields({K; _; _}) = {T x in K} //Isaac version:not sure is corect/clear
+Define: fields({K; _; _}) = Txs
+fields({K; _; _}) = K if K is of form Txs,//Marco version is longer :(
+fields({K; _; _}) = {} otherwise
 -----------------------------------------------------
 Define L[T := T'] = L, by propagating in the usual way to T"[T := T']
 T.Cs[T := T'] = T'.Cs
@@ -49,10 +52,13 @@ T[T' = T"] = T, otherwise
 -----------------------------------------------------
 
 Define T^p = T:
-	T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C^id.C1..Cn
+  T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C^id.C1..Cn //C^id survived here
+  T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C.C1..Cn //Marco version mimiking Isaac
+    where if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
+Define sameStart(Ds,T): //was confusing as a first line of another def!
+  sameStart(private? C=E,Ds; C.Cs)
 Define p(T) = E:
-	sameStart(private? C=E,Ds; C.Cs)
 	(C=L,DFz;Ds)(C.Cs)=L(Cs) where !Ds.sameStart(Cs)
 	(DFz;id=E, private?1 C1=E1 .. private?n Cn=En,Ds)(C^id.C1..Cn.Cs)=En(Cs) 
 		where not Ds.sameStart(Cs) and if id is of form t, then C = This, otherwise C = id
@@ -75,7 +81,7 @@ Ctx-F
 
 
 enter
-    DFz;Ds,C=E|-E=>E'
+    DFz;Ds,C=E|-E=>E' //Marco: is it ok to remove the private?
     ----------------------------
     DFz;Ds|-{K;Tz;private? C=E,Mz}=>{K;Tz;private? C=E',Mz}
 
@@ -91,12 +97,12 @@ sum
 redirect
     Csz = LF.redirectSet(T^p, R)
     LF.redirectable(Csz)
-	p.validTargets(range(R))
-	R' = p.bestMap(LF, R)
+    p.validTargets(range(R))
+    R' = p.bestMap(LF, R)
     ----------------------------
-    p |-LF<R>=> LF.remove(Csz)[R']_(T^p)
+    p |-LF<R> => LF.remove(Csz)[R']_(T^p)
     
-CtxF ::= []| CtxF <+ E | LF <+ CtxF | CtxF<R> 
+CtxF ::= []| CtxF <+ E | LF <+ CtxF | CtxF<R> //please, can we just put all the grammar together?
 
 # The Sum Operator
 ============================================================
@@ -107,12 +113,12 @@ L1 <+ L2 = {K1 <+ K2; Tz1 U Tz2; (Mz <+ Mz'), Mz1, Mz2}
 	if K = interface then {m in dom(L1)} = {m in dom(L2)}
 -----------------------------------------------------
 Define: K <+ K' = K"
-abstract <+ K = K <+ abstract = K
-	K != interface
+abstract <+ abstract = abstract //same lines as yours, but I think is simpler
+abstract <+ Txs = Txs <+ abstract = Txs
 interface <+ interface = interface
 ---------------------------------------------------
 Define: Mz <+ Mz' = Mz"
-(Mz, M) <+ (Mz',M') = (M <+ M'), (Mz <+ Mz')
+M1..Mn <+ M1'..Mn' = (M1 <+ M1') .. (Mn <+ Mn') //why you wrote in that other way?
 static? T m(Txs) e? <+ static? T m(Txs) e = static? T m(Txs) e
 static? T m(Txs) e? <+ static? T m(Txs) = static? T m(Txs) e?
 (C = L) <+ (C = L') = (C = (L <+ L'))
@@ -125,19 +131,16 @@ Define: L.public(Cs)
 L.public(empty)
 {_; _; C = L, _}.public(C.Cs) iff L.public(Cs)
 ------------------------------------------------------------------------------------
-Define: p.accessible(T, T')
-p.accessible(T._,T) 
-p.accessible(T._,T.C.Cs) if p(T.C).public(Cs)
-p.accessible(_, C.Cs) if p(C).public(Cs)
------------------------------------------------------------------------------------------------
-Define: p.exposable(T, T') // implies accessible
-p.exposable(T._, T.Cs') if p(T).public(Cs')
-p.exposable(T.C._, T.C'.Cs) if p(T.C').public(Cs) and not p(T).public(C)
+Define: p.exposable(T, T') //Marco: I think is better in function of each other
+p.exposable(T._, T.Cs) if p(T).public(Cs)
+p.exposable(T.C'._, T.C.Cs) if p(T.C).public(Cs) and not p(T).public(C')
 p.exposable(_, C.Cs) if p(C).public(Cs)
 ------------------------------------------------------------------
-
+Define: p.accessible(T, T')
+p.accessible(T, T') if p.exposable(T, T')
+p.accessible(T._,T.C.Cs) if p(T.C).public(Cs)
 --------------------------------------------------------
-Define p.supertypes(T) + Tz:
+Define p.supertypes(T) = Tz:
 p.supertypes(T) = T, p.supertypes(T1), ..., p.supertypes(Tn)
   where p(T)={_; T1 , ..., Tn; _}
   forall i in {1, ..., n} : p(Ti) = {interface;_;_}
@@ -149,13 +152,12 @@ exposedTypes(private? C=E)=empty
 ------------------------------------------------
 Define p.reacheableTypes(Tz) = Tz':
 T in p.reacheableTypes(T',_) if T in T',exposedTypes(p(T'))
-T in p.reacheableTypes(Tz) if exists T' in p.reacheableTypes(Tz) such that T in p.reacheableTypes(T')
----------------------------------------------------------------------------------
-
+T in p.reacheableTypes(Tz) if T in p.reacheableTypes(T') //Marco: more standard in this way
+  where T' in p.reacheableTypes(Tz)
 ---------------------------------------------------------------------------------
 Define p.validImpls(T) and p.validImpls(T, T')
 p.validImpls(T) if p.validImpls(T, T1) and ... and p.validImpls(T, Tn)
-	p.superTypes(T) = T1 ... Tn
+  where p.superTypes(T) = T1 ... Tn
 p.validImpls(T, T')
   where forall static? T0' m(T1 _  ... Tn _) _ in p(T'),
     static? T0  m(T1 _ ... Tn _) _ in p(T)
@@ -167,7 +169,6 @@ complete(C = {K; _; Mz})
   K != abstract
   forall private? C = L in Mz: complete(C = L)
   if static? _ m(_) in Mz, then K =interface  
-
 -------------------------------------------------------------------
 Define subtyping notations: p|-T<=T', p|- M<=M' and p|-T<=L
 p|-T<=T' if T' in p.supertypes(T)
@@ -181,31 +182,31 @@ p|-T <= {K'; Tz'; Mz'}
   forall m in dom(Mz'), p |- Mz(m) <= Mz'(m)
   if K = interface then K' = interface
   if K = inteface then forall m in dom(Mz), p |- Mz'(m) <= Mz(m)
-=========================================================================================================
+==========================================================================================
 
 
 # The Redirect Operator
-=========================================================================================================
+==========================================================================================
 
 ----------------------------------------------------------------
 Define L.redirectSet(T, R) = Csz:
 Cs in L.redirectSet(T, R) if Cs in dom(R)
-Cs in L.redirectSet(T, R) exists Cs' in L.redirectSet(T, R) such that T.Cs in exposedTypes(L(Cs'))
-----------------------------------------------------------------
-
+Cs in L.redirectSet(T, R) if T.Cs in exposedTypes(L(Cs'))//Marco: more standard
+  where Cs' in L.redirectSet(T, R)
 ----------------------------------------------------------
-Define L.redirectable(Csz):
+Define L.redirectable(Csz): //Marco: may be call it validSources?
 L.redirectable(Csz) iff forall Cs in Csz:
-  Cs != empty and Cs in dom(L)
-  L.public(Cs) and forall C = L' in L(Cs), Cs.C in Csz
+  Cs != empty //Many lines is more standard, the and is implicit
+  Cs in dom(L)
+  L.public(Cs) 
+  forall C = L' in L(Cs), Cs.C in Csz
 --------------------------------------------------------------
-
---------------------------------------------------------------
-Define p.validTargets(Tz):
-p.validTargets(Tz) iff forall T in Tz' : p.accessible(T^p, T) and if T = C.Cs then p.validImpls(T)
-    where Tz' = p.reacheableTypes(Tz) and T^p = C._
----------------------------------------------------------
-
+Define p.validTargets(Tz): //Marco: call it on R' instead of R?
+p.validTargets(Tz)=p.validTarget(T1)..p.validTarget(Tn)
+  where p.reacheableTypes(Tz)=T1..Tn
+(C=L,DFz;Ds).validTarget(C.Cs) = L.public(Cs)
+otherwise //I'm not sure this otherwise is clear, should be ok since I use '=' instead of 'if' above
+p.validTarget(T) = p.validImpls(T) and p.accessible(T^p, T)
 ----------------------------------------------------------
 Define L[R]_T = L', by propagating in the usual way to T[R]_T'
 T.Cs[R]_T=R(Cs)
