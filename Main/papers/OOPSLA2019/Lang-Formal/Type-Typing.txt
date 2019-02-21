@@ -1,3 +1,6 @@
+# Language Grammar and Well-Formedness
+===============================================================
+
 e  ::= x | e.m(es) | T.m(es) | e.x | new T(es)
 L  ::= {K; Tz; Mz}
 K  ::= interface | abstract | Txs
@@ -38,26 +41,26 @@ Define E(Cs) = E':
   E(empty)=E
   {_;_;Mz, private? C=L}(C.Cs) = L(Cs)
 -----------------------------------------------------------------
-Define: fields({T1 x1 .. Tn xn;_;_}) = T1 x1 .. Tn xn
+Define: fields({K; _; _}) = {T x in K}
 -----------------------------------------------------
 Define L[T := T'] = L, by propagating in the usual way to T"[T := T']
 T.Cs[T := T'] = T'.Cs
 T[T' = T"] = T, otherwise 
 -----------------------------------------------------
 
------------------------------------------------------
-Define C^id = C'
-	C^C = C and C^t = This
 Define T^p = T:
 	T^(DFz; id=E private?1 C1=E1..private?n Cn=En)=C^id.C1..Cn
 -----------------------------------------------------
 Define p(T) = E:
 	sameStart(private? C=E,Ds; C.Cs)
 	(C=L,DFz;Ds)(C.Cs)=L(Cs) where !Ds.sameStart(Cs)
-	(DFz;id=E, private?1 C1=E1 .. private?n Cn=En,Ds)(C^id.C1..Cn.Cs)=En(Cs) where !Ds.sameStart(Cs)
+	(DFz;id=E, private?1 C1=E1 .. private?n Cn=En,Ds)(C^id.C1..Cn.Cs)=En(Cs) 
+		where not Ds.sameStart(Cs) and if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
 
-# Compilation Rules
+# Flattening Rules
+============================================================
+
 top
     DFz subseteq DFs
              |- DFz:Ok
@@ -86,92 +89,135 @@ sum
 	p |- LF1 <+ LF2 => LF3
 	
 redirect
-    Csz = LF.redirectSet(T^p;R0)
+    Csz = LF.redirectSet(T^p, R)
     LF.redirectable(Csz)
-    R = p.bestMap(LF, R0) // check that this still makes sense (else redefine it)
-    Tz = p.transitiveSignature(range(R))
-    forall T in Tz:p.accessible(T^p;T)
-    T^p = C._
-    forall C.Cs in Tz: p.validImplemntation(p(T),p.supertypes(T))
+	p.validTargets(range(R))
+	R' = p.bestMap(LF, R)
     ----------------------------
-    p|-LF<R0>=> R_T^p[LF.remove(Csz)]
+    p |-LF<R>=> LF.remove(Csz)[R']_(T^p)
     
-CtxF::=[]| CtxF <+ E | LF <+ CtxF | CtxF<R> 
+CtxF ::= []| CtxF <+ E | LF <+ CtxF | CtxF<R> 
 
+# The Sum Operator
+============================================================
+Define: L1 <+ L2 =  L3
+L1 <+ L2 = {K1 <+ K2; Tz1 U Tz2; (Mz <+ Mz'), Mz1, Mz2}
+	L1 = {K1; Tz1; Mz, Mz1}
+	L2 = {K2; Tz2; Mz', Mz2}
+	if K = interface then {m in dom(L1)} = {m in dom(L2)}
 -----------------------------------------------------
-Define: complete(Ds)
-complete(D1..Dn)=complete(D1)..complete(Dn)
-complete(t = L)
-complete(C = {Tz;K; Mz})
-  K !=abstract
-  forall C = L in Mz: complete(C = L)
-  if static? _ m(_) in Mz, then K =interface  
-----------------------------------------------------------------------------------------------------------
-Define: p.accessible(T1,T2)
+Define: K <+ K' = K"
+abstract <+ K = K <+ abstract = K
+	K != interface
+interface <+ interface = interface
+---------------------------------------------------
+Define: Mz <+ Mz' = Mz"
+(Mz, M) <+ (Mz',M') = (M <+ M'), (Mz <+ Mz')
+static? T m(Txs) e? <+ static? T m(Txs) e = static? T m(Txs) e
+static? T m(Txs) e? <+ static? T m(Txs) = static? T m(Txs) e?
+(C = L) <+ (C = L') = (C = (L <+ L'))
+--------------------------------------------
+
+# Type System Notations
+==============================================================================================
+---------------------------------------------------------------------------------------------
+Define: L.public(Cs)
+L.public(empty)
+{_; _; C = L, _}.public(C.Cs) iff L.public(Cs)
+------------------------------------------------------------------------------------
+Define: p.accessible(T, T')
 p.accessible(T._,T) 
 p.accessible(T._,T.C.Cs) if p(T.C).public(Cs)
-----------------------------------------------------------------------------------------------------------
-Define: L.public(Cs)
-L.public() holds
-{Tz;K;C=L,_}.public(C.Cs)=L.public(Cs)
--------------------------------------------------------------------------------------------------
-Define: p.exportable(T)
-p.exportable(T.Cs') if T^p=T._ and Dz(T).public(Cs') //implies accessible
-p.exportable(C.Cs) if  p(C).public(Cs)
-p.exportable(T.C'.Cs) if T^p=T.C_, Dz(T.C').public(Cs) and not p(T).public(C)
-//p.exportable(T1..Tn) = p.exportable(T1) .. p.exportable(Tn) //not needed, usual expansion
+p.accessible(_, C.Cs) if p(C).public(Cs)
+-----------------------------------------------------------------------------------------------
+Define: p.exposable(T, T') // implies accessible
+p.exposable(T._, T.Cs') if p(T).public(Cs')
+p.exposable(T.C._, T.C'.Cs) if p(T.C').public(Cs) and not p(T).public(C)
+p.exposable(_, C.Cs) if p(C).public(Cs)
+------------------------------------------------------------------
+
+--------------------------------------------------------
+Define p.supertypes(T) + Tz:
+p.supertypes(T) = T, p.supertypes(T1), ..., p.supertypes(Tn)
+  where p(T)={_; T1 , ..., Tn; _}
+  forall i in {1, ..., n} : p(Ti) = {interface;_;_}
+---------------------------------------------------------------------------------
+Define exposedTypes(L) = Tz :
+exposedTypes({K; Tz; Mz})= Tz, exposedTypes(Mz)
+exposedTypes(static? T0 m(T1 x1 ... Tn xn) _)=T0..Tn
+exposedTypes(private? C=E)=empty
+------------------------------------------------
+Define p.reacheableTypes(Tz) = Tz':
+T in p.reacheableTypes(T',_) if T in T',exposedTypes(p(T'))
+T in p.reacheableTypes(Tz) if exists T' in p.reacheableTypes(Tz) such that T in p.reacheableTypes(T')
 ---------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------
-Define p.transitiveSignature(Tz):
-T in p.transitiveSignature(T,_) 
-T in p.transitiveSignature(Tz) 
-  where
-  T in p.transitiveSignature(T')
-  T' in p.transitiveSignature(Tz)
-T in p.transitiveSignature(T0,_) if T in 	(p(T0))
----------------------------------------------------------------------------------
-Define signature(L)
-signature({Tz; K; Mz})= Tz U signature(Mz)
-signature(static? T0 m(T1 x1 ... Tn xn) e?)=T0..Tn
-signature(C=E)=empty
----------------------------------------------------------------------------------
-Define p.validImplemntation(L), p.validImplemntation(L,T)
-p.validImplemntation(L,T1..Tn)=p.validImplemntation(L,T1)..p.validImplemntation(L,Tn)
-p.validImplemntation(L,T)
-  where forall static? T0' m(T1 _  ... Tn _) _ in L,
+Define p.validImpls(T) and p.validImpls(T, T')
+p.validImpls(T) if p.validImpls(T, T1) and ... and p.validImpls(T, Tn)
+	p.superTypes(T) = T1 ... Tn
+p.validImpls(T, T')
+  where forall static? T0' m(T1 _  ... Tn _) _ in p(T'),
     static? T0  m(T1 _ ... Tn _) _ in p(T)
     p |- T0 <= T0'
+-------------------------------------------------------------------
+Define: complete(Ds)
+complete(t = L)
+complete(C = {K; _; Mz})
+  K != abstract
+  forall private? C = L in Mz: complete(C = L)
+  if static? _ m(_) in Mz, then K =interface  
+
+-------------------------------------------------------------------
+Define subtyping notations: p|-T<=T', p|- M<=M' and p|-T<=L
+p|-T<=T' if T' in p.supertypes(T)
+
+p|-static? T0 m(T1 _, ..., Tn _) _ <= static? T0' m(T'1 _, ..., T'n _) _
+  p|-T0 <= T'0 and p|-T'1<=T'1 and ... and p|-T'n<=T'n
+
+p|-T <= {K'; Tz'; Mz'}
+  p(T) = {K; Tz; Mz}
+  forall T' in Tz' : p |- T <= T'
+  forall m in dom(Mz'), p |- Mz(m) <= Mz'(m)
+  if K = interface then K' = interface
+  if K = inteface then forall m in dom(Mz), p |- Mz'(m) <= Mz(m)
+=========================================================================================================
+
+
+# The Redirect Operator
+=========================================================================================================
+
+----------------------------------------------------------------
+Define L.redirectSet(T, R) = Csz:
+Cs in L.redirectSet(T, R) if Cs in dom(R)
+Cs in L.redirectSet(T, R) exists Cs' in L.redirectSet(T, R) such that T.Cs in exposedTypes(L(Cs'))
+----------------------------------------------------------------
+
 ----------------------------------------------------------
-Define: L[R_T]
-  replace all the T syntactically in L with T[R_T]
-T.Cs[R_T]=R(Cs)
-T'[R_T]=T' otherwise 
+Define L.redirectable(Csz):
+L.redirectable(Csz) iff forall Cs in Csz:
+  Cs != empty and Cs in dom(L)
+  L.public(Cs) and forall C = L' in L(Cs), Cs.C in Csz
+--------------------------------------------------------------
+
+--------------------------------------------------------------
+Define p.validTargets(Tz):
+p.validTargets(Tz) iff forall T in Tz' : p.accessible(T^p, T) and if T = C.Cs then p.validImpls(T)
+    where Tz' = p.reacheableTypes(Tz) and T^p = C._
+---------------------------------------------------------
+
+----------------------------------------------------------
+Define L[R]_T = L', by propagating in the usual way to T[R]_T'
+T.Cs[R]_T=R(Cs)
+T'[R]_T = T', otherwise 
+----------------------------------------------------------
+Define L.remove(Csz) = L':
+L.remove(Cs1 ... Csn) = L.remove(Cs1) ... L.remove(Csn)
+{K; Tz; Mz,private? C=L}.remove(C)={K; Tz; Mz}
+{K; Tz; Mz,private? C=L}.remove(C.Cs)={K; Tz; Mz, private? C=L.remove(Cs)}
 ========================================================================================================
 
-
-==============================================================
-Define: L.redirectSet(T;R)
-T.T1 in L.redirectSet(T;T1=_,R)
-T.T2 in L.redirectSet(T;R)
-  T.T1 in L.redirectSet(T;R)
-  T.T2 in signature(L(T1))
-==============================================================
-Define: L.redirectable(Tz)
-L.redirectable(Tz)
-  T subsetEq dom(L)
-  forall T in Tz, L.public(T)
-  forall T.C in Tz, T in Tz
-==============================================================
-Define: p.supertypes(T)
-p.supertypes(T)=T U p.supertypes(T1) U .. U p.supertypes(Tn)
-  where
-  p(T)={_;T1..Tn}, forall i in 1..n p(Ti)={interface;_;_} and p.accessible(T,Ti)
-==============================================================
-Define: L.remove(Tz)
-L.remove(T1..Tn)=L.remove(T1).. L.remove(Tn)
-{K;Tz;Mz,private? C=L}.remove(C)={K;Tz;Mz}
-{K;Tz;Mz,private? C=L}.remove(C.Cs)={K;Tz;Mz,private? C=L.remove(Cs)}
+# TO DO: fix everything below here
 ==============================================================
 Define: p.bestMap(L,R)=p.stableMostSpecific(L,R,validMaps)
 ==============================================================
@@ -189,14 +235,13 @@ Dz;Ds1, private? C=L, Ds2 >Dz;Ds1, private? C=L.remove(T), Ds2
 ==============================================================
 Define: R' in p.validMaps(L,R) iff
   R' in p.possibleMaps(L,R)
-  forall T in dom(R'), p|- R'(T) <= L(T)[R'_T^p]  //note: L(T)[R'_T^p] == L[R'_T^p](T)
+  forall Cs in dom(R'), p|- R'(Cs) <= L(Cs)[R']_T^p
 
 ==============================================================
 Define: R' in p.possibleMaps(L,R)
   R subsetEq R'
   dom(R') = L.redirectSet(T^p,R)
-  forall T in range(R') :
-    p.accessible(T^p,T) and p.validImplemntation(p(T),p.supertypes(T))
+  p.validTargets(range(R))
 ==============================================================
 Define: p.mostSpecificMap(R1..Rn)=R1
   where forall T in dom(R1) :
@@ -204,20 +249,6 @@ Define: p.mostSpecificMap(R1..Rn)=R1
 ==============================================================
 Define: p.mostSpecific(T,Tz)=T
   where p.supertypes(T)=Tz,_
-==============================================================
-Define subtyping notations: p|-T<=T', p|- M<=M' and p|-T<=L
-p|-T<=T' if T' in p.supertypes(T)
-
-p|-static? T0 m(T1 x1..Tn xn) e? <= static? T0' m(T'1 x'1, .. T'n x'n=e?'
-  p|-T0<=T'0 and p|-T'1<=T'1 .. p|-T'n<=T'n
-
-p|-T0<={K1; Tz1; Mz1}
-  p(T0)={K0;Tz0;Mz0}
-  forall T in Tz1 : p.supertypes(T) subseteq p.supertypes(T0)
-  forall m in dom(Mz1), p|-Mz0(m)<=Mz1(m)
-  if K0=interface then K1=interface
-  if K0=inteface then forall m in dom(Mz1), p|-Mz1(m)<=Mz0(m)
-
 ==============================================================
 ==============================================================
 
@@ -248,8 +279,8 @@ p|-T0<={K1; Tz1; Mz1}
 (p |- L) // this rule checks that L is well-typed (assuming everything else in p is)
 ===================================
     forall M in L:  p |- M
-    p.exportable(signature(L))
-    p.validImplemntation(L,p.supertypes(T^p))
+    p.exposable(T^p, exposedTypes(L))
+    p.validImpls(T^p)
     forall T _ in fields(L): p.accessible(T^p,T)
     -------------------
 	   p |-  L
