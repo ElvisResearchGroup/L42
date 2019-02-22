@@ -30,8 +30,8 @@
 \newcommand{\aimeth}[3]{\@meth{}              {#1}{#2}{#3}{}}
 
 % Nested class
+\newcommand{\ncdd}[1]{\Q{private}\q\,#1}
 \newcommand{\ncd}[2]{\cd{\Q{private}\q\,#1}{#2}}
-\newcommand{\pcd}[2]{\cd{\Q{private}\,#1}{#2}}
 \newcommand{\cd}[2]{\@code{#1\@eq#2}}
 % code literals
 \newcommand{\cl}[3]{\@code{\cp{#1\Q{;}\ #2\Q{;}\ #3}}}
@@ -44,13 +44,13 @@
 
 %New
 \renewcommand{\This}{\Q{This}\xspace}
-\renewcommand{\S}{\ensuremath{\Sigma}\xspace}
-\renewcommand{\T}[1][\S]{\ensuremath{T^{#1}}}
-\newcommand{\UT}[2][\S]{\ensuremath{{#1}_{#2}}}
+\renewcommand{\T}[1][\p]{\ensuremath{\mathbf{T}^{#1}}}
 
 \NewDocumentCommand{\Tn}{ O{\T} O{n}}{\ensuremath{{#1}^{#2}}}
 %\newcommand{\State}[2]{#1;#2}
-\NewDocumentCommand{\State}{O{\Dz}O{T}}{\ensuremath{#1; #2}}
+\NewDocumentCommand{\DS}{O{T}O{\Dz}}{\ensuremath{#2; #1}}
+\NewDocumentCommand{\pS}{O{\Ds}O{\DFz}}{\ensuremath{#2; #1}}
+\newcommand{\pSS}[1]{\pS[#1]}
 
 %\renewcommand{\T}[1]{#1\@nextpath}
 %	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
@@ -75,10 +75,10 @@
 
 % Because mathmode puts too much space
 \newcommand{\DFz}{\ensuremath{\mathit{DFz}}}
-\newcommand{\Dz}{\ensuremath{\mathit{Dz}}}
+\newcommand{\Dz}{\ensuremath{\mathit{\IO{Dz}}}}
 \newcommand{\DFs}{\ensuremath{\mathit{DFs}}}
 \newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
-\newcommand{\Id}{\ensuremath{\mathit{Id}}}
+\newcommand{\id}{\ensuremath{\mathit{id}}}
 \newcommand{\Mz}{\ensuremath{\mathit{Mz}}}
 \newcommand{\MFz}{\ensuremath{\mathit{MFz}}}
 \newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
@@ -88,7 +88,7 @@
 
 \newcommand{\Ok}{\ensuremath{\textbf{Ok}}}
 % Meta-notation
-\newcommand{\op}[2]{{\ensuremath{{}_{.\textbf{#1}({#2})}}}}
+\newcommand{\mop}[3]{{\ensuremath{{#1}_{.\textbf{#2}({#3})}}}}
 \newcommand{\opn}[1]{{\ensuremath{\textbf{#1}}}}
 \newcommand{\fop}[2]{{\ensuremath{\footnotesize{\textbf{#1}}({#2})}}}
 
@@ -109,7 +109,7 @@
 \newcommand{\wwhere}{\text{where }}
 \newcommand{\otherwise}{,\quad\text{otherwise}}
 \newcommand{\imp}{\ensuremath{\Rightarrow}}
-\newcommand{\reda}[3]{\ensuremath{#1_{#2}[#3]}}
+\newcommand{\reda}[3]{\ensuremath{{#1[#2]}_{#3}}}
 
 % Environemnts
 
@@ -117,14 +117,15 @@
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}}
 % a := b
 \newcommand{\defi}[3]{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
-% a iff b 
-\newcommand{\defip}[3]{\ensuremath{#1\text{ iff }#2}&\llap{\text{#3}}\\}
+% a if b 
+\newcommand{\defip}[3]{\ensuremath{#1\text{ if }#2}&\llap{\text{#3}}\\}
 % a % (for things that are always true)
 \newcommand{\defit}[2]{\ensuremath{#1}&\llap{\text{#2}}\\}
+\newcommand{\defii}[1]{\ensuremath{
+		#1\coloneqq\text{\ldots\ simply propagate to the other rules\ \ldots}}\\}
 %   b % indentended, for continuiation of another defi form
 \newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 \newcommand{\defin}[1]{#1\\}
-
 
 \newenvironment{grammar}{%
 	\setlength{\tabcolsep}{0pt}%
@@ -132,12 +133,13 @@
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}%
 }
 \newcommand{\produ}[3]{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
+\newcommand{\produh}[4]{\ensuremath{#1{#2}}&\ensuremath{#1{{}\Coloneqq#3}}&\llap{#1{\text{#4}}}\\}
 \newcommand{\prodc}[2]{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 % --------------
 \newcommand{\defis}{\midrule}
 
 
-\newenvironment{irules}{\noindent\[\begin{array}{l}\midrule}{\unskip\\\midrule\end{array}\]}
+\newenvironment{irules}{\noindent\[\begin{array}{c}\midrule}{\unskip\\\midrule\end{array}\]}
 \newcommand{\irule}[3]{\inferrule[(#1)]{#2}{#3}\qquad}
 \newcommand{\iruleSep}{\unskip\\[5ex]}
 

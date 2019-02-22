@@ -197,11 +197,14 @@ L.redirectable(Csz) iff forall Cs in Csz:
   L.public(Cs) 
   forall C = L' in L(Cs), Cs.C in Csz
 --------------------------------------------------------------
-Define p.validTargets(Tz): //Marco: call it on R' instead of R?
+Define p.validTargets(Tz):
 p.validTargets(Tz) if p.validTarget(T1) and ... and p.validTarget(Tn)
   where p.reacheableTypes(Tz) = T1..Tn
 (C=L,DFz;Ds).validTarget(C.Cs) if L.public(Cs)
-p.validTarget(T) if p.validImpls(T), p.accessible(Tp, T), p=DFz;Ds and C notin dom(DFz)
+p.validTarget(T) if p.validImpls(T) and p.accessible(Tp, T)
+  where p = DFz; Ds and T in dom(empty; Ds)
+
+p=DFz;Ds and C notin dom(DFz)
 ----------------------------------------------------------
 Define L[R]T = L', by propagating in the usual way to T[R]T'
 T.Cs[R]T=R(Cs)

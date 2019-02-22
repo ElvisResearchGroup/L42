@@ -1,6 +1,5 @@
-\section{Language Grammar and Well-Formedness}
-Here we use the meta-variables $x$, $t$, $C$, and $m$ as identifiers for variables/fields, traits, classes and methods (respectively). In the code examples, we will represent $C$ with upper-case identifiers. Meta-variables $n$ and $i$ refer to natural numbers. We will use the notation $Xs$, where $X$ is any metavariable, to refer to a (possibly empty) sequence of $X$s. Similarly $Xz$ will refer to a (possibly empty) \emph{set} of $X$s. Then notation $X?$ represents an $Xs$ with at most one element. Here is the grammar for our language:
-
+\section{Formalism}
+\subsection{Language Grammar and Well-Formedness}
 \noindent
 \newlength{\gramwidth}
 \setlength{\gramwidth}{\dimexpr\textwidth-1em}
@@ -9,359 +8,244 @@ Here we use the meta-variables $x$, $t$, $C$, and $m$ as identifiers for variabl
 	\produ{e}{x \mid{} \ec{e}{m}{es} \mid{} \ec{T}{m}{es} \mid{} \ef{e}{x} \mid{} \en{T}{es}}{expression}
 	\produ{L}{\cl{K}{\Tz}{\Mz}}{code literal}
 	\produ{K}{\Q{interface} \mid{} \Q{abstract} \mid{} \Txs}{kind}
-	\produ{M}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{E}}{member}
+	\produ{M}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncdd{D}}{member}
 	\produ{E}{L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}{code expression}
 	\produ{R}{\redm{Cs_1}{T_1}\ddd\redm{Cs_n}{T_n}}{redirect map}
 \end{grammar}
 \end{minipage}\hfil
 \begin{minipage}[t]{0.4\gramwidth}
 \begin{grammar}
-	\produ{\color{blue}T}{	\color{blue}C \mid T\.C}{type}
-	\produ{\Tx}{T x}{parameter/field}
-	\produ{D}{\cd{\Id}{E}}{declaration}
+	\produ{T}{C \mid T\.C}{type}
+	\produ{\Tx}{T\ x}{parameter/field}
+	\produ{D}{\cd{\id}{E}}{declaration}
 	\produ{Id}{C \mid{} t}{class/trait ID}
 	\produ{v}{\en{T}{vs}}{value}
 	\\
 \end{grammar}
 \end{minipage}
-As with Featherweight Java (FJ)~\cite{?}, in our language a main expression ($e$) will be reduced under a sequence of top level declarations ($Ds$).
-
-
-In detail, the forms of our syntax are:
-\begin{itemize}
-	\item Expressions ($e$): these are similar to FJ ones, we have conventional variables, instance method calls (where the receiver is an $e$), static method calls (where the receiver is a $T$), field accesses and new expressions.
-	
-	\item Code Literals ($L$): a code literal is like a class declaration in Java-like languages, however they do not provide a name for the class. The $K$ specifies the kind of class (and its fields, if any), the $\Tz$ component contains all the interfaces that are implemented, while the $\Mz$ are the members of the class 
-	
-	\item Kinds ($K$): are either the keyword \Q{interface}, representing a class that can be subtyped, \Q{abstract} representing a class whose fields are unknown (and so cannot be instantiated), or a list of field declarations type and field names) ($\Tx$), representing a \emph{concrete} class, which can be instantiated. For ease of explanation we will use the term `class' to refer to any of these three kinds of classes, and the term \emph{proper class} to refer to one that is not an \Q{interface}, and so cannot be subtyped.
-	
-	\item Class Members ($M$): are either a method declaration or a nested class declaration. A method declaration can optionally be abstract (if its $e\q$ is empty) or static (if it has the \Q{static} keyword). A (nested) class declaration can be \Q{private} and defines a class with name $C$ to be the flattened result of a code expression $E$.	
-
-	\item Code Expressions ($E$): are the main interesting part of our language, they are either code-literals, references to a trait, a sum operation, or a redirect operation. Such expressions will eventually be flattened (at compile time) to an $L$, were the RHS of each nested-class is also an $L$ (i.e. an $LF$, see \autoref{?})
-	\item Redirect Maps ($R$): are sequence of mappings from $Cs$s to $T$s. A $Cs$ indicates the name of a nested class within the LHS of the redirect operator, whereas the $T$ is the target of the redirect. For example the redirect $\red{E}{C_1\.C_2}{T}$ redirects the nested class named $C_2$ that is in the class named in $C_1$ in the result of $E$.
-	
-	\item Types ($T$): are paths of the from $C_0\.C_1\.\ldots\.C_n$, where $C$ refers to the top-level class named $C_0$, and $C1 \ldots C_n$ refers to a sequence of nested classes within it. The special top-level class name \This is used to represent the currently enclosing trait (if their is one). \IOComm{Marco, write something better!}
-
-	\item Parameter/Field Declarations ($\Tx$): simply declare that $x$ refers to something of type $T$.
-	
-	\item Top-level Declarations ($D$):  are bindings from an $\Id$ to an $E$. Unlike nested class declarations (an $M$), they cannot be \Q{private}, and they may declare a trait. 
-
-	\item Class/Trait Identifiers ($\Id$): refer to a top-level trait or (nested) class.
-	
-	\item Values ($v$): represent fully evaluated runtime expressions ($e$s). These corresponds to fully reduced \Q{new} expressions, where the $T$ will identify a concrete class, and the $vs$ will be the field values (in order of the field declarations).	
-\end{itemize}
-
-As a convention, whenever we define a functional notation of the form $X(Y)$, we will use $\dom{X}$, and $\ran{X}$ with their usual meaning.
 
 We additionally impose the following well-formedness constraints:
 \begin{itemize}
 	\item An $L$ marked as an \Q{interface} cannot have an $M$ which is \Q{static} or implemented (i.e. have an $e$ as its body).
-	
+	\item An $M$ cannot be of the form \ncd{t}{E}, i.e. it must not declare a trait.
 	\item In a $\Txs$ each $x$ (i.e. field or parameter name) must be distinct, and not named \Q{this}. 
 	\item A \Q{static} method cannot contain \Q{this} in its body.
 	\item Method names ($m$) and class names ($C$) inside the $\Mz$ of a code-literal ($L$) must be distinct. Thus we will use the notations $\Mz(m)$ and $\Mz(C)$ to extract the (unique) $M$ in $\Mz$ declared with name $m$ or $C$ (respectively).
 	
-	\item The names of the top-level declarations ($Ds$) must all be distinct, and not \This. \IOComm{This only applies to input from the user, not when a $Ds$ is constructed by the formalism.}
-	
+	\item The names of the top-level declarations ($\Ds$) provided in the source code must all be distinct, and not \This.
 	\item In an $R$, each $Cs$ must be distinct. Thus an $R$ is a (partial) function from $Cs$ to $T$, as such we will use the usual functional $R(Cs)$ to get the $T$ corresponding to the given $Cs$.
 \end{itemize}
 
 
 \subsection{Auxiliary Notations}
-We define fully flattened declarations, code-literals, and class members to be ones where the RHS of any (nested) class/trait declaration is also fully flattened:
-
 \begin{grammar}
-	\produ{DF}{\cd{\Id}{LF}}{flattened declaration}
+	\produ{DF}{\cd{\id}{LF}}{flattened declaration}
 	\produ{LF}{\cl{K}{\Tz}{\MFz}}{flattened code literal}
-	\produ{MF}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{LF}}{flattened member}
+	\produ{MF}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncd{C}{LF}}{program}
+	\produ{p}{\DFz; \Ds}{program}
 \end{grammar}
-
-
-We define the following obvious notations to extract the members of a code-literal:
-
+\\\\
 \begin{defs}
-	\defi{\cl{\_}{\_}{\Mz}(m)}{\Mz(m)}{get a method}
+	\defit{M \in \cl{\_}{\_}{M,\Mz}}{method in class}
 	\defis
-	\defi{L(\Empty)}{L}{get the body of a (transitively) nested class}
+	\defi{E(\Empty)}{E}{get the body of a (transitively) nested class}
 	\defi{\cl{\_}{\_}{Mz, \ncd{C}{L}}(C\.Cs)}{L(Cs)}{}
 	\defis
-	%\defi{L[\Empty=E]}{E}{update nested class}
-	\defi{L[C\.Cs=E]}{L[\,C=L(C)[Cs=E]\,]}{update nested class}
-	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{\_}}[C=E]}{\cl{K}{\Tz}{\Mz, \ncd{C}{E}}}{}
-	\defit{\cl{\_}{\_}{\cd{C}{E},\_}\op{public}{C}}{$C$ is public}
+	%\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}[C\.Cs=E]}{\cl{K}{\Tz}{\Mz, \ncd{C}{L[Cs=E]}}}{update nested class}
+	\defi{\fop{fields}{\cl{\Txs}{\_}{\_}}}{\Txs}{get the fields of a class}
+	\defi{\fop{fields}{\cl{K}{\_}{\_}}}{\Empty \otherwise}{class has no fields}
 \end{defs}
-
-We also define a notation to substitute a type with another one, as well as references to its nested classes:
-
+\\\\
 \begin{defs}
 	\defi{T\.Cs[T \coloneqq T']}{T'\.Cs}{substitute type (prefix)}{}
-	\defi{T[T']}{T\otherwise}{}
+	\defi{T[T' \coloneqq T'']}{T\otherwise}{}
+	\defii{L[T \coloneqq T']}
 \end{defs}
-We omit all the trivial propagation cases of form $L[T \coloneqq T']$, $M[T \coloneqq T']$, $K[T \coloneqq T']$, $e[T \coloneqq T']$.
-
-
-Finally, we recursively define notations to lookup and modify classes from a set of top-level declarations:
-
+\\\\
 \begin{defs}
-	\defi{(\cd{C}{L}, Dz)(C\.Cs)}{L(Cs)}{top level lookup}
-	\defi{(\cd{C}{E}, Dz)[C = E']}{(\cd{C}{E'}, Dz)}{top level update}
-	\defi{(\cd{C}{L}, Dz)[C\.Cs = E']}{(\cd{C}{L[Cs = E']}, Dz)}{top level nested update}
+	\defi{\T[(\DFz; \cd{\id}{E}, \cd{C_1}{E_1}, \ldots, \cd{C_n}{E_n})]}{C\.C_1\ldots C_n}{current type}
+	\defic{\text{where if } \id \text{ is of form } t \text{, then } C=\Q{This} \text{, otherwise } C = \id}{}
+	\defis
+	\defit{\mop{(\cd{C}{E},\Ds)}{sameStart}{C\.Cs}}{the $\Ds$ and $T$ start with the same $C$}	
+	\defi{(\cd{C}{L},\DFz; \Ds)(C\.Cs)}{L(Cs)\where \neg\mop{\Ds}{sameStart}{Cs}}{get flattened class declaration}
+	\defi{(\DFz; \cd{\id}{E}, \cd{C_1}{E_1}, \ldots, \cd{C_n}{E_n}, \Ds)(C\.C_1\ldots C_n\.Cs)}{E_n(Cs)}{}
+	\defic{\wwhere \text{not } \mop{\Ds}{sameStart}{Cs} \text{ and if } \id \text{ is of form } t \text{, then } C=\Q{This} \text{, otherwise } C=\id}
+	{}
+%	Define p(T) = E:
+%	(C=L,\DFz;\Ds)(C.Cs)=L(Cs) where !sameStart(\Ds,Cs)
+%	(\DFz;t=E0,C1=E1..Cn=En,\Ds)(This.C1..Cn.Cs)=En(Cs) where !sameStart(\Ds,Cs)
+%	(\DFz;C0=E0..Cn=En,\Ds)(C0..Cn.Cs)=En(Cs) where !sameStart(\Ds,Cs)
+%	sameStart(private? C=E,\Ds;C.Cs)
+%	(\DFz; t=E C1=E1..Cn=En)=This.C1..Cn
 \end{defs}
-And finally we define a simple notation to get the $n^\text{th}$ outer class:
-
-\begin{defs}
-\color{blue}
-	\defi{\Tn[(Cs\.C_1\.\ldots\.C_n)]}{Cs}{outer class}
-\end{defs}
-
-\subsection{Compilation Rules}
-We now define how our top-level declarations ($Ds$) are flattened (into $\DFs$). We have a top-level flattening arrow $Ds \Rightarrow Ds'$ representing a small-step of this flattening. We use an arrow $\Dz;T\vdash E\Rightarrow E'$ representing the flattening of a code expression $E$ found in the RHS of the declaration for $T$, under the context $\Dz$.
-
+\\\\
 \begin{irules}
 	\irule{Top}{
-		\State[\DFs, C = E][C] \vdash E \Rightarrow E'\\\\
-		%\text{if } $\Id$ = $t$ \text{ then } $C = \This$ \text{otherwise } $C$ = $\Id$
-		\IO{\text{if } \Id \text{ is of form } C, \text{ then } C = \Id}
+		\DFz \subseteq \DFs\\\\
+		\vdash \DFz\\\\
+		\DFz; \id = E \vdash E \Rightarrow E'
 	}{
-		\DFs\ \cd{\Id}{E}\ \Ds \Rightarrow \DFs\ \cd{\Id}{E'}\ \Ds
+		\DFs\ \cd{\id}{E}\ \Ds \Rightarrow \DFs\ \cd{\id}{E'}\ \Ds
 	}
-	\irule{Ctx-V}{
-		\State \vdash E \Rightarrow E'
+	\irule{Ctx-F}{
+		\DFz; \Ds,\id=E \vdash E \Rightarrow E'\\\\
 	}{
-		\State \vdash \ctx{V}[E] \Rightarrow \ctx{V}[E']
+		\DFz; \Ds, id = \_ \vdash \ctx{F}[E] \Rightarrow \ctx{F}[E']\\\\
 	}
-
+	
 	\iruleSep
 	\begin{array}{cc}
-		\irule{Enter}{
-		\Dz[T = L]; T\.C \vdash E \Rightarrow E'
+		\irule{Trait}{
+		}{
+			\cd{t}{LF}, \DFz; \Ds \vdash t \Rightarrow LF[\This \coloneqq T]
+		}&
+		\multirow{1}{*}{
+				\irule{Redirect}{	
+				Csz = \mop{LF}{redirectSet}{\T, R}\\\\
+				\mop{LF}{redirectable}{\Csz}\\\\
+				\mop{p}{validTargets}{\ran{R}}\\\\
+				R' = \mop{p}{bestMap}{LF, R}
+			}{
+				p \vdash \red{LF}{R} \Rightarrow \reda{\mop{LF}{remove}{\Csz}}{R'}{T}
+			}
+		}\\\\
+		\irule{Sum}{
+			\summ{LF_1}{\mop{LF_2}{refreshPrivate}{\T}} = LF_3
+		}{
+			p \vdash \summ{LF_1}{LF_2} \Rightarrow LF_3
+		}
+	\iruleSep
+	\end{array}\\
+	\irule{Enter}{	
+		\DFz; \Ds, C = E \vdash E \Rightarrow E'
 	}{
-		\State \vdash L[C = E] \Rightarrow L[C = E']
-	}&
-	\multirow{1}{*}{
-	\irule{Redirect}{
-		\Dz' = \Dz[T = LF]\\\\
-		Csz = \Dz'\op{redirectSet}{T,R}\\\\
-		LF\op{redirectable}{\Csz}\\\\
-		\ForAll{T' \in \ran{R}}{\Dz\op{accessible}{T, T'} \text{ and } Dz\op{transitiveTypes}{T'} \text{ is defined}}\\\\
-		R' = \Dz'\op{bestMap}{T,R}
-	}{
-		\State \vdash \red{LF}{R} \Rightarrow   
-		\reda{R'}{T}{LF\op{remove}{Csz}}
+		\DFz; \Ds \vdash \cl{K}{Tz}{\ncd{C}{E},\Mz} \Rightarrow \cl{K}{Tz}{\ncd{C}{E'}, \Mz}
 	}
-	}\\\\
-	\irule{Trait}{
-		\IO{\vdash \cd{t}{LF}, \Dz}
-	}{
-		\cd{t}{LF}, \State[Dz,Dz'] \vdash t \Rightarrow LF[\This \coloneqq T]
-	}\\\\
-	\irule{Sum}{
-%		LF_i'=\minid{p}{\Id}{LF_i}\\\\
-%		LF_1 \Q@<+@ LF_2 = LF%\\\\
-		%C' \textit{fresh} \\\\
-		%p'=p\op{push}{C'\Q@=@ LF_3}
-%		p' = (\cd{\Id, LF}, p)[]\\\\
-		\summ{LF_1}{\IO{LF_2\op{refreshPrivate}{T}}} = LF_3
-	}{
-		\State\ \vdash \summ{LF_1}{LF_2} \Rightarrow LF_3
-	}
-	\end{array}
 \end{irules}
-\IOComm{If we don't care about making the proof easier, we can delete the $\forall$ line for the \Rulename{Redirect} reduction rule, since it's already required by \opn{validMaps}.}
 
-Where \ctx{V} is the standard left-to-right evaluation context for code-expressions:\\
-\indent\parbox{\dimexpr\textwidth-\parindent}{\begin{grammar}
-\produ{\ctx{V}}{\hole \mid{}  \summ{\ctx{V}}{E} \mid{} \summ{LF}{\ctx{V}} \mid{} \red{\ctx{V}}{Cs}{T}}{}
-\end{grammar}}
-
-\noindent In detail the rules are:
-\begin{itemize}
-	\item \Rulename{Top}: this rule flattens the first non-flattened top-level declaration. If the declaration is a trait, $t$, it will flatten with a fresh name (i.e. it cannot be referenced by user code at this point).
-	\item \Rulename{Ctx-V}: this is the usual context propagation rule.
-	\item \Rulename{Enter}: this rule flattens any nested-class declarations that are not already $LFs$. In particular, this rule will be called by \Rulename{Ctx-V} to flatten any $L$s that are operands in an $E$, before the $E$ itself is flattened.
-	\item \Rulename{Trait}: this rule copies the body of trait to the current location, which will already be an $LF$, and hence wont need further flattening, and replaces references to \This with the name of the currently flattening class. It also verifies that the trait is well-typed (i.e. its body is well-typed, and any types it references are also well-typed and hence fully flattened).
-	\item \Rulename{Sum}: this rule simply reduces to the appropriate value. See \autoref{?} for the definition of $\summ{LF_1}{LF_2}=LF_3$. \IO{Where $L\op{refreshPrivate}{T}$ rewrites each \ncd{C}{L} in $L$ to \ncd{C'}{L}, and each reference to it (of the form $T\.C$), to $T\.C'$, for some arbitrary fresh $C'$}. This ensures that $\summ{LF_1}{LF_2}$ operates transparently with respect to private nested classes.  
-	\item \Rulename{Redirect}: this is the start of the reduction for our novel redirect operator. It proceeds in steps:
-	\begin{itemize}
-		\item It modifies the top-level decalarations, so that $T$ will refer to the LHS of the redirect.
-		\item It computes $\Csz$ which is the \emph{redirect set}: the set of nested class names that are transitively reachable from the domain of $R$ (the classes that we are `redirecting').
-		\item It verifies that these classes are all suitable for redirection (they have to exist, can't have nested classes that aren't going to be redirected, and they can't be private).
-		\item It checks that all the input types are valid, namely that they refer to (transitively) well-typed flattened classes, and do not improperly refer to a private nested class.
-		\item It computes a complete map, $R'$, which is the `best' map that extends  $R$ to map the entire redirect set.
-		\item It applies the mapping to $LF$, with the classes we are redirecting away ($Csz$) removed.
-	\end{itemize}
-\end{itemize}
-
-\subsection{The Sum operator}
-The sum operator is simply defined as:
-
+\subsection{The Sum Operator}
 \begin{defs}
 \defi{\summ{L_1}{L_2}}{\cl{\summ{K_1}{K_2}}{\Tz_1 \cup \Tz_2}{(\summ{\Mz}{\Mz'}),\Mz_1,\Mz_2}}{sum the two code literals}
-\defic{\wwhere L_1=\cl{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\cl{\Tz_2}{\Mz',\Mz_2}{K_2}}{}
+\defic{\wwhere L_1=\cl{K_1}{\Tz_1}{\Mz,\Mz_1},\quad L_2=\cl{K_2}{\Tz_2}{\Mz',\Mz_2}}{}
 \defic{\text{if}\ K = \Q{interface}\  \text{then}\ \{m \in \dom{L_1}\}= \{m \in \dom{L_2}\}}{}
 \defis
-\defi{\summ{\Q{abstract}}{K}}{\summ{K}{\Q{abstract}} \coloneqq K \where K \neq \Q{interface}}{allow adding state to a proper class}
 \defi{\summ{\Q{interface}}{\Q{interface}}}{\Q{interface}}{interfaces must match}
+\defi{\summ{\Q{abstract}}{\Q{abstract}}}{\Q{abstract}}{keep abstract classes}
+\defi{\summ{\Q{abstract}}{\Txs}}{\summ{\Txs}{\Q{abstract}} \coloneqq K}{allow adding state to an abstract class}
 \defis
-\defi{\summ{(Mz, M)}{(Mz', M')}}{(\summ{M}{M'}),(\summ{Mz}{Mz'})}{sum members pairwise}
+\defi{\summ{M_1 \ldots M_n}{M'_1 \ldots M'_n}}{(\summ{M_1}{M'}) \ldots (\summ{M_n}{M'_n})}{sum members pairwise}
 \defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\meth{T}{m}{\Txs}{e}}}{\meth{T}{m}{\Txs}{e}}{override method}
 \defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\ameth{T}{m}{\Txs}}}{\meth{T}{m}{\Txs}{e\q}}{non-override}
 \defi{\summ{(\cd{C}{L})}{(\cd{C}{L'})}}{\cd{C}{(\summ{L}{L'})}}{recursively sum public classes}
 \end{defs}
-Note that by our well-formedness requirement on $L$, $Mz_1$ and $Mz_2$ cannot both contain a member with the same $m$ or $C$ (since otherwise the result of the sum will be ill-formed).
 
-\subsection{Type system notations}
-\defin{\IOComm{These only need $\Dz / p$}}
-\begin{comment}
-Here we define some auxiliary type-system related notations.
-
-A `valid' type is one that can be used as a target in a redirect map. It must already be fully flattened and typed, and cannot refer to a private class, unless it is an outer class, or directly within one. (See Section \ref{?} for the typing rules of form $\S \vdash T : \Ok$.)
-
+\subsection{Type System Notations}
 \begin{defs}
-	\defip{\S\op{validType}{T}}{\S \vdash T : \Ok \text{ and }\S\op{accessible}{T}}{}
+	\defit{\mop{L}{public}{\Empty}}{a class is public to itself}
+	\defip{\mop{\cl{\_}{\_}{\cd{C}{L},\_}}{public}{C\.Cs}}{\mop{L}{public}{Cs}}{public nested class}
+	\defis	
+	\defip{\mop{p}{exposable}{T\.\_, T\.Cs}}{\mop{p(T)}{public}{Cs}}{outer class}
+	\defip{\mop{p}{exposable}{T\.C\.\_, T\.C'\.Cs}}{
+		\mop{p(T\.C')}{public}{Cs} \text{ and not }
+		\mop{p(T)}{public}{C}}{nested inside an outer}
+	\defip{\mop{p}{exposable}{\_, C\.Cs}}{\mop{p(C)}{public}{Cs}}{globally public class}	
+	\defis
+	\defip{\mop{p}{accessible}{T, T'}}{\mop{p}{exposable}{T, T'}}{exposable class}
+	\defip{\mop{p}{accessible}{T\.\_, T\.C\.Cs}}{\mop{p(T\.C)}{public}{Cs}}{nested of an outer}
+\end{defs}
+\\\\
+\begin{defs}
+	\defi{\mop{p}{superTypes}{T}}{
+		T,\mop{p}{superTypes}{T_1}, \ldots, \mop{p}{superTypes}{T_n}}{}
+	\defic{\wwhere p(T) = \cl{\_}{T_1\ldots T_n}{\_} \text{ and } 
+		\ForAll{i \in \{1,\ldots,n\}}{p(T_i) = \cl{\Q{interface}}{\_}{\_}}}{}
+	\defis
+	\defi{\fop{exposedTypes}{\cl{K}{\Tz}{\Mz}}}{\Tz, \fop{exposedTypes}{\Mz}}{}
+	\defi{\fop{exposedTypes}{\meth{T_0}{m}{T_1\ x_1 \ldots T_n\ x_n}{\_}}}{T_0, \ldots, T_n}{types in method signature}
+	\defi{\fop{exposedTypes}{\ncdd{D}}}{\EmptyZ}{ignore nested classes}
+	\defis
+	\defip{T \in \mop{p}{reachableTypes}{T',\_}}{T \in T', \fop{exposedTypes}{p(T')}}{}
+	\defip{T \in \mop{p}{reachableTypes}{\Tz}}{T \in 
+		\mop{p}{reachableTypes}{T'}\where T' \in \mop{p}{reachableTypes}{Tz}}{}
+
+\end{defs}
+\\\\
+\begin{defs}
+\defip{\mop{p}{validImpls}{T}}{%
+	\mop{p}{validImpls}{T, T_1} \text{ and } \ldots \text{ and } \mop{p}{validImpls}{T, T_n}%
+}{}
+	\defic{\wwhere \mop{p}{superTypes}{T} = T1, \ldots, Tn}{}
+	\defip{\mop{p}{validImpls}{T, T'}}{\forall \meth{T'_0}{m}{T_1\ \_\ldots T_n\ \_}{\_} \in p(T')}{}
+	\defic{\meth{T_0}{m}{T_1\ \_\ldots T_n\ \_}{\_} \in p(T) \text{ and } p \vdash T_0 \leq T'_0}{}	
 	\defis
 	
-	\defit{(\State{\Dz}{T\.Cs})\op{accessible}{T}}{an outer class}
-	\defit{(\State{\Dz}{T\.Cs})\op{accessible}{T\.C}}{nested within an outer class}
-	\defit{(\State)\op{accessible}{T'\.C} \text{ if } (\State)\op{accessible}{T'} \text{ and } \Dz(T')=\cl{\_}{\_}{\cd{C}{E}, \_}}{public class}
+	\defit{\fop{complete}{\cd{t}{L}}}{}
+	\defip{\fop{complete}{\cd{C}{\cl{K}{\_}{\Mz}}}}{K \neq \Q{abstract} \text{ and }}{}
+	\defic{\ForAll{\ncdd{D}\in\Mz}{\fop{complete}{D}}}{}
+	\defic{\text{if } \ameth{\_}{m}{\_} \in \Mz \text{ then } K = \Q{interface}}{}
 \end{defs}
-%%%(Dz;T.Cs').validType(T.Cs) if 
-%%  Dz;T.Cs' |- Dz(T.Cs'):OK
-%%  Dz(T).expose(Cs)
-%%%L.expose(C?) holds
-%%%L.expose(C.Cs) if L'.expose(Cs) and L={ ... C=L'}
-\end{comment}
-
-We now define a way to get the complete set of transitive super-types:
-
+\\\\
 \begin{defs}
-	\defi{\Dz\op{superTypes}{T}}{
-		T,\Dz\op{superTypes}{T_1}, \ldots, \Dz\op{superTypes}{T_n}}{}
-	\defic{\wwhere \Dz(T) = \cl{\_}{T_1\ldots T_n}{\_} \text{, } \Dz(T_i) = \cl{\Q{interface}}{\_}{\_} \text{, and } \Dz\op{accessible}{T,T_i}}{}
-\end{defs}
-
-% > > > > S.superTypes() = S!, S_T1.superTypes(),..., S_Tn.superTypes()
-% > > > >     where S[] = {; T_1, ..., Tn; _}
-% > > > >     S(T_i) = {interface; _; _}
-% > > > >     S.accessible(T_i)
-
-
-We define the usual sub-typing relations, and also define a structural sub-typing relation $\S \vdash T \leq L$, to mean that the type $T$ has a compatible structure with $L$. That is, any code using a class with structure $L$, would also be valid if it used $T$.
-
-\begin{defs}
-\defip{\Dz \vdash T \leq T'}{T' \in \Dz\op{superTypes}{T}}{}
-\defip{\Dz \vdash \meth{T_0}{m}{T_1\ x_1\ \ldots\ T_n\ x_n}{e\q} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{e\q'}}{}{}
-\defic{\Dz \vdash T_0 \leq T_0' \text{ and } \Dz \vdash T_1' \leq T_1\ \ldots\ \Dz \vdash T_n' \leq T_n }{}
-\defis
-\defip{\Dz \vdash T \leq \cl{K'}{\Tz'}{Mz'}}{}{}
-\defic{\Dz(T) = \cl{K}{Tz}{Mz}}{}
-\defic{\Dz\op{superTypes}{Tz'} \subseteq \Dz\op{superTypes}{T}}{}
-\defic{\ForAll{m \in \dom{Mz'}}{\Dz \vdash Mz(m) \leq Mz'(m)}}{}
+\defip{p \vdash T \leq T'}{T' \in \mop{p}{superTypes}{T}}{subtyping}
+\defip{p \vdash \meth{T_0}{m}{T_1\ \_\ \ldots\ T_n\ \_}{\_} \leq \meth{T_0'}{m}{T_1'\ x_1'\ \ldots\ T_n'\ x_n'}{\_}}{}{method subtyping}
+\defic{p \vdash T_0 \leq T_0' \text{ and } p \vdash T_1' \leq T_1\ \text{ and } \ldots \text{ and } p \vdash T_n' \leq T_n }{}
+\defip{p \vdash T \leq \cl{K'}{\Tz'}{Mz'}}{p(T) = \cl{K}{Tz}{Mz}}{structural subtyping}
+\defic{\ForAll{T'\in\Tz'}{p \vdash T \leq T'}}{}
+\defic{\ForAll{m \in \dom{Mz'}}{p \vdash Mz(m) \leq Mz'(m)}}{}
 \defic{\text{if } K = \Q{interface} \text{ then } K' = \Q{interface}}{}
-\defic{\text{if } K = \Q{interface} \text{ then } \ForAll{m \in \dom{Mz} }{\Dz \vdash Mz'(m) \leq Mz(m)}}{}
+\defic{\text{if } K = \Q{interface} \text{ then } \ForAll{m \in \dom{Mz} }{p \vdash Mz'(m) \leq Mz(m)}}{}
 \end{defs}
 
-\section{The Redirect Operator}
-
-\subsection{Redirect Set}
-The redirect set is the full set of (nested) class names that will be `redirected' away, it includes the classes named in the user provided redirect map, and any nested-classes their signatures (transitively) depend on.
-%Notation $p\op{redirectSet}{R}$
-%computes the set of nested classes that need to be redirected if $R$ is redirected. This is information depend just from $LF$ (the top of the program) and the domain of $R$. RedirectSet is easily computable.
+\subsection{The Redirect Operator}
 
 \begin{defs}
-	\defip{Cs \in \Dz\op{redirectSet}{T, \redm{Cs_1}{T_1}, \ldots, \redm{Cs_n}{T_n}}}{
-		T\.Cs \in \Dz\op{transitiveTypes}{T\.{{Cs}_i}}
-	}{}
+	\defip{Cs \in \mop{L}{redirectSet}{T,R}}{Cs \in \dom{R}}{}
+	\defip{Cs \in \mop{L}{redirectSet}{T,R}}{T\.Cs \in \fop{exposedTypes}{L(Cs')} \where Cs'\in\mop{L}{redirectSet}{T,R}}{}	
 \end{defs}
-
-%The intuition behind \opName{redirectSet} is that if the signature of a nested class mention another nested class, they must be redirected together.
-
-\subsection{Redirectable}
+\\\\
 \begin{defs}
-	\defip{L\op{redirectable}{Csz}}{}{the $Csz$ can all be (simultaneously) redirected away}
-	\defic{\Empty \notin Csz}{(cant redirect the whole code literal)}
-	\defic{Csz \subseteq \dom{L}}{(can only redirect things that exist)}
-	\defic{\ForAll{Cs \in Csz}{\text{if } L(Cs)\op{public}{C} \text{, then } Cs\.C \in Csz}}{}
-	\defic{}{(public nested classes must be redirected if their outer is)}
-	\defic{\ForAll{Cs\.C\.\_ \in \Csz}{L(Cs)\op{public}{C}}}{(cant redirect through a private class)}
+	\defip{\mop{L}{redirectable}{Csz}}{\forall Cs \in \Csz}{}
+	\defic{Cs \neq \Empty}{}
+	\defic{Cs \in \dom{L}}{}
+	\defic{\mop{L}{public}{Cs}}{}
+	\defic{\ForAll{ \cd{C}{L'} \in L(Cs)}{Cs\.C \in \Csz}}{}
 \end{defs}
-That is, the class itself (i.e. the one with name $\Empty$) is not redirectable, every public nested class of a redirected class must also be redirected away, a private nested class (or something inside it) can not be redirected away.
-
-
-\subsection{Removing}
-
-We define the notation $L\op{remove}{Csz}$ to return $L$ but without the nested classes in $Csz$ (and their nested classes).
-
+\\\\
 \begin{defs}
-	\defi{L\op{remove}{Cs_1\ldots Cs_n}}{L\op{remove}{Cs_1}\ldots\op{remove}{Cs_n}}{remove each class in an arbitrary order}
-	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C}}{\cl{K}{\Tz}{\Mz}}{}
-	\defi{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}\op{remove}{C\.Cs}}{\cl{K}{\Tz}{\Mz, \ncd{C}{L\op{remove}{Cs}}}}{}
+	\defip{\mop{p}{validTargets}{Tz}}{\mop{p}{validTarget}{T_1} \text{ and } \ldots \text{ and } \mop{p}{validTarget}{T_n}}{}
+	\defic{\wwhere{\mop{p}{reachableTypes}{Tz} = T_1 \ldots T_n}}{}
+	
+	\defip{\mop{(\cd{C}{L}, \DFz; \Ds)}{validTarget}{C\.Cs}}{\mop{L}{public}{Cs}}{}
+	\defip{\mop{p}{validTarget}{T}}{\mop{p}{validImpls}{T} \text{ and } \mop{p}{accessible}{\T, T}}{}
+	\defic{\wwhere p = \DFz; Ds \text{ and } T \in \dom{\EmptyZ; \Ds}}{}
 \end{defs}
-
-Note that based on the above, the empty $Cs$ cannot be removed as it does not make sense. In addition, nested classes are removed with their outers, thus the first rule will order the removal of more-nested classes first.
-
-\subsection{Renaming}
-\IOComm{With $\Q{This}_n$ this rule becomes much more complicated}
-We define the notation \reda{R}{T}{L} to return $L$ but with references to $T\.Cs$ replaced by $T'$ (for all $\redm{Cs}{T'} \in R$). 
-
+\\\\
 \begin{defs}
-	\defi{\reda{R}{T}{T\.Cs}}{R(Cs)}{}
-	\defi{\reda{R}{T}{T'}}{T'\otherwise}{($T'$ is external, or not in $R$)}
-\end{defs}
-
-We omit the definitions for all the trivial propagation cases of form $\reda{R}{T}{L}$, $\reda{R}{T}{M}$, $\reda{R}{T}{K}$, and $\reda{R}{T}{e}$.
-%The second clause of \opName{remove} requires the $Cs$ to be ordered in such a way where the inner-most nested classes are removed first.
-%Rename must keep track of the explored $Cs$ in order to distinguish
-%internal paths that need to be renamed, and the mapped type need to look out of the whole explored $Cs$ and the top level code literal (thus $n+k+1$).
-
-\subsection{Valid Redirect Map}
-
-
-We will define $\S\op{validMaps}{R}$ to produce a set of completions of the (partial) redirect map $R$, such that applying the mapping to the current class of \S will not cause it to be ill-typed. Note that we specifically do \emph{not} look at the bodies of methods or private classes in \S in order to determine whether a given mapping is valid, this allows such details of \S to change, without altering the behaviour of redirect.
-
-\begin{defs}
-	\defip{R' \in \Dz\op{validMaps}{T,R}}{}{}
-	\defic{R' \in \Dz\op{possibleMaps}{T,R}}{check that the mapping might work}
-	\defic{\ForAll{Cs \in \dom{R'}}{\Dz \vdash R'(Cs) \leq \reda{R'}{T}{\Dz(T\.Cs)}}}{}
-	\defic{}{check that the mapping preserves the structural interface}
+	\defi{\reda{T\.Cs}{R}{T}}{R(Cs)}{}
+	\defi{\reda{T'}{R}{T}}{T'\otherwise}{($T'$ is external, or not in $R$)}
+	\defii{\reda{L}{R}{T}}
+	
 	\defis
-	\defip{R' \in \Dz\op{possibleMaps}{T,R}}{}{}
-	\defic{R' \supseteq R}{it is an extension of $R$}
-	\defic{\dom{R'} = \Dz\op{redirectSet}{T, R}}{it completes the redirect map}
-	\defic{\ForAll{T' \in \ran{R'}}{Dz\op{accessible}{T, T'} \text{ and } Dz\op{transitiveTypes}{T'} \text{ is defined}}}{}
-	\defic{}{check that the targets are valid}
+	\defi{\mop{L}{remove}{Cs_1\ldots Cs_n}}{
+		\mop{L}{remove}{Cs_1}\mop{{}_{\ldots}}{remove}{Cs_n}}{remove each class in an arbitrary order}
+	\defi{\mop{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}}{remove}{C}}{\cl{K}{\Tz}{\Mz}}{}
+	\defi{\mop{\cl{K}{\Tz}{\Mz, \ncd{C}{L}}}{remove}{C\.Cs}}{\cl{K}{\Tz}{\Mz, \ncd{C}{\mop{L}{remove}{Cs}}}}{}
 \end{defs}
-\IOComm{If we don't care about making the proof easier, we can easily inline \opn{possibleMaps} into \opn{validMaps}.}
-Any map in $\S\op{validMaps}{R}$ would be a valid complete map for redirect to use. The challenge is what should happen if there are multiple maps in this set, or if the result of this set could change if extra classes are added to \S.
-
-\subsection {Best Map}
-We will say that the `best' (valid) redirect map is the (unqiue) map that is:
-\begin{itemize}
-	\item valid
-	\item chooses the most `specific' (or most derived) target for each $Cs$ in the redirect set, of all other valid maps.
-	\item Whose targets will still be the most specific even if new (unrelated) class declarations where added to the program. \IOComm{What about method declarations?}
-\end{itemize}
-
-This ensures that targets that give the most information (are more specific) are chosen, and that adding extra classes to the program will not change the result (i.e. it is stable).
-
-
+\\\\
 \begin{defs}
-	
-	\defi{\Dz\op{bestMap}{T,R}}{\Dz\op{stableMostSpecific}{T,R, \opn{validMaps}}}{}
-	\defi{\Dz\op{stableMostSpecific}{T, R, f}}{R'}{}
-	\defic{\wwhere \ForAll{\Dz' \succ \Dz}{ \S'\op{mostSpecificMap}{f(\Dz', T, R)} = R'}}{}
-	\defic{f : (\Dz, T, R) \to Rz}{}
+	\defip{R' \in \mop{p}{validMaps}{L,R}}{}{}
+	\defic{R \subseteq R'}{it is an extension of $R$}
+	\defic{\dom{R'} = \mop{L}{redirectSet}{\T, R}}{it completes the redirect map}
+	\defic{\mop{p}{validTargets}{\ran{R}}}{all the targets are valid}
+	\defic{\ForAll{Cs \in \dom{R'}}{p \vdash R'(Cs) \leq \reda{L(Cs)}{R'}{\T}}}{the map preserves structural subtyping}
+\end{defs}
+\\\\
+\begin{defs}
+	\defi{\mop{p}{bestMap}{L,R}}{R_1\where \forall p' \succ p}{for all bigger programs}
+	\defic{\mop{p}{validMaps}{L, R} = R_1, \ldots, R_n}{$R_1$ is a valid map}
+	\defic{\ForAll{Cs \in \dom{R_1}}{\{R_1(Cs), \ldots, R_n(Cs)\} \subseteq \mop{p}{superTypes}{R_1(Cs)}}}{$R_1$ choses the least subtype}
 	\defis
-	\defi{\Dz\op{mostSpecificMap}{Rz}}{R}{}
-	\defic{\wwhere R \in Rz}{}
-	\defic{\ForAll{Cs \in \dom{R}}{R(Cs) = \Dz\op{mostSpecific}{\{R'(Cs) \mid R' \in Rz\}}}}{}
-	
-	
-	\defi{\Dz\op{mostSpecific}{\Tz}}{T}{}
-	\defic{\wwhere T \in Tz \text{ and } Tz \subseteq \Dz\op{superTypes}{T}}{}
-
-\defis
-\defip{\Dz' \succ \Dz}{\ForAll{C \in \dom{\Dz}}{\Exists{\Csz}{\Dz'(C)\op{remove}{\Csz} = \Dz(C)}}}{}
+	\defip{p' \succ p}{\T[p'] = \T \text{ and } \ForAll{T \in \dom{p}}{\Exists{\Csz}{p(T) = \mop{p'(T)}{remove}{\Csz}}}}{}
 %$\S'$ has more nested classes}
 	%MostSpecific(p; Pz) = P
 	%P in p.minimize(Pz)
@@ -379,4 +263,3 @@ This ensures that targets that give the most information (are more specific) are
 	%forall p' in SimilarPrograms(p): MostSpecificMap(p'; f(p', R)) = R'
 	%with f a function (p,R)->Rz
 \end{defs}
-\IOComm{If we don't care about making the proof easier, we can easily inline \opn{stableMostSpecific} into \opn{bestMap}. And if we don't care about formalising the algorithm, we can inline \opn{mostSpecific} into \opn{mostSpecificMap}.}
