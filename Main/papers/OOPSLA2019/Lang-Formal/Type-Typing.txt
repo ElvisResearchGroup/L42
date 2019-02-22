@@ -216,39 +216,22 @@ L.remove(Cs1 ... Csn) = L.remove(Cs1) ... L.remove(Csn)
 {K; Tz; Mz,private? C=L}.remove(C.Cs)={K; Tz; Mz, private? C=L.remove(Cs)}
 ========================================================================================================
 
-# TO DO: fix everything below here
-==============================================================
-Define: p.bestMap(L,R)=p.stableMostSpecific(L,R,validMaps)
-==============================================================
-Define: p.stableMostSpecific(L,R,f)=R', with p.f(L,R)=Rz
-  where
-  forall p' > p :  p.mostSpecificMap(p.f(L,R))=R'
-==============================================================
-Define: Dz' > Dz
-Dz,_;Ds >Dz;Ds
-p1>p3 iff p1>p2, p2>p3
-Dz,C=L;Ds>Dz,C=L.remove(Tz);Ds  if !sameStart(Ds,C)
-Dz;Ds1, private? C=L, Ds2 >Dz;Ds1, private? C=L.remove(T), Ds2  
-  if !sameStart(Ds2,T)
-
-==============================================================
-Define: R' in p.validMaps(L,R) iff
-  R' in p.possibleMaps(L,R)
-  forall Cs in dom(R'), p|- R'(Cs) <= L(Cs)[R']Tp
-
-==============================================================
-Define: R' in p.possibleMaps(L,R)
+---------------------------------------------------------------
+Define: R' in p.validMaps(L,R) if
   R subsetEq R'
-  dom(R') = L.redirectSet(Tp,R)
+  dom(R') = L.redirectSet(Tp, R)
   p.validTargets(range(R))
+  forall Cs in dom(R') :  p |- R'(Cs) <= L(Cs)[R']Tp
+---------------------------------------------------------------
+p.bestMap(L,R) = R1, where forall p' > p
+	p.validMaps(L, R) = R1 ... Rn
+	forall Cs in dom(R1): {R1(Cs) ... Rn(Cs)} subseteq p.superTypes(R1(Cs))
+---------------------------------------------------------------
+p' > p  iff Tp' = Tp and for all T in dom(p), exists Csz such that p(T) = p'(T).remove(Csz)
+
 ==============================================================
-Define: p.mostSpecificMap(R1..Rn)=R1
-  where forall T in dom(R1) :
-    R1(T)=p.mostSpecific(R1(T) .. Rn(T))
-==============================================================
-Define: p.mostSpecific(T,Tz)=T
-  where p.supertypes(T)=Tz,_
-==============================================================
+
+# TO DO: fix everything below here
 ==============================================================
 
 (|- DFz e) // this is the main rule for our type-system it checks DFz and e
