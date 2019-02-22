@@ -15,23 +15,23 @@
 \newcommand{\rp}[1]{\Q{(}\!#1\Q{)}}
 \newcommand{\cp}[1]{\,\Q{\{}\!\,#1\,\Q{\}}\!}
 \newcommand{\eq}[1]{\,\Q{=}#1}
-\newcommand{\ddd}{\ensuremath{{}\mathrel{\ldots}{}}}
-
+\newcommand{\cdc}{\ensuremath{, \ldots, }}
+\newcommand{\ddd}{\ensuremath{\ldots}}
 %%%% Grammar forms
 
 	\newcommand{\@meth}[5]{\@code{#1#2\ #3\rp{#4}#5}}
 
 % Methods: any, static, instance, abstract, abstract instance, abstract static
-\newcommand{\meth}  [4]{\@meth{\Q{static}\q\,}{#1}{#2}{#3}{\ #4}}
-\newcommand{\smeth} [4]{\@meth{\Q{static}\,}  {#1}{#2}{#3}{\ #4}}
+\newcommand{\meth}  [4]{\@meth{\static\q\,}{#1}{#2}{#3}{\ #4}}
+\newcommand{\smeth} [4]{\@meth{\static\,}  {#1}{#2}{#3}{\ #4}}
 \newcommand{\imeth} [4]{\@meth{}              {#1}{#2}{#3}{\ #4}}
-\newcommand{\ameth} [3]{\@meth{\Q{static}\q\,}{#1}{#2}{#3}{}}
-\newcommand{\asmeth}[3]{\@meth{\Q{static}\,}  {#1}{#2}{#3}{}}
+\newcommand{\ameth} [3]{\@meth{\static\q\,}{#1}{#2}{#3}{}}
+\newcommand{\asmeth}[3]{\@meth{\static\,}  {#1}{#2}{#3}{}}
 \newcommand{\aimeth}[3]{\@meth{}              {#1}{#2}{#3}{}}
 
 % Nested class
-\newcommand{\ncdd}[1]{\Q{private}\q\,#1}
-\newcommand{\ncd}[2]{\cd{\Q{private}\q\,#1}{#2}}
+\newcommand{\ncdd}[1]{\private\q\,#1}
+\newcommand{\ncd}[2]{\cd{\private\q\,#1}{#2}}
 \newcommand{\cd}[2]{\@code{#1\@eq#2}}
 % code literals
 \newcommand{\cl}[3]{\@code{\cp{#1\Q{;}\ #2\Q{;}\ #3}}}
@@ -44,6 +44,13 @@
 
 %New
 \renewcommand{\This}{\Q{This}\xspace}
+\newcommand{\private}{\Q{private}\xspace}
+\renewcommand{\abstract}{\Q{abstract}\xspace}
+\renewcommand{\interface}{\Q{interface}\xspace}
+\newcommand{\static}{\Q{static}\xspace}
+\newcommand{\new}{\Q{new}\xspace}
+\renewcommand{\this}{\Q{this}\xspace}
+
 \renewcommand{\T}[1][\p]{\ensuremath{\mathbf{T}^{#1}}}
 
 \NewDocumentCommand{\Tn}{ O{\T} O{n}}{\ensuremath{{#1}^{#2}}}
@@ -69,22 +76,26 @@
 	\newcommand{\@gobblenextP}[2]{\@code{#2}\@ifnextchar\bgroup{\@gobblenextCs{\Q{,}\,}{#1}}{#1\xspace}}
 
 % new expression, field access expressions, method call expression\
-\newcommand{\en}[2]{\@code{\Q{new}\ #1\rp{#2}}}
+\newcommand{\en}[2]{\@code{\new\ #1\rp{#2}}}
 \newcommand{\ef}[2]{\@code{#1\Q{.}#2}}
 \newcommand{\ec}[3]{\ef{#1}{#2\rp{#3}}}
 
 % Because mathmode puts too much space
-\newcommand{\DFz}{\ensuremath{\mathit{DFz}}}
-\newcommand{\Dz}{\ensuremath{\mathit{\IO{Dz}}}}
-\newcommand{\DFs}{\ensuremath{\mathit{DFs}}}
-\newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
-\newcommand{\id}{\ensuremath{\mathit{id}}}
-\newcommand{\Mz}{\ensuremath{\mathit{Mz}}}
-\newcommand{\MFz}{\ensuremath{\mathit{MFz}}}
-\newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
-\newcommand{\Tz}{\ensuremath{\mathit{Tz}}}
-\newcommand{\Txs}{\ensuremath{\mathit{Txs}}}
+\newcommand{\Cs}{\ensuremath{\mathit{Cs}}}
 \newcommand{\Csz}{\ensuremath{\mathit{Csz}}}
+\newcommand{\DF}{\ensuremath{\mathit{DF}}}
+\newcommand{\DFs}{\ensuremath{\mathit{DFs}}}
+\newcommand{\DFz}{\ensuremath{\mathit{DFz}}}
+\newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
+\renewcommand{\es}{\ensuremath{\mathit{es}}}
+\newcommand{\id}{\ensuremath{\mathit{id}}}
+\newcommand{\LF}{\ensuremath{\mathit{LF}}}
+\newcommand{\MF}{\ensuremath{\mathit{MF}}}
+\newcommand{\MFz}{\ensuremath{\mathit{MFz}}}
+\newcommand{\Mz}{\ensuremath{\mathit{Mz}}}
+\newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
+\newcommand{\Txs}{\ensuremath{\mathit{Txs}}}
+\newcommand{\Tz}{\ensuremath{\mathit{Tz}}}
 
 \newcommand{\Ok}{\ensuremath{\textbf{Ok}}}
 % Meta-notation
@@ -140,7 +151,14 @@
 
 
 \newenvironment{irules}{\noindent\[\begin{array}{c}\midrule}{\unskip\\\midrule\end{array}\]}
-\newcommand{\irule}[3]{\inferrule[(#1)]{#2}{#3}\qquad}
+\NewDocumentCommand{\irule}{O{} m O{} m}{%
+	\ifstrempty{#1}{%
+		\inferrule{#2}{#4}
+	}{%
+		\inferrule[(#1)]{#2}{#4}
+	}%
+	\ifstrempty{#3}{}{\!\!\ensuremath{\begin{array}{l}#3\end{array}}}%
+	\qquad}
 \newcommand{\iruleSep}{\unskip\\[5ex]}
 
 %\newcommand{\irule}[3]{%
@@ -167,5 +185,6 @@
 
 \newcommand{\Rulename}[1]{{\textsc{(#1)}}}
 \renewcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
-
+\renewcommand{\G}{\ensuremath{\Gamma}\xspace}
+\newcommand{\vvdots}{\ensuremath{\smash{\lower 0.5ex \vdots}}\xspace} %just to make them centered and not take up too much space!
 \makeatother

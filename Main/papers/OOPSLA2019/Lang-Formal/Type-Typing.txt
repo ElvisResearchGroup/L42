@@ -51,14 +51,14 @@ T[T' = T"] = T, otherwise
 -----------------------------------------------------
 
 Define Tp = T:
-  T^(DFz; id=E C1=E1..Cn=En)=C.C1..Cn
+  T^(DFz; id=E, C1=E1, ..., Cn=En)=C.C1...Cn
     where if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
 Define Ds.sameStart(T):
   (C=E,Ds).sameStart(C.Cs)
 Define p(T) = E:
 	(C=L,DFz;Ds)(C.Cs)=L(Cs) where !Ds.sameStart(Cs)
-	(DFz;id=E, C1=E1 .. Cn=En,Ds)(C.C1..Cn.Cs)=En(Cs) 
+	(DFz;id=E, C1=E1, ..., Cn=En,Ds)(C.C1...Cn.Cs)=En(Cs) 
 		where not Ds.sameStart(Cs) and if id is of form t, then C = This, otherwise C = id
 -----------------------------------------------------
 
@@ -116,7 +116,7 @@ abstract <+ abstract = abstract
 abstract <+ Txs = Txs <+ abstract = Txs
 ---------------------------------------------------
 Define: Mz <+ Mz' = Mz"
-M1..Mn <+ M1'..Mn' = (M1 <+ M1') .. (Mn <+ Mn')
+(M1, ..., Mn) <+ (M1', ..., Mn') = (M1 <+ M1'), ..., (Mn <+ Mn')
 static? T m(Txs) e? <+ static? T m(Txs) e = static? T m(Txs) e
 static? T m(Txs) e? <+ static? T m(Txs) = static? T m(Txs) e?
 (C = L) <+ (C = L') = (C = (L <+ L'))
@@ -125,7 +125,7 @@ static? T m(Txs) e? <+ static? T m(Txs) = static? T m(Txs) e?
 # Type System Notations
 ==============================================================================================
 ---------------------------------------------------------------------------------------------
-Define: L.public(Cs)
+Define: L.public(Cs), \ldots,
 L.public(empty)
 {_; _; C = L, _}.public(C.Cs) iff L.public(Cs)
 ------------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ p.supertypes(T) = T, p.supertypes(T1), ..., p.supertypes(Tn)
 ---------------------------------------------------------------------------------
 Define exposedTypes(L) = Tz :
 exposedTypes({K; Tz; Mz})= Tz, exposedTypes(Mz)
-exposedTypes(static? T0 m(T1 x1 ... Tn xn) _)=T0..Tn
+exposedTypes(static? T0 m(T1 x1, ..., Tn xn) _)=T0, ... ,Tn
 exposedTypes(private? D)=empty
 ------------------------------------------------
 Define p.reacheableTypes(Tz) = Tz':
@@ -154,10 +154,10 @@ T in p.reacheableTypes(Tz) if T in p.reacheableTypes(T'), where T' in p.reacheab
 ---------------------------------------------------------------------------------
 Define p.validImpls(T) and p.validImpls(T, T')
 p.validImpls(T) if p.validImpls(T, T1) and ... and p.validImpls(T, Tn)
-  where p.superTypes(T) = T1 ... Tn
+  where p.superTypes(T) = T1, ..., Tn
 p.validImpls(T, T')
-  where forall static? T0' m(T1 _  ... Tn _) _ in p(T'),
-    static? T0  m(T1 _ ... Tn _) _ in p(T)
+  where forall static? T0' m(T1 _,  ..., Tn _) _ in p(T'),
+    static? T0  m(T1 _, ..., Tn _) _ in p(T)
     p |- T0 <= T0'
 -------------------------------------------------------------------
 Define: complete(Ds)
@@ -199,19 +199,17 @@ L.redirectable(Csz) iff forall Cs in Csz:
 --------------------------------------------------------------
 Define p.validTargets(Tz):
 p.validTargets(Tz) if p.validTarget(T1) and ... and p.validTarget(Tn)
-  where p.reacheableTypes(Tz) = T1..Tn
+  where p.reacheableTypes(Tz) = T1, ..., Tn
 (C=L,DFz;Ds).validTarget(C.Cs) if L.public(Cs)
 p.validTarget(T) if p.validImpls(T) and p.accessible(Tp, T)
   where p = DFz; Ds and T in dom(empty; Ds)
-
-p=DFz;Ds and C notin dom(DFz)
 ----------------------------------------------------------
 Define L[R]T = L', by propagating in the usual way to T[R]T'
 T.Cs[R]T=R(Cs)
 T'[R]T = T', otherwise 
 ----------------------------------------------------------
 Define L.remove(Csz) = L':
-L.remove(Cs1 ... Csn) = L.remove(Cs1) ... L.remove(Csn)
+L.remove(Cs1, ..., Csn) = L.remove(Cs1)...remove(Csn)
 {K; Tz; Mz,private? C=L}.remove(C)={K; Tz; Mz}
 {K; Tz; Mz,private? C=L}.remove(C.Cs)={K; Tz; Mz, private? C=L.remove(Cs)}
 ========================================================================================================
@@ -224,52 +222,83 @@ Define: R' in p.validMaps(L,R) if
   forall Cs in dom(R') :  p |- R'(Cs) <= L(Cs)[R']Tp
 ---------------------------------------------------------------
 p.bestMap(L,R) = R1, where forall p' > p
-	p.validMaps(L, R) = R1 ... Rn
-	forall Cs in dom(R1): {R1(Cs) ... Rn(Cs)} subseteq p.superTypes(R1(Cs))
+	p'.validMaps(L, R) = R1, ..., Rn
+	forall Cs in dom(R1): {R1(Cs), ..., Rn(Cs)} subseteq p'.superTypes(R1(Cs))
 ---------------------------------------------------------------
 p' > p  iff Tp' = Tp and for all T in dom(p), exists Csz such that p(T) = p'(T).remove(Csz)
 
 ==============================================================
 
-# TO DO: fix everything below here
+# Type System
 ==============================================================
+------------------------
+  |- DFz
+  DFz; Empty |- e : T
+  -------------------- complete(DFz)
+  |- DFz e
 
-(|- DFz e) // this is the main rule for our type-system it checks DFz and e
-========================================================================================================
-    |- DFz
-    DFz; Empty |- e : T
-    complete(DFz)   //doing it in the typing of the D was wrong, was called in traits
-    ---------------------------------------
-    |- DFz e
+  
+  DF1, ..., DFn; Empty |- DF1 
+  ... 
+  DF1, ..., DFn; Empty |- DFn                
+  ------------------------------------------
+  |- DF1, ..., DFn
+  
 
-(|- DFz) // this rule checks the entire DFz
-=======================================================================================================
-    DF1, ..., DFn; Empty |- DF1 
-    ... 
-    DF1, ..., DFn; Empty |- DFn                
-    ------------------------------------------
-               DF1, ..., DFn |- DFz
- 
-(p |- DF)  (p |- L)  (p |- M)
-// these rules check that DF (or nested class) (which was found in T) is well-typed, assuming everything else in Dz is
-====================================================================================================
-	   Dz; Ds,D |- L
-    ------------------------------------
-    Dz; Ds|- private? D
+  Dz; Ds, id = L |- L
+  ------------------------------------
+  Dz; Ds |- private? id = L
+  
+  
+  forall M in L: p |- M
+  p.exposable(Tp, exposedTypes(L))
+  forall T _ in fields(L): p.accessible(Tp,T)
+  -------------------------------------------- p.validImpls(Tp)
+  p |-  L
+
+  
+  if e? = e then:
+    p; this: Tp, x1 : T1,  ...., xn : Tn |- e : T0   
+  -------------------------------------------------
+  p |- static? T0 m(T1 x1 ... Tn xn) e?
+
+---------------------------------------------------------------
+
+-------------------------------------------------
+G ::= empty | x : T, G
+Each x within a G must be distinct, so we will use the functional notation G(x) to extract the corresponding T.
+
+------------------------------------------------
+	
+	----------------
+	p; G |- x : G(x)
+
+	
+	p; G |- e : T
+	---------------------------- T' in p.superTypes(T)
+	p; G |- e : T'
+	
+	
+	p; G |- e0 : T0 
+	... 
+	p; G |- en : Tn
+	-----------------------------------  T m(T1 x1, ..., Tn xn) _ in p(T0)
+	p; G |- e0.m(e1, ..., en) : T
 
 
-(p |- L) // this rule checks that L is well-typed (assuming everything else in p is)
-===================================
-    forall M in L:  p |- M
-    p.exposable(Tp, exposedTypes(L))
-    p.validImpls(Tp)
-    forall T _ in fields(L): p.accessible(Tp,T)
-    -------------------
-	   p |-  L
+	p; G |- e1 : T1 
+	... 
+	p; G |- en : Tn                          static T' m(T1 x1, ..., Tn xn) _ in  p(T)
+	------------------------------------     if this in dom(G) then:
+	p; G |- T.m(e1, ..., en) : T'               p.accessible(G(this), T)
 
+	p; G |- e1 : T1 
+	... 
+	p; G |- e1 : Tn                     if this in dom(G) then T = G(this)
+	--------------------------------------- fields(p(T)) =T1 x1, ..., Tn xn
+	p; G |- new T(e1, ..., en): T
 
-(p |- M) // check that M is well-typed, where M was found in T
-==============================================================
-    if e? = e  p; this:Tp, x1:T1,  ...., xn:Tn |- e : T0   
-    ---------------------------------------------------------------
-    p |- static? T0 m(T1 x1 ... Tn xn) e?
+	p; G |- e : T'                if this in dom(G) then e = this
+	----------------------------  T x in fields(p(T'))
+	p; G |- e.x : T
+------------------------------------------------
