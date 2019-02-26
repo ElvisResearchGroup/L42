@@ -1,19 +1,22 @@
 \noindent Object oriented languages supporting static verification (SV) usually extend the syntax for method declarations
 to support \emph{contracts} in the form of pre and post-conditions~\cite{Meyer:1988:OSC:534929}.
 Correctness is defined only for code annotated with such contracts.
-\REV{We say that such code is \emph{correct} if 
-before a method is called, its precondition holds, and \REV{before a method returns, its postcondition holds}{3}{A typo: before --> immediately after}.}{2}{This is contradicted by the next sentence, where it is stated that the verifier "assumes the correctness of every other method and the method's own precondition". The original sentence should be "We say that such code is correct if, assuming that its precondition holds before the method is called, its post-condition holds when the method returns" (which would be the usual correctness condition for a contract).}
-Automated SV typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method and the method's own precondition~\cite{barnett2004spec}. This process can be very slow and \REV{unpredictable}{1}{What do you mean by ``SV is unpredictable"? I would be careful here because unpredictability may mean nondeterminism. That is, you verify a program once, and get "Correct"; then you verify it the second time, and get ``Buggy".},
-as %that is, SV is a process that can be applied to annotated code to check if such code is correct, but
-there may be correct code that does not pass SV on a certain theorem prover.
+We say that such code is correct if, assuming that its precondition holds before the method is called, its post-condition holds when the method returns.
+Automated SV typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method and the method's own precondition~\cite{barnett2004spec}. This process can be very slow,  brittle and \REV{unpredictable}{1}{What do you mean by ``SV is unpredictable"? I would be careful here because unpredictability may mean nondeterminism. That is, you verify a program once, and get "Correct"; then you verify it the second time, and get ``Buggy".}
+as there may be correct code that does not pass SV on a certain theorem prover.
+Moreover, a contract that was verified
+using a certain version of a theorem prover may
+be unverifiable under an updated version of the same theorem prover.
 
 \REV{Metaprogramming is often used to programmatically generate faster specialised code 
 when some parameters are known in advance. %This allows for user definable optimisations.
 To use metaprogramming and SV together, we could generate code
 containing contracts, and such code could be checked after metaprogramming has been completed.
 SV could then be applied to the code resulting from the metaprogramming to ensure it is correct.
-However this could be very time consuming, since it would require verifying all the generated code from scratch.
-Even worse, since \REV{SV is unpredictable}{3}{It sounds strange. It seems to me that should be (here and, maybe, above) something like the following:  `in general SV is undecidable'.  Please consider revising this sentence.}, there would be no guarantee that the result of a given metaprogram will be verifiable, even if its result is correct by construction.}{2}{This paragraph seems to boil down to saying that it is preferable to verify the meta-program directly rather than the code
+However,
+if the same metaprogramming process is used
+to create many specialized version of code, this could be very time consuming: it would require verifying all the generated specialized code from scratch.
+Even worse, since SV is undecidable and brittle, there would be no guarantee that the result of a given metaprogram will be verifiable, even if its result is correct by construction.}{2}{This paragraph seems to boil down to saying that it is preferable to verify the meta-program directly rather than the code
 resulting from running the meta-program. This statement requires some
 justification rather than that the latter would be "time consuming". In
 some cases verification of the generated code could be much easier. The 
