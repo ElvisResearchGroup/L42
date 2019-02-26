@@ -11,9 +11,9 @@ Since all occurrences of names are consistently renamed, \textbf{renaming and hi
 The /compose/ method starts by renaming the /exp/ and /pow/ methods of /current/
 so that they satisfy the contracts in /next/ (which will be 
 /even/ or /odd/).
-The /+/ operator is the main way to compose traits%
+\REV{The /+/ operator is the main way to compose traits%
 ~\cite{scharli2003traits,LagorioSZ09}.
-The result of /+/ will contain all the methods from both operands.
+The result of /+/ will contain all the methods from both operands.}{3}{Please take into account that the + operator is associative. Consequently, program specialization and program verification methods aiming at effective analysis and transformation of the corresponding expressions with the operator have to be used and developed.}
 
 Crucially, it is possible to sum traits where a method is declared in both operands; in this case at least one of the two competing methods needs to be abstract, and the signatures of the two competing methods need to be \emph{compatible}.
 To make sure that the traditional /+/ operator also handles contracts, we need to require that the contract annotations of the two competing methods  are \emph{compatible}.
@@ -41,7 +41,7 @@ As /base/ represents /pow1(x)/; /c(base,even)/ represents /pow2(x)/. Then \Q@c(/
 The code of each /$\_$pow/ method is only executed once for each top-level /pow/ call, so the /hide/ operator can inline them.
 Thus, the result could be identical to the manually optimized code in line 7.
 
-Note that while our approach guarantees that the resulting code follows its own contracts, it does not statically ensure what contracts it would have.
+\REV{Note that while our approach guarantees that the resulting code follows its own contracts, it does not statically ensure what contracts it would have.}{2}{This paragraph casts doubt on the significance of what has been presented.}
 We are investigating how
 to perform an additional verification check
 on the result of metaprogramming.
