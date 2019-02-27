@@ -55,8 +55,9 @@ unfolding the recursion produces even more efficient code:
   return x*x2*x4; } // Since 7 = 1 + 2 + 4
 \end{lstlisting}
 \vspace{-1ex}
-\REV{Now we show how we can use the technique of iterative trait composition, together with our contract matching, to generate code like the above, employing a technique called \emph{compile-time execution}~\cite{sheard2002template}}{3}{But actually you use compile-time symbolic execution rather than compile-time execution, and even, speaking on technical details, program specialization method known as partial evaluation. Is it correct? But no reference to the corresponding papers is given. There is a huge literature relating to different methods of automated program specialization. Do you aware about? A number of such references should be included in the short reference list ending your extended abstract.\\\indent
-There are also many works on verification by program specialization. Maybe they are useful for improving your methods. Just please pay attention to this subject.}:
+
+
+Now we show how we can use the technique of iterative trait composition, together with our contract matching\IO{, to write a meta-programming, that given an exponent, produces} code like the above. \IO{Iterative trait composition} employing a technique called \emph{compile-time execution}~\cite{sheard2002template}\IO{, in which a meta-program is executed at compile time, and the result (a /Trait/) is treated as if it was directly written by the programmer.}
 \vspace{-1ex}
 \begin{lstlisting}[firstnumber=11]
 Trait base=class {//induction base case: pow(x) == x**1
