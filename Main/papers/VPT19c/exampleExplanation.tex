@@ -18,9 +18,10 @@ The result of /+/ will contain all the methods from both operands.
 Crucially, it is possible to sum traits where a method is declared in both operands; in this case at least one of the two competing methods needs to be abstract, and the signatures of the two competing methods need to be \emph{compatible}.
 To make sure that the traditional /+/ operator also handles contracts, we need to require that the contract annotations of the two competing methods  are \emph{compatible}.
 For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work.
-Thanks to this constraint \textbf{the sum operator also preserves code correctness}. \IO{There are many variations of the /+/ operator, in particular, we could easily extend our contract matching to work with an nary operator}.
+Thanks to this constraint \textbf{the sum operator also preserves code correctness}. %\IO{There are many variations of the /+/ operator, in particular, we could easily extend our contract matching to work with an nary operator}.
 
-The sum is executed when the method /compose/\IO{\footnote{\IO{a generic implementation of this method that renames and hides conflicting methods has been implemented L42~\cite{l42}}}} runs, if the matched contracts are not identical an exception will be raised. A leaked exception during compile-time metaprogramming would become a compile-time error. 
+The sum is executed when the method /compose/%\IO{\footnote{\IO{a generic implementation of this method that renames and hides conflicting methods has been implemented L42~\cite{l42}}}}
+runs, if the matched contracts are not identical an exception will be raised. A leaked exception during compile-time metaprogramming would become a compile-time error. 
 Our approach is very similar to~\cite{servetto2014meta}, and does not guarantee the success of the code generation process, rather it guarantees that if it succeeds, correct code is generated.
 
 Finally the /$\_$pow(x)/ and /$\_$exp()/ method are hidden, so that the structural shape of the result is
@@ -41,19 +42,50 @@ As /base/ represents /pow1(x)/; /c(base,even)/ represents /pow2(x)/. Then \Q@c(/
 The code of each /$\_$pow/ method is only executed once for each top-level /pow/ call, so the /hide/ operator can inline them.
 Thus, the result could be identical to the manually optimized code in line 7.
 
-\IO{We are investigation how an additional check can be performed to ensure the resulting code has specific contracts. However, our approach does guarantee that the result will be correct according to whatever contracts it contains.} For example, the following code:
-\vspace{-1ex}
-\begin{lstlisting}[numbers=none]
-@ensures(new Pow7().exp()==7&&Pow7.pow.ensures=="result==x**exp()")
-class Pow7: generate(7)
+%\IO{We are investigation how an additional check can be performed to ensure the resulting code has specific contracts. However, our approach does guarantee that the result will be correct according to whatever contracts it contains.} 
+
+\MS{Our approach, as presented in this short paper, only guarantees that the resulting code follows its own contracts, it does
+not statically ensure what contracts it would have.} As future work, we are investigating how to ensure
+the contract content of the result.
+To do so, we need to extends the language of pre//post conditions to allow assertions on the contracts of 
+/Trait/ code.
+For example the post condition 
+/@ensures(result.methName.ensures == predicate)/
+requires the result to be a /Trait/ with a method
+called /methName/, whose /@ensures/ clause is syntactically identical to the given predicate,
+ while
+/@ensures(result.methName.ensures <-> predicate)/
+would rely on conventional SV to check that 
+such /@ensures/ clause is equivalent to the given /predicate/.
+With those two instruments we could annotate the method
+ /generate/ in line 32 as:
+\begin{lstlisting}[firstnumber=32]
+@requires(exp>0)
+@ensures(result.exp().ensures <-> result==exp)
+@ensures(result.pow(x).ensures == result==x**exp())
+Trait generate(Int exp) {...}
 \end{lstlisting}
 \vspace{-1ex}
-may require the static verifier to check that the execution of
-/new Pow7().exp()/ will deterministically reduce to /7/, and that the /ensures/ clause of 
-/Pow7.pow/ is syntactically equivalent to 
-/result==x**exp()/. Note how this final step of static verification does not need to re-verify the body of
-/Pow7.pow/ and only needs to do a coarse grained 
-determinism check on the implementation of /Pow7.exp()/, before symbolically executing it.
+In this way, we could apply SV to the /generate(exp)/ method and prove it correct once and for all.
+However, we fear such SV will be too complex or impractical. In this case we could defer those difficult//novel predicates to
+run-time checks, without losing much safety:
+Iterative Composition execute meta-programming code at
+compile time, thus even run-time verification of meta-programs would happen at compile time.
+This consideration could result in a crucial design decision: code performing metaprogramming does not need to be verified by SV to produce code annotated with the desired contracts; it may be sufficient to apply some type of runtime verification during compile-time execution.
+
+%For example, the following code:
+%\vspace{-1ex}
+%\begin{lstlisting}[numbers=none]
+%@ensures(new Pow7().exp()==7&&Pow7.pow.ensures=="result==x**exp()")
+%class Pow7: generate(7)
+%\end{lstlisting}
+%\vspace{-1ex}
+%may require the static verifier to check that the execution of
+%/new Pow7().exp()/ will deterministically reduce to /7/, and that the /ensures/ clause of 
+%/Pow7.pow/ is syntactically equivalent to 
+%/result==x**exp()/. Note how this final step of static verification does not need to re-verify the body of
+%/Pow7.pow/ and only needs to do a coarse grained 
+%determinism check on the implementation of /Pow7.exp()/, before symbolically executing it.
 
 In conclusion, static verification of metaprogramming is an exciting new area of research; we are attacking the problem by reusing conventional
-object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility. A crucial design decision is that code performing metaprogramming does not need to be SVed to produce code annotated with the desired contracts; it would be sufficient to apply some type of runtime verification during compile-time execution.
+object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility.

@@ -79,7 +79,12 @@ unfolding the recursion produces even more efficient code:
 \vspace{-1ex}
 
 
-Now we show how we can use the technique of iterative trait composition, together with our contract matching\IO{, to write a meta-programming, that given an exponent, produces} code like the above. \IO{Iterative trait composition} employing a technique called \emph{compile-time execution}~\cite{sheard2002template}\IO{, in which a meta-program is executed at compile time, and the result (a /Trait/) is treated as if it was directly written by the programmer.}
+Now we show how \MS{the technique of \emph{Iterative Composition} (introduced in~\cite{servetto2014meta} and
+enriched by our contract composition check)
+can be used to write a meta-\MS{program} that given an exponent, produces} code like the above.
+\MS{Iterative Composition is a metacircular meta-programming technique relying on \emph{compile-time execution} (as ~\cite{sheard2002template}), thus a meta-program
+ is just a function or a method wrote in the target programming language that is executed during compilation.}
+
 \vspace{-1ex}
 \begin{lstlisting}[firstnumber=11]
 Trait base=class {//induction base case: pow(x) == x**1
