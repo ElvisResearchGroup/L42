@@ -2,29 +2,51 @@
 to support \emph{contracts} in the form of pre and post-conditions~\cite{Meyer:1988:OSC:534929}.
 Correctness is defined only for code annotated with such contracts.
 
-\IO{We say that a method is \emph{correct}, if whenever its precondition holds on entry, the precondition of every method it calls also holds, and the postcondition of the method holds on return.} Automated SV typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method \IODel{and the method's own precondition}~\cite{barnett2004spec}. This process can be very slow \IO{and produce unexpected results, since SV is undecidable, correct code may not necessarily pass a SV. Making matters worse, the way an SV works is not easily understood by programmers, thus it is non trivial for them to transform or construct code that will be SVed.}
+\IO{We say that a method is \emph{correct}, if whenever its precondition holds on entry, the precondition of every \MS{directly invoked method holds}, and the postcondition of the method holds \MS{when the method} returns.} Automated SV typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method~\cite{barnett2004spec}. This process can be very slow \IO{and \MS{can} produce unexpected results}: \MS{since SV is undecidable correct code may not pass SV.
+Many SV approaches are not resilient to
+some standard refactoring techniques like 
+method inlining. Sometimes SV even terminate for a time-out, exacerbating the impact of transformations like method inlining.}
 
 Metaprogramming is often used to programmatically generate faster specialised code when some parameters are known in advance\IO{, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}}
-\IO{We could use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run, SV the resulting code, thus ensuring it's correctness. However, the resulting code could be much larger than the input to the metaprogramming, and so could take a long time to SV. Even if the generated code was produce by using straightforward transformations and compositions over the input code, a SV might not verify it's correctness. The aim of our work is to ensure that result of metaprogramming is correct by construction, and thus not require SV, as well as for it to be predictable weather such constructions will succeed.}
+\IO{We could use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,} 
+\MS{ensure the correctness of the resulting code
+by applying SV.} However, the resulting code could be much larger than the input to the metaprogramming, and so it could take a long time to SV.
+\MS{Moreover, one of the main goal of metaprogramming  is make it easy to generate many specialized versions of the same functionality}.
+%, Even if the generated code was produced by using straightforward transformations and compositions over the input code, a SV might not verify it's correctness.
+The aim of our work is to \MS{apply SV} only to the code manually wrote by the programmer, 
+and to ensure that \MS{the} result of metaprogramming is \MS{instead} correct by construction.
 
 \IO{Here we use the} disciplined form of metaprogramming \IO{introduced} by Servetto \& Zucca \cite{servetto2014meta}, which is based on trait composition and adaptation~\cite{scharli2003traits}.
-Here a /Trait/ is a unit of code: a set of method declarations with pre//post-conditions. \IOComm{REV2 wants us to properly define what a triat is}
-They are well-typed and correct.
-/Trait/s directly written in the source code, 
-\IO{we extend prior work, by also requiring that they are \emph{proven correct by SV}.
-We extend the checking performed by composition and adaptation of /Trait/s to also check that contracts preserved, ensuring the correctness of the result.}
-\IOComm{I don't think my rewording makes our contribuition explicit enough..}
+Here a /Trait/ is a unit of code: a set of method declarations.
+\MS{Those methods can be abstract, and they can
+ be mutually recursive by using the implicit parameter /this/.}
+
+\MS{As in~\cite{servetto2014meta}
+we require that all the traits are well-typed
+before they are used.
+Moreover, in our proposed approach we 
+annotating methods with pre//post-conditions, and 
+we require that all traits are also correct.
+/Trait/s directly written in the source code are proven correct by SV, while traits resulting from metaprogramming are correct by construction}.
+
+\MS{Crucially, we improve the checking} performed by composition and adaptation of /Trait/s to also check that contracts \MS{are composed correctly}; thus ensuring the correctness of the result.
 %
 %The result of composing and adapting /Trait/s is also correct and well-typed.
 %
-\IO{In our style,} metaprogramming does not generate code directly, \IO{rather} code is only generated by composing and adapting traits\IO{, thus by induction, the result of metaprogramming is also correct.}
-\IODel{However generated code may not be able to pass SV, since theorem provers are not complete.}
+\MS{Our metaprogramming approach} does not generate code \MS{from scratch}; \IO{rather} code is only generated by composing and adapting traits.
+\MS{Each composition//adaptation step is guaranteed
+to produce well typed and correct code}; \IO{thus also the result of metaprogramming is well typed and correct.}
+Note that generated code may not be able to pass SV, since theorem provers are not complete.
+
 
 SV handles /extends/ and /implements/ by verifying that every 
 time a method is implemented//overriden, 
-the Liskov substitution principle~\cite{Liskov:1994:BNS:197320.197383} is satisfied\IO{: the implementation and any additional contracts must satisfy the contract of the method that is being implemented//overriden}. In this way, there is no need to re-verify
-inherited code in the context of the derived class, \IO{nor verify each call to a class's method based on each possible implementation.}
-This is easily adapted
+the Liskov substitution principle~\cite{Liskov:1994:BNS:197320.197383} is satisfied
+by checking that the new contract implies the
+overridden one. 
+ In this way, there is no need to re-verify
+inherited code in the context of the derived class.
+This concept is easily adapted
 to handle trait composition, which simply provides another way to implement an /abstract/ method.
 When traits are composed,
 it is sufficient
