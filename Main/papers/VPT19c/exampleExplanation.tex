@@ -1,4 +1,5 @@
-The traits /base/, /even/, and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and SVed before the method /generate(exp)/ can run.
+
+\IOComm{I added a paragraph break here, so this is correctly indented with respect to the code above.} The traits /base/, /even/, and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and SVed before the method /generate(exp)/ can run.
 As you can see in line /37/, a class body can be an expression in the language itself.
 At compile time such an expression will be run and the resulting /Trait/ will be used as the body of the class.
 For example, we could write /class Pow1: base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
@@ -44,35 +45,37 @@ Thus, the result could be identical to the manually optimized code in line 7.
 
 %\IO{We are investigation how an additional check can be performed to ensure the resulting code has specific contracts. However, our approach does guarantee that the result will be correct according to whatever contracts it contains.} 
 
-\MS{Our approach, as presented in this short paper, only guarantees that the resulting code follows its own contracts, it does
-not statically ensure what contracts it would have.} As future work, we are investigating how to ensure
-the contract content of the result.
-To do so, we need to extends the language of pre//post conditions to allow assertions on the contracts of 
-/Trait/ code.
-For example the post condition 
-/@ensures(result.methName.ensures == predicate)/
-requires the result to be a /Trait/ with a method
-called /methName/, whose /@ensures/ clause is syntactically identical to the given predicate,
- while
-/@ensures(result.methName.ensures <-> predicate)/
-would rely on conventional SV to check that 
-such /@ensures/ clause is equivalent to the given /predicate/.
-With those two instruments we could annotate the method
- /generate/ in line 32 as:
-\begin{lstlisting}[firstnumber=32]
+Our approach, as presented in this \IO{extend abstract} \MSDel{short paper}, only guarantees that \IO{code resulting from metaprogramming} \IODel{the resulting code} follows its own contracts, it does
+not \MSDel{statically} ensure what \IO{those contracts may be} \MSDel{contracts it would have}. As future work, we are investigating how \IO{the resulting contracts can be ensured to have a particular meaning}
+\MSDel{to ensure the contract content of the result}. \IOComm{`Ensure the contract content' does not mean what you want it to, rather it means that you are ensuring what the contract says, which we do do! You could say `ensure the contract has a specific content'.}
+To do so, we need to \IO{allow assertions on the contracts of /Trait/s to be used within pre//post conditions}
+\MSDel{extends the language of pre//post conditions to allow assertions on the contracts of /Trait/ code}.
+\IOComm{`extend the language' makes it sound like pre//post conditions are written in a seperate language! whereas in this paper we don't really care about that.}
+
+For example \IO{we could allow post conditions like} \MSDel{the post condition\\}
+/@ensures(result.$\mathit{methName}$.ensures ==\ $\mathit{predicate}$)/
+\IO{to mean that the resulting /Trait/ has}
+\MSDel{requires the result to be a /Trait/ with} a method
+called $\mathit{methName}$, whose /@ensures/ clause is syntactically identical to \MSDel{the given predicate, while} \IO{/$predicate$/; whilst}
+\MSDel{\\/@ensures(result.methName.ensures <-> predicate)/ rely on conventional SV to check that  such /@ensures/ clause is equivalent to the given /predicate/.}
+\IO{\\/@ensures(result.$\mathit{methName}$.ensures ==>\ $\mathit{predicate}$)/}
+would \IO{SV that $\mathit{methName}$'s /@ensures/ clause logically implies $\mathit{predicate}$.} \IOComm{An implication check (/=>/) is likely to be much more useful than an equivalence check.}
+With \IODel{those two instruments} \IO{these two features} we could annotate the method /generate/ in line 32 \IO{above} as:
+\begin{lstlisting}
 @requires(exp>0)
-@ensures(result.exp().ensures <-> result==exp)
-@ensures(result.pow(x).ensures == result==x**exp())
+@ensures(result.exp().ensures ==> (result==exp))
+@ensures(result.pow(x).ensures == (result==x**exp()))
 Trait generate(Int exp) {...}
 \end{lstlisting}
-\vspace{-1ex}
-In this way, we could apply SV to the /generate(exp)/ method and prove it correct once and for all.
-However, we fear such SV will be too complex or impractical. In this case we could defer those difficult//novel predicates to
-run-time checks, without losing much safety:
-Iterative Composition execute meta-programming code at
-compile time, thus even run-time verification of meta-programs would happen at compile time.
-This consideration could result in a crucial design decision: code performing metaprogramming does not need to be verified by SV to produce code annotated with the desired contracts; it may be sufficient to apply some type of runtime verification during compile-time execution.
+\IOComm{Why in the world did you set the above code to number starting at 32?, to make things more readable, I deleted that, so that the numbering is consistent with the previous listings. I have also added parenthesise to the code above, and changed /<->/ to /==>/.}
 
+\vspace{-1ex}
+In this way, we could \MSDel{apply SV to the} \MS{SV the} /generate/\MSDel{/(exp)/} method \IODel{and prove it correct once and for all}.
+However, we fear such SV will be too complex or impractical. 
+
+\IO{We could instead automatically check the above postconditions after each call to /generate/. If /generate/ is used to define a class (such as /Pow7/ above), we will guarantee that such class has the correct contracts, before it is used. Thus such runtime checking is sufficient to ensure the correctness of code produced by metaprogramming, before such code is used, however it is not sufficient to ensure the correctness of the metaprogram itself.} \IODel{In this case we could defer those difficult//novel predicates to run-time checks, without losing much safety:
+Iterative Composition execute metaprogramming code at
+compile time, thus even run-time verification of metaprograms would happen at compile time. This consideration could result in a crucial design decision: code performing metaprogramming does not need to be verified by SV to produce code annotated with the desired contracts; it may be sufficient to apply some type of runtime verification during compile-time execution.} \IOComm{I did a major rewording since we actually have multiple compile-times and run-times, so your version is confusing, hopefully my version makes the point more clear.}
 %For example, the following code:
 %\vspace{-1ex}
 %\begin{lstlisting}[numbers=none]
@@ -87,5 +90,7 @@ This consideration could result in a crucial design decision: code performing me
 %/Pow7.pow/ and only needs to do a coarse grained 
 %determinism check on the implementation of /Pow7.exp()/, before symbolically executing it.
 
-In conclusion, static verification of metaprogramming is an exciting new area of research; we are attacking the problem by reusing conventional
-object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility.
+\IO{In conclusion, by leveraging over conventional OO SV techniques, we have extended the Iterative Composition form of metaprogramming with a simple contract compatibility check, to statically ensure the correctness of code produced by such metaprogramming. In particular, our approach does not require SV of the result of metaprogramming, but only requires SVing code present directly in source code.} \IOComm{I'm worried about my use of statically here, as it might be misconstrued as meaning before the metaprogramming is executed, what I mean to say is before the resulting code is executed.}
+\MSDel{In conclusion, static verification of metaprogramming is an exciting new area of research; attacking the problem by reusing conventional
+object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility.} 
+\IOComm{We are not doing `static verification of metaprogramming'! How is this a `new area of research', it might not be a popular one, but people have done it before, what they haven't dealt with is your SPECIFIC form of meta-programming. In addition, we have not presented how the research is `exciting', finally we are not `attacking the problem', rather we have allready `attacked the problem', since that's what this paper has done.}
