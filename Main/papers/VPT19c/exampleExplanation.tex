@@ -1,11 +1,11 @@
 
-\IOComm{I added a paragraph break here, so this is correctly indented with respect to the code above.} The traits /base/, /even/, and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and SVed before the method /generate(exp)/ can run.
+The traits /base/, /even/, and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and statically verified before the method /generate(exp)/ can run.
 As you can see in line /37/, a class body can be an expression in the language itself.
 At compile time such an expression will be run and the resulting /Trait/ will be used as the body of the class.
 For example, we could write /class Pow1: base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
 The other two traits have abstract methods; implementations for /$\_$pow(x)/ and /$\_$exp()/ must be provided. However, given the contract of /pow(x)/,
-and the fact that /even/ and /odd/ have both been SVed,
-if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need for further SV.
+and the fact that /even/ and /odd/ have both been statically verified,
+if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need for further static verification.
 Many works in literature allow adapting traits by renaming or hiding methods\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
 Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
 
@@ -45,37 +45,35 @@ Thus, the result could be identical to the manually optimized code in line 7.
 
 %\IO{We are investigation how an additional check can be performed to ensure the resulting code has specific contracts. However, our approach does guarantee that the result will be correct according to whatever contracts it contains.} 
 
-Our approach, as presented in this \IO{extend abstract} \MSDel{short paper}, only guarantees that \IO{code resulting from metaprogramming} \IODel{the resulting code} follows its own contracts, it does
-not \MSDel{statically} ensure what \IO{those contracts may be} \MSDel{contracts it would have}. As future work, we are investigating how \IO{the resulting contracts can be ensured to have a particular meaning}
-\MSDel{to ensure the contract content of the result}. \IOComm{`Ensure the contract content' does not mean what you want it to, rather it means that you are ensuring what the contract says, which we do do! You could say `ensure the contract has a specific content'.}
-To do so, we need to \IO{allow assertions on the contracts of /Trait/s to be used within pre//post conditions}
-\MSDel{extends the language of pre//post conditions to allow assertions on the contracts of /Trait/ code}.
-\IOComm{`extend the language' makes it sound like pre//post conditions are written in a seperate language! whereas in this paper we don't really care about that.}
-
-For example \IO{we could allow post conditions like} \MSDel{the post condition\\}
-/@ensures(result.$\mathit{methName}$.ensures ==\ $\mathit{predicate}$)/
+Our approach, as presented in this \IO{extended abstract}, only guarantees that \IO{code resulting from metaprogramming} follows its own contracts, it does
+not \MS{statically} ensure what \IO{those contracts may be}. As future work, we are investigating how \IO{the resulting contracts can be ensured to have a particular meaning} \MS{or form}.
+To do so, we need to \IO{allow assertions on the contracts of /Trait/s to be used within pre//post conditions.}
+For example we could allow post conditions like\\*
+%\begin{lstlisting}[numbers=none]
+/@ensures(result.$\mathit{methName}$.ensures ==\ $\mathit{predicate}$)/ \\*
+%\end{lstlisting}
 \IO{to mean that the resulting /Trait/ has}
-\MSDel{requires the result to be a /Trait/ with} a method
-called $\mathit{methName}$, whose /@ensures/ clause is syntactically identical to \MSDel{the given predicate, while} \IO{/$predicate$/; whilst}
-\MSDel{\\/@ensures(result.methName.ensures <-> predicate)/ rely on conventional SV to check that  such /@ensures/ clause is equivalent to the given /predicate/.}
-\IO{\\/@ensures(result.$\mathit{methName}$.ensures ==>\ $\mathit{predicate}$)/}
-would \IO{SV that $\mathit{methName}$'s /@ensures/ clause logically implies $\mathit{predicate}$.} \IOComm{An implication check (/=>/) is likely to be much more useful than an equivalence check.}
-With \IODel{those two instruments} \IO{these two features} we could annotate the method /generate/ in line 32 \IO{above} as:
+a method
+called $\mathit{methName}$, whose /@ensures/ clause is syntactically identical to  /$predicate$/; whilst
+\\*
+/@ensures(result.$\mathit{methName}$.ensures ==>\ $\mathit{predicate}$)/
+\\*
+would \IO{use a static verifier to ensure that $\mathit{methName}$'s /@ensures/ clause logically implies $\mathit{predicate}$.}
+With \IO{these two features} we could annotate the method /generate/ in line 32 \IO{above} as:
 \begin{lstlisting}
 @requires(exp>0)
 @ensures(result.exp().ensures ==> (result==exp))
 @ensures(result.pow(x).ensures == (result==x**exp()))
 Trait generate(Int exp) {...}
 \end{lstlisting}
-\IOComm{Why in the world did you set the above code to number starting at 32?, to make things more readable, I deleted that, so that the numbering is consistent with the previous listings. I have also added parenthesise to the code above, and changed /<->/ to /==>/.}
 
 \vspace{-1ex}
-In this way, we could \MSDel{apply SV to the} \MS{SV the} /generate/\MSDel{/(exp)/} method \IODel{and prove it correct once and for all}.
-However, we fear such SV will be too complex or impractical. 
-
-\IO{We could instead automatically check the above postconditions after each call to /generate/. If /generate/ is used to define a class (such as /Pow7/ above), we will guarantee that such class has the correct contracts, before it is used. Thus such runtime checking is sufficient to ensure the correctness of code produced by metaprogramming, before such code is used, however it is not sufficient to ensure the correctness of the metaprogram itself.} \IODel{In this case we could defer those difficult//novel predicates to run-time checks, without losing much safety:
-Iterative Composition execute metaprogramming code at
-compile time, thus even run-time verification of metaprograms would happen at compile time. This consideration could result in a crucial design decision: code performing metaprogramming does not need to be verified by SV to produce code annotated with the desired contracts; it may be sufficient to apply some type of runtime verification during compile-time execution.} \IOComm{I did a major rewording since we actually have multiple compile-times and run-times, so your version is confusing, hopefully my version makes the point more clear.}
+In this way, we could statically verify the /generate/ method, however we fear such verification will be too complex or impractical. 
+We could instead automatically check the above postconditions after each call to /generate/. If /generate/ is used to define a class (such as /Pow7/ above), we will guarantee that such class has the correct contracts, before it is used. Thus
+there is no need to ensure the correctness of the metaprogram itself: such runtime checks are sufficient to ensure that after compilation, the code produced by metaprogramming has its expected behaviour.
+%\IODel{In this case we could defer those difficult//novel predicates to run-time checks, without losing much safety:
+%Iterative Composition execute metaprogramming code at
+%compile time, thus even run-time verification of metaprograms would happen at compile time. This consideration could result in a crucial design decision: code performing metaprogramming does not need to be verified by SV to produce code annotated with the desired contracts; it may be sufficient to apply some type of runtime verification during compile-time execution.} \IOComm{I did a major rewording since we actually have multiple compile-times and run-times, so your version is confusing, hopefully my version makes the point more clear.}
 %For example, the following code:
 %\vspace{-1ex}
 %\begin{lstlisting}[numbers=none]
@@ -90,7 +88,4 @@ compile time, thus even run-time verification of metaprograms would happen at co
 %/Pow7.pow/ and only needs to do a coarse grained 
 %determinism check on the implementation of /Pow7.exp()/, before symbolically executing it.
 
-\IO{In conclusion, by leveraging over conventional OO SV techniques, we have extended the Iterative Composition form of metaprogramming with a simple contract compatibility check, to statically ensure the correctness of code produced by such metaprogramming. In particular, our approach does not require SV of the result of metaprogramming, but only requires SVing code present directly in source code.} \IOComm{I'm worried about my use of statically here, as it might be misconstrued as meaning before the metaprogramming is executed, what I mean to say is before the resulting code is executed.}
-\MSDel{In conclusion, static verification of metaprogramming is an exciting new area of research; attacking the problem by reusing conventional
-object oriented static verification techniques coupled with trait composition, extended to also check contract compatibility.} 
-\IOComm{We are not doing `static verification of metaprogramming'! How is this a `new area of research', it might not be a popular one, but people have done it before, what they haven't dealt with is your SPECIFIC form of meta-programming. In addition, we have not presented how the research is `exciting', finally we are not `attacking the problem', rather we have allready `attacked the problem', since that's what this paper has done.}
+In conclusion, by leveraging over conventional OO static verification techniques, we have extended the Iterative Composition form of metaprogramming with a simple contract compatibility check, to statically ensure the correctness of code produced by such metaprogramming. In particular, our approach does not require static verification of the result of metaprogramming, but only requires verification of code present directly in source code.

@@ -1,56 +1,49 @@
-\noindent Object oriented languages supporting static verification (SV) usually extend the syntax for method declarations
+\noindent Object oriented languages supporting static verification usually extend the syntax for method declarations
 to support \emph{contracts} in the form of pre and post-conditions~\cite{Meyer:1988:OSC:534929}.
 Correctness is defined only for code annotated with such contracts.
 
-We say that a method is \emph{correct}, if whenever its precondition holds on entry, the precondition of every directly invoked method holds, and the postcondition of the method holds when the method returns. Automated SV typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method~\cite{barnett2004spec}. This process can be very slow and can produce unexpected results: since SV is undecidable correct code may not pass SV.
-Many SV approaches are not resilient to
-\MSDel{some} standard refactoring techniques like 
-method inlining. Sometimes SV even \IO{times out, making it harder to use such refactoring techniques.} \MSDel{terminate for a time-out, exacerbating the impact of transformations like method inlining.}
+We say that a method is \emph{correct}, if whenever its precondition holds on entry, the precondition of every directly invoked method holds, and the postcondition of the method holds when the method returns. Automated static verification typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method~\cite{barnett2004spec}. This process can be very slow and can produce unexpected results: since static verification is undecidable correct code may not pass a particular static verifier.
+Many static verification approaches are not resilient to
+standard refactoring techniques like 
+method inlining. Sometimes static verification even \IO{times out, making \MS{the behaviour even more sensitive} to such refactoring techniques.}
 
 Metaprogramming is often used to programmatically generate faster specialised code when some parameters are known in advance, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}
 We could use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
- \MSDel{ensure the correctness of} \IO{SV} the resulting code \MSDel{by applying SV.}. \IOComm{You don't `apply static verification', rather you `statically verify', you could also `use a static verifier'.}
-However, the resulting code could be much larger than the input to the metaprogramming, and so it could take a long time to SV.
-Moreover, one of the \MSDel{main} \IO{many} goal\IO{s} of metaprogramming is \IO{to} make it \IO{easier} \MSDel{easy} to generate \MSDel{many specialized} \IO{specialised} versions of the same \MSDel{functionality} \IO{code}. \IOComm{A `version of functionality' doesn't really make sense, a `version of code' does, we could also use `function//method'.}
+% \MSDel{ensure the correctness of} 
+statically verify the resulting code. 
+However, the resulting code could be much larger than the input to the metaprogramming, and so it could take a long time to statically verify.
+Moreover, one of the \IO{many} goal\IO{s} of metaprogramming is \IO{to} make it \IO{easier} to generate \IO{specialised} versions of the same  \IO{code}.
 %, Even if the generated code was produced by using straightforward transformations and compositions over the input code, a SV might not verify it's correctness.
-The aim of our work is to \MSDel{apply} SV only \MSDel{to the code manually wrote by the programmer} \IO{code written directly, and not code produced by metaprogramming;}
+The aim of our work is to statically verify only the original source code itself, and not the code produced by metaprogramming;
 \IO{instead, we}
-\MSDel{and to} ensure that the result of metaprogramming is \MSDel{instead} correct by construction.
+ensure that the result of metaprogramming is correct by construction.
 
 Here we use the disciplined form of metaprogramming introduced by Servetto \& Zucca \cite{servetto2014meta}, which is based on trait composition and adaptation~\cite{scharli2003traits}.
 Here a /Trait/ is a unit of code: a set of method declarations.
 \IO{Such methods can be abstract and be}
-\MSDel{Those methods can be abstract, and they can}
-be mutually recursive by using the implicit parameter /this/.
+mutually recursive by using the implicit parameter /this/.
 
 As in~\cite{servetto2014meta}
 we require that all the traits are well-typed
 before they are used.
-\MSDel{Moreover, in our proposed approach we}
-\IO{we extend this by allowing}
-\MSDel{annotating} methods \IO{to be annotated} with pre//post-conditions, and 
-\IO{ensuring that traits are correct in terms of such contracts}
-\MSDel{we require that all traits are also correct}.
-/Trait/s directly written in the source code are \IO{SVed} \MSDel{proven correct by SV}, while traits resulting from metaprogramming are \IO{ensured} correct by \IO{only providing trait operations that preserve correctness} \MSDel{construction}. \IOComm{SV proves correctness (that's the whole point), so no need to say 'proven correct by SV'. It was not clear how we `ensure correctness by construction', so I fixed that.}
-\MSDel{Crucially}
-\IO{In particular}, we extend the checking performed by \IO{the traditional trait composition (/+/)  operator, to also check the compatibility of contracts} \MSDel{composition and adaptation of /Trait/s to also check that contracts are composed correctly; thus ensuring the correctness of the result}. \IOComm{we only extend the /+/ operator here, so I've made that explicit.}
-\IOComm{The above paragraph of changes are trying to make it more clear what our contribution is, but even then it's not good enough}.
+we extend this by allowing
+methods to be annotated with pre//post-conditions, and 
+ensuring that traits are correct in terms of such contracts.
+/Trait/s directly written in the source code are statically verified, while traits resulting from metaprogramming are ensured correct by only providing trait operations that preserve correctness. 
+In particular, we \textbf{only} need to extend the checking performed by the traditional trait composition (/+/)  operator, to also check the compatibility of contracts.
 
 %
 %The result of composing and adapting /Trait/s is also correct and well-typed.
 %
-Our metaprogramming approach does not \IO{allow generating} \IODel{generate} code from scratch \IO{(such as by generating ASTs), rather the language provides a specific set of primitive composition and adapation operators which preserve correctness}.
-\MSDel{; rather code is only generated by composing and adapting traits.
-Each composition//adaptation step is guaranteed
-to produce well typed and correct code; thus also the result of metaprogramming is well typed and correct.} \IOComm{I reworded it to make it sound like you are forced to use our safe operators, and can't subvert the system, since this makes our `guarantees` meaningful.}
-Note that generated code may not be able to pass \IO{a particular} SVer, since theorem provers are not complete. \IOComm{In principle, since our code is correct, it should be able to pass some form of `static verification', however that dosn't mean it will base every `static verifier'.}
+Our metaprogramming approach does not allow generating code from scratch (such as by directly generating ASTs), rather the language provides a specific set of primitive composition and adaptation operators which preserve correctness.
+Thus the result of metaprogramming is guaranteed to be well typed and correct.
+Note that generated code may not be able to pass a particular static verifier.
 
 
-SV handles /extends/ and /implements/ by verifying that every 
+Static verification usually handles /extends/ and /implements/ by verifying that every 
 time a method is implemented//overriden, 
 the Liskov substitution principle~\cite{Liskov:1994:BNS:197320.197383} is satisfied
-by checking that the \MSDel{new contract} \IO{contract of the override//implementation} implies the \IO{contract of the overriden//implemented method} \MSDel{overridden one}. 
-\IOComm{In your version, it was not clear what contracts you were refering to.}
+by checking that the contracts of the method in the derived class implies the contract of any corresponding methods in its base classes. 
  In this way, there is no need to re-verify
 inherited code in the context of the derived class.
 This concept is easily adapted
@@ -87,11 +80,10 @@ unfolding the recursion produces even more efficient code:
 
 
 Now we show how the technique of \emph{Iterative Composition} (introduced in~\cite{servetto2014meta} and
-enriched by \MSDel{our contract composition check} \IO{the contract compatibility check we propose performing in trait composition}) \IOComm{We never call `a contract composition check`, so it's not clear what you are talking about, since I already mentioned a `contract compatibility check above', I'm referencing it here}
+enriched by \IO{the contract compatibility check we propose performing in trait composition}) 
 can be used to write a metaprogram that given an exponent, produces code like the above.
-Iterative Composition is a metacircular metaprogramming technique relying on \emph{compile-time execution} (as \IO{defined by}~\cite{sheard2002template}), \IOComm{I'm not sure what `as [10]' was meant to mean, correct me if my guess was wrong.} 
-\MSDel{thus a metaprogram is just a function or a method wrote in the target programming language that is executed during compilation.}
-\IO{, in our context this means that arbitrary expressions can be used as the RHS of a class declaration, during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `meta language'.} \IOComm{Major rewording, as your version didn't explain anything, in particular it was not clear what you meant by `during compilation'}.
+Iterative Composition is a metacircular metaprogramming technique relying on \emph{compile-time execution} (a form of execution also used by~\cite{sheard2002template}),
+\IO{in our context this means that arbitrary expressions can be used as the \MS{right hand side} of a class declaration\MS{;} during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `meta language'.} 
  
 
 \vspace{-1ex}
