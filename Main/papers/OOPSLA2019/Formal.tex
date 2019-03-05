@@ -11,7 +11,7 @@
 \begin{grammar}
 	\produ{e}{x \mid{} \ec{e}{m}{\es} \mid{} \ec{T}{m}{\es} \mid{} \ef{e}{x} \mid{} \en{T}{\es}}{expression}
 	\produ{L}{\cl{K}{\Tz}{\Mz}}{code literal}
-	\produ{K}{\interface \mid{} \abstract \mid{} \Txs}{kind}
+	\produ{K}{\interface \mid{} \aabstract \mid{} \Txs}{kind}
 	\produ{M}{\meth{T}{m}{\Txs}{e\q} \mid{} \ncdd{D}}{member}
 	\produ{E}{L \mid{} t \mid{} \summ{E_1}{E_2} \mid{} \red{E}{R}}{code expression}
 	\produ{R}{\redm{\Cs_1}{T_1}, \ldots,\redm{\Cs_n}{T_n}}{redirect map}
@@ -87,43 +87,45 @@ We additionally impose the following well-formedness constraints:
 	\irule[Top]{
 		\DFz \subseteq \DFs\\\\
 		\vdash \DFz\\\\
-		\DFz; \id = E \vdash E \Rightarrow E'
+		\DFz; \cd{\id}{\MSDel{E \vdash} E} \Rightarrow E'
 	}{
 		\DFs\ \cd{\id}{E}\ \Ds \Rightarrow \DFs\ \cd{\id}{E'}\ \Ds
 	}
 	\irule[Ctx-F]{
-		\DFz; \Ds,\id=E \vdash E \Rightarrow E'\\\\
+		\DFz; \Ds,\cd{\id}{\MSDel{E \vdash} E} \Rightarrow E'
 	}{
-		\DFz; \Ds, \id = \_ \vdash \ctx{F}[E] \Rightarrow \ctx{F}[E']\\\\
+		\DFz; \Ds, \cd{\id}{\MSDel{\_ \vdash} \ctx{F}[E]} \Rightarrow \ctx{F}[E']\\\\
 	}
 	
 	\iruleSep
 	\begin{array}{cc}
 		\irule[Trait]{
 		}{
-			\cd{t}{\LF}, \DFz; \Ds \vdash t \Rightarrow \LF[\This \coloneqq T]
+			\cd{t}{\LF}, \DFz; \Ds\IO{, \cd{\id}{\MSDel{\vdash}}} t \Rightarrow \LF[\This \coloneqq T]
 		}&
 		\multirow{1}{*}{
 				\irule[Redirect]{	
-				\Csz = \mop{\LF}{redirectSet}{\T, R}\\\\
-				\mop{\LF}{redirectable}{\Csz}\\\\
-				\mop{p}{validTargets}{\ran{R}}\\\\
-				R' = \mop{p}{bestMap}{\LF, R}
+				\MSDel{\Csz = \mop{\LF}{redirectSet}{\T, R}}\\\\
+				\MSDel{\mop{\LF}{redirectable}{\Csz}}\\\\
+				\MSDel{\mop{p}{validTargets}{\ran{R}}}\\\\
+				\IO{p = DFz; Ds, \cd{\id}{\red{\LF}{R}}}\\\\
+				\IO{\mop{p}{validRedirect}{}}\\\\
+				R' = \mop{p}{bestMap}{\MSDel{\LF, R}}
 			}{
-				p \vdash \red{\LF}{R} \Rightarrow \reda{\mop{\LF}{remove}{\Csz}}{R'}{T}
+				p \MSDel{\vdash \red{\LF}{R}} \Rightarrow \reda{\mop{\LF}{remove}{\Csz}}{R'}{T}
 			}
 		}\\\\
 		\irule[Sum]{
 			\summ{\LF_1}{\mop{\LF_2}{refreshPrivate}{\T}} = \LF_3
 		}{
-			p \vdash \summ{\LF_1}{\LF_2} \Rightarrow \LF_3
+			\MSDel{p \vdash} \IO{\DFz; \Ds, \cd{id}{}} \summ{\LF_1}{\LF_2} \Rightarrow \LF_3
 		}
-	\iruleSep
+	\iruleSep\\
 	\end{array}\\
 	\irule[Enter]{	
-		\DFz; \Ds, C = E \vdash E \Rightarrow E'
+		\DFz; \Ds, \IO{, \cd{\id}{\cl{K}{\Tz}{\ncd{C}{E},\Mz}},{}} \cd{C}{\MSDel{E \vdash} E} \Rightarrow E'
 	}{
-		\DFz; \Ds \vdash \cl{K}{\Tz}{\ncd{C}{E},\Mz} \Rightarrow \cl{K}{\Tz}{\ncd{C}{E'}, \Mz}
+		\DFz; \Ds\IO{, \cd{\id}{}} \MSDel{\vdash} \cl{K}{\Tz}{\ncd{C}{E},\Mz} \Rightarrow \cl{K}{\Tz}{\ncd{C}{E'}, \Mz}
 	}
 \end{irules}
 
@@ -134,8 +136,8 @@ We additionally impose the following well-formedness constraints:
 \defic{\text{if}\ K = \interface\  \text{then}\ \{m \in \dom{L_1}\}= \{m \in \dom{L_2}\}}{}
 \defis
 \defi{\summ{\interface}{\interface}}{\interface}{interfaces must match}
-\defi{\summ{\abstract}{\abstract}}{\abstract}{keep abstract classes}
-\defi{\summ{\abstract}{\Txs}}{\summ{\Txs}{\abstract} \coloneqq K}{allow adding state to an abstract class}
+\defi{\summ{\aabstract}{\aabstract}}{\aabstract}{keep abstract classes}
+\defi{\summ{\aabstract}{\Txs}}{\summ{\Txs}{\aabstract} \coloneqq K}{allow adding state to an abstract class}
 \defis
 \defi{\summ{(M_1, \ldots, M_n)}{(M'_1, \ldots, M'_n)}}{(\summ{M_1}{M'}), \ldots, (\summ{M_n}{M'_n})}{sum members pairwise}
 \defi{\summ{\meth{T}{m}{\Txs}{e\q}}{\meth{T}{m}{\Txs}{e}}}{\meth{T}{m}{\Txs}{e}}{override method}
@@ -184,7 +186,7 @@ We additionally impose the following well-formedness constraints:
 	\defis
 	
 	\defit{\fop{complete}{\cd{t}{L}}}{}
-	\defip{\fop{complete}{\cd{C}{\cl{K}{\_}{\Mz}}}}{K \neq \abstract \text{ and }}{}
+	\defip{\fop{complete}{\cd{C}{\cl{K}{\_}{\Mz}}}}{K \neq \aabstract \text{ and }}{}
 	\defic{\ForAll{\ncdd{D}\in\Mz}{\fop{complete}{D}}}{}
 	\defic{\text{if } \ameth{\_}{m}{\_} \in \Mz \text{ then } K = \interface}{}
 \end{defs}
@@ -237,7 +239,8 @@ We additionally impose the following well-formedness constraints:
 \end{defs}
 \\\\
 \begin{defs}
-	\defip{R' \in \mop{p}{validMaps}{L,R}}{}{}
+	\defip{R' \in \mop{p}{validMaps}{\MSDel{L,R}}}{}{}
+	\defic{\IO{p(\T) = \red{L}{R}}}{the redirect we are performing}
 	\defic{R \subseteq R'}{it is an extension of $R$}
 	\defic{\dom{R'} = \mop{L}{redirectSet}{\T, R}}{it completes the redirect map}
 	\defic{\mop{p}{validTargets}{\ran{R}}}{all the targets are valid}
@@ -245,11 +248,11 @@ We additionally impose the following well-formedness constraints:
 \end{defs}
 \\\\
 \begin{defs}
-	\defi{\mop{p}{bestMap}{L,R}}{R_1\where \forall p' \succ p}{for all bigger programs}
-	\defic{\mop{p'}{validMaps}{L, R} = R_1, \ldots, R_n}{$R_1$ is a valid map}
+	\defi{\mop{p}{bestMap}{\MSDel{L,R}}}{R_1\where \forall p' \IO{{}\succeq{}} p}{for all bigger programs}
+	\defic{\mop{p'}{validMaps}{\MSDel{L, R}} = R_1, \ldots, R_n}{$R_1$ is a valid map}
 	\defic{\ForAll{\Cs \in \dom{R_1}}{\{R_1(\Cs), \ldots, R_n(\Cs)\} \subseteq \mop{p'}{superTypes}{R_1(\Cs)}}}{$R_1$ choses the least subtype}
 	\defis
-	\defip{p' \succ p}{\T[p'] = \T \text{ and } \ForAll{T \in \dom{p}}{\Exists{\Csz}{p(T) = \mop{p'(T)}{remove}{\Csz}}}}{}
+	\defip{p' \IO{{}\succeq{}} p}{\T[p'] = \T \text{ and } \ForAll{T \in \dom{p}}{\Exists{\Csz}{p(T) = \mop{p'(T)}{remove}{\Csz}}}}{}
 %$\S'$ has more nested classes}
 	%MostSpecific(p; Pz) = P
 	%P in p.minimize(Pz)
