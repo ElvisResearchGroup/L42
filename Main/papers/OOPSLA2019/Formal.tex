@@ -250,10 +250,10 @@ We additionally impose the following well-formedness constraints:
 \\\\
 \begin{defs}
 	\defip{R' \in \mop{p}{validMaps}{\MSDel{L,R}}}{}
-	\defic{\IO{p(\T) = \red{L}{R}}}[the redirect we are performing]
+	\defic{\IO{\E = \red{L}{R}}}[the redirect we are performing]
 	\defic{R \subseteq R'}[it is an extension of $R$]
-	\defic{\dom{R'} = \mop{L}{redirectSet}{\T, R}}[it completes the redirect map]
-	\defic{\mop{p}{validTargets}{\ran{R}}}[all the targets are valid]
+	\defic{\dom{R'} = \mop{\MSDel{L}\IO{p}}{redirectSet}{\MSDel{\T, R}}}[it completes the redirect map]
+	\color{Green}\defic{[\mop{p}{validTargets}{\ran{R}}}[\color{Green} all the targets are valid\char`\]]
 	\defic{\ForAll{\Cs \in \dom{R'}}{p \vdash R'(\Cs) \leq \reda{L(\Cs)}{R'}{\T}}}[the map preserves structural subtyping]
 \end{defs}
 \\\\
