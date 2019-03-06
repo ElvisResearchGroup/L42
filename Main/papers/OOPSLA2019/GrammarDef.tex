@@ -52,6 +52,7 @@
 \renewcommand{\this}{\Q{this}\xspace}
 
 \renewcommand{\T}[1][\p]{\ensuremath{\mathbf{T}^{#1}}}
+\newcommand{\E}[1][\p]{\ensuremath{\mathbf{E}^{#1}}}
 
 \NewDocumentCommand{\Tn}{ O{\T} O{n}}{\ensuremath{{#1}^{#2}}}
 %\newcommand{\State}[2]{#1;#2}
@@ -127,25 +128,24 @@
 \newenvironment{defs}{\setlength{\tabcolsep}{0pt}\noindent\tabularx{\textwidth}{l>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}}
 % a := b
-\newcommand{\defi}[3]{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
+\NewDocumentCommand{\defi}{m m O{}}{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
 % a if b 
-\newcommand{\defip}[3]{\ensuremath{#1\text{ if }#2}&\llap{\text{#3}}\\}
+\NewDocumentCommand{\defip}{m m O{}}{\ensuremath{#1\text{ if }#2}&\llap{\text{#3}}\\}
 % a % (for things that are always true)
-\newcommand{\defit}[2]{\ensuremath{#1}&\llap{\text{#2}}\\}
+\NewDocumentCommand{\defit}{m O{}}{\ensuremath{#1}&\llap{\text{#2}}\\}
 \newcommand{\defii}[1]{\ensuremath{
 		#1\coloneqq\text{\ldots\ simply propagate to the other rules\ \ldots}}\\}
 %   b % indentended, for continuiation of another defi form
-\newcommand{\defic}[2]{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
-\newcommand{\defin}[1]{#1\\}
+\NewDocumentCommand{\defic}{m O{}}{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+\NewDocumentCommand{\defin}{m O{}}{#1\\}
 
 \newenvironment{grammar}{%
 	\setlength{\tabcolsep}{0pt}%
 	\noindent\tabularx{\textwidth}{rl>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
 	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}%
 }
-\newcommand{\produ}[3]{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
-\newcommand{\produh}[4]{\ensuremath{#1{#2}}&\ensuremath{#1{{}\Coloneqq#3}}&\llap{#1{\text{#4}}}\\}
-\newcommand{\prodc}[2]{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+\NewDocumentCommand{\produ}{m m O{}}{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
+\NewDocumentCommand{\prodc}{m mO{}}{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
 % --------------
 \newcommand{\defis}{\midrule}
 
