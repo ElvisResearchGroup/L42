@@ -19,7 +19,7 @@
 \end{minipage}\hfil
 \begin{minipage}[t]{0.4\gramwidth}
 \begin{grammar}
-	\produ{T}{C \mid T\.C}[type]
+	\produ{T}{\MSDel{C \mid T\.C} \IO{C\.\Cs}}[type]
 	\produ{\Tx}{T\ x}[parameter/field]
 	\produ{D}{\cd{\id}{E}}[declaration]
 	\produ{\id}{C \mid{} t}[class/trait ID]
@@ -69,7 +69,6 @@ We additionally impose the following well-formedness constraints:
 \begin{defs}
 	\defi{\T[(\DFz; \cd{\id}{E}, \cd{C_1}{E_1}, \ldots, \cd{C_n}{E_n})]}{C\.C_1\ldots C_n}[current type]
 	\defic{\text{where if } \id \text{ is of form } t \text{, then } C=\This \text{, otherwise } C = \id}
-	\color{Blue} \defi{\E[(\DFz; \Ds, \cd{\id}{E})]}{E}[\IO{current E}]
 	\defis
 	\defit{\mop{(\cd{C}{E},\Ds)}{sameStart}{C\.\Cs}}[the $\Ds$ and $T$ start with the same $C$]
 	\defi{(\cd{C}{L},\DFz; \Ds)(C\.\Cs)}{L(\Cs)\where \neg\mop{\Ds}{sameStart}{\Cs}}[get flattened class declaration]
@@ -87,50 +86,51 @@ We additionally impose the following well-formedness constraints:
 	\irule[Top]{
 		\DFz \subseteq \DFs\\\\
 		\vdash \DFz\\\\
-		\DFz; \cd{\id}{\MSDel{E \vdash} E} \Rightarrow E'
+		\DFz; \cd{\id}{\IO{\ctx{R}}\ \MSDel{E}} \vdash E \Rightarrow E'
 	}{
-		\DFs\ \cd{\id}{E}\ \Ds \Rightarrow \DFs\ \cd{\id}{E'}\ \Ds
+		\DFs\ \cd{\id}{\IO{\ctx{R}[}E\IO{]}\ \Ds \Rightarrow \DFs\ \cd{\id}{\IO{\ctx{R}[}E'\IO{]}}\ \Ds}
 	}
-	\irule[Ctx-F]{
-		\DFz; \Ds,\cd{\id}{\MSDel{E \vdash} E} \Rightarrow E'
+
+%Fz; id = CtxR |- E ==> E'
+%---------------------------------------------
+%DFs id = CtxR[E] Ds ==> DFs id = CtxR[E'] Ds
+
+	\MSDel{\irule[Ctx-F]{
+		\DFz; \Ds,\cd{\id}{E \vdash E} \Rightarrow E'
 	}{
-		\DFz; \Ds, \cd{\id}{\MSDel{\_ \vdash} \ctx{F}[E]} \Rightarrow \ctx{F}[E']\\\\
-	}
+		\DFz; \Ds, \cd{\id}{\_ \vdash \ctx{F}[E]} \Rightarrow \ctx{F}[E']\\\\
+	}}
 	
 	\iruleSep
 	\begin{array}{cc}
 		\irule[Trait]{
 		}{
-			\cd{t}{\LF}, \DFz; \Ds\IO{, \cd{\id}{\MSDel{\vdash}}} t \Rightarrow \LF[\This \coloneqq T]
+			\cd{t}{\LF}, \IO{p}\ \MSDel{\DFz; \Ds} \vdash t \Rightarrow \LF[\This \coloneqq \IO{\T}]
 		}&
 		\multirow{1}{*}{
 				\irule[Redirect]{	
 				\MSDel{\Csz = \mop{\LF}{redirectSet}{\T, R}}\\\\
 				\MSDel{\mop{\LF}{redirectable}{\Csz}}\\\\
 				\MSDel{\mop{p}{validTargets}{\ran{R}}}\\\\
-				\IO{\E = \red{\LF}{R}}\\\\
-				\IO{\Csz = \mop{p}{redirectSet}{}}\\\\
-				R' = \mop{p}{bestMap}{\MSDel{\LF, R}}
+				\IO{\Csz = \mop{p}{redirectSet}{LF, R}}\\\\
+				R' = \mop{p}{bestMap}{\LF, R}
 			}{
-				p \MSDel{\vdash \red{\LF}{R}} \Rightarrow \reda{\mop{\LF}{remove}{\Csz}}{R'}{T}
+				p \vdash \red{\LF}{R} \Rightarrow \reda{\mop{\LF}{remove}{\Csz}}{R'}{T}
 			}
 		}\\\\
 		\irule[Sum]{
-			\IO{\E = \summ{\LF_1}{\LF_2}}\\\\
 			\summ{\LF_1}{\mop{\LF_2}{refreshPrivate}{\T}} = \LF_3
 		}{
-			p \MSDel{\vdash \summ{\LF_1}{\LF_2}} \Rightarrow \LF_3
+			p \vdash \summ{\LF_1}{\LF_2} \Rightarrow \LF_3
 		}
 	\iruleSep\\
 	\end{array}\\
-	\irule[Enter]{	
-		\IO{\E = \cl{K}{\Tz}{\ncd{C}{E},\Mz}}\\\\
-		\IO{p, \cd{C}{E} \Rightarrow E'}\\\\
-		\MSDel{\DFz; \Ds, \cd{C}{E \vdash E} \Rightarrow E'}
+	\MSDel{\irule[Enter]{
+		\DFz; \Ds, \cd{C}{E \vdash E} \Rightarrow E'
 	}{
-		 \MSDel{\DFz; \Ds \vdash \cl{K}{\Tz}{\ncd{C}{E},\Mz}}
-		 \IO{p} \Rightarrow \cl{K}{\Tz}{\ncd{C}{E'}, \Mz}
-	}
+		 \DFz; \Ds \vdash \cl{K}{\Tz}{\ncd{C}{E},\Mz}
+		 \Rightarrow \cl{K}{\Tz}{\ncd{C}{E'}, \Mz}
+	}}
 \end{irules}
 
 \subsection{The Sum Operator}
@@ -209,9 +209,7 @@ We additionally impose the following well-formedness constraints:
 \subsection{The Redirect Operator}
 
 \begin{defs}
-	\color{Blue}\defi{\mop{p}{redirectSet}{}}{\Csz\where}
-	\color{Blue}\defic{p = \DFz; \Ds, \cd{\id}{\red{L}{R}}}
-	\color{Blue}\defic{\vdash \DFz}
+	\color{Blue}\defi{\mop{p}{redirectSet}{L,R}}{\Csz\where}
 	\color{Blue}\defic{\Cs \in \Csz \text{ iff } \Cs \in \dom{R} \text{ or } \T\.\Cs \in \fop{exposedTypes}{L(\Cs')} \text{ for some } \Cs'\in\Csz}
 	\color{Blue}\defic{\mop{L}{redirectable}{\Csz}}
 	\color{Blue}\defic{\mop{p}{validTargets}{\ran{R}}}
@@ -233,8 +231,8 @@ We additionally impose the following well-formedness constraints:
 	\defic{\wwhere{\mop{p}{reachableTypes}{\Tz} = T_1 , \ldots, T_n}}
 	
 	\defip{\mop{(\cd{C}{L}, \DFz; \Ds)}{validTarget}{C\.\Cs}}{\mop{L}{public}{\Cs}}
-	\defip{\mop{p}{validTarget}{T}}{\mop{p}{validImpls}{T} \text{ and } \mop{p}{accessible}{\T, T}}
-	\defic{\wwhere p = \DFz; \Ds \text{ and } T \in \dom{\EmptyZ; \Ds}}
+	\defip{\mop{p}{validTarget}{T}}{\mop{p}{validImpls}{T} \text{ and } \mop{p}{accessible}{\T, T} \IO{\text{ and } p(T) = L}}
+	\defic{\wwhere p = \DFz; \IO{\ctx{R}}\ \MSDel{\Ds} \text{ and } T \in \dom{\EmptyZ; \IO{\ctx{R}}\ \MSDel{\Ds}}}
 \end{defs}
 \\\\
 \begin{defs}
@@ -249,17 +247,16 @@ We additionally impose the following well-formedness constraints:
 \end{defs}
 \\\\
 \begin{defs}
-	\defip{R' \in \mop{p}{validMaps}{\MSDel{L,R}}}{}
-	\defic{\IO{\E = \red{L}{R}}}[the redirect we are performing]
+	\defip{R' \in \mop{p}{validMaps}{L,R}}{}
 	\defic{R \subseteq R'}[it is an extension of $R$]
-	\defic{\dom{R'} = \mop{\MSDel{L}\IO{p}}{redirectSet}{\MSDel{\T, R}}}[it completes the redirect map]
+	\defic{\dom{R'} = \mop{\MSDel{L}\IO{p}}{redirectSet}{\IO{L}\ \MSDel{\T}, R}}[it completes the redirect map]
 	\color{Green}\defic{[\mop{p}{validTargets}{\ran{R}}}[\color{Green} all the targets are valid\char`\]]
 	\defic{\ForAll{\Cs \in \dom{R'}}{p \vdash R'(\Cs) \leq \reda{L(\Cs)}{R'}{\T}}}[the map preserves structural subtyping]
 \end{defs}
 \\\\
 \begin{defs}
-	\defi{\mop{p}{bestMap}{\MSDel{L,R}}}{R_1\where \forall p' \IO{{}\succeq{}} p}[for all bigger programs]
-	\defic{\mop{p'}{validMaps}{\MSDel{L, R}} = R_1, \ldots, R_n}[$R_1$ is a valid map]
+	\defi{\mop{p}{bestMap}{L,R}}{R_1\where \forall p' \IO{{}\succeq{}} p}[for all bigger programs]
+	\defic{\mop{p'}{validMaps}{L, R} = R_1, \ldots, R_n}[$R_1$ is a valid map]
 	\defic{\ForAll{\Cs \in \dom{R_1}}{\{R_1(\Cs), \ldots, R_n(\Cs)\} \subseteq \mop{p'}{superTypes}{R_1(\Cs)}}}[$R_1$ chooses the least subtype]
 	\defis
 	\defip{p' \IO{{}\succeq{}} p}{\T[p'] = \T \text{ and } \ForAll{T \in \dom{p}}{\Exists{\Csz}{p(T) = \mop{p'(T)}{remove}{\Csz}}}}
