@@ -5,39 +5,39 @@ Correctness is defined only for code annotated with such contracts.
 We say that a method is \emph{correct}, if whenever its precondition holds on entry, the precondition of every directly invoked method holds, and the postcondition of the method holds when the method returns. Automated static verification typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method~\cite{barnett2004spec}. This process can be very slow and can produce unexpected results: since static verification is undecidable correct code may not pass a particular static verifier.
 Many static verification approaches are not resilient to
 standard refactoring techniques like 
-method inlining. Sometimes static verification even \IO{times out, making \MS{the behaviour even more sensitive} to such refactoring techniques.}
+method inlining. Sometimes static verification even times out, making the behaviour even more sensitive to such refactoring techniques.
 
-Metaprogramming is often used to programmatically generate faster specialised code when some parameters are known in advance, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}
+Metaprogramming is often used to programmatically generate faster specialised code when some parameters are known in advance, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}.
 We could use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
 % \MSDel{ensure the correctness of} 
 statically verify the resulting code. 
 However, the resulting code could be much larger than the input to the metaprogramming, and so it could take a long time to statically verify.
-Moreover, one of the \IO{many} goal\IO{s} of metaprogramming is \IO{to} make it \IO{easier} to generate \IO{specialised} versions of the same  \IO{code}.
+Moreover, one of the many goals of metaprogramming is to make it easier to generate many specialised versions of the same  code.
 %, Even if the generated code was produced by using straightforward transformations and compositions over the input code, a SV might not verify it's correctness.
-The aim of our work is to statically verify only the original source code itself, and not the code produced by metaprogramming;
-\IO{instead, we}
+The aim of our work is to statically verify only the original source code itself, and not the code produced by metaprogramming.
+Instead, we
 ensure that the result of metaprogramming is correct by construction.
 
-Here we use the disciplined form of metaprogramming introduced by Servetto \& Zucca \cite{servetto2014meta}, which is based on trait composition and adaptation~\cite{scharli2003traits}.
+Here we use the disciplined form of metaprogramming introduced by Servetto and Zucca \cite{servetto2014meta}, which is based on trait composition and adaptation~\cite{scharli2003traits}.
 Here a /Trait/ is a unit of code: a set of method declarations.
-\IO{Such methods can be abstract and be}
+Such methods can be abstract and can be
 mutually recursive by using the implicit parameter /this/.
 
 As in~\cite{servetto2014meta}
 we require that all the traits are well-typed
 before they are used.
-we extend this by allowing
+We extend this by allowing
 methods to be annotated with pre//post-conditions, and 
 ensuring that traits are correct in terms of such contracts.
 /Trait/s directly written in the source code are statically verified, while traits resulting from metaprogramming are ensured correct by only providing trait operations that preserve correctness. 
-In particular, we \textbf{only} need to extend the checking performed by the traditional trait composition (/+/)  operator, to also check the compatibility of contracts.
+In particular, we \textbf{only} need to extend the checking performed by the traditional trait composition (/+/)  operator to also check the compatibility of contracts.
 
 %
 %The result of composing and adapting /Trait/s is also correct and well-typed.
 %
-Our metaprogramming approach does not allow generating code from scratch (such as by directly generating ASTs), rather the language provides a specific set of primitive composition and adaptation operators which preserve correctness.
+Our metaprogramming approach does not allow generating code from scratch, such as by directly generating ASTs, rather the language provides a specific set of primitive composition and adaptation operators which preserve correctness.
 Thus the result of metaprogramming is guaranteed to be well typed and correct.
-Note that generated code may not be able to pass a particular static verifier.
+%Note that generated code may not be able to pass a particular static verifier.
 
 
 Static verification usually handles /extends/ and /implements/ by verifying that every 
@@ -80,25 +80,25 @@ unfolding the recursion produces even more efficient code:
 
 
 Now we show how the technique of \emph{Iterative Composition} (introduced in~\cite{servetto2014meta} and
-enriched by \IO{the contract compatibility check we propose performing in trait composition}) 
+enriched by the contract compatibility check we propose performing in trait composition) 
 can be used to write a metaprogram that given an exponent, produces code like the above.
 Iterative Composition is a metacircular metaprogramming technique relying on \emph{compile-time execution} (a form of execution also used by~\cite{sheard2002template}),
-\IO{in our context this means that arbitrary expressions can be used as the \MS{right hand side} of a class declaration\MS{;} during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `meta language'.} 
+in our context this means that arbitrary expressions can be used as the right hand side of a class declaration; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `meta language'.
  
 
 \vspace{-1ex}
 \begin{lstlisting}
-Trait base=class {//induction base case: pow(x) == x**1
+Trait base=class {//induction base case: pow(x)==x**1
   @ensures(result>0) Int exp(){return 1;}  
   @ensures(result==x**exp()) Int pow(Int x){return x;}
   }
-Trait even=class {//if _pow(x)== x**_exp(), pow(x) == x**(2*_exp())
+Trait even=class {//if _pow(x)==x**_exp(), pow(x)==x**(2*_exp())
   @ensures(result>0) Int $\_$exp();
   @ensures(result==2*$\_$exp()) Int exp(){return 2*$\_$exp();}
   @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
   @ensures(result==x**exp()) Int pow(Int x){return $\_$pow(x*x);}
 }
-Trait odd=class {//if _pow(x)== x**_exp(), pow(x) == x**(1+_exp())
+Trait odd=class {//if _pow(x)==x**_exp(), pow(x)==x**(1+_exp())
   @ensures(result>0) Int $\_$exp();
   @ensures(result==1+$\_$exp()) Int exp(){return 1+$\_$exp();}
   @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
@@ -106,8 +106,8 @@ Trait odd=class {//if _pow(x)== x**_exp(), pow(x) == x**(1+_exp())
 }
 //`compose' performs a step of iterative composition
 Trait compose(Trait current, Trait next){
-  current = current[rename exp->$\_$exp, pow->$\_$pow];
-  return (current+next)[hide $\_$exp, $\_$pow];}
+  current = current[rename exp()->$\_$exp(), pow(x)->$\_$pow(x)];
+  return (current+next)[hide $\_$exp(), $\_$pow(x)];}
 @requires(exp>0)//the entry point for our metaprogramming
 Trait generate(Int exp) {
   if (exp==1) return base;

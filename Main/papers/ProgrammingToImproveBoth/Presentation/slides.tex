@@ -1,0 +1,332 @@
+
+\begin{frame}[fragile]
+\frametitle{Subtyping and Subclassing}
+
+\begin{itemize}
+\item Subtyping without subclassing;
+easy: Java interfaces
+
+\item Subclassing without subtyping;
+hard:
+\begin{lstlisting}[language=Java]
+  class A{ int ma(){ return Utils.m(this); } }
+  class Utils{ static int m(A a){..} }
+  class B extends A{ int mb(){return this.ma();} }
+  ..
+  new B().mb();
+\end{lstlisting}
+\end{itemize}
+
+
+This-leaking problem:
+\Q@this@ written in class \Q@A@ is of type \Q@A@.
+when \Q@B@ inherits the code of \Q@A@,
+code \Q@Uitls.m(this)@ would pass a \Q@this@
+as an \Q@A@. To be sound, 
+\Q@B@ $\leq$ \Q@A@ must hold. 
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Reusing code without inducing subtyping}
+
+\begin{itemize}
+\item DeepFJig
+\item TraitRecordJ
+\item PackageTemplate
+\end{itemize}
+Widely different approaches,
+similar core ideas that we synthesize and improve:
+separating code from use and code for reuse
+
+\begin{itemize}
+\item Code Reuse: traits can be reused to produce more code
+\item Code Use: classes can be instantiated and used as a type
+\end{itemize}
+
+No subclassing: only trait reuse.
+
+Interfaces as the only way to induce subtyping.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{This leaking in our approach}
+
+\begin{lstlisting}
+ IA={interface method int ma()} //interface with abstract method
+ Utils={static method int m(IA a){return ...} }
+ ta={implements IA //This line is the core of the solution
+ method int ma(){return Utils.m(this);}}
+ A=Use ta
+ B=Use ta
+\end{lstlisting}
+
+\Q@this@ written in trait \Q@ta@ is of type \Q@This@ and \Q@IA@.
+when \Q@B@ inherits the code of \Q@ta@,
+code \Q@Uitls.m(this)@ would pass a \Q@this@
+as an \Q@IA@. In this way, even if
+\Q@B@ and \Q@A@ share the same code, there
+are not in a subtype relation.
+(Note that \Q@t@ is not a valid typename)
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Trait composition}
+The composed code contains all members from the used traits.
+Methods with same name and type signature are summed into a single one.
+At most one of those summed methods
+can have a body, which will be propagated into the result.
+
+\begin{lstlisting}
+t1={
+  String hello();
+  String helloWorld()=hello()+" World";
+  }
+
+t2={ String hello()="Hi"; }
+
+t3= Use t1,t2
+//-- flatten to ---------------------------
+t3= {
+  String hello()="Hi";
+  String helloWorld()=hello()+" World";
+  }
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Handling State}
+How to make this process work with constructors and fields
+while achieving the following goals:
+\begin{itemize}
+\item managing fields in a way that borrows the elegance of summing methods;
+\item actually initializing objects, leaving no \Q@null@ fields;
+\item making it easy to add new fields;
+\item allowing self instantiation: a trait method can instantiate the class using it.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Abstract State Operations}
+Idea: use abstract methods as getter, setters and factory methods.
+
+Conventionally, an abstract class is a class with some abstract method
+
+Here, a class whose abstract methods can be seen as state operations is a
+concrete coherent class.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Coherent class}
+\begin{itemize}
+\item A class with no abstract methods is coherent (just like Java
+  \Q@Math@, for example). Such classes have no instances and are only useful for calling static methods.
+\item A class with a single abstract \Q@static@ method 
+returning \Q@This@ and with parameters $T_1\ x_1, \ldots, T_n\ x_n$
+is coherent if all the other abstract methods can be seen as \emph{abstract state
+operations} over one of $x_1, \ldots, x_n$.
+That is:
+\begin{itemize}
+\item A method $T_i\ x_i$\Q@()@ is interpreted as an abstract state method: a \emph{getter} for $x_i$.
+\item A method \Q@void @$x_i$\Q@(@$T_i\ $\Q@ that)@ is a \emph{setter} for $x_i$.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Example}
+\Q@Point@s with algebraic operations:
+
+\Q@Point.of(3,4)@  static factory method
+
+\Q@Point.of(3,4).x()==3@,\ \   \Q@Point.of(3,4).y()==4@ getters
+
+\Q@Point.of(1,2).sum(Point.of(10,20))@ equivalent to \Q@Point.of(11,22)@
+
+NOTE: sum operation creates a new point
+\\*${}_{}$\\*
+If no code reuse is desired, it is easy to use Java to encode such \Q@Point@ class.
+However,we would like to define operations \Q@sum@, \Q@mul@, \Q@div@ and \Q@sub@
+independently and compose them to create classes with the operations we want,
+so that it is easy to have points with \Q@sum@ and \Q@mul@, points with
+just \Q@sum@ or points with just \Q@mul@.
+
+For example, we expect \Q@PointSumMul.sum(PointSumMul) : PointSumMul@.
+
+This breaks subtyping: \Q@PointSumMul@ $\not\leq$ \Q@PointSum@.
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Abstract state}
+\begin{lstlisting}
+p= { //point trait with abstract state
+  method int x() //getter for field x
+  method int y() //getter for field y
+  static method This of(int x,int y) //factory method
+  }
+
+Point= Use p //this is a concrete coherent class
+...
+.. Point.of(3,7).x() ..//valid code
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Abstract state}
+\begin{lstlisting}
+p={method int x()  method int y()
+  static method This of(int x,int y)}
+
+pointSum= Use p, {
+  method This sum(This that){
+    return This.of(this.x()+that.x(),this.y()+that.y());
+    }}
+
+pointMul= Use p, {
+  method This mul(This that){
+    return This.of(this.x()*that.x(),this.y()*that.y());
+    }}
+
+pointDiv= ...
+
+MyPoint= Use pointSum,pointMul,pointDiv,...
+
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Case study 1:}
+Encoding the point example above, with the 4 arithmetic operations,
+and instantiating all the 16 possible permutations as separate classes:
+\begin{center}
+\begin{tabular}{@{} l l l l @{}}
+%\toprule
+Language       & Lines of code & members & classes/traits\\
+%\rule%\midrule
+Java7           &  $115$        & $50$                &      $16$\\
+Classless Java &   $82$          & $34$                &      $16$\\
+Scala          &   $81$  &  $40$                 &    $21$\\
+\name          &   $32$ & $7$                 &      $21$\\
+%\bottomrule
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{State extensibility}
+
+%flavored= { method Flavor flavor()}
+\begin{lstlisting}
+p={method int x()  method int y()
+  static method This of(int x,int y)}
+pointSum= Use p, {
+  method This sum(This that){
+    return This.of(this.x()+that.x(),this.y()+that.y());
+    }}
+
+colored= { method Color color() }
+
+CPoint= Use pointSum,colored,{
+  static method This of(int x,int y){
+    return This.of(x,y,Color.of(/*red*/));
+    }
+  static method This of(int x,int y,Color color) 
+  }
+\end{lstlisting}
+
+Done in this way, \Q@CPoint.sum@ would return red points.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{State extensibility, with withers}
+\vspace{-1ex}
+A wither is like a field setter, but creates a new copy of the object
+\vspace{-1ex}
+ \begin{lstlisting}
+p= { 
+  method int x()
+  method int y()
+  method This withX(int that)
+  method This withY(int that)
+  method This merge(This that)
+  }
+pointSum= Use p, { 
+  method This sum(This that){
+    return this.merge(that)
+      .withX(this.x()+that.x()).withY(this.y()+that.y());
+  }}
+colored= {
+  method Color color()
+  method This withColor(Color that)
+  method This merge(This that){
+    return this.withColor(this.color().mix(that.color());
+  }}
+CPoint= Use pointSum,colored,{
+  static method This of(int x, int y, Color color)}
+\end{lstlisting}  
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{Independent extensibility}
+
+ \begin{lstlisting}
+flavored= {
+  method Flavor flavor()
+  method This withFlavor(Flavor that)
+  method This merge(This that){
+    return this.withFlavor(that.flavor());
+  }}
+FCPoint= Use //aliasing conflicting implementations
+  colored[super merge as m1],
+  flavored[super merge as m2],
+  pointSum,{
+    method This merge(This that){
+      return this.m1(that).m2(that);
+    }
+    static method This of(
+      int x, int y, Color color, Flavor flavor)
+    }
+\end{lstlisting} 
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{More in the paper}
+
+\begin{itemize}
+\item Transparent handling of nested classes
+\item \Q@This@ type generalized for family polymorphism
+\item A very natural encoding of the Expression Problem 
+\item Simple formalization of our language
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Thanks}
+${}_{}$\\*
+${}_{}$\\*
+${}_{}$\\*
+${}_{}$\\*
+Questions?
+\end{frame}
+
+%\begin{frame}[fragile]
+%\frametitle{This leaking in our approach}
+%\end{frame}
+
+%\begin{frame}[fragile]
+%\frametitle{This leaking in our approach}
+%\end{frame}

@@ -9,7 +9,7 @@ if we supply method bodies respecting these contracts, we will get \emph{correct
 Many works in literature allow adapting traits by renaming or hiding methods\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
 Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
 
-The /compose/ method starts by renaming the /exp/ and /pow/ methods of /current/
+The /compose(current,next)/ method starts by renaming the /exp()/ and /pow(x)/ methods of /current/
 so that they satisfy the contracts in /next/ (which will be 
 /even/ or /odd/).
 The /+/ operator is the main way to compose traits%
@@ -21,8 +21,9 @@ To make sure that the traditional /+/ operator also handles contracts, we need t
 For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work.
 Thanks to this constraint \textbf{the sum operator also preserves code correctness}. %\IO{There are many variations of the /+/ operator, in particular, we could easily extend our contract matching to work with an nary operator}.
 
-The sum is executed when the method /compose/%\IO{\footnote{\IO{a generic implementation of this method that renames and hides conflicting methods has been implemented L42~\cite{l42}}}}
-runs, if the matched contracts are not identical an exception will be raised. A leaked exception during compile-time metaprogramming would become a compile-time error. 
+The sum is executed when the method /compose/
+%\IO{\footnote{\IO{a generic implementation of this method that renames and hides conflicting methods has been implemented L42~\cite{l42}}}}
+runs: if the matched contracts are not identical an exception will be raised. A leaked exception during compile-time metaprogramming would become a compile-time error. 
 Our approach is very similar to~\cite{servetto2014meta}, and does not guarantee the success of the code generation process, rather it guarantees that if it succeeds, correct code is generated.
 
 Finally the /$\_$pow(x)/ and /$\_$exp()/ method are hidden, so that the structural shape of the result is
@@ -40,26 +41,26 @@ generate(7) == c(generate(6),odd) == ...
 \vspace{-1ex}
 As /base/ represents /pow1(x)/; /c(base,even)/ represents /pow2(x)/. Then \Q@c(/*pow2(x)*/,odd)@ represents \Q@pow3(x)@, \Q@c(/*pow3(x)*/,even)@ represents \Q@pow6(x)@, and finally,
 \Q@c(/*pow6(x)*/,odd)@ represents \Q@pow7(x)@.
-The code of each /$\_$pow/ method is only executed once for each top-level /pow/ call, so the /hide/ operator can inline them.
+The code of each /$\_$pow(x)/ method is only executed once for each top-level /pow(x)/ call, so the /hide/ operator can inline them.
 Thus, the result could be identical to the manually optimized code in line 7.
 
 %\IO{We are investigation how an additional check can be performed to ensure the resulting code has specific contracts. However, our approach does guarantee that the result will be correct according to whatever contracts it contains.} 
 
-Our approach, as presented in this \IO{extended abstract}, only guarantees that \IO{code resulting from metaprogramming} follows its own contracts, it does
-not \MS{statically} ensure what \IO{those contracts may be}. As future work, we are investigating how \IO{the resulting contracts can be ensured to have a particular meaning} \MS{or form}.
-To do so, we need to \IO{allow assertions on the contracts of /Trait/s to be used within pre//post conditions.}
+Our approach, as presented in this extended abstract, only guarantees that code resulting from metaprogramming follows its own contracts, it does
+not statically ensure what those contracts may be. As future work, we are investigating how the resulting contracts can be ensured to have a particular meaning or form.
+To do so, we need to allow assertions on the contracts of /Trait/s to be used within pre//post conditions.
 For example we could allow post conditions like\\*
 %\begin{lstlisting}[numbers=none]
 /@ensures(result.$\mathit{methName}$.ensures ==\ $\mathit{predicate}$)/ \\*
 %\end{lstlisting}
-\IO{to mean that the resulting /Trait/ has}
+to mean that the resulting /Trait/ has
 a method
 called $\mathit{methName}$, whose /@ensures/ clause is syntactically identical to  /$predicate$/; whilst
 \\*
 /@ensures(result.$\mathit{methName}$.ensures ==>\ $\mathit{predicate}$)/
 \\*
-would \IO{use a static verifier to ensure that $\mathit{methName}$'s /@ensures/ clause logically implies $\mathit{predicate}$.}
-With \IO{these two features} we could annotate the method /generate/ in line 32 \IO{above} as:
+would use a static verifier to ensure that $\mathit{methName}$'s /@ensures/ clause logically implies $\mathit{predicate}$.
+With these two features we could annotate the method /generate(exp)/ in line 32 above as:
 \begin{lstlisting}
 @requires(exp>0)
 @ensures(result.exp().ensures ==> (result==exp))
@@ -68,8 +69,8 @@ Trait generate(Int exp) {...}
 \end{lstlisting}
 
 \vspace{-1ex}
-In this way, we could statically verify the /generate/ method, however we fear such verification will be too complex or impractical. 
-We could instead automatically check the above postconditions after each call to /generate/. If /generate/ is used to define a class (such as /Pow7/ above), we will guarantee that such class has the correct contracts, before it is used. Thus
+In this way, we could statically verify the /generate(exp)/ method, however we fear such verification will be too complex or impractical. 
+We could instead automatically check the above postconditions after each call to /generate(exp)/. If /generate(exp)/ is used to define a class (such as /Pow7/ above), we will guarantee that such class has the expected contracts, before it is used. Thus
 there is no need to ensure the correctness of the metaprogram itself: such runtime checks are sufficient to ensure that after compilation, the code produced by metaprogramming has its expected behaviour.
 %\IODel{In this case we could defer those difficult//novel predicates to run-time checks, without losing much safety:
 %Iterative Composition execute metaprogramming code at

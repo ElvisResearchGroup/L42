@@ -1,3 +1,12 @@
+failing tests
+-----------------------
+refactor.TestInvariantClose 1,2,3,4,6
+repl.CachingTest 
+newReduction.TestL42F 0,5,6,7,9
+testAux.TestPassingPrograms //check and remove?
+widgetGui.TestTests SafeMovable
+--------------
+
 mut T bar = ...
 mut T foo = IMList[mutelems: bar];
 
@@ -418,7 +427,11 @@ refine methods:
   nope, never a good target
 interface methods:
   local rename them is ok,
-    but the target name need to be globally renamed
+    //NObut the target name need to be globally renamed
+    on default is renamed in the implemented classes, and is error
+    to hide a refine method.
+    Can be tuned by [rename I.foo()=>I.bar(), B.bar()=>B.foo()]
+    to insert delegation methods B.foo()=this.bar().
   L[Cs.s=>Cs.s'] //ok if refine s' never appear public
   moving them makes no sense.
   lifting them is ok, behaviour is syntetised with switch.
@@ -445,6 +458,208 @@ close Csz; Rs
   forall Cs.s->.. remove the method body
 4 forall  ..->Cs or ..=>Cs mapping sum the moved class bodies
   forall method mapping move the methods declarations 
+
+
+principles:
+  all visible names should be renamable
+
+
+private interfaces have all methods private
+private class need to have closed state
+well formedness a class with private abstract methods need to have those coherent on their own
+private abstract refine are not well formed
+
+
+{
+  I: {interface method T foo() }
+  B: {implements I
+    class method factory(T foo)
+    refine method T foo()
+    method bar()
+  }
+[rename I.foo => I.bar]
+[close B(???)]
+[E.eq=>_; C.eq->C.eq]
+
+{
+  I: {interface method T foo() }
+  B: {implements I
+    class method factory(T foo) factory_1(foo)
+    class method factory_1(T foo) 
+    refine method T foo() foo_1()
+    method T foo_1()
+    method bar() // try to close bar, fail as not part of constructor
+  }
+
+//ok since B would public open state not coherent
+[rename I.foo => _]
+//B public with coherent close state, unexpected?
+May be:
+  if one is hiding a set of abstract methods, it check that the hidden one is coherent on its own.
+
+what Close should do since multiple constructors exists
+
+/*
+1. Implement interface somewhere else (not inside class decl)
+2. Implement interface multiple times (have a different 'default', or allow manual selecting at each point (I1)A)  (I)(I1)myA != (I)(I2)myA
+3. Only 'see' some methods of implemented interfaces, in different contexts...(((I)A).foo !=> A.foo)
+4. Conflicting name support (implementing interfaces with methods of the same name, having non refine methods with the same name, etc..)
+5. One implementation, for multiple classes at the same time.../automatic implementation
+6. Self type
+-----------
+Guarantees:
+1. One way casting ( (I)(A)a !=> (A)(I)a )
+2. Final methods (we know what (I)a.foo will do.., but maybye not (I)a.bar)
+3. more control on who can and can't implement....
+*/
+
+
+subtype
+semantic indepentent from types
+a.foo() ===(  T x=a, x.foo())
+
+interface I { foo }
+class A: I { foo = e1 } // option 1, myA.foo == ((I)myA).foo == e1
+class B: I { foo = e1; I.foo = e2 } // option 2 myA.foo == e1, ((I)myA).foo == e2
+class B: I { I.foo = e2 } // ! myA.foo , ((I)myA).foo = e2
+
+class C: { 
+  void foo() { return e1; } }
+class B: C {
+  /*new*/ void foo() { return e2; } }
+// myB.foo() == e2, ((C)myC).foo() == e1
+
+
+myC = { bar() this.foo()  foo() 1 }
+myB = myC + { foo() 2 }
+
+myB.foo() == 2, myC.bar() = 1
+
+
+without 4
+{
+I1:{foo()}
+I2:{bar()}
+B:{A_1:{implements I1 I2
+  foo()=e1
+  bar()=e2
+  }}
+}[rename I2.bar => I2.foo]
+with 4
+{
+I1:{foo()}
+I2:{foo()}
+B:{A_1:{implements I1 I2
+  I1.foo()=e1
+  I2.foo()=e2
+  }}
+}[rename I1=>I2]
+
+{
+  I1:{foo()}
+  I2:{bar()}
+  B:{A_1:{implements I2 bar()=e1}}
+}[rename I1=>I2]
+since B privatly implements I2
+  I2 can not get more methods
+
+B privatly implements I1,I2
+B friend of A
+
+{I:{inteface Foo foo()}
+B:{implements I
+  refine Foo foo()
+  class method This (Foo foo)
+  }
+}[hide I.foo()]
+=
+{I:{inteface Foo foo_1()}
+B:{implements I
+  refine Foo foo_1()
+  class method This (Foo foo)
+  }
+}
+===
+{I:{inteface Foo foo_1()}
+B:{implements I
+  Foo foo()this.foo_1()
+  refine foo_1() //this.foo()
+  class method This (Foo foo)
+  }
+}[hide I.foo()]
+
+-------------------------
+{I:{inteface Foo foo()}
+B:{implements I
+  refine Foo foo() e
+  }
+}//[hide I.foo()]
+[rename I.foo()=>I.bar()]//[rename I.foo()=>I.bar(), B.bar()=>B.foo()]
+=
+{I:{inteface Foo bar()}
+B:{implements I
+  refine Foo bar() this.foo() //refine Foo bar() e
+  Foo foo()e //
+  }
+}
+
+B: {
+  Foo foo() e
+}[foo ~> bar] // forward body to bar (insert sig if neccesary)
+-------
+B: {
+  Foo foo() this.bar()
+  Foo bar() e
+}
+[foo => bar, bar ~> foo]
+
+
+{I:{inteface Foo bar()}
+ B:{implements I refine Foo bar() e}
+}[rename I.foo()=>I.bar()]
+
+
+{I:{inteface Foo foo_1()}//case1 //consistent with rename
+B:{implements I  refine Foo foo_1() e } } //bad because no request to mod B
+{I:{inteface Foo foo_1()}//case2 //worst
+B:{implements I  Foo foo() this.foo_1()  refine Foo foo_1() e } }
+{I:{inteface Foo foo_1()}//case3 //good for state/abstract foo()
+B:{implements I  Foo foo() e  refine Foo foo_1() this.foo() } }
+
+{I:{inteface Foo bar()}
+B:{implements I  refine Foo bar() e } } //bad because no request to mod B
+
+
+today
+each Lib has ns
+if Lib declare non-refined member with n, n in owned ns
+if L1,L2 in project, L1 has n, L2 has n implies L1==L2
+
+
+project has ns mentioned
+reuse URL refresh ns with non mentioned ones
+A+B refresh private numbers
+rule top
+B=....
+A=EvilLib.makePrivateCall(B, "m")
+
+X:{
+  B={class method foo_1() }
+  A=Evil(B) --> {class method bar() B.foo_1()}
+}
+
+A=Trait({B={ foo()}
+ bar()B.foo()
+ })
+A[hide B.foo()]
+={B={ foo_1()}
+ bar()B.foo_1()
+ }
+
+X:{
+  B={ foo() }
+  A={ bar() B.foo()}
+}[unhide B.foo]
 
 {A: {TAF foo, TAB bar} B: {TBF foo TBB bar}}
 [A=>B, A.foo=>A.bar, B.bar=>B.foo]
@@ -580,3 +795,302 @@ C = {E:{} D:{This1.E m()}}[]
 C = {This0 m() thi} <+ {This1.C m()}
 
 getRight(L1, L2) = L2
+
+
+[a:A->B b:()->A]x={a: e1 b:e2 }
+[a:A->B ]y=x
+
+D::= enum T { KK }
+KK::=K{(T id)s}
+e ::= x | |x : T| e | K{(id:e)s} | match e { cases }
+case ::= case K{(id:id')s} => e
+
+e.id == match e { case [e]{id:r} => r } // only if e: T with a single case T
+//more flexible: case ?{id:r} works if the matched type have an id
+
+
+x = typeof(y! := e) in e'
+  // typechecks/compiles e to et, 
+  // defines in e':
+  //    x to be the type of et
+  //    y! compiles/expands to et
+
+x #= typeof(y := e); e'
+  ===>
+      x #= T;
+      T y := e;
+      e'
+// where it guesses T somehow...
+let x y=()->e in e'
+
+a' y := 3;
+a z := y;
+print(a');
+
+x #= typeof(y := 3);
+x z := y; // works!
+print(x); // prints 'int'
+
+
+
+
+from!(x, in: myList, where: x > 3, select: foo(x))
+  
+--> T y = myList.where(x -> x>3).select(x -> foo(x));
+
+
+  T := typeof(y := foo(x)); e' // fails! x is not in scope
+  a' _=lambda!(x,x->select)
+  ret[a] 
+  //myList.where(x -> x>3).select(x -> foo(x))
+
+x #= typeof(y := 3);
+
+returnBlock!(body: e[return! e])
+-->
+
+x #= typeof(y);
+  ...
+  x y := e;
+...
+
+
+
+e.x == case e 
+
+type T= T a:A->B b: ()->A
+x=T a:e1 b:e2
+type I= I a:A->B
+I y=I a:x.a
+
+
+
+converter[T, I] = ....
+
+
+x=e| e.f | {(f:e)s} | x->e
+x.f=3 === x=x[f=3]
+x[i]=3 === x=x[i=3]
+
+(x.f).g=3
+===
+x.f=x.f[g=3]
+===
+x=x[f=x.f[g=3]]
+
+2 questions?
+  do we no the exact type of everything?
+  do we have shared (mutable) memory?
+
+e.f = e' === e = T(e.f0, ..., e', ..., e.fn)
+x={f: 1};
+y = &x;
+x.f = 4;
+y->f == 1;
+
+
+x={f: 1};
+// &x ==> {get: -> x, set: x' -> x = x'};
+// *e ==> e.get()
+// *e = e' ==> e.set(e')
+// e == e' !!!
+// T* ....
+// foo(myVar: {get : ()->T, set: T->T})
+// foo(int* b) { *b = 3; }
+
+Get<T>{
+  Get(()->T f){check(f);this.f=f;}
+  final f:()->T
+  }
+
+T x=...
+()->T &x === ()->x
+Get<T> &x === Get<T>(f:()->x)
+Set<T> &&x == y->x=y
+
+Get<T> restriced form of ()->T
+e:Ts1 -> e':Ts2
+if e:Ts1 then e:Ts2
+e:Ts2
+NOT THE CASE that if e' : Ts2
+  there exists e : Ts1 such that e -> e'
+
+
+module foo(x1, ..., xn):
+   e
+
+==>
+foo := QQ[|
+  mody = (e; (x1, ..., xn));
+  x1 := mody.0;
+  ...
+  xn = mody.n;
+|]
+
+// import foo; e ==>
+DE-QQ(foo); e
+
+
+type x[x']: e; e'
+
+type x[x'] : e; e'
+newtype x = e; e'
+
+
+x' y:e0; 
+e1
+x' y=e0
+e1
+
+// reduces e to v
+// creates a new-type with fresh key-name k,
+//  returns e'[x := TYPE(k), x' := k]
+//  Where TYPE(k) is the type that k unlocks
+//  (there is a one to one correspondence between k and TYPE(k))
+// Key<TYPE(k), v> 
+//
+
+type x[x']: int; e'
+x' :: KEY<TYPE(k), int>
+
+KEY-TYPE(TYPE(k)).lock(e) // e :: v
+
+
+class Key{
+  Object unlock(Box b){ b.val;}
+  static class Box{ private Object val;}
+  }
+
+
+T,v    ::= x | TT | T -> T  | Int | n | t | box T v | DD
+e      ::= x | TT | e -> e' | Int | n | t | T x : e | e(e') | newtype e | unbox T e | box T e | DD[e] | T ~ e
+m      ::= x | TT | m -> m' | Int | n | t | T x : m | m(m') | newtype m | unbox T m | box T m | ...
+         | x #= m; m'
+
+// isaacss lang
+sigma |- sigma(k) :: TT
+----------------------
+sigma |- type(k) :: TT
+
+sigma | newtype T --> sigma, k -> T | {Type(k), DD[k]}
+
+...
+-------------------------
+sigma |- Key(T, T') :: TT
+
+----------------------------------------
+sigma |- k :: Key(Type(k), sigma(k)) // 2 syntactic-forms + 2  type rules
+                                     // you, + 1 more complex reduction rule, + RTE concept
+
+// your lang
+
+sigma |- sigma(t) :: TT
+-----------------------------
+sigma | t :: TT
+
+sigma | newtype T --> sigma, t -> T | {t, DD (t x -> unbox t x),  DD (t x -> box t x)}
+
+MagicFunction --> (T, aT)
+MagicFunction --> (T, _)
+-----------------------
+MagicFunction :: T, aT
+
+
+
+
+TT kt#=newtype*
+kt k=box kt TT//somehow check box kt happens only one time?
+Int->(kt->Int) hide =
+  fun Int v =fun(kt ki){return v}
+
+newtype v-> T, box: v, unbox
+
+<TT, t-> > {t, box,unbox}=newtype Int
+
+unbox (box t 3)->3
+
+----------------------------------------fresh(t)
+newtype Int -> {t, Int x: box t x, t x: unbox x}
+
+3 points:
+  1. optimisation (a newtype T is at least as 'good' as a T)
+  2. alias-reasoning (by following the 'k', you can reason as to how the newtype is used, and optimise accordingly)
+  3. Privacy (if you have a 't', you know nothing about it, except identity, and that it is a 't')
+
+x #= newtype Int;
+  x myX = box x 3; // box x e typechecks iff e is an Int
+  Int my3 = unbox myX; // tychecks iff myX is a 't'
+
+x #= TT->Int;
+  x myX = TT tt : 3; // box x e typechecks iff e is an Int
+  Int my3 = myX(TT); // tychecks iff myX is a 't'
+
+
+// Now I have that, I can make:
+
+makeTT #= TT t : t -> t;
+II #= makeTT(Int); // tt is the same as Int -> Int
+II->Int stupid := (II t : t(3)); // equivalent to: (Int -> Int t : t(3))
+...
+
+
+
+(Ref, get, object-ref!, field-ref!) := ( // library code
+  type Ref[k] : () -> Int;
+  get := Ref r -> k.unlock(r)();
+  //object-ref := T x -> k.lock(()-> x);
+  macro field-ref!(Expr e, Nat n) = (x = e; k.lock(()-> x.n));
+  (Ref, get, object-ref!, field-ref!)
+)
+// user code CANNOT directly use 'k' (it's not in scope)
+// but object-ref! and field-ref! are (and use k)
+
+
+x := e; // can refer to x'
+T x' =: e'; // can refer to x and x'
+e'' // same here
+
+
+circularList #= <Int, circularList>;
+circularList x := {1, {2, x}}; x
+->
+p -> <Int, p> | p x := {1, {2, x}}; x : p
+
+
+
+sigma |- e : T[p := sigma(p)]
+<------------------------------->
+sigma |- e : T
+
+
+----------------------------------------
+p -> <Int, p> , x->p|- {1, x} : p
+p -> <Int, p> , x->p |- x : p
+---------------------------------------------
+p -> <Int, p> |- p x := {1, {2, x}}; x : p
+
+
+-----------------------
+
+T x =: v === v[x := (T x =: v)]
+
+x = e; // x' is in scope
+T x' := e'; // nothin extra in scope
+e''; // x and x' are in scope
+
+TT c =: <Int, c> ===  <Int, TT c =: <Int, c>>
+
+
+
+p |-> <Int, p> | e[circularList := p]
+               |- p x := {1, {2, x}}; x
+...., x |- p   |- {1, {2, x}} : p
+
+e :: p
+
+
+
+
+
+// in 42, (x := e; T x' := e'; e'')
+
