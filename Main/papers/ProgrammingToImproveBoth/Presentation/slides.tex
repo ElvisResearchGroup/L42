@@ -31,6 +31,7 @@ as an \Q@A@. To be sound,
 \begin{frame}[fragile]
 \frametitle{Reusing code without inducing subtyping}
 
+Three different approaches separating subtyping and subclassing:
 \begin{itemize}
 \item DeepFJig
 \item TraitRecordJ
@@ -38,7 +39,7 @@ as an \Q@A@. To be sound,
 \end{itemize}
 Widely different approaches,
 similar core ideas that we synthesize and improve:
-separating code from use and code for reuse
+\emph{separating code from use and code for reuse}
 
 \begin{itemize}
 \item Code Reuse: traits can be reused to produce more code
@@ -47,19 +48,24 @@ separating code from use and code for reuse
 
 No subclassing: only trait reuse.
 
-Interfaces as the only way to induce subtyping.
+Interfaces are the only way to induce subtyping.
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{This leaking in our approach}
 
 \begin{lstlisting}
- IA={interface method int ma()} //interface with abstract method
- Utils={static method int m(IA a){return ...} }
- ta={implements IA //This line is the core of the solution
- method int ma(){return Utils.m(this);}}
- A=Use ta
- B=Use ta
+IA={interface
+  method int ma()
+  }
+Utils={
+  static method int m(IA a){return ...} 
+  }
+ta={implements IA
+  method int ma(){return Utils.m(this);}
+  }
+A=Use ta
+B=Use ta
 \end{lstlisting}
 
 \Q@this@ written in trait \Q@ta@ is of type \Q@This@ and \Q@IA@.
@@ -68,7 +74,7 @@ code \Q@Uitls.m(this)@ would pass a \Q@this@
 as an \Q@IA@. In this way, even if
 \Q@B@ and \Q@A@ share the same code, there
 are not in a subtype relation.
-(Note that \Q@t@ is not a valid typename)
+(Note that \Q@ta@ is not a valid typename)
 \end{frame}
 
 \begin{frame}[fragile]
@@ -80,17 +86,17 @@ can have a body, which will be propagated into the result.
 
 \begin{lstlisting}
 t1={
-  String hello();
-  String helloWorld()=hello()+" World";
+  method String hello();
+  method String helloWorld(){return hello()+" World";}
   }
 
-t2={ String hello()="Hi"; }
+t2={ method String hello(){return "Hi";} }
 
 t3= Use t1,t2
 //-- flatten to ---------------------------
 t3= {
-  String hello()="Hi";
-  String helloWorld()=hello()+" World";
+  method String hello(){return "Hi";}
+  method String helloWorld(){return hello()+" World";}
   }
 \end{lstlisting}
 \end{frame}
@@ -110,9 +116,9 @@ while achieving the following goals:
 
 \begin{frame}[fragile]
 \frametitle{Abstract State Operations}
-Idea: use abstract methods as getter, setters and factory methods.
+Idea: use abstract methods as getters, setters and factory methods.
 
-Conventionally, an abstract class is a class with some abstract method
+Conventionally, an abstract class is a class with some abstract method.
 
 Here, a class whose abstract methods can be seen as state operations is a
 concrete coherent class.
@@ -138,19 +144,24 @@ That is:
 
 
 \begin{frame}[fragile]
-\frametitle{Example}
-\Q@Point@s with algebraic operations:
+\frametitle{Example: \Q@Point@s with algebraic operations}
 
-\Q@Point.of(3,4)@  static factory method
+static factory method:
 
-\Q@Point.of(3,4).x()==3@,\ \   \Q@Point.of(3,4).y()==4@ getters
+\quad\quad \Q@Point p=Point.of(3,4)@
 
-\Q@Point.of(1,2).sum(Point.of(10,20))@ equivalent to \Q@Point.of(11,22)@
+getters:
 
+\quad\quad \Q@p.x()==3@,\ \ \ \   \Q@p.y()==4@
+
+summing points:
+
+\quad\quad \Q@p.sum(Point.of(10,20))@ equivalent to \Q@Point.of(13,24)@
+\\*${}_{}$\\*
 NOTE: sum operation creates a new point
 \\*${}_{}$\\*
 If no code reuse is desired, it is easy to use Java to encode such \Q@Point@ class.
-However,we would like to define operations \Q@sum@, \Q@mul@, \Q@div@ and \Q@sub@
+However, we would like to define operations \Q@sum@, \Q@mul@, \Q@div@ and \Q@sub@
 independently and compose them to create classes with the operations we want,
 so that it is easy to have points with \Q@sum@ and \Q@mul@, points with
 just \Q@sum@ or points with just \Q@mul@.
@@ -181,8 +192,11 @@ Point= Use p //this is a concrete coherent class
 \begin{frame}[fragile]
 \frametitle{Abstract state}
 \begin{lstlisting}
-p={method int x()  method int y()
-  static method This of(int x,int y)}
+p={
+  method int x()
+  method int y()
+  static method This of(int x,int y)
+  }
 
 pointSum= Use p, {
   method This sum(This that){
@@ -203,7 +217,7 @@ MyPoint= Use pointSum,pointMul,pointDiv,...
 
 
 \begin{frame}[fragile]
-\frametitle{Case study 1:}
+\frametitle{Case study 1: \Q@Point@s with algebraic operations}
 Encoding the point example above, with the 4 arithmetic operations,
 and instantiating all the 16 possible permutations as separate classes:
 \begin{center}
@@ -223,11 +237,14 @@ Scala          &   $81$  &  $40$                 &    $21$\\
 
 \begin{frame}[fragile]
 \frametitle{State extensibility}
-
+\vspace{-2ex}
 %flavored= { method Flavor flavor()}
 \begin{lstlisting}
-p={method int x()  method int y()
-  static method This of(int x,int y)}
+p={
+  method int x()
+  method int y()
+  static method This of(int x,int y)
+  }
 pointSum= Use p, {
   method This sum(This that){
     return This.of(this.x()+that.x(),this.y()+that.y());

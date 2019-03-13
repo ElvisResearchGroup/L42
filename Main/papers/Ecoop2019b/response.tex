@@ -1,0 +1,204 @@
+ We first would like to address the 4 main points of RevD.
+Then we answer the 2 explicit questions of RevC
+===========================================================================================
+-convince me the restrictions are not so severe
+Our system is designed to be used together with the box and the transform pattern.
+Using those, the restrictions of our systems are not severe.
+For example, the following concerns:
+
+1"there is no shortage of code knowingly violating invariants"(and fixing them later)
+2"they batch invariant checking in order to do it less often"
+3"to implement a binary tree" "use a separate wrapper"
+4"spec# can (with user guidance) check only once"
+5"in a simulation step"
+
+Can all be resolved by using the box pattern: a separate wrapper object storing data
+whose invariant is only meaningful when checked together.
+
+In general, we expect the box pattern to replace the expose block of spec#.
+Where spec# provide special syntax, we instead require adding new methods/wrapper
+objects to obtain similar results without adding special syntax/features.
+Later, we show code examples showing in concrete how to address points 1-2-3-4-5.
+
+-why the children() call in the GUI typecheck.
+This point is connected to other comments:
+ "leak out a mut alias to the capsule field", "differs in such important ways"
+The reviewer is right, our explanation of capsule fields is lacking.
+
+Capsule local variables are basically identical in Pony and Microsoft and L42.
+Pony and Microsoft capsule fields are not identical to local variable, since they are 
+implemented with destructive reads.
+
+Capsule fields in L42 are also very different from capsule local variable.
+Formally, they do not exists, all fields are either mut or imm.
+However, the syntactic sugar allows to annotate a field as capsule:
+it is just a private (mut) field that is only
+accessible in restricted ways and is only updated/initialized using a capsule.
+Those fields are usually referred as capsule fields.
+We will cite "Flexible recovery of uniqueness and immutability" 
+pg 169 doi:10.1016/j.tcs.2018.09.001 where those patterns are discussed.
+
+The restrictions on capsule mutators are one of such restricted ways to access capsule fields.
+**We will improve the paper by explaining the difference between capsule fields and capsule 
+local variables better.**
+
+About "read method read Widgets children(){return this.box.c;}":
+this.box is a mut field
+whose usage is restricted; in this case it will return a read reference and this.box.c can
+also be typed as read.
+Note that this.box inside of a capsule mutator does return a mut reference instead.
+L42 have two different syntax for the two cases: this.box() returns a read
+and this.#box() return a mut, and can only be used in a capsule mutator.
+We tried to avoid talking about the specific syntax of L42 to focus on the type problems,
+but we may have instead created more confusion.
+
+
+-there is more generality to the GUI case study
+
+The GUI case study is just an application of the Composite programming pattern,
+one of the most common programming pattern in OO.
+We also included more case studies in the appendix, of course you are not required
+to read the appendix, but their existence shows that we can support more then just the GUI.
+ In particular, we compare with some examples offered by spec# papers, showing clearly what
+ we can and can not check ("if the limitations of a system aren't encountered in an evaluation, why not?").
+
+
+-inheritance and syntactic checks in invariant bodies
+
+A simple solution to support conventional inheritance would be to require the invariant to only
+access final and private methods (plus the syntactic checks already required).
+Allowing overriding over methods called by the invariant can be very confusing.
+Consider the following example:
+class A{
+ Int f;
+ read method int f(){return this.f;}
+ read method Bool invariant(){this.f()>0;}
+ }
+class B extends A {
+  method int f(){return -this.f;}
+  }
+Class B is changing the meaning of the invariant method in A by overriding f().
+Is this intentional? Preventing such behaviour seams like a reasonable precaution.
+
+===========================================================================================
+Explicit answers to RevC:
+-Does Boogy/Spec# rely on object immutability as well?
+Yes, they have a concept of immutable classes, and invariants can access instances of
+immutable classes and owned objects. In the following article they expand Spec# to also
+consider immutable instances of classes allowing both mutable and immutable instances: "fffff"
+
+-Why do we care for reducing checks
+As shown in the GUI example, the number of checks in visible state semantic can explode
+exponentially, making the code unusable even for debugging purposes.
+On the other side, if we can keep the cost of runtime checks sufficiently low,
+it becomes feasible to keep those checks running in production,
+and to capture invariant failure exceptions and provide alternative behaviour.
+This could have great implications for security.
+For example, if all the objects able to perform Database actions had invariants,
+our system statically ensures that Database methods are only called from objects whose invariant holds.
+If we could prove that the invariant only allows for valid DB transaction, we would have a system
+that never perform a wrong transaction.
+
+===========================================================================================
+Response to other comments:
+
+-------------------------------------
+Answers to other points of RevD
+-There are no redundant checks in the capsule mutators: since 'this' is used only once,
+ 'this' can not appear also in the form 'this.x=e' (thus a second invariant check can not be triggered)
+
+-"invariant can only access capsule and imm fields":
+also Spec# restrict what data can be accessed in the invariant, and is basically limited
+to owned and immutable fields too. (ISAAC CHECK!!!)
+
+-line 685 and capsule fields access:
+line 685 contains the definition of the method makeBox().
+The parameter is a capsule, the result is mut, thus the method perform recovery and produces a capsule.
+The method do not involve any capsule field, so we are unsure we understand the comment of RevD
+
+-reference capability 
+  If the reviewers think is more appropriate, we will change the terminology to use reference capability.
+
+-externally unique
+Neither the work of Microsoft, Pony or L42 support externally uniqueness.
+The ROG of an externally unique object can contains shared mutable objects,
+if the ROG of such objects do not point back to the initial externally unique object.
+On the other side, isolated, iso and capsule all guarantees that the whole mutable ROG
+is under the control of the isolated/iso/capsule reference.
+
+-prevent any clear class of these pathologies.
+We are not sure what revD mean here; L42 have no 'null' and if an invariant call
+somehow throw an error (unchecked exception) then according to our definition, such invariant does
+not hold, but the invariant implementation is not 'wrong'. We would expect the user to 
+throw personalized error messages instead of just returning false in order to produce better error messages.
+
+-how this allows for an invariant to be violated for a non trivial period of time
+The invariant must hold for all the objects involved in execution.
+If an object is not in the ROG of any parameter (including this) of the current method,
+clearly such object is not involved in execution and its invariant can be freely broken.
+ See the code snippet for cases 1-2.
+
+
+-soundness concerns:
+  In the formal calculus all errors are "unchecked exceptions".
+  SES requires that if a try catch captures an unchecked exceptions then the body of the try
+is typechecked using "read" instead of "mut" for all the local variables.
+  To transfer this knowledge from local variables to object locations, we annotate the try with
+the set of preserved locations.
+  Thus, if "l" was visible from outside then it could not be mutated, thus l.f=v would not typeckeck.
+  On the other side, if l.f=v typechecked, it means that l is not visible outside.
+  Then, having that constrain as a syntactic well formedness or as a typing requirement just moves 
+where the proof have to take care of it: progress (in our case) or subject reduction
+ (in the variant proposed by the reviewer).
+  This reasoning is hidden in the paper under Assumption 1 (progress), since any type system
+ supporting Assumption 1 would have to take care of this detail.
+
+-the system can no longer be used for concurrency
+Concurrency support leverage on capsule and immutable local variables.
+Concurrency do not leverage on capsule fields in both L42 and the language of Microsoft.
+We are unsure about Pony, their actor model may internally implement the mailbox as a list of capsules.
+The destructive reads of Microsoft make it easier to call concurrent operations using input
+ from isolated fields, but when concurrency start, it does it over isolated/capsule references, not fields.
+
+
+-------------------------------------
+We thank RevB for their positive comments of our paper and that "it will make a nice addition to Ecoop".
+Answering some of their particular points: 
+
+"y=this x=this y.f=x" is allowed by our system and the resulting object would have a circular object graph.
+Such object can be promoted as imm, and the whole ROG would be immutable.
+(L42 have no static fields)
+
+Object capabilities control non determinism and I/O. They are essential in the discussion after line 530
+
+------------------------------------------
+We agree with RevC that we should have clarified more
+that our model essentially imposes the box and the transform pattern.
+
+
+-----------Code, possibly to put after the 800 words
+Code examples showing how to handle point 1-5 in the details:
+1,2: violating invariants and fixing it later, or executing the invariants in batch
+class ABox{int a;int b;}
+class A{
+ capsule ABox box;
+ read method Bool invariant(){this.box.a>this.box.b;}
+ mut method Void play(){
+   mut ABox inner=this.box;
+   inner.a=5;///may break invariant
+   inner.b=3;///fix invariant
+   //invariant checked here
+   }}
+3: binary trees; note how the invariant can reason on the overall shape of the TreeBox:
+class TreeBox{mut TreeBox left, mut TreeBox right}
+class Tree{capsule TreeBox box; 
+  read method Bool invariant(){... this.box ...}}
+4:in spec# the user may write 
+  Void a() {doA(this.state) expose{doB(this.state); doC(this.state);} doD(this.state)}
+in L42 they would need to write the more verbose
+  mut method Void a() {doA(this.state) this.capsuleMutator(); doD(this.state);}
+  mut method Void capsuleMutator() {mut box=this.state; doB(box); doC(box);}
+As you can see, the user can still guide the invariant checking, but it uses programming patterns
+instead of a dedicated syntax.
+5:About 5, consider the Family example of appendix C: the box pattern triggers the
+invariant only after a complete simulation step.
