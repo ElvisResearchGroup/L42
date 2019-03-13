@@ -14,11 +14,12 @@ For example, the following concerns:
 
 Can all be resolved by using the box pattern: a separate wrapper object storing data
 whose invariant is only meaningful when checked together.
+Later, we show code examples showing in concrete how to address points 1-2-3-4-5.
 
 In general, we expect the box pattern to replace the expose block of spec#.
 Where spec# provide special syntax, we instead require adding new methods/wrapper
-objects to obtain similar results without adding special syntax/features.
-Later, we show code examples showing in concrete how to address points 1-2-3-4-5.
+objects. In this way we get a level of control very similar to the one of spec# but
+without the need of adding (and formalizing, and proving correct) special syntax/features.
 
 -why the children() call in the GUI typecheck.
 This point is connected to other comments:
@@ -85,7 +86,15 @@ Explicit answers to RevC:
 -Does Boogy/Spec# rely on object immutability as well?
 Yes, they have a concept of immutable classes, and invariants can access instances of
 immutable classes and owned objects. In the following article they expand Spec# to also
-consider immutable instances of classes allowing both mutable and immutable instances: "fffff"
+consider immutable instances of classes allowino riguarda cosa fare insieme a me piacerebbe riprendere il lavoro su aliasing, le idee in ballo sono:
+
+- type inference con le sharing relations (SAC 2018) mista a controllo per “lent” e quindi “readable"
+- type system incrementale
+- semantica operazionale con modello "misto" in cui lo store è a parte
+
+sulle prime due cose se non ricordo male avevamo già scritto un po', credo siano le cose rimaste nella directory APLAS18
+
+come scadenza (se no non si fa nulla) potremmo darg both mutable and immutable instances: "fffff"
 
 -Why do we care for reducing checks
 As shown in the GUI example, the number of checks in visible state semantic can explode
@@ -120,11 +129,14 @@ The method do not involve any capsule field, so we are unsure we understand the 
   If the reviewers think is more appropriate, we will change the terminology to use reference capability.
 
 -externally unique
-Neither the work of Microsoft, Pony or L42 support externally uniqueness.
+Neither the work of Microsoft, Pony or L42 support external uniqueness.
 The ROG of an externally unique object can contains shared mutable objects,
 if the ROG of such objects do not point back to the initial externally unique object.
 On the other side, isolated, iso and capsule all guarantees that the whole mutable ROG
 is under the control of the isolated/iso/capsule reference.
+A good explanation of this common misconception can be found in
+Capabilities for Uniqueness and Borrowing, Philipp Haller and Martin Oderskypg 360 fig3,
+where the arrow 's' is allowed in external uniqueness but not in separate uniqueness.
 
 -prevent any clear class of these pathologies.
 We are not sure what revD mean here; L42 have no 'null' and if an invariant call
@@ -193,11 +205,16 @@ class A{
 class TreeBox{mut TreeBox left, mut TreeBox right}
 class Tree{capsule TreeBox box; 
   read method Bool invariant(){... this.box ...}}
+Note that Spec# allows to specify methods able to take objects whose invariant is not known to hold.
+The box pattern also emulate that behaviour: in this example the Tree 
+correspond to a Spec# Tree where the invariant
+is known to hold, while the TreeBox correspond to a Spec# Tree where the invariant is not known to hold.
 4:in spec# the user may write 
-  Void a() {doA(this.state) expose{doB(this.state); doC(this.state);} doD(this.state)}
+    Void a() {doA() expose{doB(); doC();} doD()}
 in L42 they would need to write the more verbose
-  mut method Void a() {doA(this.state) this.capsuleMutator(); doD(this.state);}
-  mut method Void capsuleMutator() {mut box=this.state; doB(box); doC(box);}
+    mut method Void a() {doA(this.state) this.capsuleMutator(); doD(this.state);}
+    mut method Void capsuleMutator() {mut Box box=this.state; doB(box); doC(box);}
+Where this.state is the field of the box pattern.
 As you can see, the user can still guide the invariant checking, but it uses programming patterns
 instead of a dedicated syntax.
 5:About 5, consider the Family example of appendix C: the box pattern triggers the
