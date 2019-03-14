@@ -40,39 +40,25 @@ This point is connected to the comments: "leak out a mut alias to the capsule fi
 
 We agree that our explanation of capsule fields is indeed lacking.
 
-Capsule local variables are basically identical in Pony and Microsoft and L42. They use linear types to
-guarantee that they are used only once.
-Pony and Microsoft capsule fields are not identical to local variables,
-since they are implemented with destructive reads.
+Capsule expressions and local variables are identical in Pony, Microsoft and L42. Linear types ensures that variables are used only once.
+Capsule fields in Pony, Microsoft and L42 must be initialized and updated 
+with capsule expressions.
+However using destructive reads in Pony and Microsoft a capsule field access produces a capsule reference.
+L42 supports many ways to access capsule fields.
+In the one relevant for our paper a capsule field access (this.f) has the modifier of the receiver: if 'this' is 'mut', 'this.f' is 'mut'; if 'this' is 'read', 'this.f' is 'read'; if 'this' is 'capsule', 'this.f' is 'capsule'.
+Moreover, any 'mut method' accessing capsule fields must satisfy the requirements of capsule mutators.
+Those access requirements are designed to avoid representaiton exposure.
 
-Capsule fields in L42 are also very different from capsule local variable.
-Formally, they do not exists: all fields are either mut or imm.
-However, in L42 a field can be annotated as capsule.
-Such field is a mut field that is accessible only in restricted ways and is only
-updated/initialised using a capsule.
 We will cite "Flexible recovery of uniqueness and immutability" 
-pg 169 doi:10.1016/j.tcs.2018.09.001 where these patterns are discussed.
-L42 support capsule fields following various kinds of restrictions, and 
-the restrictions on capsule mutators explained after line 360
-can be seen as an extension to L42 and are one such restricted way to access capsule fields.
-Such restrictions can be enforced by looking to the code of the class in isolation,
-thus they do not require any change in the type system.
-The crucial detail is that accessing a capsule field outside of a capsule mutator
-produces a read reference.
+pg 169 doi:10.1016/j.tcs.2018.09.001 where variations on these restrictions  are discussed.
+This paper shows that capsule fields can be formalized/encoded as mut fields whose use is restricted by applying syntactic restrictions to class code in isolation.
 
 **We will improve the paper by explaining the difference between capsule fields and capsule local variables better.**
 
 About "read method read Widgets children(){return this.box.c;}":
 
-'this.box' is a capsule field: a mut field whose usage is restricted.
-Since children() is not a capsule mutator, 'this.box' will return a read reference
-and 'this.box.c' can also be typed as read.
-
-L42 have two different syntax expressions for the two cases: 'this.box()' returns a read
-and 'this.#box()' return a mut, and can only be used in a capsule mutator.
-We tried to avoid talking about the specific syntax of L42 to focus on the type problems,
-but we may have instead created more confusion.
-
+'this.box' is a capsule field accessed on a read 'this'. 'this.box' will return a read reference
+and 'this.box.c' is also read.
 
 - there is more generality to the GUI case study
 ------------------------------------------------
