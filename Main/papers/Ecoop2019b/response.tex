@@ -341,7 +341,7 @@ class FullNode implements Node{
   read method Bool sorted() {
     if(!this.right.isEmpty() && this.right.get().min()<=this.value) {return false;}
     if(!this.left.isEmpty() && this.left.get().max()>=this.value) {return false;}
-    return true;
+    return this.right.sorted() && this.left.sorted();
   }
   Int value;
   mut Node left;
