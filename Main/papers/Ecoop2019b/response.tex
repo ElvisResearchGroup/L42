@@ -279,14 +279,23 @@ In actual L42 the could could be much more compact, but we show the solution in 
 that is more verbose since it is more similar to Java.
 ----------------   
 class Tree {
-  capsule TreeBox box=new TreeBox();
-  mut method Void add(Int value) {TreeBox b=this.box; b.root=b.root.add(value);}
+  capsule TreeBox box;
+
+  Tree(){this.box=new TreeBox();}//invariant check after constructor
+
+  mut method Void add(Int value) {//this is a capsule mutator
+    TreeBox b=this.box;//only use of 'this' is here
+    b.root=b.root.add(value);//invariant check after this line is completed
+  }
   read method Bool isEmpty() {return this.box.root.isEmpty();}
-  mut method Void delete(Int value) {TreeBox b=this.box; b.root=b.root.delete(value);}
+  mut method Void delete(Int value) {//this is a capsule mutator
+    TreeBox b=this.box;//only use of 'this' is here
+     b.root=b.root.delete(value);//invariant check after this line is completed
+  }
   read method Bool invariant() {return this.box.root.sorted();}
 }
 
-class TreeBox{ mut Node root=new EmptyNode();}
+class TreeBox{ mut Node root; TreeBox(){this.root=new EmptyNode();} }
 
 interface Node{//L42 has no null; we must use subtyping or library support for optional types
   read method Bool isEmpty();
