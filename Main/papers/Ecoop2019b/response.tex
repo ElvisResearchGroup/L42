@@ -110,8 +110,9 @@ Spec# supports two kinds of invariants:  ownership based invariants
  also restricts what data can be accessed in the invariant, and is basically limited
 to owned and immutable fields too.
 Spec# offer immutable classes, and (ownership based) invariants can only access instances of
-immutable classes and owned objects. In the following article they expand Spec# to also
-consider immutable instances of classes allowing both mutable and immutable instances: "TODO"
+immutable classes and owned objects. In 'Flexible Immutability with Frozen Objects
+' they expand Spec# to also
+consider immutable instances of classes allowing both mutable and immutable instances.
 The second kind of invariant can reason over non encapsulated state, but they can not be
 soundly checked at run time.
 
