@@ -193,9 +193,18 @@ See former answer about "Does Boogy/Spec# rely on object immutability as well?"
 
 
 -line 685 and capsule fields access:
-line 685 contains the definition of the method makeBox().
-The parameter is a capsule, the returned value b is mut, thus we perform recovery and produce a capsule.
-The method do not involve any capsule field, so we are unsure we understand the comment of RevD
+line 683 contains the definition of the method makeBox(c).
+As noticed by RevC, there is a typo in our code 'cs' should be 'c' all the times.
+makeBox(c) works as follows
+* It creates a new mut Box passing 'c', which is 'mut' by subtyping.
+This is sound since the type system prevents the 'c' variable from being used again.
+* It modifies the 'mut Box b'; the fact that 'c' was 'capsule' is not relevant here.
+* it returns 'b' as a 'capsule'.  This is sound, as the only parameter 
+of makeBox(c) is 'capsule'. This mechanism work the same in L42/Pony/Microsoft.
+
+-"would a different annotation of the Spec# version lead to soundly checking the invariant with fewer invocations of the invariant method?"
+We tried many different ways to encode the GUI example in Spec#, in particular we tried very hard to find a solution that did not require to use the Box pattern (in addition of the expose block).
+In none of our attempt we managed to reduce the number of invocations.
 
 - reference capability
 ----------------------
