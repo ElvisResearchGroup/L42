@@ -4,11 +4,11 @@ We would like to thank all four reviewers for their insightful reviews!
 We start by addressing the four crucial points raised by Reviewer D.
 ======================================================================
 
+
 - convince me the restrictions are not so severe
 ------------------------------------------------
 
-Using the Box and the Transform pattern, the restrictions of our systems are not severe.
-The following concerns:
+Our solution proposes using the Box and the Transform patterns, which makes the restrictions of our systems not so severe. Specifically, when it comes to the following concerns:
 
 1 "no shortage of code knowingly violating invariants"(and fixing them later)
 2 "batch invariant checking in order to do it less often"
@@ -16,56 +16,70 @@ The following concerns:
 4 "spec# can (with user guidance) check only once"
 5 "in a simulation step"
 
-Can all be resolved by using the Box pattern: a separate wrapper object storing data
-whose invariant is only meaningful when checked together.
+We can resolve them all using the Box pattern: a separate wrapper object storing data whose invariant
+is only meaningful when checked together.
+
 At the end of this response, we include code examples demonstrating how to address points 1-2-3-4-5.
 
-Our experimentation shows that also Spec# requires the Box pattern when
-invariants over cyclic object structures are required; such as the SafeMovable in GUI.
+In particular we show a sample implementation of a Binary Sorted Tree including add and delete as queried by the reviewer.
+
+Our experimentation shows that Spec# also requires the Box pattern when
+invariants over cyclic object structures are neede; such as the SafeMovable in GUI.
 The Box pattern replaces the "expose" block of Spec#.
 Where Spec# provides special syntax, we instead require adding new methods/wrapper
 objects. In this way we get a level of control very similar to the one of Spec#
-but without adding and formalizing special syntax/features.
+but without adding and formalising special syntax/features.
 Our system is designed to keep the restrictions simple, and to minimise additional constructs and concepts.
 We believe that our restrictions are simple enough that users can easily apply and understand them.
-Line 162, page 4: 'we needed to write a separate moveTo method, since we do not want to burden our language with extra constructs such as Spec#’s expose.' 
 
-We should have made this much more clear in the introduction.
+As we said in the paper, on Line 162, page 4: 'we needed to write a separate moveTo method, since we do not want to burden our language with extra constructs such as Spec#’s expose.' But we indeed should make this much more clear in the introduction.
 
 
-- why the children() call in the GUI typechecks
------------------------------------------------
+- why the children() call in the GUI type checks
+------------------------------------------------
 
 This point is connected to the comments: "leak out a mut alias to the capsule field" and "differs in such important ways"
 
 We agree that our explanation of capsule fields is indeed lacking.
 
-Capsule expressions and local variables are identical in Pony, Microsoft and L42. Linear types ensures that variables are used only once.
-Capsule fields in Pony, Microsoft and L42 must be initialized and updated with capsule expressions.
+Capsule expressions and local variables are identical in Pony, Microsoft and L42.
+Linear types ensure that variables are used only once.
+Capsule fields in Pony, Microsoft and L42 must be initialised and updated with capsule expressions.
 However using destructive reads in Pony and Microsoft a capsule field access produces a capsule reference.
-L42 also requires to initialize and update capsule fields using capsule expressions,
+L42 also requires to initialise and update capsule fields using capsule expressions,
 but it supports many ways to access capsule fields.
-In the one relevant for our paper a capsule field access (this.f) has the modifier of the receiver: if 'this' is 'mut', 'this.f' is 'mut'; if 'this' is 'read', 'this.f' is 'read'; if 'this' is 'capsule', 'this.f' is 'capsule'.
-Moreover, any 'mut method' accessing capsule fields must satisfy the requirements of capsule mutators.
+
+One relevant way to access capsule field is as follows: require this.f to have the modifier of the receiver
+(i.e. if 'this' is 'mut', 'this.f' is 'mut'; if 'this' is 'read', 'this.f' is 'read'; if 'this' is 'capsule', 'this.f' is 'capsule').
+
+Moreover, any 'mut method' accessing capsule field must satisfy the requirements of capsule mutators.
 Those access requirements are designed to avoid representation exposure.
 This is formally encoded in the appendix as Assumptions 4 and 5.
 
 We will cite "Flexible recovery of uniqueness and immutability" 
 pg 169 doi:10.1016/j.tcs.2018.09.001 where variations on these restrictions  are discussed.
-This paper shows that capsule fields can be formalized/encoded as mut fields whose use is restricted by applying syntactic restrictions to class code in isolation.
+This paper shows that capsule fields can be formalised/encoded as mut fields whose use is restricted
+by applying syntactic restrictions to class code in isolation.
 
 **We will improve the paper by explaining the difference between capsule fields and capsule local variables better.**
 
-About "read method read Widgets children(){return this.box.c;}":
+
+So to answer the question regarding "read method read Widgets children(){return this.box.c;}":
 
 'this.box' is a capsule field accessed on a read 'this'. 'this.box' will return a read reference
 and 'this.box.c' is also read.
+
+
+Note that this behaviour is sound because thanks to Assumption 5 we know that the reachable object graph
+of this.box does not contain "this".
+
 
 - there is more generality to the GUI case study
 ------------------------------------------------
 
 The GUI is an application of the Composite programming pattern - one of the most common OO patterns.
 We also included two more case studies in the appendix.
+
 Here a summary of our 4 case studies:
 * The `Hamster`: Section 1, Pages 2-4, 
 * The `Gui`: Section 7,
@@ -101,9 +115,11 @@ class B extends A {
 Class B is changing the meaning of the invariant method in A because it overrides f().
 Is this intentional? Preventing such behaviour seems like a reasonable precaution.
 
+
 ======================================================================
 We now give answers to the two explicit questions raised by Reviewer C.
 ======================================================================
+
 
 - Does Boogy/Spec# rely on object immutability as well?
 -------------------------------------------------------
@@ -135,9 +151,8 @@ our system statically ensures that Database methods are only called from objects
 If we could prove that the invariant only allows for valid DB transaction, we would have a system
 that never performs a wrong transaction.
 
-----END OF THE 800 words if we do not count the "repetition" of rev text in order to answer them------
-
 Additional Note: We agree with Reviewer C that we should have clarified more that our model essentially imposes the Box and the Transform patterns.
+
 
 ======================================================================
 We now provide our responses to the other comments by Reviewer D.
@@ -172,7 +187,6 @@ We are unsure about Pony: their actor model may internally implement the mailbox
 The destructive reads of Microsoft make it easier to call concurrent operations using input
 from isolated fields, but concurrency relays on isolated/capsule references, not fields.
 
-
 - There are no redundant checks in the capsule mutators:
 ----------------------------------------------------------------------------------------
 
@@ -181,8 +195,7 @@ from isolated fields, but concurrency relays on isolated/capsule references, not
 - "invariant can only access capsule and imm fields":
 -----------------------------------------------------
 
-See former answer about "Does Boogy/Spec# rely on object immutability as well?"
-
+See previous answer about "Does Boogie/Spec# rely on object immutability as well?"
 
 -line 685 and capsule fields access:
 line 683 contains the definition of the method makeBox(c).
@@ -211,7 +224,6 @@ Isolated and capsule objects provides a much stronger encapsulation guarantee (s
 A good explanation of this common misconception can be found in
 Capabilities for Uniqueness and Borrowing, Philipp Haller and Martin Oderskypg 360 fig3,
 where the arrow 's' is allowed in external uniqueness but not in separate uniqueness.
-
 
 - prevent any clear class of these pathologies
 ----------------------------------------------
@@ -250,6 +262,7 @@ Code examples showing how to handle points 1-5
 ======================================================================
 
 1,2: violating invariants and fixing it later, or executing the invariants in batch
+
 ----------------
   class ABox{int a;int b;}
   class A{
@@ -262,6 +275,7 @@ Code examples showing how to handle points 1-5
      //invariant checked here
      }}
 ----------------   
+
 3: binary trees. We provide here the full code that would support sorted binary trees.
 Note how the annotation burden is quite low. We thanks the reviewer for suggesting this problem.
 If the reviewers think it is a good example, we could add it as an additional case study in the appendix.
@@ -278,6 +292,7 @@ in this example the Tree correspond to a Spec# Tree where the invariant
 is known to hold, while the TreeBox correspond to a Spec# Tree where the invariant is not known to hold.
 In actual L42 the could could be much more compact, but we show the solution in the language of our paper,
 that is more verbose since it is more similar to Java.
+
 ----------------   
 class Tree {
   capsule TreeBox box;
@@ -354,7 +369,8 @@ class FullNode implements Node{
   }
 }
 ----------------   
-4:in spec# the user may write 
+
+4:in Spec# the user may write 
 
     Void a() {this.doA(); expose{this.doB(); this.doC();} this.doD();}
 
@@ -366,5 +382,6 @@ in L42 they would need to write the more verbose
 Where this.state is the field of the box pattern.
 As you can see, the user can still guide the invariant checking, but it uses programming patterns
 instead of a dedicated syntax.
+
 5:About 5, consider the Family example of Appendix C: the box pattern triggers the
 invariant only after a complete simulation step.
