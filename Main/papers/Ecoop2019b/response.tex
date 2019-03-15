@@ -24,7 +24,7 @@ At the end of this response, we include code examples demonstrating how to addre
 In particular we show a sample implementation of a Binary Sorted Tree including add and delete as queried by the reviewer.
 
 Our experimentation shows that Spec# also requires the Box pattern when
-invariants over cyclic object structures are neede; such as the SafeMovable in GUI.
+invariants over cyclic object structures are needed; such as the SafeMovable in GUI.
 The Box pattern replaces the "expose" block of Spec#.
 Where Spec# provides special syntax, we instead require adding new methods/wrapper
 objects. In this way we get a level of control very similar to the one of Spec#
@@ -125,30 +125,32 @@ We now give answers to the two explicit questions raised by Reviewer C.
 
 - Does Boogy/Spec# rely on object immutability as well?
 -------------------------------------------------------
-Spec# supports two kinds of invariants:  ownership based invariants
- also restricts what data can be accessed in the invariant, and is basically limited
-to owned and immutable fields too.
-Spec# offer immutable classes, and (ownership based) invariants can only access instances of
+Spec# offers immutable classes, and invariants can only access instances of
 immutable classes and owned objects. In 'Flexible Immutability with Frozen Objects
 ' they expand Spec# to also
 consider immutable instances of classes allowing both mutable and immutable instances.
-The second kind of invariant, introduced in 
-'Friends Need a Bit More: Maintaining Invariants Over Shared State'[6]
- can reason over non encapsulated state, but it would
-require to register the 'friendship' relationships in some data-structure
-to allow for run-time checking.
+
+Spec# supports two kinds of invariants: ownership based invariants and visibility based invariants.
+They both limit what kind of what data can be accessed in the invariant.
+Both kinds of invariants can access immutable data;
+ownership based invariants can access owned data.
+To the best of our understanding, visibility based invariants (introduced in 
+'Friends Need a Bit More: Maintaining Invariants Over Shared State'[6])
+can reason over non encapsulated state, 
+but allow for run-time checking is not obvious (and is not implemented), since it would
+require to register the 'friendship' relationships in some data-structure.
 
 
 - Why do we care for reducing checks
 ------------------------------------
 
 As shown in the GUI, the checks in the visible state semantics can explode
-exponentially, making the code unusable even for the debugging.
+exponentially, making the code unusable even for debugging.
 On the other hand, if the cost of runtime checks is low,
 it becomes feasible to keep those checks running in production,
 to capture invariant failure exceptions and provide alternative behaviour.
 
-This have implications for security.
+This has implications for security.
 For example, if all the objects that are able to perform Database actions had invariants,
 our system statically ensures that Database methods are only called from objects whose invariant holds.
 If we could prove that the invariant only allows for a valid DB transaction, we would have a system
@@ -183,12 +185,11 @@ supporting Assumption 1 would have to take care of this detail.
 - the system can no longer be used for concurrency
 --------------------------------------------------
 
-Concurrency relies on capsule and immutable local variables.
-Concurrency does not leverage on capsule fields in both L42 and the language of Microsoft.
-We are unsure about Pony: their actor model may internally implement the mailbox as a list of capsules.
-
-The destructive reads of Microsoft make it easier to call concurrent operations using input
-from isolated fields, but concurrency relays on isolated/capsule references, not fields.
+Concurrency is about what types of expressions can be passed to different threads/actors,
+not what fields those expressions can have.
+In the language of the paper,
+reading a capsule field does not always give a capsule expression,
+so it cannot be easily passed to another thread, thus we are not violating any concurrency properties.
 
 - There are no redundant checks in the capsule mutators:
 ----------------------------------------------------------------------------------------
@@ -271,8 +272,8 @@ Code examples showing how to handle points 1-5
   class A{
    capsule ABox box;
    read method Bool invariant(){this.box.a>this.box.b;}
-   mut method Void play(){
-     mut ABox inner=this.box;
+   mut method Void play(){//this is a capsule mutator
+     mut ABox inner=this.box; //the only use of 'this'
      inner.a=5;///may break invariant
      inner.b=3;///fix invariant
      //invariant checked here
@@ -375,14 +376,30 @@ class FullNode implements Node{
 
 4:in Spec# the user may write 
 
-    Void a() {this.doA(); expose{this.doB(); this.doC();} this.doD();}
+```
+    Void a() {
+      this.doA();
+      expose(this){this.doB(); this.doC();}
+      this.doD();
+    }
+```
 
 in L42 they would need to write the more verbose
 
-    mut method Void a() {this.state.doA(); this.capsuleMutator(); this.state.doD();}
-    mut method Void capsuleMutator() {mut Box box=this.state; box.doB(); box.doC();}
+```
+    mut method Void a() {
+      this.readState().doA();
+      this.capsuleMutator();
+      this.readState().doD();
+    }
+    read method read Box readState(){return this.state;}//get the capsule state a read
+    mut method Void capsuleMutator() {
+      mut Box box=this.state;
+      box.doB(); box.doC();
+      }
+```
     
-Where this.state is the field of the box pattern.
+Where this.state is the capsule field of the box pattern.
 As you can see, the user can still guide the invariant checking, but it uses programming patterns
 instead of a dedicated syntax.
 
