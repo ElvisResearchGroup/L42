@@ -103,6 +103,7 @@ plus the syntactic checks already required and the considerations under line 407
 Overriding methods called by the invariant can be very confusing.
 Consider the following example:
 
+```
 class A{
   Int f;
   read method int f(){return this.f;}
@@ -111,6 +112,7 @@ class A{
 class B extends A {
   method int f(){return -this.f;}
 }
+```
 
 Class B is changing the meaning of the invariant method in A because it overrides f().
 Is this intentional? Preventing such behaviour seems like a reasonable precaution.
