@@ -266,7 +266,7 @@ Code examples showing how to handle points 1-5
 
 1,2: violating invariants and fixing it later, or executing the invariants in batch
 
-----------------
+```
   class ABox{int a;int b;}
   class A{
    capsule ABox box;
@@ -277,7 +277,7 @@ Code examples showing how to handle points 1-5
      inner.b=3;///fix invariant
      //invariant checked here
      }}
-----------------   
+```
 
 3: binary trees. We provide here the full code that would support sorted binary trees.
 Note how the annotation burden is quite low. We thanks the reviewer for suggesting this problem.
@@ -296,7 +296,7 @@ is known to hold, while the TreeBox correspond to a Spec# Tree where the invaria
 In actual L42 the could could be much more compact, but we show the solution in the language of our paper,
 that is more verbose since it is more similar to Java.
 
-----------------   
+``` 
 class Tree {
   capsule TreeBox box;
 
@@ -371,7 +371,7 @@ class FullNode implements Node{
     this.right = right;
   }
 }
-----------------   
+```  
 
 4:in Spec# the user may write 
 
