@@ -97,7 +97,7 @@ Here a summary of our 4 case studies:
 ------------------------------------------------------
 
 A simple solution to support conventional inheritance would be to require the invariant to only
-access final and private methods,
+access final methods,
 plus the syntactic checks already required and the considerations under line 407.
 
 Overriding methods called by the invariant can be very confusing.
@@ -147,11 +147,12 @@ exponentially, making the code unusable even for the debugging.
 On the other hand, if the cost of runtime checks is low,
 it becomes feasible to keep those checks running in production,
 to capture invariant failure exceptions and provide alternative behaviour.
+
 This have implications for security.
-For example, if all the objects able to perform Database actions had invariants,
+For example, if all the objects that are able to perform Database actions had invariants,
 our system statically ensures that Database methods are only called from objects whose invariant holds.
-If we could prove that the invariant only allows for valid DB transaction, we would have a system
-that never performs a wrong transaction.
+If we could prove that the invariant only allows for a valid DB transaction, we would have a system
+that make guarantees about transactions.
 
 Additional Note: We agree with Reviewer C that we should have clarified more that our model essentially imposes the Box and the Transform patterns.
 
@@ -169,7 +170,7 @@ is type-checked using "read" instead of "mut" for all the local variables.
 To transfer this knowledge from local variables to object locations, we annotate the try with
 the set of preserved locations.
 
-Thus, if "l" was visible from outside, then it could not be mutated, thus 'l.f=v' would not typecheck.
+Thus, if "l" was visible from outside, then it could not be mutated, thus 'l.f=v' would not type check.
 On the other hand, if 'l.f=v' type checked, it means that l is not visible outside.
 
 Having that constraint as a syntactic well-formedness or as a typing requirement just moves 
