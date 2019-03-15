@@ -10,18 +10,18 @@ We start by addressing the four crucial points raised by Reviewer D.
 
 Our solution proposes using the Box and the Transform patterns, which makes the restrictions of our systems not so severe. Specifically, when it comes to the following concerns:
 
-1 "no shortage of code knowingly violating invariants"(and fixing them later)
-2 "batch invariant checking in order to do it less often"
-3 "to implement a binary tree" "use a separate wrapper"
-4 "spec# can (with user guidance) check only once"
-5 "in a simulation step"
+1. "no shortage of code knowingly violating invariants"(and fixing them later)
+2. "batch invariant checking in order to do it less often"
+3. "to implement a binary tree" "use a separate wrapper"
+4. "spec# can (with user guidance) check only once"
+5. "in a simulation step"
 
 We can resolve them all using the Box pattern: a separate wrapper object storing data whose invariant
 is only meaningful when checked together.
 
 At the end of this response, we include code examples demonstrating how to address points 1-2-3-4-5.
 
-In particular we show a sample implementation of a Binary Sorted Tree including add and delete as queried by the reviewer.
+In particular we show a sample implementation of a Binary Sorted Tree including 'add' and 'delete' as queried by the reviewer.
 
 Our experimentation shows that Spec# also requires the Box pattern when
 invariants over cyclic object structures are needed; such as the SafeMovable in GUI.
@@ -57,8 +57,8 @@ This is formally encoded in the appendix as Assumptions 4 and 5.
 
 We will cite "Flexible recovery of uniqueness and immutability" 
 pg 169 doi:10.1016/j.tcs.2018.09.001 where variations on these restrictions are discussed.
-Such paper shows that capsule fields can be formalised/encoded as mut fields whose use is restricted
-by applying syntactic restrictions to class code in isolation.
+Such paper shows that capsule fields can be formalised/encoded as mut fields whose use is restricted by applying syntactic restrictions to class code in isolation.
+Thus, also Pony and Microsoft could have this kind of encapsulated fields.
 
 **We will improve the paper by explaining the difference between capsule fields and capsule local variables better.**
 
@@ -122,8 +122,8 @@ We now give answers to the two explicit questions raised by Reviewer C.
 
 - Does Boogy/Spec# rely on object immutability as well?
 -------------------------------------------------------
-Spec# offers immutable classes, and invariants can only access instances of
-immutable classes and owned objects. In 'Flexible Immutability with Frozen Objects
+
+Spec# offers immutable classes. In 'Flexible Immutability with Frozen Objects
 '[46] they expand Spec# to also
 consider immutable instances of classes allowing both mutable and immutable instances.
 
@@ -207,6 +207,8 @@ This is sound since the type system prevents the 'c' variable from being used ag
 of makeBox(c) is 'capsule'. This mechanism work the same in L42/Pony/Microsoft.
 
 -"would a different annotation of the Spec# version lead to soundly checking the invariant with fewer invocations of the invariant method?"
+---------------------------------------------------
+
 We tried many different ways to encode the GUI example in Spec#, in particular we tried very hard to find a solution that did not require to use the Box pattern (in addition of the expose block).
 In none of our attempt we managed to reduce the number of invocations.
 
@@ -218,6 +220,8 @@ we will change the terminology to use reference capability.
 We were not intentionally attempting to change the terminology used by the field.
 
 -externally unique
+----------------------------
+
 Neither the work of Microsoft, Pony or L42 supports external uniqueness.
 Isolated and capsule objects provides a much stronger encapsulation guarantee (separate uniqueness).
 A good explanation of this common misconception can be found in
@@ -239,6 +243,7 @@ in order to produce better error messages.
 The invariant must hold for all the objects involved in execution.
 If an object is not in the ROG of any parameter (including this) of the *current* method,
 clearly such object is not involved in the execution and its invariant can be freely broken.
+'this' can be used only once in capsule mutators, so 'this' is not visible after such first use.
 See the code snippet for cases 1-2 at the end of this response.
 
 
@@ -396,7 +401,7 @@ in L42 they would need to write the more verbose
 ```
     
 Where 'this.state' is the capsule field of the box pattern.
-As you can see, the user can still guide the invariant checking, but it uses programming patterns
+As you can see, the user can still guide the invariant checking, by using programming patterns
 instead of a dedicated syntax.
 
 5:About 5, consider the Family example of Appendix C: the box pattern triggers the
