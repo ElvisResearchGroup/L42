@@ -41,13 +41,14 @@ This point is connected to the comments: "leak out a mut alias to the capsule fi
 We agree that our explanation of capsule fields is indeed lacking.
 
 Capsule expressions and local variables are identical in Pony, Microsoft and L42. Linear types ensures that variables are used only once.
-Capsule fields in Pony, Microsoft and L42 must be initialized and updated 
-with capsule expressions.
+Capsule fields in Pony, Microsoft and L42 must be initialized and updated with capsule expressions.
 However using destructive reads in Pony and Microsoft a capsule field access produces a capsule reference.
-L42 supports many ways to access capsule fields.
+L42 also requires to initialize and update capsule fields using capsule expressions,
+but it supports many ways to access capsule fields.
 In the one relevant for our paper a capsule field access (this.f) has the modifier of the receiver: if 'this' is 'mut', 'this.f' is 'mut'; if 'this' is 'read', 'this.f' is 'read'; if 'this' is 'capsule', 'this.f' is 'capsule'.
 Moreover, any 'mut method' accessing capsule fields must satisfy the requirements of capsule mutators.
-Those access requirements are designed to avoid representaiton exposure.
+Those access requirements are designed to avoid representation exposure.
+This is formally encoded in the appendix as Assumptions 4 and 5.
 
 We will cite "Flexible recovery of uniqueness and immutability" 
 pg 169 doi:10.1016/j.tcs.2018.09.001 where variations on these restrictions  are discussed.
