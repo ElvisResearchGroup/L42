@@ -93,6 +93,10 @@ Here a summary of our 4 case studies:
 
 - inheritance and syntactic checks in invariant bodies
 ------------------------------------------------------
+We fear our syntactic checks may have been misunderstood:
+invariant methods can only access capsule and immutable fields over 'this';
+but expressions are allowed over the result of the field access.
+Thus 'this.f.bar()' is allowed if 'f' is 'capsule' or 'imm'. 
 
 A simple solution to support conventional inheritance would be to require the invariant to only
 access final methods, plus the syntactic checks already required and the considerations under line 407.
@@ -123,18 +127,8 @@ We now give answers to the two explicit questions raised by Reviewer C.
 - Does Boogy/Spec# rely on object immutability as well?
 -------------------------------------------------------
 
-Spec# offers immutable classes. In 'Flexible Immutability with Frozen Objects
-'[46] they expand Spec# to also
-consider immutable instances of classes allowing both mutable and immutable instances.
-
-Spec# supports two kinds of invariants: ownership based invariants and visibility based invariants.
-They both limit what kind of what data can be accessed in the invariant.
-Both kinds of invariants can access immutable data;
-ownership based invariants can access owned data.
-To the best of our understanding, visibility based invariants (introduced in [46,6])
-can reason over non encapsulated state, 
-but support for run-time checking is not obvious (and is not implemented), since it would
-require to register the 'friendship' relationships in some data-structure.
+Spec# offers immutable classes. In 'Flexible Immutability with Frozen Objects'[46] they expand Spec# to also consider immutable instances of non-immutable classes. Spec# supports two kinds of invariants: ownership based invariants and visibility based invariants.
+They both limit what kind of what data can be accessed in the invariant. Both kinds of invariants can access immutable data; ownership based invariants can also access owned data. Visibility based invariants can reason over non encapsulated state, but runtime checking has not been implemented, as it would require implementing 'ghost' state. 
 
 
 - Why do we care for reducing checks
