@@ -29,7 +29,7 @@ These restrictions only apply to our formalism; our code examples and the L42 im
 %We will later explain how these and other restrictions can be partially relaxed, as in the code examples.
 
 \subheading{Invariants}
-We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. As this method only takes a \Q!read! parameter (the receiver), we can be sure that it is pure \REV{\footnote{If the invariant were not pure, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}}{C}{to me, it would make sense that the runtime semantics (in particular: the invariant checking semantics) of checked exceptions would be inconsistent with that of unchecked semantics.}, as discussed in Section \ref{s:purity}.
+We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. As this method only takes a \Q!read! parameter (the receiver), we can be sure that it is pure \footnote{If the invariant were not pure, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}, as discussed in Section \ref{s:purity}.
 The bodies of \Q@invariant@ methods are limited in their usage of \Q@this@: \Q!this! can only be used to access \Q@imm@ and \Q@capsule@ fields. This restriction ensures that 
 an invalid \Q@this@ cannot be passed around.
 We prevent accessing \Q@mut@ fields since their ROG could be changed by unrelated code (see Section \ref{s:immutable}).
@@ -48,10 +48,11 @@ Formally, \emph{capsule mutators} are \Q@mut@ methods whose body accesses a \Q@c
 Capsule mutators must use \Q@this@ exactly once in their body, since fields are instance private, this will be to access the \Q!capsule! field.
 %By construction, such use is the access of the \Q@capsule@ field.
 Excluding the \Q!mut! receiver, such methods cannot have any \Q!mut! or \Q!read! parameters, their return type must not be \Q!mut!, and their \Q!throws! clause must be empty.%
-\footnote{%
+\footnote{\REVm{
 To allow capsule mutators to leak checked exceptions,
 we would need check the invariant
-when such exceptions are leaked. However, this would make the runtime semantics of checked exceptions inconsistent with unchecked ones.}.
+when such exceptions are leaked. However, this would make the runtime semantics of checked exceptions inconsistent with unchecked ones.}}
+\REVt{C}{to me, it would make sense that the runtime semantics (in particular: the invariant checking semantics) of checked exceptions would be inconsistent with that of unchecked semantics.}.
 
 
 %\end{itemize}

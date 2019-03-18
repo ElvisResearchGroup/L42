@@ -2,7 +2,6 @@
 %\addbibresource{main.bib}
 \usepackage{wrapfig}
 
-
 %
 \makeatletter
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
@@ -65,6 +64,10 @@
 \newcommand{\REV}[3]{%
 	\NoteColour{red}{#1\NoteText{\footnote{%
 				\textcolor{red}{\textbf{REV#2{:} #3}}}}}}
+			
+\newcommand{\REVm}[1]{\NoteColour{red}{#1\NoteText{\footnotemark}}}
+\newcommand{\REVt}[2]{\footnotetext{\textcolor{red}{\textbf{REV#1{:} #2}}}}
+			
 \newcommand{\subheading}[1]{%
 	\loseSpace%
 	\noindent\textsf{\textbf{\large#1\\\noindent}}
