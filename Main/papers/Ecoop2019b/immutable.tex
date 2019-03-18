@@ -27,7 +27,7 @@ class Person {
 % The difference with respect to UML DataTypes 
 %immutable types (like UML DataTypes)
 %UML datatypes are aclass property. immutable types are often an instance one (so no final fields) 
-Note that the \Q@name@ field is not final, thus \Q@Person@ objects can change state during their lifetime. This means that the ROGs of all \Q@Person@s fields are immutable, but \Q@Person@s themselves may be mutable.
+Note that the \Q@name@ field is not final, thus \Q@Person@ objects can change state during their lifetime. This means that the ROGs of all of \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
 %Of course UML DataTypes
 %immutable types
 %No, a type is not a class
@@ -59,7 +59,7 @@ class Person { .. // Same as before
 
 Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\subheading{Unrestricted use of non determinism} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \Q!true!.
+\subheading{Unrestricted use of non-determinism} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation, such as by creating new capability objects, could break our guarantee that (manually) calling it always returns \Q!true!.
 %\Q@invariant@ to be non-deterministic.}%
 % 
 For example consider this simple and contrived (mis)use of person:
@@ -78,7 +78,7 @@ method mut Person createPersons(String name) {
 %//  mut Person schrodinger2 = new Person(name); // what about here?
 
 Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
-In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non determinism only through capability objects, and 
+In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
 restricts their creation, the above example would be prevented.
  %Languages like Java, Rust and Pony, which do not require the user of object-capabilities to perform non-deterministic operations, suffer from . 
 %???

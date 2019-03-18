@@ -42,7 +42,7 @@ Note that we do not require such fields to be \Q@final@: when a field is updated
 
 %To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
 \subheading{Capsule mutators}
-In order to allow complex mutations of objects with invariants we introduce the notion of \emph{capsule mutator}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of the ROG of a capsule field. We use TMs to ensure that the object containing the capsule field is not usable whilst the fields ROG is mutated, and it's invariant is checked immediately afterwards. 
+In order to allow complex mutations of objects with invariants we introduce the notion of \emph{capsule mutator}. A \emph{capsule mutator} can perform an arbitrarily complex mutation of the ROG of a capsule field. We use TMs to ensure that the object containing the capsule field is not usable whilst the field's ROG is mutated, and its invariant is checked immediately afterwards. 
 
 Formally, \emph{capsule mutators} are \Q@mut@ methods whose body accesses a \Q@capsule@ field mentioned in the invariant of the class containing the field. 
 Capsule mutators must use \Q@this@ exactly once in their body, since fields are instance private, this will be to access the \Q!capsule! field.
@@ -50,14 +50,14 @@ Capsule mutators must use \Q@this@ exactly once in their body, since fields are 
 Excluding the \Q!mut! receiver, such methods cannot have any \Q!mut! or \Q!read! parameters, their return type must not be \Q!mut!, and their \Q!throws! clause must be empty.%
 \footnote{\REVm{
 To allow capsule mutators to leak checked exceptions,
-we would need check the invariant
+we would need to check the invariant
 when such exceptions are leaked. However, this would make the runtime semantics of checked exceptions inconsistent with unchecked ones.}}
 \REVt{C}{to me, it would make sense that the runtime semantics (in particular: the invariant checking semantics) of checked exceptions would be inconsistent with that of unchecked semantics.}.
 
 
 %\end{itemize}
 %Our type system will ensure that such methods are \Q!mut method!s, and the \Q!capsule! field will be seen as \Q!mut!.
-As capsule mutators use \Q!this! only once, and have no \Q!read! or \Q!mut! parameters, \Q!this! will not be accessible during execution. This is important, as it allows the invariant to be violated \REV{part way through the capsule mutator, but re established by the end.}{D}{how does this allow an invariant to be violated for a non-trivial period of time before being checked again?}
+As capsule mutators use \Q!this! only once, and have no \Q!read! or \Q!mut! parameters, \Q!this! will not be accessible during execution. This is important, as it allows the invariant to be violated \REV{part way through the capsule mutator, but re-established by the end.}{D}{how does this allow an invariant to be violated for a non-trivial period of time before being checked again?}
 Preventing \Q!mut! return types ensures that such methods cannot \REV{leak out a mutable alias to the \Q!capsule! field}{D}{why would it otherwise be possible ... Even doing this locally violates the soundness semantics for every reference immutability system I've seen}, which could then be used to break the invariant.
 \REV{\REV{Note that these restrictions do not apply when the receiver of the field access is \Q!capsule!, since we guarantee that the receiver is not in the ROG of any of its \Q!capsule! fields, and hence it can never be seen afterwards.}{C}{I do not understand this sentence.}}{D}{I just don't understand what this sentence is suggesting.}
 
@@ -79,9 +79,9 @@ The above restrictions can be partially relaxed without breaking soundness, howe
 	\item \REV{Unrestricted readonly access to \Q!capsule! fields can be allowed by automatically generated getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language.}{C}{this should be type-incorrect in all of
 		the related systems cited, to the best of my knowledge. because as-is there's nothing stopping a caller ... from storing that \Q!read!
 		result in the heap somewhere, leading to a violation of encapsulation. ... read-only access to capsule fields is permissible, which is not the case in the prior work I'm aware of, but perhaps L42 has made
-different choices (which then should be explained here, given all the comparisons to Gordon et al.
+different choices (which then should be explained here, given all the comparisons to Gordon \etal
 and Pony).  This doesn't invalidate recovery to immutable, but means the system can no longer be
-used for safe concurrency; fine if L42 has none, but again if this is deviating from prior work this must be discussed, and if it's relying on the details of a particular system, some detail of that specific system/paper should be given to contrast with the broad-stokes view of Gordon et al./Clebsch et al./Servetto et al.}
+used for safe concurrency; fine if L42 has none, but again if this is deviating from prior work this must be discussed, and if it's relying on the details of a particular system, some detail of that specific system/paper should be given to contrast with the broad-stokes view of Gordon \etal/Clebsch \etal/Servetto \etal} 
 	
 	\item Java style constructors could be allowed, provided that \Q!this! is only used as the receiver of field initialisations. L42 does not provide such constructors, but one can always write a static factory method that behaves equivalently.
 \end{itemize}

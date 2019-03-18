@@ -38,8 +38,8 @@ To stay parametric over the various existing type systems which provably enforce
 
 \REV{One interesting avenue for future work would be to
 use invariants to encode pre and post conditions,
-as done by~\cite{Flanagan06hybridtypes}: where pre and post conditions are encoded as the invariants of the parameter and return types (respectively).}{C}{[This] strikes me as a bit silly and impractical. Indeed: a precondition would have to hold throughout the method's execution, which is generally not the case.}
-Without good syntax sugar, such an approach could be quite verbose, however it would ensure that a methods precondition holds during the entire execution of a method, and not just the beginning. In addition this could be more efficient than traditional runtime checking when the same argument is used in the invocations of methods with the same pre condition, as happens often in practice for recursive methods: where many parameters are simply parsed unmodified in recursive calls.
+as done by~\cite{Flanagan06hybridtypes}: where pre and post-conditions are encoded as the invariants of the parameter and return types (respectively).}{C}{[This] strikes me as a bit silly and impractical. Indeed: a precondition would have to hold throughout the method's execution, which is generally not the case.}
+Without good syntax sugar, such an approach could be quite verbose, however it would ensure that a method's pre-condition holds during the entire execution of a method, and not just the beginning. In addition this could be more efficient than traditional runtime checking when the same argument is used in the invocations of methods with the same pre-condition, as happens often in practice for recursive methods: where many parameters are simply passed unmodified in recursive calls.
 
 % a method could be declared as taking a class whose invariant corresponds to the method's pre-condition,  and returning a class whose invariant corresponds to the pos-condition.
 
@@ -103,7 +103,7 @@ Other directions that could be investigated to improve our work include the addi
 \begin{comment}
 In literature, both static and runtime verification discuss
 the correctness of common programming patterns in conventional languages.
-Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object oriented programming.
+Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object-oriented programming.
  Here instead we build on languages using TMs and OCs to tame the use of imperative features. In this way
 we have a fresh start where static variables are disallowed, unchecked exceptions require care to be captured, and I/O is allowed only when an opportune capability object is reachable.
 Following those restrictions allow simpler reasoning.

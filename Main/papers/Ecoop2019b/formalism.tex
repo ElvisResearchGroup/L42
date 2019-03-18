@@ -2,7 +2,7 @@
 \label{s:formalism}
 
 %----------------------------------
-In order to model our system, we need to formalise an imperative object oriented language
+In order to model our system, we need to formalise an imperative object-oriented language
 with exceptions, object capabilities, and rich type system
 support for TMs and strong exception safety.
 Formal models of the runtime semantics of such languages are simple, but 
@@ -123,8 +123,8 @@ are run time expressions and thus are not present in method bodies, rather they 
 In addition, our reduction rules will annotate \Q@try@ expressions with
 the original state of memory. This is used to model the guarantee of strong exception safety, that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
 
-\subheading{Well Formedness Criteria}
-We additionally restrict the grammar with the following well formedness criteria:
+\subheading{Well-Formedness Criteria}
+We additionally restrict the grammar with the following well-formedness criteria:
 \begin{itemize}
 	\item \Q@invariant@ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
 	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$, respectively.

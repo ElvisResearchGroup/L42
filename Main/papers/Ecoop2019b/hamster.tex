@@ -75,7 +75,7 @@ class Cage {
 }
 \end{lstlisting}
 
-The above constructor now fails to verify, since Boogie is unconvinced that its precondition actually holds when we initialise \Q@this.path@. This is because the constructor for \Q@Object@ (the default base class if none is provided) is not marked as \Q@[Pure]@; since it is (implicitly) called upon entry to \Q@Cage@'s constructor, Boogie has no idea as to what memory could've mutated, and so it doesn't know whether the precondition still holds. The solution is to explicitly call it, but at the end of the constructor: \Q@{this.h = h; this.path = path; base();}@.
+The above constructor now fails to verify, since Boogie is unconvinced that its pre-condition actually holds when we initialise \Q@this.path@. This is because the constructor for \Q@Object@ (the default base class if none is provided) is not marked as \Q@[Pure]@; since it is (implicitly) called upon entry to \Q@Cage@'s constructor, Boogie has no idea as to what memory could've mutated, and so it doesn't know whether the pre-condition still holds. The solution is to explicitly call it, but at the end of the constructor: \Q@{this.h = h; this.path = path; base();}@.
 
 The above \Q@Cage@ code however does not work, since \Q@List@ operations, such as \Q@Contains@ and \Q@IndexOf@, will call the virtual \Q@Object.Equals@ method to compute equality of \Q@Point@s. However \Q@Object.Equals@ implements \emph{reference} equality, whereas we want \emph{value} equality.
 

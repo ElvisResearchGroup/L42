@@ -94,7 +94,7 @@ $l_0\notin\text{erog}(\sigma,l_1)$.
 
 The execution of an expression
 with no \Q@mut@ free variables is deterministic and does not
-mutate pre existing memory (and thus does not not perform I/O by mutating the pre existing $c$):\saveSpace\saveSpace
+mutate pre-existing memory (and thus does not not perform I/O by mutating the pre-existing $c$):\saveSpace\saveSpace
 \begin{Assumption}[Determinism]\rm
 	if $\emptyset;\Gamma\vdash \e:\T$, 
 	$\forall x\, ( \Gamma(x)\neq\Kw{mut}\,\_$), and
@@ -121,7 +121,7 @@ For each \Q@try@--\Q@catch@, execution preserves the memory needed to continue t
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
 %@Progress will need to rely on @StrongExceptionSafety internally.
 
-Note that our last well formedness rule requires 
+Note that our last well-formedness rule requires 
 \textsc{update} and \textsc{mcall} to introduce
 monitor expressions only over locations
 that are not preserved by \Q@try@ blocks.
@@ -230,7 +230,7 @@ and \emph{OK} will always hold.
 	 \item or we are executing inside $\e_2$:
 	 by our reduction rules, all monitor expressions start with
 	 $\e_2=l.\invariant$, thus the first execution step
-	 of $\e_2$ is trusted. Further execution steps are also trusted, since by well formedness the body of invariant methods only use \Q@this@ (now replaced with $l$) to read fields.
+	 of $\e_2$ is trusted. Further execution steps are also trusted, since by well-formedness the body of invariant methods only use \Q@this@ (now replaced with $l$) to read fields.
 	\end{itemize}
 \end{enumerate}
 In any of the possible cases above, \thm{Soundness} holds for $l$, and so it holds for all redexes.
@@ -278,7 +278,7 @@ execution can continue only if the offending object is classified as \emph{garba
 \end{proof}
 
 \subheading{Exposer Instrumentation}
-We first introduce a lemma derived from our well formedness criteria and the type system:
+We first introduce a lemma derived from our well-formedness criteria and the type system:
 \begin{Lemma}[Exposer Instrumentation]\rm
 If $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
 $\text{fieldGuarded}(\sigma_0,\e_0)$
@@ -289,7 +289,7 @@ then $\text{fieldGuarded}(\sigma_1,\e_1)$.
 The only rule that can
 introduce a new field access is \textsc{mcall}.
 In that case, \thm{Exposer Instrumentation} holds
-by well formedness (all field accesses in methods are of the form \Q@this.f@),
+by well-formedness (all field accesses in methods are of the form \Q@this.f@),
 since \textsc{mcall} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by \thm{Mut Field} such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
 
 Note that \textsc{monitor exit} is fine because monitors are removed only when
@@ -364,7 +364,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	\begin{itemize}
 		\item A location that was \emph{garbage} obviously still is, and so is also $\mathit{OK}$.
 		\item No location that was \emph{valid} could have been made invalid since this reduction rule performs no mutation of memory. If a location was \emph{wellEncapsulated} before, the only way it could be non \emph{wellEncapsulated} is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected \emph{wellEncapsulated}, hence such thing is still $\mathit{OK}$.
-		\item The only location that could have been made un \emph{monitored} is $l$ itself. By our well formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non \emph{wellEncapsulated}, since that would violate \thm{Capsule Tree}. As nothing else in $l$ was modified, and it must have been \emph{wellEncapsulated} before the \textsc{mcall}, and so it still is. In addition since  $l$ is valid, it is $\mathit{OK}$.
+		\item The only location that could have been made un \emph{monitored} is $l$ itself. By our well-formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non \emph{wellEncapsulated}, since that would violate \thm{Capsule Tree}. As nothing else in $l$ was modified, and it must have been \emph{wellEncapsulated} before the \textsc{mcall}, and so it still is. In addition since  $l$ is valid, it is $\mathit{OK}$.
 	\end{itemize}
 	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by \thm{Capsule Tree}, the resulting value, $l$, must be \emph{wellEncapsulated}, since $l$ is also \emph{valid} we have that $l$ is $\mathit{OK}$.
 
@@ -372,6 +372,6 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 \item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
 
-	By \thm{Strong Exception Safety}, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well formedness criteria, no location inside $\sigma$ could have been \emph{monitored}.
+	By \thm{Strong Exception Safety}, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria, no location inside $\sigma$ could have been \emph{monitored}.
 	Since we don't modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$. 
 \end{enumerate}

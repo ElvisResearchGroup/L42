@@ -1,17 +1,17 @@
 \section{Type Modifiers and Object Capabilities}
 \label{s:TMsAndOCs}
-Reasoning about imperative object oriented (OO) programs is a non trivial task,
+Reasoning about imperative object-oriented (OO) programs is a non trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to restrict, but not prevent such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
 % [dynamic class loading],
 
 \subheading{Type Modifiers (TMs)}
 TMs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
-three different research languages are being independently developed relying on this new design: the language of Gordon et.~al.~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
-These projects are quite large: several million lines of code are written in Gordon et.~al.'s language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
+three different research languages are being independently developed relying on this new design: the language of Gordon \etal~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
+These projects are quite large: several million lines of code are written in Gordon \etal's language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
-While we focus on the specific TMs provided by L42, Pony, and Gordon et.~al., type modifiers
+While we focus on the specific TMs provided by L42, Pony, and Gordon \etal, type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
- that allow statically reasoning about mutability and aliasing properties of objects.
+ that allow static reasoning about mutability and aliasing properties of objects.
 With slightly different names and semantics, the four most common modifiers for references to objects are:
 \begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, as in most imperative languages without modifiers.
@@ -75,7 +75,7 @@ We want to emphasise that this is not a special feature of \Q@new@ expressions:
 any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@.\footnote{%
 This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
 } This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
-Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon et.~al., does not consider promotion and 
+Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon \etal's,  does not consider promotion and 
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
 From a usability perspective, this improvement means that
 these TMs are opt-in: a programmer can write large sections of code
@@ -108,8 +108,8 @@ be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ refe
 
 % Not sure about this paragraph:
 
-The \Q@capsule@ modifier (sometimes called isolated/\Q@iso@) is possibly the one whose details differ the most in literature. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion.
-This concept is the basis for L42, Pony, and Gordon et.~al.'s type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. 
+The \Q@capsule@ modifier (sometimes called isolated/\Q@iso@) is possibly the one whose details differ the most in the literature. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion.
+This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. 
 
 %\begin{itemize}
 %	\item A capsule local variable can only be used once. %as \Q@capsule@ or \Q@mut@.
@@ -121,9 +121,9 @@ This concept is the basis for L42, Pony, and Gordon et.~al.'s type systems~\cite
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
 
-The capsule/isolated fields of Gordon et.~al. and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: in order to read them, a new value (such as \Q!null!) will be assigned to them. In contrast, L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require such destructive reads, thus \Q@capsule@ fields can be accessed many times, and their content can be seen from outside; but only in controlled ways.
-Both Gordon et.~al. and Pony restrict how \Q!capsule! local variables can be used by changing the type they are seen as, however both allow the local variable to be `consumed', allowing them to be used as normal capsule/isolated expressions, at the cost of being unable to use the variable again. L42 however uses a simpler approach where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once.
-%Both the capsule/isolated fields and variables of Pony and Gordon et.~al. rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: reading such fields replaces their values with \Q@null@.+++ and a static analysis ensures capsule local variables can be accessed only once after the initialization and every update.
+The capsule/isolated fields of Gordon \etal and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: in order to read them, a new value (such as \Q!null!) will be assigned to them. In contrast, L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require such destructive reads, thus \Q@capsule@ fields can be accessed many times, and their content can be seen from outside; but only in controlled ways.
+Both Gordon \etal and Pony restrict how \Q!capsule! local variables can be used by changing the type they are seen as, however both allow the local variable to be `consumed', allowing them to be used as normal capsule/isolated expressions, at the cost of being unable to use the variable again. L42 however uses a simpler approach where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once.
+%Both the capsule/isolated fields and variables of Pony and Gordon \etall rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: reading such fields replaces their values with \Q@null@.+++ and a static analysis ensures capsule local variables can be accessed only once after the initialization and every update.
 
 %In contrast,  L42~\cite{ServettoEtAl13a,ServettoZucca15} do not require destructive reads, and treat %\Q@capsule@ local variables and \Q@capsule@ fields differently:
 %\Q@capsule@ local variables are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once;
@@ -166,7 +166,7 @@ if a \Q@try@--\Q@catch@ block caught an exception, the state visible before exec
 % while we need it to soundly capture invariant failures.
 L42 already enforces SES for unchecked exceptions.\footnote{%
 This is needed to support safe parallelism. Pony takes a more drastic approach and does not support exceptions in the first place. 
-We are not aware of how Gordon et.~al. handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.%
+We are not aware of how Gordon \etal handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.%
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
 }
 L42 enforces SES using TMs in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
@@ -206,11 +206,11 @@ the broken object is guaranteed to be garbage collectable when the exception is 
 % Intro to OCs
 
 \subheading{Object Capabilities (OCs)}
-OCs, which L42, Pony, and Gordon et.~al.'s work have, are a widely used~\cite{miller2003capability,
+OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{miller2003capability,
 noble2016abstract,karger1988improving} programming style that allows associating resources with objects. When this style
 is respected, code that does not possess an alias to such an object cannot use its associated resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon et.~al.'s work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
+Here, as in Gordon \etal's work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
 % While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
 
@@ -262,7 +262,7 @@ For the purposes of invariant checking, we only care about the effects that meth
 TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
 as being deterministic and not mutating existing memory. Such methods are pure because:
 \begin{itemize}
-	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
+	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon \etal, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
 	Thus, since such methods do not write to memory accessible by another thread, nor read memory that could be mutated by another thread, they are atomic.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,
 	\item no other preexisting objects are accessible (as L42 does not have global variables).\footnote{%
