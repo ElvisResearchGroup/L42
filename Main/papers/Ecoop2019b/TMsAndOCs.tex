@@ -19,7 +19,7 @@ If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may be mutable aliases to such object, thus mutation can still be observed. 
 \item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will not mutate through any other alias.
 \item Encapsulated (\Q@capsule@):
- everything in the reachable object graph (ROG) of a capsule reference (including itself) is mutable only through that reference; however immutable references can be freely shared across capsule boundaries.
+ everything in the reachable object graph (ROG) of a capsule reference (including itself) is mutable only through that reference; \REV{however immutable references can be freely shared across capsule boundaries}{B}{what does [this] mean}.
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace

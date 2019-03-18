@@ -19,11 +19,22 @@
 \usepackage{amsthm}
 
 \theoremstyle{plain}
-\newcounter{definition}
+
+\makeatletter
+\newcommand{\providecounter}[1]{%
+  \ifcsname c@#1\endcsname % do nothing, counter allready defined
+  \else
+    \newcounter{#1}%
+  \fi
+}
+\makeatother
+
+
+\providecounter{definition}
 \newtheorem{Definition}[definition]{Definition}
 \newcounter{assumption}
 \newtheorem{Assumption}[assumption]{Assumption}
-\newcounter{lemma}
+\providecounter{lemma}
 \newtheorem{Lemma}[lemma]{Lemma}
 
 \usepackage{xspace}

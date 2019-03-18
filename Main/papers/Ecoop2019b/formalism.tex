@@ -129,8 +129,9 @@ We additionally restrict the grammar with the following well formedness criteria
 	\item \Q@invariant@ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
 	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$, respectively.
 	\item Field accesses and updates in the main expression are of the form $l.f$ or $l.f\equals\e$, respectively.
-	\item Locations that are preserved by \Q@try@ blocks are
-	never monitored, that is, for $\Kw{try}^\sigma\oC\e\cC\ \_$, if $\e$ is of the form $\ctx[\M{l}{\_}{\_}]$, then $l\notin\sigma$.
+	\item \REV{Locations that are preserved by \Q@try@ blocks are
+	never monitored, that is, for $\Kw{try}^\sigma\oC\e\cC\ \_$, if $\e$ is of the form $\ctx[\M{l}{\_}{\_}]$, then $l\notin\sigma$.}{D}{... It must be a property *proven* true of program executions under the specific type system. This isn't something that would just follow from from of the SES work, either (at least not the papers cited specifically for SES), because it relates to the
+	monitoring new to this work.}
 \end{itemize}
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}
 \begin{figure}
@@ -238,7 +239,7 @@ We also require evaluating \Q@invariant@ to preserve existing memory ($\sigma$),
 To allow the invariant method to be called on an invalid object, and access fields on such object, we define the set of trusted execution steps as the the call to \Q@invariant@ itself, and any field accesses inside its evaluation. Note that this only applies to single small step reductions, and not the entire evaluation of \Q!invariant!.
 
 %\loseSpace
-\noindent $\mathit{trusted}(\ctx_v,r_l)$ iff\\*
+\noindent \REV{$\mathit{trusted}(\ctx_v,r_l)$}{D}{The definition ... is missing details on the inner evaluation context in the second case, which presumably needs to have a hole somewhere} iff\\*
 \indent either
 $r_l=l.\invariant$ and
 $\ctx_v=\ctx_v'[\M{l}{v}{\square}]$,\\*

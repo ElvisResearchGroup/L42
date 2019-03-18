@@ -1,6 +1,10 @@
 \section{Invariants over encapsulated state}
 \label{s:encapsulated}
-Consider managing the shipment of items, where there is a maximum combined weight:
+\REV{Consider managing the shipment of items, where there is a maximum combined weight:}{D}{This discussion of shipping lists and items explains a problem that this system's
+	restrictions solve, but it really needs to argue for why this solution is *good*, not that it just
+	works.  Fundamentally, the first example in Section 6 is about rep exposure; why not use reference
+	immuatbility to address that too? (I'm not saying it's easy to do so, only that it should be
+	discussed, given that reference immutability was proposed in part to address just that issue.)}
 \begin{lstlisting}
 class ShippingList {
   capsule Items items;
@@ -65,7 +69,7 @@ we would get in the same situation as the former example.
 %\noindent  Moreover, if the used capsule field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
 
 
-Allowing \Q@this@ to be used more than once can also cause problems:
+\REV{Allowing \Q@this@ to be used more than once can also cause problems:}{D}{allowing 'this' to be used more than once without restriction does cause problems, but are there no intermediate restrictions that work?  This one is drastic.}
 \begin{lstlisting}
 mut method imm Void multiThis(C c) {
   read Foo f = c.foo(this);
