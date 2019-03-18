@@ -4,17 +4,17 @@
 
 \begin{lstlisting}
 @requires(exp > 0)
-@ensures(result == x**exp)
+@ensures(result = x**exp)
 Int pow(Int x, Int exp) {
 	if (exp == 1) return x;
-	if (exp %2 == 0) return pow(x*x, exp/2);//even
+	if (exp $\%$2 == 0) return pow(x*x, exp/2);//even
 	return x*pow(x, exp-1); }  //odd
 \end{lstlisting}
 If the exponent is known at compile time,
 unfolding the recursion produces even more efficient code:
 \vspace{-1ex}
 \begin{lstlisting}
-@ensures(result == x**7) Int pow7(Int x) { 
+@ensures(result = x**7) Int pow7(Int x) { 
   Int x2 = x*x; // x**2
   Int x4 = x2*x2; // x**4
   return x*x2*x4; } // Since 7 = 1 + 2 + 4
@@ -83,11 +83,125 @@ class Pow3 extends Pow2{
 \end{frame}
 
 
+
 \begin{frame}[fragile]
 \frametitle{Pow and Exp}
+\vspace{-4ex}
+\begin{lstlisting}
+class Pow1{
+  Int exp1(){return 1;}
+  @ensures(result=x**exp1())
+  Int pow1(Int x){return x;}  }
 
+class Pow2 extends Pow1{
+  Int exp2(){return exp1()+1;}
+  @ensures(result=x**exp2())
+  Int pow2(Int x){return x*pow1(x);}  }
 
+class Pow3 extends Pow2{
+  Int exp3(){return exp2()+1;}
+  @ensures(result=x**exp3())
+  Int pow3(Int x){return x*pow2(x);}  }
+\end{lstlisting}
 \end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Traits}
+\vspace{-3ex}
+\begin{columns}
+    \column{\dimexpr\paperwidth-10pt}
+\begin{lstlisting}[basicstyle=\small]
+//induction base case: pow(x)=x**1
+Trait base=class {
+  @ensures(result>0)@ensures(result=1)Int exp(){return 1;}  
+  @ensures(result=x**exp())Int pow(Int x){return x;}
+  }
+//if _pow(x)=x**_exp(), pow(x)=x**(1+_exp())
+Trait odd=class {
+  @ensures(result>0)Int $\_$exp();
+  @ensures(result=1+$\_$exp())Int exp(){return 1+$\_$exp();}
+  @ensures(result=x**$\_$exp())Int $\_$pow(Int x);
+  @ensures(result=x**exp())Int pow(Int x){return x*$\_$pow(x);}
+}
+//if _pow(x)=x**_exp(), pow(x)=x**(2*_exp())
+Trait even=class {
+  @ensures(result>0)Int $\_$exp();
+  @ensures(result=2*$\_$exp())Int exp(){return 2*$\_$exp();}
+  @ensures(result=x**$\_$exp())Int $\_$pow(Int x);
+  @ensures(result=x**exp())Int pow(Int x){return $\_$pow(x*x);}
+}
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Trait composition}
+\vspace{-3ex}
+\begin{columns}
+    \column{\dimexpr\paperwidth-10pt}
+\begin{lstlisting}[basicstyle=\small]
+//`compose' performs a step of iterative composition
+Trait compose(Trait current, Trait next){
+  current = current[rename exp()->$\_$exp(), pow(x)->$\_$pow(x)];
+  return (current+next)[hide $\_$exp(), $\_$pow(x)];
+  }
+
+@requires(exp>0)//the entry point for our metaprogramming
+Trait generate(Int exp) {
+  if (exp==1) return base;
+  if (exp$\%$2==0) return compose(generate(exp/2),even);
+  return compose(generate(exp-1),odd);
+  }
+
+class Pow7: generate(7)
+//the body of class Pow7 is the result of generate(7)
+
+
+/*example usage:*/new Pow7().pow(3)==2187//Compute 3**7
+\end{lstlisting}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Comparing code}
+\vspace{-3ex}
+\begin{lstlisting}[basicstyle=\small]
+//conventional code
+@requires(exp > 0)
+@ensures(result = x**exp)
+Int pow(Int x, Int exp) {
+	if (exp == 1) return x;
+	if (exp $\%$2 == 0) return pow(x*x, exp/2);//even
+	return x*pow(x, exp-1); }  //odd
+
+//metaprogramming
+@requires(exp>0)
+Trait generate(Int exp) {
+  if (exp==1) return base;
+  if (exp$\%$2==0) return compose(generate(exp/2),even);
+  return compose(generate(exp-1),odd);
+  }
+
+class Pow7:{//generated code
+@ensures(result>0) exp(){return 1+1+1+1+1+1+1;}
+@ensures(result = x**exp()) Int pow(Int x) {??}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Concluding}
+\begin{itemize}
+\item Idea: merge conventional verification and trait composition.
+\item Iterative composition (metaprogramming) allows to generate
+code that is correct by construction.
+\item Theorem prover/manual verification  only for the basic building blocks.
+\item Contracts are syntactically matched during the sum operation.
+\item What is the contract of the result?
+\item We are searching for relevant related work!
+\end{itemize}
+\end{frame}
+
 
 \begin{frame}[fragile]
 \frametitle{Thanks}
@@ -98,9 +212,6 @@ ${}_{}$\\*
 Questions?
 \end{frame}
 
-%\begin{frame}[fragile]
-%\frametitle{This leaking in our approach}
-%\end{frame}
 
 %\begin{frame}[fragile]
 %\frametitle{This leaking in our approach}
