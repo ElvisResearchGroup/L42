@@ -9,7 +9,7 @@ each of these works is accompanied by proofs about the properties of those modif
 Since such proofs have already been done, in this work we just assume the required properties.
 Those approaches all support deep/strong interpretation, without back doors.
 
-TM approaches like Javari~\cite{TschantzErnst05,Boyland06} and Rust~\cite{matsakis2014rust} are unsuitable since they introduce back doors which are not easily verifiable as being used properly.
+TM approaches like Javari~\cite{TschantzErnst05,Boyland06} and \REV{Rust}{A}{Why? Can you expand what the problem is?}~\cite{matsakis2014rust} are unsuitable since they introduce back doors which are not easily verifiable as being used properly.
 Many approaches just try to preserve purity (as for example~\cite{pearce2011jpure}), but here we also need aliasing control.
 Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is another popular form of aliasing control that can be used as a building block for static verification~\cite{%
 muller2002modular,%
@@ -237,7 +237,7 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 
 Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
 Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants by injecting pre and post conditions following visible state semantics;
-however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
+however it \REV{requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.}{C}{I thought Dafny implemented the dynamic frames approach, which is very flexible? An invariant is just a pure function, which can have a "reads" clause mentioning any arbitrary set of memory locations? I don't think Dafny implements the visible state semantics. Invariants are not even built into the language; they are just a pattern of using pure functions in preconditions and postconditions?}
 Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non deterministic I/O.
 
 
