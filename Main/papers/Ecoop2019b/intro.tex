@@ -24,7 +24,7 @@ An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when invariants
 The two main sound invariant protocols present in literature are \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Boogie/Pack-Unpack methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}. The visible state semantics expect the invariants of receivers to hold before and after every public method call, and after constructors. Invariants are simply checked at all such points, thus this approach is obviously sound; however this can be incredibly inefficient, even in simple cases.
 In contrast, the pack/unpack methodology marks all objects as either \emph{packed} or \emph{unpacked}, where a packed object is one whose invariant is expected to hold.
 In this approach, an object's invariant is checked only by the pack operation.
-In order for this to be sound, some form of aliasing and/or mutation control is necessary. For example, \REV{Spec\#}{C}{when first mentioning Spec\#, cite a Spec\# reference}, which follows the pack/unpack methodology, uses a theorem prover, together with source code annotations.
+In order for this to be sound, some form of aliasing and/or mutation control is necessary. For example, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}, which follows the pack/unpack methodology, uses a theorem prover, together with source code annotations.
 While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
 at runtime, 
 whilst statically verifying aliasing, purity and other similar standard properties.
