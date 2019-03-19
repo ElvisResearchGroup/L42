@@ -43,7 +43,7 @@ In contrast our model has a more fine grained representation of mutability: it i
 
 \subheading{Class invariant protocols}
 Class invariants are a fundamental part of the design by contract methodology. 
-Invariant protocols differ wildly and can be unsound or complicated, particular due to re entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
+Invariant protocols differ wildly and can be unsound or complicated, particular due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
 
 While invariant protocols all seem to 
 check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular sound approaches include:
@@ -236,7 +236,7 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 
 
 Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
-Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants by injecting pre and post-conditions following visible state semantics;
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified, it supports invariants\IO{, with its \Q!\{:autocontracts\}! annotation, which treats a class's \Q!Valid! function as the invariant and} injects pre and post-conditions following visible state semantics;
 however it \REV{requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.}{C}{I thought Dafny implemented the dynamic frames approach, which is very flexible? An invariant is just a pure function, which can have a "reads" clause mentioning any arbitrary set of memory locations? I don't think Dafny implements the visible state semantics. Invariants are not even built into the language; they are just a pattern of using pure functions in preconditions and postconditions?}
 Dafny is also generally highly restrictive with its rules for mutation, and object construction, it also does not provide any means of performing non deterministic I/O.
 
