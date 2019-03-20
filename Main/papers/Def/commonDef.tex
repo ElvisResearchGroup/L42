@@ -324,6 +324,11 @@ privateNameForSaveWithName#1\endcsname%
 \newcommand{\NoteColour}[2]{\textcolor{#1}{#2}}
 \newcommand{\NoteText}[1]{{#1}}
 \newcommand{\NoteComm}[3]{\NoteText{\scriptsize \textcolor{#1}{[#2{:} #3]}}}
+\newcommand{\NoteBlock}[4]{%
+	\NoteText{\textcolor{#1}{[{\scriptsize #2{:} #3{ }}}}%
+	 #4%
+	\NoteText{\textcolor{#1}{]}}%
+}
 \newcommand{\NoteDel}[2]{\NoteText{\textcolor{#1!60!White}{[#2]}}}
 
 \newcommand{\HideNotes}{%
@@ -335,22 +340,20 @@ privateNameForSaveWithName#1\endcsname%
 	\renewcommand{\NoteText}[1]{\unskip\space\ignorespaces}
 }
 
-\newcommand{\EZ}[1]{\NoteColour{blue}{#1}} 
-\newcommand{\EZComm}[1]{\NoteComm{blue}{Elenna}{#1}}
+\newcommand{\MakeNoteCommands}[3]{%
+	\expandafter\newcommand\csname#1\endcsname[1]{\NoteColour{#3}{##1}}%
+	\expandafter\newcommand\csname#1Comm\endcsname[1]{\NoteComm{#3}{#2}{##1}}%
+	\expandafter\newcommand\csname#1Del\endcsname[1]{\NoteDel{#3}{##1}}%
+	\expandafter\newcommand\csname#1Block\endcsname[2]{\NoteBlock{#3}{#2}{##1}{##2}}%
+}
 
-\newcommand{\MS}[1]{\NoteColour{Green}{#1}} 
-\newcommand{\MSComm}[1]{\NoteComm{Green}{Marco}{#1}}
-\newcommand{\MSDel}[1]{\NoteDel{Green}{#1}}
+\MakeNoteCommands{EZ}{Elenna}{Blue} 
+\MakeNoteCommands{MS}{Marco}{Green}
+\MakeNoteCommands{IO}{Isaac}{Blue}
+\MakeNoteCommands{AP}{Alex}{purple}
+\MakeNoteCommands{KJX}{kjx}{brown}
+\MakeNoteCommands{MAZ}{Max}{purple}
 
-\newcommand{\IO}[1]{\NoteColour{Blue}{#1}}
-\newcommand{\IOComm}[1]{\NoteComm{Blue}{Isaac}{#1}}
-\newcommand{\IODel}[1]{\NoteDel{Blue}{#1}}
-\newcommand{\AP}[1]{\NoteColour{purple}{#1}} 
-\newcommand{\APComm}[1]{\NoteComm{purple}{Alex}{#1}}
-\newcommand{\KJX}[1]{\NoteColour{brown}{#1}} 
-\newcommand{\KJXComm}[1]{\NoteComm{brown}{kjx}{#1}}
-\newcommand{\MAZ}[1]{\NoteColour{purple}{#1}}
-\newcommand{\MAZComm}[1]{\NoteComm{purple}{Max}{#1}}
 \ifdefined\AC%
   \renewcommand{\AC}[1]{\textcolor{orange}{#1}}%
 \else%
