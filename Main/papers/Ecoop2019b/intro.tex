@@ -2,13 +2,14 @@
 \label{s:intro}
 %\newpage
 %\LINE
+\IOComm{Make design goals more explicit!}
 
 Object-oriented programming languages provide great flexibility through subtyping and dynamic dispatch: they
 allow code to be adapted and specialised to behave differently in different contexts.
 %%, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
-However this flexibility hampers code reasoning, since object behaviour is usually nearly completely
-unrestricted. This is further complicated by the support OO languages typically have for exceptions,
-memory mutation, and I/O.
+However this flexibility hampers code reasoning, since \IODel{object behaviour is usually nearly completely
+unrestricted. This is further complicated by the support} OO languages typically \IO{support nearly unrestricted use of} \IODel{have for} exceptions,
+memory mutation, \IO{object aliasing,} and I/O.
 % Class invariants are a well known technique to help write correct code, however there are various different interpretations of when they should hold.
 % invariant protocols, specifying when the invariant is expected to hold and when is checked. 
 %% In the absence of on the fly static verification of dynamically loaded code, it is difficult for programmers to write code that is correct in a library setting.
@@ -18,7 +19,7 @@ Class invariants are an important concept when reasoning about software correctn
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@.
 We say that an object's invariant holds when its \Q@invariant@ method would return \Q@true@. 
-We do this, like Dafny~\cite{DBLP:conf/sigada/Leino12}, to minimise special syntactic and type-system treatment of invariants, making them easier to understand for users. Whereas most other approaches treat invariants as a special annotation with its own syntax.
+We do this, like Dafny~\cite{DBLP:conf/sigada/Leino12}, to minimise special syntactic and type-system treatment of invariants, making them easier to understand for users\IODel{. W}\IO{, w}hereas most other approaches treat invariants as a special annotation with its own syntax.
 
 An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
 The two main sound invariant protocols present in literature are \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Boogie/Pack-Unpack methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}. The visible state semantics expect the invariants of receivers to hold before and after every public method call, and after constructors. Invariants are simply checked at all such points, thus this approach is obviously sound; however this can be incredibly inefficient, even in simple cases.
@@ -32,12 +33,23 @@ This allows us to closely compare our approach with Spec\#.
 
 Instead of using automated theorem proving, 
 it is becoming more popular to verify aliasing and immutability using a type system.
-For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use Type Modifiers (TMs) and Object Capabilities (OCs) to ensure safe and deterministic parallelism.%
-\footnote{TMs are called \emph{reference capabilities} in other works. We use the term TM here
-to not confuse them with object capabilities, another technique we also use in this paper.}
+For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use Type Modifiers (TMs)\IO{\footnote{\REVm{TMs are called \emph{reference capabilities} in other works. We use the term TM here
+		to not confuse them with object capabilities, another technique we also use in this paper.}}}\REVt{D}{I'm not usually one to quibble over terminology, but this use of "Type Modifiers" terminology is
+	problematic.  The paper defines "type modifiers" to mean what prior work called "reference
+capabilities."  Arguing for change in terminology when appropriate can be a very good thing, but
+generally breeds confusion unless there's a good reason for it.  This paper doesn't actually provide
+such a reason: it merely claims in a footnote that the new terminology is to avoid confusion between
+reference capabilities and object capabilities.  Why is this even a risk? Reference capabilities are
+a static variant of object capabilities where instead of all references to an object granting the
+same abilities to modify the object, different references grant different abilities.  Prior work
+seemed to explain this clearly, so this seems a weak reason to sow confusion by breaking with prior
+work's language.  At the same time, the particular choice "type modifiers" sounds much more general
+than "reference capabilities," to the point where I assumed initially it was a stylistic variant of
+"type qualifiers.
+} and Object Capabilities (OCs) to \IO{statically} ensure \IODel{safe and} deterministic parallelism \IO{ and the absence of data-races}.\IODel{${}^1$}
 While studying those languages, we discovered an elegant way to enforce invariants.
 
-We use the guarantees provided by these systems to ensure that at all times, if an object is usable in execution, its invariant holds. What this means is that if you can do anything with an object, such as by using it as an argument/receiver of a method call, we know that the invariant of it, and all objects reachable from it, holds. In order to achieve this, we use TMs and OCs to restrict how the result of invariant methods may change, this is done by restricting I/O as well as what state the invariant can refer to and what can alias/mutate such state.  We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
+We use the guarantees provided by these systems to ensure that at all times, if an object is usable in execution, its invariant holds. What this means is that if you can do anything with an object, such as by using it as an argument/receiver of a method call, we know that the invariant of it, and all objects reachable from it, holds. In order to achieve this, we use TMs and OCs to restrict how the result of invariant methods may change, this is done by restricting I/O\IO{,} \IODel{as well as} what state the invariant can refer to\IO{,} and what can alias/mutate such state.  We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
 
 \subheading{Example}
 Here we show an example illustrating our system in action. Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
@@ -70,12 +82,12 @@ class Cage {
 \end{lstlisting}
 
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
-However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of constructor parameters, but we show their signature in order to show any annotations.
+However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of \IO{the} constructor\IO{'s} parameters, but we show their signature in order to show any annotations.
 
-We use the \Q@read@ annotation on \Q@equals@ to express that it does not modify either the
-receiver or the parameter. In \Q@Cage@ we use 
+We use the \Q@read@ annotation on \IO{the} \Q@equals@ \IO{method} to express that it \IODel{does not modify} \IO{modifies n}either \IODel{the} \IO{its}
+receiver \IO{nor its} \IODel{or the} parameter. In \Q@Cage@ we use 
 the \Q@capsule@ annotation to ensure
-that the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
+that the \IO{modification of the} \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
 of the containing \Q@Cage@. 
 We annotated the \Q@move@
 and \Q@moveTo@ methods with \Q@mut@, since they modify
@@ -88,7 +100,7 @@ Our system performs runtime checks for the invariant
 at the end of \Q@Cage@'s constructor, \Q@moveTo@ method, and after any update to one of its fields.
 The \Q@moveTo@ method is the only one that may (directly) break the \Q@Cage@'s invariant. However, there is only a single occurrence of \Q@this@ and it is used to read the \Q@h@ field. We use the guarantees of TMs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \Q@Hamster@'s position is updated. 
 The invariant is checked at the end of the \Q@moveTo@ method, just before \Q@this@ would become visible again.
-This technique loosely corresponds to an implicit pack and unpack: we use \Q@this@ only to read the field value, then we work on its value while the invariant of \Q@this@ is not known to hold, finally we check the invariant before allowing the object to  be used again.
+This technique loosely corresponds to an implicit pack and unpack: we \IODel{use} \IO{`unpack'} \Q@this@ only to read the field value, then we work on its value while the invariant of \Q@this@ is not known to hold, finally \IO{when returning, we `pack' \Q!this! and} \IODel{we} check \IODel{the} \IO{its} invariant before allowing \IODel{the object} \IO{it} to be used again.
 
 Note: since only \Q@Cage@ has an invariant,
  only \Q@Cage@ has special restrictions, allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
@@ -122,7 +134,7 @@ class Cage {
 }
 \end{lstlisting}
 
-In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant, in particular \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
+In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant, \IODel{in particular} \IO{as such, } \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
  
 Even with all of the above annotations, we still needed special care in creating \Q@Cage@s:\vspace{-1.860px}% magic number that prevents the listings background going onto the next page
 \begin{lstlisting}[
@@ -296,7 +308,7 @@ a separate \Q@moveTo@ method, since we do not want to burden our language with e
 
 %We evaluate our contribution by means of case studies;
 \subheading{Summary}
-We have fully implemented our protocol in L42\footnote{A suitably anonymised, experimental version of L42, supporting the protocol described in this paper, together with the full code of our case studies, is available at \url{http://l42.is/EcoopArtifact.zip}.}\footnote{We also believe it would be easy to implement our protocol in Pony and Gordon \etal's language.}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $5$ objects with an invariant, 
+We have fully implemented our protocol in L42\footnote{A suitably anonymised, experimental version of L42, supporting the protocol described in this paper, together with the full code of our case studies, is available at \url{http://l42.is/EcoopArtifact.zip} \IOComm{Change filename to \Q!InvariantArtifact.zip! (so it makes sense for the OOPSLA submision as well)}. We also believe it would be easy to implement our protocol in Pony and Gordon \etal's language.}\IODel{\footnotemark}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $5$ objects with an invariant, 
 our protocol performed only $77$ invariant checks, whereas the visible state semantic invariant protocols of D and Eiffel perform $53$ and $14$ million checks (respectively). See Section \ref{s:case-study} for an explanation of these result.
 % \MS{The difference between D and Eiffel is an effect of Eiffel's `uniform access principle', where fields can be used to implements `interface methods', while not triggering invariant checks.}
 We also compared with Spec\#, whose invariant protocol performs the same number of checks as ours, however the annotation burden was almost $4$ times higher than ours.
@@ -306,13 +318,13 @@ In this paper we argue that our protocol is not only more succinct than the pack
 Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures and also carefully handle non deterministic operations like I/O.
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
-Section \ref{s:TMsAndOCs} explains the \emph{type modifier} and \emph{object capability} support we use for this work.
+Section \ref{s:TMsAndOCs} explains the \IO{pre-existing} \emph{type modifier} and \emph{object capability} \IO{features} \IODel{support} we use for this work.
 Section \ref{s:protocol} explains the details of our invariant protocol, and Section \ref{s:formalism} formalises a language enforcing this protocol.
 Sections \ref{s:immutable} and \ref{s:encapsulated}, respectively, explain and motivate how our protocol can handle invariants over immutable and encapsulated data.
 Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#.
 Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
 
 Appendix \ref{s:proof} provides a proof that our invariant protocol is sound. Appendices \ref{s:hamster} and \ref{s:MoreCaseStudies} provide further
-case studies and comparisons against Spec\#, D and Eiffel.
+case studies and comparisons against Spec\#, D and Eiffel. \IOComm{Summarise the results of these extra comparisons!}
 
 %http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf

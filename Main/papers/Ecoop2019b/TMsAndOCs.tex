@@ -1,4 +1,4 @@
-\section{Type Modifiers and Object Capabilities}
+\section{Type Modifiers and Object Capabilities \IO{Background}}
 \label{s:TMsAndOCs}
 Reasoning about imperative object-oriented (OO) programs is a non trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to restrict, but not prevent such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
@@ -12,14 +12,15 @@ These projects are quite large: several million lines of code are written in Gor
 While we focus on the specific TMs provided by L42, Pony, and Gordon \etal, type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
  that allow static reasoning about mutability and aliasing properties of objects.
-With slightly different names and semantics, the four most common modifiers for references to objects are:
+With slightly different names and semantics, the four \IODel{most common} modifiers \IO{we use} for \IO{object} references \IO{(i.e. expressions and variables)} \IODel{to objects} are:
 \begin{itemize}
-\item Mutable (\Q@mut@): the referenced object can be mutated, as in most imperative languages without modifiers.
+\item Mutable (\Q@mut@): the referenced object can be mutated\IO{, and freely shared/aliased}, as in most imperative languages without modifiers.
 If all types are \Q@mut@, there is no restriction on aliasing/mutation.
-\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may be mutable aliases to such object, thus mutation can still be observed. 
-\item Immutable (\Q@imm@): the referenced object can never mutate. Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will not mutate through any other alias.
+\item \IODel{Readonly (\Q@read@): \ldots}
+\item Immutable (\Q@imm@): the referenced object \IO{can never mutate} \IO{cannot mutate, not even through other aliases}. \IODel{Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will not mutate through any other alias.} \IO{We call an object referred to by such a reference, an \emph{immutable object}; note that we don't prevent such an object from being mutated \emph{before} an immutable reference to it is made.} \IOComm{I'm not using the ROG definition of immutability, as we don't say our modifiers are deep untill later.}
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may \IO{also} be mutable aliases to \IODel{such} \IO{the same} object, thus mutation can still be observed. \IO{Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.}
 \item Encapsulated (\Q@capsule@):
- \IODel{everything} \IO{every non-immutable object} in the reachable object graph (ROG) of a capsule reference (including itself) is \IODel{mutable} only \IO{reachable} through that reference\IODel{; \REV{however immutable references can be freely shared across capsule boundaries}{B}{what does [this] mean}}. \IO{This means that for any expression $e$ and $e'$, if $e$ is typable as \Q!capsule!, then the result of $e'$ is not in the ROG of the result of $e$, unless $e'$ evaluates to an immutable object (only possible if $e'$ is not typeable as \Q!mut! or \Q!capsule!).}
+ \IODel{everything} \IO{every non-immutable object} in the reachable object graph (ROG) of a capsule reference (including itself) is \IODel{mutable} only \IO{reachable} through that reference\IODel{; \REV{however immutable references can be freely shared across capsule boundaries}{B}{what does [this] mean}}. \IO{This means that for any expression $e$ and $e'$, if $e$ is typable as \Q!capsule!, then the result of $e'$ is not in the ROG of the result of $e$, unless $e'$ evaluates to an immutable object (only possible if $e'$ is not typeable as \Q!mut! or \Q!capsule!).} \IO{An encapsulated reference can be freely promoted as mutable or immutable, since there could have been no other references to it.}
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
@@ -30,15 +31,13 @@ On the other hand, an object cannot be mutated through a \Q@read@ reference, how
 
 Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@, where we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
 \begin{lstlisting}
-mut Point mp = new Point(1, 2);
-mp.x = 3; // ok
-imm Point ip = new Point(1, 2);
-$\Comment{}$ip.x = 3; // type error
-read Point rp = mp; // ok, read is a common supertype of imm/mut
-$\Comment{}$rp.x = 3; // type error
+ mut Point mp = new Point(1, 2);   mp.x = 3; // ok
+ imm Point ip = new Point(1, 2); $\Comment{}$ip.x = 3; // type error
+read Point rp = mp;              $\Comment{}$rp.x = 3; // type error
+$\text{\IODel{// ok, read is a common supertype of imm/mut}}$
 mp.x = 5; // ok, now we can observe rp.x == 5
 ip = new Point(3, 5); // ok, ip is not final
-\end{lstlisting}
+\end{lstlisting} \IOComm{I made the above take less lines}
 
 
 There are several possible interpretations of the semantics of type modifiers.
