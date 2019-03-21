@@ -19,7 +19,8 @@ If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.
 \item Encapsulated (\Q@capsule@):
 every non-immutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.
- In order to ensure \Q!capsule! variables uniquely refer to an object, their access must be restricted. In Pony and Gordon \etal's work, reading a \Q!capsule! variable does not produce a \Q!capsule! reference, however they provide destructive reads that return the old variable value as \Q!capsule!. L42 however uses a simpler approach, where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once. \IO{Similar issues with capsule fields arise, se below.}
+ In order to ensure \Q!capsule! variables uniquely refer to an object, their access must be restricted. In Pony and Gordon \etal's work, reading a \Q!capsule! variable does not produce a \Q!capsule! reference, however they provide destructive reads that return the variable's old value as \Q!capsule!. L42 however uses a simpler approach, where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once. \IO{Later on, we discuss capsule fields, which behave slightly differently.}
+%\MS{This discussion apply to capsule local variables and capsule references. We will discuss details on capsule fields below.}
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
@@ -40,7 +41,7 @@ mp.x = 5; // ok, now we can observe rp.x == 5
 ip = new Point(3, 5); // ok, ip is not final
 \end{lstlisting} 
 
-There are several possible interpretations of the semantics of type modifiers\IO{ as applied to field}.
+There are several possible interpretations of the semantics of type modifiers when applied to fields.
 Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
 \begin{itemize}
   \item \IO{Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all} the objects in the ROG of an immutable object are \IO{also} immutable,
@@ -50,8 +51,15 @@ Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
-\IO{How \Q!capsule! fields are handled however differs widely in the literature. In order for \Q!capsule! fields to always contain a unique reference to their ROG, the language of Gordon \etal only allows them to be read destructively (i.e. by replacing the fields old value with a new one, such as \Q!null!). In contrast, the language of Pony does not provide a true \Q!capsule! field, rather it allows \Q!iso! fields which grantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field. This is still useful for safe parallelism as destructive reads of an \Q!iso! field return a proper \Q!capsule! (which can be sent to other actors), however the ROG of an \Q!iso! field can be mutated by method calls within the same actor, but on unrelated objects.
-L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,?}. For invariant checking, we would like to restrict which \emph{objects} (as opposed to \emph{threads}) can mutate the ROG of a \Q!capsule! field, in Section \ref{s:protocol} we present a novel design of \Q!capsule! fields that does this.}
+\IO{How \Q!capsule! fields are handled differs widely in the literature. In order for \Q!capsule! fields to always contain a unique reference to their ROG, the language of Gordon \etal only allows them to be read destructively (i.e. by replacing the fields old value with a new one, such as \Q!null!). 
+%In contrast \Q!capsule! field behave differently in Pony, where 
+%In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
+In contrast, Pony does not guarantee that capsule fields contain a unique reference. Non-destructive reads of \Q!capsule! fields produces a non unique-reference the can only be used in controlled ways.
+%Pony treats \Q!capsule! fields in the same way as it treats local variables: reading a capsule field creates a %non-\Q!capsule! alias to it's value, 
+%do not return a \Q!capsule!, but destructive reads do.
+%rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
+This is still useful for safe parallelism as destructive reads of a \Q!capsule! field return a \Q!capsule! reference (which can be sent to other actors), however the ROG of an \Q!capsule! field can be mutated by the same actor, even within methods of unrelated objects.
+L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,?}. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, that instead of preventing data-races, prevents representation exposure.}
 
 \noindent\IO{\subheading{Promotion and Recovery}}
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
@@ -67,21 +75,18 @@ capsule Circle cc = new Circle(new Point(0, 0), 7);
     imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 
-\IODel{Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
-The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
+Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@. All
+\Q@new@ expressions return a \Q@mut@~\cite{clebsch2015deny,?}, so \Q@mc@ is obviously ok. The declarations of \Q@cc@ and \Q@ic@ are ok, since 
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
-Moreover, the expression does not use any \Q@mut@ local variables, thus the flexible TM system
-allows the \Q@mut@ result to be promoted to \Q@capsule@, thus \Q@cc@ is ok. 
-Additionally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
-We want to emphasise that this is not a special feature of \Q@new@ expressions:
-any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@.\footnote{\IODel{
-This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
-}}}
-
-\IO{In this paper, as in~\cite{clebsch2015deny,?}, \Q!new! expressions always return a \Q!mut!, so the declaration for \Q!mc! is well typed. The flexible TM system we use allows the \Q!mut! result of such an expression to be implicitly promoted to \Q!capsule! or \Q!imm! (as in the above declarations for \Q!cc! and \Q!cc!). Such promotions are allowed for \emph{any} expression that does not have \Q!mut! or \Q!read! free variables\footnote{\IO{This assume that there are no \emph{global} \Q!read! or \Q!mut! variables/constants, as in L42, Pony, and Gordon \etal's language.}}. Since such a expression uses no \Q!mut! variables, it cannot store references to its results ROG on the heap, similarly if it used a \Q!read! (or \Q!mut!) variable, it cannot capture an existing mutable object in its ROG.}
-\IOComm{Note that Gordon and Pony freely allow read fields, so the promotion would not work if the new expressions used \Q!read! variables. L42 also allows this to work with read variables, but I don't think it's important enough to mention.}
-
+any expression (not just \Q@new@ expressions) 
+of a \Q@mut@ type that has no \Q@mut@ or \Q@read@ free 
+variables can be implicitly promoted to \Q@capsule@ or \Q@imm@.
+This requires the absence of \Q!read! and \Q!mut! \emph{global/static} variables, as in L42, Pony, and Gordon \etal's language.
+%Additionally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
+%\footnote{\IODel{
+%This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
+%}}
 This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 
 \IOBlock{Move this to related work.}{Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon \etal's,  does not consider promotion and 
@@ -183,7 +188,7 @@ L42 enforces SES using TMs in the following way:\footnote{Transactions are anoth
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 
 \noindent This strategy does not restrict \IO{when} \IODel{throwing} exceptions \IO{can be thrown}, but only catching unchecked ones.
-\IO{SES allows us to throw invariant failures as unchecked exceptions: an object that was mutated into a broken state is guaranteed to be unreachable/garbage-collectable when the invariant failure is caught} \IODel{SES allows us to soundly capture invariant failures as unchecked exceptions: the broken object is guaranteed to be garbage collectable when the exception is captured.}	
+\IO{SES allows us to throw invariant failures as unchecked exceptions: if an objects ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that not object mutated within a try block is visible when it catches an unchecked exception.}
 For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
 
@@ -241,7 +246,9 @@ moreover, the only \Q@System@ instance would be the one created by the runtime s
 %may just take a \Q@mut System@ object as a parameter.
 % could also work this way.
 This design has been explored by Joe-E~\cite{finifter2008verifiable}.
-OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. However, since
+OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. 
+
+However, since
 L42 allows user code to perform foreign calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
 %To reason about determinism, L42 connects TMs with the OC style as follows: % style by requiring:
 \begin{itemize}
