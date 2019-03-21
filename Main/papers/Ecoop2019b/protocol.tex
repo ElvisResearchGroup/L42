@@ -42,9 +42,10 @@ Note that we do not require such fields to be \Q@final@: when a field is updated
 
 %To ensure that invariants cannot be broken by unrelated code (see Section \ref{s:immutable})  %
 \subheading{\IO{Capsule Fields}}
-\IO{In order to allow complex mutations of objects with invariants we, introduce a novel kind of \Q!capsule! field:
+\IO{In order to allow complex mutations of objects with invariants, we introduce a novel kind of \Q!capsule! field, which can be accesed within invariants:
 \begin{itemize}
 	\item A \Q!capsule! field can only be initialised/updated with a \Q!capsule! expression.
+	\item Accessing a \Q!capsule! field behaves like a \Q!mut! field access: if the receiver is \Q!imm!, the field access will return \Q!imm!, if the receiver is \Q!read!, the access will return \Q!read!, if the receiver is \Q!mut!, it will return \Q!mut!.
 	\item An access of a \Q!capsule! field returns a reference with the same modifier as the receiver: i.e. 
 \MS{accessing a capsule field on a \Q!mut! receiver produces a \Q!mut!,
 accessing on a \Q!read! receiver produces a \Q!read!, and
