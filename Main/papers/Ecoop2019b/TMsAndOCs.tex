@@ -9,19 +9,17 @@ TMs, as used in this paper, are a type system feature that allows reasoning abou
 three different research languages are being independently developed relying on this new design: the language of Gordon \etal~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
 These projects are quite large: several million lines of code are written in Gordon \etal's language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the TMs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
-\IODel{While we focus on the specific TMs provided by L42, Pony, and Gordon \etal, t} \IO{T}ype modifiers
+Type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
- that allow static reasoning about mutability and aliasing properties of objects.
- \IOBlock{Moved!}{Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}.} With slightly different names and semantics, \IODel{the four most common modifiers or references to objects are} \IO{those languages all support the following modifiers for object references (i.e. expressions and variables)}:
+ that allow static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):
 \begin{itemize}
-\item Mutable (\Q@mut@): the referenced object can be mutated\IO{, and freely shared/aliased}, as in most imperative languages without modifiers.
+\item Mutable (\Q@mut@): the referenced object can be mutated, and freely shared/aliased, as in most imperative languages without modifiers.
 If all types are \Q@mut@, there is no restriction on aliasing/mutation.
-\item \IODel{Readonly (\Q@read@): \ldots}
-\item Immutable (\Q@imm@): the referenced object \IODel{can never mutate} \IO{cannot mutate, not even through other aliases}. \IODel{Like \Q@read@ references, one cannot mutate through an \Q@imm@ reference, however \Q@imm@ references also guarantee that the referenced object will not mutate through any other alias.} \IO{We call an object referenced as \Q!imm!, an \emph{immutable object}. Note that an object may be mutated and then \emph{later} become immutable.} \IOComm{I'm not using the ROG definition of immutability, as we don't say our modifiers are deep untill later.}
-\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may \IO{also} be mutable aliases to \IODel{such} \IO{the same} object, thus mutation can still be observed. \IO{Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.}
+\item Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. We call an object referenced as \Q!imm!, an \emph{immutable object}. Note that an object may be mutated and then \emph{later} become immutable.
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.
 \item Encapsulated (\Q@capsule@):
- \IODel{everything} \IO{every non-immutable object} in the reachable object graph (ROG) of a capsule reference (including itself) is \IODel{mutable} only \IO{reachable} through that reference\IODel{; \REV{however immutable references can be freely shared across capsule boundaries}{B}{what does [this] mean}}. \IO{This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object.} \IO{Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.}
- \IO{In order to ensure \Q!capsule! variables uniquely refer to an object, their access must be restricted. In Pony and Gordon \etal's work, reading a \Q!capsule! variable does not produce a \Q!capsule! reference, however they provide destructive reads that return the old variable value as \Q!capsule!.} \IOBlock{Moved}{L42 however uses a simpler approach\IO{,} where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once.}
+every non-immutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.
+ In order to ensure \Q!capsule! variables uniquely refer to an object, their access must be restricted. In Pony and Gordon \etal's work, reading a \Q!capsule! variable does not produce a \Q!capsule! reference, however they provide destructive reads that return the old variable value as \Q!capsule!. L42 however uses a simpler approach, where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once. \IO{Similar issues with capsule fields arise, se below.}
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
 %\loseSpace
@@ -32,14 +30,15 @@ On the other hand, an object cannot be mutated through a \Q@read@ reference, how
 
 Consider the following  example usage of \Q@mut@, \Q@imm@, and \Q@read@, where we can observe a change in \Q@rp@ caused by a mutation inside \Q@mp@.
 \begin{lstlisting}
- mut Point mp = new Point(1, 2);   mp.x = 3; // ok
- imm Point ip = new Point(1, 2); $\Comment{}$ip.x = 3; // type error
-read Point rp = mp;              $\Comment{}$rp.x = 3; // type error
-$\text{\IODel{// ok, read is a common supertype of imm/mut}}$
+ mut Point mp = new Point(1, 2);
+ mp.x = 3; // ok
+ imm Point ip = new Point(1, 2);
+ $\Comment{}$ip.x = 3; // type error
+read Point rp = mp;
+$\Comment{}$rp.x = 3; // type error
 mp.x = 5; // ok, now we can observe rp.x == 5
 ip = new Point(3, 5); // ok, ip is not final
-\end{lstlisting} \IOComm{I deleted the newlines after the variable declarations.}
-
+\end{lstlisting} 
 
 There are several possible interpretations of the semantics of type modifiers\IO{ as applied to field}.
 Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
@@ -51,10 +50,10 @@ Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
+\IO{How \Q!capsule! fields are handled however differs widely in the literature. In order for \Q!capsule! fields to always contain a unique reference to their ROG, the language of Gordon \etal only allows them to be read destructively (i.e. by replacing the fields old value with a new one, such as \Q!null!). In contrast, the language of Pony does not provide a true \Q!capsule! field, rather it allows \Q!iso! fields which grantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field. This is still useful for safe parallelism as destructive reads of an \Q!iso! field return a proper \Q!capsule! (which can be sent to other actors), however the ROG of an \Q!iso! field can be mutated by method calls within the same actor, but on unrelated objects.
+L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,?}. For invariant checking, we would like to restrict which \emph{objects} (as opposed to \emph{threads}) can mutate the ROG of a \Q!capsule! field, in Section \ref{s:protocol} we present a novel design of \Q!capsule! fields that does this.}
 
-\IOComm{Talk about capsule fields here!}
-
-\IO{\noindent\subheading{Promotion and Recovery}}
+\noindent\IO{\subheading{Promotion and Recovery}}
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
 The main progress in the last few years is with the flexibility of such type systems:
  where the programmer should use \Q@imm@ when  representing immutable data
@@ -68,7 +67,7 @@ capsule Circle cc = new Circle(new Point(0, 0), 7);
     imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 
-\IOBlock{Compact this!}{Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
+\IODel{Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@.
 The \Q@new@ expression returns a \Q@mut@, so \Q@mc@ is obviously ok.
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
@@ -76,9 +75,15 @@ Moreover, the expression does not use any \Q@mut@ local variables, thus the flex
 allows the \Q@mut@ result to be promoted to \Q@capsule@, thus \Q@cc@ is ok. 
 Additionally, a \Q@capsule@ can be implicitly converted to \Q@imm@, thus \Q@ic@ is also ok.
 We want to emphasise that this is not a special feature of \Q@new@ expressions:
-any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@.\footnote{%
+any expression of a \Q@mut@ type that uses no free \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@/\Q@imm@.\footnote{\IODel{
 This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
-}} This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
+}}}
+
+\IO{In this paper, as in~\cite{clebsch2015deny,?}, \Q!new! expressions always return a \Q!mut!, so the declaration for \Q!mc! is well typed. The flexible TM system we use allows the \Q!mut! result of such an expression to be implicitly promoted to \Q!capsule! or \Q!imm! (as in the above declarations for \Q!cc! and \Q!cc!). Such promotions are allowed for \emph{any} expression that does not have \Q!mut! or \Q!read! free variables\footnote{\IO{This assume that there are no \emph{global} \Q!read! or \Q!mut! variables/constants, as in L42, Pony, and Gordon \etal's language.}}. Since such a expression uses no \Q!mut! variables, it cannot store references to its results ROG on the heap, similarly if it used a \Q!read! (or \Q!mut!) variable, it cannot capture an existing mutable object in its ROG.}
+\IOComm{Note that Gordon and Pony freely allow read fields, so the promotion would not work if the new expressions used \Q!read! variables. L42 also allows this to work with read variables, but I don't think it's important enough to mention.}
+
+This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
+
 \IOBlock{Move this to related work.}{Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon \etal's,  does not consider promotion and 
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.}
 From a usability perspective, this improvement means that
@@ -122,8 +127,7 @@ be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ refe
 
 %This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
 
-\IOBlock{Rewrite and move this!}{
-The capsule/isolated fields of Gordon \etal and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: in order to read them, a new value (such as \Q!null!) will be assigned to them. In contrast, L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require such destructive reads, thus \Q@capsule@ fields can be accessed many times, and their content can be seen from outside; but only in controlled ways.} \IODel{Both Gordon \etal and Pony restrict how \Q!capsule! local variables can be used by changing the type they are seen as, however both allow the local variable to be `consumed', allowing them to be used as normal capsule/isolated expressions, at the cost of being unable to use the variable again. \IOBlock{Moved!}{L42 however uses a simpler approach \ldots.}}
+\IODel{The capsule/isolated fields of Gordon \etal and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: in order to read them, a new value (such as \Q!null!) will be assigned to them. In contrast, L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require such destructive reads, thus \Q@capsule@ fields can be accessed many times, and their content can be seen from outside; but only in controlled ways. Both Gordon \etal and Pony restrict how \Q!capsule! local variables can be used by changing the type they are seen as, however both allow the local variable to be `consumed', allowing them to be used as normal capsule/isolated expressions, at the cost of being unable to use the variable again. \IOBlock{Moved!}{L42 however uses a simpler approach \ldots.}}
 %Both the capsule/isolated fields and variables of Pony and Gordon \etall rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: reading such fields replaces their values with \Q@null@.+++ and a static analysis ensures capsule local variables can be accessed only once after the initialization and every update.
 
 %In contrast,  L42~\cite{ServettoEtAl13a,ServettoZucca15} do not require destructive reads, and treat %\Q@capsule@ local variables and \Q@capsule@ fields differently:
