@@ -19,7 +19,7 @@ If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 \item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.
 \item Encapsulated (\Q@capsule@):
 every non-immutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.
- In order to ensure \Q!capsule! variables uniquely refer to an object, their access must be restricted. In Pony and Gordon \etal's work, reading a \Q!capsule! variable does not produce a \Q!capsule! reference, however they provide destructive reads that return the variable's old value as \Q!capsule!. L42 however uses a simpler approach, where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once. \IO{Later on, we discuss capsule fields, which behave slightly differently.}
+ In order to ensure \Q!capsule! variables uniquely refer to an object, their access must be restricted. In Pony and Gordon \etal's work, reading a \Q!capsule! variable does not produce a \Q!capsule! reference, however they provide destructive reads that return the variable's old value as \Q!capsule!. L42 however uses a simpler approach, where all accesses to \Q!capsule! local variables consume them: they are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once. Later on, we discuss capsule fields, which behave slightly differently.
 %\MS{This discussion apply to capsule local variables and capsule references. We will discuss details on capsule fields below.}
 \end{itemize}
 %In the context of object-oriented programming, type modifiers may also apply to the implicit \Q@this@ parameter in method declarations, restricting the type of references the method can be called on. In addition, due to the deep meanings we type field access on object references to be the most restrictive of the object references modifier and the field’s. As \Q@read@ references impose no assumptions about aliasing, any \Q@imm@ or \Q@mut@ expression can be safely implicitly promoted to \Q@read@, whereas other conversions are not generally safe.
@@ -44,14 +44,14 @@ ip = new Point(3, 5); // ok, ip is not final
 There are several possible interpretations of the semantics of type modifiers when applied to fields.
 Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
 \begin{itemize}
-  \item \IO{Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all} the objects in the ROG of an immutable object are \IO{also} immutable,
-  \item \IO{A \Q!mut!} \IODel{a mutable} field accessed from a \Q@read@ reference produces a \Q@read@ reference\IO{; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.}\IODel{,}
+  \item Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all the objects in the ROG of an immutable object are also immutable,
+  \item A \Q!mut! field accessed from a \Q@read@ reference produces a \Q@read@ reference; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.
 %  \item no \emph{down}-casting is allowed between different type modifiers.
-  \item \IODel{n}\IO{N}o casting \IODel{/} \IO{or} promotion from \Q@read@ to \Q@mut@ is allowed.
+  \item No casting or promotion from \Q@read@ to \Q@mut@ is allowed.
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
-\IO{How \Q!capsule! fields are handled differs widely in the literature. In order for \Q!capsule! fields to always contain a unique reference to their ROG, the language of Gordon \etal only allows them to be read destructively (i.e. by replacing the fields old value with a new one, such as \Q!null!). 
+How \Q!capsule! fields are handled differs widely in the literature. In order for \Q!capsule! fields to always contain a unique reference to their ROG, the language of Gordon \etal only allows them to be read destructively (i.e. by replacing the fields old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
 In contrast, Pony does not guarantee that capsule fields contain a unique reference. Non-destructive reads of \Q!capsule! fields produces a non unique-reference the can only be used in controlled ways.
@@ -59,9 +59,9 @@ In contrast, Pony does not guarantee that capsule fields contain a unique refere
 %do not return a \Q!capsule!, but destructive reads do.
 %rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
 This is still useful for safe parallelism as destructive reads of a \Q!capsule! field return a \Q!capsule! reference (which can be sent to other actors), however the ROG of an \Q!capsule! field can be mutated by the same actor, even within methods of unrelated objects.
-L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,?}. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, that instead of preventing data-races, prevents representation exposure.}
+L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,?}. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, that instead of preventing data-races, prevents representation exposure.
 
-\noindent\IO{\subheading{Promotion and Recovery}}
+\subheading{Promotion and Recovery}
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
 The main progress in the last few years is with the flexibility of such type systems:
  where the programmer should use \Q@imm@ when  representing immutable data
@@ -97,63 +97,6 @@ mindlessly using \Q@mut@ types and be free to have rampant aliasing.
 Then, at a later stage, another programmer may still 
 be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ reference.
 
-%\saveSpace
-%\begin{lstlisting}
-%mc.radius = 3; // ok
-%imm Point ip = ic.center; // ok, ROG immutable
-%read Circle rc = mc
-%read Point rp = rc.center; // ok, fields of read Circle are read
-%$\Comment{}$mut Point mp = rc.center; // type error
-%\end{lstlisting}
-%\saveSpace
-%Such flexibility is also visible where \Q@rc.center@ returns a \Q@read@ but \Q@ic.center@ returns an \Q@imm@: any expression typed as \Q@read@ that only
-%uses immutable variables can safely be promoted to \Q@imm@ or \Q@capsule@.
-
-
- %(since \Q@ic@ is \Q@imm@, and \Q@imm@ is a deep modifier).
-%true fact but not sufficient?
-
-%With this kind of type system, we can ensure immutable classes by just declaring all their fields as final and immutable.%
-%\footnote{
-%In Java,  to ensure a class is immutable we need:
-%the class must be final, all the fields must be final of immutable
-%classes (thus no interface fields, final classes all the way down),
-%and the SecurityManager need to properly tame reflection.}
-
-% Not sure about this paragraph:
-\IODel{The \Q@capsule@ modifier (sometimes called \Q!isolated! \IODel{/\Q@iso@} \IO{or} \IO{\Q!baloon!}) is possibly the one whose details differ the most in the literature.} \IODel{\IOBlock{Moved!}{Here we refer to the interpretation of \ldots. This concept is the basis for L42, Pony, and Gordon \etal's type systems \ldots.}}
-%\begin{itemize}
-%	\item A capsule local variable can only be used once. %as \Q@capsule@ or \Q@mut@.
-%	\item Only a capsule expression can be used to initialize or update a \Q@capsule@ field.
-%	\item A capsule field access has the same type modifier as the receiver.
-%	\item An expression of a \Q@mut@ type that uses no \Q@mut@ variables declared outside can be implicitly promoted to \Q@capsule@. Promotion/recovery is the main improvement on the flexibility of TM in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}
-%	(this requires some restrictions on \Q@read@ fields that we do not discuss in detail for lack of space).
-% \end{itemize}
-
-%This is to ensure the capsule doesn't `leak', potentially violating it's exclusivity,
-
-\IODel{The capsule/isolated fields of Gordon \etal and Pony rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: in order to read them, a new value (such as \Q!null!) will be assigned to them. In contrast, L42~\cite{ServettoEtAl13a,ServettoZucca15} does not require such destructive reads, thus \Q@capsule@ fields can be accessed many times, and their content can be seen from outside; but only in controlled ways. Both Gordon \etal and Pony restrict how \Q!capsule! local variables can be used by changing the type they are seen as, however both allow the local variable to be `consumed', allowing them to be used as normal capsule/isolated expressions, at the cost of being unable to use the variable again. \IOBlock{Moved!}{L42 however uses a simpler approach \ldots.}}
-%Both the capsule/isolated fields and variables of Pony and Gordon \etall rely on destructive reads~\cite{GordonEtAl12,clebsch2015deny}: reading such fields replaces their values with \Q@null@.+++ and a static analysis ensures capsule local variables can be accessed only once after the initialization and every update.
-
-%In contrast,  L42~\cite{ServettoEtAl13a,ServettoZucca15} do not require destructive reads, and treat %\Q@capsule@ local variables and \Q@capsule@ fields differently:
-%\Q@capsule@ local variables are expressed using linear/affine types~\cite{boyland2001alias}, thus they can only be used once;
-%\Q@capsule@ fields can be accessed many times,
-%and thus their content can be seen from outside; but only in controlled ways.
-
-%while M\# and Pony requires both capsule fields and capsule variables to be `balloons'~\cite{Almeida97,ServettoEtAl13a} in the object graph.
-
-%Destructive reads would be a bad idea for validation as they would likely invalidate objects.
-
-%x=this.#f()
-%..do all you want with x...
-%// invariant check here!!
-%.
-%this.f(x -> ..)
-%this.f=transform(this.f)
-%invariantCheck()
-%transform(this.#f())
-%invariantCheck()
-
 %\loseSpace
 \subheading{Exceptions}\label{s:exceptions}
 In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
@@ -181,14 +124,14 @@ We are not aware of how Gordon \etal handles exceptions, however in order for it
 }
 L42 enforces SES using TMs in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
 \begin{itemize}
-\item Code inside a \Q@try@ block \IODel{capturing} \IO{that captures} unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
+\item Code inside a \Q@try@ block that captures unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 
-\noindent This strategy does not restrict \IO{when} \IODel{throwing} exceptions \IO{can be thrown}, but only catching unchecked ones.
-\IO{SES allows us to throw invariant failures as unchecked exceptions: if an objects ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that not object mutated within a try block is visible when it catches an unchecked exception.}
+\noindent This strategy does not restrict when exceptions can be \emph{thrown}, but only \IO{restricts when unchecked exceptions can be \emph{caught}} \IODel{catching unchecked ones}.
+SES allows us to throw invariant failures as unchecked exceptions: if an objects ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that not object mutated within a try block is visible when it catches an unchecked exception.
 For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
 
@@ -217,10 +160,10 @@ For the purposes of soundly catching invariant failures, it would be sufficient 
 
 \subheading{Object Capabilities (OCs)}
 OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{miller2003capability,
-noble2016abstract,karger1988improving} programming \IO{technique where access to resources are encoded as objects} \IODel{style that allows associating resources with objects}. When this style
+noble2016abstract,karger1988improving} programming technique where access to resources are encoded as objects. When this style
 is respected, code that does not possess an alias to such an object cannot use its associated resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon \etal's work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library\IO{,} and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
+Here, as in Gordon \etal's work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
 % While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
 
@@ -237,7 +180,7 @@ Here, as in Gordon \etal's work, we use OCs to reason about determinism and I/O.
 
 % a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
 In contrast, if Java were to respect the object capability style, the \Q@main@ method could take a \Q@System@ parameter, as in
- \Q@main($\text{\IODel{mut}}$ System s)@
+ \Q@main(System s)@
  \lstset{language=Java}
 \Q@{.. s.in.read() ..}@. \lstset{language=FortyTwo}%
 Calling methods on that \Q@System@ instance would be the only way to perform I/O;
@@ -255,7 +198,7 @@ L42 allows user code to perform foreign calls without going through a predefined
 \item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability methods}.%
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
 \item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes.
-\item In L42 there is no \Q@main@ method, rather it has several main \IODel{expressions} \IO{\emph{expressions}}; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around to the rest of the program.
+\item In L42 there is no \Q@main@ \emph{method}, rather it has several main \emph{expressions}; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around to the rest of the program.
 % \item Any method that uses non deterministic primitive operations (such as native calls or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
 % }) must be an instance method requiring a \Q@mut@ receiver.
 % Classes having such methods are \emph{capability classes}, and their instances are \emph{capability objects}.
@@ -286,7 +229,7 @@ as being deterministic and not mutating existing memory. Such methods are pure b
 		\Q@imm@ type would not cause such problems.%
 	}
 \end{itemize}
-\IO{We are unsure about the details of Gorodn \etal's and Pony's OC style, and if they can be used to enforce purity.}
+We are unsure about the details of Gorodn \etal's and Pony's OC style, and if they can be used to enforce purity.
 
 %Methods that perform non-deterministic \emph{input} shouldn't be white-listed.%, including methods that read information passed to white-listed output methods.
 
