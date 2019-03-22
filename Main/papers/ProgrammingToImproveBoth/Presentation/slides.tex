@@ -41,15 +41,30 @@ Widely different approaches,
 similar core ideas that we synthesize and improve:
 \emph{separating code from use and code for reuse}
 
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{\name: our approach:}
+We synthesize the best from these 3 approaches.
+
+Traits! (inspired from the original approach, not Scala/Rust traits).
+
 \begin{itemize}
-\item Code Reuse: traits can be reused to produce more code
-\item Code Use: classes can be instantiated and used as a type
+\item \textbf{Traits} for Code Reuse: traits can be reused to produce more code.
+\item \textbf{Classes} for Code Use: classes can be instantiated.
+\item \textbf{Types}: classes and interface names can be used as a types.
+\item \textbf{Exact types}: all classes are final; inheritance by reusing traits.
+\item \textbf{Sub types}: interfaces are the only way to induce subtyping.
+\item \textbf{Not a type}: trait names can not be used as types.
+\item[] \Q@This@ can be used to refer to the eventual class of the code.
+\item \textbf{State}: No explicit constructors/fields; state is implicitly defined.
+\item \textbf{Composition}: traits code can be composed to obtain more code.
 \end{itemize}
 
-No subclassing: only trait reuse.
 
-Interfaces are the only way to induce subtyping.
 \end{frame}
+
 
 \begin{frame}[fragile]
 \frametitle{This leaking in our approach}
@@ -123,6 +138,25 @@ Conventionally, an abstract class is a class with some abstract method.
 Here, a class whose abstract methods can be seen as state operations is a
 concrete coherent class.
 
+For example
+Java
+\begin{lstlisting}
+class A{
+  int x;
+  A(int x){this.x=x;}
+  int x(){return this.x;}
+  void x(int that){this.x=that;}
+  }
+\end{lstlisting}
+
+\name
+\begin{lstlisting}
+A={
+  static method This of(Int x)
+  method Int x()
+  method Void x(Int that)
+  }
+\end{lstlisting}
 \end{frame}
 
 \begin{frame}[fragile]
