@@ -183,7 +183,7 @@ Our protocol performs a single invariant check at the end of each constructor,  
 The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!.
 
 The results for Spec\# are very interesting, since it performs less checks than L42.
-This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block. 
+This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block\IO{, which will perform a runtime invariant check}. 
 
 Spec\# relies on the absence of arithmetic overflow, and performs runtime checks to ensure this%
 \footnote{%
@@ -215,7 +215,7 @@ whereas integer arithmetic in L42 has the common wrap around semantics.
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
 
-The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see Section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
+The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see Section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, \IO{in comparison} \IODel{this is worse} than the code following our approach that we showed above, \IODel{which has} \IO{required} 14 annotations and 14 tokens.
 
 
 \subheading{Spec\# Papers}
@@ -239,7 +239,7 @@ We can still relinquish the array, but at the cost of making the \Q!ArrayReader!
 		\item Their \Q!DirFileList! example inherits from a \Q!FileList! which has an invariant, and a final method, this is something their approach was specifically designed to handle. As L42 does not have traditional subclassing, we are unable to express this concept fully, but L42 does have code reuse via trait composition, in which case \Q!DirFileList! can essentially copy and paste the methods from \Q!FileList!, and they will automatically enforce the invariant of \Q!DirFileList!. %The disadvantage however is that if \Q!FileList! is a trait, it cannot also be a type, and so we cannot have a non-final type/class with a concrete invariant, however one can always have a final class with an invariant that wraps over a non final one. This is not an inherent limitation with our invariant protocol, but rather one of the L42 language itself.
 	\end{itemize}
 
-	\item \emph{Object Invariants in Dynamic Contexts:}~\cite{leino2004object} this paper shows how one can specify an invariant for a doubly linked list of \Q!int!s (which is an immutable value type). Unlike our protocol however, it allows the invariant of \Q!Node! to refer to sibling \Q!Node!s which are not owned/encapsulated by itself, but rather the enclosing \Q!List!. Our protocol can verify such a linked list\footnote{%
+	\item \emph{Object Invariants in Dynamic Contexts:}~\cite{leino2004object} this paper shows how one can specify an invariant for a doubly linked list of \Q!int!s (\IO{here \Q!int!} \IODel{which} is an immutable value type). Unlike our protocol however, it allows the invariant of \Q!Node! to refer to sibling \Q!Node!s which are not owned/encapsulated by itself, but rather the enclosing \Q!List!. Our protocol can verify such a linked list\footnote{%
 Our protocol allows for encoding this example, but
 to express the invariant we would need to 
 use reference equality, which the L42 language does not support.

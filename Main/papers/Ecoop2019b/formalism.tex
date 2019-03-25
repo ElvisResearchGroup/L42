@@ -159,7 +159,7 @@ We additionally restrict the grammar with the following well-formedness criteria
 		
 		
 		\text{if } \mdf=\Kw{mut}\text{ and }\exists \f\text{ such that }
-		\\*\quad C.f=\Kw{capsule}\,\_ \text{ and }\f\, \text{inside}\, C\singleDot\m
+		\\*\quad C.f=\Kw{capsule}\,\_ \text{ and } \IO{e = \ctx[\Kw{this}\singleDot\f]} \IODel{\f\, \text{inside}\, C\singleDot\m}
 		\\*
 		\text{then }\e'=\M{l}{e}{l\singleDot\invariant}\\*
 		\text{otherwise }\e'= \e
@@ -204,12 +204,12 @@ We additionally restrict the grammar with the following well-formedness criteria
 \subheading{Reduction rules}
 Our reduction rules are defined in Figure \ref{f:reductions}.
 They are pretty standard, except for our handling of monitor expressions.
-We define the relation \emph{inside} as follows:\par
-$%\begin{array}{l}
+\IODel{We define the relation \emph{inside} as follows:}\par
+\IODel{$%\begin{array}{l}
 \f\, \textit{inside}\ C\singleDot\m\text{ iff }
 C\singleDot\m=\_\,\Kw{method}\_\,\ctx[\Kw{this}\singleDot\f]
 %\end{array}
-$
+$}
 
 %\noindent Inserting the monitor expressions during reduction is convenient for the proof,
 %but it could instead be done ahead of time.
